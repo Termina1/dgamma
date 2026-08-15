@@ -240,16 +240,16 @@ public export
 relPushStack : {current, initial : state} -> (e : RelEffStar state eq) ->
   RelEffectStack state eq current initial ->
   (resultState ** RelEffectStack state eq resultState initial)
-relPushStack {current} e (MkRelEffectStack acc accRespect sound) =
-  let result = runRelEff e current
+relPushStack {current = before} e (MkRelEffectStack acc accRespect sound) =
+  let result = runRelEff e before
    in (next result ** MkRelEffectStack (acc . inverse result)
          (pushedRespect result) (pushedSound result))
   where
-  0 pushedRespect : (result : RelResult eq current) ->
+  0 pushedRespect : (result : RelResult eq before) ->
     MapRespects eq (acc . inverse result)
   pushedRespect result related = accRespect (inverseRespects result related)
 
-  0 pushedSound : (result : RelResult eq current) ->
+  0 pushedSound : (result : RelResult eq before) ->
     relation eq ((acc . inverse result) (next result)) initial
   pushedSound result = transitive eq
     (accRespect (inverseWitness result)) sound

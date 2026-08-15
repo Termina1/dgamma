@@ -405,6 +405,23 @@ runJoint (JointLeft t) = runTransformation t
 runJoint (JointRight t) = runTransformation t
 runJoint (JointCompose f g) = runJoint f . runJoint g
 
+public export
+0 diamondForwardPointwise : (left, right : EffFn state) -> (x : state) ->
+  fst (diamond left right x) = fst (left (fst (right x)))
+diamondForwardPointwise left right x with (right x) proof rightReturned
+  diamondForwardPointwise left right x | (middle, undoRight) with (left middle) proof leftReturned
+    diamondForwardPointwise left right x | (middle, undoRight) | (final, undoLeft) = Refl
+
+public export
+0 diamondInversePointwise : (left, right : EffFn state) ->
+  (origin, probe : state) ->
+  snd (diamond left right origin) probe =
+  snd (right origin) (snd (left (fst (right origin))) probe)
+diamondInversePointwise left right origin probe with (right origin) proof rightReturned
+  diamondInversePointwise left right origin probe | (middle, undoRight) with (left middle) proof leftReturned
+    diamondInversePointwise left right origin probe |
+      (middle, undoRight) | (final, undoLeft) = Refl
+
 ||| Lemma 18(2), precisely stated as generated-submonoid inclusion.
 public export
 diamondDoesNotEnlarge : (state : Type) -> Type
@@ -414,8 +431,31 @@ diamondDoesNotEnlarge state =
   (joint : JointTransformation state left right **
     Pointwise (runTransformation t) (runJoint joint))
 
-||| TODO(proof): construct the embedding by induction on Transformation. The
-||| statement is retained without a fabricated inhabitant; see NOTES.md.
+public export
+0 diamondDoesNotEnlargeProof : (state : Type) -> diamondDoesNotEnlarge state
+diamondDoesNotEnlargeProof state left right IdentityT =
+  (JointIdentity ** \x => Refl)
+diamondDoesNotEnlargeProof state left right
+  (GeneratorT ForwardGenerator) =
+    (JointCompose
+      (JointLeft (GeneratorT ForwardGenerator))
+      (JointRight (GeneratorT ForwardGenerator)) **
+      diamondForwardPointwise left right)
+diamondDoesNotEnlargeProof state left right
+  (GeneratorT (YieldedGenerator origin)) =
+    (JointCompose
+      (JointRight (GeneratorT (YieldedGenerator origin)))
+      (JointLeft
+        (GeneratorT (YieldedGenerator (fst (right origin))))) **
+      diamondInversePointwise left right origin)
+diamondDoesNotEnlargeProof state left right (ComposeT first second) =
+  let (jointFirst ** firstEqual) =
+        diamondDoesNotEnlargeProof state left right first
+      (jointSecond ** secondEqual) =
+        diamondDoesNotEnlargeProof state left right second
+   in (JointCompose jointFirst jointSecond ** \x =>
+        trans (cong (runTransformation first) (secondEqual x))
+              (firstEqual (runJoint jointSecond x)))
 
 ||| Definition 19, without quotienting: all generated maps commute and yielded
 ||| inverses are stable under every foreign generated transformation.
@@ -490,6 +530,63 @@ data PairwiseIndependent : List (EffStar state) -> Type where
   PairwiseCons : IndependentWith e rest -> PairwiseIndependent rest ->
                  PairwiseIndependent (e :: rest)
 
+public export
+pairwiseTail : PairwiseIndependent (e :: rest) -> PairwiseIndependent rest
+pairwiseTail (PairwiseCons _ tail) = tail
+
+public export
+selectedIndependentLater : (earlier : List (EffStar state)) ->
+  PairwiseIndependent (earlier ++ selected :: later) ->
+  IndependentWith selected later
+selectedIndependentLater [] (PairwiseCons selectedWith laterPairwise) = selectedWith
+selectedIndependentLater (_ :: earlier) (PairwiseCons _ tailPairwise) =
+  selectedIndependentLater earlier tailPairwise
+
+||| Pairwise commutation of a concrete list of yielded inverse maps.
+public export
+Commute : {state : Type} -> (state -> state) -> (state -> state) -> Type
+Commute {state} f g = (x : state) -> f (g x) = g (f x)
+
+public export
+data CommutesWith : (state -> state) -> List (state -> state) -> Type where
+  CommutesWithNil : CommutesWith f []
+  CommutesWithCons : Commute f g -> CommutesWith f rest ->
+                     CommutesWith f (g :: rest)
+
+public export
+data PairwiseCommuting : List (state -> state) -> Type where
+  CommutingNil : PairwiseCommuting []
+  CommutingCons : CommutesWith f rest -> PairwiseCommuting rest ->
+                  PairwiseCommuting (f :: rest)
+
+public export
+0 fixedYieldedUndoCommutes :
+  (selected : EffStar state) -> (selectedOrigin : state) ->
+  (others : List (EffStar state)) -> IndependentWith selected others ->
+  (othersStart : state) ->
+  CommutesWith (snd (runEff selected selectedOrigin))
+               (collectUndos others othersStart)
+fixedYieldedUndoCommutes selected selectedOrigin [] IndependentWithNil othersStart =
+  CommutesWithNil
+fixedYieldedUndoCommutes selected selectedOrigin (other :: rest)
+  (IndependentWithCons independent selectedRest) othersStart =
+    CommutesWithCons
+      (transformationsCommute independent
+        (GeneratorT (YieldedGenerator selectedOrigin))
+        (GeneratorT (YieldedGenerator othersStart)))
+      (fixedYieldedUndoCommutes selected selectedOrigin rest selectedRest
+        (fst (runEff other othersStart)))
+
+public export
+0 collectedUndosCommute : (effects : List (EffStar state)) ->
+  PairwiseIndependent effects -> (start : state) ->
+  PairwiseCommuting (collectUndos effects start)
+collectedUndosCommute [] PairwiseNil start = CommutingNil
+collectedUndosCommute (e :: rest) (PairwiseCons withRest restPairwise) start =
+  CommutingCons
+    (fixedYieldedUndoCommutes e start rest withRest (fst (runEff e start)))
+    (collectedUndosCommute rest restPairwise (fst (runEff e start)))
+
 ||| Pointwise equality for aligned lists of transformations.
 public export
 data TransformationListsEqual : List (state -> state) ->
@@ -498,12 +595,77 @@ data TransformationListsEqual : List (state -> state) ->
   TransformationsCons : Pointwise f g -> TransformationListsEqual fs gs ->
                         TransformationListsEqual (f :: fs) (g :: gs)
 
+||| The inductive core of Theorem 20: move one selected contribution through
+||| an arbitrary independent suffix, and preserve all suffix inverses.
+public export
+0 withdrawAcross : (selected : EffStar state) ->
+  (later : List (EffStar state)) -> IndependentWith selected later ->
+  (start : state) ->
+  (snd (runEff selected start)
+       (applyAll later (fst (runEff selected start))) = applyAll later start,
+   TransformationListsEqual
+     (collectUndos later (fst (runEff selected start)))
+     (collectUndos later start))
+withdrawAcross selected [] IndependentWithNil start =
+  (witnessed selected start, TransformationsNil)
+withdrawAcross selected (other :: rest)
+  (IndependentWithCons independent selectedRest) start =
+  let recursive = withdrawAcross selected rest selectedRest
+                    (fst (runEff other start))
+      commutation = transformationsCommute independent
+        (GeneratorT ForwardGenerator) (GeneratorT ForwardGenerator) start
+      restoredOriginal =
+        trans (cong (snd (runEff selected start))
+                (cong (applyAll rest) (sym commutation)))
+          (trans
+            (sym (leftInverseStable independent
+              (GeneratorT ForwardGenerator) start
+              (applyAll rest
+                (fst (runEff selected (fst (runEff other start)))))))
+            (fst recursive))
+      alignedRest = replace
+        {p = \s => TransformationListsEqual
+          (collectUndos rest s)
+          (collectUndos rest (fst (runEff other start)))}
+        commutation (snd recursive)
+   in (restoredOriginal,
+       TransformationsCons
+         (rightInverseStable independent
+           (GeneratorT ForwardGenerator) start)
+         alignedRest)
+
+||| Apply/collect normalization after a prefix.
+public export
+0 applyAllAppend : (earlier, later : List (EffStar state)) -> (start : state) ->
+  applyAll (earlier ++ later) start = applyAll later (applyAll earlier start)
+applyAllAppend [] later start = Refl
+applyAllAppend (e :: earlier) later start =
+  applyAllAppend earlier later (fst (runEff e start))
+
+public export
+0 collectAfterPrefix : (earlier, later : List (EffStar state)) ->
+  (start : state) ->
+  drop (length earlier) (collectUndos (earlier ++ later) start) =
+  collectUndos later (applyAll earlier start)
+collectAfterPrefix [] later start = Refl
+collectAfterPrefix (e :: earlier) later start =
+  collectAfterPrefix earlier later (fst (runEff e start))
+
+public export
+0 collectAfterSelected : (earlier : List (EffStar state)) ->
+  (selected : EffStar state) -> (later : List (EffStar state)) ->
+  (start : state) ->
+  drop (length earlier + 1)
+       (collectUndos (earlier ++ selected :: later) start) =
+  collectUndos later (fst (runEff selected (applyAll earlier start)))
+collectAfterSelected [] selected later start = Refl
+collectAfterSelected (e :: earlier) selected later start =
+  collectAfterSelected earlier selected later (fst (runEff e start))
+
 ||| Theorem 20, including both conclusions, stated for a selected effect via a
 ||| prefix/suffix decomposition. The first equality withdraws the selected
 ||| contribution; the aligned-list relation says later effects yield the same
 ||| inverses after omission.
-||| TODO(proof): general induction over the prefix/suffix trace; the n=2 core
-||| is proved by withdrawFirstOfTwo.
 public export
 outOfLIFOTheorem : (state : Type) -> Type
 outOfLIFOTheorem state =
@@ -520,17 +682,160 @@ outOfLIFOTheorem state =
      (drop (length earlier)
        (collectUndos (earlier ++ later) start)))
 
+public export
+0 outOfLIFOProof : (state : Type) -> outOfLIFOTheorem state
+outOfLIFOProof state earlier later selected start pairwise =
+  let selectedWithLater = selectedIndependentLater earlier pairwise
+      core = withdrawAcross selected later selectedWithLater
+               (applyAll earlier start)
+      recovered = fst core
+      aligned = snd core
+      recoveredAtTrace =
+        replace
+          {p = \completeState =>
+            snd (runEff selected (applyAll earlier start)) completeState =
+              applyAll later (applyAll earlier start)}
+          (sym (applyAllAppend earlier (selected :: later) start))
+          recovered
+      recoveredAtBothTraces =
+        replace
+          {p = \omittedState =>
+            snd (runEff selected (applyAll earlier start))
+              (applyAll (earlier ++ selected :: later) start) = omittedState}
+          (sym (applyAllAppend earlier later start))
+          recoveredAtTrace
+      alignedAtOriginal = replace
+        {p = \original => TransformationListsEqual original
+          (collectUndos later (applyAll earlier start))}
+        (sym (collectAfterSelected earlier selected later start)) aligned
+      alignedAtBoth = replace
+        {p = \omitted => TransformationListsEqual
+          (drop (length earlier + 1)
+            (collectUndos (earlier ++ selected :: later) start)) omitted}
+        (sym (collectAfterPrefix earlier later start)) alignedAtOriginal
+   in (recoveredAtBothTraces, alignedAtBoth)
+
 ||| A standard adjacent-swap presentation of finite permutations.
 public export
+data AdjacentSwap : List a -> List a -> Type where
+  SwapHere : AdjacentSwap (x :: y :: rest) (y :: x :: rest)
+  SwapThere : AdjacentSwap xs ys -> AdjacentSwap (z :: xs) (z :: ys)
+
+public export
 data Permutation : List a -> List a -> Type where
-  PermutationRefl : Permutation xs xs
-  PermutationCons : Permutation xs ys -> Permutation (x :: xs) (x :: ys)
-  PermutationSwap : Permutation (x :: y :: rest) (y :: x :: rest)
-  PermutationTrans : Permutation xs ys -> Permutation ys zs -> Permutation xs zs
+  PermutationDone : Permutation xs xs
+  PermutationStep : AdjacentSwap xs ys -> Permutation ys zs -> Permutation xs zs
+
+public export
+permutationCompose : Permutation xs ys -> Permutation ys zs -> Permutation xs zs
+permutationCompose PermutationDone second = second
+permutationCompose (PermutationStep step rest) second =
+  PermutationStep step (permutationCompose rest second)
+
+public export
+liftPermutation : (head : a) -> Permutation xs ys ->
+  Permutation (head :: xs) (head :: ys)
+liftPermutation head PermutationDone = PermutationDone
+liftPermutation head (PermutationStep step rest) =
+  PermutationStep (SwapThere step) (liftPermutation head rest)
+
+public export
+0 commuteSym : Commute f g -> Commute g f
+commuteSym commute x = sym (commute x)
+
+public export
+0 commutesWithSwap : CommutesWith f xs -> AdjacentSwap xs ys ->
+  CommutesWith f ys
+commutesWithSwap
+  (CommutesWithCons first (CommutesWithCons second rest)) SwapHere =
+    CommutesWithCons second (CommutesWithCons first rest)
+commutesWithSwap (CommutesWithCons first rest) (SwapThere step) =
+  CommutesWithCons first (commutesWithSwap rest step)
+
+public export
+0 swapPreservesCommuting : PairwiseCommuting xs -> AdjacentSwap xs ys ->
+  PairwiseCommuting ys
+swapPreservesCommuting
+  {xs = left :: right :: rest} {ys = right :: left :: rest}
+  (CommutingCons
+    (CommutesWithCons first headWithRest)
+    (CommutingCons secondWithRest restPairwise)) SwapHere =
+      CommutingCons
+        (CommutesWithCons (\probe => sym (first probe)) secondWithRest)
+        (CommutingCons headWithRest restPairwise)
+swapPreservesCommuting (CommutingCons headWith tailPairwise)
+  (SwapThere step) =
+    CommutingCons (commutesWithSwap headWith step)
+                  (swapPreservesCommuting tailPairwise step)
+
+public export
+0 permutationPreservesCommuting : PairwiseCommuting xs -> Permutation xs ys ->
+  PairwiseCommuting ys
+permutationPreservesCommuting pairwise PermutationDone = pairwise
+permutationPreservesCommuting pairwise (PermutationStep step rest) =
+  permutationPreservesCommuting (swapPreservesCommuting pairwise step) rest
+
+public export
+0 swapRunEqual : PairwiseCommuting xs -> AdjacentSwap xs ys ->
+  (start : state) -> runUndoList xs start = runUndoList ys start
+swapRunEqual
+  (CommutingCons (CommutesWithCons first _) _) SwapHere start =
+    cong (runUndoList _) (sym (first start))
+swapRunEqual (CommutingCons _ tailPairwise) (SwapThere step) start =
+  swapRunEqual tailPairwise step _
+
+public export
+0 permutationRunEqual : PairwiseCommuting xs -> Permutation xs ys ->
+  (start : state) -> runUndoList xs start = runUndoList ys start
+permutationRunEqual pairwise PermutationDone start = Refl
+permutationRunEqual pairwise (PermutationStep step rest) start =
+  trans (swapRunEqual pairwise step start)
+        (permutationRunEqual (swapPreservesCommuting pairwise step) rest start)
+
+public export
+moveHeadToEnd : (head : a) -> (rest : List a) ->
+  Permutation (head :: rest) (rest ++ [head])
+moveHeadToEnd head [] = PermutationDone
+moveHeadToEnd head (next :: rest) =
+  PermutationStep SwapHere (liftPermutation next (moveHeadToEnd head rest))
+
+public export
+reverseList : List a -> List a
+reverseList [] = []
+reverseList (x :: xs) = reverseList xs ++ [x]
+
+public export
+reversePermutation : (xs : List a) -> Permutation xs (reverseList xs)
+reversePermutation [] = PermutationDone
+reversePermutation (x :: xs) =
+  permutationCompose (liftPermutation x (reversePermutation xs))
+                     (moveHeadToEnd x (reverseList xs))
+
+public export
+0 runUndoAppend : (first, second : List (state -> state)) -> (start : state) ->
+  runUndoList (first ++ second) start =
+  runUndoList second (runUndoList first start)
+runUndoAppend [] second start = Refl
+runUndoAppend (f :: first) second start = runUndoAppend first second (f start)
+
+||| LIFO recovery needs no independence (Theorem 16), here specialized to the
+||| concrete inverse list collected from a trace.
+public export
+0 reverseCollectedRecovery : (effects : List (EffStar state)) -> (start : state) ->
+  runUndoList (reverseList (collectUndos effects start))
+              (applyAll effects start) = start
+reverseCollectedRecovery [] start = Refl
+reverseCollectedRecovery (e :: rest) start with (runEff e start) proof returned
+  reverseCollectedRecovery (e :: rest) start | (next, undo) =
+    trans
+      (runUndoAppend
+        (reverseList (collectUndos rest next)) [undo]
+        (applyAll rest next))
+      (trans (cong undo (reverseCollectedRecovery rest next))
+             (witnessedAt e start next undo returned))
 
 ||| Corollary 21, precisely stated: every permutation of the inverses yielded by
 ||| a pairwise-independent application trace recovers its initial state.
-||| TODO(proof): induction on Permutation using Theorem 20.
 public export
 anyPermutationRecovery : (state : Type) -> Type
 anyPermutationRecovery state =
@@ -538,3 +843,15 @@ anyPermutationRecovery state =
   PairwiseIndependent effects -> (order : List (state -> state)) ->
   Permutation (collectUndos effects start) order ->
   runUndoList order (applyAll effects start) = start
+
+public export
+0 anyPermutationRecoveryProof : (state : Type) -> anyPermutationRecovery state
+anyPermutationRecoveryProof state effects start independent order permutation =
+  let commuting = collectedUndosCommute effects independent start
+      orderToOriginal = sym
+        (permutationRunEqual commuting permutation (applyAll effects start))
+      originalToReverse = permutationRunEqual commuting
+        (reversePermutation (collectUndos effects start))
+        (applyAll effects start)
+   in trans orderToOriginal
+        (trans originalToReverse (reverseCollectedRecovery effects start))

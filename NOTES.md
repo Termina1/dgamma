@@ -77,10 +77,6 @@ There are no uses of `believe_me`, `assert_total`, `postulate`, unsafe FFI, or
 The following are statement-only `Type`s. They export no value and therefore
 cannot silently introduce a proof:
 
-- `diamondDoesNotEnlarge` — Lemma 18(2).
-- `outOfLIFOTheorem` — general Theorem 20 (the two-effect core
-  `withdrawFirstOfTwo` is proved).
-- `anyPermutationRecovery` — Corollary 21.
 - `OperationsRespectIndistinguishability` and
   `CoarsestRespectedEquivalence` — Lemma 35.
 - `distinctKeysIndependent` — Theorem 40.
@@ -99,17 +95,21 @@ statements, not holes accepted by the compiler.
   12, 17, 19, 22–34, 36–37, 39, 41) as executable Idris data/functions.
 - Proved the monoid/tracking/recovery results, witnessed effect composition,
   every field of effect preservation, projection, lifted state recovery,
-  LIFO accumulator soundness, generator commutation, finite dependent-table
-  set recovery, notification facts, table-equivalence laws, and relational
-  effect composition/soundness.
-- Stated the remaining general theorems precisely as types rather than using
-  axioms. See the audit above.
+  LIFO accumulator soundness, both clauses of Lemma 18, general out-of-LIFO
+  withdrawal (Theorem 20), arbitrary-permutation recovery (Corollary 21),
+  finite dependent-table set recovery, notification facts, table-equivalence
+  laws, and relational effect composition/soundness.
+- Stated the three remaining operation-observational theorems precisely as
+  types rather than using axioms. See the audit above.
 
 ### Adversarial review
 
-A fresh subagent reviewer could not be launched because this worker is governed
-by a higher-level child-agent restriction forbidding further delegation. An
-adversarial self-review was performed instead. It found and fixed:
+The orchestrating supervisor independently reviewed the repository and then
+required a second hardening pass. This worker has no `subagent` tool exposed in
+its tool namespace and is also governed by a child-agent instruction forbidding
+further delegation, so the requested fresh reviewer process could not be
+launched. Adversarial self-review plus the supervisor's independent review found
+and fixed:
 
 1. Initially fieldwise Theorem 13 covered only the current-state projection;
    accumulator and lifted-inverse fields were added.
@@ -122,20 +122,24 @@ adversarial self-review was performed instead. It found and fixed:
    embedding target.
 4. Operation independence initially mentioned outcomes only. It now also
    requires Definition 19 independence of the totalized lifted effect maps.
-5. All source files were scanned for hidden escape hatches and missing
+5. The supervisor rejected statement-only general independence. Lemma 18(2)
+   is now proved by an explicit `JointTransformation` embedding. Theorem 20 is
+   proved by `withdrawAcross` induction, including stability of every later
+   yielded inverse. Corollary 21 is proved by deriving pairwise commutation of
+   the concrete yielded inverses, showing adjacent swaps preserve evaluation,
+   and relating every permutation to the independently proved LIFO recovery.
+6. All source files were scanned for hidden escape hatches and missing
    `%default total`; none were found.
 
 ### Validation
 
-`idris2 --build dgamma.ipkg` succeeds with Idris 2 0.8.0. Warnings concern only
-auto-implicit names shadowing field names inside erased local theorem types.
+`idris2 --build dgamma.ipkg` succeeds with Idris 2 0.8.0 without warnings.
 
 ### Deviations / residual work
 
-Checkpoint 1 is buildable but not fully proved relative to every paper theorem:
-Lemma 18(2), general Theorem 20, Corollary 21, Lemma 35, Theorem 40 and Theorem
-42 remain precisely stated. The reasons are recorded above; no proof is claimed
-for them. Section 4 work must not begin until checkpoint approval.
+Checkpoint 1 is buildable. Lemma 35, Theorem 40 and Theorem 42 remain precisely
+stated for the paper ambiguities recorded above; no proof is claimed for them.
+Section 4 work must not begin until checkpoint approval.
 
 ## Status
 
@@ -144,12 +148,13 @@ coeffect table recovery and notifications; observational table equivalence;
 witnessing, composition, and accumulator soundness up to observational
 equivalence.
 
-**Partial:** independence/out-of-LIFO is proved for the two-effect withdrawal
-core and generator commutation; the general sequence/permutation induction is
-stated. Operation-level observational and distinct-key independence have exact
-interfaces and executable interpreters but lack their generic proofs.
+**Partial:** operation-level observational and distinct-key independence have
+exact interfaces and executable interpreters but lack their generic proofs.
+The transformation-monoid and general sequence/permutation independence results
+of Section 3.1 are fully proved.
 
-**Merely stated:** the six statement-only items listed in the escape-hatch audit.
+**Merely stated:** the three statement-only items listed in the escape-hatch
+audit (Lemma 35, Theorem 40, Theorem 42).
 
 **Next:** after checkpoint approval, encode Section 4's fiber registry and ten
 rules as an indexed transition family, then prove preservation and the tractable

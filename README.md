@@ -53,10 +53,10 @@ is exported. It is not a postulate and cannot be used as a proof.
 | Thm 16 | `EffectStack`, `pushStack` | proved as an indexed sound accumulator |
 | Def 17 | `Generator`, `Transformation`, `runTransformation` | executable inductive generated monoid |
 | Lem 18(1) | `generatorsSettleCommutation` | proved |
-| Lem 18(2) | `diamondDoesNotEnlarge` | stated (`TODO(proof)`) |
+| Lem 18(2) | `diamondDoesNotEnlarge`, `diamondDoesNotEnlargeProof` | proved by embedding generated transformations into `JointTransformation` |
 | Def 19 | `Independent`, `PairwiseIndependent` | exact executable/proof interface |
-| Thm 20 | `withdrawFirstOfTwo`; `outOfLIFOTheorem` | two-effect core proved; general theorem stated |
-| Cor 21 | `Permutation`, `anyPermutationRecovery` | precisely stated |
+| Thm 20 | `withdrawAcross`, `outOfLIFOProof` | proved for arbitrary prefix/selected effect/suffix, including inverse stability |
+| Cor 21 | `Permutation`, `anyPermutationRecoveryProof` | proved for every adjacent-swap permutation |
 | Def 22 | `Binding`, `CoeffectContext`, `lookupBinding` | executable finite dependent table |
 | Def 23 | `get`, `setFresh`, `deleteInserted` | executable; successful set returns proved indexed undo |
 | Def 24 | `CoeffectOperation`, `liftOperation` | executable partial operations |
