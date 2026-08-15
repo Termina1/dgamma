@@ -9,4 +9,5 @@ sourcedir = "src"
 modules = DGamma.Core,
           DGamma.Effects,
           DGamma.Coeffects,
-          DGamma.Unified
+          DGamma.Unified,
+          DGamma.Section3Example

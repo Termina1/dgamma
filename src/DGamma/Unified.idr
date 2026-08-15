@@ -18,11 +18,18 @@ record UnifiedLayer (lower, coeffects : Type) where
   levelCoeffects : coeffects
 
 ||| Structural recursion on the height avoids the paper's non-strictly-positive
-||| equation while preserving every finite observation of its tower.
+||| equation. This is explicitly a finite approximation, not an implementation
+||| or proof of the paper's unguarded fixed point.
 public export
 ContextTower : Nat -> Type -> Type -> Type
 ContextTower Z base coeffects = (base, coeffects)
 ContextTower (S n) base coeffects = UnifiedLayer (ContextTower n base coeffects) coeffects
+
+||| Existentially package any executable finite approximation to Gamma-infinity.
+public export
+data GammaInfinityApprox : Type -> Type -> Type where
+  AtFiniteDepth : (depth : Nat) -> ContextTower depth base coeffects ->
+                  GammaInfinityApprox base coeffects
 
 public export
 rootContext : base -> coeffects -> ContextTower Z base coeffects
@@ -106,6 +113,15 @@ public export
   TableRelated eqs left middle -> TableRelated eqs middle right ->
   TableRelated eqs left right
 tableRelatedTrans eqs lm mr k = maybeRelatedTrans (eqs k) (lm k) (mr k)
+
+public export
+tableEquivalence : {key : Type} -> {value : key -> Type} -> DecEq key =>
+  (eqs : (k : key) -> Equivalence (value k)) ->
+  Equivalence (CoeffectContext key value)
+tableEquivalence {key} {value} eqs = MkEquivalence (TableRelated eqs)
+  (tableRelatedRefl eqs)
+  (tableRelatedSym eqs)
+  (tableRelatedTrans eqs)
 
 ||| Definition 33 on an arbitrary unified runtime state with a coeffect
 ||| projection.
@@ -254,15 +270,25 @@ relPushStack {current = before} e (MkRelEffectStack acc accRespect sound) =
   pushedSound result = transitive eq
     (accRespect (inverseWitness result)) sound
 
-||| Definition 34: a heterogeneously typed operation suite.
+||| Definition 34: a heterogeneous suite of Definition-24 operations sharing
+||| one observational equivalence.
 public export
 record OperationSuite (value : Type) where
   constructor MkOperationSuite
+  suiteEquivalence : Equivalence value
   OpCode : Type
   Argument : OpCode -> Type
   Outcome : OpCode -> Type
-  applyOperation : (code : OpCode) -> Argument code -> value ->
-    Maybe (value, value -> value, Outcome code)
+  suiteOperation : (code : OpCode) ->
+    CoeffectOperation value (Argument code) (Outcome code)
+  0 operationUsesSuiteEquivalence : (code : OpCode) ->
+    valueEquivalence (suiteOperation code) = suiteEquivalence
+
+public export
+applyOperation : (suite : OperationSuite value) ->
+  (code : OpCode suite) -> Argument suite code -> value ->
+  Maybe (value, PartialMap value, Outcome suite code)
+applyOperation suite code = runOperation (suiteOperation suite code)
 
 public export
 data TestStep : (code : Type) -> (argument : code -> Type) -> Type -> Type where
@@ -287,42 +313,61 @@ runTest suite start (ForwardStep op arg :: rest) =
 runTest suite start (InverseStep op arg origin :: rest) =
   case applyOperation suite op arg origin of
     Nothing => Nothing
-    Just (next, undo, result) => runTest suite (undo start) rest
+    Just (next, undo, result) => case undo start of
+      Nothing => Nothing
+      Just prior => runTest suite prior rest
 
-||| Definition 34: no finite operation test distinguishes the values.
+||| Definition 34: no finite operation/inverse test distinguishes the values.
 public export
 Indistinguishable : {value : Type} -> (suite : OperationSuite value) -> value -> value -> Type
 Indistinguishable {value} suite left right =
   (test : List (TestStep (OpCode suite) (Argument suite) value)) ->
   runTest suite left test = runTest suite right test
 
-||| Result-agreement predicates used to state Lemma 35 without an inaccessible
-||| dependent case expression in a top-level type synonym.
 public export
-IndistResultAgreement : {value : Type} -> (suite : OperationSuite value) ->
-  {op : OpCode suite} -> Maybe (value, value -> value, Outcome suite op) ->
-  Maybe (value, value -> value, Outcome suite op) -> Type
-IndistResultAgreement suite Nothing Nothing = Unit
-IndistResultAgreement suite (Just (nextL, undoL, outL))
-                               (Just (nextR, undoR, outR)) =
-  (outL = outR,
-   Indistinguishable suite nextL nextR,
-   (x : value) -> Indistinguishable suite (undoL x) (undoR x))
-IndistResultAgreement suite _ _ = Void
+data PartialIndistinguishable : (suite : OperationSuite value) ->
+  Maybe value -> Maybe value -> Type where
+  BothTestsUndefined : PartialIndistinguishable suite Nothing Nothing
+  BothTestsDefined : Indistinguishable suite left right ->
+    PartialIndistinguishable suite (Just left) (Just right)
 
 public export
-SuccessorAgreement : {value, outcome : Type} -> (candidate : value -> value -> Type) ->
-  Maybe (value, value -> value, outcome) ->
-  Maybe (value, value -> value, outcome) -> Type
-SuccessorAgreement candidate Nothing Nothing = Unit
-SuccessorAgreement candidate (Just (nextL, _, _)) (Just (nextR, _, _)) =
-  candidate nextL nextR
-SuccessorAgreement candidate _ _ = Void
+PartialMapsPreserveIndistinguishability : {value : Type} ->
+  (suite : OperationSuite value) -> PartialMap value -> PartialMap value -> Type
+PartialMapsPreserveIndistinguishability {value} suite left right =
+  {x, y : value} -> Indistinguishable suite x y ->
+  PartialIndistinguishable suite (left x) (right y)
 
-||| Lemma 35 is stated as the exact universal property proved in the paper.
-||| It is a type (not a postulate); no inhabitant is claimed in this model,
-||| because the paper does not define equality for heterogeneous outcome traces.
-||| TODO(proof): formalize prefix closure for heterogeneous traces.
+||| Exact result agreement required by operation respect: aligned definedness,
+||| equal outcomes, indistinguishable successors, and relation-respecting
+||| partial inverses.
+public export
+data IndistResultAgreement : {value : Type} -> (suite : OperationSuite value) ->
+  {op : OpCode suite} ->
+  Maybe (value, PartialMap value, Outcome suite op) ->
+  Maybe (value, PartialMap value, Outcome suite op) -> Type where
+  IndistResultsUndefined : IndistResultAgreement suite Nothing Nothing
+  IndistResultsDefined : outLeft = outRight ->
+    Indistinguishable suite nextLeft nextRight ->
+    PartialMapsPreserveIndistinguishability suite undoLeft undoRight ->
+    IndistResultAgreement suite
+      (Just (nextLeft, undoLeft, outLeft))
+      (Just (nextRight, undoRight, outRight))
+
+public export
+data CandidateResultAgreement : (candidate : value -> value -> Type) ->
+  Maybe (value, PartialMap value, outcome) ->
+  Maybe (value, PartialMap value, outcome) -> Type where
+  CandidateUndefined : CandidateResultAgreement candidate Nothing Nothing
+  CandidateDefined : outLeft = outRight -> candidate nextLeft nextRight ->
+    ({x, y : value} -> candidate x y ->
+      PartialRelated value candidate (undoLeft x) (undoRight y)) ->
+    CandidateResultAgreement candidate
+      (Just (nextLeft, undoLeft, outLeft))
+      (Just (nextRight, undoRight, outRight))
+
+||| Lemma 35, stated with every Definition-24 respect obligation present.
+||| TODO(proof): prefix closure over the heterogeneous test trace.
 public export
 OperationsRespectIndistinguishability : {value : Type} -> OperationSuite value -> Type
 OperationsRespectIndistinguishability {value} suite =
@@ -337,85 +382,339 @@ CoarsestRespectedEquivalence {value} suite =
   (candidate : value -> value -> Type) ->
   ((op : OpCode suite) -> (arg : Argument suite op) ->
     {left, right : value} -> candidate left right ->
-    SuccessorAgreement candidate (applyOperation suite op arg left)
-                                 (applyOperation suite op arg right)) ->
+    CandidateResultAgreement candidate (applyOperation suite op arg left)
+                                       (applyOperation suite op arg right)) ->
   {left, right : value} -> candidate left right -> Indistinguishable suite left right
 
-||| Definition 39: operation independence, including outcomes, stated over a
-||| homogeneous operation suite. Equality may be replaced by relation eq.
+public export
+partialIdentity : PartialMap state
+partialIdentity x = Just x
+
+public export
+partialCompose : PartialMap state -> PartialMap state -> PartialMap state
+partialCompose after before x = case before x of
+  Nothing => Nothing
+  Just middle => after middle
+
+public export
+PartialMapsEquivalent : {state : Type} -> Equivalence state ->
+  PartialMap state -> PartialMap state -> Type
+PartialMapsEquivalent {state} eq left right = (x : state) ->
+  PartialRelated state (relation eq) (left x) (right x)
+
+public export
+PartialCommute : {state : Type} -> Equivalence state ->
+  PartialMap state -> PartialMap state -> Type
+PartialCommute eq left right =
+  PartialMapsEquivalent eq (partialCompose left right)
+                           (partialCompose right left)
+
+||| Definition 39's generated transformation monoid for a partial operation at
+||| a fixed argument.
+public export
+data PartialGenerator : (value : Type) -> (suite : OperationSuite value) ->
+  (op : OpCode suite) -> Argument suite op -> Type where
+  PartialForward : PartialGenerator value suite op arg
+  PartialYielded : (origin : value) -> PartialGenerator value suite op arg
+
+public export
+partialGeneratorMap : {value : Type} -> (suite : OperationSuite value) ->
+  {op : OpCode suite} -> {arg : Argument suite op} ->
+  PartialGenerator value suite op arg -> PartialMap value
+partialGeneratorMap {value} suite {op} {arg} PartialForward x =
+  case applyOperation suite op arg x of
+    Nothing => Nothing
+    Just (next, _, _) => Just next
+partialGeneratorMap {value} suite {op} {arg} (PartialYielded origin) x =
+  case applyOperation suite op arg origin of
+    Nothing => Nothing
+    Just (_, undo, _) => undo x
+
+public export
+data PartialTransformation : (value : Type) -> (suite : OperationSuite value) ->
+  (op : OpCode suite) -> Argument suite op -> Type where
+  PartialIdentityT : PartialTransformation value suite op arg
+  PartialGeneratorT : PartialGenerator value suite op arg ->
+                      PartialTransformation value suite op arg
+  PartialComposeT : PartialTransformation value suite op arg ->
+                    PartialTransformation value suite op arg ->
+                    PartialTransformation value suite op arg
+
+public export
+runPartialTransformation : {value : Type} -> (suite : OperationSuite value) ->
+  {op : OpCode suite} -> {arg : Argument suite op} ->
+  PartialTransformation value suite op arg -> PartialMap value
+runPartialTransformation suite PartialIdentityT = partialIdentity
+runPartialTransformation suite (PartialGeneratorT generator) =
+  partialGeneratorMap suite generator
+runPartialTransformation suite (PartialComposeT after before) =
+  partialCompose (runPartialTransformation suite after)
+                 (runPartialTransformation suite before)
+
+public export
+data OperationYieldAgreement : (eq : Equivalence value) ->
+  Maybe (value, PartialMap value, outcome) ->
+  Maybe (value, PartialMap value, outcome) -> Type where
+  YieldsBothUndefined : OperationYieldAgreement eq Nothing Nothing
+  YieldsAgree : leftOutcome = rightOutcome ->
+    PartialMapsEquivalent eq leftUndo rightUndo ->
+    OperationYieldAgreement eq
+      (Just (leftNext, leftUndo, leftOutcome))
+      (Just (rightNext, rightUndo, rightOutcome))
+
+public export
+YieldStableUnder : (suite : OperationSuite value) ->
+  (own : OpCode suite) -> Argument suite own ->
+  PartialMap value -> value -> Type
+YieldStableUnder suite own ownArg foreign origin =
+  case foreign origin of
+    Nothing => Unit
+    Just moved => OperationYieldAgreement (suiteEquivalence suite)
+      (applyOperation suite own ownArg origin)
+      (applyOperation suite own ownArg moved)
+
+||| Definition 39, now read up to the suite's observational equivalence and
+||| quantified only over states reached by foreign generated transformations.
 public export
 record OperationsIndependent (suite : OperationSuite value)
-                             (eq : Equivalence value)
                              (left, right : OpCode suite) where
   constructor MkOperationsIndependent
-  0 liftedEffectsIndependent : (leftArg : Argument suite left) ->
-    (rightArg : Argument suite right) ->
-    Independent
-      (\x => case applyOperation suite left leftArg x of
-        Nothing => (x, id)
-        Just (next, undo, _) => (next, undo))
-      (\x => case applyOperation suite right rightArg x of
-        Nothing => (x, id)
-        Just (next, undo, _) => (next, undo))
-  0 outcomesStableLeft : (leftArg : Argument suite left) ->
-    (rightArg : Argument suite right) -> (origin, moved : value) ->
-    case (applyOperation suite left leftArg origin,
-          applyOperation suite left leftArg moved) of
-      (Nothing, Nothing) => Unit
-      (Just (_, _, out1), Just (_, _, out2)) => out1 = out2
-      _ => Void
-  0 outcomesStableRight : (leftArg : Argument suite left) ->
-    (rightArg : Argument suite right) -> (origin, moved : value) ->
-    case (applyOperation suite right rightArg origin,
-          applyOperation suite right rightArg moved) of
-      (Nothing, Nothing) => Unit
-      (Just (_, _, out1), Just (_, _, out2)) => out1 = out2
-      _ => Void
+  0 transformationsCommute :
+    (leftArg : Argument suite left) -> (rightArg : Argument suite right) ->
+    (leftT : PartialTransformation value suite left leftArg) ->
+    (rightT : PartialTransformation value suite right rightArg) ->
+    PartialCommute (suiteEquivalence suite)
+      (runPartialTransformation suite leftT)
+      (runPartialTransformation suite rightT)
+  0 leftYieldStable :
+    (leftArg : Argument suite left) -> (rightArg : Argument suite right) ->
+    (foreign : PartialTransformation value suite right rightArg) ->
+    (origin : value) ->
+    YieldStableUnder suite left leftArg
+      (runPartialTransformation suite foreign) origin
+  0 rightYieldStable :
+    (leftArg : Argument suite left) -> (rightArg : Argument suite right) ->
+    (foreign : PartialTransformation value suite left leftArg) ->
+    (origin : value) ->
+    YieldStableUnder suite right rightArg
+      (runPartialTransformation suite foreign) origin
 
-||| A keyed operation suite for Theorem 40.
+||| Theorem 40 is stated only for operations constructed locally on one key;
+||| arbitrary whole-state operations cannot merely be tagged with a key.
 public export
-record KeyedOperationSuite (key, value : Type) where
+record KeyedOperationSuite (key : Type) (value : key -> Type) where
   constructor MkKeyedOperationSuite
-  keyedSuite : OperationSuite value
-  operationKey : OpCode keyedSuite -> key
+  keyEquivalences : (k : key) -> Equivalence (value k)
+  KeyOpCode : Type
+  operationKey : KeyOpCode -> key
+  KeyArgument : KeyOpCode -> Type
+  KeyOutcome : KeyOpCode -> Type
+  localOperation : (op : KeyOpCode) ->
+    CoeffectOperation (value (operationKey op))
+      (KeyArgument op) (KeyOutcome op)
+  0 localUsesKeyEquivalence : (op : KeyOpCode) ->
+    valueEquivalence (localOperation op) = keyEquivalences (operationKey op)
 
-||| Theorem 40, stated at the exact operation-independence relation above.
-||| TODO(proof): lift distinct-key table commutation through partial operations.
 public export
-distinctKeysIndependent : (key, value : Type) -> Type
+keyedApply : DecEq key => (suite : KeyedOperationSuite key value) ->
+  (op : KeyOpCode suite) -> KeyArgument suite op ->
+  CoeffectContext key value ->
+  Maybe (CoeffectContext key value,
+         CoeffectContext key value -> Maybe (CoeffectContext key value),
+         KeyOutcome suite op)
+keyedApply suite op arg table =
+  case liftOperation (operationKey suite op) (localOperation suite op) arg table of
+    Nothing => Nothing
+    Just lifted => Just (liftedAfter lifted, liftedUndo lifted, liftedOutcome lifted)
+
+public export
+keyedPartialEff : {key : Type} -> {value : key -> Type} ->
+  DecEq key => (suite : KeyedOperationSuite key value) ->
+  (op : KeyOpCode suite) -> KeyArgument suite op ->
+  CoeffectContext key value ->
+  Maybe (CoeffectContext key value,
+         CoeffectContext key value -> Maybe (CoeffectContext key value))
+keyedPartialEff suite op arg table =
+  map (\(next, undo, _) => (next, undo)) (keyedApply suite op arg table)
+
+||| A partial effect function and Definition-19 independence for such effects.
+public export
+PartialEffFn : Type -> Type
+PartialEffFn state = state -> Maybe (state, PartialMap state)
+
+public export
+data PartialEffGenerator : (state : Type) -> PartialEffFn state -> Type where
+  PartialEffForward : PartialEffGenerator state eff
+  PartialEffYielded : (origin : state) -> PartialEffGenerator state eff
+
+public export
+partialEffGeneratorMap : {state : Type} -> {eff : PartialEffFn state} ->
+  PartialEffGenerator state eff -> PartialMap state
+partialEffGeneratorMap {state} {eff} PartialEffForward x =
+  case eff x of Nothing => Nothing; Just (next, _) => Just next
+partialEffGeneratorMap {state} {eff} (PartialEffYielded origin) x =
+  case eff origin of Nothing => Nothing; Just (_, undo) => undo x
+
+public export
+data PartialEffTransformation : (state : Type) -> PartialEffFn state -> Type where
+  PartialEffIdentityT : PartialEffTransformation state eff
+  PartialEffGeneratorT : PartialEffGenerator state eff ->
+                         PartialEffTransformation state eff
+  PartialEffComposeT : PartialEffTransformation state eff ->
+                       PartialEffTransformation state eff ->
+                       PartialEffTransformation state eff
+
+public export
+runPartialEffTransformation : {state : Type} -> {eff : PartialEffFn state} ->
+  PartialEffTransformation state eff -> PartialMap state
+runPartialEffTransformation PartialEffIdentityT = partialIdentity
+runPartialEffTransformation (PartialEffGeneratorT generator) =
+  partialEffGeneratorMap generator
+runPartialEffTransformation (PartialEffComposeT after before) =
+  partialCompose (runPartialEffTransformation after)
+                 (runPartialEffTransformation before)
+
+public export
+data PartialEffectYieldAgreement : (state : Type) -> Equivalence state ->
+  Maybe (state, PartialMap state) -> Maybe (state, PartialMap state) -> Type where
+  PartialEffectBothUndefined : PartialEffectYieldAgreement state eq Nothing Nothing
+  PartialEffectYieldsAgree : PartialMapsEquivalent eq leftUndo rightUndo ->
+    PartialEffectYieldAgreement state eq
+      (Just (leftNext, leftUndo)) (Just (rightNext, rightUndo))
+
+public export
+PartialEffectYieldStableUnder : {state : Type} -> (eq : Equivalence state) ->
+  PartialEffFn state -> PartialMap state -> state -> Type
+PartialEffectYieldStableUnder {state} eq own foreign origin =
+  case foreign origin of
+    Nothing => Unit
+    Just moved => PartialEffectYieldAgreement state eq (own origin) (own moved)
+
+public export
+record PartialEffectIndependent (eq : Equivalence state)
+                                (left, right : PartialEffFn state) where
+  constructor MkPartialEffectIndependent
+  0 partialEffectsCommute :
+    (leftT : PartialEffTransformation state left) ->
+    (rightT : PartialEffTransformation state right) ->
+    PartialCommute eq (runPartialEffTransformation leftT)
+                      (runPartialEffTransformation rightT)
+  0 partialLeftYieldStable : (foreign : PartialEffTransformation state right) ->
+    (origin : state) -> PartialEffectYieldStableUnder eq left
+      (runPartialEffTransformation foreign) origin
+  0 partialRightYieldStable : (foreign : PartialEffTransformation state left) ->
+    (origin : state) -> PartialEffectYieldStableUnder eq right
+      (runPartialEffTransformation foreign) origin
+
+public export
+data LiftedOutcomeAgreement : (state : Type) -> (eq : Equivalence state) ->
+  Maybe (state, PartialMap state, outcome) ->
+  Maybe (state, PartialMap state, outcome) -> Type where
+  LiftedOutcomesUndefined : LiftedOutcomeAgreement state eq Nothing Nothing
+  LiftedOutcomesAgree : leftOutcome = rightOutcome ->
+    PartialMapsEquivalent eq leftUndo rightUndo ->
+    LiftedOutcomeAgreement state eq
+      (Just (leftNext, leftUndo, leftOutcome))
+      (Just (rightNext, rightUndo, rightOutcome))
+
+public export
+LiftedOutcomeStableUnder : {key : Type} -> {value : key -> Type} -> DecEq key =>
+  (suite : KeyedOperationSuite key value) ->
+  (own : KeyOpCode suite) -> KeyArgument suite own ->
+  PartialMap (CoeffectContext key value) -> CoeffectContext key value -> Type
+LiftedOutcomeStableUnder {key} {value} suite own ownArg foreign origin =
+  case foreign origin of
+    Nothing => Unit
+    Just moved => LiftedOutcomeAgreement (CoeffectContext key value)
+      (tableEquivalence (keyEquivalences suite))
+      (keyedApply suite own ownArg origin)
+      (keyedApply suite own ownArg moved)
+
+||| Definition 39 specialized to genuine dependent-table lifts.
+public export
+record LiftedOperationsIndependent (keyEq : DecEq key)
+                                   (suite : KeyedOperationSuite key value)
+                                   (left, right : KeyOpCode suite) where
+  constructor MkLiftedOperationsIndependent
+  0 liftedIndependent : (leftArg : KeyArgument suite left) ->
+    (rightArg : KeyArgument suite right) ->
+    PartialEffectIndependent (tableEquivalence @{keyEq} (keyEquivalences suite))
+      (keyedPartialEff @{keyEq} suite left leftArg)
+      (keyedPartialEff @{keyEq} suite right rightArg)
+  0 leftLiftedOutcomeStable : (leftArg : KeyArgument suite left) ->
+    (rightArg : KeyArgument suite right) ->
+    (foreign : PartialEffTransformation (CoeffectContext key value)
+      (keyedPartialEff @{keyEq} suite right rightArg)) ->
+    (origin : CoeffectContext key value) ->
+    LiftedOutcomeStableUnder @{keyEq} suite left leftArg
+      (runPartialEffTransformation foreign) origin
+  0 rightLiftedOutcomeStable : (leftArg : KeyArgument suite left) ->
+    (rightArg : KeyArgument suite right) ->
+    (foreign : PartialEffTransformation (CoeffectContext key value)
+      (keyedPartialEff @{keyEq} suite left leftArg)) ->
+    (origin : CoeffectContext key value) ->
+    LiftedOutcomeStableUnder @{keyEq} suite right rightArg
+      (runPartialEffTransformation foreign) origin
+
+||| Theorem 40, correctly confined to distinct dependent-table lifts.
+||| TODO(proof): prove the partial-map commuting diagrams for distinct keys.
+public export
+distinctKeysIndependent : (key : Type) -> (value : key -> Type) -> Type
 distinctKeysIndependent key value =
-  (keyed : KeyedOperationSuite key value) -> DecEq key =>
-  (eq : Equivalence value) ->
-  (left : OpCode (keyedSuite keyed)) ->
-  (right : OpCode (keyedSuite keyed)) ->
-  Not (operationKey keyed left = operationKey keyed right) ->
-  OperationsIndependent (keyedSuite keyed) eq left right
+  (keyEq : DecEq key) -> (suite : KeyedOperationSuite key value) ->
+  (left : KeyOpCode suite) -> (right : KeyOpCode suite) ->
+  Not (operationKey suite left = operationKey suite right) ->
+  LiftedOperationsIndependent keyEq suite left right
 
-||| Definition 41: a computation assembled solely from coeffect operations,
-||| with later stages chosen from earlier outcomes.
+||| Definition 41: a computation assembled solely from keyed coeffect
+||| operations, with continuations selected by outcomes.
 public export
-data Mediated : (suite : OperationSuite value) -> Type where
+data Mediated : (suite : KeyedOperationSuite key value) -> Type where
   Done : Mediated suite
-  Stage : (op : OpCode suite) -> (arg : Argument suite op) ->
-          (Outcome suite op -> Mediated suite) -> Mediated suite
+  Stage : (op : KeyOpCode suite) -> (arg : KeyArgument suite op) ->
+          (KeyOutcome suite op -> Mediated suite) -> Mediated suite
 
-||| Executable interpretation of Definition 41. Inverses compose in LIFO order.
 public export
-runMediated : (suite : OperationSuite value) -> Mediated suite -> EffFn value
-runMediated suite Done x = (x, id)
-runMediated suite (Stage op arg continue) x =
-  case applyOperation suite op arg x of
-    Nothing => (x, id)
+runMediated : DecEq key => (suite : KeyedOperationSuite key value) ->
+  Mediated suite -> PartialEffFn (CoeffectContext key value)
+runMediated suite Done table = Just (table, \later => Just later)
+runMediated suite (Stage op arg continue) table =
+  case keyedApply suite op arg table of
+    Nothing => Nothing
     Just (next, undo, result) =>
-      let (final, restUndo) = runMediated suite (continue result) next
-       in (final, undo . restUndo)
+      case runMediated suite (continue result) next of
+        Nothing => Nothing
+        Just (final, restUndo) =>
+          Just (final, partialCompose undo restUndo)
 
-||| Theorem 42, stated precisely for the executable mediated language. An
-||| inhabitant is intentionally not fabricated; see NOTES for the missing
-||| heterogeneous commutation development.
-||| TODO(proof): induction on Mediated using generator commutation and outcomes.
 public export
-MediatedIndependenceTheorem : {value : Type} -> (suite : OperationSuite value) -> Type
-MediatedIndependenceTheorem {value} suite =
-  (left, right : Mediated suite) ->
-  Independent (runMediated suite left) (runMediated suite right)
+data Occurs : {key : Type} -> {value : key -> Type} ->
+  (suite : KeyedOperationSuite key value) ->
+  (op : KeyOpCode suite) -> Mediated suite -> Type where
+  OccursHere : Occurs suite op (Stage op arg continue)
+  OccursLater : (outcome : KeyOutcome suite currentOp) ->
+    Occurs suite op (continue outcome) ->
+    Occurs suite op (Stage currentOp arg continue)
+
+||| The exact hypothesis of Theorem 42: every key used by both programs is
+||| commutative at every pair of operations occurring there.
+public export
+sharedKeysCommutative : {key : Type} -> {value : key -> Type} ->
+  (keyEq : DecEq key) -> (suite : KeyedOperationSuite key value) ->
+  Mediated suite -> Mediated suite -> Type
+sharedKeysCommutative keyEq suite left right =
+  (leftOp : KeyOpCode suite) -> (rightOp : KeyOpCode suite) ->
+  Occurs suite leftOp left -> Occurs suite rightOp right ->
+  operationKey suite leftOp = operationKey suite rightOp ->
+  LiftedOperationsIndependent keyEq suite leftOp rightOp
+
+||| Theorem 42, now with its essential shared-key commutativity hypothesis.
+||| TODO(proof): structural induction on both mediated continuation trees.
+public export
+MediatedIndependenceTheorem : (key : Type) -> (value : key -> Type) -> Type
+MediatedIndependenceTheorem key value =
+  (keyEq : DecEq key) -> (suite : KeyedOperationSuite key value) ->
+  (left : Mediated suite) -> (right : Mediated suite) ->
+  sharedKeysCommutative keyEq suite left right ->
+  PartialEffectIndependent (tableEquivalence @{keyEq} (keyEquivalences suite))
+    (runMediated @{keyEq} suite left) (runMediated @{keyEq} suite right)

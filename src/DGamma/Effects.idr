@@ -213,6 +213,34 @@ public export
 etaStar : {state : Type} -> EffStar state
 etaStar = MkEffStar (eta {state}) (\_ => Refl)
 
+||| Theorem 10(2): unconditional monoid homomorphism from twisted pairs. This
+||| does not require an inverse law; witnessing is the separate Theorem 11(2).
+public export
+embedTwisted : Twisted state -> EffFn state
+embedTwisted (MkTwisted f g) x = (f x, g)
+
+public export
+0 embedTwistedUnitState : (x : state) ->
+  fst (embedTwisted (twistedUnit {state}) x) = fst (eta {state} x)
+embedTwistedUnitState x = Refl
+
+public export
+0 embedTwistedUnitUndo : (x, probe : state) ->
+  snd (embedTwisted (twistedUnit {state}) x) probe = snd (eta {state} x) probe
+embedTwistedUnitUndo x probe = Refl
+
+public export
+0 embedTwistedMultiplicationState : (left, right : Twisted state) ->
+  (x : state) -> fst (embedTwisted (twisted left right) x) =
+  fst (diamond (embedTwisted left) (embedTwisted right) x)
+embedTwistedMultiplicationState (MkTwisted lf lb) (MkTwisted rf rb) x = Refl
+
+public export
+0 embedTwistedMultiplicationUndo : (left, right : Twisted state) ->
+  (x, probe : state) -> snd (embedTwisted (twisted left right) x) probe =
+  snd (diamond (embedTwisted left) (embedTwisted right) x) probe
+embedTwistedMultiplicationUndo (MkTwisted lf lb) (MkTwisted rf rb) x probe = Refl
+
 ||| A twisted pair whose inverse is uniform at every state.
 public export
 UniformInverse : {state : Type} -> Twisted state -> Type
@@ -314,6 +342,54 @@ effectUndoRecovery e (MkEffectContext x phi) with (runEff e x) proof returned
         inner = trans (cong (fst . runEff e) w) (cong fst returned)
         restored = trans (cong undo inner) w
      in cong (\v => MkEffectContext v id) (cong phi restored)
+
+||| Theorem 15's exact accumulator formula phi . g . f, stated pointwise.
+public export
+0 effectUndoAccumulatorFormula : (e : EffStar state) ->
+  (ctx : EffectContext state) -> (probe : state) ->
+  accumulator
+    (snd (effect (runEff e) ctx) (fst (effect (runEff e) ctx))) probe =
+  accumulator ctx
+    (snd (runEff e (current ctx)) (fst (runEff e probe)))
+effectUndoAccumulatorFormula e (MkEffectContext x phi) probe
+  with (runEff e x)
+    effectUndoAccumulatorFormula e (MkEffectContext x phi) probe |
+      (next, undo) with (runEff e probe)
+        effectUndoAccumulatorFormula e (MkEffectContext x phi) probe |
+          (next, undo) | (probeNext, probeUndo) = Refl
+
+public export
+UniformYieldAt : {state : Type} -> EffStar state -> state -> Type
+UniformYieldAt {state} e origin = (probe : state) ->
+  snd (runEff e origin) (fst (runEff e probe)) = probe
+
+public export
+LiftAccumulatorRestoredAt : {state : Type} -> EffStar state -> state -> Type
+LiftAccumulatorRestoredAt {state} e origin =
+  (phi : state -> state) -> (probe : state) ->
+  accumulator
+    (snd (effect (runEff e) (MkEffectContext origin phi))
+         (fst (effect (runEff e) (MkEffectContext origin phi)))) probe =
+  phi probe
+
+||| Theorem 15's iff: full lifted witnessing holds exactly for a yielded
+||| inverse that is uniform against the whole forward map.
+public export
+0 effectLiftWitnessIff : (e : EffStar state) -> (origin : state) ->
+  (UniformYieldAt e origin -> LiftAccumulatorRestoredAt e origin,
+   LiftAccumulatorRestoredAt e origin -> UniformYieldAt e origin)
+effectLiftWitnessIff e origin = (forward, backward)
+  where
+  0 forward : UniformYieldAt e origin -> LiftAccumulatorRestoredAt e origin
+  forward uniform phi probe =
+    trans (effectUndoAccumulatorFormula e (MkEffectContext origin phi) probe)
+          (cong phi (uniform probe))
+
+  0 backward : LiftAccumulatorRestoredAt e origin -> UniformYieldAt e origin
+  backward restored probe =
+    trans (sym (effectUndoAccumulatorFormula e
+      (MkEffectContext origin id) probe))
+      (restored id probe)
 
 ||| A finite LIFO stack of effects. Its accumulator is executable and its proof
 ||| records Theorem 16 for the sequence.
@@ -634,6 +710,63 @@ withdrawAcross selected (other :: rest)
            (GeneratorT ForwardGenerator) start)
          alignedRest)
 
+public export
+independentWithPrefix : (observed, remaining : List (EffStar state)) ->
+  IndependentWith selected (observed ++ remaining) ->
+  IndependentWith selected observed
+independentWithPrefix [] remaining independent = IndependentWithNil
+independentWithPrefix (e :: observed) remaining
+  (IndependentWithCons first rest) =
+    IndependentWithCons first (independentWithPrefix observed remaining rest)
+
+||| The forward factorization delta_u = f_j(delta'_u) from Theorem 20(1).
+public export
+0 forwardAcross : (selected : EffStar state) ->
+  (later : List (EffStar state)) -> IndependentWith selected later ->
+  (start : state) ->
+  applyAll later (fst (runEff selected start)) =
+  fst (runEff selected (applyAll later start))
+forwardAcross selected [] IndependentWithNil start = Refl
+forwardAcross selected (other :: rest)
+  (IndependentWithCons independent selectedRest) start =
+    trans
+      (cong (applyAll rest)
+        (sym (transformationsCommute independent
+          (GeneratorT ForwardGenerator) (GeneratorT ForwardGenerator) start)))
+      (forwardAcross selected rest selectedRest (fst (runEff other start)))
+
+||| Paper Theorem 20(1) at every intermediate u. The split
+||| `later = observed ++ remaining` selects u; both factorization and withdrawal
+||| are returned, not merely the final endpoint.
+public export
+theorem20EveryIntermediate : (state : Type) -> Type
+theorem20EveryIntermediate state =
+  (earlier : List (EffStar state)) -> (later : List (EffStar state)) ->
+  (selected : EffStar state) -> (start : state) ->
+  PairwiseIndependent (earlier ++ selected :: later) ->
+  (observed : List (EffStar state)) ->
+  (remaining : List (EffStar state)) -> later = observed ++ remaining ->
+  (applyAll observed (fst (runEff selected (applyAll earlier start))) =
+     fst (runEff selected (applyAll observed (applyAll earlier start))),
+   snd (runEff selected (applyAll earlier start))
+     (applyAll observed (fst (runEff selected (applyAll earlier start)))) =
+     applyAll observed (applyAll earlier start))
+
+public export
+0 theorem20EveryIntermediateProof : (state : Type) ->
+  theorem20EveryIntermediate state
+theorem20EveryIntermediateProof state earlier later selected start pairwise
+  observed remaining split =
+    let pairwiseSplit = replace
+          {p = \tail => PairwiseIndependent (earlier ++ selected :: tail)}
+          split pairwise
+        selectedWithAll = selectedIndependentLater earlier pairwiseSplit
+        selectedWithObserved = independentWithPrefix observed remaining selectedWithAll
+     in (forwardAcross selected observed selectedWithObserved
+           (applyAll earlier start),
+         fst (withdrawAcross selected observed selectedWithObserved
+           (applyAll earlier start)))
+
 ||| Apply/collect normalization after a prefix.
 public export
 0 applyAllAppend : (earlier, later : List (EffStar state)) -> (start : state) ->
@@ -833,6 +966,30 @@ reverseCollectedRecovery (e :: rest) start with (runEff e start) proof returned
         (applyAll rest next))
       (trans (cong undo (reverseCollectedRecovery rest next))
              (witnessedAt e start next undo returned))
+
+||| Theorem 16 at every intermediate reverse-revert boundary. `earlier` is the
+||| still-installed prefix and `later` the suffix already being reverted.
+public export
+lifoEveryIntermediate : (state : Type) -> Type
+lifoEveryIntermediate state =
+  (earlier : List (EffStar state)) -> (later : List (EffStar state)) ->
+  (start : state) ->
+  (runUndoList (reverseList (collectUndos later (applyAll earlier start)))
+     (applyAll (earlier ++ later) start) = applyAll earlier start,
+   runUndoList (reverseList (collectUndos earlier start))
+     (applyAll earlier start) = start)
+
+public export
+0 lifoEveryIntermediateProof : (state : Type) -> lifoEveryIntermediate state
+lifoEveryIntermediateProof state earlier later start =
+  let suffixRecovery = reverseCollectedRecovery later (applyAll earlier start)
+      atWholeTrace = replace
+        {p = \final =>
+          runUndoList
+            (reverseList (collectUndos later (applyAll earlier start))) final =
+          applyAll earlier start}
+        (sym (applyAllAppend earlier later start)) suffixRecovery
+   in (atWholeTrace, reverseCollectedRecovery earlier start)
 
 ||| Corollary 21, precisely stated: every permutation of the inverses yielded by
 ||| a pairwise-independent application trace recovers its initial state.
