@@ -10,8 +10,8 @@ computational data; laws and witnesses are erased with quantity `0`.
 idris2 --build dgamma.ipkg
 ```
 
-The package currently contains the Section 3 checkpoint. Section 4 modules are
-added only after checkpoint approval.
+The package contains the approved Section 3 checkpoint and the Checkpoint 2
+Section 4 calculus/metatheory candidate.
 
 ## Design map
 
@@ -28,6 +28,15 @@ added only after checkpoint approval.
 - `DGamma.Section3Example`: executable typed-table/notification checks plus a
   two-component effect+coeffect load/load/unload/unload scenario applying both
   base and actual-lifted recovery theorems; mediated failure also propagates.
+- `DGamma.Calculus`: components, intrinsically total committed views,
+  name-unique registries, four-state fibers, target/quiet/relied predicates, the
+  ten executable rules, indexed transition traces, and episode extraction.
+- `DGamma.Metatheory`: executable well-formedness and precise statement types
+  for Preservation, recovery exactness/terminal recovery, spatial ordering,
+  and resolution coherence, plus their supporting trace predicates.
+- `DGamma.CalculusChecks`: an executable provider/consumer lifecycle regression
+  whose recovery, active-coeffect withdrawal, and final well-formedness checks
+  all evaluate to `True`.
 
 `Pointwise` equality is used for functions rather than assuming function
 extensionality.
@@ -82,3 +91,21 @@ is exported. It is not a postulate and cannot be used as a proof.
 | Thm 40 | `KeyedOperationSuite`, `distinctKeysIndependent` | correctly confined distinct-key lift theorem stated, unproved (`TODO(proof)`) |
 | Def 41 | `Mediated`, `runMediated`, `failurePropagates` | executable partial continuation tree; operation failure remains failure |
 | Thm 42 | `Occurs`, `ProgramUsesKey`, `keyCommutative`, `sharedKeysCommutative`, `MediatedIndependenceTheorem` | exact interface-wide shared-key-commutativity hypothesis restored; stated, unproved (`TODO(proof)`) |
+| Def 43 | `Component`, `componentDependencies`, `componentProvisions`, `provisionSound` | executable **restricted normalization**: the final local provision table is immutable component data and becomes visible only in `Active`; computed table values are not modeled |
+| Def 44 | `Parent`, `Fiber`, `View`, `freshFiber` | executable; views are intrinsically total on the exact dependency list |
+| Def 45 | `Registry`, `SystemState`, `activeCoeffects`, `providerOf` | executable; registry names and coeffect keys are intrinsically unique |
+| Def 46 | `targetFiber`, `targetAt`, `quietFiber`, `quiet` | executable |
+| Def 47 | `Registration`, `registration` | **partial/restricted**: checked O-Insert/O-Retire pair is executable, but `StepEffect` has no nested-registration yield channel |
+| Def 48 | `ConfinedStep` | **structural restricted fragment**: steps cannot access any registry; own-table mutation/declared coeffect reads are normalized away, stronger than the write boundary but less expressive than the paper |
+| Def 49 | `Lifecycle`, `installed`, `committed` | executable four-state lifecycle with outcomes |
+| Def 50 | `relied`, `reliedOnBy` | executable |
+| Def 51–52 | `StepEffect`, `componentProgram`, `applyAction` L-Iter/L-Finish/L-Divert/L-Raise cases | executable finite failing iterator with per-step exact recovery witnesses and LIFO accumulator; recursive/infinite iterators are not represented |
+| Def 53 | `RuleTag`, `Action`, `applyAction`, `Transition`, `Transitions`, `EpisodeTrace`, `episodes` | ten-rule evaluator plus equation-indexed inductive LTS and closed/maximal installed intervals |
+| Lem 54–57 | structural rule inventory/equivariance/registration/vestigial facts | **not yet separately packaged as theorem declarations**; several facts hold by representation, but no proof status is claimed |
+| Def 58 | `wellFormed`, `parentChainSafe`, `pairwiseProvisionDisjoint`, `lifecycleProvidersInstalled` | executable decision procedure; clauses 3–4 use intrinsic total views and installed-provider checking; acyclicity is additionally checked |
+| Thm 59 | `preservationTheorem`, `applyActionDeterministic` | Preservation precisely stated, unproved (`TODO(proof)`); same-action evaluator determinism proved |
+| Def 60 | `stepPartialEffect`, `programPartialEffect`, `ComponentsIndependent`, `AllComponentsIndependent` | **restricted** exact-equality/whole-program partial-effect independence; reachable-iterator continuation stability is not fully encoded |
+| Thm 61 | `OpenEpisodeTrace`, `ForeignReplay`, `recoveryExactnessTheorem` | exact world-state recovery statement at every open episode prefix; unproved (`TODO(proof)`) |
+| Cor 62 | `EpisodeTrace`, `terminalRecoveryTheorem` | exact world-state terminal recovery against foreign replay; stated, unproved (`TODO(proof)`) |
+| Thm 63 | `ResolvesAt`, `ProviderAvailable`, `ProviderValueConstant`, `OrderingResult`, `providerVisibilityTheorem`, `orderingTheorem` | all three clauses (start order, close order, provider-table constancy) precisely stated; unproved (`TODO(proof)`) |
+| Thm 64 | `transitionResolutionCoherent`, `ReloadingThroughout`, `ResolutionExit`, `ResolutionOutcome`, `resolutionCoherenceTheorem` | Equation 59 plus exact Finish vs Divert/Raise-and-terminal-recovery dichotomy stated; unproved (`TODO(proof)`) |

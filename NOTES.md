@@ -97,6 +97,11 @@ cannot silently introduce a proof:
   `CoarsestRespectedEquivalence` — Lemma 35.
 - `distinctKeysIndependent` — Theorem 40.
 - `MediatedIndependenceTheorem` — Theorem 42.
+- `preservationTheorem` — Theorem 59.
+- `recoveryExactnessTheorem` — Theorem 61.
+- `terminalRecoveryTheorem` — Corollary 62.
+- `providerVisibilityTheorem` and `orderingTheorem` — Theorem 63.
+- `resolutionCoherenceTheorem` — Theorem 64.
 
 Each is marked `TODO(proof)` at its declaration. These are honest uninhabited
 statements, not holes accepted by the compiler.
@@ -224,25 +229,119 @@ and fixed:
 Checkpoint 1 is buildable. Lemma 35, Theorem 40 and Theorem 42 remain correctly
 stated and explicitly unproved; no proof is claimed for them. Definition 32 is
 an explicit finite approximation, and Lemma 38 has a proved relational core but
-not a transport theorem covering every Section 3.1 declaration. Section 4 work
-must not begin until checkpoint approval.
+not a transport theorem covering every Section 3.1 declaration.
+
+## Checkpoint 2 — Section 4 calculus through Theorem 64 (candidate)
+
+### Runtime model and deliberate restrictions
+
+- `SystemState` separates an abstract ambient `world` from the intrinsically
+  name-unique fiber `Registry`. A `StepEffect world error` therefore cannot read
+  or write registry control fields at all. This is a structurally enforced,
+  executable fragment of Definition 48, but it is stricter than the paper:
+  declared provider-table reads and mutation of the acting fiber's own table are
+  not available to a step.
+- Each `Component` carries an immutable `providedValues` table with an erased
+  proof that its domain is inside its declared provisions. The table is exposed
+  only while the fiber is `Active`; it disappears from the derived coeffect
+  context at L-Leave. This normalizes the common case where an activation
+  computes one final local table, but it cannot express table values computed
+  dynamically by an iterator. Theorem 63's constancy clause is exact for this
+  restricted model, not a proof for arbitrary paper components.
+- An iterator is a finite `List (StepEffect world error)`. Every successful step
+  returns an executable inverse and an erased exact recovery witness; failure is
+  `Left`. This supports L-Begin, L-Iter, L-Finish, both aborting and landing
+  L-Divert cases, L-Raise, L-Leave and guarded L-Unload. Infinite/coinductive
+  iterators are outside the representation.
+- Definition 47 is represented by an executable checked `Registration` pair
+  (O-Insert forward, O-Retire inverse), but `StepEffect` does not contain a
+  nested-registration yield channel. Host code can submit the pair through the
+  same evaluator. This is explicitly partial, not a claim to mechanize nested
+  instantiation inside arbitrary iterator execution.
+- Section 4 is currently the exact-equality instance of the paper's
+  observational convention. `ForeignReplay` and the recovery statements compare
+  `worldState`; control edits are excluded by construction. General transport
+  through Definition 33 remains future work.
+
+### Calculus completed
+
+- `Component`, dependent `View`, `Fiber`, `Registry`, active coeffect union,
+  provider resolution, `targetFiber`, `quiet`, and `relied` are executable.
+- `Lifecycle` has all four states and failure outcomes. Registry names and table
+  keys are duplicate-free by representation; committed views are total on
+  exactly the component dependency list by their index.
+- `applyAction` implements the ten Table-1 rules. O-Remove requires retirement,
+  inactivity and no children. L-Unload is the only accumulator application and
+  is guarded by `not (relied ...)`.
+- `Transition before after` is an indexed inductive family whose sole
+  constructor carries the exact `applyAction` equation. `Transitions`,
+  `EpisodeTrace`, `OpenEpisodeTrace`, `LocatedEpisode`, and executable `episodes`
+  describe traces and installed intervals.
+- `wellFormed` decides Definition 58: parent closure, pairwise provision
+  disjointness, total committed views valued in the registry, and installation
+  of every committed provider. It additionally checks parent acyclicity.
+- `applyActionDeterministic` is proved. The evaluator and all helpers are total.
+
+### Metatheorem statement quality
+
+The global proofs are not disguised as implementations. Their types include the
+paper's substantive clauses:
+
+- Theorem 59 preserves the executable Definition-58 predicate across every
+  indexed transition.
+- Theorem 61 quantifies every wholly-open episode prefix, exposes its current
+  accumulator, and relates its application to replay of exactly the foreign
+  state maps.
+- Corollary 62 quantifies a closed episode and relates its terminal world to the
+  same foreign replay.
+- Theorem 63 returns provider-before-consumer and
+  consumer-before-provider-close paths plus one provider value and a
+  `ProviderValueConstant` witness covering the whole consumer episode.
+- Theorem 64 returns an initial `ReloadingThroughout` interval satisfying the
+  executable Equation-59 check and an exact `FinishedResolution` versus
+  Divert/Raise-with-terminal-recovery exit alternative.
+
+Definition 60 is currently stronger in pair quantification but weaker in
+structure: `AllComponentsIndependent` asks exact partial-effect independence for
+all component pairs (including self-pairs), while each component is represented
+by its whole finite program rather than every reachable iterator continuation.
+Consequently Theorems 61–64 are precise for this finite exact-equality calculus,
+not yet the full observational/continuation-general paper statements.
+
+Lemmas 54–57 are not yet separately packaged as Idris theorem declarations.
+Their rule-shape facts motivate the evaluator and several are enforced by
+representation, but no proof status is claimed. This omission and the restricted
+Definitions 43/47/48/51/60 are checkpoint review risks, not silently completed
+work.
+
+### Validation
+
+- `idris2 --build dgamma.ipkg` succeeds with Idris 2 0.8.0.
+- `DGamma.CalculusChecks.calculusScenario` executes provider/consumer insertion,
+  ordered activation, retirement, L-Leave, and guarded L-Unload for both fibers.
+  Native evaluation reports `True` for ambient recovery, empty active coeffects,
+  and final `wellFormed`.
+- Source audit finds no `believe_me`, `assert_total`, `postulate`, unsafe FFI,
+  `%default partial`, or metavariable holes.
 
 ## Status
 
-**Fully proved:** the exact-equality Section 3.1 algebraic core, including the
-unconditional twisted homomorphism, exact lifted-undo formula/iff, every LIFO
-boundary, both clauses of Theorem 20 at every intermediate, and arbitrary
-permutation recovery; intrinsically unique dependent coeffect table recovery
-and notifications; observational table equivalence; relational effect
-composition and accumulator soundness.
+**Fully proved:** the approved Section 3.1 algebraic/recovery core; dependent
+coeffect-table recovery and notifications; observational table-equivalence and
+relational composition core; Section 4 same-action evaluator determinism; the
+concrete full lifecycle regression evaluates successfully.
 
-**Partial/deviation:** Definition 32 is represented only by explicitly finite
-approximations. Lemma 38's relational composition/stack core is proved, but the
-single universal transport claim over every Section 3.1 theorem is not.
+**Partial/deviation:** Definition 32 finite approximations; Lemma 38 transport;
+the Section 4 static provision-table normalization, registry-separated
+confinement fragment, external registration pair, finite iterator, and
+whole-program exact-equality Definition-60 independence. Lemmas 54–57 are not
+yet individually stated/proved.
 
-**Merely stated:** the three correctly shaped statement-only items listed in the
-escape-hatch audit (Lemma 35, Theorem 40, Theorem 42).
+**Merely stated:** Lemma 35, Theorems 40/42, and Section 4 Theorem 59,
+Theorem 61, Corollary 62, Theorem 63, and Theorem 64, exactly as catalogued in
+the escape-hatch audit.
 
-**Next:** after checkpoint approval, encode Section 4's fiber registry and ten
-rules as an indexed transition family, then prove preservation and the tractable
-temporal/spatial lemmas before stating any remaining global trace obligations.
+**Next:** adversarial Checkpoint-2 review should first attack fidelity of
+Definitions 43/47/48/51/60 and theorem statement strength. After fixes and
+approval, Checkpoint 3 adds Progress, Confluence, the final runtime example/docs,
+and the remaining Section 4 supporting lemmas.

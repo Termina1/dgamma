@@ -10,4 +10,7 @@ modules = DGamma.Core,
           DGamma.Effects,
           DGamma.Coeffects,
           DGamma.Unified,
-          DGamma.Section3Example
+          DGamma.Section3Example,
+          DGamma.Calculus,
+          DGamma.Metatheory,
+          DGamma.CalculusChecks
