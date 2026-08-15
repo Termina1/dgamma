@@ -25,8 +25,12 @@ inverses, isolation/interception inverses, and `runMediated` therefore use
 indexed `CoeffectApplied before`, and
 `deleteInserted` proves that its inverse recovers the same runtime dependent
 map. The erased uniqueness witness is representation proof and deliberately not
-part of that equality. `LiftedUndo`, `IsoSetResult`, and `InterSetResult` keep
-these certificates on the executable runtime path. The inverse deletes by key,
+part of that equality. `LiftedUndo` keeps a full dependency-table certificate
+on the executable runtime path. `IsoSetResult` and `InterSetResult` keep indexed
+partial table tokens, while `isoUndoValid`/`interUndoValid` certify only their
+respective dependency/provider-table projections; the smart constructors
+preserve realm/default and ambient fields operationally, but the token types do
+not claim full-context equality. The inverse deletes by key,
 so unrelated later registrations are retained; isolated undo additionally
 fails if the logical key has changed realm. `failurePropagates` checks that a failed
 mediated stage remains `Nothing`, rather than becoming identity.
@@ -97,7 +101,7 @@ cannot silently introduce a proof:
 Each is marked `TODO(proof)` at its declaration. These are honest uninhabited
 statements, not holes accepted by the compiler.
 
-## Checkpoint 1 — Section 3
+## Checkpoint 1 — Section 3 (approved)
 
 ### Scope completed
 
@@ -200,7 +204,15 @@ and fixed:
    - `keyCommutative` now quantifies every operation pair in the whole key
      interface (including self-pairs); Theorem 42 assumes it for every key used
      by both programs, literally matching the paper.
-8. All source files were scanned for hidden escape hatches and missing
+8. The supervisor's independent round-3 review
+   (`review-cp1-round3.md`) reconstructed the hidden-probe model and verified it
+   is now distinguished, checked a nontrivial distinct-value model to ensure the
+   stronger observer is non-vacuous, and checked concrete equality of captured
+   lifted undo execution with `reverseActual`. It reported no BLOCKER/MAJOR and
+   accepted CP1. Its sole MINOR was that isolation/interception validity types
+   expose table-projection recovery rather than full-context equality. README
+   and this note now state that narrower claim; no stronger theorem is implied.
+9. All source files were scanned for hidden escape hatches and missing
    `%default total`; none were found.
 
 ### Validation
