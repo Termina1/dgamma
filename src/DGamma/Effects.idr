@@ -391,6 +391,118 @@ effectLiftWitnessIff e origin = (forward, backward)
       (MkEffectContext origin id) probe))
       (restored id probe)
 
+||| Applying a witnessed effect to an effect context preserves its live recovery
+||| target (the application half of Theorem 16's invariant).
+public export
+0 effectApplicationRecovery : (e : EffStar state) ->
+  (ctx : EffectContext state) ->
+  recover (fst (effect (runEff e) ctx)) = recover ctx
+effectApplicationRecovery e (MkEffectContext x phi) with (runEff e x) proof returned
+  effectApplicationRecovery e (MkEffectContext x phi) | (next, inverseMap) =
+    cong (\v => MkEffectContext v id)
+      (cong phi (witnessedAt e x next inverseMap returned))
+
+||| A captured lifted inverse preserves the recovery target when its current
+||| state is the state produced by the corresponding application. The incoming
+||| accumulator is arbitrary, exactly as in paper Theorem 15/16.
+public export
+0 liftedInversePreservesRecovery : (e : EffStar state) ->
+  (origin, live : EffectContext state) ->
+  current live = current (fst (effect (runEff e) origin)) ->
+  recover (snd (effect (runEff e) origin) live) = recover live
+liftedInversePreservesRecovery e (MkEffectContext x phi)
+  (MkEffectContext live psi) currentMatches with (runEff e x) proof returned
+    liftedInversePreservesRecovery e (MkEffectContext x phi)
+      (MkEffectContext live psi) currentMatches | (next, inverseMap) =
+        let inverseAtApplication = witnessedAt e x next inverseMap returned
+            inverseLive = trans (cong inverseMap currentMatches)
+                                inverseAtApplication
+            forwardAfterInverse = trans
+              (cong (fst . runEff e) inverseLive) (cong fst returned)
+            recovered = trans (cong psi forwardAfterInverse)
+                              (cong psi (sym currentMatches))
+         in cong (\v => MkEffectContext v id) recovered
+
+public export
+applyActual : List (EffStar state) -> EffectContext state -> EffectContext state
+applyActual [] ctx = ctx
+applyActual (e :: rest) ctx =
+  applyActual rest (fst (effect (runEff e) ctx))
+
+public export
+capturedLiftedUndos : List (EffStar state) -> EffectContext state ->
+  List (EffectContext state -> EffectContext state)
+capturedLiftedUndos [] ctx = []
+capturedLiftedUndos (e :: rest) ctx =
+  snd (effect (runEff e) ctx) ::
+  capturedLiftedUndos rest (fst (effect (runEff e) ctx))
+
+public export
+runContextMaps : List (EffectContext state -> EffectContext state) ->
+  EffectContext state -> EffectContext state
+runContextMaps [] ctx = ctx
+runContextMaps (step :: rest) ctx = runContextMaps rest (step ctx)
+
+public export
+reverseActual : List (EffStar state) -> EffectContext state -> EffectContext state
+reverseActual [] ctx = ctx
+reverseActual (e :: rest) ctx =
+  let lifted = effect (runEff e) ctx
+   in snd lifted (reverseActual rest (fst lifted))
+
+||| Theorem 16 for the actual lifted accumulator: after all captured lifted
+||| inverses run in reverse, both the current state and the recovery observation
+||| return to their origin. The proof does not reconstruct a base-state map.
+public export
+0 reverseActualRecovery : (effects : List (EffStar state)) ->
+  (ctx : EffectContext state) ->
+  (current (reverseActual effects ctx) = current ctx,
+   recover (reverseActual effects ctx) = recover ctx)
+reverseActualRecovery [] ctx = (Refl, Refl)
+reverseActualRecovery (e :: rest) ctx =
+  let restFacts = reverseActualRecovery rest (fst (effect (runEff e) ctx))
+      restCurrent = fst restFacts
+      restRecovery = snd restFacts
+      finalCurrent = trans
+        (effectInverseProjection (runEff e) ctx
+          (reverseActual rest (fst (effect (runEff e) ctx))))
+        (trans (cong (snd (runEff e (current ctx))) restCurrent)
+          (trans
+            (cong (snd (runEff e (current ctx)))
+              (effectForwardProjection (runEff e) ctx))
+            (witnessed e (current ctx))))
+      finalRecovery = trans
+        (liftedInversePreservesRecovery e ctx
+          (reverseActual rest (fst (effect (runEff e) ctx))) restCurrent)
+        (trans restRecovery (effectApplicationRecovery e ctx))
+   in (finalCurrent, finalRecovery)
+
+public export
+0 applyActualRecovery : (effects : List (EffStar state)) ->
+  (ctx : EffectContext state) -> recover (applyActual effects ctx) = recover ctx
+applyActualRecovery [] ctx = Refl
+applyActualRecovery (e :: rest) ctx =
+  trans (applyActualRecovery rest (fst (effect (runEff e) ctx)))
+        (effectApplicationRecovery e ctx)
+
+||| Theorem 16 at every actual lifted-accumulator boundary: `earlier` remains
+||| installed and `later` is the suffix whose captured lifted inverses have run.
+public export
+actualLifoEveryIntermediate : (state : Type) -> Type
+actualLifoEveryIntermediate state =
+  (earlier : List (EffStar state)) -> (later : List (EffStar state)) ->
+  (ctx : EffectContext state) ->
+  (current (reverseActual later (applyActual earlier ctx)) =
+     current (applyActual earlier ctx),
+   recover (reverseActual later (applyActual earlier ctx)) = recover ctx)
+
+public export
+0 actualLifoEveryIntermediateProof : (state : Type) ->
+  actualLifoEveryIntermediate state
+actualLifoEveryIntermediateProof state earlier later ctx =
+  let facts = reverseActualRecovery later (applyActual earlier ctx)
+   in (fst facts, trans (snd facts) (applyActualRecovery earlier ctx))
+
 ||| A finite LIFO stack of effects. Its accumulator is executable and its proof
 ||| records Theorem 16 for the sequence.
 public export

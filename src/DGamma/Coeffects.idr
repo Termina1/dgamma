@@ -128,9 +128,11 @@ public export
 record CoeffectUndo {key : Type} {value : key -> Type}
                     (after, before : CoeffectContext key value) where
   constructor MkCoeffectUndo
-  runCoeffectUndo : CoeffectContext key value -> CoeffectContext key value
+  runCoeffectUndo : CoeffectContext key value -> Maybe (CoeffectContext key value)
   0 coeffectUndoValid :
-    bindings (runCoeffectUndo after) = bindings before
+    (restored : CoeffectContext key value **
+      (runCoeffectUndo after = Just restored,
+       bindings restored = bindings before))
 
 public export
 record CoeffectApplied {key : Type} {value : key -> Type}
@@ -155,6 +157,32 @@ public export
 deleteInserted k val (MkCoeffectContext entries unique) absent =
   deleteEntriesInserted k val entries
 
+public export
+setInverse : DecEq key => (k : key) ->
+  CoeffectContext key value -> Maybe (CoeffectContext key value)
+setInverse k later = case lookupBinding k later of
+  Nothing => Nothing
+  Just _ => Just (deleteBinding k later)
+
+public export
+0 lookupInserted : DecEq key => (k : key) -> (val : value k) ->
+  (table : CoeffectContext key value) ->
+  (absent : lookupBinding k table = Nothing) ->
+  lookupBinding k (insertBinding k val table absent) = Just val
+lookupInserted k val (MkCoeffectContext entries unique) absent with (decEq k k)
+  lookupInserted k val (MkCoeffectContext entries unique) absent | (Yes Refl) = Refl
+  lookupInserted k val (MkCoeffectContext entries unique) absent | (No contra) =
+    void (contra Refl)
+
+public export
+0 setInverseRuns : DecEq key => (k : key) -> (val : value k) ->
+  (before : CoeffectContext key value) ->
+  (absent : lookupBinding k before = Nothing) ->
+  setInverse k (insertBinding k val before absent) =
+  Just (deleteBinding k (insertBinding k val before absent))
+setInverseRuns k val before absent =
+  rewrite lookupInserted k val before absent in Refl
+
 ||| Definition 23: get, with absence represented honestly by Maybe.
 public export
 get : DecEq key => (k : key) -> CoeffectContext key value -> Maybe (value k)
@@ -169,8 +197,10 @@ setFresh k val before with (lookupBinding k before) proof found
   setFresh k val before | Just _ = Nothing
   setFresh k val before | Nothing =
     Just (MkCoeffectApplied (insertBinding k val before found)
-          (MkCoeffectUndo (deleteBinding k)
-            (deleteInserted k val before found)))
+      (MkCoeffectUndo (setInverse k)
+        (deleteBinding k (insertBinding k val before found) **
+          (setInverseRuns k val before found,
+           deleteInserted k val before found))))
 
 public export
 replaceEntries : DecEq key => (k : key) -> value k ->
@@ -253,14 +283,14 @@ record CoeffectOperation (value, argument, outcome : Type) where
 public export
 record CoeffectInterface (value : Type) where
   constructor MkCoeffectInterface
+  coeffectEquivalence : Equivalence value
   OperationCode : Type
   OperationArgument : OperationCode -> Type
   OperationOutcome : OperationCode -> Type
   coeffectOperation : (code : OperationCode) ->
     CoeffectOperation value (OperationArgument code) (OperationOutcome code)
-  0 sharedEquivalence : (left, right : OperationCode) ->
-    valueEquivalence (coeffectOperation left) =
-    valueEquivalence (coeffectOperation right)
+  0 operationUsesInterfaceEquivalence : (code : OperationCode) ->
+    valueEquivalence (coeffectOperation code) = coeffectEquivalence
 
 public export
 0 lookupReplaceEntries : DecEq key => (k : key) ->
@@ -299,31 +329,59 @@ liftedInverse k undo later =
       Nothing => Nothing
       Just prior => Just (replaceBinding k prior later)
 
+||| State-indexed partial undo returned by a lifted operation. The executable
+||| partial function and its application-state recovery certificate travel
+||| together into the runtime path.
+public export
+record LiftedUndo {key : Type} {value : key -> Type}
+                  (after, before : CoeffectContext key value) where
+  constructor MkLiftedUndo
+  runLiftedUndo : CoeffectContext key value -> Maybe (CoeffectContext key value)
+  0 liftedUndoValid :
+    (restored : CoeffectContext key value **
+      (runLiftedUndo after = Just restored,
+       bindings restored = bindings before))
+
 public export
 record LiftedOperationResult {key : Type} {value : key -> Type}
                              (before : CoeffectContext key value)
                              (outcome : Type) where
   constructor MkLiftedOperationResult
   liftedAfter : CoeffectContext key value
-  liftedUndo : CoeffectContext key value -> Maybe (CoeffectContext key value)
+  liftedUndoToken : LiftedUndo liftedAfter before
   liftedOutcome : outcome
 
 public export
-0 liftedInverseWitness : DecEq key => (k : key) ->
+liftedUndo : {key : Type} -> {value : key -> Type} ->
+  {before : CoeffectContext key value} -> {outcome : Type} ->
+  LiftedOperationResult {key} {value} before outcome ->
+  CoeffectContext key value -> Maybe (CoeffectContext key value)
+liftedUndo result = runLiftedUndo (liftedUndoToken result)
+
+public export
+makeLiftedUndo : DecEq key => (k : key) ->
   (op : CoeffectOperation (value k) argument outcome) ->
   (arg : argument) -> (table : CoeffectContext key value) ->
-  (old, next : value k) -> (undo : PartialMap (value k)) ->
+  (old, next : value k) -> (inverseMap : PartialMap (value k)) ->
   (result : outcome) ->
   (found : lookupBinding k table = Just old) ->
-  (ran : runOperation op arg old = Just (next, undo, result)) ->
-  case liftedInverse k undo (replaceBinding k next table) of
-    Nothing => Void
-    Just restored => bindings restored = bindings table
-liftedInverseWitness k op arg (MkCoeffectContext entries unique)
-  old next undo result found ran =
+  (ran : runOperation op arg old = Just (next, inverseMap, result)) ->
+  LiftedUndo (replaceBinding k next table) table
+makeLiftedUndo k op arg (MkCoeffectContext entries unique)
+  old next inverseMap result found ran =
+    MkLiftedUndo (liftedInverse k inverseMap)
+      (replaceBinding k old
+        (replaceBinding k next (MkCoeffectContext entries unique)) **
+       (inverseRuns, replaceRestoreEntries k old next entries found))
+  where
+  0 inverseRuns :
+    liftedInverse k inverseMap
+      (replaceBinding k next (MkCoeffectContext entries unique)) =
+    Just (replaceBinding k old
+      (replaceBinding k next (MkCoeffectContext entries unique)))
+  inverseRuns =
     rewrite lookupReplaceEntries k old next entries found in
-    rewrite operationWitness op arg old next undo result ran in
-    replaceRestoreEntries k old next entries found
+    rewrite operationWitness op arg old next inverseMap result ran in Refl
 
 ||| Definition 24, Equation 23: executable witnessed lift of a value operation
 ||| to the dependent table at one key. The lifted inverse remains partial.
@@ -339,7 +397,7 @@ liftOperation k op arg table with (lookupBinding k table) proof found
     liftOperation k op arg table | Just old | Just (next, undo, result) =
       Just (MkLiftedOperationResult
         (replaceBinding k next table)
-        (liftedInverse k undo)
+        (makeLiftedUndo k op arg table old next undo result found ran)
         result)
 
 ||| Definition 25: a finite set of dependencies with intrinsic uniqueness.
@@ -446,25 +504,25 @@ public export
   recoverRealisation (DerivedRealisation parent child) = Just parent
 derivedRecoveryDiscardsChild parent child = Refl
 
-||| A conventional homogeneous finite map used for realm overrides.
+||| A homogeneous finite partial function with the same intrinsic uniqueness
+||| as the dependent table.
 public export
 Assoc : Type -> Type -> Type
-Assoc key value = List (key, value)
+Assoc key item = CoeffectContext key (\_ => item)
 
 public export
-lookupAssoc : DecEq key => key -> Assoc key value -> Maybe value
-lookupAssoc wanted [] = Nothing
-lookupAssoc wanted ((found, val) :: rest) with (decEq wanted found)
-  lookupAssoc wanted ((wanted, val) :: rest) | (Yes Refl) = Just val
-  lookupAssoc wanted ((found, val) :: rest) | (No _) = lookupAssoc wanted rest
+emptyAssoc : Assoc key item
+emptyAssoc = emptyContext
 
 public export
-putAssoc : DecEq key => key -> value -> Assoc key value -> Assoc key value
-putAssoc wanted val [] = [(wanted, val)]
-putAssoc wanted val ((found, old) :: rest) with (decEq wanted found)
-  putAssoc wanted val ((wanted, old) :: rest) | (Yes Refl) = (wanted, val) :: rest
-  putAssoc wanted val ((found, old) :: rest) | (No _) =
-    (found, old) :: putAssoc wanted val rest
+lookupAssoc : DecEq key => key -> Assoc key item -> Maybe item
+lookupAssoc = lookupBinding
+
+public export
+putAssoc : DecEq key => (wanted : key) -> item -> Assoc key item -> Assoc key item
+putAssoc wanted val table with (lookupAssoc wanted table) proof found
+  putAssoc wanted val table | Just old = replaceBinding wanted val table
+  putAssoc wanted val table | Nothing = insertBinding wanted val table found
 
 ||| Evidence for the paper's inclusion K into R. Injectivity prevents unrelated
 ||| keys from collapsing in the default realm.
@@ -494,21 +552,63 @@ isoGet : (DecEq key, DecEq realm) => (k : key) ->
   (ctx : IsoContext key realm value) -> Maybe (value (resolveRealm k ctx))
 isoGet k ctx = lookupBinding (resolveRealm k ctx) (realmBindings ctx)
 
-||| Definition 29: isolated set is the ordinary witnessed set transported along
-||| realm resolution.
 public export
-isoSet : (DecEq key, DecEq realm) => (k : key) ->
-  (ctx : IsoContext key realm value) -> value (resolveRealm k ctx) ->
-  Maybe (IsoContext key realm value,
-         IsoContext key realm value -> IsoContext key realm value)
-isoSet k ctx val =
-  case setFresh (resolveRealm k ctx) val (realmBindings ctx) of
+record IsoSetResult {key, realm : Type} {value : realm -> Type}
+                    (keyEq : DecEq key)
+                    (before : IsoContext key realm value) where
+  constructor MkIsoSetResult
+  isoAfter : IsoContext key realm value
+  isolatedKey : key
+  installedRealm : realm
+  0 realmMatchesAfter : resolveRealm @{keyEq} isolatedKey isoAfter = installedRealm
+  isoTableUndo : CoeffectUndo (realmBindings isoAfter) (realmBindings before)
+
+public export
+runIsoUndo : {key, realm : Type} -> {value : realm -> Type} ->
+  {keyEq : DecEq key} -> {before : IsoContext key realm value} ->
+  DecEq realm => (result : IsoSetResult keyEq before) ->
+  IsoContext key realm value -> Maybe (IsoContext key realm value)
+runIsoUndo {keyEq} result later with (decEq (resolveRealm @{keyEq} (isolatedKey result) later)
+                                    (installedRealm result))
+  runIsoUndo result later | (No _) = Nothing
+  runIsoUndo result later | (Yes sameRealm) =
+    case runCoeffectUndo (isoTableUndo result) (realmBindings later) of
+      Nothing => Nothing
+      Just restored => Just (MkIsoContext (defaultRealms later)
+        (realmOverrides later) restored)
+
+public export
+0 isoUndoValid : {keyEq : DecEq key} -> DecEq realm =>
+  (result : IsoSetResult keyEq before) ->
+  (restored : IsoContext key realm value **
+    (runIsoUndo result (isoAfter result) = Just restored,
+     bindings (realmBindings restored) = bindings (realmBindings before)))
+isoUndoValid {keyEq} result with (decEq (resolveRealm @{keyEq} (isolatedKey result) (isoAfter result))
+                               (installedRealm result)) proof decided
+  isoUndoValid result | (No different) =
+    void (different (realmMatchesAfter result))
+  isoUndoValid result | (Yes sameRealm) with (coeffectUndoValid (isoTableUndo result))
+    isoUndoValid result | (Yes sameRealm) |
+      (restoredTable ** (undoRuns, restores)) =
+        (MkIsoContext (defaultRealms (isoAfter result))
+          (realmOverrides (isoAfter result)) restoredTable **
+          (rewrite undoRuns in Refl, restores))
+
+||| Definition 29: isolated set is indexed by its input context and retains the
+||| witnessed base-table undo. The inverse is partial if realm resolution has
+||| changed; `isoSet` never returns an unchecked total deletion.
+public export
+isoSet : (keyEq : DecEq key) -> DecEq realm => (k : key) ->
+  (ctx : IsoContext key realm value) -> value (resolveRealm @{keyEq} k ctx) ->
+  Maybe (IsoSetResult keyEq ctx)
+isoSet keyEq k ctx val =
+  case setFresh (resolveRealm @{keyEq} k ctx) val (realmBindings ctx) of
     Nothing => Nothing
     Just applied =>
-      Just (MkIsoContext (defaultRealms ctx) (realmOverrides ctx)
-              (coeffectAfter applied),
-            \later => MkIsoContext (defaultRealms later) (realmOverrides later)
-              (deleteBinding (resolveRealm k later) (realmBindings later)))
+      Just (MkIsoSetResult
+        (MkIsoContext (defaultRealms ctx) (realmOverrides ctx)
+          (coeffectAfter applied))
+        k (resolveRealm @{keyEq} k ctx) Refl (coeffectUndo applied))
 
 ||| Definition 29: isolation is a derived realization; the old context is left
 ||| intact and a new one carries the override.
@@ -519,6 +619,11 @@ isolate k realm ctx =
   MkIsoContext (defaultRealms ctx)
                (putAssoc k realm (realmOverrides ctx))
                (realmBindings ctx)
+
+public export
+isolateRealisation : DecEq key => key -> realm ->
+  (ctx : IsoContext key realm value) -> Realisation (IsoContext key realm value)
+isolateRealisation k realm ctx = DerivedRealisation ctx (isolate k realm ctx)
 
 ||| A family of metadata monoids, Definition 30.
 public export
@@ -566,20 +671,45 @@ interGet k monoid declared ctx =
     Just provider =>
       Just (provider (mergeMetadata monoid k declared (ambientMetadata ctx k)))
 
-||| Definition 31: intercepted provider set is witnessed and partial on an
-||| already-present provider, exactly as ordinary set.
+public export
+record InterSetResult {key : Type} {metadata, value : key -> Type}
+                      (before : InterContext key metadata value) where
+  constructor MkInterSetResult
+  interAfter : InterContext key metadata value
+  interTableUndo : CoeffectUndo (providerTable interAfter) (providerTable before)
+
+public export
+runInterUndo : {key : Type} -> {metadata, value : key -> Type} ->
+  {before : InterContext key metadata value} ->
+  (result : InterSetResult before) ->
+  InterContext key metadata value -> Maybe (InterContext key metadata value)
+runInterUndo result later =
+  case runCoeffectUndo (interTableUndo result) (providerTable later) of
+    Nothing => Nothing
+    Just restored => Just (MkInterContext (ambientMetadata later) restored)
+
+public export
+0 interUndoValid : (result : InterSetResult before) ->
+  (restored : InterContext key metadata value **
+    (runInterUndo result (interAfter result) = Just restored,
+     bindings (providerTable restored) = bindings (providerTable before)))
+interUndoValid result with (coeffectUndoValid (interTableUndo result))
+  interUndoValid result | (restoredTable ** (undoRuns, restores)) =
+    (MkInterContext (ambientMetadata (interAfter result)) restoredTable **
+      (rewrite undoRuns in Refl, restores))
+
+||| Definition 31: intercepted provider set retains an indexed witnessed partial
+||| table undo rather than exporting an unchecked total function.
 public export
 interSet : DecEq key => (k : key) -> (metadata k -> value k) ->
-  (ctx : InterContext key metadata value) ->
-  Maybe (InterContext key metadata value,
-         InterContext key metadata value -> InterContext key metadata value)
+  (ctx : InterContext key metadata value) -> Maybe (InterSetResult ctx)
 interSet k provider ctx =
   case setFresh k provider (providerTable ctx) of
     Nothing => Nothing
     Just applied =>
-      Just (MkInterContext (ambientMetadata ctx) (coeffectAfter applied),
-            \later => MkInterContext (ambientMetadata later)
-              (deleteBinding k (providerTable later)))
+      Just (MkInterSetResult
+        (MkInterContext (ambientMetadata ctx) (coeffectAfter applied))
+        (coeffectUndo applied))
 
 ||| Definition 31: interception is a derived realization.
 public export
@@ -591,3 +721,11 @@ intercept k monoid extra ctx =
    in MkInterContext
         (replaceDependent metadata k merged (ambientMetadata ctx))
         (providerTable ctx)
+
+public export
+interceptRealisation : {key : Type} -> {metadata, value : key -> Type} ->
+  DecEq key => (k : key) -> MetadataMonoid metadata -> metadata k ->
+  (ctx : InterContext key metadata value) ->
+  Realisation (InterContext key metadata value)
+interceptRealisation k monoid extra ctx =
+  DerivedRealisation ctx (intercept k monoid extra ctx)

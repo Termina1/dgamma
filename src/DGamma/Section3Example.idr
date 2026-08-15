@@ -39,30 +39,30 @@ toySpecA = MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)
 
 ||| Executable Definition-23/26 checks.
 public export
-toyGetA : lookupBinding {key = ToyKey} {value = ToyValue}
+0 toyGetA : lookupBinding {key = ToyKey} {value = ToyValue}
   ServiceA DGamma.Section3Example.toyAContext = Just False
 toyGetA = Refl
 
 public export
-toyEmptyUnsatisfied : satisfies
+0 toyEmptyUnsatisfied : satisfies
   (emptyContext {key = ToyKey} {value = ToyValue})
   DGamma.Section3Example.toySpecA = False
 toyEmptyUnsatisfied = Refl
 
 public export
-toyASatisfied : satisfies DGamma.Section3Example.toyAContext
+0 toyASatisfied : satisfies DGamma.Section3Example.toyAContext
   DGamma.Section3Example.toySpecA = True
 toyASatisfied = Refl
 
 public export
-toyActivates : notify {key = ToyKey} {value = ToyValue}
+0 toyActivates : notify {key = ToyKey} {value = ToyValue}
   DGamma.Section3Example.toySpecA
   (emptyContext {key = ToyKey} {value = ToyValue})
   DGamma.Section3Example.toyAContext = Activating
 toyActivates = rewrite toyEmptyUnsatisfied in Refl
 
 public export
-toySetBWorks :
+0 toySetBWorks :
   case setFresh {key = ToyKey} {value = ToyValue}
     ServiceB True DGamma.Section3Example.toyAContext of
     Nothing => Void
@@ -126,7 +126,7 @@ toyProgram = Stage {suite = DGamma.Section3Example.toyKeyedSuite}
 
 ||| Definition 41 executes a genuine partial coeffect operation.
 public export
-toyProgramRuns :
+0 toyProgramRuns :
   case runMediated {key = ToyKey} {value = ToyValue}
     DGamma.Section3Example.toyKeyedSuite
     DGamma.Section3Example.toyProgram
@@ -189,9 +189,137 @@ trueAContext = MkCoeffectContext [Bind ServiceA True]
   (UniqueCons notInEmpty UniqueNil)
 
 public export
-failurePropagates :
+0 failurePropagates :
   runMediated {key = ToyKey} {value = ToyValue}
     DGamma.Section3Example.failingSuite
     (Stage {suite = DGamma.Section3Example.failingSuite} FailA () (\_ => Done))
     DGamma.Section3Example.trueAContext = Nothing
 failurePropagates = Refl
+
+public export
+record ToyRuntime where
+  constructor MkToyRuntime
+  providerLoaded : Bool
+  consumerLoaded : Bool
+
+||| A small component interface for the Section-3 end-to-end scenario. Section 4
+||| later refines this into fibers/LTS states; these fields already use the same
+||| coeffect specifications/provisions and witnessed effects.
+public export
+record ToyComponent where
+  constructor MkToyComponent
+  requires : CoeffectSpec ToyKey
+  provides : CoeffectSpec ToyKey
+  componentEffect : EffStar ToyRuntime
+
+public export
+toggleProvider : EffStar ToyRuntime
+toggleProvider = MkEffStar run witnessed
+  where
+  run : EffFn ToyRuntime
+  run (MkToyRuntime provider consumer) =
+    (MkToyRuntime (not provider) consumer,
+     \(MkToyRuntime laterProvider laterConsumer) =>
+       MkToyRuntime (not laterProvider) laterConsumer)
+
+  0 witnessed : (world : ToyRuntime) ->
+    snd (run world) (fst (run world)) = world
+  witnessed (MkToyRuntime False consumer) = Refl
+  witnessed (MkToyRuntime True consumer) = Refl
+
+public export
+toggleConsumer : EffStar ToyRuntime
+toggleConsumer = MkEffStar run witnessed
+  where
+  run : EffFn ToyRuntime
+  run (MkToyRuntime provider consumer) =
+    (MkToyRuntime provider (not consumer),
+     \(MkToyRuntime laterProvider laterConsumer) =>
+       MkToyRuntime laterProvider (not laterConsumer))
+
+  0 witnessed : (world : ToyRuntime) ->
+    snd (run world) (fst (run world)) = world
+  witnessed (MkToyRuntime provider False) = Refl
+  witnessed (MkToyRuntime provider True) = Refl
+
+public export
+providerComponent : ToyComponent
+providerComponent = MkToyComponent emptySpec DGamma.Section3Example.toySpecA
+  DGamma.Section3Example.toggleProvider
+
+public export
+consumerComponent : ToyComponent
+consumerComponent = MkToyComponent DGamma.Section3Example.toySpecA emptySpec
+  DGamma.Section3Example.toggleConsumer
+
+public export
+activeCoeffects : ToyRuntime -> CoeffectContext ToyKey ToyValue
+activeCoeffects (MkToyRuntime False _) = emptyContext
+activeCoeffects (MkToyRuntime True _) = DGamma.Section3Example.toyAContext
+
+public export
+toyInitialRuntime : ToyRuntime
+toyInitialRuntime = MkToyRuntime False False
+
+public export
+toyEffects : List (EffStar ToyRuntime)
+toyEffects = [componentEffect DGamma.Section3Example.providerComponent,
+              componentEffect DGamma.Section3Example.consumerComponent]
+
+||| First load: the provider activates and makes the consumer's coeffect true.
+public export
+toyAfterProvider : ToyRuntime
+toyAfterProvider = fst (runEff
+  (componentEffect DGamma.Section3Example.providerComponent)
+  DGamma.Section3Example.toyInitialRuntime)
+
+public export
+0 consumerSatisfiedAfterProvider : satisfies
+  (activeCoeffects DGamma.Section3Example.toyAfterProvider)
+  (requires DGamma.Section3Example.consumerComponent) = True
+consumerSatisfiedAfterProvider = Refl
+
+||| Second load: the consumer installs its own independent effect.
+public export
+toyAfterConsumer : ToyRuntime
+toyAfterConsumer = fst (runEff
+  (componentEffect DGamma.Section3Example.consumerComponent)
+  DGamma.Section3Example.toyAfterProvider)
+
+||| load/load executes both component effects.
+public export
+0 toyLoadsBoth : applyAll DGamma.Section3Example.toyEffects
+  DGamma.Section3Example.toyInitialRuntime = MkToyRuntime True True
+toyLoadsBoth = Refl
+
+||| unload/unload uses the concrete inverses yielded by those loads. This is the
+||| executable lifecycle endpoint, not merely an abstract equality.
+public export
+0 toyUnloadUnload : runUndoList
+  (reverseList (collectUndos DGamma.Section3Example.toyEffects
+    DGamma.Section3Example.toyInitialRuntime))
+  (applyAll DGamma.Section3Example.toyEffects
+    DGamma.Section3Example.toyInitialRuntime) =
+  DGamma.Section3Example.toyInitialRuntime
+toyUnloadUnload = reverseCollectedRecovery DGamma.Section3Example.toyEffects
+  DGamma.Section3Example.toyInitialRuntime
+
+||| Theorem 16 applied to the *actual lifted accumulator* used by the runtime.
+public export
+0 toyActualAccumulatorRecovery :
+  let initialContext = MkEffectContext DGamma.Section3Example.toyInitialRuntime (\x => x)
+   in (current (reverseActual DGamma.Section3Example.toyEffects initialContext) =
+         DGamma.Section3Example.toyInitialRuntime,
+       recover (reverseActual DGamma.Section3Example.toyEffects initialContext) =
+         recover initialContext)
+toyActualAccumulatorRecovery = reverseActualRecovery
+  DGamma.Section3Example.toyEffects
+  (MkEffectContext DGamma.Section3Example.toyInitialRuntime (\x => x))
+
+||| After the final provider unload, the consumer coeffect is absent again.
+public export
+0 consumerUnsatisfiedAfterUnload : satisfies
+  (activeCoeffects (current (reverseActual DGamma.Section3Example.toyEffects
+    (MkEffectContext DGamma.Section3Example.toyInitialRuntime (\x => x)))))
+  (requires DGamma.Section3Example.consumerComponent) = False
+consumerUnsatisfiedAfterUnload = Refl

@@ -20,12 +20,15 @@
 
 The paper writes partial arrows and says a violated precondition raises an error
 and produces no transition. `get`, `setFresh`, `liftOperation`, all yielded
-inverses, and `runMediated` therefore use `Maybe`; no partial Idris function is
-used. A successful `setFresh` returns an indexed `CoeffectApplied before`, and
+inverses, isolation/interception inverses, and `runMediated` therefore use
+`Maybe`; no partial Idris function is used. A successful `setFresh` returns an
+indexed `CoeffectApplied before`, and
 `deleteInserted` proves that its inverse recovers the same runtime dependent
 map. The erased uniqueness witness is representation proof and deliberately not
-part of that equality. The inverse deletes by key, so unrelated later
-registrations are retained. `failurePropagates` executable-checks that a failed
+part of that equality. `LiftedUndo`, `IsoSetResult`, and `InterSetResult` keep
+these certificates on the executable runtime path. The inverse deletes by key,
+so unrelated later registrations are retained; isolated undo additionally
+fails if the logical key has changed realm. `failurePropagates` checks that a failed
 mediated stage remains `Nothing`, rather than becoming identity.
 
 ### The recursive context
@@ -55,12 +58,16 @@ of Lemma 38.
    the left of an arrow. Calling `mu Gamma. Gamma × (Gamma -> Gamma) × Sigma` a
    routine recursive type requires a domain-theoretic solution or a guarded
    encoding not supplied by the paper.
-2. **Lemma 35 under-specifies heterogeneous test equality.** Definition 34 lets
-   operations have operation-indexed outcome types, but “same outcomes” for a
-   word over heterogeneous operations needs an explicit dependent trace type.
-   `OperationSuite`, `Observation`, and `runTest` supply one. A remaining proof
-   obligation is prefix closure in the presence of state-indexed yielded
-   inverses.
+2. **Lemma 35 needs a stronger observer language than the prose states.** A
+   fixed inverse generator alone cannot prove that two *different* inverses
+   yielded at indistinguishable origins are pointwise related; the round-2
+   reviewer supplied a checked countermodel. Tests now contain both
+   `FixedInverseStep` (one concrete inverse applied to two related current
+   states) and `YieldedInverseStep` (inverses dynamically yielded at the two
+   compared origins, applied to one common probe). The result statement keeps
+   map-relatedness and each map's respect as separate obligations, matching
+   Definition 36. This is a semantic repair/clarification of the paper, not
+   merely a missing induction.
 3. **Definition 24 and Theorem 40 mix partial and monoidal maps.** Operations
    and their inverses are partial, while Section 3.1 originally presents total
    endomorphisms. The revised mechanization uses Kleisli composition for
@@ -165,7 +172,35 @@ and fixed:
    - Theorem 15's exact formula/iff and Theorem 16's intermediate clauses were
      added. Lemma 38 and Definition 32 are now explicitly marked partial rather
      than overclaimed.
-7. All source files were scanned for hidden escape hatches and missing
+7. The independent round-2 review (`review-cp1-round2.md`) found a checked
+   countermodel to the first Lemma 35 redesign plus runtime-token/lifecycle
+   gaps. The fixes were architectural rather than cosmetic:
+   - Definition 34 gained two inverse observations: fixed-origin inverses test
+     individual relation respect, while dynamically yielded inverses test
+     pointwise relatedness. Lemma 35 now asks for these separately, eliminating
+     the supplied countermodel's hidden probe.
+   - `LiftedOperationResult` now contains an indexed `LiftedUndo` with its
+     application-state recovery certificate, and `keyedApply` returns that
+     result intact. `keyedPartialEff` is the explicitly proof-erased mathematical
+     projection used only to state generated-monoid independence; runtime callers
+     and `runMediated` consume the witness-carrying result first.
+   - Realm overrides now reuse intrinsically unique `CoeffectContext`, and base,
+     isolated, and intercepted sets all return indexed witnessed *partial*
+     tokens. `isoUndoValid`/`interUndoValid` prove their application-state
+     recovery; isolated undo fails after a realm change instead of deleting the
+     wrong binding.
+   - `reverseActual` runs the actual `effect`-returned lifted inverses and carries
+     their live accumulator. `actualLifoEveryIntermediateProof` proves current
+     state and `recover` invariant at each prefix/suffix boundary. The older
+     reconstructed base-map theorem remains useful but is no longer cited as
+     the lifted-accumulator result.
+   - `Section3Example` now includes two components, provisions/requirements,
+     independent effects, load/load/unload/unload, coeffect activation and
+     withdrawal, and direct applications of base and lifted recovery theorems.
+   - `keyCommutative` now quantifies every operation pair in the whole key
+     interface (including self-pairs); Theorem 42 assumes it for every key used
+     by both programs, literally matching the paper.
+8. All source files were scanned for hidden escape hatches and missing
    `%default total`; none were found.
 
 ### Validation

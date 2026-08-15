@@ -25,8 +25,9 @@ added only after checkpoint approval.
 - `DGamma.Unified`: explicitly finite context-tower approximation,
   observational equivalence, witnessing up to equivalence, partial-operation
   tests, and coeffect-mediated programs.
-- `DGamma.Section3Example`: executable typed-table, notification, witnessed
-  operation, mediated execution, and failure-propagation checks.
+- `DGamma.Section3Example`: executable typed-table/notification checks plus a
+  two-component effect+coeffect load/load/unload/unload scenario applying both
+  base and actual-lifted recovery theorems; mediated failure also propagates.
 
 `Pointwise` equality is used for functions rather than assuming function
 extensionality.
@@ -53,7 +54,7 @@ is exported. It is not a postulate and cannot be used as a proof.
 | Thm 13 | `effectPreservesDiamond*` | proved on every forward/inverse field, pointwise |
 | Thm 14 | `effectForwardProjection`, `effectInverseProjection` | proved |
 | Thm 15 | `effectUndoCurrent`, `effectUndoAccumulatorFormula`, `effectLiftWitnessIff` | exact state/formula/soundness and uniform-inverse iff proved pointwise |
-| Thm 16 | `EffectStack`, `pushStack`, `lifoEveryIntermediateProof` | each reverse boundary and its soundness invariant proved |
+| Thm 16 | `reverseActual`, `reverseActualRecovery`, `actualLifoEveryIntermediateProof` | actual lifted accumulator carried through every reverse boundary; current-state and recovery invariant proved |
 | Def 17 | `Generator`, `Transformation`, `runTransformation` | executable inductive generated monoid |
 | Lem 18(1) | `generatorsSettleCommutation` | proved |
 | Lem 18(2) | `diamondDoesNotEnlarge`, `diamondDoesNotEnlargeProof` | proved by embedding generated transformations into `JointTransformation` |
@@ -61,23 +62,23 @@ is exported. It is not a postulate and cannot be used as a proof.
 | Thm 20 | `forwardAcross`, `withdrawAcross`, `theorem20EveryIntermediateProof`, `outOfLIFOProof` | both equations for every intermediate `u`, plus later-inverse stability, proved |
 | Cor 21 | `Permutation`, `anyPermutationRecoveryProof` | proved for every adjacent-swap permutation |
 | Def 22 | `Binding`, `UniqueKeys`, `CoeffectContext`, `lookupBinding` | executable finite dependent partial function; duplicate domains unrepresentable |
-| Def 23 | `get`, `setFresh`, `CoeffectApplied`, `deleteInserted` | executable; successful set returns a witnessed key-deleting undo |
-| Def 24 | `CoeffectOperation`, `OperationResultsRelated`, `CoeffectInterface`, `liftOperation`, `liftedInverseWitness` | partial inverses, witnesses, observational laws/outcomes, and witnessed table lift mechanized |
+| Def 23 | `get`, `setFresh`, `CoeffectApplied`, `CoeffectUndo` | executable; successful set returns an indexed witnessed **partial** key-deleting undo |
+| Def 24 | `CoeffectOperation`, `OperationResultsRelated`, `CoeffectInterface`, `LiftedUndo`, `liftOperation` | partial inverses, witnesses, observational laws/outcomes, and witness-carrying runtime table lift mechanized |
 | Def 25 | `CoeffectSpec`, `UniqueKeys`, `satisfies` | executable intrinsically unique finite set/decidable predicate |
 | Def 26 | `Notification`, `notify` | executable; activation/deactivation facts proved |
 | Def 27 | `Realisation`, `recoverRealisation`, `inPlaceRecovery`, `derivedRecoveryDiscardsChild` | both distinct recovery algorithms executable and proved |
-| Def 28 | `RealmEmbedding`, `IsoContext` | executable; default key-to-realm map intrinsically injective |
-| Def 29 | `resolveRealm`, `isoGet`, `isoSet`, `isolate` | get/set/inverse and derived isolation executable |
+| Def 28 | `RealmEmbedding`, unique-map `Assoc`, `IsoContext` | executable; default key-to-realm map injective and overrides duplicate-free |
+| Def 29 | `IsoSetResult`, `isoUndoValid`, `isoGet`, `isoSet`, `isolateRealisation` | indexed witnessed partial set/inverse and derived isolation executable |
 | Def 30 | `MetadataMonoid`, `InterContext`, `InterSpec` | context and unique interception specification executable; laws erased |
-| Def 31 | `interGet`, `interSet`, `intercept` | get/set/inverse and derived interception executable |
+| Def 31 | `InterSetResult`, `interUndoValid`, `interGet`, `interSet`, `interceptRealisation` | indexed witnessed partial set/inverse and derived interception executable |
 | Def 32 | `UnifiedLayer`, `ContextTower`, `GammaInfinityApprox` | **partial/deviation**: executable finite approximations only; literal negative fixed point is not claimed |
 | Def 33 | `MaybeRelated`, `TableRelated`, `StateRelated` | mechanized; equivalence laws proved |
-| Def 34 | `OperationSuite`, `TestStep`, `runTest`, `Indistinguishable` | executable tests |
-| Lem 35 | `IndistResultAgreement`, `CandidateResultAgreement`, `OperationsRespectIndistinguishability`, `CoarsestRespectedEquivalence` | exact universal-property statements, unproved (`TODO(proof)`) |
+| Def 34 | `OperationSuite`, `FixedInverseStep`, `YieldedInverseStep`, `runTest`, `Indistinguishable` | executable tests observe both fixed-inverse respect and dynamically yielded-inverse relatedness |
+| Lem 35 | `IndistResultAgreement`, `CandidateResultAgreement`, `OperationsRespectIndistinguishability`, `CoarsestRespectedEquivalence` | redesigned non-countermodel universal-property statements, unproved (`TODO(proof)`) |
 | Def 36 | `MapRespects`, `MapsRelated` | mechanized |
 | Def 37 | `RelResult`, `RelEffStar`, `fromEffStar` | executable/witnessed |
 | Lem 38 | `relDiamond`, `RelEffectStack`, `relPushStack` | **partial**: relational composition/accumulator soundness proved; full transport of every Section 3.1 theorem not claimed |
 | Def 39 | `PartialTransformation`, `OperationsIndependent`, `LiftedOperationsIndependent` | partial generated monoids, commutation up to equivalence, inverse/outcome stability mechanized |
 | Thm 40 | `KeyedOperationSuite`, `distinctKeysIndependent` | correctly confined distinct-key lift theorem stated, unproved (`TODO(proof)`) |
 | Def 41 | `Mediated`, `runMediated`, `failurePropagates` | executable partial continuation tree; operation failure remains failure |
-| Thm 42 | `Occurs`, `sharedKeysCommutative`, `MediatedIndependenceTheorem` | exact shared-key-commutativity hypothesis restored; stated, unproved (`TODO(proof)`) |
+| Thm 42 | `Occurs`, `ProgramUsesKey`, `keyCommutative`, `sharedKeysCommutative`, `MediatedIndependenceTheorem` | exact interface-wide shared-key-commutativity hypothesis restored; stated, unproved (`TODO(proof)`) |
