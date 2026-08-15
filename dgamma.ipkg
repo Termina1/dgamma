@@ -1,0 +1,12 @@
+package dgamma
+
+version = 0.1.0
+brief = "Executable Idris 2 mechanization of Cordis spatiotemporal composability"
+authors = "dgamma contributors"
+license = "MIT"
+sourcedir = "src"
+
+modules = DGamma.Core,
+          DGamma.Effects,
+          DGamma.Coeffects,
+          DGamma.Unified
