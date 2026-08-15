@@ -1,9 +1,7 @@
 module DGamma.Calculus
 
 import DGamma.Core
-import DGamma.Effects
 import DGamma.Coeffects
-import DGamma.Unified
 import Decidable.Equality
 import Data.List
 import Data.List.Elem
@@ -11,26 +9,72 @@ import Data.Maybe
 
 %default total
 
-||| Definition 51/49: one partial, failing, witnessed iterator step.
+||| A fiber-owned dynamic table whose domain is confined to its declaration.
 public export
-record StepEffect (world, error : Type) where
-  constructor MkStepEffect
-  runStepEffect : world -> Either error (world, world -> world)
-  0 stepWitness : (before, after : world) -> (undo : world -> world) ->
-    runStepEffect before = Right (after, undo) -> undo after = before
+record OwnedTable (key : Type) (value : key -> Type)
+                  (provision : CoeffectSpec key) where
+  constructor MkOwnedTable
+  ownedValues : CoeffectContext key value
+  0 ownedSound : (k : key) ->
+    Elem k (bindingKeys (bindings ownedValues)) ->
+    Elem k (dependencies provision)
 
-||| Definitions 43/51: a component's declarations and finite effect iterator.
+public export
+emptyOwned : OwnedTable key value provision
+emptyOwned = MkOwnedTable emptyContext (\k, present => absurd present)
+
+||| The only state a component step may mutate: ambient state and its own table.
+public export
+record LocalState (key : Type) (value : key -> Type) (world : Type)
+                  (provision : CoeffectSpec key) where
+  constructor MkLocalState
+  localWorld : world
+  localTable : OwnedTable key value provision
+
+||| A total, ordered capability for exactly the declared dependency keys.
+public export
+data DepValues : (key : Type) -> (value : key -> Type) -> List key -> Type where
+  NoDepValues : DepValues key value []
+  OneDepValue : value k -> DepValues key value rest ->
+                DepValues key value (k :: rest)
+
+public export
+depValueAt : DecEq key => (wanted : key) -> (deps : List key) ->
+  DepValues key value deps -> Maybe (value wanted)
+depValueAt wanted [] NoDepValues = Nothing
+depValueAt wanted (k :: ks) (OneDepValue v rest) with (decEq wanted k)
+  depValueAt k (k :: ks) (OneDepValue v rest) | (Yes Refl) = Just v
+  depValueAt wanted (k :: ks) (OneDepValue v rest) | (No _) =
+    depValueAt wanted ks rest
+
+||| Definitions 48/51: one capability-confined, partial, failing iterator step.
+||| Its inverse is witnessed at the exact local application state.
+public export
+record StepEffect (key : Type) (value : key -> Type) (world, error : Type)
+                  (deps : List key) (provision : CoeffectSpec key) where
+  constructor MkStepEffect
+  runStepEffect : DepValues key value deps ->
+                  LocalState key value world provision ->
+                  Either error
+                    (LocalState key value world provision,
+                     LocalState key value world provision ->
+                       LocalState key value world provision)
+  0 stepWitness : (capability : DepValues key value deps) ->
+    (before, after : LocalState key value world provision) ->
+    (undo : LocalState key value world provision ->
+            LocalState key value world provision) ->
+    runStepEffect capability before = Right (after, undo) ->
+    undo after = before
+
+||| Definition 43: declarations plus a finite failing effect iterator.
 public export
 record Component (key : Type) (value : key -> Type)
                  (world, error : Type) where
   constructor MkComponent
   componentDependencies : CoeffectSpec key
   componentProvisions : CoeffectSpec key
-  providedValues : CoeffectContext key value
-  componentProgram : List (StepEffect world error)
-  0 provisionSound : (k : key) ->
-    Elem k (bindingKeys (bindings providedValues)) ->
-    Elem k (dependencies componentProvisions)
+  componentProgram : List (StepEffect key value world error
+    (dependencies componentDependencies) componentProvisions)
 
 ||| A committed view is intrinsically total on exactly the dependency list.
 public export
@@ -68,29 +112,41 @@ viewLookup wanted (k :: ks) (ProviderView provider rest) with (decEq wanted k)
   viewLookup wanted (k :: ks) (ProviderView provider rest) | (No _) =
     viewLookup wanted ks rest
 
-||| Definition 49: full lifecycle with transition states and failure outcome.
+||| Definition 49. Accumulators restore both ambient state and the acting
+||| fiber's dynamic table, while no other registry field is in their capability.
 public export
-data Lifecycle : (world, error, name : Type) -> List key -> Type where
-  Inactive : Maybe error -> Lifecycle world error name deps
-  Reloading : List (StepEffect world error) -> (world -> world) ->
-              View name deps -> Lifecycle world error name deps
-  Active : (world -> world) -> View name deps ->
-           Lifecycle world error name deps
-  Unloading : (world -> world) -> View name deps -> Maybe error ->
-              Lifecycle world error name deps
+data Lifecycle : (key : Type) -> (value : key -> Type) ->
+  (world, error, name : Type) -> (deps : List key) ->
+  (provision : CoeffectSpec key) -> Type where
+  Inactive : Maybe error ->
+    Lifecycle key value world error name deps provision
+  Reloading : List (StepEffect key value world error deps provision) ->
+              (LocalState key value world provision ->
+               LocalState key value world provision) ->
+              View name deps ->
+              Lifecycle key value world error name deps provision
+  Active : (LocalState key value world provision ->
+            LocalState key value world provision) ->
+           View name deps ->
+           Lifecycle key value world error name deps provision
+  Unloading : (LocalState key value world provision ->
+               LocalState key value world provision) ->
+              View name deps -> Maybe error ->
+              Lifecycle key value world error name deps provision
 
 public export
-installed : Lifecycle world error name deps -> Bool
+installed : Lifecycle key value world error name deps provision -> Bool
 installed (Inactive _) = False
 installed _ = True
 
 public export
-isActive : Lifecycle world error name deps -> Bool
+isActive : Lifecycle key value world error name deps provision -> Bool
 isActive (Active _ _) = True
 isActive _ = False
 
 public export
-committed : Lifecycle world error name deps -> Maybe (View name deps)
+committed : Lifecycle key value world error name deps provision ->
+  Maybe (View name deps)
 committed (Inactive _) = Nothing
 committed (Reloading _ _ view) = Just view
 committed (Active _ view) = Just view
@@ -99,59 +155,79 @@ committed (Unloading _ view _) = Just view
 public export
 data Parent name = Root | ChildOf name
 
-||| Definition 44: fiber. The lifecycle view is indexed by the component's
-||| exact dependency list.
+||| Definition 44: a fiber owns its changing table. Lifecycle indices are tied
+||| to the declarations of the immutable component.
 public export
 data Fiber : (name, key : Type) -> (value : key -> Type) ->
              (world, error : Type) -> Type where
   MkFiber : (component : Component key value world error) ->
             (parent : Parent name) -> (isRetired : Bool) ->
-            Lifecycle world error name
-              (dependencies (componentDependencies component)) ->
+            (table : OwnedTable key value (componentProvisions component)) ->
+            Lifecycle key value world error name
+              (dependencies (componentDependencies component))
+              (componentProvisions component) ->
             Fiber name key value world error
 
 public export
 fiberComponent : Fiber name key value world error -> Component key value world error
-fiberComponent (MkFiber component _ _ _) = component
+fiberComponent (MkFiber component _ _ _ _) = component
 
 public export
 fiberParent : Fiber name key value world error -> Parent name
-fiberParent (MkFiber _ parent _ _) = parent
+fiberParent (MkFiber _ parent _ _ _) = parent
 
 public export
 retired : Fiber name key value world error -> Bool
-retired (MkFiber _ _ isRetired _) = isRetired
+retired (MkFiber _ _ flag _ _) = flag
+
+public export
+fiberTable : (fiber : Fiber name key value world error) ->
+  OwnedTable key value (componentProvisions (fiberComponent fiber))
+fiberTable (MkFiber _ _ _ table _) = table
 
 public export
 fiberLifecycle : (fiber : Fiber name key value world error) ->
-  Lifecycle world error name
+  Lifecycle key value world error name
     (dependencies (componentDependencies (fiberComponent fiber)))
-fiberLifecycle (MkFiber component parent isRetired lifecycle) = lifecycle
+    (componentProvisions (fiberComponent fiber))
+fiberLifecycle (MkFiber _ _ _ _ lifecycle) = lifecycle
 
 public export
 freshFiber : Component key value world error -> Parent name ->
   Fiber name key value world error
-freshFiber component parent = MkFiber component parent False (Inactive Nothing)
+freshFiber component parent =
+  MkFiber component parent False emptyOwned (Inactive Nothing)
+
+public export
+setFiberRuntime : (fiber : Fiber name key value world error) ->
+  (table : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)) ->
+  Fiber name key value world error
+setFiberRuntime (MkFiber component parent retired oldTable oldLife) table life =
+  MkFiber component parent retired table life
 
 public export
 setFiberLifecycle : (fiber : Fiber name key value world error) ->
-  Lifecycle world error name
-    (dependencies (componentDependencies (fiberComponent fiber))) ->
+  Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)) ->
   Fiber name key value world error
-setFiberLifecycle (MkFiber component parent retired old) lifecycle =
-  MkFiber component parent retired lifecycle
+setFiberLifecycle fiber lifecycle = setFiberRuntime fiber (fiberTable fiber) lifecycle
 
 public export
 retireFiber : Fiber name key value world error -> Fiber name key value world error
-retireFiber (MkFiber component parent retired lifecycle) =
-  MkFiber component parent True lifecycle
+retireFiber (MkFiber component parent retired table lifecycle) =
+  MkFiber component parent True table lifecycle
 
 public export
 FiberAt : (name, key : Type) -> (value : key -> Type) ->
   (world, error : Type) -> name -> Type
 FiberAt name key value world error _ = Fiber name key value world error
 
-||| Definition 45: finite, name-unique registry.
+||| Definition 45: finite name-unique registry.
 public export
 Registry : (name, key : Type) -> (value : key -> Type) ->
   (world, error : Type) -> Type
@@ -166,22 +242,14 @@ record SystemState (name, key : Type) (value : key -> Type)
   registry : Registry name key value world error
 
 public export
-lookupFiber : DecEq name => (n : name) ->
-  Registry name key value world error -> Maybe (Fiber name key value world error)
+lookupFiber : DecEq name => name -> Registry name key value world error ->
+  Maybe (Fiber name key value world error)
 lookupFiber = lookupBinding
 
 public export
 registryFibers : Registry name key value world error ->
   List (Binding name (FiberAt name key value world error))
 registryFibers = bindings
-
-public export
-updateFiber : DecEq name => name ->
-  (Fiber name key value world error -> Fiber name key value world error) ->
-  Registry name key value world error -> Registry name key value world error
-updateFiber n update fibers = case lookupFiber n fibers of
-  Nothing => fibers
-  Just fiber => replaceBinding n (update fiber) fibers
 
 public export
 parentPresent : DecEq name => Parent name -> Registry name key value world error -> Bool
@@ -193,7 +261,7 @@ hasChild : DecEq name => name -> Registry name key value world error -> Bool
 hasChild parent fibers = any isChild (registryFibers fibers)
   where
   isChild : Binding name (FiberAt name key value world error) -> Bool
-  isChild (Bind child fiber) = case fiberParent fiber of
+  isChild (Bind _ fiber) = case fiberParent fiber of
     Root => False
     ChildOf candidate => case decEq parent candidate of
       Yes Refl => True
@@ -205,7 +273,7 @@ providerIn : DecEq name => DecEq key => key ->
 providerIn k [] = Nothing
 providerIn k (Bind n fiber :: rest) =
   if isActive (fiberLifecycle fiber) &&
-     memberKey k (providedValues (fiberComponent fiber))
+     memberKey k (ownedValues (fiberTable fiber))
     then Just n
     else providerIn k rest
 
@@ -214,8 +282,34 @@ providerOf : DecEq name => DecEq key => key ->
   Registry name key value world error -> Maybe name
 providerOf k fibers = providerIn k (registryFibers fibers)
 
-||| Definition 45's derived coeffect context, retaining the provider identity
-||| separately through target views.
+public export
+resolveView : DecEq name => DecEq key => (deps : List key) ->
+  Registry name key value world error -> Maybe (View name deps)
+resolveView [] fibers = Just EmptyView
+resolveView (k :: ks) fibers = case providerOf k fibers of
+  Nothing => Nothing
+  Just provider => map (ProviderView provider) (resolveView ks fibers)
+
+public export
+valueFromProvider : DecEq name => DecEq key => (provider : name) ->
+  (k : key) -> Registry name key value world error -> Maybe (value k)
+valueFromProvider provider k fibers = case lookupFiber provider fibers of
+  Nothing => Nothing
+  Just fiber => lookupBinding k (ownedValues (fiberTable fiber))
+
+||| Resolve a committed capability directly through provider-owned tables.
+||| Providers need only remain installed; they intentionally need not be Active
+||| during a dependent's withdrawal interval.
+public export
+resolveCommittedValues : DecEq name => DecEq key =>
+  (deps : List key) -> View name deps ->
+  Registry name key value world error -> Maybe (DepValues key value deps)
+resolveCommittedValues [] EmptyView fibers = Just NoDepValues
+resolveCommittedValues (k :: ks) (ProviderView provider rest) fibers =
+  case valueFromProvider provider k fibers of
+    Nothing => Nothing
+    Just v => map (OneDepValue v) (resolveCommittedValues ks rest fibers)
+
 public export
 activeCoeffectsFrom : DecEq name => DecEq key =>
   List (Binding name (FiberAt name key value world error)) ->
@@ -223,13 +317,13 @@ activeCoeffectsFrom : DecEq name => DecEq key =>
 activeCoeffectsFrom [] = emptyContext
 activeCoeffectsFrom (Bind n fiber :: rest) =
   if isActive (fiberLifecycle fiber)
-    then mergeProvided (providedValues (fiberComponent fiber))
-                       (activeCoeffectsFrom rest)
+    then mergeOwned (ownedValues (fiberTable fiber))
+                    (activeCoeffectsFrom rest)
     else activeCoeffectsFrom rest
   where
-  mergeProvided : CoeffectContext key value -> CoeffectContext key value ->
-                  CoeffectContext key value
-  mergeProvided left right = foldr insertIfFresh right (bindings left)
+  mergeOwned : CoeffectContext key value -> CoeffectContext key value ->
+               CoeffectContext key value
+  mergeOwned left right = foldr insertIfFresh right (bindings left)
     where
     insertIfFresh : Binding key value -> CoeffectContext key value ->
                     CoeffectContext key value
@@ -242,14 +336,6 @@ activeCoeffects : DecEq name => DecEq key =>
   Registry name key value world error -> CoeffectContext key value
 activeCoeffects fibers = activeCoeffectsFrom (registryFibers fibers)
 
-public export
-resolveView : DecEq name => DecEq key => (deps : List key) ->
-  Registry name key value world error -> Maybe (View name deps)
-resolveView [] fibers = Just EmptyView
-resolveView (k :: ks) fibers = case providerOf k fibers of
-  Nothing => Nothing
-  Just provider => map (ProviderView provider) (resolveView ks fibers)
-
 ||| Definition 46: target view.
 public export
 targetFiber : DecEq name => DecEq key =>
@@ -257,10 +343,9 @@ targetFiber : DecEq name => DecEq key =>
   Registry name key value world error ->
   Maybe (View name (dependencies
     (componentDependencies (fiberComponent fiber))))
-targetFiber fiber fibers =
-  if retired fiber
-    then Nothing
-    else resolveView (dependencies (componentDependencies (fiberComponent fiber))) fibers
+targetFiber fiber fibers = if retired fiber
+  then Nothing
+  else resolveView (dependencies (componentDependencies (fiberComponent fiber))) fibers
 
 public export
 data SomeView : Type -> Type where
@@ -269,7 +354,7 @@ data SomeView : Type -> Type where
 public export
 targetAt : DecEq name => DecEq key => name ->
   SystemState name key value world error -> Maybe (SomeView name)
-targetAt name state = case lookupFiber name (registry state) of
+targetAt n state = case lookupFiber n (registry state) of
   Nothing => Nothing
   Just fiber => map MkSomeView (targetFiber fiber (registry state))
 
@@ -278,7 +363,6 @@ targetMatches : DecEq name => Maybe (View name deps) -> View name deps -> Bool
 targetMatches Nothing view = False
 targetMatches (Just target) view = viewEq target view
 
-||| Definition 50: relied upon by another installed fiber.
 public export
 reliedOnBy : DecEq name => name -> name ->
   List (Binding name (FiberAt name key value world error)) -> Bool
@@ -333,7 +417,7 @@ provisionsDisjointFrom provision (Bind _ fiber :: rest) =
     (componentProvisions (fiberComponent fiber))) &&
   provisionsDisjointFrom provision rest
 
-||| The ten rule names in Table 1.
+||| The ten Table-1 rule tags.
 public export
 data RuleTag = OInsertTag | ORetireTag | ORemoveTag |
                LBeginTag | LIterTag | LFinishTag | LDivertTag |
@@ -352,9 +436,7 @@ data Action : (name, key : Type) -> (value : key -> Type) ->
   LLeave : name -> Action name key value world error
   LUnload : name -> Action name key value world error
 
-||| Definition 47's registration primitive, exposed through the same checked
-||| O-Insert/O-Retire actions as external orchestration. A registering iterator
-||| may submit the first action and retain the second as its inverse.
+||| Definition 47's host-visible checked forward/inverse pair.
 public export
 record Registration (name, key : Type) (value : key -> Type)
                     (world, error : Type) where
@@ -368,20 +450,13 @@ registration : name -> Parent name -> Component key value world error ->
 registration n parent component =
   MkRegistration (OInsert n parent component) (ORetire n)
 
-||| Definition 48 is enforced structurally in this runtime model: an iterator
-||| step receives only `world`, never the registry or another fiber. The paper's
-||| permitted own-table mutation is represented by the component's immutable
-||| `providedValues`, which becomes observable only in `Active`.
 public export
-ConfinedStep : Type -> Type -> Type
-ConfinedStep = StepEffect
-
-public export
-isInactive : Lifecycle world error name deps -> Bool
+isInactive : Lifecycle key value world error name deps provision -> Bool
 isInactive (Inactive _) = True
 isInactive _ = False
 
-||| Executable operational semantics for Sections 4.2–4.3.
+||| Executable semantics for the ten rules. The empty-program terminal marker
+||| obeys the same target equality as a non-empty L-Finish; stale targets divert.
 public export
 applyAction : DecEq name => DecEq key =>
   Action name key value world error ->
@@ -399,7 +474,8 @@ applyAction (OInsert n parent component) state =
 applyAction (ORetire n) state = case lookupFiber n (registry state) of
   Nothing => Nothing
   Just fiber => Just (ORetireTag,
-    MkSystemState (worldState state) (updateFiber n retireFiber (registry state)))
+    MkSystemState (worldState state)
+      (replaceBinding n (retireFiber fiber) (registry state)))
 applyAction (ORemove n) state = case lookupFiber n (registry state) of
   Nothing => Nothing
   Just fiber =>
@@ -423,38 +499,56 @@ applyAction (LBegin n) state = case lookupFiber n (registry state) of
 applyAction (LAdvance n) state = case lookupFiber n (registry state) of
   Nothing => Nothing
   Just fiber => case fiberLifecycle fiber of
-    Reloading [] accumulator view => Just (LFinishTag,
-      MkSystemState (worldState state)
-        (replaceBinding n (setFiberLifecycle fiber (Active accumulator view))
-          (registry state)))
-    Reloading (step :: rest) accumulator view =>
-      case runStepEffect step (worldState state) of
-        Left err => Just (LRaiseTag,
+    Reloading [] accumulator view =>
+      if targetMatches (targetFiber fiber (registry state)) view
+        then Just (LFinishTag,
           MkSystemState (worldState state)
             (replaceBinding n
-              (setFiberLifecycle fiber (Unloading accumulator view (Just err)))
+              (setFiberLifecycle fiber (Active accumulator view))
               (registry state)))
-        Right (nextWorld, undo) =>
-          let nextAccumulator = accumulator . undo in
-          if targetMatches (targetFiber fiber (registry state)) view
-            then case rest of
-              [] => Just (LFinishTag,
-                MkSystemState nextWorld
-                  (replaceBinding n
-                    (setFiberLifecycle fiber (Active nextAccumulator view))
-                    (registry state)))
-              _ => Just (LIterTag,
-                MkSystemState nextWorld
-                  (replaceBinding n
-                    (setFiberLifecycle fiber
-                      (Reloading rest nextAccumulator view))
-                    (registry state)))
-            else Just (LDivertTag,
-              MkSystemState nextWorld
+        else Just (LDivertTag,
+          MkSystemState (worldState state)
+            (replaceBinding n
+              (setFiberLifecycle fiber (Unloading accumulator view Nothing))
+              (registry state)))
+    Reloading (step :: rest) accumulator view =>
+      case resolveCommittedValues
+        (dependencies (componentDependencies (fiberComponent fiber)))
+        view (registry state) of
+        Nothing => Nothing
+        Just capability =>
+          let localBefore = MkLocalState (worldState state) (fiberTable fiber) in
+          case runStepEffect step capability localBefore of
+            Left err => Just (LRaiseTag,
+              MkSystemState (worldState state)
                 (replaceBinding n
                   (setFiberLifecycle fiber
-                    (Unloading nextAccumulator view Nothing))
+                    (Unloading accumulator view (Just err)))
                   (registry state)))
+            Right (localAfter, undo) =>
+              let nextAccumulator = accumulator . undo
+                  nextWorld = localWorld localAfter
+                  nextTable = localTable localAfter in
+              if targetMatches (targetFiber fiber (registry state)) view
+                then case rest of
+                  [] => Just (LFinishTag,
+                    MkSystemState nextWorld
+                      (replaceBinding n
+                        (setFiberRuntime fiber nextTable
+                          (Active nextAccumulator view))
+                        (registry state)))
+                  _ => Just (LIterTag,
+                    MkSystemState nextWorld
+                      (replaceBinding n
+                        (setFiberRuntime fiber nextTable
+                          (Reloading rest nextAccumulator view))
+                        (registry state)))
+                else Just (LDivertTag,
+                  MkSystemState nextWorld
+                    (replaceBinding n
+                      (setFiberRuntime fiber nextTable
+                        (Unloading nextAccumulator view Nothing))
+                      (registry state)))
     _ => Nothing
 applyAction (LDivert n) state = case lookupFiber n (registry state) of
   Nothing => Nothing
@@ -486,21 +580,127 @@ applyAction (LUnload n) state = case lookupFiber n (registry state) of
     Unloading accumulator view outcome =>
       if relied n (registry state)
         then Nothing
-        else Just (LUnloadTag,
-          MkSystemState (accumulator (worldState state))
-            (replaceBinding n (setFiberLifecycle fiber (Inactive outcome))
-              (registry state)))
+        else let restored = accumulator
+                   (MkLocalState (worldState state) (fiberTable fiber)) in
+          Just (LUnloadTag,
+            MkSystemState (localWorld restored)
+              (replaceBinding n
+                (setFiberRuntime fiber (localTable restored) (Inactive outcome))
+                (registry state)))
     _ => Nothing
 
-||| Definition 53: transition as an indexed inductive family. Its constructor
-||| carries the executable rule equation; no unvalidated transition exists.
+public export
+parentInvariant : DecEq name => Parent name -> Registry name key value world error -> Bool
+parentInvariant Root fibers = True
+parentInvariant (ChildOf parent) fibers = isJust (lookupFiber parent fibers)
+
+public export
+parentChainInvariant : DecEq name => Nat -> List name -> name ->
+  Registry name key value world error -> Bool
+parentChainInvariant Z seen current fibers = False
+parentChainInvariant (S fuel) seen current fibers = case lookupFiber current fibers of
+  Nothing => False
+  Just fiber => case fiberParent fiber of
+    Root => True
+    ChildOf parent => if elemDec parent seen
+      then False
+      else parentChainInvariant fuel (parent :: seen) parent fibers
+
+public export
+viewProvidersInvariant : DecEq name => Registry name key value world error ->
+  View name deps -> Bool
+viewProvidersInvariant fibers EmptyView = True
+viewProvidersInvariant fibers (ProviderView provider rest) =
+  case lookupFiber provider fibers of
+    Nothing => False
+    Just fiber => installed (fiberLifecycle fiber) &&
+                  viewProvidersInvariant fibers rest
+
+public export
+viewBindingsInvariant : DecEq name => DecEq key => (deps : List key) ->
+  View name deps -> Registry name key value world error -> Bool
+viewBindingsInvariant deps view fibers = viewProvidersInvariant fibers view &&
+  isJust (resolveCommittedValues deps view fibers)
+
+public export
+fiberViewInvariant : DecEq name => DecEq key =>
+  Fiber name key value world error -> Registry name key value world error -> Bool
+fiberViewInvariant (MkFiber component parent retired table lifecycle) fibers =
+  case lifecycle of
+    Inactive _ => True
+    Reloading _ _ view => viewBindingsInvariant
+      (dependencies (componentDependencies component)) view fibers
+    Active _ view => viewBindingsInvariant
+      (dependencies (componentDependencies component)) view fibers
+    Unloading _ view _ => viewBindingsInvariant
+      (dependencies (componentDependencies component)) view fibers
+
+public export
+pairwiseProvisionInvariant : DecEq key =>
+  List (Binding name (FiberAt name key value world error)) -> Bool
+pairwiseProvisionInvariant [] = True
+pairwiseProvisionInvariant (Bind _ fiber :: rest) =
+  provisionsDisjointFrom (componentProvisions (fiberComponent fiber)) rest &&
+  pairwiseProvisionInvariant rest
+
+||| Definition 58's executable registry invariant. It lives beside Transition so
+||| the indexed LTS can carry erased preservation certificates intrinsically.
+public export
+registryWellFormed : DecEq name => DecEq key =>
+  SystemState name key value world error -> Bool
+registryWellFormed state =
+  let fibers = registry state
+      entries = registryFibers fibers
+      fuel = S (length entries)
+   in all (\(Bind _ fiber) => parentInvariant (fiberParent fiber) fibers) entries &&
+      all (\(Bind n _) => parentChainInvariant fuel [n] n fibers) entries &&
+      pairwiseProvisionInvariant entries &&
+      all (\(Bind _ fiber) => fiberViewInvariant fiber fibers) entries
+
+||| Runtime-checked rule application used by the proof-indexed LTS. `applyAction`
+||| remains the raw ten-rule evaluator; this wrapper rejects a malformed target
+||| rather than admitting it into a proof trace.
+public export
+checkedApplyAction : DecEq name => DecEq key =>
+  Action name key value world error ->
+  SystemState name key value world error ->
+  Maybe (RuleTag, SystemState name key value world error)
+checkedApplyAction action before = case applyAction action before of
+  Nothing => Nothing
+  Just (tag, afterState) =>
+    if registryWellFormed afterState then Just (tag, afterState) else Nothing
+
+||| An indexed transition exists only when the executable checked evaluator
+||| produced its exact endpoint.
 public export
 data Transition : SystemState name key value world error ->
                   SystemState name key value world error -> Type where
   Fired : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
           (action : Action name key value world error) -> (tag : RuleTag) ->
-          applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
+          checkedApplyAction @{nameEq} @{keyEq} action before =
+            Just (tag, afterState) ->
           Transition before afterState
+
+public export
+record TransitionResult (before : SystemState name key value world error) where
+  constructor MkTransitionResult
+  transitionAfter : SystemState name key value world error
+  transitionRule : RuleTag
+  checkedTransition : Transition before transitionAfter
+
+||| Execute and package a proof-indexed transition when the checked evaluator
+||| accepts the rule.
+public export
+fire : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  Action name key value world error ->
+  (before : SystemState name key value world error) ->
+  Maybe (TransitionResult before)
+fire nameEq keyEq action before
+  with (checkedApplyAction @{nameEq} @{keyEq} action before) proof fired
+  fire nameEq keyEq action before | Nothing = Nothing
+  fire nameEq keyEq action before | Just (tag, afterState) =
+    Just (MkTransitionResult afterState tag
+      (Fired nameEq keyEq action tag fired))
 
 public export
 data Transitions : SystemState name key value world error ->
@@ -513,20 +713,34 @@ public export
 transitionAction : {name, key, world, error : Type} -> {value : key -> Type} ->
   {before, afterState : SystemState name key value world error} ->
   Transition before afterState -> Action name key value world error
-transitionAction (Fired nameEq keyEq action tag equation) = action
+transitionAction (Fired _ _ action _ _) = action
 
 public export
 transitionTag : {name, key, world, error : Type} -> {value : key -> Type} ->
   {before, afterState : SystemState name key value world error} ->
   Transition before afterState -> RuleTag
-transitionTag (Fired nameEq keyEq action tag equation) = tag
+transitionTag (Fired _ _ _ tag _) = tag
 
-||| An executable trace snapshot used by episode extraction.
 public export
-record Snapshot (name, key : Type) (value : key -> Type)
-                (world, error : Type) where
-  constructor MkSnapshot
-  snapshotState : SystemState name key value world error
+transitionActor : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  Transition before afterState -> name
+transitionActor transition = case transitionAction transition of
+  OInsert n _ _ => n
+  ORetire n => n
+  ORemove n => n
+  LBegin n => n
+  LAdvance n => n
+  LDivert n => n
+  LLeave n => n
+  LUnload n => n
+
+public export
+appendTransitions : Transitions first middle -> Transitions middle finalState ->
+  Transitions first finalState
+appendTransitions NoTransitions suffix = suffix
+appendTransitions (MoreTransitions step rest) suffix =
+  MoreTransitions step (appendTransitions rest suffix)
 
 public export
 installedAt : DecEq name => name ->
@@ -535,24 +749,18 @@ installedAt n state = case lookupFiber n (registry state) of
   Nothing => False
   Just fiber => installed (fiberLifecycle fiber)
 
-||| Definition 53: maximal installed intervals, represented as nonempty lists of
-||| consecutive states. This function is directly executable on logged states.
+||| Executable grouping of maximal installed intervals in a snapshot log.
 public export
 episodes : DecEq name => name ->
   List (SystemState name key value world error) ->
   List (List (SystemState name key value world error))
 episodes n states = go states []
   where
-  flush : List (SystemState name key value world error) ->
-          List (List (SystemState name key value world error)) ->
-          List (List (SystemState name key value world error))
-  flush [] done = done
-  flush current done = reverse current :: done
-
   go : List (SystemState name key value world error) ->
        List (SystemState name key value world error) ->
        List (List (SystemState name key value world error))
-  go [] current = reverse (flush current [])
+  go [] [] = []
+  go [] current = [reverse current]
   go (state :: rest) current =
     if installedAt n state
       then go rest (state :: current)

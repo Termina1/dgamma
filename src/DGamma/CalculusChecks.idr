@@ -1,92 +1,176 @@
 module DGamma.CalculusChecks
 
 import DGamma.Core
-import DGamma.Effects
 import DGamma.Coeffects
 import DGamma.Calculus
 import DGamma.Metatheory
 import DGamma.Section3Example
 import Decidable.Equality
 import Data.List.Elem
+import Data.Maybe
 
 %default total
 
 public export
-emptySpec : CoeffectSpec ToyKey
-emptySpec = MkCoeffectSpec [] UniqueNil
+toyEmptySpec : CoeffectSpec ToyKey
+toyEmptySpec = MkCoeffectSpec [] UniqueNil
 
 public export
-providerStep : StepEffect ToyRuntime String
-providerStep = MkStepEffect {world = ToyRuntime} {error = String} run witnessed
-  where
-  run : ToyRuntime -> Either String (ToyRuntime, ToyRuntime -> ToyRuntime)
-  run (MkToyRuntime provider consumer) =
-    Right (MkToyRuntime (not provider) consumer,
-      \(MkToyRuntime laterProvider laterConsumer) =>
-        MkToyRuntime (not laterProvider) laterConsumer)
+toySpecB : CoeffectSpec ToyKey
+toySpecB = MkCoeffectSpec [ServiceB] (UniqueCons notInEmpty UniqueNil)
 
-  0 witnessed : (before, after : ToyRuntime) ->
-    (undo : ToyRuntime -> ToyRuntime) ->
-    run before = Right (after, undo) -> undo after = before
-  witnessed before after undo returned =
+public export
+contextA : Bool -> CoeffectContext ToyKey ToyValue
+contextA value = MkCoeffectContext [Bind ServiceA value]
+  (UniqueCons notInEmpty UniqueNil)
+
+public export
+contextB : Bool -> CoeffectContext ToyKey ToyValue
+contextB value = MkCoeffectContext [Bind ServiceB value]
+  (UniqueCons notInEmpty UniqueNil)
+
+public export
+ownedA : Bool -> OwnedTable ToyKey ToyValue DGamma.Section3Example.toySpecA
+ownedA value = MkOwnedTable (contextA value) sound
+  where
+  0 sound : (k : ToyKey) -> Elem k [ServiceA] ->
+    Elem k (dependencies DGamma.Section3Example.toySpecA)
+  sound k present = present
+
+public export
+ownedB : Bool -> OwnedTable ToyKey ToyValue DGamma.CalculusChecks.toySpecB
+ownedB value = MkOwnedTable (contextB value) sound
+  where
+  0 sound : (k : ToyKey) -> Elem k [ServiceB] ->
+    Elem k (dependencies DGamma.CalculusChecks.toySpecB)
+  sound k present = present
+
+public export
+providerInstall : StepEffect ToyKey ToyValue ToyRuntime String [] DGamma.Section3Example.toySpecA
+providerInstall = MkStepEffect run witnessed
+  where
+  run : DepValues ToyKey ToyValue [] ->
+        LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA ->
+        Either String
+          (LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA,
+           LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA ->
+             LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA)
+  run NoDepValues before =
+    let MkLocalState (MkToyRuntime provider consumer) previous = before
+        after = MkLocalState (MkToyRuntime (not provider) consumer) (ownedA True)
+        undo = the
+          (LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA ->
+           LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA)
+          (\(MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable) =>
+            MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) previous)
+     in Right (after, undo)
+
+  0 witnessed : (cap : DepValues ToyKey ToyValue []) ->
+    (before, after : LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA) ->
+    (undo : LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA ->
+            LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA) ->
+    run cap before = Right (after, undo) -> undo after = before
+  witnessed NoDepValues before after undo returned =
     replace
       {p = \outcome => case outcome of
         Left _ => Unit
         Right (next, inverse) => inverse next = before}
       returned (case before of
-        MkToyRuntime False consumer => Refl
-        MkToyRuntime True consumer => Refl)
+        MkLocalState (MkToyRuntime False consumer) table => Refl
+        MkLocalState (MkToyRuntime True consumer) table => Refl)
 
 public export
-consumerStep : StepEffect ToyRuntime String
-consumerStep = MkStepEffect {world = ToyRuntime} {error = String} run witnessed
+providerFinish : StepEffect ToyKey ToyValue ToyRuntime String [] DGamma.Section3Example.toySpecA
+providerFinish = MkStepEffect run witnessed
   where
-  run : ToyRuntime -> Either String (ToyRuntime, ToyRuntime -> ToyRuntime)
-  run (MkToyRuntime provider consumer) =
-    Right (MkToyRuntime provider (not consumer),
-      \(MkToyRuntime laterProvider laterConsumer) =>
-        MkToyRuntime laterProvider (not laterConsumer))
+  run : DepValues ToyKey ToyValue [] ->
+        LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA ->
+        Either String
+          (LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA,
+           LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA ->
+             LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA)
+  run NoDepValues before = Right (before, id)
 
-  0 witnessed : (before, after : ToyRuntime) ->
-    (undo : ToyRuntime -> ToyRuntime) ->
-    run before = Right (after, undo) -> undo after = before
-  witnessed before after undo returned =
+  0 witnessed : (cap : DepValues ToyKey ToyValue []) ->
+    (before, after : LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA) ->
+    (undo : LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA ->
+            LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA) ->
+    run cap before = Right (after, undo) -> undo after = before
+  witnessed NoDepValues before after undo returned =
+    replace
+      {p = \outcome => case outcome of
+        Left _ => Unit
+        Right (next, inverse) => inverse next = before}
+      returned Refl
+
+public export
+consumerInstall : StepEffect ToyKey ToyValue ToyRuntime String
+  [ServiceA] DGamma.CalculusChecks.toySpecB
+consumerInstall = MkStepEffect run witnessed
+  where
+  run : DepValues ToyKey ToyValue [ServiceA] ->
+        LocalState ToyKey ToyValue ToyRuntime DGamma.CalculusChecks.toySpecB ->
+        Either String
+          (LocalState ToyKey ToyValue ToyRuntime DGamma.CalculusChecks.toySpecB,
+           LocalState ToyKey ToyValue ToyRuntime DGamma.CalculusChecks.toySpecB ->
+             LocalState ToyKey ToyValue ToyRuntime DGamma.CalculusChecks.toySpecB)
+  run (OneDepValue service NoDepValues) before =
+    let MkLocalState (MkToyRuntime provider consumer) previous = before
+        nextConsumer = if service then not consumer else consumer
+        after = MkLocalState (MkToyRuntime provider nextConsumer) (ownedB service)
+        undo = the
+          (LocalState ToyKey ToyValue ToyRuntime DGamma.CalculusChecks.toySpecB ->
+           LocalState ToyKey ToyValue ToyRuntime DGamma.CalculusChecks.toySpecB)
+          (\(MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable) =>
+            MkLocalState
+              (MkToyRuntime laterProvider
+                (if service then not laterConsumer else laterConsumer))
+              previous)
+     in Right (after, undo)
+
+  0 witnessed : (cap : DepValues ToyKey ToyValue [ServiceA]) ->
+    (before, after : LocalState ToyKey ToyValue ToyRuntime DGamma.CalculusChecks.toySpecB) ->
+    (undo : LocalState ToyKey ToyValue ToyRuntime DGamma.CalculusChecks.toySpecB ->
+            LocalState ToyKey ToyValue ToyRuntime DGamma.CalculusChecks.toySpecB) ->
+    run cap before = Right (after, undo) -> undo after = before
+  witnessed (OneDepValue False NoDepValues) before after undo returned =
     replace
       {p = \outcome => case outcome of
         Left _ => Unit
         Right (next, inverse) => inverse next = before}
       returned (case before of
-        MkToyRuntime provider False => Refl
-        MkToyRuntime provider True => Refl)
+        MkLocalState (MkToyRuntime provider consumer) table => Refl)
+  witnessed (OneDepValue True NoDepValues) before after undo returned =
+    replace
+      {p = \outcome => case outcome of
+        Left _ => Unit
+        Right (next, inverse) => inverse next = before}
+      returned (case before of
+        MkLocalState (MkToyRuntime provider False) table => Refl
+        MkLocalState (MkToyRuntime provider True) table => Refl)
+
+public export
+raisingStep : StepEffect ToyKey ToyValue ToyRuntime String [] DGamma.CalculusChecks.toyEmptySpec
+raisingStep = MkStepEffect
+  (\NoDepValues, local => Left "boom")
+  (\NoDepValues, before, after, undo, returned => absurd returned)
 
 public export
 providerComponent : Component ToyKey ToyValue ToyRuntime String
-providerComponent = MkComponent
-  DGamma.CalculusChecks.emptySpec
-  DGamma.Section3Example.toySpecA
-  DGamma.Section3Example.toyAContext
-  [DGamma.CalculusChecks.providerStep]
-  sound
-  where
-  0 sound : (k : ToyKey) ->
-    Elem k (bindingKeys (bindings DGamma.Section3Example.toyAContext)) ->
-    Elem k (dependencies DGamma.Section3Example.toySpecA)
-  sound ServiceA Here = Here
-  sound ServiceA (There later) = absurd later
-  sound ServiceB Here impossible
-  sound ServiceB (There later) = absurd later
+providerComponent = MkComponent DGamma.CalculusChecks.toyEmptySpec DGamma.Section3Example.toySpecA
+  [providerInstall, providerFinish]
 
 public export
 consumerComponent : Component ToyKey ToyValue ToyRuntime String
-consumerComponent = MkComponent
-  DGamma.Section3Example.toySpecA
-  DGamma.CalculusChecks.emptySpec
-  (emptyContext {key = ToyKey} {value = ToyValue})
-  [DGamma.CalculusChecks.consumerStep]
-  sound
-  where
-  0 sound : (k : ToyKey) -> Elem k [] -> Elem k []
-  sound k present impossible
+consumerComponent = MkComponent DGamma.Section3Example.toySpecA DGamma.CalculusChecks.toySpecB [consumerInstall]
+
+public export
+emptyConsumerComponent : Component ToyKey ToyValue ToyRuntime String
+emptyConsumerComponent = MkComponent DGamma.Section3Example.toySpecA DGamma.CalculusChecks.toyEmptySpec []
+
+public export
+failingComponent : Component ToyKey ToyValue ToyRuntime String
+failingComponent = MkComponent DGamma.CalculusChecks.toyEmptySpec DGamma.CalculusChecks.toyEmptySpec [raisingStep]
 
 public export
 initialSystem : SystemState Nat ToyKey ToyValue ToyRuntime String
@@ -95,47 +179,163 @@ initialSystem = MkSystemState (MkToyRuntime False False)
     {value = FiberAt Nat ToyKey ToyValue ToyRuntime String})
 
 public export
-applyState : Action Nat ToyKey ToyValue ToyRuntime String ->
+tagEq : RuleTag -> RuleTag -> Bool
+tagEq OInsertTag OInsertTag = True
+tagEq ORetireTag ORetireTag = True
+tagEq ORemoveTag ORemoveTag = True
+tagEq LBeginTag LBeginTag = True
+tagEq LIterTag LIterTag = True
+tagEq LFinishTag LFinishTag = True
+tagEq LDivertTag LDivertTag = True
+tagEq LRaiseTag LRaiseTag = True
+tagEq LLeaveTag LLeaveTag = True
+tagEq LUnloadTag LUnloadTag = True
+tagEq _ _ = False
+
+public export
+applyTagged : RuleTag -> Action Nat ToyKey ToyValue ToyRuntime String ->
   SystemState Nat ToyKey ToyValue ToyRuntime String ->
   Maybe (SystemState Nat ToyKey ToyValue ToyRuntime String)
-applyState action state = map snd (applyAction action state)
+applyTagged expected action state = case checkedApplyAction action state of
+  Just (actual, after) => if tagEq expected actual then Just after else Nothing
+  Nothing => Nothing
 
-||| A checked full lifecycle: insert both fibers, activate the provider, activate
-||| its dependent, then retire/leave/unload the dependent before the provider.
+||| Dynamic-table/capability regression: the provider installs ServiceA and the
+||| consumer reads that declared dependency to decide its ambient effect and own
+||| ServiceB value.
 public export
-calculusScenario : Maybe (SystemState Nat ToyKey ToyValue ToyRuntime String)
-calculusScenario = do
-  insertedProvider <- applyState (OInsert 0 Root providerComponent) initialSystem
-  insertedConsumer <- applyState (OInsert 1 Root consumerComponent) insertedProvider
-  providerBeginning <- applyState (LBegin 0) insertedConsumer
-  providerActive <- applyState (LAdvance 0) providerBeginning
-  consumerBeginning <- applyState (LBegin 1) providerActive
-  bothActive <- applyState (LAdvance 1) consumerBeginning
-  consumerRetired <- applyState (ORetire 1) bothActive
-  consumerLeaving <- applyState (LLeave 1) consumerRetired
-  consumerInactive <- applyState (LUnload 1) consumerLeaving
-  providerRetired <- applyState (ORetire 0) consumerInactive
-  providerLeaving <- applyState (LLeave 0) providerRetired
-  applyState (LUnload 0) providerLeaving
+activationRun : Maybe (SystemState Nat ToyKey ToyValue ToyRuntime String)
+activationRun = do
+  s1 <- applyTagged OInsertTag (OInsert 0 Root providerComponent) initialSystem
+  s2 <- applyTagged OInsertTag (OInsert 1 Root consumerComponent) s1
+  s3 <- applyTagged LBeginTag (LBegin 0) s2
+  s4 <- applyTagged LIterTag (LAdvance 0) s3
+  s5 <- applyTagged LFinishTag (LAdvance 0) s4
+  s6 <- applyTagged LBeginTag (LBegin 1) s5
+  applyTagged LFinishTag (LAdvance 1) s6
 
-||| Runtime regression projections. They remain executable checks rather than
-||| proof claims, so callers can evaluate them in JS or native backends.
 public export
-calculusScenarioRecovered : Bool
-calculusScenarioRecovered = case calculusScenario of
+activationUsesResolution : Bool
+activationUsesResolution = case activationRun of
+  Nothing => False
+  Just state => case worldState state of
+    MkToyRuntime True True =>
+      case valueFromProvider {name = Nat} {key = ToyKey} {value = ToyValue}
+        {world = ToyRuntime} {error = String} 0 ServiceA (registry state) of
+        Just True => case valueFromProvider {name = Nat} {key = ToyKey}
+          {value = ToyValue} {world = ToyRuntime} {error = String}
+          1 ServiceB (registry state) of
+          Just True => True
+          _ => False
+        _ => False
+    _ => False
+
+||| Covers O-Insert, L-Begin, L-Iter, L-Finish, O-Retire, L-Leave,
+||| guarded L-Unload, and O-Remove. The provider is asked to unload while relied
+||| is true; success of the scenario requires that attempt to be rejected.
+public export
+guardedScenario : Maybe (SystemState Nat ToyKey ToyValue ToyRuntime String)
+guardedScenario = do
+  s1 <- applyTagged OInsertTag (OInsert 0 Root providerComponent) initialSystem
+  s2 <- applyTagged OInsertTag (OInsert 1 Root consumerComponent) s1
+  s3 <- applyTagged LBeginTag (LBegin 0) s2
+  s4 <- applyTagged LIterTag (LAdvance 0) s3
+  providerActive <- applyTagged LFinishTag (LAdvance 0) s4
+  s6 <- applyTagged LBeginTag (LBegin 1) providerActive
+  bothActive <- applyTagged LFinishTag (LAdvance 1) s6
+  s8 <- applyTagged ORetireTag (ORetire 0) bothActive
+  providerLeaving <- applyTagged LLeaveTag (LLeave 0) s8
+  case checkedApplyAction (LUnload 0) providerLeaving of
+    Just _ => Nothing
+    Nothing => do
+      s10 <- applyTagged ORetireTag (ORetire 1) providerLeaving
+      s11 <- applyTagged LLeaveTag (LLeave 1) s10
+      consumerGone <- applyTagged LUnloadTag (LUnload 1) s11
+      providerGone <- applyTagged LUnloadTag (LUnload 0) consumerGone
+      s14 <- applyTagged ORemoveTag (ORemove 1) providerGone
+      applyTagged ORemoveTag (ORemove 0) s14
+
+public export
+guardedScenarioChecks : Bool
+guardedScenarioChecks = case guardedScenario of
   Nothing => False
   Just final => case worldState final of
-    MkToyRuntime False False => True
+    MkToyRuntime False False => null (bindings (registry final)) && wellFormed final
+    _ => False
+
+||| L-Raise coverage.
+public export
+raiseRun : Maybe (SystemState Nat ToyKey ToyValue ToyRuntime String)
+raiseRun = do
+  s1 <- applyTagged OInsertTag (OInsert 2 Root failingComponent) initialSystem
+  s2 <- applyTagged LBeginTag (LBegin 2) s1
+  s3 <- applyTagged LRaiseTag (LAdvance 2) s2
+  applyTagged LUnloadTag (LUnload 2) s3
+
+public export
+raiseScenario : Bool
+raiseScenario = case raiseRun of
+  Nothing => False
+  Just final => True
+
+public export
+setupStale : Component ToyKey ToyValue ToyRuntime String ->
+  Maybe (SystemState Nat ToyKey ToyValue ToyRuntime String)
+setupStale consumer = do
+  s1 <- applyTagged OInsertTag (OInsert 0 Root providerComponent) initialSystem
+  s2 <- applyTagged OInsertTag (OInsert 1 Root consumer) s1
+  s3 <- applyTagged LBeginTag (LBegin 0) s2
+  s4 <- applyTagged LIterTag (LAdvance 0) s3
+  s5 <- applyTagged LFinishTag (LAdvance 0) s4
+  s6 <- applyTagged LBeginTag (LBegin 1) s5
+  s7 <- applyTagged ORetireTag (ORetire 0) s6
+  applyTagged LLeaveTag (LLeave 0) s7
+
+||| Aborting L-Divert coverage and regression for the rejected empty-list
+||| L-Finish: LAdvance on the stale empty program must itself divert.
+public export
+emptyStaleDiverts : Bool
+emptyStaleDiverts = case setupStale emptyConsumerComponent of
+  Nothing => False
+  Just stale => case checkedApplyAction (LAdvance 1) stale of
+    Just (LDivertTag, after) => case lookupFiber 1 (registry after) of
+      Just fiber => case fiberLifecycle fiber of
+        Unloading _ _ _ => True
+        _ => False
+      Nothing => False
     _ => False
 
 public export
-calculusScenarioNoActiveCoeffects : Bool
-calculusScenarioNoActiveCoeffects = case calculusScenario of
+abortDivertScenario : Bool
+abortDivertScenario = case setupStale emptyConsumerComponent of
   Nothing => False
-  Just final => null (bindings (activeCoeffects (registry final)))
+  Just stale => case applyTagged LDivertTag (LDivert 1) stale of
+    Just _ => True
+    Nothing => False
 
+||| Landing L-Divert coverage: the stale nonempty iteration runs, returns its
+||| inverse, and lands directly in Unloading.
 public export
-calculusScenarioWellFormed : Bool
-calculusScenarioWellFormed = case calculusScenario of
+landingDivertScenario : Bool
+landingDivertScenario = case setupStale consumerComponent of
   Nothing => False
-  Just final => wellFormed final
+  Just stale => case applyTagged LDivertTag (LAdvance 1) stale of
+    Just after => case lookupFiber 1 (registry after) of
+      Just fiber => case fiberLifecycle fiber of
+        Unloading _ _ _ => True
+        _ => False
+      Nothing => False
+    Nothing => False
+
+||| The checked evaluator can package a nonempty proof-indexed LTS step.
+public export
+proofTraceStarts : Bool
+proofTraceStarts = isJust (fire %search %search
+  (OInsert 0 Root providerComponent) initialSystem)
+
+||| All ten tags and both L-Divert alternatives are covered across the checks.
+public export
+allRuleChecks : Bool
+allRuleChecks = proofTraceStarts && activationUsesResolution && guardedScenarioChecks &&
+  raiseScenario && emptyStaleDiverts && abortDivertScenario &&
+  landingDivertScenario

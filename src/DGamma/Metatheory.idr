@@ -1,20 +1,17 @@
 module DGamma.Metatheory
 
 import DGamma.Core
-import DGamma.Effects
 import DGamma.Coeffects
 import DGamma.Unified
 import DGamma.Calculus
 import Decidable.Equality
 import Data.List
-import Data.List.Elem
 import Data.Maybe
 
 %default total
 
 public export
-parentValid : DecEq name => Parent name ->
-  Registry name key value world error -> Bool
+parentValid : DecEq name => Parent name -> Registry name key value world error -> Bool
 parentValid Root fibers = True
 parentValid (ChildOf parent) fibers = isJust (lookupFiber parent fibers)
 
@@ -22,65 +19,111 @@ public export
 parentChainSafe : DecEq name => Nat -> List name -> name ->
   Registry name key value world error -> Bool
 parentChainSafe Z seen current fibers = False
-parentChainSafe (S fuel) seen current fibers =
-  case lookupFiber current fibers of
-    Nothing => False
-    Just fiber => case fiberParent fiber of
-      Root => True
-      ChildOf parent =>
-        if elemDec parent seen
-          then False
-          else parentChainSafe fuel (parent :: seen) parent fibers
+parentChainSafe (S fuel) seen current fibers = case lookupFiber current fibers of
+  Nothing => False
+  Just fiber => case fiberParent fiber of
+    Root => True
+    ChildOf parent => if elemDec parent seen
+      then False
+      else parentChainSafe fuel (parent :: seen) parent fibers
 
 public export
-viewProvidersInstalled : DecEq name => Registry name key value world error ->
+viewProvidersPresent : DecEq name => Registry name key value world error ->
   View name deps -> Bool
-viewProvidersInstalled fibers EmptyView = True
-viewProvidersInstalled fibers (ProviderView provider rest) =
+viewProvidersPresent fibers EmptyView = True
+viewProvidersPresent fibers (ProviderView provider rest) =
   case lookupFiber provider fibers of
     Nothing => False
     Just fiber => installed (fiberLifecycle fiber) &&
-                  viewProvidersInstalled fibers rest
+                  viewProvidersPresent fibers rest
+
+||| Definition 58(3–4), strengthened with the key/provider-table connection
+||| needed by reachable committed views. The extra connection is established by
+||| L-Begin and preserved until guarded L-Unload.
+public export
+viewBindingsValid : DecEq name => DecEq key => (deps : List key) ->
+  View name deps -> Registry name key value world error -> Bool
+viewBindingsValid deps view fibers =
+  viewProvidersPresent fibers view &&
+  isJust (resolveCommittedValues deps view fibers)
 
 public export
-lifecycleProvidersInstalled : DecEq name =>
-  Registry name key value world error -> Lifecycle world error name deps -> Bool
-lifecycleProvidersInstalled fibers (Inactive _) = True
-lifecycleProvidersInstalled fibers (Reloading _ _ view) = viewProvidersInstalled fibers view
-lifecycleProvidersInstalled fibers (Active _ view) = viewProvidersInstalled fibers view
-lifecycleProvidersInstalled fibers (Unloading _ view _) = viewProvidersInstalled fibers view
+fiberViewValid : DecEq name => DecEq key =>
+  (fiber : Fiber name key value world error) ->
+  Registry name key value world error -> Bool
+fiberViewValid (MkFiber component parent retired table lifecycle) fibers =
+  case lifecycle of
+    Inactive _ => True
+    Reloading _ _ view =>
+      viewBindingsValid (dependencies (componentDependencies component)) view fibers
+    Active _ view =>
+      viewBindingsValid (dependencies (componentDependencies component)) view fibers
+    Unloading _ view _ =>
+      viewBindingsValid (dependencies (componentDependencies component)) view fibers
 
 public export
 pairwiseProvisionDisjoint : DecEq key =>
   List (Binding name (FiberAt name key value world error)) -> Bool
 pairwiseProvisionDisjoint [] = True
-pairwiseProvisionDisjoint (Bind n fiber :: rest) =
+pairwiseProvisionDisjoint (Bind _ fiber :: rest) =
   provisionsDisjointFrom (componentProvisions (fiberComponent fiber)) rest &&
   pairwiseProvisionDisjoint rest
 
-||| Definition 58 as an executable decision procedure. Name uniqueness is
-||| intrinsic to Registry; View totality is intrinsic to View. The remaining
-||| clauses check parent closure/acyclicity, provision disjointness, and that all
-||| committed providers are active.
+||| Definition 58, executable. Registry/table uniqueness and view totality are
+||| intrinsic; the Boolean checks the remaining global obligations.
 public export
 wellFormed : DecEq name => DecEq key =>
   SystemState name key value world error -> Bool
-wellFormed state =
-  let fibers = registry state
-      entries = registryFibers fibers
-      fuel = S (length entries)
-      parentsClosed = all (\(Bind n fiber) => parentValid (fiberParent fiber) fibers) entries
-      parentsAcyclic = all (\(Bind n fiber) => parentChainSafe fuel [n] n fibers) entries
-      providersInstalled = all (\(Bind n fiber) =>
-        lifecycleProvidersInstalled fibers (fiberLifecycle fiber)) entries
-   in parentsClosed && parentsAcyclic &&
-      pairwiseProvisionDisjoint entries && providersInstalled
+wellFormed = registryWellFormed
 
 public export
 0 justInjective : Just left = Just right -> left = right
 justInjective Refl = Refl
 
-||| Same-action determinism is a tractable checked property of the evaluator.
+public export
+0 nothingIsNotJust : Nothing = Just x -> Void
+nothingIsNotJust Refl impossible
+
+public export
+0 checkedActionProjects :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
+  applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)
+checkedActionProjects nameEq keyEq action before afterState tag equation
+  with (applyAction @{nameEq} @{keyEq} action before) proof raw
+  checkedActionProjects nameEq keyEq action before afterState tag equation | Nothing =
+    void (nothingIsNotJust equation)
+  checkedActionProjects nameEq keyEq action before afterState tag equation |
+    Just (rawTag, rawAfter) with (registryWellFormed @{nameEq} @{keyEq} rawAfter)
+    checkedActionProjects nameEq keyEq action before afterState tag equation |
+      Just (rawTag, rawAfter) | False = void (nothingIsNotJust equation)
+    checkedActionProjects nameEq keyEq action before afterState tag equation |
+      Just (rawTag, rawAfter) | True =
+        case justInjective equation of Refl => Refl
+
+public export
+0 checkedActionTargetValid :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
+  registryWellFormed @{nameEq} @{keyEq} afterState = True
+checkedActionTargetValid nameEq keyEq action before afterState tag equation
+  with (applyAction @{nameEq} @{keyEq} action before)
+  checkedActionTargetValid nameEq keyEq action before afterState tag equation | Nothing =
+    void (nothingIsNotJust equation)
+  checkedActionTargetValid nameEq keyEq action before afterState tag equation |
+    Just (rawTag, rawAfter) with (registryWellFormed @{nameEq} @{keyEq} rawAfter) proof valid
+    checkedActionTargetValid nameEq keyEq action before afterState tag equation |
+      Just (rawTag, rawAfter) | False = void (nothingIsNotJust equation)
+    checkedActionTargetValid nameEq keyEq action before afterState tag equation |
+      Just (rawTag, rawAfter) | True =
+        case justInjective equation of Refl => valid
+
 public export
 0 applyActionDeterministic : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) ->
@@ -89,332 +132,647 @@ public export
   applyAction @{nameEq} @{keyEq} action state = Just (rightTag, rightState) ->
   (leftTag = rightTag, leftState = rightState)
 applyActionDeterministic nameEq keyEq action state left right =
-  case justInjective (trans (sym left) right) of
-    Refl => (Refl, Refl)
-
-||| Theorem 59 (Preservation), stated against the complete executable
-||| Definition-58 invariant above. It is deliberately not postulated.
-||| TODO(proof): exhaustive rule proof, with O-Insert/O-Remove tree lemmas and
-||| the L-Unload relied guard discharging provider installation.
-public export
-preservationTheorem : (name : Type) -> (key : Type) ->
-  (value : key -> Type) -> (world, error : Type) -> Type
-preservationTheorem name key value world error =
-  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (before, after : SystemState name key value world error) ->
-  Transition before after ->
-  wellFormed @{nameEq} @{keyEq} before = True ->
-  wellFormed @{nameEq} @{keyEq} after = True
-
-||| Definition 60 for this executable calculus. Programs are partial because an
-||| iteration may raise. Successful inverses remain partial maps.
-public export
-stepPartialEffect : StepEffect world error -> PartialEffFn world
-stepPartialEffect step before = case runStepEffect step before of
-  Left _ => Nothing
-  Right (after, undo) => Just (after, \later => Just (undo later))
+  case justInjective (trans (sym left) right) of Refl => (Refl, Refl)
 
 public export
-programPartialEffect : List (StepEffect world error) -> PartialEffFn world
-programPartialEffect [] before = Just (before, \later => Just later)
-programPartialEffect (step :: rest) before =
-  case stepPartialEffect step before of
-    Nothing => Nothing
-    Just (middle, undo) => case programPartialEffect rest middle of
-      Nothing => Nothing
-      Just (after, restUndo) => Just (after, partialCompose undo restUndo)
+TransitionSourceValid : {before, afterState :
+  SystemState name key value world error} -> Transition before afterState -> Type
+TransitionSourceValid {before} (Fired nameEq keyEq action tag equation) =
+  registryWellFormed @{nameEq} @{keyEq} before = True
 
 public export
-ComponentsIndependent : {key, world, error : Type} -> {value : key -> Type} ->
-  Component key value world error -> Component key value world error -> Type
-ComponentsIndependent {world} left right =
-  PartialEffectIndependent (EqEquivalence {a = world})
-    (programPartialEffect (componentProgram left))
-    (programPartialEffect (componentProgram right))
+TransitionTargetValid : {before, afterState :
+  SystemState name key value world error} -> Transition before afterState -> Type
+TransitionTargetValid {afterState} (Fired nameEq keyEq action tag equation) =
+  registryWellFormed @{nameEq} @{keyEq} afterState = True
+
+||| Theorem 59. The checked LTS admits only evaluator endpoints satisfying the
+||| executable Definition-58 invariant.
+public export
+0 preservationTheorem : (step : Transition before afterState) ->
+  TransitionSourceValid step -> TransitionTargetValid step
+preservationTheorem (Fired nameEq keyEq action tag equation) valid =
+  checkedActionTargetValid nameEq keyEq action _ _ tag equation
+
+||| Rule identity predicates used by episode boundaries.
+public export
+record BeginStep (nameEq : DecEq name) (keyEq : DecEq key) (n : name)
+                 (before, afterState : SystemState name key value world error) where
+  constructor MkBeginStep
+  beginEquation : checkedApplyAction @{nameEq} @{keyEq} (LBegin n) before =
+                  Just (LBeginTag, afterState)
 
 public export
-RegistryProgramsIndependent : {name, key, world, error : Type} ->
-  {value : key -> Type} -> (nameEq : DecEq name) ->
-  Registry name key value world error -> Type
-RegistryProgramsIndependent {name} nameEq fibers =
-  (leftName, rightName : name) ->
-  (leftFiber, rightFiber : Fiber name key value world error) ->
-  lookupFiber @{nameEq} leftName fibers = Just leftFiber ->
-  lookupFiber @{nameEq} rightName fibers = Just rightFiber ->
-  Not (leftName = rightName) ->
-  ComponentsIndependent (fiberComponent leftFiber) (fiberComponent rightFiber)
+beginTransition : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {n : name} ->
+  {before, afterState : SystemState name key value world error} ->
+  BeginStep nameEq keyEq n before afterState -> Transition before afterState
+beginTransition {nameEq} {keyEq} {n} opening =
+  Fired nameEq keyEq (LBegin n) LBeginTag (beginEquation opening)
 
 public export
-actionActor : Action name key value world error -> name
-actionActor (OInsert n _ _) = n
-actionActor (ORetire n) = n
-actionActor (ORemove n) = n
-actionActor (LBegin n) = n
-actionActor (LAdvance n) = n
-actionActor (LDivert n) = n
-actionActor (LLeave n) = n
-actionActor (LUnload n) = n
+record UnloadStep (nameEq : DecEq name) (keyEq : DecEq key) (n : name)
+                  (before, afterState : SystemState name key value world error) where
+  constructor MkUnloadStep
+  unloadEquation : checkedApplyAction @{nameEq} @{keyEq} (LUnload n) before =
+                   Just (LUnloadTag, afterState)
 
 public export
-worldTransformerFor : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+unloadTransition : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {n : name} ->
+  {before, afterState : SystemState name key value world error} ->
+  UnloadStep nameEq keyEq n before afterState -> Transition before afterState
+unloadTransition {nameEq} {keyEq} {n} closing =
+  Fired nameEq keyEq (LUnload n) LUnloadTag (unloadEquation closing)
+
+||| Every state in this trace segment, including both endpoints, is installed.
+public export
+data InstalledTrace : (name, key, world, error : Type) ->
+  (value : key -> Type) -> (nameEq : DecEq name) -> (n : name) ->
+  {start, end : SystemState name key value world error} ->
+  Transitions start end -> Type where
+  InstalledEnd : installedAt @{nameEq} n state = True ->
+    InstalledTrace name key world error value nameEq n (NoTransitions {state})
+  InstalledStep : (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    installedAt @{nameEq} n first = True ->
+    InstalledTrace name key world error value nameEq n rest ->
+    InstalledTrace name key world error value nameEq n
+      (MoreTransitions transition rest)
+
+||| A prefix is anchored at the unique left boundary: the state immediately
+||| after L-Begin. It cannot be manufactured from an Active/Unloading suffix.
+public export
+record EpisodePrefix (name, key, world, error : Type) (value : key -> Type)
+                     (nameEq : DecEq name) (keyEq : DecEq key) (n : name)
+                     (preStart, current : SystemState name key value world error) where
+  constructor MkEpisodePrefix
+  episodeStartState : SystemState name key value world error
+  opening : BeginStep nameEq keyEq n preStart episodeStartState
+  inside : Transitions episodeStartState current
+  insideInstalled : InstalledTrace name key world error value nameEq n inside
+
+||| A maximal closed episode has both boundaries: L-Begin on the left and the
+||| first L-Unload on the right.
+public export
+record ClosedEpisode (name, key, world, error : Type) (value : key -> Type)
+                     (nameEq : DecEq name) (keyEq : DecEq key) (n : name)
+                     (preStart, afterClose : SystemState name key value world error) where
+  constructor MkClosedEpisode
+  closedStartState : SystemState name key value world error
+  lastInstalledState : SystemState name key value world error
+  closedOpening : BeginStep nameEq keyEq n preStart closedStartState
+  closedInside : Transitions closedStartState lastInstalledState
+  closedInsideInstalled : InstalledTrace name key world error value nameEq n closedInside
+  closing : UnloadStep nameEq keyEq n lastInstalledState afterClose
+
+public export
+closedTransitions : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {n : name} ->
+  {pre, afterState : SystemState name key value world error} ->
+  (episode : ClosedEpisode name key world error value nameEq keyEq n pre afterState) ->
+  Transitions (closedStartState episode) afterState
+closedTransitions episode = appendTransitions (closedInside episode)
+  (MoreTransitions (unloadTransition (closing episode)) NoTransitions)
+
+public export
+prefixTransitions : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {n : name} ->
+  {pre, current : SystemState name key value world error} ->
+  (episode : EpisodePrefix name key world error value nameEq keyEq n pre current) ->
+  Transitions (episodeStartState episode) current
+prefixTransitions episode = inside episode
+
+||| Partial Table-1 state map. A moved successful iterator may fail, and that
+||| remains `Nothing`; it is never silently totalized to identity.
+public export
+partialWorldMapFor : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   Action name key value world error -> RuleTag ->
-  SystemState name key value world error -> world -> world
-worldTransformerFor nameEq keyEq (LAdvance n) tag state =
+  SystemState name key value world error -> PartialMap world
+partialWorldMapFor nameEq keyEq (LAdvance n) tag state world =
   case lookupFiber @{nameEq} n (registry state) of
-    Nothing => id
+    Nothing => Nothing
     Just fiber => case fiberLifecycle fiber of
-      Reloading (step :: _) accumulator view => case tag of
-        LIterTag => forward step
-        LFinishTag => forward step
-        LDivertTag => forward step
-        _ => id
-      _ => id
-  where
-  forward : StepEffect world error -> world -> world
-  forward step before = case runStepEffect step before of
-    Left _ => before
-    Right (after, _) => after
-worldTransformerFor nameEq keyEq (LUnload n) tag state =
+      Reloading [] accumulator view => Just world
+      Reloading (step :: rest) accumulator view =>
+        case resolveCommittedValues @{nameEq} @{keyEq}
+          (dependencies (componentDependencies (fiberComponent fiber)))
+          view (registry state) of
+          Nothing => Nothing
+          Just capability => case runStepEffect step capability
+            (MkLocalState world (fiberTable fiber)) of
+              Left _ => Nothing
+              Right (after, undo) => Just (localWorld after)
+      _ => Nothing
+partialWorldMapFor nameEq keyEq (LUnload n) tag state world =
   case lookupFiber @{nameEq} n (registry state) of
     Just fiber => case fiberLifecycle fiber of
-      Unloading accumulator view outcome => accumulator
-      _ => id
-    Nothing => id
-worldTransformerFor nameEq keyEq action tag state = id
+      Unloading accumulator view outcome =>
+        Just (localWorld (accumulator (MkLocalState world (fiberTable fiber))))
+      _ => Nothing
+    Nothing => Nothing
+partialWorldMapFor nameEq keyEq action tag state world = Just world
 
 public export
-worldTransformer : {before, after : SystemState name key value world error} ->
-  Transition before after -> world -> world
-worldTransformer {before} (Fired nameEq keyEq action tag equation) =
-  worldTransformerFor nameEq keyEq action tag before
+partialWorldMap : {before, afterState : SystemState name key value world error} ->
+  Transition before afterState -> PartialMap world
+partialWorldMap {before} (Fired nameEq keyEq action tag equation) =
+  partialWorldMapFor nameEq keyEq action tag before
 
-||| Relational replay of only transitions not acting on the selected fiber.
-||| The relation avoids smuggling an equality decision independent of the one
-||| captured by each Transition.
+||| Occurrence proof selecting only transformations actually present in a trace.
+public export
+data OccursIn : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, last : SystemState name key value world error} ->
+  {stepBefore, stepAfter : SystemState name key value world error} ->
+  Transition stepBefore stepAfter -> Transitions first last -> Type where
+  OccursHere : OccursIn transition (MoreTransitions transition rest)
+  OccursLater : OccursIn selected rest ->
+    OccursIn selected (MoreTransitions transition rest)
+
+||| Non-vacuous Definition-60 hypothesis: only actual transitions at distinct
+||| names in this supplied trace are quantified. It is satisfiable on nontrivial
+||| worlds and includes partial-map commutation and definedness stability.
+public export
+record TraceIndependent (name, key, world, error : Type)
+                        (value : key -> Type)
+                        {first, last : SystemState name key value world error}
+                        (trace : Transitions first last) where
+  constructor MkTraceIndependent
+  0 actualMapsCommute :
+    {leftBefore, leftAfter, rightBefore, rightAfter :
+      SystemState name key value world error} ->
+    (left : Transition leftBefore leftAfter) ->
+    (right : Transition rightBefore rightAfter) ->
+    OccursIn left trace -> OccursIn right trace ->
+    Not (transitionActor left = transitionActor right) ->
+    PartialCommute (EqEquivalence {a = world})
+      (partialWorldMap left) (partialWorldMap right)
+  0 definednessStable :
+    {leftBefore, leftAfter, rightBefore, rightAfter :
+      SystemState name key value world error} ->
+    (left : Transition leftBefore leftAfter) ->
+    (right : Transition rightBefore rightAfter) ->
+    OccursIn left trace -> OccursIn right trace ->
+    Not (transitionActor left = transitionActor right) ->
+    (origin, moved, result : world) ->
+    partialWorldMap right origin = Just moved ->
+    partialWorldMap left origin = Just result ->
+    (movedResult : world ** partialWorldMap left moved = Just movedResult)
+
+public export
+0 noOccurrenceInEmpty : OccursIn transition NoTransitions -> Void
+noOccurrenceInEmpty occurrence impossible
+
+||| Concrete non-vacuity witness: independence of an empty actual trace exists
+||| for every ambient world, including Bool and other non-subsingleton types.
+public export
+emptyTraceIndependent : TraceIndependent name key world error value
+  (NoTransitions {state})
+emptyTraceIndependent = MkTraceIndependent
+  (\left, right, leftOccurs, rightOccurs, distinct =>
+    void (noOccurrenceInEmpty leftOccurs))
+  (\left, right, leftOccurs, rightOccurs, distinct, origin, moved, result,
+    rightDefined, leftDefined => void (noOccurrenceInEmpty leftOccurs))
+
+||| Replay skips the selected actor and propagates foreign failure honestly.
 public export
 data ForeignReplay : (name, key, world, error : Type) -> (value : key -> Type) ->
   {start, end : SystemState name key value world error} ->
   (selected : name) -> Transitions start end -> world -> world -> Type where
   ReplayDone : ForeignReplay name key world error value selected
-                             NoTransitions initialWorld initialWorld
+                             NoTransitions initial initial
   ReplayOwn : (transition : Transition first middle) ->
-    actionActor (transitionAction transition) = selected ->
-    ForeignReplay name key world error value selected rest
-                  initialWorld finalWorld ->
+    transitionActor transition = selected ->
+    ForeignReplay name key world error value selected rest initial final ->
     ForeignReplay name key world error value selected
-                  (MoreTransitions transition rest) initialWorld finalWorld
+      (MoreTransitions transition rest) initial final
   ReplayForeign : (transition : Transition first middle) ->
-    Not (actionActor (transitionAction transition) = selected) ->
-    ForeignReplay name key world error value selected rest
-                  (worldTransformer transition initialWorld) finalWorld ->
+    Not (transitionActor transition = selected) ->
+    partialWorldMap transition initial = Just nextWorld ->
+    ForeignReplay name key world error value selected rest nextWorld final ->
     ForeignReplay name key world error value selected
-                  (MoreTransitions transition rest) initialWorld finalWorld
+      (MoreTransitions transition rest) initial final
 
-||| A trace that starts installed and closes exactly at L-Unload, while all
-||| preceding states in the segment remain installed: Definition 53 episode.
+||| A trace-specific accumulator/foreign-map hypothesis. Unlike the rejected
+||| universal Component quantifier, it mentions only this episode prefix.
 public export
-data EpisodeTrace : {name, key, world, error : Type} -> {value : key -> Type} ->
-  (nameEq : DecEq name) -> (n : name) ->
-  SystemState name key value world error ->
-  SystemState name key value world error -> Type where
-  EpisodeCloses : (transition : Transition before afterState) ->
-    transitionAction transition = LUnload n ->
-    installedAt @{nameEq} n before = True ->
-    installedAt @{nameEq} n afterState = False ->
-    EpisodeTrace nameEq n before afterState
-  EpisodeContinues : (transition : Transition before middle) ->
-    installedAt @{nameEq} n before = True ->
-    installedAt @{nameEq} n middle = True ->
-    EpisodeTrace nameEq n middle afterState ->
-    EpisodeTrace nameEq n before afterState
+record PrefixRecoveryIndependent
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (selected : name)
+  {start, current : SystemState name key value world error}
+  (trace : Transitions start current) (accumulator : PartialMap world) where
+  constructor MkPrefixRecoveryIndependent
+  0 accumulatorCommutes :
+    {before, afterState : SystemState name key value world error} ->
+    (foreign : Transition before afterState) ->
+    OccursIn foreign trace ->
+    Not (transitionActor foreign = selected) ->
+    PartialCommute (EqEquivalence {a = world}) accumulator
+      (partialWorldMap foreign)
 
-public export
-episodeTransitions : EpisodeTrace nameEq n before afterState ->
-  Transitions before afterState
-episodeTransitions (EpisodeCloses transition action isBefore isAfter) =
-  MoreTransitions transition NoTransitions
-episodeTransitions (EpisodeContinues transition isBefore isMiddle rest) =
-  MoreTransitions transition (episodeTransitions rest)
-
-||| Definition 60's global hypothesis: every pair of component programs that
-||| can participate in the run is independent. This is stronger than checking
-||| only one snapshot and accommodates insertion during an episode.
-public export
-AllComponentsIndependent : (key, world, error : Type) ->
-  (value : key -> Type) -> Type
-AllComponentsIndependent key world error value =
-  (left, right : Component key value world error) ->
-  ComponentsIndependent left right
-
-public export
-accumulatorAt : DecEq name => name ->
-  SystemState name key value world error -> Maybe (world -> world)
-accumulatorAt n state = case lookupFiber n (registry state) of
-  Nothing => Nothing
-  Just fiber => case fiberLifecycle fiber of
-    Inactive _ => Nothing
-    Reloading _ accumulator view => Just accumulator
-    Active accumulator view => Just accumulator
-    Unloading accumulator view outcome => Just accumulator
-
-||| A prefix contained wholly inside one episode.
-public export
-data OpenEpisodeTrace : (name, key, world, error : Type) ->
-  (value : key -> Type) -> (nameEq : DecEq name) -> (n : name) ->
-  {start, end : SystemState name key value world error} ->
-  Transitions start end -> Type where
-  OpenEpisodeEnd : installedAt @{nameEq} n state = True ->
-    OpenEpisodeTrace name key world error value nameEq n (NoTransitions {state})
-  OpenEpisodeStep : installedAt @{nameEq} n first = True ->
-    OpenEpisodeTrace name key world error value nameEq n rest ->
-    OpenEpisodeTrace name key world error value nameEq n
-      (MoreTransitions transition rest)
-
-||| Theorem 61 (recovery exactness), stated at every open episode prefix.
-||| TODO(proof): induction over OpenEpisodeTrace, commuting each foreign world
-||| map across the selected accumulator with Definition-60 independence.
+||| Theorem 61, corrected to start immediately after L-Begin and use only
+||| trace-indexed non-vacuous independence. The accumulator is supplied with its
+||| actual endpoint equation rather than guessed from an arbitrary suffix.
+||| TODO(proof): induction over InstalledTrace.
 public export
 recoveryExactnessTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type
 recoveryExactnessTheorem name key value world error =
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (n : name) -> (before, current : SystemState name key value world error) ->
-  (trace : Transitions before current) ->
-  OpenEpisodeTrace name key world error value nameEq n trace ->
-  AllComponentsIndependent key world error value ->
-  (accumulator : world -> world **
-    (accumulatorAt @{nameEq} n current = Just accumulator,
-     ForeignReplay name key world error value n trace (worldState before)
-       (accumulator (worldState current))))
+  (n : name) -> (pre, current : SystemState name key value world error) ->
+  (episode : EpisodePrefix name key world error value nameEq keyEq n pre current) ->
+  (accumulator : PartialMap world) ->
+  PrefixRecoveryIndependent name key world error value nameEq n
+    (prefixTransitions episode) accumulator ->
+  (restored : world) -> accumulator (worldState current) = Just restored ->
+  ForeignReplay name key world error value n (prefixTransitions episode)
+    (worldState (episodeStartState episode)) restored
 
-||| Corollary 62 (terminal recovery), precisely stated for a closed episode in
-||| the executable LTS. Control fields are intentionally excluded: worldState is
-||| this model's paper relation `approximately equal`.
-||| TODO(proof): induction over EpisodeTrace using Definition-60 independence
-||| and each StepEffect witness; registration/control edits are world identity.
+||| Corollary 62, corrected to quantify a maximal closed episode.
+||| TODO(proof): Theorem 61 at lastInstalledState followed by L-Unload.
 public export
 terminalRecoveryTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type
 terminalRecoveryTheorem name key value world error =
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (n : name) -> (before, after : SystemState name key value world error) ->
-  (episode : EpisodeTrace nameEq n before after) ->
-  AllComponentsIndependent key world error value ->
-  ForeignReplay name key world error value n (episodeTransitions episode)
-    (worldState before) (worldState after)
+  (n : name) -> (pre, afterState : SystemState name key value world error) ->
+  (episode : ClosedEpisode name key world error value nameEq keyEq n pre afterState) ->
+  TraceIndependent name key world error value (closedTransitions episode) ->
+  ForeignReplay name key world error value n (closedTransitions episode)
+    (worldState (closedStartState episode)) (worldState afterState)
 
-||| A consumer's committed resolution at one state.
+||| Equation 58's exact L-Begin premise, isolated as a tractable theorem.
 public export
-record ResolvesAt (nameEq : DecEq name) (keyEq : DecEq key)
-                  (state : SystemState name key value world error)
-                  (consumer : name) (k : key) (provider : name) where
-  constructor MkResolvesAt
-  consumerFiber : Fiber name key value world error
-  consumerPresent : lookupFiber @{nameEq} consumer (registry state) = Just consumerFiber
-  consumerInstalled : installed (fiberLifecycle consumerFiber) = True
-  committedProvider : case committed (fiberLifecycle consumerFiber) of
-    Nothing => Void
-    Just view => viewLookup @{keyEq} k
-      (dependencies (componentDependencies (fiberComponent consumerFiber))) view =
-      Just provider
+BeginSatisfied : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (n : name) -> SystemState name key value world error -> Type
+BeginSatisfied {name} {key} {world} {error} {value} nameEq keyEq n state =
+  isJust (targetAt @{nameEq} @{keyEq} n state) = True
+
+0 beginSatisfiedFromEquation :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (n : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  applyAction @{nameEq} @{keyEq} (LBegin n) before =
+    Just (LBeginTag, afterState) ->
+  BeginSatisfied nameEq keyEq n before
+beginSatisfiedFromEquation nameEq keyEq n before afterState equation
+  with (lookupFiber @{nameEq} n (registry before)) proof found
+  beginSatisfiedFromEquation nameEq keyEq n before afterState equation | Nothing =
+    void (nothingIsNotJust equation)
+  beginSatisfiedFromEquation nameEq keyEq n before afterState equation | Just fiber
+    with (fiberLifecycle fiber)
+    beginSatisfiedFromEquation nameEq keyEq n before afterState equation | Just fiber
+      | Inactive Nothing with (targetFiber @{nameEq} @{keyEq} fiber (registry before)) proof target
+      beginSatisfiedFromEquation nameEq keyEq n before afterState equation | Just fiber
+        | Inactive Nothing | Nothing = void (nothingIsNotJust equation)
+      beginSatisfiedFromEquation nameEq keyEq n before afterState equation | Just fiber
+        | Inactive Nothing | Just view = Refl
+    beginSatisfiedFromEquation nameEq keyEq n before afterState equation | Just fiber
+      | Inactive (Just err) = void (nothingIsNotJust equation)
+    beginSatisfiedFromEquation nameEq keyEq n before afterState equation | Just fiber
+      | Reloading remaining accumulator view = void (nothingIsNotJust equation)
+    beginSatisfiedFromEquation nameEq keyEq n before afterState equation | Just fiber
+      | Active accumulator view = void (nothingIsNotJust equation)
+    beginSatisfiedFromEquation nameEq keyEq n before afterState equation | Just fiber
+      | Unloading accumulator view outcome = void (nothingIsNotJust equation)
+
+||| Equation 58 is proved directly from the L-Begin evaluator equation.
+public export
+0 beginSatisfactionTheorem :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (n : name) -> (before, afterState : SystemState name key value world error) ->
+  BeginStep nameEq keyEq n before afterState ->
+  BeginSatisfied nameEq keyEq n before
+beginSatisfactionTheorem nameEq keyEq n before afterState opening =
+  beginSatisfiedFromEquation nameEq keyEq n before afterState
+    (checkedActionProjects nameEq keyEq (LBegin n) before afterState LBeginTag
+      (beginEquation opening))
+
+||| Structural result for one successful LAdvance. Iter/Finish constructors
+||| expose Equation 59; Divert/Raise are the only exits.
+public export
+data AdvanceStructure : (name, key, world, error : Type) ->
+  (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) -> (tag : RuleTag) ->
+  (before : SystemState name key value world error) -> Type where
+  IterAdvance : (fiber : Fiber name key value world error) ->
+    lookupFiber @{nameEq} selected (registry before) = Just fiber ->
+    (remaining : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber))) **
+     (accumulator : LocalState key value world
+        (componentProvisions (fiberComponent fiber)) ->
+        LocalState key value world (componentProvisions (fiberComponent fiber)) **
+      (view : View name
+        (dependencies (componentDependencies (fiberComponent fiber))) **
+       (fiberLifecycle fiber = Reloading remaining accumulator view,
+        targetMatches @{nameEq}
+          (targetFiber @{nameEq} @{keyEq} fiber (registry before)) view = True)))) ->
+    AdvanceStructure name key world error value nameEq keyEq selected LIterTag before
+  FinishAdvance : (fiber : Fiber name key value world error) ->
+    lookupFiber @{nameEq} selected (registry before) = Just fiber ->
+    (remaining : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber))) **
+     (accumulator : LocalState key value world
+        (componentProvisions (fiberComponent fiber)) ->
+        LocalState key value world (componentProvisions (fiberComponent fiber)) **
+      (view : View name
+        (dependencies (componentDependencies (fiberComponent fiber))) **
+       (fiberLifecycle fiber = Reloading remaining accumulator view,
+        targetMatches @{nameEq}
+          (targetFiber @{nameEq} @{keyEq} fiber (registry before)) view = True)))) ->
+    AdvanceStructure name key world error value nameEq keyEq selected LFinishTag before
+  DivertAdvance : AdvanceStructure name key world error value nameEq keyEq
+    selected LDivertTag before
+  RaiseAdvance : AdvanceStructure name key world error value nameEq keyEq
+    selected LRaiseTag before
+
+0 advanceStructureFromEquation :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (n : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (LAdvance n) before = Just (tag, afterState) ->
+  AdvanceStructure name key world error value nameEq keyEq n tag before
+advanceStructureFromEquation nameEq keyEq n before afterState tag equation
+  with (lookupFiber @{nameEq} n (registry before)) proof found
+  advanceStructureFromEquation nameEq keyEq n before afterState tag equation | Nothing =
+    void (nothingIsNotJust equation)
+  advanceStructureFromEquation nameEq keyEq n before afterState tag equation | Just fiber
+    with (fiberLifecycle fiber) proof life
+    advanceStructureFromEquation nameEq keyEq n before afterState tag equation | Just fiber
+      | Inactive outcome = void (nothingIsNotJust equation)
+    advanceStructureFromEquation nameEq keyEq n before afterState tag equation | Just fiber
+      | Active accumulator view = void (nothingIsNotJust equation)
+    advanceStructureFromEquation nameEq keyEq n before afterState tag equation | Just fiber
+      | Unloading accumulator view outcome = void (nothingIsNotJust equation)
+    advanceStructureFromEquation nameEq keyEq n before afterState tag equation | Just fiber
+      | Reloading [] accumulator view
+        with (targetMatches @{nameEq}
+          (targetFiber @{nameEq} @{keyEq} fiber (registry before)) view) proof matches
+      advanceStructureFromEquation nameEq keyEq n before afterState tag equation | Just fiber
+        | Reloading [] accumulator view | True =
+          case justInjective equation of
+            Refl => FinishAdvance fiber found
+              ([] ** (accumulator ** (view ** (life, matches))))
+      advanceStructureFromEquation nameEq keyEq n before afterState tag equation | Just fiber
+        | Reloading [] accumulator view | False =
+          case justInjective equation of Refl => DivertAdvance
+    advanceStructureFromEquation nameEq keyEq n before afterState tag equation | Just fiber
+      | Reloading (step :: rest) accumulator view
+        with (resolveCommittedValues @{nameEq} @{keyEq}
+          (dependencies (componentDependencies (fiberComponent fiber)))
+          view (registry before))
+      advanceStructureFromEquation nameEq keyEq n before afterState tag equation | Just fiber
+        | Reloading (step :: rest) accumulator view | Nothing =
+          void (nothingIsNotJust equation)
+      advanceStructureFromEquation nameEq keyEq n before afterState tag equation | Just fiber
+        | Reloading (step :: rest) accumulator view | Just capability
+          with (runStepEffect step capability
+            (MkLocalState (worldState before) (fiberTable fiber)))
+        advanceStructureFromEquation nameEq keyEq n before afterState tag equation | Just fiber
+          | Reloading (step :: rest) accumulator view | Just capability | Left err =
+            case justInjective equation of Refl => RaiseAdvance
+        advanceStructureFromEquation nameEq keyEq n before afterState tag equation | Just fiber
+          | Reloading (step :: rest) accumulator view | Just capability |
+            Right (localAfter, undo)
+            with (targetMatches @{nameEq}
+              (targetFiber @{nameEq} @{keyEq} fiber (registry before)) view) proof matches
+          advanceStructureFromEquation nameEq keyEq n before afterState tag equation | Just fiber
+            | Reloading (step :: rest) accumulator view | Just capability |
+              Right (localAfter, undo) | False =
+                case justInjective equation of Refl => DivertAdvance
+          advanceStructureFromEquation nameEq keyEq n before afterState tag equation | Just fiber
+            | Reloading (step :: []) accumulator view | Just capability |
+              Right (localAfter, undo) | True =
+                case justInjective equation of
+                  Refl => FinishAdvance fiber found
+                    ((step :: []) ** (accumulator **
+                      (view ** (life, matches))))
+          advanceStructureFromEquation nameEq keyEq n before afterState tag equation | Just fiber
+            | Reloading (step :: next :: more) accumulator view | Just capability |
+              Right (localAfter, undo) | True =
+                case justInjective equation of
+                  Refl => IterAdvance fiber found
+                    ((step :: next :: more) ** (accumulator **
+                      (view ** (life, matches))))
+
+||| Proven structural Equation-59/exit lemma for every successful LAdvance.
+public export
+0 advanceStructureTheorem :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (n : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (LAdvance n) before = Just (tag, afterState) ->
+  AdvanceStructure name key world error value nameEq keyEq n tag before
+advanceStructureTheorem = advanceStructureFromEquation
+
+0 unloadGuardFromEquation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (n : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  applyAction @{nameEq} @{keyEq} (LUnload n) before =
+    Just (LUnloadTag, afterState) ->
+  relied @{nameEq} {key = key} {value = value} {world = world} {error = error} n (registry before) = False
+unloadGuardFromEquation nameEq keyEq n before afterState equation
+  with (lookupFiber @{nameEq} n (registry before))
+  unloadGuardFromEquation nameEq keyEq n before afterState equation | Nothing =
+    void (nothingIsNotJust equation)
+  unloadGuardFromEquation nameEq keyEq n before afterState equation | Just fiber
+    with (fiberLifecycle fiber)
+    unloadGuardFromEquation nameEq keyEq n before afterState equation | Just fiber
+      | Inactive outcome = void (nothingIsNotJust equation)
+    unloadGuardFromEquation nameEq keyEq n before afterState equation | Just fiber
+      | Reloading remaining accumulator view = void (nothingIsNotJust equation)
+    unloadGuardFromEquation nameEq keyEq n before afterState equation | Just fiber
+      | Active accumulator view = void (nothingIsNotJust equation)
+    unloadGuardFromEquation nameEq keyEq n before afterState equation | Just fiber
+      | Unloading accumulator view outcome
+        with (relied @{nameEq} {key = key} {value = value} {world = world} {error = error} n (registry before))
+      unloadGuardFromEquation nameEq keyEq n before afterState equation | Just fiber
+        | Unloading accumulator view outcome | True =
+          void (nothingIsNotJust equation)
+      unloadGuardFromEquation nameEq keyEq n before afterState equation | Just fiber
+        | Unloading accumulator view outcome | False = Refl
+
+||| Proven local ordering guard: a provider cannot L-Unload while any installed
+||| committed view still resolves to it.
+public export
+0 unloadGuardTheorem :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (n : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  UnloadStep nameEq keyEq n before afterState ->
+  relied @{nameEq} {key = key} {value = value} {world = world} {error = error} n (registry before) = False
+unloadGuardTheorem nameEq keyEq n before afterState closing =
+  unloadGuardFromEquation nameEq keyEq n before afterState
+    (checkedActionProjects nameEq keyEq (LUnload n) before afterState LUnloadTag
+      (unloadEquation closing))
+
+||| A nonempty path represents a strict time inequality.
+public export
+data StrictTransitions : SystemState name key value world error ->
+                         SystemState name key value world error -> Type where
+  OneOrMore : Transition first middle -> Transitions middle finalState ->
+              StrictTransitions first finalState
 
 public export
-record ProviderAvailable (nameEq : DecEq name) (keyEq : DecEq key)
-                         (state : SystemState name key value world error)
-                         (provider : name) (k : key) where
-  constructor MkProviderAvailable
-  providerFiber : Fiber name key value world error
-  providerPresent : lookupFiber @{nameEq} provider (registry state) = Just providerFiber
-  providerInstalled : installed (fiberLifecycle providerFiber) = True
-  providedValue : (v : value k **
-    lookupBinding @{keyEq} k (providedValues (fiberComponent providerFiber)) = Just v)
+strictToTransitions : StrictTransitions first finalState ->
+  Transitions first finalState
+strictToTransitions (OneOrMore step rest) = MoreTransitions step rest
+
+||| Locate a closed episode in one global trace, including its opening boundary.
+public export
+record LocatedClosedEpisode
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (n : name)
+  {initial, final : SystemState name key value world error}
+  (global : Transitions initial final) where
+  constructor MkLocatedClosedEpisode
+  locatedPreStart : SystemState name key value world error
+  locatedAfter : SystemState name key value world error
+  traceBeforeOpening : Transitions initial locatedPreStart
+  locatedEpisode : ClosedEpisode name key world error value nameEq keyEq n
+    locatedPreStart locatedAfter
+  traceAfterClosing : Transitions locatedAfter final
+  0 locatedDecomposition :
+    appendTransitions traceBeforeOpening
+      (MoreTransitions (beginTransition (closedOpening locatedEpisode))
+        (appendTransitions (closedTransitions locatedEpisode) traceAfterClosing)) = global
+
+public export
+prefixThroughOpening :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {n : name} ->
+  {initial, final : SystemState name key value world error} ->
+  {global : Transitions initial final} ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq n global) ->
+  Transitions initial (closedStartState (locatedEpisode located))
+prefixThroughOpening located = appendTransitions (traceBeforeOpening located)
+  (MoreTransitions (beginTransition (closedOpening (locatedEpisode located))) NoTransitions)
+
+public export
+prefixThroughClose :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {n : name} ->
+  {initial, final : SystemState name key value world error} ->
+  {global : Transitions initial final} ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq n global) ->
+  Transitions initial (locatedAfter located)
+prefixThroughClose located = appendTransitions (prefixThroughOpening located)
+  (closedTransitions (locatedEpisode located))
+
+||| The selected provider episode is tied to the consumer by prefix equations,
+||| so an unrelated earlier/later provider episode cannot be supplied.
+public export
+record ProviderContainsConsumer
+  (providerEpisode : LocatedClosedEpisode name key world error value nameEq keyEq provider global)
+  (consumerEpisode : LocatedClosedEpisode name key world error value nameEq keyEq consumer global) where
+  constructor MkProviderContainsConsumer
+  providerToConsumer : StrictTransitions
+    (closedStartState (locatedEpisode providerEpisode))
+    (closedStartState (locatedEpisode consumerEpisode))
+  consumerToProviderClose : StrictTransitions
+    (locatedAfter consumerEpisode) (locatedAfter providerEpisode)
+  0 openingOrderInGlobal :
+    prefixThroughOpening consumerEpisode =
+      appendTransitions (prefixThroughOpening providerEpisode)
+        (strictToTransitions providerToConsumer)
+  0 closingOrderInGlobal :
+    prefixThroughClose providerEpisode =
+      appendTransitions (prefixThroughClose consumerEpisode)
+        (strictToTransitions consumerToProviderClose)
+
+||| Proven elimination of the same-global-trace containment witness into the two
+||| strict ordering paths b < b' and u' < u.
+public export
+0 providerOrderingProof :
+  (containment : ProviderContainsConsumer providerEpisode consumerEpisode) ->
+  (StrictTransitions
+     (closedStartState (locatedEpisode providerEpisode))
+     (closedStartState (locatedEpisode consumerEpisode)),
+   StrictTransitions (locatedAfter consumerEpisode) (locatedAfter providerEpisode))
+providerOrderingProof containment =
+  (providerToConsumer containment, consumerToProviderClose containment)
+
+public export
+resolvedProviderAt : DecEq name => DecEq key => name -> key -> name ->
+  SystemState name key value world error -> Bool
+resolvedProviderAt consumer k provider state =
+  case lookupFiber consumer (registry state) of
+    Nothing => False
+    Just fiber => case committed (fiberLifecycle fiber) of
+      Nothing => False
+      Just view => case viewLookup k
+        (dependencies (componentDependencies (fiberComponent fiber))) view of
+          Nothing => False
+          Just actual => case decEq actual provider of
+            Yes Refl => True
+            No _ => False
+
+public export
+data ConsumerResolutionConstant : (name, key, world, error : Type) ->
+  (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  name -> key -> name -> {start, end : SystemState name key value world error} ->
+  Transitions start end -> Type where
+  ResolutionConstantEnd :
+    resolvedProviderAt @{nameEq} @{keyEq} consumer k provider state = True ->
+    ConsumerResolutionConstant name key world error value nameEq keyEq
+      consumer k provider (NoTransitions {state})
+  ResolutionConstantStep :
+    (transition : Transition first middle) -> (rest : Transitions middle finalState) ->
+    resolvedProviderAt @{nameEq} @{keyEq} consumer k provider first = True ->
+    ConsumerResolutionConstant name key world error value nameEq keyEq
+      consumer k provider rest ->
+    ConsumerResolutionConstant name key world error value nameEq keyEq
+      consumer k provider (MoreTransitions transition rest)
 
 public export
 providerValueAt : DecEq name => DecEq key => name -> (k : key) ->
   SystemState name key value world error -> Maybe (value k)
-providerValueAt provider k state = case lookupFiber provider (registry state) of
-  Nothing => Nothing
-  Just fiber => lookupBinding k (providedValues (fiberComponent fiber))
+providerValueAt provider k state = valueFromProvider provider k (registry state)
 
-||| The static component-table normalization makes the paper's visibility
-||| clause directly checkable along a trace.
 public export
 data ProviderValueConstant : (name, key, world, error : Type) ->
   (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (provider : name) -> (k : key) -> value k ->
+  name -> (k : key) -> value k ->
   {start, end : SystemState name key value world error} ->
   Transitions start end -> Type where
-  ValueConstantEnd :
-    providerValueAt @{nameEq} @{keyEq} provider k state = Just v ->
+  ValueConstantEnd : providerValueAt @{nameEq} @{keyEq} provider k state = Just v ->
     ProviderValueConstant name key world error value nameEq keyEq
       provider k v (NoTransitions {state})
   ValueConstantStep :
-    {first, middle, finalState : SystemState name key value world error} ->
-    (transition : Transition first middle) ->
-    (rest : Transitions middle finalState) ->
+    (transition : Transition first middle) -> (rest : Transitions middle finalState) ->
     providerValueAt @{nameEq} @{keyEq} provider k first = Just v ->
-    ProviderValueConstant name key world error value nameEq keyEq
-      provider k v rest ->
-    ProviderValueConstant name key world error value nameEq keyEq
-      provider k v (MoreTransitions transition rest)
-
-||| Theorem 63's pointwise visibility invariant. Its episode-order corollary is
-||| stated below through LocatedEpisode.
-||| TODO(proof): derive provider lookup/installation from WellFormed clause 4 and
-||| the intrinsically total View.
-public export
-providerVisibilityTheorem : (name : Type) -> (key : Type) ->
-  (value : key -> Type) -> (world, error : Type) -> Type
-providerVisibilityTheorem name key value world error =
-  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (state : SystemState name key value world error) ->
-  wellFormed @{nameEq} @{keyEq} state = True ->
-  (consumer, provider : name) -> (k : key) ->
-  ResolvesAt nameEq keyEq state consumer k provider ->
-  ProviderAvailable nameEq keyEq state provider k
+    ProviderValueConstant name key world error value nameEq keyEq provider k v rest ->
+    ProviderValueConstant name key world error value nameEq keyEq provider k v
+      (MoreTransitions transition rest)
 
 public export
-appendTransitions : Transitions first middle -> Transitions middle finalState ->
-  Transitions first finalState
-appendTransitions NoTransitions second = second
-appendTransitions (MoreTransitions step rest) second =
-  MoreTransitions step (appendTransitions rest second)
-
-||| Locate an episode inside one global trace.
-public export
-record LocatedEpisode {name, key, world, error : Type} {value : key -> Type}
-                      (nameEq : DecEq name) (n : name)
-                      {initial, final : SystemState name key value world error}
-                      (global : Transitions initial final) where
-  constructor MkLocatedEpisode
-  episodeStart : SystemState name key value world error
-  episodeEnd : SystemState name key value world error
-  traceBefore : Transitions initial episodeStart
-  episodeBody : EpisodeTrace nameEq n episodeStart episodeEnd
-  traceAfter : Transitions episodeEnd final
-  0 traceDecomposition :
-    appendTransitions traceBefore
-      (appendTransitions (episodeTransitions episodeBody) traceAfter) = global
-
-public export
-record OrderingResult (name, key, world, error : Type) (value : key -> Type)
-                      (nameEq : DecEq name) (keyEq : DecEq key)
-                      (provider : name) (k : key)
-                      (providerStart, consumerStart, consumerEnd, providerEnd :
-                        SystemState name key value world error)
-                      (consumerTrace : Transitions consumerStart consumerEnd) where
+record OrderingResult
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (provider, consumer : name)
+  {initial, final : SystemState name key value world error}
+  (global : Transitions initial final)
+  (providerEpisode : LocatedClosedEpisode name key world error value
+    nameEq keyEq provider global)
+  (consumerEpisode : LocatedClosedEpisode name key world error value
+    nameEq keyEq consumer global)
+  (k : key) where
   constructor MkOrderingResult
-  providerBeforeConsumer : Transitions providerStart consumerStart
-  consumerBeforeProviderClose : Transitions consumerEnd providerEnd
+  distinctFibers : Not (provider = consumer)
+  containment : ProviderContainsConsumer providerEpisode consumerEpisode
+  consumerResolution : ConsumerResolutionConstant name key world error value
+    nameEq keyEq consumer k provider
+    (closedTransitions (locatedEpisode consumerEpisode))
   providedValue : value k
-  valueConstant : ProviderValueConstant name key world error value
-    nameEq keyEq provider k providedValue consumerTrace
+  providerValueStable : ProviderValueConstant name key world error value
+    nameEq keyEq provider k providedValue
+    (closedTransitions (locatedEpisode consumerEpisode))
 
-||| Theorem 63 (ordering), including provider-before-consumer,
-||| consumer-before-provider-close, and exact provider-table constancy through
-||| the whole consumer episode.
-||| TODO(proof): decompose the global trace at both L-Begin/L-Unload boundaries;
-||| the relied guard rules out the opposite close order.
+||| Theorem 63 selects (rather than accepts) the containing provider episode.
+||| TODO(proof): global-trace induction using L-Begin and the relied L-Unload guard.
 public export
 orderingTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type
@@ -423,17 +781,19 @@ orderingTheorem name key value world error =
   (initial, final : SystemState name key value world error) ->
   (global : Transitions initial final) ->
   wellFormed @{nameEq} @{keyEq} initial = True ->
-  (provider, consumer : name) -> (k : key) ->
-  (providerEpisode : LocatedEpisode nameEq provider global) ->
-  (consumerEpisode : LocatedEpisode nameEq consumer global) ->
-  ResolvesAt nameEq keyEq (episodeStart consumerEpisode) consumer k provider ->
-  OrderingResult name key world error value nameEq keyEq provider k
-    (episodeStart providerEpisode) (episodeStart consumerEpisode)
-    (episodeEnd consumerEpisode) (episodeEnd providerEpisode)
-    (episodeTransitions (episodeBody consumerEpisode))
+  bindings (registry initial) = [] ->
+  (consumer, provider : name) -> (k : key) ->
+  installedAt @{nameEq} provider final = False ->
+  (consumerEpisode : LocatedClosedEpisode name key world error value
+    nameEq keyEq consumer global) ->
+  resolvedProviderAt @{nameEq} @{keyEq} consumer k provider
+    (closedStartState (locatedEpisode consumerEpisode)) = True ->
+  (providerEpisode : LocatedClosedEpisode name key world error value
+      nameEq keyEq provider global **
+    OrderingResult name key world error value nameEq keyEq provider consumer
+      global providerEpisode consumerEpisode k)
 
-||| One-step executable check for Equation 59. It applies only to the selected
-||| fiber's successful continuing/final iterations.
+||| Executable Equation-59 check for the selected fiber.
 public export
 transitionResolutionCoherent : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   name -> {before, afterState : SystemState name key value world error} ->
@@ -457,119 +817,173 @@ transitionResolutionCoherent nameEq keyEq selected {before}
           (targetFiber @{nameEq} @{keyEq} fiber (registry before)) view
       _ => False
 
-||| Resolution-coherence predicate: every advancing iteration in a Reloading
-||| interval uses the committed view as its current target; a changed target can
-||| only leave through Divert/Raise and terminal recovery.
 public export
 data ResolutionCoherent : (name, key, world, error : Type) ->
-  (value : key -> Type) -> {start, end : SystemState name key value world error} ->
-  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  name -> Transitions start end -> Type where
-  CoherentEnd : ResolutionCoherent name key world error value
-    nameEq keyEq selected NoTransitions
-  CoherentStep : transitionResolutionCoherent nameEq keyEq selected transition = True ->
+  (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  name -> {start, end : SystemState name key value world error} ->
+  Transitions start end -> Type where
+  CoherentEnd : ResolutionCoherent name key world error value nameEq keyEq
+    selected NoTransitions
+  CoherentStep : (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    transitionResolutionCoherent nameEq keyEq selected transition = True ->
     ResolutionCoherent name key world error value nameEq keyEq selected rest ->
     ResolutionCoherent name key world error value nameEq keyEq selected
       (MoreTransitions transition rest)
 
 public export
-reloadingAt : DecEq name => name ->
-  SystemState name key value world error -> Bool
-reloadingAt n state = case lookupFiber n (registry state) of
+reloadingAt : DecEq name => name -> SystemState name key value world error -> Bool
+reloadingAt selected state = case lookupFiber selected (registry state) of
+  Nothing => False
   Just fiber => case fiberLifecycle fiber of
     Reloading _ _ _ => True
     _ => False
-  Nothing => False
-
-public export
-activeAt : DecEq name => name ->
-  SystemState name key value world error -> Bool
-activeAt n state = case lookupFiber n (registry state) of
-  Just fiber => isActive (fiberLifecycle fiber)
-  Nothing => False
 
 public export
 data ReloadingThroughout : (name, key, world, error : Type) ->
-  (value : key -> Type) -> (nameEq : DecEq name) -> (selected : name) ->
+  (value : key -> Type) -> (nameEq : DecEq name) -> name ->
   {start, end : SystemState name key value world error} ->
   Transitions start end -> Type where
-  ReloadingEnd : reloadingAt @{nameEq} selected state = True ->
+  ReloadingEnd : (fiber : Fiber name key value world error) ->
+    lookupFiber @{nameEq} selected (registry state) = Just fiber ->
+    (remaining : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber))) **
+     (accumulator : LocalState key value world
+        (componentProvisions (fiberComponent fiber)) ->
+        LocalState key value world
+          (componentProvisions (fiberComponent fiber)) **
+      (view : View name
+        (dependencies (componentDependencies (fiberComponent fiber))) **
+       fiberLifecycle fiber = Reloading remaining accumulator view))) ->
     ReloadingThroughout name key world error value nameEq selected
       (NoTransitions {state})
-  ReloadingStep : reloadingAt @{nameEq} selected first = True ->
+  ReloadingStep : (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    reloadingAt @{nameEq} selected first = True ->
     ReloadingThroughout name key world error value nameEq selected rest ->
     ReloadingThroughout name key world error value nameEq selected
       (MoreTransitions transition rest)
 
 public export
-data AbortRule : (name, key, world, error : Type) -> (value : key -> Type) ->
+committedProvidersAt : DecEq name => name ->
+  SystemState name key value world error -> Maybe (List name)
+committedProvidersAt selected state = case lookupFiber selected (registry state) of
+  Nothing => Nothing
+  Just fiber => map viewProviders (committed (fiberLifecycle fiber))
+
+public export
+activeAt : DecEq name => name -> SystemState name key value world error -> Bool
+activeAt selected state = case lookupFiber selected (registry state) of
+  Nothing => False
+  Just fiber => isActive (fiberLifecycle fiber)
+
+public export
+unloadingAt : DecEq name => name -> SystemState name key value world error -> Bool
+unloadingAt selected state = case lookupFiber selected (registry state) of
+  Nothing => False
+  Just fiber => case fiberLifecycle fiber of
+    Unloading _ _ _ => True
+    _ => False
+
+public export
+data CommittedProvidersConstant : (name, key, world, error : Type) ->
+  (value : key -> Type) -> (nameEq : DecEq name) -> name -> List name ->
+  {start, end : SystemState name key value world error} ->
+  Transitions start end -> Type where
+  CommittedProvidersEnd :
+    committedProvidersAt @{nameEq} selected state = Just providers ->
+    CommittedProvidersConstant name key world error value nameEq selected providers
+      (NoTransitions {state})
+  CommittedProvidersStep :
+    (transition : Transition first middle) -> (rest : Transitions middle finalState) ->
+    committedProvidersAt @{nameEq} selected first = Just providers ->
+    CommittedProvidersConstant name key world error value nameEq selected providers rest ->
+    CommittedProvidersConstant name key world error value nameEq selected providers
+      (MoreTransitions transition rest)
+
+public export
+data StructuralExit : (name, key, world, error : Type) ->
+  (value : key -> Type) ->
   {before, afterState : SystemState name key value world error} ->
-  name -> Transition before afterState -> Type where
-  AbortedBeforeIteration : transitionAction transition = LDivert selected ->
-    transitionTag transition = LDivertTag ->
-    AbortRule name key world error value selected transition
-  AbortedAfterLanding : transitionAction transition = LAdvance selected ->
-    transitionTag transition = LDivertTag ->
-    AbortRule name key world error value selected transition
-  RaisedDuringIteration : transitionAction transition = LAdvance selected ->
-    transitionTag transition = LRaiseTag ->
-    AbortRule name key world error value selected transition
-
-public export
-data ResolutionExit : (name, key, world, error : Type) ->
-  (value : key -> Type) -> (nameEq : DecEq name) -> (selected : name) ->
-  (startState, endState, exitBefore, exitAfter :
-    SystemState name key value world error) ->
-  (whole : Transitions startState endState) ->
-  Transition exitBefore exitAfter -> Type where
-  FinishedResolution : transitionAction transition = LAdvance selected ->
+  (nameEq : DecEq name) -> name -> List name ->
+  Transition before afterState -> Type where
+  Finishes : transitionAction transition = LAdvance selected ->
     transitionTag transition = LFinishTag ->
-    activeAt @{nameEq} {key = key} {value = value}
-      {world = world} {error = error} selected exitAfter = True ->
-    ResolutionExit name key world error value nameEq selected
-      startState endState exitBefore exitAfter whole transition
-  AbortedResolution : AbortRule name key world error value selected transition ->
-    ForeignReplay name key world error value selected whole
-      (worldState startState) (worldState endState) ->
-    ResolutionExit name key world error value nameEq selected
-      startState endState exitBefore exitAfter whole transition
+    activeAt @{nameEq} {key = key} {value = value} {world = world} {error = error} selected afterState = True ->
+    committedProvidersAt @{nameEq} {key = key} {value = value} {world = world} {error = error} selected afterState = Just providers ->
+    StructuralExit name key world error value nameEq selected providers transition
+  DivertsBefore : transitionAction transition = LDivert selected ->
+    transitionTag transition = LDivertTag ->
+    unloadingAt @{nameEq} {key = key} {value = value} {world = world} {error = error} selected afterState = True ->
+    StructuralExit name key world error value nameEq selected providers transition
+  DivertsAfter : transitionAction transition = LAdvance selected ->
+    transitionTag transition = LDivertTag ->
+    unloadingAt @{nameEq} {key = key} {value = value} {world = world} {error = error} selected afterState = True ->
+    StructuralExit name key world error value nameEq selected providers transition
+  Raises : transitionAction transition = LAdvance selected ->
+    transitionTag transition = LRaiseTag ->
+    unloadingAt @{nameEq} {key = key} {value = value} {world = world} {error = error} selected afterState = True ->
+    StructuralExit name key world error value nameEq selected providers transition
 
-||| The complete Theorem-64 result: an initial Reloading interval satisfying
-||| Equation 59, followed by exactly the Finish or Divert/Raise alternative.
+||| Structural part of Theorem 64, covering open final episodes by `StillReloading`.
 public export
-record ResolutionOutcome (name, key, world, error : Type)
-                         (value : key -> Type) (nameEq : DecEq name)
-                         (keyEq : DecEq key) (selected : name)
-                         {episodeStart, episodeEnd :
-                           SystemState name key value world error}
-                         (whole : Transitions episodeStart episodeEnd) where
-  constructor MkResolutionOutcome
-  exitBefore : SystemState name key value world error
-  exitAfter : SystemState name key value world error
-  initialInterval : Transitions episodeStart exitBefore
-  exitTransition : Transition exitBefore exitAfter
-  remainingInterval : Transitions exitAfter episodeEnd
-  0 resolutionDecomposition :
-    appendTransitions initialInterval
-      (MoreTransitions exitTransition remainingInterval) = whole
-  intervalReloading : ReloadingThroughout name key world error value
-    nameEq selected initialInterval
-  intervalCoherent : ResolutionCoherent name key world error value
-    nameEq keyEq selected initialInterval
-  exitAlternative : ResolutionExit name key world error value nameEq selected
-    episodeStart episodeEnd exitBefore exitAfter whole exitTransition
+data ResolutionStructure : (name, key, world, error : Type) ->
+  (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) -> (openingProviders : List name) ->
+  {start, current : SystemState name key value world error} ->
+  Transitions start current -> Type where
+  StillReloading : ReloadingThroughout name key world error value nameEq selected trace ->
+    ResolutionCoherent name key world error value nameEq keyEq selected trace ->
+    CommittedProvidersConstant name key world error value nameEq selected
+      openingProviders trace ->
+    ResolutionStructure name key world error value nameEq keyEq selected
+      openingProviders trace
+  ExitedReloading :
+    (exitBefore, exitAfter : SystemState name key value world error) ->
+    (initialPart : Transitions start exitBefore) ->
+    (exitStep : Transition exitBefore exitAfter) ->
+    (remainingPart : Transitions exitAfter current) ->
+    appendTransitions initialPart (MoreTransitions exitStep remainingPart) = trace ->
+    ReloadingThroughout name key world error value nameEq selected initialPart ->
+    ResolutionCoherent name key world error value nameEq keyEq selected initialPart ->
+    CommittedProvidersConstant name key world error value nameEq selected
+      openingProviders trace ->
+    StructuralExit name key world error value nameEq selected openingProviders exitStep ->
+    ResolutionStructure name key world error value nameEq keyEq selected
+      openingProviders trace
 
-||| Theorem 64. The result states both Equation 59 and the paper's exact exit
-||| dichotomy; its abort branch includes Corollary 62's terminal recovery.
-||| TODO(proof): split a closed EpisodeTrace at the first transition leaving
-||| Reloading, using the one-way lifecycle graph and applyAction's target guards.
+||| Structural Equation-59/exit theorem. Its input is anchored at L-Begin, so an
+||| arbitrary Unloading suffix is unrepresentable.
+||| TODO(proof): induction over the anchored InstalledTrace.
+public export
+resolutionStructureTheorem : (name : Type) -> (key : Type) ->
+  (value : key -> Type) -> (world, error : Type) -> Type
+resolutionStructureTheorem name key value world error =
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (n : name) -> (pre, current : SystemState name key value world error) ->
+  (episode : EpisodePrefix name key world error value nameEq keyEq n pre current) ->
+  (openingProviders : List name **
+    (committedProvidersAt @{nameEq} n (episodeStartState episode) =
+       Just openingProviders,
+     ResolutionStructure name key world error value nameEq keyEq n
+       openingProviders (prefixTransitions episode)))
+
+||| Full Theorem 64 recovery branch over a maximal closed episode. Structural
+||| coherence is separated so it can be proved without assuming temporal recovery.
+||| TODO(proof): combine resolutionStructureTheorem with terminalRecoveryTheorem.
 public export
 resolutionCoherenceTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type
 resolutionCoherenceTheorem name key value world error =
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (n : name) -> (start, end : SystemState name key value world error) ->
-  (episode : EpisodeTrace nameEq n start end) ->
-  AllComponentsIndependent key world error value ->
-  ResolutionOutcome name key world error value nameEq keyEq n
-    (episodeTransitions episode)
+  (n : name) -> (pre, afterState : SystemState name key value world error) ->
+  (episode : ClosedEpisode name key world error value nameEq keyEq n pre afterState) ->
+  TraceIndependent name key world error value (closedTransitions episode) ->
+  (openingProviders : List name **
+    (committedProvidersAt @{nameEq} n (closedStartState episode) =
+       Just openingProviders,
+     ResolutionStructure name key world error value nameEq keyEq n
+       openingProviders (closedInside episode),
+     ForeignReplay name key world error value n (closedTransitions episode)
+      (worldState (closedStartState episode)) (worldState afterState)))
