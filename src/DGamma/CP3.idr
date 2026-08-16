@@ -681,3 +681,100 @@ public export
 systemEquivalentReflexive nameEq keyEq state = MkSystemEquivalent
   (MkEffectStateRelated Refl (\selected, k => Refl))
   (MkControlEquivalent (\n => Refl))
+
+||| Four possible installed-bit evolutions for one checked transition. The only
+||| changing cases are the two episode boundaries.
+public export
+data InstallationEvolution :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) -> Type where
+  RemainedUninstalled :
+    installedAt @{nameEq} selected before = False ->
+    installedAt @{nameEq} selected afterState = False ->
+    InstallationEvolution name key world error value nameEq keyEq selected
+      before afterState
+  RemainedInstalled :
+    installedAt @{nameEq} selected before = True ->
+    installedAt @{nameEq} selected afterState = True ->
+    InstallationEvolution name key world error value nameEq keyEq selected
+      before afterState
+  OpenedInstallation : BeginStep nameEq keyEq selected before afterState ->
+    InstallationEvolution name key world error value nameEq keyEq selected
+      before afterState
+  ClosedInstallation : UnloadStep nameEq keyEq selected before afterState ->
+    InstallationEvolution name key world error value nameEq keyEq selected
+      before afterState
+
+installedMaybe : {name, key, world, error : Type} -> {value : key -> Type} ->
+  Maybe (Fiber name key value world error) -> Bool
+installedMaybe Nothing = False
+installedMaybe (Just fiber) = installed (fiberLifecycle fiber)
+
+0 installedAtLookupEquation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  installedAt @{nameEq} selected state =
+    installedMaybe {name = name} {key = key} {world = world}
+      {error = error} {value = value}
+      (lookupFiber @{nameEq} selected (registry state))
+installedAtLookupEquation nameEq selected
+  state@(MkSystemState ambient fibers)
+  with (lookupFiber @{nameEq} selected fibers)
+  installedAtLookupEquation nameEq selected
+    state@(MkSystemState ambient fibers) | Nothing = Refl
+  installedAtLookupEquation nameEq selected
+    state@(MkSystemState ambient fibers) | Just fiber = Refl
+
+||| Any successful action on another name preserves the selected installed bit.
+public export
+0 foreignInstalledStable :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) ->
+  (action : Action name key value world error) ->
+  Not (selected = actionOwner action) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
+  installedAt @{nameEq} selected before =
+    installedAt @{nameEq} selected afterState
+foreignInstalledStable {name} {key} {world} {error} {value}
+  nameEq keyEq selected action distinct before afterState tag equation =
+  let update = applyActionLocalUpdate nameEq keyEq action before afterState tag
+        equation
+      lookupTargetSource = systemLocalUpdateForeign nameEq selected
+        (actionOwner action) distinct before afterState update
+      maybeTargetSource = cong
+        (\found => installedMaybe {name = name} {key = key} {world = world}
+          {error = error} {value = value} found)
+        lookupTargetSource
+      sourceObserved = installedAtLookupEquation nameEq selected before
+      targetObserved = installedAtLookupEquation nameEq selected afterState
+  in trans sourceObserved (trans (sym maybeTargetSource) (sym targetObserved))
+
+public export
+0 foreignInstallationEvolution :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) ->
+  (action : Action name key value world error) ->
+  Not (selected = actionOwner action) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
+  InstallationEvolution name key world error value nameEq keyEq selected
+    before afterState
+foreignInstallationEvolution nameEq keyEq selected action distinct before
+  afterState tag equation =
+  let stable = foreignInstalledStable nameEq keyEq selected action distinct
+        before afterState tag equation in
+  case boolEquality (installedAt @{nameEq} selected before) of
+    Left sourceFalse =>
+      RemainedUninstalled sourceFalse (trans (sym stable) sourceFalse)
+    Right sourceTrue =>
+      RemainedInstalled sourceTrue (trans (sym stable) sourceTrue)
+  where
+  boolEquality : (observed : Bool) ->
+    Either (observed = False) (observed = True)
+  boolEquality False = Left Refl
+  boolEquality True = Right Refl
