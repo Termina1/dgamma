@@ -2630,6 +2630,26 @@ record CommittedSnapshot
     Just committedView
   committedProviderNames : viewProviders committedView = providers
 
+0 committedProvidersAfterReplace :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  (selected : name) -> (ambient : world) ->
+  (fibers : Registry name key value world error) ->
+  (oldFiber, nextFiber : Fiber name key value world error) ->
+  (view : View name (dependencies
+    (componentDependencies (fiberComponent nextFiber)))) ->
+  (providers : List name) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} selected fibers = Just oldFiber ->
+  committed (fiberLifecycle nextFiber) = Just view ->
+  viewProviders view = providers ->
+  committedProvidersAt @{nameEq} {key = key} {value = value} {world = world} {error = error} selected
+    (MkSystemState ambient (replaceBinding @{nameEq} selected nextFiber fibers)) =
+    Just providers
+committedProvidersAfterReplace selected ambient fibers oldFiber nextFiber view
+  providers found lifecycle providerNames =
+  rewrite lookupReplacedFiber selected oldFiber nextFiber fibers found in
+  rewrite lifecycle in rewrite providerNames in Refl
+
 0 committedSnapshotFrom :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (selected : name) -> (providers : List name) ->
@@ -2659,6 +2679,28 @@ committedSnapshotFrom {name} {key} {world} {error} {value}
 committedSnapshotEquation snapshot = rewrite committedLookup snapshot in
   rewrite committedLifecycle snapshot in rewrite committedProviderNames snapshot in
   Refl
+
+0 committedProvidersForeignAction :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) -> (providers : List name) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) -> Not (selected = actionOwner action) ->
+  committedProvidersAt @{nameEq} selected before = Just providers ->
+  applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
+  committedProvidersAt @{nameEq} selected afterState = Just providers
+committedProvidersForeignAction {name} {key} {world} {error} {value}
+  nameEq keyEq selected providers action before afterState tag distinct
+  beforeCommitted equation =
+  let snapshot = committedSnapshotFrom nameEq selected providers before
+        beforeCommitted
+      0 foreignLookup = systemLocalUpdateForeign nameEq selected
+        (actionOwner action) distinct before afterState
+        (applyActionLocalUpdate nameEq keyEq action before afterState tag equation)
+      0 targetLookup = trans foreignLookup (committedLookup snapshot)
+  in rewrite targetLookup in rewrite committedLifecycle snapshot in
+    rewrite committedProviderNames snapshot in Refl
 
 public export
 data CommittedProvidersConstant : (name, key, world, error : Type) ->
