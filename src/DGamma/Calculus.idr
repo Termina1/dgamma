@@ -592,16 +592,21 @@ targetMatches Nothing view = False
 targetMatches (Just target) view = viewEq target view
 
 public export
-reliedOnBy : DecEq name => name -> name ->
-  List (Binding name (FiberAt name key value world error)) -> Bool
-reliedOnBy provider self [] = False
-reliedOnBy provider self (Bind n fiber :: rest) =
+reliedHead : DecEq name => name -> name ->
+  Binding name (FiberAt name key value world error) -> Bool
+reliedHead provider self (Bind n fiber) =
   let different = case decEq n self of Yes Refl => False; No _ => True
       sees = case committed (fiberLifecycle fiber) of
         Nothing => False
         Just view => viewContains provider view
-   in (different && installed (fiberLifecycle fiber) && sees) ||
-      reliedOnBy provider self rest
+  in different && installed (fiberLifecycle fiber) && sees
+
+public export
+reliedOnBy : DecEq name => name -> name ->
+  List (Binding name (FiberAt name key value world error)) -> Bool
+reliedOnBy provider self [] = False
+reliedOnBy provider self (entry :: rest) =
+  reliedHead provider self entry || reliedOnBy provider self rest
 
 public export
 relied : DecEq name => name -> Registry name key value world error -> Bool
@@ -4391,6 +4396,137 @@ viewBindingsRuntimeExcluded {name} {key} {world} {error} {value}
   rewrite cong isJust (resolveCommittedValuesRuntimeExcluded {name = name}
     {key = key} {world = world} {error = error} {value = value} nameEq keyEq
     deps view n excluded fiber newTable newLifecycle fibers) in Refl
+
+0 reliedHeadReloadingOther :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (n, current : name) -> Not (current = n) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  reliedHead @{nameEq} n n
+    (Bind current (MkFiber component parent retired table
+      (Reloading remaining accumulator view))) = viewContains @{nameEq} n view
+reliedHeadReloadingOther nameEq n current distinct component parent retired table
+  remaining accumulator view with (decEq @{nameEq} current n)
+  reliedHeadReloadingOther nameEq n n distinct component parent retired table
+    remaining accumulator view | (Yes Refl) = void (distinct Refl)
+  reliedHeadReloadingOther nameEq n current distinct component parent retired table
+    remaining accumulator view | (No _) = Refl
+
+0 reliedHeadActiveOther :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (n, current : name) -> Not (current = n) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  reliedHead @{nameEq} n n
+    (Bind current (MkFiber component parent retired table
+      (Active accumulator view))) = viewContains @{nameEq} n view
+reliedHeadActiveOther nameEq n current distinct component parent retired table
+  accumulator view with (decEq @{nameEq} current n)
+  reliedHeadActiveOther nameEq n n distinct component parent retired table
+    accumulator view | (Yes Refl) = void (distinct Refl)
+  reliedHeadActiveOther nameEq n current distinct component parent retired table
+    accumulator view | (No _) = Refl
+
+0 reliedHeadUnloadingOther :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (n, current : name) -> Not (current = n) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (outcome : Maybe error) ->
+  reliedHead @{nameEq} n n
+    (Bind current (MkFiber component parent retired table
+      (Unloading accumulator view outcome))) = viewContains @{nameEq} n view
+reliedHeadUnloadingOther nameEq n current distinct component parent retired table
+  accumulator view outcome with (decEq @{nameEq} current n)
+  reliedHeadUnloadingOther nameEq n n distinct component parent retired table
+    accumulator view outcome | (Yes Refl) = void (distinct Refl)
+  reliedHeadUnloadingOther nameEq n current distinct component parent retired table
+    accumulator view outcome | (No _) = Refl
+
+0 fiberViewUnloadOther :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (n, current : name) -> Not (current = n) ->
+  (observed : Fiber name key value world error) ->
+  (rest : List (Binding name (FiberAt name key value world error))) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (outcome : Maybe error) ->
+  (newTable : OwnedTable key value (componentProvisions component)) ->
+  (fibers : Registry name key value world error) ->
+  reliedOnBy @{nameEq} {key = key} {value = value} {world = world} {error = error} n n (Bind current observed :: rest) = False ->
+  fiberViewInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} observed fibers = True ->
+  fiberViewInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} observed
+    (replaceBinding @{nameEq} n
+      (MkFiber component parent retired newTable (Inactive outcome)) fibers) = True
+fiberViewUnloadOther nameEq keyEq n current distinct
+  (MkFiber ownComponent ownParent ownRetired ownTable (Inactive ownOutcome)) rest
+  component parent retired table accumulator view outcome newTable fibers relied
+  valid = Refl
+fiberViewUnloadOther {name} {key} {world} {error} {value}
+  nameEq keyEq n current distinct
+  (MkFiber ownComponent ownParent ownRetired ownTable
+    (Reloading remaining ownAccumulator ownView)) rest component parent retired
+  table accumulator view outcome newTable fibers relied valid =
+  let headFalse = boolOrLeftFalse _ _ relied
+      excluded = trans (sym (reliedHeadReloadingOther {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq n current distinct
+        ownComponent ownParent ownRetired ownTable remaining ownAccumulator
+        ownView)) headFalse
+  in trans (viewBindingsRuntimeExcluded {name = name} {key = key}
+      {world = world} {error = error} {value = value} nameEq keyEq
+      (dependencies (componentDependencies ownComponent)) ownView n excluded
+      (MkFiber component parent retired table (Unloading accumulator view outcome))
+      newTable (Inactive outcome) fibers) valid
+fiberViewUnloadOther {name} {key} {world} {error} {value}
+  nameEq keyEq n current distinct
+  (MkFiber ownComponent ownParent ownRetired ownTable
+    (Active ownAccumulator ownView)) rest component parent retired table
+  accumulator view outcome newTable fibers relied valid =
+  let headFalse = boolOrLeftFalse _ _ relied
+      excluded = trans (sym (reliedHeadActiveOther {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq n current distinct
+        ownComponent ownParent ownRetired ownTable ownAccumulator ownView))
+        headFalse
+  in trans (viewBindingsRuntimeExcluded {name = name} {key = key}
+      {world = world} {error = error} {value = value} nameEq keyEq
+      (dependencies (componentDependencies ownComponent)) ownView n excluded
+      (MkFiber component parent retired table (Unloading accumulator view outcome))
+      newTable (Inactive outcome) fibers) valid
+fiberViewUnloadOther {name} {key} {world} {error} {value}
+  nameEq keyEq n current distinct
+  (MkFiber ownComponent ownParent ownRetired ownTable
+    (Unloading ownAccumulator ownView ownOutcome)) rest component parent retired
+  table accumulator view outcome newTable fibers relied valid =
+  let headFalse = boolOrLeftFalse _ _ relied
+      excluded = trans (sym (reliedHeadUnloadingOther {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq n current distinct
+        ownComponent ownParent ownRetired ownTable ownAccumulator ownView
+        ownOutcome)) headFalse
+  in trans (viewBindingsRuntimeExcluded {name = name} {key = key}
+      {world = world} {error = error} {value = value} nameEq keyEq
+      (dependencies (componentDependencies ownComponent)) ownView n excluded
+      (MkFiber component parent retired table (Unloading accumulator view outcome))
+      newTable (Inactive outcome) fibers) valid
 
 0 viewProvidersActiveUnload :
   {name, key, world, error : Type} -> {value : key -> Type} ->
