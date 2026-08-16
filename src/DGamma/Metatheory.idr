@@ -2731,8 +2731,13 @@ data RegistryLocalUpdate :
     {auto staticParent : fiberParent fiber = fiberParent oldFiber} ->
     RegistryLocalUpdate name key world error value nameEq actor source
       (replaceBinding @{nameEq} actor fiber source)
-  LocalDelete : RegistryLocalUpdate name key world error value nameEq actor source
-    (deleteBinding @{nameEq} actor source)
+  LocalDelete :
+    {oldFiber : Fiber name key value world error} ->
+    {auto oldFound : lookupFiber @{nameEq} actor source = Just oldFiber} ->
+    {auto noChild : hasChild @{nameEq} {key = key} {value = value}
+      {world = world} {error = error} actor source = False} ->
+    RegistryLocalUpdate name key world error value nameEq actor source
+      (deleteBinding @{nameEq} actor source)
 
 public export
 0 registryLocalUpdateForeign :
@@ -2750,6 +2755,18 @@ registryLocalUpdateForeign nameEq selected actor distinct source
   (LocalReplace fiber) = lookupReplaceOther selected actor distinct fiber source
 registryLocalUpdateForeign nameEq selected actor distinct source LocalDelete =
   lookupDeleteOther selected actor distinct source
+
+0 noChildFromRemovalGuard :
+  (retiredFlag, inactiveFlag, childPresent : Bool) ->
+  retiredFlag && inactiveFlag && not childPresent = True ->
+  childPresent = False
+noChildFromRemovalGuard retiredFlag inactiveFlag False valid = Refl
+noChildFromRemovalGuard False inactiveFlag True valid =
+  case valid of Refl impossible
+noChildFromRemovalGuard True False True valid =
+  case valid of Refl impossible
+noChildFromRemovalGuard True True True valid =
+  case valid of Refl impossible
 
 public export
 record SystemLocalUpdate
@@ -2832,14 +2849,18 @@ applyActionLocalUpdate nameEq keyEq (ORemove n)
   applyActionLocalUpdate nameEq keyEq (ORemove n)
     before@(MkSystemState ambient fibers) afterState tag equation | Just fiber
     with (retired fiber && isInactive (fiberLifecycle fiber) &&
-      not (hasChild @{nameEq} n fibers))
+      not (hasChild @{nameEq} n fibers)) proof removable
     applyActionLocalUpdate nameEq keyEq (ORemove n)
       before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
       False = void (nothingIsNotJust equation)
     applyActionLocalUpdate nameEq keyEq (ORemove n)
       before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
       True = case justInjective equation of
-        Refl => MkSystemLocalUpdate LocalDelete
+        Refl => MkSystemLocalUpdate
+          (LocalDelete {oldFiber = fiber} @{found}
+            @{noChildFromRemovalGuard (retired fiber)
+              (isInactive (fiberLifecycle fiber)) (hasChild @{nameEq} n fibers)
+              removable})
 applyActionLocalUpdate nameEq keyEq (LBegin n)
   before@(MkSystemState ambient fibers) afterState tag equation
   with (lookupFiber @{nameEq} n fibers) proof found
