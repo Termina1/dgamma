@@ -890,17 +890,12 @@ public export
 pairwiseProvisionInvariant : DecEq key =>
   List (Binding name (FiberAt name key value world error)) -> Bool
 pairwiseProvisionInvariant [] = True
-pairwiseProvisionInvariant (Bind _ fiber :: rest) =
-  provisionsDisjointFrom (componentProvisions (fiberComponent fiber)) rest &&
-  pairwiseProvisionInvariant rest
-
-public export
-parentsInvariant : DecEq name =>
-  List (Binding name (FiberAt name key value world error)) ->
-  Registry name key value world error -> Bool
-parentsInvariant [] fibers = True
-parentsInvariant (Bind _ fiber :: rest) fibers =
-  parentInvariant (fiberParent fiber) fibers && parentsInvariant rest fibers
+pairwiseProvisionInvariant @{keyEq} {value} {world} {error}
+  (Bind _ fiber :: rest) =
+  provisionsDisjointFrom @{keyEq} {value = value} {world = world} {error = error}
+    (componentProvisions (fiberComponent fiber)) rest &&
+  pairwiseProvisionInvariant @{keyEq}
+    {value = value} {world = world} {error = error} rest
 
 0 andTrueLeft : (left, right : Bool) -> left && right = True -> left = True
 andTrueLeft False right equation = void (falseCannotBeTrue equation)
@@ -914,6 +909,53 @@ andTrueRight True True equation = Refl
 0 andBothTrue : (left, right : Bool) -> left = True -> right = True ->
   left && right = True
 andBothTrue True True Refl Refl = Refl
+
+0 freshFiberProvision : (component : Component key value world error) ->
+  (parent : Parent name) ->
+  componentProvisions (fiberComponent (freshFiber component parent)) =
+    componentProvisions component
+freshFiberProvision (MkComponent deps provision program) parent = Refl
+
+0 pairwiseFreshConsEquation : {name, key, world, error : Type} ->
+  {value : key -> Type} -> (keyEq : DecEq key) ->
+  (n : name) -> (component : Component key value world error) ->
+  (parent : Parent name) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  pairwiseProvisionInvariant @{keyEq} {value = value} {world = world} {error = error}
+    (Bind n (freshFiber component parent) :: entries) =
+  (provisionsDisjointFrom @{keyEq} {value = value} {world = world} {error = error} (componentProvisions component) entries &&
+   pairwiseProvisionInvariant @{keyEq} {value = value} {world = world} {error = error} entries)
+pairwiseFreshConsEquation {value} {world} {error} keyEq n (MkComponent deps provision program)
+  parent entries = Refl
+
+||| The O-Insert provision premise is exactly the new head clause.
+public export
+0 pairwiseProvisionInsert : {name, key, world, error : Type} ->
+  {value : key -> Type} -> (keyEq : DecEq key) ->
+  (n : name) -> (component : Component key value world error) ->
+  (parent : Parent name) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  provisionsDisjointFrom @{keyEq} {value = value} {world = world} {error = error} (componentProvisions component) entries = True ->
+  pairwiseProvisionInvariant @{keyEq} {value = value} {world = world} {error = error} entries = True ->
+  pairwiseProvisionInvariant @{keyEq} {value = value} {world = world} {error = error} (Bind n (freshFiber component parent) :: entries) = True
+pairwiseProvisionInsert {value} {world} {error} keyEq n
+  component parent entries disjoint oldValid =
+  trans
+    (pairwiseFreshConsEquation {value = value} {world = world}
+      {error = error} keyEq n component parent entries)
+    (andBothTrue
+      (provisionsDisjointFrom @{keyEq} {value = value} {world = world}
+        {error = error} (componentProvisions component) entries)
+      (pairwiseProvisionInvariant @{keyEq} {value = value} {world = world}
+        {error = error} entries) disjoint oldValid)
+
+public export
+parentsInvariant : DecEq name =>
+  List (Binding name (FiberAt name key value world error)) ->
+  Registry name key value world error -> Bool
+parentsInvariant [] fibers = True
+parentsInvariant (Bind _ fiber :: rest) fibers =
+  parentInvariant (fiberParent fiber) fibers && parentsInvariant rest fibers
 
 ||| Inserting an Inactive fresh fiber preserves every existing parent lookup.
 public export
