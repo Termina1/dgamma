@@ -3926,6 +3926,313 @@ registryWellFormedRuntimeReplace {name} {key} {world} {error} {value}
       (andBothTrue _ _ targetChains
         (andBothTrue _ _ targetPairwise targetViews))
 
+0 viewProvidersUnstableRuntime :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (deps : List key) -> (view : View name deps) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Just fiber ->
+  stableProvider (fiberLifecycle fiber) = False ->
+  viewProvidersInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fibers view = True ->
+  viewProvidersInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error}
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers) view = True
+viewProvidersUnstableRuntime {key} {world} {error} {value}
+  nameEq [] EmptyView n fiber newTable newLifecycle fibers present unstable valid =
+    Refl
+viewProvidersUnstableRuntime {name} {key} {world} {error} {value}
+  nameEq (k :: ks) (ProviderView provider rest) n fiber newTable newLifecycle
+  fibers present unstable valid with (decEq @{nameEq} provider n)
+  viewProvidersUnstableRuntime {name} {key} {world} {error} {value}
+    nameEq (k :: ks) (ProviderView n rest) n fiber newTable newLifecycle fibers
+    present unstable valid | (Yes Refl) =
+      let sourceHead = viewProvidersHeadStable {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq n k rest
+            fibers fiber present valid
+      in void (falseCannotBeTrue (trans (sym unstable) sourceHead))
+  viewProvidersUnstableRuntime {name} {key} {world} {error} {value}
+    nameEq (k :: ks) (ProviderView provider rest) n fiber newTable newLifecycle
+    fibers present unstable valid | (No distinct)
+    with (lookupFiber @{nameEq} provider fibers) proof providerLookup
+    viewProvidersUnstableRuntime {name} {key} {world} {error} {value}
+      nameEq (k :: ks) (ProviderView provider rest) n fiber newTable newLifecycle
+      fibers present unstable valid | (No distinct) | Nothing =
+        void (falseCannotBeTrue valid)
+    viewProvidersUnstableRuntime {name} {key} {world} {error} {value}
+      nameEq (k :: ks) (ProviderView provider rest) n fiber newTable newLifecycle
+      fibers present unstable valid | (No distinct) | Just providerFiber =
+        let targetLookup = trans (lookupReplaceOther provider n distinct
+              (setFiberRuntime fiber newTable newLifecycle) fibers) providerLookup
+            sourceHead = andTrueLeft _ _ valid
+            sourceTail = andTrueRight _ _ valid
+            targetTail = viewProvidersUnstableRuntime {name = name} {key = key}
+              {world = world} {error = error} {value = value} nameEq ks rest n
+              fiber newTable newLifecycle fibers present unstable sourceTail
+        in rewrite targetLookup in andBothTrue _ _ sourceHead targetTail
+
+0 valueFromProviderRuntimeOther :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provider, n : name) -> Not (provider = n) -> (k : key) ->
+  (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (fibers : Registry name key value world error) ->
+  valueFromProvider @{nameEq} @{keyEq} {value = value} {world = world} {error = error} provider k
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers) =
+  valueFromProvider @{nameEq} @{keyEq} {value = value} {world = world} {error = error} provider k fibers
+valueFromProviderRuntimeOther {key} {world} {error} {value}
+  nameEq keyEq provider n distinct k fiber newTable newLifecycle fibers
+  with (lookupFiber @{nameEq} provider fibers) proof original
+  valueFromProviderRuntimeOther {key} {world} {error} {value}
+    nameEq keyEq provider n distinct k fiber newTable newLifecycle fibers |
+    Nothing = rewrite lookupReplaceOther provider n distinct
+      (setFiberRuntime fiber newTable newLifecycle) fibers in
+      rewrite original in Refl
+  valueFromProviderRuntimeOther {key} {world} {error} {value}
+    nameEq keyEq provider n distinct k fiber newTable newLifecycle fibers |
+    Just providerFiber = rewrite lookupReplaceOther provider n distinct
+      (setFiberRuntime fiber newTable newLifecycle) fibers in
+      rewrite original in Refl
+
+0 resolveCommittedValuesUnstableRuntime :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) -> (view : View name deps) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Just fiber ->
+  stableProvider (fiberLifecycle fiber) = False ->
+  viewProvidersInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fibers view = True ->
+  resolveCommittedValues @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps view
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers) =
+  resolveCommittedValues @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps view fibers
+resolveCommittedValuesUnstableRuntime {key} {world} {error} {value}
+  nameEq keyEq [] EmptyView n fiber newTable newLifecycle fibers present unstable
+  providersValid = Refl
+resolveCommittedValuesUnstableRuntime {name} {key} {world} {error} {value}
+  nameEq keyEq (k :: ks) (ProviderView provider rest) n fiber newTable
+  newLifecycle fibers present unstable providersValid
+  with (decEq @{nameEq} provider n)
+  resolveCommittedValuesUnstableRuntime {name} {key} {world} {error} {value}
+    nameEq keyEq (k :: ks) (ProviderView n rest) n fiber newTable newLifecycle
+    fibers present unstable providersValid | (Yes Refl) =
+      let sourceHead = viewProvidersHeadStable {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq n k rest
+            fibers fiber present providersValid
+      in void (falseCannotBeTrue (trans (sym unstable) sourceHead))
+  resolveCommittedValuesUnstableRuntime {name} {key} {world} {error} {value}
+    nameEq keyEq (k :: ks) (ProviderView provider rest) n fiber newTable
+    newLifecycle fibers present unstable providersValid | (No distinct)
+    with (valueFromProvider @{nameEq} @{keyEq} {value = value} {world = world} {error = error} provider k fibers) proof original
+    resolveCommittedValuesUnstableRuntime {name} {key} {world} {error} {value}
+      nameEq keyEq (k :: ks) (ProviderView provider rest) n fiber newTable
+      newLifecycle fibers present unstable providersValid | (No distinct) |
+      Nothing =
+        let target = trans (valueFromProviderRuntimeOther {name = name}
+              {key = key} {world = world} {error = error} {value = value}
+              nameEq keyEq provider n distinct k fiber newTable newLifecycle fibers)
+              original
+        in rewrite target in Refl
+    resolveCommittedValuesUnstableRuntime {name} {key} {world} {error} {value}
+      nameEq keyEq (k :: ks) (ProviderView provider rest) n fiber newTable
+      newLifecycle fibers present unstable providersValid | (No distinct) |
+      Just v =
+        let target = trans (valueFromProviderRuntimeOther {name = name}
+              {key = key} {world = world} {error = error} {value = value}
+              nameEq keyEq provider n distinct k fiber newTable newLifecycle fibers)
+              original
+            tailValid = viewProvidersTailValid {name = name} {key = key}
+              {world = world} {error = error} {value = value} nameEq provider k
+              rest fibers providersValid
+            tailFrame = resolveCommittedValuesUnstableRuntime {name = name}
+              {key = key} {world = world} {error = error} {value = value}
+              nameEq keyEq ks rest n fiber newTable newLifecycle fibers present
+              unstable tailValid
+        in rewrite target in cong (map (OneDepValue v)) tailFrame
+
+0 viewBindingsUnstableRuntime :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) -> (view : View name deps) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Just fiber ->
+  stableProvider (fiberLifecycle fiber) = False ->
+  viewBindingsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps view fibers = True ->
+  viewBindingsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps view
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers) = True
+viewBindingsUnstableRuntime {name} {key} {world} {error} {value}
+  nameEq keyEq deps view n fiber newTable newLifecycle fibers present unstable
+  valid =
+  let sourceProviders = andTrueLeft _ _ valid
+      sourceValues = andTrueRight _ _ valid
+      targetProviders = viewProvidersUnstableRuntime {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq deps view n fiber
+        newTable newLifecycle fibers present unstable sourceProviders
+      valuesFrame = resolveCommittedValuesUnstableRuntime {name = name}
+        {key = key} {world = world} {error = error} {value = value} nameEq keyEq
+        deps view n fiber newTable newLifecycle fibers present unstable
+        sourceProviders
+      targetValues = trans (cong isJust valuesFrame) sourceValues
+  in andBothTrue _ _ targetProviders targetValues
+
+0 fiberViewUnstableRuntime :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (observed : Fiber name key value world error) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Just fiber ->
+  stableProvider (fiberLifecycle fiber) = False ->
+  fiberViewInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} observed fibers = True ->
+  fiberViewInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} observed
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers) = True
+fiberViewUnstableRuntime {name} {key} {world} {error} {value}
+  nameEq keyEq (MkFiber component parent retired table (Inactive outcome)) n fiber
+  newTable newLifecycle fibers present unstable valid = Refl
+fiberViewUnstableRuntime {name} {key} {world} {error} {value}
+  nameEq keyEq (MkFiber component parent retired table
+    (Reloading rest accumulator view)) n fiber newTable newLifecycle fibers present
+    unstable valid = viewBindingsUnstableRuntime {name = name} {key = key}
+      {world = world} {error = error} {value = value} nameEq keyEq
+      (dependencies (componentDependencies component)) view n fiber newTable
+      newLifecycle fibers present unstable valid
+fiberViewUnstableRuntime {name} {key} {world} {error} {value}
+  nameEq keyEq (MkFiber component parent retired table (Active accumulator view))
+  n fiber newTable newLifecycle fibers present unstable valid =
+    viewBindingsUnstableRuntime {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq keyEq
+      (dependencies (componentDependencies component)) view n fiber newTable
+      newLifecycle fibers present unstable valid
+fiberViewUnstableRuntime {name} {key} {world} {error} {value}
+  nameEq keyEq (MkFiber component parent retired table
+    (Unloading accumulator view outcome)) n fiber newTable newLifecycle fibers
+    present unstable valid = viewBindingsUnstableRuntime {name = name} {key = key}
+      {world = world} {error = error} {value = value} nameEq keyEq
+      (dependencies (componentDependencies component)) view n fiber newTable
+      newLifecycle fibers present unstable valid
+
+0 viewsRegistryUnstableRuntime :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Just fiber ->
+  stableProvider (fiberLifecycle fiber) = False ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries fibers = True ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers) = True
+viewsRegistryUnstableRuntime nameEq keyEq [] n fiber newTable newLifecycle fibers
+  present unstable valid = Refl
+viewsRegistryUnstableRuntime {name} {key} {world} {error} {value}
+  nameEq keyEq (Bind current observed :: rest) n fiber newTable newLifecycle fibers
+  present unstable valid = andBothTrue _ _
+    (fiberViewUnstableRuntime {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq keyEq observed n fiber newTable
+      newLifecycle fibers present unstable (andTrueLeft _ _ valid))
+    (viewsRegistryUnstableRuntime {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq keyEq rest n fiber newTable
+      newLifecycle fibers present unstable (andTrueRight _ _ valid))
+
+0 viewsEntriesRuntimeTarget :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (fiber, replacement : Fiber name key value world error) ->
+  (registry : Registry name key value world error) ->
+  lookupEntries @{nameEq} n entries = Just fiber ->
+  fiberViewInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} replacement registry = True ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries registry = True ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+    (replaceEntries @{nameEq} n replacement entries) registry = True
+viewsEntriesRuntimeTarget nameEq keyEq [] n fiber replacement registry present
+  targetSelected valid = case present of Refl impossible
+viewsEntriesRuntimeTarget {name} {key} {world} {error} {value}
+  nameEq keyEq (Bind current observed :: rest) n fiber replacement registry present
+  targetSelected valid with (decEq @{nameEq} n current)
+  viewsEntriesRuntimeTarget {name} {key} {world} {error} {value}
+    nameEq keyEq (Bind n observed :: rest) n fiber replacement registry present
+    targetSelected valid | (Yes Refl) = case present of
+      Refl => andBothTrue _ _ targetSelected (andTrueRight _ _ valid)
+  viewsEntriesRuntimeTarget {name} {key} {world} {error} {value}
+    nameEq keyEq (Bind current observed :: rest) n fiber replacement registry present
+    targetSelected valid | (No _) = andBothTrue _ _ (andTrueLeft _ _ valid)
+      (viewsEntriesRuntimeTarget {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq keyEq rest n fiber replacement
+        registry present targetSelected (andTrueRight _ _ valid))
+
+public export
+0 viewsInvariantUnstableRuntimeReplace :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Just fiber ->
+  stableProvider (fiberLifecycle fiber) = False ->
+  fiberViewInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+    (setFiberRuntime fiber newTable newLifecycle)
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers) = True ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} (registryFibers {value = value} {world = world} {error = error} fibers) fibers = True ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+    (registryFibers {value = value} {world = world} {error = error} (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers))
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers) = True
+viewsInvariantUnstableRuntimeReplace {name} {key} {world} {error} {value}
+  nameEq keyEq n fiber newTable newLifecycle
+  fibers@(MkCoeffectContext entries unique) present unstable targetSelected valid =
+  let entryPresent = lookupFiberEntries nameEq n fiber fibers present
+      framed = viewsRegistryUnstableRuntime {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq entries n fiber
+        newTable newLifecycle fibers present unstable valid
+  in viewsEntriesRuntimeTarget {name = name} {key = key} {world = world}
+    {error = error} {value = value} nameEq keyEq entries n fiber
+    (setFiberRuntime fiber newTable newLifecycle)
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers)
+    entryPresent targetSelected framed
+
 ||| Runtime-checked rule application used by the proof-indexed LTS. `applyAction`
 ||| remains the raw ten-rule evaluator; this wrapper rejects a malformed target
 ||| rather than admitting it into a proof trace.
