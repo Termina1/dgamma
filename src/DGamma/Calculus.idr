@@ -286,9 +286,11 @@ public export
 resolveView : DecEq name => DecEq key => (deps : List key) ->
   Registry name key value world error -> Maybe (View name deps)
 resolveView [] fibers = Just EmptyView
-resolveView (k :: ks) fibers = case providerOf k fibers of
-  Nothing => Nothing
-  Just provider => map (ProviderView provider) (resolveView ks fibers)
+resolveView @{nameEq} @{keyEq} (k :: ks) fibers =
+  case providerOf @{nameEq} @{keyEq} k fibers of
+    Nothing => Nothing
+    Just provider => map (ProviderView provider)
+      (resolveView @{nameEq} @{keyEq} ks fibers)
 
 public export
 valueFromProvider : DecEq name => DecEq key => (provider : name) ->
@@ -309,6 +311,50 @@ resolveCommittedValues (k :: ks) (ProviderView provider rest) fibers =
   case valueFromProvider provider k fibers of
     Nothing => Nothing
     Just v => map (OneDepValue v) (resolveCommittedValues ks rest fibers)
+
+||| Inserting a fresh Inactive fiber cannot become a provider or change any
+||| existing target resolution.
+public export
+0 providerOfInactiveInsert : {name, key, world, error : Type} ->
+  {value : key -> Type} -> (nameEq : DecEq name) -> (keyEq : DecEq key) -> (k : key) ->
+  (n : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (fibers : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Nothing) ->
+  providerOf @{nameEq} @{keyEq} {value = value} {world = world} {error = error} k (insertBinding @{nameEq} n (freshFiber component parent) fibers absent) =
+    providerOf @{nameEq} @{keyEq} {value = value} {world = world} {error = error} k fibers
+providerOfInactiveInsert nameEq keyEq k n component parent (MkCoeffectContext entries unique) absent =
+  Refl
+
+public export
+0 resolveViewInactiveInsert : {name, key, world, error : Type} ->
+  {value : key -> Type} -> (nameEq : DecEq name) -> (keyEq : DecEq key) -> (deps : List key) ->
+  (n : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (fibers : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Nothing) ->
+  resolveView @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps (insertBinding @{nameEq} n (freshFiber component parent) fibers absent) =
+    resolveView @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps fibers
+resolveViewInactiveInsert nameEq keyEq [] n component parent fibers absent = Refl
+resolveViewInactiveInsert {name} {key} {world} {error} {value} nameEq keyEq (k :: ks)
+  n component parent fibers absent
+  with (providerOf @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} k fibers) proof originalProvider
+  resolveViewInactiveInsert {name} {key} {world} {error} {value}
+    nameEq keyEq (k :: ks) n component parent fibers absent | Nothing =
+      let insertedNone = trans
+            (providerOfInactiveInsert {name = name} {key = key} {world = world}
+              {error = error} {value = value} nameEq keyEq k n component parent fibers absent)
+            originalProvider in
+        rewrite insertedNone in Refl
+  resolveViewInactiveInsert {name} {key} {world} {error} {value}
+    nameEq keyEq (k :: ks) n component parent fibers absent | Just provider =
+      let insertedJust = trans
+            (providerOfInactiveInsert {name = name} {key = key} {world = world}
+              {error = error} {value = value} nameEq keyEq k n component parent fibers absent)
+            originalProvider in
+      rewrite insertedJust in cong (map (ProviderView provider))
+        (resolveViewInactiveInsert {name = name} {key = key}
+          {world = world} {error = error} {value = value}
+          nameEq keyEq ks n component parent fibers absent)
 
 public export
 activeCoeffectsFrom : DecEq name => DecEq key =>
