@@ -3,6 +3,7 @@ module DGamma.CP3
 import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
+import DGamma.Unified
 import Data.List
 import Data.List.Elem
 import Data.Maybe
@@ -389,3 +390,294 @@ maximalQuietFromNoDeadlock nameEq keyEq state noDeadlock maximal
   maximalQuietFromNoDeadlock nameEq keyEq state noDeadlock maximal | True = Refl
   maximalQuietFromNoDeadlock nameEq keyEq state noDeadlock maximal | False =
     void (maximal (noDeadlock Refl))
+
+||| The lifecycle/control observation retained by Section 4's `simeq`. Effect
+||| tables and ambient state are deliberately excluded here and compared by
+||| `EffectStateRelated` instead.
+public export
+data LifecycleShape = InactiveCleanShape | InactiveFailedShape |
+  ReloadingShape | ActiveShape | UnloadingCleanShape | UnloadingFailedShape
+
+public export
+lifecycleShape : Lifecycle key value world error name deps provision -> LifecycleShape
+lifecycleShape (Inactive Nothing) = InactiveCleanShape
+lifecycleShape (Inactive (Just _)) = InactiveFailedShape
+lifecycleShape (Reloading _ _ _) = ReloadingShape
+lifecycleShape (Active _ _) = ActiveShape
+lifecycleShape (Unloading _ _ Nothing) = UnloadingCleanShape
+lifecycleShape (Unloading _ _ (Just _)) = UnloadingFailedShape
+
+public export
+record ControlObservation (name : Type) where
+  constructor MkControlObservation
+  observedRetired : Bool
+  observedShape : LifecycleShape
+  observedProviders : Maybe (List name)
+
+public export
+controlObservationAt : DecEq name => name ->
+  SystemState name key value world error -> Maybe (ControlObservation name)
+controlObservationAt n state = case lookupFiber n (registry state) of
+  Nothing => Nothing
+  Just fiber => Just (MkControlObservation (retired fiber)
+    (lifecycleShape (fiberLifecycle fiber))
+    (map viewProviders (committed (fiberLifecycle fiber))))
+
+||| Section 4's control-field side of observational equality, pointwise to
+||| avoid function extensionality.
+public export
+record ControlEquivalent
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name)
+  (left, right : SystemState name key value world error) where
+  constructor MkControlEquivalent
+  0 controlPointwise : (n : name) ->
+    controlObservationAt @{nameEq} n left =
+    controlObservationAt @{nameEq} n right
+
+||| Effect/control conjunction used by Lemma 72 and Theorem 73. This finite
+||| mechanization uses exact full-effect agreement, which is stronger than the
+||| paper's open observational equivalence.
+public export
+record SystemEquivalent
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (left, right : SystemState name key value world error) where
+  constructor MkSystemEquivalent
+  0 effectsEquivalent : EffectStateRelated keyEq
+    (projectEffectState @{nameEq} left) (projectEffectState @{nameEq} right)
+  0 controlsEquivalent : ControlEquivalent name key world error value nameEq
+    left right
+
+||| A shared orchestration subsequence. Lifecycle steps may be inserted or
+||| deleted independently, while O-Insert/O-Retire/O-Remove actions must occur
+||| in the same order and carry the very same runtime component values.
+public export
+data SameOrchestration :
+  {leftFirst, leftLast, rightFirst, rightLast :
+    SystemState name key value world error} ->
+  Transitions leftFirst leftLast -> Transitions rightFirst rightLast -> Type where
+  SameOrchestrationEnd : SameOrchestration NoTransitions NoTransitions
+  SkipLeftLifecycle :
+    (transition : Transition leftFirst leftMiddle) ->
+    (leftRest : Transitions leftMiddle leftLast) ->
+    isLifecycleAction (transitionAction transition) = True ->
+    SameOrchestration leftRest rightTrace ->
+    SameOrchestration (MoreTransitions transition leftRest) rightTrace
+  SkipRightLifecycle :
+    (transition : Transition rightFirst rightMiddle) ->
+    (rightRest : Transitions rightMiddle rightLast) ->
+    isLifecycleAction (transitionAction transition) = True ->
+    SameOrchestration leftTrace rightRest ->
+    SameOrchestration leftTrace (MoreTransitions transition rightRest)
+  MatchOrchestration :
+    (action : Action name key value world error) ->
+    (leftTransition : Transition leftFirst leftMiddle) ->
+    (leftRest : Transitions leftMiddle leftLast) ->
+    (rightTransition : Transition rightFirst rightMiddle) ->
+    (rightRest : Transitions rightMiddle rightLast) ->
+    isLifecycleAction action = False ->
+    transitionAction leftTransition = action ->
+    transitionAction rightTransition = action ->
+    SameOrchestration leftRest rightRest ->
+    SameOrchestration (MoreTransitions leftTransition leftRest)
+      (MoreTransitions rightTransition rightRest)
+
+||| Non-strict support order used by Definition 67's canonical form.
+public export
+data BeforeIn : a -> a -> List a -> Type where
+  BeforeHere : Elem later rest -> BeforeIn earlier later (earlier :: rest)
+  BeforeThere : BeforeIn earlier later rest ->
+    BeforeIn earlier later (other :: rest)
+
+public export
+record LinearizesSupport
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (state : SystemState name key value world error)
+  (order : List name) where
+  constructor MkLinearizesSupport
+  0 orderSound : (n : name) -> Elem n order ->
+    isSupported @{nameEq} @{keyEq} n state = True
+  0 orderComplete : (n : name) ->
+    isSupported @{nameEq} @{keyEq} n state = True -> Elem n order
+  0 edgesOrdered : (provider, consumer : name) ->
+    PrecedenceEdge nameEq provider consumer state ->
+    Elem provider order -> Elem consumer order ->
+    BeforeIn provider consumer order
+
+||| An open episode located in a global trace. At a quiescent successful state,
+||| Lemma 70 identifies exactly one such final episode for each supported name.
+public export
+record LocatedEpisodePrefix
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (n : name)
+  {initial, final : SystemState name key value world error}
+  (global : Transitions initial final) where
+  constructor MkLocatedEpisodePrefix
+  prefixPreStart : SystemState name key value world error
+  prefixCurrent : SystemState name key value world error
+  traceBeforePrefix : Transitions initial prefixPreStart
+  locatedPrefix : EpisodePrefix name key world error value nameEq keyEq n
+    prefixPreStart prefixCurrent
+  traceAfterPrefix : Transitions prefixCurrent final
+  0 prefixDecomposition :
+    appendTransitions traceBeforePrefix
+      (MoreTransitions (beginTransition (opening locatedPrefix))
+        (appendTransitions (prefixTransitions locatedPrefix) traceAfterPrefix)) = global
+
+public export
+record CanonicalSchedule
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, originalFinal : SystemState name key value world error}
+  (original : Transitions initial originalFinal) where
+  constructor MkCanonicalSchedule
+  canonicalFinal : SystemState name key value world error
+  canonicalTrace : Transitions initial canonicalFinal
+  sameInputs : SameOrchestration original canonicalTrace
+  supportOrder : List name
+  supportLinearization : LinearizesSupport name key world error value nameEq keyEq
+    originalFinal supportOrder
+  canonicalEpisode : (n : name) -> Elem n supportOrder ->
+    LocatedEpisodePrefix name key world error value nameEq keyEq n canonicalTrace
+  canonicalEndpoint : SystemEquivalent name key world error value nameEq keyEq
+    originalFinal canonicalFinal
+
+||| Lemma 70, stated as pointwise equality so no finite-set quotient or function
+||| extensionality is required.
+public export
+SupportMatchesActive : {name, key, world, error : Type} ->
+  {value : key -> Type} -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  SystemState name key value world error -> Type
+SupportMatchesActive {name} nameEq keyEq state = (n : name) ->
+  isSupported @{nameEq} @{keyEq} n state = activeAt n state
+  where
+  activeAt : name -> SystemState name key value world error -> Bool
+  activeAt n state = case lookupFiber n (registry state) of
+    Nothing => False
+    Just fiber => isActive (fiberLifecycle fiber)
+
+||| Lemma 70. The statement exposes every paper premise; its full induction on
+||| the support relation remains part of the Confluence proof debt.
+||| TODO(proof): well-founded support induction and parent-registration frame.
+public export
+supportAtQuiescenceTheorem : (name : Type) -> (key : Type) ->
+  (value : key -> Type) -> (world, error : Type) -> Type
+supportAtQuiescenceTheorem name key value world error =
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) ->
+  PrecedenceAcyclic nameEq state ->
+  quiet @{nameEq} @{keyEq} state = True ->
+  noFailedFibers state = True ->
+  allFibersTotalOnProvision @{keyEq} state = True ->
+  SupportMatchesActive nameEq keyEq state
+
+||| Lemma 71's effect-level transposition core. Control-field applicability
+||| frames are separate debt, but the endpoint effect diamond is exactly the
+||| generated-monoid commutation field of Definition 60.
+public export
+0 activationEffectTransposition :
+  (independent : TraceIndependent name key world error value keyEq trace) ->
+  (left, right : name) -> Not (left = right) ->
+  (leftT : TraceEffectTransformation name key world error value left trace) ->
+  (rightT : TraceEffectTransformation name key world error value right trace) ->
+  PartialCommute (EffectStateEquivalence keyEq)
+    (runTraceEffectTransformation leftT)
+    (runTraceEffectTransformation rightT)
+activationEffectTransposition
+  (MkTraceIndependent commute yieldsStable) left right distinct leftT rightT =
+  commute left right distinct leftT rightT
+
+||| Lemma 72's precise finite deletion statement. `surviving` is an actual
+||| checked trace, not a list permutation claim, and the endpoint relation keeps
+||| both effect and control observations.
+public export
+record DeletionResult
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, originalFinal : SystemState name key value world error}
+  (original : Transitions initial originalFinal) where
+  constructor MkDeletionResult
+  survivingFinal : SystemState name key value world error
+  surviving : Transitions initial survivingFinal
+  endpointPreserved : SystemEquivalent name key world error value nameEq keyEq
+    originalFinal survivingFinal
+
+||| Theorem 73. Part 1 returns the canonical schedule promised by the paper;
+||| Part 2 states unique quiescent endpoints for any same-input execution, up to
+||| the explicit effect/control equivalence. Name-renaming generalization is
+||| retained as documented proof debt rather than hidden in exact equality.
+||| TODO(proof): Lemma-71 applicability frames, Lemma-72 deletion induction,
+||| support well-foundedness, and canonical episode sorting.
+public export
+confluenceTheorem : (name : Type) -> (key : Type) ->
+  (value : key -> Type) -> (world, error : Type) -> Type
+confluenceTheorem name key value world error =
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, leftFinal, rightFinal : SystemState name key value world error) ->
+  (leftTrace : Transitions initial leftFinal) ->
+  (rightTrace : Transitions initial rightFinal) ->
+  registryWellFormed @{nameEq} @{keyEq} initial = True ->
+  bindings (registry initial) = [] ->
+  quiet @{nameEq} @{keyEq} leftFinal = True ->
+  quiet @{nameEq} @{keyEq} rightFinal = True ->
+  noFailedFibers leftFinal = True ->
+  noFailedFibers rightFinal = True ->
+  allFibersTotalOnProvision @{keyEq} leftFinal = True ->
+  allFibersTotalOnProvision @{keyEq} rightFinal = True ->
+  TraceIndependent name key world error value keyEq leftTrace ->
+  TraceIndependent name key world error value keyEq rightTrace ->
+  SameOrchestration leftTrace rightTrace ->
+  (CanonicalSchedule name key world error value nameEq keyEq leftTrace,
+   CanonicalSchedule name key world error value nameEq keyEq rightTrace,
+   SystemEquivalent name key world error value nameEq keyEq leftFinal rightFinal)
+
+||| Reflexivity sanity check for the orchestration projection: arbitrary
+||| lifecycle noise is ignored, while each orchestration action matches itself.
+public export
+0 sameOrchestrationReflexive :
+  (trace : Transitions first last) -> SameOrchestration trace trace
+sameOrchestrationReflexive NoTransitions = SameOrchestrationEnd
+sameOrchestrationReflexive
+  (MoreTransitions transition@(Fired nameEq keyEq (OInsert n parent component)
+    tag equation) rest) =
+  MatchOrchestration (OInsert n parent component) transition rest transition rest
+    Refl Refl Refl (sameOrchestrationReflexive rest)
+sameOrchestrationReflexive
+  (MoreTransitions transition@(Fired nameEq keyEq (ORetire n) tag equation) rest) =
+  MatchOrchestration (ORetire n) transition rest transition rest
+    Refl Refl Refl (sameOrchestrationReflexive rest)
+sameOrchestrationReflexive
+  (MoreTransitions transition@(Fired nameEq keyEq (ORemove n) tag equation) rest) =
+  MatchOrchestration (ORemove n) transition rest transition rest
+    Refl Refl Refl (sameOrchestrationReflexive rest)
+sameOrchestrationReflexive
+  (MoreTransitions transition@(Fired nameEq keyEq (LBegin n) tag equation) rest) =
+  SkipLeftLifecycle transition rest Refl
+    (SkipRightLifecycle transition rest Refl (sameOrchestrationReflexive rest))
+sameOrchestrationReflexive
+  (MoreTransitions transition@(Fired nameEq keyEq (LAdvance n) tag equation) rest) =
+  SkipLeftLifecycle transition rest Refl
+    (SkipRightLifecycle transition rest Refl (sameOrchestrationReflexive rest))
+sameOrchestrationReflexive
+  (MoreTransitions transition@(Fired nameEq keyEq (LDivert n) tag equation) rest) =
+  SkipLeftLifecycle transition rest Refl
+    (SkipRightLifecycle transition rest Refl (sameOrchestrationReflexive rest))
+sameOrchestrationReflexive
+  (MoreTransitions transition@(Fired nameEq keyEq (LLeave n) tag equation) rest) =
+  SkipLeftLifecycle transition rest Refl
+    (SkipRightLifecycle transition rest Refl (sameOrchestrationReflexive rest))
+sameOrchestrationReflexive
+  (MoreTransitions transition@(Fired nameEq keyEq (LUnload n) tag equation) rest) =
+  SkipLeftLifecycle transition rest Refl
+    (SkipRightLifecycle transition rest Refl (sameOrchestrationReflexive rest))
+
+public export
+0 systemEquivalentReflexive :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) ->
+  SystemEquivalent name key world error value nameEq keyEq state state
+systemEquivalentReflexive nameEq keyEq state = MkSystemEquivalent
+  (MkEffectStateRelated Refl (\selected, k => Refl))
+  (MkControlEquivalent (\n => Refl))
