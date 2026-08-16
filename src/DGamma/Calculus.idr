@@ -843,15 +843,48 @@ viewBindingsInactiveInsert {name} {key} {world} {error} {value}
 public export
 fiberViewInvariant : DecEq name => DecEq key =>
   Fiber name key value world error -> Registry name key value world error -> Bool
-fiberViewInvariant (MkFiber component parent retired table lifecycle) fibers =
+fiberViewInvariant @{nameEq} @{keyEq}
+  (MkFiber component parent retired table lifecycle) fibers =
   case lifecycle of
     Inactive _ => True
-    Reloading _ _ view => viewBindingsInvariant
+    Reloading _ _ view => viewBindingsInvariant @{nameEq} @{keyEq}
       (dependencies (componentDependencies component)) view fibers
-    Active _ view => viewBindingsInvariant
+    Active _ view => viewBindingsInvariant @{nameEq} @{keyEq}
       (dependencies (componentDependencies component)) view fibers
-    Unloading _ view _ => viewBindingsInvariant
+    Unloading _ view _ => viewBindingsInvariant @{nameEq} @{keyEq}
       (dependencies (componentDependencies component)) view fibers
+
+public export
+0 fiberViewInactiveInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (fiber : Fiber name key value world error) ->
+  (n : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (fibers : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} n fibers = Nothing) ->
+  fiberViewInvariant @{nameEq} @{keyEq} fiber
+    (insertBinding @{nameEq} n (freshFiber component parent) fibers absent) =
+  fiberViewInvariant @{nameEq} @{keyEq} fiber fibers
+fiberViewInactiveInsert {name} {key} {world} {error} {value}
+  nameEq keyEq (MkFiber ownComponent ownParent retired table lifecycle)
+  n component parent fibers absent = case lifecycle of
+    Inactive outcome => Refl
+    Reloading remaining accumulator view =>
+      viewBindingsInactiveInsert {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq keyEq
+        (dependencies (componentDependencies ownComponent)) view
+        n component parent fibers absent
+    Active accumulator view =>
+      viewBindingsInactiveInsert {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq keyEq
+        (dependencies (componentDependencies ownComponent)) view
+        n component parent fibers absent
+    Unloading accumulator view outcome =>
+      viewBindingsInactiveInsert {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq keyEq
+        (dependencies (componentDependencies ownComponent)) view
+        n component parent fibers absent
 
 public export
 pairwiseProvisionInvariant : DecEq key =>
