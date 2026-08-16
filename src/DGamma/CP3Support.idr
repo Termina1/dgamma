@@ -178,6 +178,46 @@ sameOrchestrationTransitive
           rightTransition rightRest leftOrchestration leftAction rightAction
           (sameOrchestrationTransitive firstTail secondTail)
 
+||| If the canonical sorting/deletion construction returns the same canonical
+||| endpoint for two schedules, observational uniqueness follows by symmetry
+||| and transitivity. This discharges Theorem 73's final diagram chase.
+public export
+0 canonicalEndpointsEquivalent :
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  (leftSchedule : CanonicalSchedule name key world error value nameEq keyEq
+    leftTrace) ->
+  (rightSchedule : CanonicalSchedule name key world error value nameEq keyEq
+    rightTrace) ->
+  canonicalFinal leftSchedule = canonicalFinal rightSchedule ->
+  SystemEquivalent name key world error value nameEq keyEq leftFinal rightFinal
+canonicalEndpointsEquivalent leftSchedule rightSchedule sameFinal =
+  systemEquivalentTransitive (canonicalEndpoint leftSchedule)
+    (replace {p = \state => SystemEquivalent name key world error value nameEq
+      keyEq state rightFinal} (sym sameFinal)
+      (systemEquivalentSymmetric (canonicalEndpoint rightSchedule)))
+
+||| Canonical-schedule construction plus endpoint coincidence is precisely the
+||| still-missing constructive core of full Confluence; all packaging after it
+||| is proved here.
+public export
+0 confluenceFromCanonicalSchedules :
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  (leftSchedule : CanonicalSchedule name key world error value nameEq keyEq
+    leftTrace) ->
+  (rightSchedule : CanonicalSchedule name key world error value nameEq keyEq
+    rightTrace) ->
+  canonicalFinal leftSchedule = canonicalFinal rightSchedule ->
+  (CanonicalSchedule name key world error value nameEq keyEq leftTrace,
+   CanonicalSchedule name key world error value nameEq keyEq rightTrace,
+   SystemEquivalent name key world error value nameEq keyEq leftFinal rightFinal)
+confluenceFromCanonicalSchedules leftSchedule rightSchedule sameFinal =
+  (leftSchedule, rightSchedule,
+    canonicalEndpointsEquivalent leftSchedule rightSchedule sameFinal)
+
 ||| Lemma 72 base case: deleting no episodes preserves the original checked
 ||| trace and endpoint.
 public export
