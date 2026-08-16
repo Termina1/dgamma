@@ -2227,10 +2227,11 @@ record CurrentEndpointRenaming
         (leftFinalGenerations registrations) = Just leftGeneration))
 
 ||| The host specialization packages paper Lemma 56 explicitly: external root
-||| actions retain their exact raw order, generated registration trees use a
-||| generation bijection, and only the current endpoint receives a raw-name
-||| bijection.  This extra witness is necessary because O-Insert is an explicit
-||| rule rather than a value actually returned by `runStepEffect`.
+||| actions retain their exact raw order and every historical root birth is
+||| generation-coupled to that occurrence; generated registration trees use a
+||| parent-local generation bijection; and only the current endpoint receives a
+||| raw-name bijection. This extra witness is necessary because O-Insert is an
+||| explicit rule rather than a value actually returned by `runStepEffect`.
 public export
 record SameOrchestrationModuloGenerated
   {leftFirst, leftFinal, rightFirst, rightFinal :

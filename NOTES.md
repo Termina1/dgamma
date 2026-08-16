@@ -165,8 +165,8 @@ cannot silently introduce a proof:
 - `supportAtQuiescenceTheorem` — Lemma 70.
 - `deletionTheorem` — Lemma 72.
 - `confluenceTheorem` — the finite explicit-registration form of Theorem 73,
-  with generation-wise Lemma-56 registration matching and a separate current
-  endpoint renaming.
+  with parent-generation/per-parent-position structural matching, exact
+  historical external-root coupling, and a separate current endpoint renaming.
 
 Each open theorem is marked `TODO(proof)` at its declaration. These are honest
 uninhabited statements, not holes accepted by the compiler. `orderingTheorem`
@@ -604,12 +604,15 @@ empty-suffix quantitative base (`progressEndFromNoDeadlock` and
    bound across every lifecycle transition. This needs a ranked induction, not
    arithmetic normalization alone.
 
-### Confluence (Theorem 73): generation-wise statement and proof debt
+### Confluence (Theorem 73): parent-local structural statement and proof debt
 
 The finite explicit-registration specialization remains stated and is being
-resubmitted for round-7 review. Round 6 accepted generation-stamped
-*self-canonicalization* but rejected the cross-trace premise because it still
-used one global raw-name bijection. The proposition now separates three roles:
+resubmitted for round-8 review. Round 6 accepted generation-stamped
+*self-canonicalization* and found the global raw-name collision; round 7
+accepted that generation/current-name split but found two further proposition-
+shape defects: child births were still paired in one global chronological word,
+and historical removed external-root generations were not tied to their exact
+external input occurrences. The proposition now separates six roles:
 
 1. **One-step episode deletion (Lemma 72).** `KeepAction` remains
    bidirectional, but `DeleteEpisodeLifecycle` additionally requires
@@ -623,39 +626,55 @@ used one global raw-name bijection. The proposition now separates three roles:
    nonempty head step and fixed continuation of its live parent. Protocol ranks
    strictly increase along yielded-parent and precedence edges. This is the
    documented explicit-host repair for the paper's Lemma-68 provenance gap.
-3. **Generation-wise Lemma-56 matching.**
-   `RegistrationGenerationBijection` acts on `(raw name, birth ordinal)`, not on
-   raw names. `RegistrationTraceCorrespondence` scans both checked traces with
-   separate ordinals and current-generation environments; it pairs every child
-   birth exactly once, keeps the component equal, and maps both the child's
-   generation and the exact parent generation live at that birth. Non-child
-   actions may interleave independently. `SameExternalOrchestration` separately
-   compares externally supplied root actions in raw-name order.
-4. **Current endpoint names.** `CurrentEndpointRenaming` contains the raw
+3. **Parent-local generation matching.** `RegistrationGenerationBijection`
+   acts on `(raw name, birth ordinal)`, not on raw names. Each
+   `RegistrationEvent` records the exact child generation, the parent generation
+   live at that birth, the component, and the number of earlier children born
+   under that parent generation. `RegistrationTraceCorrespondence` may hold
+   births pending while either trace advances, but each pending birth must be
+   removed exactly once by a `RegistrationEventMatch`. That match requires the
+   same component, mapped child and parent generations, and equal **per-parent**
+   child position. It therefore preserves one parent's iterator/yield order but
+   imposes no chronological order between different parents.
+4. **Historical external roots.** `SameExternalOrchestration` still compares
+   externally supplied root actions in exact raw-name order.
+   `ExternalRootBirthCorrespondence` additionally scans every historical root
+   O-Insert, including roots removed before the endpoint, and requires its
+   generation to map to that exact same matched root birth. Generated subtrees
+   cannot be reassigned by permuting removed external-root generations.
+5. **Current endpoint names.** `CurrentEndpointRenaming` contains the raw
    `NameBijection` used only by `SystemEquivalentByRenaming`. It fixes every
    live root and requires each last unremoved generation to agree with the
    generation bijection. A raw name can therefore map differently at distinct
    historical births without changing a later shared live root.
-5. **Canonical deletion.** `CanonicalRegistrationCorrespondence` still maps
+6. **Canonical deletion.** `CanonicalRegistrationCorrespondence` still maps
    located occurrences injectively and keys removals by exact generations.
    `CanonicalEndpointRelation` separates historical
    `endpointWithdrawnGenerations` from current `endpointWithdrawnNames`, and
    `CanonicalInputPlacement` quantifies freshness/order per located birth.
 
-`freshChoiceCorrespondenceWitness` is the concrete round-6 blocker regression:
-the left checked trace uses child generation `(1,2)` and later live root 1; the
-right uses child generation `(2,2)` and the same later live root 1. The
-historical generations swap, `(1,5)` remains fixed, the complete
-`SameOrchestrationModuloGenerated` value is constructed, and
-`freshChoiceTheorem73PremiseChain` applies the exact public Theorem-73 type after
-all remaining semantic premises. `roleChangingFullCanonicalScheduleStatementCheck`
-then specializes every `CanonicalSchedule` constructor field to the nine-action
-trace and forces historical withdrawals to `[(1,2)]` with no current raw
-omission. It is an honest full-package assembly check, not a construction of
-the still-open canonical sorting proof. `roleChangingCanonicalRuntimeCheck`
-separately executes the six-action roots-first replay and confirms that both the
-original and replay endpoints are quiet, successful, supported, active-root
-shapes.
+Three concrete statement regressions now cover the repaired public domain.
+`freshChoiceCorrespondenceWitness` retains round 6's pair: left child `(1,2)`
+versus right child `(2,2)`, both followed by the same live root `(1,5)`.
+`crossParentPermutationCorrespondenceWitness` constructs two checked 12-action
+traces with exact external roots 0 then 1 and the same final registration tree;
+the left births children `(2,4)` under root 0 then `(3,5)` under root 1, while
+the right births `(3,4)` then `(2,5)`. The pending structural matcher maps
+`(2,4)->(2,5)` and `(3,5)->(3,4)` at local position zero under their respective
+fixed parent generations. `crossParentPermutationTheorem73PremiseChain` applies
+the literal public `confluenceTheorem` after taking every remaining semantic
+premise. Conversely, `historicalExternalRootPermutationRejected` projects the
+first exact-root equation and eliminates a bijection that sends historical root
+`(0,0)` to `(1,1)`.
+
+`roleChangingFullCanonicalScheduleStatementCheck` still specializes every
+`CanonicalSchedule` constructor field to the nine-action role-changing trace
+and forces historical withdrawals to `[(1,2)]` with no current raw omission. It
+is an honest full-package assembly check, not a construction of the still-open
+canonical sorting proof. `roleChangingCanonicalRuntimeCheck` separately
+executes the six-action roots-first replay and confirms quiet, successful,
+supported active-root endpoint shapes. The round-6 1-vs-2 witness and this
+self-canonical package both still typecheck under the parent-local redesign.
 
 The trace-free `CanonicalEndpointRelation` deliberately cannot validate an
 arbitrary historical list. `canonicalEndpointHistoricalOnly` is therefore only
@@ -665,8 +684,9 @@ stamp is an actual original child birth removed from the canonical trace.
 
 The older exact-name/zero-current-raw-withdrawal helpers remain proved strong
 special cases. Constructive checked deletion, canonical sorting, and general
-endpoint assembly remain open; generation-wise cross-trace renaming is no
-longer proposition-shape debt.
+endpoint assembly remain open. The two round-7 proposition-shape defects now
+have positive/negative typed regressions, but acceptance is not claimed before
+the independent round-8 review.
 
 ### Recovery and Theorem 64
 
@@ -740,7 +760,7 @@ that the accumulator executes at L-Unload, not at L-Leave/L-Divert/L-Raise.
 These are candidate proposition-shape repairs. Constructive Lemma 72/Theorem 73
 proofs and a full positive nested canonical schedule remain open.
 
-### CP3 adversarial rounds 5–6: role changes and cross-trace generations
+### CP3 adversarial rounds 5–7: role changes and structural generations
 
 Round 5 found that raw-name canonical withdrawal made the checked
 child-1-to-live-root-1 trace internally inconsistent. Generation-stamped
@@ -748,25 +768,36 @@ canonical accounting repaired that self-canonical case. Round 6 accepted the
 repair but found a distinct cross-trace restriction: the global raw
 `NameBijection` still forced historical child 1 to remain 1 because the later
 live external root 1 had to be fixed, excluding an equivalent trace that chose
-fresh child 2.
+fresh child 2. The generation/current-name split and the complete 1-vs-2 public
+premise chain repaired that defect without regressing self-canonicalization.
 
-The cross-trace premise now uses `RegistrationTraceCorrespondence` under a
-`RegistrationGenerationBijection`. Its scanner records root births in the
-current-generation environment, pairs child births with the same component,
-and verifies that both child and live-parent generations map. The current
-endpoint raw bijection is separate and fixes roots. The concrete two-trace
-witness swaps only `(1,2)` and `(2,2)` while leaving live `(1,5)` unchanged.
-Thus the exact paper-legal fresh-choice pair identified by round 6 now inhabits
-`SameOrchestrationModuloGenerated` and reaches the complete Theorem-73 premise
-application guard.
+Round 7 then showed that the first generation scanner was not actually a tree
+bijection: it consumed the globally first remaining child on both sides. The
+reviewer's checked 12-action pair reversed two independent parents' child-birth
+interleaving and reached the concrete forced mismatch `(3,4)` versus `(2,5)`.
+The same review found the weaker dual: a removed external root was coupled to
+its exact raw input only while current, allowing historical root generations
+and their subtrees to be swapped.
 
-The old singleton-membership role-change guard was removed. `roleChangingFullCanonicalScheduleStatementCheck` now assembles every
-field of a `CanonicalSchedule` specialized to the concrete nine-action trace,
-with exact historical/no-raw-withdrawal equations. Because constructive sorting
-remains open, the field proofs remain arguments; this is the largest honest
-full-package statement regression currently available, not a claimed schedule
-inhabitant. Likewise `canonicalEndpointHistoricalOnly` is documented as
-unchecked metadata unless coupled to `canonicalRegistrationTree`.
+The replacement uses pending generated events and matches on mapped parent
+generation plus per-parent child position. Cross-parent chronological order is
+absent from the proposition. A separate `ExternalRootBirthCorrespondence`
+fixes every historical external O-Insert occurrence. The committed 12-action
+witness now builds the complete `SameOrchestrationModuloGenerated` package and
+crosses the exact public Theorem-73 premise chain; a concrete generation swap
+of historical roots 0 and 1 is constructively eliminated. The earlier 1-vs-2
+fresh-choice pair, nine-action self-canonical statement package, positive
+parent yield, empty-parent rejection, strict-rank cycle rejection, and identity-
+deletion barrier remain typechecked.
+
+The old singleton-membership role-change guard remains removed.
+`roleChangingFullCanonicalScheduleStatementCheck` assembles every field of a
+`CanonicalSchedule` specialized to the concrete nine-action trace, with exact
+historical/no-raw-withdrawal equations. Because constructive sorting remains
+open, the field proofs remain arguments; this is a full-package statement
+regression, not a claimed schedule inhabitant. Likewise
+`canonicalEndpointHistoricalOnly` remains unchecked metadata unless coupled to
+`canonicalRegistrationTree`.
 
 ## Status
 
@@ -778,10 +809,12 @@ strict containment, resolution constancy, and provider-value constancy.
 **Partial:** Progress/Theorem 66 (search/maximality/base case proved);
 Lemmas 68/70 (candidate tagged/ranked provenance statements; Lemma-70 empty
 base proved); Lemma 71 (effect commutation projection); Lemma 72 (candidate
-lifecycle-only deletion statement); Confluence/Theorem 73 (generation-wise
-cross-trace and generation-stamped canonical proposition package submitted for
-round-7 review; constructive deletion/sorting and general endpoint assembly
-remain open); and recovery-combined Theorem 64 (complete conditional assembly
+lifecycle-only deletion statement); Confluence/Theorem 73 (parent-local
+structural cross-trace and generation-stamped canonical proposition package
+submitted for round-8 review; the round-7 cross-parent and historical-root
+statement defects have typed regressions, while constructive deletion/sorting
+and general endpoint assembly remain open); and recovery-combined Theorem 64
+(complete conditional assembly
 from Corollary 62). Lemmas 54–57 have many rule, frame, and boundary analogues
 but are not individually complete.
 
@@ -797,8 +830,8 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** obtain round-7 statement review, then implement temporal accumulator
+**Next:** obtain round-8 statement review, then implement temporal accumulator
 induction, ranked unloading-chain Progress, and constructive checked episode
-deletion/canonical sorting. The concrete role-changing package now exercises the
-full schedule constructor, but an inhabited positive canonical schedule remains
-constructive proof debt.
+deletion/canonical sorting. The 12-action cross-parent pair now reaches the
+literal public premise chain and historical-root reassignment is rejected; an
+inhabited positive canonical schedule remains constructive proof debt.
