@@ -518,6 +518,61 @@ elemDec wanted (x :: xs) = case decEq wanted x of
   Yes Refl => True
   No _ => elemDec wanted xs
 
+public export
+removeName : DecEq a => a -> List a -> List a
+removeName wanted [] = []
+removeName wanted (x :: xs) with (decEq wanted x)
+  removeName x (x :: xs) | (Yes Refl) = xs
+  removeName wanted (x :: xs) | (No _) = x :: removeName wanted xs
+
+public export
+0 removeNamePresentLength : DecEq a => (wanted : a) -> (xs : List a) ->
+  Elem wanted xs -> S (length (removeName wanted xs)) = length xs
+removeNamePresentLength wanted [] present impossible
+removeNamePresentLength wanted (x :: xs) present with (decEq wanted x)
+  removeNamePresentLength x (x :: xs) present | (Yes Refl) = Refl
+  removeNamePresentLength x (x :: xs) Here | (No distinct) =
+    void (distinct Refl)
+  removeNamePresentLength wanted (x :: xs) (There later) | (No _) =
+    cong S (removeNamePresentLength wanted xs later)
+
+public export
+0 elemRemoveOtherName : DecEq a => (wanted, removed : a) ->
+  Not (wanted = removed) -> (xs : List a) ->
+  Elem wanted xs -> Elem wanted (removeName removed xs)
+elemRemoveOtherName wanted removed distinct [] present impossible
+elemRemoveOtherName wanted removed distinct (x :: xs) present
+  with (decEq removed x)
+  elemRemoveOtherName wanted x distinct (x :: xs) present | (Yes Refl) =
+    case present of
+      Here => void (distinct Refl)
+      There later => later
+  elemRemoveOtherName x removed distinct (x :: xs) Here | (No _) = Here
+  elemRemoveOtherName wanted removed distinct (x :: xs) (There later) | (No _) =
+    There (elemRemoveOtherName wanted removed distinct xs later)
+
+public export
+0 elemRemoveWasPresent : DecEq a => (wanted, removed : a) -> (xs : List a) ->
+  Elem wanted (removeName removed xs) -> Elem wanted xs
+elemRemoveWasPresent wanted removed [] present impossible
+elemRemoveWasPresent wanted removed (x :: xs) present with (decEq removed x)
+  elemRemoveWasPresent wanted x (x :: xs) present | (Yes Refl) = There present
+  elemRemoveWasPresent x removed (x :: xs) Here | (No _) = Here
+  elemRemoveWasPresent wanted removed (x :: xs) (There later) | (No _) =
+    There (elemRemoveWasPresent wanted removed xs later)
+
+public export
+0 elemDecFalseNotElem : DecEq a => (wanted : a) -> (xs : List a) ->
+  elemDec wanted xs = False -> Not (Elem wanted xs)
+elemDecFalseNotElem wanted [] absent = \present => uninhabited present
+elemDecFalseNotElem wanted (x :: xs) absent with (decEq wanted x)
+  elemDecFalseNotElem x (x :: xs) absent | (Yes Refl) =
+    case absent of Refl impossible
+  elemDecFalseNotElem wanted (x :: xs) absent | (No distinct) = \present =>
+    case present of
+      Here => distinct Refl
+      There later => elemDecFalseNotElem wanted xs absent later
+
 ||| Appending a distinct fresh name does not change a failed membership test.
 public export
 0 elemDecAppendFresh : DecEq a => (wanted, fresh : a) -> (seen : List a) ->
