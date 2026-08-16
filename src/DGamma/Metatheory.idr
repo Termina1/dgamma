@@ -2227,7 +2227,7 @@ record OrderingResult
     (closedInside (locatedEpisode consumerEpisode))
 
 ||| Theorem 63 selects (rather than accepts) the containing provider episode.
-||| TODO(proof): global-trace induction using L-Begin and the relied L-Unload guard.
+||| Its inhabitant is `DGamma.Ordering.orderingTheoremProof`.
 public export
 orderingTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type
@@ -4397,7 +4397,8 @@ resolutionStructureTheoremProof nameEq keyEq selected pre current episode =
 
 ||| Full Theorem 64 recovery branch over a maximal closed episode. Structural
 ||| coherence is separated so it can be proved without assuming temporal recovery.
-||| TODO(proof): combine resolutionStructureTheorem with terminalRecoveryTheorem.
+||| TODO(proof): terminal recovery remains open; `DGamma.CP3Support` proves the
+||| final combination from `terminalRecoveryTheorem`.
 public export
 resolutionCoherenceTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type
@@ -4547,14 +4548,14 @@ public export
     (setFiberRuntime fiber newTable newLife) =
   fiberResolvedProvider @{nameEq} @{keyEq} wanted provider fiber
 fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
-  (MkFiber component parent retired table (Inactive outcome)) newTable newLife
+  (MkFiber component parent retiredFlag table (Inactive outcome)) newTable newLife
   view sourceCommitted targetCommitted = case sourceCommitted of Refl impossible
 fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
-  (MkFiber component parent retired table
+  (MkFiber component parent retiredFlag table
     (Reloading remaining accumulator sourceView)) newTable (Inactive outcome)
   view sourceCommitted targetCommitted = case targetCommitted of Refl impossible
 fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
-  (MkFiber component parent retired table
+  (MkFiber component parent retiredFlag table
     (Reloading remaining accumulator sourceView)) newTable
   (Reloading targetRemaining targetAccumulator targetView)
   view sourceCommitted targetCommitted =
@@ -4566,11 +4567,11 @@ fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
       (dependencies (componentDependencies component))) ->
       fiberResolvedProvider @{nameEq} @{keyEq} wanted provider
         (setFiberRuntime
-          (MkFiber component parent retired table
+          (MkFiber component parent retiredFlag table
             (Reloading remaining accumulator sameView))
           newTable (Reloading targetRemaining targetAccumulator sameView)) =
       fiberResolvedProvider @{nameEq} @{keyEq} wanted provider
-        (MkFiber component parent retired table
+        (MkFiber component parent retiredFlag table
           (Reloading remaining accumulator sameView))
     resolutionSame sameView with (viewLookup @{keyEq} wanted
       (dependencies (componentDependencies component)) sameView)
@@ -4580,7 +4581,7 @@ fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
           case equal of Refl => Refl
         resolutionSame sameView | Just actual | No distinct = Refl
 fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
-  (MkFiber component parent retired table
+  (MkFiber component parent retiredFlag table
     (Reloading remaining accumulator sourceView)) newTable
   (Active targetAccumulator targetView)
   view sourceCommitted targetCommitted =
@@ -4588,11 +4589,11 @@ fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
       Refl => case justInjective targetCommitted of
         Refl => trans
           (fiberResolvedProviderActiveView nameEq keyEq wanted provider component
-            parent retired newTable targetAccumulator targetView)
+            parent retiredFlag newTable targetAccumulator targetView)
           (sym (fiberResolvedProviderReloadingView nameEq keyEq wanted provider
-            component parent retired table remaining accumulator targetView))
+            component parent retiredFlag table remaining accumulator targetView))
 fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
-  (MkFiber component parent retired table
+  (MkFiber component parent retiredFlag table
     (Reloading remaining accumulator sourceView)) newTable
   (Unloading targetAccumulator targetView outcome)
   view sourceCommitted targetCommitted =
@@ -4600,54 +4601,54 @@ fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
       Refl => case justInjective targetCommitted of
         Refl => trans
           (fiberResolvedProviderUnloadingView nameEq keyEq wanted provider
-            component parent retired newTable targetAccumulator targetView outcome)
+            component parent retiredFlag newTable targetAccumulator targetView outcome)
           (sym (fiberResolvedProviderReloadingView nameEq keyEq wanted provider
-            component parent retired table remaining accumulator targetView))
+            component parent retiredFlag table remaining accumulator targetView))
 fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
-  (MkFiber component parent retired table (Active accumulator sourceView))
+  (MkFiber component parent retiredFlag table (Active accumulator sourceView))
   newTable (Inactive outcome) view sourceCommitted targetCommitted =
     case targetCommitted of Refl impossible
 fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
-  (MkFiber component parent retired table (Active accumulator sourceView))
+  (MkFiber component parent retiredFlag table (Active accumulator sourceView))
   newTable (Reloading targetRemaining targetAccumulator targetView)
   view sourceCommitted targetCommitted =
     case justInjective sourceCommitted of
       Refl => case justInjective targetCommitted of
         Refl => trans
           (fiberResolvedProviderReloadingView nameEq keyEq wanted provider
-            component parent retired newTable targetRemaining targetAccumulator
+            component parent retiredFlag newTable targetRemaining targetAccumulator
             targetView)
           (sym (fiberResolvedProviderActiveView nameEq keyEq wanted provider
-            component parent retired table accumulator targetView))
+            component parent retiredFlag table accumulator targetView))
 fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
-  (MkFiber component parent retired table (Active accumulator sourceView))
+  (MkFiber component parent retiredFlag table (Active accumulator sourceView))
   newTable (Active targetAccumulator targetView)
   view sourceCommitted targetCommitted =
     case justInjective sourceCommitted of
       Refl => case justInjective targetCommitted of
         Refl => trans
           (fiberResolvedProviderActiveView nameEq keyEq wanted provider component
-            parent retired newTable targetAccumulator targetView)
+            parent retiredFlag newTable targetAccumulator targetView)
           (sym (fiberResolvedProviderActiveView nameEq keyEq wanted provider
-            component parent retired table accumulator targetView))
+            component parent retiredFlag table accumulator targetView))
 fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
-  (MkFiber component parent retired table (Active accumulator sourceView))
+  (MkFiber component parent retiredFlag table (Active accumulator sourceView))
   newTable (Unloading targetAccumulator targetView outcome)
   view sourceCommitted targetCommitted =
     case justInjective sourceCommitted of
       Refl => case justInjective targetCommitted of
         Refl => trans
           (fiberResolvedProviderUnloadingView nameEq keyEq wanted provider
-            component parent retired newTable targetAccumulator targetView outcome)
+            component parent retiredFlag newTable targetAccumulator targetView outcome)
           (sym (fiberResolvedProviderActiveView nameEq keyEq wanted provider
-            component parent retired table accumulator targetView))
+            component parent retiredFlag table accumulator targetView))
 fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
-  (MkFiber component parent retired table
+  (MkFiber component parent retiredFlag table
     (Unloading accumulator sourceView sourceOutcome)) newTable
   (Inactive outcome) view sourceCommitted targetCommitted =
     case targetCommitted of Refl impossible
 fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
-  (MkFiber component parent retired table
+  (MkFiber component parent retiredFlag table
     (Unloading accumulator sourceView sourceOutcome)) newTable
   (Reloading targetRemaining targetAccumulator targetView)
   view sourceCommitted targetCommitted =
@@ -4655,12 +4656,12 @@ fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
       Refl => case justInjective targetCommitted of
         Refl => trans
           (fiberResolvedProviderReloadingView nameEq keyEq wanted provider
-            component parent retired newTable targetRemaining targetAccumulator
+            component parent retiredFlag newTable targetRemaining targetAccumulator
             targetView)
           (sym (fiberResolvedProviderUnloadingView nameEq keyEq wanted provider
-            component parent retired table accumulator targetView sourceOutcome))
+            component parent retiredFlag table accumulator targetView sourceOutcome))
 fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
-  (MkFiber component parent retired table
+  (MkFiber component parent retiredFlag table
     (Unloading accumulator sourceView sourceOutcome)) newTable
   (Active targetAccumulator targetView)
   view sourceCommitted targetCommitted =
@@ -4668,11 +4669,11 @@ fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
       Refl => case justInjective targetCommitted of
         Refl => trans
           (fiberResolvedProviderActiveView nameEq keyEq wanted provider component
-            parent retired newTable targetAccumulator targetView)
+            parent retiredFlag newTable targetAccumulator targetView)
           (sym (fiberResolvedProviderUnloadingView nameEq keyEq wanted provider
-            component parent retired table accumulator targetView sourceOutcome))
+            component parent retiredFlag table accumulator targetView sourceOutcome))
 fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
-  (MkFiber component parent retired table
+  (MkFiber component parent retiredFlag table
     (Unloading accumulator sourceView sourceOutcome)) newTable
   (Unloading targetAccumulator targetView outcome)
   view sourceCommitted targetCommitted =
@@ -4680,9 +4681,9 @@ fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
       Refl => case justInjective targetCommitted of
         Refl => trans
           (fiberResolvedProviderUnloadingView nameEq keyEq wanted provider
-            component parent retired newTable targetAccumulator targetView outcome)
+            component parent retiredFlag newTable targetAccumulator targetView outcome)
           (sym (fiberResolvedProviderUnloadingView nameEq keyEq wanted provider
-            component parent retired table accumulator targetView sourceOutcome))
+            component parent retiredFlag table accumulator targetView sourceOutcome))
 
 public export
 0 fiberResolvedProviderRetireFrame :

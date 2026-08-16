@@ -265,12 +265,12 @@ isLifecycleAction _ = True
 
 public export
 data LifecycleOnly :
-  {first, last : SystemState name key value world error} ->
-  Transitions first last -> Type where
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Type where
   LifecycleOnlyEnd : LifecycleOnly NoTransitions
   LifecycleOnlyStep :
     (transition : Transition first middle) ->
-    (rest : Transitions middle last) ->
+    (rest : Transitions middle finalState) ->
     isLifecycleAction (transitionAction transition) = True ->
     LifecycleOnly rest -> LifecycleOnly (MoreTransitions transition rest)
 
@@ -353,8 +353,8 @@ record ProgressResult
 
 ||| Theorem 66, faithfully specialized to finite traces and static-list
 ||| iterators. Finiteness of N is intrinsic in the registry representation.
-||| TODO(proof): the unloading-chain case needs the proved global Ordering
-||| theorem; the numerical bound then follows by precedence induction.
+||| TODO(proof): global Ordering is proved; the remaining debt is the
+||| unloading-chain no-deadlock induction and Equation-61 precedence bound.
 public export
 progressTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type
@@ -642,7 +642,7 @@ confluenceTheorem name key value world error =
 ||| lifecycle noise is ignored, while each orchestration action matches itself.
 public export
 0 sameOrchestrationReflexive :
-  (trace : Transitions first last) -> SameOrchestration trace trace
+  (trace : Transitions first finalState) -> SameOrchestration trace trace
 sameOrchestrationReflexive NoTransitions = SameOrchestrationEnd
 sameOrchestrationReflexive
   (MoreTransitions transition@(Fired nameEq keyEq (OInsert n parent component)
@@ -1565,8 +1565,8 @@ public export
 data InstalledEnding :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
-  {first, last : SystemState name key value world error} ->
-  Transitions first last -> Type where
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Type where
   EntireTraceInstalled :
     InstalledTrace name key world error value nameEq keyEq selected trace ->
     InstalledEnding name key world error value nameEq keyEq selected trace
@@ -1574,7 +1574,7 @@ data InstalledEnding :
     (preStart, opened : SystemState name key value world error) ->
     (beforeOpening : Transitions first preStart) ->
     (opening : BeginStep nameEq keyEq selected preStart opened) ->
-    (afterOpening : Transitions opened last) ->
+    (afterOpening : Transitions opened finalState) ->
     appendTransitions beforeOpening
       (MoreTransitions (beginTransition opening) afterOpening) = trace ->
     InstalledTrace name key world error value nameEq keyEq selected afterOpening ->
@@ -1593,9 +1593,9 @@ unloadTargetUninstalled nameEq keyEq selected before afterState closing =
 
 0 installedEnding :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
-  (trace : Transitions first last) ->
+  (trace : Transitions first finalState) ->
   AlignedTransitions name key world error value nameEq keyEq trace ->
-  installedAt @{nameEq} selected last = True ->
+  installedAt @{nameEq} selected finalState = True ->
   InstalledEnding name key world error value nameEq keyEq selected trace
 installedEnding nameEq keyEq selected NoTransitions AlignedEnd endpointTrue =
   EntireTraceInstalled (InstalledEnd endpointTrue)
@@ -1635,14 +1635,14 @@ public export
 record LastOpeningResult
   (name, key, world, error : Type) (value : key -> Type)
   (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
-  {first, last : SystemState name key value world error}
-  (trace : Transitions first last) where
+  {first, finalState : SystemState name key value world error}
+  (trace : Transitions first finalState) where
   constructor MkLastOpeningResult
   openingPreStart : SystemState name key value world error
   openingStart : SystemState name key value world error
   traceBeforeLastOpening : Transitions first openingPreStart
   lastOpeningStep : BeginStep nameEq keyEq selected openingPreStart openingStart
-  traceAfterLastOpening : Transitions openingStart last
+  traceAfterLastOpening : Transitions openingStart finalState
   openingSplit : appendTransitions traceBeforeLastOpening
     (MoreTransitions (beginTransition lastOpeningStep) traceAfterLastOpening) = trace
   afterOpeningInstalled : InstalledTrace name key world error value nameEq keyEq
@@ -1651,10 +1651,10 @@ record LastOpeningResult
 public export
 0 extractLastOpening :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
-  (trace : Transitions first last) ->
+  (trace : Transitions first finalState) ->
   AlignedTransitions name key world error value nameEq keyEq trace ->
   installedAt @{nameEq} selected first = False ->
-  installedAt @{nameEq} selected last = True ->
+  installedAt @{nameEq} selected finalState = True ->
   LastOpeningResult name key world error value nameEq keyEq selected trace
 extractLastOpening nameEq keyEq selected trace aligned sourceFalse targetTrue =
   case installedEnding nameEq keyEq selected trace aligned targetTrue of
@@ -1671,8 +1671,8 @@ public export
 record FirstClosingResult
   (name, key, world, error : Type) (value : key -> Type)
   (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
-  {first, last : SystemState name key value world error}
-  (trace : Transitions first last) where
+  {first, finalState : SystemState name key value world error}
+  (trace : Transitions first finalState) where
   constructor MkFirstClosingResult
   closingBefore : SystemState name key value world error
   closingAfter : SystemState name key value world error
@@ -1680,17 +1680,17 @@ record FirstClosingResult
   beforeClosingInstalled : InstalledTrace name key world error value nameEq keyEq
     selected traceBeforeFirstClosing
   firstClosingStep : UnloadStep nameEq keyEq selected closingBefore closingAfter
-  traceAfterFirstClosing : Transitions closingAfter last
+  traceAfterFirstClosing : Transitions closingAfter finalState
   closingSplit : appendTransitions traceBeforeFirstClosing
     (MoreTransitions (unloadTransition firstClosingStep) traceAfterFirstClosing) = trace
 
 public export
 0 extractFirstClosing :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
-  (trace : Transitions first last) ->
+  (trace : Transitions first finalState) ->
   AlignedTransitions name key world error value nameEq keyEq trace ->
   installedAt @{nameEq} selected first = True ->
-  installedAt @{nameEq} selected last = False ->
+  installedAt @{nameEq} selected finalState = False ->
   FirstClosingResult name key world error value nameEq keyEq selected trace
 extractFirstClosing nameEq keyEq selected NoTransitions AlignedEnd sourceTrue
   targetFalse = void (falseNotTrue (trans (sym targetFalse) sourceTrue))
@@ -1856,17 +1856,17 @@ cp3AndRightTrue True True valid = Refl
 viewLookupStableProvider nameEq keyEq [] EmptyView wanted provider fibers
   lookup valid = case lookup of Refl impossible
 viewLookupStableProvider nameEq keyEq (current :: rest)
-  (ProviderView currentProvider tail) wanted provider fibers lookup valid
+  (ProviderView currentProvider viewTail) wanted provider fibers lookup valid
   with (decEq @{keyEq} wanted current)
   viewLookupStableProvider nameEq keyEq (current :: rest)
-    (ProviderView currentProvider tail) current provider fibers lookup valid |
+    (ProviderView currentProvider viewTail) current provider fibers lookup valid |
     Yes Refl = case justInjective lookup of
       Refl => stableHead valid
     where
     stableHead :
       viewProvidersInvariant @{nameEq} {key = key} {value = value}
         {world = world} {error = error} fibers
-        (ProviderView currentProvider tail) = True ->
+        (ProviderView currentProvider viewTail) = True ->
       (providerFiber : Fiber name key value world error **
         (lookupFiber @{nameEq} {key = key} {value = value}
           {world = world} {error = error} currentProvider fibers = Just providerFiber,
@@ -1879,13 +1879,13 @@ viewLookupStableProvider nameEq keyEq (current :: rest)
         let providerStable = cp3AndLeftTrue
               (stableProvider (fiberLifecycle providerFiber))
               (viewProvidersInvariant @{nameEq} {key = key} {value = value}
-                {world = world} {error = error} fibers tail) headValid
+                {world = world} {error = error} fibers viewTail) headValid
         in (providerFiber ** (Refl, providerStable))
   viewLookupStableProvider nameEq keyEq (current :: rest)
-    (ProviderView currentProvider tail) wanted provider fibers lookup valid |
+    (ProviderView currentProvider viewTail) wanted provider fibers lookup valid |
     No distinct =
-      viewLookupStableProvider nameEq keyEq rest tail wanted provider fibers lookup
-        (viewProvidersTailValid nameEq currentProvider current tail fibers valid)
+      viewLookupStableProvider nameEq keyEq rest viewTail wanted provider fibers lookup
+        (viewProvidersTailValid nameEq currentProvider current viewTail fibers valid)
 
 0 resolvedViewValue :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -1901,17 +1901,17 @@ viewLookupStableProvider nameEq keyEq (current :: rest)
 resolvedViewValue nameEq keyEq [] EmptyView wanted provider fibers lookup valid =
   case lookup of Refl impossible
 resolvedViewValue nameEq keyEq (current :: rest)
-  (ProviderView currentProvider tail) wanted provider fibers lookup valid
+  (ProviderView currentProvider viewTail) wanted provider fibers lookup valid
   with (decEq @{keyEq} wanted current)
   resolvedViewValue nameEq keyEq (current :: rest)
-    (ProviderView currentProvider tail) current provider fibers lookup valid |
+    (ProviderView currentProvider viewTail) current provider fibers lookup valid |
     Yes Refl = case justInjective lookup of
       Refl => resolvedHead valid
     where
     resolvedHead :
       isJust (resolveCommittedValues @{nameEq} @{keyEq} {value = value}
         {world = world} {error = error}
-        (current :: rest) (ProviderView currentProvider tail) fibers) = True ->
+        (current :: rest) (ProviderView currentProvider viewTail) fibers) = True ->
       (provided : value current **
         valueFromProvider @{nameEq} @{keyEq} {value = value}
           {world = world} {error = error} currentProvider current fibers =
@@ -1923,25 +1923,25 @@ resolvedViewValue nameEq keyEq (current :: rest)
       resolvedHead headValid | Nothing = absurd headValid
       resolvedHead headValid | Just provided = (provided ** Refl)
   resolvedViewValue nameEq keyEq (current :: rest)
-    (ProviderView currentProvider tail) wanted provider fibers lookup valid |
+    (ProviderView currentProvider viewTail) wanted provider fibers lookup valid |
     No distinct with (valueFromProvider @{nameEq} @{keyEq} {value = value}
         {world = world} {error = error} currentProvider current fibers)
     proof currentValue
     resolvedViewValue nameEq keyEq (current :: rest)
-      (ProviderView currentProvider tail) wanted provider fibers lookup valid |
+      (ProviderView currentProvider viewTail) wanted provider fibers lookup valid |
       No distinct | Nothing = absurd valid
     resolvedViewValue nameEq keyEq (current :: rest)
-      (ProviderView currentProvider tail) wanted provider fibers lookup valid |
+      (ProviderView currentProvider viewTail) wanted provider fibers lookup valid |
       No distinct | Just currentProvided
-      with (resolveCommittedValues @{nameEq} @{keyEq} rest tail fibers)
+      with (resolveCommittedValues @{nameEq} @{keyEq} rest viewTail fibers)
       proof tailValues
       resolvedViewValue nameEq keyEq (current :: rest)
-        (ProviderView currentProvider tail) wanted provider fibers lookup valid |
+        (ProviderView currentProvider viewTail) wanted provider fibers lookup valid |
         No distinct | Just currentProvided | Nothing = absurd valid
       resolvedViewValue nameEq keyEq (current :: rest)
-        (ProviderView currentProvider tail) wanted provider fibers lookup valid |
+        (ProviderView currentProvider viewTail) wanted provider fibers lookup valid |
         No distinct | Just currentProvided | Just values =
-          resolvedViewValue nameEq keyEq rest tail wanted provider fibers lookup
+          resolvedViewValue nameEq keyEq rest viewTail wanted provider fibers lookup
             (cong isJust tailValues)
 
 0 stableProviderImpliesInstalled :
@@ -2924,26 +2924,26 @@ resolvedConstantInstalledTrace nameEq keyEq consumer wanted provider providers
 viewLookupImpliesContains nameEq keyEq wanted [] EmptyView provider found =
   case found of Refl impossible
 viewLookupImpliesContains nameEq keyEq wanted (current :: rest)
-  (ProviderView currentProvider tail) provider found
+  (ProviderView currentProvider viewTail) provider found
   with (decEq @{keyEq} wanted current)
   viewLookupImpliesContains nameEq keyEq current (current :: rest)
-    (ProviderView currentProvider tail) provider found | Yes Refl =
+    (ProviderView currentProvider viewTail) provider found | Yes Refl =
       case cp3JustInjective found of
         Refl => sameProvider
     where
       sameProvider : viewContains @{nameEq} currentProvider
-        (ProviderView currentProvider tail) = True
+        (ProviderView currentProvider viewTail) = True
       sameProvider with (decEq @{nameEq} currentProvider currentProvider)
         sameProvider | Yes Refl = Refl
         sameProvider | No distinct = absurd (distinct Refl)
   viewLookupImpliesContains nameEq keyEq wanted (current :: rest)
-    (ProviderView currentProvider tail) provider found | No wantedDistinct
+    (ProviderView currentProvider viewTail) provider found | No wantedDistinct
     with (decEq @{nameEq} provider currentProvider)
     viewLookupImpliesContains nameEq keyEq wanted (current :: rest)
-      (ProviderView provider tail) provider found | No wantedDistinct | Yes Refl = Refl
+      (ProviderView provider viewTail) provider found | No wantedDistinct | Yes Refl = Refl
     viewLookupImpliesContains nameEq keyEq wanted (current :: rest)
-      (ProviderView currentProvider tail) provider found | No wantedDistinct |
-      No providerDistinct = viewLookupImpliesContains nameEq keyEq wanted rest tail
+      (ProviderView currentProvider viewTail) provider found | No wantedDistinct |
+      No providerDistinct = viewLookupImpliesContains nameEq keyEq wanted rest viewTail
         provider found
 
 0 reliedHeadFromCommittedView :
@@ -2956,45 +2956,45 @@ viewLookupImpliesContains nameEq keyEq wanted (current :: rest)
   viewContains @{nameEq} provider view = True ->
   reliedHead @{nameEq} provider provider (Bind consumer fiber) = True
 reliedHeadFromCommittedView nameEq provider consumer distinct
-  (MkFiber component parent retired table (Inactive outcome)) view committedView
+  (MkFiber component parent retiredFlag table (Inactive outcome)) view committedView
   contains = case committedView of Refl impossible
 reliedHeadFromCommittedView nameEq provider consumer distinct
-  (MkFiber component parent retired table
+  (MkFiber component parent retiredFlag table
     (Reloading remaining accumulator actualView)) view committedView contains =
   different (trans (cong (viewContains @{nameEq} provider)
     (cp3JustInjective committedView)) contains)
   where
     different : viewContains @{nameEq} provider actualView = True ->
       reliedHead @{nameEq} provider provider
-        (Bind consumer (MkFiber component parent retired table
+        (Bind consumer (MkFiber component parent retiredFlag table
           (Reloading remaining accumulator actualView))) = True
     different actualContains with (decEq @{nameEq} consumer provider)
       different actualContains | Yes equal = case equal of
         Refl => absurd (distinct Refl)
       different actualContains | No _ = rewrite actualContains in Refl
 reliedHeadFromCommittedView nameEq provider consumer distinct
-  (MkFiber component parent retired table (Active accumulator actualView))
+  (MkFiber component parent retiredFlag table (Active accumulator actualView))
   view committedView contains =
   different (trans (cong (viewContains @{nameEq} provider)
     (cp3JustInjective committedView)) contains)
   where
     different : viewContains @{nameEq} provider actualView = True ->
       reliedHead @{nameEq} provider provider
-        (Bind consumer (MkFiber component parent retired table
+        (Bind consumer (MkFiber component parent retiredFlag table
           (Active accumulator actualView))) = True
     different actualContains with (decEq @{nameEq} consumer provider)
       different actualContains | Yes equal = case equal of
         Refl => absurd (distinct Refl)
       different actualContains | No _ = rewrite actualContains in Refl
 reliedHeadFromCommittedView nameEq provider consumer distinct
-  (MkFiber component parent retired table
+  (MkFiber component parent retiredFlag table
     (Unloading accumulator actualView outcome)) view committedView contains =
   different (trans (cong (viewContains @{nameEq} provider)
     (cp3JustInjective committedView)) contains)
   where
     different : viewContains @{nameEq} provider actualView = True ->
       reliedHead @{nameEq} provider provider
-        (Bind consumer (MkFiber component parent retired table
+        (Bind consumer (MkFiber component parent retiredFlag table
           (Unloading accumulator actualView outcome))) = True
     different actualContains with (decEq @{nameEq} consumer provider)
       different actualContains | Yes equal = case equal of

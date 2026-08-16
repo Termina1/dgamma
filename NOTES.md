@@ -105,11 +105,14 @@ cannot silently introduce a proof:
 - `MediatedIndependenceTheorem` — Theorem 42.
 - `recoveryExactnessTheorem` — Theorem 61.
 - `terminalRecoveryTheorem` — Corollary 62.
-- `orderingTheorem` — the finite closed-trace form of Theorem 63.
 - `resolutionCoherenceTheorem` — the recovery-combined form of Theorem 64.
+- `progressTheorem` — the finite quantitative form of Theorem 66.
+- `supportAtQuiescenceTheorem` — Lemma 70.
+- `confluenceTheorem` — the finite canonical-schedule form of Theorem 73.
 
-Each is marked `TODO(proof)` at its declaration. These are honest uninhabited
-statements, not holes accepted by the compiler.
+Each open theorem is marked `TODO(proof)` at its declaration. These are honest
+uninhabited statements, not holes accepted by the compiler. `orderingTheorem`
+is no longer on this list: `DGamma.Ordering.orderingTheoremProof` inhabits it.
 
 ## Checkpoint 1 — Section 3 (approved)
 
@@ -308,13 +311,16 @@ BLOCKER/MAJOR was addressed architecturally rather than hidden by a postulate.
   at its opening, and provider inactivity at the final state, it selects the
   containing closed provider episode. Its result requires strict prefix
   equations in the same global trace, consumer committed-provider constancy,
-  and dynamic provider-value constancy. The global induction remains
-  statement-only.
+  and dynamic provider-value constancy. `orderingTheoremProof` now proves the
+  complete statement by factoring snapshot/value induction from strict
+  last-opening/first-closing episode extraction.
 - The global `resolutionStructureTheorem` is anchored by `EpisodePrefix`, so the
   round-1 Unloading-suffix counterexample is unrepresentable. The local
   Equation-59 facts and the whole-episode first-exit split are proved by
-  `resolutionStructureTheoremProof`; only recovery-combined
-  `resolutionCoherenceTheorem` remains statement-only.
+  `resolutionStructureTheoremProof`. `resolutionCoherenceFromTerminalRecovery`
+  proves all remaining dependent packaging from Corollary 62; the exported
+  recovery-combined theorem remains statement-only only because terminal
+  recovery itself is open.
 
 ### Executable adversarial coverage
 
@@ -370,8 +376,9 @@ The report correctly rejected the old `preservationTheorem` name: at that
 review point its proof was only the target check embedded in
 `checkedApplyAction`. That lemma is now named `checkedTransitionTargetValid`.
 The later proof-bar pass proves raw Theorem 59 directly and locates the selected
-fiber's first exit after the maximal Reloading prefix. Global provider-episode
-selection remains open; no checked-monitor lemma is claimed as that result.
+fiber's first exit after the maximal Reloading prefix. Checkpoint 3 subsequently
+proves global provider-episode selection in `DGamma.Ordering`; no checked-monitor
+lemma is substituted for that result.
 
 ### Round-3 full-effect recovery redesign
 
@@ -501,25 +508,97 @@ proof irrelevance. The paper-explicit `consumer /= provider` premise is also now
 present in the finite Ordering statement rather than recovered indirectly from
 provision disjointness.
 
+## Checkpoint 3 — Ordering, Progress, and Confluence
+
+### Fully proved global Ordering (Theorem 63)
+
+- `orderingTheoremProof` inhabits the exact exported `orderingTheorem`; the
+  theorem is no longer statement-only.
+- `resolvedConstantInstalledTrace` transports the committed consumer snapshot
+  across every installed step without proof irrelevance or function
+  extensionality.
+- `providerValueConstantTrace` proves provider-value constancy. Foreign actions
+  use lookup frames; ORetire and LLeave have factored selected-provider proofs;
+  impossible selected LBegin/LAdvance/LDivert/LUnload cases are eliminated from
+  stable-provider and installed-boundary evidence.
+- `extractContainingProviderEpisode` selects the last provider opening before
+  the consumer and the first provider closing after it. Its two
+  `StrictTransitions` and prefix equations prove strict containment in the same
+  global trace, including name reuse.
+- `DGamma.Ordering` isolates final assembly from the large CP3 module. This is
+  an elaboration-performance split only; it changes no theorem premise.
+
+### Progress (Theorem 66): precise remaining debt
+
+The exact finite theorem remains stated. Proved cores are lifecycle witness
+search soundness, maximality-implies-quiet from no-deadlock, and the complete
+empty-suffix quantitative base (`progressEndFromNoDeadlock` and
+`progressEndFromSearch`). Two nontrivial obligations remain:
+
+1. **Unloading-chain no-deadlock.** A locally blocked Unloading fiber may be
+   relied on by another installed fiber. Proving that some lifecycle action is
+   enabled requires well-founded induction over the precedence/reliance chain,
+   using global Ordering to rule out a closed cycle. A local evaluator case
+   split is insufficient.
+2. **Equation-61 precedence bound.** `TargetTurnCount` records target changes,
+   but the bound on `stepsActingOn` must charge Reloading/Active/Unloading
+   phases through provider precedence while preserving the static program
+   bound across every lifecycle transition. This needs a ranked induction, not
+   arithmetic normalization alone.
+
+### Confluence (Theorem 73): precise remaining debt
+
+The exact theorem remains stated. Proved machinery includes effect
+transposition from Definition 60, `SameOrchestration` reflexivity/symmetry/
+transitivity, equivalence symmetry/transitivity, deletion identity and
+composition, and the final canonical-endpoint diagram
+(`canonicalEndpointsEquivalent`, `confluenceFromCanonicalSchedules`). The
+remaining constructive core is:
+
+1. **One-step episode deletion (Lemma 72).** Deleting an unsupported episode
+   must rebuild a checked trace while preserving applicability of every
+   surviving control step, then combine control frames with the already-proved
+   effect diamond.
+2. **Canonical sorting.** Constructing `CanonicalSchedule` requires a finite
+   support linearization and repeated checked transpositions/deletions. The two
+   schedules must be shown to reach the same canonical endpoint. The final
+   equivalence packaging after this construction is already proved.
+
+### Recovery and Theorem 64
+
+Theorem 61 and Corollary 62 remain stated. The hard obligation is the **temporal
+accumulator induction**: show that the actual dependent accumulator stored by
+all L-Iter/L-Divert/L-Raise paths factors into the yielded inverse generators,
+then commute each factor across foreign transformations and replay the suffix.
+The generated-monoid premise now contains exactly the needed per-yield facts,
+but the indexed induction through `InstalledTrace` is not yet implemented.
+`resolutionCoherenceFromTerminalRecovery` proves that Corollary 62 immediately
+completes the recovery branch of Theorem 64; resolution structure and final
+packaging are no longer debt.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
-Preservation; same-action determinism; checked projection/admission; Equation
-58; local relied guards; per-step Equation 59 and aborting L-Divert; committed
-provider constancy over aligned installed traces; and the whole-episode
-first-exit `resolutionStructureTheoremProof`. All executable rule checks pass.
+Preservation; Equation 58; local relied guards; per-step Equation 59; whole-
+episode resolution structure; and global spatial Ordering/Theorem 63 including
+strict containment, resolution constancy, and provider-value constancy.
 
-**Partial/deviation:** Definition 32 finite approximations; Lemma 38 transport;
-finite static-list continuation closure rather than coinductive/data-dependent
-iterators; host-level rather than nested registration; trace-anchored
-full-effect generated monoids; exact full-effect equality; and the checked
-proof-LTS. Full observational transport remains future work. Lemmas
-54–57 are not individually complete.
+**Partial:** Progress/Theorem 66 (search/maximality/base case proved);
+Lemma 70 (empty base proved); Lemma 71 (effect diamond proved); Lemma 72
+(identity/composition proved); Confluence/Theorem 73 (orchestration equivalence
+and endpoint assembly proved); and recovery-combined Theorem 64 (complete
+conditional assembly from Corollary 62). Lemmas 54–57 have many rule, frame,
+and boundary analogues but are not individually complete.
 
-**Merely stated:** Lemma 35, Theorems 40/42, actual-handle full-effect Theorem
-61 and Corollary 62, corrected global `orderingTheorem`, and recovery-combined
-`resolutionCoherenceTheorem`. They remain escape-hatch-free proposition types.
+**Merely stated:** Lemma 35, Theorems 40/42, recovery Theorem 61, Corollary 62,
+`resolutionCoherenceTheorem`, `progressTheorem`,
+`supportAtQuiescenceTheorem`, and `confluenceTheorem`. These remain
+escape-hatch-free proposition types.
 
-**Next:** CP3 proves global provider ordering, states and develops Progress and
-Confluence with honest supporting cores, extends the reconciliation example,
-and then revisits recovery proof debt.
+**Deviations:** Definition 32 finite approximations; finite static-list
+continuations; host-level rather than nested registration; trace-anchored
+full-effect generated monoids; exact full-effect equality; and explicit
+`AlignedTransitions` dictionary alignment.
+
+**Next:** implement temporal accumulator induction, ranked unloading-chain
+Progress, and constructive checked episode deletion/canonical sorting.
