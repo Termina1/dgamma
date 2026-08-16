@@ -2230,6 +2230,61 @@ pairwiseRetireEntries {name} {key} {world} {error} {value}
         (pairwiseRetireEntries {name = name} {key = key} {world = world}
           {error = error} {value = value} nameEq keyEq rest n fiber present)
 
+||| Removing an entry cannot introduce a provision overlap.
+public export
+0 provisionsDisjointDelete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provision : CoeffectSpec key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (removed : name) ->
+  provisionsDisjointFrom @{keyEq} {value = value} {world = world}
+    {error = error} provision entries = True ->
+  provisionsDisjointFrom @{keyEq} {value = value} {world = world}
+    {error = error} provision (deleteEntries @{nameEq} removed entries) = True
+provisionsDisjointDelete nameEq keyEq provision [] removed valid = Refl
+provisionsDisjointDelete {name} {key} {world} {error} {value}
+  nameEq keyEq provision (Bind current fiber :: rest) removed valid
+  with (decEq @{nameEq} removed current)
+  provisionsDisjointDelete {name} {key} {world} {error} {value}
+    nameEq keyEq provision (Bind removed fiber :: rest) removed valid |
+    (Yes Refl) = andTrueRight _ _ valid
+  provisionsDisjointDelete {name} {key} {world} {error} {value}
+    nameEq keyEq provision (Bind current fiber :: rest) removed valid |
+    (No _) = andBothTrue _ _ (andTrueLeft _ _ valid)
+      (provisionsDisjointDelete {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq keyEq provision rest removed
+        (andTrueRight _ _ valid))
+
+||| Pairwise provision disjointness is downward closed under deletion.
+public export
+0 pairwiseProvisionDelete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (removed : name) ->
+  pairwiseProvisionInvariant @{keyEq} {value = value} {world = world}
+    {error = error} entries = True ->
+  pairwiseProvisionInvariant @{keyEq} {value = value} {world = world}
+    {error = error} (deleteEntries @{nameEq} removed entries) = True
+pairwiseProvisionDelete nameEq keyEq [] removed valid = Refl
+pairwiseProvisionDelete {name} {key} {world} {error} {value}
+  nameEq keyEq (Bind current fiber :: rest) removed valid
+  with (decEq @{nameEq} removed current)
+  pairwiseProvisionDelete {name} {key} {world} {error} {value}
+    nameEq keyEq (Bind removed fiber :: rest) removed valid | (Yes Refl) =
+      andTrueRight _ _ valid
+  pairwiseProvisionDelete {name} {key} {world} {error} {value}
+    nameEq keyEq (Bind current fiber :: rest) removed valid | (No _) =
+      andBothTrue _ _
+        (provisionsDisjointDelete {name = name} {key = key} {world = world}
+          {error = error} {value = value} nameEq keyEq
+          (componentProvisions (fiberComponent fiber)) rest removed
+          (andTrueLeft _ _ valid))
+        (pairwiseProvisionDelete {name = name} {key = key} {world = world}
+          {error = error} {value = value} nameEq keyEq rest removed
+          (andTrueRight _ _ valid))
+
 public export
 0 retireViewInvariant : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (fiber : Fiber name key value world error) ->
