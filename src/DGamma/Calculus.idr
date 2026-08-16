@@ -825,6 +825,22 @@ isInactive : Lifecycle key value world error name deps provision -> Bool
 isInactive (Inactive _) = True
 isInactive _ = False
 
+public export
+beginFiberAction : DecEq name => DecEq key => name ->
+  Fiber name key value world error ->
+  SystemState name key value world error ->
+  Maybe (RuleTag, SystemState name key value world error)
+beginFiberAction n fiber state = case fiberLifecycle fiber of
+  Inactive Nothing => case targetFiber fiber (registry state) of
+    Nothing => Nothing
+    Just view => Just (LBeginTag,
+      MkSystemState (worldState state)
+        (replaceBinding n
+          (setFiberLifecycle fiber
+            (Reloading (componentProgram (fiberComponent fiber)) id view))
+          (registry state)))
+  _ => Nothing
+
 ||| Executable semantics for the ten rules. The empty-program terminal marker
 ||| obeys the same target equality as a non-empty L-Finish; stale targets divert.
 public export
@@ -856,16 +872,7 @@ applyAction (ORemove n) state = case lookupFiber n (registry state) of
       else Nothing
 applyAction (LBegin n) state = case lookupFiber n (registry state) of
   Nothing => Nothing
-  Just fiber => case fiberLifecycle fiber of
-    Inactive Nothing => case targetFiber fiber (registry state) of
-      Nothing => Nothing
-      Just view => Just (LBeginTag,
-        MkSystemState (worldState state)
-          (replaceBinding n
-            (setFiberLifecycle fiber
-              (Reloading (componentProgram (fiberComponent fiber)) id view))
-            (registry state)))
-    _ => Nothing
+  Just fiber => beginFiberAction n fiber state
 applyAction (LAdvance n) state = case lookupFiber n (registry state) of
   Nothing => Nothing
   Just fiber => case fiberLifecycle fiber of

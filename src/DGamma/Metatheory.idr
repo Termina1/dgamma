@@ -1995,6 +1995,269 @@ committedProvidersAt selected state = case lookupFiber selected (registry state)
   Nothing => Nothing
   Just fiber => map viewProviders (committed (fiberLifecycle fiber))
 
+0 setFiberRuntimeReloadingBool :
+  (fiber : Fiber name key value world error) ->
+  (table : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)))) ->
+  (accumulator : LocalState key value world
+      (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world (componentProvisions (fiberComponent fiber))) ->
+  (view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))) ->
+  (case fiberLifecycle
+    (setFiberRuntime fiber table (Reloading remaining accumulator view)) of
+      Reloading _ _ _ => True
+      _ => False) = True
+setFiberRuntimeReloadingBool
+  (MkFiber component parent retired oldTable oldLifecycle) table remaining
+  accumulator view = Refl
+
+0 setFiberRuntimeCommittedProviders :
+  (fiber : Fiber name key value world error) ->
+  (table : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)))) ->
+  (accumulator : LocalState key value world
+      (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world (componentProvisions (fiberComponent fiber))) ->
+  (view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))) ->
+  map (\resolved => viewProviders resolved) (committed (fiberLifecycle
+    (setFiberRuntime fiber table (Reloading remaining accumulator view)))) =
+    Just (viewProviders view)
+setFiberRuntimeCommittedProviders
+  (MkFiber component parent retired oldTable oldLifecycle) table remaining
+  accumulator view = Refl
+
+0 committedReloadingAfterReplace :
+  {name, key, world, error : Type} -> {value : key -> Type} -> DecEq name =>
+  {fibers : Registry name key value world error} -> {worldValue : world} ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  {table : OwnedTable key value (componentProvisions (fiberComponent fiber))} ->
+  {remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)))} ->
+  {accumulator : LocalState key value world
+      (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world (componentProvisions (fiberComponent fiber))} ->
+  {view : View name (dependencies
+    (componentDependencies (fiberComponent fiber)))} ->
+  lookupFiber selected fibers = Just fiber ->
+  committedProvidersAt {key = key} {value = value} {world = world}
+    {error = error} selected (MkSystemState worldValue
+      (replaceBinding selected
+        (setFiberRuntime fiber table
+          (Reloading remaining accumulator view)) fibers)) =
+    Just (viewProviders view)
+committedReloadingAfterReplace {table} {remaining} {accumulator} {view} selected
+  fiber@(MkFiber component parent retired oldTable oldLife) found =
+  rewrite lookupReplacedFiber selected fiber
+    (setFiberRuntime fiber table (Reloading remaining accumulator view)) fibers
+    found in Refl
+
+
+public export
+record ReloadingSnapshot
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (selected : name) (providers : List name)
+  (state : SystemState name key value world error) where
+  constructor MkReloadingSnapshot
+  snapshotFiber : Fiber name key value world error
+  snapshotLookup : lookupFiber @{nameEq} selected (registry state) =
+    Just snapshotFiber
+  snapshotRemaining : List (StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent snapshotFiber)))
+    (componentProvisions (fiberComponent snapshotFiber)))
+  snapshotAccumulator : LocalState key value world
+      (componentProvisions (fiberComponent snapshotFiber)) ->
+    LocalState key value world
+      (componentProvisions (fiberComponent snapshotFiber))
+  snapshotView : View name
+    (dependencies (componentDependencies (fiberComponent snapshotFiber)))
+  snapshotReloading : fiberLifecycle snapshotFiber =
+    Reloading snapshotRemaining snapshotAccumulator snapshotView
+  snapshotProviders : viewProviders snapshotView = providers
+
+0 snapshotFromPredicates :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) -> (providers : List name) ->
+  (state : SystemState name key value world error) ->
+  reloadingAt @{nameEq} selected state = True ->
+  committedProvidersAt @{nameEq} selected state = Just providers ->
+  ReloadingSnapshot name key world error value nameEq selected providers state
+snapshotFromPredicates {name} {key} {world} {error} {value}
+  nameEq selected providers state reloading committedProviders
+  with (lookupFiber @{nameEq} selected (registry state)) proof found
+  snapshotFromPredicates {name} {key} {world} {error} {value}
+    nameEq selected providers state reloading committedProviders | Nothing =
+      void (falseIsNotTrue reloading)
+  snapshotFromPredicates {name} {key} {world} {error} {value}
+    nameEq selected providers state reloading committedProviders | Just fiber
+    with (fiberLifecycle fiber) proof lifecycle
+    snapshotFromPredicates {name} {key} {world} {error} {value}
+      nameEq selected providers state reloading committedProviders | Just fiber |
+      Inactive outcome = void (falseIsNotTrue reloading)
+    snapshotFromPredicates {name} {key} {world} {error} {value}
+      nameEq selected providers state reloading committedProviders | Just fiber |
+      Active accumulator view = void (falseIsNotTrue reloading)
+    snapshotFromPredicates {name} {key} {world} {error} {value}
+      nameEq selected providers state reloading committedProviders | Just fiber |
+      Unloading accumulator view outcome = void (falseIsNotTrue reloading)
+    snapshotFromPredicates {name} {key} {world} {error} {value}
+      nameEq selected providers state reloading committedProviders | Just fiber |
+      Reloading remaining accumulator view =
+        MkReloadingSnapshot fiber found remaining accumulator view lifecycle
+          (justInjective committedProviders)
+
+0 systemStateEta : (state : SystemState name key value world error) ->
+  MkSystemState (worldState state) (registry state) = state
+systemStateEta (MkSystemState ambient fibers) = Refl
+
+0 beginFiberReloadingSnapshot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (fiber : Fiber name key value world error) -> (ambient : world) ->
+  (fibers : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) ->
+  lookupFiber @{nameEq} selected fibers = Just fiber ->
+  beginFiberAction @{nameEq} @{keyEq} selected fiber
+    (MkSystemState ambient fibers) =
+    Just (LBeginTag, afterState) ->
+  (providers : List name ** ReloadingSnapshot name key world error value nameEq
+    selected providers afterState)
+beginFiberReloadingSnapshot {name} {key} {world} {error} {value}
+  nameEq keyEq selected fiber ambient fibers afterState found equation
+  with (fiberLifecycle fiber)
+  beginFiberReloadingSnapshot {name} {key} {world} {error} {value}
+    nameEq keyEq selected fiber ambient fibers afterState found equation |
+    Inactive Nothing with (targetFiber @{nameEq} @{keyEq} fiber fibers)
+    beginFiberReloadingSnapshot {name} {key} {world} {error} {value}
+      nameEq keyEq selected fiber ambient fibers afterState found equation |
+      Inactive Nothing | Nothing = void (nothingIsNotJust equation)
+    beginFiberReloadingSnapshot {name} {key} {world} {error} {value}
+      nameEq keyEq selected fiber ambient fibers afterState found equation |
+      Inactive Nothing | Just view with (fibers)
+      beginFiberReloadingSnapshot {name} {key} {world} {error} {value}
+        nameEq keyEq selected fiber ambient fibers afterState found equation |
+        Inactive Nothing | Just view | (MkCoeffectContext entries unique) = case justInjective equation of
+          Refl =>
+            let 0 replacementLookup : (lookupFiber @{nameEq} {key = key}
+                  {value = value} {world = world} {error = error} selected
+                  (replaceBinding @{nameEq} selected
+                    (setFiberRuntime fiber (fiberTable fiber)
+                      (Reloading (componentProgram (fiberComponent fiber)) (\local => local) view))
+                    (MkCoeffectContext entries unique)) =
+                  Just (setFiberRuntime fiber (fiberTable fiber)
+                    (Reloading (componentProgram (fiberComponent fiber)) (\local => local) view)))
+                replacementLookup = lookupReplaceEntries @{nameEq}
+                  {value = FiberAt name key value world error} selected fiber
+                  (setFiberRuntime fiber (fiberTable fiber)
+                    (Reloading (componentProgram (fiberComponent fiber)) (\local => local) view))
+                  entries found
+                0 reloadingAfter : (reloadingAt @{nameEq} {key = key}
+                  {value = value} {world = world} {error = error} selected
+                  (MkSystemState ambient
+                    (replaceBinding @{nameEq} selected
+                      (setFiberRuntime fiber (fiberTable fiber)
+                        (Reloading (componentProgram (fiberComponent fiber)) (\local => local) view))
+                      (MkCoeffectContext entries unique))) = True)
+                reloadingAfter = rewrite replacementLookup in
+                  setFiberRuntimeReloadingBool fiber (fiberTable fiber)
+                    (componentProgram (fiberComponent fiber))
+                    (\local => local) view
+                0 committedAfter : (committedProvidersAt @{nameEq} {key = key}
+                  {value = value} {world = world} {error = error} selected
+                  (MkSystemState ambient
+                    (replaceBinding @{nameEq} selected
+                      (setFiberRuntime fiber (fiberTable fiber)
+                        (Reloading (componentProgram (fiberComponent fiber)) (\local => local) view))
+                      (MkCoeffectContext entries unique))) = Just (viewProviders view))
+                committedAfter = rewrite replacementLookup in
+                  setFiberRuntimeCommittedProviders fiber (fiberTable fiber)
+                    (componentProgram (fiberComponent fiber))
+                    (\local => local) view
+            in (viewProviders view **
+              snapshotFromPredicates nameEq selected (viewProviders view)
+                (MkSystemState ambient
+                  (replaceBinding @{nameEq} selected
+                    (setFiberRuntime fiber (fiberTable fiber)
+                      (Reloading (componentProgram (fiberComponent fiber)) (\local => local) view))
+                    (MkCoeffectContext entries unique)))
+                reloadingAfter committedAfter)
+  beginFiberReloadingSnapshot {name} {key} {world} {error} {value}
+    nameEq keyEq selected fiber ambient fibers afterState found equation |
+    Inactive (Just err) = void (nothingIsNotJust equation)
+  beginFiberReloadingSnapshot {name} {key} {world} {error} {value}
+    nameEq keyEq selected fiber ambient fibers afterState found equation |
+    Reloading remaining accumulator view = void (nothingIsNotJust equation)
+  beginFiberReloadingSnapshot {name} {key} {world} {error} {value}
+    nameEq keyEq selected fiber ambient fibers afterState found equation |
+    Active accumulator view = void (nothingIsNotJust equation)
+  beginFiberReloadingSnapshot {name} {key} {world} {error} {value}
+    nameEq keyEq selected fiber ambient fibers afterState found equation |
+    Unloading accumulator view outcome = void (nothingIsNotJust equation)
+
+0 beginReloadingSnapshotFromEquation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  applyAction @{nameEq} @{keyEq} (LBegin selected) before =
+    Just (LBeginTag, afterState) ->
+  (providers : List name ** ReloadingSnapshot name key world error value nameEq
+    selected providers afterState)
+beginReloadingSnapshotFromEquation {name} {key} {world} {error} {value}
+  nameEq keyEq selected before afterState equation
+  with (lookupFiber @{nameEq} selected (registry before)) proof found
+  beginReloadingSnapshotFromEquation {name} {key} {world} {error} {value}
+    nameEq keyEq selected before afterState equation | Nothing =
+      void (nothingIsNotJust equation)
+  beginReloadingSnapshotFromEquation {name} {key} {world} {error} {value}
+    nameEq keyEq selected before afterState equation | Just fiber =
+      beginFiberReloadingSnapshot nameEq keyEq selected fiber (worldState before) (registry before) afterState
+        found (replace {p = \state => beginFiberAction @{nameEq} @{keyEq}
+          selected fiber state = Just (LBeginTag, afterState)}
+          (sym (systemStateEta before)) equation)
+
+0 beginReloadingSnapshot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  BeginStep nameEq keyEq selected before afterState ->
+  (providers : List name ** ReloadingSnapshot name key world error value nameEq
+    selected providers afterState)
+beginReloadingSnapshot nameEq keyEq selected before afterState opening =
+  beginReloadingSnapshotFromEquation nameEq keyEq selected before afterState
+    (checkedActionProjects nameEq keyEq (LBegin selected) before afterState
+      LBeginTag (beginEquation opening))
+
+0 snapshotReloadingAt :
+  (snapshot : ReloadingSnapshot name key world error value nameEq selected
+    providers state) -> reloadingAt @{nameEq} selected state = True
+snapshotReloadingAt snapshot = rewrite snapshotLookup snapshot in
+  rewrite snapshotReloading snapshot in Refl
+
+0 snapshotCommittedProviders :
+  (snapshot : ReloadingSnapshot name key world error value nameEq selected
+    providers state) ->
+  committedProvidersAt @{nameEq} selected state = Just providers
+snapshotCommittedProviders snapshot = rewrite snapshotLookup snapshot in
+  rewrite snapshotReloading snapshot in rewrite snapshotProviders snapshot in Refl
+
+0 snapshotEndThroughout :
+  (snapshot : ReloadingSnapshot name key world error value nameEq selected
+    providers state) ->
+  ReloadingThroughout name key world error value nameEq selected
+    (NoTransitions {state})
+snapshotEndThroughout snapshot = ReloadingEnd (snapshotFiber snapshot)
+  (snapshotLookup snapshot)
+  (snapshotRemaining snapshot ** (snapshotAccumulator snapshot **
+    (snapshotView snapshot ** snapshotReloading snapshot)))
+
 public export
 activeAt : DecEq name => name -> SystemState name key value world error -> Bool
 activeAt selected state = case lookupFiber selected (registry state) of
