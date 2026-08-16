@@ -4233,6 +4233,194 @@ viewsInvariantUnstableRuntimeReplace {name} {key} {world} {error} {value}
       (setFiberRuntime fiber newTable newLifecycle) fibers)
     entryPresent targetSelected framed
 
+0 activeIsStable :
+  (lifecycle : Lifecycle key value world error name deps provision) ->
+  isActive lifecycle = True -> stableProvider lifecycle = True
+activeIsStable (Inactive outcome) active = void (falseCannotBeTrue active)
+activeIsStable (Reloading rest accumulator view) active =
+  void (falseCannotBeTrue active)
+activeIsStable (Active accumulator view) active = Refl
+activeIsStable (Unloading accumulator view outcome) active =
+  void (falseCannotBeTrue active)
+
+0 lookupEntriesHead : (keyEq : DecEq key) -> (k : key) -> (v : value k) ->
+  (rest : List (Binding key value)) ->
+  lookupEntries @{keyEq} k (Bind k v :: rest) = Just v
+lookupEntriesHead keyEq k v rest with (decEq @{keyEq} k k)
+  lookupEntriesHead keyEq k v rest | (Yes Refl) = Refl
+  lookupEntriesHead keyEq k v rest | (No contra) = void (contra Refl)
+
+0 lookupEntriesOtherHead : (keyEq : DecEq key) ->
+  (wanted, current : key) -> Not (wanted = current) ->
+  (v : value current) -> (rest : List (Binding key value)) ->
+  lookupEntries @{keyEq} wanted (Bind current v :: rest) =
+  lookupEntries @{keyEq} wanted rest
+lookupEntriesOtherHead keyEq wanted current distinct v rest
+  with (decEq @{keyEq} wanted current)
+  lookupEntriesOtherHead keyEq current current distinct v rest | (Yes Refl) =
+    void (distinct Refl)
+  lookupEntriesOtherHead keyEq wanted current distinct v rest | (No _) = Refl
+
+record ProviderEntrySound (name, key, world, error : Type)
+  (value : key -> Type) (nameEq : DecEq name) (keyEq : DecEq key)
+  (k : key) (provider : name)
+  (entries : List (Binding name (FiberAt name key value world error))) where
+  constructor MkProviderEntrySound
+  soundProviderFiber : Fiber name key value world error
+  0 soundProviderLookup : lookupEntries @{nameEq} provider entries =
+    Just soundProviderFiber
+  0 soundProviderStable : stableProvider
+    (fiberLifecycle soundProviderFiber) = True
+  0 soundProviderValue : isJust (lookupBinding @{keyEq} k
+    (ownedValues (fiberTable soundProviderFiber))) = True
+
+0 providerInSound :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (k : key) ->
+  (provider : name) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  UniqueKeys (bindingKeys entries) ->
+  providerIn @{nameEq} @{keyEq} {value = value} {world = world} {error = error} k entries = Just provider ->
+  ProviderEntrySound name key world error value nameEq keyEq k provider entries
+providerInSound nameEq keyEq k provider [] UniqueNil found =
+  case found of Refl impossible
+providerInSound {name} {key} {world} {error} {value}
+  nameEq keyEq k provider (Bind current fiber :: rest)
+  (UniqueCons headFresh tailUnique) found
+  with (isActive (fiberLifecycle fiber) &&
+    memberKey @{keyEq} k (ownedValues (fiberTable fiber))) proof usable
+  providerInSound {name} {key} {world} {error} {value}
+    nameEq keyEq k provider (Bind current fiber :: rest)
+    (UniqueCons headFresh tailUnique) found | True =
+      case justValuesEqual found of
+        Refl => MkProviderEntrySound fiber
+          (lookupEntriesHead nameEq current fiber rest)
+          (activeIsStable (fiberLifecycle fiber)
+            (andTrueLeft _ _ usable))
+          (andTrueRight _ _ usable)
+  providerInSound {name} {key} {world} {error} {value}
+    nameEq keyEq k provider (Bind current fiber :: rest)
+    (UniqueCons headFresh tailUnique) found | False =
+      let tailSound = providerInSound {name = name} {key = key} {world = world}
+            {error = error} {value = value} nameEq keyEq k provider rest
+            tailUnique found
+          providerInTail = localLookupJustElem provider rest
+            (soundProviderFiber tailSound) (soundProviderLookup tailSound)
+          distinct : Not (provider = current)
+          distinct same = headFresh
+            (replace {p = \candidate => Elem candidate (bindingKeys rest)} same
+              providerInTail)
+          liftedLookup = trans
+            (lookupEntriesOtherHead nameEq provider current distinct fiber rest)
+            (soundProviderLookup tailSound)
+      in MkProviderEntrySound (soundProviderFiber tailSound) liftedLookup
+        (soundProviderStable tailSound) (soundProviderValue tailSound)
+
+record ProviderOfSound (name, key, world, error : Type)
+  (value : key -> Type) (nameEq : DecEq name) (keyEq : DecEq key)
+  (k : key) (provider : name)
+  (fibers : Registry name key value world error) where
+  constructor MkProviderOfSound
+  providerOfFiber : Fiber name key value world error
+  0 providerOfLookup : lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} provider fibers =
+    Just providerOfFiber
+  0 providerOfStable : stableProvider (fiberLifecycle providerOfFiber) = True
+  0 providerOfValue : isJust (valueFromProvider @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+    provider k fibers) = True
+
+0 providerOfSound :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (k : key) ->
+  (provider : name) -> (fibers : Registry name key value world error) ->
+  providerOf @{nameEq} @{keyEq} {value = value} {world = world} {error = error} k fibers = Just provider ->
+  ProviderOfSound name key world error value nameEq keyEq k provider fibers
+providerOfSound {name} {key} {world} {error} {value}
+  nameEq keyEq k provider fibers@(MkCoeffectContext entries unique) found =
+  let entrySound = providerInSound {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq keyEq k provider entries unique
+        found
+      0 valuePresent : (isJust (valueFromProvider @{nameEq} @{keyEq}
+        {value = value} {world = world} {error = error} provider k fibers) = True)
+      valuePresent = rewrite soundProviderLookup entrySound in
+        soundProviderValue entrySound
+  in MkProviderOfSound (soundProviderFiber entrySound)
+    (soundProviderLookup entrySound)
+    (soundProviderStable entrySound) valuePresent
+
+0 isJustTrueWitness : (candidate : Maybe a) -> isJust candidate = True ->
+  (witness : a ** candidate = Just witness)
+isJustTrueWitness Nothing valid = void (falseCannotBeTrue valid)
+isJustTrueWitness (Just witness) valid = (witness ** Refl)
+
+||| A view returned by target resolution has stable providers and all requested
+||| values, exactly the strengthened Definition-58 committed-view clause.
+public export
+0 resolveViewBindingsSound :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) -> (view : View name deps) ->
+  (fibers : Registry name key value world error) ->
+  resolveView @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps fibers = Just view ->
+  viewBindingsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps view fibers = True
+resolveViewBindingsSound nameEq keyEq [] EmptyView fibers resolved = Refl
+resolveViewBindingsSound {name} {key} {world} {error} {value}
+  nameEq keyEq (k :: ks) view fibers resolved
+  with (providerOf @{nameEq} @{keyEq} {value = value} {world = world} {error = error} k fibers) proof providerFound
+  resolveViewBindingsSound {name} {key} {world} {error} {value}
+    nameEq keyEq (k :: ks) view fibers resolved | Nothing =
+      case resolved of Refl impossible
+  resolveViewBindingsSound {name} {key} {world} {error} {value}
+    nameEq keyEq (k :: ks) view fibers resolved | Just provider
+    with (resolveView @{nameEq} @{keyEq} ks fibers) proof tailFound
+    resolveViewBindingsSound {name} {key} {world} {error} {value}
+      nameEq keyEq (k :: ks) view fibers resolved | Just provider | Nothing =
+        case resolved of Refl impossible
+    resolveViewBindingsSound {name} {key} {world} {error} {value}
+      nameEq keyEq (k :: ks) view fibers resolved | Just provider | Just rest =
+        case justValuesEqual resolved of
+          Refl =>
+            let providerSound = providerOfSound {name = name} {key = key}
+                  {world = world} {error = error} {value = value} nameEq keyEq k
+                  provider fibers providerFound
+                tailSound = resolveViewBindingsSound {name = name} {key = key}
+                  {world = world} {error = error} {value = value} nameEq keyEq ks
+                  rest fibers tailFound
+                0 providersHead : (stableProvider
+                  (fiberLifecycle (providerOfFiber providerSound)) = True)
+                providersHead = providerOfStable providerSound
+                0 providersTail : (viewProvidersInvariant @{nameEq}
+                  {key = key} {value = value} {world = world} {error = error}
+                  fibers rest = True)
+                providersTail = andTrueLeft _ _ tailSound
+                0 valuesTail : (isJust (resolveCommittedValues @{nameEq} @{keyEq}
+                  {value = value} {world = world} {error = error} ks rest fibers) =
+                  True)
+                valuesTail = andTrueRight _ _ tailSound
+                0 valuesHead : (isJust (valueFromProvider @{nameEq} @{keyEq}
+                  {value = value} {world = world} {error = error} provider k
+                  fibers) = True)
+                valuesHead = providerOfValue providerSound
+            in case isJustTrueWitness
+              (valueFromProvider @{nameEq} @{keyEq} {value = value}
+                {world = world} {error = error} provider k fibers)
+              valuesHead of
+              (v ** valueEquation) => case isJustTrueWitness
+                (resolveCommittedValues @{nameEq} @{keyEq} {value = value}
+                  {world = world} {error = error} ks rest fibers)
+                valuesTail of
+                (tailValues ** tailEquation) =>
+                  let 0 allProviders : (viewProvidersInvariant @{nameEq}
+                        {key = key} {value = value} {world = world}
+                        {error = error} fibers (ProviderView provider rest) = True)
+                      allProviders = rewrite providerOfLookup providerSound in
+                        andBothTrue _ _ providersHead providersTail
+                      0 allValues : (isJust (resolveCommittedValues @{nameEq}
+                        @{keyEq} {value = value} {world = world} {error = error}
+                        (k :: ks) (ProviderView provider rest) fibers) = True)
+                      allValues = rewrite valueEquation in
+                        rewrite tailEquation in Refl
+                  in andBothTrue _ _ allProviders allValues
+
 ||| Runtime-checked rule application used by the proof-indexed LTS. `applyAction`
 ||| remains the raw ten-rule evaluator; this wrapper rejects a malformed target
 ||| rather than admitting it into a proof trace.
