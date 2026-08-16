@@ -3348,6 +3348,120 @@ retireReloadingAfterReplace selected
   rewrite lookupReplacedFiber selected fiber (retireFiber fiber) fibers found in
   rewrite reloading in Refl
 
+0 retireReloadingFromSnapshot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  (selected : name) -> (providers : List name) -> (ambient : world) ->
+  (fibers : Registry name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  (snapshot : ReloadingSnapshot name key world error value nameEq selected
+    providers (MkSystemState ambient fibers)) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} selected fibers = Just fiber ->
+  reloadingAt @{nameEq} {key = key} {value = value} {world = world} {error = error} selected (MkSystemState ambient
+    (replaceBinding @{nameEq} selected (retireFiber fiber) fibers)) = True
+retireReloadingFromSnapshot selected providers ambient fibers fiber snapshot found =
+  case justInjective (trans (sym (snapshotLookup snapshot)) found) of
+    Refl => retireReloadingAfterReplace selected fiber found
+      (snapshotReloading snapshot)
+
+
+
+0 retireReloadingSnapshotFromEquation :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) -> (providers : List name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  ReloadingSnapshot name key world error value nameEq selected providers before ->
+  committedProvidersAt @{nameEq} selected afterState = Just providers ->
+  applyAction @{nameEq} @{keyEq} (ORetire selected) before =
+    Just (tag, afterState) ->
+  ReloadingSnapshot name key world error value nameEq selected providers afterState
+retireReloadingSnapshotFromEquation nameEq keyEq selected providers
+  (MkSystemState ambient fibers) afterState tag snapshot targetCommitted equation
+  with (lookupFiber @{nameEq} selected fibers) proof found
+  retireReloadingSnapshotFromEquation nameEq keyEq selected providers
+    (MkSystemState ambient fibers) afterState tag snapshot targetCommitted equation | Nothing =
+      void (nothingIsNotJust equation)
+  retireReloadingSnapshotFromEquation nameEq keyEq selected providers
+    (MkSystemState ambient fibers) afterState tag snapshot targetCommitted equation | Just fiber =
+      case justInjective equation of
+        Refl => snapshotFromPredicates nameEq selected providers
+          (MkSystemState ambient
+            (replaceBinding @{nameEq} selected (retireFiber fiber) fibers))
+          (retireReloadingFromSnapshot selected providers ambient fibers fiber
+            snapshot found)
+          targetCommitted
+
+0 retireReloadingSnapshot :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) -> (providers : List name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  ReloadingSnapshot name key world error value nameEq selected providers before ->
+  applyAction @{nameEq} @{keyEq} (ORetire selected) before =
+    Just (tag, afterState) ->
+  ReloadingSnapshot name key world error value nameEq selected providers afterState
+retireReloadingSnapshot nameEq keyEq selected providers before afterState tag
+  snapshot equation =
+  retireReloadingSnapshotFromEquation nameEq keyEq selected providers before
+    afterState tag snapshot
+    (committedProvidersORetireSelected nameEq keyEq selected providers before
+      afterState tag (snapshotCommittedProviders snapshot) equation)
+    equation
+
+0 successfulLDivertTag :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (LDivert selected) before =
+    Just (tag, afterState) ->
+  tag = LDivertTag
+successfulLDivertTag nameEq keyEq selected before afterState tag equation
+  with (lookupFiber @{nameEq} selected (registry before))
+  successfulLDivertTag nameEq keyEq selected before afterState tag equation |
+    Nothing = void (nothingIsNotJust equation)
+  successfulLDivertTag nameEq keyEq selected before afterState tag equation |
+    Just fiber with (fiberLifecycle fiber)
+    successfulLDivertTag nameEq keyEq selected before afterState tag equation |
+      Just fiber | Inactive outcome = void (nothingIsNotJust equation)
+    successfulLDivertTag nameEq keyEq selected before afterState tag equation |
+      Just fiber | Active accumulator view = void (nothingIsNotJust equation)
+    successfulLDivertTag nameEq keyEq selected before afterState tag equation |
+      Just fiber | Unloading accumulator view outcome =
+        void (nothingIsNotJust equation)
+    successfulLDivertTag nameEq keyEq selected before afterState tag equation |
+      Just fiber | Reloading remaining accumulator view
+      with (targetMatches @{nameEq}
+        (targetFiber @{nameEq} @{keyEq} fiber (registry before)) view)
+      successfulLDivertTag nameEq keyEq selected before afterState tag equation |
+        Just fiber | Reloading remaining accumulator view | True =
+          void (nothingIsNotJust equation)
+      successfulLDivertTag nameEq keyEq selected before afterState tag equation |
+        Just fiber | Reloading remaining accumulator view | False =
+          sym (cong fst (justInjective equation))
+
+0 iterAdvanceCoherent :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (checkedEquation : checkedApplyAction @{nameEq} @{keyEq}
+    (LAdvance selected) before = Just (LIterTag, afterState)) ->
+  AdvanceStructure name key world error value nameEq keyEq selected LIterTag
+    before afterState ->
+  transitionResolutionCoherent nameEq keyEq selected {before = before}
+    (Fired nameEq keyEq (LAdvance selected) LIterTag checkedEquation) = True
+iterAdvanceCoherent nameEq keyEq selected before afterState checkedEquation
+  (IterAdvance fiber found
+    (remaining ** (accumulator ** (view ** (life, matches)))) reloading)
+  with (decEq @{nameEq} selected selected)
+  iterAdvanceCoherent nameEq keyEq selected before afterState checkedEquation
+    (IterAdvance fiber found
+      (remaining ** (accumulator ** (view ** (life, matches)))) reloading) |
+      Yes Refl = rewrite found in rewrite life in matches
+  iterAdvanceCoherent nameEq keyEq selected before afterState checkedEquation
+    (IterAdvance fiber found
+      (remaining ** (accumulator ** (view ** (life, matches)))) reloading) |
+      No contra = void (contra Refl)
+
 public export
 data StructuralExit : (name, key, world, error : Type) ->
   (value : key -> Type) ->
