@@ -130,6 +130,54 @@ sameOrchestrationSymmetric
       MatchOrchestration action rightTransition rightRest leftTransition leftRest
         orchestration rightAction leftAction (sameOrchestrationSymmetric tail)
 
+0 boolTrueFalse : observed = True -> observed = False -> result
+boolTrueFalse Refl Refl impossible
+
+||| Shared-orchestration witnesses compose. The two mismatch cases are
+||| impossible because the shared middle transition cannot be both lifecycle
+||| and orchestration.
+public export
+0 sameOrchestrationTransitive :
+  SameOrchestration left middle -> SameOrchestration middle right ->
+  SameOrchestration left right
+sameOrchestrationTransitive SameOrchestrationEnd SameOrchestrationEnd =
+  SameOrchestrationEnd
+sameOrchestrationTransitive
+  (SkipLeftLifecycle transition rest lifecycle tail) rightWitness =
+    SkipLeftLifecycle transition rest lifecycle
+      (sameOrchestrationTransitive tail rightWitness)
+sameOrchestrationTransitive leftWitness
+  (SkipRightLifecycle transition rest lifecycle tail) =
+    SkipRightLifecycle transition rest lifecycle
+      (sameOrchestrationTransitive leftWitness tail)
+sameOrchestrationTransitive
+  (SkipRightLifecycle middleTransition middleRest lifecycle firstTail)
+  (SkipLeftLifecycle middleTransition middleRest lifecycleAgain secondTail) =
+    sameOrchestrationTransitive firstTail secondTail
+sameOrchestrationTransitive
+  (SkipRightLifecycle middleTransition middleRest lifecycle firstTail)
+  (MatchOrchestration action middleTransition middleRest rightTransition rightRest
+    orchestration middleAction rightAction secondTail) =
+      boolTrueFalse
+        (trans (sym (cong isLifecycleAction middleAction)) lifecycle)
+        orchestration
+sameOrchestrationTransitive
+  (MatchOrchestration action leftTransition leftRest middleTransition middleRest
+    orchestration leftAction middleAction firstTail)
+  (SkipLeftLifecycle middleTransition middleRest lifecycle secondTail) =
+      boolTrueFalse
+        (trans (sym (cong isLifecycleAction middleAction)) lifecycle)
+        orchestration
+sameOrchestrationTransitive
+  (MatchOrchestration leftActionValue leftTransition leftRest middleTransition
+    middleRest leftOrchestration leftAction middleLeftAction firstTail)
+  (MatchOrchestration rightActionValue middleTransition middleRest rightTransition
+    rightRest rightOrchestration middleRightAction rightAction secondTail) =
+      case trans (sym middleLeftAction) middleRightAction of
+        Refl => MatchOrchestration leftActionValue leftTransition leftRest
+          rightTransition rightRest leftOrchestration leftAction rightAction
+          (sameOrchestrationTransitive firstTail secondTail)
+
 ||| Lemma 72 base case: deleting no episodes preserves the original checked
 ||| trace and endpoint.
 public export
