@@ -58,6 +58,17 @@ memberKey : DecEq key => key -> CoeffectContext key value -> Bool
 memberKey wanted table = isJust (lookupBinding wanted table)
 
 public export
+0 lookupJustElem : DecEq key => (wanted : key) ->
+  (entries : List (Binding key value)) -> (found : value wanted) ->
+  lookupEntries wanted entries = Just found -> Elem wanted (bindingKeys entries)
+lookupJustElem wanted [] found present = case present of Refl impossible
+lookupJustElem wanted (Bind current value :: rest) found present
+  with (decEq wanted current)
+  lookupJustElem current (Bind current value :: rest) found present | (Yes Refl) = Here
+  lookupJustElem wanted (Bind current value :: rest) found present | (No _) =
+    There (lookupJustElem wanted rest found present)
+
+public export
 0 lookupNothingNotElem : DecEq key => (wanted : key) ->
   (entries : List (Binding key value)) ->
   lookupEntries wanted entries = Nothing -> Not (Elem wanted (bindingKeys entries))
@@ -304,6 +315,22 @@ lookupDeleteOtherEntries wanted removed distinct (Bind found old :: rest)
     lookupDeleteOtherEntries wanted removed distinct (Bind found old :: rest) |
       (No notRemoved) | (No _) =
         lookupDeleteOtherEntries wanted removed distinct rest
+
+public export
+0 deletedKeyNotElem : DecEq key => (removed : key) ->
+  (entries : List (Binding key value)) ->
+  UniqueKeys (bindingKeys entries) ->
+  Not (Elem removed (bindingKeys (deleteEntries removed entries)))
+deletedKeyNotElem removed [] UniqueNil = \present => uninhabited present
+deletedKeyNotElem removed (Bind current value :: rest) (UniqueCons headFresh tailUnique)
+  with (decEq removed current)
+  deletedKeyNotElem current (Bind current value :: rest)
+    (UniqueCons headFresh tailUnique) | (Yes Refl) = headFresh
+  deletedKeyNotElem removed (Bind current value :: rest)
+    (UniqueCons headFresh tailUnique) | (No distinct) = \present =>
+      case present of
+        Here => distinct Refl
+        There later => deletedKeyNotElem removed rest tailUnique later
 
 public export
 0 deleteEntriesPresentLength : DecEq key => (removed : key) ->
