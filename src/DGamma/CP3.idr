@@ -2429,9 +2429,83 @@ record VestigialEndpointGeneration
     {world = world} {error = error} selected (registry state) = False
   0 vestigialUnsupported : isSupported @{nameEq} @{keyEq} {key = key}
     {value = value} {world = world} {error = error} selected state = False
-  0 vestigialProvidesNoKey : (k : key) ->
-    providerOf @{nameEq} @{keyEq} {value = value} {world = world}
-      {error = error} k (registry state) = Just selected -> Void
+
+||| Executable checker for the full paper-Lemma-57 fiber shape. The discarded
+||| generation arguments remain proofs from the trace scanner; all endpoint
+||| inertness fields are checked from runtime state rather than asserted.
+public export
+vestigialEndpointGeneration :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (currentGenerations : GenerationEnvironment name) ->
+  (discardedGenerations : List (RegistrationGeneration name)) ->
+  (selected : name) -> (state : SystemState name key value world error) ->
+  (generation : RegistrationGeneration name) ->
+  (0 current : lookupCurrentGeneration @{nameEq} selected currentGenerations =
+    Just generation) ->
+  (0 discarded : Elem generation discardedGenerations) ->
+  Maybe (VestigialEndpointGeneration name key world error value nameEq keyEq
+    currentGenerations discardedGenerations selected state)
+vestigialEndpointGeneration nameEq keyEq currentGenerations discardedGenerations
+  selected state generation current discarded
+  with (lookupFiber @{nameEq} selected (registry state)) proof found
+  vestigialEndpointGeneration nameEq keyEq currentGenerations discardedGenerations
+    selected state generation current discarded | Nothing = Nothing
+  vestigialEndpointGeneration nameEq keyEq currentGenerations discardedGenerations
+    selected state generation current discarded |
+      Just fiber@(MkFiber component parent False table lifecycle) = Nothing
+  vestigialEndpointGeneration nameEq keyEq currentGenerations discardedGenerations
+    selected state generation current discarded |
+      Just fiber@(MkFiber component parent True table (Inactive (Just failure))) =
+        Nothing
+  vestigialEndpointGeneration nameEq keyEq currentGenerations discardedGenerations
+    selected state generation current discarded |
+      Just fiber@(MkFiber component parent True table (Reloading remaining accumulator view)) =
+        Nothing
+  vestigialEndpointGeneration nameEq keyEq currentGenerations discardedGenerations
+    selected state generation current discarded |
+      Just fiber@(MkFiber component parent True table (Active accumulator view)) =
+        Nothing
+  vestigialEndpointGeneration nameEq keyEq currentGenerations discardedGenerations
+    selected state generation current discarded |
+      Just fiber@(MkFiber component parent True table
+        (Unloading accumulator view outcome)) = Nothing
+  vestigialEndpointGeneration nameEq keyEq currentGenerations discardedGenerations
+    selected state generation current discarded |
+      Just fiber@(MkFiber component parent True
+        table@(MkOwnedTable (MkCoeffectContext (binding :: rest) unique) sound)
+        (Inactive Nothing)) = Nothing
+  vestigialEndpointGeneration nameEq keyEq currentGenerations discardedGenerations
+    selected state generation current discarded |
+      Just fiber@(MkFiber component parent True
+        table@(MkOwnedTable (MkCoeffectContext [] unique) sound)
+        (Inactive Nothing))
+    with (hasChild @{nameEq} selected (registry state)) proof children
+    vestigialEndpointGeneration nameEq keyEq currentGenerations discardedGenerations
+      selected state generation current discarded |
+        Just fiber@(MkFiber component parent True
+          table@(MkOwnedTable (MkCoeffectContext [] unique) sound)
+          (Inactive Nothing)) | True = Nothing
+    vestigialEndpointGeneration nameEq keyEq currentGenerations discardedGenerations
+      selected state generation current discarded |
+        Just fiber@(MkFiber component parent True
+          table@(MkOwnedTable (MkCoeffectContext [] unique) sound)
+          (Inactive Nothing)) | False
+      with (isSupported @{nameEq} @{keyEq} selected state) proof supported
+      vestigialEndpointGeneration nameEq keyEq currentGenerations discardedGenerations
+        selected state generation current discarded |
+          Just fiber@(MkFiber component parent True
+            table@(MkOwnedTable (MkCoeffectContext [] unique) sound)
+            (Inactive Nothing)) | False | True = Nothing
+      vestigialEndpointGeneration nameEq keyEq currentGenerations discardedGenerations
+        selected state generation current discarded |
+          Just fiber@(MkFiber component parent True
+            table@(MkOwnedTable (MkCoeffectContext [] unique) sound)
+            (Inactive Nothing)) | False | False =
+              Just (MkVestigialEndpointGeneration generation current discarded
+                (MkFiber component parent True
+                  (MkOwnedTable (MkCoeffectContext [] unique) sound)
+                  (Inactive Nothing))
+                found Refl Refl Refl children supported)
 
 ||| The raw-name bijection used only to compare *non-vestigial current endpoint*
 ||| generations. Historical child births are governed by the generation
