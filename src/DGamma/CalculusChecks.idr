@@ -48,7 +48,7 @@ ownedB value = MkOwnedTable (contextB value) sound
 
 public export
 providerInstall : StepEffect ToyKey ToyValue ToyRuntime String [] DGamma.Section3Example.toySpecA
-providerInstall = MkStepEffect run witnessed
+providerInstall = MkStepEffect Nothing run witnessed
   where
   run : DepValues ToyKey ToyValue [] ->
         LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA ->
@@ -82,7 +82,7 @@ providerInstall = MkStepEffect run witnessed
 
 public export
 providerFinish : StepEffect ToyKey ToyValue ToyRuntime String [] DGamma.Section3Example.toySpecA
-providerFinish = MkStepEffect run witnessed
+providerFinish = MkStepEffect Nothing run witnessed
   where
   run : DepValues ToyKey ToyValue [] ->
         LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA ->
@@ -107,7 +107,7 @@ providerFinish = MkStepEffect run witnessed
 public export
 consumerInstall : StepEffect ToyKey ToyValue ToyRuntime String
   [ServiceA] DGamma.CalculusChecks.toySpecB
-consumerInstall = MkStepEffect run witnessed
+consumerInstall = MkStepEffect Nothing run witnessed
   where
   run : DepValues ToyKey ToyValue [ServiceA] ->
         LocalState ToyKey ToyValue ToyRuntime DGamma.CalculusChecks.toySpecB ->
@@ -152,7 +152,7 @@ consumerInstall = MkStepEffect run witnessed
 
 public export
 raisingStep : StepEffect ToyKey ToyValue ToyRuntime String [] DGamma.CalculusChecks.toyEmptySpec
-raisingStep = MkStepEffect
+raisingStep = MkStepEffect Nothing
   (\NoDepValues, local => Left "boom")
   (\NoDepValues, before, after, undo, returned => absurd returned)
 

@@ -206,9 +206,9 @@ public export
   {initial, leftFinal, rightFinal : SystemState name key value world error} ->
   {leftTrace : Transitions initial leftFinal} ->
   {rightTrace : Transitions initial rightFinal} ->
-  (leftSchedule : CanonicalSchedule name key world error value nameEq keyEq
+  (leftSchedule : CanonicalSchedule name key world error value protocol nameEq keyEq
     leftTrace) ->
-  (rightSchedule : CanonicalSchedule name key world error value nameEq keyEq
+  (rightSchedule : CanonicalSchedule name key world error value protocol nameEq keyEq
     rightTrace) ->
   endpointWithdrawnNames (canonicalEndpoint leftSchedule) = [] ->
   endpointWithdrawnNames (canonicalEndpoint rightSchedule) = [] ->
@@ -225,23 +225,23 @@ canonicalEndpointsEquivalent leftSchedule rightSchedule leftEmpty rightEmpty
           (canonicalEndpointWithoutWithdrawals (canonicalEndpoint rightSchedule)
             rightEmpty)))
 
-||| Canonical-schedule construction plus endpoint coincidence is precisely the
-||| still-missing constructive core of full Confluence; all packaging after it
-||| is proved here.
+||| Legacy zero-withdrawal/exact-name packaging. This is a proved strong special
+||| case only; general Theorem 73 now concludes `ConfluenceResult` through a
+||| Lemma-56 bijection and is not discharged by this helper.
 public export
 0 confluenceFromCanonicalSchedules :
   {initial, leftFinal, rightFinal : SystemState name key value world error} ->
   {leftTrace : Transitions initial leftFinal} ->
   {rightTrace : Transitions initial rightFinal} ->
-  (leftSchedule : CanonicalSchedule name key world error value nameEq keyEq
+  (leftSchedule : CanonicalSchedule name key world error value protocol nameEq keyEq
     leftTrace) ->
-  (rightSchedule : CanonicalSchedule name key world error value nameEq keyEq
+  (rightSchedule : CanonicalSchedule name key world error value protocol nameEq keyEq
     rightTrace) ->
   endpointWithdrawnNames (canonicalEndpoint leftSchedule) = [] ->
   endpointWithdrawnNames (canonicalEndpoint rightSchedule) = [] ->
   canonicalFinal leftSchedule = canonicalFinal rightSchedule ->
-  (CanonicalSchedule name key world error value nameEq keyEq leftTrace,
-   CanonicalSchedule name key world error value nameEq keyEq rightTrace,
+  (CanonicalSchedule name key world error value protocol nameEq keyEq leftTrace,
+   CanonicalSchedule name key world error value protocol nameEq keyEq rightTrace,
    SystemEquivalent name key world error value nameEq keyEq leftFinal rightFinal)
 confluenceFromCanonicalSchedules leftSchedule rightSchedule leftEmpty rightEmpty
   sameFinal =

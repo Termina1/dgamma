@@ -53,6 +53,10 @@ public export
 record StepEffect (key : Type) (value : key -> Type) (world, error : Type)
                   (deps : List key) (provision : CoeffectSpec key) where
   constructor MkStepEffect
+  ||| Optional finite-host identifier for a component registration yielded by
+  ||| this step. The actual fresh name is chosen by O-Insert; CP3 supplies the
+  ||| shared catalog and trace-level occurrence correspondence.
+  registrationYieldTag : Maybe Nat
   runStepEffect : DepValues key value deps ->
                   LocalState key value world provision ->
                   Either error

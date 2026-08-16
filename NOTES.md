@@ -90,29 +90,41 @@ of Lemma 38.
    is equivalent to that yielded inverse being uniform against the whole
    forward map. This resolves the mechanization issue but the paper could state
    the scope more explicitly.
-5. **Confirmed Erratum 3 — Lemma 68 assumes nested-registration provenance that
-   O-Insert does not enforce.** The failing proof step says that a subtree fiber
+5. **Confirmed Erratum #3 — Lemma 68 assumes yielded nested-registration
+   provenance that O-Insert does not enforce.** The proof says a subtree fiber
    is “registered by an activation of `m` or of one of `m`'s descendants, hence
-   at a step after the L-Begin of `m`”.  The rule as printed requires only that
-   the named parent is present and the new name is currently fresh.  A checked
-   sequence can therefore activate a root provider and consumer, retire and
-   unload both, O-Remove the provider, reissue its name as a child of the former
-   consumer, then reactivate the child followed by the parent.  The final
-   precedence edge from the reused provider to the consumer and parent edge
-   back to the reused child form a nonempty mixed `SupportPath` cycle in a state
-   legally reached from the empty registry.  Simpler direct-child and
-   retired-parent variants fail for the same missing provenance.  Thus
-   reached-from-empty alone does not prove Lemma 68 (and does not suffice for
-   Lemma 70). The paper-intent repair is a nested-registration discipline. The
-   finite host statement now requires the parent to be `Reloading`—strictly
-   after L-Begin and before L-Finish/L-Raise/L-Divert—at every child O-Insert,
-   forbids a second insertion of any already-issued name, and requires either
-   no later parent recovery or an explicit child O-Retire before the first
-   L-Leave/L-Divert/L-Raise recovery boundary. These three fields respectively
-   exclude the review's inactive-parent direct
-   insertion, remove/reissue, and retired-parent/open-child checked traces.
-   This is a premise on the trace; the calculus rule itself is not strengthened,
-   and the desired combined well-foundedness is not assumed as a shortcut.
+   at a step after the L-Begin of `m`”. Table-1 O-Insert requires only a present
+   parent, current freshness, and provision disjointness; it does not identify
+   a parent iterator step or yielded inverse. Checked inactive-parent,
+   remove/reissue, and retired-parent/open-child traces expose that mismatch.
+
+   Round 3's report was incremental. Its early cross-subtree counterexample
+   applies to the submitted **phase/order-only** `RegistrationDiscipline`: merely
+   seeing `Reloading` plus a timely O-Retire does not identify what the program
+   yielded and admits an alternating mixed support cycle. The later VERIFIED
+   disposition concerns the stricter intended formulation. This revision makes
+   that distinction a type distinction. `RegistrationProvenance` ties every
+   child insertion to the actual nonempty head `StepEffect`, its fixed suffix,
+   an optional `registrationYieldTag`, a shared deterministic
+   `RegistrationProtocol` catalog, and an admitted component rank whose yielded
+   and precedence edges strictly increase. `RegistrationDiscipline` adds the
+   inverse O-Retire-before-recovery obligation needed by Lemma 70 and Confluence;
+   Lemma 68 itself requires only `RegistrationProvenance`.
+
+   The former global no-rebirth condition has been removed. The paper explicitly
+   says a name freed by O-Remove may be reissued (lines 1855–1858); current
+   freshness plus occurrence-level yield evidence handles each birth instead of
+   banning that legal behavior. The finite catalog tag/rank is an explicit host
+   representation delta necessitated by the absence of a recursive component
+   yield channel in `runStepEffect`; it is not claimed to be a paper rule.
+6. **Erratum #4 / proof-intent ambiguity in Lemma 72.** The prose says to delete
+   “steps that act on n”, which literally includes O-Retire under Definition 53,
+   but the proof immediately claims those steps write only `theta_n` and
+   Theorem 73 must preserve external orchestration. A checked retirement episode
+   shows literal deletion falsifies the control conclusion. `EpisodeDeletedActor`
+   therefore follows the proof intent: it deletes only selected lifecycle steps;
+   selected O-Retire/O-Remove survive, while every R-owned action remains
+   deletable.
 
 ## Escape-hatch and hole audit
 
@@ -133,7 +145,8 @@ cannot silently introduce a proof:
 - `supportWellFoundedTheorem` — Lemma 68.
 - `supportAtQuiescenceTheorem` — Lemma 70.
 - `deletionTheorem` — Lemma 72.
-- `confluenceTheorem` — the finite/no-nested-registration form of Theorem 73.
+- `confluenceTheorem` — the finite explicit-registration form of Theorem 73,
+  with a Lemma-56 bijection.
 
 Each open theorem is marked `TODO(proof)` at its declaration. These are honest
 uninhabited statements, not holes accepted by the compiler. `orderingTheorem`
@@ -573,27 +586,36 @@ empty-suffix quantitative base (`progressEndFromNoDeadlock` and
 
 ### Confluence (Theorem 73): statement under repair and proof debt
 
-The finite specialization remains stated and awaits round-3 statement review.
-Previously verified machinery remains: effect transposition from Definition 60,
-the older all-explicit-action `SameOrchestration` equivalence utilities, the
-full Equation-53 relation, unique combined Equation-62 order, and ordered
-contiguous open blocks. The theorem statement now uses
-`SameExternalOrchestration`, which matches only root orchestration and treats
-provenance-disciplined child actions as internal.
-Round-2 exposed additional proposition-shape defects now represented explicitly:
+The finite explicit-registration specialization remains stated and awaits
+round-4 review. Previously verified Equation-53, combined Equation-62, block,
+root-placement, and exact-filter structures remain. Round-3's three statement
+blockers are now represented as follows:
 
-1. **One-step episode deletion (Lemma 72).** `ActionSubsequence.KeepAction`
-   requires non-deletability, so the selected L-Begin/body/L-Unload and every
-   R-owned action are mandatory deletions. The statement rejects any L-Begin
-   for R, checks dependency edges at each consumer episode's start, quantifies
-   Definition-69 totality over every inserted component, and carries explicit
-   insertion/retirement provenance. The checked replay proof remains open.
-2. **Canonical sorting.** `RootInputsBeforeLifecycle` covers O-Insert,
-   O-Retire, and O-Remove at every root, including unsupported roots.
-   `CanonicalEndpointRelation` carries an explicit possibly nonempty withdrawal
-   set with effects and full outside-set control agreement. The earlier endpoint
-   diagram remains proved only for the zero-withdrawal specialization;
-   constructive deletion/sorting and general endpoint composition remain open.
+1. **One-step episode deletion (Lemma 72).** `KeepAction` remains
+   bidirectional, but `DeleteEpisodeLifecycle` additionally requires
+   `isLifecycleAction=True`. Thus selected L-Begin/body/L-Leave/L-Unload steps
+   are removed while selected O-Retire/O-Remove survive; every R-owned action is
+   still removed. Open-R exclusion, relevant-time dependencies, all-trace
+   totality, yielded-registration provenance, effects, and outside-R controls
+   remain explicit. The checked replay proof is open.
+2. **Yielded registration.** `StepEffect.registrationYieldTag` and the shared
+   `RegistrationProtocol` catalog connect each child O-Insert to the exact
+   nonempty head step and fixed continuation of its live parent. Protocol ranks
+   strictly increase along yielded-parent and precedence edges. An empty parent
+   program therefore cannot fabricate a child, and the phase-only alternating
+   cross-subtree trace has no ranked protocol witness.
+3. **Lemma-56 renaming and canonical trees.** `NameBijection` fixes external
+   roots and transports generated names, parents, provider views, effect tables,
+   and every Equation-53 control payload. `SameOrchestrationModuloGenerated`
+   carries the registration-tree bijection; `ConfluenceResult` concludes
+   `SystemEquivalentByRenaming`, not exact-domain `SystemEquivalent`.
+   `CanonicalSchedule` now carries the same protocol discipline on both traces
+   plus `CanonicalRegistrationCorrespondence`, preventing fabricated child
+   registrations and accounting removed ones in the withdrawal list.
+
+The older exact-name/zero-withdrawal endpoint helpers remain proved only as a
+strong special case. Constructive deletion, sorting, renaming construction, and
+general endpoint composition remain open.
 
 ### Recovery and Theorem 64
 
@@ -607,19 +629,20 @@ but the indexed induction through `InstalledTrace` is not yet implemented.
 completes the recovery branch of Theorem 64; resolution structure and final
 packaging are no longer debt.
 
-### CP3 adversarial rounds 1–2: statement redesign in progress
+### CP3 adversarial rounds 1–3: statement redesign in progress
 
-Round 1 accepted global Ordering. Round 2 showed that the first redesign still
-left false/trivial proposition shapes. The following are candidate repairs for
-round-3 review, not accepted theorem statements:
+Round 1 accepted global Ordering. Rounds 2–3 exposed false/trivial proposition
+shapes in support, deletion, and fresh-name Confluence. The following are
+candidate round-4 statements, not accepted proofs:
 
 - The old Lemma-70 alias accepted an arbitrary snapshot and was false on a
   quiet Active mixed cycle (parent edge one way, precedence edge the other).
   `SupportEdge`/`SupportPath` now represent the full Equation-62 relation;
   `ReachedFromEmpty` records an aligned checked trace from an empty well-formed
   registry, but round 2 proved that reachability alone is insufficient.
-  `RegistrationDiscipline` now additionally exposes Erratum #3's activation,
-  no-rebirth, and child-retirement premises in Lemmas 68 and 70.
+  `RegistrationProvenance` now exposes the exact tagged parent step/catalog and
+  rank needed by Lemma 68. `RegistrationDiscipline` adds only the retirement
+  provenance needed by Lemma 70. Legal post-remove name reissue is retained.
 - The old `fiberTotalOnProvision` is retained only as an executable current-
   Active diagnostic. `ProgramFinishes` and `ComponentTotalOnProvision` now
   quantify every successful complete component execution, independent of a
@@ -632,14 +655,15 @@ round-3 review, not accepted theorem statements:
   registration ordering. `FiberControlRelated` retains the exact immutable
   component (dependencies, provisions, program), parent, retirement, remaining
   iterator, committed view, outcome, and a pointwise accumulator relation.
-- The round-1 `DeletionResult` redesign still admitted identity. Exact filtering
-  now gives `KeepAction` an explicit non-deletability premise; the statement
-  also excludes open R episodes and moves totality/dependency evidence to the
-  relevant trace occurrences.
+- The round-1 `DeletionResult` redesign admitted identity; round 3 then showed
+  its selected predicate over-deleted O-Retire. `KeepAction` now requires
+  non-deletability and selected deletion is lifecycle-only. Open-R and
+  relevant-time totality/dependency guards remain explicit.
 - `DGamma.CP3StatementChecks` now applies and projects Lemma 68 rather than
-  returning its alias, and separately projects block order, all-root placement,
-  all three deletion segments, effect recovery, outside controls, and endpoint
-  withdrawals. These candidate types remain honestly unproved.
+  returning its alias, and separately projects lifecycle-only deletion, yielded
+  source/rank provenance, canonical discipline/tree correspondence, block/order
+  fields, all deletion segments, effect recovery, Lemma-56 renaming, outside
+  controls, and withdrawals. These candidate types remain honestly unproved.
 
 ## Status
 
@@ -649,10 +673,10 @@ episode resolution structure; and global spatial Ordering/Theorem 63 including
 strict containment, resolution constancy, and provider-value constancy.
 
 **Partial:** Progress/Theorem 66 (search/maximality/base case proved);
-Lemmas 68/70 (candidate statements with Erratum-3 premise; Lemma-70 empty base
-proved); Lemma 71 (effect commutation projection); Lemma 72 (candidate mandatory-
-deletion statement); Confluence/Theorem 73 (candidate canonical package under
-round-3 review; older orchestration utilities and zero-withdrawal endpoint assembly); and recovery-combined Theorem 64 (complete
+Lemmas 68/70 (candidate tagged/ranked provenance statements; Lemma-70 empty
+base proved); Lemma 71 (effect commutation projection); Lemma 72 (candidate
+lifecycle-only deletion statement); Confluence/Theorem 73 (candidate Lemma-56
+renamed canonical package under round-4 review; zero-withdrawal assembly only); and recovery-combined Theorem 64 (complete
 conditional assembly from Corollary 62). Lemmas 54–57 have many rule, frame,
 and boundary analogues but are not individually complete.
 
@@ -663,7 +687,7 @@ and boundary analogues but are not individually complete.
 escape-hatch-free proposition types.
 
 **Deviations:** Definition 32 finite approximations; finite static-list
-continuations; host-level rather than nested registration; trace-anchored
+continuations; finite tagged/catalogued explicit registration rather than a recursive nested yield; trace-anchored
 full-effect generated monoids; exact full-effect equality; and explicit
 `AlignedTransitions` dictionary alignment.
 
