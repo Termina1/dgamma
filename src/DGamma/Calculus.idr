@@ -686,6 +686,10 @@ elemDecFalseNotElem wanted (x :: xs) absent with (decEq wanted x)
       Here => distinct Refl
       There later => elemDecFalseNotElem wanted xs absent later
 
+0 elemLengthZeroImpossible : (xs : List a) -> length xs = Z -> Elem x xs -> Void
+elemLengthZeroImpossible [] Refl present = uninhabited present
+elemLengthZeroImpossible (_ :: _) Refl present impossible
+
 public export
 AvailableComplete : (name, key, world, error : Type) ->
   (value : key -> Type) -> (nameEq : DecEq name) ->
@@ -2293,6 +2297,309 @@ pairwiseRetireEntries {name} {key} {world} {error} {value}
         (componentProvisions (fiberComponent observed)) rest &&)
         (pairwiseRetireEntries {name = name} {key = key} {world = world}
           {error = error} {value = value} nameEq keyEq rest n fiber present)
+
+public export
+ParentStepValid : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> Nat -> List name ->
+  Fiber name key value world error -> Registry name key value world error -> Type
+ParentStepValid nameEq fuel seen fiber fibers = case fiberParent fiber of
+  Root => True = True
+  ChildOf parent => if elemDec @{nameEq} parent seen
+    then False = True
+    else parentChainInvariant @{nameEq} fuel (parent :: seen) parent fibers = True
+
+0 reducedParentStepValid :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (fuel : Nat) -> (seen : List name) ->
+  (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (case fiberParent fiber of
+    Root => True
+    ChildOf parent => if elemDec @{nameEq} parent seen then False
+      else parentChainInvariant @{nameEq} fuel (parent :: seen) parent fibers) =
+    True ->
+  ParentStepValid nameEq fuel seen fiber fibers
+reducedParentStepValid nameEq fuel seen
+  (MkFiber component Root retired table lifecycle) fibers valid = valid
+reducedParentStepValid {name} nameEq fuel seen
+  (MkFiber component (ChildOf parent) retired table lifecycle) fibers valid
+  with (elemDec @{nameEq} parent seen)
+  reducedParentStepValid nameEq fuel seen
+    (MkFiber component (ChildOf parent) retired table lifecycle) fibers valid |
+    True = valid
+  reducedParentStepValid nameEq fuel seen
+    (MkFiber component (ChildOf parent) retired table lifecycle) fibers valid |
+    False = valid
+
+0 normalizedChildParentStep :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (fuel : Nat) -> (parent : name) ->
+  (seen : List name) -> (ancestor : name) ->
+  (component : Component key value world error) -> (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (lifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (fibers : Registry name key value world error) ->
+  (if (case decEq @{nameEq} ancestor parent of
+        Yes Refl => True
+        No _ => elemDec @{nameEq} ancestor seen)
+    then False
+    else parentChainInvariant @{nameEq} fuel (ancestor :: parent :: seen)
+      ancestor fibers) = True ->
+  ParentStepValid nameEq fuel (parent :: seen)
+    (MkFiber component (ChildOf ancestor) retired table lifecycle) fibers
+normalizedChildParentStep nameEq fuel parent seen ancestor component retired
+  table lifecycle fibers valid with (decEq @{nameEq} ancestor parent)
+  normalizedChildParentStep nameEq fuel parent seen parent component retired
+    table lifecycle fibers valid | (Yes Refl) = valid
+  normalizedChildParentStep nameEq fuel parent seen ancestor component retired
+    table lifecycle fibers valid | (No distinct)
+    with (elemDec @{nameEq} ancestor seen)
+    normalizedChildParentStep nameEq fuel parent seen ancestor component retired
+      table lifecycle fibers valid | (No distinct) | True = valid
+    normalizedChildParentStep nameEq fuel parent seen ancestor component retired
+      table lifecycle fibers valid | (No distinct) | False = valid
+
+0 normalizedExposedParentStep :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (fuel : Nat) -> (parent : name) ->
+  (seen : List name) -> (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (case fiberParent fiber of
+    Root => True
+    ChildOf ancestor => if (case decEq @{nameEq} ancestor parent of
+      Yes Refl => True
+      No _ => elemDec @{nameEq} ancestor seen)
+      then False else parentChainInvariant @{nameEq} fuel
+        (ancestor :: parent :: seen) ancestor fibers) = True ->
+  ParentStepValid nameEq fuel (parent :: seen) fiber fibers
+normalizedExposedParentStep nameEq fuel parent seen
+  (MkFiber component Root retired table lifecycle) fibers valid = valid
+normalizedExposedParentStep nameEq fuel parent seen
+  (MkFiber component (ChildOf ancestor) retired table lifecycle) fibers valid
+  with (decEq @{nameEq} ancestor parent)
+  normalizedExposedParentStep nameEq fuel parent seen
+    (MkFiber component (ChildOf parent) retired table lifecycle) fibers valid |
+    (Yes Refl) = valid
+  normalizedExposedParentStep nameEq fuel parent seen
+    (MkFiber component (ChildOf ancestor) retired table lifecycle) fibers valid |
+    (No distinct) with (elemDec @{nameEq} ancestor seen)
+    normalizedExposedParentStep nameEq fuel parent seen
+      (MkFiber component (ChildOf ancestor) retired table lifecycle) fibers valid |
+      (No distinct) | True = valid
+    normalizedExposedParentStep nameEq fuel parent seen
+      (MkFiber component (ChildOf ancestor) retired table lifecycle) fibers valid |
+      (No distinct) | False = valid
+
+||| One cardinality-controlled deletion step, assuming the current source
+||| lookup has already been exposed. Recursion is structural on `remaining`.
+public export
+0 parentChainDeleteKnown :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (remaining : Nat) ->
+  (available, seen : List name) -> (current, removed : name) ->
+  (removedFiber, currentFiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  length available = S remaining -> Elem current available ->
+  Not (Elem removed available) -> Elem current seen ->
+  AvailableComplete name key world error value nameEq seen available
+    (deleteBinding @{nameEq} removed fibers) ->
+  hasChild @{nameEq} {key = key} {value = value} {world = world} {error = error} removed fibers = False ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} removed fibers = Just removedFiber ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} current fibers = Just currentFiber ->
+  (case fiberParent currentFiber of
+    Root => True
+    ChildOf parent => if elemDec @{nameEq} parent seen then False
+      else parentChainInvariant @{nameEq} {key = key} {value = value}
+        {world = world} {error = error} (S remaining) (parent :: seen)
+        parent fibers) = True ->
+  parentChainInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (S remaining) seen current
+    (deleteBinding @{nameEq} removed fibers) = True
+parentChainDeleteKnown {name} {key} {world} {error} {value}
+  nameEq Z available seen current removed removedFiber
+  (MkFiber component Root retired table lifecycle) fibers
+  lengthOk currentAvailable removedAbsent currentSeen complete noChild present
+  currentLookup sourceValid =
+    let currentDistinct : Not (current = removed)
+        currentDistinct same = removedAbsent
+          (replace {p = \candidate => Elem candidate available} same currentAvailable)
+        targetLookup = trans
+          (lookupDeleteOther current removed currentDistinct fibers) currentLookup
+    in rewrite targetLookup in Refl
+parentChainDeleteKnown {name} {key} {world} {error} {value}
+  nameEq Z available seen current removed removedFiber
+  (MkFiber component (ChildOf parent) retired table lifecycle) fibers
+  lengthOk currentAvailable removedAbsent currentSeen complete noChild present
+  currentLookup sourceValid
+  with (elemDec @{nameEq} parent seen) proof parentSeen
+  parentChainDeleteKnown {name} {key} {world} {error} {value}
+    nameEq Z available seen current removed removedFiber
+    (MkFiber component (ChildOf parent) retired table lifecycle) fibers
+    lengthOk currentAvailable removedAbsent currentSeen complete noChild present
+    currentLookup sourceValid | True = void (falseCannotBeTrue sourceValid)
+  parentChainDeleteKnown {name} {key} {world} {error} {value}
+    nameEq Z available seen current removed removedFiber
+    (MkFiber component (ChildOf parent) retired table lifecycle) fibers
+    lengthOk currentAvailable removedAbsent currentSeen complete noChild present
+    currentLookup sourceValid | False
+    with (lookupFiber @{nameEq} parent fibers) proof parentLookup
+    parentChainDeleteKnown {name} {key} {world} {error} {value}
+      nameEq Z available seen current removed removedFiber
+      (MkFiber component (ChildOf parent) retired table lifecycle) fibers
+      lengthOk currentAvailable removedAbsent currentSeen complete noChild present
+      currentLookup sourceValid | False | Nothing =
+        void (falseCannotBeTrue sourceValid)
+    parentChainDeleteKnown {name} {key} {world} {error} {value}
+      nameEq Z available seen current removed removedFiber
+      (MkFiber component (ChildOf parent) retired table lifecycle) fibers
+      lengthOk currentAvailable removedAbsent currentSeen complete noChild present
+      currentLookup sourceValid | False | Just parentFiber =
+        let 0 parentNotSeen : Not (Elem parent seen)
+            parentNotSeen = elemDecFalseNotElem parent seen parentSeen
+            0 parentNotRemoved : Not (parent = removed)
+            parentNotRemoved = \same =>
+              noChildLookupParentDistinct {name = name} {key = key}
+                {world = world} {error = error} {value = value} nameEq removed
+                current (MkFiber component (ChildOf parent) retired table lifecycle)
+                fibers noChild currentLookup (cong ChildOf same)
+            targetParentLookup = trans
+              (lookupDeleteOther parent removed parentNotRemoved fibers) parentLookup
+            0 parentAvailable : Elem parent available
+            parentAvailable = complete parent parentNotSeen parentFiber
+              targetParentLookup
+            0 shrunk : AvailabilityShrink name key world error value nameEq Z
+              available seen current parent removed
+              (deleteBinding @{nameEq} removed fibers)
+            shrunk = shrinkAvailability {name = name} {key = key}
+              {world = world} {error = error} {value = value} nameEq Z available
+              seen current parent removed (deleteBinding @{nameEq} removed fibers)
+              lengthOk currentAvailable removedAbsent currentSeen parentNotSeen
+              parentAvailable complete
+        in void (elemLengthZeroImpossible (removeName current available)
+          (shrinkLength shrunk) (shrinkParent shrunk))
+parentChainDeleteKnown {name} {key} {world} {error} {value}
+  nameEq (S remaining) available seen current removed removedFiber
+  (MkFiber component Root retired table lifecycle) fibers
+  lengthOk currentAvailable removedAbsent currentSeen complete noChild present
+  currentLookup sourceValid =
+    let currentDistinct : Not (current = removed)
+        currentDistinct same = removedAbsent
+          (replace {p = \candidate => Elem candidate available} same currentAvailable)
+        targetLookup = trans
+          (lookupDeleteOther current removed currentDistinct fibers) currentLookup
+    in rewrite targetLookup in Refl
+parentChainDeleteKnown {name} {key} {world} {error} {value}
+  nameEq (S remaining) available seen current removed removedFiber
+  (MkFiber component (ChildOf parent) retired table lifecycle) fibers
+  lengthOk currentAvailable removedAbsent currentSeen complete noChild present
+  currentLookup sourceValid
+  with (elemDec @{nameEq} parent seen) proof parentSeen
+  parentChainDeleteKnown {name} {key} {world} {error} {value}
+    nameEq (S remaining) available seen current removed removedFiber (MkFiber component (ChildOf parent) retired table lifecycle)
+    fibers lengthOk currentAvailable removedAbsent currentSeen complete noChild
+    present currentLookup sourceValid | True = void (falseCannotBeTrue sourceValid)
+  parentChainDeleteKnown {name} {key} {world} {error} {value}
+    nameEq (S remaining) available seen current removed removedFiber (MkFiber component (ChildOf parent) retired table lifecycle)
+    fibers lengthOk currentAvailable removedAbsent currentSeen complete noChild
+    present currentLookup sourceValid | False
+    with (lookupFiber @{nameEq} parent fibers) proof parentLookup
+    parentChainDeleteKnown {name} {key} {world} {error} {value}
+      nameEq (S remaining) available seen current removed removedFiber (MkFiber component (ChildOf parent) retired table lifecycle)
+      fibers lengthOk currentAvailable removedAbsent currentSeen complete noChild
+      present currentLookup sourceValid | False | Nothing =
+        void (falseCannotBeTrue sourceValid)
+    parentChainDeleteKnown {name} {key} {world} {error} {value}
+      nameEq (S remaining) available seen current removed removedFiber (MkFiber component (ChildOf parent) retired table lifecycle)
+      fibers lengthOk currentAvailable removedAbsent currentSeen complete noChild
+      present currentLookup sourceValid | False | Just parentFiber with (fiberParent parentFiber) proof nextParentShape
+      parentChainDeleteKnown {name} {key} {world} {error} {value}
+        nameEq (S remaining) available seen current removed removedFiber (MkFiber component (ChildOf parent) retired table lifecycle)
+        fibers lengthOk currentAvailable removedAbsent currentSeen complete noChild
+        present currentLookup sourceValid | False | Just parentFiber | Root =
+          let currentDistinct : Not (current = removed)
+              currentDistinct same = removedAbsent
+                (replace {p = \candidate => Elem candidate available} same
+                  currentAvailable)
+              targetLookup = trans
+                (lookupDeleteOther current removed currentDistinct fibers) currentLookup
+              0 parentNotSeen : Not (Elem parent seen)
+              parentNotSeen = elemDecFalseNotElem parent seen parentSeen
+              0 parentNotRemoved : Not (parent = removed)
+              parentNotRemoved = \same =>
+                noChildLookupParentDistinct {name = name} {key = key}
+                  {world = world} {error = error} {value = value} nameEq removed
+                  current (MkFiber component (ChildOf parent) retired table lifecycle) fibers noChild currentLookup
+                  (cong ChildOf same)
+              targetParentLookup = trans
+                (lookupDeleteOther parent removed parentNotRemoved fibers) parentLookup
+              0 parentAvailable : Elem parent available
+              parentAvailable = complete parent parentNotSeen parentFiber
+                targetParentLookup
+              0 shrunk : AvailabilityShrink name key world error value nameEq
+                (S remaining) available seen current parent removed
+                (deleteBinding @{nameEq} removed fibers)
+              shrunk = shrinkAvailability {name = name} {key = key}
+                {world = world} {error = error} {value = value} nameEq (S remaining)
+                available seen current parent removed
+                (deleteBinding @{nameEq} removed fibers) lengthOk currentAvailable
+                removedAbsent currentSeen parentNotSeen parentAvailable complete
+          in rewrite targetLookup in rewrite parentSeen in
+            parentChainDeleteKnown {name = name} {key = key} {world = world}
+              {error = error} {value = value} nameEq remaining
+              (removeName current available) (parent :: seen) parent removed
+              removedFiber parentFiber fibers (shrinkLength shrunk)
+              (shrinkParent shrunk) (shrinkRemovedAbsent shrunk) Here
+              (shrinkComplete shrunk) noChild present parentLookup
+              (rewrite nextParentShape in Refl)
+      parentChainDeleteKnown {name} {key} {world} {error} {value}
+        nameEq (S remaining) available seen current removed removedFiber (MkFiber component (ChildOf parent) retired table lifecycle)
+        fibers lengthOk currentAvailable removedAbsent currentSeen complete noChild
+        present currentLookup sourceValid | False | Just parentFiber | ChildOf ancestor with (elemDec @{nameEq} ancestor (parent :: seen)) proof ancestorSeen
+        parentChainDeleteKnown {name} {key} {world} {error} {value}
+          nameEq (S remaining) available seen current removed removedFiber (MkFiber component (ChildOf parent) retired table lifecycle)
+          fibers lengthOk currentAvailable removedAbsent currentSeen complete noChild
+          present currentLookup sourceValid | False | Just parentFiber | ChildOf ancestor | True =
+            void (falseCannotBeTrue sourceValid)
+        parentChainDeleteKnown {name} {key} {world} {error} {value}
+          nameEq (S remaining) available seen current removed removedFiber (MkFiber component (ChildOf parent) retired table lifecycle)
+          fibers lengthOk currentAvailable removedAbsent currentSeen complete noChild
+          present currentLookup sourceValid | False | Just parentFiber | ChildOf ancestor | False =
+            let currentDistinct : Not (current = removed)
+                currentDistinct same = removedAbsent
+                  (replace {p = \candidate => Elem candidate available} same
+                    currentAvailable)
+                targetLookup = trans
+                  (lookupDeleteOther current removed currentDistinct fibers) currentLookup
+                0 parentNotSeen : Not (Elem parent seen)
+                parentNotSeen = elemDecFalseNotElem parent seen parentSeen
+                0 parentNotRemoved : Not (parent = removed)
+                parentNotRemoved = \same =>
+                  noChildLookupParentDistinct {name = name} {key = key}
+                    {world = world} {error = error} {value = value} nameEq removed
+                    current (MkFiber component (ChildOf parent) retired table lifecycle) fibers noChild currentLookup
+                    (cong ChildOf same)
+                targetParentLookup = trans
+                  (lookupDeleteOther parent removed parentNotRemoved fibers) parentLookup
+                0 parentAvailable : Elem parent available
+                parentAvailable = complete parent parentNotSeen parentFiber
+                  targetParentLookup
+                0 shrunk : AvailabilityShrink name key world error value nameEq
+                  (S remaining) available seen current parent removed
+                  (deleteBinding @{nameEq} removed fibers)
+                shrunk = shrinkAvailability {name = name} {key = key}
+                  {world = world} {error = error} {value = value} nameEq (S remaining)
+                  available seen current parent removed
+                  (deleteBinding @{nameEq} removed fibers) lengthOk currentAvailable
+                  removedAbsent currentSeen parentNotSeen parentAvailable complete
+            in rewrite targetLookup in rewrite parentSeen in
+              parentChainDeleteKnown {name = name} {key = key} {world = world}
+                {error = error} {value = value} nameEq remaining
+                (removeName current available) (parent :: seen) parent removed
+                removedFiber parentFiber fibers (shrinkLength shrunk)
+                (shrinkParent shrunk) (shrinkRemovedAbsent shrunk) Here
+                (shrinkComplete shrunk) noChild present parentLookup
+                (rewrite nextParentShape in rewrite ancestorSeen in sourceValid)
 
 0 parentInvariantDeleteDistinct :
   {name, key, world, error : Type} -> {value : key -> Type} ->
