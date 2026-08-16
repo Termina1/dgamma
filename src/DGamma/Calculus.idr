@@ -1058,6 +1058,27 @@ andTrueRight True True equation = Refl
   left && right = True
 andBothTrue True True Refl Refl = Refl
 
+0 andFourFirst : (a, b, c, d : Bool) ->
+  a && b && c && d = True -> a = True
+andFourFirst a b c d valid = andTrueLeft a (b && c && d) valid
+
+0 andFourSecond : (a, b, c, d : Bool) ->
+  a && b && c && d = True -> b = True
+andFourSecond a b c d valid =
+  andTrueLeft b (c && d) (andTrueRight a (b && c && d) valid)
+
+0 andFourThird : (a, b, c, d : Bool) ->
+  a && b && c && d = True -> c = True
+andFourThird a b c d valid =
+  andTrueLeft c d
+    (andTrueRight b (c && d) (andTrueRight a (b && c && d) valid))
+
+0 andFourFourth : (a, b, c, d : Bool) ->
+  a && b && c && d = True -> d = True
+andFourFourth a b c d valid =
+  andTrueRight c d
+    (andTrueRight b (c && d) (andTrueRight a (b && c && d) valid))
+
 0 freshFiberProvision : (component : Component key value world error) ->
   (parent : Parent name) ->
   componentProvisions (fiberComponent (freshFiber component parent)) =
@@ -1390,6 +1411,111 @@ registryWellFormed state =
    in parentsInvariant entries fibers &&
       chainsInvariant fuel entries fibers &&
       pairwiseProvisionInvariant entries && viewsInvariant entries fibers
+
+0 registryFibersInserted : {name, key, world, error : Type} ->
+  {value : key -> Type} -> (nameEq : DecEq name) -> (n : name) ->
+  (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Nothing) ->
+  registryFibers {value = value} {world = world} {error = error} (insertBinding @{nameEq} n fiber fibers absent) =
+    Bind n fiber :: registryFibers {value = value} {world = world} {error = error} fibers
+registryFibersInserted {key} {world} {error} {value} nameEq n fiber (MkCoeffectContext entries unique) absent = Refl
+
+0 insertedWellFormedEquation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (n : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (ambient : world) ->
+  (fibers : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Nothing) ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+    (MkSystemState ambient
+      (insertBinding @{nameEq} n (freshFiber component parent) fibers absent)) =
+  (parentInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} parent
+      (insertBinding @{nameEq} n (freshFiber component parent) fibers absent) &&
+   parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (registryFibers {value = value} {world = world} {error = error} fibers)
+      (insertBinding @{nameEq} n (freshFiber component parent) fibers absent)) &&
+  ((parentChainInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (S (S (length (registryFibers {value = value} {world = world} {error = error} fibers)))) [n] n
+      (insertBinding @{nameEq} n (freshFiber component parent) fibers absent) &&
+    chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (S (S (length (registryFibers {value = value} {world = world} {error = error} fibers))))
+      (registryFibers {value = value} {world = world} {error = error} fibers)
+      (insertBinding @{nameEq} n (freshFiber component parent) fibers absent)) &&
+   (pairwiseProvisionInvariant @{keyEq} {value = value} {world = world} {error = error}
+      (Bind n (freshFiber component parent) :: registryFibers {value = value} {world = world} {error = error} fibers) &&
+    (True && viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} (registryFibers {value = value} {world = world} {error = error} fibers)
+      (insertBinding @{nameEq} n (freshFiber component parent) fibers absent))))
+insertedWellFormedEquation {key} {world} {error} {value} nameEq keyEq n component parent ambient
+  (MkCoeffectContext entries unique) absent = Refl
+
+||| O-Insert preserves all four clauses of Definition 58.
+public export
+0 registryWellFormedInactiveInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (n : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (ambient : world) ->
+  (fibers : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Nothing) ->
+  parentInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} parent fibers = True ->
+  provisionsDisjointFrom @{keyEq} {value = value} {world = world} {error = error} (componentProvisions component)
+    (registryFibers {value = value} {world = world} {error = error} fibers) = True ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world} {error = error} (MkSystemState ambient fibers) = True ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+    (MkSystemState ambient
+      (insertBinding @{nameEq} n (freshFiber component parent) fibers absent)) = True
+registryWellFormedInactiveInsert {name} {key} {world} {error} {value}
+  nameEq keyEq n component parent ambient
+  fibers@(MkCoeffectContext entries unique) absent parentValid disjoint valid =
+  let sourceParents = andFourFirst
+        (parentsInvariant @{nameEq} entries fibers)
+        (chainsInvariant @{nameEq} (S (length entries)) entries fibers)
+        (pairwiseProvisionInvariant @{keyEq} entries)
+        (viewsInvariant @{nameEq} @{keyEq} entries fibers) valid
+      sourceChains = andFourSecond
+        (parentsInvariant @{nameEq} entries fibers)
+        (chainsInvariant @{nameEq} (S (length entries)) entries fibers)
+        (pairwiseProvisionInvariant @{keyEq} entries)
+        (viewsInvariant @{nameEq} @{keyEq} entries fibers) valid
+      sourcePairwise = andFourThird
+        (parentsInvariant @{nameEq} entries fibers)
+        (chainsInvariant @{nameEq} (S (length entries)) entries fibers)
+        (pairwiseProvisionInvariant @{keyEq} entries)
+        (viewsInvariant @{nameEq} @{keyEq} entries fibers) valid
+      sourceViews = andFourFourth
+        (parentsInvariant @{nameEq} entries fibers)
+        (chainsInvariant @{nameEq} (S (length entries)) entries fibers)
+        (pairwiseProvisionInvariant @{keyEq} entries)
+        (viewsInvariant @{nameEq} @{keyEq} entries fibers) valid
+      targetNewParent = parentInvariantInactiveInsert {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq parent n component
+        parent fibers absent parentValid
+      targetOldParents = parentsInvariantInactiveInsert {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq entries n component
+        parent fibers absent sourceParents
+      targetParents = andBothTrue _ _ targetNewParent targetOldParents
+      sourceChainsRaised = chainsFuelMonotone {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq (S (length entries)) entries
+        fibers sourceChains
+      targetOldChains = chainsInactiveInsert {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq (S (S (length entries))) entries
+        n component parent fibers absent sourceChainsRaised
+      targetNewChain = newFiberParentChain {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq (S (length entries)) n component
+        parent fibers absent parentValid sourceChains
+      targetChains = andBothTrue _ _ targetNewChain targetOldChains
+      targetPairwise = pairwiseProvisionInsert {name = name} {key = key}
+        {world = world} {error = error} {value = value} keyEq n component parent
+        entries disjoint sourcePairwise
+      targetOldViews = viewsInactiveInsert {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq entries n
+        component parent fibers absent sourceViews
+      targetViews = andBothTrue _ _ Refl targetOldViews in
+    trans (insertedWellFormedEquation {name = name} {key = key}
+      {world = world} {error = error} {value = value} nameEq keyEq n component
+      parent ambient fibers absent)
+      (andBothTrue _ _ targetParents
+        (andBothTrue _ _ targetChains
+          (andBothTrue _ _ targetPairwise targetViews)))
 
 ||| Runtime-checked rule application used by the proof-indexed LTS. `applyAction`
 ||| remains the raw ten-rule evaluator; this wrapper rejects a malformed target
