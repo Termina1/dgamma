@@ -4261,6 +4261,137 @@ viewsInvariantUnstableRuntimeReplace {name} {key} {world} {error} {value}
       (setFiberRuntime fiber newTable newLifecycle) fibers)
     entryPresent targetSelected framed
 
+0 viewProvidersRuntimeExcluded :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (deps : List key) -> (view : View name deps) ->
+  (n : name) -> viewContains @{nameEq} n view = False ->
+  (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (fibers : Registry name key value world error) ->
+  viewProvidersInvariant @{nameEq} {key = key} {value = value} {world = world}
+    {error = error}
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers) view =
+  viewProvidersInvariant @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} fibers view
+viewProvidersRuntimeExcluded nameEq [] EmptyView n excluded fiber newTable
+  newLifecycle fibers = Refl
+viewProvidersRuntimeExcluded {name} {key} {world} {error} {value}
+  nameEq (k :: ks) (ProviderView provider rest) n excluded fiber newTable
+  newLifecycle fibers with (decEq @{nameEq} n provider)
+  viewProvidersRuntimeExcluded {name} {key} {world} {error} {value}
+    nameEq (k :: ks) (ProviderView n rest) n excluded fiber newTable newLifecycle
+    fibers | (Yes Refl) = void (trueNotFalse excluded)
+  viewProvidersRuntimeExcluded {name} {key} {world} {error} {value}
+    nameEq (k :: ks) (ProviderView provider rest) n excluded fiber newTable
+    newLifecycle fibers | (No notSame)
+    with (lookupFiber @{nameEq} provider fibers) proof original
+    viewProvidersRuntimeExcluded {name} {key} {world} {error} {value}
+      nameEq (k :: ks) (ProviderView provider rest) n excluded fiber newTable
+      newLifecycle fibers | (No notSame) | Nothing =
+        let distinct : Not (provider = n)
+            distinct same = notSame (sym same)
+        in rewrite lookupReplaceOther provider n distinct
+          (setFiberRuntime fiber newTable newLifecycle) fibers in
+          rewrite original in Refl
+    viewProvidersRuntimeExcluded {name} {key} {world} {error} {value}
+      nameEq (k :: ks) (ProviderView provider rest) n excluded fiber newTable
+      newLifecycle fibers | (No notSame) | Just providerFiber =
+        let distinct : Not (provider = n)
+            distinct same = notSame (sym same)
+        in rewrite lookupReplaceOther provider n distinct
+          (setFiberRuntime fiber newTable newLifecycle) fibers in
+          rewrite original in cong (stableProvider (fiberLifecycle providerFiber) &&)
+            (viewProvidersRuntimeExcluded {name = name} {key = key}
+              {world = world} {error = error} {value = value} nameEq ks rest n
+              excluded fiber newTable newLifecycle fibers)
+
+0 resolveCommittedValuesRuntimeExcluded :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) -> (view : View name deps) ->
+  (n : name) -> viewContains @{nameEq} n view = False ->
+  (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (fibers : Registry name key value world error) ->
+  resolveCommittedValues @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} deps view
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers) =
+  resolveCommittedValues @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} deps view fibers
+resolveCommittedValuesRuntimeExcluded nameEq keyEq [] EmptyView n excluded fiber
+  newTable newLifecycle fibers = Refl
+resolveCommittedValuesRuntimeExcluded {name} {key} {world} {error} {value}
+  nameEq keyEq (k :: ks) (ProviderView provider rest) n excluded fiber newTable
+  newLifecycle fibers with (decEq @{nameEq} n provider)
+  resolveCommittedValuesRuntimeExcluded {name} {key} {world} {error} {value}
+    nameEq keyEq (k :: ks) (ProviderView n rest) n excluded fiber newTable
+    newLifecycle fibers | (Yes Refl) = void (trueNotFalse excluded)
+  resolveCommittedValuesRuntimeExcluded {name} {key} {world} {error} {value}
+    nameEq keyEq (k :: ks) (ProviderView provider rest) n excluded fiber newTable
+    newLifecycle fibers | (No notSame)
+    with (valueFromProvider @{nameEq} @{keyEq} provider k fibers) proof original
+    resolveCommittedValuesRuntimeExcluded {name} {key} {world} {error} {value}
+      nameEq keyEq (k :: ks) (ProviderView provider rest) n excluded fiber newTable
+      newLifecycle fibers | (No notSame) | Nothing =
+        let distinct : Not (provider = n)
+            distinct same = notSame (sym same)
+            target = trans (valueFromProviderRuntimeOther {name = name}
+              {key = key} {world = world} {error = error} {value = value}
+              nameEq keyEq provider n distinct k fiber newTable newLifecycle fibers)
+              original
+        in rewrite target in Refl
+    resolveCommittedValuesRuntimeExcluded {name} {key} {world} {error} {value}
+      nameEq keyEq (k :: ks) (ProviderView provider rest) n excluded fiber newTable
+      newLifecycle fibers | (No notSame) | Just v =
+        let distinct : Not (provider = n)
+            distinct same = notSame (sym same)
+            target = trans (valueFromProviderRuntimeOther {name = name}
+              {key = key} {world = world} {error = error} {value = value}
+              nameEq keyEq provider n distinct k fiber newTable newLifecycle fibers)
+              original
+        in rewrite target in cong (map (OneDepValue v))
+          (resolveCommittedValuesRuntimeExcluded {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq keyEq ks rest
+            n excluded fiber newTable newLifecycle fibers)
+
+public export
+0 viewBindingsRuntimeExcluded :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) -> (view : View name deps) ->
+  (n : name) -> viewContains @{nameEq} n view = False ->
+  (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (fibers : Registry name key value world error) ->
+  viewBindingsInvariant @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} deps view
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers) =
+  viewBindingsInvariant @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} deps view fibers
+viewBindingsRuntimeExcluded {name} {key} {world} {error} {value}
+  nameEq keyEq deps view n excluded fiber newTable newLifecycle fibers =
+  rewrite viewProvidersRuntimeExcluded {name = name} {key = key} {world = world}
+    {error = error} {value = value} nameEq deps view n excluded fiber newTable
+    newLifecycle fibers in
+  rewrite cong isJust (resolveCommittedValuesRuntimeExcluded {name = name}
+    {key = key} {world = world} {error = error} {value = value} nameEq keyEq
+    deps view n excluded fiber newTable newLifecycle fibers) in Refl
+
 0 viewProvidersActiveUnload :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (deps : List key) -> (observed : View name deps) ->
