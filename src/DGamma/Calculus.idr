@@ -1827,6 +1827,65 @@ public export
 retireProvisionInvariant (MkFiber component parent retired table lifecycle) = Refl
 
 public export
+0 provisionsDisjointRetireEntries :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provision : CoeffectSpec key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  lookupEntries @{nameEq} {value = FiberAt name key value world error}
+    n entries = Just fiber ->
+  provisionsDisjointFrom @{keyEq} {value = value} {world = world} {error = error} provision
+    (replaceEntries @{nameEq} n (retireFiber fiber) entries) =
+  provisionsDisjointFrom @{keyEq} {value = value} {world = world} {error = error} provision entries
+provisionsDisjointRetireEntries {world} {error} {value} nameEq keyEq provision [] n fiber present =
+  case present of Refl impossible
+provisionsDisjointRetireEntries {name} {key} {world} {error} {value}
+  nameEq keyEq provision (Bind current observed :: rest) n fiber present
+  with (decEq @{nameEq} n current)
+  provisionsDisjointRetireEntries {name} {key} {world} {error} {value}
+    nameEq keyEq provision (Bind n observed :: rest) n fiber present |
+    (Yes Refl) = case present of
+      Refl => rewrite retireProvisionInvariant observed in Refl
+  provisionsDisjointRetireEntries {name} {key} {world} {error} {value}
+    nameEq keyEq provision (Bind current observed :: rest) n fiber present |
+    (No _) = cong
+      (not (provisionOverlap @{keyEq} provision
+        (componentProvisions (fiberComponent observed))) &&)
+      (provisionsDisjointRetireEntries {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq provision
+        rest n fiber present)
+
+public export
+0 pairwiseRetireEntries :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  lookupEntries @{nameEq} {value = FiberAt name key value world error}
+    n entries = Just fiber ->
+  pairwiseProvisionInvariant @{keyEq} {value = value} {world = world}
+    {error = error} (replaceEntries @{nameEq} n (retireFiber fiber) entries) =
+  pairwiseProvisionInvariant @{keyEq} {value = value} {world = world} {error = error} entries
+pairwiseRetireEntries {world} {error} {value} nameEq keyEq [] n fiber present =
+  case present of Refl impossible
+pairwiseRetireEntries {name} {key} {world} {error} {value}
+  nameEq keyEq (Bind current observed :: rest) n fiber present
+  with (decEq @{nameEq} n current)
+  pairwiseRetireEntries {name} {key} {world} {error} {value}
+    nameEq keyEq (Bind n observed :: rest) n fiber present | (Yes Refl) =
+      case present of Refl => rewrite retireProvisionInvariant observed in Refl
+  pairwiseRetireEntries {name} {key} {world} {error} {value}
+    nameEq keyEq (Bind current observed :: rest) n fiber present | (No _) =
+      rewrite provisionsDisjointRetireEntries {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq
+        (componentProvisions (fiberComponent observed)) rest n fiber present in
+      cong (provisionsDisjointFrom @{keyEq}
+        (componentProvisions (fiberComponent observed)) rest &&)
+        (pairwiseRetireEntries {name = name} {key = key} {world = world}
+          {error = error} {value = value} nameEq keyEq rest n fiber present)
+
+public export
 0 retireViewInvariant : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (fiber : Fiber name key value world error) ->
   (fibers : Registry name key value world error) ->
