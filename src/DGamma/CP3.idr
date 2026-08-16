@@ -2056,6 +2056,12 @@ record CanonicalInputPlacement
 ||| explicitly permits a nonempty set of vestigial original names to be absent
 ||| from the canonical endpoint while retaining effects and full controls
 ||| outside that set.
+|||
+||| API caveat: this trace-free record does not validate the historical
+||| `endpointWithdrawnGenerations` list by itself. Historical entries have
+||| semantic force only when this value is the `canonicalEndpoint` of a
+||| `CanonicalSchedule`, whose `canonicalRegistrationTree` proves that every
+||| listed generation is an actual original child birth absent canonically.
 public export
 record CanonicalEndpointRelation
   (name, key, world, error : Type) (value : key -> Type)
@@ -2085,7 +2091,9 @@ record CanonicalEndpointRelation
 
 ||| Finite canonical-form statement package under active repair: it retains the
 ||| verified Equation-62 order/block fields and exposes all-root input placement
-||| plus endpoint withdrawal sets. Constructive inhabitation remains open.
+||| plus endpoint withdrawal sets. This coupling is what validates the endpoint
+||| relation's otherwise-unchecked historical metadata. Constructive
+||| inhabitation remains open.
 public export
 record CanonicalSchedule
   (name, key, world, error : Type) (value : key -> Type)

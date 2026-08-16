@@ -185,10 +185,11 @@ sameOrchestrationTransitive
 notInEmpty Here impossible
 notInEmpty (There later) impossible
 
-||| Generation deletion is independent of current raw-name omission. In
-||| particular, a later live root incarnation can remain exactly unchanged at
-||| the endpoint while an earlier child birth of that raw name is recorded in
-||| the historical generation list.
+||| Trace-free metadata constructor only: generation deletion is independent of
+||| current raw-name omission, so a later live root incarnation can remain
+||| unchanged while an earlier child birth is listed historically. This helper
+||| does not prove that any listed generation occurred; that fact is meaningful
+||| only through `CanonicalSchedule.canonicalRegistrationTree`.
 public export
 0 canonicalEndpointHistoricalOnly :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
