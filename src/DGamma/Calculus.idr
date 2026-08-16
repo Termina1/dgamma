@@ -3483,6 +3483,449 @@ registryWellFormedInactiveDelete {name} {key} {world} {error} {value}
   in andBothTrue _ _ targetParents
     (andBothTrue _ _ targetChains (andBothTrue _ _ targetPairwise targetViews))
 
+0 setFiberRuntimeProvision :
+  (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  componentProvisions (fiberComponent
+    (setFiberRuntime fiber newTable newLifecycle)) =
+  componentProvisions (fiberComponent fiber)
+setFiberRuntimeProvision
+  (MkFiber component parent retired oldTable oldLifecycle) newTable
+  newLifecycle = Refl
+
+0 setFiberRuntimeParent :
+  (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  fiberParent (setFiberRuntime fiber newTable newLifecycle) = fiberParent fiber
+setFiberRuntimeParent (MkFiber component parent retired oldTable oldLifecycle)
+  newTable newLifecycle = Refl
+
+0 lookupRuntimeReplaced :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (n : name) ->
+  (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} n fibers = Just fiber ->
+  lookupFiber @{nameEq} n
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers) =
+    Just (setFiberRuntime fiber newTable newLifecycle)
+lookupRuntimeReplaced nameEq n fiber newTable newLifecycle
+  (MkCoeffectContext entries unique) present =
+  lookupReplaceEntries n fiber (setFiberRuntime fiber newTable newLifecycle)
+    entries present
+
+||| A runtime replacement preserves the component, parent, retirement bit, and
+||| provision. This frame packages the only lookup fact needed by parent chains.
+public export
+record RuntimeLookupFrame (nameEq : DecEq name) (current, n : name)
+  (fiber, observed : Fiber name key value world error)
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber)))
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)))
+  (fibers : Registry name key value world error) where
+  constructor MkRuntimeLookupFrame
+  framedRuntimeFiber : Fiber name key value world error
+  0 framedRuntimeLookup : lookupFiber @{nameEq} current
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers) =
+    Just framedRuntimeFiber
+  0 framedRuntimeParent : fiberParent framedRuntimeFiber = fiberParent observed
+
+0 runtimeLookupFrame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (current, n : name) ->
+  (fiber, observed : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} current fibers = Just observed ->
+  lookupFiber @{nameEq} n fibers = Just fiber ->
+  RuntimeLookupFrame nameEq current n fiber observed newTable newLifecycle fibers
+runtimeLookupFrame {name} {key} {world} {error} {value}
+  nameEq current n fiber observed newTable newLifecycle
+  fibers@(MkCoeffectContext entries unique) currentLookup present
+  with (decEq @{nameEq} current n)
+  runtimeLookupFrame {name} {key} {world} {error} {value}
+    nameEq n n fiber observed newTable newLifecycle
+    fibers@(MkCoeffectContext entries unique) currentLookup present | (Yes Refl) =
+      case justValuesEqual (trans (sym currentLookup) present) of
+        Refl => MkRuntimeLookupFrame (setFiberRuntime fiber newTable newLifecycle)
+          (lookupReplaceEntries n fiber
+            (setFiberRuntime fiber newTable newLifecycle) entries present)
+          (setFiberRuntimeParent fiber newTable newLifecycle)
+  runtimeLookupFrame {name} {key} {world} {error} {value}
+    nameEq current n fiber observed newTable newLifecycle
+    fibers@(MkCoeffectContext entries unique) currentLookup present | (No distinct) =
+      MkRuntimeLookupFrame observed
+        (trans (lookupReplaceOtherEntries current n distinct
+          (setFiberRuntime fiber newTable newLifecycle) entries) currentLookup)
+        Refl
+
+0 parentInvariantRuntimeRegistry :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (parent : Parent name) -> (n : name) ->
+  (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Just fiber ->
+  parentInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} parent fibers = True ->
+  parentInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} parent
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers) = True
+parentInvariantRuntimeRegistry nameEq Root n fiber newTable newLifecycle fibers
+  present valid = Refl
+parentInvariantRuntimeRegistry {name} {key} {world} {error} {value}
+  nameEq (ChildOf parent) n fiber newTable newLifecycle fibers present valid
+  with (decEq @{nameEq} parent n)
+  parentInvariantRuntimeRegistry {name} {key} {world} {error} {value}
+    nameEq (ChildOf n) n fiber newTable newLifecycle fibers present valid |
+    (Yes Refl) = rewrite lookupRuntimeReplaced nameEq n fiber newTable
+      newLifecycle fibers present in Refl
+  parentInvariantRuntimeRegistry {name} {key} {world} {error} {value}
+    nameEq (ChildOf parent) n fiber newTable newLifecycle fibers present valid |
+    (No distinct) = rewrite lookupReplaceOther parent n distinct
+      (setFiberRuntime fiber newTable newLifecycle) fibers in valid
+
+0 parentsRegistryRuntime :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Just fiber ->
+  parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} entries fibers = True ->
+  parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} entries
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers) = True
+parentsRegistryRuntime nameEq [] n fiber newTable newLifecycle fibers present valid =
+  Refl
+parentsRegistryRuntime {name} {key} {world} {error} {value}
+  nameEq (Bind current observed :: rest) n fiber newTable newLifecycle fibers
+  present valid = andBothTrue _ _
+    (parentInvariantRuntimeRegistry {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq (fiberParent observed) n fiber
+      newTable newLifecycle fibers present (andTrueLeft _ _ valid))
+    (parentsRegistryRuntime {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq rest n fiber newTable newLifecycle
+      fibers present (andTrueRight _ _ valid))
+
+0 parentsEntriesRuntime :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (registry : Registry name key value world error) ->
+  lookupEntries @{nameEq} n entries = Just fiber ->
+  parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} entries registry = True ->
+  parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error}
+    (replaceEntries @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) entries) registry = True
+parentsEntriesRuntime nameEq [] n fiber newTable newLifecycle registry present valid =
+  case present of Refl impossible
+parentsEntriesRuntime {name} {key} {world} {error} {value}
+  nameEq (Bind current observed :: rest) n fiber newTable newLifecycle registry
+  present valid with (decEq @{nameEq} n current)
+  parentsEntriesRuntime {name} {key} {world} {error} {value}
+    nameEq (Bind n observed :: rest) n fiber newTable newLifecycle registry
+    present valid | (Yes Refl) = case present of
+      Refl => rewrite setFiberRuntimeParent observed newTable newLifecycle in
+        andBothTrue _ _ (andTrueLeft _ _ valid) (andTrueRight _ _ valid)
+  parentsEntriesRuntime {name} {key} {world} {error} {value}
+    nameEq (Bind current observed :: rest) n fiber newTable newLifecycle registry
+    present valid | (No _) = andBothTrue _ _ (andTrueLeft _ _ valid)
+      (parentsEntriesRuntime {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq rest n fiber newTable newLifecycle
+        registry present (andTrueRight _ _ valid))
+
+0 parentChainRuntimeRegistry :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (fuel : Nat) -> (seen : List name) ->
+  (current, n : name) -> (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Just fiber ->
+  parentChainInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fuel seen current fibers = True ->
+  parentChainInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fuel seen current
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers) = True
+parentChainRuntimeRegistry nameEq Z seen current n fiber newTable newLifecycle fibers
+  present valid = void (falseCannotBeTrue valid)
+parentChainRuntimeRegistry {name} {key} {world} {error} {value}
+  nameEq (S fuel) seen current n fiber newTable newLifecycle fibers present valid
+  with (lookupFiber @{nameEq} current fibers) proof currentLookup
+  parentChainRuntimeRegistry {name} {key} {world} {error} {value}
+    nameEq (S fuel) seen current n fiber newTable newLifecycle fibers present valid |
+    Nothing = void (falseCannotBeTrue valid)
+  parentChainRuntimeRegistry {name} {key} {world} {error} {value}
+    nameEq (S fuel) seen current n fiber newTable newLifecycle fibers present valid |
+    Just observed with (fiberParent observed) proof parentShape
+    parentChainRuntimeRegistry {name} {key} {world} {error} {value}
+      nameEq (S fuel) seen current n fiber newTable newLifecycle fibers present valid |
+      Just observed | Root =
+        let frame = runtimeLookupFrame {name = name} {key = key} {world = world}
+              {error = error} {value = value} nameEq current n fiber observed
+              newTable newLifecycle fibers currentLookup present
+        in rewrite framedRuntimeLookup frame in rewrite framedRuntimeParent frame in
+          rewrite parentShape in Refl
+    parentChainRuntimeRegistry {name} {key} {world} {error} {value}
+      nameEq (S fuel) seen current n fiber newTable newLifecycle fibers present valid |
+      Just observed | ChildOf parent
+      with (elemDec @{nameEq} parent seen) proof parentSeen
+      parentChainRuntimeRegistry {name} {key} {world} {error} {value}
+        nameEq (S fuel) seen current n fiber newTable newLifecycle fibers present valid |
+        Just observed | ChildOf parent | True = void (falseCannotBeTrue valid)
+      parentChainRuntimeRegistry {name} {key} {world} {error} {value}
+        nameEq (S fuel) seen current n fiber newTable newLifecycle fibers present valid |
+        Just observed | ChildOf parent | False =
+          let frame = runtimeLookupFrame {name = name} {key = key} {world = world}
+                {error = error} {value = value} nameEq current n fiber observed
+                newTable newLifecycle fibers currentLookup present
+              recursive = parentChainRuntimeRegistry {name = name} {key = key}
+                {world = world} {error = error} {value = value} nameEq fuel
+                (parent :: seen) parent n fiber newTable newLifecycle fibers
+                present valid
+          in rewrite framedRuntimeLookup frame in
+            rewrite framedRuntimeParent frame in rewrite parentShape in
+            rewrite parentSeen in recursive
+
+0 chainsRegistryRuntime :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (fuel : Nat) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Just fiber ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fuel entries fibers = True ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fuel entries
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers) = True
+chainsRegistryRuntime nameEq fuel [] n fiber newTable newLifecycle fibers present
+  valid = Refl
+chainsRegistryRuntime {name} {key} {world} {error} {value}
+  nameEq fuel (Bind current observed :: rest) n fiber newTable newLifecycle fibers
+  present valid = andBothTrue _ _
+    (parentChainRuntimeRegistry {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq fuel [current] current n fiber
+      newTable newLifecycle fibers present (andTrueLeft _ _ valid))
+    (chainsRegistryRuntime {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq fuel rest n fiber newTable
+      newLifecycle fibers present (andTrueRight _ _ valid))
+
+0 chainsEntriesRuntime :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (fuel : Nat) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (registry : Registry name key value world error) ->
+  lookupEntries @{nameEq} n entries = Just fiber ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fuel entries registry = True ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fuel
+    (replaceEntries @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) entries) registry = True
+chainsEntriesRuntime nameEq fuel [] n fiber newTable newLifecycle registry present
+  valid = case present of Refl impossible
+chainsEntriesRuntime {name} {key} {world} {error} {value}
+  nameEq fuel (Bind current observed :: rest) n fiber newTable newLifecycle registry
+  present valid with (decEq @{nameEq} n current)
+  chainsEntriesRuntime {name} {key} {world} {error} {value}
+    nameEq fuel (Bind n observed :: rest) n fiber newTable newLifecycle registry
+    present valid | (Yes Refl) = case present of Refl => valid
+  chainsEntriesRuntime {name} {key} {world} {error} {value}
+    nameEq fuel (Bind current observed :: rest) n fiber newTable newLifecycle registry
+    present valid | (No _) = andBothTrue _ _ (andTrueLeft _ _ valid)
+      (chainsEntriesRuntime {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq fuel rest n fiber newTable
+        newLifecycle registry present (andTrueRight _ _ valid))
+
+0 provisionsDisjointRuntimeEntries :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provision : CoeffectSpec key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  lookupEntries @{nameEq} n entries = Just fiber ->
+  provisionsDisjointFrom @{keyEq} {value = value} {world = world} {error = error} provision
+    (replaceEntries @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) entries) =
+  provisionsDisjointFrom @{keyEq} {value = value} {world = world} {error = error} provision entries
+provisionsDisjointRuntimeEntries nameEq keyEq provision [] n fiber newTable
+  newLifecycle present = case present of Refl impossible
+provisionsDisjointRuntimeEntries {name} {key} {world} {error} {value}
+  nameEq keyEq provision (Bind current observed :: rest) n fiber newTable
+  newLifecycle present with (decEq @{nameEq} n current)
+  provisionsDisjointRuntimeEntries {name} {key} {world} {error} {value}
+    nameEq keyEq provision (Bind n observed :: rest) n fiber newTable newLifecycle
+    present | (Yes Refl) = case present of
+      Refl => rewrite setFiberRuntimeProvision observed newTable newLifecycle in
+        Refl
+  provisionsDisjointRuntimeEntries {name} {key} {world} {error} {value}
+    nameEq keyEq provision (Bind current observed :: rest) n fiber newTable
+    newLifecycle present | (No _) = cong
+      (not (provisionOverlap @{keyEq} provision
+        (componentProvisions (fiberComponent observed))) &&)
+      (provisionsDisjointRuntimeEntries {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq provision
+        rest n fiber newTable newLifecycle present)
+
+0 pairwiseRuntimeEntries :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  lookupEntries @{nameEq} n entries = Just fiber ->
+  pairwiseProvisionInvariant @{keyEq} {value = value} {world = world} {error = error}
+    (replaceEntries @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) entries) =
+  pairwiseProvisionInvariant @{keyEq} {value = value} {world = world} {error = error} entries
+pairwiseRuntimeEntries nameEq keyEq [] n fiber newTable newLifecycle present =
+  case present of Refl impossible
+pairwiseRuntimeEntries {name} {key} {world} {error} {value}
+  nameEq keyEq (Bind current observed :: rest) n fiber newTable newLifecycle present
+  with (decEq @{nameEq} n current)
+  pairwiseRuntimeEntries {name} {key} {world} {error} {value}
+    nameEq keyEq (Bind n observed :: rest) n fiber newTable newLifecycle present |
+    (Yes Refl) = case present of
+      Refl => rewrite setFiberRuntimeProvision observed newTable newLifecycle in
+        Refl
+  pairwiseRuntimeEntries {name} {key} {world} {error} {value}
+    nameEq keyEq (Bind current observed :: rest) n fiber newTable newLifecycle present |
+    (No _) = rewrite provisionsDisjointRuntimeEntries {name = name} {key = key}
+      {world = world} {error = error} {value = value} nameEq keyEq
+      (componentProvisions (fiberComponent observed)) rest n fiber newTable
+      newLifecycle present in cong
+        (provisionsDisjointFrom @{keyEq}
+          (componentProvisions (fiberComponent observed)) rest &&)
+        (pairwiseRuntimeEntries {name = name} {key = key} {world = world}
+          {error = error} {value = value} nameEq keyEq rest n fiber newTable
+          newLifecycle present)
+
+||| Assemble the three structural clauses for an arbitrary runtime replacement;
+||| the caller supplies the committed-view clause, which is rule-specific.
+public export
+0 registryWellFormedRuntimeReplace :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (ambient : world) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Just fiber ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world} {error = error} (MkSystemState ambient fibers) = True ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+    (registryFibers {value = value} {world = world} {error = error} (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers))
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers) = True ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} (MkSystemState ambient (replaceBinding @{nameEq} n
+      (setFiberRuntime fiber newTable newLifecycle) fibers)) = True
+registryWellFormedRuntimeReplace {name} {key} {world} {error} {value}
+  nameEq keyEq ambient n fiber newTable newLifecycle
+  fibers@(MkCoeffectContext entries unique) present valid targetViews =
+  let entryPresent = lookupFiberEntries nameEq n fiber fibers present
+      sourceParents = andFourFirst
+        (parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} entries fibers)
+        (chainsInvariant @{nameEq} (S (length entries)) entries fibers)
+        (pairwiseProvisionInvariant @{keyEq} {value = value} {world = world} {error = error} entries)
+        (viewsInvariant @{nameEq} @{keyEq} entries fibers) valid
+      sourceChains = andFourSecond
+        (parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} entries fibers)
+        (chainsInvariant @{nameEq} (S (length entries)) entries fibers)
+        (pairwiseProvisionInvariant @{keyEq} {value = value} {world = world} {error = error} entries)
+        (viewsInvariant @{nameEq} @{keyEq} entries fibers) valid
+      sourcePairwise = andFourThird
+        (parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} entries fibers)
+        (chainsInvariant @{nameEq} (S (length entries)) entries fibers)
+        (pairwiseProvisionInvariant @{keyEq} {value = value} {world = world} {error = error} entries)
+        (viewsInvariant @{nameEq} @{keyEq} entries fibers) valid
+      framedParents = parentsRegistryRuntime {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq entries n fiber
+        newTable newLifecycle fibers present sourceParents
+      targetParents = parentsEntriesRuntime {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq entries n fiber
+        newTable newLifecycle
+        (replaceBinding @{nameEq} n
+          (setFiberRuntime fiber newTable newLifecycle) fibers)
+        entryPresent framedParents
+      framedChains = chainsRegistryRuntime {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq
+        (S (length entries)) entries n fiber newTable newLifecycle fibers present
+        sourceChains
+      targetChains = chainsEntriesRuntime {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq
+        (S (length entries)) entries n fiber newTable newLifecycle
+        (replaceBinding @{nameEq} n
+          (setFiberRuntime fiber newTable newLifecycle) fibers)
+        entryPresent framedChains
+      targetPairwise = trans (pairwiseRuntimeEntries {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq entries n
+        fiber newTable newLifecycle entryPresent) sourcePairwise
+  in rewrite replaceEntriesLength n
+      (setFiberRuntime fiber newTable newLifecycle) entries in
+    andBothTrue _ _ targetParents
+      (andBothTrue _ _ targetChains
+        (andBothTrue _ _ targetPairwise targetViews))
+
 ||| Runtime-checked rule application used by the proof-indexed LTS. `applyAction`
 ||| remains the raw ten-rule evaluator; this wrapper rejects a malformed target
 ||| rather than admitting it into a proof trace.
