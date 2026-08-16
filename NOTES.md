@@ -15,6 +15,12 @@
 - Idris does not assume function extensionality. Every equality of functions in
   the paper is therefore represented by `Pointwise` equality. This avoids an
   axiom and is the computationally relevant form of the statement.
+- **Erasure is not proof irrelevance.** Although `CoeffectContext.uniqueBindings`
+  is quantity `0`, two contexts built from the same runtime bindings with
+  differently derived `UniqueKeys` witnesses are not automatically equal in
+  Idris. Metatheory must therefore frame and compare executable observations
+  (`lookupFiber`, invariant folds, resolved values), never obtain a state or
+  context equality solely by assuming erased uniqueness proofs coincide.
 
 ### Partial coeffect operations
 
