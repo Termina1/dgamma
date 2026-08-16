@@ -3174,6 +3174,126 @@ viewBindingsInactiveDelete {name} {key} {world} {error} {value}
   in andBothTrue _ _ targetProviders targetValues
 
 public export
+0 fiberViewInactiveDelete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (observed : Fiber name key value world error) ->
+  (removed : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (outcome : Maybe error) -> (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} removed fibers =
+    Just (MkFiber component parent retired table (Inactive outcome)) ->
+  fiberViewInvariant @{nameEq} @{keyEq} observed fibers = True ->
+  fiberViewInvariant @{nameEq} @{keyEq} observed
+    (deleteBinding @{nameEq} removed fibers) = True
+fiberViewInactiveDelete {name} {key} {world} {error} {value}
+  nameEq keyEq (MkFiber observedComponent observedParent observedRetired
+    observedTable (Inactive observedOutcome)) removed component parent retired
+    table outcome fibers present valid = Refl
+fiberViewInactiveDelete {name} {key} {world} {error} {value}
+  nameEq keyEq (MkFiber observedComponent observedParent observedRetired
+    observedTable (Reloading rest accumulator view)) removed component parent retired
+    table outcome fibers present valid =
+      viewBindingsInactiveDelete {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq keyEq
+        (dependencies (componentDependencies observedComponent)) view removed
+        component parent retired table outcome fibers present valid
+fiberViewInactiveDelete {name} {key} {world} {error} {value}
+  nameEq keyEq (MkFiber observedComponent observedParent observedRetired
+    observedTable (Active accumulator view)) removed component parent retired table
+    outcome fibers present valid =
+      viewBindingsInactiveDelete {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq keyEq
+        (dependencies (componentDependencies observedComponent)) view removed
+        component parent retired table outcome fibers present valid
+fiberViewInactiveDelete {name} {key} {world} {error} {value}
+  nameEq keyEq (MkFiber observedComponent observedParent observedRetired
+    observedTable (Unloading accumulator view observedOutcome)) removed component
+    parent retired table outcome fibers present valid =
+      viewBindingsInactiveDelete {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq keyEq
+        (dependencies (componentDependencies observedComponent)) view removed
+        component parent retired table outcome fibers present valid
+
+0 viewsRegistryInactiveDelete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (removed : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (outcome : Maybe error) -> (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} removed fibers =
+    Just (MkFiber component parent retired table (Inactive outcome)) ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries fibers = True ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries
+    (deleteBinding @{nameEq} removed fibers) = True
+viewsRegistryInactiveDelete {key} {world} {error} {value}
+  nameEq keyEq [] removed component parent retired table outcome fibers present valid =
+    Refl
+viewsRegistryInactiveDelete {name} {key} {world} {error} {value}
+  nameEq keyEq (Bind current observed :: rest) removed component parent retired table
+  outcome fibers present valid =
+  andBothTrue _ _
+    (fiberViewInactiveDelete {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq keyEq observed removed component
+      parent retired table outcome fibers present (andTrueLeft _ _ valid))
+    (viewsRegistryInactiveDelete {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq keyEq rest removed component parent
+      retired table outcome fibers present (andTrueRight _ _ valid))
+
+0 viewsEntriesDeleteSameRegistry :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (removed : name) -> (fibers : Registry name key value world error) ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries fibers = True ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} (deleteEntries @{nameEq} removed entries)
+    fibers = True
+viewsEntriesDeleteSameRegistry {key} {world} {error} {value}
+  nameEq keyEq [] removed fibers valid = Refl
+viewsEntriesDeleteSameRegistry {name} {key} {world} {error} {value}
+  nameEq keyEq (Bind current observed :: rest) removed fibers valid
+  with (decEq @{nameEq} removed current)
+  viewsEntriesDeleteSameRegistry {name} {key} {world} {error} {value}
+    nameEq keyEq (Bind removed observed :: rest) removed fibers valid |
+    (Yes Refl) = andTrueRight _ _ valid
+  viewsEntriesDeleteSameRegistry {name} {key} {world} {error} {value}
+    nameEq keyEq (Bind current observed :: rest) removed fibers valid |
+    (No _) = andBothTrue _ _ (andTrueLeft _ _ valid)
+      (viewsEntriesDeleteSameRegistry {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq keyEq rest removed fibers
+        (andTrueRight _ _ valid))
+
+||| Removing an Inactive fiber preserves committed views in all remaining
+||| registry entries.
+public export
+0 viewsInvariantInactiveDelete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (removed : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (outcome : Maybe error) -> (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} removed fibers =
+    Just (MkFiber component parent retired table (Inactive outcome)) ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} (registryFibers {value = value} {world = world} {error = error} fibers) fibers = True ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} (registryFibers {value = value} {world = world} {error = error} (deleteBinding @{nameEq} removed fibers))
+    (deleteBinding @{nameEq} removed fibers) = True
+viewsInvariantInactiveDelete {name} {key} {world} {error} {value}
+  nameEq keyEq removed component parent retired table outcome
+  fibers@(MkCoeffectContext entries unique) present valid =
+  let sourceRemaining = viewsEntriesDeleteSameRegistry {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq entries
+        removed fibers valid
+  in viewsRegistryInactiveDelete {name = name} {key = key} {world = world}
+    {error = error} {value = value} nameEq keyEq
+    (deleteEntries @{nameEq} removed entries) removed component parent retired table
+    outcome fibers present sourceRemaining
+
+public export
 0 retireViewInvariant : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (fiber : Fiber name key value world error) ->
   (fibers : Registry name key value world error) ->
