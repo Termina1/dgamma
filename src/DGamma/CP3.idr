@@ -778,3 +778,746 @@ foreignInstallationEvolution nameEq keyEq selected action distinct before
     Either (observed = False) (observed = True)
   boolEquality False = Left Refl
   boolEquality True = Right Refl
+
+public export
+0 installedAtFound :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} selected (registry state) = Just fiber ->
+  installedAt @{nameEq} selected state = installed (fiberLifecycle fiber)
+installedAtFound {name} {key} {world} {error} {value}
+  nameEq selected state fiber found =
+  trans (installedAtLookupEquation nameEq selected state)
+    (cong (installedMaybe {name = name} {key = key} {world = world}
+      {error = error} {value = value}) found)
+
+public export
+0 installedAtMissing :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  lookupFiber @{nameEq} selected (registry state) = observed ->
+  observed = Nothing ->
+  installedAt @{nameEq} selected state = False
+installedAtMissing {name} {key} {world} {error} {value}
+  nameEq selected state observed found missing =
+  trans (installedAtLookupEquation nameEq selected state)
+    (trans (cong (installedMaybe {name = name} {key = key} {world = world}
+      {error = error} {value = value}) found)
+      (cong (installedMaybe {name = name} {key = key} {world = world}
+        {error = error} {value = value}) missing))
+
+0 activeImpliesInstalled :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  activeAt @{nameEq} selected state = True ->
+  installedAt @{nameEq} selected state = True
+activeImpliesInstalled nameEq selected state evidence
+  with (lookupFiber @{nameEq} selected (registry state)) proof found
+  activeImpliesInstalled nameEq selected state evidence | Nothing = absurd evidence
+  activeImpliesInstalled nameEq selected state evidence | Just fiber
+    with (fiberLifecycle fiber) proof life
+    activeImpliesInstalled nameEq selected state evidence | Just fiber |
+      Inactive outcome = absurd evidence
+    activeImpliesInstalled nameEq selected state evidence | Just fiber |
+      Reloading remaining accumulator view = absurd evidence
+    activeImpliesInstalled nameEq selected state evidence | Just fiber |
+      Active accumulator view =
+        Refl
+    activeImpliesInstalled nameEq selected state evidence | Just fiber |
+      Unloading accumulator view outcome = absurd evidence
+
+0 reloadingImpliesInstalled :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  reloadingAt @{nameEq} selected state = True ->
+  installedAt @{nameEq} selected state = True
+reloadingImpliesInstalled nameEq selected state evidence
+  with (lookupFiber @{nameEq} selected (registry state)) proof found
+  reloadingImpliesInstalled nameEq selected state evidence | Nothing = absurd evidence
+  reloadingImpliesInstalled nameEq selected state evidence | Just fiber
+    with (fiberLifecycle fiber) proof life
+    reloadingImpliesInstalled nameEq selected state evidence | Just fiber |
+      Inactive outcome = absurd evidence
+    reloadingImpliesInstalled nameEq selected state evidence | Just fiber |
+      Reloading remaining accumulator view =
+        Refl
+    reloadingImpliesInstalled nameEq selected state evidence | Just fiber |
+      Active accumulator view = absurd evidence
+    reloadingImpliesInstalled nameEq selected state evidence | Just fiber |
+      Unloading accumulator view outcome = absurd evidence
+
+0 unloadingImpliesInstalled :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  unloadingAt @{nameEq} selected state = True ->
+  installedAt @{nameEq} selected state = True
+unloadingImpliesInstalled nameEq selected state evidence
+  with (lookupFiber @{nameEq} selected (registry state)) proof found
+  unloadingImpliesInstalled nameEq selected state evidence | Nothing = absurd evidence
+  unloadingImpliesInstalled nameEq selected state evidence | Just fiber
+    with (fiberLifecycle fiber) proof life
+    unloadingImpliesInstalled nameEq selected state evidence | Just fiber |
+      Inactive outcome = absurd evidence
+    unloadingImpliesInstalled nameEq selected state evidence | Just fiber |
+      Reloading remaining accumulator view = absurd evidence
+    unloadingImpliesInstalled nameEq selected state evidence | Just fiber |
+      Active accumulator view = absurd evidence
+    unloadingImpliesInstalled nameEq selected state evidence | Just fiber |
+      Unloading accumulator view outcome =
+        Refl
+
+public export
+0 installedAtDecEqCoherent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (leftEq, rightEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  installedAt @{leftEq} selected state = installedAt @{rightEq} selected state
+installedAtDecEqCoherent {name} {key} {world} {error} {value}
+  leftEq rightEq selected state =
+  let lookupCoherent = lookupFiberDecEqCoherent leftEq rightEq selected
+        (registry state)
+      observedCoherent = cong
+        (installedMaybe {name = name} {key = key} {world = world}
+          {error = error} {value = value}) lookupCoherent
+  in trans (installedAtLookupEquation leftEq selected state)
+    (trans observedCoherent
+      (sym (installedAtLookupEquation rightEq selected state)))
+
+0 reloadingAnyImpliesInstalled :
+  {leftEq : DecEq name} -> (rightEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  reloadingAt @{leftEq} selected state = True ->
+  installedAt @{rightEq} selected state = True
+reloadingAnyImpliesInstalled {leftEq} rightEq selected state evidence =
+  trans (sym (installedAtDecEqCoherent leftEq rightEq selected state))
+    (reloadingImpliesInstalled leftEq selected state evidence)
+
+0 activeAnyImpliesInstalled :
+  {leftEq : DecEq name} -> (rightEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  activeAt @{leftEq} selected state = True ->
+  installedAt @{rightEq} selected state = True
+activeAnyImpliesInstalled {leftEq} rightEq selected state evidence =
+  trans (sym (installedAtDecEqCoherent leftEq rightEq selected state))
+    (activeImpliesInstalled leftEq selected state evidence)
+
+0 unloadingAnyImpliesInstalled :
+  {leftEq : DecEq name} -> (rightEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  unloadingAt @{leftEq} selected state = True ->
+  installedAt @{rightEq} selected state = True
+unloadingAnyImpliesInstalled {leftEq} rightEq selected state evidence =
+  trans (sym (installedAtDecEqCoherent leftEq rightEq selected state))
+    (unloadingImpliesInstalled leftEq selected state evidence)
+
+
+0 reloadingEndpointImpliesInstalled :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  reloadingEndpoint @{nameEq} selected state = True ->
+  installedAt @{nameEq} selected state = True
+reloadingEndpointImpliesInstalled nameEq selected state evidence
+  with (lookupFiber @{nameEq} selected (registry state))
+  reloadingEndpointImpliesInstalled nameEq selected state evidence | Nothing =
+    absurd evidence
+  reloadingEndpointImpliesInstalled nameEq selected state evidence | Just fiber
+    with (fiberLifecycle fiber)
+    reloadingEndpointImpliesInstalled nameEq selected state evidence | Just fiber |
+      Inactive outcome = absurd evidence
+    reloadingEndpointImpliesInstalled nameEq selected state evidence | Just fiber |
+      Reloading remaining accumulator view = Refl
+    reloadingEndpointImpliesInstalled nameEq selected state evidence | Just fiber |
+      Active accumulator view = absurd evidence
+    reloadingEndpointImpliesInstalled nameEq selected state evidence | Just fiber |
+      Unloading accumulator view outcome = absurd evidence
+
+0 activeEndpointImpliesInstalled :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  activeEndpoint @{nameEq} selected state = True ->
+  installedAt @{nameEq} selected state = True
+activeEndpointImpliesInstalled nameEq selected state evidence
+  with (lookupFiber @{nameEq} selected (registry state))
+  activeEndpointImpliesInstalled nameEq selected state evidence | Nothing =
+    absurd evidence
+  activeEndpointImpliesInstalled nameEq selected state evidence | Just fiber
+    with (fiberLifecycle fiber)
+    activeEndpointImpliesInstalled nameEq selected state evidence | Just fiber |
+      Inactive outcome = absurd evidence
+    activeEndpointImpliesInstalled nameEq selected state evidence | Just fiber |
+      Reloading remaining accumulator view = absurd evidence
+    activeEndpointImpliesInstalled nameEq selected state evidence | Just fiber |
+      Active accumulator view = Refl
+    activeEndpointImpliesInstalled nameEq selected state evidence | Just fiber |
+      Unloading accumulator view outcome = absurd evidence
+
+0 unloadingEndpointImpliesInstalled :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  unloadingEndpoint @{nameEq} selected state = True ->
+  installedAt @{nameEq} selected state = True
+unloadingEndpointImpliesInstalled nameEq selected state evidence
+  with (lookupFiber @{nameEq} selected (registry state))
+  unloadingEndpointImpliesInstalled nameEq selected state evidence | Nothing =
+    absurd evidence
+  unloadingEndpointImpliesInstalled nameEq selected state evidence | Just fiber
+    with (fiberLifecycle fiber)
+    unloadingEndpointImpliesInstalled nameEq selected state evidence | Just fiber |
+      Inactive outcome = absurd evidence
+    unloadingEndpointImpliesInstalled nameEq selected state evidence | Just fiber |
+      Reloading remaining accumulator view = absurd evidence
+    unloadingEndpointImpliesInstalled nameEq selected state evidence | Just fiber |
+      Active accumulator view = absurd evidence
+    unloadingEndpointImpliesInstalled nameEq selected state evidence | Just fiber |
+      Unloading accumulator view outcome = Refl
+
+0 lAdvanceStartsInstalled :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (LAdvance selected) before =
+    Just (tag, afterState) ->
+  installedAt @{nameEq} selected before = True
+lAdvanceStartsInstalled nameEq keyEq selected before afterState tag equation
+  with (lookupFiber @{nameEq} selected (registry before))
+  lAdvanceStartsInstalled nameEq keyEq selected before afterState tag equation |
+    Nothing = void (nothingIsNotJust equation)
+  lAdvanceStartsInstalled nameEq keyEq selected before afterState tag equation |
+    Just fiber with (fiberLifecycle fiber)
+    lAdvanceStartsInstalled nameEq keyEq selected before afterState tag equation |
+      Just fiber | Inactive outcome = void (nothingIsNotJust equation)
+    lAdvanceStartsInstalled nameEq keyEq selected before afterState tag equation |
+      Just fiber | Reloading remaining accumulator view = Refl
+    lAdvanceStartsInstalled nameEq keyEq selected before afterState tag equation |
+      Just fiber | Active accumulator view = void (nothingIsNotJust equation)
+    lAdvanceStartsInstalled nameEq keyEq selected before afterState tag equation |
+      Just fiber | Unloading accumulator view outcome =
+        void (nothingIsNotJust equation)
+
+0 lAdvanceEndsInstalled :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (LAdvance selected) before =
+    Just (tag, afterState) ->
+  installedAt @{nameEq} selected afterState = True
+lAdvanceEndsInstalled {name} {key} {world} {error} {value}
+  nameEq keyEq selected before afterState tag equation =
+  case advanceStructureTheorem nameEq keyEq selected before afterState tag
+    equation of
+    IterAdvance fiber found package reloading =>
+      reloadingEndpointImpliesInstalled nameEq selected afterState reloading
+    FinishAdvance fiber found package active =>
+      activeEndpointImpliesInstalled nameEq selected afterState active
+    DivertAdvance unloading =>
+      unloadingEndpointImpliesInstalled nameEq selected afterState unloading
+    RaiseAdvance unloading =>
+      unloadingEndpointImpliesInstalled nameEq selected afterState unloading
+
+0 lDivertInstalled :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  applyAction @{nameEq} @{keyEq} (LDivert selected) before =
+    Just (LDivertTag, afterState) ->
+  (installedAt @{nameEq} selected before = True,
+   installedAt @{nameEq} selected afterState = True)
+lDivertInstalled {name} {key} {world} {error} {value}
+  nameEq keyEq selected before afterState equation =
+  case abortDivertStructureTheorem nameEq keyEq selected before afterState
+    equation of
+    MkAbortDivertStructure fiber found remaining accumulator view reloading
+      changed unloading =>
+        (trans (installedAtFound nameEq selected before fiber found)
+          (cong installed reloading),
+         unloadingEndpointImpliesInstalled nameEq selected afterState unloading)
+
+0 installedAtAfterReplace :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (sourceFiber, targetFiberValue : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (ambient : world) ->
+  (found : lookupFiber @{nameEq} selected fibers = Just sourceFiber) ->
+  installedAt @{nameEq} selected
+    (the (SystemState name key value world error)
+      (MkSystemState ambient
+        (replaceBinding @{nameEq} selected targetFiberValue fibers))) =
+    installed (fiberLifecycle targetFiberValue)
+installedAtAfterReplace {name} {key} {world} {error} {value}
+  nameEq selected sourceFiber targetFiberValue fibers ambient found =
+  trans (installedAtLookupEquation nameEq selected
+    (MkSystemState ambient
+      (replaceBinding @{nameEq} selected targetFiberValue fibers)))
+    (cong (installedMaybe {name = name} {key = key} {world = world}
+      {error = error} {value = value})
+      (lookupReplacedFiber selected sourceFiber targetFiberValue fibers found))
+
+0 installedSetFiberLifecycle :
+  (fiber : Fiber name key value world error) ->
+  (next : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  installed (fiberLifecycle (setFiberLifecycle fiber next)) = installed next
+installedSetFiberLifecycle (MkFiber component parent retired table lifecycle) next =
+  Refl
+
+0 installedSetFiberRuntime :
+  (fiber : Fiber name key value world error) ->
+  (table : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (next : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  installed (fiberLifecycle (setFiberRuntime fiber table next)) = installed next
+installedSetFiberRuntime (MkFiber component parent retired oldTable lifecycle)
+  table next = Refl
+
+0 lLeaveInstalled :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (LLeave selected) before =
+    Just (tag, afterState) ->
+  (installedAt @{nameEq} selected before = True,
+   installedAt @{nameEq} selected afterState = True)
+lLeaveInstalled nameEq keyEq selected
+  before@(MkSystemState ambient fibers) afterState tag equation
+  with (lookupFiber @{nameEq} selected fibers) proof found
+  lLeaveInstalled nameEq keyEq selected
+    before@(MkSystemState ambient fibers) afterState tag equation | Nothing =
+      void (nothingIsNotJust equation)
+  lLeaveInstalled nameEq keyEq selected
+    before@(MkSystemState ambient fibers) afterState tag equation | Just fiber
+    with (fiberLifecycle fiber)
+    lLeaveInstalled nameEq keyEq selected
+      before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
+      Inactive outcome = void (nothingIsNotJust equation)
+    lLeaveInstalled nameEq keyEq selected
+      before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
+      Reloading remaining accumulator view = void (nothingIsNotJust equation)
+    lLeaveInstalled nameEq keyEq selected
+      before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
+      Unloading accumulator view outcome = void (nothingIsNotJust equation)
+    lLeaveInstalled nameEq keyEq selected
+      before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
+      Active accumulator view
+      with (targetMatches @{nameEq}
+        (targetFiber @{nameEq} @{keyEq} fiber fibers) view)
+      lLeaveInstalled nameEq keyEq selected
+        before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
+        Active accumulator view | True = void (nothingIsNotJust equation)
+      lLeaveInstalled nameEq keyEq selected
+        before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
+        Active accumulator view | False =
+          case justInjective equation of
+            Refl => let targetObserved = installedAtAfterReplace nameEq selected
+                          fiber (setFiberLifecycle fiber
+                            (Unloading accumulator view Nothing))
+                          fibers ambient found
+                        targetInstalled = trans targetObserved
+                          (trans (installedSetFiberLifecycle fiber
+                            (Unloading accumulator view Nothing)) Refl)
+                    in (Refl, targetInstalled)
+
+0 lUnloadBoundary :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (LUnload selected) before =
+    Just (tag, afterState) ->
+  (tag = LUnloadTag,
+   installedAt @{nameEq} selected before = True,
+   installedAt @{nameEq} selected afterState = False)
+lUnloadBoundary nameEq keyEq selected
+  before@(MkSystemState ambient fibers) afterState tag equation
+  with (lookupFiber @{nameEq} selected fibers) proof found
+  lUnloadBoundary nameEq keyEq selected
+    before@(MkSystemState ambient fibers) afterState tag equation | Nothing =
+      void (nothingIsNotJust equation)
+  lUnloadBoundary nameEq keyEq selected
+    before@(MkSystemState ambient fibers) afterState tag equation | Just fiber
+    with (fiberLifecycle fiber)
+    lUnloadBoundary nameEq keyEq selected
+      before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
+      Inactive outcome = void (nothingIsNotJust equation)
+    lUnloadBoundary nameEq keyEq selected
+      before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
+      Reloading remaining accumulator view = void (nothingIsNotJust equation)
+    lUnloadBoundary nameEq keyEq selected
+      before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
+      Active accumulator view = void (nothingIsNotJust equation)
+    lUnloadBoundary nameEq keyEq selected
+      before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
+      Unloading accumulator view outcome
+      with (relied @{nameEq} selected fibers)
+      lUnloadBoundary nameEq keyEq selected
+        before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
+        Unloading accumulator view outcome | True =
+          void (nothingIsNotJust equation)
+      lUnloadBoundary nameEq keyEq selected
+        before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
+        Unloading accumulator view outcome | False =
+          case justInjective equation of
+            Refl =>
+              let restored = accumulator (MkLocalState ambient (fiberTable fiber))
+                  targetObserved = installedAtAfterReplace nameEq selected fiber
+                    (setFiberRuntime fiber
+                      (localTable (accumulator
+                        (MkLocalState ambient (fiberTable fiber))))
+                      (Inactive outcome)) fibers
+                    (localWorld (accumulator
+                      (MkLocalState ambient (fiberTable fiber)))) found
+                  targetUninstalled = trans targetObserved
+                    (trans (installedSetFiberRuntime fiber
+                      (localTable (accumulator
+                        (MkLocalState ambient (fiberTable fiber))))
+                      (Inactive outcome)) Refl)
+              in (Refl, Refl, targetUninstalled)
+
+0 lBeginBoundary :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  checkedApplyAction @{nameEq} @{keyEq} (LBegin selected) before =
+    Just (tag, afterState) ->
+  (tag = LBeginTag,
+   installedAt @{nameEq} selected before = False,
+   installedAt @{nameEq} selected afterState = True)
+lBeginBoundary nameEq keyEq selected before afterState tag checkedEquation =
+  let rawEquation = checkedActionProjects nameEq keyEq (LBegin selected)
+        before afterState tag checkedEquation in
+  lBeginRaw rawEquation
+  where
+  lBeginRaw : applyAction @{nameEq} @{keyEq} (LBegin selected) before =
+      Just (tag, afterState) ->
+    (tag = LBeginTag,
+     installedAt @{nameEq} selected before = False,
+     installedAt @{nameEq} selected afterState = True)
+  lBeginRaw rawEquation
+    with (lookupFiber @{nameEq} selected (registry before)) proof found
+    lBeginRaw rawEquation | Nothing = void (nothingIsNotJust rawEquation)
+    lBeginRaw rawEquation | Just fiber with (fiberLifecycle fiber)
+      lBeginRaw rawEquation | Just fiber | Inactive Nothing
+        with (targetFiber @{nameEq} @{keyEq} fiber (registry before))
+        lBeginRaw rawEquation | Just fiber | Inactive Nothing | Nothing =
+          void (nothingIsNotJust rawEquation)
+        lBeginRaw rawEquation | Just fiber | Inactive Nothing | Just view =
+          case justInjective rawEquation of
+            Refl =>
+              let targetObserved = installedAtAfterReplace nameEq selected fiber
+                    (setFiberLifecycle fiber
+                      (Reloading (componentProgram (fiberComponent fiber)) id view))
+                    (registry before) (worldState before) found
+                  targetInstalled = trans targetObserved
+                    (trans (installedSetFiberLifecycle fiber
+                      (Reloading (componentProgram (fiberComponent fiber)) id view))
+                      Refl)
+              in (Refl, Refl, targetInstalled)
+      lBeginRaw rawEquation | Just fiber | Inactive (Just err) =
+        void (nothingIsNotJust rawEquation)
+      lBeginRaw rawEquation | Just fiber |
+        Reloading remaining accumulator view = void (nothingIsNotJust rawEquation)
+      lBeginRaw rawEquation | Just fiber | Active accumulator view =
+        void (nothingIsNotJust rawEquation)
+      lBeginRaw rawEquation | Just fiber |
+        Unloading accumulator view outcome = void (nothingIsNotJust rawEquation)
+
+0 installedRetireFiber : (fiber : Fiber name key value world error) ->
+  installed (fiberLifecycle (retireFiber fiber)) = installed (fiberLifecycle fiber)
+installedRetireFiber (MkFiber component parent retired table lifecycle) = Refl
+
+0 oRetireStable :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (ORetire selected) before =
+    Just (tag, afterState) ->
+  installedAt @{nameEq} selected before =
+    installedAt @{nameEq} selected afterState
+oRetireStable nameEq keyEq selected
+  before@(MkSystemState ambient fibers) afterState tag equation
+  with (lookupFiber @{nameEq} selected fibers) proof found
+  oRetireStable nameEq keyEq selected before@(MkSystemState ambient fibers)
+    afterState tag equation | Nothing = void (nothingIsNotJust equation)
+  oRetireStable nameEq keyEq selected before@(MkSystemState ambient fibers)
+    afterState tag equation | Just fiber =
+      case justInjective equation of
+        Refl =>
+          let sourceObserved = installedAtFound nameEq selected
+                (MkSystemState ambient fibers) fiber found
+              targetObserved = installedAtAfterReplace nameEq selected fiber
+                (retireFiber fiber) fibers ambient found
+          in sym (trans targetObserved (installedRetireFiber fiber))
+
+0 lookupNotElemNothing : DecEq key => (wanted : key) ->
+  (entries : List (Binding key value)) ->
+  Not (Elem wanted (bindingKeys entries)) ->
+  lookupEntries wanted entries = Nothing
+lookupNotElemNothing wanted [] absent = Refl
+lookupNotElemNothing wanted (Bind current observed :: rest) absent
+  with (decEq wanted current)
+  lookupNotElemNothing current (Bind current observed :: rest) absent |
+    Yes Refl = void (absent Here)
+  lookupNotElemNothing wanted (Bind current observed :: rest) absent |
+    No distinct = lookupNotElemNothing wanted rest (\later => absent (There later))
+
+0 lookupDeleteSelf : DecEq key => (removed : key) ->
+  (table : CoeffectContext key value) ->
+  lookupBinding removed (deleteBinding removed table) = Nothing
+lookupDeleteSelf removed (MkCoeffectContext entries unique) =
+  lookupNotElemNothing removed (deleteEntries removed entries)
+    (deletedKeyNotElem removed entries unique)
+
+0 installedAtAfterDelete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (fibers : Registry name key value world error) -> (ambient : world) ->
+  installedAt @{nameEq} selected
+    (the (SystemState name key value world error)
+      (MkSystemState ambient (deleteBinding selected fibers))) = False
+installedAtAfterDelete {name} {key} {world} {error} {value}
+  nameEq selected fibers ambient =
+  trans (installedAtLookupEquation nameEq selected
+    (MkSystemState ambient (deleteBinding selected fibers)))
+    (cong (installedMaybe {name = name} {key = key} {world = world}
+      {error = error} {value = value}) (lookupDeleteSelf selected fibers))
+
+0 oRemoveUninstalled :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (ORemove selected) before =
+    Just (tag, afterState) ->
+  (installedAt @{nameEq} selected before = False,
+   installedAt @{nameEq} selected afterState = False)
+oRemoveUninstalled nameEq keyEq selected
+  before@(MkSystemState ambient fibers) afterState tag equation
+  with (lookupFiber @{nameEq} selected fibers) proof found
+  oRemoveUninstalled nameEq keyEq selected before@(MkSystemState ambient fibers)
+    afterState tag equation | Nothing = void (nothingIsNotJust equation)
+  oRemoveUninstalled nameEq keyEq selected before@(MkSystemState ambient fibers)
+    afterState tag equation | Just fiber
+    with (retired fiber && isInactive (fiberLifecycle fiber) &&
+      not (hasChild @{nameEq} selected fibers)) proof guards
+    oRemoveUninstalled nameEq keyEq selected before@(MkSystemState ambient fibers)
+      afterState tag equation | Just fiber | False =
+        void (nothingIsNotJust equation)
+    oRemoveUninstalled nameEq keyEq selected before@(MkSystemState ambient fibers)
+      afterState tag equation | Just fiber | True =
+        let tailValid = boolAndRight (retired fiber)
+              (isInactive (fiberLifecycle fiber) &&
+                not (hasChild @{nameEq} selected fibers)) guards
+            inactiveValid = boolAndLeft (isInactive (fiberLifecycle fiber))
+              (not (hasChild @{nameEq} selected fibers)) tailValid
+        in case inactiveLifecycleWitness (fiberLifecycle fiber) inactiveValid of
+          (outcome ** lifecycleIsInactive) =>
+            case justInjective equation of
+              Refl =>
+                let sourceUninstalled =
+                      trans (cong installed lifecycleIsInactive) Refl
+                in (sourceUninstalled,
+                  installedAtAfterDelete nameEq selected fibers ambient)
+
+0 lookupInsertedImplicit : DecEq key => (selected : key) ->
+  (next : value selected) -> (before : CoeffectContext key value) ->
+  {0 absent : lookupBinding selected before = Nothing} ->
+  lookupBinding selected (insertBinding selected next before absent) = Just next
+lookupInsertedImplicit selected next (MkCoeffectContext entries unique) {absent}
+  with (decEq selected selected)
+  lookupInsertedImplicit selected next (MkCoeffectContext entries unique)
+    {absent} | Yes Refl = Refl
+  lookupInsertedImplicit selected next (MkCoeffectContext entries unique)
+    {absent} | No contra = void (contra Refl)
+
+0 setFreshSelectedLookup : DecEq key => (selected : key) ->
+  (next : value selected) -> (before : CoeffectContext key value) ->
+  (applied : CoeffectApplied before) ->
+  setFresh selected next before = Just applied ->
+  lookupBinding selected (coeffectAfter applied) = Just next
+setFreshSelectedLookup selected next before applied success
+  with (lookupBinding selected before) proof found
+  setFreshSelectedLookup selected next before applied success | Just current =
+    void (nothingIsNotJust success)
+  setFreshSelectedLookup selected next before applied success | Nothing =
+    case justInjective success of
+      Refl => lookupInsertedImplicit selected next before
+
+0 oInsertUninstalled :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (OInsert selected parent component) before =
+    Just (tag, afterState) ->
+  (installedAt @{nameEq} selected before = False,
+   installedAt @{nameEq} selected afterState = False)
+oInsertUninstalled {name} {key} {world} {error} {value}
+  nameEq keyEq selected parent component
+  before@(MkSystemState ambient fibers) afterState tag equation
+  with (parentPresent @{nameEq} parent fibers &&
+    provisionsDisjointFrom @{keyEq} (componentProvisions component)
+      (registryFibers fibers))
+  oInsertUninstalled {name} {key} {world} {error} {value}
+    nameEq keyEq selected parent component before@(MkSystemState ambient fibers)
+    afterState tag equation | False = void (nothingIsNotJust equation)
+  oInsertUninstalled {name} {key} {world} {error} {value}
+    nameEq keyEq selected parent component before@(MkSystemState ambient fibers)
+    afterState tag equation | True
+    with (setFresh @{nameEq} selected (freshFiber component parent) fibers) proof inserted
+    oInsertUninstalled {name} {key} {world} {error} {value}
+      nameEq keyEq selected parent component before@(MkSystemState ambient fibers)
+      afterState tag equation | True | Nothing = void (nothingIsNotJust equation)
+    oInsertUninstalled {name} {key} {world} {error} {value}
+      nameEq keyEq selected parent component before@(MkSystemState ambient fibers)
+      afterState tag equation | True | Just applied =
+        case justInjective equation of
+          Refl =>
+            let absent = setFreshAbsent nameEq selected
+                  (freshFiber component parent) fibers applied inserted
+                sourceUninstalled = installedAtMissing nameEq selected
+                  (MkSystemState ambient fibers)
+                  (lookupFiber @{nameEq} selected fibers) Refl absent
+                insertedLookup = setFreshSelectedLookup selected
+                  (freshFiber component parent) fibers applied inserted
+                targetObserved = installedAtLookupEquation nameEq selected
+                  (MkSystemState ambient (coeffectAfter applied))
+                targetUninstalled = trans targetObserved
+                  (cong (installedMaybe {name = name} {key = key} {world = world}
+                    {error = error} {value = value}) insertedLookup)
+            in (sourceUninstalled, targetUninstalled)
+
+0 stableInstallationEvolution :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  installedAt @{nameEq} selected before =
+    installedAt @{nameEq} selected afterState ->
+  InstallationEvolution name key world error value nameEq keyEq selected
+    before afterState
+stableInstallationEvolution nameEq keyEq selected before afterState stable =
+  case boolEquality (installedAt @{nameEq} selected before) of
+    Left sourceFalse =>
+      RemainedUninstalled sourceFalse (trans (sym stable) sourceFalse)
+    Right sourceTrue =>
+      RemainedInstalled sourceTrue (trans (sym stable) sourceTrue)
+  where
+  boolEquality : (observed : Bool) ->
+    Either (observed = False) (observed = True)
+  boolEquality False = Left Refl
+  boolEquality True = Right Refl
+
+0 openedEvolutionFrom :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) -> tag = LBeginTag ->
+  (checkedEquation : checkedApplyAction @{nameEq} @{keyEq}
+    (LBegin selected) before = Just (tag, afterState)) ->
+  installedAt @{nameEq} selected before = False ->
+  installedAt @{nameEq} selected afterState = True ->
+  InstallationEvolution name key world error value nameEq keyEq selected
+    before afterState
+openedEvolutionFrom nameEq keyEq selected before afterState LBeginTag Refl
+  checkedEquation sourceFalse targetTrue =
+  OpenedInstallation (MkBeginStep checkedEquation)
+
+0 closedEvolutionFrom :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) -> tag = LUnloadTag ->
+  (checkedEquation : checkedApplyAction @{nameEq} @{keyEq}
+    (LUnload selected) before = Just (tag, afterState)) ->
+  installedAt @{nameEq} selected before = True ->
+  installedAt @{nameEq} selected afterState = False ->
+  InstallationEvolution name key world error value nameEq keyEq selected
+    before afterState
+closedEvolutionFrom nameEq keyEq selected before afterState LUnloadTag Refl
+  checkedEquation sourceTrue targetFalse =
+  ClosedInstallation (MkUnloadStep checkedEquation)
+
+0 lDivertInstallationEvolution :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) -> tag = LDivertTag ->
+  applyAction @{nameEq} @{keyEq} (LDivert selected) before =
+    Just (tag, afterState) ->
+  InstallationEvolution name key world error value nameEq keyEq selected
+    before afterState
+lDivertInstallationEvolution nameEq keyEq selected before afterState LDivertTag
+  Refl equation = case lDivertInstalled nameEq keyEq selected before afterState
+    equation of
+    (sourceTrue, targetTrue) => RemainedInstalled sourceTrue targetTrue
+
+||| Lemma 54(4), packaged for every checked step: L-Begin and L-Unload are the
+||| unique installed-bit boundaries; every other selected or foreign action
+||| preserves the bit.
+public export
+0 installationEvolutionStep :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (checkedEquation : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  InstallationEvolution name key world error value nameEq keyEq selected
+    before afterState
+installationEvolutionStep nameEq keyEq selected action tag before afterState
+  checkedEquation with (decEq @{nameEq} selected (actionOwner action))
+  installationEvolutionStep nameEq keyEq selected action tag before afterState
+    checkedEquation | No distinct =
+      foreignInstallationEvolution nameEq keyEq selected action distinct before
+        afterState tag (checkedActionProjects nameEq keyEq action before afterState
+          tag checkedEquation)
+  installationEvolutionStep nameEq keyEq selected
+    (OInsert selected parent component) tag before afterState checkedEquation |
+    Yes Refl = case oInsertUninstalled nameEq keyEq selected parent component before
+        afterState tag (checkedActionProjects nameEq keyEq
+          (OInsert selected parent component) before afterState tag checkedEquation) of
+        (sourceFalse, targetFalse) =>
+          RemainedUninstalled sourceFalse targetFalse
+  installationEvolutionStep nameEq keyEq selected (ORetire selected) tag before
+    afterState checkedEquation | Yes Refl = stableInstallationEvolution nameEq keyEq selected before afterState
+        (oRetireStable nameEq keyEq selected before afterState tag
+          (checkedActionProjects nameEq keyEq (ORetire selected) before afterState
+            tag checkedEquation))
+  installationEvolutionStep nameEq keyEq selected (ORemove selected) tag before
+    afterState checkedEquation | Yes Refl = case oRemoveUninstalled nameEq keyEq selected before afterState tag
+        (checkedActionProjects nameEq keyEq (ORemove selected) before afterState
+          tag checkedEquation) of
+        (sourceFalse, targetFalse) =>
+          RemainedUninstalled sourceFalse targetFalse
+  installationEvolutionStep nameEq keyEq selected (LBegin selected) tag before
+    afterState checkedEquation | Yes Refl = case lBeginBoundary nameEq keyEq selected before afterState tag
+        checkedEquation of
+        (tagShape, sourceFalse, targetTrue) =>
+          openedEvolutionFrom nameEq keyEq selected before afterState tag
+            tagShape checkedEquation sourceFalse targetTrue
+  installationEvolutionStep nameEq keyEq selected (LAdvance selected) tag before
+    afterState checkedEquation | Yes Refl =
+        let rawEquation = checkedActionProjects nameEq keyEq (LAdvance selected)
+              before afterState tag checkedEquation
+        in RemainedInstalled
+          (lAdvanceStartsInstalled nameEq keyEq selected before afterState tag
+            rawEquation)
+          (lAdvanceEndsInstalled nameEq keyEq selected before afterState tag
+            rawEquation)
+  installationEvolutionStep nameEq keyEq selected (LDivert selected) tag before
+    afterState checkedEquation | Yes Refl =
+        let rawEquation = checkedActionProjects nameEq keyEq (LDivert selected)
+              before afterState tag checkedEquation
+            tagShape = successfulLDivertTag nameEq keyEq selected before afterState
+              tag rawEquation
+        in lDivertInstallationEvolution nameEq keyEq selected before afterState
+          tag tagShape rawEquation
+  installationEvolutionStep nameEq keyEq selected (LLeave selected) tag before
+    afterState checkedEquation | Yes Refl = case lLeaveInstalled nameEq keyEq selected before afterState tag
+        (checkedActionProjects nameEq keyEq (LLeave selected) before afterState
+          tag checkedEquation) of
+        (sourceTrue, targetTrue) => RemainedInstalled sourceTrue targetTrue
+  installationEvolutionStep nameEq keyEq selected (LUnload selected) tag before
+    afterState checkedEquation | Yes Refl = case lUnloadBoundary nameEq keyEq selected before afterState tag
+        (checkedActionProjects nameEq keyEq (LUnload selected) before afterState
+          tag checkedEquation) of
+        (tagShape, sourceTrue, targetFalse) =>
+          closedEvolutionFrom nameEq keyEq selected before afterState tag
+            tagShape checkedEquation sourceTrue targetFalse

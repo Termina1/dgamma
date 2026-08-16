@@ -159,15 +159,18 @@ checkedTransitionTargetValid (Fired nameEq keyEq action tag equation) =
 0 falseIsNotTrue : False = True -> Void
 falseIsNotTrue Refl impossible
 
+public export
 0 boolAndLeft : (left, right : Bool) -> left && right = True -> left = True
 boolAndLeft False right valid = void (falseIsNotTrue valid)
 boolAndLeft True right valid = Refl
 
+public export
 0 boolAndRight : (left, right : Bool) -> left && right = True -> right = True
 boolAndRight False right valid = void (falseIsNotTrue valid)
 boolAndRight True False valid = void (falseIsNotTrue valid)
 boolAndRight True True valid = Refl
 
+public export
 0 setFreshAbsent : {name, key, world, error : Type} ->
   {value : key -> Type} -> (nameEq : DecEq name) -> (n : name) ->
   (fiber : Fiber name key value world error) ->
@@ -181,6 +184,7 @@ setFreshAbsent {key} {world} {error} {value} nameEq n fiber before applied succe
     void (nothingIsNotJust success)
   setFreshAbsent {key} {world} {error} {value} nameEq n fiber before applied success | Nothing = Refl
 
+public export
 0 setFreshAfter : {name, key, world, error : Type} ->
   {value : key -> Type} -> (nameEq : DecEq name) -> (n : name) ->
   (fiber : Fiber name key value world error) ->
@@ -263,6 +267,7 @@ preservationORetire {name} {key} {world} {error} {value}
 notTrueMeansFalse False valid = Refl
 notTrueMeansFalse True valid = void (falseIsNotTrue valid)
 
+public export
 0 inactiveLifecycleWitness :
   (lifecycle : Lifecycle key value world error name deps provision) ->
   isInactive lifecycle = True ->
@@ -1672,6 +1677,7 @@ unloadingEndpoint selected state = case lookupFiber selected (registry state) of
     Unloading _ _ _ => True
     _ => False
 
+public export
 0 lookupReplacedFiber : DecEq name => (selected : name) ->
   (old, next : Fiber name key value world error) ->
   (fibers : Registry name key value world error) ->
@@ -2245,6 +2251,7 @@ lookupEntriesDecEqCoherent leftEq rightEq wanted (Bind current observed :: rest)
       (Bind current observed :: rest) | (No leftDistinct) | (No rightDistinct) =
         lookupEntriesDecEqCoherent leftEq rightEq wanted rest
 
+public export
 0 lookupFiberDecEqCoherent :
   (leftEq, rightEq : DecEq name) -> (wanted : name) ->
   (fibers : Registry name key value world error) ->
@@ -3698,6 +3705,7 @@ retireReloadingSnapshot nameEq keyEq selected providers before afterState tag
       afterState tag (snapshotCommittedProviders snapshot) equation)
     equation
 
+public export
 0 successfulLDivertTag :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (before, afterState : SystemState name key value world error) ->
