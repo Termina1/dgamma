@@ -724,6 +724,18 @@ parentInvariant Root fibers = True
 parentInvariant (ChildOf parent) fibers = isJust (lookupFiber parent fibers)
 
 public export
+0 parentPresentIsInvariant : {name, key, world, error : Type} ->
+  {value : key -> Type} -> (nameEq : DecEq name) -> (parent : Parent name) ->
+  (fibers : Registry name key value world error) ->
+  parentPresent @{nameEq} {key = key} {value = value} {world = world} {error = error}
+    parent fibers =
+  parentInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error}
+    parent fibers
+parentPresentIsInvariant {key} {world} {error} {value} nameEq Root fibers = Refl
+parentPresentIsInvariant {key} {world} {error} {value}
+  nameEq (ChildOf parent) fibers = Refl
+
+public export
 parentChainInvariant : DecEq name => Nat -> List name -> name ->
   Registry name key value world error -> Bool
 parentChainInvariant Z seen current fibers = False

@@ -156,6 +156,89 @@ public export
 checkedTransitionTargetValid (Fired nameEq keyEq action tag equation) =
   checkedActionTargetValid nameEq keyEq action _ _ tag equation
 
+0 falseIsNotTrue : False = True -> Void
+falseIsNotTrue Refl impossible
+
+0 boolAndLeft : (left, right : Bool) -> left && right = True -> left = True
+boolAndLeft False right valid = void (falseIsNotTrue valid)
+boolAndLeft True right valid = Refl
+
+0 boolAndRight : (left, right : Bool) -> left && right = True -> right = True
+boolAndRight False right valid = void (falseIsNotTrue valid)
+boolAndRight True False valid = void (falseIsNotTrue valid)
+boolAndRight True True valid = Refl
+
+0 setFreshAbsent : {name, key, world, error : Type} ->
+  {value : key -> Type} -> (nameEq : DecEq name) -> (n : name) ->
+  (fiber : Fiber name key value world error) ->
+  (before : Registry name key value world error) ->
+  (applied : CoeffectApplied before) ->
+  setFresh @{nameEq} n fiber before = Just applied ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n before = Nothing
+setFreshAbsent {key} {world} {error} {value} nameEq n fiber before applied success
+  with (lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n before)
+  setFreshAbsent {key} {world} {error} {value} nameEq n fiber before applied success | Just old =
+    void (nothingIsNotJust success)
+  setFreshAbsent {key} {world} {error} {value} nameEq n fiber before applied success | Nothing = Refl
+
+0 setFreshAfter : {name, key, world, error : Type} ->
+  {value : key -> Type} -> (nameEq : DecEq name) -> (n : name) ->
+  (fiber : Fiber name key value world error) ->
+  (before : Registry name key value world error) ->
+  (applied : CoeffectApplied before) ->
+  (success : setFresh @{nameEq} n fiber before = Just applied) ->
+  coeffectAfter applied =
+    insertBinding @{nameEq} n fiber before
+      (setFreshAbsent {key = key} {value = value} {world = world} {error = error} nameEq n fiber before applied success)
+setFreshAfter {key} {world} {error} {value} nameEq n fiber before applied success
+  with (lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n before)
+  setFreshAfter {key} {world} {error} {value} nameEq n fiber before applied success | Just old =
+    void (nothingIsNotJust success)
+  setFreshAfter {key} {world} {error} {value} nameEq n fiber before applied success | Nothing =
+    case justInjective success of Refl => Refl
+
+0 preservationOInsert :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (n : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  registryWellFormed @{nameEq} @{keyEq} before = True ->
+  applyAction @{nameEq} @{keyEq} (OInsert n parent component) before =
+    Just (tag, afterState) ->
+  registryWellFormed @{nameEq} @{keyEq} afterState = True
+preservationOInsert {name} {key} {world} {error} {value}
+  nameEq keyEq n parent component (MkSystemState ambient fibers) afterState tag
+  valid equation
+  with (parentPresent @{nameEq} parent fibers &&
+    provisionsDisjointFrom @{keyEq} (componentProvisions component)
+      (registryFibers fibers)) proof premises
+  preservationOInsert {name} {key} {world} {error} {value}
+    nameEq keyEq n parent component (MkSystemState ambient fibers) afterState tag
+    valid equation | False = void (nothingIsNotJust equation)
+  preservationOInsert {name} {key} {world} {error} {value}
+    nameEq keyEq n parent component (MkSystemState ambient fibers) afterState tag
+    valid equation | True
+    with (setFresh @{nameEq} n (freshFiber component parent) fibers) proof inserted
+    preservationOInsert {name} {key} {world} {error} {value}
+      nameEq keyEq n parent component (MkSystemState ambient fibers) afterState tag
+      valid equation | True | Nothing = void (nothingIsNotJust equation)
+    preservationOInsert {name} {key} {world} {error} {value}
+      nameEq keyEq n parent component (MkSystemState ambient fibers) afterState tag
+      valid equation | True | Just applied =
+        case justInjective equation of
+          Refl =>
+            let parentValid = trans (sym (parentPresentIsInvariant nameEq parent fibers))
+                  (boolAndLeft _ _ premises)
+            in rewrite setFreshAfter nameEq n (freshFiber component parent)
+                 fibers applied inserted in
+              registryWellFormedInactiveInsert {name = name} {key = key}
+                {world = world} {error = error} {value = value} nameEq keyEq n
+                component parent ambient fibers
+                (setFreshAbsent nameEq n (freshFiber component parent)
+                  fibers applied inserted)
+                parentValid (boolAndRight _ _ premises) valid
+
 ||| Paper Theorem 59, stated over the raw ten-rule evaluator. Unlike the checked
 ||| admission fact, this direction cannot hide a malformed endpoint.
 ||| TODO(proof): rule induction plus registry replacement/insertion/deletion
