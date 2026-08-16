@@ -1307,6 +1307,39 @@ chainsFuelMonotone {key} {world} {error} {value} nameEq fuel
       (chainsFuelMonotone {key = key} {value = value}
         {world = world} {error = error} nameEq fuel rest fibers tailValid)
 
+||| Pointwise lift of the fresh-insertion frame over existing chain checks.
+public export
+0 chainsInactiveInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (fuel : Nat) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (fibers : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Nothing) ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fuel entries fibers = True ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fuel entries
+    (insertBinding @{nameEq} n (freshFiber component parent) fibers absent) = True
+chainsInactiveInsert {key} {world} {error} {value} nameEq fuel [] n component parent fibers absent valid = Refl
+chainsInactiveInsert {name} {key} {world} {error} {value}
+  nameEq fuel (Bind current fiber :: rest) n component parent fibers absent valid =
+  let sourceHead = andTrueLeft
+        (parentChainInvariant @{nameEq} {key = key} {value = value}
+          {world = world} {error = error} fuel [current] current fibers)
+        (chainsInvariant @{nameEq} {key = key} {value = value}
+          {world = world} {error = error} fuel rest fibers) valid
+      sourceTail = andTrueRight
+        (parentChainInvariant @{nameEq} {key = key} {value = value}
+          {world = world} {error = error} fuel [current] current fibers)
+        (chainsInvariant @{nameEq} {key = key} {value = value}
+          {world = world} {error = error} fuel rest fibers) valid
+      targetHead = parentChainInactiveInsert {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq fuel [current]
+        current n component parent fibers absent sourceHead
+      targetTail = chainsInactiveInsert {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq fuel rest
+        n component parent fibers absent sourceTail in
+    andBothTrue _ _ targetHead targetTail
+
 public export
 viewsInvariant : DecEq name => DecEq key =>
   List (Binding name (FiberAt name key value world error)) ->
