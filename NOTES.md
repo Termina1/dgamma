@@ -97,6 +97,7 @@ cannot silently introduce a proof:
   `CoarsestRespectedEquivalence` — Lemma 35.
 - `distinctKeysIndependent` — Theorem 40.
 - `MediatedIndependenceTheorem` — Theorem 42.
+- `preservationTheorem` — raw-rule Theorem 59.
 - `recoveryExactnessTheorem` — Theorem 61.
 - `terminalRecoveryTheorem` — Corollary 62.
 - `orderingTheorem` — the finite closed-trace form of Theorem 63.
@@ -322,23 +323,73 @@ rule-shape fragments are now represented by checked transitions,
 `BeginStep`/`UnloadStep`, `InstalledTrace`, Equation 58, the unload guard, and
 `AdvanceStructure`.
 
+### Round-2 countermodels and remediation
+
+The independent round-2 report (`review-cp2-round2.md`) confirmed all five
+round-1 blocker repairs, dynamic capability use, complete tag coverage, and a
+real seven-step checked trace. It then supplied three new executable attacks.
+
+- The arbitrary accumulator in Theorem 61 was deleted. `actualAccumulatorAt`
+  extracts a dependent `AccumulatorHandle` from the selected fiber at the exact
+  episode endpoint; `runAccumulator` determines the result. The theorem can no
+  longer choose an unrelated function or restored world. Its conclusion also
+  contains `SelectedTableRecovered`, pointwise exact recovery of the fiber's
+  dynamic owned table.
+- Definition 58's provider invariant now admits committed providers only in
+  Active or Unloading, never Reloading. This makes table mutation structurally
+  disjoint from existing committed consumers while preserving withdrawal-time
+  capability reads.
+- `OrderingResult.consumerResolution` and `providerValueStable` now range over
+  `closedInside`, ending at the last installed state before L-Unload. They no
+  longer demand a committed view at the post-close Inactive endpoint.
+- `partialWorldMapFor` dispatches on `RuleTag`; L-Raise is exactly identity as in
+  Table 1. Only successful Iter/Finish/landing-Divert maps rerun an iterator and
+  may be undefined off-origin. `raiseMapIsIdentity` is an executable regression.
+- `TerminalTableRecovery` adds the table half of paper's control-forgetting
+  relation: the selected table equals its opening table pointwise and every
+  foreign table equals its last-installed value across L-Unload. Theorem 64 now
+  carries this result too. Pointwise dependent lookup equality is used because
+  values have no global `DecEq` and erased uniqueness certificates are not
+  runtime state.
+- `AdvanceStructure` now includes its endpoint and proves Reloading for Iter,
+  Active for Finish, and Unloading for landing Divert/Raise.
+  `AbortDivertStructure` separately proves the exact pre/target-changed/post
+  shape of the aborting L-Divert action.
+- `reliedProviderCannotUnload` is a proved local provider-ordering conclusion:
+  an L-Unload cannot coexist with the relied certificate created by an
+  installed consumer's committed view.
+
+The report correctly rejected the old `preservationTheorem` name: its proof was
+only the target check embedded in `checkedApplyAction`. That lemma is now named
+`checkedTransitionTargetValid`. Paper Theorem 59 is stated separately as the raw
+implication from a valid source plus an `applyAction` equation to a valid target.
+It remains unproved. Likewise the proof locating the unique exit after the
+maximal Reloading prefix, and global provider-episode selection, remain open.
+No checked-monitor lemma is claimed as those results.
+
 ## Status
 
-**Fully proved:** all previously approved Section 3 results; Section 4 checked
-LTS preservation, same-action determinism, checked-to-raw projection,
-Equation 58, the local L-Unload relied guard, and per-LAdvance Equation 59/tag
-classification. All executable adversarial rule checks pass.
+**Fully proved:** all previously approved Section 3 results; same-action raw
+evaluator determinism; checked-to-raw projection and checked target admission;
+Equation 58; L-Unload's local relied guard and relied-provider exclusion;
+per-LAdvance Equation 59 with exact Iter/Finish/Divert/Raise endpoint phase; and
+the aborting L-Divert structural shape. All executable rule checks, including
+L-Raise identity and dynamic resolution consumption, pass.
 
 **Partial/deviation:** Definition 32 finite approximations; Lemma 38 transport;
-finite iterators; host-level rather than nested registration; exact-equality
-Section 4; and a checked proof-LTS gate whose raw-rule completeness is not yet
-proved. Lemmas 54–57 are not individually complete.
+finite iterators; host-level rather than nested registration; trace-specific
+rather than generated-monoid independence; exact ambient equality; and the
+checked proof-LTS. Table recovery is now explicit and exact pointwise, while
+full observational transport remains future work. Lemmas 54–57 are not
+individually complete.
 
-**Merely stated:** Lemma 35, Theorems 40/42, corrected Theorem 61 and Corollary
-62, the finite closed-trace global `orderingTheorem`, global
-`resolutionStructureTheorem`, and the recovery-combined Theorem 64.
+**Merely stated:** Lemma 35, Theorems 40/42, raw Theorem 59, actual-handle/table
+Theorem 61 and Corollary 62, corrected global `orderingTheorem`, global
+`resolutionStructureTheorem`, and recovery-combined Theorem 64. These are the
+only `TODO(proof)` declarations and remain escape-hatch-free types.
 
-**Next:** independent CP2 round-2 countermodel review, with special scrutiny of
-checked-LTS non-vacuity, episode boundaries, selected provider containment, and
-whether the proved local ordering/coherence lemmas meet the checkpoint proof
-bar.
+**Next:** independent CP2 round-3 should rerun the immediate-prefix,
+post-L-Unload, and L-Raise attacks against the corrected types. The outstanding
+checkpoint proof bar is raw rule preservation, deriving global provider
+containment/constancy rather than accepting local relied evidence, and locating
+the whole-episode structural exit.

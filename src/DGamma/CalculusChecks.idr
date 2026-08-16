@@ -263,12 +263,29 @@ guardedScenarioChecks = case guardedScenario of
     MkToyRuntime False False => null (bindings (registry final)) && wellFormed final
     _ => False
 
+||| State immediately before the failing LAdvance.
+public export
+raisePrefix : Maybe (SystemState Nat ToyKey ToyValue ToyRuntime String)
+raisePrefix = do
+  s1 <- applyTagged OInsertTag (OInsert 2 Root failingComponent) initialSystem
+  applyTagged LBeginTag (LBegin 2) s1
+
+||| Regression for Table 1: the effect map of an actual L-Raise is identity,
+||| not the nowhere-defined replay map.
+public export
+raiseMapIsIdentity : Bool
+raiseMapIsIdentity = case raisePrefix of
+  Nothing => False
+  Just before => case partialWorldMapFor %search %search
+    (LAdvance 2) LRaiseTag before (MkToyRuntime True False) of
+      Just (MkToyRuntime True False) => True
+      _ => False
+
 ||| L-Raise coverage.
 public export
 raiseRun : Maybe (SystemState Nat ToyKey ToyValue ToyRuntime String)
 raiseRun = do
-  s1 <- applyTagged OInsertTag (OInsert 2 Root failingComponent) initialSystem
-  s2 <- applyTagged LBeginTag (LBegin 2) s1
+  s2 <- raisePrefix
   s3 <- applyTagged LRaiseTag (LAdvance 2) s2
   applyTagged LUnloadTag (LUnload 2) s3
 
@@ -337,5 +354,5 @@ proofTraceStarts = isJust (fire %search %search
 public export
 allRuleChecks : Bool
 allRuleChecks = proofTraceStarts && activationUsesResolution && guardedScenarioChecks &&
-  raiseScenario && emptyStaleDiverts && abortDivertScenario &&
+  raiseMapIsIdentity && raiseScenario && emptyStaleDiverts && abortDivertScenario &&
   landingDivertScenario

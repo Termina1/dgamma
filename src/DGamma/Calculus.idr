@@ -606,6 +606,15 @@ parentChainInvariant (S fuel) seen current fibers = case lookupFiber current fib
       then False
       else parentChainInvariant fuel (parent :: seen) parent fibers
 
+||| A committed provider may be Active or withdrawing, but never Inactive or
+||| Reloading. In particular a Reloading fiber may mutate its table without
+||| invalidating any already-committed consumer view.
+public export
+stableProvider : Lifecycle key value world error name deps provision -> Bool
+stableProvider (Active _ _) = True
+stableProvider (Unloading _ _ _) = True
+stableProvider _ = False
+
 public export
 viewProvidersInvariant : DecEq name => Registry name key value world error ->
   View name deps -> Bool
@@ -613,7 +622,7 @@ viewProvidersInvariant fibers EmptyView = True
 viewProvidersInvariant fibers (ProviderView provider rest) =
   case lookupFiber provider fibers of
     Nothing => False
-    Just fiber => installed (fiberLifecycle fiber) &&
+    Just fiber => stableProvider (fiberLifecycle fiber) &&
                   viewProvidersInvariant fibers rest
 
 public export
