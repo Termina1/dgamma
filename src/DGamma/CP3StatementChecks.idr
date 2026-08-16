@@ -355,6 +355,58 @@ freshChoiceGenerationBijection = MkRegistrationGenerationBijection
   swapFreshGeneration swapFreshGeneration swapFreshGenerationInvolutive
   swapFreshGenerationInvolutive
 
+swapHistoricalRootGeneration : RegistrationGeneration Nat ->
+  RegistrationGeneration Nat
+swapHistoricalRootGeneration (MkRegistrationGeneration 0 0) =
+  MkRegistrationGeneration 1 1
+swapHistoricalRootGeneration (MkRegistrationGeneration 1 1) =
+  MkRegistrationGeneration 0 0
+swapHistoricalRootGeneration generation = generation
+
+0 swapHistoricalRootGenerationInvolutive :
+  (generation : RegistrationGeneration Nat) ->
+  swapHistoricalRootGeneration (swapHistoricalRootGeneration generation) = generation
+swapHistoricalRootGenerationInvolutive (MkRegistrationGeneration Z Z) = Refl
+swapHistoricalRootGenerationInvolutive
+  (MkRegistrationGeneration Z (S ordinal)) = Refl
+swapHistoricalRootGenerationInvolutive
+  (MkRegistrationGeneration (S Z) Z) = Refl
+swapHistoricalRootGenerationInvolutive
+  (MkRegistrationGeneration (S Z) (S Z)) = Refl
+swapHistoricalRootGenerationInvolutive
+  (MkRegistrationGeneration (S Z) (S (S ordinal))) = Refl
+swapHistoricalRootGenerationInvolutive
+  (MkRegistrationGeneration (S (S name)) ordinal) = Refl
+
+public export
+historicalRootPermutationBijection : RegistrationGenerationBijection Nat
+historicalRootPermutationBijection = MkRegistrationGenerationBijection
+  swapHistoricalRootGeneration swapHistoricalRootGeneration
+  swapHistoricalRootGenerationInvolutive
+  swapHistoricalRootGenerationInvolutive
+
+||| The weak dual found in round 7 is rejected at the public coupling: even if
+||| root 0 is later removed, its exact external birth at ordinal 0 cannot be
+||| reassigned to root 1's historical generation.
+public export
+0 historicalExternalRootPermutationRejected :
+  {leftFirst, leftMiddle, leftFinal, rightFirst, rightMiddle, rightFinal :
+    SystemState Nat key value world error} ->
+  {leftTransition : Transition leftFirst leftMiddle} ->
+  {leftRest : Transitions leftMiddle leftFinal} ->
+  {rightTransition : Transition rightFirst rightMiddle} ->
+  {rightRest : Transitions rightMiddle rightFinal} ->
+  {component : Component key value world error} ->
+  ExternalRootBirthCorrespondence
+    DGamma.CP3StatementChecks.historicalRootPermutationBijection 0
+    (MoreTransitions leftTransition leftRest) 0
+    (MoreTransitions rightTransition rightRest) ->
+  transitionAction leftTransition = OInsert 0 Root component ->
+  transitionAction rightTransition = OInsert 0 Root component -> Void
+historicalExternalRootPermutationRejected coupling leftRoot rightRoot =
+  case firstExternalRootBirthMapped coupling leftRoot rightRoot of
+    Refl impossible
+
 0 namedInsertLookup :
   (step : CheckedNamedTransition nameEq keyEq
     (OInsert child parent component) before) ->
@@ -834,6 +886,67 @@ buildRoleChangingNamedTrace generatedChild = do
     (LAdvance 1) (namedAfter t8)
   Just (MkRoleChangingNamedTrace t1 t2 t3 t4 t5 t6 t7 t8 t9)
 
+0 freshChoiceExternalRootBirthCorrespondence :
+  (left : RoleChangingNamedTrace 1) ->
+  (right : RoleChangingNamedTrace 2) ->
+  ExternalRootBirthCorrespondence
+    DGamma.CP3StatementChecks.freshChoiceGenerationBijection 0
+    (namedRoleChangingTrace left) 0 (namedRoleChangingTrace right)
+freshChoiceExternalRootBirthCorrespondence left right =
+  MatchExternalRootBirth
+    (namedTransition (rootInsert0 left)) (namedRoleTail2 left)
+    (namedTransition (rootInsert0 right)) (namedRoleTail2 right)
+    (namedAction (rootInsert0 left)) (namedAction (rootInsert0 right)) Refl
+  (SkipLeftNonExternalRootBirth (LBegin 0)
+    (namedTransition (parentBegin left)) (namedRoleTail3 left)
+    (namedAction (parentBegin left)) Refl
+  (SkipRightNonExternalRootBirth (LBegin 0)
+    (namedTransition (parentBegin right)) (namedRoleTail3 right)
+    (namedAction (parentBegin right)) Refl
+  (SkipLeftNonExternalRootBirth
+    (OInsert 1 (ChildOf 0) registrationTestChild)
+    (namedTransition (childInsert left)) (namedRoleTail4 left)
+    (namedAction (childInsert left)) Refl
+  (SkipRightNonExternalRootBirth
+    (OInsert 2 (ChildOf 0) registrationTestChild)
+    (namedTransition (childInsert right)) (namedRoleTail4 right)
+    (namedAction (childInsert right)) Refl
+  (SkipLeftNonExternalRootBirth (ORetire 1)
+    (namedTransition (childRetire left)) (namedRoleTail5 left)
+    (namedAction (childRetire left)) Refl
+  (SkipRightNonExternalRootBirth (ORetire 2)
+    (namedTransition (childRetire right)) (namedRoleTail5 right)
+    (namedAction (childRetire right)) Refl
+  (SkipLeftNonExternalRootBirth (ORemove 1)
+    (namedTransition (childRemove left)) (namedRoleTail6 left)
+    (namedAction (childRemove left)) Refl
+  (SkipRightNonExternalRootBirth (ORemove 2)
+    (namedTransition (childRemove right)) (namedRoleTail6 right)
+    (namedAction (childRemove right)) Refl
+  (MatchExternalRootBirth
+    (namedTransition (rootInsert1 left)) (namedRoleTail7 left)
+    (namedTransition (rootInsert1 right)) (namedRoleTail7 right)
+    (namedAction (rootInsert1 left)) (namedAction (rootInsert1 right)) Refl
+  (SkipLeftNonExternalRootBirth (LAdvance 0)
+    (namedTransition (parentAdvance left)) (namedRoleTail8 left)
+    (namedAction (parentAdvance left)) Refl
+  (SkipRightNonExternalRootBirth (LAdvance 0)
+    (namedTransition (parentAdvance right)) (namedRoleTail8 right)
+    (namedAction (parentAdvance right)) Refl
+  (SkipLeftNonExternalRootBirth (LBegin 1)
+    (namedTransition (rootBegin1 left)) (namedRoleTail9 left)
+    (namedAction (rootBegin1 left)) Refl
+  (SkipRightNonExternalRootBirth (LBegin 1)
+    (namedTransition (rootBegin1 right)) (namedRoleTail9 right)
+    (namedAction (rootBegin1 right)) Refl
+  (SkipLeftNonExternalRootBirth (LAdvance 1)
+    (namedTransition (rootAdvance1 left)) NoTransitions
+    (namedAction (rootAdvance1 left)) Refl
+  (SkipRightNonExternalRootBirth (LAdvance 1)
+    (namedTransition (rootAdvance1 right)) NoTransitions
+    (namedAction (rootAdvance1 right)) Refl
+    ExternalRootBirthCorrespondenceEnd)))))))))))))))
+
 0 freshChoiceSameInputs :
   (left : RoleChangingNamedTrace 1) ->
   (right : RoleChangingNamedTrace 2) ->
@@ -843,6 +956,7 @@ buildRoleChangingNamedTrace generatedChild = do
 freshChoiceSameInputs left right =
   MkSameOrchestrationModuloGenerated freshChoiceGenerationBijection
     (freshChoiceSameExternal left right)
+    (freshChoiceExternalRootBirthCorrespondence left right)
     (freshChoiceRegistrationCorrespondence left right)
     (freshChoiceCurrentEndpointRenaming left right)
 

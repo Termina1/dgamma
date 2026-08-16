@@ -1745,6 +1745,104 @@ identityRegistrationGenerationBijection =
   MkRegistrationGenerationBijection id id (\generation => Refl)
     (\generation => Refl)
 
+public export
+isExternalRootBirthAction : Action name key value world error -> Bool
+isExternalRootBirthAction (OInsert root Root component) = True
+isExternalRootBirthAction action = False
+
+||| Every historical external root birth is coupled to the same exact root
+||| O-Insert occurrence on the other trace.  Root births retain their global
+||| input order (as required by `SameExternalOrchestration`); internal actions
+||| may interleave independently.  In particular, removed root generations
+||| cannot be permuted to reassign their generated subtrees.
+public export
+data ExternalRootBirthCorrespondence :
+  (renaming : RegistrationGenerationBijection name) ->
+  (leftOrdinal : Nat) ->
+  {leftFirst, leftFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) ->
+  (rightOrdinal : Nat) ->
+  {rightFirst, rightFinal : SystemState name key value world error} ->
+  (right : Transitions rightFirst rightFinal) -> Type where
+  ExternalRootBirthCorrespondenceEnd :
+    ExternalRootBirthCorrespondence renaming leftOrdinal NoTransitions
+      rightOrdinal NoTransitions
+  SkipLeftNonExternalRootBirth :
+    (action : Action name key value world error) ->
+    (transition : Transition leftFirst leftMiddle) ->
+    (leftRest : Transitions leftMiddle leftFinal) ->
+    transitionAction transition = action ->
+    isExternalRootBirthAction action = False ->
+    ExternalRootBirthCorrespondence renaming (S leftOrdinal) leftRest
+      rightOrdinal right ->
+    ExternalRootBirthCorrespondence renaming leftOrdinal
+      (MoreTransitions transition leftRest) rightOrdinal right
+  SkipRightNonExternalRootBirth :
+    (action : Action name key value world error) ->
+    (transition : Transition rightFirst rightMiddle) ->
+    (rightRest : Transitions rightMiddle rightFinal) ->
+    transitionAction transition = action ->
+    isExternalRootBirthAction action = False ->
+    ExternalRootBirthCorrespondence renaming leftOrdinal left
+      (S rightOrdinal) rightRest ->
+    ExternalRootBirthCorrespondence renaming leftOrdinal left rightOrdinal
+      (MoreTransitions transition rightRest)
+  MatchExternalRootBirth :
+    (leftTransition : Transition leftFirst leftMiddle) ->
+    (leftRest : Transitions leftMiddle leftFinal) ->
+    (rightTransition : Transition rightFirst rightMiddle) ->
+    (rightRest : Transitions rightMiddle rightFinal) ->
+    transitionAction leftTransition = OInsert root Root component ->
+    transitionAction rightTransition = OInsert root Root component ->
+    generationForward renaming
+      (MkRegistrationGeneration root leftOrdinal) =
+      MkRegistrationGeneration root rightOrdinal ->
+    ExternalRootBirthCorrespondence renaming (S leftOrdinal) leftRest
+      (S rightOrdinal) rightRest ->
+    ExternalRootBirthCorrespondence renaming leftOrdinal
+      (MoreTransitions leftTransition leftRest) rightOrdinal
+      (MoreTransitions rightTransition rightRest)
+
+||| Projection used by rejection regressions: the first exact external root
+||| birth cannot map to another historical root generation.
+public export
+0 firstExternalRootBirthMapped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFirst, leftMiddle, leftFinal, rightFirst, rightMiddle, rightFinal :
+    SystemState name key value world error} ->
+  {leftTransition : Transition leftFirst leftMiddle} ->
+  {leftRest : Transitions leftMiddle leftFinal} ->
+  {rightTransition : Transition rightFirst rightMiddle} ->
+  {rightRest : Transitions rightMiddle rightFinal} ->
+  {renaming : RegistrationGenerationBijection name} ->
+  {leftOrdinal, rightOrdinal : Nat} -> {root : name} ->
+  {component : Component key value world error} ->
+  ExternalRootBirthCorrespondence renaming leftOrdinal
+    (MoreTransitions leftTransition leftRest) rightOrdinal
+    (MoreTransitions rightTransition rightRest) ->
+  transitionAction leftTransition = OInsert root Root component ->
+  transitionAction rightTransition = OInsert root Root component ->
+  generationForward renaming
+    (MkRegistrationGeneration root leftOrdinal) =
+    MkRegistrationGeneration root rightOrdinal
+firstExternalRootBirthMapped
+  (MatchExternalRootBirth leftTransition leftRest rightTransition rightRest
+    leftAction rightAction mapped tail) requestedLeft requestedRight =
+      case trans (sym leftAction) requestedLeft of
+        Refl => mapped
+firstExternalRootBirthMapped
+  (SkipLeftNonExternalRootBirth action transition rest transitionAction nonRoot tail)
+  requestedLeft requestedRight =
+    let observed = trans (sym (cong isExternalRootBirthAction transitionAction))
+          (cong isExternalRootBirthAction requestedLeft) in
+      case trans (sym nonRoot) observed of Refl impossible
+firstExternalRootBirthMapped
+  (SkipRightNonExternalRootBirth action transition rest transitionAction nonRoot tail)
+  requestedLeft requestedRight =
+    let observed = trans (sym (cong isExternalRootBirthAction transitionAction))
+          (cong isExternalRootBirthAction requestedRight) in
+      case trans (sym nonRoot) observed of Refl impossible
+
 ||| The generation environment carried by the correspondence scanner.  Its
 ||| entries are the last O-Insert births not followed by O-Remove in the
 ||| processed prefix.  The checked LTS guarantees at most one current entry per
@@ -2142,6 +2240,8 @@ record SameOrchestrationModuloGenerated
   constructor MkSameOrchestrationModuloGenerated
   generatedGenerationBijection : RegistrationGenerationBijection name
   sameExternalInputs : SameExternalOrchestration nameEq left right
+  externalRootGenerationsCoupled : ExternalRootBirthCorrespondence
+    generatedGenerationBijection 0 left 0 right
   generatedRegistrationTree : RegistrationCorrespondenceByGeneration nameEq
     generatedGenerationBijection left right
   endpointRenaming : CurrentEndpointRenaming nameEq generatedGenerationBijection
