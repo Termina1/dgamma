@@ -1321,6 +1321,7 @@ andFourThird a b c d valid =
   andTrueLeft c d
     (andTrueRight b (c && d) (andTrueRight a (b && c && d) valid))
 
+public export
 0 andFourFourth : (a, b, c, d : Bool) ->
   a && b && c && d = True -> d = True
 andFourFourth a b c d valid =
@@ -4066,6 +4067,7 @@ resolveCommittedValuesUnstableRuntime {name} {key} {world} {error} {value}
               unstable tailValid
         in rewrite target in cong (map (OneDepValue v)) tailFrame
 
+public export
 0 viewBindingsUnstableRuntime :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -4420,6 +4422,29 @@ resolveViewBindingsSound {name} {key} {world} {error} {value}
                       allValues = rewrite valueEquation in
                         rewrite tailEquation in Refl
                   in andBothTrue _ _ allProviders allValues
+
+public export
+0 targetFiberBindingsSound :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))) ->
+  targetFiber @{nameEq} @{keyEq} {value = value} {world = world} {error = error} fiber fibers = Just view ->
+  viewBindingsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+    (dependencies (componentDependencies (fiberComponent fiber))) view fibers =
+    True
+targetFiberBindingsSound {name} {key} {world} {error} {value}
+  nameEq keyEq fiber fibers view target with (retired fiber)
+  targetFiberBindingsSound {name} {key} {world} {error} {value}
+    nameEq keyEq fiber fibers view target | True = case target of Refl impossible
+  targetFiberBindingsSound {name} {key} {world} {error} {value}
+    nameEq keyEq fiber fibers view target | False =
+      resolveViewBindingsSound {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq keyEq
+        (dependencies (componentDependencies (fiberComponent fiber))) view fibers
+        target
 
 ||| Runtime-checked rule application used by the proof-indexed LTS. `applyAction`
 ||| remains the raw ten-rule evaluator; this wrapper rejects a malformed target
