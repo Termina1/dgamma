@@ -18,6 +18,11 @@ listMember wanted (current :: rest) = case decEq wanted current of
 
 %default total
 
+public export
+0 listMemberEmpty : (nameEq : DecEq name) -> (selected : name) ->
+  listMember @{nameEq} selected [] = False
+listMemberEmpty nameEq selected = Refl
+
 ||| Definition 65. `provider` precedes `consumer` when a key the former may
 ||| provide is declared by the latter. This is the finite executable graph used
 ||| by the Progress and Confluence statements.
@@ -3756,4 +3761,29 @@ public export
 alignedEpisodeInside opening inside
   (AlignedStep (LBegin consumer) LBeginTag (beginEquation opening) inside aligned) =
     aligned
+
+public export
+0 lookupFiberEmptyRegistry :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  bindings (registry state) = [] ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} selected (registry state) = Nothing
+lookupFiberEmptyRegistry nameEq selected
+  (MkSystemState ambient (MkCoeffectContext [] unique)) Refl = Refl
+lookupFiberEmptyRegistry nameEq selected
+  (MkSystemState ambient (MkCoeffectContext (entry :: rest) unique)) empty =
+    case empty of Refl impossible
+
+public export
+0 supportSetEmptyRegistry :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) ->
+  bindings (registry state) = [] -> supportSet @{nameEq} @{keyEq} state = []
+supportSetEmptyRegistry nameEq keyEq
+  (MkSystemState ambient (MkCoeffectContext [] unique)) Refl = Refl
+supportSetEmptyRegistry nameEq keyEq
+  (MkSystemState ambient (MkCoeffectContext (entry :: rest) unique)) empty =
+    case empty of Refl impossible
 

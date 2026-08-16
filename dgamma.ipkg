@@ -15,4 +15,5 @@ modules = DGamma.Core,
           DGamma.Metatheory,
           DGamma.CP3,
           DGamma.Ordering,
+          DGamma.CP3Support,
           DGamma.CalculusChecks
