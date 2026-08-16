@@ -789,6 +789,32 @@ preservationTheorem name key value world error =
   applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
   registryWellFormed @{nameEq} @{keyEq} afterState = True
 
+||| Inhabitant of raw paper Theorem 59, dispatched over every executable action.
+public export
+0 preservationTheoremProof : preservationTheorem name key value world error
+preservationTheoremProof nameEq keyEq (OInsert n parent component) before
+  afterState tag valid equation = preservationOInsert nameEq keyEq n parent
+    component before afterState tag valid equation
+preservationTheoremProof nameEq keyEq (ORetire n) before afterState tag valid
+  equation = preservationORetire nameEq keyEq n before afterState tag valid
+    equation
+preservationTheoremProof nameEq keyEq (ORemove n) before afterState tag valid
+  equation = preservationORemove nameEq keyEq n before afterState tag valid
+    equation
+preservationTheoremProof nameEq keyEq (LBegin n) before afterState tag valid
+  equation = preservationLBegin nameEq keyEq n before afterState tag valid equation
+preservationTheoremProof nameEq keyEq (LAdvance n) before afterState tag valid
+  equation = preservationLAdvance nameEq keyEq n before afterState tag valid
+    equation
+preservationTheoremProof nameEq keyEq (LDivert n) before afterState tag valid
+  equation = preservationLDivert nameEq keyEq n before afterState tag valid
+    equation
+preservationTheoremProof nameEq keyEq (LLeave n) before afterState tag valid
+  equation = preservationLLeave nameEq keyEq n before afterState tag valid equation
+preservationTheoremProof nameEq keyEq (LUnload n) before afterState tag valid
+  equation = preservationLUnload nameEq keyEq n before afterState tag valid
+    equation
+
 ||| Rule identity predicates used by episode boundaries.
 public export
 record BeginStep (nameEq : DecEq name) (keyEq : DecEq key) (n : name)
