@@ -107,8 +107,10 @@ cannot silently introduce a proof:
 - `terminalRecoveryTheorem` — Corollary 62.
 - `resolutionCoherenceTheorem` — the recovery-combined form of Theorem 64.
 - `progressTheorem` — the finite quantitative form of Theorem 66.
+- `supportWellFoundedTheorem` — Lemma 68.
 - `supportAtQuiescenceTheorem` — Lemma 70.
-- `confluenceTheorem` — the finite canonical-schedule form of Theorem 73.
+- `deletionTheorem` — Lemma 72.
+- `confluenceTheorem` — the finite/no-nested-registration form of Theorem 73.
 
 Each open theorem is marked `TODO(proof)` at its declaration. These are honest
 uninhabited statements, not holes accepted by the compiler. `orderingTheorem`
@@ -530,7 +532,7 @@ provision disjointness.
 
 ### Progress (Theorem 66): precise remaining debt
 
-The exact finite theorem remains stated. Proved cores are lifecycle witness
+The finite-trace specialization remains stated. Proved cores are lifecycle witness
 search soundness, maximality-implies-quiet from no-deadlock, and the complete
 empty-suffix quantitative base (`progressEndFromNoDeadlock` and
 `progressEndFromSearch`). Two nontrivial obligations remain:
@@ -548,20 +550,23 @@ empty-suffix quantitative base (`progressEndFromNoDeadlock` and
 
 ### Confluence (Theorem 73): precise remaining debt
 
-The exact theorem remains stated. Proved machinery includes effect
-transposition from Definition 60, `SameOrchestration` reflexivity/symmetry/
-transitivity, equivalence symmetry/transitivity, deletion identity and
-composition, and the final canonical-endpoint diagram
+The finite/no-nested-registration specialization remains stated. Proved
+machinery includes effect transposition from Definition 60,
+`SameOrchestration` reflexivity/symmetry/transitivity, full Equation-53
+relation symmetry/transitivity, and the final canonical-endpoint diagram
 (`canonicalEndpointsEquivalent`, `confluenceFromCanonicalSchedules`). The
 remaining constructive core is:
 
-1. **One-step episode deletion (Lemma 72).** Deleting an unsupported episode
-   must rebuild a checked trace while preserving applicability of every
-   surviving control step, then combine control frames with the already-proved
-   effect diamond.
-2. **Canonical sorting.** Constructing `CanonicalSchedule` requires a finite
-   support linearization and repeated checked transpositions/deletions. The two
-   schedules must be shown to reach the same canonical endpoint. The final
+1. **One-step episode deletion (Lemma 72).** `deletionTheorem` now names the
+   closing episode, exact registered set R, three segment-specific action
+   subsequences, effect recovery, outside-R full control agreement, and
+   vestigial/absent names. Its proof must rebuild a checked trace while
+   preserving applicability of every surviving step.
+2. **Canonical sorting.** `CanonicalSchedule` now requires a unique support
+   enumeration linearizing the combined parent-or-precedence closure, exactly
+   one ordered contiguous open actor block per supported fiber, exclusion of
+   unsupported lifecycle history, and root/child input placement. Constructing
+   these fields requires repeated checked transpositions/deletions. The final
    equivalence packaging after this construction is already proved.
 
 ### Recovery and Theorem 64
@@ -576,6 +581,39 @@ but the indexed induction through `InstalledTrace` is not yet implemented.
 completes the recovery branch of Theorem 64; resolution structure and final
 packaging are no longer debt.
 
+### CP3 adversarial round-1 statement repairs
+
+The round-1 review accepted global Ordering but found two statement blockers.
+Both were type-design bugs rather than absent inhabitants, and both are repaired:
+
+- The old Lemma-70 alias accepted an arbitrary snapshot and was false on a
+  quiet Active mixed cycle (parent edge one way, precedence edge the other).
+  `SupportEdge`/`SupportPath` now represent the full Equation-62 relation;
+  `ReachedFromEmpty` records an aligned checked trace from an empty well-formed
+  registry; and `supportWellFoundedTheorem` states Lemma 68 independently with
+  well-foundedness and unique-solution conclusions. Lemma 70 now requires that
+  reachability witness and the semantic component-level Definition-69 premise.
+- The old `fiberTotalOnProvision` is retained only as an executable current-
+  Active diagnostic. `ProgramFinishes` and `ComponentTotalOnProvision` now
+  quantify every successful complete component execution, independent of a
+  lifecycle snapshot, matching Definition 69.
+- The old canonical package ordered precedence only and compared lifecycle
+  summaries. `LinearizesSupport` now requires `UniqueKeys` and linearizes
+  `SupportPath`; `LocatedOpenEpisodeBlock` enforces actor-only contiguity,
+  openness, and no earlier/later episode; coverage excludes unsupported
+  lifecycle history; and `CanonicalInputPlacement` records root/child
+  registration ordering. `FiberControlRelated` retains the exact immutable
+  component (dependencies, provisions, program), parent, retirement, remaining
+  iterator, committed view, outcome, and a pointwise accumulator relation.
+- The trivial old `DeletionResult` was removed. The new `deletionTheorem` and
+  indexed result name the selected closing episode and R, encode deletion as
+  checked action subsequences split before/inside/after the episode, and retain
+  effect recovery, full control equivalence outside R, and vestigial-versus-
+  absent registered names.
+- `DGamma.CP3StatementChecks` is a compile-time API regression module projecting
+  each required reachability, Equation-62, canonical-block, Equation-53, and
+  deletion field. The repaired types remain honestly unproved where indicated.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
@@ -584,15 +622,17 @@ episode resolution structure; and global spatial Ordering/Theorem 63 including
 strict containment, resolution constancy, and provider-value constancy.
 
 **Partial:** Progress/Theorem 66 (search/maximality/base case proved);
-Lemma 70 (empty base proved); Lemma 71 (effect diamond proved); Lemma 72
-(identity/composition proved); Confluence/Theorem 73 (orchestration equivalence
-and endpoint assembly proved); and recovery-combined Theorem 64 (complete
+Lemma 68 (reached-state statement only); Lemma 70 (repaired reached-state
+statement and empty base); Lemma 71 (effect commutation projection); Lemma 72
+(faithful statement only); Confluence/Theorem 73 (faithful redesigned canonical
+package, orchestration equivalence, and endpoint assembly); and recovery-combined Theorem 64 (complete
 conditional assembly from Corollary 62). Lemmas 54–57 have many rule, frame,
 and boundary analogues but are not individually complete.
 
 **Merely stated:** Lemma 35, Theorems 40/42, recovery Theorem 61, Corollary 62,
 `resolutionCoherenceTheorem`, `progressTheorem`,
-`supportAtQuiescenceTheorem`, and `confluenceTheorem`. These remain
+`supportWellFoundedTheorem`, `supportAtQuiescenceTheorem`,
+`deletionTheorem`, and `confluenceTheorem`. These remain
 escape-hatch-free proposition types.
 
 **Deviations:** Definition 32 finite approximations; finite static-list

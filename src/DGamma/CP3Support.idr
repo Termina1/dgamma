@@ -79,7 +79,8 @@ public export
   ControlEquivalent name key world error value nameEq left right ->
   ControlEquivalent name key world error value nameEq right left
 controlEquivalentSymmetric (MkControlEquivalent pointwise) =
-  MkControlEquivalent (\selected => sym (pointwise selected))
+  MkControlEquivalent
+    (\selected => fiberControlMaybeSymmetric (pointwise selected))
 
 public export
 0 controlEquivalentTransitive :
@@ -89,7 +90,8 @@ public export
 controlEquivalentTransitive (MkControlEquivalent leftPointwise)
   (MkControlEquivalent rightPointwise) =
     MkControlEquivalent
-      (\selected => trans (leftPointwise selected) (rightPointwise selected))
+      (\selected => fiberControlMaybeTransitive (leftPointwise selected)
+        (rightPointwise selected))
 
 public export
 0 systemEquivalentSymmetric :
@@ -217,29 +219,6 @@ public export
 confluenceFromCanonicalSchedules leftSchedule rightSchedule sameFinal =
   (leftSchedule, rightSchedule,
     canonicalEndpointsEquivalent leftSchedule rightSchedule sameFinal)
-
-||| Lemma 72 base case: deleting no episodes preserves the original checked
-||| trace and endpoint.
-public export
-0 deletionKeepsAll :
-  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trace : Transitions initial finalState) ->
-  DeletionResult name key world error value nameEq keyEq trace
-deletionKeepsAll nameEq keyEq trace =
-  MkDeletionResult finalState trace
-    (systemEquivalentReflexive nameEq keyEq finalState)
-
-||| Sequential deletion witnesses compose; this is the induction-composition
-||| operation required by Lemma 72 once one-step deletion is available.
-public export
-0 deletionResultsCompose :
-  (first : DeletionResult name key world error value nameEq keyEq original) ->
-  DeletionResult name key world error value nameEq keyEq (surviving first) ->
-  DeletionResult name key world error value nameEq keyEq original
-deletionResultsCompose first second =
-  MkDeletionResult (survivingFinal second) (surviving second)
-    (systemEquivalentTransitive (endpointPreserved first)
-      (endpointPreserved second))
 
 ||| Foreign replay on an empty trace is exactly effect-state equivalence.
 public export
