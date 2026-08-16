@@ -120,6 +120,188 @@ SupportWellFounded : {name, key, world, error : Type} -> {value : key -> Type} -
 SupportWellFounded {name} nameEq state =
   (n : name) -> SupportPath nameEq state n n -> Void
 
+||| Strict occurrence order in a finite trace/action list.
+public export
+data BeforeIn : a -> a -> List a -> Type where
+  BeforeHere : Elem later rest -> BeforeIn earlier later (earlier :: rest)
+  BeforeThere : BeforeIn earlier later rest ->
+    BeforeIn earlier later (other :: rest)
+
+public export
+data ActionOccurs :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  Action name key value world error -> Transitions first finalState -> Type where
+  ActionOccursHere :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    transitionAction transition = action ->
+    ActionOccurs action (MoreTransitions transition rest)
+  ActionOccursLater :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    ActionOccurs action rest ->
+    ActionOccurs action (MoreTransitions transition rest)
+
+public export
+data ActionBefore :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  Action name key value world error -> Action name key value world error ->
+  Transitions first finalState -> Type where
+  ActionBeforeHere :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    transitionAction transition = earlier ->
+    ActionOccurs later rest ->
+    ActionBefore earlier later (MoreTransitions transition rest)
+  ActionBeforeLater :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    ActionBefore earlier later rest ->
+    ActionBefore earlier later (MoreTransitions transition rest)
+
+||| Evidence that a parent was inside its activation effect when an explicit
+||| child insertion occurred. `Reloading` is the calculus phase strictly after
+||| L-Begin and before L-Finish/L-Raise/L-Divert.
+public export
+data ReloadingPhase : Lifecycle key value world error name deps provision -> Type where
+  IsReloadingPhase :
+    ReloadingPhase (Reloading remaining accumulator phaseView)
+
+public export
+record ParentActivationPhase
+  {name, key, world, error : Type} {value : key -> Type}
+  (nameEq : DecEq name) (parent : name)
+  (state : SystemState name key value world error) where
+  constructor MkParentActivationPhase
+  parentFiberAtInsert : Fiber name key value world error
+  parentFoundAtInsert : lookupFiber @{nameEq} parent (registry state) =
+    Just parentFiberAtInsert
+  parentIsReloading : ReloadingPhase (fiberLifecycle parentFiberAtInsert)
+
+||| A live name has one birth in the trace. This makes the paper's phrase “the
+||| step that registered” denote a stable generation rather than a reused name.
+public export
+NoLaterInsertion :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  name -> Transitions first finalState -> Type
+NoLaterInsertion child rest =
+  (parent : Parent name) -> (component : Component key value world error) ->
+  ActionOccurs (OInsert child parent component) rest -> Void
+
+||| A transition that executes a parent's accumulator: normal retirement,
+||| explicit diversion, or an L-Advance that raises/diverts.
+public export
+data ParentRecoveryStep :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (parent : name) ->
+  {before, afterState : SystemState name key value world error} ->
+  Transition before afterState -> Type where
+  ParentLeaves : transitionAction transition = LLeave parent ->
+    ParentRecoveryStep parent transition
+  ParentDivertsBefore : transitionAction transition = LDivert parent ->
+    ParentRecoveryStep parent transition
+  ParentDivertsAfter : transitionAction transition = LAdvance parent ->
+    transitionTag transition = LDivertTag ->
+    ParentRecoveryStep parent transition
+  ParentRaises : transitionAction transition = LAdvance parent ->
+    transitionTag transition = LRaiseTag ->
+    ParentRecoveryStep parent transition
+
+public export
+data NoParentRecovery :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (parent : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Type where
+  NoParentRecoveryEnd : NoParentRecovery parent NoTransitions
+  NoParentRecoveryStep :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    (ParentRecoveryStep parent transition -> Void) ->
+    NoParentRecovery parent rest ->
+    NoParentRecovery parent (MoreTransitions transition rest)
+
+||| The explicit O-Retire for a registered child occurs before the first parent
+||| recovery transition in the suffix.
+public export
+data ChildRetiresBeforeRecovery :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (parent, child : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Type where
+  ChildRetiresNow :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    transitionAction transition = ORetire child ->
+    ChildRetiresBeforeRecovery parent child
+      (MoreTransitions transition rest)
+  ChildRetiresLater :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    (ParentRecoveryStep parent transition -> Void) ->
+    ChildRetiresBeforeRecovery parent child rest ->
+    ChildRetiresBeforeRecovery parent child
+      (MoreTransitions transition rest)
+
+||| Explicit counterpart of Definition 47's accumulator provenance. Either the
+||| parent never recovers within this suffix, or the child retirement precedes
+||| its first L-Leave/L-Divert/L-Raise recovery boundary.
+public export
+data ChildRetirementProvenance :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (parent, child : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Type where
+  ParentDoesNotRecover : NoParentRecovery parent rest ->
+    ChildRetirementProvenance parent child rest
+  ChildRetiredBeforeParent : ChildRetiresBeforeRecovery parent child rest ->
+    ChildRetirementProvenance parent child rest
+
+||| The trace-local obligation generated by one step. Root insertion only fixes
+||| a fresh generation. Child insertion additionally has activation and inverse
+||| retirement provenance; the operational O-Insert rule itself is unchanged.
+public export
+RegistrationStepDiscipline :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  (action : Action name key value world error) ->
+  (before : SystemState name key value world error) ->
+  {afterState, finalState : SystemState name key value world error} ->
+  Transitions afterState finalState -> Type
+RegistrationStepDiscipline nameEq (OInsert child Root component) before rest =
+  NoLaterInsertion child rest
+RegistrationStepDiscipline nameEq
+  (OInsert child (ChildOf parent) component) before rest =
+    (ParentActivationPhase nameEq parent before,
+     NoLaterInsertion child rest,
+     ChildRetirementProvenance parent child rest)
+RegistrationStepDiscipline nameEq (ORetire child) before rest = ()
+RegistrationStepDiscipline nameEq (ORemove child) before rest = ()
+RegistrationStepDiscipline nameEq (LBegin child) before rest = ()
+RegistrationStepDiscipline nameEq (LAdvance child) before rest = ()
+RegistrationStepDiscipline nameEq (LDivert child) before rest = ()
+RegistrationStepDiscipline nameEq (LLeave child) before rest = ()
+RegistrationStepDiscipline nameEq (LUnload child) before rest = ()
+
+||| Missing trace invariant behind paper Lemmas 68 and 70. It exposes rather
+||| than silently adds the nested-registration discipline omitted by O-Insert.
+public export
+data RegistrationDiscipline :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Type where
+  RegistrationDisciplineEnd : RegistrationDiscipline nameEq NoTransitions
+  RegistrationDisciplineStep :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    RegistrationStepDiscipline nameEq (transitionAction transition) first rest ->
+    RegistrationDiscipline nameEq rest ->
+    RegistrationDiscipline nameEq (MoreTransitions transition rest)
+
 ||| A state reached by checked rules from the paper's empty-registry initial
 ||| convention. Dictionary alignment avoids an implicit proof-irrelevance axiom.
 public export
@@ -231,17 +413,18 @@ record SupportWellFoundedResult
     SupportSolution @{nameEq} @{keyEq} candidate state ->
     (n : name) -> candidate n = isSupported @{nameEq} @{keyEq} n state
 
-||| Paper Lemma 68. The reached-from-empty premise is essential: parent and
-||| precedence edges can form a mixed cycle in an arbitrary snapshot even when
-||| precedence alone is acyclic.
-||| TODO(proof): registration-time ranking plus the mixed-cycle exclusion.
+||| Paper Lemma 68 with the missing nested-registration invariant exposed as a
+||| premise. Reachability alone is insufficient under Table-1 O-Insert; see
+||| Erratum #3 in NOTES.md.
+||| TODO(proof): registration-time ranking under `RegistrationDiscipline`.
 public export
 supportWellFoundedTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type
 supportWellFoundedTheorem name key value world error =
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (state : SystemState name key value world error) ->
-  ReachedFromEmpty name key world error value nameEq keyEq state ->
+  (reached : ReachedFromEmpty name key world error value nameEq keyEq state) ->
+  RegistrationDiscipline nameEq (reachTrace reached) ->
   PrecedenceAcyclic nameEq state ->
   SupportWellFoundedResult name key world error value nameEq keyEq state
 
@@ -281,8 +464,43 @@ ComponentTotalOnProvision {key} {value} {world} {error} component =
   (k : key) -> Elem k (dependencies (componentProvisions component)) ->
   isJust (lookupBinding k (ownedValues (localTable finalState))) = True
 
+||| Definition-69 obligation contributed by one trace action. In an empty-start
+||| trace every component that ever appears is introduced by O-Insert, including
+||| components later removed or earlier generations of a reused name.
+public export
+ActionComponentTotal :
+  {name, key, world, error : Type} -> {value : key -> Type} -> DecEq key =>
+  Action name key value world error -> Type
+ActionComponentTotal {key} {value} {world} {error}
+  (OInsert n parent component) =
+    ComponentTotalOnProvision component
+ActionComponentTotal (ORetire n) = ()
+ActionComponentTotal (ORemove n) = ()
+ActionComponentTotal (LBegin n) = ()
+ActionComponentTotal (LAdvance n) = ()
+ActionComponentTotal (LDivert n) = ()
+ActionComponentTotal (LLeave n) = ()
+ActionComponentTotal (LUnload n) = ()
+
+||| Semantic totality for every component occurrence in a trace, rather than
+||| only the components surviving in its endpoint registry.
+public export
+data TraceComponentsTotal :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (keyEq : DecEq key) ->
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Type where
+  TraceComponentsTotalEnd : TraceComponentsTotal keyEq NoTransitions
+  TraceComponentsTotalStep :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    ActionComponentTotal @{keyEq} (transitionAction transition) ->
+    TraceComponentsTotal keyEq rest ->
+    TraceComponentsTotal keyEq (MoreTransitions transition rest)
+
 ||| Every component currently registered satisfies Definition 69. The property
-||| depends only on the immutable component value, not its lifecycle state.
+||| depends only on the immutable component value, not its lifecycle state. This
+||| endpoint-only helper is weaker than `TraceComponentsTotal`.
 public export
 ComponentsTotalOnProvision :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -511,8 +729,8 @@ record ProgressResult
   maximalIsQuiet : LifecycleMaximal nameEq keyEq last ->
     quiet @{nameEq} @{keyEq} last = True
 
-||| Theorem 66, faithfully specialized to finite traces and static-list
-||| iterators. Finiteness of N is intrinsic in the registry representation.
+||| Candidate finite-trace/static-list specialization of Theorem 66.
+||| Finiteness of N is intrinsic in the registry representation.
 ||| TODO(proof): global Ordering is proved; the remaining debt is the
 ||| unloading-chain no-deadlock induction and Equation-61 precedence bound.
 public export
@@ -866,47 +1084,6 @@ data SameOrchestration :
     SameOrchestration (MoreTransitions leftTransition leftRest)
       (MoreTransitions rightTransition rightRest)
 
-||| Strict occurrence order in a finite trace/action list.
-public export
-data BeforeIn : a -> a -> List a -> Type where
-  BeforeHere : Elem later rest -> BeforeIn earlier later (earlier :: rest)
-  BeforeThere : BeforeIn earlier later rest ->
-    BeforeIn earlier later (other :: rest)
-
-public export
-data ActionOccurs :
-  {name, key, world, error : Type} -> {value : key -> Type} ->
-  {first, finalState : SystemState name key value world error} ->
-  Action name key value world error -> Transitions first finalState -> Type where
-  ActionOccursHere :
-    (transition : Transition first middle) ->
-    (rest : Transitions middle finalState) ->
-    transitionAction transition = action ->
-    ActionOccurs action (MoreTransitions transition rest)
-  ActionOccursLater :
-    (transition : Transition first middle) ->
-    (rest : Transitions middle finalState) ->
-    ActionOccurs action rest ->
-    ActionOccurs action (MoreTransitions transition rest)
-
-public export
-data ActionBefore :
-  {name, key, world, error : Type} -> {value : key -> Type} ->
-  {first, finalState : SystemState name key value world error} ->
-  Action name key value world error -> Action name key value world error ->
-  Transitions first finalState -> Type where
-  ActionBeforeHere :
-    (transition : Transition first middle) ->
-    (rest : Transitions middle finalState) ->
-    transitionAction transition = earlier ->
-    ActionOccurs later rest ->
-    ActionBefore earlier later (MoreTransitions transition rest)
-  ActionBeforeLater :
-    (transition : Transition first middle) ->
-    (rest : Transitions middle finalState) ->
-    ActionBefore earlier later rest ->
-    ActionBefore earlier later (MoreTransitions transition rest)
-
 ||| A unique enumeration of the support set that linearizes the transitive
 ||| closure of both halves of Equation 62.
 public export
@@ -1053,195 +1230,6 @@ data LifecycleActorsCovered :
     LifecycleActorsCovered supportNames rest ->
     LifecycleActorsCovered supportNames (MoreTransitions transition rest)
 
-||| Paper Theorem 73's placement rule for orchestration inputs, specialized to
-||| this calculus's explicit O-Insert registration (nested registration is not
-||| represented). Root insertions precede every lifecycle action; child
-||| insertions precede every lifecycle action of that child.
-public export
-record CanonicalInputPlacement
-  (name, key, world, error : Type) (value : key -> Type)
-  (nameEq : DecEq name) (keyEq : DecEq key)
-  (supportState : SystemState name key value world error)
-  (order : List name)
-  {initial, finalState : SystemState name key value world error}
-  (trace : Transitions initial finalState) where
-  constructor MkCanonicalInputPlacement
-  0 rootInputFirst : (n : name) -> Elem n order ->
-    (fiber : Fiber name key value world error) ->
-    lookupFiber @{nameEq} n (registry supportState) = Just fiber ->
-    fiberParent fiber = Root ->
-    (component : Component key value world error **
-      (ActionOccurs (OInsert n Root component) trace,
-       (action : Action name key value world error) ->
-       isLifecycleAction action = True -> ActionOccurs action trace ->
-       ActionBefore (OInsert n Root component) action trace))
-  0 childInputBeforeOwnLifecycle : (n, parent : name) -> Elem n order ->
-    (fiber : Fiber name key value world error) ->
-    lookupFiber @{nameEq} n (registry supportState) = Just fiber ->
-    fiberParent fiber = ChildOf parent ->
-    (component : Component key value world error **
-      (ActionOccurs (OInsert n (ChildOf parent) component) trace,
-       (action : Action name key value world error) ->
-       isLifecycleAction action = True -> actionOwner action = n ->
-       ActionOccurs action trace ->
-       ActionBefore (OInsert n (ChildOf parent) component) action trace))
-
-||| Faithful finite canonical-form package for paper Theorem 73(1): a unique
-||| support enumeration linearizing Equation 62, exactly one open contiguous
-||| episode block per supported fiber in that order, no unsupported lifecycle
-||| history, and the prescribed orchestration placement.
-public export
-record CanonicalSchedule
-  (name, key, world, error : Type) (value : key -> Type)
-  (nameEq : DecEq name) (keyEq : DecEq key)
-  {initial, originalFinal : SystemState name key value world error}
-  (original : Transitions initial originalFinal) where
-  constructor MkCanonicalSchedule
-  canonicalFinal : SystemState name key value world error
-  canonicalTrace : Transitions initial canonicalFinal
-  sameInputs : SameOrchestration original canonicalTrace
-  supportOrder : List name
-  supportLinearization : LinearizesSupport name key world error value nameEq keyEq
-    originalFinal supportOrder
-  canonicalBlock : (n : name) -> Elem n supportOrder ->
-    LocatedOpenEpisodeBlock name key world error value nameEq keyEq n canonicalTrace
-  blocksFollowOrder : (earlier, later : name) ->
-    (earlierIn : Elem earlier supportOrder) ->
-    (laterIn : Elem later supportOrder) ->
-    BeforeIn earlier later supportOrder ->
-    BlockBefore name key world error value nameEq keyEq canonicalTrace
-      earlier later (canonicalBlock earlier earlierIn) (canonicalBlock later laterIn)
-  lifecycleCoverage : LifecycleActorsCovered supportOrder canonicalTrace
-  inputPlacement : CanonicalInputPlacement name key world error value nameEq keyEq
-    originalFinal supportOrder canonicalTrace
-  canonicalEndpoint : SystemEquivalent name key world error value nameEq keyEq
-    originalFinal canonicalFinal
-
-||| Lemma 70, stated as pointwise equality so no finite-set quotient or function
-||| extensionality is required.
-public export
-SupportMatchesActive : {name, key, world, error : Type} ->
-  {value : key -> Type} -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  SystemState name key value world error -> Type
-SupportMatchesActive {name} nameEq keyEq state = (n : name) ->
-  isSupported @{nameEq} @{keyEq} n state = supportedActiveAt @{nameEq} n state
-
-||| Paper Lemma 70. Reachability from the empty registry supplies Lemma 68's
-||| essential mixed parent/precedence well-foundedness; Definition 69 is the
-||| component-level semantic property above.
-||| TODO(proof): invoke Lemma 68, then induct over its combined support order.
-public export
-supportAtQuiescenceTheorem : (name : Type) -> (key : Type) ->
-  (value : key -> Type) -> (world, error : Type) -> Type
-supportAtQuiescenceTheorem name key value world error =
-  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (state : SystemState name key value world error) ->
-  ReachedFromEmpty name key world error value nameEq keyEq state ->
-  PrecedenceAcyclic nameEq state ->
-  quiet @{nameEq} @{keyEq} state = True ->
-  noFailedFibers state = True ->
-  ComponentsTotalOnProvision @{nameEq} @{keyEq} state ->
-  SupportMatchesActive nameEq keyEq state
-
-||| Lemma 71's effect-level transposition core. Control-field applicability
-||| frames are separate debt, but the endpoint effect diamond is exactly the
-||| generated-monoid commutation field of Definition 60.
-public export
-0 activationEffectTransposition :
-  (independent : TraceIndependent name key world error value keyEq trace) ->
-  (left, right : name) -> Not (left = right) ->
-  (leftT : TraceEffectTransformation name key world error value left trace) ->
-  (rightT : TraceEffectTransformation name key world error value right trace) ->
-  PartialCommute (EffectStateEquivalence keyEq)
-    (runTraceEffectTransformation leftT)
-    (runTraceEffectTransformation rightT)
-activationEffectTransposition
-  (MkTraceIndependent commute yieldsStable) left right distinct leftT rightT =
-  commute left right distinct leftT rightT
-
-||| Exact action-subsequence witness used by paper Lemma 72. Kept actions
-||| are replayed as checked transitions at their new states; dropped actions
-||| must satisfy the segment-specific deletion predicate.
-public export
-data ActionSubsequence :
-  {name, key, world, error : Type} -> {value : key -> Type} ->
-  {originalFirst, originalFinal, survivingFirst, survivingFinal :
-    SystemState name key value world error} ->
-  (deletable : Action name key value world error -> Type) ->
-  Transitions originalFirst originalFinal ->
-  Transitions survivingFirst survivingFinal -> Type where
-  ActionSubsequenceEnd : ActionSubsequence deletable NoTransitions NoTransitions
-  KeepAction :
-    (originalTransition : Transition originalFirst originalMiddle) ->
-    (originalRest : Transitions originalMiddle originalFinal) ->
-    (survivingTransition : Transition survivingFirst survivingMiddle) ->
-    (survivingRest : Transitions survivingMiddle survivingFinal) ->
-    transitionAction originalTransition = transitionAction survivingTransition ->
-    ActionSubsequence deletable originalRest survivingRest ->
-    ActionSubsequence deletable
-      (MoreTransitions originalTransition originalRest)
-      (MoreTransitions survivingTransition survivingRest)
-  DeleteAction :
-    (originalTransition : Transition originalFirst originalMiddle) ->
-    (originalRest : Transitions originalMiddle originalFinal) ->
-    deletable (transitionAction originalTransition) ->
-    ActionSubsequence deletable originalRest surviving ->
-    ActionSubsequence deletable
-      (MoreTransitions originalTransition originalRest) surviving
-
-public export
-RegisteredActor : List name -> Action name key value world error -> Type
-RegisteredActor registered action = Elem (actionOwner action) registered
-
-public export
-data EpisodeDeletedActor : name -> List name ->
-  Action name key value world error -> Type where
-  DeleteEpisodeOwner : actionOwner action = selected ->
-    EpisodeDeletedActor selected registered action
-  DeleteRegisteredActor : Elem (actionOwner action) registered ->
-    EpisodeDeletedActor selected registered action
-
-||| The exact set R of names registered during the selected closed episode in
-||| this explicit-registration calculus.
-public export
-RegisteredNamesDuring :
-  {name, key, world, error : Type} -> {value : key -> Type} ->
-  {first, finalState : SystemState name key value world error} ->
-  (selected : name) -> (registered : List name) ->
-  Transitions first finalState -> Type
-RegisteredNamesDuring {name} {key} {value} {world} {error}
-  selected registered trace =
-  ((child : name) -> Elem child registered ->
-    (component : Component key value world error **
-      ActionOccurs (OInsert child (ChildOf selected) component) trace),
-   (child : name) -> (component : Component key value world error) ->
-    ActionOccurs (OInsert child (ChildOf selected) component) trace ->
-    Elem child registered)
-
-public export
-NoRegisteredEpisode :
-  {name, key, world, error : Type} -> {value : key -> Type} ->
-  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
-  {initial, finalState : SystemState name key value world error} ->
-  (registered : List name) ->
-  (global : Transitions initial finalState) -> Type
-NoRegisteredEpisode {name} {key} {world} {error} {value} {nameEq} {keyEq}
-  registered global =
-    (child : name) -> Elem child registered ->
-    LocatedClosedEpisode name key world error value nameEq keyEq child global -> Void
-
-public export
-NoDependentClosingEpisode :
-  {name, key, world, error : Type} -> {value : key -> Type} ->
-  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
-  {initial, finalState : SystemState name key value world error} ->
-  (selected : name) -> (state : SystemState name key value world error) ->
-  (global : Transitions initial finalState) -> Type
-NoDependentClosingEpisode {name} {key} {world} {error} {value} {nameEq} {keyEq}
-  selected state global =
-    (consumer : name) -> PrecedenceEdge nameEq selected consumer state ->
-    LocatedClosedEpisode name key world error value nameEq keyEq consumer global -> Void
-
 ||| Paper's vestigial-versus-absent registered-name conclusion.
 public export
 RegisteredNamesWithdrawn :
@@ -1270,9 +1258,322 @@ ControlEquivalentOutside {name} {key} {value} {world} {error} nameEq registered 
     (lookupFiber @{nameEq} n (registry originalFinal))
     (lookupFiber @{nameEq} n (registry survivingFinal))
 
-||| Precise result of paper Lemma 72 for one selected closed episode. The trace
-||| is split around that episode so only selected-actor steps inside [b,u] may
-||| be dropped, while registered-name steps may be dropped globally.
+||| A transition at a fiber inserted by the orchestrator: root O-Insert, or a
+||| later O-Retire/O-Remove while that live root entry is present.
+public export
+data RootOrchestrationStep :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {before, afterState : SystemState name key value world error} ->
+  Transition before afterState -> Type where
+  RootInsertStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} ->
+    {before, afterState : SystemState name key value world error} ->
+    {transition : Transition before afterState} -> {n : name} ->
+    {component : Component key value world error} ->
+    transitionAction transition = OInsert n Root component ->
+    RootOrchestrationStep nameEq transition
+  RootRetireStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} ->
+    {before, afterState : SystemState name key value world error} ->
+    {transition : Transition before afterState} -> {n : name} ->
+    (fiber : Fiber name key value world error) ->
+    lookupFiber @{nameEq} n (registry before) = Just fiber ->
+    fiberParent fiber = Root ->
+    transitionAction transition = ORetire n ->
+    RootOrchestrationStep nameEq transition
+  RootRemoveStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} ->
+    {before, afterState : SystemState name key value world error} ->
+    {transition : Transition before afterState} -> {n : name} ->
+    (fiber : Fiber name key value world error) ->
+    lookupFiber @{nameEq} n (registry before) = Just fiber ->
+    fiberParent fiber = Root ->
+    transitionAction transition = ORemove n ->
+    RootOrchestrationStep nameEq transition
+
+public export
+data NoRootOrchestration :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Type where
+  NoRootOrchestrationEnd : NoRootOrchestration nameEq NoTransitions
+  NoRootOrchestrationStep :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    (RootOrchestrationStep nameEq transition -> Void) ->
+    NoRootOrchestration nameEq rest ->
+    NoRootOrchestration nameEq (MoreTransitions transition rest)
+
+||| Every orchestration step at every root fiber—including unsupported roots
+||| and O-Retire/O-Remove—precedes every lifecycle transition in the trace.
+public export
+data RootInputsBeforeLifecycle :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Type where
+  RootInputsBeforeLifecycleEnd : RootInputsBeforeLifecycle nameEq NoTransitions
+  RootInputsBeforeLifecycleStep :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    (isLifecycleAction (transitionAction transition) = True ->
+      NoRootOrchestration nameEq rest) ->
+    RootInputsBeforeLifecycle nameEq rest ->
+    RootInputsBeforeLifecycle nameEq (MoreTransitions transition rest)
+
+||| Same external orchestration inputs under the explicit-registration
+||| specialization. Root inputs must match in order; lifecycle steps and
+||| provenance-disciplined child insert/retire/remove steps are internal and may
+||| be removed by canonical deletion.
+public export
+data SameExternalOrchestration :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {leftFirst, leftLast, rightFirst, rightLast :
+    SystemState name key value world error} ->
+  Transitions leftFirst leftLast -> Transitions rightFirst rightLast -> Type where
+  SameExternalOrchestrationEnd :
+    SameExternalOrchestration nameEq NoTransitions NoTransitions
+  SkipLeftInternal :
+    (transition : Transition leftFirst leftMiddle) ->
+    (leftRest : Transitions leftMiddle leftLast) ->
+    (RootOrchestrationStep nameEq transition -> Void) ->
+    SameExternalOrchestration nameEq leftRest rightTrace ->
+    SameExternalOrchestration nameEq
+      (MoreTransitions transition leftRest) rightTrace
+  SkipRightInternal :
+    (transition : Transition rightFirst rightMiddle) ->
+    (rightRest : Transitions rightMiddle rightLast) ->
+    (RootOrchestrationStep nameEq transition -> Void) ->
+    SameExternalOrchestration nameEq leftTrace rightRest ->
+    SameExternalOrchestration nameEq leftTrace
+      (MoreTransitions transition rightRest)
+  MatchExternalInput :
+    (action : Action name key value world error) ->
+    (leftTransition : Transition leftFirst leftMiddle) ->
+    (leftRest : Transitions leftMiddle leftLast) ->
+    RootOrchestrationStep nameEq leftTransition ->
+    (rightTransition : Transition rightFirst rightMiddle) ->
+    (rightRest : Transitions rightMiddle rightLast) ->
+    RootOrchestrationStep nameEq rightTransition ->
+    transitionAction leftTransition = action ->
+    transitionAction rightTransition = action ->
+    SameExternalOrchestration nameEq leftRest rightRest ->
+    SameExternalOrchestration nameEq
+      (MoreTransitions leftTransition leftRest)
+      (MoreTransitions rightTransition rightRest)
+
+||| Paper Theorem 73's placement rule for inputs. All root orchestration steps
+||| precede all lifecycle steps, while each explicit child registration precedes
+||| the lifecycle block of the child it created.
+public export
+record CanonicalInputPlacement
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (supportState : SystemState name key value world error)
+  (order : List name)
+  {initial, finalState : SystemState name key value world error}
+  (trace : Transitions initial finalState) where
+  constructor MkCanonicalInputPlacement
+  0 allRootInputsFirst : RootInputsBeforeLifecycle nameEq trace
+  0 childInputBeforeOwnLifecycle : (n, parent : name) -> Elem n order ->
+    (fiber : Fiber name key value world error) ->
+    lookupFiber @{nameEq} n (registry supportState) = Just fiber ->
+    fiberParent fiber = ChildOf parent ->
+    (component : Component key value world error **
+      (ActionOccurs (OInsert n (ChildOf parent) component) trace,
+       (action : Action name key value world error) ->
+       isLifecycleAction action = True -> actionOwner action = n ->
+       ActionOccurs action trace ->
+       ActionBefore (OInsert n (ChildOf parent) component) action trace))
+
+||| Endpoint relation used by canonical deletion. Unlike `SystemEquivalent`, it
+||| explicitly permits a nonempty set of vestigial original names to be absent
+||| from the canonical endpoint while retaining effects and full controls
+||| outside that set.
+public export
+record CanonicalEndpointRelation
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (originalFinal, canonicalFinal : SystemState name key value world error) where
+  constructor MkCanonicalEndpointRelation
+  endpointWithdrawnNames : List name
+  0 endpointEffectsEquivalent : EffectStateRelated keyEq
+    (projectEffectState @{nameEq} originalFinal)
+    (projectEffectState @{nameEq} canonicalFinal)
+  0 endpointControlsOutside : ControlEquivalentOutside nameEq
+    endpointWithdrawnNames originalFinal canonicalFinal
+  0 endpointNamesWithdrawn : RegisteredNamesWithdrawn nameEq
+    endpointWithdrawnNames originalFinal canonicalFinal
+
+||| Finite canonical-form statement package under active repair: it retains the
+||| verified Equation-62 order/block fields and exposes all-root input placement
+||| plus endpoint withdrawal sets. Constructive inhabitation remains open.
+public export
+record CanonicalSchedule
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, originalFinal : SystemState name key value world error}
+  (original : Transitions initial originalFinal) where
+  constructor MkCanonicalSchedule
+  canonicalFinal : SystemState name key value world error
+  canonicalTrace : Transitions initial canonicalFinal
+  sameInputs : SameExternalOrchestration nameEq original canonicalTrace
+  supportOrder : List name
+  supportLinearization : LinearizesSupport name key world error value nameEq keyEq
+    originalFinal supportOrder
+  canonicalBlock : (n : name) -> Elem n supportOrder ->
+    LocatedOpenEpisodeBlock name key world error value nameEq keyEq n canonicalTrace
+  blocksFollowOrder : (earlier, later : name) ->
+    (earlierIn : Elem earlier supportOrder) ->
+    (laterIn : Elem later supportOrder) ->
+    BeforeIn earlier later supportOrder ->
+    BlockBefore name key world error value nameEq keyEq canonicalTrace
+      earlier later (canonicalBlock earlier earlierIn) (canonicalBlock later laterIn)
+  lifecycleCoverage : LifecycleActorsCovered supportOrder canonicalTrace
+  inputPlacement : CanonicalInputPlacement name key world error value nameEq keyEq
+    originalFinal supportOrder canonicalTrace
+  canonicalEndpoint : CanonicalEndpointRelation name key world error value
+    nameEq keyEq originalFinal canonicalFinal
+
+||| Lemma 70, stated as pointwise equality so no finite-set quotient or function
+||| extensionality is required.
+public export
+SupportMatchesActive : {name, key, world, error : Type} ->
+  {value : key -> Type} -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  SystemState name key value world error -> Type
+SupportMatchesActive {name} nameEq keyEq state = (n : name) ->
+  isSupported @{nameEq} @{keyEq} n state = supportedActiveAt @{nameEq} n state
+
+||| Paper Lemma 70 with the missing nested-registration/retirement provenance
+||| exposed as `RegistrationDiscipline`; reachability alone is not sufficient.
+||| Definition 69 is the component-level semantic property above.
+||| TODO(proof): invoke Lemma 68, then induct over its combined support order.
+public export
+supportAtQuiescenceTheorem : (name : Type) -> (key : Type) ->
+  (value : key -> Type) -> (world, error : Type) -> Type
+supportAtQuiescenceTheorem name key value world error =
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) ->
+  (reached : ReachedFromEmpty name key world error value nameEq keyEq state) ->
+  RegistrationDiscipline nameEq (reachTrace reached) ->
+  PrecedenceAcyclic nameEq state ->
+  quiet @{nameEq} @{keyEq} state = True ->
+  noFailedFibers state = True ->
+  ComponentsTotalOnProvision @{nameEq} @{keyEq} state ->
+  SupportMatchesActive nameEq keyEq state
+
+||| Lemma 71's effect-level transposition core. Control-field applicability
+||| frames are separate debt, but the endpoint effect diamond is exactly the
+||| generated-monoid commutation field of Definition 60.
+public export
+0 activationEffectTransposition :
+  (independent : TraceIndependent name key world error value keyEq trace) ->
+  (left, right : name) -> Not (left = right) ->
+  (leftT : TraceEffectTransformation name key world error value left trace) ->
+  (rightT : TraceEffectTransformation name key world error value right trace) ->
+  PartialCommute (EffectStateEquivalence keyEq)
+    (runTraceEffectTransformation leftT)
+    (runTraceEffectTransformation rightT)
+activationEffectTransposition
+  (MkTraceIndependent commute yieldsStable) left right distinct leftT rightT =
+  commute left right distinct leftT rightT
+
+||| Mandatory action-filter witness used by paper Lemma 72. Kept actions are
+||| replayed as checked transitions and carry proof that they are not deletable;
+||| every deletable action is therefore structurally forced through DeleteAction.
+public export
+data ActionSubsequence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {originalFirst, originalFinal, survivingFirst, survivingFinal :
+    SystemState name key value world error} ->
+  (deletable : Action name key value world error -> Type) ->
+  Transitions originalFirst originalFinal ->
+  Transitions survivingFirst survivingFinal -> Type where
+  ActionSubsequenceEnd : ActionSubsequence deletable NoTransitions NoTransitions
+  KeepAction :
+    (originalTransition : Transition originalFirst originalMiddle) ->
+    (originalRest : Transitions originalMiddle originalFinal) ->
+    (survivingTransition : Transition survivingFirst survivingMiddle) ->
+    (survivingRest : Transitions survivingMiddle survivingFinal) ->
+    Not (deletable (transitionAction originalTransition)) ->
+    transitionAction originalTransition = transitionAction survivingTransition ->
+    ActionSubsequence deletable originalRest survivingRest ->
+    ActionSubsequence deletable
+      (MoreTransitions originalTransition originalRest)
+      (MoreTransitions survivingTransition survivingRest)
+  DeleteAction :
+    (originalTransition : Transition originalFirst originalMiddle) ->
+    (originalRest : Transitions originalMiddle originalFinal) ->
+    deletable (transitionAction originalTransition) ->
+    ActionSubsequence deletable originalRest surviving ->
+    ActionSubsequence deletable
+      (MoreTransitions originalTransition originalRest) surviving
+
+public export
+RegisteredActor : List name -> Action name key value world error -> Type
+RegisteredActor registered action = Elem (actionOwner action) registered
+
+public export
+data EpisodeDeletedActor : name -> List name ->
+  Action name key value world error -> Type where
+  DeleteEpisodeOwner : actionOwner action = selected ->
+    EpisodeDeletedActor selected registered action
+  DeleteRegisteredActor : Elem (actionOwner action) registered ->
+    EpisodeDeletedActor selected registered action
+
+||| The set R of explicit child insertions during the selected closed episode,
+||| together with the visible counterpart of Definition 47: each insertion's
+||| O-Retire occurs later in that same episode before the parent's leave.
+public export
+RegisteredNamesDuring :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (selected : name) -> (registered : List name) ->
+  Transitions first finalState -> Type
+RegisteredNamesDuring {name} {key} {value} {world} {error}
+  selected registered trace =
+  ((child : name) -> Elem child registered ->
+    (component : Component key value world error **
+      (ActionOccurs (OInsert child (ChildOf selected) component) trace,
+       ActionBefore (OInsert child (ChildOf selected) component)
+         (ORetire child) trace)),
+   (child : name) -> (component : Component key value world error) ->
+    ActionOccurs (OInsert child (ChildOf selected) component) trace ->
+    Elem child registered)
+
+public export
+NoRegisteredEpisode :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, finalState : SystemState name key value world error} ->
+  (registered : List name) ->
+  (global : Transitions initial finalState) -> Type
+NoRegisteredEpisode {name} registered global =
+  (child : name) -> Elem child registered ->
+  ActionOccurs (LBegin child) global -> Void
+
+public export
+NoDependentClosingEpisode :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, finalState : SystemState name key value world error} ->
+  (selected : name) -> (global : Transitions initial finalState) -> Type
+NoDependentClosingEpisode {name} {key} {world} {error} {value} {nameEq} {keyEq}
+  selected global =
+    (consumer : name) ->
+    (consumerEpisode : LocatedClosedEpisode name key world error value nameEq
+      keyEq consumer global) ->
+    PrecedenceEdge nameEq selected consumer
+      (closedStartState (locatedEpisode consumerEpisode)) -> Void
+
+||| Candidate result shape for paper Lemma 72. Bidirectional filtering makes the
+||| selected episode boundaries/body and all R-owned actions mandatory deletions.
 public export
 record DeletionResult
   (name, key, world, error : Type) (value : key -> Type)
@@ -1319,9 +1620,10 @@ survivingTrace :
 survivingTrace {initial} result = appendTransitions (survivingBefore result)
   (appendTransitions (survivingEpisode result) (survivingAfter result))
 
-||| Paper Lemma 72, now stated with its selected episode, exact R, maximality
-||| hypotheses, subsequence deletion, effect recovery, and outside-R control
-||| agreement. The proof remains honest debt.
+||| Candidate paper-Lemma-72 statement after round-2 review: mandatory
+||| deletion, all-trace component totality, activation/retirement provenance,
+||| open-episode exclusion, relevant-episode dependency edges, effect recovery,
+||| and outside-R control agreement are explicit. It remains unproved.
 ||| TODO(proof): one-episode checked replay using Corollary 62 and Lemma 71.
 public export
 deletionTheorem : (name : Type) -> (key : Type) ->
@@ -1331,11 +1633,12 @@ deletionTheorem name key value world error =
   (initial, finalState : SystemState name key value world error) ->
   (global : Transitions initial finalState) ->
   AlignedTransitions name key world error value nameEq keyEq global ->
+  RegistrationDiscipline nameEq global ->
   registryWellFormed @{nameEq} @{keyEq} initial = True ->
   bindings (registry initial) = [] ->
   quiet @{nameEq} @{keyEq} finalState = True ->
   noFailedFibers finalState = True ->
-  ComponentsTotalOnProvision @{nameEq} @{keyEq} finalState ->
+  TraceComponentsTotal keyEq global ->
   TraceIndependent name key world error value keyEq global ->
   (selected : name) ->
   (episode : LocatedClosedEpisode name key world error value nameEq keyEq
@@ -1345,16 +1648,15 @@ deletionTheorem name key value world error =
     (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode)))
       (closedTransitions (locatedEpisode episode))) ->
   NoDependentClosingEpisode {nameEq = nameEq} {keyEq = keyEq}
-    selected finalState global ->
+    selected global ->
   NoRegisteredEpisode {nameEq = nameEq} {keyEq = keyEq} registered global ->
   DeletionResult name key world error value nameEq keyEq global selected episode
     registered
 
-||| Paper Theorem 73, specialized only by finite iterators, explicit
-||| registration, exact effect equality, and exact names (the missing nested
-||| registration channel makes Lemma-56 renaming unnecessary here). Part 1's
-||| package encodes Equation 62, unique ordered contiguous open episodes, input
-||| placement, lifecycle coverage, and full Equation-53 control agreement.
+||| Candidate finite/no-nested-registration statement for paper Theorem 73.
+||| Its verified structural fields are retained, while missing registration
+||| provenance, all-trace totality, all-root placement, and withdrawn endpoints
+||| are now visible. It remains under adversarial statement review.
 ||| TODO(proof): Lemma-71 applicability frames, Lemma-72 deletion induction,
 ||| support well-foundedness, and canonical episode sorting.
 public export
@@ -1367,17 +1669,19 @@ confluenceTheorem name key value world error =
   (rightTrace : Transitions initial rightFinal) ->
   AlignedTransitions name key world error value nameEq keyEq leftTrace ->
   AlignedTransitions name key world error value nameEq keyEq rightTrace ->
+  RegistrationDiscipline nameEq leftTrace ->
+  RegistrationDiscipline nameEq rightTrace ->
   registryWellFormed @{nameEq} @{keyEq} initial = True ->
   bindings (registry initial) = [] ->
   quiet @{nameEq} @{keyEq} leftFinal = True ->
   quiet @{nameEq} @{keyEq} rightFinal = True ->
   noFailedFibers leftFinal = True ->
   noFailedFibers rightFinal = True ->
-  ComponentsTotalOnProvision @{nameEq} @{keyEq} leftFinal ->
-  ComponentsTotalOnProvision @{nameEq} @{keyEq} rightFinal ->
+  TraceComponentsTotal keyEq leftTrace ->
+  TraceComponentsTotal keyEq rightTrace ->
   TraceIndependent name key world error value keyEq leftTrace ->
   TraceIndependent name key world error value keyEq rightTrace ->
-  SameOrchestration leftTrace rightTrace ->
+  SameExternalOrchestration nameEq leftTrace rightTrace ->
   (CanonicalSchedule name key world error value nameEq keyEq leftTrace,
    CanonicalSchedule name key world error value nameEq keyEq rightTrace,
    SystemEquivalent name key world error value nameEq keyEq leftFinal rightFinal)

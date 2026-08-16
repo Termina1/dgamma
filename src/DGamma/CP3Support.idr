@@ -6,6 +6,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.Ordering
 import Decidable.Equality
+import Data.List.Elem
 import Data.Nat
 
 %default total
@@ -180,9 +181,26 @@ sameOrchestrationTransitive
           rightTransition rightRest leftOrchestration leftAction rightAction
           (sameOrchestrationTransitive firstTail secondTail)
 
-||| If the canonical sorting/deletion construction returns the same canonical
-||| endpoint for two schedules, observational uniqueness follows by symmetry
-||| and transitivity. This discharges Theorem 73's final diagram chase.
+0 notInEmpty : Elem value [] -> Void
+notInEmpty Here impossible
+notInEmpty (There later) impossible
+
+||| A canonical endpoint with no withdrawals recovers the stronger exact-domain
+||| relation used by the existing endpoint diagram.
+public export
+0 canonicalEndpointWithoutWithdrawals :
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
+    originalFinal canonicalState) ->
+  endpointWithdrawnNames endpoint = [] ->
+  SystemEquivalent name key world error value nameEq keyEq originalFinal
+    canonicalState
+canonicalEndpointWithoutWithdrawals
+  (MkCanonicalEndpointRelation [] effects controls withdrawn) Refl =
+    MkSystemEquivalent effects (MkControlEquivalent (\n => controls n notInEmpty))
+
+||| For the zero-withdrawal specialization, coincidence of canonical endpoints
+||| yields exact-domain endpoint equivalence. Nonempty-withdrawal composition is
+||| deliberately left to the still-open constructive Confluence proof.
 public export
 0 canonicalEndpointsEquivalent :
   {initial, leftFinal, rightFinal : SystemState name key value world error} ->
@@ -192,13 +210,20 @@ public export
     leftTrace) ->
   (rightSchedule : CanonicalSchedule name key world error value nameEq keyEq
     rightTrace) ->
+  endpointWithdrawnNames (canonicalEndpoint leftSchedule) = [] ->
+  endpointWithdrawnNames (canonicalEndpoint rightSchedule) = [] ->
   canonicalFinal leftSchedule = canonicalFinal rightSchedule ->
   SystemEquivalent name key world error value nameEq keyEq leftFinal rightFinal
-canonicalEndpointsEquivalent leftSchedule rightSchedule sameFinal =
-  systemEquivalentTransitive (canonicalEndpoint leftSchedule)
-    (replace {p = \state => SystemEquivalent name key world error value nameEq
-      keyEq state rightFinal} (sym sameFinal)
-      (systemEquivalentSymmetric (canonicalEndpoint rightSchedule)))
+canonicalEndpointsEquivalent leftSchedule rightSchedule leftEmpty rightEmpty
+  sameFinal =
+    systemEquivalentTransitive
+      (canonicalEndpointWithoutWithdrawals (canonicalEndpoint leftSchedule)
+        leftEmpty)
+      (replace {p = \state => SystemEquivalent name key world error value nameEq
+        keyEq state rightFinal} (sym sameFinal)
+        (systemEquivalentSymmetric
+          (canonicalEndpointWithoutWithdrawals (canonicalEndpoint rightSchedule)
+            rightEmpty)))
 
 ||| Canonical-schedule construction plus endpoint coincidence is precisely the
 ||| still-missing constructive core of full Confluence; all packaging after it
@@ -212,13 +237,17 @@ public export
     leftTrace) ->
   (rightSchedule : CanonicalSchedule name key world error value nameEq keyEq
     rightTrace) ->
+  endpointWithdrawnNames (canonicalEndpoint leftSchedule) = [] ->
+  endpointWithdrawnNames (canonicalEndpoint rightSchedule) = [] ->
   canonicalFinal leftSchedule = canonicalFinal rightSchedule ->
   (CanonicalSchedule name key world error value nameEq keyEq leftTrace,
    CanonicalSchedule name key world error value nameEq keyEq rightTrace,
    SystemEquivalent name key world error value nameEq keyEq leftFinal rightFinal)
-confluenceFromCanonicalSchedules leftSchedule rightSchedule sameFinal =
-  (leftSchedule, rightSchedule,
-    canonicalEndpointsEquivalent leftSchedule rightSchedule sameFinal)
+confluenceFromCanonicalSchedules leftSchedule rightSchedule leftEmpty rightEmpty
+  sameFinal =
+    (leftSchedule, rightSchedule,
+      canonicalEndpointsEquivalent leftSchedule rightSchedule leftEmpty rightEmpty
+        sameFinal)
 
 ||| Foreign replay on an empty trace is exactly effect-state equivalence.
 public export
