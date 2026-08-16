@@ -760,8 +760,7 @@ Thus the exact paper-legal fresh-choice pair identified by round 6 now inhabits
 `SameOrchestrationModuloGenerated` and reaches the complete Theorem-73 premise
 application guard.
 
-The old `roleChangingGenerationAccountingGuard` (singleton membership) was
-removed. `roleChangingFullCanonicalScheduleStatementCheck` now assembles every
+The old singleton-membership role-change guard was removed. `roleChangingFullCanonicalScheduleStatementCheck` now assembles every
 field of a `CanonicalSchedule` specialized to the concrete nine-action trace,
 with exact historical/no-raw-withdrawal equations. Because constructive sorting
 remains open, the field proofs remain arguments; this is the largest honest
