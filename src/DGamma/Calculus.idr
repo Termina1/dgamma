@@ -2230,6 +2230,85 @@ pairwiseRetireEntries {name} {key} {world} {error} {value}
         (pairwiseRetireEntries {name = name} {key = key} {world = world}
           {error = error} {value = value} nameEq keyEq rest n fiber present)
 
+0 parentInvariantDeleteDistinct :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (parent : Parent name) -> (removed : name) ->
+  (fibers : Registry name key value world error) ->
+  Not (parent = ChildOf removed) ->
+  parentInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} parent fibers = True ->
+  parentInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} parent (deleteBinding @{nameEq} removed fibers) = True
+parentInvariantDeleteDistinct {key} {world} {error} {value} nameEq Root removed fibers distinct valid = Refl
+parentInvariantDeleteDistinct {name} {key} {world} {error} {value}
+  nameEq (ChildOf parent) removed fibers distinct valid =
+    let parentDistinct : Not (parent = removed)
+        parentDistinct same = distinct (cong ChildOf same)
+    in rewrite lookupDeleteOther parent removed parentDistinct fibers in valid
+
+0 parentsRegistryDelete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (removed : name) -> (fibers : Registry name key value world error) ->
+  hasChildIn @{nameEq} {key = key} {value = value} {world = world} {error = error} removed entries = False ->
+  parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} entries fibers = True ->
+  parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} entries (deleteBinding @{nameEq} removed fibers) = True
+parentsRegistryDelete {key} {world} {error} {value} nameEq [] removed fibers noChild valid = Refl
+parentsRegistryDelete {name} {key} {world} {error} {value}
+  nameEq (Bind current observed :: rest) removed fibers noChild valid =
+  let headDistinct = noChildHeadParentDistinct nameEq removed current observed rest
+        noChild
+      targetHead = parentInvariantDeleteDistinct {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq
+        (fiberParent observed) removed fibers headDistinct (andTrueLeft _ _ valid)
+      targetTail = parentsRegistryDelete {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq rest removed fibers
+        (boolOrRightFalse
+          (isChildOf @{nameEq} removed (Bind current observed))
+          (hasChildIn @{nameEq} {key = key} {value = value} {world = world} {error = error} removed rest) noChild)
+        (andTrueRight _ _ valid)
+  in andBothTrue _ _ targetHead targetTail
+
+||| Parent closure is preserved when the no-child guard removes a leaf.
+public export
+0 parentsInvariantDelete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (removed : name) -> (fibers : Registry name key value world error) ->
+  hasChildIn @{nameEq} {key = key} {value = value} {world = world} {error = error} removed entries = False ->
+  parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} entries fibers = True ->
+  parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (deleteEntries @{nameEq} removed entries)
+    (deleteBinding @{nameEq} removed fibers) = True
+parentsInvariantDelete {key} {world} {error} {value} nameEq [] removed fibers noChild valid = Refl
+parentsInvariantDelete {name} {key} {world} {error} {value}
+  nameEq (Bind current observed :: rest) removed fibers noChild valid
+  with (decEq @{nameEq} removed current)
+  parentsInvariantDelete {name} {key} {world} {error} {value}
+    nameEq (Bind removed observed :: rest) removed fibers noChild valid |
+    (Yes Refl) = parentsRegistryDelete {name = name} {key = key}
+      {world = world} {error = error} {value = value} nameEq rest removed fibers
+      (boolOrRightFalse
+        (isChildOf @{nameEq} removed (Bind removed observed))
+        (hasChildIn @{nameEq} {key = key} {value = value} {world = world} {error = error} removed rest) noChild)
+      (andTrueRight _ _ valid)
+  parentsInvariantDelete {name} {key} {world} {error} {value}
+    nameEq (Bind current observed :: rest) removed fibers noChild valid |
+    (No _) =
+      let headDistinct = noChildHeadParentDistinct nameEq removed current observed
+            rest noChild
+          targetHead = parentInvariantDeleteDistinct {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq
+            (fiberParent observed) removed fibers headDistinct
+            (andTrueLeft _ _ valid)
+          targetTail = parentsInvariantDelete {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq rest removed
+            fibers
+            (boolOrRightFalse
+              (isChildOf @{nameEq} removed (Bind current observed))
+              (hasChildIn @{nameEq} {key = key} {value = value} {world = world} {error = error} removed rest) noChild)
+            (andTrueRight _ _ valid)
+      in andBothTrue _ _ targetHead targetTail
+
 ||| Removing an entry cannot introduce a provision overlap.
 public export
 0 provisionsDisjointDelete :
