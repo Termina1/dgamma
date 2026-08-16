@@ -587,7 +587,7 @@ empty-suffix quantitative base (`progressEndFromNoDeadlock` and
 ### Confluence (Theorem 73): statement under repair and proof debt
 
 The finite explicit-registration specialization remains stated and awaits
-round-4 review. Previously verified Equation-53, combined Equation-62, block,
+round-5 review. Previously verified Equation-53, combined Equation-62, block,
 root-placement, and exact-filter structures remain. Round-3's three statement
 blockers are now represented as follows:
 
@@ -600,7 +600,8 @@ blockers are now represented as follows:
    remain explicit. The checked replay proof is open.
 2. **Yielded registration.** `StepEffect.registrationYieldTag` and the shared
    `RegistrationProtocol` catalog connect each child O-Insert to the exact
-   nonempty head step and fixed continuation of its live parent. Protocol ranks
+   nonempty head step and fixed continuation of its live parent; the rank law
+   now requires that source step to be an `Elem` of the parent program. Protocol ranks
    strictly increase along yielded-parent and precedence edges. An empty parent
    program therefore cannot fabricate a child, and the phase-only alternating
    cross-subtree trace has no ranked protocol witness.
@@ -609,9 +610,11 @@ blockers are now represented as follows:
    and every Equation-53 control payload. `SameOrchestrationModuloGenerated`
    carries the registration-tree bijection; `ConfluenceResult` concludes
    `SystemEquivalentByRenaming`, not exact-domain `SystemEquivalent`.
-   `CanonicalSchedule` now carries the same protocol discipline on both traces
-   plus `CanonicalRegistrationCorrespondence`, preventing fabricated child
-   registrations and accounting removed ones in the withdrawal list.
+   `CanonicalSchedule` carries the same protocol discipline on both traces. Its
+   parent episode block admits provenance-linked child O-Insert, while
+   `CanonicalRegistrationCorrespondence` maps located occurrences injectively
+   and accounts removed generations in the withdrawal list. Registered endpoint
+   results include vestigial/absent and already-absent/absent alternatives.
 
 The older exact-name/zero-withdrawal endpoint helpers remain proved only as a
 strong special case. Constructive deletion, sorting, renaming construction, and
@@ -633,7 +636,7 @@ packaging are no longer debt.
 
 Round 1 accepted global Ordering. Rounds 2–3 exposed false/trivial proposition
 shapes in support, deletion, and fresh-name Confluence. The following are
-candidate round-4 statements, not accepted proofs:
+candidate round-5 statements, not accepted proofs:
 
 - The old Lemma-70 alias accepted an arbitrary snapshot and was false on a
   quiet Active mixed cycle (parent edge one way, precedence edge the other).
@@ -661,9 +664,33 @@ candidate round-4 statements, not accepted proofs:
   relevant-time totality/dependency guards remain explicit.
 - `DGamma.CP3StatementChecks` now applies and projects Lemma 68 rather than
   returning its alias, and separately projects lifecycle-only deletion, yielded
-  source/rank provenance, canonical discipline/tree correspondence, block/order
+  source/program-membership/rank provenance with a concrete positive inhabitant,
+  canonical discipline/located-generation correspondence, block/order
   fields, all deletion segments, effect recovery, Lemma-56 renaming, outside
   controls, and withdrawals. These candidate types remain honestly unproved.
+
+### CP3 adversarial round 4: over-strengthening repairs
+
+Round 4 verified lifecycle-only retirement replay and full endpoint renaming, but
+proved the first rank law made every child yield empty: it quantified arbitrary
+tagged same-typed steps. `yieldedRankIncreases` now takes
+`Elem step (componentProgram parent)`, exactly matching
+`ParentRegistrationYield.sourceBelongsToProgram`. `positiveParentRegistrationYield`
+in `DGamma.CP3StatementChecks` constructs a concrete nonempty tagged parent,
+child, catalog, ranks, and source membership, preventing another vacuity
+regression.
+
+The same review identified three downstream shapes. `ActorLifecycleOnly` now
+admits a yielded child O-Insert within its parent's canonical block;
+`LocatedGeneratedRegistration` and ordinal inverse/injectivity fields replace
+raw `ActionOccurs` existence for registration correspondence; live endpoint
+roots, rather than every historical raw root name, are fixed by Lemma 56.
+Finally, `WithdrawnNameResult` includes the paper-permitted already-removed
+absent/absent endpoint case. The recovery-boundary comment now states correctly
+that the accumulator executes at L-Unload, not at L-Leave/L-Divert/L-Raise.
+
+These are candidate proposition-shape repairs. Constructive Lemma 72/Theorem 73
+proofs and a full positive nested canonical schedule remain open.
 
 ## Status
 
@@ -676,7 +703,7 @@ strict containment, resolution constancy, and provider-value constancy.
 Lemmas 68/70 (candidate tagged/ranked provenance statements; Lemma-70 empty
 base proved); Lemma 71 (effect commutation projection); Lemma 72 (candidate
 lifecycle-only deletion statement); Confluence/Theorem 73 (candidate Lemma-56
-renamed canonical package under round-4 review; zero-withdrawal assembly only); and recovery-combined Theorem 64 (complete
+renamed canonical package under round-5 review; zero-withdrawal assembly only); and recovery-combined Theorem 64 (complete
 conditional assembly from Corollary 62). Lemmas 54–57 have many rule, frame,
 and boundary analogues but are not individually complete.
 

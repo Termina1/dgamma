@@ -178,6 +178,7 @@ record RegistrationProtocol (key : Type) (value : key -> Type)
       (dependencies (componentDependencies parent))
       (componentProvisions parent)) ->
     (tag, parentRank, childRank : Nat) ->
+    Elem step (componentProgram parent) ->
     registrationRank parent = Just parentRank ->
     registrationRank child = Just childRank ->
     registrationYieldTag step = Just tag ->
@@ -200,7 +201,8 @@ emptyRegistrationProtocol = MkRegistrationProtocol
   (\tag => Nothing)
   (\component => Nothing)
   (\parent, child, step, tag, parentRank, childRank,
-    parentRanked, childRanked, stepTag, cataloged => case parentRanked of Refl impossible)
+    sourceInProgram, parentRanked, childRanked, stepTag, cataloged =>
+      case parentRanked of Refl impossible)
   (\provider, consumer, providerRank, consumerRank,
     providerRanked, consumerRanked, k, provides, depends =>
       case providerRanked of Refl impossible)
@@ -246,8 +248,8 @@ record ParentRegistrationYield
   catalogYieldsComponent : registrationCatalog protocol yieldTag =
     Just childComponent
 
-||| A transition that executes a parent's accumulator: normal retirement,
-||| explicit diversion, or an L-Advance that raises/diverts.
+||| A transition that enters a parent's recovery/unloading path. The stored
+||| accumulator itself executes later, at L-Unload.
 public export
 data ParentRecoveryStep :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -1344,8 +1346,10 @@ supportedActiveAt n state = case lookupFiber n (registry state) of
   Nothing => False
   Just fiber => isActive (fiberLifecycle fiber)
 
-||| Every transition of a contiguous canonical episode block is a lifecycle
-||| action of its selected actor.
+||| Every transition of a contiguous canonical episode block is either a
+||| lifecycle action of its selected actor or an explicit child registration
+||| yielded within that actor's Reloading phase. The schedule-wide discipline
+||| supplies the tag/catalog provenance for the latter.
 public export
 data ActorLifecycleOnly :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -1357,6 +1361,13 @@ data ActorLifecycleOnly :
     (rest : Transitions middle finalState) ->
     isLifecycleAction (transitionAction transition) = True ->
     transitionActor transition = selected ->
+    ActorLifecycleOnly selected rest ->
+    ActorLifecycleOnly selected (MoreTransitions transition rest)
+  ActorYieldedRegistrationStep :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    transitionAction transition =
+      OInsert child (ChildOf selected) childComponent ->
     ActorLifecycleOnly selected rest ->
     ActorLifecycleOnly selected (MoreTransitions transition rest)
 
@@ -1465,21 +1476,46 @@ data LifecycleActorsCovered :
     LifecycleActorsCovered supportNames rest ->
     LifecycleActorsCovered supportNames (MoreTransitions transition rest)
 
-||| Paper's vestigial-versus-absent registered-name conclusion.
+||| Paper's registered-name endpoint alternatives: a name may be a vestigial
+||| original entry withdrawn from the survivor, or it may already have been
+||| O-Removed in the original and remain absent in the survivor.
+public export
+data WithdrawnNameResult :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (child : name) ->
+  (originalFinal, survivingFinal : SystemState name key value world error) -> Type where
+  VestigialNameWithdrawn :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {child : name} ->
+    {originalFinal, survivingFinal : SystemState name key value world error} ->
+    (fiber : Fiber name key value world error) ->
+    lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+      {error = error} child (registry originalFinal) = Just fiber ->
+    retired fiber = True ->
+    installed (fiberLifecycle fiber) = False ->
+    bindings (ownedValues (fiberTable fiber)) = [] ->
+    lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+      {error = error} child (registry survivingFinal) = Nothing ->
+    WithdrawnNameResult nameEq child originalFinal survivingFinal
+  NameAlreadyAbsent :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {child : name} ->
+    {originalFinal, survivingFinal : SystemState name key value world error} ->
+    lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+      {error = error} child (registry originalFinal) = Nothing ->
+    lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+      {error = error} child (registry survivingFinal) = Nothing ->
+    WithdrawnNameResult nameEq child originalFinal survivingFinal
+
 public export
 RegisteredNamesWithdrawn :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (registered : List name) ->
   SystemState name key value world error ->
   SystemState name key value world error -> Type
-RegisteredNamesWithdrawn {name} {key} {value} {world} {error} nameEq registered originalFinal survivingFinal =
+RegisteredNamesWithdrawn {name} nameEq registered originalFinal survivingFinal =
   (child : name) -> Elem child registered ->
-  ((fiber : Fiber name key value world error **
-    (lookupFiber @{nameEq} child (registry originalFinal) = Just fiber,
-     retired fiber = True,
-     installed (fiberLifecycle fiber) = False,
-     bindings (ownedValues (fiberTable fiber)) = [])),
-   lookupFiber @{nameEq} child (registry survivingFinal) = Nothing)
+  WithdrawnNameResult nameEq child originalFinal survivingFinal
 
 ||| Equation-53 agreement outside the names R withdrawn by deletion.
 public export
@@ -1604,43 +1640,79 @@ data SameExternalOrchestration :
       (MoreTransitions rightTransition rightRest)
 
 public export
-ExternallyInserted :
-  {name, key, world, error : Type} -> {value : key -> Type} ->
-  {first, finalState : SystemState name key value world error} ->
-  name -> Transitions first finalState -> Type
-ExternallyInserted n trace =
-  (component : Component key value world error **
-    ActionOccurs (OInsert n Root component) trace)
+transitionCount : Transitions first finalState -> Nat
+transitionCount NoTransitions = 0
+transitionCount (MoreTransitions transition rest) = S (transitionCount rest)
 
-||| Lemma-56 correspondence of generated registration trees. Root names are
-||| fixed, while child names and parent pointers are transported bijectively and
-||| the registered component remains identical.
+||| One occurrence/generation of an explicit child registration, identified by
+||| its dependent prefix rather than only by its raw action value.
+public export
+record LocatedGeneratedRegistration
+  {initial, finalState : SystemState name key value world error}
+  (child, parent : name)
+  (component : Component key value world error)
+  (global : Transitions initial finalState) where
+  constructor MkLocatedGeneratedRegistration
+  registrationBefore : SystemState name key value world error
+  registrationAfter : SystemState name key value world error
+  beforeRegistration : Transitions initial registrationBefore
+  registrationTransition : Transition registrationBefore registrationAfter
+  afterRegistration : Transitions registrationAfter finalState
+  0 registrationAction : transitionAction registrationTransition =
+    OInsert child (ChildOf parent) component
+  0 registrationDecomposition :
+    appendTransitions beforeRegistration
+      (MoreTransitions registrationTransition afterRegistration) = global
+
+public export
+registrationOrdinal : LocatedGeneratedRegistration child parent component global -> Nat
+registrationOrdinal occurrence = transitionCount (beforeRegistration occurrence)
+
+||| Lemma-56 correspondence of generated registration trees. Live root
+||| generations are fixed; child registration occurrences are transported
+||| bijectively, including multiplicity under raw-name reissue.
 public export
 record RegistrationCorrespondenceByRenaming
-  (renaming : NameBijection name)
+  (nameEq : DecEq name) (renaming : NameBijection name)
   {leftFirst, leftFinal, rightFirst, rightFinal :
     SystemState name key value world error}
   (left : Transitions leftFirst leftFinal)
   (right : Transitions rightFirst rightFinal) where
   constructor MkRegistrationCorrespondenceByRenaming
-  0 leftExternalFixed : (n : name) -> ExternallyInserted n left ->
-    renameForward renaming n = n
-  0 rightExternalFixed : (n : name) -> ExternallyInserted n right ->
-    renameBackward renaming n = n
-  0 leftGeneratedMatched :
-    (child, parent : name) ->
-    (component : Component key value world error) ->
-    ActionOccurs (OInsert child (ChildOf parent) component) left ->
-    ActionOccurs
-      (OInsert (renameForward renaming child)
-        (ChildOf (renameForward renaming parent)) component) right
-  0 rightGeneratedMatched :
-    (child, parent : name) ->
-    (component : Component key value world error) ->
-    ActionOccurs (OInsert child (ChildOf parent) component) right ->
-    ActionOccurs
-      (OInsert (renameBackward renaming child)
-        (ChildOf (renameBackward renaming parent)) component) left
+  0 leftLiveRootFixed : (n : name) ->
+    (fiber : Fiber name key value world error) ->
+    lookupFiber n (registry leftFinal) = Just fiber ->
+    fiberParent fiber = Root -> renameForward renaming n = n
+  0 rightLiveRootFixed : (n : name) ->
+    (fiber : Fiber name key value world error) ->
+    lookupFiber n (registry rightFinal) = Just fiber ->
+    fiberParent fiber = Root -> renameBackward renaming n = n
+  forwardRegistration :
+    {child, parent : name} ->
+    {component : Component key value world error} ->
+    LocatedGeneratedRegistration child parent component left ->
+    LocatedGeneratedRegistration (renameForward renaming child)
+      (renameForward renaming parent) component right
+  backwardRegistration :
+    {child, parent : name} ->
+    {component : Component key value world error} ->
+    LocatedGeneratedRegistration child parent component right ->
+    LocatedGeneratedRegistration (renameBackward renaming child)
+      (renameBackward renaming parent) component left
+  0 leftRegistrationOrdinalInverse :
+    {child, parent : name} ->
+    {component : Component key value world error} ->
+    (occurrence : LocatedGeneratedRegistration child parent component left) ->
+    registrationOrdinal
+      (backwardRegistration (forwardRegistration occurrence)) =
+    registrationOrdinal occurrence
+  0 rightRegistrationOrdinalInverse :
+    {child, parent : name} ->
+    {component : Component key value world error} ->
+    (occurrence : LocatedGeneratedRegistration child parent component right) ->
+    registrationOrdinal
+      (forwardRegistration (backwardRegistration occurrence)) =
+    registrationOrdinal occurrence
 
 ||| The host specialization packages paper Lemma 56 explicitly: external root
 ||| actions retain their order, and generated registration trees correspond
@@ -1656,12 +1728,12 @@ record SameOrchestrationModuloGenerated
   constructor MkSameOrchestrationModuloGenerated
   generatedNameBijection : NameBijection name
   sameExternalInputs : SameExternalOrchestration nameEq left right
-  generatedRegistrationTree : RegistrationCorrespondenceByRenaming
+  generatedRegistrationTree : RegistrationCorrespondenceByRenaming nameEq
     generatedNameBijection left right
 
-||| Registration-tree preservation for one canonical reduction. Original child
-||| registrations either survive unchanged or their generated names are listed
-||| among the endpoint withdrawals; the canonical trace cannot fabricate one.
+||| Registration-tree preservation for one canonical reduction. Occurrences,
+||| not raw action values, are mapped so legal remove/reissue multiplicity is
+||| retained. Each original generation either survives or is withdrawn.
 public export
 record CanonicalRegistrationCorrespondence
   {initial, originalFinal, canonicalFinal :
@@ -1670,23 +1742,31 @@ record CanonicalRegistrationCorrespondence
   (canonical : Transitions initial canonicalFinal)
   (withdrawn : List name) where
   constructor MkCanonicalRegistrationCorrespondence
-  0 canonicalRegistrationSound :
-    (child, parent : name) ->
-    (component : Component key value world error) ->
-    ActionOccurs (OInsert child (ChildOf parent) component) canonical ->
-    ActionOccurs (OInsert child (ChildOf parent) component) original
-  0 originalRegistrationAccounted :
-    (child, parent : name) ->
-    (component : Component key value world error) ->
-    ActionOccurs (OInsert child (ChildOf parent) component) original ->
+  canonicalToOriginal :
+    {child, parent : name} ->
+    {component : Component key value world error} ->
+    LocatedGeneratedRegistration child parent component canonical ->
+    LocatedGeneratedRegistration child parent component original
+  originalRegistrationAccounted :
+    {child, parent : name} ->
+    {component : Component key value world error} ->
+    LocatedGeneratedRegistration child parent component original ->
     Either (Elem child withdrawn)
-      (ActionOccurs (OInsert child (ChildOf parent) component) canonical)
+      (LocatedGeneratedRegistration child parent component canonical)
+  0 canonicalOccurrenceInjective :
+    {child, parent : name} ->
+    {component : Component key value world error} ->
+    (leftOccurrence, rightOccurrence :
+      LocatedGeneratedRegistration child parent component canonical) ->
+    registrationOrdinal (canonicalToOriginal leftOccurrence) =
+      registrationOrdinal (canonicalToOriginal rightOccurrence) ->
+    registrationOrdinal leftOccurrence = registrationOrdinal rightOccurrence
   0 withdrawnRegistrationRemoved :
     (child : name) -> Elem child withdrawn ->
     (parent : name **
      component : Component key value world error **
-       (ActionOccurs (OInsert child (ChildOf parent) component) original,
-        ActionOccurs (OInsert child (ChildOf parent) component) canonical -> Void))
+     occurrence : LocatedGeneratedRegistration child parent component original **
+       (LocatedGeneratedRegistration child parent component canonical -> Void))
 
 ||| Paper Theorem 73's placement rule for inputs. All root orchestration steps
 ||| precede all lifecycle steps, while each explicit child registration precedes
@@ -2001,7 +2081,7 @@ record ConfluenceResult
     keyEq leftTrace
   rightCanonical : CanonicalSchedule name key world error value protocol nameEq
     keyEq rightTrace
-  finalRegistrationCorrespondence : RegistrationCorrespondenceByRenaming
+  finalRegistrationCorrespondence : RegistrationCorrespondenceByRenaming nameEq
     renaming leftTrace rightTrace
   finalEndpointsEquivalent : SystemEquivalentByRenaming name key world error
     value nameEq keyEq renaming leftFinal rightFinal

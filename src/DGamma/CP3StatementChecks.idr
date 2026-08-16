@@ -6,8 +6,167 @@ import DGamma.Metatheory
 import DGamma.CP3
 import Decidable.Equality
 import Data.List.Elem
+import Data.Nat
 
 %default total
+
+||| A concrete nonrecursive tagged registration instance. It prevents the
+||| source/rank API checks below from passing only because their premise is
+||| empty, as happened in round 4.
+public export
+data RegistrationTestKey : Type where
+
+public export
+RegistrationTestValue : RegistrationTestKey -> Type
+RegistrationTestValue key impossible
+
+registrationTestSpec : CoeffectSpec RegistrationTestKey
+registrationTestSpec = MkCoeffectSpec [] UniqueNil
+
+registrationTestStep : StepEffect RegistrationTestKey RegistrationTestValue
+  Unit String [] DGamma.CP3StatementChecks.registrationTestSpec
+registrationTestStep = MkStepEffect (Just 0)
+  (\NoDepValues, before => Right (before, id))
+  (\NoDepValues, before, after, undo, returned =>
+    replace
+      {p = \outcome => case outcome of
+        Left _ => Unit
+        Right (next, inverse) => inverse next = before}
+      returned Refl)
+
+registrationTestChild : Component RegistrationTestKey RegistrationTestValue
+  Unit String
+registrationTestChild = MkComponent registrationTestSpec registrationTestSpec []
+
+registrationTestParent : Component RegistrationTestKey RegistrationTestValue
+  Unit String
+registrationTestParent = MkComponent registrationTestSpec registrationTestSpec
+  [registrationTestStep]
+
+registrationTestCatalog : Nat -> Maybe
+  (Component RegistrationTestKey RegistrationTestValue Unit String)
+registrationTestCatalog Z = Just registrationTestChild
+registrationTestCatalog (S later) = Nothing
+
+registrationTestRank : Component RegistrationTestKey RegistrationTestValue
+  Unit String -> Maybe Nat
+registrationTestRank (MkComponent deps provision []) = Just 1
+registrationTestRank (MkComponent deps provision (step :: rest)) = Just 0
+
+0 registrationTestYieldRanks :
+  (parent, child : Component RegistrationTestKey RegistrationTestValue Unit String) ->
+  (step : StepEffect RegistrationTestKey RegistrationTestValue Unit String
+    (dependencies (componentDependencies parent))
+    (componentProvisions parent)) ->
+  (tag, parentRank, childRank : Nat) ->
+  Elem step (componentProgram parent) ->
+  registrationTestRank parent = Just parentRank ->
+  registrationTestRank child = Just childRank ->
+  registrationYieldTag step = Just tag ->
+  registrationTestCatalog tag = Just child ->
+  LT parentRank childRank
+registrationTestYieldRanks (MkComponent deps provision []) child step tag
+  parentRank childRank source parentRanked childRanked stepTag cataloged =
+    case source of Here impossible; There later impossible
+registrationTestYieldRanks
+  (MkComponent deps provision (first :: rest)) child step Z
+  parentRank childRank source parentRanked childRanked stepTag cataloged =
+    case cataloged of
+      Refl => case parentRanked of
+        Refl => case childRanked of
+          Refl => LTESucc LTEZero
+registrationTestYieldRanks
+  (MkComponent deps provision (first :: rest)) child step (S tag)
+  parentRank childRank source parentRanked childRanked stepTag cataloged =
+    case cataloged of Refl impossible
+
+0 registrationTestPrecedenceRanks :
+  (provider, consumer : Component RegistrationTestKey RegistrationTestValue
+    Unit String) ->
+  (providerRank, consumerRank : Nat) ->
+  registrationTestRank provider = Just providerRank ->
+  registrationTestRank consumer = Just consumerRank ->
+  (k : RegistrationTestKey) ->
+  Elem k (dependencies (componentProvisions provider)) ->
+  Elem k (dependencies (componentDependencies consumer)) ->
+  LT providerRank consumerRank
+registrationTestPrecedenceRanks provider consumer providerRank consumerRank
+  providerRanked consumerRanked k provides depends impossible
+
+registrationTestProtocol : RegistrationProtocol RegistrationTestKey
+  RegistrationTestValue Unit String
+registrationTestProtocol = MkRegistrationProtocol registrationTestCatalog
+  registrationTestRank registrationTestYieldRanks registrationTestPrecedenceRanks
+
+registrationTestParentFiber : Fiber Nat RegistrationTestKey RegistrationTestValue
+  Unit String
+registrationTestParentFiber = MkFiber registrationTestParent Root False emptyOwned
+  (Reloading [registrationTestStep] id EmptyView)
+
+registrationTestState : SystemState Nat RegistrationTestKey RegistrationTestValue
+  Unit String
+registrationTestState = MkSystemState ()
+  (MkCoeffectContext [Bind 0 registrationTestParentFiber]
+    (UniqueCons zeroNotInEmpty UniqueNil))
+  where
+  zeroNotInEmpty : Not (Elem (the Nat 0) [])
+  zeroNotInEmpty present = absurd present
+
+registrationTestNameEq : DecEq Nat
+registrationTestNameEq = %search
+
+implementation DecEq RegistrationTestKey where
+  decEq key impossible
+
+registrationTestKeyEq : DecEq RegistrationTestKey
+registrationTestKeyEq = %search
+
+registrationTestInitial : SystemState Nat RegistrationTestKey
+  RegistrationTestValue Unit String
+registrationTestInitial = MkSystemState () emptyContext
+
+registrationTestInactiveParent : Fiber Nat RegistrationTestKey
+  RegistrationTestValue Unit String
+registrationTestInactiveParent = MkFiber registrationTestParent Root False
+  emptyOwned (Inactive Nothing)
+
+registrationTestInserted : SystemState Nat RegistrationTestKey
+  RegistrationTestValue Unit String
+registrationTestInserted = MkSystemState ()
+  (MkCoeffectContext [Bind 0 registrationTestInactiveParent]
+    (UniqueCons zeroNotInEmpty UniqueNil))
+  where
+  zeroNotInEmpty : Not (Elem (the Nat 0) [])
+  zeroNotInEmpty present = absurd present
+
+registrationTestChildFiber : Fiber Nat RegistrationTestKey
+  RegistrationTestValue Unit String
+registrationTestChildFiber = MkFiber registrationTestChild (ChildOf 0) False
+  emptyOwned (Inactive Nothing)
+
+registrationTestChildInserted : SystemState Nat RegistrationTestKey
+  RegistrationTestValue Unit String
+registrationTestChildInserted = MkSystemState ()
+  (MkCoeffectContext
+    [Bind 1 registrationTestChildFiber, Bind 0 registrationTestParentFiber]
+    (UniqueCons oneNotZero (UniqueCons zeroNotInEmpty UniqueNil)))
+  where
+  oneNotZero : Not (Elem (the Nat 1) [the Nat 0])
+  oneNotZero Here impossible
+  oneNotZero (There later) = absurd later
+  zeroNotInEmpty : Not (Elem (the Nat 0) [])
+  zeroNotInEmpty present = absurd present
+
+||| Positive inhabitant of the exact child-registration premise.
+public export
+0 positiveParentRegistrationYield : ParentRegistrationYield
+  DGamma.CP3StatementChecks.registrationTestProtocol
+  DGamma.CP3StatementChecks.registrationTestNameEq 0
+  DGamma.CP3StatementChecks.registrationTestChild
+  DGamma.CP3StatementChecks.registrationTestState
+positiveParentRegistrationYield = MkParentRegistrationYield
+  registrationTestParentFiber Refl registrationTestStep [] id EmptyView Refl Here
+  0 1 Refl Refl 0 Refl Refl
 
 ||| Every externally inserted component is enrolled in the shared rank protocol;
 ||| legal name reissue is not forbidden.
@@ -97,6 +256,17 @@ supportLemma68UniqueGuard claim nameEq keyEq protocol state reached discipline a
   uniqueSupportSolution
     (claim nameEq keyEq protocol state reached discipline acyclic)
 
+||| Canonical parent blocks explicitly admit their yielded child O-Insert.
+public export
+0 canonicalBlockRegistrationGuard :
+  (transition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  transitionAction transition =
+    OInsert child (ChildOf selected) childComponent ->
+  ActorLifecycleOnly selected rest ->
+  ActorLifecycleOnly selected (MoreTransitions transition rest)
+canonicalBlockRegistrationGuard = ActorYieldedRegistrationStep
+
 ||| Regression guards for Equation 62 and Theorem 73's canonical fields.
 public export
 0 canonicalOrderUniqueGuard :
@@ -182,9 +352,9 @@ public export
   Elem child (endpointWithdrawnNames (canonicalEndpoint schedule)) ->
   (parent : name **
    component : Component key value world error **
-    (ActionOccurs (OInsert child (ChildOf parent) component) trace,
-     ActionOccurs (OInsert child (ChildOf parent) component)
-       (canonicalTrace schedule) -> Void))
+   occurrence : LocatedGeneratedRegistration child parent component trace **
+    (LocatedGeneratedRegistration child parent component
+      (canonicalTrace schedule) -> Void))
 canonicalWithdrawnRegistrationGuard schedule =
   withdrawnRegistrationRemoved (canonicalRegistrationTree schedule)
 
@@ -250,8 +420,21 @@ orchestrationRenamingGuard same = generatedNameBijection same
 public export
 0 registrationRenamingGuard :
   (same : SameOrchestrationModuloGenerated nameEq left right) ->
-  RegistrationCorrespondenceByRenaming (generatedNameBijection same) left right
+  RegistrationCorrespondenceByRenaming nameEq (generatedNameBijection same) left right
 registrationRenamingGuard same = generatedRegistrationTree same
+
+public export
+0 registrationMultiplicityGuard :
+  {child, parent : name} ->
+  {component : Component key value world error} ->
+  (same : SameOrchestrationModuloGenerated nameEq left right) ->
+  (occurrence : LocatedGeneratedRegistration child parent component left) ->
+  registrationOrdinal
+    (backwardRegistration (generatedRegistrationTree same)
+      (forwardRegistration (generatedRegistrationTree same) occurrence)) =
+  registrationOrdinal occurrence
+registrationMultiplicityGuard same occurrence =
+  leftRegistrationOrdinalInverse (generatedRegistrationTree same) occurrence
 
 public export
 0 confluenceRenamedEndpointGuard :
@@ -290,6 +473,17 @@ public export
 selectedRemoveSurvivesGuard
   (DeleteEpisodeLifecycle Refl lifecycle) = case lifecycle of Refl impossible
 selectedRemoveSurvivesGuard (DeleteRegisteredActor present) = absurd present
+
+||| Positive guard for the paper-permitted already-removed R endpoint case.
+public export
+0 alreadyAbsentWithdrawalGuard :
+  {originalFinal, survivingState : SystemState name key value world error} ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} child (registry originalFinal) = Nothing ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} child (registry survivingState) = Nothing ->
+  WithdrawnNameResult nameEq child originalFinal survivingState
+alreadyAbsentWithdrawalGuard = NameAlreadyAbsent
 
 ||| Regression guards for Lemma 72's selected-episode deletion and outside-R
 ||| control/withdrawal conclusions.
