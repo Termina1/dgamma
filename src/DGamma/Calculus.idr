@@ -738,17 +738,6 @@ parentsInvariant [] fibers = True
 parentsInvariant (Bind _ fiber :: rest) fibers =
   parentInvariant (fiberParent fiber) fibers && parentsInvariant rest fibers
 
-public export
-chainsInvariant : DecEq name => Nat ->
-  List (Binding name (FiberAt name key value world error)) ->
-  Registry name key value world error -> Bool
-chainsInvariant fuel [] fibers = True
-chainsInvariant {key} {value} {world} {error} fuel (Bind n _ :: rest) fibers =
-  parentChainInvariant {key = key} {value = value} {world = world} {error = error}
-    fuel [n] n fibers &&
-  chainsInvariant {key = key} {value = value} {world = world} {error = error}
-    fuel rest fibers
-
 0 andTrueLeft : (left, right : Bool) -> left && right = True -> left = True
 andTrueLeft False right equation = void (falseCannotBeTrue equation)
 andTrueLeft True right equation = Refl
@@ -761,6 +750,67 @@ andTrueRight True True equation = Refl
 0 andBothTrue : (left, right : Bool) -> left = True -> right = True ->
   left && right = True
 andBothTrue True True Refl Refl = Refl
+
+||| Inserting an Inactive fresh fiber preserves every existing parent lookup.
+public export
+0 parentInvariantInactiveInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (parent : Parent name) ->
+  (n : name) -> (component : Component key value world error) ->
+  (newParent : Parent name) -> (fibers : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Nothing) ->
+  parentInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} parent fibers = True ->
+  parentInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} parent
+    (insertBinding @{nameEq} n (freshFiber component newParent) fibers absent) = True
+parentInvariantInactiveInsert {key} {world} {error} {value} nameEq Root n component newParent fibers absent valid = Refl
+parentInvariantInactiveInsert {key} {world} {error} {value} nameEq (ChildOf parent) n component newParent fibers absent valid
+  with (lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} parent fibers) proof present
+  parentInvariantInactiveInsert {key} {world} {error} {value} nameEq (ChildOf parent) n component newParent fibers absent valid |
+    Nothing = void (falseCannotBeTrue valid)
+  parentInvariantInactiveInsert {key} {world} {error} {value} nameEq (ChildOf parent) n component newParent fibers absent valid |
+    Just parentFiber =
+      let distinct = presentAbsentDistinct parent n fibers parentFiber present absent
+          framed = lookupInsertOther parent n distinct (freshFiber component newParent)
+            fibers absent in
+        rewrite framed in rewrite present in Refl
+
+public export
+0 parentsInvariantInactiveInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (component : Component key value world error) ->
+  (newParent : Parent name) -> (fibers : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Nothing) ->
+  parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} entries fibers = True ->
+  parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} entries
+    (insertBinding @{nameEq} n (freshFiber component newParent) fibers absent) = True
+parentsInvariantInactiveInsert {key} {world} {error} {value} nameEq [] n component newParent fibers absent valid = Refl
+parentsInvariantInactiveInsert {key} {world} {error} {value} nameEq (Bind current fiber :: rest)
+  n component newParent fibers absent valid =
+  andBothTrue
+    (parentInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (fiberParent fiber)
+      (insertBinding @{nameEq} n (freshFiber component newParent) fibers absent))
+    (parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} rest
+      (insertBinding @{nameEq} n (freshFiber component newParent) fibers absent))
+    (parentInvariantInactiveInsert nameEq (fiberParent fiber) n component
+      newParent fibers absent
+      (andTrueLeft (parentInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (fiberParent fiber) fibers)
+        (parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} rest fibers) valid))
+    (parentsInvariantInactiveInsert nameEq rest n component newParent fibers absent
+      (andTrueRight (parentInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (fiberParent fiber) fibers)
+        (parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} rest fibers) valid))
+
+public export
+chainsInvariant : DecEq name => Nat ->
+  List (Binding name (FiberAt name key value world error)) ->
+  Registry name key value world error -> Bool
+chainsInvariant fuel [] fibers = True
+chainsInvariant {key} {value} {world} {error} fuel (Bind n _ :: rest) fibers =
+  parentChainInvariant {key = key} {value = value} {world = world} {error = error}
+    fuel [n] n fibers &&
+  chainsInvariant {key = key} {value = value} {world = world} {error = error}
+    fuel rest fibers
 
 ||| Lift fuel monotonicity pointwise over every registry entry.
 public export
