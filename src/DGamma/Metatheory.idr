@@ -3272,6 +3272,82 @@ committedProvidersInstalledTrace nameEq keyEq selected providers
     (committedProvidersInstalledTrace nameEq keyEq selected providers rest tail
       afterSnapshot)
 
+0 foreignReloadingSnapshot :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) -> (providers : List name) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) -> Not (selected = actionOwner action) ->
+  ReloadingSnapshot name key world error value nameEq selected providers before ->
+  applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
+  ReloadingSnapshot name key world error value nameEq selected providers afterState
+foreignReloadingSnapshot nameEq keyEq selected providers action before afterState
+  tag distinct snapshot equation =
+  let 0 foreignLookup = systemLocalUpdateForeign nameEq selected
+        (actionOwner action) distinct before afterState
+        (applyActionLocalUpdate nameEq keyEq action before afterState tag equation)
+      0 targetLookup = trans foreignLookup (snapshotLookup snapshot)
+  in MkReloadingSnapshot (snapshotFiber snapshot) targetLookup
+    (snapshotRemaining snapshot) (snapshotAccumulator snapshot)
+    (snapshotView snapshot) (snapshotReloading snapshot)
+    (snapshotProviders snapshot)
+
+0 foreignTransitionCoherent :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) ->
+  {before, afterState : SystemState name key value world error} ->
+  (action : Action name key value world error) ->
+  (tag : RuleTag) ->
+  (equation : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  Not (selected = actionOwner action) ->
+  transitionResolutionCoherent nameEq keyEq selected {before = before}
+    (Fired nameEq keyEq action tag equation) = True
+foreignTransitionCoherent nameEq keyEq selected
+  (OInsert actor parent component) tag equation distinct = Refl
+foreignTransitionCoherent nameEq keyEq selected (ORetire actor) tag equation
+  distinct = Refl
+foreignTransitionCoherent nameEq keyEq selected (ORemove actor) tag equation
+  distinct = Refl
+foreignTransitionCoherent nameEq keyEq selected (LBegin actor) tag equation
+  distinct = Refl
+foreignTransitionCoherent nameEq keyEq selected (LAdvance actor) tag equation
+  distinct with (decEq @{nameEq} actor selected)
+  foreignTransitionCoherent nameEq keyEq selected (LAdvance selected) tag equation
+    distinct | Yes Refl = void (distinct Refl)
+  foreignTransitionCoherent nameEq keyEq selected (LAdvance actor) tag equation
+    distinct | No actorDistinct = Refl
+foreignTransitionCoherent nameEq keyEq selected (LDivert actor) tag equation
+  distinct = Refl
+foreignTransitionCoherent nameEq keyEq selected (LLeave actor) tag equation
+  distinct = Refl
+foreignTransitionCoherent nameEq keyEq selected (LUnload actor) tag equation
+  distinct = Refl
+
+0 retireReloadingAfterReplace :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {fibers : Registry name key value world error} -> {worldValue : world} ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  {remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)))} ->
+  {accumulator : LocalState key value world
+      (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world (componentProvisions (fiberComponent fiber))} ->
+  {view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))} ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} selected fibers = Just fiber ->
+  fiberLifecycle fiber = Reloading remaining accumulator view ->
+  reloadingAt @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} selected (MkSystemState worldValue
+    (replaceBinding @{nameEq} selected (retireFiber fiber) fibers)) = True
+retireReloadingAfterReplace selected
+  fiber@(MkFiber component parent retired table lifecycle) found reloading =
+  rewrite lookupReplacedFiber selected fiber (retireFiber fiber) fibers found in
+  rewrite reloading in Refl
+
 public export
 data StructuralExit : (name, key, world, error : Type) ->
   (value : key -> Type) ->
