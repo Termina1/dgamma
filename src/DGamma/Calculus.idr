@@ -615,6 +615,38 @@ stableProvider (Active _ _) = True
 stableProvider (Unloading _ _ _) = True
 stableProvider _ = False
 
+0 falseCannotBeTrue : False = True -> Void
+falseCannotBeTrue Refl impossible
+
+||| Parent-chain validity is monotone in fuel. Insertion raises the global fuel
+||| by one, so existing chains remain certified.
+public export
+0 parentChainFuelMonotone : {name, key, world, error : Type} ->
+  {value : key -> Type} -> (nameEq : DecEq name) -> (fuel : Nat) ->
+  (seen : List name) -> (current : name) ->
+  (fibers : Registry name key value world error) ->
+  parentChainInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error}
+    fuel seen current fibers = True ->
+  parentChainInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error}
+    (S fuel) seen current fibers = True
+parentChainFuelMonotone nameEq Z seen current fibers valid =
+  void (falseCannotBeTrue valid)
+parentChainFuelMonotone nameEq (S fuel) seen current fibers valid
+  with (lookupFiber @{nameEq} current fibers)
+  parentChainFuelMonotone nameEq (S fuel) seen current fibers valid | Nothing =
+    void (falseCannotBeTrue valid)
+  parentChainFuelMonotone nameEq (S fuel) seen current fibers valid | Just fiber
+    with (fiberParent fiber)
+    parentChainFuelMonotone nameEq (S fuel) seen current fibers valid | Just fiber |
+      Root = Refl
+    parentChainFuelMonotone nameEq (S fuel) seen current fibers valid | Just fiber |
+      ChildOf parent with (elemDec @{nameEq} parent seen)
+      parentChainFuelMonotone nameEq (S fuel) seen current fibers valid | Just fiber |
+        ChildOf parent | True = void (falseCannotBeTrue valid)
+      parentChainFuelMonotone nameEq (S fuel) seen current fibers valid | Just fiber |
+        ChildOf parent | False =
+          parentChainFuelMonotone nameEq fuel (parent :: seen) parent fibers valid
+
 public export
 viewProvidersInvariant : DecEq name => Registry name key value world error ->
   View name deps -> Bool
@@ -665,8 +697,57 @@ chainsInvariant : DecEq name => Nat ->
   List (Binding name (FiberAt name key value world error)) ->
   Registry name key value world error -> Bool
 chainsInvariant fuel [] fibers = True
-chainsInvariant fuel (Bind n _ :: rest) fibers =
-  parentChainInvariant fuel [n] n fibers && chainsInvariant fuel rest fibers
+chainsInvariant {key} {value} {world} {error} fuel (Bind n _ :: rest) fibers =
+  parentChainInvariant {key = key} {value = value} {world = world} {error = error}
+    fuel [n] n fibers &&
+  chainsInvariant {key = key} {value = value} {world = world} {error = error}
+    fuel rest fibers
+
+0 andTrueLeft : (left, right : Bool) -> left && right = True -> left = True
+andTrueLeft False right equation = void (falseCannotBeTrue equation)
+andTrueLeft True right equation = Refl
+
+0 andTrueRight : (left, right : Bool) -> left && right = True -> right = True
+andTrueRight False right equation = void (falseCannotBeTrue equation)
+andTrueRight True False equation = void (falseCannotBeTrue equation)
+andTrueRight True True equation = Refl
+
+0 andBothTrue : (left, right : Bool) -> left = True -> right = True ->
+  left && right = True
+andBothTrue True True Refl Refl = Refl
+
+||| Lift fuel monotonicity pointwise over every registry entry.
+public export
+0 chainsFuelMonotone : {name, key, world, error : Type} ->
+  {value : key -> Type} -> (nameEq : DecEq name) -> (fuel : Nat) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (fibers : Registry name key value world error) ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error}
+    fuel entries fibers = True ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error}
+    (S fuel) entries fibers = True
+chainsFuelMonotone nameEq fuel [] fibers valid = Refl
+chainsFuelMonotone {key} {world} {error} {value} nameEq fuel
+  (Bind n fiber :: rest) fibers valid =
+  let headValid = andTrueLeft
+        (parentChainInvariant @{nameEq} {key = key} {value = value} {world = world}
+          {error = error} fuel [n] n fibers)
+        (chainsInvariant @{nameEq} {key = key} {value = value} {world = world}
+          {error = error} fuel rest fibers) valid
+      tailValid = andTrueRight
+        (parentChainInvariant @{nameEq} {key = key} {value = value} {world = world}
+          {error = error} fuel [n] n fibers)
+        (chainsInvariant @{nameEq} {key = key} {value = value} {world = world}
+          {error = error} fuel rest fibers) valid in
+    andBothTrue
+      (parentChainInvariant @{nameEq} {key = key} {value = value} {world = world}
+        {error = error} (S fuel) [n] n fibers)
+      (chainsInvariant @{nameEq} {key = key} {value = value} {world = world}
+        {error = error} (S fuel) rest fibers)
+      (parentChainFuelMonotone {key = key} {value = value}
+        {world = world} {error = error} nameEq fuel [n] n fibers headValid)
+      (chainsFuelMonotone {key = key} {value = value}
+        {world = world} {error = error} nameEq fuel rest fibers tailValid)
 
 public export
 viewsInvariant : DecEq name => DecEq key =>
