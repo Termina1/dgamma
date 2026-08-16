@@ -481,11 +481,25 @@ raw Preservation, lifecycle frames, and later trace deletion/permutation proofs.
   `%default total`, and the escape-hatch scan finds no
   `believe_me`, `assert_total`, postulate, unsafe FFI, `%default partial`, or
   metavariable holes.
-- **Deferred global-ordering debt:** `orderingTheorem` remains deliberately
-  statement-only CP3 work. It still requires indexed global-trace search and
-  splitting, name-reuse boundary extraction, the restricted Lemma-54
-  lifecycle/view frames, and the forward relied-guard argument. CP2 does not
-  silently replace this with local `reliedProviderCannotUnload`.
+- **Deferred global-ordering debt:** CP3 now addresses this with indexed global
+  trace splitting, name-reuse boundary extraction, Lemma-54 lifecycle/view
+  frames, and the forward relied-guard argument. CP2 did not silently replace
+  it with local `reliedProviderCannotUnload`.
+
+### CP3 dictionary-alignment encoding premise
+
+`orderingTheorem` now takes `AlignedTransitions nameEq keyEq global`. Idris
+retains distinct `DecEq` implementations as distinct values even when erased,
+so a transition built with an extensionally equivalent dictionary cannot be
+repackaged definitionally as the `BeginStep`/`UnloadStep` required by an episode.
+The paper has one ambient equality decision procedure and no corresponding
+issue. `AlignedTransitions` makes the proof-LTS convention explicit: every
+transition in the searched global trace uses the theorem's dictionaries. It
+changes no runtime rule or guard and is the same dictionary-alignment discipline
+already used by `InstalledTrace`; omitting it would amount to silently assuming
+proof irrelevance. The paper-explicit `consumer /= provider` premise is also now
+present in the finite Ordering statement rather than recovered indirectly from
+provision disjointness.
 
 ## Status
 

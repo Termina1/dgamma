@@ -2199,7 +2199,7 @@ orderingTheorem name key value world error =
   AlignedTransitions name key world error value nameEq keyEq global ->
   wellFormed @{nameEq} @{keyEq} initial = True ->
   bindings (registry initial) = [] ->
-  (consumer, provider : name) -> (k : key) ->
+  (consumer, provider : name) -> Not (consumer = provider) -> (k : key) ->
   installedAt @{nameEq} provider final = False ->
   (consumerEpisode : LocatedClosedEpisode name key world error value
     nameEq keyEq consumer global) ->
