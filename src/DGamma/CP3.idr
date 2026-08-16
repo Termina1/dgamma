@@ -2060,6 +2060,16 @@ resolvedCommittedFiberData {name} {key} {world} {error} {value}
     (dependencies (componentDependencies (fiberComponent consumerFiber))) view
     resolvedLookup selectedValid
 
+0 trueFalseImpossible :
+  {observed : Bool} -> {result : Type} ->
+  observed = True -> observed = False -> result
+trueFalseImpossible Refl Refl impossible
+
+0 equalTrueEqualFalseImpossible :
+  {left, middle : Bool} -> {result : Type} ->
+  left = True -> left = middle -> middle = False -> result
+equalTrueEqualFalseImpossible Refl Refl Refl impossible
+
 ||| A well-formed committed consumer view yields both the installed provider
 ||| witness needed for boundary extraction and the concrete opening value.
 public export
@@ -2071,69 +2081,1679 @@ public export
   resolvedProviderAt @{nameEq} @{keyEq} consumer wanted provider state = True ->
   ResolvedProviderData name key world error value nameEq keyEq consumer wanted
     provider state
-resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved
-  with (lookupFiber @{nameEq} consumer (registry state)) proof consumerFound
-  resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
+resolvedProviderData nameEq keyEq consumer wanted provider (MkSystemState ambient fibers) wellFormed resolved
+  with (lookupFiber @{nameEq} consumer fibers) proof consumerFound
+  resolvedProviderData nameEq keyEq consumer wanted provider (MkSystemState ambient fibers) wellFormed resolved |
     Nothing = absurd resolved
-  resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
-    Just consumerFiber with (fiberLifecycle consumerFiber) proof lifecycle
-    resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
-      Just consumerFiber | Inactive outcome = absurd resolved
-    resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
-      Just consumerFiber | Reloading remaining accumulator view
-      with (viewLookup @{keyEq} wanted
-        (dependencies (componentDependencies (fiberComponent consumerFiber))) view)
-      proof selectedProvider
-      resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
-        Just consumerFiber | Reloading remaining accumulator view | Nothing =
-          absurd resolved
-      resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
-        Just consumerFiber | Reloading remaining accumulator view | Just actual
-        with (decEq @{nameEq} actual provider)
-        resolvedProviderData nameEq keyEq consumer wanted actual state wellFormed resolved |
-          Just consumerFiber | Reloading remaining accumulator view | Just actual |
-          Yes Refl =
-            resolvedCommittedFiberData nameEq keyEq consumer wanted actual state
-              consumerFiber consumerFound wellFormed view
-              (cong committed lifecycle) selectedProvider
-        resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
-          Just consumerFiber | Reloading remaining accumulator view | Just actual |
-          No distinct = absurd resolved
-    resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
-      Just consumerFiber | Active accumulator view
-      with (viewLookup @{keyEq} wanted
-        (dependencies (componentDependencies (fiberComponent consumerFiber))) view)
-      proof selectedProvider
-      resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
-        Just consumerFiber | Active accumulator view | Nothing = absurd resolved
-      resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
-        Just consumerFiber | Active accumulator view | Just actual
-        with (decEq @{nameEq} actual provider)
-        resolvedProviderData nameEq keyEq consumer wanted actual state wellFormed resolved |
-          Just consumerFiber | Active accumulator view | Just actual | Yes Refl =
-            resolvedCommittedFiberData nameEq keyEq consumer wanted actual state
-              consumerFiber consumerFound wellFormed view
-              (cong committed lifecycle) selectedProvider
-        resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
-          Just consumerFiber | Active accumulator view | Just actual | No distinct =
+  resolvedProviderData nameEq keyEq consumer wanted provider (MkSystemState ambient fibers) wellFormed resolved |
+    Just fiber@(MkFiber component parent retired table (Inactive outcome)) =
+      absurd resolved
+  resolvedProviderData nameEq keyEq consumer wanted provider (MkSystemState ambient fibers) wellFormed resolved |
+    Just fiber@(MkFiber component parent retired table
+      (Reloading remaining accumulator view))
+    with (viewLookup @{keyEq} wanted
+      (dependencies (componentDependencies component)) view) proof selectedProvider
+    resolvedProviderData nameEq keyEq consumer wanted provider (MkSystemState ambient fibers) wellFormed resolved |
+      Just fiber@(MkFiber component parent retired table
+        (Reloading remaining accumulator view)) | Nothing = absurd resolved
+    resolvedProviderData nameEq keyEq consumer wanted provider (MkSystemState ambient fibers) wellFormed resolved |
+      Just fiber@(MkFiber component parent retired table
+        (Reloading remaining accumulator view)) | Just actual
+      with (decEq @{nameEq} actual provider)
+      resolvedProviderData nameEq keyEq consumer wanted provider (MkSystemState ambient fibers) wellFormed resolved |
+        Just fiber@(MkFiber component parent retired table
+          (Reloading remaining accumulator view)) | Just actual | Yes equal =
+          case equal of
+            Refl => resolvedCommittedFiberData nameEq keyEq consumer wanted actual (MkSystemState ambient fibers)
+              (MkFiber component parent retired table
+                (Reloading remaining accumulator view)) consumerFound wellFormed view
+              Refl selectedProvider
+      resolvedProviderData nameEq keyEq consumer wanted provider (MkSystemState ambient fibers) wellFormed resolved |
+        Just fiber@(MkFiber component parent retired table
+          (Reloading remaining accumulator view)) | Just actual | No distinct = absurd resolved
+  resolvedProviderData nameEq keyEq consumer wanted provider (MkSystemState ambient fibers) wellFormed resolved |
+    Just fiber@(MkFiber component parent retired table (Active accumulator view))
+    with (viewLookup @{keyEq} wanted
+      (dependencies (componentDependencies component)) view) proof selectedProvider
+    resolvedProviderData nameEq keyEq consumer wanted provider (MkSystemState ambient fibers) wellFormed resolved |
+      Just fiber@(MkFiber component parent retired table (Active accumulator view)) |
+      Nothing = absurd resolved
+    resolvedProviderData nameEq keyEq consumer wanted provider (MkSystemState ambient fibers) wellFormed resolved |
+      Just fiber@(MkFiber component parent retired table (Active accumulator view)) |
+      Just actual with (decEq @{nameEq} actual provider)
+      resolvedProviderData nameEq keyEq consumer wanted provider (MkSystemState ambient fibers) wellFormed resolved |
+        Just fiber@(MkFiber component parent retired table (Active accumulator view)) |
+        Just actual | Yes equal = case equal of
+          Refl => resolvedCommittedFiberData nameEq keyEq consumer wanted actual (MkSystemState ambient fibers)
+            (MkFiber component parent retired table (Active accumulator view))
+            consumerFound wellFormed view Refl selectedProvider
+      resolvedProviderData nameEq keyEq consumer wanted provider (MkSystemState ambient fibers) wellFormed resolved |
+        Just fiber@(MkFiber component parent retired table (Active accumulator view)) |
+        Just actual | No distinct = absurd resolved
+  resolvedProviderData nameEq keyEq consumer wanted provider (MkSystemState ambient fibers) wellFormed resolved |
+    Just fiber@(MkFiber component parent retired table
+      (Unloading accumulator view outcome))
+    with (viewLookup @{keyEq} wanted
+      (dependencies (componentDependencies component)) view) proof selectedProvider
+    resolvedProviderData nameEq keyEq consumer wanted provider (MkSystemState ambient fibers) wellFormed resolved |
+      Just fiber@(MkFiber component parent retired table
+        (Unloading accumulator view outcome)) | Nothing = absurd resolved
+    resolvedProviderData nameEq keyEq consumer wanted provider (MkSystemState ambient fibers) wellFormed resolved |
+      Just fiber@(MkFiber component parent retired table
+        (Unloading accumulator view outcome)) | Just actual
+      with (decEq @{nameEq} actual provider)
+      resolvedProviderData nameEq keyEq consumer wanted provider (MkSystemState ambient fibers) wellFormed resolved |
+        Just fiber@(MkFiber component parent retired table
+          (Unloading accumulator view outcome)) | Just actual | Yes equal =
+          case equal of
+            Refl => resolvedCommittedFiberData nameEq keyEq consumer wanted actual (MkSystemState ambient fibers)
+              (MkFiber component parent retired table
+                (Unloading accumulator view outcome)) consumerFound wellFormed view
+              Refl selectedProvider
+      resolvedProviderData nameEq keyEq consumer wanted provider (MkSystemState ambient fibers) wellFormed resolved |
+        Just fiber@(MkFiber component parent retired table
+          (Unloading accumulator view outcome)) | Just actual | No distinct = absurd resolved
+fiberResolvesWith : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (provider : name) ->
+  Fiber name key value world error -> Bool
+fiberResolvesWith nameEq keyEq wanted provider
+  (MkFiber component parent retired table lifecycle) =
+  case committed lifecycle of
+    Nothing => False
+    Just view => case viewLookup @{keyEq} wanted
+      (dependencies (componentDependencies component)) view of
+        Nothing => False
+        Just actual => case decEq @{nameEq} actual provider of
+          Yes Refl => True
+          No _ => False
+
+0 fiberResolvesWithMatches :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (provider : name) ->
+  (fiber : Fiber name key value world error) ->
+  fiberResolvesWith nameEq keyEq wanted provider fiber =
+    fiberResolvedProvider @{nameEq} @{keyEq} wanted provider fiber
+fiberResolvesWithMatches nameEq keyEq wanted provider
+  (MkFiber component parent retired table (Inactive outcome)) = Refl
+fiberResolvesWithMatches nameEq keyEq wanted provider
+  (MkFiber component parent retired table
+    (Reloading remaining accumulator view))
+  with (viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies component)) view)
+  fiberResolvesWithMatches nameEq keyEq wanted provider
+    (MkFiber component parent retired table
+      (Reloading remaining accumulator view)) | Nothing = Refl
+  fiberResolvesWithMatches nameEq keyEq wanted provider
+    (MkFiber component parent retired table
+      (Reloading remaining accumulator view)) | Just actual
+    with (decEq @{nameEq} actual provider)
+    fiberResolvesWithMatches nameEq keyEq wanted provider
+      (MkFiber component parent retired table
+        (Reloading remaining accumulator view)) | Just actual | Yes equal =
+        case equal of Refl => Refl
+    fiberResolvesWithMatches nameEq keyEq wanted provider
+      (MkFiber component parent retired table
+        (Reloading remaining accumulator view)) | Just actual | No distinct = Refl
+fiberResolvesWithMatches nameEq keyEq wanted provider
+  (MkFiber component parent retired table (Active accumulator view))
+  with (viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies component)) view)
+  fiberResolvesWithMatches nameEq keyEq wanted provider
+    (MkFiber component parent retired table (Active accumulator view)) |
+    Nothing = Refl
+  fiberResolvesWithMatches nameEq keyEq wanted provider
+    (MkFiber component parent retired table (Active accumulator view)) |
+    Just actual with (decEq @{nameEq} actual provider)
+    fiberResolvesWithMatches nameEq keyEq wanted provider
+      (MkFiber component parent retired table (Active accumulator view)) |
+      Just actual | Yes equal = case equal of Refl => Refl
+    fiberResolvesWithMatches nameEq keyEq wanted provider
+      (MkFiber component parent retired table (Active accumulator view)) |
+      Just actual | No distinct = Refl
+fiberResolvesWithMatches nameEq keyEq wanted provider
+  (MkFiber component parent retired table
+    (Unloading accumulator view outcome))
+  with (viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies component)) view)
+  fiberResolvesWithMatches nameEq keyEq wanted provider
+    (MkFiber component parent retired table
+      (Unloading accumulator view outcome)) | Nothing = Refl
+  fiberResolvesWithMatches nameEq keyEq wanted provider
+    (MkFiber component parent retired table
+      (Unloading accumulator view outcome)) | Just actual
+    with (decEq @{nameEq} actual provider)
+    fiberResolvesWithMatches nameEq keyEq wanted provider
+      (MkFiber component parent retired table
+        (Unloading accumulator view outcome)) | Just actual | Yes equal =
+        case equal of Refl => Refl
+    fiberResolvesWithMatches nameEq keyEq wanted provider
+      (MkFiber component parent retired table
+        (Unloading accumulator view outcome)) | Just actual | No distinct = Refl
+
+fiberResolves : DecEq name => DecEq key => (wanted : key) -> (provider : name) ->
+  Fiber name key value world error -> Bool
+fiberResolves @{nameEq} @{keyEq} = fiberResolvesWith nameEq keyEq
+
+resolvedMaybeFiberWith : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (provider : name) ->
+  Maybe (Fiber name key value world error) -> Bool
+resolvedMaybeFiberWith nameEq keyEq wanted provider Nothing = False
+resolvedMaybeFiberWith nameEq keyEq wanted provider (Just fiber) =
+  fiberResolvesWith nameEq keyEq wanted provider fiber
+
+
+0 resolvedAtLookupEquation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (consumer : name) -> (wanted : key) -> (provider : name) ->
+  (state : SystemState name key value world error) ->
+  resolvedProviderAt @{nameEq} @{keyEq} consumer wanted provider state =
+    resolvedMaybeFiberWith {value = value} {world = world} {error = error}
+      nameEq keyEq wanted provider (lookupFiber @{nameEq} consumer (registry state))
+resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+  state@(MkSystemState ambient fibers)
+  with (lookupFiber @{nameEq} consumer fibers)
+  resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+    state@(MkSystemState ambient fibers) | Nothing = Refl
+  resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+    state@(MkSystemState ambient fibers) |
+    Just (MkFiber component parent retired table (Inactive outcome)) = Refl
+  resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+    state@(MkSystemState ambient fibers) |
+    Just (MkFiber component parent retired table
+      (Reloading remaining accumulator view))
+    with (viewLookup @{keyEq} wanted
+      (dependencies (componentDependencies component)) view)
+    resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+      state@(MkSystemState ambient fibers) |
+      Just (MkFiber component parent retired table
+        (Reloading remaining accumulator view)) | Nothing = Refl
+    resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+      state@(MkSystemState ambient fibers) |
+      Just (MkFiber component parent retired table
+        (Reloading remaining accumulator view)) | Just actual
+      with (decEq @{nameEq} actual provider)
+      resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+        state@(MkSystemState ambient fibers) |
+        Just (MkFiber component parent retired table
+          (Reloading remaining accumulator view)) | Just actual | Yes equal =
+          case equal of Refl => Refl
+      resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+        state@(MkSystemState ambient fibers) |
+        Just (MkFiber component parent retired table
+          (Reloading remaining accumulator view)) | Just actual | No distinct = Refl
+  resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+    state@(MkSystemState ambient fibers) |
+    Just (MkFiber component parent retired table (Active accumulator view))
+    with (viewLookup @{keyEq} wanted
+      (dependencies (componentDependencies component)) view)
+    resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+      state@(MkSystemState ambient fibers) |
+      Just (MkFiber component parent retired table (Active accumulator view)) |
+      Nothing = Refl
+    resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+      state@(MkSystemState ambient fibers) |
+      Just (MkFiber component parent retired table (Active accumulator view)) |
+      Just actual with (decEq @{nameEq} actual provider)
+      resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+        state@(MkSystemState ambient fibers) |
+        Just (MkFiber component parent retired table (Active accumulator view)) |
+        Just actual | Yes equal = case equal of Refl => Refl
+      resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+        state@(MkSystemState ambient fibers) |
+        Just (MkFiber component parent retired table (Active accumulator view)) |
+        Just actual | No distinct = Refl
+  resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+    state@(MkSystemState ambient fibers) |
+    Just (MkFiber component parent retired table
+      (Unloading accumulator view outcome))
+    with (viewLookup @{keyEq} wanted
+      (dependencies (componentDependencies component)) view)
+    resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+      state@(MkSystemState ambient fibers) |
+      Just (MkFiber component parent retired table
+        (Unloading accumulator view outcome)) | Nothing = Refl
+    resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+      state@(MkSystemState ambient fibers) |
+      Just (MkFiber component parent retired table
+        (Unloading accumulator view outcome)) | Just actual
+      with (decEq @{nameEq} actual provider)
+      resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+        state@(MkSystemState ambient fibers) |
+        Just (MkFiber component parent retired table
+          (Unloading accumulator view outcome)) | Just actual | Yes equal =
+          case equal of Refl => Refl
+      resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+        state@(MkSystemState ambient fibers) |
+        Just (MkFiber component parent retired table
+          (Unloading accumulator view outcome)) | Just actual | No distinct = Refl
+
+0 resolvedAtAfterReplace :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (consumer : name) -> (wanted : key) -> (provider : name) ->
+  (sourceFiber, targetFiberValue : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) -> (ambient : world) ->
+  (found : lookupFiber @{nameEq} consumer fibers = Just sourceFiber) ->
+  resolvedProviderAt @{nameEq} @{keyEq} consumer wanted provider
+    (the (SystemState name key value world error)
+      (MkSystemState ambient
+        (replaceBinding @{nameEq} consumer targetFiberValue fibers))) =
+  fiberResolves @{nameEq} @{keyEq} wanted provider targetFiberValue
+resolvedAtAfterReplace {name} {key} {world} {error} {value}
+  nameEq keyEq consumer wanted provider sourceFiber targetFiberValue fibers
+  ambient found =
+  trans (resolvedAtLookupEquation nameEq keyEq consumer wanted provider
+    (MkSystemState ambient
+      (replaceBinding @{nameEq} consumer targetFiberValue fibers)))
+    (cong (resolvedMaybeFiberWith nameEq keyEq wanted provider)
+      (lookupReplacedFiber consumer sourceFiber targetFiberValue fibers found))
+
+0 fiberResolvedProviderSetRuntimeSameCommitted :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (provider : name) ->
+  (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLife : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))) ->
+  committed (fiberLifecycle fiber) = Just view ->
+  committed newLife = Just view ->
+  fiberResolves @{nameEq} @{keyEq} wanted provider
+    (setFiberRuntime fiber newTable newLife) =
+  fiberResolves @{nameEq} @{keyEq} wanted provider fiber
+fiberResolvedProviderSetRuntimeSameCommitted nameEq keyEq wanted provider
+  fiber newTable newLife view sourceCommitted targetCommitted =
+    trans (fiberResolvesWithMatches nameEq keyEq wanted provider
+      (setFiberRuntime fiber newTable newLife))
+      (trans (fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
+        fiber newTable newLife view sourceCommitted targetCommitted)
+        (sym (fiberResolvesWithMatches nameEq keyEq wanted provider fiber)))
+
+0 reloadingToReloadingResolution : DecEq name => DecEq key =>
+  (wanted : key) -> (provider : name) ->
+  (fiber : Fiber name key value world error) ->
+  {remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)))} ->
+  {accumulator : LocalState key value world
+    (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world (componentProvisions (fiberComponent fiber))} ->
+  {view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))} ->
+  fiberLifecycle fiber = Reloading remaining accumulator view ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newRemaining : List (StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)))) ->
+  (newAccumulator : LocalState key value world
+    (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world (componentProvisions (fiberComponent fiber))) ->
+  fiberResolves wanted provider
+    (setFiberRuntime fiber newTable
+      (Reloading newRemaining newAccumulator view)) =
+  fiberResolves wanted provider fiber
+reloadingToReloadingResolution @{nameEq} @{keyEq} wanted provider
+  fiber@(MkFiber component parent retired table
+    (Reloading remaining accumulator view)) Refl newTable newRemaining
+  newAccumulator =
+    fiberResolvedProviderSetRuntimeSameCommitted nameEq keyEq wanted provider
+      fiber newTable (Reloading newRemaining newAccumulator view) view Refl Refl
+
+0 reloadingToActiveResolution : DecEq name => DecEq key =>
+  (wanted : key) -> (provider : name) ->
+  (fiber : Fiber name key value world error) ->
+  {remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)))} ->
+  {accumulator : LocalState key value world
+    (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world (componentProvisions (fiberComponent fiber))} ->
+  {view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))} ->
+  fiberLifecycle fiber = Reloading remaining accumulator view ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newAccumulator : LocalState key value world
+    (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world (componentProvisions (fiberComponent fiber))) ->
+  fiberResolves wanted provider
+    (setFiberRuntime fiber newTable (Active newAccumulator view)) =
+  fiberResolves wanted provider fiber
+reloadingToActiveResolution @{nameEq} @{keyEq} wanted provider
+  fiber@(MkFiber component parent retired table
+    (Reloading remaining accumulator view)) Refl newTable newAccumulator =
+    fiberResolvedProviderSetRuntimeSameCommitted nameEq keyEq wanted provider
+      fiber newTable (Active newAccumulator view) view Refl Refl
+
+0 reloadingToUnloadingResolution : DecEq name => DecEq key =>
+  (wanted : key) -> (provider : name) ->
+  (fiber : Fiber name key value world error) ->
+  {remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)))} ->
+  {accumulator : LocalState key value world
+    (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world (componentProvisions (fiberComponent fiber))} ->
+  {view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))} ->
+  fiberLifecycle fiber = Reloading remaining accumulator view ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newAccumulator : LocalState key value world
+    (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world (componentProvisions (fiberComponent fiber))) ->
+  (outcome : Maybe error) ->
+  fiberResolves wanted provider
+    (setFiberRuntime fiber newTable
+      (Unloading newAccumulator view outcome)) =
+  fiberResolves wanted provider fiber
+reloadingToUnloadingResolution @{nameEq} @{keyEq} wanted provider
+  fiber@(MkFiber component parent retired table
+    (Reloading remaining accumulator view)) Refl newTable newAccumulator outcome =
+    fiberResolvedProviderSetRuntimeSameCommitted nameEq keyEq wanted provider
+      fiber newTable (Unloading newAccumulator view outcome) view Refl Refl
+
+0 activeToUnloadingResolution : DecEq name => DecEq key =>
+  (wanted : key) -> (provider : name) ->
+  (fiber : Fiber name key value world error) ->
+  {accumulator : LocalState key value world
+    (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world (componentProvisions (fiberComponent fiber))} ->
+  {view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))} ->
+  fiberLifecycle fiber = Active accumulator view ->
+  fiberResolves wanted provider
+    (setFiberLifecycle fiber (Unloading accumulator view Nothing)) =
+  fiberResolves wanted provider fiber
+activeToUnloadingResolution @{nameEq} @{keyEq} wanted provider
+  fiber@(MkFiber component parent retired table (Active accumulator view)) Refl =
+    fiberResolvedProviderSetRuntimeSameCommitted nameEq keyEq wanted provider
+      fiber (fiberTable fiber) (Unloading accumulator view Nothing) view Refl Refl
+
+0 retireResolution : DecEq name => DecEq key =>
+  (wanted : key) -> (provider : name) ->
+  (fiber : Fiber name key value world error) ->
+  fiberResolves wanted provider (retireFiber fiber) =
+  fiberResolves wanted provider fiber
+retireResolution @{nameEq} @{keyEq} wanted provider fiber =
+  trans (fiberResolvesWithMatches nameEq keyEq wanted provider (retireFiber fiber))
+    (trans (fiberResolvedProviderRetireFrame nameEq keyEq wanted provider fiber)
+      (sym (fiberResolvesWithMatches nameEq keyEq wanted provider fiber)))
+
+0 resolvedProviderForeignAction :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (consumer : name) -> (wanted : key) -> (provider : name) ->
+  (action : Action name key value world error) ->
+  (source, target : SystemState name key value world error) ->
+  (tag : RuleTag) -> Not (consumer = actionOwner action) ->
+  applyAction @{nameEq} @{keyEq} action source = Just (tag, target) ->
+  resolvedProviderAt @{nameEq} @{keyEq} consumer wanted provider target =
+  resolvedProviderAt @{nameEq} @{keyEq} consumer wanted provider source
+resolvedProviderForeignAction nameEq keyEq consumer wanted provider action source target
+  tag distinct raw =
+  let local = applyActionLocalUpdate nameEq keyEq action source target tag raw
+      lookupFrame = systemLocalUpdateForeign nameEq consumer (actionOwner action)
+        distinct source target local
+  in trans (resolvedAtLookupEquation nameEq keyEq consumer wanted provider target)
+    (trans (cong (resolvedMaybeFiberWith nameEq keyEq wanted provider) lookupFrame)
+      (sym (resolvedAtLookupEquation nameEq keyEq consumer wanted provider source)))
+
+0 resolvedAtFoundCore :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (consumer : name) -> (wanted : key) -> (provider : name) ->
+  (state : SystemState name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} consumer (registry state) = Just fiber ->
+  resolvedProviderAt @{nameEq} @{keyEq} consumer wanted provider state =
+    fiberResolvesWith nameEq keyEq wanted provider fiber
+resolvedAtFoundCore nameEq keyEq consumer wanted provider state fiber found =
+  trans (resolvedAtLookupEquation nameEq keyEq consumer wanted provider state)
+    (cong (resolvedMaybeFiberWith nameEq keyEq wanted provider) found)
+
+0 resolvedAfterReplaceStable :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (consumer : name) -> (wanted : key) -> (provider : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (sourceFiber, targetFiberValue : Fiber name key value world error) ->
+  (found : lookupFiber @{nameEq} consumer fibers = Just sourceFiber) ->
+  fiberResolvesWith nameEq keyEq wanted provider targetFiberValue =
+    fiberResolvesWith nameEq keyEq wanted provider sourceFiber ->
+  resolvedProviderAt @{nameEq} @{keyEq} consumer wanted provider
+    (the (SystemState name key value world error)
+      (MkSystemState ambient
+        (replaceBinding @{nameEq} consumer targetFiberValue fibers))) =
+  resolvedProviderAt @{nameEq} @{keyEq} consumer wanted provider
+    (the (SystemState name key value world error)
+      (MkSystemState ambient fibers))
+resolvedAfterReplaceStable nameEq keyEq consumer wanted provider ambient fibers
+  sourceFiber targetFiberValue found stable =
+  trans (resolvedAtAfterReplace nameEq keyEq consumer wanted provider sourceFiber
+    targetFiberValue fibers ambient found)
+    (trans stable (sym (resolvedAtFoundCore nameEq keyEq consumer wanted provider
+      (MkSystemState ambient fibers) sourceFiber found)))
+
+0 falseAndTrueImpossible : observed = False -> observed = True -> result
+falseAndTrueImpossible Refl Refl impossible
+
+record StaticSelectedReplacement
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (selected : name)
+  (before, afterState : SystemState name key value world error) where
+  constructor MkStaticSelectedReplacement
+  oldSelectedFiber : Fiber name key value world error
+  newSelectedFiber : Fiber name key value world error
+  oldSelectedFound : lookupFiber @{nameEq} selected (registry before) =
+    Just oldSelectedFiber
+  newSelectedFound : lookupFiber @{nameEq} selected (registry afterState) =
+    Just newSelectedFiber
+  selectedComponentStable : fiberComponent newSelectedFiber =
+    fiberComponent oldSelectedFiber
+
+0 installedLocalUpdateStaticReplacement :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  SystemLocalUpdate name key world error value nameEq selected before afterState ->
+  installedAt @{nameEq} selected before = True ->
+  installedAt @{nameEq} selected afterState = True ->
+  StaticSelectedReplacement name key world error value nameEq selected before
+    afterState
+installedLocalUpdateStaticReplacement {name} {key} {world} {error} {value}
+  nameEq selected before@(MkSystemState ambient fibers)
+  afterState@(MkSystemState afterAmbient afterFibers) update sourceInstalled
+  targetInstalled
+  with (systemRegistryUpdate update)
+  installedLocalUpdateStaticReplacement {name} {key} {world} {error} {value}
+    nameEq selected before@(MkSystemState ambient fibers)
+    afterState@(MkSystemState afterAmbient
+      (insertBinding @{nameEq} selected fiber fibers absent)) update sourceInstalled
+    targetInstalled | LocalInsert fiber absent = falseAndTrueImpossible
+      (installedAtMissing nameEq selected (MkSystemState ambient fibers)
+        (lookupFiber @{nameEq} selected fibers) Refl absent)
+      sourceInstalled
+  installedLocalUpdateStaticReplacement {name} {key} {world} {error} {value}
+    nameEq selected before@(MkSystemState ambient fibers)
+    afterState@(MkSystemState afterAmbient
+      (replaceBinding @{nameEq} selected targetFiberValue fibers)) update
+    sourceInstalled targetInstalled |
+    LocalReplace {oldFiber} @{oldFound} @{staticComponent} targetFiberValue =
+      MkStaticSelectedReplacement oldFiber targetFiberValue oldFound
+        (lookupReplacedFiber selected oldFiber targetFiberValue
+          fibers oldFound) staticComponent
+  installedLocalUpdateStaticReplacement {name} {key} {world} {error} {value}
+    nameEq selected before@(MkSystemState ambient fibers)
+    afterState@(MkSystemState afterAmbient
+      (deleteBinding @{nameEq} selected fibers)) update sourceInstalled
+    targetInstalled | LocalDelete = falseAndTrueImpossible
+      (trans (installedAtLookupEquation nameEq selected
+        (MkSystemState afterAmbient (deleteBinding @{nameEq} selected fibers)))
+        (cong (installedMaybe {name = name} {key = key} {world = world}
+          {error = error} {value = value})
+          (lookupDeleteSelf selected fibers)))
+      targetInstalled
+
+0 installedFiberWitness :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  installedAt @{nameEq} selected state = True ->
+  (fiber : Fiber name key value world error **
+    lookupFiber @{nameEq} selected (registry state) = Just fiber)
+installedFiberWitness nameEq selected state installedTrue
+  with (lookupFiber @{nameEq} selected (registry state)) proof found
+  installedFiberWitness nameEq selected state installedTrue | Nothing =
+    absurd installedTrue
+  installedFiberWitness nameEq selected state installedTrue | Just fiber =
+    (fiber ** Refl)
+
+0 installedCheckedStepStaticReplacement :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
+  installedAt @{nameEq} selected before = True ->
+  installedAt @{nameEq} selected afterState = True ->
+  StaticSelectedReplacement name key world error value nameEq selected before
+    afterState
+installedCheckedStepStaticReplacement nameEq keyEq selected action tag before
+  afterState checkedEquation sourceInstalled targetInstalled
+  with (decEq @{nameEq} selected (actionOwner action))
+  installedCheckedStepStaticReplacement nameEq keyEq selected action tag before
+    afterState checkedEquation sourceInstalled targetInstalled | No distinct =
+      case installedFiberWitness nameEq selected before sourceInstalled of
+        (fiber ** sourceFound) =>
+          let raw = checkedActionProjects nameEq keyEq action before afterState tag
+                checkedEquation
+              update = applyActionLocalUpdate nameEq keyEq action before afterState
+                tag raw
+              targetFound = trans
+                (systemLocalUpdateForeign nameEq selected (actionOwner action)
+                  distinct before afterState update) sourceFound
+          in MkStaticSelectedReplacement fiber fiber sourceFound targetFound Refl
+  installedCheckedStepStaticReplacement nameEq keyEq selected action tag before
+    afterState checkedEquation sourceInstalled targetInstalled | Yes same =
+      let raw = checkedActionProjects nameEq keyEq action before afterState tag
+            checkedEquation
+          update = applyActionLocalUpdate nameEq keyEq action before afterState tag raw
+      in case same of
+        Refl => installedLocalUpdateStaticReplacement nameEq selected before afterState
+          update sourceInstalled targetInstalled
+
+0 cp3JustInjective : Just left = Just right -> left = right
+cp3JustInjective Refl = Refl
+
+0 viewProvidersInjective :
+  (left, right : View name deps) -> viewProviders left = viewProviders right ->
+  left = right
+viewProvidersInjective EmptyView EmptyView Refl = Refl
+viewProvidersInjective (ProviderView left leftRest)
+  (ProviderView right rightRest) equation =
+  case consInjective equation of
+    (headEqual, tailEqual) => case headEqual of
+      Refl => cong (ProviderView right)
+        (viewProvidersInjective leftRest rightRest tailEqual)
+
+0 snapshotComponentStable :
+  (sourceSnapshot : CommittedSnapshot name key world error value nameEq selected
+    providers before) ->
+  (targetSnapshot : CommittedSnapshot name key world error value nameEq selected
+    providers afterState) ->
+  (replacement : StaticSelectedReplacement name key world error value nameEq
+    selected before afterState) ->
+  fiberComponent (committedFiber targetSnapshot) =
+    fiberComponent (committedFiber sourceSnapshot)
+snapshotComponentStable sourceSnapshot targetSnapshot replacement =
+  let oldEqual = cp3JustInjective (trans (sym (oldSelectedFound replacement))
+        (committedLookup sourceSnapshot))
+      newEqual = cp3JustInjective (trans (sym (newSelectedFound replacement))
+        (committedLookup targetSnapshot))
+  in trans (cong fiberComponent (sym newEqual))
+    (trans (selectedComponentStable replacement)
+      (cong fiberComponent oldEqual))
+
+0 resolvedViewStableAcrossComponents :
+  (wanted : key) -> (provider : name) ->
+  (targetComponent, sourceComponent : Component key value world error) ->
+  (componentStable : targetComponent = sourceComponent) ->
+  (targetView : View name
+    (dependencies (componentDependencies targetComponent))) ->
+  (sourceView : View name
+    (dependencies (componentDependencies sourceComponent))) ->
+  viewProviders targetView = viewProviders sourceView ->
+  viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies sourceComponent)) sourceView =
+    Just provider ->
+  viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies targetComponent)) targetView =
+    Just provider
+resolvedViewStableAcrossComponents wanted provider component component Refl
+  targetView sourceView providersEqual sourceResolved =
+    rewrite viewProvidersInjective targetView sourceView providersEqual in
+      sourceResolved
+
+0 snapshotResolvedLookupStable :
+  (wanted : key) -> (provider : name) ->
+  (sourceSnapshot : CommittedSnapshot name key world error value nameEq selected
+    providers before) ->
+  (targetSnapshot : CommittedSnapshot name key world error value nameEq selected
+    providers afterState) ->
+  fiberComponent (committedFiber targetSnapshot) =
+    fiberComponent (committedFiber sourceSnapshot) ->
+  viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies
+      (fiberComponent (committedFiber sourceSnapshot))))
+    (committedView sourceSnapshot) = Just provider ->
+  viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies
+      (fiberComponent (committedFiber targetSnapshot))))
+    (committedView targetSnapshot) = Just provider
+snapshotResolvedLookupStable wanted provider sourceSnapshot targetSnapshot
+  componentStable sourceResolved =
+  resolvedViewStableAcrossComponents wanted provider
+    (fiberComponent (committedFiber targetSnapshot))
+    (fiberComponent (committedFiber sourceSnapshot)) componentStable
+    (committedView targetSnapshot) (committedView sourceSnapshot)
+    (trans (committedProviderNames targetSnapshot)
+      (sym (committedProviderNames sourceSnapshot))) sourceResolved
+
+public export
+record ResolvedConsumerSnapshotData
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (consumer : name) (wanted : key) (provider : name)
+  (state : SystemState name key value world error) where
+  constructor MkResolvedConsumerSnapshotData
+  resolvedProviders : List name
+  resolvedConsumerSnapshot : CommittedSnapshot name key world error value nameEq
+    consumer resolvedProviders state
+  snapshotKeyResolved : viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies
+      (fiberComponent (committedFiber resolvedConsumerSnapshot))))
+    (committedView resolvedConsumerSnapshot) = Just provider
+
+public export
+0 resolvedConsumerSnapshotData :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (consumer : name) -> (wanted : key) -> (provider : name) ->
+  (state : SystemState name key value world error) ->
+  resolvedProviderAt @{nameEq} @{keyEq} consumer wanted provider state = True ->
+  ResolvedConsumerSnapshotData name key world error value nameEq keyEq consumer
+    wanted provider state
+resolvedConsumerSnapshotData nameEq keyEq consumer wanted provider
+  (MkSystemState ambient fibers) resolved
+  with (lookupFiber @{nameEq} consumer fibers) proof consumerFound
+  resolvedConsumerSnapshotData nameEq keyEq consumer wanted provider
+    (MkSystemState ambient fibers) resolved | Nothing = absurd resolved
+  resolvedConsumerSnapshotData nameEq keyEq consumer wanted provider
+    (MkSystemState ambient fibers) resolved |
+    Just (MkFiber component parent retired table (Inactive outcome)) =
+      absurd resolved
+  resolvedConsumerSnapshotData nameEq keyEq consumer wanted provider
+    (MkSystemState ambient fibers) resolved |
+    Just fiber@(MkFiber component parent retired table
+      (Reloading remaining accumulator view))
+    with (viewLookup @{keyEq} wanted
+      (dependencies (componentDependencies component)) view) proof selectedProvider
+    resolvedConsumerSnapshotData nameEq keyEq consumer wanted provider
+      (MkSystemState ambient fibers) resolved |
+      Just fiber@(MkFiber component parent retired table
+        (Reloading remaining accumulator view)) | Nothing = absurd resolved
+    resolvedConsumerSnapshotData nameEq keyEq consumer wanted provider
+      (MkSystemState ambient fibers) resolved |
+      Just fiber@(MkFiber component parent retired table
+        (Reloading remaining accumulator view)) | Just actual
+      with (decEq @{nameEq} actual provider)
+      resolvedConsumerSnapshotData nameEq keyEq consumer wanted provider
+        (MkSystemState ambient fibers) resolved |
+        Just fiber@(MkFiber component parent retired table
+          (Reloading remaining accumulator view)) | Just actual | Yes equal =
+          case equal of
+            Refl => MkResolvedConsumerSnapshotData (viewProviders view)
+              (MkCommittedSnapshot
+                (MkFiber component parent retired table
+                  (Reloading remaining accumulator view)) consumerFound view Refl Refl)
+              selectedProvider
+      resolvedConsumerSnapshotData nameEq keyEq consumer wanted provider
+        (MkSystemState ambient fibers) resolved |
+        Just fiber@(MkFiber component parent retired table
+          (Reloading remaining accumulator view)) | Just actual | No distinct =
             absurd resolved
-    resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
-      Just consumerFiber | Unloading accumulator view outcome
-      with (viewLookup @{keyEq} wanted
-        (dependencies (componentDependencies (fiberComponent consumerFiber))) view)
-      proof selectedProvider
-      resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
-        Just consumerFiber | Unloading accumulator view outcome | Nothing =
-          absurd resolved
-      resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
-        Just consumerFiber | Unloading accumulator view outcome | Just actual
-        with (decEq @{nameEq} actual provider)
-        resolvedProviderData nameEq keyEq consumer wanted actual state wellFormed resolved |
-          Just consumerFiber | Unloading accumulator view outcome | Just actual |
-          Yes Refl =
-            resolvedCommittedFiberData nameEq keyEq consumer wanted actual state
-              consumerFiber consumerFound wellFormed view
-              (cong committed lifecycle) selectedProvider
-        resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
-          Just consumerFiber | Unloading accumulator view outcome | Just actual |
-          No distinct = absurd resolved
+  resolvedConsumerSnapshotData nameEq keyEq consumer wanted provider
+    (MkSystemState ambient fibers) resolved |
+    Just fiber@(MkFiber component parent retired table (Active accumulator view))
+    with (viewLookup @{keyEq} wanted
+      (dependencies (componentDependencies component)) view) proof selectedProvider
+    resolvedConsumerSnapshotData nameEq keyEq consumer wanted provider
+      (MkSystemState ambient fibers) resolved |
+      Just fiber@(MkFiber component parent retired table (Active accumulator view)) |
+      Nothing = absurd resolved
+    resolvedConsumerSnapshotData nameEq keyEq consumer wanted provider
+      (MkSystemState ambient fibers) resolved |
+      Just fiber@(MkFiber component parent retired table (Active accumulator view)) |
+      Just actual with (decEq @{nameEq} actual provider)
+      resolvedConsumerSnapshotData nameEq keyEq consumer wanted provider
+        (MkSystemState ambient fibers) resolved |
+        Just fiber@(MkFiber component parent retired table (Active accumulator view)) |
+        Just actual | Yes equal = case equal of
+          Refl => MkResolvedConsumerSnapshotData (viewProviders view)
+            (MkCommittedSnapshot
+              (MkFiber component parent retired table (Active accumulator view))
+              consumerFound view Refl Refl) selectedProvider
+      resolvedConsumerSnapshotData nameEq keyEq consumer wanted provider
+        (MkSystemState ambient fibers) resolved |
+        Just fiber@(MkFiber component parent retired table (Active accumulator view)) |
+        Just actual | No distinct = absurd resolved
+  resolvedConsumerSnapshotData nameEq keyEq consumer wanted provider
+    (MkSystemState ambient fibers) resolved |
+    Just fiber@(MkFiber component parent retired table
+      (Unloading accumulator view outcome))
+    with (viewLookup @{keyEq} wanted
+      (dependencies (componentDependencies component)) view) proof selectedProvider
+    resolvedConsumerSnapshotData nameEq keyEq consumer wanted provider
+      (MkSystemState ambient fibers) resolved |
+      Just fiber@(MkFiber component parent retired table
+        (Unloading accumulator view outcome)) | Nothing = absurd resolved
+    resolvedConsumerSnapshotData nameEq keyEq consumer wanted provider
+      (MkSystemState ambient fibers) resolved |
+      Just fiber@(MkFiber component parent retired table
+        (Unloading accumulator view outcome)) | Just actual
+      with (decEq @{nameEq} actual provider)
+      resolvedConsumerSnapshotData nameEq keyEq consumer wanted provider
+        (MkSystemState ambient fibers) resolved |
+        Just fiber@(MkFiber component parent retired table
+          (Unloading accumulator view outcome)) | Just actual | Yes equal =
+          case equal of
+            Refl => MkResolvedConsumerSnapshotData (viewProviders view)
+              (MkCommittedSnapshot
+                (MkFiber component parent retired table
+                  (Unloading accumulator view outcome)) consumerFound view Refl Refl)
+              selectedProvider
+      resolvedConsumerSnapshotData nameEq keyEq consumer wanted provider
+        (MkSystemState ambient fibers) resolved |
+        Just fiber@(MkFiber component parent retired table
+          (Unloading accumulator view outcome)) | Just actual | No distinct =
+            absurd resolved
+
+0 snapshotResolvedProviderAt :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (consumer : name) -> (wanted : key) -> (provider : name) ->
+  (snapshot : CommittedSnapshot name key world error value nameEq consumer
+    providers state) ->
+  viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies
+      (fiberComponent (committedFiber snapshot))))
+    (committedView snapshot) = Just provider ->
+  resolvedProviderAt @{nameEq} @{keyEq} consumer wanted provider state = True
+snapshotResolvedProviderAt nameEq keyEq consumer wanted provider
+  (MkCommittedSnapshot
+    (MkFiber component parent retired table lifecycle) found view committedView
+      providerNames) resolved =
+  rewrite found in
+  rewrite committedView in
+  rewrite resolved in
+    sameName
+  where
+    sameName : (case decEq @{nameEq} provider provider of
+      Yes Refl => True
+      No _ => False) = True
+    sameName with (decEq @{nameEq} provider provider)
+      sameName | Yes Refl = Refl
+      sameName | No distinct = absurd (distinct Refl)
+
+public export
+0 resolvedConstantInstalledTrace :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (consumer : name) -> (wanted : key) -> (provider : name) ->
+  (providers : List name) ->
+  (transitions : Transitions start finalState) ->
+  (installedTrace : InstalledTrace name key world error value nameEq keyEq
+    consumer transitions) ->
+  (snapshot : CommittedSnapshot name key world error value nameEq consumer
+    providers start) ->
+  (resolved : viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies
+      (fiberComponent (committedFiber snapshot))))
+    (committedView snapshot) = Just provider) ->
+  ConsumerResolutionConstant name key world error value nameEq keyEq consumer
+    wanted provider transitions
+resolvedConstantInstalledTrace nameEq keyEq consumer wanted provider providers
+  NoTransitions (InstalledEnd installed) snapshot resolved =
+    ResolutionConstantEnd
+      (snapshotResolvedProviderAt nameEq keyEq consumer wanted provider snapshot
+        resolved)
+resolvedConstantInstalledTrace nameEq keyEq consumer wanted provider providers
+  (MoreTransitions transition@(Fired nameEq keyEq action tag checkedEquation) rest)
+  (InstalledStep action tag checkedEquation rest sourceInstalled tail) snapshot
+  resolved =
+    let raw = checkedActionProjects nameEq keyEq action _ _ tag checkedEquation
+        targetInstalled = installedTraceStart tail
+        afterCommitted = case decEq @{nameEq} consumer (actionOwner action) of
+          No distinct => committedProvidersForeignAction nameEq keyEq consumer
+            providers action _ _ tag distinct (committedSnapshotEquation snapshot)
+            raw
+          Yes same => committedProvidersSelectedAction nameEq keyEq consumer providers
+            action _ _ tag (sym same) snapshot targetInstalled raw
+        targetSnapshot = committedSnapshotFrom nameEq consumer providers _
+          afterCommitted
+        replacement = installedCheckedStepStaticReplacement nameEq keyEq consumer
+          action tag _ _ checkedEquation sourceInstalled targetInstalled
+        componentStable = snapshotComponentStable snapshot targetSnapshot replacement
+        targetResolved = snapshotResolvedLookupStable wanted provider snapshot
+          targetSnapshot componentStable resolved
+        sourceResolved = snapshotResolvedProviderAt nameEq keyEq consumer wanted
+          provider snapshot resolved
+    in ResolutionConstantStep transition rest sourceResolved
+      (resolvedConstantInstalledTrace nameEq keyEq consumer wanted provider providers
+        rest tail targetSnapshot targetResolved)
+
+0 viewLookupImpliesContains :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (deps : List key) -> (view : View name deps) ->
+  (provider : name) ->
+  viewLookup @{keyEq} wanted deps view = Just provider ->
+  viewContains @{nameEq} provider view = True
+viewLookupImpliesContains nameEq keyEq wanted [] EmptyView provider found =
+  case found of Refl impossible
+viewLookupImpliesContains nameEq keyEq wanted (current :: rest)
+  (ProviderView currentProvider tail) provider found
+  with (decEq @{keyEq} wanted current)
+  viewLookupImpliesContains nameEq keyEq current (current :: rest)
+    (ProviderView currentProvider tail) provider found | Yes Refl =
+      case cp3JustInjective found of
+        Refl => sameProvider
+    where
+      sameProvider : viewContains @{nameEq} currentProvider
+        (ProviderView currentProvider tail) = True
+      sameProvider with (decEq @{nameEq} currentProvider currentProvider)
+        sameProvider | Yes Refl = Refl
+        sameProvider | No distinct = absurd (distinct Refl)
+  viewLookupImpliesContains nameEq keyEq wanted (current :: rest)
+    (ProviderView currentProvider tail) provider found | No wantedDistinct
+    with (decEq @{nameEq} provider currentProvider)
+    viewLookupImpliesContains nameEq keyEq wanted (current :: rest)
+      (ProviderView provider tail) provider found | No wantedDistinct | Yes Refl = Refl
+    viewLookupImpliesContains nameEq keyEq wanted (current :: rest)
+      (ProviderView currentProvider tail) provider found | No wantedDistinct |
+      No providerDistinct = viewLookupImpliesContains nameEq keyEq wanted rest tail
+        provider found
+
+0 reliedHeadFromCommittedView :
+  (nameEq : DecEq name) -> (provider, consumer : name) ->
+  Not (consumer = provider) ->
+  (fiber : Fiber name key value world error) ->
+  (view : View name (dependencies
+    (componentDependencies (fiberComponent fiber)))) ->
+  committed (fiberLifecycle fiber) = Just view ->
+  viewContains @{nameEq} provider view = True ->
+  reliedHead @{nameEq} provider provider (Bind consumer fiber) = True
+reliedHeadFromCommittedView nameEq provider consumer distinct
+  (MkFiber component parent retired table (Inactive outcome)) view committedView
+  contains = case committedView of Refl impossible
+reliedHeadFromCommittedView nameEq provider consumer distinct
+  (MkFiber component parent retired table
+    (Reloading remaining accumulator actualView)) view committedView contains =
+  different (trans (cong (viewContains @{nameEq} provider)
+    (cp3JustInjective committedView)) contains)
+  where
+    different : viewContains @{nameEq} provider actualView = True ->
+      reliedHead @{nameEq} provider provider
+        (Bind consumer (MkFiber component parent retired table
+          (Reloading remaining accumulator actualView))) = True
+    different actualContains with (decEq @{nameEq} consumer provider)
+      different actualContains | Yes equal = case equal of
+        Refl => absurd (distinct Refl)
+      different actualContains | No _ = rewrite actualContains in Refl
+reliedHeadFromCommittedView nameEq provider consumer distinct
+  (MkFiber component parent retired table (Active accumulator actualView))
+  view committedView contains =
+  different (trans (cong (viewContains @{nameEq} provider)
+    (cp3JustInjective committedView)) contains)
+  where
+    different : viewContains @{nameEq} provider actualView = True ->
+      reliedHead @{nameEq} provider provider
+        (Bind consumer (MkFiber component parent retired table
+          (Active accumulator actualView))) = True
+    different actualContains with (decEq @{nameEq} consumer provider)
+      different actualContains | Yes equal = case equal of
+        Refl => absurd (distinct Refl)
+      different actualContains | No _ = rewrite actualContains in Refl
+reliedHeadFromCommittedView nameEq provider consumer distinct
+  (MkFiber component parent retired table
+    (Unloading accumulator actualView outcome)) view committedView contains =
+  different (trans (cong (viewContains @{nameEq} provider)
+    (cp3JustInjective committedView)) contains)
+  where
+    different : viewContains @{nameEq} provider actualView = True ->
+      reliedHead @{nameEq} provider provider
+        (Bind consumer (MkFiber component parent retired table
+          (Unloading accumulator actualView outcome))) = True
+    different actualContains with (decEq @{nameEq} consumer provider)
+      different actualContains | Yes equal = case equal of
+        Refl => absurd (distinct Refl)
+      different actualContains | No _ = rewrite actualContains in Refl
+
+
+0 resolvedConsumerSnapshotRelied :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {providers : List name} ->
+  {state : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (consumer, provider : name) -> Not (consumer = provider) -> (wanted : key) ->
+  (snapshot : CommittedSnapshot name key world error value nameEq consumer
+    providers state) ->
+  viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies
+      (fiberComponent (committedFiber snapshot))))
+    (committedView snapshot) = Just provider ->
+  relied @{nameEq} {key = key} {value = value} {world = world} {error = error} provider (registry state) = True
+resolvedConsumerSnapshotRelied nameEq keyEq consumer provider distinct wanted
+  snapshot resolved =
+  let contains = viewLookupImpliesContains nameEq keyEq wanted
+        (dependencies (componentDependencies
+          (fiberComponent (committedFiber snapshot))))
+        (committedView snapshot) provider resolved
+      headTrue = reliedHeadFromCommittedView nameEq provider consumer distinct
+        (committedFiber snapshot) (committedView snapshot)
+        (committedLifecycle snapshot) contains
+      entriesFound = lookupFiberEntries nameEq consumer (committedFiber snapshot)
+        (registry state) (committedLookup snapshot)
+  in reliedOnByLookupTrue nameEq provider consumer (committedFiber snapshot)
+    (registry state) (committedLookup snapshot) headTrue
+
+public export
+record StableProviderValue
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (provider : name) (wanted : key) (provided : value wanted)
+  (state : SystemState name key value world error) where
+  constructor MkStableProviderValue
+  stableValueFiber : Fiber name key value world error
+  stableValueFound : lookupFiber @{nameEq} provider (registry state) =
+    Just stableValueFiber
+  stableValueLifecycle : stableProvider (fiberLifecycle stableValueFiber) = True
+  stableValuePresent : providerValueAt @{nameEq} @{keyEq} provider wanted state =
+    Just provided
+
+fiberValueMaybeWith : (keyEq : DecEq key) -> (wanted : key) ->
+  Maybe (Fiber name key value world error) -> Maybe (value wanted)
+fiberValueMaybeWith keyEq wanted Nothing = Nothing
+fiberValueMaybeWith keyEq wanted (Just fiber) =
+  lookupBinding @{keyEq} wanted (ownedValues (fiberTable fiber))
+
+0 providerValueAtLookupEquation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provider : name) -> (wanted : key) ->
+  (state : SystemState name key value world error) ->
+  providerValueAt @{nameEq} @{keyEq} provider wanted state =
+    fiberValueMaybeWith {value = value} {world = world} {error = error}
+      keyEq wanted (lookupFiber @{nameEq} provider (registry state))
+providerValueAtLookupEquation nameEq keyEq provider wanted
+  state@(MkSystemState ambient fibers)
+  with (lookupFiber @{nameEq} provider fibers)
+  providerValueAtLookupEquation nameEq keyEq provider wanted
+    state@(MkSystemState ambient fibers) | Nothing = Refl
+  providerValueAtLookupEquation nameEq keyEq provider wanted
+    state@(MkSystemState ambient fibers) |
+    Just (MkFiber component parent retired table lifecycle)
+    with (lookupBinding @{keyEq} wanted (ownedValues table))
+    providerValueAtLookupEquation nameEq keyEq provider wanted
+      state@(MkSystemState ambient fibers) |
+      Just (MkFiber component parent retired table lifecycle) | Nothing = Refl
+    providerValueAtLookupEquation nameEq keyEq provider wanted
+      state@(MkSystemState ambient fibers) |
+      Just (MkFiber component parent retired table lifecycle) | Just found = Refl
+
+0 providerValueAtFoundCore :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provider : name) -> (wanted : key) ->
+  (state : SystemState name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} provider (registry state) = Just fiber ->
+  providerValueAt @{nameEq} @{keyEq} provider wanted state =
+    fiberValueMaybeWith keyEq wanted (Just fiber)
+providerValueAtFoundCore nameEq keyEq provider wanted state fiber found =
+  trans (providerValueAtLookupEquation nameEq keyEq provider wanted state)
+    (cong (fiberValueMaybeWith keyEq wanted) found)
+
+0 providerValueForeignAction :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provider : name) -> (wanted : key) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) -> Not (provider = actionOwner action) ->
+  applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
+  providerValueAt @{nameEq} @{keyEq} provider wanted afterState =
+  providerValueAt @{nameEq} @{keyEq} provider wanted before
+providerValueForeignAction nameEq keyEq provider wanted action before afterState
+  tag distinct raw =
+  let update = applyActionLocalUpdate nameEq keyEq action before afterState tag raw
+      lookupFrame = systemLocalUpdateForeign nameEq provider (actionOwner action)
+        distinct before afterState update
+  in trans (providerValueAtLookupEquation nameEq keyEq provider wanted afterState)
+    (trans (cong (fiberValueMaybeWith keyEq wanted) lookupFrame)
+      (sym (providerValueAtLookupEquation nameEq keyEq provider wanted before)))
+
+0 stableProviderValueForeign :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provider : name) -> (wanted : key) -> (provided : value wanted) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) -> Not (provider = actionOwner action) ->
+  applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
+  StableProviderValue name key world error value nameEq keyEq provider wanted
+    provided before ->
+  StableProviderValue name key world error value nameEq keyEq provider wanted
+    provided afterState
+stableProviderValueForeign nameEq keyEq provider wanted provided action before
+  afterState tag distinct raw snapshot =
+  let update = applyActionLocalUpdate nameEq keyEq action before afterState tag raw
+      targetFound = trans (systemLocalUpdateForeign nameEq provider
+        (actionOwner action) distinct before afterState update)
+        (stableValueFound snapshot)
+      targetValue = trans (providerValueForeignAction nameEq keyEq provider wanted
+        action before afterState tag distinct raw) (stableValuePresent snapshot)
+  in MkStableProviderValue (stableValueFiber snapshot) targetFound
+    (stableValueLifecycle snapshot) targetValue
+
+0 retireStableProvider :
+  (fiber : Fiber name key value world error) ->
+  stableProvider (fiberLifecycle fiber) = True ->
+  stableProvider (fiberLifecycle (retireFiber fiber)) = True
+retireStableProvider
+  fiber@(MkFiber component parent retiredFlag table lifecycle) stable =
+  let targetExact = cong (\observed => stableProvider (fiberLifecycle observed))
+        (retireFiberExact component parent retiredFlag table lifecycle)
+      targetObserved = fiberStableProviderObservation component parent True table
+        lifecycle
+      sourceObserved = fiberStableProviderObservation component parent retiredFlag
+        table lifecycle
+      lifecycleStable = trans (sym sourceObserved) stable
+  in trans targetExact (trans targetObserved lifecycleStable)
+
+0 successfulORetireTarget :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provider : name) -> (fiber : Fiber name key value world error) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  lookupFiber @{nameEq} provider fibers = Just fiber ->
+  applyAction @{nameEq} @{keyEq} (ORetire provider)
+    (MkSystemState ambient fibers) = Just (tag, afterState) ->
+  afterState = MkSystemState ambient
+    (replaceBinding @{nameEq} provider (retireFiber fiber) fibers)
+successfulORetireTarget nameEq keyEq provider fiber ambient fibers afterState tag
+  found raw with (lookupFiber @{nameEq} provider fibers) proof observed
+  successfulORetireTarget nameEq keyEq provider fiber ambient fibers afterState tag
+    found raw | Nothing = case found of Refl impossible
+  successfulORetireTarget nameEq keyEq provider fiber ambient fibers afterState tag
+    found raw | Just actual = case cp3JustInjective found of
+      Refl => case cp3JustInjective raw of Refl => Refl
+
+0 stableProviderValueRetire :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provider : name) -> (wanted : key) -> (provided : value wanted) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (ORetire provider) before =
+    Just (tag, afterState) ->
+  StableProviderValue name key world error value nameEq keyEq provider wanted
+    provided before ->
+  StableProviderValue name key world error value nameEq keyEq provider wanted
+    provided afterState
+stableProviderValueRetire nameEq keyEq provider wanted provided
+  before@(MkSystemState ambient fibers) afterState tag raw
+  (MkStableProviderValue fiber found stable present) =
+  case successfulORetireTarget nameEq keyEq provider fiber ambient fibers
+    afterState tag found raw of
+      Refl => MkStableProviderValue (retireFiber fiber)
+        (lookupReplacedFiber provider fiber (retireFiber fiber) fibers found)
+        (retireStableProvider fiber stable)
+        (trans (valueFromProviderRetireRegistry nameEq keyEq provider wanted
+          provider fiber fibers found) present)
+
+
+0 lLeaveProviderValueStable :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (provider : name) ->
+  (wanted : key) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (LLeave provider) before =
+    Just (tag, afterState) ->
+  providerValueAt @{nameEq} @{keyEq} provider wanted afterState =
+  providerValueAt @{nameEq} @{keyEq} provider wanted before
+lLeaveProviderValueStable nameEq keyEq provider wanted
+  before@(MkSystemState ambient fibers) afterState tag raw
+  with (lookupFiber @{nameEq} provider fibers) proof found
+  lLeaveProviderValueStable nameEq keyEq provider wanted
+    before@(MkSystemState ambient fibers) afterState tag raw | Nothing =
+      void (nothingIsNotJust raw)
+  lLeaveProviderValueStable nameEq keyEq provider wanted
+    before@(MkSystemState ambient fibers) afterState tag raw | Just fiber
+    with (fiberLifecycle fiber) proof life
+    lLeaveProviderValueStable nameEq keyEq provider wanted
+      before@(MkSystemState ambient fibers) afterState tag raw | Just fiber |
+      Inactive outcome = void (nothingIsNotJust raw)
+    lLeaveProviderValueStable nameEq keyEq provider wanted
+      before@(MkSystemState ambient fibers) afterState tag raw | Just fiber |
+      Reloading remaining accumulator view = void (nothingIsNotJust raw)
+    lLeaveProviderValueStable nameEq keyEq provider wanted
+      before@(MkSystemState ambient fibers) afterState tag raw | Just fiber |
+      Unloading accumulator view outcome = void (nothingIsNotJust raw)
+    lLeaveProviderValueStable nameEq keyEq provider wanted
+      before@(MkSystemState ambient fibers) afterState tag raw | Just fiber |
+      Active accumulator view
+      with (targetMatches @{nameEq}
+        (targetFiber @{nameEq} @{keyEq} fiber fibers) view)
+      lLeaveProviderValueStable nameEq keyEq provider wanted
+        before@(MkSystemState ambient fibers) afterState tag raw | Just fiber |
+        Active accumulator view | True = void (nothingIsNotJust raw)
+      lLeaveProviderValueStable nameEq keyEq provider wanted
+        before@(MkSystemState ambient fibers) afterState tag raw | Just
+        fiber@(MkFiber component parent retiredFlag table lifecycle) |
+        Active accumulator view | False =
+          case trans (sym (fiberLifecycleObservation component parent retiredFlag
+            table lifecycle)) life of
+            Refl => case cp3JustInjective raw of
+              Refl => rewrite setFiberLifecycleExact component parent retiredFlag
+                table (Active accumulator view)
+                (Unloading accumulator view Nothing) in
+                trans (valueFromProviderActiveUnload nameEq keyEq provider wanted provider
+                  component parent retiredFlag table accumulator view fibers found)
+                  (providerValueAtFoundCore nameEq keyEq provider wanted
+                    (MkSystemState ambient fibers)
+                    (MkFiber component parent retiredFlag table
+                      (Active accumulator view)) found)
+
+public export
+0 stableValueInstalled :
+  (nameEq : DecEq name) ->
+  (snapshot : StableProviderValue name key world error value nameEq keyEq
+    provider wanted provided state) ->
+  installedAt @{nameEq} provider state = True
+stableValueInstalled nameEq snapshot =
+  trans (installedAtFound nameEq _ _ (stableValueFiber snapshot)
+    (stableValueFound snapshot))
+    (stableProviderImpliesInstalled (fiberLifecycle (stableValueFiber snapshot))
+      (stableValueLifecycle snapshot))
+
+0 lAdvanceSourceReloading :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (provider : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (LAdvance provider) before =
+    Just (tag, afterState) ->
+  reloadingAt @{nameEq} provider before = True
+lAdvanceSourceReloading nameEq keyEq provider
+  before@(MkSystemState ambient fibers) afterState tag raw
+  with (lookupFiber @{nameEq} provider fibers)
+  lAdvanceSourceReloading nameEq keyEq provider
+    before@(MkSystemState ambient fibers) afterState tag raw | Nothing =
+      void (nothingIsNotJust raw)
+  lAdvanceSourceReloading nameEq keyEq provider
+    before@(MkSystemState ambient fibers) afterState tag raw | Just fiber
+    with (fiberLifecycle fiber)
+    lAdvanceSourceReloading nameEq keyEq provider
+      before@(MkSystemState ambient fibers) afterState tag raw | Just fiber |
+      Inactive outcome = void (nothingIsNotJust raw)
+    lAdvanceSourceReloading nameEq keyEq provider
+      before@(MkSystemState ambient fibers) afterState tag raw | Just fiber |
+      Reloading remaining accumulator view = Refl
+    lAdvanceSourceReloading nameEq keyEq provider
+      before@(MkSystemState ambient fibers) afterState tag raw | Just fiber |
+      Active accumulator view = void (nothingIsNotJust raw)
+    lAdvanceSourceReloading nameEq keyEq provider
+      before@(MkSystemState ambient fibers) afterState tag raw | Just fiber |
+      Unloading accumulator view outcome = void (nothingIsNotJust raw)
+
+0 lDivertSourceReloading :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (provider : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (LDivert provider) before =
+    Just (tag, afterState) ->
+  reloadingAt @{nameEq} provider before = True
+lDivertSourceReloading nameEq keyEq provider
+  before@(MkSystemState ambient fibers) afterState tag raw
+  with (lookupFiber @{nameEq} provider fibers)
+  lDivertSourceReloading nameEq keyEq provider
+    before@(MkSystemState ambient fibers) afterState tag raw | Nothing =
+      void (nothingIsNotJust raw)
+  lDivertSourceReloading nameEq keyEq provider
+    before@(MkSystemState ambient fibers) afterState tag raw | Just fiber
+    with (fiberLifecycle fiber)
+    lDivertSourceReloading nameEq keyEq provider
+      before@(MkSystemState ambient fibers) afterState tag raw | Just fiber |
+      Inactive outcome = void (nothingIsNotJust raw)
+    lDivertSourceReloading nameEq keyEq provider
+      before@(MkSystemState ambient fibers) afterState tag raw | Just fiber |
+      Reloading remaining accumulator view = Refl
+    lDivertSourceReloading nameEq keyEq provider
+      before@(MkSystemState ambient fibers) afterState tag raw | Just fiber |
+      Active accumulator view = void (nothingIsNotJust raw)
+    lDivertSourceReloading nameEq keyEq provider
+      before@(MkSystemState ambient fibers) afterState tag raw | Just fiber |
+      Unloading accumulator view outcome = void (nothingIsNotJust raw)
+
+0 stableValueNotReloading :
+  (nameEq : DecEq name) -> (provider : name) ->
+  (state : SystemState name key value world error) ->
+  (snapshot : StableProviderValue name key world error value nameEq keyEq
+    provider wanted provided state) ->
+  reloadingAt @{nameEq} provider state = True -> Void
+stableValueNotReloading nameEq provider state snapshot reloading
+  with (lookupFiber @{nameEq} provider (registry state)) proof found
+  stableValueNotReloading nameEq provider state snapshot reloading | Nothing =
+    absurd reloading
+  stableValueNotReloading nameEq provider state snapshot reloading |
+    Just (MkFiber component parent retiredFlag table lifecycle)
+    with (fiberLifecycle (MkFiber component parent retiredFlag table lifecycle)) proof life
+    stableValueNotReloading nameEq provider state snapshot reloading |
+      Just (MkFiber component parent retiredFlag table lifecycle) |
+      Inactive outcome = absurd reloading
+    stableValueNotReloading nameEq provider state snapshot reloading |
+      Just (MkFiber component parent retiredFlag table lifecycle) |
+      Reloading remaining accumulator view =
+        let sameFiber = cp3JustInjective (trans (sym found)
+              (stableValueFound snapshot))
+            currentStable = trans (cong
+              (\fiber => stableProvider (fiberLifecycle fiber)) sameFiber)
+              (stableValueLifecycle snapshot)
+        in absurd currentStable
+    stableValueNotReloading nameEq provider state snapshot reloading |
+      Just (MkFiber component parent retiredFlag table lifecycle) |
+      Active accumulator view = absurd reloading
+    stableValueNotReloading nameEq provider state snapshot reloading |
+      Just (MkFiber component parent retiredFlag table lifecycle) |
+      Unloading accumulator view outcome = absurd reloading
+
+0 selectedProviderValueStep :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provider : name) -> (wanted : key) -> (provided : value wanted) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) -> actionOwner action = provider ->
+  checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
+  StableProviderValue name key world error value nameEq keyEq provider wanted
+    provided before ->
+  installedAt @{nameEq} provider afterState = True ->
+  providerValueAt @{nameEq} @{keyEq} provider wanted afterState =
+    providerValueAt @{nameEq} @{keyEq} provider wanted before
+selectedProviderValueStep nameEq keyEq provider wanted provided
+  (OInsert provider parent component) before afterState tag Refl checked snapshot
+  targetInstalled =
+    let raw = checkedActionProjects nameEq keyEq
+          (OInsert provider parent component) before afterState tag checked
+        (sourceFalse, targetFalse) = oInsertUninstalled nameEq keyEq provider parent
+          component before afterState tag raw
+    in falseAndTrueImpossible sourceFalse (stableValueInstalled nameEq snapshot)
+selectedProviderValueStep nameEq keyEq provider wanted provided
+  (ORetire provider) before afterState tag Refl checked snapshot targetInstalled =
+    let raw = checkedActionProjects nameEq keyEq (ORetire provider) before
+          afterState tag checked
+        targetSnapshot = stableProviderValueRetire nameEq keyEq provider wanted
+          provided before afterState tag raw snapshot
+    in trans (stableValuePresent targetSnapshot)
+      (sym (stableValuePresent snapshot))
+selectedProviderValueStep nameEq keyEq provider wanted provided
+  (ORemove provider) before afterState tag Refl checked snapshot targetInstalled =
+    let raw = checkedActionProjects nameEq keyEq (ORemove provider) before
+          afterState tag checked
+        (sourceFalse, targetFalse) = oRemoveUninstalled nameEq keyEq provider before
+          afterState tag raw
+    in falseAndTrueImpossible sourceFalse (stableValueInstalled nameEq snapshot)
+selectedProviderValueStep nameEq keyEq provider wanted provided
+  (LBegin provider) before afterState tag Refl checked snapshot targetInstalled =
+    case lBeginBoundary nameEq keyEq provider before afterState tag checked of
+      (tagShape, sourceFalse, targetTrue) =>
+        falseAndTrueImpossible sourceFalse (stableValueInstalled nameEq snapshot)
+selectedProviderValueStep nameEq keyEq provider wanted provided
+  (LAdvance provider) before afterState tag Refl checked snapshot targetInstalled =
+    let raw = checkedActionProjects nameEq keyEq (LAdvance provider) before
+          afterState tag checked
+    in void (stableValueNotReloading nameEq provider before snapshot
+      (lAdvanceSourceReloading nameEq keyEq provider before afterState tag raw))
+selectedProviderValueStep nameEq keyEq provider wanted provided
+  (LDivert provider) before afterState tag Refl checked snapshot targetInstalled =
+    let raw = checkedActionProjects nameEq keyEq (LDivert provider) before
+          afterState tag checked
+    in void (stableValueNotReloading nameEq provider before snapshot
+      (lDivertSourceReloading nameEq keyEq provider before afterState tag raw))
+selectedProviderValueStep nameEq keyEq provider wanted provided
+  (LLeave provider) before afterState tag Refl checked snapshot targetInstalled =
+    lLeaveProviderValueStable nameEq keyEq provider wanted before afterState tag
+      (checkedActionProjects nameEq keyEq (LLeave provider) before afterState tag
+        checked)
+selectedProviderValueStep nameEq keyEq provider wanted provided
+  (LUnload provider) before afterState tag Refl checked snapshot targetInstalled =
+    case lUnloadBoundary nameEq keyEq provider before afterState tag
+      (checkedActionProjects nameEq keyEq (LUnload provider) before afterState tag
+        checked) of
+      (tagShape, sourceTrue, targetFalse) =>
+        falseAndTrueImpossible targetFalse targetInstalled
+
+0 consumerResolutionStart :
+  {start, end : SystemState name key value world error} ->
+  {trace : Transitions start end} ->
+  ConsumerResolutionConstant name key world error value nameEq keyEq consumer
+    wanted provider trace ->
+  resolvedProviderAt @{nameEq} @{keyEq} consumer wanted provider start = True
+consumerResolutionStart (ResolutionConstantEnd resolved) = resolved
+consumerResolutionStart (ResolutionConstantStep transition rest resolved tail) = resolved
+
+public export
+record ProviderValueTraceResult
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (provider : name) (wanted : key) (provided : value wanted)
+  {start, finalState : SystemState name key value world error}
+  (trace : Transitions start finalState) where
+  constructor MkProviderValueTraceResult
+  finalProviderWellFormed :
+    registryWellFormed @{nameEq} @{keyEq} finalState = True
+  finalProviderSnapshot : StableProviderValue name key world error value nameEq
+    keyEq provider wanted provided finalState
+  providerTraceValues : ProviderValueConstant name key world error value nameEq keyEq
+    provider wanted provided trace
+  providerTraceInstalled : InstalledTrace name key world error value nameEq keyEq
+    provider trace
+
+public export
+0 providerValueConstantTrace :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (consumer, provider : name) -> (wanted : key) -> (provided : value wanted) ->
+  (trace : Transitions start finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  registryWellFormed @{nameEq} @{keyEq} start = True ->
+  ConsumerResolutionConstant name key world error value nameEq keyEq consumer
+    wanted provider trace ->
+  StableProviderValue name key world error value nameEq keyEq provider wanted
+    provided start ->
+  ProviderValueTraceResult name key world error value nameEq keyEq provider wanted
+    provided trace
+providerValueConstantTrace nameEq keyEq consumer provider wanted provided
+  NoTransitions AlignedEnd wellFormed (ResolutionConstantEnd resolved) snapshot =
+    MkProviderValueTraceResult wellFormed snapshot
+      (ValueConstantEnd (stableValuePresent snapshot))
+      (InstalledEnd (stableValueInstalled nameEq snapshot))
+providerValueConstantTrace nameEq keyEq consumer provider wanted provided
+  (MoreTransitions transition@(Fired nameEq keyEq action tag checked) rest)
+  (AlignedStep action tag checked rest alignedRest) wellFormed
+  (ResolutionConstantStep (Fired nameEq keyEq action tag checked) rest
+    sourceResolved resolutionRest) snapshot =
+    let raw = checkedActionProjects nameEq keyEq action _ _ tag checked
+        targetWellFormed = preservationTheoremProof nameEq keyEq action _ _ tag
+          wellFormed raw
+        targetData = resolvedProviderData nameEq keyEq consumer wanted provider _
+          targetWellFormed (consumerResolutionStart resolutionRest)
+        targetSnapshot = case decEq @{nameEq} provider (actionOwner action) of
+          No distinct => stableProviderValueForeign nameEq keyEq provider wanted
+            provided action _ _ tag distinct raw snapshot
+          Yes same =>
+            let valueStable = selectedProviderValueStep nameEq keyEq provider wanted
+                  provided action _ _ tag (sym same) checked snapshot
+                  (resolvedProviderInstalled targetData)
+                targetPresent = trans valueStable (stableValuePresent snapshot)
+            in MkStableProviderValue (resolvedProviderFiber targetData)
+              (resolvedProviderLookup targetData)
+              (resolvedProviderStable targetData) targetPresent
+        tailResult = providerValueConstantTrace nameEq keyEq consumer provider wanted
+          provided rest alignedRest targetWellFormed resolutionRest targetSnapshot
+    in MkProviderValueTraceResult
+      (finalProviderWellFormed tailResult)
+      (finalProviderSnapshot tailResult)
+      (ValueConstantStep transition rest (stableValuePresent snapshot)
+        (providerTraceValues tailResult))
+      (InstalledStep action tag checked rest
+        (stableValueInstalled nameEq snapshot)
+        (providerTraceInstalled tailResult))
+
+public export
+0 alignedTraceWellFormedEnd :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trace : Transitions start finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  registryWellFormed @{nameEq} @{keyEq} start = True ->
+  registryWellFormed @{nameEq} @{keyEq} finalState = True
+alignedTraceWellFormedEnd nameEq keyEq NoTransitions AlignedEnd wellFormed = wellFormed
+alignedTraceWellFormedEnd nameEq keyEq
+  (MoreTransitions (Fired nameEq keyEq action tag checked) rest)
+  (AlignedStep action tag checked rest alignedRest) wellFormed =
+    let raw = checkedActionProjects nameEq keyEq action _ _ tag checked
+        nextWellFormed = preservationTheoremProof nameEq keyEq action _ _ tag
+          wellFormed raw
+    in alignedTraceWellFormedEnd nameEq keyEq rest alignedRest nextWellFormed
+
+public export
+0 emptyRegistryUninstalled :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  bindings (registry state) = [] ->
+  installedAt @{nameEq} selected state = False
+emptyRegistryUninstalled nameEq selected
+  (MkSystemState ambient (MkCoeffectContext [] unique)) Refl = Refl
+emptyRegistryUninstalled nameEq selected
+  (MkSystemState ambient (MkCoeffectContext (binding :: rest) unique)) empty =
+    case empty of Refl impossible
+
+0 appendFinalPath :
+  (path : Transitions first middle) ->
+  (lastStep : Transition middle finalState) ->
+  StrictTransitions first finalState
+appendFinalPath NoTransitions lastStep = OneOrMore lastStep NoTransitions
+appendFinalPath (MoreTransitions firstStep rest) lastStep =
+  OneOrMore firstStep (appendTransitions rest
+    (MoreTransitions lastStep NoTransitions))
+
+0 appendFinalPathTrace :
+  (path : Transitions first middle) ->
+  (lastStep : Transition middle finalState) ->
+  strictToTransitions (appendFinalPath path lastStep) =
+    appendTransitions path (MoreTransitions lastStep NoTransitions)
+appendFinalPathTrace NoTransitions lastStep = Refl
+appendFinalPathTrace (MoreTransitions firstStep rest) lastStep = Refl
+
+0 nestedOpeningOrder :
+  (providerBefore : Transitions initial providerPre) ->
+  (providerOpening : Transition providerPre providerStart) ->
+  (between : Transitions providerStart consumerPre) ->
+  (consumerBefore : Transitions initial consumerPre) ->
+  (consumerOpening : Transition consumerPre consumerStart) ->
+  appendTransitions providerBefore
+    (MoreTransitions providerOpening between) = consumerBefore ->
+  appendTransitions consumerBefore
+    (MoreTransitions consumerOpening NoTransitions) =
+  appendTransitions
+    (appendTransitions providerBefore
+      (MoreTransitions providerOpening NoTransitions))
+    (strictToTransitions (appendFinalPath between consumerOpening))
+nestedOpeningOrder providerBefore providerOpening between consumerBefore
+  consumerOpening split =
+    rewrite appendFinalPathTrace between consumerOpening in
+    rewrite appendTransitionsAssociative providerBefore
+      (MoreTransitions providerOpening NoTransitions)
+      (appendTransitions between
+        (MoreTransitions consumerOpening NoTransitions)) in
+    rewrite sym (appendTransitionsAssociative providerBefore
+      (MoreTransitions providerOpening between)
+      (MoreTransitions consumerOpening NoTransitions)) in
+    rewrite split in Refl
+
+0 nestedClosingOrder :
+  (providerOpeningPrefix : Transitions initial providerStart) ->
+  (afterProviderOpening : Transitions providerStart consumerPre) ->
+  (consumerOpening : Transition consumerPre consumerStart) ->
+  (consumerAfterOpening : Transitions consumerStart consumerAfter) ->
+  (beforeProviderClosing : Transitions consumerAfter providerLast) ->
+  (providerClosing : Transition providerLast providerAfter) ->
+  appendTransitions providerOpeningPrefix
+    (appendTransitions
+      (appendTransitions afterProviderOpening
+        (appendTransitions
+          (MoreTransitions consumerOpening consumerAfterOpening)
+          beforeProviderClosing))
+      (MoreTransitions providerClosing NoTransitions)) =
+  appendTransitions
+    (appendTransitions
+      (appendTransitions providerOpeningPrefix
+        (appendTransitions afterProviderOpening
+          (MoreTransitions consumerOpening NoTransitions)))
+      consumerAfterOpening)
+    (appendTransitions beforeProviderClosing
+      (MoreTransitions providerClosing NoTransitions))
+nestedClosingOrder providerOpeningPrefix afterProviderOpening consumerOpening
+  consumerAfterOpening beforeProviderClosing providerClosing =
+    rewrite appendTransitionsAssociative afterProviderOpening
+      (appendTransitions (MoreTransitions consumerOpening consumerAfterOpening)
+        beforeProviderClosing)
+      (MoreTransitions providerClosing NoTransitions) in
+    rewrite appendTransitionsAssociative
+      (MoreTransitions consumerOpening consumerAfterOpening)
+      beforeProviderClosing (MoreTransitions providerClosing NoTransitions) in
+    rewrite appendTransitionsAssociative
+      (appendTransitions providerOpeningPrefix
+        (appendTransitions afterProviderOpening
+          (MoreTransitions consumerOpening NoTransitions)))
+      consumerAfterOpening
+      (appendTransitions beforeProviderClosing
+        (MoreTransitions providerClosing NoTransitions)) in
+    rewrite appendTransitionsAssociative providerOpeningPrefix
+      (appendTransitions afterProviderOpening
+        (MoreTransitions consumerOpening NoTransitions))
+      (appendTransitions consumerAfterOpening
+        (appendTransitions beforeProviderClosing
+          (MoreTransitions providerClosing NoTransitions))) in
+    rewrite appendTransitionsAssociative afterProviderOpening
+      (MoreTransitions consumerOpening NoTransitions)
+      (appendTransitions consumerAfterOpening
+        (appendTransitions beforeProviderClosing
+          (MoreTransitions providerClosing NoTransitions))) in Refl
+
+public export
+0 extractContainingProviderEpisode :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provider, consumer : name) ->
+  (global : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  (consumerEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    consumer global) ->
+  Not (consumer = provider) ->
+  installedAt @{nameEq} provider initial = False ->
+  installedAt @{nameEq} provider
+    (locatedPreStart consumerEpisode) = True ->
+  installedAt @{nameEq} provider
+    (locatedAfter consumerEpisode) = True ->
+  installedAt @{nameEq} provider finalState = False ->
+  InstalledTrace name key world error value nameEq keyEq provider
+    (MoreTransitions
+      (beginTransition (closedOpening (locatedEpisode consumerEpisode)))
+      (closedTransitions (locatedEpisode consumerEpisode))) ->
+  (providerEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+      provider global **
+    ProviderContainsConsumer providerEpisode consumerEpisode)
+extractContainingProviderEpisode nameEq keyEq provider consumer global aligned
+  consumerEpisode distinct initialFalse providerBeforeConsumer providerAfterConsumer
+  finalFalse providerCenterInstalled =
+  let alignedSplit = alignedAppendSplit (traceBeforeOpening consumerEpisode)
+        (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode consumerEpisode))) (closedTransitions (locatedEpisode consumerEpisode))) (traceAfterClosing consumerEpisode))
+        (rewrite (locatedDecomposition consumerEpisode) in aligned)
+      leftAligned = fst alignedSplit
+      centerRightAligned = snd alignedSplit
+      centerSplit = alignedAppendSplit (MoreTransitions (beginTransition (closedOpening (locatedEpisode consumerEpisode))) (closedTransitions (locatedEpisode consumerEpisode))) (traceAfterClosing consumerEpisode) centerRightAligned
+      rightAligned = snd centerSplit
+  in case extractLastOpening nameEq keyEq provider (traceBeforeOpening consumerEpisode) leftAligned
+       initialFalse providerBeforeConsumer of
+    MkLastOpeningResult providerPre providerStart providerPrefix providerOpening
+      afterProviderOpening providerOpeningSplit afterProviderInstalled =>
+      case extractFirstClosing nameEq keyEq provider (traceAfterClosing consumerEpisode) rightAligned
+        providerAfterConsumer finalFalse of
+        MkFirstClosingResult providerLast providerAfter beforeProviderClosing
+          beforeProviderInstalled providerClosing afterProviderClosing
+          providerClosingSplit =>
+          let centerBeforeInstalled = appendInstalledTrace (MoreTransitions (beginTransition (closedOpening (locatedEpisode consumerEpisode))) (closedTransitions (locatedEpisode consumerEpisode)))
+                beforeProviderClosing providerCenterInstalled beforeProviderInstalled
+              insideInstalled = appendInstalledTrace afterProviderOpening
+                (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode consumerEpisode))) (closedTransitions (locatedEpisode consumerEpisode))) beforeProviderClosing) afterProviderInstalled centerBeforeInstalled
+              combinedClosingSplit :
+                (appendTransitions (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode consumerEpisode))) (closedTransitions (locatedEpisode consumerEpisode))) beforeProviderClosing)
+                  (MoreTransitions (unloadTransition providerClosing)
+                    afterProviderClosing) =
+                appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode consumerEpisode))) (closedTransitions (locatedEpisode consumerEpisode))) (traceAfterClosing consumerEpisode))
+              combinedClosingSplit =
+                rewrite appendTransitionsAssociative (MoreTransitions (beginTransition (closedOpening (locatedEpisode consumerEpisode))) (closedTransitions (locatedEpisode consumerEpisode)))
+                  beforeProviderClosing
+                  (MoreTransitions (unloadTransition providerClosing)
+                    afterProviderClosing) in
+                rewrite providerClosingSplit in Refl
+              0 providerDecomposition :
+                (appendTransitions providerPrefix
+                  (MoreTransitions (beginTransition providerOpening)
+                    (appendTransitions
+                      (appendTransitions (appendTransitions afterProviderOpening (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode consumerEpisode))) (closedTransitions (locatedEpisode consumerEpisode))) beforeProviderClosing))
+                        (MoreTransitions (unloadTransition providerClosing)
+                          NoTransitions))
+                      afterProviderClosing)) = global)
+              providerDecomposition =
+                rewrite appendTransitionsAssociative (appendTransitions afterProviderOpening (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode consumerEpisode))) (closedTransitions (locatedEpisode consumerEpisode))) beforeProviderClosing))
+                  (MoreTransitions (unloadTransition providerClosing) NoTransitions)
+                  afterProviderClosing in
+                rewrite sym (locatedDecomposition consumerEpisode) in
+                spanningDecomposition providerPrefix providerOpening
+                afterProviderOpening (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode consumerEpisode))) (closedTransitions (locatedEpisode consumerEpisode))) beforeProviderClosing) providerClosing
+                afterProviderClosing (traceBeforeOpening consumerEpisode)
+                (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode consumerEpisode))) (closedTransitions (locatedEpisode consumerEpisode))) (traceAfterClosing consumerEpisode))
+                providerOpeningSplit combinedClosingSplit
+              0 providerClosed : ClosedEpisode name key world error value
+                nameEq keyEq provider providerPre providerAfter
+              providerClosed = MkClosedEpisode providerStart providerLast
+                providerOpening (appendTransitions afterProviderOpening (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode consumerEpisode))) (closedTransitions (locatedEpisode consumerEpisode))) beforeProviderClosing)) insideInstalled providerClosing
+              0 providerLocated : LocatedClosedEpisode name key world error value
+                nameEq keyEq provider global
+              providerLocated = MkLocatedClosedEpisode providerPre providerAfter
+                providerPrefix providerClosed afterProviderClosing
+                providerDecomposition
+              0 providerToConsumerPath : StrictTransitions providerStart
+                (closedStartState (locatedEpisode consumerEpisode))
+              providerToConsumerPath = appendFinalPath afterProviderOpening
+                (beginTransition (closedOpening (locatedEpisode consumerEpisode)))
+              0 consumerToProviderPath : StrictTransitions
+                (locatedAfter consumerEpisode) providerAfter
+              consumerToProviderPath = appendFinalPath beforeProviderClosing
+                (unloadTransition providerClosing)
+              0 openingOrder : prefixThroughOpening consumerEpisode =
+                appendTransitions (prefixThroughOpening providerLocated)
+                  (strictToTransitions providerToConsumerPath)
+              openingOrder = nestedOpeningOrder providerPrefix
+                (beginTransition providerOpening) afterProviderOpening
+                (traceBeforeOpening consumerEpisode) (beginTransition (closedOpening (locatedEpisode consumerEpisode)))
+                providerOpeningSplit
+              0 expandedClosingOrder :
+                prefixThroughClose providerLocated =
+                appendTransitions
+                  (appendTransitions
+                    (appendTransitions (prefixThroughOpening providerLocated)
+                      (appendTransitions afterProviderOpening
+                        (MoreTransitions
+                          (beginTransition (closedOpening
+                            (locatedEpisode consumerEpisode))) NoTransitions)))
+                    (closedTransitions (locatedEpisode consumerEpisode)))
+                  (appendTransitions beforeProviderClosing
+                    (MoreTransitions (unloadTransition providerClosing)
+                      NoTransitions))
+              expandedClosingOrder = nestedClosingOrder
+                (prefixThroughOpening providerLocated) afterProviderOpening
+                (beginTransition (closedOpening (locatedEpisode consumerEpisode)))
+                (closedTransitions (locatedEpisode consumerEpisode)) beforeProviderClosing
+                (unloadTransition providerClosing)
+              0 closingPrefixExpansion :
+                appendTransitions (prefixThroughClose consumerEpisode)
+                  (appendTransitions beforeProviderClosing
+                    (MoreTransitions (unloadTransition providerClosing)
+                      NoTransitions)) =
+                appendTransitions
+                  (appendTransitions
+                    (appendTransitions (prefixThroughOpening providerLocated)
+                      (appendTransitions afterProviderOpening
+                        (MoreTransitions
+                          (beginTransition (closedOpening
+                            (locatedEpisode consumerEpisode))) NoTransitions)))
+                    (closedTransitions (locatedEpisode consumerEpisode)))
+                  (appendTransitions beforeProviderClosing
+                    (MoreTransitions (unloadTransition providerClosing)
+                      NoTransitions))
+              closingPrefixExpansion =
+                rewrite sym (appendFinalPathTrace afterProviderOpening
+                  (beginTransition (closedOpening
+                    (locatedEpisode consumerEpisode)))) in
+                cong
+                (\openingPrefix => appendTransitions
+                  (appendTransitions openingPrefix
+                    (closedTransitions (locatedEpisode consumerEpisode)))
+                  (appendTransitions beforeProviderClosing
+                    (MoreTransitions (unloadTransition providerClosing)
+                      NoTransitions)))
+                openingOrder
+              0 closingOrder : prefixThroughClose providerLocated =
+                appendTransitions (prefixThroughClose consumerEpisode)
+                  (strictToTransitions consumerToProviderPath)
+              closingOrder =
+                rewrite appendFinalPathTrace beforeProviderClosing
+                  (unloadTransition providerClosing) in
+                trans expandedClosingOrder (sym closingPrefixExpansion)
+          in (providerLocated ** MkProviderContainsConsumer
+            providerToConsumerPath consumerToProviderPath openingOrder closingOrder)
+
+public export
+0 alignedEpisodeInside :
+  (opening : BeginStep nameEq keyEq consumer preStart start) ->
+  (inside : Transitions start afterState) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions (beginTransition opening) inside) ->
+  AlignedTransitions name key world error value nameEq keyEq inside
+alignedEpisodeInside opening inside
+  (AlignedStep (LBegin consumer) LBeginTag (beginEquation opening) inside aligned) =
+    aligned
+

@@ -2093,15 +2093,54 @@ providerOrderingProof containment =
   (providerToConsumer containment, consumerToProviderClose containment)
 
 public export
+%inline
+lifecycleResolvedProvider : DecEq name => DecEq key =>
+  (k : key) -> (provider : name) ->
+  (component : Component key value world error) ->
+  Lifecycle key value world error name
+    (dependencies (componentDependencies component))
+    (componentProvisions component) -> Bool
+lifecycleResolvedProvider k provider component (Inactive outcome) = False
+lifecycleResolvedProvider k provider component
+  (Reloading remaining accumulator view) =
+    case viewLookup k (dependencies (componentDependencies component)) view of
+      Nothing => False
+      Just actual => case decEq actual provider of
+        Yes Refl => True
+        No _ => False
+lifecycleResolvedProvider k provider component (Active accumulator view) =
+  case viewLookup k (dependencies (componentDependencies component)) view of
+    Nothing => False
+    Just actual => case decEq actual provider of
+      Yes Refl => True
+      No _ => False
+lifecycleResolvedProvider k provider component
+  (Unloading accumulator view outcome) =
+    case viewLookup k (dependencies (componentDependencies component)) view of
+      Nothing => False
+      Just actual => case decEq actual provider of
+        Yes Refl => True
+        No _ => False
+
+public export
+%inline
+fiberResolvedProvider : DecEq name => DecEq key => key -> name ->
+  Fiber name key value world error -> Bool
+fiberResolvedProvider k provider
+  (MkFiber component parent retired table lifecycle) =
+    lifecycleResolvedProvider k provider component lifecycle
+
+public export
 resolvedProviderAt : DecEq name => DecEq key => name -> key -> name ->
   SystemState name key value world error -> Bool
 resolvedProviderAt consumer k provider state =
   case lookupFiber consumer (registry state) of
     Nothing => False
-    Just fiber => case committed (fiberLifecycle fiber) of
+    Just (MkFiber component parent retired table lifecycle) =>
+      case committed lifecycle of
       Nothing => False
       Just view => case viewLookup k
-        (dependencies (componentDependencies (fiberComponent fiber))) view of
+        (dependencies (componentDependencies component)) view of
           Nothing => False
           Just actual => case decEq actual provider of
             Yes Refl => True
@@ -2657,6 +2696,9 @@ data RegistryLocalUpdate :
     RegistryLocalUpdate name key world error value nameEq actor source
       (insertBinding @{nameEq} actor fiber source absent)
   LocalReplace : (fiber : Fiber name key value world error) ->
+    {oldFiber : Fiber name key value world error} ->
+    {auto oldFound : lookupFiber @{nameEq} actor source = Just oldFiber} ->
+    {auto staticComponent : fiberComponent fiber = fiberComponent oldFiber} ->
     RegistryLocalUpdate name key world error value nameEq actor source
       (replaceBinding @{nameEq} actor fiber source)
   LocalDelete : RegistryLocalUpdate name key world error value nameEq actor source
@@ -2741,17 +2783,17 @@ applyActionLocalUpdate {name} {key} {world} {error} {value}
               fibers applied inserted))
 applyActionLocalUpdate nameEq keyEq (ORetire n)
   before@(MkSystemState ambient fibers) afterState tag equation
-  with (lookupFiber @{nameEq} n fibers)
+  with (lookupFiber @{nameEq} n fibers) proof found
   applyActionLocalUpdate nameEq keyEq (ORetire n)
     before@(MkSystemState ambient fibers) afterState tag equation | Nothing =
       void (nothingIsNotJust equation)
   applyActionLocalUpdate nameEq keyEq (ORetire n)
     before@(MkSystemState ambient fibers) afterState tag equation | Just fiber =
       case justInjective equation of
-        Refl => MkSystemLocalUpdate (LocalReplace (retireFiber fiber))
+        Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentRetire fiber} (retireFiber fiber))
 applyActionLocalUpdate nameEq keyEq (ORemove n)
   before@(MkSystemState ambient fibers) afterState tag equation
-  with (lookupFiber @{nameEq} n fibers)
+  with (lookupFiber @{nameEq} n fibers) proof found
   applyActionLocalUpdate nameEq keyEq (ORemove n)
     before@(MkSystemState ambient fibers) afterState tag equation | Nothing =
       void (nothingIsNotJust equation)
@@ -2768,7 +2810,7 @@ applyActionLocalUpdate nameEq keyEq (ORemove n)
         Refl => MkSystemLocalUpdate LocalDelete
 applyActionLocalUpdate nameEq keyEq (LBegin n)
   before@(MkSystemState ambient fibers) afterState tag equation
-  with (lookupFiber @{nameEq} n fibers)
+  with (lookupFiber @{nameEq} n fibers) proof found
   applyActionLocalUpdate nameEq keyEq (LBegin n)
     before@(MkSystemState ambient fibers) afterState tag equation | Nothing =
       void (nothingIsNotJust equation)
@@ -2784,8 +2826,7 @@ applyActionLocalUpdate nameEq keyEq (LBegin n)
       applyActionLocalUpdate nameEq keyEq (LBegin n)
         before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
         Inactive Nothing | Just view = case justInjective equation of
-          Refl => MkSystemLocalUpdate (LocalReplace
-            (setFiberLifecycle fiber
+          Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetLifecycle fiber (Reloading (componentProgram (fiberComponent fiber)) id view)} (setFiberLifecycle fiber
               (Reloading (componentProgram (fiberComponent fiber)) id view)))
     applyActionLocalUpdate nameEq keyEq (LBegin n)
       before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
@@ -2801,7 +2842,7 @@ applyActionLocalUpdate nameEq keyEq (LBegin n)
       Unloading accumulator view outcome = void (nothingIsNotJust equation)
 applyActionLocalUpdate nameEq keyEq (LAdvance n)
   before@(MkSystemState ambient fibers) afterState tag equation
-  with (lookupFiber @{nameEq} n fibers)
+  with (lookupFiber @{nameEq} n fibers) proof found
   applyActionLocalUpdate nameEq keyEq (LAdvance n)
     before@(MkSystemState ambient fibers) afterState tag equation | Nothing =
       void (nothingIsNotJust equation)
@@ -2825,13 +2866,11 @@ applyActionLocalUpdate nameEq keyEq (LAdvance n)
       applyActionLocalUpdate nameEq keyEq (LAdvance n)
         before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
         Reloading [] accumulator view | True = case justInjective equation of
-          Refl => MkSystemLocalUpdate (LocalReplace
-            (setFiberLifecycle fiber (Active accumulator view)))
+          Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetLifecycle fiber (Active accumulator view)} (setFiberLifecycle fiber (Active accumulator view)))
       applyActionLocalUpdate nameEq keyEq (LAdvance n)
         before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
         Reloading [] accumulator view | False = case justInjective equation of
-          Refl => MkSystemLocalUpdate (LocalReplace
-            (setFiberLifecycle fiber (Unloading accumulator view Nothing)))
+          Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetLifecycle fiber (Unloading accumulator view Nothing)} (setFiberLifecycle fiber (Unloading accumulator view Nothing)))
     applyActionLocalUpdate nameEq keyEq (LAdvance n)
       before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
       Reloading (step :: rest) accumulator view
@@ -2851,8 +2890,7 @@ applyActionLocalUpdate nameEq keyEq (LAdvance n)
           before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
           Reloading (step :: rest) accumulator view | Just capability | Left err =
             case justInjective equation of
-              Refl => MkSystemLocalUpdate (LocalReplace
-                (setFiberLifecycle fiber
+              Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetLifecycle fiber (Unloading accumulator view (Just err))} (setFiberLifecycle fiber
                   (Unloading accumulator view (Just err))))
         applyActionLocalUpdate nameEq keyEq (LAdvance n)
           before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
@@ -2864,26 +2902,23 @@ applyActionLocalUpdate nameEq keyEq (LAdvance n)
             before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
             Reloading (step :: rest) accumulator view | Just capability |
             Right (localAfter, undo) | False = case justInjective equation of
-              Refl => MkSystemLocalUpdate (LocalReplace
-                (setFiberRuntime fiber (localTable localAfter)
+              Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetRuntime fiber _ _} (setFiberRuntime fiber (localTable localAfter)
                   (Unloading (accumulator . undo) view Nothing)))
           applyActionLocalUpdate nameEq keyEq (LAdvance n)
             before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
             Reloading (step :: []) accumulator view | Just capability |
             Right (localAfter, undo) | True = case justInjective equation of
-              Refl => MkSystemLocalUpdate (LocalReplace
-                (setFiberRuntime fiber (localTable localAfter)
+              Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetRuntime fiber _ _} (setFiberRuntime fiber (localTable localAfter)
                   (Active (accumulator . undo) view)))
           applyActionLocalUpdate nameEq keyEq (LAdvance n)
             before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
             Reloading (step :: next :: more) accumulator view | Just capability |
             Right (localAfter, undo) | True = case justInjective equation of
-              Refl => MkSystemLocalUpdate (LocalReplace
-                (setFiberRuntime fiber (localTable localAfter)
+              Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetRuntime fiber _ _} (setFiberRuntime fiber (localTable localAfter)
                   (Reloading (next :: more) (accumulator . undo) view)))
 applyActionLocalUpdate nameEq keyEq (LDivert n)
   before@(MkSystemState ambient fibers) afterState tag equation
-  with (lookupFiber @{nameEq} n fibers)
+  with (lookupFiber @{nameEq} n fibers) proof found
   applyActionLocalUpdate nameEq keyEq (LDivert n)
     before@(MkSystemState ambient fibers) afterState tag equation | Nothing =
       void (nothingIsNotJust equation)
@@ -2902,8 +2937,7 @@ applyActionLocalUpdate nameEq keyEq (LDivert n)
       applyActionLocalUpdate nameEq keyEq (LDivert n)
         before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
         Reloading remaining accumulator view | False = case justInjective equation of
-          Refl => MkSystemLocalUpdate (LocalReplace
-            (setFiberLifecycle fiber (Unloading accumulator view Nothing)))
+          Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetLifecycle fiber (Unloading accumulator view Nothing)} (setFiberLifecycle fiber (Unloading accumulator view Nothing)))
     applyActionLocalUpdate nameEq keyEq (LDivert n)
       before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
       Inactive outcome = void (nothingIsNotJust equation)
@@ -2915,7 +2949,7 @@ applyActionLocalUpdate nameEq keyEq (LDivert n)
       Unloading accumulator view outcome = void (nothingIsNotJust equation)
 applyActionLocalUpdate nameEq keyEq (LLeave n)
   before@(MkSystemState ambient fibers) afterState tag equation
-  with (lookupFiber @{nameEq} n fibers)
+  with (lookupFiber @{nameEq} n fibers) proof found
   applyActionLocalUpdate nameEq keyEq (LLeave n)
     before@(MkSystemState ambient fibers) afterState tag equation | Nothing =
       void (nothingIsNotJust equation)
@@ -2933,8 +2967,7 @@ applyActionLocalUpdate nameEq keyEq (LLeave n)
       applyActionLocalUpdate nameEq keyEq (LLeave n)
         before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
         Active accumulator view | False = case justInjective equation of
-          Refl => MkSystemLocalUpdate (LocalReplace
-            (setFiberLifecycle fiber (Unloading accumulator view Nothing)))
+          Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetLifecycle fiber (Unloading accumulator view Nothing)} (setFiberLifecycle fiber (Unloading accumulator view Nothing)))
     applyActionLocalUpdate nameEq keyEq (LLeave n)
       before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
       Inactive outcome = void (nothingIsNotJust equation)
@@ -2946,7 +2979,7 @@ applyActionLocalUpdate nameEq keyEq (LLeave n)
       Unloading accumulator view outcome = void (nothingIsNotJust equation)
 applyActionLocalUpdate nameEq keyEq (LUnload n)
   before@(MkSystemState ambient fibers) afterState tag equation
-  with (lookupFiber @{nameEq} n fibers)
+  with (lookupFiber @{nameEq} n fibers) proof found
   applyActionLocalUpdate nameEq keyEq (LUnload n)
     before@(MkSystemState ambient fibers) afterState tag equation | Nothing =
       void (nothingIsNotJust equation)
@@ -2963,8 +2996,7 @@ applyActionLocalUpdate nameEq keyEq (LUnload n)
       applyActionLocalUpdate nameEq keyEq (LUnload n)
         before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
         Unloading accumulator view outcome | False = case justInjective equation of
-          Refl => MkSystemLocalUpdate (LocalReplace
-            (setFiberRuntime fiber
+          Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetRuntime fiber _ _} (setFiberRuntime fiber
               (localTable (accumulator (MkLocalState ambient (fiberTable fiber))))
               (Inactive outcome)))
     applyActionLocalUpdate nameEq keyEq (LUnload n)
@@ -2977,6 +3009,7 @@ applyActionLocalUpdate nameEq keyEq (LUnload n)
       before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
       Active accumulator view = void (nothingIsNotJust equation)
 
+public export
 record CommittedSnapshot
   (name, key, world, error : Type) (value : key -> Type)
   (nameEq : DecEq name) (selected : name) (providers : List name)
@@ -3011,6 +3044,7 @@ committedProvidersAfterReplace selected ambient fibers oldFiber nextFiber view
   rewrite lookupReplacedFiber selected oldFiber nextFiber fibers found in
   rewrite lifecycle in rewrite providerNames in Refl
 
+public export
 0 committedSnapshotFrom :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (selected : name) -> (providers : List name) ->
@@ -3033,6 +3067,7 @@ committedSnapshotFrom {name} {key} {world} {error} {value}
       nameEq selected providers state present | Just fiber | Just view =
         MkCommittedSnapshot fiber found view lifecycle (justInjective present)
 
+public export
 0 committedSnapshotEquation :
   (snapshot : CommittedSnapshot name key world error value nameEq selected
     providers state) ->
@@ -3465,6 +3500,7 @@ successfulLUnloadEndsUninstalled nameEq keyEq selected
         Unloading accumulator view outcome | False = case justInjective equation of
           Refl => inactiveAfterReplace selected fiber found
 
+public export
 0 committedProvidersForeignAction :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -3487,6 +3523,7 @@ committedProvidersForeignAction {name} {key} {world} {error} {value}
   in rewrite targetLookup in rewrite committedLifecycle snapshot in
     rewrite committedProviderNames snapshot in Refl
 
+public export
 0 committedProvidersSelectedAction :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (providers : List name) ->
@@ -3561,6 +3598,7 @@ data CommittedProvidersConstant : (name, key, world, error : Type) ->
     CommittedProvidersConstant name key world error value nameEq selected providers
       (MoreTransitions transition rest)
 
+public export
 0 committedProvidersInstalledTrace :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (providers : List name) ->
@@ -4376,3 +4414,399 @@ resolutionCoherenceTheorem name key value world error =
      ForeignReplay name key world error value keyEq n (closedTransitions episode)
        (projectEffectState @{nameEq} (closedStartState episode))
        (projectEffectState @{nameEq} afterState)))
+
+public export
+0 fiberResolvedProviderInactive :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (provider : name) ->
+  (fiber : Fiber name key value world error) ->
+  (outcome : Maybe error) ->
+  fiberLifecycle fiber = Inactive outcome ->
+  fiberResolvedProvider @{nameEq} @{keyEq} wanted provider fiber = False
+fiberResolvedProviderInactive nameEq keyEq wanted provider
+  (MkFiber component parent retired table (Inactive outcome)) outcome Refl = Refl
+
+public export
+resolvedProviderInView : DecEq name => DecEq key =>
+  (wanted : key) -> (provider : name) ->
+  (component : Component key value world error) ->
+  View name (dependencies (componentDependencies component)) -> Bool
+resolvedProviderInView wanted provider component view =
+  case viewLookup wanted (dependencies (componentDependencies component)) view of
+    Nothing => False
+    Just actual => case decEq actual provider of
+      Yes Refl => True
+      No _ => False
+
+public export
+0 fiberResolvedProviderReloadingView :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (provider : name) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world
+    (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  fiberResolvedProvider @{nameEq} @{keyEq} wanted provider
+    (MkFiber component parent retired table
+      (Reloading remaining accumulator view)) =
+  resolvedProviderInView @{nameEq} @{keyEq} wanted provider component view
+fiberResolvedProviderReloadingView nameEq keyEq wanted provider component
+  parent retired table remaining accumulator view with
+    (viewLookup @{keyEq} wanted
+      (dependencies (componentDependencies component)) view)
+  fiberResolvedProviderReloadingView nameEq keyEq wanted provider component
+    parent retired table remaining accumulator view | Nothing = Refl
+  fiberResolvedProviderReloadingView nameEq keyEq wanted provider component
+    parent retired table remaining accumulator view | Just actual with
+      (decEq @{nameEq} actual provider)
+    fiberResolvedProviderReloadingView nameEq keyEq wanted provider component
+      parent retired table remaining accumulator view | Just actual | Yes equal =
+        case equal of Refl => Refl
+    fiberResolvedProviderReloadingView nameEq keyEq wanted provider component
+      parent retired table remaining accumulator view | Just actual | No distinct = Refl
+
+public export
+0 fiberResolvedProviderActiveView :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (provider : name) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world
+    (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  fiberResolvedProvider @{nameEq} @{keyEq} wanted provider
+    (MkFiber component parent retired table (Active accumulator view)) =
+  resolvedProviderInView @{nameEq} @{keyEq} wanted provider component view
+fiberResolvedProviderActiveView nameEq keyEq wanted provider component parent
+  retired table accumulator view with (viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies component)) view)
+  fiberResolvedProviderActiveView nameEq keyEq wanted provider component parent
+    retired table accumulator view | Nothing = Refl
+  fiberResolvedProviderActiveView nameEq keyEq wanted provider component parent
+    retired table accumulator view | Just actual with
+      (decEq @{nameEq} actual provider)
+    fiberResolvedProviderActiveView nameEq keyEq wanted provider component parent
+      retired table accumulator view | Just actual | Yes equal =
+        case equal of Refl => Refl
+    fiberResolvedProviderActiveView nameEq keyEq wanted provider component parent
+      retired table accumulator view | Just actual | No distinct = Refl
+
+public export
+0 fiberResolvedProviderUnloadingView :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (provider : name) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world
+    (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (outcome : Maybe error) ->
+  fiberResolvedProvider @{nameEq} @{keyEq} wanted provider
+    (MkFiber component parent retired table
+      (Unloading accumulator view outcome)) =
+  resolvedProviderInView @{nameEq} @{keyEq} wanted provider component view
+fiberResolvedProviderUnloadingView nameEq keyEq wanted provider component parent
+  retired table accumulator view outcome with (viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies component)) view)
+  fiberResolvedProviderUnloadingView nameEq keyEq wanted provider component parent
+    retired table accumulator view outcome | Nothing = Refl
+  fiberResolvedProviderUnloadingView nameEq keyEq wanted provider component parent
+    retired table accumulator view outcome | Just actual with
+      (decEq @{nameEq} actual provider)
+    fiberResolvedProviderUnloadingView nameEq keyEq wanted provider component parent
+      retired table accumulator view outcome | Just actual | Yes equal =
+        case equal of Refl => Refl
+    fiberResolvedProviderUnloadingView nameEq keyEq wanted provider component parent
+      retired table accumulator view outcome | Just actual | No distinct = Refl
+
+public export
+0 fiberResolvedProviderSetRuntimeFrame :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (provider : name) ->
+  (fiber : Fiber name key value world error) ->
+  (newTable : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (newLife : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))) ->
+  committed (fiberLifecycle fiber) = Just view ->
+  committed newLife = Just view ->
+  fiberResolvedProvider @{nameEq} @{keyEq} wanted provider
+    (setFiberRuntime fiber newTable newLife) =
+  fiberResolvedProvider @{nameEq} @{keyEq} wanted provider fiber
+fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
+  (MkFiber component parent retired table (Inactive outcome)) newTable newLife
+  view sourceCommitted targetCommitted = case sourceCommitted of Refl impossible
+fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
+  (MkFiber component parent retired table
+    (Reloading remaining accumulator sourceView)) newTable (Inactive outcome)
+  view sourceCommitted targetCommitted = case targetCommitted of Refl impossible
+fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
+  (MkFiber component parent retired table
+    (Reloading remaining accumulator sourceView)) newTable
+  (Reloading targetRemaining targetAccumulator targetView)
+  view sourceCommitted targetCommitted =
+    case justInjective sourceCommitted of
+      Refl => case justInjective targetCommitted of
+        Refl => resolutionSame targetView
+  where
+    0 resolutionSame : (sameView : View name
+      (dependencies (componentDependencies component))) ->
+      fiberResolvedProvider @{nameEq} @{keyEq} wanted provider
+        (setFiberRuntime
+          (MkFiber component parent retired table
+            (Reloading remaining accumulator sameView))
+          newTable (Reloading targetRemaining targetAccumulator sameView)) =
+      fiberResolvedProvider @{nameEq} @{keyEq} wanted provider
+        (MkFiber component parent retired table
+          (Reloading remaining accumulator sameView))
+    resolutionSame sameView with (viewLookup @{keyEq} wanted
+      (dependencies (componentDependencies component)) sameView)
+      resolutionSame sameView | Nothing = Refl
+      resolutionSame sameView | Just actual with (decEq @{nameEq} actual provider)
+        resolutionSame sameView | Just actual | Yes equal =
+          case equal of Refl => Refl
+        resolutionSame sameView | Just actual | No distinct = Refl
+fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
+  (MkFiber component parent retired table
+    (Reloading remaining accumulator sourceView)) newTable
+  (Active targetAccumulator targetView)
+  view sourceCommitted targetCommitted =
+    case justInjective sourceCommitted of
+      Refl => case justInjective targetCommitted of
+        Refl => trans
+          (fiberResolvedProviderActiveView nameEq keyEq wanted provider component
+            parent retired newTable targetAccumulator targetView)
+          (sym (fiberResolvedProviderReloadingView nameEq keyEq wanted provider
+            component parent retired table remaining accumulator targetView))
+fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
+  (MkFiber component parent retired table
+    (Reloading remaining accumulator sourceView)) newTable
+  (Unloading targetAccumulator targetView outcome)
+  view sourceCommitted targetCommitted =
+    case justInjective sourceCommitted of
+      Refl => case justInjective targetCommitted of
+        Refl => trans
+          (fiberResolvedProviderUnloadingView nameEq keyEq wanted provider
+            component parent retired newTable targetAccumulator targetView outcome)
+          (sym (fiberResolvedProviderReloadingView nameEq keyEq wanted provider
+            component parent retired table remaining accumulator targetView))
+fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
+  (MkFiber component parent retired table (Active accumulator sourceView))
+  newTable (Inactive outcome) view sourceCommitted targetCommitted =
+    case targetCommitted of Refl impossible
+fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
+  (MkFiber component parent retired table (Active accumulator sourceView))
+  newTable (Reloading targetRemaining targetAccumulator targetView)
+  view sourceCommitted targetCommitted =
+    case justInjective sourceCommitted of
+      Refl => case justInjective targetCommitted of
+        Refl => trans
+          (fiberResolvedProviderReloadingView nameEq keyEq wanted provider
+            component parent retired newTable targetRemaining targetAccumulator
+            targetView)
+          (sym (fiberResolvedProviderActiveView nameEq keyEq wanted provider
+            component parent retired table accumulator targetView))
+fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
+  (MkFiber component parent retired table (Active accumulator sourceView))
+  newTable (Active targetAccumulator targetView)
+  view sourceCommitted targetCommitted =
+    case justInjective sourceCommitted of
+      Refl => case justInjective targetCommitted of
+        Refl => trans
+          (fiberResolvedProviderActiveView nameEq keyEq wanted provider component
+            parent retired newTable targetAccumulator targetView)
+          (sym (fiberResolvedProviderActiveView nameEq keyEq wanted provider
+            component parent retired table accumulator targetView))
+fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
+  (MkFiber component parent retired table (Active accumulator sourceView))
+  newTable (Unloading targetAccumulator targetView outcome)
+  view sourceCommitted targetCommitted =
+    case justInjective sourceCommitted of
+      Refl => case justInjective targetCommitted of
+        Refl => trans
+          (fiberResolvedProviderUnloadingView nameEq keyEq wanted provider
+            component parent retired newTable targetAccumulator targetView outcome)
+          (sym (fiberResolvedProviderActiveView nameEq keyEq wanted provider
+            component parent retired table accumulator targetView))
+fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
+  (MkFiber component parent retired table
+    (Unloading accumulator sourceView sourceOutcome)) newTable
+  (Inactive outcome) view sourceCommitted targetCommitted =
+    case targetCommitted of Refl impossible
+fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
+  (MkFiber component parent retired table
+    (Unloading accumulator sourceView sourceOutcome)) newTable
+  (Reloading targetRemaining targetAccumulator targetView)
+  view sourceCommitted targetCommitted =
+    case justInjective sourceCommitted of
+      Refl => case justInjective targetCommitted of
+        Refl => trans
+          (fiberResolvedProviderReloadingView nameEq keyEq wanted provider
+            component parent retired newTable targetRemaining targetAccumulator
+            targetView)
+          (sym (fiberResolvedProviderUnloadingView nameEq keyEq wanted provider
+            component parent retired table accumulator targetView sourceOutcome))
+fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
+  (MkFiber component parent retired table
+    (Unloading accumulator sourceView sourceOutcome)) newTable
+  (Active targetAccumulator targetView)
+  view sourceCommitted targetCommitted =
+    case justInjective sourceCommitted of
+      Refl => case justInjective targetCommitted of
+        Refl => trans
+          (fiberResolvedProviderActiveView nameEq keyEq wanted provider component
+            parent retired newTable targetAccumulator targetView)
+          (sym (fiberResolvedProviderUnloadingView nameEq keyEq wanted provider
+            component parent retired table accumulator targetView sourceOutcome))
+fiberResolvedProviderSetRuntimeFrame nameEq keyEq wanted provider
+  (MkFiber component parent retired table
+    (Unloading accumulator sourceView sourceOutcome)) newTable
+  (Unloading targetAccumulator targetView outcome)
+  view sourceCommitted targetCommitted =
+    case justInjective sourceCommitted of
+      Refl => case justInjective targetCommitted of
+        Refl => trans
+          (fiberResolvedProviderUnloadingView nameEq keyEq wanted provider
+            component parent retired newTable targetAccumulator targetView outcome)
+          (sym (fiberResolvedProviderUnloadingView nameEq keyEq wanted provider
+            component parent retired table accumulator targetView sourceOutcome))
+
+public export
+0 fiberResolvedProviderRetireFrame :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (provider : name) ->
+  (fiber : Fiber name key value world error) ->
+  fiberResolvedProvider @{nameEq} @{keyEq} wanted provider
+    (retireFiber fiber) =
+  fiberResolvedProvider @{nameEq} @{keyEq} wanted provider fiber
+fiberResolvedProviderRetireFrame nameEq keyEq wanted provider
+  (MkFiber component parent retired table (Inactive outcome)) = Refl
+fiberResolvedProviderRetireFrame nameEq keyEq wanted provider
+  (MkFiber component parent retired table
+    (Reloading remaining accumulator view)) = Refl
+fiberResolvedProviderRetireFrame nameEq keyEq wanted provider
+  (MkFiber component parent retired table (Active accumulator view)) = Refl
+fiberResolvedProviderRetireFrame nameEq keyEq wanted provider
+  (MkFiber component parent retired table
+    (Unloading accumulator view outcome)) = Refl
+
+
+public export
+0 resolvedProviderInViewNothing :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (provider : name) ->
+  (component : Component key value world error) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies component)) view = Nothing ->
+  resolvedProviderInView @{nameEq} @{keyEq} wanted provider component view = False
+resolvedProviderInViewNothing nameEq keyEq wanted provider component view equation
+  with (viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies component)) view)
+  resolvedProviderInViewNothing nameEq keyEq wanted provider component view Refl |
+    Nothing = Refl
+  resolvedProviderInViewNothing nameEq keyEq wanted provider component view equation |
+    Just actual = case equation of Refl impossible
+
+public export
+0 resolvedProviderInViewDifferent :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (provider, actual : name) ->
+  (component : Component key value world error) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies component)) view = Just actual ->
+  (distinct : Not (actual = provider)) ->
+  resolvedProviderInView @{nameEq} @{keyEq} wanted provider component view = False
+resolvedProviderInViewDifferent nameEq keyEq wanted provider actual component view
+  found distinct with (viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies component)) view)
+  resolvedProviderInViewDifferent nameEq keyEq wanted provider actual component view
+    Refl distinct | Just actual with (decEq @{nameEq} actual provider)
+    resolvedProviderInViewDifferent nameEq keyEq wanted actual actual component view
+      Refl distinct | Just actual | Yes Refl = absurd (distinct Refl)
+    resolvedProviderInViewDifferent nameEq keyEq wanted provider actual component view
+      Refl distinct | Just actual | No _ = Refl
+
+public export
+0 fiberResolvedProviderReloadingNothing :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (provider : name) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  viewLookup @{keyEq} wanted (dependencies (componentDependencies component)) view = Nothing ->
+  fiberResolvedProvider @{nameEq} @{keyEq} wanted provider
+    (MkFiber component parent retired table (Reloading remaining accumulator view)) = False
+fiberResolvedProviderReloadingNothing nameEq keyEq wanted provider component parent
+  retired table remaining accumulator view equation with
+    (viewLookup @{keyEq} wanted (dependencies (componentDependencies component)) view)
+  fiberResolvedProviderReloadingNothing nameEq keyEq wanted provider component parent
+    retired table remaining accumulator view Refl | Nothing = Refl
+  fiberResolvedProviderReloadingNothing nameEq keyEq wanted provider component parent
+    retired table remaining accumulator view equation | Just actual =
+      case equation of Refl impossible
+
+public export
+0 fiberResolvedProviderActiveNothing :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (provider : name) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  viewLookup @{keyEq} wanted (dependencies (componentDependencies component)) view = Nothing ->
+  fiberResolvedProvider @{nameEq} @{keyEq} wanted provider
+    (MkFiber component parent retired table (Active accumulator view)) = False
+fiberResolvedProviderActiveNothing nameEq keyEq wanted provider component parent retired
+  table accumulator view equation with
+    (viewLookup @{keyEq} wanted (dependencies (componentDependencies component)) view)
+  fiberResolvedProviderActiveNothing nameEq keyEq wanted provider component parent retired
+    table accumulator view Refl | Nothing = Refl
+  fiberResolvedProviderActiveNothing nameEq keyEq wanted provider component parent retired
+    table accumulator view equation | Just actual = case equation of Refl impossible
+
+public export
+0 fiberResolvedProviderUnloadingNothing :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (provider : name) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (outcome : Maybe error) ->
+  viewLookup @{keyEq} wanted (dependencies (componentDependencies component)) view = Nothing ->
+  fiberResolvedProvider @{nameEq} @{keyEq} wanted provider
+    (MkFiber component parent retired table (Unloading accumulator view outcome)) = False
+fiberResolvedProviderUnloadingNothing nameEq keyEq wanted provider component parent retired
+  table accumulator view outcome equation with
+    (viewLookup @{keyEq} wanted (dependencies (componentDependencies component)) view)
+  fiberResolvedProviderUnloadingNothing nameEq keyEq wanted provider component parent retired
+    table accumulator view outcome Refl | Nothing = Refl
+  fiberResolvedProviderUnloadingNothing nameEq keyEq wanted provider component parent retired
+    table accumulator view outcome equation | Just actual = case equation of Refl impossible
+
+

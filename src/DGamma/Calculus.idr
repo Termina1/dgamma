@@ -193,12 +193,25 @@ fiberLifecycle : (fiber : Fiber name key value world error) ->
 fiberLifecycle (MkFiber _ _ _ _ lifecycle) = lifecycle
 
 public export
+0 fiberLifecycleObservation :
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (lifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  fiberLifecycle (MkFiber component parent retiredFlag table lifecycle) = lifecycle
+fiberLifecycleObservation component parent retiredFlag table lifecycle = Refl
+
+
+public export
 freshFiber : Component key value world error -> Parent name ->
   Fiber name key value world error
 freshFiber component parent =
   MkFiber component parent False emptyOwned (Inactive Nothing)
 
 public export
+%inline
 setFiberRuntime : (fiber : Fiber name key value world error) ->
   (table : OwnedTable key value
     (componentProvisions (fiberComponent fiber))) ->
@@ -210,6 +223,20 @@ setFiberRuntime (MkFiber component parent retired oldTable oldLife) table life =
   MkFiber component parent retired table life
 
 public export
+%hint
+0 fiberComponentSetRuntime :
+  (fiber : Fiber name key value world error) ->
+  (table : OwnedTable key value
+    (componentProvisions (fiberComponent fiber))) ->
+  (life : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  fiberComponent (setFiberRuntime fiber table life) = fiberComponent fiber
+fiberComponentSetRuntime (MkFiber component parent retired oldTable oldLife)
+  table life = Refl
+
+public export
+%inline
 setFiberLifecycle : (fiber : Fiber name key value world error) ->
   Lifecycle key value world error name
     (dependencies (componentDependencies (fiberComponent fiber)))
@@ -218,9 +245,39 @@ setFiberLifecycle : (fiber : Fiber name key value world error) ->
 setFiberLifecycle fiber lifecycle = setFiberRuntime fiber (fiberTable fiber) lifecycle
 
 public export
+0 setFiberLifecycleExact :
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (oldLife, newLife : Lifecycle key value world error name
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  setFiberLifecycle (MkFiber component parent retiredFlag table oldLife) newLife =
+    MkFiber component parent retiredFlag table newLife
+setFiberLifecycleExact component parent retiredFlag table oldLife newLife = Refl
+
+public export
+0 fiberComponentSetLifecycle :
+  (fiber : Fiber name key value world error) ->
+  (life : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  fiberComponent (setFiberLifecycle fiber life) = fiberComponent fiber
+fiberComponentSetLifecycle (MkFiber component parent retired table oldLife) life =
+  Refl
+
+public export
+%inline
 retireFiber : Fiber name key value world error -> Fiber name key value world error
 retireFiber (MkFiber component parent retired table lifecycle) =
   MkFiber component parent True table lifecycle
+
+public export
+%hint
+0 fiberComponentRetire :
+  (fiber : Fiber name key value world error) ->
+  fiberComponent (retireFiber fiber) = fiberComponent fiber
+fiberComponentRetire (MkFiber component parent retired table lifecycle) = Refl
 
 public export
 FiberAt : (name, key : Type) -> (value : key -> Type) ->
@@ -574,6 +631,24 @@ targetFiber : DecEq name => DecEq key =>
 targetFiber fiber fibers = if retired fiber
   then Nothing
   else resolveView (dependencies (componentDependencies (fiberComponent fiber))) fibers
+
+public export
+0 targetFiberExplicit :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (lifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (fibers : Registry name key value world error) ->
+  targetFiber @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} (MkFiber component parent retiredFlag table lifecycle) fibers =
+  if retiredFlag then Nothing
+  else resolveView @{nameEq} @{keyEq}
+    (dependencies (componentDependencies component)) fibers
+targetFiberExplicit nameEq keyEq component parent False table lifecycle fibers = Refl
+targetFiberExplicit nameEq keyEq component parent True table lifecycle fibers = Refl
 
 public export
 data SomeView : Type -> Type where
@@ -1003,6 +1078,27 @@ stableProvider : Lifecycle key value world error name deps provision -> Bool
 stableProvider (Active _ _) = True
 stableProvider (Unloading _ _ _) = True
 stableProvider _ = False
+
+public export
+0 fiberStableProviderObservation :
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (lifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  stableProvider (fiberLifecycle
+    (MkFiber component parent retiredFlag table lifecycle)) =
+  stableProvider lifecycle
+fiberStableProviderObservation component parent retiredFlag table
+  (Inactive outcome) = Refl
+fiberStableProviderObservation component parent retiredFlag table
+  (Reloading remaining accumulator view) = Refl
+fiberStableProviderObservation component parent retiredFlag table
+  (Active accumulator view) = Refl
+fiberStableProviderObservation component parent retiredFlag table
+  (Unloading accumulator view outcome) = Refl
+
 
 0 falseCannotBeTrue : False = True -> Void
 falseCannotBeTrue Refl impossible
@@ -4765,6 +4861,7 @@ viewProvidersActiveUnload {name} {key} {world} {error} {value}
             {error = error} {value = value} nameEq ks rest n component parent
             retired table accumulator view fibers present)
 
+public export
 0 valueFromProviderActiveUnload :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -5330,3 +5427,55 @@ episodes n states = go states []
       else case current of
         [] => go rest []
         _ => reverse current :: go rest []
+
+public export
+0 retireFiberExact :
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (lifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  retireFiber (MkFiber component parent retired table lifecycle) =
+    MkFiber component parent True table lifecycle
+retireFiberExact component parent retired table lifecycle = Refl
+
+0 calculusJustInjective : Just left = Just right -> left = right
+calculusJustInjective Refl = Refl
+
+public export
+0 reliedOnByLookupTrue :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (provider, consumer : name) ->
+  (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} consumer fibers = Just fiber ->
+  reliedHead @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} provider provider
+    (the (Binding name (\_ => Fiber name key value world error))
+      (Bind consumer fiber)) = True ->
+  relied @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} provider fibers = True
+reliedOnByLookupTrue {name} {key} {world} {error} {value}
+  nameEq provider consumer fiber fibers@(MkCoeffectContext entries unique)
+  found headTrue = go entries
+    (lookupFiberEntries nameEq consumer fiber fibers found)
+  where
+    go : (remaining : List
+      (Binding name (\_ => Fiber name key value world error))) ->
+      lookupEntries @{nameEq} consumer remaining = Just fiber ->
+      reliedOnBy @{nameEq} {key = key} {value = value} {world = world}
+        {error = error} provider provider remaining = True
+    go [] present = case present of Refl impossible
+    go (Bind current observed :: rest) present
+      with (decEq @{nameEq} consumer current)
+      go (Bind current observed :: rest) present | Yes equal = case equal of
+        Refl => case calculusJustInjective present of
+          Refl => rewrite headTrue in Refl
+      go (Bind current observed :: rest) present | No distinct
+      with (reliedHead @{nameEq} {key = key} {value = value} {world = world}
+        {error = error} provider provider (Bind current observed))
+        go (Bind current observed :: rest) present | No distinct | False =
+          go rest present
+        go (Bind current observed :: rest) present | No distinct | True = Refl
+
