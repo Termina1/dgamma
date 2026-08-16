@@ -555,71 +555,106 @@ freshChoiceFinalGenerations =
   [(0, MkRegistrationGeneration 0 0),
    (1, MkRegistrationGeneration 1 5)]
 
+freshChoiceLeftFinalIndex : RegistrationIndexState Nat
+freshChoiceLeftFinalIndex = MkRegistrationIndexState
+  (putCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
+    1 (MkRegistrationGeneration 1 5)
+    (deleteCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
+      1 (putCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
+        1 (MkRegistrationGeneration 1 2)
+        (putCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
+          0 (MkRegistrationGeneration 0 0) []))))
+  (incrementChildrenBornUnder @{DGamma.CP3StatementChecks.registrationTestNameEq}
+    (MkRegistrationGeneration 0 0) [])
+
+freshChoiceRightFinalIndex : RegistrationIndexState Nat
+freshChoiceRightFinalIndex = MkRegistrationIndexState
+  (putCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
+    1 (MkRegistrationGeneration 1 5)
+    (deleteCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
+      2 (putCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
+        2 (MkRegistrationGeneration 2 2)
+        (putCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
+          0 (MkRegistrationGeneration 0 0) []))))
+  (incrementChildrenBornUnder @{DGamma.CP3StatementChecks.registrationTestNameEq}
+    (MkRegistrationGeneration 0 0) [])
+
+freshChoiceParentIndex : RegistrationIndexState Nat
+freshChoiceParentIndex = MkRegistrationIndexState
+  [(0, MkRegistrationGeneration 0 0)] []
+
 0 freshChoiceGenerationTraceCorrespondence :
   (left : RoleChangingNamedTrace 1) ->
   (right : RoleChangingNamedTrace 2) ->
   RegistrationTraceCorrespondence
     DGamma.CP3StatementChecks.registrationTestNameEq
-    DGamma.CP3StatementChecks.freshChoiceGenerationBijection 0 []
-    (namedRoleChangingTrace left)
-    DGamma.CP3StatementChecks.freshChoiceFinalGenerations 0 []
-    (namedRoleChangingTrace right)
-    DGamma.CP3StatementChecks.freshChoiceFinalGenerations
+    DGamma.CP3StatementChecks.freshChoiceGenerationBijection
+    0 DGamma.CP3.emptyRegistrationIndex (namedRoleChangingTrace left)
+    DGamma.CP3StatementChecks.freshChoiceLeftFinalIndex
+    0 DGamma.CP3.emptyRegistrationIndex (namedRoleChangingTrace right)
+    DGamma.CP3StatementChecks.freshChoiceRightFinalIndex [] []
 freshChoiceGenerationTraceCorrespondence left right =
   SkipLeftNonRegistration (OInsert 0 Root registrationTestParent)
     (namedTransition (rootInsert0 left)) (namedRoleTail2 left)
     (namedAction (rootInsert0 left)) Refl
-  (SkipRightNonRegistration (OInsert 0 Root registrationTestParent)
-    (namedTransition (rootInsert0 right)) (namedRoleTail2 right)
-    (namedAction (rootInsert0 right)) Refl
   (SkipLeftNonRegistration (LBegin 0)
     (namedTransition (parentBegin left)) (namedRoleTail3 left)
     (namedAction (parentBegin left)) Refl
-  (SkipRightNonRegistration (LBegin 0)
-    (namedTransition (parentBegin right)) (namedRoleTail3 right)
-    (namedAction (parentBegin right)) Refl
-  (MatchGeneratedRegistration
+  (QueueLeftGeneratedRegistration
     (namedTransition (childInsert left)) (namedRoleTail4 left)
-    (namedTransition (childInsert right)) (namedRoleTail4 right)
-    (namedAction (childInsert left)) (namedAction (childInsert right))
-    Refl Refl Refl Refl
+    (namedAction (childInsert left))
   (SkipLeftNonRegistration (ORetire 1)
     (namedTransition (childRetire left)) (namedRoleTail5 left)
     (namedAction (childRetire left)) Refl
-  (SkipRightNonRegistration (ORetire 2)
-    (namedTransition (childRetire right)) (namedRoleTail5 right)
-    (namedAction (childRetire right)) Refl
   (SkipLeftNonRegistration (ORemove 1)
     (namedTransition (childRemove left)) (namedRoleTail6 left)
     (namedAction (childRemove left)) Refl
-  (SkipRightNonRegistration (ORemove 2)
-    (namedTransition (childRemove right)) (namedRoleTail6 right)
-    (namedAction (childRemove right)) Refl
   (SkipLeftNonRegistration (OInsert 1 Root registrationTestChild)
     (namedTransition (rootInsert1 left)) (namedRoleTail7 left)
     (namedAction (rootInsert1 left)) Refl
-  (SkipRightNonRegistration (OInsert 1 Root registrationTestChild)
-    (namedTransition (rootInsert1 right)) (namedRoleTail7 right)
-    (namedAction (rootInsert1 right)) Refl
   (SkipLeftNonRegistration (LAdvance 0)
     (namedTransition (parentAdvance left)) (namedRoleTail8 left)
     (namedAction (parentAdvance left)) Refl
-  (SkipRightNonRegistration (LAdvance 0)
-    (namedTransition (parentAdvance right)) (namedRoleTail8 right)
-    (namedAction (parentAdvance right)) Refl
   (SkipLeftNonRegistration (LBegin 1)
     (namedTransition (rootBegin1 left)) (namedRoleTail9 left)
     (namedAction (rootBegin1 left)) Refl
-  (SkipRightNonRegistration (LBegin 1)
-    (namedTransition (rootBegin1 right)) (namedRoleTail9 right)
-    (namedAction (rootBegin1 right)) Refl
   (SkipLeftNonRegistration (LAdvance 1)
     (namedTransition (rootAdvance1 left)) NoTransitions
     (namedAction (rootAdvance1 left)) Refl
+  (SkipRightNonRegistration (OInsert 0 Root registrationTestParent)
+    (namedTransition (rootInsert0 right)) (namedRoleTail2 right)
+    (namedAction (rootInsert0 right)) Refl
+  (SkipRightNonRegistration (LBegin 0)
+    (namedTransition (parentBegin right)) (namedRoleTail3 right)
+    (namedAction (parentBegin right)) Refl
+  (MatchRightWithPendingLeft
+    (namedTransition (childInsert right)) (namedRoleTail4 right)
+    (namedAction (childInsert right)) []
+    (registrationEventAt @{DGamma.CP3StatementChecks.registrationTestNameEq}
+      2 DGamma.CP3StatementChecks.freshChoiceParentIndex 1 0 registrationTestChild)
+    []
+    (MkRegistrationEventMatch Refl
+      (MkRegistrationGeneration 0 0) (MkRegistrationGeneration 0 0)
+      Refl Refl Refl Refl Refl)
+  (SkipRightNonRegistration (ORetire 2)
+    (namedTransition (childRetire right)) (namedRoleTail5 right)
+    (namedAction (childRetire right)) Refl
+  (SkipRightNonRegistration (ORemove 2)
+    (namedTransition (childRemove right)) (namedRoleTail6 right)
+    (namedAction (childRemove right)) Refl
+  (SkipRightNonRegistration (OInsert 1 Root registrationTestChild)
+    (namedTransition (rootInsert1 right)) (namedRoleTail7 right)
+    (namedAction (rootInsert1 right)) Refl
+  (SkipRightNonRegistration (LAdvance 0)
+    (namedTransition (parentAdvance right)) (namedRoleTail8 right)
+    (namedAction (parentAdvance right)) Refl
+  (SkipRightNonRegistration (LBegin 1)
+    (namedTransition (rootBegin1 right)) (namedRoleTail9 right)
+    (namedAction (rootBegin1 right)) Refl
   (SkipRightNonRegistration (LAdvance 1)
     (namedTransition (rootAdvance1 right)) NoTransitions
     (namedAction (rootAdvance1 right)) Refl
-    RegistrationCorrespondenceEnd))))))))))))))))
+    RegistrationCorrespondenceEnd)))))))))))))))))
 
 0 freshChoiceRegistrationCorrespondence :
   (left : RoleChangingNamedTrace 1) ->
@@ -628,8 +663,8 @@ freshChoiceGenerationTraceCorrespondence left right =
     DGamma.CP3StatementChecks.freshChoiceGenerationBijection (namedRoleChangingTrace left)
     (namedRoleChangingTrace right)
 freshChoiceRegistrationCorrespondence left right =
-  MkRegistrationCorrespondenceByGeneration DGamma.CP3StatementChecks.freshChoiceFinalGenerations
-    DGamma.CP3StatementChecks.freshChoiceFinalGenerations
+  MkRegistrationCorrespondenceByGeneration
+    freshChoiceLeftFinalIndex freshChoiceRightFinalIndex
     (freshChoiceGenerationTraceCorrespondence left right)
 
 0 freshChoiceCurrentGenerationForward : (n : Nat) ->
@@ -1281,8 +1316,10 @@ public export
 0 registrationMultiplicityGuard :
   (same : SameOrchestrationModuloGenerated nameEq left right) ->
   RegistrationTraceCorrespondence nameEq (generatedGenerationBijection same)
-    0 [] left (leftFinalGenerations (generatedRegistrationTree same))
-    0 [] right (rightFinalGenerations (generatedRegistrationTree same))
+    0 DGamma.CP3.emptyRegistrationIndex left
+      (leftFinalIndex (generatedRegistrationTree same))
+    0 DGamma.CP3.emptyRegistrationIndex right
+      (rightFinalIndex (generatedRegistrationTree same)) [] []
 registrationMultiplicityGuard same =
   generationTraceCorrespondence (generatedRegistrationTree same)
 

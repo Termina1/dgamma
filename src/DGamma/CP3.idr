@@ -1797,28 +1797,146 @@ isGeneratedRegistrationAction : Action name key value world error -> Bool
 isGeneratedRegistrationAction (OInsert child (ChildOf parent) component) = True
 isGeneratedRegistrationAction action = False
 
-||| A structural bijection of generated registration events.  Both scans carry
-||| their own transition ordinal and current generation environment.  Non-child
-||| actions may be skipped independently; child births must be paired in order,
-||| must name the same component role, and must map both the child generation
-||| and the then-live parent generation.  The end indices expose the current
-||| generations without an unsafe fold over dependent trace states.
+||| Executable indexing state for one trace.  Besides the currently live
+||| generation of each raw name, it records how many children have already been
+||| born under each exact parent generation.  The latter is Definition 47's
+||| per-parent iterator/yield position; it deliberately says nothing about the
+||| relative schedule of different parents.
+public export
+record RegistrationIndexState (name : Type) where
+  constructor MkRegistrationIndexState
+  indexedLiveGenerations : GenerationEnvironment name
+  indexedChildCounts : List (RegistrationGeneration name, Nat)
+
+public export
+emptyRegistrationIndex : RegistrationIndexState name
+emptyRegistrationIndex = MkRegistrationIndexState [] []
+
+sameRegistrationGeneration : DecEq name =>
+  RegistrationGeneration name -> RegistrationGeneration name -> Bool
+sameRegistrationGeneration
+  (MkRegistrationGeneration leftName leftOrdinal)
+  (MkRegistrationGeneration rightName rightOrdinal) =
+    case decEq leftName rightName of
+      No different => False
+      Yes Refl => leftOrdinal == rightOrdinal
+
+public export
+childrenBornUnder : DecEq name => RegistrationGeneration name ->
+  List (RegistrationGeneration name, Nat) -> Nat
+childrenBornUnder parent [] = 0
+childrenBornUnder parent ((candidate, count) :: rest) =
+  if sameRegistrationGeneration parent candidate
+     then count
+     else childrenBornUnder parent rest
+
+public export
+incrementChildrenBornUnder : DecEq name => RegistrationGeneration name ->
+  List (RegistrationGeneration name, Nat) ->
+  List (RegistrationGeneration name, Nat)
+incrementChildrenBornUnder parent [] = [(parent, 1)]
+incrementChildrenBornUnder parent ((candidate, count) :: rest) =
+  if sameRegistrationGeneration parent candidate
+     then (candidate, S count) :: rest
+     else (candidate, count) :: incrementChildrenBornUnder parent rest
+
+public export
+advanceRegistrationIndex : DecEq name => Nat ->
+  Action name key value world error -> RegistrationIndexState name ->
+  RegistrationIndexState name
+advanceRegistrationIndex ordinal (OInsert child (ChildOf parent) component)
+  (MkRegistrationIndexState live counts) =
+    let childGeneration = MkRegistrationGeneration child ordinal in
+    case lookupCurrentGeneration parent live of
+      Nothing => MkRegistrationIndexState
+        (putCurrentGeneration child childGeneration live) counts
+      Just parentGeneration => MkRegistrationIndexState
+        (putCurrentGeneration child childGeneration live)
+        (incrementChildrenBornUnder parentGeneration counts)
+advanceRegistrationIndex ordinal (OInsert root Root component)
+  (MkRegistrationIndexState live counts) =
+    MkRegistrationIndexState
+      (putCurrentGeneration root (MkRegistrationGeneration root ordinal) live)
+      counts
+advanceRegistrationIndex ordinal (ORemove removed)
+  (MkRegistrationIndexState live counts) =
+    MkRegistrationIndexState (deleteCurrentGeneration removed live) counts
+advanceRegistrationIndex ordinal action index = index
+
+||| One executable generated-birth descriptor.  Parent generations and local
+||| positions are computed from the processed prefix.  `Nothing` is retained
+||| for malformed raw traces; a correspondence below requires `Just`, so such a
+||| child cannot silently match a well-formed registration event.
+public export
+record RegistrationEvent
+  (name, key, world, error : Type) (value : key -> Type) where
+  constructor MkRegistrationEvent
+  eventChild : name
+  eventParent : name
+  eventComponent : Component key value world error
+  eventChildGeneration : RegistrationGeneration name
+  eventParentGeneration : Maybe (RegistrationGeneration name)
+  eventChildPosition : Nat
+
+public export
+registrationEventAt : DecEq name => Nat -> RegistrationIndexState name ->
+  (child, parent : name) -> Component key value world error ->
+  RegistrationEvent name key world error value
+registrationEventAt ordinal (MkRegistrationIndexState live counts)
+  child parent component =
+    let parentGeneration = lookupCurrentGeneration parent live
+        position = case parentGeneration of
+          Nothing => 0
+          Just generation => childrenBornUnder generation counts in
+      MkRegistrationEvent child parent component
+        (MkRegistrationGeneration child ordinal) parentGeneration position
+
+||| Two child births represent the same structural iterator position.  Child
+||| names/birth ordinals may differ, but the exact component is equal, the
+||| parent generations correspond, and the child position within that parent
+||| is identical.  There is intentionally no comparison of their global birth
+||| ordinals beyond the generation bijection itself.
+public export
+record RegistrationEventMatch
+  (renaming : RegistrationGenerationBijection name)
+  (left, right : RegistrationEvent name key world error value) where
+  constructor MkRegistrationEventMatch
+  0 matchedComponent : eventComponent left = eventComponent right
+  leftMatchedParentGeneration : RegistrationGeneration name
+  rightMatchedParentGeneration : RegistrationGeneration name
+  0 leftParentGenerationPresent : eventParentGeneration left =
+    Just leftMatchedParentGeneration
+  0 rightParentGenerationPresent : eventParentGeneration right =
+    Just rightMatchedParentGeneration
+  0 matchedChildGeneration : generationForward renaming
+    (eventChildGeneration left) = eventChildGeneration right
+  0 matchedParentGeneration : generationForward renaming
+    leftMatchedParentGeneration = rightMatchedParentGeneration
+  0 matchedPerParentPosition : eventChildPosition left = eventChildPosition right
+
+||| Parent-local structural matching of generated births.  A birth may be held
+||| pending while either trace advances; it must eventually remove exactly one
+||| opposite-side pending birth.  Thus global cross-parent chronology is
+||| irrelevant, while `RegistrationEventMatch` preserves each mapped parent's
+||| local iterator/yield position.
 public export
 data RegistrationTraceCorrespondence :
   (nameEq : DecEq name) ->
   (renaming : RegistrationGenerationBijection name) ->
-  (leftOrdinal : Nat) -> (leftLive : GenerationEnvironment name) ->
+  (leftOrdinal : Nat) -> (leftIndex : RegistrationIndexState name) ->
   {leftFirst, leftFinal : SystemState name key value world error} ->
   (left : Transitions leftFirst leftFinal) ->
-  (leftFinalLive : GenerationEnvironment name) ->
-  (rightOrdinal : Nat) -> (rightLive : GenerationEnvironment name) ->
+  (leftFinalIndex : RegistrationIndexState name) ->
+  (rightOrdinal : Nat) -> (rightIndex : RegistrationIndexState name) ->
   {rightFirst, rightFinal : SystemState name key value world error} ->
   (right : Transitions rightFirst rightFinal) ->
-  (rightFinalLive : GenerationEnvironment name) -> Type where
+  (rightFinalIndex : RegistrationIndexState name) ->
+  (pendingLeft, pendingRight :
+    List (RegistrationEvent name key world error value)) -> Type where
   RegistrationCorrespondenceEnd :
     RegistrationTraceCorrespondence nameEq renaming
-      leftOrdinal leftLive NoTransitions leftLive
-      rightOrdinal rightLive NoTransitions rightLive
+      leftOrdinal leftIndex NoTransitions leftIndex
+      rightOrdinal rightIndex NoTransitions rightIndex [] []
   SkipLeftNonRegistration :
     (action : Action name key value world error) ->
     (transition : Transition leftFirst leftMiddle) ->
@@ -1827,11 +1945,12 @@ data RegistrationTraceCorrespondence :
     isGeneratedRegistrationAction action = False ->
     RegistrationTraceCorrespondence nameEq renaming
       (S leftOrdinal)
-      (advanceGenerationEnvironment @{nameEq} leftOrdinal action leftLive)
-      leftRest leftFinalLive rightOrdinal rightLive right rightFinalLive ->
+      (advanceRegistrationIndex @{nameEq} leftOrdinal action leftIndex)
+      leftRest leftFinalIndex rightOrdinal rightIndex right rightFinalIndex
+      pendingLeft pendingRight ->
     RegistrationTraceCorrespondence nameEq renaming
-      leftOrdinal leftLive (MoreTransitions transition leftRest) leftFinalLive
-      rightOrdinal rightLive right rightFinalLive
+      leftOrdinal leftIndex (MoreTransitions transition leftRest) leftFinalIndex
+      rightOrdinal rightIndex right rightFinalIndex pendingLeft pendingRight
   SkipRightNonRegistration :
     (action : Action name key value world error) ->
     (transition : Transition rightFirst rightMiddle) ->
@@ -1839,50 +1958,88 @@ data RegistrationTraceCorrespondence :
     transitionAction transition = action ->
     isGeneratedRegistrationAction action = False ->
     RegistrationTraceCorrespondence nameEq renaming
-      leftOrdinal leftLive left leftFinalLive
+      leftOrdinal leftIndex left leftFinalIndex
       (S rightOrdinal)
-      (advanceGenerationEnvironment @{nameEq} rightOrdinal action rightLive)
-      rightRest rightFinalLive ->
+      (advanceRegistrationIndex @{nameEq} rightOrdinal action rightIndex)
+      rightRest rightFinalIndex pendingLeft pendingRight ->
     RegistrationTraceCorrespondence nameEq renaming
-      leftOrdinal leftLive left leftFinalLive
-      rightOrdinal rightLive (MoreTransitions transition rightRest)
-      rightFinalLive
-  MatchGeneratedRegistration :
-    (leftTransition : Transition leftFirst leftMiddle) ->
+      leftOrdinal leftIndex left leftFinalIndex rightOrdinal rightIndex
+      (MoreTransitions transition rightRest) rightFinalIndex
+      pendingLeft pendingRight
+  QueueLeftGeneratedRegistration :
+    (transition : Transition leftFirst leftMiddle) ->
     (leftRest : Transitions leftMiddle leftFinal) ->
-    (rightTransition : Transition rightFirst rightMiddle) ->
-    (rightRest : Transitions rightMiddle rightFinal) ->
-    transitionAction leftTransition =
-      OInsert leftChild (ChildOf leftParent) component ->
-    transitionAction rightTransition =
-      OInsert rightChild (ChildOf rightParent) component ->
-    lookupCurrentGeneration @{nameEq} leftParent leftLive =
-      Just leftParentGeneration ->
-    lookupCurrentGeneration @{nameEq} rightParent rightLive =
-      Just rightParentGeneration ->
-    generationForward renaming
-      (MkRegistrationGeneration leftChild leftOrdinal) =
-      MkRegistrationGeneration rightChild rightOrdinal ->
-    generationForward renaming leftParentGeneration = rightParentGeneration ->
+    transitionAction transition = OInsert child (ChildOf parent) component ->
     RegistrationTraceCorrespondence nameEq renaming
       (S leftOrdinal)
-      (putCurrentGeneration @{nameEq} leftChild
-        (MkRegistrationGeneration leftChild leftOrdinal) leftLive)
-      leftRest leftFinalLive
-      (S rightOrdinal)
-      (putCurrentGeneration @{nameEq} rightChild
-        (MkRegistrationGeneration rightChild rightOrdinal) rightLive)
-      rightRest rightFinalLive ->
+      (advanceRegistrationIndex @{nameEq} leftOrdinal
+        (OInsert child (ChildOf parent) component) leftIndex)
+      leftRest leftFinalIndex rightOrdinal rightIndex right rightFinalIndex
+      (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent component ::
+        pendingLeft) pendingRight ->
     RegistrationTraceCorrespondence nameEq renaming
-      leftOrdinal leftLive (MoreTransitions leftTransition leftRest)
-      leftFinalLive rightOrdinal rightLive
-      (MoreTransitions rightTransition rightRest) rightFinalLive
+      leftOrdinal leftIndex (MoreTransitions transition leftRest) leftFinalIndex
+      rightOrdinal rightIndex right rightFinalIndex pendingLeft pendingRight
+  QueueRightGeneratedRegistration :
+    (transition : Transition rightFirst rightMiddle) ->
+    (rightRest : Transitions rightMiddle rightFinal) ->
+    transitionAction transition = OInsert child (ChildOf parent) component ->
+    RegistrationTraceCorrespondence nameEq renaming
+      leftOrdinal leftIndex left leftFinalIndex
+      (S rightOrdinal)
+      (advanceRegistrationIndex @{nameEq} rightOrdinal
+        (OInsert child (ChildOf parent) component) rightIndex)
+      rightRest rightFinalIndex pendingLeft
+      (registrationEventAt @{nameEq} rightOrdinal rightIndex child parent component ::
+        pendingRight) ->
+    RegistrationTraceCorrespondence nameEq renaming
+      leftOrdinal leftIndex left leftFinalIndex rightOrdinal rightIndex
+      (MoreTransitions transition rightRest) rightFinalIndex
+      pendingLeft pendingRight
+  MatchLeftWithPendingRight :
+    (transition : Transition leftFirst leftMiddle) ->
+    (leftRest : Transitions leftMiddle leftFinal) ->
+    transitionAction transition = OInsert child (ChildOf parent) component ->
+    (rightPrefix : List (RegistrationEvent name key world error value)) ->
+    (rightEvent : RegistrationEvent name key world error value) ->
+    (rightSuffix : List (RegistrationEvent name key world error value)) ->
+    RegistrationEventMatch renaming
+      (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent component)
+      rightEvent ->
+    RegistrationTraceCorrespondence nameEq renaming
+      (S leftOrdinal)
+      (advanceRegistrationIndex @{nameEq} leftOrdinal
+        (OInsert child (ChildOf parent) component) leftIndex)
+      leftRest leftFinalIndex rightOrdinal rightIndex right rightFinalIndex
+      pendingLeft (rightPrefix ++ rightSuffix) ->
+    RegistrationTraceCorrespondence nameEq renaming
+      leftOrdinal leftIndex (MoreTransitions transition leftRest) leftFinalIndex
+      rightOrdinal rightIndex right rightFinalIndex pendingLeft
+      (rightPrefix ++ (rightEvent :: rightSuffix))
+  MatchRightWithPendingLeft :
+    (transition : Transition rightFirst rightMiddle) ->
+    (rightRest : Transitions rightMiddle rightFinal) ->
+    transitionAction transition = OInsert child (ChildOf parent) component ->
+    (leftPrefix : List (RegistrationEvent name key world error value)) ->
+    (leftEvent : RegistrationEvent name key world error value) ->
+    (leftSuffix : List (RegistrationEvent name key world error value)) ->
+    RegistrationEventMatch renaming leftEvent
+      (registrationEventAt @{nameEq} rightOrdinal rightIndex child parent component) ->
+    RegistrationTraceCorrespondence nameEq renaming
+      leftOrdinal leftIndex left leftFinalIndex
+      (S rightOrdinal)
+      (advanceRegistrationIndex @{nameEq} rightOrdinal
+        (OInsert child (ChildOf parent) component) rightIndex)
+      rightRest rightFinalIndex (leftPrefix ++ leftSuffix) pendingRight ->
+    RegistrationTraceCorrespondence nameEq renaming
+      leftOrdinal leftIndex left leftFinalIndex rightOrdinal rightIndex
+      (MoreTransitions transition rightRest) rightFinalIndex
+      (leftPrefix ++ (leftEvent :: leftSuffix)) pendingRight
 
 ||| Lemma-56 correspondence of generated registration trees, indexed by
-||| generation rather than raw name.  External roots are intentionally absent
-||| from the matched-event branch: `SameExternalOrchestration` compares their
-||| raw inputs, while the scanner still records their generations so a later
-||| child can identify the exact parent birth.
+||| generation rather than raw name.  The scanner can advance either trace and
+||| holds generated events pending, so it imposes order only through the
+||| per-parent positions in `RegistrationEventMatch`.
 public export
 record RegistrationCorrespondenceByGeneration
   (nameEq : DecEq name) (renaming : RegistrationGenerationBijection name)
@@ -1891,10 +2048,41 @@ record RegistrationCorrespondenceByGeneration
   (left : Transitions leftFirst leftFinal)
   (right : Transitions rightFirst rightFinal) where
   constructor MkRegistrationCorrespondenceByGeneration
-  leftFinalGenerations : GenerationEnvironment name
-  rightFinalGenerations : GenerationEnvironment name
+  leftFinalIndex : RegistrationIndexState name
+  rightFinalIndex : RegistrationIndexState name
   generationTraceCorrespondence : RegistrationTraceCorrespondence nameEq renaming
-    0 [] left leftFinalGenerations 0 [] right rightFinalGenerations
+    0 (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)
+    left leftFinalIndex
+    0 (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)
+    right rightFinalIndex [] []
+
+public export
+leftFinalGenerations :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal :
+    SystemState name key value world error} ->
+  {nameEq : DecEq name} ->
+  {renaming : RegistrationGenerationBijection name} ->
+  {left : Transitions leftFirst leftFinal} ->
+  {right : Transitions rightFirst rightFinal} ->
+  RegistrationCorrespondenceByGeneration nameEq renaming left right ->
+  GenerationEnvironment name
+leftFinalGenerations registrations =
+  indexedLiveGenerations (leftFinalIndex registrations)
+
+public export
+rightFinalGenerations :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal :
+    SystemState name key value world error} ->
+  {nameEq : DecEq name} ->
+  {renaming : RegistrationGenerationBijection name} ->
+  {left : Transitions leftFirst leftFinal} ->
+  {right : Transitions rightFirst rightFinal} ->
+  RegistrationCorrespondenceByGeneration nameEq renaming left right ->
+  GenerationEnvironment name
+rightFinalGenerations registrations =
+  indexedLiveGenerations (rightFinalIndex registrations)
 
 ||| The raw-name bijection used only to compare *current endpoint* registries.
 ||| Historical child births are governed by the generation bijection above.
