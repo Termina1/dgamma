@@ -4,6 +4,8 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CalculusChecks
+import DGamma.Section3Example
 import Decidable.Equality
 import Data.List.Elem
 import Data.Nat
@@ -365,8 +367,8 @@ freshChoiceGenerationBijection = MkRegistrationGenerationBijection
 swapHistoricalRootGeneration : RegistrationGeneration Nat ->
   RegistrationGeneration Nat
 swapHistoricalRootGeneration (MkRegistrationGeneration 0 0) =
-  MkRegistrationGeneration 1 1
-swapHistoricalRootGeneration (MkRegistrationGeneration 1 1) =
+  MkRegistrationGeneration 1 3
+swapHistoricalRootGeneration (MkRegistrationGeneration 1 3) =
   MkRegistrationGeneration 0 0
 swapHistoricalRootGeneration generation = generation
 
@@ -381,7 +383,11 @@ swapHistoricalRootGenerationInvolutive
 swapHistoricalRootGenerationInvolutive
   (MkRegistrationGeneration (S Z) (S Z)) = Refl
 swapHistoricalRootGenerationInvolutive
-  (MkRegistrationGeneration (S Z) (S (S ordinal))) = Refl
+  (MkRegistrationGeneration (S Z) (S (S Z))) = Refl
+swapHistoricalRootGenerationInvolutive
+  (MkRegistrationGeneration (S Z) (S (S (S Z)))) = Refl
+swapHistoricalRootGenerationInvolutive
+  (MkRegistrationGeneration (S Z) (S (S (S (S ordinal))))) = Refl
 swapHistoricalRootGenerationInvolutive
   (MkRegistrationGeneration (S (S name)) ordinal) = Refl
 
@@ -392,27 +398,108 @@ historicalRootPermutationBijection = MkRegistrationGenerationBijection
   swapHistoricalRootGenerationInvolutive
   swapHistoricalRootGenerationInvolutive
 
-||| The weak dual found in round 7 is rejected at the public coupling: even if
-||| root 0 is later removed, its exact external birth at ordinal 0 cannot be
-||| reassigned to root 1's historical generation.
+||| Concrete removed-root history used by the round-8 negative guard.  Both
+||| external roots are gone at the endpoint, so current-name constraints cannot
+||| mask historical generation reassignment.
+record RemovedRootTrace where
+  constructor MkRemovedRootTrace
+  removedInsert0 : CheckedNamedTransition DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (OInsert 0 Root DGamma.CP3StatementChecks.registrationTestChild)
+    DGamma.CP3StatementChecks.registrationTestInitial
+  removedRetire0 : CheckedNamedTransition DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (ORetire 0) (namedAfter removedInsert0)
+  removedRemove0 : CheckedNamedTransition DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (ORemove 0) (namedAfter removedRetire0)
+  removedInsert1 : CheckedNamedTransition DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (OInsert 1 Root DGamma.CP3StatementChecks.registrationTestChild)
+    (namedAfter removedRemove0)
+  removedRetire1 : CheckedNamedTransition DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (ORetire 1) (namedAfter removedInsert1)
+  removedRemove1 : CheckedNamedTransition DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (ORemove 1) (namedAfter removedRetire1)
+
+removedRootTrace : (trace : RemovedRootTrace) ->
+  Transitions DGamma.CP3StatementChecks.registrationTestInitial (namedAfter (removedRemove1 trace))
+removedRootTrace trace =
+  MoreTransitions (namedTransition (removedInsert0 trace))
+  (MoreTransitions (namedTransition (removedRetire0 trace))
+  (MoreTransitions (namedTransition (removedRemove0 trace))
+  (MoreTransitions (namedTransition (removedInsert1 trace))
+  (MoreTransitions (namedTransition (removedRetire1 trace))
+  (MoreTransitions (namedTransition (removedRemove1 trace))
+    NoTransitions)))))
+
+removedRootTail1 : (trace : RemovedRootTrace) ->
+  Transitions (namedAfter (removedInsert0 trace))
+    (namedAfter (removedRemove1 trace))
+removedRootTail1 trace =
+  MoreTransitions (namedTransition (removedRetire0 trace))
+  (MoreTransitions (namedTransition (removedRemove0 trace))
+  (MoreTransitions (namedTransition (removedInsert1 trace))
+  (MoreTransitions (namedTransition (removedRetire1 trace))
+  (MoreTransitions (namedTransition (removedRemove1 trace)) NoTransitions))))
+
+buildRemovedRootTrace : Maybe RemovedRootTrace
+buildRemovedRootTrace = do
+  t0 <- checkedNamedFire DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq
+    (OInsert 0 Root DGamma.CP3StatementChecks.registrationTestChild) DGamma.CP3StatementChecks.registrationTestInitial
+  t1 <- checkedNamedFire DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq
+    (ORetire 0) (namedAfter t0)
+  t2 <- checkedNamedFire DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq
+    (ORemove 0) (namedAfter t1)
+  t3 <- checkedNamedFire DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq
+    (OInsert 1 Root DGamma.CP3StatementChecks.registrationTestChild) (namedAfter t2)
+  t4 <- checkedNamedFire DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq
+    (ORetire 1) (namedAfter t3)
+  t5 <- checkedNamedFire DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq
+    (ORemove 1) (namedAfter t4)
+  Just (MkRemovedRootTrace t0 t1 t2 t3 t4 t5)
+
+public export
+removedRootRuntimeCheck : Bool
+removedRootRuntimeCheck = case buildRemovedRootTrace of
+  Nothing => False
+  Just trace => null (bindings (registry (namedAfter (removedRemove1 trace))))
+
+0 historicalFirstRootMoved :
+  generationForward DGamma.CP3StatementChecks.historicalRootPermutationBijection
+    (MkRegistrationGeneration 0 0) = MkRegistrationGeneration 0 0 -> Void
+historicalFirstRootMoved Refl impossible
+
+||| An alleged complete public same-input package for the concrete history,
+||| together with the forbidden permutation `(0,0) <-> (1,3)`.  This record is
+||| deliberately uninhabited; unlike the old guard it contains every conjunct
+||| of `SameOrchestrationModuloGenerated`, not only root coupling.
+public export
+record CompleteRemovedRootPermutationCandidate where
+  constructor MkCompleteRemovedRootPermutationCandidate
+  removedRootHistory : RemovedRootTrace
+  0 removedRootFullRelation : SameOrchestrationModuloGenerated
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    (removedRootTrace removedRootHistory) (removedRootTrace removedRootHistory)
+  0 removedRootUsesPermutation : generatedGenerationBijection
+    removedRootFullRelation =
+    DGamma.CP3StatementChecks.historicalRootPermutationBijection
+
+||| Full-relation rejection: the exact first external input must map `(0,0)` to
+||| itself, while the candidate's complete generation renaming maps it to
+||| `(1,3)`.  Empty endpoints play no role in the contradiction.
 public export
 0 historicalExternalRootPermutationRejected :
-  {leftFirst, leftMiddle, leftFinal, rightFirst, rightMiddle, rightFinal :
-    SystemState Nat key value world error} ->
-  {leftTransition : Transition leftFirst leftMiddle} ->
-  {leftRest : Transitions leftMiddle leftFinal} ->
-  {rightTransition : Transition rightFirst rightMiddle} ->
-  {rightRest : Transitions rightMiddle rightFinal} ->
-  {component : Component key value world error} ->
-  ExternalRootBirthCorrespondence
-    DGamma.CP3StatementChecks.historicalRootPermutationBijection 0
-    (MoreTransitions leftTransition leftRest) 0
-    (MoreTransitions rightTransition rightRest) ->
-  transitionAction leftTransition = OInsert 0 Root component ->
-  transitionAction rightTransition = OInsert 0 Root component -> Void
-historicalExternalRootPermutationRejected coupling leftRoot rightRoot =
-  case firstExternalRootBirthMapped coupling leftRoot rightRoot of
-    Refl impossible
+  CompleteRemovedRootPermutationCandidate -> Void
+historicalExternalRootPermutationRejected candidate =
+  let generation : RegistrationGeneration Nat
+      generation = MkRegistrationGeneration 0 0
+      mapped : generationForward
+        (generatedGenerationBijection (removedRootFullRelation candidate))
+        generation = generation
+      mapped = firstExternalRootBirthMapped
+        (externalRootGenerationsCoupled (removedRootFullRelation candidate))
+        (namedAction (removedInsert0 (removedRootHistory candidate)))
+        (namedAction (removedInsert0 (removedRootHistory candidate)))
+      renamed = cong (\renaming => generationForward renaming generation)
+        (removedRootUsesPermutation candidate) in
+    historicalFirstRootMoved (trans (sym renamed) mapped)
 
 0 namedInsertLookup :
   (step : CheckedNamedTransition nameEq keyEq
@@ -1735,12 +1822,1390 @@ crossParentPermutationRuntimeCheck =
         (namedAfter (crossAdvance3 left))
     _ => False
 
+||| Round-8 delay/divert/reopen regression.  The parent depends on ServiceA,
+||| so retiring provider 0 diverts its first activation.  A replacement provider
+||| later reopens the parent from the start of its iterator.
+episodeNameEq : DecEq Nat
+episodeNameEq = %search
+
+episodeKeyEq : DecEq ToyKey
+episodeKeyEq = %search
+
+episodeRegistrationStep : StepEffect ToyKey ToyValue ToyRuntime String
+  [ServiceA] DGamma.CalculusChecks.toyEmptySpec
+episodeRegistrationStep = MkStepEffect (Just 0)
+  (\(OneDepValue service NoDepValues), before => Right (before, id))
+  (\(OneDepValue service NoDepValues), before, after, undo, returned =>
+    replace
+      {p = \outcome => case outcome of
+        Left _ => Unit
+        Right (next, inverse) => inverse next = before}
+      returned Refl)
+
+episodeChild : Component ToyKey ToyValue ToyRuntime String
+episodeChild = MkComponent DGamma.CalculusChecks.toyEmptySpec
+  DGamma.CalculusChecks.toyEmptySpec []
+
+episodeParent : Component ToyKey ToyValue ToyRuntime String
+episodeParent = MkComponent DGamma.Section3Example.toySpecA
+  DGamma.CalculusChecks.toyEmptySpec [episodeRegistrationStep]
+
+record EpisodeRootSource
+  (root : Nat)
+  (before : SystemState Nat ToyKey ToyValue ToyRuntime String) where
+  constructor MkEpisodeRootSource
+  episodeRootFiber : Fiber Nat ToyKey ToyValue ToyRuntime String
+  0 episodeRootFound : lookupFiber
+    @{DGamma.CP3StatementChecks.episodeNameEq} root (registry before) =
+    Just episodeRootFiber
+  0 episodeRootParent : fiberParent episodeRootFiber = Root
+
+findEpisodeRootSource : (root : Nat) ->
+  (before : SystemState Nat ToyKey ToyValue ToyRuntime String) ->
+  Maybe (EpisodeRootSource root before)
+findEpisodeRootSource root before
+  with (lookupFiber @{DGamma.CP3StatementChecks.episodeNameEq}
+    root (registry before)) proof found
+    findEpisodeRootSource root before | Nothing = Nothing
+    findEpisodeRootSource root before | Just fiber
+      with (fiberParent fiber) proof parentRole
+        findEpisodeRootSource root before | Just fiber | Root =
+          Just (MkEpisodeRootSource fiber found parentRole)
+        findEpisodeRootSource root before | Just fiber | ChildOf parent = Nothing
+
+record EpisodeChildSource
+  (child : Nat)
+  (before : SystemState Nat ToyKey ToyValue ToyRuntime String) where
+  constructor MkEpisodeChildSource
+  episodeChildFiber : Fiber Nat ToyKey ToyValue ToyRuntime String
+  episodeChildParent : Nat
+  0 episodeChildFound : lookupFiber
+    @{DGamma.CP3StatementChecks.episodeNameEq} child (registry before) =
+    Just episodeChildFiber
+  0 episodeChildParentRole : fiberParent episodeChildFiber =
+    ChildOf episodeChildParent
+
+findEpisodeChildSource : (child : Nat) ->
+  (before : SystemState Nat ToyKey ToyValue ToyRuntime String) ->
+  Maybe (EpisodeChildSource child before)
+findEpisodeChildSource child before
+  with (lookupFiber @{DGamma.CP3StatementChecks.episodeNameEq}
+    child (registry before)) proof found
+    findEpisodeChildSource child before | Nothing = Nothing
+    findEpisodeChildSource child before | Just fiber
+      with (fiberParent fiber) proof parentRole
+        findEpisodeChildSource child before | Just fiber | Root = Nothing
+        findEpisodeChildSource child before | Just fiber | ChildOf parent =
+          Just (MkEpisodeChildSource fiber parent found parentRole)
+
+record EpisodeCommonPrefix where
+  constructor MkEpisodeCommonPrefix
+  episodeInsert0 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq
+    (OInsert 0 Root DGamma.CalculusChecks.providerComponent)
+    DGamma.CalculusChecks.initialSystem
+  episodeInsert1 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq
+    (OInsert 1 Root DGamma.CP3StatementChecks.episodeParent)
+    (namedAfter episodeInsert0)
+  episodeBegin0 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LBegin 0)
+    (namedAfter episodeInsert1)
+  episodeAdvance0a : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LAdvance 0)
+    (namedAfter episodeBegin0)
+  episodeAdvance0b : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LAdvance 0)
+    (namedAfter episodeAdvance0a)
+
+buildEpisodeCommonPrefix : Maybe EpisodeCommonPrefix
+buildEpisodeCommonPrefix = do
+  t0 <- checkedNamedFire episodeNameEq episodeKeyEq
+    (OInsert 0 Root DGamma.CalculusChecks.providerComponent)
+    DGamma.CalculusChecks.initialSystem
+  t1 <- checkedNamedFire episodeNameEq episodeKeyEq
+    (OInsert 1 Root episodeParent) (namedAfter t0)
+  t2 <- checkedNamedFire episodeNameEq episodeKeyEq (LBegin 0) (namedAfter t1)
+  t3 <- checkedNamedFire episodeNameEq episodeKeyEq (LAdvance 0) (namedAfter t2)
+  t4 <- checkedNamedFire episodeNameEq episodeKeyEq (LAdvance 0) (namedAfter t3)
+  Just (MkEpisodeCommonPrefix t0 t1 t2 t3 t4)
+
+record EpisodeLeftTrace where
+  constructor MkEpisodeLeftTrace
+  leftEpisodePrefix : EpisodeCommonPrefix
+  leftBegin1 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LBegin 1)
+    (namedAfter (episodeAdvance0b leftEpisodePrefix))
+  leftDeletedChild : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq
+    (OInsert 2 (ChildOf 1) DGamma.CP3StatementChecks.episodeChild)
+    (namedAfter leftBegin1)
+  leftRetireChild2 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (ORetire 2)
+    (namedAfter leftDeletedChild)
+  leftRemoveChild2 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (ORemove 2)
+    (namedAfter leftRetireChild2)
+  leftRetire0 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (ORetire 0)
+    (namedAfter leftRemoveChild2)
+  leftLeave0 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LLeave 0)
+    (namedAfter leftRetire0)
+  leftDivert1 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LDivert 1)
+    (namedAfter leftLeave0)
+  leftUnload1 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LUnload 1)
+    (namedAfter leftDivert1)
+  leftUnload0 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LUnload 0)
+    (namedAfter leftUnload1)
+  leftRemove0 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (ORemove 0)
+    (namedAfter leftUnload0)
+  leftInsert3 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq
+    (OInsert 3 Root DGamma.CalculusChecks.providerComponent)
+    (namedAfter leftRemove0)
+  leftBegin3 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LBegin 3)
+    (namedAfter leftInsert3)
+  leftAdvance3a : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LAdvance 3)
+    (namedAfter leftBegin3)
+  leftAdvance3b : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LAdvance 3)
+    (namedAfter leftAdvance3a)
+  leftReopen1 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LBegin 1)
+    (namedAfter leftAdvance3b)
+  leftSurvivingChild : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq
+    (OInsert 4 (ChildOf 1) DGamma.CP3StatementChecks.episodeChild)
+    (namedAfter leftReopen1)
+  leftFinish1 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LAdvance 1)
+    (namedAfter leftSurvivingChild)
+  leftBegin4 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LBegin 4)
+    (namedAfter leftFinish1)
+  leftFinish4 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LAdvance 4)
+    (namedAfter leftBegin4)
+  leftRetireChildSource : EpisodeChildSource 2
+    (namedAfter leftDeletedChild)
+  leftRemoveChildSource : EpisodeChildSource 2
+    (namedAfter leftRetireChild2)
+  leftRetire0Source : EpisodeRootSource 0 (namedAfter leftRemoveChild2)
+  leftRemove0Source : EpisodeRootSource 0 (namedAfter leftUnload0)
+
+buildEpisodeLeftTrace : EpisodeCommonPrefix -> Maybe EpisodeLeftTrace
+buildEpisodeLeftTrace common = do
+  t5 <- checkedNamedFire episodeNameEq episodeKeyEq (LBegin 1)
+    (namedAfter (episodeAdvance0b common))
+  t6 <- checkedNamedFire episodeNameEq episodeKeyEq
+    (OInsert 2 (ChildOf 1) episodeChild) (namedAfter t5)
+  t7 <- checkedNamedFire episodeNameEq episodeKeyEq (ORetire 2) (namedAfter t6)
+  t8 <- checkedNamedFire episodeNameEq episodeKeyEq (ORemove 2) (namedAfter t7)
+  t9 <- checkedNamedFire episodeNameEq episodeKeyEq (ORetire 0) (namedAfter t8)
+  t10 <- checkedNamedFire episodeNameEq episodeKeyEq (LLeave 0) (namedAfter t9)
+  t11 <- checkedNamedFire episodeNameEq episodeKeyEq (LDivert 1) (namedAfter t10)
+  t12 <- checkedNamedFire episodeNameEq episodeKeyEq (LUnload 1) (namedAfter t11)
+  t13 <- checkedNamedFire episodeNameEq episodeKeyEq (LUnload 0) (namedAfter t12)
+  t14 <- checkedNamedFire episodeNameEq episodeKeyEq (ORemove 0) (namedAfter t13)
+  t15 <- checkedNamedFire episodeNameEq episodeKeyEq
+    (OInsert 3 Root DGamma.CalculusChecks.providerComponent) (namedAfter t14)
+  t16 <- checkedNamedFire episodeNameEq episodeKeyEq (LBegin 3) (namedAfter t15)
+  t17 <- checkedNamedFire episodeNameEq episodeKeyEq (LAdvance 3) (namedAfter t16)
+  t18 <- checkedNamedFire episodeNameEq episodeKeyEq (LAdvance 3) (namedAfter t17)
+  t19 <- checkedNamedFire episodeNameEq episodeKeyEq (LBegin 1) (namedAfter t18)
+  t20 <- checkedNamedFire episodeNameEq episodeKeyEq
+    (OInsert 4 (ChildOf 1) episodeChild) (namedAfter t19)
+  t21 <- checkedNamedFire episodeNameEq episodeKeyEq (LAdvance 1) (namedAfter t20)
+  t22 <- checkedNamedFire episodeNameEq episodeKeyEq (LBegin 4) (namedAfter t21)
+  t23 <- checkedNamedFire episodeNameEq episodeKeyEq (LAdvance 4) (namedAfter t22)
+  childRetireSource <- findEpisodeChildSource 2 (namedAfter t6)
+  childRemoveSource <- findEpisodeChildSource 2 (namedAfter t7)
+  retire0Source <- findEpisodeRootSource 0 (namedAfter t8)
+  remove0Source <- findEpisodeRootSource 0 (namedAfter t13)
+  Just (MkEpisodeLeftTrace common t5 t6 t7 t8 t9 t10 t11 t12 t13 t14
+    t15 t16 t17 t18 t19 t20 t21 t22 t23 childRetireSource
+    childRemoveSource retire0Source remove0Source)
+
+record EpisodeRightTrace where
+  constructor MkEpisodeRightTrace
+  rightEpisodePrefix : EpisodeCommonPrefix
+  rightRetire0 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (ORetire 0)
+    (namedAfter (episodeAdvance0b rightEpisodePrefix))
+  rightLeave0 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LLeave 0)
+    (namedAfter rightRetire0)
+  rightUnload0 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LUnload 0)
+    (namedAfter rightLeave0)
+  rightRemove0 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (ORemove 0)
+    (namedAfter rightUnload0)
+  rightInsert3 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq
+    (OInsert 3 Root DGamma.CalculusChecks.providerComponent)
+    (namedAfter rightRemove0)
+  rightBegin3 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LBegin 3)
+    (namedAfter rightInsert3)
+  rightAdvance3a : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LAdvance 3)
+    (namedAfter rightBegin3)
+  rightAdvance3b : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LAdvance 3)
+    (namedAfter rightAdvance3a)
+  rightBegin1 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LBegin 1)
+    (namedAfter rightAdvance3b)
+  rightSurvivingChild : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq
+    (OInsert 4 (ChildOf 1) DGamma.CP3StatementChecks.episodeChild)
+    (namedAfter rightBegin1)
+  rightFinish1 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LAdvance 1)
+    (namedAfter rightSurvivingChild)
+  rightBegin4 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LBegin 4)
+    (namedAfter rightFinish1)
+  rightFinish4 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq (LAdvance 4)
+    (namedAfter rightBegin4)
+  rightRetire0Source : EpisodeRootSource 0
+    (namedAfter (episodeAdvance0b rightEpisodePrefix))
+  rightRemove0Source : EpisodeRootSource 0 (namedAfter rightUnload0)
+
+buildEpisodeRightTrace : EpisodeCommonPrefix -> Maybe EpisodeRightTrace
+buildEpisodeRightTrace common = do
+  t5 <- checkedNamedFire episodeNameEq episodeKeyEq (ORetire 0)
+    (namedAfter (episodeAdvance0b common))
+  t6 <- checkedNamedFire episodeNameEq episodeKeyEq (LLeave 0) (namedAfter t5)
+  t7 <- checkedNamedFire episodeNameEq episodeKeyEq (LUnload 0) (namedAfter t6)
+  t8 <- checkedNamedFire episodeNameEq episodeKeyEq (ORemove 0) (namedAfter t7)
+  t9 <- checkedNamedFire episodeNameEq episodeKeyEq
+    (OInsert 3 Root DGamma.CalculusChecks.providerComponent) (namedAfter t8)
+  t10 <- checkedNamedFire episodeNameEq episodeKeyEq (LBegin 3) (namedAfter t9)
+  t11 <- checkedNamedFire episodeNameEq episodeKeyEq (LAdvance 3) (namedAfter t10)
+  t12 <- checkedNamedFire episodeNameEq episodeKeyEq (LAdvance 3) (namedAfter t11)
+  t13 <- checkedNamedFire episodeNameEq episodeKeyEq (LBegin 1) (namedAfter t12)
+  t14 <- checkedNamedFire episodeNameEq episodeKeyEq
+    (OInsert 4 (ChildOf 1) episodeChild) (namedAfter t13)
+  t15 <- checkedNamedFire episodeNameEq episodeKeyEq (LAdvance 1) (namedAfter t14)
+  t16 <- checkedNamedFire episodeNameEq episodeKeyEq (LBegin 4) (namedAfter t15)
+  t17 <- checkedNamedFire episodeNameEq episodeKeyEq (LAdvance 4) (namedAfter t16)
+  retire0Source <- findEpisodeRootSource 0
+    (namedAfter (episodeAdvance0b common))
+  remove0Source <- findEpisodeRootSource 0 (namedAfter t7)
+  Just (MkEpisodeRightTrace common t5 t6 t7 t8 t9 t10 t11 t12 t13 t14
+    t15 t16 t17 retire0Source remove0Source)
+
+episodeLeftTail24 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftFinish4 trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail24 trace = NoTransitions
+
+episodeLeftTail23 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftBegin4 trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail23 trace = MoreTransitions (namedTransition (leftFinish4 trace))
+  (episodeLeftTail24 trace)
+
+episodeLeftTail22 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftFinish1 trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail22 trace = MoreTransitions (namedTransition (leftBegin4 trace))
+  (episodeLeftTail23 trace)
+
+episodeLeftTail21 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftSurvivingChild trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail21 trace = MoreTransitions (namedTransition (leftFinish1 trace))
+  (episodeLeftTail22 trace)
+
+episodeLeftTail20 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftReopen1 trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail20 trace = MoreTransitions (namedTransition (leftSurvivingChild trace))
+  (episodeLeftTail21 trace)
+
+episodeLeftTail19 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftAdvance3b trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail19 trace = MoreTransitions (namedTransition (leftReopen1 trace))
+  (episodeLeftTail20 trace)
+
+episodeLeftTail18 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftAdvance3a trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail18 trace = MoreTransitions (namedTransition (leftAdvance3b trace))
+  (episodeLeftTail19 trace)
+
+episodeLeftTail17 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftBegin3 trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail17 trace = MoreTransitions (namedTransition (leftAdvance3a trace))
+  (episodeLeftTail18 trace)
+
+episodeLeftTail16 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftInsert3 trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail16 trace = MoreTransitions (namedTransition (leftBegin3 trace))
+  (episodeLeftTail17 trace)
+
+episodeLeftTail15 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftRemove0 trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail15 trace = MoreTransitions (namedTransition (leftInsert3 trace))
+  (episodeLeftTail16 trace)
+
+episodeLeftTail14 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftUnload0 trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail14 trace = MoreTransitions (namedTransition (leftRemove0 trace))
+  (episodeLeftTail15 trace)
+
+episodeLeftTail13 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftUnload1 trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail13 trace = MoreTransitions (namedTransition (leftUnload0 trace))
+  (episodeLeftTail14 trace)
+
+episodeLeftTail12 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftDivert1 trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail12 trace = MoreTransitions (namedTransition (leftUnload1 trace))
+  (episodeLeftTail13 trace)
+
+episodeLeftTail11 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftLeave0 trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail11 trace = MoreTransitions (namedTransition (leftDivert1 trace))
+  (episodeLeftTail12 trace)
+
+episodeLeftTail10 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftRetire0 trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail10 trace = MoreTransitions (namedTransition (leftLeave0 trace))
+  (episodeLeftTail11 trace)
+
+episodeLeftTail9 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftRemoveChild2 trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail9 trace = MoreTransitions (namedTransition (leftRetire0 trace))
+  (episodeLeftTail10 trace)
+
+episodeLeftTail8 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftRetireChild2 trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail8 trace = MoreTransitions (namedTransition (leftRemoveChild2 trace))
+  (episodeLeftTail9 trace)
+
+episodeLeftTail7 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftDeletedChild trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail7 trace = MoreTransitions (namedTransition (leftRetireChild2 trace))
+  (episodeLeftTail8 trace)
+
+episodeLeftTail6 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (leftBegin1 trace)) (namedAfter (leftFinish4 trace))
+episodeLeftTail6 trace = MoreTransitions (namedTransition (leftDeletedChild trace))
+  (episodeLeftTail7 trace)
+
+episodeLeftTail5 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (episodeAdvance0b (leftEpisodePrefix trace))) (namedAfter (leftFinish4 trace))
+episodeLeftTail5 trace = MoreTransitions (namedTransition (leftBegin1 trace))
+  (episodeLeftTail6 trace)
+
+episodeLeftTail4 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (episodeAdvance0a (leftEpisodePrefix trace))) (namedAfter (leftFinish4 trace))
+episodeLeftTail4 trace = MoreTransitions (namedTransition (episodeAdvance0b (leftEpisodePrefix trace)))
+  (episodeLeftTail5 trace)
+
+episodeLeftTail3 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (episodeBegin0 (leftEpisodePrefix trace))) (namedAfter (leftFinish4 trace))
+episodeLeftTail3 trace = MoreTransitions (namedTransition (episodeAdvance0a (leftEpisodePrefix trace)))
+  (episodeLeftTail4 trace)
+
+episodeLeftTail2 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (episodeInsert1 (leftEpisodePrefix trace))) (namedAfter (leftFinish4 trace))
+episodeLeftTail2 trace = MoreTransitions (namedTransition (episodeBegin0 (leftEpisodePrefix trace)))
+  (episodeLeftTail3 trace)
+
+episodeLeftTail1 : (trace : EpisodeLeftTrace) ->
+  Transitions (namedAfter (episodeInsert0 (leftEpisodePrefix trace))) (namedAfter (leftFinish4 trace))
+episodeLeftTail1 trace = MoreTransitions (namedTransition (episodeInsert1 (leftEpisodePrefix trace)))
+  (episodeLeftTail2 trace)
+
+public export
+episodeLeftTrace : (trace : EpisodeLeftTrace) ->
+  Transitions DGamma.CalculusChecks.initialSystem (namedAfter (leftFinish4 trace))
+episodeLeftTrace trace = MoreTransitions (namedTransition (episodeInsert0 (leftEpisodePrefix trace)))
+  (episodeLeftTail1 trace)
+
+episodeRightTail18 : (trace : EpisodeRightTrace) ->
+  Transitions (namedAfter (rightFinish4 trace)) (namedAfter (rightFinish4 trace))
+episodeRightTail18 trace = NoTransitions
+
+episodeRightTail17 : (trace : EpisodeRightTrace) ->
+  Transitions (namedAfter (rightBegin4 trace)) (namedAfter (rightFinish4 trace))
+episodeRightTail17 trace = MoreTransitions (namedTransition (rightFinish4 trace))
+  (episodeRightTail18 trace)
+
+episodeRightTail16 : (trace : EpisodeRightTrace) ->
+  Transitions (namedAfter (rightFinish1 trace)) (namedAfter (rightFinish4 trace))
+episodeRightTail16 trace = MoreTransitions (namedTransition (rightBegin4 trace))
+  (episodeRightTail17 trace)
+
+episodeRightTail15 : (trace : EpisodeRightTrace) ->
+  Transitions (namedAfter (rightSurvivingChild trace)) (namedAfter (rightFinish4 trace))
+episodeRightTail15 trace = MoreTransitions (namedTransition (rightFinish1 trace))
+  (episodeRightTail16 trace)
+
+episodeRightTail14 : (trace : EpisodeRightTrace) ->
+  Transitions (namedAfter (rightBegin1 trace)) (namedAfter (rightFinish4 trace))
+episodeRightTail14 trace = MoreTransitions (namedTransition (rightSurvivingChild trace))
+  (episodeRightTail15 trace)
+
+episodeRightTail13 : (trace : EpisodeRightTrace) ->
+  Transitions (namedAfter (rightAdvance3b trace)) (namedAfter (rightFinish4 trace))
+episodeRightTail13 trace = MoreTransitions (namedTransition (rightBegin1 trace))
+  (episodeRightTail14 trace)
+
+episodeRightTail12 : (trace : EpisodeRightTrace) ->
+  Transitions (namedAfter (rightAdvance3a trace)) (namedAfter (rightFinish4 trace))
+episodeRightTail12 trace = MoreTransitions (namedTransition (rightAdvance3b trace))
+  (episodeRightTail13 trace)
+
+episodeRightTail11 : (trace : EpisodeRightTrace) ->
+  Transitions (namedAfter (rightBegin3 trace)) (namedAfter (rightFinish4 trace))
+episodeRightTail11 trace = MoreTransitions (namedTransition (rightAdvance3a trace))
+  (episodeRightTail12 trace)
+
+episodeRightTail10 : (trace : EpisodeRightTrace) ->
+  Transitions (namedAfter (rightInsert3 trace)) (namedAfter (rightFinish4 trace))
+episodeRightTail10 trace = MoreTransitions (namedTransition (rightBegin3 trace))
+  (episodeRightTail11 trace)
+
+episodeRightTail9 : (trace : EpisodeRightTrace) ->
+  Transitions (namedAfter (rightRemove0 trace)) (namedAfter (rightFinish4 trace))
+episodeRightTail9 trace = MoreTransitions (namedTransition (rightInsert3 trace))
+  (episodeRightTail10 trace)
+
+episodeRightTail8 : (trace : EpisodeRightTrace) ->
+  Transitions (namedAfter (rightUnload0 trace)) (namedAfter (rightFinish4 trace))
+episodeRightTail8 trace = MoreTransitions (namedTransition (rightRemove0 trace))
+  (episodeRightTail9 trace)
+
+episodeRightTail7 : (trace : EpisodeRightTrace) ->
+  Transitions (namedAfter (rightLeave0 trace)) (namedAfter (rightFinish4 trace))
+episodeRightTail7 trace = MoreTransitions (namedTransition (rightUnload0 trace))
+  (episodeRightTail8 trace)
+
+episodeRightTail6 : (trace : EpisodeRightTrace) ->
+  Transitions (namedAfter (rightRetire0 trace)) (namedAfter (rightFinish4 trace))
+episodeRightTail6 trace = MoreTransitions (namedTransition (rightLeave0 trace))
+  (episodeRightTail7 trace)
+
+episodeRightTail5 : (trace : EpisodeRightTrace) ->
+  Transitions (namedAfter (episodeAdvance0b (rightEpisodePrefix trace))) (namedAfter (rightFinish4 trace))
+episodeRightTail5 trace = MoreTransitions (namedTransition (rightRetire0 trace))
+  (episodeRightTail6 trace)
+
+episodeRightTail4 : (trace : EpisodeRightTrace) ->
+  Transitions (namedAfter (episodeAdvance0a (rightEpisodePrefix trace))) (namedAfter (rightFinish4 trace))
+episodeRightTail4 trace = MoreTransitions (namedTransition (episodeAdvance0b (rightEpisodePrefix trace)))
+  (episodeRightTail5 trace)
+
+episodeRightTail3 : (trace : EpisodeRightTrace) ->
+  Transitions (namedAfter (episodeBegin0 (rightEpisodePrefix trace))) (namedAfter (rightFinish4 trace))
+episodeRightTail3 trace = MoreTransitions (namedTransition (episodeAdvance0a (rightEpisodePrefix trace)))
+  (episodeRightTail4 trace)
+
+episodeRightTail2 : (trace : EpisodeRightTrace) ->
+  Transitions (namedAfter (episodeInsert1 (rightEpisodePrefix trace))) (namedAfter (rightFinish4 trace))
+episodeRightTail2 trace = MoreTransitions (namedTransition (episodeBegin0 (rightEpisodePrefix trace)))
+  (episodeRightTail3 trace)
+
+episodeRightTail1 : (trace : EpisodeRightTrace) ->
+  Transitions (namedAfter (episodeInsert0 (rightEpisodePrefix trace))) (namedAfter (rightFinish4 trace))
+episodeRightTail1 trace = MoreTransitions (namedTransition (episodeInsert1 (rightEpisodePrefix trace)))
+  (episodeRightTail2 trace)
+
+public export
+episodeRightTrace : (trace : EpisodeRightTrace) ->
+  Transitions DGamma.CalculusChecks.initialSystem (namedAfter (rightFinish4 trace))
+episodeRightTrace trace = MoreTransitions (namedTransition (episodeInsert0 (rightEpisodePrefix trace)))
+  (episodeRightTail1 trace)
+
+swapNineFifteen : Nat -> Nat
+swapNineFifteen 9 = 15
+swapNineFifteen 15 = 9
+swapNineFifteen n = n
+
+0 swapNineFifteenInvolutive : (n : Nat) -> swapNineFifteen (swapNineFifteen n) = n
+swapNineFifteenInvolutive 0 = Refl
+swapNineFifteenInvolutive 1 = Refl
+swapNineFifteenInvolutive 2 = Refl
+swapNineFifteenInvolutive 3 = Refl
+swapNineFifteenInvolutive 4 = Refl
+swapNineFifteenInvolutive 5 = Refl
+swapNineFifteenInvolutive 6 = Refl
+swapNineFifteenInvolutive 7 = Refl
+swapNineFifteenInvolutive 8 = Refl
+swapNineFifteenInvolutive 9 = Refl
+swapNineFifteenInvolutive 10 = Refl
+swapNineFifteenInvolutive 11 = Refl
+swapNineFifteenInvolutive 12 = Refl
+swapNineFifteenInvolutive 13 = Refl
+swapNineFifteenInvolutive 14 = Refl
+swapNineFifteenInvolutive 15 = Refl
+swapNineFifteenInvolutive (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S later)))))))))))))))) = Refl
+
+swapFourteenTwenty : Nat -> Nat
+swapFourteenTwenty 14 = 20
+swapFourteenTwenty 20 = 14
+swapFourteenTwenty n = n
+
+0 swapFourteenTwentyInvolutive : (n : Nat) -> swapFourteenTwenty (swapFourteenTwenty n) = n
+swapFourteenTwentyInvolutive 0 = Refl
+swapFourteenTwentyInvolutive 1 = Refl
+swapFourteenTwentyInvolutive 2 = Refl
+swapFourteenTwentyInvolutive 3 = Refl
+swapFourteenTwentyInvolutive 4 = Refl
+swapFourteenTwentyInvolutive 5 = Refl
+swapFourteenTwentyInvolutive 6 = Refl
+swapFourteenTwentyInvolutive 7 = Refl
+swapFourteenTwentyInvolutive 8 = Refl
+swapFourteenTwentyInvolutive 9 = Refl
+swapFourteenTwentyInvolutive 10 = Refl
+swapFourteenTwentyInvolutive 11 = Refl
+swapFourteenTwentyInvolutive 12 = Refl
+swapFourteenTwentyInvolutive 13 = Refl
+swapFourteenTwentyInvolutive 14 = Refl
+swapFourteenTwentyInvolutive 15 = Refl
+swapFourteenTwentyInvolutive 16 = Refl
+swapFourteenTwentyInvolutive 17 = Refl
+swapFourteenTwentyInvolutive 18 = Refl
+swapFourteenTwentyInvolutive 19 = Refl
+swapFourteenTwentyInvolutive 20 = Refl
+swapFourteenTwentyInvolutive (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S later))))))))))))))))))))) = Refl
+
+episodeGenerationMap : RegistrationGeneration Nat -> RegistrationGeneration Nat
+episodeGenerationMap (MkRegistrationGeneration 3 ordinal) =
+  MkRegistrationGeneration 3 (swapNineFifteen ordinal)
+episodeGenerationMap (MkRegistrationGeneration 4 ordinal) =
+  MkRegistrationGeneration 4 (swapFourteenTwenty ordinal)
+episodeGenerationMap generation = generation
+
+0 episodeGenerationMapInvolutive : (generation : RegistrationGeneration Nat) ->
+  episodeGenerationMap (episodeGenerationMap generation) = generation
+episodeGenerationMapInvolutive (MkRegistrationGeneration Z ordinal) = Refl
+episodeGenerationMapInvolutive (MkRegistrationGeneration (S Z) ordinal) = Refl
+episodeGenerationMapInvolutive
+  (MkRegistrationGeneration (S (S Z)) ordinal) = Refl
+episodeGenerationMapInvolutive
+  (MkRegistrationGeneration (S (S (S Z))) ordinal) =
+    cong (MkRegistrationGeneration 3) (swapNineFifteenInvolutive ordinal)
+episodeGenerationMapInvolutive
+  (MkRegistrationGeneration (S (S (S (S Z)))) ordinal) =
+    cong (MkRegistrationGeneration 4) (swapFourteenTwentyInvolutive ordinal)
+episodeGenerationMapInvolutive
+  (MkRegistrationGeneration (S (S (S (S (S later))))) ordinal) = Refl
+
+public export
+episodeBoundaryGenerationBijection : RegistrationGenerationBijection Nat
+episodeBoundaryGenerationBijection = MkRegistrationGenerationBijection
+  episodeGenerationMap episodeGenerationMap episodeGenerationMapInvolutive
+  episodeGenerationMapInvolutive
+
+episodeIndexAdvance : Nat ->
+  Action Nat ToyKey ToyValue ToyRuntime String -> RegistrationIndexState Nat ->
+  RegistrationIndexState Nat
+episodeIndexAdvance = DGamma.CP3.advanceRegistrationIndex
+  @{DGamma.CP3StatementChecks.episodeNameEq}
+
+episodeIndexSurvive : Nat -> (child, parent : Nat) ->
+  Component ToyKey ToyValue ToyRuntime String -> RegistrationIndexState Nat ->
+  RegistrationIndexState Nat
+episodeIndexSurvive = DGamma.CP3.advanceSurvivingRegistrationIndex
+  @{DGamma.CP3StatementChecks.episodeNameEq}
+
+episodeCommonIndex : RegistrationIndexState Nat
+episodeCommonIndex =
+  let i0 = episodeIndexAdvance 0
+        (OInsert 0 Root DGamma.CalculusChecks.providerComponent)
+        DGamma.CP3.emptyRegistrationIndex
+      i1 = episodeIndexAdvance 1 (OInsert 1 Root episodeParent) i0
+      i2 = episodeIndexAdvance 2 (LBegin 0) i1
+      i3 = episodeIndexAdvance 3 (LAdvance 0) i2 in
+    episodeIndexAdvance 4 (LAdvance 0) i3
+
+episodeLeftDeletedIndex : RegistrationIndexState Nat
+episodeLeftDeletedIndex = episodeIndexAdvance 5 (LBegin 1) episodeCommonIndex
+
+episodeLeftSurvivingIndex : RegistrationIndexState Nat
+episodeLeftSurvivingIndex =
+  let i7 = episodeIndexAdvance 7 (ORetire 2)
+        (episodeIndexAdvance 6
+          (OInsert 2 (ChildOf 1) episodeChild) episodeLeftDeletedIndex)
+      i8 = episodeIndexAdvance 8 (ORemove 2) i7
+      i9 = episodeIndexAdvance 9 (ORetire 0) i8
+      i10 = episodeIndexAdvance 10 (LLeave 0) i9
+      i11 = episodeIndexAdvance 11 (LDivert 1) i10
+      i12 = episodeIndexAdvance 12 (LUnload 1) i11
+      i13 = episodeIndexAdvance 13 (LUnload 0) i12
+      i14 = episodeIndexAdvance 14 (ORemove 0) i13
+      i15 = episodeIndexAdvance 15
+        (OInsert 3 Root DGamma.CalculusChecks.providerComponent) i14
+      i16 = episodeIndexAdvance 16 (LBegin 3) i15
+      i17 = episodeIndexAdvance 17 (LAdvance 3) i16
+      i18 = episodeIndexAdvance 18 (LAdvance 3) i17 in
+    episodeIndexAdvance 19 (LBegin 1) i18
+
+episodeLeftFinalIndex : RegistrationIndexState Nat
+episodeLeftFinalIndex =
+  let i20 = episodeIndexSurvive 20 4 1 episodeChild
+        episodeLeftSurvivingIndex
+      i21 = episodeIndexAdvance 21 (LAdvance 1) i20
+      i22 = episodeIndexAdvance 22 (LBegin 4) i21 in
+    episodeIndexAdvance 23 (LAdvance 4) i22
+
+episodeRightSurvivingIndex : RegistrationIndexState Nat
+episodeRightSurvivingIndex =
+  let i5 = episodeIndexAdvance 5 (ORetire 0) episodeCommonIndex
+      i6 = episodeIndexAdvance 6 (LLeave 0) i5
+      i7 = episodeIndexAdvance 7 (LUnload 0) i6
+      i8 = episodeIndexAdvance 8 (ORemove 0) i7
+      i9 = episodeIndexAdvance 9
+        (OInsert 3 Root DGamma.CalculusChecks.providerComponent) i8
+      i10 = episodeIndexAdvance 10 (LBegin 3) i9
+      i11 = episodeIndexAdvance 11 (LAdvance 3) i10
+      i12 = episodeIndexAdvance 12 (LAdvance 3) i11 in
+    episodeIndexAdvance 13 (LBegin 1) i12
+
+episodeRightFinalIndex : RegistrationIndexState Nat
+episodeRightFinalIndex =
+  let i14 = episodeIndexSurvive 14 4 1 episodeChild
+        episodeRightSurvivingIndex
+      i15 = episodeIndexAdvance 15 (LAdvance 1) i14
+      i16 = episodeIndexAdvance 16 (LBegin 4) i15 in
+    episodeIndexAdvance 17 (LAdvance 4) i16
+
+0 episodeDeletedBirthCloses : (left : EpisodeLeftTrace) ->
+  ActionOccurs (LUnload 1) (episodeLeftTail7 left)
+episodeDeletedBirthCloses left =
+  ActionOccursLater (namedTransition (leftRetireChild2 left))
+    (episodeLeftTail8 left)
+  (ActionOccursLater (namedTransition (leftRemoveChild2 left))
+    (episodeLeftTail9 left)
+  (ActionOccursLater (namedTransition (leftRetire0 left))
+    (episodeLeftTail10 left)
+  (ActionOccursLater (namedTransition (leftLeave0 left))
+    (episodeLeftTail11 left)
+  (ActionOccursLater (namedTransition (leftDivert1 left))
+    (episodeLeftTail12 left)
+  (ActionOccursHere (namedTransition (leftUnload1 left))
+    (episodeLeftTail13 left) (namedAction (leftUnload1 left)))))))
+
+0 episodeLeftDeletedClassification : (left : EpisodeLeftTrace) ->
+  DeletedClosingRegistration
+    (registrationEventAt @{DGamma.CP3StatementChecks.episodeNameEq} 6
+      DGamma.CP3StatementChecks.episodeLeftDeletedIndex 2 1
+      DGamma.CP3StatementChecks.episodeChild)
+    (episodeLeftTail7 left)
+episodeLeftDeletedClassification left = MkDeletedClosingRegistration
+  (MkRegistrationActivation (MkRegistrationGeneration 1 1) 5) Refl
+  (episodeDeletedBirthCloses left)
+
+0 episodeLeftParentRemainsOpen : (left : EpisodeLeftTrace) ->
+  NoParentUnload 1 (episodeLeftTail21 left)
+episodeLeftParentRemainsOpen left =
+  NoParentUnloadStep (namedTransition (leftFinish1 left))
+    (episodeLeftTail22 left)
+    (namedTransitionNotUnload (leftFinish1 left) (\Refl impossible))
+  (NoParentUnloadStep (namedTransition (leftBegin4 left))
+    (episodeLeftTail23 left)
+    (namedTransitionNotUnload (leftBegin4 left) (\Refl impossible))
+  (NoParentUnloadStep (namedTransition (leftFinish4 left))
+    (episodeLeftTail24 left)
+    (namedTransitionNotUnload (leftFinish4 left) (\Refl impossible))
+    NoParentUnloadEnd))
+
+0 episodeRightParentRemainsOpen : (right : EpisodeRightTrace) ->
+  NoParentUnload 1 (episodeRightTail15 right)
+episodeRightParentRemainsOpen right =
+  NoParentUnloadStep (namedTransition (rightFinish1 right))
+    (episodeRightTail16 right)
+    (namedTransitionNotUnload (rightFinish1 right) (\Refl impossible))
+  (NoParentUnloadStep (namedTransition (rightBegin4 right))
+    (episodeRightTail17 right)
+    (namedTransitionNotUnload (rightBegin4 right) (\Refl impossible))
+  (NoParentUnloadStep (namedTransition (rightFinish4 right))
+    (episodeRightTail18 right)
+    (namedTransitionNotUnload (rightFinish4 right) (\Refl impossible))
+    NoParentUnloadEnd))
+
+0 episodeLeftSurvivingClassification : (left : EpisodeLeftTrace) ->
+  SurvivingRegistration
+    (registrationEventAt @{DGamma.CP3StatementChecks.episodeNameEq} 20
+      DGamma.CP3StatementChecks.episodeLeftSurvivingIndex 4 1
+      DGamma.CP3StatementChecks.episodeChild)
+    (episodeLeftTail21 left)
+episodeLeftSurvivingClassification left = MkSurvivingRegistration
+  (MkRegistrationActivation (MkRegistrationGeneration 1 1) 19) Refl
+  (episodeLeftParentRemainsOpen left)
+
+0 episodeRightSurvivingClassification : (right : EpisodeRightTrace) ->
+  SurvivingRegistration
+    (registrationEventAt @{DGamma.CP3StatementChecks.episodeNameEq} 14
+      DGamma.CP3StatementChecks.episodeRightSurvivingIndex 4 1
+      DGamma.CP3StatementChecks.episodeChild)
+    (episodeRightTail15 right)
+episodeRightSurvivingClassification right = MkSurvivingRegistration
+  (MkRegistrationActivation (MkRegistrationGeneration 1 1) 13) Refl
+  (episodeRightParentRemainsOpen right)
+
+||| The old lifetime counter assigned the reopened left birth position one.
+||| Closed-episode exclusion plus the L-Begin activation stamp makes both first
+||| surviving yields position zero.
+public export
+0 episodeBoundaryPositionsReset :
+  (eventChildPosition
+    (registrationEventAt @{DGamma.CP3StatementChecks.episodeNameEq} 20
+      DGamma.CP3StatementChecks.episodeLeftSurvivingIndex 4 1
+      DGamma.CP3StatementChecks.episodeChild) = 0,
+   eventChildPosition
+    (registrationEventAt @{DGamma.CP3StatementChecks.episodeNameEq} 14
+      DGamma.CP3StatementChecks.episodeRightSurvivingIndex 4 1
+      DGamma.CP3StatementChecks.episodeChild) = 0)
+episodeBoundaryPositionsReset = (Refl, Refl)
+
+0 episodeBoundaryTraceCorrespondence :
+  (left : EpisodeLeftTrace) -> (right : EpisodeRightTrace) ->
+  RegistrationTraceCorrespondence DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeBoundaryGenerationBijection
+    0 DGamma.CP3.emptyRegistrationIndex (episodeLeftTrace left)
+      DGamma.CP3StatementChecks.episodeLeftFinalIndex
+    0 DGamma.CP3.emptyRegistrationIndex (episodeRightTrace right)
+      DGamma.CP3StatementChecks.episodeRightFinalIndex [] []
+episodeBoundaryTraceCorrespondence left right =
+  SkipLeftNonRegistration (OInsert 0 Root DGamma.CalculusChecks.providerComponent)
+    (namedTransition (episodeInsert0 (leftEpisodePrefix left))) (episodeLeftTail1 left)
+    (namedAction (episodeInsert0 (leftEpisodePrefix left))) Refl
+  (SkipLeftNonRegistration (OInsert 1 Root episodeParent)
+    (namedTransition (episodeInsert1 (leftEpisodePrefix left))) (episodeLeftTail2 left)
+    (namedAction (episodeInsert1 (leftEpisodePrefix left))) Refl
+  (SkipLeftNonRegistration (LBegin 0)
+    (namedTransition (episodeBegin0 (leftEpisodePrefix left))) (episodeLeftTail3 left)
+    (namedAction (episodeBegin0 (leftEpisodePrefix left))) Refl
+  (SkipLeftNonRegistration (LAdvance 0)
+    (namedTransition (episodeAdvance0a (leftEpisodePrefix left))) (episodeLeftTail4 left)
+    (namedAction (episodeAdvance0a (leftEpisodePrefix left))) Refl
+  (SkipLeftNonRegistration (LAdvance 0)
+    (namedTransition (episodeAdvance0b (leftEpisodePrefix left))) (episodeLeftTail5 left)
+    (namedAction (episodeAdvance0b (leftEpisodePrefix left))) Refl
+  (SkipLeftNonRegistration (LBegin 1)
+    (namedTransition (leftBegin1 left)) (episodeLeftTail6 left)
+    (namedAction (leftBegin1 left)) Refl
+  (DiscardLeftDeletedRegistration
+    (namedTransition (leftDeletedChild left)) (episodeLeftTail7 left)
+    (namedAction (leftDeletedChild left)) (episodeLeftDeletedClassification left)
+  (SkipLeftNonRegistration (ORetire 2)
+    (namedTransition (leftRetireChild2 left)) (episodeLeftTail8 left)
+    (namedAction (leftRetireChild2 left)) Refl
+  (SkipLeftNonRegistration (ORemove 2)
+    (namedTransition (leftRemoveChild2 left)) (episodeLeftTail9 left)
+    (namedAction (leftRemoveChild2 left)) Refl
+  (SkipLeftNonRegistration (ORetire 0)
+    (namedTransition (leftRetire0 left)) (episodeLeftTail10 left)
+    (namedAction (leftRetire0 left)) Refl
+  (SkipLeftNonRegistration (LLeave 0)
+    (namedTransition (leftLeave0 left)) (episodeLeftTail11 left)
+    (namedAction (leftLeave0 left)) Refl
+  (SkipLeftNonRegistration (LDivert 1)
+    (namedTransition (leftDivert1 left)) (episodeLeftTail12 left)
+    (namedAction (leftDivert1 left)) Refl
+  (SkipLeftNonRegistration (LUnload 1)
+    (namedTransition (leftUnload1 left)) (episodeLeftTail13 left)
+    (namedAction (leftUnload1 left)) Refl
+  (SkipLeftNonRegistration (LUnload 0)
+    (namedTransition (leftUnload0 left)) (episodeLeftTail14 left)
+    (namedAction (leftUnload0 left)) Refl
+  (SkipLeftNonRegistration (ORemove 0)
+    (namedTransition (leftRemove0 left)) (episodeLeftTail15 left)
+    (namedAction (leftRemove0 left)) Refl
+  (SkipLeftNonRegistration (OInsert 3 Root DGamma.CalculusChecks.providerComponent)
+    (namedTransition (leftInsert3 left)) (episodeLeftTail16 left)
+    (namedAction (leftInsert3 left)) Refl
+  (SkipLeftNonRegistration (LBegin 3)
+    (namedTransition (leftBegin3 left)) (episodeLeftTail17 left)
+    (namedAction (leftBegin3 left)) Refl
+  (SkipLeftNonRegistration (LAdvance 3)
+    (namedTransition (leftAdvance3a left)) (episodeLeftTail18 left)
+    (namedAction (leftAdvance3a left)) Refl
+  (SkipLeftNonRegistration (LAdvance 3)
+    (namedTransition (leftAdvance3b left)) (episodeLeftTail19 left)
+    (namedAction (leftAdvance3b left)) Refl
+  (SkipLeftNonRegistration (LBegin 1)
+    (namedTransition (leftReopen1 left)) (episodeLeftTail20 left)
+    (namedAction (leftReopen1 left)) Refl
+  (QueueLeftGeneratedRegistration
+    (namedTransition (leftSurvivingChild left)) (episodeLeftTail21 left)
+    (namedAction (leftSurvivingChild left)) (episodeLeftSurvivingClassification left)
+  (SkipLeftNonRegistration (LAdvance 1)
+    (namedTransition (leftFinish1 left)) (episodeLeftTail22 left)
+    (namedAction (leftFinish1 left)) Refl
+  (SkipLeftNonRegistration (LBegin 4)
+    (namedTransition (leftBegin4 left)) (episodeLeftTail23 left)
+    (namedAction (leftBegin4 left)) Refl
+  (SkipLeftNonRegistration (LAdvance 4)
+    (namedTransition (leftFinish4 left)) (episodeLeftTail24 left)
+    (namedAction (leftFinish4 left)) Refl
+  (SkipRightNonRegistration (OInsert 0 Root DGamma.CalculusChecks.providerComponent)
+    (namedTransition (episodeInsert0 (rightEpisodePrefix right))) (episodeRightTail1 right)
+    (namedAction (episodeInsert0 (rightEpisodePrefix right))) Refl
+  (SkipRightNonRegistration (OInsert 1 Root episodeParent)
+    (namedTransition (episodeInsert1 (rightEpisodePrefix right))) (episodeRightTail2 right)
+    (namedAction (episodeInsert1 (rightEpisodePrefix right))) Refl
+  (SkipRightNonRegistration (LBegin 0)
+    (namedTransition (episodeBegin0 (rightEpisodePrefix right))) (episodeRightTail3 right)
+    (namedAction (episodeBegin0 (rightEpisodePrefix right))) Refl
+  (SkipRightNonRegistration (LAdvance 0)
+    (namedTransition (episodeAdvance0a (rightEpisodePrefix right))) (episodeRightTail4 right)
+    (namedAction (episodeAdvance0a (rightEpisodePrefix right))) Refl
+  (SkipRightNonRegistration (LAdvance 0)
+    (namedTransition (episodeAdvance0b (rightEpisodePrefix right))) (episodeRightTail5 right)
+    (namedAction (episodeAdvance0b (rightEpisodePrefix right))) Refl
+  (SkipRightNonRegistration (ORetire 0)
+    (namedTransition (rightRetire0 right)) (episodeRightTail6 right)
+    (namedAction (rightRetire0 right)) Refl
+  (SkipRightNonRegistration (LLeave 0)
+    (namedTransition (rightLeave0 right)) (episodeRightTail7 right)
+    (namedAction (rightLeave0 right)) Refl
+  (SkipRightNonRegistration (LUnload 0)
+    (namedTransition (rightUnload0 right)) (episodeRightTail8 right)
+    (namedAction (rightUnload0 right)) Refl
+  (SkipRightNonRegistration (ORemove 0)
+    (namedTransition (rightRemove0 right)) (episodeRightTail9 right)
+    (namedAction (rightRemove0 right)) Refl
+  (SkipRightNonRegistration (OInsert 3 Root DGamma.CalculusChecks.providerComponent)
+    (namedTransition (rightInsert3 right)) (episodeRightTail10 right)
+    (namedAction (rightInsert3 right)) Refl
+  (SkipRightNonRegistration (LBegin 3)
+    (namedTransition (rightBegin3 right)) (episodeRightTail11 right)
+    (namedAction (rightBegin3 right)) Refl
+  (SkipRightNonRegistration (LAdvance 3)
+    (namedTransition (rightAdvance3a right)) (episodeRightTail12 right)
+    (namedAction (rightAdvance3a right)) Refl
+  (SkipRightNonRegistration (LAdvance 3)
+    (namedTransition (rightAdvance3b right)) (episodeRightTail13 right)
+    (namedAction (rightAdvance3b right)) Refl
+  (SkipRightNonRegistration (LBegin 1)
+    (namedTransition (rightBegin1 right)) (episodeRightTail14 right)
+    (namedAction (rightBegin1 right)) Refl
+  (MatchRightWithPendingLeft
+    (namedTransition (rightSurvivingChild right)) (episodeRightTail15 right)
+    (namedAction (rightSurvivingChild right)) (episodeRightSurvivingClassification right) []
+    (registrationEventAt @{DGamma.CP3StatementChecks.episodeNameEq} 20
+      DGamma.CP3StatementChecks.episodeLeftSurvivingIndex 4 1 episodeChild) []
+    (MkRegistrationEventMatch Refl
+      (MkRegistrationActivation (MkRegistrationGeneration 1 1) 19)
+      (MkRegistrationActivation (MkRegistrationGeneration 1 1) 13)
+      Refl Refl Refl Refl Refl)
+  (SkipRightNonRegistration (LAdvance 1)
+    (namedTransition (rightFinish1 right)) (episodeRightTail16 right)
+    (namedAction (rightFinish1 right)) Refl
+  (SkipRightNonRegistration (LBegin 4)
+    (namedTransition (rightBegin4 right)) (episodeRightTail17 right)
+    (namedAction (rightBegin4 right)) Refl
+  (SkipRightNonRegistration (LAdvance 4)
+    (namedTransition (rightFinish4 right)) (episodeRightTail18 right)
+    (namedAction (rightFinish4 right)) Refl
+  (RegistrationCorrespondenceEnd))))))))))))))))))))))))))))))))))))))))))
+
+0 episodeBoundaryRegistrationCorrespondence :
+  (left : EpisodeLeftTrace) -> (right : EpisodeRightTrace) ->
+  RegistrationCorrespondenceByGeneration
+    DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeBoundaryGenerationBijection
+    (episodeLeftTrace left) (episodeRightTrace right)
+episodeBoundaryRegistrationCorrespondence left right =
+  MkRegistrationCorrespondenceByGeneration episodeLeftFinalIndex
+    episodeRightFinalIndex (episodeBoundaryTraceCorrespondence left right)
+
+0 episodeCurrentForward :
+  (left : EpisodeLeftTrace) -> (right : EpisodeRightTrace) ->
+  (n : Nat) -> (generation : RegistrationGeneration Nat) ->
+  lookupCurrentGeneration @{DGamma.CP3StatementChecks.episodeNameEq} n
+    (leftFinalGenerations
+      (episodeBoundaryRegistrationCorrespondence left right)) = Just generation ->
+  (rightGeneration : RegistrationGeneration Nat **
+   (generationForward DGamma.CP3StatementChecks.episodeBoundaryGenerationBijection generation =
+      rightGeneration,
+    lookupCurrentGeneration @{DGamma.CP3StatementChecks.episodeNameEq} n
+      (rightFinalGenerations
+        (episodeBoundaryRegistrationCorrespondence left right)) =
+      Just rightGeneration))
+episodeCurrentForward left right Z generation found =
+  void (nothingIsNotJust found)
+episodeCurrentForward left right (S Z) generation found =
+  case justInjective found of
+    Refl => (MkRegistrationGeneration 1 1 ** (Refl, Refl))
+episodeCurrentForward left right (S (S Z)) generation found =
+  void (nothingIsNotJust found)
+episodeCurrentForward left right (S (S (S Z))) generation found =
+  case justInjective found of
+    Refl => (MkRegistrationGeneration 3 9 ** (Refl, Refl))
+episodeCurrentForward left right (S (S (S (S Z)))) generation found =
+  case justInjective found of
+    Refl => (MkRegistrationGeneration 4 14 ** (Refl, Refl))
+episodeCurrentForward left right (S (S (S (S (S later))))) generation found =
+  void (nothingIsNotJust found)
+
+0 episodeCurrentBackward :
+  (left : EpisodeLeftTrace) -> (right : EpisodeRightTrace) ->
+  (n : Nat) -> (generation : RegistrationGeneration Nat) ->
+  lookupCurrentGeneration @{DGamma.CP3StatementChecks.episodeNameEq} n
+    (rightFinalGenerations
+      (episodeBoundaryRegistrationCorrespondence left right)) = Just generation ->
+  (leftGeneration : RegistrationGeneration Nat **
+   (generationBackward DGamma.CP3StatementChecks.episodeBoundaryGenerationBijection generation =
+      leftGeneration,
+    lookupCurrentGeneration @{DGamma.CP3StatementChecks.episodeNameEq} n
+      (leftFinalGenerations
+        (episodeBoundaryRegistrationCorrespondence left right)) =
+      Just leftGeneration))
+episodeCurrentBackward left right Z generation found =
+  void (nothingIsNotJust found)
+episodeCurrentBackward left right (S Z) generation found =
+  case justInjective found of
+    Refl => (MkRegistrationGeneration 1 1 ** (Refl, Refl))
+episodeCurrentBackward left right (S (S Z)) generation found =
+  void (nothingIsNotJust found)
+episodeCurrentBackward left right (S (S (S Z))) generation found =
+  case justInjective found of
+    Refl => (MkRegistrationGeneration 3 15 ** (Refl, Refl))
+episodeCurrentBackward left right (S (S (S (S Z)))) generation found =
+  case justInjective found of
+    Refl => (MkRegistrationGeneration 4 20 ** (Refl, Refl))
+episodeCurrentBackward left right (S (S (S (S (S later))))) generation found =
+  void (nothingIsNotJust found)
+
+0 episodeBoundaryEndpointRenaming :
+  (left : EpisodeLeftTrace) -> (right : EpisodeRightTrace) ->
+  CurrentEndpointRenaming DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeBoundaryGenerationBijection
+    (episodeLeftTrace left) (episodeRightTrace right)
+    (episodeBoundaryRegistrationCorrespondence left right)
+episodeBoundaryEndpointRenaming left right =
+  MkCurrentEndpointRenaming identityNameBijection
+    (\n, fiber, found, root => Refl)
+    (\n, fiber, found, root => Refl)
+    (episodeCurrentForward left right) (episodeCurrentBackward left right)
+
+0 episodeLeftRetireRoot : (left : EpisodeLeftTrace) ->
+  RootOrchestrationStep DGamma.CP3StatementChecks.episodeNameEq
+    (namedTransition (leftRetire0 left))
+episodeLeftRetireRoot left = RootRetireStep
+  (episodeRootFiber (leftRetire0Source left))
+  (episodeRootFound (leftRetire0Source left))
+  (episodeRootParent (leftRetire0Source left))
+  (namedAction (leftRetire0 left))
+
+0 episodeRightRetireRoot : (right : EpisodeRightTrace) ->
+  RootOrchestrationStep DGamma.CP3StatementChecks.episodeNameEq
+    (namedTransition (rightRetire0 right))
+episodeRightRetireRoot right = RootRetireStep
+  (episodeRootFiber (rightRetire0Source right))
+  (episodeRootFound (rightRetire0Source right))
+  (episodeRootParent (rightRetire0Source right))
+  (namedAction (rightRetire0 right))
+
+0 episodeLeftRemoveRoot : (left : EpisodeLeftTrace) ->
+  RootOrchestrationStep DGamma.CP3StatementChecks.episodeNameEq
+    (namedTransition (leftRemove0 left))
+episodeLeftRemoveRoot left = RootRemoveStep
+  (episodeRootFiber (leftRemove0Source left))
+  (episodeRootFound (leftRemove0Source left))
+  (episodeRootParent (leftRemove0Source left))
+  (namedAction (leftRemove0 left))
+
+0 episodeRightRemoveRoot : (right : EpisodeRightTrace) ->
+  RootOrchestrationStep DGamma.CP3StatementChecks.episodeNameEq
+    (namedTransition (rightRemove0 right))
+episodeRightRemoveRoot right = RootRemoveStep
+  (episodeRootFiber (rightRemove0Source right))
+  (episodeRootFound (rightRemove0Source right))
+  (episodeRootParent (rightRemove0Source right))
+  (namedAction (rightRemove0 right))
+
+0 episodeLeftChildRetireInternal : (left : EpisodeLeftTrace) ->
+  RootOrchestrationStep DGamma.CP3StatementChecks.episodeNameEq
+    (namedTransition (leftRetireChild2 left)) -> Void
+episodeLeftChildRetireInternal left = childRetireCannotBeRoot
+  DGamma.CP3StatementChecks.episodeNameEq
+  (namedTransition (leftRetireChild2 left))
+  (namedAction (leftRetireChild2 left))
+  (episodeChildFiber (leftRetireChildSource left))
+  (episodeChildFound (leftRetireChildSource left))
+  (episodeChildParentRole (leftRetireChildSource left))
+
+0 episodeLeftChildRemoveInternal : (left : EpisodeLeftTrace) ->
+  RootOrchestrationStep DGamma.CP3StatementChecks.episodeNameEq
+    (namedTransition (leftRemoveChild2 left)) -> Void
+episodeLeftChildRemoveInternal left = childRemoveCannotBeRoot
+  DGamma.CP3StatementChecks.episodeNameEq
+  (namedTransition (leftRemoveChild2 left))
+  (namedAction (leftRemoveChild2 left))
+  (episodeChildFiber (leftRemoveChildSource left))
+  (episodeChildFound (leftRemoveChildSource left))
+  (episodeChildParentRole (leftRemoveChildSource left))
+
+0 episodeBoundaryExternalRoots :
+  (left : EpisodeLeftTrace) -> (right : EpisodeRightTrace) ->
+  ExternalRootBirthCorrespondence
+    DGamma.CP3StatementChecks.episodeBoundaryGenerationBijection 0
+    (episodeLeftTrace left) 0 (episodeRightTrace right)
+episodeBoundaryExternalRoots left right =
+  MatchExternalRootBirth
+    (namedTransition (episodeInsert0 (leftEpisodePrefix left))) (episodeLeftTail1 left)
+    (namedTransition (episodeInsert0 (rightEpisodePrefix right))) (episodeRightTail1 right)
+    (namedAction (episodeInsert0 (leftEpisodePrefix left))) (namedAction (episodeInsert0 (rightEpisodePrefix right))) Refl
+  (MatchExternalRootBirth
+    (namedTransition (episodeInsert1 (leftEpisodePrefix left))) (episodeLeftTail2 left)
+    (namedTransition (episodeInsert1 (rightEpisodePrefix right))) (episodeRightTail2 right)
+    (namedAction (episodeInsert1 (leftEpisodePrefix left))) (namedAction (episodeInsert1 (rightEpisodePrefix right))) Refl
+  (SkipLeftNonExternalRootBirth (LBegin 0)
+    (namedTransition (episodeBegin0 (leftEpisodePrefix left))) (episodeLeftTail3 left)
+    (namedAction (episodeBegin0 (leftEpisodePrefix left))) Refl
+  (SkipLeftNonExternalRootBirth (LAdvance 0)
+    (namedTransition (episodeAdvance0a (leftEpisodePrefix left))) (episodeLeftTail4 left)
+    (namedAction (episodeAdvance0a (leftEpisodePrefix left))) Refl
+  (SkipLeftNonExternalRootBirth (LAdvance 0)
+    (namedTransition (episodeAdvance0b (leftEpisodePrefix left))) (episodeLeftTail5 left)
+    (namedAction (episodeAdvance0b (leftEpisodePrefix left))) Refl
+  (SkipLeftNonExternalRootBirth (LBegin 1)
+    (namedTransition (leftBegin1 left)) (episodeLeftTail6 left)
+    (namedAction (leftBegin1 left)) Refl
+  (SkipLeftNonExternalRootBirth (OInsert 2 (ChildOf 1) episodeChild)
+    (namedTransition (leftDeletedChild left)) (episodeLeftTail7 left)
+    (namedAction (leftDeletedChild left)) Refl
+  (SkipLeftNonExternalRootBirth (ORetire 2)
+    (namedTransition (leftRetireChild2 left)) (episodeLeftTail8 left)
+    (namedAction (leftRetireChild2 left)) Refl
+  (SkipLeftNonExternalRootBirth (ORemove 2)
+    (namedTransition (leftRemoveChild2 left)) (episodeLeftTail9 left)
+    (namedAction (leftRemoveChild2 left)) Refl
+  (SkipLeftNonExternalRootBirth (ORetire 0)
+    (namedTransition (leftRetire0 left)) (episodeLeftTail10 left)
+    (namedAction (leftRetire0 left)) Refl
+  (SkipLeftNonExternalRootBirth (LLeave 0)
+    (namedTransition (leftLeave0 left)) (episodeLeftTail11 left)
+    (namedAction (leftLeave0 left)) Refl
+  (SkipLeftNonExternalRootBirth (LDivert 1)
+    (namedTransition (leftDivert1 left)) (episodeLeftTail12 left)
+    (namedAction (leftDivert1 left)) Refl
+  (SkipLeftNonExternalRootBirth (LUnload 1)
+    (namedTransition (leftUnload1 left)) (episodeLeftTail13 left)
+    (namedAction (leftUnload1 left)) Refl
+  (SkipLeftNonExternalRootBirth (LUnload 0)
+    (namedTransition (leftUnload0 left)) (episodeLeftTail14 left)
+    (namedAction (leftUnload0 left)) Refl
+  (SkipLeftNonExternalRootBirth (ORemove 0)
+    (namedTransition (leftRemove0 left)) (episodeLeftTail15 left)
+    (namedAction (leftRemove0 left)) Refl
+  (SkipRightNonExternalRootBirth (LBegin 0)
+    (namedTransition (episodeBegin0 (rightEpisodePrefix right))) (episodeRightTail3 right)
+    (namedAction (episodeBegin0 (rightEpisodePrefix right))) Refl
+  (SkipRightNonExternalRootBirth (LAdvance 0)
+    (namedTransition (episodeAdvance0a (rightEpisodePrefix right))) (episodeRightTail4 right)
+    (namedAction (episodeAdvance0a (rightEpisodePrefix right))) Refl
+  (SkipRightNonExternalRootBirth (LAdvance 0)
+    (namedTransition (episodeAdvance0b (rightEpisodePrefix right))) (episodeRightTail5 right)
+    (namedAction (episodeAdvance0b (rightEpisodePrefix right))) Refl
+  (SkipRightNonExternalRootBirth (ORetire 0)
+    (namedTransition (rightRetire0 right)) (episodeRightTail6 right)
+    (namedAction (rightRetire0 right)) Refl
+  (SkipRightNonExternalRootBirth (LLeave 0)
+    (namedTransition (rightLeave0 right)) (episodeRightTail7 right)
+    (namedAction (rightLeave0 right)) Refl
+  (SkipRightNonExternalRootBirth (LUnload 0)
+    (namedTransition (rightUnload0 right)) (episodeRightTail8 right)
+    (namedAction (rightUnload0 right)) Refl
+  (SkipRightNonExternalRootBirth (ORemove 0)
+    (namedTransition (rightRemove0 right)) (episodeRightTail9 right)
+    (namedAction (rightRemove0 right)) Refl
+  (MatchExternalRootBirth
+    (namedTransition (leftInsert3 left)) (episodeLeftTail16 left)
+    (namedTransition (rightInsert3 right)) (episodeRightTail10 right)
+    (namedAction (leftInsert3 left)) (namedAction (rightInsert3 right)) Refl
+  (SkipLeftNonExternalRootBirth (LBegin 3)
+    (namedTransition (leftBegin3 left)) (episodeLeftTail17 left)
+    (namedAction (leftBegin3 left)) Refl
+  (SkipLeftNonExternalRootBirth (LAdvance 3)
+    (namedTransition (leftAdvance3a left)) (episodeLeftTail18 left)
+    (namedAction (leftAdvance3a left)) Refl
+  (SkipLeftNonExternalRootBirth (LAdvance 3)
+    (namedTransition (leftAdvance3b left)) (episodeLeftTail19 left)
+    (namedAction (leftAdvance3b left)) Refl
+  (SkipLeftNonExternalRootBirth (LBegin 1)
+    (namedTransition (leftReopen1 left)) (episodeLeftTail20 left)
+    (namedAction (leftReopen1 left)) Refl
+  (SkipLeftNonExternalRootBirth (OInsert 4 (ChildOf 1) episodeChild)
+    (namedTransition (leftSurvivingChild left)) (episodeLeftTail21 left)
+    (namedAction (leftSurvivingChild left)) Refl
+  (SkipLeftNonExternalRootBirth (LAdvance 1)
+    (namedTransition (leftFinish1 left)) (episodeLeftTail22 left)
+    (namedAction (leftFinish1 left)) Refl
+  (SkipLeftNonExternalRootBirth (LBegin 4)
+    (namedTransition (leftBegin4 left)) (episodeLeftTail23 left)
+    (namedAction (leftBegin4 left)) Refl
+  (SkipLeftNonExternalRootBirth (LAdvance 4)
+    (namedTransition (leftFinish4 left)) (episodeLeftTail24 left)
+    (namedAction (leftFinish4 left)) Refl
+  (SkipRightNonExternalRootBirth (LBegin 3)
+    (namedTransition (rightBegin3 right)) (episodeRightTail11 right)
+    (namedAction (rightBegin3 right)) Refl
+  (SkipRightNonExternalRootBirth (LAdvance 3)
+    (namedTransition (rightAdvance3a right)) (episodeRightTail12 right)
+    (namedAction (rightAdvance3a right)) Refl
+  (SkipRightNonExternalRootBirth (LAdvance 3)
+    (namedTransition (rightAdvance3b right)) (episodeRightTail13 right)
+    (namedAction (rightAdvance3b right)) Refl
+  (SkipRightNonExternalRootBirth (LBegin 1)
+    (namedTransition (rightBegin1 right)) (episodeRightTail14 right)
+    (namedAction (rightBegin1 right)) Refl
+  (SkipRightNonExternalRootBirth (OInsert 4 (ChildOf 1) episodeChild)
+    (namedTransition (rightSurvivingChild right)) (episodeRightTail15 right)
+    (namedAction (rightSurvivingChild right)) Refl
+  (SkipRightNonExternalRootBirth (LAdvance 1)
+    (namedTransition (rightFinish1 right)) (episodeRightTail16 right)
+    (namedAction (rightFinish1 right)) Refl
+  (SkipRightNonExternalRootBirth (LBegin 4)
+    (namedTransition (rightBegin4 right)) (episodeRightTail17 right)
+    (namedAction (rightBegin4 right)) Refl
+  (SkipRightNonExternalRootBirth (LAdvance 4)
+    (namedTransition (rightFinish4 right)) (episodeRightTail18 right)
+    (namedAction (rightFinish4 right)) Refl
+  (ExternalRootBirthCorrespondenceEnd)))))))))))))))))))))))))))))))))))))))
+
+0 episodeBoundarySameExternal :
+  (left : EpisodeLeftTrace) -> (right : EpisodeRightTrace) ->
+  SameExternalOrchestration DGamma.CP3StatementChecks.episodeNameEq
+    (episodeLeftTrace left) (episodeRightTrace right)
+episodeBoundarySameExternal left right =
+  MatchExternalInput (OInsert 0 Root DGamma.CalculusChecks.providerComponent)
+    (namedTransition (episodeInsert0 (leftEpisodePrefix left))) (episodeLeftTail1 left) (RootInsertStep (namedAction (episodeInsert0 (leftEpisodePrefix left))))
+    (namedTransition (episodeInsert0 (rightEpisodePrefix right))) (episodeRightTail1 right) (RootInsertStep (namedAction (episodeInsert0 (rightEpisodePrefix right))))
+    (namedAction (episodeInsert0 (leftEpisodePrefix left))) (namedAction (episodeInsert0 (rightEpisodePrefix right)))
+  (MatchExternalInput (OInsert 1 Root episodeParent)
+    (namedTransition (episodeInsert1 (leftEpisodePrefix left))) (episodeLeftTail2 left) (RootInsertStep (namedAction (episodeInsert1 (leftEpisodePrefix left))))
+    (namedTransition (episodeInsert1 (rightEpisodePrefix right))) (episodeRightTail2 right) (RootInsertStep (namedAction (episodeInsert1 (rightEpisodePrefix right))))
+    (namedAction (episodeInsert1 (leftEpisodePrefix left))) (namedAction (episodeInsert1 (rightEpisodePrefix right)))
+  (SkipLeftInternal (namedTransition (episodeBegin0 (leftEpisodePrefix left)))
+    (episodeLeftTail3 left) (namedLifecycleNotRoot (episodeBegin0 (leftEpisodePrefix left)) Refl)
+  (SkipLeftInternal (namedTransition (episodeAdvance0a (leftEpisodePrefix left)))
+    (episodeLeftTail4 left) (namedLifecycleNotRoot (episodeAdvance0a (leftEpisodePrefix left)) Refl)
+  (SkipLeftInternal (namedTransition (episodeAdvance0b (leftEpisodePrefix left)))
+    (episodeLeftTail5 left) (namedLifecycleNotRoot (episodeAdvance0b (leftEpisodePrefix left)) Refl)
+  (SkipLeftInternal (namedTransition (leftBegin1 left))
+    (episodeLeftTail6 left) (namedLifecycleNotRoot (leftBegin1 left) Refl)
+  (SkipLeftInternal (namedTransition (leftDeletedChild left))
+    (episodeLeftTail7 left) (childInsertCannotBeRoot (namedTransition (leftDeletedChild left)) (namedAction (leftDeletedChild left)))
+  (SkipLeftInternal (namedTransition (leftRetireChild2 left))
+    (episodeLeftTail8 left) (episodeLeftChildRetireInternal left)
+  (SkipLeftInternal (namedTransition (leftRemoveChild2 left))
+    (episodeLeftTail9 left) (episodeLeftChildRemoveInternal left)
+  (SkipRightInternal (namedTransition (episodeBegin0 (rightEpisodePrefix right)))
+    (episodeRightTail3 right) (namedLifecycleNotRoot (episodeBegin0 (rightEpisodePrefix right)) Refl)
+  (SkipRightInternal (namedTransition (episodeAdvance0a (rightEpisodePrefix right)))
+    (episodeRightTail4 right) (namedLifecycleNotRoot (episodeAdvance0a (rightEpisodePrefix right)) Refl)
+  (SkipRightInternal (namedTransition (episodeAdvance0b (rightEpisodePrefix right)))
+    (episodeRightTail5 right) (namedLifecycleNotRoot (episodeAdvance0b (rightEpisodePrefix right)) Refl)
+  (MatchExternalInput (ORetire 0)
+    (namedTransition (leftRetire0 left)) (episodeLeftTail10 left) (episodeLeftRetireRoot left)
+    (namedTransition (rightRetire0 right)) (episodeRightTail6 right) (episodeRightRetireRoot right)
+    (namedAction (leftRetire0 left)) (namedAction (rightRetire0 right))
+  (SkipLeftInternal (namedTransition (leftLeave0 left))
+    (episodeLeftTail11 left) (namedLifecycleNotRoot (leftLeave0 left) Refl)
+  (SkipLeftInternal (namedTransition (leftDivert1 left))
+    (episodeLeftTail12 left) (namedLifecycleNotRoot (leftDivert1 left) Refl)
+  (SkipLeftInternal (namedTransition (leftUnload1 left))
+    (episodeLeftTail13 left) (namedLifecycleNotRoot (leftUnload1 left) Refl)
+  (SkipLeftInternal (namedTransition (leftUnload0 left))
+    (episodeLeftTail14 left) (namedLifecycleNotRoot (leftUnload0 left) Refl)
+  (SkipRightInternal (namedTransition (rightLeave0 right))
+    (episodeRightTail7 right) (namedLifecycleNotRoot (rightLeave0 right) Refl)
+  (SkipRightInternal (namedTransition (rightUnload0 right))
+    (episodeRightTail8 right) (namedLifecycleNotRoot (rightUnload0 right) Refl)
+  (MatchExternalInput (ORemove 0)
+    (namedTransition (leftRemove0 left)) (episodeLeftTail15 left) (episodeLeftRemoveRoot left)
+    (namedTransition (rightRemove0 right)) (episodeRightTail9 right) (episodeRightRemoveRoot right)
+    (namedAction (leftRemove0 left)) (namedAction (rightRemove0 right))
+  (MatchExternalInput (OInsert 3 Root DGamma.CalculusChecks.providerComponent)
+    (namedTransition (leftInsert3 left)) (episodeLeftTail16 left) (RootInsertStep (namedAction (leftInsert3 left)))
+    (namedTransition (rightInsert3 right)) (episodeRightTail10 right) (RootInsertStep (namedAction (rightInsert3 right)))
+    (namedAction (leftInsert3 left)) (namedAction (rightInsert3 right))
+  (SkipLeftInternal (namedTransition (leftBegin3 left))
+    (episodeLeftTail17 left) (namedLifecycleNotRoot (leftBegin3 left) Refl)
+  (SkipLeftInternal (namedTransition (leftAdvance3a left))
+    (episodeLeftTail18 left) (namedLifecycleNotRoot (leftAdvance3a left) Refl)
+  (SkipLeftInternal (namedTransition (leftAdvance3b left))
+    (episodeLeftTail19 left) (namedLifecycleNotRoot (leftAdvance3b left) Refl)
+  (SkipLeftInternal (namedTransition (leftReopen1 left))
+    (episodeLeftTail20 left) (namedLifecycleNotRoot (leftReopen1 left) Refl)
+  (SkipLeftInternal (namedTransition (leftSurvivingChild left))
+    (episodeLeftTail21 left) (childInsertCannotBeRoot (namedTransition (leftSurvivingChild left)) (namedAction (leftSurvivingChild left)))
+  (SkipLeftInternal (namedTransition (leftFinish1 left))
+    (episodeLeftTail22 left) (namedLifecycleNotRoot (leftFinish1 left) Refl)
+  (SkipLeftInternal (namedTransition (leftBegin4 left))
+    (episodeLeftTail23 left) (namedLifecycleNotRoot (leftBegin4 left) Refl)
+  (SkipLeftInternal (namedTransition (leftFinish4 left))
+    (episodeLeftTail24 left) (namedLifecycleNotRoot (leftFinish4 left) Refl)
+  (SkipRightInternal (namedTransition (rightBegin3 right))
+    (episodeRightTail11 right) (namedLifecycleNotRoot (rightBegin3 right) Refl)
+  (SkipRightInternal (namedTransition (rightAdvance3a right))
+    (episodeRightTail12 right) (namedLifecycleNotRoot (rightAdvance3a right) Refl)
+  (SkipRightInternal (namedTransition (rightAdvance3b right))
+    (episodeRightTail13 right) (namedLifecycleNotRoot (rightAdvance3b right) Refl)
+  (SkipRightInternal (namedTransition (rightBegin1 right))
+    (episodeRightTail14 right) (namedLifecycleNotRoot (rightBegin1 right) Refl)
+  (SkipRightInternal (namedTransition (rightSurvivingChild right))
+    (episodeRightTail15 right) (childInsertCannotBeRoot (namedTransition (rightSurvivingChild right)) (namedAction (rightSurvivingChild right)))
+  (SkipRightInternal (namedTransition (rightFinish1 right))
+    (episodeRightTail16 right) (namedLifecycleNotRoot (rightFinish1 right) Refl)
+  (SkipRightInternal (namedTransition (rightBegin4 right))
+    (episodeRightTail17 right) (namedLifecycleNotRoot (rightBegin4 right) Refl)
+  (SkipRightInternal (namedTransition (rightFinish4 right))
+    (episodeRightTail18 right) (namedLifecycleNotRoot (rightFinish4 right) Refl)
+  (SameExternalOrchestrationEnd)))))))))))))))))))))))))))))))))))))
+
+0 episodeBoundarySameInputs :
+  (left : EpisodeLeftTrace) -> (right : EpisodeRightTrace) ->
+  SameOrchestrationModuloGenerated DGamma.CP3StatementChecks.episodeNameEq
+    (episodeLeftTrace left) (episodeRightTrace right)
+episodeBoundarySameInputs left right = MkSameOrchestrationModuloGenerated
+  episodeBoundaryGenerationBijection (episodeBoundarySameExternal left right)
+  (episodeBoundaryExternalRoots left right)
+  (episodeBoundaryRegistrationCorrespondence left right)
+  (episodeBoundaryEndpointRenaming left right)
+
+public export
+record EpisodeBoundaryCorrespondenceWitness where
+  constructor MkEpisodeBoundaryCorrespondenceWitness
+  episodeBoundaryLeft : EpisodeLeftTrace
+  episodeBoundaryRight : EpisodeRightTrace
+  0 episodeBoundarySameInputWitness : SameOrchestrationModuloGenerated
+    DGamma.CP3StatementChecks.episodeNameEq
+    (episodeLeftTrace episodeBoundaryLeft)
+    (episodeRightTrace episodeBoundaryRight)
+
+public export
+episodeBoundaryCorrespondenceWitness :
+  Maybe EpisodeBoundaryCorrespondenceWitness
+episodeBoundaryCorrespondenceWitness = do
+  leftCommon <- buildEpisodeCommonPrefix
+  rightCommon <- buildEpisodeCommonPrefix
+  left <- buildEpisodeLeftTrace leftCommon
+  right <- buildEpisodeRightTrace rightCommon
+  Just (MkEpisodeBoundaryCorrespondenceWitness left right
+    (episodeBoundarySameInputs left right))
+
+public export
+episodeBoundaryCorrespondenceCheck : Bool
+episodeBoundaryCorrespondenceCheck =
+  case episodeBoundaryCorrespondenceWitness of
+    Nothing => False
+    Just witness => True
+
+||| Full public Theorem-73 boundary for the hardened round-8 pair.  The left
+||| deleted child is retired and removed before its parent's L-Unload.  Its
+||| classification is discharged by `DeletedClosingRegistration`; the final
+||| child is position zero in the reopened left activation and in the delayed
+||| right activation.
+public export
+0 episodeBoundaryTheorem73PremiseChain :
+  confluenceTheorem Nat ToyKey ToyValue ToyRuntime String ->
+  (protocol : RegistrationProtocol ToyKey ToyValue ToyRuntime String) ->
+  (0 witness : EpisodeBoundaryCorrespondenceWitness) ->
+  AlignedTransitions Nat ToyKey ToyRuntime String ToyValue
+    DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq
+    (episodeLeftTrace (episodeBoundaryLeft witness)) ->
+  AlignedTransitions Nat ToyKey ToyRuntime String ToyValue
+    DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq
+    (episodeRightTrace (episodeBoundaryRight witness)) ->
+  RegistrationDiscipline protocol DGamma.CP3StatementChecks.episodeNameEq
+    (episodeLeftTrace (episodeBoundaryLeft witness)) ->
+  RegistrationDiscipline protocol DGamma.CP3StatementChecks.episodeNameEq
+    (episodeRightTrace (episodeBoundaryRight witness)) ->
+  registryWellFormed @{DGamma.CP3StatementChecks.episodeNameEq}
+    @{DGamma.CP3StatementChecks.episodeKeyEq}
+    DGamma.CalculusChecks.initialSystem = True ->
+  bindings (registry DGamma.CalculusChecks.initialSystem) = [] ->
+  quiet @{DGamma.CP3StatementChecks.episodeNameEq}
+    @{DGamma.CP3StatementChecks.episodeKeyEq}
+    (namedAfter (leftFinish4 (episodeBoundaryLeft witness))) = True ->
+  quiet @{DGamma.CP3StatementChecks.episodeNameEq}
+    @{DGamma.CP3StatementChecks.episodeKeyEq}
+    (namedAfter (rightFinish4 (episodeBoundaryRight witness))) = True ->
+  noFailedFibers
+    (namedAfter (leftFinish4 (episodeBoundaryLeft witness))) = True ->
+  noFailedFibers
+    (namedAfter (rightFinish4 (episodeBoundaryRight witness))) = True ->
+  TraceComponentsTotal DGamma.CP3StatementChecks.episodeKeyEq
+    (episodeLeftTrace (episodeBoundaryLeft witness)) ->
+  TraceComponentsTotal DGamma.CP3StatementChecks.episodeKeyEq
+    (episodeRightTrace (episodeBoundaryRight witness)) ->
+  TraceIndependent Nat ToyKey ToyRuntime String ToyValue
+    DGamma.CP3StatementChecks.episodeKeyEq
+    (episodeLeftTrace (episodeBoundaryLeft witness)) ->
+  TraceIndependent Nat ToyKey ToyRuntime String ToyValue
+    DGamma.CP3StatementChecks.episodeKeyEq
+    (episodeRightTrace (episodeBoundaryRight witness)) ->
+  ConfluenceResult Nat ToyKey ToyRuntime String ToyValue protocol
+    DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq
+    (episodeLeftTrace (episodeBoundaryLeft witness))
+    (episodeRightTrace (episodeBoundaryRight witness))
+    (generatedGenerationBijection
+      (episodeBoundarySameInputWitness witness))
+    (currentNameBijection
+      (endpointRenaming (episodeBoundarySameInputWitness witness)))
+episodeBoundaryTheorem73PremiseChain claim protocol witness leftAligned
+  rightAligned leftDiscipline rightDiscipline initialWellFormed initialEmpty
+  leftQuiet rightQuiet leftSuccess rightSuccess leftTotal rightTotal
+  leftIndependent rightIndependent =
+    claim DGamma.CP3StatementChecks.episodeNameEq
+      DGamma.CP3StatementChecks.episodeKeyEq protocol
+      DGamma.CalculusChecks.initialSystem
+      (namedAfter (leftFinish4 (episodeBoundaryLeft witness)))
+      (namedAfter (rightFinish4 (episodeBoundaryRight witness)))
+      (episodeLeftTrace (episodeBoundaryLeft witness))
+      (episodeRightTrace (episodeBoundaryRight witness))
+      leftAligned rightAligned leftDiscipline rightDiscipline initialWellFormed
+      initialEmpty leftQuiet rightQuiet leftSuccess rightSuccess leftTotal
+      rightTotal leftIndependent rightIndependent
+      (episodeBoundarySameInputWitness witness)
+
+public export
+episodeBoundaryRuntimeCheck : Bool
+episodeBoundaryRuntimeCheck =
+  case (buildEpisodeCommonPrefix, buildEpisodeCommonPrefix) of
+    (Just leftPrefix, Just rightPrefix) =>
+      case (buildEpisodeLeftTrace leftPrefix, buildEpisodeRightTrace rightPrefix) of
+        (Just left, Just right) =>
+          let leftFinal = namedAfter (leftFinish4 left)
+              rightFinal = namedAfter (rightFinish4 right) in
+            quiet @{episodeNameEq} @{episodeKeyEq} leftFinal &&
+            quiet @{episodeNameEq} @{episodeKeyEq} rightFinal &&
+            noFailedFibers leftFinal && noFailedFibers rightFinal &&
+            isSupported @{episodeNameEq} @{episodeKeyEq} 1 leftFinal &&
+            isSupported @{episodeNameEq} @{episodeKeyEq} 3 leftFinal &&
+            isSupported @{episodeNameEq} @{episodeKeyEq} 4 leftFinal &&
+            isSupported @{episodeNameEq} @{episodeKeyEq} 1 rightFinal &&
+            isSupported @{episodeNameEq} @{episodeKeyEq} 3 rightFinal &&
+            isSupported @{episodeNameEq} @{episodeKeyEq} 4 rightFinal
+        _ => False
+    _ => False
+
 public export
 allCP3StatementChecks : Bool
 allCP3StatementChecks = roleChangingRuntimeCheck &&
   roleChangingCanonicalRuntimeCheck && roleChangingProofTraceCheck &&
   freshChoiceCorrespondenceCheck && crossParentPermutationRuntimeCheck &&
-  crossParentPermutationCorrespondenceCheck
+  crossParentPermutationCorrespondenceCheck && removedRootRuntimeCheck &&
+  episodeBoundaryRuntimeCheck &&
+  episodeBoundaryCorrespondenceCheck
 
 ||| End-to-end Theorem-73 statement check for the blocker pair.  Every premise
 ||| after the concrete checked traces is the exact public theorem premise; the
