@@ -686,6 +686,70 @@ elemDecFalseNotElem wanted (x :: xs) absent with (decEq wanted x)
       Here => distinct Refl
       There later => elemDecFalseNotElem wanted xs absent later
 
+public export
+AvailableComplete : (name, key, world, error : Type) ->
+  (value : key -> Type) -> (nameEq : DecEq name) ->
+  List name -> List name -> Registry name key value world error -> Type
+AvailableComplete name key world error value nameEq seen available fibers =
+  (candidate : name) -> Not (Elem candidate seen) ->
+  (found : Fiber name key value world error) ->
+  lookupFiber @{nameEq} candidate fibers = Just found -> Elem candidate available
+
+public export
+record AvailabilityShrink (name, key, world, error : Type)
+  (value : key -> Type) (nameEq : DecEq name)
+  (remaining : Nat) (available, seen : List name)
+  (current, parent, removed : name)
+  (target : Registry name key value world error) where
+  constructor MkAvailabilityShrink
+  0 shrinkLength : length (removeName current available) = remaining
+  0 shrinkParent : Elem parent (removeName current available)
+  0 shrinkRemovedAbsent : Not (Elem removed (removeName current available))
+  0 shrinkComplete : AvailableComplete name key world error value nameEq
+    (parent :: seen) (removeName current available) target
+
+public export
+0 shrinkAvailability :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (remaining : Nat) ->
+  (available, seen : List name) -> (current, parent, removed : name) ->
+  (target : Registry name key value world error) ->
+  length available = S remaining -> Elem current available ->
+  Not (Elem removed available) -> Elem current seen ->
+  Not (Elem parent seen) -> Elem parent available ->
+  AvailableComplete name key world error value nameEq seen available target ->
+  AvailabilityShrink name key world error value nameEq remaining available seen
+    current parent removed target
+shrinkAvailability nameEq remaining available seen current parent removed target
+  lengthOk currentAvailable removedAbsent currentSeen parentNotSeen parentAvailable
+  complete =
+  let parentCurrentDistinct : Not (parent = current)
+      parentCurrentDistinct same = parentNotSeen
+        (replace {p = \candidate => Elem candidate seen} (sym same) currentSeen)
+      0 parentNext : Elem parent (removeName current available)
+      parentNext = elemRemoveOtherName parent current parentCurrentDistinct
+        available parentAvailable
+      0 nextRemovedAbsent : Not (Elem removed (removeName current available))
+      nextRemovedAbsent occurrence = removedAbsent
+        (elemRemoveWasPresent removed current available occurrence)
+      0 nextComplete : AvailableComplete name key world error value nameEq
+        (parent :: seen) (removeName current available) target
+      nextComplete candidate notSeen found foundLookup =
+        let oldNotSeen : Not (Elem candidate seen)
+            oldNotSeen occurrence = notSeen (There occurrence)
+            candidateCurrentDistinct : Not (candidate = current)
+            candidateCurrentDistinct same = notSeen
+              (There (replace {p = \chosen => Elem chosen seen}
+                (sym same) currentSeen))
+        in elemRemoveOtherName candidate current candidateCurrentDistinct available
+          (complete candidate oldNotSeen found foundLookup)
+      0 removedLength : S (length (removeName current available)) =
+        length available
+      removedLength = removeNamePresentLength current available currentAvailable
+      0 nextLength : length (removeName current available) = remaining
+      nextLength = case trans removedLength lengthOk of Refl => Refl
+  in MkAvailabilityShrink nextLength parentNext nextRemovedAbsent nextComplete
+
 ||| Appending a distinct fresh name does not change a failed membership test.
 public export
 0 elemDecAppendFresh : DecEq a => (wanted, fresh : a) -> (seen : List a) ->
