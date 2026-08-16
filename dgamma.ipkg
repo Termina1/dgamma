@@ -17,4 +17,5 @@ modules = DGamma.Core,
           DGamma.Ordering,
           DGamma.CP3Support,
           DGamma.CP3StatementChecks,
+          DGamma.CP3VestigialChecks,
           DGamma.CalculusChecks

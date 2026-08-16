@@ -298,6 +298,7 @@ roleChangingProofTraceCheck = case roleChangingCheckedTrace of
 ||| A checked transition retaining the requested action in its type.  `fire`
 ||| intentionally hides that equality in `TransitionResult`; the registration-
 ||| generation regressions below need it to assemble structural trace evidence.
+public export
 record CheckedNamedTransition
   (nameEq : DecEq name) (keyEq : DecEq key)
   (action : Action name key value world error)
@@ -310,6 +311,7 @@ record CheckedNamedTransition
   namedTransition : Transition before namedAfter
   0 namedAction : transitionAction namedTransition = action
 
+public export
 checkedNamedFire : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) ->
   (before : SystemState name key value world error) ->
@@ -530,6 +532,7 @@ namedRetireLookup {child} {before} nameEq keyEq fiber found step =
     (checkedActionProjects nameEq keyEq (ORetire child) before
       (namedAfter step) (namedRule step) (namedChecked step))
 
+public export
 0 lifecycleCannotBeRoot :
   (transition : Transition before afterState) ->
   isLifecycleAction (transitionAction transition) = True ->
@@ -543,6 +546,7 @@ lifecycleCannotBeRoot transition lifecycle
   (RootRemoveStep fiber found parent action) =
     case trans (sym (cong isLifecycleAction action)) lifecycle of Refl impossible
 
+public export
 0 childInsertCannotBeRoot :
   (transition : Transition before afterState) ->
   transitionAction transition = OInsert child (ChildOf parent) component ->
@@ -556,6 +560,7 @@ childInsertCannotBeRoot transition childAction
   (RootRemoveStep fiber found parent rootAction) =
     case trans (sym childAction) rootAction of Refl impossible
 
+public export
 0 childRetireCannotBeRoot :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {before, afterState : SystemState name key value world error} ->
@@ -1535,6 +1540,7 @@ crossParentGenerationTraceCorrespondence left right =
     (namedAction (crossAdvance3 right)) Refl
     RegistrationCorrespondenceEnd)))))))))))))))))))))))
 
+public export
 0 namedLifecycleNotRoot :
   (step : CheckedNamedTransition nameEq keyEq action before) ->
   isLifecycleAction action = True ->
@@ -1837,12 +1843,15 @@ crossParentPermutationRuntimeCheck =
 ||| Round-8 delay/divert/reopen regression.  The parent depends on ServiceA,
 ||| so retiring provider 0 diverts its first activation.  A replacement provider
 ||| later reopens the parent from the start of its iterator.
+public export
 episodeNameEq : DecEq Nat
 episodeNameEq = %search
 
+public export
 episodeKeyEq : DecEq ToyKey
 episodeKeyEq = %search
 
+public export
 episodeRegistrationStep : StepEffect ToyKey ToyValue ToyRuntime String
   [ServiceA] DGamma.CalculusChecks.toyEmptySpec
 episodeRegistrationStep = MkStepEffect (Just 0)
@@ -1854,14 +1863,17 @@ episodeRegistrationStep = MkStepEffect (Just 0)
         Right (next, inverse) => inverse next = before}
       returned Refl)
 
+public export
 episodeChild : Component ToyKey ToyValue ToyRuntime String
 episodeChild = MkComponent DGamma.CalculusChecks.toyEmptySpec
   DGamma.CalculusChecks.toyEmptySpec []
 
+public export
 episodeParent : Component ToyKey ToyValue ToyRuntime String
 episodeParent = MkComponent DGamma.Section3Example.toySpecA
   DGamma.CalculusChecks.toyEmptySpec [episodeRegistrationStep]
 
+public export
 record EpisodeRootSource
   (root : Nat)
   (before : SystemState Nat ToyKey ToyValue ToyRuntime String) where
@@ -1872,6 +1884,7 @@ record EpisodeRootSource
     Just episodeRootFiber
   0 episodeRootParent : fiberParent episodeRootFiber = Root
 
+public export
 findEpisodeRootSource : (root : Nat) ->
   (before : SystemState Nat ToyKey ToyValue ToyRuntime String) ->
   Maybe (EpisodeRootSource root before)
@@ -1885,6 +1898,7 @@ findEpisodeRootSource root before
           Just (MkEpisodeRootSource fiber found parentRole)
         findEpisodeRootSource root before | Just fiber | ChildOf parent = Nothing
 
+public export
 record EpisodeChildSource
   (child : Nat)
   (before : SystemState Nat ToyKey ToyValue ToyRuntime String) where
@@ -1897,6 +1911,7 @@ record EpisodeChildSource
   0 episodeChildParentRole : fiberParent episodeChildFiber =
     ChildOf episodeChildParent
 
+public export
 findEpisodeChildSource : (child : Nat) ->
   (before : SystemState Nat ToyKey ToyValue ToyRuntime String) ->
   Maybe (EpisodeChildSource child before)
@@ -1910,6 +1925,7 @@ findEpisodeChildSource child before
         findEpisodeChildSource child before | Just fiber | ChildOf parent =
           Just (MkEpisodeChildSource fiber parent found parentRole)
 
+public export
 record EpisodeCommonPrefix where
   constructor MkEpisodeCommonPrefix
   episodeInsert0 : CheckedNamedTransition DGamma.CP3StatementChecks.episodeNameEq
@@ -1930,6 +1946,7 @@ record EpisodeCommonPrefix where
     DGamma.CP3StatementChecks.episodeKeyEq (LAdvance 0)
     (namedAfter episodeAdvance0a)
 
+public export
 buildEpisodeCommonPrefix : Maybe EpisodeCommonPrefix
 buildEpisodeCommonPrefix = do
   t0 <- checkedNamedFire episodeNameEq episodeKeyEq
@@ -2045,6 +2062,7 @@ buildEpisodeLeftTrace common = do
     t15 t16 t17 t18 t19 t20 t21 t22 t23 childRetireSource
     childRemoveSource retire0Source remove0Source)
 
+public export
 record EpisodeRightTrace where
   constructor MkEpisodeRightTrace
   rightEpisodePrefix : EpisodeCommonPrefix
@@ -2093,6 +2111,7 @@ record EpisodeRightTrace where
     (namedAfter (episodeAdvance0b rightEpisodePrefix))
   rightRemove0Source : EpisodeRootSource 0 (namedAfter rightUnload0)
 
+public export
 buildEpisodeRightTrace : EpisodeCommonPrefix -> Maybe EpisodeRightTrace
 buildEpisodeRightTrace common = do
   t5 <- checkedNamedFire episodeNameEq episodeKeyEq (ORetire 0)
@@ -2242,90 +2261,108 @@ episodeLeftTrace : (trace : EpisodeLeftTrace) ->
 episodeLeftTrace trace = MoreTransitions (namedTransition (episodeInsert0 (leftEpisodePrefix trace)))
   (episodeLeftTail1 trace)
 
+public export
 episodeRightTail18 : (trace : EpisodeRightTrace) ->
   Transitions (namedAfter (rightFinish4 trace)) (namedAfter (rightFinish4 trace))
 episodeRightTail18 trace = NoTransitions
 
+public export
 episodeRightTail17 : (trace : EpisodeRightTrace) ->
   Transitions (namedAfter (rightBegin4 trace)) (namedAfter (rightFinish4 trace))
 episodeRightTail17 trace = MoreTransitions (namedTransition (rightFinish4 trace))
   (episodeRightTail18 trace)
 
+public export
 episodeRightTail16 : (trace : EpisodeRightTrace) ->
   Transitions (namedAfter (rightFinish1 trace)) (namedAfter (rightFinish4 trace))
 episodeRightTail16 trace = MoreTransitions (namedTransition (rightBegin4 trace))
   (episodeRightTail17 trace)
 
+public export
 episodeRightTail15 : (trace : EpisodeRightTrace) ->
   Transitions (namedAfter (rightSurvivingChild trace)) (namedAfter (rightFinish4 trace))
 episodeRightTail15 trace = MoreTransitions (namedTransition (rightFinish1 trace))
   (episodeRightTail16 trace)
 
+public export
 episodeRightTail14 : (trace : EpisodeRightTrace) ->
   Transitions (namedAfter (rightBegin1 trace)) (namedAfter (rightFinish4 trace))
 episodeRightTail14 trace = MoreTransitions (namedTransition (rightSurvivingChild trace))
   (episodeRightTail15 trace)
 
+public export
 episodeRightTail13 : (trace : EpisodeRightTrace) ->
   Transitions (namedAfter (rightAdvance3b trace)) (namedAfter (rightFinish4 trace))
 episodeRightTail13 trace = MoreTransitions (namedTransition (rightBegin1 trace))
   (episodeRightTail14 trace)
 
+public export
 episodeRightTail12 : (trace : EpisodeRightTrace) ->
   Transitions (namedAfter (rightAdvance3a trace)) (namedAfter (rightFinish4 trace))
 episodeRightTail12 trace = MoreTransitions (namedTransition (rightAdvance3b trace))
   (episodeRightTail13 trace)
 
+public export
 episodeRightTail11 : (trace : EpisodeRightTrace) ->
   Transitions (namedAfter (rightBegin3 trace)) (namedAfter (rightFinish4 trace))
 episodeRightTail11 trace = MoreTransitions (namedTransition (rightAdvance3a trace))
   (episodeRightTail12 trace)
 
+public export
 episodeRightTail10 : (trace : EpisodeRightTrace) ->
   Transitions (namedAfter (rightInsert3 trace)) (namedAfter (rightFinish4 trace))
 episodeRightTail10 trace = MoreTransitions (namedTransition (rightBegin3 trace))
   (episodeRightTail11 trace)
 
+public export
 episodeRightTail9 : (trace : EpisodeRightTrace) ->
   Transitions (namedAfter (rightRemove0 trace)) (namedAfter (rightFinish4 trace))
 episodeRightTail9 trace = MoreTransitions (namedTransition (rightInsert3 trace))
   (episodeRightTail10 trace)
 
+public export
 episodeRightTail8 : (trace : EpisodeRightTrace) ->
   Transitions (namedAfter (rightUnload0 trace)) (namedAfter (rightFinish4 trace))
 episodeRightTail8 trace = MoreTransitions (namedTransition (rightRemove0 trace))
   (episodeRightTail9 trace)
 
+public export
 episodeRightTail7 : (trace : EpisodeRightTrace) ->
   Transitions (namedAfter (rightLeave0 trace)) (namedAfter (rightFinish4 trace))
 episodeRightTail7 trace = MoreTransitions (namedTransition (rightUnload0 trace))
   (episodeRightTail8 trace)
 
+public export
 episodeRightTail6 : (trace : EpisodeRightTrace) ->
   Transitions (namedAfter (rightRetire0 trace)) (namedAfter (rightFinish4 trace))
 episodeRightTail6 trace = MoreTransitions (namedTransition (rightLeave0 trace))
   (episodeRightTail7 trace)
 
+public export
 episodeRightTail5 : (trace : EpisodeRightTrace) ->
   Transitions (namedAfter (episodeAdvance0b (rightEpisodePrefix trace))) (namedAfter (rightFinish4 trace))
 episodeRightTail5 trace = MoreTransitions (namedTransition (rightRetire0 trace))
   (episodeRightTail6 trace)
 
+public export
 episodeRightTail4 : (trace : EpisodeRightTrace) ->
   Transitions (namedAfter (episodeAdvance0a (rightEpisodePrefix trace))) (namedAfter (rightFinish4 trace))
 episodeRightTail4 trace = MoreTransitions (namedTransition (episodeAdvance0b (rightEpisodePrefix trace)))
   (episodeRightTail5 trace)
 
+public export
 episodeRightTail3 : (trace : EpisodeRightTrace) ->
   Transitions (namedAfter (episodeBegin0 (rightEpisodePrefix trace))) (namedAfter (rightFinish4 trace))
 episodeRightTail3 trace = MoreTransitions (namedTransition (episodeAdvance0a (rightEpisodePrefix trace)))
   (episodeRightTail4 trace)
 
+public export
 episodeRightTail2 : (trace : EpisodeRightTrace) ->
   Transitions (namedAfter (episodeInsert1 (rightEpisodePrefix trace))) (namedAfter (rightFinish4 trace))
 episodeRightTail2 trace = MoreTransitions (namedTransition (episodeBegin0 (rightEpisodePrefix trace)))
   (episodeRightTail3 trace)
 
+public export
 episodeRightTail1 : (trace : EpisodeRightTrace) ->
   Transitions (namedAfter (episodeInsert0 (rightEpisodePrefix trace))) (namedAfter (rightFinish4 trace))
 episodeRightTail1 trace = MoreTransitions (namedTransition (episodeInsert1 (rightEpisodePrefix trace)))
