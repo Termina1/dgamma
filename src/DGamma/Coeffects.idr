@@ -224,6 +224,16 @@ replacePreservesKeys k val (Bind found old :: rest) with (decEq k found)
 
 ||| Replace a present binding while preserving every other key/domain proof.
 public export
+0 replaceEntriesLength : DecEq key => (k : key) -> (next : value k) ->
+  (entries : List (Binding key value)) ->
+  length (replaceEntries k next entries) = length entries
+replaceEntriesLength k next [] = Refl
+replaceEntriesLength k next (Bind found old :: rest) with (decEq k found)
+  replaceEntriesLength found next (Bind found old :: rest) | (Yes Refl) = Refl
+  replaceEntriesLength k next (Bind found old :: rest) | (No _) =
+    cong S (replaceEntriesLength k next rest)
+
+public export
 replaceBinding : DecEq key => (k : key) -> value k ->
   CoeffectContext key value -> CoeffectContext key value
 replaceBinding k val (MkCoeffectContext entries unique) =

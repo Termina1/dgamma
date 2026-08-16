@@ -2132,6 +2132,71 @@ viewsEntriesRetire {name} {key} {world} {error} {value}
         {error = error} {value = value} nameEq keyEq rest n fiber registry present
         (andTrueRight _ _ valid))
 
+||| ORetire preserves all four clauses of Definition 58.
+public export
+0 registryWellFormedRetire :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (ambient : world) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (present : lookupFiber @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} n fibers = Just fiber) ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world} {error = error} (MkSystemState ambient fibers) = True ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+    (MkSystemState ambient (replaceBinding @{nameEq} n (retireFiber fiber) fibers)) = True
+registryWellFormedRetire {name} {key} {world} {error} {value}
+  nameEq keyEq ambient n fiber fibers@(MkCoeffectContext entries unique)
+  present valid =
+  let entryPresent = lookupFiberEntries nameEq n fiber fibers present
+      sourceParents = andFourFirst
+        (parentsInvariant @{nameEq} entries fibers)
+        (chainsInvariant @{nameEq} (S (length entries)) entries fibers)
+        (pairwiseProvisionInvariant @{keyEq} entries)
+        (viewsInvariant @{nameEq} @{keyEq} entries fibers) valid
+      sourceChains = andFourSecond
+        (parentsInvariant @{nameEq} entries fibers)
+        (chainsInvariant @{nameEq} (S (length entries)) entries fibers)
+        (pairwiseProvisionInvariant @{keyEq} entries)
+        (viewsInvariant @{nameEq} @{keyEq} entries fibers) valid
+      sourcePairwise = andFourThird
+        (parentsInvariant @{nameEq} entries fibers)
+        (chainsInvariant @{nameEq} (S (length entries)) entries fibers)
+        (pairwiseProvisionInvariant @{keyEq} entries)
+        (viewsInvariant @{nameEq} @{keyEq} entries fibers) valid
+      sourceViews = andFourFourth
+        (parentsInvariant @{nameEq} entries fibers)
+        (chainsInvariant @{nameEq} (S (length entries)) entries fibers)
+        (pairwiseProvisionInvariant @{keyEq} entries)
+        (viewsInvariant @{nameEq} @{keyEq} entries fibers) valid
+      parentsFramed = parentsRegistryRetire {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq entries n fiber
+        fibers present sourceParents
+      targetParents = parentsEntriesRetire {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq entries n fiber
+        (replaceBinding @{nameEq} n (retireFiber fiber) fibers)
+        entryPresent parentsFramed
+      chainsFramed = chainsRegistryRetire {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq (S (length entries)) entries n
+        fiber fibers present sourceChains
+      targetChains = chainsEntriesRetire {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq (S (length entries)) entries n
+        fiber (replaceBinding @{nameEq} n (retireFiber fiber) fibers)
+        entryPresent chainsFramed
+      targetPairwise = trans (pairwiseRetireEntries {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq entries n
+        fiber entryPresent) sourcePairwise
+      viewsFramed = viewsRegistryRetire {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq entries n
+        fiber fibers present sourceViews
+      targetViews = viewsEntriesRetire {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq entries n
+        fiber (replaceBinding @{nameEq} n (retireFiber fiber) fibers)
+        entryPresent viewsFramed in
+    rewrite replaceEntriesLength n (retireFiber fiber) entries in
+      andBothTrue _ _ targetParents
+        (andBothTrue _ _ targetChains
+          (andBothTrue _ _ targetPairwise targetViews))
+
 ||| Runtime-checked rule application used by the proof-indexed LTS. `applyAction`
 ||| remains the raw ten-rule evaluator; this wrapper rejects a malformed target
 ||| rather than admitting it into a proof trace.
