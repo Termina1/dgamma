@@ -2970,6 +2970,99 @@ pairwiseProvisionDelete {name} {key} {world} {error} {value}
           {error = error} {value = value} nameEq keyEq rest removed
           (andTrueRight _ _ valid))
 
+0 viewProvidersHeadStable :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {deps : List key} -> (nameEq : DecEq name) ->
+  (provider : name) -> (k : key) -> (rest : View name deps) -> (fibers : Registry name key value world error) ->
+  (providerFiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} provider fibers = Just providerFiber ->
+  viewProvidersInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fibers (ProviderView {k = k} provider rest) = True ->
+  stableProvider (fiberLifecycle providerFiber) = True
+viewProvidersHeadStable {name} {key} {world} {error} {value}
+  nameEq provider k rest fibers providerFiber present valid
+  with (lookupFiber @{nameEq} provider fibers)
+  viewProvidersHeadStable {name} {key} {world} {error} {value}
+    nameEq provider k rest fibers providerFiber present valid | Nothing =
+      case present of Refl impossible
+  viewProvidersHeadStable {name} {key} {world} {error} {value}
+    nameEq provider k rest fibers providerFiber present valid | Just observed =
+      case present of Refl => andTrueLeft _ _ valid
+
+||| A committed view cannot name an Inactive fiber as a provider; deleting such
+||| a fiber therefore preserves the installed/stable provider certificate.
+public export
+0 viewProvidersInactiveDelete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (deps : List key) -> (view : View name deps) ->
+  (removed : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (outcome : Maybe error) -> (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} removed fibers =
+    Just (MkFiber component parent retired table (Inactive outcome)) ->
+  viewProvidersInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fibers view = True ->
+  viewProvidersInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (deleteBinding @{nameEq} removed fibers)
+    view = True
+viewProvidersInactiveDelete {key} {world} {error} {value}
+  nameEq [] EmptyView removed component parent retired table outcome fibers
+  present valid = Refl
+viewProvidersInactiveDelete {name} {key} {world} {error} {value}
+  nameEq (k :: ks) (ProviderView provider rest) removed component parent retired
+  table outcome fibers present valid with (decEq @{nameEq} provider removed)
+  viewProvidersInactiveDelete {name} {key} {world} {error} {value}
+    nameEq (k :: ks) (ProviderView removed rest) removed component parent retired
+    table outcome fibers present valid | (Yes Refl) =
+      let 0 sourceHead : (stableProvider {key = key} {value = value}
+            {world = world} {error = error} {name = name}
+            {deps = dependencies (componentDependencies component)}
+            {provision = componentProvisions component} (Inactive outcome) = True)
+          sourceHead = viewProvidersHeadStable {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq removed k rest
+            fibers (MkFiber component parent retired table (Inactive outcome))
+            present valid
+      in void (falseCannotBeTrue sourceHead)
+  viewProvidersInactiveDelete {name} {key} {world} {error} {value}
+    nameEq (k :: ks) (ProviderView provider rest) removed component parent retired
+    table outcome fibers present valid | (No distinct)
+    with (lookupFiber @{nameEq} provider fibers) proof providerLookup
+    viewProvidersInactiveDelete {name} {key} {world} {error} {value}
+      nameEq (k :: ks) (ProviderView provider rest) removed component parent retired
+      table outcome fibers present valid | (No distinct) | Nothing =
+        void (falseCannotBeTrue valid)
+    viewProvidersInactiveDelete {name} {key} {world} {error} {value}
+      nameEq (k :: ks) (ProviderView provider rest) removed component parent retired
+      table outcome fibers present valid | (No distinct) | Just providerFiber =
+        let targetLookup = trans
+              (lookupDeleteOther provider removed distinct fibers) providerLookup
+            sourceHead = andTrueLeft _ _ valid
+            sourceTail = andTrueRight _ _ valid
+            targetTail = viewProvidersInactiveDelete {name = name} {key = key}
+              {world = world} {error = error} {value = value} nameEq ks rest
+              removed component parent retired table outcome fibers present sourceTail
+        in rewrite targetLookup in andBothTrue _ _ sourceHead targetTail
+
+||| Deleting a distinct fiber leaves a provider-owned value lookup unchanged.
+public export
+0 valueFromProviderInactiveDeleteOther :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provider, removed : name) -> Not (provider = removed) -> (k : key) ->
+  (fibers : Registry name key value world error) ->
+  valueFromProvider @{nameEq} @{keyEq} {value = value} {world = world} {error = error} provider k
+    (deleteBinding @{nameEq} removed fibers) =
+  valueFromProvider @{nameEq} @{keyEq} {value = value} {world = world} {error = error} provider k fibers
+valueFromProviderInactiveDeleteOther {key} {world} {error} {value}
+  nameEq keyEq provider removed distinct k fibers
+  with (lookupFiber @{nameEq} provider fibers) proof original
+  valueFromProviderInactiveDeleteOther {key} {world} {error} {value}
+    nameEq keyEq provider removed distinct k fibers | Nothing =
+      rewrite lookupDeleteOther provider removed distinct fibers in
+      rewrite original in Refl
+  valueFromProviderInactiveDeleteOther {key} {world} {error} {value}
+    nameEq keyEq provider removed distinct k fibers | Just providerFiber =
+      rewrite lookupDeleteOther provider removed distinct fibers in
+      rewrite original in Refl
+
 public export
 0 retireViewInvariant : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (fiber : Fiber name key value world error) ->
