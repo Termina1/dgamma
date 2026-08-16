@@ -144,6 +144,16 @@ of Lemma 38.
    ordinal)` for historical/generated registration trees, and a separate
    `CurrentEndpointRenaming` for the current registries with live roots fixed.
    This is a generation-wise interpretation of Lemma 56, not a ban on reuse.
+8. **Likely clarification needed for Theorem 73's final equivalence.** Lemma 57
+   makes a vestigial entry observationally equal (`approximately equal`) to its absence, and
+   Lemma 72 promises control equivalence only outside the registered-name set
+   `R`. A closing episode may therefore leave a schedule-dependent vestigial
+   registry entry without any O-Remove. Read literally, Theorem 73(2)'s claim
+   of final control equivalence on the complete raw registry domain is false in
+   that ordinary case. `SystemEquivalentByRenamingModuloVestigial` follows the
+   proof's outside-`R` boundary: effects remain exact, every non-vestigial
+   control entry corresponds exactly under renaming, and an unmatched entry is
+   admitted only with an exact discarded-generation Lemma-57 certificate.
 
 ## Escape-hatch and hole audit
 
@@ -165,8 +175,9 @@ cannot silently introduce a proof:
 - `supportAtQuiescenceTheorem` — Lemma 70.
 - `deletionTheorem` — Lemma 72.
 - `confluenceTheorem` — the finite explicit-registration form of Theorem 73,
-  with parent-generation/per-parent-position structural matching, exact
-  historical external-root coupling, and a separate current endpoint renaming.
+  with parent-activation structural matching, exact historical external-root
+  coupling, non-vestigial current-generation renaming, and final control
+  equivalence modulo exact trace-derived Lemma-57 vestigials.
 
 Each open theorem is marked `TODO(proof)` at its declaration. These are honest
 uninhabited statements, not holes accepted by the compiler. `orderingTheorem`
@@ -607,16 +618,13 @@ empty-suffix quantitative base (`progressEndFromNoDeadlock` and
 ### Confluence (Theorem 73): parent-local structural statement and proof debt
 
 The finite explicit-registration specialization remains stated and is being
-resubmitted for round-9 review. Round 6 accepted generation-stamped
-*self-canonicalization* and found the global raw-name collision; round 7
-accepted that generation/current-name split but found two further proposition-
-shape defects: child births were still paired in one global chronological word,
-and historical removed external-root generations were not tied to their exact
-external input occurrences. Round 8 accepted those two repairs but exposed a
-parent-episode defect: a child born in an activation later deleted by that
-parent's closing `L-Unload` still consumed the lifetime-local child position,
-so a reopened left episode could not match a delayed right episode. The
-proposition now separates six roles:
+resubmitted for round-10 review. Rounds 6–8 established generation stamping,
+parent-local matching, historical-root coupling, activation-local positions,
+and surviving-only tree matching. Round 9 accepted all of those repairs but
+found their downstream endpoint projection still exact-domain: a discarded
+birth left vestigial rather than O-Removed had to biject again and the theorem
+result could not express its absence on the other side. The proposition now
+separates seven roles:
 
 1. **One-step episode deletion (Lemma 72).** `KeepAction` remains
    bidirectional, but `DeleteEpisodeLifecycle` additionally requires
@@ -652,17 +660,28 @@ proposition now separates six roles:
    generation to map to that exact same matched root birth. Generated subtrees
    cannot be reassigned by permuting removed external-root generations.
 5. **Current endpoint names.** `CurrentEndpointRenaming` contains the raw
-   `NameBijection` used only by `SystemEquivalentByRenaming`. It fixes every
-   live root and requires each last unremoved generation to agree with the
-   generation bijection. A raw name can therefore map differently at distinct
-   historical births without changing a later shared live root.
-6. **Canonical deletion.** `CanonicalRegistrationCorrespondence` still maps
+   `NameBijection`, fixes every live root, and requires each **non-vestigial**
+   current generation to agree with the generation bijection. A generation may
+   be omitted only with `VestigialEndpointGeneration`: its exact current stamp
+   occurs in `indexedDeletedGenerations`, and the endpoint fiber is retired,
+   `Inactive Nothing`, empty-table, childless, and unsupported. The executable
+   `vestigialEndpointGeneration` checks those runtime fields; a metadata flag
+   alone cannot manufacture the witness.
+6. **Final endpoint equivalence.**
+   `SystemEquivalentByRenamingModuloVestigial` keeps ambient state and every
+   effect-table lookup exact under the raw renaming. Its pointwise control sum
+   requires `MaybeFiberRelatedBy` whenever either side is non-vestigial; every
+   unmatched present entry on either side must carry the complete vestigial
+   certificate above. Thus loosening the premise does not leave a false exact-
+   domain conclusion. `supportedGenerationNotVestigial` proves directly that a
+   live supported fiber cannot enter the exception.
+7. **Canonical deletion.** `CanonicalRegistrationCorrespondence` still maps
    located occurrences injectively and keys removals by exact generations.
    `CanonicalEndpointRelation` separates historical
    `endpointWithdrawnGenerations` from current `endpointWithdrawnNames`, and
    `CanonicalInputPlacement` quantifies freshness/order per located birth.
 
-Four concrete statement regressions now cover the repaired public domain.
+Six concrete statement families now cover the repaired public domain.
 `freshChoiceCorrespondenceWitness` retains round 6's pair: left child `(1,2)`
 versus right child `(2,2)`, both followed by the same live root `(1,5)`.
 `crossParentPermutationCorrespondenceWitness` constructs two checked 12-action
@@ -681,7 +700,23 @@ left birth carries explicit closing-unload evidence and is discarded; the
 surviving births both elaborate at activation-local position zero.
 `episodeBoundaryTheorem73PremiseChain` applies this complete
 `SameOrchestrationModuloGenerated` witness through the literal public theorem
-boundary after taking all remaining semantic premises.
+boundary after taking all remaining semantic premises. This older 24/18 pair
+is retained specifically as the activation-reset/early-O-Remove regression; it
+is no longer cited as covering paper vestigials.
+
+`DGamma.CP3VestigialChecks` supplies the missing no-O-Remove cases. The 23/18
+pair removes only the early child O-Remove. The 27/18 pair additionally begins
+and finishes child 2, retires it while Active, closes parent 1 while the child
+is still open, and only then leaves/unloads the child. Both endpoints are
+checked quiet and successful with identical supported tree `{1,3,4}`; left
+name 2 is an unremoved retired/clean/empty/childless/unsupported vestigial.
+`vestigial23CorrespondenceWitness` and
+`vestigial27CorrespondenceWitness` construct the complete public same-input
+packages. Their `*Theorem73PremiseChain` declarations take every literal public
+premise and project the new vestigial-aware final relation from the theorem
+result. `liveProvidingFiberRuntimeCheck` confirms root 3 is the supported
+ServiceA provider, while `liveProvidingFiberVestigialRejected` eliminates any
+attempted vestigial certificate for it at `vestigialUnsupported`.
 
 Conversely, `CompleteRemovedRootPermutationCandidate` contains a concrete
 six-action checked history that inserts/retires/removes root 0 and then root 1,
@@ -708,10 +743,9 @@ stamp is an actual original child birth removed from the canonical trace.
 
 The older exact-name/zero-current-raw-withdrawal helpers remain proved strong
 special cases. Constructive checked deletion, canonical sorting, and general
-endpoint assembly remain open. The round-7 and round-8 proposition-shape
-defects now have positive/negative typed regressions, but acceptance is not
-claimed before the independent
-round-9 review.
+endpoint assembly remain open. The round-7/8 repairs and round-9 vestigial
+endpoint repair now have positive/negative typed regressions, but acceptance is
+not claimed before the independent round-10 review.
 
 ### Recovery and Theorem 64
 
@@ -785,7 +819,7 @@ that the accumulator executes at L-Unload, not at L-Leave/L-Divert/L-Raise.
 These are candidate proposition-shape repairs. Constructive Lemma 72/Theorem 73
 proofs and a full positive nested canonical schedule remain open.
 
-### CP3 adversarial rounds 5–8: role changes and structural generations
+### CP3 adversarial rounds 5–9: role changes, generations, and vestigials
 
 Round 5 found that raw-name canonical withdrawal made the checked
 child-1-to-live-root-1 trace internally inconsistent. Generation-stamped
@@ -820,6 +854,17 @@ history before deriving contradiction. The earlier 1-vs-2 fresh-choice pair,
 positive parent yield, empty-parent rejection, strict-rank cycle rejection, and
 identity-deletion barrier remain typechecked.
 
+Round 9 verified the 24/18 activation repair but exposed its early O-Remove as
+masking the paper-normal endpoint: discarded birth 2 remained in the current
+generation environment when only retired, and exact raw-domain control
+comparison could not relate it to absence. The repair is coupled. The scanner
+records every discarded generation. `CurrentEndpointRenaming` either matches a
+current generation or supplies a fully checked trace-derived vestigial witness;
+`ConfluenceResult.finalEndpointsEquivalent` now uses the same exception and is
+exact on all effects/non-vestigial controls. The checked 23/18 and activated-
+child 27/18 pairs both cross the public premise and result boundaries, while a
+supported/providing fiber is rejected.
+
 The old singleton-membership role-change guard remains removed.
 `roleChangingFullCanonicalScheduleStatementCheck` assembles every field of a
 `CanonicalSchedule` specialized to the concrete nine-action trace, with exact
@@ -840,11 +885,12 @@ strict containment, resolution constancy, and provider-value constancy.
 Lemmas 68/70 (candidate tagged/ranked provenance statements; Lemma-70 empty
 base proved); Lemma 71 (effect commutation projection); Lemma 72 (candidate
 lifecycle-only deletion statement); Confluence/Theorem 73 (surviving parent-
-activation structural cross-trace and generation-stamped canonical proposition
-package submitted for round-9 review;
-the round-7 cross-parent/historical-root and round-8 closing-episode defects
-have complete typed regressions, while constructive deletion/sorting and
-general endpoint assembly remain open); and recovery-combined Theorem 64
+activation structural cross-trace, generation-stamped canonical proposition,
+and vestigial-aware outside-R endpoint relation submitted for round-10 review;
+the round-7 cross-parent/historical-root, round-8 closing-episode, and round-9
+vestigial-endpoint defects have complete typed regressions, while constructive
+deletion/sorting and general endpoint assembly remain open); and recovery-
+combined Theorem 64
 (complete conditional assembly
 from Corollary 62). Lemmas 54–57 have many rule, frame, and boundary analogues
 but are not individually complete.
@@ -861,9 +907,10 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** obtain round-9 statement review, then implement temporal accumulator
+**Next:** obtain round-10 statement review, then implement temporal accumulator
 induction, ranked unloading-chain Progress, and constructive checked episode
-deletion/canonical sorting. Fresh-choice, cross-parent, and hardened activation-
-episode pairs reach the literal public premise chain; complete-relation
-historical-root reassignment is rejected. An inhabited positive canonical
-schedule remains constructive proof debt.
+deletion/canonical sorting. Fresh-choice, cross-parent, 24/18 activation-reset,
+and no-O-Remove 23/18 and 27/18 vestigial pairs reach the literal public premise
+chain; the latter two also project the vestigial-aware result. Live providers
+and complete-relation historical-root reassignment are rejected. An inhabited
+positive canonical schedule remains constructive proof debt.
