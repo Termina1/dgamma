@@ -2790,6 +2790,52 @@ chainsRegistryDeleteCardinal {name} {key} {world} {error} {value}
         (andTrueRight _ _ valid)
   in andBothTrue _ _ targetHead targetTail
 
+||| Connect the exact one-entry length decrement to the cardinal chain fold.
+public export
+0 chainsInvariantDeleteCardinal :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  (removed : name) -> (removedFiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  hasChild @{nameEq} {key = key} {value = value} {world = world} {error = error} removed fibers = False ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} removed fibers = Just removedFiber ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (S (length (registryFibers {value = value} {world = world} {error = error} fibers)))
+    (registryFibers {value = value} {world = world} {error = error} fibers) fibers = True ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} (S (length (registryFibers {value = value} {world = world} {error = error} (deleteBinding @{nameEq} removed fibers))))
+    (registryFibers {value = value} {world = world} {error = error} (deleteBinding @{nameEq} removed fibers))
+    (deleteBinding @{nameEq} removed fibers) = True
+chainsInvariantDeleteCardinal {name} {key} {world} {error} {value}
+  nameEq removed removedFiber fibers@(MkCoeffectContext entries unique)
+  noChild present valid =
+  let 0 entryPresent : (lookupEntries @{nameEq}
+        {value = FiberAt name key value world error} removed entries =
+        Just removedFiber)
+      entryPresent = lookupFiberEntries nameEq removed removedFiber fibers present
+      0 targetEntries : List (Binding name (FiberAt name key value world error))
+      targetEntries = deleteEntries @{nameEq} removed entries
+      0 sourceLength : S (length targetEntries) = length entries
+      sourceLength = deleteEntriesPresentLength removed removedFiber entries entryPresent
+      0 sourceFuelEq : S (S (length targetEntries)) = S (length entries)
+      sourceFuelEq = cong S sourceLength
+      0 sourceTargetChains : chainsInvariant @{nameEq} {key = key}
+        {value = value} {world = world} {error = error} (S (length entries)) targetEntries fibers = True
+      sourceTargetChains = chainsEntriesDeleteSameRegistry {name = name}
+        {key = key} {world = world} {error = error} {value = value} nameEq
+        (S (length entries)) entries removed fibers valid
+      0 normalizedSource : chainsInvariant @{nameEq} {key = key}
+        {value = value} {world = world} {error = error} (S (S (length targetEntries))) targetEntries fibers = True
+      normalizedSource = replace
+        {p = \fuel => chainsInvariant @{nameEq} {key = key} {value = value}
+          {world = world} {error = error} fuel targetEntries fibers = True}
+        (sym sourceFuelEq) sourceTargetChains
+      0 identitySubset : EntrySubset targetEntries targetEntries
+      identitySubset entry occurrence = occurrence
+  in chainsRegistryDeleteCardinal {name = name} {key = key} {world = world}
+    {error = error} {value = value} nameEq (length targetEntries) targetEntries
+    targetEntries identitySubset removed removedFiber fibers Refl Refl
+    (deletedKeyNotElem removed entries unique) noChild present normalizedSource
+
 0 parentInvariantDeleteDistinct :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (parent : Parent name) -> (removed : name) ->
