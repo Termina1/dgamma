@@ -90,6 +90,25 @@ of Lemma 38.
    is equivalent to that yielded inverse being uniform against the whole
    forward map. This resolves the mechanization issue but the paper could state
    the scope more explicitly.
+5. **Confirmed Erratum 3 — Lemma 68 assumes nested-registration provenance that
+   O-Insert does not enforce.** The failing proof step says that a subtree fiber
+   is “registered by an activation of `m` or of one of `m`'s descendants, hence
+   at a step after the L-Begin of `m`”.  The rule as printed requires only that
+   the named parent is present and the new name is currently fresh.  A checked
+   sequence can therefore activate a root provider and consumer, retire and
+   unload both, O-Remove the provider, reissue its name as a child of the former
+   consumer, then reactivate the child followed by the parent.  The final
+   precedence edge from the reused provider to the consumer and parent edge
+   back to the reused child form a nonempty mixed `SupportPath` cycle in a state
+   legally reached from the empty registry.  Simpler direct-child and
+   retired-parent variants fail for the same missing provenance.  Thus
+   reached-from-empty alone does not prove Lemma 68 (and does not suffice for
+   Lemma 70).  The paper-intent repair is a nested-registration discipline: a
+   child insertion must be produced inside an activation of its live parent
+   (the finite host specialization checks that the parent is `Active` at every
+   child O-Insert), and parent withdrawal must retire the children that
+   activation registered.  This is a premise on the trace, not a bare
+   assumption that the desired combined relation is already well founded.
 
 ## Escape-hatch and hole audit
 
