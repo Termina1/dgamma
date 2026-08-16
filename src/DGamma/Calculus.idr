@@ -1762,6 +1762,64 @@ fiberViewRetireRegistry {name} {key} {world} {error} {value}
       {error = error} {value = value} nameEq keyEq
       (dependencies (componentDependencies component)) view n fiber fibers present
 
+||| Lift the parent lookup frame over a fixed entry list.
+public export
+0 parentsRegistryRetire :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (present : lookupFiber @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} n fibers = Just fiber) ->
+  parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} entries fibers = True ->
+  parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} entries
+    (replaceBinding @{nameEq} n (retireFiber fiber) fibers) = True
+parentsRegistryRetire {key} {world} {error} {value} nameEq [] n fiber fibers present valid = Refl
+parentsRegistryRetire {name} {key} {world} {error} {value}
+  nameEq (Bind current observed :: rest) n fiber fibers present valid =
+    andBothTrue _ _
+      (trans (parentInvariantRetireRegistry {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq
+        (fiberParent observed) n fiber fibers present)
+        (andTrueLeft _ _ valid))
+      (parentsRegistryRetire {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq rest n fiber fibers present
+        (andTrueRight _ _ valid))
+
+||| Replacing the matching entry by its retired form preserves its parent field.
+public export
+0 parentsEntriesRetire :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (entries : List (Binding name
+    (FiberAt name key value world error))) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (registry : Registry name key value world error) ->
+  lookupEntries @{nameEq} {value = FiberAt name key value world error} n entries = Just fiber ->
+  parentsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} entries registry = True ->
+  parentsInvariant @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} (replaceEntries @{nameEq} n (retireFiber fiber) entries) registry = True
+parentsEntriesRetire {key} {world} {error} {value} nameEq [] n fiber registry present valid =
+  case present of Refl impossible
+parentsEntriesRetire {name} {key} {world} {error} {value}
+  nameEq (Bind current observed :: rest) n fiber registry present valid
+  with (decEq @{nameEq} n current)
+  parentsEntriesRetire {name} {key} {world} {error} {value}
+    nameEq (Bind n observed :: rest) n fiber registry present valid | (Yes Refl) =
+      case present of
+        Refl =>
+          andBothTrue _ _
+            (trans (retireParentInvariant {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq observed registry)
+              (andTrueLeft _ _ valid))
+            (andTrueRight _ _ valid)
+  parentsEntriesRetire {name} {key} {world} {error} {value}
+    nameEq (Bind current observed :: rest) n fiber registry present valid |
+    (No _) = andBothTrue _ _ (andTrueLeft _ _ valid)
+      (parentsEntriesRetire {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq rest n fiber registry present
+        (andTrueRight _ _ valid))
+
 public export
 0 retireProvisionInvariant : (fiber : Fiber name key value world error) ->
   componentProvisions (fiberComponent (retireFiber fiber)) =
