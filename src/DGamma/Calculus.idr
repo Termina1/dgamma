@@ -1529,6 +1529,39 @@ registryWellFormedInactiveInsert {name} {key} {world} {error} {value}
         (andBothTrue _ _ targetChains
           (andBothTrue _ _ targetPairwise targetViews)))
 
+||| Retirement changes only a flag not observed by the local clauses of
+||| Definition 58. These projection equations seed the ORetire replacement fold.
+public export
+0 retireParentInvariant : {name, key, world, error : Type} ->
+  {value : key -> Type} -> (nameEq : DecEq name) ->
+  (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  parentInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (fiberParent (retireFiber fiber)) fibers =
+  parentInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (fiberParent fiber) fibers
+retireParentInvariant {key} {world} {error} {value} nameEq (MkFiber component parent retired table lifecycle)
+  fibers = Refl
+
+public export
+0 retireProvisionInvariant : (fiber : Fiber name key value world error) ->
+  componentProvisions (fiberComponent (retireFiber fiber)) =
+  componentProvisions (fiberComponent fiber)
+retireProvisionInvariant (MkFiber component parent retired table lifecycle) = Refl
+
+public export
+0 retireViewInvariant : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  fiberViewInvariant @{nameEq} @{keyEq} (retireFiber fiber) fibers =
+  fiberViewInvariant @{nameEq} @{keyEq} fiber fibers
+retireViewInvariant nameEq keyEq
+  (MkFiber component parent retired table (Inactive outcome)) fibers = Refl
+retireViewInvariant nameEq keyEq
+  (MkFiber component parent retired table (Reloading rest accumulator view)) fibers = Refl
+retireViewInvariant nameEq keyEq
+  (MkFiber component parent retired table (Active accumulator view)) fibers = Refl
+retireViewInvariant nameEq keyEq
+  (MkFiber component parent retired table (Unloading accumulator view outcome)) fibers = Refl
+
 ||| Runtime-checked rule application used by the proof-indexed LTS. `applyAction`
 ||| remains the raw ten-rule evaluator; this wrapper rejects a malformed target
 ||| rather than admitting it into a proof trace.
