@@ -441,8 +441,18 @@ The repair restores a finite full-effect-state form of paper Equations 54–55:
 
 `yieldedInverseGeneratorRuntimeCheck` executes one stage and its separately
 exposed full-state inverse, checking restoration of ambient state and the actor
-owned table. Round 5 must rerun the composite-accumulator probe and variants
-that attack individual factors and later suffixes.
+owned table. Round 5 reran the composite-accumulator, individual-factor,
+later-suffix, and origin-shift attacks; all were rejected, and CP2 was approved.
+
+Two conservative deltas remain explicit after that approval. First,
+`ActualForwardGenerator` includes every actual action, so off-origin O-Insert
+and O-Remove table-clearing maps are generators even though the literal paper
+assigns orchestration maps identity. This can reject a paper-independent trace
+but cannot admit an invalid one. Second, the reviewer constructed separate
+positive witnesses for a nonempty two-actor control trace and a one-actor
+effectful trace; the repository still lacks a single fully effectful two-actor
+interleaving independence witness. This is useful future regression coverage,
+not a soundness blocker.
 
 Reusable dependent-map frame lemmas `lookupReplaceOther`,
 `lookupDeleteOther`, and `lookupInsertOther` were added to `DGamma.Coeffects`.
@@ -496,6 +506,6 @@ proof-LTS. Full observational transport remains future work. Lemmas
 61 and Corollary 62, corrected global `orderingTheorem`, and recovery-combined
 `resolutionCoherenceTheorem`. They remain escape-hatch-free proposition types.
 
-**Next:** independent CP2 adversarial round 5, rerunning the round-4
-composite-accumulator attack plus per-factor and nested-continuation variants.
-After approval, CP3 adds global provider ordering, Progress, and Confluence.
+**Next:** CP3 proves global provider ordering, states and develops Progress and
+Confluence with honest supporting cores, extends the reconciliation example,
+and then revisits recovery proof debt.

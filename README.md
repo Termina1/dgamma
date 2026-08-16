@@ -10,8 +10,9 @@ computational data; laws and witnesses are erased with quantity `0`.
 idris2 --build dgamma.ipkg
 ```
 
-The package contains the approved Section 3 checkpoint and the completed
-Checkpoint 2 proof-bar candidate, pending independent round-4 review.
+The package contains the approved Section 3 and Checkpoint 2 mechanizations.
+Checkpoint 3 (global ordering, Progress, Confluence, and reconciliation) is in
+progress.
 
 ## Design map
 
