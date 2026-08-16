@@ -3063,6 +3063,116 @@ valueFromProviderInactiveDeleteOther {key} {world} {error} {value}
       rewrite lookupDeleteOther provider removed distinct fibers in
       rewrite original in Refl
 
+0 viewProvidersTailValid :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {deps : List key} -> (nameEq : DecEq name) ->
+  (provider : name) -> (k : key) -> (rest : View name deps) ->
+  (fibers : Registry name key value world error) ->
+  viewProvidersInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fibers (ProviderView {k = k} provider rest) =
+    True ->
+  viewProvidersInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fibers rest = True
+viewProvidersTailValid {name} {key} {world} {error} {value}
+  nameEq provider k rest fibers valid with (lookupFiber @{nameEq} provider fibers)
+  viewProvidersTailValid {name} {key} {world} {error} {value}
+    nameEq provider k rest fibers valid | Nothing =
+      void (falseCannotBeTrue valid)
+  viewProvidersTailValid {name} {key} {world} {error} {value}
+    nameEq provider k rest fibers valid | Just providerFiber =
+      andTrueRight _ _ valid
+
+||| All value observations of a valid committed view survive deletion of an
+||| Inactive fiber.
+public export
+0 resolveCommittedValuesInactiveDelete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) -> (view : View name deps) ->
+  (removed : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (outcome : Maybe error) -> (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} removed fibers =
+    Just (MkFiber component parent retired table (Inactive outcome)) ->
+  viewProvidersInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fibers view = True ->
+  resolveCommittedValues @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps view
+    (deleteBinding @{nameEq} removed fibers) =
+  resolveCommittedValues @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps view fibers
+resolveCommittedValuesInactiveDelete {key} {world} {error} {value}
+  nameEq keyEq [] EmptyView removed component parent retired table outcome fibers
+  present providersValid = Refl
+resolveCommittedValuesInactiveDelete {name} {key} {world} {error} {value}
+  nameEq keyEq (k :: ks) (ProviderView provider rest) removed component parent
+  retired table outcome fibers present providersValid
+  with (decEq @{nameEq} provider removed)
+  resolveCommittedValuesInactiveDelete {name} {key} {world} {error} {value}
+    nameEq keyEq (k :: ks) (ProviderView removed rest) removed component parent
+    retired table outcome fibers present providersValid | (Yes Refl) =
+      let 0 sourceHead : (stableProvider {key = key} {value = value}
+            {world = world} {error = error} {name = name}
+            {deps = dependencies (componentDependencies component)}
+            {provision = componentProvisions component} (Inactive outcome) = True)
+          sourceHead = viewProvidersHeadStable {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq removed k rest
+            fibers (MkFiber component parent retired table (Inactive outcome))
+            present providersValid
+      in void (falseCannotBeTrue sourceHead)
+  resolveCommittedValuesInactiveDelete {name} {key} {world} {error} {value}
+    nameEq keyEq (k :: ks) (ProviderView provider rest) removed component parent
+    retired table outcome fibers present providersValid | (No distinct)
+    with (valueFromProvider @{nameEq} @{keyEq} provider k fibers) proof original
+    resolveCommittedValuesInactiveDelete {name} {key} {world} {error} {value}
+      nameEq keyEq (k :: ks) (ProviderView provider rest) removed component parent
+      retired table outcome fibers present providersValid | (No distinct) | Nothing =
+        let target = trans (valueFromProviderInactiveDeleteOther
+              {name = name} {key = key} {world = world} {error = error}
+              {value = value} nameEq keyEq provider removed distinct k fibers)
+              original
+        in rewrite target in Refl
+    resolveCommittedValuesInactiveDelete {name} {key} {world} {error} {value}
+      nameEq keyEq (k :: ks) (ProviderView provider rest) removed component parent
+      retired table outcome fibers present providersValid | (No distinct) | Just v =
+        let target = trans (valueFromProviderInactiveDeleteOther
+              {name = name} {key = key} {world = world} {error = error}
+              {value = value} nameEq keyEq provider removed distinct k fibers)
+              original
+            tailValid = viewProvidersTailValid {name = name} {key = key}
+              {world = world} {error = error} {value = value} nameEq provider k
+              rest fibers providersValid
+            tailFrame = resolveCommittedValuesInactiveDelete {name = name}
+              {key = key} {world = world} {error = error} {value = value}
+              nameEq keyEq ks rest removed component parent retired table outcome
+              fibers present tailValid
+        in rewrite target in cong (map (OneDepValue v)) tailFrame
+
+public export
+0 viewBindingsInactiveDelete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) -> (view : View name deps) ->
+  (removed : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (outcome : Maybe error) -> (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} removed fibers =
+    Just (MkFiber component parent retired table (Inactive outcome)) ->
+  viewBindingsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps view fibers = True ->
+  viewBindingsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps view
+    (deleteBinding @{nameEq} removed fibers) = True
+viewBindingsInactiveDelete {name} {key} {world} {error} {value}
+  nameEq keyEq deps view removed component parent retired table outcome fibers
+  present valid =
+  let sourceProviders = andTrueLeft _ _ valid
+      sourceValues = andTrueRight _ _ valid
+      targetProviders = viewProvidersInactiveDelete {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq deps view removed
+        component parent retired table outcome fibers present sourceProviders
+      valuesFrame = resolveCommittedValuesInactiveDelete {name = name}
+        {key = key} {world = world} {error = error} {value = value} nameEq keyEq
+        deps view removed component parent retired table outcome fibers present
+        sourceProviders
+      targetValues = trans (cong isJust valuesFrame) sourceValues
+  in andBothTrue _ _ targetProviders targetValues
+
 public export
 0 retireViewInvariant : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (fiber : Fiber name key value world error) ->
