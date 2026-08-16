@@ -4012,7 +4012,6 @@ resolutionStructureInstalled nameEq keyEq selected providers
 
 ||| Structural Equation-59/exit theorem. Its input is anchored at L-Begin, so an
 ||| arbitrary Unloading suffix is unrepresentable.
-||| TODO(proof): induction over the anchored InstalledTrace.
 public export
 resolutionStructureTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type
@@ -4025,6 +4024,17 @@ resolutionStructureTheorem name key value world error =
        Just openingProviders,
      ResolutionStructure name key world error value nameEq keyEq n
        openingProviders (prefixTransitions episode)))
+
+public export
+0 resolutionStructureTheoremProof :
+  resolutionStructureTheorem name key value world error
+resolutionStructureTheoremProof nameEq keyEq selected pre current episode =
+  case beginReloadingSnapshot nameEq keyEq selected pre
+    (episodeStartState episode) (opening episode) of
+    (providers ** snapshot) =>
+      (providers ** (snapshotCommittedProviders snapshot,
+        resolutionStructureInstalled nameEq keyEq selected providers
+          (prefixTransitions episode) (insideInstalled episode) snapshot))
 
 ||| Full Theorem 64 recovery branch over a maximal closed episode. Structural
 ||| coherence is separated so it can be proved without assuming temporal recovery.
