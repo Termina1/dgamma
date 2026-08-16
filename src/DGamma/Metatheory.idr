@@ -2279,6 +2279,58 @@ unloadingAt selected state = case lookupFiber selected (registry state) of
     Unloading _ _ _ => True
     _ => False
 
+public export
+data RegistryLocalUpdate :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  Registry name key value world error -> Registry name key value world error ->
+  Type where
+  LocalInsert : (fiber : Fiber name key value world error) ->
+    (absent : lookupFiber @{nameEq} actor source = Nothing) ->
+    RegistryLocalUpdate name key world error value nameEq actor source
+      (insertBinding @{nameEq} actor fiber source absent)
+  LocalReplace : (fiber : Fiber name key value world error) ->
+    RegistryLocalUpdate name key world error value nameEq actor source
+      (replaceBinding @{nameEq} actor fiber source)
+  LocalDelete : RegistryLocalUpdate name key world error value nameEq actor source
+    (deleteBinding @{nameEq} actor source)
+
+0 registryLocalUpdateForeign :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected, actor : name) ->
+  Not (selected = actor) ->
+  (source : Registry name key value world error) ->
+  {target : Registry name key value world error} ->
+  RegistryLocalUpdate name key world error value nameEq actor source target ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} selected target = lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} selected source
+registryLocalUpdateForeign nameEq selected actor distinct source
+  (LocalInsert fiber absent) =
+    lookupInsertOther selected actor distinct fiber source absent
+registryLocalUpdateForeign nameEq selected actor distinct source
+  (LocalReplace fiber) = lookupReplaceOther selected actor distinct fiber source
+registryLocalUpdateForeign nameEq selected actor distinct source LocalDelete =
+  lookupDeleteOther selected actor distinct source
+
+public export
+record SystemLocalUpdate
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (actor : name)
+  (before, afterState : SystemState name key value world error) where
+  constructor MkSystemLocalUpdate
+  systemRegistryUpdate : RegistryLocalUpdate name key world error value nameEq
+    actor (registry before) (registry afterState)
+
+0 systemLocalUpdateForeign :
+  (nameEq : DecEq name) -> (selected, actor : name) ->
+  Not (selected = actor) ->
+  (before, afterState : SystemState name key value world error) ->
+  SystemLocalUpdate name key world error value nameEq actor before afterState ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} selected (registry afterState) =
+    lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} selected (registry before)
+systemLocalUpdateForeign nameEq selected actor distinct before afterState update =
+  registryLocalUpdateForeign nameEq selected actor distinct (registry before)
+    (systemRegistryUpdate update)
+
 record CommittedSnapshot
   (name, key, world, error : Type) (value : key -> Type)
   (nameEq : DecEq name) (selected : name) (providers : List name)
