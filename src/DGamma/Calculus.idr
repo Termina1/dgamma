@@ -336,10 +336,50 @@ resolveCommittedValues : DecEq name => DecEq key =>
   (deps : List key) -> View name deps ->
   Registry name key value world error -> Maybe (DepValues key value deps)
 resolveCommittedValues [] EmptyView fibers = Just NoDepValues
-resolveCommittedValues (k :: ks) (ProviderView provider rest) fibers =
-  case valueFromProvider provider k fibers of
+resolveCommittedValues @{nameEq} @{keyEq} (k :: ks) (ProviderView provider rest) fibers =
+  case valueFromProvider @{nameEq} @{keyEq} provider k fibers of
     Nothing => Nothing
-    Just v => map (OneDepValue v) (resolveCommittedValues ks rest fibers)
+    Just v => map (OneDepValue v)
+      (resolveCommittedValues @{nameEq} @{keyEq} ks rest fibers)
+
+||| Inserting an empty Inactive fiber preserves every committed capability.
+public export
+0 resolveCommittedValuesInactiveInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) -> (view : View name deps) ->
+  (n : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (fibers : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Nothing) ->
+  resolveCommittedValues @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps view
+    (insertBinding @{nameEq} n (freshFiber component parent) fibers absent) =
+  resolveCommittedValues @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps view fibers
+resolveCommittedValuesInactiveInsert {key} {world} {error} {value} nameEq keyEq [] EmptyView
+  n component parent fibers absent = Refl
+resolveCommittedValuesInactiveInsert {name} {key} {world} {error} {value}
+  nameEq keyEq (k :: ks) (ProviderView provider rest)
+  n component parent fibers absent
+  with (valueFromProvider @{nameEq} @{keyEq} provider k fibers) proof original
+  resolveCommittedValuesInactiveInsert {name} {key} {world} {error} {value}
+    nameEq keyEq (k :: ks) (ProviderView provider rest)
+    n component parent fibers absent | Nothing =
+      let inserted = trans
+            (valueFromProviderInactiveInsert {name = name} {key = key}
+              {world = world} {error = error} {value = value}
+              nameEq keyEq provider k n component parent fibers absent)
+            original in rewrite inserted in Refl
+  resolveCommittedValuesInactiveInsert {name} {key} {world} {error} {value}
+    nameEq keyEq (k :: ks) (ProviderView provider rest)
+    n component parent fibers absent | Just v =
+      let inserted = trans
+            (valueFromProviderInactiveInsert {name = name} {key = key}
+              {world = world} {error = error} {value = value}
+              nameEq keyEq provider k n component parent fibers absent)
+            original in
+      rewrite inserted in cong (map (OneDepValue v))
+        (resolveCommittedValuesInactiveInsert {name = name} {key = key}
+          {world = world} {error = error} {value = value}
+          nameEq keyEq ks rest n component parent fibers absent)
 
 ||| Inserting a fresh Inactive fiber cannot become a provider or change any
 ||| existing target resolution.
