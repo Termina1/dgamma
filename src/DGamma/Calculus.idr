@@ -2601,6 +2601,64 @@ parentChainDeleteKnown {name} {key} {world} {error} {value}
                 (shrinkComplete shrunk) noChild present parentLookup
                 (rewrite nextParentShape in rewrite ancestorSeen in sourceValid)
 
+||| Expose the source lookup and discharge the known-fiber cardinal step.
+public export
+0 parentChainDeleteAvailable :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (remaining : Nat) ->
+  (available, seen : List name) -> (current, removed : name) ->
+  (removedFiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  length available = S remaining -> Elem current available ->
+  Not (Elem removed available) -> Elem current seen ->
+  AvailableComplete name key world error value nameEq seen available
+    (deleteBinding @{nameEq} removed fibers) ->
+  hasChild @{nameEq} {key = key} {value = value} {world = world} {error = error} removed fibers = False ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} removed fibers = Just removedFiber ->
+  parentChainInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (S (S remaining)) seen current fibers = True ->
+  parentChainInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (S remaining) seen current
+    (deleteBinding @{nameEq} removed fibers) = True
+parentChainDeleteAvailable {name} {key} {world} {error} {value}
+  nameEq remaining available seen current removed removedFiber fibers lengthOk
+  currentAvailable removedAbsent currentSeen complete noChild present valid
+  with (lookupFiber @{nameEq} current fibers) proof currentLookup
+  parentChainDeleteAvailable {name} {key} {world} {error} {value}
+    nameEq remaining available seen current removed removedFiber fibers lengthOk
+    currentAvailable removedAbsent currentSeen complete noChild present valid |
+    Nothing = void (falseCannotBeTrue valid)
+  parentChainDeleteAvailable {name} {key} {world} {error} {value}
+    nameEq remaining available seen current removed removedFiber fibers lengthOk
+    currentAvailable removedAbsent currentSeen complete noChild present valid |
+    Just currentFiber with (fiberParent currentFiber) proof parentShape
+    parentChainDeleteAvailable {name} {key} {world} {error} {value}
+      nameEq remaining available seen current removed removedFiber fibers lengthOk
+      currentAvailable removedAbsent currentSeen complete noChild present valid |
+      Just currentFiber | Root =
+        parentChainDeleteKnown {name = name} {key = key} {world = world}
+          {error = error} {value = value} nameEq remaining available seen current
+          removed removedFiber currentFiber fibers lengthOk currentAvailable
+          removedAbsent currentSeen complete noChild present currentLookup
+          (rewrite parentShape in Refl)
+    parentChainDeleteAvailable {name} {key} {world} {error} {value}
+      nameEq remaining available seen current removed removedFiber fibers lengthOk
+      currentAvailable removedAbsent currentSeen complete noChild present valid |
+      Just currentFiber | ChildOf parent
+      with (elemDec @{nameEq} parent seen) proof parentSeen
+      parentChainDeleteAvailable {name} {key} {world} {error} {value}
+        nameEq remaining available seen current removed removedFiber fibers lengthOk
+        currentAvailable removedAbsent currentSeen complete noChild present valid |
+        Just currentFiber | ChildOf parent | True =
+          void (falseCannotBeTrue valid)
+      parentChainDeleteAvailable {name} {key} {world} {error} {value}
+        nameEq remaining available seen current removed removedFiber fibers lengthOk
+        currentAvailable removedAbsent currentSeen complete noChild present valid |
+        Just currentFiber | ChildOf parent | False =
+          parentChainDeleteKnown {name = name} {key = key} {world = world}
+            {error = error} {value = value} nameEq remaining available seen current
+            removed removedFiber currentFiber fibers lengthOk currentAvailable
+            removedAbsent currentSeen complete noChild present currentLookup
+            (rewrite parentShape in rewrite parentSeen in valid)
+
 0 parentInvariantDeleteDistinct :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (parent : Parent name) -> (removed : name) ->
