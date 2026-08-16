@@ -1826,6 +1826,133 @@ public export
   componentProvisions (fiberComponent fiber)
 retireProvisionInvariant (MkFiber component parent retired table lifecycle) = Refl
 
+0 justValuesEqual : Just x = Just y -> x = y
+justValuesEqual Refl = Refl
+
+0 nothingNotJust : {a : Type} -> {x : a} ->
+  the (Maybe a) Nothing = Just x -> Void
+nothingNotJust Refl impossible
+
+||| Expose one parent-chain step without relying on reduction at call sites.
+public export
+0 parentChainStepEquation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (fuel : Nat) -> (seen : List name) ->
+  (current : name) -> (fibers : Registry name key value world error) ->
+  parentChainInvariant @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} (S fuel) seen current fibers =
+  case lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} current fibers of
+    Nothing => False
+    Just fiber => case fiberParent fiber of
+      Root => True
+      ChildOf parent => if elemDec @{nameEq} parent seen
+        then False else parentChainInvariant @{nameEq} {key = key}
+          {value = value} {world = world} {error = error} fuel
+          (parent :: seen) parent fibers
+parentChainStepEquation nameEq fuel seen current
+  (MkCoeffectContext entries unique) with (lookupEntries @{nameEq} current entries)
+  parentChainStepEquation nameEq fuel seen current
+    (MkCoeffectContext entries unique) | Nothing = Refl
+  parentChainStepEquation nameEq fuel seen current
+    (MkCoeffectContext entries unique) | Just fiber
+    with (fiberParent fiber)
+    parentChainStepEquation nameEq fuel seen current
+      (MkCoeffectContext entries unique) | Just fiber | Root = Refl
+    parentChainStepEquation nameEq fuel seen current
+      (MkCoeffectContext entries unique) | Just fiber | ChildOf parent
+      with (elemDec @{nameEq} parent seen)
+      parentChainStepEquation nameEq fuel seen current
+        (MkCoeffectContext entries unique) | Just fiber | ChildOf parent | True = Refl
+      parentChainStepEquation nameEq fuel seen current
+        (MkCoeffectContext entries unique) | Just fiber | ChildOf parent | False = Refl
+
+public export
+record RetireLookupFrame (nameEq : DecEq name) (current, n : name)
+  (fiber, observed : Fiber name key value world error)
+  (fibers : Registry name key value world error) where
+  constructor MkRetireLookupFrame
+  framedFiber : Fiber name key value world error
+  0 framedLookup : lookupFiber @{nameEq} current
+    (replaceBinding @{nameEq} n (retireFiber fiber) fibers) = Just framedFiber
+  0 framedParent : fiberParent framedFiber = fiberParent observed
+
+0 retireLookupFrame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (current, n : name) ->
+  (fiber, observed : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} current fibers = Just observed ->
+  lookupFiber @{nameEq} n fibers = Just fiber ->
+  RetireLookupFrame nameEq current n fiber observed fibers
+retireLookupFrame {name} {key} {world} {error} {value}
+  nameEq current n fiber observed fibers@(MkCoeffectContext entries unique)
+  currentLookup present with (decEq @{nameEq} current n)
+  retireLookupFrame {name} {key} {world} {error} {value}
+    nameEq n n fiber observed fibers@(MkCoeffectContext entries unique)
+    currentLookup present | (Yes Refl) =
+      case justValuesEqual (trans (sym currentLookup) present) of
+        Refl => MkRetireLookupFrame (retireFiber fiber)
+          (lookupReplaceEntries n fiber (retireFiber fiber) entries present)
+          (retireFiberParent fiber)
+  retireLookupFrame {name} {key} {world} {error} {value}
+    nameEq current n fiber observed fibers@(MkCoeffectContext entries unique)
+    currentLookup present | (No distinct) =
+      MkRetireLookupFrame observed
+        (trans (lookupReplaceOtherEntries current n distinct (retireFiber fiber)
+          entries) currentLookup) Refl
+
+||| Retirement preserves every fuel-bounded parent chain.
+public export
+0 parentChainRetireRegistry :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (fuel : Nat) -> (seen : List name) ->
+  (current, n : name) -> (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (present : lookupFiber @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} n fibers = Just fiber) ->
+  parentChainInvariant @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} fuel seen current fibers = True ->
+  parentChainInvariant @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} fuel seen current
+    (replaceBinding @{nameEq} n (retireFiber fiber) fibers) = True
+parentChainRetireRegistry nameEq Z seen current n fiber fibers present valid =
+  void (falseCannotBeTrue valid)
+parentChainRetireRegistry {name} {key} {world} {error} {value}
+  nameEq (S fuel) seen current n fiber fibers present valid
+  with (lookupFiber @{nameEq} current fibers) proof currentLookup
+  parentChainRetireRegistry {name} {key} {world} {error} {value}
+    nameEq (S fuel) seen current n fiber fibers present valid | Nothing =
+      void (falseCannotBeTrue valid)
+  parentChainRetireRegistry {name} {key} {world} {error} {value}
+    nameEq (S fuel) seen current n fiber fibers present valid | Just observed
+    with (fiberParent observed) proof parentShape
+    parentChainRetireRegistry {name} {key} {world} {error} {value}
+      nameEq (S fuel) seen current n fiber fibers present valid | Just observed |
+      Root =
+        let frame = retireLookupFrame {name = name} {key = key} {world = world}
+              {error = error} {value = value} nameEq current n fiber observed
+              fibers currentLookup present in
+        rewrite framedLookup frame in rewrite framedParent frame in
+        rewrite parentShape in Refl
+    parentChainRetireRegistry {name} {key} {world} {error} {value}
+      nameEq (S fuel) seen current n fiber fibers present valid | Just observed |
+      ChildOf parent with (elemDec @{nameEq} parent seen) proof parentSeen
+      parentChainRetireRegistry {name} {key} {world} {error} {value}
+        nameEq (S fuel) seen current n fiber fibers present valid | Just observed |
+        ChildOf parent | True = void (falseCannotBeTrue valid)
+      parentChainRetireRegistry {name} {key} {world} {error} {value}
+        nameEq (S fuel) seen current n fiber fibers present valid | Just observed |
+        ChildOf parent | False =
+          let frame = retireLookupFrame {name = name} {key = key} {world = world}
+                {error = error} {value = value} nameEq current n fiber observed
+                fibers currentLookup present
+              recursive = parentChainRetireRegistry {name = name} {key = key}
+                {world = world} {error = error} {value = value} nameEq fuel
+                (parent :: seen) parent n fiber fibers present valid in
+          rewrite framedLookup frame in rewrite framedParent frame in
+          rewrite parentShape in rewrite parentSeen in recursive
+
 public export
 0 provisionsDisjointRetireEntries :
   {name, key, world, error : Type} -> {value : key -> Type} ->
