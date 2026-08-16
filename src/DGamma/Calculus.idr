@@ -2659,6 +2659,60 @@ parentChainDeleteAvailable {name} {key} {world} {error} {value}
             removedAbsent currentSeen complete noChild present currentLookup
             (rewrite parentShape in rewrite parentSeen in valid)
 
+0 bindingKeyElem : (entry : Binding key value) ->
+  (entries : List (Binding key value)) ->
+  Elem entry entries -> Elem (bindingKey entry) (bindingKeys entries)
+bindingKeyElem entry [] present impossible
+bindingKeyElem entry (entry :: rest) Here = Here
+bindingKeyElem entry (other :: rest) (There later) =
+  There (bindingKeyElem entry rest later)
+
+0 localLookupJustElem : DecEq key => (wanted : key) ->
+  (entries : List (Binding key value)) -> (found : value wanted) ->
+  lookupEntries wanted entries = Just found -> Elem wanted (bindingKeys entries)
+localLookupJustElem wanted [] found present = case present of Refl impossible
+localLookupJustElem wanted (Bind current value :: rest) found present
+  with (decEq wanted current)
+  localLookupJustElem current (Bind current value :: rest) found present |
+    (Yes Refl) = Here
+  localLookupJustElem wanted (Bind current value :: rest) found present |
+    (No _) = There (localLookupJustElem wanted rest found present)
+
+0 registryAvailabilityComplete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (seen : List name) ->
+  (fibers : Registry name key value world error) ->
+  AvailableComplete name key world error value nameEq seen
+    (bindingKeys (registryFibers {value = value} {world = world} {error = error} fibers)) fibers
+registryAvailabilityComplete {key} {world} {error} {value} nameEq seen fibers candidate notSeen found present =
+  localLookupJustElem candidate (registryFibers {value = value} {world = world} {error = error} fibers) found
+    (lookupFiberEntries nameEq candidate found fibers present)
+
+||| Deleting an entry from the checked list leaves every remaining source chain
+||| certificate available at the original fuel.
+public export
+0 chainsEntriesDeleteSameRegistry :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (fuel : Nat) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (removed : name) -> (fibers : Registry name key value world error) ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fuel entries fibers = True ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fuel (deleteEntries @{nameEq} removed entries)
+    fibers = True
+chainsEntriesDeleteSameRegistry {key} {world} {error} {value} nameEq fuel [] removed fibers valid = Refl
+chainsEntriesDeleteSameRegistry {name} {key} {world} {error} {value}
+  nameEq fuel (Bind current observed :: rest) removed fibers valid
+  with (decEq @{nameEq} removed current)
+  chainsEntriesDeleteSameRegistry {name} {key} {world} {error} {value}
+    nameEq fuel (Bind removed observed :: rest) removed fibers valid |
+    (Yes Refl) = andTrueRight _ _ valid
+  chainsEntriesDeleteSameRegistry {name} {key} {world} {error} {value}
+    nameEq fuel (Bind current observed :: rest) removed fibers valid |
+    (No _) = andBothTrue _ _ (andTrueLeft _ _ valid)
+      (chainsEntriesDeleteSameRegistry {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq fuel rest removed fibers
+        (andTrueRight _ _ valid))
+
 0 parentInvariantDeleteDistinct :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (parent : Parent name) -> (removed : name) ->
