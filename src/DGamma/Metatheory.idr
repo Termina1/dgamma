@@ -466,6 +466,84 @@ preservationLDivert {name} {key} {world} {error} {value}
     Just (MkFiber component parent retired table
       (Unloading accumulator view outcome)) = void (nothingIsNotJust equation)
 
+0 preservationReloadingRuntime :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (sourceAmbient, targetAmbient : world) -> (n : name) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retired : Bool) ->
+  (oldTable : OwnedTable key value (componentProvisions component)) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (newTable : OwnedTable key value (componentProvisions component)) ->
+  (newLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers =
+    Just (MkFiber component parent retired oldTable
+      (Reloading remaining accumulator view)) ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+    (MkSystemState sourceAmbient fibers) = True ->
+  fiberViewInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+    (setFiberRuntime
+      (MkFiber component parent retired oldTable
+        (Reloading remaining accumulator view)) newTable newLifecycle)
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime
+        (MkFiber component parent retired oldTable
+          (Reloading remaining accumulator view)) newTable newLifecycle)
+      fibers) =
+  viewBindingsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+    (dependencies (componentDependencies component)) view
+    (replaceBinding @{nameEq} n
+      (setFiberRuntime
+        (MkFiber component parent retired oldTable
+          (Reloading remaining accumulator view)) newTable newLifecycle)
+      fibers) ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+    (MkSystemState targetAmbient
+      (replaceBinding @{nameEq} n
+        (setFiberRuntime
+          (MkFiber component parent retired oldTable
+            (Reloading remaining accumulator view)) newTable newLifecycle)
+        fibers)) = True
+preservationReloadingRuntime {name} {key} {world} {error} {value}
+  nameEq keyEq sourceAmbient targetAmbient n component parent retired oldTable
+  remaining accumulator view newTable newLifecycle fibers found valid
+  targetOwnEquation =
+  let sourceViews = sourceViewsFromWellFormed nameEq keyEq sourceAmbient fibers
+        valid
+      entryPresent = lookupFiberEntries nameEq n
+        (MkFiber component parent retired oldTable
+          (Reloading remaining accumulator view)) fibers found
+      sourceSelected = viewsInvariantLookup {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq n
+        (MkFiber component parent retired oldTable
+          (Reloading remaining accumulator view))
+        (registryFibers fibers) fibers entryPresent sourceViews
+      targetBindings = viewBindingsUnstableRuntime {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq
+        (dependencies (componentDependencies component)) view n
+        (MkFiber component parent retired oldTable
+          (Reloading remaining accumulator view)) newTable newLifecycle fibers
+        found Refl sourceSelected
+      targetSelected = trans targetOwnEquation targetBindings
+      targetViews = viewsInvariantUnstableRuntimeReplace {name = name}
+        {key = key} {world = world} {error = error} {value = value} nameEq keyEq n
+        (MkFiber component parent retired oldTable
+          (Reloading remaining accumulator view)) newTable newLifecycle fibers
+        found Refl targetSelected sourceViews
+  in registryWellFormedRuntimeReplace {name = name} {key = key}
+    {world = world} {error = error} {value = value} nameEq keyEq targetAmbient n
+    (MkFiber component parent retired oldTable
+      (Reloading remaining accumulator view)) newTable newLifecycle fibers found
+    valid targetViews
+
 ||| Paper Theorem 59, stated over the raw ten-rule evaluator. Unlike the checked
 ||| admission fact, this direction cannot hide a malformed endpoint.
 ||| TODO(proof): rule induction plus registry replacement/insertion/deletion
