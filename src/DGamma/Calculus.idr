@@ -1173,6 +1173,44 @@ chainsInvariant {key} {value} {world} {error} fuel (Bind n _ :: rest) fibers =
   chainsInvariant {key = key} {value = value} {world = world} {error = error}
     fuel rest fibers
 
+||| Extract the chain certificate for any name present in the checked entries.
+public export
+0 chainsInvariantLookup :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (fuel : Nat) -> (wanted : name) ->
+  (fiber : Fiber name key value world error) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (fibers : Registry name key value world error) ->
+  lookupEntries @{nameEq} wanted entries = Just fiber ->
+  chainsInvariant @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} fuel entries fibers = True ->
+  parentChainInvariant @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} fuel [wanted] wanted fibers = True
+chainsInvariantLookup nameEq fuel wanted fiber [] fibers present valid =
+  case present of Refl impossible
+chainsInvariantLookup {name} {key} {world} {error} {value}
+  nameEq fuel wanted fiber (Bind current currentFiber :: rest) fibers present valid
+  with (decEq @{nameEq} wanted current)
+  chainsInvariantLookup {name} {key} {world} {error} {value}
+    nameEq fuel current fiber (Bind current currentFiber :: rest) fibers present valid |
+    (Yes Refl) =
+      case present of
+        Refl =>
+          andTrueLeft
+          (parentChainInvariant @{nameEq} {key = key} {value = value}
+            {world = world} {error = error} fuel [current] current fibers)
+          (chainsInvariant @{nameEq} {key = key} {value = value}
+            {world = world} {error = error} fuel rest fibers) valid
+  chainsInvariantLookup {name} {key} {world} {error} {value}
+    nameEq fuel wanted fiber (Bind current currentFiber :: rest) fibers present valid |
+    (No _) = chainsInvariantLookup {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq fuel wanted fiber rest fibers present
+      (andTrueRight
+        (parentChainInvariant @{nameEq} {key = key} {value = value}
+          {world = world} {error = error} fuel [current] current fibers)
+        (chainsInvariant @{nameEq} {key = key} {value = value}
+          {world = world} {error = error} fuel rest fibers) valid)
+
 ||| Lift fuel monotonicity pointwise over every registry entry.
 public export
 0 chainsFuelMonotone : {name, key, world, error : Type} ->
