@@ -241,6 +241,7 @@ presentAbsentDistinct present present table found presentHere absentHere Refl =
   case trans (sym presentHere) absentHere of Refl impossible
 
 ||| Lookup frame for replacing a distinct key.
+public export
 0 lookupReplaceOtherEntries : DecEq key => (wanted, changed : key) ->
   Not (wanted = changed) -> (next : value changed) ->
   (entries : List (Binding key value)) ->

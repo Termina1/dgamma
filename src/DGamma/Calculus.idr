@@ -1541,6 +1541,31 @@ public export
 retireParentInvariant {key} {world} {error} {value} nameEq (MkFiber component parent retired table lifecycle)
   fibers = Refl
 
+||| Replacing a present fiber by its retired form preserves every parent lookup.
+public export
+0 parentInvariantRetireRegistry :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (parent : Parent name) -> (n : name) ->
+  (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Just fiber ->
+  parentInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} parent
+    (replaceBinding @{nameEq} n (retireFiber fiber) fibers) =
+  parentInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} parent fibers
+parentInvariantRetireRegistry {key} {world} {error} {value} nameEq Root n fiber fibers present = Refl
+parentInvariantRetireRegistry {name} {key} {world} {error} {value}
+  nameEq (ChildOf parent) n fiber fibers@(MkCoeffectContext entries unique) present
+  with (decEq @{nameEq} parent n)
+  parentInvariantRetireRegistry {name} {key} {world} {error} {value}
+    nameEq (ChildOf n) n fiber fibers@(MkCoeffectContext entries unique) present |
+    (Yes Refl) =
+      rewrite lookupReplaceEntries n fiber (retireFiber fiber) entries present in
+      rewrite present in Refl
+  parentInvariantRetireRegistry {name} {key} {world} {error} {value}
+    nameEq (ChildOf parent) n fiber fibers@(MkCoeffectContext entries unique) present |
+    (No distinct) = rewrite lookupReplaceOtherEntries parent n distinct
+      (retireFiber fiber) entries in Refl
+
 public export
 0 retireProvisionInvariant : (fiber : Fiber name key value world error) ->
   componentProvisions (fiberComponent (retireFiber fiber)) =
