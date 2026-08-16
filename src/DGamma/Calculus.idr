@@ -299,6 +299,35 @@ valueFromProvider provider k fibers = case lookupFiber provider fibers of
   Nothing => Nothing
   Just fiber => lookupBinding k (ownedValues (fiberTable fiber))
 
+||| Inserting an empty Inactive fiber preserves every provider-table lookup.
+public export
+0 valueFromProviderInactiveInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provider : name) -> (k : key) -> (n : name) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (fibers : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Nothing) ->
+  valueFromProvider @{nameEq} @{keyEq} {value = value} {world = world} {error = error} provider k
+    (insertBinding @{nameEq} n (freshFiber component parent) fibers absent) =
+  valueFromProvider @{nameEq} @{keyEq} {value = value} {world = world} {error = error} provider k fibers
+valueFromProviderInactiveInsert {key} {world} {error} {value} nameEq keyEq provider k n component parent fibers absent
+  with (decEq @{nameEq} provider n)
+  valueFromProviderInactiveInsert {key} {world} {error} {value} nameEq keyEq n k n component parent fibers absent |
+    (Yes Refl) =
+      rewrite lookupInserted n (freshFiber component parent) fibers absent in
+        rewrite absent in Refl
+  valueFromProviderInactiveInsert {key} {world} {error} {value} nameEq keyEq provider k n component parent fibers absent |
+    (No distinct) with (lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} provider fibers) proof present
+    valueFromProviderInactiveInsert {key} {world} {error} {value} nameEq keyEq provider k n component parent fibers absent |
+      (No distinct) | Nothing =
+        rewrite lookupInsertOther provider n distinct (freshFiber component parent)
+          fibers absent in rewrite present in Refl
+    valueFromProviderInactiveInsert {key} {world} {error} {value} nameEq keyEq provider k n component parent fibers absent |
+      (No distinct) | Just providerFiber =
+        rewrite lookupInsertOther provider n distinct (freshFiber component parent)
+          fibers absent in rewrite present in Refl
+
 ||| Resolve a committed capability directly through provider-owned tables.
 ||| Providers need only remain installed; they intentionally need not be Active
 ||| during a dependent's withdrawal interval.
