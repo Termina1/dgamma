@@ -1718,3 +1718,90 @@ extractFirstClosing nameEq keyEq selected
   where
   falseNotTrue : False = True -> Void
   falseNotTrue Refl impossible
+
+public export
+0 appendTransitionsAssociative :
+  (left : Transitions first middle) ->
+  (center : Transitions middle later) ->
+  (right : Transitions later finalState) ->
+  appendTransitions (appendTransitions left center) right =
+    appendTransitions left (appendTransitions center right)
+appendTransitionsAssociative NoTransitions center right = Refl
+appendTransitionsAssociative (MoreTransitions transition rest) center right =
+  cong (MoreTransitions transition)
+    (appendTransitionsAssociative rest center right)
+
+0 spanningDecomposition :
+  (beforeOpening : Transitions initial preStart) ->
+  (opening : BeginStep nameEq keyEq selected preStart opened) ->
+  (afterOpening : Transitions opened anchor) ->
+  (beforeClosing : Transitions anchor closeBefore) ->
+  (closing : UnloadStep nameEq keyEq selected closeBefore closeAfter) ->
+  (afterClosing : Transitions closeAfter finalState) ->
+  (leftTrace : Transitions initial anchor) ->
+  (rightTrace : Transitions anchor finalState) ->
+  appendTransitions beforeOpening
+    (MoreTransitions (beginTransition opening) afterOpening) = leftTrace ->
+  appendTransitions beforeClosing
+    (MoreTransitions (unloadTransition closing) afterClosing) = rightTrace ->
+  appendTransitions beforeOpening
+    (MoreTransitions (beginTransition opening)
+      (appendTransitions (appendTransitions afterOpening beforeClosing)
+        (MoreTransitions (unloadTransition closing) afterClosing))) =
+  appendTransitions leftTrace rightTrace
+spanningDecomposition beforeOpening opening afterOpening beforeClosing closing
+  afterClosing leftTrace rightTrace openingSplit closingSplit =
+  rewrite appendTransitionsAssociative afterOpening beforeClosing
+    (MoreTransitions (unloadTransition closing) afterClosing) in
+  rewrite closingSplit in
+  rewrite sym (appendTransitionsAssociative beforeOpening
+    (MoreTransitions (beginTransition opening) afterOpening) rightTrace) in
+  rewrite openingSplit in Refl
+
+||| Boundary-selection core of Theorem 63: an installed anchor between an
+||| initially uninstalled state and an uninstalled endpoint determines the
+||| unique last-open/first-close episode spanning that anchor.
+public export
+0 extractSpanningClosedEpisode :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (leftTrace : Transitions initial anchor) ->
+  (rightTrace : Transitions anchor finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq leftTrace ->
+  AlignedTransitions name key world error value nameEq keyEq rightTrace ->
+  installedAt @{nameEq} selected initial = False ->
+  installedAt @{nameEq} selected anchor = True ->
+  installedAt @{nameEq} selected finalState = False ->
+  LocatedClosedEpisode name key world error value nameEq keyEq selected
+    (appendTransitions leftTrace rightTrace)
+extractSpanningClosedEpisode nameEq keyEq selected leftTrace rightTrace prefixAligned
+  suffixAligned initialFalse anchorTrue finalFalse =
+  case extractLastOpening nameEq keyEq selected leftTrace prefixAligned initialFalse
+    anchorTrue of
+    MkLastOpeningResult preStart opened beforeOpening opening afterOpening
+      openingSplit installedAfterOpening =>
+      case extractFirstClosing nameEq keyEq selected rightTrace suffixAligned anchorTrue
+        finalFalse of
+        MkFirstClosingResult closeBefore closeAfter beforeClosing installedBeforeClosing
+          closing afterClosing closingSplit =>
+            let insideInstalled = appendInstalledTrace afterOpening beforeClosing
+                  installedAfterOpening installedBeforeClosing
+                decomposition = spanningDecomposition beforeOpening opening afterOpening
+                  beforeClosing closing afterClosing leftTrace rightTrace openingSplit closingSplit
+                locatedDecomposition :
+                  (appendTransitions beforeOpening
+                    (MoreTransitions (beginTransition opening)
+                      (appendTransitions
+                        (appendTransitions (appendTransitions afterOpening beforeClosing)
+                          (MoreTransitions (unloadTransition closing) NoTransitions))
+                        afterClosing)) =
+                  appendTransitions leftTrace rightTrace)
+                locatedDecomposition =
+                  rewrite appendTransitionsAssociative
+                    (appendTransitions afterOpening beforeClosing)
+                    (MoreTransitions (unloadTransition closing) NoTransitions)
+                    afterClosing in decomposition
+            in MkLocatedClosedEpisode preStart closeAfter beforeOpening
+              (MkClosedEpisode opened closeBefore opening
+                (appendTransitions afterOpening beforeClosing)
+                insideInstalled closing)
+              afterClosing locatedDecomposition

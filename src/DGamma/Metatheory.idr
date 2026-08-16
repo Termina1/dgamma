@@ -319,6 +319,7 @@ preservationORemove {name} {key} {world} {error} {value}
               ambient n component parent retired table outcome fibers found
               childAbsent valid
 
+public export
 0 sourceViewsFromWellFormed :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (ambient : world) ->
   (fibers : Registry name key value world error) ->

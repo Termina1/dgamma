@@ -2984,6 +2984,7 @@ pairwiseProvisionDelete {name} {key} {world} {error} {value}
           {error = error} {value = value} nameEq keyEq rest removed
           (andTrueRight _ _ valid))
 
+public export
 0 viewProvidersHeadStable :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {deps : List key} -> (nameEq : DecEq name) ->
@@ -3077,6 +3078,7 @@ valueFromProviderInactiveDeleteOther {key} {world} {error} {value}
       rewrite lookupDeleteOther provider removed distinct fibers in
       rewrite original in Refl
 
+public export
 0 viewProvidersTailValid :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {deps : List key} -> (nameEq : DecEq name) ->
