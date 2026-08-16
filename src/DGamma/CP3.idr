@@ -1725,56 +1725,224 @@ locatedRegistrationGeneration :
 locatedRegistrationGeneration {registered} occurrence =
   MkRegistrationGeneration registered (locatedActionOrdinal occurrence)
 
-||| Lemma-56 correspondence of generated registration trees. Live root
-||| generations are fixed; child registration occurrences are transported
-||| bijectively, including multiplicity under raw-name reissue.
+||| A bijection of registration *generations*, not of raw names.  The birth
+||| ordinal is part of the key, so a raw name may be transported differently
+||| at two distinct births.  This is the finite trace form of paper Lemma 56
+||| needed when O-Remove permits later raw-name reuse.
 public export
-record RegistrationCorrespondenceByRenaming
-  (nameEq : DecEq name) (renaming : NameBijection name)
+record RegistrationGenerationBijection (name : Type) where
+  constructor MkRegistrationGenerationBijection
+  generationForward : RegistrationGeneration name -> RegistrationGeneration name
+  generationBackward : RegistrationGeneration name -> RegistrationGeneration name
+  0 generationLeftInverse : (generation : RegistrationGeneration name) ->
+    generationBackward (generationForward generation) = generation
+  0 generationRightInverse : (generation : RegistrationGeneration name) ->
+    generationForward (generationBackward generation) = generation
+
+public export
+identityRegistrationGenerationBijection : RegistrationGenerationBijection name
+identityRegistrationGenerationBijection =
+  MkRegistrationGenerationBijection id id (\generation => Refl)
+    (\generation => Refl)
+
+||| The generation environment carried by the correspondence scanner.  Its
+||| entries are the last O-Insert births not followed by O-Remove in the
+||| processed prefix.  The checked LTS guarantees at most one current entry per
+||| raw name; replacement keeps the definition executable on arbitrary traces.
+public export
+GenerationEnvironment : Type -> Type
+GenerationEnvironment name = List (name, RegistrationGeneration name)
+
+putCurrentGeneration : DecEq name => name -> RegistrationGeneration name ->
+  GenerationEnvironment name -> GenerationEnvironment name
+putCurrentGeneration selected generation [] = [(selected, generation)]
+putCurrentGeneration selected generation ((candidate, current) :: rest) =
+  case decEq selected candidate of
+    Yes Refl => (selected, generation) :: rest
+    No different => (candidate, current) ::
+      putCurrentGeneration selected generation rest
+
+deleteCurrentGeneration : DecEq name => name -> GenerationEnvironment name ->
+  GenerationEnvironment name
+deleteCurrentGeneration selected [] = []
+deleteCurrentGeneration selected ((candidate, current) :: rest) =
+  case decEq selected candidate of
+    Yes Refl => rest
+    No different => (candidate, current) :: deleteCurrentGeneration selected rest
+
+public export
+lookupCurrentGeneration : DecEq name => name -> GenerationEnvironment name ->
+  Maybe (RegistrationGeneration name)
+lookupCurrentGeneration selected [] = Nothing
+lookupCurrentGeneration selected ((candidate, current) :: rest) =
+  case decEq selected candidate of
+    Yes Refl => Just current
+    No different => lookupCurrentGeneration selected rest
+
+advanceGenerationEnvironment : DecEq name => Nat ->
+  Action name key value world error -> GenerationEnvironment name ->
+  GenerationEnvironment name
+advanceGenerationEnvironment ordinal (OInsert registered parent component) live =
+  putCurrentGeneration registered
+    (MkRegistrationGeneration registered ordinal) live
+advanceGenerationEnvironment ordinal (ORemove removed) live =
+  deleteCurrentGeneration removed live
+advanceGenerationEnvironment ordinal action live = live
+
+isGeneratedRegistrationAction : Action name key value world error -> Bool
+isGeneratedRegistrationAction (OInsert child (ChildOf parent) component) = True
+isGeneratedRegistrationAction action = False
+
+||| A structural bijection of generated registration events.  Both scans carry
+||| their own transition ordinal and current generation environment.  Non-child
+||| actions may be skipped independently; child births must be paired in order,
+||| must name the same component role, and must map both the child generation
+||| and the then-live parent generation.  The end indices expose the current
+||| generations without an unsafe fold over dependent trace states.
+public export
+data RegistrationTraceCorrespondence :
+  (nameEq : DecEq name) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (leftOrdinal : Nat) -> (leftLive : GenerationEnvironment name) ->
+  {leftFirst, leftFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) ->
+  (leftFinalLive : GenerationEnvironment name) ->
+  (rightOrdinal : Nat) -> (rightLive : GenerationEnvironment name) ->
+  {rightFirst, rightFinal : SystemState name key value world error} ->
+  (right : Transitions rightFirst rightFinal) ->
+  (rightFinalLive : GenerationEnvironment name) -> Type where
+  RegistrationCorrespondenceEnd :
+    RegistrationTraceCorrespondence nameEq renaming
+      leftOrdinal leftLive NoTransitions leftLive
+      rightOrdinal rightLive NoTransitions rightLive
+  SkipLeftNonRegistration :
+    (transition : Transition leftFirst leftMiddle) ->
+    (leftRest : Transitions leftMiddle leftFinal) ->
+    isGeneratedRegistrationAction (transitionAction transition) = False ->
+    RegistrationTraceCorrespondence nameEq renaming
+      (S leftOrdinal)
+      (advanceGenerationEnvironment @{nameEq} leftOrdinal
+        (transitionAction transition) leftLive)
+      leftRest leftFinalLive rightOrdinal rightLive right rightFinalLive ->
+    RegistrationTraceCorrespondence nameEq renaming
+      leftOrdinal leftLive (MoreTransitions transition leftRest) leftFinalLive
+      rightOrdinal rightLive right rightFinalLive
+  SkipRightNonRegistration :
+    (transition : Transition rightFirst rightMiddle) ->
+    (rightRest : Transitions rightMiddle rightFinal) ->
+    isGeneratedRegistrationAction (transitionAction transition) = False ->
+    RegistrationTraceCorrespondence nameEq renaming
+      leftOrdinal leftLive left leftFinalLive
+      (S rightOrdinal)
+      (advanceGenerationEnvironment @{nameEq} rightOrdinal
+        (transitionAction transition) rightLive)
+      rightRest rightFinalLive ->
+    RegistrationTraceCorrespondence nameEq renaming
+      leftOrdinal leftLive left leftFinalLive
+      rightOrdinal rightLive (MoreTransitions transition rightRest)
+      rightFinalLive
+  MatchGeneratedRegistration :
+    (leftTransition : Transition leftFirst leftMiddle) ->
+    (leftRest : Transitions leftMiddle leftFinal) ->
+    (rightTransition : Transition rightFirst rightMiddle) ->
+    (rightRest : Transitions rightMiddle rightFinal) ->
+    transitionAction leftTransition =
+      OInsert leftChild (ChildOf leftParent) component ->
+    transitionAction rightTransition =
+      OInsert rightChild (ChildOf rightParent) component ->
+    lookupCurrentGeneration @{nameEq} leftParent leftLive =
+      Just leftParentGeneration ->
+    lookupCurrentGeneration @{nameEq} rightParent rightLive =
+      Just rightParentGeneration ->
+    generationForward renaming
+      (MkRegistrationGeneration leftChild leftOrdinal) =
+      MkRegistrationGeneration rightChild rightOrdinal ->
+    generationForward renaming leftParentGeneration = rightParentGeneration ->
+    RegistrationTraceCorrespondence nameEq renaming
+      (S leftOrdinal)
+      (putCurrentGeneration @{nameEq} leftChild
+        (MkRegistrationGeneration leftChild leftOrdinal) leftLive)
+      leftRest leftFinalLive
+      (S rightOrdinal)
+      (putCurrentGeneration @{nameEq} rightChild
+        (MkRegistrationGeneration rightChild rightOrdinal) rightLive)
+      rightRest rightFinalLive ->
+    RegistrationTraceCorrespondence nameEq renaming
+      leftOrdinal leftLive (MoreTransitions leftTransition leftRest)
+      leftFinalLive rightOrdinal rightLive
+      (MoreTransitions rightTransition rightRest) rightFinalLive
+
+||| Lemma-56 correspondence of generated registration trees, indexed by
+||| generation rather than raw name.  External roots are intentionally absent
+||| from the matched-event branch: `SameExternalOrchestration` compares their
+||| raw inputs, while the scanner still records their generations so a later
+||| child can identify the exact parent birth.
+public export
+record RegistrationCorrespondenceByGeneration
+  (nameEq : DecEq name) (renaming : RegistrationGenerationBijection name)
   {leftFirst, leftFinal, rightFirst, rightFinal :
     SystemState name key value world error}
   (left : Transitions leftFirst leftFinal)
   (right : Transitions rightFirst rightFinal) where
-  constructor MkRegistrationCorrespondenceByRenaming
+  constructor MkRegistrationCorrespondenceByGeneration
+  leftFinalGenerations : GenerationEnvironment name
+  rightFinalGenerations : GenerationEnvironment name
+  generationTraceCorrespondence : RegistrationTraceCorrespondence nameEq renaming
+    0 [] left leftFinalGenerations 0 [] right rightFinalGenerations
+
+||| The raw-name bijection used only to compare *current endpoint* registries.
+||| Historical child births are governed by the generation bijection above.
+||| Live roots are fixed because they are external names; a current generated
+||| child must agree with the image of its own last unremoved generation.
+public export
+record CurrentEndpointRenaming
+  (nameEq : DecEq name) (generationRenaming : RegistrationGenerationBijection name)
+  {leftFirst, leftFinal, rightFirst, rightFinal :
+    SystemState name key value world error}
+  (left : Transitions leftFirst leftFinal)
+  (right : Transitions rightFirst rightFinal)
+  (registrations : RegistrationCorrespondenceByGeneration nameEq
+    generationRenaming left right) where
+  constructor MkCurrentEndpointRenaming
+  currentNameBijection : NameBijection name
   0 leftLiveRootFixed : (n : name) ->
     (fiber : Fiber name key value world error) ->
-    lookupFiber n (registry leftFinal) = Just fiber ->
-    fiberParent fiber = Root -> renameForward renaming n = n
+    lookupFiber @{nameEq} n (registry leftFinal) = Just fiber ->
+    fiberParent fiber = Root -> renameForward currentNameBijection n = n
   0 rightLiveRootFixed : (n : name) ->
     (fiber : Fiber name key value world error) ->
-    lookupFiber n (registry rightFinal) = Just fiber ->
-    fiberParent fiber = Root -> renameBackward renaming n = n
-  forwardRegistration :
-    {child, parent : name} ->
-    {component : Component key value world error} ->
-    LocatedGeneratedRegistration child parent component left ->
-    LocatedGeneratedRegistration (renameForward renaming child)
-      (renameForward renaming parent) component right
-  backwardRegistration :
-    {child, parent : name} ->
-    {component : Component key value world error} ->
-    LocatedGeneratedRegistration child parent component right ->
-    LocatedGeneratedRegistration (renameBackward renaming child)
-      (renameBackward renaming parent) component left
-  0 leftRegistrationOrdinalInverse :
-    {child, parent : name} ->
-    {component : Component key value world error} ->
-    (occurrence : LocatedGeneratedRegistration child parent component left) ->
-    registrationOrdinal
-      (backwardRegistration (forwardRegistration occurrence)) =
-    registrationOrdinal occurrence
-  0 rightRegistrationOrdinalInverse :
-    {child, parent : name} ->
-    {component : Component key value world error} ->
-    (occurrence : LocatedGeneratedRegistration child parent component right) ->
-    registrationOrdinal
-      (forwardRegistration (backwardRegistration occurrence)) =
-    registrationOrdinal occurrence
+    lookupFiber @{nameEq} n (registry rightFinal) = Just fiber ->
+    fiberParent fiber = Root -> renameBackward currentNameBijection n = n
+  0 leftLiveChildGeneration : (n, parent : name) ->
+    (fiber : Fiber name key value world error) ->
+    lookupFiber @{nameEq} n (registry leftFinal) = Just fiber ->
+    fiberParent fiber = ChildOf parent ->
+    (leftGeneration : RegistrationGeneration name **
+     rightGeneration : RegistrationGeneration name **
+     (lookupCurrentGeneration @{nameEq} n
+        (leftFinalGenerations registrations) = Just leftGeneration,
+      generationForward generationRenaming leftGeneration = rightGeneration,
+      lookupCurrentGeneration @{nameEq}
+        (renameForward currentNameBijection n)
+        (rightFinalGenerations registrations) = Just rightGeneration))
+  0 rightLiveChildGeneration : (n, parent : name) ->
+    (fiber : Fiber name key value world error) ->
+    lookupFiber @{nameEq} n (registry rightFinal) = Just fiber ->
+    fiberParent fiber = ChildOf parent ->
+    (rightGeneration : RegistrationGeneration name **
+     leftGeneration : RegistrationGeneration name **
+     (lookupCurrentGeneration @{nameEq} n
+        (rightFinalGenerations registrations) = Just rightGeneration,
+      generationBackward generationRenaming rightGeneration = leftGeneration,
+      lookupCurrentGeneration @{nameEq}
+        (renameBackward currentNameBijection n)
+        (leftFinalGenerations registrations) = Just leftGeneration))
 
 ||| The host specialization packages paper Lemma 56 explicitly: external root
-||| actions retain their order, and generated registration trees correspond
-||| through one bijection. This extra witness is necessary because O-Insert is
-||| an explicit rule rather than a value actually returned by `runStepEffect`.
+||| actions retain their exact raw order, generated registration trees use a
+||| generation bijection, and only the current endpoint receives a raw-name
+||| bijection.  This extra witness is necessary because O-Insert is an explicit
+||| rule rather than a value actually returned by `runStepEffect`.
 public export
 record SameOrchestrationModuloGenerated
   {leftFirst, leftFinal, rightFirst, rightFinal :
@@ -1783,10 +1951,12 @@ record SameOrchestrationModuloGenerated
   (left : Transitions leftFirst leftFinal)
   (right : Transitions rightFirst rightFinal) where
   constructor MkSameOrchestrationModuloGenerated
-  generatedNameBijection : NameBijection name
+  generatedGenerationBijection : RegistrationGenerationBijection name
   sameExternalInputs : SameExternalOrchestration nameEq left right
-  generatedRegistrationTree : RegistrationCorrespondenceByRenaming nameEq
-    generatedNameBijection left right
+  generatedRegistrationTree : RegistrationCorrespondenceByGeneration nameEq
+    generatedGenerationBijection left right
+  endpointRenaming : CurrentEndpointRenaming nameEq generatedGenerationBijection
+    left right generatedRegistrationTree
 
 ||| Registration-tree preservation for one canonical reduction. Withdrawal is
 ||| keyed by `(raw name, birth ordinal)`, never by the raw name alone. Thus a
@@ -2168,7 +2338,9 @@ deletionTheorem name key value world error =
   DeletionResult name key world error value nameEq keyEq global selected episode
     registered
 
-||| Theorem-73 result transported through the explicit Lemma-56 bijection.
+||| Theorem-73 result transported through the explicit Lemma-56 generation
+||| bijection.  Historical registrations and current endpoint names are kept
+||| separate, so one raw name may have different images at different births.
 public export
 record ConfluenceResult
   (name, key, world, error : Type) (value : key -> Type)
@@ -2177,16 +2349,19 @@ record ConfluenceResult
   {initial, leftFinal, rightFinal : SystemState name key value world error}
   (leftTrace : Transitions initial leftFinal)
   (rightTrace : Transitions initial rightFinal)
-  (renaming : NameBijection name) where
+  (generationRenaming : RegistrationGenerationBijection name)
+  (currentRenaming : NameBijection name) where
   constructor MkConfluenceResult
   leftCanonical : CanonicalSchedule name key world error value protocol nameEq
     keyEq leftTrace
   rightCanonical : CanonicalSchedule name key world error value protocol nameEq
     keyEq rightTrace
-  finalRegistrationCorrespondence : RegistrationCorrespondenceByRenaming nameEq
-    renaming leftTrace rightTrace
+  finalRegistrationCorrespondence : RegistrationCorrespondenceByGeneration nameEq
+    generationRenaming leftTrace rightTrace
+  finalEndpointRenaming : CurrentEndpointRenaming nameEq generationRenaming
+    leftTrace rightTrace finalRegistrationCorrespondence
   finalEndpointsEquivalent : SystemEquivalentByRenaming name key world error
-    value nameEq keyEq renaming leftFinal rightFinal
+    value nameEq keyEq currentRenaming leftFinal rightFinal
 
 ||| Candidate finite explicit-registration statement for paper Theorem 73.
 ||| Yield tags/catalogs provide Definition-47 provenance, and paper Lemma 56 is
@@ -2219,7 +2394,8 @@ confluenceTheorem name key value world error =
   TraceIndependent name key world error value keyEq rightTrace ->
   (sameInputs : SameOrchestrationModuloGenerated nameEq leftTrace rightTrace) ->
   ConfluenceResult name key world error value protocol nameEq keyEq leftTrace
-    rightTrace (generatedNameBijection sameInputs)
+    rightTrace (generatedGenerationBijection sameInputs)
+    (currentNameBijection (endpointRenaming sameInputs))
 
 ||| Reflexivity sanity check for the orchestration projection: arbitrary
 ||| lifecycle noise is ignored, while each orchestration action matches itself.

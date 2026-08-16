@@ -567,36 +567,45 @@ public export
     (canonicalFinal schedule)
 canonicalWithdrawalGuard schedule = endpointNamesWithdrawn (canonicalEndpoint schedule)
 
-||| Lemma-56 guards: the same-input package exports both the bijection and the
-||| transported registration-tree correspondence.
+||| Lemma-56 guards: the same-input package exports a generation bijection for
+||| historical registrations and a separate raw-name bijection for the current
+||| endpoint only.
 public export
-0 orchestrationRenamingGuard :
+0 orchestrationGenerationRenamingGuard :
+  {leftFirst, leftFinal, rightFirst, rightFinal :
+    SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} ->
+  {right : Transitions rightFirst rightFinal} ->
+  (same : SameOrchestrationModuloGenerated nameEq left right) ->
+  RegistrationGenerationBijection name
+orchestrationGenerationRenamingGuard same = generatedGenerationBijection same
+
+public export
+0 orchestrationCurrentRenamingGuard :
   {leftFirst, leftFinal, rightFirst, rightFinal :
     SystemState name key value world error} ->
   {left : Transitions leftFirst leftFinal} ->
   {right : Transitions rightFirst rightFinal} ->
   (same : SameOrchestrationModuloGenerated nameEq left right) ->
   NameBijection name
-orchestrationRenamingGuard same = generatedNameBijection same
+orchestrationCurrentRenamingGuard same =
+  currentNameBijection (endpointRenaming same)
 
 public export
-0 registrationRenamingGuard :
+0 registrationGenerationGuard :
   (same : SameOrchestrationModuloGenerated nameEq left right) ->
-  RegistrationCorrespondenceByRenaming nameEq (generatedNameBijection same) left right
-registrationRenamingGuard same = generatedRegistrationTree same
+  RegistrationCorrespondenceByGeneration nameEq
+    (generatedGenerationBijection same) left right
+registrationGenerationGuard same = generatedRegistrationTree same
 
 public export
 0 registrationMultiplicityGuard :
-  {child, parent : name} ->
-  {component : Component key value world error} ->
   (same : SameOrchestrationModuloGenerated nameEq left right) ->
-  (occurrence : LocatedGeneratedRegistration child parent component left) ->
-  registrationOrdinal
-    (backwardRegistration (generatedRegistrationTree same)
-      (forwardRegistration (generatedRegistrationTree same) occurrence)) =
-  registrationOrdinal occurrence
-registrationMultiplicityGuard same occurrence =
-  leftRegistrationOrdinalInverse (generatedRegistrationTree same) occurrence
+  RegistrationTraceCorrespondence nameEq (generatedGenerationBijection same)
+    0 [] left (leftFinalGenerations (generatedRegistrationTree same))
+    0 [] right (rightFinalGenerations (generatedRegistrationTree same))
+registrationMultiplicityGuard same =
+  generationTraceCorrespondence (generatedRegistrationTree same)
 
 public export
 0 confluenceRenamedEndpointGuard :
@@ -604,9 +613,9 @@ public export
   {left : Transitions initial leftFinal} ->
   {right : Transitions initial rightFinal} ->
   (result : ConfluenceResult name key world error value protocol nameEq keyEq
-    left right renaming) ->
-  SystemEquivalentByRenaming name key world error value nameEq keyEq renaming
-    leftFinal rightFinal
+    left right generationRenaming currentRenaming) ->
+  SystemEquivalentByRenaming name key world error value nameEq keyEq
+    currentRenaming leftFinal rightFinal
 confluenceRenamedEndpointGuard result = finalEndpointsEquivalent result
 
 ||| Semantic guard for the round-3 retirement blocker: outside R, an action of
