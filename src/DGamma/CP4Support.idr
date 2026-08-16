@@ -329,6 +329,10 @@ reachedRegistryProtocolRanked protocol nameEq keyEq reached provenance =
 natLTIrreflexive {n = Z} prf impossible
 natLTIrreflexive {n = S k} (LTESucc prf) = natLTIrreflexive prf
 
+0 natLTTransitive : LT first middle -> LT middle final -> LT first final
+natLTTransitive firstMiddle middleFinal =
+  transitive firstMiddle (lteSuccLeft middleFinal)
+
 ||| Static ranks witnessing that an immediate parent is strictly below its child.
 public export
 record ParentRankWitness
@@ -670,3 +674,139 @@ reachedRegistryParentRanksIncrease protocol nameEq keyEq reached provenance =
     (reachAligned reached) provenance
     (emptyRegistryParentRanksIncrease protocol nameEq (reachInitial reached)
       (reachInitialEmpty reached))
+
+
+public export
+record NameProtocolRank
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (state : SystemState name key value world error)
+  (selected : name) (rank : Nat) where
+  constructor MkNameProtocolRank
+  rankedFiber : Fiber name key value world error
+  rankedFound : lookupFiber @{nameEq} selected (registry state) = Just rankedFiber
+  componentHasRank : registrationRank protocol (fiberComponent rankedFiber) =
+    Just rank
+
+0 nameProtocolRankUnique :
+  NameProtocolRank protocol nameEq state selected leftRank ->
+  NameProtocolRank protocol nameEq state selected rightRank ->
+  leftRank = rightRank
+nameProtocolRankUnique
+  (MkNameProtocolRank leftFiber leftFound leftRanked)
+  (MkNameProtocolRank rightFiber rightFound rightRanked) =
+    let sameFiber = justInjective (trans (sym leftFound) rightFound)
+    in case sameFiber of
+      Refl => justInjective (trans (sym leftRanked) rightRanked)
+
+public export
+record RankedSupportEdge
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (state : SystemState name key value world error)
+  (lower, upper : name) where
+  constructor MkRankedSupportEdge
+  lowerRank : Nat
+  upperRank : Nat
+  lowerNameRanked : NameProtocolRank protocol nameEq state lower lowerRank
+  upperNameRanked : NameProtocolRank protocol nameEq state upper upperRank
+  edgeRankIncreases : LT lowerRank upperRank
+
+public export
+0 supportEdgeRankIncreases :
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) ->
+  (state : SystemState name key value world error) ->
+  RegistryProtocolRanked protocol nameEq state ->
+  RegistryParentRanksIncrease protocol nameEq state ->
+  SupportEdge nameEq state lower upper ->
+  RankedSupportEdge protocol nameEq state lower upper
+supportEdgeRankIncreases protocol nameEq state ranked parentOrdered
+  (SupportPrecedence
+    (MkPrecedenceEdge edgeKey providerFiber consumerFiber providerFound
+      consumerFound providerDeclares consumerDeclares)) =
+        let (providerRank ** providerRanked) =
+              ranked lower providerFiber providerFound
+            (consumerRank ** consumerRanked) =
+              ranked upper consumerFiber consumerFound
+            lower = precedenceRankIncreases protocol
+              (fiberComponent providerFiber) (fiberComponent consumerFiber)
+              providerRank consumerRank providerRanked consumerRanked edgeKey
+              providerDeclares consumerDeclares
+        in MkRankedSupportEdge providerRank consumerRank
+          (MkNameProtocolRank providerFiber providerFound providerRanked)
+          (MkNameProtocolRank consumerFiber consumerFound consumerRanked)
+          lower
+supportEdgeRankIncreases protocol nameEq state ranked parentOrdered
+  (SupportParent
+    (MkParentSupportEdge childFiber childFound childParent)) =
+      let witness = parentOrdered lower upper childFiber childFound childParent
+      in MkRankedSupportEdge (parentRank witness) (childRank witness)
+        (MkNameProtocolRank (parentFiber witness) (parentFound witness)
+          (parentComponentRanked witness))
+        (MkNameProtocolRank childFiber childFound
+          (childComponentRanked witness))
+        (parentRankLower witness)
+
+public export
+record RankedSupportPath
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (state : SystemState name key value world error)
+  (lower, upper : name) where
+  constructor MkRankedSupportPath
+  pathLowerRank : Nat
+  pathUpperRank : Nat
+  pathLowerNameRanked :
+    NameProtocolRank protocol nameEq state lower pathLowerRank
+  pathUpperNameRanked :
+    NameProtocolRank protocol nameEq state upper pathUpperRank
+  pathRankIncreases : LT pathLowerRank pathUpperRank
+
+public export
+0 supportPathRankIncreases :
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) ->
+  (state : SystemState name key value world error) ->
+  RegistryProtocolRanked protocol nameEq state ->
+  RegistryParentRanksIncrease protocol nameEq state ->
+  SupportPath nameEq state lower upper ->
+  RankedSupportPath protocol nameEq state lower upper
+supportPathRankIncreases protocol nameEq state ranked parentOrdered
+  (SupportPathOne edge) =
+    let rankedEdge = supportEdgeRankIncreases protocol nameEq state ranked
+          parentOrdered edge
+    in MkRankedSupportPath (lowerRank rankedEdge) (upperRank rankedEdge)
+      (lowerNameRanked rankedEdge) (upperNameRanked rankedEdge)
+      (edgeRankIncreases rankedEdge)
+supportPathRankIncreases protocol nameEq state ranked parentOrdered
+  (SupportPathMore edge rest) =
+    let rankedEdge = supportEdgeRankIncreases protocol nameEq state ranked
+          parentOrdered edge
+        rankedRest = supportPathRankIncreases protocol nameEq state ranked
+          parentOrdered rest
+        sameMiddle = nameProtocolRankUnique (upperNameRanked rankedEdge)
+          (pathLowerNameRanked rankedRest)
+        firstLeg = replace
+          {p = \rank => LT (lowerRank rankedEdge) rank}
+          sameMiddle (edgeRankIncreases rankedEdge)
+    in MkRankedSupportPath (lowerRank rankedEdge)
+      (pathUpperRank rankedRest) (lowerNameRanked rankedEdge)
+      (pathUpperNameRanked rankedRest)
+      (natLTTransitive firstLeg (pathRankIncreases rankedRest))
+
+||| The combined parent-or-precedence support relation has no cycle.
+public export
+0 supportCombinedWellFounded :
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) ->
+  (state : SystemState name key value world error) ->
+  RegistryProtocolRanked protocol nameEq state ->
+  RegistryParentRanksIncrease protocol nameEq state ->
+  SupportWellFounded nameEq state
+supportCombinedWellFounded protocol nameEq state ranked parentOrdered selected path =
+  let rankedPath = supportPathRankIncreases protocol nameEq state ranked
+        parentOrdered path
+      sameRank = nameProtocolRankUnique (pathLowerNameRanked rankedPath)
+        (pathUpperNameRanked rankedPath)
+      selfLess = replace
+        {p = \rank => LT (pathLowerRank rankedPath) rank}
+        (sym sameRank) (pathRankIncreases rankedPath)
+  in natLTIrreflexive selfLess

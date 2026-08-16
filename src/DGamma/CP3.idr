@@ -10,6 +10,7 @@ import Data.Maybe
 import Data.Nat
 import Decidable.Equality
 
+public export
 listMember : DecEq a => a -> List a -> Bool
 listMember wanted [] = False
 listMember wanted (current :: rest) = case decEq wanted current of
@@ -417,6 +418,7 @@ record ReachedFromEmpty
   reachInitialEmpty : bindings (registry reachInitial) = []
   reachInitialWellFormed : registryWellFormed @{nameEq} @{keyEq} reachInitial = True
 
+public export
 providerFromPredicate : DecEq name => DecEq key => key -> (name -> Bool) ->
   List (Binding name (FiberAt name key value world error)) -> Bool
 providerFromPredicate wanted supported [] = False
@@ -450,6 +452,7 @@ SupportSolution {name} candidate state =
   (n : name) -> candidate n = supportClause candidate n state
 
 
+public export
 providerFromCandidate : DecEq name => DecEq key => key -> List name ->
   List (Binding name (FiberAt name key value world error)) -> Bool
 providerFromCandidate wanted supported [] = False
@@ -458,10 +461,12 @@ providerFromCandidate wanted supported (Bind n fiber :: rest) =
     (dependencies (componentProvisions (fiberComponent fiber)))) ||
   providerFromCandidate wanted supported rest
 
+public export
 parentFromCandidate : DecEq name => Parent name -> List name -> Bool
 parentFromCandidate Root supported = True
 parentFromCandidate (ChildOf parent) supported = listMember parent supported
 
+public export
 supportCandidate : DecEq name => DecEq key =>
   List (Binding name (FiberAt name key value world error)) ->
   List name -> Binding name (FiberAt name key value world error) -> Bool
@@ -471,6 +476,7 @@ supportCandidate entries supported (Bind n fiber) =
   all (\k => providerFromCandidate k supported entries)
     (dependencies (componentDependencies (fiberComponent fiber)))
 
+public export
 supportPass : DecEq name => DecEq key =>
   List (Binding name (FiberAt name key value world error)) ->
   List name -> List name
@@ -483,6 +489,7 @@ supportPass entries supported = foldl addIfSupported supported entries
     else if supportCandidate entries accumulated entry
       then n :: accumulated else accumulated
 
+public export
 supportFuel : DecEq name => DecEq key => Nat ->
   List (Binding name (FiberAt name key value world error)) ->
   List name -> List name
