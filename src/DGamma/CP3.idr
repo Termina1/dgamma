@@ -6,6 +6,7 @@ import DGamma.Metatheory
 import Data.List
 import Data.List.Elem
 import Data.Maybe
+import Data.Nat
 import Decidable.Equality
 
 listMember : DecEq a => a -> List a -> Bool
@@ -162,3 +163,229 @@ programsBoundedBy bound state = all bounded (registryFibers (registry state))
   bounded : Binding name (FiberAt name key value world error) -> Bool
   bounded (Bind n fiber) =
     length (componentProgram (fiberComponent fiber)) <= bound
+
+||| A concrete host lifecycle rule applicable at one state. `LAdvance` covers
+||| the landing L-Iter/L-Finish/L-Raise/L-Divert alternatives; the separate
+||| `LDivert` constructor is the optional aborting rule.
+public export
+data LifecycleMove :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  SystemState name key value world error -> Type where
+  CanBegin : (actor : name) -> (after : SystemState name key value world error) ->
+    applyAction @{nameEq} @{keyEq} (LBegin actor) before = Just (LBeginTag, after) ->
+    LifecycleMove nameEq keyEq before
+  CanAdvance : (actor : name) -> (tag : RuleTag) ->
+    (after : SystemState name key value world error) ->
+    applyAction @{nameEq} @{keyEq} (LAdvance actor) before = Just (tag, after) ->
+    LifecycleMove nameEq keyEq before
+  CanDivert : (actor : name) -> (after : SystemState name key value world error) ->
+    applyAction @{nameEq} @{keyEq} (LDivert actor) before = Just (LDivertTag, after) ->
+    LifecycleMove nameEq keyEq before
+  CanLeave : (actor : name) -> (after : SystemState name key value world error) ->
+    applyAction @{nameEq} @{keyEq} (LLeave actor) before = Just (LLeaveTag, after) ->
+    LifecycleMove nameEq keyEq before
+  CanUnload : (actor : name) -> (after : SystemState name key value world error) ->
+    applyAction @{nameEq} @{keyEq} (LUnload actor) before = Just (LUnloadTag, after) ->
+    LifecycleMove nameEq keyEq before
+
+tryUnload : DecEq name => DecEq key => (actor : name) ->
+  (state : SystemState name key value world error) -> Maybe (LifecycleMove %search %search state)
+tryUnload actor state with (applyAction (LUnload actor) state) proof result
+  tryUnload actor state | Just (LUnloadTag, after) =
+    Just (CanUnload actor after result)
+  tryUnload actor state | Just (tag, after) = Nothing
+  tryUnload actor state | Nothing = Nothing
+
+tryLeave : DecEq name => DecEq key => (actor : name) ->
+  (state : SystemState name key value world error) -> Maybe (LifecycleMove %search %search state)
+tryLeave actor state with (applyAction (LLeave actor) state) proof result
+  tryLeave actor state | Just (LLeaveTag, after) =
+    Just (CanLeave actor after result)
+  tryLeave actor state | Just (tag, after) = tryUnload actor state
+  tryLeave actor state | Nothing = tryUnload actor state
+
+tryDivert : DecEq name => DecEq key => (actor : name) ->
+  (state : SystemState name key value world error) -> Maybe (LifecycleMove %search %search state)
+tryDivert actor state with (applyAction (LDivert actor) state) proof result
+  tryDivert actor state | Just (LDivertTag, after) =
+    Just (CanDivert actor after result)
+  tryDivert actor state | Just (tag, after) = tryLeave actor state
+  tryDivert actor state | Nothing = tryLeave actor state
+
+tryAdvance : DecEq name => DecEq key => (actor : name) ->
+  (state : SystemState name key value world error) -> Maybe (LifecycleMove %search %search state)
+tryAdvance actor state with (applyAction (LAdvance actor) state) proof result
+  tryAdvance actor state | Just (tag, after) =
+    Just (CanAdvance actor tag after result)
+  tryAdvance actor state | Nothing = tryDivert actor state
+
+tryLifecycleActor : DecEq name => DecEq key => (actor : name) ->
+  (state : SystemState name key value world error) -> Maybe (LifecycleMove %search %search state)
+tryLifecycleActor actor state with (applyAction (LBegin actor) state) proof result
+  tryLifecycleActor actor state | Just (LBeginTag, after) =
+    Just (CanBegin actor after result)
+  tryLifecycleActor actor state | Just (tag, after) = tryAdvance actor state
+  tryLifecycleActor actor state | Nothing = tryAdvance actor state
+
+firstApplicableFrom : DecEq name => DecEq key =>
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (state : SystemState name key value world error) -> Maybe (LifecycleMove %search %search state)
+firstApplicableFrom [] state = Nothing
+firstApplicableFrom (Bind actor fiber :: rest) state =
+  case tryLifecycleActor actor state of
+    Just move => Just move
+    Nothing => firstApplicableFrom rest state
+
+||| Executable witness search over exactly the lifecycle rules required by the
+||| paper's Progress theorem.
+public export
+firstApplicableLifecycle : DecEq name => DecEq key =>
+  (state : SystemState name key value world error) -> Maybe (LifecycleMove %search %search state)
+firstApplicableLifecycle state =
+  firstApplicableFrom (registryFibers (registry state)) state
+
+public export
+LifecycleMaximal : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  SystemState name key value world error -> Type
+LifecycleMaximal nameEq keyEq state =
+  LifecycleMove nameEq keyEq state -> Void
+
+public export
+isLifecycleAction : Action name key value world error -> Bool
+isLifecycleAction (OInsert n parent component) = False
+isLifecycleAction (ORetire n) = False
+isLifecycleAction (ORemove n) = False
+isLifecycleAction _ = True
+
+public export
+data LifecycleOnly :
+  {first, last : SystemState name key value world error} ->
+  Transitions first last -> Type where
+  LifecycleOnlyEnd : LifecycleOnly NoTransitions
+  LifecycleOnlyStep :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle last) ->
+    isLifecycleAction (transitionAction transition) = True ->
+    LifecycleOnly rest -> LifecycleOnly (MoreTransitions transition rest)
+
+public export
+0 stepsActingOn : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, last : SystemState name key value world error} ->
+  DecEq name => name -> Transitions first last -> Nat
+stepsActingOn actor NoTransitions = Z
+stepsActingOn actor (MoreTransitions transition rest) =
+  let later = stepsActingOn actor rest in
+  case decEq (transitionActor transition) actor of
+    Yes Refl => S later
+    No _ => later
+
+sameNameList : DecEq name => List name -> List name -> Bool
+sameNameList [] [] = True
+sameNameList [] (_ :: _) = False
+sameNameList (_ :: _) [] = False
+sameNameList (x :: xs) (y :: ys) = case decEq x y of
+  Yes Refl => sameNameList xs ys
+  No _ => False
+
+public export
+targetProvidersAt : DecEq name => DecEq key => name ->
+  SystemState name key value world error -> Maybe (List name)
+targetProvidersAt actor state = case lookupFiber actor (registry state) of
+  Nothing => Nothing
+  Just fiber => map viewProviders (targetFiber fiber (registry state))
+
+sameTarget : DecEq name => Maybe (List name) -> Maybe (List name) -> Bool
+sameTarget Nothing Nothing = True
+sameTarget Nothing (Just _) = False
+sameTarget (Just _) Nothing = False
+sameTarget (Just left) (Just right) = sameNameList left right
+
+||| Equation 61 as an exact indexed count. Transition endpoint states live in
+||| erased indices, so the count is evidence rather than a runtime traversal;
+||| `sameTarget` itself remains executable on explicit endpoints.
+public export
+data TargetTurnCount :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {first, last : SystemState name key value world error} ->
+  Transitions first last -> Nat -> Type where
+  NoTargetTurns : TargetTurnCount name key world error value nameEq keyEq actor
+    NoTransitions Z
+  TargetStayed :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    sameTarget @{nameEq}
+      (targetProvidersAt @{nameEq} @{keyEq} actor first)
+      (targetProvidersAt @{nameEq} @{keyEq} actor middle) = True ->
+    TargetTurnCount name key world error value nameEq keyEq actor rest turns ->
+    TargetTurnCount name key world error value nameEq keyEq actor
+      (MoreTransitions transition rest) turns
+  TargetChanged :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    sameTarget @{nameEq}
+      (targetProvidersAt @{nameEq} @{keyEq} actor first)
+      (targetProvidersAt @{nameEq} @{keyEq} actor middle) = False ->
+    TargetTurnCount name key world error value nameEq keyEq actor rest turns ->
+    TargetTurnCount name key world error value nameEq keyEq actor
+      (MoreTransitions transition rest) (S turns)
+
+public export
+record ProgressResult
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (bound : Nat)
+  {first, last : SystemState name key value world error}
+  (trace : Transitions first last) where
+  constructor MkProgressResult
+  noDeadlock : quiet @{nameEq} @{keyEq} last = False -> LifecycleMove nameEq keyEq last
+  perFiberBound : (actor : name) -> (turns : Nat) ->
+    TargetTurnCount name key world error value nameEq keyEq actor trace turns ->
+    LTE (stepsActingOn @{nameEq} actor trace)
+      ((bound + 4) * (turns + 1))
+  maximalIsQuiet : LifecycleMaximal nameEq keyEq last ->
+    quiet @{nameEq} @{keyEq} last = True
+
+||| Theorem 66, faithfully specialized to finite traces and static-list
+||| iterators. Finiteness of N is intrinsic in the registry representation.
+||| TODO(proof): the unloading-chain case needs the proved global Ordering
+||| theorem; the numerical bound then follows by precedence induction.
+public export
+progressTheorem : (name : Type) -> (key : Type) ->
+  (value : key -> Type) -> (world, error : Type) -> Type
+progressTheorem name key value world error =
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (bound : Nat) ->
+  (first, last : SystemState name key value world error) ->
+  (trace : Transitions first last) ->
+  LifecycleOnly trace ->
+  registryWellFormed @{nameEq} @{keyEq} first = True ->
+  PrecedenceAcyclic nameEq first ->
+  programsBoundedBy bound first = True ->
+  ProgressResult name key world error value nameEq keyEq bound trace
+
+||| Tractable executable core: a successful search result is already the exact
+||| indexed applicability witness needed by the no-deadlock conclusion.
+public export
+0 searchedLifecycleMove :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) ->
+  (move : LifecycleMove nameEq keyEq state) ->
+  firstApplicableLifecycle @{nameEq} @{keyEq} state = Just move ->
+  LifecycleMove nameEq keyEq state
+searchedLifecycleMove nameEq keyEq state move equation = move
+
+||| The logical consequence in the last sentence of Theorem 66: no-deadlock
+||| turns lifecycle maximality into quiescence without an additional axiom.
+public export
+0 maximalQuietFromNoDeadlock :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) ->
+  (noDeadlock : quiet @{nameEq} @{keyEq} state = False ->
+    LifecycleMove nameEq keyEq state) ->
+  LifecycleMaximal nameEq keyEq state ->
+  quiet @{nameEq} @{keyEq} state = True
+maximalQuietFromNoDeadlock nameEq keyEq state noDeadlock maximal
+  with (quiet @{nameEq} @{keyEq} state) proof quietResult
+  maximalQuietFromNoDeadlock nameEq keyEq state noDeadlock maximal | True = Refl
+  maximalQuietFromNoDeadlock nameEq keyEq state noDeadlock maximal | False =
+    void (maximal (noDeadlock Refl))
