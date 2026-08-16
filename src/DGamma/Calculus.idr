@@ -766,11 +766,51 @@ public export
 viewProvidersInvariant : DecEq name => Registry name key value world error ->
   View name deps -> Bool
 viewProvidersInvariant fibers EmptyView = True
-viewProvidersInvariant fibers (ProviderView provider rest) =
-  case lookupFiber provider fibers of
+viewProvidersInvariant @{nameEq} fibers (ProviderView provider rest) =
+  case lookupFiber @{nameEq} provider fibers of
     Nothing => False
     Just fiber => stableProvider (fiberLifecycle fiber) &&
-                  viewProvidersInvariant fibers rest
+                  viewProvidersInvariant @{nameEq} fibers rest
+
+public export
+0 viewProvidersInactiveInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (deps : List key) -> (view : View name deps) ->
+  (n : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (fibers : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Nothing) ->
+  viewProvidersInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error}
+    (insertBinding @{nameEq} n (freshFiber component parent) fibers absent) view =
+  viewProvidersInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fibers view
+viewProvidersInactiveInsert {key} {world} {error} {value} nameEq [] EmptyView n component parent fibers absent = Refl
+viewProvidersInactiveInsert {name} {key} {world} {error} {value}
+  nameEq (k :: ks) (ProviderView provider rest) n component parent fibers absent
+  with (decEq @{nameEq} provider n)
+  viewProvidersInactiveInsert {name} {key} {world} {error} {value}
+    nameEq (k :: ks) (ProviderView n rest) n component parent fibers absent |
+    (Yes Refl) =
+      rewrite lookupInserted n (freshFiber component parent) fibers absent in
+        rewrite absent in Refl
+  viewProvidersInactiveInsert {name} {key} {world} {error} {value}
+    nameEq (k :: ks) (ProviderView provider rest) n component parent fibers absent |
+    (No distinct) with (lookupFiber @{nameEq} {key = key} {value = value}
+      {world = world} {error = error} provider fibers) proof original
+    viewProvidersInactiveInsert {name} {key} {world} {error} {value}
+      nameEq (k :: ks) (ProviderView provider rest) n component parent fibers absent |
+      (No distinct) | Nothing =
+        let inserted = trans
+              (lookupInsertOther provider n distinct (freshFiber component parent)
+                fibers absent) original in rewrite inserted in Refl
+    viewProvidersInactiveInsert {name} {key} {world} {error} {value}
+      nameEq (k :: ks) (ProviderView provider rest) n component parent fibers absent |
+      (No distinct) | Just providerFiber =
+        let inserted = trans
+              (lookupInsertOther provider n distinct (freshFiber component parent)
+                fibers absent) original in
+        rewrite inserted in cong (stableProvider (fiberLifecycle providerFiber) &&)
+          (viewProvidersInactiveInsert {name = name} {key = key}
+            {world = world} {error = error} {value = value}
+            nameEq ks rest n component parent fibers absent)
 
 public export
 viewBindingsInvariant : DecEq name => DecEq key => (deps : List key) ->
