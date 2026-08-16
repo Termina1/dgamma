@@ -652,8 +652,32 @@ pairwiseProvisionInvariant (Bind _ fiber :: rest) =
   provisionsDisjointFrom (componentProvisions (fiberComponent fiber)) rest &&
   pairwiseProvisionInvariant rest
 
-||| Definition 58's executable registry invariant. It lives beside Transition so
-||| the indexed LTS can carry erased preservation certificates intrinsically.
+public export
+parentsInvariant : DecEq name =>
+  List (Binding name (FiberAt name key value world error)) ->
+  Registry name key value world error -> Bool
+parentsInvariant [] fibers = True
+parentsInvariant (Bind _ fiber :: rest) fibers =
+  parentInvariant (fiberParent fiber) fibers && parentsInvariant rest fibers
+
+public export
+chainsInvariant : DecEq name => Nat ->
+  List (Binding name (FiberAt name key value world error)) ->
+  Registry name key value world error -> Bool
+chainsInvariant fuel [] fibers = True
+chainsInvariant fuel (Bind n _ :: rest) fibers =
+  parentChainInvariant fuel [n] n fibers && chainsInvariant fuel rest fibers
+
+public export
+viewsInvariant : DecEq name => DecEq key =>
+  List (Binding name (FiberAt name key value world error)) ->
+  Registry name key value world error -> Bool
+viewsInvariant [] fibers = True
+viewsInvariant (Bind _ fiber :: rest) fibers =
+  fiberViewInvariant fiber fibers && viewsInvariant rest fibers
+
+||| Definition 58's executable registry invariant. Explicit recursive folds make
+||| preservation frame proofs reusable and transparent.
 public export
 registryWellFormed : DecEq name => DecEq key =>
   SystemState name key value world error -> Bool
@@ -661,10 +685,9 @@ registryWellFormed state =
   let fibers = registry state
       entries = registryFibers fibers
       fuel = S (length entries)
-   in all (\(Bind _ fiber) => parentInvariant (fiberParent fiber) fibers) entries &&
-      all (\(Bind n _) => parentChainInvariant fuel [n] n fibers) entries &&
-      pairwiseProvisionInvariant entries &&
-      all (\(Bind _ fiber) => fiberViewInvariant fiber fibers) entries
+   in parentsInvariant entries fibers &&
+      chainsInvariant fuel entries fibers &&
+      pairwiseProvisionInvariant entries && viewsInvariant entries fibers
 
 ||| Runtime-checked rule application used by the proof-indexed LTS. `applyAction`
 ||| remains the raw ten-rule evaluator; this wrapper rejects a malformed target
