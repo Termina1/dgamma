@@ -1147,50 +1147,334 @@ data OccursIn : {name, key, world, error : Type} -> {value : key -> Type} ->
   OccursLater : OccursIn selected rest ->
     OccursIn selected (MoreTransitions transition rest)
 
-||| Non-vacuous Definition-60 hypothesis over the complete effect state.
-||| Every commutation and definedness premise observes ambient state and all
-||| owned tables pointwise; no world-only projection exists in this interface.
+public export
+actionOwner : Action name key value world error -> name
+actionOwner (OInsert n parent component) = n
+actionOwner (ORetire n) = n
+actionOwner (ORemove n) = n
+actionOwner (LBegin n) = n
+actionOwner (LAdvance n) = n
+actionOwner (LDivert n) = n
+actionOwner (LLeave n) = n
+actionOwner (LUnload n) = n
+
+||| Finite-list realization of paper Definition 60's continuation closure.
+||| `ReachableSuffix source target` witnesses that `target` is the iterator
+||| continuation reached after zero or more yields from `source`.
+public export
+data ReachableSuffix : List a -> List a -> Type where
+  SuffixHere : ReachableSuffix suffix suffix
+  SuffixLater : ReachableSuffix rest suffix ->
+    ReachableSuffix (discarded :: rest) suffix
+
+||| One reachable nonterminal iterator stage belonging to an actual LAdvance
+||| occurrence. Every nonempty suffix is represented, so later continuations
+||| are generators even when the supplied trace stops before executing them.
+public export
+data IteratorStage :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (actor : name) ->
+  {first, last : SystemState name key value world error} ->
+  Transitions first last -> Type where
+  StageFromAdvance :
+    {before, afterState : SystemState name key value world error} ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+    (tag : RuleTag) ->
+    (equation : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+      Just (tag, afterState)) ->
+    OccursIn (Fired {before = before} {afterState = afterState}
+      nameEq keyEq (LAdvance actor) tag equation) trace ->
+    (fiber : Fiber name key value world error) ->
+    lookupFiber @{nameEq} actor (registry before) = Just fiber ->
+    (remaining : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber)))) ->
+    (accumulator : LocalState key value world
+        (componentProvisions (fiberComponent fiber)) ->
+      LocalState key value world
+        (componentProvisions (fiberComponent fiber))) ->
+    (view : View name
+      (dependencies (componentDependencies (fiberComponent fiber)))) ->
+    fiberLifecycle fiber = Reloading remaining accumulator view ->
+    (step : StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber))) ->
+    (rest : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber)))) ->
+    ReachableSuffix remaining (step :: rest) ->
+    IteratorStage name key world error value actor trace
+
+||| Lift one concrete yielded local inverse to the complete effect state.
+public export
+yieldedInverseEffectMap :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (provision : CoeffectSpec key) ->
+  (undo : LocalState key value world provision ->
+    LocalState key value world provision) ->
+  PartialEffectMap name key value world
+yieldedInverseEffectMap nameEq keyEq actor provision undo state =
+  let owned = restrictOwned @{keyEq} provision (effectTables state actor)
+      restored = undo (MkLocalState (effectAmbient state) owned)
+  in Just (setEffectTable @{nameEq} actor
+    (ownedValues (localTable restored))
+    (setEffectAmbient (localWorld restored) state))
+
+||| Evaluate one reachable iterator stage, exposing both its forward result and
+||| the exact inverse yielded at this application state. The continuation is
+||| the stage's statically fixed `rest`; unlike the paper's general iterator,
+||| this finite calculus has no data-dependent continuation constructor.
+public export
+iteratorStepEffect :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (fiber : Fiber name key value world error) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))) ->
+  EffectState name key value world ->
+  Maybe (EffectState name key value world, PartialEffectMap name key value world)
+iteratorStepEffect nameEq keyEq actor fiber step view state =
+  case resolveEffectValues @{keyEq}
+    (dependencies (componentDependencies (fiberComponent fiber))) view state of
+    Nothing => Nothing
+    Just capability =>
+      let owned = restrictOwned @{keyEq}
+            (componentProvisions (fiberComponent fiber))
+            (effectTables state actor)
+      in case runStepEffect step capability
+        (MkLocalState (effectAmbient state) owned) of
+        Left _ => Nothing
+        Right (after, undo) =>
+          let next = setEffectTable @{nameEq} actor
+                (ownedValues (localTable after))
+                (setEffectAmbient (localWorld after) state)
+          in Just (next,
+            yieldedInverseEffectMap nameEq keyEq actor
+              (componentProvisions (fiberComponent fiber)) undo)
+
+public export
+iteratorStageEffect :
+  IteratorStage name key world error value actor trace ->
+  EffectState name key value world ->
+  Maybe (EffectState name key value world, PartialEffectMap name key value world)
+iteratorStageEffect
+  (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+    accumulator view lifecycle step rest suffix) =
+  iteratorStepEffect nameEq keyEq actor fiber step view
+
+||| Equation 54 generators: actual Table-1 maps, every reachable iterator
+||| forward map, and every inverse yielded by such a stage at every origin.
+public export
+data TraceEffectGenerator :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (actor : name) ->
+  {first, last : SystemState name key value world error} ->
+  Transitions first last -> Type where
+  ActualForwardGenerator :
+    (before, afterState : SystemState name key value world error) ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+    (action : Action name key value world error) -> (tag : RuleTag) ->
+    (equation : checkedApplyAction @{nameEq} @{keyEq} action before =
+      Just (tag, afterState)) ->
+    OccursIn (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag equation) trace ->
+    actionOwner action = actor ->
+    TraceEffectGenerator name key world error value actor trace
+  IteratorForwardGenerator :
+    IteratorStage name key world error value actor trace ->
+    TraceEffectGenerator name key world error value actor trace
+  IteratorYieldedGenerator :
+    IteratorStage name key world error value actor trace ->
+    EffectState name key value world ->
+    TraceEffectGenerator name key world error value actor trace
+
+public export
+traceGeneratorMap :
+  TraceEffectGenerator name key world error value actor trace ->
+  PartialEffectMap name key value world
+traceGeneratorMap
+  (ActualForwardGenerator before afterState nameEq keyEq action tag equation
+    occurs actorMatches) state =
+  partialEffectMapFor nameEq keyEq action tag before state
+traceGeneratorMap (IteratorForwardGenerator stage) state =
+  map fst (iteratorStageEffect stage state)
+traceGeneratorMap (IteratorYieldedGenerator stage origin) state =
+  case iteratorStageEffect stage origin of
+    Nothing => Nothing
+    Just (after, undo) => undo state
+
+||| The partial transformation monoid M(i) generated by Equation 54.
+public export
+data TraceEffectTransformation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (actor : name) ->
+  {first, last : SystemState name key value world error} ->
+  Transitions first last -> Type where
+  TraceIdentity : TraceEffectTransformation name key world error value actor trace
+  TraceGenerator : TraceEffectGenerator name key world error value actor trace ->
+    TraceEffectTransformation name key world error value actor trace
+  TraceCompose :
+    TraceEffectTransformation name key world error value actor trace ->
+    TraceEffectTransformation name key world error value actor trace ->
+    TraceEffectTransformation name key world error value actor trace
+
+public export
+runTraceEffectTransformation :
+  TraceEffectTransformation name key world error value actor trace ->
+  PartialEffectMap name key value world
+runTraceEffectTransformation TraceIdentity = partialIdentity
+runTraceEffectTransformation (TraceGenerator generator) =
+  traceGeneratorMap generator
+runTraceEffectTransformation (TraceCompose after before) =
+  partialCompose (runTraceEffectTransformation after)
+    (runTraceEffectTransformation before)
+
+||| Equation 55 compares the yielded inverse and continuation. In this finite
+||| representation the continuation is fixed by `ReachableSuffix`; this family
+||| therefore compares the only dynamic yield field, the inverse, at every
+||| foreign-moved origin. Undefinedness must agree as well.
+public export
+data IteratorYieldAgreement :
+  (name, key : Type) -> (value : key -> Type) -> (world : Type) ->
+  (keyEq : DecEq key) ->
+  Maybe (EffectState name key value world,
+    PartialEffectMap name key value world) ->
+  Maybe (EffectState name key value world,
+    PartialEffectMap name key value world) -> Type where
+  IteratorBothUndefined :
+    IteratorYieldAgreement name key value world keyEq Nothing Nothing
+  IteratorYieldsAgree :
+    PartialMapsEquivalent (EffectStateEquivalence keyEq) leftUndo rightUndo ->
+    IteratorYieldAgreement name key value world keyEq
+      (Just (leftAfter, leftUndo)) (Just (rightAfter, rightUndo))
+
+public export
+IteratorYieldStableUnder :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, last : SystemState name key value world error} ->
+  {trace : Transitions first last} -> {actor : name} ->
+  (keyEq : DecEq key) ->
+  IteratorStage name key world error value actor trace ->
+  PartialEffectMap name key value world ->
+  EffectState name key value world -> Type
+IteratorYieldStableUnder {name} {key} {world} {value} keyEq stage foreign origin =
+  case foreign origin of
+    Nothing => Unit
+    Just moved => IteratorYieldAgreement name key value world keyEq
+      (iteratorStageEffect stage moved) (iteratorStageEffect stage origin)
+
+||| Full-effect-state Definition 60 / Equation 55. Distinct actors' complete
+||| generated monoids commute, including every individual yielded inverse, and
+||| moving an iterator by any foreign generated transformation preserves its
+||| yielded inverse (and its statically fixed reachable continuation).
 public export
 record TraceIndependent (name, key, world, error : Type)
                         (value : key -> Type) (keyEq : DecEq key)
                         {first, last : SystemState name key value world error}
                         (trace : Transitions first last) where
   constructor MkTraceIndependent
-  0 actualMapsCommute :
-    {leftBefore, leftAfter, rightBefore, rightAfter :
-      SystemState name key value world error} ->
-    (left : Transition leftBefore leftAfter) ->
-    (right : Transition rightBefore rightAfter) ->
-    OccursIn left trace -> OccursIn right trace ->
-    Not (transitionActor left = transitionActor right) ->
+  0 generatedMonoidsCommute :
+    (left, right : name) -> Not (left = right) ->
+    (leftT : TraceEffectTransformation name key world error value left trace) ->
+    (rightT : TraceEffectTransformation name key world error value right trace) ->
     PartialCommute (EffectStateEquivalence keyEq)
-      (partialEffectMap left) (partialEffectMap right)
-  0 definednessStable :
-    {leftBefore, leftAfter, rightBefore, rightAfter :
-      SystemState name key value world error} ->
-    (left : Transition leftBefore leftAfter) ->
-    (right : Transition rightBefore rightAfter) ->
-    OccursIn left trace -> OccursIn right trace ->
-    Not (transitionActor left = transitionActor right) ->
-    (origin, moved, result : EffectState name key value world) ->
-    partialEffectMap right origin = Just moved ->
-    partialEffectMap left origin = Just result ->
-    (movedResult : EffectState name key value world **
-      partialEffectMap left moved = Just movedResult)
+      (runTraceEffectTransformation leftT)
+      (runTraceEffectTransformation rightT)
+  0 iteratorYieldsStable :
+    (left, right : name) -> Not (left = right) ->
+    (stage : IteratorStage name key world error value left trace) ->
+    (foreign : TraceEffectTransformation name key world error value right trace) ->
+    (origin : EffectState name key value world) ->
+    IteratorYieldStableUnder keyEq stage
+      (runTraceEffectTransformation foreign) origin
+
+||| Direct projection used by recovery: each concrete yielded inverse is a
+||| generator in M(i), so final-accumulator cancellation cannot hide it.
+public export
+0 yieldedInverseCommutes :
+  (independent : TraceIndependent name key world error value keyEq trace) ->
+  (left, right : name) -> Not (left = right) ->
+  (stage : IteratorStage name key world error value left trace) ->
+  (origin : EffectState name key value world) ->
+  (foreign : TraceEffectTransformation name key world error value right trace) ->
+  PartialCommute (EffectStateEquivalence keyEq)
+    (traceGeneratorMap (IteratorYieldedGenerator stage origin))
+    (runTraceEffectTransformation foreign)
+yieldedInverseCommutes independent left right distinct stage origin foreign =
+  generatedMonoidsCommute independent left right distinct
+    (TraceGenerator (IteratorYieldedGenerator stage origin)) foreign
+
+||| Every statically reachable continuation forward map is likewise a generator.
+public export
+0 reachableContinuationCommutes :
+  (independent : TraceIndependent name key world error value keyEq trace) ->
+  (left, right : name) -> Not (left = right) ->
+  (stage : IteratorStage name key world error value left trace) ->
+  (foreign : TraceEffectTransformation name key world error value right trace) ->
+  PartialCommute (EffectStateEquivalence keyEq)
+    (traceGeneratorMap (IteratorForwardGenerator stage))
+    (runTraceEffectTransformation foreign)
+reachableContinuationCommutes independent left right distinct stage foreign =
+  generatedMonoidsCommute independent left right distinct
+    (TraceGenerator (IteratorForwardGenerator stage)) foreign
 
 public export
 0 noOccurrenceInEmpty : OccursIn transition NoTransitions -> Void
 noOccurrenceInEmpty occurrence impossible
+
+0 noIteratorStageInEmpty :
+  IteratorStage name key world error value actor NoTransitions -> Void
+noIteratorStageInEmpty (StageFromAdvance nameEq keyEq actor tag equation occurs
+  fiber found remaining accumulator view lifecycle step rest suffix) =
+  noOccurrenceInEmpty occurs
+
+0 noTraceGeneratorInEmpty :
+  TraceEffectGenerator name key world error value actor NoTransitions -> Void
+noTraceGeneratorInEmpty
+  (ActualForwardGenerator before afterState nameEq keyEq action tag equation occurs
+    actorMatches) = noOccurrenceInEmpty occurs
+noTraceGeneratorInEmpty (IteratorForwardGenerator stage) =
+  noIteratorStageInEmpty stage
+noTraceGeneratorInEmpty (IteratorYieldedGenerator stage origin) =
+  noIteratorStageInEmpty stage
+
+0 emptyTraceTransformationMap :
+  (transformation : TraceEffectTransformation name key world error value actor
+    (NoTransitions {state = systemState})) ->
+  (effectState : EffectState name key value world) ->
+  runTraceEffectTransformation transformation effectState = Just effectState
+emptyTraceTransformationMap TraceIdentity effectState = Refl
+emptyTraceTransformationMap (TraceGenerator generator) effectState =
+  void (noTraceGeneratorInEmpty generator)
+emptyTraceTransformationMap (TraceCompose after before) effectState =
+  rewrite emptyTraceTransformationMap before effectState in
+    emptyTraceTransformationMap after effectState
+
+0 emptyTraceCompositionMap :
+  (after : TraceEffectTransformation name key world error value afterActor
+    (NoTransitions {state = systemState})) ->
+  (before : TraceEffectTransformation name key world error value beforeActor
+    (NoTransitions {state = systemState})) ->
+  (effectState : EffectState name key value world) ->
+  partialCompose (runTraceEffectTransformation after)
+    (runTraceEffectTransformation before) effectState = Just effectState
+emptyTraceCompositionMap after before effectState =
+  rewrite emptyTraceTransformationMap before effectState in
+    emptyTraceTransformationMap after effectState
 
 ||| Concrete non-vacuity witness for every full effect state.
 public export
 emptyTraceIndependent : (keyEq : DecEq key) ->
   TraceIndependent name key world error value keyEq (NoTransitions {state})
 emptyTraceIndependent keyEq = MkTraceIndependent
-  (\left, right, leftOccurs, rightOccurs, distinct =>
-    void (noOccurrenceInEmpty leftOccurs))
-  (\left, right, leftOccurs, rightOccurs, distinct, origin, moved, result,
-    rightDefined, leftDefined => void (noOccurrenceInEmpty leftOccurs))
+  (\left, right, distinct, leftT, rightT, effectState =>
+    rewrite emptyTraceCompositionMap leftT rightT effectState in
+    rewrite emptyTraceCompositionMap rightT leftT effectState in
+    PartialDefined (effectStateReflexive keyEq effectState))
+  (\left, right, distinct, stage, foreign, origin =>
+    void (noIteratorStageInEmpty stage))
 
 ||| Full-effect replay skips the selected actor and propagates foreign failure.
 ||| Its zero-step case uses pointwise effect-state equality, avoiding function
@@ -1254,22 +1538,18 @@ accumulatorEffectMap nameEq keyEq selected
       Just (setEffectTable @{nameEq} selected (ownedValues (localTable restored))
         (setEffectAmbient (localWorld restored) state))
 
-||| A trace-specific full-effect accumulator/foreign-map hypothesis.
+||| Prefix form of paper Definition 60. It is the generated-monoid family
+||| condition itself, not a commutation assumption about the final accumulator.
+||| The selected accumulator is derived from the individual yielded generators
+||| recorded by `IteratorStage` during the eventual Theorem-61 induction.
 public export
-record PrefixRecoveryIndependent
-  (name, key, world, error : Type) (value : key -> Type)
-  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
-  {start, current : SystemState name key value world error}
-  (trace : Transitions start current)
-  (accumulator : PartialEffectMap name key value world) where
-  constructor MkPrefixRecoveryIndependent
-  0 accumulatorCommutes :
-    {before, afterState : SystemState name key value world error} ->
-    (foreign : Transition before afterState) ->
-    OccursIn foreign trace ->
-    Not (transitionActor foreign = selected) ->
-    PartialCommute (EffectStateEquivalence keyEq) accumulator
-      (partialEffectMap foreign)
+PrefixRecoveryIndependent :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {start, current : SystemState name key value world error} ->
+  Transitions start current -> Type
+PrefixRecoveryIndependent name key world error value nameEq keyEq selected trace =
+  TraceIndependent name key world error value keyEq trace
 
 ||| Theorem 61. Premises and conclusion now range over exactly the same full
 ||| effect state (ambient plus every owned table).
@@ -1284,7 +1564,7 @@ recoveryExactnessTheorem name key value world error =
   (handle : AccumulatorHandle key value world) ->
   actualAccumulatorAt @{nameEq} n current = Just handle ->
   PrefixRecoveryIndependent name key world error value nameEq keyEq n
-    (prefixTransitions episode) (accumulatorEffectMap nameEq keyEq n handle) ->
+    (prefixTransitions episode) ->
   (restored : EffectState name key value world) ->
   accumulatorEffectMap nameEq keyEq n handle (projectEffectState @{nameEq} current) =
     Just restored ->
@@ -2371,16 +2651,7 @@ systemLocalUpdateForeign nameEq selected actor distinct before afterState update
   registryLocalUpdateForeign nameEq selected actor distinct (registry before)
     (systemRegistryUpdate update)
 
-public export
-actionOwner : Action name key value world error -> name
-actionOwner (OInsert n parent component) = n
-actionOwner (ORetire n) = n
-actionOwner (ORemove n) = n
-actionOwner (LBegin n) = n
-actionOwner (LAdvance n) = n
-actionOwner (LDivert n) = n
-actionOwner (LLeave n) = n
-actionOwner (LUnload n) = n
+
 
 0 applyActionLocalUpdate :
   {name, key, world, error : Type} -> {value : key -> Type} ->
