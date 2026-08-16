@@ -688,23 +688,24 @@ public export
 data InstallationEvolution :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
-  (before, afterState : SystemState name key value world error) -> Type where
+  (before, afterState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) -> Type where
   RemainedUninstalled :
     installedAt @{nameEq} selected before = False ->
     installedAt @{nameEq} selected afterState = False ->
     InstallationEvolution name key world error value nameEq keyEq selected
-      before afterState
+      before afterState action tag
   RemainedInstalled :
     installedAt @{nameEq} selected before = True ->
     installedAt @{nameEq} selected afterState = True ->
     InstallationEvolution name key world error value nameEq keyEq selected
-      before afterState
-  OpenedInstallation : BeginStep nameEq keyEq selected before afterState ->
+      before afterState action tag
+  OpenedInstallation :
     InstallationEvolution name key world error value nameEq keyEq selected
-      before afterState
-  ClosedInstallation : UnloadStep nameEq keyEq selected before afterState ->
+      before afterState (LBegin selected) LBeginTag
+  ClosedInstallation :
     InstallationEvolution name key world error value nameEq keyEq selected
-      before afterState
+      before afterState (LUnload selected) LUnloadTag
 
 installedMaybe : {name, key, world, error : Type} -> {value : key -> Type} ->
   Maybe (Fiber name key value world error) -> Bool
@@ -763,7 +764,7 @@ public export
   (tag : RuleTag) ->
   applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
   InstallationEvolution name key world error value nameEq keyEq selected
-    before afterState
+    before afterState action tag
 foreignInstallationEvolution nameEq keyEq selected action distinct before
   afterState tag equation =
   let stable = foreignInstalledStable nameEq keyEq selected action distinct
@@ -1392,11 +1393,12 @@ oInsertUninstalled {name} {key} {world} {error} {value}
 0 stableInstallationEvolution :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (before, afterState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
   installedAt @{nameEq} selected before =
     installedAt @{nameEq} selected afterState ->
   InstallationEvolution name key world error value nameEq keyEq selected
-    before afterState
-stableInstallationEvolution nameEq keyEq selected before afterState stable =
+    before afterState action tag
+stableInstallationEvolution nameEq keyEq selected before afterState action tag stable =
   case boolEquality (installedAt @{nameEq} selected before) of
     Left sourceFalse =>
       RemainedUninstalled sourceFalse (trans (sym stable) sourceFalse)
@@ -1417,10 +1419,10 @@ stableInstallationEvolution nameEq keyEq selected before afterState stable =
   installedAt @{nameEq} selected before = False ->
   installedAt @{nameEq} selected afterState = True ->
   InstallationEvolution name key world error value nameEq keyEq selected
-    before afterState
+    before afterState (LBegin selected) tag
 openedEvolutionFrom nameEq keyEq selected before afterState LBeginTag Refl
   checkedEquation sourceFalse targetTrue =
-  OpenedInstallation (MkBeginStep checkedEquation)
+  OpenedInstallation
 
 0 closedEvolutionFrom :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
@@ -1431,10 +1433,10 @@ openedEvolutionFrom nameEq keyEq selected before afterState LBeginTag Refl
   installedAt @{nameEq} selected before = True ->
   installedAt @{nameEq} selected afterState = False ->
   InstallationEvolution name key world error value nameEq keyEq selected
-    before afterState
+    before afterState (LUnload selected) tag
 closedEvolutionFrom nameEq keyEq selected before afterState LUnloadTag Refl
   checkedEquation sourceTrue targetFalse =
-  ClosedInstallation (MkUnloadStep checkedEquation)
+  ClosedInstallation
 
 0 lDivertInstallationEvolution :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
@@ -1443,7 +1445,7 @@ closedEvolutionFrom nameEq keyEq selected before afterState LUnloadTag Refl
   applyAction @{nameEq} @{keyEq} (LDivert selected) before =
     Just (tag, afterState) ->
   InstallationEvolution name key world error value nameEq keyEq selected
-    before afterState
+    before afterState (LDivert selected) tag
 lDivertInstallationEvolution nameEq keyEq selected before afterState LDivertTag
   Refl equation = case lDivertInstalled nameEq keyEq selected before afterState
     equation of
@@ -1460,7 +1462,7 @@ public export
   (checkedEquation : checkedApplyAction @{nameEq} @{keyEq} action before =
     Just (tag, afterState)) ->
   InstallationEvolution name key world error value nameEq keyEq selected
-    before afterState
+    before afterState action tag
 installationEvolutionStep nameEq keyEq selected action tag before afterState
   checkedEquation with (decEq @{nameEq} selected (actionOwner action))
   installationEvolutionStep nameEq keyEq selected action tag before afterState
@@ -1477,7 +1479,7 @@ installationEvolutionStep nameEq keyEq selected action tag before afterState
           RemainedUninstalled sourceFalse targetFalse
   installationEvolutionStep nameEq keyEq selected (ORetire selected) tag before
     afterState checkedEquation | Yes Refl = stableInstallationEvolution nameEq keyEq selected before afterState
-        (oRetireStable nameEq keyEq selected before afterState tag
+        (ORetire selected) tag (oRetireStable nameEq keyEq selected before afterState tag
           (checkedActionProjects nameEq keyEq (ORetire selected) before afterState
             tag checkedEquation))
   installationEvolutionStep nameEq keyEq selected (ORemove selected) tag before
@@ -1521,3 +1523,198 @@ installationEvolutionStep nameEq keyEq selected action tag before afterState
         (tagShape, sourceTrue, targetFalse) =>
           closedEvolutionFrom nameEq keyEq selected before afterState tag
             tagShape checkedEquation sourceTrue targetFalse
+
+public export
+0 alignedAppendSplit :
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (appendTransitions left right) ->
+  (AlignedTransitions name key world error value nameEq keyEq left,
+   AlignedTransitions name key world error value nameEq keyEq right)
+alignedAppendSplit NoTransitions right aligned = (AlignedEnd, aligned)
+alignedAppendSplit (MoreTransitions (Fired nameEq keyEq action tag equation) rest)
+  right (AlignedStep action tag equation
+    (appendTransitions rest right) alignedTail) =
+  case alignedAppendSplit rest right alignedTail of
+    (leftAligned, rightAligned) =>
+      (AlignedStep action tag equation rest leftAligned, rightAligned)
+
+public export
+0 appendInstalledTrace :
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  InstalledTrace name key world error value nameEq keyEq selected left ->
+  InstalledTrace name key world error value nameEq keyEq selected right ->
+  InstalledTrace name key world error value nameEq keyEq selected
+    (appendTransitions left right)
+appendInstalledTrace NoTransitions right (InstalledEnd installed) rightInstalled =
+  rightInstalled
+appendInstalledTrace
+  (MoreTransitions (Fired nameEq keyEq action tag equation) rest) right
+  (InstalledStep action tag equation rest sourceInstalled tailInstalled)
+  rightInstalled =
+    InstalledStep action tag equation (appendTransitions rest right)
+      sourceInstalled
+      (appendInstalledTrace rest right tailInstalled rightInstalled)
+
+public export
+data InstalledEnding :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, last : SystemState name key value world error} ->
+  Transitions first last -> Type where
+  EntireTraceInstalled :
+    InstalledTrace name key world error value nameEq keyEq selected trace ->
+    InstalledEnding name key world error value nameEq keyEq selected trace
+  LastOpening :
+    (preStart, opened : SystemState name key value world error) ->
+    (beforeOpening : Transitions first preStart) ->
+    (opening : BeginStep nameEq keyEq selected preStart opened) ->
+    (afterOpening : Transitions opened last) ->
+    appendTransitions beforeOpening
+      (MoreTransitions (beginTransition opening) afterOpening) = trace ->
+    InstalledTrace name key world error value nameEq keyEq selected afterOpening ->
+    InstalledEnding name key world error value nameEq keyEq selected trace
+
+0 unloadTargetUninstalled :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  UnloadStep nameEq keyEq selected before afterState ->
+  installedAt @{nameEq} selected afterState = False
+unloadTargetUninstalled nameEq keyEq selected before afterState closing =
+  case lUnloadBoundary nameEq keyEq selected before afterState LUnloadTag
+    (checkedActionProjects nameEq keyEq (LUnload selected) before afterState
+      LUnloadTag (unloadEquation closing)) of
+    (tagShape, sourceTrue, targetFalse) => targetFalse
+
+0 installedEnding :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (trace : Transitions first last) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  installedAt @{nameEq} selected last = True ->
+  InstalledEnding name key world error value nameEq keyEq selected trace
+installedEnding nameEq keyEq selected NoTransitions AlignedEnd endpointTrue =
+  EntireTraceInstalled (InstalledEnd endpointTrue)
+installedEnding nameEq keyEq selected
+  trace@(MoreTransitions (Fired nameEq keyEq action tag equation) rest)
+  (AlignedStep action tag equation rest alignedRest) endpointTrue =
+  case installedEnding nameEq keyEq selected rest alignedRest endpointTrue of
+    LastOpening preStart opened beforeOpening opening afterOpening split
+      installedAfter =>
+        LastOpening preStart opened
+          (MoreTransitions (Fired nameEq keyEq action tag equation) beforeOpening)
+          opening afterOpening
+          (cong (MoreTransitions (Fired nameEq keyEq action tag equation)) split)
+          installedAfter
+    EntireTraceInstalled installedRest =>
+      case installationEvolutionStep nameEq keyEq selected action tag _ _ equation of
+        RemainedInstalled sourceTrue targetTrue =>
+          EntireTraceInstalled
+            (InstalledStep action tag equation rest sourceTrue installedRest)
+        OpenedInstallation =>
+          LastOpening _ _ NoTransitions (MkBeginStep equation) rest Refl installedRest
+        RemainedUninstalled sourceFalse targetFalse =>
+          let targetTrue = installedTraceStart installedRest
+          in void (falseNotTrue (trans (sym targetFalse) targetTrue))
+        ClosedInstallation =>
+          let targetFalse = case lUnloadBoundary nameEq keyEq selected _ _
+                LUnloadTag (checkedActionProjects nameEq keyEq (LUnload selected)
+                  _ _ LUnloadTag equation) of
+                (tagShape, sourceTrue, targetFalse) => targetFalse
+              targetTrue = installedTraceStart installedRest
+          in void (falseNotTrue (trans (sym targetFalse) targetTrue))
+  where
+  falseNotTrue : False = True -> Void
+  falseNotTrue Refl impossible
+
+public export
+record LastOpeningResult
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
+  {first, last : SystemState name key value world error}
+  (trace : Transitions first last) where
+  constructor MkLastOpeningResult
+  openingPreStart : SystemState name key value world error
+  openingStart : SystemState name key value world error
+  traceBeforeLastOpening : Transitions first openingPreStart
+  lastOpeningStep : BeginStep nameEq keyEq selected openingPreStart openingStart
+  traceAfterLastOpening : Transitions openingStart last
+  openingSplit : appendTransitions traceBeforeLastOpening
+    (MoreTransitions (beginTransition lastOpeningStep) traceAfterLastOpening) = trace
+  afterOpeningInstalled : InstalledTrace name key world error value nameEq keyEq
+    selected traceAfterLastOpening
+
+public export
+0 extractLastOpening :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (trace : Transitions first last) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  installedAt @{nameEq} selected first = False ->
+  installedAt @{nameEq} selected last = True ->
+  LastOpeningResult name key world error value nameEq keyEq selected trace
+extractLastOpening nameEq keyEq selected trace aligned sourceFalse targetTrue =
+  case installedEnding nameEq keyEq selected trace aligned targetTrue of
+    LastOpening preStart opened before opening after split installedAfter =>
+      MkLastOpeningResult preStart opened before opening after split installedAfter
+    EntireTraceInstalled installedTrace =>
+      let sourceTrue = installedTraceStart installedTrace in
+      void (falseNotTrue (trans (sym sourceFalse) sourceTrue))
+  where
+  falseNotTrue : False = True -> Void
+  falseNotTrue Refl impossible
+
+public export
+record FirstClosingResult
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
+  {first, last : SystemState name key value world error}
+  (trace : Transitions first last) where
+  constructor MkFirstClosingResult
+  closingBefore : SystemState name key value world error
+  closingAfter : SystemState name key value world error
+  traceBeforeFirstClosing : Transitions first closingBefore
+  beforeClosingInstalled : InstalledTrace name key world error value nameEq keyEq
+    selected traceBeforeFirstClosing
+  firstClosingStep : UnloadStep nameEq keyEq selected closingBefore closingAfter
+  traceAfterFirstClosing : Transitions closingAfter last
+  closingSplit : appendTransitions traceBeforeFirstClosing
+    (MoreTransitions (unloadTransition firstClosingStep) traceAfterFirstClosing) = trace
+
+public export
+0 extractFirstClosing :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (trace : Transitions first last) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  installedAt @{nameEq} selected first = True ->
+  installedAt @{nameEq} selected last = False ->
+  FirstClosingResult name key world error value nameEq keyEq selected trace
+extractFirstClosing nameEq keyEq selected NoTransitions AlignedEnd sourceTrue
+  targetFalse = void (falseNotTrue (trans (sym targetFalse) sourceTrue))
+  where
+  falseNotTrue : False = True -> Void
+  falseNotTrue Refl impossible
+extractFirstClosing nameEq keyEq selected
+  trace@(MoreTransitions (Fired nameEq keyEq action tag equation) rest)
+  (AlignedStep action tag equation rest alignedRest) sourceTrue targetFalse =
+  case installationEvolutionStep nameEq keyEq selected action tag _ _ equation of
+    ClosedInstallation =>
+      MkFirstClosingResult _ _ NoTransitions (InstalledEnd sourceTrue)
+        (MkUnloadStep equation) rest Refl
+    RemainedInstalled stepSource stepTarget =>
+      case extractFirstClosing nameEq keyEq selected rest alignedRest stepTarget
+        targetFalse of
+        MkFirstClosingResult closeBefore closeAfter beforeClosing installedBefore
+          closing afterClosing split =>
+            MkFirstClosingResult closeBefore closeAfter
+              (MoreTransitions (Fired nameEq keyEq action tag equation) beforeClosing)
+              (InstalledStep action tag equation beforeClosing stepSource installedBefore)
+              closing afterClosing
+              (cong (MoreTransitions (Fired nameEq keyEq action tag equation)) split)
+    RemainedUninstalled stepSource stepTarget =>
+      void (falseNotTrue (trans (sym stepSource) sourceTrue))
+    OpenedInstallation =>
+      case lBeginBoundary nameEq keyEq selected _ _ LBeginTag equation of
+        (tagShape, openingSourceFalse, openingTargetTrue) =>
+          void (falseNotTrue (trans (sym openingSourceFalse) sourceTrue))
+  where
+  falseNotTrue : False = True -> Void
+  falseNotTrue Refl impossible

@@ -849,6 +849,27 @@ unloadTransition : {name, key, world, error : Type} -> {value : key -> Type} ->
 unloadTransition {nameEq} {keyEq} {n} closing =
   Fired nameEq keyEq (LUnload n) LUnloadTag (unloadEquation closing)
 
+||| A trace whose transition dictionaries are the episode's dictionaries.
+||| This is operationally irrelevant but avoids assuming proof irrelevance for
+||| distinct `DecEq` implementations when extracting global episodes.
+public export
+data AlignedTransitions : (name, key, world, error : Type) ->
+  (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {start, end : SystemState name key value world error} ->
+  Transitions start end -> Type where
+  AlignedEnd : AlignedTransitions name key world error value nameEq keyEq
+    NoTransitions
+  AlignedStep :
+    {first, middle, finalState : SystemState name key value world error} ->
+    (action : Action name key value world error) -> (tag : RuleTag) ->
+    (equation : checkedApplyAction @{nameEq} @{keyEq} action first =
+      Just (tag, middle)) ->
+    (rest : Transitions middle finalState) ->
+    AlignedTransitions name key world error value nameEq keyEq rest ->
+    AlignedTransitions name key world error value nameEq keyEq
+      (MoreTransitions (Fired {before = first} {afterState = middle}
+        nameEq keyEq action tag equation) rest)
+
 ||| Every state in this trace segment, including both endpoints, is installed.
 public export
 data InstalledTrace : (name, key, world, error : Type) ->
@@ -2174,6 +2195,7 @@ orderingTheorem name key value world error =
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (initial, final : SystemState name key value world error) ->
   (global : Transitions initial final) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
   wellFormed @{nameEq} @{keyEq} initial = True ->
   bindings (registry initial) = [] ->
   (consumer, provider : name) -> (k : key) ->
@@ -3510,6 +3532,7 @@ committedProvidersSelectedAction nameEq keyEq selected providers
       (trans (sym (successfulLUnloadEndsUninstalled nameEq keyEq selected before
         afterState tag equation)) targetInstalled))
 
+public export
 0 installedTraceStart :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
