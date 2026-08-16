@@ -766,6 +766,59 @@ parentChainAbsentImpossible {key} {world} {error} {value}
     nameEq (S fuel) seen current fibers absent valid | Just fiber =
       case absent of Refl impossible
 
+||| Adding a globally absent name to the seen set cannot truncate a valid chain.
+public export
+0 parentChainAppendFresh :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (fuel : Nat) -> (seen : List name) ->
+  (current, fresh : name) -> (fibers : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} fresh fibers = Nothing) ->
+  Not (Elem fresh seen) -> Elem current seen ->
+  parentChainInvariant @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} fuel seen current fibers = True ->
+  parentChainInvariant @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} fuel (seen ++ [fresh]) current fibers = True
+parentChainAppendFresh nameEq Z seen current fresh fibers absent notSeen currentSeen valid =
+  void (falseCannotBeTrue valid)
+parentChainAppendFresh {name} {key} {world} {error} {value}
+  nameEq (S fuel) seen current fresh fibers absent notSeen currentSeen valid
+  with (lookupFiber @{nameEq} current fibers) proof currentLookup
+  parentChainAppendFresh {name} {key} {world} {error} {value}
+    nameEq (S fuel) seen current fresh fibers absent notSeen currentSeen valid |
+    Nothing = void (falseCannotBeTrue valid)
+  parentChainAppendFresh {name} {key} {world} {error} {value}
+    nameEq (S fuel) seen current fresh fibers absent notSeen currentSeen valid |
+    Just currentFiber with (fiberParent currentFiber) proof parentShape
+    parentChainAppendFresh {name} {key} {world} {error} {value}
+      nameEq (S fuel) seen current fresh fibers absent notSeen currentSeen valid |
+      Just currentFiber | Root =
+        Refl
+    parentChainAppendFresh {name} {key} {world} {error} {value}
+      nameEq (S fuel) seen current fresh fibers absent notSeen currentSeen valid |
+      Just currentFiber | ChildOf next
+      with (elemDec @{nameEq} next seen) proof sourceSeen
+      parentChainAppendFresh {name} {key} {world} {error} {value}
+        nameEq (S fuel) seen current fresh fibers absent notSeen currentSeen valid |
+        Just currentFiber | ChildOf next | True = void (falseCannotBeTrue valid)
+      parentChainAppendFresh {name} {key} {world} {error} {value}
+        nameEq (S fuel) seen current fresh fibers absent notSeen currentSeen valid |
+        Just currentFiber | ChildOf next | False =
+          case decEq @{nameEq} next fresh of
+            Yes Refl => void (parentChainAbsentImpossible {key = key} {value = value}
+              {world = world} {error = error} nameEq fuel (fresh :: seen) fresh
+              fibers absent valid)
+            No distinct =>
+              let targetSeen = elemDecAppendFresh next fresh seen sourceSeen distinct
+                  freshNotLater : Not (Elem fresh (next :: seen))
+                  freshNotLater occurrence = case occurrence of
+                    Here => distinct Refl
+                    There later => notSeen later
+              in rewrite targetSeen in
+                parentChainAppendFresh {name = name} {key = key} {world = world}
+                  {error = error} {value = value} nameEq fuel (next :: seen)
+                  next fresh fibers absent freshNotLater Here valid
+
 ||| A fresh Inactive insertion preserves an existing parent chain. The `seen`
 ||| premise records that the fresh name cannot be an ancestor already visited.
 public export
