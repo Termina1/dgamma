@@ -203,23 +203,24 @@ canonicalEndpointHistoricalOnly nameEq keyEq state generations =
     (\child, present => void (notInEmpty present))
     (\child, present => void (notInEmpty present))
 
-||| A canonical endpoint with no withdrawals recovers the stronger exact-domain
-||| relation used by the existing endpoint diagram.
+||| A canonical endpoint with no current raw-name omissions recovers the
+||| stronger exact-domain relation, even when its historical generation-
+||| withdrawal list is nonempty.
 public export
-0 canonicalEndpointWithoutWithdrawals :
+0 canonicalEndpointWithoutRawWithdrawals :
   (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
     originalFinal canonicalState) ->
   endpointWithdrawnNames endpoint = [] ->
   SystemEquivalent name key world error value nameEq keyEq originalFinal
     canonicalState
-canonicalEndpointWithoutWithdrawals
+canonicalEndpointWithoutRawWithdrawals
   (MkCanonicalEndpointRelation [] generations effects controls withdrawn justified)
   Refl =
     MkSystemEquivalent effects (MkControlEquivalent (\n => controls n notInEmpty))
 
-||| For the zero-withdrawal specialization, coincidence of canonical endpoints
-||| yields exact-domain endpoint equivalence. Nonempty-withdrawal composition is
-||| deliberately left to the still-open constructive Confluence proof.
+||| For the zero-raw-withdrawal specialization, coincidence of canonical
+||| endpoints yields exact-domain endpoint equivalence. Composition with actual
+||| current raw-name omissions is deliberately left to the open Confluence proof.
 public export
 0 canonicalEndpointsEquivalent :
   {initial, leftFinal, rightFinal : SystemState name key value world error} ->
@@ -236,15 +237,15 @@ public export
 canonicalEndpointsEquivalent leftSchedule rightSchedule leftEmpty rightEmpty
   sameFinal =
     systemEquivalentTransitive
-      (canonicalEndpointWithoutWithdrawals (canonicalEndpoint leftSchedule)
+      (canonicalEndpointWithoutRawWithdrawals (canonicalEndpoint leftSchedule)
         leftEmpty)
       (replace {p = \state => SystemEquivalent name key world error value nameEq
         keyEq state rightFinal} (sym sameFinal)
         (systemEquivalentSymmetric
-          (canonicalEndpointWithoutWithdrawals (canonicalEndpoint rightSchedule)
+          (canonicalEndpointWithoutRawWithdrawals (canonicalEndpoint rightSchedule)
             rightEmpty)))
 
-||| Legacy zero-withdrawal/exact-name packaging. This is a proved strong special
+||| Legacy zero-raw-withdrawal/exact-name packaging. This is a proved strong special
 ||| case only; general Theorem 73 now concludes `ConfluenceResult` through a
 ||| Lemma-56 bijection and is not discharged by this helper.
 public export
