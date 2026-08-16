@@ -2680,6 +2680,159 @@ committedSnapshotEquation snapshot = rewrite committedLookup snapshot in
   rewrite committedLifecycle snapshot in rewrite committedProviderNames snapshot in
   Refl
 
+0 committedProvidersOInsertSelected :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  (providers : List name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  committedProvidersAt @{nameEq} selected before = Just providers ->
+  applyAction @{nameEq} @{keyEq} (OInsert selected parent component) before =
+    Just (tag, afterState) ->
+  committedProvidersAt @{nameEq} selected afterState = Just providers
+committedProvidersOInsertSelected {name} {key} {world} {error} {value}
+  nameEq keyEq selected parent component providers
+  (MkSystemState ambient fibers) afterState tag beforeCommitted equation
+  with (parentPresent @{nameEq} parent fibers &&
+    provisionsDisjointFrom @{keyEq} (componentProvisions component)
+      (registryFibers fibers))
+  committedProvidersOInsertSelected {name} {key} {world} {error} {value}
+    nameEq keyEq selected parent component providers
+    (MkSystemState ambient fibers) afterState tag beforeCommitted equation |
+    False = void (nothingIsNotJust equation)
+  committedProvidersOInsertSelected {name} {key} {world} {error} {value}
+    nameEq keyEq selected parent component providers
+    (MkSystemState ambient fibers) afterState tag beforeCommitted equation |
+    True with (setFresh @{nameEq} selected (freshFiber component parent) fibers)
+      proof inserted
+    committedProvidersOInsertSelected {name} {key} {world} {error} {value}
+      nameEq keyEq selected parent component providers
+      (MkSystemState ambient fibers) afterState tag beforeCommitted equation |
+      True | Nothing = void (nothingIsNotJust equation)
+    committedProvidersOInsertSelected {name} {key} {world} {error} {value}
+      nameEq keyEq selected parent component providers
+      (MkSystemState ambient fibers) afterState tag beforeCommitted equation |
+      True | Just applied =
+        let snapshot = committedSnapshotFrom nameEq selected providers (MkSystemState ambient fibers)
+              beforeCommitted
+            absent = setFreshAbsent nameEq selected (freshFiber component parent)
+              fibers applied inserted
+        in void (nothingIsNotJust
+          (trans (sym absent) (committedLookup snapshot)))
+
+0 committedProvidersORetireSelected :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (providers : List name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  committedProvidersAt @{nameEq} selected before = Just providers ->
+  applyAction @{nameEq} @{keyEq} (ORetire selected) before =
+    Just (tag, afterState) ->
+  committedProvidersAt @{nameEq} selected afterState = Just providers
+committedProvidersORetireSelected nameEq keyEq selected providers
+  before@(MkSystemState ambient fibers) afterState tag beforeCommitted equation
+  with (lookupFiber @{nameEq} selected fibers) proof found
+  committedProvidersORetireSelected nameEq keyEq selected providers
+    before@(MkSystemState ambient fibers) afterState tag beforeCommitted equation |
+    Nothing = void (nothingIsNotJust beforeCommitted)
+  committedProvidersORetireSelected nameEq keyEq selected providers
+    before@(MkSystemState ambient fibers) afterState tag beforeCommitted equation |
+    Just fiber@(MkFiber component parent retired table lifecycle)
+    with (committed lifecycle) proof lifecycleCommitted
+    committedProvidersORetireSelected nameEq keyEq selected providers
+      before@(MkSystemState ambient fibers) afterState tag beforeCommitted equation |
+      Just fiber@(MkFiber component parent retired table lifecycle) | Nothing =
+        void (nothingIsNotJust beforeCommitted)
+    committedProvidersORetireSelected nameEq keyEq selected providers
+      before@(MkSystemState ambient fibers) afterState tag beforeCommitted equation |
+      Just fiber@(MkFiber component parent retired table lifecycle) | Just view =
+        case justInjective equation of
+          Refl => committedProvidersAfterReplace selected ambient fibers
+            (MkFiber component parent retired table lifecycle)
+            (retireFiber (MkFiber component parent retired table lifecycle))
+            view providers found lifecycleCommitted
+            (justInjective beforeCommitted)
+
+0 committedProvidersORemoveSelected :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (providers : List name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  committedProvidersAt @{nameEq} selected before = Just providers ->
+  applyAction @{nameEq} @{keyEq} (ORemove selected) before =
+    Just (tag, afterState) ->
+  committedProvidersAt @{nameEq} selected afterState = Just providers
+committedProvidersORemoveSelected nameEq keyEq selected providers
+  before afterState tag beforeCommitted equation
+  with (lookupFiber @{nameEq} selected (registry before))
+  committedProvidersORemoveSelected nameEq keyEq selected providers
+    before afterState tag beforeCommitted equation | Nothing =
+      void (nothingIsNotJust beforeCommitted)
+  committedProvidersORemoveSelected nameEq keyEq selected providers
+    before afterState tag beforeCommitted equation | Just fiber
+    with (fiberLifecycle fiber)
+    committedProvidersORemoveSelected nameEq keyEq selected providers
+      before afterState tag beforeCommitted equation | Just fiber |
+      Inactive outcome = void (nothingIsNotJust beforeCommitted)
+    committedProvidersORemoveSelected nameEq keyEq selected providers
+      before afterState tag beforeCommitted equation | Just fiber |
+      Reloading remaining accumulator view with (retired fiber)
+      committedProvidersORemoveSelected nameEq keyEq selected providers
+        before afterState tag beforeCommitted equation | Just fiber |
+        Reloading remaining accumulator view | False = void (nothingIsNotJust equation)
+      committedProvidersORemoveSelected nameEq keyEq selected providers
+        before afterState tag beforeCommitted equation | Just fiber |
+        Reloading remaining accumulator view | True = void (nothingIsNotJust equation)
+    committedProvidersORemoveSelected nameEq keyEq selected providers
+      before afterState tag beforeCommitted equation | Just fiber |
+      Active accumulator view with (retired fiber)
+      committedProvidersORemoveSelected nameEq keyEq selected providers
+        before afterState tag beforeCommitted equation | Just fiber |
+        Active accumulator view | False = void (nothingIsNotJust equation)
+      committedProvidersORemoveSelected nameEq keyEq selected providers
+        before afterState tag beforeCommitted equation | Just fiber |
+        Active accumulator view | True = void (nothingIsNotJust equation)
+    committedProvidersORemoveSelected nameEq keyEq selected providers
+      before afterState tag beforeCommitted equation | Just fiber |
+      Unloading accumulator view outcome with (retired fiber)
+      committedProvidersORemoveSelected nameEq keyEq selected providers
+        before afterState tag beforeCommitted equation | Just fiber |
+        Unloading accumulator view outcome | False = void (nothingIsNotJust equation)
+      committedProvidersORemoveSelected nameEq keyEq selected providers
+        before afterState tag beforeCommitted equation | Just fiber |
+        Unloading accumulator view outcome | True = void (nothingIsNotJust equation)
+
+0 committedProvidersLBeginSelected :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (providers : List name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  committedProvidersAt @{nameEq} selected before = Just providers ->
+  applyAction @{nameEq} @{keyEq} (LBegin selected) before =
+    Just (tag, afterState) ->
+  committedProvidersAt @{nameEq} selected afterState = Just providers
+committedProvidersLBeginSelected nameEq keyEq selected providers before afterState
+  tag beforeCommitted equation
+  with (lookupFiber @{nameEq} selected (registry before))
+  committedProvidersLBeginSelected nameEq keyEq selected providers before afterState
+    tag beforeCommitted equation | Nothing = void (nothingIsNotJust beforeCommitted)
+  committedProvidersLBeginSelected nameEq keyEq selected providers before afterState
+    tag beforeCommitted equation | Just fiber
+    with (fiberLifecycle fiber)
+    committedProvidersLBeginSelected nameEq keyEq selected providers before afterState
+      tag beforeCommitted equation | Just fiber | Inactive outcome =
+        void (nothingIsNotJust beforeCommitted)
+    committedProvidersLBeginSelected nameEq keyEq selected providers before afterState
+      tag beforeCommitted equation | Just fiber |
+      Reloading remaining accumulator view = void (nothingIsNotJust equation)
+    committedProvidersLBeginSelected nameEq keyEq selected providers before afterState
+      tag beforeCommitted equation | Just fiber |
+      Active accumulator view = void (nothingIsNotJust equation)
+    committedProvidersLBeginSelected nameEq keyEq selected providers before afterState
+      tag beforeCommitted equation | Just fiber |
+      Unloading accumulator view outcome = void (nothingIsNotJust equation)
+
 0 committedProvidersForeignAction :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
