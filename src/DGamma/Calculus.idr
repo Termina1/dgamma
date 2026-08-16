@@ -1954,6 +1954,56 @@ parentChainRetireRegistry {name} {key} {world} {error} {value}
           rewrite parentShape in rewrite parentSeen in recursive
 
 public export
+0 chainsRegistryRetire :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (fuel : Nat) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (present : lookupFiber @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} n fibers = Just fiber) ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fuel entries fibers = True ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fuel entries
+    (replaceBinding @{nameEq} n (retireFiber fiber) fibers) = True
+chainsRegistryRetire {key} {world} {error} {value} nameEq fuel [] n fiber fibers present valid = Refl
+chainsRegistryRetire {name} {key} {world} {error} {value}
+  nameEq fuel (Bind current observed :: rest) n fiber fibers present valid =
+  andBothTrue _ _
+    (parentChainRetireRegistry {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq fuel [current] current n fiber
+      fibers present (andTrueLeft _ _ valid))
+    (chainsRegistryRetire {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq fuel rest n fiber fibers present
+      (andTrueRight _ _ valid))
+
+public export
+0 chainsEntriesRetire :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (fuel : Nat) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (registry : Registry name key value world error) ->
+  lookupEntries @{nameEq} {value = FiberAt name key value world error}
+    n entries = Just fiber ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fuel entries registry = True ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fuel
+    (replaceEntries @{nameEq} n (retireFiber fiber) entries) registry = True
+chainsEntriesRetire {key} {world} {error} {value} nameEq fuel [] n fiber registry present valid =
+  case present of Refl impossible
+chainsEntriesRetire {name} {key} {world} {error} {value}
+  nameEq fuel (Bind current observed :: rest) n fiber registry present valid
+  with (decEq @{nameEq} n current)
+  chainsEntriesRetire {name} {key} {world} {error} {value}
+    nameEq fuel (Bind n observed :: rest) n fiber registry present valid |
+    (Yes Refl) = case present of Refl => valid
+  chainsEntriesRetire {name} {key} {world} {error} {value}
+    nameEq fuel (Bind current observed :: rest) n fiber registry present valid |
+    (No _) = andBothTrue _ _ (andTrueLeft _ _ valid)
+      (chainsEntriesRetire {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq fuel rest n fiber registry present
+        (andTrueRight _ _ valid))
+
+public export
 0 provisionsDisjointRetireEntries :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
