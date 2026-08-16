@@ -2279,6 +2279,50 @@ unloadingAt selected state = case lookupFiber selected (registry state) of
     Unloading _ _ _ => True
     _ => False
 
+record CommittedSnapshot
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (selected : name) (providers : List name)
+  (state : SystemState name key value world error) where
+  constructor MkCommittedSnapshot
+  committedFiber : Fiber name key value world error
+  committedLookup : lookupFiber @{nameEq} selected (registry state) =
+    Just committedFiber
+  committedView : View name
+    (dependencies (componentDependencies (fiberComponent committedFiber)))
+  committedLifecycle : committed (fiberLifecycle committedFiber) =
+    Just committedView
+  committedProviderNames : viewProviders committedView = providers
+
+0 committedSnapshotFrom :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) -> (providers : List name) ->
+  (state : SystemState name key value world error) ->
+  committedProvidersAt @{nameEq} selected state = Just providers ->
+  CommittedSnapshot name key world error value nameEq selected providers state
+committedSnapshotFrom {name} {key} {world} {error} {value}
+  nameEq selected providers state present
+  with (lookupFiber @{nameEq} selected (registry state)) proof found
+  committedSnapshotFrom {name} {key} {world} {error} {value}
+    nameEq selected providers state present | Nothing =
+      void (nothingIsNotJust present)
+  committedSnapshotFrom {name} {key} {world} {error} {value}
+    nameEq selected providers state present | Just fiber
+    with (committed (fiberLifecycle fiber)) proof lifecycle
+    committedSnapshotFrom {name} {key} {world} {error} {value}
+      nameEq selected providers state present | Just fiber | Nothing =
+        void (nothingIsNotJust present)
+    committedSnapshotFrom {name} {key} {world} {error} {value}
+      nameEq selected providers state present | Just fiber | Just view =
+        MkCommittedSnapshot fiber found view lifecycle (justInjective present)
+
+0 committedSnapshotEquation :
+  (snapshot : CommittedSnapshot name key world error value nameEq selected
+    providers state) ->
+  committedProvidersAt @{nameEq} selected state = Just providers
+committedSnapshotEquation snapshot = rewrite committedLookup snapshot in
+  rewrite committedLifecycle snapshot in rewrite committedProviderNames snapshot in
+  Refl
+
 public export
 data CommittedProvidersConstant : (name, key, world, error : Type) ->
   (value : key -> Type) -> (nameEq : DecEq name) -> name -> List name ->
