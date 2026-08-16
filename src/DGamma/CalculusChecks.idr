@@ -4,6 +4,7 @@ import DGamma.Core
 import DGamma.Coeffects
 import DGamma.Calculus
 import DGamma.Metatheory
+import DGamma.CP3
 import DGamma.Section3Example
 import Decidable.Equality
 import Data.List.Elem
@@ -307,6 +308,64 @@ guardedScenarioChecks = case guardedScenario of
     MkToyRuntime False False => null (bindings (registry final)) && wellFormed final
     _ => False
 
+||| A tiny declarative configuration surface for the CP3 reconciliation
+||| example. Each reconciliation phase is a deterministic checked rule program;
+||| impossible intermediate configurations return `Nothing`.
+public export
+data ToyDesiredConfiguration = FullStack | ProviderOnly | EmptyStack
+
+public export
+reconcileToy : ToyDesiredConfiguration ->
+  SystemState Nat ToyKey ToyValue ToyRuntime String ->
+  Maybe (SystemState Nat ToyKey ToyValue ToyRuntime String)
+reconcileToy FullStack state = do
+  s1 <- applyTagged OInsertTag (OInsert 0 Root providerComponent) state
+  s2 <- applyTagged OInsertTag (OInsert 1 Root consumerComponent) s1
+  s3 <- applyTagged LBeginTag (LBegin 0) s2
+  s4 <- applyTagged LIterTag (LAdvance 0) s3
+  s5 <- applyTagged LFinishTag (LAdvance 0) s4
+  s6 <- applyTagged LBeginTag (LBegin 1) s5
+  applyTagged LFinishTag (LAdvance 1) s6
+reconcileToy ProviderOnly state = do
+  s1 <- applyTagged ORetireTag (ORetire 1) state
+  s2 <- applyTagged LLeaveTag (LLeave 1) s1
+  s3 <- applyTagged LUnloadTag (LUnload 1) s2
+  applyTagged ORemoveTag (ORemove 1) s3
+reconcileToy EmptyStack state = do
+  s1 <- applyTagged ORetireTag (ORetire 0) state
+  s2 <- applyTagged LLeaveTag (LLeave 0) s1
+  s3 <- applyTagged LUnloadTag (LUnload 0) s2
+  applyTagged ORemoveTag (ORemove 0) s3
+
+public export
+reconciliationScenario : Maybe
+  (SystemState Nat ToyKey ToyValue ToyRuntime String,
+   SystemState Nat ToyKey ToyValue ToyRuntime String,
+   SystemState Nat ToyKey ToyValue ToyRuntime String)
+reconciliationScenario = do
+  full <- reconcileToy FullStack initialSystem
+  providerOnly <- reconcileToy ProviderOnly full
+  empty <- reconcileToy EmptyStack providerOnly
+  Just (full, providerOnly, empty)
+
+||| Declarative `[provider,consumer] -> [provider] -> []` reconciliation.
+||| Support agrees with the active fibers at both quiescent intermediate states,
+||| and reversing both effect accumulators returns the unique empty outcome.
+public export
+reconciliationScenarioChecks : Bool
+reconciliationScenarioChecks = case reconciliationScenario of
+  Nothing => False
+  Just (full, providerOnly, empty) =>
+    case (worldState full, worldState providerOnly, worldState empty) of
+      (MkToyRuntime True True, MkToyRuntime True False,
+       MkToyRuntime False False) =>
+        quiet full && quiet providerOnly && quiet empty &&
+        isSupported 0 full && isSupported 1 full &&
+        isSupported 0 providerOnly && not (isSupported 1 providerOnly) &&
+        not (isSupported 0 empty) && not (isSupported 1 empty) &&
+        null (bindings (registry empty)) && wellFormed empty
+      _ => False
+
 ||| State immediately before the failing LAdvance.
 public export
 raisePrefix : Maybe (SystemState Nat ToyKey ToyValue ToyRuntime String)
@@ -398,6 +457,7 @@ proofTraceStarts = isJust (fire %search %search
 public export
 allRuleChecks : Bool
 allRuleChecks = proofTraceStarts && fullEffectMapCarriesTable &&
-  yieldedInverseGeneratorRuntimeCheck && activationUsesResolution && guardedScenarioChecks &&
+  yieldedInverseGeneratorRuntimeCheck && activationUsesResolution &&
+  reconciliationScenarioChecks && guardedScenarioChecks &&
   raiseMapIsIdentity && raiseScenario && emptyStaleDiverts && abortDivertScenario &&
   landingDivertScenario
