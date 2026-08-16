@@ -103,12 +103,10 @@ cannot silently introduce a proof:
   `CoarsestRespectedEquivalence` — Lemma 35.
 - `distinctKeysIndependent` — Theorem 40.
 - `MediatedIndependenceTheorem` — Theorem 42.
-- `preservationTheorem` — raw-rule Theorem 59.
 - `recoveryExactnessTheorem` — Theorem 61.
 - `terminalRecoveryTheorem` — Corollary 62.
 - `orderingTheorem` — the finite closed-trace form of Theorem 63.
-- `resolutionStructureTheorem` and `resolutionCoherenceTheorem` — the global
-  structural/full forms of Theorem 64.
+- `resolutionCoherenceTheorem` — the recovery-combined form of Theorem 64.
 
 Each is marked `TODO(proof)` at its declaration. These are honest uninhabited
 statements, not holes accepted by the compiler.
@@ -238,7 +236,9 @@ stated and explicitly unproved; no proof is claimed for them. Definition 32 is
 an explicit finite approximation, and Lemma 38 has a proved relational core but
 not a transport theorem covering every Section 3.1 declaration.
 
-## Checkpoint 2 — Section 4 calculus through Theorem 64 (round-1 redesign)
+## Checkpoint 2
+
+### Section 4 calculus through Theorem 64
 
 The independent round-1 report (`review-cp2-round1.md`) rejected the first
 candidate for vacuous/false theorem types and one confirmed rule bug. Every
@@ -271,10 +271,10 @@ BLOCKER/MAJOR was addressed architecturally rather than hidden by a postulate.
 - `applyAction` remains the raw ten-rule evaluator. `checkedApplyAction` is the
   executable proof-trace gate: it admits the same endpoint only when the target
   satisfies `registryWellFormed`. `Transition` is indexed by that checked
-  equation and `fire` packages executable results. `preservationTheorem` is
-  proved by eliminating the checked equation via `checkedActionTargetValid`.
-  This is a deliberate proof-LTS safety monitor; proving that the monitor never
-  rejects a raw rule from a valid source remains a stronger future lemma.
+  equation and `fire` packages executable results. Separately,
+  `preservationTheoremProof` proves raw Theorem 59 directly from source
+  well-formedness and an `applyAction` equation for every rule branch; it does
+  not use checked target admission.
 - `EpisodePrefix` must contain a checked L-Begin boundary immediately before its
   installed trace. `ClosedEpisode` additionally contains its checked L-Unload
   boundary. Arbitrary Active/Unloading suffixes no longer inhabit the episode
@@ -312,8 +312,9 @@ BLOCKER/MAJOR was addressed architecturally rather than hidden by a postulate.
   statement-only.
 - The global `resolutionStructureTheorem` is anchored by `EpisodePrefix`, so the
   round-1 Unloading-suffix counterexample is unrepresentable. The local
-  Equation-59/exit fact is proved; the global split and the recovery-combined
-  `resolutionCoherenceTheorem` remain statement-only.
+  Equation-59 facts and the whole-episode first-exit split are proved by
+  `resolutionStructureTheoremProof`; only recovery-combined
+  `resolutionCoherenceTheorem` remains statement-only.
 
 ### Executable adversarial coverage
 
@@ -365,13 +366,12 @@ real seven-step checked trace. It then supplied three new executable attacks.
   an L-Unload cannot coexist with the relied certificate created by an
   installed consumer's committed view.
 
-The report correctly rejected the old `preservationTheorem` name: its proof was
-only the target check embedded in `checkedApplyAction`. That lemma is now named
-`checkedTransitionTargetValid`. Paper Theorem 59 is stated separately as the raw
-implication from a valid source plus an `applyAction` equation to a valid target.
-It remains unproved. Likewise the proof locating the unique exit after the
-maximal Reloading prefix, and global provider-episode selection, remain open.
-No checked-monitor lemma is claimed as those results.
+The report correctly rejected the old `preservationTheorem` name: at that
+review point its proof was only the target check embedded in
+`checkedApplyAction`. That lemma is now named `checkedTransitionTargetValid`.
+The later proof-bar pass proves raw Theorem 59 directly and locates the selected
+fiber's first exit after the maximal Reloading prefix. Global provider-episode
+selection remains open; no checked-monitor lemma is claimed as that result.
 
 ### Round-3 full-effect recovery redesign
 
@@ -409,21 +409,37 @@ Definition 58 now uses explicit `parentsInvariant`, `chainsInvariant`, and
 preserves every existing acyclicity check. These are shared infrastructure for
 raw Preservation, lifecycle frames, and later trace deletion/permutation proofs.
 
-The supervisor's final CP2 bar additionally requires inhabited raw Preservation
-and the whole-episode first-exit split. Those proofs are not yet complete in
-this commit; global provider selection is explicitly deferred to CP3 with the
-reviewer's required machinery: indexed trace splitting/search, boundary
-extraction under name reuse, restricted Lemma-54 lifecycle/view frames, and a
-forward relied-guard argument.
+### CP2 proof-bar completion and audit
+
+- `preservationTheoremProof` dispatches over every raw action and proves all
+  Definition-58 clauses without using `checkedApplyAction` or target admission.
+- `InstalledTrace` is aligned with the episode's `nameEq`/`keyEq` dictionaries.
+  Every successful action is classified as a single-name registry update;
+  foreign lookup frames and selected lifecycle lemmas then prove
+  `committedProvidersInstalledTrace`.
+- `classifyReloadingStep` separates a continuing foreign/ORetire/L-Iter step
+  from Finish, aborting/landing Divert, or Raise. Invalid selected actions are
+  eliminated from the exact raw equation. `resolutionStructureInstalled`
+  inducts over the aligned trace, prepends continuing steps, and carries a
+  found exit through the remaining suffix. `resolutionStructureTheoremProof`
+  starts this induction from the exact L-Begin snapshot.
+- The clean git-archive build succeeds, `allRuleChecks` evaluates to `True`, all
+  modules retain `%default total`, and the escape-hatch scan finds no
+  `believe_me`, `assert_total`, postulate, unsafe FFI, `%default partial`, or
+  metavariable holes.
+- **Deferred global-ordering debt:** `orderingTheorem` remains deliberately
+  statement-only CP3 work. It still requires indexed global-trace search and
+  splitting, name-reuse boundary extraction, the restricted Lemma-54
+  lifecycle/view frames, and the forward relied-guard argument. CP2 does not
+  silently replace this with local `reliedProviderCannotUnload`.
 
 ## Status
 
-**Fully proved:** all previously approved Section 3 results; same-action raw
-evaluator determinism; checked-to-raw projection and checked target admission;
-Equation 58; L-Unload's local relied guard and relied-provider exclusion;
-per-LAdvance Equation 59 with exact Iter/Finish/Divert/Raise endpoint phase; and
-the aborting L-Divert structural shape. All executable rule checks, including
-L-Raise identity and dynamic resolution consumption, pass.
+**Fully proved:** all previously approved Section 3 results; raw Theorem 59
+Preservation; same-action determinism; checked projection/admission; Equation
+58; local relied guards; per-step Equation 59 and aborting L-Divert; committed
+provider constancy over aligned installed traces; and the whole-episode
+first-exit `resolutionStructureTheoremProof`. All executable rule checks pass.
 
 **Partial/deviation:** Definition 32 finite approximations; Lemma 38 transport;
 finite iterators; host-level rather than nested registration; trace-specific
@@ -431,12 +447,10 @@ rather than generated-monoid independence; exact full-effect equality; and the
 checked proof-LTS. Full observational transport remains future work. Lemmas
 54–57 are not individually complete.
 
-**Merely stated:** Lemma 35, Theorems 40/42, raw Theorem 59, actual-handle/table
-Theorem 61 and Corollary 62, corrected global `orderingTheorem`, global
-`resolutionStructureTheorem`, and recovery-combined Theorem 64. These are the
-only `TODO(proof)` declarations and remain escape-hatch-free types.
+**Merely stated:** Lemma 35, Theorems 40/42, actual-handle full-effect Theorem
+61 and Corollary 62, corrected global `orderingTheorem`, and recovery-combined
+`resolutionCoherenceTheorem`. They remain escape-hatch-free proposition types.
 
-**Next:** finish and independently audit raw Theorem 59 and the whole-episode
-first-exit split. Round 4 must rerun the table-sensitive actual-handle attack on
-full-effect commutation/replay. Global provider selection remains deliberate
-CP3 proof debt rather than part of the final CP2 approval bar.
+**Next:** independent CP2 adversarial round 4, including the table-sensitive
+actual-handle attack on full-effect commutation/replay. After approval, CP3 adds
+global provider ordering, Progress, and Confluence.

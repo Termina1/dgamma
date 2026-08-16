@@ -775,8 +775,6 @@ preservationLUnload {name} {key} {world} {error} {value}
 
 ||| Paper Theorem 59, stated over the raw ten-rule evaluator. Unlike the checked
 ||| admission fact, this direction cannot hide a malformed endpoint.
-||| TODO(proof): rule induction plus registry replacement/insertion/deletion
-||| invariant lemmas. This remains the CP2 proof-bar gap after round 2.
 public export
 preservationTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type

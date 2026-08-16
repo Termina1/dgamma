@@ -10,8 +10,8 @@ computational data; laws and witnesses are erased with quantity `0`.
 idris2 --build dgamma.ipkg
 ```
 
-The package contains the approved Section 3 checkpoint and the Checkpoint 2
-Section 4 calculus/metatheory candidate.
+The package contains the approved Section 3 checkpoint and the completed
+Checkpoint 2 proof-bar candidate, pending independent round-4 review.
 
 ## Design map
 
@@ -32,9 +32,9 @@ Section 4 calculus/metatheory candidate.
   dependency values, components, intrinsically total committed views,
   name-unique registries, the four-state lifecycle, all ten executable rules,
   a checked proof-indexed LTS, and episode extraction.
-- `DGamma.Metatheory`: executable well-formedness and precise statement types
-  for Preservation, recovery exactness/terminal recovery, spatial ordering,
-  and resolution coherence, plus their supporting trace predicates.
+- `DGamma.Metatheory`: executable well-formedness, raw-rule Preservation,
+  whole-episode resolution structure, precise remaining recovery/ordering
+  statement types, and their supporting indexed trace predicates.
 - `DGamma.CalculusChecks`: dynamic-table/dependency-consumption regressions plus
   executable coverage of all ten tags, both L-Divert alternatives, stale empty
   iterators, failure, relied/L-Unload ordering, recovery, and removal.
@@ -104,9 +104,9 @@ is exported. It is not a postulate and cannot be used as a proof.
 | Def 53 | `RuleTag`, `Action`, `applyAction`, `checkedApplyAction`, `Transition`, `fire`, `Transitions`, `EpisodePrefix`, `ClosedEpisode`, `episodes` | ten-rule evaluator; proof traces are checked for Def-58 targets; episode types require L-Begin left boundaries and L-Unload right boundaries |
 | Lem 54–57 | structural rule inventory/equivariance/registration/vestigial facts | **not yet separately packaged as theorem declarations**; several facts hold by representation, but no proof status is claimed |
 | Def 58 | `registryWellFormed`, `wellFormed`, `viewBindingsInvariant` | executable decision procedure; committed views require installed providers **and matching provider-table keys**, plus parent, disjointness, and acyclicity checks |
-| Thm 59 | `preservationTheorem`, `checkedTransitionTargetValid`, `applyActionDeterministic` | raw invariant-preservation direction now precisely stated but unproved; checked target admission and same-action determinism proved |
+| Thm 59 | `preservationTheorem`, `preservationTheoremProof`, `checkedTransitionTargetValid`, `applyActionDeterministic` | raw invariant preservation proved by exhaustive rule dispatch; checked target admission and same-action determinism separately proved |
 | Def 60 | `EffectState`, `EffectStateRelated`, `partialEffectMap`, `TraceIndependent`, `PrefixRecoveryIndependent` | trace-indexed commutation/definedness over the complete effect state—ambient plus every owned table; constructibly non-vacuous on empty traces |
 | Thm 61 | `AccumulatorHandle`, `actualAccumulatorAt`, `accumulatorEffectMap`, `ForeignReplay`, `recoveryExactnessTheorem` | L-Begin anchored; actual dependent accumulator, independence, replay, and conclusion all use the same full effect state; unproved |
 | Cor 62 | `terminalRecoveryTheorem`, `raiseMapIsIdentity` | one full-effect replay equation; L-Raise identity and off-origin full-state failure represented exactly; unproved |
 | Thm 63 | `beginSatisfactionTheorem`, `unloadGuardTheorem`, `reliedProviderCannotUnload`, `ProviderContainsConsumer`, `orderingTheorem` | Equation 58 and local relied-on provider close exclusion proved; consumer/value constancy now ends before L-Unload; global provider selection remains unproved |
-| Thm 64 | `AdvanceStructure`, `advanceStructureTheorem`, `AbortDivertStructure`, `abortDivertStructureTheorem`, `ResolutionStructure`, `resolutionStructureTheorem` | one-step Equation 59 plus exact Active/Unloading endpoint shapes and aborting L-Divert proved; whole-episode exit location/recovery combination remains stated |
+| Thm 64 | `AdvanceStructure`, `advanceStructureTheorem`, `AbortDivertStructure`, `abortDivertStructureTheorem`, `ReloadingStepClassification`, `committedProvidersInstalledTrace`, `ResolutionStructure`, `resolutionStructureTheorem`, `resolutionStructureTheoremProof`, `resolutionCoherenceTheorem` | one-step Equation 59, exact exit shapes, provider constancy, and the whole-episode first-exit split proved; the recovery-combined theorem remains stated |
