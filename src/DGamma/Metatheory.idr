@@ -2632,6 +2632,7 @@ data RegistryLocalUpdate :
   LocalDelete : RegistryLocalUpdate name key world error value nameEq actor source
     (deleteBinding @{nameEq} actor source)
 
+public export
 0 registryLocalUpdateForeign :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (selected, actor : name) ->
@@ -2657,6 +2658,7 @@ record SystemLocalUpdate
   systemRegistryUpdate : RegistryLocalUpdate name key world error value nameEq
     actor (registry before) (registry afterState)
 
+public export
 0 systemLocalUpdateForeign :
   (nameEq : DecEq name) -> (selected, actor : name) ->
   Not (selected = actor) ->
@@ -2670,6 +2672,7 @@ systemLocalUpdateForeign nameEq selected actor distinct before afterState update
 
 
 
+public export
 0 applyActionLocalUpdate :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
