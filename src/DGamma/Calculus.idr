@@ -518,6 +518,20 @@ elemDec wanted (x :: xs) = case decEq wanted x of
   Yes Refl => True
   No _ => elemDec wanted xs
 
+||| Appending a distinct fresh name does not change a failed membership test.
+public export
+0 elemDecAppendFresh : DecEq a => (wanted, fresh : a) -> (seen : List a) ->
+  elemDec wanted seen = False -> Not (wanted = fresh) ->
+  elemDec wanted (seen ++ [fresh]) = False
+elemDecAppendFresh wanted fresh [] absent distinct with (decEq wanted fresh)
+  elemDecAppendFresh fresh fresh [] absent distinct | (Yes Refl) = void (distinct Refl)
+  elemDecAppendFresh wanted fresh [] absent distinct | (No _) = Refl
+elemDecAppendFresh wanted fresh (x :: xs) absent distinct with (decEq wanted x)
+  elemDecAppendFresh x fresh (x :: xs) absent distinct | (Yes Refl) =
+    case absent of Refl impossible
+  elemDecAppendFresh wanted fresh (x :: xs) absent distinct | (No _) =
+    elemDecAppendFresh wanted fresh xs absent distinct
+
 public export
 provisionOverlap : DecEq key => CoeffectSpec key -> CoeffectSpec key -> Bool
 provisionOverlap left right = any (\k => elemDec k (dependencies right))
