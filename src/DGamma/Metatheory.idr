@@ -2686,6 +2686,35 @@ unloadingAt selected state = case lookupFiber selected (registry state) of
     _ => False
 
 public export
+%hint
+0 fiberParentRetireHint : (fiber : Fiber name key value world error) ->
+  fiberParent (retireFiber fiber) = fiberParent fiber
+fiberParentRetireHint (MkFiber component parent retired table lifecycle) = Refl
+
+public export
+%hint
+0 fiberParentSetLifecycleHint :
+  (fiber : Fiber name key value world error) ->
+  (life : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  fiberParent (setFiberLifecycle fiber life) = fiberParent fiber
+fiberParentSetLifecycleHint (MkFiber component parent retired table oldLife)
+  life = Refl
+
+public export
+%hint
+0 fiberParentSetRuntimeHint :
+  (fiber : Fiber name key value world error) ->
+  (table : OwnedTable key value (componentProvisions (fiberComponent fiber))) ->
+  (life : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  fiberParent (setFiberRuntime fiber table life) = fiberParent fiber
+fiberParentSetRuntimeHint (MkFiber component parent retired oldTable oldLife)
+  table life = Refl
+
+public export
 data RegistryLocalUpdate :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (nameEq : DecEq name) -> (actor : name) ->
@@ -2699,6 +2728,7 @@ data RegistryLocalUpdate :
     {oldFiber : Fiber name key value world error} ->
     {auto oldFound : lookupFiber @{nameEq} actor source = Just oldFiber} ->
     {auto staticComponent : fiberComponent fiber = fiberComponent oldFiber} ->
+    {auto staticParent : fiberParent fiber = fiberParent oldFiber} ->
     RegistryLocalUpdate name key world error value nameEq actor source
       (replaceBinding @{nameEq} actor fiber source)
   LocalDelete : RegistryLocalUpdate name key world error value nameEq actor source
@@ -2790,7 +2820,9 @@ applyActionLocalUpdate nameEq keyEq (ORetire n)
   applyActionLocalUpdate nameEq keyEq (ORetire n)
     before@(MkSystemState ambient fibers) afterState tag equation | Just fiber =
       case justInjective equation of
-        Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentRetire fiber} (retireFiber fiber))
+        Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found}
+          @{fiberComponentRetire fiber} @{fiberParentRetireHint fiber}
+          (retireFiber fiber))
 applyActionLocalUpdate nameEq keyEq (ORemove n)
   before@(MkSystemState ambient fibers) afterState tag equation
   with (lookupFiber @{nameEq} n fibers) proof found
@@ -2826,7 +2858,12 @@ applyActionLocalUpdate nameEq keyEq (LBegin n)
       applyActionLocalUpdate nameEq keyEq (LBegin n)
         before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
         Inactive Nothing | Just view = case justInjective equation of
-          Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetLifecycle fiber (Reloading (componentProgram (fiberComponent fiber)) id view)} (setFiberLifecycle fiber
+          Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found}
+            @{fiberComponentSetLifecycle fiber
+              (Reloading (componentProgram (fiberComponent fiber)) id view)}
+            @{fiberParentSetLifecycleHint fiber
+              (Reloading (componentProgram (fiberComponent fiber)) id view)}
+            (setFiberLifecycle fiber
               (Reloading (componentProgram (fiberComponent fiber)) id view)))
     applyActionLocalUpdate nameEq keyEq (LBegin n)
       before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
@@ -2866,11 +2903,17 @@ applyActionLocalUpdate nameEq keyEq (LAdvance n)
       applyActionLocalUpdate nameEq keyEq (LAdvance n)
         before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
         Reloading [] accumulator view | True = case justInjective equation of
-          Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetLifecycle fiber (Active accumulator view)} (setFiberLifecycle fiber (Active accumulator view)))
+          Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found}
+            @{fiberComponentSetLifecycle fiber (Active accumulator view)}
+            @{fiberParentSetLifecycleHint fiber (Active accumulator view)}
+            (setFiberLifecycle fiber (Active accumulator view)))
       applyActionLocalUpdate nameEq keyEq (LAdvance n)
         before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
         Reloading [] accumulator view | False = case justInjective equation of
-          Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetLifecycle fiber (Unloading accumulator view Nothing)} (setFiberLifecycle fiber (Unloading accumulator view Nothing)))
+          Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found}
+            @{fiberComponentSetLifecycle fiber (Unloading accumulator view Nothing)}
+            @{fiberParentSetLifecycleHint fiber (Unloading accumulator view Nothing)}
+            (setFiberLifecycle fiber (Unloading accumulator view Nothing)))
     applyActionLocalUpdate nameEq keyEq (LAdvance n)
       before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
       Reloading (step :: rest) accumulator view
@@ -2890,7 +2933,12 @@ applyActionLocalUpdate nameEq keyEq (LAdvance n)
           before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
           Reloading (step :: rest) accumulator view | Just capability | Left err =
             case justInjective equation of
-              Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetLifecycle fiber (Unloading accumulator view (Just err))} (setFiberLifecycle fiber
+              Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found}
+                @{fiberComponentSetLifecycle fiber
+                  (Unloading accumulator view (Just err))}
+                @{fiberParentSetLifecycleHint fiber
+                  (Unloading accumulator view (Just err))}
+                (setFiberLifecycle fiber
                   (Unloading accumulator view (Just err))))
         applyActionLocalUpdate nameEq keyEq (LAdvance n)
           before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
@@ -2902,19 +2950,31 @@ applyActionLocalUpdate nameEq keyEq (LAdvance n)
             before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
             Reloading (step :: rest) accumulator view | Just capability |
             Right (localAfter, undo) | False = case justInjective equation of
-              Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetRuntime fiber _ _} (setFiberRuntime fiber (localTable localAfter)
+              Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found}
+                @{fiberComponentSetRuntime fiber _ _}
+                @{fiberParentSetRuntimeHint fiber (localTable localAfter)
+                  (Unloading (accumulator . undo) view Nothing)}
+                (setFiberRuntime fiber (localTable localAfter)
                   (Unloading (accumulator . undo) view Nothing)))
           applyActionLocalUpdate nameEq keyEq (LAdvance n)
             before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
             Reloading (step :: []) accumulator view | Just capability |
             Right (localAfter, undo) | True = case justInjective equation of
-              Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetRuntime fiber _ _} (setFiberRuntime fiber (localTable localAfter)
+              Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found}
+                @{fiberComponentSetRuntime fiber _ _}
+                @{fiberParentSetRuntimeHint fiber (localTable localAfter)
+                  (Active (accumulator . undo) view)}
+                (setFiberRuntime fiber (localTable localAfter)
                   (Active (accumulator . undo) view)))
           applyActionLocalUpdate nameEq keyEq (LAdvance n)
             before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
             Reloading (step :: next :: more) accumulator view | Just capability |
             Right (localAfter, undo) | True = case justInjective equation of
-              Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetRuntime fiber _ _} (setFiberRuntime fiber (localTable localAfter)
+              Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found}
+                @{fiberComponentSetRuntime fiber _ _}
+                @{fiberParentSetRuntimeHint fiber (localTable localAfter)
+                  (Reloading (next :: more) (accumulator . undo) view)}
+                (setFiberRuntime fiber (localTable localAfter)
                   (Reloading (next :: more) (accumulator . undo) view)))
 applyActionLocalUpdate nameEq keyEq (LDivert n)
   before@(MkSystemState ambient fibers) afterState tag equation
@@ -2937,7 +2997,10 @@ applyActionLocalUpdate nameEq keyEq (LDivert n)
       applyActionLocalUpdate nameEq keyEq (LDivert n)
         before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
         Reloading remaining accumulator view | False = case justInjective equation of
-          Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetLifecycle fiber (Unloading accumulator view Nothing)} (setFiberLifecycle fiber (Unloading accumulator view Nothing)))
+          Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found}
+            @{fiberComponentSetLifecycle fiber (Unloading accumulator view Nothing)}
+            @{fiberParentSetLifecycleHint fiber (Unloading accumulator view Nothing)}
+            (setFiberLifecycle fiber (Unloading accumulator view Nothing)))
     applyActionLocalUpdate nameEq keyEq (LDivert n)
       before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
       Inactive outcome = void (nothingIsNotJust equation)
@@ -2967,7 +3030,10 @@ applyActionLocalUpdate nameEq keyEq (LLeave n)
       applyActionLocalUpdate nameEq keyEq (LLeave n)
         before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
         Active accumulator view | False = case justInjective equation of
-          Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetLifecycle fiber (Unloading accumulator view Nothing)} (setFiberLifecycle fiber (Unloading accumulator view Nothing)))
+          Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found}
+            @{fiberComponentSetLifecycle fiber (Unloading accumulator view Nothing)}
+            @{fiberParentSetLifecycleHint fiber (Unloading accumulator view Nothing)}
+            (setFiberLifecycle fiber (Unloading accumulator view Nothing)))
     applyActionLocalUpdate nameEq keyEq (LLeave n)
       before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
       Inactive outcome = void (nothingIsNotJust equation)
@@ -2996,7 +3062,12 @@ applyActionLocalUpdate nameEq keyEq (LUnload n)
       applyActionLocalUpdate nameEq keyEq (LUnload n)
         before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
         Unloading accumulator view outcome | False = case justInjective equation of
-          Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found} @{fiberComponentSetRuntime fiber _ _} (setFiberRuntime fiber
+          Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found}
+            @{fiberComponentSetRuntime fiber _ _}
+            @{fiberParentSetRuntimeHint fiber
+              (localTable (accumulator (MkLocalState ambient (fiberTable fiber))))
+              (Inactive outcome)}
+            (setFiberRuntime fiber
               (localTable (accumulator (MkLocalState ambient (fiberTable fiber))))
               (Inactive outcome)))
     applyActionLocalUpdate nameEq keyEq (LUnload n)
