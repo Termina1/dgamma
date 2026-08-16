@@ -1663,6 +1663,44 @@ valueFromProviderRetireRegistry {name} {key} {world} {error} {value}
         rewrite lookupReplaceOtherEntries provider n distinct (retireFiber fiber)
           entries in rewrite original in Refl
 
+||| Retirement preserves every value in an already committed capability.
+public export
+0 resolveCommittedValuesRetireRegistry :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) -> (view : View name deps) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (present : lookupFiber @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} n fibers = Just fiber) ->
+  resolveCommittedValues @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} deps view
+    (replaceBinding @{nameEq} n (retireFiber fiber) fibers) =
+  resolveCommittedValues @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} deps view fibers
+resolveCommittedValuesRetireRegistry nameEq keyEq [] EmptyView
+  n fiber fibers present = Refl
+resolveCommittedValuesRetireRegistry {name} {key} {world} {error} {value}
+  nameEq keyEq (k :: ks) (ProviderView provider rest) n fiber fibers present
+  with (valueFromProvider @{nameEq} @{keyEq} provider k fibers) proof original
+  resolveCommittedValuesRetireRegistry {name} {key} {world} {error} {value}
+    nameEq keyEq (k :: ks) (ProviderView provider rest) n fiber fibers present |
+    Nothing =
+      let target = trans (valueFromProviderRetireRegistry {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq keyEq provider
+            k n fiber fibers present) original in
+        rewrite target in Refl
+  resolveCommittedValuesRetireRegistry {name} {key} {world} {error} {value}
+    nameEq keyEq (k :: ks) (ProviderView provider rest) n fiber fibers present |
+    Just v =
+      let target = trans (valueFromProviderRetireRegistry {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq keyEq provider
+            k n fiber fibers present) original in
+        rewrite target in cong (map (OneDepValue v))
+          (resolveCommittedValuesRetireRegistry {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq keyEq ks rest
+            n fiber fibers present)
+
 public export
 0 retireProvisionInvariant : (fiber : Fiber name key value world error) ->
   componentProvisions (fiberComponent (retireFiber fiber)) =
