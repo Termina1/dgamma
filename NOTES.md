@@ -393,13 +393,56 @@ The recovery layer now has one state space throughout:
   table, `resolveEffectValues` reads provider tables from the moved state, and
   successful steps update both ambient and own table. L-Unload applies the
   captured accumulator to both fields. L-Raise remains full-state identity.
-- `TraceIndependent`, `PrefixRecoveryIndependent`, definedness stability, and
-  `ForeignReplay` accept only `PartialEffectMap`; their APIs contain no
-  world-projection map. `accumulatorEffectMap` uses the same type.
+- `TraceIndependent`, `PrefixRecoveryIndependent`, and `ForeignReplay` accept
+  only `PartialEffectMap`; their APIs contain no world-projection map.
+  `accumulatorEffectMap` uses the same type. The round-4 section below records
+  the subsequently discovered and repaired per-yield omission.
 - Theorem 61 and Corollary 62 conclude one full-effect replay relation. The
   disconnected `SelectedTableRecovered`/`TerminalTableRecovery` appendages were
   removed. Premises therefore structurally observe exactly what conclusions
   claim.
+
+### Round-4 yielded-inverse generated-monoid repair
+
+Round 4 (`review-cp2-round4.md`) accepted both CP2 bar proofs but found a new
+recovery blocker. The prior `TraceIndependent` quantified actual Table-1
+forward maps, while `PrefixRecoveryIndependent` compared foreign maps only with
+the final composite accumulator. Two equal noncommuting yielded inverses can
+cancel in that composite, so its commutation does not imply commutation of each
+factor. The reviewer's four-state executable probe reached exactly this case:
+the composite accumulator was identity, but removing the selected actor yielded
+`Q3` while foreign replay yielded `Q1`. The old Theorem-61/Corollary-62 premises
+were therefore false, not merely conservative.
+
+The repair restores a finite full-effect-state form of paper Equations 54–55:
+
+- `ReachableSuffix` is the continuation closure for the finite-list iterator;
+  `IteratorStage` anchors every nonempty reachable suffix at an actual
+  L-Advance occurrence.
+- `iteratorStageEffect` exposes the exact forward result, individual yielded
+  inverse, and explicit fixed continuation at every full `EffectState` origin.
+- `TraceEffectGenerator` includes actual Table-1 forwards, every reachable
+  continuation forward, and every per-origin yielded inverse.
+  `TraceEffectTransformation` closes these generators under identity and
+  composition, giving the partial transformation monoid `M(i)`.
+- `TraceIndependent.generatedMonoidsCommute` quantifies every transformation of
+  distinct actors; `iteratorYieldsStable` separately requires inverse and
+  continuation agreement when a foreign generated transformation moves the
+  origin. `yieldedInverseCommutes` directly projects the per-factor obligation,
+  so cancellation in the final accumulator cannot hide a bad inverse.
+- `PrefixRecoveryIndependent` is now the same generated-monoid family premise,
+  not a final-accumulator commutation certificate. The actual accumulator
+  remains fixed by `actualAccumulatorAt`; the deferred Theorem-61 induction
+  must derive its factorization from the yielded generators.
+- This is intentionally the finite calculus's continuation closure: each
+  continuation is a static list suffix. Data-dependent/coinductive iterator
+  continuations and nested registration remain documented representation
+  restrictions rather than silently omitted Equation-55 fields.
+
+`yieldedInverseGeneratorRuntimeCheck` executes one stage and its separately
+exposed full-state inverse, checking restoration of ambient state and the actor
+owned table. Round 5 must rerun the composite-accumulator probe and variants
+that attack individual factors and later suffixes.
 
 Reusable dependent-map frame lemmas `lookupReplaceOther`,
 `lookupDeleteOther`, and `lookupInsertOther` were added to `DGamma.Coeffects`.
@@ -423,8 +466,9 @@ raw Preservation, lifecycle frames, and later trace deletion/permutation proofs.
   inducts over the aligned trace, prepends continuing steps, and carries a
   found exit through the remaining suffix. `resolutionStructureTheoremProof`
   starts this induction from the exact L-Begin snapshot.
-- The clean git-archive build succeeds, `allRuleChecks` evaluates to `True`, all
-  modules retain `%default total`, and the escape-hatch scan finds no
+- The clean git-archive build succeeds, `allRuleChecks` (including the
+  per-yield inverse runtime regression) evaluates to `True`, all modules retain
+  `%default total`, and the escape-hatch scan finds no
   `believe_me`, `assert_total`, postulate, unsafe FFI, `%default partial`, or
   metavariable holes.
 - **Deferred global-ordering debt:** `orderingTheorem` remains deliberately
@@ -442,15 +486,16 @@ provider constancy over aligned installed traces; and the whole-episode
 first-exit `resolutionStructureTheoremProof`. All executable rule checks pass.
 
 **Partial/deviation:** Definition 32 finite approximations; Lemma 38 transport;
-finite iterators; host-level rather than nested registration; trace-specific
-rather than generated-monoid independence; exact full-effect equality; and the
-checked proof-LTS. Full observational transport remains future work. Lemmas
+finite static-list continuation closure rather than coinductive/data-dependent
+iterators; host-level rather than nested registration; trace-anchored
+full-effect generated monoids; exact full-effect equality; and the checked
+proof-LTS. Full observational transport remains future work. Lemmas
 54–57 are not individually complete.
 
 **Merely stated:** Lemma 35, Theorems 40/42, actual-handle full-effect Theorem
 61 and Corollary 62, corrected global `orderingTheorem`, and recovery-combined
 `resolutionCoherenceTheorem`. They remain escape-hatch-free proposition types.
 
-**Next:** independent CP2 adversarial round 4, including the table-sensitive
-actual-handle attack on full-effect commutation/replay. After approval, CP3 adds
-global provider ordering, Progress, and Confluence.
+**Next:** independent CP2 adversarial round 5, rerunning the round-4
+composite-accumulator attack plus per-factor and nested-continuation variants.
+After approval, CP3 adds global provider ordering, Progress, and Confluence.

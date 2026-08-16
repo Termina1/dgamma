@@ -37,7 +37,8 @@ Checkpoint 2 proof-bar candidate, pending independent round-4 review.
   statement types, and their supporting indexed trace predicates.
 - `DGamma.CalculusChecks`: dynamic-table/dependency-consumption regressions plus
   executable coverage of all ten tags, both L-Divert alternatives, stale empty
-  iterators, failure, relied/L-Unload ordering, recovery, and removal.
+  iterators, per-yield full-state inverse exposure, failure, relied/L-Unload
+  ordering, recovery, and removal.
 
 `Pointwise` equality is used for functions rather than assuming function
 extensionality.
@@ -105,8 +106,8 @@ is exported. It is not a postulate and cannot be used as a proof.
 | Lem 54–57 | structural rule inventory/equivariance/registration/vestigial facts | **not yet separately packaged as theorem declarations**; several facts hold by representation, but no proof status is claimed |
 | Def 58 | `registryWellFormed`, `wellFormed`, `viewBindingsInvariant` | executable decision procedure; committed views require installed providers **and matching provider-table keys**, plus parent, disjointness, and acyclicity checks |
 | Thm 59 | `preservationTheorem`, `preservationTheoremProof`, `checkedTransitionTargetValid`, `applyActionDeterministic` | raw invariant preservation proved by exhaustive rule dispatch; checked target admission and same-action determinism separately proved |
-| Def 60 | `EffectState`, `EffectStateRelated`, `partialEffectMap`, `TraceIndependent`, `PrefixRecoveryIndependent` | trace-indexed commutation/definedness over the complete effect state—ambient plus every owned table; constructibly non-vacuous on empty traces |
-| Thm 61 | `AccumulatorHandle`, `actualAccumulatorAt`, `accumulatorEffectMap`, `ForeignReplay`, `recoveryExactnessTheorem` | L-Begin anchored; actual dependent accumulator, independence, replay, and conclusion all use the same full effect state; unproved |
+| Def 60 | `ReachableSuffix`, `IteratorStage`, `iteratorStageEffect`, `TraceEffectGenerator`, `TraceEffectTransformation`, `runTraceEffectTransformation`, `IteratorYieldAgreement`, `TraceIndependent`, `PrefixRecoveryIndependent` | full-effect-state M(i): actual forwards, every statically reachable continuation forward, and every per-origin yielded inverse generate each actor's partial transformation monoid; cross-actor monoids commute and inverse+continuation yields are stable; empty traces remain constructibly non-vacuous |
+| Thm 61 | `AccumulatorHandle`, `actualAccumulatorAt`, `accumulatorEffectMap`, `ForeignReplay`, `recoveryExactnessTheorem` | L-Begin anchored; actual dependent accumulator plus Definition-60 generated-monoid independence, replay, and conclusion all use the same full effect state; unproved |
 | Cor 62 | `terminalRecoveryTheorem`, `raiseMapIsIdentity` | one full-effect replay equation; L-Raise identity and off-origin full-state failure represented exactly; unproved |
 | Thm 63 | `beginSatisfactionTheorem`, `unloadGuardTheorem`, `reliedProviderCannotUnload`, `ProviderContainsConsumer`, `orderingTheorem` | Equation 58 and local relied-on provider close exclusion proved; consumer/value constancy now ends before L-Unload; global provider selection remains unproved |
 | Thm 64 | `AdvanceStructure`, `advanceStructureTheorem`, `AbortDivertStructure`, `abortDivertStructureTheorem`, `ReloadingStepClassification`, `committedProvidersInstalledTrace`, `ResolutionStructure`, `resolutionStructureTheorem`, `resolutionStructureTheoremProof`, `resolutionCoherenceTheorem` | one-step Equation 59, exact exit shapes, provider constancy, and the whole-episode first-exit split proved; the recovery-combined theorem remains stated |
