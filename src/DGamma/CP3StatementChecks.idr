@@ -168,6 +168,114 @@ positiveParentRegistrationYield = MkParentRegistrationYield
   registrationTestParentFiber Refl registrationTestStep [] id EmptyView Refl Here
   0 1 Refl Refl 0 Refl Refl
 
+roleChangingApply :
+  Action Nat RegistrationTestKey RegistrationTestValue Unit String ->
+  SystemState Nat RegistrationTestKey RegistrationTestValue Unit String ->
+  Maybe (SystemState Nat RegistrationTestKey RegistrationTestValue Unit String)
+roleChangingApply action before = case checkedApplyAction
+  @{registrationTestNameEq} @{registrationTestKeyEq} action before of
+    Nothing => Nothing
+    Just (tag, afterState) => Just afterState
+
+||| The round-5 counterexample trace is retained as an executable positive
+||| regression. Raw name 1 is born as a yielded child, retired and removed,
+||| then legally born again as a live external root.
+public export
+roleChangingRun : Maybe
+  (SystemState Nat RegistrationTestKey RegistrationTestValue Unit String)
+roleChangingRun = do
+  s1 <- roleChangingApply (OInsert 0 Root registrationTestParent)
+    registrationTestInitial
+  s2 <- roleChangingApply (LBegin 0) s1
+  s3 <- roleChangingApply
+    (OInsert 1 (ChildOf 0) registrationTestChild) s2
+  s4 <- roleChangingApply (ORetire 1) s3
+  s5 <- roleChangingApply (ORemove 1) s4
+  s6 <- roleChangingApply (OInsert 1 Root registrationTestChild) s5
+  s7 <- roleChangingApply (LAdvance 0) s6
+  s8 <- roleChangingApply (LBegin 1) s7
+  roleChangingApply (LAdvance 1) s8
+
+public export
+roleChangingRuntimeCheck : Bool
+roleChangingRuntimeCheck = case roleChangingRun of
+  Nothing => False
+  Just finalState =>
+    quiet @{registrationTestNameEq} @{registrationTestKeyEq} finalState &&
+    noFailedFibers finalState &&
+    isSupported @{registrationTestNameEq} @{registrationTestKeyEq} 0 finalState &&
+    isSupported @{registrationTestNameEq} @{registrationTestKeyEq} 1 finalState &&
+    case lookupFiber @{registrationTestNameEq} 1 (registry finalState) of
+      Nothing => False
+      Just fiber => case fiberParent fiber of
+        Root => True
+        ChildOf parent => False
+
+||| Proof-indexed form of the same nine checked transitions. It is assembled by
+||| `fire`, so every stored edge is accepted by the checked evaluator.
+public export
+record RoleChangingCheckedTrace where
+  constructor MkRoleChangingCheckedTrace
+  roleChangingFinal : SystemState Nat RegistrationTestKey RegistrationTestValue
+    Unit String
+  roleChangingTrace : Transitions
+    DGamma.CP3StatementChecks.registrationTestInitial roleChangingFinal
+
+public export
+roleChangingCheckedTrace : Maybe RoleChangingCheckedTrace
+roleChangingCheckedTrace = do
+  r1 <- fire registrationTestNameEq registrationTestKeyEq
+    (OInsert 0 Root registrationTestParent) registrationTestInitial
+  r2 <- fire registrationTestNameEq registrationTestKeyEq (LBegin 0)
+    (transitionAfter r1)
+  r3 <- fire registrationTestNameEq registrationTestKeyEq
+    (OInsert 1 (ChildOf 0) registrationTestChild) (transitionAfter r2)
+  r4 <- fire registrationTestNameEq registrationTestKeyEq (ORetire 1)
+    (transitionAfter r3)
+  r5 <- fire registrationTestNameEq registrationTestKeyEq (ORemove 1)
+    (transitionAfter r4)
+  r6 <- fire registrationTestNameEq registrationTestKeyEq
+    (OInsert 1 Root registrationTestChild) (transitionAfter r5)
+  r7 <- fire registrationTestNameEq registrationTestKeyEq (LAdvance 0)
+    (transitionAfter r6)
+  r8 <- fire registrationTestNameEq registrationTestKeyEq (LBegin 1)
+    (transitionAfter r7)
+  r9 <- fire registrationTestNameEq registrationTestKeyEq (LAdvance 1)
+    (transitionAfter r8)
+  let trace = MoreTransitions (checkedTransition r1)
+        (MoreTransitions (checkedTransition r2)
+          (MoreTransitions (checkedTransition r3)
+            (MoreTransitions (checkedTransition r4)
+              (MoreTransitions (checkedTransition r5)
+                (MoreTransitions (checkedTransition r6)
+                  (MoreTransitions (checkedTransition r7)
+                    (MoreTransitions (checkedTransition r8)
+                      (MoreTransitions (checkedTransition r9)
+                        NoTransitions))))))))
+  Just (MkRoleChangingCheckedTrace (transitionAfter r9) trace)
+
+public export
+roleChangingProofTraceCheck : Bool
+roleChangingProofTraceCheck = case roleChangingCheckedTrace of
+  Nothing => False
+  Just checked => True
+
+||| The generation-stamped accounting branch is constructively available for
+||| every located child birth while the same raw name remains outside the raw
+||| endpoint-withdrawal list. This is the proposition-shape regression paired
+||| with `roleChangingRuntimeCheck`.
+public export
+0 roleChangingGenerationAccountingGuard :
+  (occurrence : LocatedGeneratedRegistration child parent component original) ->
+  (Elem (registrationGeneration occurrence)
+     [registrationGeneration occurrence],
+   Not (Elem child []))
+roleChangingGenerationAccountingGuard occurrence = (Here, notInRawEmpty)
+  where
+  notInRawEmpty : Not (Elem child [])
+  notInRawEmpty Here impossible
+  notInRawEmpty (There later) impossible
+
 ||| Every externally inserted component is enrolled in the shared rank protocol;
 ||| legal name reissue is not forbidden.
 public export
@@ -315,6 +423,36 @@ canonicalAllRootInputsGuard schedule =
   allRootInputsFirst (inputPlacement schedule)
 
 public export
+0 canonicalRootGenerationFreshGuard :
+  {initial, originalFinal : SystemState name key value world error} ->
+  {trace : Transitions initial originalFinal} ->
+  (schedule : CanonicalSchedule name key world error value protocol nameEq keyEq
+    trace) ->
+  {root : name} -> {component : Component key value world error} ->
+  (birth : LocatedActionOccurrence (OInsert root Root component)
+    (canonicalTrace schedule)) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} root (registry (actionBeforeState birth)) = Nothing
+canonicalRootGenerationFreshGuard schedule =
+  rootGenerationFresh (inputPlacement schedule)
+
+public export
+0 canonicalRootGenerationPlacementGuard :
+  {initial, originalFinal : SystemState name key value world error} ->
+  {trace : Transitions initial originalFinal} ->
+  (schedule : CanonicalSchedule name key world error value protocol nameEq keyEq
+    trace) ->
+  {root : name} -> {component : Component key value world error} ->
+  (birth : LocatedActionOccurrence (OInsert root Root component)
+    (canonicalTrace schedule)) ->
+  {action : Action name key value world error} ->
+  (lifecycle : LocatedActionOccurrence action (canonicalTrace schedule)) ->
+  isLifecycleAction action = True ->
+  LT (locatedActionOrdinal birth) (locatedActionOrdinal lifecycle)
+canonicalRootGenerationPlacementGuard schedule =
+  rootGenerationBeforeLifecycle (inputPlacement schedule)
+
+public export
 0 canonicalExternalInputsGuard :
   {initial, originalFinal : SystemState name key value world error} ->
   {trace : Transitions initial originalFinal} ->
@@ -339,7 +477,7 @@ public export
   (schedule : CanonicalSchedule name key world error value protocol nameEq keyEq
     trace) ->
   CanonicalRegistrationCorrespondence trace (canonicalTrace schedule)
-    (endpointWithdrawnNames (canonicalEndpoint schedule))
+    (endpointWithdrawnGenerations (canonicalEndpoint schedule))
 canonicalRegistrationTreeGuard schedule = canonicalRegistrationTree schedule
 
 public export
@@ -348,15 +486,39 @@ public export
   {trace : Transitions initial originalFinal} ->
   (schedule : CanonicalSchedule name key world error value protocol nameEq keyEq
     trace) ->
-  (child : name) ->
-  Elem child (endpointWithdrawnNames (canonicalEndpoint schedule)) ->
+  (generation : RegistrationGeneration name) ->
+  Elem generation (endpointWithdrawnGenerations (canonicalEndpoint schedule)) ->
   (parent : name **
    component : Component key value world error **
-   occurrence : LocatedGeneratedRegistration child parent component trace **
-    (LocatedGeneratedRegistration child parent component
-      (canonicalTrace schedule) -> Void))
+   occurrence : LocatedGeneratedRegistration (generationName generation)
+     parent component trace **
+   (registrationGeneration occurrence = generation,
+    (canonicalParent : name) ->
+    (canonicalComponent : Component key value world error) ->
+    (canonicalOccurrence : LocatedGeneratedRegistration
+      (generationName generation) canonicalParent canonicalComponent
+      (canonicalTrace schedule)) ->
+    registrationGeneration
+      (canonicalToOriginal (canonicalRegistrationTree schedule)
+        canonicalOccurrence) = generation -> Void))
 canonicalWithdrawnRegistrationGuard schedule =
   withdrawnRegistrationRemoved (canonicalRegistrationTree schedule)
+
+||| A withdrawn historical generation need not withdraw the current raw-name
+||| endpoint. This is the key role-changing-reissue distinction: a child birth
+||| can be deleted while a later root birth of the same raw name stays live.
+public export
+0 generationWithdrawalIndependentOfRawEndpoint :
+  {originalFinal, canonicalFinal : SystemState name key value world error} ->
+  {endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
+    originalFinal canonicalFinal} ->
+  (generation : RegistrationGeneration name) ->
+  Elem generation (endpointWithdrawnGenerations endpoint) ->
+  Not (Elem (generationName generation) (endpointWithdrawnNames endpoint)) ->
+  (Elem generation (endpointWithdrawnGenerations endpoint),
+   Not (Elem (generationName generation) (endpointWithdrawnNames endpoint)))
+generationWithdrawalIndependentOfRawEndpoint generation withdrawn rawLive =
+  (withdrawn, rawLive)
 
 public export
 0 canonicalBlockGuard :

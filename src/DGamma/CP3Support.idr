@@ -185,6 +185,24 @@ sameOrchestrationTransitive
 notInEmpty Here impossible
 notInEmpty (There later) impossible
 
+||| Generation deletion is independent of current raw-name omission. In
+||| particular, a later live root incarnation can remain exactly unchanged at
+||| the endpoint while an earlier child birth of that raw name is recorded in
+||| the historical generation list.
+public export
+0 canonicalEndpointHistoricalOnly :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) ->
+  (generations : List (RegistrationGeneration name)) ->
+  CanonicalEndpointRelation name key world error value nameEq keyEq state state
+canonicalEndpointHistoricalOnly nameEq keyEq state generations =
+  MkCanonicalEndpointRelation [] generations
+    (MkEffectStateRelated Refl (\selected, k => Refl))
+    (\n, outside => fiberControlMaybeReflexive
+      (lookupFiber @{nameEq} n (registry state)))
+    (\child, present => void (notInEmpty present))
+    (\child, present => void (notInEmpty present))
+
 ||| A canonical endpoint with no withdrawals recovers the stronger exact-domain
 ||| relation used by the existing endpoint diagram.
 public export
@@ -195,7 +213,8 @@ public export
   SystemEquivalent name key world error value nameEq keyEq originalFinal
     canonicalState
 canonicalEndpointWithoutWithdrawals
-  (MkCanonicalEndpointRelation [] effects controls withdrawn) Refl =
+  (MkCanonicalEndpointRelation [] generations effects controls withdrawn justified)
+  Refl =
     MkSystemEquivalent effects (MkControlEquivalent (\n => controls n notInEmpty))
 
 ||| For the zero-withdrawal specialization, coincidence of canonical endpoints

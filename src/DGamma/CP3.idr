@@ -1644,6 +1644,29 @@ transitionCount : Transitions first finalState -> Nat
 transitionCount NoTransitions = 0
 transitionCount (MoreTransitions transition rest) = S (transitionCount rest)
 
+||| One action occurrence located by its dependent prefix. Canonical placement
+||| uses these locations rather than raw action membership so two births of the
+||| same raw name remain distinct.
+public export
+record LocatedActionOccurrence
+  {initial, finalState : SystemState name key value world error}
+  (action : Action name key value world error)
+  (global : Transitions initial finalState) where
+  constructor MkLocatedActionOccurrence
+  actionBeforeState : SystemState name key value world error
+  actionAfterState : SystemState name key value world error
+  beforeActionOccurrence : Transitions initial actionBeforeState
+  locatedTransition : Transition actionBeforeState actionAfterState
+  afterActionOccurrence : Transitions actionAfterState finalState
+  0 locatedAction : transitionAction locatedTransition = action
+  0 actionOccurrenceDecomposition :
+    appendTransitions beforeActionOccurrence
+      (MoreTransitions locatedTransition afterActionOccurrence) = global
+
+public export
+locatedActionOrdinal : LocatedActionOccurrence action global -> Nat
+locatedActionOrdinal occurrence = transitionCount (beforeActionOccurrence occurrence)
+
 ||| One occurrence/generation of an explicit child registration, identified by
 ||| its dependent prefix rather than only by its raw action value.
 public export
@@ -1667,6 +1690,40 @@ record LocatedGeneratedRegistration
 public export
 registrationOrdinal : LocatedGeneratedRegistration child parent component global -> Nat
 registrationOrdinal occurrence = transitionCount (beforeRegistration occurrence)
+
+||| Stable accounting key for one registration birth within a trace. Raw names
+||| may be reused after O-Remove, so a name alone does not identify the
+||| generation that canonical deletion retained or withdrew.
+public export
+record RegistrationGeneration (name : Type) where
+  constructor MkRegistrationGeneration
+  generationName : name
+  generationBirthOrdinal : Nat
+
+||| Stamp a located child-registration occurrence by its raw name and birth
+||| ordinal in the containing trace.
+public export
+registrationGeneration :
+  {child, parent : name} ->
+  {component : Component key value world error} ->
+  {global : Transitions initial finalState} ->
+  LocatedGeneratedRegistration child parent component global ->
+  RegistrationGeneration name
+registrationGeneration {child} occurrence =
+  MkRegistrationGeneration child (registrationOrdinal occurrence)
+
+||| Stamp any located O-Insert, including an external root birth. The checked
+||| transition at `actionBeforeState` supplies that generation's operational
+||| freshness; later reuse receives a different ordinal.
+public export
+locatedRegistrationGeneration :
+  {registered : name} -> {parent : Parent name} ->
+  {component : Component key value world error} ->
+  {global : Transitions initial finalState} ->
+  LocatedActionOccurrence (OInsert registered parent component) global ->
+  RegistrationGeneration name
+locatedRegistrationGeneration {registered} occurrence =
+  MkRegistrationGeneration registered (locatedActionOrdinal occurrence)
 
 ||| Lemma-56 correspondence of generated registration trees. Live root
 ||| generations are fixed; child registration occurrences are transported
@@ -1731,16 +1788,18 @@ record SameOrchestrationModuloGenerated
   generatedRegistrationTree : RegistrationCorrespondenceByRenaming nameEq
     generatedNameBijection left right
 
-||| Registration-tree preservation for one canonical reduction. Occurrences,
-||| not raw action values, are mapped so legal remove/reissue multiplicity is
-||| retained. Each original generation either survives or is withdrawn.
+||| Registration-tree preservation for one canonical reduction. Withdrawal is
+||| keyed by `(raw name, birth ordinal)`, never by the raw name alone. Thus a
+||| deleted child generation may share its raw name with a later live root
+||| generation. Every retained canonical occurrence is also tied back to the
+||| exact original generation that it represents.
 public export
 record CanonicalRegistrationCorrespondence
   {initial, originalFinal, canonicalFinal :
     SystemState name key value world error}
   (original : Transitions initial originalFinal)
   (canonical : Transitions initial canonicalFinal)
-  (withdrawn : List name) where
+  (withdrawn : List (RegistrationGeneration name)) where
   constructor MkCanonicalRegistrationCorrespondence
   canonicalToOriginal :
     {child, parent : name} ->
@@ -1750,23 +1809,33 @@ record CanonicalRegistrationCorrespondence
   originalRegistrationAccounted :
     {child, parent : name} ->
     {component : Component key value world error} ->
-    LocatedGeneratedRegistration child parent component original ->
-    Either (Elem child withdrawn)
-      (LocatedGeneratedRegistration child parent component canonical)
+    (occurrence : LocatedGeneratedRegistration child parent component original) ->
+    Either (Elem (registrationGeneration occurrence) withdrawn)
+      (canonicalOccurrence :
+        LocatedGeneratedRegistration child parent component canonical **
+       registrationGeneration (canonicalToOriginal canonicalOccurrence) =
+         registrationGeneration occurrence)
   0 canonicalOccurrenceInjective :
     {child, parent : name} ->
     {component : Component key value world error} ->
     (leftOccurrence, rightOccurrence :
       LocatedGeneratedRegistration child parent component canonical) ->
-    registrationOrdinal (canonicalToOriginal leftOccurrence) =
-      registrationOrdinal (canonicalToOriginal rightOccurrence) ->
-    registrationOrdinal leftOccurrence = registrationOrdinal rightOccurrence
+    registrationGeneration (canonicalToOriginal leftOccurrence) =
+      registrationGeneration (canonicalToOriginal rightOccurrence) ->
+    registrationGeneration leftOccurrence = registrationGeneration rightOccurrence
   0 withdrawnRegistrationRemoved :
-    (child : name) -> Elem child withdrawn ->
+    (generation : RegistrationGeneration name) -> Elem generation withdrawn ->
     (parent : name **
      component : Component key value world error **
-     occurrence : LocatedGeneratedRegistration child parent component original **
-       (LocatedGeneratedRegistration child parent component canonical -> Void))
+     occurrence : LocatedGeneratedRegistration (generationName generation)
+       parent component original **
+     (registrationGeneration occurrence = generation,
+      (canonicalParent : name) ->
+      (canonicalComponent : Component key value world error) ->
+      (canonicalOccurrence : LocatedGeneratedRegistration
+        (generationName generation) canonicalParent canonicalComponent canonical) ->
+      registrationGeneration (canonicalToOriginal canonicalOccurrence) =
+        generation -> Void))
 
 ||| Paper Theorem 73's placement rule for inputs. All root orchestration steps
 ||| precede all lifecycle steps, while each explicit child registration precedes
@@ -1781,16 +1850,37 @@ record CanonicalInputPlacement
   (trace : Transitions initial finalState) where
   constructor MkCanonicalInputPlacement
   0 allRootInputsFirst : RootInputsBeforeLifecycle nameEq trace
-  0 childInputBeforeOwnLifecycle : (n, parent : name) -> Elem n order ->
+  ||| Freshness and placement are stated for each located root birth, not for a
+  ||| raw name globally. A later root birth may therefore reuse the raw name of
+  ||| a withdrawn child generation.
+  0 rootGenerationFresh :
+    {root : name} -> {component : Component key value world error} ->
+    (birth : LocatedActionOccurrence (OInsert root Root component) trace) ->
+    lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+      {error = error} root (registry (actionBeforeState birth)) = Nothing
+  0 rootGenerationBeforeLifecycle :
+    {root : name} -> {component : Component key value world error} ->
+    (birth : LocatedActionOccurrence (OInsert root Root component) trace) ->
+    {action : Action name key value world error} ->
+    (lifecycle : LocatedActionOccurrence action trace) ->
+    isLifecycleAction action = True ->
+    LT (locatedActionOrdinal birth) (locatedActionOrdinal lifecycle)
+  ||| The surviving child is linked to one located birth generation. Its
+  ||| checked O-Insert is fresh at that birth state and precedes every located
+  ||| lifecycle occurrence of that child.
+  0 childGenerationBeforeOwnLifecycle :
+    (n, parent : name) -> Elem n order ->
     (fiber : Fiber name key value world error) ->
     lookupFiber @{nameEq} n (registry supportState) = Just fiber ->
     fiberParent fiber = ChildOf parent ->
     (component : Component key value world error **
-      (ActionOccurs (OInsert n (ChildOf parent) component) trace,
-       (action : Action name key value world error) ->
-       isLifecycleAction action = True -> actionOwner action = n ->
-       ActionOccurs action trace ->
-       ActionBefore (OInsert n (ChildOf parent) component) action trace))
+     birth : LocatedGeneratedRegistration n parent component trace **
+     (lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+       {error = error} n (registry (registrationBefore birth)) = Nothing,
+      (action : Action name key value world error) ->
+      (lifecycle : LocatedActionOccurrence action trace) ->
+      isLifecycleAction action = True -> actionOwner action = n ->
+      LT (registrationOrdinal birth) (locatedActionOrdinal lifecycle)))
 
 ||| Endpoint relation used by canonical deletion. Unlike `SystemEquivalent`, it
 ||| explicitly permits a nonempty set of vestigial original names to be absent
@@ -1802,7 +1892,13 @@ record CanonicalEndpointRelation
   (nameEq : DecEq name) (keyEq : DecEq key)
   (originalFinal, canonicalFinal : SystemState name key value world error) where
   constructor MkCanonicalEndpointRelation
+  ||| Raw names actually absent from the canonical endpoint. This list is only
+  ||| for comparing the current endpoint registries.
   endpointWithdrawnNames : List name
+  ||| Historical child births deleted while canonicalizing. A generation may
+  ||| appear here even when the same raw name denotes a later live endpoint
+  ||| root and therefore does not appear in `endpointWithdrawnNames`.
+  endpointWithdrawnGenerations : List (RegistrationGeneration name)
   0 endpointEffectsEquivalent : EffectStateRelated keyEq
     (projectEffectState @{nameEq} originalFinal)
     (projectEffectState @{nameEq} canonicalFinal)
@@ -1810,6 +1906,12 @@ record CanonicalEndpointRelation
     endpointWithdrawnNames originalFinal canonicalFinal
   0 endpointNamesWithdrawn : RegisteredNamesWithdrawn nameEq
     endpointWithdrawnNames originalFinal canonicalFinal
+  ||| Every raw endpoint omission is justified by at least one deleted
+  ||| generation of that raw name; the converse deliberately does not hold.
+  0 endpointNameHasWithdrawnGeneration : (child : name) ->
+    Elem child endpointWithdrawnNames ->
+    (birth : Nat ** Elem (MkRegistrationGeneration child birth)
+      endpointWithdrawnGenerations)
 
 ||| Finite canonical-form statement package under active repair: it retains the
 ||| verified Equation-62 order/block fields and exposes all-root input placement
@@ -1845,7 +1947,7 @@ record CanonicalSchedule
   canonicalEndpoint : CanonicalEndpointRelation name key world error value
     nameEq keyEq originalFinal canonicalFinal
   canonicalRegistrationTree : CanonicalRegistrationCorrespondence original
-    canonicalTrace (endpointWithdrawnNames canonicalEndpoint)
+    canonicalTrace (endpointWithdrawnGenerations canonicalEndpoint)
 
 ||| Lemma 70, stated as pointwise equality so no finite-set quotient or function
 ||| extensionality is required.
