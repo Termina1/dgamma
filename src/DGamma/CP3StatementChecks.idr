@@ -861,21 +861,60 @@ freshChoiceTheorem73PremiseChain claim witness leftAligned rightAligned
       initialEmpty leftQuiet rightQuiet leftSuccess rightSuccess leftTotal
       rightTotal leftIndependent rightIndependent (blockerPairSameInputs witness)
 
-||| The generation-stamped accounting branch is constructively available for
-||| every located child birth while the same raw name remains outside the raw
-||| endpoint-withdrawal list. This is the proposition-shape regression paired
-||| with `roleChangingRuntimeCheck`.
+||| Complete `CanonicalSchedule` constructor check specialized to the concrete
+||| nine-action role-changing trace.  This is intentionally an assembly check,
+||| not a claimed construction of the still-open sorting proof: every field is
+||| tied to this exact original trace, and the endpoint is additionally forced
+||| to have no current raw omission and exactly the historical child generation
+||| `(1,2)`.  It replaces the former singleton-membership pseudo-regression.
 public export
-0 roleChangingGenerationAccountingGuard :
-  (occurrence : LocatedGeneratedRegistration child parent component original) ->
-  (Elem (registrationGeneration occurrence)
-     [registrationGeneration occurrence],
-   Not (Elem child []))
-roleChangingGenerationAccountingGuard occurrence = (Here, notInRawEmpty)
-  where
-  notInRawEmpty : Not (Elem child [])
-  notInRawEmpty Here impossible
-  notInRawEmpty (There later) impossible
+0 roleChangingFullCanonicalScheduleStatementCheck :
+  (original : RoleChangingNamedTrace 1) ->
+  (canonicalFinal : SystemState Nat RegistrationTestKey RegistrationTestValue
+    Unit String) ->
+  (canonicalTrace : Transitions DGamma.CP3StatementChecks.registrationTestInitial canonicalFinal) ->
+  SameExternalOrchestration DGamma.CP3StatementChecks.registrationTestNameEq
+    (namedRoleChangingTrace original) canonicalTrace ->
+  RegistrationDiscipline DGamma.CP3StatementChecks.registrationTestProtocol DGamma.CP3StatementChecks.registrationTestNameEq
+    (namedRoleChangingTrace original) ->
+  RegistrationDiscipline DGamma.CP3StatementChecks.registrationTestProtocol DGamma.CP3StatementChecks.registrationTestNameEq
+    canonicalTrace ->
+  (order : List Nat) ->
+  (linearization : LinearizesSupport Nat RegistrationTestKey Unit String
+    RegistrationTestValue DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq
+    (namedAfter (rootAdvance1 original)) order) ->
+  (blocks : (n : Nat) -> Elem n order ->
+    LocatedOpenEpisodeBlock Nat RegistrationTestKey Unit String
+      RegistrationTestValue DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq n
+      canonicalTrace) ->
+  ((earlier, later : Nat) ->
+    (earlierIn : Elem earlier order) -> (laterIn : Elem later order) ->
+    BeforeIn earlier later order ->
+    BlockBefore Nat RegistrationTestKey Unit String RegistrationTestValue
+      DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq canonicalTrace earlier later
+      (blocks earlier earlierIn) (blocks later laterIn)) ->
+  LifecycleActorsCovered order canonicalTrace ->
+  CanonicalInputPlacement Nat RegistrationTestKey Unit String
+    RegistrationTestValue DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq
+    (namedAfter (rootAdvance1 original)) order canonicalTrace ->
+  (endpoint : CanonicalEndpointRelation Nat RegistrationTestKey Unit String
+    RegistrationTestValue DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq
+    (namedAfter (rootAdvance1 original)) canonicalFinal) ->
+  endpointWithdrawnNames endpoint = [] ->
+  endpointWithdrawnGenerations endpoint =
+    [MkRegistrationGeneration 1 2] ->
+  CanonicalRegistrationCorrespondence (namedRoleChangingTrace original)
+    canonicalTrace (endpointWithdrawnGenerations endpoint) ->
+  CanonicalSchedule Nat RegistrationTestKey Unit String RegistrationTestValue
+    DGamma.CP3StatementChecks.registrationTestProtocol DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq
+    (namedRoleChangingTrace original)
+roleChangingFullCanonicalScheduleStatementCheck original canonicalFinal
+  canonicalTrace sameInputs originalDiscipline canonicalDiscipline order
+  linearization blocks ordered coverage placement endpoint noRaw historical
+  registrationTree =
+    MkCanonicalSchedule canonicalFinal canonicalTrace sameInputs
+      originalDiscipline canonicalDiscipline order linearization blocks ordered
+      coverage placement endpoint registrationTree
 
 ||| Every externally inserted component is enrolled in the shared rank protocol;
 ||| legal name reissue is not forbidden.
