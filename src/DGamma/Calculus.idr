@@ -257,15 +257,128 @@ parentPresent Root fibers = True
 parentPresent (ChildOf parent) fibers = isJust (lookupFiber parent fibers)
 
 public export
+isChildOf : DecEq name => name ->
+  Binding name (FiberAt name key value world error) -> Bool
+isChildOf parent (Bind _ fiber) = case fiberParent fiber of
+  Root => False
+  ChildOf candidate => case decEq parent candidate of
+    Yes Refl => True
+    No _ => False
+
+public export
+hasChildIn : DecEq name => name ->
+  List (Binding name (FiberAt name key value world error)) -> Bool
+hasChildIn parent [] = False
+hasChildIn parent (entry :: rest) = isChildOf parent entry || hasChildIn parent rest
+
+public export
 hasChild : DecEq name => name -> Registry name key value world error -> Bool
-hasChild parent fibers = any isChild (registryFibers fibers)
-  where
-  isChild : Binding name (FiberAt name key value world error) -> Bool
-  isChild (Bind _ fiber) = case fiberParent fiber of
-    Root => False
-    ChildOf candidate => case decEq parent candidate of
-      Yes Refl => True
-      No _ => False
+hasChild parent fibers = hasChildIn parent (registryFibers fibers)
+
+0 justFiberInjective : Just left = Just right -> left = right
+justFiberInjective Refl = Refl
+
+0 childOfInjective : ChildOf left = ChildOf right -> left = right
+childOfInjective Refl = Refl
+
+0 rootNotChild : Root = ChildOf n -> Void
+rootNotChild Refl impossible
+
+0 trueNotFalse : True = False -> Void
+trueNotFalse Refl impossible
+
+0 childOfSelfTrue : (nameEq : DecEq name) -> (removed, current : name) ->
+  (component : Component key value world error) -> (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (lifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  isChildOf @{nameEq} removed
+    (Bind current (MkFiber component (ChildOf removed) retired table lifecycle)) = True
+childOfSelfTrue nameEq removed current component retired table lifecycle
+  with (decEq @{nameEq} removed removed)
+  childOfSelfTrue nameEq removed current component retired table lifecycle |
+    (Yes Refl) = Refl
+  childOfSelfTrue nameEq removed current component retired table lifecycle |
+    (No contra) = void (contra Refl)
+
+0 boolOrLeftFalse : (left, right : Bool) -> left || right = False -> left = False
+boolOrLeftFalse False right valid = Refl
+boolOrLeftFalse True right valid = void (trueNotFalse valid)
+
+0 boolOrRightFalse : (left, right : Bool) -> left || right = False -> right = False
+boolOrRightFalse False False valid = Refl
+boolOrRightFalse False True valid = void (trueNotFalse valid)
+boolOrRightFalse True right valid = void (trueNotFalse valid)
+
+0 noChildHeadParentDistinct :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (removed, current : name) ->
+  (observed : Fiber name key value world error) ->
+  (rest : List (Binding name (FiberAt name key value world error))) ->
+  hasChildIn @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} removed (Bind current observed :: rest) = False ->
+  Not (fiberParent observed = ChildOf removed)
+noChildHeadParentDistinct {key} {world} {error} {value} nameEq removed current
+  (MkFiber component parent retired table lifecycle) rest noChild =
+  case parent of
+    Root => \same => rootNotChild same
+    ChildOf candidate => case decEq @{nameEq} removed candidate of
+      Yes Refl => \same =>
+        let headFalse = boolOrLeftFalse
+              (isChildOf @{nameEq} removed
+                (Bind current (MkFiber component (ChildOf removed) retired table lifecycle)))
+              (hasChildIn @{nameEq} removed rest) noChild
+        in trueNotFalse (trans (sym (childOfSelfTrue nameEq removed current component
+          retired table lifecycle)) headFalse)
+      No distinct => \same => distinct (sym (childOfInjective same))
+
+||| The executable no-child guard excludes the removed name as the parent of
+||| every present fiber, including ancestors reached during a chain traversal.
+public export
+0 noChildLookupParentDistinct :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (removed, current : name) ->
+  (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  hasChild @{nameEq} {key = key} {value = value} {world = world} {error = error} removed fibers = False ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} current fibers = Just fiber ->
+  Not (fiberParent fiber = ChildOf removed)
+0 noChildEntriesLookupParentDistinct :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (removed, current : name) ->
+  (fiber : Fiber name key value world error) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  hasChildIn @{nameEq} {key = key} {value = value} {world = world} {error = error} removed entries = False ->
+  lookupEntries @{nameEq} {value = FiberAt name key value world error} current entries = Just fiber ->
+  Not (fiberParent fiber = ChildOf removed)
+noChildEntriesLookupParentDistinct {key} {world} {error} {value} nameEq removed current fiber [] noChild present =
+  case present of Refl impossible
+noChildEntriesLookupParentDistinct {name} {key} {world} {error} {value}
+  nameEq removed current fiber (Bind found observed :: rest) noChild present
+  with (decEq @{nameEq} current found)
+  noChildEntriesLookupParentDistinct {name} {key} {world} {error} {value}
+    nameEq removed found fiber (Bind found observed :: rest) noChild present |
+    (Yes Refl) =
+      replace {p = \candidate => Not (fiberParent candidate = ChildOf removed)}
+        (justFiberInjective present)
+        (noChildHeadParentDistinct nameEq removed found observed rest noChild)
+  noChildEntriesLookupParentDistinct {name} {key} {world} {error} {value}
+    nameEq removed current fiber (Bind found observed :: rest) noChild present |
+    (No _) = noChildEntriesLookupParentDistinct {name = name} {key = key}
+      {world = world} {error = error} {value = value} nameEq removed current fiber
+      rest
+      (boolOrRightFalse
+        (isChildOf @{nameEq} removed (Bind found observed))
+        (hasChildIn @{nameEq} {key = key} {value = value} {world = world} {error = error} removed rest) noChild)
+      present
+
+noChildLookupParentDistinct {name} {key} {world} {error} {value}
+  nameEq removed current fiber (MkCoeffectContext entries unique) noChild present =
+  noChildEntriesLookupParentDistinct {name = name} {key = key} {world = world}
+    {error = error} {value = value} nameEq removed current fiber entries
+    noChild present
+
 
 public export
 providerIn : DecEq name => DecEq key => key ->
