@@ -5122,6 +5122,7 @@ providerOfSound {name} {key} {world} {error} {value}
     (soundProviderLookup entrySound)
     (soundProviderStable entrySound) valuePresent
 
+public export
 0 isJustTrueWitness : (candidate : Maybe a) -> isJust candidate = True ->
   (witness : a ** candidate = Just witness)
 isJustTrueWitness Nothing valid = void (falseCannotBeTrue valid)

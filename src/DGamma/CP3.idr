@@ -1805,3 +1805,335 @@ extractSpanningClosedEpisode nameEq keyEq selected leftTrace rightTrace prefixAl
                 (appendTransitions afterOpening beforeClosing)
                 insideInstalled closing)
               afterClosing locatedDecomposition
+
+0 resolvedViewLookup :
+  {name, key : Type} -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) -> (view : View name deps) ->
+  (wanted : key) -> (provider : name) ->
+  (case viewLookup @{keyEq} wanted deps view of
+     Nothing => False
+     Just actual => case decEq @{nameEq} actual provider of
+       Yes Refl => True
+       No _ => False) = True ->
+  viewLookup @{keyEq} wanted deps view = Just provider
+resolvedViewLookup nameEq keyEq deps view wanted provider valid
+  with (viewLookup @{keyEq} wanted deps view) proof found
+  resolvedViewLookup nameEq keyEq deps view wanted provider valid | Nothing = absurd valid
+  resolvedViewLookup nameEq keyEq deps view wanted provider valid | Just actual
+    with (decEq @{nameEq} actual provider)
+    resolvedViewLookup nameEq keyEq deps view wanted actual valid | Just actual | Yes Refl =
+      rewrite sym found in Refl
+    resolvedViewLookup nameEq keyEq deps view wanted provider valid | Just actual | No distinct =
+      absurd valid
+
+public export
+cp3AndLeftTrue : (left, right : Bool) -> left && right = True -> left = True
+cp3AndLeftTrue False right valid = absurd valid
+cp3AndLeftTrue True right valid = Refl
+
+public export
+cp3AndRightTrue : (left, right : Bool) -> left && right = True -> right = True
+cp3AndRightTrue False right valid = absurd valid
+cp3AndRightTrue True False valid = absurd valid
+cp3AndRightTrue True True valid = Refl
+
+0 viewLookupStableProvider :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) -> (view : View name deps) ->
+  (wanted : key) -> (provider : name) ->
+  (fibers : Registry name key value world error) ->
+  (resolvedLookup : viewLookup @{keyEq} wanted deps view = Just provider) ->
+  (providersValid : viewProvidersInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fibers view = True) ->
+  (providerFiber : Fiber name key value world error **
+    (lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} provider fibers = Just providerFiber,
+     stableProvider (fiberLifecycle providerFiber) = True))
+viewLookupStableProvider nameEq keyEq [] EmptyView wanted provider fibers
+  lookup valid = case lookup of Refl impossible
+viewLookupStableProvider nameEq keyEq (current :: rest)
+  (ProviderView currentProvider tail) wanted provider fibers lookup valid
+  with (decEq @{keyEq} wanted current)
+  viewLookupStableProvider nameEq keyEq (current :: rest)
+    (ProviderView currentProvider tail) current provider fibers lookup valid |
+    Yes Refl = case justInjective lookup of
+      Refl => stableHead valid
+    where
+    stableHead :
+      viewProvidersInvariant @{nameEq} {key = key} {value = value}
+        {world = world} {error = error} fibers
+        (ProviderView currentProvider tail) = True ->
+      (providerFiber : Fiber name key value world error **
+        (lookupFiber @{nameEq} {key = key} {value = value}
+          {world = world} {error = error} currentProvider fibers = Just providerFiber,
+         stableProvider (fiberLifecycle providerFiber) = True))
+    stableHead headValid with (lookupFiber @{nameEq} {key = key} {value = value}
+        {world = world} {error = error} currentProvider fibers)
+      proof providerFound
+      stableHead headValid | Nothing = absurd headValid
+      stableHead headValid | Just providerFiber =
+        let providerStable = cp3AndLeftTrue
+              (stableProvider (fiberLifecycle providerFiber))
+              (viewProvidersInvariant @{nameEq} {key = key} {value = value}
+                {world = world} {error = error} fibers tail) headValid
+        in (providerFiber ** (Refl, providerStable))
+  viewLookupStableProvider nameEq keyEq (current :: rest)
+    (ProviderView currentProvider tail) wanted provider fibers lookup valid |
+    No distinct =
+      viewLookupStableProvider nameEq keyEq rest tail wanted provider fibers lookup
+        (viewProvidersTailValid nameEq currentProvider current tail fibers valid)
+
+0 resolvedViewValue :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) -> (view : View name deps) ->
+  (wanted : key) -> (provider : name) ->
+  (fibers : Registry name key value world error) ->
+  (resolvedLookup : viewLookup @{keyEq} wanted deps view = Just provider) ->
+  (valuesValid : isJust
+    (resolveCommittedValues @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps view fibers) = True) ->
+  (provided : value wanted **
+    valueFromProvider @{nameEq} @{keyEq} {value = value} {world = world} {error = error} provider wanted fibers = Just provided)
+resolvedViewValue nameEq keyEq [] EmptyView wanted provider fibers lookup valid =
+  case lookup of Refl impossible
+resolvedViewValue nameEq keyEq (current :: rest)
+  (ProviderView currentProvider tail) wanted provider fibers lookup valid
+  with (decEq @{keyEq} wanted current)
+  resolvedViewValue nameEq keyEq (current :: rest)
+    (ProviderView currentProvider tail) current provider fibers lookup valid |
+    Yes Refl = case justInjective lookup of
+      Refl => resolvedHead valid
+    where
+    resolvedHead :
+      isJust (resolveCommittedValues @{nameEq} @{keyEq} {value = value}
+        {world = world} {error = error}
+        (current :: rest) (ProviderView currentProvider tail) fibers) = True ->
+      (provided : value current **
+        valueFromProvider @{nameEq} @{keyEq} {value = value}
+          {world = world} {error = error} currentProvider current fibers =
+          Just provided)
+    resolvedHead headValid
+      with (valueFromProvider @{nameEq} @{keyEq} {value = value}
+        {world = world} {error = error} currentProvider current fibers)
+      proof currentValue
+      resolvedHead headValid | Nothing = absurd headValid
+      resolvedHead headValid | Just provided = (provided ** Refl)
+  resolvedViewValue nameEq keyEq (current :: rest)
+    (ProviderView currentProvider tail) wanted provider fibers lookup valid |
+    No distinct with (valueFromProvider @{nameEq} @{keyEq} {value = value}
+        {world = world} {error = error} currentProvider current fibers)
+    proof currentValue
+    resolvedViewValue nameEq keyEq (current :: rest)
+      (ProviderView currentProvider tail) wanted provider fibers lookup valid |
+      No distinct | Nothing = absurd valid
+    resolvedViewValue nameEq keyEq (current :: rest)
+      (ProviderView currentProvider tail) wanted provider fibers lookup valid |
+      No distinct | Just currentProvided
+      with (resolveCommittedValues @{nameEq} @{keyEq} rest tail fibers)
+      proof tailValues
+      resolvedViewValue nameEq keyEq (current :: rest)
+        (ProviderView currentProvider tail) wanted provider fibers lookup valid |
+        No distinct | Just currentProvided | Nothing = absurd valid
+      resolvedViewValue nameEq keyEq (current :: rest)
+        (ProviderView currentProvider tail) wanted provider fibers lookup valid |
+        No distinct | Just currentProvided | Just values =
+          resolvedViewValue nameEq keyEq rest tail wanted provider fibers lookup
+            (cong isJust tailValues)
+
+0 stableProviderImpliesInstalled :
+  (lifecycle : Lifecycle key value world error name deps provision) ->
+  stableProvider lifecycle = True -> installed lifecycle = True
+stableProviderImpliesInstalled (Inactive outcome) valid = absurd valid
+stableProviderImpliesInstalled (Reloading remaining accumulator view) valid =
+  absurd valid
+stableProviderImpliesInstalled (Active accumulator view) valid = Refl
+stableProviderImpliesInstalled (Unloading accumulator view outcome) valid = Refl
+
+public export
+record ResolvedProviderData
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (consumer : name) (wanted : key) (provider : name)
+  (state : SystemState name key value world error) where
+  constructor MkResolvedProviderData
+  resolvedProviderFiber : Fiber name key value world error
+  resolvedProviderLookup : lookupFiber @{nameEq} provider (registry state) =
+    Just resolvedProviderFiber
+  resolvedProviderStable : stableProvider
+    (fiberLifecycle resolvedProviderFiber) = True
+  resolvedValue : value wanted
+  resolvedValuePresent : providerValueAt @{nameEq} @{keyEq} provider wanted state =
+    Just resolvedValue
+  resolvedProviderInstalled : installedAt @{nameEq} provider state = True
+
+
+
+0 resolvedProviderFromView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (consumer : name) -> (wanted : key) -> (provider : name) ->
+  (state : SystemState name key value world error) ->
+  (deps : List key) -> (view : View name deps) ->
+  (resolvedLookup : viewLookup @{keyEq} wanted deps view = Just provider) ->
+  (viewValid : viewBindingsInvariant @{nameEq} @{keyEq}
+    {value = value} {world = world} {error = error} deps view
+    (registry state) = True) ->
+  ResolvedProviderData name key world error value nameEq keyEq consumer wanted
+    provider state
+resolvedProviderFromView {name} {key} {world} {error} {value}
+  nameEq keyEq consumer wanted provider state deps view
+  resolvedLookup viewValid =
+  let providersValid = cp3AndLeftTrue
+        (viewProvidersInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (registry state) view)
+        (isJust (resolveCommittedValues @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps view
+          (registry state))) viewValid
+      valuesValid = cp3AndRightTrue
+        (viewProvidersInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (registry state) view)
+        (isJust (resolveCommittedValues @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps view
+          (registry state))) viewValid
+  in case viewLookupStableProvider nameEq keyEq deps view wanted provider
+       (registry state) resolvedLookup providersValid of
+    (providerFiber ** (providerFound, providerStable)) =>
+      case resolvedViewValue nameEq keyEq deps view wanted provider
+        (registry state) resolvedLookup valuesValid of
+        (provided ** valuePresent) =>
+          let providerInstalled = trans
+                (installedAtFound nameEq provider state providerFiber providerFound)
+                (stableProviderImpliesInstalled
+                  (fiberLifecycle providerFiber) providerStable)
+          in MkResolvedProviderData providerFiber providerFound providerStable
+            provided valuePresent providerInstalled
+
+0 committedViewBindingsValid :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (view : View name (dependencies
+    (componentDependencies (fiberComponent fiber)))) ->
+  (fiberValid : fiberViewInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} fiber fibers = True) ->
+  (committedEquation : committed (fiberLifecycle fiber) = Just view) ->
+  viewBindingsInvariant @{nameEq} @{keyEq}
+    {value = value} {world = world} {error = error}
+    (dependencies (componentDependencies (fiberComponent fiber))) view fibers = True
+committedViewBindingsValid nameEq keyEq
+  (MkFiber component parent retired table (Inactive outcome)) fibers view valid
+  committedEquation = case committedEquation of Refl impossible
+committedViewBindingsValid nameEq keyEq
+  (MkFiber component parent retired table
+    (Reloading remaining accumulator actualView)) fibers view valid
+  committedEquation = case justInjective committedEquation of Refl => valid
+committedViewBindingsValid nameEq keyEq
+  (MkFiber component parent retired table (Active accumulator actualView))
+  fibers view valid committedEquation =
+    case justInjective committedEquation of Refl => valid
+committedViewBindingsValid nameEq keyEq
+  (MkFiber component parent retired table
+    (Unloading accumulator actualView outcome)) fibers view valid
+  committedEquation = case justInjective committedEquation of Refl => valid
+
+0 resolvedCommittedFiberData :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (consumer : name) -> (wanted : key) -> (provider : name) ->
+  (state : SystemState name key value world error) ->
+  (consumerFiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} consumer (registry state) = Just consumerFiber ->
+  registryWellFormed @{nameEq} @{keyEq} state = True ->
+  (view : View name (dependencies
+    (componentDependencies (fiberComponent consumerFiber)))) ->
+  committed (fiberLifecycle consumerFiber) = Just view ->
+  (resolvedLookup : viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies (fiberComponent consumerFiber))) view =
+    Just provider) ->
+  ResolvedProviderData name key world error value nameEq keyEq consumer wanted
+    provider state
+resolvedCommittedFiberData {name} {key} {world} {error} {value}
+  nameEq keyEq consumer wanted provider state@(MkSystemState ambient fibers)
+  consumerFiber consumerFound wellFormed view committedEquation resolvedLookup =
+  let allViews = sourceViewsFromWellFormed nameEq keyEq ambient fibers wellFormed
+      entryPresent = lookupFiberEntries nameEq consumer consumerFiber fibers
+        consumerFound
+      selectedControl = viewsInvariantLookup nameEq keyEq consumer consumerFiber
+        (registryFibers fibers) fibers entryPresent allViews
+      selectedValid = committedViewBindingsValid nameEq keyEq consumerFiber fibers
+        view selectedControl committedEquation
+  in resolvedProviderFromView nameEq keyEq consumer wanted provider state
+    (dependencies (componentDependencies (fiberComponent consumerFiber))) view
+    resolvedLookup selectedValid
+
+||| A well-formed committed consumer view yields both the installed provider
+||| witness needed for boundary extraction and the concrete opening value.
+public export
+0 resolvedProviderData :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (consumer : name) -> (wanted : key) -> (provider : name) ->
+  (state : SystemState name key value world error) ->
+  registryWellFormed @{nameEq} @{keyEq} state = True ->
+  resolvedProviderAt @{nameEq} @{keyEq} consumer wanted provider state = True ->
+  ResolvedProviderData name key world error value nameEq keyEq consumer wanted
+    provider state
+resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved
+  with (lookupFiber @{nameEq} consumer (registry state)) proof consumerFound
+  resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
+    Nothing = absurd resolved
+  resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
+    Just consumerFiber with (fiberLifecycle consumerFiber) proof lifecycle
+    resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
+      Just consumerFiber | Inactive outcome = absurd resolved
+    resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
+      Just consumerFiber | Reloading remaining accumulator view
+      with (viewLookup @{keyEq} wanted
+        (dependencies (componentDependencies (fiberComponent consumerFiber))) view)
+      proof selectedProvider
+      resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
+        Just consumerFiber | Reloading remaining accumulator view | Nothing =
+          absurd resolved
+      resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
+        Just consumerFiber | Reloading remaining accumulator view | Just actual
+        with (decEq @{nameEq} actual provider)
+        resolvedProviderData nameEq keyEq consumer wanted actual state wellFormed resolved |
+          Just consumerFiber | Reloading remaining accumulator view | Just actual |
+          Yes Refl =
+            resolvedCommittedFiberData nameEq keyEq consumer wanted actual state
+              consumerFiber consumerFound wellFormed view
+              (cong committed lifecycle) selectedProvider
+        resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
+          Just consumerFiber | Reloading remaining accumulator view | Just actual |
+          No distinct = absurd resolved
+    resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
+      Just consumerFiber | Active accumulator view
+      with (viewLookup @{keyEq} wanted
+        (dependencies (componentDependencies (fiberComponent consumerFiber))) view)
+      proof selectedProvider
+      resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
+        Just consumerFiber | Active accumulator view | Nothing = absurd resolved
+      resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
+        Just consumerFiber | Active accumulator view | Just actual
+        with (decEq @{nameEq} actual provider)
+        resolvedProviderData nameEq keyEq consumer wanted actual state wellFormed resolved |
+          Just consumerFiber | Active accumulator view | Just actual | Yes Refl =
+            resolvedCommittedFiberData nameEq keyEq consumer wanted actual state
+              consumerFiber consumerFound wellFormed view
+              (cong committed lifecycle) selectedProvider
+        resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
+          Just consumerFiber | Active accumulator view | Just actual | No distinct =
+            absurd resolved
+    resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
+      Just consumerFiber | Unloading accumulator view outcome
+      with (viewLookup @{keyEq} wanted
+        (dependencies (componentDependencies (fiberComponent consumerFiber))) view)
+      proof selectedProvider
+      resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
+        Just consumerFiber | Unloading accumulator view outcome | Nothing =
+          absurd resolved
+      resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
+        Just consumerFiber | Unloading accumulator view outcome | Just actual
+        with (decEq @{nameEq} actual provider)
+        resolvedProviderData nameEq keyEq consumer wanted actual state wellFormed resolved |
+          Just consumerFiber | Unloading accumulator view outcome | Just actual |
+          Yes Refl =
+            resolvedCommittedFiberData nameEq keyEq consumer wanted actual state
+              consumerFiber consumerFound wellFormed view
+              (cong committed lifecycle) selectedProvider
+        resolvedProviderData nameEq keyEq consumer wanted provider state wellFormed resolved |
+          Just consumerFiber | Unloading accumulator view outcome | Just actual |
+          No distinct = absurd resolved
