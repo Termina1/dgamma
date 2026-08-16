@@ -1624,6 +1624,45 @@ viewProvidersRetireRegistry {name} {key} {world} {error} {value}
             {error = error} {value = value} nameEq deps rest n fiber
             (MkCoeffectContext entries unique) present)
 
+||| Retirement leaves every provider-owned value lookup unchanged.
+public export
+0 valueFromProviderRetireRegistry :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provider : name) -> (k : key) -> (n : name) ->
+  (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (present : lookupFiber @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} n fibers = Just fiber) ->
+  valueFromProvider @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} provider k
+    (replaceBinding @{nameEq} n (retireFiber fiber) fibers) =
+  valueFromProvider @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} provider k fibers
+valueFromProviderRetireRegistry {name} {key} {world} {error} {value}
+  nameEq keyEq provider k n fiber fibers@(MkCoeffectContext entries unique) present
+  with (decEq @{nameEq} provider n)
+  valueFromProviderRetireRegistry {name} {key} {world} {error} {value}
+    nameEq keyEq n k n
+    fiber@(MkFiber component parent retired table lifecycle)
+    fibers@(MkCoeffectContext entries unique) present | (Yes Refl) =
+      rewrite lookupReplaceEntries n fiber (retireFiber fiber) entries present in
+      rewrite present in Refl
+  valueFromProviderRetireRegistry {name} {key} {world} {error} {value}
+    nameEq keyEq provider k n fiber fibers@(MkCoeffectContext entries unique)
+    present | (No distinct)
+    with (lookupEntries @{nameEq} provider entries) proof original
+    valueFromProviderRetireRegistry {name} {key} {world} {error} {value}
+      nameEq keyEq provider k n fiber fibers@(MkCoeffectContext entries unique)
+      present | (No distinct) | Nothing =
+        rewrite lookupReplaceOtherEntries provider n distinct (retireFiber fiber)
+          entries in rewrite original in Refl
+    valueFromProviderRetireRegistry {name} {key} {world} {error} {value}
+      nameEq keyEq provider k n fiber fibers@(MkCoeffectContext entries unique)
+      present | (No distinct) | Just providerFiber =
+        rewrite lookupReplaceOtherEntries provider n distinct (retireFiber fiber)
+          entries in rewrite original in Refl
+
 public export
 0 retireProvisionInvariant : (fiber : Fiber name key value world error) ->
   componentProvisions (fiberComponent (retireFiber fiber)) =
