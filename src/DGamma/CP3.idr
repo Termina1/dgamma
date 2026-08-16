@@ -1898,8 +1898,9 @@ record RegistrationCorrespondenceByGeneration
 
 ||| The raw-name bijection used only to compare *current endpoint* registries.
 ||| Historical child births are governed by the generation bijection above.
-||| Live roots are fixed because they are external names; a current generated
-||| child must agree with the image of its own last unremoved generation.
+||| Live roots are fixed because they are external names, and every last
+||| unremoved birth (root or child) must agree with both bijections. Applying
+||| the raw bijection only here avoids constraining earlier generations.
 public export
 record CurrentEndpointRenaming
   (nameEq : DecEq name) (generationRenaming : RegistrationGenerationBijection name)

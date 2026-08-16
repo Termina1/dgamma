@@ -652,7 +652,10 @@ all remaining semantic premises. `roleChangingFullCanonicalScheduleStatementChec
 then specializes every `CanonicalSchedule` constructor field to the nine-action
 trace and forces historical withdrawals to `[(1,2)]` with no current raw
 omission. It is an honest full-package assembly check, not a construction of
-the still-open canonical sorting proof.
+the still-open canonical sorting proof. `roleChangingCanonicalRuntimeCheck`
+separately executes the six-action roots-first replay and confirms that both the
+original and replay endpoints are quiet, successful, supported, active-root
+shapes.
 
 The trace-free `CanonicalEndpointRelation` deliberately cannot validate an
 arbitrary historical list. `canonicalEndpointHistoricalOnly` is therefore only
