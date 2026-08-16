@@ -827,66 +827,57 @@ public export
   (nameEq : DecEq name) -> (fuel : Nat) -> (seen : List name) ->
   (current, n : name) -> (component : Component key value world error) ->
   (parent : Parent name) -> (fibers : Registry name key value world error) ->
-  (absent : lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Nothing) ->
-  Not (Elem n seen) -> Elem current seen ->
-  parentChainInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fuel seen current fibers = True ->
-  parentChainInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fuel seen current
+  (absent : lookupFiber @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} n fibers = Nothing) ->
+  Not (current = n) ->
+  parentChainInvariant @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} fuel seen current fibers = True ->
+  parentChainInvariant @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} fuel seen current
     (insertBinding @{nameEq} n (freshFiber component parent) fibers absent) = True
-parentChainInactiveInsert {key} {world} {error} {value} nameEq Z seen current n component parent fibers
-  absent freshNotSeen currentSeen valid = void (falseCannotBeTrue valid)
+parentChainInactiveInsert nameEq Z seen current n component parent fibers
+  absent distinct valid = void (falseCannotBeTrue valid)
 parentChainInactiveInsert {name} {key} {world} {error} {value}
-  nameEq (S fuel) seen current n component parent fibers
-  absent freshNotSeen currentSeen valid
-  with (lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} current fibers) proof currentLookup
+  nameEq (S fuel) seen current n component parent fibers absent distinct valid
+  with (lookupFiber @{nameEq} current fibers) proof currentLookup
   parentChainInactiveInsert {name} {key} {world} {error} {value}
-    nameEq (S fuel) seen current n component parent fibers
-    absent freshNotSeen currentSeen valid | Nothing = void (falseCannotBeTrue valid)
+    nameEq (S fuel) seen current n component parent fibers absent distinct valid |
+    Nothing = void (falseCannotBeTrue valid)
   parentChainInactiveInsert {name} {key} {world} {error} {value}
-    nameEq (S fuel) seen current n component parent fibers
-    absent freshNotSeen currentSeen valid | Just currentFiber
-    with (fiberParent currentFiber) proof parentShape
+    nameEq (S fuel) seen current n component parent fibers absent distinct valid |
+    Just currentFiber with (fiberParent currentFiber) proof parentShape
     parentChainInactiveInsert {name} {key} {world} {error} {value}
-      nameEq (S fuel) seen current n component parent fibers
-      absent freshNotSeen currentSeen valid | Just currentFiber | Root =
-        let distinct = \same => freshNotSeen (replace {p = \x => Elem x seen}
-              same currentSeen)
-            framed = lookupInsertOther current n distinct (freshFiber component parent)
+      nameEq (S fuel) seen current n component parent fibers absent distinct valid |
+      Just currentFiber | Root =
+        let framed = lookupInsertOther current n distinct (freshFiber component parent)
               fibers absent
             inserted = trans framed currentLookup in
           rewrite inserted in rewrite parentShape in Refl
     parentChainInactiveInsert {name} {key} {world} {error} {value}
-      nameEq (S fuel) seen current n component parent fibers
-      absent freshNotSeen currentSeen valid | Just currentFiber | ChildOf next
+      nameEq (S fuel) seen current n component parent fibers absent distinct valid |
+      Just currentFiber | ChildOf next
       with (elemDec @{nameEq} next seen) proof seenNext
       parentChainInactiveInsert {name} {key} {world} {error} {value}
-        nameEq (S fuel) seen current n component parent fibers
-        absent freshNotSeen currentSeen valid | Just currentFiber | ChildOf next |
-        True = void (falseCannotBeTrue valid)
+        nameEq (S fuel) seen current n component parent fibers absent distinct valid |
+        Just currentFiber | ChildOf next | True = void (falseCannotBeTrue valid)
       parentChainInactiveInsert {name} {key} {world} {error} {value}
-        nameEq (S fuel) seen current n component parent fibers
-        absent freshNotSeen currentSeen valid | Just currentFiber | ChildOf next |
-        False =
-          let currentDistinct = \same => freshNotSeen (replace {p = \x => Elem x seen}
-                same currentSeen)
-              currentFramed = lookupInsertOther current n currentDistinct
+        nameEq (S fuel) seen current n component parent fibers absent distinct valid |
+        Just currentFiber | ChildOf next | False =
+          let currentFramed = lookupInsertOther current n distinct
                 (freshFiber component parent) fibers absent
               insertedCurrent = trans currentFramed currentLookup in
           case decEq @{nameEq} next n of
             Yes Refl =>
               rewrite insertedCurrent in rewrite parentShape in rewrite seenNext in
-                void (parentChainAbsentImpossible {key = key} {value = value} {world = world} {error = error} nameEq fuel (n :: seen) n
+                void (parentChainAbsentImpossible {key = key} {value = value}
+                  {world = world} {error = error} nameEq fuel (n :: seen) n
                   fibers absent valid)
             No nextDistinct =>
-              let nextNotSeen : Not (Elem n (next :: seen))
-                  nextNotSeen occurrence = case occurrence of
-                    Here => nextDistinct Refl
-                    There later => freshNotSeen later
-                  in rewrite insertedCurrent in rewrite parentShape in
-                    rewrite seenNext in
-                      parentChainInactiveInsert {name = name} {key = key}
-                        {world = world} {error = error} {value = value}
-                        nameEq fuel (next :: seen) next n component parent fibers absent
-                        nextNotSeen Here valid
+              rewrite insertedCurrent in rewrite parentShape in rewrite seenNext in
+                parentChainInactiveInsert {name = name} {key = key}
+                  {world = world} {error = error} {value = value}
+                  nameEq fuel (next :: seen) next n component parent fibers absent
+                  nextDistinct valid
 
 ||| Parent-chain validity is monotone in fuel. Insertion raises the global fuel
 ||| by one, so existing chains remain certified.
@@ -1210,6 +1201,77 @@ chainsInvariantLookup {name} {key} {world} {error} {value}
           {world = world} {error = error} fuel [current] current fibers)
         (chainsInvariant @{nameEq} {key = key} {value = value}
           {world = world} {error = error} fuel rest fibers) valid)
+
+0 newChildChainEquation : {name, key, world, error : Type} ->
+  {value : key -> Type} -> (nameEq : DecEq name) -> (fuel : Nat) ->
+  (n, parent : name) -> Not (parent = n) ->
+  (component : Component key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Nothing) ->
+  parentChainInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (S fuel) [n] n
+    (insertBinding @{nameEq} n (freshFiber component (ChildOf parent)) fibers absent) =
+  parentChainInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fuel [parent, n] parent
+    (insertBinding @{nameEq} n (freshFiber component (ChildOf parent)) fibers absent)
+newChildChainEquation {key} {world} {error} {value} nameEq fuel n parent distinct component
+  (MkCoeffectContext entries unique) absent with (decEq @{nameEq} n n)
+  newChildChainEquation {key} {world} {error} {value} nameEq fuel n parent distinct component
+    (MkCoeffectContext entries unique) absent | (Yes Refl)
+    with (decEq @{nameEq} parent n)
+    newChildChainEquation {key} {world} {error} {value} nameEq fuel n parent distinct component
+      (MkCoeffectContext entries unique) absent | (Yes Refl) | (Yes same) =
+        void (distinct same)
+    newChildChainEquation {key} {world} {error} {value} nameEq fuel n parent distinct component
+      (MkCoeffectContext entries unique) absent | (Yes Refl) | (No _) = Refl
+  newChildChainEquation {key} {world} {error} {value} nameEq fuel n parent distinct component
+    (MkCoeffectContext entries unique) absent | (No contra) = void (contra Refl)
+
+0 lookupFiberEntries : (nameEq : DecEq name) -> (wanted : name) ->
+  (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} wanted fibers = Just fiber ->
+  lookupEntries @{nameEq} wanted (bindings fibers) = Just fiber
+lookupFiberEntries nameEq wanted fiber (MkCoeffectContext entries unique) found = found
+
+||| The newly inserted fiber's parent chain is valid one fuel step above the
+||| source registry's chain budget.
+public export
+0 newFiberParentChain :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (fuel : Nat) -> (n : name) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (fibers : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Nothing) ->
+  parentInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} parent fibers = True ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} fuel (bindings fibers) fibers = True ->
+  parentChainInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (S fuel) [n] n
+    (insertBinding @{nameEq} n (freshFiber component parent) fibers absent) = True
+newFiberParentChain {key} {world} {error} {value} nameEq fuel n component Root fibers absent parentValid chainsValid =
+  rewrite lookupInserted n (freshFiber component Root) fibers absent in Refl
+newFiberParentChain {name} {key} {world} {error} {value}
+  nameEq fuel n component (ChildOf parent) fibers absent parentValid chainsValid
+  with (lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} parent fibers) proof parentLookup
+  newFiberParentChain {name} {key} {world} {error} {value}
+    nameEq fuel n component (ChildOf parent) fibers absent parentValid chainsValid |
+    Nothing = void (falseCannotBeTrue parentValid)
+  newFiberParentChain {name} {key} {world} {error} {value}
+    nameEq fuel n component (ChildOf parent) fibers absent parentValid chainsValid |
+    Just parentFiber =
+      let distinct = presentAbsentDistinct parent n fibers parentFiber parentLookup absent
+          sourceParent = chainsInvariantLookup {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq fuel parent
+            parentFiber (bindings fibers) fibers
+            (lookupFiberEntries nameEq parent parentFiber fibers parentLookup) chainsValid
+          sourceWithFresh = parentChainAppendFresh {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq fuel [parent]
+            parent n fibers absent
+            (\occurrence => case occurrence of Here => distinct Refl)
+            Here sourceParent
+          targetParent = parentChainInactiveInsert {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq fuel [parent, n]
+            parent n component (ChildOf parent) fibers absent
+            distinct sourceWithFresh in
+        trans (newChildChainEquation {key = key} {value = value} {world = world} {error = error} nameEq fuel n parent distinct component
+          fibers absent) targetParent
 
 ||| Lift fuel monotonicity pointwise over every registry entry.
 public export
