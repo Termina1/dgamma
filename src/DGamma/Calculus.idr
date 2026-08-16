@@ -1529,6 +1529,10 @@ registryWellFormedInactiveInsert {name} {key} {world} {error} {value}
         (andBothTrue _ _ targetChains
           (andBothTrue _ _ targetPairwise targetViews)))
 
+0 retireFiberComponent : (fiber : Fiber name key value world error) ->
+  fiberComponent (retireFiber fiber) = fiberComponent fiber
+retireFiberComponent (MkFiber component parent retired table lifecycle) = Refl
+
 0 retireFiberParent : (fiber : Fiber name key value world error) ->
   fiberParent (retireFiber fiber) = fiberParent fiber
 retireFiberParent (MkFiber component parent retired table lifecycle) = Refl
@@ -1569,6 +1573,56 @@ parentInvariantRetireRegistry {name} {key} {world} {error} {value}
     nameEq (ChildOf parent) n fiber fibers@(MkCoeffectContext entries unique) present |
     (No distinct) = rewrite lookupReplaceOtherEntries parent n distinct
       (retireFiber fiber) entries in Refl
+
+||| Committed views observe lifecycle stability, not the retirement flag.
+public export
+0 viewProvidersRetireRegistry :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (deps : List key) -> (view : View name deps) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (present : lookupFiber @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} n fibers = Just fiber) ->
+  viewProvidersInvariant @{nameEq} {key = key} {value = value}
+    {world = world} {error = error}
+    (replaceBinding @{nameEq} n (retireFiber fiber) fibers) view =
+  viewProvidersInvariant @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} fibers view
+viewProvidersRetireRegistry nameEq [] EmptyView n fiber fibers present = Refl
+viewProvidersRetireRegistry {name} {key} {world} {error} {value}
+  nameEq (dep :: deps) (ProviderView provider rest) n fiber
+  fibers@(MkCoeffectContext entries unique) present
+  with (decEq @{nameEq} provider n)
+  viewProvidersRetireRegistry {name} {key} {world} {error} {value}
+    nameEq (dep :: deps) (ProviderView n rest) n
+    fiber@(MkFiber ownComponent ownParent retired table lifecycle)
+    fibers@(MkCoeffectContext entries unique) present | (Yes Refl) =
+      rewrite lookupReplaceEntries n fiber (retireFiber fiber) entries present in
+      rewrite present in
+      cong (stableProvider lifecycle &&)
+        (viewProvidersRetireRegistry {name = name} {key = key} {world = world}
+          {error = error} {value = value} nameEq deps rest n
+          (MkFiber ownComponent ownParent retired table lifecycle)
+          (MkCoeffectContext entries unique) present)
+  viewProvidersRetireRegistry {name} {key} {world} {error} {value}
+    nameEq (dep :: deps) (ProviderView provider rest) n fiber
+    fibers@(MkCoeffectContext entries unique) present | (No distinct)
+    with (lookupEntries @{nameEq} provider entries) proof original
+    viewProvidersRetireRegistry {name} {key} {world} {error} {value}
+      nameEq (dep :: deps) (ProviderView provider rest) n fiber
+      fibers@(MkCoeffectContext entries unique) present | (No distinct) | Nothing =
+        rewrite lookupReplaceOtherEntries provider n distinct (retireFiber fiber)
+          entries in rewrite original in Refl
+    viewProvidersRetireRegistry {name} {key} {world} {error} {value}
+      nameEq (dep :: deps) (ProviderView provider rest) n fiber
+      fibers@(MkCoeffectContext entries unique) present | (No distinct) |
+      Just providerFiber =
+        rewrite lookupReplaceOtherEntries provider n distinct (retireFiber fiber)
+          entries in rewrite original in
+        cong (stableProvider (fiberLifecycle providerFiber) &&)
+          (viewProvidersRetireRegistry {name = name} {key = key} {world = world}
+            {error = error} {value = value} nameEq deps rest n fiber
+            (MkCoeffectContext entries unique) present)
 
 public export
 0 retireProvisionInvariant : (fiber : Fiber name key value world error) ->
