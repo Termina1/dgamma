@@ -2713,6 +2713,83 @@ chainsEntriesDeleteSameRegistry {name} {key} {world} {error} {value}
         {error = error} {value = value} nameEq fuel rest removed fibers
         (andTrueRight _ _ valid))
 
+0 bindingKeysLength : (entries : List (Binding key value)) ->
+  length (bindingKeys entries) = length entries
+bindingKeysLength [] = Refl
+bindingKeysLength (Bind k v :: rest) = cong S (bindingKeysLength rest)
+
+public export
+EntrySubset : {key : Type} -> {value : key -> Type} -> List (Binding key value) -> List (Binding key value) -> Type
+EntrySubset scan full = (entry : Binding key value) ->
+  Elem entry scan -> Elem entry full
+
+0 chainsRegistryDeleteCardinal :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (remaining : Nat) ->
+  (scan, full : List (Binding name (FiberAt name key value world error))) ->
+  EntrySubset scan full -> (removed : name) ->
+  (removedFiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  registryFibers {value = value} {world = world} {error = error}
+    (deleteBinding @{nameEq} removed fibers) = full ->
+  length full = remaining ->
+  Not (Elem removed (bindingKeys full)) ->
+  hasChild @{nameEq} {key = key} {value = value} {world = world} {error = error} removed fibers = False ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} removed fibers = Just removedFiber ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (S (S remaining)) scan fibers = True ->
+  chainsInvariant @{nameEq} {key = key} {value = value} {world = world} {error = error} (S remaining) scan
+    (deleteBinding @{nameEq} removed fibers) = True
+chainsRegistryDeleteCardinal {key} {world} {error} {value} nameEq remaining [] full subset removed removedFiber
+  fibers targetEntriesEq lengthOk removedAbsent noChild present valid = Refl
+chainsRegistryDeleteCardinal {name} {key} {world} {error} {value}
+  nameEq remaining (entry@(Bind current observed) :: rest) full subset removed
+  removedFiber fibers targetEntriesEq lengthOk removedAbsent noChild present valid =
+  let 0 currentInFull : Elem entry full
+      currentInFull = subset entry Here
+      0 currentInKeys : Elem current (bindingKeys full)
+      currentInKeys = bindingKeyElem entry full currentInFull
+      currentDistinct : Not (current = removed)
+      currentDistinct same = removedAbsent
+        (replace {p = \candidate => Elem candidate (bindingKeys full)} same
+          currentInKeys)
+      0 available : List name
+      available = current :: bindingKeys full
+      0 availableLength : length available = S remaining
+      availableLength = cong S (trans (bindingKeysLength full) lengthOk)
+      0 availableCurrent : Elem current available
+      availableCurrent = Here
+      0 availableRemovedAbsent : Not (Elem removed available)
+      availableRemovedAbsent occurrence = case occurrence of
+        Here => currentDistinct Refl
+        There later => removedAbsent later
+      0 availableComplete : AvailableComplete name key world error value nameEq
+        [current] available (deleteBinding @{nameEq} removed fibers)
+      availableComplete candidate notSeen found foundLookup =
+        There (replace {p = \entries => Elem candidate (bindingKeys entries)}
+          targetEntriesEq
+          (registryAvailabilityComplete {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq [current]
+            (deleteBinding @{nameEq} removed fibers) candidate notSeen found
+            foundLookup))
+      0 targetHead : parentChainInvariant @{nameEq} {key = key} {value = value}
+        {world = world} {error = error} (S remaining) [current] current
+        (deleteBinding @{nameEq} removed fibers) = True
+      targetHead = parentChainDeleteAvailable {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq remaining available
+        [current] current removed removedFiber fibers availableLength availableCurrent
+        availableRemovedAbsent Here availableComplete noChild present
+        (andTrueLeft _ _ valid)
+      0 tailSubset : EntrySubset rest full
+      tailSubset tailEntry tailElem = subset tailEntry (There tailElem)
+      0 targetTail : chainsInvariant @{nameEq} {key = key} {value = value}
+        {world = world} {error = error} (S remaining) rest
+        (deleteBinding @{nameEq} removed fibers) = True
+      targetTail = chainsRegistryDeleteCardinal {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq remaining rest full
+        tailSubset removed removedFiber fibers targetEntriesEq lengthOk removedAbsent noChild present
+        (andTrueRight _ _ valid)
+  in andBothTrue _ _ targetHead targetTail
+
 0 parentInvariantDeleteDistinct :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (parent : Parent name) -> (removed : name) ->
