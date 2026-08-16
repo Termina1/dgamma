@@ -1702,6 +1702,67 @@ resolveCommittedValuesRetireRegistry {name} {key} {world} {error} {value}
             n fiber fibers present)
 
 public export
+0 viewBindingsRetireRegistry :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) -> (view : View name deps) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (present : lookupFiber @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} n fibers = Just fiber) ->
+  viewBindingsInvariant @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} deps view
+    (replaceBinding @{nameEq} n (retireFiber fiber) fibers) =
+  viewBindingsInvariant @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} deps view fibers
+viewBindingsRetireRegistry {name} {key} {world} {error} {value}
+  nameEq keyEq deps view n fiber fibers present =
+  rewrite viewProvidersRetireRegistry {name = name} {key = key}
+    {world = world} {error = error} {value = value} nameEq deps view n fiber
+    fibers present in
+  rewrite resolveCommittedValuesRetireRegistry {name = name} {key = key}
+    {world = world} {error = error} {value = value} nameEq keyEq deps view n
+    fiber fibers present in Refl
+
+public export
+0 fiberViewRetireRegistry :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (observed : Fiber name key value world error) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (present : lookupFiber @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} n fibers = Just fiber) ->
+  fiberViewInvariant @{nameEq} @{keyEq} observed
+    (replaceBinding @{nameEq} n (retireFiber fiber) fibers) =
+  fiberViewInvariant @{nameEq} @{keyEq} observed fibers
+fiberViewRetireRegistry {name} {key} {world} {error} {value}
+  nameEq keyEq
+  (MkFiber component parent retired table (Inactive outcome))
+  n fiber fibers present = Refl
+fiberViewRetireRegistry {name} {key} {world} {error} {value}
+  nameEq keyEq
+  (MkFiber component parent retired table (Reloading rest accumulator view))
+  n fiber fibers present =
+    viewBindingsRetireRegistry {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq keyEq
+      (dependencies (componentDependencies component)) view n fiber fibers present
+fiberViewRetireRegistry {name} {key} {world} {error} {value}
+  nameEq keyEq
+  (MkFiber component parent retired table (Active accumulator view))
+  n fiber fibers present =
+    viewBindingsRetireRegistry {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq keyEq
+      (dependencies (componentDependencies component)) view n fiber fibers present
+fiberViewRetireRegistry {name} {key} {world} {error} {value}
+  nameEq keyEq
+  (MkFiber component parent retired table (Unloading accumulator view outcome))
+  n fiber fibers present =
+    viewBindingsRetireRegistry {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq keyEq
+      (dependencies (componentDependencies component)) view n fiber fibers present
+
+public export
 0 retireProvisionInvariant : (fiber : Fiber name key value world error) ->
   componentProvisions (fiberComponent (retireFiber fiber)) =
   componentProvisions (fiberComponent fiber)
