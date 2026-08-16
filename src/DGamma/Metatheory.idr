@@ -1917,6 +1917,43 @@ data ResolutionCoherent : (name, key, world, error : Type) ->
     ResolutionCoherent name key world error value nameEq keyEq selected
       (MoreTransitions transition rest)
 
+0 lookupEntriesDecEqCoherent :
+  {key : Type} -> {value : key -> Type} ->
+  (leftEq, rightEq : DecEq key) -> (wanted : key) ->
+  (entries : List (Binding key value)) ->
+  lookupEntries @{leftEq} wanted entries = lookupEntries @{rightEq} wanted entries
+lookupEntriesDecEqCoherent leftEq rightEq wanted [] = Refl
+lookupEntriesDecEqCoherent leftEq rightEq wanted (Bind current observed :: rest)
+  with (decEq @{leftEq} wanted current)
+  lookupEntriesDecEqCoherent leftEq rightEq current
+    (Bind current observed :: rest) | (Yes Refl)
+    with (decEq @{rightEq} current current)
+    lookupEntriesDecEqCoherent leftEq rightEq current
+      (Bind current observed :: rest) | (Yes Refl) | (Yes Refl) = Refl
+    lookupEntriesDecEqCoherent leftEq rightEq current
+      (Bind current observed :: rest) | (Yes Refl) | (No contra) =
+        void (contra Refl)
+  lookupEntriesDecEqCoherent leftEq rightEq wanted
+    (Bind current observed :: rest) | (No leftDistinct)
+    with (decEq @{rightEq} wanted current)
+    lookupEntriesDecEqCoherent leftEq rightEq current
+      (Bind current observed :: rest) | (No leftDistinct) | (Yes Refl) =
+        void (leftDistinct Refl)
+    lookupEntriesDecEqCoherent leftEq rightEq wanted
+      (Bind current observed :: rest) | (No leftDistinct) | (No rightDistinct) =
+        lookupEntriesDecEqCoherent leftEq rightEq wanted rest
+
+0 lookupFiberDecEqCoherent :
+  (leftEq, rightEq : DecEq name) -> (wanted : name) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{leftEq} {key = key} {value = value} {world = world}
+    {error = error} wanted fibers =
+  lookupFiber @{rightEq} {key = key} {value = value} {world = world}
+    {error = error} wanted fibers
+lookupFiberDecEqCoherent leftEq rightEq wanted
+  (MkCoeffectContext entries unique) =
+  lookupEntriesDecEqCoherent leftEq rightEq wanted entries
+
 public export
 reloadingAt : DecEq name => name -> SystemState name key value world error -> Bool
 reloadingAt selected state = case lookupFiber selected (registry state) of
