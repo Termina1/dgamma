@@ -1841,6 +1841,61 @@ retireViewInvariant nameEq keyEq
 retireViewInvariant nameEq keyEq
   (MkFiber component parent retired table (Unloading accumulator view outcome)) fibers = Refl
 
+public export
+0 viewsRegistryRetire :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (present : lookupFiber @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} n fibers = Just fiber) ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries fibers = True ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries
+    (replaceBinding @{nameEq} n (retireFiber fiber) fibers) = True
+viewsRegistryRetire {key} {world} {error} {value} nameEq keyEq [] n fiber fibers present valid = Refl
+viewsRegistryRetire {name} {key} {world} {error} {value}
+  nameEq keyEq (Bind current observed :: rest) n fiber fibers present valid =
+    andBothTrue _ _
+      (trans (fiberViewRetireRegistry {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq observed n
+        fiber fibers present) (andTrueLeft _ _ valid))
+      (viewsRegistryRetire {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq keyEq rest n fiber fibers present
+        (andTrueRight _ _ valid))
+
+public export
+0 viewsEntriesRetire :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (registry : Registry name key value world error) ->
+  lookupEntries @{nameEq} {value = FiberAt name key value world error}
+    n entries = Just fiber ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries registry = True ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} (replaceEntries @{nameEq} n (retireFiber fiber) entries) registry = True
+viewsEntriesRetire {key} {world} {error} {value} nameEq keyEq [] n fiber registry present valid =
+  case present of Refl impossible
+viewsEntriesRetire {name} {key} {world} {error} {value}
+  nameEq keyEq (Bind current observed :: rest) n fiber registry present valid
+  with (decEq @{nameEq} n current)
+  viewsEntriesRetire {name} {key} {world} {error} {value}
+    nameEq keyEq (Bind n observed :: rest) n fiber registry present valid |
+    (Yes Refl) = case present of
+      Refl => andBothTrue _ _
+        (trans (retireViewInvariant {name = name} {key = key} {world = world}
+          {error = error} {value = value} nameEq keyEq observed registry)
+          (andTrueLeft _ _ valid))
+        (andTrueRight _ _ valid)
+  viewsEntriesRetire {name} {key} {world} {error} {value}
+    nameEq keyEq (Bind current observed :: rest) n fiber registry present valid |
+    (No _) = andBothTrue _ _ (andTrueLeft _ _ valid)
+      (viewsEntriesRetire {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq keyEq rest n fiber registry present
+        (andTrueRight _ _ valid))
+
 ||| Runtime-checked rule application used by the proof-indexed LTS. `applyAction`
 ||| remains the raw ten-rule evaluator; this wrapper rejects a malformed target
 ||| rather than admitting it into a proof trace.
