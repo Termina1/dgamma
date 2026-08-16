@@ -663,6 +663,59 @@ preservationLAdvance {name} {key} {world} {error} {value}
     Just (MkFiber component parent retired table
       (Unloading accumulator view outcome)) = void (nothingIsNotJust equation)
 
+0 preservationLLeave :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (n : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  registryWellFormed @{nameEq} @{keyEq} before = True ->
+  applyAction @{nameEq} @{keyEq} (LLeave n) before = Just (tag, afterState) ->
+  registryWellFormed @{nameEq} @{keyEq} afterState = True
+preservationLLeave {name} {key} {world} {error} {value}
+  nameEq keyEq n (MkSystemState ambient fibers) afterState tag valid equation
+  with (lookupFiber @{nameEq} n fibers) proof found
+  preservationLLeave {name} {key} {world} {error} {value}
+    nameEq keyEq n (MkSystemState ambient fibers) afterState tag valid equation |
+    Nothing = void (nothingIsNotJust equation)
+  preservationLLeave {name} {key} {world} {error} {value}
+    nameEq keyEq n (MkSystemState ambient fibers) afterState tag valid equation |
+    Just (MkFiber component parent retired table (Inactive outcome)) =
+      void (nothingIsNotJust equation)
+  preservationLLeave {name} {key} {world} {error} {value}
+    nameEq keyEq n (MkSystemState ambient fibers) afterState tag valid equation |
+    Just (MkFiber component parent retired table
+      (Reloading remaining accumulator view)) = void (nothingIsNotJust equation)
+  preservationLLeave {name} {key} {world} {error} {value}
+    nameEq keyEq n (MkSystemState ambient fibers) afterState tag valid equation |
+    Just (MkFiber component parent retired table (Active accumulator view))
+    with (targetMatches @{nameEq}
+      (targetFiber @{nameEq} @{keyEq}
+        (MkFiber component parent retired table (Active accumulator view)) fibers)
+      view)
+    preservationLLeave {name} {key} {world} {error} {value}
+      nameEq keyEq n (MkSystemState ambient fibers) afterState tag valid equation |
+      Just (MkFiber component parent retired table (Active accumulator view)) |
+      True = void (nothingIsNotJust equation)
+    preservationLLeave {name} {key} {world} {error} {value}
+      nameEq keyEq n (MkSystemState ambient fibers) afterState tag valid equation |
+      Just (MkFiber component parent retired table (Active accumulator view)) |
+      False = case justInjective equation of
+        Refl =>
+          let sourceViews = sourceViewsFromWellFormed nameEq keyEq ambient fibers
+                valid
+              targetViews = viewsInvariantActiveUnload {name = name} {key = key}
+                {world = world} {error = error} {value = value} nameEq keyEq n
+                component parent retired table accumulator view fibers found
+                sourceViews
+          in registryWellFormedRuntimeReplace {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq keyEq ambient n
+            (MkFiber component parent retired table (Active accumulator view))
+            table (Unloading accumulator view Nothing) fibers found valid
+            targetViews
+  preservationLLeave {name} {key} {world} {error} {value}
+    nameEq keyEq n (MkSystemState ambient fibers) afterState tag valid equation |
+    Just (MkFiber component parent retired table
+      (Unloading accumulator view outcome)) = void (nothingIsNotJust equation)
+
 ||| Paper Theorem 59, stated over the raw ten-rule evaluator. Unlike the checked
 ||| admission fact, this direction cannot hide a malformed endpoint.
 ||| TODO(proof): rule induction plus registry replacement/insertion/deletion
