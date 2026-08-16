@@ -260,6 +260,607 @@ roleChangingProofTraceCheck = case roleChangingCheckedTrace of
   Nothing => False
   Just checked => True
 
+||| A checked transition retaining the requested action in its type.  `fire`
+||| intentionally hides that equality in `TransitionResult`; the registration-
+||| generation regressions below need it to assemble structural trace evidence.
+record CheckedNamedTransition
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (action : Action name key value world error)
+  (before : SystemState name key value world error) where
+  constructor MkCheckedNamedTransition
+  namedAfter : SystemState name key value world error
+  namedRule : RuleTag
+  0 namedChecked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (namedRule, namedAfter)
+  namedTransition : Transition before namedAfter
+  0 namedAction : transitionAction namedTransition = action
+
+checkedNamedFire : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (before : SystemState name key value world error) ->
+  Maybe (CheckedNamedTransition nameEq keyEq action before)
+checkedNamedFire nameEq keyEq action before
+  with (checkedApplyAction @{nameEq} @{keyEq} action before) proof fired
+    checkedNamedFire nameEq keyEq action before | Nothing = Nothing
+    checkedNamedFire nameEq keyEq action before | Just (tag, afterState) =
+      Just (MkCheckedNamedTransition afterState tag fired
+        (Fired nameEq keyEq action tag fired) Refl)
+
+swapFreshRaw : Nat -> Nat
+swapFreshRaw (S Z) = S (S Z)
+swapFreshRaw (S (S Z)) = S Z
+swapFreshRaw n = n
+
+0 swapFreshRawInvolutive : (n : Nat) -> swapFreshRaw (swapFreshRaw n) = n
+swapFreshRawInvolutive Z = Refl
+swapFreshRawInvolutive (S Z) = Refl
+swapFreshRawInvolutive (S (S Z)) = Refl
+swapFreshRawInvolutive (S (S (S later))) = Refl
+
+swapFreshGeneration : RegistrationGeneration Nat -> RegistrationGeneration Nat
+swapFreshGeneration (MkRegistrationGeneration name (S (S Z))) =
+  MkRegistrationGeneration (swapFreshRaw name) (S (S Z))
+swapFreshGeneration generation = generation
+
+0 swapFreshGenerationInvolutive : (generation : RegistrationGeneration Nat) ->
+  swapFreshGeneration (swapFreshGeneration generation) = generation
+swapFreshGenerationInvolutive (MkRegistrationGeneration name Z) = Refl
+swapFreshGenerationInvolutive (MkRegistrationGeneration name (S Z)) = Refl
+swapFreshGenerationInvolutive
+  (MkRegistrationGeneration name (S (S Z))) =
+    cong (\mapped => MkRegistrationGeneration mapped (S (S Z)))
+      (swapFreshRawInvolutive name)
+swapFreshGenerationInvolutive
+  (MkRegistrationGeneration name (S (S (S later)))) = Refl
+
+||| The generation bijection for the reviewer's pair swaps only the historical
+||| birth-at-ordinal-2 generations `(1,2)` and `(2,2)`.  In particular the
+||| later live root generation `(1,5)` remains fixed.
+public export
+freshChoiceGenerationBijection : RegistrationGenerationBijection Nat
+freshChoiceGenerationBijection = MkRegistrationGenerationBijection
+  swapFreshGeneration swapFreshGeneration swapFreshGenerationInvolutive
+  swapFreshGenerationInvolutive
+
+0 namedInsertLookup :
+  (step : CheckedNamedTransition nameEq keyEq
+    (OInsert child parent component) before) ->
+  lookupFiber @{nameEq} child (registry (namedAfter step)) =
+    Just (freshFiber component parent)
+namedInsertLookup {nameEq} {keyEq} {child} {parent} {component} {before} step =
+  oInsertResultLookup nameEq keyEq child parent component before
+    (namedAfter step) (namedRule step)
+    (checkedActionProjects nameEq keyEq (OInsert child parent component) before
+      (namedAfter step) (namedRule step) (namedChecked step))
+
+0 namedRetireLookup :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before : SystemState name key value world error} ->
+  {child : name} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (fiber : Fiber name key value world error) ->
+  (found : lookupFiber @{nameEq} child (registry before) = Just fiber) ->
+  (step : CheckedNamedTransition nameEq keyEq (ORetire child) before) ->
+  (afterFiber : Fiber name key value world error **
+   (lookupFiber @{nameEq} child (registry (namedAfter step)) = Just afterFiber,
+    fiberParent afterFiber = fiberParent fiber))
+namedRetireLookup {child} {before} nameEq keyEq fiber found step =
+  oRetireResultLookup nameEq keyEq child fiber before (namedAfter step)
+    (namedRule step) found
+    (checkedActionProjects nameEq keyEq (ORetire child) before
+      (namedAfter step) (namedRule step) (namedChecked step))
+
+0 lifecycleCannotBeRoot :
+  (transition : Transition before afterState) ->
+  isLifecycleAction (transitionAction transition) = True ->
+  RootOrchestrationStep nameEq transition -> Void
+lifecycleCannotBeRoot transition lifecycle (RootInsertStep action) =
+  case trans (sym (cong isLifecycleAction action)) lifecycle of Refl impossible
+lifecycleCannotBeRoot transition lifecycle
+  (RootRetireStep fiber found parent action) =
+    case trans (sym (cong isLifecycleAction action)) lifecycle of Refl impossible
+lifecycleCannotBeRoot transition lifecycle
+  (RootRemoveStep fiber found parent action) =
+    case trans (sym (cong isLifecycleAction action)) lifecycle of Refl impossible
+
+0 childInsertCannotBeRoot :
+  (transition : Transition before afterState) ->
+  transitionAction transition = OInsert child (ChildOf parent) component ->
+  RootOrchestrationStep nameEq transition -> Void
+childInsertCannotBeRoot transition childAction (RootInsertStep rootAction) =
+  case trans (sym childAction) rootAction of Refl impossible
+childInsertCannotBeRoot transition childAction
+  (RootRetireStep fiber found parent rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+childInsertCannotBeRoot transition childAction
+  (RootRemoveStep fiber found parent rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+
+0 childRetireCannotBeRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {child, parent : name} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  transitionAction transition = ORetire child ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} child (registry before) = Just fiber ->
+  fiberParent fiber = ChildOf parent ->
+  RootOrchestrationStep nameEq transition -> Void
+childRetireCannotBeRoot nameEq transition childAction fiber childFound childParent
+  (RootInsertStep rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+childRetireCannotBeRoot nameEq transition childAction fiber childFound childParent
+  (RootRetireStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of
+      Refl =>
+        let sameFiber = justInjective (trans (sym childFound) rootFound)
+            roleConflict : (ChildOf parent = Root)
+            roleConflict = trans (sym childParent)
+              (trans (cong fiberParent sameFiber) rootParent) in
+          case roleConflict of Refl impossible
+childRetireCannotBeRoot nameEq transition childAction fiber childFound childParent
+  (RootRemoveStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+
+0 childRemoveCannotBeRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {child, parent : name} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  transitionAction transition = ORemove child ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} child (registry before) = Just fiber ->
+  fiberParent fiber = ChildOf parent ->
+  RootOrchestrationStep nameEq transition -> Void
+childRemoveCannotBeRoot nameEq transition childAction fiber childFound childParent
+  (RootInsertStep rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+childRemoveCannotBeRoot nameEq transition childAction fiber childFound childParent
+  (RootRetireStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+childRemoveCannotBeRoot nameEq transition childAction fiber childFound childParent
+  (RootRemoveStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of
+      Refl =>
+        let sameFiber = justInjective (trans (sym childFound) rootFound)
+            roleConflict : (ChildOf parent = Root)
+            roleConflict = trans (sym childParent)
+              (trans (cong fiberParent sameFiber) rootParent) in
+          case roleConflict of Refl impossible
+
+record RoleChangingNamedTrace (generatedChild : Nat) where
+  constructor MkRoleChangingNamedTrace
+  rootInsert0 : CheckedNamedTransition DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (OInsert 0 Root DGamma.CP3StatementChecks.registrationTestParent)
+    DGamma.CP3StatementChecks.registrationTestInitial
+  parentBegin : CheckedNamedTransition DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (LBegin 0) (namedAfter rootInsert0)
+  childInsert : CheckedNamedTransition DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq
+    (OInsert generatedChild (ChildOf 0) DGamma.CP3StatementChecks.registrationTestChild)
+    (namedAfter parentBegin)
+  childRetire : CheckedNamedTransition DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (ORetire generatedChild) (namedAfter childInsert)
+  childRemove : CheckedNamedTransition DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (ORemove generatedChild) (namedAfter childRetire)
+  rootInsert1 : CheckedNamedTransition DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (OInsert 1 Root DGamma.CP3StatementChecks.registrationTestChild)
+    (namedAfter childRemove)
+  parentAdvance : CheckedNamedTransition DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (LAdvance 0) (namedAfter rootInsert1)
+  rootBegin1 : CheckedNamedTransition DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (LBegin 1) (namedAfter parentAdvance)
+  rootAdvance1 : CheckedNamedTransition DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (LAdvance 1) (namedAfter rootBegin1)
+
+namedRoleChangingTrace : (evidence : RoleChangingNamedTrace generatedChild) ->
+  Transitions DGamma.CP3StatementChecks.registrationTestInitial (namedAfter (rootAdvance1 evidence))
+namedRoleChangingTrace evidence =
+  MoreTransitions (namedTransition (rootInsert0 evidence))
+    (MoreTransitions (namedTransition (parentBegin evidence))
+      (MoreTransitions (namedTransition (childInsert evidence))
+        (MoreTransitions (namedTransition (childRetire evidence))
+          (MoreTransitions (namedTransition (childRemove evidence))
+            (MoreTransitions (namedTransition (rootInsert1 evidence))
+              (MoreTransitions (namedTransition (parentAdvance evidence))
+                (MoreTransitions (namedTransition (rootBegin1 evidence))
+                  (MoreTransitions (namedTransition (rootAdvance1 evidence))
+                    NoTransitions))))))))
+
+namedRoleTail9 : (evidence : RoleChangingNamedTrace generatedChild) ->
+  Transitions (namedAfter (rootBegin1 evidence))
+    (namedAfter (rootAdvance1 evidence))
+namedRoleTail9 evidence = MoreTransitions
+  (namedTransition (rootAdvance1 evidence)) NoTransitions
+
+namedRoleTail8 : (evidence : RoleChangingNamedTrace generatedChild) ->
+  Transitions (namedAfter (parentAdvance evidence))
+    (namedAfter (rootAdvance1 evidence))
+namedRoleTail8 evidence = MoreTransitions (namedTransition (rootBegin1 evidence))
+  (namedRoleTail9 evidence)
+
+namedRoleTail7 : (evidence : RoleChangingNamedTrace generatedChild) ->
+  Transitions (namedAfter (rootInsert1 evidence))
+    (namedAfter (rootAdvance1 evidence))
+namedRoleTail7 evidence = MoreTransitions
+  (namedTransition (parentAdvance evidence)) (namedRoleTail8 evidence)
+
+namedRoleTail6 : (evidence : RoleChangingNamedTrace generatedChild) ->
+  Transitions (namedAfter (childRemove evidence))
+    (namedAfter (rootAdvance1 evidence))
+namedRoleTail6 evidence = MoreTransitions (namedTransition (rootInsert1 evidence))
+  (namedRoleTail7 evidence)
+
+namedRoleTail5 : (evidence : RoleChangingNamedTrace generatedChild) ->
+  Transitions (namedAfter (childRetire evidence))
+    (namedAfter (rootAdvance1 evidence))
+namedRoleTail5 evidence = MoreTransitions (namedTransition (childRemove evidence))
+  (namedRoleTail6 evidence)
+
+namedRoleTail4 : (evidence : RoleChangingNamedTrace generatedChild) ->
+  Transitions (namedAfter (childInsert evidence))
+    (namedAfter (rootAdvance1 evidence))
+namedRoleTail4 evidence = MoreTransitions (namedTransition (childRetire evidence))
+  (namedRoleTail5 evidence)
+
+namedRoleTail3 : (evidence : RoleChangingNamedTrace generatedChild) ->
+  Transitions (namedAfter (parentBegin evidence))
+    (namedAfter (rootAdvance1 evidence))
+namedRoleTail3 evidence = MoreTransitions (namedTransition (childInsert evidence))
+  (namedRoleTail4 evidence)
+
+namedRoleTail2 : (evidence : RoleChangingNamedTrace generatedChild) ->
+  Transitions (namedAfter (rootInsert0 evidence))
+    (namedAfter (rootAdvance1 evidence))
+namedRoleTail2 evidence = MoreTransitions (namedTransition (parentBegin evidence))
+  (namedRoleTail3 evidence)
+
+freshChoiceFinalGenerations : GenerationEnvironment Nat
+freshChoiceFinalGenerations =
+  [(0, MkRegistrationGeneration 0 0),
+   (1, MkRegistrationGeneration 1 5)]
+
+0 freshChoiceGenerationTraceCorrespondence :
+  (left : RoleChangingNamedTrace 1) ->
+  (right : RoleChangingNamedTrace 2) ->
+  RegistrationTraceCorrespondence
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.freshChoiceGenerationBijection 0 []
+    (namedRoleChangingTrace left)
+    DGamma.CP3StatementChecks.freshChoiceFinalGenerations 0 []
+    (namedRoleChangingTrace right)
+    DGamma.CP3StatementChecks.freshChoiceFinalGenerations
+freshChoiceGenerationTraceCorrespondence left right =
+  SkipLeftNonRegistration (OInsert 0 Root registrationTestParent)
+    (namedTransition (rootInsert0 left)) (namedRoleTail2 left)
+    (namedAction (rootInsert0 left)) Refl
+  (SkipRightNonRegistration (OInsert 0 Root registrationTestParent)
+    (namedTransition (rootInsert0 right)) (namedRoleTail2 right)
+    (namedAction (rootInsert0 right)) Refl
+  (SkipLeftNonRegistration (LBegin 0)
+    (namedTransition (parentBegin left)) (namedRoleTail3 left)
+    (namedAction (parentBegin left)) Refl
+  (SkipRightNonRegistration (LBegin 0)
+    (namedTransition (parentBegin right)) (namedRoleTail3 right)
+    (namedAction (parentBegin right)) Refl
+  (MatchGeneratedRegistration
+    (namedTransition (childInsert left)) (namedRoleTail4 left)
+    (namedTransition (childInsert right)) (namedRoleTail4 right)
+    (namedAction (childInsert left)) (namedAction (childInsert right))
+    Refl Refl Refl Refl
+  (SkipLeftNonRegistration (ORetire 1)
+    (namedTransition (childRetire left)) (namedRoleTail5 left)
+    (namedAction (childRetire left)) Refl
+  (SkipRightNonRegistration (ORetire 2)
+    (namedTransition (childRetire right)) (namedRoleTail5 right)
+    (namedAction (childRetire right)) Refl
+  (SkipLeftNonRegistration (ORemove 1)
+    (namedTransition (childRemove left)) (namedRoleTail6 left)
+    (namedAction (childRemove left)) Refl
+  (SkipRightNonRegistration (ORemove 2)
+    (namedTransition (childRemove right)) (namedRoleTail6 right)
+    (namedAction (childRemove right)) Refl
+  (SkipLeftNonRegistration (OInsert 1 Root registrationTestChild)
+    (namedTransition (rootInsert1 left)) (namedRoleTail7 left)
+    (namedAction (rootInsert1 left)) Refl
+  (SkipRightNonRegistration (OInsert 1 Root registrationTestChild)
+    (namedTransition (rootInsert1 right)) (namedRoleTail7 right)
+    (namedAction (rootInsert1 right)) Refl
+  (SkipLeftNonRegistration (LAdvance 0)
+    (namedTransition (parentAdvance left)) (namedRoleTail8 left)
+    (namedAction (parentAdvance left)) Refl
+  (SkipRightNonRegistration (LAdvance 0)
+    (namedTransition (parentAdvance right)) (namedRoleTail8 right)
+    (namedAction (parentAdvance right)) Refl
+  (SkipLeftNonRegistration (LBegin 1)
+    (namedTransition (rootBegin1 left)) (namedRoleTail9 left)
+    (namedAction (rootBegin1 left)) Refl
+  (SkipRightNonRegistration (LBegin 1)
+    (namedTransition (rootBegin1 right)) (namedRoleTail9 right)
+    (namedAction (rootBegin1 right)) Refl
+  (SkipLeftNonRegistration (LAdvance 1)
+    (namedTransition (rootAdvance1 left)) NoTransitions
+    (namedAction (rootAdvance1 left)) Refl
+  (SkipRightNonRegistration (LAdvance 1)
+    (namedTransition (rootAdvance1 right)) NoTransitions
+    (namedAction (rootAdvance1 right)) Refl
+    RegistrationCorrespondenceEnd))))))))))))))))
+
+0 freshChoiceRegistrationCorrespondence :
+  (left : RoleChangingNamedTrace 1) ->
+  (right : RoleChangingNamedTrace 2) ->
+  RegistrationCorrespondenceByGeneration DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.freshChoiceGenerationBijection (namedRoleChangingTrace left)
+    (namedRoleChangingTrace right)
+freshChoiceRegistrationCorrespondence left right =
+  MkRegistrationCorrespondenceByGeneration DGamma.CP3StatementChecks.freshChoiceFinalGenerations
+    DGamma.CP3StatementChecks.freshChoiceFinalGenerations
+    (freshChoiceGenerationTraceCorrespondence left right)
+
+0 freshChoiceCurrentGenerationForward : (n : Nat) ->
+  (generation : RegistrationGeneration Nat) ->
+  lookupCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq} n DGamma.CP3StatementChecks.freshChoiceFinalGenerations = Just generation ->
+  (rightGeneration : RegistrationGeneration Nat **
+   (generationForward DGamma.CP3StatementChecks.freshChoiceGenerationBijection generation = rightGeneration,
+    lookupCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq} n DGamma.CP3StatementChecks.freshChoiceFinalGenerations = Just rightGeneration))
+freshChoiceCurrentGenerationForward Z generation found =
+  case justInjective found of
+    Refl => ((MkRegistrationGeneration 0 0) ** (Refl, Refl))
+freshChoiceCurrentGenerationForward (S Z) generation found =
+  case justInjective found of
+    Refl => ((MkRegistrationGeneration 1 5) ** (Refl, Refl))
+freshChoiceCurrentGenerationForward (S (S later)) generation found =
+  void (nothingIsNotJust found)
+
+0 freshChoiceCurrentEndpointRenaming :
+  (left : RoleChangingNamedTrace 1) ->
+  (right : RoleChangingNamedTrace 2) ->
+  CurrentEndpointRenaming DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.freshChoiceGenerationBijection
+    (namedRoleChangingTrace left) (namedRoleChangingTrace right)
+    (freshChoiceRegistrationCorrespondence left right)
+freshChoiceCurrentEndpointRenaming left right =
+  MkCurrentEndpointRenaming identityNameBijection
+    (\n, fiber, found, root => Refl)
+    (\n, fiber, found, root => Refl)
+    freshChoiceCurrentGenerationForward freshChoiceCurrentGenerationForward
+
+record RoleChildRetiredEvidence
+  (generatedChild : Nat) (evidence : RoleChangingNamedTrace generatedChild) where
+  constructor MkRoleChildRetiredEvidence
+  retiredChildFiber : Fiber Nat RegistrationTestKey RegistrationTestValue Unit String
+  0 retiredChildFound : lookupFiber
+    @{DGamma.CP3StatementChecks.registrationTestNameEq} generatedChild
+    (registry (namedAfter (childRetire evidence))) = Just retiredChildFiber
+  0 retiredChildParent : fiberParent retiredChildFiber = ChildOf 0
+
+0 roleChildRetiredEvidence :
+  (evidence : RoleChangingNamedTrace generatedChild) ->
+  RoleChildRetiredEvidence generatedChild evidence
+roleChildRetiredEvidence {generatedChild} evidence =
+  case namedRetireLookup registrationTestNameEq registrationTestKeyEq
+       (freshFiber registrationTestChild (ChildOf 0))
+       (namedInsertLookup (childInsert evidence)) (childRetire evidence) of
+    (afterFiber ** (afterFound, afterParent)) =>
+      MkRoleChildRetiredEvidence afterFiber afterFound (trans afterParent Refl)
+
+0 freshChoiceSameExternal :
+  (left : RoleChangingNamedTrace 1) ->
+  (right : RoleChangingNamedTrace 2) ->
+  SameExternalOrchestration
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    (namedRoleChangingTrace left) (namedRoleChangingTrace right)
+freshChoiceSameExternal left right =
+  let leftRetired = roleChildRetiredEvidence left
+      rightRetired = roleChildRetiredEvidence right in
+  MatchExternalInput (OInsert 0 Root registrationTestParent)
+            (namedTransition (rootInsert0 left)) (namedRoleTail2 left)
+            (RootInsertStep (namedAction (rootInsert0 left)))
+            (namedTransition (rootInsert0 right)) (namedRoleTail2 right)
+            (RootInsertStep (namedAction (rootInsert0 right)))
+            (namedAction (rootInsert0 left)) (namedAction (rootInsert0 right))
+          (SkipLeftInternal (namedTransition (parentBegin left))
+            (namedRoleTail3 left)
+            (lifecycleCannotBeRoot (namedTransition (parentBegin left))
+              (trans (cong isLifecycleAction (namedAction (parentBegin left)))
+                Refl))
+          (SkipRightInternal (namedTransition (parentBegin right))
+            (namedRoleTail3 right)
+            (lifecycleCannotBeRoot (namedTransition (parentBegin right))
+              (trans (cong isLifecycleAction (namedAction (parentBegin right)))
+                Refl))
+          (SkipLeftInternal (namedTransition (childInsert left))
+            (namedRoleTail4 left)
+            (childInsertCannotBeRoot (namedTransition (childInsert left))
+              (namedAction (childInsert left)))
+          (SkipRightInternal (namedTransition (childInsert right))
+            (namedRoleTail4 right)
+            (childInsertCannotBeRoot (namedTransition (childInsert right))
+              (namedAction (childInsert right)))
+          (SkipLeftInternal (namedTransition (childRetire left))
+            (namedRoleTail5 left)
+            (childRetireCannotBeRoot registrationTestNameEq
+              (namedTransition (childRetire left))
+              (namedAction (childRetire left))
+              (freshFiber registrationTestChild (ChildOf 0))
+              (namedInsertLookup (childInsert left)) Refl)
+          (SkipRightInternal (namedTransition (childRetire right))
+            (namedRoleTail5 right)
+            (childRetireCannotBeRoot registrationTestNameEq
+              (namedTransition (childRetire right))
+              (namedAction (childRetire right))
+              (freshFiber registrationTestChild (ChildOf 0))
+              (namedInsertLookup (childInsert right)) Refl)
+          (SkipLeftInternal (namedTransition (childRemove left))
+            (namedRoleTail6 left)
+            (childRemoveCannotBeRoot registrationTestNameEq
+              (namedTransition (childRemove left))
+              (namedAction (childRemove left))
+              (retiredChildFiber leftRetired) (retiredChildFound leftRetired)
+              (retiredChildParent leftRetired))
+          (SkipRightInternal (namedTransition (childRemove right))
+            (namedRoleTail6 right)
+            (childRemoveCannotBeRoot registrationTestNameEq
+              (namedTransition (childRemove right))
+              (namedAction (childRemove right))
+              (retiredChildFiber rightRetired) (retiredChildFound rightRetired)
+              (retiredChildParent rightRetired))
+          (MatchExternalInput (OInsert 1 Root registrationTestChild)
+            (namedTransition (rootInsert1 left)) (namedRoleTail7 left)
+            (RootInsertStep (namedAction (rootInsert1 left)))
+            (namedTransition (rootInsert1 right)) (namedRoleTail7 right)
+            (RootInsertStep (namedAction (rootInsert1 right)))
+            (namedAction (rootInsert1 left)) (namedAction (rootInsert1 right))
+          (SkipLeftInternal (namedTransition (parentAdvance left))
+            (namedRoleTail8 left)
+            (lifecycleCannotBeRoot (namedTransition (parentAdvance left))
+              (trans (cong isLifecycleAction (namedAction (parentAdvance left)))
+                Refl))
+          (SkipRightInternal (namedTransition (parentAdvance right))
+            (namedRoleTail8 right)
+            (lifecycleCannotBeRoot (namedTransition (parentAdvance right))
+              (trans (cong isLifecycleAction (namedAction (parentAdvance right)))
+                Refl))
+          (SkipLeftInternal (namedTransition (rootBegin1 left))
+            (namedRoleTail9 left)
+            (lifecycleCannotBeRoot (namedTransition (rootBegin1 left))
+              (trans (cong isLifecycleAction (namedAction (rootBegin1 left)))
+                Refl))
+          (SkipRightInternal (namedTransition (rootBegin1 right))
+            (namedRoleTail9 right)
+            (lifecycleCannotBeRoot (namedTransition (rootBegin1 right))
+              (trans (cong isLifecycleAction (namedAction (rootBegin1 right)))
+                Refl))
+          (SkipLeftInternal (namedTransition (rootAdvance1 left)) NoTransitions
+            (lifecycleCannotBeRoot (namedTransition (rootAdvance1 left))
+              (trans (cong isLifecycleAction (namedAction (rootAdvance1 left)))
+                Refl))
+          (SkipRightInternal (namedTransition (rootAdvance1 right)) NoTransitions
+            (lifecycleCannotBeRoot (namedTransition (rootAdvance1 right))
+              (trans (cong isLifecycleAction (namedAction (rootAdvance1 right)))
+                Refl))
+            SameExternalOrchestrationEnd)))))))))))))))
+
+buildRoleChangingNamedTrace : (generatedChild : Nat) ->
+  Maybe (RoleChangingNamedTrace generatedChild)
+buildRoleChangingNamedTrace generatedChild = do
+  t1 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (OInsert 0 Root registrationTestParent) registrationTestInitial
+  t2 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq (LBegin 0)
+    (namedAfter t1)
+  t3 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (OInsert generatedChild (ChildOf 0) registrationTestChild) (namedAfter t2)
+  t4 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (ORetire generatedChild) (namedAfter t3)
+  t5 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (ORemove generatedChild) (namedAfter t4)
+  t6 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (OInsert 1 Root registrationTestChild) (namedAfter t5)
+  t7 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (LAdvance 0) (namedAfter t6)
+  t8 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (LBegin 1) (namedAfter t7)
+  t9 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (LAdvance 1) (namedAfter t8)
+  Just (MkRoleChangingNamedTrace t1 t2 t3 t4 t5 t6 t7 t8 t9)
+
+0 freshChoiceSameInputs :
+  (left : RoleChangingNamedTrace 1) ->
+  (right : RoleChangingNamedTrace 2) ->
+  SameOrchestrationModuloGenerated
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    (namedRoleChangingTrace left) (namedRoleChangingTrace right)
+freshChoiceSameInputs left right =
+  MkSameOrchestrationModuloGenerated freshChoiceGenerationBijection
+    (freshChoiceSameExternal left right)
+    (freshChoiceRegistrationCorrespondence left right)
+    (freshChoiceCurrentEndpointRenaming left right)
+
+||| Concrete checked witness for the reviewer's blocker pair.  The left trace
+||| uses raw child 1 and later live root 1; the right trace uses raw child 2 and
+||| the same later live root 1.  The historical generations swap while the
+||| current endpoint bijection is identity.
+public export
+record FreshChoiceCorrespondenceWitness where
+  constructor MkFreshChoiceCorrespondenceWitness
+  leftFreshChoice : RoleChangingNamedTrace 1
+  rightFreshChoice : RoleChangingNamedTrace 2
+  0 blockerPairSameInputs : SameOrchestrationModuloGenerated
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    (namedRoleChangingTrace leftFreshChoice)
+    (namedRoleChangingTrace rightFreshChoice)
+
+public export
+freshChoiceCorrespondenceWitness : Maybe FreshChoiceCorrespondenceWitness
+freshChoiceCorrespondenceWitness = do
+  left <- buildRoleChangingNamedTrace 1
+  right <- buildRoleChangingNamedTrace 2
+  Just (MkFreshChoiceCorrespondenceWitness left right
+    (freshChoiceSameInputs left right))
+
+public export
+freshChoiceCorrespondenceCheck : Bool
+freshChoiceCorrespondenceCheck = case freshChoiceCorrespondenceWitness of
+  Nothing => False
+  Just witness => True
+
+||| End-to-end Theorem-73 statement check for the blocker pair.  Every premise
+||| after the concrete checked traces is the exact public theorem premise; the
+||| same-input argument is the constructed generation-wise witness above, not
+||| an assumed global raw-name renaming.
+public export
+0 freshChoiceTheorem73PremiseChain :
+  confluenceTheorem Nat RegistrationTestKey RegistrationTestValue Unit String ->
+  (0 witness : FreshChoiceCorrespondenceWitness) ->
+  AlignedTransitions Nat RegistrationTestKey Unit String RegistrationTestValue
+    DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq
+    (namedRoleChangingTrace (leftFreshChoice witness)) ->
+  AlignedTransitions Nat RegistrationTestKey Unit String RegistrationTestValue
+    DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq
+    (namedRoleChangingTrace (rightFreshChoice witness)) ->
+  RegistrationDiscipline DGamma.CP3StatementChecks.registrationTestProtocol DGamma.CP3StatementChecks.registrationTestNameEq
+    (namedRoleChangingTrace (leftFreshChoice witness)) ->
+  RegistrationDiscipline DGamma.CP3StatementChecks.registrationTestProtocol DGamma.CP3StatementChecks.registrationTestNameEq
+    (namedRoleChangingTrace (rightFreshChoice witness)) ->
+  registryWellFormed @{DGamma.CP3StatementChecks.registrationTestNameEq} @{DGamma.CP3StatementChecks.registrationTestKeyEq}
+    DGamma.CP3StatementChecks.registrationTestInitial = True ->
+  bindings (registry DGamma.CP3StatementChecks.registrationTestInitial) = [] ->
+  quiet @{DGamma.CP3StatementChecks.registrationTestNameEq} @{DGamma.CP3StatementChecks.registrationTestKeyEq}
+    (namedAfter (rootAdvance1 (leftFreshChoice witness))) = True ->
+  quiet @{DGamma.CP3StatementChecks.registrationTestNameEq} @{DGamma.CP3StatementChecks.registrationTestKeyEq}
+    (namedAfter (rootAdvance1 (rightFreshChoice witness))) = True ->
+  noFailedFibers (namedAfter (rootAdvance1 (leftFreshChoice witness))) = True ->
+  noFailedFibers (namedAfter (rootAdvance1 (rightFreshChoice witness))) = True ->
+  TraceComponentsTotal DGamma.CP3StatementChecks.registrationTestKeyEq
+    (namedRoleChangingTrace (leftFreshChoice witness)) ->
+  TraceComponentsTotal DGamma.CP3StatementChecks.registrationTestKeyEq
+    (namedRoleChangingTrace (rightFreshChoice witness)) ->
+  TraceIndependent Nat RegistrationTestKey Unit String RegistrationTestValue
+    DGamma.CP3StatementChecks.registrationTestKeyEq (namedRoleChangingTrace (leftFreshChoice witness)) ->
+  TraceIndependent Nat RegistrationTestKey Unit String RegistrationTestValue
+    DGamma.CP3StatementChecks.registrationTestKeyEq (namedRoleChangingTrace (rightFreshChoice witness)) ->
+  ConfluenceResult Nat RegistrationTestKey Unit String RegistrationTestValue
+    DGamma.CP3StatementChecks.registrationTestProtocol DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq
+    (namedRoleChangingTrace (leftFreshChoice witness))
+    (namedRoleChangingTrace (rightFreshChoice witness))
+    (generatedGenerationBijection (blockerPairSameInputs witness))
+    (currentNameBijection (endpointRenaming (blockerPairSameInputs witness)))
+freshChoiceTheorem73PremiseChain claim witness leftAligned rightAligned
+  leftDiscipline rightDiscipline initialWellFormed initialEmpty leftQuiet
+  rightQuiet leftSuccess rightSuccess leftTotal rightTotal leftIndependent
+  rightIndependent =
+    claim DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq DGamma.CP3StatementChecks.registrationTestProtocol
+      DGamma.CP3StatementChecks.registrationTestInitial
+      (namedAfter (rootAdvance1 (leftFreshChoice witness)))
+      (namedAfter (rootAdvance1 (rightFreshChoice witness)))
+      (namedRoleChangingTrace (leftFreshChoice witness))
+      (namedRoleChangingTrace (rightFreshChoice witness))
+      leftAligned rightAligned leftDiscipline rightDiscipline initialWellFormed
+      initialEmpty leftQuiet rightQuiet leftSuccess rightSuccess leftTotal
+      rightTotal leftIndependent rightIndependent (blockerPairSameInputs witness)
+
 ||| The generation-stamped accounting branch is constructively available for
 ||| every located child birth while the same raw name remains outside the raw
 ||| endpoint-withdrawal list. This is the proposition-shape regression paired

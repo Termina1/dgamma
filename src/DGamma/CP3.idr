@@ -1753,6 +1753,7 @@ public export
 GenerationEnvironment : Type -> Type
 GenerationEnvironment name = List (name, RegistrationGeneration name)
 
+public export
 putCurrentGeneration : DecEq name => name -> RegistrationGeneration name ->
   GenerationEnvironment name -> GenerationEnvironment name
 putCurrentGeneration selected generation [] = [(selected, generation)]
@@ -1762,6 +1763,7 @@ putCurrentGeneration selected generation ((candidate, current) :: rest) =
     No different => (candidate, current) ::
       putCurrentGeneration selected generation rest
 
+public export
 deleteCurrentGeneration : DecEq name => name -> GenerationEnvironment name ->
   GenerationEnvironment name
 deleteCurrentGeneration selected [] = []
@@ -1779,6 +1781,7 @@ lookupCurrentGeneration selected ((candidate, current) :: rest) =
     Yes Refl => Just current
     No different => lookupCurrentGeneration selected rest
 
+public export
 advanceGenerationEnvironment : DecEq name => Nat ->
   Action name key value world error -> GenerationEnvironment name ->
   GenerationEnvironment name
@@ -1789,6 +1792,7 @@ advanceGenerationEnvironment ordinal (ORemove removed) live =
   deleteCurrentGeneration removed live
 advanceGenerationEnvironment ordinal action live = live
 
+public export
 isGeneratedRegistrationAction : Action name key value world error -> Bool
 isGeneratedRegistrationAction (OInsert child (ChildOf parent) component) = True
 isGeneratedRegistrationAction action = False
@@ -1816,26 +1820,28 @@ data RegistrationTraceCorrespondence :
       leftOrdinal leftLive NoTransitions leftLive
       rightOrdinal rightLive NoTransitions rightLive
   SkipLeftNonRegistration :
+    (action : Action name key value world error) ->
     (transition : Transition leftFirst leftMiddle) ->
     (leftRest : Transitions leftMiddle leftFinal) ->
-    isGeneratedRegistrationAction (transitionAction transition) = False ->
+    transitionAction transition = action ->
+    isGeneratedRegistrationAction action = False ->
     RegistrationTraceCorrespondence nameEq renaming
       (S leftOrdinal)
-      (advanceGenerationEnvironment @{nameEq} leftOrdinal
-        (transitionAction transition) leftLive)
+      (advanceGenerationEnvironment @{nameEq} leftOrdinal action leftLive)
       leftRest leftFinalLive rightOrdinal rightLive right rightFinalLive ->
     RegistrationTraceCorrespondence nameEq renaming
       leftOrdinal leftLive (MoreTransitions transition leftRest) leftFinalLive
       rightOrdinal rightLive right rightFinalLive
   SkipRightNonRegistration :
+    (action : Action name key value world error) ->
     (transition : Transition rightFirst rightMiddle) ->
     (rightRest : Transitions rightMiddle rightFinal) ->
-    isGeneratedRegistrationAction (transitionAction transition) = False ->
+    transitionAction transition = action ->
+    isGeneratedRegistrationAction action = False ->
     RegistrationTraceCorrespondence nameEq renaming
       leftOrdinal leftLive left leftFinalLive
       (S rightOrdinal)
-      (advanceGenerationEnvironment @{nameEq} rightOrdinal
-        (transitionAction transition) rightLive)
+      (advanceGenerationEnvironment @{nameEq} rightOrdinal action rightLive)
       rightRest rightFinalLive ->
     RegistrationTraceCorrespondence nameEq renaming
       leftOrdinal leftLive left leftFinalLive
@@ -1913,27 +1919,21 @@ record CurrentEndpointRenaming
     (fiber : Fiber name key value world error) ->
     lookupFiber @{nameEq} n (registry rightFinal) = Just fiber ->
     fiberParent fiber = Root -> renameBackward currentNameBijection n = n
-  0 leftLiveChildGeneration : (n, parent : name) ->
-    (fiber : Fiber name key value world error) ->
-    lookupFiber @{nameEq} n (registry leftFinal) = Just fiber ->
-    fiberParent fiber = ChildOf parent ->
-    (leftGeneration : RegistrationGeneration name **
-     rightGeneration : RegistrationGeneration name **
-     (lookupCurrentGeneration @{nameEq} n
-        (leftFinalGenerations registrations) = Just leftGeneration,
-      generationForward generationRenaming leftGeneration = rightGeneration,
+  0 leftCurrentGenerationMapped : (n : name) ->
+    (leftGeneration : RegistrationGeneration name) ->
+    lookupCurrentGeneration @{nameEq} n
+      (leftFinalGenerations registrations) = Just leftGeneration ->
+    (rightGeneration : RegistrationGeneration name **
+     (generationForward generationRenaming leftGeneration = rightGeneration,
       lookupCurrentGeneration @{nameEq}
         (renameForward currentNameBijection n)
         (rightFinalGenerations registrations) = Just rightGeneration))
-  0 rightLiveChildGeneration : (n, parent : name) ->
-    (fiber : Fiber name key value world error) ->
-    lookupFiber @{nameEq} n (registry rightFinal) = Just fiber ->
-    fiberParent fiber = ChildOf parent ->
-    (rightGeneration : RegistrationGeneration name **
-     leftGeneration : RegistrationGeneration name **
-     (lookupCurrentGeneration @{nameEq} n
-        (rightFinalGenerations registrations) = Just rightGeneration,
-      generationBackward generationRenaming rightGeneration = leftGeneration,
+  0 rightCurrentGenerationMapped : (n : name) ->
+    (rightGeneration : RegistrationGeneration name) ->
+    lookupCurrentGeneration @{nameEq} n
+      (rightFinalGenerations registrations) = Just rightGeneration ->
+    (leftGeneration : RegistrationGeneration name **
+     (generationBackward generationRenaming rightGeneration = leftGeneration,
       lookupCurrentGeneration @{nameEq}
         (renameBackward currentNameBijection n)
         (leftFinalGenerations registrations) = Just leftGeneration))
@@ -3154,6 +3154,77 @@ oInsertUninstalled {name} {key} {world} {error} {value}
                   (cong (installedMaybe {name = name} {key = key} {world = world}
                     {error = error} {value = value}) insertedLookup)
             in (sourceUninstalled, targetUninstalled)
+
+||| Exact target lookup for a successful raw O-Insert.  This is the control
+||| fact needed to classify a following O-Retire/O-Remove as internal to a
+||| generated child rather than as external root orchestration.
+public export
+0 oInsertResultLookup :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (OInsert selected parent component) before =
+    Just (tag, afterState) ->
+  lookupFiber @{nameEq} selected (registry afterState) =
+    Just (freshFiber component parent)
+oInsertResultLookup {name} {key} {world} {error} {value}
+  nameEq keyEq selected parent component
+  before@(MkSystemState ambient fibers) afterState tag equation
+  with (parentPresent @{nameEq} parent fibers &&
+    provisionsDisjointFrom @{keyEq} (componentProvisions component)
+      (registryFibers fibers))
+  oInsertResultLookup {name} {key} {world} {error} {value}
+    nameEq keyEq selected parent component before@(MkSystemState ambient fibers)
+    afterState tag equation | False = void (nothingIsNotJust equation)
+  oInsertResultLookup {name} {key} {world} {error} {value}
+    nameEq keyEq selected parent component before@(MkSystemState ambient fibers)
+    afterState tag equation | True
+    with (setFresh @{nameEq} selected (freshFiber component parent) fibers) proof inserted
+    oInsertResultLookup {name} {key} {world} {error} {value}
+      nameEq keyEq selected parent component before@(MkSystemState ambient fibers)
+      afterState tag equation | True | Nothing = void (nothingIsNotJust equation)
+    oInsertResultLookup {name} {key} {world} {error} {value}
+      nameEq keyEq selected parent component before@(MkSystemState ambient fibers)
+      afterState tag equation | True | Just applied =
+        case justInjective equation of
+          Refl => setFreshSelectedLookup selected (freshFiber component parent)
+            fibers applied inserted
+
+0 retiredFiberKeepsParent : (fiber : Fiber name key value world error) ->
+  fiberParent (retireFiber fiber) = fiberParent fiber
+retiredFiberKeepsParent (MkFiber component parent retired table lifecycle) = Refl
+
+||| Exact target lookup for successful retirement of a known fiber, retaining
+||| the parent role needed to classify a following O-Remove.
+public export
+0 oRetireResultLookup :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (fiber : Fiber name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  lookupFiber @{nameEq} selected (registry before) = Just fiber ->
+  applyAction @{nameEq} @{keyEq} (ORetire selected) before =
+    Just (tag, afterState) ->
+  (afterFiber : Fiber name key value world error **
+   (lookupFiber @{nameEq} selected (registry afterState) = Just afterFiber,
+    fiberParent afterFiber = fiberParent fiber))
+oRetireResultLookup nameEq keyEq selected fiber
+  (MkSystemState ambient fibers) afterState tag found equation
+  with (lookupFiber @{nameEq} selected fibers) proof current
+    oRetireResultLookup nameEq keyEq selected fiber
+      (MkSystemState ambient fibers) afterState tag found equation |
+        Nothing = void (nothingIsNotJust equation)
+    oRetireResultLookup nameEq keyEq selected fiber
+      (MkSystemState ambient fibers) afterState tag found equation |
+        Just observed =
+          let sameFiber : (observed = fiber)
+              sameFiber = justInjective found in
+            case justInjective equation of
+              Refl => (retireFiber observed **
+                (lookupReplacedFiber selected observed (retireFiber observed)
+                  fibers current,
+                 trans (retiredFiberKeepsParent observed) (cong fiberParent sameFiber)))
 
 0 stableInstallationEvolution :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
