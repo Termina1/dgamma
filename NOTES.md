@@ -607,12 +607,16 @@ empty-suffix quantitative base (`progressEndFromNoDeadlock` and
 ### Confluence (Theorem 73): parent-local structural statement and proof debt
 
 The finite explicit-registration specialization remains stated and is being
-resubmitted for round-8 review. Round 6 accepted generation-stamped
+resubmitted for round-9 review. Round 6 accepted generation-stamped
 *self-canonicalization* and found the global raw-name collision; round 7
 accepted that generation/current-name split but found two further proposition-
 shape defects: child births were still paired in one global chronological word,
 and historical removed external-root generations were not tied to their exact
-external input occurrences. The proposition now separates six roles:
+external input occurrences. Round 8 accepted those two repairs but exposed a
+parent-episode defect: a child born in an activation later deleted by that
+parent's closing `L-Unload` still consumed the lifetime-local child position,
+so a reopened left episode could not match a delayed right episode. The
+proposition now separates six roles:
 
 1. **One-step episode deletion (Lemma 72).** `KeepAction` remains
    bidirectional, but `DeleteEpisodeLifecycle` additionally requires
@@ -626,16 +630,21 @@ external input occurrences. The proposition now separates six roles:
    nonempty head step and fixed continuation of its live parent. Protocol ranks
    strictly increase along yielded-parent and precedence edges. This is the
    documented explicit-host repair for the paper's Lemma-68 provenance gap.
-3. **Parent-local generation matching.** `RegistrationGenerationBijection`
-   acts on `(raw name, birth ordinal)`, not on raw names. Each
-   `RegistrationEvent` records the exact child generation, the parent generation
-   live at that birth, the component, and the number of earlier children born
-   under that parent generation. `RegistrationTraceCorrespondence` may hold
-   births pending while either trace advances, but each pending birth must be
-   removed exactly once by a `RegistrationEventMatch`. That match requires the
-   same component, mapped child and parent generations, and equal **per-parent**
-   child position. It therefore preserves one parent's iterator/yield order but
-   imposes no chronological order between different parents.
+3. **Surviving parent-activation matching.**
+   `RegistrationGenerationBijection` acts on `(raw name, birth ordinal)`, not
+   on raw names. `RegistrationActivation` pairs the live parent generation with
+   its exact `L-Begin` ordinal. `L-Begin` resets that activation's child
+   position to zero; `L-Unload` clears it. A generated birth may enter the
+   pending tree only with `SurvivingRegistration`, whose suffix proves
+   `NoParentUnload`; it may be skipped only with
+   `DeletedClosingRegistration`, which supplies the exact activation plus an
+   `ActionOccurs (LUnload parent)` proof. Therefore births from deleted closing
+   episodes neither match nor consume positions. `RegistrationEventMatch`
+   requires the same component, mapped child and parent generations, matching
+   concrete activation witnesses (whose opening ordinals may differ), and equal
+   **parent-activation** positions. It preserves one activation's iterator/yield
+   order but imposes no
+   chronological order between different parents.
 4. **Historical external roots.** `SameExternalOrchestration` still compares
    externally supplied root actions in exact raw-name order.
    `ExternalRootBirthCorrespondence` additionally scans every historical root
@@ -653,7 +662,7 @@ external input occurrences. The proposition now separates six roles:
    `endpointWithdrawnGenerations` from current `endpointWithdrawnNames`, and
    `CanonicalInputPlacement` quantifies freshness/order per located birth.
 
-Three concrete statement regressions now cover the repaired public domain.
+Four concrete statement regressions now cover the repaired public domain.
 `freshChoiceCorrespondenceWitness` retains round 6's pair: left child `(1,2)`
 versus right child `(2,2)`, both followed by the same live root `(1,5)`.
 `crossParentPermutationCorrespondenceWitness` constructs two checked 12-action
@@ -661,11 +670,26 @@ traces with exact external roots 0 then 1 and the same final registration tree;
 the left births children `(2,4)` under root 0 then `(3,5)` under root 1, while
 the right births `(3,4)` then `(2,5)`. The pending structural matcher maps
 `(2,4)->(2,5)` and `(3,5)->(3,4)` at local position zero under their respective
-fixed parent generations. `crossParentPermutationTheorem73PremiseChain` applies
+fixed parent activations. `crossParentPermutationTheorem73PremiseChain` applies
 the literal public `confluenceTheorem` after taking every remaining semantic
-premise. Conversely, `historicalExternalRootPermutationRejected` projects the
-first exact-root equation and eliminates a bijection that sends historical root
-`(0,0)` to `(1,1)`.
+premise. `episodeBoundaryCorrespondenceWitness` is the hardened round-8 case:
+the left trace begins parent 1, inserts child 2, retires/removes it early,
+diverts and unloads parent 1, replaces provider root 0 with root 3, reopens
+parent 1, and inserts surviving child 4. The right delays parent-1 activation
+until after the same provider replacement and inserts only child 4. The deleted
+left birth carries explicit closing-unload evidence and is discarded; the
+surviving births both elaborate at activation-local position zero.
+`episodeBoundaryTheorem73PremiseChain` applies this complete
+`SameOrchestrationModuloGenerated` witness through the literal public theorem
+boundary after taking all remaining semantic premises.
+
+Conversely, `CompleteRemovedRootPermutationCandidate` contains a concrete
+six-action checked history that inserts/retires/removes root 0 and then root 1,
+together with an alleged **full** `SameOrchestrationModuloGenerated` relation,
+not merely the root-coupling projection. `historicalExternalRootPermutationRejected`
+projects the exact first-root equation from that full candidate and eliminates
+its `(0,0) <-> (1,3)` historical permutation. Both endpoints are empty, so this
+negative check cannot be discharged accidentally by current-name constraints.
 
 `roleChangingFullCanonicalScheduleStatementCheck` still specializes every
 `CanonicalSchedule` constructor field to the nine-action role-changing trace
@@ -684,9 +708,10 @@ stamp is an actual original child birth removed from the canonical trace.
 
 The older exact-name/zero-current-raw-withdrawal helpers remain proved strong
 special cases. Constructive checked deletion, canonical sorting, and general
-endpoint assembly remain open. The two round-7 proposition-shape defects now
-have positive/negative typed regressions, but acceptance is not claimed before
-the independent round-8 review.
+endpoint assembly remain open. The round-7 and round-8 proposition-shape
+defects now have positive/negative typed regressions, but acceptance is not
+claimed before the independent
+round-9 review.
 
 ### Recovery and Theorem 64
 
@@ -760,7 +785,7 @@ that the accumulator executes at L-Unload, not at L-Leave/L-Divert/L-Raise.
 These are candidate proposition-shape repairs. Constructive Lemma 72/Theorem 73
 proofs and a full positive nested canonical schedule remain open.
 
-### CP3 adversarial rounds 5–7: role changes and structural generations
+### CP3 adversarial rounds 5–8: role changes and structural generations
 
 Round 5 found that raw-name canonical withdrawal made the checked
 child-1-to-live-root-1 trace internally inconsistent. Generation-stamped
@@ -779,16 +804,21 @@ The same review found the weaker dual: a removed external root was coupled to
 its exact raw input only while current, allowing historical root generations
 and their subtrees to be swapped.
 
-The replacement uses pending generated events and matches on mapped parent
-generation plus per-parent child position. Cross-parent chronological order is
-absent from the proposition. A separate `ExternalRootBirthCorrespondence`
-fixes every historical external O-Insert occurrence. The committed 12-action
-witness now builds the complete `SameOrchestrationModuloGenerated` package and
-crosses the exact public Theorem-73 premise chain; a concrete generation swap
-of historical roots 0 and 1 is constructively eliminated. The earlier 1-vs-2
-fresh-choice pair, nine-action self-canonical statement package, positive
-parent yield, empty-parent rejection, strict-rank cycle rejection, and identity-
-deletion barrier remain typechecked.
+The round-7 replacement used pending generated events and mapped parent-local
+positions, removing cross-parent chronological order, while
+`ExternalRootBirthCorrespondence` fixed every historical external O-Insert.
+Round 8 then supplied a checked delay/divert/delete/reopen counterexample to the
+remaining lifetime-local position. Path A now compares only surviving
+activation trees: `L-Begin` creates a new activation stamp and resets position;
+a matched birth proves no later parent unload, while every discarded generated
+birth proves the closing unload explicitly. The 24-action left/18-action right
+hardened pair builds the complete `SameOrchestrationModuloGenerated` package
+and crosses the exact public Theorem-73 premise chain. The historical-root
+negative now assumes the complete full relation over a checked two-removed-root
+history before deriving contradiction. The earlier 1-vs-2 fresh-choice pair,
+12-action cross-parent pair, nine-action self-canonical statement package,
+positive parent yield, empty-parent rejection, strict-rank cycle rejection, and
+identity-deletion barrier remain typechecked.
 
 The old singleton-membership role-change guard remains removed.
 `roleChangingFullCanonicalScheduleStatementCheck` assembles every field of a
@@ -809,11 +839,12 @@ strict containment, resolution constancy, and provider-value constancy.
 **Partial:** Progress/Theorem 66 (search/maximality/base case proved);
 Lemmas 68/70 (candidate tagged/ranked provenance statements; Lemma-70 empty
 base proved); Lemma 71 (effect commutation projection); Lemma 72 (candidate
-lifecycle-only deletion statement); Confluence/Theorem 73 (parent-local
-structural cross-trace and generation-stamped canonical proposition package
-submitted for round-8 review; the round-7 cross-parent and historical-root
-statement defects have typed regressions, while constructive deletion/sorting
-and general endpoint assembly remain open); and recovery-combined Theorem 64
+lifecycle-only deletion statement); Confluence/Theorem 73 (surviving parent-
+activation structural cross-trace and generation-stamped canonical proposition
+package submitted for round-9 review;
+the round-7 cross-parent/historical-root and round-8 closing-episode defects
+have complete typed regressions, while constructive deletion/sorting and
+general endpoint assembly remain open); and recovery-combined Theorem 64
 (complete conditional assembly
 from Corollary 62). Lemmas 54–57 have many rule, frame, and boundary analogues
 but are not individually complete.
@@ -830,8 +861,9 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** obtain round-8 statement review, then implement temporal accumulator
+**Next:** obtain round-9 statement review, then implement temporal accumulator
 induction, ranked unloading-chain Progress, and constructive checked episode
-deletion/canonical sorting. The 12-action cross-parent pair now reaches the
-literal public premise chain and historical-root reassignment is rejected; an
-inhabited positive canonical schedule remains constructive proof debt.
+deletion/canonical sorting. Fresh-choice, cross-parent, and hardened activation-
+episode pairs reach the literal public premise chain; complete-relation
+historical-root reassignment is rejected. An inhabited positive canonical
+schedule remains constructive proof debt.
