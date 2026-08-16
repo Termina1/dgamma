@@ -3428,6 +3428,61 @@ registryWellFormedRetire {name} {key} {world} {error} {value}
         (andBothTrue _ _ targetChains
           (andBothTrue _ _ targetPairwise targetViews))
 
+||| ORemove preserves all four clauses of Definition 58 when its leaf is
+||| Inactive. The retired guard is operational but irrelevant to well-formedness.
+public export
+0 registryWellFormedInactiveDelete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (ambient : world) ->
+  (removed : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (outcome : Maybe error) -> (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} removed fibers =
+    Just (MkFiber component parent retired table (Inactive outcome)) ->
+  hasChild @{nameEq} {key = key} {value = value} {world = world} {error = error} removed fibers = False ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world} {error = error} (MkSystemState ambient fibers) = True ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} (MkSystemState ambient (deleteBinding @{nameEq} removed fibers)) = True
+registryWellFormedInactiveDelete {name} {key} {world} {error} {value}
+  nameEq keyEq ambient removed component parent retired table outcome
+  fibers@(MkCoeffectContext entries unique) present noChild valid =
+  let sourceParents = andFourFirst
+        (parentsInvariant @{nameEq} entries fibers)
+        (chainsInvariant @{nameEq} (S (length entries)) entries fibers)
+        (pairwiseProvisionInvariant @{keyEq} entries)
+        (viewsInvariant @{nameEq} @{keyEq} entries fibers) valid
+      sourceChains = andFourSecond
+        (parentsInvariant @{nameEq} entries fibers)
+        (chainsInvariant @{nameEq} (S (length entries)) entries fibers)
+        (pairwiseProvisionInvariant @{keyEq} entries)
+        (viewsInvariant @{nameEq} @{keyEq} entries fibers) valid
+      sourcePairwise = andFourThird
+        (parentsInvariant @{nameEq} entries fibers)
+        (chainsInvariant @{nameEq} (S (length entries)) entries fibers)
+        (pairwiseProvisionInvariant @{keyEq} entries)
+        (viewsInvariant @{nameEq} @{keyEq} entries fibers) valid
+      sourceViews = andFourFourth
+        (parentsInvariant @{nameEq} entries fibers)
+        (chainsInvariant @{nameEq} (S (length entries)) entries fibers)
+        (pairwiseProvisionInvariant @{keyEq} entries)
+        (viewsInvariant @{nameEq} @{keyEq} entries fibers) valid
+      targetParents = parentsInvariantDelete {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq entries removed
+        fibers noChild sourceParents
+      targetChains = chainsInvariantDeleteCardinal {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq removed
+        (MkFiber component parent retired table (Inactive outcome)) fibers noChild
+        present sourceChains
+      targetPairwise = pairwiseProvisionDelete {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq entries
+        removed sourcePairwise
+      targetViews = viewsInvariantInactiveDelete {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq removed
+        component parent retired table outcome fibers present sourceViews
+  in andBothTrue _ _ targetParents
+    (andBothTrue _ _ targetChains (andBothTrue _ _ targetPairwise targetViews))
+
 ||| Runtime-checked rule application used by the proof-indexed LTS. `applyAction`
 ||| remains the raw ten-rule evaluator; this wrapper rejects a malformed target
 ||| rather than admitting it into a proof trace.

@@ -259,6 +259,61 @@ preservationORetire {name} {key} {world} {error} {value}
         {world = world} {error = error} {value = value} nameEq keyEq ambient n
         fiber fibers found valid
 
+0 notTrueMeansFalse : (value : Bool) -> not value = True -> value = False
+notTrueMeansFalse False valid = Refl
+notTrueMeansFalse True valid = void (falseIsNotTrue valid)
+
+0 inactiveLifecycleWitness :
+  (lifecycle : Lifecycle key value world error name deps provision) ->
+  isInactive lifecycle = True ->
+  (outcome : Maybe error ** lifecycle = Inactive outcome)
+inactiveLifecycleWitness (Inactive outcome) valid = (outcome ** Refl)
+inactiveLifecycleWitness (Reloading rest accumulator view) valid =
+  void (falseIsNotTrue valid)
+inactiveLifecycleWitness (Active accumulator view) valid =
+  void (falseIsNotTrue valid)
+inactiveLifecycleWitness (Unloading accumulator view outcome) valid =
+  void (falseIsNotTrue valid)
+
+0 preservationORemove :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (n : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  registryWellFormed @{nameEq} @{keyEq} before = True ->
+  applyAction @{nameEq} @{keyEq} (ORemove n) before = Just (tag, afterState) ->
+  registryWellFormed @{nameEq} @{keyEq} afterState = True
+preservationORemove {name} {key} {world} {error} {value}
+  nameEq keyEq n (MkSystemState ambient fibers) afterState tag valid equation
+  with (lookupFiber @{nameEq} n fibers) proof found
+  preservationORemove {name} {key} {world} {error} {value}
+    nameEq keyEq n (MkSystemState ambient fibers) afterState tag valid equation |
+    Nothing = void (nothingIsNotJust equation)
+  preservationORemove {name} {key} {world} {error} {value}
+    nameEq keyEq n (MkSystemState ambient fibers) afterState tag valid equation |
+    Just (MkFiber component parent retired table lifecycle)
+    with (retired && isInactive lifecycle && not (hasChild @{nameEq} n fibers))
+      proof guards
+    preservationORemove {name} {key} {world} {error} {value}
+      nameEq keyEq n (MkSystemState ambient fibers) afterState tag valid equation |
+      Just (MkFiber component parent retired table lifecycle) | False =
+        void (nothingIsNotJust equation)
+    preservationORemove {name} {key} {world} {error} {value}
+      nameEq keyEq n (MkSystemState ambient fibers) afterState tag valid equation |
+      Just (MkFiber component parent retired table lifecycle) | True =
+        let tailValid = boolAndRight retired
+              (isInactive lifecycle && not (hasChild @{nameEq} n fibers)) guards
+            inactiveValid = boolAndLeft (isInactive lifecycle)
+              (not (hasChild @{nameEq} n fibers)) tailValid
+            childAbsent = notTrueMeansFalse (hasChild @{nameEq} n fibers)
+              (boolAndRight (isInactive lifecycle)
+                (not (hasChild @{nameEq} n fibers)) tailValid)
+        in case inactiveLifecycleWitness lifecycle inactiveValid of
+          (outcome ** Refl) => case justInjective equation of
+            Refl => registryWellFormedInactiveDelete {name = name} {key = key}
+              {world = world} {error = error} {value = value} nameEq keyEq
+              ambient n component parent retired table outcome fibers found
+              childAbsent valid
+
 ||| Paper Theorem 59, stated over the raw ten-rule evaluator. Unlike the checked
 ||| admission fact, this direction cannot hide a malformed endpoint.
 ||| TODO(proof): rule induction plus registry replacement/insertion/deletion
