@@ -1497,6 +1497,7 @@ newChildChainEquation {key} {world} {error} {value} nameEq fuel n parent distinc
   newChildChainEquation {key} {world} {error} {value} nameEq fuel n parent distinct component
     (MkCoeffectContext entries unique) absent | (No contra) = void (contra Refl)
 
+public export
 0 lookupFiberEntries : (nameEq : DecEq name) -> (wanted : name) ->
   (fiber : Fiber name key value world error) ->
   (fibers : Registry name key value world error) ->
@@ -4197,6 +4198,31 @@ viewsEntriesRuntimeTarget {name} {key} {world} {error} {value}
       (viewsEntriesRuntimeTarget {name = name} {key = key} {world = world}
         {error = error} {value = value} nameEq keyEq rest n fiber replacement
         registry present targetSelected (andTrueRight _ _ valid))
+
+public export
+0 viewsInvariantLookup :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : name) -> (fiber : Fiber name key value world error) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (registry : Registry name key value world error) ->
+  lookupEntries @{nameEq} wanted entries = Just fiber ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries registry = True ->
+  fiberViewInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} fiber registry = True
+viewsInvariantLookup nameEq keyEq wanted fiber [] registry present valid =
+  case present of Refl impossible
+viewsInvariantLookup {name} {key} {world} {error} {value}
+  nameEq keyEq wanted fiber (Bind current observed :: rest) registry present valid
+  with (decEq @{nameEq} wanted current)
+  viewsInvariantLookup {name} {key} {world} {error} {value}
+    nameEq keyEq current fiber (Bind current observed :: rest) registry present
+    valid | (Yes Refl) = case justValuesEqual present of
+      Refl => andTrueLeft _ _ valid
+  viewsInvariantLookup {name} {key} {world} {error} {value}
+    nameEq keyEq wanted fiber (Bind current observed :: rest) registry present
+    valid | (No _) = viewsInvariantLookup {name = name} {key = key}
+      {world = world} {error = error} {value = value} nameEq keyEq wanted fiber
+      rest registry present (andTrueRight _ _ valid)
 
 public export
 0 viewsInvariantUnstableRuntimeReplace :
