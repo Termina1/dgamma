@@ -211,6 +211,39 @@ roleChangingRuntimeCheck = case roleChangingRun of
         Root => True
         ChildOf parent => False
 
+||| Executable six-action canonical replay for the nine-action role-changing
+||| history: both external roots are inserted before either lifecycle block and
+||| the withdrawn historical child birth is absent.
+public export
+roleChangingCanonicalRun : Maybe
+  (SystemState Nat RegistrationTestKey RegistrationTestValue Unit String)
+roleChangingCanonicalRun = do
+  s1 <- roleChangingApply (OInsert 0 Root registrationTestParent)
+    registrationTestInitial
+  s2 <- roleChangingApply (OInsert 1 Root registrationTestChild) s1
+  s3 <- roleChangingApply (LBegin 0) s2
+  s4 <- roleChangingApply (LAdvance 0) s3
+  s5 <- roleChangingApply (LBegin 1) s4
+  roleChangingApply (LAdvance 1) s5
+
+public export
+roleChangingCanonicalRuntimeCheck : Bool
+roleChangingCanonicalRuntimeCheck = case (roleChangingRun, roleChangingCanonicalRun) of
+  (Just originalFinal, Just canonicalFinal) =>
+    quiet @{registrationTestNameEq} @{registrationTestKeyEq} canonicalFinal &&
+    noFailedFibers canonicalFinal &&
+    isSupported @{registrationTestNameEq} @{registrationTestKeyEq} 0 canonicalFinal &&
+    isSupported @{registrationTestNameEq} @{registrationTestKeyEq} 1 canonicalFinal &&
+    case (lookupFiber @{registrationTestNameEq} 1 (registry originalFinal),
+          lookupFiber @{registrationTestNameEq} 1 (registry canonicalFinal)) of
+      (Just originalFiber, Just canonicalFiber) =>
+        case (fiberParent originalFiber, fiberParent canonicalFiber) of
+          (Root, Root) => isActive (fiberLifecycle originalFiber) &&
+            isActive (fiberLifecycle canonicalFiber)
+          _ => False
+      _ => False
+  _ => False
+
 ||| Proof-indexed form of the same nine checked transitions. It is assembled by
 ||| `fire`, so every stored edge is accepted by the checked evaluator.
 public export
@@ -805,6 +838,12 @@ freshChoiceCorrespondenceCheck : Bool
 freshChoiceCorrespondenceCheck = case freshChoiceCorrespondenceWitness of
   Nothing => False
   Just witness => True
+
+public export
+allCP3StatementChecks : Bool
+allCP3StatementChecks = roleChangingRuntimeCheck &&
+  roleChangingCanonicalRuntimeCheck && roleChangingProofTraceCheck &&
+  freshChoiceCorrespondenceCheck
 
 ||| End-to-end Theorem-73 statement check for the blocker pair.  Every premise
 ||| after the concrete checked traces is the exact public theorem premise; the
