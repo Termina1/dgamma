@@ -397,8 +397,11 @@ The recovery layer now has one state space throughout:
 
 Reusable dependent-map frame lemmas `lookupReplaceOther`,
 `lookupDeleteOther`, and `lookupInsertOther` were added to `DGamma.Coeffects`.
-They are the first infrastructure for raw Preservation, lifecycle frames, and
-later trace deletion/permutation proofs.
+Definition 58 now uses explicit `parentsInvariant`, `chainsInvariant`, and
+`viewsInvariant` recursors rather than opaque library folds, and
+`parentChainFuelMonotone`/`chainsFuelMonotone` prove that insertion's extra fuel
+preserves every existing acyclicity check. These are shared infrastructure for
+raw Preservation, lifecycle frames, and later trace deletion/permutation proofs.
 
 The supervisor's final CP2 bar additionally requires inhabited raw Preservation
 and the whole-episode first-exit split. Those proofs are not yet complete in
