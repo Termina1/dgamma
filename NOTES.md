@@ -367,6 +367,46 @@ It remains unproved. Likewise the proof locating the unique exit after the
 maximal Reloading prefix, and global provider-episode selection, remain open.
 No checked-monitor lemma is claimed as those results.
 
+### Round-3 full-effect recovery redesign
+
+The round-3 review (`review-cp2-round3.md`) found that the round-2 conclusions
+compared owned tables while `TraceIndependent`, accumulator commutation, and
+`ForeignReplay` still projected every map to ambient `world`. Its reachable
+actual-handle counterexample was valid: an inverse can be world-identity yet
+choose the wrong table off-origin.
+
+The recovery layer now has one state space throughout:
+
+- `EffectState` contains ambient state and a table for every name;
+  `projectEffectState` erases only control. Absent and empty tables coincide,
+  matching vestigial-entry equivalence.
+- `EffectStateRelated` compares ambient state exactly and every heterogeneous
+  lookup pointwise, avoiding function extensionality and value `DecEq`.
+- `partialEffectMap` executes Table-1 effect maps on that full state.
+  `restrictOwned` reconstructs the acting fiber's provision-confined input
+  table, `resolveEffectValues` reads provider tables from the moved state, and
+  successful steps update both ambient and own table. L-Unload applies the
+  captured accumulator to both fields. L-Raise remains full-state identity.
+- `TraceIndependent`, `PrefixRecoveryIndependent`, definedness stability, and
+  `ForeignReplay` accept only `PartialEffectMap`; their APIs contain no
+  world-projection map. `accumulatorEffectMap` uses the same type.
+- Theorem 61 and Corollary 62 conclude one full-effect replay relation. The
+  disconnected `SelectedTableRecovered`/`TerminalTableRecovery` appendages were
+  removed. Premises therefore structurally observe exactly what conclusions
+  claim.
+
+Reusable dependent-map frame lemmas `lookupReplaceOther`,
+`lookupDeleteOther`, and `lookupInsertOther` were added to `DGamma.Coeffects`.
+They are the first infrastructure for raw Preservation, lifecycle frames, and
+later trace deletion/permutation proofs.
+
+The supervisor's final CP2 bar additionally requires inhabited raw Preservation
+and the whole-episode first-exit split. Those proofs are not yet complete in
+this commit; global provider selection is explicitly deferred to CP3 with the
+reviewer's required machinery: indexed trace splitting/search, boundary
+extraction under name reuse, restricted Lemma-54 lifecycle/view frames, and a
+forward relied-guard argument.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; same-action raw
@@ -378,18 +418,16 @@ L-Raise identity and dynamic resolution consumption, pass.
 
 **Partial/deviation:** Definition 32 finite approximations; Lemma 38 transport;
 finite iterators; host-level rather than nested registration; trace-specific
-rather than generated-monoid independence; exact ambient equality; and the
-checked proof-LTS. Table recovery is now explicit and exact pointwise, while
-full observational transport remains future work. Lemmas 54–57 are not
-individually complete.
+rather than generated-monoid independence; exact full-effect equality; and the
+checked proof-LTS. Full observational transport remains future work. Lemmas
+54–57 are not individually complete.
 
 **Merely stated:** Lemma 35, Theorems 40/42, raw Theorem 59, actual-handle/table
 Theorem 61 and Corollary 62, corrected global `orderingTheorem`, global
 `resolutionStructureTheorem`, and recovery-combined Theorem 64. These are the
 only `TODO(proof)` declarations and remain escape-hatch-free types.
 
-**Next:** independent CP2 round-3 should rerun the immediate-prefix,
-post-L-Unload, and L-Raise attacks against the corrected types. The outstanding
-checkpoint proof bar is raw rule preservation, deriving global provider
-containment/constancy rather than accepting local relied evidence, and locating
-the whole-episode structural exit.
+**Next:** finish and independently audit raw Theorem 59 and the whole-episode
+first-exit split. Round 4 must rerun the table-sensitive actual-handle attack on
+full-effect commutation/replay. Global provider selection remains deliberate
+CP3 proof debt rather than part of the final CP2 approval bar.

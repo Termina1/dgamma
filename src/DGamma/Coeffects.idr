@@ -231,6 +231,81 @@ replaceBinding k val (MkCoeffectContext entries unique) =
     (replace {p = UniqueKeys}
       (sym (replacePreservesKeys k val entries)) unique)
 
+||| Lookup frame for replacing a distinct key.
+0 lookupReplaceOtherEntries : DecEq key => (wanted, changed : key) ->
+  Not (wanted = changed) -> (next : value changed) ->
+  (entries : List (Binding key value)) ->
+  lookupEntries wanted (replaceEntries changed next entries) =
+    lookupEntries wanted entries
+lookupReplaceOtherEntries wanted changed distinct next [] = Refl
+lookupReplaceOtherEntries wanted changed distinct next (Bind found old :: rest)
+  with (decEq changed found)
+  lookupReplaceOtherEntries wanted found distinct next (Bind found old :: rest) |
+    (Yes Refl) with (decEq wanted found)
+    lookupReplaceOtherEntries found found distinct next (Bind found old :: rest) |
+      (Yes Refl) | (Yes Refl) = void (distinct Refl)
+    lookupReplaceOtherEntries wanted found distinct next (Bind found old :: rest) |
+      (Yes Refl) | (No _) = Refl
+  lookupReplaceOtherEntries wanted changed distinct next (Bind found old :: rest) |
+    (No notChanged) with (decEq wanted found)
+    lookupReplaceOtherEntries found changed distinct next (Bind found old :: rest) |
+      (No notChanged) | (Yes Refl) = Refl
+    lookupReplaceOtherEntries wanted changed distinct next (Bind found old :: rest) |
+      (No notChanged) | (No _) =
+        lookupReplaceOtherEntries wanted changed distinct next rest
+
+public export
+0 lookupReplaceOther : DecEq key => (wanted, changed : key) ->
+  Not (wanted = changed) -> (next : value changed) ->
+  (table : CoeffectContext key value) ->
+  lookupBinding wanted (replaceBinding changed next table) =
+    lookupBinding wanted table
+lookupReplaceOther wanted changed distinct next (MkCoeffectContext entries unique) =
+  lookupReplaceOtherEntries wanted changed distinct next entries
+
+||| Lookup frame for deleting a distinct key.
+0 lookupDeleteOtherEntries : DecEq key => (wanted, removed : key) ->
+  Not (wanted = removed) -> (entries : List (Binding key value)) ->
+  lookupEntries wanted (deleteEntries removed entries) = lookupEntries wanted entries
+lookupDeleteOtherEntries wanted removed distinct [] = Refl
+lookupDeleteOtherEntries wanted removed distinct (Bind found old :: rest)
+  with (decEq removed found)
+  lookupDeleteOtherEntries wanted found distinct (Bind found old :: rest) |
+    (Yes Refl) with (decEq wanted found)
+    lookupDeleteOtherEntries found found distinct (Bind found old :: rest) |
+      (Yes Refl) | (Yes Refl) = void (distinct Refl)
+    lookupDeleteOtherEntries wanted found distinct (Bind found old :: rest) |
+      (Yes Refl) | (No _) = Refl
+  lookupDeleteOtherEntries wanted removed distinct (Bind found old :: rest) |
+    (No notRemoved) with (decEq wanted found)
+    lookupDeleteOtherEntries found removed distinct (Bind found old :: rest) |
+      (No notRemoved) | (Yes Refl) = Refl
+    lookupDeleteOtherEntries wanted removed distinct (Bind found old :: rest) |
+      (No notRemoved) | (No _) =
+        lookupDeleteOtherEntries wanted removed distinct rest
+
+public export
+0 lookupDeleteOther : DecEq key => (wanted, removed : key) ->
+  Not (wanted = removed) -> (table : CoeffectContext key value) ->
+  lookupBinding wanted (deleteBinding removed table) = lookupBinding wanted table
+lookupDeleteOther wanted removed distinct (MkCoeffectContext entries unique) =
+  lookupDeleteOtherEntries wanted removed distinct entries
+
+||| Lookup frame for inserting a distinct fresh key.
+public export
+0 lookupInsertOther : DecEq key => (wanted, inserted : key) ->
+  Not (wanted = inserted) -> (next : value inserted) ->
+  (table : CoeffectContext key value) ->
+  (absent : lookupBinding inserted table = Nothing) ->
+  lookupBinding wanted (insertBinding inserted next table absent) =
+    lookupBinding wanted table
+lookupInsertOther wanted inserted distinct next (MkCoeffectContext entries unique) absent
+  with (decEq wanted inserted)
+  lookupInsertOther inserted inserted distinct next (MkCoeffectContext entries unique) absent |
+    (Yes Refl) = void (distinct Refl)
+  lookupInsertOther wanted inserted distinct next (MkCoeffectContext entries unique) absent |
+    (No _) = Refl
+
 public export
 PartialMap : Type -> Type
 PartialMap value = value -> Maybe value

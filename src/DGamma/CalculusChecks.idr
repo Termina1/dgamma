@@ -200,6 +200,26 @@ applyTagged expected action state = case checkedApplyAction action state of
   Just (actual, after) => if tagEq expected actual then Just after else Nothing
   Nothing => Nothing
 
+public export
+providerBeginRun : Maybe (SystemState Nat ToyKey ToyValue ToyRuntime String)
+providerBeginRun = do
+  s1 <- applyTagged OInsertTag (OInsert 0 Root providerComponent) initialSystem
+  applyTagged LBeginTag (LBegin 0) s1
+
+||| The full replay map carries the table write as well as ambient state.
+public export
+fullEffectMapCarriesTable : Bool
+fullEffectMapCarriesTable = case providerBeginRun of
+  Nothing => False
+  Just before => case partialEffectMapFor %search %search
+    (LAdvance 0) LIterTag before (projectEffectState before) of
+      Nothing => False
+      Just after => case lookupBinding ServiceA (effectTables after 0) of
+        Just True => case effectAmbient after of
+          MkToyRuntime True False => True
+          _ => False
+        _ => False
+
 ||| Dynamic-table/capability regression: the provider installs ServiceA and the
 ||| consumer reads that declared dependency to decide its ambient effect and own
 ||| ServiceB value.
@@ -353,6 +373,7 @@ proofTraceStarts = isJust (fire %search %search
 ||| All ten tags and both L-Divert alternatives are covered across the checks.
 public export
 allRuleChecks : Bool
-allRuleChecks = proofTraceStarts && activationUsesResolution && guardedScenarioChecks &&
+allRuleChecks = proofTraceStarts && fullEffectMapCarriesTable &&
+  activationUsesResolution && guardedScenarioChecks &&
   raiseMapIsIdentity && raiseScenario && emptyStaleDiverts && abortDivertScenario &&
   landingDivertScenario

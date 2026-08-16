@@ -6,6 +6,7 @@ import DGamma.Unified
 import DGamma.Calculus
 import Decidable.Equality
 import Data.List
+import Data.List.Elem
 import Data.Maybe
 
 %default total
@@ -260,6 +261,190 @@ prefixTransitions : {name, key, world, error : Type} -> {value : key -> Type} ->
   Transitions (episodeStartState episode) current
 prefixTransitions episode = inside episode
 
+||| Paper Definition-53 effect state: ambient state plus every named owned
+||| table, with registry/control fields erased. Absent and empty tables are
+||| intentionally observationally identical, as required by vestigial entries.
+public export
+record EffectState (name, key : Type) (value : key -> Type) (world : Type) where
+  constructor MkEffectState
+  effectAmbient : world
+  effectTables : name -> CoeffectContext key value
+
+public export
+projectEffectState : DecEq name =>
+  SystemState name key value world error -> EffectState name key value world
+projectEffectState state = MkEffectState (worldState state) tableFor
+  where
+  tableFor : name -> CoeffectContext key value
+  tableFor selected = case lookupFiber selected (registry state) of
+    Nothing => emptyContext
+    Just fiber => ownedValues (fiberTable fiber)
+
+||| Exact effect-state agreement without function extensionality.
+public export
+record EffectStateRelated {name, key : Type} {value : key -> Type} {world : Type}
+  (keyEq : DecEq key) (left, right : EffectState name key value world) where
+  constructor MkEffectStateRelated
+  0 ambientExact : effectAmbient left = effectAmbient right
+  0 tablesExact : (selected : name) -> (k : key) ->
+    lookupBinding k (effectTables left selected) =
+    lookupBinding k (effectTables right selected)
+
+0 effectStateReflexive : (keyEq : DecEq key) ->
+  (state : EffectState name key value world) ->
+  EffectStateRelated keyEq state state
+effectStateReflexive keyEq state =
+  MkEffectStateRelated Refl (\selected, k => Refl)
+
+0 effectStateSymmetric : (keyEq : DecEq key) ->
+  EffectStateRelated keyEq left right -> EffectStateRelated keyEq right left
+effectStateSymmetric keyEq relation = MkEffectStateRelated
+  (sym (ambientExact relation))
+  (\selected, k => sym (tablesExact relation selected k))
+
+0 effectStateTransitive : (keyEq : DecEq key) ->
+  EffectStateRelated keyEq left middle -> EffectStateRelated keyEq middle right ->
+  EffectStateRelated keyEq left right
+effectStateTransitive keyEq first second = MkEffectStateRelated
+  (trans (ambientExact first) (ambientExact second))
+  (\selected, k => trans (tablesExact first selected k)
+                         (tablesExact second selected k))
+
+public export
+EffectStateEquivalence : {name, key, world : Type} -> {value : key -> Type} ->
+  (keyEq : DecEq key) -> Equivalence (EffectState name key value world)
+EffectStateEquivalence {name} {key} {world} {value} keyEq =
+  MkEquivalence (EffectStateRelated keyEq)
+  (effectStateReflexive keyEq) (effectStateSymmetric keyEq)
+  (effectStateTransitive keyEq)
+
+record RestrictedEntries (key : Type) (value : key -> Type)
+                         (allowed : List key) where
+  constructor MkRestrictedEntries
+  restrictedBindings : List (Binding key value)
+  0 restrictedUnique : UniqueKeys (bindingKeys restrictedBindings)
+  0 restrictedSound : (k : key) -> Elem k (bindingKeys restrictedBindings) ->
+    Elem k allowed
+
+restrictEntries : DecEq key => (allowed : List key) -> (0 unique : UniqueKeys allowed) ->
+  CoeffectContext key value -> RestrictedEntries key value allowed
+restrictEntries [] UniqueNil table = MkRestrictedEntries [] UniqueNil
+  (\k, present => absurd present)
+restrictEntries (k :: ks) (UniqueCons absent uniqueRest) table
+  with (lookupBinding k table)
+  restrictEntries (k :: ks) (UniqueCons absent uniqueRest) table | Nothing =
+    let tail = restrictEntries ks uniqueRest table in
+      MkRestrictedEntries (restrictedBindings tail) (restrictedUnique tail)
+        (\present, occurs => There (restrictedSound tail present occurs))
+  restrictEntries (k :: ks) (UniqueCons absent uniqueRest) table | Just v =
+    let tail = restrictEntries ks uniqueRest table
+        0 notInTail = \occurs => absent
+          (restrictedSound tail k occurs) in
+      MkRestrictedEntries (Bind k v :: restrictedBindings tail)
+        (UniqueCons notInTail (restrictedUnique tail))
+        (\present, occurs => case occurs of
+          Here => Here
+          There later => There (restrictedSound tail present later))
+
+||| Reconstruct an owned table by restricting an arbitrary effect table to the
+||| component's declared provision. This makes full-state maps executable while
+||| preserving capability confinement intrinsically.
+public export
+restrictOwned : DecEq key => (provision : CoeffectSpec key) ->
+  CoeffectContext key value -> OwnedTable key value provision
+restrictOwned (MkCoeffectSpec allowed unique) table =
+  let result = restrictEntries allowed unique table in
+    MkOwnedTable
+      (MkCoeffectContext (restrictedBindings result) (restrictedUnique result))
+      (restrictedSound result)
+
+public export
+setEffectTable : DecEq name => name -> CoeffectContext key value ->
+  EffectState name key value world -> EffectState name key value world
+setEffectTable selected table state = MkEffectState (effectAmbient state) next
+  where
+  next : name -> CoeffectContext key value
+  next candidate = case decEq candidate selected of
+    Yes Refl => table
+    No _ => effectTables state candidate
+
+public export
+setEffectAmbient : world -> EffectState name key value world ->
+  EffectState name key value world
+setEffectAmbient next state = MkEffectState next (effectTables state)
+
+resolveEffectValues : DecEq key => (deps : List key) -> View name deps ->
+  EffectState name key value world -> Maybe (DepValues key value deps)
+resolveEffectValues [] EmptyView state = Just NoDepValues
+resolveEffectValues (k :: ks) (ProviderView provider rest) state =
+  case lookupBinding k (effectTables state provider) of
+    Nothing => Nothing
+    Just v => map (OneDepValue v) (resolveEffectValues ks rest state)
+
+public export
+PartialEffectMap : (name, key : Type) -> (value : key -> Type) ->
+  (world : Type) -> Type
+PartialEffectMap name key value world =
+  EffectState name key value world -> Maybe (EffectState name key value world)
+
+||| Full Table-1 effect map. Successful iterator maps and yielded accumulators
+||| consume and produce both ambient state and the acting fiber's owned table.
+||| Control-only edits are erased; O-Insert/O-Remove set the actor table empty.
+public export
+partialEffectMapFor : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  Action name key value world error -> RuleTag ->
+  SystemState name key value world error -> PartialEffectMap name key value world
+partialEffectMapFor nameEq keyEq (OInsert n parent component) tag origin state =
+  Just (setEffectTable @{nameEq} n emptyContext state)
+partialEffectMapFor nameEq keyEq (ORemove n) tag origin state =
+  Just (setEffectTable @{nameEq} n emptyContext state)
+partialEffectMapFor nameEq keyEq (LAdvance n) LRaiseTag origin state = Just state
+partialEffectMapFor nameEq keyEq (LAdvance n) tag origin state = case tag of
+  LIterTag => successfulAdvance
+  LFinishTag => successfulAdvance
+  LDivertTag => successfulAdvance
+  _ => Just state
+  where
+  successfulAdvance : Maybe (EffectState name key value world)
+  successfulAdvance = case lookupFiber @{nameEq} n (registry origin) of
+    Nothing => Nothing
+    Just fiber => case fiberLifecycle fiber of
+      Reloading [] accumulator view => Just state
+      Reloading (step :: rest) accumulator view =>
+        case resolveEffectValues @{keyEq}
+          (dependencies (componentDependencies (fiberComponent fiber))) view state of
+          Nothing => Nothing
+          Just capability =>
+            let owned = restrictOwned @{keyEq}
+                  (componentProvisions (fiberComponent fiber)) (effectTables state n) in
+            case runStepEffect step capability
+              (MkLocalState (effectAmbient state) owned) of
+              Left _ => Nothing
+              Right (after, undo) => Just
+                (setEffectTable @{nameEq} n (ownedValues (localTable after))
+                  (setEffectAmbient (localWorld after) state))
+      _ => Nothing
+partialEffectMapFor nameEq keyEq (LUnload n) tag origin state =
+  case lookupFiber @{nameEq} n (registry origin) of
+    Nothing => Nothing
+    Just fiber => case fiberLifecycle fiber of
+      Unloading accumulator view outcome =>
+        let owned = restrictOwned @{keyEq}
+              (componentProvisions (fiberComponent fiber)) (effectTables state n)
+            restored = accumulator (MkLocalState (effectAmbient state) owned) in
+          Just (setEffectTable @{nameEq} n (ownedValues (localTable restored))
+            (setEffectAmbient (localWorld restored) state))
+      _ => Nothing
+partialEffectMapFor nameEq keyEq action tag origin state = Just state
+
+public export
+partialEffectMap : {before, afterState : SystemState name key value world error} ->
+  Transition before afterState -> PartialEffectMap name key value world
+partialEffectMap {before} (Fired nameEq keyEq action tag equation) =
+  partialEffectMapFor nameEq keyEq action tag before
+
+||| Partial world projection retained only as an executable diagnostic. Recovery
+||| hypotheses below use `partialEffectMap` exclusively.
 ||| Partial Table-1 state map. A moved successful iterator may fail, and that
 ||| remains `Nothing`; it is never silently totalized to identity.
 public export
@@ -314,12 +499,12 @@ data OccursIn : {name, key, world, error : Type} -> {value : key -> Type} ->
   OccursLater : OccursIn selected rest ->
     OccursIn selected (MoreTransitions transition rest)
 
-||| Non-vacuous Definition-60 hypothesis: only actual transitions at distinct
-||| names in this supplied trace are quantified. It is satisfiable on nontrivial
-||| worlds and includes partial-map commutation and definedness stability.
+||| Non-vacuous Definition-60 hypothesis over the complete effect state.
+||| Every commutation and definedness premise observes ambient state and all
+||| owned tables pointwise; no world-only projection exists in this interface.
 public export
 record TraceIndependent (name, key, world, error : Type)
-                        (value : key -> Type)
+                        (value : key -> Type) (keyEq : DecEq key)
                         {first, last : SystemState name key value world error}
                         (trace : Transitions first last) where
   constructor MkTraceIndependent
@@ -330,8 +515,8 @@ record TraceIndependent (name, key, world, error : Type)
     (right : Transition rightBefore rightAfter) ->
     OccursIn left trace -> OccursIn right trace ->
     Not (transitionActor left = transitionActor right) ->
-    PartialCommute (EqEquivalence {a = world})
-      (partialWorldMap left) (partialWorldMap right)
+    PartialCommute (EffectStateEquivalence keyEq)
+      (partialEffectMap left) (partialEffectMap right)
   0 definednessStable :
     {leftBefore, leftAfter, rightBefore, rightAfter :
       SystemState name key value world error} ->
@@ -339,47 +524,52 @@ record TraceIndependent (name, key, world, error : Type)
     (right : Transition rightBefore rightAfter) ->
     OccursIn left trace -> OccursIn right trace ->
     Not (transitionActor left = transitionActor right) ->
-    (origin, moved, result : world) ->
-    partialWorldMap right origin = Just moved ->
-    partialWorldMap left origin = Just result ->
-    (movedResult : world ** partialWorldMap left moved = Just movedResult)
+    (origin, moved, result : EffectState name key value world) ->
+    partialEffectMap right origin = Just moved ->
+    partialEffectMap left origin = Just result ->
+    (movedResult : EffectState name key value world **
+      partialEffectMap left moved = Just movedResult)
 
 public export
 0 noOccurrenceInEmpty : OccursIn transition NoTransitions -> Void
 noOccurrenceInEmpty occurrence impossible
 
-||| Concrete non-vacuity witness: independence of an empty actual trace exists
-||| for every ambient world, including Bool and other non-subsingleton types.
+||| Concrete non-vacuity witness for every full effect state.
 public export
-emptyTraceIndependent : TraceIndependent name key world error value
-  (NoTransitions {state})
-emptyTraceIndependent = MkTraceIndependent
+emptyTraceIndependent : (keyEq : DecEq key) ->
+  TraceIndependent name key world error value keyEq (NoTransitions {state})
+emptyTraceIndependent keyEq = MkTraceIndependent
   (\left, right, leftOccurs, rightOccurs, distinct =>
     void (noOccurrenceInEmpty leftOccurs))
   (\left, right, leftOccurs, rightOccurs, distinct, origin, moved, result,
     rightDefined, leftDefined => void (noOccurrenceInEmpty leftOccurs))
 
-||| Replay skips the selected actor and propagates foreign failure honestly.
+||| Full-effect replay skips the selected actor and propagates foreign failure.
+||| Its zero-step case uses pointwise effect-state equality, avoiding function
+||| extensionality while retaining every owned table.
 public export
 data ForeignReplay : (name, key, world, error : Type) -> (value : key -> Type) ->
+  (keyEq : DecEq key) ->
   {start, end : SystemState name key value world error} ->
-  (selected : name) -> Transitions start end -> world -> world -> Type where
-  ReplayDone : ForeignReplay name key world error value selected
-                             NoTransitions initial initial
+  (selected : name) -> Transitions start end ->
+  EffectState name key value world -> EffectState name key value world -> Type where
+  ReplayDone : EffectStateRelated keyEq initial final ->
+    ForeignReplay name key world error value keyEq selected
+      NoTransitions initial final
   ReplayOwn : (transition : Transition first middle) ->
     transitionActor transition = selected ->
-    ForeignReplay name key world error value selected rest initial final ->
-    ForeignReplay name key world error value selected
+    ForeignReplay name key world error value keyEq selected rest initial final ->
+    ForeignReplay name key world error value keyEq selected
       (MoreTransitions transition rest) initial final
   ReplayForeign : (transition : Transition first middle) ->
     Not (transitionActor transition = selected) ->
-    partialWorldMap transition initial = Just nextWorld ->
-    ForeignReplay name key world error value selected rest nextWorld final ->
-    ForeignReplay name key world error value selected
+    partialEffectMap transition initial = Just nextEffect ->
+    ForeignReplay name key world error value keyEq selected rest nextEffect final ->
+    ForeignReplay name key world error value keyEq selected
       (MoreTransitions transition rest) initial final
 
-||| A dependent package for the accumulator and owned table actually stored in
-||| an installed fiber. Callers cannot substitute an unrelated function.
+||| A dependent package for the accumulator actually stored in an installed
+||| fiber. The provision index determines which table slice it may transform.
 public export
 data AccumulatorHandle : (key : Type) -> (value : key -> Type) ->
   (world : Type) -> Type where
@@ -403,64 +593,38 @@ actualAccumulatorAt selected state = case lookupFiber selected (registry state) 
     Unloading accumulator _ _ => Just (MkAccumulatorHandle
       (componentProvisions (fiberComponent fiber)) (fiberTable fiber) accumulator)
 
+||| Lift the actual accumulator to the same complete effect state used by
+||| independence and replay. The input table is reconstructed from that state,
+||| so off-origin table corruption is visible to the commutation premise.
 public export
-record EffectResult (key : Type) (value : key -> Type) (world : Type) where
-  constructor MkEffectResult
-  effectWorld : world
-  effectTable : CoeffectContext key value
+accumulatorEffectMap : (nameEq : DecEq name) -> (keyEq : DecEq key) -> name ->
+  AccumulatorHandle key value world -> PartialEffectMap name key value world
+accumulatorEffectMap nameEq keyEq selected
+  (MkAccumulatorHandle provision captured accumulator) state =
+    let owned = restrictOwned @{keyEq} provision (effectTables state selected)
+        restored = accumulator (MkLocalState (effectAmbient state) owned) in
+      Just (setEffectTable @{nameEq} selected (ownedValues (localTable restored))
+        (setEffectAmbient (localWorld restored) state))
 
-public export
-runAccumulator : AccumulatorHandle key value world -> world ->
-  EffectResult key value world
-runAccumulator (MkAccumulatorHandle provision table accumulator) world =
-  let restored = accumulator (MkLocalState world table) in
-      MkEffectResult (localWorld restored) (ownedValues (localTable restored))
-
-public export
-accumulatorWorldMap : AccumulatorHandle key value world -> PartialMap world
-accumulatorWorldMap handle world = Just (effectWorld (runAccumulator handle world))
-
-public export
-tableValueAt : DecEq name => DecEq key => name -> (k : key) ->
-  SystemState name key value world error -> Maybe (value k)
-tableValueAt selected k state = valueFromProvider selected k (registry state)
-
-||| The table half of paper's control-forgetting relation: applying the actual
-||| accumulator restores the selected fiber's table pointwise to its opening
-||| table. Equality is heterogeneous in the key and therefore needs no DecEq on
-||| runtime values.
-public export
-record SelectedTableRecovered
-  (name, key, world, error : Type) (value : key -> Type)
-  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
-  (opening : SystemState name key value world error)
-  (restored : EffectResult key value world) where
-  constructor MkSelectedTableRecovered
-  0 selectedValueExact : (k : key) ->
-    lookupBinding k (effectTable restored) =
-      tableValueAt @{nameEq} @{keyEq} selected k opening
-
-||| A trace-specific accumulator/foreign-map hypothesis. Unlike the rejected
-||| universal Component quantifier, it mentions only this episode prefix.
+||| A trace-specific full-effect accumulator/foreign-map hypothesis.
 public export
 record PrefixRecoveryIndependent
   (name, key, world, error : Type) (value : key -> Type)
-  (nameEq : DecEq name) (selected : name)
+  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
   {start, current : SystemState name key value world error}
-  (trace : Transitions start current) (accumulator : PartialMap world) where
+  (trace : Transitions start current)
+  (accumulator : PartialEffectMap name key value world) where
   constructor MkPrefixRecoveryIndependent
   0 accumulatorCommutes :
     {before, afterState : SystemState name key value world error} ->
     (foreign : Transition before afterState) ->
     OccursIn foreign trace ->
     Not (transitionActor foreign = selected) ->
-    PartialCommute (EqEquivalence {a = world}) accumulator
-      (partialWorldMap foreign)
+    PartialCommute (EffectStateEquivalence keyEq) accumulator
+      (partialEffectMap foreign)
 
-||| Theorem 61 uses the accumulator retrieved from the selected fiber at the
-||| exact prefix endpoint. This is the indexed-handle pattern of Section 3.1:
-||| there is no caller-chosen accumulator or caller-chosen restored endpoint.
-||| Its conclusion includes both ambient replay and exact selected-table recovery.
+||| Theorem 61. Premises and conclusion now range over exactly the same full
+||| effect state (ambient plus every owned table).
 ||| TODO(proof): temporal induction over InstalledTrace and actual accumulators.
 public export
 recoveryExactnessTheorem : (name : Type) -> (key : Type) ->
@@ -471,32 +635,16 @@ recoveryExactnessTheorem name key value world error =
   (episode : EpisodePrefix name key world error value nameEq keyEq n pre current) ->
   (handle : AccumulatorHandle key value world) ->
   actualAccumulatorAt @{nameEq} n current = Just handle ->
-  PrefixRecoveryIndependent name key world error value nameEq n
-    (prefixTransitions episode) (accumulatorWorldMap handle) ->
-  (ForeignReplay name key world error value n (prefixTransitions episode)
-     (worldState (episodeStartState episode))
-     (effectWorld (runAccumulator handle (worldState current))),
-   SelectedTableRecovered name key world error value nameEq keyEq n
-     (episodeStartState episode) (runAccumulator handle (worldState current)))
+  PrefixRecoveryIndependent name key world error value nameEq keyEq n
+    (prefixTransitions episode) (accumulatorEffectMap nameEq keyEq n handle) ->
+  (restored : EffectState name key value world) ->
+  accumulatorEffectMap nameEq keyEq n handle (projectEffectState @{nameEq} current) =
+    Just restored ->
+  ForeignReplay name key world error value keyEq n (prefixTransitions episode)
+    (projectEffectState @{nameEq} (episodeStartState episode)) restored
 
-||| Exact table component of the paper's control-forgetting relation at close.
-||| The selected table returns to its opening value; the L-Unload control edit
-||| leaves every foreign table at its last-installed value.
-public export
-record TerminalTableRecovery
-  (name, key, world, error : Type) (value : key -> Type)
-  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
-  (opening, lastInstalled, afterClose :
-    SystemState name key value world error) where
-  constructor MkTerminalTableRecovery
-  0 selectedTableExact : (k : key) ->
-    tableValueAt @{nameEq} @{keyEq} selected k afterClose =
-    tableValueAt @{nameEq} @{keyEq} selected k opening
-  0 foreignTablesExact : (foreign : name) -> Not (foreign = selected) ->
-    (k : key) -> tableValueAt @{nameEq} @{keyEq} foreign k afterClose =
-      tableValueAt @{nameEq} @{keyEq} foreign k lastInstalled
-
-||| Corollary 62, over a maximal closed episode and both effect-state halves.
+||| Corollary 62, as one full-effect replay equation rather than a world replay
+||| plus disconnected table fields.
 ||| TODO(proof): Theorem 61 at lastInstalledState followed by L-Unload.
 public export
 terminalRecoveryTheorem : (name : Type) -> (key : Type) ->
@@ -505,11 +653,10 @@ terminalRecoveryTheorem name key value world error =
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (n : name) -> (pre, afterState : SystemState name key value world error) ->
   (episode : ClosedEpisode name key world error value nameEq keyEq n pre afterState) ->
-  TraceIndependent name key world error value (closedTransitions episode) ->
-  (ForeignReplay name key world error value n (closedTransitions episode)
-     (worldState (closedStartState episode)) (worldState afterState),
-   TerminalTableRecovery name key world error value nameEq keyEq n
-     (closedStartState episode) (lastInstalledState episode) afterState)
+  TraceIndependent name key world error value keyEq (closedTransitions episode) ->
+  ForeignReplay name key world error value keyEq n (closedTransitions episode)
+    (projectEffectState @{nameEq} (closedStartState episode))
+    (projectEffectState @{nameEq} afterState)
 
 ||| Equation 58's exact L-Begin premise, isolated as a tractable theorem.
 public export
@@ -1275,13 +1422,12 @@ resolutionCoherenceTheorem name key value world error =
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (n : name) -> (pre, afterState : SystemState name key value world error) ->
   (episode : ClosedEpisode name key world error value nameEq keyEq n pre afterState) ->
-  TraceIndependent name key world error value (closedTransitions episode) ->
+  TraceIndependent name key world error value keyEq (closedTransitions episode) ->
   (openingProviders : List name **
     (committedProvidersAt @{nameEq} n (closedStartState episode) =
        Just openingProviders,
      ResolutionStructure name key world error value nameEq keyEq n
        openingProviders (closedInside episode),
-     ForeignReplay name key world error value n (closedTransitions episode)
-       (worldState (closedStartState episode)) (worldState afterState),
-     TerminalTableRecovery name key world error value nameEq keyEq n
-       (closedStartState episode) (lastInstalledState episode) afterState))
+     ForeignReplay name key world error value keyEq n (closedTransitions episode)
+       (projectEffectState @{nameEq} (closedStartState episode))
+       (projectEffectState @{nameEq} afterState)))
