@@ -1014,8 +1014,38 @@ viewsInvariant : DecEq name => DecEq key =>
   List (Binding name (FiberAt name key value world error)) ->
   Registry name key value world error -> Bool
 viewsInvariant [] fibers = True
-viewsInvariant (Bind _ fiber :: rest) fibers =
-  fiberViewInvariant fiber fibers && viewsInvariant rest fibers
+viewsInvariant @{nameEq} @{keyEq} (Bind _ fiber :: rest) fibers =
+  fiberViewInvariant @{nameEq} @{keyEq} fiber fibers &&
+  viewsInvariant @{nameEq} @{keyEq} rest fibers
+
+public export
+0 viewsInactiveInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (fibers : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = Nothing) ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries fibers = True ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries
+    (insertBinding @{nameEq} n (freshFiber component parent) fibers absent) = True
+viewsInactiveInsert {key} {world} {error} {value} nameEq keyEq [] n component parent fibers absent valid = Refl
+viewsInactiveInsert {name} {key} {world} {error} {value}
+  nameEq keyEq (Bind current fiber :: rest) n component parent fibers absent valid =
+  let oldHead = andTrueLeft
+        (fiberViewInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} fiber fibers)
+        (viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} rest fibers) valid
+      oldTail = andTrueRight
+        (fiberViewInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} fiber fibers)
+        (viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} rest fibers) valid
+      newHead = trans
+        (fiberViewInactiveInsert {name = name} {key = key} {world = world}
+          {error = error} {value = value} nameEq keyEq fiber n component parent
+          fibers absent) oldHead
+      newTail = viewsInactiveInsert {name = name} {key = key} {world = world}
+        {error = error} {value = value} nameEq keyEq rest n component parent
+        fibers absent oldTail in
+    andBothTrue _ _ newHead newTail
 
 ||| Definition 58's executable registry invariant. Explicit recursive folds make
 ||| preservation frame proofs reusable and transparent.
