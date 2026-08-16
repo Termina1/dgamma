@@ -4528,6 +4528,177 @@ fiberViewUnloadOther {name} {key} {world} {error} {value}
       (MkFiber component parent retired table (Unloading accumulator view outcome))
       newTable (Inactive outcome) fibers) valid
 
+0 viewsEntriesUnloadAfter :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (n : name) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  Not (Elem n (bindingKeys entries)) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (outcome : Maybe error) ->
+  (newTable : OwnedTable key value (componentProvisions component)) ->
+  (fibers : Registry name key value world error) ->
+  reliedOnBy @{nameEq} {key = key} {value = value} {world = world} {error = error} n n entries = False ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries fibers = True ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries
+    (replaceBinding @{nameEq} n
+      (MkFiber component parent retired newTable (Inactive outcome)) fibers) = True
+viewsEntriesUnloadAfter nameEq keyEq n [] absent component parent retired table
+  accumulator view outcome newTable fibers relied valid = Refl
+viewsEntriesUnloadAfter {name} {key} {world} {error} {value}
+  nameEq keyEq n (Bind current observed :: rest) absent component parent retired
+  table accumulator view outcome newTable fibers relied valid =
+  let distinct : Not (current = n)
+      distinct same = absent
+        (replace {p = \candidate => Elem candidate
+          (current :: bindingKeys rest)} same Here)
+      0 targetHead : (fiberViewInvariant @{nameEq} @{keyEq} {value = value}
+        {world = world} {error = error} observed
+        (replaceBinding @{nameEq} n
+          (MkFiber component parent retired newTable (Inactive outcome)) fibers) =
+        True)
+      targetHead = fiberViewUnloadOther {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq n current
+        distinct observed rest component parent retired table accumulator view
+        outcome newTable fibers relied (andTrueLeft _ _ valid)
+      tailAbsent : Not (Elem n (bindingKeys rest))
+      tailAbsent later = absent (There later)
+      0 tailRelied : (reliedOnBy @{nameEq} {key = key} {value = value}
+        {world = world} {error = error} n n rest = False)
+      tailRelied = boolOrRightFalse
+        (reliedHead @{nameEq} n n (Bind current observed))
+        (reliedOnBy @{nameEq} {key = key} {value = value} {world = world} {error = error} n n rest) relied
+      0 targetTail : (viewsInvariant @{nameEq} @{keyEq} {value = value}
+        {world = world} {error = error} rest
+        (replaceBinding @{nameEq} n
+          (MkFiber component parent retired newTable (Inactive outcome)) fibers) =
+        True)
+      targetTail = viewsEntriesUnloadAfter {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq n rest
+        tailAbsent component parent retired table accumulator view outcome newTable
+        fibers tailRelied (andTrueRight _ _ valid)
+  in andBothTrue _ _ targetHead targetTail
+
+0 viewsEntriesUnloadBefore :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (n : name) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  UniqueKeys (bindingKeys entries) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (outcome : Maybe error) ->
+  (newTable : OwnedTable key value (componentProvisions component)) ->
+  (fibers : Registry name key value world error) ->
+  lookupEntries @{nameEq} n entries =
+    Just (MkFiber component parent retired table
+      (Unloading accumulator view outcome)) ->
+  reliedOnBy @{nameEq} {key = key} {value = value} {world = world} {error = error} n n entries = False ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries fibers = True ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+    (replaceEntries @{nameEq} n
+      (MkFiber component parent retired newTable (Inactive outcome)) entries)
+    (replaceBinding @{nameEq} n
+      (MkFiber component parent retired newTable (Inactive outcome)) fibers) = True
+viewsEntriesUnloadBefore nameEq keyEq n [] UniqueNil component parent retired table
+  accumulator view outcome newTable fibers present relied valid =
+  case present of Refl impossible
+viewsEntriesUnloadBefore {name} {key} {world} {error} {value}
+  nameEq keyEq n (Bind current observed :: rest) (UniqueCons headFresh tailUnique)
+  component parent retired table accumulator view outcome newTable fibers present
+  relied valid with (decEq @{nameEq} n current)
+  viewsEntriesUnloadBefore {name} {key} {world} {error} {value}
+    nameEq keyEq current (Bind current observed :: rest)
+    (UniqueCons headFresh tailUnique) component parent retired table accumulator view
+    outcome newTable fibers present relied valid | (Yes Refl) = case present of
+      Refl =>
+        let 0 tailRelied : (reliedOnBy @{nameEq} {key = key} {value = value}
+              {world = world} {error = error} current current rest = False)
+            tailRelied = boolOrRightFalse
+              (reliedHead @{nameEq} current current
+                (Bind current (MkFiber component parent retired table
+                  (Unloading accumulator view outcome))))
+              (reliedOnBy @{nameEq} current current rest) relied
+            0 targetTail : (viewsInvariant @{nameEq} @{keyEq} {value = value}
+              {world = world} {error = error} rest
+              (replaceBinding @{nameEq} current
+                (MkFiber component parent retired newTable (Inactive outcome))
+                fibers) = True)
+            targetTail = viewsEntriesUnloadAfter {name = name} {key = key}
+              {world = world} {error = error} {value = value} nameEq keyEq current
+              rest headFresh component parent retired table accumulator view
+              outcome newTable fibers tailRelied (andTrueRight _ _ valid)
+        in andBothTrue _ _ Refl targetTail
+  viewsEntriesUnloadBefore {name} {key} {world} {error} {value}
+    nameEq keyEq n (Bind current observed :: rest) (UniqueCons headFresh tailUnique)
+    component parent retired table accumulator view outcome newTable fibers present
+    relied valid | (No notSame) =
+      let distinct : Not (current = n)
+          distinct same = notSame (sym same)
+          0 targetHead : (fiberViewInvariant @{nameEq} @{keyEq} {value = value}
+            {world = world} {error = error} observed
+            (replaceBinding @{nameEq} n
+              (MkFiber component parent retired newTable (Inactive outcome))
+              fibers) = True)
+          targetHead = fiberViewUnloadOther {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq keyEq n current
+            distinct observed rest component parent retired table accumulator view
+            outcome newTable fibers relied (andTrueLeft _ _ valid)
+          0 tailRelied : (reliedOnBy @{nameEq} {key = key} {value = value}
+            {world = world} {error = error} n n rest = False)
+          tailRelied = boolOrRightFalse
+            (reliedHead @{nameEq} n n (Bind current observed))
+            (reliedOnBy @{nameEq} {key = key} {value = value} {world = world} {error = error} n n rest) relied
+          0 targetTail : (viewsInvariant @{nameEq} @{keyEq} {value = value}
+            {world = world} {error = error}
+            (replaceEntries @{nameEq} n
+              (MkFiber component parent retired newTable (Inactive outcome)) rest)
+            (replaceBinding @{nameEq} n
+              (MkFiber component parent retired newTable (Inactive outcome))
+              fibers) = True)
+          targetTail = viewsEntriesUnloadBefore {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq keyEq n rest
+            tailUnique component parent retired table accumulator view outcome
+            newTable fibers present tailRelied (andTrueRight _ _ valid)
+      in andBothTrue _ _ targetHead targetTail
+
+public export
+0 viewsInvariantUnloadingInactive :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (n : name) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (outcome : Maybe error) ->
+  (newTable : OwnedTable key value (componentProvisions component)) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers =
+    Just (MkFiber component parent retired table
+      (Unloading accumulator view outcome)) ->
+  relied @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers = False ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} (registryFibers {value = value} {world = world} {error = error} fibers) fibers = True ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+    (registryFibers {value = value} {world = world} {error = error} (replaceBinding @{nameEq} n
+      (MkFiber component parent retired newTable (Inactive outcome)) fibers))
+    (replaceBinding @{nameEq} n
+      (MkFiber component parent retired newTable (Inactive outcome)) fibers) = True
+viewsInvariantUnloadingInactive {name} {key} {world} {error} {value}
+  nameEq keyEq n component parent retired table accumulator view outcome newTable
+  fibers@(MkCoeffectContext entries unique) present notRelied valid =
+  viewsEntriesUnloadBefore {name = name} {key = key} {world = world}
+    {error = error} {value = value} nameEq keyEq n entries unique component parent
+    retired table accumulator view outcome newTable fibers present notRelied valid
+
 0 viewProvidersActiveUnload :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (deps : List key) -> (observed : View name deps) ->
