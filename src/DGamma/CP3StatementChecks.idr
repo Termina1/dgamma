@@ -476,6 +476,7 @@ record CompleteRemovedRootPermutationCandidate where
   removedRootHistory : RemovedRootTrace
   0 removedRootFullRelation : SameOrchestrationModuloGenerated
     DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq
     (removedRootTrace removedRootHistory) (removedRootTrace removedRootHistory)
   0 removedRootUsesPermutation : generatedGenerationBijection
     removedRootFullRelation =
@@ -881,6 +882,7 @@ freshChoiceCurrentGenerationForward (S (S later)) generation found =
   (left : RoleChangingNamedTrace 1) ->
   (right : RoleChangingNamedTrace 2) ->
   CurrentEndpointRenaming DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq
     DGamma.CP3StatementChecks.freshChoiceGenerationBijection
     (namedRoleChangingTrace left) (namedRoleChangingTrace right)
     (freshChoiceRegistrationCorrespondence left right)
@@ -888,7 +890,10 @@ freshChoiceCurrentEndpointRenaming left right =
   MkCurrentEndpointRenaming identityNameBijection
     (\n, fiber, found, root => Refl)
     (\n, fiber, found, root => Refl)
-    freshChoiceCurrentGenerationForward freshChoiceCurrentGenerationForward
+    (\n, generation, found =>
+      Right (freshChoiceCurrentGenerationForward n generation found))
+    (\n, generation, found =>
+      Right (freshChoiceCurrentGenerationForward n generation found))
 
 record RoleChildRetiredEvidence
   (generatedChild : Nat) (evidence : RoleChangingNamedTrace generatedChild) where
@@ -1095,6 +1100,7 @@ freshChoiceExternalRootBirthCorrespondence left right =
   (right : RoleChangingNamedTrace 2) ->
   SameOrchestrationModuloGenerated
     DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq
     (namedRoleChangingTrace left) (namedRoleChangingTrace right)
 freshChoiceSameInputs left right =
   MkSameOrchestrationModuloGenerated freshChoiceGenerationBijection
@@ -1114,6 +1120,7 @@ record FreshChoiceCorrespondenceWitness where
   rightFreshChoice : RoleChangingNamedTrace 2
   0 blockerPairSameInputs : SameOrchestrationModuloGenerated
     DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq
     (namedRoleChangingTrace leftFreshChoice)
     (namedRoleChangingTrace rightFreshChoice)
 
@@ -1752,6 +1759,7 @@ crossParentCurrentBackward left right (S (S (S (S later)))) generation found =
   (left : CrossParentNamedTrace 2 0 3 1) ->
   (right : CrossParentNamedTrace 3 1 2 0) ->
   CurrentEndpointRenaming DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq
     DGamma.CP3StatementChecks.crossParentGenerationBijection
     (crossParentTrace left) (crossParentTrace right)
     (crossParentRegistrationCorrespondence left right)
@@ -1759,14 +1767,17 @@ crossParentCurrentEndpointRenaming left right =
   MkCurrentEndpointRenaming identityNameBijection
     (\n, fiber, found, root => Refl)
     (\n, fiber, found, root => Refl)
-    (crossParentCurrentForward left right)
-    (crossParentCurrentBackward left right)
+    (\n, generation, found =>
+      Right (crossParentCurrentForward left right n generation found))
+    (\n, generation, found =>
+      Right (crossParentCurrentBackward left right n generation found))
 
 0 crossParentSameInputs :
   (left : CrossParentNamedTrace 2 0 3 1) ->
   (right : CrossParentNamedTrace 3 1 2 0) ->
   SameOrchestrationModuloGenerated
     DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq
     (crossParentTrace left) (crossParentTrace right)
 crossParentSameInputs left right =
   MkSameOrchestrationModuloGenerated crossParentGenerationBijection
@@ -1782,6 +1793,7 @@ record CrossParentPermutationCorrespondenceWitness where
   crossParentRight : CrossParentNamedTrace 3 1 2 0
   0 crossParentBlockerSameInputs : SameOrchestrationModuloGenerated
     DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq
     (crossParentTrace crossParentLeft) (crossParentTrace crossParentRight)
 
 public export
@@ -2418,6 +2430,12 @@ episodeIndexSurvive : Nat -> (child, parent : Nat) ->
 episodeIndexSurvive = DGamma.CP3.advanceSurvivingRegistrationIndex
   @{DGamma.CP3StatementChecks.episodeNameEq}
 
+episodeIndexDelete : Nat -> (child, parent : Nat) ->
+  Component ToyKey ToyValue ToyRuntime String -> RegistrationIndexState Nat ->
+  RegistrationIndexState Nat
+episodeIndexDelete = DGamma.CP3.advanceDeletedRegistrationIndex
+  @{DGamma.CP3StatementChecks.episodeNameEq}
+
 episodeCommonIndex : RegistrationIndexState Nat
 episodeCommonIndex =
   let i0 = episodeIndexAdvance 0
@@ -2434,8 +2452,7 @@ episodeLeftDeletedIndex = episodeIndexAdvance 5 (LBegin 1) episodeCommonIndex
 episodeLeftSurvivingIndex : RegistrationIndexState Nat
 episodeLeftSurvivingIndex =
   let i7 = episodeIndexAdvance 7 (ORetire 2)
-        (episodeIndexAdvance 6
-          (OInsert 2 (ChildOf 1) episodeChild) episodeLeftDeletedIndex)
+        (episodeIndexDelete 6 2 1 episodeChild episodeLeftDeletedIndex)
       i8 = episodeIndexAdvance 8 (ORemove 2) i7
       i9 = episodeIndexAdvance 9 (ORetire 0) i8
       i10 = episodeIndexAdvance 10 (LLeave 0) i9
@@ -2782,6 +2799,7 @@ episodeCurrentBackward left right (S (S (S (S (S later))))) generation found =
 0 episodeBoundaryEndpointRenaming :
   (left : EpisodeLeftTrace) -> (right : EpisodeRightTrace) ->
   CurrentEndpointRenaming DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq
     DGamma.CP3StatementChecks.episodeBoundaryGenerationBijection
     (episodeLeftTrace left) (episodeRightTrace right)
     (episodeBoundaryRegistrationCorrespondence left right)
@@ -2789,7 +2807,10 @@ episodeBoundaryEndpointRenaming left right =
   MkCurrentEndpointRenaming identityNameBijection
     (\n, fiber, found, root => Refl)
     (\n, fiber, found, root => Refl)
-    (episodeCurrentForward left right) (episodeCurrentBackward left right)
+    (\n, generation, found =>
+      Right (episodeCurrentForward left right n generation found))
+    (\n, generation, found =>
+      Right (episodeCurrentBackward left right n generation found))
 
 0 episodeLeftRetireRoot : (left : EpisodeLeftTrace) ->
   RootOrchestrationStep DGamma.CP3StatementChecks.episodeNameEq
@@ -3071,6 +3092,7 @@ episodeBoundarySameExternal left right =
 0 episodeBoundarySameInputs :
   (left : EpisodeLeftTrace) -> (right : EpisodeRightTrace) ->
   SameOrchestrationModuloGenerated DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq
     (episodeLeftTrace left) (episodeRightTrace right)
 episodeBoundarySameInputs left right = MkSameOrchestrationModuloGenerated
   episodeBoundaryGenerationBijection (episodeBoundarySameExternal left right)
@@ -3085,6 +3107,7 @@ record EpisodeBoundaryCorrespondenceWitness where
   episodeBoundaryRight : EpisodeRightTrace
   0 episodeBoundarySameInputWitness : SameOrchestrationModuloGenerated
     DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq
     (episodeLeftTrace episodeBoundaryLeft)
     (episodeRightTrace episodeBoundaryRight)
 
@@ -3672,7 +3695,8 @@ public export
     SystemState name key value world error} ->
   {left : Transitions leftFirst leftFinal} ->
   {right : Transitions rightFirst rightFinal} ->
-  (same : SameOrchestrationModuloGenerated nameEq left right) ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  (same : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
   RegistrationGenerationBijection name
 orchestrationGenerationRenamingGuard same = generatedGenerationBijection same
 
@@ -3682,21 +3706,32 @@ public export
     SystemState name key value world error} ->
   {left : Transitions leftFirst leftFinal} ->
   {right : Transitions rightFirst rightFinal} ->
-  (same : SameOrchestrationModuloGenerated nameEq left right) ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  (same : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
   NameBijection name
 orchestrationCurrentRenamingGuard same =
   currentNameBijection (endpointRenaming same)
 
 public export
 0 registrationGenerationGuard :
-  (same : SameOrchestrationModuloGenerated nameEq left right) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal :
+    SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} ->
+  {right : Transitions rightFirst rightFinal} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  (same : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
   RegistrationCorrespondenceByGeneration nameEq
     (generatedGenerationBijection same) left right
 registrationGenerationGuard same = generatedRegistrationTree same
 
 public export
 0 registrationMultiplicityGuard :
-  (same : SameOrchestrationModuloGenerated nameEq left right) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal :
+    SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} ->
+  {right : Transitions rightFirst rightFinal} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  (same : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
   RegistrationTraceCorrespondence nameEq (generatedGenerationBijection same)
     0 DGamma.CP3.emptyRegistrationIndex left
       (leftFinalIndex (generatedRegistrationTree same))
@@ -3712,8 +3747,8 @@ public export
   {right : Transitions initial rightFinal} ->
   (result : ConfluenceResult name key world error value protocol nameEq keyEq
     left right generationRenaming currentRenaming) ->
-  SystemEquivalentByRenaming name key world error value nameEq keyEq
-    currentRenaming leftFinal rightFinal
+  SystemEquivalentByRenamingModuloVestigial name key world error value nameEq
+    keyEq (finalRegistrationCorrespondence result) currentRenaming
 confluenceRenamedEndpointGuard result = finalEndpointsEquivalent result
 
 ||| Semantic guard for the round-3 retirement blocker: outside R, an action of

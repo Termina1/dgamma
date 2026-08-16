@@ -1908,17 +1908,20 @@ record RegistrationActivation (name : Type) where
 ||| endpoint coupling.  Parent activations start at L-Begin and end at L-Unload,
 ||| and surviving-child counts are keyed by that activation, so an iterator's
 ||| position restarts when a parent reactivates.  Counts include only births
-||| retained by the surviving-registration relation below.
+||| retained by the surviving-registration relation below.  Discarded
+||| generations are stamped separately: this is the trace-derived evidence
+||| that an unremoved current entry came from a deleted closing episode.
 public export
 record RegistrationIndexState (name : Type) where
   constructor MkRegistrationIndexState
   indexedLiveGenerations : GenerationEnvironment name
   indexedParentActivations : List (name, RegistrationActivation name)
   indexedSurvivingChildCounts : List (RegistrationActivation name, Nat)
+  indexedDeletedGenerations : List (RegistrationGeneration name)
 
 public export
 emptyRegistrationIndex : RegistrationIndexState name
-emptyRegistrationIndex = MkRegistrationIndexState [] [] []
+emptyRegistrationIndex = MkRegistrationIndexState [] [] [] []
 
 public export
 sameRegistrationGeneration : DecEq name =>
@@ -1997,30 +2000,47 @@ advanceRegistrationIndex : DecEq name => Nat ->
   Action name key value world error -> RegistrationIndexState name ->
   RegistrationIndexState name
 advanceRegistrationIndex ordinal (OInsert child (ChildOf parent) component)
-  (MkRegistrationIndexState live activations counts) =
+  (MkRegistrationIndexState live activations counts deleted) =
     MkRegistrationIndexState
       (putCurrentGeneration child (MkRegistrationGeneration child ordinal) live)
-      activations counts
+      activations counts deleted
 advanceRegistrationIndex ordinal (OInsert root Root component)
-  (MkRegistrationIndexState live activations counts) =
+  (MkRegistrationIndexState live activations counts deleted) =
     MkRegistrationIndexState
       (putCurrentGeneration root (MkRegistrationGeneration root ordinal) live)
-      activations counts
+      activations counts deleted
 advanceRegistrationIndex ordinal (ORemove removed)
-  (MkRegistrationIndexState live activations counts) =
+  (MkRegistrationIndexState live activations counts deleted) =
     MkRegistrationIndexState (deleteCurrentGeneration removed live)
-      (deleteParentActivation removed activations) counts
+      (deleteParentActivation removed activations) counts deleted
 advanceRegistrationIndex ordinal (LBegin parent)
-  index@(MkRegistrationIndexState live activations counts) =
+  index@(MkRegistrationIndexState live activations counts deleted) =
     case lookupCurrentGeneration parent live of
       Nothing => index
       Just generation => MkRegistrationIndexState live
         (putParentActivation parent
-          (MkRegistrationActivation generation ordinal) activations) counts
+          (MkRegistrationActivation generation ordinal) activations) counts deleted
 advanceRegistrationIndex ordinal (LUnload parent)
-  (MkRegistrationIndexState live activations counts) =
+  (MkRegistrationIndexState live activations counts deleted) =
     MkRegistrationIndexState live (deleteParentActivation parent activations) counts
+      deleted
 advanceRegistrationIndex ordinal action index = index
+
+||| Advance over a generated birth classified as belonging to a closing parent
+||| episode.  The birth remains in the live environment until an actual
+||| O-Remove, but its exact generation stamp is recorded as discarded.
+public export
+advanceDeletedRegistrationIndex : DecEq name => Nat ->
+  (child, parent : name) -> Component key value world error ->
+  RegistrationIndexState name -> RegistrationIndexState name
+advanceDeletedRegistrationIndex ordinal child parent component index =
+  let advanced = advanceRegistrationIndex ordinal
+        (OInsert child (ChildOf parent) component) index in
+    MkRegistrationIndexState
+      (indexedLiveGenerations advanced)
+      (indexedParentActivations advanced)
+      (indexedSurvivingChildCounts advanced)
+      (MkRegistrationGeneration child ordinal :: indexedDeletedGenerations advanced)
 
 ||| Advance over a generated birth retained in the surviving registration
 ||| tree.  Only such births consume an activation-local iterator position.
@@ -2029,7 +2049,7 @@ advanceSurvivingRegistrationIndex : DecEq name => Nat ->
   (child, parent : name) -> Component key value world error ->
   RegistrationIndexState name -> RegistrationIndexState name
 advanceSurvivingRegistrationIndex ordinal child parent component
-  index@(MkRegistrationIndexState live activations counts) =
+  index@(MkRegistrationIndexState live activations counts deleted) =
     let advanced = advanceRegistrationIndex ordinal
           (OInsert child (ChildOf parent) component) index in
     case lookupParentActivation parent activations of
@@ -2038,6 +2058,7 @@ advanceSurvivingRegistrationIndex ordinal child parent component
         (indexedLiveGenerations advanced)
         (indexedParentActivations advanced)
         (incrementChildrenBornInActivation activation counts)
+        (indexedDeletedGenerations advanced)
 
 ||| One executable generated-birth descriptor.  Parent generation and position
 ||| are scoped by the L-Begin activation live at the birth.  `Nothing` is
@@ -2058,7 +2079,8 @@ public export
 registrationEventAt : DecEq name => Nat -> RegistrationIndexState name ->
   (child, parent : name) -> Component key value world error ->
   RegistrationEvent name key world error value
-registrationEventAt ordinal (MkRegistrationIndexState live activations counts)
+registrationEventAt ordinal
+  (MkRegistrationIndexState live activations counts deleted)
   child parent component =
     let activation = lookupParentActivation parent activations
         position = case activation of
@@ -2196,8 +2218,8 @@ data RegistrationTraceCorrespondence :
       leftRest ->
     RegistrationTraceCorrespondence nameEq renaming
       (S leftOrdinal)
-      (advanceRegistrationIndex @{nameEq} leftOrdinal
-        (OInsert child (ChildOf parent) component) leftIndex)
+      (advanceDeletedRegistrationIndex @{nameEq} leftOrdinal child parent
+        component leftIndex)
       leftRest leftFinalIndex rightOrdinal rightIndex right rightFinalIndex
       pendingLeft pendingRight ->
     RegistrationTraceCorrespondence nameEq renaming
@@ -2213,8 +2235,8 @@ data RegistrationTraceCorrespondence :
     RegistrationTraceCorrespondence nameEq renaming
       leftOrdinal leftIndex left leftFinalIndex
       (S rightOrdinal)
-      (advanceRegistrationIndex @{nameEq} rightOrdinal
-        (OInsert child (ChildOf parent) component) rightIndex)
+      (advanceDeletedRegistrationIndex @{nameEq} rightOrdinal child parent
+        component rightIndex)
       rightRest rightFinalIndex pendingLeft pendingRight ->
     RegistrationTraceCorrespondence nameEq renaming
       leftOrdinal leftIndex left leftFinalIndex rightOrdinal rightIndex
@@ -2350,14 +2372,76 @@ rightFinalGenerations :
 rightFinalGenerations registrations =
   indexedLiveGenerations (rightFinalIndex registrations)
 
-||| The raw-name bijection used only to compare *current endpoint* registries.
-||| Historical child births are governed by the generation bijection above.
-||| Live roots are fixed because they are external names, and every last
-||| unremoved birth (root or child) must agree with both bijections. Applying
-||| the raw bijection only here avoids constraining earlier generations.
+public export
+leftDeletedGenerations :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal :
+    SystemState name key value world error} ->
+  {nameEq : DecEq name} ->
+  {renaming : RegistrationGenerationBijection name} ->
+  {left : Transitions leftFirst leftFinal} ->
+  {right : Transitions rightFirst rightFinal} ->
+  RegistrationCorrespondenceByGeneration nameEq renaming left right ->
+  List (RegistrationGeneration name)
+leftDeletedGenerations registrations =
+  indexedDeletedGenerations (leftFinalIndex registrations)
+
+public export
+rightDeletedGenerations :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal :
+    SystemState name key value world error} ->
+  {nameEq : DecEq name} ->
+  {renaming : RegistrationGenerationBijection name} ->
+  {left : Transitions leftFirst leftFinal} ->
+  {right : Transitions rightFirst rightFinal} ->
+  RegistrationCorrespondenceByGeneration nameEq renaming left right ->
+  List (RegistrationGeneration name)
+rightDeletedGenerations registrations =
+  indexedDeletedGenerations (rightFinalIndex registrations)
+
+||| Lemma 57's exact endpoint condition, augmented with the generation stamp
+||| produced by the surviving-tree scanner.  A vestigial endpoint is not merely
+||| unsupported: its current birth was classified as belonging to a deleted
+||| closing parent episode, its fiber is retired and cleanly inactive, its
+||| installed table is empty, it has no child, and it provides/supports nothing.
+public export
+record VestigialEndpointGeneration
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (currentGenerations : GenerationEnvironment name)
+  (discardedGenerations : List (RegistrationGeneration name))
+  (selected : name)
+  (state : SystemState name key value world error) where
+  constructor MkVestigialEndpointGeneration
+  vestigialGeneration : RegistrationGeneration name
+  0 vestigialGenerationCurrent : lookupCurrentGeneration @{nameEq} selected
+    currentGenerations = Just vestigialGeneration
+  0 vestigialBirthDiscarded : Elem vestigialGeneration discardedGenerations
+  vestigialFiber : Fiber name key value world error
+  0 vestigialFiberPresent : lookupFiber @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} selected (registry state) = Just vestigialFiber
+  0 vestigialRetired : retired vestigialFiber = True
+  0 vestigialInactiveClean : fiberLifecycle vestigialFiber = Inactive Nothing
+  0 vestigialInstalledKeysEmpty :
+    bindings (ownedValues (fiberTable vestigialFiber)) = []
+  0 vestigialHasNoChild : hasChild @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} selected (registry state) = False
+  0 vestigialUnsupported : isSupported @{nameEq} @{keyEq} {key = key}
+    {value = value} {world = world} {error = error} selected state = False
+  0 vestigialProvidesNoKey : (k : key) ->
+    providerOf @{nameEq} @{keyEq} {value = value} {world = world}
+      {error = error} k (registry state) = Just selected -> Void
+
+||| The raw-name bijection used only to compare *non-vestigial current endpoint*
+||| generations. Historical child births are governed by the generation
+||| bijection above. Live roots are fixed because they are external names. A
+||| current generation may be omitted from cross-trace coupling only by giving
+||| the complete Lemma-57 evidence above, including its discarded birth stamp.
 public export
 record CurrentEndpointRenaming
-  (nameEq : DecEq name) (generationRenaming : RegistrationGenerationBijection name)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (generationRenaming : RegistrationGenerationBijection name)
   {leftFirst, leftFinal, rightFirst, rightFinal :
     SystemState name key value world error}
   (left : Transitions leftFirst leftFinal)
@@ -2378,20 +2462,28 @@ record CurrentEndpointRenaming
     (leftGeneration : RegistrationGeneration name) ->
     lookupCurrentGeneration @{nameEq} n
       (leftFinalGenerations registrations) = Just leftGeneration ->
-    (rightGeneration : RegistrationGeneration name **
-     (generationForward generationRenaming leftGeneration = rightGeneration,
-      lookupCurrentGeneration @{nameEq}
-        (renameForward currentNameBijection n)
-        (rightFinalGenerations registrations) = Just rightGeneration))
+    Either
+      (VestigialEndpointGeneration name key world error value nameEq keyEq
+        (leftFinalGenerations registrations)
+        (leftDeletedGenerations registrations) n leftFinal)
+      (rightGeneration : RegistrationGeneration name **
+       (generationForward generationRenaming leftGeneration = rightGeneration,
+        lookupCurrentGeneration @{nameEq}
+          (renameForward currentNameBijection n)
+          (rightFinalGenerations registrations) = Just rightGeneration))
   0 rightCurrentGenerationMapped : (n : name) ->
     (rightGeneration : RegistrationGeneration name) ->
     lookupCurrentGeneration @{nameEq} n
       (rightFinalGenerations registrations) = Just rightGeneration ->
-    (leftGeneration : RegistrationGeneration name **
-     (generationBackward generationRenaming rightGeneration = leftGeneration,
-      lookupCurrentGeneration @{nameEq}
-        (renameBackward currentNameBijection n)
-        (leftFinalGenerations registrations) = Just leftGeneration))
+    Either
+      (VestigialEndpointGeneration name key world error value nameEq keyEq
+        (rightFinalGenerations registrations)
+        (rightDeletedGenerations registrations) n rightFinal)
+      (leftGeneration : RegistrationGeneration name **
+       (generationBackward generationRenaming rightGeneration = leftGeneration,
+        lookupCurrentGeneration @{nameEq}
+          (renameBackward currentNameBijection n)
+          (leftFinalGenerations registrations) = Just leftGeneration))
 
 ||| The host specialization packages paper Lemma 56 explicitly: external root
 ||| actions retain their exact raw order and every historical root birth is
@@ -2403,7 +2495,7 @@ public export
 record SameOrchestrationModuloGenerated
   {leftFirst, leftFinal, rightFirst, rightFinal :
     SystemState name key value world error}
-  (nameEq : DecEq name)
+  (nameEq : DecEq name) (keyEq : DecEq key)
   (left : Transitions leftFirst leftFinal)
   (right : Transitions rightFirst rightFinal) where
   constructor MkSameOrchestrationModuloGenerated
@@ -2413,8 +2505,84 @@ record SameOrchestrationModuloGenerated
     generatedGenerationBijection 0 left 0 right
   generatedRegistrationTree : RegistrationCorrespondenceByGeneration nameEq
     generatedGenerationBijection left right
-  endpointRenaming : CurrentEndpointRenaming nameEq generatedGenerationBijection
-    left right generatedRegistrationTree
+  endpointRenaming : CurrentEndpointRenaming nameEq keyEq
+    generatedGenerationBijection left right generatedRegistrationTree
+
+||| Pointwise control correspondence at a final endpoint. Non-vestigial names
+||| must correspond exactly through the raw-name bijection. Domain mismatch is
+||| admitted only when each present unmatched side carries the complete
+||| trace-derived vestigial evidence; the both-present constructor deliberately
+||| does not pretend that two unrelated vestigial components are equal.
+public export
+record EndpointFiberRelatedModuloVestigial
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {leftFirst, leftFinal, rightFirst, rightFinal :
+    SystemState name key value world error}
+  {left : Transitions leftFirst leftFinal}
+  {right : Transitions rightFirst rightFinal}
+  {generationRenaming : RegistrationGenerationBijection name}
+  (registrations : RegistrationCorrespondenceByGeneration nameEq
+    generationRenaming left right)
+  (renaming : NameBijection name) (selected : name) where
+  constructor MkEndpointFiberRelatedModuloVestigial
+  0 endpointFiberDisposition :
+    Either
+      (MaybeFiberRelatedBy renaming
+        (lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+          {error = error} selected (registry leftFinal))
+        (lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+          {error = error} (renameForward renaming selected)
+          (registry rightFinal)))
+      (Either
+        (VestigialEndpointGeneration name key world error value nameEq keyEq
+          (leftFinalGenerations registrations)
+          (leftDeletedGenerations registrations) selected leftFinal,
+         lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+           {error = error} (renameForward renaming selected)
+           (registry rightFinal) = Nothing)
+        (Either
+          (lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+             {error = error} selected (registry leftFinal) = Nothing,
+           VestigialEndpointGeneration name key world error value nameEq keyEq
+             (rightFinalGenerations registrations)
+             (rightDeletedGenerations registrations)
+             (renameForward renaming selected) rightFinal)
+          (VestigialEndpointGeneration name key world error value nameEq keyEq
+             (leftFinalGenerations registrations)
+             (leftDeletedGenerations registrations) selected leftFinal,
+           VestigialEndpointGeneration name key world error value nameEq keyEq
+             (rightFinalGenerations registrations)
+             (rightDeletedGenerations registrations)
+             (renameForward renaming selected) rightFinal)))
+
+||| Paper Lemma 72's outside-R endpoint relation transported through Lemma 56.
+||| Effects remain exact (ambient state plus every table lookup under the raw
+||| renaming). Controls correspond exactly on every non-vestigial domain point;
+||| any unmatched present fiber on either side must be an inert discarded birth.
+public export
+record SystemEquivalentByRenamingModuloVestigial
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {leftFirst, leftFinal, rightFirst, rightFinal :
+    SystemState name key value world error}
+  {left : Transitions leftFirst leftFinal}
+  {right : Transitions rightFirst rightFinal}
+  {generationRenaming : RegistrationGenerationBijection name}
+  (registrations : RegistrationCorrespondenceByGeneration nameEq
+    generationRenaming left right)
+  (renaming : NameBijection name) where
+  constructor MkSystemEquivalentByRenamingModuloVestigial
+  0 exactRenamedAmbient : worldState leftFinal = worldState rightFinal
+  0 exactRenamedTables : (n : name) -> (k : key) ->
+    lookupBinding {key = key} {value = value} k
+      (effectTables (projectEffectState @{nameEq} leftFinal) n) =
+    lookupBinding {key = key} {value = value} k
+      (effectTables (projectEffectState @{nameEq} rightFinal)
+        (renameForward renaming n))
+  0 controlsModuloVestigial : (n : name) ->
+    EndpointFiberRelatedModuloVestigial name key world error value nameEq keyEq
+      registrations renaming n
 
 ||| Registration-tree preservation for one canonical reduction. Withdrawal is
 ||| keyed by `(raw name, birth ordinal)`, never by the raw name alone. Thus a
@@ -2824,10 +2992,11 @@ record ConfluenceResult
     keyEq rightTrace
   finalRegistrationCorrespondence : RegistrationCorrespondenceByGeneration nameEq
     generationRenaming leftTrace rightTrace
-  finalEndpointRenaming : CurrentEndpointRenaming nameEq generationRenaming
+  finalEndpointRenaming : CurrentEndpointRenaming nameEq keyEq generationRenaming
     leftTrace rightTrace finalRegistrationCorrespondence
-  finalEndpointsEquivalent : SystemEquivalentByRenaming name key world error
-    value nameEq keyEq currentRenaming leftFinal rightFinal
+  finalEndpointsEquivalent : SystemEquivalentByRenamingModuloVestigial
+    name key world error value nameEq keyEq finalRegistrationCorrespondence
+    currentRenaming
 
 ||| Candidate finite explicit-registration statement for paper Theorem 73.
 ||| Yield tags/catalogs provide Definition-47 provenance, and paper Lemma 56 is
@@ -2858,7 +3027,7 @@ confluenceTheorem name key value world error =
   TraceComponentsTotal keyEq rightTrace ->
   TraceIndependent name key world error value keyEq leftTrace ->
   TraceIndependent name key world error value keyEq rightTrace ->
-  (sameInputs : SameOrchestrationModuloGenerated nameEq leftTrace rightTrace) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace) ->
   ConfluenceResult name key world error value protocol nameEq keyEq leftTrace
     rightTrace (generatedGenerationBijection sameInputs)
     (currentNameBijection (endpointRenaming sameInputs))
