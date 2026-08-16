@@ -3962,6 +3962,54 @@ data ResolutionStructure : (name, key, world, error : Type) ->
     ResolutionStructure name key world error value nameEq keyEq selected
       openingProviders trace
 
+0 resolutionStructureInstalled :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) -> (providers : List name) ->
+  (transitions : Transitions start current) ->
+  (installedTrace : InstalledTrace name key world error value nameEq keyEq
+    selected transitions) ->
+  ReloadingSnapshot name key world error value nameEq selected providers start ->
+  ResolutionStructure name key world error value nameEq keyEq selected providers
+    transitions
+resolutionStructureInstalled nameEq keyEq selected providers NoTransitions
+  (InstalledEnd installed) snapshot =
+    StillReloading (snapshotEndThroughout snapshot) CoherentEnd
+      (CommittedProvidersEnd (snapshotCommittedProviders snapshot))
+resolutionStructureInstalled nameEq keyEq selected providers
+  transitions@(MoreTransitions
+    (Fired nameEq keyEq action tag checkedEquation) rest)
+  installedTrace@(InstalledStep action tag checkedEquation rest sourceInstalled tail)
+  snapshot =
+  let sourceCommitted = snapshotCommittedProviders snapshot
+      sourceCommittedSnapshot = committedSnapshotFrom nameEq selected providers _
+        sourceCommitted
+      wholeConstant = committedProvidersInstalledTrace nameEq keyEq selected
+        providers transitions installedTrace sourceCommittedSnapshot
+      classification = classifyReloadingStep nameEq keyEq selected providers action
+        tag _ _ checkedEquation snapshot
+  in case classification of
+    ReloadingExits exit => ExitedReloading _ _ NoTransitions (Fired nameEq keyEq action tag checkedEquation) rest Refl
+      (snapshotEndThroughout snapshot) CoherentEnd wholeConstant exit
+    ReloadingContinues nextSnapshot stepCoherent =>
+      case resolutionStructureInstalled nameEq keyEq selected providers rest tail
+        nextSnapshot of
+        StillReloading tailReloading tailCoherent tailConstant =>
+          StillReloading
+            (ReloadingStep (Fired nameEq keyEq action tag checkedEquation) rest (snapshotReloadingAt snapshot)
+              tailReloading)
+            (CoherentStep (Fired nameEq keyEq action tag checkedEquation) rest stepCoherent tailCoherent)
+            (CommittedProvidersStep (Fired nameEq keyEq action tag checkedEquation) rest sourceCommitted tailConstant)
+        ExitedReloading exitBefore exitAfter initialPart exitStep remainingPart
+          splitEquation initialReloading initialCoherent tailConstant exit =>
+            ExitedReloading exitBefore exitAfter
+              (MoreTransitions (Fired nameEq keyEq action tag checkedEquation) initialPart) exitStep remainingPart
+              (cong (MoreTransitions (Fired nameEq keyEq action tag checkedEquation)) splitEquation)
+              (ReloadingStep (Fired nameEq keyEq action tag checkedEquation) initialPart
+                (snapshotReloadingAt snapshot) initialReloading)
+              (CoherentStep (Fired nameEq keyEq action tag checkedEquation) initialPart stepCoherent initialCoherent)
+              (CommittedProvidersStep (Fired nameEq keyEq action tag checkedEquation) rest sourceCommitted tailConstant)
+              exit
+
 ||| Structural Equation-59/exit theorem. Its input is anchored at L-Begin, so an
 ||| arbitrary Unloading suffix is unrepresentable.
 ||| TODO(proof): induction over the anchored InstalledTrace.
