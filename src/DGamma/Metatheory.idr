@@ -3487,6 +3487,455 @@ data StructuralExit : (name, key, world, error : Type) ->
     StructuralExit name key world error value nameEq selected providers transition
 
 ||| Structural part of Theorem 64, covering open final episodes by `StillReloading`.
+0 snapshotReloadingForLookup :
+  (snapshot : ReloadingSnapshot name key world error value nameEq selected
+    providers state) ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} selected (registry state) = Just fiber ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) **
+   (accumulator : LocalState key value world
+      (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world (componentProvisions (fiberComponent fiber)) **
+   (view : View name
+      (dependencies (componentDependencies (fiberComponent fiber))) **
+    fiberLifecycle fiber = Reloading remaining accumulator view)))
+snapshotReloadingForLookup snapshot fiber found =
+  case justInjective (trans (sym (snapshotLookup snapshot)) found) of
+    Refl => (snapshotRemaining snapshot ** (snapshotAccumulator snapshot **
+      (snapshotView snapshot ** snapshotReloading snapshot)))
+
+0 oInsertReloadingImpossible :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (snapshot : ReloadingSnapshot name key world error value nameEq selected
+    providers before) ->
+  applyAction @{nameEq} @{keyEq} (OInsert selected parent component) before =
+    Just (tag, afterState) -> Void
+oInsertReloadingImpossible {name} {key} {world} {error} {value}
+  nameEq keyEq selected parent component (MkSystemState ambient fibers)
+  afterState tag snapshot equation
+  with (parentPresent @{nameEq} parent fibers &&
+    provisionsDisjointFrom @{keyEq} (componentProvisions component)
+      (registryFibers fibers))
+  oInsertReloadingImpossible {name} {key} {world} {error} {value}
+    nameEq keyEq selected parent component (MkSystemState ambient fibers)
+    afterState tag snapshot equation | False = void (nothingIsNotJust equation)
+  oInsertReloadingImpossible {name} {key} {world} {error} {value}
+    nameEq keyEq selected parent component (MkSystemState ambient fibers)
+    afterState tag snapshot equation | True
+    with (setFresh @{nameEq} selected (freshFiber component parent) fibers)
+      proof inserted
+    oInsertReloadingImpossible {name} {key} {world} {error} {value}
+      nameEq keyEq selected parent component (MkSystemState ambient fibers)
+      afterState tag snapshot equation | True | Nothing =
+        void (nothingIsNotJust equation)
+    oInsertReloadingImpossible {name} {key} {world} {error} {value}
+      nameEq keyEq selected parent component (MkSystemState ambient fibers)
+      afterState tag snapshot equation | True | Just applied =
+        let absent = setFreshAbsent nameEq selected (freshFiber component parent)
+              fibers applied inserted
+        in void (nothingIsNotJust
+          (trans (sym absent) (snapshotLookup snapshot)))
+
+0 oRemoveReloadingImpossible :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (snapshot : ReloadingSnapshot name key world error value nameEq selected
+    providers before) ->
+  applyAction @{nameEq} @{keyEq} (ORemove selected) before =
+    Just (tag, afterState) -> Void
+oRemoveReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+  equation with (lookupFiber @{nameEq} selected (registry before)) proof found
+  oRemoveReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+    equation | Nothing = void (nothingIsNotJust equation)
+  oRemoveReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+    equation | Just fiber with (fiberLifecycle fiber) proof lifecycle
+    oRemoveReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+      equation | Just fiber | Inactive outcome =
+        case snapshotReloadingForLookup snapshot fiber found of
+          (remaining ** (accumulator ** (view ** reloading))) =>
+            case trans (sym lifecycle) reloading of Refl impossible
+    oRemoveReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+      equation | Just fiber | Active accumulator view =
+        case snapshotReloadingForLookup snapshot fiber found of
+          (remaining ** (priorAccumulator ** (priorView ** reloading))) =>
+            case trans (sym lifecycle) reloading of Refl impossible
+    oRemoveReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+      equation | Just fiber | Unloading accumulator view outcome =
+        case snapshotReloadingForLookup snapshot fiber found of
+          (remaining ** (priorAccumulator ** (priorView ** reloading))) =>
+            case trans (sym lifecycle) reloading of Refl impossible
+    oRemoveReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+      equation | Just fiber | Reloading remaining accumulator view
+      with (retired fiber)
+      oRemoveReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+        equation | Just fiber | Reloading remaining accumulator view | False =
+          void (nothingIsNotJust equation)
+      oRemoveReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+        equation | Just fiber | Reloading remaining accumulator view | True =
+          void (nothingIsNotJust equation)
+
+0 lBeginReloadingImpossible :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (snapshot : ReloadingSnapshot name key world error value nameEq selected
+    providers before) ->
+  applyAction @{nameEq} @{keyEq} (LBegin selected) before =
+    Just (tag, afterState) -> Void
+lBeginReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+  equation with (lookupFiber @{nameEq} selected (registry before)) proof found
+  lBeginReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+    equation | Nothing = void (nothingIsNotJust equation)
+  lBeginReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+    equation | Just fiber with (fiberLifecycle fiber) proof lifecycle
+    lBeginReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+      equation | Just fiber | Inactive outcome =
+        case snapshotReloadingForLookup snapshot fiber found of
+          (remaining ** (accumulator ** (view ** reloading))) =>
+            case trans (sym lifecycle) reloading of Refl impossible
+    lBeginReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+      equation | Just fiber | Active accumulator view =
+        case snapshotReloadingForLookup snapshot fiber found of
+          (remaining ** (priorAccumulator ** (priorView ** reloading))) =>
+            case trans (sym lifecycle) reloading of Refl impossible
+    lBeginReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+      equation | Just fiber | Unloading accumulator view outcome =
+        case snapshotReloadingForLookup snapshot fiber found of
+          (remaining ** (priorAccumulator ** (priorView ** reloading))) =>
+            case trans (sym lifecycle) reloading of Refl impossible
+    lBeginReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+      equation | Just fiber | Reloading remaining accumulator view =
+        void (nothingIsNotJust equation)
+
+0 lLeaveReloadingImpossible :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (snapshot : ReloadingSnapshot name key world error value nameEq selected
+    providers before) ->
+  applyAction @{nameEq} @{keyEq} (LLeave selected) before =
+    Just (tag, afterState) -> Void
+lLeaveReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+  equation with (lookupFiber @{nameEq} selected (registry before)) proof found
+  lLeaveReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+    equation | Nothing = void (nothingIsNotJust equation)
+  lLeaveReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+    equation | Just fiber with (fiberLifecycle fiber) proof lifecycle
+    lLeaveReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+      equation | Just fiber | Inactive outcome =
+        case snapshotReloadingForLookup snapshot fiber found of
+          (remaining ** (accumulator ** (view ** reloading))) =>
+            case trans (sym lifecycle) reloading of Refl impossible
+    lLeaveReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+      equation | Just fiber | Active accumulator view =
+        case snapshotReloadingForLookup snapshot fiber found of
+          (remaining ** (priorAccumulator ** (priorView ** reloading))) =>
+            case trans (sym lifecycle) reloading of Refl impossible
+    lLeaveReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+      equation | Just fiber | Unloading accumulator view outcome =
+        case snapshotReloadingForLookup snapshot fiber found of
+          (remaining ** (priorAccumulator ** (priorView ** reloading))) =>
+            case trans (sym lifecycle) reloading of Refl impossible
+    lLeaveReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+      equation | Just fiber | Reloading remaining accumulator view =
+        void (nothingIsNotJust equation)
+
+0 lUnloadReloadingImpossible :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (snapshot : ReloadingSnapshot name key world error value nameEq selected
+    providers before) ->
+  applyAction @{nameEq} @{keyEq} (LUnload selected) before =
+    Just (tag, afterState) -> Void
+lUnloadReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+  equation with (lookupFiber @{nameEq} selected (registry before)) proof found
+  lUnloadReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+    equation | Nothing = void (nothingIsNotJust equation)
+  lUnloadReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+    equation | Just fiber with (fiberLifecycle fiber) proof lifecycle
+    lUnloadReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+      equation | Just fiber | Inactive outcome =
+        case snapshotReloadingForLookup snapshot fiber found of
+          (remaining ** (accumulator ** (view ** reloading))) =>
+            case trans (sym lifecycle) reloading of Refl impossible
+    lUnloadReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+      equation | Just fiber | Active accumulator view =
+        case snapshotReloadingForLookup snapshot fiber found of
+          (remaining ** (priorAccumulator ** (priorView ** reloading))) =>
+            case trans (sym lifecycle) reloading of Refl impossible
+    lUnloadReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+      equation | Just fiber | Unloading accumulator view outcome =
+        case snapshotReloadingForLookup snapshot fiber found of
+          (remaining ** (priorAccumulator ** (priorView ** reloading))) =>
+            case trans (sym lifecycle) reloading of Refl impossible
+    lUnloadReloadingImpossible nameEq keyEq selected before afterState tag snapshot
+      equation | Just fiber | Reloading remaining accumulator view =
+        void (nothingIsNotJust equation)
+
+0 reloadingEndpointAt :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  reloadingEndpoint @{nameEq} selected state = True ->
+  reloadingAt @{nameEq} selected state = True
+reloadingEndpointAt nameEq selected state evidence
+  with (lookupFiber @{nameEq} selected (registry state))
+  reloadingEndpointAt nameEq selected state evidence | Nothing =
+    void (falseIsNotTrue evidence)
+  reloadingEndpointAt nameEq selected state evidence | Just fiber
+    with (fiberLifecycle fiber)
+    reloadingEndpointAt nameEq selected state evidence | Just fiber |
+      Inactive outcome = void (falseIsNotTrue evidence)
+    reloadingEndpointAt nameEq selected state evidence | Just fiber |
+      Active accumulator view = void (falseIsNotTrue evidence)
+    reloadingEndpointAt nameEq selected state evidence | Just fiber |
+      Unloading accumulator view outcome = void (falseIsNotTrue evidence)
+    reloadingEndpointAt nameEq selected state evidence | Just fiber |
+      Reloading remaining accumulator view = Refl
+
+0 activeEndpointAt :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  activeEndpoint @{nameEq} selected state = True ->
+  activeAt @{nameEq} selected state = True
+activeEndpointAt nameEq selected state evidence
+  with (lookupFiber @{nameEq} selected (registry state))
+  activeEndpointAt nameEq selected state evidence | Nothing =
+    void (falseIsNotTrue evidence)
+  activeEndpointAt nameEq selected state evidence | Just fiber
+    with (fiberLifecycle fiber)
+    activeEndpointAt nameEq selected state evidence | Just fiber |
+      Inactive outcome = void (falseIsNotTrue evidence)
+    activeEndpointAt nameEq selected state evidence | Just fiber |
+      Reloading remaining accumulator view = void (falseIsNotTrue evidence)
+    activeEndpointAt nameEq selected state evidence | Just fiber |
+      Unloading accumulator view outcome = void (falseIsNotTrue evidence)
+    activeEndpointAt nameEq selected state evidence | Just fiber |
+      Active accumulator view = Refl
+
+0 unloadingEndpointAt :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  unloadingEndpoint @{nameEq} selected state = True ->
+  unloadingAt @{nameEq} selected state = True
+unloadingEndpointAt nameEq selected state evidence
+  with (lookupFiber @{nameEq} selected (registry state))
+  unloadingEndpointAt nameEq selected state evidence | Nothing =
+    void (falseIsNotTrue evidence)
+  unloadingEndpointAt nameEq selected state evidence | Just fiber
+    with (fiberLifecycle fiber)
+    unloadingEndpointAt nameEq selected state evidence | Just fiber |
+      Inactive outcome = void (falseIsNotTrue evidence)
+    unloadingEndpointAt nameEq selected state evidence | Just fiber |
+      Reloading remaining accumulator view = void (falseIsNotTrue evidence)
+    unloadingEndpointAt nameEq selected state evidence | Just fiber |
+      Active accumulator view = void (falseIsNotTrue evidence)
+    unloadingEndpointAt nameEq selected state evidence | Just fiber |
+      Unloading accumulator view outcome = Refl
+
+public export
+data ReloadingStepClassification :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) -> (providers : List name) ->
+  {before, afterState : SystemState name key value world error} ->
+  Transition before afterState -> Type where
+  ReloadingContinues :
+    {before, afterState : SystemState name key value world error} ->
+    {transition : Transition before afterState} ->
+    ReloadingSnapshot name key world error value nameEq selected providers
+      afterState ->
+    transitionResolutionCoherent nameEq keyEq selected transition = True ->
+    ReloadingStepClassification name key world error value nameEq keyEq
+      selected providers transition
+  ReloadingExits :
+    {before, afterState : SystemState name key value world error} ->
+    {transition : Transition before afterState} ->
+    StructuralExit name key world error value nameEq selected providers
+      transition ->
+    ReloadingStepClassification name key world error value nameEq keyEq
+      selected providers transition
+
+0 classifyReloadingStep :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) -> (providers : List name) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (checkedEquation : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  ReloadingSnapshot name key world error value nameEq selected providers before ->
+  ReloadingStepClassification name key world error value nameEq keyEq selected
+    providers (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checkedEquation)
+classifyReloadingStep nameEq keyEq selected providers
+  (OInsert actor parent component) tag before afterState checkedEquation
+  snapshot with (decEq @{nameEq} selected actor)
+  classifyReloadingStep nameEq keyEq selected providers
+    (OInsert actor parent component) tag before afterState checkedEquation
+    snapshot | No distinct =
+      let rawEquation = checkedActionProjects nameEq keyEq (OInsert actor parent component) before afterState
+            tag checkedEquation
+      in ReloadingContinues
+        (foreignReloadingSnapshot nameEq keyEq selected providers (OInsert actor parent component) before
+          afterState tag distinct snapshot rawEquation)
+        (foreignTransitionCoherent nameEq keyEq selected (OInsert actor parent component) tag checkedEquation
+          distinct)
+  classifyReloadingStep nameEq keyEq actor providers
+    (OInsert actor parent component) tag before afterState checkedEquation
+    snapshot | Yes Refl = void (oInsertReloadingImpossible nameEq keyEq actor
+      parent component before afterState tag snapshot
+      (checkedActionProjects nameEq keyEq (OInsert actor parent component) before afterState tag
+        checkedEquation))
+classifyReloadingStep nameEq keyEq selected providers (ORetire actor) tag
+  before afterState checkedEquation snapshot with (decEq @{nameEq} selected actor)
+  classifyReloadingStep nameEq keyEq selected providers (ORetire actor) tag
+    before afterState checkedEquation snapshot | No distinct =
+      let rawEquation = checkedActionProjects nameEq keyEq (ORetire actor) before afterState
+            tag checkedEquation
+      in ReloadingContinues
+        (foreignReloadingSnapshot nameEq keyEq selected providers (ORetire actor) before
+          afterState tag distinct snapshot rawEquation)
+        (foreignTransitionCoherent nameEq keyEq selected (ORetire actor) tag checkedEquation
+          distinct)
+  classifyReloadingStep nameEq keyEq actor providers (ORetire actor) tag
+    before afterState checkedEquation snapshot | Yes Refl =
+      let rawEquation = checkedActionProjects nameEq keyEq (ORetire actor) before afterState
+            tag checkedEquation
+      in ReloadingContinues
+        (retireReloadingSnapshot nameEq keyEq actor providers before afterState tag
+          snapshot rawEquation) Refl
+classifyReloadingStep nameEq keyEq selected providers (ORemove actor) tag
+  before afterState checkedEquation snapshot with (decEq @{nameEq} selected actor)
+  classifyReloadingStep nameEq keyEq selected providers (ORemove actor) tag
+    before afterState checkedEquation snapshot | No distinct =
+      let rawEquation = checkedActionProjects nameEq keyEq (ORemove actor) before afterState
+            tag checkedEquation
+      in ReloadingContinues
+        (foreignReloadingSnapshot nameEq keyEq selected providers (ORemove actor) before
+          afterState tag distinct snapshot rawEquation)
+        (foreignTransitionCoherent nameEq keyEq selected (ORemove actor) tag checkedEquation
+          distinct)
+  classifyReloadingStep nameEq keyEq actor providers (ORemove actor) tag
+    before afterState checkedEquation snapshot | Yes Refl =
+      void (oRemoveReloadingImpossible nameEq keyEq actor before afterState tag
+        snapshot (checkedActionProjects nameEq keyEq (ORemove actor) before afterState tag
+          checkedEquation))
+classifyReloadingStep nameEq keyEq selected providers (LBegin actor) tag
+  before afterState checkedEquation snapshot with (decEq @{nameEq} selected actor)
+  classifyReloadingStep nameEq keyEq selected providers (LBegin actor) tag
+    before afterState checkedEquation snapshot | No distinct =
+      let rawEquation = checkedActionProjects nameEq keyEq (LBegin actor) before afterState
+            tag checkedEquation
+      in ReloadingContinues
+        (foreignReloadingSnapshot nameEq keyEq selected providers (LBegin actor) before
+          afterState tag distinct snapshot rawEquation)
+        (foreignTransitionCoherent nameEq keyEq selected (LBegin actor) tag checkedEquation
+          distinct)
+  classifyReloadingStep nameEq keyEq actor providers (LBegin actor) tag
+    before afterState checkedEquation snapshot | Yes Refl =
+      void (lBeginReloadingImpossible nameEq keyEq actor before afterState tag
+        snapshot (checkedActionProjects nameEq keyEq (LBegin actor) before afterState tag
+          checkedEquation))
+classifyReloadingStep nameEq keyEq selected providers (LAdvance actor) tag
+  before afterState checkedEquation snapshot with (decEq @{nameEq} selected actor)
+  classifyReloadingStep nameEq keyEq selected providers (LAdvance actor) tag
+    before afterState checkedEquation snapshot | No distinct =
+      let rawEquation = checkedActionProjects nameEq keyEq (LAdvance actor) before afterState
+            tag checkedEquation
+      in ReloadingContinues
+        (foreignReloadingSnapshot nameEq keyEq selected providers (LAdvance actor) before
+          afterState tag distinct snapshot rawEquation)
+        (foreignTransitionCoherent nameEq keyEq selected (LAdvance actor) tag checkedEquation
+          distinct)
+  classifyReloadingStep nameEq keyEq actor providers (LAdvance actor) tag
+    before afterState checkedEquation snapshot | Yes Refl =
+      let rawEquation = checkedActionProjects nameEq keyEq (LAdvance actor) before afterState
+            tag checkedEquation
+          structure = advanceStructureTheorem nameEq keyEq actor before afterState
+            tag rawEquation
+          committedSnapshot = committedSnapshotFrom nameEq actor providers before
+            (snapshotCommittedProviders snapshot)
+          targetCommitted = committedProvidersLAdvanceSelected nameEq keyEq actor
+            providers before afterState tag committedSnapshot rawEquation
+      in case structure of
+        IterAdvance fiber found shape reloading =>
+          ReloadingContinues
+            (snapshotFromPredicates nameEq actor providers afterState
+              (reloadingEndpointAt nameEq actor afterState reloading)
+              targetCommitted)
+            (iterAdvanceCoherent nameEq keyEq actor before afterState
+              checkedEquation structure)
+        FinishAdvance fiber found shape active => ReloadingExits
+          (Finishes Refl Refl (activeEndpointAt nameEq actor afterState active)
+            targetCommitted)
+        DivertAdvance unloading => ReloadingExits
+          (DivertsAfter Refl Refl
+            (unloadingEndpointAt nameEq actor afterState unloading))
+        RaiseAdvance unloading => ReloadingExits
+          (Raises Refl Refl
+            (unloadingEndpointAt nameEq actor afterState unloading))
+classifyReloadingStep nameEq keyEq selected providers (LDivert actor) tag
+  before afterState checkedEquation snapshot with (decEq @{nameEq} selected actor)
+  classifyReloadingStep nameEq keyEq selected providers (LDivert actor) tag
+    before afterState checkedEquation snapshot | No distinct =
+      let rawEquation = checkedActionProjects nameEq keyEq (LDivert actor) before afterState
+            tag checkedEquation
+      in ReloadingContinues
+        (foreignReloadingSnapshot nameEq keyEq selected providers (LDivert actor) before
+          afterState tag distinct snapshot rawEquation)
+        (foreignTransitionCoherent nameEq keyEq selected (LDivert actor) tag checkedEquation
+          distinct)
+  classifyReloadingStep nameEq keyEq actor providers (LDivert actor) tag
+    before afterState checkedEquation snapshot | Yes Refl =
+      let rawEquation = checkedActionProjects nameEq keyEq (LDivert actor) before afterState
+            tag checkedEquation
+          tagShape = successfulLDivertTag nameEq keyEq actor before afterState tag
+            rawEquation
+      in case tagShape of
+        Refl => let structure = abortDivertStructureTheorem nameEq keyEq actor
+                      before afterState rawEquation
+                in ReloadingExits (DivertsBefore Refl Refl
+                  (unloadingEndpointAt nameEq actor afterState
+                    (divertUnloading structure)))
+classifyReloadingStep nameEq keyEq selected providers (LLeave actor) tag
+  before afterState checkedEquation snapshot with (decEq @{nameEq} selected actor)
+  classifyReloadingStep nameEq keyEq selected providers (LLeave actor) tag
+    before afterState checkedEquation snapshot | No distinct =
+      let rawEquation = checkedActionProjects nameEq keyEq (LLeave actor) before afterState
+            tag checkedEquation
+      in ReloadingContinues
+        (foreignReloadingSnapshot nameEq keyEq selected providers (LLeave actor) before
+          afterState tag distinct snapshot rawEquation)
+        (foreignTransitionCoherent nameEq keyEq selected (LLeave actor) tag checkedEquation
+          distinct)
+  classifyReloadingStep nameEq keyEq actor providers (LLeave actor) tag
+    before afterState checkedEquation snapshot | Yes Refl =
+      void (lLeaveReloadingImpossible nameEq keyEq actor before afterState tag
+        snapshot (checkedActionProjects nameEq keyEq (LLeave actor) before afterState tag
+          checkedEquation))
+classifyReloadingStep nameEq keyEq selected providers (LUnload actor) tag
+  before afterState checkedEquation snapshot with (decEq @{nameEq} selected actor)
+  classifyReloadingStep nameEq keyEq selected providers (LUnload actor) tag
+    before afterState checkedEquation snapshot | No distinct =
+      let rawEquation = checkedActionProjects nameEq keyEq (LUnload actor) before afterState
+            tag checkedEquation
+      in ReloadingContinues
+        (foreignReloadingSnapshot nameEq keyEq selected providers (LUnload actor) before
+          afterState tag distinct snapshot rawEquation)
+        (foreignTransitionCoherent nameEq keyEq selected (LUnload actor) tag checkedEquation
+          distinct)
+  classifyReloadingStep nameEq keyEq actor providers (LUnload actor) tag
+    before afterState checkedEquation snapshot | Yes Refl =
+      void (lUnloadReloadingImpossible nameEq keyEq actor before afterState tag
+        snapshot (checkedActionProjects nameEq keyEq (LUnload actor) before afterState tag
+          checkedEquation))
+
 public export
 data ResolutionStructure : (name, key, world, error : Type) ->
   (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
