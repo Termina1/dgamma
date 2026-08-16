@@ -4261,6 +4261,306 @@ viewsInvariantUnstableRuntimeReplace {name} {key} {world} {error} {value}
       (setFiberRuntime fiber newTable newLifecycle) fibers)
     entryPresent targetSelected framed
 
+0 viewProvidersActiveUnload :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (deps : List key) -> (observed : View name deps) ->
+  (n : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} n fibers =
+    Just (MkFiber component parent retired table (Active accumulator view)) ->
+  viewProvidersInvariant @{nameEq} {key = key} {value = value} {world = world}
+    {error = error}
+    (replaceBinding @{nameEq} n
+      (MkFiber component parent retired table
+        (Unloading accumulator view Nothing)) fibers) observed =
+  viewProvidersInvariant @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} fibers observed
+viewProvidersActiveUnload nameEq [] EmptyView n component parent retired table
+  accumulator view fibers present = Refl
+viewProvidersActiveUnload {name} {key} {world} {error} {value}
+  nameEq (k :: ks) (ProviderView provider rest) n component parent retired table
+  accumulator view fibers present with (decEq @{nameEq} provider n)
+  viewProvidersActiveUnload {name} {key} {world} {error} {value}
+    nameEq (k :: ks) (ProviderView n rest) n component parent retired table
+    accumulator view fibers present | (Yes Refl) =
+      rewrite lookupRuntimeReplaced nameEq n
+        (MkFiber component parent retired table (Active accumulator view)) table
+        (Unloading accumulator view Nothing) fibers present in
+      rewrite present in cong (True &&)
+        (viewProvidersActiveUnload {name = name} {key = key} {world = world}
+          {error = error} {value = value} nameEq ks rest n component parent
+          retired table accumulator view fibers present)
+  viewProvidersActiveUnload {name} {key} {world} {error} {value}
+    nameEq (k :: ks) (ProviderView provider rest) n component parent retired table
+    accumulator view fibers present | (No distinct)
+    with (lookupFiber @{nameEq} provider fibers) proof original
+    viewProvidersActiveUnload {name} {key} {world} {error} {value}
+      nameEq (k :: ks) (ProviderView provider rest) n component parent retired table
+      accumulator view fibers present | (No distinct) | Nothing =
+        rewrite lookupReplaceOther provider n distinct
+          (MkFiber component parent retired table
+            (Unloading accumulator view Nothing)) fibers in
+        rewrite original in Refl
+    viewProvidersActiveUnload {name} {key} {world} {error} {value}
+      nameEq (k :: ks) (ProviderView provider rest) n component parent retired table
+      accumulator view fibers present | (No distinct) | Just providerFiber =
+        rewrite lookupReplaceOther provider n distinct
+          (MkFiber component parent retired table
+            (Unloading accumulator view Nothing)) fibers in
+        rewrite original in cong (stableProvider (fiberLifecycle providerFiber) &&)
+          (viewProvidersActiveUnload {name = name} {key = key} {world = world}
+            {error = error} {value = value} nameEq ks rest n component parent
+            retired table accumulator view fibers present)
+
+0 valueFromProviderActiveUnload :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provider : name) -> (k : key) -> (n : name) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} n fibers =
+    Just (MkFiber component parent retired table (Active accumulator view)) ->
+  valueFromProvider @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} provider k
+    (replaceBinding @{nameEq} n
+      (MkFiber component parent retired table
+        (Unloading accumulator view Nothing)) fibers) =
+  valueFromProvider @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} provider k fibers
+valueFromProviderActiveUnload {name} {key} {world} {error} {value}
+  nameEq keyEq provider k n component parent retired table accumulator view fibers
+  present with (decEq @{nameEq} provider n)
+  valueFromProviderActiveUnload {name} {key} {world} {error} {value}
+    nameEq keyEq n k n component parent retired table accumulator view fibers
+    present | (Yes Refl) =
+      rewrite lookupRuntimeReplaced nameEq n
+        (MkFiber component parent retired table (Active accumulator view)) table
+        (Unloading accumulator view Nothing) fibers present in
+      rewrite present in Refl
+  valueFromProviderActiveUnload {name} {key} {world} {error} {value}
+    nameEq keyEq provider k n component parent retired table accumulator view fibers
+    present | (No distinct) with (lookupFiber @{nameEq} provider fibers) proof original
+    valueFromProviderActiveUnload {name} {key} {world} {error} {value}
+      nameEq keyEq provider k n component parent retired table accumulator view fibers
+      present | (No distinct) | Nothing =
+        rewrite lookupReplaceOther provider n distinct
+          (MkFiber component parent retired table
+            (Unloading accumulator view Nothing)) fibers in
+        rewrite original in Refl
+    valueFromProviderActiveUnload {name} {key} {world} {error} {value}
+      nameEq keyEq provider k n component parent retired table accumulator view fibers
+      present | (No distinct) | Just providerFiber =
+        rewrite lookupReplaceOther provider n distinct
+          (MkFiber component parent retired table
+            (Unloading accumulator view Nothing)) fibers in
+        rewrite original in Refl
+
+0 resolveCommittedValuesActiveUnload :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) -> (observed : View name deps) -> (n : name) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers =
+    Just (MkFiber component parent retired table (Active accumulator view)) ->
+  resolveCommittedValues @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps observed
+    (replaceBinding @{nameEq} n
+      (MkFiber component parent retired table
+        (Unloading accumulator view Nothing)) fibers) =
+  resolveCommittedValues @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps observed fibers
+resolveCommittedValuesActiveUnload nameEq keyEq [] EmptyView n component parent
+  retired table accumulator view fibers present = Refl
+resolveCommittedValuesActiveUnload {name} {key} {world} {error} {value}
+  nameEq keyEq (k :: ks) (ProviderView provider rest) n component parent retired
+  table accumulator view fibers present
+  with (valueFromProvider @{nameEq} @{keyEq} provider k fibers) proof original
+  resolveCommittedValuesActiveUnload {name} {key} {world} {error} {value}
+    nameEq keyEq (k :: ks) (ProviderView provider rest) n component parent retired
+    table accumulator view fibers present | Nothing =
+      let target = trans (valueFromProviderActiveUnload {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq keyEq provider
+            k n component parent retired table accumulator view fibers present)
+            original
+      in rewrite target in Refl
+  resolveCommittedValuesActiveUnload {name} {key} {world} {error} {value}
+    nameEq keyEq (k :: ks) (ProviderView provider rest) n component parent retired
+    table accumulator view fibers present | Just v =
+      let target = trans (valueFromProviderActiveUnload {name = name} {key = key}
+            {world = world} {error = error} {value = value} nameEq keyEq provider
+            k n component parent retired table accumulator view fibers present)
+            original
+      in rewrite target in cong (map (OneDepValue v))
+        (resolveCommittedValuesActiveUnload {name = name} {key = key}
+          {world = world} {error = error} {value = value} nameEq keyEq ks rest n
+          component parent retired table accumulator view fibers present)
+
+0 viewBindingsActiveUnload :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) -> (observed : View name deps) -> (n : name) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers =
+    Just (MkFiber component parent retired table (Active accumulator view)) ->
+  viewBindingsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps observed
+    (replaceBinding @{nameEq} n
+      (MkFiber component parent retired table
+        (Unloading accumulator view Nothing)) fibers) =
+  viewBindingsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps observed fibers
+viewBindingsActiveUnload {name} {key} {world} {error} {value}
+  nameEq keyEq deps observed n component parent retired table accumulator view
+  fibers present =
+    rewrite viewProvidersActiveUnload {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq deps observed n component parent
+      retired table accumulator view fibers present in
+    rewrite cong isJust (resolveCommittedValuesActiveUnload {name = name}
+      {key = key} {world = world} {error = error} {value = value} nameEq keyEq
+      deps observed n component parent retired table accumulator view fibers
+      present) in Refl
+
+0 fiberViewActiveUnload :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (observed : Fiber name key value world error) -> (n : name) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers =
+    Just (MkFiber component parent retired table (Active accumulator view)) ->
+  fiberViewInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} observed
+    (replaceBinding @{nameEq} n
+      (MkFiber component parent retired table
+        (Unloading accumulator view Nothing)) fibers) =
+  fiberViewInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} observed fibers
+fiberViewActiveUnload nameEq keyEq
+  (MkFiber ownComponent ownParent ownRetired ownTable (Inactive outcome)) n
+  component parent retired table accumulator view fibers present = Refl
+fiberViewActiveUnload {name} {key} {world} {error} {value}
+  nameEq keyEq (MkFiber ownComponent ownParent ownRetired ownTable
+    (Reloading rest ownAccumulator ownView)) n component parent retired table
+    accumulator view fibers present = viewBindingsActiveUnload {name = name}
+      {key = key} {world = world} {error = error} {value = value} nameEq keyEq
+      (dependencies (componentDependencies ownComponent)) ownView n component
+      parent retired table accumulator view fibers present
+fiberViewActiveUnload {name} {key} {world} {error} {value}
+  nameEq keyEq (MkFiber ownComponent ownParent ownRetired ownTable
+    (Active ownAccumulator ownView)) n component parent retired table accumulator
+    view fibers present = viewBindingsActiveUnload {name = name} {key = key}
+      {world = world} {error = error} {value = value} nameEq keyEq
+      (dependencies (componentDependencies ownComponent)) ownView n component
+      parent retired table accumulator view fibers present
+fiberViewActiveUnload {name} {key} {world} {error} {value}
+  nameEq keyEq (MkFiber ownComponent ownParent ownRetired ownTable
+    (Unloading ownAccumulator ownView outcome)) n component parent retired table
+    accumulator view fibers present = viewBindingsActiveUnload {name = name}
+      {key = key} {world = world} {error = error} {value = value} nameEq keyEq
+      (dependencies (componentDependencies ownComponent)) ownView n component
+      parent retired table accumulator view fibers present
+
+0 viewsRegistryActiveUnload :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (n : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers =
+    Just (MkFiber component parent retired table (Active accumulator view)) ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries
+    (replaceBinding @{nameEq} n
+      (MkFiber component parent retired table
+        (Unloading accumulator view Nothing)) fibers) =
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries fibers
+viewsRegistryActiveUnload nameEq keyEq [] n component parent retired table
+  accumulator view fibers present = Refl
+viewsRegistryActiveUnload {name} {key} {world} {error} {value}
+  nameEq keyEq (Bind current observed :: rest) n component parent retired table
+  accumulator view fibers present =
+    rewrite fiberViewActiveUnload {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq keyEq observed n component parent
+      retired table accumulator view fibers present in
+    rewrite viewsRegistryActiveUnload {name = name} {key = key}
+      {world = world} {error = error} {value = value} nameEq keyEq rest n
+      component parent retired table accumulator view fibers present in Refl
+
+public export
+0 viewsInvariantActiveUnload :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (n : name) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retired : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} n fibers =
+    Just (MkFiber component parent retired table (Active accumulator view)) ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} (registryFibers {value = value} {world = world} {error = error} fibers) fibers = True ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+    (registryFibers {value = value} {world = world} {error = error} (replaceBinding @{nameEq} n
+      (MkFiber component parent retired table
+        (Unloading accumulator view Nothing)) fibers))
+    (replaceBinding @{nameEq} n
+      (MkFiber component parent retired table
+        (Unloading accumulator view Nothing)) fibers) = True
+viewsInvariantActiveUnload {name} {key} {world} {error} {value}
+  nameEq keyEq n component parent retired table accumulator view
+  fibers@(MkCoeffectContext entries unique) present valid =
+  let entryPresent = lookupFiberEntries nameEq n
+        (MkFiber component parent retired table (Active accumulator view)) fibers
+        present
+      framed = trans (viewsRegistryActiveUnload {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq entries n
+        component parent retired table accumulator view fibers present) valid
+      sourceSelected = viewsInvariantLookup {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq n
+        (MkFiber component parent retired table (Active accumulator view)) entries
+        fibers entryPresent valid
+      targetSelected = trans (viewBindingsActiveUnload {name = name} {key = key}
+        {world = world} {error = error} {value = value} nameEq keyEq
+        (dependencies (componentDependencies component)) view n component parent
+        retired table accumulator view fibers present) sourceSelected
+  in viewsEntriesRuntimeTarget {name = name} {key = key} {world = world}
+    {error = error} {value = value} nameEq keyEq entries n
+    (MkFiber component parent retired table (Active accumulator view))
+    (MkFiber component parent retired table
+      (Unloading accumulator view Nothing))
+    (replaceBinding @{nameEq} n
+      (MkFiber component parent retired table
+        (Unloading accumulator view Nothing)) fibers)
+    entryPresent targetSelected framed
+
 0 activeIsStable :
   (lifecycle : Lifecycle key value world error name deps provision) ->
   isActive lifecycle = True -> stableProvider lifecycle = True
