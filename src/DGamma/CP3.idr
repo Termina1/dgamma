@@ -1895,20 +1895,30 @@ isGeneratedRegistrationAction : Action name key value world error -> Bool
 isGeneratedRegistrationAction (OInsert child (ChildOf parent) component) = True
 isGeneratedRegistrationAction action = False
 
-||| Executable indexing state for one trace.  Besides the currently live
-||| generation of each raw name, it records how many children have already been
-||| born under each exact parent generation.  The latter is Definition 47's
-||| per-parent iterator/yield position; it deliberately says nothing about the
-||| relative schedule of different parents.
+||| One activation episode of an exact parent registration generation.  The
+||| opening ordinal distinguishes repeated L-Begin episodes of one long-lived
+||| parent; it is an indexing stamp, not a globally compared schedule position.
+public export
+record RegistrationActivation (name : Type) where
+  constructor MkRegistrationActivation
+  activationParentGeneration : RegistrationGeneration name
+  activationBeginOrdinal : Nat
+
+||| Executable indexing state for one trace.  Live generations serve current
+||| endpoint coupling.  Parent activations start at L-Begin and end at L-Unload,
+||| and surviving-child counts are keyed by that activation, so an iterator's
+||| position restarts when a parent reactivates.  Counts include only births
+||| retained by the surviving-registration relation below.
 public export
 record RegistrationIndexState (name : Type) where
   constructor MkRegistrationIndexState
   indexedLiveGenerations : GenerationEnvironment name
-  indexedChildCounts : List (RegistrationGeneration name, Nat)
+  indexedParentActivations : List (name, RegistrationActivation name)
+  indexedSurvivingChildCounts : List (RegistrationActivation name, Nat)
 
 public export
 emptyRegistrationIndex : RegistrationIndexState name
-emptyRegistrationIndex = MkRegistrationIndexState [] []
+emptyRegistrationIndex = MkRegistrationIndexState [] [] []
 
 public export
 sameRegistrationGeneration : DecEq name =>
@@ -1921,51 +1931,118 @@ sameRegistrationGeneration
       Yes Refl => leftOrdinal == rightOrdinal
 
 public export
-childrenBornUnder : DecEq name => RegistrationGeneration name ->
-  List (RegistrationGeneration name, Nat) -> Nat
-childrenBornUnder parent [] = 0
-childrenBornUnder parent ((candidate, count) :: rest) =
-  if sameRegistrationGeneration parent candidate
-     then count
-     else childrenBornUnder parent rest
+sameRegistrationActivation : DecEq name =>
+  RegistrationActivation name -> RegistrationActivation name -> Bool
+sameRegistrationActivation
+  (MkRegistrationActivation leftParent leftBegin)
+  (MkRegistrationActivation rightParent rightBegin) =
+    sameRegistrationGeneration leftParent rightParent && leftBegin == rightBegin
 
 public export
-incrementChildrenBornUnder : DecEq name => RegistrationGeneration name ->
-  List (RegistrationGeneration name, Nat) ->
-  List (RegistrationGeneration name, Nat)
-incrementChildrenBornUnder parent [] = [(parent, 1)]
-incrementChildrenBornUnder parent ((candidate, count) :: rest) =
-  if sameRegistrationGeneration parent candidate
-     then (candidate, S count) :: rest
-     else (candidate, count) :: incrementChildrenBornUnder parent rest
+putParentActivation : DecEq name => name -> RegistrationActivation name ->
+  List (name, RegistrationActivation name) ->
+  List (name, RegistrationActivation name)
+putParentActivation selected activation [] = [(selected, activation)]
+putParentActivation selected activation ((candidate, current) :: rest) =
+  case decEq selected candidate of
+    Yes Refl => (selected, activation) :: rest
+    No different => (candidate, current) ::
+      putParentActivation selected activation rest
 
+public export
+deleteParentActivation : DecEq name => name ->
+  List (name, RegistrationActivation name) ->
+  List (name, RegistrationActivation name)
+deleteParentActivation selected [] = []
+deleteParentActivation selected ((candidate, current) :: rest) =
+  case decEq selected candidate of
+    Yes Refl => rest
+    No different => (candidate, current) :: deleteParentActivation selected rest
+
+public export
+lookupParentActivation : DecEq name => name ->
+  List (name, RegistrationActivation name) ->
+  Maybe (RegistrationActivation name)
+lookupParentActivation selected [] = Nothing
+lookupParentActivation selected ((candidate, current) :: rest) =
+  case decEq selected candidate of
+    Yes Refl => Just current
+    No different => lookupParentActivation selected rest
+
+public export
+childrenBornInActivation : DecEq name => RegistrationActivation name ->
+  List (RegistrationActivation name, Nat) -> Nat
+childrenBornInActivation activation [] = 0
+childrenBornInActivation activation ((candidate, count) :: rest) =
+  if sameRegistrationActivation activation candidate
+     then count
+     else childrenBornInActivation activation rest
+
+public export
+incrementChildrenBornInActivation : DecEq name => RegistrationActivation name ->
+  List (RegistrationActivation name, Nat) ->
+  List (RegistrationActivation name, Nat)
+incrementChildrenBornInActivation activation [] = [(activation, 1)]
+incrementChildrenBornInActivation activation ((candidate, count) :: rest) =
+  if sameRegistrationActivation activation candidate
+     then (candidate, S count) :: rest
+     else (candidate, count) :: incrementChildrenBornInActivation activation rest
+
+||| Advance the trace index without declaring a generated birth canonical.
+||| In particular, child O-Insert updates the live-generation environment but
+||| does not consume a surviving iterator position until the correspondence
+||| classifies that birth as retained.
 public export
 advanceRegistrationIndex : DecEq name => Nat ->
   Action name key value world error -> RegistrationIndexState name ->
   RegistrationIndexState name
 advanceRegistrationIndex ordinal (OInsert child (ChildOf parent) component)
-  (MkRegistrationIndexState live counts) =
-    let childGeneration = MkRegistrationGeneration child ordinal in
-    case lookupCurrentGeneration parent live of
-      Nothing => MkRegistrationIndexState
-        (putCurrentGeneration child childGeneration live) counts
-      Just parentGeneration => MkRegistrationIndexState
-        (putCurrentGeneration child childGeneration live)
-        (incrementChildrenBornUnder parentGeneration counts)
+  (MkRegistrationIndexState live activations counts) =
+    MkRegistrationIndexState
+      (putCurrentGeneration child (MkRegistrationGeneration child ordinal) live)
+      activations counts
 advanceRegistrationIndex ordinal (OInsert root Root component)
-  (MkRegistrationIndexState live counts) =
+  (MkRegistrationIndexState live activations counts) =
     MkRegistrationIndexState
       (putCurrentGeneration root (MkRegistrationGeneration root ordinal) live)
-      counts
+      activations counts
 advanceRegistrationIndex ordinal (ORemove removed)
-  (MkRegistrationIndexState live counts) =
-    MkRegistrationIndexState (deleteCurrentGeneration removed live) counts
+  (MkRegistrationIndexState live activations counts) =
+    MkRegistrationIndexState (deleteCurrentGeneration removed live)
+      (deleteParentActivation removed activations) counts
+advanceRegistrationIndex ordinal (LBegin parent)
+  index@(MkRegistrationIndexState live activations counts) =
+    case lookupCurrentGeneration parent live of
+      Nothing => index
+      Just generation => MkRegistrationIndexState live
+        (putParentActivation parent
+          (MkRegistrationActivation generation ordinal) activations) counts
+advanceRegistrationIndex ordinal (LUnload parent)
+  (MkRegistrationIndexState live activations counts) =
+    MkRegistrationIndexState live (deleteParentActivation parent activations) counts
 advanceRegistrationIndex ordinal action index = index
 
-||| One executable generated-birth descriptor.  Parent generations and local
-||| positions are computed from the processed prefix.  `Nothing` is retained
-||| for malformed raw traces; a correspondence below requires `Just`, so such a
-||| child cannot silently match a well-formed registration event.
+||| Advance over a generated birth retained in the surviving registration
+||| tree.  Only such births consume an activation-local iterator position.
+public export
+advanceSurvivingRegistrationIndex : DecEq name => Nat ->
+  (child, parent : name) -> Component key value world error ->
+  RegistrationIndexState name -> RegistrationIndexState name
+advanceSurvivingRegistrationIndex ordinal child parent component
+  index@(MkRegistrationIndexState live activations counts) =
+    let advanced = advanceRegistrationIndex ordinal
+          (OInsert child (ChildOf parent) component) index in
+    case lookupParentActivation parent activations of
+      Nothing => advanced
+      Just activation => MkRegistrationIndexState
+        (indexedLiveGenerations advanced)
+        (indexedParentActivations advanced)
+        (incrementChildrenBornInActivation activation counts)
+
+||| One executable generated-birth descriptor.  Parent generation and position
+||| are scoped by the L-Begin activation live at the birth.  `Nothing` is
+||| retained for malformed raw traces; every retained/deleted classification
+||| below requires `Just`, so no child outside an activation can be matched.
 public export
 record RegistrationEvent
   (name, key, world, error : Type) (value : key -> Type) where
@@ -1974,50 +2051,95 @@ record RegistrationEvent
   eventParent : name
   eventComponent : Component key value world error
   eventChildGeneration : RegistrationGeneration name
-  eventParentGeneration : Maybe (RegistrationGeneration name)
+  eventParentActivation : Maybe (RegistrationActivation name)
   eventChildPosition : Nat
 
 public export
 registrationEventAt : DecEq name => Nat -> RegistrationIndexState name ->
   (child, parent : name) -> Component key value world error ->
   RegistrationEvent name key world error value
-registrationEventAt ordinal (MkRegistrationIndexState live counts)
+registrationEventAt ordinal (MkRegistrationIndexState live activations counts)
   child parent component =
-    let parentGeneration = lookupCurrentGeneration parent live
-        position = case parentGeneration of
+    let activation = lookupParentActivation parent activations
+        position = case activation of
           Nothing => 0
-          Just generation => childrenBornUnder generation counts in
+          Just current => childrenBornInActivation current counts in
       MkRegistrationEvent child parent component
-        (MkRegistrationGeneration child ordinal) parentGeneration position
+        (MkRegistrationGeneration child ordinal) activation position
 
-||| Two child births represent the same structural iterator position.  Child
-||| names/birth ordinals may differ, but the exact component is equal, the
-||| parent generations correspond, and the child position within that parent
-||| is identical.  There is intentionally no comparison of their global birth
-||| ordinals beyond the generation bijection itself.
+||| No L-Unload of this raw parent occurs in the remaining trace.  Together
+||| with the activation stamp at the birth, this identifies a registration in
+||| the one parent episode that survives canonical deletion.
+public export
+data NoParentUnload :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (parent : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Type where
+  NoParentUnloadEnd : NoParentUnload parent NoTransitions
+  NoParentUnloadStep :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    (transitionAction transition = LUnload parent -> Void) ->
+    NoParentUnload parent rest ->
+    NoParentUnload parent (MoreTransitions transition rest)
+
+||| A retained birth is in the activation live at the event and that activation
+||| never reaches L-Unload in the original trace.  These, and only these, enter
+||| the surviving registration-tree bijection.
+public export
+record SurvivingRegistration
+  (event : RegistrationEvent name key world error value)
+  {first, finalState : SystemState name key value world error}
+  (rest : Transitions first finalState) where
+  constructor MkSurvivingRegistration
+  survivingActivation : RegistrationActivation name
+  0 survivingActivationPresent : eventParentActivation event =
+    Just survivingActivation
+  0 survivingParentEpisodeOpen : NoParentUnload (eventParent event) rest
+
+||| An unmatched historical birth must carry the dual evidence: it occurred in
+||| the activation stamped at the event and that activation later closes at an
+||| L-Unload.  Checked lifecycle transitions ensure the first such L-Unload is
+||| the right boundary of the activation current at the birth.  This is the
+||| explicit proof obligation that excludes closing-episode births before the
+||| surviving registration trees are compared.
+public export
+record DeletedClosingRegistration
+  (event : RegistrationEvent name key world error value)
+  {first, finalState : SystemState name key value world error}
+  (rest : Transitions first finalState) where
+  constructor MkDeletedClosingRegistration
+  deletedActivation : RegistrationActivation name
+  0 deletedActivationPresent : eventParentActivation event = Just deletedActivation
+  0 deletedParentEpisodeCloses : ActionOccurs (LUnload (eventParent event)) rest
+
+||| Two retained births represent the same iterator position in their respective
+||| surviving parent activations.  Activation opening ordinals may differ with
+||| scheduling; mapped parent generations, exact components, and positions must
+||| agree.  There is no global child-birth ordering constraint.
 public export
 record RegistrationEventMatch
   (renaming : RegistrationGenerationBijection name)
   (left, right : RegistrationEvent name key world error value) where
   constructor MkRegistrationEventMatch
   0 matchedComponent : eventComponent left = eventComponent right
-  leftMatchedParentGeneration : RegistrationGeneration name
-  rightMatchedParentGeneration : RegistrationGeneration name
-  0 leftParentGenerationPresent : eventParentGeneration left =
-    Just leftMatchedParentGeneration
-  0 rightParentGenerationPresent : eventParentGeneration right =
-    Just rightMatchedParentGeneration
+  leftMatchedActivation : RegistrationActivation name
+  rightMatchedActivation : RegistrationActivation name
+  0 leftActivationPresent : eventParentActivation left = Just leftMatchedActivation
+  0 rightActivationPresent : eventParentActivation right = Just rightMatchedActivation
   0 matchedChildGeneration : generationForward renaming
     (eventChildGeneration left) = eventChildGeneration right
   0 matchedParentGeneration : generationForward renaming
-    leftMatchedParentGeneration = rightMatchedParentGeneration
-  0 matchedPerParentPosition : eventChildPosition left = eventChildPosition right
+    (activationParentGeneration leftMatchedActivation) =
+    activationParentGeneration rightMatchedActivation
+  0 matchedPerActivationPosition : eventChildPosition left = eventChildPosition right
 
-||| Parent-local structural matching of generated births.  A birth may be held
-||| pending while either trace advances; it must eventually remove exactly one
-||| opposite-side pending birth.  Thus global cross-parent chronology is
-||| irrelevant, while `RegistrationEventMatch` preserves each mapped parent's
-||| local iterator/yield position.
+||| Parent-local matching of canonical surviving generated births.  Births in
+||| parent activations that later L-Unload are discarded with explicit
+||| `DeletedClosingRegistration` evidence and never enter pending lists or
+||| consume positions.  Retained births may be held pending while either trace
+||| advances, so independent parents may interleave in any order.
 public export
 data RegistrationTraceCorrespondence :
   (nameEq : DecEq name) ->
@@ -2065,14 +2187,50 @@ data RegistrationTraceCorrespondence :
       leftOrdinal leftIndex left leftFinalIndex rightOrdinal rightIndex
       (MoreTransitions transition rightRest) rightFinalIndex
       pendingLeft pendingRight
-  QueueLeftGeneratedRegistration :
+  DiscardLeftDeletedRegistration :
     (transition : Transition leftFirst leftMiddle) ->
     (leftRest : Transitions leftMiddle leftFinal) ->
     transitionAction transition = OInsert child (ChildOf parent) component ->
+    DeletedClosingRegistration
+      (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent component)
+      leftRest ->
     RegistrationTraceCorrespondence nameEq renaming
       (S leftOrdinal)
       (advanceRegistrationIndex @{nameEq} leftOrdinal
         (OInsert child (ChildOf parent) component) leftIndex)
+      leftRest leftFinalIndex rightOrdinal rightIndex right rightFinalIndex
+      pendingLeft pendingRight ->
+    RegistrationTraceCorrespondence nameEq renaming
+      leftOrdinal leftIndex (MoreTransitions transition leftRest) leftFinalIndex
+      rightOrdinal rightIndex right rightFinalIndex pendingLeft pendingRight
+  DiscardRightDeletedRegistration :
+    (transition : Transition rightFirst rightMiddle) ->
+    (rightRest : Transitions rightMiddle rightFinal) ->
+    transitionAction transition = OInsert child (ChildOf parent) component ->
+    DeletedClosingRegistration
+      (registrationEventAt @{nameEq} rightOrdinal rightIndex child parent component)
+      rightRest ->
+    RegistrationTraceCorrespondence nameEq renaming
+      leftOrdinal leftIndex left leftFinalIndex
+      (S rightOrdinal)
+      (advanceRegistrationIndex @{nameEq} rightOrdinal
+        (OInsert child (ChildOf parent) component) rightIndex)
+      rightRest rightFinalIndex pendingLeft pendingRight ->
+    RegistrationTraceCorrespondence nameEq renaming
+      leftOrdinal leftIndex left leftFinalIndex rightOrdinal rightIndex
+      (MoreTransitions transition rightRest) rightFinalIndex
+      pendingLeft pendingRight
+  QueueLeftGeneratedRegistration :
+    (transition : Transition leftFirst leftMiddle) ->
+    (leftRest : Transitions leftMiddle leftFinal) ->
+    transitionAction transition = OInsert child (ChildOf parent) component ->
+    SurvivingRegistration
+      (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent component)
+      leftRest ->
+    RegistrationTraceCorrespondence nameEq renaming
+      (S leftOrdinal)
+      (advanceSurvivingRegistrationIndex @{nameEq} leftOrdinal
+        child parent component leftIndex)
       leftRest leftFinalIndex rightOrdinal rightIndex right rightFinalIndex
       (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent component ::
         pendingLeft) pendingRight ->
@@ -2083,11 +2241,14 @@ data RegistrationTraceCorrespondence :
     (transition : Transition rightFirst rightMiddle) ->
     (rightRest : Transitions rightMiddle rightFinal) ->
     transitionAction transition = OInsert child (ChildOf parent) component ->
+    SurvivingRegistration
+      (registrationEventAt @{nameEq} rightOrdinal rightIndex child parent component)
+      rightRest ->
     RegistrationTraceCorrespondence nameEq renaming
       leftOrdinal leftIndex left leftFinalIndex
       (S rightOrdinal)
-      (advanceRegistrationIndex @{nameEq} rightOrdinal
-        (OInsert child (ChildOf parent) component) rightIndex)
+      (advanceSurvivingRegistrationIndex @{nameEq} rightOrdinal
+        child parent component rightIndex)
       rightRest rightFinalIndex pendingLeft
       (registrationEventAt @{nameEq} rightOrdinal rightIndex child parent component ::
         pendingRight) ->
@@ -2099,6 +2260,9 @@ data RegistrationTraceCorrespondence :
     (transition : Transition leftFirst leftMiddle) ->
     (leftRest : Transitions leftMiddle leftFinal) ->
     transitionAction transition = OInsert child (ChildOf parent) component ->
+    SurvivingRegistration
+      (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent component)
+      leftRest ->
     (rightPrefix : List (RegistrationEvent name key world error value)) ->
     (rightEvent : RegistrationEvent name key world error value) ->
     (rightSuffix : List (RegistrationEvent name key world error value)) ->
@@ -2107,8 +2271,8 @@ data RegistrationTraceCorrespondence :
       rightEvent ->
     RegistrationTraceCorrespondence nameEq renaming
       (S leftOrdinal)
-      (advanceRegistrationIndex @{nameEq} leftOrdinal
-        (OInsert child (ChildOf parent) component) leftIndex)
+      (advanceSurvivingRegistrationIndex @{nameEq} leftOrdinal
+        child parent component leftIndex)
       leftRest leftFinalIndex rightOrdinal rightIndex right rightFinalIndex
       pendingLeft (rightPrefix ++ rightSuffix) ->
     RegistrationTraceCorrespondence nameEq renaming
@@ -2119,6 +2283,9 @@ data RegistrationTraceCorrespondence :
     (transition : Transition rightFirst rightMiddle) ->
     (rightRest : Transitions rightMiddle rightFinal) ->
     transitionAction transition = OInsert child (ChildOf parent) component ->
+    SurvivingRegistration
+      (registrationEventAt @{nameEq} rightOrdinal rightIndex child parent component)
+      rightRest ->
     (leftPrefix : List (RegistrationEvent name key world error value)) ->
     (leftEvent : RegistrationEvent name key world error value) ->
     (leftSuffix : List (RegistrationEvent name key world error value)) ->
@@ -2127,8 +2294,8 @@ data RegistrationTraceCorrespondence :
     RegistrationTraceCorrespondence nameEq renaming
       leftOrdinal leftIndex left leftFinalIndex
       (S rightOrdinal)
-      (advanceRegistrationIndex @{nameEq} rightOrdinal
-        (OInsert child (ChildOf parent) component) rightIndex)
+      (advanceSurvivingRegistrationIndex @{nameEq} rightOrdinal
+        child parent component rightIndex)
       rightRest rightFinalIndex (leftPrefix ++ leftSuffix) pendingRight ->
     RegistrationTraceCorrespondence nameEq renaming
       leftOrdinal leftIndex left leftFinalIndex rightOrdinal rightIndex

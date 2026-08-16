@@ -319,6 +319,13 @@ checkedNamedFire nameEq keyEq action before
       Just (MkCheckedNamedTransition afterState tag fired
         (Fired nameEq keyEq action tag fired) Refl)
 
+0 namedTransitionNotUnload :
+  (step : CheckedNamedTransition nameEq keyEq action before) ->
+  (action = LUnload parent -> Void) ->
+  transitionAction (namedTransition step) = LUnload parent -> Void
+namedTransitionNotUnload step actionNotUnload observed =
+  actionNotUnload (trans (sym (namedAction step)) observed)
+
 swapFreshRaw : Nat -> Nat
 swapFreshRaw (S Z) = S (S Z)
 swapFreshRaw (S (S Z)) = S Z
@@ -602,38 +609,86 @@ namedRoleTail2 : (evidence : RoleChangingNamedTrace generatedChild) ->
 namedRoleTail2 evidence = MoreTransitions (namedTransition (parentBegin evidence))
   (namedRoleTail3 evidence)
 
+registrationTestAdvance : Nat ->
+  Action Nat RegistrationTestKey RegistrationTestValue Unit String ->
+  RegistrationIndexState Nat -> RegistrationIndexState Nat
+registrationTestAdvance = DGamma.CP3.advanceRegistrationIndex
+  @{DGamma.CP3StatementChecks.registrationTestNameEq}
+
+registrationTestAdvanceSurviving : Nat -> (child, parent : Nat) ->
+  Component RegistrationTestKey RegistrationTestValue Unit String ->
+  RegistrationIndexState Nat -> RegistrationIndexState Nat
+registrationTestAdvanceSurviving = DGamma.CP3.advanceSurvivingRegistrationIndex
+  @{DGamma.CP3StatementChecks.registrationTestNameEq}
+
 freshChoiceFinalGenerations : GenerationEnvironment Nat
 freshChoiceFinalGenerations =
   [(0, MkRegistrationGeneration 0 0),
    (1, MkRegistrationGeneration 1 5)]
 
+freshChoiceParentIndex : RegistrationIndexState Nat
+freshChoiceParentIndex = registrationTestAdvance 1 (LBegin 0)
+  (registrationTestAdvance 0
+    (OInsert 0 Root registrationTestParent) DGamma.CP3.emptyRegistrationIndex)
+
 freshChoiceLeftFinalIndex : RegistrationIndexState Nat
-freshChoiceLeftFinalIndex = MkRegistrationIndexState
-  (putCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
-    1 (MkRegistrationGeneration 1 5)
-    (deleteCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
-      1 (putCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
-        1 (MkRegistrationGeneration 1 2)
-        (putCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
-          0 (MkRegistrationGeneration 0 0) []))))
-  (incrementChildrenBornUnder @{DGamma.CP3StatementChecks.registrationTestNameEq}
-    (MkRegistrationGeneration 0 0) [])
+freshChoiceLeftFinalIndex =
+  let afterChild = registrationTestAdvanceSurviving 2
+        1 0 registrationTestChild freshChoiceParentIndex
+      afterRetire = registrationTestAdvance 3 (ORetire 1) afterChild
+      afterRemove = registrationTestAdvance 4 (ORemove 1) afterRetire
+      afterRoot = registrationTestAdvance 5
+        (OInsert 1 Root registrationTestChild) afterRemove
+      afterParent = registrationTestAdvance 6 (LAdvance 0) afterRoot
+      afterBegin = registrationTestAdvance 7 (LBegin 1) afterParent in
+    registrationTestAdvance 8 (LAdvance 1) afterBegin
 
 freshChoiceRightFinalIndex : RegistrationIndexState Nat
-freshChoiceRightFinalIndex = MkRegistrationIndexState
-  (putCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
-    1 (MkRegistrationGeneration 1 5)
-    (deleteCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
-      2 (putCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
-        2 (MkRegistrationGeneration 2 2)
-        (putCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
-          0 (MkRegistrationGeneration 0 0) []))))
-  (incrementChildrenBornUnder @{DGamma.CP3StatementChecks.registrationTestNameEq}
-    (MkRegistrationGeneration 0 0) [])
+freshChoiceRightFinalIndex =
+  let afterChild = registrationTestAdvanceSurviving 2
+        2 0 registrationTestChild freshChoiceParentIndex
+      afterRetire = registrationTestAdvance 3 (ORetire 2) afterChild
+      afterRemove = registrationTestAdvance 4 (ORemove 2) afterRetire
+      afterRoot = registrationTestAdvance 5
+        (OInsert 1 Root registrationTestChild) afterRemove
+      afterParent = registrationTestAdvance 6 (LAdvance 0) afterRoot
+      afterBegin = registrationTestAdvance 7 (LBegin 1) afterParent in
+    registrationTestAdvance 8 (LAdvance 1) afterBegin
 
-freshChoiceParentIndex : RegistrationIndexState Nat
-freshChoiceParentIndex = MkRegistrationIndexState
-  [(0, MkRegistrationGeneration 0 0)] []
+0 freshChoiceParentSurvives :
+  (evidence : RoleChangingNamedTrace generatedChild) ->
+  NoParentUnload 0 (namedRoleTail4 evidence)
+freshChoiceParentSurvives evidence =
+  NoParentUnloadStep (namedTransition (childRetire evidence))
+    (namedRoleTail5 evidence)
+    (namedTransitionNotUnload (childRetire evidence) (\Refl impossible))
+  (NoParentUnloadStep (namedTransition (childRemove evidence))
+    (namedRoleTail6 evidence)
+    (namedTransitionNotUnload (childRemove evidence) (\Refl impossible))
+  (NoParentUnloadStep (namedTransition (rootInsert1 evidence))
+    (namedRoleTail7 evidence)
+    (namedTransitionNotUnload (rootInsert1 evidence) (\Refl impossible))
+  (NoParentUnloadStep (namedTransition (parentAdvance evidence))
+    (namedRoleTail8 evidence)
+    (namedTransitionNotUnload (parentAdvance evidence) (\Refl impossible))
+  (NoParentUnloadStep (namedTransition (rootBegin1 evidence))
+    (namedRoleTail9 evidence)
+    (namedTransitionNotUnload (rootBegin1 evidence) (\Refl impossible))
+  (NoParentUnloadStep (namedTransition (rootAdvance1 evidence))
+    NoTransitions
+    (namedTransitionNotUnload (rootAdvance1 evidence) (\Refl impossible))
+    NoParentUnloadEnd)))))
+
+0 freshChoiceSurvivingRegistration :
+  (evidence : RoleChangingNamedTrace generatedChild) ->
+  SurvivingRegistration
+    (registrationEventAt @{DGamma.CP3StatementChecks.registrationTestNameEq}
+      2 DGamma.CP3StatementChecks.freshChoiceParentIndex generatedChild 0
+      DGamma.CP3StatementChecks.registrationTestChild)
+    (namedRoleTail4 evidence)
+freshChoiceSurvivingRegistration evidence = MkSurvivingRegistration
+  (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1) Refl
+  (freshChoiceParentSurvives evidence)
 
 0 freshChoiceGenerationTraceCorrespondence :
   (left : RoleChangingNamedTrace 1) ->
@@ -654,7 +709,7 @@ freshChoiceGenerationTraceCorrespondence left right =
     (namedAction (parentBegin left)) Refl
   (QueueLeftGeneratedRegistration
     (namedTransition (childInsert left)) (namedRoleTail4 left)
-    (namedAction (childInsert left))
+    (namedAction (childInsert left)) (freshChoiceSurvivingRegistration left)
   (SkipLeftNonRegistration (ORetire 1)
     (namedTransition (childRetire left)) (namedRoleTail5 left)
     (namedAction (childRetire left)) Refl
@@ -681,12 +736,13 @@ freshChoiceGenerationTraceCorrespondence left right =
     (namedAction (parentBegin right)) Refl
   (MatchRightWithPendingLeft
     (namedTransition (childInsert right)) (namedRoleTail4 right)
-    (namedAction (childInsert right)) []
+    (namedAction (childInsert right)) (freshChoiceSurvivingRegistration right) []
     (registrationEventAt @{DGamma.CP3StatementChecks.registrationTestNameEq}
       2 DGamma.CP3StatementChecks.freshChoiceParentIndex 1 0 registrationTestChild)
     []
     (MkRegistrationEventMatch Refl
-      (MkRegistrationGeneration 0 0) (MkRegistrationGeneration 0 0)
+      (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1)
+      (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1)
       Refl Refl Refl Refl Refl)
   (SkipRightNonRegistration (ORetire 2)
     (namedTransition (childRetire right)) (namedRoleTail5 right)
@@ -1174,43 +1230,114 @@ buildCrossParentNamedTrace firstChild firstParent secondChild secondParent = do
   Just (MkCrossParentNamedTrace t1 t2 t3 t4 t5 t6 t7 t8 t9 t10 t11 t12)
 
 crossRootsIndex : RegistrationIndexState Nat
-crossRootsIndex = MkRegistrationIndexState
-  (putCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
-    1 (MkRegistrationGeneration 1 1)
-    (putCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
-      0 (MkRegistrationGeneration 0 0) [])) []
+crossRootsIndex =
+  let root0 = registrationTestAdvance 0
+        (OInsert 0 Root registrationTestParent) DGamma.CP3.emptyRegistrationIndex
+      root1 = registrationTestAdvance 1
+        (OInsert 1 Root registrationTestParent) root0
+      begin0 = registrationTestAdvance 2 (LBegin 0) root1 in
+    registrationTestAdvance 3 (LBegin 1) begin0
 
 crossLeftBeforeSecondIndex : RegistrationIndexState Nat
-crossLeftBeforeSecondIndex = advanceRegistrationIndex
-  @{DGamma.CP3StatementChecks.registrationTestNameEq} 4
-  (OInsert 2 (ChildOf 0) registrationTestChild) crossRootsIndex
+crossLeftBeforeSecondIndex = registrationTestAdvanceSurviving 4
+  2 0 registrationTestChild crossRootsIndex
 
 crossRightBeforeSecondIndex : RegistrationIndexState Nat
-crossRightBeforeSecondIndex = advanceRegistrationIndex
-  @{DGamma.CP3StatementChecks.registrationTestNameEq} 4
-  (OInsert 3 (ChildOf 1) registrationTestChild) crossRootsIndex
+crossRightBeforeSecondIndex = registrationTestAdvanceSurviving 4
+  3 1 registrationTestChild crossRootsIndex
 
 crossLeftFinalIndex : RegistrationIndexState Nat
-crossLeftFinalIndex = advanceRegistrationIndex
-  @{DGamma.CP3StatementChecks.registrationTestNameEq} 5
-  (OInsert 3 (ChildOf 1) registrationTestChild) crossLeftBeforeSecondIndex
+crossLeftFinalIndex =
+  let child3 = registrationTestAdvanceSurviving 5
+        3 1 registrationTestChild crossLeftBeforeSecondIndex
+      advance0 = registrationTestAdvance 6 (LAdvance 0) child3
+      advance1 = registrationTestAdvance 7 (LAdvance 1) advance0
+      begin2 = registrationTestAdvance 8 (LBegin 2) advance1
+      advance2 = registrationTestAdvance 9 (LAdvance 2) begin2
+      begin3 = registrationTestAdvance 10 (LBegin 3) advance2 in
+    registrationTestAdvance 11 (LAdvance 3) begin3
 
 crossRightFinalIndex : RegistrationIndexState Nat
-crossRightFinalIndex = advanceRegistrationIndex
-  @{DGamma.CP3StatementChecks.registrationTestNameEq} 5
-  (OInsert 2 (ChildOf 0) registrationTestChild) crossRightBeforeSecondIndex
+crossRightFinalIndex =
+  let child2 = registrationTestAdvanceSurviving 5
+        2 0 registrationTestChild crossRightBeforeSecondIndex
+      advance0 = registrationTestAdvance 6 (LAdvance 0) child2
+      advance1 = registrationTestAdvance 7 (LAdvance 1) advance0
+      begin2 = registrationTestAdvance 8 (LBegin 2) advance1
+      advance2 = registrationTestAdvance 9 (LAdvance 2) begin2
+      begin3 = registrationTestAdvance 10 (LBegin 3) advance2 in
+    registrationTestAdvance 11 (LAdvance 3) begin3
 
-0 crossRootGenerationsDiffer : sameRegistrationGeneration
-  @{DGamma.CP3StatementChecks.registrationTestNameEq}
-  (MkRegistrationGeneration 1 1) (MkRegistrationGeneration 0 0) = False
-crossRootGenerationsDiffer = Refl
+0 crossNoParentUnloadTail7 : (parent : Nat) ->
+  (trace : CrossParentNamedTrace a b c d) ->
+  NoParentUnload parent (crossTail7 trace)
+crossNoParentUnloadTail7 parent trace =
+  NoParentUnloadStep (namedTransition (crossAdvance0 trace))
+    (crossTail8 trace)
+    (namedTransitionNotUnload (crossAdvance0 trace) (\Refl impossible))
+  (NoParentUnloadStep (namedTransition (crossAdvance1 trace))
+    (crossTail9 trace)
+    (namedTransitionNotUnload (crossAdvance1 trace) (\Refl impossible))
+  (NoParentUnloadStep (namedTransition (crossBegin2 trace))
+    (crossTail10 trace)
+    (namedTransitionNotUnload (crossBegin2 trace) (\Refl impossible))
+  (NoParentUnloadStep (namedTransition (crossAdvance2 trace))
+    (crossTail11 trace)
+    (namedTransitionNotUnload (crossAdvance2 trace) (\Refl impossible))
+  (NoParentUnloadStep (namedTransition (crossBegin3 trace))
+    (crossTail12 trace)
+    (namedTransitionNotUnload (crossBegin3 trace) (\Refl impossible))
+  (NoParentUnloadStep (namedTransition (crossAdvance3 trace))
+    NoTransitions
+    (namedTransitionNotUnload (crossAdvance3 trace) (\Refl impossible))
+    NoParentUnloadEnd)))))
 
-0 crossSecondParentPositionZero : childrenBornUnder
-  @{DGamma.CP3StatementChecks.registrationTestNameEq}
-  (MkRegistrationGeneration 1 1)
-  (indexedChildCounts DGamma.CP3StatementChecks.crossLeftBeforeSecondIndex) = 0
-crossSecondParentPositionZero =
-  rewrite crossRootGenerationsDiffer in Refl
+0 crossNoParentUnloadTail6 : (parent : Nat) ->
+  (trace : CrossParentNamedTrace a b c d) ->
+  NoParentUnload parent (crossTail6 trace)
+crossNoParentUnloadTail6 parent trace =
+  NoParentUnloadStep (namedTransition (crossSecondChild trace))
+    (crossTail7 trace)
+    (namedTransitionNotUnload (crossSecondChild trace) (\Refl impossible))
+    (crossNoParentUnloadTail7 parent trace)
+
+0 crossLeftFirstSurvives : (trace : CrossParentNamedTrace 2 0 3 1) ->
+  SurvivingRegistration
+    (registrationEventAt @{DGamma.CP3StatementChecks.registrationTestNameEq}
+      4 DGamma.CP3StatementChecks.crossRootsIndex 2 0
+      DGamma.CP3StatementChecks.registrationTestChild)
+    (crossTail6 trace)
+crossLeftFirstSurvives trace = MkSurvivingRegistration
+  (MkRegistrationActivation (MkRegistrationGeneration 0 0) 2) Refl
+  (crossNoParentUnloadTail6 0 trace)
+
+0 crossLeftSecondSurvives : (trace : CrossParentNamedTrace 2 0 3 1) ->
+  SurvivingRegistration
+    (registrationEventAt @{DGamma.CP3StatementChecks.registrationTestNameEq}
+      5 DGamma.CP3StatementChecks.crossLeftBeforeSecondIndex
+      3 1 DGamma.CP3StatementChecks.registrationTestChild) (crossTail7 trace)
+crossLeftSecondSurvives trace = MkSurvivingRegistration
+  (MkRegistrationActivation (MkRegistrationGeneration 1 1) 3) Refl
+  (crossNoParentUnloadTail7 1 trace)
+
+0 crossRightFirstSurvives : (trace : CrossParentNamedTrace 3 1 2 0) ->
+  SurvivingRegistration
+    (registrationEventAt @{DGamma.CP3StatementChecks.registrationTestNameEq}
+      4 DGamma.CP3StatementChecks.crossRootsIndex 3 1
+      DGamma.CP3StatementChecks.registrationTestChild)
+    (crossTail6 trace)
+crossRightFirstSurvives trace = MkSurvivingRegistration
+  (MkRegistrationActivation (MkRegistrationGeneration 1 1) 3) Refl
+  (crossNoParentUnloadTail6 1 trace)
+
+0 crossRightSecondSurvives : (trace : CrossParentNamedTrace 3 1 2 0) ->
+  SurvivingRegistration
+    (registrationEventAt @{DGamma.CP3StatementChecks.registrationTestNameEq}
+      5 DGamma.CP3StatementChecks.crossRightBeforeSecondIndex
+      2 0 DGamma.CP3StatementChecks.registrationTestChild) (crossTail7 trace)
+crossRightSecondSurvives trace = MkSurvivingRegistration
+  (MkRegistrationActivation (MkRegistrationGeneration 0 0) 2) Refl
+  (crossNoParentUnloadTail7 0 trace)
 
 0 crossParentGenerationTraceCorrespondence :
   (left : CrossParentNamedTrace 2 0 3 1) ->
@@ -1237,10 +1364,10 @@ crossParentGenerationTraceCorrespondence left right =
     (namedAction (crossBegin1 left)) Refl
   (QueueLeftGeneratedRegistration
     (namedTransition (crossFirstChild left)) (crossTail6 left)
-    (namedAction (crossFirstChild left))
+    (namedAction (crossFirstChild left)) (crossLeftFirstSurvives left)
   (QueueLeftGeneratedRegistration
     (namedTransition (crossSecondChild left)) (crossTail7 left)
-    (namedAction (crossSecondChild left))
+    (namedAction (crossSecondChild left)) (crossLeftSecondSurvives left)
   (SkipLeftNonRegistration (LAdvance 0)
     (namedTransition (crossAdvance0 left)) (crossTail8 left)
     (namedAction (crossAdvance0 left)) Refl
@@ -1273,7 +1400,7 @@ crossParentGenerationTraceCorrespondence left right =
     (namedAction (crossBegin1 right)) Refl
   (MatchRightWithPendingLeft
     (namedTransition (crossFirstChild right)) (crossTail6 right)
-    (namedAction (crossFirstChild right)) []
+    (namedAction (crossFirstChild right)) (crossRightFirstSurvives right) []
     (registrationEventAt @{DGamma.CP3StatementChecks.registrationTestNameEq}
       5 DGamma.CP3StatementChecks.crossLeftBeforeSecondIndex
       3 1 registrationTestChild)
@@ -1281,16 +1408,18 @@ crossParentGenerationTraceCorrespondence left right =
       4 DGamma.CP3StatementChecks.crossRootsIndex
       2 0 registrationTestChild)]
     (MkRegistrationEventMatch Refl
-      (MkRegistrationGeneration 1 1) (MkRegistrationGeneration 1 1)
-      Refl Refl Refl Refl crossSecondParentPositionZero)
+      (MkRegistrationActivation (MkRegistrationGeneration 1 1) 3)
+      (MkRegistrationActivation (MkRegistrationGeneration 1 1) 3)
+      Refl Refl Refl Refl Refl)
   (MatchRightWithPendingLeft
     (namedTransition (crossSecondChild right)) (crossTail7 right)
-    (namedAction (crossSecondChild right)) []
+    (namedAction (crossSecondChild right)) (crossRightSecondSurvives right) []
     (registrationEventAt @{DGamma.CP3StatementChecks.registrationTestNameEq}
       4 DGamma.CP3StatementChecks.crossRootsIndex
       2 0 registrationTestChild) []
     (MkRegistrationEventMatch Refl
-      (MkRegistrationGeneration 0 0) (MkRegistrationGeneration 0 0)
+      (MkRegistrationActivation (MkRegistrationGeneration 0 0) 2)
+      (MkRegistrationActivation (MkRegistrationGeneration 0 0) 2)
       Refl Refl Refl Refl Refl)
   (SkipRightNonRegistration (LAdvance 0)
     (namedTransition (crossAdvance0 right)) (crossTail8 right)
