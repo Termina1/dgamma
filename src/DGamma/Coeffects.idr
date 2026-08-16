@@ -284,6 +284,7 @@ lookupReplaceOther wanted changed distinct next (MkCoeffectContext entries uniqu
   lookupReplaceOtherEntries wanted changed distinct next entries
 
 ||| Lookup frame for deleting a distinct key.
+public export
 0 lookupDeleteOtherEntries : DecEq key => (wanted, removed : key) ->
   Not (wanted = removed) -> (entries : List (Binding key value)) ->
   lookupEntries wanted (deleteEntries removed entries) = lookupEntries wanted entries
@@ -303,6 +304,19 @@ lookupDeleteOtherEntries wanted removed distinct (Bind found old :: rest)
     lookupDeleteOtherEntries wanted removed distinct (Bind found old :: rest) |
       (No notRemoved) | (No _) =
         lookupDeleteOtherEntries wanted removed distinct rest
+
+public export
+0 deleteEntriesPresentLength : DecEq key => (removed : key) ->
+  (old : value removed) -> (entries : List (Binding key value)) ->
+  lookupEntries removed entries = Just old ->
+  S (length (deleteEntries removed entries)) = length entries
+deleteEntriesPresentLength removed old [] present = case present of Refl impossible
+deleteEntriesPresentLength removed old (Bind found value :: rest) present
+  with (decEq removed found)
+  deleteEntriesPresentLength found old (Bind found value :: rest) present |
+    (Yes Refl) = Refl
+  deleteEntriesPresentLength removed old (Bind found value :: rest) present |
+    (No _) = cong S (deleteEntriesPresentLength removed old rest present)
 
 public export
 0 lookupDeleteOther : DecEq key => (wanted, removed : key) ->
