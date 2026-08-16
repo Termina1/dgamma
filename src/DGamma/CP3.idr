@@ -1910,6 +1910,7 @@ public export
 emptyRegistrationIndex : RegistrationIndexState name
 emptyRegistrationIndex = MkRegistrationIndexState [] []
 
+public export
 sameRegistrationGeneration : DecEq name =>
   RegistrationGeneration name -> RegistrationGeneration name -> Bool
 sameRegistrationGeneration

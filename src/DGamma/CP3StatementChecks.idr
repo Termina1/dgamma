@@ -988,11 +988,630 @@ freshChoiceCorrespondenceCheck = case freshChoiceCorrespondenceWitness of
   Nothing => False
   Just witness => True
 
+swapFourFive : Nat -> Nat
+swapFourFive 4 = 5
+swapFourFive 5 = 4
+swapFourFive n = n
+
+0 swapFourFiveInvolutive : (n : Nat) -> swapFourFive (swapFourFive n) = n
+swapFourFiveInvolutive Z = Refl
+swapFourFiveInvolutive (S Z) = Refl
+swapFourFiveInvolutive (S (S Z)) = Refl
+swapFourFiveInvolutive (S (S (S Z))) = Refl
+swapFourFiveInvolutive (S (S (S (S Z)))) = Refl
+swapFourFiveInvolutive (S (S (S (S (S Z))))) = Refl
+swapFourFiveInvolutive (S (S (S (S (S (S later)))))) = Refl
+
+swapCrossParentGeneration : RegistrationGeneration Nat -> RegistrationGeneration Nat
+swapCrossParentGeneration (MkRegistrationGeneration 2 ordinal) =
+  MkRegistrationGeneration 2 (swapFourFive ordinal)
+swapCrossParentGeneration (MkRegistrationGeneration 3 ordinal) =
+  MkRegistrationGeneration 3 (swapFourFive ordinal)
+swapCrossParentGeneration generation = generation
+
+0 swapCrossParentGenerationInvolutive :
+  (generation : RegistrationGeneration Nat) ->
+  swapCrossParentGeneration (swapCrossParentGeneration generation) = generation
+swapCrossParentGenerationInvolutive (MkRegistrationGeneration Z ordinal) = Refl
+swapCrossParentGenerationInvolutive
+  (MkRegistrationGeneration (S Z) ordinal) = Refl
+swapCrossParentGenerationInvolutive
+  (MkRegistrationGeneration (S (S Z)) ordinal) =
+    cong (MkRegistrationGeneration 2) (swapFourFiveInvolutive ordinal)
+swapCrossParentGenerationInvolutive
+  (MkRegistrationGeneration (S (S (S Z))) ordinal) =
+    cong (MkRegistrationGeneration 3) (swapFourFiveInvolutive ordinal)
+swapCrossParentGenerationInvolutive
+  (MkRegistrationGeneration (S (S (S (S later)))) ordinal) = Refl
+
+public export
+crossParentGenerationBijection : RegistrationGenerationBijection Nat
+crossParentGenerationBijection = MkRegistrationGenerationBijection
+  swapCrossParentGeneration swapCrossParentGeneration
+  swapCrossParentGenerationInvolutive swapCrossParentGenerationInvolutive
+
+record CrossParentNamedTrace
+  (firstChild, firstParent, secondChild, secondParent : Nat) where
+  constructor MkCrossParentNamedTrace
+  crossRoot0 : CheckedNamedTransition
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq
+    (OInsert 0 Root DGamma.CP3StatementChecks.registrationTestParent)
+    DGamma.CP3StatementChecks.registrationTestInitial
+  crossRoot1 : CheckedNamedTransition
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq
+    (OInsert 1 Root DGamma.CP3StatementChecks.registrationTestParent)
+    (namedAfter crossRoot0)
+  crossBegin0 : CheckedNamedTransition
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (LBegin 0)
+    (namedAfter crossRoot1)
+  crossBegin1 : CheckedNamedTransition
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (LBegin 1)
+    (namedAfter crossBegin0)
+  crossFirstChild : CheckedNamedTransition
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq
+    (OInsert firstChild (ChildOf firstParent)
+      DGamma.CP3StatementChecks.registrationTestChild)
+    (namedAfter crossBegin1)
+  crossSecondChild : CheckedNamedTransition
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq
+    (OInsert secondChild (ChildOf secondParent)
+      DGamma.CP3StatementChecks.registrationTestChild)
+    (namedAfter crossFirstChild)
+  crossAdvance0 : CheckedNamedTransition
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (LAdvance 0)
+    (namedAfter crossSecondChild)
+  crossAdvance1 : CheckedNamedTransition
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (LAdvance 1)
+    (namedAfter crossAdvance0)
+  crossBegin2 : CheckedNamedTransition
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (LBegin 2)
+    (namedAfter crossAdvance1)
+  crossAdvance2 : CheckedNamedTransition
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (LAdvance 2)
+    (namedAfter crossBegin2)
+  crossBegin3 : CheckedNamedTransition
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (LBegin 3)
+    (namedAfter crossAdvance2)
+  crossAdvance3 : CheckedNamedTransition
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq (LAdvance 3)
+    (namedAfter crossBegin3)
+
+crossParentTrace :
+  (trace : CrossParentNamedTrace firstChild firstParent secondChild secondParent) ->
+  Transitions DGamma.CP3StatementChecks.registrationTestInitial
+    (namedAfter (crossAdvance3 trace))
+crossParentTrace trace =
+  MoreTransitions (namedTransition (crossRoot0 trace))
+  (MoreTransitions (namedTransition (crossRoot1 trace))
+  (MoreTransitions (namedTransition (crossBegin0 trace))
+  (MoreTransitions (namedTransition (crossBegin1 trace))
+  (MoreTransitions (namedTransition (crossFirstChild trace))
+  (MoreTransitions (namedTransition (crossSecondChild trace))
+  (MoreTransitions (namedTransition (crossAdvance0 trace))
+  (MoreTransitions (namedTransition (crossAdvance1 trace))
+  (MoreTransitions (namedTransition (crossBegin2 trace))
+  (MoreTransitions (namedTransition (crossAdvance2 trace))
+  (MoreTransitions (namedTransition (crossBegin3 trace))
+  (MoreTransitions (namedTransition (crossAdvance3 trace))
+    NoTransitions)))))))))))
+
+crossTail12 : (trace : CrossParentNamedTrace a b c d) ->
+  Transitions (namedAfter (crossBegin3 trace)) (namedAfter (crossAdvance3 trace))
+crossTail12 trace = MoreTransitions (namedTransition (crossAdvance3 trace)) NoTransitions
+crossTail11 : (trace : CrossParentNamedTrace a b c d) ->
+  Transitions (namedAfter (crossAdvance2 trace)) (namedAfter (crossAdvance3 trace))
+crossTail11 trace = MoreTransitions (namedTransition (crossBegin3 trace)) (crossTail12 trace)
+crossTail10 : (trace : CrossParentNamedTrace a b c d) ->
+  Transitions (namedAfter (crossBegin2 trace)) (namedAfter (crossAdvance3 trace))
+crossTail10 trace = MoreTransitions (namedTransition (crossAdvance2 trace)) (crossTail11 trace)
+crossTail9 : (trace : CrossParentNamedTrace a b c d) ->
+  Transitions (namedAfter (crossAdvance1 trace)) (namedAfter (crossAdvance3 trace))
+crossTail9 trace = MoreTransitions (namedTransition (crossBegin2 trace)) (crossTail10 trace)
+crossTail8 : (trace : CrossParentNamedTrace a b c d) ->
+  Transitions (namedAfter (crossAdvance0 trace)) (namedAfter (crossAdvance3 trace))
+crossTail8 trace = MoreTransitions (namedTransition (crossAdvance1 trace)) (crossTail9 trace)
+crossTail7 : (trace : CrossParentNamedTrace a b c d) ->
+  Transitions (namedAfter (crossSecondChild trace)) (namedAfter (crossAdvance3 trace))
+crossTail7 trace = MoreTransitions (namedTransition (crossAdvance0 trace)) (crossTail8 trace)
+crossTail6 : (trace : CrossParentNamedTrace a b c d) ->
+  Transitions (namedAfter (crossFirstChild trace)) (namedAfter (crossAdvance3 trace))
+crossTail6 trace = MoreTransitions (namedTransition (crossSecondChild trace)) (crossTail7 trace)
+crossTail5 : (trace : CrossParentNamedTrace a b c d) ->
+  Transitions (namedAfter (crossBegin1 trace)) (namedAfter (crossAdvance3 trace))
+crossTail5 trace = MoreTransitions (namedTransition (crossFirstChild trace)) (crossTail6 trace)
+crossTail4 : (trace : CrossParentNamedTrace a b c d) ->
+  Transitions (namedAfter (crossBegin0 trace)) (namedAfter (crossAdvance3 trace))
+crossTail4 trace = MoreTransitions (namedTransition (crossBegin1 trace)) (crossTail5 trace)
+crossTail3 : (trace : CrossParentNamedTrace a b c d) ->
+  Transitions (namedAfter (crossRoot1 trace)) (namedAfter (crossAdvance3 trace))
+crossTail3 trace = MoreTransitions (namedTransition (crossBegin0 trace)) (crossTail4 trace)
+crossTail2 : (trace : CrossParentNamedTrace a b c d) ->
+  Transitions (namedAfter (crossRoot0 trace)) (namedAfter (crossAdvance3 trace))
+crossTail2 trace = MoreTransitions (namedTransition (crossRoot1 trace)) (crossTail3 trace)
+
+buildCrossParentNamedTrace :
+  (firstChild, firstParent, secondChild, secondParent : Nat) ->
+  Maybe (CrossParentNamedTrace firstChild firstParent secondChild secondParent)
+buildCrossParentNamedTrace firstChild firstParent secondChild secondParent = do
+  t1 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (OInsert 0 Root registrationTestParent) registrationTestInitial
+  t2 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (OInsert 1 Root registrationTestParent) (namedAfter t1)
+  t3 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (LBegin 0) (namedAfter t2)
+  t4 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (LBegin 1) (namedAfter t3)
+  t5 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (OInsert firstChild (ChildOf firstParent) registrationTestChild)
+    (namedAfter t4)
+  t6 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (OInsert secondChild (ChildOf secondParent) registrationTestChild)
+    (namedAfter t5)
+  t7 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (LAdvance 0) (namedAfter t6)
+  t8 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (LAdvance 1) (namedAfter t7)
+  t9 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (LBegin 2) (namedAfter t8)
+  t10 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (LAdvance 2) (namedAfter t9)
+  t11 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (LBegin 3) (namedAfter t10)
+  t12 <- checkedNamedFire registrationTestNameEq registrationTestKeyEq
+    (LAdvance 3) (namedAfter t11)
+  Just (MkCrossParentNamedTrace t1 t2 t3 t4 t5 t6 t7 t8 t9 t10 t11 t12)
+
+crossRootsIndex : RegistrationIndexState Nat
+crossRootsIndex = MkRegistrationIndexState
+  (putCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
+    1 (MkRegistrationGeneration 1 1)
+    (putCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq}
+      0 (MkRegistrationGeneration 0 0) [])) []
+
+crossLeftBeforeSecondIndex : RegistrationIndexState Nat
+crossLeftBeforeSecondIndex = advanceRegistrationIndex
+  @{DGamma.CP3StatementChecks.registrationTestNameEq} 4
+  (OInsert 2 (ChildOf 0) registrationTestChild) crossRootsIndex
+
+crossRightBeforeSecondIndex : RegistrationIndexState Nat
+crossRightBeforeSecondIndex = advanceRegistrationIndex
+  @{DGamma.CP3StatementChecks.registrationTestNameEq} 4
+  (OInsert 3 (ChildOf 1) registrationTestChild) crossRootsIndex
+
+crossLeftFinalIndex : RegistrationIndexState Nat
+crossLeftFinalIndex = advanceRegistrationIndex
+  @{DGamma.CP3StatementChecks.registrationTestNameEq} 5
+  (OInsert 3 (ChildOf 1) registrationTestChild) crossLeftBeforeSecondIndex
+
+crossRightFinalIndex : RegistrationIndexState Nat
+crossRightFinalIndex = advanceRegistrationIndex
+  @{DGamma.CP3StatementChecks.registrationTestNameEq} 5
+  (OInsert 2 (ChildOf 0) registrationTestChild) crossRightBeforeSecondIndex
+
+0 crossRootGenerationsDiffer : sameRegistrationGeneration
+  @{DGamma.CP3StatementChecks.registrationTestNameEq}
+  (MkRegistrationGeneration 1 1) (MkRegistrationGeneration 0 0) = False
+crossRootGenerationsDiffer = Refl
+
+0 crossSecondParentPositionZero : childrenBornUnder
+  @{DGamma.CP3StatementChecks.registrationTestNameEq}
+  (MkRegistrationGeneration 1 1)
+  (indexedChildCounts DGamma.CP3StatementChecks.crossLeftBeforeSecondIndex) = 0
+crossSecondParentPositionZero =
+  rewrite crossRootGenerationsDiffer in Refl
+
+0 crossParentGenerationTraceCorrespondence :
+  (left : CrossParentNamedTrace 2 0 3 1) ->
+  (right : CrossParentNamedTrace 3 1 2 0) ->
+  RegistrationTraceCorrespondence
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.crossParentGenerationBijection
+    0 DGamma.CP3.emptyRegistrationIndex (crossParentTrace left)
+      DGamma.CP3StatementChecks.crossLeftFinalIndex
+    0 DGamma.CP3.emptyRegistrationIndex (crossParentTrace right)
+      DGamma.CP3StatementChecks.crossRightFinalIndex [] []
+crossParentGenerationTraceCorrespondence left right =
+  SkipLeftNonRegistration (OInsert 0 Root registrationTestParent)
+    (namedTransition (crossRoot0 left)) (crossTail2 left)
+    (namedAction (crossRoot0 left)) Refl
+  (SkipLeftNonRegistration (OInsert 1 Root registrationTestParent)
+    (namedTransition (crossRoot1 left)) (crossTail3 left)
+    (namedAction (crossRoot1 left)) Refl
+  (SkipLeftNonRegistration (LBegin 0)
+    (namedTransition (crossBegin0 left)) (crossTail4 left)
+    (namedAction (crossBegin0 left)) Refl
+  (SkipLeftNonRegistration (LBegin 1)
+    (namedTransition (crossBegin1 left)) (crossTail5 left)
+    (namedAction (crossBegin1 left)) Refl
+  (QueueLeftGeneratedRegistration
+    (namedTransition (crossFirstChild left)) (crossTail6 left)
+    (namedAction (crossFirstChild left))
+  (QueueLeftGeneratedRegistration
+    (namedTransition (crossSecondChild left)) (crossTail7 left)
+    (namedAction (crossSecondChild left))
+  (SkipLeftNonRegistration (LAdvance 0)
+    (namedTransition (crossAdvance0 left)) (crossTail8 left)
+    (namedAction (crossAdvance0 left)) Refl
+  (SkipLeftNonRegistration (LAdvance 1)
+    (namedTransition (crossAdvance1 left)) (crossTail9 left)
+    (namedAction (crossAdvance1 left)) Refl
+  (SkipLeftNonRegistration (LBegin 2)
+    (namedTransition (crossBegin2 left)) (crossTail10 left)
+    (namedAction (crossBegin2 left)) Refl
+  (SkipLeftNonRegistration (LAdvance 2)
+    (namedTransition (crossAdvance2 left)) (crossTail11 left)
+    (namedAction (crossAdvance2 left)) Refl
+  (SkipLeftNonRegistration (LBegin 3)
+    (namedTransition (crossBegin3 left)) (crossTail12 left)
+    (namedAction (crossBegin3 left)) Refl
+  (SkipLeftNonRegistration (LAdvance 3)
+    (namedTransition (crossAdvance3 left)) NoTransitions
+    (namedAction (crossAdvance3 left)) Refl
+  (SkipRightNonRegistration (OInsert 0 Root registrationTestParent)
+    (namedTransition (crossRoot0 right)) (crossTail2 right)
+    (namedAction (crossRoot0 right)) Refl
+  (SkipRightNonRegistration (OInsert 1 Root registrationTestParent)
+    (namedTransition (crossRoot1 right)) (crossTail3 right)
+    (namedAction (crossRoot1 right)) Refl
+  (SkipRightNonRegistration (LBegin 0)
+    (namedTransition (crossBegin0 right)) (crossTail4 right)
+    (namedAction (crossBegin0 right)) Refl
+  (SkipRightNonRegistration (LBegin 1)
+    (namedTransition (crossBegin1 right)) (crossTail5 right)
+    (namedAction (crossBegin1 right)) Refl
+  (MatchRightWithPendingLeft
+    (namedTransition (crossFirstChild right)) (crossTail6 right)
+    (namedAction (crossFirstChild right)) []
+    (registrationEventAt @{DGamma.CP3StatementChecks.registrationTestNameEq}
+      5 DGamma.CP3StatementChecks.crossLeftBeforeSecondIndex
+      3 1 registrationTestChild)
+    [(registrationEventAt @{DGamma.CP3StatementChecks.registrationTestNameEq}
+      4 DGamma.CP3StatementChecks.crossRootsIndex
+      2 0 registrationTestChild)]
+    (MkRegistrationEventMatch Refl
+      (MkRegistrationGeneration 1 1) (MkRegistrationGeneration 1 1)
+      Refl Refl Refl Refl crossSecondParentPositionZero)
+  (MatchRightWithPendingLeft
+    (namedTransition (crossSecondChild right)) (crossTail7 right)
+    (namedAction (crossSecondChild right)) []
+    (registrationEventAt @{DGamma.CP3StatementChecks.registrationTestNameEq}
+      4 DGamma.CP3StatementChecks.crossRootsIndex
+      2 0 registrationTestChild) []
+    (MkRegistrationEventMatch Refl
+      (MkRegistrationGeneration 0 0) (MkRegistrationGeneration 0 0)
+      Refl Refl Refl Refl Refl)
+  (SkipRightNonRegistration (LAdvance 0)
+    (namedTransition (crossAdvance0 right)) (crossTail8 right)
+    (namedAction (crossAdvance0 right)) Refl
+  (SkipRightNonRegistration (LAdvance 1)
+    (namedTransition (crossAdvance1 right)) (crossTail9 right)
+    (namedAction (crossAdvance1 right)) Refl
+  (SkipRightNonRegistration (LBegin 2)
+    (namedTransition (crossBegin2 right)) (crossTail10 right)
+    (namedAction (crossBegin2 right)) Refl
+  (SkipRightNonRegistration (LAdvance 2)
+    (namedTransition (crossAdvance2 right)) (crossTail11 right)
+    (namedAction (crossAdvance2 right)) Refl
+  (SkipRightNonRegistration (LBegin 3)
+    (namedTransition (crossBegin3 right)) (crossTail12 right)
+    (namedAction (crossBegin3 right)) Refl
+  (SkipRightNonRegistration (LAdvance 3)
+    (namedTransition (crossAdvance3 right)) NoTransitions
+    (namedAction (crossAdvance3 right)) Refl
+    RegistrationCorrespondenceEnd)))))))))))))))))))))))
+
+0 namedLifecycleNotRoot :
+  (step : CheckedNamedTransition nameEq keyEq action before) ->
+  isLifecycleAction action = True ->
+  RootOrchestrationStep nameEq (namedTransition step) -> Void
+namedLifecycleNotRoot step lifecycle =
+  lifecycleCannotBeRoot (namedTransition step)
+    (trans (cong isLifecycleAction (namedAction step)) lifecycle)
+
+0 crossParentExternalRootBirthCorrespondence :
+  (left : CrossParentNamedTrace 2 0 3 1) ->
+  (right : CrossParentNamedTrace 3 1 2 0) ->
+  ExternalRootBirthCorrespondence
+    DGamma.CP3StatementChecks.crossParentGenerationBijection 0
+    (crossParentTrace left) 0 (crossParentTrace right)
+crossParentExternalRootBirthCorrespondence left right =
+  MatchExternalRootBirth
+    (namedTransition (crossRoot0 left)) (crossTail2 left)
+    (namedTransition (crossRoot0 right)) (crossTail2 right)
+    (namedAction (crossRoot0 left)) (namedAction (crossRoot0 right)) Refl
+  (MatchExternalRootBirth
+    (namedTransition (crossRoot1 left)) (crossTail3 left)
+    (namedTransition (crossRoot1 right)) (crossTail3 right)
+    (namedAction (crossRoot1 left)) (namedAction (crossRoot1 right)) Refl
+  (SkipLeftNonExternalRootBirth (LBegin 0)
+    (namedTransition (crossBegin0 left)) (crossTail4 left)
+    (namedAction (crossBegin0 left)) Refl
+  (SkipLeftNonExternalRootBirth (LBegin 1)
+    (namedTransition (crossBegin1 left)) (crossTail5 left)
+    (namedAction (crossBegin1 left)) Refl
+  (SkipLeftNonExternalRootBirth
+    (OInsert 2 (ChildOf 0) registrationTestChild)
+    (namedTransition (crossFirstChild left)) (crossTail6 left)
+    (namedAction (crossFirstChild left)) Refl
+  (SkipLeftNonExternalRootBirth
+    (OInsert 3 (ChildOf 1) registrationTestChild)
+    (namedTransition (crossSecondChild left)) (crossTail7 left)
+    (namedAction (crossSecondChild left)) Refl
+  (SkipLeftNonExternalRootBirth (LAdvance 0)
+    (namedTransition (crossAdvance0 left)) (crossTail8 left)
+    (namedAction (crossAdvance0 left)) Refl
+  (SkipLeftNonExternalRootBirth (LAdvance 1)
+    (namedTransition (crossAdvance1 left)) (crossTail9 left)
+    (namedAction (crossAdvance1 left)) Refl
+  (SkipLeftNonExternalRootBirth (LBegin 2)
+    (namedTransition (crossBegin2 left)) (crossTail10 left)
+    (namedAction (crossBegin2 left)) Refl
+  (SkipLeftNonExternalRootBirth (LAdvance 2)
+    (namedTransition (crossAdvance2 left)) (crossTail11 left)
+    (namedAction (crossAdvance2 left)) Refl
+  (SkipLeftNonExternalRootBirth (LBegin 3)
+    (namedTransition (crossBegin3 left)) (crossTail12 left)
+    (namedAction (crossBegin3 left)) Refl
+  (SkipLeftNonExternalRootBirth (LAdvance 3)
+    (namedTransition (crossAdvance3 left)) NoTransitions
+    (namedAction (crossAdvance3 left)) Refl
+  (SkipRightNonExternalRootBirth (LBegin 0)
+    (namedTransition (crossBegin0 right)) (crossTail4 right)
+    (namedAction (crossBegin0 right)) Refl
+  (SkipRightNonExternalRootBirth (LBegin 1)
+    (namedTransition (crossBegin1 right)) (crossTail5 right)
+    (namedAction (crossBegin1 right)) Refl
+  (SkipRightNonExternalRootBirth
+    (OInsert 3 (ChildOf 1) registrationTestChild)
+    (namedTransition (crossFirstChild right)) (crossTail6 right)
+    (namedAction (crossFirstChild right)) Refl
+  (SkipRightNonExternalRootBirth
+    (OInsert 2 (ChildOf 0) registrationTestChild)
+    (namedTransition (crossSecondChild right)) (crossTail7 right)
+    (namedAction (crossSecondChild right)) Refl
+  (SkipRightNonExternalRootBirth (LAdvance 0)
+    (namedTransition (crossAdvance0 right)) (crossTail8 right)
+    (namedAction (crossAdvance0 right)) Refl
+  (SkipRightNonExternalRootBirth (LAdvance 1)
+    (namedTransition (crossAdvance1 right)) (crossTail9 right)
+    (namedAction (crossAdvance1 right)) Refl
+  (SkipRightNonExternalRootBirth (LBegin 2)
+    (namedTransition (crossBegin2 right)) (crossTail10 right)
+    (namedAction (crossBegin2 right)) Refl
+  (SkipRightNonExternalRootBirth (LAdvance 2)
+    (namedTransition (crossAdvance2 right)) (crossTail11 right)
+    (namedAction (crossAdvance2 right)) Refl
+  (SkipRightNonExternalRootBirth (LBegin 3)
+    (namedTransition (crossBegin3 right)) (crossTail12 right)
+    (namedAction (crossBegin3 right)) Refl
+  (SkipRightNonExternalRootBirth (LAdvance 3)
+    (namedTransition (crossAdvance3 right)) NoTransitions
+    (namedAction (crossAdvance3 right)) Refl
+    ExternalRootBirthCorrespondenceEnd)))))))))))))))))))))
+
+0 crossParentSameExternal :
+  (left : CrossParentNamedTrace 2 0 3 1) ->
+  (right : CrossParentNamedTrace 3 1 2 0) ->
+  SameExternalOrchestration DGamma.CP3StatementChecks.registrationTestNameEq
+    (crossParentTrace left) (crossParentTrace right)
+crossParentSameExternal left right =
+  MatchExternalInput (OInsert 0 Root registrationTestParent)
+    (namedTransition (crossRoot0 left)) (crossTail2 left)
+    (RootInsertStep (namedAction (crossRoot0 left)))
+    (namedTransition (crossRoot0 right)) (crossTail2 right)
+    (RootInsertStep (namedAction (crossRoot0 right)))
+    (namedAction (crossRoot0 left)) (namedAction (crossRoot0 right))
+  (MatchExternalInput (OInsert 1 Root registrationTestParent)
+    (namedTransition (crossRoot1 left)) (crossTail3 left)
+    (RootInsertStep (namedAction (crossRoot1 left)))
+    (namedTransition (crossRoot1 right)) (crossTail3 right)
+    (RootInsertStep (namedAction (crossRoot1 right)))
+    (namedAction (crossRoot1 left)) (namedAction (crossRoot1 right))
+  (SkipLeftInternal (namedTransition (crossBegin0 left)) (crossTail4 left)
+    (namedLifecycleNotRoot (crossBegin0 left) Refl)
+  (SkipLeftInternal (namedTransition (crossBegin1 left)) (crossTail5 left)
+    (namedLifecycleNotRoot (crossBegin1 left) Refl)
+  (SkipLeftInternal (namedTransition (crossFirstChild left)) (crossTail6 left)
+    (childInsertCannotBeRoot (namedTransition (crossFirstChild left))
+      (namedAction (crossFirstChild left)))
+  (SkipLeftInternal (namedTransition (crossSecondChild left)) (crossTail7 left)
+    (childInsertCannotBeRoot (namedTransition (crossSecondChild left))
+      (namedAction (crossSecondChild left)))
+  (SkipLeftInternal (namedTransition (crossAdvance0 left)) (crossTail8 left)
+    (namedLifecycleNotRoot (crossAdvance0 left) Refl)
+  (SkipLeftInternal (namedTransition (crossAdvance1 left)) (crossTail9 left)
+    (namedLifecycleNotRoot (crossAdvance1 left) Refl)
+  (SkipLeftInternal (namedTransition (crossBegin2 left)) (crossTail10 left)
+    (namedLifecycleNotRoot (crossBegin2 left) Refl)
+  (SkipLeftInternal (namedTransition (crossAdvance2 left)) (crossTail11 left)
+    (namedLifecycleNotRoot (crossAdvance2 left) Refl)
+  (SkipLeftInternal (namedTransition (crossBegin3 left)) (crossTail12 left)
+    (namedLifecycleNotRoot (crossBegin3 left) Refl)
+  (SkipLeftInternal (namedTransition (crossAdvance3 left)) NoTransitions
+    (namedLifecycleNotRoot (crossAdvance3 left) Refl)
+  (SkipRightInternal (namedTransition (crossBegin0 right)) (crossTail4 right)
+    (namedLifecycleNotRoot (crossBegin0 right) Refl)
+  (SkipRightInternal (namedTransition (crossBegin1 right)) (crossTail5 right)
+    (namedLifecycleNotRoot (crossBegin1 right) Refl)
+  (SkipRightInternal (namedTransition (crossFirstChild right)) (crossTail6 right)
+    (childInsertCannotBeRoot (namedTransition (crossFirstChild right))
+      (namedAction (crossFirstChild right)))
+  (SkipRightInternal (namedTransition (crossSecondChild right)) (crossTail7 right)
+    (childInsertCannotBeRoot (namedTransition (crossSecondChild right))
+      (namedAction (crossSecondChild right)))
+  (SkipRightInternal (namedTransition (crossAdvance0 right)) (crossTail8 right)
+    (namedLifecycleNotRoot (crossAdvance0 right) Refl)
+  (SkipRightInternal (namedTransition (crossAdvance1 right)) (crossTail9 right)
+    (namedLifecycleNotRoot (crossAdvance1 right) Refl)
+  (SkipRightInternal (namedTransition (crossBegin2 right)) (crossTail10 right)
+    (namedLifecycleNotRoot (crossBegin2 right) Refl)
+  (SkipRightInternal (namedTransition (crossAdvance2 right)) (crossTail11 right)
+    (namedLifecycleNotRoot (crossAdvance2 right) Refl)
+  (SkipRightInternal (namedTransition (crossBegin3 right)) (crossTail12 right)
+    (namedLifecycleNotRoot (crossBegin3 right) Refl)
+  (SkipRightInternal (namedTransition (crossAdvance3 right)) NoTransitions
+    (namedLifecycleNotRoot (crossAdvance3 right) Refl)
+    SameExternalOrchestrationEnd)))))))))))))))))))))
+
+0 crossParentRegistrationCorrespondence :
+  (left : CrossParentNamedTrace 2 0 3 1) ->
+  (right : CrossParentNamedTrace 3 1 2 0) ->
+  RegistrationCorrespondenceByGeneration
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.crossParentGenerationBijection
+    (crossParentTrace left) (crossParentTrace right)
+crossParentRegistrationCorrespondence left right =
+  MkRegistrationCorrespondenceByGeneration crossLeftFinalIndex
+    crossRightFinalIndex (crossParentGenerationTraceCorrespondence left right)
+
+0 crossParentCurrentForward :
+  (left : CrossParentNamedTrace 2 0 3 1) ->
+  (right : CrossParentNamedTrace 3 1 2 0) ->
+  (n : Nat) -> (generation : RegistrationGeneration Nat) ->
+  lookupCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq} n
+    (leftFinalGenerations (crossParentRegistrationCorrespondence left right)) =
+      Just generation ->
+  (rightGeneration : RegistrationGeneration Nat **
+   (generationForward DGamma.CP3StatementChecks.crossParentGenerationBijection
+      generation = rightGeneration,
+    lookupCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq} n
+      (rightFinalGenerations (crossParentRegistrationCorrespondence left right)) =
+        Just rightGeneration))
+crossParentCurrentForward left right Z generation found =
+  case justInjective found of
+    Refl => (MkRegistrationGeneration 0 0 ** (Refl, Refl))
+crossParentCurrentForward left right (S Z) generation found =
+  case justInjective found of
+    Refl => (MkRegistrationGeneration 1 1 ** (Refl, Refl))
+crossParentCurrentForward left right (S (S Z)) generation found =
+  case justInjective found of
+    Refl => (MkRegistrationGeneration 2 5 ** (Refl, Refl))
+crossParentCurrentForward left right (S (S (S Z))) generation found =
+  case justInjective found of
+    Refl => (MkRegistrationGeneration 3 4 ** (Refl, Refl))
+crossParentCurrentForward left right (S (S (S (S later)))) generation found =
+  void (nothingIsNotJust found)
+
+0 crossParentCurrentBackward :
+  (left : CrossParentNamedTrace 2 0 3 1) ->
+  (right : CrossParentNamedTrace 3 1 2 0) ->
+  (n : Nat) -> (generation : RegistrationGeneration Nat) ->
+  lookupCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq} n
+    (rightFinalGenerations (crossParentRegistrationCorrespondence left right)) =
+      Just generation ->
+  (leftGeneration : RegistrationGeneration Nat **
+   (generationBackward DGamma.CP3StatementChecks.crossParentGenerationBijection
+      generation = leftGeneration,
+    lookupCurrentGeneration @{DGamma.CP3StatementChecks.registrationTestNameEq} n
+      (leftFinalGenerations (crossParentRegistrationCorrespondence left right)) =
+        Just leftGeneration))
+crossParentCurrentBackward left right Z generation found =
+  case justInjective found of
+    Refl => (MkRegistrationGeneration 0 0 ** (Refl, Refl))
+crossParentCurrentBackward left right (S Z) generation found =
+  case justInjective found of
+    Refl => (MkRegistrationGeneration 1 1 ** (Refl, Refl))
+crossParentCurrentBackward left right (S (S Z)) generation found =
+  case justInjective found of
+    Refl => (MkRegistrationGeneration 2 4 ** (Refl, Refl))
+crossParentCurrentBackward left right (S (S (S Z))) generation found =
+  case justInjective found of
+    Refl => (MkRegistrationGeneration 3 5 ** (Refl, Refl))
+crossParentCurrentBackward left right (S (S (S (S later)))) generation found =
+  void (nothingIsNotJust found)
+
+0 crossParentCurrentEndpointRenaming :
+  (left : CrossParentNamedTrace 2 0 3 1) ->
+  (right : CrossParentNamedTrace 3 1 2 0) ->
+  CurrentEndpointRenaming DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.crossParentGenerationBijection
+    (crossParentTrace left) (crossParentTrace right)
+    (crossParentRegistrationCorrespondence left right)
+crossParentCurrentEndpointRenaming left right =
+  MkCurrentEndpointRenaming identityNameBijection
+    (\n, fiber, found, root => Refl)
+    (\n, fiber, found, root => Refl)
+    (crossParentCurrentForward left right)
+    (crossParentCurrentBackward left right)
+
+0 crossParentSameInputs :
+  (left : CrossParentNamedTrace 2 0 3 1) ->
+  (right : CrossParentNamedTrace 3 1 2 0) ->
+  SameOrchestrationModuloGenerated
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    (crossParentTrace left) (crossParentTrace right)
+crossParentSameInputs left right =
+  MkSameOrchestrationModuloGenerated crossParentGenerationBijection
+    (crossParentSameExternal left right)
+    (crossParentExternalRootBirthCorrespondence left right)
+    (crossParentRegistrationCorrespondence left right)
+    (crossParentCurrentEndpointRenaming left right)
+
+public export
+record CrossParentPermutationCorrespondenceWitness where
+  constructor MkCrossParentPermutationCorrespondenceWitness
+  crossParentLeft : CrossParentNamedTrace 2 0 3 1
+  crossParentRight : CrossParentNamedTrace 3 1 2 0
+  0 crossParentBlockerSameInputs : SameOrchestrationModuloGenerated
+    DGamma.CP3StatementChecks.registrationTestNameEq
+    (crossParentTrace crossParentLeft) (crossParentTrace crossParentRight)
+
+public export
+crossParentPermutationCorrespondenceWitness :
+  Maybe CrossParentPermutationCorrespondenceWitness
+crossParentPermutationCorrespondenceWitness = do
+  left <- buildCrossParentNamedTrace 2 0 3 1
+  right <- buildCrossParentNamedTrace 3 1 2 0
+  Just (MkCrossParentPermutationCorrespondenceWitness left right
+    (crossParentSameInputs left right))
+
+public export
+crossParentPermutationCorrespondenceCheck : Bool
+crossParentPermutationCorrespondenceCheck =
+  case crossParentPermutationCorrespondenceWitness of
+    Nothing => False
+    Just witness => True
+
+public export
+crossParentPermutationRuntimeCheck : Bool
+crossParentPermutationRuntimeCheck =
+  case (buildCrossParentNamedTrace 2 0 3 1,
+        buildCrossParentNamedTrace 3 1 2 0) of
+    (Just left, Just right) =>
+      quiet @{registrationTestNameEq} @{registrationTestKeyEq}
+        (namedAfter (crossAdvance3 left)) &&
+      quiet @{registrationTestNameEq} @{registrationTestKeyEq}
+        (namedAfter (crossAdvance3 right)) &&
+      noFailedFibers (namedAfter (crossAdvance3 left)) &&
+      noFailedFibers (namedAfter (crossAdvance3 right)) &&
+      isSupported @{registrationTestNameEq} @{registrationTestKeyEq} 0
+        (namedAfter (crossAdvance3 left)) &&
+      isSupported @{registrationTestNameEq} @{registrationTestKeyEq} 1
+        (namedAfter (crossAdvance3 left)) &&
+      isSupported @{registrationTestNameEq} @{registrationTestKeyEq} 2
+        (namedAfter (crossAdvance3 left)) &&
+      isSupported @{registrationTestNameEq} @{registrationTestKeyEq} 3
+        (namedAfter (crossAdvance3 left))
+    _ => False
+
 public export
 allCP3StatementChecks : Bool
 allCP3StatementChecks = roleChangingRuntimeCheck &&
   roleChangingCanonicalRuntimeCheck && roleChangingProofTraceCheck &&
-  freshChoiceCorrespondenceCheck
+  freshChoiceCorrespondenceCheck && crossParentPermutationRuntimeCheck &&
+  crossParentPermutationCorrespondenceCheck
 
 ||| End-to-end Theorem-73 statement check for the blocker pair.  Every premise
 ||| after the concrete checked traces is the exact public theorem premise; the
@@ -1048,6 +1667,61 @@ freshChoiceTheorem73PremiseChain claim witness leftAligned rightAligned
       leftAligned rightAligned leftDiscipline rightDiscipline initialWellFormed
       initialEmpty leftQuiet rightQuiet leftSuccess rightSuccess leftTotal
       rightTotal leftIndependent rightIndependent (blockerPairSameInputs witness)
+
+||| End-to-end public Theorem-73 premise check for the round-7 blocker pair.
+||| The traces differ only in the cross-parent interleaving of child births:
+||| left generations `(2,4),(3,5)` map structurally to right generations
+||| `(2,5),(3,4)` while both external roots stay exact.
+public export
+0 crossParentPermutationTheorem73PremiseChain :
+  confluenceTheorem Nat RegistrationTestKey RegistrationTestValue Unit String ->
+  (0 witness : CrossParentPermutationCorrespondenceWitness) ->
+  AlignedTransitions Nat RegistrationTestKey Unit String RegistrationTestValue
+    DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq
+    (crossParentTrace (crossParentLeft witness)) ->
+  AlignedTransitions Nat RegistrationTestKey Unit String RegistrationTestValue
+    DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq
+    (crossParentTrace (crossParentRight witness)) ->
+  RegistrationDiscipline DGamma.CP3StatementChecks.registrationTestProtocol DGamma.CP3StatementChecks.registrationTestNameEq
+    (crossParentTrace (crossParentLeft witness)) ->
+  RegistrationDiscipline DGamma.CP3StatementChecks.registrationTestProtocol DGamma.CP3StatementChecks.registrationTestNameEq
+    (crossParentTrace (crossParentRight witness)) ->
+  registryWellFormed @{DGamma.CP3StatementChecks.registrationTestNameEq} @{DGamma.CP3StatementChecks.registrationTestKeyEq}
+    DGamma.CP3StatementChecks.registrationTestInitial = True ->
+  bindings (registry DGamma.CP3StatementChecks.registrationTestInitial) = [] ->
+  quiet @{DGamma.CP3StatementChecks.registrationTestNameEq} @{DGamma.CP3StatementChecks.registrationTestKeyEq}
+    (namedAfter (crossAdvance3 (crossParentLeft witness))) = True ->
+  quiet @{DGamma.CP3StatementChecks.registrationTestNameEq} @{DGamma.CP3StatementChecks.registrationTestKeyEq}
+    (namedAfter (crossAdvance3 (crossParentRight witness))) = True ->
+  noFailedFibers (namedAfter (crossAdvance3 (crossParentLeft witness))) = True ->
+  noFailedFibers (namedAfter (crossAdvance3 (crossParentRight witness))) = True ->
+  TraceComponentsTotal DGamma.CP3StatementChecks.registrationTestKeyEq
+    (crossParentTrace (crossParentLeft witness)) ->
+  TraceComponentsTotal DGamma.CP3StatementChecks.registrationTestKeyEq
+    (crossParentTrace (crossParentRight witness)) ->
+  TraceIndependent Nat RegistrationTestKey Unit String RegistrationTestValue
+    DGamma.CP3StatementChecks.registrationTestKeyEq (crossParentTrace (crossParentLeft witness)) ->
+  TraceIndependent Nat RegistrationTestKey Unit String RegistrationTestValue
+    DGamma.CP3StatementChecks.registrationTestKeyEq (crossParentTrace (crossParentRight witness)) ->
+  ConfluenceResult Nat RegistrationTestKey Unit String RegistrationTestValue
+    DGamma.CP3StatementChecks.registrationTestProtocol DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq
+    (crossParentTrace (crossParentLeft witness))
+    (crossParentTrace (crossParentRight witness))
+    (generatedGenerationBijection (crossParentBlockerSameInputs witness))
+    (currentNameBijection (endpointRenaming (crossParentBlockerSameInputs witness)))
+crossParentPermutationTheorem73PremiseChain claim witness leftAligned rightAligned
+  leftDiscipline rightDiscipline initialWellFormed initialEmpty leftQuiet
+  rightQuiet leftSuccess rightSuccess leftTotal rightTotal leftIndependent
+  rightIndependent =
+    claim DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq DGamma.CP3StatementChecks.registrationTestProtocol
+      DGamma.CP3StatementChecks.registrationTestInitial
+      (namedAfter (crossAdvance3 (crossParentLeft witness)))
+      (namedAfter (crossAdvance3 (crossParentRight witness)))
+      (crossParentTrace (crossParentLeft witness))
+      (crossParentTrace (crossParentRight witness))
+      leftAligned rightAligned leftDiscipline rightDiscipline initialWellFormed
+      initialEmpty leftQuiet rightQuiet leftSuccess rightSuccess leftTotal
+      rightTotal leftIndependent rightIndependent (crossParentBlockerSameInputs witness)
 
 ||| Complete `CanonicalSchedule` constructor check specialized to the concrete
 ||| nine-action role-changing trace.  This is intentionally an assembly check,
