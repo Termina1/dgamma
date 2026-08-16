@@ -815,8 +815,30 @@ viewProvidersInactiveInsert {name} {key} {world} {error} {value}
 public export
 viewBindingsInvariant : DecEq name => DecEq key => (deps : List key) ->
   View name deps -> Registry name key value world error -> Bool
-viewBindingsInvariant deps view fibers = viewProvidersInvariant fibers view &&
-  isJust (resolveCommittedValues deps view fibers)
+viewBindingsInvariant @{nameEq} @{keyEq} deps view fibers =
+  viewProvidersInvariant @{nameEq} fibers view &&
+  isJust (resolveCommittedValues @{nameEq} @{keyEq} deps view fibers)
+
+public export
+0 viewBindingsInactiveInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) -> (view : View name deps) ->
+  (n : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (fibers : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} n fibers = Nothing) ->
+  viewBindingsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps view
+    (insertBinding @{nameEq} n (freshFiber component parent) fibers absent) =
+  viewBindingsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} deps view fibers
+viewBindingsInactiveInsert {name} {key} {world} {error} {value}
+  nameEq keyEq deps view n component parent fibers absent =
+  rewrite viewProvidersInactiveInsert {name = name} {key = key}
+    {world = world} {error = error} {value = value}
+    nameEq deps view n component parent fibers absent in
+  rewrite resolveCommittedValuesInactiveInsert {name = name} {key = key}
+    {world = world} {error = error} {value = value}
+    nameEq keyEq deps view n component parent fibers absent in Refl
 
 public export
 fiberViewInvariant : DecEq name => DecEq key =>
