@@ -1529,6 +1529,10 @@ registryWellFormedInactiveInsert {name} {key} {world} {error} {value}
         (andBothTrue _ _ targetChains
           (andBothTrue _ _ targetPairwise targetViews)))
 
+0 retireFiberParent : (fiber : Fiber name key value world error) ->
+  fiberParent (retireFiber fiber) = fiberParent fiber
+retireFiberParent (MkFiber component parent retired table lifecycle) = Refl
+
 ||| Retirement changes only a flag not observed by the local clauses of
 ||| Definition 58. These projection equations seed the ORetire replacement fold.
 public export
