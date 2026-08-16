@@ -220,6 +220,30 @@ fullEffectMapCarriesTable = case providerBeginRun of
           _ => False
         _ => False
 
+||| Definition-60 generator regression: one iterator stage exposes its exact
+||| per-yield inverse on full EffectState, independently of the final composite
+||| accumulator. The inverse restores both ambient state and the actor table.
+public export
+yieldedInverseGeneratorRuntimeCheck : Bool
+yieldedInverseGeneratorRuntimeCheck =
+  let origin : EffectState Nat ToyKey ToyValue ToyRuntime
+      origin = MkEffectState (MkToyRuntime False False)
+        (\actor => emptyContext)
+      fiber = freshFiber providerComponent Root
+  in case iteratorStepEffect %search %search 0 fiber providerInstall EmptyView
+    origin of
+    Nothing => False
+    Just (after, yielded) =>
+      case (effectAmbient after, lookupBinding ServiceA (effectTables after 0)) of
+        (MkToyRuntime True False, Just True) => case yielded after of
+          Nothing => False
+          Just restored =>
+            case (effectAmbient restored,
+              lookupBinding ServiceA (effectTables restored 0)) of
+              (MkToyRuntime False False, Nothing) => True
+              _ => False
+        _ => False
+
 ||| Dynamic-table/capability regression: the provider installs ServiceA and the
 ||| consumer reads that declared dependency to decide its ambient effect and own
 ||| ServiceB value.
@@ -374,6 +398,6 @@ proofTraceStarts = isJust (fire %search %search
 public export
 allRuleChecks : Bool
 allRuleChecks = proofTraceStarts && fullEffectMapCarriesTable &&
-  activationUsesResolution && guardedScenarioChecks &&
+  yieldedInverseGeneratorRuntimeCheck && activationUsesResolution && guardedScenarioChecks &&
   raiseMapIsIdentity && raiseScenario && emptyStaleDiverts && abortDivertScenario &&
   landingDivertScenario
