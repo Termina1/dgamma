@@ -113,10 +113,17 @@ of Lemma 38.
 
    The former global no-rebirth condition has been removed. The paper explicitly
    says a name freed by O-Remove may be reissued (lines 1855–1858); current
-   freshness plus occurrence-level yield evidence handles each birth instead of
-   banning that legal behavior. The finite catalog tag/rank is an explicit host
-   representation delta necessitated by the absence of a recursive component
-   yield channel in `runStepEffect`; it is not claimed to be a paper rule.
+   freshness plus located occurrence evidence distinguishes each birth instead
+   of banning that legal behavior. The finite catalog tag/rank is an explicit
+   host representation delta necessitated by the absence of a recursive
+   component yield channel in `runStepEffect`; it is not claimed to be a paper
+   rule. It is also an **over-approximation** of one Definition-47 application:
+   because the separate O-Insert rule does not consume the iterator head, one
+   live tagged source occurrence may license several fresh child names. This is
+   more permissive than the paper's one-fresh-name application. It does not
+   invalidate Lemmas 68/70: every admitted child still has a strictly higher
+   component rank and its own retirement obligation, so duplicating a target
+   rank cannot create a support cycle.
 6. **Erratum #4 / proof-intent ambiguity in Lemma 72.** The prose says to delete
    “steps that act on n”, which literally includes O-Retire under Definition 53,
    but the proof immediately claims those steps write only `theta_n` and
@@ -584,12 +591,12 @@ empty-suffix quantitative base (`progressEndFromNoDeadlock` and
    bound across every lifecycle transition. This needs a ranked induction, not
    arithmetic normalization alone.
 
-### Confluence (Theorem 73): statement under repair and proof debt
+### Confluence (Theorem 73): generation-stamped statement and proof debt
 
 The finite explicit-registration specialization remains stated and awaits
-round-5 review. Previously verified Equation-53, combined Equation-62, block,
+round-6 review. Previously verified Equation-53, combined Equation-62, block,
 root-placement, and exact-filter structures remain. Round-3's three statement
-blockers are now represented as follows:
+blockers and the round-5 generation collision are represented as follows:
 
 1. **One-step episode deletion (Lemma 72).** `KeepAction` remains
    bidirectional, but `DeleteEpisodeLifecycle` additionally requires
@@ -612,13 +619,25 @@ blockers are now represented as follows:
    `SystemEquivalentByRenaming`, not exact-domain `SystemEquivalent`.
    `CanonicalSchedule` carries the same protocol discipline on both traces. Its
    parent episode block admits provenance-linked child O-Insert, while
-   `CanonicalRegistrationCorrespondence` maps located occurrences injectively
-   and accounts removed generations in the withdrawal list. Registered endpoint
-   results include vestigial/absent and already-absent/absent alternatives.
+   `CanonicalRegistrationCorrespondence` maps located occurrences injectively.
+   Removed child births are now keyed by `RegistrationGeneration`, the pair of
+   raw name and birth ordinal, rather than by a raw name.
+4. **Role-changing raw-name reissue.** `CanonicalEndpointRelation` deliberately
+   separates historical `endpointWithdrawnGenerations` from current
+   `endpointWithdrawnNames`. A historical child generation can therefore be
+   removed while a later live root generation of the same raw name remains in
+   both endpoints. `LocatedActionOccurrence` and `CanonicalInputPlacement`
+   quantify root/child freshness and lifecycle placement at each located birth.
+   The checked nine-action regression in `DGamma.CP3StatementChecks` executes
+   child birth/retire/remove followed by same-name root birth and ends quiet with
+   both roots supported. `canonicalEndpointHistoricalOnly` proves the key
+   endpoint case constructively; raw endpoint withdrawals still require the
+   original vestigial/absent or absent/absent evidence.
 
-The older exact-name/zero-withdrawal endpoint helpers remain proved only as a
-strong special case. Constructive deletion, sorting, renaming construction, and
-general endpoint composition remain open.
+The older exact-name/zero-raw-withdrawal endpoint helpers remain proved only as a
+strong special case; they permit nonempty historical generation withdrawals.
+Constructive deletion, sorting, renaming construction, and general endpoint
+composition remain open.
 
 ### Recovery and Theorem 64
 
@@ -654,8 +673,8 @@ candidate round-5 statements, not accepted proofs:
   summaries. `LinearizesSupport` now requires `UniqueKeys` and linearizes
   `SupportPath`; `LocatedOpenEpisodeBlock` enforces actor-only contiguity,
   openness, and no earlier/later episode; coverage excludes unsupported
-  lifecycle history; and `CanonicalInputPlacement` records root/child
-  registration ordering. `FiberControlRelated` retains the exact immutable
+  lifecycle history; and `CanonicalInputPlacement` records located root/child
+  birth freshness and ordering. `FiberControlRelated` retains the exact immutable
   component (dependencies, provisions, program), parent, retirement, remaining
   iterator, committed view, outcome, and a pointwise accumulator relation.
 - The round-1 `DeletionResult` redesign admitted identity; round 3 then showed
@@ -692,6 +711,37 @@ that the accumulator executes at L-Unload, not at L-Leave/L-Divert/L-Raise.
 These are candidate proposition-shape repairs. Constructive Lemma 72/Theorem 73
 proofs and a full positive nested canonical schedule remain open.
 
+### CP3 adversarial round 5: role-changing generation repair
+
+Round 5 found one substantive false statement: a legal checked trace used raw
+name 1 first for a yielded child, retired and removed that birth, then reissued
+1 as a live external root. Raw-name canonical withdrawal could neither delete
+the historical child (the current root was live) nor retain it after moving all
+root inputs before lifecycle actions.
+
+The repair is generation stamping, not a no-role-change restriction:
+
+- `RegistrationGeneration` is `(generationName, generationBirthOrdinal)`, and
+  `registrationGeneration` stamps every located child O-Insert.
+- `CanonicalRegistrationCorrespondence` accounts, injects, and removes exact
+  generations. A retained canonical occurrence names the exact original birth
+  represented by `canonicalToOriginal`.
+- `CanonicalEndpointRelation` has separate historical-generation and current-
+  raw-name withdrawal lists. Only the latter weakens endpoint control equality
+  and must satisfy `RegisteredNamesWithdrawn`; each raw omission is linked to a
+  deleted generation, but a deleted generation need not omit the current raw
+  endpoint.
+- `CanonicalInputPlacement` now uses `LocatedActionOccurrence`: freshness and
+  root-before-lifecycle/child-before-own-lifecycle obligations quantify concrete
+  birth occurrences and ordinals rather than raw action existence.
+- `roleChangingRuntimeCheck` and `roleChangingProofTraceCheck` retain the exact
+  nine-action checked regression; `roleChangingGenerationAccountingGuard` and
+  `canonicalEndpointHistoricalOnly` witness the separated accounting shape.
+
+No restriction on paper-legal raw-name role changes was added. The remaining
+Theorem-73 debt is constructive deletion/sorting/renaming and endpoint assembly,
+not another known proposition-shape defect.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
@@ -702,10 +752,11 @@ strict containment, resolution constancy, and provider-value constancy.
 **Partial:** Progress/Theorem 66 (search/maximality/base case proved);
 Lemmas 68/70 (candidate tagged/ranked provenance statements; Lemma-70 empty
 base proved); Lemma 71 (effect commutation projection); Lemma 72 (candidate
-lifecycle-only deletion statement); Confluence/Theorem 73 (candidate Lemma-56
-renamed canonical package under round-5 review; zero-withdrawal assembly only); and recovery-combined Theorem 64 (complete
-conditional assembly from Corollary 62). Lemmas 54–57 have many rule, frame,
-and boundary analogues but are not individually complete.
+lifecycle-only deletion statement); Confluence/Theorem 73 (generation-stamped
+Lemma-56 canonical package awaiting round-6 review; zero-raw-withdrawal assembly
+only); and recovery-combined Theorem 64 (complete conditional assembly from
+Corollary 62). Lemmas 54–57 have many rule, frame, and boundary analogues but are
+not individually complete.
 
 **Merely stated:** Lemma 35, Theorems 40/42, recovery Theorem 61, Corollary 62,
 `resolutionCoherenceTheorem`, `progressTheorem`,
@@ -714,9 +765,13 @@ and boundary analogues but are not individually complete.
 escape-hatch-free proposition types.
 
 **Deviations:** Definition 32 finite approximations; finite static-list
-continuations; finite tagged/catalogued explicit registration rather than a recursive nested yield; trace-anchored
-full-effect generated monoids; exact full-effect equality; and explicit
-`AlignedTransitions` dictionary alignment.
+continuations; finite tagged/catalogued explicit registration rather than a
+recursive nested yield (including the documented one-source-head/many-child-name
+over-approximation); trace-anchored full-effect generated monoids; exact full-
+effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** implement temporal accumulator induction, ranked unloading-chain
-Progress, and constructive checked episode deletion/canonical sorting.
+**Next:** after round-6 statement review, implement temporal accumulator
+induction, ranked unloading-chain Progress, and constructive checked episode
+deletion/canonical sorting. A full positive nested canonical schedule remains a
+useful proof-level regression beyond the checked role-changing trace and
+constructive generation-accounting witnesses now present.
