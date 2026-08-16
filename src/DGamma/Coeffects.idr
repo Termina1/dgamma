@@ -231,6 +231,15 @@ replaceBinding k val (MkCoeffectContext entries unique) =
     (replace {p = UniqueKeys}
       (sym (replacePreservesKeys k val entries)) unique)
 
+||| A present binding is distinct from a key known absent.
+public export
+0 presentAbsentDistinct : DecEq key => (present, absent : key) ->
+  (table : CoeffectContext key value) -> (found : value present) ->
+  lookupBinding present table = Just found ->
+  lookupBinding absent table = Nothing -> Not (present = absent)
+presentAbsentDistinct present present table found presentHere absentHere Refl =
+  case trans (sym presentHere) absentHere of Refl impossible
+
 ||| Lookup frame for replacing a distinct key.
 0 lookupReplaceOtherEntries : DecEq key => (wanted, changed : key) ->
   Not (wanted = changed) -> (next : value changed) ->
