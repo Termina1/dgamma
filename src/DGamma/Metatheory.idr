@@ -849,17 +849,24 @@ unloadTransition {nameEq} {keyEq} {n} closing =
 ||| Every state in this trace segment, including both endpoints, is installed.
 public export
 data InstalledTrace : (name, key, world, error : Type) ->
-  (value : key -> Type) -> (nameEq : DecEq name) -> (n : name) ->
+  (value : key -> Type) -> (nameEq : DecEq name) ->
+  (keyEq : DecEq key) -> (n : name) ->
   {start, end : SystemState name key value world error} ->
   Transitions start end -> Type where
   InstalledEnd : installedAt @{nameEq} n state = True ->
-    InstalledTrace name key world error value nameEq n (NoTransitions {state})
-  InstalledStep : (transition : Transition first middle) ->
+    InstalledTrace name key world error value nameEq keyEq n
+      (NoTransitions {state})
+  InstalledStep :
+    {first, middle, finalState : SystemState name key value world error} ->
+    (action : Action name key value world error) -> (tag : RuleTag) ->
+    (equation : checkedApplyAction @{nameEq} @{keyEq} action first =
+      Just (tag, middle)) ->
     (rest : Transitions middle finalState) ->
     installedAt @{nameEq} n first = True ->
-    InstalledTrace name key world error value nameEq n rest ->
-    InstalledTrace name key world error value nameEq n
-      (MoreTransitions transition rest)
+    InstalledTrace name key world error value nameEq keyEq n rest ->
+    InstalledTrace name key world error value nameEq keyEq n
+      {start = first} {end = finalState}
+      (MoreTransitions (Fired nameEq keyEq action tag equation) rest)
 
 ||| A prefix is anchored at the unique left boundary: the state immediately
 ||| after L-Begin. It cannot be manufactured from an Active/Unloading suffix.
@@ -871,7 +878,7 @@ record EpisodePrefix (name, key, world, error : Type) (value : key -> Type)
   episodeStartState : SystemState name key value world error
   opening : BeginStep nameEq keyEq n preStart episodeStartState
   inside : Transitions episodeStartState current
-  insideInstalled : InstalledTrace name key world error value nameEq n inside
+  insideInstalled : InstalledTrace name key world error value nameEq keyEq n inside
 
 ||| A maximal closed episode has both boundaries: L-Begin on the left and the
 ||| first L-Unload on the right.
@@ -884,7 +891,7 @@ record ClosedEpisode (name, key, world, error : Type) (value : key -> Type)
   lastInstalledState : SystemState name key value world error
   closedOpening : BeginStep nameEq keyEq n preStart closedStartState
   closedInside : Transitions closedStartState lastInstalledState
-  closedInsideInstalled : InstalledTrace name key world error value nameEq n closedInside
+  closedInsideInstalled : InstalledTrace name key world error value nameEq keyEq n closedInside
   closing : UnloadStep nameEq keyEq n lastInstalledState afterClose
 
 public export
