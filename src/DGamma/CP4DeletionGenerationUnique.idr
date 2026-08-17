@@ -22,6 +22,7 @@ GenerationEnvironmentNamesUnique : GenerationEnvironment name -> Type
 GenerationEnvironmentNamesUnique live =
   UniqueKeys (generationEnvironmentNames live)
 
+public export
 0 environmentElemName :
   Elem (selected, generation) live ->
   Elem selected (generationEnvironmentNames live)
