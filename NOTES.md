@@ -274,7 +274,6 @@ cannot silently introduce a proof:
 - `recoveryExactnessTheorem` — Theorem 61.
 - `terminalRecoveryTheorem` — Corollary 62.
 - `resolutionCoherenceTheorem` — the recovery-combined form of Theorem 64.
-- `progressTheorem` — the finite quantitative form of Theorem 66.
 - `deletionTheorem` — Lemma 72.
 - `confluenceTheorem` — the finite explicit-registration form of Theorem 73,
   with parent-activation structural matching, exact historical external-root
@@ -284,6 +283,8 @@ cannot silently introduce a proof:
 Each open theorem is marked `TODO(proof)` at its declaration. These are honest
 uninhabited statements, not holes accepted by the compiler. `orderingTheorem`
 is no longer on this list: `DGamma.Ordering.orderingTheoremProof` inhabits it.
+`progressTheorem` is likewise inhabited by
+`DGamma.CP4ProgressProof.progressTheoremProof`.
 
 ## Checkpoint 1 — Section 3 (approved)
 
@@ -699,26 +700,25 @@ provision disjointness.
 - `DGamma.Ordering` isolates final assembly from the large CP3 module. This is
   an elaboration-performance split only; it changes no theorem premise.
 
-### Progress (Theorem 66): precise remaining debt
+### Fully proved Progress (Theorem 66)
 
-The finite-trace specialization remains stated. Proved cores are lifecycle witness
-search soundness, maximality-implies-quiet from no-deadlock, and the complete
-empty-suffix quantitative base (`progressEndFromNoDeadlock` and
-`progressEndFromSearch`). CP4 Finding #5 constructively refutes the old alias;
-the approved repaired alias now carries `continuationsBoundedBy`, its all-rule
-preservation proof, a positive checked witness, and old-countermodel rejection.
-Two nontrivial proof obligations remain:
+`DGamma.CP4ProgressProof.progressTheoremProof` inhabits the approved repaired
+finite-trace alias. The proof combines four constructive layers:
 
-1. **Unloading-chain no-deadlock.** A locally blocked Unloading fiber may be
-   relied on by another installed fiber. Proving that some lifecycle action is
-   enabled requires well-founded induction over the precedence/reliance chain,
-   using global Ordering to rule out a closed cycle. A local evaluator case
-   split is insufficient.
-2. **Equation-61 precedence bound.** `TargetTurnCount` records target changes,
-   but the bound on `stepsActingOn` must charge Reloading/Active/Unloading
-   phases through provider precedence while preserving the static program
-   bound across every lifecycle transition. This needs a ranked induction, not
-   arithmetic normalization alone.
+1. `CP4ProgressNoDeadlockFinal` scans all lifecycle shapes and follows blocked
+   Unloading reliance through finite precedence accessibility.
+2. `CP4ProgressStep*` proves strict same-target potential consumption for every
+   successful L-Begin, L-Advance outcome, L-Divert, L-Leave, and L-Unload rule.
+3. `CP4ProgressNumeric.actorTraceEquation61` performs the amortized induction:
+   the initial potential pays the first interval and each `TargetChanged`
+   constructor contributes one fresh `K + 4` budget.
+4. `CP4ProgressProgramBound` and `CP4ProgressPrecedence` preserve the declared
+   program bound and precedence acyclicity along lifecycle-only traces, allowing
+   the endpoint no-deadlock theorem to use the initial public premises.
+
+CP4 Findings #5 and #6 remain approved statement repairs pending the mandatory
+end-of-CP4 adversarial review. The old continuation shape remains constructively
+refuted; no escape hatch was introduced.
 
 ### Confluence (Theorem 73): parent-local structural statement and proof debt
 
@@ -1073,10 +1073,11 @@ module. Every landed module checks in roughly 0.7–2.3 seconds. All failed WIP 
 SHA256-archived outside the repository before cleanup; no worktree content was
 silently discarded.
 
-`DGamma.CP4ProgressPotential` additionally defines the executable same-target
-lifecycle potential from Theorem 66(A) and proves its uniform `K + 4` upper
-bound from `continuationsBoundedBy`. The remaining quantitative debt is the
-per-rule strict-decrease/amortized trace induction yielding Equation 61.
+`DGamma.CP4ProgressPotential` defines the executable same-target lifecycle
+potential from Theorem 66(A) and proves its uniform `K + 4` upper bound from
+`continuationsBoundedBy`. `CP4ProgressStep*` proves every per-rule decrease,
+`CP4ProgressNumeric` proves the amortized Equation-61 trace bound, and
+`CP4ProgressProof` assembles the full public theorem.
 
 ### Cold-build validation under Idris 2 v0.8.0
 
@@ -1109,15 +1110,13 @@ finite-specialized Lemma 68, including combined support well-foundedness and
 unique Definition-67 support-solution equality with the executable closure;
 and Lemma 70, including endpoint Active-table totality, non-retired-child
 parent safety, both Active/support fixed-point directions, and final Lemma-68
-uniqueness assembly. The repaired Definition-69/Lemma-70 statement shapes still
-await end-of-CP4 re-review.
+uniqueness assembly; and Progress/Theorem 66, including lifecycle program and
+continuation preservation, precedence-acyclicity preservation, complete
+unloading-chain no-deadlock, all-rule potential decrease, amortized Equation
+61, maximality, and final public-alias assembly. The repaired Definition-69/
+Lemma-70 and Theorem-66 statement shapes still await end-of-CP4 re-review.
 
-**Partial:** Progress/Theorem 66 (approved CP4 continuation-bound and global-
-equality-alignment repairs; all-rule continuation preservation,
-positive/rejected/aligned regressions, finite precedence descent, complete
-unloading-chain no-deadlock, search/maximality/base case, and the `K + 4`
-potential upper bound proved; repaired shape awaits end-of-CP4 re-review; the
-per-rule Equation-61 amortized numeric bound remains); Lemma 71 (effect commutation projection); Lemma 72 (candidate
+**Partial:** Lemma 71 (effect commutation projection); Lemma 72 (candidate
 lifecycle-only deletion statement); Confluence/Theorem 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
 and vestigial-aware outside-R endpoint relation submitted for round-10 review;
@@ -1130,8 +1129,7 @@ from Corollary 62). Lemmas 54–57 have many rule, frame, and boundary analogues
 but are not individually complete.
 
 **Merely stated:** Lemma 35, Theorems 40/42, recovery Theorem 61, Corollary 62,
-`resolutionCoherenceTheorem`, `progressTheorem`, `deletionTheorem`, and
-`confluenceTheorem`.
+`resolutionCoherenceTheorem`, `deletionTheorem`, and `confluenceTheorem`.
 These remain escape-hatch-free proposition types.
 
 **Deviations:** Definition 32 finite approximations; finite static-list
@@ -1140,9 +1138,9 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** finish the per-rule potential-decrease and amortized Equation-61
-trace bound, assemble the repaired Progress alias, then implement constructive checked episode
-deletion/canonical sorting. Fresh-choice, cross-parent, 24/18 activation-reset,
+**Next:** implement the per-rule foreign-episode deletion frames and then the
+constructive checked Lemma-72 trace replay/canonical sorting. Fresh-choice,
+cross-parent, 24/18 activation-reset,
 and no-O-Remove 23/18 and 27/18 vestigial pairs reach the literal public premise
 chain; the latter two also project the vestigial-aware result. Live providers
 and complete-relation historical-root reassignment are rejected. An inhabited

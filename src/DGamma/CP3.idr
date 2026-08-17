@@ -1158,7 +1158,7 @@ record ProgressResult
 ||| paper-implicit bound on every current Reloading continuation. CP4 Finding #6
 ||| restores the global equality discipline already used by sibling trace
 ||| theorems: every checked step is aligned with these equality witnesses.
-||| TODO(proof): the remaining debt is the Equation-61 quantitative bound.
+||| Constructively implemented by `DGamma.CP4ProgressProof.progressTheoremProof`.
 public export
 progressTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type
