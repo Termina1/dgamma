@@ -1079,6 +1079,25 @@ potential from Theorem 66(A) and proves its uniform `K + 4` upper bound from
 `CP4ProgressNumeric` proves the amortized Equation-61 trace bound, and
 `CP4ProgressProof` assembles the full public theorem.
 
+### Lemma 72 Step-4 frame library
+
+`ActualEffectFrame` states actual-generator soundness relationally with
+`EffectStateRelated`; exact `EffectState` equality would require forbidden
+function extensionality because effect tables are functions. The first six
+per-rule frames are proved and separately committed: O-Insert, O-Retire,
+O-Remove, L-Begin, L-Divert, and L-Leave. The shared core proves pointwise
+fresh insertion, deletion, and table-preserving replacement projection frames.
+
+This exposed a real prerequisite omitted by the prior structural work:
+`ActualForwardGenerator` packages a checked transition, but Definition-60
+commutation alone did not prove that its partial map reaches the concrete LTS
+target even up to `EffectStateRelated`. The remaining L-Iter/L-Finish/L-Raise/
+L-Unload soundness cases are effectful. After those, adjacent replay still needs
+control-guard preservation; effect commutation by itself does not preserve
+provider lifecycle, target, or reliance guards. Whether
+`NoDependentClosingEpisode` suffices globally is under active review; no
+statement change has been made.
+
 ### Cold-build validation under Idris 2 v0.8.0
 
 A one-process build from an empty `build/` may be killed while elaborating the
@@ -1100,6 +1119,15 @@ the isolated `--check` above consumes only artifacts produced inside the clean
 archive. This recipe was exercised on commit `fe9764d`, followed by the 31/31
 runtime aggregate and escape/totality scans.
 
+For the expanded 46-module Step-3 tree, a new clean archive reached the known
+`CP4SupportSolution` boundary and the initial package process exited 137 as
+expected. The isolated support-solution rebuild then exceeded the 20-minute
+validation command budget, and a one-process warm package invocation likewise
+exceeded ten minutes. This is recorded as a validation resource residual, not
+silently called a clean pass. Targeted checks of `CP4ProgressProof`, every new
+Progress dependency, and all six deletion-frame modules succeed; 46/46 source
+modules retain `%default total`, and anchored escape-hatch scans remain empty.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
@@ -1117,7 +1145,9 @@ unloading-chain no-deadlock, all-rule potential decrease, amortized Equation
 Lemma-70 and Theorem-66 statement shapes still await end-of-CP4 re-review.
 
 **Partial:** Lemma 71 (effect commutation projection); Lemma 72 (candidate
-lifecycle-only deletion statement); Confluence/Theorem 73 (surviving parent-
+lifecycle-only deletion statement plus actual-forward effect frames for six of
+ten evaluator tags; four effectful frames, control applicability, and trace
+assembly remain); Confluence/Theorem 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
 and vestigial-aware outside-R endpoint relation submitted for round-10 review;
 the round-7 cross-parent/historical-root, round-8 closing-episode, and round-9
