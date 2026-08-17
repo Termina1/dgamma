@@ -123,6 +123,7 @@ valueFromProviderAtFound nameEq keyEq provider wanted fibers fiber found =
 bindingElemKey Here = Here
 bindingElemKey (There later) = There (bindingElemKey later)
 
+public export
 0 lookupEntryFromElem :
   (keyEq : DecEq key) ->
   (entries : List (Binding key value)) ->
