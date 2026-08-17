@@ -76,6 +76,7 @@ potentialFromLookup bound Nothing target = Z
 potentialFromLookup bound (Just fiber) target =
   fiberTargetPotential bound fiber target
 
+public export
 0 actorPotentialLookupEquation :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (bound : Nat) ->
@@ -95,6 +96,20 @@ actorPotentialLookupEquation nameEq keyEq bound actor state
     cong (fiberTargetPotential @{nameEq} bound fiber)
       (targetProvidersAtLookup nameEq keyEq actor state fiber found)
 
+public export
+0 actorTargetPotentialAtLookup :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (bound : Nat) ->
+  (actor : name) -> (state : SystemState name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} actor (registry state) = Just fiber ->
+  actorTargetPotential @{nameEq} @{keyEq} bound actor state =
+    fiberTargetPotential @{nameEq} bound fiber
+      (targetProvidersAt @{nameEq} @{keyEq} actor state)
+actorTargetPotentialAtLookup nameEq keyEq bound actor state fiber found =
+  rewrite actorPotentialLookupEquation nameEq keyEq bound actor state in
+  rewrite found in Refl
+
 0 potentialCaseTargetEqual :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (bound : Nat) ->
@@ -106,6 +121,39 @@ actorPotentialLookupEquation nameEq keyEq bound actor state
   potentialFromLookup @{nameEq} {name = name} {key = key} {world = world}
     {error = error} {value = value} bound found rightTarget
 potentialCaseTargetEqual nameEq bound found leftTarget leftTarget Refl = Refl
+
+public export
+0 inactiveAvailablePotential :
+  (nameEq : DecEq name) -> (bound : Nat) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (providers : List name) ->
+  fiberTargetPotential @{nameEq} bound
+    (MkFiber component parent retiredFlag table (Inactive Nothing))
+    (Just providers) = bound + 2
+inactiveAvailablePotential nameEq bound component parent retiredFlag table
+  providers = Refl
+
+public export
+0 reloadingCommittedPotential :
+  (nameEq : DecEq name) -> (bound : Nat) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  fiberTargetPotential @{nameEq} bound
+    (MkFiber component parent retiredFlag table
+      (Reloading remaining accumulator view))
+    (Just (viewProviders view)) = S (length remaining)
+reloadingCommittedPotential nameEq bound component parent retiredFlag table
+  remaining accumulator view =
+    rewrite sameTargetJustReflexive nameEq (viewProviders view) in Refl
 
 ||| A foreign local update leaves the selected fiber exact. Under the
 ||| `TargetStayed` premise, the provider-name target is exact as well, so the

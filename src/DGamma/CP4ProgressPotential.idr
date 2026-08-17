@@ -40,6 +40,7 @@ actorProgressPotential bound actor state =
     Nothing => Z
     Just fiber => fiberProgressPotential bound fiber (registry state)
 
+public export
 0 boolLTEToLTE : (left, right : Nat) -> left <= right = True -> LTE left right
 boolLTEToLTE Z right valid = LTEZero
 boolLTEToLTE (S left) Z valid = case valid of Refl impossible
@@ -152,6 +153,21 @@ sameNameListTrueEqual nameEq (left :: leftRest) (right :: rightRest) same
       (sameNameListTrueEqual nameEq leftRest rightRest same)
   sameNameListTrueEqual nameEq (left :: leftRest) (right :: rightRest) same |
     No distinct = case same of Refl impossible
+
+public export
+0 sameNameListReflexive : (nameEq : DecEq name) -> (names : List name) ->
+  sameNameList @{nameEq} names names = True
+sameNameListReflexive nameEq [] = Refl
+sameNameListReflexive nameEq (name :: rest) with (decEq @{nameEq} name name)
+  sameNameListReflexive nameEq (name :: rest) | Yes Refl =
+    sameNameListReflexive nameEq rest
+  sameNameListReflexive nameEq (name :: rest) | No distinct =
+    void (distinct Refl)
+
+public export
+0 sameTargetJustReflexive : (nameEq : DecEq name) -> (names : List name) ->
+  sameTarget @{nameEq} (Just names) (Just names) = True
+sameTargetJustReflexive nameEq names = sameNameListReflexive nameEq names
 
 public export
 0 sameTargetTrueEqual : (nameEq : DecEq name) ->
