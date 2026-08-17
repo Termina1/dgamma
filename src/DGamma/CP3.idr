@@ -1802,6 +1802,15 @@ data LifecycleActorsCovered :
     LifecycleActorsCovered supportNames rest ->
     LifecycleActorsCovered supportNames (MoreTransitions transition rest)
 
+||| Stable accounting key for one registration birth within a trace. Raw names
+||| may be reused after O-Remove, so a name alone does not identify the
+||| generation that canonical deletion retained or withdrew.
+public export
+record RegistrationGeneration (name : Type) where
+  constructor MkRegistrationGeneration
+  generationName : name
+  generationBirthOrdinal : Nat
+
 ||| Paper's registered-name endpoint alternatives: a name may be a vestigial
 ||| original entry withdrawn from the survivor, or it may already have been
 ||| O-Removed in the original and remain absent in the survivor.
@@ -1834,12 +1843,12 @@ data WithdrawnNameResult :
     WithdrawnNameResult nameEq child originalFinal survivingFinal
 
 public export
-RegisteredNamesWithdrawn :
+RawNamesWithdrawn :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (registered : List name) ->
   SystemState name key value world error ->
   SystemState name key value world error -> Type
-RegisteredNamesWithdrawn {name} nameEq registered originalFinal survivingFinal =
+RawNamesWithdrawn {name} nameEq registered originalFinal survivingFinal =
   (child : name) -> Elem child registered ->
   WithdrawnNameResult nameEq child originalFinal survivingFinal
 
@@ -2016,15 +2025,6 @@ record LocatedGeneratedRegistration
 public export
 registrationOrdinal : LocatedGeneratedRegistration child parent component global -> Nat
 registrationOrdinal occurrence = transitionCount (beforeRegistration occurrence)
-
-||| Stable accounting key for one registration birth within a trace. Raw names
-||| may be reused after O-Remove, so a name alone does not identify the
-||| generation that canonical deletion retained or withdrew.
-public export
-record RegistrationGeneration (name : Type) where
-  constructor MkRegistrationGeneration
-  generationName : name
-  generationBirthOrdinal : Nat
 
 ||| Stamp a located child-registration occurrence by its raw name and birth
 ||| ordinal in the containing trace.
@@ -3106,7 +3106,7 @@ record CanonicalEndpointRelation
     (projectEffectState @{nameEq} canonicalFinal)
   0 endpointControlsOutside : ControlEquivalentOutside nameEq
     endpointWithdrawnNames originalFinal canonicalFinal
-  0 endpointNamesWithdrawn : RegisteredNamesWithdrawn nameEq
+  0 endpointNamesWithdrawn : RawNamesWithdrawn nameEq
     endpointWithdrawnNames originalFinal canonicalFinal
   ||| Every raw endpoint omission is justified by at least one deleted
   ||| generation of that raw name; the converse deliberately does not hold.
@@ -3243,16 +3243,176 @@ data EpisodeDeletedActor : name -> List name ->
   DeleteRegisteredActor : Elem (actionOwner action) registered ->
     EpisodeDeletedActor selected registered action
 
+||| The exact registration generation owning one action occurrence. O-Insert
+||| owns the fresh generation it creates; every other action belongs to the
+||| generation current immediately before the step.
+public export
+actionGenerationAt : DecEq name => Nat -> GenerationEnvironment name ->
+  Action name key value world error -> Maybe (RegistrationGeneration name)
+actionGenerationAt ordinal live (OInsert inserted parent component) =
+  Just (MkRegistrationGeneration inserted ordinal)
+actionGenerationAt ordinal live action =
+  lookupCurrentGeneration (actionOwner action) live
+
+public export
+GenerationOwnedActor :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> List (RegistrationGeneration name) -> Nat ->
+  GenerationEnvironment name -> Action name key value world error -> Type
+GenerationOwnedActor nameEq registered ordinal live action =
+  (generation : RegistrationGeneration name **
+    (actionGenerationAt @{nameEq} ordinal live action = Just generation,
+     Elem generation registered))
+
+||| Generation-indexed action filtering. The scanner state follows the original
+||| trace even when a step is deleted, so a later raw-name reissue receives and
+||| keeps its distinct birth ordinal.
+public export
+data GenerationActionSubsequence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {originalFirst, originalFinal, survivingFirst, survivingFinal :
+    SystemState name key value world error} ->
+  (nameEq : DecEq name) ->
+  (deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  Transitions originalFirst originalFinal ->
+  Transitions survivingFirst survivingFinal -> Type where
+  GenerationActionSubsequenceEnd :
+    GenerationActionSubsequence nameEq deletable ordinal live
+      NoTransitions NoTransitions
+  KeepGenerationAction :
+    (originalTransition : Transition originalFirst originalMiddle) ->
+    (originalRest : Transitions originalMiddle originalFinal) ->
+    (survivingTransition : Transition survivingFirst survivingMiddle) ->
+    (survivingRest : Transitions survivingMiddle survivingFinal) ->
+    Not (deletable ordinal live (transitionAction originalTransition)) ->
+    transitionAction originalTransition = transitionAction survivingTransition ->
+    GenerationActionSubsequence nameEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction originalTransition) live)
+      originalRest survivingRest ->
+    GenerationActionSubsequence nameEq deletable ordinal live
+      (MoreTransitions originalTransition originalRest)
+      (MoreTransitions survivingTransition survivingRest)
+  DeleteGenerationAction :
+    (originalTransition : Transition originalFirst originalMiddle) ->
+    (originalRest : Transitions originalMiddle originalFinal) ->
+    deletable ordinal live (transitionAction originalTransition) ->
+    GenerationActionSubsequence nameEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction originalTransition) live)
+      originalRest surviving ->
+    GenerationActionSubsequence nameEq deletable ordinal live
+      (MoreTransitions originalTransition originalRest) surviving
+
+||| Proof-producing scan of exact generation state through a dependent trace.
+||| The final ordinal/environment are indices, avoiding any raw-name ambiguity.
+public export
+data GenerationTraceScan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> Nat -> GenerationEnvironment name ->
+  Transitions first finalState -> Nat -> GenerationEnvironment name -> Type where
+  GenerationTraceScanEnd :
+    GenerationTraceScan nameEq ordinal live NoTransitions ordinal live
+  GenerationTraceScanStep :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    GenerationTraceScan nameEq (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction transition) live)
+      rest finalOrdinal finalLive ->
+    GenerationTraceScan nameEq ordinal live
+      (MoreTransitions transition rest) finalOrdinal finalLive
+
+public export
+data EpisodeGenerationDeletedActor :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> name -> List (RegistrationGeneration name) ->
+  Nat -> GenerationEnvironment name -> Action name key value world error ->
+  Type where
+  DeleteEpisodeGenerationLifecycle :
+    actionOwner action = selected ->
+    isLifecycleAction action = True ->
+    EpisodeGenerationDeletedActor nameEq selected registered ordinal live action
+  DeleteRegisteredGeneration :
+    GenerationOwnedActor nameEq registered ordinal live action ->
+    EpisodeGenerationDeletedActor nameEq selected registered ordinal live action
+
+public export
+data IsBeginAction : Action name key value world error -> Type where
+  ItIsLBegin : IsBeginAction (LBegin actor)
+
+||| A later reuse of the same raw name is a different generation and is allowed
+||| to begin; only the exact generated births in R are episode-free.
+public export
+data NoRegisteredEpisode :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> List (RegistrationGeneration name) -> Nat ->
+  GenerationEnvironment name -> Transitions first finalState -> Type where
+  NoRegisteredEpisodeEnd :
+    NoRegisteredEpisode nameEq registered ordinal live NoTransitions
+  NoRegisteredEpisodeStep :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    (IsBeginAction (transitionAction transition) ->
+      GenerationOwnedActor nameEq registered ordinal live
+        (transitionAction transition) -> Void) ->
+    NoRegisteredEpisode nameEq registered (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction transition) live) rest ->
+    NoRegisteredEpisode nameEq registered ordinal live
+      (MoreTransitions transition rest)
+
+||| One exact generated birth in the selected segment, stamped by the global
+||| starting ordinal and paired with a later retirement in that same segment.
+public export
+record GeneratedDuring
+  (name, key, world, error : Type) (value : key -> Type)
+  (selected : name) (startOrdinal : Nat)
+  {first, finalState : SystemState name key value world error}
+  (trace : Transitions first finalState)
+  (generation : RegistrationGeneration name) where
+  constructor MkGeneratedDuring
+  generatedChild : name
+  generatedComponent : Component key value world error
+  generatedBirth : LocatedActionOccurrence
+    (OInsert generatedChild (ChildOf selected) generatedComponent) trace
+  0 generatedStamp : generation = MkRegistrationGeneration generatedChild
+    (startOrdinal + locatedActionOrdinal generatedBirth)
+  generatedRetiresLater : ActionOccurs (ORetire generatedChild)
+    (afterActionOccurrence generatedBirth)
+
+public export
+RegisteredGenerationsDuring :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (selected : name) -> (startOrdinal : Nat) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (trace : Transitions first finalState) -> Type
+RegisteredGenerationsDuring {name} {key} {value} {world} {error}
+  selected startOrdinal registered trace =
+  ((generation : RegistrationGeneration name) -> Elem generation registered ->
+    GeneratedDuring name key world error value selected startOrdinal trace
+      generation,
+   (child : name) -> (component : Component key value world error) ->
+    (birth : LocatedActionOccurrence
+      (OInsert child (ChildOf selected) component) trace) ->
+    Elem (MkRegistrationGeneration child
+      (startOrdinal + locatedActionOrdinal birth)) registered)
+
 ||| The set R of explicit child insertions during the selected closed episode,
 ||| together with the visible counterpart of Definition 47: each insertion's
 ||| O-Retire occurs later in that same episode before the parent's leave.
 public export
-RegisteredNamesDuring :
+RawRegisteredNamesDuring :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, finalState : SystemState name key value world error} ->
   (selected : name) -> (registered : List name) ->
   Transitions first finalState -> Type
-RegisteredNamesDuring {name} {key} {value} {world} {error}
+RawRegisteredNamesDuring {name} {key} {value} {world} {error}
   selected registered trace =
   ((child : name) -> Elem child registered ->
     (component : Component key value world error **
@@ -3264,13 +3424,13 @@ RegisteredNamesDuring {name} {key} {value} {world} {error}
     Elem child registered)
 
 public export
-NoRegisteredEpisode :
+NoRawRegisteredEpisode :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
   {initial, finalState : SystemState name key value world error} ->
   (registered : List name) ->
   (global : Transitions initial finalState) -> Type
-NoRegisteredEpisode {name} registered global =
+NoRawRegisteredEpisode {name} registered global =
   (child : name) -> Elem child registered ->
   ActionOccurs (LBegin child) global -> Void
 
@@ -3288,9 +3448,80 @@ NoDependentClosingEpisode {name} {key} {world} {error} {value} {nameEq} {keyEq}
     PrecedenceEdge nameEq selected consumer
       (closedStartState (locatedEpisode consumerEpisode)) -> Void
 
+public export
+CurrentGenerationOutside : {name : Type} -> {nameEq : DecEq name} ->
+  List (RegistrationGeneration name) -> GenerationEnvironment name -> name -> Type
+CurrentGenerationOutside {name} registered live selected =
+  (generation : RegistrationGeneration name) ->
+  lookupCurrentGeneration selected live = Just generation ->
+  Elem generation registered -> Void
+
+||| Equation-53 control agreement exempts only a targeted generation that is
+||| still current. A later generation reusing the same raw name remains exact.
+public export
+ControlEquivalentOutsideGenerations :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> List (RegistrationGeneration name) ->
+  GenerationEnvironment name -> SystemState name key value world error ->
+  SystemState name key value world error -> Type
+ControlEquivalentOutsideGenerations {name} nameEq registered live originalFinal
+  survivingFinal = (selected : name) ->
+    CurrentGenerationOutside {nameEq = nameEq} registered live selected ->
+    FiberControlMaybeRelated
+      (lookupFiber @{nameEq} selected (registry originalFinal))
+      (lookupFiber @{nameEq} selected (registry survivingFinal))
+
+||| Endpoint disposition of one deleted generation. If it remains current it is
+||| the Lemma-57 vestigial removed from the replay; if O-Remove closed it, any
+||| later raw-name generation is governed by outside-generation control equality.
+public export
+data WithdrawnGenerationResult :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (live : GenerationEnvironment name) ->
+  (generation : RegistrationGeneration name) ->
+  (originalFinal, survivingFinal : SystemState name key value world error) -> Type
+  where
+  CurrentGenerationWithdrawn :
+    (fiber : Fiber name key value world error) ->
+    lookupCurrentGeneration @{nameEq} (generationName generation) live =
+      Just generation ->
+    lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} (generationName generation)
+      (registry originalFinal) = Just fiber ->
+    retired fiber = True ->
+    installed (fiberLifecycle fiber) = False ->
+    bindings (ownedValues (fiberTable fiber)) = [] ->
+    lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} (generationName generation)
+      (registry survivingFinal) = Nothing ->
+    WithdrawnGenerationResult {name = name} {key = key} {value = value}
+      {world = world} {error = error} nameEq live generation originalFinal
+      survivingFinal
+  HistoricalGenerationClosed :
+    (lookupCurrentGeneration @{nameEq} (generationName generation) live =
+      Just generation -> Void) ->
+    WithdrawnGenerationResult {name = name} {key = key} {value = value}
+      {world = world} {error = error} nameEq live generation originalFinal
+      survivingFinal
+
+||| Generation-aware replacement of the old raw-name withdrawal family.
+public export
+RegisteredNamesWithdrawn :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (registered : List (RegistrationGeneration name)) ->
+  (live : GenerationEnvironment name) ->
+  SystemState name key value world error ->
+  SystemState name key value world error -> Type
+RegisteredNamesWithdrawn {name} {key} {world} {error} {value}
+  nameEq registered live originalFinal survivingFinal =
+  (generation : RegistrationGeneration name) -> Elem generation registered ->
+  WithdrawnGenerationResult {name = name} {key = key} {value = value}
+    {world = world} {error = error} nameEq live generation originalFinal
+    survivingFinal
+
 ||| Candidate result shape for paper Lemma 72. Bidirectional filtering deletes
-||| selected lifecycle actions and all R-owned actions, while retaining selected
-||| orchestration such as O-Retire/O-Remove.
+||| selected lifecycle actions and exact generated R generations while retaining
+||| later raw-name reissues and selected orchestration such as O-Retire/O-Remove.
 public export
 record DeletionResult
   (name, key, world, error : Type) (value : key -> Type)
@@ -3300,29 +3531,50 @@ record DeletionResult
   (selected : name)
   (episode : LocatedClosedEpisode name key world error value nameEq keyEq
     selected original)
-  (registered : List name) where
+  (registered : List (RegistrationGeneration name))
+  (episodeStartOrdinal : Nat)
+  (episodeStartLive : GenerationEnvironment name) where
   constructor MkDeletionResult
-  selectedOutsideRegistered : Not (Elem selected registered)
+  selectedOutsideRegistered : (generation : RegistrationGeneration name) ->
+    Elem generation registered -> Not (generationName generation = selected)
   survivingBeforeEnd : SystemState name key value world error
   survivingEpisodeEnd : SystemState name key value world error
   survivingFinal : SystemState name key value world error
   survivingBefore : Transitions initial survivingBeforeEnd
   survivingEpisode : Transitions survivingBeforeEnd survivingEpisodeEnd
   survivingAfter : Transitions survivingEpisodeEnd survivingFinal
-  beforeDeletion : ActionSubsequence (RegisteredActor registered)
+  beforeGenerationScan : GenerationTraceScan nameEq 0 []
+    (traceBeforeOpening episode) episodeStartOrdinal episodeStartLive
+  episodeEndOrdinal : Nat
+  episodeEndLive : GenerationEnvironment name
+  episodeGenerationScan : GenerationTraceScan nameEq episodeStartOrdinal
+    episodeStartLive
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode)))
+      (closedTransitions (locatedEpisode episode)))
+    episodeEndOrdinal episodeEndLive
+  originalFinalOrdinal : Nat
+  originalFinalLive : GenerationEnvironment name
+  afterGenerationScan : GenerationTraceScan nameEq episodeEndOrdinal
+    episodeEndLive (traceAfterClosing episode) originalFinalOrdinal
+    originalFinalLive
+  beforeDeletion : GenerationActionSubsequence nameEq
+    (GenerationOwnedActor nameEq registered) 0 []
     (traceBeforeOpening episode) survivingBefore
-  episodeDeletion : ActionSubsequence (EpisodeDeletedActor selected registered)
+  episodeDeletion : GenerationActionSubsequence nameEq
+    (EpisodeGenerationDeletedActor nameEq selected registered)
+    episodeStartOrdinal episodeStartLive
     (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode)))
       (closedTransitions (locatedEpisode episode))) survivingEpisode
-  afterDeletion : ActionSubsequence (RegisteredActor registered)
+  afterDeletion : GenerationActionSubsequence nameEq
+    (GenerationOwnedActor nameEq registered) episodeEndOrdinal episodeEndLive
     (traceAfterClosing episode) survivingAfter
   effectsPreserved : EffectStateRelated keyEq
     (projectEffectState @{nameEq} originalFinal)
     (projectEffectState @{nameEq} survivingFinal)
-  controlsPreservedOutside : ControlEquivalentOutside nameEq registered
-    originalFinal survivingFinal
+  controlsPreservedOutside : ControlEquivalentOutsideGenerations nameEq registered
+    originalFinalLive originalFinal survivingFinal
   registeredWithdrawn : RegisteredNamesWithdrawn nameEq registered
-    originalFinal survivingFinal
+    originalFinalLive originalFinal survivingFinal
 
 public export
 survivingTrace :
@@ -3331,9 +3583,11 @@ survivingTrace :
   {initial, originalFinal : SystemState name key value world error} ->
   {original : Transitions initial originalFinal} -> {selected : name} ->
   {episode : LocatedClosedEpisode name key world error value nameEq keyEq
-    selected original} -> {registered : List name} ->
+    selected original} -> {registered : List (RegistrationGeneration name)} ->
+  {episodeStartOrdinal : Nat} ->
+  {episodeStartLive : GenerationEnvironment name} ->
   (result : DeletionResult name key world error value nameEq keyEq original
-    selected episode registered) ->
+    selected episode registered episodeStartOrdinal episodeStartLive) ->
   Transitions initial (survivingFinal result)
 survivingTrace {initial} result = appendTransitions (survivingBefore result)
   (appendTransitions (survivingEpisode result) (survivingAfter result))
@@ -3362,16 +3616,21 @@ deletionTheorem name key value world error =
   (selected : name) ->
   (episode : LocatedClosedEpisode name key world error value nameEq keyEq
     selected global) ->
-  (registered : List name) ->
-  Not (Elem selected registered) ->
-  RegisteredNamesDuring selected registered
+  (registered : List (RegistrationGeneration name)) ->
+  ((generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (episodeStartOrdinal : Nat) ->
+  (episodeStartLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq 0 [] (traceBeforeOpening episode)
+    episodeStartOrdinal episodeStartLive ->
+  RegisteredGenerationsDuring selected episodeStartOrdinal registered
     (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode)))
       (closedTransitions (locatedEpisode episode))) ->
   NoDependentClosingEpisode {nameEq = nameEq} {keyEq = keyEq}
     selected global ->
-  NoRegisteredEpisode {nameEq = nameEq} {keyEq = keyEq} registered global ->
+  NoRegisteredEpisode nameEq registered 0 [] global ->
   DeletionResult name key world error value nameEq keyEq global selected episode
-    registered
+    registered episodeStartOrdinal episodeStartLive
 
 ||| Theorem-73 result transported through the explicit Lemma-56 generation
 ||| bijection.  Historical registrations and current endpoint names are kept

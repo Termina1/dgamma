@@ -301,6 +301,39 @@ of Lemma 38.
     The timed-out `CP3StatementChecks`, `CP3VestigialChecks`, and
     `CalculusChecks` runs are part of the registered clean-validation debt and
     must pass before that review.
+13. **CP4 Finding #8 — Lemma 72's raw R filter deleted later generations.**
+    The accepted CP3 statement used `RegisteredActor (List name)` before and
+    after the selected episode. After the selected child generation was
+    O-Removed, a legal later O-Insert could reuse its raw name; the raw filter
+    then deleted that unrelated root birth too. At a quiet endpoint where the
+    reissued root is non-retired with unavailable dependencies,
+    `RegisteredNamesWithdrawn` was impossible. This is the same raw-name-reuse
+    genus as CP3 rounds 6–7 and paper erratum #3 (Lemma 56), now surfacing in
+    Lemma 72; the future authors letter should consolidate the genealogy.
+
+    With supervisor approval, the repair reuses `RegistrationGeneration`.
+    `actionGenerationAt` assigns O-Insert its `(raw name, birth ordinal)` and
+    every later action the generation current immediately before the step.
+    `GenerationActionSubsequence` scans the original trace even across deleted
+    actions, so O-Remove closes exactly one generation and a later O-Insert is
+    retained. `RegisteredGenerationsDuring`, `NoRegisteredEpisode`,
+    `ControlEquivalentOutsideGenerations`, and generation-aware
+    `RegisteredNamesWithdrawn` now use the same stamp throughout premises,
+    filtering, controls, and endpoint withdrawal. Raw canonical endpoint names
+    retain the explicitly renamed `RawNamesWithdrawn` relation where a raw
+    endpoint omission is intentionally being described.
+
+    `CP4DeletionGenerationChecks` pins the ten-step checked countermodel:
+    selected L-Begin; child O-Insert/ORetire; selected finish/retire/leave/
+    unload; child O-Remove; then a quiet non-retired root reissue at the same raw
+    name. Its runtime check prints `True`. The old one-action raw
+    `ActionSubsequence` is proved to delete the reissue, while the repaired
+    generation filter is proved to keep that exact checked transition.
+
+    Finding #8 joins Findings #4–#7 on the mandatory end-of-CP4 adversarial
+    re-review list. The reviewer must attack scanner ordinal alignment,
+    O-Remove/reissue boundaries, current-generation endpoint exemptions, and
+    the existing no-O-Remove vestigial cases under the repaired alias.
 
 ## Escape-hatch and hole audit
 
@@ -1150,10 +1183,11 @@ prior deletion target. The nonempty `nonemptyInactivePlanControlWitness` crosses
 the aggregate with a concrete checked L-Finish.
 
 This closes the Lemma-57/suffix control-applicability theorem, not all of Lemma
-72: the remaining construction must derive the Inactive-leaf plan and actor-
-outside certificates for R from `RegistrationDiscipline`,
-`RegisteredNamesDuring`, and `NoRegisteredEpisode`, establish the selected
-closed-episode boundary, and assemble the filtered trace. Whether
+72: after Finding #8, the remaining construction must derive the Inactive-leaf
+plan and actor-outside certificates for exact R generations from
+`RegistrationDiscipline`, `RegisteredGenerationsDuring`, and the generation-
+indexed `NoRegisteredEpisode`, establish the selected closed-episode boundary,
+and assemble the filtered trace. Whether
 `NoDependentClosingEpisode` suffices for that episode-local bridge remains under
 active review; no public statement change has been made.
 
@@ -1206,6 +1240,16 @@ exceeded ten minutes, so it is not recorded as a package pass and does not
 change the registered clean-build debt. The repository-wide scan now covers
 68/68 `%default total` modules with no escape-hatch match.
 
+For Finding #8, a forced rebuild of `CP3` plus
+`CP4DeletionGenerationChecks` passed in 10.97 seconds and the executable
+countermodel printed `True`. A lightweight exact copy of the full
+`CP3StatementChecks` source (only the already-validated
+`acceptedSupportLemma68Proof` import/application removed to avoid the registered
+`CP4SupportSolution` elaboration boundary) rebuilt 10/10 modules, including all
+repaired deletion projections. The tracked tree now scans 69/69
+`%default total` modules with no escape hatch. This targeted validation does not
+discharge the registered clean-package debt.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
@@ -1224,9 +1268,10 @@ Lemma-70 and Theorem-66 statement shapes still await end-of-CP4 re-review.
 
 **Partial:** Lemma 71 (effect commutation projection); Lemma 72 (candidate
 lifecycle-only deletion statement, exhaustive ten-tag actual-forward effect
-frames, and proved checked lifecycle applicability through indexed deletion of
-Inactive R leaves; episode-to-plan derivation, selected-episode boundary, and
-trace/endpoint assembly remain); Confluence/Theorem
+frames, generation-correct action/result filtering, and proved checked
+lifecycle applicability through indexed deletion of Inactive R leaves;
+episode-to-plan derivation, selected-episode boundary, and trace/endpoint
+assembly remain); Confluence/Theorem
 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
 and vestigial-aware outside-R endpoint relation submitted for round-10 review;

@@ -3732,7 +3732,7 @@ public export
   {initial, originalFinal : SystemState name key value world error} ->
   {trace : Transitions initial originalFinal} ->
   (schedule : CanonicalSchedule name key world error value protocol nameEq keyEq trace) ->
-  RegisteredNamesWithdrawn nameEq
+  RawNamesWithdrawn nameEq
     (endpointWithdrawnNames (canonicalEndpoint schedule)) originalFinal
     (canonicalFinal schedule)
 canonicalWithdrawalGuard schedule = endpointNamesWithdrawn (canonicalEndpoint schedule)
@@ -3847,10 +3847,15 @@ public export
   {initial, originalFinal : SystemState name key value world error} ->
   {original : Transitions initial originalFinal} -> {selected : name} ->
   {episode : LocatedClosedEpisode name key world error value nameEq keyEq
-    selected original} -> {registered : List name} ->
+    selected original} ->
+  {registered : List (RegistrationGeneration name)} ->
+  {episodeStartOrdinal : Nat} ->
+  {episodeStartLive : GenerationEnvironment name} ->
   (result : DeletionResult name key world error value nameEq keyEq original
-    selected episode registered) ->
-  ActionSubsequence (EpisodeDeletedActor selected registered)
+    selected episode registered episodeStartOrdinal episodeStartLive) ->
+  GenerationActionSubsequence nameEq
+    (EpisodeGenerationDeletedActor nameEq selected registered)
+    episodeStartOrdinal episodeStartLive
     (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode)))
       (closedTransitions (locatedEpisode episode)))
     (survivingEpisode result)
@@ -3861,11 +3866,14 @@ public export
   {initial, originalFinal : SystemState name key value world error} ->
   {original : Transitions initial originalFinal} -> {selected : name} ->
   {episode : LocatedClosedEpisode name key world error value nameEq keyEq
-    selected original} -> {registered : List name} ->
+    selected original} ->
+  {registered : List (RegistrationGeneration name)} ->
+  {episodeStartOrdinal : Nat} ->
+  {episodeStartLive : GenerationEnvironment name} ->
   (result : DeletionResult name key world error value nameEq keyEq original
-    selected episode registered) ->
-  ActionSubsequence (RegisteredActor registered) (traceBeforeOpening episode)
-    (survivingBefore result)
+    selected episode registered episodeStartOrdinal episodeStartLive) ->
+  GenerationActionSubsequence nameEq (GenerationOwnedActor nameEq registered)
+    0 [] (traceBeforeOpening episode) (survivingBefore result)
 deletionBeforeGuard result = beforeDeletion result
 
 public export
@@ -3873,11 +3881,15 @@ public export
   {initial, originalFinal : SystemState name key value world error} ->
   {original : Transitions initial originalFinal} -> {selected : name} ->
   {episode : LocatedClosedEpisode name key world error value nameEq keyEq
-    selected original} -> {registered : List name} ->
+    selected original} ->
+  {registered : List (RegistrationGeneration name)} ->
+  {episodeStartOrdinal : Nat} ->
+  {episodeStartLive : GenerationEnvironment name} ->
   (result : DeletionResult name key world error value nameEq keyEq original
-    selected episode registered) ->
-  ActionSubsequence (RegisteredActor registered) (traceAfterClosing episode)
-    (survivingAfter result)
+    selected episode registered episodeStartOrdinal episodeStartLive) ->
+  GenerationActionSubsequence nameEq (GenerationOwnedActor nameEq registered)
+    (episodeEndOrdinal result) (episodeEndLive result)
+    (traceAfterClosing episode) (survivingAfter result)
 deletionAfterGuard result = afterDeletion result
 
 public export
@@ -3885,9 +3897,12 @@ public export
   {initial, originalFinal : SystemState name key value world error} ->
   {original : Transitions initial originalFinal} -> {selected : name} ->
   {episode : LocatedClosedEpisode name key world error value nameEq keyEq
-    selected original} -> {registered : List name} ->
+    selected original} ->
+  {registered : List (RegistrationGeneration name)} ->
+  {episodeStartOrdinal : Nat} ->
+  {episodeStartLive : GenerationEnvironment name} ->
   (result : DeletionResult name key world error value nameEq keyEq original
-    selected episode registered) ->
+    selected episode registered episodeStartOrdinal episodeStartLive) ->
   EffectStateRelated keyEq (projectEffectState @{nameEq} originalFinal)
     (projectEffectState @{nameEq} (survivingFinal result))
 deletionEffectsGuard result = effectsPreserved result
@@ -3897,10 +3912,14 @@ public export
   {initial, originalFinal : SystemState name key value world error} ->
   {original : Transitions initial originalFinal} -> {selected : name} ->
   {episode : LocatedClosedEpisode name key world error value nameEq keyEq
-    selected original} -> {registered : List name} ->
+    selected original} ->
+  {registered : List (RegistrationGeneration name)} ->
+  {episodeStartOrdinal : Nat} ->
+  {episodeStartLive : GenerationEnvironment name} ->
   (result : DeletionResult name key world error value nameEq keyEq original
-    selected episode registered) ->
-  ControlEquivalentOutside nameEq registered originalFinal (survivingFinal result)
+    selected episode registered episodeStartOrdinal episodeStartLive) ->
+  ControlEquivalentOutsideGenerations nameEq registered
+    (originalFinalLive result) originalFinal (survivingFinal result)
 deletionOutsideControlGuard result = controlsPreservedOutside result
 
 public export
@@ -3908,8 +3927,12 @@ public export
   {initial, originalFinal : SystemState name key value world error} ->
   {original : Transitions initial originalFinal} -> {selected : name} ->
   {episode : LocatedClosedEpisode name key world error value nameEq keyEq
-    selected original} -> {registered : List name} ->
+    selected original} ->
+  {registered : List (RegistrationGeneration name)} ->
+  {episodeStartOrdinal : Nat} ->
+  {episodeStartLive : GenerationEnvironment name} ->
   (result : DeletionResult name key world error value nameEq keyEq original
-    selected episode registered) ->
-  RegisteredNamesWithdrawn nameEq registered originalFinal (survivingFinal result)
+    selected episode registered episodeStartOrdinal episodeStartLive) ->
+  RegisteredNamesWithdrawn nameEq registered (originalFinalLive result)
+    originalFinal (survivingFinal result)
 deletionWithdrawnGuard result = registeredWithdrawn result
