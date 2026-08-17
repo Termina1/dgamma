@@ -316,7 +316,10 @@ of Lemma 38.
     every later action the generation current immediately before the step.
     `GenerationActionSubsequence` scans the original trace even across deleted
     actions, so O-Remove closes exactly one generation and a later O-Insert is
-    retained. `RegisteredGenerationsDuring`, `NoRegisteredEpisode`,
+    retained. `scanGenerations` now constructs the indexed
+    `GenerationTraceScan` certificate for every finite checked trace, exposing
+    exact start/end ordinals and live-generation environments for the three
+    Lemma-72 segments. `RegisteredGenerationsDuring`, `NoRegisteredEpisode`,
     `ControlEquivalentOutsideGenerations`, and generation-aware
     `RegisteredNamesWithdrawn` now use the same stamp throughout premises,
     filtering, controls, and endpoint withdrawal. Raw canonical endpoint names

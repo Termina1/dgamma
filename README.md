@@ -89,9 +89,11 @@ progress.
   capability resolution, and reliance; all five lifecycle action forms remain
   raw- and checked-applicable through an indexed multi-leaf deletion plan.
   `DGamma.CP4DeletionControlChecks` supplies a nonempty checked L-Finish replay.
-- `DGamma.CP4DeletionGenerationChecks`: Finding-8 checked reuse countermodel;
-  the old raw-name filter provably deletes a later root reissue, while the
-  repaired `(name, birth ordinal)` generation filter provably preserves it.
+- `DGamma.CP4DeletionGenerationChecks` and
+  `DGamma.CP4DeletionGenerationScan`: Finding-8 checked reuse countermodel plus
+  a total proof-producing scanner for every finite trace; the old raw-name
+  filter provably deletes a later root reissue, while the repaired
+  `(name, birth ordinal)` generation filter provably preserves it.
 - `DGamma.CP4IndependenceNonVacuity` and `DGamma.CP4RestrictionChecks`:
   Finding-7 order-preserving Definition-60 restriction, reverse-order
   old/new/actual regression, and nonempty corrected `TraceIndependent` /

@@ -1811,6 +1811,16 @@ record RegistrationGeneration (name : Type) where
   generationName : name
   generationBirthOrdinal : Nat
 
+public export
+implementation DecEq name => DecEq (RegistrationGeneration name) where
+  decEq (MkRegistrationGeneration leftName leftOrdinal)
+    (MkRegistrationGeneration rightName rightOrdinal) =
+      case decEq leftName rightName of
+        No different => No (\Refl => different Refl)
+        Yes Refl => case decEq leftOrdinal rightOrdinal of
+          No different => No (\Refl => different Refl)
+          Yes Refl => Yes Refl
+
 ||| Paper's registered-name endpoint alternatives: a name may be a vestigial
 ||| original entry withdrawn from the survivor, or it may already have been
 ||| O-Removed in the original and remain absent in the survivor.
