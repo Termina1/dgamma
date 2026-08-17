@@ -148,6 +148,48 @@ lookupEntryFromElem keyEq (Bind current currentValue :: rest)
     (UniqueCons fresh tailUnique) (There later) | No distinct =
       lookupEntryFromElem keyEq rest tailUnique later
 
+public export
+data CommittedFiberShape :
+  (fiber : Fiber name key value world error) ->
+  View name (dependencies
+    (componentDependencies (fiberComponent fiber))) -> Type where
+  CommittedReloading :
+    (component : Component key value world error) -> (parent : Parent name) ->
+    (retiredFlag : Bool) ->
+    (table : OwnedTable key value (componentProvisions component)) ->
+    (remaining : List (StepEffect key value world error
+      (dependencies (componentDependencies component))
+      (componentProvisions component))) ->
+    (accumulator : LocalState key value world
+        (componentProvisions component) ->
+      LocalState key value world (componentProvisions component)) ->
+    (view : View name (dependencies (componentDependencies component))) ->
+    CommittedFiberShape
+      (MkFiber component parent retiredFlag table
+        (Reloading remaining accumulator view)) view
+  CommittedActive :
+    (component : Component key value world error) -> (parent : Parent name) ->
+    (retiredFlag : Bool) ->
+    (table : OwnedTable key value (componentProvisions component)) ->
+    (accumulator : LocalState key value world
+        (componentProvisions component) ->
+      LocalState key value world (componentProvisions component)) ->
+    (view : View name (dependencies (componentDependencies component))) ->
+    CommittedFiberShape
+      (MkFiber component parent retiredFlag table (Active accumulator view)) view
+  CommittedUnloading :
+    (component : Component key value world error) -> (parent : Parent name) ->
+    (retiredFlag : Bool) ->
+    (table : OwnedTable key value (componentProvisions component)) ->
+    (accumulator : LocalState key value world
+        (componentProvisions component) ->
+      LocalState key value world (componentProvisions component)) ->
+    (view : View name (dependencies (componentDependencies component))) ->
+    (outcome : Maybe error) ->
+    CommittedFiberShape
+      (MkFiber component parent retiredFlag table
+        (Unloading accumulator view outcome)) view
+
 record ReliedEntry
   (name, key, world, error : Type) (value : key -> Type)
   (provider : name)
@@ -164,6 +206,8 @@ record ReliedEntry
     committed (fiberLifecycle reliedConsumerFiber) = Just reliedConsumerView
   0 reliedProviderOccurrence : ViewProviderOccurrence provider
     (dependencies (componentDependencies (fiberComponent reliedConsumerFiber)))
+    reliedConsumerView
+  0 reliedConsumerShape : CommittedFiberShape reliedConsumerFiber
     reliedConsumerView
 
 0 reliedHeadEntry :
@@ -195,6 +239,8 @@ reliedHeadEntry nameEq provider consumer
           (MkFiber component parent retiredFlag table
             (Reloading remaining accumulator view)) Here distinct view Refl
           (viewContainsOccurrence nameEq provider view headTrue)
+          (CommittedReloading component parent retiredFlag table remaining
+            accumulator view)
 reliedHeadEntry nameEq provider consumer
   (MkFiber component parent retiredFlag table (Active accumulator view)) headTrue
   with (decEq @{nameEq} consumer provider)
@@ -208,6 +254,7 @@ reliedHeadEntry nameEq provider consumer
         (MkFiber component parent retiredFlag table (Active accumulator view))
         Here distinct view Refl
         (viewContainsOccurrence nameEq provider view headTrue)
+        (CommittedActive component parent retiredFlag table accumulator view)
 reliedHeadEntry nameEq provider consumer
   (MkFiber component parent retiredFlag table
     (Unloading accumulator view outcome)) headTrue
@@ -223,6 +270,8 @@ reliedHeadEntry nameEq provider consumer
           (MkFiber component parent retiredFlag table
             (Unloading accumulator view outcome)) Here distinct view Refl
           (viewContainsOccurrence nameEq provider view headTrue)
+          (CommittedUnloading component parent retiredFlag table accumulator view
+            outcome)
 
 0 reliedOnByEntry :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -237,15 +286,17 @@ reliedOnByEntry nameEq provider (Bind consumer fiber :: rest) reliedTrue
   with (reliedHead @{nameEq} provider provider (Bind consumer fiber)) proof head
   reliedOnByEntry nameEq provider (Bind consumer fiber :: rest) reliedTrue |
     True = case reliedHeadEntry nameEq provider consumer fiber head of
-      MkReliedEntry consumer fiber Here distinct view committed occurrence =>
-        MkReliedEntry consumer fiber Here distinct view committed occurrence
+      MkReliedEntry consumer fiber Here distinct view committed occurrence
+        shape =>
+          MkReliedEntry consumer fiber Here distinct view committed occurrence
+            shape
   reliedOnByEntry nameEq provider (Bind consumer fiber :: rest) reliedTrue |
     False =
       let later = reliedOnByEntry nameEq provider rest reliedTrue
       in MkReliedEntry (reliedConsumerName later) (reliedConsumerFiber later)
         (There (reliedConsumerMember later)) (reliedConsumerDistinct later)
         (reliedConsumerView later) (reliedConsumerCommitted later)
-        (reliedProviderOccurrence later)
+        (reliedProviderOccurrence later) (reliedConsumerShape later)
 
 public export
 record ReliedConsumer
@@ -266,6 +317,7 @@ record ReliedConsumer
     consumerView
   0 providerPrecedesConsumer :
     PrecedenceEdge nameEq provider consumerName state
+  0 consumerShape : CommittedFiberShape consumerFiber consumerView
 
 ||| Reflection of the unloading guard into the exact precedence edge consumed
 ||| by the well-founded descent.
@@ -367,7 +419,7 @@ reliedConsumerWitness nameEq keyEq
               providerFound found providerDeclares (usedDependency use)
         in MkReliedConsumer consumer fiber found (reliedConsumerDistinct entry)
           (reliedConsumerView entry) (reliedConsumerCommitted entry)
-          (reliedProviderOccurrence entry) edge
+          (reliedProviderOccurrence entry) edge (reliedConsumerShape entry)
 
 public export
 0 viewEqTrueEqual :
