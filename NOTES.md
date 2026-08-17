@@ -1138,11 +1138,24 @@ This exposed a real prerequisite omitted by the prior structural work:
 commutation alone did not prove that its partial map reaches the concrete LTS
 target even up to `EffectStateRelated`.
 `actualTransitionEffectFrame` now closes that prerequisite exhaustively.
-Adjacent replay still needs control-guard preservation; effect commutation by
-itself does not preserve
-provider lifecycle, target, or reliance guards. Whether
-`NoDependentClosingEpisode` suffices globally is under active review; no
-statement change has been made.
+The control-side suffix frame is now constructive. `providerOfInactiveDelete`,
+`resolveViewInactiveDelete`, `resolveCommittedValuesInactiveDelete`, and
+`reliedInactiveDelete` show that removing an Inactive leaf cannot change a
+surviving fiber's target, valid committed capability, or L-Unload reliance
+check. Per-rule modules exhaust L-Begin, every L-Advance landing, L-Divert,
+L-Leave, and L-Unload. `checkedLifecycleAfterInactiveDelete` rebuilds a checked
+transition using raw Preservation; `checkedLifecycleAfterInactivePlan` iterates
+this through an indexed multi-leaf plan whose tail source is definitionally the
+prior deletion target. The nonempty `nonemptyInactivePlanControlWitness` crosses
+the aggregate with a concrete checked L-Finish.
+
+This closes the Lemma-57/suffix control-applicability theorem, not all of Lemma
+72: the remaining construction must derive the Inactive-leaf plan and actor-
+outside certificates for R from `RegistrationDiscipline`,
+`RegisteredNamesDuring`, and `NoRegisteredEpisode`, establish the selected
+closed-episode boundary, and assemble the filtered trace. Whether
+`NoDependentClosingEpisode` suffices for that episode-local bridge remains under
+active review; no public statement change has been made.
 
 ### Cold-build validation under Idris 2 v0.8.0
 
@@ -1186,6 +1199,13 @@ Step-4 work, but do not discharge this final reproducibility debt. The same
 clean run must explicitly rebuild `CP3StatementChecks`, `CP3VestigialChecks`,
 and `CalculusChecks`, whose post-Finding-7 attempts timed out under shared load.
 
+For the control-applicability milestone, deleting all eight new TTC/TTM pairs
+and checking `CP4DeletionControlChecks` rebuilt the complete new dependency
+chain (8 modules) in 2.30 seconds. The whole warm package invocation again
+exceeded ten minutes, so it is not recorded as a package pass and does not
+change the registered clean-build debt. The repository-wide scan now covers
+68/68 `%default total` modules with no escape-hatch match.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
@@ -1203,8 +1223,10 @@ unloading-chain no-deadlock, all-rule potential decrease, amortized Equation
 Lemma-70 and Theorem-66 statement shapes still await end-of-CP4 re-review.
 
 **Partial:** Lemma 71 (effect commutation projection); Lemma 72 (candidate
-lifecycle-only deletion statement plus exhaustive ten-tag actual-forward effect
-frames; control applicability and trace assembly remain); Confluence/Theorem
+lifecycle-only deletion statement, exhaustive ten-tag actual-forward effect
+frames, and proved checked lifecycle applicability through indexed deletion of
+Inactive R leaves; episode-to-plan derivation, selected-episode boundary, and
+trace/endpoint assembly remain); Confluence/Theorem
 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
 and vestigial-aware outside-R endpoint relation submitted for round-10 review;
@@ -1226,8 +1248,10 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** implement the per-rule foreign-episode deletion frames and then the
-constructive checked Lemma-72 trace replay/canonical sorting. Fresh-choice,
+**Next:** derive the indexed Inactive-leaf deletion plan from the public
+Lemma-72 episode premises, prove the selected closed-episode replay boundary,
+and assemble the final checked `ActionSubsequence`/endpoints; then use deletion
+for constructive canonical sorting. Fresh-choice,
 cross-parent, 24/18 activation-reset,
 and no-O-Remove 23/18 and 27/18 vestigial pairs reach the literal public premise
 chain; the latter two also project the vestigial-aware result. Live providers
