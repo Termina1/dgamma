@@ -138,6 +138,7 @@ registryUpdatePreservesPrograms nameEq bound actor source _ LocalDelete
       (sym (deleteRegistryEntries nameEq actor source))
       (allDeletePrograms nameEq bound actor (entriesOf {name = name} {key = key} {value = value} {world = world} {error = error} source) programs)
 
+public export
 0 lifecycleActorPresent :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) ->
