@@ -5,6 +5,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4ProgressReliance
+import DGamma.CP4ProgressUnloadingShape
 import Decidable.Equality
 
 %default total
@@ -173,3 +174,78 @@ unloadingActiveConsumerMove nameEq keyEq ambient fibers wellFormed provider
               {p = \selected => isActive (fiberLifecycle selected) = True}
               (sym sameProviderFiber) (providerOfActive providerSound)
         in case impossibleActive of Refl impossible
+
+||| Pre-saturated unloading provider site. Packaging the dependent fields keeps
+||| clients from elaborating the expanded theorem's curried spine.
+public export
+record UnloadingSite
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (provider : name)
+  (fibers : Registry name key value world error) where
+  constructor MkUnloadingSite
+  unloadingSiteComponent : Component key value world error
+  unloadingSiteParent : Parent name
+  unloadingSiteRetired : Bool
+  unloadingSiteTable : OwnedTable key value
+    (componentProvisions unloadingSiteComponent)
+  unloadingSiteAccumulator : LocalState key value world
+      (componentProvisions unloadingSiteComponent) ->
+    LocalState key value world (componentProvisions unloadingSiteComponent)
+  unloadingSiteView : View name (dependencies
+    (componentDependencies unloadingSiteComponent))
+  unloadingSiteOutcome : Maybe error
+  0 unloadingSiteFound : lookupFiber @{nameEq} provider fibers = Just
+    (MkFiber unloadingSiteComponent unloadingSiteParent unloadingSiteRetired
+      unloadingSiteTable
+      (Unloading unloadingSiteAccumulator unloadingSiteView
+        unloadingSiteOutcome))
+
+||| Pre-saturated Active consumer plus its positional reliance witness.
+public export
+record ActiveRelianceSite
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (provider : name)
+  (fibers : Registry name key value world error) where
+  constructor MkActiveRelianceSite
+  activeSiteConsumer : name
+  activeSiteComponent : Component key value world error
+  activeSiteParent : Parent name
+  activeSiteRetired : Bool
+  activeSiteTable : OwnedTable key value
+    (componentProvisions activeSiteComponent)
+  activeSiteAccumulator : LocalState key value world
+      (componentProvisions activeSiteComponent) ->
+    LocalState key value world (componentProvisions activeSiteComponent)
+  activeSiteView : View name (dependencies
+    (componentDependencies activeSiteComponent))
+  0 activeSiteFound : lookupFiber @{nameEq} activeSiteConsumer fibers = Just
+    (MkFiber activeSiteComponent activeSiteParent activeSiteRetired
+      activeSiteTable (Active activeSiteAccumulator activeSiteView))
+  0 activeSiteOccurrence : ViewProviderOccurrence provider
+    (dependencies (componentDependencies activeSiteComponent)) activeSiteView
+
+||| Monomorphic same-module specialization of the direct Active clause.
+public export
+0 unloadingActiveSitesMove :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} (MkSystemState ambient fibers) = True ->
+  (provider : name) ->
+  UnloadingSite name key world error value nameEq provider fibers ->
+  ActiveRelianceSite name key world error value nameEq provider fibers ->
+  LifecycleMove {name = name} {key = key} {value = value} {world = world}
+    {error = error} nameEq keyEq (MkSystemState ambient fibers)
+unloadingActiveSitesMove nameEq keyEq ambient fibers wellFormed provider
+  (MkUnloadingSite providerComponent providerParent providerRetired
+    providerTable providerAccumulator providerView providerOutcome providerFound)
+  (MkActiveRelianceSite consumer consumerComponent consumerParent
+    consumerRetired consumerTable consumerAccumulator consumerView consumerFound
+    occurrence) =
+      the (LifecycleMove nameEq keyEq (MkSystemState ambient fibers))
+        (unloadingActiveConsumerMove nameEq keyEq ambient fibers wellFormed
+          provider consumer providerComponent providerParent providerRetired
+          providerTable providerAccumulator providerView providerOutcome
+          providerFound consumerComponent consumerParent consumerRetired
+          consumerTable consumerAccumulator consumerView consumerFound occurrence)
