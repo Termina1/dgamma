@@ -1218,13 +1218,17 @@ public result constructor from that skeleton and an erased
 assembly is therefore closed; endpoint debt cannot hide inside existential
 bookkeeping.
 
-The remaining construction must derive the Inactive-leaf plan and actor-outside
-certificates for exact R generations from `RegistrationDiscipline`,
-`RegisteredGenerationsDuring`, and generation-indexed `NoRegisteredEpisode`,
-establish the selected closed-episode boundary, prove both filters succeed, and
-derive the three endpoint invariants. Whether `NoDependentClosingEpisode`
-suffices for that
-episode-local bridge remains under active review; no public statement change
+`buildCurrentRegisteredDeletionPlan` now performs the exact generation-aware
+plan construction executable at any boundary: it scans the live generation
+environment, ignores non-R generations (including later raw-name reissues),
+checks each current R fiber is an Inactive leaf, and constructs both
+`InactiveLeafDeletionPlan` and every pointwise actor-outside projection. The
+remaining proof obligation is sharply its success from
+`RegistrationDiscipline`, `RegisteredGenerationsDuring`, and generation-indexed
+`NoRegisteredEpisode`, rather than construction of the dependent plan itself.
+The remaining construction must also establish the selected closed-episode
+boundary, prove both filters succeed, and derive the three endpoint invariants.
+Whether `NoDependentClosingEpisode` suffices for that episode-local bridge remains under active review; no public statement change
 has been made.
 
 ### Cold-build validation under Idris 2 v0.8.0
@@ -1308,8 +1312,9 @@ frames, generation-correct action/result filtering, proved birth-ordinal bounds
 and verbatim pre-episode subsequence construction, a total dependent filter
 that exposes kept-action replay failure, exact located splitting of the
 no-R-episode and Definition-69 premises, conditional trace/final-record
-assembly, and proved checked lifecycle applicability through indexed deletion
-of Inactive R leaves; episode-to-plan derivation, selected-episode/suffix
+assembly, executable exact-generation Inactive-leaf plan/actor-outside
+construction, and proved checked lifecycle applicability through that plan;
+plan-builder success from episode provenance, selected-episode/suffix
 applicability, and endpoint effect/control/withdrawal invariants remain);
 Confluence/Theorem
 73 (surviving parent-
