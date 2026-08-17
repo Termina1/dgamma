@@ -155,6 +155,108 @@ reloadingCommittedPotential nameEq bound component parent retiredFlag table
   remaining accumulator view =
     rewrite sameTargetJustReflexive nameEq (viewProviders view) in Refl
 
+public export
+0 reloadingStalePotential :
+  (nameEq : DecEq name) -> (bound : Nat) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (target : Maybe (List name)) ->
+  sameTarget @{nameEq} target (Just (viewProviders view)) = False ->
+  fiberTargetPotential @{nameEq} bound
+    (MkFiber component parent retiredFlag table
+      (Reloading remaining accumulator view)) target = bound + 4
+reloadingStalePotential nameEq bound component parent retiredFlag table
+  remaining accumulator view target stale = rewrite stale in Refl
+
+public export
+0 activeStalePotential :
+  (nameEq : DecEq name) -> (bound : Nat) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (target : Maybe (List name)) ->
+  sameTarget @{nameEq} target (Just (viewProviders view)) = False ->
+  fiberTargetPotential @{nameEq} bound
+    (MkFiber component parent retiredFlag table (Active accumulator view))
+    target = bound + 4
+activeStalePotential nameEq bound component parent retiredFlag table accumulator
+  view target stale = rewrite stale in Refl
+
+public export
+0 unloadingCleanPotential :
+  (nameEq : DecEq name) -> (bound : Nat) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  fiberTargetPotential @{nameEq} bound
+    (MkFiber component parent retiredFlag table
+      (Unloading accumulator view Nothing)) target = bound + 3
+unloadingCleanPotential nameEq bound component parent retiredFlag table
+  accumulator view = Refl
+
+public export
+0 unloadingFailedPotential :
+  (nameEq : DecEq name) -> (bound : Nat) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (err : error) ->
+  fiberTargetPotential @{nameEq} bound
+    (MkFiber component parent retiredFlag table
+      (Unloading accumulator view (Just err))) target = 1
+unloadingFailedPotential nameEq bound component parent retiredFlag table
+  accumulator view err = Refl
+
+public export
+0 inactiveFailedPotential :
+  (nameEq : DecEq name) -> (bound : Nat) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (err : error) ->
+  fiberTargetPotential @{nameEq} bound
+    (MkFiber component parent retiredFlag table (Inactive (Just err))) target = Z
+inactiveFailedPotential nameEq bound component parent retiredFlag table err = Refl
+
+public export
+0 boundPlusThreeStep : (bound : Nat) -> LTE (S (bound + 3)) (bound + 4)
+boundPlusThreeStep Z = lteRefl 4
+boundPlusThreeStep (S bound) = LTESucc (boundPlusThreeStep bound)
+
+public export
+0 inactiveCleanAfterUnload : (nameEq : DecEq name) -> (bound : Nat) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (target : Maybe (List name)) ->
+  LTE (S (fiberTargetPotential @{nameEq} bound
+    (MkFiber component parent retiredFlag table (Inactive Nothing)) target))
+    (bound + 3)
+inactiveCleanAfterUnload nameEq bound component parent retiredFlag table Nothing =
+  oneLTEBoundPlusThree bound
+inactiveCleanAfterUnload nameEq Z component parent retiredFlag table
+  (Just providers) = lteRefl 3
+inactiveCleanAfterUnload nameEq (S bound) component parent retiredFlag table
+  (Just providers) = LTESucc
+    (inactiveCleanAfterUnload nameEq bound component parent retiredFlag table
+      (Just providers))
+
 ||| A foreign local update leaves the selected fiber exact. Under the
 ||| `TargetStayed` premise, the provider-name target is exact as well, so the
 ||| factored potential is unchanged without inspecting the evaluator rule.
