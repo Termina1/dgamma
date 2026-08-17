@@ -23,6 +23,18 @@ ActualEffectFrame nameEq keyEq action tag before afterState =
       (projectEffectState @{nameEq} before))
     (Just (projectEffectState @{nameEq} afterState))
 
+public export
+0 setLifecycleTableLookup : (keyEq : DecEq key) -> (k : key) ->
+  (fiber : Fiber name key value world error) ->
+  (life : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  lookupBinding @{keyEq} k
+    (ownedValues (fiberTable (setFiberLifecycle fiber life))) =
+  lookupBinding @{keyEq} k (ownedValues (fiberTable fiber))
+setLifecycleTableLookup keyEq k
+  (MkFiber component parent retiredFlag table oldLife) life = Refl
+
 ||| Replacing one fiber while preserving its owned table is invisible to the
 ||| full effect-state projection, pointwise on every dynamic table lookup.
 public export
