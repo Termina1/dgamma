@@ -1155,9 +1155,10 @@ record ProgressResult
 ||| Candidate finite-trace/static-list specialization of Theorem 66.
 ||| Finiteness of N is intrinsic in the registry representation.
 ||| CP4 Finding #5 repairs the arbitrary-first-state encoding by exposing the
-||| paper-implicit bound on every current Reloading continuation.
-||| TODO(proof): the remaining debt is the unloading-chain no-deadlock
-||| induction and Equation-61 precedence bound.
+||| paper-implicit bound on every current Reloading continuation. CP4 Finding #6
+||| restores the global equality discipline already used by sibling trace
+||| theorems: every checked step is aligned with these equality witnesses.
+||| TODO(proof): the remaining debt is the Equation-61 quantitative bound.
 public export
 progressTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type
@@ -1166,6 +1167,7 @@ progressTheorem name key value world error =
   (first, last : SystemState name key value world error) ->
   (trace : Transitions first last) ->
   LifecycleOnly trace ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
   registryWellFormed @{nameEq} @{keyEq} first = True ->
   PrecedenceAcyclic nameEq first ->
   programsBoundedBy bound first = True ->

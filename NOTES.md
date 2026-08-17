@@ -238,6 +238,26 @@ of Lemma 38.
     finite specialization otherwise loses. Record that parallel in the future
     authors letter. **The repaired Theorem-66 shape requires end-of-CP4
     adversarial re-review alongside Definition 69/Lemma 70.**
+11. **CP4 Finding #6 — Theorem 66 omitted the global equality alignment used
+    by every sibling trace metatheorem.** `Transition` stores the `DecEq name`
+    and `DecEq key` witnesses used by its checked evaluator step, while the old
+    Progress alias fixed another pair only for initial invariants, target-turn
+    counting, and the conclusion. Without `AlignedTransitions`, preservation
+    and the quantitative per-rule proof would have to establish coherence of
+    the complete evaluator across arbitrary equality implementations—an
+    artifact of the Idris encoding, not a claim in the paper.
+
+    With supervisor approval, `progressTheorem` now carries
+    `AlignedTransitions name key world error value nameEq keyEq trace`
+    immediately after `LifecycleOnly trace`. This matches the established CP2/
+    CP3 encoding used by `orderingTheorem`, `deletionTheorem`,
+    `confluenceTheorem`, `alignedTraceWellFormedEnd`, and the trace-level
+    installation/resolution results. The paper has one global equality, so the
+    premise restores that semantics rather than weakening Theorem 66.
+    `DGamma.CP4ProgressChecks.progressCounterAligned` is a checked nonempty
+    five-step witness that the new premise is constructive and non-vacuous.
+    Finding #6 joins Findings #4 and #5 on the mandatory end-of-CP4 adversarial
+    re-review list.
 
 ## Escape-hatch and hole audit
 

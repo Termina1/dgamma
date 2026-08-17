@@ -224,6 +224,30 @@ progressCounterLifecycleOnly = LifecycleOnlyStep counterStep0 _ Refl
       (LifecycleOnlyStep counterStep3 _ Refl
         (LifecycleOnlyStep counterStep4 NoTransitions Refl LifecycleOnlyEnd))))
 
+||| Non-vacuity witness for CP4 Finding #6: the existing checked five-step
+||| regression trace uses one global pair of equality witnesses throughout.
+public export
+0 progressCounterAligned : AlignedTransitions Nat ToyKey ToyRuntime String
+  ToyValue %search %search DGamma.CP4ProgressChecks.progressCounterTrace
+progressCounterAligned =
+  AlignedStep (LAdvance (the Nat 0)) LIterTag
+    (checkedFromRaw %search %search (LAdvance (the Nat 0)) progressCounter0
+      progressCounter1 LIterTag progressCounterRaw0 progressCounter1WellFormed)
+    _ (AlignedStep (LAdvance (the Nat 0)) LIterTag
+      (checkedFromRaw %search %search (LAdvance (the Nat 0)) progressCounter1
+        progressCounter2 LIterTag Refl progressCounter2WellFormed)
+      _ (AlignedStep (LAdvance (the Nat 0)) LIterTag
+        (checkedFromRaw %search %search (LAdvance (the Nat 0)) progressCounter2
+          progressCounter3 LIterTag Refl progressCounter3WellFormed)
+        _ (AlignedStep (LAdvance (the Nat 0)) LIterTag
+          (checkedFromRaw %search %search (LAdvance (the Nat 0)) progressCounter3
+            progressCounter4 LIterTag Refl progressCounter4WellFormed)
+          _ (AlignedStep (LAdvance (the Nat 0)) LFinishTag
+            (checkedFromRaw %search %search (LAdvance (the Nat 0))
+              progressCounter4 progressCounter5 LFinishTag Refl
+              progressCounter5WellFormed)
+            NoTransitions AlignedEnd))))
+
 0 counterTargetProviders :
   (lifecycle : Lifecycle ToyKey ToyValue ToyRuntime String Nat []
     DGamma.Section3Example.toySpecA) ->
