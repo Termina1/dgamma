@@ -4,6 +4,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.Unified
+import Data.List.Elem
 import Decidable.Equality
 
 %default total
@@ -82,6 +83,66 @@ projectTablePreservingReplace nameEq keyEq actor worldValue old next fibers foun
       tables selected k | No distinct | Just observed =
         let targetLookup = trans
               (lookupReplaceOther selected actor distinct next fibers) sourceLookup
+        in rewrite targetLookup in Refl
+
+0 lookupNotElemNothing : DecEq key => (wanted : key) ->
+  (entries : List (Binding key value)) ->
+  Not (Elem wanted (bindingKeys entries)) -> lookupEntries wanted entries = Nothing
+lookupNotElemNothing wanted [] absent = Refl
+lookupNotElemNothing wanted (Bind current value :: rest) absent with
+  (decEq wanted current)
+  lookupNotElemNothing current (Bind current value :: rest) absent | Yes Refl =
+    void (absent Here)
+  lookupNotElemNothing wanted (Bind current value :: rest) absent | No distinct =
+    lookupNotElemNothing wanted rest (\later => absent (There later))
+
+0 lookupDeleteSelf : DecEq key => (removed : key) ->
+  (context : CoeffectContext key value) ->
+  lookupBinding removed (deleteBinding removed context) = Nothing
+lookupDeleteSelf removed (MkCoeffectContext entries unique) =
+  lookupNotElemNothing removed (deleteEntries removed entries)
+    (deletedKeyNotElem removed entries unique)
+
+||| O-Remove's effect map explicitly empties the removed name. This is
+||| pointwise equal to projecting the registry after deleting that binding.
+public export
+0 projectDeleteEffectFrame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (worldValue : world) -> (fibers : Registry name key value world error) ->
+  EffectStateRelated keyEq
+    (setEffectTable @{nameEq} actor (emptyContext {key = key} {value = value})
+      (projectEffectState @{nameEq}
+        (the (SystemState name key value world error)
+          (MkSystemState worldValue fibers))))
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState worldValue (deleteBinding @{nameEq} actor fibers))))
+projectDeleteEffectFrame nameEq keyEq actor worldValue fibers =
+  MkEffectStateRelated Refl tables
+  where
+  0 tables : (selected : name) -> (k : key) ->
+    lookupBinding @{keyEq} k
+      (effectTables (setEffectTable @{nameEq} actor (emptyContext {key = key} {value = value})
+        (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState worldValue fibers)))) selected) =
+    lookupBinding @{keyEq} k
+      (effectTables (projectEffectState @{nameEq}
+        (the (SystemState name key value world error)
+          (MkSystemState worldValue
+            (deleteBinding @{nameEq} actor fibers)))) selected)
+  tables selected k with (decEq @{nameEq} selected actor)
+    tables _ k | Yes Refl = rewrite lookupDeleteSelf actor fibers in Refl
+    tables selected k | No distinct with
+      (lookupFiber @{nameEq} selected fibers) proof sourceLookup
+      tables selected k | No distinct | Nothing =
+        let targetLookup = trans (lookupDeleteOther selected actor distinct fibers)
+              sourceLookup
+        in rewrite targetLookup in Refl
+      tables selected k | No distinct | Just observed =
+        let targetLookup = trans (lookupDeleteOther selected actor distinct fibers)
+              sourceLookup
         in rewrite targetLookup in Refl
 
 ||| Package a control-only local replacement once its evaluator endpoint and
