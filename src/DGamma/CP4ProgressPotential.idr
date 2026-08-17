@@ -139,3 +139,124 @@ actorProgressPotentialBounded nameEq keyEq bound actor state continuations
     Just (MkFiber component parent retiredFlag table
       (Unloading accumulator committedView (Just err))) =
         oneLTEPlusFour bound
+
+0 sameNameListTrueEqual : (nameEq : DecEq name) -> (left, right : List name) ->
+  sameNameList @{nameEq} left right = True -> left = right
+sameNameListTrueEqual nameEq [] [] same = Refl
+sameNameListTrueEqual nameEq [] (_ :: _) same = case same of Refl impossible
+sameNameListTrueEqual nameEq (_ :: _) [] same = case same of Refl impossible
+sameNameListTrueEqual nameEq (left :: leftRest) (right :: rightRest) same
+  with (decEq @{nameEq} left right)
+  sameNameListTrueEqual nameEq (right :: leftRest) (right :: rightRest) same |
+    Yes Refl = cong (right ::)
+      (sameNameListTrueEqual nameEq leftRest rightRest same)
+  sameNameListTrueEqual nameEq (left :: leftRest) (right :: rightRest) same |
+    No distinct = case same of Refl impossible
+
+public export
+0 sameTargetTrueEqual : (nameEq : DecEq name) ->
+  (left, right : Maybe (List name)) ->
+  sameTarget @{nameEq} left right = True -> left = right
+sameTargetTrueEqual nameEq Nothing Nothing same = Refl
+sameTargetTrueEqual nameEq Nothing (Just right) same = case same of
+  Refl impossible
+sameTargetTrueEqual nameEq (Just left) Nothing same = case same of
+  Refl impossible
+sameTargetTrueEqual nameEq (Just left) (Just right) same =
+  cong Just (sameNameListTrueEqual nameEq left right same)
+
+||| Potential factored through the provider-name target used by Equation 61.
+||| This form makes target-stable foreign steps definitionally frame the budget.
+public export
+fiberTargetPotential : DecEq name => Nat ->
+  Fiber name key value world error -> Maybe (List name) -> Nat
+fiberTargetPotential bound fiber target = case fiberLifecycle fiber of
+  Inactive (Just err) => Z
+  Inactive Nothing => case target of
+    Nothing => Z
+    Just providers => bound + 2
+  Reloading remaining accumulator committedView =>
+    if sameTarget target (Just (viewProviders committedView))
+      then S (length remaining)
+      else bound + 4
+  Active accumulator committedView =>
+    if sameTarget target (Just (viewProviders committedView))
+      then Z
+      else bound + 4
+  Unloading accumulator committedView Nothing => bound + 3
+  Unloading accumulator committedView (Just err) => 1
+
+public export
+actorTargetPotential : DecEq name => DecEq key => Nat -> name ->
+  SystemState name key value world error -> Nat
+actorTargetPotential bound actor state =
+  case lookupFiber actor (registry state) of
+    Nothing => Z
+    Just fiber => fiberTargetPotential bound fiber
+      (targetProvidersAt actor state)
+
+||| Provider-name formulation of the one-interval potential bound.
+public export
+0 actorTargetPotentialBounded :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (bound : Nat) ->
+  (actor : name) -> (state : SystemState name key value world error) ->
+  continuationsBoundedBy bound state = True ->
+  LTE (actorTargetPotential @{nameEq} @{keyEq} bound actor state) (bound + 4)
+actorTargetPotentialBounded nameEq keyEq bound actor state continuations
+  with (lookupFiber @{nameEq} actor (registry state)) proof found
+  actorTargetPotentialBounded nameEq keyEq bound actor state continuations |
+    Nothing = LTEZero
+  actorTargetPotentialBounded nameEq keyEq bound actor state continuations |
+    Just (MkFiber component parent retiredFlag table (Inactive (Just err))) =
+      LTEZero
+  actorTargetPotentialBounded nameEq keyEq bound actor state continuations |
+    Just (MkFiber component parent retiredFlag table (Inactive Nothing))
+    with (targetProvidersAt @{nameEq} @{keyEq} actor state)
+    actorTargetPotentialBounded nameEq keyEq bound actor state continuations |
+      Just (MkFiber component parent retiredFlag table (Inactive Nothing)) |
+      Nothing = LTEZero
+    actorTargetPotentialBounded nameEq keyEq bound actor state continuations |
+      Just (MkFiber component parent retiredFlag table (Inactive Nothing)) |
+      Just providers = plusTwoLTEPlusFour bound
+  actorTargetPotentialBounded nameEq keyEq bound actor state continuations |
+    Just fiber@(MkFiber component parent retiredFlag table
+      (Reloading remaining accumulator committedView))
+    with (sameTarget @{nameEq}
+      (targetProvidersAt @{nameEq} @{keyEq} actor state)
+      (Just (viewProviders committedView)))
+    actorTargetPotentialBounded nameEq keyEq bound actor state continuations |
+      Just fiber@(MkFiber component parent retiredFlag table
+        (Reloading remaining accumulator committedView)) | True =
+        let bounded = continuationBoundedAtLookup nameEq bound state
+              continuations actor
+              (MkFiber component parent retiredFlag table
+                (Reloading remaining accumulator committedView)) found
+            0 remainingBoolean : (length remaining <= bound = True)
+            remainingBoolean = bounded
+        in successorLTEPlusFour (length remaining) bound
+          (boolLTEToLTE (length remaining) bound remainingBoolean)
+    actorTargetPotentialBounded nameEq keyEq bound actor state continuations |
+      Just fiber@(MkFiber component parent retiredFlag table
+        (Reloading remaining accumulator committedView)) | False =
+        lteReflexive (bound + 4)
+  actorTargetPotentialBounded nameEq keyEq bound actor state continuations |
+    Just fiber@(MkFiber component parent retiredFlag table
+      (Active accumulator committedView))
+    with (sameTarget @{nameEq}
+      (targetProvidersAt @{nameEq} @{keyEq} actor state)
+      (Just (viewProviders committedView)))
+    actorTargetPotentialBounded nameEq keyEq bound actor state continuations |
+      Just fiber@(MkFiber component parent retiredFlag table
+        (Active accumulator committedView)) | True = LTEZero
+    actorTargetPotentialBounded nameEq keyEq bound actor state continuations |
+      Just fiber@(MkFiber component parent retiredFlag table
+        (Active accumulator committedView)) | False =
+        lteReflexive (bound + 4)
+  actorTargetPotentialBounded nameEq keyEq bound actor state continuations |
+    Just (MkFiber component parent retiredFlag table
+      (Unloading accumulator committedView Nothing)) =
+        plusThreeLTEPlusFour bound
+  actorTargetPotentialBounded nameEq keyEq bound actor state continuations |
+    Just (MkFiber component parent retiredFlag table
+      (Unloading accumulator committedView (Just err))) =
+        oneLTEPlusFour bound
