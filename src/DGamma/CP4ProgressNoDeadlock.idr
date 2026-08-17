@@ -4,6 +4,8 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP4ProgressFinite
+import DGamma.CP4ProgressReliance
 import Control.WellFounded
 import Data.List
 import Data.List.Elem
@@ -12,629 +14,380 @@ import Decidable.Equality
 
 %default total
 
-||| Append one final Definition-65 edge to a nonempty precedence path.
+||| Raw preservation turns a successful rule at a well-formed source into a
+||| transition admitted by the checked evaluator.
 public export
-0 precedencePathSnoc :
-  PrecedencePath nameEq state first middle ->
-  PrecedenceEdge nameEq middle finalName state ->
-  PrecedencePath nameEq state first finalName
-precedencePathSnoc (PrecedenceOne edge) finalEdge =
-  PrecedenceMore edge (PrecedenceOne finalEdge)
-precedencePathSnoc (PrecedenceMore edge rest) finalEdge =
-  PrecedenceMore edge (precedencePathSnoc rest finalEdge)
-
-||| The forward-successor relation used by the unloading descent: a consumer is
-||| smaller than the provider it currently relies on, so accessibility follows
-||| the provider-to-consumer direction of precedence.
-public export
-0 PrecedenceSuccessor :
-  (nameEq : DecEq name) -> SystemState name key value world error ->
-  name -> name -> Type
-PrecedenceSuccessor nameEq state consumer provider =
-  PrecedenceEdge nameEq provider consumer state
-
-0 elemLengthZeroImpossible : (values : List a) -> length values = Z ->
-  Elem wanted values -> Void
-elemLengthZeroImpossible [] Refl present impossible
-elemLengthZeroImpossible (_ :: _) Refl present impossible
-
-0 accessibleFromAvailable :
-  {name, key, world, error : Type} -> {value : key -> Type} ->
-  (nameEq : DecEq name) -> (state : SystemState name key value world error) ->
-  PrecedenceAcyclic nameEq state ->
-  (fuel : Nat) -> (available, seen : List name) -> (current : name) ->
-  length available = fuel -> Elem current available ->
-  ((earlier : name) -> Elem earlier seen ->
-    PrecedencePath nameEq state earlier current) ->
-  ((candidate : name) -> Not (Elem candidate seen) ->
-    (fiber : Fiber name key value world error) ->
-    lookupFiber @{nameEq} candidate (registry state) = Just fiber ->
-    Elem candidate available) ->
-  Accessible (PrecedenceSuccessor nameEq state) current
-accessibleFromAvailable nameEq state acyclic Z available seen current lengthZero
-  currentAvailable seenPath complete =
-    void (elemLengthZeroImpossible available lengthZero currentAvailable)
-accessibleFromAvailable nameEq state acyclic (S remaining) available seen current
-  availableLength currentAvailable seenPath complete = Access $ \consumer, edge =>
-    let 0 consumerNotCurrent : Not (consumer = current)
-        consumerNotCurrent same =
-          let 0 selfEdge : PrecedenceEdge nameEq current current state
-              selfEdge = replace
-                {p = \selected => PrecedenceEdge nameEq current selected state}
-                same edge
-          in acyclic current (PrecedenceOne selfEdge)
-        0 consumerNotSeen : Not (Elem consumer seen)
-        consumerNotSeen present = acyclic consumer
-          (precedencePathSnoc (seenPath consumer present) edge)
-        0 consumerAvailable : Elem consumer available
-        consumerAvailable = complete consumer consumerNotSeen
-          (consumerFiber edge) (consumerFound edge)
-        0 consumerRemaining : Elem consumer (removeName current available)
-        consumerRemaining = elemRemoveOtherName consumer current
-          consumerNotCurrent available consumerAvailable
-        0 removedLength : S (length (removeName current available)) =
-          length available
-        removedLength = removeNamePresentLength current available currentAvailable
-        0 remainingLength : length (removeName current available) = remaining
-        remainingLength = case trans removedLength availableLength of Refl => Refl
-        0 nextSeenPath : (earlier : name) -> Elem earlier (current :: seen) ->
-          PrecedencePath nameEq state earlier consumer
-        nextSeenPath _ Here = PrecedenceOne edge
-        nextSeenPath earlier (There earlierSeen) =
-          precedencePathSnoc (seenPath earlier earlierSeen) edge
-        0 nextComplete : (candidate : name) ->
-          Not (Elem candidate (current :: seen)) ->
-          (fiber : Fiber name key value world error) ->
-          lookupFiber @{nameEq} candidate (registry state) = Just fiber ->
-          Elem candidate (removeName current available)
-        nextComplete candidate candidateFresh fiber found =
-          let 0 candidateNotSeen : Not (Elem candidate seen)
-              candidateNotSeen present = candidateFresh (There present)
-              0 candidateNotCurrent : Not (candidate = current)
-              candidateNotCurrent same = candidateFresh
-                (replace {p = \selected => Elem selected (current :: seen)}
-                  (sym same) Here)
-          in elemRemoveOtherName candidate current candidateNotCurrent available
-            (complete candidate candidateNotSeen fiber found)
-    in accessibleFromAvailable nameEq state acyclic remaining
-      (removeName current available) (current :: seen) consumer remainingLength
-      consumerRemaining nextSeenPath nextComplete
-
-||| Constructive finite-graph well-foundedness in the direction needed by
-||| Theorem 66. This is the same finite acyclicity-to-descent pattern used by
-||| Lemma 68, specialized to Definition 65 alone.
-public export
-0 precedenceSuccessorAccessible :
-  (nameEq : DecEq name) -> (state : SystemState name key value world error) ->
-  PrecedenceAcyclic nameEq state -> (current : name) ->
-  (fiber : Fiber name key value world error) ->
-  lookupFiber @{nameEq} current (registry state) = Just fiber ->
-  Accessible (PrecedenceSuccessor nameEq state) current
-precedenceSuccessorAccessible nameEq
-  state@(MkSystemState ambient (MkCoeffectContext entries unique)) acyclic current
-  fiber found =
-    let 0 currentAvailable : Elem current (bindingKeys entries)
-        currentAvailable = lookupJustElem current entries fiber found
-        0 complete : (candidate : name) -> Not (Elem candidate []) ->
-          (observed : Fiber name key value world error) ->
-          lookupFiber @{nameEq} candidate
-            (registry state) = Just observed ->
-          Elem candidate (bindingKeys entries)
-        complete candidate fresh observed present =
-          lookupJustElem candidate entries observed present
-        0 noSeenPath : (earlier : name) -> Elem earlier [] ->
-          PrecedencePath nameEq state earlier current
-        noSeenPath earlier present impossible
-    in accessibleFromAvailable nameEq state acyclic (length (bindingKeys entries))
-      (bindingKeys entries) [] current Refl currentAvailable noSeenPath complete
-
-||| A positional witness that one committed dependency was resolved to a given
-||| provider. Keeping the position avoids assuming dependency keys are unique.
-public export
-data ViewProviderOccurrence :
-  (provider : name) -> (deps : List key) -> View name deps -> Type where
-  ProviderOccursHere :
-    ViewProviderOccurrence provider (wanted :: rest)
-      (ProviderView provider viewTail)
-  ProviderOccursLater :
-    ViewProviderOccurrence provider rest viewTail ->
-    ViewProviderOccurrence provider (wanted :: rest)
-      (ProviderView current viewTail)
-
-0 viewContainsOccurrence :
-  (nameEq : DecEq name) -> (provider : name) ->
-  (view : View name deps) -> viewContains @{nameEq} provider view = True ->
-  ViewProviderOccurrence provider deps view
-viewContainsOccurrence nameEq provider EmptyView contains = case contains of
-  Refl impossible
-viewContainsOccurrence nameEq provider (ProviderView current tail) contains
-  with (decEq @{nameEq} provider current)
-  viewContainsOccurrence nameEq current (ProviderView current tail) contains |
-    Yes Refl = ProviderOccursHere
-  viewContainsOccurrence nameEq provider (ProviderView current tail) contains |
-    No distinct = ProviderOccursLater
-      (viewContainsOccurrence nameEq provider tail contains)
-
-public export
-record CommittedProviderUse
-  (name, key, world, error : Type) (value : key -> Type)
-  (nameEq : DecEq name) (keyEq : DecEq key)
-  (provider : name) (fibers : Registry name key value world error)
-  (deps : List key) (view : View name deps) where
-  constructor MkCommittedProviderUse
-  usedKey : key
-  usedValue : value usedKey
-  0 usedDependency : Elem usedKey deps
-  0 usedProviderValue :
-    valueFromProvider @{nameEq} @{keyEq} {value = value} {world = world}
-      {error = error} provider usedKey fibers = Just usedValue
-
-0 committedProviderUse :
+0 checkedFromRaw :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (provider : name) -> (deps : List key) -> (view : View name deps) ->
-  (fibers : Registry name key value world error) ->
-  ViewProviderOccurrence provider deps view ->
-  (capability : DepValues key value deps) ->
-  resolveCommittedValues @{nameEq} @{keyEq} {value = value} {world = world}
-    {error = error} deps view fibers = Just capability ->
-  CommittedProviderUse name key world error value nameEq keyEq provider fibers
-    deps view
-committedProviderUse nameEq keyEq provider (wanted :: rest)
-  (ProviderView provider tail) fibers ProviderOccursHere capability resolved
-  with (valueFromProvider @{nameEq} @{keyEq} provider wanted fibers) proof found
-  committedProviderUse nameEq keyEq provider (wanted :: rest)
-    (ProviderView provider tail) fibers ProviderOccursHere capability resolved |
-    Nothing = case resolved of Refl impossible
-  committedProviderUse nameEq keyEq provider (wanted :: rest)
-    (ProviderView provider tail) fibers ProviderOccursHere capability resolved |
-    Just used = MkCommittedProviderUse wanted used Here found
-committedProviderUse nameEq keyEq provider (wanted :: rest)
-  (ProviderView current tail) fibers (ProviderOccursLater later) capability
-  resolved
-  with (valueFromProvider @{nameEq} @{keyEq} current wanted fibers)
-  committedProviderUse nameEq keyEq provider (wanted :: rest)
-    (ProviderView current tail) fibers (ProviderOccursLater later) capability
-    resolved | Nothing = case resolved of Refl impossible
-  committedProviderUse nameEq keyEq provider (wanted :: rest)
-    (ProviderView current tail) fibers (ProviderOccursLater later) capability
-    resolved | Just currentValue
-    with (resolveCommittedValues @{nameEq} @{keyEq} rest tail fibers) proof tailRun
-    committedProviderUse nameEq keyEq provider (wanted :: rest)
-      (ProviderView current tail) fibers (ProviderOccursLater later) capability
-      resolved | Just currentValue | Nothing = case resolved of Refl impossible
-    committedProviderUse nameEq keyEq provider (wanted :: rest)
-      (ProviderView current tail) fibers (ProviderOccursLater later)
-      capability resolved | Just currentValue | Just tailCapability =
-        let laterUse = committedProviderUse nameEq keyEq provider rest tail fibers
-              later tailCapability tailRun
-        in MkCommittedProviderUse (usedKey laterUse) (usedValue laterUse)
-          (There (usedDependency laterUse)) (usedProviderValue laterUse)
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  registryWellFormed @{nameEq} @{keyEq} before = True ->
+  applyAction @{nameEq} @{keyEq} {value = value} {world = world} {error = error} action before = Just (tag, afterState) ->
+  checkedApplyAction @{nameEq} @{keyEq} {value = value} {world = world} {error = error} action before =
+    Just (tag, afterState)
+checkedFromRaw {name = name} {key = key} {value = value}
+        {world = world} {error = error} nameEq keyEq action before afterState tag valid raw =
+  rewrite raw in
+  rewrite preservationTheoremProof nameEq keyEq action before afterState tag
+    valid raw in Refl
 
-0 lookupBindingJustElem :
-  (keyEq : DecEq key) -> (wanted : key) ->
-  (table : CoeffectContext key value) -> (found : value wanted) ->
-  lookupBinding @{keyEq} wanted table = Just found ->
-  Elem wanted (bindingKeys (bindings table))
-lookupBindingJustElem keyEq wanted (MkCoeffectContext entries unique) found
-  present = lookupJustElem wanted entries found present
-
-0 valueFromProviderAtFound :
+0 selectedFiberViewValid :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (provider : name) -> (wanted : key) ->
+  (ambient : world) ->
   (fibers : Registry name key value world error) ->
-  (fiber : Fiber name key value world error) ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
   lookupFiber @{nameEq} {key = key} {value = value} {world = world}
-    {error = error} provider fibers = Just fiber ->
-  valueFromProvider @{nameEq} @{keyEq} {value = value} {world = world}
-    {error = error} provider wanted fibers =
-    lookupBinding @{keyEq} wanted (ownedValues (fiberTable fiber))
-valueFromProviderAtFound nameEq keyEq provider wanted fibers fiber found =
-  rewrite found in Refl
-
-0 bindingElemKey :
-  Elem (Bind selected observed) entries -> Elem selected (bindingKeys entries)
-bindingElemKey Here = Here
-bindingElemKey (There later) = There (bindingElemKey later)
-
-0 lookupEntryFromElem :
-  (keyEq : DecEq key) ->
-  (entries : List (Binding key value)) ->
-  (unique : UniqueKeys (bindingKeys entries)) ->
-  Elem (Bind selected observed) entries ->
-  lookupEntries @{keyEq} selected entries = Just observed
-lookupEntryFromElem keyEq (Bind selected observed :: rest)
-  (UniqueCons fresh tailUnique) Here
-  with (decEq @{keyEq} selected selected)
-  lookupEntryFromElem keyEq (Bind selected observed :: rest)
-    (UniqueCons fresh tailUnique) Here | Yes Refl = Refl
-  lookupEntryFromElem keyEq (Bind selected observed :: rest)
-    (UniqueCons fresh tailUnique) Here | No contra = void (contra Refl)
-lookupEntryFromElem keyEq (Bind current currentValue :: rest)
-  (UniqueCons fresh tailUnique) (There later)
-  with (decEq @{keyEq} selected current)
-  lookupEntryFromElem keyEq (Bind current currentValue :: rest)
-    (UniqueCons fresh tailUnique) (There later) | Yes same =
-      void (fresh (replace
-        {p = \candidate => Elem candidate (bindingKeys rest)} same
-        (bindingElemKey later)))
-  lookupEntryFromElem keyEq (Bind current currentValue :: rest)
-    (UniqueCons fresh tailUnique) (There later) | No distinct =
-      lookupEntryFromElem keyEq rest tailUnique later
-
-record ReliedEntry
-  (name, key, world, error : Type) (value : key -> Type)
-  (provider : name)
-  (entries : List (Binding name (FiberAt name key value world error))) where
-  constructor MkReliedEntry
-  reliedConsumerName : name
-  reliedConsumerFiber : Fiber name key value world error
-  0 reliedConsumerMember :
-    Elem (Bind reliedConsumerName reliedConsumerFiber) entries
-  0 reliedConsumerDistinct : Not (reliedConsumerName = provider)
-  reliedConsumerView : View name (dependencies
-    (componentDependencies (fiberComponent reliedConsumerFiber)))
-  0 reliedConsumerCommitted :
-    committed (fiberLifecycle reliedConsumerFiber) = Just reliedConsumerView
-  0 reliedProviderOccurrence : ViewProviderOccurrence provider
-    (dependencies (componentDependencies (fiberComponent reliedConsumerFiber)))
-    reliedConsumerView
-
-0 reliedHeadEntry :
-  (nameEq : DecEq name) -> (provider, consumer : name) ->
-  (fiber : Fiber name key value world error) ->
-  reliedHead @{nameEq} provider provider (Bind consumer fiber) = True ->
-  ReliedEntry name key world error value provider [Bind consumer fiber]
-reliedHeadEntry nameEq provider consumer
-  (MkFiber component parent retiredFlag table (Inactive outcome)) headTrue
-  with (decEq @{nameEq} consumer provider)
-  reliedHeadEntry nameEq provider provider
-    (MkFiber component parent retiredFlag table (Inactive outcome)) headTrue |
-    Yes Refl = case headTrue of Refl impossible
-  reliedHeadEntry nameEq provider consumer
-    (MkFiber component parent retiredFlag table (Inactive outcome)) headTrue |
-    No distinct = case headTrue of Refl impossible
-reliedHeadEntry nameEq provider consumer
-  (MkFiber component parent retiredFlag table
-    (Reloading remaining accumulator view)) headTrue
-  with (decEq @{nameEq} consumer provider)
-  reliedHeadEntry nameEq provider provider
-    (MkFiber component parent retiredFlag table
-      (Reloading remaining accumulator view)) headTrue | Yes Refl =
-        case headTrue of Refl impossible
-  reliedHeadEntry nameEq provider consumer
-    (MkFiber component parent retiredFlag table
-      (Reloading remaining accumulator view)) headTrue | No distinct =
-        MkReliedEntry consumer
-          (MkFiber component parent retiredFlag table
-            (Reloading remaining accumulator view)) Here distinct view Refl
-          (viewContainsOccurrence nameEq provider view headTrue)
-reliedHeadEntry nameEq provider consumer
-  (MkFiber component parent retiredFlag table (Active accumulator view)) headTrue
-  with (decEq @{nameEq} consumer provider)
-  reliedHeadEntry nameEq provider provider
-    (MkFiber component parent retiredFlag table (Active accumulator view))
-    headTrue | Yes Refl = case headTrue of Refl impossible
-  reliedHeadEntry nameEq provider consumer
-    (MkFiber component parent retiredFlag table (Active accumulator view))
-    headTrue | No distinct =
-      MkReliedEntry consumer
-        (MkFiber component parent retiredFlag table (Active accumulator view))
-        Here distinct view Refl
-        (viewContainsOccurrence nameEq provider view headTrue)
-reliedHeadEntry nameEq provider consumer
-  (MkFiber component parent retiredFlag table
-    (Unloading accumulator view outcome)) headTrue
-  with (decEq @{nameEq} consumer provider)
-  reliedHeadEntry nameEq provider provider
-    (MkFiber component parent retiredFlag table
-      (Unloading accumulator view outcome)) headTrue | Yes Refl =
-        case headTrue of Refl impossible
-  reliedHeadEntry nameEq provider consumer
-    (MkFiber component parent retiredFlag table
-      (Unloading accumulator view outcome)) headTrue | No distinct =
-        MkReliedEntry consumer
-          (MkFiber component parent retiredFlag table
-            (Unloading accumulator view outcome)) Here distinct view Refl
-          (viewContainsOccurrence nameEq provider view headTrue)
-
-0 reliedOnByEntry :
-  {name, key, world, error : Type} -> {value : key -> Type} ->
-  (nameEq : DecEq name) -> (provider : name) ->
-  (entries : List (Binding name (FiberAt name key value world error))) ->
-  reliedOnBy @{nameEq} {key = key} {value = value} {world = world}
-    {error = error} provider provider entries = True ->
-  ReliedEntry name key world error value provider entries
-reliedOnByEntry nameEq provider [] reliedTrue = case reliedTrue of
-  Refl impossible
-reliedOnByEntry nameEq provider (Bind consumer fiber :: rest) reliedTrue
-  with (reliedHead @{nameEq} provider provider (Bind consumer fiber)) proof head
-  reliedOnByEntry nameEq provider (Bind consumer fiber :: rest) reliedTrue |
-    True = case reliedHeadEntry nameEq provider consumer fiber head of
-      MkReliedEntry consumer fiber Here distinct view committed occurrence =>
-        MkReliedEntry consumer fiber Here distinct view committed occurrence
-  reliedOnByEntry nameEq provider (Bind consumer fiber :: rest) reliedTrue |
-    False =
-      let later = reliedOnByEntry nameEq provider rest reliedTrue
-      in MkReliedEntry (reliedConsumerName later) (reliedConsumerFiber later)
-        (There (reliedConsumerMember later)) (reliedConsumerDistinct later)
-        (reliedConsumerView later) (reliedConsumerCommitted later)
-        (reliedProviderOccurrence later)
+    {error = error} selected fibers = Just fiber ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error}
+    (MkSystemState ambient fibers) = True ->
+  fiberViewInvariant @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} fiber fibers = True
+selectedFiberViewValid nameEq keyEq ambient
+  fibers@(MkCoeffectContext entries unique) selected fiber found wellFormed =
+    viewsInvariantLookup nameEq keyEq selected fiber entries fibers
+      (lookupFiberEntries nameEq selected fiber fibers found)
+      (wellFormedViewsInvariant nameEq keyEq ambient fibers wellFormed)
 
 public export
-record ReliedConsumer
-  (nameEq : DecEq name) (provider : name)
-  (state : SystemState name key value world error) where
-  constructor MkReliedConsumer
-  consumerName : name
-  consumerFiber : Fiber name key value world error
-  0 consumerFound : lookupFiber @{nameEq} consumerName (registry state) =
-    Just consumerFiber
-  0 consumerDistinct : Not (consumerName = provider)
-  consumerView : View name (dependencies
-    (componentDependencies (fiberComponent consumerFiber)))
-  0 consumerCommitted :
-    committed (fiberLifecycle consumerFiber) = Just consumerView
-  0 providerOccurrence : ViewProviderOccurrence provider
-    (dependencies (componentDependencies (fiberComponent consumerFiber)))
-    consumerView
-  0 providerPrecedesConsumer :
-    PrecedenceEdge nameEq provider consumerName state
+0 RawActionResult :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  Action name key value world error ->
+  SystemState name key value world error -> Type
+RawActionResult name key world error value nameEq keyEq action before =
+  (tag : RuleTag **
+    (afterState : SystemState name key value world error **
+      applyAction @{nameEq} @{keyEq} {value = value} {world = world} {error = error} action before = Just (tag, afterState)))
 
-||| Reflection of the unloading guard into the exact precedence edge consumed
-||| by the well-founded descent.
-public export
-0 reliedConsumerWitness :
+0 reloadingAdvanceResolvedRaw :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (state : SystemState name key value world error) ->
-  registryWellFormed @{nameEq} @{keyEq} state = True ->
-  (provider : name) -> (providerFiber : Fiber name key value world error) ->
-  lookupFiber @{nameEq} provider (registry state) = Just providerFiber ->
-  relied @{nameEq} {key = key} {value = value} {world = world}
-    {error = error} provider (registry state) = True ->
-  ReliedConsumer nameEq provider state
-reliedConsumerWitness nameEq keyEq
-  (MkSystemState ambient (MkCoeffectContext entries unique)) wellFormed
-  provider providerFiber providerFound reliedTrue =
-    let entry = reliedOnByEntry nameEq provider entries reliedTrue
-        consumer : name
-        consumer = reliedConsumerName entry
-        fiber : Fiber name key value world error
-        fiber = reliedConsumerFiber entry
-        0 found : lookupFiber @{nameEq} consumer
-          (MkCoeffectContext entries unique) = Just fiber
-        found = lookupEntryFromElem nameEq entries unique
-          (reliedConsumerMember entry)
-        0 allViews : viewsInvariant @{nameEq} @{keyEq} {value = value}
-          {world = world} {error = error} entries
-          (MkCoeffectContext entries unique) = True
-        allViews = wellFormedViewsInvariant nameEq keyEq ambient
-          (MkCoeffectContext entries unique) wellFormed
-        0 selectedView : fiberViewInvariant @{nameEq} @{keyEq} {value = value}
-          {world = world} {error = error} fiber
-          (MkCoeffectContext entries unique) = True
-        selectedView = viewsInvariantLookup nameEq keyEq consumer fiber entries
-          (MkCoeffectContext entries unique) found allViews
-        0 bindingsValid : viewBindingsInvariant @{nameEq} @{keyEq}
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (actor : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (capability : DepValues key value
+    (dependencies (componentDependencies component))) ->
+  resolveCommittedValues @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} (dependencies (componentDependencies component)) view
+    fibers = Just capability ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} actor fibers = Just
+    (MkFiber component parent retiredFlag table
+      (Reloading (step :: rest) accumulator view)) ->
+  RawActionResult name key world error value nameEq keyEq (LAdvance actor)
+    (MkSystemState ambient fibers)
+reloadingAdvanceResolvedRaw nameEq keyEq ambient fibers actor component parent
+  retiredFlag table step rest accumulator view capability resolved found
+  with (runStepEffect step capability (MkLocalState ambient table)) proof ran
+  reloadingAdvanceResolvedRaw nameEq keyEq ambient fibers actor component parent
+    retiredFlag table step rest accumulator view capability resolved found |
+    Left err =
+      let afterState : SystemState name key value world error
+          afterState = MkSystemState ambient
+            (replaceBinding @{nameEq} actor
+              (setFiberLifecycle
+                (MkFiber component parent retiredFlag table
+                  (Reloading (step :: rest) accumulator view))
+                (Unloading accumulator view (Just err))) fibers)
+          0 raw : (applyAction @{nameEq} @{keyEq} {value = value}
+            {world = world} {error = error} (LAdvance actor)
+            (MkSystemState ambient fibers) = Just (LRaiseTag, afterState))
+          raw = rewrite found in rewrite resolved in rewrite ran in Refl
+      in (LRaiseTag ** (afterState ** raw))
+  reloadingAdvanceResolvedRaw nameEq keyEq ambient fibers actor component parent
+    retiredFlag table step rest accumulator view capability resolved found |
+    Right (localAfter, undo)
+    with (targetMatches @{nameEq}
+      (targetFiber @{nameEq} @{keyEq} {value = value} {world = world}
+        {error = error}
+        (MkFiber component parent retiredFlag table
+          (Reloading (step :: rest) accumulator view)) fibers) view) proof matches
+    reloadingAdvanceResolvedRaw nameEq keyEq ambient fibers actor component parent
+      retiredFlag table step rest accumulator view capability resolved found |
+      Right (localAfter, undo) | False =
+        let afterState : SystemState name key value world error
+            afterState = MkSystemState (localWorld localAfter)
+              (replaceBinding @{nameEq} actor
+                (setFiberRuntime
+                  (MkFiber component parent retiredFlag table
+                    (Reloading (step :: rest) accumulator view))
+                  (localTable localAfter)
+                  (Unloading (accumulator . undo) view Nothing)) fibers)
+            0 raw : (applyAction @{nameEq} @{keyEq} {value = value}
+              {world = world} {error = error} (LAdvance actor)
+              (MkSystemState ambient fibers) = Just (LDivertTag, afterState))
+            raw = rewrite found in rewrite resolved in rewrite ran in
+              rewrite matches in Refl
+        in (LDivertTag ** (afterState ** raw))
+    reloadingAdvanceResolvedRaw nameEq keyEq ambient fibers actor component parent
+      retiredFlag table step [] accumulator view capability resolved found |
+      Right (localAfter, undo) | True =
+        let afterState : SystemState name key value world error
+            afterState = MkSystemState (localWorld localAfter)
+              (replaceBinding @{nameEq} actor
+                (setFiberRuntime
+                  (MkFiber component parent retiredFlag table
+                    (Reloading [step] accumulator view))
+                  (localTable localAfter)
+                  (Active (accumulator . undo) view)) fibers)
+            0 raw : (applyAction @{nameEq} @{keyEq} {value = value}
+              {world = world} {error = error} (LAdvance actor)
+              (MkSystemState ambient fibers) = Just (LFinishTag, afterState))
+            raw = rewrite found in rewrite resolved in rewrite ran in
+              rewrite matches in Refl
+        in (LFinishTag ** (afterState ** raw))
+    reloadingAdvanceResolvedRaw nameEq keyEq ambient fibers actor component parent
+      retiredFlag table step (next :: more) accumulator view capability resolved
+      found | Right (localAfter, undo) | True =
+        let afterState : SystemState name key value world error
+            afterState = MkSystemState (localWorld localAfter)
+              (replaceBinding @{nameEq} actor
+                (setFiberRuntime
+                  (MkFiber component parent retiredFlag table
+                    (Reloading (step :: next :: more) accumulator view))
+                  (localTable localAfter)
+                  (Reloading (next :: more) (accumulator . undo) view)) fibers)
+            0 raw : (applyAction @{nameEq} @{keyEq} {value = value}
+              {world = world} {error = error} (LAdvance actor)
+              (MkSystemState ambient fibers) = Just (LIterTag, afterState))
+            raw = rewrite found in rewrite resolved in rewrite ran in
+              rewrite matches in Refl
+        in (LIterTag ** (afterState ** raw))
+
+0 reloadingAdvanceRaw :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (actor : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} actor fibers = Just
+    (MkFiber component parent retiredFlag table
+      (Reloading remaining accumulator view)) ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error}
+    (MkSystemState ambient fibers) = True ->
+  RawActionResult name key world error value nameEq keyEq (LAdvance actor)
+    (MkSystemState ambient fibers)
+reloadingAdvanceRaw nameEq keyEq ambient fibers actor component parent
+  retiredFlag table [] accumulator view found wellFormed
+  with (targetMatches @{nameEq}
+    (targetFiber @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+      (MkFiber component parent retiredFlag table
+        (Reloading [] accumulator view)) fibers) view) proof matches
+  reloadingAdvanceRaw nameEq keyEq ambient fibers actor component parent
+    retiredFlag table [] accumulator view found wellFormed | True =
+      let afterState : SystemState name key value world error
+          afterState = MkSystemState ambient
+            (replaceBinding @{nameEq} actor
+              (setFiberLifecycle
+                (MkFiber component parent retiredFlag table
+                  (Reloading [] accumulator view))
+                (Active accumulator view)) fibers)
+          0 raw : (applyAction @{nameEq} @{keyEq} {value = value} {world = world} {error = error} (LAdvance actor)
+            (MkSystemState ambient fibers) = Just (LFinishTag, afterState))
+          raw = rewrite found in rewrite matches in Refl
+      in (LFinishTag ** (afterState ** raw))
+  reloadingAdvanceRaw nameEq keyEq ambient fibers actor component parent
+    retiredFlag table [] accumulator view found wellFormed | False =
+      let afterState : SystemState name key value world error
+          afterState = MkSystemState ambient
+            (replaceBinding @{nameEq} actor
+              (setFiberLifecycle
+                (MkFiber component parent retiredFlag table
+                  (Reloading [] accumulator view))
+                (Unloading accumulator view Nothing)) fibers)
+          0 raw : (applyAction @{nameEq} @{keyEq} {value = value} {world = world} {error = error} (LAdvance actor)
+            (MkSystemState ambient fibers) = Just (LDivertTag, afterState))
+          raw = rewrite found in rewrite matches in Refl
+      in (LDivertTag ** (afterState ** raw))
+reloadingAdvanceRaw nameEq keyEq ambient fibers actor component parent
+  retiredFlag table (step :: rest) accumulator view found wellFormed =
+    let 0 selectedValid : (fiberViewInvariant @{nameEq} @{keyEq}
           {value = value} {world = world} {error = error}
-          (dependencies (componentDependencies (fiberComponent fiber)))
-          (reliedConsumerView entry) (MkCoeffectContext entries unique) = True
-        bindingsValid = committedViewBindingsValid nameEq keyEq fiber
-          (MkCoeffectContext entries unique) (reliedConsumerView entry) selectedView
-          (reliedConsumerCommitted entry)
-        0 resolvedIsJust : isJust (resolveCommittedValues @{nameEq} @{keyEq}
+          (MkFiber component parent retiredFlag table
+            (Reloading (step :: rest) accumulator view)) fibers = True)
+        selectedValid = selectedFiberViewValid nameEq keyEq ambient fibers actor
+          (MkFiber component parent retiredFlag table
+            (Reloading (step :: rest) accumulator view)) found wellFormed
+        0 bindingsValid : (viewBindingsInvariant @{nameEq} @{keyEq}
           {value = value} {world = world} {error = error}
-          (dependencies (componentDependencies (fiberComponent fiber)))
-          (reliedConsumerView entry) (MkCoeffectContext entries unique)) = True
-        resolvedIsJust = boolAndRight _ _ bindingsValid
-        0 resolvedWitness :
+          (dependencies (componentDependencies component)) view fibers = True)
+        bindingsValid = committedViewBindingsValid nameEq keyEq
+          (MkFiber component parent retiredFlag table
+            (Reloading (step :: rest) accumulator view)) fibers view
+          selectedValid Refl
+        0 capabilityIsJust :
+          (isJust (resolveCommittedValues @{nameEq} @{keyEq} {value = value}
+            {world = world} {error = error}
+            (dependencies (componentDependencies component)) view fibers) = True)
+        capabilityIsJust = boolAndRight _ _ bindingsValid
+        0 capabilityWitness :
           (capability : DepValues key value
-            (dependencies
-              (componentDependencies (fiberComponent fiber))) **
+            (dependencies (componentDependencies component)) **
            resolveCommittedValues @{nameEq} @{keyEq} {value = value}
              {world = world} {error = error}
-             (dependencies
-               (componentDependencies (fiberComponent fiber)))
-             (reliedConsumerView entry) (MkCoeffectContext entries unique) =
+             (dependencies (componentDependencies component)) view fibers =
                Just capability)
-        resolvedWitness = isJustTrueWitness
+        capabilityWitness = isJustTrueWitness
           (resolveCommittedValues @{nameEq} @{keyEq} {value = value}
             {world = world} {error = error}
-            (dependencies (componentDependencies (fiberComponent fiber)))
-            (reliedConsumerView entry) (MkCoeffectContext entries unique))
-            resolvedIsJust
-    in case resolvedWitness of
-      (capability ** resolved) =>
-        let 0 providerFoundBinding :
-              (lookupBinding @{nameEq} provider
-                (MkCoeffectContext entries unique) = Just providerFiber)
-            providerFoundBinding = providerFound
-            0 use : CommittedProviderUse name key world error value nameEq keyEq
-              provider (MkCoeffectContext entries unique)
-              (dependencies (componentDependencies (fiberComponent fiber)))
-              (reliedConsumerView entry)
-            use = committedProviderUse nameEq keyEq provider
-              (dependencies (componentDependencies (fiberComponent fiber)))
-              (reliedConsumerView entry) (MkCoeffectContext entries unique)
-              (reliedProviderOccurrence entry) capability resolved
-            0 providerLookupValue :
-              (lookupBinding @{keyEq} (usedKey use)
-                (ownedValues (fiberTable providerFiber)) = Just (usedValue use))
-            providerLookupValue = trans
-              (sym (valueFromProviderAtFound nameEq keyEq provider
-                (usedKey use) (MkCoeffectContext entries unique) providerFiber
-                providerFoundBinding))
-              (usedProviderValue use)
-            0 providerDeclares : Elem (usedKey use)
-              (dependencies
-                (componentProvisions (fiberComponent providerFiber)))
-            providerDeclares = ownedSound (fiberTable providerFiber)
-              (usedKey use)
-              (lookupBindingJustElem keyEq (usedKey use)
-                (ownedValues (fiberTable providerFiber))
-                (usedValue use) providerLookupValue)
-            0 edge : PrecedenceEdge nameEq provider consumer
-              (the (SystemState name key value world error)
-                (MkSystemState ambient (MkCoeffectContext entries unique)))
-            edge = MkPrecedenceEdge (usedKey use) providerFiber fiber
-              providerFound found providerDeclares (usedDependency use)
-        in MkReliedConsumer consumer fiber found (reliedConsumerDistinct entry)
-          (reliedConsumerView entry) (reliedConsumerCommitted entry)
-          (reliedProviderOccurrence entry) edge
+            (dependencies (componentDependencies component)) view fibers)
+          capabilityIsJust
+    in case capabilityWitness of
+      (capability ** resolved) => reloadingAdvanceResolvedRaw nameEq keyEq
+        ambient fibers actor component parent retiredFlag table step rest
+        accumulator view capability resolved found
 
-0 viewEqTrueEqual :
-  (nameEq : DecEq name) -> (left, right : View name deps) ->
-  viewEq @{nameEq} left right = True -> left = right
-viewEqTrueEqual nameEq EmptyView EmptyView valid = Refl
-viewEqTrueEqual nameEq (ProviderView left leftRest)
-  (ProviderView right rightRest) valid
-  with (decEq @{nameEq} left right)
-  viewEqTrueEqual nameEq (ProviderView right leftRest)
-    (ProviderView right rightRest) valid | Yes Refl =
-      cong (ProviderView right)
-        (viewEqTrueEqual nameEq leftRest rightRest valid)
-  viewEqTrueEqual nameEq (ProviderView left leftRest)
-    (ProviderView right rightRest) valid | No distinct = case valid of
-      Refl impossible
-
-0 resolveViewOccurrenceProvider :
+public export
+0 reloadingLifecycleMove :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (provider : name) -> (deps : List key) -> (view : View name deps) ->
-  (fibers : Registry name key value world error) ->
-  ViewProviderOccurrence provider deps view ->
-  resolveView @{nameEq} @{keyEq} {value = value} {world = world}
-    {error = error} deps fibers = Just view ->
-  (wanted : key **
-    (Elem wanted deps,
-     providerOf @{nameEq} @{keyEq} {value = value} {world = world}
-       {error = error} wanted fibers = Just provider))
-resolveViewOccurrenceProvider nameEq keyEq provider (wanted :: rest)
-  (ProviderView provider tail) fibers ProviderOccursHere resolved
-  with (providerOf @{nameEq} @{keyEq} wanted fibers) proof providerFound
-  resolveViewOccurrenceProvider nameEq keyEq provider (wanted :: rest)
-    (ProviderView provider tail) fibers ProviderOccursHere resolved |
-    Nothing = case resolved of Refl impossible
-  resolveViewOccurrenceProvider nameEq keyEq provider (wanted :: rest)
-    (ProviderView provider tail) fibers ProviderOccursHere resolved |
-    Just selected
-    with (resolveView @{nameEq} @{keyEq} rest fibers)
-    resolveViewOccurrenceProvider nameEq keyEq provider (wanted :: rest)
-      (ProviderView provider tail) fibers ProviderOccursHere resolved |
-      Just selected | Nothing = case resolved of Refl impossible
-    resolveViewOccurrenceProvider nameEq keyEq provider (wanted :: rest)
-      (ProviderView provider tail) fibers ProviderOccursHere resolved |
-      Just selected | Just resolvedTail = case justInjective resolved of
-        Refl => (wanted ** (Here, providerFound))
-resolveViewOccurrenceProvider nameEq keyEq provider (wanted :: rest)
-  (ProviderView current tail) fibers (ProviderOccursLater later) resolved
-  with (providerOf @{nameEq} @{keyEq} wanted fibers)
-  resolveViewOccurrenceProvider nameEq keyEq provider (wanted :: rest)
-    (ProviderView current tail) fibers (ProviderOccursLater later) resolved |
-    Nothing = case resolved of Refl impossible
-  resolveViewOccurrenceProvider nameEq keyEq provider (wanted :: rest)
-    (ProviderView current tail) fibers (ProviderOccursLater later) resolved |
-    Just selected
-    with (resolveView @{nameEq} @{keyEq} rest fibers) proof tailResolved
-    resolveViewOccurrenceProvider nameEq keyEq provider (wanted :: rest)
-      (ProviderView current tail) fibers (ProviderOccursLater later) resolved |
-      Just selected | Nothing = case resolved of Refl impossible
-    resolveViewOccurrenceProvider nameEq keyEq provider (wanted :: rest)
-      (ProviderView current tail) fibers (ProviderOccursLater later) resolved |
-      Just selected | Just resolvedTail = case justInjective resolved of
-        Refl =>
-          let (laterKey ** (laterElem, laterProvider)) =
-                resolveViewOccurrenceProvider nameEq keyEq provider rest tail
-                  fibers later tailResolved
-          in (laterKey ** (There laterElem, laterProvider))
+  (state : SystemState name key value world error) ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} state = True ->
+  (actor : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} actor (registry state) = Just
+    (MkFiber component parent retiredFlag table
+      (Reloading remaining accumulator view)) ->
+  LifecycleMove nameEq keyEq state
+reloadingLifecycleMove nameEq keyEq (MkSystemState ambient fibers) wellFormed
+  actor component parent retiredFlag table remaining accumulator view found =
+    case reloadingAdvanceRaw nameEq keyEq ambient fibers actor component parent
+      retiredFlag table remaining accumulator view found wellFormed of
+      (tag ** (afterState ** raw)) => CanAdvance actor tag afterState raw
 
-||| An Active consumer committed to an Unloading provider necessarily has a
-||| stale target, because current target resolution selects Active providers.
 public export
-0 activeConsumerTargetMismatch :
+0 beginLifecycleMove :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (state : SystemState name key value world error) ->
-  (provider, consumer : name) ->
-  (providerComponent : Component key value world error) ->
-  (providerParent : Parent name) -> (providerRetired : Bool) ->
-  (providerTable : OwnedTable key value
-    (componentProvisions providerComponent)) ->
-  (providerAccumulator : LocalState key value world
-      (componentProvisions providerComponent) ->
-    LocalState key value world (componentProvisions providerComponent)) ->
-  (providerView : View name (dependencies
-    (componentDependencies providerComponent))) ->
-  (providerOutcome : Maybe error) ->
-  lookupFiber @{nameEq} provider (registry state) = Just
-    (MkFiber providerComponent providerParent providerRetired providerTable
-      (Unloading providerAccumulator providerView providerOutcome)) ->
-  (consumerComponent : Component key value world error) ->
-  (consumerParent : Parent name) -> (consumerRetired : Bool) ->
-  (consumerTable : OwnedTable key value
-    (componentProvisions consumerComponent)) ->
-  (consumerAccumulator : LocalState key value world
-      (componentProvisions consumerComponent) ->
-    LocalState key value world (componentProvisions consumerComponent)) ->
-  (consumerView : View name (dependencies
-    (componentDependencies consumerComponent))) ->
-  lookupFiber @{nameEq} consumer (registry state) = Just
-    (MkFiber consumerComponent consumerParent consumerRetired consumerTable
-      (Active consumerAccumulator consumerView)) ->
-  ViewProviderOccurrence provider
-    (dependencies (componentDependencies consumerComponent)) consumerView ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} state = True ->
+  (actor : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} actor (registry state) = Just
+    (MkFiber component parent retiredFlag table (Inactive Nothing)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  targetFiber @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+    (MkFiber component parent retiredFlag table (Inactive Nothing))
+    (registry state) = Just view ->
+  LifecycleMove nameEq keyEq state
+beginLifecycleMove nameEq keyEq (MkSystemState ambient fibers) wellFormed actor component parent
+  retiredFlag table found view target =
+    let sourceFiber : Fiber name key value world error
+        sourceFiber = MkFiber component parent retiredFlag table (Inactive Nothing)
+        afterState : SystemState name key value world error
+        afterState = MkSystemState ambient
+          (replaceBinding @{nameEq} actor
+            (setFiberLifecycle sourceFiber
+              (Reloading (componentProgram component) id view)) fibers)
+        0 raw : (applyAction @{nameEq} @{keyEq} {value = value} {world = world} {error = error} (LBegin actor)
+          (MkSystemState ambient fibers) = Just (LBeginTag, afterState))
+        raw = rewrite found in rewrite target in Refl
+    in CanBegin actor afterState raw
+
+public export
+0 leaveLifecycleMove :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} state = True ->
+  (actor : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} actor (registry state) = Just
+    (MkFiber component parent retiredFlag table (Active accumulator view)) ->
   targetMatches @{nameEq}
-    (targetFiber @{nameEq} @{keyEq}
-      (MkFiber consumerComponent consumerParent consumerRetired consumerTable
-        (Active consumerAccumulator consumerView)) (registry state))
-    consumerView = False
-activeConsumerTargetMismatch nameEq keyEq state provider consumer
-  providerComponent providerParent providerRetired providerTable
-  providerAccumulator providerView providerOutcome providerFound
-  consumerComponent consumerParent True consumerTable consumerAccumulator
-  consumerView consumerFound occurrence = Refl
-activeConsumerTargetMismatch nameEq keyEq state provider consumer
-  providerComponent providerParent providerRetired providerTable
-  providerAccumulator providerView providerOutcome providerFound
-  consumerComponent consumerParent False consumerTable consumerAccumulator
-  consumerView consumerFound occurrence
-  with (resolveView @{nameEq} @{keyEq}
-    (dependencies (componentDependencies consumerComponent)) (registry state))
-    proof resolved
-  activeConsumerTargetMismatch nameEq keyEq state provider consumer
-    providerComponent providerParent providerRetired providerTable
-    providerAccumulator providerView providerOutcome providerFound
-    consumerComponent consumerParent False consumerTable consumerAccumulator
-    consumerView consumerFound occurrence | Nothing = Refl
-  activeConsumerTargetMismatch nameEq keyEq state provider consumer
-    providerComponent providerParent providerRetired providerTable
-    providerAccumulator providerView providerOutcome providerFound
-    consumerComponent consumerParent False consumerTable consumerAccumulator
-    consumerView consumerFound occurrence | Just target
-    with (viewEq @{nameEq} target consumerView) proof same
-    activeConsumerTargetMismatch nameEq keyEq state provider consumer
-      providerComponent providerParent providerRetired providerTable
-      providerAccumulator providerView providerOutcome providerFound
-      consumerComponent consumerParent False consumerTable consumerAccumulator
-      consumerView consumerFound occurrence | Just target | False = Refl
-    activeConsumerTargetMismatch nameEq keyEq state provider consumer
-      providerComponent providerParent providerRetired providerTable
-      providerAccumulator providerView providerOutcome providerFound
-      consumerComponent consumerParent False consumerTable consumerAccumulator
-      consumerView consumerFound occurrence | Just target | True =
-        let targetEqual = viewEqTrueEqual nameEq target consumerView same
-            resolvedCommitted = trans resolved (cong Just targetEqual)
-            (wanted ** (dependency, providerSelected)) =
-              resolveViewOccurrenceProvider nameEq keyEq provider
-                (dependencies (componentDependencies consumerComponent))
-                consumerView (registry state) occurrence resolvedCommitted
-            providerSound = providerOfSound nameEq keyEq wanted provider
-              (registry state) providerSelected
-            sameProviderFiber = justInjective
-              (trans (sym providerFound) (providerOfLookup providerSound))
-            0 impossibleActive : (False = True)
-            impossibleActive = replace
-              {p = \fiber => isActive (fiberLifecycle fiber) = True}
-              (sym sameProviderFiber) (providerOfActive providerSound)
-        in case impossibleActive of Refl impossible
+    (targetFiber @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
+      (MkFiber component parent retiredFlag table (Active accumulator view))
+      (registry state)) view = False ->
+  LifecycleMove nameEq keyEq state
+leaveLifecycleMove nameEq keyEq (MkSystemState ambient fibers) wellFormed actor component parent
+  retiredFlag table accumulator view found mismatch =
+    let sourceFiber : Fiber name key value world error
+        sourceFiber = MkFiber component parent retiredFlag table
+          (Active accumulator view)
+        afterState : SystemState name key value world error
+        afterState = MkSystemState ambient
+          (replaceBinding @{nameEq} actor
+            (setFiberLifecycle sourceFiber
+              (Unloading accumulator view Nothing)) fibers)
+        0 raw : (applyAction @{nameEq} @{keyEq} {value = value} {world = world} {error = error} (LLeave actor)
+          (MkSystemState ambient fibers) = Just (LLeaveTag, afterState))
+        raw = rewrite found in rewrite mismatch in Refl
+    in CanLeave actor afterState raw
+
+public export
+0 unloadLifecycleMove :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} state = True ->
+  (actor : name) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (outcome : Maybe error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} actor (registry state) = Just
+    (MkFiber component parent retiredFlag table
+      (Unloading accumulator view outcome)) ->
+  relied @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} actor (registry state) = False ->
+  LifecycleMove nameEq keyEq state
+unloadLifecycleMove nameEq keyEq (MkSystemState ambient fibers) wellFormed actor component parent
+  retiredFlag table accumulator view outcome found unrelied =
+    let sourceFiber : Fiber name key value world error
+        sourceFiber = MkFiber component parent retiredFlag table
+          (Unloading accumulator view outcome)
+        restored = accumulator (MkLocalState ambient table)
+        afterState : SystemState name key value world error
+        afterState = MkSystemState (localWorld restored)
+          (replaceBinding @{nameEq} actor
+            (setFiberRuntime sourceFiber (localTable restored) (Inactive outcome))
+            fibers)
+        0 raw : (applyAction @{nameEq} @{keyEq} {value = value} {world = world} {error = error} (LUnload actor)
+          (MkSystemState ambient fibers) = Just (LUnloadTag, afterState))
+        raw = rewrite found in rewrite unrelied in Refl
+    in CanUnload actor afterState raw
