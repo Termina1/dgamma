@@ -1172,8 +1172,8 @@ expected. The isolated support-solution rebuild then exceeded the 20-minute
 validation command budget, and a one-process warm package invocation likewise
 exceeded ten minutes. This is recorded as a validation resource residual, not
 silently called a clean pass. Targeted checks of `CP4ProgressProof`, every new
-Progress dependency, and all six deletion-frame modules succeed; the current
-53/53 source modules retain `%default total`, and anchored escape-hatch scans
+Progress dependency, and the then-current deletion-frame modules succeeded;
+the current 60/60 source modules retain `%default total`, and anchored escape-hatch scans
 remain empty. A combined runtime-runner compilation also exceeded five minutes,
 so no fresh aggregate count is claimed for this milestone.
 
