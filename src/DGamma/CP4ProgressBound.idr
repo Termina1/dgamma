@@ -228,6 +228,7 @@ registryUpdatePreservesContinuationBound nameEq bound actor source _
       (allDeleteContinuation nameEq bound actor (registryFibers source)
         continuations)
 
+public export
 0 selectedProgramBounded :
   (nameEq : DecEq name) -> (bound : Nat) ->
   (state : SystemState name key value world error) ->

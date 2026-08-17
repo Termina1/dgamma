@@ -195,6 +195,25 @@ actorTargetPotential bound actor state =
     Just fiber => fiberTargetPotential bound fiber
       (targetProvidersAt actor state)
 
+public export
+0 actorTargetPotentialEquation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (bound : Nat) ->
+  (actor : name) -> (state : SystemState name key value world error) ->
+  actorTargetPotential @{nameEq} @{keyEq} {name = name} {key = key}
+    {world = world} {error = error} {value = value} bound actor state =
+    case lookupFiber @{nameEq} {key = key} {world = world} {error = error}
+      {value = value} actor (registry state) of
+      Nothing => Z
+      Just fiber => fiberTargetPotential @{nameEq} {name = name} {key = key}
+        {world = world} {error = error} {value = value} bound fiber
+        (targetProvidersAt @{nameEq} @{keyEq} {name = name} {key = key}
+          {world = world} {error = error} {value = value} actor state)
+actorTargetPotentialEquation nameEq keyEq bound actor state
+  with (lookupFiber @{nameEq} actor (registry state))
+  actorTargetPotentialEquation nameEq keyEq bound actor state | Nothing = Refl
+  actorTargetPotentialEquation nameEq keyEq bound actor state | Just fiber = Refl
+
 ||| Provider-name formulation of the one-interval potential bound.
 public export
 0 actorTargetPotentialBounded :
