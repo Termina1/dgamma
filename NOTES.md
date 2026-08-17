@@ -1226,7 +1226,11 @@ checks each current R fiber is an Inactive leaf, and constructs both
 remaining proof obligation is sharply its success from
 `RegistrationDiscipline`, `RegisteredGenerationsDuring`, and generation-indexed
 `NoRegisteredEpisode`, rather than construction of the dependent plan itself.
-`CurrentRegisteredInactiveLeaves` names that exact boundary invariant;
+`reachedCurrentRegisteredInactive` now proves the Inactive half directly by
+forward induction over aligned checked transitions and the generation-indexed
+no-episode evidence. It handles insertion, retirement, removal, raw-name reuse,
+and rules out every lifecycle action that would require a non-Inactive source.
+`CurrentRegisteredInactiveLeaves` names the remaining full boundary invariant;
 `currentRegisteredLeavesGivePlan` proves it yields the checked multi-leaf plan,
 and `hasChildDeleteFalse` proves iterated leaf deletion cannot create a child.
 `generationTraceScanPreservesUnique` proves live raw names remain unique from
@@ -1325,8 +1329,8 @@ no-R-episode and Definition-69 premises, conditional trace/final-record
 assembly, executable exact-generation Inactive-leaf plan/actor-outside
 construction, constructive plan success from the explicit current-R leaf
 invariant, scanner live-name uniqueness plus the public-outside bridge, and
-proved checked lifecycle applicability through that plan; derivation of the
-leaf invariant from episode provenance, selected-episode/suffix
+proved checked lifecycle applicability through that plan; childlessness of
+current R names from disciplined registration, selected-episode/suffix
 applicability, and endpoint effect/control/withdrawal invariants remain);
 Confluence/Theorem
 73 (surviving parent-
