@@ -987,6 +987,27 @@ proof exports are quantity `0`, `%default total` remains universal, and the
 runtime evaluator/support computation is unchanged. The approved Definition-69
 statement repair still requires the mandated end-of-CP4 adversarial re-review.
 
+### Cold-build validation under Idris 2 v0.8.0
+
+A one-process build from an empty `build/` may be killed while elaborating the
+pre-existing 1,800-line `DGamma.CP4SupportSolution`: Idris retains the memory
+used to compile its large dependencies in the same process. This is an
+elaborator-resource issue, not a type error. For a genuinely clean archive,
+use process isolation at that boundary:
+
+```sh
+idris2 --clean dgamma.ipkg
+idris2 --build dgamma.ipkg || true   # populates dependency TTCs; may die there
+idris2 --source-dir src --check src/DGamma/CP4SupportSolution.idr
+idris2 --build dgamma.ipkg
+```
+
+The final command must report all 20 package modules. The CP4 Lemma-70 modules
+then cold-check quickly. Validators must not copy TTCs from another worktree;
+the isolated `--check` above consumes only artifacts produced inside the clean
+archive. This recipe was exercised on commit `fe9764d`, followed by the 31/31
+runtime aggregate and escape/totality scans.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
