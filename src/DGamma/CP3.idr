@@ -427,6 +427,11 @@ providerFromPredicate wanted supported (Bind n fiber :: rest) =
     (dependencies (componentProvisions (fiberComponent fiber)))) ||
   providerFromPredicate wanted supported rest
 
+public export
+allList : (a -> Bool) -> List a -> Bool
+allList predicate [] = True
+allList predicate (value :: rest) = predicate value && allList predicate rest
+
 ||| One unfolding of Definition 67 for an arbitrary candidate support set.
 public export
 supportClause : DecEq name => DecEq key => (name -> Bool) -> name ->
@@ -439,7 +444,7 @@ supportClause supported selected state =
       (case fiberParent fiber of
         Root => True
         ChildOf parent => supported parent) &&
-      all (\k => providerFromPredicate k supported
+      allList (\k => providerFromPredicate k supported
         (registryFibers (registry state)))
         (dependencies (componentDependencies (fiberComponent fiber)))
 
@@ -473,21 +478,90 @@ supportCandidate : DecEq name => DecEq key =>
 supportCandidate entries supported (Bind n fiber) =
   not (retired fiber) &&
   parentFromCandidate (fiberParent fiber) supported &&
-  all (\k => providerFromCandidate k supported entries)
+  allList (\k => providerFromCandidate k supported entries)
     (dependencies (componentDependencies (fiberComponent fiber)))
+
+public export
+supportPassEntries : DecEq name => DecEq key =>
+  List (Binding name (FiberAt name key value world error)) ->
+  List (Binding name (FiberAt name key value world error)) ->
+  List name -> List name
+supportPassEntries entries [] supported = supported
+supportPassEntries entries (entry@(Bind n fiber) :: rest) supported =
+  if listMember n supported then supportPassEntries entries rest supported
+  else if supportCandidate entries supported entry
+    then supportPassEntries entries rest (n :: supported)
+    else supportPassEntries entries rest supported
+
+public export
+supportPassEntriesMember :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {auto nameEq : DecEq name} -> {auto keyEq : DecEq key} ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (entry : Binding name (FiberAt name key value world error)) ->
+  (rest : List (Binding name (FiberAt name key value world error))) ->
+  (supported : List name) ->
+  listMember (bindingKey entry) supported = True ->
+  supportPassEntries {value = value} {world = world} {error = error} entries (entry :: rest) supported =
+    supportPassEntries {value = value} {world = world} {error = error} entries rest supported
+supportPassEntriesMember entries (Bind n fiber) rest supported member =
+  rewrite member in Refl
+
+public export
+supportPassEntriesAdd :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {auto nameEq : DecEq name} -> {auto keyEq : DecEq key} ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (entry : Binding name (FiberAt name key value world error)) ->
+  (rest : List (Binding name (FiberAt name key value world error))) ->
+  (supported : List name) ->
+  listMember (bindingKey entry) supported = False ->
+  supportCandidate {value = value} {world = world} {error = error} entries supported entry = True ->
+  supportPassEntries {value = value} {world = world} {error = error} entries (entry :: rest) supported =
+    supportPassEntries {value = value} {world = world} {error = error} entries rest (bindingKey entry :: supported)
+supportPassEntriesAdd entries entry@(Bind n fiber) rest supported member candidate =
+  rewrite member in rewrite candidate in Refl
+
+public export
+supportPassEntriesReject :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {auto nameEq : DecEq name} -> {auto keyEq : DecEq key} ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (entry : Binding name (FiberAt name key value world error)) ->
+  (rest : List (Binding name (FiberAt name key value world error))) ->
+  (supported : List name) ->
+  listMember (bindingKey entry) supported = False ->
+  supportCandidate {value = value} {world = world} {error = error} entries supported entry = False ->
+  supportPassEntries {value = value} {world = world} {error = error} entries (entry :: rest) supported =
+    supportPassEntries {value = value} {world = world} {error = error} entries rest supported
+supportPassEntriesReject entries entry@(Bind n fiber) rest supported member candidate =
+  rewrite member in rewrite candidate in Refl
+
+public export
+supportPassEntriesRejectElim :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {auto nameEq : DecEq name} -> {auto keyEq : DecEq key} ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (entry : Binding name (FiberAt name key value world error)) ->
+  (rest : List (Binding name (FiberAt name key value world error))) ->
+  (supported : List name) ->
+  listMember (bindingKey entry) supported = False ->
+  supportCandidate {value = value} {world = world} {error = error}
+    entries supported entry = False ->
+  (property : List name -> Type) ->
+  property (supportPassEntries {value = value} {world = world} {error = error}
+    entries rest supported) ->
+  property (supportPassEntries {value = value} {world = world} {error = error}
+    entries (entry :: rest) supported)
+supportPassEntriesRejectElim entries entry@(Bind n fiber) rest supported
+  member candidate property result =
+    rewrite member in rewrite candidate in result
 
 public export
 supportPass : DecEq name => DecEq key =>
   List (Binding name (FiberAt name key value world error)) ->
   List name -> List name
-supportPass entries supported = foldl addIfSupported supported entries
-  where
-  addIfSupported : List name ->
-    Binding name (FiberAt name key value world error) -> List name
-  addIfSupported accumulated entry@(Bind n fiber) =
-    if listMember n accumulated then accumulated
-    else if supportCandidate entries accumulated entry
-      then n :: accumulated else accumulated
+supportPass entries supported = supportPassEntries entries entries supported
 
 public export
 supportFuel : DecEq name => DecEq key => Nat ->
@@ -510,6 +584,149 @@ isSupported : DecEq name => DecEq key => name ->
   SystemState name key value world error -> Bool
 isSupported n state = listMember n (supportSet state)
 
+bindingKeyFromEntryElemSupport :
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  Elem (Bind n fiber) entries -> Elem n (bindingKeys entries)
+bindingKeyFromEntryElemSupport n fiber (Bind n fiber :: rest) Here = Here
+bindingKeyFromEntryElemSupport n fiber (entry :: rest) (There later) =
+  There (bindingKeyFromEntryElemSupport n fiber rest later)
+
+
+
+listMemberSelfTrue : DecEq name => (selected : name) ->
+  (supported : List name) -> listMember selected (selected :: supported) = True
+listMemberSelfTrue selected supported with (decEq selected selected)
+  listMemberSelfTrue selected supported | Yes Refl = Refl
+  listMemberSelfTrue selected supported | No contra = void (contra Refl)
+
+listMemberConsTailTrue : DecEq name =>
+  (selected, added : name) -> (supported : List name) ->
+  listMember selected supported = True ->
+  listMember selected (added :: supported) = True
+listMemberConsTailTrue selected added supported present
+  with (decEq selected added)
+  listMemberConsTailTrue added added supported present | Yes Refl = Refl
+  listMemberConsTailTrue selected added supported present | No different = present
+
+listMemberConsOtherFalse : DecEq name =>
+  (selected, added : name) -> Not (selected = added) ->
+  (supported : List name) -> listMember selected supported = False ->
+  listMember selected (added :: supported) = False
+listMemberConsOtherFalse selected added different supported missing
+  with (decEq selected added)
+  listMemberConsOtherFalse added added different supported missing | Yes Refl =
+    void (different Refl)
+  listMemberConsOtherFalse selected added different supported missing | No _ = missing
+
+supportPassEntriesPreservesMember :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (scan : List (Binding name (FiberAt name key value world error))) ->
+  (supported : List name) -> (selected : name) ->
+  listMember @{nameEq} selected supported = True ->
+  listMember @{nameEq} selected
+    (supportPassEntries @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries scan supported) = True
+supportPassEntriesPreservesMember nameEq keyEq entries [] supported selected
+  present = present
+supportPassEntriesPreservesMember nameEq keyEq entries (Bind current fiber :: rest)
+  supported selected present with (listMember @{nameEq} current supported)
+  supportPassEntriesPreservesMember nameEq keyEq entries
+    (Bind current fiber :: rest) supported selected present | True =
+      supportPassEntriesPreservesMember nameEq keyEq entries rest supported selected
+        present
+  supportPassEntriesPreservesMember nameEq keyEq entries
+    (Bind current fiber :: rest) supported selected present | False
+    with (supportCandidate @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries supported
+      (Bind current fiber))
+    supportPassEntriesPreservesMember nameEq keyEq entries
+      (Bind current fiber :: rest) supported selected present | False | True =
+        supportPassEntriesPreservesMember nameEq keyEq entries rest
+          (current :: supported) selected
+          (listMemberConsTailTrue selected current supported present)
+    supportPassEntriesPreservesMember nameEq keyEq entries
+      (Bind current fiber :: rest) supported selected present | False | False =
+        supportPassEntriesPreservesMember nameEq keyEq entries rest supported
+          selected present
+
+public export
+supportPassEntriesEligible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (scan : List (Binding name (FiberAt name key value world error))) ->
+  UniqueKeys (bindingKeys scan) ->
+  (supported : List name) ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  Elem (Bind selected fiber) scan ->
+  listMember @{nameEq} selected supported = False ->
+  supportCandidate @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries supported
+    (Bind selected fiber) = True ->
+  ((added : name) -> (current : List name) ->
+    supportCandidate @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries current
+      (Bind selected fiber) = True ->
+    supportCandidate @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries (added :: current)
+      (Bind selected fiber) = True) ->
+  listMember @{nameEq} selected
+    (supportPassEntries @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries scan supported) = True
+supportPassEntriesEligible nameEq keyEq entries [] UniqueNil supported selected
+  fiber present missing candidate monotone impossible
+supportPassEntriesEligible nameEq keyEq entries
+  (Bind selected fiber :: rest) (UniqueCons headFresh tailUnique) supported
+  selected fiber Here missing candidate monotone
+  with (listMember @{nameEq} selected supported)
+  supportPassEntriesEligible nameEq keyEq entries
+    (Bind selected fiber :: rest) (UniqueCons headFresh tailUnique) supported
+    selected fiber Here missing candidate monotone | True =
+      case missing of Refl impossible
+  supportPassEntriesEligible nameEq keyEq entries
+    (Bind selected fiber :: rest) (UniqueCons headFresh tailUnique) supported
+    selected fiber Here missing candidate monotone | False
+    with (supportCandidate @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries supported
+      (Bind selected fiber))
+    supportPassEntriesEligible nameEq keyEq entries
+      (Bind selected fiber :: rest) (UniqueCons headFresh tailUnique) supported
+      selected fiber Here missing candidate monotone | False | True =
+        supportPassEntriesPreservesMember nameEq keyEq entries rest
+          (selected :: supported) selected (listMemberSelfTrue selected supported)
+    supportPassEntriesEligible nameEq keyEq entries
+      (Bind selected fiber :: rest) (UniqueCons headFresh tailUnique) supported
+      selected fiber Here missing candidate monotone | False | False =
+        case candidate of Refl impossible
+supportPassEntriesEligible nameEq keyEq entries
+  (Bind current observed :: rest) (UniqueCons headFresh tailUnique) supported
+  selected fiber (There later) missing candidate monotone
+  with (listMember @{nameEq} current supported)
+  supportPassEntriesEligible nameEq keyEq entries
+    (Bind current observed :: rest) (UniqueCons headFresh tailUnique) supported
+    selected fiber (There later) missing candidate monotone | True =
+      supportPassEntriesEligible nameEq keyEq entries rest tailUnique supported
+        selected fiber later missing candidate monotone
+  supportPassEntriesEligible nameEq keyEq entries
+    (Bind current observed :: rest) (UniqueCons headFresh tailUnique) supported
+    selected fiber (There later) missing candidate monotone | False
+    with (supportCandidate @{nameEq} @{keyEq} {value = value} {world = world} {error = error} entries supported
+      (Bind current observed))
+    supportPassEntriesEligible nameEq keyEq entries
+      (Bind current observed :: rest) (UniqueCons headFresh tailUnique) supported
+      selected fiber (There later) missing candidate monotone | False | False =
+        supportPassEntriesEligible nameEq keyEq entries rest tailUnique supported
+          selected fiber later missing candidate monotone
+    supportPassEntriesEligible nameEq keyEq entries
+      (Bind current observed :: rest) (UniqueCons headFresh tailUnique) supported
+      selected fiber (There later) missing candidate monotone | False | True =
+        let different : Not (selected = current)
+            different same = headFresh
+              (replace {p = \n => Elem n (bindingKeys rest)} same
+                (bindingKeyFromEntryElemSupport selected fiber rest later))
+            nextMissing = listMemberConsOtherFalse selected current different
+              supported missing
+            nextCandidate = monotone current supported candidate
+        in supportPassEntriesEligible nameEq keyEq entries rest tailUnique
+          (current :: supported) selected fiber later nextMissing nextCandidate
+          monotone
+
 public export
 record SupportWellFoundedResult
   (name, key, world, error : Type) (value : key -> Type)
@@ -524,7 +741,8 @@ record SupportWellFoundedResult
 ||| Paper Lemma 68 with the missing nested-registration invariant exposed as a
 ||| premise. Reachability alone is insufficient under Table-1 O-Insert; see
 ||| Erratum #3 in NOTES.md.
-||| TODO(proof): registration-time ranking under `RegistrationProvenance`.
+||| Constructively implemented by `supportWellFoundedTheoremProof` in
+||| `DGamma.CP4SupportSolution`; no postulate or escape hatch is used.
 public export
 supportWellFoundedTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type

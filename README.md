@@ -44,6 +44,11 @@ progress.
   activation-stamped parent-local surviving-registration trees, exact
   historical external-root coupling, and endpoint equivalence modulo inert
   vestigial generations from deleted closing episodes.
+- `DGamma.CP4Support`: registration-rank preservation and rank descent for the
+  combined parent/precedence support relation.
+- `DGamma.CP4SupportSolution`: constructive fixed-point, soundness, minimality,
+  and uniqueness proofs for the executable Definition-67 support closure; it
+  exports the accepted Lemma-68 proof.
 - `DGamma.CP3StatementChecks`: checked positive/negative proposition-shape
   regressions, including the delay/divert/delete/reopen activation-episode pair.
 - `DGamma.CP3VestigialChecks`: checked 23/18 and 27/18 no-O-Remove schedules,
@@ -123,7 +128,7 @@ is exported. It is not a postulate and cannot be used as a proof.
 | Def 65 | `precedesFiber`, `PrecedenceEdge`, `PrecedencePath`, `PrecedenceAcyclic` | executable finite precedence graph and precise acyclicity premise |
 | Thm 66 | `ProgressResult`, `progressTheorem`, `searchedLifecycleMove`, `maximalQuietFromNoDeadlock`, `progressEndFromNoDeadlock`, `progressEndFromSearch` | **partial/stated finite specialization**: search soundness, maximality consequence, and the empty-suffix quantitative base are proved; unloading-chain no-deadlock and the precedence-count bound remain open |
 | Def 67 | `SupportEdge`, `SupportPath`, `supportClause`, `supportSet`, `isSupported` | executable bounded least-support computation; Equation 62 includes both precedence and immediate-parent edges |
-| Lem 68 | `ReachedFromEmpty`, `RegistrationProtocol`, `RegistrationProvenance`, `ParentRegistrationYield`, `SupportWellFoundedResult`, `supportWellFoundedTheorem` | **statement under review**: child insertion is tied to a tagged step that is actually an `Elem` of the parent program; yielded-parent and precedence ranks increase; legal post-remove raw-name reissue remains allowed; a concrete child-yield witness guards non-vacuity. The finite host may license several names from one live head, a sound rank-preserving over-approximation of one Def-47 application |
+| Lem 68 | `ReachedFromEmpty`, `RegistrationProtocol`, `RegistrationProvenance`, `ParentRegistrationYield`, `SupportWellFoundedResult`, `supportWellFoundedTheorem`, `supportWellFoundedTheoremProof` | **proved (finite specialization)**: reached-trace provenance preserves strict protocol ranks for every registration; parent and precedence edges strictly increase rank, so their union is well founded. The executable bounded support closure is a fixed point, is contained in every Boolean solution, and contains every solution by well-founded rank induction, hence the Definition-67 solution is unique. Legal post-remove raw-name reissue remains allowed. The finite host's documented one-source-head/many-name over-approximation remains unchanged |
 | Def 69 | `ProgramFinishes`, `ComponentTotalOnProvision`, `TraceComponentsTotal` | semantic component-level totality over every successful full program execution and every component inserted anywhere in a trace; endpoint-only and runtime diagnostics are explicitly weaker helpers |
 | Lem 70 | `SupportMatchesActive`, `RegistrationDiscipline`, `supportAtQuiescenceTheorem`, `supportMatchesActiveEmpty` | **statement under review**: adds per-child retirement-before-parent-recovery to Lemma 68's yielded-registration provenance and semantic Definition-69 totality; only the empty-registry base is proved |
 | Lem 71 | `activationEffectTransposition` | **partial**: generated-monoid effect commutation premise is projected; control applicability frames remain open |

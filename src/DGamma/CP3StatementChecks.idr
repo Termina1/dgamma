@@ -4,6 +4,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP4SupportSolution
 import DGamma.CalculusChecks
 import DGamma.Section3Example
 import Decidable.Equality
@@ -3487,6 +3488,13 @@ supportLemma70Guard claim nameEq keyEq protocol state reached discipline acyclic
   quietState noFailures totality =
     claim nameEq keyEq protocol state reached discipline acyclic quietState noFailures
       totality
+
+||| The constructive CP4 inhabitant has exactly the immutable accepted alias.
+public export
+0 acceptedSupportLemma68Proof :
+  supportWellFoundedTheorem name key value world error
+acceptedSupportLemma68Proof =
+  supportWellFoundedTheoremProof name key value world error
 
 ||| Real Lemma-68 regression projections: the guard applies the theorem only
 ||| after reachability and registration provenance, then extracts each result.

@@ -171,7 +171,6 @@ cannot silently introduce a proof:
 - `terminalRecoveryTheorem` — Corollary 62.
 - `resolutionCoherenceTheorem` — the recovery-combined form of Theorem 64.
 - `progressTheorem` — the finite quantitative form of Theorem 66.
-- `supportWellFoundedTheorem` — Lemma 68.
 - `supportAtQuiescenceTheorem` — Lemma 70.
 - `deletionTheorem` — Lemma 72.
 - `confluenceTheorem` — the finite explicit-registration form of Theorem 73,
@@ -874,16 +873,57 @@ regression, not a claimed schedule inhabitant. Likewise
 `canonicalEndpointHistoricalOnly` remains unchecked metadata unless coupled to
 `canonicalRegistrationTree`.
 
+## CP4 constructive proof debt
+
+The interrupted CP4 worktree was inspected before any edit. It contained a
+proof-oriented refactor of `supportPass` into explicit `supportPassEntries`, an
+explicit `allList` with the same Boolean conjunction semantics as the prior
+library `all`, and a new untracked `DGamma.CP4SupportSolution` module. Nothing
+was discarded. The recovered work compiled under Idris 2 0.8.0 and was finished
+as Lemma 68.
+
+The accepted `supportWellFoundedTheorem` type is unchanged. The executable
+Definition-67 implementation was only definitionally refactored so recursive
+proofs can expose one scan step at a time; `supportClause`, `supportCandidate`,
+`supportPass`, `supportFuel`, `supportSet`, and `isSupported` retain their prior
+runtime behavior. This is not a CP4 statement deviation.
+
+`supportWellFoundedTheoremProof` now constructs both fields of
+`SupportWellFoundedResult` without an escape hatch:
+
+1. `DGamma.CP4Support` recovers a protocol rank for every current registration
+   from the aligned reached trace. Both an immediate parent edge and a
+   provision-precedence edge strictly increase that rank, so every nonempty
+   combined support path strictly increases it and cannot cycle.
+2. `supportFuelLengthStable` proves that at most the registry length worth of
+   successful additions reaches a fixed point. `supportSetIsSolution` proves
+   the computed bounded closure satisfies Equation 62.
+3. `computedSupportIncludedInSolution` proves leastness by scan/fuel induction.
+   The converse `candidateIncludedInComputedSupport` uses accessibility of each
+   finite protocol rank: a candidate-supported fiber's parent and providers
+   have smaller ranks and are already in the computed closure, making the fiber
+   eligible for the stable pass.
+4. `supportSolutionUniqueFromRanks` combines both Boolean inclusions pointwise,
+   completing Definition-67 support-solution uniqueness.
+
+Every public theorem/proof export in the new module is quantity `0`; auxiliary
+fixed-point machinery is private and is consumed only while elaborating those
+erased exports. The runtime support computation remains executable. No
+statement micro-adjustment, partial definition, postulate, or proof escape was
+introduced.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
 Preservation; Equation 58; local relied guards; per-step Equation 59; whole-
-episode resolution structure; and global spatial Ordering/Theorem 63 including
-strict containment, resolution constancy, and provider-value constancy.
+episode resolution structure; global spatial Ordering/Theorem 63 including
+strict containment, resolution constancy, and provider-value constancy; and
+finite-specialized Lemma 68, including combined support well-foundedness and
+unique Definition-67 support-solution equality with the executable closure.
 
 **Partial:** Progress/Theorem 66 (search/maximality/base case proved);
-Lemmas 68/70 (candidate tagged/ranked provenance statements; Lemma-70 empty
-base proved); Lemma 71 (effect commutation projection); Lemma 72 (candidate
+Lemma 70 (candidate tagged/ranked provenance statement; empty base proved);
+Lemma 71 (effect commutation projection); Lemma 72 (candidate
 lifecycle-only deletion statement); Confluence/Theorem 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
 and vestigial-aware outside-R endpoint relation submitted for round-10 review;
@@ -897,9 +937,8 @@ but are not individually complete.
 
 **Merely stated:** Lemma 35, Theorems 40/42, recovery Theorem 61, Corollary 62,
 `resolutionCoherenceTheorem`, `progressTheorem`,
-`supportWellFoundedTheorem`, `supportAtQuiescenceTheorem`,
-`deletionTheorem`, and `confluenceTheorem`. These remain
-escape-hatch-free proposition types.
+`supportAtQuiescenceTheorem`, `deletionTheorem`, and `confluenceTheorem`.
+These remain escape-hatch-free proposition types.
 
 **Deviations:** Definition 32 finite approximations; finite static-list
 continuations; finite tagged/catalogued explicit registration rather than a
@@ -907,8 +946,9 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** obtain round-10 statement review, then implement temporal accumulator
-induction, ranked unloading-chain Progress, and constructive checked episode
+**Next:** prove Lemma 70 from Lemma 68 plus quiescence, failure-freedom,
+registration retirement discipline, and Definition-69 totality; then implement
+ranked unloading-chain Progress and constructive checked episode
 deletion/canonical sorting. Fresh-choice, cross-parent, 24/18 activation-reset,
 and no-O-Remove 23/18 and 27/18 vestigial pairs reach the literal public premise
 chain; the latter two also project the vestigial-aware result. Live providers
