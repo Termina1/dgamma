@@ -35,6 +35,13 @@ lteRefl Z = LTEZero
 lteRefl (S number) = LTESucc (lteRefl number)
 
 public export
+0 lteTransitive : LTE first middle -> LTE middle last -> LTE first last
+lteTransitive LTEZero right = LTEZero
+lteTransitive (LTESucc left) LTEZero impossible
+lteTransitive (LTESucc left) (LTESucc right) =
+  LTESucc (lteTransitive left right)
+
+public export
 0 lteWeakenRight : LTE left right -> LTE left (S right)
 lteWeakenRight LTEZero = LTEZero
 lteWeakenRight (LTESucc smaller) = LTESucc (lteWeakenRight smaller)
@@ -156,6 +163,22 @@ reloadingCommittedPotential nameEq bound component parent retiredFlag table
     rewrite sameTargetJustReflexive nameEq (viewProviders view) in Refl
 
 public export
+0 activeCommittedPotential :
+  (nameEq : DecEq name) -> (bound : Nat) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  fiberTargetPotential @{nameEq} bound
+    (MkFiber component parent retiredFlag table (Active accumulator view))
+    (Just (viewProviders view)) = Z
+activeCommittedPotential nameEq bound component parent retiredFlag table
+  accumulator view =
+    rewrite sameTargetJustReflexive nameEq (viewProviders view) in Refl
+
+public export
 0 reloadingStalePotential :
   (nameEq : DecEq name) -> (bound : Nat) ->
   (component : Component key value world error) -> (parent : Parent name) ->
@@ -240,6 +263,39 @@ boundPlusThreeStep Z = lteRefl 4
 boundPlusThreeStep (S bound) = LTESucc (boundPlusThreeStep bound)
 
 public export
+0 twoLTEBoundPlusFour : (bound : Nat) -> LTE 2 (bound + 4)
+twoLTEBoundPlusFour Z = LTESucc (LTESucc LTEZero)
+twoLTEBoundPlusFour (S bound) = lteWeakenRight (twoLTEBoundPlusFour bound)
+
+public export
+0 nonemptyReloadingPotentialAtLeastTwo :
+  (nameEq : DecEq name) -> (bound : Nat) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (target : Maybe (List name)) ->
+  LTE 2 (fiberTargetPotential @{nameEq} bound
+    (MkFiber component parent retiredFlag table
+      (Reloading (step :: rest) accumulator view)) target)
+nonemptyReloadingPotentialAtLeastTwo nameEq bound component parent retiredFlag
+  table step rest accumulator view target with
+  (sameTarget @{nameEq} target (Just (viewProviders view)))
+  nonemptyReloadingPotentialAtLeastTwo nameEq bound component parent retiredFlag
+    table step rest accumulator view target | True =
+      LTESucc (LTESucc LTEZero)
+  nonemptyReloadingPotentialAtLeastTwo nameEq bound component parent retiredFlag
+    table step rest accumulator view target | False = twoLTEBoundPlusFour bound
+
+public export
 0 inactiveCleanAfterUnload : (nameEq : DecEq name) -> (bound : Nat) ->
   (component : Component key value world error) -> (parent : Parent name) ->
   (retiredFlag : Bool) ->
@@ -256,6 +312,15 @@ inactiveCleanAfterUnload nameEq (S bound) component parent retiredFlag table
   (Just providers) = LTESucc
     (inactiveCleanAfterUnload nameEq bound component parent retiredFlag table
       (Just providers))
+
+public export
+0 transportActorPotentialTarget :
+  ActorPotentialStep name key world error value nameEq keyEq bound actor
+    source concreteTarget ->
+  concreteTarget = target ->
+  ActorPotentialStep name key world error value nameEq keyEq bound actor
+    source target
+transportActorPotentialTarget step Refl = step
 
 ||| A foreign local update leaves the selected fiber exact. Under the
 ||| `TargetStayed` premise, the provider-name target is exact as well, so the
