@@ -333,6 +333,36 @@ sourceViewsFromWellFormed nameEq keyEq ambient fibers valid =
     (pairwiseProvisionInvariant @{keyEq} (registryFibers {value = value} {world = world} {error = error} fibers))
     (viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world} {error = error} (registryFibers {value = value} {world = world} {error = error} fibers) fibers) valid
 
+||| Public projection of the committed-view conjunct of registry well-formedness.
+public export
+0 wellFormedViewsInvariant :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (ambient : world) ->
+  (fibers : Registry name key value world error) ->
+  registryWellFormed @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} (MkSystemState ambient fibers) = True ->
+  viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error}
+    (registryFibers {value = value} {world = world} {error = error} fibers)
+    fibers = True
+wellFormedViewsInvariant {name} {key} {world} {error} {value}
+  nameEq keyEq ambient fibers valid =
+    andFourFourth
+      (parentsInvariant @{nameEq}
+        (registryFibers {value = value} {world = world} {error = error} fibers)
+        fibers)
+      (chainsInvariant @{nameEq}
+        (S (length (registryFibers {value = value} {world = world}
+          {error = error} fibers)))
+        (registryFibers {value = value} {world = world} {error = error} fibers)
+        fibers)
+      (pairwiseProvisionInvariant @{keyEq}
+        (registryFibers {value = value} {world = world} {error = error} fibers))
+      (viewsInvariant @{nameEq} @{keyEq} {value = value} {world = world}
+        {error = error}
+        (registryFibers {value = value} {world = world} {error = error} fibers)
+        fibers) valid
+
 0 preservationLBegin :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (n : name) ->
   (before, afterState : SystemState name key value world error) ->

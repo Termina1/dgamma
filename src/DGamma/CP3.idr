@@ -4873,6 +4873,7 @@ resolvedProviderFromView {name} {key} {world} {error} {value}
           in MkResolvedProviderData providerFiber providerFound providerStable
             provided valuePresent providerInstalled
 
+public export
 0 committedViewBindingsValid :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->

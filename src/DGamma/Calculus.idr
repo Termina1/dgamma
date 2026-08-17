@@ -5162,6 +5162,7 @@ record ProviderEntrySound (name, key, world, error : Type)
   soundProviderFiber : Fiber name key value world error
   0 soundProviderLookup : lookupEntries @{nameEq} provider entries =
     Just soundProviderFiber
+  0 soundProviderActive : isActive (fiberLifecycle soundProviderFiber) = True
   0 soundProviderStable : stableProvider
     (fiberLifecycle soundProviderFiber) = True
   0 soundProviderValue : isJust (lookupBinding @{keyEq} k
@@ -5186,11 +5187,12 @@ providerInSound {name} {key} {world} {error} {value}
     nameEq keyEq k provider (Bind current fiber :: rest)
     (UniqueCons headFresh tailUnique) found | True =
       case justValuesEqual found of
-        Refl => MkProviderEntrySound fiber
-          (lookupEntriesHead nameEq current fiber rest)
-          (activeIsStable (fiberLifecycle fiber)
-            (andTrueLeft _ _ usable))
-          (andTrueRight _ _ usable)
+        Refl =>
+          let active = andTrueLeft _ _ usable
+          in MkProviderEntrySound fiber
+            (lookupEntriesHead nameEq current fiber rest) active
+            (activeIsStable (fiberLifecycle fiber) active)
+            (andTrueRight _ _ usable)
   providerInSound {name} {key} {world} {error} {value}
     nameEq keyEq k provider (Bind current fiber :: rest)
     (UniqueCons headFresh tailUnique) found | False =
@@ -5207,8 +5209,10 @@ providerInSound {name} {key} {world} {error} {value}
             (lookupEntriesOtherHead nameEq provider current distinct fiber rest)
             (soundProviderLookup tailSound)
       in MkProviderEntrySound (soundProviderFiber tailSound) liftedLookup
-        (soundProviderStable tailSound) (soundProviderValue tailSound)
+        (soundProviderActive tailSound) (soundProviderStable tailSound)
+        (soundProviderValue tailSound)
 
+public export
 record ProviderOfSound (name, key, world, error : Type)
   (value : key -> Type) (nameEq : DecEq name) (keyEq : DecEq key)
   (k : key) (provider : name)
@@ -5217,10 +5221,12 @@ record ProviderOfSound (name, key, world, error : Type)
   providerOfFiber : Fiber name key value world error
   0 providerOfLookup : lookupFiber @{nameEq} {key = key} {value = value} {world = world} {error = error} provider fibers =
     Just providerOfFiber
+  0 providerOfActive : isActive (fiberLifecycle providerOfFiber) = True
   0 providerOfStable : stableProvider (fiberLifecycle providerOfFiber) = True
   0 providerOfValue : isJust (valueFromProvider @{nameEq} @{keyEq} {value = value} {world = world} {error = error}
     provider k fibers) = True
 
+public export
 0 providerOfSound :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (k : key) ->
@@ -5237,7 +5243,7 @@ providerOfSound {name} {key} {world} {error} {value}
       valuePresent = rewrite soundProviderLookup entrySound in
         soundProviderValue entrySound
   in MkProviderOfSound (soundProviderFiber entrySound)
-    (soundProviderLookup entrySound)
+    (soundProviderLookup entrySound) (soundProviderActive entrySound)
     (soundProviderStable entrySound) valuePresent
 
 public export
