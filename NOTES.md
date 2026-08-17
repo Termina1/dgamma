@@ -196,6 +196,31 @@ of Lemma 38.
    proof-only change. Definition 69, Lemma 70, and downstream Lemma 72/Theorem
    73 premises that mention `TraceComponentsTotal` lose their prior accepted
    status until the end-of-CP4 adversarial round re-reviews the repaired shapes.
+10. **CP4 Finding #5 — the CP3 Theorem-66 alias omits initial continuation
+    validity.** The numeric premise bounds only
+    `length (componentProgram component)`. Its `first` state is otherwise
+    arbitrary: `registryWellFormed` validates committed views but does not say
+    that a `Reloading remaining ...` continuation is a suffix of, or even no
+    longer than, that declared program.
+
+    `DGamma.CP4ProgressChecks` pins the countermodel. One root fiber carries a
+    component with an empty declared program (`K = 0`) but starts in
+    `Reloading` with five well-typed no-op steps. The registry is well formed,
+    precedence is vacuously acyclic, the declared program bound is true, all
+    five checked transitions are lifecycle rules, and the target remains
+    `Just []`, hence `V(0) = 0`. The conclusion nevertheless demands
+    `S(0) = 5 <= (0 + 4) * (0 + 1) = 4`.
+    `progressAliasCounterexample` maps any inhabitant of the current public
+    alias to `Void`; the executable companion evaluates `True`.
+
+    The paper's global convention starts states from valid operational
+    histories, so this is an encoding omission rather than a paper
+    counterexample. The minimal explicit repair is an initial premise that
+    every current `Reloading` continuation has length at most `K` (declared
+    programs remain separately bounded). Lifecycle rules preserve that premise:
+    L-Begin installs the bounded declared program and L-Iter strictly shortens
+    it. **No alias or executable premise has been changed pending supervisor
+    approval.**
 
 ## Escape-hatch and hole audit
 
@@ -642,7 +667,10 @@ provision disjointness.
 The finite-trace specialization remains stated. Proved cores are lifecycle witness
 search soundness, maximality-implies-quiet from no-deadlock, and the complete
 empty-suffix quantitative base (`progressEndFromNoDeadlock` and
-`progressEndFromSearch`). Two nontrivial obligations remain:
+`progressEndFromSearch`). CP4 Finding #5 now constructively refutes the current
+alias because it lacks an initial Reloading-continuation bound; the immutable
+alias awaits a repair decision. After that minimal premise is restored, two
+nontrivial proof obligations remain:
 
 1. **Unloading-chain no-deadlock.** A locally blocked Unloading fiber may be
    relied on by another installed fiber. Proving that some lifecycle action is
@@ -1021,8 +1049,9 @@ parent safety, both Active/support fixed-point directions, and final Lemma-68
 uniqueness assembly. The repaired Definition-69/Lemma-70 statement shapes still
 await end-of-CP4 re-review.
 
-**Partial:** Progress/Theorem 66 (search/maximality/base case proved);
-Lemma 71 (effect commutation projection); Lemma 72 (candidate
+**Partial:** Progress/Theorem 66 (search/maximality/base case proved; current
+alias constructively refuted by CP4 Finding #5 and awaiting an approved initial
+continuation-bound repair); Lemma 71 (effect commutation projection); Lemma 72 (candidate
 lifecycle-only deletion statement); Confluence/Theorem 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
 and vestigial-aware outside-R endpoint relation submitted for round-10 review;

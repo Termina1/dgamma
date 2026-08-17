@@ -1,0 +1,349 @@
+module DGamma.CP4ProgressChecks
+
+import DGamma.Calculus
+import DGamma.Coeffects
+import DGamma.Metatheory
+import DGamma.CP3
+import DGamma.CalculusChecks
+import DGamma.Section3Example
+import Data.List.Elem
+import Data.Maybe
+import Data.Nat
+import Decidable.Equality
+
+%default total
+
+||| A component whose declared program is empty. The current CP3 Progress alias
+||| does not require a Reloading continuation to be a suffix of this program.
+public export
+progressCounterComponent : Component ToyKey ToyValue ToyRuntime String
+progressCounterComponent = MkComponent DGamma.CalculusChecks.toyEmptySpec
+  DGamma.Section3Example.toySpecA []
+
+progressSteps : List (StepEffect ToyKey ToyValue ToyRuntime String []
+  DGamma.Section3Example.toySpecA)
+progressSteps =
+  [ DGamma.CalculusChecks.providerFinish
+  , DGamma.CalculusChecks.providerFinish
+  , DGamma.CalculusChecks.providerFinish
+  , DGamma.CalculusChecks.providerFinish
+  , DGamma.CalculusChecks.providerFinish
+  ]
+
+progressSteps1 : List (StepEffect ToyKey ToyValue ToyRuntime String []
+  DGamma.Section3Example.toySpecA)
+progressSteps1 =
+  [ DGamma.CalculusChecks.providerFinish
+  , DGamma.CalculusChecks.providerFinish
+  , DGamma.CalculusChecks.providerFinish
+  , DGamma.CalculusChecks.providerFinish
+  ]
+
+progressSteps2 : List (StepEffect ToyKey ToyValue ToyRuntime String []
+  DGamma.Section3Example.toySpecA)
+progressSteps2 =
+  [ DGamma.CalculusChecks.providerFinish
+  , DGamma.CalculusChecks.providerFinish
+  , DGamma.CalculusChecks.providerFinish
+  ]
+
+progressSteps3 : List (StepEffect ToyKey ToyValue ToyRuntime String []
+  DGamma.Section3Example.toySpecA)
+progressSteps3 =
+  [ DGamma.CalculusChecks.providerFinish
+  , DGamma.CalculusChecks.providerFinish
+  ]
+
+progressSteps4 : List (StepEffect ToyKey ToyValue ToyRuntime String []
+  DGamma.Section3Example.toySpecA)
+progressSteps4 = [DGamma.CalculusChecks.providerFinish]
+
+counterState : Lifecycle ToyKey ToyValue ToyRuntime String Nat []
+  DGamma.Section3Example.toySpecA ->
+  SystemState Nat ToyKey ToyValue ToyRuntime String
+counterState lifecycle = MkSystemState (MkToyRuntime False False)
+  (MkCoeffectContext
+    [Bind 0 (MkFiber progressCounterComponent Root False emptyOwned lifecycle)]
+    (UniqueCons notInEmpty UniqueNil))
+
+public export
+progressCounter0 : SystemState Nat ToyKey ToyValue ToyRuntime String
+progressCounter0 = counterState (Reloading progressSteps id EmptyView)
+
+progressCounter1 : SystemState Nat ToyKey ToyValue ToyRuntime String
+progressCounter1 = counterState
+  (Reloading progressSteps1 (id . id) EmptyView)
+
+progressCounter2 : SystemState Nat ToyKey ToyValue ToyRuntime String
+progressCounter2 = counterState
+  (Reloading progressSteps2 ((id . id) . id) EmptyView)
+
+progressCounter3 : SystemState Nat ToyKey ToyValue ToyRuntime String
+progressCounter3 = counterState
+  (Reloading progressSteps3 (((id . id) . id) . id) EmptyView)
+
+progressCounter4 : SystemState Nat ToyKey ToyValue ToyRuntime String
+progressCounter4 = counterState
+  (Reloading progressSteps4 ((((id . id) . id) . id) . id) EmptyView)
+
+public export
+progressCounter5 : SystemState Nat ToyKey ToyValue ToyRuntime String
+progressCounter5 = counterState
+  (Active (((((id . id) . id) . id) . id) . id) EmptyView)
+
+0 emptyViewBindingsValid :
+  (fibers : Registry Nat ToyKey ToyValue ToyRuntime String) ->
+  viewBindingsInvariant @{the (DecEq Nat) %search}
+    @{the (DecEq ToyKey) %search} {value = ToyValue} {world = ToyRuntime}
+    {error = String} [] EmptyView fibers = True
+emptyViewBindingsValid fibers = Refl
+
+0 counterReloadingWellFormed :
+  (remaining : List (StepEffect ToyKey ToyValue ToyRuntime String []
+    DGamma.Section3Example.toySpecA)) ->
+  (accumulator : LocalState ToyKey ToyValue ToyRuntime
+      DGamma.Section3Example.toySpecA ->
+    LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA) ->
+  registryWellFormed @{the (DecEq Nat) %search}
+    @{the (DecEq ToyKey) %search}
+    (counterState (Reloading remaining accumulator EmptyView)) = True
+counterReloadingWellFormed remaining accumulator =
+  rewrite emptyViewBindingsValid
+    (registry (counterState (Reloading remaining accumulator EmptyView))) in Refl
+
+0 counterActiveWellFormed :
+  (accumulator : LocalState ToyKey ToyValue ToyRuntime
+      DGamma.Section3Example.toySpecA ->
+    LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA) ->
+  registryWellFormed @{the (DecEq Nat) %search}
+    @{the (DecEq ToyKey) %search}
+    (counterState (Active accumulator EmptyView)) = True
+counterActiveWellFormed accumulator =
+  rewrite emptyViewBindingsValid
+    (registry (counterState (Active accumulator EmptyView))) in Refl
+
+0 progressCounter0WellFormed :
+  registryWellFormed @{the (DecEq Nat) %search}
+    @{the (DecEq ToyKey) %search}
+    DGamma.CP4ProgressChecks.progressCounter0 = True
+progressCounter0WellFormed = counterReloadingWellFormed progressSteps id
+
+0 progressCounter1WellFormed :
+  registryWellFormed @{the (DecEq Nat) %search}
+    @{the (DecEq ToyKey) %search}
+    DGamma.CP4ProgressChecks.progressCounter1 = True
+progressCounter1WellFormed = counterReloadingWellFormed progressSteps1 (id . id)
+
+0 progressCounter2WellFormed :
+  registryWellFormed @{the (DecEq Nat) %search}
+    @{the (DecEq ToyKey) %search}
+    DGamma.CP4ProgressChecks.progressCounter2 = True
+progressCounter2WellFormed = counterReloadingWellFormed progressSteps2 ((id . id) . id)
+
+0 progressCounter3WellFormed :
+  registryWellFormed @{the (DecEq Nat) %search}
+    @{the (DecEq ToyKey) %search}
+    DGamma.CP4ProgressChecks.progressCounter3 = True
+progressCounter3WellFormed = counterReloadingWellFormed progressSteps3 (((id . id) . id) . id)
+
+0 progressCounter4WellFormed :
+  registryWellFormed @{the (DecEq Nat) %search}
+    @{the (DecEq ToyKey) %search}
+    DGamma.CP4ProgressChecks.progressCounter4 = True
+progressCounter4WellFormed = counterReloadingWellFormed progressSteps4
+  ((((id . id) . id) . id) . id)
+
+0 progressCounter5WellFormed :
+  registryWellFormed @{the (DecEq Nat) %search}
+    @{the (DecEq ToyKey) %search}
+    DGamma.CP4ProgressChecks.progressCounter5 = True
+progressCounter5WellFormed = counterActiveWellFormed
+  (((((id . id) . id) . id) . id) . id)
+
+0 progressCounterRaw0 :
+  applyAction @{the (DecEq Nat) %search} @{the (DecEq ToyKey) %search}
+    (LAdvance (the Nat 0)) DGamma.CP4ProgressChecks.progressCounter0 =
+    Just (LIterTag, DGamma.CP4ProgressChecks.progressCounter1)
+progressCounterRaw0 = Refl
+
+0 checkedFromRaw :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
+  registryWellFormed @{nameEq} @{keyEq} afterState = True ->
+  checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)
+checkedFromRaw nameEq keyEq action before afterState tag raw valid =
+  rewrite raw in rewrite valid in Refl
+
+0 counterStep0 : Transition DGamma.CP4ProgressChecks.progressCounter0
+  DGamma.CP4ProgressChecks.progressCounter1
+counterStep0 = Fired %search %search (LAdvance (the Nat 0)) LIterTag
+  (checkedFromRaw %search %search (LAdvance (the Nat 0)) progressCounter0
+    progressCounter1 LIterTag progressCounterRaw0 progressCounter1WellFormed)
+
+0 counterStep1 : Transition DGamma.CP4ProgressChecks.progressCounter1
+  DGamma.CP4ProgressChecks.progressCounter2
+counterStep1 = Fired %search %search (LAdvance (the Nat 0)) LIterTag
+  (checkedFromRaw %search %search (LAdvance (the Nat 0)) progressCounter1
+    progressCounter2 LIterTag Refl progressCounter2WellFormed)
+
+0 counterStep2 : Transition DGamma.CP4ProgressChecks.progressCounter2
+  DGamma.CP4ProgressChecks.progressCounter3
+counterStep2 = Fired %search %search (LAdvance (the Nat 0)) LIterTag
+  (checkedFromRaw %search %search (LAdvance (the Nat 0)) progressCounter2
+    progressCounter3 LIterTag Refl progressCounter3WellFormed)
+
+0 counterStep3 : Transition DGamma.CP4ProgressChecks.progressCounter3
+  DGamma.CP4ProgressChecks.progressCounter4
+counterStep3 = Fired %search %search (LAdvance (the Nat 0)) LIterTag
+  (checkedFromRaw %search %search (LAdvance (the Nat 0)) progressCounter3
+    progressCounter4 LIterTag Refl progressCounter4WellFormed)
+
+0 counterStep4 : Transition DGamma.CP4ProgressChecks.progressCounter4
+  DGamma.CP4ProgressChecks.progressCounter5
+counterStep4 = Fired %search %search (LAdvance (the Nat 0)) LFinishTag
+  (checkedFromRaw %search %search (LAdvance (the Nat 0)) progressCounter4
+    progressCounter5 LFinishTag Refl progressCounter5WellFormed)
+
+public export
+0 progressCounterTrace : Transitions DGamma.CP4ProgressChecks.progressCounter0
+  DGamma.CP4ProgressChecks.progressCounter5
+progressCounterTrace = MoreTransitions counterStep0
+  (MoreTransitions counterStep1
+    (MoreTransitions counterStep2
+      (MoreTransitions counterStep3
+        (MoreTransitions counterStep4 NoTransitions))))
+
+0 progressCounterLifecycleOnly :
+  LifecycleOnly DGamma.CP4ProgressChecks.progressCounterTrace
+progressCounterLifecycleOnly = LifecycleOnlyStep counterStep0 _ Refl
+  (LifecycleOnlyStep counterStep1 _ Refl
+    (LifecycleOnlyStep counterStep2 _ Refl
+      (LifecycleOnlyStep counterStep3 _ Refl
+        (LifecycleOnlyStep counterStep4 NoTransitions Refl LifecycleOnlyEnd))))
+
+0 counterTargetProviders :
+  (lifecycle : Lifecycle ToyKey ToyValue ToyRuntime String Nat []
+    DGamma.Section3Example.toySpecA) ->
+  targetProvidersAt @{the (DecEq Nat) %search}
+    @{the (DecEq ToyKey) %search} (the Nat 0) (counterState lifecycle) =
+      Just []
+counterTargetProviders lifecycle = Refl
+
+0 counterSameTarget :
+  (left, right : Lifecycle ToyKey ToyValue ToyRuntime String Nat []
+    DGamma.Section3Example.toySpecA) ->
+  sameTarget @{the (DecEq Nat) %search}
+    (targetProvidersAt @{the (DecEq Nat) %search}
+      @{the (DecEq ToyKey) %search} (the Nat 0) (counterState left))
+    (targetProvidersAt @{the (DecEq Nat) %search}
+      @{the (DecEq ToyKey) %search} (the Nat 0) (counterState right)) = True
+counterSameTarget left right =
+  let 0 rightLift :
+        (sameTarget @{the (DecEq Nat) %search} (Just [])
+          (targetProvidersAt @{the (DecEq Nat) %search}
+            @{the (DecEq ToyKey) %search} (the Nat 0)
+            (counterState right)) = True)
+      rightLift = replace
+        {p = \observed => sameTarget @{the (DecEq Nat) %search}
+          (Just []) observed = True}
+        (sym (counterTargetProviders right)) Refl
+  in replace
+    {p = \observed => sameTarget @{the (DecEq Nat) %search} observed
+      (targetProvidersAt @{the (DecEq Nat) %search}
+        @{the (DecEq ToyKey) %search} (the Nat 0)
+        (counterState right)) = True}
+    (sym (counterTargetProviders left)) rightLift
+
+0 progressCounterTurns :
+  TargetTurnCount Nat ToyKey ToyRuntime String ToyValue %search %search 0
+    DGamma.CP4ProgressChecks.progressCounterTrace Z
+progressCounterTurns = TargetStayed counterStep0 _
+  (counterSameTarget (Reloading progressSteps id EmptyView)
+    (Reloading progressSteps1 (id . id) EmptyView))
+  (TargetStayed counterStep1 _
+    (counterSameTarget (Reloading progressSteps1 (id . id) EmptyView)
+      (Reloading progressSteps2 ((id . id) . id) EmptyView))
+    (TargetStayed counterStep2 _
+      (counterSameTarget (Reloading progressSteps2 ((id . id) . id) EmptyView)
+        (Reloading progressSteps3 (((id . id) . id) . id) EmptyView))
+      (TargetStayed counterStep3 _
+        (counterSameTarget
+          (Reloading progressSteps3 (((id . id) . id) . id) EmptyView)
+          (Reloading progressSteps4 ((((id . id) . id) . id) . id)
+            EmptyView))
+        (TargetStayed counterStep4 NoTransitions
+          (counterSameTarget
+            (Reloading progressSteps4 ((((id . id) . id) . id) . id)
+              EmptyView)
+            (Active (((((id . id) . id) . id) . id) . id) EmptyView))
+          NoTargetTurns))))
+
+0 elemEmptyAbsurd : Elem value [] -> Void
+elemEmptyAbsurd Here impossible
+elemEmptyAbsurd (There later) impossible
+
+0 counterFoundHasNoDependencies :
+  (selected : Nat) -> (fiber : Fiber Nat ToyKey ToyValue ToyRuntime String) ->
+  lookupFiber @{the (DecEq Nat) %search} selected
+    (registry DGamma.CP4ProgressChecks.progressCounter0) = Just fiber ->
+  (wanted : ToyKey) ->
+  Elem wanted (dependencies (componentDependencies (fiberComponent fiber))) ->
+  Void
+counterFoundHasNoDependencies selected fiber found wanted declared
+  with (decEq selected (the Nat 0))
+  counterFoundHasNoDependencies (the Nat 0) fiber found wanted declared |
+    Yes Refl =
+      let 0 same = justInjective found
+      in case same of Refl => elemEmptyAbsurd declared
+  counterFoundHasNoDependencies selected fiber found wanted declared |
+    No distinct = case found of Refl impossible
+
+0 progressCounterAcyclic : PrecedenceAcyclic (the (DecEq Nat) %search)
+  DGamma.CP4ProgressChecks.progressCounter0
+progressCounterAcyclic selected (PrecedenceOne
+  (MkPrecedenceEdge edgeKey providerFiber consumerFiber providerFound
+    consumerFound providerDeclares consumerDeclares)) =
+      counterFoundHasNoDependencies selected consumerFiber consumerFound
+        edgeKey consumerDeclares
+progressCounterAcyclic selected (PrecedenceMore {middle}
+  (MkPrecedenceEdge edgeKey providerFiber consumerFiber providerFound
+    consumerFound providerDeclares consumerDeclares) rest) =
+      counterFoundHasNoDependencies middle consumerFiber consumerFound
+        edgeKey consumerDeclares
+
+0 succNotLTEZero : LTE (S n) Z -> Void
+succNotLTEZero LTEZero impossible
+succNotLTEZero (LTESucc earlier) impossible
+
+0 fiveNotLTEFour : LTE 5 4 -> Void
+fiveNotLTEFour (LTESucc (LTESucc (LTESucc (LTESucc impossibleBound)))) =
+  succNotLTEZero impossibleBound
+
+||| The current immutable CP3 alias is uninhabited: its premises admit an
+||| arbitrary overlong initial Reloading continuation while its conclusion
+||| bounds actor steps by the (empty) declared component program.
+public export
+0 progressAliasCounterexample :
+  progressTheorem Nat ToyKey ToyValue ToyRuntime String -> Void
+progressAliasCounterexample theorem =
+  let result = theorem %search %search Z progressCounter0 progressCounter5
+        progressCounterTrace progressCounterLifecycleOnly
+        progressCounter0WellFormed
+        progressCounterAcyclic Refl
+      impossibleBound = perFiberBound result 0 Z progressCounterTurns
+  in fiveNotLTEFour impossibleBound
+
+public export
+progressAliasCounterexampleRuntimeCheck : Bool
+progressAliasCounterexampleRuntimeCheck =
+  length progressSteps == 5 &&
+  length (componentProgram progressCounterComponent) == 0 &&
+  targetProvidersAt @{the (DecEq Nat) %search}
+    @{the (DecEq ToyKey) %search} 0 progressCounter0 == Just [] &&
+  targetProvidersAt @{the (DecEq Nat) %search}
+    @{the (DecEq ToyKey) %search} 0 progressCounter5 == Just [] &&
+  registryWellFormed progressCounter0 &&
+  programsBoundedBy Z progressCounter0

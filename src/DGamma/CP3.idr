@@ -1027,6 +1027,7 @@ stepsActingOn actor (MoreTransitions transition rest) =
     Yes Refl => S later
     No _ => later
 
+public export
 sameNameList : DecEq name => List name -> List name -> Bool
 sameNameList [] [] = True
 sameNameList [] (_ :: _) = False
@@ -1042,6 +1043,7 @@ targetProvidersAt actor state = case lookupFiber actor (registry state) of
   Nothing => Nothing
   Just fiber => map viewProviders (targetFiber fiber (registry state))
 
+public export
 sameTarget : DecEq name => Maybe (List name) -> Maybe (List name) -> Bool
 sameTarget Nothing Nothing = True
 sameTarget Nothing (Just _) = False
