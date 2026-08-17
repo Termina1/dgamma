@@ -70,7 +70,6 @@ public export
 progressCounter0 : SystemState Nat ToyKey ToyValue ToyRuntime String
 progressCounter0 = counterState (Reloading progressSteps id EmptyView)
 
-public export
 progressCounter1 : SystemState Nat ToyKey ToyValue ToyRuntime String
 progressCounter1 = counterState
   (Reloading progressSteps1 (id . id) EmptyView)
@@ -178,7 +177,6 @@ progressCounterRaw0 = Refl
 checkedFromRaw nameEq keyEq action before afterState tag raw valid =
   rewrite raw in rewrite valid in Refl
 
-public export
 0 counterStep0 : Transition DGamma.CP4ProgressChecks.progressCounter0
   DGamma.CP4ProgressChecks.progressCounter1
 counterStep0 = Fired %search %search (LAdvance (the Nat 0)) LIterTag

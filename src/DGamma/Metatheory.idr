@@ -635,7 +635,9 @@ preservationLAdvance {name} {key} {world} {error} {value}
       nameEq keyEq n (MkSystemState ambient fibers) afterState tag valid equation |
       Just (MkFiber component parent retired table
         (Reloading (step :: rest) accumulator view)) | Just capability
-      with (runStepEffect step capability (MkLocalState ambient table))
+      with (runStepEffect step capability (MkLocalState ambient
+                    (restrictOwnedPreservingOrder (componentProvisions component)
+                      (ownedValues table))))
       preservationLAdvance {name} {key} {world} {error} {value}
         nameEq keyEq n (MkSystemState ambient fibers) afterState tag valid equation |
         Just (MkFiber component parent retired table
@@ -799,14 +801,20 @@ preservationLUnload {name} {key} {world} {error} {value}
                   {key = key} {world = world} {error = error} {value = value}
                   nameEq keyEq n component parent retired table accumulator view
                   outcome
-                  (localTable (accumulator (MkLocalState ambient table))) fibers
+                  (localTable (accumulator (MkLocalState ambient
+                    (restrictOwnedPreservingOrder (componentProvisions component)
+                      (ownedValues table))))) fibers
                   found reliedProof sourceViews
             in registryWellFormedRuntimeReplace {name = name} {key = key}
               {world = world} {error = error} {value = value} nameEq keyEq
-              (localWorld (accumulator (MkLocalState ambient table))) n
+              (localWorld (accumulator (MkLocalState ambient
+                    (restrictOwnedPreservingOrder (componentProvisions component)
+                      (ownedValues table))))) n
               (MkFiber component parent retired table
                 (Unloading accumulator view outcome))
-              (localTable (accumulator (MkLocalState ambient table)))
+              (localTable (accumulator (MkLocalState ambient
+                    (restrictOwnedPreservingOrder (componentProvisions component)
+                      (ownedValues table)))))
               (Inactive outcome) fibers found valid targetViews
 
 ||| Paper Theorem 59, stated over the raw ten-rule evaluator. Unlike the checked
@@ -1052,71 +1060,6 @@ restrictEntries (k :: ks) (UniqueCons absent uniqueRest) table
           Here => Here
           There later => There (restrictedSound tail present later))
 
-record OrderRestrictedEntries (key : Type) (value : key -> Type)
-  (allowed : List key) (original : List (Binding key value)) where
-  constructor MkOrderRestrictedEntries
-  orderRestrictedBindings : List (Binding key value)
-  0 orderRestrictedUnique : UniqueKeys (bindingKeys orderRestrictedBindings)
-  0 orderRestrictedSound : (k : key) ->
-    Elem k (bindingKeys orderRestrictedBindings) -> Elem k allowed
-  0 orderRestrictedSubset : (k : key) ->
-    Elem k (bindingKeys orderRestrictedBindings) -> Elem k (bindingKeys original)
-
-0 memberTrueElem : DecEq a => (selected : a) -> (values : List a) ->
-  elemDec selected values = True -> Elem selected values
-memberTrueElem selected [] present = case present of Refl impossible
-memberTrueElem selected (current :: rest) present with (decEq selected current)
-  memberTrueElem current (current :: rest) present | Yes Refl = Here
-  memberTrueElem selected (current :: rest) present | No distinct =
-    There (memberTrueElem selected rest present)
-
-orderRestrictEntries : DecEq key => (allowed : List key) ->
-  (entries : List (Binding key value)) -> (0 unique : UniqueKeys (bindingKeys entries)) ->
-  OrderRestrictedEntries key value allowed entries
-orderRestrictEntries allowed [] UniqueNil =
-  MkOrderRestrictedEntries [] UniqueNil
-    (\k, present => absurd present)
-    (\k, present => absurd present)
-orderRestrictEntries allowed (Bind current observed :: rest)
-  (UniqueCons headFresh tailUnique) with (elemDec current allowed) proof member
-  orderRestrictEntries allowed (Bind current observed :: rest)
-    (UniqueCons headFresh tailUnique) | False =
-      let tail = orderRestrictEntries allowed rest tailUnique in
-      MkOrderRestrictedEntries (orderRestrictedBindings tail)
-        (orderRestrictedUnique tail) (orderRestrictedSound tail)
-        (\k, present => There (orderRestrictedSubset tail k present))
-  orderRestrictEntries allowed (Bind current observed :: rest)
-    (UniqueCons headFresh tailUnique) | True =
-      let tail = orderRestrictEntries allowed rest tailUnique
-          0 currentFresh : Not
-            (Elem current (bindingKeys (orderRestrictedBindings tail)))
-          currentFresh present = headFresh
-            (orderRestrictedSubset tail current present)
-      in MkOrderRestrictedEntries
-        (Bind current observed :: orderRestrictedBindings tail)
-        (UniqueCons currentFresh (orderRestrictedUnique tail))
-        (\k, present => case present of
-          Here => memberTrueElem current allowed member
-          There later => orderRestrictedSound tail k later)
-        (\k, present => case present of
-          Here => Here
-          There later => There (orderRestrictedSubset tail k later))
-
-||| Order-preserving capability restriction used by Definition 60. Unlike the
-||| older declaration-order reconstruction, this filters the input table in its
-||| existing binding order, so an actual generator observes exactly the same
-||| runtime `OwnedTable` ordering as the evaluator.
-public export
-restrictOwnedPreservingOrder : DecEq key => (provision : CoeffectSpec key) ->
-  CoeffectContext key value -> OwnedTable key value provision
-restrictOwnedPreservingOrder (MkCoeffectSpec allowed allowedUnique)
-  (MkCoeffectContext entries entriesUnique) =
-    let result = orderRestrictEntries allowed entries entriesUnique in
-    MkOwnedTable
-      (MkCoeffectContext (orderRestrictedBindings result)
-        (orderRestrictedUnique result))
-      (orderRestrictedSound result)
-
 ||| Legacy declaration-order restriction, retained for the Finding-7
 ||| counter-regression and for callers that explicitly request canonical order.
 public export
@@ -1143,6 +1086,7 @@ setEffectAmbient : world -> EffectState name key value world ->
   EffectState name key value world
 setEffectAmbient next state = MkEffectState next (effectTables state)
 
+public export
 resolveEffectValues : DecEq key => (deps : List key) -> View name deps ->
   EffectState name key value world -> Maybe (DepValues key value deps)
 resolveEffectValues [] EmptyView state = Just NoDepValues
@@ -1213,6 +1157,154 @@ partialEffectMap : {before, afterState : SystemState name key value world error}
 partialEffectMap {before} (Fired nameEq keyEq action tag equation) =
   partialEffectMapFor nameEq keyEq action tag before
 
+public export
+0 partialEffectMapAdvanceFinishRuns :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (capability : DepValues key value
+    (dependencies (componentDependencies component))) ->
+  lookupFiber @{nameEq} actor fibers =
+    Just (MkFiber component parent retiredFlag table
+      (Reloading (step :: rest) accumulator view)) ->
+  resolveEffectValues @{keyEq}
+    (dependencies (componentDependencies component)) view
+    (projectEffectState @{nameEq} (the (SystemState name key value world error)
+      (MkSystemState ambient fibers))) =
+      Just capability ->
+  (localAfter : LocalState key value world (componentProvisions component)) ->
+  (undo : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  runStepEffect step capability
+    (MkLocalState ambient
+      (restrictOwnedPreservingOrder (componentProvisions component)
+        (ownedValues table))) = Right (localAfter, undo) ->
+  partialEffectMapFor nameEq keyEq (LAdvance actor) LFinishTag
+    (the (SystemState name key value world error)
+      (MkSystemState ambient fibers))
+    (projectEffectState @{nameEq} (the (SystemState name key value world error)
+      (MkSystemState ambient fibers))) =
+  Just (setEffectTable @{nameEq} actor (ownedValues (localTable localAfter))
+    (setEffectAmbient (localWorld localAfter)
+      (projectEffectState @{nameEq} (the (SystemState name key value world error)
+      (MkSystemState ambient fibers)))))
+partialEffectMapAdvanceFinishRuns nameEq keyEq actor ambient fibers component
+  parent retiredFlag table step rest accumulator view capability found resolved
+  localAfter undo ran =
+    let 0 projectedTable : (effectTables
+          (projectEffectState @{nameEq}
+            (the (SystemState name key value world error)
+              (MkSystemState ambient fibers))) actor = ownedValues table)
+        projectedTable = rewrite found in Refl
+    in rewrite found in rewrite resolved in rewrite projectedTable in
+      rewrite ran in Refl
+
+public export
+0 partialEffectMapAdvanceIterRuns :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (capability : DepValues key value
+    (dependencies (componentDependencies component))) ->
+  lookupFiber @{nameEq} actor fibers =
+    Just (MkFiber component parent retiredFlag table
+      (Reloading (step :: rest) accumulator view)) ->
+  resolveEffectValues @{keyEq}
+    (dependencies (componentDependencies component)) view
+    (projectEffectState @{nameEq} (the (SystemState name key value world error)
+      (MkSystemState ambient fibers))) =
+      Just capability ->
+  (localAfter : LocalState key value world (componentProvisions component)) ->
+  (undo : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  runStepEffect step capability
+    (MkLocalState ambient
+      (restrictOwnedPreservingOrder (componentProvisions component)
+        (ownedValues table))) = Right (localAfter, undo) ->
+  partialEffectMapFor nameEq keyEq (LAdvance actor) LIterTag
+    (the (SystemState name key value world error)
+      (MkSystemState ambient fibers))
+    (projectEffectState @{nameEq} (the (SystemState name key value world error)
+      (MkSystemState ambient fibers))) =
+  Just (setEffectTable @{nameEq} actor (ownedValues (localTable localAfter))
+    (setEffectAmbient (localWorld localAfter)
+      (projectEffectState @{nameEq} (the (SystemState name key value world error)
+      (MkSystemState ambient fibers)))))
+partialEffectMapAdvanceIterRuns nameEq keyEq actor ambient fibers component parent
+  retiredFlag table step rest accumulator view capability found resolved localAfter
+  undo ran =
+    let 0 projectedTable : (effectTables
+          (projectEffectState @{nameEq}
+            (the (SystemState name key value world error)
+              (MkSystemState ambient fibers))) actor = ownedValues table)
+        projectedTable = rewrite found in Refl
+    in rewrite found in rewrite resolved in rewrite projectedTable in
+      rewrite ran in Refl
+
+public export
+0 partialEffectMapUnloadRuns :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (outcome : Maybe error) ->
+  lookupFiber @{nameEq} actor fibers =
+    Just (MkFiber component parent retiredFlag table
+      (Unloading accumulator view outcome)) ->
+  let restored = accumulator
+        (MkLocalState ambient
+          (restrictOwnedPreservingOrder (componentProvisions component)
+            (ownedValues table))) in
+  partialEffectMapFor nameEq keyEq (LUnload actor) LUnloadTag
+    (the (SystemState name key value world error)
+      (MkSystemState ambient fibers))
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState ambient fibers))) =
+  Just (setEffectTable @{nameEq} actor
+    (ownedValues (localTable restored))
+    (setEffectAmbient (localWorld restored)
+      (projectEffectState @{nameEq}
+        (the (SystemState name key value world error)
+          (MkSystemState ambient fibers)))))
+partialEffectMapUnloadRuns nameEq keyEq actor ambient fibers component parent
+  retiredFlag table accumulator view outcome found =
+  let 0 projectedTable : (effectTables
+        (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState ambient fibers))) actor = ownedValues table)
+      projectedTable = rewrite found in Refl
+  in rewrite found in rewrite projectedTable in Refl
+
 ||| Partial world projection retained only as an executable diagnostic. Recovery
 ||| hypotheses below use `partialEffectMap` exclusively.
 ||| Partial Table-1 state map. A moved successful iterator may fail, and that
@@ -1240,7 +1332,10 @@ partialWorldMapFor nameEq keyEq (LAdvance n) tag state currentWorld =
           view (registry state) of
           Nothing => Nothing
           Just capability => case runStepEffect step capability
-            (MkLocalState currentWorld (fiberTable fiber)) of
+            (MkLocalState currentWorld
+              (restrictOwnedPreservingOrder
+                (componentProvisions (fiberComponent fiber))
+                (ownedValues (fiberTable fiber)))) of
               Left _ => Nothing
               Right (after, undo) => Just (localWorld after)
       _ => Nothing
@@ -1248,7 +1343,10 @@ partialWorldMapFor nameEq keyEq (LUnload n) tag state world =
   case lookupFiber @{nameEq} n (registry state) of
     Just fiber => case fiberLifecycle fiber of
       Unloading accumulator view outcome =>
-        Just (localWorld (accumulator (MkLocalState world (fiberTable fiber))))
+        Just (localWorld (accumulator (MkLocalState world
+          (restrictOwnedPreservingOrder
+            (componentProvisions (fiberComponent fiber))
+            (ownedValues (fiberTable fiber))))))
       _ => Nothing
     Nothing => Nothing
 partialWorldMapFor nameEq keyEq action tag state world = Just world
@@ -2011,7 +2109,10 @@ advanceStructureFromEquation nameEq keyEq n before afterState tag equation
       advanceStructureFromEquation nameEq keyEq n before afterState tag equation | Just fiber
         | Reloading (step :: rest) accumulator view | Just capability
           with (runStepEffect step capability
-            (MkLocalState (worldState before) (fiberTable fiber)))
+            (MkLocalState (worldState before)
+              (restrictOwnedPreservingOrder
+                (componentProvisions (fiberComponent fiber))
+                (ownedValues (fiberTable fiber)))))
         advanceStructureFromEquation nameEq keyEq n before afterState tag equation | Just fiber
           | Reloading (step :: rest) accumulator view | Just capability | Left err =
             case justInjective equation of
@@ -3298,7 +3399,10 @@ applyActionLocalUpdate nameEq keyEq (LAdvance n)
         before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
         Reloading (step :: rest) accumulator view | Just capability
         with (runStepEffect step capability
-          (MkLocalState ambient (fiberTable fiber)))
+          (MkLocalState ambient
+            (restrictOwnedPreservingOrder
+              (componentProvisions (fiberComponent fiber))
+              (ownedValues (fiberTable fiber)))))
         applyActionLocalUpdate nameEq keyEq (LAdvance n)
           before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
           Reloading (step :: rest) accumulator view | Just capability | Left err =
@@ -3459,16 +3563,25 @@ applyActionLocalUpdate nameEq keyEq (LUnload n)
           Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found}
             @{fiberComponentSetRuntime fiber _ _}
             @{fiberParentSetRuntimeHint fiber
-              (localTable (accumulator (MkLocalState ambient (fiberTable fiber))))
+              (localTable (accumulator (MkLocalState ambient
+            (restrictOwnedPreservingOrder
+              (componentProvisions (fiberComponent fiber))
+              (ownedValues (fiberTable fiber))))))
               (Inactive outcome)}
             @{RetirementStable (retiredAfterSetRuntime fiber _ _)}
             @{ContinuationStopped
               (continuationSetRuntimeStopped fiber
                 (localTable
-                  (accumulator (MkLocalState ambient (fiberTable fiber))))
+                  (accumulator (MkLocalState ambient
+            (restrictOwnedPreservingOrder
+              (componentProvisions (fiberComponent fiber))
+              (ownedValues (fiberTable fiber))))))
                 (Inactive outcome) NotInactive)}
             (setFiberRuntime fiber
-              (localTable (accumulator (MkLocalState ambient (fiberTable fiber))))
+              (localTable (accumulator (MkLocalState ambient
+            (restrictOwnedPreservingOrder
+              (componentProvisions (fiberComponent fiber))
+              (ownedValues (fiberTable fiber))))))
               (Inactive outcome)))
     applyActionLocalUpdate nameEq keyEq (LUnload n)
       before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
@@ -3795,7 +3908,10 @@ committedProvidersLAdvanceSelected nameEq keyEq selected providers
         (MkSystemState ambient fibers) afterState tag snapshot equation |
         Just fiber | Reloading (step :: rest) accumulator view | Just capability
         with (runStepEffect step capability
-          (MkLocalState ambient (fiberTable fiber)))
+          (MkLocalState ambient
+            (restrictOwnedPreservingOrder
+              (componentProvisions (fiberComponent fiber))
+              (ownedValues (fiberTable fiber)))))
         committedProvidersLAdvanceSelected nameEq keyEq selected providers
           (MkSystemState ambient fibers) afterState tag snapshot equation |
           Just fiber | Reloading (step :: rest) accumulator view |

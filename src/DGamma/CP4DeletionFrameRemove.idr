@@ -61,4 +61,4 @@ removeActualEffectFrame nameEq keyEq actor (MkSystemState ambient fibers)
                     (MkSystemState ambient fibers))))
               (projectEffectState @{nameEq} state)}
             concreteAfter relatedConcrete
-      in PartialDefined relatedAfter
+      in MkActualEffectFrame (PartialDefined relatedAfter)

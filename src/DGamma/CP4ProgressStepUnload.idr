@@ -69,7 +69,9 @@ unloadActorPotentialStep nameEq keyEq bound actor
                 (Unloading accumulator view Nothing)
               restored : LocalState key value world
                 (componentProvisions component)
-              restored = accumulator (MkLocalState ambient table)
+              restored = accumulator (MkLocalState ambient
+                (restrictOwnedPreservingOrder (componentProvisions component)
+                  (ownedValues table)))
               newTable : OwnedTable key value (componentProvisions component)
               newTable = localTable restored
               next : Fiber name key value world error
@@ -174,7 +176,9 @@ unloadActorPotentialStep nameEq keyEq bound actor
                 (Unloading accumulator view (Just err))
               restored : LocalState key value world
                 (componentProvisions component)
-              restored = accumulator (MkLocalState ambient table)
+              restored = accumulator (MkLocalState ambient
+                (restrictOwnedPreservingOrder (componentProvisions component)
+                  (ownedValues table)))
               newTable : OwnedTable key value (componentProvisions component)
               newTable = localTable restored
               next : Fiber name key value world error

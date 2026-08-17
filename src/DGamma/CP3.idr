@@ -3964,18 +3964,30 @@ lUnloadBoundary nameEq keyEq selected
         Unloading accumulator view outcome | False =
           case justInjective equation of
             Refl =>
-              let restored = accumulator (MkLocalState ambient (fiberTable fiber))
+              let restored = accumulator (MkLocalState ambient
+                          (restrictOwnedPreservingOrder
+                            (componentProvisions (fiberComponent fiber))
+                            (ownedValues (fiberTable fiber))))
                   targetObserved = installedAtAfterReplace nameEq selected fiber
                     (setFiberRuntime fiber
                       (localTable (accumulator
-                        (MkLocalState ambient (fiberTable fiber))))
+                        (MkLocalState ambient
+                          (restrictOwnedPreservingOrder
+                            (componentProvisions (fiberComponent fiber))
+                            (ownedValues (fiberTable fiber))))))
                       (Inactive outcome)) fibers
                     (localWorld (accumulator
-                      (MkLocalState ambient (fiberTable fiber)))) found
+                      (MkLocalState ambient
+                          (restrictOwnedPreservingOrder
+                            (componentProvisions (fiberComponent fiber))
+                            (ownedValues (fiberTable fiber)))))) found
                   targetUninstalled = trans targetObserved
                     (trans (installedSetFiberRuntime fiber
                       (localTable (accumulator
-                        (MkLocalState ambient (fiberTable fiber))))
+                        (MkLocalState ambient
+                          (restrictOwnedPreservingOrder
+                            (componentProvisions (fiberComponent fiber))
+                            (ownedValues (fiberTable fiber))))))
                       (Inactive outcome)) Refl)
               in (Refl, Refl, targetUninstalled)
 

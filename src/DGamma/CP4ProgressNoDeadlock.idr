@@ -92,7 +92,10 @@ RawActionResult name key world error value nameEq keyEq action before =
     (MkSystemState ambient fibers)
 reloadingAdvanceResolvedRaw nameEq keyEq ambient fibers actor component parent
   retiredFlag table step rest accumulator view capability resolved found
-  with (runStepEffect step capability (MkLocalState ambient table)) proof ran
+  with (runStepEffect step capability
+    (MkLocalState ambient
+      (restrictOwnedPreservingOrder (componentProvisions component)
+        (ownedValues table)))) proof ran
   reloadingAdvanceResolvedRaw nameEq keyEq ambient fibers actor component parent
     retiredFlag table step rest accumulator view capability resolved found |
     Left err =
@@ -381,7 +384,9 @@ unloadLifecycleMove nameEq keyEq (MkSystemState ambient fibers) wellFormed actor
     let sourceFiber : Fiber name key value world error
         sourceFiber = MkFiber component parent retiredFlag table
           (Unloading accumulator view outcome)
-        restored = accumulator (MkLocalState ambient table)
+        restored = accumulator (MkLocalState ambient
+          (restrictOwnedPreservingOrder (componentProvisions component)
+            (ownedValues table)))
         afterState : SystemState name key value world error
         afterState = MkSystemState (localWorld restored)
           (replaceBinding @{nameEq} actor

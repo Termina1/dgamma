@@ -99,4 +99,4 @@ insertActualEffectFrame nameEq keyEq actor parent component
                     (MkSystemState ambient fibers))))
               (projectEffectState @{nameEq} state)}
             concreteAfter relatedConcrete
-      in PartialDefined relatedAfter
+      in MkActualEffectFrame (PartialDefined relatedAfter)

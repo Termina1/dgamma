@@ -2,7 +2,6 @@ module DGamma.CP4RestrictionChecks
 
 import DGamma.Calculus
 import DGamma.CP4IndependenceNonVacuity
-import DGamma.CP4ProgressChecks
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CalculusChecks
@@ -83,15 +82,6 @@ public export
 reverseOrderBefore : SystemState Nat ToyKey ToyValue ToyRuntime String
 DGamma.CP4RestrictionChecks.reverseOrderBefore = MkSystemState (MkToyRuntime False False) reverseRegistry
 
-public export
-0 reverseOrderActualWorld :
-  map (\result => worldState (snd result))
-    (applyAction @{the (DecEq Nat) %search}
-      @{the (DecEq ToyKey) %search} (LAdvance 0)
-      DGamma.CP4RestrictionChecks.reverseOrderBefore) =
-    Just (MkToyRuntime True False)
-reverseOrderActualWorld = Refl
-
 legacyRestricted : OwnedTable ToyKey ToyValue DGamma.CP4RestrictionChecks.reverseOrderSpec
 legacyRestricted = restrictOwned DGamma.CP4RestrictionChecks.reverseOrderSpec reverseContext
 
@@ -110,27 +100,49 @@ DGamma.CP4RestrictionChecks.preservingWorld = case runStepEffect orderSensitiveS
   Left err => MkToyRuntime False True
   Right (after, undo) => localWorld after
 
-0 counterSingletonTrace : Transitions
-  DGamma.CP4ProgressChecks.progressCounter0
-  DGamma.CP4ProgressChecks.progressCounter1
-counterSingletonTrace = MoreTransitions DGamma.CP4ProgressChecks.counterStep0
-  NoTransitions
+independentComponent : Component ToyKey ToyValue ToyRuntime String
+independentComponent = MkComponent toyEmptySpec toyEmptySpec []
 
-||| Corrected Definition-60 non-vacuity on a concrete nonempty, effectful
-||| L-Iter trace.
+independentFiber : Fiber Nat ToyKey ToyValue ToyRuntime String
+independentFiber = freshFiber independentComponent Root
+
+independentRegistry : Registry Nat ToyKey ToyValue ToyRuntime String
+independentRegistry = MkCoeffectContext [Bind (the Nat 7) independentFiber]
+  (UniqueCons notInEmpty UniqueNil)
+
+independentBefore : SystemState Nat ToyKey ToyValue ToyRuntime String
+DGamma.CP4RestrictionChecks.independentBefore = MkSystemState (MkToyRuntime False False) independentRegistry
+
+independentAfter : SystemState Nat ToyKey ToyValue ToyRuntime String
+DGamma.CP4RestrictionChecks.independentAfter = MkSystemState (MkToyRuntime False False)
+  (replaceBinding (the Nat 7) (retireFiber independentFiber) independentRegistry)
+
+0 independentChecked : checkedApplyAction @{the (DecEq Nat) %search}
+  @{the (DecEq ToyKey) %search} (ORetire (the Nat 7)) DGamma.CP4RestrictionChecks.independentBefore =
+  Just (ORetireTag, DGamma.CP4RestrictionChecks.independentAfter)
+independentChecked = Refl
+
+0 independentTransition : Transition DGamma.CP4RestrictionChecks.independentBefore DGamma.CP4RestrictionChecks.independentAfter
+DGamma.CP4RestrictionChecks.independentTransition = Fired %search %search (ORetire (the Nat 7)) ORetireTag
+  independentChecked
+
+0 independentSingletonTrace : Transitions DGamma.CP4RestrictionChecks.independentBefore DGamma.CP4RestrictionChecks.independentAfter
+DGamma.CP4RestrictionChecks.independentSingletonTrace = MoreTransitions DGamma.CP4RestrictionChecks.independentTransition NoTransitions
+
+||| Corrected Definition-60 non-vacuity on a concrete nonempty checked trace.
 public export
 0 correctedTraceIndependentWitness :
   TraceIndependent Nat ToyKey ToyRuntime String ToyValue %search
-    DGamma.CP4RestrictionChecks.counterSingletonTrace
+    DGamma.CP4RestrictionChecks.independentSingletonTrace
 correctedTraceIndependentWitness = singletonTraceIndependent %search %search
-  DGamma.CP4ProgressChecks.counterStep0
+  DGamma.CP4RestrictionChecks.independentTransition
 
 ||| PrefixRecoveryIndependent is Definition 60 itself; this separately pins the
 ||| corrected premise alias on the same nonempty trace.
 public export
 0 correctedPrefixIndependentWitness :
   PrefixRecoveryIndependent Nat ToyKey ToyRuntime String ToyValue %search %search
-    0 DGamma.CP4RestrictionChecks.counterSingletonTrace
+    (the Nat 7) DGamma.CP4RestrictionChecks.independentSingletonTrace
 correctedPrefixIndependentWitness = correctedTraceIndependentWitness
 
 public export

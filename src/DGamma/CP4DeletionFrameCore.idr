@@ -13,16 +13,18 @@ import Decidable.Equality
 ||| Pointwise `EffectStateRelated` is required because effect tables are functions
 ||| and the project deliberately does not assume function extensionality.
 public export
-ActualEffectFrame :
+data ActualEffectFrame :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) -> (tag : RuleTag) ->
-  (before, afterState : SystemState name key value world error) -> Type
-ActualEffectFrame nameEq keyEq action tag before afterState =
-  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
-    (partialEffectMapFor nameEq keyEq action tag before
-      (projectEffectState @{nameEq} before))
-    (Just (projectEffectState @{nameEq} afterState))
+  (before, afterState : SystemState name key value world error) -> Type where
+  MkActualEffectFrame :
+    (0 related : PartialRelated (EffectState name key value world)
+      (EffectStateRelated keyEq)
+      (partialEffectMapFor nameEq keyEq action tag before
+        (projectEffectState @{nameEq} before))
+      (Just (projectEffectState @{nameEq} afterState))) ->
+    ActualEffectFrame nameEq keyEq action tag before afterState
 
 public export
 0 setLifecycleTableLookup : (keyEq : DecEq key) -> (k : key) ->
@@ -198,6 +200,156 @@ projectDeleteEffectFrame nameEq keyEq actor worldValue fibers =
               sourceLookup
         in rewrite targetLookup in Refl
 
+public export
+0 projectedActorTable :
+  (nameEq : DecEq name) -> (actor : name) ->
+  (state : SystemState name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} actor (registry state) = Just fiber ->
+  effectTables (projectEffectState @{nameEq} state) actor =
+    ownedValues (fiberTable fiber)
+projectedActorTable nameEq actor state fiber found = rewrite found in Refl
+
+||| The moved-effect resolver agrees with the evaluator's committed resolver at
+||| an actual projected source.
+public export
+0 resolveEffectValuesProjected :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) -> (view : View name deps) ->
+  (state : SystemState name key value world error) ->
+  resolveEffectValues @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} deps view (projectEffectState @{nameEq} state) =
+  resolveCommittedValues @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} deps view (registry state)
+resolveEffectValuesProjected nameEq keyEq [] EmptyView
+  (MkSystemState ambient fibers) = Refl
+resolveEffectValuesProjected nameEq keyEq (k :: ks) (ProviderView provider rest)
+  (MkSystemState ambient fibers) with (lookupFiber @{nameEq} provider fibers)
+  resolveEffectValuesProjected nameEq keyEq (k :: ks)
+    (ProviderView provider rest) (MkSystemState ambient fibers) | Nothing = Refl
+  resolveEffectValuesProjected nameEq keyEq (k :: ks)
+    (ProviderView provider rest) (MkSystemState ambient fibers) |
+    Just providerFiber with
+    (lookupBinding @{keyEq} k (ownedValues (fiberTable providerFiber)))
+    resolveEffectValuesProjected nameEq keyEq (k :: ks)
+      (ProviderView provider rest) (MkSystemState ambient fibers) |
+      Just providerFiber | Nothing = Refl
+    resolveEffectValuesProjected nameEq keyEq (k :: ks)
+      (ProviderView provider rest) (MkSystemState ambient fibers) |
+      Just providerFiber | Just provided = cong (map (OneDepValue provided))
+        (resolveEffectValuesProjected nameEq keyEq ks rest
+          (MkSystemState ambient fibers))
+
+||| Runtime-changing replacement frame shared by L-Iter/L-Finish/L-Unload.
+public export
+0 projectRuntimeReplace :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (sourceWorld, targetWorld : world) ->
+  (old, next : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} actor fibers = Just old ->
+  (targetTable : CoeffectContext key value) ->
+  ((k : key) -> lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
+    lookupBinding @{keyEq} k targetTable) ->
+  EffectStateRelated keyEq
+    (setEffectTable @{nameEq} actor targetTable
+      (setEffectAmbient targetWorld
+        (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState sourceWorld fibers)))))
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState targetWorld
+          (replaceBinding @{nameEq} actor next fibers))))
+projectRuntimeReplace nameEq keyEq actor sourceWorld targetWorld old next fibers
+  found targetTable tableSame = MkEffectStateRelated Refl tables
+  where
+  0 tables : (selected : name) -> (k : key) ->
+    lookupBinding @{keyEq} k
+      (effectTables (setEffectTable @{nameEq} actor targetTable
+        (setEffectAmbient targetWorld
+          (projectEffectState @{nameEq}
+            (the (SystemState name key value world error)
+              (MkSystemState sourceWorld fibers))))) selected) =
+    lookupBinding @{keyEq} k
+      (effectTables (projectEffectState @{nameEq}
+        (the (SystemState name key value world error)
+          (MkSystemState targetWorld
+            (replaceBinding @{nameEq} actor next fibers)))) selected)
+  tables selected k with (decEq @{nameEq} selected actor)
+    tables _ k | Yes Refl =
+      rewrite lookupReplacedFiber actor old next fibers found in sym (tableSame k)
+    tables selected k | No distinct with
+      (lookupFiber @{nameEq} selected fibers) proof sourceLookup
+      tables selected k | No distinct | Nothing =
+        let targetLookup = trans
+              (lookupReplaceOther selected actor distinct next fibers) sourceLookup
+        in rewrite targetLookup in Refl
+      tables selected k | No distinct | Just observed =
+        let targetLookup = trans
+              (lookupReplaceOther selected actor distinct next fibers) sourceLookup
+        in rewrite targetLookup in Refl
+
+||| Package an effectful runtime replacement once the per-rule evaluator split
+||| exposes the exact moved effect state.
+public export
+0 runtimeReplaceActualEffectFrame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (actor : name) -> (sourceWorld, targetWorld : world) ->
+  (old, next : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) ->
+  lookupFiber @{nameEq} actor fibers = Just old ->
+  (targetTable : CoeffectContext key value) ->
+  ((k : key) -> lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
+    lookupBinding @{keyEq} k targetTable) ->
+  (concreteAfter :
+    (the (SystemState name key value world error)
+      (MkSystemState targetWorld
+        (replaceBinding @{nameEq} actor next fibers))) = afterState) ->
+  (mapRuns : partialEffectMapFor nameEq keyEq action tag
+    (the (SystemState name key value world error)
+      (MkSystemState sourceWorld fibers))
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState sourceWorld fibers))) =
+    Just (setEffectTable @{nameEq} actor targetTable
+      (setEffectAmbient targetWorld
+        (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState sourceWorld fibers)))))) ->
+  ActualEffectFrame nameEq keyEq action tag (MkSystemState sourceWorld fibers)
+    afterState
+runtimeReplaceActualEffectFrame nameEq keyEq action tag actor sourceWorld
+  targetWorld old next fibers afterState found targetTable tableSame concreteAfter
+  mapRuns =
+  let concrete = MkSystemState targetWorld
+        (replaceBinding @{nameEq} actor next fibers)
+      relatedConcrete = projectRuntimeReplace nameEq keyEq actor sourceWorld
+        targetWorld old next fibers found targetTable tableSame
+      0 relatedAfter : EffectStateRelated keyEq
+        (setEffectTable @{nameEq} actor targetTable
+          (setEffectAmbient targetWorld
+            (projectEffectState @{nameEq}
+              (the (SystemState name key value world error)
+                (MkSystemState sourceWorld fibers)))))
+        (projectEffectState @{nameEq} afterState)
+      relatedAfter = replace
+        {p = \state => EffectStateRelated keyEq
+          (setEffectTable @{nameEq} actor targetTable
+            (setEffectAmbient targetWorld
+              (projectEffectState @{nameEq}
+                (the (SystemState name key value world error)
+                  (MkSystemState sourceWorld fibers)))))
+          (projectEffectState @{nameEq} state)}
+        concreteAfter relatedConcrete
+  in MkActualEffectFrame
+    (rewrite mapRuns in PartialDefined relatedAfter)
+
 ||| Package a control-only local replacement once its evaluator endpoint and
 ||| identity effect-map branch have been exposed by a per-rule case split.
 public export
@@ -251,4 +403,5 @@ controlReplaceActualEffectFrame nameEq keyEq action tag actor worldValue old nex
             (MkSystemState worldValue fibers)))
           (projectEffectState @{nameEq} state)}
         concreteAfter relatedConcrete
-  in rewrite identityMap in PartialDefined relatedAfter
+  in MkActualEffectFrame
+    (rewrite identityMap in PartialDefined relatedAfter)

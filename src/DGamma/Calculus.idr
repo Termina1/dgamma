@@ -23,6 +23,79 @@ public export
 emptyOwned : OwnedTable key value provision
 emptyOwned = MkOwnedTable emptyContext (\k, present => absurd present)
 
+record OrderRestrictedEntries (key : Type) (value : key -> Type)
+  (allowed : List key) (original : List (Binding key value)) where
+  constructor MkOrderRestrictedEntries
+  orderRestrictedBindings : List (Binding key value)
+  0 orderRestrictedUnique : UniqueKeys (bindingKeys orderRestrictedBindings)
+  0 orderRestrictedSound : (k : key) ->
+    Elem k (bindingKeys orderRestrictedBindings) -> Elem k allowed
+  0 orderRestrictedSubset : (k : key) ->
+    Elem k (bindingKeys orderRestrictedBindings) -> Elem k (bindingKeys original)
+
+memberKeyList : DecEq key => key -> List key -> Bool
+memberKeyList wanted [] = False
+memberKeyList wanted (current :: rest) = case decEq wanted current of
+  Yes Refl => True
+  No distinct => memberKeyList wanted rest
+
+0 memberKeyListTrueElem : DecEq key => (selected : key) -> (values : List key) ->
+  memberKeyList selected values = True -> Elem selected values
+memberKeyListTrueElem selected [] present = case present of Refl impossible
+memberKeyListTrueElem selected (current :: rest) present with
+  (decEq selected current)
+  memberKeyListTrueElem current (current :: rest) present | Yes Refl = Here
+  memberKeyListTrueElem selected (current :: rest) present | No distinct =
+    There (memberKeyListTrueElem selected rest present)
+
+orderRestrictEntries : DecEq key => (allowed : List key) ->
+  (entries : List (Binding key value)) ->
+  (0 unique : UniqueKeys (bindingKeys entries)) ->
+  OrderRestrictedEntries key value allowed entries
+orderRestrictEntries allowed [] UniqueNil =
+  MkOrderRestrictedEntries [] UniqueNil
+    (\k, present => absurd present)
+    (\k, present => absurd present)
+orderRestrictEntries allowed (Bind current observed :: rest)
+  (UniqueCons headFresh tailUnique) with
+  (memberKeyList current allowed) proof member
+  orderRestrictEntries allowed (Bind current observed :: rest)
+    (UniqueCons headFresh tailUnique) | False =
+      let tail = orderRestrictEntries allowed rest tailUnique in
+      MkOrderRestrictedEntries (orderRestrictedBindings tail)
+        (orderRestrictedUnique tail) (orderRestrictedSound tail)
+        (\k, present => There (orderRestrictedSubset tail k present))
+  orderRestrictEntries allowed (Bind current observed :: rest)
+    (UniqueCons headFresh tailUnique) | True =
+      let tail = orderRestrictEntries allowed rest tailUnique
+          0 currentFresh : Not
+            (Elem current (bindingKeys (orderRestrictedBindings tail)))
+          currentFresh present = headFresh
+            (orderRestrictedSubset tail current present)
+      in MkOrderRestrictedEntries
+        (Bind current observed :: orderRestrictedBindings tail)
+        (UniqueCons currentFresh (orderRestrictedUnique tail))
+        (\k, present => case present of
+          Here => memberKeyListTrueElem current allowed member
+          There later => orderRestrictedSound tail k later)
+        (\k, present => case present of
+          Here => Here
+          There later => There (orderRestrictedSubset tail k later))
+
+||| Reconstruct a capability-confined table by filtering the input bindings in
+||| their existing order. This is the Finding-7 runtime-normalization primitive
+||| shared definitionally by the LTS and Definition-60 maps.
+public export
+restrictOwnedPreservingOrder : DecEq key => (provision : CoeffectSpec key) ->
+  CoeffectContext key value -> OwnedTable key value provision
+restrictOwnedPreservingOrder (MkCoeffectSpec allowed allowedUnique)
+  (MkCoeffectContext entries entriesUnique) =
+    let result = orderRestrictEntries allowed entries entriesUnique in
+    MkOwnedTable
+      (MkCoeffectContext (orderRestrictedBindings result)
+        (orderRestrictedUnique result))
+      (orderRestrictedSound result)
+
 ||| The only state a component step may mutate: ambient state and its own table.
 public export
 record LocalState (key : Type) (value : key -> Type) (world : Type)
@@ -990,7 +1063,10 @@ applyAction (LAdvance n) state = case lookupFiber n (registry state) of
         view (registry state) of
         Nothing => Nothing
         Just capability =>
-          let localBefore = MkLocalState (worldState state) (fiberTable fiber) in
+          let normalizedTable = restrictOwnedPreservingOrder
+                (componentProvisions (fiberComponent fiber))
+                (ownedValues (fiberTable fiber))
+              localBefore = MkLocalState (worldState state) normalizedTable in
           case runStepEffect step capability localBefore of
             Left err => Just (LRaiseTag,
               MkSystemState (worldState state)
@@ -1053,8 +1129,11 @@ applyAction (LUnload n) state = case lookupFiber n (registry state) of
     Unloading accumulator view outcome =>
       if relied n (registry state)
         then Nothing
-        else let restored = accumulator
-                   (MkLocalState (worldState state) (fiberTable fiber)) in
+        else let normalizedTable = restrictOwnedPreservingOrder
+                   (componentProvisions (fiberComponent fiber))
+                   (ownedValues (fiberTable fiber))
+                 restored = accumulator
+                   (MkLocalState (worldState state) normalizedTable) in
           Just (LUnloadTag,
             MkSystemState (localWorld restored)
               (replaceBinding n

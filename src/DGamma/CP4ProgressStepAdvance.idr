@@ -122,7 +122,10 @@ advanceActorPotentialStep nameEq keyEq bound actor
         (MkSystemState ambient fibers) afterState tag raw |
           Just (MkFiber component parent retiredFlag table lifecycle) |
             Reloading (step :: rest) accumulator view | Just capability with
-        (runStepEffect step capability (MkLocalState ambient table))
+        (runStepEffect step capability
+          (MkLocalState ambient
+            (restrictOwnedPreservingOrder (componentProvisions component)
+              (ownedValues table))))
         advanceActorPotentialStep nameEq keyEq bound actor
           (MkSystemState ambient fibers) afterState tag raw |
             Just (MkFiber component parent retiredFlag table lifecycle) |
