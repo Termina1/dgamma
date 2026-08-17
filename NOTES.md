@@ -215,12 +215,29 @@ of Lemma 38.
 
     The paper's global convention starts states from valid operational
     histories, so this is an encoding omission rather than a paper
-    counterexample. The minimal explicit repair is an initial premise that
-    every current `Reloading` continuation has length at most `K` (declared
-    programs remain separately bounded). Lifecycle rules preserve that premise:
-    L-Begin installs the bounded declared program and L-Iter strictly shortens
-    it. **No alias or executable premise has been changed pending supervisor
-    approval.**
+    counterexample. With supervisor approval, the alias now adds the minimal
+    explicit `continuationsBoundedBy K first = True` premise: every current
+    `Reloading` continuation has length at most `K`, while declared programs
+    remain separately bounded.
+
+    `DGamma.CP4ProgressBound.transitionPreservesContinuationsBoundedBy` proves
+    the repaired premise is preserved by **all ten evaluator rules**, using
+    proof metadata on local updates: insertion starts non-Reloading; retirement
+    preserves a continuation; exits stop it; L-Iter shortens it; and L-Begin
+    restarts exactly at the declared program, discharged by
+    `programsBoundedBy`. `repairedContinuationPremisePositive` gives a checked
+    nontrivial Reloading endpoint with four remaining steps at `K=4`, while
+    `progressAliasCounterexample` / `progressCounterContinuationRejected`
+    prove the old K=0 countermodel is blocked exactly at the new premise. The
+    old theorem shape remains named only as the rejected diagnostic
+    `UnboundedProgressTheorem`, refuted by
+    `unboundedProgressAliasCounterexample`.
+
+    This repair is the same genus as Lemma 68's explicit reached-state premise:
+    both expose a paper-global reachability invariant that an arbitrary-state
+    finite specialization otherwise loses. Record that parallel in the future
+    authors letter. **The repaired Theorem-66 shape requires end-of-CP4
+    adversarial re-review alongside Definition 69/Lemma 70.**
 
 ## Escape-hatch and hole audit
 
@@ -667,10 +684,10 @@ provision disjointness.
 The finite-trace specialization remains stated. Proved cores are lifecycle witness
 search soundness, maximality-implies-quiet from no-deadlock, and the complete
 empty-suffix quantitative base (`progressEndFromNoDeadlock` and
-`progressEndFromSearch`). CP4 Finding #5 now constructively refutes the current
-alias because it lacks an initial Reloading-continuation bound; the immutable
-alias awaits a repair decision. After that minimal premise is restored, two
-nontrivial proof obligations remain:
+`progressEndFromSearch`). CP4 Finding #5 constructively refutes the old alias;
+the approved repaired alias now carries `continuationsBoundedBy`, its all-rule
+preservation proof, a positive checked witness, and old-countermodel rejection.
+Two nontrivial proof obligations remain:
 
 1. **Unloading-chain no-deadlock.** A locally blocked Unloading fiber may be
    relied on by another installed fiber. Proving that some lifecycle action is
@@ -1030,7 +1047,7 @@ idris2 --source-dir src --check src/DGamma/CP4SupportSolution.idr
 idris2 --build dgamma.ipkg
 ```
 
-The final command must report all 20 package modules. The CP4 Lemma-70 modules
+The final command must report all 22 package modules. The CP4 Lemma-70 modules
 then cold-check quickly. Validators must not copy TTCs from another worktree;
 the isolated `--check` above consumes only artifacts produced inside the clean
 archive. This recipe was exercised on commit `fe9764d`, followed by the 31/31
@@ -1049,9 +1066,10 @@ parent safety, both Active/support fixed-point directions, and final Lemma-68
 uniqueness assembly. The repaired Definition-69/Lemma-70 statement shapes still
 await end-of-CP4 re-review.
 
-**Partial:** Progress/Theorem 66 (search/maximality/base case proved; current
-alias constructively refuted by CP4 Finding #5 and awaiting an approved initial
-continuation-bound repair); Lemma 71 (effect commutation projection); Lemma 72 (candidate
+**Partial:** Progress/Theorem 66 (approved CP4 continuation-bound statement
+repair, all-rule premise preservation, positive/rejected regressions, and
+search/maximality/base case proved; repaired shape awaits end-of-CP4 re-review;
+unloading descent and numeric bound remain); Lemma 71 (effect commutation projection); Lemma 72 (candidate
 lifecycle-only deletion statement); Confluence/Theorem 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
 and vestigial-aware outside-R endpoint relation submitted for round-10 review;

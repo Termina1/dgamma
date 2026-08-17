@@ -905,12 +905,69 @@ noFailedFibers state = allList notFailedEntry
   (registryFibers (registry state))
 
 public export
+programBoundedEntry : Nat ->
+  Binding name (FiberAt name key value world error) -> Bool
+programBoundedEntry bound (Bind n fiber) =
+  length (componentProgram (fiberComponent fiber)) <= bound
+
+public export
 programsBoundedBy : Nat -> SystemState name key value world error -> Bool
-programsBoundedBy bound state = all bounded (registryFibers (registry state))
-  where
-  bounded : Binding name (FiberAt name key value world error) -> Bool
-  bounded (Bind n fiber) =
-    length (componentProgram (fiberComponent fiber)) <= bound
+programsBoundedBy bound state = allList (programBoundedEntry bound)
+  (registryFibers (registry state))
+
+public export
+0 programsBoundedByEquation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (bound : Nat) -> (state : SystemState name key value world error) ->
+  programsBoundedBy bound state =
+    allList (programBoundedEntry {name = name} {key = key} {value = value}
+      {world = world} {error = error} bound)
+      (registryFibers {value = value} {world = world} {error = error}
+        (registry state))
+programsBoundedByEquation bound state = Refl
+
+public export
+continuationLengthCheck : Nat -> Maybe Nat -> Bool
+continuationLengthCheck bound Nothing = True
+continuationLengthCheck bound (Just remainingLength) = remainingLength <= bound
+
+public export
+fiberContinuationBoundedBy : Nat -> Fiber name key value world error -> Bool
+fiberContinuationBoundedBy bound fiber =
+  continuationLengthCheck bound (fiberContinuationLength fiber)
+
+public export
+0 fiberContinuationBoundedByEquation :
+  (bound : Nat) -> (fiber : Fiber name key value world error) ->
+  fiberContinuationBoundedBy bound fiber =
+    continuationLengthCheck bound (fiberContinuationLength fiber)
+fiberContinuationBoundedByEquation bound fiber = Refl
+
+public export
+continuationBoundedEntry : Nat ->
+  Binding name (FiberAt name key value world error) -> Bool
+continuationBoundedEntry bound (Bind n fiber) =
+  fiberContinuationBoundedBy bound fiber
+
+||| CP4 repair premise for Theorem 66: the paper's reached-state convention
+||| makes every current Reloading continuation a suffix of its declared program.
+||| The finite alias exposes exactly the length consequence needed by Equation 61.
+public export
+continuationsBoundedBy : Nat ->
+  SystemState name key value world error -> Bool
+continuationsBoundedBy bound state = allList (continuationBoundedEntry bound)
+  (registryFibers (registry state))
+
+public export
+0 continuationsBoundedByEquation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (bound : Nat) -> (state : SystemState name key value world error) ->
+  continuationsBoundedBy bound state =
+    allList (continuationBoundedEntry {name = name} {key = key}
+      {value = value} {world = world} {error = error} bound)
+      (registryFibers {value = value} {world = world} {error = error}
+        (registry state))
+continuationsBoundedByEquation bound state = Refl
 
 ||| A concrete host lifecycle rule applicable at one state. `LAdvance` covers
 ||| the landing L-Iter/L-Finish/L-Raise/L-Divert alternatives; the separate
@@ -1097,8 +1154,10 @@ record ProgressResult
 
 ||| Candidate finite-trace/static-list specialization of Theorem 66.
 ||| Finiteness of N is intrinsic in the registry representation.
-||| TODO(proof): global Ordering is proved; the remaining debt is the
-||| unloading-chain no-deadlock induction and Equation-61 precedence bound.
+||| CP4 Finding #5 repairs the arbitrary-first-state encoding by exposing the
+||| paper-implicit bound on every current Reloading continuation.
+||| TODO(proof): the remaining debt is the unloading-chain no-deadlock
+||| induction and Equation-61 precedence bound.
 public export
 progressTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type
@@ -1110,6 +1169,7 @@ progressTheorem name key value world error =
   registryWellFormed @{nameEq} @{keyEq} first = True ->
   PrecedenceAcyclic nameEq first ->
   programsBoundedBy bound first = True ->
+  continuationsBoundedBy bound first = True ->
   ProgressResult name key world error value nameEq keyEq bound trace
 
 ||| Tractable executable core: a successful search result is already the exact

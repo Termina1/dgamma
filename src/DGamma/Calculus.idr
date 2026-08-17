@@ -197,6 +197,13 @@ fiberLifecycle : (fiber : Fiber name key value world error) ->
 fiberLifecycle (MkFiber _ _ _ _ lifecycle) = lifecycle
 
 public export
+fiberContinuationLength : Fiber name key value world error -> Maybe Nat
+fiberContinuationLength
+  (MkFiber component parent retiredFlag table lifecycle) = case lifecycle of
+    Reloading remaining accumulator view => Just (length remaining)
+    _ => Nothing
+
+public export
 0 fiberLifecycleObservation :
   (component : Component key value world error) ->
   (parent : Parent name) -> (retiredFlag : Bool) ->

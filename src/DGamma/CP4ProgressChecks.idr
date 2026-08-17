@@ -322,19 +322,53 @@ succNotLTEZero (LTESucc earlier) impossible
 fiveNotLTEFour (LTESucc (LTESucc (LTESucc (LTESucc impossibleBound)))) =
   succNotLTEZero impossibleBound
 
-||| The current immutable CP3 alias is uninhabited: its premises admit an
-||| arbitrary overlong initial Reloading continuation while its conclusion
-||| bounds actor steps by the (empty) declared component program.
+||| The rejected pre-repair Theorem-66 shape, retained to pin the missed
+||| arbitrary-initial-continuation countermodel.
 public export
-0 progressAliasCounterexample :
-  progressTheorem Nat ToyKey ToyValue ToyRuntime String -> Void
-progressAliasCounterexample theorem =
+UnboundedProgressTheorem : Type
+UnboundedProgressTheorem =
+  (nameEq : DecEq Nat) -> (keyEq : DecEq ToyKey) -> (bound : Nat) ->
+  (first, last : SystemState Nat ToyKey ToyValue ToyRuntime String) ->
+  (trace : Transitions first last) -> LifecycleOnly trace ->
+  registryWellFormed @{nameEq} @{keyEq} first = True ->
+  PrecedenceAcyclic nameEq first -> programsBoundedBy bound first = True ->
+  ProgressResult Nat ToyKey ToyRuntime String ToyValue nameEq keyEq bound trace
+
+||| The rejected old alias is uninhabited: it admitted the five-step
+||| continuation while promising a four-step bound.
+public export
+0 unboundedProgressAliasCounterexample : UnboundedProgressTheorem -> Void
+unboundedProgressAliasCounterexample theorem =
   let result = theorem %search %search Z progressCounter0 progressCounter5
         progressCounterTrace progressCounterLifecycleOnly
         progressCounter0WellFormed
         progressCounterAcyclic Refl
       impossibleBound = perFiberBound result 0 Z progressCounterTurns
   in fiveNotLTEFour impossibleBound
+
+||| The same concrete first state is rejected exactly at the additional premise
+||| of the repaired public `progressTheorem` alias.
+public export
+0 progressAliasCounterexample :
+  continuationsBoundedBy Z DGamma.CP4ProgressChecks.progressCounter0 = True ->
+  Void
+progressAliasCounterexample bounded = case bounded of Refl impossible
+
+public export
+0 progressCounterContinuationRejected :
+  continuationsBoundedBy Z DGamma.CP4ProgressChecks.progressCounter0 = True ->
+  Void
+progressCounterContinuationRejected = progressAliasCounterexample
+
+||| Non-vacuity of the repaired premise at a checked, nonempty trace endpoint:
+||| after one of the five Reloading landings, four remain and K=4.
+public export
+0 repairedContinuationPremisePositive :
+  (trace : Transitions DGamma.CP4ProgressChecks.progressCounter0
+      DGamma.CP4ProgressChecks.progressCounter1 **
+    continuationsBoundedBy 4 DGamma.CP4ProgressChecks.progressCounter1 = True)
+repairedContinuationPremisePositive =
+  (MoreTransitions counterStep0 NoTransitions ** Refl)
 
 public export
 progressAliasCounterexampleRuntimeCheck : Bool
@@ -346,4 +380,6 @@ progressAliasCounterexampleRuntimeCheck =
   targetProvidersAt @{the (DecEq Nat) %search}
     @{the (DecEq ToyKey) %search} 0 progressCounter5 == Just [] &&
   registryWellFormed progressCounter0 &&
-  programsBoundedBy Z progressCounter0
+  programsBoundedBy Z progressCounter0 &&
+  not (continuationsBoundedBy Z progressCounter0) &&
+  continuationsBoundedBy 4 progressCounter1

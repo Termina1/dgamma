@@ -2715,12 +2715,164 @@ fiberParentSetRuntimeHint (MkFiber component parent retired oldTable oldLife)
   table life = Refl
 
 public export
+data NotReloading : Lifecycle key value world error name deps provision -> Type where
+  NotInactive : NotReloading (Inactive outcome)
+  NotActive : NotReloading (Active accumulator view)
+  NotUnloading : NotReloading (Unloading accumulator view outcome)
+
+public export
+data ContinuationUpdate :
+  Fiber name key value world error -> Fiber name key value world error -> Type where
+  ContinuationPreserved :
+    {old, updated : Fiber name key value world error} ->
+    fiberContinuationLength updated = fiberContinuationLength old ->
+    ContinuationUpdate old updated
+  ContinuationStopped :
+    {old, updated : Fiber name key value world error} ->
+    fiberContinuationLength updated = Nothing -> ContinuationUpdate old updated
+  ContinuationAdvanced :
+    {old, updated : Fiber name key value world error} ->
+    (remainingLength : Nat) ->
+    fiberContinuationLength old = Just (S remainingLength) ->
+    fiberContinuationLength updated = Just remainingLength ->
+    ContinuationUpdate old updated
+  ContinuationRestarted :
+    {old, updated : Fiber name key value world error} ->
+    fiberContinuationLength updated =
+      Just (length (componentProgram (fiberComponent old))) ->
+    ContinuationUpdate old updated
+
+public export
 data RetirementUpdate :
   Fiber name key value world error -> Fiber name key value world error -> Type where
   RetirementStable : {old, updated : Fiber name key value world error} ->
     retired updated = retired old -> RetirementUpdate old updated
   RetirementApplied : {old, updated : Fiber name key value world error} ->
     retired updated = True -> RetirementUpdate old updated
+
+0 continuationAfterRetire : (fiber : Fiber name key value world error) ->
+  fiberContinuationLength (retireFiber fiber) = fiberContinuationLength fiber
+continuationAfterRetire
+  (MkFiber component parent retiredFlag table (Inactive outcome)) = Refl
+continuationAfterRetire
+  (MkFiber component parent retiredFlag table
+    (Reloading remaining accumulator view)) = Refl
+continuationAfterRetire
+  (MkFiber component parent retiredFlag table (Active accumulator view)) = Refl
+continuationAfterRetire
+  (MkFiber component parent retiredFlag table
+    (Unloading accumulator view outcome)) = Refl
+
+0 continuationLengthReloading :
+  (fiber : Fiber name key value world error) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)))) ->
+  (accumulator : LocalState key value world
+      (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world
+      (componentProvisions (fiberComponent fiber))) ->
+  (view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))) ->
+  fiberLifecycle fiber = Reloading remaining accumulator view ->
+  fiberContinuationLength fiber = Just (length remaining)
+continuationLengthReloading
+  (MkFiber component parent retiredFlag table (Inactive outcome)) remaining
+  accumulator view life = case life of Refl impossible
+continuationLengthReloading
+  (MkFiber component parent retiredFlag table
+    (Reloading actualRemaining actualAccumulator actualView)) remaining
+  accumulator view life = case life of Refl => Refl
+continuationLengthReloading
+  (MkFiber component parent retiredFlag table (Active actualAccumulator actualView))
+  remaining accumulator view life = case life of Refl impossible
+continuationLengthReloading
+  (MkFiber component parent retiredFlag table
+    (Unloading actualAccumulator actualView outcome)) remaining accumulator view
+  life = case life of Refl impossible
+
+0 continuationSetLifecycleReloading :
+  (fiber : Fiber name key value world error) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)))) ->
+  (accumulator : LocalState key value world
+      (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world
+      (componentProvisions (fiberComponent fiber))) ->
+  (view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))) ->
+  fiberContinuationLength
+    (setFiberLifecycle fiber (Reloading remaining accumulator view)) =
+      Just (length remaining)
+continuationSetLifecycleReloading
+  (MkFiber component parent retiredFlag table lifecycle) remaining accumulator
+  view = Refl
+
+0 continuationSetLifecycleActive :
+  (fiber : Fiber name key value world error) ->
+  (accumulator : LocalState key value world
+      (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world
+      (componentProvisions (fiberComponent fiber))) ->
+  (view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))) ->
+  fiberContinuationLength (setFiberLifecycle fiber (Active accumulator view)) =
+    Nothing
+continuationSetLifecycleActive
+  (MkFiber component parent retiredFlag table lifecycle) accumulator view = Refl
+
+0 continuationSetLifecycleUnloading :
+  (fiber : Fiber name key value world error) ->
+  (accumulator : LocalState key value world
+      (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world
+      (componentProvisions (fiberComponent fiber))) ->
+  (view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))) ->
+  (outcome : Maybe error) ->
+  fiberContinuationLength
+    (setFiberLifecycle fiber (Unloading accumulator view outcome)) = Nothing
+continuationSetLifecycleUnloading
+  (MkFiber component parent retiredFlag table lifecycle) accumulator view
+  outcome = Refl
+
+0 continuationSetRuntimeReloading :
+  (fiber : Fiber name key value world error) ->
+  (table : OwnedTable key value (componentProvisions (fiberComponent fiber))) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)))) ->
+  (accumulator : LocalState key value world
+      (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world
+      (componentProvisions (fiberComponent fiber))) ->
+  (view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))) ->
+  fiberContinuationLength
+    (setFiberRuntime fiber table (Reloading remaining accumulator view)) =
+      Just (length remaining)
+continuationSetRuntimeReloading
+  (MkFiber component parent retiredFlag oldTable lifecycle) table remaining
+  accumulator view = Refl
+
+0 continuationSetRuntimeStopped :
+  (fiber : Fiber name key value world error) ->
+  (table : OwnedTable key value (componentProvisions (fiberComponent fiber))) ->
+  (life : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  NotReloading life ->
+  fiberContinuationLength (setFiberRuntime fiber table life) = Nothing
+continuationSetRuntimeStopped
+  (MkFiber component parent retiredFlag oldTable lifecycle) table
+  (Inactive outcome) NotInactive = Refl
+continuationSetRuntimeStopped
+  (MkFiber component parent retiredFlag oldTable lifecycle) table
+  (Active accumulator view) NotActive = Refl
+continuationSetRuntimeStopped
+  (MkFiber component parent retiredFlag oldTable lifecycle) table
+  (Unloading accumulator view outcome) NotUnloading = Refl
 
 0 retiredAfterRetire : (fiber : Fiber name key value world error) ->
   retired (retireFiber fiber) = True
@@ -2753,6 +2905,7 @@ data RegistryLocalUpdate :
   Type where
   LocalInsert : (fiber : Fiber name key value world error) ->
     (absent : lookupFiber @{nameEq} actor source = Nothing) ->
+    {auto insertedContinuationEmpty : fiberContinuationLength fiber = Nothing} ->
     RegistryLocalUpdate name key world error value nameEq actor source
       (insertBinding @{nameEq} actor fiber source absent)
   LocalReplace : (fiber : Fiber name key value world error) ->
@@ -2761,6 +2914,7 @@ data RegistryLocalUpdate :
     {auto staticComponent : fiberComponent fiber = fiberComponent oldFiber} ->
     {auto staticParent : fiberParent fiber = fiberParent oldFiber} ->
     {auto retirementUpdate : RetirementUpdate oldFiber fiber} ->
+    {auto continuationUpdate : ContinuationUpdate oldFiber fiber} ->
     RegistryLocalUpdate name key world error value nameEq actor source
       (replaceBinding @{nameEq} actor fiber source)
   LocalDelete :
@@ -2859,7 +3013,7 @@ applyActionLocalUpdate {name} {key} {world} {error} {value}
           fibers applied inserted in
           MkSystemLocalUpdate (LocalInsert (freshFiber component parent)
             (setFreshAbsent nameEq n (freshFiber component parent)
-              fibers applied inserted))
+              fibers applied inserted) @{Refl})
 applyActionLocalUpdate nameEq keyEq (ORetire n)
   before@(MkSystemState ambient fibers) afterState tag equation
   with (lookupFiber @{nameEq} n fibers) proof found
@@ -2872,6 +3026,7 @@ applyActionLocalUpdate nameEq keyEq (ORetire n)
         Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found}
           @{fiberComponentRetire fiber} @{fiberParentRetireHint fiber}
           @{RetirementApplied (retiredAfterRetire fiber)}
+          @{ContinuationPreserved (continuationAfterRetire fiber)}
           (retireFiber fiber))
 applyActionLocalUpdate nameEq keyEq (ORemove n)
   before@(MkSystemState ambient fibers) afterState tag equation
@@ -2918,6 +3073,9 @@ applyActionLocalUpdate nameEq keyEq (LBegin n)
             @{fiberParentSetLifecycleHint fiber
               (Reloading (componentProgram (fiberComponent fiber)) id view)}
             @{RetirementStable (retiredAfterSetLifecycle fiber _)}
+            @{ContinuationRestarted
+              (continuationSetLifecycleReloading fiber
+                (componentProgram (fiberComponent fiber)) id view)}
             (setFiberLifecycle fiber
               (Reloading (componentProgram (fiberComponent fiber)) id view)))
     applyActionLocalUpdate nameEq keyEq (LBegin n)
@@ -2940,7 +3098,7 @@ applyActionLocalUpdate nameEq keyEq (LAdvance n)
       void (nothingIsNotJust equation)
   applyActionLocalUpdate nameEq keyEq (LAdvance n)
     before@(MkSystemState ambient fibers) afterState tag equation | Just fiber
-    with (fiberLifecycle fiber)
+    with (fiberLifecycle fiber) proof life
     applyActionLocalUpdate nameEq keyEq (LAdvance n)
       before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
       Inactive outcome = void (nothingIsNotJust equation)
@@ -2962,6 +3120,8 @@ applyActionLocalUpdate nameEq keyEq (LAdvance n)
             @{fiberComponentSetLifecycle fiber (Active accumulator view)}
             @{fiberParentSetLifecycleHint fiber (Active accumulator view)}
             @{RetirementStable (retiredAfterSetLifecycle fiber _)}
+            @{ContinuationStopped
+              (continuationSetLifecycleActive fiber accumulator view)}
             (setFiberLifecycle fiber (Active accumulator view)))
       applyActionLocalUpdate nameEq keyEq (LAdvance n)
         before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
@@ -2970,6 +3130,8 @@ applyActionLocalUpdate nameEq keyEq (LAdvance n)
             @{fiberComponentSetLifecycle fiber (Unloading accumulator view Nothing)}
             @{fiberParentSetLifecycleHint fiber (Unloading accumulator view Nothing)}
             @{RetirementStable (retiredAfterSetLifecycle fiber _)}
+            @{ContinuationStopped
+              (continuationSetLifecycleUnloading fiber accumulator view Nothing)}
             (setFiberLifecycle fiber (Unloading accumulator view Nothing)))
     applyActionLocalUpdate nameEq keyEq (LAdvance n)
       before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
@@ -2996,6 +3158,9 @@ applyActionLocalUpdate nameEq keyEq (LAdvance n)
                 @{fiberParentSetLifecycleHint fiber
                   (Unloading accumulator view (Just err))}
                 @{RetirementStable (retiredAfterSetLifecycle fiber _)}
+                @{ContinuationStopped
+                  (continuationSetLifecycleUnloading fiber accumulator view
+                    (Just err))}
                 (setFiberLifecycle fiber
                   (Unloading accumulator view (Just err))))
         applyActionLocalUpdate nameEq keyEq (LAdvance n)
@@ -3013,6 +3178,9 @@ applyActionLocalUpdate nameEq keyEq (LAdvance n)
                 @{fiberParentSetRuntimeHint fiber (localTable localAfter)
                   (Unloading (accumulator . undo) view Nothing)}
                 @{RetirementStable (retiredAfterSetRuntime fiber _ _)}
+                @{ContinuationStopped
+                  (continuationSetRuntimeStopped fiber (localTable localAfter)
+                    (Unloading (accumulator . undo) view Nothing) NotUnloading)}
                 (setFiberRuntime fiber (localTable localAfter)
                   (Unloading (accumulator . undo) view Nothing)))
           applyActionLocalUpdate nameEq keyEq (LAdvance n)
@@ -3024,6 +3192,9 @@ applyActionLocalUpdate nameEq keyEq (LAdvance n)
                 @{fiberParentSetRuntimeHint fiber (localTable localAfter)
                   (Active (accumulator . undo) view)}
                 @{RetirementStable (retiredAfterSetRuntime fiber _ _)}
+                @{ContinuationStopped
+                  (continuationSetRuntimeStopped fiber (localTable localAfter)
+                    (Active (accumulator . undo) view) NotActive)}
                 (setFiberRuntime fiber (localTable localAfter)
                   (Active (accumulator . undo) view)))
           applyActionLocalUpdate nameEq keyEq (LAdvance n)
@@ -3035,6 +3206,11 @@ applyActionLocalUpdate nameEq keyEq (LAdvance n)
                 @{fiberParentSetRuntimeHint fiber (localTable localAfter)
                   (Reloading (next :: more) (accumulator . undo) view)}
                 @{RetirementStable (retiredAfterSetRuntime fiber _ _)}
+                @{ContinuationAdvanced (length (next :: more))
+                  (continuationLengthReloading fiber (step :: next :: more)
+                    accumulator view life)
+                  (continuationSetRuntimeReloading fiber (localTable localAfter)
+                    (next :: more) (accumulator . undo) view)}
                 (setFiberRuntime fiber (localTable localAfter)
                   (Reloading (next :: more) (accumulator . undo) view)))
 applyActionLocalUpdate nameEq keyEq (LDivert n)
@@ -3062,6 +3238,8 @@ applyActionLocalUpdate nameEq keyEq (LDivert n)
             @{fiberComponentSetLifecycle fiber (Unloading accumulator view Nothing)}
             @{fiberParentSetLifecycleHint fiber (Unloading accumulator view Nothing)}
             @{RetirementStable (retiredAfterSetLifecycle fiber _)}
+            @{ContinuationStopped
+              (continuationSetLifecycleUnloading fiber accumulator view Nothing)}
             (setFiberLifecycle fiber (Unloading accumulator view Nothing)))
     applyActionLocalUpdate nameEq keyEq (LDivert n)
       before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
@@ -3096,6 +3274,8 @@ applyActionLocalUpdate nameEq keyEq (LLeave n)
             @{fiberComponentSetLifecycle fiber (Unloading accumulator view Nothing)}
             @{fiberParentSetLifecycleHint fiber (Unloading accumulator view Nothing)}
             @{RetirementStable (retiredAfterSetLifecycle fiber _)}
+            @{ContinuationStopped
+              (continuationSetLifecycleUnloading fiber accumulator view Nothing)}
             (setFiberLifecycle fiber (Unloading accumulator view Nothing)))
     applyActionLocalUpdate nameEq keyEq (LLeave n)
       before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
@@ -3131,6 +3311,11 @@ applyActionLocalUpdate nameEq keyEq (LUnload n)
               (localTable (accumulator (MkLocalState ambient (fiberTable fiber))))
               (Inactive outcome)}
             @{RetirementStable (retiredAfterSetRuntime fiber _ _)}
+            @{ContinuationStopped
+              (continuationSetRuntimeStopped fiber
+                (localTable
+                  (accumulator (MkLocalState ambient (fiberTable fiber))))
+                (Inactive outcome) NotInactive)}
             (setFiberRuntime fiber
               (localTable (accumulator (MkLocalState ambient (fiberTable fiber))))
               (Inactive outcome)))
