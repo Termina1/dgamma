@@ -1203,6 +1203,13 @@ smaller state. Thus action-subsequence construction is complete modulo the
 control-applicability invariant that Step 4(b) is deriving; no applicability is
 smuggled into the filter.
 
+`splitLocatedNoRegisteredSegments` now performs the public alias's exact
+three-way trace split while threading the original scanner ordinal/environment.
+It constructs the episode and suffix `GenerationTraceScan` values and restricts
+global `NoRegisteredEpisode` to both pieces. `traceComponentsTotalLocatedSplit`
+does the same for repaired Definition 69. This removes another previously
+implicit appeal to hereditary premises; no extra theorem assumption was added.
+
 The remaining construction must derive the Inactive-leaf plan and actor-outside
 certificates for exact R generations from `RegistrationDiscipline`,
 `RegisteredGenerationsDuring`, and generation-indexed `NoRegisteredEpisode`,
@@ -1290,7 +1297,8 @@ Lemma-70 and Theorem-66 statement shapes still await end-of-CP4 re-review.
 lifecycle-only deletion statement, exhaustive ten-tag actual-forward effect
 frames, generation-correct action/result filtering, proved birth-ordinal bounds
 and verbatim pre-episode subsequence construction, a total dependent filter
-that exposes kept-action replay failure, and proved checked lifecycle
+that exposes kept-action replay failure, exact located splitting of the
+no-R-episode and Definition-69 premises, and proved checked lifecycle
 applicability through indexed deletion of Inactive R leaves; episode-to-plan
 derivation, selected-episode/suffix applicability, and endpoint assembly
 remain); Confluence/Theorem
