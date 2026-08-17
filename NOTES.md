@@ -1193,6 +1193,16 @@ segment's exact birth stamps. Consequently no R generation can own an action
 before the selected episode, and `DeletionResult.beforeDeletion` is
 constructively the original prefix retained verbatim.
 
+`decGenerationOwnedActor` and `decEpisodeGenerationDeletedActor` decide the
+repaired predicates themselves, not a parallel Boolean approximation.
+`filterGenerationActions` then scans the original generation environment even
+across erased actions and constructs the surviving checked trace together with
+its `GenerationActionSubsequence`. Its `Maybe` failure remains intentional and
+honest: it occurs exactly when a non-deletable action cannot be replayed at the
+smaller state. Thus action-subsequence construction is complete modulo the
+control-applicability invariant that Step 4(b) is deriving; no applicability is
+smuggled into the filter.
+
 The remaining construction must derive the Inactive-leaf plan and actor-outside
 certificates for exact R generations from `RegistrationDiscipline`,
 `RegisteredGenerationsDuring`, and generation-indexed `NoRegisteredEpisode`,
@@ -1279,9 +1289,10 @@ Lemma-70 and Theorem-66 statement shapes still await end-of-CP4 re-review.
 **Partial:** Lemma 71 (effect commutation projection); Lemma 72 (candidate
 lifecycle-only deletion statement, exhaustive ten-tag actual-forward effect
 frames, generation-correct action/result filtering, proved birth-ordinal bounds
-and verbatim pre-episode subsequence construction, and proved checked lifecycle
+and verbatim pre-episode subsequence construction, a total dependent filter
+that exposes kept-action replay failure, and proved checked lifecycle
 applicability through indexed deletion of Inactive R leaves; episode-to-plan
-derivation, selected-episode boundary, suffix filtering, and endpoint assembly
+derivation, selected-episode/suffix applicability, and endpoint assembly
 remain); Confluence/Theorem
 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
