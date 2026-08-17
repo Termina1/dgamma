@@ -103,6 +103,59 @@ lookupDeleteSelf removed (MkCoeffectContext entries unique) =
   lookupNotElemNothing removed (deleteEntries removed entries)
     (deletedKeyNotElem removed entries unique)
 
+||| O-Insert's effect map explicitly creates an empty actor table, matching
+||| the fresh fiber's empty owned table in the target projection.
+public export
+0 projectInsertEffectFrame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (worldValue : world) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (fibers : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} actor fibers = Nothing) ->
+  EffectStateRelated keyEq
+    (setEffectTable @{nameEq} actor
+      (emptyContext {key = key} {value = value})
+      (projectEffectState @{nameEq}
+        (the (SystemState name key value world error)
+          (MkSystemState worldValue fibers))))
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState worldValue
+          (insertBinding @{nameEq} actor (freshFiber component parent) fibers
+            absent))))
+projectInsertEffectFrame nameEq keyEq actor worldValue component parent fibers
+  absent = MkEffectStateRelated Refl tables
+  where
+  0 tables : (selected : name) -> (k : key) ->
+    lookupBinding @{keyEq} k
+      (effectTables (setEffectTable @{nameEq} actor
+        (emptyContext {key = key} {value = value})
+        (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState worldValue fibers)))) selected) =
+    lookupBinding @{keyEq} k
+      (effectTables (projectEffectState @{nameEq}
+        (the (SystemState name key value world error)
+          (MkSystemState worldValue
+            (insertBinding @{nameEq} actor (freshFiber component parent) fibers
+              absent)))) selected)
+  tables selected k with (decEq @{nameEq} selected actor)
+    tables _ k | Yes Refl =
+      rewrite lookupInserted actor (freshFiber component parent) fibers absent in
+        Refl
+    tables selected k | No distinct with
+      (lookupFiber @{nameEq} selected fibers) proof sourceLookup
+      tables selected k | No distinct | Nothing =
+        let targetLookup = trans
+              (lookupInsertOther selected actor distinct
+                (freshFiber component parent) fibers absent) sourceLookup
+        in rewrite targetLookup in Refl
+      tables selected k | No distinct | Just observed =
+        let targetLookup = trans
+              (lookupInsertOther selected actor distinct
+                (freshFiber component parent) fibers absent) sourceLookup
+        in rewrite targetLookup in Refl
+
 ||| O-Remove's effect map explicitly empties the removed name. This is
 ||| pointwise equal to projecting the registry after deleting that binding.
 public export
