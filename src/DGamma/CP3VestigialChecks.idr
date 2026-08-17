@@ -1142,9 +1142,11 @@ public export
     (namedAfter (finishSurvivor23 (vestigial23Left witness))) = True ->
   noFailedFibers
     (namedAfter (rightFinish4 (vestigial23Right witness))) = True ->
-  TraceComponentsTotal DGamma.CP3VestigialChecks.keyEq
+  TraceComponentsTotal DGamma.CP3VestigialChecks.nameEq
+    DGamma.CP3VestigialChecks.keyEq
     (vestigialLeft23Trace (vestigial23Left witness)) ->
-  TraceComponentsTotal DGamma.CP3VestigialChecks.keyEq
+  TraceComponentsTotal DGamma.CP3VestigialChecks.nameEq
+    DGamma.CP3VestigialChecks.keyEq
     (episodeRightTrace (vestigial23Right witness)) ->
   TraceIndependent Nat ToyKey ToyRuntime String ToyValue DGamma.CP3VestigialChecks.keyEq
     (vestigialLeft23Trace (vestigial23Left witness)) ->
@@ -1989,9 +1991,11 @@ public export
     (namedAfter (finishSurvivor27 (vestigial27Left witness))) = True ->
   noFailedFibers
     (namedAfter (rightFinish4 (vestigial27Right witness))) = True ->
-  TraceComponentsTotal DGamma.CP3VestigialChecks.keyEq
+  TraceComponentsTotal DGamma.CP3VestigialChecks.nameEq
+    DGamma.CP3VestigialChecks.keyEq
     (vestigialLeft27Trace (vestigial27Left witness)) ->
-  TraceComponentsTotal DGamma.CP3VestigialChecks.keyEq
+  TraceComponentsTotal DGamma.CP3VestigialChecks.nameEq
+    DGamma.CP3VestigialChecks.keyEq
     (episodeRightTrace (vestigial27Right witness)) ->
   TraceIndependent Nat ToyKey ToyRuntime String ToyValue DGamma.CP3VestigialChecks.keyEq
     (vestigialLeft27Trace (vestigial27Left witness)) ->

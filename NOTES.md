@@ -154,6 +154,48 @@ of Lemma 38.
    proof's outside-`R` boundary: effects remain exact, every non-vestigial
    control entry corresponds exactly under renaming, and an unmatched entry is
    admitted only with an exact discarded-generation Lemma-57 certificate.
+9. **CP4 Finding #4 — the CP3 Definition-69 encoding was too weak under
+   interleaving.** Rounds 1–10 accepted `ComponentTotalOnProvision` as a
+   property of uninterrupted `ProgramFinishes`: one `LocalState` flowed
+   directly from each iterator step to the next. The actual LTS permits a
+   foreign fiber to mutate ambient `world` between those iterations.
+
+   `DGamma.CP4TotalityChecks` commits the missed countermodel. Root provider P
+   declares `ServiceA`. P1 always sets `world=False`; P2 installs `ServiceA`
+   exactly when it observes `False`. Every uninterrupted P execution therefore
+   installs the key, and `providerUninterruptedTotal` inhabits the old CP3
+   predicate. A foreign root T runs between P1 and P2 and sets `world=True`.
+   P then finishes Active with an empty table. A clean root consumer C that
+   depends on `ServiceA` stays Inactive. The checked endpoint is quiet and
+   failure-free, but C is supported from P's declaration and is not Active.
+   `oldTotalityInterleavingDivergence` evaluates `True`, while
+   `counterexampleTraceTotalityRejected` proves the repaired evidence producer
+   rejects this exact schedule.
+
+   This is also the precise connection to Definition 60 that the paper's prose
+   mentions: installed-key schedule-independence follows from effect
+   independence; P and T are deliberately non-independent. Since Lemma 70 does
+   not assume Definition-60 independence, Definition 69 itself must quantify
+   any actual activation that finishes, including interleaved activations, as
+   the paper literally says. CP3's uninterrupted proxy moved that obligation
+   outside the LTS and was unfaithful.
+
+   With supervisor approval, CP4 repairs `TraceComponentsTotal` to certify the
+   actual acting fiber's table at each checked actor boundary, a preserved
+   strengthening of checking L-Finish alone. `buildCertifiedActionTrace`
+   executes schedules while constructing this erased certificate.
+   `repairedTotalityInterleavingCheck` evaluates `True` for the same schedule
+   after replacing P2 by an always-installing step, and
+   `repairedTraceTotalityWitness` constructs its trace-indexed proof value.
+   `reachedActiveFibersProvideAll` derives endpoint Active-table totality by
+   local-update framing. `ProgramFinishes` and
+   `UninterruptedComponentTotalOnProvision` remain only as named rejected
+   diagnostics so the regression continues to typecheck.
+
+   **Review status:** this is an approved CP4 statement repair, not an immutable
+   proof-only change. Definition 69, Lemma 70, and downstream Lemma 72/Theorem
+   73 premises that mention `TraceComponentsTotal` lose their prior accepted
+   status until the end-of-CP4 adversarial round re-reviews the repaired shapes.
 
 ## Escape-hatch and hole audit
 
@@ -772,10 +814,13 @@ candidate round-5 statements, not accepted proofs:
   `RegistrationProvenance` now exposes the exact tagged parent step/catalog and
   rank needed by Lemma 68. `RegistrationDiscipline` adds only the retirement
   provenance needed by Lemma 70. Legal post-remove name reissue is retained.
-- The old `fiberTotalOnProvision` is retained only as an executable current-
-  Active diagnostic. `ProgramFinishes` and `ComponentTotalOnProvision` now
-  quantify every successful complete component execution, independent of a
-  lifecycle snapshot, matching Definition 69.
+- Round 3 retained `fiberTotalOnProvision` only as an executable current-Active
+  diagnostic and replaced it with `ProgramFinishes` /
+  `ComponentTotalOnProvision`. CP4 Finding #4 above supersedes that conclusion:
+  uninterrupted complete executions do not cover foreign interleaving.
+  `ProgramFinishes` and the renamed
+  `UninterruptedComponentTotalOnProvision` are now countermodel diagnostics;
+  repaired Definition 69 is `TraceComponentsTotal`.
 - The old canonical package ordered precedence only and compared lifecycle
   summaries. `LinearizesSupport` now requires `UniqueKeys` and linearizes
   `SupportPath`; `LocatedOpenEpisodeBlock` enforces actor-only contiguity,
@@ -922,8 +967,9 @@ finite-specialized Lemma 68, including combined support well-foundedness and
 unique Definition-67 support-solution equality with the executable closure.
 
 **Partial:** Progress/Theorem 66 (search/maximality/base case proved);
-Lemma 70 (candidate tagged/ranked provenance statement; empty base proved);
-Lemma 71 (effect commutation projection); Lemma 72 (candidate
+Lemma 70 (approved CP4 Definition-69 statement repair awaiting re-review;
+empty base and trace-to-endpoint Active-table totality proved, fixed-point
+assembly in progress); Lemma 71 (effect commutation projection); Lemma 72 (candidate
 lifecycle-only deletion statement); Confluence/Theorem 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
 and vestigial-aware outside-R endpoint relation submitted for round-10 review;
@@ -946,8 +992,9 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** prove Lemma 70 from Lemma 68 plus quiescence, failure-freedom,
-registration retirement discipline, and Definition-69 totality; then implement
+**Next:** finish Lemma 70 from Lemma 68 plus quiescence, failure-freedom,
+registration retirement discipline, and repaired trace-indexed Definition-69
+totality; then implement
 ranked unloading-chain Progress and constructive checked episode
 deletion/canonical sorting. Fresh-choice, cross-parent, 24/18 activation-reset,
 and no-O-Remove 23/18 and 27/18 vestigial pairs reach the literal public premise

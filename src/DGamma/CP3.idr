@@ -756,9 +756,10 @@ supportWellFoundedTheorem name key value world error =
   SupportWellFoundedResult name key world error value nameEq keyEq state
 
 
-||| A successful execution of the complete finite component program. This is
-||| independent of any lifecycle state and is the semantic object quantified
-||| by paper Definition 69.
+||| An uninterrupted execution of a finite component program. CP3 originally
+||| used this object as Definition 69. That reading is too weak for the actual
+||| interleaving LTS: a foreign step may change the ambient world between two
+||| iterations. It remains public only to state the committed CP4 countermodel.
 public export
 data ProgramFinishes :
   (program : List (StepEffect key value world error deps provision)) ->
@@ -776,13 +777,14 @@ data ProgramFinishes :
     ProgramFinishes rest capability after finalState ->
     ProgramFinishes (step :: rest) capability before finalState
 
-||| Paper Definition 69: a component-level condition over every successful
-||| activation, not a predicate on one current lifecycle snapshot.
+||| The rejected CP3 interpretation of Definition 69. It quantifies only
+||| uninterrupted executions and is retained as an explicit regression target,
+||| not as a premise of Lemmas 70/72 or Theorem 73.
 public export
-ComponentTotalOnProvision :
+UninterruptedComponentTotalOnProvision :
   {key, world, error : Type} -> {value : key -> Type} -> DecEq key =>
   (component : Component key value world error) -> Type
-ComponentTotalOnProvision {key} {value} {world} {error} component =
+UninterruptedComponentTotalOnProvision {key} {value} {world} {error} component =
   (capability : DepValues key value
     (dependencies (componentDependencies component))) ->
   (before, finalState : LocalState key value world
@@ -791,51 +793,80 @@ ComponentTotalOnProvision {key} {value} {world} {error} component =
   (k : key) -> Elem k (dependencies (componentProvisions component)) ->
   isJust (lookupBinding k (ownedValues (localTable finalState))) = True
 
-||| Definition-69 obligation contributed by one trace action. In an empty-start
-||| trace every component that ever appears is introduced by O-Insert, including
-||| components later removed or earlier generations of a reused name.
+||| Every declared provision of one currently Active fiber is installed in its
+||| actual runtime table.
 public export
-ActionComponentTotal :
-  {name, key, world, error : Type} -> {value : key -> Type} -> DecEq key =>
-  Action name key value world error -> Type
-ActionComponentTotal {key} {value} {world} {error}
-  (OInsert n parent component) =
-    ComponentTotalOnProvision component
-ActionComponentTotal (ORetire n) = ()
-ActionComponentTotal (ORemove n) = ()
-ActionComponentTotal (LBegin n) = ()
-ActionComponentTotal (LAdvance n) = ()
-ActionComponentTotal (LDivert n) = ()
-ActionComponentTotal (LLeave n) = ()
-ActionComponentTotal (LUnload n) = ()
+ActiveFiberProvidesAll :
+  {key, world, error, name : Type} -> {value : key -> Type} ->
+  (keyEq : DecEq key) -> Fiber name key value world error -> Type
+ActiveFiberProvidesAll {key} {value} keyEq fiber =
+  (k : key) -> Elem k
+    (dependencies (componentProvisions (fiberComponent fiber))) ->
+  isJust (lookupBinding @{keyEq} k
+    (ownedValues (fiberTable fiber))) = True
 
-||| Semantic totality for every component occurrence in a trace, rather than
-||| only the components surviving in its endpoint registry.
+||| Endpoint form derived from repaired trace totality. It is not independently
+||| assumed by Lemma 70.
+public export
+ActiveFibersProvideAll :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  SystemState name key value world error -> Type
+ActiveFibersProvideAll {name} nameEq keyEq state =
+  (n : name) -> (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} n (registry state) = Just fiber ->
+  isActive (fiberLifecycle fiber) = True ->
+  ActiveFiberProvidesAll keyEq fiber
+
+||| Repaired Definition 69 obligation at one actual checked scheduling boundary.
+||| Sampling the acting fiber after every action is a preserved strengthening of
+||| sampling only L-Finish: a checked action can first make its actor Active only
+||| at L-Finish, and foreign actions leave that fiber's table unchanged.
+public export
+TransitionComponentTotal :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {before, afterState : SystemState name key value world error} ->
+  Transition before afterState -> Type
+TransitionComponentTotal {name} nameEq keyEq {afterState} transition =
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} (actionOwner (transitionAction transition))
+    (registry afterState) = Just fiber ->
+  isActive (fiberLifecycle fiber) = True ->
+  ActiveFiberProvidesAll keyEq fiber
+
+||| Paper Definition 69 repaired to range over actual interleaved checked
+||| activations. Every actor boundary in the supplied trace certifies its actual
+||| Active table, so in particular every activation that finishes is total on
+||| its provision. Unlike the old `ProgramFinishes` reading, foreign ambient
+||| changes between iterations are observed.
 public export
 data TraceComponentsTotal :
   {name, key, world, error : Type} -> {value : key -> Type} ->
-  (keyEq : DecEq key) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   {first, finalState : SystemState name key value world error} ->
   Transitions first finalState -> Type where
-  TraceComponentsTotalEnd : TraceComponentsTotal keyEq NoTransitions
+  TraceComponentsTotalEnd : TraceComponentsTotal nameEq keyEq NoTransitions
   TraceComponentsTotalStep :
     (transition : Transition first middle) ->
     (rest : Transitions middle finalState) ->
-    ActionComponentTotal @{keyEq} (transitionAction transition) ->
-    TraceComponentsTotal keyEq rest ->
-    TraceComponentsTotal keyEq (MoreTransitions transition rest)
+    TransitionComponentTotal nameEq keyEq transition ->
+    TraceComponentsTotal nameEq keyEq rest ->
+    TraceComponentsTotal nameEq keyEq
+      (MoreTransitions transition rest)
 
-||| Every component currently registered satisfies Definition 69. The property
-||| depends only on the immutable component value, not its lifecycle state. This
-||| endpoint-only helper is weaker than `TraceComponentsTotal`.
+||| The old endpoint collection of uninterrupted component predicates. It is a
+||| diagnostic for the CP4 countermodel only and no longer represents paper
+||| Definition 69.
 public export
-ComponentsTotalOnProvision :
+UninterruptedComponentsTotalOnProvision :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   DecEq name => DecEq key => SystemState name key value world error -> Type
-ComponentsTotalOnProvision {name} {key} {value} {world} {error} state =
-  (n : name) -> (fiber : Fiber name key value world error) ->
-  lookupFiber n (registry state) = Just fiber ->
-  ComponentTotalOnProvision (fiberComponent fiber)
+UninterruptedComponentsTotalOnProvision {name} {key} {value} {world} {error}
+  state =
+    (n : name) -> (fiber : Fiber name key value world error) ->
+    lookupFiber n (registry state) = Just fiber ->
+    UninterruptedComponentTotalOnProvision (fiberComponent fiber)
 
 ||| Executable current-state consequence used by runtime diagnostics: every
 ||| Active instance currently has every provision key installed. It is weaker
@@ -844,7 +875,7 @@ public export
 fiberTotalOnProvision : DecEq key =>
   Fiber name key value world error -> Bool
 fiberTotalOnProvision fiber = case fiberLifecycle fiber of
-  Active accumulator view => all
+  Active accumulator view => allList
     (\k => isJust (lookupBinding k (ownedValues (fiberTable fiber))))
     (dependencies (componentProvisions (fiberComponent fiber)))
   _ => True
@@ -3077,7 +3108,7 @@ supportAtQuiescenceTheorem name key value world error =
   PrecedenceAcyclic nameEq state ->
   quiet @{nameEq} @{keyEq} state = True ->
   noFailedFibers state = True ->
-  ComponentsTotalOnProvision @{nameEq} @{keyEq} state ->
+  TraceComponentsTotal nameEq keyEq (reachTrace reached) ->
   SupportMatchesActive nameEq keyEq state
 
 ||| Lemma 71's effect-level transposition core. Control-field applicability
@@ -3255,7 +3286,7 @@ deletionTheorem name key value world error =
   bindings (registry initial) = [] ->
   quiet @{nameEq} @{keyEq} finalState = True ->
   noFailedFibers finalState = True ->
-  TraceComponentsTotal keyEq global ->
+  TraceComponentsTotal nameEq keyEq global ->
   TraceIndependent name key world error value keyEq global ->
   (selected : name) ->
   (episode : LocatedClosedEpisode name key world error value nameEq keyEq
@@ -3322,8 +3353,8 @@ confluenceTheorem name key value world error =
   quiet @{nameEq} @{keyEq} rightFinal = True ->
   noFailedFibers leftFinal = True ->
   noFailedFibers rightFinal = True ->
-  TraceComponentsTotal keyEq leftTrace ->
-  TraceComponentsTotal keyEq rightTrace ->
+  TraceComponentsTotal nameEq keyEq leftTrace ->
+  TraceComponentsTotal nameEq keyEq rightTrace ->
   TraceIndependent name key world error value keyEq leftTrace ->
   TraceIndependent name key world error value keyEq rightTrace ->
   (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace) ->

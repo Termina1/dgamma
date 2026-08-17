@@ -3203,9 +3203,11 @@ public export
     (namedAfter (leftFinish4 (episodeBoundaryLeft witness))) = True ->
   noFailedFibers
     (namedAfter (rightFinish4 (episodeBoundaryRight witness))) = True ->
-  TraceComponentsTotal DGamma.CP3StatementChecks.episodeKeyEq
+  TraceComponentsTotal DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq
     (episodeLeftTrace (episodeBoundaryLeft witness)) ->
-  TraceComponentsTotal DGamma.CP3StatementChecks.episodeKeyEq
+  TraceComponentsTotal DGamma.CP3StatementChecks.episodeNameEq
+    DGamma.CP3StatementChecks.episodeKeyEq
     (episodeRightTrace (episodeBoundaryRight witness)) ->
   TraceIndependent Nat ToyKey ToyRuntime String ToyValue
     DGamma.CP3StatementChecks.episodeKeyEq
@@ -3295,9 +3297,11 @@ public export
     (namedAfter (rootAdvance1 (rightFreshChoice witness))) = True ->
   noFailedFibers (namedAfter (rootAdvance1 (leftFreshChoice witness))) = True ->
   noFailedFibers (namedAfter (rootAdvance1 (rightFreshChoice witness))) = True ->
-  TraceComponentsTotal DGamma.CP3StatementChecks.registrationTestKeyEq
+  TraceComponentsTotal DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq
     (namedRoleChangingTrace (leftFreshChoice witness)) ->
-  TraceComponentsTotal DGamma.CP3StatementChecks.registrationTestKeyEq
+  TraceComponentsTotal DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq
     (namedRoleChangingTrace (rightFreshChoice witness)) ->
   TraceIndependent Nat RegistrationTestKey Unit String RegistrationTestValue
     DGamma.CP3StatementChecks.registrationTestKeyEq (namedRoleChangingTrace (leftFreshChoice witness)) ->
@@ -3350,9 +3354,11 @@ public export
     (namedAfter (crossAdvance3 (crossParentRight witness))) = True ->
   noFailedFibers (namedAfter (crossAdvance3 (crossParentLeft witness))) = True ->
   noFailedFibers (namedAfter (crossAdvance3 (crossParentRight witness))) = True ->
-  TraceComponentsTotal DGamma.CP3StatementChecks.registrationTestKeyEq
+  TraceComponentsTotal DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq
     (crossParentTrace (crossParentLeft witness)) ->
-  TraceComponentsTotal DGamma.CP3StatementChecks.registrationTestKeyEq
+  TraceComponentsTotal DGamma.CP3StatementChecks.registrationTestNameEq
+    DGamma.CP3StatementChecks.registrationTestKeyEq
     (crossParentTrace (crossParentRight witness)) ->
   TraceIndependent Nat RegistrationTestKey Unit String RegistrationTestValue
     DGamma.CP3StatementChecks.registrationTestKeyEq (crossParentTrace (crossParentLeft witness)) ->
@@ -3482,7 +3488,7 @@ public export
   PrecedenceAcyclic nameEq state ->
   quiet @{nameEq} @{keyEq} state = True ->
   noFailedFibers state = True ->
-  ComponentsTotalOnProvision @{nameEq} @{keyEq} state ->
+  TraceComponentsTotal nameEq keyEq (reachTrace reached) ->
   SupportMatchesActive nameEq keyEq state
 supportLemma70Guard claim nameEq keyEq protocol state reached discipline acyclic
   quietState noFailures totality =
