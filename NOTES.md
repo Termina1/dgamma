@@ -1186,13 +1186,20 @@ prior deletion target. The nonempty `nonemptyInactivePlanControlWitness` crosses
 the aggregate with a concrete checked L-Finish.
 
 This closes the Lemma-57/suffix control-applicability theorem, not all of Lemma
-72: after Finding #8, the remaining construction must derive the Inactive-leaf
-plan and actor-outside certificates for exact R generations from
-`RegistrationDiscipline`, `RegisteredGenerationsDuring`, and the generation-
-indexed `NoRegisteredEpisode`, establish the selected closed-episode boundary,
-and assemble the filtered trace. Whether
-`NoDependentClosingEpisode` suffices for that episode-local bridge remains under
-active review; no public statement change has been made.
+72. `GenerationEnvironmentBounded` now proves that every scanner-live birth is
+strictly earlier than the next ordinal, and
+`deletionBeforeFromRegisteredDuring` combines that invariant with the selected
+segment's exact birth stamps. Consequently no R generation can own an action
+before the selected episode, and `DeletionResult.beforeDeletion` is
+constructively the original prefix retained verbatim.
+
+The remaining construction must derive the Inactive-leaf plan and actor-outside
+certificates for exact R generations from `RegistrationDiscipline`,
+`RegisteredGenerationsDuring`, and generation-indexed `NoRegisteredEpisode`,
+establish the selected closed-episode boundary, filter the suffix, and assemble
+the endpoint. Whether `NoDependentClosingEpisode` suffices for that
+episode-local bridge remains under active review; no public statement change
+has been made.
 
 ### Cold-build validation under Idris 2 v0.8.0
 
@@ -1271,10 +1278,11 @@ Lemma-70 and Theorem-66 statement shapes still await end-of-CP4 re-review.
 
 **Partial:** Lemma 71 (effect commutation projection); Lemma 72 (candidate
 lifecycle-only deletion statement, exhaustive ten-tag actual-forward effect
-frames, generation-correct action/result filtering, and proved checked
-lifecycle applicability through indexed deletion of Inactive R leaves;
-episode-to-plan derivation, selected-episode boundary, and trace/endpoint
-assembly remain); Confluence/Theorem
+frames, generation-correct action/result filtering, proved birth-ordinal bounds
+and verbatim pre-episode subsequence construction, and proved checked lifecycle
+applicability through indexed deletion of Inactive R leaves; episode-to-plan
+derivation, selected-episode boundary, suffix filtering, and endpoint assembly
+remain); Confluence/Theorem
 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
 and vestigial-aware outside-R endpoint relation submitted for round-10 review;
