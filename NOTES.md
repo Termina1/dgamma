@@ -1052,6 +1052,32 @@ proof exports are quantity `0`, `%default total` remains universal, and the
 runtime evaluator/support computation is unchanged. The approved Definition-69
 statement repair still requires the mandated end-of-CP4 adversarial re-review.
 
+### Theorem 66: unloading-chain no-deadlock
+
+`DGamma.CP4ProgressNoDeadlockFinal.progressNoDeadlockAt` now proves the complete
+no-deadlock clause. `CP4ProgressFinite` turns finite acyclic precedence into
+accessibility. `CP4ProgressReliance` reflects a true `relied` guard into an
+actual consumer and precedence edge; it records the consumer's committed
+lifecycle shape at construction. `CP4ProgressUnloadingDescent` then recurses on
+that accessibility proof: Reloading advances, Active leaves because its
+Unloading provider makes the committed target stale, another Unloading
+consumer descends, and an unrelied provider unloads. The registry scanner covers
+all lifecycle forms and returns either exact quiescence evidence or a move.
+
+Idris 0.8 exhibited a reproducible elaboration cliff when a 20-plus dependent-
+argument mismatch lemma was applied across a module boundary: the application
+exceeded ten minutes or was killed, while its direct proof checked in under two
+seconds. The final architecture uses one rule case per small module and packages
+the Active provider/consumer fields into pre-saturated records in the defining
+module. Every landed module checks in roughly 0.7–2.3 seconds. All failed WIP was
+SHA256-archived outside the repository before cleanup; no worktree content was
+silently discarded.
+
+`DGamma.CP4ProgressPotential` additionally defines the executable same-target
+lifecycle potential from Theorem 66(A) and proves its uniform `K + 4` upper
+bound from `continuationsBoundedBy`. The remaining quantitative debt is the
+per-rule strict-decrease/amortized trace induction yielding Equation 61.
+
 ### Cold-build validation under Idris 2 v0.8.0
 
 A one-process build from an empty `build/` may be killed while elaborating the
@@ -1067,7 +1093,7 @@ idris2 --source-dir src --check src/DGamma/CP4SupportSolution.idr
 idris2 --build dgamma.ipkg
 ```
 
-The final command must report all 22 package modules. The CP4 Lemma-70 modules
+The final command must report every package module. The CP4 Lemma-70 modules
 then cold-check quickly. Validators must not copy TTCs from another worktree;
 the isolated `--check` above consumes only artifacts produced inside the clean
 archive. This recipe was exercised on commit `fe9764d`, followed by the 31/31
@@ -1086,10 +1112,12 @@ parent safety, both Active/support fixed-point directions, and final Lemma-68
 uniqueness assembly. The repaired Definition-69/Lemma-70 statement shapes still
 await end-of-CP4 re-review.
 
-**Partial:** Progress/Theorem 66 (approved CP4 continuation-bound statement
-repair, all-rule premise preservation, positive/rejected regressions, and
-search/maximality/base case proved; repaired shape awaits end-of-CP4 re-review;
-unloading descent and numeric bound remain); Lemma 71 (effect commutation projection); Lemma 72 (candidate
+**Partial:** Progress/Theorem 66 (approved CP4 continuation-bound and global-
+equality-alignment repairs; all-rule continuation preservation,
+positive/rejected/aligned regressions, finite precedence descent, complete
+unloading-chain no-deadlock, search/maximality/base case, and the `K + 4`
+potential upper bound proved; repaired shape awaits end-of-CP4 re-review; the
+per-rule Equation-61 amortized numeric bound remains); Lemma 71 (effect commutation projection); Lemma 72 (candidate
 lifecycle-only deletion statement); Confluence/Theorem 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
 and vestigial-aware outside-R endpoint relation submitted for round-10 review;
@@ -1112,8 +1140,8 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** implement ranked unloading-chain Progress and its numeric precedence
-bound, then constructive checked episode
+**Next:** finish the per-rule potential-decrease and amortized Equation-61
+trace bound, assemble the repaired Progress alias, then implement constructive checked episode
 deletion/canonical sorting. Fresh-choice, cross-parent, 24/18 activation-reset,
 and no-O-Remove 23/18 and 27/18 vestigial pairs reach the literal public premise
 chain; the latter two also project the vestigial-aware result. Live providers
