@@ -213,7 +213,6 @@ cannot silently introduce a proof:
 - `terminalRecoveryTheorem` — Corollary 62.
 - `resolutionCoherenceTheorem` — the recovery-combined form of Theorem 64.
 - `progressTheorem` — the finite quantitative form of Theorem 66.
-- `supportAtQuiescenceTheorem` — Lemma 70.
 - `deletionTheorem` — Lemma 72.
 - `confluenceTheorem` — the finite explicit-registration form of Theorem 73,
   with parent-activation structural matching, exact historical external-root
@@ -957,6 +956,37 @@ erased exports. The runtime support computation remains executable. No
 statement micro-adjustment, partial definition, postulate, or proof escape was
 introduced.
 
+### Lemma 70: support equals Active at quiescence
+
+`DGamma.CP4Lemma70.supportAtQuiescenceTheoremProof` now inhabits the repaired,
+otherwise immutable Lemma-70 alias without an escape hatch:
+
+1. `reachedActiveFibersProvideAll` folds repaired Definition-69 certificates
+   over the aligned checked trace, so every endpoint Active fiber has every
+   declared provision installed in its actual table.
+2. `DGamma.CP4ParentSafety` carries each child insertion's
+   `ChildRetirementProvenance` forward. A non-retired current child retains a
+   parent in `Reloading` or `Active`; a parent recovery step is excluded until
+   that child is retired. Quiescence rules out `Reloading`, hence the parent is
+   Active. The internal `RetirementUpdate` view added to local replacement
+   frames records whether retirement is preserved or explicitly applied; it
+   strengthens proof metadata only and does not change evaluator behavior.
+3. `DGamma.CP4SupportActive` proves both fixed-point directions. An Active
+   fiber's quiet target supplies Active providers, trace totality turns their
+   declared provisions into actual provider resolution, and parent safety
+   supplies the parent clause. Conversely, a true support clause supplies a
+   target; quiescence plus failure-freedom rules out every lifecycle except
+   `Active`.
+4. The resulting Active predicate is a `SupportSolution`. Lemma 68's unique
+   support-solution field then gives the required pointwise
+   `isSupported = supportedActiveAt` equality.
+
+The elaboration was deliberately split across three small proof modules after
+an initial monolithic assembly exhibited catastrophic elaborator growth. All
+proof exports are quantity `0`, `%default total` remains universal, and the
+runtime evaluator/support computation is unchanged. The approved Definition-69
+statement repair still requires the mandated end-of-CP4 adversarial re-review.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
@@ -964,12 +994,14 @@ Preservation; Equation 58; local relied guards; per-step Equation 59; whole-
 episode resolution structure; global spatial Ordering/Theorem 63 including
 strict containment, resolution constancy, and provider-value constancy; and
 finite-specialized Lemma 68, including combined support well-foundedness and
-unique Definition-67 support-solution equality with the executable closure.
+unique Definition-67 support-solution equality with the executable closure;
+and Lemma 70, including endpoint Active-table totality, non-retired-child
+parent safety, both Active/support fixed-point directions, and final Lemma-68
+uniqueness assembly. The repaired Definition-69/Lemma-70 statement shapes still
+await end-of-CP4 re-review.
 
 **Partial:** Progress/Theorem 66 (search/maximality/base case proved);
-Lemma 70 (approved CP4 Definition-69 statement repair awaiting re-review;
-empty base and trace-to-endpoint Active-table totality proved, fixed-point
-assembly in progress); Lemma 71 (effect commutation projection); Lemma 72 (candidate
+Lemma 71 (effect commutation projection); Lemma 72 (candidate
 lifecycle-only deletion statement); Confluence/Theorem 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
 and vestigial-aware outside-R endpoint relation submitted for round-10 review;
@@ -982,8 +1014,8 @@ from Corollary 62). Lemmas 54–57 have many rule, frame, and boundary analogues
 but are not individually complete.
 
 **Merely stated:** Lemma 35, Theorems 40/42, recovery Theorem 61, Corollary 62,
-`resolutionCoherenceTheorem`, `progressTheorem`,
-`supportAtQuiescenceTheorem`, `deletionTheorem`, and `confluenceTheorem`.
+`resolutionCoherenceTheorem`, `progressTheorem`, `deletionTheorem`, and
+`confluenceTheorem`.
 These remain escape-hatch-free proposition types.
 
 **Deviations:** Definition 32 finite approximations; finite static-list
@@ -992,10 +1024,8 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** finish Lemma 70 from Lemma 68 plus quiescence, failure-freedom,
-registration retirement discipline, and repaired trace-indexed Definition-69
-totality; then implement
-ranked unloading-chain Progress and constructive checked episode
+**Next:** implement ranked unloading-chain Progress and its numeric precedence
+bound, then constructive checked episode
 deletion/canonical sorting. Fresh-choice, cross-parent, 24/18 activation-reset,
 and no-O-Remove 23/18 and 27/18 vestigial pairs reach the literal public premise
 chain; the latter two also project the vestigial-aware result. Live providers

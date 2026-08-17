@@ -702,11 +702,21 @@ quietFiber fiber fibers = case fiberLifecycle fiber of
   _ => False
 
 public export
+allRecursive : (a -> Bool) -> List a -> Bool
+allRecursive predicate [] = True
+allRecursive predicate (value :: rest) =
+  predicate value && allRecursive predicate rest
+
+public export
+quietEntryFor : DecEq name => DecEq key =>
+  Registry name key value world error ->
+  Binding name (FiberAt name key value world error) -> Bool
+quietEntryFor fibers (Bind _ fiber) = quietFiber fiber fibers
+
+public export
 quiet : DecEq name => DecEq key => SystemState name key value world error -> Bool
-quiet state = all quietEntry (registryFibers (registry state))
-  where
-  quietEntry : Binding name (FiberAt name key value world error) -> Bool
-  quietEntry (Bind _ fiber) = quietFiber fiber (registry state)
+quiet state = allRecursive (quietEntryFor (registry state))
+  (registryFibers (registry state))
 
 public export
 elemDec : DecEq a => a -> List a -> Bool

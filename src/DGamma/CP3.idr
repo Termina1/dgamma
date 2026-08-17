@@ -890,13 +890,19 @@ allFibersTotalOnProvision state = all totalEntry
   totalEntry (Bind n fiber) = fiberTotalOnProvision fiber
 
 public export
+fiberNotFailed : Fiber name key value world error -> Bool
+fiberNotFailed fiber = case fiberLifecycle fiber of
+  Inactive (Just errorValue) => False
+  _ => True
+
+public export
+notFailedEntry : Binding name (FiberAt name key value world error) -> Bool
+notFailedEntry (Bind n fiber) = fiberNotFailed fiber
+
+public export
 noFailedFibers : SystemState name key value world error -> Bool
-noFailedFibers state = all notFailed (registryFibers (registry state))
-  where
-  notFailed : Binding name (FiberAt name key value world error) -> Bool
-  notFailed (Bind n fiber) = case fiberLifecycle fiber of
-    Inactive (Just errorValue) => False
-    _ => True
+noFailedFibers state = allList notFailedEntry
+  (registryFibers (registry state))
 
 public export
 programsBoundedBy : Nat -> SystemState name key value world error -> Bool
@@ -3095,7 +3101,8 @@ SupportMatchesActive {name} nameEq keyEq state = (n : name) ->
 ||| Paper Lemma 70 with the missing nested-registration/retirement provenance
 ||| exposed as `RegistrationDiscipline`; reachability alone is not sufficient.
 ||| Definition 69 is the component-level semantic property above.
-||| TODO(proof): invoke Lemma 68, then induct over its combined support order.
+||| Constructively implemented by
+||| `DGamma.CP4Lemma70.supportAtQuiescenceTheoremProof`.
 public export
 supportAtQuiescenceTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type
