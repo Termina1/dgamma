@@ -1131,6 +1131,13 @@ Progress dependency, and all six deletion-frame modules succeed; the current
 remain empty. A combined runtime-runner compilation also exceeded five minutes,
 so no fresh aggregate count is claimed for this milestone.
 
+**Registered CP4 validation debt:** before the end-of-CP4 adversarial review,
+split the roughly 1,800-line `CP4SupportSolution` into per-lemma modules while
+preserving its public aliases, then repeat the clean archive recipe. Exit 137 is
+the macOS OOM killer; cold builds must run without concurrent Chez processes.
+Targeted per-module checks, totality, and escape scans are accepted for ongoing
+Step-4 work, but do not discharge this final reproducibility debt.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
