@@ -1230,9 +1230,19 @@ remaining proof obligation is sharply its success from
 forward induction over aligned checked transitions and the generation-indexed
 no-episode evidence. It handles insertion, retirement, removal, raw-name reuse,
 and rules out every lifecycle action that would require a non-Inactive source.
-`CurrentRegisteredChildless` now names the sole remaining structural half;
-`inactiveAndChildlessGiveLeaves` combines it with proved inactivity, and
-`reachedBoundaryGivesDeletionPlan` derives the complete exact-generation plan.
+`CurrentRegisteredChildless` names the structural half, and
+`reachedCurrentRegisteredChildless` now proves it by forward induction over the
+aligned checked trace. At a fresh birth, well-formed parent closure proves that
+an absent raw name cannot already have children; at a later O-Insert, disciplined
+`ParentRegistrationYield` provenance would require the current exact R parent
+to be Reloading, contradicting the proved Inactive invariant. O-Remove/reissue
+is handled by the generation environment rather than a global raw-name ban.
+The theorem is stronger than the selected-episode use site: once
+`NoRegisteredEpisode` identifies the exact generation list, it does not need to
+inspect `RegisteredGenerationsDuring` again. `inactiveAndChildlessGiveLeaves`
+combines both halves, and `reachedDisciplinedBoundaryGivesDeletionPlan` derives
+the complete exact-generation plan directly from public discipline,
+well-formedness, alignment, scan, and no-episode premises.
 `CurrentRegisteredInactiveLeaves` is the combined internal boundary invariant;
 `currentRegisteredLeavesGivePlan` proves it yields the checked multi-leaf plan,
 and `hasChildDeleteFalse` proves iterated leaf deletion cannot create a child.
@@ -1243,8 +1253,9 @@ actor-outside input. `checkedLifecycleAfterCurrentRegisteredPlan` composes that
 bridge, the executable plan, and the exhaustive lifecycle control theorem into
 one checked replay result. No raw-name global exclusion was reintroduced.
 
-The remaining construction must also establish the selected closed-episode
-boundary, prove both filters succeed, and derive the three endpoint invariants.
+The current-R boundary construction is now complete. The remaining construction
+must prove both selected-episode/suffix filters succeed and derive the three
+endpoint invariants.
 Whether `NoDependentClosingEpisode` suffices for that episode-local bridge remains under active review; no public statement change
 has been made.
 
@@ -1332,10 +1343,11 @@ no-R-episode and Definition-69 premises, conditional trace/final-record
 assembly, executable exact-generation Inactive-leaf plan/actor-outside
 construction, constructive plan success from the explicit current-R leaf
 invariant, scanner live-name uniqueness plus the public-outside bridge, and
-proved checked lifecycle applicability through that plan; the isolated
-`CurrentRegisteredChildless` theorem from disciplined registration,
-selected-episode/suffix
-applicability, and endpoint effect/control/withdrawal invariants remain);
+proved checked lifecycle applicability through that plan, and a complete
+`CurrentRegisteredChildless` induction from disciplined registration,
+well-formed parent closure, and exact-generation no-episode evidence;
+selected-episode/suffix applicability and endpoint effect/control/withdrawal
+invariants remain);
 Confluence/Theorem
 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,

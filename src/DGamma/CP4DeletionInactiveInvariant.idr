@@ -13,6 +13,7 @@ import Decidable.Equality
 0 justInjectiveInactive : Just left = Just right -> left = right
 justInjectiveInactive Refl = Refl
 
+public export
 0 lookupPutCurrentSelf :
   (nameEq : DecEq name) -> (selected : name) ->
   (generation : RegistrationGeneration name) ->
@@ -87,6 +88,7 @@ lookupCurrentNothingFromAbsent nameEq selected
       lookupCurrentNothingFromAbsent nameEq selected rest
         (\present => absent (There present))
 
+public export
 0 lookupDeleteCurrentSelf :
   (nameEq : DecEq name) -> (selected : name) ->
   (live : GenerationEnvironment name) ->
@@ -131,6 +133,7 @@ lookupDeleteCurrentOther nameEq observed removed distinct
       No observedDifferent =
         lookupDeleteCurrentOther nameEq observed removed distinct rest
 
+public export
 0 lookupAdvanceGenerationOther :
   (nameEq : DecEq name) -> (ordinal : Nat) ->
   (action : Action name key value world error) ->
@@ -468,6 +471,7 @@ inactiveCannotUnload nameEq keyEq selected before afterState tag raw
         retiredFlag table outcome found))
       (unloadSourceUnloading nameEq keyEq selected before afterState tag raw))
 
+public export
 0 currentRegisteredInactiveStep :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (registered : List (RegistrationGeneration name)) ->
