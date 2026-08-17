@@ -1119,14 +1119,17 @@ the isolated `--check` above consumes only artifacts produced inside the clean
 archive. This recipe was exercised on commit `fe9764d`, followed by the 31/31
 runtime aggregate and escape/totality scans.
 
-For the expanded 46-module Step-3 tree, a new clean archive reached the known
+For the expanded Step-3 tree (46 modules at that validation point), a new clean
+archive reached the known
 `CP4SupportSolution` boundary and the initial package process exited 137 as
 expected. The isolated support-solution rebuild then exceeded the 20-minute
 validation command budget, and a one-process warm package invocation likewise
 exceeded ten minutes. This is recorded as a validation resource residual, not
 silently called a clean pass. Targeted checks of `CP4ProgressProof`, every new
-Progress dependency, and all six deletion-frame modules succeed; 46/46 source
-modules retain `%default total`, and anchored escape-hatch scans remain empty.
+Progress dependency, and all six deletion-frame modules succeed; the current
+53/53 source modules retain `%default total`, and anchored escape-hatch scans
+remain empty. A combined runtime-runner compilation also exceeded five minutes,
+so no fresh aggregate count is claimed for this milestone.
 
 ## Status
 
