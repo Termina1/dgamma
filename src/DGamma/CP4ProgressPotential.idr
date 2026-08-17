@@ -260,3 +260,45 @@ actorTargetPotentialBounded nameEq keyEq bound actor state continuations
     Just (MkFiber component parent retiredFlag table
       (Unloading accumulator committedView (Just err))) =
         oneLTEPlusFour bound
+
+||| `viewEq` is exactly provider-list equality because a dependent `View` has
+||| one provider at every fixed dependency position.
+public export
+0 viewEqSameNameList : (nameEq : DecEq name) ->
+  (left, right : View name deps) ->
+  viewEq @{nameEq} left right =
+    sameNameList @{nameEq} (DGamma.Calculus.viewProviders left)
+      (DGamma.Calculus.viewProviders right)
+viewEqSameNameList nameEq EmptyView EmptyView = Refl
+viewEqSameNameList nameEq (ProviderView left leftRest)
+  (ProviderView right rightRest) with (decEq @{nameEq} left right)
+  viewEqSameNameList nameEq (ProviderView right leftRest)
+    (ProviderView right rightRest) | Yes Refl =
+      viewEqSameNameList nameEq leftRest rightRest
+  viewEqSameNameList nameEq (ProviderView left leftRest)
+    (ProviderView right rightRest) | No distinct = Refl
+
+||| Provider-list presentation of the evaluator's committed-target guard.
+public export
+0 targetMatchesSameTarget : (nameEq : DecEq name) ->
+  (target : Maybe (View name deps)) -> (committedView : View name deps) ->
+  targetMatches @{nameEq} target committedView =
+    sameTarget @{nameEq}
+      (map (\v => DGamma.Calculus.viewProviders v) target)
+      (Just (DGamma.Calculus.viewProviders committedView))
+targetMatchesSameTarget nameEq Nothing committedView = Refl
+targetMatchesSameTarget nameEq (Just target) committedView =
+  viewEqSameNameList nameEq target committedView
+
+||| Expose the selected lookup hidden by `targetProvidersAt`.
+public export
+0 targetProvidersAtLookup :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (state : SystemState name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} actor (registry state) = Just fiber ->
+  targetProvidersAt @{nameEq} @{keyEq} actor state =
+    map (\v => DGamma.Calculus.viewProviders v)
+      (targetFiber @{nameEq} @{keyEq} fiber (registry state))
+targetProvidersAtLookup nameEq keyEq actor state fiber found =
+  rewrite found in Refl
