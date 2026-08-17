@@ -272,7 +272,13 @@ of Lemma 38.
     With supervisor approval, Definition-60/yielded/recovery maps now use
     `restrictOwnedPreservingOrder`, which filters the input table in its current
     order while reconstructing `ownedSound`. Legacy `restrictOwned` remains
-    only for the negative regression. `reverseOrderRestrictionRegression`
+    only for the negative regression. Because Idris quantity-0 erasure is not
+    proof irrelevance (the CP2 lesson), equality of reconstructed `OwnedTable`
+    certificates cannot be assumed. The LTS therefore normalizes L-Advance and
+    L-Unload inputs with the same order-preserving constructor used by the
+    generated maps. Binding order and values are identical to the stored table;
+    only erased certificate identity changes, so observable evaluator/plugin
+    semantics is unchanged. `reverseOrderRestrictionRegression`
     pins all three outcomes: actual L-Advance sees reverse order and sets the
     world true, the legacy map sets it false, and the corrected map again sets
     it true. The executable runner prints `True`.
@@ -1117,17 +1123,20 @@ potential from Theorem 66(A) and proves its uniform `K + 4` upper bound from
 
 `ActualEffectFrame` states actual-generator soundness relationally with
 `EffectStateRelated`; exact `EffectState` equality would require forbidden
-function extensionality because effect tables are functions. The first six
-per-rule frames are proved and separately committed: O-Insert, O-Retire,
-O-Remove, L-Begin, L-Divert, and L-Leave. The shared core proves pointwise
-fresh insertion, deletion, and table-preserving replacement projection frames.
+function extensionality because effect tables are functions. Complete checked
+frames are proved for O-Insert, O-Retire, O-Remove, L-Begin, explicit L-Divert,
+L-Leave, and L-Unload. Saturated effectful frames cover empty/nonempty L-Finish,
+L-Iter, and L-Raise. The shared core proves pointwise insertion, deletion,
+table-preserving replacement, runtime replacement, and actual capability
+resolution frames. L-Advance dispatcher integration and its effectful landing-
+L-Divert branch remain before the ten-tag aggregate is complete.
 
 This exposed a real prerequisite omitted by the prior structural work:
 `ActualForwardGenerator` packages a checked transition, but Definition-60
 commutation alone did not prove that its partial map reaches the concrete LTS
-target even up to `EffectStateRelated`. The remaining L-Iter/L-Finish/L-Raise/
-L-Unload soundness cases are effectful. After those, adjacent replay still needs
-control-guard preservation; effect commutation by itself does not preserve
+target even up to `EffectStateRelated`. After L-Advance dispatcher completion,
+adjacent replay still needs control-guard preservation; effect commutation by
+itself does not preserve
 provider lifecycle, target, or reliance guards. Whether
 `NoDependentClosingEpisode` suffices globally is under active review; no
 statement change has been made.
