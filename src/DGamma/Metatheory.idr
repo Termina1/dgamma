@@ -995,6 +995,7 @@ record EffectStateRelated {name, key : Type} {value : key -> Type} {world : Type
     lookupBinding k (effectTables left selected) =
     lookupBinding k (effectTables right selected)
 
+public export
 0 effectStateReflexive : (keyEq : DecEq key) ->
   (state : EffectState name key value world) ->
   EffectStateRelated keyEq state state
@@ -1051,9 +1052,73 @@ restrictEntries (k :: ks) (UniqueCons absent uniqueRest) table
           Here => Here
           There later => There (restrictedSound tail present later))
 
-||| Reconstruct an owned table by restricting an arbitrary effect table to the
-||| component's declared provision. This makes full-state maps executable while
-||| preserving capability confinement intrinsically.
+record OrderRestrictedEntries (key : Type) (value : key -> Type)
+  (allowed : List key) (original : List (Binding key value)) where
+  constructor MkOrderRestrictedEntries
+  orderRestrictedBindings : List (Binding key value)
+  0 orderRestrictedUnique : UniqueKeys (bindingKeys orderRestrictedBindings)
+  0 orderRestrictedSound : (k : key) ->
+    Elem k (bindingKeys orderRestrictedBindings) -> Elem k allowed
+  0 orderRestrictedSubset : (k : key) ->
+    Elem k (bindingKeys orderRestrictedBindings) -> Elem k (bindingKeys original)
+
+0 memberTrueElem : DecEq a => (selected : a) -> (values : List a) ->
+  elemDec selected values = True -> Elem selected values
+memberTrueElem selected [] present = case present of Refl impossible
+memberTrueElem selected (current :: rest) present with (decEq selected current)
+  memberTrueElem current (current :: rest) present | Yes Refl = Here
+  memberTrueElem selected (current :: rest) present | No distinct =
+    There (memberTrueElem selected rest present)
+
+orderRestrictEntries : DecEq key => (allowed : List key) ->
+  (entries : List (Binding key value)) -> (0 unique : UniqueKeys (bindingKeys entries)) ->
+  OrderRestrictedEntries key value allowed entries
+orderRestrictEntries allowed [] UniqueNil =
+  MkOrderRestrictedEntries [] UniqueNil
+    (\k, present => absurd present)
+    (\k, present => absurd present)
+orderRestrictEntries allowed (Bind current observed :: rest)
+  (UniqueCons headFresh tailUnique) with (elemDec current allowed) proof member
+  orderRestrictEntries allowed (Bind current observed :: rest)
+    (UniqueCons headFresh tailUnique) | False =
+      let tail = orderRestrictEntries allowed rest tailUnique in
+      MkOrderRestrictedEntries (orderRestrictedBindings tail)
+        (orderRestrictedUnique tail) (orderRestrictedSound tail)
+        (\k, present => There (orderRestrictedSubset tail k present))
+  orderRestrictEntries allowed (Bind current observed :: rest)
+    (UniqueCons headFresh tailUnique) | True =
+      let tail = orderRestrictEntries allowed rest tailUnique
+          0 currentFresh : Not
+            (Elem current (bindingKeys (orderRestrictedBindings tail)))
+          currentFresh present = headFresh
+            (orderRestrictedSubset tail current present)
+      in MkOrderRestrictedEntries
+        (Bind current observed :: orderRestrictedBindings tail)
+        (UniqueCons currentFresh (orderRestrictedUnique tail))
+        (\k, present => case present of
+          Here => memberTrueElem current allowed member
+          There later => orderRestrictedSound tail k later)
+        (\k, present => case present of
+          Here => Here
+          There later => There (orderRestrictedSubset tail k later))
+
+||| Order-preserving capability restriction used by Definition 60. Unlike the
+||| older declaration-order reconstruction, this filters the input table in its
+||| existing binding order, so an actual generator observes exactly the same
+||| runtime `OwnedTable` ordering as the evaluator.
+public export
+restrictOwnedPreservingOrder : DecEq key => (provision : CoeffectSpec key) ->
+  CoeffectContext key value -> OwnedTable key value provision
+restrictOwnedPreservingOrder (MkCoeffectSpec allowed allowedUnique)
+  (MkCoeffectContext entries entriesUnique) =
+    let result = orderRestrictEntries allowed entries entriesUnique in
+    MkOwnedTable
+      (MkCoeffectContext (orderRestrictedBindings result)
+        (orderRestrictedUnique result))
+      (orderRestrictedSound result)
+
+||| Legacy declaration-order restriction, retained for the Finding-7
+||| counter-regression and for callers that explicitly request canonical order.
 public export
 restrictOwned : DecEq key => (provision : CoeffectSpec key) ->
   CoeffectContext key value -> OwnedTable key value provision
@@ -1120,7 +1185,7 @@ partialEffectMapFor nameEq keyEq (LAdvance n) tag origin state = case tag of
           (dependencies (componentDependencies (fiberComponent fiber))) view state of
           Nothing => Nothing
           Just capability =>
-            let owned = restrictOwned @{keyEq}
+            let owned = restrictOwnedPreservingOrder @{keyEq}
                   (componentProvisions (fiberComponent fiber)) (effectTables state n) in
             case runStepEffect step capability
               (MkLocalState (effectAmbient state) owned) of
@@ -1134,7 +1199,7 @@ partialEffectMapFor nameEq keyEq (LUnload n) tag origin state =
     Nothing => Nothing
     Just fiber => case fiberLifecycle fiber of
       Unloading accumulator view outcome =>
-        let owned = restrictOwned @{keyEq}
+        let owned = restrictOwnedPreservingOrder @{keyEq}
               (componentProvisions (fiberComponent fiber)) (effectTables state n)
             restored = accumulator (MkLocalState (effectAmbient state) owned) in
           Just (setEffectTable @{nameEq} n (ownedValues (localTable restored))
@@ -1271,7 +1336,7 @@ yieldedInverseEffectMap :
     LocalState key value world provision) ->
   PartialEffectMap name key value world
 yieldedInverseEffectMap nameEq keyEq actor provision undo state =
-  let owned = restrictOwned @{keyEq} provision (effectTables state actor)
+  let owned = restrictOwnedPreservingOrder @{keyEq} provision (effectTables state actor)
       restored = undo (MkLocalState (effectAmbient state) owned)
   in Just (setEffectTable @{nameEq} actor
     (ownedValues (localTable restored))
@@ -1297,7 +1362,7 @@ iteratorStepEffect nameEq keyEq actor fiber step view state =
     (dependencies (componentDependencies (fiberComponent fiber))) view state of
     Nothing => Nothing
     Just capability =>
-      let owned = restrictOwned @{keyEq}
+      let owned = restrictOwnedPreservingOrder @{keyEq}
             (componentProvisions (fiberComponent fiber))
             (effectTables state actor)
       in case runStepEffect step capability
@@ -1538,6 +1603,62 @@ emptyTraceCompositionMap after before effectState =
   rewrite emptyTraceTransformationMap before effectState in
     emptyTraceTransformationMap after effectState
 
+public export
+0 effectPartialMapReflexive :
+  (keyEq : DecEq key) -> (map : PartialEffectMap name key value world) ->
+  PartialMapsEquivalent (EffectStateEquivalence keyEq) map map
+effectPartialMapReflexive keyEq map state with (map state)
+  effectPartialMapReflexive keyEq map state | Nothing = PartialUndefined
+  effectPartialMapReflexive keyEq map state | Just next =
+    PartialDefined (effectStateReflexive keyEq next)
+
+public export
+0 iteratorYieldAgreementReflexive :
+  (keyEq : DecEq key) ->
+  (stage : IteratorStage name key world error value actor trace) ->
+  (origin : EffectState name key value world) ->
+  IteratorYieldAgreement name key value world error keyEq
+    (iteratorStageEffect stage origin) (iteratorStageEffect stage origin)
+iteratorYieldAgreementReflexive keyEq stage origin with
+  (iteratorStageEffect stage origin)
+  iteratorYieldAgreementReflexive keyEq stage origin | Nothing =
+    IteratorBothUndefined
+  iteratorYieldAgreementReflexive keyEq stage origin |
+    Just (after, undo, continuation) =
+      IteratorYieldsAgree Refl (effectPartialMapReflexive keyEq undo)
+
+public export
+0 effectIdentityOnLeftCommutes :
+  (keyEq : DecEq key) ->
+  (left : PartialEffectMap name key value world) ->
+  ((state : EffectState name key value world) -> left state = Just state) ->
+  (right : PartialEffectMap name key value world) ->
+  PartialCommute (EffectStateEquivalence keyEq) left right
+effectIdentityOnLeftCommutes keyEq left leftIdentity right state
+  with (right state) proof rightResult
+  effectIdentityOnLeftCommutes keyEq left leftIdentity right state | Nothing =
+    rewrite leftIdentity state in rewrite rightResult in PartialUndefined
+  effectIdentityOnLeftCommutes keyEq left leftIdentity right state | Just moved =
+    rewrite leftIdentity state in rewrite rightResult in
+    rewrite leftIdentity moved in
+      PartialDefined (effectStateReflexive keyEq moved)
+
+public export
+0 effectIdentityOnRightCommutes :
+  (keyEq : DecEq key) ->
+  (left : PartialEffectMap name key value world) ->
+  (right : PartialEffectMap name key value world) ->
+  ((state : EffectState name key value world) -> right state = Just state) ->
+  PartialCommute (EffectStateEquivalence keyEq) left right
+effectIdentityOnRightCommutes keyEq left right rightIdentity state
+  with (left state) proof leftResult
+  effectIdentityOnRightCommutes keyEq left right rightIdentity state | Nothing =
+    rewrite rightIdentity state in rewrite leftResult in PartialUndefined
+  effectIdentityOnRightCommutes keyEq left right rightIdentity state | Just moved =
+    rewrite rightIdentity state in rewrite leftResult in
+    rewrite rightIdentity moved in
+      PartialDefined (effectStateReflexive keyEq moved)
+
 ||| Concrete non-vacuity witness for every full effect state.
 public export
 emptyTraceIndependent : (keyEq : DecEq key) ->
@@ -1607,7 +1728,7 @@ accumulatorEffectMap : (nameEq : DecEq name) -> (keyEq : DecEq key) -> name ->
   AccumulatorHandle key value world -> PartialEffectMap name key value world
 accumulatorEffectMap nameEq keyEq selected
   (MkAccumulatorHandle provision captured accumulator) state =
-    let owned = restrictOwned @{keyEq} provision (effectTables state selected)
+    let owned = restrictOwnedPreservingOrder @{keyEq} provision (effectTables state selected)
         restored = accumulator (MkLocalState (effectAmbient state) owned) in
       Just (setEffectTable @{nameEq} selected (ownedValues (localTable restored))
         (setEffectAmbient (localWorld restored) state))

@@ -258,6 +258,40 @@ of Lemma 38.
     five-step witness that the new premise is constructive and non-vacuous.
     Finding #6 joins Findings #4 and #5 on the mandatory end-of-CP4 adversarial
     re-review list.
+12. **CP4 Finding #7 — Definition-60 restriction reordered actual owned
+    tables.** The LTS runs L-Advance and L-Unload functions on the fiber's
+    stored `OwnedTable`. The old `restrictOwned` reconstructed a moved effect
+    table by iterating the component's provision declaration, so a valid table
+    stored in another order was silently canonicalized. Because `StepEffect`
+    and accumulators are executable and may inspect binding order, an
+    `ActualForwardGenerator` could disagree with its checked LTS transition at
+    the actual source. Ten CP3 review rounds missed this because no earlier
+    proof connected generated partial maps back to real evaluator endpoints;
+    the Step-4 per-rule frames are the first such consumer.
+
+    With supervisor approval, Definition-60/yielded/recovery maps now use
+    `restrictOwnedPreservingOrder`, which filters the input table in its current
+    order while reconstructing `ownedSound`. Legacy `restrictOwned` remains
+    only for the negative regression. `reverseOrderRestrictionRegression`
+    pins all three outcomes: actual L-Advance sees reverse order and sets the
+    world true, the legacy map sets it false, and the corrected map again sets
+    it true. The executable runner prints `True`.
+
+    This deliberately corrects the semantic extension of unchanged premises
+    such as `TraceIndependent` and `PrefixRecoveryIndependent`: old concrete
+    witnesses for the wrong canonicalizing maps may cease to inhabit them and
+    must be revalidated/replaced. `singletonTraceIndependent` plus the concrete
+    nonempty effectful `correctedTraceIndependentWitness` and
+    `correctedPrefixIndependentWitness` prove the corrected premises remain
+    non-vacuous. Statement shapes and their paper-intended meaning—commutation
+    of the evaluator's actual maps—do not drift.
+
+    Finding #7 joins Findings #4–#6 on the mandatory end-of-CP4 adversarial
+    re-review list. The reviewer must attack both evaluator-faithfulness of the
+    order-preserving maps and non-vacuity of corrected independence premises.
+    The timed-out `CP3StatementChecks`, `CP3VestigialChecks`, and
+    `CalculusChecks` runs are part of the registered clean-validation debt and
+    must pass before that review.
 
 ## Escape-hatch and hole audit
 
@@ -1136,7 +1170,9 @@ split the roughly 1,800-line `CP4SupportSolution` into per-lemma modules while
 preserving its public aliases, then repeat the clean archive recipe. Exit 137 is
 the macOS OOM killer; cold builds must run without concurrent Chez processes.
 Targeted per-module checks, totality, and escape scans are accepted for ongoing
-Step-4 work, but do not discharge this final reproducibility debt.
+Step-4 work, but do not discharge this final reproducibility debt. The same
+clean run must explicitly rebuild `CP3StatementChecks`, `CP3VestigialChecks`,
+and `CalculusChecks`, whose post-Finding-7 attempts timed out under shared load.
 
 ## Status
 
