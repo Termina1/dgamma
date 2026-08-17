@@ -15,3 +15,11 @@ data IsUnloadingFiber : {name, key, world, error : Type} ->
     IsUnloadingFiber
       (MkFiber component parent retiredFlag table
         (Unloading accumulator view outcome))
+
+||| Compact indexed evidence that a fiber is in the Active lifecycle.
+public export
+data IsActiveFiber : {name, key, world, error : Type} ->
+  {value : key -> Type} -> Fiber name key value world error -> Type where
+  ActiveNow :
+    IsActiveFiber
+      (MkFiber component parent retiredFlag table (Active accumulator view))
