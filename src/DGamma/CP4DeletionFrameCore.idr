@@ -83,3 +83,58 @@ projectTablePreservingReplace nameEq keyEq actor worldValue old next fibers foun
         let targetLookup = trans
               (lookupReplaceOther selected actor distinct next fibers) sourceLookup
         in rewrite targetLookup in Refl
+
+||| Package a control-only local replacement once its evaluator endpoint and
+||| identity effect-map branch have been exposed by a per-rule case split.
+public export
+0 controlReplaceActualEffectFrame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (actor : name) -> (worldValue : world) ->
+  (old, next : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) ->
+  lookupFiber @{nameEq} actor fibers = Just old ->
+  ((k : key) -> lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
+    lookupBinding @{keyEq} k (ownedValues (fiberTable old))) ->
+  (concreteAfter :
+    (the (SystemState name key value world error)
+      (MkSystemState worldValue
+        (replaceBinding @{nameEq} actor next fibers))) = afterState) ->
+  (identityMap : partialEffectMapFor nameEq keyEq action tag
+    (the (SystemState name key value world error)
+      (MkSystemState worldValue fibers))
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState worldValue fibers))) =
+      Just (projectEffectState @{nameEq}
+        (the (SystemState name key value world error)
+          (MkSystemState worldValue fibers)))) ->
+  ActualEffectFrame nameEq keyEq action tag (MkSystemState worldValue fibers)
+    afterState
+controlReplaceActualEffectFrame nameEq keyEq action tag actor worldValue old next
+  fibers afterState found tableSame concreteAfter identityMap =
+  let 0 concrete : SystemState name key value world error
+      concrete = MkSystemState worldValue
+        (replaceBinding @{nameEq} actor next fibers)
+      0 relatedConcrete : EffectStateRelated keyEq
+        (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState worldValue fibers)))
+        (projectEffectState @{nameEq} concrete)
+      relatedConcrete = projectTablePreservingReplace nameEq keyEq actor
+        worldValue old next fibers found tableSame
+      0 relatedAfter : EffectStateRelated keyEq
+        (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState worldValue fibers)))
+        (projectEffectState @{nameEq} afterState)
+      relatedAfter = replace
+        {p = \state => EffectStateRelated keyEq
+          (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState worldValue fibers)))
+          (projectEffectState @{nameEq} state)}
+        concreteAfter relatedConcrete
+  in rewrite identityMap in PartialDefined relatedAfter
