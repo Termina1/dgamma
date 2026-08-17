@@ -1266,6 +1266,47 @@ partialEffectMapAdvanceIterRuns nameEq keyEq actor ambient fibers component pare
       rewrite ran in Refl
 
 public export
+0 advanceDivertMapSameAsIter :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (origin : SystemState name key value world error) ->
+  (state : EffectState name key value world) ->
+  partialEffectMapFor nameEq keyEq (LAdvance actor) LDivertTag origin state =
+  partialEffectMapFor nameEq keyEq (LAdvance actor) LIterTag origin state
+advanceDivertMapSameAsIter nameEq keyEq actor
+  (MkSystemState ambient fibers) state with
+  (lookupFiber @{nameEq} actor fibers)
+  advanceDivertMapSameAsIter nameEq keyEq actor (MkSystemState ambient fibers) state | Nothing = Refl
+  advanceDivertMapSameAsIter nameEq keyEq actor (MkSystemState ambient fibers) state | Just fiber with
+    (fiberLifecycle fiber)
+    advanceDivertMapSameAsIter nameEq keyEq actor (MkSystemState ambient fibers) state | Just fiber |
+      Inactive outcome = Refl
+    advanceDivertMapSameAsIter nameEq keyEq actor (MkSystemState ambient fibers) state | Just fiber |
+      Active accumulator view = Refl
+    advanceDivertMapSameAsIter nameEq keyEq actor (MkSystemState ambient fibers) state | Just fiber |
+      Unloading accumulator view outcome = Refl
+    advanceDivertMapSameAsIter nameEq keyEq actor (MkSystemState ambient fibers) state | Just fiber |
+      Reloading [] accumulator view = Refl
+    advanceDivertMapSameAsIter nameEq keyEq actor (MkSystemState ambient fibers) state | Just fiber |
+      Reloading (step :: rest) accumulator view with
+      (resolveEffectValues @{keyEq}
+        (dependencies (componentDependencies (fiberComponent fiber))) view state)
+      advanceDivertMapSameAsIter nameEq keyEq actor (MkSystemState ambient fibers) state | Just fiber |
+        Reloading (step :: rest) accumulator view | Nothing = Refl
+      advanceDivertMapSameAsIter nameEq keyEq actor (MkSystemState ambient fibers) state | Just fiber |
+        Reloading (step :: rest) accumulator view | Just capability with
+        (runStepEffect step capability
+          (MkLocalState (effectAmbient state)
+            (restrictOwnedPreservingOrder
+              (componentProvisions (fiberComponent fiber))
+              (effectTables state actor))))
+        advanceDivertMapSameAsIter nameEq keyEq actor (MkSystemState ambient fibers) state | Just fiber |
+          Reloading (step :: rest) accumulator view | Just capability |
+            Left err = Refl
+        advanceDivertMapSameAsIter nameEq keyEq actor (MkSystemState ambient fibers) state | Just fiber |
+          Reloading (step :: rest) accumulator view | Just capability |
+            Right (localAfter, undo) = Refl
+
+public export
 0 partialEffectMapUnloadRuns :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->

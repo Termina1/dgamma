@@ -9,6 +9,16 @@ import Decidable.Equality
 
 %default total
 
+public export
+0 ruleTagFromJust : Just (expectedTag, concrete) = Just (observedTag, after) ->
+  expectedTag = observedTag
+ruleTagFromJust equation = cong fst (justInjective equation)
+
+public export
+0 endpointFromJust : Just (expectedTag, concrete) = Just (observedTag, after) ->
+  concrete = after
+endpointFromJust equation = cong snd (justInjective equation)
+
 ||| Relational soundness of one actual-forward generator at its concrete source.
 ||| Pointwise `EffectStateRelated` is required because effect tables are functions
 ||| and the project deliberately does not assume function extensionality.
