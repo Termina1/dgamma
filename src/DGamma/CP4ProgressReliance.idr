@@ -369,6 +369,7 @@ reliedConsumerWitness nameEq keyEq
           (reliedConsumerView entry) (reliedConsumerCommitted entry)
           (reliedProviderOccurrence entry) edge
 
+public export
 0 viewEqTrueEqual :
   (nameEq : DecEq name) -> (left, right : View name deps) ->
   viewEq @{nameEq} left right = True -> left = right
@@ -384,6 +385,7 @@ viewEqTrueEqual nameEq (ProviderView left leftRest)
     (ProviderView right rightRest) valid | No distinct = case valid of
       Refl impossible
 
+public export
 0 resolveViewOccurrenceProvider :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
