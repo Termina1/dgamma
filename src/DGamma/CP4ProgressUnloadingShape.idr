@@ -23,3 +23,20 @@ data IsActiveFiber : {name, key, world, error : Type} ->
   ActiveNow :
     IsActiveFiber
       (MkFiber component parent retiredFlag table (Active accumulator view))
+
+||| Classified successor of one blocked Unloading provider.
+public export
+data UnloadingStep :
+  (0 name : Type) -> (0 key : Type) -> (0 world : Type) ->
+  (0 error : Type) -> (0 value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (provider : name) ->
+  (state : SystemState name key value world error) -> Type where
+  ImmediateMove :
+    LifecycleMove nameEq keyEq state ->
+    UnloadingStep name key world error value nameEq keyEq provider state
+  SmallerUnloading :
+    (consumer : name) -> (fiber : Fiber name key value world error) ->
+    lookupFiber @{nameEq} consumer (registry state) = Just fiber ->
+    IsUnloadingFiber fiber ->
+    PrecedenceEdge nameEq provider consumer state ->
+    UnloadingStep name key world error value nameEq keyEq provider state
