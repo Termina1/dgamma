@@ -1210,11 +1210,20 @@ global `NoRegisteredEpisode` to both pieces. `traceComponentsTotalLocatedSplit`
 does the same for repaired Definition 69. This removes another previously
 implicit appeal to hereditary premises; no extra theorem assumption was added.
 
+`DeletionTraceSkeleton` integrates the verbatim prefix, exact segment scans,
+and both dependent generation filters. `assembleDeletionResult` proves the
+public result constructor from that skeleton and an erased
+`DeletionEndpointEvidence` containing exactly `effectsPreserved`,
+`controlsPreservedOutside`, and `registeredWithdrawn`. Final dependent-record
+assembly is therefore closed; endpoint debt cannot hide inside existential
+bookkeeping.
+
 The remaining construction must derive the Inactive-leaf plan and actor-outside
 certificates for exact R generations from `RegistrationDiscipline`,
 `RegisteredGenerationsDuring`, and generation-indexed `NoRegisteredEpisode`,
-establish the selected closed-episode boundary, filter the suffix, and assemble
-the endpoint. Whether `NoDependentClosingEpisode` suffices for that
+establish the selected closed-episode boundary, prove both filters succeed, and
+derive the three endpoint invariants. Whether `NoDependentClosingEpisode`
+suffices for that
 episode-local bridge remains under active review; no public statement change
 has been made.
 
@@ -1298,10 +1307,11 @@ lifecycle-only deletion statement, exhaustive ten-tag actual-forward effect
 frames, generation-correct action/result filtering, proved birth-ordinal bounds
 and verbatim pre-episode subsequence construction, a total dependent filter
 that exposes kept-action replay failure, exact located splitting of the
-no-R-episode and Definition-69 premises, and proved checked lifecycle
-applicability through indexed deletion of Inactive R leaves; episode-to-plan
-derivation, selected-episode/suffix applicability, and endpoint assembly
-remain); Confluence/Theorem
+no-R-episode and Definition-69 premises, conditional trace/final-record
+assembly, and proved checked lifecycle applicability through indexed deletion
+of Inactive R leaves; episode-to-plan derivation, selected-episode/suffix
+applicability, and endpoint effect/control/withdrawal invariants remain);
+Confluence/Theorem
 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
 and vestigial-aware outside-R endpoint relation submitted for round-10 review;
