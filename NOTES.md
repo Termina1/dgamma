@@ -1226,6 +1226,11 @@ checks each current R fiber is an Inactive leaf, and constructs both
 remaining proof obligation is sharply its success from
 `RegistrationDiscipline`, `RegisteredGenerationsDuring`, and generation-indexed
 `NoRegisteredEpisode`, rather than construction of the dependent plan itself.
+`generationTraceScanPreservesUnique` proves live raw names remain unique from
+`[]`, and `currentGenerationOutsideImpliesActorOutsidePlan` consequently bridges
+the public generation-aware outside relation to the builder's pointwise
+actor-outside input. No raw-name global exclusion was reintroduced.
+
 The remaining construction must also establish the selected closed-episode
 boundary, prove both filters succeed, and derive the three endpoint invariants.
 Whether `NoDependentClosingEpisode` suffices for that episode-local bridge remains under active review; no public statement change
@@ -1313,7 +1318,8 @@ and verbatim pre-episode subsequence construction, a total dependent filter
 that exposes kept-action replay failure, exact located splitting of the
 no-R-episode and Definition-69 premises, conditional trace/final-record
 assembly, executable exact-generation Inactive-leaf plan/actor-outside
-construction, and proved checked lifecycle applicability through that plan;
+construction, scanner live-name uniqueness plus the public-outside bridge, and
+proved checked lifecycle applicability through that plan;
 plan-builder success from episode provenance, selected-episode/suffix
 applicability, and endpoint effect/control/withdrawal invariants remain);
 Confluence/Theorem
