@@ -1229,7 +1229,9 @@ remaining proof obligation is sharply its success from
 `generationTraceScanPreservesUnique` proves live raw names remain unique from
 `[]`, and `currentGenerationOutsideImpliesActorOutsidePlan` consequently bridges
 the public generation-aware outside relation to the builder's pointwise
-actor-outside input. No raw-name global exclusion was reintroduced.
+actor-outside input. `checkedLifecycleAfterCurrentRegisteredPlan` composes that
+bridge, the executable plan, and the exhaustive lifecycle control theorem into
+one checked replay result. No raw-name global exclusion was reintroduced.
 
 The remaining construction must also establish the selected closed-episode
 boundary, prove both filters succeed, and derive the three endpoint invariants.

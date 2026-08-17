@@ -2,7 +2,9 @@ module DGamma.CP4DeletionGenerationUnique
 
 import DGamma.Calculus
 import DGamma.Coeffects
+import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP4DeletionControlPlan
 import DGamma.CP4DeletionPlanBuilder
 import Data.List.Elem
 import Decidable.Equality
@@ -212,3 +214,45 @@ currentGenerationOutsideImpliesActorOutsidePlan nameEq registered live unique
     case same of
       Refl => outside generation
         (lookupCurrentGenerationFromElem nameEq live unique present) member
+
+||| Integrated suffix-control theorem: once the executable residue builder has
+||| succeeded, the public generation-aware outside premise and scanner
+||| uniqueness provide exactly the actor certificate needed to replay any
+||| lifecycle action through the smaller registry.
+public export
+0 checkedLifecycleAfterCurrentRegisteredPlan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (live : GenerationEnvironment name) ->
+  GenerationEnvironmentNamesUnique live ->
+  (ambient : world) ->
+  (source : Registry name key value world error) ->
+  (planResult : CurrentRegisteredPlanResult name key world error value nameEq
+    registered live source) ->
+  (action : Action name key value world error) ->
+  (lifecycle : isLifecycleAction action = True) ->
+  CurrentGenerationOutside {nameEq = nameEq} registered live
+    (actionOwner action) ->
+  (sourceWellFormed : registryWellFormed @{nameEq} @{keyEq}
+    {name = name} {key = key} {value = value} {world = world} {error = error}
+    (MkSystemState ambient source) = True) ->
+  {tag : RuleTag} ->
+  {afterState : SystemState name key value world error} ->
+  checkedApplyAction @{nameEq} @{keyEq}
+    {name = name} {key = key} {value = value} {world = world} {error = error}
+    action (MkSystemState ambient source) = Just (tag, afterState) ->
+  TransitionResult {name = name} {key = key} {value = value}
+    {world = world} {error = error}
+    (MkSystemState ambient (planTarget planResult))
+checkedLifecycleAfterCurrentRegisteredPlan {name} {key} {world} {error} {value}
+  nameEq keyEq registered live unique ambient source planResult action lifecycle outside sourceWellFormed checked =
+    let 0 strongOutside = currentGenerationOutsideImpliesActorOutsidePlan nameEq
+          registered live unique (actionOwner action) outside
+        0 planOutside = actorOutsidePlan planResult (actionOwner action)
+          strongOutside
+    in checkedLifecycleAfterInactivePlan
+      {name = name} {key = key} {value = value} {world = world} {error = error}
+      nameEq keyEq action lifecycle ambient source (planTarget planResult)
+      (inactiveLeafPlan planResult) planOutside
+      sourceWellFormed checked
