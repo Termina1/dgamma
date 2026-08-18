@@ -1,0 +1,142 @@
+module DGamma.CP4RecoverySelectedLeave
+
+import DGamma.Core
+import DGamma.Calculus
+import DGamma.Coeffects
+import DGamma.Metatheory
+import DGamma.CP4RecoveryAccumulator
+import DGamma.CP4RecoveryTrace
+import DGamma.Unified
+import Decidable.Equality
+
+%default total
+
+0 justPairInjective : Just left = Just right -> left = right
+justPairInjective Refl = Refl
+
+0 leaveConcreteModel :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  applyAction @{nameEq} @{keyEq} (LLeave selected)
+    (MkSystemState ambient fibers) = Just (LLeaveTag, afterState) ->
+  (modelFiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} selected fibers = Just modelFiber ->
+  (modelAccumulator : LocalState key value world
+      (componentProvisions (fiberComponent modelFiber)) ->
+    LocalState key value world
+      (componentProvisions (fiberComponent modelFiber))) ->
+  InstalledAccumulator modelFiber modelAccumulator ->
+  (modelTransformation : TraceEffectTransformation name key world error value
+    selected whole) ->
+  AccumulatorFactorization nameEq keyEq selected
+    (componentProvisions (fiberComponent modelFiber)) modelAccumulator
+    modelTransformation ->
+  AccumulatorModel name key world error value nameEq keyEq selected whole
+    afterState
+leaveConcreteModel {name} {key} {world} {error} {value}
+  nameEq keyEq selected ambient fibers afterState whole raw modelFiber modelFound
+  modelAccumulator modelInstalled modelTransformation modelFactorization
+  with (lookupFiber @{nameEq} selected fibers) proof found
+  leaveConcreteModel nameEq keyEq selected ambient fibers afterState whole raw
+    modelFiber modelFound modelAccumulator modelInstalled modelTransformation
+    modelFactorization | Nothing = void (nothingIsNotJust modelFound)
+  leaveConcreteModel nameEq keyEq selected ambient fibers afterState whole raw
+    modelFiber modelFound modelAccumulator modelInstalled modelTransformation
+    modelFactorization |
+    Just (MkFiber component parent retiredFlag table lifecycle)
+    with (lifecycle)
+    leaveConcreteModel nameEq keyEq selected ambient fibers afterState whole raw
+      modelFiber modelFound modelAccumulator modelInstalled modelTransformation
+      modelFactorization |
+      Just (MkFiber component parent retiredFlag table lifecycle) |
+      Inactive outcome = void (nothingIsNotJust raw)
+    leaveConcreteModel nameEq keyEq selected ambient fibers afterState whole raw
+      modelFiber modelFound modelAccumulator modelInstalled modelTransformation
+      modelFactorization |
+      Just (MkFiber component parent retiredFlag table lifecycle) |
+      Reloading remaining accumulator view = void (nothingIsNotJust raw)
+    leaveConcreteModel nameEq keyEq selected ambient fibers afterState whole raw
+      modelFiber modelFound modelAccumulator modelInstalled modelTransformation
+      modelFactorization |
+      Just (MkFiber component parent retiredFlag table lifecycle) |
+      Unloading accumulator view outcome = void (nothingIsNotJust raw)
+    leaveConcreteModel nameEq keyEq selected ambient fibers afterState whole raw
+      modelFiber modelFound modelAccumulator modelInstalled modelTransformation
+      modelFactorization |
+      Just (MkFiber component parent retiredFlag table lifecycle) |
+      Active accumulator view
+      with (targetMatches @{nameEq}
+        (targetFiber @{nameEq} @{keyEq}
+          (MkFiber component parent retiredFlag table
+            (Active accumulator view)) fibers) view)
+      leaveConcreteModel nameEq keyEq selected ambient fibers afterState whole raw
+        modelFiber modelFound modelAccumulator modelInstalled modelTransformation
+        modelFactorization |
+        Just (MkFiber component parent retiredFlag table lifecycle) |
+        Active accumulator view | True = void (nothingIsNotJust raw)
+      leaveConcreteModel nameEq keyEq selected ambient fibers afterState whole raw
+        modelFiber modelFound modelAccumulator modelInstalled modelTransformation
+        modelFactorization |
+        Just (MkFiber component parent retiredFlag table lifecycle) |
+        Active accumulator view | False =
+          let sourceFiber : Fiber name key value world error
+              sourceFiber = MkFiber component parent retiredFlag table
+                (Active accumulator view)
+              targetFiberValue : Fiber name key value world error
+              targetFiberValue = setFiberLifecycle sourceFiber
+                (Unloading accumulator view Nothing)
+              concrete : SystemState name key value world error
+              concrete = MkSystemState ambient
+                (replaceBinding @{nameEq} selected targetFiberValue fibers)
+              0 concreteIsAfter : concrete = afterState
+              concreteIsAfter = cong snd (justPairInjective raw)
+              0 sameFiber : modelFiber = sourceFiber
+              sameFiber = sym (justPairInjective modelFound)
+          in case sameFiber of
+            Refl => case modelInstalled of
+              AccumulatorReloading modelRemaining modelView modelLife =>
+                case modelLife of Refl impossible
+              AccumulatorActive modelView modelLife => case modelLife of
+                Refl =>
+                  let 0 targetFound : (lookupFiber @{nameEq} {name = name}
+                        {key = key} {value = value} {world = world}
+                        {error = error} selected (registry concrete) =
+                        Just targetFiberValue)
+                      targetFound = lookupReplacedFiber selected sourceFiber
+                        targetFiberValue fibers found
+                      concreteModel : AccumulatorModel name key world error value
+                        nameEq keyEq selected whole concrete
+                      concreteModel = MkAccumulatorModel targetFiberValue
+                        targetFound accumulator
+                        (AccumulatorUnloading view Nothing Refl)
+                        modelTransformation modelFactorization
+                  in replace
+                    {p = \observed => AccumulatorModel name key world error value
+                      nameEq keyEq selected whole observed}
+                    concreteIsAfter concreteModel
+              AccumulatorUnloading modelView outcome modelLife =>
+                case modelLife of Refl impossible
+
+||| L-Leave changes a selected Active lifecycle to Unloading without changing
+||| its table, accumulator, or generated inverse transformation.
+public export
+0 selectedLeavePreservesAccumulatorModel :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  checkedApplyAction @{nameEq} @{keyEq} (LLeave selected) before =
+    Just (LLeaveTag, afterState) ->
+  AccumulatorModel name key world error value nameEq keyEq selected whole before ->
+  AccumulatorModel name key world error value nameEq keyEq selected whole
+    afterState
+selectedLeavePreservesAccumulatorModel nameEq keyEq selected
+  (MkSystemState ambient fibers) afterState whole checked
+  (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
+    modelTransformation modelFactorization) =
+    leaveConcreteModel nameEq keyEq selected ambient fibers afterState whole
+      (checkedActionProjects nameEq keyEq (LLeave selected)
+        (MkSystemState ambient fibers) afterState LLeaveTag checked)
+      modelFiber modelFound modelAccumulator modelInstalled modelTransformation
+      modelFactorization
