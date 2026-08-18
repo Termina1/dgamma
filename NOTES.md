@@ -1797,6 +1797,14 @@ anchored executable escape-hatch scan is empty. The inherited untracked `paper/`
 and `review-cp3-round10.md` inputs were not modified. This is still warm
 validation and leaves the registered cold-archive debt unchanged.
 
+After the selected-episode effect quotient, stamp-coherence invariant,
+relational suffix boundary, checked-L-Unload effect join, and empty-plan effect
+frame landed, a no-concurrent warm package invocation passed all 128/128 source
+modules. All 128 retain `%default total`; the anchored escape-hatch scan is
+empty. The inherited untracked `paper/` and `review-cp3-round10.md` inputs remain
+untouched. This is again warm validation only and does not discharge the
+registered `CP4SupportSolution` split/no-concurrent-Chez cold-archive debt.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
@@ -1841,8 +1849,11 @@ exact ordered-binding insert/replace/delete commutation through the dependent
 plan plus exact removal of a deleted actor's plan occurrence; exhaustive
 retained/deleted one-head boundary preservation, including the five exact
 lifecycle result/control comparisons, and the simultaneous whole-trace suffix
-fold are proved; the selected-segment Lemma-71 quotient and endpoint
-effect/control/withdrawal invariants remain);
+fold are proved; the selected quotient's accumulator/effect half is now proved
+at L-Begin, every skipped selected installed head, every foreign actual map, and
+checked L-Unload, with complete-plan transport and an ordered relational suffix
+interface; retained foreign checked controls, deleted-R/empty-plan propagation,
+the relational suffix fold, and endpoint control/withdrawal invariants remain);
 Confluence/Theorem
 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
@@ -1862,14 +1873,13 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** package the proved runtime/plan transport, plan completeness, and
-local delete/replace/insert commutation into preservation of
-`NoEpisodeReplayBoundary` across each deleted and retained suffix head, then
-fold that local result over
-the whole suffix. Next prove the selected-segment lifecycle/effect quotient using
-Lemma-71 transposition and the now-proved Corollary 62. Feed both retained-head
-families to the readiness inductions, join terminal recovery to the deletion
-skeleton, derive final control/withdrawal evidence, and inhabit `deletionTheorem`.
+**Next:** complete the selected quotient's control half: replay retained foreign
+heads from the accumulator-transposed effect output, delete R-owned
+orchestration heads while deriving `EmptyTableInactivePlan`, and convert checked
+L-Unload's reset-to-Inactive control into the ordered relational suffix boundary.
+Fold that relation over the already-complete suffix cases (the exact fold remains
+a regression specialization), feed readiness to the deletion skeleton, derive
+endpoint control/withdrawal evidence, and inhabit `deletionTheorem`.
 After that, use deletion
 for constructive canonical sorting. Fresh-choice,
 cross-parent, 24/18 activation-reset,
