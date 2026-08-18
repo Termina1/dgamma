@@ -20,14 +20,15 @@ record DivertConcreteResult
   {wholeFirst, wholeLast : SystemState name key value world error}
   (whole : Transitions wholeFirst wholeLast)
   (afterState : SystemState name key value world error)
-  (modelFiber : Fiber name key value world error)
+  (sourceFiber : Fiber name key value world error)
   (modelAccumulator : LocalState key value world
-      (componentProvisions (fiberComponent modelFiber)) ->
+      (componentProvisions (fiberComponent sourceFiber)) ->
     LocalState key value world
-      (componentProvisions (fiberComponent modelFiber))) where
+      (componentProvisions (fiberComponent sourceFiber))) where
   constructor MkDivertConcreteResult
   targetModel : AccumulatorModel name key world error value nameEq keyEq selected
     whole afterState
+  0 targetRetiredSame : retired (modelFiber targetModel) = retired sourceFiber
   0 targetMapRuntime : (state : EffectState name key value world) ->
     accumulatorEffectMap nameEq keyEq selected (modelHandle targetModel) state =
     accumulatorRuntimeEffectMap nameEq keyEq selected modelAccumulator state
@@ -136,7 +137,7 @@ divertConcreteModel {name} {key} {world} {error} {value}
                         concreteResult : DivertConcreteResult name key world
                           error value nameEq keyEq selected whole concrete
                           sourceFiber accumulator
-                        concreteResult = MkDivertConcreteResult concreteModel
+                        concreteResult = MkDivertConcreteResult concreteModel Refl
                           (\state => Refl)
                     in replace
                       {p = \observed => DivertConcreteResult name key world error
@@ -171,6 +172,28 @@ selectedDivertPreservesAccumulatorModel nameEq keyEq selected
         (MkSystemState ambient fibers) afterState LDivertTag checked)
       modelFiber modelFound modelAccumulator modelInstalled modelTransformation
       modelFactorization modelConfinement)
+
+public export
+0 selectedDivertPreservesRetired :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LDivert selected) before =
+    Just (LDivertTag, afterState)) ->
+  (model : AccumulatorModel name key world error value nameEq keyEq selected whole
+    before) ->
+  retired (modelFiber (selectedDivertPreservesAccumulatorModel nameEq keyEq
+    selected before afterState whole checked model)) = retired (modelFiber model)
+selectedDivertPreservesRetired nameEq keyEq selected
+  (MkSystemState ambient fibers) afterState whole checked
+  (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
+    modelTransformation modelFactorization modelConfinement) =
+      targetRetiredSame (divertConcreteModel nameEq keyEq selected ambient fibers
+        afterState whole
+        (checkedActionProjects nameEq keyEq (LDivert selected)
+          (MkSystemState ambient fibers) afterState LDivertTag checked)
+        modelFiber modelFound modelAccumulator modelInstalled modelTransformation
+        modelFactorization modelConfinement)
 
 ||| L-Divert retains the runtime accumulator callback in the target model.
 public export

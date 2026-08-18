@@ -1641,13 +1641,23 @@ current-R plan without assuming a raw-name global freshness discipline.
 step. It proves the checked update must be a parent-preserving replacement
 (insert/delete contradict the source/target accumulator models), commutes that
 replacement through the complete current-R plan, applies the selected recovery
-step, and preserves every foreign control while leaving the survivor fixed.
-Thus L-Advance, L-Divert, and L-Leave—and any control-only selected installed
-branch supplied by the exhaustive recovery dispatcher—share one boundary
-constructor. `DGamma.CP4DeletionSelectedOwnDispatch` now instantiates that
-constructor for an arbitrary checked selected interior lifecycle head;
-`selectedInstalledAccumulatorStep` eliminates impossible insert/remove/begin/
-unload shapes and supplies the exact target model.
+step, and leaves the survivor fixed. The selected boundary has been honestly
+strengthened to the ordered selected-exempt control skeleton that this step and
+the pending foreign replay actually require: it compares the complete-plan
+target to the survivor with exact binding names/order, full
+`FiberControlRelated` evidence off the selected actor, and static
+component/parent/retirement equality at the selected actor. Consequently exact
+R absence and provider scan order are one field of the boundary rather than a
+side certificate that could drift. Pointwise outside-control agreement is now
+a proved projection. Selected replacement commutation transports the skeleton
+without equating uniqueness certificates. `SelectedStableAccumulatorStep`
+adds the missing retirement frame; the L-Advance builder and L-Divert/L-Leave
+concrete models prove it per branch, and the exhaustive dispatcher eliminates
+insert/retire/remove/begin/unload. Thus
+`deletedSelectedInstalledHeadPreservesEpisodeBoundary` remains fully proved
+under the stronger invariant. This is the approved ordered-table design-chain
+addendum; public Lemma 72 is unchanged. The next obligation is the retained
+foreign checked-control transport over this skeleton.
 `DGamma.CP4DeletionRelationalBoundary` now defines the approved primary suffix
 interface. It compares the actual survivor with the complete current-R plan
 target using `EffectStateRelated` plus an ordered `FiberControlRelated`
@@ -1851,7 +1861,8 @@ retained/deleted one-head boundary preservation, including the five exact
 lifecycle result/control comparisons, and the simultaneous whole-trace suffix
 fold are proved; the selected quotient's accumulator/effect half is now proved
 at L-Begin, every skipped selected installed head, every foreign actual map, and
-checked L-Unload, with complete-plan transport and an ordered relational suffix
+checked L-Unload, with complete-plan transport, a preserved ordered
+selected-exempt interior control skeleton, and an ordered relational suffix
 interface; retained foreign checked controls, deleted-R/empty-plan propagation,
 the relational suffix fold, and endpoint control/withdrawal invariants remain);
 Confluence/Theorem

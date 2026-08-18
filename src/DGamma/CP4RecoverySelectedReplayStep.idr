@@ -4,6 +4,7 @@ import DGamma.Core
 import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
+import DGamma.CP3
 import DGamma.CP4DeletionFrameCore
 import DGamma.CP4DeletionFrames
 import DGamma.CP4DeletionFrameRetire
@@ -140,8 +141,9 @@ selectedAdvanceAccumulatorStep nameEq keyEq selected before afterState tag check
   whole occurs model =
     case selectedAdvanceAccumulatorRecovery nameEq keyEq selected before
       afterState tag checked whole occurs model of
-      MkSelectedAdvanceRecovery target sourceRecovered targetRecovered sourceRuns
-        targetRuns related => MkSelectedAccumulatorStep target sourceRecovered
+      MkSelectedAdvanceRecovery target targetRetired sourceRecovered
+        targetRecovered sourceRuns targetRuns related =>
+          MkSelectedAccumulatorStep target sourceRecovered
           targetRecovered sourceRuns targetRuns related
 
 public export
@@ -202,6 +204,20 @@ selectedDivertAccumulatorStep nameEq keyEq selected before afterState whole
         afterState whole checked model)
       projectedRelated
 
+0 selectedDivertAccumulatorStepRetired :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LDivert selected) before =
+    Just (LDivertTag, afterState)) ->
+  (model : AccumulatorModel name key world error value nameEq keyEq selected whole
+    before) ->
+  retired (modelFiber (targetModel (selectedDivertAccumulatorStep nameEq keyEq
+    selected before afterState whole checked model))) = retired (modelFiber model)
+selectedDivertAccumulatorStepRetired nameEq keyEq selected before afterState whole
+  checked model = selectedDivertPreservesRetired nameEq keyEq selected before
+    afterState whole checked model
+
 public export
 0 selectedLeaveAccumulatorStep :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
@@ -231,6 +247,35 @@ selectedLeaveAccumulatorStep nameEq keyEq selected before afterState whole
         afterState whole checked model)
       projectedRelated
 
+
+public export
+record SelectedStableAccumulatorStep
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
+  {before, afterState : SystemState name key value world error}
+  (transition : Transition before afterState)
+  {wholeFirst, wholeLast : SystemState name key value world error}
+  (whole : Transitions wholeFirst wholeLast)
+  (sourceModel : AccumulatorModel name key world error value nameEq keyEq
+    selected whole before) where
+  constructor MkSelectedStableAccumulatorStep
+  stableAccumulatorStep : SelectedAccumulatorStep name key world error value
+    nameEq keyEq selected transition whole sourceModel
+  0 stableRetiredSame : retired (modelFiber (targetModel stableAccumulatorStep)) =
+    retired (modelFiber sourceModel)
+0 selectedLeaveAccumulatorStepRetired :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LLeave selected) before =
+    Just (LLeaveTag, afterState)) ->
+  (model : AccumulatorModel name key world error value nameEq keyEq selected whole
+    before) ->
+  retired (modelFiber (targetModel (selectedLeaveAccumulatorStep nameEq keyEq
+    selected before afterState whole checked model))) = retired (modelFiber model)
+selectedLeaveAccumulatorStepRetired nameEq keyEq selected before afterState whole
+  checked model = selectedLeavePreservesRetired nameEq keyEq selected before
+    afterState whole checked model
 
 public export
 0 selectedInstalledAccumulatorStep :
@@ -282,6 +327,67 @@ selectedInstalledAccumulatorStep nameEq keyEq selected action tag before afterSt
           raw of
           Refl => selectedLeaveAccumulatorStep nameEq keyEq selected before
             afterState whole checked model
+      LUnload actor => case owner of
+        Refl => void (unloadCannotEndInstalled nameEq keyEq selected before
+          afterState tag raw targetInstalled)
+
+||| Lifecycle-only selected dispatcher with the additional static retirement
+||| frame needed by the ordered selected-exempt deletion boundary.
+public export
+0 selectedInstalledStableAccumulatorStep :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  actionOwner action = selected ->
+  isLifecycleAction action = True ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (occurs : OccursIn
+    (Fired {before = before} {afterState = afterState} nameEq keyEq action tag
+      checked) whole) ->
+  installedAt @{nameEq} selected afterState = True ->
+  (model : AccumulatorModel name key world error value nameEq keyEq selected whole
+    before) ->
+  SelectedStableAccumulatorStep name key world error value nameEq keyEq selected
+    (Fired nameEq keyEq action tag checked) whole model
+selectedInstalledStableAccumulatorStep nameEq keyEq selected action tag before
+  afterState checked owner lifecycle whole occurs targetInstalled model =
+    let 0 raw = checkedActionProjects nameEq keyEq action before afterState tag
+          checked
+        0 sourceInstalled = accumulatorModelInstalledAt model
+    in case action of
+      OInsert actor parent component => void (case lifecycle of Refl impossible)
+      ORetire actor => void (case lifecycle of Refl impossible)
+      ORemove actor => void (case lifecycle of Refl impossible)
+      LBegin actor => case owner of
+        Refl => void (beginCannotInstalled nameEq keyEq selected before afterState
+          tag raw sourceInstalled)
+      LAdvance actor => case owner of
+        Refl => case selectedAdvanceAccumulatorRecovery nameEq keyEq selected
+          before afterState tag checked whole occurs model of
+          MkSelectedAdvanceRecovery target retiredSame sourceRecovered
+            targetRecovered sourceRuns targetRuns related =>
+              MkSelectedStableAccumulatorStep
+                (MkSelectedAccumulatorStep target sourceRecovered targetRecovered
+                  sourceRuns targetRuns related)
+                retiredSame
+      LDivert actor => case owner of
+        Refl => case successfulLDivertTag nameEq keyEq selected before afterState
+          tag raw of
+          Refl => MkSelectedStableAccumulatorStep
+            (selectedDivertAccumulatorStep nameEq keyEq selected before
+              afterState whole checked model)
+            (selectedDivertAccumulatorStepRetired nameEq keyEq selected before
+              afterState whole checked model)
+      LLeave actor => case owner of
+        Refl => case successfulLeaveTag nameEq keyEq selected before afterState
+          tag raw of
+          Refl => MkSelectedStableAccumulatorStep
+            (selectedLeaveAccumulatorStep nameEq keyEq selected before
+              afterState whole checked model)
+            (selectedLeaveAccumulatorStepRetired nameEq keyEq selected before
+              afterState whole checked model)
       LUnload actor => case owner of
         Refl => void (unloadCannotEndInstalled nameEq keyEq selected before
           afterState tag raw targetInstalled)

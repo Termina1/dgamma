@@ -20,14 +20,15 @@ record LeaveConcreteResult
   {wholeFirst, wholeLast : SystemState name key value world error}
   (whole : Transitions wholeFirst wholeLast)
   (afterState : SystemState name key value world error)
-  (modelFiber : Fiber name key value world error)
+  (sourceFiber : Fiber name key value world error)
   (modelAccumulator : LocalState key value world
-      (componentProvisions (fiberComponent modelFiber)) ->
+      (componentProvisions (fiberComponent sourceFiber)) ->
     LocalState key value world
-      (componentProvisions (fiberComponent modelFiber))) where
+      (componentProvisions (fiberComponent sourceFiber))) where
   constructor MkLeaveConcreteResult
   targetModel : AccumulatorModel name key world error value nameEq keyEq selected
     whole afterState
+  0 targetRetiredSame : retired (modelFiber targetModel) = retired sourceFiber
   0 targetMapRuntime : (state : EffectState name key value world) ->
     accumulatorEffectMap nameEq keyEq selected (modelHandle targetModel) state =
     accumulatorRuntimeEffectMap nameEq keyEq selected modelAccumulator state
@@ -135,7 +136,7 @@ leaveConcreteModel {name} {key} {world} {error} {value}
                       concreteResult : LeaveConcreteResult name key world error
                         value nameEq keyEq selected whole concrete sourceFiber
                         accumulator
-                      concreteResult = MkLeaveConcreteResult concreteModel
+                      concreteResult = MkLeaveConcreteResult concreteModel Refl
                         (\state => Refl)
                   in replace
                     {p = \observed => LeaveConcreteResult name key world error
@@ -167,6 +168,28 @@ selectedLeavePreservesAccumulatorModel nameEq keyEq selected
         (MkSystemState ambient fibers) afterState LLeaveTag checked)
       modelFiber modelFound modelAccumulator modelInstalled modelTransformation
       modelFactorization modelConfinement)
+
+public export
+0 selectedLeavePreservesRetired :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LLeave selected) before =
+    Just (LLeaveTag, afterState)) ->
+  (model : AccumulatorModel name key world error value nameEq keyEq selected whole
+    before) ->
+  retired (modelFiber (selectedLeavePreservesAccumulatorModel nameEq keyEq
+    selected before afterState whole checked model)) = retired (modelFiber model)
+selectedLeavePreservesRetired nameEq keyEq selected
+  (MkSystemState ambient fibers) afterState whole checked
+  (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
+    modelTransformation modelFactorization modelConfinement) =
+      targetRetiredSame (leaveConcreteModel nameEq keyEq selected ambient fibers
+        afterState whole
+        (checkedActionProjects nameEq keyEq (LLeave selected)
+          (MkSystemState ambient fibers) afterState LLeaveTag checked)
+        modelFiber modelFound modelAccumulator modelInstalled modelTransformation
+        modelFactorization modelConfinement)
 
 ||| L-Leave retains the runtime accumulator callback in the target model.
 public export

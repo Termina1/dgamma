@@ -57,11 +57,13 @@ record BuiltAccumulatorModel
   (whole : Transitions wholeFirst wholeLast)
   (afterState : SystemState name key value world error)
   (provision : CoeffectSpec key)
+  (expectedRetired : Bool)
   (runtimeAccumulator : LocalState key value world provision ->
     LocalState key value world provision) where
   constructor MkBuiltAccumulatorModel
   builtModel : AccumulatorModel name key world error value nameEq keyEq selected
     whole afterState
+  0 builtRetired : retired (modelFiber builtModel) = expectedRetired
   0 builtMapRuntime : (state : EffectState name key value world) ->
     accumulatorEffectMap nameEq keyEq selected (modelHandle builtModel) state =
     accumulatorRuntimeEffectMap nameEq keyEq selected runtimeAccumulator state
@@ -155,7 +157,7 @@ reloadingModelMapRuntime nameEq keyEq selected component parent retiredFlag tabl
   TransformationPreservesConfinement selected
     (componentProvisions (fiberComponent modelFiber)) modelTransformation ->
   BuiltAccumulatorModel name key world error value nameEq keyEq selected whole
-    afterState (componentProvisions component) accumulator
+    afterState (componentProvisions component) retiredFlag accumulator
 controlAdvanceModel {name} {key} {world} {error} {value}
   nameEq keyEq selected ambient fibers afterState whole component parent
   retiredFlag table remaining accumulator view sourceFound targetWorld targetTable
@@ -209,13 +211,13 @@ controlAdvanceModel {name} {key} {world} {error} {value}
                     modelFactorActual modelConfinement
                   concreteResult : BuiltAccumulatorModel name key world error
                     value nameEq keyEq selected whole concrete
-                    (componentProvisions component) accumulator
-                  concreteResult = MkBuiltAccumulatorModel concreteModel
+                    (componentProvisions component) retiredFlag accumulator
+                  concreteResult = MkBuiltAccumulatorModel concreteModel Refl
                     (\state => Refl)
               in replace
                 {p = \observed => BuiltAccumulatorModel name key world error
                   value nameEq keyEq selected whole observed
-                  (componentProvisions component) accumulator}
+                  (componentProvisions component) retiredFlag accumulator}
                 concreteIsAfter concreteResult
         AccumulatorActive modelView modelLife =>
           case modelLife of Refl impossible
@@ -285,7 +287,7 @@ controlAdvanceModel {name} {key} {world} {error} {value}
   TransformationPreservesConfinement selected
     (componentProvisions (fiberComponent modelFiber)) modelTransformation ->
   BuiltAccumulatorModel name key world error value nameEq keyEq selected whole
-    afterState (componentProvisions component)
+    afterState (componentProvisions component) retiredFlag
     (pushLocalUndo (componentProvisions component) accumulator undo)
 successfulAdvanceModel {name} {key} {world} {error} {value}
   nameEq keyEq selected before afterState tag whole
@@ -406,13 +408,13 @@ successfulAdvanceModel {name} {key} {world} {error} {value}
                 nextFactorization nextConfinement
               concreteResult : BuiltAccumulatorModel name key world error value
                 nameEq keyEq selected whole concrete
-                (componentProvisions component) targetAccumulator
-              concreteResult = MkBuiltAccumulatorModel concreteModel
+                (componentProvisions component) retiredFlag targetAccumulator
+              concreteResult = MkBuiltAccumulatorModel concreteModel Refl
                 (\state => Refl)
           in replace
             {p = \observed => BuiltAccumulatorModel name key world error value
               nameEq keyEq selected whole observed
-              (componentProvisions component) targetAccumulator}
+              (componentProvisions component) retiredFlag targetAccumulator}
             concreteIsAfter concreteResult
         AccumulatorActive modelView modelLife =>
           case modelLife of Refl impossible
@@ -455,10 +457,12 @@ record SelectedAdvanceRecovery
   (before, afterState : SystemState name key value world error)
   {wholeFirst, wholeLast : SystemState name key value world error}
   (whole : Transitions wholeFirst wholeLast)
-  (sourceHandle : AccumulatorHandle key value world) where
+  (sourceHandle : AccumulatorHandle key value world)
+  (sourceRetired : Bool) where
   constructor MkSelectedAdvanceRecovery
   targetModel : AccumulatorModel name key world error value nameEq keyEq selected
     whole afterState
+  0 targetRetiredSame : retired (modelFiber targetModel) = sourceRetired
   0 sourceRecovered : EffectState name key value world
   0 targetRecovered : EffectState name key value world
   0 sourceAccumulatorRuns : accumulatorEffectMap nameEq keyEq selected
@@ -488,11 +492,11 @@ record SelectedAdvanceRecovery
   (sourceModel : AccumulatorModel name key world error value nameEq keyEq
     selected whole before) ->
   (built : BuiltAccumulatorModel name key world error value nameEq keyEq selected
-    whole afterState (componentProvisions component) accumulator) ->
+    whole afterState (componentProvisions component) retiredFlag accumulator) ->
   EffectStateRelated keyEq (projectEffectState @{nameEq} before)
     (projectEffectState @{nameEq} afterState) ->
-  SelectedAdvanceRecovery name key world error value nameEq keyEq selected before afterState whole
-    (modelHandle sourceModel)
+  SelectedAdvanceRecovery name key world error value nameEq keyEq selected before
+    afterState whole (modelHandle sourceModel) (retired (modelFiber sourceModel))
 controlAdvanceRecovery nameEq keyEq selected before afterState whole
   component parent retiredFlag table remaining accumulator view found sourceModel
   built projectedRelated =
@@ -544,7 +548,13 @@ controlAdvanceRecovery nameEq keyEq selected before afterState whole
             (modelHandle (builtModel built))
             (projectEffectState @{nameEq} afterState))
         related = case atOutputs of PartialDefined relation => relation
-    in MkSelectedAdvanceRecovery (builtModel built)
+        0 sourceRetired : retired (modelFiber sourceModel) = retiredFlag
+        sourceRetired = cong retired
+          (justPairInjective (trans (sym (modelFound sourceModel)) found))
+        0 targetToSource : retired (modelFiber (builtModel built)) =
+          retired (modelFiber sourceModel)
+        targetToSource = trans (builtRetired built) (sym sourceRetired)
+    in MkSelectedAdvanceRecovery (builtModel built) targetToSource
       (advanceAccumulatorResult nameEq keyEq selected (modelHandle sourceModel)
         (projectEffectState @{nameEq} before))
       (advanceAccumulatorResult nameEq keyEq selected
@@ -583,15 +593,15 @@ controlAdvanceRecovery nameEq keyEq selected before afterState whole
   (sourceModel : AccumulatorModel name key world error value nameEq keyEq
     selected whole before) ->
   (built : BuiltAccumulatorModel name key world error value nameEq keyEq selected
-    whole afterState (componentProvisions component)
+    whole afterState (componentProvisions component) retiredFlag
     (pushLocalUndo (componentProvisions component) accumulator undo)) ->
   EffectStateRelated keyEq
     (setEffectTable @{nameEq} selected (ownedValues (localTable localAfter))
       (setEffectAmbient (localWorld localAfter)
         (projectEffectState @{nameEq} before)))
     (projectEffectState @{nameEq} afterState) ->
-  SelectedAdvanceRecovery name key world error value nameEq keyEq selected before afterState whole
-    (modelHandle sourceModel)
+  SelectedAdvanceRecovery name key world error value nameEq keyEq selected before
+    afterState whole (modelHandle sourceModel) (retired (modelFiber sourceModel))
 successfulAdvanceRecovery nameEq keyEq selected before afterState whole component parent retiredFlag table step rest accumulator view found
   capability localAfter undo ran sourceModel built movedToTarget =
     let 0 sourceRuntimeToModel :
@@ -705,7 +715,13 @@ successfulAdvanceRecovery nameEq keyEq selected before afterState whole componen
         related = transitive (EffectStateEquivalence keyEq)
           (symmetric (EffectStateEquivalence keyEq) primitiveOutputs)
           targetOutputs
-    in MkSelectedAdvanceRecovery (builtModel built)
+        0 sourceRetired : retired (modelFiber sourceModel) = retiredFlag
+        sourceRetired = cong retired
+          (justPairInjective (trans (sym (modelFound sourceModel)) found))
+        0 targetToSource : retired (modelFiber (builtModel built)) =
+          retired (modelFiber sourceModel)
+        targetToSource = trans (builtRetired built) (sym sourceRetired)
+    in MkSelectedAdvanceRecovery (builtModel built) targetToSource
       (advanceAccumulatorResult nameEq keyEq selected (modelHandle sourceModel)
         (projectEffectState @{nameEq} before))
       (advanceAccumulatorResult nameEq keyEq selected (modelHandle (builtModel built))
@@ -748,8 +764,8 @@ public export
     before afterState tag whole} ->
   (model : AccumulatorModel name key world error value nameEq keyEq selected whole
     before) ->
-  SelectedAdvanceRecovery name key world error value nameEq keyEq selected before afterState whole
-    (modelHandle model)
+  SelectedAdvanceRecovery name key world error value nameEq keyEq selected before
+    afterState whole (modelHandle model) (retired (modelFiber model))
 selectedAdvanceFromRaw {name} {key} {world} {error} {value}
   nameEq keyEq selected (MkSystemState ambient fibers) afterState tag
   checked whole occurs
@@ -1120,7 +1136,7 @@ selectedAdvanceFromRaw {name} {key} {world} {error} {value}
                           (MkSystemState ambient fibers))))) mapRuns
                 0 built : BuiltAccumulatorModel name key world error value
                   nameEq keyEq selected whole afterState
-                  (componentProvisions component)
+                  (componentProvisions component) retiredFlag
                   (pushLocalUndo (componentProvisions component) accumulator undo)
                 built = successfulAdvanceModel nameEq keyEq selected
                   (MkSystemState ambient fibers) afterState tag whole anchor
@@ -1220,7 +1236,7 @@ selectedAdvanceFromRaw {name} {key} {world} {error} {value}
                           (MkSystemState ambient fibers))))) mapRuns
                 0 built : BuiltAccumulatorModel name key world error value
                   nameEq keyEq selected whole afterState
-                  (componentProvisions component)
+                  (componentProvisions component) retiredFlag
                   (pushLocalUndo (componentProvisions component) accumulator undo)
                 built = successfulAdvanceModel nameEq keyEq selected
                   (MkSystemState ambient fibers) afterState tag whole anchor
@@ -1321,7 +1337,7 @@ selectedAdvanceFromRaw {name} {key} {world} {error} {value}
                           (MkSystemState ambient fibers))))) mapRuns
                 0 built : BuiltAccumulatorModel name key world error value
                   nameEq keyEq selected whole afterState
-                  (componentProvisions component)
+                  (componentProvisions component) retiredFlag
                   (pushLocalUndo (componentProvisions component) accumulator undo)
                 built = successfulAdvanceModel nameEq keyEq selected
                   (MkSystemState ambient fibers) afterState tag whole anchor
@@ -1360,7 +1376,7 @@ public export
   (model : AccumulatorModel name key world error value nameEq keyEq selected whole
     before) ->
   SelectedAdvanceRecovery name key world error value nameEq keyEq selected before
-    afterState whole (modelHandle model)
+    afterState whole (modelHandle model) (retired (modelFiber model))
 selectedAdvanceAccumulatorRecovery nameEq keyEq selected before afterState tag
   checked whole occurs model =
     selectedAdvanceFromRaw nameEq keyEq selected before afterState tag checked

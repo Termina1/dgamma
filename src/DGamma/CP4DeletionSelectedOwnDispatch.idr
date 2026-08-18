@@ -8,6 +8,7 @@ import DGamma.CP4DeletionSelectedBoundary
 import DGamma.CP4DeletionSelectedEffectCore
 import DGamma.CP4DeletionSelectedOwn
 import DGamma.CP4RecoverySelectedReplayStep
+import DGamma.CP4RecoveryTrace
 import Data.List.Elem
 import Decidable.Equality
 
@@ -44,9 +45,10 @@ public export
 deletedSelectedInstalledHeadPreservesEpisodeBoundary nameEq keyEq selected
   registered ordinal live stamped selectedOutside action tag before afterState
   checked owner lifecycle whole occurs targetInstalled survivor boundary =
-    let 0 step = selectedInstalledAccumulatorStep nameEq keyEq selected action tag
-          before afterState checked owner whole occurs targetInstalled
-          (selectedBoundaryModel (selectedBoundaryEffects boundary))
-    in skippedSelectedAccumulatorStepPreservesEpisodeBoundary nameEq keyEq
-      selected registered ordinal live stamped selectedOutside action tag before
-      afterState checked whole survivor boundary owner step
+    case selectedInstalledStableAccumulatorStep nameEq keyEq selected action tag
+      before afterState checked owner lifecycle whole occurs targetInstalled
+      (selectedBoundaryModel (selectedBoundaryEffects boundary)) of
+      MkSelectedStableAccumulatorStep step retiredSame =>
+        skippedSelectedAccumulatorStepPreservesEpisodeBoundary nameEq keyEq
+          selected registered ordinal live stamped selectedOutside action tag
+          before afterState checked whole survivor boundary owner step retiredSame

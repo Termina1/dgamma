@@ -199,17 +199,20 @@ progress.
   ordered-table output matches target recovery, and a later checked-control
   proof can package the next boundary without repeating commutation.
   `DGamma.CP4DeletionSelectedBoundary` combines that effect relation with a
-  complete current-R plan, exact controls outside the selected/R generations,
-  and checked well-formedness. It proves the post-L-Begin base and preserves all
-  foreign controls across any skipped selected installed step.
+  complete current-R plan, an ordered selected-exempt control skeleton against
+  the plan target, and checked well-formedness. The skeleton retains exact
+  registry domain/order (hence R absence); its selected cell keeps component,
+  parent, and retirement exact while allowing the erased lifecycle to differ.
+  Outside-control agreement is now derived from this one coherent invariant.
   `DGamma.CP4DeletionSelectedOwn` combines scanner stamp coherence with the
   public selected/R exclusion, commutes every selected installed replacement
-  through the complete plan, and consumes the selected accumulator step to
-  preserve the full boundary while the survivor skips it.
-  `deletedSelectedInstalledHeadPreservesEpisodeBoundary` dispatches every
-  checked selected interior lifecycle head through the exhaustive recovery
-  infrastructure. The remaining selected layer must rebuild retained foreign
-  controls, handle deleted R heads, and close L-Unload.
+  through the complete plan, and preserves that ordered skeleton while the
+  survivor skips the action. The selected recovery dispatcher now also proves
+  retirement stability for all possible interior L-Advance/L-Divert/L-Leave
+  heads, so `deletedSelectedInstalledHeadPreservesEpisodeBoundary` remains
+  exhaustive under the stronger boundary. The remaining selected layer must
+  use this skeleton to rebuild retained foreign checked controls, then handle
+  deleted R heads and close L-Unload.
   `DGamma.CP4DeletionRelationalBoundary` is the primary selected-to-suffix
   interface: it relates the actual survivor to the complete plan target by
   ordered effects and an ordered control skeleton with extensional accumulators.

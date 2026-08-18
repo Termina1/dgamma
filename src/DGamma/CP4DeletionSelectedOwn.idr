@@ -74,6 +74,105 @@ registryReplacementPreservesCompletePlan nameEq actor registered live source
     void (nothingIsNotJust (trans
       (sym (lookupDeleteSelf actor source)) targetFound))
 
+0 fiberStaticFromEqualFields :
+  (left, right : Fiber name key value world error) ->
+  fiberComponent left = fiberComponent right ->
+  fiberParent left = fiberParent right ->
+  retired left = retired right ->
+  FiberStaticRelated name key world error value left right
+fiberStaticFromEqualFields
+  (MkFiber leftComponent leftParent leftRetired leftTable leftLifecycle)
+  (MkFiber rightComponent rightParent rightRetired rightTable rightLifecycle)
+  componentSame parentSame retiredSame = case componentSame of
+    Refl => FibersStaticRelated leftParent rightParent leftRetired rightRetired
+      leftTable rightTable leftLifecycle rightLifecycle parentSame retiredSame
+
+record SelectedReplacementPlanStep
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (registered : List (RegistrationGeneration name))
+  (live : GenerationEnvironment name) (actor : name)
+  (source, target : Registry name key value world error)
+  (oldPlan : CompleteCurrentRegisteredPlanResult name key world error value
+    nameEq registered live source)
+  (sourceFiber, targetFiber : Fiber name key value world error) where
+  constructor MkSelectedReplacementPlanStep
+  selectedReplacementPlan : CompleteCurrentRegisteredPlanResult name key world
+    error value nameEq registered live target
+  0 selectedReplacementTargetBindings :
+    bindings (planTarget (completePlanResult selectedReplacementPlan)) =
+    replaceEntries @{nameEq} actor targetFiber
+      (bindings (planTarget (completePlanResult oldPlan)))
+  0 selectedReplacementStatic : FiberStaticRelated name key world error value
+    targetFiber sourceFiber
+
+0 registryReplacementPreservesPlanAndControls :
+  (nameEq : DecEq name) -> (actor : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (live : GenerationEnvironment name) ->
+  (source, target : Registry name key value world error) ->
+  (oldPlan : CompleteCurrentRegisteredPlanResult name key world error value
+    nameEq registered live source) ->
+  ActorOutsideDeletionPlan actor
+    (inactiveLeafPlan (completePlanResult oldPlan)) ->
+  (sourceFiber : Fiber name key value world error) ->
+  (sourceFound : lookupFiber @{nameEq} actor source = Just sourceFiber) ->
+  (targetFiber : Fiber name key value world error) ->
+  (targetFound : lookupFiber @{nameEq} actor target = Just targetFiber) ->
+  retired targetFiber = retired sourceFiber ->
+  RegistryLocalUpdate name key world error value nameEq actor source target ->
+  SelectedReplacementPlanStep name key world error value nameEq registered live
+    actor source target oldPlan sourceFiber targetFiber
+registryReplacementPreservesPlanAndControls nameEq actor registered live source
+  _ oldPlan outside sourceFiber sourceFound targetFiber targetFound
+  retiredSame (LocalInsert inserted absent) =
+    void (nothingIsNotJust (trans (sym absent) sourceFound))
+registryReplacementPreservesPlanAndControls nameEq actor registered live source
+  _
+  oldPlan@(MkCompleteCurrentRegisteredPlanResult
+    oldResult@(MkCurrentRegisteredPlanResult oldTarget oldInactive oldOutside)
+    oldComplete)
+  outside sourceFiber sourceFound targetFiber targetFound retiredSame
+  (LocalReplace next {oldFiber} {oldFound} {staticComponent} {staticParent}) =
+    let 0 oldIsSource : (oldFiber = sourceFiber)
+        oldIsSource = justInjective (trans (sym oldFound) sourceFound)
+        0 nextFound : (lookupFiber @{nameEq} actor
+              (replaceBinding @{nameEq} actor next source) = Just next)
+        nextFound = lookupReplacedFiber actor oldFiber next source oldFound
+        0 nextIsTarget : (next = targetFiber)
+        nextIsTarget = justInjective (trans (sym nextFound) targetFound)
+    in case oldIsSource of
+      Refl => case nextIsTarget of
+        Refl => case replaceOutsideThroughInactivePlan nameEq actor sourceFiber
+          targetFiber source oldTarget oldInactive outside sourceFound
+          staticParent of
+          MkInactivePlanPreservingUpdateCommute
+            (MkInactivePlanUpdateCommute nextTarget nextInactive targetBindings
+              nextOutside) actorsSame =>
+                let nextResult : CurrentRegisteredPlanResult name key world error
+                      value nameEq registered live
+                      (replaceBinding @{nameEq} actor targetFiber source)
+                    nextResult = MkCurrentRegisteredPlanResult nextTarget
+                      nextInactive
+                      (\observed, outsideCurrent => nextOutside observed
+                        (oldOutside observed outsideCurrent))
+                    0 nextComplete : CurrentRegisteredPlanComplete name key world
+                      error value nameEq registered live nextResult
+                    nextComplete observed generation present member =
+                      replace {p = Elem observed} (sym actorsSame)
+                        (oldComplete observed generation present member)
+                    0 static : FiberStaticRelated name key world error value
+                      targetFiber sourceFiber
+                    static = fiberStaticFromEqualFields targetFiber sourceFiber
+                      staticComponent staticParent retiredSame
+                in MkSelectedReplacementPlanStep
+                  (MkCompleteCurrentRegisteredPlanResult nextResult nextComplete)
+                  targetBindings static
+registryReplacementPreservesPlanAndControls nameEq actor registered live source
+  _ oldPlan outside sourceFiber sourceFound targetFiber targetFound
+  retiredSame (LocalDelete {oldFiber} {oldFound}) =
+    void (nothingIsNotJust (trans
+      (sym (lookupDeleteSelf actor source)) targetFound))
+
 ||| Scanner stamp coherence turns the public generation-name exclusion into the
 ||| strong pointwise condition expected by the executable deletion plan.
 public export
@@ -186,19 +285,113 @@ public export
   (step : SelectedAccumulatorStep name key world error value nameEq keyEq
     selected (Fired nameEq keyEq action tag checked) whole
       (selectedBoundaryModel (selectedBoundaryEffects boundary))) ->
+  retired (modelFiber (targetModel step)) =
+    retired (modelFiber
+      (selectedBoundaryModel (selectedBoundaryEffects boundary))) ->
   SelectedEpisodeReplayBoundary name key world error value nameEq keyEq selected
     registered (S ordinal) live whole afterState survivor
 skippedSelectedAccumulatorStepPreservesEpisodeBoundary nameEq keyEq selected
   registered ordinal live stamped selectedOutside action tag before afterState
-  checked whole survivor boundary owner step =
+  checked whole survivor
+  boundary@(MkSelectedEpisodeReplayBoundary
+    boundaryEffects@(MkSelectedEffectReplayBoundary sourceModel
+      boundaryRecovered boundaryRuns survivorToRecovered)
+    boundaryComplete oldOrdered beforeWellFormed survivorWellFormed)
+  owner
+  step@(MkSelectedAccumulatorStep nextModel sourceRecovered targetRecovered
+    sourceRuns targetRuns recoveredRelated)
+  retiredSame =
     let 0 nextEffects = selectedStepPreservesEffectReplayBoundary nameEq keyEq
           selected (Fired nameEq keyEq action tag checked) whole
-          (selectedBoundaryEffects boundary) step
-        0 nextPlan = selectedReplacementPreservesCompletePlan nameEq keyEq
-          selected registered live stamped selectedOutside action tag before
-          afterState checked owner (selectedBoundaryModel
-            (selectedBoundaryEffects boundary)) (targetModel step)
-          (selectedBoundaryPlan boundary)
-    in skippedSelectedStepPreservesEpisodeBoundary nameEq keyEq selected
-      registered ordinal live action tag before afterState checked whole survivor
-      boundary owner nextEffects nextPlan
+          boundaryEffects step
+        0 raw = checkedActionProjects nameEq keyEq action before afterState tag
+          checked
+        0 update = applyActionLocalUpdate nameEq keyEq action before afterState
+          tag raw
+        0 selectedPlanOutside = selectedOutsideBoundaryPlan selected registered
+          live stamped selectedOutside boundaryComplete
+        0 outsideAtOwner : ActorOutsideDeletionPlan (actionOwner action)
+          (inactiveLeafPlan (completePlanResult boundaryComplete))
+        outsideAtOwner = replace
+          {p = \observed => ActorOutsideDeletionPlan observed
+            (inactiveLeafPlan (completePlanResult boundaryComplete))}
+          (sym owner) selectedPlanOutside
+        0 sourceFoundAtOwner : lookupFiber @{nameEq} (actionOwner action)
+              (registry before) = Just (modelFiber sourceModel)
+        sourceFoundAtOwner = replace
+          {p = \observed => lookupFiber @{nameEq} observed (registry before) =
+            Just (modelFiber sourceModel)}
+          (sym owner) (modelFound sourceModel)
+        0 targetFoundAtOwner : lookupFiber @{nameEq} (actionOwner action)
+              (registry afterState) = Just (modelFiber nextModel)
+        targetFoundAtOwner = replace
+          {p = \observed => lookupFiber @{nameEq} observed
+            (registry afterState) = Just (modelFiber nextModel)}
+          (sym owner) (modelFound nextModel)
+    in case registryReplacementPreservesPlanAndControls nameEq
+      (actionOwner action) registered live (registry before)
+      (registry afterState) boundaryComplete outsideAtOwner
+      (modelFiber sourceModel)
+      sourceFoundAtOwner (modelFiber nextModel) targetFoundAtOwner retiredSame
+      (systemRegistryUpdate update) of
+      MkSelectedReplacementPlanStep nextComplete targetBindings targetStatic =>
+        let 0 planSourceFound : (lookupFiber @{nameEq} selected
+              (planTarget (completePlanResult boundaryComplete)) =
+                Just (modelFiber sourceModel))
+            planSourceFound = trans
+              (lookupOutsideInactivePlan nameEq selected (registry before)
+                (planTarget (completePlanResult boundaryComplete))
+                (inactiveLeafPlan (completePlanResult boundaryComplete))
+                selectedPlanOutside)
+              (modelFound sourceModel)
+            0 planEntriesFound : (lookupEntries @{nameEq} selected
+                  (bindings (planTarget (completePlanResult boundaryComplete))) =
+                Just (modelFiber sourceModel))
+            planEntriesFound = trans
+              (sym (lookupFiberAsEntries nameEq selected
+                (planTarget (completePlanResult boundaryComplete))))
+              planSourceFound
+            0 replacedSelected : SelectedOrderedRegistryControlsRelated name key
+              world error value selected
+              (replaceEntries @{nameEq} selected (modelFiber nextModel)
+                (bindings (planTarget (completePlanResult boundaryComplete))))
+              (bindings (registry survivor))
+            replacedSelected = selectedOrderedReplaceSelectedLeft nameEq
+              selected (modelFiber sourceModel) (modelFiber nextModel)
+              (bindings (planTarget (completePlanResult boundaryComplete)))
+              (bindings (registry survivor))
+              planEntriesFound targetStatic
+              oldOrdered
+            0 ownerEntries : replaceEntries @{nameEq} (actionOwner action)
+                  (modelFiber nextModel)
+                  (bindings (planTarget (completePlanResult boundaryComplete))) =
+                replaceEntries @{nameEq} selected (modelFiber nextModel)
+                  (bindings (planTarget (completePlanResult boundaryComplete)))
+            ownerEntries = cong
+              (\observed => replaceEntries @{nameEq} observed
+                (modelFiber nextModel)
+                (bindings (planTarget (completePlanResult boundaryComplete))))
+                owner
+            0 replacedOwner : SelectedOrderedRegistryControlsRelated name key
+              world error value selected
+              (replaceEntries @{nameEq} (actionOwner action)
+                (modelFiber nextModel)
+                (bindings (planTarget (completePlanResult boundaryComplete))))
+              (bindings (registry survivor))
+            replacedOwner = replace
+              {p = \entries => SelectedOrderedRegistryControlsRelated name key
+                world error value selected entries
+                (bindings (registry survivor))}
+              (sym ownerEntries) replacedSelected
+            0 nextOrdered : SelectedOrderedRegistryControlsRelated name key world
+              error value selected
+              (bindings (planTarget (completePlanResult nextComplete)))
+              (bindings (registry survivor))
+            nextOrdered = replace
+              {p = \entries => SelectedOrderedRegistryControlsRelated name key
+                world error value selected entries
+                (bindings (registry survivor))}
+              (sym targetBindings) replacedOwner
+        in skippedSelectedStepPreservesEpisodeBoundary nameEq keyEq selected
+          registered ordinal live action tag before afterState checked whole
+          survivor boundary owner nextEffects nextComplete nextOrdered
