@@ -1465,11 +1465,26 @@ specializations use the committed decidable deletion predicates directly. The
 then runs both exact filter-success specializations and constructs the complete
 `DeletionTraceSkeleton` without a `Maybe`; its suffix readiness callback is
 indexed by the selected filter's actual result and exact episode generation
-scan. The remaining obligation-2 step is now only construction of
-`GenerationReplayReady` from the cross-boundary invariant identifying each
-incrementally built survivor with its corresponding original boundary minus the
-selected episode/current-R plan. No theorem alias or runtime evaluator changed,
-and no escape hatch was introduced.
+scan. `DGamma.CP4DeletionReadiness` now proves the two requested structural
+readiness inductions. `retainedReplayGivesGenerationReadiness` performs the
+ordinal/environment/deletion decision recursion once; its selected-episode and
+suffix specializations use the exact committed deletion predicates. The input
+`GenerationRetainedReplay` is a record-saturated local interface: at each kept
+original head it supplies the exact `fireNamed` result at the current survivor,
+and the induction itself threads that endpoint into the tail.
+
+This pins the remaining obligation-2 dependency precisely. The existing
+`checkedRetained*AfterCurrentPlan` lemmas fire from
+`MkSystemState originalAmbient (planTarget plan)`, whereas the dependent filter
+carries its independently computed survivor. A new replay-boundary invariant
+must identify or relate those sources through every step. In the suffix this is
+the no-selected-episode deletion/commutation frame; in the selected segment it
+also quotients the selected fiber lifecycle and uses generated-effect
+transposition. Theorem 61 supplies the selected endpoint effect replay but not
+this intermediate checked applicability. This is the still-partial Lemma-71
+control/replay content, not an extra public premise and not permanently
+residualized: it is also required by Theorem-73 sorting. No theorem alias or
+runtime evaluator changed, and no escape hatch was introduced.
 
 ### Cold-build validation under Idris 2 v0.8.0
 
