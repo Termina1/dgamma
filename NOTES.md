@@ -1531,8 +1531,12 @@ also exposed that checked O-Retire is deliberately/idempotently permissive: it
 has no `retired = False` guard, so an exact R leaf may legally be retired again.
 `retireExactActorInInactivePlan` is the corresponding fifth internal fold; it
 updates that Inactive leaf in place and proves that deleting the replacement
-has the old target's exact ordered bindings. This closes work order 1's local
-action/plan commutation layer; packaging these folds into the next
+has the old target's exact ordered bindings. The preserving folds now return
+`InactivePlanPreservingUpdateCommute`, which additionally proves exact plan-actor
+list equality. Exact removal returns `InactivePlanRemovingUpdateCommute`, proving
+the dropped actor is outside and every distinct old leaf remains; these are the
+erased facts needed to preserve boundary completeness. This closes work order
+1's local action/plan commutation layer; packaging these folds into the next
 `NoEpisodeReplayBoundary` remains work order 2.
 
 `DGamma.CP4DeletionNoEpisodeReplay` keeps the action index that the older

@@ -53,6 +53,26 @@ record InactivePlanUpdateCommute
     ActorOutsideDeletionPlan actor oldPlan ->
     ActorOutsideDeletionPlan actor commutedInactivePlan
 
+||| Strong result for updates that preserve the exact ordered plan actor list.
+||| Boundary completeness consumes this equality; the exact O-Remove fold uses
+||| the weaker result above because it deliberately drops one actor.
+public export
+record InactivePlanPreservingUpdateCommute
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name)
+  {oldSource, oldTarget : Registry name key value world error}
+  (oldPlan : InactiveLeafDeletionPlan {name = name} {key = key}
+    {value = value} {world = world} {error = error} nameEq oldSource oldTarget)
+  (newSource : Registry name key value world error)
+  (expectedTargetBindings :
+    List (Binding name (FiberAt name key value world error))) where
+  constructor MkInactivePlanPreservingUpdateCommute
+  preservingUpdateCommute : InactivePlanUpdateCommute name key world error value
+    nameEq oldPlan newSource expectedTargetBindings
+  0 preservedPlanActors :
+    inactivePlanActors (commutedInactivePlan preservingUpdateCommute) =
+    inactivePlanActors oldPlan
+
 ||| A retained O-Insert commutes through every deleted leaf when both its fresh
 ||| owner and (for a child insertion) its parent are outside the plan.
 public export
@@ -68,16 +88,17 @@ public export
       (OInsert inserted parent component)) plan ->
   (0 absent : lookupFiber @{nameEq} {name = name} {key = key}
     {value = value} {world = world} {error = error} inserted source = Nothing) ->
-  InactivePlanUpdateCommute name key world error value nameEq plan
+  InactivePlanPreservingUpdateCommute name key world error value nameEq plan
     (insertBinding @{nameEq} inserted (freshFiber component parent) source absent)
     (Bind inserted (freshFiber component parent) :: bindings target)
 insertFreshThroughInactivePlan nameEq inserted parent component
   source@(MkCoeffectContext entries unique) _ NoInactiveLeafDeletion
   OrchestrationOutsideDeletionEnd absent =
-    MkInactivePlanUpdateCommute
-      (insertBinding @{nameEq} inserted (freshFiber component parent) source absent)
-      NoInactiveLeafDeletion Refl
-      (\actor, ActorOutsideDeletionEnd => ActorOutsideDeletionEnd)
+    MkInactivePlanPreservingUpdateCommute
+      (MkInactivePlanUpdateCommute
+        (insertBinding @{nameEq} inserted (freshFiber component parent) source absent)
+        NoInactiveLeafDeletion Refl
+        (\actor, ActorOutsideDeletionEnd => ActorOutsideDeletionEnd)) Refl
 insertFreshThroughInactivePlan {name} {key} {world} {error} {value}
   nameEq inserted parent component source target
   (DeleteInactiveLeaf removed removedComponent removedParent removedRetired
@@ -116,11 +137,15 @@ insertFreshThroughInactivePlan {name} {key} {world} {error} {value}
         actualTailSource = deleteBinding @{nameEq} removed
           (insertBinding @{nameEq} inserted (freshFiber component parent) source
             absent)
+        0 tailStrong : InactivePlanPreservingUpdateCommute name key world error
+          value nameEq rest canonicalTailSource
+          (Bind inserted (freshFiber component parent) :: bindings target)
+        tailStrong = insertFreshThroughInactivePlan nameEq inserted parent
+          component oldTailSource target rest outsideRest tailAbsent
         0 tailCommute : InactivePlanUpdateCommute name key world error value
           nameEq rest canonicalTailSource
           (Bind inserted (freshFiber component parent) :: bindings target)
-        tailCommute = insertFreshThroughInactivePlan nameEq inserted parent
-          component oldTailSource target rest outsideRest tailAbsent
+        tailCommute = preservingUpdateCommute tailStrong
         0 tailSourcesSame : bindings canonicalTailSource =
           bindings actualTailSource
         tailSourcesSame = trans
@@ -158,8 +183,12 @@ insertFreshThroughInactivePlan {name} {key} {world} {error} {value}
               (transportedActorOutside transported actor
                 (commutedActorOutside tailCommute actor actorOutsideRest))
         outsideCommute actor ActorOutsideDeletionEnd impossible
-    in MkInactivePlanUpdateCommute (transportedPlanTarget transported) nextPlan
-      targetBindings outsideCommute
+    in MkInactivePlanPreservingUpdateCommute
+      (MkInactivePlanUpdateCommute (transportedPlanTarget transported) nextPlan
+        targetBindings outsideCommute)
+      (cong (removed ::)
+        (trans (transportedPlanActors transported)
+          (preservedPlanActors tailStrong)))
 
 ||| A parent-preserving replacement of an actor outside the plan commutes
 ||| through the complete leaf deletion.  All evaluator replacement branches
@@ -175,15 +204,17 @@ public export
   ActorOutsideDeletionPlan changed plan ->
   (0 found : lookupFiber @{nameEq} changed source = Just old) ->
   (0 sameParent : fiberParent next = fiberParent old) ->
-  InactivePlanUpdateCommute name key world error value nameEq plan
+  InactivePlanPreservingUpdateCommute name key world error value nameEq plan
     (replaceBinding @{nameEq} changed next source)
     (replaceEntries @{nameEq} changed next (bindings target))
 replaceOutsideThroughInactivePlan nameEq changed old next
   source@(MkCoeffectContext entries unique) _ NoInactiveLeafDeletion
   ActorOutsideDeletionEnd found sameParent =
-    MkInactivePlanUpdateCommute (replaceBinding @{nameEq} changed next source)
-      NoInactiveLeafDeletion Refl
-      (\actor, ActorOutsideDeletionEnd => ActorOutsideDeletionEnd)
+    MkInactivePlanPreservingUpdateCommute
+      (MkInactivePlanUpdateCommute
+        (replaceBinding @{nameEq} changed next source)
+        NoInactiveLeafDeletion Refl
+        (\actor, ActorOutsideDeletionEnd => ActorOutsideDeletionEnd)) Refl
 replaceOutsideThroughInactivePlan {name} {key} {world} {error} {value}
   nameEq changed old next source target
   (DeleteInactiveLeaf removed removedComponent removedParent removedRetired
@@ -213,11 +244,15 @@ replaceOutsideThroughInactivePlan {name} {key} {world} {error} {value}
         actualTailSource : Registry name key value world error
         actualTailSource = deleteBinding @{nameEq} removed
           (replaceBinding @{nameEq} changed next source)
+        0 tailStrong : InactivePlanPreservingUpdateCommute name key world error
+          value nameEq rest canonicalTailSource
+          (replaceEntries @{nameEq} changed next (bindings target))
+        tailStrong = replaceOutsideThroughInactivePlan nameEq changed old next
+          oldTailSource target rest outsideRest tailFound sameParent
         0 tailCommute : InactivePlanUpdateCommute name key world error value
           nameEq rest canonicalTailSource
           (replaceEntries @{nameEq} changed next (bindings target))
-        tailCommute = replaceOutsideThroughInactivePlan nameEq changed old next
-          oldTailSource target rest outsideRest tailFound sameParent
+        tailCommute = preservingUpdateCommute tailStrong
         0 tailSourcesSame : bindings canonicalTailSource =
           bindings actualTailSource
         tailSourcesSame = trans
@@ -253,8 +288,12 @@ replaceOutsideThroughInactivePlan {name} {key} {world} {error} {value}
               (transportedActorOutside transported actor
                 (commutedActorOutside tailCommute actor actorOutsideRest))
         outsideCommute actor ActorOutsideDeletionEnd impossible
-    in MkInactivePlanUpdateCommute (transportedPlanTarget transported) nextPlan
-      targetBindings outsideCommute
+    in MkInactivePlanPreservingUpdateCommute
+      (MkInactivePlanUpdateCommute (transportedPlanTarget transported) nextPlan
+        targetBindings outsideCommute)
+      (cong (removed ::)
+        (trans (transportedPlanActors transported)
+          (preservedPlanActors tailStrong)))
 
 ||| Deleting an actor outside the plan commutes with deleting every plan leaf.
 public export
@@ -265,15 +304,17 @@ public export
   (plan : InactiveLeafDeletionPlan {name = name} {key = key}
     {value = value} {world = world} {error = error} nameEq source target) ->
   ActorOutsideDeletionPlan changed plan ->
-  InactivePlanUpdateCommute name key world error value nameEq plan
+  InactivePlanPreservingUpdateCommute name key world error value nameEq plan
     (deleteBinding @{nameEq} changed source)
     (deleteEntries @{nameEq} changed (bindings target))
 deleteOutsideThroughInactivePlan nameEq changed
   source@(MkCoeffectContext entries unique) _ NoInactiveLeafDeletion
   ActorOutsideDeletionEnd =
-    MkInactivePlanUpdateCommute (deleteBinding @{nameEq} changed source)
-      NoInactiveLeafDeletion Refl
-      (\actor, ActorOutsideDeletionEnd => ActorOutsideDeletionEnd)
+    MkInactivePlanPreservingUpdateCommute
+      (MkInactivePlanUpdateCommute
+        (deleteBinding @{nameEq} changed source)
+        NoInactiveLeafDeletion Refl
+        (\actor, ActorOutsideDeletionEnd => ActorOutsideDeletionEnd)) Refl
 deleteOutsideThroughInactivePlan {name} {key} {world} {error} {value}
   nameEq changed source target
   (DeleteInactiveLeaf removed removedComponent removedParent removedRetired
@@ -299,11 +340,15 @@ deleteOutsideThroughInactivePlan {name} {key} {world} {error} {value}
         actualTailSource : Registry name key value world error
         actualTailSource = deleteBinding @{nameEq} removed
           (deleteBinding @{nameEq} changed source)
+        0 tailStrong : InactivePlanPreservingUpdateCommute name key world error
+          value nameEq rest canonicalTailSource
+          (deleteEntries @{nameEq} changed (bindings target))
+        tailStrong = deleteOutsideThroughInactivePlan nameEq changed oldTailSource
+          target rest outsideRest
         0 tailCommute : InactivePlanUpdateCommute name key world error value
           nameEq rest canonicalTailSource
           (deleteEntries @{nameEq} changed (bindings target))
-        tailCommute = deleteOutsideThroughInactivePlan nameEq changed oldTailSource
-          target rest outsideRest
+        tailCommute = preservingUpdateCommute tailStrong
         0 tailSourcesSame : bindings canonicalTailSource =
           bindings actualTailSource
         tailSourcesSame = deleteBindingDistinctCommuteBindings nameEq changed
@@ -337,14 +382,87 @@ deleteOutsideThroughInactivePlan {name} {key} {world} {error} {value}
               (transportedActorOutside transported actor
                 (commutedActorOutside tailCommute actor actorOutsideRest))
         outsideCommute actor ActorOutsideDeletionEnd impossible
-    in MkInactivePlanUpdateCommute (transportedPlanTarget transported) nextPlan
-      targetBindings outsideCommute
+    in MkInactivePlanPreservingUpdateCommute
+      (MkInactivePlanUpdateCommute (transportedPlanTarget transported) nextPlan
+        targetBindings outsideCommute)
+      (cong (removed ::)
+        (trans (transportedPlanActors transported)
+          (preservedPlanActors tailStrong)))
 
 0 memberTailWhenHeadDistinct :
   (actor, head : name) -> Not (actor = head) ->
   (rest : List name) -> Elem actor (head :: rest) -> Elem actor rest
 memberTailWhenHeadDistinct actor actor distinct rest Here = void (distinct Refl)
 memberTailWhenHeadDistinct actor head distinct rest (There later) = later
+
+0 lookupNotElemNothingPlan : DecEq key => (wanted : key) ->
+  (entries : List (Binding key value)) ->
+  Not (Elem wanted (bindingKeys entries)) ->
+  lookupEntries wanted entries = Nothing
+lookupNotElemNothingPlan wanted [] absent = Refl
+lookupNotElemNothingPlan wanted (Bind current next :: rest) absent
+  with (decEq wanted current)
+  lookupNotElemNothingPlan current (Bind current next :: rest) absent | Yes Refl =
+    void (absent Here)
+  lookupNotElemNothingPlan wanted (Bind current next :: rest) absent |
+    No distinct = lookupNotElemNothingPlan wanted rest
+      (\later => absent (There later))
+
+0 lookupDeleteSelfPlan : DecEq key => (removed : key) ->
+  (table : CoeffectContext key value) ->
+  lookupBinding removed (deleteBinding removed table) = Nothing
+lookupDeleteSelfPlan removed (MkCoeffectContext entries unique) =
+  lookupNotElemNothingPlan removed (deleteEntries removed entries)
+    (deletedKeyNotElem removed entries unique)
+
+0 absentActorOutsideInactivePlan :
+  (nameEq : DecEq name) -> (actor : name) ->
+  (source, target : Registry name key value world error) ->
+  (plan : InactiveLeafDeletionPlan {name = name} {key = key}
+    {value = value} {world = world} {error = error} nameEq source target) ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor source = Nothing ->
+  ActorOutsideDeletionPlan actor plan
+absentActorOutsideInactivePlan nameEq actor source source
+  NoInactiveLeafDeletion absent = ActorOutsideDeletionEnd
+absentActorOutsideInactivePlan nameEq actor source target
+  (DeleteInactiveLeaf removed component parent retiredFlag table outcome found
+    noChild rest) absent with (decEq @{nameEq} actor removed)
+  absentActorOutsideInactivePlan nameEq removed source target
+    (DeleteInactiveLeaf removed component parent retiredFlag table outcome found
+      noChild rest) absent | Yes Refl =
+        void (nothingIsNotJust (trans (sym absent) found))
+  absentActorOutsideInactivePlan nameEq actor source target
+    (DeleteInactiveLeaf removed component parent retiredFlag table outcome found
+      noChild rest) absent | No distinct =
+        ActorOutsideDeletionStep rest distinct
+          (absentActorOutsideInactivePlan nameEq actor
+            (deleteBinding @{nameEq} removed source) target rest
+            (trans (lookupDeleteOther actor removed distinct source) absent))
+
+||| Strong result for the exact-removal fold.  Besides the common registry
+||| commutation package it proves that the removed actor is outside the new plan
+||| and that every distinct old leaf survives.
+public export
+record InactivePlanRemovingUpdateCommute
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name)
+  {oldSource, oldTarget : Registry name key value world error}
+  (removedActor : name)
+  (oldPlan : InactiveLeafDeletionPlan {name = name} {key = key}
+    {value = value} {world = world} {error = error} nameEq oldSource oldTarget)
+  (newSource : Registry name key value world error)
+  (expectedTargetBindings :
+    List (Binding name (FiberAt name key value world error))) where
+  constructor MkInactivePlanRemovingUpdateCommute
+  removingUpdateCommute : InactivePlanUpdateCommute name key world error value
+    nameEq oldPlan newSource expectedTargetBindings
+  0 removedActorOutsidePlan : ActorOutsideDeletionPlan removedActor
+    (commutedInactivePlan removingUpdateCommute)
+  0 distinctOldActorRetained : (actor : name) -> Not (actor = removedActor) ->
+    Elem actor (inactivePlanActors oldPlan) ->
+    Elem actor (inactivePlanActors
+      (commutedInactivePlan removingUpdateCommute))
 
 ||| If the original action removes an actor that the plan itself deletes, erase
 ||| that exact plan occurrence instead of replaying the action.  The resulting
@@ -361,8 +479,9 @@ public export
     {world = world} {error = error} removedActor plan ->
   (0 actorNoChild : hasChild @{nameEq} {name = name} {key = key}
     {value = value} {world = world} {error = error} removedActor source = False) ->
-  InactivePlanUpdateCommute name key world error value nameEq plan
-    (deleteBinding @{nameEq} removedActor source) (bindings target)
+  InactivePlanRemovingUpdateCommute name key world error value nameEq
+    removedActor plan (deleteBinding @{nameEq} removedActor source)
+    (bindings target)
 removeExactActorFromInactivePlan nameEq removedActor source source
   NoInactiveLeafDeletion present actorNoChild = void (elemNilVoid present)
   where
@@ -386,7 +505,15 @@ removeExactActorFromInactivePlan {name} {key} {world} {error} {value}
           outsideCommute actor
             (ActorOutsideDeletionStep _ actorDistinct actorOutsideRest) =
               actorOutsideRest
-      in MkInactivePlanUpdateCommute target rest Refl outsideCommute
+          0 removedOutside : ActorOutsideDeletionPlan headActor rest
+          removedOutside = absentActorOutsideInactivePlan nameEq headActor
+            (deleteBinding @{nameEq} headActor source) target rest
+            (lookupDeleteSelfPlan headActor source)
+      in MkInactivePlanRemovingUpdateCommute
+        (MkInactivePlanUpdateCommute target rest Refl outsideCommute)
+        removedOutside
+        (\actor, distinct, present => memberTailWhenHeadDistinct actor headActor
+          distinct (inactivePlanActors rest) present)
   removeExactActorFromInactivePlan {name} {key} {world} {error} {value}
     nameEq removedActor source target
     (DeleteInactiveLeaf headActor headComponent headParent headRetired headTable
@@ -421,10 +548,13 @@ removeExactActorFromInactivePlan {name} {key} {world} {error} {value}
             oldTailSource = False
           tailActorNoChild = hasChildDeleteFalse nameEq removedActor headActor
             source actorNoChild
+          0 tailStrong : InactivePlanRemovingUpdateCommute name key world error
+            value nameEq removedActor rest canonicalTailSource (bindings target)
+          tailStrong = removeExactActorFromInactivePlan nameEq removedActor
+            oldTailSource target rest tailPresent tailActorNoChild
           0 tailCommute : InactivePlanUpdateCommute name key world error value
             nameEq rest canonicalTailSource (bindings target)
-          tailCommute = removeExactActorFromInactivePlan nameEq removedActor
-            oldTailSource target rest tailPresent tailActorNoChild
+          tailCommute = removingUpdateCommute tailStrong
           0 tailSourcesSame : bindings canonicalTailSource =
             bindings actualTailSource
           tailSourcesSame = deleteBindingDistinctCommuteBindings nameEq
@@ -457,8 +587,25 @@ removeExactActorFromInactivePlan {name} {key} {world} {error} {value}
                 actorOutsideHead
                 (transportedActorOutside transported actor
                   (commutedActorOutside tailCommute actor actorOutsideRest))
-      in MkInactivePlanUpdateCommute (transportedPlanTarget transported) nextPlan
-        targetBindings outsideCommute
+          0 removedOutside : ActorOutsideDeletionPlan removedActor nextPlan
+          removedOutside = ActorOutsideDeletionStep
+            (transportedInactivePlan transported) actorDistinctHead
+            (transportedActorOutside transported removedActor
+              (removedActorOutsidePlan tailStrong))
+          0 retainedOther : (actor : name) -> Not (actor = removedActor) ->
+            Elem actor
+              (headActor :: inactivePlanActors rest) ->
+            Elem actor (headActor :: inactivePlanActors
+              (transportedInactivePlan transported))
+          retainedOther _ distinct Here = Here
+          retainedOther actor distinct (There later) =
+            There (replace {p = Elem actor}
+              (sym (transportedPlanActors transported))
+              (distinctOldActorRetained tailStrong actor distinct later))
+      in MkInactivePlanRemovingUpdateCommute
+        (MkInactivePlanUpdateCommute (transportedPlanTarget transported) nextPlan
+          targetBindings outsideCommute)
+        removedOutside retainedOther
 
 0 justInjectivePlanCommute : Just left = Just right -> left = right
 justInjectivePlanCommute Refl = Refl
@@ -479,7 +626,7 @@ public export
   ActorDeletedByInactivePlan {name = name} {key = key} {value = value}
     {world = world} {error = error} retiredActor plan ->
   (0 found : lookupFiber @{nameEq} retiredActor source = Just oldFiber) ->
-  InactivePlanUpdateCommute name key world error value nameEq plan
+  InactivePlanPreservingUpdateCommute name key world error value nameEq plan
     (replaceBinding @{nameEq} retiredActor (retireFiber oldFiber) source)
     (bindings target)
 retireExactActorInInactivePlan nameEq retiredActor oldFiber source source
@@ -551,8 +698,10 @@ retireExactActorInInactivePlan {name} {key} {world} {error} {value}
                   ActorOutsideDeletionStep (transportedInactivePlan transported)
                     actorDistinct
                     (transportedActorOutside transported actor actorOutsideRest)
-          in MkInactivePlanUpdateCommute (transportedPlanTarget transported)
-            nextPlan targetBindings outsideCommute
+          in MkInactivePlanPreservingUpdateCommute
+            (MkInactivePlanUpdateCommute (transportedPlanTarget transported)
+              nextPlan targetBindings outsideCommute)
+            (cong (headActor ::) (transportedPlanActors transported))
   retireExactActorInInactivePlan {name} {key} {world} {error} {value}
     nameEq retiredActor oldFiber source target
     (DeleteInactiveLeaf headActor headComponent headParent headRetired headTable
@@ -576,10 +725,13 @@ retireExactActorInInactivePlan {name} {key} {world} {error} {value}
           actualTailSource : Registry name key value world error
           actualTailSource = deleteBinding @{nameEq} headActor
             (replaceBinding @{nameEq} retiredActor (retireFiber oldFiber) source)
+          0 tailStrong : InactivePlanPreservingUpdateCommute name key world
+            error value nameEq rest canonicalTailSource (bindings target)
+          tailStrong = retireExactActorInInactivePlan nameEq retiredActor
+            oldFiber oldTailSource target rest tailPresent tailFound
           0 tailCommute : InactivePlanUpdateCommute name key world error value
             nameEq rest canonicalTailSource (bindings target)
-          tailCommute = retireExactActorInInactivePlan nameEq retiredActor
-            oldFiber oldTailSource target rest tailPresent tailFound
+          tailCommute = preservingUpdateCommute tailStrong
           0 tailSourcesSame : bindings canonicalTailSource =
             bindings actualTailSource
           tailSourcesSame = trans
@@ -630,5 +782,9 @@ retireExactActorInInactivePlan {name} {key} {world} {error} {value}
                 actorOutsideHead
                 (transportedActorOutside transported actor
                   (commutedActorOutside tailCommute actor actorOutsideRest))
-      in MkInactivePlanUpdateCommute (transportedPlanTarget transported) nextPlan
-        targetBindings outsideCommute
+      in MkInactivePlanPreservingUpdateCommute
+        (MkInactivePlanUpdateCommute (transportedPlanTarget transported) nextPlan
+          targetBindings outsideCommute)
+        (cong (headActor ::)
+          (trans (transportedPlanActors transported)
+            (preservedPlanActors tailStrong)))
