@@ -248,6 +248,10 @@ progress.
   `DGamma.CP4DeletionSelectedForeignLifecycleReplayCore` fixes the common
   concrete replay result (raw step, checked step, and next ordered controls) and
   projects every saturated source relation back to the selected-exempt skeleton.
+  `DGamma.CP4DeletionSelectedForeignLifecycleBegin` now inhabits that result for
+  L-Begin: it transports the exact dependent target view, reconstructs the
+  survivor's declared continuation/identity accumulator, proves Preservation,
+  and replaces both ordered foreign controls.
   Deriving the opening/component
   anchor from each located retained lifecycle occurrence and reconstructing the
   five concrete checked evaluator branches remain before the selected layer can

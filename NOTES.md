@@ -1769,7 +1769,14 @@ types or semantics. `DGamma.CP4DeletionSelectedForeignLifecycleReplayCore`
 adds the common proof-indexed result for each pending concrete lifecycle branch
 and proves that saturation projects back to the ordered selected-exempt
 skeleton; this keeps raw/checked applicability and next-boundary controls in one
-non-drifting package.
+non-drifting package. `DGamma.CP4DeletionSelectedForeignLifecycleBegin` is the
+first concrete consumer: successful plan-side L-Begin is reflected to an exact
+unretired clean-Inactive shape, `foreignLifecycleResolveViewSame` transports its
+whole dependent `View`, and the survivor executes a real raw and checked
+L-Begin. Both sides install the same declared continuation and identity
+accumulator, `beginLifecycleControlRelated` supplies the new control relation,
+and ordered replacement plus raw Preservation produce the next replay package.
+No ambient equality is assumed.
 `DGamma.CP4DeletionRelationalBoundary` now defines the approved primary suffix
 interface. It compares the actual survivor with the complete current-R plan
 target using `EffectStateRelated` plus an ordered `FiberControlRelated`
