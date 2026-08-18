@@ -189,3 +189,31 @@ beginAccumulatorModel nameEq keyEq selected {preStart} {start} whole opening =
   beginAccumulatorModelFromRaw nameEq keyEq selected preStart start whole
     (checkedActionProjects nameEq keyEq (LBegin selected) preStart start
       LBeginTag (beginEquation opening))
+
+||| A foreign step cannot change the selected fiber object, hence it preserves
+||| the exact lifecycle accumulator and its generated-transformation model.
+||| Ambient/table commutation is deliberately deferred to the replay invariant;
+||| this lemma is only the control-side persistence fact.
+public export
+0 foreignStepPreservesAccumulatorModel :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState) ->
+  Not (selected = actionOwner action) ->
+  AccumulatorModel name key world error value nameEq keyEq selected whole before ->
+  AccumulatorModel name key world error value nameEq keyEq selected whole
+    afterState
+foreignStepPreservesAccumulatorModel {name} {key} {world} {error} {value}
+  nameEq keyEq selected action tag before afterState whole checked distinct model =
+    let raw = checkedActionProjects nameEq keyEq action before afterState tag checked
+        update = applyActionLocalUpdate nameEq keyEq action before afterState tag raw
+        targetFound = trans
+          (systemLocalUpdateForeign nameEq selected (actionOwner action) distinct
+            before afterState update)
+          (modelFound model)
+    in MkAccumulatorModel (modelFiber model) targetFound
+      (modelAccumulator model) (modelInstalled model)
+      (modelTransformation model) (modelFactorization model)

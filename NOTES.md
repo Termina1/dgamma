@@ -1339,8 +1339,12 @@ that selected-episode equality to the surviving suffix.
 actual installed fiber and exact `AccumulatorHandle`. `beginAccumulatorModel`
 proves the L-Begin base directly from the checked evaluator: it extracts the
 fresh Reloading lifecycle, identity accumulator, runtime table, and identity
-transformation without assuming proof irrelevance. The remaining temporal step
-is forward preservation of this model through installed transitions.
+transformation without assuming proof irrelevance.
+`foreignStepPreservesAccumulatorModel` proves the complete control-side foreign
+step: the exhaustive local-update theorem keeps the selected fiber object,
+accumulator, installed-shape evidence, and factorization unchanged. The
+remaining temporal step is the selected-action dispatcher plus the effect-side
+commutation/replay invariant.
 
 `DGamma.CP4DeletionFilterSuccess` closes the filter's generic `Maybe` layer
 without replacing it by a parallel relation. `GenerationReplayReady` records
