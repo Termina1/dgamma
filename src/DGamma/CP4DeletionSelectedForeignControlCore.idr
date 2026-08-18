@@ -10,6 +10,12 @@ import Decidable.Equality
 
 %default total
 
+0 nothingIsNotJust : Nothing = Just item -> Void
+nothingIsNotJust Refl impossible
+
+0 justInjective : Just left = Just right -> left = right
+justInjective Refl = Refl
+
 0 selectedFiberComponentSame :
   SelectedFiberControlsRelated name key world error value selected actor
     left right ->
@@ -95,6 +101,137 @@ selectedOrderedLookupPresenceSame nameEq wanted
   selectedOrderedLookupPresenceSame nameEq wanted
     (SelectedOrderedControlsCons current relation tail) | No distinct =
       selectedOrderedLookupPresenceSame nameEq wanted tail
+
+0 orderedLookupForeignEntries :
+  (nameEq : DecEq name) -> (selected, actor : name) ->
+  Not (actor = selected) ->
+  SelectedOrderedRegistryControlsRelated name key world error value selected
+    left right ->
+  FiberControlMaybeRelated
+    (lookupEntries @{nameEq} actor left) (lookupEntries @{nameEq} actor right)
+orderedLookupForeignEntries nameEq selected actor distinct
+  SelectedOrderedControlsNil = NoControlFibers
+orderedLookupForeignEntries nameEq selected actor distinct
+  (SelectedOrderedControlsCons current relation tail)
+  with (decEq @{nameEq} actor current)
+  orderedLookupForeignEntries nameEq selected current distinct
+    (SelectedOrderedControlsCons current
+      (SelectedFiberControls currentIsSelected static) tail) | Yes Refl =
+        void (distinct currentIsSelected)
+  orderedLookupForeignEntries nameEq selected current distinct
+    (SelectedOrderedControlsCons current
+      (ForeignFiberControls currentDistinct fibers) tail) | Yes Refl =
+        SomeControlFibers fibers
+  orderedLookupForeignEntries nameEq selected actor distinct
+    (SelectedOrderedControlsCons current relation tail) | No actorDifferent =
+      orderedLookupForeignEntries nameEq selected actor distinct tail
+
+public export
+0 selectedOrderedForeignLookupControls :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected, actor : name) ->
+  Not (actor = selected) ->
+  (left, right : Registry name key value world error) ->
+  SelectedOrderedRegistryControlsRelated name key world error value selected
+    (bindings left) (bindings right) ->
+  FiberControlMaybeRelated {name = name} {key = key} {value = value}
+    {world = world} {error = error}
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} actor left)
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} actor right)
+selectedOrderedForeignLookupControls nameEq selected actor distinct left right
+  related =
+    replace
+      {p = \leftLookup => FiberControlMaybeRelated leftLookup
+        (lookupFiber @{nameEq} actor right)}
+      (sym (lookupFiberAsEntries nameEq actor left))
+      (replace
+        {p = \rightLookup => FiberControlMaybeRelated
+          (lookupEntries @{nameEq} actor (bindings left)) rightLookup}
+        (sym (lookupFiberAsEntries nameEq actor right))
+        (orderedLookupForeignEntries nameEq selected actor distinct related))
+
+public export
+record ForeignRelatedFiberFound
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (actor : name)
+  (left, right : Registry name key value world error)
+  (leftFiber : Fiber name key value world error) where
+  constructor MkForeignRelatedFiberFound
+  foreignRelatedFiber : Fiber name key value world error
+  0 foreignRelatedFound : lookupFiber @{nameEq} actor right =
+    Just foreignRelatedFiber
+  0 foreignRelatedControl : FiberControlRelated leftFiber foreignRelatedFiber
+
+0 someControlNothingImpossible :
+  FiberControlMaybeRelated (Just fiber) Nothing -> Void
+someControlNothingImpossible relation impossible
+
+public export
+0 foreignControlLookupFound :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (left, right : Registry name key value world error) ->
+  (leftFiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor left = Just leftFiber ->
+  FiberControlMaybeRelated {name = name} {key = key} {value = value}
+    {world = world} {error = error}
+    (lookupFiber @{nameEq} actor left) (lookupFiber @{nameEq} actor right) ->
+  ForeignRelatedFiberFound name key world error value nameEq actor left right
+    leftFiber
+foreignControlLookupFound nameEq actor left right leftFiber leftFound related
+  with (lookupFiber @{nameEq} actor left)
+  foreignControlLookupFound nameEq actor left right leftFiber leftFound related |
+    Nothing = void (nothingIsNotJust leftFound)
+  foreignControlLookupFound nameEq actor left right leftFiber leftFound related |
+    Just observedLeft with (lookupFiber @{nameEq} actor right) proof rightFound
+    foreignControlLookupFound nameEq actor left right leftFiber leftFound related |
+      Just observedLeft | Nothing =
+        void (someControlNothingImpossible related)
+    foreignControlLookupFound nameEq actor left right leftFiber leftFound related |
+      Just observedLeft | Just observedRight =
+        case justInjective leftFound of
+          Refl => case related of
+            SomeControlFibers controls =>
+              MkForeignRelatedFiberFound observedRight rightFound controls
+
+public export
+0 selectedOrderedNothingOnRight :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {selected : name} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (left, right : Registry name key value world error) ->
+  SelectedOrderedRegistryControlsRelated name key world error value selected
+    (bindings left) (bindings right) ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor left = Nothing ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor right = Nothing
+selectedOrderedNothingOnRight nameEq actor left right related leftAbsent
+  with (lookupFiber @{nameEq} actor right) proof rightFound
+  selectedOrderedNothingOnRight nameEq actor left right related leftAbsent |
+    Nothing = Refl
+  selectedOrderedNothingOnRight nameEq actor left right related leftAbsent |
+    Just rightFiber =
+      let 0 presenceSame : (isJust (lookupEntries @{nameEq} actor
+            (bindings left)) = isJust (lookupEntries @{nameEq} actor
+              (bindings right)))
+          presenceSame = selectedOrderedLookupPresenceSame nameEq actor related
+          0 fiberPresenceSame :
+            (isJust (lookupFiber @{nameEq} {name = name} {key = key}
+              {value = value} {world = world} {error = error} actor left) =
+             isJust (lookupFiber @{nameEq} {name = name} {key = key}
+              {value = value} {world = world} {error = error} actor right))
+          fiberPresenceSame = trans
+            (cong isJust (lookupFiberAsEntries nameEq actor left))
+            (trans presenceSame
+              (sym (cong isJust (lookupFiberAsEntries nameEq actor right))))
+          0 contradiction : (False = True)
+          contradiction = trans (sym (cong isJust leftAbsent))
+            (trans fiberPresenceSame (cong isJust rightFound))
+      in case contradiction of Refl impossible
 
 public export
 0 selectedOrderedParentPresentSame :

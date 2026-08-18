@@ -214,9 +214,12 @@ progress.
   proves the first control-rebuild layer: lookup presence, parent presence,
   ordered provision-disjointness, no-child, retirement/Inactive observations,
   and foreign retirement are invariant across the skeleton. The remaining
-  selected layer must use those frames to rebuild each retained checked rule,
-  then handle
-  deleted R heads and close L-Unload.
+  `DGamma.CP4DeletionSelectedForeignOrchestration` uses those frames to rebuild
+  all three retained orchestration rules (O-Insert/O-Retire/O-Remove), preserves
+  the ordered skeleton, proves checked well-formed targets, and joins each target
+  to the already-transposed Definition-60 output. The retained lifecycle branch
+  still needs its selected-precedence/target-resolution argument before the
+  selected layer can handle deleted R heads and close L-Unload.
   `DGamma.CP4DeletionRelationalBoundary` is the primary selected-to-suffix
   interface: it relates the actual survivor to the complete plan target by
   ordered effects and an ordered control skeleton with extensional accumulators.

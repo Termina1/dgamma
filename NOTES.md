@@ -1663,8 +1663,17 @@ Boolean part of that obligation: exact binding order preserves lookup/parent
 presence; related component declarations preserve O-Insert provision guards;
 related parents preserve O-Remove child guards; and full foreign control
 relations preserve retired/Inactive observations and O-Retire edits. These are
-ordered-binding theorems, not lookup-extensional shortcuts. Rule-specific raw
-reconstruction and its join to the already-transposed effect output remain.
+ordered-binding theorems, not lookup-extensional shortcuts. `DGamma.CP4DeletionSelectedForeignOrchestration` now consumes those frames for
+all three orchestration forms. O-Insert reconstructs the proof-relevant
+`setFresh` result while comparing only runtime binding lists; O-Retire updates
+both fully related foreign cells; O-Remove transports retired/Inactive/no-child
+guards and deletes both ordered cells. Every branch constructs a checked
+survivor transition, preserves the ordered skeleton, and uses
+`actualTransitionEffectFrame` to prove its projection realizes the previously
+transposed `foreignSurvivorOutput`, yielding the next selected effect boundary.
+The remaining part of obligation 1 is lifecycle-specific: derive from the public
+no-dependent-closing premise that the selected activation cannot change a
+retained foreign target, then rebuild L-Begin/L-Advance/L-Divert/L-Leave/L-Unload.
 `DGamma.CP4DeletionRelationalBoundary` now defines the approved primary suffix
 interface. It compares the actual survivor with the complete current-R plan
 target using `EffectStateRelated` plus an ordered `FiberControlRelated`
@@ -1870,7 +1879,8 @@ fold are proved; the selected quotient's accumulator/effect half is now proved
 at L-Begin, every skipped selected installed head, every foreign actual map, and
 checked L-Unload, with complete-plan transport, a preserved ordered
 selected-exempt interior control skeleton, and an ordered relational suffix
-interface; retained foreign checked controls, deleted-R/empty-plan propagation,
+interface; retained foreign lifecycle checked controls (all orchestration forms
+are proved), deleted-R/empty-plan propagation,
 the relational suffix fold, and endpoint control/withdrawal invariants remain);
 Confluence/Theorem
 73 (surviving parent-

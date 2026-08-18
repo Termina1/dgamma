@@ -164,6 +164,15 @@ selectedOrderedReplaceSelectedLeft nameEq selected oldFiber nextFiber
           leftRest rightRest found nextToOld tail)
 
 public export
+0 selectedOrderedTransport :
+  leftBefore = leftAfter -> rightBefore = rightAfter ->
+  SelectedOrderedRegistryControlsRelated name key world error value selected
+    leftBefore rightBefore ->
+  SelectedOrderedRegistryControlsRelated name key world error value selected
+    leftAfter rightAfter
+selectedOrderedTransport Refl Refl related = related
+
+public export
 0 selectedOrderedInsertForeign :
   (selected, actor : name) -> Not (actor = selected) ->
   FiberControlRelated leftFiber rightFiber ->
