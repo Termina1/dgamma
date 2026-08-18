@@ -202,8 +202,11 @@ progress.
   `DGamma.CP4DeletionSelectedOwn` combines scanner stamp coherence with the
   public selected/R exclusion, commutes every selected installed replacement
   through the complete plan, and consumes the selected accumulator step to
-  preserve the full boundary while the survivor skips it. The remaining
-  selected layer must rebuild retained foreign controls, handle deleted R
+  preserve the full boundary while the survivor skips it.
+  `deletedSelectedInstalledHeadPreservesEpisodeBoundary` dispatches every
+  checked selected interior lifecycle head through the exhaustive recovery
+  infrastructure. The remaining selected layer must rebuild retained foreign
+  controls, handle deleted R
   heads, and close L-Unload. The located-episode splitter
   derives the episode/suffix generation scans and restricts both no-R-episode
   and repaired Definition-69 evidence without new public premises.

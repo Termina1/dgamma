@@ -1627,7 +1627,11 @@ replacement through the complete current-R plan, applies the selected recovery
 step, and preserves every foreign control while leaving the survivor fixed.
 Thus L-Advance, L-Divert, and L-Leave—and any control-only selected installed
 branch supplied by the exhaustive recovery dispatcher—share one boundary
-constructor. The remaining selected stage must construct foreign retained
+constructor. `DGamma.CP4DeletionSelectedOwnDispatch` now instantiates that
+constructor for an arbitrary checked selected interior lifecycle head;
+`selectedInstalledAccumulatorStep` eliminates impossible insert/remove/begin/
+unload shapes and supplies the exact target model. The remaining selected stage
+must construct foreign retained
 checked transitions, handle deleted R heads, and close the L-Unload endpoint.
 
 ### Corollary 62: terminal recovery
