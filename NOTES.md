@@ -1778,6 +1778,15 @@ accumulator, `beginLifecycleControlRelated` supplies the new control relation,
 and ordered replacement plus raw Preservation produce the next replay package.
 No ambient equality is assumed.
 
+`DGamma.CP4DeletionSelectedForeignLifecycleDivert` is the second concrete
+consumer. It inverts the exact plan-side L-Divert without fiber/proof equality,
+uses the saturated ordered provider scan to preserve the stale-target Boolean,
+transports the owner's remaining program, committed view, and extensional
+accumulator relation to Unloading, executes a real survivor L-Divert, proves its
+checked target by Preservation, and replaces both foreign control cells in the
+ordered skeleton. Ambient states remain unrelated, as required by the already
+transposed effect layer.
+
 The precedence anchor now has both cases required by the paper rather than
 pretending every retained lifecycle occurrence belongs to a closing foreign
 episode. `DGamma.CP4DeletionSelectedForeignLifecycleAnchorEndpoint` derives
@@ -1996,6 +2005,11 @@ executable escape-hatch scan is empty. This is warm validation only and does not
 discharge the mandatory `CP4SupportSolution` split/no-concurrent-Chez cold
 archive build.
 
+After concrete retained L-Divert reconstruction, a warm package invocation
+passed all 142/142 modules, including the three heavy check modules. All 142
+retain `%default total` and the anchored escape-hatch scan remains empty. This
+again leaves the split/cold-archive validation debt unchanged.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
@@ -2050,7 +2064,8 @@ occurrence/component transport, first-close action-specific temporal
 classification, exact closing-episode reconstruction, selected-L-Unload
 reliance anchoring, and all lifecycle-result control constructors are proved,
 while the stays-installed endpoint/reliance join into the provider frame and
-the concrete checked lifecycle transitions beyond L-Begin remain;
+the concrete checked L-Advance/L-Leave/L-Unload transitions remain (L-Begin and
+L-Divert are reconstructed);
 deleted-R/empty-plan propagation,
 the relational suffix fold, and endpoint control/withdrawal invariants remain);
 Confluence/Theorem

@@ -259,6 +259,10 @@ progress.
   L-Begin: it transports the exact dependent target view, reconstructs the
   survivor's declared continuation/identity accumulator, proves Preservation,
   and replaces both ordered foreign controls.
+  `DGamma.CP4DeletionSelectedForeignLifecycleDivert` does the same for retained
+  L-Divert: exact ordered target resolution preserves the stale-target guard,
+  related accumulators/views become related Unloading controls, and the real
+  survivor transition is checked by Preservation.
   The anchor's closed/open eliminations, Lemma-70 endpoint bridge, occurrence
   splitting, and installed component transport are proved.
   `DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify` now gives every
@@ -270,8 +274,8 @@ progress.
   the critical alternative at the selected episode's own L-Unload source, so a
   later selected activation or reused raw endpoint is never assumed Inactive.
   Joining the stays-installed branch to the already-proved Lemma-70 open anchor,
-  and the four concrete checked evaluator branches beyond L-Begin, remain before
-  the selected layer can handle deleted R heads and close L-Unload.
+  and concrete L-Advance/L-Leave/L-Unload reconstruction, remain before the
+  selected layer can handle deleted R heads and close L-Unload.
   `DGamma.CP4DeletionRelationalBoundary` is the primary selected-to-suffix
   interface: it relates the actual survivor to the complete plan target by
   ordered effects and an ordered control skeleton with extensional accumulators.
