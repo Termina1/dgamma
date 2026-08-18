@@ -1603,6 +1603,14 @@ passed on the immediate no-concurrent retry documented in Finding #11, and
 validation; the registered `CP4SupportSolution` split plus cold archive build
 remains outstanding.
 
+After the two readiness inductions, Corollary 62, Theorem 64, and the first
+no-selected-episode replay-boundary stage landed, a no-concurrent-Chez warm
+package invocation passed all 103/103 modules. All 103 source modules retain
+`%default total`; the anchored proof-escape scan is empty (the sole broad
+`postulate` text match is a documentation sentence saying none is used). This
+is a current warm typecheck only and does not discharge the registered
+`CP4SupportSolution` split/cold-archive validation debt.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
@@ -1661,9 +1669,11 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** apply the now-inhabited Theorem 61 to Lemma-72 selected-episode
-recovery/effect equivalence, join it to the constructed deletion skeleton, then
-derive final control/withdrawal evidence and inhabit `deletionTheorem`.
+**Next:** preserve `NoEpisodeReplayBoundary` across every retained/deleted
+suffix head, then prove the selected-segment lifecycle/effect quotient using
+Lemma-71 transposition and the now-proved Corollary 62. Feed both retained-head
+families to the readiness inductions, join terminal recovery to the deletion
+skeleton, derive final control/withdrawal evidence, and inhabit `deletionTheorem`.
 After that, use deletion
 for constructive canonical sorting. Fresh-choice,
 cross-parent, 24/18 activation-reset,
