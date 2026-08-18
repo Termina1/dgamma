@@ -247,6 +247,7 @@ selectedOrderedDeleteForeign nameEq selected actor distinct
         (selectedOrderedDeleteForeign nameEq selected actor distinct leftRest
           rightRest tail)
 
+public export
 0 selectedOrderedLookupControlsRelated :
   (nameEq : DecEq name) -> (selected, actor : name) ->
   Not (actor = selected) ->

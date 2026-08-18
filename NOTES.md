@@ -1658,6 +1658,13 @@ insert/retire/remove/begin/unload. Thus
 under the stronger invariant. This is the approved ordered-table design-chain
 addendum; public Lemma 72 is unchanged. The next obligation is the retained
 foreign checked-control transport over this skeleton.
+`DGamma.CP4DeletionSelectedForeignControlCore` now discharges the structural
+Boolean part of that obligation: exact binding order preserves lookup/parent
+presence; related component declarations preserve O-Insert provision guards;
+related parents preserve O-Remove child guards; and full foreign control
+relations preserve retired/Inactive observations and O-Retire edits. These are
+ordered-binding theorems, not lookup-extensional shortcuts. Rule-specific raw
+reconstruction and its join to the already-transposed effect output remain.
 `DGamma.CP4DeletionRelationalBoundary` now defines the approved primary suffix
 interface. It compares the actual survivor with the complete current-R plan
 target using `EffectStateRelated` plus an ordered `FiberControlRelated`

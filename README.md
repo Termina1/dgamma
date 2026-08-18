@@ -210,8 +210,12 @@ progress.
   survivor skips the action. The selected recovery dispatcher now also proves
   retirement stability for all possible interior L-Advance/L-Divert/L-Leave
   heads, so `deletedSelectedInstalledHeadPreservesEpisodeBoundary` remains
-  exhaustive under the stronger boundary. The remaining selected layer must
-  use this skeleton to rebuild retained foreign checked controls, then handle
+  exhaustive under the stronger boundary. `DGamma.CP4DeletionSelectedForeignControlCore`
+  proves the first control-rebuild layer: lookup presence, parent presence,
+  ordered provision-disjointness, no-child, retirement/Inactive observations,
+  and foreign retirement are invariant across the skeleton. The remaining
+  selected layer must use those frames to rebuild each retained checked rule,
+  then handle
   deleted R heads and close L-Unload.
   `DGamma.CP4DeletionRelationalBoundary` is the primary selected-to-suffix
   interface: it relates the actual survivor to the complete plan target by
