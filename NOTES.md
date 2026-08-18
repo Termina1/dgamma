@@ -1322,6 +1322,20 @@ outside certificate. `checkedRetainedOrchestrationAfterCurrentPlan` and
 `checkedRetainedLifecycleAfterCurrentPlan` close the checked one-step theorem
 for all eight action constructors.
 
+`DGamma.CP4RecoveryAccumulator` closes the first algebraic half of obligation
+3. `AccumulatorFactorization` relates the concrete lifecycle accumulator to one
+trailing actor normalization after the generated composition of its individual
+yielded inverses. `identityAccumulatorFactorization` proves the L-Begin base;
+`pushAccumulatorFactorization` proves the inductive L-Advance step using the
+Finding-9 `pushLocalUndo` rhythm. The proof is relational because complete effect
+states contain a function-valued name-to-table projection: exact function
+equality would require forbidden extensionality. `effectOverwriteSameActor`
+proves directly that the trailing normalization absorbs the intermediate
+selected-table/ambient write. The remaining obligation-3 work is the temporal
+trace induction: build the concrete transformation at each selected advance,
+commute it across foreign actual generators using `TraceIndependent`, and join
+that selected-episode equality to the surviving suffix.
+
 `DGamma.CP4DeletionFilterSuccess` closes the filter's generic `Maybe` layer
 without replacing it by a parallel relation. `GenerationReplayReady` records
 one exact `fireNamed` success for every retained head and no transition for a
