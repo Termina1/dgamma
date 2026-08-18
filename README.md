@@ -148,8 +148,9 @@ progress.
   uniqueness certificates; `DGamma.CP4RuntimeBindingsChecks` pins that rationale
   with separately defined singleton certificates. `DGamma.CP4DeletionPlanRuntime`
   proves the matching dependent plan reindexing theorem across exact ordered
-  bindings, preserving every Inactive/childless leaf and the final target binding
-  list without proof irrelevance. `DGamma.CP4DeletionPlanComplete` strengthens
+  bindings, preserving every Inactive/childless leaf, every actor-outside
+  certificate, and the final target binding list without proof irrelevance.
+  `DGamma.CP4DeletionPlanComplete` strengthens
   the canonical current-R leaf builder with the erased converse: every current
   exact R generation occurs in the plan, and derives that complete plan directly
   from the public reached/discipline/no-episode premises.

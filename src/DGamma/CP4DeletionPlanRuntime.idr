@@ -64,6 +64,9 @@ record InactivePlanBindingsTransport
     transportedPlanTarget
   0 transportedPlanBindings : bindings leftTarget =
     bindings transportedPlanTarget
+  0 transportedActorOutside : (actor : name) ->
+    ActorOutsideDeletionPlan actor leftPlan ->
+    ActorOutsideDeletionPlan actor transportedInactivePlan
 
 ||| Total plan transport through exact ordered bindings.  This is the plan-side
 ||| companion of evaluator runtime-snapshot transport.
@@ -81,6 +84,7 @@ public export
 transportInactivePlanAcrossBindings nameEq leftSource leftSource rightSource
   NoInactiveLeafDeletion same =
     MkInactivePlanBindingsTransport rightSource NoInactiveLeafDeletion same
+      (\actor, ActorOutsideDeletionEnd => ActorOutsideDeletionEnd)
 transportInactivePlanAcrossBindings nameEq leftSource leftTarget rightSource
   (DeleteInactiveLeaf removed component parent retiredFlag table outcome found
     noChild rest) same =
@@ -108,8 +112,23 @@ transportInactivePlanAcrossBindings nameEq leftSource leftTarget rightSource
             value nameEq rest rightTailSource
           tailTransport = transportInactivePlanAcrossBindings nameEq
             leftTailSource leftTarget rightTailSource rest tailsSame
-      in MkInactivePlanBindingsTransport
-        (transportedPlanTarget tailTransport)
-        (DeleteInactiveLeaf removed component parent retiredFlag table outcome
-          rightFound rightNoChild (transportedInactivePlan tailTransport))
-        (transportedPlanBindings tailTransport)
+      in let transportedPlan : InactiveLeafDeletionPlan {name = name}
+               {key = key} {value = value} {world = world} {error = error}
+               nameEq rightSource (transportedPlanTarget tailTransport)
+             transportedPlan = DeleteInactiveLeaf removed component parent
+               retiredFlag table outcome rightFound rightNoChild
+               (transportedInactivePlan tailTransport)
+             0 outsideTransport : (actor : name) ->
+               ActorOutsideDeletionPlan actor
+                 (DeleteInactiveLeaf {fibers = leftSource}
+                   {target = leftTarget} removed component parent retiredFlag
+                   table outcome found noChild rest) ->
+               ActorOutsideDeletionPlan actor transportedPlan
+             outsideTransport actor
+               (ActorOutsideDeletionStep _ oldDistinct outsideRest) =
+                 ActorOutsideDeletionStep (transportedInactivePlan tailTransport)
+                   oldDistinct
+                   (transportedActorOutside tailTransport actor outsideRest)
+         in MkInactivePlanBindingsTransport
+           (transportedPlanTarget tailTransport) transportedPlan
+           (transportedPlanBindings tailTransport) outsideTransport

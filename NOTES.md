@@ -1506,8 +1506,9 @@ ambient/ordered-binding equality while deliberately ignoring proof-only
 `UniqueKeys` terms; `CP4RuntimeBindingsChecks` pins the proof-distinct singleton
 regression. `DGamma.CP4DeletionPlanRuntime.transportInactivePlanAcrossBindings`
 proves the companion dependent induction: every Inactive/childless leaf plan
-reindexes across the same runtime binding list and its target retains exact
-ordered bindings, again without equating uniqueness certificates.
+and actor-outside certificate reindexes across the same runtime binding list,
+and its target retains exact ordered bindings, again without equating
+uniqueness certificates.
 `DGamma.CP4DeletionPlanComplete.currentRegisteredLeavesGiveCompletePlan` adds
 its necessary converse: every current exact R generation appears in the plan;
 `reachedDisciplinedBoundaryGivesCompleteDeletionPlan` constructs that saturated
