@@ -1286,11 +1286,15 @@ deleted head. A structural induction constructs the same
 `GenerationFilterResult` and proves an equation that the executable
 `filterGenerationActions` call returned `Just`; selected-episode and suffix
 specializations use the committed decidable deletion predicates directly. The
-remaining obligation-2 step is now only construction of `GenerationReplayReady`
-from the cross-boundary invariant identifying each incrementally built survivor
-with its corresponding original boundary minus the selected episode/current-R
-plan. No theorem alias or runtime evaluator changed, and no escape hatch was
-introduced.
+`DGamma.CP4DeletionSkeletonSuccess.deletionReplayReadyGivesTraceSkeleton`
+then runs both exact filter-success specializations and constructs the complete
+`DeletionTraceSkeleton` without a `Maybe`; its suffix readiness callback is
+indexed by the selected filter's actual result and exact episode generation
+scan. The remaining obligation-2 step is now only construction of
+`GenerationReplayReady` from the cross-boundary invariant identifying each
+incrementally built survivor with its corresponding original boundary minus the
+selected episode/current-R plan. No theorem alias or runtime evaluator changed,
+and no escape hatch was introduced.
 
 ### Cold-build validation under Idris 2 v0.8.0
 

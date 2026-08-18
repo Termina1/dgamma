@@ -122,8 +122,8 @@ progress.
   `DGamma.CP4DeletionGenerationBounds`,
   `DGamma.CP4DeletionGenerationUnique`,
   `DGamma.CP4DeletionGenerationFilter`,
-  `DGamma.CP4DeletionFilterSuccess`, `DGamma.CP4DeletionPremiseSplit`, and
-  `DGamma.CP4DeletionSkeleton`:
+  `DGamma.CP4DeletionFilterSuccess`, `DGamma.CP4DeletionPremiseSplit`,
+  `DGamma.CP4DeletionSkeleton`, and `DGamma.CP4DeletionSkeletonSuccess`:
   Finding-8 checked reuse countermodel,
   a total proof-producing scanner, proved birth-before-current-ordinal and
   live-name-uniqueness invariants, decidable exact-generation deletion
@@ -140,8 +140,10 @@ progress.
   The located-episode splitter derives the episode/suffix generation scans and
   restricts both no-R-episode and repaired Definition-69 evidence without new
   public premises. `DeletionTraceSkeleton` integrates those proofs with both
-  dependent filters, while `assembleDeletionResult` proves final record
-  construction from exactly the three remaining endpoint invariants.
+  dependent filters; `deletionReplayReadyGivesTraceSkeleton` is its non-`Maybe`
+  proof-driven assembly and runs both executable filters through their exact
+  success theorems. `assembleDeletionResult` proves final record construction
+  from exactly the three remaining endpoint invariants.
 - `DGamma.CP4IndependenceNonVacuity` and `DGamma.CP4RestrictionChecks`:
   Finding-7 order-preserving Definition-60 restriction, reverse-order
   old/new/actual regression, and nonempty corrected `TraceIndependent` /
