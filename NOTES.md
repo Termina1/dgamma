@@ -1504,7 +1504,11 @@ The first dedicated replay-boundary stage is now constructive.
 exhaustive eight-action keystone that transports evaluator success across exact
 ambient/ordered-binding equality while deliberately ignoring proof-only
 `UniqueKeys` terms; `CP4RuntimeBindingsChecks` pins the proof-distinct singleton
-regression. `DGamma.CP4DeletionNoEpisodeReplay` keeps the action index that the older
+regression. `DGamma.CP4DeletionPlanRuntime.transportInactivePlanAcrossBindings`
+proves the companion dependent induction: every Inactive/childless leaf plan
+reindexes across the same runtime binding list and its target retains exact
+ordered bindings, again without equating uniqueness certificates.
+`DGamma.CP4DeletionNoEpisodeReplay` keeps the action index that the older
 `TransitionResult` wrappers erased. `lifecycleRawAfterInactivePlan` and
 `orchestrationRawAfterInactivePlan` fold the existing one-leaf frames through a
 complete plan; `inactivePlanPreservesWellFormed` and raw Preservation turn the
