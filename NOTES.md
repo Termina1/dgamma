@@ -1484,6 +1484,21 @@ control/replay content, not an extra public premise and not permanently
 residualized: it is also required by Theorem-73 sorting. No theorem alias or
 runtime evaluator changed, and no escape hatch was introduced.
 
+The first dedicated replay-boundary stage is now constructive.
+`DGamma.CP4DeletionNoEpisodeReplay` keeps the action index that the older
+`TransitionResult` wrappers erased. `lifecycleRawAfterInactivePlan` and
+`orchestrationRawAfterInactivePlan` fold the existing one-leaf frames through a
+complete plan; `inactivePlanPreservesWellFormed` and raw Preservation turn the
+result into the exact checked `fireNamed` package. `retainedSuffixHeadAfterCurrentPlan`
+dispatches all eight actions, deriving lifecycle actor exclusion from the
+complement of generation ownership and child-O-Insert parent exclusion from
+registration discipline. `NoEpisodeReplayBoundary` then identifies an actual
+survivor with the exact ambient-preserving current-R plan target, and
+`retainedSuffixHeadAtBoundary` instantiates the suffix retained-head interface
+at that boundary. The remaining no-selected-episode work is preservation of
+this record after each kept/deleted head (the endpoint commutation half); the
+selected segment separately needs the selected-fiber lifecycle/effect quotient.
+
 ### Corollary 62: terminal recovery
 
 `DGamma.CP4TerminalRecovery.terminalRecoveryTheoremProof` now inhabits the
@@ -1624,8 +1639,9 @@ child-O-Insert parent guard), and a complete `CurrentRegisteredChildless`
 induction from disciplined registration,
 well-formed parent closure, and exact-generation no-episode evidence; both
 structural readiness inductions from the saturated retained-head interface;
-construction of that interface from the Lemma-71 replay-boundary invariant and
-endpoint effect/control/withdrawal invariants remain);
+and the all-action no-selected-episode retained-head frame at an exact current-R
+plan boundary; preservation of that boundary through the suffix, the selected-
+segment Lemma-71 quotient, and endpoint effect/control/withdrawal invariants remain);
 Confluence/Theorem
 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
