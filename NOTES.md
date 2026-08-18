@@ -1595,7 +1595,15 @@ table. `beginSelectedEffectReplayBoundary` derives the base from checked L-Begin
 without equating registry proof terms, and
 `selectedStepPreservesEffectReplayBoundary` consumes the proved selected
 retirement/advance/divert/leave accumulator step to preserve the relation when
-that selected lifecycle action is skipped. The remaining selected stage must
+that selected lifecycle action is skipped.
+`DGamma.CP4DeletionSelectedEffectForeign` closes the effect-only foreign
+transposition at each intermediate boundary. It applies
+`foreignAccumulatorStep`, transports the corrected Definition-60 map through
+`partialEffectMapRespects`, proves the map is defined on the survivor's exact
+ambient/ordered-table projection, and relates its output to target recovery.
+`foreignEffectStepGivesNextBoundary` is the explicit join point for the pending
+control proof: once an actual replay target is shown to project to that output,
+the next accumulator boundary is immediate. The remaining selected stage must
 construct foreign retained checked transitions, thread current-R plan deletion,
 and close the L-Unload endpoint.
 

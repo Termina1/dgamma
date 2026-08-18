@@ -190,8 +190,12 @@ progress.
   quotient with an accumulator-indexed effect boundary: checked L-Begin proves
   the base against the untouched survivor, and every selected installed step
   preserves that boundary when its lifecycle action is erased. The remaining
-  selected layer must replay foreign/retained controls and thread exact R-plan
-  deletion through the same boundary. The located-episode splitter
+  `DGamma.CP4DeletionSelectedEffectForeign` then proves the foreign half of the
+  Lemma-71 diamond: the corrected actual map runs on the related survivor, its
+  ordered-table output matches target recovery, and a later checked-control
+  proof can package the next boundary without repeating commutation. The
+  remaining selected layer must rebuild retained controls and thread exact
+  R-plan deletion through the same boundary. The located-episode splitter
   derives the episode/suffix generation scans and restricts both no-R-episode
   and repaired Definition-69 evidence without new public premises.
   `DeletionTraceSkeleton` integrates those proofs with both dependent filters;
