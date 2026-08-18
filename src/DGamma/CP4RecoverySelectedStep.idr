@@ -30,6 +30,7 @@ accumulatorModelInstalledAt model = rewrite modelFound model in
     AccumulatorActive view life => rewrite life in Refl
     AccumulatorUnloading view outcome life => rewrite life in Refl
 
+public export
 0 successfulRetireTag :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (before, afterState : SystemState name key value world error) ->
@@ -44,6 +45,7 @@ successfulRetireTag nameEq keyEq selected (MkSystemState ambient fibers)
   successfulRetireTag nameEq keyEq selected (MkSystemState ambient fibers)
     afterState tag raw | Just fiber = sym (cong fst (justPairInjective raw))
 
+public export
 0 successfulLeaveTag :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (before, afterState : SystemState name key value world error) ->
@@ -77,6 +79,7 @@ successfulLeaveTag nameEq keyEq selected (MkSystemState ambient fibers)
         afterState tag raw | Just fiber | Active accumulator view | False =
           sym (cong fst (justPairInjective raw))
 
+public export
 0 insertCannotExisting :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (parent : Parent name) -> (component : Component key value world error) ->
@@ -112,6 +115,7 @@ insertCannotExisting {name} {key} {world} {error} {value}
               fibers applied fresh
         in void (nothingIsNotJust (trans (sym absent) existing))
 
+public export
 0 removeCannotInstalled :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (before, afterState : SystemState name key value world error) ->
@@ -159,6 +163,7 @@ removeCannotInstalled nameEq keyEq selected (MkSystemState ambient fibers)
         afterState tag raw installedSource | Just fiber |
         Unloading accumulator view outcome | True = void (nothingIsNotJust raw)
 
+public export
 0 beginCannotInstalled :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (before, afterState : SystemState name key value world error) ->
@@ -189,6 +194,7 @@ beginCannotInstalled nameEq keyEq selected (MkSystemState ambient fibers)
       afterState tag raw installedSource | Just fiber |
       Unloading accumulator view outcome = void (nothingIsNotJust raw)
 
+public export
 0 unloadCannotEndInstalled :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (before, afterState : SystemState name key value world error) ->
