@@ -1434,6 +1434,13 @@ repaired deletion projections. The tracked tree now scans 69/69
 `%default total` modules with no escape hatch. This targeted validation does not
 discharge the registered clean-package debt.
 
+For Finding #9 and the first obligation-3 recovery modules, the mandatory
+accumulator-dependent revalidation is recorded in Finding #9 above. After the
+four recovery modules landed, the warm package build reports 88/88 total source
+modules and the anchored escape-hatch scan remains empty. This is a current
+whole-package typecheck, but it does not discharge the separately registered
+cold archive / `CP4SupportSolution` split debt.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
@@ -1450,7 +1457,12 @@ unloading-chain no-deadlock, all-rule potential decrease, amortized Equation
 61, maximality, and final public-alias assembly. The repaired Definition-69/
 Lemma-70 and Theorem-66 statement shapes still await end-of-CP4 re-review.
 
-**Partial:** Lemma 71 (effect commutation projection); Lemma 72 (candidate
+**Partial:** recovery Theorem 61 (Finding-9 inter-undo alignment, concrete
+accumulator factorization through Definition-60 yielded maps, exact L-Begin
+runtime model/handle, foreign control persistence, selected O-Retire, and the
+successful L-Advance push are proved; foreign effect/replay commutation and
+remaining selected control branches remain); Lemma 71 (effect commutation
+projection); Lemma 72 (candidate
 lifecycle-only deletion statement, exhaustive ten-tag actual-forward effect
 frames, generation-correct action/result filtering, proved birth-ordinal bounds
 and verbatim pre-episode subsequence construction, a total dependent filter
@@ -1477,7 +1489,8 @@ combined Theorem 64
 from Corollary 62). Lemmas 54–57 have many rule, frame, and boundary analogues
 but are not individually complete.
 
-**Merely stated:** Lemma 35, Theorems 40/42, recovery Theorem 61, Corollary 62,
+**Merely stated:** Lemma 35, Theorems 40/42, the public recovery-Theorem-61
+alias (despite the partial constructive infrastructure above), Corollary 62,
 `resolutionCoherenceTheorem`, `deletionTheorem`, and `confluenceTheorem`.
 These remain escape-hatch-free proposition types.
 
@@ -1487,9 +1500,10 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** derive the indexed Inactive-leaf deletion plan from the public
-Lemma-72 episode premises, prove the selected closed-episode replay boundary,
-and assemble the final checked `ActionSubsequence`/endpoints; then use deletion
+**Next:** complete the recovery model's selected control dispatcher and foreign
+effect/replay commutation, join it to the already constructed deletion skeleton,
+then derive final control/withdrawal evidence and inhabit `deletionTheorem`.
+After that, use deletion
 for constructive canonical sorting. Fresh-choice,
 cross-parent, 24/18 activation-reset,
 and no-O-Remove 23/18 and 27/18 vestigial pairs reach the literal public premise
