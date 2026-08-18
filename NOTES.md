@@ -1552,6 +1552,11 @@ boundary scaffold now owns `CompleteCurrentRegisteredPlanResult` directly, so a
 deleted exact-generation head can recover plan membership without an unrelated
 side invariant; `InactivePlanBindingsTransport` also preserves the plan actor
 list while continuing to avoid equality of uniqueness proofs.
+`DGamma.CP4DeletionBoundaryPlan` now performs the finite environment half of
+boundary preservation: retained insert/replace/remove and exact deleted remove
+all produce a new complete current-R plan, using explicit `Elem` transports for
+`putCurrentGeneration`/`deleteCurrentGeneration` and the strong commutation
+actor facts. No registry or proof-term equality is introduced.
 `retainedSuffixHeadAtBoundary` uses the keystone transport to instantiate the
 suffix retained-head interface without proof irrelevance. The remaining
 no-selected-episode work is preservation of

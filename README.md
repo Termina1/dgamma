@@ -165,6 +165,9 @@ progress.
   than equating `UniqueKeys` proof terms. Their strong boundary forms also prove
   exact preservation of plan actors; exact removal proves the dropped actor is
   outside the new plan and all distinct leaves survive.
+  `DGamma.CP4DeletionBoundaryPlan` lifts those actor facts to complete current-R
+  plans across retained insertion/replacement/removal and exact deleted removal,
+  with generation environments updated in lockstep.
   `DGamma.CP4DeletionNoEpisodeReplay`
   proves the suffix retained-head frame for all eight actions at a current-R
   plan boundary and names `NoEpisodeReplayBoundary` at this exact runtime
