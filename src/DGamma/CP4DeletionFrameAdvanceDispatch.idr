@@ -170,7 +170,7 @@ advanceActualEffectFrame nameEq keyEq actor (MkSystemState ambient fibers)
                       (MkFiber component parent retiredFlag table
                         (Reloading (step :: rest) accumulator view))
                       (localTable localAfter)
-                      (Unloading (accumulator . undo) view Nothing)) fibers)
+                      (Unloading (pushLocalUndo (componentProvisions component) accumulator undo) view Nothing)) fibers)
                 0 tagShape : LDivertTag = tag
                 tagShape = ruleTagFromJust raw
                 0 afterShape : concrete = afterState
@@ -197,7 +197,7 @@ advanceActualEffectFrame nameEq keyEq actor (MkSystemState ambient fibers)
                       (MkFiber component parent retiredFlag table
                         (Reloading [step] accumulator view))
                       (localTable localAfter)
-                      (Active (accumulator . undo) view)) fibers)
+                      (Active (pushLocalUndo (componentProvisions component) accumulator undo) view)) fibers)
                 0 tagShape : LFinishTag = tag
                 tagShape = ruleTagFromJust raw
                 0 afterShape : concrete = afterState
@@ -223,7 +223,7 @@ advanceActualEffectFrame nameEq keyEq actor (MkSystemState ambient fibers)
                       (MkFiber component parent retiredFlag table
                         (Reloading (step :: nextStep :: more) accumulator view))
                       (localTable localAfter)
-                      (Reloading (nextStep :: more) (accumulator . undo) view)) fibers)
+                      (Reloading (nextStep :: more) (pushLocalUndo (componentProvisions component) accumulator undo) view)) fibers)
                 0 tagShape : LIterTag = tag
                 tagShape = ruleTagFromJust raw
                 0 afterShape : concrete = afterState

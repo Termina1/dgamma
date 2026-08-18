@@ -103,7 +103,7 @@ advanceAfterTarget nameEq keyEq actor removed ambient fibers actorFiber step []
       (MkSystemState (localWorld localAfter)
         (replaceBinding @{nameEq} actor
           (setFiberRuntime actorFiber (localTable localAfter)
-            (Active (accumulator . undo) view))
+            (Active (pushLocalUndo (componentProvisions (fiberComponent actorFiber)) accumulator undo) view))
           (deleteBinding @{nameEq} removed fibers)))
       (rewrite replayFound in rewrite actorLife in rewrite replayResolved in
         rewrite ran in rewrite replayTarget in rewrite matches in Refl)
@@ -114,7 +114,7 @@ advanceAfterTarget nameEq keyEq actor removed ambient fibers actorFiber step
       (MkSystemState (localWorld localAfter)
         (replaceBinding @{nameEq} actor
           (setFiberRuntime actorFiber (localTable localAfter)
-            (Reloading (next :: later) (accumulator . undo) view))
+            (Reloading (next :: later) (pushLocalUndo (componentProvisions (fiberComponent actorFiber)) accumulator undo) view))
           (deleteBinding @{nameEq} removed fibers)))
       (rewrite replayFound in rewrite actorLife in rewrite replayResolved in
         rewrite ran in rewrite replayTarget in rewrite matches in Refl)
@@ -125,7 +125,7 @@ advanceAfterTarget nameEq keyEq actor removed ambient fibers actorFiber step res
       (MkSystemState (localWorld localAfter)
         (replaceBinding @{nameEq} actor
           (setFiberRuntime actorFiber (localTable localAfter)
-            (Unloading (accumulator . undo) view Nothing))
+            (Unloading (pushLocalUndo (componentProvisions (fiberComponent actorFiber)) accumulator undo) view Nothing))
           (deleteBinding @{nameEq} removed fibers)))
       (rewrite replayFound in rewrite actorLife in rewrite replayResolved in
         rewrite ran in rewrite replayTarget in rewrite matches in Refl)

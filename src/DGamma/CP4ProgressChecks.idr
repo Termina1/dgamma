@@ -58,38 +58,97 @@ progressSteps4 : List (StepEffect ToyKey ToyValue ToyRuntime String []
   DGamma.Section3Example.toySpecA)
 progressSteps4 = [DGamma.CalculusChecks.providerFinish]
 
+counterStateWithTable :
+  (table : OwnedTable ToyKey ToyValue DGamma.Section3Example.toySpecA) ->
+  Lifecycle ToyKey ToyValue ToyRuntime String Nat []
+    DGamma.Section3Example.toySpecA ->
+  SystemState Nat ToyKey ToyValue ToyRuntime String
+counterStateWithTable table lifecycle = MkSystemState (MkToyRuntime False False)
+  (MkCoeffectContext
+    [Bind 0 (MkFiber progressCounterComponent Root False table lifecycle)]
+    (UniqueCons notInEmpty UniqueNil))
+
 counterState : Lifecycle ToyKey ToyValue ToyRuntime String Nat []
   DGamma.Section3Example.toySpecA ->
   SystemState Nat ToyKey ToyValue ToyRuntime String
-counterState lifecycle = MkSystemState (MkToyRuntime False False)
-  (MkCoeffectContext
-    [Bind 0 (MkFiber progressCounterComponent Root False emptyOwned lifecycle)]
-    (UniqueCons notInEmpty UniqueNil))
+counterState = counterStateWithTable emptyOwned
+
+CounterAccumulator : Type
+CounterAccumulator = LocalState ToyKey ToyValue ToyRuntime
+    DGamma.Section3Example.toySpecA ->
+  LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA
+
+counterAccumulator0 : CounterAccumulator
+counterAccumulator0 = id
+
+counterAccumulator1 : CounterAccumulator
+counterAccumulator1 = pushLocalUndo DGamma.Section3Example.toySpecA
+  counterAccumulator0 id
+
+counterAccumulator2 : CounterAccumulator
+counterAccumulator2 = pushLocalUndo DGamma.Section3Example.toySpecA
+  counterAccumulator1 id
+
+counterAccumulator3 : CounterAccumulator
+counterAccumulator3 = pushLocalUndo DGamma.Section3Example.toySpecA
+  counterAccumulator2 id
+
+counterAccumulator4 : CounterAccumulator
+counterAccumulator4 = pushLocalUndo DGamma.Section3Example.toySpecA
+  counterAccumulator3 id
+
+counterAccumulator5 : CounterAccumulator
+counterAccumulator5 = pushLocalUndo DGamma.Section3Example.toySpecA
+  counterAccumulator4 id
+
+counterTable0 : OwnedTable ToyKey ToyValue DGamma.Section3Example.toySpecA
+counterTable0 = emptyOwned
+
+counterTable1 : OwnedTable ToyKey ToyValue DGamma.Section3Example.toySpecA
+counterTable1 = restrictOwnedPreservingOrder DGamma.Section3Example.toySpecA
+  (ownedValues counterTable0)
+
+counterTable2 : OwnedTable ToyKey ToyValue DGamma.Section3Example.toySpecA
+counterTable2 = restrictOwnedPreservingOrder DGamma.Section3Example.toySpecA
+  (ownedValues counterTable1)
+
+counterTable3 : OwnedTable ToyKey ToyValue DGamma.Section3Example.toySpecA
+counterTable3 = restrictOwnedPreservingOrder DGamma.Section3Example.toySpecA
+  (ownedValues counterTable2)
+
+counterTable4 : OwnedTable ToyKey ToyValue DGamma.Section3Example.toySpecA
+counterTable4 = restrictOwnedPreservingOrder DGamma.Section3Example.toySpecA
+  (ownedValues counterTable3)
+
+counterTable5 : OwnedTable ToyKey ToyValue DGamma.Section3Example.toySpecA
+counterTable5 = restrictOwnedPreservingOrder DGamma.Section3Example.toySpecA
+  (ownedValues counterTable4)
 
 public export
 progressCounter0 : SystemState Nat ToyKey ToyValue ToyRuntime String
-progressCounter0 = counterState (Reloading progressSteps id EmptyView)
+progressCounter0 = counterStateWithTable counterTable0
+  (Reloading progressSteps counterAccumulator0 EmptyView)
 
 progressCounter1 : SystemState Nat ToyKey ToyValue ToyRuntime String
-progressCounter1 = counterState
-  (Reloading progressSteps1 (id . id) EmptyView)
+progressCounter1 = counterStateWithTable counterTable1
+  (Reloading progressSteps1 counterAccumulator1 EmptyView)
 
 progressCounter2 : SystemState Nat ToyKey ToyValue ToyRuntime String
-progressCounter2 = counterState
-  (Reloading progressSteps2 ((id . id) . id) EmptyView)
+progressCounter2 = counterStateWithTable counterTable2
+  (Reloading progressSteps2 counterAccumulator2 EmptyView)
 
 progressCounter3 : SystemState Nat ToyKey ToyValue ToyRuntime String
-progressCounter3 = counterState
-  (Reloading progressSteps3 (((id . id) . id) . id) EmptyView)
+progressCounter3 = counterStateWithTable counterTable3
+  (Reloading progressSteps3 counterAccumulator3 EmptyView)
 
 progressCounter4 : SystemState Nat ToyKey ToyValue ToyRuntime String
-progressCounter4 = counterState
-  (Reloading progressSteps4 ((((id . id) . id) . id) . id) EmptyView)
+progressCounter4 = counterStateWithTable counterTable4
+  (Reloading progressSteps4 counterAccumulator4 EmptyView)
 
 public export
 progressCounter5 : SystemState Nat ToyKey ToyValue ToyRuntime String
-progressCounter5 = counterState
-  (Active (((((id . id) . id) . id) . id) . id) EmptyView)
+progressCounter5 = counterStateWithTable counterTable5
+  (Active counterAccumulator5 EmptyView)
 
 0 emptyViewBindingsValid :
   (fibers : Registry Nat ToyKey ToyValue ToyRuntime String) ->
@@ -99,6 +158,7 @@ progressCounter5 = counterState
 emptyViewBindingsValid fibers = Refl
 
 0 counterReloadingWellFormed :
+  (table : OwnedTable ToyKey ToyValue DGamma.Section3Example.toySpecA) ->
   (remaining : List (StepEffect ToyKey ToyValue ToyRuntime String []
     DGamma.Section3Example.toySpecA)) ->
   (accumulator : LocalState ToyKey ToyValue ToyRuntime
@@ -106,59 +166,67 @@ emptyViewBindingsValid fibers = Refl
     LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA) ->
   registryWellFormed @{the (DecEq Nat) %search}
     @{the (DecEq ToyKey) %search}
-    (counterState (Reloading remaining accumulator EmptyView)) = True
-counterReloadingWellFormed remaining accumulator =
+    (counterStateWithTable table
+      (Reloading remaining accumulator EmptyView)) = True
+counterReloadingWellFormed table remaining accumulator =
   rewrite emptyViewBindingsValid
-    (registry (counterState (Reloading remaining accumulator EmptyView))) in Refl
+    (registry (counterStateWithTable table
+      (Reloading remaining accumulator EmptyView))) in Refl
 
 0 counterActiveWellFormed :
+  (table : OwnedTable ToyKey ToyValue DGamma.Section3Example.toySpecA) ->
   (accumulator : LocalState ToyKey ToyValue ToyRuntime
       DGamma.Section3Example.toySpecA ->
     LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA) ->
   registryWellFormed @{the (DecEq Nat) %search}
     @{the (DecEq ToyKey) %search}
-    (counterState (Active accumulator EmptyView)) = True
-counterActiveWellFormed accumulator =
+    (counterStateWithTable table (Active accumulator EmptyView)) = True
+counterActiveWellFormed table accumulator =
   rewrite emptyViewBindingsValid
-    (registry (counterState (Active accumulator EmptyView))) in Refl
+    (registry (counterStateWithTable table
+      (Active accumulator EmptyView))) in Refl
 
 0 progressCounter0WellFormed :
   registryWellFormed @{the (DecEq Nat) %search}
     @{the (DecEq ToyKey) %search}
     DGamma.CP4ProgressChecks.progressCounter0 = True
-progressCounter0WellFormed = counterReloadingWellFormed progressSteps id
+progressCounter0WellFormed = counterReloadingWellFormed counterTable0
+  progressSteps counterAccumulator0
 
 0 progressCounter1WellFormed :
   registryWellFormed @{the (DecEq Nat) %search}
     @{the (DecEq ToyKey) %search}
     DGamma.CP4ProgressChecks.progressCounter1 = True
-progressCounter1WellFormed = counterReloadingWellFormed progressSteps1 (id . id)
+progressCounter1WellFormed = counterReloadingWellFormed counterTable1
+  progressSteps1 counterAccumulator1
 
 0 progressCounter2WellFormed :
   registryWellFormed @{the (DecEq Nat) %search}
     @{the (DecEq ToyKey) %search}
     DGamma.CP4ProgressChecks.progressCounter2 = True
-progressCounter2WellFormed = counterReloadingWellFormed progressSteps2 ((id . id) . id)
+progressCounter2WellFormed = counterReloadingWellFormed counterTable2
+  progressSteps2 counterAccumulator2
 
 0 progressCounter3WellFormed :
   registryWellFormed @{the (DecEq Nat) %search}
     @{the (DecEq ToyKey) %search}
     DGamma.CP4ProgressChecks.progressCounter3 = True
-progressCounter3WellFormed = counterReloadingWellFormed progressSteps3 (((id . id) . id) . id)
+progressCounter3WellFormed = counterReloadingWellFormed counterTable3
+  progressSteps3 counterAccumulator3
 
 0 progressCounter4WellFormed :
   registryWellFormed @{the (DecEq Nat) %search}
     @{the (DecEq ToyKey) %search}
     DGamma.CP4ProgressChecks.progressCounter4 = True
-progressCounter4WellFormed = counterReloadingWellFormed progressSteps4
-  ((((id . id) . id) . id) . id)
+progressCounter4WellFormed = counterReloadingWellFormed counterTable4
+  progressSteps4 counterAccumulator4
 
 0 progressCounter5WellFormed :
   registryWellFormed @{the (DecEq Nat) %search}
     @{the (DecEq ToyKey) %search}
     DGamma.CP4ProgressChecks.progressCounter5 = True
-progressCounter5WellFormed = counterActiveWellFormed
-  (((((id . id) . id) . id) . id) . id)
+progressCounter5WellFormed = counterActiveWellFormed counterTable5
+  counterAccumulator5
 
 0 progressCounterRaw0 :
   applyAction @{the (DecEq Nat) %search} @{the (DecEq ToyKey) %search}

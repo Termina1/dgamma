@@ -50,7 +50,7 @@ controlAfter = MkSystemState (MkToyRuntime False False)
     (setFiberRuntime controlActorFiber
       (restrictOwnedPreservingOrder DGamma.Section3Example.toySpecA
         (ownedValues (fiberTable controlActorFiber)))
-      (Active (id . id) EmptyView))
+      (Active (pushLocalUndo DGamma.Section3Example.toySpecA id id) EmptyView))
     controlRegistry)
 
 0 controlEmptyViewValid :

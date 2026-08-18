@@ -664,8 +664,8 @@ preservationLAdvance {name} {key} {world} {error} {value}
               Refl => preservationReloadingRuntime nameEq keyEq ambient
                 (localWorld localAfter) n component parent retired table
                 (step :: rest) accumulator view (localTable localAfter)
-                (Unloading (accumulator . undo) view Nothing) fibers found valid
-                Refl
+                (Unloading (pushLocalUndo (componentProvisions component)
+                  accumulator undo) view Nothing) fibers found valid Refl
         preservationLAdvance {name} {key} {world} {error} {value}
           nameEq keyEq n (MkSystemState ambient fibers) afterState tag valid equation |
           Just (MkFiber component parent retired table
@@ -680,7 +680,8 @@ preservationLAdvance {name} {key} {world} {error} {value}
                 Refl => preservationReloadingRuntime nameEq keyEq ambient
                   (localWorld localAfter) n component parent retired table
                   [step] accumulator view (localTable localAfter)
-                  (Active (accumulator . undo) view) fibers found valid Refl
+                  (Active (pushLocalUndo (componentProvisions component)
+                    accumulator undo) view) fibers found valid Refl
           preservationLAdvance {name} {key} {world} {error} {value}
             nameEq keyEq n (MkSystemState ambient fibers) afterState tag valid equation |
             Just (MkFiber component parent retired table
@@ -690,8 +691,9 @@ preservationLAdvance {name} {key} {world} {error} {value}
                 Refl => preservationReloadingRuntime nameEq keyEq ambient
                   (localWorld localAfter) n component parent retired table
                   (step :: next :: more) accumulator view (localTable localAfter)
-                  (Reloading (next :: more) (accumulator . undo) view) fibers
-                  found valid Refl
+                  (Reloading (next :: more)
+                    (pushLocalUndo (componentProvisions component)
+                      accumulator undo) view) fibers found valid Refl
   preservationLAdvance {name} {key} {world} {error} {value}
     nameEq keyEq n (MkSystemState ambient fibers) afterState tag valid equation |
     Just (MkFiber component parent retired table (Active accumulator view)) =
@@ -3472,13 +3474,19 @@ applyActionLocalUpdate nameEq keyEq (LAdvance n)
               Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found}
                 @{fiberComponentSetRuntime fiber _ _}
                 @{fiberParentSetRuntimeHint fiber (localTable localAfter)
-                  (Unloading (accumulator . undo) view Nothing)}
+                  (Unloading (pushLocalUndo
+                    (componentProvisions (fiberComponent fiber)) accumulator undo)
+                    view Nothing)}
                 @{RetirementStable (retiredAfterSetRuntime fiber _ _)}
                 @{ContinuationStopped
                   (continuationSetRuntimeStopped fiber (localTable localAfter)
-                    (Unloading (accumulator . undo) view Nothing) NotUnloading)}
+                    (Unloading (pushLocalUndo
+                      (componentProvisions (fiberComponent fiber)) accumulator undo)
+                      view Nothing) NotUnloading)}
                 (setFiberRuntime fiber (localTable localAfter)
-                  (Unloading (accumulator . undo) view Nothing)))
+                  (Unloading (pushLocalUndo
+                    (componentProvisions (fiberComponent fiber)) accumulator undo)
+                    view Nothing)))
           applyActionLocalUpdate nameEq keyEq (LAdvance n)
             before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
             Reloading (step :: []) accumulator view | Just capability |
@@ -3486,13 +3494,19 @@ applyActionLocalUpdate nameEq keyEq (LAdvance n)
               Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found}
                 @{fiberComponentSetRuntime fiber _ _}
                 @{fiberParentSetRuntimeHint fiber (localTable localAfter)
-                  (Active (accumulator . undo) view)}
+                  (Active (pushLocalUndo
+                    (componentProvisions (fiberComponent fiber)) accumulator undo)
+                    view)}
                 @{RetirementStable (retiredAfterSetRuntime fiber _ _)}
                 @{ContinuationStopped
                   (continuationSetRuntimeStopped fiber (localTable localAfter)
-                    (Active (accumulator . undo) view) NotActive)}
+                    (Active (pushLocalUndo
+                      (componentProvisions (fiberComponent fiber)) accumulator undo)
+                      view) NotActive)}
                 (setFiberRuntime fiber (localTable localAfter)
-                  (Active (accumulator . undo) view)))
+                  (Active (pushLocalUndo
+                    (componentProvisions (fiberComponent fiber)) accumulator undo)
+                    view)))
           applyActionLocalUpdate nameEq keyEq (LAdvance n)
             before@(MkSystemState ambient fibers) afterState tag equation | Just fiber |
             Reloading (step :: next :: more) accumulator view | Just capability |
@@ -3500,15 +3514,24 @@ applyActionLocalUpdate nameEq keyEq (LAdvance n)
               Refl => MkSystemLocalUpdate (LocalReplace {oldFiber = fiber} @{found}
                 @{fiberComponentSetRuntime fiber _ _}
                 @{fiberParentSetRuntimeHint fiber (localTable localAfter)
-                  (Reloading (next :: more) (accumulator . undo) view)}
+                  (Reloading (next :: more)
+                    (pushLocalUndo
+                      (componentProvisions (fiberComponent fiber)) accumulator undo)
+                    view)}
                 @{RetirementStable (retiredAfterSetRuntime fiber _ _)}
                 @{ContinuationAdvanced (length (next :: more))
                   (continuationLengthReloading fiber (step :: next :: more)
                     accumulator view life)
                   (continuationSetRuntimeReloading fiber (localTable localAfter)
-                    (next :: more) (accumulator . undo) view)}
+                    (next :: more)
+                    (pushLocalUndo
+                      (componentProvisions (fiberComponent fiber)) accumulator undo)
+                    view)}
                 (setFiberRuntime fiber (localTable localAfter)
-                  (Reloading (next :: more) (accumulator . undo) view)))
+                  (Reloading (next :: more)
+                    (pushLocalUndo
+                      (componentProvisions (fiberComponent fiber)) accumulator undo)
+                    view)))
 applyActionLocalUpdate nameEq keyEq (LDivert n)
   before@(MkSystemState ambient fibers) afterState tag equation
   with (lookupFiber @{nameEq} n fibers) proof found

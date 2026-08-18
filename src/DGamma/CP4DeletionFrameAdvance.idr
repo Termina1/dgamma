@@ -122,7 +122,7 @@ public export
           (setFiberRuntime
             (MkFiber component parent retiredFlag table
               (Reloading [step] accumulator view))
-            (localTable localAfter) (Active (accumulator . undo) view)) fibers))) =
+            (localTable localAfter) (Active (pushLocalUndo (componentProvisions component) accumulator undo) view)) fibers))) =
       afterState) ->
   ActualEffectFrame nameEq keyEq (LAdvance actor) LFinishTag
     (MkSystemState ambient fibers) afterState
@@ -134,7 +134,7 @@ finishStepActualEffectFrame nameEq keyEq actor ambient fibers component parent
         (Reloading [step] accumulator view)
       next : Fiber name key value world error
       next = setFiberRuntime sourceFiber (localTable localAfter)
-        (Active (accumulator . undo) view)
+        (Active (pushLocalUndo (componentProvisions component) accumulator undo) view)
       0 effectResolved : resolveEffectValues @{keyEq}
         (dependencies (componentDependencies component)) view
         (projectEffectState @{nameEq}
@@ -163,7 +163,7 @@ finishStepActualEffectFrame nameEq keyEq actor ambient fibers component parent
         lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
         lookupBinding @{keyEq} k (ownedValues (localTable localAfter))
       tableSame k = runtimeTableLookup keyEq k sourceFiber
-        (localTable localAfter) (Active (accumulator . undo) view)
+        (localTable localAfter) (Active (pushLocalUndo (componentProvisions component) accumulator undo) view)
   in runtimeReplaceActualEffectFrame nameEq keyEq (LAdvance actor) LFinishTag
     actor ambient (localWorld localAfter) sourceFiber next fibers afterState
     sourceFound (ownedValues (localTable localAfter)) tableSame concreteAfter
@@ -218,7 +218,7 @@ public export
             (MkFiber component parent retiredFlag table
               (Reloading (step :: nextStep :: more) accumulator view))
             (localTable localAfter)
-            (Reloading (nextStep :: more) (accumulator . undo) view)) fibers))) =
+            (Reloading (nextStep :: more) (pushLocalUndo (componentProvisions component) accumulator undo) view)) fibers))) =
       afterState) ->
   ActualEffectFrame nameEq keyEq (LAdvance actor) LIterTag
     (MkSystemState ambient fibers) afterState
@@ -230,7 +230,7 @@ iterActualEffectFrame nameEq keyEq actor ambient fibers component parent
         (Reloading (step :: nextStep :: more) accumulator view)
       next : Fiber name key value world error
       next = setFiberRuntime sourceFiber (localTable localAfter)
-        (Reloading (nextStep :: more) (accumulator . undo) view)
+        (Reloading (nextStep :: more) (pushLocalUndo (componentProvisions component) accumulator undo) view)
       0 effectResolved : resolveEffectValues @{keyEq}
         (dependencies (componentDependencies component)) view
         (projectEffectState @{nameEq}
@@ -260,7 +260,7 @@ iterActualEffectFrame nameEq keyEq actor ambient fibers component parent
         lookupBinding @{keyEq} k (ownedValues (localTable localAfter))
       tableSame k = runtimeTableLookup keyEq k sourceFiber
         (localTable localAfter)
-        (Reloading (nextStep :: more) (accumulator . undo) view)
+        (Reloading (nextStep :: more) (pushLocalUndo (componentProvisions component) accumulator undo) view)
   in runtimeReplaceActualEffectFrame nameEq keyEq (LAdvance actor) LIterTag
     actor ambient (localWorld localAfter) sourceFiber next fibers afterState
     sourceFound (ownedValues (localTable localAfter)) tableSame concreteAfter
@@ -314,7 +314,7 @@ public export
             (MkFiber component parent retiredFlag table
               (Reloading (step :: rest) accumulator view))
             (localTable localAfter)
-            (Unloading (accumulator . undo) view Nothing)) fibers))) = afterState) ->
+            (Unloading (pushLocalUndo (componentProvisions component) accumulator undo) view Nothing)) fibers))) = afterState) ->
   ActualEffectFrame nameEq keyEq (LAdvance actor) LDivertTag
     (MkSystemState ambient fibers) afterState
 landingDivertActualEffectFrame nameEq keyEq actor ambient fibers component parent
@@ -325,7 +325,7 @@ landingDivertActualEffectFrame nameEq keyEq actor ambient fibers component paren
         (Reloading (step :: rest) accumulator view)
       next : Fiber name key value world error
       next = setFiberRuntime sourceFiber (localTable localAfter)
-        (Unloading (accumulator . undo) view Nothing)
+        (Unloading (pushLocalUndo (componentProvisions component) accumulator undo) view Nothing)
       0 effectResolved : resolveEffectValues @{keyEq}
         (dependencies (componentDependencies component)) view
         (projectEffectState @{nameEq}
@@ -370,7 +370,7 @@ landingDivertActualEffectFrame nameEq keyEq actor ambient fibers component paren
         lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
         lookupBinding @{keyEq} k (ownedValues (localTable localAfter))
       tableSame k = runtimeTableLookup keyEq k sourceFiber
-        (localTable localAfter) (Unloading (accumulator . undo) view Nothing)
+        (localTable localAfter) (Unloading (pushLocalUndo (componentProvisions component) accumulator undo) view Nothing)
   in runtimeReplaceActualEffectFrame nameEq keyEq (LAdvance actor) LDivertTag
     actor ambient (localWorld localAfter) sourceFiber next fibers afterState
     sourceFound (ownedValues (localTable localAfter)) tableSame concreteAfter

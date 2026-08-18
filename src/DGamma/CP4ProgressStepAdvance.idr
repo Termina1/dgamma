@@ -170,14 +170,14 @@ advanceActorPotentialStep nameEq keyEq bound actor
               Just (MkFiber component parent retiredFlag table lifecycle) |
                 Reloading (step :: rest) accumulator view | Just capability |
                   Right (localAfter, undo) | False =
-            let nextAccumulator = accumulator . undo
+            let nextAccumulator = pushLocalUndo (componentProvisions component) accumulator undo
                 nextTable : OwnedTable key value (componentProvisions component)
                 nextTable = localTable localAfter
                 sourceFiber = MkFiber component parent retiredFlag table
                   (Reloading (step :: rest) accumulator view)
                 targetFiberValue : Fiber name key value world error
                 targetFiberValue = MkFiber component parent retiredFlag (localTable localAfter)
-                  (Unloading (accumulator . undo) view Nothing)
+                  (Unloading (pushLocalUndo (componentProvisions component) accumulator undo) view Nothing)
                 targetState : SystemState name key value world error
                 targetState = MkSystemState (localWorld localAfter)
                   (replaceBinding @{nameEq} actor targetFiberValue fibers)
@@ -195,7 +195,7 @@ advanceActorPotentialStep nameEq keyEq bound actor
                 exactStep = divertAdvancePotentialStep nameEq keyEq bound actor
                   (MkSystemState ambient fibers) targetState component parent
                   retiredFlag table (localTable localAfter) (step :: rest) accumulator
-                  (accumulator . undo) view found targetFound matches
+                  (pushLocalUndo (componentProvisions component) accumulator undo) view found targetFound matches
             in transportActorPotentialTarget exactStep
               (cong snd (justInjective rawReduced))
           advanceActorPotentialStep nameEq keyEq bound actor
@@ -203,12 +203,12 @@ advanceActorPotentialStep nameEq keyEq bound actor
               Just (MkFiber component parent retiredFlag table lifecycle) |
                 Reloading (step :: []) accumulator view | Just capability |
                   Right (localAfter, undo) | True =
-            let nextAccumulator = accumulator . undo
+            let nextAccumulator = pushLocalUndo (componentProvisions component) accumulator undo
                 nextTable : OwnedTable key value (componentProvisions component)
                 nextTable = localTable localAfter
                 targetFiberValue : Fiber name key value world error
                 targetFiberValue = MkFiber component parent retiredFlag (localTable localAfter)
-                  (Active (accumulator . undo) view)
+                  (Active (pushLocalUndo (componentProvisions component) accumulator undo) view)
                 targetState : SystemState name key value world error
                 targetState = MkSystemState (localWorld localAfter)
                   (replaceBinding @{nameEq} actor targetFiberValue fibers)
@@ -226,7 +226,7 @@ advanceActorPotentialStep nameEq keyEq bound actor
                 exactStep = finishAdvancePotentialStep nameEq keyEq bound actor
                   (MkSystemState ambient fibers) targetState component parent
                   retiredFlag table (localTable localAfter) (step :: []) accumulator
-                  (accumulator . undo) view found targetFound matches
+                  (pushLocalUndo (componentProvisions component) accumulator undo) view found targetFound matches
             in transportActorPotentialTarget exactStep
               (cong snd (justInjective rawReduced))
           advanceActorPotentialStep nameEq keyEq bound actor
@@ -234,12 +234,12 @@ advanceActorPotentialStep nameEq keyEq bound actor
               Just (MkFiber component parent retiredFlag table lifecycle) |
                 Reloading (step :: nextStep :: more) accumulator view |
                   Just capability | Right (localAfter, undo) | True =
-            let nextAccumulator = accumulator . undo
+            let nextAccumulator = pushLocalUndo (componentProvisions component) accumulator undo
                 nextTable : OwnedTable key value (componentProvisions component)
                 nextTable = localTable localAfter
                 targetFiberValue : Fiber name key value world error
                 targetFiberValue = MkFiber component parent retiredFlag (localTable localAfter)
-                  (Reloading (nextStep :: more) (accumulator . undo) view)
+                  (Reloading (nextStep :: more) (pushLocalUndo (componentProvisions component) accumulator undo) view)
                 targetState : SystemState name key value world error
                 targetState = MkSystemState (localWorld localAfter)
                   (replaceBinding @{nameEq} actor targetFiberValue fibers)
@@ -257,6 +257,6 @@ advanceActorPotentialStep nameEq keyEq bound actor
                 exactStep = iterAdvancePotentialStep nameEq keyEq bound actor
                   (MkSystemState ambient fibers) targetState component parent
                   retiredFlag table (localTable localAfter) step nextStep more accumulator
-                  (accumulator . undo) view found targetFound matches
+                  (pushLocalUndo (componentProvisions component) accumulator undo) view found targetFound matches
             in transportActorPotentialTarget exactStep
               (cong snd (justInjective rawReduced))

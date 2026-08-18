@@ -245,6 +245,50 @@ yieldedInverseGeneratorRuntimeCheck =
               _ => False
         _ => False
 
+sameToyBindings : List (Binding ToyKey ToyValue) ->
+  List (Binding ToyKey ToyValue) -> Bool
+sameToyBindings [] [] = True
+sameToyBindings (Bind leftKey leftValue :: leftRest)
+  (Bind rightKey rightValue :: rightRest) with (decEq leftKey rightKey)
+  sameToyBindings (Bind key leftValue :: leftRest)
+    (Bind key rightValue :: rightRest) | Yes Refl =
+      leftValue == rightValue && sameToyBindings leftRest rightRest
+  sameToyBindings (Bind leftKey leftValue :: leftRest)
+    (Bind rightKey rightValue :: rightRest) | No _ = False
+sameToyBindings _ _ = False
+
+sameToyLocalRuntime : LocalState ToyKey ToyValue ToyRuntime provision ->
+  LocalState ToyKey ToyValue ToyRuntime provision -> Bool
+sameToyLocalRuntime (MkLocalState (MkToyRuntime leftProvider leftConsumer)
+  leftTable) (MkLocalState (MkToyRuntime rightProvider rightConsumer)
+  rightTable) =
+    leftProvider == rightProvider && leftConsumer == rightConsumer &&
+    sameToyBindings (bindings (ownedValues leftTable))
+      (bindings (ownedValues rightTable))
+
+||| Finding-9 executable regression. Two existing effectful provider steps yield
+||| two inverses; the pre-repair `undo1 . undo2` accumulator and the repaired
+||| inter-undo-normalizing construction recover bit-identical runtime worlds and
+||| ordered binding lists from the same unload-normalized state.
+public export
+interUndoNormalizationRuntimeIdentity : Bool
+interUndoNormalizationRuntimeIdentity =
+  let initial : LocalState ToyKey ToyValue ToyRuntime
+        DGamma.Section3Example.toySpecA
+      initial = MkLocalState (MkToyRuntime False False) (ownedA False)
+  in case runStepEffect providerInstall NoDepValues initial of
+    Left _ => False
+    Right (afterFirst, undoFirst) =>
+      case runStepEffect providerInstall NoDepValues afterFirst of
+        Left _ => False
+        Right (afterSecond, undoSecond) =>
+          let probe = normalizeLocal DGamma.Section3Example.toySpecA afterSecond
+              oldAccumulator = undoFirst . undoSecond
+              newAccumulator = pushLocalUndo DGamma.Section3Example.toySpecA
+                (pushLocalUndo DGamma.Section3Example.toySpecA id undoFirst)
+                undoSecond
+          in sameToyLocalRuntime (oldAccumulator probe) (newAccumulator probe)
+
 ||| Dynamic-table/capability regression: the provider installs ServiceA and the
 ||| consumer reads that declared dependency to decide its ambient effect and own
 ||| ServiceB value.
@@ -457,7 +501,8 @@ proofTraceStarts = isJust (fire %search %search
 public export
 allRuleChecks : Bool
 allRuleChecks = proofTraceStarts && fullEffectMapCarriesTable &&
-  yieldedInverseGeneratorRuntimeCheck && activationUsesResolution &&
+  yieldedInverseGeneratorRuntimeCheck && interUndoNormalizationRuntimeIdentity &&
+  activationUsesResolution &&
   reconciliationScenarioChecks && guardedScenarioChecks &&
   raiseMapIsIdentity && raiseScenario && emptyStaleDiverts && abortDivertScenario &&
   landingDivertScenario

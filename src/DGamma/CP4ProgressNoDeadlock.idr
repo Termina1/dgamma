@@ -129,7 +129,7 @@ reloadingAdvanceResolvedRaw nameEq keyEq ambient fibers actor component parent
                   (MkFiber component parent retiredFlag table
                     (Reloading (step :: rest) accumulator view))
                   (localTable localAfter)
-                  (Unloading (accumulator . undo) view Nothing)) fibers)
+                  (Unloading (pushLocalUndo (componentProvisions component) accumulator undo) view Nothing)) fibers)
             0 raw : (applyAction @{nameEq} @{keyEq} {value = value}
               {world = world} {error = error} (LAdvance actor)
               (MkSystemState ambient fibers) = Just (LDivertTag, afterState))
@@ -146,7 +146,7 @@ reloadingAdvanceResolvedRaw nameEq keyEq ambient fibers actor component parent
                   (MkFiber component parent retiredFlag table
                     (Reloading [step] accumulator view))
                   (localTable localAfter)
-                  (Active (accumulator . undo) view)) fibers)
+                  (Active (pushLocalUndo (componentProvisions component) accumulator undo) view)) fibers)
             0 raw : (applyAction @{nameEq} @{keyEq} {value = value}
               {world = world} {error = error} (LAdvance actor)
               (MkSystemState ambient fibers) = Just (LFinishTag, afterState))
@@ -163,7 +163,7 @@ reloadingAdvanceResolvedRaw nameEq keyEq ambient fibers actor component parent
                   (MkFiber component parent retiredFlag table
                     (Reloading (step :: next :: more) accumulator view))
                   (localTable localAfter)
-                  (Reloading (next :: more) (accumulator . undo) view)) fibers)
+                  (Reloading (next :: more) (pushLocalUndo (componentProvisions component) accumulator undo) view)) fibers)
             0 raw : (applyAction @{nameEq} @{keyEq} {value = value}
               {world = world} {error = error} (LAdvance actor)
               (MkSystemState ambient fibers) = Just (LIterTag, afterState))

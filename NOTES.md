@@ -337,6 +337,49 @@ of Lemma 38.
     re-review list. The reviewer must attack scanner ordinal alignment,
     O-Remove/reissue boundaries, current-generation endpoint exemptions, and
     the existing no-O-Remove vestigial cases under the repaired alias.
+14. **CP4 Finding #9 — the lifecycle accumulator and Definition-60 yielded
+    maps normalized at different rhythms.** After Finding #7, every yielded
+    inverse map applies `restrictOwnedPreservingOrder` before its undo. A
+    generated-monoid composition therefore normalizes before *every* captured
+    inverse, while the evaluator's old lifecycle accumulator
+    `accumulator . undo` normalized only once, at the eventual L-Unload. Their
+    runtime binding lists remained equal, but each normalization reconstructs
+    quantity-0 `UniqueKeys`/`ownedSound` certificates. Quantity-0 erasure is not
+    constructive proof irrelevance: identifying the two `OwnedTable` records
+    would require equality of erased negative-function proofs and hence the
+    forbidden function-extensionality step. This blocked the accumulator-to-
+    generated-transformation invariant required by obligation 3.
+
+    With supervisor approval, successful L-Advance now uses
+    `pushLocalUndo provision accumulator undo`, definitionally
+    `accumulator . normalizeLocal provision . undo`. Commit `babebb6` first
+    proved the key runtime fact: normalizing an already confined table preserves
+    its complete binding list and order. `normalizeLocalWorld` and
+    `normalizeLocalBindings` expose both observable invariants. Thus the repair
+    changes only when erased confinement certificates are rebuilt; ambient data,
+    table keys/values/order, and plugin-visible evaluator behavior are unchanged.
+    The disproportionate alternative—adding a public respect/quotient law to
+    every `StepEffect`—was rejected.
+
+    `interUndoNormalizationRuntimeIdentity` executes two existing effectful
+    provider steps and compares the pre-repair `undo1 . undo2` accumulator with
+    the repaired inter-undo-normalizing accumulator on the same L-Unload-
+    normalized state. It compares both runtime world bits and the complete
+    ordered binding lists and evaluates to `True`. Mandatory revalidation passed
+    for the Section-3/CP2 LIFO module, Metatheory recovery/exit infrastructure,
+    raw Preservation's L-Advance/L-Unload branches, the complete Progress proof,
+    all changed deletion effect/control frames, corrected nonempty independence
+    witnesses, `CalculusChecks`, and `CP3VestigialChecks`. The first vestigial
+    check attempt exited 137 at the known support-solution resource boundary;
+    rebuilding `CP4SupportSolution` alone and then rerunning the two heavy check
+    modules succeeded. The combined runtime tuple for the new regression plus
+    the 23/18, 27/18, and live-provider vestigial checks was
+    `(True, (True, (True, True)))`.
+
+    Finding #9 joins Findings #4–#8 on the mandatory end-of-CP4 adversarial
+    re-review list. The reviewer must attack observable equivalence of both
+    normalization repairs together, especially multi-effect accumulator order
+    and Definition-60 correspondence.
 
 ## Escape-hatch and hole audit
 

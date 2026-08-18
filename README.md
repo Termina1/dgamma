@@ -31,16 +31,18 @@ progress.
   base and actual-lifted recovery theorems; mediated failure also propagates.
 - `DGamma.Calculus`: capability-confined dynamic per-fiber tables, declared
   dependency values, order-preserving erased-certificate normalization at
-  L-Advance/L-Unload effect sources, components, intrinsically total committed views,
-  name-unique registries, the four-state lifecycle, all ten executable rules,
+  L-Advance/L-Unload effect sources and between accumulated undos, components,
+  intrinsically total committed views, name-unique registries, the four-state
+  lifecycle, all ten executable rules,
   a checked proof-indexed LTS, and episode extraction.
 - `DGamma.Metatheory`: executable well-formedness, raw-rule Preservation,
   whole-episode resolution structure, precise remaining recovery/ordering
   statement types, and their supporting indexed trace predicates.
 - `DGamma.CalculusChecks`: dynamic-table/dependency-consumption regressions plus
   executable coverage of all ten tags, both L-Divert alternatives, stale empty
-  iterators, per-yield full-state inverse exposure, failure, relied/L-Unload
-  ordering, recovery, and removal.
+  iterators, per-yield full-state inverse exposure, bit-identical old/new
+  multi-effect accumulator recovery, failure, relied/L-Unload ordering,
+  recovery, and removal.
 - `DGamma.CP3`: finite-host Lemmas 68–72/Theorem 73 interfaces, including
   activation-stamped parent-local surviving-registration trees, exact
   historical external-root coupling, and endpoint equivalence modulo inert
@@ -217,7 +219,7 @@ is exported. It is not a postulate and cannot be used as a proof.
 | Def 48 | `DepValues`, `LocalState`, `StepEffect`, `resolveCommittedValues` | executable capability confinement: a step reads exactly declared dependency values and mutates only ambient world plus its own provision-confined table; optional registration metadata does not widen local mutation |
 | Def 49 | `Lifecycle`, `installed`, `committed` | executable four-state lifecycle with outcomes |
 | Def 50 | `relied`, `reliedOnBy` | executable |
-| Def 51–52 | `StepEffect`, `componentProgram`, `applyAction` L-Iter/L-Finish/L-Divert/L-Raise cases | executable finite failing iterator with per-step exact recovery witnesses and LIFO accumulator; recursive/infinite iterators are not represented |
+| Def 51–52 | `StepEffect`, `componentProgram`, `applyAction` L-Iter/L-Finish/L-Divert/L-Raise cases | executable finite failing iterator with per-step exact recovery witnesses and LIFO accumulator; accumulators normalize between captured undos to align erased certificates with Definition-60 maps without changing runtime bindings; recursive/infinite iterators are not represented |
 | Def 53 | `RuleTag`, `Action`, `applyAction`, `checkedApplyAction`, `Transition`, `fire`, `Transitions`, `EpisodePrefix`, `ClosedEpisode`, `episodes` | ten-rule evaluator; proof traces are checked for Def-58 targets; episode types require L-Begin left boundaries and L-Unload right boundaries |
 | Lem 54–57 | `VestigialEndpointGeneration`, `vestigialEndpointGeneration`, `InactiveLeafDeletionPlan`, `checkedLifecycleAfterInactivePlan`, structural rule inventory/equivariance/registration facts | **partial**: the exact Lemma-57 inert endpoint shape is executable and live fibers are proved unable to inhabit it. Its control-applicability direction is proved constructively for every lifecycle rule through an indexed multi-leaf deletion plan (target/capability/reliance guards plus checked replay); the converse operational clauses and Lemmas 54–56 are not separately complete |
 | Def 58 | `registryWellFormed`, `wellFormed`, `viewBindingsInvariant` | executable decision procedure; committed views require installed providers **and matching provider-table keys**, plus parent, disjointness, and acyclicity checks |

@@ -154,6 +154,45 @@ record LocalState (key : Type) (value : key -> Type) (world : Type)
   localWorld : world
   localTable : OwnedTable key value provision
 
+||| Proof-transparent normalization of an already provision-confined local
+||| state.  At runtime this preserves the ambient value and binding list exactly;
+||| it deliberately rebuilds the erased confinement certificates so consecutive
+||| yielded inverse maps share Definition 60's normalization rhythm.
+public export
+normalizeLocal : DecEq key => (provision : CoeffectSpec key) ->
+  LocalState key value world provision -> LocalState key value world provision
+normalizeLocal provision (MkLocalState ambient table) =
+  MkLocalState ambient
+    (restrictOwnedPreservingOrder provision (ownedValues table))
+
+public export
+0 normalizeLocalWorld : DecEq key => (provision : CoeffectSpec key) ->
+  (local : LocalState key value world provision) ->
+  localWorld (normalizeLocal provision local) = localWorld local
+normalizeLocalWorld provision (MkLocalState ambient table) = Refl
+
+public export
+0 normalizeLocalBindings : DecEq key => (provision : CoeffectSpec key) ->
+  (local : LocalState key value world provision) ->
+  bindings (ownedValues (localTable (normalizeLocal provision local))) =
+  bindings (ownedValues (localTable local))
+normalizeLocalBindings provision (MkLocalState ambient table) =
+  restrictOwnedPreservingOrderBindings provision table
+
+||| Compose one newly yielded undo in LIFO order.  The inter-undo normalization
+||| is erased-certificate transparent at runtime but makes the evaluator's
+||| accumulator construction align definitionally with repeated Definition-60
+||| `yieldedInverseEffectMap` applications.
+public export
+pushLocalUndo : DecEq key => (provision : CoeffectSpec key) ->
+  (accumulator : LocalState key value world provision ->
+    LocalState key value world provision) ->
+  (undo : LocalState key value world provision ->
+    LocalState key value world provision) ->
+  LocalState key value world provision -> LocalState key value world provision
+pushLocalUndo provision accumulator undo =
+  accumulator . normalizeLocal provision . undo
+
 ||| A total, ordered capability for exactly the declared dependency keys.
 public export
 data DepValues : (key : Type) -> (value : key -> Type) -> List key -> Type where
@@ -1125,7 +1164,8 @@ applyAction (LAdvance n) state = case lookupFiber n (registry state) of
                     (Unloading accumulator view (Just err)))
                   (registry state)))
             Right (localAfter, undo) =>
-              let nextAccumulator = accumulator . undo
+              let nextAccumulator = pushLocalUndo
+                    (componentProvisions (fiberComponent fiber)) accumulator undo
                   nextWorld = localWorld localAfter
                   nextTable = localTable localAfter in
               if targetMatches (targetFiber fiber (registry state)) view
