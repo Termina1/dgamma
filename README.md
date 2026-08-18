@@ -146,9 +146,10 @@ progress.
   proof-driven assembly and runs both executable filters through their exact
   success theorems. `assembleDeletionResult` proves final record construction
   from exactly the three remaining endpoint invariants.
-- `DGamma.CP4RecoveryAccumulator`, `DGamma.CP4RecoveryTrace`, and
-  `DGamma.CP4RecoverySelectedRetire`: obligation-3 accumulator factorization,
-  its trace-indexed runtime model, and selected O-Retire preservation. L-Begin's
+- `DGamma.CP4RecoveryAccumulator`, `DGamma.CP4RecoveryTrace`,
+  `DGamma.CP4RecoverySelectedRetire`, and `DGamma.CP4RecoveryAdvance`:
+  obligation-3 accumulator factorization, its trace-indexed runtime model,
+  selected O-Retire preservation, and the successful L-Advance push. L-Begin's
   identity accumulator is tied constructively to one trailing actor
   normalization, and each repaired `pushLocalUndo` extends the Definition-60
   yielded-inverse transformation while preserving full-effect relatedness

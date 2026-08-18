@@ -1348,6 +1348,15 @@ commutation/replay invariant. `selectedRetirePreservesAccumulatorModel` now
 closes the selected O-Retire branch: it reconstructs the exact checked target,
 transports all three installed lifecycle shapes through the retirement-only
 fiber update, and retains the accumulator transformation/factorization.
+`DGamma.CP4RecoveryAdvance.actualIteratorStageYields` now connects a concrete
+successful checked L-Advance to the exact Definition-60 `IteratorStage` at the
+projected source, including the evaluator's resolved capability, resulting
+ambient/table state, yielded inverse, and continuation. The derived
+`successfulAdvancePushesAccumulatorFactorization` extends the old generated
+transformation by that exact inverse occurrence and applies the Finding-9 push
+factorization. This closes the only selected temporal branch that changes the
+accumulator; control-only selected branches and foreign replay commutation
+remain.
 
 `DGamma.CP4DeletionFilterSuccess` closes the filter's generic `Maybe` layer
 without replacing it by a parallel relation. `GenerationReplayReady` records
