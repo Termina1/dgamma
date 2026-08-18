@@ -48,7 +48,10 @@ progress.
   historical external-root coupling, and endpoint equivalence modulo inert
   vestigial generations from deleted closing episodes. Equation-53 accumulator
   controls compare pointwise ambient values and complete ordered bindings,
-  never erased `OwnedTable` certificates (CP4 Finding #12).
+  never erased `OwnedTable` certificates (CP4 Finding #12). Pushed
+  accumulators canonicalize each callback input by construction, so this
+  all-input relation remains compositional without adding equality dictionaries
+  to the public control family.
 - `DGamma.CP4AccumulatorControlChecks`: proof-distinct accumulator/table
   certificates with identical runtime observations, plus a concrete non-vacuous
   `FiberControlRelated` witness under the Finding-12 relation and the rejected
@@ -347,7 +350,7 @@ is exported. It is not a postulate and cannot be used as a proof.
 | Def 48 | `DepValues`, `LocalState`, `StepEffect`, `resolveCommittedValues`, `restrictedLocalCanonical`, `advanceSourceStepRecovery` | executable capability confinement: a step reads exactly declared dependency values and mutates only ambient world plus its own provision-confined table; optional registration metadata does not widen local mutation; exact recovery is required on the canonical restricted-source domain, with the precondition discharged for every evaluator source |
 | Def 49 | `Lifecycle`, `installed`, `committed` | executable four-state lifecycle with outcomes |
 | Def 50 | `relied`, `reliedOnBy` | executable |
-| Def 51–52 | `StepEffect`, `componentProgram`, `applyAction` L-Iter/L-Finish/L-Divert/L-Raise cases, `pushLocalUndoRecoversStep` | executable finite failing iterator with per-step exact recovery witnesses on canonical restricted sources and a proved canonical composed-accumulator chain; accumulators normalize between captured undos to align erased certificates with Definition-60 maps without changing runtime bindings; recursive/infinite iterators are not represented |
+| Def 51–52 | `StepEffect`, `componentProgram`, `applyAction` L-Iter/L-Finish/L-Divert/L-Raise cases, `pushLocalUndoRecoversStep`, `pushLocalUndoRuntimeRelated`, `interUndoNormalizationRuntimeIdentity` | executable finite failing iterator with per-step exact recovery witnesses on canonical restricted sources and a proved canonical composed-accumulator chain; accumulators normalize before and after each captured undo, making the canonical evaluator domain explicit while preserving reachable behavior; the two-step old/new runtime regression remains bit-identical; recursive/infinite iterators are not represented |
 | Def 53 | `RuleTag`, `Action`, `applyAction`, `checkedApplyAction`, `Transition`, `fire`, `Transitions`, `EpisodePrefix`, `ClosedEpisode`, `episodes` | ten-rule evaluator; proof traces are checked for Def-58 targets; episode types require L-Begin left boundaries and L-Unload right boundaries |
 | Lem 54–57 | `VestigialEndpointGeneration`, `vestigialEndpointGeneration`, `InactiveLeafDeletionPlan`, `checkedLifecycleAfterInactivePlan`, structural rule inventory/equivariance/registration facts | **partial**: the exact Lemma-57 inert endpoint shape is executable and live fibers are proved unable to inhabit it. Its control-applicability direction is proved constructively for every lifecycle rule through an indexed multi-leaf deletion plan (target/capability/reliance guards plus checked replay); the converse operational clauses and Lemmas 54–56 are not separately complete |
 | Def 58 | `registryWellFormed`, `wellFormed`, `viewBindingsInvariant` | executable decision procedure; committed views require installed providers **and matching provider-table keys**, plus parent, disjointness, and acyclicity checks |

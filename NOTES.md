@@ -514,6 +514,20 @@ of Lemma 38.
     Strengthening `TraceIndependent` to proof-bearing equality was rejected as
     both unfaithful and unusable by real components.
 
+    **Canonical-domain implementation addendum.** `pushLocalUndo` now composes
+    as `older . normalize . undo . normalize`: every yielded inverse receives a
+    canonical input by construction, while the already-present post-undo
+    normalization gives the older accumulator one exact canonical argument.
+    L-Unload already normalizes the initial input and every older undo already
+    sat behind a normalization, so evaluator/plugin behavior on the reachable
+    domain is unchanged. `pushLocalUndoRuntimeRelated` is the named composition
+    keystone: runtime-related yielded inverses normalize to one exact local
+    argument before invoking the older related accumulators. The existing
+    two-step `interUndoNormalizationRuntimeIdentity` regression compares the
+    pre-normalization chain to the wrapper chain and still evaluates `True`.
+    `pushLocalUndoRecoversStep`, accumulator factorization, and selected effect
+    recovery were mechanically adapted with the Finding-11 fixed-point law.
+
     `DGamma.CP4AccumulatorControlChecks` pins the distinction with two
     separately constructed singleton uniqueness certificates. The rejected
     `OldExactAccumulatorRelated` diagnostic exposes the former proof-bearing
@@ -523,7 +537,8 @@ of Lemma 38.
     rebuild re-established every direct consumer, explicitly including
     `CalculusChecks`, `CP3StatementChecks`, `CP3VestigialChecks`, Theorems
     61/62/64, all renamed-control/vestigial pairs, and the selected/deletion
-    proof chain.
+    proof chain. The combined Finding-12/multi-step runtime tuple is
+    `(True, True)`.
 
     Finding #12 joins Findings #4–#11 on the mandatory end-of-CP4 adversarial
     re-review list. Findings #7/#9/#10/#11/#12 are one observable-truth review

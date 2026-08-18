@@ -424,7 +424,7 @@ pushLocalUndo : DecEq key => (provision : CoeffectSpec key) ->
     LocalState key value world provision) ->
   LocalState key value world provision -> LocalState key value world provision
 pushLocalUndo provision accumulator undo =
-  accumulator . normalizeLocal provision . undo
+  accumulator . normalizeLocal provision . undo . normalizeLocal provision
 
 ||| A total, ordered capability for exactly the declared dependency keys.
 public export
@@ -534,10 +534,12 @@ public export
       (MkLocalState ambient (restrictOwnedPreservingOrder provision context))
 pushLocalUndoRecoversStep step capability ambient context after undo accumulator
   ran =
-    let 0 recovered = restrictedStepRecovery step capability ambient context
+    let 0 afterCanonical = normalizeLocalIdempotent provision after
+        0 recovered = restrictedStepRecovery step capability ambient context
           after undo ran
         0 sourceCanonical = restrictedLocalCanonical provision ambient context
-    in rewrite recovered in rewrite sourceCanonical in Refl
+    in rewrite afterCanonical in rewrite recovered in
+      rewrite sourceCanonical in Refl
 
 ||| Definition 43: declarations plus a finite failing effect iterator.
 public export

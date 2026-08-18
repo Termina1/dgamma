@@ -1286,6 +1286,66 @@ AccumulatorRelated {key} {value} {world} {provision} left right =
   (input : LocalState key value world provision) ->
   LocalStateRuntimeRelated (left input) (right input)
 
+||| Equal runtime observations normalize to one exact canonical local state.
+||| This is the proof-term boundary used when composed accumulator callbacks
+||| exchange values.
+public export
+0 localStateRuntimeNormalizationEqual :
+  (keyEq : DecEq key) -> (provision : CoeffectSpec key) ->
+  {left, right : LocalState key value world provision} ->
+  LocalStateRuntimeRelated left right ->
+  normalizeLocal @{keyEq} provision left = normalizeLocal @{keyEq} provision right
+localStateRuntimeNormalizationEqual keyEq provision
+  {left = MkLocalState leftAmbient leftTable}
+  {right = MkLocalState rightAmbient rightTable}
+  (MkLocalStateRuntimeRelated ambientSame bindingsSame) =
+    case ambientSame of
+      Refl => cong (MkLocalState rightAmbient)
+        (canonicalNormalizationFromEqualBindings @{keyEq} provision
+          (ownedValues leftTable) (ownedValues rightTable) bindingsSame)
+
+||| Finding-12 composition keystone.  Each newly yielded inverse receives the
+||| canonicalized input promised by `IteratorYieldAgreement`; its runtime-related
+||| outputs normalize to one exact argument for the already-related older
+||| accumulators.
+public export
+0 pushLocalUndoRuntimeRelated :
+  (keyEq : DecEq key) -> (provision : CoeffectSpec key) ->
+  (leftAccumulator, rightAccumulator :
+    LocalState key value world provision -> LocalState key value world provision) ->
+  (leftUndo, rightUndo :
+    LocalState key value world provision -> LocalState key value world provision) ->
+  AccumulatorRelated leftAccumulator rightAccumulator ->
+  ((input : LocalState key value world provision) ->
+    LocalStateRuntimeRelated
+      (leftUndo (normalizeLocal @{keyEq} provision input))
+      (rightUndo (normalizeLocal @{keyEq} provision input))) ->
+  AccumulatorRelated
+    (pushLocalUndo @{keyEq} provision leftAccumulator leftUndo)
+    (pushLocalUndo @{keyEq} provision rightAccumulator rightUndo)
+pushLocalUndoRuntimeRelated keyEq provision leftAccumulator rightAccumulator
+  leftUndo rightUndo older undos input =
+    let 0 normalizedSame : (
+          normalizeLocal @{keyEq} provision
+            (leftUndo (normalizeLocal @{keyEq} provision input)) =
+          normalizeLocal @{keyEq} provision
+            (rightUndo (normalizeLocal @{keyEq} provision input)))
+        normalizedSame = localStateRuntimeNormalizationEqual keyEq provision
+          (undos input)
+        0 olderAtLeft : LocalStateRuntimeRelated
+          (leftAccumulator (normalizeLocal @{keyEq} provision
+            (leftUndo (normalizeLocal @{keyEq} provision input))))
+          (rightAccumulator (normalizeLocal @{keyEq} provision
+            (leftUndo (normalizeLocal @{keyEq} provision input))))
+        olderAtLeft = older (normalizeLocal @{keyEq} provision
+          (leftUndo (normalizeLocal @{keyEq} provision input)))
+    in replace
+      {p = \rightInput => LocalStateRuntimeRelated
+        (leftAccumulator (normalizeLocal @{keyEq} provision
+          (leftUndo (normalizeLocal @{keyEq} provision input))))
+        (rightAccumulator rightInput)}
+      normalizedSame olderAtLeft
+
 ||| Full lifecycle-control relation. Unlike `LifecycleShape`, this retains the
 ||| remaining iterator, accumulator, committed view, and failure outcome.
 public export

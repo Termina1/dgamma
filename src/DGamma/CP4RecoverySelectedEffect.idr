@@ -51,7 +51,12 @@ successfulPushEffectRecovery nameEq keyEq selected provision accumulator step
   successfulPushEffectRecovery nameEq keyEq selected provision accumulator step
     capability (MkEffectState ambient tables)
     (MkLocalState afterWorld afterTable) undo ran | Yes Refl =
-      let 0 recovered : (undo
+      let 0 afterCanonical : (normalizeLocal provision
+              (normalizeLocal provision (MkLocalState afterWorld afterTable)) =
+            normalizeLocal provision (MkLocalState afterWorld afterTable))
+          afterCanonical = normalizeLocalIdempotent provision
+            (MkLocalState afterWorld afterTable)
+          0 recovered : (undo
               (normalizeLocal provision (MkLocalState afterWorld afterTable)) =
             MkLocalState ambient
               (restrictOwnedPreservingOrder provision (tables selected)))
@@ -83,5 +88,6 @@ successfulPushEffectRecovery nameEq keyEq selected provision accumulator step
             (localWorld finalLocal) afterWorld
             (ownedValues (localTable finalLocal)) (ownedValues afterTable)
             (MkEffectState ambient tables)
-      in rewrite recovered in rewrite sourceCanonical in
+      in rewrite afterCanonical in rewrite recovered in
+        rewrite sourceCanonical in
         PartialDefined (symmetric (EffectStateEquivalence keyEq) sourceToMoved)

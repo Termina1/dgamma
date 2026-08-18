@@ -372,6 +372,8 @@ public export
     (TraceCompose old (TraceGenerator generator))
 pushAccumulatorFactorization nameEq keyEq selected provision accumulator undo
   old generator oldFactor generatorMap state@(MkEffectState ambient tables) =
+    rewrite restrictedLocalCanonical @{keyEq} provision ambient
+      (tables selected) in
     let normalized : OwnedTable key value provision
         normalized = restrictOwnedPreservingOrder @{keyEq} provision
           (tables selected)
