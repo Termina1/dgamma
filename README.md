@@ -92,8 +92,12 @@ progress.
   O-Retire, and O-Remove applicability frames through the same plan. Its
   `OrchestrationOutsideDeletionPlan` records both owner exclusion and the extra
   child-O-Insert parent exclusion, so all retained action classes now have a
-  checked plan-level replay theorem. Derivation of those certificates from the
-  located Lemma-72 trace remains part of filter-success obligation 2.
+  checked plan-level replay theorem. `DGamma.CP4DeletionRetainedAction` derives
+  those certificates per original boundary: fresh insertion gives owner
+  exclusion, disciplined parent-yield provenance excludes an Inactive R parent,
+  and the complement of exact generation ownership handles every non-insertion
+  action. Threading these one-step results through the two dependent filters
+  remains the final filter-success part of obligation 2.
   `DGamma.CP4DeletionControlChecks` supplies a nonempty checked L-Finish replay.
   `DGamma.CP4DeletionPlanBuilder` scans the final live generation environment,
   skips historical generations and later raw-name reissues, constructs the

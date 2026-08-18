@@ -1267,10 +1267,21 @@ O-Insert is the important nontrivial case: registry deletion relaxes provision
 uniqueness, but a child insertion also reads its parent. The new
 `OrchestrationOutsideDeletionPlan` therefore records both owner exclusion and
 `InsertionParentOutside` for every erased leaf. This prevents an unsound generic
-“orchestration only gets easier” argument. The remaining obligation-2 step is
-to derive these owner/parent certificates at every retained occurrence and
-thread the selected-episode/suffix filter success induction. No theorem alias or
-runtime evaluator changed, and no escape hatch was introduced.
+“orchestration only gets easier” argument.
+
+`DGamma.CP4DeletionRetainedAction` now derives the plan certificates at every
+original retained boundary. A successful O-Insert is fresh, hence outside each
+present leaf. For child O-Insert, `ParentRegistrationYield` proves its parent is
+Reloading, which is incompatible with every Inactive plan leaf. For O-Retire,
+O-Remove, and all lifecycle forms, the complement of
+`GenerationOwnedActor` plus scanner uniqueness gives the exact current-R
+outside certificate. `checkedRetainedOrchestrationAfterCurrentPlan` and
+`checkedRetainedLifecycleAfterCurrentPlan` close the checked one-step theorem
+for all eight action constructors. The remaining obligation-2 step is the
+cross-boundary invariant that identifies each incrementally built survivor with
+the corresponding original boundary minus the selected episode/current-R plan,
+then threads these one-step results through both dependent filters. No theorem
+alias or runtime evaluator changed, and no escape hatch was introduced.
 
 ### Cold-build validation under Idris 2 v0.8.0
 
