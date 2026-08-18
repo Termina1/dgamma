@@ -79,6 +79,7 @@ actorNormalizationAtOwnedTable nameEq keyEq selected provision table
         restrictOwnedPreservingOrderBindings provision table
     tableBindings candidate | No distinct = Refl
 
+public export
 0 identityAccumulatorMapIsNormalizer :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (provision : CoeffectSpec key) ->

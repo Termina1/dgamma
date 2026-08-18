@@ -90,6 +90,20 @@ modelHandleAt model = rewrite modelFound model in case modelInstalled model of
 0 justPairInjective : Just left = Just right -> left = right
 justPairInjective Refl = Refl
 
+record BeginAccumulatorModelResult
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
+  {wholeFirst, wholeLast : SystemState name key value world error}
+  (whole : Transitions wholeFirst wholeLast)
+  (modelState : SystemState name key value world error) where
+  constructor MkBeginAccumulatorModelResult
+  beginModel : AccumulatorModel name key world error value nameEq keyEq selected
+    whole modelState
+  0 beginMapIsNormalizer : (effectState : EffectState name key value world) ->
+    accumulatorEffectMap nameEq keyEq selected (modelHandle beginModel)
+      effectState = actorNormalizationMap nameEq keyEq selected
+      (componentProvisions (fiberComponent (modelFiber beginModel))) effectState
+
 0 beginConcreteAccumulatorModel :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (ambient : world) -> (fibers : Registry name key value world error) ->
@@ -104,7 +118,8 @@ justPairInjective Refl = Refl
       (setFiberLifecycle fiber
         (Reloading (componentProgram (fiberComponent fiber)) (\local => local) view)) fibers) =
     start ->
-  AccumulatorModel name key world error value nameEq keyEq selected whole start
+  BeginAccumulatorModelResult name key world error value nameEq keyEq selected
+    whole start
 beginConcreteAccumulatorModel {name} {key} {world} {error} {value}
   nameEq keyEq selected ambient fibers start whole
   fiber@(MkFiber component parent retired table oldLife) found view concreteIsStart =
@@ -119,7 +134,7 @@ beginConcreteAccumulatorModel {name} {key} {world} {error} {value}
         nextFound = lookupReplacedFiber selected fiber nextFiber fibers found
         concreteModel : AccumulatorModel name key world error value nameEq keyEq
           selected whole concrete
-        concreteModel = MkAccumulatorModel nextFiber nextFound id
+        concreteModel = MkAccumulatorModel nextFiber nextFound (\local => local)
           (AccumulatorReloading (componentProgram component) view Refl)
           TraceIdentity
           (identityAccumulatorFactorization {name = name} {key = key}
@@ -129,10 +144,23 @@ beginConcreteAccumulatorModel {name} {key} {world} {error} {value}
             {name = name} {key = key} {world = world} {error = error}
             {value = value} {trace = whole} selected
             (componentProvisions component))
+        0 concreteHandle : (modelHandle concreteModel =
+          MkAccumulatorHandle (componentProvisions component) table
+            (\local => local))
+        concreteHandle = Refl
+        0 concreteProvision :
+          (componentProvisions (fiberComponent (modelFiber concreteModel)) =
+           componentProvisions component)
+        concreteProvision = Refl
+        concreteResult : BeginAccumulatorModelResult name key world error value
+          nameEq keyEq selected whole concrete
+        concreteResult = MkBeginAccumulatorModelResult concreteModel
+          (\(MkEffectState effectWorld effectTables) =>
+            rewrite concreteProvision in Refl)
     in replace
-      {p = \observed => AccumulatorModel name key world error value nameEq keyEq
-        selected whole observed}
-      concreteIsStart concreteModel
+      {p = \observed => BeginAccumulatorModelResult name key world error value
+        nameEq keyEq selected whole observed}
+      concreteIsStart concreteResult
 
 0 beginAccumulatorModelFromRaw :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
@@ -140,7 +168,8 @@ beginConcreteAccumulatorModel {name} {key} {world} {error} {value}
   (whole : Transitions start wholeLast) ->
   applyAction @{nameEq} @{keyEq} (LBegin selected) preStart =
     Just (LBeginTag, start) ->
-  AccumulatorModel name key world error value nameEq keyEq selected whole start
+  BeginAccumulatorModelResult name key world error value nameEq keyEq selected
+    whole start
 beginAccumulatorModelFromRaw {name} {key} {world} {error} {value}
   nameEq keyEq selected preStart@(MkSystemState ambient fibers) start whole raw
   with (lookupFiber @{nameEq} selected fibers) proof found
@@ -193,9 +222,30 @@ public export
   BeginStep nameEq keyEq selected preStart start ->
   AccumulatorModel name key world error value nameEq keyEq selected whole start
 beginAccumulatorModel nameEq keyEq selected {preStart} {start} whole opening =
-  beginAccumulatorModelFromRaw nameEq keyEq selected preStart start whole
-    (checkedActionProjects nameEq keyEq (LBegin selected) preStart start
-      LBeginTag (beginEquation opening))
+  beginModel (beginAccumulatorModelFromRaw nameEq keyEq selected preStart start
+    whole (checkedActionProjects nameEq keyEq (LBegin selected) preStart start
+      LBeginTag (beginEquation opening)))
+
+||| L-Begin's model handle executes exactly one actor normalization.
+public export
+0 beginAccumulatorModelMapIsNormalizer :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {preStart, start : SystemState name key value world error} ->
+  (whole : Transitions start wholeLast) ->
+  (opening : BeginStep nameEq keyEq selected preStart start) ->
+  (state : EffectState name key value world) ->
+  accumulatorEffectMap nameEq keyEq selected
+    (modelHandle (beginAccumulatorModel nameEq keyEq selected whole opening))
+    state = actorNormalizationMap nameEq keyEq selected
+      (componentProvisions (fiberComponent
+        (modelFiber (beginAccumulatorModel nameEq keyEq selected whole opening))))
+      state
+beginAccumulatorModelMapIsNormalizer nameEq keyEq selected {preStart} {start}
+  whole opening state =
+    beginMapIsNormalizer (beginAccumulatorModelFromRaw nameEq keyEq selected
+      preStart start whole
+      (checkedActionProjects nameEq keyEq (LBegin selected) preStart start
+        LBeginTag (beginEquation opening))) state
 
 ||| A foreign step cannot change the selected fiber object, hence it preserves
 ||| the exact lifecycle accumulator and its generated-transformation model.
@@ -225,3 +275,26 @@ foreignStepPreservesAccumulatorModel {name} {key} {world} {error} {value}
       (modelAccumulator model) (modelInstalled model)
       (modelTransformation model) (modelFactorization model)
       (modelConfinement model)
+
+||| A foreign control update changes only the selected model's state index; its
+||| executable accumulator map is exactly retained.
+public export
+0 foreignStepPreservesAccumulatorMap :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (distinct : Not (selected = actionOwner action)) ->
+  (model : AccumulatorModel name key world error value nameEq keyEq selected whole
+    before) ->
+  (state : EffectState name key value world) ->
+  accumulatorEffectMap nameEq keyEq selected
+    (modelHandle (foreignStepPreservesAccumulatorModel nameEq keyEq selected
+      action tag before afterState whole checked distinct model)) state =
+  accumulatorEffectMap nameEq keyEq selected (modelHandle model) state
+foreignStepPreservesAccumulatorMap nameEq keyEq selected action tag before
+  afterState whole checked distinct
+  (MkAccumulatorModel fiber found accumulator installed transformation
+    factorization confinement) state = Refl

@@ -22,6 +22,7 @@ OccurrenceEmbedding segment whole =
   (transition : Transition stepBefore stepAfter) ->
   OccursIn transition segment -> OccursIn transition whole
 
+public export
 0 tailOccurrenceEmbedding :
   (head : Transition first middle) ->
   (rest : Transitions middle last) ->
