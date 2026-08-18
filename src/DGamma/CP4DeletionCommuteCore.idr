@@ -163,6 +163,38 @@ deleteEntriesDistinctCommute keyEq left right distinct
             cong (Bind current old ::)
               (deleteEntriesDistinctCommute keyEq left right distinct rest)
 
+||| Observable projection of insertion, independent of its erased uniqueness
+||| certificate.
+public export
+0 insertBindingRuntimeBindings :
+  (keyEq : DecEq key) -> (inserted : key) -> (next : value inserted) ->
+  (table : CoeffectContext key value) ->
+  (0 absent : lookupBinding @{keyEq} inserted table = Nothing) ->
+  bindings (insertBinding @{keyEq} inserted next table absent) =
+    Bind inserted next :: bindings table
+insertBindingRuntimeBindings keyEq inserted next
+  (MkCoeffectContext entries unique) absent = Refl
+
+||| Observable projection of replacement.
+public export
+0 replaceBindingRuntimeBindings :
+  (keyEq : DecEq key) -> (changed : key) -> (next : value changed) ->
+  (table : CoeffectContext key value) ->
+  bindings (replaceBinding @{keyEq} changed next table) =
+    replaceEntries @{keyEq} changed next (bindings table)
+replaceBindingRuntimeBindings keyEq changed next
+  (MkCoeffectContext entries unique) = Refl
+
+||| Observable projection of deletion.
+public export
+0 deleteBindingRuntimeBindings :
+  (keyEq : DecEq key) -> (removed : key) ->
+  (table : CoeffectContext key value) ->
+  bindings (deleteBinding @{keyEq} removed table) =
+    deleteEntries @{keyEq} removed (bindings table)
+deleteBindingRuntimeBindings keyEq removed
+  (MkCoeffectContext entries unique) = Refl
+
 ||| Registry-level observable form of insertion/deletion commutation.
 public export
 0 deleteBindingAfterDistinctInsertBindings :

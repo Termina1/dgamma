@@ -129,6 +129,7 @@ parentDifferentIsChildFalse nameEq selected inserted component
   parentDifferentIsChildFalse nameEq selected inserted component
     (ChildOf candidate) different | No distinct = Refl
 
+public export
 0 hasChildInsertFalse :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (selected, inserted : name) ->
@@ -223,6 +224,7 @@ hasChildInReplaceFalse nameEq selected changed next old
             old rest found sameParent tailFalse
       in rewrite headFalse in rewrite replacedTailFalse in Refl
 
+public export
 0 hasChildReplaceFalse :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (selected, changed : name) ->
