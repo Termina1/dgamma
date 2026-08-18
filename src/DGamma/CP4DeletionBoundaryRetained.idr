@@ -6,6 +6,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionBoundaryDeleted
 import DGamma.CP4DeletionBoundaryPlan
+import DGamma.CP4DeletionChildlessInvariant
 import DGamma.CP4DeletionCommuteCore
 import DGamma.CP4DeletionControlBegin
 import DGamma.CP4DeletionControlOrchestration
@@ -16,6 +17,7 @@ import DGamma.CP4DeletionNoEpisodeReplay
 import DGamma.CP4DeletionPlanBuilder
 import DGamma.CP4DeletionPlanCommute
 import DGamma.CP4DeletionPlanComplete
+import DGamma.CP4DeletionPlanSuccess
 import DGamma.CP4DeletionRetainedAction
 import DGamma.CP4RuntimeBindings
 import Data.List.Elem
@@ -411,3 +413,193 @@ retainedRetirePreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
                                        nextBoundary
                                in MkRetainedNoEpisodeBoundaryStep named fired
                                  namedBoundary
+
+0 hasChildFalseAfterInactivePlan :
+  (nameEq : DecEq name) -> (actor : name) ->
+  (source, target : Registry name key value world error) ->
+  (plan : InactiveLeafDeletionPlan {name = name} {key = key} {value = value}
+    {world = world} {error = error} nameEq source target) ->
+  hasChild @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor source = False ->
+  hasChild @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor target = False
+hasChildFalseAfterInactivePlan nameEq actor source source
+  NoInactiveLeafDeletion noChild = noChild
+hasChildFalseAfterInactivePlan nameEq actor source target
+  (DeleteInactiveLeaf removed component parent retiredFlag table outcome found
+    removedNoChild rest) noChild =
+      hasChildFalseAfterInactivePlan nameEq actor
+        (deleteBinding @{nameEq} removed source) target rest
+        (hasChildDeleteFalse nameEq actor removed source noChild)
+
+||| Retained O-Remove closes a non-R generation in both the original and
+||| survivor traces.  The outside deletion commutes through the complete R plan,
+||| and the generation environment is reindexed without dropping any R leaf.
+public export
+0 retainedRemovePreservesNoEpisodeBoundary :
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (actor : name) ->
+  (original, survivor : SystemState name key value world error) ->
+  (boundary : NoEpisodeReplayBoundary name key world error value nameEq keyEq
+    registered live original survivor) ->
+  {originalAfter, originalFinal : SystemState name key value world error} ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq}
+    (the (Action name key value world error) (ORemove actor)) original =
+    Just (tag, originalAfter)) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  RegistrationStepDiscipline protocol nameEq (ORemove actor) original rest ->
+  Not (GenerationOwnedActor nameEq registered ordinal live
+    (the (Action name key value world error) (ORemove actor))) ->
+  RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
+    registered (deleteCurrentGeneration @{nameEq} actor live)
+    (ORemove actor) originalAfter survivor
+retainedRemovePreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
+  protocol nameEq keyEq registered ordinal live actor original survivor
+  (MkNoEpisodeReplayBoundary ambient source originalShape
+    (MkCompleteCurrentRegisteredPlanResult
+      oldPlan@(MkCurrentRegisteredPlanResult oldTarget oldInactive oldOutside)
+      oldComplete)
+    survivorAmbient survivorBindings unique sourceWellFormed survivorWellFormed)
+  tag checked rest discipline retained = case originalShape of
+    Refl =>
+      let 0 originalRaw = checkedActionProjects nameEq keyEq (ORemove actor)
+            (MkSystemState ambient source) originalAfter tag checked
+          0 outside = retainedOrchestrationOutsidePlan protocol nameEq keyEq
+            registered ordinal live unique (ORemove actor) Refl
+            (MkSystemState ambient source) originalAfter tag originalRaw rest
+            discipline retained
+              (MkCurrentRegisteredPlanResult oldTarget oldInactive oldOutside)
+          0 ownerOutside = orchestrationOwnerOutside outside
+      in case removeSuccessView nameEq keyEq actor ambient source tag
+        originalAfter originalRaw of
+        MkRemoveSuccessView oldFiber oldFound originalGuard originalNoChild =>
+          let 0 planOldFound : (lookupFiber @{nameEq} {name = name}
+                {key = key} {value = value} {world = world} {error = error}
+                actor oldTarget = Just oldFiber)
+              planOldFound = trans
+                (lookupOutsideInactivePlan nameEq actor source oldTarget
+                  oldInactive ownerOutside) oldFound
+              0 planNoChild : hasChild @{nameEq} {name = name} {key = key}
+                {value = value} {world = world} {error = error} actor oldTarget =
+                False
+              planNoChild = hasChildFalseAfterInactivePlan nameEq actor source
+                oldTarget oldInactive originalNoChild
+              0 normalizedGuard : (retired oldFiber &&
+                isInactive (fiberLifecycle oldFiber) && True = True)
+              normalizedGuard = replace {p = \children =>
+                retired oldFiber && isInactive (fiberLifecycle oldFiber) &&
+                  not children = True} originalNoChild originalGuard
+              0 planGuard : (retired oldFiber &&
+                isInactive (fiberLifecycle oldFiber) &&
+                not (hasChild @{nameEq} {name = name} {key = key}
+                  {value = value} {world = world} {error = error} actor
+                  oldTarget) = True)
+              planGuard = rewrite planNoChild in normalizedGuard
+              0 canonicalPlanRaw : (applyAction @{nameEq} @{keyEq}
+                (the (Action name key value world error) (ORemove actor))
+                (MkSystemState ambient oldTarget) =
+                Just (ORemoveTag, MkSystemState ambient
+                  (deleteBinding @{nameEq} actor oldTarget)))
+              canonicalPlanRaw = rewrite planOldFound in rewrite planGuard in Refl
+              0 removedOutsideCurrent : ActorOutsideCurrentRegistered actor
+                registered live
+              removedOutsideCurrent = actorOutsideCurrentFromCompletePlan
+                (MkCurrentRegisteredPlanResult oldTarget oldInactive oldOutside)
+                oldComplete actor ownerOutside
+          in case deleteOutsideThroughInactivePlan nameEq actor source oldTarget
+            oldInactive ownerOutside of
+            MkInactivePlanPreservingUpdateCommute
+              (MkInactivePlanUpdateCommute nextTarget nextInactive
+                nextTargetBindings nextOutside) actorsSame =>
+              let
+                  0 outsideBack : (observed : name) ->
+                    ActorOutsideCurrentRegistered observed registered (deleteCurrentGeneration @{nameEq} actor live) ->
+                    ActorOutsideCurrentRegistered observed registered live
+                  outsideBack observed outsideCurrent selected generation present
+                    member = outsideCurrent selected generation
+                      (deletePreservesOtherEntry nameEq actor selected
+                        (removedOutsideCurrent selected generation present member)
+                        generation live present) member
+                  0 outsideNew : (observed : name) ->
+                    ActorOutsideCurrentRegistered observed registered (deleteCurrentGeneration @{nameEq} actor live) ->
+                    ActorOutsideDeletionPlan observed nextInactive
+                  outsideNew observed outsideCurrent = nextOutside observed
+                    (oldOutside observed (outsideBack observed outsideCurrent))
+                  nextPlan : CurrentRegisteredPlanResult name key world error
+                    value nameEq registered (deleteCurrentGeneration @{nameEq} actor live)
+                    (deleteBinding @{nameEq} actor source)
+                  nextPlan = MkCurrentRegisteredPlanResult nextTarget nextInactive
+                    outsideNew
+                  0 nextComplete : CurrentRegisteredPlanComplete name key world
+                    error value nameEq registered (deleteCurrentGeneration @{nameEq} actor live) nextPlan
+                  nextComplete selected generation present member =
+                    replace {p = Elem selected} (sym actorsSame)
+                      (oldComplete selected generation
+                        (entryAfterDeleteComesFromOld nameEq actor live selected
+                          generation present) member)
+              in case transportPlanActionToBoundary nameEq keyEq (ORemove actor)
+                (MkSystemState ambient oldTarget)
+                (MkSystemState ambient (deleteBinding @{nameEq} actor oldTarget))
+                survivor
+                (boundaryPlanSnapshotMatchesSurvivor
+                  (MkNoEpisodeReplayBoundary ambient source Refl
+                    (MkCompleteCurrentRegisteredPlanResult
+                      (MkCurrentRegisteredPlanResult oldTarget oldInactive
+                        oldOutside) oldComplete)
+                    survivorAmbient survivorBindings unique sourceWellFormed
+                    survivorWellFormed))
+                ORemoveTag canonicalPlanRaw survivorWellFormed of
+                MkBoundaryActionTransport survivorAfter survivorRaw
+                  afterSnapshots survivorAfterWellFormed named namedAfterProof
+                  fired =>
+                  let 0 survivorAmbientNext :
+                        (worldState survivorAfter = ambient)
+                      survivorAmbientNext =
+                        sym (cong snapshotWorld afterSnapshots)
+                      0 survivorBindingsNext :
+                        (bindings (registry survivorAfter) = bindings nextTarget)
+                      survivorBindingsNext = trans
+                        (sym (cong snapshotBindings afterSnapshots))
+                        (trans (deleteBindingRuntimeBindings nameEq actor oldTarget)
+                          (sym nextTargetBindings))
+                      0 originalAfterWellFormed :
+                        (registryWellFormed @{nameEq} @{keyEq}
+                          (the (SystemState name key value world error)
+                            (MkSystemState ambient
+                              (deleteBinding @{nameEq} actor source))) = True)
+                      originalAfterWellFormed = preservationTheoremProof nameEq
+                        keyEq (ORemove actor) (MkSystemState ambient source)
+                        (MkSystemState ambient
+                          (deleteBinding @{nameEq} actor source)) ORemoveTag
+                        sourceWellFormed originalRaw
+                      0 nextUnique : GenerationEnvironmentNamesUnique (deleteCurrentGeneration @{nameEq} actor live)
+                      nextUnique = advanceGenerationEnvironmentPreservesUnique
+                        nameEq ordinal
+                        (the (Action name key value world error) (ORemove actor))
+                        live unique
+                      0 nextBoundary : NoEpisodeReplayBoundary name key world
+                        error value nameEq keyEq registered (deleteCurrentGeneration @{nameEq} actor live)
+                        (MkSystemState ambient
+                          (deleteBinding @{nameEq} actor source)) survivorAfter
+                      nextBoundary = MkNoEpisodeReplayBoundary ambient
+                        (deleteBinding @{nameEq} actor source) Refl
+                        (MkCompleteCurrentRegisteredPlanResult nextPlan
+                          nextComplete)
+                        survivorAmbientNext survivorBindingsNext nextUnique
+                        originalAfterWellFormed survivorAfterWellFormed
+                      0 namedBoundary : NoEpisodeReplayBoundary name key world
+                        error value nameEq keyEq registered (deleteCurrentGeneration @{nameEq} actor live)
+                        (MkSystemState ambient
+                          (deleteBinding @{nameEq} actor source))
+                        (namedAfter named)
+                      namedBoundary = replace {p = \candidate =>
+                        NoEpisodeReplayBoundary name key world error value nameEq
+                          keyEq registered (deleteCurrentGeneration @{nameEq} actor live)
+                          (MkSystemState ambient
+                            (deleteBinding @{nameEq} actor source)) candidate}
+                        (sym namedAfterProof) nextBoundary
+                  in MkRetainedNoEpisodeBoundaryStep named fired namedBoundary
