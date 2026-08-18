@@ -66,16 +66,18 @@ providerInstall = MkStepEffect Nothing run witnessed
             MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) previous)
      in Right (after, undo)
 
-  0 witnessed : (cap : DepValues ToyKey ToyValue []) ->
+  0 witnessed : {auto keyEq : DecEq ToyKey} -> (cap : DepValues ToyKey ToyValue []) ->
     (before, after : LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA) ->
     (undo : LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA ->
             LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA) ->
-    run cap before = Right (after, undo) -> undo after = before
-  witnessed NoDepValues before after undo returned =
+    run cap before = Right (after, undo) ->
+    normalizeLocal _ before = before ->
+    undo (normalizeLocal _ after) = before
+  witnessed NoDepValues before after undo returned canonical =
     replace
       {p = \outcome => case outcome of
         Left _ => Unit
-        Right (next, inverse) => inverse next = before}
+        Right (next, inverse) => inverse (normalizeLocal _ next) = before}
       returned (case before of
         MkLocalState (MkToyRuntime False consumer) table => Refl
         MkLocalState (MkToyRuntime True consumer) table => Refl)
@@ -92,17 +94,19 @@ providerFinish = MkStepEffect Nothing run witnessed
              LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA)
   run NoDepValues before = Right (before, id)
 
-  0 witnessed : (cap : DepValues ToyKey ToyValue []) ->
+  0 witnessed : {auto keyEq : DecEq ToyKey} -> (cap : DepValues ToyKey ToyValue []) ->
     (before, after : LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA) ->
     (undo : LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA ->
             LocalState ToyKey ToyValue ToyRuntime DGamma.Section3Example.toySpecA) ->
-    run cap before = Right (after, undo) -> undo after = before
-  witnessed NoDepValues before after undo returned =
+    run cap before = Right (after, undo) ->
+    normalizeLocal _ before = before ->
+    undo (normalizeLocal _ after) = before
+  witnessed NoDepValues before after undo returned canonical =
     replace
       {p = \outcome => case outcome of
         Left _ => Unit
-        Right (next, inverse) => inverse next = before}
-      returned Refl
+        Right (next, inverse) => inverse (normalizeLocal _ next) = before}
+      returned canonical
 
 public export
 consumerInstall : StepEffect ToyKey ToyValue ToyRuntime String
@@ -129,23 +133,25 @@ consumerInstall = MkStepEffect Nothing run witnessed
               previous)
      in Right (after, undo)
 
-  0 witnessed : (cap : DepValues ToyKey ToyValue [ServiceA]) ->
+  0 witnessed : {auto keyEq : DecEq ToyKey} -> (cap : DepValues ToyKey ToyValue [ServiceA]) ->
     (before, after : LocalState ToyKey ToyValue ToyRuntime DGamma.CalculusChecks.toySpecB) ->
     (undo : LocalState ToyKey ToyValue ToyRuntime DGamma.CalculusChecks.toySpecB ->
             LocalState ToyKey ToyValue ToyRuntime DGamma.CalculusChecks.toySpecB) ->
-    run cap before = Right (after, undo) -> undo after = before
-  witnessed (OneDepValue False NoDepValues) before after undo returned =
+    run cap before = Right (after, undo) ->
+    normalizeLocal _ before = before ->
+    undo (normalizeLocal _ after) = before
+  witnessed (OneDepValue False NoDepValues) before after undo returned canonical =
     replace
       {p = \outcome => case outcome of
         Left _ => Unit
-        Right (next, inverse) => inverse next = before}
+        Right (next, inverse) => inverse (normalizeLocal _ next) = before}
       returned (case before of
         MkLocalState (MkToyRuntime provider consumer) table => Refl)
-  witnessed (OneDepValue True NoDepValues) before after undo returned =
+  witnessed (OneDepValue True NoDepValues) before after undo returned canonical =
     replace
       {p = \outcome => case outcome of
         Left _ => Unit
-        Right (next, inverse) => inverse next = before}
+        Right (next, inverse) => inverse (normalizeLocal _ next) = before}
       returned (case before of
         MkLocalState (MkToyRuntime provider False) table => Refl
         MkLocalState (MkToyRuntime provider True) table => Refl)
@@ -154,7 +160,7 @@ public export
 raisingStep : StepEffect ToyKey ToyValue ToyRuntime String [] DGamma.CalculusChecks.toyEmptySpec
 raisingStep = MkStepEffect Nothing
   (\NoDepValues, local => Left "boom")
-  (\NoDepValues, before, after, undo, returned => absurd returned)
+  (\NoDepValues, before, after, undo, returned, canonical => absurd returned)
 
 public export
 providerComponent : Component ToyKey ToyValue ToyRuntime String

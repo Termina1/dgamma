@@ -37,12 +37,14 @@ registeringStep : StepEffect ReissueKey ReissueValue Unit String []
   DGamma.CP4DeletionGenerationChecks.reuseEmptySpec
 registeringStep = MkStepEffect (Just 0)
   (\NoDepValues, before => Right (before, id))
-  (\NoDepValues, before, after, undo, returned =>
+  (\NoDepValues, before, after, undo, returned, canonical =>
     replace
       {p = \outcome => case outcome of
         Left failure => Unit
-        Right (next, inverse) => inverse next = before}
-      returned Refl)
+        Right (next, inverse) => inverse
+          (normalizeLocal DGamma.CP4DeletionGenerationChecks.reuseEmptySpec next) =
+          before}
+      returned canonical)
 
 selectedComponent : Component ReissueKey ReissueValue Unit String
 selectedComponent = MkComponent

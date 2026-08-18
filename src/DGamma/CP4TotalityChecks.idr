@@ -55,15 +55,16 @@ providerFirstRun NoDepValues before@(MkLocalState world table) =
   Right (MkLocalState False table, \after => before)
 
 private
-0 providerFirstWitness :
+0 providerFirstWitness : {auto keyEq : DecEq ToyKey} ->
   (capability : DepValues ToyKey ToyValue []) ->
   (before, after : LocalState ToyKey ToyValue Bool DGamma.CP4TotalityChecks.counterServiceASpec) ->
   (undo : LocalState ToyKey ToyValue Bool DGamma.CP4TotalityChecks.counterServiceASpec ->
     LocalState ToyKey ToyValue Bool DGamma.CP4TotalityChecks.counterServiceASpec) ->
   providerFirstRun capability before = Right (after, undo) ->
-  undo after = before
+  normalizeLocal _ before = before ->
+  undo (normalizeLocal _ after) = before
 providerFirstWitness NoDepValues before@(MkLocalState world table) after undo
-  equation = case rightInjective equation of Refl => Refl
+  equation canonical = case rightInjective equation of Refl => Refl
 
 private
 providerFirst : StepEffect ToyKey ToyValue Bool Unit [] DGamma.CP4TotalityChecks.counterServiceASpec
@@ -86,17 +87,18 @@ providerConditionalRun NoDepValues before@(MkLocalState True table) =
   Right (MkLocalState True emptyOwned, \after => before)
 
 private
-0 providerConditionalWitness :
+0 providerConditionalWitness : {auto keyEq : DecEq ToyKey} ->
   (capability : DepValues ToyKey ToyValue []) ->
   (before, after : LocalState ToyKey ToyValue Bool DGamma.CP4TotalityChecks.counterServiceASpec) ->
   (undo : LocalState ToyKey ToyValue Bool DGamma.CP4TotalityChecks.counterServiceASpec ->
     LocalState ToyKey ToyValue Bool DGamma.CP4TotalityChecks.counterServiceASpec) ->
   providerConditionalRun capability before = Right (after, undo) ->
-  undo after = before
+  normalizeLocal _ before = before ->
+  undo (normalizeLocal _ after) = before
 providerConditionalWitness NoDepValues before@(MkLocalState False table) after
-  undo equation = case rightInjective equation of Refl => Refl
+  undo equation canonical = case rightInjective equation of Refl => Refl
 providerConditionalWitness NoDepValues before@(MkLocalState True table) after
-  undo equation = case rightInjective equation of Refl => Refl
+  undo equation canonical = case rightInjective equation of Refl => Refl
 
 private
 providerConditional :
@@ -154,15 +156,16 @@ togglerRun NoDepValues before@(MkLocalState world table) =
   Right (MkLocalState True table, \after => before)
 
 private
-0 togglerWitness :
+0 togglerWitness : {auto keyEq : DecEq ToyKey} ->
   (capability : DepValues ToyKey ToyValue []) ->
   (before, after : LocalState ToyKey ToyValue Bool DGamma.CP4TotalityChecks.counterEmptySpec) ->
   (undo : LocalState ToyKey ToyValue Bool DGamma.CP4TotalityChecks.counterEmptySpec ->
     LocalState ToyKey ToyValue Bool DGamma.CP4TotalityChecks.counterEmptySpec) ->
   togglerRun capability before = Right (after, undo) ->
-  undo after = before
-togglerWitness NoDepValues before@(MkLocalState world table) after undo equation =
-  case rightInjective equation of Refl => Refl
+  normalizeLocal _ before = before ->
+  undo (normalizeLocal _ after) = before
+togglerWitness NoDepValues before@(MkLocalState world table) after undo equation
+  canonical = case rightInjective equation of Refl => Refl
 
 private
 togglerStep : StepEffect ToyKey ToyValue Bool Unit [] DGamma.CP4TotalityChecks.counterEmptySpec
@@ -252,15 +255,16 @@ providerAlwaysRun NoDepValues before@(MkLocalState world table) =
   Right (MkLocalState world DGamma.CP4TotalityChecks.counterServiceATable, \after => before)
 
 private
-0 providerAlwaysWitness :
+0 providerAlwaysWitness : {auto keyEq : DecEq ToyKey} ->
   (capability : DepValues ToyKey ToyValue []) ->
   (before, after : LocalState ToyKey ToyValue Bool DGamma.CP4TotalityChecks.counterServiceASpec) ->
   (undo : LocalState ToyKey ToyValue Bool DGamma.CP4TotalityChecks.counterServiceASpec ->
     LocalState ToyKey ToyValue Bool DGamma.CP4TotalityChecks.counterServiceASpec) ->
   providerAlwaysRun capability before = Right (after, undo) ->
-  undo after = before
+  normalizeLocal _ before = before ->
+  undo (normalizeLocal _ after) = before
 providerAlwaysWitness NoDepValues before@(MkLocalState world table) after undo
-  equation = case rightInjective equation of Refl => Refl
+  equation canonical = case rightInjective equation of Refl => Refl
 
 private
 providerAlways : StepEffect ToyKey ToyValue Bool Unit [] DGamma.CP4TotalityChecks.counterServiceASpec

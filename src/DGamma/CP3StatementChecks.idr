@@ -30,12 +30,14 @@ registrationTestStep : StepEffect RegistrationTestKey RegistrationTestValue
   Unit String [] DGamma.CP3StatementChecks.registrationTestSpec
 registrationTestStep = MkStepEffect (Just 0)
   (\NoDepValues, before => Right (before, id))
-  (\NoDepValues, before, after, undo, returned =>
+  (\NoDepValues, before, after, undo, returned, canonical =>
     replace
       {p = \outcome => case outcome of
         Left _ => Unit
-        Right (next, inverse) => inverse next = before}
-      returned Refl)
+        Right (next, inverse) => inverse
+          (normalizeLocal DGamma.CP3StatementChecks.registrationTestSpec next) =
+          before}
+      returned canonical)
 
 registrationTestChild : Component RegistrationTestKey RegistrationTestValue
   Unit String
@@ -1857,12 +1859,14 @@ episodeRegistrationStep : StepEffect ToyKey ToyValue ToyRuntime String
   [ServiceA] DGamma.CalculusChecks.toyEmptySpec
 episodeRegistrationStep = MkStepEffect (Just 0)
   (\(OneDepValue service NoDepValues), before => Right (before, id))
-  (\(OneDepValue service NoDepValues), before, after, undo, returned =>
+  (\(OneDepValue service NoDepValues), before, after, undo, returned,
+      canonical =>
     replace
       {p = \outcome => case outcome of
         Left _ => Unit
-        Right (next, inverse) => inverse next = before}
-      returned Refl)
+        Right (next, inverse) => inverse
+          (normalizeLocal DGamma.CalculusChecks.toyEmptySpec next) = before}
+      returned canonical)
 
 public export
 episodeChild : Component ToyKey ToyValue ToyRuntime String

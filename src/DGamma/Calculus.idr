@@ -299,6 +299,57 @@ restrictOwnedPreservingOrderBindings
   (MkOwnedTable (MkCoeffectContext entries entriesUnique) sound) =
     orderRestrictBindingsIdentity allowed entries entriesUnique sound
 
+0 orderRestrictedBindingsConstructor :
+  (allowed : List key) -> (entries : List (Binding key value)) ->
+  (filtered : List (Binding key value)) ->
+  (unique : UniqueKeys (bindingKeys filtered)) ->
+  (sound : AllKeysAllowed (bindingKeys filtered) allowed) ->
+  (subset : AllKeysAllowed (bindingKeys filtered) (bindingKeys entries)) ->
+  orderRestrictedBindings
+    (MkOrderRestrictedEntries {allowed = allowed} {original = entries}
+      filtered unique sound subset) = filtered
+orderRestrictedBindingsConstructor allowed entries filtered unique sound subset =
+  Refl
+
+||| Finding #11's canonical-domain keystone: one order-preserving restriction
+||| already is a fixed point of restriction, even when the original context was
+||| not provision-confined.  This is stronger than runtime binding preservation:
+||| it identifies the canonically rebuilt erased certificates propositionally.
+public export
+0 restrictOwnedPreservingOrderIdempotent : DecEq key =>
+  (provision : CoeffectSpec key) ->
+  (context : CoeffectContext key value) ->
+  restrictOwnedPreservingOrder provision
+    (ownedValues (restrictOwnedPreservingOrder provision context)) =
+  restrictOwnedPreservingOrder provision context
+restrictOwnedPreservingOrderIdempotent
+  provision@(MkCoeffectSpec allowed allowedUnique)
+  context@(MkCoeffectContext entries entriesUnique)
+  with (orderRestrictEntries allowed entries entriesUnique) proof firstRun
+  restrictOwnedPreservingOrderIdempotent
+    provision@(MkCoeffectSpec allowed allowedUnique)
+    context@(MkCoeffectContext entries entriesUnique) |
+      MkOrderRestrictedEntries filtered firstUnique firstSound firstSubset =
+        let observed = MkOrderRestrictedEntries {allowed = allowed}
+              {original = entries} filtered firstUnique firstSound firstSubset
+            observedBindings = orderRestrictedBindingsConstructor allowed
+              entries filtered firstUnique firstSound firstSubset
+        in rewrite observedBindings in
+          let filteredAgain = orderRestrictBindingsIdentity allowed filtered
+                (canonicalUniqueKeys (bindingKeys filtered) firstUnique)
+                firstSound
+          in canonicalOwnedFromFilteredCong
+            (MkCoeffectSpec allowed allowedUnique)
+            (orderRestrictedBindings (orderRestrictEntries allowed filtered
+              (canonicalUniqueKeys (bindingKeys filtered) firstUnique)))
+            filtered filteredAgain
+            (orderRestrictedUnique (orderRestrictEntries allowed filtered
+              (canonicalUniqueKeys (bindingKeys filtered) firstUnique)))
+            firstUnique
+            (orderRestrictedSound (orderRestrictEntries allowed filtered
+              (canonicalUniqueKeys (bindingKeys filtered) firstUnique)))
+            firstSound
+
 ||| The only state a component step may mutate: ambient state and its own table.
 public export
 record LocalState (key : Type) (value : key -> Type) (world : Type)
@@ -331,6 +382,35 @@ public export
   bindings (ownedValues (localTable local))
 normalizeLocalBindings provision (MkLocalState ambient table) =
   restrictOwnedPreservingOrderBindings provision table
+
+||| Finding #11 companion keystone: normalization is propositionally
+||| idempotent because Finding #10 makes its certificates canonical functions of
+||| the complete ordered runtime bindings and provision.
+public export
+0 normalizeLocalIdempotent : DecEq key => (provision : CoeffectSpec key) ->
+  (local : LocalState key value world provision) ->
+  normalizeLocal provision (normalizeLocal provision local) =
+  normalizeLocal provision local
+normalizeLocalIdempotent provision (MkLocalState ambient table) =
+  cong (MkLocalState ambient)
+    (canonicalNormalizationFromEqualBindings provision
+      (ownedValues
+        (restrictOwnedPreservingOrder provision (ownedValues table)))
+      (ownedValues table)
+      (restrictOwnedPreservingOrderBindings provision table))
+
+||| Every evaluator and Definition-60 step source is canonical: both construct
+||| it by one order-preserving restriction from a complete actor context.
+public export
+0 restrictedLocalCanonical : DecEq key =>
+  (provision : CoeffectSpec key) -> (ambient : world) ->
+  (context : CoeffectContext key value) ->
+  normalizeLocal provision
+    (MkLocalState ambient (restrictOwnedPreservingOrder provision context)) =
+  MkLocalState ambient (restrictOwnedPreservingOrder provision context)
+restrictedLocalCanonical provision ambient context =
+  cong (MkLocalState ambient)
+    (restrictOwnedPreservingOrderIdempotent provision context)
 
 ||| Compose one newly yielded undo in LIFO order.  The inter-undo normalization
 ||| is erased-certificate transparent at runtime but makes the evaluator's
@@ -378,12 +458,86 @@ record StepEffect (key : Type) (value : key -> Type) (world, error : Type)
                     (LocalState key value world provision,
                      LocalState key value world provision ->
                        LocalState key value world provision)
-  0 stepWitness : (capability : DepValues key value deps) ->
+  0 stepWitness : {auto keyEq : DecEq key} ->
+    (capability : DepValues key value deps) ->
     (before, after : LocalState key value world provision) ->
     (undo : LocalState key value world provision ->
             LocalState key value world provision) ->
     runStepEffect capability before = Right (after, undo) ->
-    undo after = before
+    normalizeLocal provision before = before ->
+    undo (normalizeLocal provision after) = before
+
+||| Discharge a `StepEffect` author's conditional recovery law at the exact
+||| canonical source shape shared by L-Advance and Definition 60.
+public export
+0 restrictedStepRecovery : DecEq key =>
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  (step : StepEffect key value world error deps provision) ->
+  (capability : DepValues key value deps) ->
+  (ambient : world) -> (context : CoeffectContext key value) ->
+  (after : LocalState key value world provision) ->
+  (undo : LocalState key value world provision ->
+    LocalState key value world provision) ->
+  runStepEffect step capability
+    (MkLocalState ambient
+      (restrictOwnedPreservingOrder provision context)) =
+    Right (after, undo) ->
+  undo (normalizeLocal provision after) =
+    MkLocalState ambient (restrictOwnedPreservingOrder provision context)
+restrictedStepRecovery step capability ambient context after undo ran =
+  stepWitness step capability
+    (MkLocalState ambient (restrictOwnedPreservingOrder provision context))
+    after undo ran (restrictedLocalCanonical provision ambient context)
+
+||| L-Advance specializes the shared restricted-source proof to the fiber's
+||| already provision-confined runtime table.
+public export
+0 advanceSourceStepRecovery : DecEq key =>
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  (step : StepEffect key value world error deps provision) ->
+  (capability : DepValues key value deps) ->
+  (ambient : world) -> (table : OwnedTable key value provision) ->
+  (after : LocalState key value world provision) ->
+  (undo : LocalState key value world provision ->
+    LocalState key value world provision) ->
+  runStepEffect step capability
+    (MkLocalState ambient
+      (restrictOwnedPreservingOrder provision (ownedValues table))) =
+    Right (after, undo) ->
+  undo (normalizeLocal provision after) =
+    MkLocalState ambient
+      (restrictOwnedPreservingOrder provision (ownedValues table))
+advanceSourceStepRecovery step capability ambient table after undo ran =
+  restrictedStepRecovery step capability ambient (ownedValues table) after undo
+    ran
+
+||| One successful push supplies the older accumulator with the canonical
+||| recovered source. Consequently induction over repeated pushes never feeds a
+||| later undo a noncanonical local state.
+public export
+0 pushLocalUndoRecoversStep : DecEq key =>
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  (step : StepEffect key value world error deps provision) ->
+  (capability : DepValues key value deps) ->
+  (ambient : world) -> (context : CoeffectContext key value) ->
+  (after : LocalState key value world provision) ->
+  (undo : LocalState key value world provision ->
+    LocalState key value world provision) ->
+  (accumulator : LocalState key value world provision ->
+    LocalState key value world provision) ->
+  runStepEffect step capability
+    (MkLocalState ambient
+      (restrictOwnedPreservingOrder provision context)) =
+    Right (after, undo) ->
+  pushLocalUndo provision accumulator undo (normalizeLocal provision after) =
+    accumulator
+      (MkLocalState ambient (restrictOwnedPreservingOrder provision context))
+pushLocalUndoRecoversStep step capability ambient context after undo accumulator
+  ran =
+    let 0 recovered = restrictedStepRecovery step capability ambient context
+          after undo ran
+        0 sourceCanonical = restrictedLocalCanonical provision ambient context
+    in rewrite recovered in rewrite sourceCanonical in Refl
 
 ||| Definition 43: declarations plus a finite failing effect iterator.
 public export

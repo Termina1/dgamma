@@ -430,6 +430,54 @@ of Lemma 38.
     ordered-table design chain, as well as the still-separate renamed endpoint
     table relation.
 
+16. **CP4 Finding #11 — recovery is exact on the canonical evaluator domain,
+    not on every proof-distinct `LocalState`.** Finding #9 made every yielded
+    inverse map normalize its local input before invoking the callback. The old
+    `StepEffect.stepWitness` only proved `undo after = before`, which says
+    nothing about `undo (normalizeLocal provision after)`. The first attempted
+    unconditional replacement,
+    `run ... before = Right (after, undo) -> undo (normalizeLocal provision
+    after) = before`, is uninhabitable for the public callback interface: the
+    identity step may be called directly with a provision-confined table whose
+    erased `UniqueKeys`/soundness witnesses are propositionally noncanonical.
+    It would then require `normalizeLocal provision before = before`, although
+    normalization deliberately rebuilds those certificates. Runtime bindings
+    are identical, but Idris intensional equality correctly distinguishes the
+    proof-bearing records.
+
+    With supervisor approval, the old law was replaced rather than retained:
+    `stepWitness` now requires
+    `normalizeLocal provision before = before` and concludes
+    `undo (normalizeLocal provision after) = before`. This is the exact domain
+    used by the evaluator and Definition 60. The companion keystones
+    `restrictOwnedPreservingOrderIdempotent`, `normalizeLocalIdempotent`, and
+    `restrictedLocalCanonical` prove that one ordered restriction produces a
+    canonical fixed point. `advanceSourceStepRecovery` discharges the premise
+    for L-Advance's owned-table source;
+    `DGamma.Metatheory.yieldedInverseStepRecovery` does so for the arbitrary
+    full-effect-state restriction used by Definition 60; and
+    `pushLocalUndoRecoversStep` proves that a successful pushed undo supplies
+    the older accumulator with the canonical recovered source. Thus induction
+    over the composed accumulator chain cannot pass a proof-noncanonical local
+    state to a later undo.
+
+    Every concrete `StepEffect` author was rechecked under the conditional law:
+    the four calculus examples, both CP3 registration examples, the
+    generation-reissue registration step, the order-sensitive restriction
+    regression, and all four Definition-69 totality regressions. The
+    order-sensitive checks additionally specialize the fixed-point,
+    L-Advance, yielded-map, and pushed-accumulator lemmas so the three required
+    application sites remain typechecked. One forced `CP3StatementChecks`
+    rebuild was killed at the known `CP4SupportSolution` resource boundary
+    (exit 137); an immediate no-concurrent-Chez retry rebuilt the support
+    solution and then `CP3StatementChecks` successfully. This is a warm targeted
+    pass and does not discharge the registered cold-archive validation debt.
+
+    Finding #11 joins Findings #4–#10 on the mandatory end-of-CP4 adversarial
+    re-review list. Review must attempt a proof-relevant noncanonical table at
+    every direct `runStepEffect` entry point and a multi-undo chain whose
+    intermediate worlds and ordered bindings differ.
+
 ## Escape-hatch and hole audit
 
 There are no uses of `believe_me`, `assert_total`, `postulate`, unsafe FFI, or

@@ -55,16 +55,21 @@ orderSensitiveStep = MkStepEffect Nothing run witnessed
   run NoDepValues before@(MkLocalState world table) =
     Right (MkLocalState (orderWorld table) table, (\later => before))
 
-  0 witnessed : (capability : DepValues ToyKey ToyValue []) ->
+  0 witnessed : {auto keyEq : DecEq ToyKey} ->
+    (capability : DepValues ToyKey ToyValue []) ->
     (before, after : LocalState ToyKey ToyValue ToyRuntime DGamma.CP4RestrictionChecks.reverseOrderSpec) ->
     (undo : LocalState ToyKey ToyValue ToyRuntime DGamma.CP4RestrictionChecks.reverseOrderSpec ->
       LocalState ToyKey ToyValue ToyRuntime DGamma.CP4RestrictionChecks.reverseOrderSpec) ->
-    run capability before = Right (after, undo) -> undo after = before
-  witnessed NoDepValues before@(MkLocalState world table) after undo returned =
+    run capability before = Right (after, undo) ->
+    normalizeLocal DGamma.CP4RestrictionChecks.reverseOrderSpec before = before ->
+    undo (normalizeLocal DGamma.CP4RestrictionChecks.reverseOrderSpec after) = before
+  witnessed NoDepValues before@(MkLocalState world table) after undo returned
+    canonical =
     replace
       {p = \outcome => case outcome of
         Left err => Unit
-        Right (next, inverse) => inverse next = before}
+        Right (next, inverse) => inverse
+          (normalizeLocal DGamma.CP4RestrictionChecks.reverseOrderSpec next) = before}
       returned Refl
 
 reverseComponent : Component ToyKey ToyValue ToyRuntime String
@@ -99,6 +104,92 @@ DGamma.CP4RestrictionChecks.preservingWorld = case runStepEffect orderSensitiveS
   (MkLocalState (MkToyRuntime False False) preservingRestricted) of
   Left err => MkToyRuntime False True
   Right (after, undo) => localWorld after
+
+||| Finding #11 keystone specialized to a context whose input order is visible
+||| to the concrete host callback.
+public export
+0 reverseRestrictionCanonical :
+  normalizeLocal DGamma.CP4RestrictionChecks.reverseOrderSpec
+    (MkLocalState (MkToyRuntime False False)
+      DGamma.CP4RestrictionChecks.preservingRestricted) =
+  MkLocalState (MkToyRuntime False False)
+    DGamma.CP4RestrictionChecks.preservingRestricted
+reverseRestrictionCanonical = restrictedLocalCanonical
+  DGamma.CP4RestrictionChecks.reverseOrderSpec (MkToyRuntime False False)
+  DGamma.CP4RestrictionChecks.reverseContext
+
+||| The actual L-Advance source shape discharges the conditional witness.
+public export
+0 orderSensitiveAdvanceRecovery :
+  (after : LocalState ToyKey ToyValue ToyRuntime
+    DGamma.CP4RestrictionChecks.reverseOrderSpec) ->
+  (undo : LocalState ToyKey ToyValue ToyRuntime
+      DGamma.CP4RestrictionChecks.reverseOrderSpec ->
+    LocalState ToyKey ToyValue ToyRuntime
+      DGamma.CP4RestrictionChecks.reverseOrderSpec) ->
+  runStepEffect DGamma.CP4RestrictionChecks.orderSensitiveStep NoDepValues
+    (MkLocalState (MkToyRuntime False False)
+      (restrictOwnedPreservingOrder
+        DGamma.CP4RestrictionChecks.reverseOrderSpec
+        (ownedValues DGamma.CP4RestrictionChecks.reverseOwned))) =
+    Right (after, undo) ->
+  undo (normalizeLocal DGamma.CP4RestrictionChecks.reverseOrderSpec after) =
+    MkLocalState (MkToyRuntime False False)
+      (restrictOwnedPreservingOrder
+        DGamma.CP4RestrictionChecks.reverseOrderSpec
+        (ownedValues DGamma.CP4RestrictionChecks.reverseOwned))
+orderSensitiveAdvanceRecovery after undo ran = advanceSourceStepRecovery
+  DGamma.CP4RestrictionChecks.orderSensitiveStep NoDepValues
+  (MkToyRuntime False False) DGamma.CP4RestrictionChecks.reverseOwned after undo
+  ran
+
+||| Definition 60's yielded inverse applies the same witness to its explicitly
+||| normalized callback input.
+public export
+0 orderSensitiveYieldedRecovery :
+  (after : LocalState ToyKey ToyValue ToyRuntime
+    DGamma.CP4RestrictionChecks.reverseOrderSpec) ->
+  (undo : LocalState ToyKey ToyValue ToyRuntime
+      DGamma.CP4RestrictionChecks.reverseOrderSpec ->
+    LocalState ToyKey ToyValue ToyRuntime
+      DGamma.CP4RestrictionChecks.reverseOrderSpec) ->
+  runStepEffect DGamma.CP4RestrictionChecks.orderSensitiveStep NoDepValues
+    (MkLocalState (MkToyRuntime False False)
+      DGamma.CP4RestrictionChecks.preservingRestricted) =
+    Right (after, undo) ->
+  undo (MkLocalState (localWorld after)
+    (restrictOwnedPreservingOrder
+      DGamma.CP4RestrictionChecks.reverseOrderSpec
+      (ownedValues (localTable after)))) =
+    MkLocalState (MkToyRuntime False False)
+      DGamma.CP4RestrictionChecks.preservingRestricted
+orderSensitiveYieldedRecovery after undo ran = yieldedInverseStepRecovery
+  DGamma.CP4RestrictionChecks.orderSensitiveStep NoDepValues
+  (MkToyRuntime False False) DGamma.CP4RestrictionChecks.reverseContext after
+  undo ran
+
+||| A composed LIFO accumulator passes the canonical recovered source to every
+||| older layer.
+public export
+0 orderSensitivePushRecovery :
+  (after : LocalState ToyKey ToyValue ToyRuntime
+    DGamma.CP4RestrictionChecks.reverseOrderSpec) ->
+  (undo, accumulator : LocalState ToyKey ToyValue ToyRuntime
+      DGamma.CP4RestrictionChecks.reverseOrderSpec ->
+    LocalState ToyKey ToyValue ToyRuntime
+      DGamma.CP4RestrictionChecks.reverseOrderSpec) ->
+  runStepEffect DGamma.CP4RestrictionChecks.orderSensitiveStep NoDepValues
+    (MkLocalState (MkToyRuntime False False)
+      DGamma.CP4RestrictionChecks.preservingRestricted) =
+    Right (after, undo) ->
+  pushLocalUndo DGamma.CP4RestrictionChecks.reverseOrderSpec accumulator undo
+    (normalizeLocal DGamma.CP4RestrictionChecks.reverseOrderSpec after) =
+  accumulator (MkLocalState (MkToyRuntime False False)
+    DGamma.CP4RestrictionChecks.preservingRestricted)
+orderSensitivePushRecovery after undo accumulator ran = pushLocalUndoRecoversStep
+  DGamma.CP4RestrictionChecks.orderSensitiveStep NoDepValues
+  (MkToyRuntime False False) DGamma.CP4RestrictionChecks.reverseContext after
+  undo accumulator ran
 
 independentComponent : Component ToyKey ToyValue ToyRuntime String
 independentComponent = MkComponent toyEmptySpec toyEmptySpec []

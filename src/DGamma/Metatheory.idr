@@ -1539,6 +1539,31 @@ yieldedInverseEffectMap nameEq keyEq actor provision undo state =
     (ownedValues (localTable restored))
     (setEffectAmbient (localWorld restored) state))
 
+||| Finding #11 at the Definition-60 application site. The yielded map feeds its
+||| callback exactly the normalization of the step's returned local state, while
+||| the step source is canonical after one restriction.
+public export
+0 yieldedInverseStepRecovery : DecEq key =>
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  (step : StepEffect key value world error deps provision) ->
+  (capability : DepValues key value deps) ->
+  (ambient : world) -> (context : CoeffectContext key value) ->
+  (after : LocalState key value world provision) ->
+  (undo : LocalState key value world provision ->
+    LocalState key value world provision) ->
+  runStepEffect step capability
+    (MkLocalState ambient
+      (restrictOwnedPreservingOrder provision context)) =
+    Right (after, undo) ->
+  undo
+    (MkLocalState (localWorld after)
+      (restrictOwnedPreservingOrder provision
+        (ownedValues (localTable after)))) =
+    MkLocalState ambient (restrictOwnedPreservingOrder provision context)
+yieldedInverseStepRecovery step capability ambient context
+  after@(MkLocalState afterAmbient afterTable) undo ran =
+    restrictedStepRecovery step capability ambient context after undo ran
+
 ||| Evaluate one reachable iterator stage, exposing both its forward result and
 ||| the exact inverse yielded at this application state. The continuation is
 ||| the stage's statically fixed `rest`; unlike the paper's general iterator,
