@@ -214,6 +214,68 @@ advanceRuntimeMapRespects nameEq keyEq actor (MkSystemState ambient fibers) left
     left right related | Just fiber =
       successfulAdvanceMapRespects nameEq keyEq actor fiber left right related
 
+public export
+0 accumulatorRuntimeEffectMapRespects :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (provision : CoeffectSpec key) ->
+  (accumulator : LocalState key value world provision ->
+    LocalState key value world provision) ->
+  (left, right : EffectState name key value world) ->
+  EffectStateRelated keyEq left right ->
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    (accumulatorRuntimeEffectMap nameEq keyEq actor accumulator left)
+    (accumulatorRuntimeEffectMap nameEq keyEq actor accumulator right)
+accumulatorRuntimeEffectMapRespects nameEq keyEq actor provision accumulator
+  left right related =
+    let actorTableSame = tablesExact related actor
+        ambientSame = ambientExact related
+        0 ownedSame :
+          (restrictOwnedPreservingOrder @{keyEq} provision
+             (effectTables left actor) =
+           restrictOwnedPreservingOrder @{keyEq} provision
+             (effectTables right actor))
+        ownedSame = canonicalNormalizationFromEqualBindings provision
+          (effectTables left actor) (effectTables right actor) actorTableSame
+        0 localSame :
+          (MkLocalState (effectAmbient left)
+             (restrictOwnedPreservingOrder @{keyEq} provision
+               (effectTables left actor)) =
+           MkLocalState (effectAmbient right)
+             (restrictOwnedPreservingOrder @{keyEq} provision
+               (effectTables right actor)))
+        localSame = rewrite ambientSame in rewrite ownedSame in Refl
+        0 restoredSame :
+          (accumulator
+             (MkLocalState (effectAmbient left)
+               (restrictOwnedPreservingOrder @{keyEq} provision
+                 (effectTables left actor))) =
+           accumulator
+             (MkLocalState (effectAmbient right)
+               (restrictOwnedPreservingOrder @{keyEq} provision
+                 (effectTables right actor))))
+        restoredSame = cong accumulator localSame
+    in rewrite sym restoredSame in
+      PartialDefined (setActorRuntimeRelated nameEq keyEq actor
+        (localWorld (accumulator
+          (MkLocalState (effectAmbient left)
+            (restrictOwnedPreservingOrder @{keyEq} provision
+              (effectTables left actor)))))
+        (ownedValues (localTable (accumulator
+          (MkLocalState (effectAmbient left)
+            (restrictOwnedPreservingOrder @{keyEq} provision
+              (effectTables left actor))))))
+        left right related)
+
+public export
+0 accumulatorEffectMapRespects :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (handle : AccumulatorHandle key value world) ->
+  EffectPartialMapRespects keyEq
+    (accumulatorEffectMap nameEq keyEq actor handle)
+accumulatorEffectMapRespects nameEq keyEq actor
+  (MkAccumulatorHandle provision captured accumulator) =
+    accumulatorRuntimeEffectMapRespects nameEq keyEq actor provision accumulator
+
 unloadEffectMap :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
   Fiber name key value world error -> PartialEffectMap name key value world
@@ -237,53 +299,8 @@ unloadMapRespects nameEq keyEq actor fiber left right related
     Active accumulator view = PartialUndefined
   unloadMapRespects nameEq keyEq actor fiber left right related |
     Unloading accumulator view outcome =
-      let actorTableSame = tablesExact related actor
-          ambientSame = ambientExact related
-          0 ownedSame :
-            (restrictOwnedPreservingOrder @{keyEq}
-               (componentProvisions (fiberComponent fiber))
-               (effectTables left actor) =
-             restrictOwnedPreservingOrder @{keyEq}
-               (componentProvisions (fiberComponent fiber))
-               (effectTables right actor))
-          ownedSame = canonicalNormalizationFromEqualBindings
-            (componentProvisions (fiberComponent fiber))
-            (effectTables left actor) (effectTables right actor) actorTableSame
-          0 localSame :
-            (MkLocalState (effectAmbient left)
-               (restrictOwnedPreservingOrder @{keyEq}
-                 (componentProvisions (fiberComponent fiber))
-                 (effectTables left actor)) =
-             MkLocalState (effectAmbient right)
-               (restrictOwnedPreservingOrder @{keyEq}
-                 (componentProvisions (fiberComponent fiber))
-                 (effectTables right actor)))
-          localSame = rewrite ambientSame in rewrite ownedSame in Refl
-          0 restoredSame :
-            (accumulator
-               (MkLocalState (effectAmbient left)
-                 (restrictOwnedPreservingOrder @{keyEq}
-                   (componentProvisions (fiberComponent fiber))
-                   (effectTables left actor))) =
-             accumulator
-               (MkLocalState (effectAmbient right)
-                 (restrictOwnedPreservingOrder @{keyEq}
-                   (componentProvisions (fiberComponent fiber))
-                   (effectTables right actor))))
-          restoredSame = cong accumulator localSame
-      in rewrite sym restoredSame in
-        PartialDefined (setActorRuntimeRelated nameEq keyEq actor
-          (localWorld (accumulator
-            (MkLocalState (effectAmbient left)
-              (restrictOwnedPreservingOrder @{keyEq}
-                (componentProvisions (fiberComponent fiber))
-                (effectTables left actor)))))
-          (ownedValues (localTable (accumulator
-            (MkLocalState (effectAmbient left)
-              (restrictOwnedPreservingOrder @{keyEq}
-                (componentProvisions (fiberComponent fiber))
-                (effectTables left actor))))))
-          left right related)
+      accumulatorRuntimeEffectMapRespects nameEq keyEq actor
+        (componentProvisions (fiberComponent fiber)) accumulator left right related
 
 0 unloadRuntimeMapRespects :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
