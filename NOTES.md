@@ -493,6 +493,21 @@ of Lemma 38.
     every direct `runStepEffect` entry point and a multi-undo chain whose
     intermediate worlds and ordered bindings differ.
 
+    **Relational replay addendum.** The selected-episode quotient confirms the
+    same representation boundary one level higher: Theorem 61 returns exact
+    ambient/ordered-table agreement and extensional accumulator control, not
+    equality of proof-bearing `Fiber` values. Consequently the recovered
+    survivor cannot constructively seed `NoEpisodeReplayBoundary`'s exact raw
+    registry-binding snapshot without function extensionality and proof
+    irrelevance. With supervisor approval, public Lemma 72 remains unchanged
+    while `RelationalNoEpisodeReplayBoundary` becomes the primary
+    selected-to-suffix interface: complete current-R plan plus
+    `EffectStateRelated` and `ControlEquivalent` against the plan target. The
+    old exact boundary embeds as its runtime-snapshot specialization. A parallel
+    relational suffix fold will be used rather than mechanically replacing the
+    already-proved exact fold; this avoids destabilizing the 0eeef3d lifecycle
+    case split, and the exact fold remains a useful regression specialization.
+
 ## Escape-hatch and hole audit
 
 There are no uses of `believe_me`, `assert_total`, `postulate`, unsafe FFI, or
@@ -1630,9 +1645,15 @@ branch supplied by the exhaustive recovery dispatcher—share one boundary
 constructor. `DGamma.CP4DeletionSelectedOwnDispatch` now instantiates that
 constructor for an arbitrary checked selected interior lifecycle head;
 `selectedInstalledAccumulatorStep` eliminates impossible insert/remove/begin/
-unload shapes and supplies the exact target model. The remaining selected stage
-must construct foreign retained
-checked transitions, handle deleted R heads, and close the L-Unload endpoint.
+unload shapes and supplies the exact target model.
+`DGamma.CP4DeletionRelationalBoundary` now defines the approved primary suffix
+interface. It compares the actual survivor with the complete current-R plan
+target using `EffectStateRelated` plus full `ControlEquivalent`, and
+`exactBoundaryGivesRelational` proves the previous snapshot scaffold is its
+special case even across distinct top-level uniqueness certificates. The
+remaining selected stage must construct foreign retained checked transitions,
+handle deleted R heads, close the L-Unload endpoint, and feed the parallel
+relational suffix fold.
 
 ### Corollary 62: terminal recovery
 

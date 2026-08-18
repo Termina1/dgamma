@@ -206,8 +206,12 @@ progress.
   `deletedSelectedInstalledHeadPreservesEpisodeBoundary` dispatches every
   checked selected interior lifecycle head through the exhaustive recovery
   infrastructure. The remaining selected layer must rebuild retained foreign
-  controls, handle deleted R
-  heads, and close L-Unload. The located-episode splitter
+  controls, handle deleted R heads, and close L-Unload.
+  `DGamma.CP4DeletionRelationalBoundary` is the primary selected-to-suffix
+  interface: it relates the actual survivor to the complete plan target by
+  ordered effects and extensional controls. The former exact snapshot boundary
+  embeds as a specialization, but selected recovery is never strengthened to
+  function/proof equality. The located-episode splitter
   derives the episode/suffix generation scans and restricts both no-R-episode
   and repaired Definition-69 evidence without new public premises.
   `DeletionTraceSkeleton` integrates those proofs with both dependent filters;
