@@ -1544,6 +1544,15 @@ Finding-7/9/vestigial/calculus runtime aggregates evaluate to the all-`True`
 tuple recorded above. This is full consumer revalidation for the semantic
 change, but still does not discharge the registered split/cold-archive debt.
 
+After Finding #11 and constructive Theorem 61, a no-concurrent-Chez warm package
+build passed all 99/99 modules. The run explicitly rebuilt
+`CP3VestigialChecks`, all deletion/control modules, all Progress modules, and the
+new selected/foreign/replay proof chain. `CP3StatementChecks` had separately
+passed on the immediate no-concurrent retry documented in Finding #11, and
+`CalculusChecks` had passed its targeted rebuild. This is current complete warm
+validation; the registered `CP4SupportSolution` split plus cold archive build
+remains outstanding.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
