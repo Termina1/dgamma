@@ -490,7 +490,6 @@ cannot silently introduce a proof:
   `CoarsestRespectedEquivalence` — Lemma 35.
 - `distinctKeysIndependent` — Theorem 40.
 - `MediatedIndependenceTheorem` — Theorem 42.
-- `terminalRecoveryTheorem` — Corollary 62.
 - `resolutionCoherenceTheorem` — the recovery-combined form of Theorem 64.
 - `deletionTheorem` — Lemma 72.
 - `confluenceTheorem` — the finite explicit-registration form of Theorem 73,
@@ -685,7 +684,8 @@ BLOCKER/MAJOR was addressed architecturally rather than hidden by a postulate.
   failure is never totalized to identity.
 - Theorem 61 is now anchored at L-Begin and takes a trace-specific
   `PrefixRecoveryIndependent`. Corollary 62 takes a maximal `ClosedEpisode`.
-  Both remain statement-only pending the temporal induction.
+  At the CP2 checkpoint both remained statement-only pending the temporal
+  induction; CP4 now proves both.
 
 ### Spatial/resolution statements and proved structural lemmas
 
@@ -708,9 +708,8 @@ BLOCKER/MAJOR was addressed architecturally rather than hidden by a postulate.
   round-1 Unloading-suffix counterexample is unrepresentable. The local
   Equation-59 facts and the whole-episode first-exit split are proved by
   `resolutionStructureTheoremProof`. `resolutionCoherenceFromTerminalRecovery`
-  proves all remaining dependent packaging from Corollary 62; the exported
-  recovery-combined theorem remains statement-only only because terminal
-  recovery itself is open.
+  proves all remaining dependent packaging from Corollary 62. CP4 has now
+  proved terminal recovery, leaving only the direct exported proof binding.
 
 ### Executable adversarial coverage
 
@@ -1072,15 +1071,11 @@ not claimed before the independent round-10 review.
 
 ### Recovery and Theorem 64
 
-Theorem 61 and Corollary 62 remain stated. The hard obligation is the **temporal
-accumulator induction**: show that the actual dependent accumulator stored by
-all L-Iter/L-Divert/L-Raise paths factors into the yielded inverse generators,
-then commute each factor across foreign transformations and replay the suffix.
-The generated-monoid premise now contains exactly the needed per-yield facts,
-but the indexed induction through `InstalledTrace` is not yet implemented.
-`resolutionCoherenceFromTerminalRecovery` proves that Corollary 62 immediately
-completes the recovery branch of Theorem 64; resolution structure and final
-packaging are no longer debt.
+At the CP3 checkpoint Theorem 61 and Corollary 62 remained stated because the
+actual accumulator still needed a temporal generated-monoid induction. CP4 now
+implements that induction and proves both. `resolutionCoherenceFromTerminalRecovery`
+shows that Corollary 62 immediately completes the recovery branch of Theorem 64;
+resolution structure and final packaging are no longer substantive debt.
 
 ### CP3 adversarial rounds 1–3: statement redesign in progress
 
@@ -1486,6 +1481,22 @@ control/replay content, not an extra public premise and not permanently
 residualized: it is also required by Theorem-73 sorting. No theorem alias or
 runtime evaluator changed, and no escape hatch was introduced.
 
+### Corollary 62: terminal recovery
+
+`DGamma.CP4TerminalRecovery.terminalRecoveryTheoremProof` now inhabits the
+immutable Corollary-62 alias. `appendLeftOccurrenceEmbedding` runs the proved
+Theorem-61 simultaneous induction over the maximal installed body while keeping
+the complete closed trace as its generator universe, so the public independence
+premise needs no lossy subtrace conversion. `ClosingAccumulatorResult` extracts
+the exact runtime handle consumed by checked L-Unload and reuses the exhaustive
+actual-effect frame to relate its result to the concrete post-close projection
+without function extensionality. The two `actualAccumulatorAt` equations identify
+that handle with the temporal model's final handle; `appendOwnReplay` then appends
+L-Unload as the selected actor's skipped replay step and composes the terminal
+relation. `beginAccumulatorRecovery` is now publicly exported as a proved helper
+so the closed-body replay starts at the exact episode opening projection. No
+statement, runtime evaluator, or escape hatch changed.
+
 ### Cold-build validation under Idris 2 v0.8.0
 
 A one-process build from an empty `build/` may be killed while elaborating the
@@ -1584,7 +1595,9 @@ unloading-chain no-deadlock, all-rule potential decrease, amortized Equation
 61, maximality, and final public-alias assembly; and recovery Theorem 61,
 including the conditional selected-step inverse, foreign generated-map
 commutation, congruent replay transport, simultaneous installed-trace
-induction, and exact public-alias endpoint assembly. The repaired Definition-69/
+induction, and exact public-alias endpoint assembly; and Corollary 62, including
+checked L-Unload handle extraction, terminal effect framing, and closed-trace
+replay assembly. The repaired Definition-69/
 Lemma-70 and Theorem-66 statement shapes still await end-of-CP4 re-review.
 
 **Partial:** Lemma 71 (effect commutation projection); Lemma 72 (candidate
@@ -1599,9 +1612,10 @@ invariant, scanner live-name uniqueness plus the public-outside bridge, proved c
 lifecycle and orchestration applicability through that plan (including the
 child-O-Insert parent guard), and a complete `CurrentRegisteredChildless`
 induction from disciplined registration,
-well-formed parent closure, and exact-generation no-episode evidence;
-selected-episode/suffix applicability and endpoint effect/control/withdrawal
-invariants remain);
+well-formed parent closure, and exact-generation no-episode evidence; both
+structural readiness inductions from the saturated retained-head interface;
+construction of that interface from the Lemma-71 replay-boundary invariant and
+endpoint effect/control/withdrawal invariants remain);
 Confluence/Theorem
 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
@@ -1614,7 +1628,7 @@ combined Theorem 64
 from Corollary 62). Lemmas 54–57 have many rule, frame, and boundary analogues
 but are not individually complete.
 
-**Merely stated:** Lemma 35, Theorems 40/42, Corollary 62,
+**Merely stated:** Lemma 35, Theorems 40/42,
 `resolutionCoherenceTheorem`, `deletionTheorem`, and `confluenceTheorem`.
 These remain escape-hatch-free proposition types.
 

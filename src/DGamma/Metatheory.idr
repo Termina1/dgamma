@@ -1990,8 +1990,8 @@ recoveryExactnessTheorem name key value world error =
     (projectEffectState @{nameEq} (episodeStartState episode)) restored
 
 ||| Corollary 62, as one full-effect replay equation rather than a world replay
-||| plus disconnected table fields.
-||| TODO(proof): Theorem 61 at lastInstalledState followed by L-Unload.
+||| plus disconnected table fields. Inhabited constructively by
+||| `DGamma.CP4TerminalRecovery.terminalRecoveryTheoremProof`.
 public export
 terminalRecoveryTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type

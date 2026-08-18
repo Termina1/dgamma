@@ -150,6 +150,7 @@ transitionActorFired nameEq keyEq (LUnload actor) tag checked = Refl
   ForeignReplay name key world error value keyEq selected trace right final
 replaceReplayInitial Refl replay = replay
 
+public export
 0 beginAccumulatorRecovery :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   {preStart, start : SystemState name key value world error} ->
