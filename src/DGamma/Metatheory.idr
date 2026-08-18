@@ -5130,8 +5130,7 @@ resolutionStructureTheoremProof nameEq keyEq selected pre current episode =
 
 ||| Full Theorem 64 recovery branch over a maximal closed episode. Structural
 ||| coherence is separated so it can be proved without assuming temporal recovery.
-||| TODO(proof): terminal recovery remains open; `DGamma.CP3Support` proves the
-||| final combination from `terminalRecoveryTheorem`.
+||| Inhabited by `DGamma.CP4ResolutionCoherence.resolutionCoherenceTheoremProof`.
 public export
 resolutionCoherenceTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type

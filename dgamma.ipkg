@@ -104,6 +104,7 @@ modules = DGamma.Core,
           DGamma.CP4RestrictionChecks,
           DGamma.CP4TotalityChecks,
           DGamma.CP3Support,
+          DGamma.CP4ResolutionCoherence,
           DGamma.CP3StatementChecks,
           DGamma.CP3VestigialChecks,
           DGamma.CalculusChecks

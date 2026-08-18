@@ -490,7 +490,6 @@ cannot silently introduce a proof:
   `CoarsestRespectedEquivalence` — Lemma 35.
 - `distinctKeysIndependent` — Theorem 40.
 - `MediatedIndependenceTheorem` — Theorem 42.
-- `resolutionCoherenceTheorem` — the recovery-combined form of Theorem 64.
 - `deletionTheorem` — Lemma 72.
 - `confluenceTheorem` — the finite explicit-registration form of Theorem 73,
   with parent-activation structural matching, exact historical external-root
@@ -1075,7 +1074,8 @@ At the CP3 checkpoint Theorem 61 and Corollary 62 remained stated because the
 actual accumulator still needed a temporal generated-monoid induction. CP4 now
 implements that induction and proves both. `resolutionCoherenceFromTerminalRecovery`
 shows that Corollary 62 immediately completes the recovery branch of Theorem 64;
-resolution structure and final packaging are no longer substantive debt.
+`DGamma.CP4ResolutionCoherence.resolutionCoherenceTheoremProof` now performs that
+direct assembly, so resolution structure and final packaging are closed.
 
 ### CP3 adversarial rounds 1–3: statement redesign in progress
 
@@ -1497,6 +1497,12 @@ relation. `beginAccumulatorRecovery` is now publicly exported as a proved helper
 so the closed-body replay starts at the exact episode opening projection. No
 statement, runtime evaluator, or escape hatch changed.
 
+`DGamma.CP4ResolutionCoherence.resolutionCoherenceTheoremProof` immediately
+applies the previously proved `resolutionCoherenceFromTerminalRecovery`
+packager, closing Theorem 64 on the unchanged public alias. Equation 59,
+whole-episode resolution structure, terminal recovery, and dependent result
+assembly are therefore all proved.
+
 ### Cold-build validation under Idris 2 v0.8.0
 
 A one-process build from an empty `build/` may be killed while elaborating the
@@ -1597,7 +1603,8 @@ including the conditional selected-step inverse, foreign generated-map
 commutation, congruent replay transport, simultaneous installed-trace
 induction, and exact public-alias endpoint assembly; and Corollary 62, including
 checked L-Unload handle extraction, terminal effect framing, and closed-trace
-replay assembly. The repaired Definition-69/
+replay assembly; and recovery-combined Theorem 64, including Equation 59,
+whole-episode resolution structure, and dependent result assembly. The repaired Definition-69/
 Lemma-70 and Theorem-66 statement shapes still await end-of-CP4 re-review.
 
 **Partial:** Lemma 71 (effect commutation projection); Lemma 72 (candidate
@@ -1622,14 +1629,11 @@ activation structural cross-trace, generation-stamped canonical proposition,
 and vestigial-aware outside-R endpoint relation submitted for round-10 review;
 the round-7 cross-parent/historical-root, round-8 closing-episode, and round-9
 vestigial-endpoint defects have complete typed regressions, while constructive
-deletion/sorting and general endpoint assembly remain open); and recovery-
-combined Theorem 64
-(complete conditional assembly
-from Corollary 62). Lemmas 54–57 have many rule, frame, and boundary analogues
+deletion/sorting and general endpoint assembly remain open). Lemmas 54–57 have many rule, frame, and boundary analogues
 but are not individually complete.
 
-**Merely stated:** Lemma 35, Theorems 40/42,
-`resolutionCoherenceTheorem`, `deletionTheorem`, and `confluenceTheorem`.
+**Merely stated:** Lemma 35, Theorems 40/42, `deletionTheorem`, and
+`confluenceTheorem`.
 These remain escape-hatch-free proposition types.
 
 **Deviations:** Definition 32 finite approximations; finite static-list
