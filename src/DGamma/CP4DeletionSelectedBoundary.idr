@@ -333,11 +333,81 @@ SelectedControlsOutside {name} nameEq selected registered live original
       (lookupFiber @{nameEq} actor (registry original))
       (lookupFiber @{nameEq} actor (registry survivor))
 
+||| The quotient survivor never executes the selected episode.  This explicit
+||| certificate retains its exact clean-Inactive source cell; provider and
+||| reliance scans need more than the selected-exempt static skeleton alone.
+public export
+data SelectedSurvivorCleanInactive :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  SystemState name key value world error -> Type where
+  SelectedCleanInactiveWitness :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {state : SystemState name key value world error} ->
+    (component : Component key value world error) ->
+    (parent : Parent name) -> (retiredFlag : Bool) ->
+    (table : OwnedTable key value (componentProvisions component)) ->
+    lookupFiber @{nameEq} selected (registry state) =
+      Just (MkFiber component parent retiredFlag table (Inactive Nothing)) ->
+    SelectedSurvivorCleanInactive name key world error value nameEq selected
+      state
+
+0 nothingNotJustSelectedBoundary : Nothing = Just item -> Void
+nothingNotJustSelectedBoundary Refl impossible
+
+||| A successful selected L-Begin exposes the exact clean-Inactive source cell
+||| retained by the quotient survivor.
+public export
+0 selectedCleanInactiveBeforeBegin :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  checkedApplyAction @{nameEq} @{keyEq} (LBegin selected) before =
+    Just (LBeginTag, afterState) ->
+  SelectedSurvivorCleanInactive name key world error value nameEq selected
+    before
+selectedCleanInactiveBeforeBegin nameEq keyEq selected
+  before@(MkSystemState ambient source) afterState checked
+  with (lookupFiber @{nameEq} selected source) proof found
+  selectedCleanInactiveBeforeBegin nameEq keyEq selected
+    before@(MkSystemState ambient source) afterState checked | Nothing =
+      void (nothingNotJustSelectedBoundary checked)
+  selectedCleanInactiveBeforeBegin nameEq keyEq selected
+    before@(MkSystemState ambient source) afterState checked |
+    Just fiber@(MkFiber component parent retiredFlag table lifecycle)
+    with (lifecycle)
+    selectedCleanInactiveBeforeBegin nameEq keyEq selected
+      before@(MkSystemState ambient source) afterState checked |
+      Just fiber@(MkFiber component parent retiredFlag table lifecycle) |
+      Inactive Nothing =
+        SelectedCleanInactiveWitness component parent retiredFlag table found
+    selectedCleanInactiveBeforeBegin nameEq keyEq selected
+      before@(MkSystemState ambient source) afterState checked |
+      Just fiber@(MkFiber component parent retiredFlag table lifecycle) |
+      Inactive (Just failure) =
+        void (nothingNotJustSelectedBoundary checked)
+    selectedCleanInactiveBeforeBegin nameEq keyEq selected
+      before@(MkSystemState ambient source) afterState checked |
+      Just fiber@(MkFiber component parent retiredFlag table lifecycle) |
+      Reloading remaining accumulator view =
+        void (nothingNotJustSelectedBoundary checked)
+    selectedCleanInactiveBeforeBegin nameEq keyEq selected
+      before@(MkSystemState ambient source) afterState checked |
+      Just fiber@(MkFiber component parent retiredFlag table lifecycle) |
+      Active accumulator view =
+        void (nothingNotJustSelectedBoundary checked)
+    selectedCleanInactiveBeforeBegin nameEq keyEq selected
+      before@(MkSystemState ambient source) afterState checked |
+      Just fiber@(MkFiber component parent retiredFlag table lifecycle) |
+      Unloading accumulator view outcome =
+        void (nothingNotJustSelectedBoundary checked)
+
 ||| Combined intermediate boundary for the selected-episode quotient.  It owns
 ||| the exact current-R deletion plan, Theorem-61 effect recovery, an ordered
-||| selected-exempt control skeleton, and both checked-validity facts.  Unlike
-||| `NoEpisodeReplayBoundary`, no raw runtime-snapshot equality is claimed:
-||| selected effects are related only after applying the live accumulator.
+||| selected-exempt control skeleton, the survivor's clean-Inactive selected
+||| cell, and both checked-validity facts.  Unlike `NoEpisodeReplayBoundary`, no
+||| raw runtime-snapshot equality is claimed: selected effects are related only
+||| after applying the live accumulator.
 public export
 record SelectedEpisodeReplayBoundary
   (name, key, world, error : Type) (value : key -> Type)
@@ -357,6 +427,9 @@ record SelectedEpisodeReplayBoundary
       (bindings (planTarget
         (completePlanResult selectedBoundaryPlan)))
       (bindings (registry survivor))
+  0 selectedBoundarySurvivorCleanInactive :
+    SelectedSurvivorCleanInactive name key world error value nameEq selected
+      survivor
   0 selectedOriginalWellFormed : registryWellFormed @{nameEq} @{keyEq}
     original = True
   0 selectedSurvivorWellFormed : registryWellFormed @{nameEq} @{keyEq}
@@ -370,7 +443,7 @@ public export
 selectedBoundaryControls {name} {key} {world} {error} {value}
   {registered} {live} {original} {survivor}
   (MkSelectedEpisodeReplayBoundary effects completePlan orderedControls
-    originalWellFormed survivorWellFormed)
+    survivorCleanInactive originalWellFormed survivorWellFormed)
   actor actorDistinct outsideCurrent =
   let 0 outsidePlan : ActorOutsideDeletionPlan
         {name = name} {key = key} {value = value} {world = world}
@@ -462,7 +535,10 @@ beginSelectedEpisodeReplayBoundary nameEq keyEq selected registered ordinal live
           (LBegin selected) preStart start LBeginTag preWellFormed raw
     in MkSelectedEpisodeReplayBoundary
       (beginSelectedEffectReplayBoundary nameEq keyEq selected whole opening)
-      plan ordered startWellFormed preWellFormed
+      plan ordered
+      (selectedCleanInactiveBeforeBegin nameEq keyEq selected preStart start
+        (beginEquation opening))
+      startWellFormed preWellFormed
 
 ||| Generic structural half for a selected installed step that is skipped by
 ||| the quotient.  The caller supplies the already-proved effect step and the
@@ -494,11 +570,11 @@ public export
 skippedSelectedStepPreservesEpisodeBoundary nameEq keyEq selected registered
   ordinal live action tag before afterState checked whole survivor
   (MkSelectedEpisodeReplayBoundary oldEffects oldPlan oldOrdered
-    beforeWellFormed survivorWellFormed)
+    survivorCleanInactive beforeWellFormed survivorWellFormed)
   owner nextEffects nextPlan nextOrdered =
     let 0 raw = checkedActionProjects nameEq keyEq action before afterState tag
           checked
         0 afterWellFormed = preservationTheoremProof nameEq keyEq action before
           afterState tag beforeWellFormed raw
     in MkSelectedEpisodeReplayBoundary nextEffects nextPlan nextOrdered
-      afterWellFormed survivorWellFormed
+      survivorCleanInactive afterWellFormed survivorWellFormed

@@ -3,6 +3,7 @@ module DGamma.CP4DeletionSelectedForeignControlCore
 import DGamma.Core
 import DGamma.Calculus
 import DGamma.Coeffects
+import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionSelectedBoundary
 import Data.Maybe
@@ -10,11 +11,40 @@ import Decidable.Equality
 
 %default total
 
-0 nothingIsNotJust : Nothing = Just item -> Void
-nothingIsNotJust Refl impossible
+||| A foreign checked evaluator step cannot disturb the selected quotient's
+||| exact clean-Inactive survivor cell.
+public export
+0 foreignActionPreservesSelectedCleanInactive :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (action : Action name key value world error) ->
+  Not (selected = actionOwner action) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
+  SelectedSurvivorCleanInactive name key world error value nameEq selected
+    before ->
+  SelectedSurvivorCleanInactive name key world error value nameEq selected
+    afterState
+foreignActionPreservesSelectedCleanInactive
+  {name} {key} {world} {error} {value}
+  nameEq keyEq selected action distinct before afterState tag raw
+  (SelectedCleanInactiveWitness component parent retiredFlag table found) =
+    let 0 lookupSame = systemLocalUpdateForeign nameEq selected
+          (actionOwner action) distinct before afterState
+          (applyActionLocalUpdate nameEq keyEq action before afterState tag raw)
+        0 foundAfter : (lookupFiber @{nameEq} {name = name} {key = key}
+          {value = value} {world = world} {error = error} selected
+          (registry afterState) =
+          Just (the (Fiber name key value world error)
+            (MkFiber component parent retiredFlag table (Inactive Nothing))))
+        foundAfter = trans lookupSame found
+    in SelectedCleanInactiveWitness component parent retiredFlag table foundAfter
 
-0 justInjective : Just left = Just right -> left = right
-justInjective Refl = Refl
+0 nothingIsNotJustForeignControl : Nothing = Just item -> Void
+nothingIsNotJustForeignControl Refl impossible
+
+0 justInjectiveForeignControl : Just left = Just right -> left = right
+justInjectiveForeignControl Refl = Refl
 
 0 selectedFiberComponentSame :
   SelectedFiberControlsRelated name key world error value selected actor
@@ -184,7 +214,7 @@ public export
 foreignControlLookupFound nameEq actor left right leftFiber leftFound related
   with (lookupFiber @{nameEq} actor left)
   foreignControlLookupFound nameEq actor left right leftFiber leftFound related |
-    Nothing = void (nothingIsNotJust leftFound)
+    Nothing = void (nothingIsNotJustForeignControl leftFound)
   foreignControlLookupFound nameEq actor left right leftFiber leftFound related |
     Just observedLeft with (lookupFiber @{nameEq} actor right) proof rightFound
     foreignControlLookupFound nameEq actor left right leftFiber leftFound related |
@@ -192,7 +222,7 @@ foreignControlLookupFound nameEq actor left right leftFiber leftFound related
         void (someControlNothingImpossible related)
     foreignControlLookupFound nameEq actor left right leftFiber leftFound related |
       Just observedLeft | Just observedRight =
-        case justInjective leftFound of
+        case justInjectiveForeignControl leftFound of
           Refl => case related of
             SomeControlFibers controls =>
               MkForeignRelatedFiberFound observedRight rightFound controls

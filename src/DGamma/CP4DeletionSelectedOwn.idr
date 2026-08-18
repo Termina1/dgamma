@@ -296,7 +296,8 @@ skippedSelectedAccumulatorStepPreservesEpisodeBoundary nameEq keyEq selected
   boundary@(MkSelectedEpisodeReplayBoundary
     boundaryEffects@(MkSelectedEffectReplayBoundary sourceModel
       boundaryRecovered boundaryRuns survivorToRecovered)
-    boundaryComplete oldOrdered beforeWellFormed survivorWellFormed)
+    boundaryComplete oldOrdered survivorCleanInactive beforeWellFormed
+      survivorWellFormed)
   owner
   step@(MkSelectedAccumulatorStep nextModel sourceRecovered targetRecovered
     sourceRuns targetRuns recoveredRelated)

@@ -493,6 +493,44 @@ of Lemma 38.
     every direct `runStepEffect` entry point and a multi-undo chain whose
     intermediate worlds and ordered bindings differ.
 
+17. **CP4 Finding #12 — Equation-53 accumulator controls compared erased proof
+    terms rather than runtime states.** The retained-foreign L-Advance replay
+    exposed the last inconsistent layer in the Finding-#10/#11 representation
+    boundary. A replayed iterator runs at the recovered effect origin and stores
+    the inverse yielded there. `TraceIndependent.iteratorYieldsStable` correctly
+    relates that inverse to the original one by exact ambient state and complete
+    ordered table bindings. The old `AccumulatorRelated`, however, demanded
+    literal equality of the two proof-bearing `LocalState` outputs at every
+    input, including erased `OwnedTable` uniqueness/confinement certificates.
+    That stronger obligation neither follows from Definition 60 nor denotes an
+    observation available to the executable host.
+
+    With supervisor approval, `LocalStateRuntimeRelated` now records exact
+    ambient and ordered-binding equality, and `AccumulatorRelated` is its
+    pointwise lifting. All lifecycle/control, renaming, endpoint, and vestigial
+    relations continue to carry complete runtime information while no longer
+    requesting proof irrelevance. This is the paper-faithful reading of
+    Equation 53: ordinary state equivalence has no erased-certificate identity.
+    Strengthening `TraceIndependent` to proof-bearing equality was rejected as
+    both unfaithful and unusable by real components.
+
+    `DGamma.CP4AccumulatorControlChecks` pins the distinction with two
+    separately constructed singleton uniqueness certificates. The rejected
+    `OldExactAccumulatorRelated` diagnostic exposes the former proof-bearing
+    state-equality obligation; the repaired relation constructs both a direct
+    accumulator witness and a non-vacuous `FiberControlRelated` witness, while
+    the runtime binding check evaluates `True`. A full warm 131/131 package
+    rebuild re-established every direct consumer, explicitly including
+    `CalculusChecks`, `CP3StatementChecks`, `CP3VestigialChecks`, Theorems
+    61/62/64, all renamed-control/vestigial pairs, and the selected/deletion
+    proof chain.
+
+    Finding #12 joins Findings #4–#11 on the mandatory end-of-CP4 adversarial
+    re-review list. Findings #7/#9/#10/#11/#12 are one observable-truth review
+    unit: evaluator order, normalization rhythm, exact effect tables,
+    canonical recovery, and accumulator control observations must be attacked
+    together.
+
     **Relational replay addendum.** The selected-episode quotient confirms the
     same representation boundary one level higher: Theorem 61 returns exact
     ambient/ordered-table agreement and extensional accumulator control, not
@@ -1674,6 +1712,10 @@ transposed `foreignSurvivorOutput`, yielding the next selected effect boundary.
 The remaining part of obligation 1 is lifecycle-specific: derive from the public
 no-dependent-closing premise that the selected activation cannot change a
 retained foreign target, then rebuild L-Begin/L-Advance/L-Divert/L-Leave/L-Unload.
+The selected boundary now also retains the constructively true clean-Inactive
+survivor cell explicitly. This approved internal strengthening rules out a
+spurious selected provider or relying consumer and is preserved by every
+foreign evaluator action; public Lemma 72 is unchanged.
 `DGamma.CP4DeletionRelationalBoundary` now defines the approved primary suffix
 interface. It compares the actual survivor with the complete current-R plan
 target using `EffectStateRelated` plus an ordered `FiberControlRelated`
@@ -1830,6 +1872,13 @@ modules. All 128 retain `%default total`; the anchored escape-hatch scan is
 empty. The inherited untracked `paper/` and `review-cp3-round10.md` inputs remain
 untouched. This is again warm validation only and does not discharge the
 registered `CP4SupportSolution` split/no-concurrent-Chez cold-archive debt.
+
+After Finding #12 and the explicit selected-survivor clean-Inactive boundary
+certificate, a full warm package invocation rebuilt and passed all 131/131
+modules. This run included the three heavy check modules and every Eq-53
+consumer. The proof-distinct accumulator regression and concrete control
+witness check independently. This remains warm validation and leaves the
+registered split/no-concurrent-Chez cold-archive debt unchanged.
 
 ## Status
 

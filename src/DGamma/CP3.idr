@@ -1234,9 +1234,47 @@ controlObservationAt n state = case lookupFiber n (registry state) of
     (lifecycleShape (fiberLifecycle fiber))
     (map viewProviders (committed (fiberLifecycle fiber))))
 
-||| Pointwise relation on the accumulator functions carried inside lifecycle
-||| control state (paper Equation 53 / Definition 36). Exact local-state
-||| equality is the finite runtime's chosen observational relation.
+||| Runtime observation on proof-bearing local states.  Ambient values and the
+||| complete ordered binding list are observable; erased `OwnedTable`
+||| certificates are not (CP4 Finding #12).
+public export
+record LocalStateRuntimeRelated
+  {key, world : Type} {value : key -> Type}
+  {provision : CoeffectSpec key}
+  (left, right : LocalState key value world provision) where
+  constructor MkLocalStateRuntimeRelated
+  0 localAmbientExact : localWorld left = localWorld right
+  0 localBindingsExact :
+    bindings (ownedValues (localTable left)) =
+    bindings (ownedValues (localTable right))
+
+public export
+0 localStateRuntimeReflexive :
+  (state : LocalState key value world provision) ->
+  LocalStateRuntimeRelated state state
+localStateRuntimeReflexive state = MkLocalStateRuntimeRelated Refl Refl
+
+public export
+0 localStateRuntimeSymmetric :
+  LocalStateRuntimeRelated left right -> LocalStateRuntimeRelated right left
+localStateRuntimeSymmetric (MkLocalStateRuntimeRelated ambient tables) =
+  MkLocalStateRuntimeRelated (sym ambient) (sym tables)
+
+public export
+0 localStateRuntimeTransitive :
+  LocalStateRuntimeRelated first middle ->
+  LocalStateRuntimeRelated middle finalState ->
+  LocalStateRuntimeRelated first finalState
+localStateRuntimeTransitive
+  (MkLocalStateRuntimeRelated firstAmbient firstTables)
+  (MkLocalStateRuntimeRelated secondAmbient secondTables) =
+    MkLocalStateRuntimeRelated (trans firstAmbient secondAmbient)
+      (trans firstTables secondTables)
+
+||| Pointwise runtime relation on accumulator functions carried inside
+||| lifecycle control state (paper Equation 53 / Definition 36).  This compares
+||| exactly what a plugin can observe and never asks for equality of erased
+||| certificate terms in function outputs.
 public export
 AccumulatorRelated :
   {key, world : Type} -> {value : key -> Type} ->
@@ -1244,8 +1282,9 @@ AccumulatorRelated :
   (LocalState key value world provision -> LocalState key value world provision) ->
   (LocalState key value world provision -> LocalState key value world provision) ->
   Type
-AccumulatorRelated {key} {value} {world} {provision} left right = (input : LocalState key value world provision) ->
-  left input = right input
+AccumulatorRelated {key} {value} {world} {provision} left right =
+  (input : LocalState key value world provision) ->
+  LocalStateRuntimeRelated (left input) (right input)
 
 ||| Full lifecycle-control relation. Unlike `LifecycleShape`, this retains the
 ||| remaining iterator, accumulator, committed view, and failure outcome.
@@ -1348,11 +1387,11 @@ public export
   LifecycleControlRelated lifecycle lifecycle
 lifecycleControlReflexive (Inactive outcome) = InactiveControls Refl
 lifecycleControlReflexive (Reloading remaining accumulator view) =
-  ReloadingControls Refl (\input => Refl) Refl
+  ReloadingControls Refl (\input => localStateRuntimeReflexive _) Refl
 lifecycleControlReflexive {error} (Active accumulator view) =
-  ActiveControls {error = error} (\input => Refl) Refl
+  ActiveControls {error = error} (\input => localStateRuntimeReflexive _) Refl
 lifecycleControlReflexive (Unloading accumulator view outcome) =
-  UnloadingControls (\input => Refl) Refl Refl
+  UnloadingControls (\input => localStateRuntimeReflexive _) Refl Refl
 
 public export
 0 lifecycleControlSymmetric :
@@ -1362,11 +1401,15 @@ public export
   LifecycleControlRelated left right -> LifecycleControlRelated right left
 lifecycleControlSymmetric (InactiveControls outcome) = InactiveControls (sym outcome)
 lifecycleControlSymmetric (ReloadingControls remaining accumulator view) =
-  ReloadingControls (sym remaining) (\input => sym (accumulator input)) (sym view)
+  ReloadingControls (sym remaining)
+    (\input => localStateRuntimeSymmetric (accumulator input)) (sym view)
 lifecycleControlSymmetric {error} (ActiveControls accumulator view) =
-  ActiveControls {error = error} (\input => sym (accumulator input)) (sym view)
+  ActiveControls {error = error}
+    (\input => localStateRuntimeSymmetric (accumulator input)) (sym view)
 lifecycleControlSymmetric (UnloadingControls accumulator view outcome) =
-  UnloadingControls (\input => sym (accumulator input)) (sym view) (sym outcome)
+  UnloadingControls
+    (\input => localStateRuntimeSymmetric (accumulator input))
+    (sym view) (sym outcome)
 
 public export
 0 lifecycleControlTransitive :
@@ -1380,17 +1423,20 @@ lifecycleControlTransitive (InactiveControls left) (InactiveControls right) =
 lifecycleControlTransitive (ReloadingControls leftRemaining leftAccumulator leftView)
   (ReloadingControls rightRemaining rightAccumulator rightView) =
     ReloadingControls (trans leftRemaining rightRemaining)
-      (\input => trans (leftAccumulator input) (rightAccumulator input))
+      (\input => localStateRuntimeTransitive
+        (leftAccumulator input) (rightAccumulator input))
       (trans leftView rightView)
 lifecycleControlTransitive {error} (ActiveControls leftAccumulator leftView)
   (ActiveControls rightAccumulator rightView) =
     ActiveControls {error = error}
-      (\input => trans (leftAccumulator input) (rightAccumulator input))
+      (\input => localStateRuntimeTransitive
+        (leftAccumulator input) (rightAccumulator input))
       (trans leftView rightView)
 lifecycleControlTransitive (UnloadingControls leftAccumulator leftView leftOutcome)
   (UnloadingControls rightAccumulator rightView rightOutcome) =
     UnloadingControls
-      (\input => trans (leftAccumulator input) (rightAccumulator input))
+      (\input => localStateRuntimeTransitive
+        (leftAccumulator input) (rightAccumulator input))
       (trans leftView rightView) (trans leftOutcome rightOutcome)
 
 public export
