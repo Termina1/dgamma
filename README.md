@@ -181,9 +181,9 @@ progress.
   O-Insert/O-Retire/O-Remove replay the exact checked head, commute the registry
   update through the plan, preserve complete actor coverage, and re-establish
   the runtime snapshot boundary without proof irrelevance. The exhaustive
-  `retainedOrchestrationPreservesNoEpisodeBoundary` dispatcher is closed; the
-  five retained lifecycle forms remain before the dependent
-  suffix remains the no-selected-episode induction step. The selected
+  `retainedOrchestrationPreservesNoEpisodeBoundary` dispatcher is closed. The
+  five retained lifecycle forms remain before the dependent whole-suffix
+  no-selected-episode induction. The selected
   segment additionally needs the Lemma-71 lifecycle quotient. The located-episode splitter
   derives the episode/suffix generation scans and restricts both no-R-episode
   and repaired Definition-69 evidence without new public premises.

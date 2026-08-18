@@ -1574,9 +1574,10 @@ threads its fresh non-R birth through `putCurrentGeneration`; remove threads
 `retainedOrchestrationPreservesNoEpisodeBoundary` dispatches the three cases.
 Snapshot proofs project exact world/ordered-binding equality only.
 `retainedSuffixHeadAtBoundary` uses the keystone transport to instantiate the
-suffix retained-head interface without proof irrelevance. The remaining
-no-selected-episode work is preservation of
-this record after each kept/deleted head (the endpoint commutation half); the
+suffix retained-head interface without proof irrelevance. Deleted heads and all
+three retained orchestration forms now preserve the boundary. The remaining
+no-selected-episode work is the exact result/control comparison for the five
+retained lifecycle forms, followed by the structural whole-suffix fold; the
 selected segment separately needs the selected-fiber lifecycle/effect quotient.
 
 ### Corollary 62: terminal recovery
