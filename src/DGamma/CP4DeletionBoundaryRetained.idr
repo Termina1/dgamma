@@ -9,6 +9,7 @@ import DGamma.CP4DeletionBoundaryLifecycleCore
 import DGamma.CP4DeletionBoundaryLifecycleBegin
 import DGamma.CP4DeletionBoundaryLifecycleAdvance
 import DGamma.CP4DeletionBoundaryLifecycleDivert
+import DGamma.CP4DeletionBoundaryLifecycleLeave
 import DGamma.CP4DeletionBoundaryPlan
 import DGamma.CP4DeletionChildlessInvariant
 import DGamma.CP4DeletionCommuteCore
@@ -359,6 +360,33 @@ retainedDivertPreservesNoEpisodeBoundary nameEq keyEq registered ordinal live
     retainedLifecyclePreservesNoEpisodeBoundary nameEq keyEq registered ordinal
       live (LDivert actor) Refl NonInsertDivert tag
       (divertOneDeleteRuntimeCommute nameEq keyEq actor) original survivor boundary
+      checked retained
+
+||| Retained non-R L-Leave preserves the exact stale-target control transition
+||| across the complete current-R plan.
+public export
+0 retainedLeavePreservesNoEpisodeBoundary :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (actor : name) ->
+  (original, survivor : SystemState name key value world error) ->
+  (boundary : NoEpisodeReplayBoundary name key world error value nameEq keyEq
+    registered live original survivor) ->
+  {originalAfter : SystemState name key value world error} ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq}
+    (the (Action name key value world error) (LLeave actor)) original =
+    Just (tag, originalAfter)) ->
+  Not (GenerationOwnedActor nameEq registered ordinal live
+    (the (Action name key value world error) (LLeave actor))) ->
+  RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
+    registered live (LLeave actor) originalAfter survivor
+retainedLeavePreservesNoEpisodeBoundary nameEq keyEq registered ordinal live
+  actor original survivor boundary tag checked retained =
+    retainedLifecyclePreservesNoEpisodeBoundary nameEq keyEq registered ordinal
+      live (LLeave actor) Refl NonInsertLeave tag
+      (leaveOneDeleteRuntimeCommute nameEq keyEq actor) original survivor boundary
       checked retained
 
 public export
