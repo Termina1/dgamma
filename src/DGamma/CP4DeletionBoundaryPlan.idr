@@ -92,6 +92,7 @@ registeredEntryAfterPutComesFromOld nameEq inserted fresh registered freshOutsid
       There later => There (registeredEntryAfterPutComesFromOld nameEq inserted
         fresh registered freshOutside rest selected generation later member)
 
+public export
 0 deletePreservesOtherEntry :
   (nameEq : DecEq name) -> (removed, selected : name) ->
   Not (removed = selected) ->
@@ -114,6 +115,7 @@ deletePreservesOtherEntry nameEq removed selected distinct generation
       There later => There (deletePreservesOtherEntry nameEq removed selected
         distinct generation rest later)
 
+public export
 0 entryAfterDeleteComesFromOld :
   (nameEq : DecEq name) -> (removed : name) ->
   (live : GenerationEnvironment name) ->
@@ -135,6 +137,7 @@ entryAfterDeleteComesFromOld nameEq removed
       There later => There (entryAfterDeleteComesFromOld nameEq removed rest
         selected generation later)
 
+public export
 0 entryAfterDeleteActorDistinct :
   (nameEq : DecEq name) -> (removed : name) ->
   (live : GenerationEnvironment name) ->
@@ -159,6 +162,25 @@ entryAfterDeleteActorDistinct nameEq removed
       Here => removedDifferent (sym same)
       There later => entryAfterDeleteActorDistinct nameEq removed rest restUnique
         selected generation later same
+
+public export
+0 currentGenerationEntryFromLookup :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (generation : RegistrationGeneration name) ->
+  (live : GenerationEnvironment name) ->
+  lookupCurrentGeneration @{nameEq} selected live = Just generation ->
+  Elem (selected, generation) live
+currentGenerationEntryFromLookup nameEq selected generation [] found =
+  case found of Refl impossible
+currentGenerationEntryFromLookup nameEq selected generation
+  ((candidate, current) :: rest) found with (decEq @{nameEq} selected candidate)
+  currentGenerationEntryFromLookup nameEq candidate generation
+    ((candidate, current) :: rest) found | Yes Refl =
+      case justInjective found of Refl => Here
+  currentGenerationEntryFromLookup nameEq selected generation
+    ((candidate, current) :: rest) found | No distinct =
+      There (currentGenerationEntryFromLookup nameEq selected generation rest
+        found)
 
 0 outsidePlanDistinctFromMember :
   {source, target : Registry name key value world error} ->

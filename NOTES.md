@@ -1557,6 +1557,12 @@ boundary preservation: retained insert/replace/remove and exact deleted remove
 all produce a new complete current-R plan, using explicit `Elem` transports for
 `putCurrentGeneration`/`deleteCurrentGeneration` and the strong commutation
 actor facts. No registry or proof-term equality is introduced.
+`DGamma.CP4DeletionBoundaryDeleted.deletedSuffixHeadPreservesNoEpisodeBoundary`
+closes the deleted-head half exhaustively. A registered O-Insert contradicts the
+strict birth-before-boundary invariant; L-Begin contradicts the no-episode head;
+L-Advance/Divert/Leave/Unload cannot fire from the exact Inactive plan leaf;
+idempotent O-Retire updates that leaf, and O-Remove drops it. Both surviving
+cases retain the exact old survivor snapshot and checked well-formedness.
 `retainedSuffixHeadAtBoundary` uses the keystone transport to instantiate the
 suffix retained-head interface without proof irrelevance. The remaining
 no-selected-episode work is preservation of

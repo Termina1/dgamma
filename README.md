@@ -173,7 +173,11 @@ progress.
   plan boundary and names `NoEpisodeReplayBoundary` at this exact runtime
   representation. The boundary now coherently owns the complete current-R plan
   (not a separate side invariant), and runtime plan transport preserves its
-  exact actor list as erased metadata; maintaining that boundary record through the dependent
+  exact actor list as erased metadata. `DGamma.CP4DeletionBoundaryDeleted`
+  proves the exhaustive deleted-head preservation theorem: birth bounds exclude
+  O-Insert, no-episode evidence excludes L-Begin, Inactive leaves exclude the
+  other lifecycle actions, and exact O-Retire/O-Remove preserve the boundary.
+  Maintaining the boundary through retained heads and then the dependent
   suffix remains the no-selected-episode induction step. The selected
   segment additionally needs the Lemma-71 lifecycle quotient. The located-episode splitter
   derives the episode/suffix generation scans and restricts both no-R-episode
