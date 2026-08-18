@@ -1731,6 +1731,15 @@ The selected boundary now also retains the constructively true clean-Inactive
 survivor cell explicitly. This approved internal strengthening rules out a
 spurious selected provider or relying consumer and is preserved by every
 foreign evaluator action; public Lemma 72 is unchanged.
+`DGamma.CP4DeletionSelectedForeignLifecycleCore` now establishes the first
+checked-control layer without pretending the trace argument is already solved.
+Its ordered source relation combines full foreign controls, exact foreign table
+bindings, and explicit selected-cell provider/reliance exclusions; its saturated
+`ForeignLifecycleGuardFrame` is the exact consumer boundary for the pending
+no-dependent-closing derivation. Rule-level control constructors cover L-Begin,
+empty L-Finish, L-Raise, L-Divert, L-Leave, and L-Unload's Inactive reset.
+Successful L-Advance uses `pushLocalUndoRuntimeRelated`; concrete checked-action
+reconstruction and frame construction from public premises remain open.
 `DGamma.CP4DeletionRelationalBoundary` now defines the approved primary suffix
 interface. It compares the actual survivor with the complete current-R plan
 target using `EffectStateRelated` plus an ordered `FiberControlRelated`
@@ -1892,8 +1901,11 @@ After Finding #12 and the explicit selected-survivor clean-Inactive boundary
 certificate, a full warm package invocation rebuilt and passed all 131/131
 modules. This run included the three heavy check modules and every Eq-53
 consumer. The proof-distinct accumulator regression and concrete control
-witness check independently. This remains warm validation and leaves the
-registered split/no-concurrent-Chez cold-archive debt unchanged.
+witness check independently. After the retained-foreign lifecycle source/control
+module was added, the warm package passed all 132/132 modules; all 132 retain
+`%default total` and the anchored escape-hatch scan is empty. This remains warm
+validation and leaves the registered split/no-concurrent-Chez cold-archive debt
+unchanged.
 
 ## Status
 
@@ -1943,8 +1955,10 @@ fold are proved; the selected quotient's accumulator/effect half is now proved
 at L-Begin, every skipped selected installed head, every foreign actual map, and
 checked L-Unload, with complete-plan transport, a preserved ordered
 selected-exempt interior control skeleton, and an ordered relational suffix
-interface; retained foreign lifecycle checked controls (all orchestration forms
-are proved), deleted-R/empty-plan propagation,
+interface; retained foreign lifecycle source frames and all lifecycle-result
+control constructors are proved, while construction of that saturated frame
+from no-dependent-closing and the concrete checked lifecycle transitions remain;
+deleted-R/empty-plan propagation,
 the relational suffix fold, and endpoint control/withdrawal invariants remain);
 Confluence/Theorem
 73 (surviving parent-

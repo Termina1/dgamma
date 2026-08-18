@@ -229,9 +229,16 @@ progress.
   `DGamma.CP4DeletionSelectedForeignOrchestration` uses those frames to rebuild
   all three retained orchestration rules (O-Insert/O-Retire/O-Remove), preserves
   the ordered skeleton, proves checked well-formed targets, and joins each target
-  to the already-transposed Definition-60 output. The retained lifecycle branch
-  still needs its selected-precedence/target-resolution argument before the
-  selected layer can handle deleted R heads and close L-Unload.
+  to the already-transposed Definition-60 output.
+  `DGamma.CP4DeletionSelectedForeignLifecycleCore` begins the retained lifecycle
+  half with an ordered runtime/control source relation, a saturated structural
+  guard frame, and proved lifecycle-result constructors for L-Begin, empty
+  L-Finish, L-Raise, L-Divert, L-Leave, and reset-to-Inactive L-Unload. Successful
+  effectful L-Advance composes through the named
+  `pushLocalUndoRuntimeRelated` keystone. Deriving the saturated frame from the
+  public no-dependent-closing premise and reconstructing the five concrete
+  checked evaluator branches remain before the selected layer can handle
+  deleted R heads and close L-Unload.
   `DGamma.CP4DeletionRelationalBoundary` is the primary selected-to-suffix
   interface: it relates the actual survivor to the complete plan target by
   ordered effects and an ordered control skeleton with extensional accumulators.
