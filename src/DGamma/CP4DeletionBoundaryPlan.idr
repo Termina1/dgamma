@@ -36,6 +36,7 @@ ltIrreflexiveBoundary Z less impossible
 ltIrreflexiveBoundary (S n) (LTESucc less) =
   ltIrreflexiveBoundary n less
 
+public export
 0 putPreservesOtherEntry :
   (nameEq : DecEq name) -> (inserted, selected : name) ->
   Not (inserted = selected) ->
@@ -62,6 +63,7 @@ putPreservesOtherEntry nameEq inserted selected distinct fresh generation
         There later => There (putPreservesOtherEntry nameEq inserted selected
           distinct fresh generation rest later)
 
+public export
 0 registeredEntryAfterPutComesFromOld :
   (nameEq : DecEq name) -> (inserted : name) ->
   (fresh : RegistrationGeneration name) ->

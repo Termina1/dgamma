@@ -202,6 +202,36 @@ insertSuccessView nameEq keyEq actor parent component ambient source tag afterSt
             (setFreshAbsent nameEq actor (freshFiber component parent) source
               applied inserted)
 
+record InsertRuntimeObservation
+  (name, key, world, error : Type) (value : key -> Type)
+  (actor : name) (component : Component key value world error)
+  (parent : Parent name) (ambient : world)
+  (source : Registry name key value world error)
+  (tag : RuleTag) (afterState : SystemState name key value world error) where
+  constructor MkInsertRuntimeObservation
+  0 insertObservedWorld : worldState afterState = ambient
+  0 insertObservedBindings : bindings (registry afterState) =
+    Bind actor (freshFiber component parent) :: bindings source
+
+0 insertRuntimeObservation :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (tag : RuleTag) ->
+  (afterState : SystemState name key value world error) ->
+  applyAction @{nameEq} @{keyEq}
+    (the (Action name key value world error) (OInsert actor parent component))
+    (MkSystemState ambient source) = Just (tag, afterState) ->
+  InsertRuntimeObservation name key world error value actor component parent
+    ambient source tag afterState
+insertRuntimeObservation nameEq keyEq actor parent component ambient source tag
+  afterState raw = case insertSuccessView nameEq keyEq actor parent component
+    ambient source tag afterState raw of
+    MkInsertSuccessView absent => MkInsertRuntimeObservation Refl
+      (insertBindingRuntimeBindings nameEq actor (freshFiber component parent)
+        source absent)
+
 0 snapshotWorldEquality :
   runtimeSnapshot left = runtimeSnapshot right ->
   worldState left = worldState right
@@ -603,3 +633,242 @@ retainedRemovePreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
                             (deleteBinding @{nameEq} actor source)) candidate}
                         (sym namedAfterProof) nextBoundary
                   in MkRetainedNoEpisodeBoundaryStep named fired namedBoundary
+
+||| Retained O-Insert creates a fresh non-R generation in both traces.  Owner
+||| and parent exclusion commute the insertion through every current R leaf;
+||| the new generation environment is proved complete using the strict retained
+||| witness for the fresh birth stamp.
+public export
+0 retainedInsertPreservesNoEpisodeBoundary :
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (inserted : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (original, survivor : SystemState name key value world error) ->
+  (boundary : NoEpisodeReplayBoundary name key world error value nameEq keyEq
+    registered live original survivor) ->
+  {originalAfter, originalFinal : SystemState name key value world error} ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq}
+    (the (Action name key value world error)
+      (OInsert inserted parent component)) original =
+    Just (tag, originalAfter)) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  RegistrationStepDiscipline protocol nameEq
+    (OInsert inserted parent component) original rest ->
+  Not (GenerationOwnedActor nameEq registered ordinal live
+    (the (Action name key value world error)
+      (OInsert inserted parent component))) ->
+  RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
+    registered
+    (putCurrentGeneration @{nameEq} inserted
+      (MkRegistrationGeneration inserted ordinal) live)
+    (OInsert inserted parent component) originalAfter survivor
+retainedInsertPreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
+  protocol nameEq keyEq registered ordinal live inserted parent component
+  original survivor
+  (MkNoEpisodeReplayBoundary ambient source originalShape
+    (MkCompleteCurrentRegisteredPlanResult
+      oldPlan@(MkCurrentRegisteredPlanResult oldTarget oldInactive oldOutside)
+      oldComplete)
+    survivorAmbient survivorBindings unique sourceWellFormed survivorWellFormed)
+  tag checked rest discipline retained = case originalShape of
+    Refl =>
+      let 0 originalRaw = checkedActionProjects nameEq keyEq
+            (OInsert inserted parent component) (MkSystemState ambient source)
+            originalAfter tag checked
+          0 outside = retainedOrchestrationOutsidePlan protocol nameEq keyEq
+            registered ordinal live unique (OInsert inserted parent component)
+            Refl (MkSystemState ambient source) originalAfter tag originalRaw
+            rest discipline retained
+            (MkCurrentRegisteredPlanResult oldTarget oldInactive oldOutside)
+          0 ownerOutside = orchestrationOwnerOutside outside
+          0 planRawResult = orchestrationRawAfterInactivePlan nameEq keyEq
+            (OInsert inserted parent component) Refl ambient source oldTarget
+            oldInactive outside originalRaw
+      in case insertSuccessView nameEq keyEq inserted parent component ambient
+        source tag originalAfter originalRaw of
+        MkInsertSuccessView originalAbsent => case planRawResult of
+          MkRawActionResult planTag planAfter planRaw =>
+            case insertRuntimeObservation nameEq keyEq inserted parent component
+              ambient oldTarget planTag planAfter planRaw of
+              MkInsertRuntimeObservation planWorld planBindings =>
+                case insertFreshThroughInactivePlan nameEq inserted parent
+                  component source oldTarget oldInactive outside originalAbsent of
+                  MkInactivePlanPreservingUpdateCommute
+                    (MkInactivePlanUpdateCommute nextTarget nextInactive
+                      nextTargetBindings nextOutside) actorsSame =>
+                    let 0 freshOutside : Not
+                          (Elem (MkRegistrationGeneration inserted ordinal)
+                            registered)
+                        freshOutside member = retained ((MkRegistrationGeneration inserted ordinal) ** (Refl, member))
+                        0 insertedOutsideCurrent :
+                          ActorOutsideCurrentRegistered inserted registered live
+                        insertedOutsideCurrent =
+                          actorOutsideCurrentFromCompletePlan
+                            (MkCurrentRegisteredPlanResult oldTarget oldInactive
+                              oldOutside) oldComplete inserted ownerOutside
+                        0 outsideBack : (observed : name) ->
+                          ActorOutsideCurrentRegistered observed registered
+                            (putCurrentGeneration @{nameEq} inserted (MkRegistrationGeneration inserted ordinal) live) ->
+                          ActorOutsideCurrentRegistered observed registered live
+                        outsideBack observed outsideCurrent selected generation
+                          present member = outsideCurrent selected generation
+                            (putPreservesOtherEntry nameEq inserted selected
+                              (insertedOutsideCurrent selected generation present
+                                member) (MkRegistrationGeneration inserted ordinal) generation live present) member
+                        0 outsideNew : (observed : name) ->
+                          ActorOutsideCurrentRegistered observed registered
+                            (putCurrentGeneration @{nameEq} inserted (MkRegistrationGeneration inserted ordinal) live) ->
+                          ActorOutsideDeletionPlan observed nextInactive
+                        outsideNew observed outsideCurrent = nextOutside observed
+                          (oldOutside observed
+                            (outsideBack observed outsideCurrent))
+                        nextPlan : CurrentRegisteredPlanResult name key world error
+                          value nameEq registered (putCurrentGeneration @{nameEq} inserted (MkRegistrationGeneration inserted ordinal) live)
+                          (insertBinding @{nameEq} inserted
+                            (freshFiber component parent) source originalAbsent)
+                        nextPlan = MkCurrentRegisteredPlanResult nextTarget
+                          nextInactive outsideNew
+                        0 nextComplete : CurrentRegisteredPlanComplete name key
+                          world error value nameEq registered (putCurrentGeneration @{nameEq} inserted (MkRegistrationGeneration inserted ordinal) live) nextPlan
+                        nextComplete selected generation present member =
+                          replace {p = Elem selected} (sym actorsSame)
+                            (oldComplete selected generation
+                              (registeredEntryAfterPutComesFromOld nameEq inserted
+                                (MkRegistrationGeneration inserted ordinal) registered freshOutside live selected
+                                generation present member) member)
+                    in case transportPlanActionToBoundary nameEq keyEq
+                      (OInsert inserted parent component)
+                      (MkSystemState ambient oldTarget) planAfter survivor
+                      (boundaryPlanSnapshotMatchesSurvivor
+                        (MkNoEpisodeReplayBoundary ambient source Refl
+                          (MkCompleteCurrentRegisteredPlanResult
+                            (MkCurrentRegisteredPlanResult oldTarget oldInactive
+                              oldOutside) oldComplete)
+                          survivorAmbient survivorBindings unique sourceWellFormed
+                          survivorWellFormed))
+                      planTag planRaw survivorWellFormed of
+                      MkBoundaryActionTransport survivorAfter survivorRaw
+                        afterSnapshots survivorAfterWellFormed named
+                        namedAfterProof fired =>
+                        let 0 survivorAmbientNext :
+                              (worldState survivorAfter = ambient)
+                            survivorAmbientNext = trans
+                              (sym (cong snapshotWorld afterSnapshots)) planWorld
+                            0 survivorBindingsNext :
+                              (bindings (registry survivorAfter) =
+                              bindings nextTarget)
+                            survivorBindingsNext = trans
+                              (sym (cong snapshotBindings afterSnapshots))
+                              (trans planBindings (sym nextTargetBindings))
+                            0 originalAfterWellFormed :
+                              (registryWellFormed @{nameEq} @{keyEq}
+                                (the (SystemState name key value world error)
+                                  (MkSystemState ambient
+                                    (insertBinding @{nameEq} inserted
+                                      (freshFiber component parent) source
+                                      originalAbsent))) = True)
+                            originalAfterWellFormed = preservationTheoremProof
+                              nameEq keyEq (OInsert inserted parent component)
+                              (MkSystemState ambient source)
+                              (MkSystemState ambient
+                                (insertBinding @{nameEq} inserted
+                                  (freshFiber component parent) source
+                                  originalAbsent)) OInsertTag sourceWellFormed
+                              originalRaw
+                            0 nextUnique : GenerationEnvironmentNamesUnique
+                              (putCurrentGeneration @{nameEq} inserted (MkRegistrationGeneration inserted ordinal) live)
+                            nextUnique = advanceGenerationEnvironmentPreservesUnique
+                              nameEq ordinal
+                              (the (Action name key value world error)
+                                (OInsert inserted parent component)) live unique
+                            0 nextBoundary : NoEpisodeReplayBoundary name key
+                              world error value nameEq keyEq registered (putCurrentGeneration @{nameEq} inserted (MkRegistrationGeneration inserted ordinal) live)
+                              (MkSystemState ambient
+                                (insertBinding @{nameEq} inserted
+                                  (freshFiber component parent) source
+                                  originalAbsent)) survivorAfter
+                            nextBoundary = MkNoEpisodeReplayBoundary ambient
+                              (insertBinding @{nameEq} inserted
+                                (freshFiber component parent) source
+                                originalAbsent) Refl
+                              (MkCompleteCurrentRegisteredPlanResult nextPlan
+                                nextComplete)
+                              survivorAmbientNext survivorBindingsNext nextUnique
+                              originalAfterWellFormed survivorAfterWellFormed
+                            0 namedBoundary : NoEpisodeReplayBoundary name key
+                              world error value nameEq keyEq registered (putCurrentGeneration @{nameEq} inserted (MkRegistrationGeneration inserted ordinal) live)
+                              (MkSystemState ambient
+                                (insertBinding @{nameEq} inserted
+                                  (freshFiber component parent) source
+                                  originalAbsent)) (namedAfter named)
+                            namedBoundary = replace {p = \candidate =>
+                              NoEpisodeReplayBoundary name key world error value
+                                nameEq keyEq registered (putCurrentGeneration @{nameEq} inserted (MkRegistrationGeneration inserted ordinal) live)
+                                (MkSystemState ambient
+                                  (insertBinding @{nameEq} inserted
+                                    (freshFiber component parent) source
+                                    originalAbsent)) candidate}
+                              (sym namedAfterProof) nextBoundary
+                        in MkRetainedNoEpisodeBoundaryStep named fired
+                          namedBoundary
+
+||| Exhaustive retained orchestration boundary step.  Lifecycle actions are
+||| intentionally left to the selected effect/control commutation layer.
+public export
+0 retainedOrchestrationPreservesNoEpisodeBoundary :
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  isLifecycleAction action = False ->
+  (original, survivor : SystemState name key value world error) ->
+  (boundary : NoEpisodeReplayBoundary name key world error value nameEq keyEq
+    registered live original survivor) ->
+  {originalAfter, originalFinal : SystemState name key value world error} ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action original =
+    Just (tag, originalAfter)) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  RegistrationStepDiscipline protocol nameEq action original rest ->
+  Not (GenerationOwnedActor nameEq registered ordinal live action) ->
+  RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
+    registered (advanceGenerationEnvironment @{nameEq} ordinal action live)
+    action originalAfter survivor
+retainedOrchestrationPreservesNoEpisodeBoundary protocol nameEq keyEq registered
+  ordinal live (OInsert inserted parent component) orchestration original survivor
+  boundary tag checked rest discipline retained =
+    retainedInsertPreservesNoEpisodeBoundary protocol nameEq keyEq registered
+      ordinal live inserted parent component original survivor boundary tag
+      checked rest discipline retained
+retainedOrchestrationPreservesNoEpisodeBoundary protocol nameEq keyEq registered
+  ordinal live (ORetire actor) orchestration original survivor boundary tag
+  checked rest discipline retained =
+    retainedRetirePreservesNoEpisodeBoundary protocol nameEq keyEq registered
+      ordinal live actor original survivor boundary tag checked rest discipline
+      retained
+retainedOrchestrationPreservesNoEpisodeBoundary protocol nameEq keyEq registered
+  ordinal live (ORemove actor) orchestration original survivor boundary tag
+  checked rest discipline retained =
+    retainedRemovePreservesNoEpisodeBoundary protocol nameEq keyEq registered
+      ordinal live actor original survivor boundary tag checked rest discipline
+      retained
+retainedOrchestrationPreservesNoEpisodeBoundary protocol nameEq keyEq registered
+  ordinal live (LBegin actor) Refl original survivor boundary tag checked rest
+  discipline retained impossible
+retainedOrchestrationPreservesNoEpisodeBoundary protocol nameEq keyEq registered
+  ordinal live (LAdvance actor) Refl original survivor boundary tag checked rest
+  discipline retained impossible
+retainedOrchestrationPreservesNoEpisodeBoundary protocol nameEq keyEq registered
+  ordinal live (LDivert actor) Refl original survivor boundary tag checked rest
+  discipline retained impossible
+retainedOrchestrationPreservesNoEpisodeBoundary protocol nameEq keyEq registered
+  ordinal live (LLeave actor) Refl original survivor boundary tag checked rest
+  discipline retained impossible
+retainedOrchestrationPreservesNoEpisodeBoundary protocol nameEq keyEq registered
+  ordinal live (LUnload actor) Refl original survivor boundary tag checked rest
+  discipline retained impossible

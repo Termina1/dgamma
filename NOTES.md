@@ -1563,14 +1563,16 @@ strict birth-before-boundary invariant; L-Begin contradicts the no-episode head;
 L-Advance/Divert/Leave/Unload cannot fire from the exact Inactive plan leaf;
 idempotent O-Retire updates that leaf, and O-Remove drops it. Both surviving
 cases retain the exact old survivor snapshot and checked well-formedness.
-The retained half now has both existing-actor orchestration cases.
-`retainedRetirePreservesNoEpisodeBoundary` and
-`retainedRemovePreservesNoEpisodeBoundary` obtain the exact plan/outside frame,
-commute the replacement/deletion, transport the checked evaluator result to the
-proof-distinct survivor registry, and package the next complete boundary. The
-remove case also threads `deleteCurrentGeneration` and proves that deleting plan
-leaves cannot create a child. Snapshot proofs project exact world/ordered-binding
-equality only.
+The retained orchestration half is now exhaustive.
+`retainedInsertPreservesNoEpisodeBoundary`,
+`retainedRetirePreservesNoEpisodeBoundary`, and
+`retainedRemovePreservesNoEpisodeBoundary` obtain exact plan/outside frames,
+commute insert/replace/delete updates, transport checked evaluator results to the
+proof-distinct survivor registry, and package the next complete boundary. Insert
+threads its fresh non-R birth through `putCurrentGeneration`; remove threads
+`deleteCurrentGeneration` and proves plan deletion cannot create a child.
+`retainedOrchestrationPreservesNoEpisodeBoundary` dispatches the three cases.
+Snapshot proofs project exact world/ordered-binding equality only.
 `retainedSuffixHeadAtBoundary` uses the keystone transport to instantiate the
 suffix retained-head interface without proof irrelevance. The remaining
 no-selected-episode work is preservation of
