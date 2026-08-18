@@ -240,7 +240,11 @@ progress.
   frame without registry/proof equality: ordered foreign cells retain exact
   table bindings and reliance observations, while a concrete consumer-opening
   anchor turns any selected provision overlap into the exact Definition-65 edge
-  rejected by `NoDependentClosingEpisode`. Deriving that opening/component
+  rejected by `NoDependentClosingEpisode`.
+  `DGamma.CP4DeletionSelectedForeignLifecycleGuards` folds those source cells
+  into exact first-provider and complete `resolveView` equality for every owner
+  dependency, retaining executable registry scan order rather than replacing it
+  by lookup extensionality. Deriving the opening/component
   anchor from each located retained lifecycle occurrence and reconstructing the
   five concrete checked evaluator branches remain before the selected layer can
   handle deleted R heads and close L-Unload.

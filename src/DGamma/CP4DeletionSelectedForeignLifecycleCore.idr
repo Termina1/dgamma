@@ -52,6 +52,7 @@ providerCandidate wanted fiber =
   isActive (fiberLifecycle fiber) &&
   memberKey wanted (ownedValues (fiberTable fiber))
 
+public export
 0 providerCandidateExplicit :
   (keyEq : DecEq key) -> (wanted : key) ->
   (fiber : Fiber name key value world error) ->
@@ -60,6 +61,7 @@ providerCandidate wanted fiber =
       memberKey @{keyEq} wanted (ownedValues (fiberTable fiber))
 providerCandidateExplicit keyEq wanted fiber = Refl
 
+public export
 0 foreignProviderCandidateSame :
   (keyEq : DecEq key) -> (wanted : key) ->
   {left, right : Fiber name key value world error} ->

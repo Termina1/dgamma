@@ -1756,6 +1756,16 @@ case from quiescence and Lemma 70) remains before concrete checked-action
 reconstruction. The supervisor approved exporting the previously private
 `providerCandidate` used in the already-public source-cell constructor; this is
 a visibility-only repair with no semantic change.
+`DGamma.CP4DeletionSelectedForeignLifecycleGuards` closes the executable target
+scan implied by that frame. `foreignLifecycleProviderInSame` preserves the
+first active provider at every declared dependency across the complete ordered
+registry (selected false/false, foreign candidates exact), and
+`foreignLifecycleResolveViewSame` lifts it to the dependent `View` returned by
+`resolveView`. The proof retains provider order and whole table bindings; it
+does not weaken target equality to unordered membership. The visibility-only
+exports of `providerCandidateExplicit` and `foreignProviderCandidateSame` expose
+facts already present in the public source relation and do not change their
+types or semantics.
 `DGamma.CP4DeletionRelationalBoundary` now defines the approved primary suffix
 interface. It compares the actual survivor with the complete current-R plan
 target using `EffectStateRelated` plus an ordered `FiberControlRelated`
