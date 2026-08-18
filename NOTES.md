@@ -1335,6 +1335,12 @@ selected-table/ambient write. The remaining obligation-3 work is the temporal
 trace induction: build the concrete transformation at each selected advance,
 commute it across foreign actual generators using `TraceIndependent`, and join
 that selected-episode equality to the surviving suffix.
+`DGamma.CP4RecoveryTrace.AccumulatorModel` now ties that algebraic object to the
+actual installed fiber and exact `AccumulatorHandle`. `beginAccumulatorModel`
+proves the L-Begin base directly from the checked evaluator: it extracts the
+fresh Reloading lifecycle, identity accumulator, runtime table, and identity
+transformation without assuming proof irrelevance. The remaining temporal step
+is forward preservation of this model through installed transitions.
 
 `DGamma.CP4DeletionFilterSuccess` closes the filter's generic `Maybe` layer
 without replacing it by a parallel relation. `GenerationReplayReady` records
