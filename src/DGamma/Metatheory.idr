@@ -1001,11 +1001,11 @@ record EffectStateRelated {name, key : Type} {value : key -> Type} {world : Type
   (keyEq : DecEq key) (left, right : EffectState name key value world) where
   constructor MkEffectStateRelated
   0 ambientExact : effectAmbient left = effectAmbient right
-  ||| Finding #10: exact effect agreement retains each complete ordered table.
-  ||| Pointwise table equality avoids function extensionality while preserving
-  ||| every runtime observation available to `StepEffect`, including order.
+  ||| Finding #10 (revised): exact runtime effect agreement retains each
+  ||| complete ordered binding list while abstracting erased certificates.
   0 tablesExact : (selected : name) ->
-    effectTables left selected = effectTables right selected
+    bindings (effectTables left selected) =
+    bindings (effectTables right selected)
 
 public export
 0 effectStateReflexive : (keyEq : DecEq key) ->

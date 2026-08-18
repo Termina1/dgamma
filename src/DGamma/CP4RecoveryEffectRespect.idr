@@ -33,12 +33,12 @@ setActorRuntimeRelated nameEq keyEq actor worldValue table left right related =
   MkEffectStateRelated Refl tables
   where
   0 tables : (selected : name) ->
-    effectTables
+    bindings (effectTables
       (setEffectTable @{nameEq} actor table
-        (setEffectAmbient worldValue left)) selected =
-    effectTables
+        (setEffectAmbient worldValue left)) selected) =
+    bindings (effectTables
       (setEffectTable @{nameEq} actor table
-        (setEffectAmbient worldValue right)) selected
+        (setEffectAmbient worldValue right)) selected)
   tables selected with (decEq @{nameEq} selected actor) proof decision
     tables selected | Yes same = case same of Refl => Refl
     tables selected | No distinct = tablesExact related selected
@@ -55,11 +55,21 @@ setActorTableRelated nameEq keyEq actor table left right related =
   MkEffectStateRelated (ambientExact related) tables
   where
   0 tables : (selected : name) ->
-    effectTables (setEffectTable @{nameEq} actor table left) selected =
-    effectTables (setEffectTable @{nameEq} actor table right) selected
+    bindings (effectTables (setEffectTable @{nameEq} actor table left) selected) =
+    bindings (effectTables (setEffectTable @{nameEq} actor table right) selected)
   tables selected with (decEq @{nameEq} selected actor) proof decision
     tables selected | Yes same = case same of Refl => Refl
     tables selected | No distinct = tablesExact related selected
+
+0 lookupBindingFromEqualBindings :
+  (keyEq : DecEq key) -> (wanted : key) ->
+  (left, right : CoeffectContext key value) ->
+  bindings left = bindings right ->
+  lookupBinding @{keyEq} wanted left = lookupBinding @{keyEq} wanted right
+lookupBindingFromEqualBindings keyEq wanted
+  (MkCoeffectContext leftEntries leftUnique)
+  (MkCoeffectContext rightEntries rightUnique) same =
+    cong (lookupEntries @{keyEq} wanted) same
 
 public export
 0 resolveEffectValuesRelated :
@@ -74,13 +84,15 @@ resolveEffectValuesRelated keyEq (k :: ks) (ProviderView provider rest) related
   with (lookupBinding @{keyEq} k (effectTables left provider)) proof leftLookup
   resolveEffectValuesRelated keyEq (k :: ks) (ProviderView provider rest)
     related | Nothing =
-      let headSame = cong (lookupBinding @{keyEq} k)
+      let headSame = lookupBindingFromEqualBindings keyEq k
+            (effectTables left provider) (effectTables right provider)
             (tablesExact related provider)
           rightLookup = trans (sym headSame) leftLookup
       in rewrite rightLookup in Refl
   resolveEffectValuesRelated keyEq (k :: ks) (ProviderView provider rest)
     related | Just v =
-      let headSame = cong (lookupBinding @{keyEq} k)
+      let headSame = lookupBindingFromEqualBindings keyEq k
+            (effectTables left provider) (effectTables right provider)
             (tablesExact related provider)
           rightLookup = trans (sym headSame) leftLookup
       in rewrite rightLookup in cong (map (OneDepValue v))
@@ -101,15 +113,22 @@ successfulAdvanceMap = fiberAdvanceRuntimeEffectMap
     (stepForwardEffectMap nameEq keyEq actor step capability left)
     (stepForwardEffectMap nameEq keyEq actor step capability right)
 stepForwardMapRespects nameEq keyEq actor step capability left right related =
-  let 0 localSame :
+  let 0 ownedSame :
+        (restrictOwnedPreservingOrder @{keyEq} provision
+           (effectTables left actor) =
+         restrictOwnedPreservingOrder @{keyEq} provision
+           (effectTables right actor))
+      ownedSame = canonicalNormalizationFromEqualBindings provision
+        (effectTables left actor) (effectTables right actor)
+        (tablesExact related actor)
+      0 localSame :
         (MkLocalState (effectAmbient left)
            (restrictOwnedPreservingOrder @{keyEq} provision
              (effectTables left actor)) =
          MkLocalState (effectAmbient right)
            (restrictOwnedPreservingOrder @{keyEq} provision
              (effectTables right actor)))
-      localSame = rewrite ambientExact related in
-        rewrite tablesExact related actor in Refl
+      localSame = rewrite ambientExact related in rewrite ownedSame in Refl
   in stepRuns localSame
   where
   0 stepRuns :
@@ -220,6 +239,16 @@ unloadMapRespects nameEq keyEq actor fiber left right related
     Unloading accumulator view outcome =
       let actorTableSame = tablesExact related actor
           ambientSame = ambientExact related
+          0 ownedSame :
+            (restrictOwnedPreservingOrder @{keyEq}
+               (componentProvisions (fiberComponent fiber))
+               (effectTables left actor) =
+             restrictOwnedPreservingOrder @{keyEq}
+               (componentProvisions (fiberComponent fiber))
+               (effectTables right actor))
+          ownedSame = canonicalNormalizationFromEqualBindings
+            (componentProvisions (fiberComponent fiber))
+            (effectTables left actor) (effectTables right actor) actorTableSame
           0 localSame :
             (MkLocalState (effectAmbient left)
                (restrictOwnedPreservingOrder @{keyEq}
@@ -229,7 +258,7 @@ unloadMapRespects nameEq keyEq actor fiber left right related
                (restrictOwnedPreservingOrder @{keyEq}
                  (componentProvisions (fiberComponent fiber))
                  (effectTables right actor)))
-          localSame = rewrite ambientSame in rewrite actorTableSame in Refl
+          localSame = rewrite ambientSame in rewrite ownedSame in Refl
           0 restoredSame :
             (accumulator
                (MkLocalState (effectAmbient left)

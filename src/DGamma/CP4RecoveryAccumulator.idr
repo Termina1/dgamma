@@ -50,6 +50,81 @@ public export
       (ownedValues (localTable local)))
 normalizeLocalExact keyEq provision (MkLocalState ambient table) = Refl
 
+||| One actor normalization is observationally identity on a provision-confined
+||| runtime table. Finding #10 compares ordered bindings, not erased certificate
+||| identity, so the Finding-7 order-preservation theorem closes this directly.
+public export
+0 actorNormalizationAtOwnedTable :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (provision : CoeffectSpec key) ->
+  (table : OwnedTable key value provision) ->
+  (state : EffectState name key value world) ->
+  effectTables state selected = ownedValues table ->
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    (actorNormalizationMap nameEq keyEq selected provision state) (Just state)
+actorNormalizationAtOwnedTable nameEq keyEq selected provision table
+  state@(MkEffectState ambient tables) tableAt = PartialDefined
+    (MkEffectStateRelated Refl tableBindings)
+  where
+  0 tableBindings : (candidate : name) ->
+    bindings (effectTables
+      (setEffectTable @{nameEq} selected
+        (ownedValues (restrictOwnedPreservingOrder provision (tables selected)))
+        state) candidate) =
+    bindings (effectTables state candidate)
+  tableBindings candidate with (decEq @{nameEq} candidate selected) proof decision
+    tableBindings candidate | Yes same = case same of
+      Refl => rewrite tableAt in
+        restrictOwnedPreservingOrderBindings provision table
+    tableBindings candidate | No distinct = Refl
+
+0 identityAccumulatorMapIsNormalizer :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (provision : CoeffectSpec key) ->
+  (table : OwnedTable key value provision) ->
+  (state : EffectState name key value world) ->
+  accumulatorEffectMap nameEq keyEq selected
+    (MkAccumulatorHandle provision table (\local => local)) state =
+  actorNormalizationMap nameEq keyEq selected provision state
+identityAccumulatorMapIsNormalizer nameEq keyEq selected provision table
+  (MkEffectState ambient tables) = Refl
+
+0 justEffectInjective : Just left = Just right -> left = right
+justEffectInjective Refl = Refl
+
+||| The zero-step Theorem-61 base: the identity accumulator's mandatory input
+||| normalization is related to the original owned table under ordered bindings.
+public export
+0 identityAccumulatorOwnedRecovery :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (provision : CoeffectSpec key) ->
+  (table : OwnedTable key value provision) ->
+  (state, restored : EffectState name key value world) ->
+  effectTables state selected = ownedValues table ->
+  accumulatorEffectMap nameEq keyEq selected
+    (MkAccumulatorHandle provision table (\local => local)) state =
+    Just restored ->
+  EffectStateRelated keyEq state restored
+identityAccumulatorOwnedRecovery nameEq keyEq selected provision table state
+  restored tableAt restoredEquation =
+    case actorNormalizationAtOwnedTable nameEq keyEq selected provision table
+      state tableAt of
+      PartialDefined normalizedToState =>
+        let 0 normalizerEquation : (actorNormalizationMap nameEq keyEq selected
+              provision state = Just restored)
+            normalizerEquation = trans
+              (sym (identityAccumulatorMapIsNormalizer nameEq keyEq selected
+                provision table state)) restoredEquation
+            0 normalizedIsRestored :
+              (setEffectTable @{nameEq} selected
+                 (ownedValues (restrictOwnedPreservingOrder provision
+                   (effectTables state selected))) state = restored)
+            normalizedIsRestored = justEffectInjective normalizerEquation
+        in replace
+          {p = \observed => EffectStateRelated keyEq state observed}
+          normalizedIsRestored
+          (symmetric (EffectStateEquivalence keyEq) normalizedToState)
+
 ||| Overwriting the same actor's ambient/table contribution twice makes the
 ||| intermediate contribution observationally irrelevant. This is the exact
 ||| relation needed between a lifecycle accumulator and one yielded map.
@@ -71,15 +146,15 @@ effectOverwriteSameActor nameEq keyEq selected finalWorld intermediateWorld
     MkEffectStateRelated Refl tableLookups
   where
   0 tableLookups : (candidate : name) ->
-    effectTables
+    bindings (effectTables
       (setEffectTable @{nameEq} selected finalTable
-        (setEffectAmbient finalWorld (MkEffectState ambient tables))) candidate =
-    effectTables
+        (setEffectAmbient finalWorld (MkEffectState ambient tables))) candidate) =
+    bindings (effectTables
       (setEffectTable @{nameEq} selected finalTable
         (setEffectAmbient finalWorld
           (setEffectTable @{nameEq} selected intermediateTable
             (setEffectAmbient intermediateWorld
-              (MkEffectState ambient tables))))) candidate
+              (MkEffectState ambient tables))))) candidate)
   tableLookups candidate with (decEq @{nameEq} candidate selected) proof decision
     tableLookups candidate | Yes same = case same of Refl => Refl
     tableLookups candidate | No distinct = rewrite decision in Refl

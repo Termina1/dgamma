@@ -91,7 +91,7 @@ public export
         (MkSystemState worldValue
           (replaceBinding @{nameEq} actor next fibers))))
 projectTablePreservingReplace nameEq keyEq actor worldValue old next fibers found
-  tableSame = MkEffectStateRelated Refl tables
+  tableSame = MkEffectStateRelated Refl (\selected => cong bindings (tables selected))
   where
   0 tables : (selected : name) ->
     effectTables (projectEffectState @{nameEq}
@@ -156,7 +156,7 @@ public export
           (insertBinding @{nameEq} actor (freshFiber component parent) fibers
             absent))))
 projectInsertEffectFrame nameEq keyEq actor worldValue component parent fibers
-  absent = MkEffectStateRelated Refl tables
+  absent = MkEffectStateRelated Refl (\selected => cong bindings (tables selected))
   where
   0 tables : (selected : name) ->
     effectTables (setEffectTable @{nameEq} actor
@@ -202,7 +202,7 @@ public export
       (the (SystemState name key value world error)
         (MkSystemState worldValue (deleteBinding @{nameEq} actor fibers))))
 projectDeleteEffectFrame nameEq keyEq actor worldValue fibers =
-  MkEffectStateRelated Refl tables
+  MkEffectStateRelated Refl (\selected => cong bindings (tables selected))
   where
   0 tables : (selected : name) ->
     effectTables (setEffectTable @{nameEq} actor
@@ -290,7 +290,7 @@ public export
         (MkSystemState targetWorld
           (replaceBinding @{nameEq} actor next fibers))))
 projectRuntimeReplace nameEq keyEq actor sourceWorld targetWorld old next fibers
-  found targetTable tableSame = MkEffectStateRelated Refl tables
+  found targetTable tableSame = MkEffectStateRelated Refl (\selected => cong bindings (tables selected))
   where
   0 tables : (selected : name) ->
     effectTables (setEffectTable @{nameEq} actor targetTable

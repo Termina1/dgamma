@@ -215,7 +215,7 @@ public export
     DGamma.CP4RestrictionChecks.orderedEffectState
     DGamma.CP4RestrictionChecks.reverseEffectState -> Void
 strengthenedRelationRejectsOrderMismatch related =
-  orderedBindingsDiffer (cong bindings (tablesExact related 0))
+  orderedBindingsDiffer (tablesExact related 0)
 
 ||| Executable half of the discriminating regression: the host callback sees
 ||| the order that the old relation forgot and returns different worlds.
