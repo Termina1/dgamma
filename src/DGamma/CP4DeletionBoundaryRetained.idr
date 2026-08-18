@@ -7,6 +7,7 @@ import DGamma.CP3
 import DGamma.CP4DeletionBoundaryDeleted
 import DGamma.CP4DeletionBoundaryLifecycleCore
 import DGamma.CP4DeletionBoundaryLifecycleBegin
+import DGamma.CP4DeletionBoundaryLifecycleAdvance
 import DGamma.CP4DeletionBoundaryPlan
 import DGamma.CP4DeletionChildlessInvariant
 import DGamma.CP4DeletionCommuteCore
@@ -304,6 +305,33 @@ retainedBeginPreservesNoEpisodeBoundary nameEq keyEq registered ordinal live
       live (LBegin actor) Refl NonInsertBegin tag
       (beginOneDeleteRuntimeCommute nameEq keyEq actor) original survivor boundary
       checked retained
+
+||| Retained non-R L-Advance preserves exact world, ordered tables, and all
+||| iterator lifecycle outcomes across the complete current-R plan.
+public export
+0 retainedAdvancePreservesNoEpisodeBoundary :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (actor : name) ->
+  (original, survivor : SystemState name key value world error) ->
+  (boundary : NoEpisodeReplayBoundary name key world error value nameEq keyEq
+    registered live original survivor) ->
+  {originalAfter : SystemState name key value world error} ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq}
+    (the (Action name key value world error) (LAdvance actor)) original =
+    Just (tag, originalAfter)) ->
+  Not (GenerationOwnedActor nameEq registered ordinal live
+    (the (Action name key value world error) (LAdvance actor))) ->
+  RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
+    registered live (LAdvance actor) originalAfter survivor
+retainedAdvancePreservesNoEpisodeBoundary nameEq keyEq registered ordinal live
+  actor original survivor boundary tag checked retained =
+    retainedLifecyclePreservesNoEpisodeBoundary nameEq keyEq registered ordinal
+      live (LAdvance actor) Refl NonInsertAdvance tag
+      (advanceOneDeleteRuntimeCommute nameEq keyEq actor) original survivor
+      boundary checked retained
 
 public export
 data InsertSuccessView :
