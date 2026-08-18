@@ -5,6 +5,8 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionBoundaryDeleted
+import DGamma.CP4DeletionBoundaryLifecycleCore
+import DGamma.CP4DeletionBoundaryLifecycleBegin
 import DGamma.CP4DeletionBoundaryPlan
 import DGamma.CP4DeletionChildlessInvariant
 import DGamma.CP4DeletionCommuteCore
@@ -134,6 +136,11 @@ boundaryTransportWorldFromPlan transport =
 boundaryTransportBindingsFromPlan transport =
   sym (cong snapshotBindings (boundaryTransportSnapshot transport))
 
+0 systemStateRuntimeEta :
+  (state : SystemState name key value world error) ->
+  MkSystemState (worldState state) (registry state) = state
+systemStateRuntimeEta (MkSystemState ambient source) = Refl
+
 public export
 record RetainedNoEpisodeBoundaryStep
   (name, key, world, error : Type) (value : key -> Type)
@@ -150,6 +157,153 @@ record RetainedNoEpisodeBoundaryStep
   0 retainedNextBoundary : NoEpisodeReplayBoundary name key world error value
     nameEq keyEq registered nextLive originalAfter
     (namedAfter retainedBoundaryNamed)
+
+||| Shared boundary assembly for all five retained lifecycle heads.  The
+||| rule-specific callback proves one-leaf evaluator commutation; the core fold
+||| transports it through the complete current-R plan, after which runtime
+||| snapshot transport reconstructs the exact checked survivor head.
+public export
+0 retainedLifecyclePreservesNoEpisodeBoundary :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  (lifecycle : isLifecycleAction action = True) ->
+  (nonInsert : NonInsertAction action) ->
+  (tag : RuleTag) ->
+  (commuteOne : LifecycleOneDeleteCommuter name key world error value nameEq
+    keyEq action tag) ->
+  (original, survivor : SystemState name key value world error) ->
+  (boundary : NoEpisodeReplayBoundary name key world error value nameEq keyEq
+    registered live original survivor) ->
+  {originalAfter : SystemState name key value world error} ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action original =
+    Just (tag, originalAfter)) ->
+  Not (GenerationOwnedActor nameEq registered ordinal live action) ->
+  RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
+    registered live action originalAfter survivor
+retainedLifecyclePreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
+  nameEq keyEq registered ordinal live action lifecycle nonInsert tag commuteOne
+  original survivor
+  (MkNoEpisodeReplayBoundary ambient source originalShape
+    oldComplete@(MkCompleteCurrentRegisteredPlanResult
+      oldPlan@(MkCurrentRegisteredPlanResult oldTarget oldInactive oldOutside)
+      oldCompleteProof)
+    survivorAmbient survivorBindings unique sourceWellFormed survivorWellFormed)
+  checked retained = case originalShape of
+    Refl =>
+      let 0 originalRaw = checkedActionProjects nameEq keyEq action
+            (MkSystemState ambient source) originalAfter tag checked
+          0 outsideCurrent = retainedNonInsertOutsideCurrentRegistered nameEq
+            registered ordinal live unique action nonInsert retained
+          0 outsidePlan = oldOutside (actionOwner action) outsideCurrent
+          0 planCommute : LifecyclePlanActionCommute name key world error value
+            nameEq keyEq action tag oldInactive ambient originalAfter
+          planCommute = lifecycleActionThroughInactivePlan nameEq keyEq action
+            lifecycle tag commuteOne ambient source oldTarget oldInactive
+            outsidePlan sourceWellFormed originalRaw
+          0 preserving : InactivePlanPreservingUpdateCommute name key world
+            error value nameEq oldInactive (registry originalAfter)
+            (bindings (registry (lifecyclePlanReplayAfter planCommute)))
+          preserving = lifecycleAfterCommute planCommute
+          0 commuteBase : InactivePlanUpdateCommute name key world error value
+            nameEq oldInactive (registry originalAfter)
+            (bindings (registry (lifecyclePlanReplayAfter planCommute)))
+          commuteBase = preservingUpdateCommute preserving
+          0 outsideNext : (observed : name) ->
+            ActorOutsideCurrentRegistered observed registered live ->
+            ActorOutsideDeletionPlan observed
+              (commutedInactivePlan commuteBase)
+          outsideNext observed outsideCurrent = commutedActorOutside commuteBase
+            observed (oldOutside observed outsideCurrent)
+          nextPlan : CurrentRegisteredPlanResult name key world error value
+            nameEq registered live (registry originalAfter)
+          nextPlan = MkCurrentRegisteredPlanResult
+            (commutedPlanTarget commuteBase) (commutedInactivePlan commuteBase)
+            outsideNext
+          0 nextCompleteProof : CurrentRegisteredPlanComplete name key world
+            error value nameEq registered live nextPlan
+          nextCompleteProof selected generation present member =
+            replace {p = Elem selected} (sym (preservedPlanActors preserving))
+              (oldCompleteProof selected generation present member)
+          completeNext : CompleteCurrentRegisteredPlanResult name key world
+            error value nameEq registered live (registry originalAfter)
+          completeNext = MkCompleteCurrentRegisteredPlanResult nextPlan
+            nextCompleteProof
+      in case transportPlanActionToBoundary nameEq keyEq action
+              (MkSystemState ambient oldTarget)
+              (lifecyclePlanReplayAfter planCommute) survivor
+              (boundaryPlanSnapshotMatchesSurvivor
+                (MkNoEpisodeReplayBoundary ambient source Refl
+                  (MkCompleteCurrentRegisteredPlanResult
+                    (MkCurrentRegisteredPlanResult oldTarget oldInactive
+                      oldOutside) oldCompleteProof)
+                  survivorAmbient survivorBindings unique sourceWellFormed
+                  survivorWellFormed))
+          tag (lifecyclePlanReplayRaw planCommute) survivorWellFormed of
+          MkBoundaryActionTransport survivorAfter survivorRaw
+            afterSnapshots survivorAfterWellFormed named namedAfterProof
+            fired =>
+                  let 0 survivorAmbientNext : (worldState survivorAfter =
+                        worldState originalAfter)
+                      survivorAmbientNext = trans
+                        (sym (cong snapshotWorld afterSnapshots))
+                        (sym (lifecyclePlanWorld planCommute))
+                      0 survivorBindingsNext :
+                        (bindings (registry survivorAfter) =
+                        bindings (planTarget nextPlan))
+                      survivorBindingsNext = trans
+                        (sym (cong snapshotBindings afterSnapshots))
+                        (sym (commutedTargetBindings commuteBase))
+                      0 originalAfterWellFormed :
+                        (registryWellFormed @{nameEq} @{keyEq} originalAfter =
+                          True)
+                      originalAfterWellFormed = preservationTheoremProof
+                        nameEq keyEq action (MkSystemState ambient source)
+                        originalAfter tag sourceWellFormed originalRaw
+                      0 nextBoundary : NoEpisodeReplayBoundary name key world
+                        error value nameEq keyEq registered live originalAfter
+                        survivorAfter
+                      nextBoundary = MkNoEpisodeReplayBoundary
+                        (worldState originalAfter) (registry originalAfter)
+                        (sym (systemStateRuntimeEta originalAfter)) completeNext
+                        survivorAmbientNext survivorBindingsNext unique
+                        originalAfterWellFormed survivorAfterWellFormed
+                      0 namedBoundary : NoEpisodeReplayBoundary name key world
+                        error value nameEq keyEq registered live originalAfter
+                        (namedAfter named)
+                      namedBoundary = replace {p = \candidate =>
+                        NoEpisodeReplayBoundary name key world error value
+                          nameEq keyEq registered live originalAfter candidate}
+                        (sym namedAfterProof) nextBoundary
+                  in MkRetainedNoEpisodeBoundaryStep named fired namedBoundary
+
+||| Retained non-R L-Begin preserves exact result/control after deleting all
+||| current R leaves.
+public export
+0 retainedBeginPreservesNoEpisodeBoundary :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (actor : name) ->
+  (original, survivor : SystemState name key value world error) ->
+  (boundary : NoEpisodeReplayBoundary name key world error value nameEq keyEq
+    registered live original survivor) ->
+  {originalAfter : SystemState name key value world error} ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq}
+    (the (Action name key value world error) (LBegin actor)) original =
+    Just (tag, originalAfter)) ->
+  Not (GenerationOwnedActor nameEq registered ordinal live
+    (the (Action name key value world error) (LBegin actor))) ->
+  RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
+    registered live (LBegin actor) originalAfter survivor
+retainedBeginPreservesNoEpisodeBoundary nameEq keyEq registered ordinal live
+  actor original survivor boundary tag checked retained =
+    retainedLifecyclePreservesNoEpisodeBoundary nameEq keyEq registered ordinal
+      live (LBegin actor) Refl NonInsertBegin tag
+      (beginOneDeleteRuntimeCommute nameEq keyEq actor) original survivor boundary
+      checked retained
 
 public export
 data InsertSuccessView :
