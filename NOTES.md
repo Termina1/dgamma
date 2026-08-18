@@ -425,6 +425,21 @@ of Lemma 38.
     remains on the end-of-CP4 endpoint-equivalence review list; no unapproved
     alias change was folded into Finding #10.
 
+    **Replay-boundary addendum.** The first `NoEpisodeReplayBoundary` scaffold
+    incorrectly asked for term-level `SystemState` equality with an
+    `InactiveLeafDeletionPlan` target. Commuting a retained action past those
+    deletions preserves the exact ambient state and ordered runtime binding
+    list, but the two construction orders can synthesize different erased
+    `UniqueKeys` proof terms. With supervisor approval, the boundary now states
+    exactly ambient/binding equality and carries survivor well-formedness;
+    `transportApplyActionAcrossRuntimeSnapshot` proves all eight evaluator
+    cases preserve tags and runtime snapshots and reconstructs a real raw step.
+    `CP4RuntimeBindingsChecks` pins two separately defined singleton uniqueness
+    certificates and checks both observation equality and successful O-Retire
+    transport. This is the same Finding-#10 representation principle, not a new
+    theorem-alias repair: ordered bindings are observable, uniqueness proofs
+    are not.
+
     Finding #10 joins Findings #4–#9 on the mandatory end-of-CP4 adversarial
     re-review list. The reviewer must attack Findings #7, #9, and #10 as one
     ordered-table design chain, as well as the still-separate renamed endpoint
@@ -1485,17 +1500,22 @@ residualized: it is also required by Theorem-73 sorting. No theorem alias or
 runtime evaluator changed, and no escape hatch was introduced.
 
 The first dedicated replay-boundary stage is now constructive.
-`DGamma.CP4DeletionNoEpisodeReplay` keeps the action index that the older
+`DGamma.CP4RuntimeBindings.transportApplyActionAcrossRuntimeSnapshot` is the
+exhaustive eight-action keystone that transports evaluator success across exact
+ambient/ordered-binding equality while deliberately ignoring proof-only
+`UniqueKeys` terms; `CP4RuntimeBindingsChecks` pins the proof-distinct singleton
+regression. `DGamma.CP4DeletionNoEpisodeReplay` keeps the action index that the older
 `TransitionResult` wrappers erased. `lifecycleRawAfterInactivePlan` and
 `orchestrationRawAfterInactivePlan` fold the existing one-leaf frames through a
 complete plan; `inactivePlanPreservesWellFormed` and raw Preservation turn the
 result into the exact checked `fireNamed` package. `retainedSuffixHeadAfterCurrentPlan`
 dispatches all eight actions, deriving lifecycle actor exclusion from the
 complement of generation ownership and child-O-Insert parent exclusion from
-registration discipline. `NoEpisodeReplayBoundary` then identifies an actual
-survivor with the exact ambient-preserving current-R plan target, and
-`retainedSuffixHeadAtBoundary` instantiates the suffix retained-head interface
-at that boundary. The remaining no-selected-episode work is preservation of
+registration discipline. `NoEpisodeReplayBoundary` then identifies an actual survivor with the plan
+at the exact host-observable runtime snapshot and carries checked validity;
+`retainedSuffixHeadAtBoundary` uses the keystone transport to instantiate the
+suffix retained-head interface without proof irrelevance. The remaining
+no-selected-episode work is preservation of
 this record after each kept/deleted head (the endpoint commutation half); the
 selected segment separately needs the selected-fiber lifecycle/effect quotient.
 

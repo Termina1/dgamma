@@ -14,6 +14,7 @@ import DGamma.CP4DeletionGenerationFilter
 import DGamma.CP4DeletionGenerationUnique
 import DGamma.CP4DeletionPlanBuilder
 import DGamma.CP4DeletionRetainedAction
+import DGamma.CP4RuntimeBindings
 import Decidable.Equality
 
 %default total
@@ -253,10 +254,11 @@ retainedSuffixHeadAfterCurrentPlan protocol nameEq keyEq registered ordinal live
         (MkSystemState ambient (planTarget planResult)) targetWellFormed
         (Fired nameEq keyEq action originalTag checked) originalRest Refl replayRaw
 
-||| Exact no-selected-episode boundary relation.  The survivor is the original
-||| boundary with every current R generation removed by the proved plan; ambient
-||| state is unchanged.  The next induction layer must preserve this record
-||| across kept and deleted heads.
+||| Exact no-selected-episode boundary relation at the host-observable runtime
+||| representation.  The survivor has the plan target's ambient state and exact
+||| ordered binding list.  It does not demand equality of the erased
+||| `UniqueKeys` witness, which would amount to an unavailable proof-irrelevance
+||| axiom.  Both source validity facts are carried explicitly for checked replay.
 public export
 record NoEpisodeReplayBoundary
   (name, key, world, error : Type) (value : key -> Type)
@@ -271,11 +273,58 @@ record NoEpisodeReplayBoundary
     MkSystemState boundaryAmbient boundaryRegistry
   boundaryPlan : CurrentRegisteredPlanResult name key world error value nameEq
     registered live boundaryRegistry
-  0 survivorBoundaryShape : survivor =
-    MkSystemState boundaryAmbient (planTarget boundaryPlan)
+  0 survivorBoundaryAmbient : worldState survivor = boundaryAmbient
+  0 survivorBoundaryBindings : bindings (registry survivor) =
+    bindings (planTarget boundaryPlan)
   0 boundaryGenerationsUnique : GenerationEnvironmentNamesUnique live
   0 originalBoundaryWellFormed : registryWellFormed @{nameEq} @{keyEq}
     original = True
+  0 survivorBoundaryWellFormed : registryWellFormed @{nameEq} @{keyEq}
+    survivor = True
+
+0 runtimeSnapshotPartsEqual :
+  (leftWorld, rightWorld : world) ->
+  (leftBindings, rightBindings :
+    List (Binding name (FiberAt name key value world error))) ->
+  leftWorld = rightWorld -> leftBindings = rightBindings ->
+  the (RuntimeSnapshot name key world error value)
+    (MkRuntimeSnapshot leftWorld leftBindings) =
+  the (RuntimeSnapshot name key world error value)
+    (MkRuntimeSnapshot rightWorld rightBindings)
+runtimeSnapshotPartsEqual leftWorld leftWorld leftBindings leftBindings Refl
+  Refl = Refl
+
+0 boundaryPlanSnapshotMatchesSurvivor :
+  (boundary : NoEpisodeReplayBoundary name key world error value nameEq keyEq
+    registered live original survivor) ->
+  runtimeSnapshot
+    (MkSystemState (boundaryAmbient boundary)
+      (planTarget (boundaryPlan boundary))) =
+  runtimeSnapshot survivor
+boundaryPlanSnapshotMatchesSurvivor {survivor}
+  (MkNoEpisodeReplayBoundary ambient source originalShape plan survivorAmbient
+    survivorBindings unique originalWellFormed survivorWellFormed) =
+      runtimeSnapshotPartsEqual ambient (worldState survivor)
+        (bindings (planTarget plan)) (bindings (registry survivor))
+        (sym survivorAmbient) (sym survivorBindings)
+
+0 namedFireProjectsRaw :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (source : SystemState name key value world error) ->
+  (named : NamedTransition name key world error value action source) ->
+  fireNamed nameEq keyEq action source = Just named ->
+  applyAction @{nameEq} @{keyEq} action source =
+    Just (namedTag named, namedAfter named)
+namedFireProjectsRaw nameEq keyEq action source named fired
+  with (checkedApplyAction @{nameEq} @{keyEq} action source) proof checked
+  namedFireProjectsRaw nameEq keyEq action source named fired | Nothing =
+    void (nothingIsNotJust fired)
+  namedFireProjectsRaw nameEq keyEq action source named fired |
+    Just (tag, afterState) =
+      case justInjective fired of
+        Refl => checkedActionProjects nameEq keyEq action source afterState tag
+          checked
 
 ||| Instantiate the suffix retained-head interface at one exact boundary.
 ||| Unlike `TransitionResult`, the result remains indexed by the original action
@@ -302,13 +351,53 @@ public export
     {originalFirst = original} {originalMiddle = originalAfter}
     {originalFinal = originalFinal} {survivingFirst = survivor}
     (Fired nameEq keyEq action tag checked) rest
-retainedSuffixHeadAtBoundary protocol nameEq keyEq registered ordinal live
-  original survivor
-  (MkNoEpisodeReplayBoundary ambient source originalShape plan survivorShape
-    unique sourceWellFormed)
+retainedSuffixHeadAtBoundary {name} {key} {world} {error} {value}
+  protocol nameEq keyEq registered ordinal live original survivor
+  boundary@(MkNoEpisodeReplayBoundary ambient source originalShape plan
+    survivorAmbient survivorBindings unique sourceWellFormed survivorWellFormed)
   action tag checked rest discipline retained =
     case originalShape of
-      Refl => case survivorShape of
-        Refl => retainedSuffixHeadAfterCurrentPlan protocol nameEq keyEq
-          registered ordinal live unique action ambient source plan tag checked
-          rest discipline retained sourceWellFormed
+      Refl =>
+        case retainedSuffixHeadAfterCurrentPlan protocol nameEq keyEq registered
+          ordinal live unique action ambient source plan tag checked rest
+          discipline retained sourceWellFormed of
+          MkRetainedGenerationReplayStep planNamed planFired =>
+            let planSource : SystemState name key value world error
+                planSource = MkSystemState ambient (planTarget plan)
+                planRaw : applyAction @{nameEq} @{keyEq} action planSource =
+                  Just (namedTag planNamed, namedAfter planNamed)
+                planRaw = namedFireProjectsRaw nameEq keyEq action planSource
+                  planNamed planFired
+                0 planSurvivorSame : runtimeSnapshot planSource =
+                  runtimeSnapshot survivor
+                planSurvivorSame = runtimeSnapshotPartsEqual ambient
+                  (worldState survivor) (bindings (planTarget plan))
+                  (bindings (registry survivor)) (sym survivorAmbient)
+                  (sym survivorBindings)
+                0 transported : ActionRuntimeTransport name key world error
+                  value nameEq keyEq action survivor (namedTag planNamed)
+                  (namedAfter planNamed)
+                transported =
+                  transportApplyActionAcrossRuntimeSnapshot nameEq keyEq action
+                    planSource survivor planSurvivorSame
+                    (namedTag planNamed) (namedAfter planNamed) planRaw
+            in case transported of
+              MkActionRuntimeTransport replayAfter replayRaw replaySnapshot =>
+                let 0 replayWellFormed = preservationTheoremProof nameEq keyEq
+                      action survivor replayAfter (namedTag planNamed)
+                      survivorWellFormed replayRaw
+                    0 replayChecked : (checkedApplyAction @{nameEq} @{keyEq}
+                      action survivor = Just (namedTag planNamed, replayAfter))
+                    replayChecked = rewrite replayRaw in
+                      rewrite replayWellFormed in Refl
+                    replayTransition : Transition survivor replayAfter
+                    replayTransition = Fired nameEq keyEq action
+                      (namedTag planNamed) replayChecked
+                    replayNamed : NamedTransition name key world error value
+                      action survivor
+                    replayNamed = MkNamedTransition replayAfter
+                      (namedTag planNamed) replayTransition Refl
+                    0 replayFired : fireNamed nameEq keyEq action survivor =
+                      Just replayNamed
+                    replayFired = rewrite replayChecked in Refl
+                in MkRetainedGenerationReplayStep replayNamed replayFired

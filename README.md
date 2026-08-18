@@ -142,10 +142,15 @@ progress.
   `selectedEpisodeRetainedReplayGivesReadiness` and
   `registeredGenerationRetainedReplayGivesReadiness` thread exact deletion
   decisions and survivor endpoints from one record-saturated retained-head
-  interface. `DGamma.CP4DeletionNoEpisodeReplay` proves the exact suffix
-  retained-head frame for all eight actions at a current-R plan boundary and
-  names `NoEpisodeReplayBoundary`; maintaining that boundary record through the
-  dependent suffix remains the no-selected-episode induction step. The selected
+  interface. `DGamma.CP4RuntimeBindings` proves the exhaustive eight-action
+  `transportApplyActionAcrossRuntimeSnapshot` keystone: evaluator tags and exact
+  ambient/ordered-binding results are invariant under changes to erased
+  uniqueness certificates; `DGamma.CP4RuntimeBindingsChecks` pins that rationale
+  with separately defined singleton certificates. `DGamma.CP4DeletionNoEpisodeReplay`
+  proves the suffix retained-head frame for all eight actions at a current-R
+  plan boundary and names `NoEpisodeReplayBoundary` at this exact runtime
+  representation; maintaining that boundary record through the dependent
+  suffix remains the no-selected-episode induction step. The selected
   segment additionally needs the Lemma-71 lifecycle quotient. The located-episode splitter
   derives the episode/suffix generation scans and restricts both no-R-episode
   and repaired Definition-69 evidence without new public premises.
