@@ -82,19 +82,172 @@ orderRestrictEntries allowed (Bind current observed :: rest)
           Here => Here
           There later => There (orderRestrictedSubset tail k later))
 
+AllKeysAllowed : {key : Type} -> List key -> List key -> Type
+AllKeysAllowed {key} keys allowed =
+  (k : key) -> Elem k keys -> Elem k allowed
+
+0 decUniqueKeys : DecEq key => (keys : List key) -> Dec (UniqueKeys keys)
+decUniqueKeys [] = Yes UniqueNil
+decUniqueKeys (current :: rest) with (isElem current rest)
+  decUniqueKeys (current :: rest) | Yes present =
+    No (\(UniqueCons fresh tailUnique) => fresh present)
+  decUniqueKeys (current :: rest) | No absent with (decUniqueKeys rest)
+    decUniqueKeys (current :: rest) | No absent | Yes tailUnique =
+      Yes (UniqueCons absent tailUnique)
+    decUniqueKeys (current :: rest) | No absent | No notUnique =
+      No (\(UniqueCons fresh tailUnique) => notUnique tailUnique)
+
+0 decAllKeysAllowed : DecEq key => (keys, allowed : List key) ->
+  Dec (AllKeysAllowed keys allowed)
+decAllKeysAllowed [] allowed = Yes (\k, present => case present of _ impossible)
+decAllKeysAllowed (current :: rest) allowed with (isElem current allowed)
+  decAllKeysAllowed (current :: rest) allowed | No absent =
+    No (\sound => absent (sound current Here))
+  decAllKeysAllowed (current :: rest) allowed | Yes currentAllowed
+    with (decAllKeysAllowed rest allowed)
+    decAllKeysAllowed (current :: rest) allowed | Yes currentAllowed |
+      No tailRejected =
+        No (\sound => tailRejected (\k, later => sound k (There later)))
+    decAllKeysAllowed (current :: rest) allowed | Yes currentAllowed |
+      Yes tailSound = Yes (\k, present => case present of
+        Here => currentAllowed
+        There later => tailSound k later)
+
+%inline
+0 canonicalUniqueKeys : DecEq key => (keys : List key) ->
+  UniqueKeys keys -> UniqueKeys keys
+canonicalUniqueKeys keys evidence with (decUniqueKeys keys)
+  canonicalUniqueKeys keys evidence | Yes canonical = canonical
+  canonicalUniqueKeys keys evidence | No rejected = void (rejected evidence)
+
+%inline
+0 canonicalAllowed : DecEq key => (keys, allowed : List key) ->
+  AllKeysAllowed keys allowed -> AllKeysAllowed keys allowed
+canonicalAllowed keys allowed evidence with (decAllKeysAllowed keys allowed)
+  canonicalAllowed keys allowed evidence | Yes canonical = canonical
+  canonicalAllowed keys allowed evidence | No rejected = void (rejected evidence)
+
+%inline
+canonicalOwnedFromFiltered : DecEq key =>
+  (provision : CoeffectSpec key) ->
+  (filtered : List (Binding key value)) ->
+  (0 unique : UniqueKeys (bindingKeys filtered)) ->
+  (0 sound : AllKeysAllowed (bindingKeys filtered) (dependencies provision)) ->
+  OwnedTable key value provision
+canonicalOwnedFromFiltered provision filtered unique sound =
+  MkOwnedTable
+    (MkCoeffectContext filtered
+      (canonicalUniqueKeys (bindingKeys filtered) unique))
+    (canonicalAllowed (bindingKeys filtered) (dependencies provision) sound)
+
+0 canonicalOwnedEvidenceIrrelevant : DecEq key =>
+  (provision : CoeffectSpec key) ->
+  (filtered : List (Binding key value)) ->
+  (leftUnique, rightUnique : UniqueKeys (bindingKeys filtered)) ->
+  (leftSound, rightSound :
+    AllKeysAllowed (bindingKeys filtered) (dependencies provision)) ->
+  canonicalOwnedFromFiltered provision filtered leftUnique leftSound =
+  canonicalOwnedFromFiltered provision filtered rightUnique rightSound
+canonicalOwnedEvidenceIrrelevant provision filtered leftUnique rightUnique
+  leftSound rightSound with (decUniqueKeys (bindingKeys filtered))
+  canonicalOwnedEvidenceIrrelevant provision filtered leftUnique rightUnique
+    leftSound rightSound | No rejected = void (rejected leftUnique)
+  canonicalOwnedEvidenceIrrelevant provision filtered leftUnique rightUnique
+    leftSound rightSound | Yes canonicalUnique
+    with (decAllKeysAllowed (bindingKeys filtered) (dependencies provision))
+    canonicalOwnedEvidenceIrrelevant provision filtered leftUnique rightUnique
+      leftSound rightSound | Yes canonicalUnique | No rejected =
+        void (rejected leftSound)
+    canonicalOwnedEvidenceIrrelevant provision filtered leftUnique rightUnique
+      leftSound rightSound | Yes canonicalUnique | Yes canonicalSound = Refl
+
+0 canonicalOwnedFromFilteredCong : DecEq key =>
+  (provision : CoeffectSpec key) ->
+  (leftFiltered, rightFiltered : List (Binding key value)) ->
+  (same : leftFiltered = rightFiltered) ->
+  (leftUnique : UniqueKeys (bindingKeys leftFiltered)) ->
+  (rightUnique : UniqueKeys (bindingKeys rightFiltered)) ->
+  (leftSound : AllKeysAllowed (bindingKeys leftFiltered)
+    (dependencies provision)) ->
+  (rightSound : AllKeysAllowed (bindingKeys rightFiltered)
+    (dependencies provision)) ->
+  canonicalOwnedFromFiltered provision leftFiltered leftUnique leftSound =
+  canonicalOwnedFromFiltered provision rightFiltered rightUnique rightSound
+canonicalOwnedFromFilteredCong provision leftFiltered leftFiltered Refl
+  leftUnique rightUnique leftSound rightSound =
+    canonicalOwnedEvidenceIrrelevant provision leftFiltered leftUnique
+      rightUnique leftSound rightSound
+
+0 orderRestrictedBindingsProofIrrelevant : DecEq key =>
+  (allowed : List key) -> (entries : List (Binding key value)) ->
+  (leftUnique, rightUnique : UniqueKeys (bindingKeys entries)) ->
+  orderRestrictedBindings (orderRestrictEntries allowed entries leftUnique) =
+  orderRestrictedBindings (orderRestrictEntries allowed entries rightUnique)
+orderRestrictedBindingsProofIrrelevant allowed [] UniqueNil UniqueNil = Refl
+orderRestrictedBindingsProofIrrelevant allowed
+  (Bind current observed :: rest)
+  (UniqueCons leftFresh leftUnique) (UniqueCons rightFresh rightUnique)
+  with (memberKeyList current allowed)
+  orderRestrictedBindingsProofIrrelevant allowed
+    (Bind current observed :: rest)
+    (UniqueCons leftFresh leftUnique) (UniqueCons rightFresh rightUnique) |
+    False = orderRestrictedBindingsProofIrrelevant allowed rest leftUnique
+      rightUnique
+  orderRestrictedBindingsProofIrrelevant allowed
+    (Bind current observed :: rest)
+    (UniqueCons leftFresh leftUnique) (UniqueCons rightFresh rightUnique) |
+    True = cong (Bind current observed ::)
+      (orderRestrictedBindingsProofIrrelevant allowed rest leftUnique rightUnique)
+
 ||| Reconstruct a capability-confined table by filtering the input bindings in
-||| their existing order. This is the Finding-7 runtime-normalization primitive
-||| shared definitionally by the LTS and Definition-60 maps.
+||| their existing order. Finding #10 canonicalizes both erased certificates
+||| from the runtime output bindings and provision; source proof identity is
+||| used only to rule out impossible decision branches.
 public export
 restrictOwnedPreservingOrder : DecEq key => (provision : CoeffectSpec key) ->
   CoeffectContext key value -> OwnedTable key value provision
-restrictOwnedPreservingOrder (MkCoeffectSpec allowed allowedUnique)
+restrictOwnedPreservingOrder provision@(MkCoeffectSpec allowed allowedUnique)
   (MkCoeffectContext entries entriesUnique) =
     let result = orderRestrictEntries allowed entries entriesUnique in
-    MkOwnedTable
-      (MkCoeffectContext (orderRestrictedBindings result)
-        (orderRestrictedUnique result))
-      (orderRestrictedSound result)
+    canonicalOwnedFromFiltered provision (orderRestrictedBindings result)
+      (orderRestrictedUnique result) (orderRestrictedSound result)
+
+||| Finding #10 keystone: equal complete ordered runtime bindings normalize to
+||| propositionally equal owned tables, regardless of erased source certificates.
+public export
+0 canonicalNormalizationFromEqualBindings : DecEq key =>
+  (provision : CoeffectSpec key) ->
+  (left, right : CoeffectContext key value) ->
+  bindings left = bindings right ->
+  restrictOwnedPreservingOrder provision left =
+  restrictOwnedPreservingOrder provision right
+canonicalNormalizationFromEqualBindings
+  provision@(MkCoeffectSpec allowed allowedUnique)
+  (MkCoeffectContext leftEntries leftUnique)
+  (MkCoeffectContext rightEntries rightUnique) sameBindings =
+    case sameBindings of
+      Refl =>
+        let 0 filteredSame :
+              (orderRestrictedBindings
+                 (orderRestrictEntries allowed rightEntries leftUnique) =
+               orderRestrictedBindings
+                 (orderRestrictEntries allowed rightEntries rightUnique))
+            filteredSame = orderRestrictedBindingsProofIrrelevant allowed
+              rightEntries leftUnique rightUnique
+        in canonicalOwnedFromFilteredCong
+          (MkCoeffectSpec allowed allowedUnique)
+          (orderRestrictedBindings
+            (orderRestrictEntries allowed rightEntries leftUnique))
+          (orderRestrictedBindings
+            (orderRestrictEntries allowed rightEntries rightUnique)) filteredSame
+          (orderRestrictedUnique
+            (orderRestrictEntries allowed rightEntries leftUnique))
+          (orderRestrictedUnique
+            (orderRestrictEntries allowed rightEntries rightUnique))
+          (orderRestrictedSound
+            (orderRestrictEntries allowed rightEntries leftUnique))
+          (orderRestrictedSound
+            (orderRestrictEntries allowed rightEntries rightUnique))
 
 0 memberKeyListFromElem : DecEq key => (selected : key) ->
   (allowed : List key) -> Elem selected allowed ->
