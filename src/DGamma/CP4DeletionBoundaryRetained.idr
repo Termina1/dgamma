@@ -1187,3 +1187,39 @@ retainedOrchestrationPreservesNoEpisodeBoundary protocol nameEq keyEq registered
 retainedOrchestrationPreservesNoEpisodeBoundary protocol nameEq keyEq registered
   ordinal live (LUnload actor) Refl original survivor boundary tag checked rest
   discipline retained impossible
+
+||| Exhaustive retained-head boundary preservation used by the structural
+||| no-selected-episode suffix induction.
+public export
+0 retainedSuffixHeadPreservesNoEpisodeBoundary :
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  (original, survivor : SystemState name key value world error) ->
+  (boundary : NoEpisodeReplayBoundary name key world error value nameEq keyEq
+    registered live original survivor) ->
+  {originalAfter, originalFinal : SystemState name key value world error} ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action original =
+    Just (tag, originalAfter)) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  RegistrationStepDiscipline protocol nameEq action original rest ->
+  Not (GenerationOwnedActor nameEq registered ordinal live action) ->
+  RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
+    registered (advanceGenerationEnvironment @{nameEq} ordinal action live)
+    action originalAfter survivor
+retainedSuffixHeadPreservesNoEpisodeBoundary protocol nameEq keyEq registered
+  ordinal live action original survivor boundary tag checked rest discipline
+  retained with (isLifecycleAction action) proof kind
+  retainedSuffixHeadPreservesNoEpisodeBoundary protocol nameEq keyEq registered
+    ordinal live action original survivor boundary tag checked rest discipline
+    retained | True = retainedLifecycleHeadPreservesNoEpisodeBoundary nameEq
+      keyEq registered ordinal live action kind original survivor boundary tag
+      checked retained
+  retainedSuffixHeadPreservesNoEpisodeBoundary protocol nameEq keyEq registered
+    ordinal live action original survivor boundary tag checked rest discipline
+    retained | False = retainedOrchestrationPreservesNoEpisodeBoundary protocol
+      nameEq keyEq registered ordinal live action kind original survivor boundary
+      tag checked rest discipline retained
