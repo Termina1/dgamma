@@ -1656,7 +1656,12 @@ skeleton (which projects to full `ControlEquivalent`), and
 special case even across distinct top-level uniqueness certificates. The
 remaining selected stage must construct foreign retained checked transitions,
 handle deleted R heads, close the L-Unload endpoint, and feed the parallel
-relational suffix fold.
+relational suffix fold. The effect half of that close is now constructive:
+`DGamma.CP4DeletionSelectedCloseEffect.selectedUnloadClosesEffectBoundary`
+identifies the intermediate model handle with the exact handle consumed by
+checked L-Unload, equates their recovered outputs, and composes the L-Unload
+actual-effect frame to obtain original-post-close/survivor
+`EffectStateRelated`. Control/reset-to-Inactive and plan packaging remain.
 
 ### Corollary 62: terminal recovery
 

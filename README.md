@@ -212,7 +212,10 @@ progress.
   ordered effects and an ordered control skeleton with extensional accumulators.
   The former exact snapshot boundary
   embeds as a specialization, but selected recovery is never strengthened to
-  function/proof equality. The located-episode splitter
+  function/proof equality. `selectedUnloadClosesEffectBoundary` identifies the
+  boundary model's handle with checked L-Unload's handle and closes exact
+  post-episode effect agreement with the untouched survivor. The
+  located-episode splitter
   derives the episode/suffix generation scans and restricts both no-R-episode
   and repaired Definition-69 evidence without new public premises.
   `DeletionTraceSkeleton` integrates those proofs with both dependent filters;
