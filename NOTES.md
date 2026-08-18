@@ -1514,6 +1514,22 @@ its necessary converse: every current exact R generation appears in the plan;
 `reachedDisciplinedBoundaryGivesCompleteDeletionPlan` constructs that saturated
 plan from the public reached-trace premises. The older plan result stays
 unchanged for existing consumers.
+`DGamma.CP4DeletionCommuteCore` now proves the local ordered-binding algebra
+needed by the next boundary step: deletion commutes with a distinct fresh head
+insertion, a distinct replacement, and a second distinct deletion. The matching
+registry lemmas deliberately project only `bindings`; no `UniqueKeys` proof
+identity is requested. `DGamma.CP4DeletionPlanCommute` lifts each update through
+an indexed `InactiveLeafDeletionPlan`. A retained O-Insert carries both owner and
+parent exclusion, a retained replacement carries the evaluator's static-parent
+fact, and a retained deletion cannot create children. At every recursive tail,
+the two update orders are joined with `transportInactivePlanAcrossBindings`
+rather than proof irrelevance. `removeExactActorFromInactivePlan` handles the
+complementary deleted O-Remove case by deleting the actor's exact plan occurrence
+and preserving the old target's complete ordered binding list. Arbitrary
+actor-outside certificates are transported by all four folds. This closes work
+order 1's local action/plan commutation layer; packaging these folds into the
+next `NoEpisodeReplayBoundary` remains work order 2.
+
 `DGamma.CP4DeletionNoEpisodeReplay` keeps the action index that the older
 `TransitionResult` wrappers erased. `lifecycleRawAfterInactivePlan` and
 `orchestrationRawAfterInactivePlan` fold the existing one-leaf frames through a
@@ -1649,6 +1665,13 @@ Targeted forced checks passed `CP4RuntimeBindings`, its proof-distinct regressio
 `CP4DeletionNoEpisodeReplay`. This remains warm validation; it does not
 supersede the registered split/no-concurrent-Chez cold-archive debt.
 
+After the local action/plan commutation layer, targeted forced checks passed both
+new modules and the strengthened exported childlessness frames. A warm package
+build passed all 109/109 modules; all 109 retain `%default total`, and the
+anchored executable escape-hatch scan is empty. The inherited untracked `paper/`
+and `review-cp3-round10.md` inputs were not modified. This is still warm
+validation and leaves the registered cold-archive debt unchanged.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
@@ -1689,9 +1712,10 @@ and the all-action no-selected-episode retained-head frame at an exact current-R
 plan boundary; exhaustive evaluator transport across equal runtime snapshots,
 dependent Inactive-plan/actor-exclusion transport across equal ordered bindings,
 and complete current-R plan construction from the public reached-trace premises;
-the retained/deleted action-to-plan commutation step and its whole-suffix fold,
-the selected-segment Lemma-71 quotient, and endpoint effect/control/withdrawal
-invariants remain);
+exact ordered-binding insert/replace/delete commutation through the dependent
+plan plus exact removal of a deleted actor's plan occurrence; retained/deleted
+boundary preservation and its whole-suffix fold, the selected-segment Lemma-71
+quotient, and endpoint effect/control/withdrawal invariants remain);
 Confluence/Theorem
 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
@@ -1711,9 +1735,10 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** combine the new runtime/plan transport and plan-completeness layers
-with delete/replace/insert commutation to preserve `NoEpisodeReplayBoundary`
-across each deleted and retained suffix head, then fold that local result over
+**Next:** package the proved runtime/plan transport, plan completeness, and
+local delete/replace/insert commutation into preservation of
+`NoEpisodeReplayBoundary` across each deleted and retained suffix head, then
+fold that local result over
 the whole suffix. Next prove the selected-segment lifecycle/effect quotient using
 Lemma-71 transposition and the now-proved Corollary 62. Feed both retained-head
 families to the readiness inductions, join terminal recovery to the deletion

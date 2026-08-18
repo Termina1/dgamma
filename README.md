@@ -154,6 +154,13 @@ progress.
   the canonical current-R leaf builder with the erased converse: every current
   exact R generation occurs in the plan, and derives that complete plan directly
   from the public reached/discipline/no-episode premises.
+  `DGamma.CP4DeletionCommuteCore` proves exact ordered-binding commutation for
+  distinct insert/delete, replace/delete, and delete/delete updates.
+  `DGamma.CP4DeletionPlanCommute` lifts those laws through an indexed leaf plan:
+  retained insertions, parent-preserving replacements, and deletions commute
+  through the whole plan, while a deleted actor's exact occurrence is removed
+  from the plan. All four results compare runtime bindings only and transport
+  the dependent tail rather than equating `UniqueKeys` proof terms.
   `DGamma.CP4DeletionNoEpisodeReplay`
   proves the suffix retained-head frame for all eight actions at a current-R
   plan boundary and names `NoEpisodeReplayBoundary` at this exact runtime
