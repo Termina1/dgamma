@@ -459,3 +459,176 @@ removeExactActorFromInactivePlan {name} {key} {world} {error} {value}
                   (commutedActorOutside tailCommute actor actorOutsideRest))
       in MkInactivePlanUpdateCommute (transportedPlanTarget transported) nextPlan
         targetBindings outsideCommute
+
+0 justInjectivePlanCommute : Just left = Just right -> left = right
+justInjectivePlanCommute Refl = Refl
+
+||| Re-retiring an exact actor already erased by the plan updates that leaf in
+||| place.  The replacement is not replayed in the survivor: deleting the
+||| retired replacement yields the same ordered target bindings as deleting the
+||| old Inactive leaf.  This case is required because the evaluator permits
+||| idempotent O-Retire on an already-retired fiber.
+public export
+0 retireExactActorInInactivePlan :
+  (nameEq : DecEq name) ->
+  (retiredActor : name) ->
+  (oldFiber : Fiber name key value world error) ->
+  (source, target : Registry name key value world error) ->
+  (plan : InactiveLeafDeletionPlan {name = name} {key = key}
+    {value = value} {world = world} {error = error} nameEq source target) ->
+  ActorDeletedByInactivePlan {name = name} {key = key} {value = value}
+    {world = world} {error = error} retiredActor plan ->
+  (0 found : lookupFiber @{nameEq} retiredActor source = Just oldFiber) ->
+  InactivePlanUpdateCommute name key world error value nameEq plan
+    (replaceBinding @{nameEq} retiredActor (retireFiber oldFiber) source)
+    (bindings target)
+retireExactActorInInactivePlan nameEq retiredActor oldFiber source source
+  NoInactiveLeafDeletion present found = void (elemNilVoid present)
+  where
+  0 elemNilVoid : Elem item [] -> Void
+  elemNilVoid Here impossible
+  elemNilVoid (There later) impossible
+retireExactActorInInactivePlan {name} {key} {world} {error} {value}
+  nameEq retiredActor oldFiber source target
+  (DeleteInactiveLeaf headActor headComponent headParent headRetired headTable
+    headOutcome headFound headNoChild rest) present found
+  with (decEq @{nameEq} retiredActor headActor)
+  retireExactActorInInactivePlan nameEq headActor oldFiber source target
+    (DeleteInactiveLeaf headActor headComponent headParent headRetired headTable
+      headOutcome headFound headNoChild rest) present found | Yes Refl =
+      let 0 sameOld :
+            (the (Fiber name key value world error) oldFiber =
+              MkFiber headComponent headParent headRetired headTable
+                (Inactive headOutcome))
+          sameOld = justInjectivePlanCommute (trans (sym found) headFound)
+      in case sameOld of
+        Refl =>
+          let nextFiber : Fiber name key value world error
+              nextFiber = MkFiber headComponent headParent True headTable
+                (Inactive headOutcome)
+              updatedSource : Registry name key value world error
+              updatedSource = replaceBinding @{nameEq} headActor nextFiber source
+              actualTailSource : Registry name key value world error
+              actualTailSource = deleteBinding @{nameEq} headActor updatedSource
+              oldTailSource : Registry name key value world error
+              oldTailSource = deleteBinding @{nameEq} headActor source
+              0 tailsSame : bindings oldTailSource = bindings actualTailSource
+              tailsSame = sym (deleteBindingAfterSameReplaceBindings nameEq
+                headActor nextFiber source)
+              0 transported : InactivePlanBindingsTransport name key world error
+                value nameEq rest actualTailSource
+              transported = transportInactivePlanAcrossBindings nameEq
+                oldTailSource target actualTailSource rest tailsSame
+              0 nextFound : lookupFiber @{nameEq} headActor updatedSource =
+                Just nextFiber
+              nextFound = lookupReplacedFiber headActor
+                (MkFiber headComponent headParent headRetired headTable
+                  (Inactive headOutcome)) nextFiber source headFound
+              0 nextNoChild : hasChild @{nameEq} {name = name} {key = key}
+                {value = value} {world = world} {error = error} headActor
+                updatedSource = False
+              nextNoChild = hasChildReplaceFalse nameEq headActor headActor
+                nextFiber
+                (MkFiber headComponent headParent headRetired headTable
+                  (Inactive headOutcome)) source headFound Refl headNoChild
+              nextPlan : InactiveLeafDeletionPlan {name = name} {key = key}
+                {value = value} {world = world} {error = error} nameEq
+                updatedSource (transportedPlanTarget transported)
+              nextPlan = DeleteInactiveLeaf headActor headComponent headParent
+                True headTable headOutcome nextFound nextNoChild
+                (transportedInactivePlan transported)
+              0 targetBindings : bindings (transportedPlanTarget transported) =
+                bindings target
+              targetBindings = sym (transportedPlanBindings transported)
+              0 outsideCommute : (actor : name) ->
+                ActorOutsideDeletionPlan actor
+                  (DeleteInactiveLeaf {fibers = source} {target = target}
+                    headActor headComponent headParent headRetired headTable
+                    headOutcome headFound headNoChild rest) ->
+                ActorOutsideDeletionPlan actor nextPlan
+              outsideCommute actor
+                (ActorOutsideDeletionStep _ actorDistinct actorOutsideRest) =
+                  ActorOutsideDeletionStep (transportedInactivePlan transported)
+                    actorDistinct
+                    (transportedActorOutside transported actor actorOutsideRest)
+          in MkInactivePlanUpdateCommute (transportedPlanTarget transported)
+            nextPlan targetBindings outsideCommute
+  retireExactActorInInactivePlan {name} {key} {world} {error} {value}
+    nameEq retiredActor oldFiber source target
+    (DeleteInactiveLeaf headActor headComponent headParent headRetired headTable
+      headOutcome headFound headNoChild rest) present found |
+    No actorDistinctHead =
+      let 0 headDistinctActor : Not (headActor = retiredActor)
+          headDistinctActor = unequalSymmetric actorDistinctHead
+          0 tailPresent : Elem retiredActor (inactivePlanActors rest)
+          tailPresent = memberTailWhenHeadDistinct retiredActor headActor
+            actorDistinctHead (inactivePlanActors rest) present
+          0 tailFound : lookupFiber @{nameEq} retiredActor
+            (deleteBinding @{nameEq} headActor source) = Just oldFiber
+          tailFound = trans
+            (lookupDeleteOther retiredActor headActor actorDistinctHead source)
+            found
+          oldTailSource : Registry name key value world error
+          oldTailSource = deleteBinding @{nameEq} headActor source
+          canonicalTailSource : Registry name key value world error
+          canonicalTailSource = replaceBinding @{nameEq} retiredActor
+            (retireFiber oldFiber) oldTailSource
+          actualTailSource : Registry name key value world error
+          actualTailSource = deleteBinding @{nameEq} headActor
+            (replaceBinding @{nameEq} retiredActor (retireFiber oldFiber) source)
+          0 tailCommute : InactivePlanUpdateCommute name key world error value
+            nameEq rest canonicalTailSource (bindings target)
+          tailCommute = retireExactActorInInactivePlan nameEq retiredActor
+            oldFiber oldTailSource target rest tailPresent tailFound
+          0 tailSourcesSame : bindings canonicalTailSource =
+            bindings actualTailSource
+          tailSourcesSame = trans
+            (replaceBindingRuntimeBindings nameEq retiredActor
+              (retireFiber oldFiber) oldTailSource)
+            (sym (deleteBindingAfterDistinctReplaceBindings nameEq retiredActor
+              headActor actorDistinctHead (retireFiber oldFiber) source))
+          0 transported : InactivePlanBindingsTransport name key world error
+            value nameEq (commutedInactivePlan tailCommute) actualTailSource
+          transported = transportInactivePlanAcrossBindings nameEq
+            canonicalTailSource (commutedPlanTarget tailCommute) actualTailSource
+            (commutedInactivePlan tailCommute) tailSourcesSame
+          0 nextHeadFound : lookupFiber @{nameEq} headActor
+            (replaceBinding @{nameEq} retiredActor (retireFiber oldFiber)
+              source) =
+            Just (MkFiber headComponent headParent headRetired headTable
+              (Inactive headOutcome))
+          nextHeadFound = trans
+            (lookupReplaceOther headActor retiredActor headDistinctActor
+              (retireFiber oldFiber) source) headFound
+          0 nextHeadNoChild : hasChild @{nameEq} {name = name} {key = key}
+            {value = value} {world = world} {error = error} headActor
+            (replaceBinding @{nameEq} retiredActor (retireFiber oldFiber)
+              source) = False
+          nextHeadNoChild = hasChildReplaceFalse nameEq headActor retiredActor
+            (retireFiber oldFiber) oldFiber source found
+            (fiberParentRetireHint oldFiber) headNoChild
+          nextPlan : InactiveLeafDeletionPlan {name = name} {key = key}
+            {value = value} {world = world} {error = error} nameEq
+            (replaceBinding @{nameEq} retiredActor (retireFiber oldFiber) source)
+            (transportedPlanTarget transported)
+          nextPlan = DeleteInactiveLeaf headActor headComponent headParent
+            headRetired headTable headOutcome nextHeadFound nextHeadNoChild
+            (transportedInactivePlan transported)
+          0 targetBindings : bindings (transportedPlanTarget transported) =
+            bindings target
+          targetBindings = trans (sym (transportedPlanBindings transported))
+            (commutedTargetBindings tailCommute)
+          0 outsideCommute : (actor : name) ->
+            ActorOutsideDeletionPlan actor
+              (DeleteInactiveLeaf {fibers = source} {target = target} headActor
+                headComponent headParent headRetired headTable headOutcome
+                headFound headNoChild rest) ->
+            ActorOutsideDeletionPlan actor nextPlan
+          outsideCommute actor
+            (ActorOutsideDeletionStep _ actorOutsideHead actorOutsideRest) =
+              ActorOutsideDeletionStep (transportedInactivePlan transported)
+                actorOutsideHead
+                (transportedActorOutside transported actor
+                  (commutedActorOutside tailCommute actor actorOutsideRest))
+      in MkInactivePlanUpdateCommute (transportedPlanTarget transported) nextPlan
+        targetBindings outsideCommute

@@ -159,8 +159,10 @@ progress.
   `DGamma.CP4DeletionPlanCommute` lifts those laws through an indexed leaf plan:
   retained insertions, parent-preserving replacements, and deletions commute
   through the whole plan, while a deleted actor's exact occurrence is removed
-  from the plan. All four results compare runtime bindings only and transport
-  the dependent tail rather than equating `UniqueKeys` proof terms.
+  from the plan. The additional `retireExactActorInInactivePlan` fold handles
+  the evaluator's legal idempotent re-retirement of an exact deleted leaf. All
+  results compare runtime bindings only and transport the dependent tail rather
+  than equating `UniqueKeys` proof terms.
   `DGamma.CP4DeletionNoEpisodeReplay`
   proves the suffix retained-head frame for all eight actions at a current-R
   plan boundary and names `NoEpisodeReplayBoundary` at this exact runtime

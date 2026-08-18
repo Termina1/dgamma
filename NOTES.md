@@ -1526,9 +1526,14 @@ the two update orders are joined with `transportInactivePlanAcrossBindings`
 rather than proof irrelevance. `removeExactActorFromInactivePlan` handles the
 complementary deleted O-Remove case by deleting the actor's exact plan occurrence
 and preserving the old target's complete ordered binding list. Arbitrary
-actor-outside certificates are transported by all four folds. This closes work
-order 1's local action/plan commutation layer; packaging these folds into the
-next `NoEpisodeReplayBoundary` remains work order 2.
+actor-outside certificates are transported by all four folds. The boundary pass
+also exposed that checked O-Retire is deliberately/idempotently permissive: it
+has no `retired = False` guard, so an exact R leaf may legally be retired again.
+`retireExactActorInInactivePlan` is the corresponding fifth internal fold; it
+updates that Inactive leaf in place and proves that deleting the replacement
+has the old target's exact ordered bindings. This closes work order 1's local
+action/plan commutation layer; packaging these folds into the next
+`NoEpisodeReplayBoundary` remains work order 2.
 
 `DGamma.CP4DeletionNoEpisodeReplay` keeps the action index that the older
 `TransitionResult` wrappers erased. `lifecycleRawAfterInactivePlan` and

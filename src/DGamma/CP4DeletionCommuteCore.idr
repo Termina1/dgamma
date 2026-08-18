@@ -113,6 +113,38 @@ deleteEntriesAfterDistinctReplace keyEq changed removed distinct next
               (deleteEntriesAfterDistinctReplace keyEq changed removed distinct
                 next rest)
 
+||| Deleting a key after replacing that same key forgets the replacement.
+||| This law is total even when the key is absent: in that case both operations
+||| traverse the list without changing it.
+public export
+0 deleteEntriesAfterSameReplace :
+  (keyEq : DecEq key) ->
+  (changed : key) -> (next : value changed) ->
+  (entries : List (Binding key value)) ->
+  deleteEntries @{keyEq} changed
+    (replaceEntries @{keyEq} changed next entries) =
+  deleteEntries @{keyEq} changed entries
+deleteEntriesAfterSameReplace keyEq changed next [] = Refl
+deleteEntriesAfterSameReplace keyEq changed next (Bind current old :: rest)
+  with (decEq @{keyEq} changed current) proof changedCurrent
+  deleteEntriesAfterSameReplace keyEq current next
+    (Bind current old :: rest) | Yes Refl
+    with (decEq @{keyEq} current current)
+    deleteEntriesAfterSameReplace keyEq current next
+      (Bind current old :: rest) | Yes Refl | Yes Refl = Refl
+    deleteEntriesAfterSameReplace keyEq current next
+      (Bind current old :: rest) | Yes Refl | No absurd = void (absurd Refl)
+  deleteEntriesAfterSameReplace keyEq changed next
+    (Bind current old :: rest) | No different
+    with (decEq @{keyEq} changed current)
+    deleteEntriesAfterSameReplace keyEq current next
+      (Bind current old :: rest) | No different | Yes Refl =
+        void (different Refl)
+    deleteEntriesAfterSameReplace keyEq changed next
+      (Bind current old :: rest) | No different | No stillDifferent =
+        cong (Bind current old ::)
+          (deleteEntriesAfterSameReplace keyEq changed next rest)
+
 ||| Deletions at two distinct keys commute on the exact ordered binding list.
 public export
 0 deleteEntriesDistinctCommute :
@@ -226,6 +258,19 @@ public export
 deleteBindingAfterDistinctReplaceBindings keyEq changed removed distinct next
   (MkCoeffectContext entries unique) =
     deleteEntriesAfterDistinctReplace keyEq changed removed distinct next entries
+
+||| Registry-level observable form of deleting a same-key replacement.
+public export
+0 deleteBindingAfterSameReplaceBindings :
+  (keyEq : DecEq key) ->
+  (changed : key) -> (next : value changed) ->
+  (table : CoeffectContext key value) ->
+  bindings (deleteBinding @{keyEq} changed
+    (replaceBinding @{keyEq} changed next table)) =
+  bindings (deleteBinding @{keyEq} changed table)
+deleteBindingAfterSameReplaceBindings keyEq changed next
+  (MkCoeffectContext entries unique) =
+    deleteEntriesAfterSameReplace keyEq changed next entries
 
 ||| Registry-level observable form of two distinct deletions commuting.
 public export
