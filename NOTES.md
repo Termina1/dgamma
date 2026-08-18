@@ -1662,6 +1662,13 @@ identifies the intermediate model handle with the exact handle consumed by
 checked L-Unload, equates their recovered outputs, and composes the L-Unload
 actual-effect frame to obtain original-post-close/survivor
 `EffectStateRelated`. Control/reset-to-Inactive and plan packaging remain.
+`DGamma.CP4DeletionPlanEffects` now isolates the other effect-side join premise:
+`EmptyTableInactivePlan` records the no-episode empty table at every exact R
+leaf, and `emptyInactivePlanPreservesEffects` proves pointwise that iterated
+leaf deletion preserves ambient state and every ordered actor table. The proof
+composes the existing one-step O-Remove effect frame and never equates registry
+or owned-table uniqueness certificates. Deriving this evidence from the public
+no-R-episode induction remains part of the selected fold.
 
 ### Corollary 62: terminal recovery
 
