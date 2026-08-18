@@ -4151,6 +4151,7 @@ unloadingEndpointImpliesInstalled nameEq selected state evidence
     unloadingEndpointImpliesInstalled nameEq selected state evidence | Just fiber |
       Unloading accumulator view outcome = Refl
 
+public export
 0 lAdvanceStartsInstalled :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (before, afterState : SystemState name key value world error) ->
@@ -4194,6 +4195,7 @@ lAdvanceEndsInstalled {name} {key} {world} {error} {value}
     RaiseAdvance unloading =>
       unloadingEndpointImpliesInstalled nameEq selected afterState unloading
 
+public export
 0 lDivertInstalled :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (before, afterState : SystemState name key value world error) ->
@@ -4252,6 +4254,7 @@ installedSetFiberLifecycle (MkFiber component parent retired table lifecycle) ne
 installedSetFiberRuntime (MkFiber component parent retired oldTable lifecycle)
   table next = Refl
 
+public export
 0 lLeaveInstalled :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (before, afterState : SystemState name key value world error) ->
@@ -4299,6 +4302,7 @@ lLeaveInstalled nameEq keyEq selected
                             (Unloading accumulator view Nothing)) Refl)
                     in (Refl, targetInstalled)
 
+public export
 0 lUnloadBoundary :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (before, afterState : SystemState name key value world error) ->
@@ -4366,6 +4370,7 @@ lUnloadBoundary nameEq keyEq selected
                       (Inactive outcome)) Refl)
               in (Refl, Refl, targetUninstalled)
 
+public export
 0 lBeginBoundary :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (before, afterState : SystemState name key value world error) ->

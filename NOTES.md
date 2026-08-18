@@ -1801,10 +1801,25 @@ components are proved stable across every checked step with the evaluator's
 and `closedForeignLifecycleAnchorFromInstalledPrefix` constructs the closed
 anchor from the located episode plus its opening-to-occurrence prefixes. The
 open smart constructor rebuilds Lemma 70 internally from the public premises.
-The next anchor join is action-specific endpoint classification: derive the
-final Active owner / Inactive selected fiber facts for the genuinely open case,
-and use the selected L-Unload reliance guard when a later selected activation
-or raw-name generation means the selected raw endpoint is Active again.
+`DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify` now closes the first
+half of that action-specific join. `LocatedTransitionOccurrence` retains the
+exact transition dictionaries/equation; each retained lifecycle occurrence is
+anchored after L-Begin and before L-Advance/L-Divert/L-Leave/L-Unload. The
+forward `InstalledContinuation` classifier stops at the first L-Unload instead
+of branching on the raw final installed bit. Consequently a later close/reopen
+or O-Remove/O-Insert reuse is classified as a closing current activation, and
+`closingOccurrenceGivesLocatedEpisode` reconstructs its exact global
+`LocatedClosedEpisode` without a final-uninstalled premise.
+
+The critical remaining-open alternative is no longer represented by an
+endpoint-Inactive guess. `SelectedUnloadRelianceAnchor` is constructed from an
+installed segment through the selected episode's own closing source and records
+both the foreign owner's stable component and the exact selected L-Unload
+`relied=False` head observation. This certificate is generation-safe because it
+mentions the selected closing state, not a possibly reactivated or reused raw
+endpoint. The remaining join must select the existing Lemma-70 open anchor when
+the original selected endpoint is stable Inactive and otherwise thread this
+reliance anchor into the action-specific target comparison.
 `DGamma.CP4DeletionRelationalBoundary` now defines the approved primary suffix
 interface. It compares the actual survivor with the complete current-R plan
 target using `EffectStateRelated` plus an ordered `FiberControlRelated`
@@ -1972,6 +1987,15 @@ module was added, the warm package passed all 132/132 modules; all 132 retain
 validation and leaves the registered split/no-concurrent-Chez cold-archive debt
 unchanged.
 
+After the action-specific retained-lifecycle temporal classifier and
+selected-L-Unload reliance anchor landed, the first warm package attempt was
+killed with the known exit-137 resource failure. An immediate retry with no
+other Chez/Idris process rebuilt the heavy support and statement-check chain and
+passed all 141/141 modules. All 141 retain `%default total`; the anchored
+executable escape-hatch scan is empty. This is warm validation only and does not
+discharge the mandatory `CP4SupportSolution` split/no-concurrent-Chez cold
+archive build.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
@@ -2022,9 +2046,11 @@ checked L-Unload, with complete-plan transport, a preserved ordered
 selected-exempt interior control skeleton, and an ordered relational suffix
 interface; retained foreign lifecycle source frames, both closed/open
 precedence-anchor eliminations, Lemma-70 endpoint reconstruction, installed
-occurrence/component transport, and all lifecycle-result control constructors
-are proved, while action-specific classification into those anchors and the
-concrete checked lifecycle transitions beyond L-Begin remain;
+occurrence/component transport, first-close action-specific temporal
+classification, exact closing-episode reconstruction, selected-L-Unload
+reliance anchoring, and all lifecycle-result control constructors are proved,
+while the stays-installed endpoint/reliance join into the provider frame and
+the concrete checked lifecycle transitions beyond L-Begin remain;
 deleted-R/empty-plan propagation,
 the relational suffix fold, and endpoint control/withdrawal invariants remain);
 Confluence/Theorem

@@ -260,10 +260,18 @@ progress.
   survivor's declared continuation/identity accumulator, proves Preservation,
   and replaces both ordered foreign controls.
   The anchor's closed/open eliminations, Lemma-70 endpoint bridge, occurrence
-  splitting, and installed component transport are proved. Action-specific
-  endpoint classification (including later selected reactivation) and the four
-  concrete checked evaluator branches beyond L-Begin remain before the selected
-  layer can handle deleted R heads and close L-Unload.
+  splitting, and installed component transport are proved.
+  `DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify` now gives every
+  exact retained lifecycle occurrence its action-specific installed point
+  (after L-Begin, before every other lifecycle rule) and scans forward to the
+  first close rather than inspecting the raw final installed bit. A closing
+  branch reconstructs the exact located activation even across later
+  close/reopen or remove/reinsert reuse. `SelectedUnloadRelianceAnchor` records
+  the critical alternative at the selected episode's own L-Unload source, so a
+  later selected activation or reused raw endpoint is never assumed Inactive.
+  Joining the stays-installed branch to the already-proved Lemma-70 open anchor,
+  and the four concrete checked evaluator branches beyond L-Begin, remain before
+  the selected layer can handle deleted R heads and close L-Unload.
   `DGamma.CP4DeletionRelationalBoundary` is the primary selected-to-suffix
   interface: it relates the actual survivor to the complete plan target by
   ordered effects and an ordered control skeleton with extensional accumulators.
