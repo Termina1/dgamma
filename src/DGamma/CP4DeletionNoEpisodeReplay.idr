@@ -313,6 +313,7 @@ boundaryPlanComplete boundary = currentPlanComplete (boundaryCompletePlan bounda
 runtimeSnapshotPartsEqual leftWorld leftWorld leftBindings leftBindings Refl
   Refl = Refl
 
+public export
 0 boundaryPlanSnapshotMatchesSurvivor :
   (boundary : NoEpisodeReplayBoundary name key world error value nameEq keyEq
     registered live original survivor) ->

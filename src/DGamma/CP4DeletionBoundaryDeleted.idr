@@ -33,6 +33,7 @@ noChildFromRemovalGuardBoundary True False True valid =
 noChildFromRemovalGuardBoundary True True True valid =
   case valid of Refl impossible
 
+public export
 data RetireSuccessView :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (nameEq : DecEq name) -> (actor : name) ->
@@ -49,6 +50,7 @@ data RetireSuccessView :
       (MkSystemState ambient
         (replaceBinding @{nameEq} actor (retireFiber oldFiber) source))
 
+public export
 0 retireSuccessView :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (actor : name) -> (ambient : world) ->
@@ -68,6 +70,7 @@ retireSuccessView nameEq keyEq actor ambient source tag afterState raw
     Just oldFiber = case justInjective raw of
       Refl => MkRetireSuccessView oldFiber found
 
+public export
 data RemoveSuccessView :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (nameEq : DecEq name) -> (actor : name) ->
@@ -79,11 +82,15 @@ data RemoveSuccessView :
     {source : Registry name key value world error} ->
     (oldFiber : Fiber name key value world error) ->
     lookupFiber @{nameEq} actor source = Just oldFiber ->
+    (retired oldFiber && isInactive (fiberLifecycle oldFiber) &&
+      not (hasChild @{nameEq} {name = name} {key = key} {value = value}
+        {world = world} {error = error} actor source) = True) ->
     hasChild @{nameEq} {name = name} {key = key} {value = value}
       {world = world} {error = error} actor source = False ->
     RemoveSuccessView name key world error value nameEq actor ambient source
       ORemoveTag (MkSystemState ambient (deleteBinding @{nameEq} actor source))
 
+public export
 0 removeSuccessView :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (actor : name) -> (ambient : world) ->
@@ -107,7 +114,7 @@ removeSuccessView nameEq keyEq actor ambient source tag afterState raw
       Just oldFiber | False = void (nothingNotJustBoundary raw)
     removeSuccessView nameEq keyEq actor ambient source tag afterState raw |
       Just oldFiber | True = case justInjective raw of
-        Refl => MkRemoveSuccessView oldFiber found
+        Refl => MkRemoveSuccessView oldFiber found removable
           (noChildFromRemovalGuardBoundary (retired oldFiber)
             (isInactive (fiberLifecycle oldFiber))
             (hasChild @{nameEq} actor source) removable)
@@ -238,7 +245,7 @@ deletedRemovePreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
             0 planMember = oldComplete actor generation currentEntry member
         in case removeSuccessView nameEq keyEq actor ambient source tag
           originalAfter raw of
-          MkRemoveSuccessView oldFiber found noChild =>
+          MkRemoveSuccessView oldFiber found removable noChild =>
             case removeExactActorFromInactivePlan nameEq actor source oldTarget
               oldInactive planMember noChild of
               removingStrong@(MkInactivePlanRemovingUpdateCommute
