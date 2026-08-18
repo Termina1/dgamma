@@ -193,9 +193,13 @@ progress.
   `DGamma.CP4DeletionSelectedEffectForeign` then proves the foreign half of the
   Lemma-71 diamond: the corrected actual map runs on the related survivor, its
   ordered-table output matches target recovery, and a later checked-control
-  proof can package the next boundary without repeating commutation. The
-  remaining selected layer must rebuild retained controls and thread exact
-  R-plan deletion through the same boundary. The located-episode splitter
+  proof can package the next boundary without repeating commutation.
+  `DGamma.CP4DeletionSelectedBoundary` combines that effect relation with a
+  complete current-R plan, exact controls outside the selected/R generations,
+  and checked well-formedness. It proves the post-L-Begin base and preserves all
+  foreign controls across any skipped selected installed step. The remaining
+  selected layer must rebuild retained controls, transport the plan at each
+  concrete head, and close L-Unload. The located-episode splitter
   derives the episode/suffix generation scans and restricts both no-R-episode
   and repaired Definition-69 evidence without new public premises.
   `DeletionTraceSkeleton` integrates those proofs with both dependent filters;

@@ -1603,9 +1603,19 @@ transposition at each intermediate boundary. It applies
 ambient/ordered-table projection, and relates its output to target recovery.
 `foreignEffectStepGivesNextBoundary` is the explicit join point for the pending
 control proof: once an actual replay target is shown to project to that output,
-the next accumulator boundary is immediate. The remaining selected stage must
-construct foreign retained checked transitions, thread current-R plan deletion,
-and close the L-Unload endpoint.
+the next accumulator boundary is immediate.
+`DGamma.CP4DeletionSelectedBoundary` now packages the intermediate quotient
+state with its complete current-R plan, accumulator effect boundary, exact
+pointwise controls outside the selected fiber and current R generations, and
+both source well-formedness facts. `beginSelectedEpisodeReplayBoundary` proves
+this combined relation immediately after deleting L-Begin.
+`skippedSelectedStepPreservesEpisodeBoundary` proves the generic structural
+step: a skipped selected replacement leaves every foreign control lookup exact;
+the rule-specific selected accumulator proof and plan transport are its only
+inputs. Generation uniqueness remains supplied by the simultaneous scanner at
+the rule-specific fold rather than duplicated inside this boundary record. The
+remaining selected stage must construct foreign retained checked transitions,
+thread current-R plan deletion, and close the L-Unload endpoint.
 
 ### Corollary 62: terminal recovery
 
