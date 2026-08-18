@@ -96,6 +96,56 @@ restrictOwnedPreservingOrder (MkCoeffectSpec allowed allowedUnique)
         (orderRestrictedUnique result))
       (orderRestrictedSound result)
 
+0 memberKeyListFromElem : DecEq key => (selected : key) ->
+  (allowed : List key) -> Elem selected allowed ->
+  memberKeyList selected allowed = True
+memberKeyListFromElem selected (selected :: rest) Here
+  with (decEq selected selected)
+  memberKeyListFromElem selected (selected :: rest) Here | Yes Refl = Refl
+  memberKeyListFromElem selected (selected :: rest) Here | No contra =
+    void (contra Refl)
+memberKeyListFromElem selected (current :: rest) (There later)
+  with (decEq selected current)
+  memberKeyListFromElem current (current :: rest) (There later) | Yes Refl = Refl
+  memberKeyListFromElem selected (current :: rest) (There later) | No _ =
+    memberKeyListFromElem selected rest later
+
+0 orderRestrictBindingsIdentity : DecEq key =>
+  (allowed : List key) ->
+  (entries : List (Binding key value)) ->
+  (unique : UniqueKeys (bindingKeys entries)) ->
+  ((k : key) -> Elem k (bindingKeys entries) -> Elem k allowed) ->
+  orderRestrictedBindings (orderRestrictEntries allowed entries unique) = entries
+orderRestrictBindingsIdentity allowed [] UniqueNil sound = Refl
+orderRestrictBindingsIdentity allowed (Bind current observed :: rest)
+  (UniqueCons headFresh tailUnique) sound
+  with (memberKeyList current allowed) proof member
+  orderRestrictBindingsIdentity allowed (Bind current observed :: rest)
+    (UniqueCons headFresh tailUnique) sound | False =
+      let present = memberKeyListFromElem current allowed (sound current Here)
+      in case trans (sym member) present of Refl impossible
+  orderRestrictBindingsIdentity allowed (Bind current observed :: rest)
+    (UniqueCons headFresh tailUnique) sound | True =
+      cong (Bind current observed ::)
+        (orderRestrictBindingsIdentity allowed rest tailUnique
+          (\k, later => sound k (There later)))
+
+||| Normalizing an already confined owned table preserves its runtime binding
+||| list exactly, including its existing order.  The two reconstructed erased
+||| uniqueness witnesses need not be propositionally equal, so the executable
+||| statement intentionally projects `bindings`.
+public export
+0 restrictOwnedPreservingOrderBindings : DecEq key =>
+  (provision : CoeffectSpec key) ->
+  (table : OwnedTable key value provision) ->
+  bindings (ownedValues
+    (restrictOwnedPreservingOrder provision (ownedValues table))) =
+  bindings (ownedValues table)
+restrictOwnedPreservingOrderBindings
+  (MkCoeffectSpec allowed allowedUnique)
+  (MkOwnedTable (MkCoeffectContext entries entriesUnique) sound) =
+    orderRestrictBindingsIdentity allowed entries entriesUnique sound
+
 ||| The only state a component step may mutate: ambient state and its own table.
 public export
 record LocalState (key : Type) (value : key -> Type) (world : Type)
