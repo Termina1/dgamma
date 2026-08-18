@@ -502,8 +502,10 @@ of Lemma 38.
     irrelevance. With supervisor approval, public Lemma 72 remains unchanged
     while `RelationalNoEpisodeReplayBoundary` becomes the primary
     selected-to-suffix interface: complete current-R plan plus
-    `EffectStateRelated` and `ControlEquivalent` against the plan target. The
-    old exact boundary embeds as its runtime-snapshot specialization. A parallel
+    `EffectStateRelated` and an ordered control-binding relation (projecting to
+    `ControlEquivalent`) against the plan target. Ordering is retained because
+    provider selection is executable and scans the registry list. The old exact
+    boundary embeds as its runtime-snapshot specialization. A parallel
     relational suffix fold will be used rather than mechanically replacing the
     already-proved exact fold; this avoids destabilizing the 0eeef3d lifecycle
     case split, and the exact fold remains a useful regression specialization.
@@ -1648,7 +1650,8 @@ constructor for an arbitrary checked selected interior lifecycle head;
 unload shapes and supplies the exact target model.
 `DGamma.CP4DeletionRelationalBoundary` now defines the approved primary suffix
 interface. It compares the actual survivor with the complete current-R plan
-target using `EffectStateRelated` plus full `ControlEquivalent`, and
+target using `EffectStateRelated` plus an ordered `FiberControlRelated`
+skeleton (which projects to full `ControlEquivalent`), and
 `exactBoundaryGivesRelational` proves the previous snapshot scaffold is its
 special case even across distinct top-level uniqueness certificates. The
 remaining selected stage must construct foreign retained checked transitions,

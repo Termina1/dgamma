@@ -209,7 +209,8 @@ progress.
   controls, handle deleted R heads, and close L-Unload.
   `DGamma.CP4DeletionRelationalBoundary` is the primary selected-to-suffix
   interface: it relates the actual survivor to the complete plan target by
-  ordered effects and extensional controls. The former exact snapshot boundary
+  ordered effects and an ordered control skeleton with extensional accumulators.
+  The former exact snapshot boundary
   embeds as a specialization, but selected recovery is never strengthened to
   function/proof equality. The located-episode splitter
   derives the episode/suffix generation scans and restricts both no-R-episode

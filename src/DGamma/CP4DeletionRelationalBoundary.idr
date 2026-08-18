@@ -12,6 +12,69 @@ import Decidable.Equality
 
 %default total
 
+||| Ordered control skeleton used by relational replay.  Binding names/order,
+||| components, parents, retirement bits, lifecycle constructors, continuations,
+||| views, and accumulators (extensionally) are retained; owned tables remain on
+||| the separate exact ordered-effect relation.
+public export
+data OrderedRegistryControlsRelated :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  List (Binding name (FiberAt name key value world error)) ->
+  List (Binding name (FiberAt name key value world error)) -> Type where
+  OrderedControlsNil : OrderedRegistryControlsRelated name key world error value
+    [] []
+  OrderedControlsCons :
+    (actor : name) ->
+    FiberControlRelated leftFiber rightFiber ->
+    OrderedRegistryControlsRelated name key world error value leftRest
+      rightRest ->
+    OrderedRegistryControlsRelated name key world error value
+      (Bind actor leftFiber :: leftRest) (Bind actor rightFiber :: rightRest)
+
+public export
+0 orderedControlsReflexive :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  OrderedRegistryControlsRelated name key world error value entries entries
+orderedControlsReflexive [] = OrderedControlsNil
+orderedControlsReflexive (Bind actor fiber :: rest) =
+  OrderedControlsCons actor (fiberControlReflexive fiber)
+    (orderedControlsReflexive rest)
+
+0 orderedLookupControlsRelated :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {left, right : List (Binding name (FiberAt name key value world error))} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  OrderedRegistryControlsRelated name key world error value left right ->
+  FiberControlMaybeRelated
+    (lookupEntries @{nameEq} {key = name}
+      {value = FiberAt name key value world error} actor left)
+    (lookupEntries @{nameEq} {key = name}
+      {value = FiberAt name key value world error} actor right)
+orderedLookupControlsRelated nameEq actor OrderedControlsNil = NoControlFibers
+orderedLookupControlsRelated nameEq actor
+  (OrderedControlsCons current fibers tail) with (decEq @{nameEq} actor current)
+  orderedLookupControlsRelated nameEq current
+    (OrderedControlsCons current fibers tail) | Yes Refl =
+      SomeControlFibers fibers
+  orderedLookupControlsRelated nameEq actor
+    (OrderedControlsCons current fibers tail) | No distinct =
+      orderedLookupControlsRelated nameEq actor tail
+
+public export
+0 orderedControlsGiveControlEquivalent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  (left, right : SystemState name key value world error) ->
+  OrderedRegistryControlsRelated name key world error value
+    (bindings (registry left)) (bindings (registry right)) ->
+  ControlEquivalent name key world error value nameEq left right
+orderedControlsGiveControlEquivalent nameEq
+  (MkSystemState leftWorld (MkCoeffectContext leftEntries leftUnique))
+  (MkSystemState rightWorld (MkCoeffectContext rightEntries rightUnique))
+  ordered = MkControlEquivalent (\actor =>
+    orderedLookupControlsRelated nameEq actor ordered)
+
 ||| Apply the current-R deletion plan to registry control while retaining the
 ||| original ambient state.  This is the conceptual source of the relational
 ||| suffix replay; no equality of the registry's erased uniqueness proof is
@@ -44,13 +107,28 @@ record RelationalNoEpisodeReplayBoundary
       (plannedSystemState original
         (completePlanResult relationalCompletePlan)))
     (projectEffectState @{nameEq} survivor)
-  0 relationalControls : ControlEquivalent name key world error value nameEq
-    (plannedSystemState original
-      (completePlanResult relationalCompletePlan)) survivor
+  0 relationalOrderedControls : OrderedRegistryControlsRelated name key world
+    error value
+    (bindings (registry (plannedSystemState original
+      (completePlanResult relationalCompletePlan))))
+    (bindings (registry survivor))
   0 relationalOriginalWellFormed : registryWellFormed @{nameEq} @{keyEq}
     original = True
   0 relationalSurvivorWellFormed : registryWellFormed @{nameEq} @{keyEq}
     survivor = True
+
+public export
+0 relationalControlEquivalent :
+  (boundary : RelationalNoEpisodeReplayBoundary name key world error value
+    nameEq keyEq registered live original survivor) ->
+  ControlEquivalent name key world error value nameEq
+    (plannedSystemState original
+      (completePlanResult (relationalCompletePlan boundary))) survivor
+relationalControlEquivalent boundary = orderedControlsGiveControlEquivalent
+  nameEq
+  (plannedSystemState original
+    (completePlanResult (relationalCompletePlan boundary))) survivor
+  (relationalOrderedControls boundary)
 
 0 projectEffectTableReproof :
   (nameEq : DecEq name) -> (actor : name) -> (ambient : world) ->
@@ -68,6 +146,18 @@ projectEffectTableReproof nameEq actor ambient entries leftUnique rightUnique
     Nothing = Refl
   projectEffectTableReproof nameEq actor ambient entries leftUnique rightUnique |
     Just fiber = Refl
+
+0 orderedControlsFromRuntimeSnapshot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (left, right : SystemState name key value world error) ->
+  runtimeSnapshot left = runtimeSnapshot right ->
+  OrderedRegistryControlsRelated name key world error value
+    (bindings (registry left)) (bindings (registry right))
+orderedControlsFromRuntimeSnapshot
+  (MkSystemState leftWorld (MkCoeffectContext leftEntries leftUnique))
+  (MkSystemState rightWorld (MkCoeffectContext rightEntries rightUnique)) same =
+    case cong snapshotBindings same of
+      Refl => orderedControlsReflexive rightEntries
 
 0 fiberControlMaybeReproof :
   {name, key, world, error : Type} ->
@@ -147,6 +237,15 @@ exactBoundaryGivesRelational
               equivalent = runtimeSnapshotGivesSystemEquivalent nameEq keyEq
                 (plannedSystemState (MkSystemState ambient source)
                   (completePlanResult completePlan)) survivor snapshotsSame
+              0 ordered : OrderedRegistryControlsRelated name key world error
+                value
+                (bindings (registry
+                  (plannedSystemState (MkSystemState ambient source)
+                    (completePlanResult completePlan))))
+                (bindings (registry survivor))
+              ordered = orderedControlsFromRuntimeSnapshot
+                (plannedSystemState (MkSystemState ambient source)
+                  (completePlanResult completePlan)) survivor snapshotsSame
           in MkRelationalNoEpisodeReplayBoundary completePlan
-            (effectsEquivalent equivalent) (controlsEquivalent equivalent)
-            originalWellFormed survivorWellFormed
+            (effectsEquivalent equivalent) ordered originalWellFormed
+            survivorWellFormed
