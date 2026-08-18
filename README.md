@@ -166,7 +166,9 @@ progress.
   `DGamma.CP4DeletionNoEpisodeReplay`
   proves the suffix retained-head frame for all eight actions at a current-R
   plan boundary and names `NoEpisodeReplayBoundary` at this exact runtime
-  representation; maintaining that boundary record through the dependent
+  representation. The boundary now coherently owns the complete current-R plan
+  (not a separate side invariant), and runtime plan transport preserves its
+  exact actor list as erased metadata; maintaining that boundary record through the dependent
   suffix remains the no-selected-episode induction step. The selected
   segment additionally needs the Lemma-71 lifecycle quotient. The located-episode splitter
   derives the episode/suffix generation scans and restricts both no-R-episode

@@ -1543,7 +1543,11 @@ result into the exact checked `fireNamed` package. `retainedSuffixHeadAfterCurre
 dispatches all eight actions, deriving lifecycle actor exclusion from the
 complement of generation ownership and child-O-Insert parent exclusion from
 registration discipline. `NoEpisodeReplayBoundary` then identifies an actual survivor with the plan
-at the exact host-observable runtime snapshot and carries checked validity;
+at the exact host-observable runtime snapshot and carries checked validity. The
+boundary scaffold now owns `CompleteCurrentRegisteredPlanResult` directly, so a
+deleted exact-generation head can recover plan membership without an unrelated
+side invariant; `InactivePlanBindingsTransport` also preserves the plan actor
+list while continuing to avoid equality of uniqueness proofs.
 `retainedSuffixHeadAtBoundary` uses the keystone transport to instantiate the
 suffix retained-head interface without proof irrelevance. The remaining
 no-selected-episode work is preservation of

@@ -13,6 +13,7 @@ import DGamma.CP4DeletionReadiness
 import DGamma.CP4DeletionGenerationFilter
 import DGamma.CP4DeletionGenerationUnique
 import DGamma.CP4DeletionPlanBuilder
+import DGamma.CP4DeletionPlanComplete
 import DGamma.CP4DeletionRetainedAction
 import DGamma.CP4RuntimeBindings
 import Decidable.Equality
@@ -271,16 +272,34 @@ record NoEpisodeReplayBoundary
   boundaryRegistry : Registry name key value world error
   0 originalBoundaryShape : original =
     MkSystemState boundaryAmbient boundaryRegistry
-  boundaryPlan : CurrentRegisteredPlanResult name key world error value nameEq
-    registered live boundaryRegistry
+  boundaryCompletePlan : CompleteCurrentRegisteredPlanResult name key world error
+    value nameEq registered live boundaryRegistry
   0 survivorBoundaryAmbient : worldState survivor = boundaryAmbient
   0 survivorBoundaryBindings : bindings (registry survivor) =
-    bindings (planTarget boundaryPlan)
+    bindings (planTarget (completePlanResult boundaryCompletePlan))
   0 boundaryGenerationsUnique : GenerationEnvironmentNamesUnique live
   0 originalBoundaryWellFormed : registryWellFormed @{nameEq} @{keyEq}
     original = True
   0 survivorBoundaryWellFormed : registryWellFormed @{nameEq} @{keyEq}
     survivor = True
+
+||| Existing consumers use the ordinary plan projection; completeness remains
+||| attached to the coherent boundary scaffold rather than threaded separately.
+public export
+boundaryPlan :
+  (boundary : NoEpisodeReplayBoundary name key world error value nameEq keyEq
+    registered live original survivor) ->
+  CurrentRegisteredPlanResult name key world error value nameEq registered live
+    (boundaryRegistry boundary)
+boundaryPlan boundary = completePlanResult (boundaryCompletePlan boundary)
+
+public export
+0 boundaryPlanComplete :
+  (boundary : NoEpisodeReplayBoundary name key world error value nameEq keyEq
+    registered live original survivor) ->
+  CurrentRegisteredPlanComplete name key world error value nameEq registered live
+    (boundaryPlan boundary)
+boundaryPlanComplete boundary = currentPlanComplete (boundaryCompletePlan boundary)
 
 0 runtimeSnapshotPartsEqual :
   (leftWorld, rightWorld : world) ->
@@ -302,11 +321,13 @@ runtimeSnapshotPartsEqual leftWorld leftWorld leftBindings leftBindings Refl
       (planTarget (boundaryPlan boundary))) =
   runtimeSnapshot survivor
 boundaryPlanSnapshotMatchesSurvivor {survivor}
-  (MkNoEpisodeReplayBoundary ambient source originalShape plan survivorAmbient
-    survivorBindings unique originalWellFormed survivorWellFormed) =
+  (MkNoEpisodeReplayBoundary ambient source originalShape completePlan
+    survivorAmbient survivorBindings unique originalWellFormed
+    survivorWellFormed) =
       runtimeSnapshotPartsEqual ambient (worldState survivor)
-        (bindings (planTarget plan)) (bindings (registry survivor))
-        (sym survivorAmbient) (sym survivorBindings)
+        (bindings (planTarget (completePlanResult completePlan)))
+        (bindings (registry survivor)) (sym survivorAmbient)
+        (sym survivorBindings)
 
 0 namedFireProjectsRaw :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -353,7 +374,8 @@ public export
     (Fired nameEq keyEq action tag checked) rest
 retainedSuffixHeadAtBoundary {name} {key} {world} {error} {value}
   protocol nameEq keyEq registered ordinal live original survivor
-  boundary@(MkNoEpisodeReplayBoundary ambient source originalShape plan
+  boundary@(MkNoEpisodeReplayBoundary ambient source originalShape
+    completePlan@(MkCompleteCurrentRegisteredPlanResult plan planComplete)
     survivorAmbient survivorBindings unique sourceWellFormed survivorWellFormed)
   action tag checked rest discipline retained =
     case originalShape of
@@ -370,10 +392,11 @@ retainedSuffixHeadAtBoundary {name} {key} {world} {error} {value}
                   planNamed planFired
                 0 planSurvivorSame : runtimeSnapshot planSource =
                   runtimeSnapshot survivor
-                planSurvivorSame = runtimeSnapshotPartsEqual ambient
-                  (worldState survivor) (bindings (planTarget plan))
-                  (bindings (registry survivor)) (sym survivorAmbient)
-                  (sym survivorBindings)
+                planSurvivorSame = boundaryPlanSnapshotMatchesSurvivor
+                  (MkNoEpisodeReplayBoundary ambient source Refl
+                    (MkCompleteCurrentRegisteredPlanResult plan planComplete)
+                    survivorAmbient survivorBindings unique sourceWellFormed
+                    survivorWellFormed)
                 0 transported : ActionRuntimeTransport name key world error
                   value nameEq keyEq action survivor (namedTag planNamed)
                   (namedAfter planNamed)

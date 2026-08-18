@@ -3,6 +3,7 @@ module DGamma.CP4DeletionPlanRuntime
 import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.CP4DeletionControlPlan
+import DGamma.CP4DeletionPlanComplete
 import Decidable.Equality
 
 %default total
@@ -64,6 +65,8 @@ record InactivePlanBindingsTransport
     transportedPlanTarget
   0 transportedPlanBindings : bindings leftTarget =
     bindings transportedPlanTarget
+  0 transportedPlanActors : inactivePlanActors transportedInactivePlan =
+    inactivePlanActors leftPlan
   0 transportedActorOutside : (actor : name) ->
     ActorOutsideDeletionPlan actor leftPlan ->
     ActorOutsideDeletionPlan actor transportedInactivePlan
@@ -83,7 +86,7 @@ public export
     rightSource
 transportInactivePlanAcrossBindings nameEq leftSource leftSource rightSource
   NoInactiveLeafDeletion same =
-    MkInactivePlanBindingsTransport rightSource NoInactiveLeafDeletion same
+    MkInactivePlanBindingsTransport rightSource NoInactiveLeafDeletion same Refl
       (\actor, ActorOutsideDeletionEnd => ActorOutsideDeletionEnd)
 transportInactivePlanAcrossBindings nameEq leftSource leftTarget rightSource
   (DeleteInactiveLeaf removed component parent retiredFlag table outcome found
@@ -131,4 +134,6 @@ transportInactivePlanAcrossBindings nameEq leftSource leftTarget rightSource
                    (transportedActorOutside tailTransport actor outsideRest)
          in MkInactivePlanBindingsTransport
            (transportedPlanTarget tailTransport) transportedPlan
-           (transportedPlanBindings tailTransport) outsideTransport
+           (transportedPlanBindings tailTransport)
+           (cong (removed ::) (transportedPlanActors tailTransport))
+           outsideTransport
