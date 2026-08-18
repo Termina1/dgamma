@@ -1575,10 +1575,16 @@ threads its fresh non-R birth through `putCurrentGeneration`; remove threads
 Snapshot proofs project exact world/ordered-binding equality only.
 `retainedSuffixHeadAtBoundary` uses the keystone transport to instantiate the
 suffix retained-head interface without proof irrelevance. Deleted heads and all
-three retained orchestration forms now preserve the boundary. The remaining
-no-selected-episode work is the exact result/control comparison for the five
-retained lifecycle forms, followed by the structural whole-suffix fold; the
-selected segment separately needs the selected-fiber lifecycle/effect quotient.
+retained heads now preserve the boundary. The new lifecycle layer proves exact
+one-leaf result/control commutation separately for L-Begin, every L-Advance
+outcome, L-Divert, L-Leave, and accumulator-driven L-Unload.
+`lifecycleActionThroughInactivePlan` folds those comparisons through the whole
+current-R deletion plan, transporting dependent tails by ordered-binding
+equality and preserving complete plan actors. The shared boundary assembler
+then replays the plan-side evaluator result on the proof-distinct survivor via
+runtime snapshots. No state/proof-term equality is used. The remaining
+no-selected-episode work is the structural whole-trace suffix fold; the selected
+segment separately needs the selected-fiber lifecycle/effect quotient.
 
 ### Corollary 62: terminal recovery
 
@@ -1748,9 +1754,11 @@ plan boundary; exhaustive evaluator transport across equal runtime snapshots,
 dependent Inactive-plan/actor-exclusion transport across equal ordered bindings,
 and complete current-R plan construction from the public reached-trace premises;
 exact ordered-binding insert/replace/delete commutation through the dependent
-plan plus exact removal of a deleted actor's plan occurrence; retained/deleted
-boundary preservation and its whole-suffix fold, the selected-segment Lemma-71
-quotient, and endpoint effect/control/withdrawal invariants remain);
+plan plus exact removal of a deleted actor's plan occurrence; exhaustive
+retained/deleted one-head boundary preservation, including the five exact
+lifecycle result/control comparisons, is proved; the whole-trace suffix fold,
+the selected-segment Lemma-71 quotient, and endpoint effect/control/withdrawal
+invariants remain);
 Confluence/Theorem
 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,

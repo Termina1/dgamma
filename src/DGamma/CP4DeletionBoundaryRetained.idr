@@ -10,6 +10,7 @@ import DGamma.CP4DeletionBoundaryLifecycleBegin
 import DGamma.CP4DeletionBoundaryLifecycleAdvance
 import DGamma.CP4DeletionBoundaryLifecycleDivert
 import DGamma.CP4DeletionBoundaryLifecycleLeave
+import DGamma.CP4DeletionBoundaryLifecycleUnload
 import DGamma.CP4DeletionBoundaryPlan
 import DGamma.CP4DeletionChildlessInvariant
 import DGamma.CP4DeletionCommuteCore
@@ -388,6 +389,82 @@ retainedLeavePreservesNoEpisodeBoundary nameEq keyEq registered ordinal live
       live (LLeave actor) Refl NonInsertLeave tag
       (leaveOneDeleteRuntimeCommute nameEq keyEq actor) original survivor boundary
       checked retained
+
+||| Retained non-R L-Unload applies the same normalized accumulator to both
+||| states and preserves its exact recovered world/table and Inactive control.
+public export
+0 retainedUnloadPreservesNoEpisodeBoundary :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (actor : name) ->
+  (original, survivor : SystemState name key value world error) ->
+  (boundary : NoEpisodeReplayBoundary name key world error value nameEq keyEq
+    registered live original survivor) ->
+  {originalAfter : SystemState name key value world error} ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq}
+    (the (Action name key value world error) (LUnload actor)) original =
+    Just (tag, originalAfter)) ->
+  Not (GenerationOwnedActor nameEq registered ordinal live
+    (the (Action name key value world error) (LUnload actor))) ->
+  RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
+    registered live (LUnload actor) originalAfter survivor
+retainedUnloadPreservesNoEpisodeBoundary nameEq keyEq registered ordinal live
+  actor original survivor boundary tag checked retained =
+    retainedLifecyclePreservesNoEpisodeBoundary nameEq keyEq registered ordinal
+      live (LUnload actor) Refl NonInsertUnload tag
+      (unloadOneDeleteRuntimeCommute nameEq keyEq actor) original survivor boundary
+      checked retained
+
+||| Exhaustive dispatcher for the five retained lifecycle forms.
+public export
+0 retainedLifecycleHeadPreservesNoEpisodeBoundary :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  isLifecycleAction action = True ->
+  (original, survivor : SystemState name key value world error) ->
+  (boundary : NoEpisodeReplayBoundary name key world error value nameEq keyEq
+    registered live original survivor) ->
+  {originalAfter : SystemState name key value world error} ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action original =
+    Just (tag, originalAfter)) ->
+  Not (GenerationOwnedActor nameEq registered ordinal live action) ->
+  RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
+    registered (advanceGenerationEnvironment @{nameEq} ordinal action live)
+    action originalAfter survivor
+retainedLifecycleHeadPreservesNoEpisodeBoundary nameEq keyEq registered ordinal
+  live (OInsert actor parent component) Refl original survivor boundary tag
+  checked retained impossible
+retainedLifecycleHeadPreservesNoEpisodeBoundary nameEq keyEq registered ordinal
+  live (ORetire actor) Refl original survivor boundary tag checked retained
+  impossible
+retainedLifecycleHeadPreservesNoEpisodeBoundary nameEq keyEq registered ordinal
+  live (ORemove actor) Refl original survivor boundary tag checked retained
+  impossible
+retainedLifecycleHeadPreservesNoEpisodeBoundary nameEq keyEq registered ordinal
+  live (LBegin actor) lifecycle original survivor boundary tag checked retained =
+    retainedBeginPreservesNoEpisodeBoundary nameEq keyEq registered ordinal live
+      actor original survivor boundary tag checked retained
+retainedLifecycleHeadPreservesNoEpisodeBoundary nameEq keyEq registered ordinal
+  live (LAdvance actor) lifecycle original survivor boundary tag checked retained =
+    retainedAdvancePreservesNoEpisodeBoundary nameEq keyEq registered ordinal live
+      actor original survivor boundary tag checked retained
+retainedLifecycleHeadPreservesNoEpisodeBoundary nameEq keyEq registered ordinal
+  live (LDivert actor) lifecycle original survivor boundary tag checked retained =
+    retainedDivertPreservesNoEpisodeBoundary nameEq keyEq registered ordinal live
+      actor original survivor boundary tag checked retained
+retainedLifecycleHeadPreservesNoEpisodeBoundary nameEq keyEq registered ordinal
+  live (LLeave actor) lifecycle original survivor boundary tag checked retained =
+    retainedLeavePreservesNoEpisodeBoundary nameEq keyEq registered ordinal live
+      actor original survivor boundary tag checked retained
+retainedLifecycleHeadPreservesNoEpisodeBoundary nameEq keyEq registered ordinal
+  live (LUnload actor) lifecycle original survivor boundary tag checked retained =
+    retainedUnloadPreservesNoEpisodeBoundary nameEq keyEq registered ordinal live
+      actor original survivor boundary tag checked retained
 
 public export
 data InsertSuccessView :
