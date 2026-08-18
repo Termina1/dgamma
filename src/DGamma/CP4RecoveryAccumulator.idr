@@ -70,21 +70,19 @@ effectOverwriteSameActor nameEq keyEq selected finalWorld intermediateWorld
   finalTable intermediateTable (MkEffectState ambient tables) =
     MkEffectStateRelated Refl tableLookups
   where
-  0 tableLookups : (candidate : name) -> (k : key) ->
-    lookupBinding @{keyEq} k
-      (effectTables
-        (setEffectTable @{nameEq} selected finalTable
-          (setEffectAmbient finalWorld (MkEffectState ambient tables))) candidate) =
-    lookupBinding @{keyEq} k
-      (effectTables
-        (setEffectTable @{nameEq} selected finalTable
-          (setEffectAmbient finalWorld
-            (setEffectTable @{nameEq} selected intermediateTable
-              (setEffectAmbient intermediateWorld
-                (MkEffectState ambient tables))))) candidate)
-  tableLookups candidate k with (decEq @{nameEq} candidate selected) proof decision
-    tableLookups candidate k | Yes same = case same of Refl => Refl
-    tableLookups candidate k | No distinct = rewrite decision in Refl
+  0 tableLookups : (candidate : name) ->
+    effectTables
+      (setEffectTable @{nameEq} selected finalTable
+        (setEffectAmbient finalWorld (MkEffectState ambient tables))) candidate =
+    effectTables
+      (setEffectTable @{nameEq} selected finalTable
+        (setEffectAmbient finalWorld
+          (setEffectTable @{nameEq} selected intermediateTable
+            (setEffectAmbient intermediateWorld
+              (MkEffectState ambient tables))))) candidate
+  tableLookups candidate with (decEq @{nameEq} candidate selected) proof decision
+    tableLookups candidate | Yes same = case same of Refl => Refl
+    tableLookups candidate | No distinct = rewrite decision in Refl
 
 public export
 AccumulatorFactorization :

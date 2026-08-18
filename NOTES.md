@@ -380,6 +380,55 @@ of Lemma 38.
     re-review list. The reviewer must attack observable equivalence of both
     normalization repairs together, especially multi-effect accumulator order
     and Definition-60 correspondence.
+15. **CP4 Finding #10 — lookup equality forgot a host-observable table order.**
+    The first foreign-effect induction for Theorem 61 exposed a missing
+    congruence used explicitly in the paper's proof: each generated map must
+    carry effect-equal states to effect-equal states. `EffectStateRelated` had
+    compared ambient state exactly but tables only by per-key lookup. Two unique
+    dependent tables with the same bindings in different orders were therefore
+    related, even though Finding #7 established that `StepEffect` is executable
+    and may inspect that order. A later foreign map could distinguish related
+    states, so pairwise `PartialCommute` alone could not transport the recovery
+    induction hypothesis.
+
+    With supervisor approval, `EffectStateRelated.tablesExact` now requires
+    pointwise **whole `CoeffectContext` equality** for each actor name. This
+    keeps the name-to-table function extensionality-free while retaining the
+    complete binding list/order and its erased uniqueness certificate. It is
+    the consistent completion of the Finding-#7 -> Finding-#9 design chain:
+    Definition-60 preserves evaluator order, the lifecycle accumulator matches
+    its normalization rhythm, and the equality used to compose those maps no
+    longer forgets an observation available to the host. The rejected
+    alternative was a new `PartialMapRespects` premise on `TraceIndependent`;
+    that would strengthen every metatheorem premise while leaving the defective
+    alleged exact relation in place.
+
+    `legacyOrderBlindnessWitness` constructs two full effect states related by
+    the old lookup-only relation. `strengthenedRelationRejectsOrderMismatch`
+    proves the same pair cannot inhabit the repaired relation, and
+    `effectRelationOrderRegression` executes an order-sensitive witnessed
+    `StepEffect` on both tables and evaluates to `True`. All exact-effect frame
+    proofs were strengthened from per-key lookups to whole-table equalities.
+    A warm package build rebuilt/passed all 93 modules, including
+    `CP3StatementChecks`, `CP3VestigialChecks`, `CalculusChecks`, the recovery
+    modules, independence witnesses, and every deletion frame. The executable
+    validation tuple for the new regression, Finding-9 inter-undo regression,
+    Finding-7 restriction regression, the complete vestigial aggregate, and
+    the complete calculus aggregate was
+    `(True, (True, (True, (True, True))))`.
+
+    `SystemEquivalentByRenamingModuloVestigial.exactRenamedTables` is a
+    separate renamed-table lookup family rather than an `EffectStateRelated`
+    consumer, so its proposition did not shift in this repair. Nevertheless
+    the 23/18 and 27/18 correspondence witnesses and live-provider rejection
+    were recompiled and executed successfully. Its separate order sensitivity
+    remains on the end-of-CP4 endpoint-equivalence review list; no unapproved
+    alias change was folded into Finding #10.
+
+    Finding #10 joins Findings #4–#9 on the mandatory end-of-CP4 adversarial
+    re-review list. The reviewer must attack Findings #7, #9, and #10 as one
+    ordered-table design chain, as well as the still-separate renamed endpoint
+    table relation.
 
 ## Escape-hatch and hole audit
 
@@ -1441,6 +1490,13 @@ modules and the anchored escape-hatch scan remains empty. This is a current
 whole-package typecheck, but it does not discharge the separately registered
 cold archive / `CP4SupportSolution` split debt.
 
+Finding #10 then strengthened the exact effect relation and all of its direct
+consumers. The warm package invocation rebuilt and passed 93/93 modules,
+including the three heavy check modules; the new/old order regression and all
+Finding-7/9/vestigial/calculus runtime aggregates evaluate to the all-`True`
+tuple recorded above. This is full consumer revalidation for the semantic
+change, but still does not discharge the registered split/cold-archive debt.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
@@ -1457,11 +1513,13 @@ unloading-chain no-deadlock, all-rule potential decrease, amortized Equation
 61, maximality, and final public-alias assembly. The repaired Definition-69/
 Lemma-70 and Theorem-66 statement shapes still await end-of-CP4 re-review.
 
-**Partial:** recovery Theorem 61 (Finding-9 inter-undo alignment, concrete
-accumulator factorization through Definition-60 yielded maps, exact L-Begin
-runtime model/handle, foreign control persistence, selected O-Retire, and the
-successful L-Advance push are proved; foreign effect/replay commutation and
-remaining selected control branches remain); Lemma 71 (effect commutation
+**Partial:** recovery Theorem 61 (Finding-9 inter-undo alignment, Finding-10
+ordered effect equality, concrete accumulator factorization through
+Definition-60 yielded maps, exact L-Begin runtime model/handle, foreign control
+persistence, every selected installed control branch and boundary exclusion,
+every successful L-Advance push, and the complete `InstalledTrace` temporal
+induction are proved; foreign effect/replay commutation and final public-alias
+assembly remain); Lemma 71 (effect commutation
 projection); Lemma 72 (candidate
 lifecycle-only deletion statement, exhaustive ten-tag actual-forward effect
 frames, generation-correct action/result filtering, proved birth-ordinal bounds
@@ -1500,8 +1558,9 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** complete the recovery model's selected control dispatcher and foreign
-effect/replay commutation, join it to the already constructed deletion skeleton,
+**Next:** prove foreign effect/replay commutation using Finding #10's repaired
+ordered equality and the completed temporal accumulator model, then join it to
+the already constructed deletion skeleton,
 then derive final control/withdrawal evidence and inhabit `deletionTheorem`.
 After that, use deletion
 for constructive canonical sorting. Fresh-choice,

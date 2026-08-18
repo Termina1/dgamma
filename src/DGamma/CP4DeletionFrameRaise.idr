@@ -54,13 +54,13 @@ raiseConcreteActualEffectFrame nameEq keyEq actor ambient fibers component paren
       0 nextShape : next = setFiberLifecycle sourceFiber
         (Unloading accumulator view (Just err))
       nextShape = Refl
-      0 tableSame : (k : key) ->
-        lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
-        lookupBinding @{keyEq} k (ownedValues (fiberTable sourceFiber))
-      tableSame k = trans
-        (cong (\observed => lookupBinding @{keyEq} k
-          (ownedValues (fiberTable observed))) nextShape)
-        (setLifecycleTableLookup keyEq k sourceFiber
+      0 tableSame : ownedValues (fiberTable next) =
+        ownedValues (fiberTable sourceFiber)
+      tableSame = replace
+        {p = \observed => ownedValues (fiberTable observed) =
+          ownedValues (fiberTable sourceFiber)}
+        (sym nextShape)
+        (setLifecycleTableExact sourceFiber
           (Unloading accumulator view (Just err)))
       0 identityMap : partialEffectMapFor nameEq keyEq (LAdvance actor) LRaiseTag
         (the (SystemState name key value world error)

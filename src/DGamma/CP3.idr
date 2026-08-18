@@ -3748,7 +3748,7 @@ public export
   (state : SystemState name key value world error) ->
   SystemEquivalent name key world error value nameEq keyEq state state
 systemEquivalentReflexive nameEq keyEq state = MkSystemEquivalent
-  (MkEffectStateRelated Refl (\selected, k => Refl))
+  (MkEffectStateRelated Refl (\selected => Refl))
   (MkControlEquivalent
     (\n => fiberControlMaybeReflexive (lookupFiber @{nameEq} n (registry state))))
 

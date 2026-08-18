@@ -145,6 +145,95 @@ public export
     (the Nat 7) DGamma.CP4RestrictionChecks.independentSingletonTrace
 correctedPrefixIndependentWitness = correctedTraceIndependentWitness
 
+||| The pre-Finding-10 relation: ambient equality plus per-key lookup equality.
+||| It is retained only as a negative regression, never as a semantic alias.
+LegacyLookupRelated :
+  {name, key, world : Type} -> {value : key -> Type} ->
+  (keyEq : DecEq key) ->
+  EffectState name key value world -> EffectState name key value world -> Type
+LegacyLookupRelated {name} {key} keyEq left right =
+  (effectAmbient left = effectAmbient right,
+   (selected : name) -> (k : key) ->
+     lookupBinding @{keyEq} k (effectTables left selected) =
+     lookupBinding @{keyEq} k (effectTables right selected))
+
+forwardContext : CoeffectContext ToyKey ToyValue
+forwardContext = MkCoeffectContext [Bind ServiceA False, Bind ServiceB False]
+  (UniqueCons serviceANotInB (UniqueCons notInEmpty UniqueNil))
+
+forwardOwned : OwnedTable ToyKey ToyValue DGamma.CP4RestrictionChecks.reverseOrderSpec
+forwardOwned = MkOwnedTable forwardContext sound
+  where
+  0 sound : (k : ToyKey) -> Elem k [ServiceA, ServiceB] ->
+    Elem k (dependencies DGamma.CP4RestrictionChecks.reverseOrderSpec)
+  sound ServiceA Here = Here
+  sound ServiceA (There Here) impossible
+  sound ServiceB Here impossible
+  sound ServiceB (There Here) = There Here
+
+orderedEffectTables : Nat -> CoeffectContext ToyKey ToyValue
+orderedEffectTables Z = forwardContext
+orderedEffectTables (S selected) = emptyContext
+
+reverseEffectTables : Nat -> CoeffectContext ToyKey ToyValue
+reverseEffectTables Z = reverseContext
+reverseEffectTables (S selected) = emptyContext
+
+orderedEffectState : EffectState Nat ToyKey ToyValue ToyRuntime
+orderedEffectState = MkEffectState (MkToyRuntime False False) orderedEffectTables
+
+reverseEffectState : EffectState Nat ToyKey ToyValue ToyRuntime
+reverseEffectState = MkEffectState (MkToyRuntime False False) reverseEffectTables
+
+||| The old lookup-only relation cannot see the reversed runtime binding order.
+public export
+0 legacyOrderBlindnessWitness : LegacyLookupRelated
+  (the (DecEq ToyKey) %search)
+  DGamma.CP4RestrictionChecks.orderedEffectState
+  DGamma.CP4RestrictionChecks.reverseEffectState
+legacyOrderBlindnessWitness = (Refl, lookups)
+  where
+  0 lookups : (selected : Nat) -> (k : ToyKey) ->
+    lookupBinding @{the (DecEq ToyKey) %search} k
+      (effectTables DGamma.CP4RestrictionChecks.orderedEffectState selected) =
+    lookupBinding @{the (DecEq ToyKey) %search} k
+      (effectTables DGamma.CP4RestrictionChecks.reverseEffectState selected)
+  lookups Z ServiceA = Refl
+  lookups Z ServiceB = Refl
+  lookups (S selected) ServiceA = Refl
+  lookups (S selected) ServiceB = Refl
+
+0 orderedBindingsDiffer : Not
+  (bindings DGamma.CP4RestrictionChecks.forwardContext =
+   bindings DGamma.CP4RestrictionChecks.reverseContext)
+orderedBindingsDiffer Refl impossible
+
+||| Finding #10's ordered-context relation correctly rejects the same pair.
+public export
+0 strengthenedRelationRejectsOrderMismatch :
+  EffectStateRelated (the (DecEq ToyKey) %search)
+    DGamma.CP4RestrictionChecks.orderedEffectState
+    DGamma.CP4RestrictionChecks.reverseEffectState -> Void
+strengthenedRelationRejectsOrderMismatch related =
+  orderedBindingsDiffer (cong bindings (tablesExact related 0))
+
+||| Executable half of the discriminating regression: the host callback sees
+||| the order that the old relation forgot and returns different worlds.
+public export
+effectRelationOrderRegression : Bool
+effectRelationOrderRegression =
+  case runStepEffect orderSensitiveStep NoDepValues
+    (MkLocalState (MkToyRuntime False False) forwardOwned) of
+    Left err => False
+    Right (forwardAfter, forwardUndo) =>
+      case runStepEffect orderSensitiveStep NoDepValues
+        (MkLocalState (MkToyRuntime False False) reverseOwned) of
+        Left err => False
+        Right (reverseAfter, reverseUndo) =>
+          let MkToyRuntime forwardProvider forwardConsumer = localWorld forwardAfter
+              MkToyRuntime reverseProvider reverseConsumer = localWorld reverseAfter
+          in not forwardProvider && reverseProvider
+
 public export
 reverseOrderRestrictionRegression : Bool
 reverseOrderRestrictionRegression =

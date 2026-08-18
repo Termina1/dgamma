@@ -53,10 +53,9 @@ unloadConcreteActualEffectFrame nameEq keyEq actor ambient fibers component pare
       restored = accumulator (MkLocalState ambient normalized)
       next : Fiber name key value world error
       next = setFiberRuntime sourceFiber (localTable restored) (Inactive outcome)
-      0 tableSame : (k : key) ->
-        lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
-        lookupBinding @{keyEq} k (ownedValues (localTable restored))
-      tableSame k = runtimeTableLookup keyEq k sourceFiber (localTable restored)
+      0 tableSame : ownedValues (fiberTable next) =
+        ownedValues (localTable restored)
+      tableSame = setRuntimeTableExact sourceFiber (localTable restored)
         (Inactive outcome)
       0 mapRuns : partialEffectMapFor nameEq keyEq (LUnload actor) LUnloadTag
         (the (SystemState name key value world error)
@@ -143,10 +142,9 @@ unloadActualEffectFrame nameEq keyEq actor (MkSystemState ambient fibers)
             let next : Fiber name key value world error
                 next = setFiberRuntime sourceFiber (localTable restored)
                   (Inactive outcome)
-                0 tableSame : (k : key) ->
-                  lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
-                  lookupBinding @{keyEq} k (ownedValues (localTable restored))
-                tableSame k = runtimeTableLookup keyEq k sourceFiber
+                0 tableSame : ownedValues (fiberTable next) =
+                  ownedValues (localTable restored)
+                tableSame = setRuntimeTableExact sourceFiber
                   (localTable restored) (Inactive outcome)
                 0 mapRuns : partialEffectMapFor nameEq keyEq (LUnload actor)
                   LUnloadTag

@@ -48,6 +48,29 @@ public export
 setLifecycleTableLookup keyEq k
   (MkFiber component parent retiredFlag table oldLife) life = Refl
 
+public export
+0 setLifecycleTableExact :
+  (fiber : Fiber name key value world error) ->
+  (life : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  ownedValues (fiberTable (setFiberLifecycle fiber life)) =
+  ownedValues (fiberTable fiber)
+setLifecycleTableExact
+  (MkFiber component parent retiredFlag table oldLife) life = Refl
+
+public export
+0 setRuntimeTableExact :
+  (fiber : Fiber name key value world error) ->
+  (table : OwnedTable key value (componentProvisions (fiberComponent fiber))) ->
+  (life : Lifecycle key value world error name
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  ownedValues (fiberTable (setFiberRuntime fiber table life)) =
+  ownedValues table
+setRuntimeTableExact
+  (MkFiber component parent retiredFlag oldTable oldLife) table life = Refl
+
 ||| Replacing one fiber while preserving its owned table is invisible to the
 ||| full effect-state projection, pointwise on every dynamic table lookup.
 public export
@@ -58,8 +81,7 @@ public export
   (old, next : Fiber name key value world error) ->
   (fibers : Registry name key value world error) ->
   lookupFiber @{nameEq} actor fibers = Just old ->
-  ((k : key) -> lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
-    lookupBinding @{keyEq} k (ownedValues (fiberTable old))) ->
+  ownedValues (fiberTable next) = ownedValues (fiberTable old) ->
   EffectStateRelated keyEq
     (projectEffectState @{nameEq}
       (the (SystemState name key value world error)
@@ -71,28 +93,26 @@ public export
 projectTablePreservingReplace nameEq keyEq actor worldValue old next fibers found
   tableSame = MkEffectStateRelated Refl tables
   where
-  0 tables : (selected : name) -> (k : key) ->
-    lookupBinding @{keyEq} k
-      (effectTables (projectEffectState @{nameEq}
-        (the (SystemState name key value world error)
-          (MkSystemState worldValue fibers))) selected) =
-    lookupBinding @{keyEq} k
-      (effectTables (projectEffectState @{nameEq}
-        (the (SystemState name key value world error)
-          (MkSystemState worldValue
-            (replaceBinding @{nameEq} actor next fibers)))) selected)
-  tables selected k with (decEq @{nameEq} selected actor)
-    tables _ k | Yes Refl =
+  0 tables : (selected : name) ->
+    effectTables (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState worldValue fibers))) selected =
+    effectTables (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState worldValue
+          (replaceBinding @{nameEq} actor next fibers)))) selected
+  tables selected with (decEq @{nameEq} selected actor)
+    tables _ | Yes Refl =
       rewrite found in
       rewrite lookupReplacedFiber actor old next fibers found in
-      sym (tableSame k)
-    tables selected k | No distinct with
+      sym tableSame
+    tables selected | No distinct with
       (lookupFiber @{nameEq} selected fibers) proof sourceLookup
-      tables selected k | No distinct | Nothing =
+      tables selected | No distinct | Nothing =
         let targetLookup = trans
               (lookupReplaceOther selected actor distinct next fibers) sourceLookup
         in rewrite targetLookup in Refl
-      tables selected k | No distinct | Just observed =
+      tables selected | No distinct | Just observed =
         let targetLookup = trans
               (lookupReplaceOther selected actor distinct next fibers) sourceLookup
         in rewrite targetLookup in Refl
@@ -138,31 +158,29 @@ public export
 projectInsertEffectFrame nameEq keyEq actor worldValue component parent fibers
   absent = MkEffectStateRelated Refl tables
   where
-  0 tables : (selected : name) -> (k : key) ->
-    lookupBinding @{keyEq} k
-      (effectTables (setEffectTable @{nameEq} actor
-        (emptyContext {key = key} {value = value})
-        (projectEffectState @{nameEq}
-          (the (SystemState name key value world error)
-            (MkSystemState worldValue fibers)))) selected) =
-    lookupBinding @{keyEq} k
-      (effectTables (projectEffectState @{nameEq}
+  0 tables : (selected : name) ->
+    effectTables (setEffectTable @{nameEq} actor
+      (emptyContext {key = key} {value = value})
+      (projectEffectState @{nameEq}
         (the (SystemState name key value world error)
-          (MkSystemState worldValue
-            (insertBinding @{nameEq} actor (freshFiber component parent) fibers
-              absent)))) selected)
-  tables selected k with (decEq @{nameEq} selected actor)
-    tables _ k | Yes Refl =
+          (MkSystemState worldValue fibers)))) selected =
+    effectTables (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState worldValue
+          (insertBinding @{nameEq} actor (freshFiber component parent) fibers
+            absent)))) selected
+  tables selected with (decEq @{nameEq} selected actor)
+    tables _ | Yes Refl =
       rewrite lookupInserted actor (freshFiber component parent) fibers absent in
         Refl
-    tables selected k | No distinct with
+    tables selected | No distinct with
       (lookupFiber @{nameEq} selected fibers) proof sourceLookup
-      tables selected k | No distinct | Nothing =
+      tables selected | No distinct | Nothing =
         let targetLookup = trans
               (lookupInsertOther selected actor distinct
                 (freshFiber component parent) fibers absent) sourceLookup
         in rewrite targetLookup in Refl
-      tables selected k | No distinct | Just observed =
+      tables selected | No distinct | Just observed =
         let targetLookup = trans
               (lookupInsertOther selected actor distinct
                 (freshFiber component parent) fibers absent) sourceLookup
@@ -186,26 +204,25 @@ public export
 projectDeleteEffectFrame nameEq keyEq actor worldValue fibers =
   MkEffectStateRelated Refl tables
   where
-  0 tables : (selected : name) -> (k : key) ->
-    lookupBinding @{keyEq} k
-      (effectTables (setEffectTable @{nameEq} actor (emptyContext {key = key} {value = value})
-        (projectEffectState @{nameEq}
-          (the (SystemState name key value world error)
-            (MkSystemState worldValue fibers)))) selected) =
-    lookupBinding @{keyEq} k
-      (effectTables (projectEffectState @{nameEq}
+  0 tables : (selected : name) ->
+    effectTables (setEffectTable @{nameEq} actor
+      (emptyContext {key = key} {value = value})
+      (projectEffectState @{nameEq}
         (the (SystemState name key value world error)
-          (MkSystemState worldValue
-            (deleteBinding @{nameEq} actor fibers)))) selected)
-  tables selected k with (decEq @{nameEq} selected actor)
-    tables _ k | Yes Refl = rewrite lookupDeleteSelf actor fibers in Refl
-    tables selected k | No distinct with
+          (MkSystemState worldValue fibers)))) selected =
+    effectTables (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState worldValue
+          (deleteBinding @{nameEq} actor fibers)))) selected
+  tables selected with (decEq @{nameEq} selected actor)
+    tables _ | Yes Refl = rewrite lookupDeleteSelf actor fibers in Refl
+    tables selected | No distinct with
       (lookupFiber @{nameEq} selected fibers) proof sourceLookup
-      tables selected k | No distinct | Nothing =
+      tables selected | No distinct | Nothing =
         let targetLookup = trans (lookupDeleteOther selected actor distinct fibers)
               sourceLookup
         in rewrite targetLookup in Refl
-      tables selected k | No distinct | Just observed =
+      tables selected | No distinct | Just observed =
         let targetLookup = trans (lookupDeleteOther selected actor distinct fibers)
               sourceLookup
         in rewrite targetLookup in Refl
@@ -261,8 +278,7 @@ public export
   (fibers : Registry name key value world error) ->
   lookupFiber @{nameEq} actor fibers = Just old ->
   (targetTable : CoeffectContext key value) ->
-  ((k : key) -> lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
-    lookupBinding @{keyEq} k targetTable) ->
+  ownedValues (fiberTable next) = targetTable ->
   EffectStateRelated keyEq
     (setEffectTable @{nameEq} actor targetTable
       (setEffectAmbient targetWorld
@@ -276,28 +292,26 @@ public export
 projectRuntimeReplace nameEq keyEq actor sourceWorld targetWorld old next fibers
   found targetTable tableSame = MkEffectStateRelated Refl tables
   where
-  0 tables : (selected : name) -> (k : key) ->
-    lookupBinding @{keyEq} k
-      (effectTables (setEffectTable @{nameEq} actor targetTable
-        (setEffectAmbient targetWorld
-          (projectEffectState @{nameEq}
-            (the (SystemState name key value world error)
-              (MkSystemState sourceWorld fibers))))) selected) =
-    lookupBinding @{keyEq} k
-      (effectTables (projectEffectState @{nameEq}
-        (the (SystemState name key value world error)
-          (MkSystemState targetWorld
-            (replaceBinding @{nameEq} actor next fibers)))) selected)
-  tables selected k with (decEq @{nameEq} selected actor)
-    tables _ k | Yes Refl =
-      rewrite lookupReplacedFiber actor old next fibers found in sym (tableSame k)
-    tables selected k | No distinct with
+  0 tables : (selected : name) ->
+    effectTables (setEffectTable @{nameEq} actor targetTable
+      (setEffectAmbient targetWorld
+        (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState sourceWorld fibers))))) selected =
+    effectTables (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState targetWorld
+          (replaceBinding @{nameEq} actor next fibers)))) selected
+  tables selected with (decEq @{nameEq} selected actor)
+    tables _ | Yes Refl =
+      rewrite lookupReplacedFiber actor old next fibers found in sym tableSame
+    tables selected | No distinct with
       (lookupFiber @{nameEq} selected fibers) proof sourceLookup
-      tables selected k | No distinct | Nothing =
+      tables selected | No distinct | Nothing =
         let targetLookup = trans
               (lookupReplaceOther selected actor distinct next fibers) sourceLookup
         in rewrite targetLookup in Refl
-      tables selected k | No distinct | Just observed =
+      tables selected | No distinct | Just observed =
         let targetLookup = trans
               (lookupReplaceOther selected actor distinct next fibers) sourceLookup
         in rewrite targetLookup in Refl
@@ -315,8 +329,7 @@ public export
   (afterState : SystemState name key value world error) ->
   lookupFiber @{nameEq} actor fibers = Just old ->
   (targetTable : CoeffectContext key value) ->
-  ((k : key) -> lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
-    lookupBinding @{keyEq} k targetTable) ->
+  ownedValues (fiberTable next) = targetTable ->
   (concreteAfter :
     (the (SystemState name key value world error)
       (MkSystemState targetWorld
@@ -372,8 +385,7 @@ public export
   (fibers : Registry name key value world error) ->
   (afterState : SystemState name key value world error) ->
   lookupFiber @{nameEq} actor fibers = Just old ->
-  ((k : key) -> lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
-    lookupBinding @{keyEq} k (ownedValues (fiberTable old))) ->
+  ownedValues (fiberTable next) = ownedValues (fiberTable old) ->
   (concreteAfter :
     (the (SystemState name key value world error)
       (MkSystemState worldValue

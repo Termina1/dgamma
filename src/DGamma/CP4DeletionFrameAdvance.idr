@@ -22,6 +22,7 @@ public export
 runtimeTableLookup keyEq k
   (MkFiber component parent retiredFlag oldTable oldLife) table life = Refl
 
+
 ||| Empty-continuation L-Finish changes only lifecycle control.
 public export
 0 finishEmptyActualEffectFrame :
@@ -56,13 +57,13 @@ finishEmptyActualEffectFrame nameEq keyEq actor ambient fibers component parent
       next = setFiberLifecycle sourceFiber (Active accumulator view)
       0 nextShape : next = setFiberLifecycle sourceFiber (Active accumulator view)
       nextShape = Refl
-      0 tableSame : (k : key) ->
-        lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
-        lookupBinding @{keyEq} k (ownedValues (fiberTable sourceFiber))
-      tableSame k = trans
-        (cong (\observed => lookupBinding @{keyEq} k
-          (ownedValues (fiberTable observed))) nextShape)
-        (setLifecycleTableLookup keyEq k sourceFiber (Active accumulator view))
+      0 tableSame : ownedValues (fiberTable next) =
+        ownedValues (fiberTable sourceFiber)
+      tableSame = replace
+        {p = \observed => ownedValues (fiberTable observed) =
+          ownedValues (fiberTable sourceFiber)}
+        (sym nextShape)
+        (setLifecycleTableExact sourceFiber (Active accumulator view))
       0 identityMap : partialEffectMapFor nameEq keyEq (LAdvance actor)
         LFinishTag
         (the (SystemState name key value world error)
@@ -159,11 +160,11 @@ finishStepActualEffectFrame nameEq keyEq actor ambient fibers component parent
       mapRuns = partialEffectMapAdvanceFinishRuns nameEq keyEq actor ambient
         fibers component parent retiredFlag table step [] accumulator view
         capability sourceFound effectResolved localAfter undo ran
-      0 tableSame : (k : key) ->
-        lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
-        lookupBinding @{keyEq} k (ownedValues (localTable localAfter))
-      tableSame k = runtimeTableLookup keyEq k sourceFiber
-        (localTable localAfter) (Active (pushLocalUndo (componentProvisions component) accumulator undo) view)
+      0 tableSame : ownedValues (fiberTable next) =
+        ownedValues (localTable localAfter)
+      tableSame = setRuntimeTableExact sourceFiber (localTable localAfter)
+        (Active (pushLocalUndo (componentProvisions component) accumulator undo)
+          view)
   in runtimeReplaceActualEffectFrame nameEq keyEq (LAdvance actor) LFinishTag
     actor ambient (localWorld localAfter) sourceFiber next fibers afterState
     sourceFound (ownedValues (localTable localAfter)) tableSame concreteAfter
@@ -255,12 +256,11 @@ iterActualEffectFrame nameEq keyEq actor ambient fibers component parent
       mapRuns = partialEffectMapAdvanceIterRuns nameEq keyEq actor ambient
         fibers component parent retiredFlag table step (nextStep :: more)
         accumulator view capability sourceFound effectResolved localAfter undo ran
-      0 tableSame : (k : key) ->
-        lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
-        lookupBinding @{keyEq} k (ownedValues (localTable localAfter))
-      tableSame k = runtimeTableLookup keyEq k sourceFiber
-        (localTable localAfter)
-        (Reloading (nextStep :: more) (pushLocalUndo (componentProvisions component) accumulator undo) view)
+      0 tableSame : ownedValues (fiberTable next) =
+        ownedValues (localTable localAfter)
+      tableSame = setRuntimeTableExact sourceFiber (localTable localAfter)
+        (Reloading (nextStep :: more)
+          (pushLocalUndo (componentProvisions component) accumulator undo) view)
   in runtimeReplaceActualEffectFrame nameEq keyEq (LAdvance actor) LIterTag
     actor ambient (localWorld localAfter) sourceFiber next fibers afterState
     sourceFound (ownedValues (localTable localAfter)) tableSame concreteAfter
@@ -366,11 +366,11 @@ landingDivertActualEffectFrame nameEq keyEq actor ambient fibers component paren
         (advanceDivertMapSameAsIter nameEq keyEq actor
           (MkSystemState ambient fibers)
           (projectEffectState @{nameEq} (MkSystemState ambient fibers))) iterMapRuns
-      0 tableSame : (k : key) ->
-        lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
-        lookupBinding @{keyEq} k (ownedValues (localTable localAfter))
-      tableSame k = runtimeTableLookup keyEq k sourceFiber
-        (localTable localAfter) (Unloading (pushLocalUndo (componentProvisions component) accumulator undo) view Nothing)
+      0 tableSame : ownedValues (fiberTable next) =
+        ownedValues (localTable localAfter)
+      tableSame = setRuntimeTableExact sourceFiber (localTable localAfter)
+        (Unloading (pushLocalUndo (componentProvisions component) accumulator undo)
+          view Nothing)
   in runtimeReplaceActualEffectFrame nameEq keyEq (LAdvance actor) LDivertTag
     actor ambient (localWorld localAfter) sourceFiber next fibers afterState
     sourceFound (ownedValues (localTable localAfter)) tableSame concreteAfter
@@ -410,13 +410,13 @@ landingDivertEmptyActualEffectFrame nameEq keyEq actor ambient fibers component
       0 nextShape : next = setFiberLifecycle sourceFiber
         (Unloading accumulator view Nothing)
       nextShape = Refl
-      0 tableSame : (k : key) ->
-        lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
-        lookupBinding @{keyEq} k (ownedValues (fiberTable sourceFiber))
-      tableSame k = trans
-        (cong (\observed => lookupBinding @{keyEq} k
-          (ownedValues (fiberTable observed))) nextShape)
-        (setLifecycleTableLookup keyEq k sourceFiber
+      0 tableSame : ownedValues (fiberTable next) =
+        ownedValues (fiberTable sourceFiber)
+      tableSame = replace
+        {p = \observed => ownedValues (fiberTable observed) =
+          ownedValues (fiberTable sourceFiber)}
+        (sym nextShape)
+        (setLifecycleTableExact sourceFiber
           (Unloading accumulator view Nothing))
       0 identityMap : partialEffectMapFor nameEq keyEq (LAdvance actor)
         LDivertTag

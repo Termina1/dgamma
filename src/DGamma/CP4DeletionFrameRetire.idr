@@ -8,12 +8,10 @@ import Decidable.Equality
 
 %default total
 
-0 retireTableLookup : (keyEq : DecEq key) -> (k : key) ->
-  (fiber : Fiber name key value world error) ->
-  lookupBinding @{keyEq} k (ownedValues (fiberTable (retireFiber fiber))) =
-  lookupBinding @{keyEq} k (ownedValues (fiberTable fiber))
-retireTableLookup keyEq k (MkFiber component parent retiredFlag table lifecycle) =
-  Refl
+0 retireTableExact : (fiber : Fiber name key value world error) ->
+  ownedValues (fiberTable (retireFiber fiber)) =
+  ownedValues (fiberTable fiber)
+retireTableExact (MkFiber component parent retiredFlag table lifecycle) = Refl
 
 ||| O-Retire is control-only. Its actual-forward generator is therefore the
 ||| identity on effects and the target projection is pointwise unchanged.
@@ -45,13 +43,12 @@ retireActualEffectFrame nameEq keyEq actor (MkSystemState ambient fibers)
         concreteAfter = cong snd (justInjective rawReduced)
         0 nextShape : next = retireFiber fiber
         nextShape = Refl
-        0 tableSame : (k : key) ->
-          lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
-          lookupBinding @{keyEq} k (ownedValues (fiberTable fiber))
-        tableSame k = trans
-          (cong (\observed => lookupBinding @{keyEq} k
-            (ownedValues (fiberTable observed))) nextShape)
-          (retireTableLookup keyEq k fiber)
+        0 tableSame : ownedValues (fiberTable next) =
+          ownedValues (fiberTable fiber)
+        tableSame = replace
+          {p = \observed => ownedValues (fiberTable observed) =
+            ownedValues (fiberTable fiber)}
+          (sym nextShape) (retireTableExact fiber)
         0 relatedConcrete : EffectStateRelated keyEq
           (projectEffectState @{nameEq}
             (the (SystemState name key value world error)

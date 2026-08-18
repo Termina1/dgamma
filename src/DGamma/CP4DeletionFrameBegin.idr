@@ -71,13 +71,13 @@ beginActualEffectFrame nameEq keyEq actor (MkSystemState ambient fibers)
             0 nextShape : next = setFiberLifecycle sourceFiber
               (Reloading (componentProgram component) (\local => local) view)
             nextShape = Refl
-            0 tableSame : (k : key) ->
-              lookupBinding @{keyEq} k (ownedValues (fiberTable next)) =
-              lookupBinding @{keyEq} k (ownedValues (fiberTable sourceFiber))
-            tableSame k = trans
-              (cong (\observed => lookupBinding @{keyEq} k
-                (ownedValues (fiberTable observed))) nextShape)
-              (setLifecycleTableLookup keyEq k sourceFiber
+            0 tableSame : ownedValues (fiberTable next) =
+              ownedValues (fiberTable sourceFiber)
+            tableSame = replace
+              {p = \observed => ownedValues (fiberTable observed) =
+                ownedValues (fiberTable sourceFiber)}
+              (sym nextShape)
+              (setLifecycleTableExact sourceFiber
                 (Reloading (componentProgram component) (\local => local) view))
             0 relatedConcrete : EffectStateRelated keyEq
               (projectEffectState @{nameEq}

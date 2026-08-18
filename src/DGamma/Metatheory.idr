@@ -1001,30 +1001,32 @@ record EffectStateRelated {name, key : Type} {value : key -> Type} {world : Type
   (keyEq : DecEq key) (left, right : EffectState name key value world) where
   constructor MkEffectStateRelated
   0 ambientExact : effectAmbient left = effectAmbient right
-  0 tablesExact : (selected : name) -> (k : key) ->
-    lookupBinding k (effectTables left selected) =
-    lookupBinding k (effectTables right selected)
+  ||| Finding #10: exact effect agreement retains each complete ordered table.
+  ||| Pointwise table equality avoids function extensionality while preserving
+  ||| every runtime observation available to `StepEffect`, including order.
+  0 tablesExact : (selected : name) ->
+    effectTables left selected = effectTables right selected
 
 public export
 0 effectStateReflexive : (keyEq : DecEq key) ->
   (state : EffectState name key value world) ->
   EffectStateRelated keyEq state state
 effectStateReflexive keyEq state =
-  MkEffectStateRelated Refl (\selected, k => Refl)
+  MkEffectStateRelated Refl (\selected => Refl)
 
 0 effectStateSymmetric : (keyEq : DecEq key) ->
   EffectStateRelated keyEq left right -> EffectStateRelated keyEq right left
 effectStateSymmetric keyEq relation = MkEffectStateRelated
   (sym (ambientExact relation))
-  (\selected, k => sym (tablesExact relation selected k))
+  (\selected => sym (tablesExact relation selected))
 
 0 effectStateTransitive : (keyEq : DecEq key) ->
   EffectStateRelated keyEq left middle -> EffectStateRelated keyEq middle right ->
   EffectStateRelated keyEq left right
 effectStateTransitive keyEq first second = MkEffectStateRelated
   (trans (ambientExact first) (ambientExact second))
-  (\selected, k => trans (tablesExact first selected k)
-                         (tablesExact second selected k))
+  (\selected => trans (tablesExact first selected)
+                      (tablesExact second selected))
 
 public export
 EffectStateEquivalence : {name, key, world : Type} -> {value : key -> Type} ->

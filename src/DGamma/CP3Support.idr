@@ -63,7 +63,7 @@ public export
 0 effectStateRelatedSymmetric :
   EffectStateRelated keyEq left right -> EffectStateRelated keyEq right left
 effectStateRelatedSymmetric (MkEffectStateRelated ambient tables) =
-  MkEffectStateRelated (sym ambient) (\selected, k => sym (tables selected k))
+  MkEffectStateRelated (sym ambient) (\selected => sym (tables selected))
 
 public export
 0 effectStateRelatedTransitive :
@@ -73,7 +73,7 @@ public export
 effectStateRelatedTransitive (MkEffectStateRelated ambientLeft tablesLeft)
   (MkEffectStateRelated ambientRight tablesRight) =
     MkEffectStateRelated (trans ambientLeft ambientRight)
-      (\selected, k => trans (tablesLeft selected k) (tablesRight selected k))
+      (\selected => trans (tablesLeft selected) (tablesRight selected))
 
 public export
 0 controlEquivalentSymmetric :
@@ -198,7 +198,7 @@ public export
   CanonicalEndpointRelation name key world error value nameEq keyEq state state
 canonicalEndpointHistoricalOnly nameEq keyEq state generations =
   MkCanonicalEndpointRelation [] generations
-    (MkEffectStateRelated Refl (\selected, k => Refl))
+    (MkEffectStateRelated Refl (\selected => Refl))
     (\n, outside => fiberControlMaybeReflexive
       (lookupFiber @{nameEq} n (registry state)))
     (\child, present => void (notInEmpty present))
