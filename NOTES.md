@@ -1465,8 +1465,11 @@ readiness inductions. `retainedReplayGivesGenerationReadiness` performs the
 ordinal/environment/deletion decision recursion once; its selected-episode and
 suffix specializations use the exact committed deletion predicates. The input
 `GenerationRetainedReplay` is a record-saturated local interface: at each kept
-original head it supplies the exact `fireNamed` result at the current survivor,
-and the induction itself threads that endpoint into the tail.
+original head it receives the exact complement-of-deletion proof and supplies
+the exact `fireNamed` result at the current survivor; the induction itself
+threads that endpoint into the tail. Carrying the complement is necessary for
+the current-R plan's actor-exclusion proof—deleted heads deliberately have no
+survivor transition.
 
 This pins the remaining obligation-2 dependency precisely. The existing
 `checkedRetained*AfterCurrentPlan` lemmas fire from

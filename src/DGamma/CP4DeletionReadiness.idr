@@ -27,18 +27,22 @@ record RetainedGenerationReplayStep
     (transitionAction originalTransition) survivingFirst = Just replayedHead
 
 ||| Record-saturated interface expected from a replay-boundary invariant.
-||| It is deliberately independent of the deletion predicate: the readiness
-||| induction calls it only after obtaining `Not (deletable ...)`.
+||| The complement proof is essential: current-R plan replay needs it to derive
+||| exact actor exclusion, and deleted heads deliberately have no transition at
+||| the survivor boundary.
 public export
 GenerationRetainedReplay :
   (name, key, world, error : Type) -> (value : key -> Type) ->
-  (nameEq : DecEq name) -> (keyEq : DecEq key) -> Type
-GenerationRetainedReplay name key world error value nameEq keyEq =
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type) -> Type
+GenerationRetainedReplay name key world error value nameEq keyEq deletable =
   (ordinal : Nat) -> (live : GenerationEnvironment name) ->
   {originalFirst, originalMiddle, originalFinal, survivingFirst :
     SystemState name key value world error} ->
   (originalTransition : Transition originalFirst originalMiddle) ->
   (originalRest : Transitions originalMiddle originalFinal) ->
+  Not (deletable ordinal live (transitionAction originalTransition)) ->
   RetainedGenerationReplayStep name key world error value nameEq keyEq
     originalTransition originalRest
 
@@ -56,7 +60,7 @@ public export
     (action : Action name key value world error) ->
     Dec (deletable ordinal live action)) ->
   (replayRetained : GenerationRetainedReplay name key world error value
-    nameEq keyEq) ->
+    nameEq keyEq deletable) ->
   (ordinal : Nat) -> (live : GenerationEnvironment name) ->
   (original : Transitions originalFirst originalFinal) ->
   (currentSurvivor : SystemState name key value world error) ->
@@ -83,7 +87,7 @@ retainedReplayGivesGenerationReadiness nameEq keyEq deletable decDeletable
     (MoreTransitions originalTransition originalRest) currentSurvivor |
       No retained =
         case replayRetained {survivingFirst = currentSurvivor} ordinal live
-          originalTransition originalRest of
+          originalTransition originalRest retained of
           MkRetainedGenerationReplayStep
             (MkNamedTransition survivingAfter survivingTag survivingTransition
               sameAction) fired =>
@@ -105,7 +109,7 @@ public export
   (selected : name) ->
   (registered : List (RegistrationGeneration name)) ->
   (replayRetained : GenerationRetainedReplay name key world error value
-    nameEq keyEq) ->
+    nameEq keyEq (EpisodeGenerationDeletedActor nameEq selected registered)) ->
   (ordinal : Nat) -> (live : GenerationEnvironment name) ->
   (original : Transitions originalFirst originalFinal) ->
   (currentSurvivor : SystemState name key value world error) ->
@@ -129,7 +133,7 @@ public export
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (registered : List (RegistrationGeneration name)) ->
   (replayRetained : GenerationRetainedReplay name key world error value
-    nameEq keyEq) ->
+    nameEq keyEq (GenerationOwnedActor nameEq registered)) ->
   (ordinal : Nat) -> (live : GenerationEnvironment name) ->
   (original : Transitions originalFirst originalFinal) ->
   (currentSurvivor : SystemState name key value world error) ->
