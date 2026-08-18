@@ -1105,6 +1105,89 @@ PartialEffectMap : (name, key : Type) -> (value : key -> Type) ->
 PartialEffectMap name key value world =
   EffectState name key value world -> Maybe (EffectState name key value world)
 
+||| Shared executable successful iterator map. Factoring this branch lets the
+||| Finding-10 congruence proof reuse exactly the evaluator-facing term rather
+||| than a propositionally parallel callback application.
+public export
+%inline
+stepForwardEffectMap :
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (step : StepEffect key value world error deps provision) ->
+  DepValues key value deps -> PartialEffectMap name key value world
+stepForwardEffectMap {provision} nameEq keyEq actor step capability state =
+  let owned = restrictOwnedPreservingOrder @{keyEq} provision
+        (effectTables state actor) in
+  case runStepEffect step capability
+    (MkLocalState (effectAmbient state) owned) of
+    Left _ => Nothing
+    Right (after, undo) => Just
+      (setEffectTable @{nameEq} actor (ownedValues (localTable after))
+        (setEffectAmbient (localWorld after) state))
+
+public export
+%inline
+accumulatorRuntimeEffectMap :
+  {provision : CoeffectSpec key} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (LocalState key value world provision ->
+    LocalState key value world provision) ->
+  PartialEffectMap name key value world
+accumulatorRuntimeEffectMap {provision} nameEq keyEq actor accumulator state =
+  let owned = restrictOwnedPreservingOrder @{keyEq} provision
+        (effectTables state actor)
+      restored = accumulator (MkLocalState (effectAmbient state) owned)
+  in Just (setEffectTable @{nameEq} actor
+    (ownedValues (localTable restored))
+    (setEffectAmbient (localWorld restored) state))
+
+public export
+%inline
+fiberAdvanceRuntimeEffectMap :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  Fiber name key value world error -> PartialEffectMap name key value world
+fiberAdvanceRuntimeEffectMap nameEq keyEq actor fiber state =
+  case fiberLifecycle fiber of
+    Reloading [] accumulator view => Just state
+    Reloading (step :: rest) accumulator view =>
+      case resolveEffectValues @{keyEq}
+        (dependencies (componentDependencies (fiberComponent fiber))) view state of
+        Nothing => Nothing
+        Just capability =>
+          stepForwardEffectMap nameEq keyEq actor step capability state
+    _ => Nothing
+
+public export
+%inline
+advanceRuntimeEffectMap :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  SystemState name key value world error -> PartialEffectMap name key value world
+advanceRuntimeEffectMap nameEq keyEq actor origin state =
+  case lookupFiber @{nameEq} actor (registry origin) of
+    Nothing => Nothing
+    Just fiber => fiberAdvanceRuntimeEffectMap nameEq keyEq actor fiber state
+
+public export
+%inline
+fiberUnloadRuntimeEffectMap :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  Fiber name key value world error -> PartialEffectMap name key value world
+fiberUnloadRuntimeEffectMap nameEq keyEq actor fiber state =
+  case fiberLifecycle fiber of
+    Unloading accumulator view outcome =>
+      accumulatorRuntimeEffectMap nameEq keyEq actor accumulator state
+    _ => Nothing
+
+public export
+%inline
+unloadRuntimeEffectMap :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  SystemState name key value world error -> PartialEffectMap name key value world
+unloadRuntimeEffectMap nameEq keyEq actor origin state =
+  case lookupFiber @{nameEq} actor (registry origin) of
+    Nothing => Nothing
+    Just fiber => fiberUnloadRuntimeEffectMap nameEq keyEq actor fiber state
+
 ||| Full Table-1 effect map. Successful iterator maps and yielded accumulators
 ||| consume and produce both ambient state and the acting fiber's owned table.
 ||| Control-only edits are erased; O-Insert/O-Remove set the actor table empty.
@@ -1118,41 +1201,12 @@ partialEffectMapFor nameEq keyEq (ORemove n) tag origin state =
   Just (setEffectTable @{nameEq} n emptyContext state)
 partialEffectMapFor nameEq keyEq (LAdvance n) LRaiseTag origin state = Just state
 partialEffectMapFor nameEq keyEq (LAdvance n) tag origin state = case tag of
-  LIterTag => successfulAdvance
-  LFinishTag => successfulAdvance
-  LDivertTag => successfulAdvance
+  LIterTag => advanceRuntimeEffectMap nameEq keyEq n origin state
+  LFinishTag => advanceRuntimeEffectMap nameEq keyEq n origin state
+  LDivertTag => advanceRuntimeEffectMap nameEq keyEq n origin state
   _ => Just state
-  where
-  successfulAdvance : Maybe (EffectState name key value world)
-  successfulAdvance = case lookupFiber @{nameEq} n (registry origin) of
-    Nothing => Nothing
-    Just fiber => case fiberLifecycle fiber of
-      Reloading [] accumulator view => Just state
-      Reloading (step :: rest) accumulator view =>
-        case resolveEffectValues @{keyEq}
-          (dependencies (componentDependencies (fiberComponent fiber))) view state of
-          Nothing => Nothing
-          Just capability =>
-            let owned = restrictOwnedPreservingOrder @{keyEq}
-                  (componentProvisions (fiberComponent fiber)) (effectTables state n) in
-            case runStepEffect step capability
-              (MkLocalState (effectAmbient state) owned) of
-              Left _ => Nothing
-              Right (after, undo) => Just
-                (setEffectTable @{nameEq} n (ownedValues (localTable after))
-                  (setEffectAmbient (localWorld after) state))
-      _ => Nothing
 partialEffectMapFor nameEq keyEq (LUnload n) tag origin state =
-  case lookupFiber @{nameEq} n (registry origin) of
-    Nothing => Nothing
-    Just fiber => case fiberLifecycle fiber of
-      Unloading accumulator view outcome =>
-        let owned = restrictOwnedPreservingOrder @{keyEq}
-              (componentProvisions (fiberComponent fiber)) (effectTables state n)
-            restored = accumulator (MkLocalState (effectAmbient state) owned) in
-          Just (setEffectTable @{nameEq} n (ownedValues (localTable restored))
-            (setEffectAmbient (localWorld restored) state))
-      _ => Nothing
+  unloadRuntimeEffectMap nameEq keyEq n origin state
 partialEffectMapFor nameEq keyEq action tag origin state = Just state
 
 public export
