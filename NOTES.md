@@ -1641,6 +1641,14 @@ package invocation passed all 103/103 modules. All 103 source modules retain
 is a current warm typecheck only and does not discharge the registered
 `CP4SupportSolution` split/cold-archive validation debt.
 
+After the runtime-snapshot repair and the first whole-suffix foundations, a
+warm package invocation passed all 107/107 modules. All 107 source modules have
+`%default total`, and the anchored executable escape-hatch scan is empty.
+Targeted forced checks passed `CP4RuntimeBindings`, its proof-distinct regression,
+`CP4DeletionPlanRuntime`, `CP4DeletionPlanComplete`, and the adapted
+`CP4DeletionNoEpisodeReplay`. This remains warm validation; it does not
+supersede the registered split/no-concurrent-Chez cold-archive debt.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
@@ -1678,8 +1686,12 @@ induction from disciplined registration,
 well-formed parent closure, and exact-generation no-episode evidence; both
 structural readiness inductions from the saturated retained-head interface;
 and the all-action no-selected-episode retained-head frame at an exact current-R
-plan boundary; preservation of that boundary through the suffix, the selected-
-segment Lemma-71 quotient, and endpoint effect/control/withdrawal invariants remain);
+plan boundary; exhaustive evaluator transport across equal runtime snapshots,
+dependent Inactive-plan/actor-exclusion transport across equal ordered bindings,
+and complete current-R plan construction from the public reached-trace premises;
+the retained/deleted action-to-plan commutation step and its whole-suffix fold,
+the selected-segment Lemma-71 quotient, and endpoint effect/control/withdrawal
+invariants remain);
 Confluence/Theorem
 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
@@ -1699,8 +1711,10 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** preserve `NoEpisodeReplayBoundary` across every retained/deleted
-suffix head, then prove the selected-segment lifecycle/effect quotient using
+**Next:** combine the new runtime/plan transport and plan-completeness layers
+with delete/replace/insert commutation to preserve `NoEpisodeReplayBoundary`
+across each deleted and retained suffix head, then fold that local result over
+the whole suffix. Next prove the selected-segment lifecycle/effect quotient using
 Lemma-71 transposition and the now-proved Corollary 62. Feed both retained-head
 families to the readiness inductions, join terminal recovery to the deletion
 skeleton, derive final control/withdrawal evidence, and inhabit `deletionTheorem`.
