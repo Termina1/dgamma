@@ -109,6 +109,7 @@ tailNameDistinct selected generation rest selectedFresh tailSelected
     selectedFresh (replace {p = \name => Elem name (generationEnvironmentNames rest)}
       same (environmentElemName present))
 
+public export
 0 inactiveLeavesAfterDelete :
   (nameEq : DecEq name) ->
   (registered : List (RegistrationGeneration name)) ->

@@ -149,7 +149,11 @@ progress.
   with separately defined singleton certificates. `DGamma.CP4DeletionPlanRuntime`
   proves the matching dependent plan reindexing theorem across exact ordered
   bindings, preserving every Inactive/childless leaf and the final target binding
-  list without proof irrelevance. `DGamma.CP4DeletionNoEpisodeReplay`
+  list without proof irrelevance. `DGamma.CP4DeletionPlanComplete` strengthens
+  the canonical current-R leaf builder with the erased converse: every current
+  exact R generation occurs in the plan, and derives that complete plan directly
+  from the public reached/discipline/no-episode premises.
+  `DGamma.CP4DeletionNoEpisodeReplay`
   proves the suffix retained-head frame for all eight actions at a current-R
   plan boundary and names `NoEpisodeReplayBoundary` at this exact runtime
   representation; maintaining that boundary record through the dependent

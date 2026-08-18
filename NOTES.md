@@ -1508,6 +1508,11 @@ regression. `DGamma.CP4DeletionPlanRuntime.transportInactivePlanAcrossBindings`
 proves the companion dependent induction: every Inactive/childless leaf plan
 reindexes across the same runtime binding list and its target retains exact
 ordered bindings, again without equating uniqueness certificates.
+`DGamma.CP4DeletionPlanComplete.currentRegisteredLeavesGiveCompletePlan` adds
+its necessary converse: every current exact R generation appears in the plan;
+`reachedDisciplinedBoundaryGivesCompleteDeletionPlan` constructs that saturated
+plan from the public reached-trace premises. The older plan result stays
+unchanged for existing consumers.
 `DGamma.CP4DeletionNoEpisodeReplay` keeps the action index that the older
 `TransitionResult` wrappers erased. `lifecycleRawAfterInactivePlan` and
 `orchestrationRawAfterInactivePlan` fold the existing one-leaf frames through a
