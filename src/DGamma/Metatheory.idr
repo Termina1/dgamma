@@ -1970,7 +1970,8 @@ PrefixRecoveryIndependent name key world error value nameEq keyEq selected trace
 
 ||| Theorem 61. Premises and conclusion now range over exactly the same full
 ||| effect state (ambient plus every owned table).
-||| TODO(proof): temporal induction over InstalledTrace and actual accumulators.
+||| Inhabited constructively by
+||| `DGamma.CP4RecoveryReplay.recoveryExactnessTheoremProof`.
 public export
 recoveryExactnessTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type

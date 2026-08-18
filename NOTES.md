@@ -490,7 +490,6 @@ cannot silently introduce a proof:
   `CoarsestRespectedEquivalence` — Lemma 35.
 - `distinctKeysIndependent` — Theorem 40.
 - `MediatedIndependenceTheorem` — Theorem 42.
-- `recoveryExactnessTheorem` — Theorem 61.
 - `terminalRecoveryTheorem` — Corollary 62.
 - `resolutionCoherenceTheorem` — the recovery-combined form of Theorem 64.
 - `deletionTheorem` — Lemma 72.
@@ -1558,17 +1557,13 @@ parent safety, both Active/support fixed-point directions, and final Lemma-68
 uniqueness assembly; and Progress/Theorem 66, including lifecycle program and
 continuation preservation, precedence-acyclicity preservation, complete
 unloading-chain no-deadlock, all-rule potential decrease, amortized Equation
-61, maximality, and final public-alias assembly. The repaired Definition-69/
+61, maximality, and final public-alias assembly; and recovery Theorem 61,
+including the conditional selected-step inverse, foreign generated-map
+commutation, congruent replay transport, simultaneous installed-trace
+induction, and exact public-alias endpoint assembly. The repaired Definition-69/
 Lemma-70 and Theorem-66 statement shapes still await end-of-CP4 re-review.
 
-**Partial:** recovery Theorem 61 (Finding-9 inter-undo alignment, Finding-10
-ordered effect equality, concrete accumulator factorization through
-Definition-60 yielded maps, exact L-Begin runtime model/handle, foreign control
-persistence, every selected installed control branch and boundary exclusion,
-every successful L-Advance push, and the complete `InstalledTrace` temporal
-induction are proved; foreign effect/replay commutation and final public-alias
-assembly remain); Lemma 71 (effect commutation
-projection); Lemma 72 (candidate
+**Partial:** Lemma 71 (effect commutation projection); Lemma 72 (candidate
 lifecycle-only deletion statement, exhaustive ten-tag actual-forward effect
 frames, generation-correct action/result filtering, proved birth-ordinal bounds
 and verbatim pre-episode subsequence construction, a total dependent filter
@@ -1595,8 +1590,7 @@ combined Theorem 64
 from Corollary 62). Lemmas 54–57 have many rule, frame, and boundary analogues
 but are not individually complete.
 
-**Merely stated:** Lemma 35, Theorems 40/42, the public recovery-Theorem-61
-alias (despite the partial constructive infrastructure above), Corollary 62,
+**Merely stated:** Lemma 35, Theorems 40/42, Corollary 62,
 `resolutionCoherenceTheorem`, `deletionTheorem`, and `confluenceTheorem`.
 These remain escape-hatch-free proposition types.
 
@@ -1606,10 +1600,9 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** prove foreign effect/replay commutation using Finding #10's repaired
-ordered equality and the completed temporal accumulator model, then join it to
-the already constructed deletion skeleton,
-then derive final control/withdrawal evidence and inhabit `deletionTheorem`.
+**Next:** apply the now-inhabited Theorem 61 to Lemma-72 selected-episode
+recovery/effect equivalence, join it to the constructed deletion skeleton, then
+derive final control/withdrawal evidence and inhabit `deletionTheorem`.
 After that, use deletion
 for constructive canonical sorting. Fresh-choice,
 cross-parent, 24/18 activation-reset,

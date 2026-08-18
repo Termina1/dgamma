@@ -146,13 +146,13 @@ progress.
   proof-driven assembly and runs both executable filters through their exact
   success theorems. `assembleDeletionResult` proves final record construction
   from exactly the three remaining endpoint invariants.
-- `DGamma.CP4RecoveryAccumulator`, `DGamma.CP4RecoveryTrace`,
-  `DGamma.CP4RecoverySelectedRetire`, and `DGamma.CP4RecoveryAdvance`:
-  obligation-3 accumulator factorization, its trace-indexed runtime model,
-  selected O-Retire preservation, and the successful L-Advance push. L-Begin's
-  identity accumulator is tied constructively to one trailing actor
-  normalization, and each repaired `pushLocalUndo` extends the Definition-60
-  yielded-inverse transformation while preserving full-effect relatedness
+- `DGamma.CP4RecoveryAccumulator`, `DGamma.CP4RecoveryTrace`, the selected-step
+  recovery modules, `DGamma.CP4RecoveryForeignCommute`, and
+  `DGamma.CP4RecoveryReplay`: complete constructive Theorem-61 recovery.
+  L-Begin establishes the normalized identity base; every selected installed
+  branch recovers its source (including conditional-law L-Advance), foreign
+  generated transformations commute across the accumulator, and simultaneous
+  temporal induction assembles the exact full-effect `ForeignReplay` result
   without function extensionality.
 - `DGamma.CP4IndependenceNonVacuity` and `DGamma.CP4RestrictionChecks`:
   Finding-7 order-preserving Definition-60 restriction, reverse-order
@@ -251,7 +251,7 @@ is exported. It is not a postulate and cannot be used as a proof.
 | Def 58 | `registryWellFormed`, `wellFormed`, `viewBindingsInvariant` | executable decision procedure; committed views require installed providers **and matching provider-table keys**, plus parent, disjointness, and acyclicity checks |
 | Thm 59 | `preservationTheorem`, `preservationTheoremProof`, `checkedTransitionTargetValid`, `applyActionDeterministic` | raw invariant preservation proved by exhaustive rule dispatch; checked target admission and same-action determinism separately proved |
 | Def 60 | `EffectStateRelated`, `ReachableSuffix`, `IteratorStage`, `iteratorStageEffect`, `TraceEffectGenerator`, `TraceEffectTransformation`, `runTraceEffectTransformation`, `restrictOwnedPreservingOrder`, `restrictOwnedPreservingOrderIdempotent`, `yieldedInverseStepRecovery`, `IteratorYieldAgreement`, `TraceIndependent`, `PrefixRecoveryIndependent`, `singletonTraceIndependent`, `strengthenedRelationRejectsOrderMismatch` | full-effect-state M(i): actual forwards, every statically reachable continuation forward, and every per-origin yielded inverse generate each actor's partial transformation monoid; moved effect tables preserve stored binding order (Finding #7), lifecycle accumulators normalize between undos (Finding #9), exact effect equality compares each complete ordered table pointwise in the actor name without function extensionality (Finding #10), and yielded inverse recovery is proved on the canonical restricted-source domain (Finding #11). Cross-actor monoids commute, yields are stable, concrete independence remains non-vacuous, and the old lookup-only relation is rejected by an order-sensitive executable regression |
-| Thm 61 | `AccumulatorHandle`, `actualAccumulatorAt`, `accumulatorEffectMap`, `ForeignReplay`, `AccumulatorFactorization`, `AccumulatorModel`, `beginAccumulatorModel`, `foreignStepPreservesAccumulatorModel`, `selectedRetirePreservesAccumulatorModel`, `selectedDivertPreservesAccumulatorModel`, `selectedLeavePreservesAccumulatorModel`, `selectedAdvancePreservesAccumulatorModel`, `selectedInstalledStepPreservesAccumulatorModel`, `accumulatorModelAlongSegment`, `episodePrefixAccumulatorModel`, `recoveryExactnessTheorem` | **partial/stated**: the L-Begin base and complete installed-trace temporal induction are proved, including every selected control branch, every boundary exclusion, foreign control persistence, and exact generated-transformation extension at each successful L-Advance. Finding #10 repairs the ordered effect equivalence needed by the paper's congruence step; foreign effect/replay commutation and final public-alias assembly remain open |
+| Thm 61 | `AccumulatorHandle`, `AccumulatorModel`, `selectedAdvanceAccumulatorRecovery`, `selectedInstalledAccumulatorStep`, `foreignAccumulatorStep`, `accumulatorReplayAlongSegment`, `foreignReplayInitialRelated`, `recoveryExactnessTheorem`, `recoveryExactnessTheoremProof` | **proved**: L-Begin supplies the normalized identity base; every selected installed action recovers the source accumulator, every foreign action commutes across its generated inverse transformation, and simultaneous installed-trace induction constructs the exact full-effect `ForeignReplay`; Findings #9–#11 discharge ordered normalization, exact-map respect, and the canonical conditional recovery law |
 | Cor 62 | `terminalRecoveryTheorem`, `raiseMapIsIdentity`, `foreignReplayEmpty` | **stated**: one full-effect replay equation; L-Raise identity and the empty replay core are proved, but terminal recovery remains open |
 | Thm 63 | `beginSatisfactionTheorem`, `unloadGuardTheorem`, `InstallationEvolution`, `ProviderContainsConsumer`, `extractContainingProviderEpisode`, `providerValueConstantTrace`, `orderingTheorem`, `orderingTheoremProof` | **proved**: selects the same-global-trace provider episode, proves both strict boundaries, constant consumer resolution, and constant provider value; `AlignedTransitions` is the explicit dictionary-alignment premise |
 | Thm 64 | `advanceStructureTheorem`, `abortDivertStructureTheorem`, `resolutionStructureTheoremProof`, `resolutionCoherenceTheorem`, `resolutionCoherenceFromTerminalRecovery` | **partial/stated**: Equation 59 and whole-episode resolution structure are proved; final packaging from Corollary 62 is proved; only terminal recovery is missing |
