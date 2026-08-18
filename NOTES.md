@@ -1777,6 +1777,34 @@ L-Begin. Both sides install the same declared continuation and identity
 accumulator, `beginLifecycleControlRelated` supplies the new control relation,
 and ordered replacement plus raw Preservation produce the next replay package.
 No ambient equality is assumed.
+
+The precedence anchor now has both cases required by the paper rather than
+pretending every retained lifecycle occurrence belongs to a closing foreign
+episode. `DGamma.CP4DeletionSelectedForeignLifecycleAnchorEndpoint` derives
+endpoint precedence acyclicity from the existing protocol-rank discipline and
+then applies the proved Lemma 70 using exactly Lemma 72's public reached/quiet/
+failure-free/totality premises. No support or acyclicity premise was added to
+the public theorem. `DGamma.CP4DeletionSelectedForeignLifecycleAnchorOpen`
+proves the open-at-quiescence exclusion: an Active supported owner obtains a
+supported declared provider for each dependency; pairwise provision uniqueness
+identifies any provider overlapping the selected declaration with the selected
+name; Lemma 70 would then make the selected endpoint fiber Active, contradicting
+its Inactive closing endpoint. The closed constructor retains the exact
+consumer-opening edge used by `NoDependentClosingEpisode`, and the saturated
+frame dispatches over both constructors.
+
+`DGamma.CP4DeletionSelectedForeignLifecycleAnchorTrace` supplies the remaining
+trace mechanics without proof equality: `OccursIn` is converted to an exact
+`LocatedActionOccurrence`; installed evidence is split at that occurrence;
+components are proved stable across every checked step with the evaluator's
+`RegistryLocalUpdate` certificate and then across an arbitrary installed trace;
+and `closedForeignLifecycleAnchorFromInstalledPrefix` constructs the closed
+anchor from the located episode plus its opening-to-occurrence prefixes. The
+open smart constructor rebuilds Lemma 70 internally from the public premises.
+The next anchor join is action-specific endpoint classification: derive the
+final Active owner / Inactive selected fiber facts for the genuinely open case,
+and use the selected L-Unload reliance guard when a later selected activation
+or raw-name generation means the selected raw endpoint is Active again.
 `DGamma.CP4DeletionRelationalBoundary` now defines the approved primary suffix
 interface. It compares the actual survivor with the complete current-R plan
 target using `EffectStateRelated` plus an ordered `FiberControlRelated`
@@ -1992,9 +2020,11 @@ fold are proved; the selected quotient's accumulator/effect half is now proved
 at L-Begin, every skipped selected installed head, every foreign actual map, and
 checked L-Unload, with complete-plan transport, a preserved ordered
 selected-exempt interior control skeleton, and an ordered relational suffix
-interface; retained foreign lifecycle source frames and all lifecycle-result
-control constructors are proved, while construction of that saturated frame
-from no-dependent-closing and the concrete checked lifecycle transitions remain;
+interface; retained foreign lifecycle source frames, both closed/open
+precedence-anchor eliminations, Lemma-70 endpoint reconstruction, installed
+occurrence/component transport, and all lifecycle-result control constructors
+are proved, while action-specific classification into those anchors and the
+concrete checked lifecycle transitions beyond L-Begin remain;
 deleted-R/empty-plan propagation,
 the relational suffix fold, and endpoint control/withdrawal invariants remain);
 Confluence/Theorem

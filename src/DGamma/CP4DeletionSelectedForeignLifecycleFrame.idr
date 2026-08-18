@@ -8,6 +8,8 @@ import DGamma.CP3
 import DGamma.CP4DeletionSelectedBoundary
 import DGamma.CP4DeletionSelectedForeignControlCore
 import DGamma.CP4DeletionSelectedForeignLifecycleCore
+import DGamma.CP4DeletionSelectedForeignLifecycleAnchorCore
+import DGamma.CP4DeletionSelectedForeignLifecycleAnchorOpen
 import Data.List.Elem
 import Data.Maybe
 import Decidable.Equality
@@ -244,34 +246,6 @@ lifecycleControlReliedHeadSame nameEq provider self current
           (sym (reliedHeadLifecycleObservation nameEq provider self current _
             rightParent rightRetired rightTable rightLifecycle)))
 
-||| Trace anchor used to turn one observed overlap at the current quotient
-||| boundary into the exact Definition-65 edge forbidden at the consumer's
-||| opening.  Later lifecycle reconstruction derives these component-stability
-||| fields from the located checked trace; the record does not weaken the edge.
-public export
-record ForeignLifecyclePrecedenceAnchor
-  (name, key, world, error : Type) (value : key -> Type)
-  (nameEq : DecEq name) (keyEq : DecEq key)
-  {initial, finalState : SystemState name key value world error}
-  (global : Transitions initial finalState)
-  (selected, actor : name)
-  (currentSelected, currentOwner : Fiber name key value world error) where
-  constructor MkForeignLifecyclePrecedenceAnchor
-  anchoredConsumerEpisode : LocatedClosedEpisode name key world error value
-    nameEq keyEq actor global
-  anchoredSelectedFiber : Fiber name key value world error
-  anchoredOwnerFiber : Fiber name key value world error
-  0 anchoredSelectedFound : lookupFiber @{nameEq} selected
-    (registry (closedStartState (locatedEpisode anchoredConsumerEpisode))) =
-      Just anchoredSelectedFiber
-  0 anchoredOwnerFound : lookupFiber @{nameEq} actor
-    (registry (closedStartState (locatedEpisode anchoredConsumerEpisode))) =
-      Just anchoredOwnerFiber
-  0 anchoredSelectedComponent : fiberComponent anchoredSelectedFiber =
-    fiberComponent currentSelected
-  0 anchoredOwnerComponent : fiberComponent anchoredOwnerFiber =
-    fiberComponent currentOwner
-
 ||| A current selected table entry on a dependency key would expose a concrete
 ||| precedence edge at the anchored consumer opening, contradicting the public
 ||| no-dependent-closing premise.  The result is the exact Boolean observation
@@ -292,18 +266,28 @@ public export
   providerCandidate @{keyEq} wanted selectedFiber = False
 selectedProviderExcludedByNoDependent nameEq keyEq selected actor global
   noDependent selectedFiber ownerFiber
-  (MkForeignLifecyclePrecedenceAnchor consumerEpisode startSelected startOwner
+  anchor@(OpenForeignLifecyclePrecedenceAnchor finalSelected finalOwner
+    finalSelectedFound finalOwnerFound finalSelectedComponent finalOwnerComponent
+    finalSelectedInactive finalOwnerActive finalWellFormed supportMatches)
+  wanted ownerDeclares = openForeignLifecycleProviderExcluded nameEq keyEq
+    selected actor global selectedFiber ownerFiber finalSelected finalOwner
+    finalSelectedFound finalOwnerFound finalSelectedComponent finalOwnerComponent
+    finalSelectedInactive finalOwnerActive finalWellFormed supportMatches wanted
+    ownerDeclares
+selectedProviderExcludedByNoDependent nameEq keyEq selected actor global
+  noDependent selectedFiber ownerFiber
+  (ClosedForeignLifecyclePrecedenceAnchor consumerEpisode startSelected startOwner
     selectedFound ownerFound selectedComponent ownerComponent)
   wanted ownerDeclares
   with (providerCandidate @{keyEq} wanted selectedFiber) proof candidate
   selectedProviderExcludedByNoDependent nameEq keyEq selected actor global
     noDependent selectedFiber ownerFiber
-    (MkForeignLifecyclePrecedenceAnchor consumerEpisode startSelected startOwner
+    (ClosedForeignLifecyclePrecedenceAnchor consumerEpisode startSelected startOwner
       selectedFound ownerFound selectedComponent ownerComponent)
     wanted ownerDeclares | False = Refl
   selectedProviderExcludedByNoDependent nameEq keyEq selected actor global
     noDependent selectedFiber ownerFiber
-    (MkForeignLifecyclePrecedenceAnchor consumerEpisode startSelected startOwner
+    (ClosedForeignLifecyclePrecedenceAnchor consumerEpisode startSelected startOwner
       selectedFound ownerFound selectedComponent ownerComponent)
     wanted ownerDeclares | True =
       let 0 memberTrue : (memberKey @{keyEq} wanted
