@@ -1586,8 +1586,18 @@ runtime snapshots. No state/proof-term equality is used.
 `DGamma.CP4DeletionSuffixFold.noEpisodeSuffixReplayFold` closes the structural
 whole-trace suffix induction: deleted heads leave the survivor fixed, retained
 heads replay their exact checked action, and one simultaneous result carries the
-generation scan, `GenerationReplayReady`, and final complete boundary. The
-selected segment separately needs the selected-fiber lifecycle/effect quotient.
+generation scan, `GenerationReplayReady`, and final complete boundary.
+`DGamma.CP4DeletionSelectedEffectCore` now establishes the first committed
+selected-episode quotient stage. `SelectedEffectReplayBoundary` ties the actual
+installed state to its concrete Theorem-61 accumulator model and requires the
+survivor projection to equal the recovered ambient state and every ordered actor
+table. `beginSelectedEffectReplayBoundary` derives the base from checked L-Begin
+without equating registry proof terms, and
+`selectedStepPreservesEffectReplayBoundary` consumes the proved selected
+retirement/advance/divert/leave accumulator step to preserve the relation when
+that selected lifecycle action is skipped. The remaining selected stage must
+construct foreign retained checked transitions, thread current-R plan deletion,
+and close the L-Unload endpoint.
 
 ### Corollary 62: terminal recovery
 

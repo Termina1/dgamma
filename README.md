@@ -186,8 +186,12 @@ progress.
   lifecycle dispatchers are closed. `DGamma.CP4DeletionSuffixFold` now performs
   the dependent whole-trace no-selected-episode suffix induction, constructing
   its generation scan, concrete-filter readiness, and final complete boundary
-  simultaneously. The selected
-  segment additionally needs the Lemma-71 lifecycle quotient. The located-episode splitter
+  simultaneously. `DGamma.CP4DeletionSelectedEffectCore` starts the selected
+  quotient with an accumulator-indexed effect boundary: checked L-Begin proves
+  the base against the untouched survivor, and every selected installed step
+  preserves that boundary when its lifecycle action is erased. The remaining
+  selected layer must replay foreign/retained controls and thread exact R-plan
+  deletion through the same boundary. The located-episode splitter
   derives the episode/suffix generation scans and restricts both no-R-episode
   and repaired Definition-69 evidence without new public premises.
   `DeletionTraceSkeleton` integrates those proofs with both dependent filters;
