@@ -127,8 +127,9 @@ progress.
   `DGamma.CP4DeletionFilterSuccess`, `DGamma.CP4DeletionPremiseSplit`,
   `DGamma.CP4DeletionSkeleton`, and `DGamma.CP4DeletionSkeletonSuccess`:
   Finding-8 checked reuse countermodel,
-  a total proof-producing scanner, proved birth-before-current-ordinal and
-  live-name-uniqueness invariants, decidable exact-generation deletion
+  a total proof-producing scanner, proved birth-before-current-ordinal,
+  live-name-uniqueness, and key/stamp-name coherence invariants, decidable
+  exact-generation deletion
   predicates, and a total
   `Maybe` keep/delete/replay constructor for every finite trace. The old raw-name
   filter provably deletes a later root reissue, while the repaired `(name,

@@ -1613,7 +1613,13 @@ this combined relation immediately after deleting L-Begin.
 step: a skipped selected replacement leaves every foreign control lookup exact;
 the rule-specific selected accumulator proof and plan transport are its only
 inputs. Generation uniqueness remains supplied by the simultaneous scanner at
-the rule-specific fold rather than duplicated inside this boundary record. The
+the rule-specific fold rather than duplicated inside this boundary record.
+`DGamma.CP4DeletionGenerationStamped` adds the complementary scanner invariant
+needed there: every environment key equals its generation's raw name.
+Insertion, removal, all six unchanged-environment action forms, and whole-trace
+preservation from `[]` are proved constructively. This lets the public
+`selectedOutsideRegistered` premise exclude the selected fiber from an exact
+current-R plan without assuming a raw-name global freshness discipline. The
 remaining selected stage must construct foreign retained checked transitions,
 thread current-R plan deletion, and close the L-Unload endpoint.
 
