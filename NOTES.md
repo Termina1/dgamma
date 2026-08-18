@@ -1277,11 +1277,20 @@ O-Remove, and all lifecycle forms, the complement of
 `GenerationOwnedActor` plus scanner uniqueness gives the exact current-R
 outside certificate. `checkedRetainedOrchestrationAfterCurrentPlan` and
 `checkedRetainedLifecycleAfterCurrentPlan` close the checked one-step theorem
-for all eight action constructors. The remaining obligation-2 step is the
-cross-boundary invariant that identifies each incrementally built survivor with
-the corresponding original boundary minus the selected episode/current-R plan,
-then threads these one-step results through both dependent filters. No theorem
-alias or runtime evaluator changed, and no escape hatch was introduced.
+for all eight action constructors.
+
+`DGamma.CP4DeletionFilterSuccess` closes the filter's generic `Maybe` layer
+without replacing it by a parallel relation. `GenerationReplayReady` records
+one exact `fireNamed` success for every retained head and no transition for a
+deleted head. A structural induction constructs the same
+`GenerationFilterResult` and proves an equation that the executable
+`filterGenerationActions` call returned `Just`; selected-episode and suffix
+specializations use the committed decidable deletion predicates directly. The
+remaining obligation-2 step is now only construction of `GenerationReplayReady`
+from the cross-boundary invariant identifying each incrementally built survivor
+with its corresponding original boundary minus the selected episode/current-R
+plan. No theorem alias or runtime evaluator changed, and no escape hatch was
+introduced.
 
 ### Cold-build validation under Idris 2 v0.8.0
 

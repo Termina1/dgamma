@@ -122,7 +122,8 @@ progress.
   `DGamma.CP4DeletionGenerationBounds`,
   `DGamma.CP4DeletionGenerationUnique`,
   `DGamma.CP4DeletionGenerationFilter`,
-  `DGamma.CP4DeletionPremiseSplit`, and `DGamma.CP4DeletionSkeleton`:
+  `DGamma.CP4DeletionFilterSuccess`, `DGamma.CP4DeletionPremiseSplit`, and
+  `DGamma.CP4DeletionSkeleton`:
   Finding-8 checked reuse countermodel,
   a total proof-producing scanner, proved birth-before-current-ordinal and
   live-name-uniqueness invariants, decidable exact-generation deletion
@@ -131,8 +132,11 @@ progress.
   filter provably deletes a later root reissue, while the repaired `(name,
   birth ordinal)` filter preserves it; registrations born in the selected
   episode are proved unable to delete any prefix action. The constructor
-  returns `Nothing` precisely at a kept action that fails in the smaller state,
-  leaving that control obligation visible to the remaining Lemma-72 proof.
+  returns `Nothing` precisely at a kept action that fails in the smaller state.
+  `GenerationReplayReady` packages exact retained `fireNamed` successes, and
+  `generationReplayReadyGivesFilterSuccess` proves the executable filter itself
+  returns `Just` (with selected-episode and suffix specializations), reducing the
+  remaining gap to construction of readiness from the cross-boundary invariant.
   The located-episode splitter derives the episode/suffix generation scans and
   restricts both no-R-episode and repaired Definition-69 evidence without new
   public premises. `DeletionTraceSkeleton` integrates those proofs with both
