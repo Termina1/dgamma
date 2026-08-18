@@ -88,6 +88,12 @@ progress.
   deleting an Inactive leaf preserves active-provider targets, committed
   capability resolution, and reliance; all five lifecycle action forms remain
   raw- and checked-applicable through an indexed multi-leaf deletion plan.
+  `DGamma.CP4DeletionControlOrchestration` proves the complementary O-Insert,
+  O-Retire, and O-Remove applicability frames through the same plan. Its
+  `OrchestrationOutsideDeletionPlan` records both owner exclusion and the extra
+  child-O-Insert parent exclusion, so all retained action classes now have a
+  checked plan-level replay theorem. Derivation of those certificates from the
+  located Lemma-72 trace remains part of filter-success obligation 2.
   `DGamma.CP4DeletionControlChecks` supplies a nonempty checked L-Finish replay.
   `DGamma.CP4DeletionPlanBuilder` scans the final live generation environment,
   skips historical generations and later raw-name reissues, constructs the

@@ -1259,6 +1259,19 @@ endpoint invariants.
 Whether `NoDependentClosingEpisode` suffices for that episode-local bridge remains under active review; no public statement change
 has been made.
 
+Obligation 2 now has its complete per-action plan frame. The earlier
+`checkedLifecycleAfterInactivePlan` covers all five lifecycle action forms;
+`DGamma.CP4DeletionControlOrchestration` adds raw and checked O-Insert,
+O-Retire, and O-Remove replay through an arbitrary `InactiveLeafDeletionPlan`.
+O-Insert is the important nontrivial case: registry deletion relaxes provision
+uniqueness, but a child insertion also reads its parent. The new
+`OrchestrationOutsideDeletionPlan` therefore records both owner exclusion and
+`InsertionParentOutside` for every erased leaf. This prevents an unsound generic
+“orchestration only gets easier” argument. The remaining obligation-2 step is
+to derive these owner/parent certificates at every retained occurrence and
+thread the selected-episode/suffix filter success induction. No theorem alias or
+runtime evaluator changed, and no escape hatch was introduced.
+
 ### Cold-build validation under Idris 2 v0.8.0
 
 A one-process build from an empty `build/` may be killed while elaborating the
@@ -1342,9 +1355,10 @@ that exposes kept-action replay failure, exact located splitting of the
 no-R-episode and Definition-69 premises, conditional trace/final-record
 assembly, executable exact-generation Inactive-leaf plan/actor-outside
 construction, constructive plan success from the explicit current-R leaf
-invariant, scanner live-name uniqueness plus the public-outside bridge, and
-proved checked lifecycle applicability through that plan, and a complete
-`CurrentRegisteredChildless` induction from disciplined registration,
+invariant, scanner live-name uniqueness plus the public-outside bridge, proved checked
+lifecycle and orchestration applicability through that plan (including the
+child-O-Insert parent guard), and a complete `CurrentRegisteredChildless`
+induction from disciplined registration,
 well-formed parent closure, and exact-generation no-episode evidence;
 selected-episode/suffix applicability and endpoint effect/control/withdrawal
 invariants remain);
