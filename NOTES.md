@@ -1765,7 +1765,11 @@ registry (selected false/false, foreign candidates exact), and
 does not weaken target equality to unordered membership. The visibility-only
 exports of `providerCandidateExplicit` and `foreignProviderCandidateSame` expose
 facts already present in the public source relation and do not change their
-types or semantics.
+types or semantics. `DGamma.CP4DeletionSelectedForeignLifecycleReplayCore`
+adds the common proof-indexed result for each pending concrete lifecycle branch
+and proves that saturation projects back to the ordered selected-exempt
+skeleton; this keeps raw/checked applicability and next-boundary controls in one
+non-drifting package.
 `DGamma.CP4DeletionRelationalBoundary` now defines the approved primary suffix
 interface. It compares the actual survivor with the complete current-R plan
 target using `EffectStateRelated` plus an ordered `FiberControlRelated`

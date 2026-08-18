@@ -244,7 +244,11 @@ progress.
   `DGamma.CP4DeletionSelectedForeignLifecycleGuards` folds those source cells
   into exact first-provider and complete `resolveView` equality for every owner
   dependency, retaining executable registry scan order rather than replacing it
-  by lookup extensionality. Deriving the opening/component
+  by lookup extensionality.
+  `DGamma.CP4DeletionSelectedForeignLifecycleReplayCore` fixes the common
+  concrete replay result (raw step, checked step, and next ordered controls) and
+  projects every saturated source relation back to the selected-exempt skeleton.
+  Deriving the opening/component
   anchor from each located retained lifecycle occurrence and reconstructing the
   five concrete checked evaluator branches remain before the selected layer can
   handle deleted R heads and close L-Unload.
