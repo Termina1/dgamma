@@ -1344,7 +1344,10 @@ transformation without assuming proof irrelevance.
 step: the exhaustive local-update theorem keeps the selected fiber object,
 accumulator, installed-shape evidence, and factorization unchanged. The
 remaining temporal step is the selected-action dispatcher plus the effect-side
-commutation/replay invariant.
+commutation/replay invariant. `selectedRetirePreservesAccumulatorModel` now
+closes the selected O-Retire branch: it reconstructs the exact checked target,
+transports all three installed lifecycle shapes through the retirement-only
+fiber update, and retains the accumulator transformation/factorization.
 
 `DGamma.CP4DeletionFilterSuccess` closes the filter's generic `Maybe` layer
 without replacing it by a parallel relation. `GenerationReplayReady` records
