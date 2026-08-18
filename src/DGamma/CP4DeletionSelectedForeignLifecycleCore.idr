@@ -45,6 +45,7 @@ lifecycleInstalledSame (ReloadingControls remaining accumulator view) = Refl
 lifecycleInstalledSame (ActiveControls accumulator view) = Refl
 lifecycleInstalledSame (UnloadingControls accumulator view outcome) = Refl
 
+public export
 0 providerCandidate : DecEq key => key ->
   Fiber name key value world error -> Bool
 providerCandidate wanted fiber =

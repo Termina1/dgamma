@@ -235,10 +235,15 @@ progress.
   guard frame, and proved lifecycle-result constructors for L-Begin, empty
   L-Finish, L-Raise, L-Divert, L-Leave, and reset-to-Inactive L-Unload. Successful
   effectful L-Advance composes through the named
-  `pushLocalUndoRuntimeRelated` keystone. Deriving the saturated frame from the
-  public no-dependent-closing premise and reconstructing the five concrete
-  checked evaluator branches remain before the selected layer can handle
-  deleted R heads and close L-Unload.
+  `pushLocalUndoRuntimeRelated` keystone.
+  `DGamma.CP4DeletionSelectedForeignLifecycleFrame` constructs that saturated
+  frame without registry/proof equality: ordered foreign cells retain exact
+  table bindings and reliance observations, while a concrete consumer-opening
+  anchor turns any selected provision overlap into the exact Definition-65 edge
+  rejected by `NoDependentClosingEpisode`. Deriving that opening/component
+  anchor from each located retained lifecycle occurrence and reconstructing the
+  five concrete checked evaluator branches remain before the selected layer can
+  handle deleted R heads and close L-Unload.
   `DGamma.CP4DeletionRelationalBoundary` is the primary selected-to-suffix
   interface: it relates the actual survivor to the complete plan target by
   ordered effects and an ordered control skeleton with extensional accumulators.

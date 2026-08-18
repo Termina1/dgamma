@@ -1738,8 +1738,24 @@ bindings, and explicit selected-cell provider/reliance exclusions; its saturated
 `ForeignLifecycleGuardFrame` is the exact consumer boundary for the pending
 no-dependent-closing derivation. Rule-level control constructors cover L-Begin,
 empty L-Finish, L-Raise, L-Divert, L-Leave, and L-Unload's Inactive reset.
-Successful L-Advance uses `pushLocalUndoRuntimeRelated`; concrete checked-action
-reconstruction and frame construction from public premises remain open.
+Successful L-Advance uses `pushLocalUndoRuntimeRelated`.
+`DGamma.CP4DeletionSelectedForeignLifecycleFrame` now performs the first honest
+saturation step. `selectedProviderExcludedByNoDependent` reflects an observed
+owned-table key through `ownedSound`, transports both immutable component
+identities to a located consumer opening, constructs the exact
+`PrecedenceEdge`, and eliminates it with the public
+`NoDependentClosingEpisode`. The ordered fold then preserves every foreign
+runtime table and relied-head observation, uses the explicit clean-Inactive
+survivor selected cell for the sole exceptional head, and proves false reliance
+transfers to the survivor. `foreignLifecycleGuardFrameFromNoDependent` assembles
+the complete frame and owner control relation without equating registries or
+erased certificates. Its `ForeignLifecyclePrecedenceAnchor` is deliberately a
+trace-derived intermediate, not a new public Lemma-72 premise: deriving that
+anchor for each retained occurrence (including the non-closing/open-at-end
+case from quiescence and Lemma 70) remains before concrete checked-action
+reconstruction. The supervisor approved exporting the previously private
+`providerCandidate` used in the already-public source-cell constructor; this is
+a visibility-only repair with no semantic change.
 `DGamma.CP4DeletionRelationalBoundary` now defines the approved primary suffix
 interface. It compares the actual survivor with the complete current-R plan
 target using `EffectStateRelated` plus an ordered `FiberControlRelated`
