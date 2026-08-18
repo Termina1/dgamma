@@ -1619,9 +1619,16 @@ needed there: every environment key equals its generation's raw name.
 Insertion, removal, all six unchanged-environment action forms, and whole-trace
 preservation from `[]` are proved constructively. This lets the public
 `selectedOutsideRegistered` premise exclude the selected fiber from an exact
-current-R plan without assuming a raw-name global freshness discipline. The
-remaining selected stage must construct foreign retained checked transitions,
-thread current-R plan deletion, and close the L-Unload endpoint.
+current-R plan without assuming a raw-name global freshness discipline.
+`DGamma.CP4DeletionSelectedOwn` now closes the full skipped-selected installed
+step. It proves the checked update must be a parent-preserving replacement
+(insert/delete contradict the source/target accumulator models), commutes that
+replacement through the complete current-R plan, applies the selected recovery
+step, and preserves every foreign control while leaving the survivor fixed.
+Thus L-Advance, L-Divert, and L-Leave—and any control-only selected installed
+branch supplied by the exhaustive recovery dispatcher—share one boundary
+constructor. The remaining selected stage must construct foreign retained
+checked transitions, handle deleted R heads, and close the L-Unload endpoint.
 
 ### Corollary 62: terminal recovery
 

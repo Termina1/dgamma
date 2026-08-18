@@ -190,7 +190,7 @@ progress.
   simultaneously. `DGamma.CP4DeletionSelectedEffectCore` starts the selected
   quotient with an accumulator-indexed effect boundary: checked L-Begin proves
   the base against the untouched survivor, and every selected installed step
-  preserves that boundary when its lifecycle action is erased. The remaining
+  preserves that boundary when its lifecycle action is erased.
   `DGamma.CP4DeletionSelectedEffectForeign` then proves the foreign half of the
   Lemma-71 diamond: the corrected actual map runs on the related survivor, its
   ordered-table output matches target recovery, and a later checked-control
@@ -198,9 +198,13 @@ progress.
   `DGamma.CP4DeletionSelectedBoundary` combines that effect relation with a
   complete current-R plan, exact controls outside the selected/R generations,
   and checked well-formedness. It proves the post-L-Begin base and preserves all
-  foreign controls across any skipped selected installed step. The remaining
-  selected layer must rebuild retained controls, transport the plan at each
-  concrete head, and close L-Unload. The located-episode splitter
+  foreign controls across any skipped selected installed step.
+  `DGamma.CP4DeletionSelectedOwn` combines scanner stamp coherence with the
+  public selected/R exclusion, commutes every selected installed replacement
+  through the complete plan, and consumes the selected accumulator step to
+  preserve the full boundary while the survivor skips it. The remaining
+  selected layer must rebuild retained foreign controls, handle deleted R
+  heads, and close L-Unload. The located-episode splitter
   derives the episode/suffix generation scans and restricts both no-R-episode
   and repaired Definition-69 evidence without new public premises.
   `DeletionTraceSkeleton` integrates those proofs with both dependent filters;
