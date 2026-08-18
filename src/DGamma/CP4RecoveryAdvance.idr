@@ -71,6 +71,7 @@ actualIteratorStageYields {name} {key} {world} {error} {value}
     rewrite resolved in rewrite projectedActorTable nameEq selected before fiber
       found in rewrite ran in Refl
 
+public export
 0 yieldedGeneratorMapFromStageRun :
   (stage : IteratorStage name key world error value selected whole) ->
   (origin, after : EffectState name key value world) ->

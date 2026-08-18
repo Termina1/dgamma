@@ -96,6 +96,8 @@ lifecycleAccumulator (Unloading accumulator view outcome) = Just accumulator
   AccumulatorFactorization nameEq keyEq selected
     (componentProvisions (fiberComponent modelFiber)) modelAccumulator
     modelTransformation ->
+  TransformationPreservesConfinement selected
+    (componentProvisions (fiberComponent modelFiber)) modelTransformation ->
   AccumulatorModel name key world error value nameEq keyEq selected whole
     afterState
 controlAdvanceModel {name} {key} {world} {error} {value}
@@ -103,7 +105,7 @@ controlAdvanceModel {name} {key} {world} {error} {value}
   retiredFlag table remaining accumulator view sourceFound targetWorld targetTable
   targetLifecycle targetInstalled concrete concreteShape concreteIsAfter modelFiber
   modelFound modelAccumulator modelInstalled modelTransformation
-  modelFactorization =
+  modelFactorization modelConfinement =
     let sourceFiber : Fiber name key value world error
         sourceFiber = MkFiber component parent retiredFlag table
           (Reloading remaining accumulator view)
@@ -148,7 +150,7 @@ controlAdvanceModel {name} {key} {world} {error} {value}
                     nameEq keyEq selected whole concrete
                   concreteModel = MkAccumulatorModel targetFiberValue targetFound
                     accumulator targetInstalled modelTransformation
-                    modelFactorActual
+                    modelFactorActual modelConfinement
               in replace
                 {p = \observed => AccumulatorModel name key world error value
                   nameEq keyEq selected whole observed}
@@ -218,6 +220,8 @@ controlAdvanceModel {name} {key} {world} {error} {value}
   AccumulatorFactorization nameEq keyEq selected
     (componentProvisions (fiberComponent modelFiber)) modelAccumulator
     modelTransformation ->
+  TransformationPreservesConfinement selected
+    (componentProvisions (fiberComponent modelFiber)) modelTransformation ->
   AccumulatorModel name key world error value nameEq keyEq selected whole
     afterState
 successfulAdvanceModel {name} {key} {world} {error} {value}
@@ -226,7 +230,7 @@ successfulAdvanceModel {name} {key} {world} {error} {value}
   retiredFlag table step rest accumulator view sourceFound capability resolved
   localAfter undo ran targetLifecycle targetInstalled concrete concreteShape
   concreteIsAfter modelFiber modelFound modelAccumulator modelInstalled
-  modelTransformation modelFactorization =
+  modelTransformation modelFactorization modelConfinement =
     let targetAccumulator : LocalState key value world
           (componentProvisions component) ->
           LocalState key value world (componentProvisions component)
@@ -245,6 +249,33 @@ successfulAdvanceModel {name} {key} {world} {error} {value}
           selected whole
         nextTransformation = TraceCompose modelTransformation
           (TraceGenerator generator)
+        0 stageRuns : iteratorStageEffect stage
+          (projectEffectState @{nameEq} before) = Just
+          (setEffectTable @{nameEq} selected
+            (ownedValues (localTable localAfter))
+            (setEffectAmbient (localWorld localAfter)
+              (projectEffectState @{nameEq} before)),
+           yieldedInverseEffectMap nameEq keyEq selected
+             (componentProvisions component) undo,
+           MkIteratorContinuation rest)
+        stageRuns = actualIteratorStageYields nameEq keyEq selected before
+          afterState tag anchoredChecked anchoredOccurs
+          (MkFiber component parent retiredFlag table
+            (Reloading (step :: rest) accumulator view))
+          sourceFound step rest accumulator view Refl capability resolved
+          localAfter undo ran
+        0 generatorMap : (state : EffectState name key value world) ->
+          traceGeneratorMap generator state = yieldedInverseEffectMap nameEq
+            keyEq selected (componentProvisions component) undo state
+        generatorMap = yieldedGeneratorMapFromStageRun stage
+          (projectEffectState @{nameEq} before)
+          (setEffectTable @{nameEq} selected
+            (ownedValues (localTable localAfter))
+            (setEffectAmbient (localWorld localAfter)
+              (projectEffectState @{nameEq} before)))
+          (yieldedInverseEffectMap nameEq keyEq selected
+            (componentProvisions component) undo)
+          (MkIteratorContinuation rest) stageRuns
         0 sameFiber : modelFiber = MkFiber component parent retiredFlag table
           (Reloading (step :: rest) accumulator view)
         sameFiber = justPairInjective (trans (sym modelFound) sourceFound)
@@ -271,6 +302,11 @@ successfulAdvanceModel {name} {key} {world} {error} {value}
                   (Reloading (step :: rest) accumulator view))
                 sourceFound step rest accumulator view Refl capability
                 resolved localAfter undo ran modelTransformation modelFactorActual
+              0 nextConfinement : TransformationPreservesConfinement selected
+                (componentProvisions component) nextTransformation
+              nextConfinement = pushTransformationPreservesConfinement nameEq
+                keyEq selected (componentProvisions component) undo
+                modelTransformation generator modelConfinement generatorMap
               concreteTarget : SystemState name key value world error
               concreteTarget = MkSystemState (localWorld localAfter)
                 (replaceBinding @{nameEq} selected
@@ -304,7 +340,7 @@ successfulAdvanceModel {name} {key} {world} {error} {value}
                 (MkFiber component parent retiredFlag (localTable localAfter)
                   targetLifecycle) targetFound
                 targetAccumulator targetInstalled nextTransformation
-                nextFactorization
+                nextFactorization nextConfinement
           in replace
             {p = \observed => AccumulatorModel name key world error value
               nameEq keyEq selected whole observed}
@@ -339,41 +375,41 @@ selectedAdvanceFromRaw {name} {key} {world} {error} {value}
   nameEq keyEq selected before@(MkSystemState ambient fibers) afterState tag
   checked whole occurs
   (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
-    modelTransformation modelFactorization)
+    modelTransformation modelFactorization modelConfinement)
   with (lookupFiber @{nameEq} selected fibers) proof found
   selectedAdvanceFromRaw nameEq keyEq selected
     before@(MkSystemState ambient fibers) afterState tag checked whole occurs
     (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
-      modelTransformation modelFactorization) | Nothing =
+      modelTransformation modelFactorization modelConfinement) | Nothing =
         void (nothingIsNotJust modelFound)
   selectedAdvanceFromRaw nameEq keyEq selected
     before@(MkSystemState ambient fibers) afterState tag checked whole occurs
     (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
-      modelTransformation modelFactorization) |
+      modelTransformation modelFactorization modelConfinement) |
       Just (MkFiber component parent retiredFlag table lifecycle)
     with (lifecycle)
     selectedAdvanceFromRaw nameEq keyEq selected
       before@(MkSystemState ambient fibers) afterState tag checked whole occurs
       (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
-        modelTransformation modelFactorization) |
+        modelTransformation modelFactorization modelConfinement) |
         Just (MkFiber component parent retiredFlag table lifecycle) |
           Inactive outcome = void (nothingIsNotJust checked)
     selectedAdvanceFromRaw nameEq keyEq selected
       before@(MkSystemState ambient fibers) afterState tag checked whole occurs
       (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
-        modelTransformation modelFactorization) |
+        modelTransformation modelFactorization modelConfinement) |
         Just (MkFiber component parent retiredFlag table lifecycle) |
           Active accumulator view = void (nothingIsNotJust checked)
     selectedAdvanceFromRaw nameEq keyEq selected
       before@(MkSystemState ambient fibers) afterState tag checked whole occurs
       (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
-        modelTransformation modelFactorization) |
+        modelTransformation modelFactorization modelConfinement) |
         Just (MkFiber component parent retiredFlag table lifecycle) |
           Unloading accumulator view outcome = void (nothingIsNotJust checked)
     selectedAdvanceFromRaw nameEq keyEq selected
       before@(MkSystemState ambient fibers) afterState tag checked whole occurs
       (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
-        modelTransformation modelFactorization) |
+        modelTransformation modelFactorization modelConfinement) |
         Just (MkFiber component parent retiredFlag table lifecycle) |
           Reloading [] accumulator view
       with (targetMatches @{nameEq}
@@ -383,7 +419,7 @@ selectedAdvanceFromRaw {name} {key} {world} {error} {value}
       selectedAdvanceFromRaw nameEq keyEq selected
         before@(MkSystemState ambient fibers) afterState tag checked whole occurs
         (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
-          modelTransformation modelFactorization) |
+          modelTransformation modelFactorization modelConfinement) |
           Just (MkFiber component parent retiredFlag table lifecycle) |
             Reloading [] accumulator view | True =
         let sourceFiber = MkFiber component parent retiredFlag table
@@ -411,11 +447,11 @@ selectedAdvanceFromRaw {name} {key} {world} {error} {value}
           (Active accumulator view) (AccumulatorActive view Refl) concrete
           concreteShape concreteIsAfter modelFiber
           (trans found modelFound) modelAccumulator modelInstalled
-          modelTransformation modelFactorization
+          modelTransformation modelFactorization modelConfinement
       selectedAdvanceFromRaw nameEq keyEq selected
         before@(MkSystemState ambient fibers) afterState tag checked whole occurs
         (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
-          modelTransformation modelFactorization) |
+          modelTransformation modelFactorization modelConfinement) |
           Just (MkFiber component parent retiredFlag table lifecycle) |
             Reloading [] accumulator view | False =
         let sourceFiber = MkFiber component parent retiredFlag table
@@ -444,11 +480,11 @@ selectedAdvanceFromRaw {name} {key} {world} {error} {value}
           (Unloading accumulator view Nothing)
           (AccumulatorUnloading view Nothing Refl) concrete concreteShape
           concreteIsAfter modelFiber (trans found modelFound)
-          modelAccumulator modelInstalled modelTransformation modelFactorization
+          modelAccumulator modelInstalled modelTransformation modelFactorization modelConfinement
     selectedAdvanceFromRaw nameEq keyEq selected
       before@(MkSystemState ambient fibers) afterState tag checked whole occurs
       (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
-        modelTransformation modelFactorization) |
+        modelTransformation modelFactorization modelConfinement) |
         Just (MkFiber component parent retiredFlag table lifecycle) |
           Reloading (step :: rest) accumulator view
       with (resolveCommittedValues @{nameEq} @{keyEq}
@@ -456,14 +492,14 @@ selectedAdvanceFromRaw {name} {key} {world} {error} {value}
       selectedAdvanceFromRaw nameEq keyEq selected
         before@(MkSystemState ambient fibers) afterState tag checked whole occurs
         (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
-          modelTransformation modelFactorization) |
+          modelTransformation modelFactorization modelConfinement) |
           Just (MkFiber component parent retiredFlag table lifecycle) |
             Reloading (step :: rest) accumulator view | Nothing =
               void (nothingIsNotJust checked)
       selectedAdvanceFromRaw nameEq keyEq selected
         before@(MkSystemState ambient fibers) afterState tag checked whole occurs
         (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
-          modelTransformation modelFactorization) |
+          modelTransformation modelFactorization modelConfinement) |
           Just (MkFiber component parent retiredFlag table lifecycle) |
             Reloading (step :: rest) accumulator view | Just capability
         with (runStepEffect step capability
@@ -473,7 +509,7 @@ selectedAdvanceFromRaw {name} {key} {world} {error} {value}
         selectedAdvanceFromRaw nameEq keyEq selected
           before@(MkSystemState ambient fibers) afterState tag checked whole occurs
           (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
-            modelTransformation modelFactorization) |
+            modelTransformation modelFactorization modelConfinement) |
             Just (MkFiber component parent retiredFlag table lifecycle) |
               Reloading (step :: rest) accumulator view | Just capability |
                 Left err =
@@ -504,11 +540,11 @@ selectedAdvanceFromRaw {name} {key} {world} {error} {value}
             (AccumulatorUnloading view (Just err) Refl) concrete concreteShape
             concreteIsAfter modelFiber (trans found modelFound)
             modelAccumulator modelInstalled
-            modelTransformation modelFactorization
+            modelTransformation modelFactorization modelConfinement
         selectedAdvanceFromRaw nameEq keyEq selected
           before@(MkSystemState ambient fibers) afterState tag checked whole occurs
           (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
-            modelTransformation modelFactorization) |
+            modelTransformation modelFactorization modelConfinement) |
             Just (MkFiber component parent retiredFlag table lifecycle) |
               Reloading (step :: rest) accumulator view | Just capability |
                 Right (localAfter, undo)
@@ -519,7 +555,7 @@ selectedAdvanceFromRaw {name} {key} {world} {error} {value}
           selectedAdvanceFromRaw nameEq keyEq selected
             before@(MkSystemState ambient fibers) afterState tag checked whole occurs
             (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
-              modelTransformation modelFactorization) |
+              modelTransformation modelFactorization modelConfinement) |
               Just (MkFiber component parent retiredFlag table lifecycle) |
                 Reloading (step :: rest) accumulator view | Just capability |
                   Right (localAfter, undo) | False =
@@ -553,11 +589,11 @@ selectedAdvanceFromRaw {name} {key} {world} {error} {value}
               (AccumulatorUnloading view Nothing Refl) concrete concreteShape
               concreteIsAfter modelFiber (trans found modelFound)
               modelAccumulator modelInstalled
-              modelTransformation modelFactorization
+              modelTransformation modelFactorization modelConfinement
           selectedAdvanceFromRaw nameEq keyEq selected
             before@(MkSystemState ambient fibers) afterState tag checked whole occurs
             (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
-              modelTransformation modelFactorization) |
+              modelTransformation modelFactorization modelConfinement) |
               Just (MkFiber component parent retiredFlag table lifecycle) |
                 Reloading (step :: []) accumulator view | Just capability |
                   Right (localAfter, undo) | True =
@@ -591,11 +627,11 @@ selectedAdvanceFromRaw {name} {key} {world} {error} {value}
               (AccumulatorActive view Refl) concrete concreteShape
               concreteIsAfter modelFiber (trans found modelFound)
               modelAccumulator modelInstalled
-              modelTransformation modelFactorization
+              modelTransformation modelFactorization modelConfinement
           selectedAdvanceFromRaw nameEq keyEq selected
             before@(MkSystemState ambient fibers) afterState tag checked whole occurs
             (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
-              modelTransformation modelFactorization) |
+              modelTransformation modelFactorization modelConfinement) |
               Just (MkFiber component parent retiredFlag table lifecycle) |
                 Reloading (step :: nextStep :: more) accumulator view |
                   Just capability | Right (localAfter, undo) | True =
@@ -631,7 +667,7 @@ selectedAdvanceFromRaw {name} {key} {world} {error} {value}
               concreteShape
               concreteIsAfter modelFiber (trans found modelFound)
               modelAccumulator modelInstalled
-              modelTransformation modelFactorization
+              modelTransformation modelFactorization modelConfinement
 
 ||| Public checked-step specialization; the raw evaluator equation is projected
 ||| once and fed to the exhaustive dispatcher as an erased implicit.

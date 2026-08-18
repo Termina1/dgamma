@@ -33,39 +33,41 @@ justPairInjective Refl = Refl
   AccumulatorFactorization nameEq keyEq selected
     (componentProvisions (fiberComponent modelFiber)) modelAccumulator
     modelTransformation ->
+  TransformationPreservesConfinement selected
+    (componentProvisions (fiberComponent modelFiber)) modelTransformation ->
   AccumulatorModel name key world error value nameEq keyEq selected whole
     afterState
 divertConcreteModel {name} {key} {world} {error} {value}
   nameEq keyEq selected ambient fibers afterState whole raw modelFiber modelFound
   modelAccumulator modelInstalled modelTransformation modelFactorization
-  with (lookupFiber @{nameEq} selected fibers) proof found
+  modelConfinement with (lookupFiber @{nameEq} selected fibers) proof found
   divertConcreteModel nameEq keyEq selected ambient fibers afterState whole raw
     modelFiber modelFound modelAccumulator modelInstalled modelTransformation
-    modelFactorization | Nothing =
+    modelFactorization modelConfinement | Nothing =
       void (nothingIsNotJust modelFound)
   divertConcreteModel nameEq keyEq selected ambient fibers afterState whole raw
     modelFiber modelFound modelAccumulator modelInstalled modelTransformation
-    modelFactorization |
+    modelFactorization modelConfinement |
     Just (MkFiber component parent retiredFlag table lifecycle)
     with (lifecycle)
     divertConcreteModel nameEq keyEq selected ambient fibers afterState whole raw
       modelFiber modelFound modelAccumulator modelInstalled modelTransformation
-      modelFactorization |
+      modelFactorization modelConfinement |
       Just (MkFiber component parent retiredFlag table lifecycle) |
       Inactive outcome = void (nothingIsNotJust raw)
     divertConcreteModel nameEq keyEq selected ambient fibers afterState whole raw
       modelFiber modelFound modelAccumulator modelInstalled modelTransformation
-      modelFactorization |
+      modelFactorization modelConfinement |
       Just (MkFiber component parent retiredFlag table lifecycle) |
       Active accumulator view = void (nothingIsNotJust raw)
     divertConcreteModel nameEq keyEq selected ambient fibers afterState whole raw
       modelFiber modelFound modelAccumulator modelInstalled modelTransformation
-      modelFactorization |
+      modelFactorization modelConfinement |
       Just (MkFiber component parent retiredFlag table lifecycle) |
       Unloading accumulator view outcome = void (nothingIsNotJust raw)
     divertConcreteModel nameEq keyEq selected ambient fibers afterState whole raw
       modelFiber modelFound modelAccumulator modelInstalled modelTransformation
-      modelFactorization |
+      modelFactorization modelConfinement |
       Just (MkFiber component parent retiredFlag table lifecycle) |
       Reloading remaining accumulator view
       with (targetMatches @{nameEq}
@@ -74,13 +76,13 @@ divertConcreteModel {name} {key} {world} {error} {value}
             (Reloading remaining accumulator view)) fibers) view)
       divertConcreteModel nameEq keyEq selected ambient fibers afterState whole raw
         modelFiber modelFound modelAccumulator modelInstalled modelTransformation
-        modelFactorization |
+        modelFactorization modelConfinement |
         Just (MkFiber component parent retiredFlag table lifecycle) |
         Reloading remaining accumulator view | True =
           void (nothingIsNotJust raw)
       divertConcreteModel nameEq keyEq selected ambient fibers afterState whole raw
         modelFiber modelFound modelAccumulator modelInstalled modelTransformation
-        modelFactorization |
+        modelFactorization modelConfinement |
         Just (MkFiber component parent retiredFlag table lifecycle) |
         Reloading remaining accumulator view | False =
           let sourceFiber : Fiber name key value world error
@@ -112,7 +114,7 @@ divertConcreteModel {name} {key} {world} {error} {value}
                         concreteModel = MkAccumulatorModel targetFiberValue
                           targetFound accumulator
                           (AccumulatorUnloading view Nothing Refl)
-                          modelTransformation modelFactorization
+                          modelTransformation modelFactorization modelConfinement
                     in replace
                       {p = \observed => AccumulatorModel name key world error value
                         nameEq keyEq selected whole observed}
@@ -138,9 +140,9 @@ public export
 selectedDivertPreservesAccumulatorModel nameEq keyEq selected
   (MkSystemState ambient fibers) afterState whole checked
   (MkAccumulatorModel modelFiber modelFound modelAccumulator modelInstalled
-    modelTransformation modelFactorization) =
+    modelTransformation modelFactorization modelConfinement) =
     divertConcreteModel nameEq keyEq selected ambient fibers afterState whole
       (checkedActionProjects nameEq keyEq (LDivert selected)
         (MkSystemState ambient fibers) afterState LDivertTag checked)
       modelFiber modelFound modelAccumulator modelInstalled modelTransformation
-      modelFactorization
+      modelFactorization modelConfinement

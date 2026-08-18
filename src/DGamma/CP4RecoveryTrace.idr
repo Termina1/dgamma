@@ -6,6 +6,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP4RecoveryAccumulator
 import DGamma.Unified
+import Data.List.Elem
 import Decidable.Equality
 
 %default total
@@ -64,6 +65,8 @@ record AccumulatorModel
   0 modelFactorization : AccumulatorFactorization nameEq keyEq selected
     (componentProvisions (fiberComponent modelFiber)) modelAccumulator
     modelTransformation
+  0 modelConfinement : TransformationPreservesConfinement selected
+    (componentProvisions (fiberComponent modelFiber)) modelTransformation
 
 public export
 modelHandle :
@@ -122,6 +125,10 @@ beginConcreteAccumulatorModel {name} {key} {world} {error} {value}
           (identityAccumulatorFactorization {name = name} {key = key}
             {world = world} {error = error} {value = value} {trace = whole}
             nameEq keyEq selected (componentProvisions component))
+          (identityTransformationPreservesConfinement
+            {name = name} {key = key} {world = world} {error = error}
+            {value = value} {trace = whole} selected
+            (componentProvisions component))
     in replace
       {p = \observed => AccumulatorModel name key world error value nameEq keyEq
         selected whole observed}
@@ -217,3 +224,4 @@ foreignStepPreservesAccumulatorModel {name} {key} {world} {error} {value}
     in MkAccumulatorModel (modelFiber model) targetFound
       (modelAccumulator model) (modelInstalled model)
       (modelTransformation model) (modelFactorization model)
+      (modelConfinement model)

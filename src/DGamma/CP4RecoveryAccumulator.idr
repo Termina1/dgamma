@@ -5,6 +5,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.Unified
+import Data.List.Elem
 import Decidable.Equality
 
 %default total
@@ -158,6 +159,122 @@ effectOverwriteSameActor nameEq keyEq selected finalWorld intermediateWorld
   tableLookups candidate with (decEq @{nameEq} candidate selected) proof decision
     tableLookups candidate | Yes same = case same of Refl => Refl
     tableLookups candidate | No distinct = rewrite decision in Refl
+
+public export
+ActorEffectTableConfined :
+  {name, key, world : Type} -> {value : key -> Type} ->
+  (selected : name) -> (provision : CoeffectSpec key) ->
+  EffectState name key value world -> Type
+ActorEffectTableConfined {key} selected provision state =
+  (k : key) ->
+  Elem k (bindingKeys (bindings (effectTables state selected))) ->
+  Elem k (dependencies provision)
+
+public export
+TransformationPreservesConfinement :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, last : SystemState name key value world error} ->
+  {trace : Transitions first last} ->
+  (selected : name) -> (provision : CoeffectSpec key) ->
+  TraceEffectTransformation name key world error value selected trace -> Type
+TransformationPreservesConfinement {name} {key} {world} {value}
+  selected provision transformation =
+  (state, moved : EffectState name key value world) ->
+  ActorEffectTableConfined selected provision state ->
+  runTraceEffectTransformation transformation state = Just moved ->
+  ActorEffectTableConfined selected provision moved
+
+public export
+0 identityTransformationPreservesConfinement :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, last : SystemState name key value world error} ->
+  {trace : Transitions first last} ->
+  (selected : name) -> (provision : CoeffectSpec key) ->
+  TransformationPreservesConfinement selected provision
+    (TraceIdentity {trace = trace})
+identityTransformationPreservesConfinement selected provision state state
+  confined Refl = confined
+
+public export
+0 actorNormalizationIdentityWhenConfined :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (provision : CoeffectSpec key) ->
+  (state : EffectState name key value world) ->
+  ActorEffectTableConfined selected provision state ->
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    (actorNormalizationMap nameEq keyEq selected provision state) (Just state)
+actorNormalizationIdentityWhenConfined nameEq keyEq selected provision
+  state@(MkEffectState ambient tables) confined = PartialDefined
+    (MkEffectStateRelated Refl tableBindings)
+  where
+  table : OwnedTable key value provision
+  table = MkOwnedTable (tables selected) confined
+
+  0 tableBindings : (candidate : name) ->
+    bindings (effectTables
+      (setEffectTable @{nameEq} selected
+        (ownedValues (restrictOwnedPreservingOrder provision (tables selected)))
+        state) candidate) = bindings (effectTables state candidate)
+  tableBindings candidate with (decEq @{nameEq} candidate selected) proof decision
+    tableBindings candidate | Yes same = case same of
+      Refl => restrictOwnedPreservingOrderBindings provision table
+    tableBindings candidate | No distinct = Refl
+
+0 partialComposeRuns :
+  (before, after : PartialEffectMap name key value world) ->
+  (state, moved, final : EffectState name key value world) ->
+  before state = Just moved ->
+  partialCompose after before state = Just final ->
+  after moved = Just final
+partialComposeRuns before after state moved final beforeRuns composed
+  with (before state)
+  partialComposeRuns before after state moved final beforeRuns composed |
+    Nothing = void (nothingIsNotJust beforeRuns)
+  partialComposeRuns before after state moved final beforeRuns composed |
+    Just actual = case justEffectInjective beforeRuns of
+      Refl => composed
+
+public export
+0 pushTransformationPreservesConfinement :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (provision : CoeffectSpec key) ->
+  (undo : LocalState key value world provision ->
+    LocalState key value world provision) ->
+  (old : TraceEffectTransformation name key world error value selected trace) ->
+  (generator : TraceEffectGenerator name key world error value selected trace) ->
+  TransformationPreservesConfinement selected provision old ->
+  ((state : EffectState name key value world) ->
+    traceGeneratorMap generator state =
+      yieldedInverseEffectMap nameEq keyEq selected provision undo state) ->
+  TransformationPreservesConfinement selected provision
+    (TraceCompose old (TraceGenerator generator))
+pushTransformationPreservesConfinement nameEq keyEq selected provision undo old
+  generator oldPreserves generatorMap state final confined equation =
+    let normalized : OwnedTable key value provision
+        normalized = restrictOwnedPreservingOrder @{keyEq} provision
+          (effectTables state selected)
+        restored : LocalState key value world provision
+        restored = undo (MkLocalState (effectAmbient state) normalized)
+        moved : EffectState name key value world
+        moved = setEffectTable @{nameEq} selected
+          (ownedValues (localTable restored))
+          (setEffectAmbient (localWorld restored) state)
+        0 generatorRuns : (traceGeneratorMap generator state = Just moved)
+        generatorRuns = trans (generatorMap state) Refl
+        0 oldRuns : (runTraceEffectTransformation old moved = Just final)
+        oldRuns = partialComposeRuns (traceGeneratorMap generator)
+          (runTraceEffectTransformation old) state moved final generatorRuns
+          equation
+        0 movedConfined : ActorEffectTableConfined selected provision moved
+        movedConfined k present =
+          let tableAt = effectTableAfterSetSelf nameEq selected
+                (ownedValues (localTable restored))
+                (setEffectAmbient (localWorld restored) state)
+          in ownedSound (localTable restored) k
+            (replace
+              {p = \context => Elem k (bindingKeys (bindings context))}
+              tableAt present)
+    in oldPreserves moved final movedConfined oldRuns
 
 public export
 AccumulatorFactorization :

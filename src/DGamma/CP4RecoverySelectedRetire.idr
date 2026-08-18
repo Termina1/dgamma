@@ -69,12 +69,12 @@ public export
 selectedRetirePreservesAccumulatorModel {name} {key} {world} {error} {value}
   nameEq keyEq selected (MkSystemState ambient fibers) afterState whole checked
   (MkAccumulatorModel fiber sourceFound accumulator installed transformation
-    factorization)
+    factorization confinement)
   with (fiber)
   selectedRetirePreservesAccumulatorModel nameEq keyEq selected
     (MkSystemState ambient fibers) afterState whole checked
     (MkAccumulatorModel fiber sourceFound accumulator installed transformation
-      factorization) |
+      factorization confinement) |
       (MkFiber component parent retired table lifecycle) =
         let raw = checkedActionProjects nameEq keyEq (ORetire selected)
               (MkSystemState ambient fibers) afterState ORetireTag checked
@@ -98,7 +98,7 @@ selectedRetirePreservesAccumulatorModel {name} {key} {world} {error} {value}
               accumulator
               (retireInstalledAccumulator component parent retired table lifecycle
                 accumulator installed)
-              transformation factorization
+              transformation factorization confinement
         in replace
           {p = \observed => AccumulatorModel name key world error value nameEq
             keyEq selected whole observed}
