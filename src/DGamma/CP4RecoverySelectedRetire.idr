@@ -103,3 +103,41 @@ selectedRetirePreservesAccumulatorModel {name} {key} {world} {error} {value}
           {p = \observed => AccumulatorModel name key world error value nameEq
             keyEq selected whole observed}
           concreteIsAfter concreteModel
+
+||| O-Retire changes neither the provision nor the runtime accumulator callback;
+||| the handle's captured table is intentionally irrelevant to its effect map.
+public export
+0 selectedRetirePreservesAccumulatorMap :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (ORetire selected) before =
+    Just (ORetireTag, afterState)) ->
+  (model : AccumulatorModel name key world error value nameEq keyEq selected whole
+    before) ->
+  (state : EffectState name key value world) ->
+  accumulatorEffectMap nameEq keyEq selected
+    (modelHandle (selectedRetirePreservesAccumulatorModel nameEq keyEq selected
+      before afterState whole checked model)) state =
+  accumulatorEffectMap nameEq keyEq selected (modelHandle model) state
+selectedRetirePreservesAccumulatorMap {name} {key} {world} {error} {value}
+  nameEq keyEq selected before@(MkSystemState ambient fibers) afterState whole
+  checked model@(MkAccumulatorModel fiber sourceFound accumulator installed
+    transformation factorization confinement) state
+  with (fiber)
+  selectedRetirePreservesAccumulatorMap nameEq keyEq selected
+    before@(MkSystemState ambient fibers) afterState whole checked
+    model@(MkAccumulatorModel fiber sourceFound accumulator installed
+      transformation factorization confinement) state |
+      MkFiber component parent retired table lifecycle =
+        let raw = checkedActionProjects nameEq keyEq (ORetire selected)
+              (MkSystemState ambient fibers) afterState ORetireTag checked
+            concrete : SystemState name key value world error
+            concrete = MkSystemState ambient
+              (replaceBinding @{nameEq} selected
+                (MkFiber component parent True table lifecycle) fibers)
+            0 concreteIsAfter : concrete = afterState
+            concreteIsAfter = sym (successfulRetireTarget nameEq keyEq selected
+              (MkFiber component parent retired table lifecycle) ambient fibers
+              afterState ORetireTag sourceFound raw)
+        in case concreteIsAfter of Refl => Refl
