@@ -109,7 +109,7 @@ singletonTraceIndependent nameEq keyEq head = MkTraceIndependent commute stable
     (foreign : TraceEffectTransformation name key world error value right
       (MoreTransitions head NoTransitions)) ->
     (origin : EffectState name key value world) ->
-    IteratorYieldStableUnder keyEq stage
+    IteratorOutcomeStableUnder keyEq stage
       (runTraceEffectTransformation foreign) origin
   stable left right distinct stage foreign origin =
     let leftIsActor = iteratorStageActorAtSingleton head stage
@@ -120,4 +120,4 @@ singletonTraceIndependent nameEq keyEq head = MkTraceIndependent commute stable
         foreignIdentity = foreignTransformationIdentity head rightForeign foreign
           origin
     in rewrite foreignIdentity in
-      iteratorYieldAgreementReflexive keyEq stage origin
+      iteratorOutcomeAgreementReflexive keyEq stage origin

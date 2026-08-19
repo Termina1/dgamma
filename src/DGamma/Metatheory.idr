@@ -1605,6 +1605,51 @@ data IteratorContinuation : (key : Type) -> (value : key -> Type) ->
     List (StepEffect key value world error deps provision) ->
     IteratorContinuation key value world error
 
+||| Failure-aware result of one reachable iterator stage.  `Nothing` remains
+||| reserved for an unavailable declared capability; a callback failure retains
+||| its host-observable error instead of being collapsed into undefinedness.
+public export
+data IteratorStageOutcome :
+  (name, key : Type) -> (value : key -> Type) -> (world, error : Type) -> Type where
+  IteratorRaised : error ->
+    IteratorStageOutcome name key value world error
+  IteratorYielded : EffectState name key value world ->
+    PartialEffectMap name key value world ->
+    IteratorContinuation key value world error ->
+    IteratorStageOutcome name key value world error
+
+||| Evaluate a reachable stage while retaining both successful yields and the
+||| exact failure outcome recorded by L-Raise (CP4 Finding #13).
+public export
+iteratorStageOutcome :
+  IteratorStage name key world error value actor trace ->
+  EffectState name key value world ->
+  Maybe (IteratorStageOutcome name key value world error)
+iteratorStageOutcome
+  (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+    accumulator view lifecycle step rest suffix) state =
+  case resolveEffectValues @{keyEq}
+    (dependencies (componentDependencies (fiberComponent fiber))) view state of
+    Nothing => Nothing
+    Just capability =>
+      let owned = restrictOwnedPreservingOrder @{keyEq}
+            (componentProvisions (fiberComponent fiber))
+            (effectTables state actor)
+      in case runStepEffect step capability
+        (MkLocalState (effectAmbient state) owned) of
+        Left failure => Just (IteratorRaised failure)
+        Right (after, undo) =>
+          let next = setEffectTable @{nameEq} actor
+                (ownedValues (localTable after))
+                (setEffectAmbient (localWorld after) state)
+          in Just (IteratorYielded next
+            (yieldedInverseEffectMap nameEq keyEq actor
+              (componentProvisions (fiberComponent fiber)) undo)
+            (MkIteratorContinuation rest))
+
+||| Successful-yield projection retained for Definition 54 and the recovery
+||| algebra.  Failure remains outside the effect transformation, exactly as the
+||| L-Raise row of Table 1 uses the identity effect map.
 public export
 iteratorStageEffect :
   IteratorStage name key world error value actor trace ->
@@ -1612,12 +1657,11 @@ iteratorStageEffect :
   Maybe (EffectState name key value world,
     PartialEffectMap name key value world,
     IteratorContinuation key value world error)
-iteratorStageEffect
-  (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
-    accumulator view lifecycle step rest suffix) state =
-  map (\(after, undo) =>
-    (after, undo, MkIteratorContinuation rest))
-    (iteratorStepEffect nameEq keyEq actor fiber step view state)
+iteratorStageEffect stage state = case iteratorStageOutcome stage state of
+  Nothing => Nothing
+  Just (IteratorRaised failure) => Nothing
+  Just (IteratorYielded after undo continuation) =>
+    Just (after, undo, continuation)
 
 ||| Equation 54 generators: actual Table-1 maps, every reachable iterator
 ||| forward map, and every inverse yielded by such a stage at every origin.
@@ -1726,6 +1770,44 @@ IteratorYieldStableUnder {name} {key} {world} {error} {value}
     Just moved => IteratorYieldAgreement name key value world error keyEq
       (iteratorStageEffect stage moved) (iteratorStageEffect stage origin)
 
+||| Failure-aware Equation-55 agreement.  Successful yields retain the original
+||| continuation and inverse-map clauses unchanged.  Unlike the paper's literal
+||| “reading Right around the triple”, failures must agree on the observable
+||| error that L-Raise stores in lifecycle control.
+public export
+data IteratorOutcomeAgreement :
+  (name, key : Type) -> (value : key -> Type) -> (world, error : Type) ->
+  (keyEq : DecEq key) ->
+  Maybe (IteratorStageOutcome name key value world error) ->
+  Maybe (IteratorStageOutcome name key value world error) -> Type where
+  IteratorOutcomesUndefined :
+    IteratorOutcomeAgreement name key value world error keyEq Nothing Nothing
+  IteratorFailuresAgree : leftError = rightError ->
+    IteratorOutcomeAgreement name key value world error keyEq
+      (Just (IteratorRaised leftError)) (Just (IteratorRaised rightError))
+  IteratorSuccessfulYieldsAgree :
+    leftContinuation = rightContinuation ->
+    PartialMapsEquivalent (EffectStateEquivalence keyEq) leftUndo rightUndo ->
+    IteratorOutcomeAgreement name key value world error keyEq
+      (Just (IteratorYielded leftAfter leftUndo leftContinuation))
+      (Just (IteratorYielded rightAfter rightUndo rightContinuation))
+
+public export
+IteratorOutcomeStableUnder :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, last : SystemState name key value world error} ->
+  {trace : Transitions first last} -> {actor : name} ->
+  (keyEq : DecEq key) ->
+  IteratorStage name key world error value actor trace ->
+  PartialEffectMap name key value world ->
+  EffectState name key value world -> Type
+IteratorOutcomeStableUnder {name} {key} {world} {error} {value}
+  keyEq stage foreign origin =
+  case foreign origin of
+    Nothing => Unit
+    Just moved => IteratorOutcomeAgreement name key value world error keyEq
+      (iteratorStageOutcome stage moved) (iteratorStageOutcome stage origin)
+
 ||| Full-effect-state Definition 60 / Equation 55. Distinct actors' complete
 ||| generated monoids commute, including every individual yielded inverse, and
 ||| moving an iterator by any foreign generated transformation preserves its
@@ -1748,7 +1830,7 @@ record TraceIndependent (name, key, world, error : Type)
     (stage : IteratorStage name key world error value left trace) ->
     (foreign : TraceEffectTransformation name key world error value right trace) ->
     (origin : EffectState name key value world) ->
-    IteratorYieldStableUnder keyEq stage
+    IteratorOutcomeStableUnder keyEq stage
       (runTraceEffectTransformation foreign) origin
 
 ||| Direct projection used by recovery: each concrete yielded inverse is a
@@ -1848,6 +1930,26 @@ iteratorYieldAgreementReflexive keyEq stage origin with
   iteratorYieldAgreementReflexive keyEq stage origin |
     Just (after, undo, continuation) =
       IteratorYieldsAgree Refl (effectPartialMapReflexive keyEq undo)
+
+||| Reflexivity of the repaired Equation-55 premise covers unavailable,
+||| failing, and successful stages constructively.
+public export
+0 iteratorOutcomeAgreementReflexive :
+  (keyEq : DecEq key) ->
+  (stage : IteratorStage name key world error value actor trace) ->
+  (origin : EffectState name key value world) ->
+  IteratorOutcomeAgreement name key value world error keyEq
+    (iteratorStageOutcome stage origin) (iteratorStageOutcome stage origin)
+iteratorOutcomeAgreementReflexive keyEq stage origin with
+  (iteratorStageOutcome stage origin)
+  iteratorOutcomeAgreementReflexive keyEq stage origin | Nothing =
+    IteratorOutcomesUndefined
+  iteratorOutcomeAgreementReflexive keyEq stage origin |
+    Just (IteratorRaised failure) = IteratorFailuresAgree Refl
+  iteratorOutcomeAgreementReflexive keyEq stage origin |
+    Just (IteratorYielded after undo continuation) =
+      IteratorSuccessfulYieldsAgree Refl
+        (effectPartialMapReflexive keyEq undo)
 
 public export
 0 effectIdentityOnLeftCommutes :

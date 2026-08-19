@@ -562,6 +562,50 @@ of Lemma 38.
     relational suffix fold will be used rather than mechanically replacing the
     already-proved exact fold; this avoids destabilizing the 0eeef3d lifecycle
     case split, and the exact fold remains a useful regression specialization.
+18. **CP4 Finding #13 / candidate paper Erratum #4 — Definition 60 omitted
+    failure-outcome agreement.** The retained-foreign L-Advance proof reached
+    L-Raise and exposed that the old `IteratorYieldAgreement` projected every
+    `Left error` to `Nothing`. It therefore certified two evaluations of the
+    same iterator that failed with different errors, even though L-Raise stores
+    that error in `Unloading` and Equation 53 compares outcomes exactly. The
+    paper makes the same omission literally: after Equation 54 it says
+    Definition 60 is read with **“Right around the triple”**, and Equation 55
+    compares only `pr2,3`. That is insufficient for Lemma 71, Lemma 72, and
+    Theorem 73 once a transposed evaluation fails.
+
+    With supervisor approval, `IteratorStageOutcome` now distinguishes an
+    unavailable capability, `IteratorRaised error`, and a successful
+    `IteratorYielded` triple. `IteratorOutcomeAgreement` keeps the successful
+    continuation/inverse-map clauses unchanged and adds exact error agreement;
+    `TraceIndependent.iteratorYieldsStable` now carries that repaired outcome
+    relation. The old success-only `IteratorYieldAgreement` remains available
+    as an explicitly rejected diagnostic rather than silently changing its
+    meaning.
+
+    `DGamma.CP4FailureOutcomeChecks` pins the defect in both directions. One
+    callback returns `ColdError` or `HotError` according to ambient state. Its
+    two evaluations inhabit the old premise as `IteratorBothUndefined`, and
+    both checked L-Raise endpoints exist, but exact `ControlEquivalent` is
+    constructively impossible because their stored outcomes differ. The new
+    premise is constructively refuted by `repairedFailurePremiseRejected`.
+    Conversely, `agreeingFailureTraceIndependent` is a genuinely failing
+    nonempty checked-trace witness under the repaired relation; the existing
+    never-failing singleton witnesses and all recovery consumers remain the
+    mandatory revalidation set.
+
+    **Erratum #4 for the future authors letter.** Definition 60 must require
+    equal observable failures when corresponding iterator evaluations both
+    raise (and must reject raise/yield or raise/undefined disagreement). The
+    phrase “reading Right around the triple” makes the witness vacuous exactly
+    where L-Raise writes a schedule-visible control outcome. Without this
+    clause Theorem 73 is false: independent schedules may finish with distinct
+    error controls. This is the same proof/definition mismatch genus as Lemma
+    68's rank argument—the proof uses an invariant that the stated premise does
+    not enforce.
+
+    Finding #13 joins Findings #4–#12 on the mandatory end-of-CP4 adversarial
+    re-review list. Failure/value transport and successful yielded-inverse
+    transport must be attacked together at retained L-Advance boundaries.
 
 ## Escape-hatch and hole audit
 
