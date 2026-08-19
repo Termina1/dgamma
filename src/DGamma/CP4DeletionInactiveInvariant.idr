@@ -415,6 +415,7 @@ unloadSourceUnloading nameEq keyEq selected (MkSystemState ambient fibers)
         afterState tag raw | Just fiber | Unloading accumulator view outcome |
         False = Refl
 
+public export
 0 inactiveCannotAdvance :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (before, afterState : SystemState name key value world error) ->
@@ -429,6 +430,7 @@ inactiveCannotAdvance nameEq keyEq selected before afterState tag raw
         retiredFlag table outcome found))
       (advanceSourceReloading nameEq keyEq selected before afterState tag raw))
 
+public export
 0 inactiveCannotDivert :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (before, afterState : SystemState name key value world error) ->
@@ -443,6 +445,7 @@ inactiveCannotDivert nameEq keyEq selected before afterState tag raw
         retiredFlag table outcome found))
       (divertSourceReloading nameEq keyEq selected before afterState tag raw))
 
+public export
 0 inactiveCannotLeave :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (before, afterState : SystemState name key value world error) ->
@@ -457,6 +460,7 @@ inactiveCannotLeave nameEq keyEq selected before afterState tag raw
         retiredFlag table outcome found))
       (leaveSourceActive nameEq keyEq selected before afterState tag raw))
 
+public export
 0 inactiveCannotUnload :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (before, afterState : SystemState name key value world error) ->

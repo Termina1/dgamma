@@ -1933,13 +1933,20 @@ identifies the intermediate model handle with the exact handle consumed by
 checked L-Unload, equates their recovered outputs, and composes the L-Unload
 actual-effect frame to obtain original-post-close/survivor
 `EffectStateRelated`. Control/reset-to-Inactive and plan packaging remain.
-`DGamma.CP4DeletionPlanEffects` now isolates the other effect-side join premise:
+`DGamma.CP4DeletionPlanEffects` isolates the other effect-side join premise:
 `EmptyTableInactivePlan` records the no-episode empty table at every exact R
 leaf, and `emptyInactivePlanPreservesEffects` proves pointwise that iterated
 leaf deletion preserves ambient state and every ordered actor table. The proof
 composes the existing one-step O-Remove effect frame and never equates registry
-or owned-table uniqueness certificates. Deriving this evidence from the public
-no-R-episode induction remains part of the selected fold.
+or owned-table uniqueness certificates. That premise is now constructive:
+`DGamma.CP4DeletionEmptyTableInvariant` performs a simultaneous checked-trace
+induction with the proved Inactive invariant, showing O-Insert starts empty,
+O-Retire retains bindings, foreign heads preserve lookup, and every R lifecycle
+head is impossible without L-Begin. `DGamma.CP4DeletionPlanEmpty` then uses the
+plan's outside projection as a constructive no-extra-leaf argument and derives
+`EmptyTableInactivePlan` for every complete current-R plan. The reached theorem
+`reachedCompletePlanHasEmptyTables` consumes exactly scanner/alignment/public
+no-episode evidence.
 
 ### Corollary 62: terminal recovery
 
@@ -2109,8 +2116,10 @@ After Finding #13 and retained L-Advance outcome/control reconstruction, the
 warm package passed all 155/155 modules, including the repaired independence
 countermodel and the three heavy check modules. After the split outcome and
 five-rule provider-evidence dispatchers landed, a warm package build passed all
-158/158 modules; the anchored executable escape-hatch scan remained empty.
-The builds reused existing heavy-check artifacts, so these remain warm passes
+158/158 modules. After the no-episode empty-table induction and its plan bridge,
+the warm package passed all 160/160 modules; the anchored executable
+escape-hatch scan remained empty. The builds reused existing heavy-check
+artifacts, so these remain warm passes
 and leave the mandatory split/no-concurrent-Chez cold-archive validation debt
 unchanged.
 
@@ -2170,7 +2179,8 @@ reliance anchoring, the complete Lemma-70/reliance provider-frame join, all
 lifecycle-result control constructors, repaired failure/success outcome
 transport, concrete checked L-Advance branch reconstruction, and the exhaustive
 retained-head provider/outcome dispatcher are proved (alongside L-Begin,
-L-Divert, L-Leave, and L-Unload); deleted-R/empty-plan propagation,
+L-Divert, L-Leave, and L-Unload); public no-episode evidence now derives empty
+current-R tables and `EmptyTableInactivePlan`; deleted-R boundary propagation,
 the relational suffix fold, and endpoint control/withdrawal invariants remain);
 Confluence/Theorem
 73 (surviving parent-
@@ -2193,7 +2203,8 @@ effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
 **Next:** complete the selected quotient's control half: feed the proved
 retained-foreign dispatcher through the dependent selected-segment induction,
-delete R-owned orchestration heads while deriving `EmptyTableInactivePlan`, and convert checked
+delete R-owned orchestration heads while carrying the proved
+`EmptyTableInactivePlan`, and convert checked
 L-Unload's reset-to-Inactive control into the ordered relational suffix boundary.
 Fold that relation over the already-complete suffix cases (the exact fold remains
 a regression specialization), feed readiness to the deletion skeleton, derive

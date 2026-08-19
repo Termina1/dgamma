@@ -164,9 +164,13 @@ progress.
   the canonical current-R leaf builder with the erased converse: every current
   exact R generation occurs in the plan, and derives that complete plan directly
   from the public reached/discipline/no-episode premises.
-  `DGamma.CP4DeletionPlanEffects` packages empty-table evidence for those leaves
-  and proves that erasing the complete plan preserves exact ambient/ordered-table
-  effects without registry extensionality.
+  `DGamma.CP4DeletionEmptyTableInvariant` proves from public exact-generation
+  no-episode evidence that every current R table stays empty across the checked
+  trace. `DGamma.CP4DeletionPlanEmpty` constructively identifies every plan leaf
+  with a current R generation using the plan's outside projection, thereby
+  deriving `EmptyTableInactivePlan`; `DGamma.CP4DeletionPlanEffects` then proves
+  that erasing the complete plan preserves exact ambient/ordered-table effects
+  without registry extensionality.
   `DGamma.CP4DeletionCommuteCore` proves exact ordered-binding commutation for
   distinct insert/delete, replace/delete, and delete/delete updates.
   `DGamma.CP4DeletionPlanCommute` lifts those laws through an indexed leaf plan:
