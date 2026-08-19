@@ -1793,6 +1793,15 @@ resolution preserves the false target-match guard, both owners enter related
 clean Unloading controls, and raw Preservation reconstructs the checked
 survivor step and next ordered skeleton without comparing ambient states.
 
+`DGamma.CP4DeletionSelectedForeignLifecycleUnload` reconstructs retained
+L-Unload. The saturated frame transfers the exact false reliance guard; the
+survivor executes its own related accumulator on its actual normalized local
+input; both owners reset to the common Inactive outcome; and Preservation
+supplies the checked target. The proof deliberately does not equate accumulator
+outputs across different ambient/table inputs—those observations belong to the
+already-transposed effect boundary, while `FiberControlRelated` observes the
+post-unload control outcome.
+
 The precedence anchor now has both cases required by the paper rather than
 pretending every retained lifecycle occurrence belongs to a closing foreign
 episode. `DGamma.CP4DeletionSelectedForeignLifecycleAnchorEndpoint` derives
@@ -2031,9 +2040,10 @@ After the stays-installed provider exclusion and the unified
 Lemma-70/reliance frame join, a warm package invocation passed all 150/150
 modules. The new modules and their exported join were also checked directly.
 After retained L-Leave reconstruction, the warm package passed all 151/151
-modules. The builds reused existing heavy-check artifacts, so these remain warm
-passes and leave the mandatory split/no-concurrent-Chez cold-archive validation
-debt unchanged.
+modules; after retained L-Unload reconstruction it passed all 152/152 modules.
+The builds reused existing heavy-check artifacts, so these remain warm passes
+and leave the mandatory split/no-concurrent-Chez cold-archive validation debt
+unchanged.
 
 ## Status
 
@@ -2089,7 +2099,7 @@ occurrence/component transport, first-close action-specific temporal
 classification, exact closing-episode reconstruction, selected-L-Unload
 reliance anchoring, the complete Lemma-70/reliance provider-frame join, and all
 lifecycle-result control constructors are proved, while the concrete checked
-L-Advance/L-Unload transitions remain (L-Begin, L-Divert, and L-Leave are
+L-Advance transition remains (L-Begin, L-Divert, L-Leave, and L-Unload are
 reconstructed);
 deleted-R/empty-plan propagation,
 the relational suffix fold, and endpoint control/withdrawal invariants remain);

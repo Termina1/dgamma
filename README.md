@@ -267,6 +267,11 @@ progress.
   L-Leave analogously from related Active controls: the saturated ordered target
   scan preserves the stale-target guard, both cells enter related Unloading
   controls, and Preservation supplies the checked survivor step.
+  `DGamma.CP4DeletionSelectedForeignLifecycleUnload` transfers the false
+  reliance guard, executes the survivor's own related accumulator on its actual
+  ambient/table input, resets both controls to the common Inactive outcome, and
+  proves the concrete survivor step checked. Ambient/table comparison remains
+  correctly owned by the already-transposed effect layer.
   The anchor's closed/open eliminations, Lemma-70 endpoint bridge, occurrence
   splitting, and installed component transport are proved.
   `DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify` now gives every
@@ -285,8 +290,8 @@ progress.
   elaboration-performance boundary only. `DGamma.CP4DeletionSelectedForeignLifecycleProviderFrame`
   joins that evidence with the closed/open precedence alternatives (including
   Lemma 70) and constructs the same saturated ordered guard frame without raw
-  endpoint identity or registry equality. Concrete L-Advance/L-Unload
-  reconstruction remains before the selected layer can handle deleted R heads
+  endpoint identity or registry equality. Concrete L-Advance reconstruction
+  remains before the selected layer can handle deleted R heads
   and close L-Unload.
   `DGamma.CP4DeletionRelationalBoundary` is the primary selected-to-suffix
   interface: it relates the actual survivor to the complete plan target by
