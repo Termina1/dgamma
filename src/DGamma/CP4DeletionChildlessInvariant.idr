@@ -526,6 +526,7 @@ foreignInsertionParentDifferent protocol nameEq selected inserted
     No distinct = \same => distinct
       (sym (childOfInjectiveChildless same))
 
+public export
 0 ownerInsertionParentDifferent :
   (protocol : RegistrationProtocol key value world error) ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->

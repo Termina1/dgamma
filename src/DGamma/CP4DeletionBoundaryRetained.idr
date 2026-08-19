@@ -517,6 +517,7 @@ insertSuccessView nameEq keyEq actor parent component ambient source tag afterSt
             (setFreshAbsent nameEq actor (freshFiber component parent) source
               applied inserted)
 
+public export
 record InsertRuntimeObservation
   (name, key, world, error : Type) (value : key -> Type)
   (actor : name) (component : Component key value world error)
@@ -528,6 +529,7 @@ record InsertRuntimeObservation
   0 insertObservedBindings : bindings (registry afterState) =
     Bind actor (freshFiber component parent) :: bindings source
 
+public export
 0 insertRuntimeObservation :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (actor : name) -> (parent : Parent name) ->

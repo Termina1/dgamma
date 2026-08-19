@@ -13,6 +13,7 @@ import DGamma.CP4DeletionGenerationUnique
 import DGamma.CP4DeletionInactiveInvariant
 import DGamma.CP4DeletionPlanBuilder
 import DGamma.CP4DeletionPlanComplete
+import DGamma.CP4DeletionPlanCommute
 import DGamma.CP4DeletionPlanEffects
 import DGamma.CP4DeletionPlanRuntime
 import DGamma.CP4DeletionRetainedAction
@@ -189,6 +190,168 @@ entryAfterDistinctPutComesFromOld nameEq inserted selected distinct fresh
           (sym (lookupPutCurrentOther nameEq selected inserted distinct fresh live))
           nextCurrent
     in currentGenerationEntryFromLookup nameEq selected generation live oldCurrent
+
+||| Package a preserving plan update together with the ordered target equality
+||| that the older plan-only helper intentionally hides behind its result.
+public export
+0 completePlanAfterPreservingReplacementWithBindings :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (live : GenerationEnvironment name) ->
+  {oldSource, newSource : Registry name key value world error} ->
+  {expectedTargetBindings :
+    List (Binding name (FiberAt name key value world error))} ->
+  (oldComplete : CompleteCurrentRegisteredPlanResult name key world error value
+    nameEq registered live oldSource) ->
+  (commuted : InactivePlanPreservingUpdateCommute name key world error value
+    nameEq (inactiveLeafPlan (completePlanResult oldComplete)) newSource
+    expectedTargetBindings) ->
+  (nextComplete : CompleteCurrentRegisteredPlanResult name key world error value
+      nameEq registered live newSource **
+    bindings (planTarget (completePlanResult nextComplete)) =
+      expectedTargetBindings)
+completePlanAfterPreservingReplacementWithBindings nameEq registered live
+  (MkCompleteCurrentRegisteredPlanResult
+    oldResult@(MkCurrentRegisteredPlanResult oldTarget oldPlan oldOutside)
+    oldComplete)
+  (MkInactivePlanPreservingUpdateCommute
+    base@(MkInactivePlanUpdateCommute nextTarget nextPlan targetBindings
+      nextOutside)
+    actorsSame) =
+    let 0 outsideNew : (actor : name) ->
+          ActorOutsideCurrentRegistered actor registered live ->
+          ActorOutsideDeletionPlan actor nextPlan
+        outsideNew actor outside = nextOutside actor (oldOutside actor outside)
+        0 nextResult : CurrentRegisteredPlanResult name key world error value
+          nameEq registered live newSource
+        nextResult = MkCurrentRegisteredPlanResult nextTarget nextPlan outsideNew
+        0 completeNew : CurrentRegisteredPlanComplete name key world error value
+          nameEq registered live nextResult
+        completeNew actor generation present member =
+          replace {p = Elem actor} (sym actorsSame)
+            (oldComplete actor generation present member)
+        0 nextComplete : CompleteCurrentRegisteredPlanResult name key world error
+          value nameEq registered live newSource
+        nextComplete = MkCompleteCurrentRegisteredPlanResult nextResult completeNew
+    in (nextComplete ** targetBindings)
+
+||| Exact O-Remove variant with the same observable target equality retained.
+public export
+0 completePlanAfterDeletedRemoveWithBindings :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (live : GenerationEnvironment name) ->
+  {oldSource, newSource : Registry name key value world error} ->
+  {expectedTargetBindings :
+    List (Binding name (FiberAt name key value world error))} ->
+  GenerationEnvironmentNamesUnique live ->
+  (removed : name) ->
+  (oldComplete : CompleteCurrentRegisteredPlanResult name key world error value
+    nameEq registered live oldSource) ->
+  (commuted : InactivePlanRemovingUpdateCommute name key world error value nameEq
+    removed (inactiveLeafPlan (completePlanResult oldComplete)) newSource
+    expectedTargetBindings) ->
+  (nextComplete : CompleteCurrentRegisteredPlanResult name key world error value
+      nameEq registered (deleteCurrentGeneration @{nameEq} removed live)
+      newSource **
+    bindings (planTarget (completePlanResult nextComplete)) =
+      expectedTargetBindings)
+completePlanAfterDeletedRemoveWithBindings nameEq registered live unique removed
+  (MkCompleteCurrentRegisteredPlanResult
+    oldResult@(MkCurrentRegisteredPlanResult oldTarget oldPlan oldOutside)
+    oldComplete)
+  (MkInactivePlanRemovingUpdateCommute
+    base@(MkInactivePlanUpdateCommute nextTarget nextPlan targetBindings
+      nextOutside)
+    removedOutside retainedOther) =
+    let 0 newLive : GenerationEnvironment name
+        newLive = deleteCurrentGeneration @{nameEq} removed live
+        0 outsideNew : (actor : name) ->
+          ActorOutsideCurrentRegistered actor registered newLive ->
+          ActorOutsideDeletionPlan actor nextPlan
+        outsideNew actor outside with (decEq @{nameEq} actor removed)
+          outsideNew _ outside | Yes Refl = removedOutside
+          outsideNew actor outside | No actorDistinct = nextOutside actor
+            (oldOutside actor
+              (\selected, generation, present, member =>
+                case decEq @{nameEq} removed selected of
+                  Yes Refl => \same => actorDistinct same
+                  No removedDistinct => outside selected generation
+                    (deletePreservesOtherEntry nameEq removed selected
+                      removedDistinct generation live present) member))
+        0 nextResult : CurrentRegisteredPlanResult name key world error value
+          nameEq registered newLive newSource
+        nextResult = MkCurrentRegisteredPlanResult nextTarget nextPlan outsideNew
+        0 completeNew : CurrentRegisteredPlanComplete name key world error value
+          nameEq registered newLive nextResult
+        completeNew selected generation present member = retainedOther selected
+          (entryAfterDeleteActorDistinct nameEq removed live unique selected
+            generation present)
+          (oldComplete selected generation
+            (entryAfterDeleteComesFromOld nameEq removed live selected generation
+              present)
+            member)
+        0 nextComplete : CompleteCurrentRegisteredPlanResult name key world error
+          value nameEq registered newLive newSource
+        nextComplete = MkCompleteCurrentRegisteredPlanResult nextResult completeNew
+    in (nextComplete ** targetBindings)
+
+||| Reindex a complete current-R plan across exact ordered runtime bindings.
+||| Plan actors, outside evidence, and completeness are transported together;
+||| erased uniqueness certificates are never compared.
+public export
+0 transportCompletePlanAcrossBindings :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (live : GenerationEnvironment name) ->
+  (leftSource, rightSource : Registry name key value world error) ->
+  (leftComplete : CompleteCurrentRegisteredPlanResult name key world error value
+    nameEq registered live leftSource) ->
+  bindings leftSource = bindings rightSource ->
+  (rightComplete : CompleteCurrentRegisteredPlanResult name key world error value
+      nameEq registered live rightSource **
+    bindings (planTarget (completePlanResult rightComplete)) =
+      bindings (planTarget (completePlanResult leftComplete)))
+transportCompletePlanAcrossBindings {name} {key} {world} {error} {value}
+  nameEq registered live leftSource rightSource
+  (MkCompleteCurrentRegisteredPlanResult
+    leftResult@(MkCurrentRegisteredPlanResult leftTarget leftPlan leftOutside)
+    leftPlanComplete)
+  sourcesSame =
+    let 0 transported : InactivePlanBindingsTransport name key world error value
+          nameEq leftPlan rightSource
+        transported = transportInactivePlanAcrossBindings nameEq leftSource
+          leftTarget rightSource leftPlan sourcesSame
+        0 rightTarget : Registry name key value world error
+        rightTarget = transportedPlanTarget transported
+        0 rightPlan : InactiveLeafDeletionPlan {name = name} {key = key}
+          {value = value} {world = world} {error = error} nameEq rightSource
+          rightTarget
+        rightPlan = transportedInactivePlan transported
+        0 rightOutside : (actor : name) ->
+          ActorOutsideCurrentRegistered actor registered live ->
+          ActorOutsideDeletionPlan actor rightPlan
+        rightOutside actor outside = transportedActorOutside transported actor
+          (leftOutside actor outside)
+        0 rightResult : CurrentRegisteredPlanResult name key world error value
+          nameEq registered live rightSource
+        rightResult = MkCurrentRegisteredPlanResult rightTarget rightPlan
+          rightOutside
+        0 rightCompleteProof : CurrentRegisteredPlanComplete name key world error
+          value nameEq registered live rightResult
+        rightCompleteProof actor generation present member =
+          replace {p = Elem actor} (sym (transportedPlanActors transported))
+            (leftPlanComplete actor generation present member)
+        0 rightComplete : CompleteCurrentRegisteredPlanResult name key world error
+          value nameEq registered live rightSource
+        rightComplete = MkCompleteCurrentRegisteredPlanResult rightResult
+          rightCompleteProof
+        0 targetsSame : (bindings rightTarget = bindings leftTarget)
+        targetsSame = sym (transportedPlanBindings transported)
+    in (rightComplete ** targetsSame)
 
 ||| Complete-plan update for an O-Insert that is itself deleted as an R birth.
 ||| The new fresh empty/Inactive leaf is prepended to the plan, so deleting it

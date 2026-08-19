@@ -52,6 +52,7 @@ absentActorOutsideDeletionPlan {name} {key} {world} {error} {value}
       (absentActorOutsideDeletionPlan nameEq actor
         (deleteBinding @{nameEq} removed source) target rest tailAbsent)
 
+public export
 0 successfulInsertAbsent :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
