@@ -263,6 +263,10 @@ progress.
   L-Divert: exact ordered target resolution preserves the stale-target guard,
   related accumulators/views become related Unloading controls, and the real
   survivor transition is checked by Preservation.
+  `DGamma.CP4DeletionSelectedForeignLifecycleLeave` reconstructs retained
+  L-Leave analogously from related Active controls: the saturated ordered target
+  scan preserves the stale-target guard, both cells enter related Unloading
+  controls, and Preservation supplies the checked survivor step.
   The anchor's closed/open eliminations, Lemma-70 endpoint bridge, occurrence
   splitting, and installed component transport are proved.
   `DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify` now gives every
@@ -281,7 +285,7 @@ progress.
   elaboration-performance boundary only. `DGamma.CP4DeletionSelectedForeignLifecycleProviderFrame`
   joins that evidence with the closed/open precedence alternatives (including
   Lemma 70) and constructs the same saturated ordered guard frame without raw
-  endpoint identity or registry equality. Concrete L-Advance/L-Leave/L-Unload
+  endpoint identity or registry equality. Concrete L-Advance/L-Unload
   reconstruction remains before the selected layer can handle deleted R heads
   and close L-Unload.
   `DGamma.CP4DeletionRelationalBoundary` is the primary selected-to-suffix
