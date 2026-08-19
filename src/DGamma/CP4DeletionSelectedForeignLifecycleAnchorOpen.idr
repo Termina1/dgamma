@@ -157,6 +157,7 @@ sharedProvisionRejectsDisjointOpenAnchor keyEq wanted provision
         (provisionsDisjointFrom @{keyEq} provision rest) disjoint)
       provisionMember providerName providerFiber later providerMember
 
+public export
 0 pairwiseSharedProvisionSameName :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (keyEq : DecEq key) ->
@@ -207,6 +208,7 @@ pairwiseSharedProvisionSameName keyEq
     leftName rightName leftFiber rightFiber leftLater rightLater wanted
     leftDeclares rightDeclares
 
+public export
 0 lookupEntryElemOpenAnchor :
   (nameEq : DecEq name) -> (selected : name) ->
   (entries : List (Binding name (FiberAt name key value world error))) ->
@@ -336,6 +338,7 @@ supportClauseProvidersAtFoundOpenAnchor {name} {value} {world} {error}
           nameEq keyEq predicate entries
           (dependencies (componentDependencies component))) expanded)
 
+public export
 0 registryWellFormedPairwiseOpenAnchor :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -364,6 +367,7 @@ registryWellFormedPairwiseOpenAnchor nameEq keyEq
             viewsInvariant @{nameEq} @{keyEq} (registryFibers fibers) fibers)
           wellFormed))
 
+public export
 0 memberKeyTrueElemOpenAnchor :
   (keyEq : DecEq key) -> (wanted : key) ->
   (table : CoeffectContext key value) ->

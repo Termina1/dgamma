@@ -1826,9 +1826,20 @@ installed segment through the selected episode's own closing source and records
 both the foreign owner's stable component and the exact selected L-Unload
 `relied=False` head observation. This certificate is generation-safe because it
 mentions the selected closing state, not a possibly reactivated or reused raw
-endpoint. The remaining join must select the existing Lemma-70 open anchor when
-the original selected endpoint is stable Inactive and otherwise thread this
-reliance anchor into the action-specific target comparison.
+endpoint. The provider-frame join is now constructive.
+`DGamma.CP4DeletionSelectedForeignLifecycleAnchorReliance*` extracts the
+foreign owner's intrinsically total committed view, uses current well-formedness
+and pairwise provision uniqueness to identify any selected provider candidate
+with that committed provider, carries the name through the complete installed
+segment, and contradicts the exact selected L-Unload head observation. No final
+raw selected cell is inspected. `ForeignLifecycleProviderFrameEvidence` then
+joins this branch with both existing precedence constructors—the closed
+Definition-65 edge and the Lemma-70 open endpoint—and
+`foreignLifecycleGuardFrameFromEvidence` saturates the same ordered source
+relation for either reason. The seven small reliance modules are an
+elaboration-performance split only; no theorem premise or evaluator behavior
+changed. Four previously private helper facts were made public solely so this
+separate proof module can consume their unchanged types.
 `DGamma.CP4DeletionRelationalBoundary` now defines the approved primary suffix
 interface. It compares the actual survivor with the complete current-R plan
 target using `EffectStateRelated` plus an ordered `FiberControlRelated`
@@ -2010,6 +2021,13 @@ passed all 142/142 modules, including the three heavy check modules. All 142
 retain `%default total` and the anchored escape-hatch scan remains empty. This
 again leaves the split/cold-archive validation debt unchanged.
 
+After the stays-installed provider exclusion and the unified
+Lemma-70/reliance frame join, a warm package invocation passed all 150/150
+modules. The new modules and their exported join were also checked directly.
+The build reused existing heavy-check artifacts, so this remains a warm pass
+and leaves the mandatory split/no-concurrent-Chez cold-archive validation debt
+unchanged.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
@@ -2062,10 +2080,10 @@ interface; retained foreign lifecycle source frames, both closed/open
 precedence-anchor eliminations, Lemma-70 endpoint reconstruction, installed
 occurrence/component transport, first-close action-specific temporal
 classification, exact closing-episode reconstruction, selected-L-Unload
-reliance anchoring, and all lifecycle-result control constructors are proved,
-while the stays-installed endpoint/reliance join into the provider frame and
-the concrete checked L-Advance/L-Leave/L-Unload transitions remain (L-Begin and
-L-Divert are reconstructed);
+reliance anchoring, the complete Lemma-70/reliance provider-frame join, and all
+lifecycle-result control constructors are proved, while the concrete checked
+L-Advance/L-Leave/L-Unload transitions remain (L-Begin and L-Divert are
+reconstructed);
 deleted-R/empty-plan propagation,
 the relational suffix fold, and endpoint control/withdrawal invariants remain);
 Confluence/Theorem

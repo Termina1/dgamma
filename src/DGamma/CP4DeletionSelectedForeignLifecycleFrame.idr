@@ -19,6 +19,7 @@ import Decidable.Equality
 0 justInjectiveLifecycleFrame : Just left = Just right -> left = right
 justInjectiveLifecycleFrame Refl = Refl
 
+public export
 0 exactFiberControlsFromMaybe :
   FiberControlMaybeRelated (Just left) (Just right) ->
   FiberControlRelated left right
@@ -391,6 +392,7 @@ buildForeignOnlyLifecycleSources nameEq keyEq selected deps
             (buildForeignOnlyLifecycleSources nameEq keyEq selected deps leftRest
               rightRest tailLeftAbsent tailRightAbsent foreignTables tail)
 
+public export
 0 buildForeignLifecycleSources :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (selected : name) -> (deps : List key) ->

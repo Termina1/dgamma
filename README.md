@@ -273,9 +273,17 @@ progress.
   close/reopen or remove/reinsert reuse. `SelectedUnloadRelianceAnchor` records
   the critical alternative at the selected episode's own L-Unload source, so a
   later selected activation or reused raw endpoint is never assumed Inactive.
-  Joining the stays-installed branch to the already-proved Lemma-70 open anchor,
-  and concrete L-Advance/L-Leave/L-Unload reconstruction, remain before the
-  selected layer can handle deleted R heads and close L-Unload.
+  The `DGamma.CP4DeletionSelectedForeignLifecycleAnchorReliance*` split proves
+  the missing stays-installed exclusion: intrinsic committed views, current
+  well-formedness, and pairwise provision uniqueness identify any selected
+  provider candidate with the owner's committed provider; resolution constancy
+  then contradicts the selected L-Unload reliance guard. The split is an
+  elaboration-performance boundary only. `DGamma.CP4DeletionSelectedForeignLifecycleProviderFrame`
+  joins that evidence with the closed/open precedence alternatives (including
+  Lemma 70) and constructs the same saturated ordered guard frame without raw
+  endpoint identity or registry equality. Concrete L-Advance/L-Leave/L-Unload
+  reconstruction remains before the selected layer can handle deleted R heads
+  and close L-Unload.
   `DGamma.CP4DeletionRelationalBoundary` is the primary selected-to-suffix
   interface: it relates the actual survivor to the complete plan target by
   ordered effects and an ordered control skeleton with extensional accumulators.
