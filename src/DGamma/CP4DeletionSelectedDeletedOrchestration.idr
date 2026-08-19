@@ -18,6 +18,7 @@ import DGamma.CP4DeletionPlanBuilder
 import DGamma.CP4DeletionPlanCommute
 import DGamma.CP4DeletionPlanComplete
 import DGamma.CP4DeletionPlanEffects
+import DGamma.CP4DeletionPlanEmpty
 import DGamma.CP4DeletionRetainedAction
 import DGamma.CP4DeletionSelectedBoundary
 import DGamma.CP4DeletionSelectedDeletedCore
@@ -222,6 +223,25 @@ record DeletedRegisteredEpisodeBoundaryStep
   0 deletedRegisteredEmptyTables : CurrentRegisteredEmptyTables name key world
     error value nameEq registered
     (advanceGenerationEnvironment @{nameEq} ordinal action live) afterState
+
+||| Re-materialize the exact empty-plan witness owned by the returned boundary.
+||| The result record stores the representation-independent current-R invariant,
+||| so callers never need an equality between separately constructed plans.
+public export
+0 deletedRegisteredBoundaryHasEmptyPlan :
+  (unique : GenerationEnvironmentNamesUnique
+    (advanceGenerationEnvironment @{nameEq} ordinal action live)) ->
+  (step : DeletedRegisteredEpisodeBoundaryStep name key world error value nameEq
+    keyEq selected registered ordinal live action whole afterState survivor) ->
+  EmptyTableInactivePlan name key world error value nameEq
+    (inactiveLeafPlan (completePlanResult
+      (selectedBoundaryPlan (deletedRegisteredBoundary step))))
+deletedRegisteredBoundaryHasEmptyPlan unique step =
+  completeCurrentRegisteredPlanHasEmptyTables nameEq registered
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) unique
+    (worldState afterState) (registry afterState)
+    (selectedBoundaryPlan (deletedRegisteredBoundary step))
+    (deletedRegisteredEmptyTables step)
 
 ||| A fresh R O-Insert is skipped.  The original creates an empty Inactive leaf,
 ||| the complete plan immediately erases it, and the survivor stays fixed.
