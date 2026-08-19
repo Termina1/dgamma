@@ -330,6 +330,7 @@ boundaryPlanSnapshotMatchesSurvivor {survivor}
         (bindings (registry survivor)) (sym survivorAmbient)
         (sym survivorBindings)
 
+public export
 0 namedFireProjectsRaw :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) ->

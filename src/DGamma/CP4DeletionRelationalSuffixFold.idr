@@ -111,6 +111,9 @@ RelationalActionReplayer name key world error value nameEq keyEq =
   (action : Action name key value world error) ->
   (leftBefore, rightBefore : SystemState name key value world error) ->
   (leftNamed : NamedTransition name key world error value action leftBefore) ->
+  applyAction @{nameEq} @{keyEq} action leftBefore =
+    Just (namedTag leftNamed, namedAfter leftNamed) ->
+  registryWellFormed @{nameEq} @{keyEq} leftBefore = True ->
   EffectStateRelated keyEq (projectEffectState @{nameEq} leftBefore)
     (projectEffectState @{nameEq} rightBefore) ->
   OrderedRegistryControlsRelated name key world error value
@@ -236,6 +239,11 @@ retainedSuffixHeadPreservesRelationalBoundary protocol nameEq keyEq replayAction
       (plannedSystemState original
         (completePlanResult (relationalCompletePlan boundary)))
       survivor (retainedBoundaryNamed exactStep)
+      (namedFireProjectsRaw nameEq keyEq action
+        (plannedSystemState original
+          (completePlanResult (relationalCompletePlan boundary)))
+        (retainedBoundaryNamed exactStep) (retainedBoundaryFires exactStep))
+      (survivorBoundaryWellFormed exactBefore)
       (relationalEffects boundary) (relationalOrderedControls boundary)
       (relationalSurvivorWellFormed boundary) of
       replay@(MkRelatedNamedActionReplay survivorNamed survivorFires

@@ -64,6 +64,7 @@ data ForeignInsertPlanView :
         (insertBinding @{nameEq} actor (freshFiber component parent) source
           absent))
 
+public export
 0 foreignInsertPlanView :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (actor : name) -> (parent : Parent name) ->
@@ -96,10 +97,12 @@ foreignInsertPlanView nameEq keyEq actor parent component ambient source tag
               applied inserted)
             guards
 
+public export
 0 boolAndCong : leftA = rightA -> leftB = rightB ->
   leftA && leftB = rightA && rightB
 boolAndCong Refl Refl = Refl
 
+public export
 0 setFreshFromAbsent :
   (keyEq : DecEq key) -> (selected : key) -> (next : value selected) ->
   (before : CoeffectContext key value) ->

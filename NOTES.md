@@ -1980,8 +1980,23 @@ generation scan, executable `GenerationReplayReady`, live-name uniqueness, and
 the final `RelationalNoEpisodeReplayBoundary`. This is a proved fold, not an
 inhabitant of its still-open local operational-congruence input: Definition-60
 outcome/effect stability and the ordered lifecycle constructors must now supply
-that interface for every retained evaluator tag. No public Lemma-72 statement or
-replay-boundary record changed, and no escape hatch was introduced.
+that interface for every retained evaluator tag.
+
+The first concrete relational-action layer is also complete.
+`DGamma.CP4DeletionRelationalActionCore` proves exact ordered lookup, absence,
+insert/replace/delete, O-Insert guards, child guards, and effect updates.
+`DGamma.CP4DeletionRelationalLifecycleSources` combines the orthogonal exact
+effect and ordered-control relations into a per-cell runtime relation and proves
+provider order, target resolution, target matching, and reliance observations
+are identical. `DGamma.CP4DeletionRelationalActionOrchestration` then constructs
+real checked survivor O-Insert/O-Retire/O-Remove steps and composes their exact
+effect/control outputs, including proof-distinct registry certificates. Several
+previously proved private helpers were exported solely for this module split;
+all types and implementations are unchanged. The remaining
+`RelationalActionReplayer` debt is precisely L-Begin/L-Advance/L-Divert/L-Leave/
+L-Unload. Endpoint control/withdrawal and `deletionTheorem` consequently remain
+uninhabited. No public Lemma-72 statement or replay-boundary record changed, and
+no escape hatch was introduced.
 
 ### Corollary 62: terminal recovery
 
@@ -2165,6 +2180,13 @@ a warm package invocation passed the current 164/164 module list. This does not
 discharge the mandatory `CP4SupportSolution` split/no-concurrent-Chez
 cold-archive debt.
 
+The relational suffix/action milestone adds four modules total (the structural
+fold plus ordered action core, lifecycle-source observations, and concrete
+orchestration replay). Targeted checks of all four passed, and the warm package
+build passed the current 168/168 module list, including rebuilt selected
+lifecycle/dispatch consumers after visibility-only exports. This remains warm
+validation and does not discharge the registered cold-build debt.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
@@ -2226,8 +2248,9 @@ current-R tables and `EmptyTableInactivePlan`; selected-boundary propagation is
 proved for every deleted R O-Insert/O-Retire/O-Remove head, including complete
 plan and derived empty-table transport while the survivor remains fixed; the
 parallel relational suffix induction is proved from an explicit per-action
-operational-congruence interface, with deleted heads fully discharged; that
-interface's Definition-60 inhabitant and endpoint control/withdrawal invariants
+operational-congruence interface, with deleted heads fully discharged; all
+orchestration inhabitants and ordered lifecycle source observations are proved,
+while the five lifecycle inhabitants and endpoint control/withdrawal invariants
 remain);
 Confluence/Theorem
 73 (surviving parent-
@@ -2253,9 +2276,9 @@ retained-foreign dispatcher through the dependent selected-segment induction,
 delete R-owned orchestration heads while carrying the proved
 `EmptyTableInactivePlan`, and convert checked
 L-Unload's reset-to-Inactive control into the ordered relational suffix boundary.
-Inhabit the relational fold's explicit per-action replay interface from the
-proved Definition-60 outcome/effect and ordered control frames (the structural
-fold and all deleted-head cases are now complete), feed readiness to the deletion
+Finish the relational fold's explicit per-action replay interface for the five
+lifecycle tags (all orchestration tags, source observations, structural folding,
+and deleted-head cases are complete), feed readiness to the deletion
 skeleton, derive
 endpoint control/withdrawal evidence, and inhabit `deletionTheorem`.
 After that, use deletion

@@ -129,6 +129,7 @@ foreignBeginPlanViewAtOwner nameEq keyEq actor ambient plan
     (Unloading accumulator view outcome)) tag afterState raw =
       void (nothingNotJustForeignBegin raw)
 
+public export
 0 foreignBeginPlanView :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
   (ambient : world) -> (plan : Registry name key value world error) ->

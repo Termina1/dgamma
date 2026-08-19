@@ -40,6 +40,7 @@ noChildFromRemoveGuard False inactiveFlag True valid = case valid of Refl imposs
 noChildFromRemoveGuard True False True valid = case valid of Refl impossible
 noChildFromRemoveGuard True True True valid = case valid of Refl impossible
 
+public export
 record RetireSourceView
   (name, key, world, error : Type) (value : key -> Type)
   (nameEq : DecEq name) (actor : name)
@@ -49,6 +50,7 @@ record RetireSourceView
   0 retireSourceFound : lookupFiber @{nameEq} actor source =
     Just retireSourceFiber
 
+public export
 0 retireSourceView :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
   (ambient : world) -> (source : Registry name key value world error) ->
@@ -64,6 +66,7 @@ retireSourceView nameEq keyEq actor ambient source tag afterState raw
   retireSourceView nameEq keyEq actor ambient source tag afterState raw |
     Just fiber = MkRetireSourceView fiber found
 
+public export
 record RemoveSourceView
   (name, key, world, error : Type) (value : key -> Type)
   (nameEq : DecEq name) (actor : name)
@@ -79,6 +82,7 @@ record RemoveSourceView
   0 removeSourceNoChild : hasChild @{nameEq} {name = name} {key = key}
     {value = value} {world = world} {error = error} actor source = False
 
+public export
 0 removeSourceView :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
   (ambient : world) -> (source : Registry name key value world error) ->
@@ -102,6 +106,7 @@ removeSourceView nameEq keyEq actor ambient source tag afterState raw
           (isInactive (fiberLifecycle fiber)) (hasChild @{nameEq} actor source)
           removable)
 
+public export
 record OrchestrationRuntimeObservation
   (name, key, world, error : Type) (value : key -> Type)
   (ambient : world)
@@ -112,6 +117,7 @@ record OrchestrationRuntimeObservation
   0 orchestrationObservedBindings : bindings (registry afterState) =
     bindings canonical
 
+public export
 0 retireRuntimeObservation :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
   (ambient : world) -> (source : Registry name key value world error) ->
@@ -140,6 +146,7 @@ retireRuntimeObservation nameEq keyEq actor ambient source oldFiber found tag
       (sym (cong (worldState . snd) samePair))
       (sym (cong (bindings . registry . snd) samePair))
 
+public export
 0 removeRuntimeObservation :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->

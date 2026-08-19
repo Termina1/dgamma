@@ -229,6 +229,7 @@ reliedHeadLifecycleObservation nameEq provider self current component parent
     reliedHeadUnloadingObservation nameEq provider self current component parent
       retiredFlag table accumulator view outcome
 
+public export
 0 lifecycleControlReliedHeadSame :
   (nameEq : DecEq name) -> (provider, self, current : name) ->
   {left, right : Fiber name key value world error} ->
