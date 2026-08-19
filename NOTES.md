@@ -1856,10 +1856,15 @@ and projects yielded full-state inverse equivalence back to
 L-Divert, exact-error L-Raise, effectful L-Finish/L-Iter/landing-L-Divert, and
 uses `pushLocalUndoRuntimeRelated` for every successful accumulator update.
 Every constructor executes a real survivor raw step, proves its checked target
-by Preservation, and updates the ordered selected-exempt controls. The final
-occurrence/provider dispatcher still has to feed the already-proved guard and
-outcome evidence into these saturated constructors; no extra public premise is
-intended or accepted.
+by Preservation, and updates the ordered selected-exempt controls.
+`DGamma.CP4DeletionSelectedForeignLifecycleAdvanceDispatchCore` defines the
+concrete evaluator outcome used at this join, and
+`replayForeignAdvanceControlsFromOutcome` eliminates repaired Equation-55
+agreement across every empty/failure/success branch. The exhaustive
+`replayForeignLifecycleControlsFromProviderEvidence` dispatcher then saturates
+either occurrence-local provider-frame reason and invokes the matching
+L-Begin/L-Advance/L-Divert/L-Leave/L-Unload reconstruction. This is an internal
+consumer of already-derived trace evidence, not an added public premise.
 
 The precedence anchor now has both cases required by the paper rather than
 pretending every retained lifecycle occurrence belongs to a closing foreign
@@ -2102,9 +2107,12 @@ After retained L-Leave reconstruction, the warm package passed all 151/151
 modules; after retained L-Unload reconstruction it passed all 152/152 modules.
 After Finding #13 and retained L-Advance outcome/control reconstruction, the
 warm package passed all 155/155 modules, including the repaired independence
-countermodel and the three heavy check modules. The builds reused existing
-heavy-check artifacts, so these remain warm passes and leave the mandatory
-split/no-concurrent-Chez cold-archive validation debt unchanged.
+countermodel and the three heavy check modules. After the split outcome and
+five-rule provider-evidence dispatchers landed, a warm package build passed all
+158/158 modules; the anchored executable escape-hatch scan remained empty.
+The builds reused existing heavy-check artifacts, so these remain warm passes
+and leave the mandatory split/no-concurrent-Chez cold-archive validation debt
+unchanged.
 
 ## Status
 
@@ -2160,10 +2168,9 @@ occurrence/component transport, first-close action-specific temporal
 classification, exact closing-episode reconstruction, selected-L-Unload
 reliance anchoring, the complete Lemma-70/reliance provider-frame join, all
 lifecycle-result control constructors, repaired failure/success outcome
-transport, and concrete checked L-Advance branch reconstruction are proved
-(alongside L-Begin, L-Divert, L-Leave, and L-Unload); the final retained-head
-occurrence/provider dispatcher remains;
-deleted-R/empty-plan propagation,
+transport, concrete checked L-Advance branch reconstruction, and the exhaustive
+retained-head provider/outcome dispatcher are proved (alongside L-Begin,
+L-Divert, L-Leave, and L-Unload); deleted-R/empty-plan propagation,
 the relational suffix fold, and endpoint control/withdrawal invariants remain);
 Confluence/Theorem
 73 (surviving parent-
@@ -2184,9 +2191,9 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** complete the selected quotient's control half: replay retained foreign
-heads from the accumulator-transposed effect output, delete R-owned
-orchestration heads while deriving `EmptyTableInactivePlan`, and convert checked
+**Next:** complete the selected quotient's control half: feed the proved
+retained-foreign dispatcher through the dependent selected-segment induction,
+delete R-owned orchestration heads while deriving `EmptyTableInactivePlan`, and convert checked
 L-Unload's reset-to-Inactive control into the ordered relational suffix boundary.
 Fold that relation over the already-complete suffix cases (the exact fold remains
 a regression specialization), feed readiness to the deletion skeleton, derive
