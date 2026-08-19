@@ -39,6 +39,7 @@ lookupPutCurrentSelf nameEq selected generation
     ((candidate, current) :: rest) | No different =
       rewrite decision in lookupPutCurrentSelf nameEq selected generation rest
 
+public export
 0 lookupPutCurrentOther :
   (nameEq : DecEq name) -> (observed, inserted : name) ->
   Not (observed = inserted) ->

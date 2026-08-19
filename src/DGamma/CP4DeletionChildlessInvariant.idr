@@ -95,6 +95,7 @@ parentsAbsentHaveNoChild nameEq selected
             absent tailParents
       in tailChildless
 
+public export
 0 wellFormedAbsentHasNoChild :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->

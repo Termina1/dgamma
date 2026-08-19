@@ -54,6 +54,7 @@ nameAbsentAfterPutOther nameEq protected inserted distinct generation
         There later => nameAbsentAfterPutOther nameEq protected inserted distinct
           generation rest (\old => absent (There old)) later
 
+public export
 0 putCurrentGenerationPreservesUnique :
   (nameEq : DecEq name) -> (selected : name) ->
   (generation : RegistrationGeneration name) ->

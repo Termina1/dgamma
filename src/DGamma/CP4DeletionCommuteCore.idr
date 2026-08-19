@@ -227,6 +227,24 @@ public export
 deleteBindingRuntimeBindings keyEq removed
   (MkCoeffectContext entries unique) = Refl
 
+||| Deleting a freshly inserted head restores the old ordered runtime bindings.
+||| The intrinsic uniqueness certificate may differ, so only `bindings` is
+||| compared.
+public export
+0 deleteBindingAfterFreshInsertBindings :
+  (keyEq : DecEq key) -> (inserted : key) -> (next : value inserted) ->
+  (table : CoeffectContext key value) ->
+  (0 absent : lookupBinding @{keyEq} inserted table = Nothing) ->
+  bindings (deleteBinding @{keyEq} inserted
+    (insertBinding @{keyEq} inserted next table absent)) = bindings table
+deleteBindingAfterFreshInsertBindings keyEq inserted next
+  (MkCoeffectContext entries unique) absent
+  with (decEq @{keyEq} inserted inserted)
+  deleteBindingAfterFreshInsertBindings keyEq inserted next
+    (MkCoeffectContext entries unique) absent | Yes Refl = Refl
+  deleteBindingAfterFreshInsertBindings keyEq inserted next
+    (MkCoeffectContext entries unique) absent | No absurd = void (absurd Refl)
+
 ||| Registry-level observable form of insertion/deletion commutation.
 public export
 0 deleteBindingAfterDistinctInsertBindings :
