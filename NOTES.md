@@ -1948,6 +1948,27 @@ plan's outside projection as a constructive no-extra-leaf argument and derives
 `reachedCompletePlanHasEmptyTables` consumes exactly scanner/alignment/public
 no-episode evidence.
 
+The selected-boundary deleted-R orchestration layer is now constructive.
+`DGamma.CP4DeletionSelectedDeletedPlan` adds the proof-relevant plan operations
+that the exact suffix boundary did not need to expose: a fresh R O-Insert
+prepends its canonical empty/Inactive/childless leaf, complete plans transport
+across equal ordered runtime bindings, and the preserving/removing folds retain
+their observable target equations. `DGamma.CP4DeletionSelectedDeletedCore`
+uses the old and new `EmptyTableInactivePlan` witnesses to relate the original
+before/after effect projections through their common plan target, transports the
+unchanged selected accumulator on that relation, and keeps the survivor fixed.
+It also re-derives next-boundary table emptiness from the public current-R
+invariant rather than storing a new premise in `SelectedEpisodeReplayBoundary`.
+`DGamma.CP4DeletionSelectedDeletedOrchestration` instantiates that core for all
+three possible deleted orchestration heads: fresh O-Insert, legal idempotent
+O-Retire, and exact O-Remove. Each canonical registry update is transported to
+the evaluator's actual proof-distinct target through ambient/ordered-binding
+observations; no `UniqueKeys` or registry equality is requested.
+`deletedRegisteredOrchestrationHeadPreservesEpisodeBoundary` is the exhaustive
+three-rule dispatcher. This changes no public Lemma-72 statement and does not
+restructure either replay-boundary record. The next obligation is the retained
+foreign-head selected fold and its parallel relational suffix continuation.
+
 ### Corollary 62: terminal recovery
 
 `DGamma.CP4TerminalRecovery.terminalRecoveryTheoremProof` now inhabits the
@@ -2123,6 +2144,13 @@ artifacts, so these remain warm passes
 and leave the mandatory split/no-concurrent-Chez cold-archive validation debt
 unchanged.
 
+The deleted-R selected-boundary milestone adds three small modules plus one
+exhaustive dispatcher. Targeted checks of the plan, core, orchestration, and
+dispatch modules passed under Idris 2 v0.8.0. With no concurrent Chez process,
+a warm package invocation passed the current 164/164 module list. This does not
+discharge the mandatory `CP4SupportSolution` split/no-concurrent-Chez
+cold-archive debt.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
@@ -2180,8 +2208,10 @@ lifecycle-result control constructors, repaired failure/success outcome
 transport, concrete checked L-Advance branch reconstruction, and the exhaustive
 retained-head provider/outcome dispatcher are proved (alongside L-Begin,
 L-Divert, L-Leave, and L-Unload); public no-episode evidence now derives empty
-current-R tables and `EmptyTableInactivePlan`; deleted-R boundary propagation,
-the relational suffix fold, and endpoint control/withdrawal invariants remain);
+current-R tables and `EmptyTableInactivePlan`; selected-boundary propagation is
+proved for every deleted R O-Insert/O-Retire/O-Remove head, including complete
+plan and derived empty-table transport while the survivor remains fixed; the
+relational suffix fold and endpoint control/withdrawal invariants remain);
 Confluence/Theorem
 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
