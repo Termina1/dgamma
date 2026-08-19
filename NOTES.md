@@ -1966,8 +1966,22 @@ the evaluator's actual proof-distinct target through ambient/ordered-binding
 observations; no `UniqueKeys` or registry equality is requested.
 `deletedRegisteredOrchestrationHeadPreservesEpisodeBoundary` is the exhaustive
 three-rule dispatcher. This changes no public Lemma-72 statement and does not
-restructure either replay-boundary record. The next obligation is the retained
-foreign-head selected fold and its parallel relational suffix continuation.
+restructure either replay-boundary record.
+
+`DGamma.CP4DeletionRelationalSuffixFold` now proves the parallel structural
+suffix induction without weakening the ordered boundary. An exact scaffold from
+the relational boundary reuses every committed current-R plan/head commutation.
+Deleted R heads are fully discharged by composing the exact next-plan bridge
+with the existing relation to the fixed survivor. Retained heads similarly reuse
+the exact plan-side transition, then consume the explicit
+`RelationalActionReplayer` interface; their returned effect/control relation is
+composed with the exact next-plan bridge. The simultaneous result threads the
+generation scan, executable `GenerationReplayReady`, live-name uniqueness, and
+the final `RelationalNoEpisodeReplayBoundary`. This is a proved fold, not an
+inhabitant of its still-open local operational-congruence input: Definition-60
+outcome/effect stability and the ordered lifecycle constructors must now supply
+that interface for every retained evaluator tag. No public Lemma-72 statement or
+replay-boundary record changed, and no escape hatch was introduced.
 
 ### Corollary 62: terminal recovery
 
@@ -2211,7 +2225,10 @@ L-Divert, L-Leave, and L-Unload); public no-episode evidence now derives empty
 current-R tables and `EmptyTableInactivePlan`; selected-boundary propagation is
 proved for every deleted R O-Insert/O-Retire/O-Remove head, including complete
 plan and derived empty-table transport while the survivor remains fixed; the
-relational suffix fold and endpoint control/withdrawal invariants remain);
+parallel relational suffix induction is proved from an explicit per-action
+operational-congruence interface, with deleted heads fully discharged; that
+interface's Definition-60 inhabitant and endpoint control/withdrawal invariants
+remain);
 Confluence/Theorem
 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
@@ -2236,8 +2253,10 @@ retained-foreign dispatcher through the dependent selected-segment induction,
 delete R-owned orchestration heads while carrying the proved
 `EmptyTableInactivePlan`, and convert checked
 L-Unload's reset-to-Inactive control into the ordered relational suffix boundary.
-Fold that relation over the already-complete suffix cases (the exact fold remains
-a regression specialization), feed readiness to the deletion skeleton, derive
+Inhabit the relational fold's explicit per-action replay interface from the
+proved Definition-60 outcome/effect and ordered control frames (the structural
+fold and all deleted-head cases are now complete), feed readiness to the deletion
+skeleton, derive
 endpoint control/withdrawal evidence, and inhabit `deletionTheorem`.
 After that, use deletion
 for constructive canonical sorting. Fresh-choice,
