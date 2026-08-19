@@ -290,9 +290,15 @@ progress.
   elaboration-performance boundary only. `DGamma.CP4DeletionSelectedForeignLifecycleProviderFrame`
   joins that evidence with the closed/open precedence alternatives (including
   Lemma 70) and constructs the same saturated ordered guard frame without raw
-  endpoint identity or registry equality. Concrete L-Advance reconstruction
-  remains before the selected layer can handle deleted R heads
-  and close L-Unload.
+  endpoint identity or registry equality.
+  `DGamma.CP4DeletionSelectedForeignLifecycleAdvanceOutcome` factors the
+  selected boundary through its generated transformation and instantiates the
+  repaired Equation-55 outcome clause. The concrete L-Advance module then
+  reconstructs empty finish/divert, exact-error raise, and every successful
+  finish/iter/landing-divert survivor; yielded inverse equivalence composes via
+  `pushLocalUndoRuntimeRelated`. The final occurrence/provider dispatcher
+  remains before the selected layer can handle deleted R heads and close
+  L-Unload.
   `DGamma.CP4DeletionRelationalBoundary` is the primary selected-to-suffix
   interface: it relates the actual survivor to the complete plan target by
   ordered effects and an ordered control skeleton with extensional accumulators.

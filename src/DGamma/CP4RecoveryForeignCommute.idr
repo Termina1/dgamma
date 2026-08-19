@@ -66,6 +66,7 @@ partialComposeAfterUndefined after before origin middle beforeRuns afterRuns
   PartialRelated state rel (Just left) (Just right) -> rel left right
 partialDefinedRelation (PartialDefined related) = related
 
+public export
 0 partialSymmetric : (eq : Equivalence state) ->
   PartialRelated state (relation eq) left right ->
   PartialRelated state (relation eq) right left
@@ -73,6 +74,7 @@ partialSymmetric eq PartialUndefined = PartialUndefined
 partialSymmetric eq (PartialDefined related) =
   PartialDefined (symmetric eq related)
 
+public export
 0 partialTransitive : (eq : Equivalence state) ->
   PartialRelated state (relation eq) left middle ->
   PartialRelated state (relation eq) middle right ->
@@ -124,6 +126,7 @@ accumulatorOutput nameEq keyEq selected provision accumulator state =
 accumulatorOutputRuns nameEq keyEq selected provision accumulator
   (MkEffectState ambient tables) = Refl
 
+public export
 record AccumulatorFactorPoint
   (name, key, world, error : Type) (value : key -> Type)
   (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
@@ -149,6 +152,7 @@ record AccumulatorFactorPoint
       accumulator) state = Just recovered
   0 recoveredToNormalized : EffectStateRelated keyEq recovered normalized
 
+public export
 0 buildAccumulatorFactorPoint :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (provision : CoeffectSpec key) ->
@@ -234,6 +238,7 @@ buildAccumulatorFactorPoint {name} {key} {world} {error} {value}
           (MkEffectState ambient tables))
         generatedResult normalizedRuns recoveredRuns related
 
+public export
 0 factorPointNormalizationIdentity :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (provision : CoeffectSpec key) ->
@@ -266,6 +271,7 @@ factorPointNormalizationIdentity nameEq keyEq selected provision accumulator
           {p = \observed => EffectStateRelated keyEq observed (generated point)}
           canonicalIsStored canonicalToGenerated
 
+public export
 0 projectedModelTableConfined :
   (nameEq : DecEq name) -> (selected : name) ->
   (state : SystemState name key value world error) ->

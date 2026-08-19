@@ -98,6 +98,157 @@ resolveEffectValuesRelated keyEq (k :: ks) (ProviderView provider rest) related
       in rewrite rightLookup in cong (map (OneDepValue v))
         (resolveEffectValuesRelated keyEq ks rest related)
 
+0 reindexEffectStateRelated :
+  EffectStateRelated leftKeyEq left right ->
+  EffectStateRelated rightKeyEq left right
+reindexEffectStateRelated (MkEffectStateRelated ambient tables) =
+  MkEffectStateRelated ambient tables
+
+||| Runtime-equal effect observations evaluate one iterator stage with the same
+||| availability, exact failure, or successful yielded callback.  Successful
+||| inverse maps are compared by the original Equation-55 map clause; forward
+||| outputs need not be propositionally equal because they retain the two
+||| proof-distinct surrounding table functions.
+public export
+0 iteratorStageOutcomeRelated :
+  (keyEq : DecEq key) ->
+  (stage : IteratorStage name key world error value actor trace) ->
+  (left, right : EffectState name key value world) ->
+  EffectStateRelated keyEq left right ->
+  IteratorOutcomeAgreement name key value world error keyEq
+    (iteratorStageOutcome stage left) (iteratorStageOutcome stage right)
+iteratorStageOutcomeRelated {name} {key} {world} {error} {value}
+  keyEq (StageFromAdvance nameEq stageKeyEq actor tag equation occurs fiber found
+    remaining accumulator view lifecycle step rest suffix) left right related
+  with (resolveEffectValues @{stageKeyEq}
+    (dependencies (componentDependencies (fiberComponent fiber))) view left)
+    proof leftResolved
+  iteratorStageOutcomeRelated keyEq
+    (StageFromAdvance nameEq stageKeyEq actor tag equation occurs fiber found
+      remaining accumulator view lifecycle step rest suffix)
+    left right related | Nothing =
+      let 0 stageRelated : EffectStateRelated stageKeyEq left right
+          stageRelated = reindexEffectStateRelated related
+          0 resolvedSame :
+            resolveEffectValues @{stageKeyEq}
+              (dependencies (componentDependencies (fiberComponent fiber))) view
+              left =
+            resolveEffectValues @{stageKeyEq}
+              (dependencies (componentDependencies (fiberComponent fiber))) view
+              right
+          resolvedSame = resolveEffectValuesRelated stageKeyEq
+            (dependencies (componentDependencies (fiberComponent fiber))) view
+            stageRelated
+          0 rightResolved : resolveEffectValues @{stageKeyEq}
+            (dependencies (componentDependencies (fiberComponent fiber))) view
+            right = Nothing
+          rightResolved = trans (sym resolvedSame) leftResolved
+      in rewrite rightResolved in IteratorOutcomesUndefined
+  iteratorStageOutcomeRelated keyEq
+    (StageFromAdvance nameEq stageKeyEq actor tag equation occurs fiber found
+      remaining accumulator view lifecycle step rest suffix)
+    left right related | Just capability
+    with (runStepEffect step capability
+      (MkLocalState (effectAmbient left)
+        (restrictOwnedPreservingOrder @{stageKeyEq}
+          (componentProvisions (fiberComponent fiber))
+          (effectTables left actor)))) proof leftRan
+    iteratorStageOutcomeRelated keyEq
+      (StageFromAdvance nameEq stageKeyEq actor tag equation occurs fiber found
+        remaining accumulator view lifecycle step rest suffix)
+      left right related | Just capability | Left failure =
+        let 0 stageRelated : EffectStateRelated stageKeyEq left right
+            stageRelated = reindexEffectStateRelated related
+            0 resolvedSame :
+              resolveEffectValues @{stageKeyEq}
+                (dependencies (componentDependencies (fiberComponent fiber)))
+                view left =
+              resolveEffectValues @{stageKeyEq}
+                (dependencies (componentDependencies (fiberComponent fiber)))
+                view right
+            resolvedSame = resolveEffectValuesRelated stageKeyEq
+              (dependencies (componentDependencies (fiberComponent fiber))) view
+              stageRelated
+            0 rightResolved : resolveEffectValues @{stageKeyEq}
+              (dependencies (componentDependencies (fiberComponent fiber))) view
+              right = Just capability
+            rightResolved = trans (sym resolvedSame) leftResolved
+            0 ownedSame :
+              (restrictOwnedPreservingOrder @{stageKeyEq}
+                  (componentProvisions (fiberComponent fiber))
+                  (effectTables left actor) =
+               restrictOwnedPreservingOrder @{stageKeyEq}
+                  (componentProvisions (fiberComponent fiber))
+                  (effectTables right actor))
+            ownedSame = canonicalNormalizationFromEqualBindings @{stageKeyEq}
+              (componentProvisions (fiberComponent fiber))
+              (effectTables left actor) (effectTables right actor)
+              (tablesExact stageRelated actor)
+            0 localSame :
+              (MkLocalState (effectAmbient left)
+                  (restrictOwnedPreservingOrder @{stageKeyEq}
+                    (componentProvisions (fiberComponent fiber))
+                    (effectTables left actor)) =
+               MkLocalState (effectAmbient right)
+                  (restrictOwnedPreservingOrder @{stageKeyEq}
+                    (componentProvisions (fiberComponent fiber))
+                    (effectTables right actor)))
+            localSame = rewrite ambientExact stageRelated in
+              rewrite ownedSame in Refl
+            runSame = cong (runStepEffect step capability) localSame
+            rightRan = trans (sym runSame) leftRan
+        in rewrite rightResolved in rewrite rightRan in
+          IteratorFailuresAgree Refl
+    iteratorStageOutcomeRelated keyEq
+      (StageFromAdvance nameEq stageKeyEq actor tag equation occurs fiber found
+        remaining accumulator view lifecycle step rest suffix)
+      left right related | Just capability | Right (after, undo) =
+        let 0 stageRelated : EffectStateRelated stageKeyEq left right
+            stageRelated = reindexEffectStateRelated related
+            0 resolvedSame :
+              resolveEffectValues @{stageKeyEq}
+                (dependencies (componentDependencies (fiberComponent fiber)))
+                view left =
+              resolveEffectValues @{stageKeyEq}
+                (dependencies (componentDependencies (fiberComponent fiber)))
+                view right
+            resolvedSame = resolveEffectValuesRelated stageKeyEq
+              (dependencies (componentDependencies (fiberComponent fiber))) view
+              stageRelated
+            0 rightResolved : resolveEffectValues @{stageKeyEq}
+              (dependencies (componentDependencies (fiberComponent fiber))) view
+              right = Just capability
+            rightResolved = trans (sym resolvedSame) leftResolved
+            0 ownedSame :
+              (restrictOwnedPreservingOrder @{stageKeyEq}
+                  (componentProvisions (fiberComponent fiber))
+                  (effectTables left actor) =
+               restrictOwnedPreservingOrder @{stageKeyEq}
+                  (componentProvisions (fiberComponent fiber))
+                  (effectTables right actor))
+            ownedSame = canonicalNormalizationFromEqualBindings @{stageKeyEq}
+              (componentProvisions (fiberComponent fiber))
+              (effectTables left actor) (effectTables right actor)
+              (tablesExact stageRelated actor)
+            0 localSame :
+              (MkLocalState (effectAmbient left)
+                  (restrictOwnedPreservingOrder @{stageKeyEq}
+                    (componentProvisions (fiberComponent fiber))
+                    (effectTables left actor)) =
+               MkLocalState (effectAmbient right)
+                  (restrictOwnedPreservingOrder @{stageKeyEq}
+                    (componentProvisions (fiberComponent fiber))
+                    (effectTables right actor)))
+            localSame = rewrite ambientExact stageRelated in
+              rewrite ownedSame in Refl
+            runSame = cong (runStepEffect step capability) localSame
+            rightRan = trans (sym runSame) leftRan
+            undoMap = yieldedInverseEffectMap nameEq stageKeyEq actor
+              (componentProvisions (fiberComponent fiber)) undo
+        in rewrite rightResolved in rewrite rightRan in
+          IteratorSuccessfulYieldsAgree Refl
+            (effectPartialMapReflexive keyEq undoMap)
+
 successfulAdvanceMap :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
   Fiber name key value world error -> PartialEffectMap name key value world

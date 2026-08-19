@@ -1846,6 +1846,21 @@ outputs across different ambient/table inputs—those observations belong to the
 already-transposed effect boundary, while `FiberControlRelated` observes the
 post-unload control outcome.
 
+`DGamma.CP4DeletionSelectedForeignLifecycleAdvanceOutcome` and
+`DGamma.CP4DeletionSelectedForeignLifecycleAdvance` close the rule-level
+retained L-Advance reconstruction. The outcome layer factors the selected
+accumulator boundary through its generated Definition-60 transformation,
+transports repaired Equation-55 agreement through exact runtime observations,
+and projects yielded full-state inverse equivalence back to
+`LocalStateRuntimeRelated`. The concrete layer reconstructs empty L-Finish and
+L-Divert, exact-error L-Raise, effectful L-Finish/L-Iter/landing-L-Divert, and
+uses `pushLocalUndoRuntimeRelated` for every successful accumulator update.
+Every constructor executes a real survivor raw step, proves its checked target
+by Preservation, and updates the ordered selected-exempt controls. The final
+occurrence/provider dispatcher still has to feed the already-proved guard and
+outcome evidence into these saturated constructors; no extra public premise is
+intended or accepted.
+
 The precedence anchor now has both cases required by the paper rather than
 pretending every retained lifecycle occurrence belongs to a closing foreign
 episode. `DGamma.CP4DeletionSelectedForeignLifecycleAnchorEndpoint` derives
