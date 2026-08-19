@@ -2100,9 +2100,11 @@ Lemma-70/reliance frame join, a warm package invocation passed all 150/150
 modules. The new modules and their exported join were also checked directly.
 After retained L-Leave reconstruction, the warm package passed all 151/151
 modules; after retained L-Unload reconstruction it passed all 152/152 modules.
-The builds reused existing heavy-check artifacts, so these remain warm passes
-and leave the mandatory split/no-concurrent-Chez cold-archive validation debt
-unchanged.
+After Finding #13 and retained L-Advance outcome/control reconstruction, the
+warm package passed all 155/155 modules, including the repaired independence
+countermodel and the three heavy check modules. The builds reused existing
+heavy-check artifacts, so these remain warm passes and leave the mandatory
+split/no-concurrent-Chez cold-archive validation debt unchanged.
 
 ## Status
 
@@ -2156,10 +2158,11 @@ interface; retained foreign lifecycle source frames, both closed/open
 precedence-anchor eliminations, Lemma-70 endpoint reconstruction, installed
 occurrence/component transport, first-close action-specific temporal
 classification, exact closing-episode reconstruction, selected-L-Unload
-reliance anchoring, the complete Lemma-70/reliance provider-frame join, and all
-lifecycle-result control constructors are proved, while the concrete checked
-L-Advance transition remains (L-Begin, L-Divert, L-Leave, and L-Unload are
-reconstructed);
+reliance anchoring, the complete Lemma-70/reliance provider-frame join, all
+lifecycle-result control constructors, repaired failure/success outcome
+transport, and concrete checked L-Advance branch reconstruction are proved
+(alongside L-Begin, L-Divert, L-Leave, and L-Unload); the final retained-head
+occurrence/provider dispatcher remains;
 deleted-R/empty-plan propagation,
 the relational suffix fold, and endpoint control/withdrawal invariants remain);
 Confluence/Theorem
