@@ -32,6 +32,7 @@ lookupNotElemNothing wanted (Bind current value :: rest) absent
     No distinct = lookupNotElemNothing wanted rest
       (\later => absent (There later))
 
+public export
 0 lookupDeleteSelf : DecEq key => (removed : key) ->
   (table : CoeffectContext key value) ->
   lookupBinding removed (deleteBinding removed table) = Nothing
