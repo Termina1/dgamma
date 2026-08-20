@@ -404,8 +404,8 @@ selectedClosedEpisodeFold {name} {key} {world} {error} {value}
           local (S episodeStartOrdinal)
           episodeStartLive uniqueStart stampedStart (closedInside (locatedEpisode located))
           alignedInside (closedInsideInstalled (locatedEpisode located))
-          insideNoRegistered insideEmbedding
-          (\transition, occurrence => occurrence) (locatedPreStart located)
+          insideNoRegistered insideEmbedding NoTransitions Refl
+          (locatedPreStart located)
           initialBoundary initialInactive initialEmpty initialPlanEmpty
         0 finalUnique : GenerationEnvironmentNamesUnique
           (interiorFinalLive interior)
