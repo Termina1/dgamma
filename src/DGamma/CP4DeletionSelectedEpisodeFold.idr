@@ -387,7 +387,7 @@ selectedClosedEpisodeFold {name} {key} {world} {error} {value}
           keyEq selected registered protocol
           (appendTransitions (closedTransitions (locatedEpisode located))
             (traceAfterClosing located))
-          (lastInstalledState (locatedEpisode located))
+          (closedInside (locatedEpisode located))
         local = selectedEpisodeLocalReplayer protocol nameEq keyEq selected
           registered selectedOutside global aligned discipline noDependent independent (appendTransitions (closedTransitions (locatedEpisode located))
             (traceAfterClosing located))
@@ -400,10 +400,12 @@ selectedClosedEpisodeFold {name} {key} {world} {error} {value}
           (closedInside (locatedEpisode located)) (locatedPreStart located)
         interior = selectedEpisodeInteriorFold protocol nameEq keyEq selected
           registered selectedOutside (appendTransitions (closedTransitions (locatedEpisode located))
-            (traceAfterClosing located)) local (S episodeStartOrdinal)
+            (traceAfterClosing located)) (closedInside (locatedEpisode located))
+          local (S episodeStartOrdinal)
           episodeStartLive uniqueStart stampedStart (closedInside (locatedEpisode located))
           alignedInside (closedInsideInstalled (locatedEpisode located))
-          insideNoRegistered insideEmbedding (locatedPreStart located)
+          insideNoRegistered insideEmbedding
+          (\transition, occurrence => occurrence) (locatedPreStart located)
           initialBoundary initialInactive initialEmpty initialPlanEmpty
         0 finalUnique : GenerationEnvironmentNamesUnique
           (interiorFinalLive interior)
