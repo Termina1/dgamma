@@ -2249,14 +2249,24 @@ closing crossing activations use committed-provider persistence and open-through
 close activations use the selected L-Unload reliance guard. Exact interior
 prefix/decomposition indices ensure the temporal occurrence is not confused with
 a duplicate transition. `selectedClosedEpisodeFoldFromPremises` checks the full
-dispatcher/fold composition. The next blocker is the post-close selected-static
-suffix upgrade at selected removal/reissue.
+dispatcher/fold composition. Shift 34 adds the first checked post-close
+discharge layer: `selectedOrderedAbsentGivesOrdered` upgrades the selected
+quotient after selected O-Remove, while
+`selectedOrderedCleanInactiveGivesOrdered` upgrades a surviving selected cell
+when both endpoints are `Inactive Nothing`. The structural prefix replay that
+carries selected-static controls to either discharge point remains the active
+blocker.
 
 For endpoint withdrawal, `currentGenerationAtScanStart` is checked: a generation
 older than the current ordinal that remains current at a scanned suffix endpoint
 was already current at the suffix source. This rules out confusing an
-occurrence-local O-Retire with a later raw-name reissue and is the key backward
-lemma for retirement persistence.
+occurrence-local O-Retire with a later raw-name reissue. Shift 34 also checks
+`retiredInactiveCurrentPersists`: once that exact generation retires while
+Inactive, retirement is monotone while it remains current under
+`NoRegisteredEpisode`; the proof explicitly eliminates reissue, removal, and
+all impossible Inactive lifecycle heads. The remaining join is to transport each
+`GeneratedDuring.generatedRetiresLater` occurrence to this suffix theorem and
+construct `CurrentRegisteredWithdrawable`.
 
 ## Status
 
