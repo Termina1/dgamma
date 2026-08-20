@@ -158,7 +158,7 @@ record RetainedNoEpisodeBoundaryStep
     survivorBefore
   0 retainedBoundaryFires : fireNamed nameEq keyEq action survivorBefore =
     Just retainedBoundaryNamed
-  0 retainedNextBoundary : NoEpisodeReplayBoundary name key world error value
+  retainedNextBoundary : NoEpisodeReplayBoundary name key world error value
     nameEq keyEq registered nextLive originalAfter
     (namedAfter retainedBoundaryNamed)
 
