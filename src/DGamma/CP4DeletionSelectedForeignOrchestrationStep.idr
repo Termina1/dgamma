@@ -20,6 +20,7 @@ import Decidable.Equality
 
 %default total
 
+public export
 record NamedForeignOrchestrationReplay
   (name, key, world, error : Type) (value : key -> Type)
   (nameEq : DecEq name) (keyEq : DecEq key)
@@ -31,6 +32,7 @@ record NamedForeignOrchestrationReplay
     Just orchestrationNamed
   0 orchestrationNamedAfter : namedAfter orchestrationNamed = target
 
+public export
 foreignOrchestrationReplayNamed :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) ->
