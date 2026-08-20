@@ -109,6 +109,7 @@ record SelectedEpisodeLocalReplayer
     installedAt @{nameEq} selected afterState = True ->
     {restFinal : SystemState name key value world error} ->
     (rest : Transitions afterState restFinal) ->
+    InstalledTrace name key world error value nameEq keyEq selected rest ->
     (noBegin : IsBeginAction action ->
       GenerationOwnedActor nameEq registered ordinal live action -> Void) ->
     (occurs : OccursIn
@@ -287,7 +288,7 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
           replay = replayRetainedEpisodeHead local ordinal live unique stamped
             selectedOutside action _ _ survivorFirst tag checked
             sourceInstalled (installedTraceStart installedRest) rest
-            noBegin occurs boundary emptyPlan inactive retained
+            installedRest noBegin occurs boundary emptyPlan inactive retained
       in case replay of
         MkSelectedEpisodeRetainedHead
           named@(MkNamedTransition namedAfter namedTag namedTransition sameAction)
