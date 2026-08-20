@@ -46,8 +46,11 @@ record SelectedEpisodeLifecycleAnchorProvider
   (name, key, world, error : Type) (value : key -> Type)
   (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
   (registered : List (RegistrationGeneration name))
-  {globalFirst, globalLast : SystemState name key value world error}
-  (global : Transitions globalFirst globalLast) where
+  {globalFirst, globalLast, selectedPre, selectedAfter :
+    SystemState name key value world error}
+  (global : Transitions globalFirst globalLast)
+  (selectedEpisode : ClosedEpisode name key world error value nameEq keyEq
+    selected selectedPre selectedAfter) where
   constructor MkSelectedEpisodeLifecycleAnchorProvider
   0 lifecycleAnchorAt :
     (ordinal : Nat) -> (live : GenerationEnvironment name) ->
@@ -58,8 +61,7 @@ record SelectedEpisodeLifecycleAnchorProvider
     (tag : RuleTag) ->
     (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
       Just (tag, afterState)) ->
-    {restFinal : SystemState name key value world error} ->
-    (rest : Transitions afterState restFinal) ->
+    (rest : Transitions afterState (lastInstalledState selectedEpisode)) ->
     InstalledTrace name key world error value nameEq keyEq selected rest ->
     (occurs : OccursIn
       (Fired {before = before} {afterState = afterState}
@@ -260,15 +262,17 @@ public export
   NoDependentClosingEpisode {nameEq = nameEq} {keyEq = keyEq} selected global ->
   TraceIndependent name key world error value keyEq global ->
   (whole : Transitions wholeFirst wholeLast) ->
+  (selectedEpisode : ClosedEpisode name key world error value nameEq keyEq
+    selected selectedPre selectedAfter) ->
   (wholeInGlobal : OccurrenceEmbedding whole global) ->
   SelectedEpisodeLifecycleAnchorProvider name key world error value nameEq keyEq
-    selected registered global ->
+    selected registered global selectedEpisode ->
   SelectedEpisodeLocalReplayer name key world error value nameEq keyEq selected
-    registered protocol whole
+    registered protocol whole (lastInstalledState selectedEpisode)
 selectedEpisodeLocalReplayer {name} {key} {world} {error} {value}
   protocol nameEq keyEq selected registered
   selectedOutside global aligned globalDiscipline noDependent independent whole
-  wholeInGlobal
+  selectedEpisode wholeInGlobal
   anchors = MkSelectedEpisodeLocalReplayer replayDeleted replayRetained
   where
   0 replayDeleted :
@@ -372,8 +376,7 @@ selectedEpisodeLocalReplayer {name} {key} {world} {error} {value}
       Just (tag, afterState)) ->
     installedAt @{nameEq} selected before = True ->
     installedAt @{nameEq} selected afterState = True ->
-    {restFinal : SystemState name key value world error} ->
-    (rest : Transitions afterState restFinal) ->
+    (rest : Transitions afterState (lastInstalledState selectedEpisode)) ->
     InstalledTrace name key world error value nameEq keyEq selected rest ->
     (noBegin : IsBeginAction action ->
       GenerationOwnedActor nameEq registered ordinal live action -> Void) ->
