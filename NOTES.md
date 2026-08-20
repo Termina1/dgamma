@@ -2253,9 +2253,15 @@ dispatcher/fold composition. Shift 34 adds the first checked post-close
 discharge layer: `selectedOrderedAbsentGivesOrdered` upgrades the selected
 quotient after selected O-Remove, while
 `selectedOrderedCleanInactiveGivesOrdered` upgrades a surviving selected cell
-when both endpoints are `Inactive Nothing`. The structural prefix replay that
-carries selected-static controls to either discharge point remains the active
-blocker.
+when both endpoints are `Inactive Nothing`. Shift 35 now proves the effect half
+of every retained post-close action (`postCloseOrchestrationEffects` and
+`postCloseLifecycleEffects`) without upgrading selected control prematurely.
+It also checks `retainedForeignPostCloseOrchestration`, including exact current-R
+plan commutation, all three foreign orchestration constructors, survivor replay,
+selected-static control threading, selected Inactive preservation, and all
+current-R Inactive/empty-plan invariants. The remaining structural prefix cases
+are selected O-Retire and retained foreign lifecycle; selected O-Remove/rebegin
+then dispatch to the already-checked full-control upgrades.
 
 For endpoint withdrawal, `currentGenerationAtScanStart` is checked: a generation
 older than the current ordinal that remains current at a scanned suffix endpoint
