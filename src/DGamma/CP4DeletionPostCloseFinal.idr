@@ -175,3 +175,95 @@ finalPostCloseGivesRelational nameEq keyEq selected registered live unique stamp
                                   (postCloseOriginalWellFormed boundary)
                                   (postCloseSurvivorWellFormed boundary)
             Just failure => void (falseNotTruePostFinal selectedNotFailed)
+
+0 cleanPlanPostCloseGivesRelational :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (original, survivor : SystemState name key value world error) ->
+  (boundary : PostCloseSelectedBoundary name key world error value nameEq keyEq
+    selected registered ordinal live original survivor) ->
+  SelectedSurvivorCleanInactive name key world error value nameEq selected
+    (plannedSystemState original
+      (completePlanResult (postClosePlan boundary))) ->
+  RelationalNoEpisodeReplayBoundary name key world error value nameEq keyEq
+    registered live original survivor
+cleanPlanPostCloseGivesRelational nameEq selected original survivor boundary
+  (SelectedCleanInactiveWitness component leftParent leftRetired leftTable
+    leftFound) =
+    case selectedStaticLookupFound nameEq selected
+      (planTarget (completePlanResult (postClosePlan boundary)))
+      (registry survivor)
+      (MkFiber component leftParent leftRetired leftTable (Inactive Nothing))
+      leftFound (postCloseControls boundary) of
+      MkSelectedStaticFiberFound rightFiber rightFound static =>
+        case postCloseCleanInactive boundary of
+          SelectedCleanInactiveWitness cleanComponent cleanParent cleanRetired
+            cleanTable cleanFound =>
+              let sameFiber = justInjective (trans (sym rightFound) cleanFound)
+              in case sameFiber of
+                Refl => case static of
+                  FibersStaticRelated leftParent cleanParent leftRetired
+                    cleanRetired leftTable cleanTable (Inactive Nothing)
+                    (Inactive Nothing) parentSame retiredSame =>
+                      let controls = selectedOrderedCleanInactiveGivesOrdered
+                            nameEq selected component leftParent cleanParent
+                            leftRetired cleanRetired leftTable cleanTable
+                            (bindings (planTarget (completePlanResult
+                              (postClosePlan boundary))))
+                            (bindings (registry survivor))
+                            (uniqueBindings (planTarget (completePlanResult
+                              (postClosePlan boundary))))
+                            (uniqueBindings (registry survivor))
+                            (trans (sym (lookupFiberAsEntries nameEq selected
+                              (planTarget (completePlanResult
+                                (postClosePlan boundary))))) leftFound)
+                            (trans (sym (lookupFiberAsEntries nameEq selected
+                              (registry survivor))) cleanFound)
+                            (postCloseControls boundary)
+                      in MkRelationalNoEpisodeReplayBoundary
+                        (postClosePlan boundary) (postCloseEffects boundary)
+                        controls (postCloseOriginalWellFormed boundary)
+                        (postCloseSurvivorWellFormed boundary)
+
+||| An action that requires the original selected cell to be clean (notably
+||| L-Begin) provides the same discharge without waiting for the trace endpoint.
+public export
+0 cleanOriginalPostCloseGivesRelational :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (live : GenerationEnvironment name) ->
+  GenerationEnvironmentNamesUnique live ->
+  GenerationEnvironmentStamped live ->
+  ((generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (original, survivor : SystemState name key value world error) ->
+  (boundary : PostCloseSelectedBoundary name key world error value nameEq keyEq
+    selected registered ordinal live original survivor) ->
+  SelectedSurvivorCleanInactive name key world error value nameEq selected
+    original ->
+  RelationalNoEpisodeReplayBoundary name key world error value nameEq keyEq
+    registered live original survivor
+cleanOriginalPostCloseGivesRelational nameEq selected registered live unique
+  stamped selectedOutside original survivor boundary originalClean =
+    let currentOutside = selectedCurrentOutsidePostFinal nameEq selected
+          registered live stamped selectedOutside
+        strongOutside = currentGenerationOutsideImpliesActorOutsidePlan nameEq
+          registered live unique selected currentOutside
+        planOutside = actorOutsidePlan
+          (completePlanResult (postClosePlan boundary)) selected strongOutside
+    in case postClosePlanSelectedInactive boundary of
+      MkInactiveFiberAt component parent retiredFlag table outcome planFound =>
+        case originalClean of
+          SelectedCleanInactiveWitness originalComponent originalParent
+            originalRetired originalTable originalFound =>
+              let planToOriginal = lookupOutsideInactivePlan nameEq selected
+                    (registry original)
+                    (planTarget (completePlanResult (postClosePlan boundary)))
+                    (inactiveLeafPlan (completePlanResult
+                      (postClosePlan boundary))) planOutside
+                  sameFiber = justInjective
+                    (trans (sym planFound) (trans planToOriginal originalFound))
+              in case sameFiber of
+                Refl => cleanPlanPostCloseGivesRelational nameEq selected original
+                  survivor boundary
+                  (SelectedCleanInactiveWitness originalComponent originalParent
+                    originalRetired originalTable planFound)
