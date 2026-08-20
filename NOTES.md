@@ -2187,6 +2187,25 @@ build passed the current 168/168 module list, including rebuilt selected
 lifecycle/dispatch consumers after visibility-only exports. This remains warm
 validation and does not discharge the registered cold-build debt.
 
+### Lemma-72 relational replay and close milestone
+
+The retained-action interface is now inhabited for all eight actions. The five
+lifecycle cases execute concrete survivor `L-Begin`, every repaired
+`L-Advance` outcome, `L-Divert`, `L-Leave`, and accumulator-driven `L-Unload`,
+and package both exact effect relations and ordered controls. Global
+`TraceIndependent` restricts constructively along occurrence embeddings.
+
+The selected quotient now has checked opening, retained selected O-Retire,
+retained foreign orchestration, and full retained foreign lifecycle packages.
+The lifecycle join derives foreign tables from located ordered membership,
+transports repaired Advance outcomes at projected effect sources, and composes
+actual effect frames with the transposed accumulator output. Checked selected
+L-Unload now produces `PostCloseSelectedBoundary`, deliberately retaining the
+selected-static relation for failed closes. `CP4DeletionEndpoint` proves generic
+final effect/control/withdrawal assembly from a relational suffix boundary plus
+the remaining trace-derived current-generation retirement invariant. The warm
+package build passed all 188 listed modules. No escape hatch was introduced.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
@@ -2247,11 +2266,14 @@ L-Divert, L-Leave, and L-Unload); public no-episode evidence now derives empty
 current-R tables and `EmptyTableInactivePlan`; selected-boundary propagation is
 proved for every deleted R O-Insert/O-Retire/O-Remove head, including complete
 plan and derived empty-table transport while the survivor remains fixed; the
-parallel relational suffix induction is proved from an explicit per-action
-operational-congruence interface, with deleted heads fully discharged; all
-orchestration inhabitants and ordered lifecycle source observations are proved,
-while the five lifecycle inhabitants and endpoint control/withdrawal invariants
-remain);
+parallel relational suffix induction is proved and its per-action interface is
+now fully inhabited for all orchestration and lifecycle actions; selected
+opening, selected-retire, retained foreign orchestration/lifecycle, selected
+close, and generic endpoint effect/control/withdrawal packaging are proved. The
+remaining Lemma-72 work is the structural selected-episode fold, the
+selected-static post-close suffix upgrade (including failed-close removal or
+reissue), and derivation of current-generation retirement for the generic
+endpoint packager);
 Confluence/Theorem
 73 (surviving parent-
 activation structural cross-trace, generation-stamped canonical proposition,
@@ -2271,16 +2293,13 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** complete the selected quotient's control half: feed the proved
-retained-foreign dispatcher through the dependent selected-segment induction,
-delete R-owned orchestration heads while carrying the proved
-`EmptyTableInactivePlan`, and convert checked
-L-Unload's reset-to-Inactive control into the ordered relational suffix boundary.
-Finish the relational fold's explicit per-action replay interface for the five
-lifecycle tags (all orchestration tags, source observations, structural folding,
-and deleted-head cases are complete), feed readiness to the deletion
-skeleton, derive
-endpoint control/withdrawal evidence, and inhabit `deletionTheorem`.
+**Next:** implement the simultaneous selected-segment induction over the now
+complete per-head packages, carrying generation scan/uniqueness/stamping,
+current-R Inactive/empty invariants, executable readiness, and provider-anchor
+evidence. Then fold `PostCloseSelectedBoundary` through the suffix until its
+selected-static failed-close relation upgrades to full ordered controls; derive
+the current-generation retirement invariant, apply `CP4DeletionEndpoint`, and
+inhabit `deletionTheorem`. Do not begin Theorem 73 before this is checked.
 After that, use deletion
 for constructive canonical sorting. Fresh-choice,
 cross-parent, 24/18 activation-reset,
