@@ -49,6 +49,54 @@ data ForeignLeavePlanView :
           (MkFiber component parent retiredFlag table
             (Unloading accumulator view Nothing)) plan))
 
+public export
+record ForeignLeaveReplayData
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (actor : name) (ambient : world)
+  (plan : Registry name key value world error)
+  (owner : Fiber name key value world error)
+  (tag : RuleTag) (afterState : SystemState name key value world error) where
+  constructor MkForeignLeaveReplayData
+  leaveReplayComponent : Component key value world error
+  leaveReplayParent : Parent name
+  leaveReplayRetired : Bool
+  leaveReplayTable : OwnedTable key value
+    (componentProvisions leaveReplayComponent)
+  leaveReplayAccumulator : LocalState key value world
+    (componentProvisions leaveReplayComponent) ->
+    LocalState key value world (componentProvisions leaveReplayComponent)
+  leaveReplayView : View name
+    (dependencies (componentDependencies leaveReplayComponent))
+  0 leaveReplayOwnerShape : owner = MkFiber leaveReplayComponent
+    leaveReplayParent leaveReplayRetired leaveReplayTable
+    (Active leaveReplayAccumulator leaveReplayView)
+  0 leaveReplayMismatch : targetMatches @{nameEq}
+    (targetFiber @{nameEq} @{keyEq}
+      (MkFiber leaveReplayComponent leaveReplayParent leaveReplayRetired
+        leaveReplayTable (Active leaveReplayAccumulator leaveReplayView)) plan)
+    leaveReplayView = False
+  0 leaveReplayTagShape : tag = LLeaveTag
+  0 leaveReplayAfterShape : MkSystemState ambient
+    (replaceBinding @{nameEq} actor
+      (MkFiber leaveReplayComponent leaveReplayParent leaveReplayRetired
+        leaveReplayTable
+        (Unloading leaveReplayAccumulator leaveReplayView Nothing)) plan) =
+    afterState
+
+public export
+0 foreignLeaveReplayData :
+  ForeignLeavePlanView name key world error value nameEq keyEq actor ambient
+    plan owner tag afterState ->
+  ForeignLeaveReplayData name key world error value nameEq keyEq actor ambient
+    plan owner tag afterState
+foreignLeaveReplayData
+  (MkForeignLeavePlanView {component} {parent} {retiredFlag} {table}
+    accumulator view mismatch) =
+      MkForeignLeaveReplayData component parent retiredFlag table accumulator
+        view Refl mismatch Refl Refl
+
+public export
 record LocatedForeignLeavePlanView
   (name, key, world, error : Type) (value : key -> Type)
   (nameEq : DecEq name) (keyEq : DecEq key)
@@ -62,6 +110,7 @@ record LocatedForeignLeavePlanView
   0 leavePlanView : ForeignLeavePlanView name key world error value nameEq
     keyEq actor ambient plan leavePlanOwner tag afterState
 
+public export
 0 foreignLeavePlanView :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
   (ambient : world) -> (plan : Registry name key value world error) ->
@@ -146,6 +195,7 @@ targetFiberFromResolveSameForeignLeave nameEq keyEq component leftParent
       (sym (targetFiberExplicit nameEq keyEq component rightParent True
         rightTable rightLifecycle right))
 
+public export
 record ActiveRightControls
   {key, world, error, name : Type} {value : key -> Type}
   {deps : List key} {provision : CoeffectSpec key}
@@ -163,6 +213,7 @@ record ActiveRightControls
     rightControlAccumulator
   0 rightControlViewsEqual : leftView = rightControlView
 
+public export
 0 activeRightControls :
   {key, world, error, name : Type} -> {value : key -> Type} ->
   {deps : List key} -> {provision : CoeffectSpec key} ->

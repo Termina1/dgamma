@@ -53,6 +53,84 @@ data ForeignDivertPlanView :
           (MkFiber component parent retiredFlag table
             (Unloading accumulator view Nothing)) plan))
 
+public export
+record ForeignDivertReplayData
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (actor : name) (ambient : world)
+  (plan : Registry name key value world error)
+  (owner : Fiber name key value world error)
+  (tag : RuleTag) (afterState : SystemState name key value world error) where
+  constructor MkForeignDivertReplayData
+  divertReplayComponent : Component key value world error
+  divertReplayParent : Parent name
+  divertReplayRetired : Bool
+  divertReplayTable : OwnedTable key value
+    (componentProvisions divertReplayComponent)
+  divertReplayRemaining : List (StepEffect key value world error
+    (dependencies (componentDependencies divertReplayComponent))
+    (componentProvisions divertReplayComponent))
+  divertReplayAccumulator : LocalState key value world
+    (componentProvisions divertReplayComponent) ->
+    LocalState key value world (componentProvisions divertReplayComponent)
+  divertReplayView : View name
+    (dependencies (componentDependencies divertReplayComponent))
+  0 divertReplayOwnerShape : owner = MkFiber divertReplayComponent
+    divertReplayParent divertReplayRetired divertReplayTable
+    (Reloading divertReplayRemaining divertReplayAccumulator divertReplayView)
+  0 divertReplayMismatch : targetMatches @{nameEq}
+    (targetFiber @{nameEq} @{keyEq}
+      (MkFiber divertReplayComponent divertReplayParent divertReplayRetired
+        divertReplayTable
+        (Reloading divertReplayRemaining divertReplayAccumulator
+          divertReplayView)) plan) divertReplayView = False
+  0 divertReplayTagShape : tag = LDivertTag
+  0 divertReplayAfterShape : MkSystemState ambient
+    (replaceBinding @{nameEq} actor
+      (MkFiber divertReplayComponent divertReplayParent divertReplayRetired
+        divertReplayTable
+        (Unloading divertReplayAccumulator divertReplayView Nothing)) plan) =
+    afterState
+
+public export
+0 foreignDivertReplayData :
+  ForeignDivertPlanView name key world error value nameEq keyEq actor ambient
+    plan owner tag afterState ->
+  ForeignDivertReplayData name key world error value nameEq keyEq actor ambient
+    plan owner tag afterState
+foreignDivertReplayData
+  (MkForeignDivertPlanView {component} {parent} {retiredFlag} {table}
+    remaining accumulator view mismatch) =
+      MkForeignDivertReplayData component parent retiredFlag table remaining
+        accumulator view Refl mismatch Refl Refl
+
+public export
+0 foreignDivertPlanViewTag :
+  ForeignDivertPlanView name key world error value nameEq keyEq actor ambient
+    plan owner tag afterState -> tag = LDivertTag
+foreignDivertPlanViewTag
+  (MkForeignDivertPlanView remaining accumulator view mismatch) = Refl
+
+public export
+foreignDivertPlanAfter :
+  ForeignDivertPlanView name key world error value nameEq keyEq actor ambient
+    plan owner tag afterState -> SystemState name key value world error
+foreignDivertPlanAfter
+  (MkForeignDivertPlanView {component} {parent} {retiredFlag} {table}
+    remaining accumulator view mismatch) =
+      MkSystemState ambient (replaceBinding @{nameEq} actor
+        (MkFiber component parent retiredFlag table
+          (Unloading accumulator view Nothing)) plan)
+
+public export
+0 foreignDivertPlanAfterIsObserved :
+  (witness : ForeignDivertPlanView name key world error value nameEq keyEq actor
+    ambient plan owner tag afterState) ->
+  foreignDivertPlanAfter witness = afterState
+foreignDivertPlanAfterIsObserved
+  (MkForeignDivertPlanView remaining accumulator view mismatch) = Refl
+
+public export
 record LocatedForeignDivertPlanView
   (name, key, world, error : Type) (value : key -> Type)
   (nameEq : DecEq name) (keyEq : DecEq key)
@@ -66,6 +144,7 @@ record LocatedForeignDivertPlanView
   0 divertPlanView : ForeignDivertPlanView name key world error value nameEq
     keyEq actor ambient plan divertPlanOwner tag afterState
 
+public export
 0 foreignDivertPlanView :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
   (ambient : world) -> (plan : Registry name key value world error) ->
@@ -108,6 +187,7 @@ foreignDivertPlanView nameEq keyEq actor ambient plan tag afterState raw
       (Unloading accumulator view outcome)) =
         void (nothingNotJustForeignDivert raw)
 
+public export
 0 targetFiberFromResolveSameForeignDivert :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (component : Component key value world error) ->
@@ -149,6 +229,7 @@ targetFiberFromResolveSameForeignDivert nameEq keyEq component leftParent
       (sym (targetFiberExplicit nameEq keyEq component rightParent True
         rightTable rightLifecycle right))
 
+public export
 record ReloadingRightControls
   {key, world, error, name : Type} {value : key -> Type}
   {deps : List key} {provision : CoeffectSpec key}
@@ -170,6 +251,7 @@ record ReloadingRightControls
     rightControlAccumulator
   0 rightControlViewsEqual : leftView = rightControlView
 
+public export
 0 reloadingRightControls :
   {key, world, error, name : Type} -> {value : key -> Type} ->
   {deps : List key} -> {provision : CoeffectSpec key} ->

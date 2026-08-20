@@ -116,6 +116,7 @@ registryUpdateRuntimeView nameEq actor source _
   (LocalDelete {oldFiber} {oldFound}) =
     RuntimeViewedDelete oldFiber oldFound Refl
 
+public export
 0 lifecycleOwnerPresent :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) ->

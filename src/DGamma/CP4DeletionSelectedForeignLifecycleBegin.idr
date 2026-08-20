@@ -30,22 +30,54 @@ data ForeignBeginPlanView :
     {nameEq : DecEq name} -> {keyEq : DecEq key} ->
     {actor : name} -> {ambient : world} ->
     {plan : Registry name key value world error} ->
+    {tag : RuleTag} ->
+    {afterState : SystemState name key value world error} ->
+    {owner : Fiber name key value world error} ->
     {component : Component key value world error} ->
     {parent : Parent name} ->
     {table : OwnedTable key value (componentProvisions component)} ->
     (view : View name
       (dependencies (componentDependencies component))) ->
+    (ownerShape : owner =
+      MkFiber component parent False table (Inactive Nothing)) ->
     (targetFound : targetFiber @{nameEq} @{keyEq}
       (MkFiber component parent False table (Inactive Nothing)) plan =
         Just view) ->
+    (tagShape : tag = LBeginTag) ->
+    (afterShape : MkSystemState ambient
+      (replaceBinding @{nameEq} actor
+        (MkFiber component parent False table
+          (Reloading (componentProgram component) (\local => local) view))
+        plan) = afterState) ->
     ForeignBeginPlanView name key world error value nameEq keyEq actor ambient
-      plan (MkFiber component parent False table (Inactive Nothing))
-      LBeginTag
-      (MkSystemState ambient
-        (replaceBinding @{nameEq} actor
-          (MkFiber component parent False table
-            (Reloading (componentProgram component) (\local => local) view))
-          plan))
+      plan owner tag afterState
+
+public export
+foreignBeginPlanAfter :
+  ForeignBeginPlanView name key world error value nameEq keyEq actor ambient
+    plan owner tag afterState -> SystemState name key value world error
+foreignBeginPlanAfter (MkForeignBeginPlanView {component} {parent} {table}
+  view ownerShape targetFound tagShape afterShape) = MkSystemState ambient
+    (replaceBinding @{nameEq} actor
+      (MkFiber component parent False table
+        (Reloading (componentProgram component) (\local => local) view)) plan)
+
+public export
+0 foreignBeginPlanAfterIsObserved :
+  (witness : ForeignBeginPlanView name key world error value nameEq keyEq actor
+    ambient plan owner tag afterState) ->
+  foreignBeginPlanAfter witness = afterState
+foreignBeginPlanAfterIsObserved
+  (MkForeignBeginPlanView view ownerShape targetFound tagShape afterShape) =
+    afterShape
+
+public export
+0 foreignBeginPlanViewTag :
+  ForeignBeginPlanView name key world error value nameEq keyEq actor ambient
+    plan owner tag afterState -> tag = LBeginTag
+foreignBeginPlanViewTag
+  (MkForeignBeginPlanView view ownerShape targetFound tagShape afterShape) =
+    tagShape
 
 0 applyBeginAtFound :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
@@ -80,7 +112,7 @@ foreignBeginUnretiredPlanView nameEq keyEq actor ambient plan component parent
   foreignBeginUnretiredPlanView nameEq keyEq actor ambient plan component parent
     table tag afterState raw | Just view =
       case justInjective raw of
-        Refl => MkForeignBeginPlanView view target
+        Refl => MkForeignBeginPlanView view Refl target Refl Refl
 
 0 foreignBeginInactivePlanView :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
@@ -177,13 +209,14 @@ replayForeignBeginControls nameEq keyEq selected actor actorDistinct planAmbient
     case foreignBeginPlanView nameEq keyEq actor planAmbient plan leftOwner
       leftFound tag planAfter planRaw of
       MkForeignBeginPlanView {component} {parent = leftParent}
-        {table = leftTable} view leftTarget =>
-        case frame of
-          MkForeignLifecycleGuardFrame sources
-            (FibersControlRelated leftParent rightParent False rightRetired
-              leftTable rightTable (Inactive Nothing) rightLifecycle parentSame
-              retiredSame lifecycleSame)
-            relianceFrame =>
+        {table = leftTable} view ownerShape leftTarget tagShape afterShape =>
+        case ownerShape of
+          Refl => case frame of
+            MkForeignLifecycleGuardFrame sources
+              (FibersControlRelated leftParent rightParent False rightRetired
+                leftTable rightTable (Inactive Nothing) rightLifecycle parentSame
+                retiredSame lifecycleSame)
+              relianceFrame =>
               case lifecycleSame of
                 InactiveControls outcomeSame =>
                   case outcomeSame of
@@ -322,5 +355,19 @@ replayForeignBeginControls nameEq keyEq selected actor actorDistinct planAmbient
                               finalOrdered = selectedOrderedTransport
                                 (sym planBindings) (sym survivorBindings)
                                 replacedOrdered
-                          in MkForeignLifecycleControlReplay survivorAfter
-                            survivorRaw survivorChecked finalOrdered
+                              0 observedFinalOrdered :
+                                SelectedOrderedRegistryControlsRelated name key
+                                  world error value selected
+                                  (bindings (registry planAfter))
+                                  (bindings (registry survivorAfter))
+                              observedFinalOrdered = selectedOrderedTransport
+                                (cong (\state => bindings (registry state))
+                                  afterShape) Refl finalOrdered
+                          in replace
+                            {p = \observedTag => ForeignLifecycleControlReplay
+                              name key world error value nameEq keyEq selected
+                              (LBegin actor) observedTag planAfter
+                              (MkSystemState survivorAmbient survivor)}
+                            (sym tagShape)
+                            (MkForeignLifecycleControlReplay survivorAfter
+                              survivorRaw survivorChecked observedFinalOrdered)

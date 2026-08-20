@@ -41,6 +41,7 @@ record ForeignUnloadPlanView
   0 unloadPlanUnrelied : relied @{nameEq} {name = name} {key = key}
     {value = value} {world = world} {error = error} actor plan = False
 
+public export
 record LocatedForeignUnloadPlanView
   (name, key, world, error : Type) (value : key -> Type)
   (nameEq : DecEq name) (keyEq : DecEq key)
@@ -54,6 +55,7 @@ record LocatedForeignUnloadPlanView
   0 unloadPlanView : ForeignUnloadPlanView name key world error value nameEq
     keyEq actor ambient plan unloadPlanOwner tag afterState
 
+public export
 0 foreignUnloadPlanView :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
   (ambient : world) -> (plan : Registry name key value world error) ->
@@ -94,6 +96,7 @@ foreignUnloadPlanView nameEq keyEq actor ambient plan tag afterState raw
               (MkForeignUnloadPlanView component parent retiredFlag table
                 accumulator view outcome Refl reliance)
 
+public export
 record UnloadingRightControls
   {key, world, error, name : Type} {value : key -> Type}
   {deps : List key} {provision : CoeffectSpec key}
@@ -113,6 +116,7 @@ record UnloadingRightControls
   0 rightControlViewsEqual : leftView = rightControlView
   0 rightControlOutcomesEqual : leftOutcome = rightControlOutcome
 
+public export
 0 unloadingRightControls :
   {key, world, error, name : Type} -> {value : key -> Type} ->
   {deps : List key} -> {provision : CoeffectSpec key} ->
