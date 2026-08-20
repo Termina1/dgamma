@@ -267,3 +267,36 @@ cleanOriginalPostCloseGivesRelational nameEq selected registered live unique
                   survivor boundary
                   (SelectedCleanInactiveWitness originalComponent originalParent
                     originalRetired originalTable planFound)
+
+||| The plan deletes only current registered generations; scanner stamping and
+||| selected-name exclusion therefore transport the plan-side Inactive witness
+||| back to the original state.
+public export
+0 postCloseOriginalSelectedInactive :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (live : GenerationEnvironment name) ->
+  GenerationEnvironmentNamesUnique live ->
+  GenerationEnvironmentStamped live ->
+  ((generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (original, survivor : SystemState name key value world error) ->
+  PostCloseSelectedBoundary name key world error value nameEq keyEq selected
+    registered ordinal live original survivor ->
+  InactiveFiberAt name key world error value nameEq selected original
+postCloseOriginalSelectedInactive nameEq selected registered live unique stamped
+  selectedOutside original survivor boundary =
+    let currentOutside = selectedCurrentOutsidePostFinal nameEq selected
+          registered live stamped selectedOutside
+        strongOutside = currentGenerationOutsideImpliesActorOutsidePlan nameEq
+          registered live unique selected currentOutside
+        planOutside = actorOutsidePlan
+          (completePlanResult (postClosePlan boundary)) selected strongOutside
+    in case postClosePlanSelectedInactive boundary of
+      MkInactiveFiberAt component parent retiredFlag table outcome planFound =>
+        MkInactiveFiberAt component parent retiredFlag table outcome
+          (trans (sym (lookupOutsideInactivePlan nameEq selected
+            (registry original)
+            (planTarget (completePlanResult (postClosePlan boundary)))
+            (inactiveLeafPlan (completePlanResult (postClosePlan boundary)))
+            planOutside)) planFound)

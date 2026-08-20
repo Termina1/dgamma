@@ -560,3 +560,17 @@ deletedSuffixHeadPreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
         (\ambient, source, raw, inactive =>
           unloadInactiveImpossible nameEq keyEq actor ambient source tag
             originalAfter raw inactive)
+
+||| Successful O-Retire has its unique Table-1 tag, independent of the source
+||| registry representation proof.
+public export
+0 retireSuccessTag :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (ORetire actor) before =
+    Just (tag, afterState) -> tag = ORetireTag
+retireSuccessTag nameEq keyEq actor (MkSystemState ambient fibers) afterState
+  tag raw = case retireSuccessView nameEq keyEq actor ambient fibers tag
+    afterState raw of
+    MkRetireSuccessView oldFiber found => Refl
