@@ -59,7 +59,8 @@ record SelectedEpisodeLocalReplayer
   (registered : List (RegistrationGeneration name))
   (protocol : RegistrationProtocol key value world error)
   {wholeFirst, wholeLast : SystemState name key value world error}
-  (whole : Transitions wholeFirst wholeLast) where
+  (whole : Transitions wholeFirst wholeLast)
+  (episodeCloseSource : SystemState name key value world error) where
   constructor MkSelectedEpisodeLocalReplayer
   0 replayDeletedEpisodeHead :
     (ordinal : Nat) -> (live : GenerationEnvironment name) ->
@@ -107,8 +108,7 @@ record SelectedEpisodeLocalReplayer
       Just (tag, afterState)) ->
     installedAt @{nameEq} selected before = True ->
     installedAt @{nameEq} selected afterState = True ->
-    {restFinal : SystemState name key value world error} ->
-    (rest : Transitions afterState restFinal) ->
+    (rest : Transitions afterState episodeCloseSource) ->
     InstalledTrace name key world error value nameEq keyEq selected rest ->
     (noBegin : IsBeginAction action ->
       GenerationOwnedActor nameEq registered ordinal live action -> Void) ->
@@ -182,7 +182,7 @@ public export
     Not (generationName generation = selected)) ->
   (whole : Transitions wholeFirst wholeLast) ->
   (local : SelectedEpisodeLocalReplayer name key world error value nameEq keyEq
-    selected registered protocol whole) ->
+    selected registered protocol whole originalFinal) ->
   (ordinal : Nat) -> (live : GenerationEnvironment name) ->
   GenerationEnvironmentNamesUnique live ->
   GenerationEnvironmentStamped live ->
