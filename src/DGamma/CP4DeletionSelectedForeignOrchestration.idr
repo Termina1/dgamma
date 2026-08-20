@@ -123,22 +123,22 @@ public export
   Not (actor = selected) ->
   (parent : Parent name) ->
   (component : Component key value world error) ->
-  (ambient : world) ->
+  (planAmbient, survivorAmbient : world) ->
   (plan, survivor : Registry name key value world error) ->
   SelectedOrderedRegistryControlsRelated name key world error value selected
     (bindings plan) (bindings survivor) ->
   (tag : RuleTag) -> (planAfter : SystemState name key value world error) ->
   applyAction @{nameEq} @{keyEq} (OInsert actor parent component)
-    (MkSystemState ambient plan) = Just (tag, planAfter) ->
+    (MkSystemState planAmbient plan) = Just (tag, planAfter) ->
   registryWellFormed @{nameEq} @{keyEq} {name = name} {key = key}
     {value = value} {world = world} {error = error}
-    (MkSystemState ambient survivor) = True ->
+    (MkSystemState survivorAmbient survivor) = True ->
   ForeignOrchestrationControlReplay name key world error value nameEq keyEq
     selected (OInsert actor parent component) tag planAfter
-    (MkSystemState ambient survivor)
+    (MkSystemState survivorAmbient survivor)
 replayForeignInsertControls nameEq keyEq selected actor actorDistinct parent
-  component ambient plan survivor ordered tag planAfter planRaw survivorWellFormed
-  = case foreignInsertPlanView nameEq keyEq actor parent component ambient plan
+  component planAmbient survivorAmbient plan survivor ordered tag planAfter planRaw survivorWellFormed
+  = case foreignInsertPlanView nameEq keyEq actor parent component planAmbient plan
       tag planAfter planRaw of
       MkForeignInsertPlanView planAbsent planGuards =>
         let 0 survivorAbsent = selectedOrderedNothingOnRight nameEq actor plan
@@ -161,21 +161,21 @@ replayForeignInsertControls nameEq keyEq selected actor actorDistinct parent
           survivor survivorAbsent of
           (applied ** inserted) =>
             let survivorAfter : SystemState name key value world error
-                survivorAfter = MkSystemState ambient (coeffectAfter applied)
+                survivorAfter = MkSystemState survivorAmbient (coeffectAfter applied)
                 0 survivorRaw : (applyAction @{nameEq} @{keyEq}
                       (OInsert actor parent component)
-                      (MkSystemState ambient survivor) =
+                      (MkSystemState survivorAmbient survivor) =
                     Just (OInsertTag, survivorAfter))
                 survivorRaw = rewrite survivorGuards in rewrite inserted in Refl
                 0 survivorAfterWellFormed :
                   (registryWellFormed @{nameEq} @{keyEq} survivorAfter = True)
                 survivorAfterWellFormed = preservationTheoremProof nameEq keyEq
                   (OInsert actor parent component)
-                  (MkSystemState ambient survivor) survivorAfter OInsertTag
+                  (MkSystemState survivorAmbient survivor) survivorAfter OInsertTag
                   survivorWellFormed survivorRaw
                 0 survivorChecked : (checkedApplyAction @{nameEq} @{keyEq}
                       (OInsert actor parent component)
-                      (MkSystemState ambient survivor) =
+                      (MkSystemState survivorAmbient survivor) =
                     Just (OInsertTag, survivorAfter))
                 survivorChecked = rewrite survivorRaw in
                   rewrite survivorAfterWellFormed in Refl
@@ -217,41 +217,41 @@ public export
 0 replayForeignRetireControls :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected, actor : name) ->
   Not (actor = selected) ->
-  (ambient : world) ->
+  (planAmbient, survivorAmbient : world) ->
   (plan, survivor : Registry name key value world error) ->
   SelectedOrderedRegistryControlsRelated name key world error value selected
     (bindings plan) (bindings survivor) ->
   (tag : RuleTag) -> (planAfter : SystemState name key value world error) ->
   applyAction @{nameEq} @{keyEq} (ORetire actor)
-    (MkSystemState ambient plan) = Just (tag, planAfter) ->
+    (MkSystemState planAmbient plan) = Just (tag, planAfter) ->
   registryWellFormed @{nameEq} @{keyEq} {name = name} {key = key}
     {value = value} {world = world} {error = error}
-    (MkSystemState ambient survivor) = True ->
+    (MkSystemState survivorAmbient survivor) = True ->
   ForeignOrchestrationControlReplay name key world error value nameEq keyEq
-    selected (ORetire actor) tag planAfter (MkSystemState ambient survivor)
-replayForeignRetireControls nameEq keyEq selected actor actorDistinct ambient plan
+    selected (ORetire actor) tag planAfter (MkSystemState survivorAmbient survivor)
+replayForeignRetireControls nameEq keyEq selected actor actorDistinct planAmbient survivorAmbient plan
   survivor ordered tag planAfter planRaw survivorWellFormed =
-    case retireSuccessView nameEq keyEq actor ambient plan tag planAfter planRaw of
+    case retireSuccessView nameEq keyEq actor planAmbient plan tag planAfter planRaw of
       MkRetireSuccessView planFiber planFound =>
         case foreignControlLookupFound nameEq actor plan survivor planFiber
           planFound (selectedOrderedForeignLookupControls nameEq selected actor
             actorDistinct plan survivor ordered) of
           MkForeignRelatedFiberFound survivorFiber survivorFound fibers =>
             let survivorAfter : SystemState name key value world error
-                survivorAfter = MkSystemState ambient
+                survivorAfter = MkSystemState survivorAmbient
                   (replaceBinding @{nameEq} actor (retireFiber survivorFiber)
                     survivor)
                 0 survivorRaw : (applyAction @{nameEq} @{keyEq} (ORetire actor)
-                      (MkSystemState ambient survivor) =
+                      (MkSystemState survivorAmbient survivor) =
                     Just (ORetireTag, survivorAfter))
                 survivorRaw = rewrite survivorFound in Refl
                 0 survivorAfterWellFormed :
                   (registryWellFormed @{nameEq} @{keyEq} survivorAfter = True)
                 survivorAfterWellFormed = preservationTheoremProof nameEq keyEq
-                  (ORetire actor) (MkSystemState ambient survivor) survivorAfter
+                  (ORetire actor) (MkSystemState survivorAmbient survivor) survivorAfter
                   ORetireTag survivorWellFormed survivorRaw
                 0 survivorChecked : (checkedApplyAction @{nameEq} @{keyEq}
-                      (ORetire actor) (MkSystemState ambient survivor) =
+                      (ORetire actor) (MkSystemState survivorAmbient survivor) =
                     Just (ORetireTag, survivorAfter))
                 survivorChecked = rewrite survivorRaw in
                   rewrite survivorAfterWellFormed in Refl
@@ -296,21 +296,21 @@ public export
 0 replayForeignRemoveControls :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected, actor : name) ->
   Not (actor = selected) ->
-  (ambient : world) ->
+  (planAmbient, survivorAmbient : world) ->
   (plan, survivor : Registry name key value world error) ->
   SelectedOrderedRegistryControlsRelated name key world error value selected
     (bindings plan) (bindings survivor) ->
   (tag : RuleTag) -> (planAfter : SystemState name key value world error) ->
   applyAction @{nameEq} @{keyEq} (ORemove actor)
-    (MkSystemState ambient plan) = Just (tag, planAfter) ->
+    (MkSystemState planAmbient plan) = Just (tag, planAfter) ->
   registryWellFormed @{nameEq} @{keyEq} {name = name} {key = key}
     {value = value} {world = world} {error = error}
-    (MkSystemState ambient survivor) = True ->
+    (MkSystemState survivorAmbient survivor) = True ->
   ForeignOrchestrationControlReplay name key world error value nameEq keyEq
-    selected (ORemove actor) tag planAfter (MkSystemState ambient survivor)
-replayForeignRemoveControls nameEq keyEq selected actor actorDistinct ambient plan
+    selected (ORemove actor) tag planAfter (MkSystemState survivorAmbient survivor)
+replayForeignRemoveControls nameEq keyEq selected actor actorDistinct planAmbient survivorAmbient plan
   survivor ordered tag planAfter planRaw survivorWellFormed =
-    case removeSuccessView nameEq keyEq actor ambient plan tag planAfter planRaw of
+    case removeSuccessView nameEq keyEq actor planAmbient plan tag planAfter planRaw of
       MkRemoveSuccessView planFiber planFound planGuard planNoChild =>
         case foreignControlLookupFound nameEq actor plan survivor planFiber
           planFound (selectedOrderedForeignLookupControls nameEq selected actor
@@ -340,20 +340,20 @@ replayForeignRemoveControls nameEq keyEq selected actor actorDistinct ambient pl
                   rewrite sym retiredSame in rewrite sym inactiveSame in
                     normalizedPlanGuard
                 survivorAfter : SystemState name key value world error
-                survivorAfter = MkSystemState ambient
+                survivorAfter = MkSystemState survivorAmbient
                   (deleteBinding @{nameEq} actor survivor)
                 0 survivorRaw : (applyAction @{nameEq} @{keyEq} (ORemove actor)
-                      (MkSystemState ambient survivor) =
+                      (MkSystemState survivorAmbient survivor) =
                     Just (ORemoveTag, survivorAfter))
                 survivorRaw = rewrite survivorFound in rewrite survivorGuard in
                   Refl
                 0 survivorAfterWellFormed :
                   (registryWellFormed @{nameEq} @{keyEq} survivorAfter = True)
                 survivorAfterWellFormed = preservationTheoremProof nameEq keyEq
-                  (ORemove actor) (MkSystemState ambient survivor) survivorAfter
+                  (ORemove actor) (MkSystemState survivorAmbient survivor) survivorAfter
                   ORemoveTag survivorWellFormed survivorRaw
                 0 survivorChecked : (checkedApplyAction @{nameEq} @{keyEq}
-                      (ORemove actor) (MkSystemState ambient survivor) =
+                      (ORemove actor) (MkSystemState survivorAmbient survivor) =
                     Just (ORemoveTag, survivorAfter))
                 survivorChecked = rewrite survivorRaw in
                   rewrite survivorAfterWellFormed in Refl
