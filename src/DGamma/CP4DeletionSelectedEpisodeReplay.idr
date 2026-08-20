@@ -66,6 +66,9 @@ record SelectedEpisodeLifecycleAnchorProvider
     (occurs : OccursIn
       (Fired {before = before} {afterState = afterState}
         nameEq keyEq action tag checked) global) ->
+    (insideOccurs : OccursIn
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq action tag checked) (closedInside selectedEpisode)) ->
     {wholeFirst, wholeLast : SystemState name key value world error} ->
     {whole : Transitions wholeFirst wholeLast} ->
     {survivor : SystemState name key value world error} ->
@@ -268,7 +271,7 @@ public export
   SelectedEpisodeLifecycleAnchorProvider name key world error value nameEq keyEq
     selected registered global selectedEpisode ->
   SelectedEpisodeLocalReplayer name key world error value nameEq keyEq selected
-    registered protocol whole (lastInstalledState selectedEpisode)
+    registered protocol whole (closedInside selectedEpisode)
 selectedEpisodeLocalReplayer {name} {key} {world} {error} {value}
   protocol nameEq keyEq selected registered
   selectedOutside global aligned globalDiscipline noDependent independent whole
@@ -383,6 +386,9 @@ selectedEpisodeLocalReplayer {name} {key} {world} {error} {value}
     (occurs : OccursIn
       (Fired {before = before} {afterState = afterState}
         nameEq keyEq action tag checked) whole) ->
+    (insideOccurs : OccursIn
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq action tag checked) (closedInside selectedEpisode)) ->
     (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
       keyEq selected registered ordinal live whole before survivor) ->
     EmptyTableInactivePlan name key world error value nameEq
@@ -396,7 +402,7 @@ selectedEpisodeLocalReplayer {name} {key} {world} {error} {value}
       registered ordinal live whole action afterState survivor
   replayRetained ordinal live unique stamped outside action before afterState
     survivor tag checked sourceInstalled targetInstalled rest selectedRest
-    noBegin occurs boundary emptyPlan inactive retained =
+    noBegin occurs insideOccurs boundary emptyPlan inactive retained =
       case decEq @{nameEq} (actionOwner action) selected of
         Yes ownerSelected => selectedCase ownerSelected
         No ownerDistinct => foreignCase ownerDistinct
@@ -595,7 +601,8 @@ selectedEpisodeLocalReplayer {name} {key} {world} {error} {value}
                 live action kind distinct before afterState tag checked rest
                 selectedRest
                 (wholeInGlobal (Fired nameEq keyEq action tag checked) occurs)
-                boundary leftSelected leftOwner rightOwner selectedFound leftFound
+                insideOccurs boundary leftSelected leftOwner rightOwner
+                selectedFound leftFound
                 (trans (sym (lookupOutsideInactivePlan nameEq selected
                   (registry before)
                   (planTarget (completePlanResult
