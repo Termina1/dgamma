@@ -95,6 +95,7 @@ postClosePlanExactBoundary nameEq keyEq unique boundary =
         Refl Refl unique (postCloseOriginalWellFormed boundary)
         plannedWellFormed
 
+public export
 0 inactiveForeignPost :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (action : Action name key value world error) ->
@@ -155,7 +156,6 @@ packagePostCloseOrchestrationWithInvariants :
   (ordinal : Nat) -> (live : GenerationEnvironment name) ->
   GenerationEnvironmentNamesUnique live ->
   (action : Action name key value world error) ->
-  (orchestration : isLifecycleAction action = False) ->
   (original, originalAfter, originalFinal, survivor :
     SystemState name key value world error) ->
   (tag : RuleTag) ->
@@ -186,15 +186,19 @@ packagePostCloseOrchestrationWithInvariants :
     (namedAfter (retainedBoundaryNamed exactStep)) ->
   SelectedSurvivorCleanInactive name key world error value nameEq selected
     (foreignControlAfter control) ->
+  EffectStateRelated keyEq
+    (projectEffectState @{nameEq} (namedAfter
+      (retainedBoundaryNamed exactStep)))
+    (projectEffectState @{nameEq} (foreignControlAfter control)) ->
   PostCloseOrchestrationStep name key world error value nameEq keyEq selected
     registered (S ordinal)
     (advanceGenerationEnvironment @{nameEq} ordinal action live)
     action originalAfter survivor
 packagePostCloseOrchestrationWithInvariants protocol nameEq keyEq selected
-  registered ordinal live unique action orchestration original originalAfter
+  registered ordinal live unique action original originalAfter
   originalFinal survivor tag checked rest discipline retained noBegin
   sourceInactive sourceEmpty boundary exactStep control namedSelectedInactive
-  nextClean =
+  nextClean nextHeadEffects =
     let 0 planRaw = namedFireProjectsRaw nameEq keyEq action (plannedSystemState original
           (completePlanResult (postClosePlan boundary))) (retainedBoundaryNamed exactStep)
           (retainedBoundaryFires exactStep)
@@ -203,24 +207,6 @@ packagePostCloseOrchestrationWithInvariants protocol nameEq keyEq selected
           (namedTag (retainedBoundaryNamed exactStep))
           (namedAfter (retainedBoundaryNamed exactStep)) survivor
         controlAtNamed = control
-        0 planChecked : (checkedApplyAction @{nameEq} @{keyEq} action
-          (plannedSystemState original
-            (completePlanResult (postClosePlan boundary))) =
-          Just (namedTag (retainedBoundaryNamed exactStep),
-            namedAfter (retainedBoundaryNamed exactStep)))
-        planChecked = rewrite planRaw in
-          rewrite survivorBoundaryWellFormed (retainedNextBoundary exactStep) in
-          Refl
-        0 nextHeadEffects : (EffectStateRelated keyEq
-          (projectEffectState @{nameEq} (namedAfter
-            (retainedBoundaryNamed exactStep)))
-          (projectEffectState @{nameEq}
-            (foreignControlAfter controlAtNamed)))
-        nextHeadEffects = postCloseOrchestrationEffects nameEq keyEq action
-          orchestration (namedTag (retainedBoundaryNamed exactStep)) (plannedSystemState original
-          (completePlanResult (postClosePlan boundary))) (namedAfter (retainedBoundaryNamed exactStep))
-          survivor (foreignControlAfter controlAtNamed) planChecked
-          (foreignControlChecked controlAtNamed) (postCloseEffects boundary)
         nextPackage : RetainedNextPlanPackage name key world error value nameEq
           registered
           (advanceGenerationEnvironment @{nameEq} ordinal action live)
@@ -410,12 +396,31 @@ retainedForeignPostCloseOrchestration protocol nameEq keyEq selected registered
                 (namedTag (retainedBoundaryNamed exactStep))
                 (foreignControlRaw controlExact)
                 (postCloseCleanInactive boundary)
+              0 planChecked : (checkedApplyAction @{nameEq} @{keyEq} action
+                (plannedSystemState original
+                  (completePlanResult (postClosePlan boundary))) =
+                Just (namedTag (retainedBoundaryNamed exactStep),
+                  namedAfter (retainedBoundaryNamed exactStep)))
+              planChecked = rewrite planRaw in
+                rewrite survivorBoundaryWellFormed
+                  (retainedNextBoundary exactStep) in Refl
+              0 headEffects : (EffectStateRelated keyEq
+                (projectEffectState @{nameEq}
+                  (namedAfter (retainedBoundaryNamed exactStep)))
+                (projectEffectState @{nameEq}
+                  (foreignControlAfter controlExact)))
+              headEffects = postCloseOrchestrationEffects nameEq keyEq action
+                orchestration (namedTag (retainedBoundaryNamed exactStep))
+                (plannedSystemState original
+                  (completePlanResult (postClosePlan boundary)))
+                (namedAfter (retainedBoundaryNamed exactStep)) survivor
+                (foreignControlAfter controlExact) planChecked
+                (foreignControlChecked controlExact) (postCloseEffects boundary)
           in packagePostCloseOrchestrationWithInvariants protocol nameEq keyEq
-            selected registered ordinal live unique action orchestration original
-            originalAfter originalFinal survivor tag checked rest discipline
-            retained noBegin (postCloseCurrentInactive boundary)
-            (postCloseCurrentEmpty boundary) boundary exactStep controlExact
-            planInactive clean
+            selected registered ordinal live unique action original originalAfter
+            originalFinal survivor tag checked rest discipline retained noBegin
+            (postCloseCurrentInactive boundary) (postCloseCurrentEmpty boundary)
+            boundary exactStep controlExact planInactive clean headEffects
     in case action of
       OInsert actor parent component =>
         let control = replayForeignInsertControls nameEq keyEq selected actor

@@ -14,6 +14,7 @@ import DGamma.CP4DeletionInactiveInvariant
 import DGamma.CP4DeletionNoEpisodeReplay
 import DGamma.CP4DeletionPlanBuilder
 import DGamma.CP4DeletionPlanComplete
+import DGamma.CP4DeletionPostCloseEffectReplay
 import DGamma.CP4DeletionPostCloseOrchestration
 import DGamma.CP4DeletionRelationalBoundary
 import DGamma.CP4DeletionSelectedBoundary
@@ -215,9 +216,29 @@ retainedSelectedPostCloseRetire protocol nameEq keyEq selected registered ordina
           (foreignControlAfter controlExact)
           (namedTag (retainedBoundaryNamed exactStep))
           (foreignControlRaw controlExact) (postCloseCleanInactive boundary)
+        0 planChecked : (checkedApplyAction @{nameEq} @{keyEq}
+          (ORetire selected)
+          (plannedSystemState original
+            (completePlanResult (postClosePlan boundary))) =
+          Just (namedTag (retainedBoundaryNamed exactStep),
+            namedAfter (retainedBoundaryNamed exactStep)))
+        planChecked = rewrite planRaw in
+          rewrite survivorBoundaryWellFormed (retainedNextBoundary exactStep) in
+          Refl
+        0 headEffects : (EffectStateRelated keyEq
+          (projectEffectState @{nameEq}
+            (namedAfter (retainedBoundaryNamed exactStep)))
+          (projectEffectState @{nameEq}
+            (foreignControlAfter controlExact)))
+        headEffects = postCloseOrchestrationEffects nameEq keyEq
+          (ORetire selected) Refl (namedTag (retainedBoundaryNamed exactStep))
+          (plannedSystemState original
+            (completePlanResult (postClosePlan boundary)))
+          (namedAfter (retainedBoundaryNamed exactStep)) survivor
+          (foreignControlAfter controlExact) planChecked
+          (foreignControlChecked controlExact) (postCloseEffects boundary)
     in packagePostCloseOrchestrationWithInvariants protocol nameEq keyEq selected
-      registered ordinal live unique (ORetire selected) Refl original
-      originalAfter originalFinal survivor ORetireTag checked rest discipline
-      retained noBegin (postCloseCurrentInactive boundary)
-      (postCloseCurrentEmpty boundary) boundary exactStep controlExact
-      planInactive clean
+      registered ordinal live unique (ORetire selected) original originalAfter
+      originalFinal survivor ORetireTag checked rest discipline retained noBegin
+      (postCloseCurrentInactive boundary) (postCloseCurrentEmpty boundary)
+      boundary exactStep controlExact planInactive clean headEffects

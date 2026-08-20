@@ -98,6 +98,7 @@ lookupEntryFromUniqueMember keyEq
     (There later) | No distinct =
       lookupEntryFromUniqueMember keyEq rest uniqueRest later
 
+public export
 0 registryLookupFromMember :
   (nameEq : DecEq name) ->
   (registry : Registry name key value world error) ->
