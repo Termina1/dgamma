@@ -2206,6 +2206,33 @@ final effect/control/withdrawal assembly from a relational suffix boundary plus
 the remaining trace-derived current-generation retirement invariant. The warm
 package build passed all 188 listed modules. No escape hatch was introduced.
 
+### Lemma-72 selected structural fold checkpoint (shift 32)
+
+The selected quotient now has a checked simultaneous structural induction. It
+threads the generation scan, uniqueness/stamping, current-R Inactive and empty
+invariants, executable filter readiness, the exact selected accumulator/control
+boundary, and occurrence identity. A concrete local dispatcher covers deleted
+selected lifecycle, deleted-R orchestration, selected O-Retire, retained foreign
+orchestration, and all retained foreign lifecycle rules. Registration discipline
+is recovered at the exact occurrence in the immutable global trace, avoiding an
+invalid attempt to shorten the future-sensitive O-Insert premise.
+
+`selectedClosedEpisodeFold` composes the checked opening boundary, the installed
+interior fold, and selected L-Unload into `PostCloseSelectedBoundary`. Its only
+remaining internal input is `SelectedEpisodeLifecycleAnchorProvider`. Existing
+precedence and selected-unload reliance anchors do not directly cover the
+crossing interval where a foreign activation opened before selected L-Begin and
+closes before selected L-Unload. `DirectProviderFrameEvidence` now exposes the
+precise Boolean exclusion needed for that case without changing any public
+statement. Proving this crossing exclusion is the first remaining blocker before
+the post-close fold can start.
+
+For endpoint withdrawal, `currentGenerationAtScanStart` is checked: a generation
+older than the current ordinal that remains current at a scanned suffix endpoint
+was already current at the suffix source. This rules out confusing an
+occurrence-local O-Retire with a later raw-name reissue and is the key backward
+lemma for retirement persistence.
+
 ## Status
 
 **Fully proved:** all previously approved Section 3 results; raw Theorem 59
