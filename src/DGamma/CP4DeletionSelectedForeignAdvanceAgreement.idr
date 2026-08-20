@@ -90,35 +90,6 @@ locateAdvanceStage nameEq keyEq actor component leftParent retiredFlag leftTable
         (step :: rest) leftAccumulator view Refl step rest SuffixHere)
       (\state => Refl)
 
-0 runtimeAdvanceOutcomeAsData :
-  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
-  (component : Component key value world error) ->
-  (step : StepEffect key value world error
-    (dependencies (componentDependencies component))
-    (componentProvisions component)) ->
-  (rest : List (StepEffect key value world error
-    (dependencies (componentDependencies component))
-    (componentProvisions component))) ->
-  (view : View name (dependencies (componentDependencies component))) ->
-  (ambient : world) ->
-  (runtimeTable : OwnedTable key value (componentProvisions component)) ->
-  (source : Registry name key value world error) ->
-  (runtimeParent : Parent name) -> (runtimeRetired : Bool) ->
-  (runtimeAccumulator : LocalState key value world
-    (componentProvisions component) ->
-    LocalState key value world (componentProvisions component)) ->
-  lookupFiber @{nameEq} actor source = Just
-    (MkFiber component runtimeParent runtimeRetired runtimeTable
-      (Reloading (step :: rest) runtimeAccumulator view)) ->
-  iteratorStageOutcomeComponentData nameEq keyEq actor component view step rest
-    (projectEffectState @{nameEq}
-      (the (SystemState name key value world error)
-        (MkSystemState ambient source))) =
-  runtimeAdvanceOutcome nameEq keyEq actor component step rest view ambient
-    runtimeTable source
-runtimeAdvanceOutcomeAsData nameEq keyEq actor component step rest view ambient
-  runtimeTable source runtimeParent runtimeRetired runtimeAccumulator found = Refl
-
 ||| Repaired Equation 55 at the exact plan/survivor sources used by retained
 ||| selected-episode L-Advance replay.  Empty current-R leaves preserve the
 ||| original projection, and global Definition-60 independence supplies the
@@ -168,11 +139,16 @@ public export
     (MkFiber component rightParent retiredFlag rightTable
       (Reloading (step :: rest) rightAccumulator view)) ->
   IteratorOutcomeAgreement name key value world error keyEq
-    (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
-      (worldState survivor) rightTable (registry survivor))
-    (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
-      (worldState before) leftTable
-      (planTarget (completePlanResult (selectedBoundaryPlan boundary))))
+    (iteratorStageOutcomeComponentData nameEq keyEq actor component view step
+      rest (projectEffectState @{nameEq}
+        (the (SystemState name key value world error)
+          (MkSystemState (worldState survivor) (registry survivor)))))
+    (iteratorStageOutcomeComponentData nameEq keyEq actor component view step
+      rest (projectEffectState @{nameEq}
+        (the (SystemState name key value world error)
+          (MkSystemState (worldState before)
+            (planTarget (completePlanResult
+              (selectedBoundaryPlan boundary)))))))
 
 selectedForeignAdvanceOutcomeProvider {name} {key} {world} {error} {value}
   nameEq keyEq selected actor distinct whole
@@ -262,21 +238,33 @@ selectedForeignAdvanceOutcomeProvider {name} {key} {world} {error} {value}
             survivorDataTransport = cong
               (iteratorStageOutcomeComponentData nameEq keyEq actor component
                 view step rest) (sym survivorEtaEffects)
+            0 survivorStage : iteratorStageOutcome stage
+              (projectEffectState @{nameEq} survivor) =
+              iteratorStageOutcomeComponentData nameEq keyEq actor component
+                view step rest
+                (projectEffectState @{nameEq}
+                  (the (SystemState name key value world error)
+                    (MkSystemState (worldState survivor) (registry survivor))))
             survivorStage = trans
               (stageData (projectEffectState @{nameEq} survivor))
-              (trans survivorDataTransport
-                (runtimeAdvanceOutcomeAsData nameEq keyEq actor component step
-                  rest view (worldState survivor) rightTable (registry survivor)
-                  rightParent retiredFlag rightAccumulator survivorFound))
-            planStage = trans
-              (stageData (projectEffectState @{nameEq}
+              survivorDataTransport
+            0 planStage : iteratorStageOutcome stage
+              (projectEffectState @{nameEq}
+                (the (SystemState name key value world error)
+                  (MkSystemState (worldState before)
+                    (planTarget (completePlanResult
+                      (selectedBoundaryPlan boundary)))))) =
+              iteratorStageOutcomeComponentData nameEq keyEq actor component
+                view step rest
+                (projectEffectState @{nameEq}
+                  (the (SystemState name key value world error)
+                    (MkSystemState (worldState before)
+                      (planTarget (completePlanResult
+                        (selectedBoundaryPlan boundary))))))
+            planStage = stageData (projectEffectState @{nameEq}
+              (the (SystemState name key value world error)
                 (MkSystemState (worldState before)
                   (planTarget (completePlanResult
                     (selectedBoundaryPlan boundary))))))
-              (runtimeAdvanceOutcomeAsData nameEq keyEq actor component step rest view
-                (worldState before) leftTable
-                (planTarget (completePlanResult
-                  (selectedBoundaryPlan boundary))) leftParent retiredFlag
-                leftAccumulator planFound)
         in outcomeAgreementTransport survivorStage planStage
           survivorToPlan

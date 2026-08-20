@@ -112,7 +112,7 @@ noEpisodeSuffixReplayFold protocol nameEq keyEq registered ordinal live
         stepDiscipline retained of
         MkRetainedNoEpisodeBoundaryStep
           named@(MkNamedTransition survivingAfter survivingTag
-            survivingTransition sameAction) fired nextBoundary =>
+            survivingTransition sameAction) fired tagSame nextBoundary =>
               let 0 folded = noEpisodeSuffixReplayFold protocol nameEq keyEq
                     registered (S ordinal)
                     (advanceGenerationEnvironment @{nameEq} ordinal action live)

@@ -51,10 +51,14 @@ ForeignAdvanceOutcomeProvider name key world error value nameEq keyEq
       (MkFiber component rightParent retiredFlag rightTable
         (Reloading (step :: rest) rightAccumulator view)) ->
     IteratorOutcomeAgreement name key value world error keyEq
-      (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
-        survivorAmbient rightTable survivor)
-      (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
-        planAmbient leftTable plan)
+      (iteratorStageOutcomeComponentData nameEq keyEq actor component view step
+        rest (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState survivorAmbient survivor))))
+      (iteratorStageOutcomeComponentData nameEq keyEq actor component view step
+        rest (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState planAmbient plan))))
 ForeignAdvanceOutcomeProvider name key world error value nameEq keyEq
   action planAmbient survivorAmbient plan survivor = Unit
 

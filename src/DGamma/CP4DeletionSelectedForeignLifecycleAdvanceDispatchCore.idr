@@ -60,10 +60,25 @@ runtimeAdvanceOutcome :
   Maybe (IteratorStageOutcome name key value world error)
 runtimeAdvanceOutcome nameEq keyEq actor component step rest view ambient table
   source =
-    iteratorStageOutcomeComponentData nameEq keyEq actor component view step rest
-      (projectEffectState @{nameEq}
-        (the (SystemState name key value world error)
-          (MkSystemState ambient source)))
+    case resolveCommittedValues @{nameEq} @{keyEq}
+      (dependencies (componentDependencies component)) view source of
+      Nothing => Nothing
+      Just capability =>
+        case runStepEffect step capability
+          (MkLocalState ambient
+            (restrictOwnedPreservingOrder @{keyEq}
+              (componentProvisions component) (ownedValues table))) of
+          Left failure => Just (IteratorRaised failure)
+          Right (after, undo) =>
+            Just (IteratorYielded
+              (setEffectTable @{nameEq} actor
+                (ownedValues (localTable after))
+                (setEffectAmbient (localWorld after)
+                  (projectEffectState @{nameEq}
+                    (MkSystemState ambient source))))
+              (yieldedInverseEffectMap nameEq keyEq actor
+                (componentProvisions component) undo)
+              (MkIteratorContinuation rest))
 
 public export
 record ReloadingRightAdvance

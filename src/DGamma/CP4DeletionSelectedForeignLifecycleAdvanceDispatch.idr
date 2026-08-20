@@ -63,10 +63,14 @@ public export
       (MkFiber component rightParent retiredFlag rightTable
         (Reloading (step :: rest) rightAccumulator view)) ->
     IteratorOutcomeAgreement name key value world error keyEq
-      (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
-        survivorAmbient rightTable survivor)
-      (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
-        planAmbient leftTable plan)) ->
+      (iteratorStageOutcomeComponentData nameEq keyEq actor component view step
+        rest (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState survivorAmbient survivor))))
+      (iteratorStageOutcomeComponentData nameEq keyEq actor component view step
+        rest (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState planAmbient plan))))) ->
   ForeignLifecycleControlReplay name key world error value nameEq keyEq
     selected (LAdvance actor) tag planAfter
     (MkSystemState survivorAmbient survivor)
@@ -226,10 +230,14 @@ replayForeignAdvanceControlsFromOutcome {name} {key} {world} {error} {value}
     where
     0 dispatchDefined :
       IteratorOutcomeAgreement name key value world error keyEq
-        (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
-          survivorAmbient rightTable survivor)
-        (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
-          planAmbient leftTable plan) ->
+        (iteratorStageOutcomeComponentData nameEq keyEq actor component view step
+          rest (projectEffectState @{nameEq}
+            (the (SystemState name key value world error)
+              (MkSystemState survivorAmbient survivor))))
+        (iteratorStageOutcomeComponentData nameEq keyEq actor component view step
+          rest (projectEffectState @{nameEq}
+            (the (SystemState name key value world error)
+              (MkSystemState planAmbient plan)))) ->
       SelectedOrderedRegistryControlsRelated name key world error value selected
         (bindings plan) (bindings survivor) ->
       (matches : Bool) ->

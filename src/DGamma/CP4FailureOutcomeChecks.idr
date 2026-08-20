@@ -197,7 +197,10 @@ coldStageOutcome = Refl
 0 raisedStageHasNoSuccessfulEffect :
   iteratorStageOutcome stage state = Just (IteratorRaised failure) ->
   iteratorStageEffect stage state = Nothing
-raisedStageHasNoSuccessfulEffect equation = rewrite equation in Refl
+raisedStageHasNoSuccessfulEffect
+  {stage = StageFromAdvance nameEq keyEq actor tag checked occurs fiber found
+    remaining accumulator view lifecycle step rest suffix} equation =
+      rewrite equation in Refl
 
 0 hotStageEffect : iteratorStageEffect
   DGamma.CP4FailureOutcomeChecks.failureStage
