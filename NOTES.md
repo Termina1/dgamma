@@ -2265,8 +2265,11 @@ selected-static cells and reuses the common post-close packager.
 `retainedForeignPostCloseLifecycle` derives direct provider exclusion from the
 plan-side selected Inactive witness, derives L-Advance outcome agreement from a
 singleton checked stage plus related effects, replays all lifecycle rules, and
-threads the full post-close invariant. The remaining obligation-2 work is now
-only the structural action dispatch/fold and selected O-Remove/rebegin discharge.
+threads the full post-close invariant. Shift 37 completes the structural post-close fold: selected O-Remove upgrades
+through absence, selected L-Begin upgrades through its checked clean source,
+and an unremoved selected cell upgrades at the no-failure endpoint. Deleted-R,
+foreign orchestration, and all foreign lifecycle heads recurse through the same
+scanner/readiness invariant.
 
 For endpoint withdrawal, `currentGenerationAtScanStart` is checked: a generation
 older than the current ordinal that remains current at a scanned suffix endpoint
@@ -2275,90 +2278,38 @@ occurrence-local O-Retire with a later raw-name reissue. Shift 34 also checks
 `retiredInactiveCurrentPersists`: once that exact generation retires while
 Inactive, retirement is monotone while it remains current under
 `NoRegisteredEpisode`; the proof explicitly eliminates reissue, removal, and
-all impossible Inactive lifecycle heads. The remaining join is to transport each
-`GeneratedDuring.generatedRetiresLater` occurrence to this suffix theorem and
-construct `CurrentRegisteredWithdrawable`.
+all impossible Inactive lifecycle heads. `CP4DeletionWithdrawalJoin` now splits
+the exact center scanner at every generated birth, locates its promised later
+O-Retire, preserves exact-generation retirement through the center and suffix,
+and constructs `CurrentRegisteredWithdrawable` without confusing a later raw-
+name reissue.
 
 ## Status
 
-**Fully proved:** all previously approved Section 3 results; raw Theorem 59
-Preservation; Equation 58; local relied guards; per-step Equation 59; whole-
-episode resolution structure; global spatial Ordering/Theorem 63 including
-strict containment, resolution constancy, and provider-value constancy; and
-finite-specialized Lemma 68, including combined support well-foundedness and
-unique Definition-67 support-solution equality with the executable closure;
-and Lemma 70, including endpoint Active-table totality, non-retired-child
-parent safety, both Active/support fixed-point directions, and final Lemma-68
-uniqueness assembly; and Progress/Theorem 66, including lifecycle program and
-continuation preservation, precedence-acyclicity preservation, complete
-unloading-chain no-deadlock, all-rule potential decrease, amortized Equation
-61, maximality, and final public-alias assembly; and recovery Theorem 61,
-including the conditional selected-step inverse, foreign generated-map
-commutation, congruent replay transport, simultaneous installed-trace
-induction, and exact public-alias endpoint assembly; and Corollary 62, including
-checked L-Unload handle extraction, terminal effect framing, and closed-trace
-replay assembly; and recovery-combined Theorem 64, including Equation 59,
-whole-episode resolution structure, and dependent result assembly. The repaired Definition-69/
-Lemma-70 and Theorem-66 statement shapes still await end-of-CP4 re-review.
+**Fully proved:** all previously listed approved Section 3 results; Preservation
+(Theorem 59); Theorems 61, 63, and 64; Corollary 62; finite-specialized Lemmas
+68 and 70; repaired finite Progress/Theorem 66; and **Lemma 72**.
+`DGamma.CP4DeletionTheorem.deletionTheoremProof` inhabits the unchanged public
+`deletionTheorem` type. Its proof composes the selected center fold, complete
+post-close structural fold, exact retirement/scanner join, executable dependent
+filter witnesses, and `CP4DeletionEndpoint` effect/control/withdrawal packaging.
 
-**Partial:** Lemma 71 (effect commutation projection); Lemma 72 (candidate
-lifecycle-only deletion statement, exhaustive ten-tag actual-forward effect
-frames, generation-correct action/result filtering, proved birth-ordinal bounds
-and verbatim pre-episode subsequence construction, a total dependent filter
-that exposes kept-action replay failure, exact located splitting of the
-no-R-episode and Definition-69 premises, conditional trace/final-record
-assembly, executable exact-generation Inactive-leaf plan/actor-outside
-construction, constructive plan success from the explicit current-R leaf
-invariant, scanner live-name uniqueness plus the public-outside bridge, proved checked
-lifecycle and orchestration applicability through that plan (including the
-child-O-Insert parent guard), and a complete `CurrentRegisteredChildless`
-induction from disciplined registration,
-well-formed parent closure, and exact-generation no-episode evidence; both
-structural readiness inductions from the saturated retained-head interface;
-and the all-action no-selected-episode retained-head frame at an exact current-R
-plan boundary; exhaustive evaluator transport across equal runtime snapshots,
-dependent Inactive-plan/actor-exclusion transport across equal ordered bindings,
-and complete current-R plan construction from the public reached-trace premises;
-exact ordered-binding insert/replace/delete commutation through the dependent
-plan plus exact removal of a deleted actor's plan occurrence; exhaustive
-retained/deleted one-head boundary preservation, including the five exact
-lifecycle result/control comparisons, and the simultaneous whole-trace suffix
-fold are proved; the selected quotient's accumulator/effect half is now proved
-at L-Begin, every skipped selected installed head, every foreign actual map, and
-checked L-Unload, with complete-plan transport, a preserved ordered
-selected-exempt interior control skeleton, and an ordered relational suffix
-interface; retained foreign lifecycle source frames, both closed/open
-precedence-anchor eliminations, Lemma-70 endpoint reconstruction, installed
-occurrence/component transport, first-close action-specific temporal
-classification, exact closing-episode reconstruction, selected-L-Unload
-reliance anchoring, the complete Lemma-70/reliance provider-frame join, all
-lifecycle-result control constructors, repaired failure/success outcome
-transport, concrete checked L-Advance branch reconstruction, and the exhaustive
-retained-head provider/outcome dispatcher are proved (alongside L-Begin,
-L-Divert, L-Leave, and L-Unload); public no-episode evidence now derives empty
-current-R tables and `EmptyTableInactivePlan`; selected-boundary propagation is
-proved for every deleted R O-Insert/O-Retire/O-Remove head, including complete
-plan and derived empty-table transport while the survivor remains fixed; the
-parallel relational suffix induction is proved and its per-action interface is
-now fully inhabited for all orchestration and lifecycle actions; selected
-opening, selected-retire, retained foreign orchestration/lifecycle, selected
-close, and generic endpoint effect/control/withdrawal packaging are proved. The
-remaining Lemma-72 work is the structural selected-episode fold, the
-selected-static post-close suffix upgrade (including failed-close removal or
-reissue), and derivation of current-generation retirement for the generic
-endpoint packager);
-Confluence/Theorem
-73 (surviving parent-
-activation structural cross-trace, generation-stamped canonical proposition,
-and vestigial-aware outside-R endpoint relation submitted for round-10 review;
-the round-7 cross-parent/historical-root, round-8 closing-episode, and round-9
-vestigial-endpoint defects have complete typed regressions, while constructive
-deletion/sorting and general endpoint assembly remain open). Lemmas 54–57 have many rule, frame, and boundary analogues
-but are not individually complete.
+**Partial:** Lemma 71 remains a projection-level mechanization rather than a
+standalone paper-shaped theorem. Lemmas 54–57 have many proved rule/frame
+analogues but are not individually complete. Theorem 73 remains statement and
+regression work only; no constructive sorting/confluence proof was started in
+Shift 37.
 
-**Merely stated:** Lemma 35, Theorems 40/42, `deletionTheorem`, and
-`confluenceTheorem`.
-These remain escape-hatch-free proposition types.
+**Merely stated:** Lemma 35, Theorems 40/42, and `confluenceTheorem`. These are
+escape-hatch-free proposition types. `deletionTheorem` is no longer merely
+stated: its checked inhabitant is exported downstream.
+
+**Validation:** targeted checks passed for the selected fold, post-close fold,
+withdrawal join, endpoint, and theorem roots. Every `src/**/*.idr` module has
+`%default total`; scans found no `believe_me`, `assert_total`, postulate,
+`%default partial`, partial declaration, or metavariable hole. The warm package
+build passed all 207/207 modules. The older documented `TODO(proof)` comments
+for Unified Lemmas 35/40/42 and Theorem 73 remain outside Lemma-72 scope.
 
 **Deviations:** Definition 32 finite approximations; finite static-list
 continuations; finite tagged/catalogued explicit registration rather than a
@@ -2366,17 +2317,6 @@ recursive nested yield (including the documented one-source-head/many-child-name
 over-approximation); trace-anchored full-effect generated monoids; exact full-
 effect equality; and explicit `AlignedTransitions` dictionary alignment.
 
-**Next:** implement the simultaneous selected-segment induction over the now
-complete per-head packages, carrying generation scan/uniqueness/stamping,
-current-R Inactive/empty invariants, executable readiness, and provider-anchor
-evidence. Then fold `PostCloseSelectedBoundary` through the suffix until its
-selected-static failed-close relation upgrades to full ordered controls; derive
-the current-generation retirement invariant, apply `CP4DeletionEndpoint`, and
-inhabit `deletionTheorem`. Do not begin Theorem 73 before this is checked.
-After that, use deletion
-for constructive canonical sorting. Fresh-choice,
-cross-parent, 24/18 activation-reset,
-and no-O-Remove 23/18 and 27/18 vestigial pairs reach the literal public premise
-chain; the latter two also project the vestigial-aware result. Live providers
-and complete-relation historical-root reassignment are rejected. An inhabited
-positive canonical schedule remains constructive proof debt.
+**Next:** stop at the Lemma-72 boundary. The supervisor will run the required
+fresh-context adversarial review separately. Do not begin Theorem 73 or split
+the registered validation debt in this shift.
