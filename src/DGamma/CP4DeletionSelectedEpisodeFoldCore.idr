@@ -116,9 +116,9 @@ record SelectedEpisodeLocalReplayer
     (occurs : OccursIn
       (Fired {before = before} {afterState = afterState}
         nameEq keyEq action tag checked) whole) ->
-    (insideOccurs : OccursIn
-      (Fired {before = before} {afterState = afterState}
-        nameEq keyEq action tag checked) interior) ->
+    (insidePrefix : Transitions interiorFirst before) ->
+    appendTransitions insidePrefix
+      (MoreTransitions (Fired nameEq keyEq action tag checked) rest) = interior ->
     (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
       keyEq selected registered ordinal live whole before survivor) ->
     EmptyTableInactivePlan name key world error value nameEq
@@ -198,7 +198,8 @@ public export
     original) ->
   (noRegistered : NoRegisteredEpisode nameEq registered ordinal live original) ->
   (embed : OccurrenceEmbedding original whole) ->
-  (interiorEmbed : OccurrenceEmbedding original interior) ->
+  (interiorPrefix : Transitions interiorFirst originalFirst) ->
+  appendTransitions interiorPrefix original = interior ->
   (survivorFirst : SystemState name key value world error) ->
   (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
     keyEq selected registered ordinal live whole originalFirst survivorFirst) ->
@@ -213,7 +214,7 @@ public export
     registered ordinal live whole original survivorFirst
 selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
   selectedOutside whole interior local ordinal live unique stamped NoTransitions
-  AlignedEnd (InstalledEnd installedEnd) NoRegisteredEpisodeEnd embed interiorEmbed survivorFirst
+  AlignedEnd (InstalledEnd installedEnd) NoRegisteredEpisodeEnd embed interiorPrefix interiorDecomposition survivorFirst
   boundary inactive empty emptyPlan =
     MkSelectedEpisodeInteriorFold ordinal live survivorFirst
       GenerationTraceScanEnd ReplayReadyEnd boundary
@@ -224,7 +225,7 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
   (InstalledStep action tag checked rest sourceInstalled installedRest)
   (NoRegisteredEpisodeStep
     (Fired nameEq keyEq action tag checked) rest noBegin noRegisteredRest)
-  embed interiorEmbed survivorFirst boundary inactive empty emptyPlan
+  embed interiorPrefix interiorDecomposition survivorFirst boundary inactive empty emptyPlan
   with (decEpisodeGenerationDeletedActor nameEq selected registered ordinal live
     action)
   selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
@@ -234,7 +235,7 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
     (InstalledStep action tag checked rest sourceInstalled installedRest)
     (NoRegisteredEpisodeStep
       (Fired nameEq keyEq action tag checked) rest noBegin noRegisteredRest)
-    embed interiorEmbed survivorFirst boundary inactive empty emptyPlan | Yes deleted =
+    embed interiorPrefix interiorDecomposition survivorFirst boundary inactive empty emptyPlan | Yes deleted =
       let 0 raw = checkedActionProjects nameEq keyEq action _ _ tag checked
           0 nextUnique = advanceGenerationEnvironmentPreservesUnique nameEq
             ordinal action live unique
@@ -257,9 +258,15 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
             nextUnique _ (selectedBoundaryPlan nextBoundary) nextEmpty
           0 tailEmbed : OccurrenceEmbedding rest whole
           tailEmbed later occursLater = embed later (OccursLater occursLater)
-          0 tailInteriorEmbed : OccurrenceEmbedding rest interior
-          tailInteriorEmbed later occursLater = interiorEmbed later
-            (OccursLater occursLater)
+          0 nextInteriorDecomposition : appendTransitions
+            (appendTransitions interiorPrefix
+              (MoreTransitions (Fired nameEq keyEq action tag checked)
+                NoTransitions)) rest = interior
+          nextInteriorDecomposition = trans
+            (appendTransitionsAssociative interiorPrefix
+              (MoreTransitions (Fired nameEq keyEq action tag checked)
+                NoTransitions) rest)
+            interiorDecomposition
           0 folded : SelectedEpisodeInteriorFold name key world error value
             nameEq keyEq selected registered (S ordinal)
             (advanceGenerationEnvironment @{nameEq} ordinal action live) whole
@@ -268,7 +275,10 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
             registered selectedOutside whole interior local (S ordinal)
             (advanceGenerationEnvironment @{nameEq} ordinal action live)
             nextUnique nextStamped rest alignedRest installedRest
-            noRegisteredRest tailEmbed tailInteriorEmbed survivorFirst nextBoundary nextInactive
+            noRegisteredRest tailEmbed
+            (appendTransitions interiorPrefix
+              (MoreTransitions (Fired nameEq keyEq action tag checked)
+                NoTransitions)) nextInteriorDecomposition survivorFirst nextBoundary nextInactive
             nextEmpty nextEmptyPlan
       in MkSelectedEpisodeInteriorFold
         (interiorFinalOrdinal folded) (interiorFinalLive folded)
@@ -283,7 +293,7 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
     (InstalledStep action tag checked rest sourceInstalled installedRest)
     (NoRegisteredEpisodeStep
       (Fired nameEq keyEq action tag checked) rest noBegin noRegisteredRest)
-    embed interiorEmbed survivorFirst boundary inactive empty emptyPlan | No retained =
+    embed interiorPrefix interiorDecomposition survivorFirst boundary inactive empty emptyPlan | No retained =
       let 0 raw = checkedActionProjects nameEq keyEq action _ _ tag checked
           0 nextUnique = advanceGenerationEnvironmentPreservesUnique nameEq
             ordinal action live unique
@@ -297,8 +307,7 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
           replay = replayRetainedEpisodeHead local ordinal live unique stamped
             selectedOutside action _ _ survivorFirst tag checked
             sourceInstalled (installedTraceStart installedRest) rest
-            installedRest noBegin occurs
-            (interiorEmbed (Fired nameEq keyEq action tag checked) OccursHere)
+            installedRest noBegin occurs interiorPrefix interiorDecomposition
             boundary emptyPlan inactive retained
       in case replay of
         MkSelectedEpisodeRetainedHead
@@ -312,9 +321,15 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
                 nextUnique _ (selectedBoundaryPlan nextBoundary) nextEmpty
               0 tailEmbed : OccurrenceEmbedding rest whole
               tailEmbed later occursLater = embed later (OccursLater occursLater)
-              0 tailInteriorEmbed : OccurrenceEmbedding rest interior
-              tailInteriorEmbed later occursLater = interiorEmbed later
-                (OccursLater occursLater)
+              0 nextInteriorDecomposition : appendTransitions
+                (appendTransitions interiorPrefix
+                  (MoreTransitions (Fired nameEq keyEq action tag checked)
+                    NoTransitions)) rest = interior
+              nextInteriorDecomposition = trans
+                (appendTransitionsAssociative interiorPrefix
+                  (MoreTransitions (Fired nameEq keyEq action tag checked)
+                    NoTransitions) rest)
+                interiorDecomposition
               0 folded : SelectedEpisodeInteriorFold name key world error value
                 nameEq keyEq selected registered (S ordinal)
                 (advanceGenerationEnvironment @{nameEq} ordinal action live)
@@ -323,7 +338,10 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
                 selected registered selectedOutside whole interior local (S ordinal)
                 (advanceGenerationEnvironment @{nameEq} ordinal action live)
                 nextUnique nextStamped rest alignedRest installedRest
-                noRegisteredRest tailEmbed tailInteriorEmbed namedAfter nextBoundary
+                noRegisteredRest tailEmbed
+                (appendTransitions interiorPrefix
+                  (MoreTransitions (Fired nameEq keyEq action tag checked)
+                    NoTransitions)) nextInteriorDecomposition namedAfter nextBoundary
                 nextInactive nextEmpty nextEmptyPlan
           in MkSelectedEpisodeInteriorFold
             (interiorFinalOrdinal folded) (interiorFinalLive folded)
