@@ -338,6 +338,89 @@ spanningOccurrenceDecomposition beforeOpening opening afterOpening beforeClosing
       (MoreTransitions (beginTransition opening) afterOpening) rightTrace) in
     rewrite openingSplit in Refl
 
+||| A closing activation located around the installed anchor chosen for one
+||| lifecycle occurrence.  In addition to the public located episode, this
+||| retains the installed prefix from the activation's L-Begin target to the
+||| occurrence anchor; crossing-activation exclusion needs precisely this
+||| prefix to transport the committed provider observation backwards.
+public export
+record LocatedClosingActivationAtAnchor
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (actor : name)
+  {initial, finalState, stepBefore, stepAfter :
+    SystemState name key value world error}
+  (transition : Transition stepBefore stepAfter)
+  (global : Transitions initial finalState)
+  (anchor : ForeignLifecycleInstalledAnchor name key world error value nameEq
+    keyEq actor transition global) where
+  constructor MkLocatedClosingActivationAtAnchor
+  closingActivationEpisode : LocatedClosedEpisode name key world error value
+    nameEq keyEq actor global
+  activationToOccurrenceAnchor : Transitions
+    (closedStartState (locatedEpisode closingActivationEpisode))
+    (lifecycleInstalledState anchor)
+  0 activationToOccurrenceInstalled : InstalledTrace name key world error value
+    nameEq keyEq actor activationToOccurrenceAnchor
+
+||| Promote a first-close result while retaining the exact activation prefix.
+public export
+0 closingOccurrenceGivesLocatedActivation :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (transition : Transition stepBefore stepAfter) ->
+  (global : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  bindings (registry initial) = [] ->
+  (anchor : ForeignLifecycleInstalledAnchor name key world error value nameEq
+    keyEq actor transition global) ->
+  FirstClosingResult name key world error value nameEq keyEq actor
+    (lifecycleAfterInstalled anchor) ->
+  LocatedClosingActivationAtAnchor name key world error value nameEq keyEq actor
+    transition global anchor
+closingOccurrenceGivesLocatedActivation nameEq keyEq actor transition global
+  aligned initialEmpty anchor
+  (MkFirstClosingResult closeBefore closeAfter beforeClosing installedBefore
+    closing afterClosing closingSplit) =
+    let 0 alignedAtAnchor : AlignedTransitions name key world error value nameEq
+          keyEq
+          (appendTransitions (lifecycleBeforeInstalled anchor)
+            (lifecycleAfterInstalled anchor))
+        alignedAtAnchor = rewrite lifecycleAnchorDecomposition anchor in aligned
+        0 alignedParts :
+          (AlignedTransitions name key world error value nameEq keyEq
+            (lifecycleBeforeInstalled anchor),
+           AlignedTransitions name key world error value nameEq keyEq
+            (lifecycleAfterInstalled anchor))
+        alignedParts = alignedAppendSplitAnchorClassify
+          (lifecycleBeforeInstalled anchor)
+          (lifecycleAfterInstalled anchor) alignedAtAnchor
+        0 initialUninstalled : installedAt @{nameEq} actor initial = False
+        initialUninstalled = emptyRegistryUninstalled nameEq actor initial
+          initialEmpty
+    in case extractLastOpening nameEq keyEq actor
+      (lifecycleBeforeInstalled anchor) (fst alignedParts) initialUninstalled
+      (lifecycleAnchorInstalled anchor) of
+      MkLastOpeningResult preStart opened beforeOpening opening afterOpening
+        openingSplit installedAfterOpening =>
+          let 0 insideInstalled = appendInstalledTrace afterOpening beforeClosing
+                installedAfterOpening installedBefore
+              0 decompositionForAppend = spanningOccurrenceDecomposition
+                beforeOpening opening afterOpening beforeClosing closing
+                afterClosing (lifecycleBeforeInstalled anchor)
+                (lifecycleAfterInstalled anchor) openingSplit closingSplit
+              0 locatedDecomposition = trans
+                (rewrite appendTransitionsAssociative
+                  (appendTransitions afterOpening beforeClosing)
+                  (MoreTransitions (unloadTransition closing) NoTransitions)
+                  afterClosing in decompositionForAppend)
+                (lifecycleAnchorDecomposition anchor)
+          in MkLocatedClosingActivationAtAnchor
+            (MkLocatedClosedEpisode preStart closeAfter beforeOpening
+              (MkClosedEpisode opened closeBefore opening
+                (appendTransitions afterOpening beforeClosing) insideInstalled
+                closing)
+              afterClosing locatedDecomposition)
+            afterOpening installedAfterOpening
+
 ||| A closing result is promoted to the exact located episode containing this
 ||| occurrence.  The first-close classifier makes this valid even when the same
 ||| raw name is later removed, reinserted, or activated again.
