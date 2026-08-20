@@ -2243,14 +2243,14 @@ is recovered at the exact occurrence in the immutable global trace, avoiding an
 invalid attempt to shorten the future-sensitive O-Insert premise.
 
 `selectedClosedEpisodeFold` composes the checked opening boundary, the installed
-interior fold, and selected L-Unload into `PostCloseSelectedBoundary`. Its only
-remaining internal input is `SelectedEpisodeLifecycleAnchorProvider`. Existing
-precedence and selected-unload reliance anchors do not directly cover the
-crossing interval where a foreign activation opened before selected L-Begin and
-closes before selected L-Unload. `DirectProviderFrameEvidence` now exposes the
-precise Boolean exclusion needed for that case without changing any public
-statement. Proving this crossing exclusion is the first remaining blocker before
-the post-close fold can start.
+interior fold, and selected L-Unload into `PostCloseSelectedBoundary`. Shift 33
+has now discharged its former internal anchor input from the public premises:
+closing crossing activations use committed-provider persistence and open-through-
+close activations use the selected L-Unload reliance guard. Exact interior
+prefix/decomposition indices ensure the temporal occurrence is not confused with
+a duplicate transition. `selectedClosedEpisodeFoldFromPremises` checks the full
+dispatcher/fold composition. The next blocker is the post-close selected-static
+suffix upgrade at selected removal/reissue.
 
 For endpoint withdrawal, `currentGenerationAtScanStart` is checked: a generation
 older than the current ordinal that remains current at a scanned suffix endpoint
