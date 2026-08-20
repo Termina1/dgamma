@@ -12,6 +12,30 @@ import Decidable.Equality
 0 justInjectiveCommittedPersistence : Just left = Just right -> left = right
 justInjectiveCommittedPersistence Refl = Refl
 
+0 committedLookupSameState :
+  (keyEq : DecEq key) -> (wanted : key) -> (provider : name) ->
+  (firstSnapshot : CommittedSnapshot name key world error value nameEq consumer
+    firstProviders state) ->
+  (finalSnapshot : CommittedSnapshot name key world error value nameEq consumer
+    finalProviders state) ->
+  viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies
+      (fiberComponent (committedFiber finalSnapshot))))
+    (committedView finalSnapshot) = Just provider ->
+  viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies
+      (fiberComponent (committedFiber firstSnapshot))))
+    (committedView firstSnapshot) = Just provider
+committedLookupSameState keyEq wanted provider
+  (MkCommittedSnapshot firstFiber firstFound firstView firstCommitted firstNames)
+  (MkCommittedSnapshot finalFiber finalFound finalView finalCommitted finalNames)
+  finalResolved =
+    case justInjectiveCommittedPersistence
+      (trans (sym finalFound) firstFound) of
+      Refl => case justInjectiveCommittedPersistence
+        (trans (sym finalCommitted) firstCommitted) of
+        Refl => finalResolved
+
 ||| A provider selected by an installed consumer's committed view at a later
 ||| point was already selected by that same activation at every earlier point.
 ||| In particular, a provisions-disjoint insertion cannot manufacture a new
@@ -26,14 +50,14 @@ public export
 0 committedProviderProvisionPersists :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (consumer : name) -> (wanted : key) -> (provider : name) ->
-  (providers : List name) ->
+  (firstProviders, finalProviders : List name) ->
   (trace : Transitions first finalState) ->
   (installed : InstalledTrace name key world error value nameEq keyEq consumer
     trace) ->
   (firstSnapshot : CommittedSnapshot name key world error value nameEq consumer
-    providers first) ->
+    firstProviders first) ->
   (finalSnapshot : CommittedSnapshot name key world error value nameEq consumer
-    providers finalState) ->
+    finalProviders finalState) ->
   viewLookup @{keyEq} wanted
     (dependencies (componentDependencies
       (fiberComponent (committedFiber finalSnapshot))))
@@ -43,19 +67,12 @@ public export
       (fiberComponent (committedFiber firstSnapshot))))
     (committedView firstSnapshot) = Just provider
 committedProviderProvisionPersists nameEq keyEq consumer wanted provider
-  providers NoTransitions (InstalledEnd installed) firstSnapshot finalSnapshot
-  finalResolved =
-    let 0 sameFiber : (committedFiber finalSnapshot = committedFiber firstSnapshot)
-        sameFiber = justInjectiveCommittedPersistence
-          (trans (sym (committedLookup finalSnapshot))
-            (committedLookup firstSnapshot))
-        0 componentSame : (fiberComponent (committedFiber firstSnapshot) =
-          fiberComponent (committedFiber finalSnapshot))
-        componentSame = cong fiberComponent (sym sameFiber)
-    in snapshotResolvedLookupStable wanted provider finalSnapshot firstSnapshot
-      componentSame finalResolved
+  firstProviders finalProviders NoTransitions (InstalledEnd installed)
+  firstSnapshot finalSnapshot
+  finalResolved = committedLookupSameState keyEq wanted provider firstSnapshot
+    finalSnapshot finalResolved
 committedProviderProvisionPersists nameEq keyEq consumer wanted provider
-  providers
+  firstProviders finalProviders
   (MoreTransitions transition@(Fired nameEq keyEq action tag checked) rest)
   (InstalledStep action tag checked rest sourceInstalled tailInstalled)
   firstSnapshot finalSnapshot finalResolved =
@@ -63,15 +80,16 @@ committedProviderProvisionPersists nameEq keyEq consumer wanted provider
         0 targetInstalled = installedTraceStart tailInstalled
         0 afterCommitted = case decEq @{nameEq} consumer (actionOwner action) of
           No distinct => committedProvidersForeignAction nameEq keyEq consumer
-            providers action _ _ tag distinct
+            firstProviders action _ _ tag distinct
             (committedSnapshotEquation firstSnapshot) raw
           Yes same => committedProvidersSelectedAction nameEq keyEq consumer
-            providers action _ _ tag (sym same) firstSnapshot targetInstalled raw
-        middleSnapshot = committedSnapshotFrom nameEq consumer providers _
+            firstProviders action _ _ tag (sym same) firstSnapshot
+            targetInstalled raw
+        middleSnapshot = committedSnapshotFrom nameEq consumer firstProviders _
           afterCommitted
         0 middleResolved = committedProviderProvisionPersists nameEq keyEq
-          consumer wanted provider providers rest tailInstalled middleSnapshot
-          finalSnapshot finalResolved
+          consumer wanted provider firstProviders finalProviders rest
+          tailInstalled middleSnapshot finalSnapshot finalResolved
         0 replacement = installedCheckedStepStaticReplacement nameEq keyEq
           consumer action tag _ _ checked sourceInstalled targetInstalled
         0 componentStable = snapshotComponentStable firstSnapshot middleSnapshot
