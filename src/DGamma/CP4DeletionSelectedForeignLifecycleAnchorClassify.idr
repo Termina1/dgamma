@@ -111,6 +111,15 @@ classifyInstalledContinuation nameEq keyEq actor
             void (falseNotTrueAnchorClassify
               (trans (sym stepSource) sourceInstalled))
 
+public export
+lifecycleOccurrenceAnchorState :
+  Action name key value world error ->
+  SystemState name key value world error ->
+  SystemState name key value world error ->
+  SystemState name key value world error
+lifecycleOccurrenceAnchorState (LBegin actor) before afterState = afterState
+lifecycleOccurrenceAnchorState action before afterState = before
+
 ||| Every retained lifecycle occurrence has a canonical installed anchor.
 ||| L-Begin anchors immediately after itself; all other lifecycle rules anchor
 ||| immediately before themselves.  The two traces still compose to the exact
@@ -130,6 +139,9 @@ record ForeignLifecycleInstalledAnchor
   lifecycleAfterInstalled : Transitions lifecycleInstalledState finalState
   0 lifecycleAnchorInstalled :
     installedAt @{nameEq} actor lifecycleInstalledState = True
+  0 lifecycleAnchorState : lifecycleInstalledState =
+    lifecycleOccurrenceAnchorState (transitionAction transition) stepBefore
+      stepAfter
   0 lifecycleAnchorDecomposition :
     appendTransitions lifecycleBeforeInstalled lifecycleAfterInstalled = global
 
@@ -202,7 +214,7 @@ foreignLifecycleOccurrenceInstalledAnchor nameEq keyEq actor
               (appendTransitions earlier
                 (MoreTransitions
                   (Fired nameEq keyEq (LBegin actor) tag checked) NoTransitions))
-              suffix targetInstalled
+              suffix targetInstalled Refl
               (appendOccurrenceAtTarget earlier
                 (Fired nameEq keyEq (LBegin actor) tag checked) suffix global
                 decomposition)
@@ -218,7 +230,7 @@ foreignLifecycleOccurrenceInstalledAnchor nameEq keyEq actor
         in MkForeignLifecycleInstalledAnchor _ earlier
           (MoreTransitions (Fired nameEq keyEq (LAdvance actor) tag checked)
             suffix)
-          sourceInstalled decomposition
+          sourceInstalled Refl decomposition
 foreignLifecycleOccurrenceInstalledAnchor nameEq keyEq actor
   (LDivert actor) Refl lifecycle tag checked global occurs =
     case locateTransitionOccurrence
@@ -233,7 +245,7 @@ foreignLifecycleOccurrenceInstalledAnchor nameEq keyEq actor
             MkForeignLifecycleInstalledAnchor _ earlier
               (MoreTransitions (Fired nameEq keyEq (LDivert actor) tag checked)
                 suffix)
-              sourceInstalled decomposition
+              sourceInstalled Refl decomposition
           RemainedUninstalled sourceUninstalled targetUninstalled =>
             case successfulLDivertTag nameEq keyEq actor _ _ tag raw of
               Refl => case lDivertInstalled nameEq keyEq actor _ _ raw of
@@ -252,7 +264,7 @@ foreignLifecycleOccurrenceInstalledAnchor nameEq keyEq actor
         in MkForeignLifecycleInstalledAnchor _ earlier
           (MoreTransitions (Fired nameEq keyEq (LLeave actor) tag checked)
             suffix)
-          sourceInstalled decomposition
+          sourceInstalled Refl decomposition
 foreignLifecycleOccurrenceInstalledAnchor nameEq keyEq actor
   (LUnload actor) Refl lifecycle tag checked global occurs =
     case locateTransitionOccurrence
@@ -265,7 +277,7 @@ foreignLifecycleOccurrenceInstalledAnchor nameEq keyEq actor
         in MkForeignLifecycleInstalledAnchor _ earlier
           (MoreTransitions (Fired nameEq keyEq (LUnload actor) tag checked)
             suffix)
-          sourceInstalled decomposition
+          sourceInstalled Refl decomposition
 
 ||| The trace-level join: locate the occurrence, select its action-specific
 ||| installed point, split aligned evidence there, and classify the *current
