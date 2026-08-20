@@ -213,7 +213,7 @@ public export
   NoDependentClosingEpisode {nameEq = nameEq} {keyEq = keyEq} selected global ->
   (noRegistered : NoRegisteredEpisode nameEq registered 0 [] global) ->
   SelectedEpisodeLifecycleAnchorProvider name key world error value nameEq keyEq
-    selected registered global ->
+    selected registered global (locatedEpisode located) ->
   SelectedClosedEpisodeFold name key world error value nameEq keyEq selected
     registered episodeStartOrdinal episodeStartLive (locatedEpisode located)
     (appendTransitions (closedTransitions (locatedEpisode located))
@@ -387,10 +387,11 @@ selectedClosedEpisodeFold {name} {key} {world} {error} {value}
           keyEq selected registered protocol
           (appendTransitions (closedTransitions (locatedEpisode located))
             (traceAfterClosing located))
+          (lastInstalledState (locatedEpisode located))
         local = selectedEpisodeLocalReplayer protocol nameEq keyEq selected
           registered selectedOutside global aligned discipline noDependent independent (appendTransitions (closedTransitions (locatedEpisode located))
             (traceAfterClosing located))
-          wholeGlobal anchors
+          (locatedEpisode located) wholeGlobal anchors
         0 interior : SelectedEpisodeInteriorFold name key world error value
           nameEq keyEq selected registered (S episodeStartOrdinal)
           episodeStartLive
