@@ -58,9 +58,10 @@ record SelectedEpisodeLocalReplayer
   (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
   (registered : List (RegistrationGeneration name))
   (protocol : RegistrationProtocol key value world error)
-  {wholeFirst, wholeLast : SystemState name key value world error}
+  {wholeFirst, wholeLast, interiorFirst, episodeCloseSource :
+    SystemState name key value world error}
   (whole : Transitions wholeFirst wholeLast)
-  (episodeCloseSource : SystemState name key value world error) where
+  (interior : Transitions interiorFirst episodeCloseSource) where
   constructor MkSelectedEpisodeLocalReplayer
   0 replayDeletedEpisodeHead :
     (ordinal : Nat) -> (live : GenerationEnvironment name) ->
@@ -115,6 +116,9 @@ record SelectedEpisodeLocalReplayer
     (occurs : OccursIn
       (Fired {before = before} {afterState = afterState}
         nameEq keyEq action tag checked) whole) ->
+    (insideOccurs : OccursIn
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq action tag checked) interior) ->
     (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
       keyEq selected registered ordinal live whole before survivor) ->
     EmptyTableInactivePlan name key world error value nameEq
@@ -181,8 +185,9 @@ public export
   ((generation : RegistrationGeneration name) -> Elem generation registered ->
     Not (generationName generation = selected)) ->
   (whole : Transitions wholeFirst wholeLast) ->
+  (interior : Transitions interiorFirst originalFinal) ->
   (local : SelectedEpisodeLocalReplayer name key world error value nameEq keyEq
-    selected registered protocol whole originalFinal) ->
+    selected registered protocol whole interior) ->
   (ordinal : Nat) -> (live : GenerationEnvironment name) ->
   GenerationEnvironmentNamesUnique live ->
   GenerationEnvironmentStamped live ->
@@ -193,6 +198,7 @@ public export
     original) ->
   (noRegistered : NoRegisteredEpisode nameEq registered ordinal live original) ->
   (embed : OccurrenceEmbedding original whole) ->
+  (interiorEmbed : OccurrenceEmbedding original interior) ->
   (survivorFirst : SystemState name key value world error) ->
   (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
     keyEq selected registered ordinal live whole originalFirst survivorFirst) ->
@@ -206,29 +212,29 @@ public export
   SelectedEpisodeInteriorFold name key world error value nameEq keyEq selected
     registered ordinal live whole original survivorFirst
 selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
-  selectedOutside whole local ordinal live unique stamped NoTransitions
-  AlignedEnd (InstalledEnd installedEnd) NoRegisteredEpisodeEnd embed survivorFirst
+  selectedOutside whole interior local ordinal live unique stamped NoTransitions
+  AlignedEnd (InstalledEnd installedEnd) NoRegisteredEpisodeEnd embed interiorEmbed survivorFirst
   boundary inactive empty emptyPlan =
     MkSelectedEpisodeInteriorFold ordinal live survivorFirst
       GenerationTraceScanEnd ReplayReadyEnd boundary
 selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
-  selectedOutside whole local ordinal live unique stamped
+  selectedOutside whole interior local ordinal live unique stamped
   (MoreTransitions (Fired nameEq keyEq action tag checked) rest)
   (AlignedStep action tag checked rest alignedRest)
   (InstalledStep action tag checked rest sourceInstalled installedRest)
   (NoRegisteredEpisodeStep
     (Fired nameEq keyEq action tag checked) rest noBegin noRegisteredRest)
-  embed survivorFirst boundary inactive empty emptyPlan
+  embed interiorEmbed survivorFirst boundary inactive empty emptyPlan
   with (decEpisodeGenerationDeletedActor nameEq selected registered ordinal live
     action)
   selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
-    selectedOutside whole local ordinal live unique stamped
+    selectedOutside whole interior local ordinal live unique stamped
     (MoreTransitions (Fired nameEq keyEq action tag checked) rest)
     (AlignedStep action tag checked rest alignedRest)
     (InstalledStep action tag checked rest sourceInstalled installedRest)
     (NoRegisteredEpisodeStep
       (Fired nameEq keyEq action tag checked) rest noBegin noRegisteredRest)
-    embed survivorFirst boundary inactive empty emptyPlan | Yes deleted =
+    embed interiorEmbed survivorFirst boundary inactive empty emptyPlan | Yes deleted =
       let 0 raw = checkedActionProjects nameEq keyEq action _ _ tag checked
           0 nextUnique = advanceGenerationEnvironmentPreservesUnique nameEq
             ordinal action live unique
@@ -251,15 +257,18 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
             nextUnique _ (selectedBoundaryPlan nextBoundary) nextEmpty
           0 tailEmbed : OccurrenceEmbedding rest whole
           tailEmbed later occursLater = embed later (OccursLater occursLater)
+          0 tailInteriorEmbed : OccurrenceEmbedding rest interior
+          tailInteriorEmbed later occursLater = interiorEmbed later
+            (OccursLater occursLater)
           0 folded : SelectedEpisodeInteriorFold name key world error value
             nameEq keyEq selected registered (S ordinal)
             (advanceGenerationEnvironment @{nameEq} ordinal action live) whole
             rest survivorFirst
           folded = selectedEpisodeInteriorFold protocol nameEq keyEq selected
-            registered selectedOutside whole local (S ordinal)
+            registered selectedOutside whole interior local (S ordinal)
             (advanceGenerationEnvironment @{nameEq} ordinal action live)
             nextUnique nextStamped rest alignedRest installedRest
-            noRegisteredRest tailEmbed survivorFirst nextBoundary nextInactive
+            noRegisteredRest tailEmbed tailInteriorEmbed survivorFirst nextBoundary nextInactive
             nextEmpty nextEmptyPlan
       in MkSelectedEpisodeInteriorFold
         (interiorFinalOrdinal folded) (interiorFinalLive folded)
@@ -268,13 +277,13 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
         (ReplayReadyDelete deleted (interiorReady folded))
         (interiorBoundary folded)
   selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
-    selectedOutside whole local ordinal live unique stamped
+    selectedOutside whole interior local ordinal live unique stamped
     (MoreTransitions (Fired nameEq keyEq action tag checked) rest)
     (AlignedStep action tag checked rest alignedRest)
     (InstalledStep action tag checked rest sourceInstalled installedRest)
     (NoRegisteredEpisodeStep
       (Fired nameEq keyEq action tag checked) rest noBegin noRegisteredRest)
-    embed survivorFirst boundary inactive empty emptyPlan | No retained =
+    embed interiorEmbed survivorFirst boundary inactive empty emptyPlan | No retained =
       let 0 raw = checkedActionProjects nameEq keyEq action _ _ tag checked
           0 nextUnique = advanceGenerationEnvironmentPreservesUnique nameEq
             ordinal action live unique
@@ -288,7 +297,9 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
           replay = replayRetainedEpisodeHead local ordinal live unique stamped
             selectedOutside action _ _ survivorFirst tag checked
             sourceInstalled (installedTraceStart installedRest) rest
-            installedRest noBegin occurs boundary emptyPlan inactive retained
+            installedRest noBegin occurs
+            (interiorEmbed (Fired nameEq keyEq action tag checked) OccursHere)
+            boundary emptyPlan inactive retained
       in case replay of
         MkSelectedEpisodeRetainedHead
           named@(MkNamedTransition namedAfter namedTag namedTransition sameAction)
@@ -301,15 +312,18 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
                 nextUnique _ (selectedBoundaryPlan nextBoundary) nextEmpty
               0 tailEmbed : OccurrenceEmbedding rest whole
               tailEmbed later occursLater = embed later (OccursLater occursLater)
+              0 tailInteriorEmbed : OccurrenceEmbedding rest interior
+              tailInteriorEmbed later occursLater = interiorEmbed later
+                (OccursLater occursLater)
               0 folded : SelectedEpisodeInteriorFold name key world error value
                 nameEq keyEq selected registered (S ordinal)
                 (advanceGenerationEnvironment @{nameEq} ordinal action live)
                 whole rest namedAfter
               folded = selectedEpisodeInteriorFold protocol nameEq keyEq
-                selected registered selectedOutside whole local (S ordinal)
+                selected registered selectedOutside whole interior local (S ordinal)
                 (advanceGenerationEnvironment @{nameEq} ordinal action live)
                 nextUnique nextStamped rest alignedRest installedRest
-                noRegisteredRest tailEmbed namedAfter nextBoundary
+                noRegisteredRest tailEmbed tailInteriorEmbed namedAfter nextBoundary
                 nextInactive nextEmpty nextEmptyPlan
           in MkSelectedEpisodeInteriorFold
             (interiorFinalOrdinal folded) (interiorFinalLive folded)
