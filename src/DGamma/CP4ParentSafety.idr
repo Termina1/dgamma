@@ -758,6 +758,7 @@ retireTargetIsRetired nameEq keyEq selected
             same = justInjective (trans (sym retiredFound) targetFound)
         in case same of Refl => retiredAfterRetireQ sourceFiber
 
+public export
 0 removeTargetIsAbsent :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->

@@ -316,6 +316,101 @@ packagePostCloseOrchestrationWithInvariants protocol nameEq keyEq selected
               originalAfter observed}
             (sym afterSame) nextBoundary)
 
+||| Common post-close discharge packager. Once the selected-static relation has
+||| been upgraded at the named plan endpoint, the exact next-plan package and
+||| head effect proof yield the ordinary relational boundary directly.
+public export
+0 packagePostCloseDischarged :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  (originalAfter, survivor : SystemState name key value world error) ->
+  (exactStep : RetainedNoEpisodeBoundaryStep name key world error value nameEq
+    keyEq registered (advanceGenerationEnvironment @{nameEq} ordinal action live)
+    action tag originalAfter planBefore) ->
+  (control : ForeignOrchestrationControlReplay name key world error value nameEq
+    keyEq selected action (namedTag (retainedBoundaryNamed exactStep))
+    (namedAfter (retainedBoundaryNamed exactStep)) survivor) ->
+  EffectStateRelated keyEq
+    (projectEffectState @{nameEq} (namedAfter (retainedBoundaryNamed exactStep)))
+    (projectEffectState @{nameEq} (foreignControlAfter control)) ->
+  OrderedRegistryControlsRelated name key world error value
+    (bindings (registry (namedAfter (retainedBoundaryNamed exactStep))))
+    (bindings (registry (foreignControlAfter control))) ->
+  registryWellFormed @{nameEq} @{keyEq} survivor = True ->
+  RelationalRetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
+    registered (advanceGenerationEnvironment @{nameEq} ordinal action live)
+    action originalAfter survivor
+packagePostCloseDischarged nameEq keyEq selected registered ordinal live action
+  originalAfter survivor exactStep control headEffects namedOrdered survivorWF =
+    let nextPackage : RetainedNextPlanPackage name key world error value nameEq
+          registered (advanceGenerationEnvironment @{nameEq} ordinal action live)
+          originalAfter (namedAfter (retainedBoundaryNamed exactStep))
+        nextPackage = retainedStepNextPlanPackage exactStep
+        nextPlan : CompleteCurrentRegisteredPlanResult name key world error value
+          nameEq registered (advanceGenerationEnvironment @{nameEq} ordinal
+            action live) (registry originalAfter)
+        nextPlan = retainedPackagePlan nextPackage
+        0 originalWorldToBoundary : worldState originalAfter =
+          boundaryAmbient (retainedNextBoundary exactStep)
+        originalWorldToBoundary = cong worldState
+          (originalBoundaryShape (retainedNextBoundary exactStep))
+        0 nextWorldSame : worldState (plannedSystemState originalAfter
+            (completePlanResult nextPlan)) =
+          worldState (namedAfter (retainedBoundaryNamed exactStep))
+        nextWorldSame = trans originalWorldToBoundary
+          (sym (survivorBoundaryAmbient (retainedNextBoundary exactStep)))
+        0 nextPlanToNamed : EffectStateRelated keyEq
+          (projectEffectState @{nameEq} (plannedSystemState originalAfter
+            (completePlanResult nextPlan)))
+          (projectEffectState @{nameEq}
+            (namedAfter (retainedBoundaryNamed exactStep)))
+        nextPlanToNamed = effectFromWorldBindingsPost nameEq keyEq
+          (plannedSystemState originalAfter (completePlanResult nextPlan))
+          (namedAfter (retainedBoundaryNamed exactStep)) nextWorldSame
+          (retainedPackageBindings nextPackage)
+        0 nextEffects : EffectStateRelated keyEq
+          (projectEffectState @{nameEq} (plannedSystemState originalAfter
+            (completePlanResult nextPlan)))
+          (projectEffectState @{nameEq} (foreignControlAfter control))
+        nextEffects = effectTransitivePostOrchestration nextPlanToNamed headEffects
+        0 nextControls : OrderedRegistryControlsRelated name key world error value
+          (bindings (registry (plannedSystemState originalAfter
+            (completePlanResult nextPlan))))
+          (bindings (registry (foreignControlAfter control)))
+        nextControls = replace
+          {p = \observed => OrderedRegistryControlsRelated name key world error
+            value observed (bindings (registry (foreignControlAfter control)))}
+          (sym (retainedPackageBindings nextPackage)) namedOrdered
+        0 nextOriginalWF : registryWellFormed @{nameEq} @{keyEq}
+          originalAfter = True
+        nextOriginalWF = originalBoundaryWellFormed
+          (retainedNextBoundary exactStep)
+        0 nextSurvivorWF : registryWellFormed @{nameEq} @{keyEq}
+          (foreignControlAfter control) = True
+        nextSurvivorWF = preservationTheoremProof nameEq keyEq action survivor
+          (foreignControlAfter control) (namedTag (retainedBoundaryNamed exactStep))
+          survivorWF (foreignControlRaw control)
+        0 nextBoundary : RelationalNoEpisodeReplayBoundary name key world error
+          value nameEq keyEq registered
+          (advanceGenerationEnvironment @{nameEq} ordinal action live)
+          originalAfter (foreignControlAfter control)
+        nextBoundary = MkRelationalNoEpisodeReplayBoundary nextPlan nextEffects
+          nextControls nextOriginalWF nextSurvivorWF
+        namedReplay = foreignOrchestrationReplayNamed nameEq keyEq action survivor
+          control
+    in case namedReplay of
+      MkNamedForeignOrchestrationReplay named fires afterSame =>
+        MkRelationalRetainedNoEpisodeBoundaryStep named fires
+          (replace
+            {p = \observed => RelationalNoEpisodeReplayBoundary name key world
+              error value nameEq keyEq registered
+              (advanceGenerationEnvironment @{nameEq} ordinal action live)
+              originalAfter observed}
+            (sym afterSame) nextBoundary)
+
 ||| Replay one retained foreign orchestration head while preserving the
 ||| selected-static post-close quotient.
 public export
