@@ -73,28 +73,26 @@ foreignLifecycleReplayNamed :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) ->
   (before : SystemState name key value world error) ->
-  (replay : ForeignLifecycleControlReplay name key world error value nameEq keyEq
+  (0 replay : ForeignLifecycleControlReplay name key world error value nameEq keyEq
     selected action tag planAfter before) ->
   NamedForeignLifecycleReplay name key world error value nameEq keyEq action
     before (foreignLifecycleAfter replay)
 foreignLifecycleReplayNamed nameEq keyEq action before replay
   with (fireNamed nameEq keyEq action before) proof fired
   foreignLifecycleReplayNamed nameEq keyEq action before replay | Nothing =
-    case replay of
-      MkForeignLifecycleControlReplay after raw checked ordered =>
-        let 0 checkedNothing : (checkedApplyAction @{nameEq} @{keyEq} action
-              before = Nothing)
-            checkedNothing = fireNamedNothingImpliesCheckedNothing nameEq keyEq
-              action before fired
-        in void (nothingIsNotJust (trans (sym checkedNothing) checked))
+    let 0 checkedNothing : (checkedApplyAction @{nameEq} @{keyEq} action
+          before = Nothing)
+        checkedNothing = fireNamedNothingImpliesCheckedNothing nameEq keyEq
+          action before fired
+    in void (nothingIsNotJust
+      (trans (sym checkedNothing) (foreignLifecycleChecked replay)))
   foreignLifecycleReplayNamed nameEq keyEq action before replay | Just named =
-    case replay of
-      MkForeignLifecycleControlReplay after raw checked ordered =>
-        let 0 namedRaw = namedFireProjectsRaw nameEq keyEq action before named
-              fired
-            0 pairSame : ((namedTag named, namedAfter named) = (tag, after))
-            pairSame = justInjective (trans (sym namedRaw) raw)
-        in MkNamedForeignLifecycleReplay named fired (cong snd pairSame)
+    let 0 namedRaw = namedFireProjectsRaw nameEq keyEq action before named fired
+        0 pairSame : ((namedTag named, namedAfter named) =
+          (tag, foreignLifecycleAfter replay))
+        pairSame = justInjective
+          (trans (sym namedRaw) (foreignLifecycleRaw replay))
+    in MkNamedForeignLifecycleReplay named fired (cong snd pairSame)
 
 ||| Join a concrete retained lifecycle replay with the already-transposed
 ||| selected effect step.  Related owner controls compare the original Table-1
@@ -131,7 +129,7 @@ packageForeignLifecycleEpisodeStep :
   lookupFiber @{nameEq} (actionOwner action) (registry survivor) =
     Just survivorOwner ->
   FiberControlRelated originalOwner survivorOwner ->
-  (control : ForeignLifecycleControlReplay name key world error value nameEq
+  (0 control : ForeignLifecycleControlReplay name key world error value nameEq
     keyEq selected action (namedTag (retainedBoundaryNamed exactStep))
     (namedAfter (retainedBoundaryNamed exactStep)) survivor) ->
   ForeignRetainedEpisodeStep name key world error value nameEq keyEq selected
@@ -143,7 +141,7 @@ packageForeignLifecycleEpisodeStep nameEq keyEq selected registered ordinal live
   survivorFound ownersRelated control =
     let 0 planTagSame : (namedTag (retainedBoundaryNamed exactStep) = tag)
         planTagSame = retainedBoundaryTagSame exactStep
-        controlAtTag : ForeignLifecycleControlReplay name key world error value
+        0 controlAtTag : ForeignLifecycleControlReplay name key world error value
           nameEq keyEq selected action tag
           (namedAfter (retainedBoundaryNamed exactStep)) survivor
         controlAtTag = replace

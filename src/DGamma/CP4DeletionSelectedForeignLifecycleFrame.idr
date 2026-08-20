@@ -350,6 +350,8 @@ lookupNothingFromNotElemLifecycleFrame nameEq wanted entries absent
   lookupEntries @{nameEq} selected right = Nothing ->
   ((current : name) -> Not (current = selected) ->
     {leftFiber, rightFiber : Fiber name key value world error} ->
+    Elem (Bind current leftFiber) left ->
+    Elem (Bind current rightFiber) right ->
     FiberControlRelated leftFiber rightFiber ->
     bindings (ownedValues (fiberTable leftFiber)) =
       bindings (ownedValues (fiberTable rightFiber))) ->
@@ -387,11 +389,15 @@ buildForeignOnlyLifecycleSources nameEq keyEq selected deps
         ForeignFiberControls relationDistinct controls =>
           ForeignLifecycleSourcesCons current
             (ForeignLifecycleSourceCell currentDistinct controls
-              (foreignTables current currentDistinct controls)
+              (foreignTables current currentDistinct Here Here controls)
               (\provider, self => lifecycleControlReliedHeadSame nameEq provider
                 self current controls))
             (buildForeignOnlyLifecycleSources nameEq keyEq selected deps leftRest
-              rightRest tailLeftAbsent tailRightAbsent foreignTables tail)
+              rightRest tailLeftAbsent tailRightAbsent
+              (\later, laterDistinct, leftMember, rightMember, laterControls =>
+                foreignTables later laterDistinct (There leftMember)
+                  (There rightMember) laterControls)
+              tail)
 
 public export
 0 buildForeignLifecycleSources :
@@ -412,6 +418,8 @@ public export
     providerCandidate @{keyEq} wanted leftSelected = False) ->
   ((current : name) -> Not (current = selected) ->
     {leftFiber, rightFiber : Fiber name key value world error} ->
+    Elem (Bind current leftFiber) left ->
+    Elem (Bind current rightFiber) right ->
     FiberControlRelated leftFiber rightFiber ->
     bindings (ownedValues (fiberTable leftFiber)) =
       bindings (ownedValues (fiberTable rightFiber))) ->
@@ -469,7 +477,11 @@ buildForeignLifecycleSources nameEq keyEq selected deps leftSelected
                 Nothing)
               selectedExcluded)
             (buildForeignOnlyLifecycleSources nameEq keyEq current deps leftRest
-              rightRest leftTailAbsent rightTailAbsent foreignTables tail)
+              rightRest leftTailAbsent rightTailAbsent
+              (\later, laterDistinct, leftMember, rightMember, laterControls =>
+                foreignTables later laterDistinct (There leftMember)
+                  (There rightMember) laterControls)
+              tail)
   buildForeignLifecycleSources nameEq keyEq current deps leftSelected
     cleanComponent cleanParent cleanRetired cleanTable
     (Bind current leftFiber :: leftRest)
@@ -502,13 +514,17 @@ buildForeignLifecycleSources nameEq keyEq selected deps leftSelected
             (ForeignLifecycleSourceCell
               (\same => selectedDistinct (sym same)) controls
               (foreignTables current (\same => selectedDistinct (sym same))
-                controls)
+                Here Here controls)
               (\provider, self => lifecycleControlReliedHeadSame nameEq provider
                 self current controls))
             (buildForeignLifecycleSources nameEq keyEq selected deps leftSelected
               cleanComponent cleanParent cleanRetired cleanTable leftRest
               rightRest leftUnique rightUnique tailLeftFound tailRightFound
-              selectedExcluded foreignTables tail)
+              selectedExcluded
+              (\later, laterDistinct, leftMember, rightMember, laterControls =>
+                foreignTables later laterDistinct (There leftMember)
+                  (There rightMember) laterControls)
+              tail)
 
 ||| The selected cell is allowed to carry different installed controls on the
 ||| plan side.  A false left reliance nevertheless transfers: every foreign
@@ -591,6 +607,8 @@ public export
     (bindings left) (bindings right) ->
   ((current : name) -> Not (current = selected) ->
     {leftFiber, rightFiber : Fiber name key value world error} ->
+    Elem (Bind current leftFiber) (bindings left) ->
+    Elem (Bind current rightFiber) (bindings right) ->
     FiberControlRelated leftFiber rightFiber ->
     bindings (ownedValues (fiberTable leftFiber)) =
       bindings (ownedValues (fiberTable rightFiber))) ->

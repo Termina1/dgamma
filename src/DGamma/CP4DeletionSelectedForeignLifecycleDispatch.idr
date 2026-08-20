@@ -15,9 +15,49 @@ import DGamma.CP4DeletionSelectedForeignLifecycleLeave
 import DGamma.CP4DeletionSelectedForeignLifecycleProviderFrame
 import DGamma.CP4DeletionSelectedForeignLifecycleReplayCore
 import DGamma.CP4DeletionSelectedForeignLifecycleUnload
+import Data.List.Elem
 import Decidable.Equality
 
 %default total
+
+public export
+%inline
+ForeignAdvanceOutcomeProvider :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (planAmbient, survivorAmbient : world) ->
+  (plan, survivor : Registry name key value world error) -> Type
+ForeignAdvanceOutcomeProvider name key world error value nameEq keyEq
+  (LAdvance actor) planAmbient survivorAmbient plan survivor =
+    (component : Component key value world error) ->
+    (leftTable, rightTable : OwnedTable key value
+      (componentProvisions component)) ->
+    (step : StepEffect key value world error
+      (dependencies (componentDependencies component))
+      (componentProvisions component)) ->
+    (rest : List (StepEffect key value world error
+      (dependencies (componentDependencies component))
+      (componentProvisions component))) ->
+    (view : View name (dependencies (componentDependencies component))) ->
+    (leftParent, rightParent : Parent name) -> (retiredFlag : Bool) ->
+    (leftAccumulator, rightAccumulator : LocalState key value world
+      (componentProvisions component) -> LocalState key value world
+      (componentProvisions component)) ->
+    lookupFiber @{nameEq} actor plan = Just
+      (MkFiber component leftParent retiredFlag leftTable
+        (Reloading (step :: rest) leftAccumulator view)) ->
+    lookupFiber @{nameEq} actor survivor = Just
+      (MkFiber component rightParent retiredFlag rightTable
+        (Reloading (step :: rest) rightAccumulator view)) ->
+    IteratorOutcomeAgreement name key value world error keyEq
+      (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
+        survivorAmbient rightTable survivor)
+      (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
+        planAmbient leftTable plan)
+ForeignAdvanceOutcomeProvider name key world error value nameEq keyEq
+  action planAmbient survivorAmbient plan survivor = Unit
+
 
 ||| Exhaustive five-rule dispatcher after provider/guard saturation.  The
 ||| repaired outcome callback is demanded only by L-Advance; all other rules
@@ -45,21 +85,8 @@ public export
   registryWellFormed @{nameEq} @{keyEq} {name = name} {key = key}
     {value = value} {world = world} {error = error}
     (MkSystemState survivorAmbient survivor) = True ->
-  ((component : Component key value world error) ->
-    (leftTable, rightTable : OwnedTable key value
-      (componentProvisions component)) ->
-    (step : StepEffect key value world error
-      (dependencies (componentDependencies component))
-      (componentProvisions component)) ->
-    (rest : List (StepEffect key value world error
-      (dependencies (componentDependencies component))
-      (componentProvisions component))) ->
-    (view : View name (dependencies (componentDependencies component))) ->
-    IteratorOutcomeAgreement name key value world error keyEq
-      (runtimeAdvanceOutcome nameEq keyEq (actionOwner action) component step
-        rest view survivorAmbient rightTable survivor)
-      (runtimeAdvanceOutcome nameEq keyEq (actionOwner action) component step
-        rest view planAmbient leftTable plan)) ->
+  ForeignAdvanceOutcomeProvider name key world error value nameEq keyEq
+    action planAmbient survivorAmbient plan survivor ->
   ForeignLifecycleControlReplay name key world error value nameEq keyEq
     selected action tag planAfter (MkSystemState survivorAmbient survivor)
 replayForeignLifecycleControlsFromFrame nameEq keyEq selected
@@ -138,6 +165,8 @@ public export
     (bindings plan) (bindings survivor) ->
   ((current : name) -> Not (current = selected) ->
     {leftFiber, rightFiber : Fiber name key value world error} ->
+    Elem (Bind current leftFiber) (bindings plan) ->
+    Elem (Bind current rightFiber) (bindings survivor) ->
     FiberControlRelated leftFiber rightFiber ->
     bindings (ownedValues (fiberTable leftFiber)) =
       bindings (ownedValues (fiberTable rightFiber))) ->
@@ -147,21 +176,8 @@ public export
   registryWellFormed @{nameEq} @{keyEq} {name = name} {key = key}
     {value = value} {world = world} {error = error}
     (MkSystemState survivorAmbient survivor) = True ->
-  ((component : Component key value world error) ->
-    (leftTable, rightTable : OwnedTable key value
-      (componentProvisions component)) ->
-    (step : StepEffect key value world error
-      (dependencies (componentDependencies component))
-      (componentProvisions component)) ->
-    (rest : List (StepEffect key value world error
-      (dependencies (componentDependencies component))
-      (componentProvisions component))) ->
-    (view : View name (dependencies (componentDependencies component))) ->
-    IteratorOutcomeAgreement name key value world error keyEq
-      (runtimeAdvanceOutcome nameEq keyEq (actionOwner action) component step
-        rest view survivorAmbient rightTable survivor)
-      (runtimeAdvanceOutcome nameEq keyEq (actionOwner action) component step
-        rest view planAmbient leftTable plan)) ->
+  ForeignAdvanceOutcomeProvider name key world error value nameEq keyEq
+    action planAmbient survivorAmbient plan survivor ->
   ForeignLifecycleControlReplay name key world error value nameEq keyEq
     selected action tag planAfter (MkSystemState survivorAmbient survivor)
 replayForeignLifecycleControlsFromProviderEvidence nameEq keyEq selected action

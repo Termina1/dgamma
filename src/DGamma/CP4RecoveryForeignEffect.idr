@@ -105,6 +105,7 @@ advanceForeignPreservesBindings nameEq keyEq selected actor distinct
           stepForwardForeignPreservesBindings nameEq keyEq selected actor distinct
             step capability state moved equation
 
+public export
 0 accumulatorForeignPreservesBindings :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (selected, actor : name) -> Not (selected = actor) ->
@@ -136,6 +137,19 @@ accumulatorForeignPreservesBindings nameEq keyEq selected actor distinct provisi
       {p = \observed => bindings (effectTables observed selected) =
         bindings (effectTables state selected)}
       concreteIsMoved concretePreserves
+
+public export
+0 accumulatorEffectMapForeignPreservesBindings :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected, actor : name) -> Not (selected = actor) ->
+  (handle : AccumulatorHandle key value world) ->
+  (state, moved : EffectState name key value world) ->
+  accumulatorEffectMap nameEq keyEq actor handle state = Just moved ->
+  bindings (effectTables moved selected) = bindings (effectTables state selected)
+accumulatorEffectMapForeignPreservesBindings nameEq keyEq selected actor distinct
+  (MkAccumulatorHandle provision captured accumulator) state moved equation =
+    accumulatorForeignPreservesBindings nameEq keyEq selected actor distinct
+      provision accumulator state moved equation
 
 0 unloadForeignPreservesBindings :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->

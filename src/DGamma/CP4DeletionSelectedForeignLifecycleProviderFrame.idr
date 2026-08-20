@@ -100,6 +100,8 @@ public export
     (bindings left) (bindings right) ->
   ((current : name) -> Not (current = selected) ->
     {leftFiber, rightFiber : Fiber name key value world error} ->
+    Elem (Bind current leftFiber) (bindings left) ->
+    Elem (Bind current rightFiber) (bindings right) ->
     FiberControlRelated leftFiber rightFiber ->
     bindings (ownedValues (fiberTable leftFiber)) =
       bindings (ownedValues (fiberTable rightFiber))) ->
@@ -183,6 +185,8 @@ public export
     (bindings left) (bindings right) ->
   ((current : name) -> Not (current = selected) ->
     {leftFiber, rightFiber : Fiber name key value world error} ->
+    Elem (Bind current leftFiber) (bindings left) ->
+    Elem (Bind current rightFiber) (bindings right) ->
     FiberControlRelated leftFiber rightFiber ->
     bindings (ownedValues (fiberTable leftFiber)) =
       bindings (ownedValues (fiberTable rightFiber))) ->

@@ -1623,6 +1623,40 @@ data IteratorStageOutcome :
 ||| definitionally independent of their erased proof terms.
 public export
 %inline
+iteratorStageOutcomeComponentData :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (component : Component key value world error) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  EffectState name key value world ->
+  Maybe (IteratorStageOutcome name key value world error)
+iteratorStageOutcomeComponentData nameEq keyEq actor component view step rest
+  state =
+  case resolveEffectValues @{keyEq}
+    (dependencies (componentDependencies component)) view state of
+    Nothing => Nothing
+    Just capability =>
+      let owned = restrictOwnedPreservingOrder @{keyEq}
+            (componentProvisions component) (effectTables state actor)
+      in case runStepEffect step capability
+        (MkLocalState (effectAmbient state) owned) of
+        Left failure => Just (IteratorRaised failure)
+        Right (after, undo) =>
+          let next = setEffectTable @{nameEq} actor
+                (ownedValues (localTable after))
+                (setEffectAmbient (localWorld after) state)
+          in Just (IteratorYielded next
+            (yieldedInverseEffectMap nameEq keyEq actor
+              (componentProvisions component) undo)
+            (MkIteratorContinuation rest))
+
+public export
+%inline
 iteratorStageOutcomeData :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
   (fiber : Fiber name key value world error) ->
@@ -1637,24 +1671,8 @@ iteratorStageOutcomeData :
   EffectState name key value world ->
   Maybe (IteratorStageOutcome name key value world error)
 iteratorStageOutcomeData nameEq keyEq actor fiber view step rest state =
-  case resolveEffectValues @{keyEq}
-    (dependencies (componentDependencies (fiberComponent fiber))) view state of
-    Nothing => Nothing
-    Just capability =>
-      let owned = restrictOwnedPreservingOrder @{keyEq}
-            (componentProvisions (fiberComponent fiber))
-            (effectTables state actor)
-      in case runStepEffect step capability
-        (MkLocalState (effectAmbient state) owned) of
-        Left failure => Just (IteratorRaised failure)
-        Right (after, undo) =>
-          let next = setEffectTable @{nameEq} actor
-                (ownedValues (localTable after))
-                (setEffectAmbient (localWorld after) state)
-          in Just (IteratorYielded next
-            (yieldedInverseEffectMap nameEq keyEq actor
-              (componentProvisions (fiberComponent fiber)) undo)
-            (MkIteratorContinuation rest))
+  iteratorStageOutcomeComponentData nameEq keyEq actor (fiberComponent fiber)
+    view step rest state
 
 ||| Evaluate a reachable stage while retaining both successful yields and the
 ||| exact failure outcome recorded by L-Raise (CP4 Finding #13).
