@@ -71,6 +71,7 @@ alignedLocatedInside global aligned episode =
       (closedTransitions (locatedEpisode episode))
       (alignedLocatedCenter global aligned episode)))
 
+public export
 0 episodeStartWellFormed :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (consumer : name) ->
   (global : Transitions initial finalState) ->
