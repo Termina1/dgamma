@@ -5,6 +5,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP4DeletionFrameCore
 import DGamma.CP4DeletionRelationalBoundary
 import DGamma.CP4DeletionRelationalLifecycleCore
 import DGamma.CP4DeletionSelectedForeignLifecycleAdvanceOutcome
@@ -21,6 +22,142 @@ import Decidable.Equality
   PartialMapsEquivalent eq right left
 partialMapsEquivalentSymmetric eq maps input =
   partialSymmetric eq (maps input)
+
+0 effectRelatedSymmetric : EffectStateRelated keyEq left right ->
+  EffectStateRelated keyEq right left
+effectRelatedSymmetric (MkEffectStateRelated ambient tables) =
+  MkEffectStateRelated (sym ambient) (\actor => sym (tables actor))
+
+0 effectRelatedTransitive : EffectStateRelated keyEq left middle ->
+  EffectStateRelated keyEq middle right -> EffectStateRelated keyEq left right
+effectRelatedTransitive (MkEffectStateRelated firstAmbient firstTables)
+  (MkEffectStateRelated secondAmbient secondTables) =
+    MkEffectStateRelated (trans firstAmbient secondAmbient)
+      (\actor => trans (firstTables actor) (secondTables actor))
+
+0 controlAdvanceEffects :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (leftWorld, rightWorld : world) ->
+  (left, right : Registry name key value world error) ->
+  (leftOld, rightOld, leftNext, rightNext : Fiber name key value world error) ->
+  lookupFiber @{nameEq} actor left = Just leftOld ->
+  lookupFiber @{nameEq} actor right = Just rightOld ->
+  ownedValues (fiberTable leftNext) = ownedValues (fiberTable leftOld) ->
+  ownedValues (fiberTable rightNext) = ownedValues (fiberTable rightOld) ->
+  EffectStateRelated keyEq
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState leftWorld left)))
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState rightWorld right))) ->
+  (leftAfter : SystemState name key value world error) ->
+  MkSystemState leftWorld (replaceBinding @{nameEq} actor leftNext left) =
+    leftAfter ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} leftAfter)
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState rightWorld
+          (replaceBinding @{nameEq} actor rightNext right))))
+controlAdvanceEffects nameEq keyEq actor leftWorld rightWorld left right leftOld
+  rightOld leftNext rightNext leftFound rightFound leftTableSame rightTableSame
+  effects leftAfter leftShape =
+    let 0 leftSourceToTarget : EffectStateRelated keyEq
+          (projectEffectState @{nameEq}
+            (the (SystemState name key value world error)
+              (MkSystemState leftWorld left)))
+          (projectEffectState @{nameEq} leftAfter)
+        leftSourceToTarget = replace
+          {p = \state => EffectStateRelated keyEq
+            (projectEffectState @{nameEq}
+              (the (SystemState name key value world error)
+                (MkSystemState leftWorld left)))
+            (projectEffectState @{nameEq} state)}
+          leftShape (projectTablePreservingReplace nameEq keyEq actor leftWorld
+            leftOld leftNext left leftFound leftTableSame)
+        0 rightSourceToTarget : EffectStateRelated keyEq
+          (projectEffectState @{nameEq}
+            (the (SystemState name key value world error)
+              (MkSystemState rightWorld right)))
+          (projectEffectState @{nameEq}
+            (the (SystemState name key value world error)
+              (MkSystemState rightWorld
+                (replaceBinding @{nameEq} actor rightNext right))))
+        rightSourceToTarget = projectTablePreservingReplace nameEq keyEq actor
+          rightWorld rightOld rightNext right rightFound rightTableSame
+    in effectRelatedTransitive (effectRelatedSymmetric leftSourceToTarget)
+      (effectRelatedTransitive effects rightSourceToTarget)
+
+0 runtimeAdvanceEffects :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (leftWorld, rightWorld : world) ->
+  (left, right : Registry name key value world error) ->
+  (leftOld, rightOld, leftNext, rightNext : Fiber name key value world error) ->
+  lookupFiber @{nameEq} actor left = Just leftOld ->
+  lookupFiber @{nameEq} actor right = Just rightOld ->
+  (leftAfterLocal, rightAfterLocal : LocalState key value world provision) ->
+  ownedValues (fiberTable leftNext) =
+    ownedValues (localTable leftAfterLocal) ->
+  ownedValues (fiberTable rightNext) =
+    ownedValues (localTable rightAfterLocal) ->
+  EffectStateRelated keyEq
+    (setEffectTable @{nameEq} actor (ownedValues (localTable leftAfterLocal))
+      (setEffectAmbient (localWorld leftAfterLocal)
+        (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState leftWorld left)))))
+    (setEffectTable @{nameEq} actor (ownedValues (localTable rightAfterLocal))
+      (setEffectAmbient (localWorld rightAfterLocal)
+        (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState rightWorld right))))) ->
+  (leftAfter : SystemState name key value world error) ->
+  MkSystemState (localWorld leftAfterLocal)
+    (replaceBinding @{nameEq} actor leftNext left) = leftAfter ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} leftAfter)
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState (localWorld rightAfterLocal)
+          (replaceBinding @{nameEq} actor rightNext right))))
+runtimeAdvanceEffects nameEq keyEq actor leftWorld rightWorld left right leftOld
+  rightOld leftNext rightNext leftFound rightFound leftAfterLocal rightAfterLocal
+  leftTableSame rightTableSame primitiveRelated leftAfter leftShape =
+    let 0 leftUpdateToTarget : EffectStateRelated keyEq
+          (setEffectTable @{nameEq} actor
+            (ownedValues (localTable leftAfterLocal))
+            (setEffectAmbient (localWorld leftAfterLocal)
+              (projectEffectState @{nameEq}
+                (the (SystemState name key value world error)
+                  (MkSystemState leftWorld left)))))
+          (projectEffectState @{nameEq} leftAfter)
+        leftUpdateToTarget = replace
+          {p = \state => EffectStateRelated keyEq
+            (setEffectTable @{nameEq} actor
+              (ownedValues (localTable leftAfterLocal))
+              (setEffectAmbient (localWorld leftAfterLocal)
+                (projectEffectState @{nameEq}
+                  (the (SystemState name key value world error)
+                    (MkSystemState leftWorld left)))))
+            (projectEffectState @{nameEq} state)}
+          leftShape (projectRuntimeReplace nameEq keyEq actor leftWorld
+            (localWorld leftAfterLocal) leftOld leftNext left leftFound
+            (ownedValues (localTable leftAfterLocal)) leftTableSame)
+        0 rightUpdateToTarget : EffectStateRelated keyEq
+          (setEffectTable @{nameEq} actor
+            (ownedValues (localTable rightAfterLocal))
+            (setEffectAmbient (localWorld rightAfterLocal)
+              (projectEffectState @{nameEq}
+                (the (SystemState name key value world error)
+                  (MkSystemState rightWorld right)))))
+          (projectEffectState @{nameEq}
+            (the (SystemState name key value world error)
+              (MkSystemState (localWorld rightAfterLocal)
+                (replaceBinding @{nameEq} actor rightNext right))))
+        rightUpdateToTarget = projectRuntimeReplace nameEq keyEq actor
+          rightWorld (localWorld rightAfterLocal) rightOld rightNext right
+          rightFound (ownedValues (localTable rightAfterLocal)) rightTableSame
+    in effectRelatedTransitive (effectRelatedSymmetric leftUpdateToTarget)
+      (effectRelatedTransitive primitiveRelated rightUpdateToTarget)
 
 ||| Empty-continuation L-Finish/L-Divert reconstruction.  Provider-frame guard
 ||| saturation supplies the two equal target-match observations to this final
@@ -50,6 +187,13 @@ public export
       (Reloading [] rightAccumulator view))) ->
   OrderedRegistryControlsRelated name key world error value
     (bindings plan) (bindings survivor) ->
+  EffectStateRelated keyEq
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState planAmbient plan)))
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState survivorAmbient survivor))) ->
   (matches : Bool) ->
   targetMatches @{nameEq}
     (targetFiber @{nameEq} @{keyEq} {name = name} {key = key}
@@ -73,12 +217,12 @@ replayRelatedAdvanceEmptyControls {name} {key} {world} {error} {value}
   nameEq keyEq actor planAmbient survivorAmbient plan
   survivor component leftParent rightParent retiredFlag leftTable rightTable
   leftAccumulator rightAccumulator view parentSame accumulatorsSame leftFound
-  rightFound sourceOrdered matches leftMatches rightMatches tag planAfter raw
+  rightFound sourceOrdered sourceEffects matches leftMatches rightMatches tag planAfter raw
   with (matches)
   replayRelatedAdvanceEmptyControls nameEq keyEq actor
     planAmbient survivorAmbient plan survivor component leftParent rightParent
     retiredFlag leftTable rightTable leftAccumulator rightAccumulator view
-    parentSame accumulatorsSame leftFound rightFound sourceOrdered matches
+    parentSame accumulatorsSame leftFound rightFound sourceOrdered sourceEffects matches
     leftMatches rightMatches tag planAfter raw | True =
       let leftNext : Fiber name key value world error
           leftNext = MkFiber component leftParent retiredFlag leftTable
@@ -111,11 +255,19 @@ replayRelatedAdvanceEmptyControls {name} {key} {world} {error} {value}
           actor (LAdvance actor) LFinishTag planAfter
           survivorAmbient plan survivor leftNext rightNext nextControls
           sourceOrdered planAmbient Refl survivorAmbient survivorRaw
+          (controlAdvanceEffects nameEq keyEq actor planAmbient survivorAmbient
+            plan survivor
+            (MkFiber component leftParent retiredFlag leftTable
+              (Reloading [] leftAccumulator view))
+            (MkFiber component rightParent retiredFlag rightTable
+              (Reloading [] rightAccumulator view))
+            leftNext rightNext leftFound rightFound Refl Refl sourceEffects
+            planAfter Refl)
          
   replayRelatedAdvanceEmptyControls nameEq keyEq actor
     planAmbient survivorAmbient plan survivor component leftParent rightParent
     retiredFlag leftTable rightTable leftAccumulator rightAccumulator view
-    parentSame accumulatorsSame leftFound rightFound sourceOrdered matches
+    parentSame accumulatorsSame leftFound rightFound sourceOrdered sourceEffects matches
     leftMatches rightMatches tag planAfter raw | False =
       let leftNext : Fiber name key value world error
           leftNext = MkFiber component leftParent retiredFlag leftTable
@@ -149,6 +301,14 @@ replayRelatedAdvanceEmptyControls {name} {key} {world} {error} {value}
           actor (LAdvance actor) LDivertTag planAfter
           survivorAmbient plan survivor leftNext rightNext nextControls
           sourceOrdered planAmbient Refl survivorAmbient survivorRaw
+          (controlAdvanceEffects nameEq keyEq actor planAmbient survivorAmbient
+            plan survivor
+            (MkFiber component leftParent retiredFlag leftTable
+              (Reloading [] leftAccumulator view))
+            (MkFiber component rightParent retiredFlag rightTable
+              (Reloading [] rightAccumulator view))
+            leftNext rightNext leftFound rightFound Refl Refl sourceEffects
+            planAfter Refl)
          
 
 ||| L-Raise reconstruction uses the repaired Definition-60 failure clause:
@@ -184,6 +344,13 @@ public export
       (Reloading (step :: rest) rightAccumulator view))) ->
   OrderedRegistryControlsRelated name key world error value
     (bindings plan) (bindings survivor) ->
+  EffectStateRelated keyEq
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState planAmbient plan)))
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState survivorAmbient survivor))) ->
   (leftCapability, rightCapability : DepValues key value
     (dependencies (componentDependencies component))) ->
   resolveCommittedValues @{nameEq} @{keyEq} {name = name} {key = key}
@@ -215,7 +382,7 @@ replayRelatedAdvanceRaisedControls {name} {key} {world} {error} {value}
   nameEq keyEq actor planAmbient survivorAmbient plan
   survivor component leftParent rightParent retiredFlag leftTable rightTable
   step rest leftAccumulator rightAccumulator view parentSame accumulatorsSame
-  leftFound rightFound sourceOrdered leftCapability rightCapability leftResolved
+  leftFound rightFound sourceOrdered sourceEffects leftCapability rightCapability leftResolved
   rightResolved leftError rightError errorsSame leftRan rightRan tag planAfter raw
   =
     let leftNext : Fiber name key value world error
@@ -251,6 +418,14 @@ replayRelatedAdvanceRaisedControls {name} {key} {world} {error} {value}
       Refl => packageFullLifecycleReplacementReplay nameEq keyEq actor (LAdvance actor) LRaiseTag planAfter survivorAmbient
         plan survivor leftNext rightNext nextControls sourceOrdered planAmbient
         Refl survivorAmbient survivorRaw
+        (controlAdvanceEffects nameEq keyEq actor planAmbient survivorAmbient
+          plan survivor
+          (MkFiber component leftParent retiredFlag leftTable
+            (Reloading (step :: rest) leftAccumulator view))
+          (MkFiber component rightParent retiredFlag rightTable
+            (Reloading (step :: rest) rightAccumulator view))
+          leftNext rightNext leftFound rightFound Refl Refl sourceEffects
+          planAfter Refl)
 
 ||| Successful L-Advance reconstruction.  The yielded inverse equivalence is
 ||| the successful constructor of repaired Equation 55 (survivor-to-plan
@@ -287,6 +462,13 @@ public export
       (Reloading (step :: rest) rightAccumulator view))) ->
   OrderedRegistryControlsRelated name key world error value
     (bindings plan) (bindings survivor) ->
+  EffectStateRelated keyEq
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState planAmbient plan)))
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState survivorAmbient survivor))) ->
   (leftCapability, rightCapability : DepValues key value
     (dependencies (componentDependencies component))) ->
   resolveCommittedValues @{nameEq} @{keyEq} {name = name} {key = key}
@@ -310,6 +492,17 @@ public export
     (MkLocalState survivorAmbient
       (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component)
         (ownedValues rightTable))) = Right (rightAfter, rightUndo) ->
+  EffectStateRelated keyEq
+    (setEffectTable @{nameEq} actor (ownedValues (localTable leftAfter))
+      (setEffectAmbient (localWorld leftAfter)
+        (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState planAmbient plan)))))
+    (setEffectTable @{nameEq} actor (ownedValues (localTable rightAfter))
+      (setEffectAmbient (localWorld rightAfter)
+        (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState survivorAmbient survivor))))) ->
   PartialMapsEquivalent (EffectStateEquivalence keyEq)
     (yieldedInverseEffectMap nameEq keyEq actor
       (componentProvisions component) rightUndo)
@@ -339,8 +532,8 @@ replayRelatedAdvanceSuccessfulControls {name} {key} {world} {error} {value}
   nameEq keyEq actor planAmbient survivorAmbient plan
   survivor component leftParent rightParent retiredFlag leftTable rightTable
   step rest leftAccumulator rightAccumulator view parentSame accumulatorsSame
-  leftFound rightFound sourceOrdered leftCapability rightCapability leftResolved
-  rightResolved leftAfter rightAfter leftUndo rightUndo leftRan rightRan undoMaps
+  leftFound rightFound sourceOrdered sourceEffects leftCapability rightCapability leftResolved
+  rightResolved leftAfter rightAfter leftUndo rightUndo leftRan rightRan primitiveEffects undoMaps
   matches leftMatches rightMatches tag planAfter raw =
     let 0 originalToSurvivorMaps = partialMapsEquivalentSymmetric
           (EffectStateEquivalence keyEq) undoMaps
@@ -403,6 +596,14 @@ replayRelatedAdvanceSuccessfulControls {name} {key} {world} {error} {value}
       Refl => packageFullLifecycleReplacementReplay nameEq keyEq actor (LAdvance actor) LDivertTag planAfter survivorAmbient
         plan survivor leftNext rightNext nextControls sourceOrdered
         (localWorld leftAfter) Refl (localWorld rightAfter) survivorRaw
+        (runtimeAdvanceEffects nameEq keyEq actor planAmbient survivorAmbient
+          plan survivor
+          (MkFiber component leftParent retiredFlag leftTable
+            (Reloading (step :: rest) leftAccumulator view))
+          (MkFiber component rightParent retiredFlag rightTable
+            (Reloading (step :: rest) rightAccumulator view))
+          leftNext rightNext leftFound rightFound leftAfter rightAfter Refl Refl
+          primitiveEffects planAfter Refl)
        
   successfulByMatch True observedMatches pushedRelated with (rest) proof restShape
     successfulByMatch True observedMatches pushedRelated | [] =
@@ -451,6 +652,14 @@ replayRelatedAdvanceSuccessfulControls {name} {key} {world} {error} {value}
           survivorAmbient plan survivor leftNext rightNext nextControls
           sourceOrdered (localWorld leftAfter) Refl (localWorld rightAfter)
           survivorRaw
+          (runtimeAdvanceEffects nameEq keyEq actor planAmbient survivorAmbient
+          plan survivor
+          (MkFiber component leftParent retiredFlag leftTable
+            (Reloading (step :: rest) leftAccumulator view))
+          (MkFiber component rightParent retiredFlag rightTable
+            (Reloading (step :: rest) rightAccumulator view))
+          leftNext rightNext leftFound rightFound leftAfter rightAfter Refl Refl
+          primitiveEffects planAfter Refl)
     successfulByMatch True observedMatches pushedRelated | next :: later =
       let 0 leftObserved = trans leftMatches (sym observedMatches)
           0 rightObserved = trans rightMatches (sym observedMatches)
@@ -500,4 +709,12 @@ replayRelatedAdvanceSuccessfulControls {name} {key} {world} {error} {value}
           actor (LAdvance actor) LIterTag planAfter survivorAmbient
           plan survivor leftNext rightNext nextControls sourceOrdered
           (localWorld leftAfter) Refl (localWorld rightAfter) survivorRaw
+          (runtimeAdvanceEffects nameEq keyEq actor planAmbient survivorAmbient
+          plan survivor
+          (MkFiber component leftParent retiredFlag leftTable
+            (Reloading (step :: rest) leftAccumulator view))
+          (MkFiber component rightParent retiredFlag rightTable
+            (Reloading (step :: rest) rightAccumulator view))
+          leftNext rightNext leftFound rightFound leftAfter rightAfter Refl Refl
+          primitiveEffects planAfter Refl)
          

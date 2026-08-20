@@ -38,6 +38,13 @@ public export
   FiberControlRelated leftOwner rightOwner ->
   (sourceOrdered : OrderedRegistryControlsRelated name key world error value
     (bindings plan) (bindings survivor)) ->
+  EffectStateRelated keyEq
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState planAmbient plan)))
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState survivorAmbient survivor))) ->
   (tag : RuleTag) -> (planAfter : SystemState name key value world error) ->
   applyAction @{nameEq} @{keyEq} (LAdvance actor)
     (MkSystemState planAmbient plan) = Just (tag, planAfter) ->
@@ -61,7 +68,7 @@ public export
     lookupFiber @{nameEq} actor survivor = Just
       (MkFiber component rightParent retiredFlag rightTable
         (Reloading (step :: rest) rightAccumulator view)) ->
-    IteratorOutcomeAgreement name key value world error keyEq
+    RuntimeIteratorOutcomeAgreement name key value world error keyEq
       (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
         survivorAmbient rightTable survivor)
       (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
@@ -72,7 +79,7 @@ public export
 replayRelatedAdvanceControlsFromOutcome {name} {key} {world} {error} {value}
   nameEq keyEq actor planAmbient survivorAmbient plan
   survivor leftOwner rightOwner leftFound rightFound sources ownerControls
-  sourceOrdered tag planAfter planRaw outcomes =
+  sourceOrdered sourceEffects tag planAfter planRaw outcomes =
     case ownerControls of
       FibersControlRelated {component} leftParent rightParent retiredFlag
         rightRetired leftTable rightTable leftLifecycle rightLifecycle parentSame
@@ -172,7 +179,8 @@ replayRelatedAdvanceControlsFromOutcome {name} {key} {world} {error} {value}
       in replayRelatedAdvanceEmptyControls nameEq keyEq actor planAmbient survivorAmbient plan survivor component
         leftParent rightParent retiredFlag leftTable rightTable leftAccumulator
         rightAccumulator view parentsSame accumulatorsSame concreteLeftFound
-        concreteRightFound ordered matches leftMatches rightMatches tag planAfter planRaw
+        concreteRightFound ordered sourceEffects matches leftMatches rightMatches
+        tag planAfter planRaw
        
   dispatchRemaining sources leftParent rightParent retiredFlag leftTable
     rightTable (step :: rest) leftAccumulator rightAccumulator view parentsSame
@@ -219,7 +227,7 @@ replayRelatedAdvanceControlsFromOutcome {name} {key} {world} {error} {value}
       in dispatchDefined agreement ordered matches leftMatches rightMatches
     where
     0 dispatchDefined :
-      IteratorOutcomeAgreement name key value world error keyEq
+      RuntimeIteratorOutcomeAgreement name key value world error keyEq
         (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
           survivorAmbient rightTable survivor)
         (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
@@ -263,10 +271,12 @@ replayRelatedAdvanceControlsFromOutcome {name} {key} {world} {error} {value}
           proof leftDefinedRun
           dispatchDefined agreement ordered matches leftMatches rightMatches |
             Just leftCapability | Nothing | Left leftError =
-              void (undefinedDefinedOutcomeImpossible agreement)
+              void (undefinedDefinedOutcomeImpossible
+                (runtimeAgreementForControls agreement))
           dispatchDefined agreement ordered matches leftMatches rightMatches |
             Just leftCapability | Nothing | Right (leftAfter, leftUndo) =
-              void (undefinedDefinedOutcomeImpossible agreement)
+              void (undefinedDefinedOutcomeImpossible
+                (runtimeAgreementForControls agreement))
         dispatchDefined agreement ordered matches leftMatches rightMatches |
           Just leftCapability | Just rightCapability
           with (runStepEffect step leftCapability
@@ -284,18 +294,20 @@ replayRelatedAdvanceControlsFromOutcome {name} {key} {world} {error} {value}
             dispatchDefined agreement ordered matches leftMatches rightMatches |
               Just leftCapability | Just rightCapability | Left leftError |
               Left rightError = case agreement of
-                IteratorFailuresAgree errorsSame =>
+                RuntimeFailuresAgree errorsSame =>
                   replayRelatedAdvanceRaisedControls nameEq keyEq actor planAmbient survivorAmbient plan survivor
                     component leftParent rightParent retiredFlag leftTable
                     rightTable step rest leftAccumulator rightAccumulator view
                     parentsSame accumulatorsSame concreteLeftFound
-                    concreteRightFound ordered leftCapability rightCapability leftResolved rightResolved
+                    concreteRightFound ordered sourceEffects leftCapability
+                    rightCapability leftResolved rightResolved
                     leftError rightError (sym errorsSame) leftRan rightRan tag
                     planAfter planRaw
             dispatchDefined agreement ordered matches leftMatches rightMatches |
               Just leftCapability | Just rightCapability | Left leftError |
               Right (rightAfter, rightUndo) =
-                void (successFailureOutcomeImpossible agreement)
+                void (successFailureOutcomeImpossible
+                  (runtimeAgreementForControls agreement))
           dispatchDefined agreement ordered matches leftMatches rightMatches |
             Just leftCapability | Just rightCapability |
             Right (leftAfter, leftUndo)
@@ -307,18 +319,20 @@ replayRelatedAdvanceControlsFromOutcome {name} {key} {world} {error} {value}
             dispatchDefined agreement ordered matches leftMatches rightMatches |
               Just leftCapability | Just rightCapability |
               Right (leftAfter, leftUndo) | Left rightError =
-                void (failureSuccessOutcomeImpossible agreement)
+                void (failureSuccessOutcomeImpossible
+                  (runtimeAgreementForControls agreement))
             dispatchDefined agreement ordered matches leftMatches rightMatches |
               Just leftCapability | Just rightCapability |
               Right (leftAfter, leftUndo) | Right (rightAfter, rightUndo) =
                 case agreement of
-                  IteratorSuccessfulYieldsAgree continuationSame undoMaps =>
+                  RuntimeYieldsAgree primitiveEffects undoMaps =>
                     replayRelatedAdvanceSuccessfulControls nameEq keyEq
                       actor planAmbient survivorAmbient plan
                       survivor component leftParent rightParent retiredFlag
                       leftTable rightTable step rest leftAccumulator
                       rightAccumulator view parentsSame accumulatorsSame
-                      concreteLeftFound concreteRightFound ordered leftCapability
-                      rightCapability leftResolved rightResolved leftAfter rightAfter leftUndo
-                      rightUndo leftRan rightRan undoMaps matches leftMatches
+                      concreteLeftFound concreteRightFound ordered sourceEffects
+                      leftCapability rightCapability leftResolved rightResolved
+                      leftAfter rightAfter leftUndo rightUndo leftRan rightRan
+                      primitiveEffects undoMaps matches leftMatches
                       rightMatches tag planAfter planRaw

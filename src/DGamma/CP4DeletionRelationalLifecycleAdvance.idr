@@ -11,6 +11,7 @@ import DGamma.CP4DeletionRelationalActionCore
 import DGamma.CP4DeletionRelationalActionOrchestration
 import DGamma.CP4DeletionRelationalBoundary
 import DGamma.CP4DeletionRelationalLifecycleAdvanceCases
+import DGamma.CP4DeletionRelationalLifecycleAdvanceDispatch
 import DGamma.CP4DeletionRelationalLifecycleCore
 import DGamma.CP4DeletionRelationalLifecycleSources
 import DGamma.CP4DeletionRelationalSuffixFold
@@ -57,7 +58,7 @@ public export
     (projectEffectState @{nameEq}
       (the (SystemState name key value world error)
         (MkSystemState rightWorld right))) ->
-  IteratorOutcomeAgreement name key value world error keyEq
+  RuntimeIteratorOutcomeAgreement name key value world error keyEq
     (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
       rightWorld rightTable right)
     (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
@@ -129,7 +130,7 @@ runtimeAdvanceOutcomeRelated {name} {key} {world} {error} {value}
       MkLocalState rightWorld
         (restrictOwnedPreservingOrder @{keyEq}
           (componentProvisions component) (ownedValues rightTable))) ->
-    IteratorOutcomeAgreement name key value world error keyEq
+    RuntimeIteratorOutcomeAgreement name key value world error keyEq
       (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
         rightWorld rightTable right)
       (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
@@ -140,7 +141,7 @@ runtimeAdvanceOutcomeRelated {name} {key} {world} {error} {value}
       (dependencies (componentDependencies component)) view left) proof leftRun
     outcomeByResolution resolvedSame localInputSame | Nothing =
       let 0 rightRun = sym resolvedSame
-      in rewrite rightRun in IteratorOutcomesUndefined
+      in rewrite rightRun in RuntimeOutcomesUndefined
     outcomeByResolution resolvedSame localInputSame | Just capability
       with (runStepEffect step capability
         (MkLocalState leftWorld
@@ -153,15 +154,92 @@ runtimeAdvanceOutcomeRelated {name} {key} {world} {error} {value}
               0 runSame = cong (runStepEffect step capability) localInputSame
               0 rightStep = trans (sym runSame) stepRun
           in rewrite rightResolve in rewrite rightStep in
-            IteratorFailuresAgree Refl
+            RuntimeFailuresAgree Refl
       outcomeByResolution resolvedSame localInputSame | Just capability |
         Right (after, undo) =
           let 0 rightResolve = sym resolvedSame
               0 runSame = cong (runStepEffect step capability) localInputSame
               0 rightStep = trans (sym runSame) stepRun
+              0 ambientRelated : EffectStateRelated keyEq
+                (setEffectAmbient (localWorld after)
+                  (projectEffectState @{nameEq}
+                    (the (SystemState name key value world error)
+                      (MkSystemState leftWorld left))))
+                (setEffectAmbient (localWorld after)
+                  (projectEffectState @{nameEq}
+                    (the (SystemState name key value world error)
+                      (MkSystemState rightWorld right))))
+              ambientRelated = setRelatedEffectAmbient keyEq
+                (localWorld after) (localWorld after) Refl effects
+              0 outputRelated : EffectStateRelated keyEq
+                (setEffectTable @{nameEq} actor
+                  (ownedValues (localTable after))
+                  (setEffectAmbient (localWorld after)
+                    (projectEffectState @{nameEq}
+                      (the (SystemState name key value world error)
+                        (MkSystemState leftWorld left)))))
+                (setEffectTable @{nameEq} actor
+                  (ownedValues (localTable after))
+                  (setEffectAmbient (localWorld after)
+                    (projectEffectState @{nameEq}
+                      (the (SystemState name key value world error)
+                        (MkSystemState rightWorld right)))))
+              outputRelated = setRelatedEffectTables nameEq keyEq actor
+                (ownedValues (localTable after))
+                (ownedValues (localTable after)) Refl ambientRelated
           in rewrite rightResolve in rewrite rightStep in
-            IteratorSuccessfulYieldsAgree Refl
+            RuntimeYieldsAgree outputRelated
               (effectPartialMapReflexive {name = name} {key = key}
                 {value = value} {world = world} keyEq
                 (yieldedInverseEffectMap nameEq keyEq actor
                   (componentProvisions component) undo))
+
+||| Full relational replay for every retained L-Advance branch.  The control
+||| dispatcher consumes the strengthened runtime outcome agreement; its effect
+||| payload is then packaged with the concrete survivor transition.
+public export
+0 replayRelatedAdvance :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (leftBefore, rightBefore : SystemState name key value world error) ->
+  (leftNamed : NamedTransition name key world error value (LAdvance actor)
+    leftBefore) ->
+  applyAction @{nameEq} @{keyEq} (LAdvance actor) leftBefore =
+    Just (namedTag leftNamed, namedAfter leftNamed) ->
+  registryWellFormed @{nameEq} @{keyEq} leftBefore = True ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} leftBefore)
+    (projectEffectState @{nameEq} rightBefore) ->
+  OrderedRegistryControlsRelated name key world error value
+    (bindings (registry leftBefore)) (bindings (registry rightBefore)) ->
+  registryWellFormed @{nameEq} @{keyEq} rightBefore = True ->
+  RelatedNamedActionReplay name key world error value nameEq keyEq
+    (LAdvance actor) leftBefore rightBefore leftNamed
+replayRelatedAdvance nameEq keyEq actor
+  (MkSystemState leftWorld leftRegistry)
+  (MkSystemState rightWorld rightRegistry)
+  leftNamed leftRaw leftWellFormed effects ordered rightWellFormed =
+    case relatedLifecycleOwnersAt nameEq keyEq (LAdvance actor) Refl
+      (MkSystemState leftWorld leftRegistry)
+      (MkSystemState rightWorld rightRegistry)
+      (namedTag leftNamed) (namedAfter leftNamed) leftRaw effects ordered of
+      MkRelatedLifecycleOwners leftOwner rightOwner leftFound rightFound
+        ownersRelated sources =>
+          case replayRelatedAdvanceControlsFromOutcome nameEq keyEq actor
+            leftWorld rightWorld leftRegistry rightRegistry leftOwner rightOwner
+            leftFound rightFound sources ownersRelated ordered effects
+            (namedTag leftNamed) (namedAfter leftNamed) leftRaw
+            (\component, leftTable, rightTable, step, rest, view,
+              leftParent, rightParent, retiredFlag, leftAccumulator,
+              rightAccumulator, concreteLeftFound, concreteRightFound =>
+                runtimeAdvanceOutcomeRelated nameEq keyEq actor component step
+                  rest view leftWorld rightWorld leftTable rightTable
+                  leftRegistry rightRegistry leftParent rightParent retiredFlag
+                  retiredFlag
+                  (Reloading (step :: rest) leftAccumulator view)
+                  (Reloading (step :: rest) rightAccumulator view)
+                  concreteLeftFound concreteRightFound effects) of
+            replay@(MkFullLifecycleControlReplay rightAfter rightRaw
+              finalEffects finalControls) =>
+                packageRelatedReplay nameEq keyEq (LAdvance actor)
+                  (MkSystemState leftWorld leftRegistry)
+                  (MkSystemState rightWorld rightRegistry) leftNamed rightAfter
+                  rightRaw rightWellFormed finalEffects finalControls

@@ -12,9 +12,42 @@ import DGamma.CP4DeletionRelationalActionCore
 import DGamma.CP4DeletionRelationalBoundary
 import DGamma.CP4DeletionRelationalLifecycleSources
 import DGamma.CP4DeletionSelectedForeignControlCore
+import DGamma.Unified
 import Decidable.Equality
 
 %default total
+
+||| Strengthening of Equation 55 used by the full relational boundary.  Besides
+||| failure and continuation agreement, a successful iterator step carries the
+||| exact runtime observations needed to relate the resulting Table-1 effects.
+public export
+data RuntimeIteratorOutcomeAgreement :
+  (name, key : Type) -> (value : key -> Type) ->
+  (world, error : Type) -> (keyEq : DecEq key) ->
+  Maybe (IteratorStageOutcome name key value world error) ->
+  Maybe (IteratorStageOutcome name key value world error) -> Type where
+  RuntimeOutcomesUndefined : RuntimeIteratorOutcomeAgreement name key value
+    world error keyEq Nothing Nothing
+  RuntimeFailuresAgree : (0 errorsSame : leftError = rightError) ->
+    RuntimeIteratorOutcomeAgreement name key value world error keyEq
+      (Just (IteratorRaised leftError)) (Just (IteratorRaised rightError))
+  RuntimeYieldsAgree :
+    (0 afterRelated : EffectStateRelated keyEq secondAfter firstAfter) ->
+    (0 undoMaps : PartialMapsEquivalent (EffectStateEquivalence keyEq)
+      firstUndo secondUndo) ->
+    RuntimeIteratorOutcomeAgreement name key value world error keyEq
+      (Just (IteratorYielded firstAfter firstUndo continuation))
+      (Just (IteratorYielded secondAfter secondUndo continuation))
+
+public export
+0 runtimeAgreementForControls :
+  RuntimeIteratorOutcomeAgreement name key value world error keyEq left right ->
+  IteratorOutcomeAgreement name key value world error keyEq left right
+runtimeAgreementForControls RuntimeOutcomesUndefined = IteratorOutcomesUndefined
+runtimeAgreementForControls (RuntimeFailuresAgree errorsSame) =
+  IteratorFailuresAgree errorsSame
+runtimeAgreementForControls (RuntimeYieldsAgree afterRelated undoMaps) =
+  IteratorSuccessfulYieldsAgree Refl undoMaps
 
 ||| The two exact owner cells and the complete ordered runtime source relation
 ||| recovered from one successful lifecycle head.
@@ -142,6 +175,9 @@ record FullLifecycleControlReplay
   fullLifecycleAfter : SystemState name key value world error
   0 fullLifecycleRaw : applyAction @{nameEq} @{keyEq} action rightBefore =
     Just (tag, fullLifecycleAfter)
+  0 fullLifecycleEffects : EffectStateRelated keyEq
+    (projectEffectState @{nameEq} leftAfter)
+    (projectEffectState @{nameEq} fullLifecycleAfter)
   0 fullLifecycleControls : OrderedRegistryControlsRelated name key world error
     value (bindings (registry leftAfter))
     (bindings (registry fullLifecycleAfter))
@@ -165,11 +201,16 @@ public export
     (MkSystemState rightBeforeWorld right) =
     Just (tag, MkSystemState rightAfterWorld
       (replaceBinding @{nameEq} actor rightNext right)) ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} leftAfter)
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState rightAfterWorld
+          (replaceBinding @{nameEq} actor rightNext right)))) ->
   FullLifecycleControlReplay name key world error value nameEq keyEq action tag
     leftAfter (MkSystemState rightBeforeWorld right)
 packageFullLifecycleReplacementReplay nameEq keyEq actor action tag leftAfter
   rightBeforeWorld left right leftNext rightNext nextRelated sourceOrdered
-  leftAfterWorld leftAfterShape rightAfterWorld rightRaw =
+  leftAfterWorld leftAfterShape rightAfterWorld rightRaw finalEffects =
     let rightAfter : SystemState name key value world error
         rightAfter = MkSystemState rightAfterWorld
           (replaceBinding @{nameEq} actor rightNext right)
@@ -197,7 +238,8 @@ packageFullLifecycleReplacementReplay nameEq keyEq actor action tag leftAfter
         finalControls = orderedControlsTransport
           (cong (\state => bindings (registry state)) leftAfterShape) Refl
           concrete
-    in MkFullLifecycleControlReplay rightAfter rightRaw finalControls
+    in MkFullLifecycleControlReplay rightAfter rightRaw finalEffects
+      finalControls
 
 ||| Shared ordered-control packager for every lifecycle branch.  It deliberately
 ||| compares runtime binding lists rather than erased registry certificates.
