@@ -36,6 +36,7 @@ alignedLocatedBefore global aligned episode =
       (traceAfterClosing episode))
     (rewrite (locatedDecomposition episode) in aligned))
 
+public export
 0 alignedLocatedCenter :
   (global : Transitions initial finalState) ->
   AlignedTransitions name key world error value nameEq keyEq global ->
@@ -46,6 +47,26 @@ alignedLocatedBefore global aligned episode =
       (closedTransitions (locatedEpisode episode)))
 alignedLocatedCenter global aligned episode =
   fst (alignedAppendSplit
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode)))
+      (closedTransitions (locatedEpisode episode)))
+    (traceAfterClosing episode)
+    (snd (alignedAppendSplit (traceBeforeOpening episode)
+      (appendTransitions
+        (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode)))
+          (closedTransitions (locatedEpisode episode)))
+        (traceAfterClosing episode))
+      (rewrite (locatedDecomposition episode) in aligned))))
+
+public export
+0 alignedLocatedAfter :
+  (global : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    consumer global) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (traceAfterClosing episode)
+alignedLocatedAfter global aligned episode =
+  snd (alignedAppendSplit
     (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode)))
       (closedTransitions (locatedEpisode episode)))
     (traceAfterClosing episode)

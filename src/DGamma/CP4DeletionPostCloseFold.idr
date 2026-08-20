@@ -121,6 +121,8 @@ prependPostCloseKept nameEq keyEq registered ordinal live transition retained
         (relationalSuffixGenerationScan folded))
       (ReplayReadyKeep retained after namedTag namedTransition namedAction fires
         (relationalSuffixReplayReady folded))
+      (ReplayEndsKeep retained namedTag namedTransition namedAction fires
+        (relationalSuffixReplayReady folded) (relationalSuffixReadyEnds folded))
       (relationalSuffixFinalUnique folded)
       (relationalSuffixFinalBoundary folded)
 
@@ -150,6 +152,8 @@ prependPostCloseDeleted nameEq keyEq registered ordinal live transition
       (GenerationTraceScanStep transition rest
         (relationalSuffixGenerationScan folded))
       (ReplayReadyDelete deleted (relationalSuffixReplayReady folded))
+      (ReplayEndsDelete deleted (relationalSuffixReplayReady folded)
+        (relationalSuffixReadyEnds folded))
       (relationalSuffixFinalUnique folded)
       (relationalSuffixFinalBoundary folded)
 
@@ -187,7 +191,7 @@ postCloseSuffixFold protocol nameEq keyEq selected registered selectedOutside
   global noDependent ordinal live bornBefore unique stamped NoTransitions survivor
   boundary RegistrationDisciplineEnd AlignedEnd NoRegisteredEpisodeEnd noFailed =
     MkRelationalNoEpisodeSuffixReplayFold ordinal live survivor
-      GenerationTraceScanEnd ReplayReadyEnd unique
+      GenerationTraceScanEnd ReplayReadyEnd (ReplayEndsEnd Refl) unique
       (finalPostCloseGivesRelational nameEq keyEq selected registered live unique
         stamped selectedOutside _ survivor noFailed boundary)
 postCloseSuffixFold {original} {finalState} protocol nameEq keyEq selected

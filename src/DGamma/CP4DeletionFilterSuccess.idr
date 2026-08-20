@@ -210,3 +210,55 @@ registeredGenerationReplayReadyGivesFilterSuccess nameEq keyEq registered
       (GenerationOwnedActor nameEq registered)
       (decGenerationOwnedActor nameEq registered)
       ordinal live original survivingFirst ready
+
+||| Endpoint coherence witness for a replay-readiness derivation.
+public export
+data ReplayReadyEndsAt :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type} ->
+  {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+  {first, originalFinal, survivingFirst :
+    SystemState name key value world error} ->
+  {original : Transitions first originalFinal} ->
+  GenerationReplayReady nameEq keyEq deletable ordinal live original
+    survivingFirst ->
+  SystemState name key value world error -> Type where
+  ReplayEndsEnd :
+    {endpoint : SystemState name key value world error} ->
+    (same : target = endpoint) ->
+    ReplayReadyEndsAt (ReplayReadyEnd {survivingFirst = endpoint}) target
+  ReplayEndsDelete :
+    {middle : SystemState name key value world error} ->
+    {transition : Transition first middle} ->
+    {rest : Transitions middle originalFinal} ->
+    (deleted : deletable ordinal live (transitionAction transition)) ->
+    (tail : GenerationReplayReady nameEq keyEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction transition) live) rest survivingFirst) ->
+    ReplayReadyEndsAt tail target ->
+    ReplayReadyEndsAt
+      (ReplayReadyDelete {originalTransition = transition}
+        {originalRest = rest} deleted tail) target
+  ReplayEndsKeep :
+    {middle, survivingAfter : SystemState name key value world error} ->
+    {originalTransition : Transition first middle} ->
+    {rest : Transitions middle originalFinal} ->
+    (retained : Not (deletable ordinal live
+      (transitionAction originalTransition))) ->
+    (tag : RuleTag) ->
+    (survivingTransition : Transition survivingFirst survivingAfter) ->
+    (sameAction : transitionAction survivingTransition =
+      transitionAction originalTransition) ->
+    (fires : fireNamed nameEq keyEq (transitionAction originalTransition)
+      survivingFirst = Just (MkNamedTransition survivingAfter tag
+        survivingTransition sameAction)) ->
+    (tail : GenerationReplayReady nameEq keyEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction originalTransition) live) rest survivingAfter) ->
+    ReplayReadyEndsAt tail target ->
+    ReplayReadyEndsAt
+      (ReplayReadyKeep {originalTransition = originalTransition}
+        {originalRest = rest} retained survivingAfter tag survivingTransition
+        sameAction fires tail) target

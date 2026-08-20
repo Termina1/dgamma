@@ -3711,8 +3711,9 @@ survivingTrace {initial} result = appendTransitions (survivingBefore result)
 ||| Candidate paper-Lemma-72 statement after round-3 review: lifecycle-only
 ||| selected deletion, all-trace totality, yielded/inverse provenance,
 ||| open-episode exclusion, relevant-episode dependency edges, effect recovery,
-||| and outside-R control agreement are explicit. It remains unproved.
-||| TODO(proof): one-episode checked replay using Corollary 62 and Lemma 71.
+||| and outside-R control agreement are explicit. Its checked inhabitant is
+||| `DGamma.CP4DeletionTheorem.deletionTheoremProof`; it lives downstream to
+||| preserve the dependency order of this statement module.
 public export
 deletionTheorem : (name : Type) -> (key : Type) ->
   (value : key -> Type) -> (world, error : Type) -> Type

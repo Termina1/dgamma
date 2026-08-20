@@ -7,6 +7,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionBoundaryPlan
 import DGamma.CP4DeletionEmptyTableInvariant
+import DGamma.CP4DeletionGenerationBounds
 import DGamma.CP4DeletionGenerationStamped
 import DGamma.CP4DeletionGenerationUnique
 import DGamma.CP4DeletionInactiveInvariant
@@ -584,3 +585,52 @@ currentRegisteredWithdrawableFromTrace nameEq keyEq selected registered
                       (Refl, finalEmptyAll (generationName generation) generation
                         member finalCurrent fiber
                         found))))
+
+||| Every registered birth selected by `RegisteredGenerationsDuring` occurs at a
+||| strict scanner position before the center endpoint.
+public export
+0 registeredBornBeforeCenterEnd :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {startLive : GenerationEnvironment name} ->
+  (nameEq : DecEq name) -> (selected : name) -> (startOrdinal : Nat) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (center : Transitions first finalState) ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq startOrdinal startLive center finalOrdinal
+    finalLive ->
+  RegisteredGenerationsDuring selected startOrdinal registered center ->
+  RegisteredGenerationsBornBefore registered finalOrdinal
+registeredBornBeforeCenterEnd nameEq selected startOrdinal registered center
+  finalOrdinal finalLive scan (generatedAll, complete) generation member =
+    case generatedAll generation member of
+      MkGeneratedDuring child component birth stamp retires =>
+        let decomposed : GenerationTraceScan nameEq startOrdinal startLive
+              (appendTransitions (beforeActionOccurrence birth)
+                (MoreTransitions (locatedTransition birth)
+                  (afterActionOccurrence birth))) finalOrdinal finalLive
+            decomposed = replace
+              {p = \observed => GenerationTraceScan nameEq startOrdinal startLive
+                observed finalOrdinal finalLive}
+              (sym (actionOccurrenceDecomposition birth)) scan
+        in case splitGenerationScan nameEq startOrdinal startLive
+          (beforeActionOccurrence birth)
+          (MoreTransitions (locatedTransition birth)
+            (afterActionOccurrence birth)) finalOrdinal finalLive decomposed of
+          MkSplitGenerationScan beforeOrdinal beforeLive beforeScan fromBirth =>
+            case fromBirth of
+              GenerationTraceScanStep _ _ afterScan =>
+                let beforeCount = scanOrdinalCount beforeScan
+                    birthOrdinal : (beforeOrdinal =
+                      startOrdinal + locatedActionOrdinal birth)
+                    birthOrdinal = trans beforeCount
+                      (cong (startOrdinal +) (cong transitionCount Refl))
+                    beforeLessFinal : LT beforeOrdinal finalOrdinal
+                    beforeLessFinal = generationScanStartLTE afterScan
+                in replace
+                  {p = \observed => LT (generationBirthOrdinal observed)
+                    finalOrdinal}
+                  (sym stamp)
+                  (replace
+                    {p = \observedBirth => LT observedBirth finalOrdinal}
+                    birthOrdinal beforeLessFinal)

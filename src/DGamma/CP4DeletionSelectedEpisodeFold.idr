@@ -125,6 +125,81 @@ appendReady nameEq keyEq deletable
     ReplayReadyKeep retained next tagNext fired sameAction fires
       (appendReady nameEq keyEq deletable rest right scanTail readyTail rightReady)
 
+0 appendReadySelfEnds :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type) ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (scan : GenerationTraceScan nameEq ordinal live left middleOrdinal middleLive) ->
+  (ready : GenerationReplayReady nameEq keyEq deletable ordinal live left
+    survivorFirst) ->
+  (rightReady : (current : SystemState name key value world error) ->
+    GenerationReplayReady nameEq keyEq deletable middleOrdinal middleLive right
+      current) ->
+  ((current : SystemState name key value world error) ->
+    ReplayReadyEndsAt (rightReady current) current) ->
+  (leftEnds : ReplayReadyEndsAt ready target) ->
+  ReplayReadyEndsAt
+    (appendReady nameEq keyEq deletable left right scan ready rightReady) target
+appendReadySelfEnds nameEq keyEq deletable NoTransitions right
+  GenerationTraceScanEnd ReplayReadyEnd rightReady rightEnds
+  (ReplayEndsEnd {endpoint = survivorFirst} same) =
+    replace
+      {p = \observed => ReplayReadyEndsAt (rightReady survivorFirst) observed}
+      (sym same) (rightEnds survivorFirst)
+appendReadySelfEnds nameEq keyEq deletable
+  (MoreTransitions transition@(Fired _ _ action ruleTag checked) rest) right
+  (GenerationTraceScanStep (Fired _ _ action ruleTag checked) rest tailScan)
+  (ReplayReadyDelete deleted tailReady) rightReady rightEnds
+  (ReplayEndsDelete _ _ tailEnds) =
+    let 0 shape : (appendReady nameEq keyEq deletable
+            (MoreTransitions transition rest) right
+            (GenerationTraceScanStep transition rest tailScan)
+            (ReplayReadyDelete deleted tailReady) rightReady =
+          ReplayReadyDelete {originalTransition = transition}
+            {originalRest = appendTransitions rest right} deleted
+            (appendReady nameEq keyEq deletable rest right tailScan tailReady
+            rightReady))
+        shape = Refl
+        0 built : ReplayReadyEndsAt
+          (ReplayReadyDelete {originalTransition = transition}
+            {originalRest = appendTransitions rest right} deleted
+            (appendReady nameEq keyEq deletable rest
+            right tailScan tailReady rightReady)) target
+        built = ReplayEndsDelete deleted (appendReady nameEq keyEq deletable rest
+            right tailScan tailReady rightReady)
+          (appendReadySelfEnds nameEq keyEq deletable rest right tailScan
+            tailReady rightReady rightEnds tailEnds)
+    in replace {p = \ready => ReplayReadyEndsAt ready target} (sym shape) built
+appendReadySelfEnds nameEq keyEq deletable
+  (MoreTransitions transition@(Fired _ _ action ruleTag checked) rest) right
+  (GenerationTraceScanStep (Fired _ _ action ruleTag checked) rest tailScan)
+  (ReplayReadyKeep retained after tag survivingTransition sameAction fires
+    tailReady) rightReady rightEnds
+  (ReplayEndsKeep _ _ _ _ _ _ tailEnds) =
+    let 0 shape : (appendReady nameEq keyEq deletable
+            (MoreTransitions transition rest) right
+            (GenerationTraceScanStep transition rest tailScan)
+            (ReplayReadyKeep retained after tag survivingTransition sameAction
+              fires tailReady) rightReady =
+          ReplayReadyKeep {originalTransition = transition}
+            {originalRest = appendTransitions rest right} retained after tag
+            survivingTransition sameAction fires (appendReady nameEq keyEq deletable rest right tailScan tailReady
+            rightReady))
+        shape = Refl
+        0 built : ReplayReadyEndsAt
+          (ReplayReadyKeep {originalTransition = transition}
+            {originalRest = appendTransitions rest right} retained after tag
+            survivingTransition sameAction fires (appendReady nameEq keyEq deletable rest right tailScan
+              tailReady rightReady)) target
+        built = ReplayEndsKeep retained tag survivingTransition sameAction fires
+          (appendReady nameEq keyEq deletable rest right tailScan tailReady
+            rightReady)
+          (appendReadySelfEnds nameEq keyEq deletable rest right tailScan
+            tailReady rightReady rightEnds tailEnds)
+    in replace {p = \ready => ReplayReadyEndsAt ready target} (sym shape) built
+
 public export
 record SelectedClosedEpisodeFold
   (name, key, world, error : Type) (value : key -> Type)
@@ -150,6 +225,8 @@ record SelectedClosedEpisodeFold
     episodeStartOrdinal episodeStartLive
     (MoreTransitions (beginTransition (closedOpening episode))
       (closedTransitions episode)) preStart
+  0 selectedFoldReadyEnds : ReplayReadyEndsAt selectedFoldReady
+    selectedFoldSurvivor
   0 selectedFoldUnique : GenerationEnvironmentNamesUnique selectedFoldEndLive
   0 selectedFoldStamped : GenerationEnvironmentStamped selectedFoldEndLive
   0 selectedFoldPostClose : PostCloseSelectedBoundary name key world error value
@@ -483,6 +560,22 @@ selectedClosedEpisodeFold {name} {key} {world} {error} {value}
             (closedTransitions (locatedEpisode located)))
           (locatedPreStart located)
         fullReady = ReplayReadyDelete openingDeleted insideCloseReady
+        closeEnds : (currentSurvivor : SystemState name key value world error) ->
+          ReplayReadyEndsAt (closeReady currentSurvivor) currentSurvivor
+        closeEnds currentSurvivor = ReplayEndsDelete closeDeleted ReplayReadyEnd
+          (ReplayEndsEnd Refl)
+        0 insideCloseEnds : ReplayReadyEndsAt insideCloseReady
+          (interiorFinalSurvivor interior)
+        insideCloseEnds = appendReadySelfEnds nameEq keyEq
+          (EpisodeGenerationDeletedActor nameEq selected registered)
+          (closedInside (locatedEpisode located))
+          (MoreTransitions closeTransition NoTransitions)
+          (interiorScan interior) (interiorReady interior) closeReady closeEnds
+          (interiorReadyEnds interior)
+        0 fullReadyEnds : ReplayReadyEndsAt fullReady
+          (interiorFinalSurvivor interior)
+        fullReadyEnds = ReplayEndsDelete openingDeleted insideCloseReady
+          insideCloseEnds
         appendScanWithClose : GenerationTraceScan nameEq (S episodeStartOrdinal)
           episodeStartLive (closedTransitions (locatedEpisode located))
           (S (interiorFinalOrdinal interior)) (interiorFinalLive interior)
@@ -501,7 +594,7 @@ selectedClosedEpisodeFold {name} {key} {world} {error} {value}
           appendScanWithClose
     in MkSelectedClosedEpisodeFold (S (interiorFinalOrdinal interior))
       (interiorFinalLive interior) (interiorFinalSurvivor interior) fullScan
-      fullReady finalUnique finalStamped postClose
+      fullReady fullReadyEnds finalUnique finalStamped postClose
 
 ||| Public-premise entry point: reconstruct the occurrence-local lifecycle
 ||| anchor provider internally, then run the complete selected structural fold.

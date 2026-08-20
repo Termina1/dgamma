@@ -296,6 +296,8 @@ record RelationalNoEpisodeSuffixReplayFold
     original relationalSuffixFinalOrdinal relationalSuffixFinalLive
   0 relationalSuffixReplayReady : GenerationReplayReady nameEq keyEq
     (GenerationOwnedActor nameEq registered) ordinal live original survivingFirst
+  0 relationalSuffixReadyEnds : ReplayReadyEndsAt relationalSuffixReplayReady
+    relationalSuffixFinalSurvivor
   0 relationalSuffixFinalUnique : GenerationEnvironmentNamesUnique
     relationalSuffixFinalLive
   0 relationalSuffixFinalBoundary : RelationalNoEpisodeReplayBoundary name key
@@ -328,7 +330,7 @@ relationalNoEpisodeSuffixReplayFold protocol nameEq keyEq replayAction registere
   ordinal live bornBefore unique NoTransitions survivingFirst boundary
   RegistrationDisciplineEnd AlignedEnd NoRegisteredEpisodeEnd =
     MkRelationalNoEpisodeSuffixReplayFold ordinal live survivingFirst
-      GenerationTraceScanEnd ReplayReadyEnd unique boundary
+      GenerationTraceScanEnd ReplayReadyEnd (ReplayEndsEnd Refl) unique boundary
 relationalNoEpisodeSuffixReplayFold protocol nameEq keyEq replayAction registered
   ordinal live bornBefore unique
   (MoreTransitions (Fired nameEq keyEq action tag checked) rest)
@@ -368,6 +370,8 @@ relationalNoEpisodeSuffixReplayFold protocol nameEq keyEq replayAction registere
           (Fired nameEq keyEq action tag checked) rest
           (relationalSuffixGenerationScan folded))
         (ReplayReadyDelete deleted (relationalSuffixReplayReady folded))
+        (ReplayEndsDelete deleted (relationalSuffixReplayReady folded)
+          (relationalSuffixReadyEnds folded))
         (relationalSuffixFinalUnique folded)
         (relationalSuffixFinalBoundary folded)
   relationalNoEpisodeSuffixReplayFold protocol nameEq keyEq replayAction
@@ -404,5 +408,8 @@ relationalNoEpisodeSuffixReplayFold protocol nameEq keyEq replayAction registere
                 (ReplayReadyKeep retained survivingAfter survivingTag
                   survivingTransition sameAction fired
                   (relationalSuffixReplayReady folded))
+                (ReplayEndsKeep retained survivingTag survivingTransition
+                  sameAction fired (relationalSuffixReplayReady folded)
+                  (relationalSuffixReadyEnds folded))
                 (relationalSuffixFinalUnique folded)
                 (relationalSuffixFinalBoundary folded)

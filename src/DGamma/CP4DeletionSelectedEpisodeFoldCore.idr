@@ -154,6 +154,7 @@ record SelectedEpisodeInteriorFold
   0 interiorReady : GenerationReplayReady nameEq keyEq
     (EpisodeGenerationDeletedActor nameEq selected registered)
     ordinal live original survivorFirst
+  0 interiorReadyEnds : ReplayReadyEndsAt interiorReady interiorFinalSurvivor
   0 interiorBoundary : SelectedEpisodeReplayBoundary name key world error value
     nameEq keyEq selected registered interiorFinalOrdinal interiorFinalLive whole
     originalFinal interiorFinalSurvivor
@@ -217,7 +218,7 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
   AlignedEnd (InstalledEnd installedEnd) NoRegisteredEpisodeEnd embed interiorPrefix interiorDecomposition survivorFirst
   boundary inactive empty emptyPlan =
     MkSelectedEpisodeInteriorFold ordinal live survivorFirst
-      GenerationTraceScanEnd ReplayReadyEnd boundary
+      GenerationTraceScanEnd ReplayReadyEnd (ReplayEndsEnd Refl) boundary
 selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
   selectedOutside whole interior local ordinal live unique stamped
   (MoreTransitions (Fired nameEq keyEq action tag checked) rest)
@@ -285,6 +286,8 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
         (interiorFinalSurvivor folded)
         (GenerationTraceScanStep (Fired nameEq keyEq action tag checked) rest (interiorScan folded))
         (ReplayReadyDelete deleted (interiorReady folded))
+        (ReplayEndsDelete deleted (interiorReady folded)
+          (interiorReadyEnds folded))
         (interiorBoundary folded)
   selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
     selectedOutside whole interior local ordinal live unique stamped
@@ -350,4 +353,6 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
             (ReplayReadyKeep retained namedAfter namedTag namedTransition
               sameAction fired
               (interiorReady folded))
+            (ReplayEndsKeep retained namedTag namedTransition sameAction fired
+              (interiorReady folded) (interiorReadyEnds folded))
             (interiorBoundary folded)
