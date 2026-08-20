@@ -606,6 +606,31 @@ of Lemma 38.
     Finding #13 joins Findings #4–#12 on the mandatory end-of-CP4 adversarial
     re-review list. Failure/value transport and successful yielded-inverse
     transport must be attacked together at retained L-Advance boundaries.
+19. **CP4 Finding #14 — resolved by committed-provider persistence (not an
+    erratum).** During the selected-episode fold, a crossing foreign activation
+    can open before the selected L-Begin and close before the selected L-Unload.
+    The first attempted countermodel let actor A commit dependency key `k`, then
+    inserted/activated selected S so that S became a live candidate for `k`
+    during A's activation. That sketch is not executable. A's successful
+    L-Begin already requires an active provider P for `k`. If S existed at A's
+    opening and its component declared `k`, `PrecedenceEdge S A` holds even when
+    S itself was Inactive/table-empty, so `NoDependentClosingEpisode` rejects
+    the trace. If S was absent, later O-Insert S fails the
+    `provisionsDisjointFrom` guard while P remains. P cannot be withdrawn while
+    A's committed view relies on it, and raw-name removal/reissue hits the same
+    insertion guard. The initially proposed weakening was therefore retracted;
+    no false countermodel module was added.
+
+    The checked resolution is the named reusable theorem
+    `committedProviderProvisionPersists`: a provider observed in the committed
+    view at a later point of one installed activation was already committed at
+    every earlier point. `crossingActivationExcludesSelectedProvider` transports
+    a hypothetical selected candidate back to A's L-Begin boundary, reconstructs
+    the forbidden precedence edge, and eliminates it with the unchanged public
+    premise. `selectedEpisodeLifecycleAnchorProvider` combines that closing
+    branch with the selected-L-Unload reliance branch. The complete selected
+    dispatcher and structural fold now compose from public Lemma-72 premises via
+    `selectedClosedEpisodeFoldFromPremises`.
 
 ## Escape-hatch and hole audit
 
