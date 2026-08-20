@@ -60,6 +60,7 @@ currentAfterOneStep nameEq actor generation ordinal live unique less action rest
         unique)
       (lteSuccRight less) rest finalOrdinal finalLive scan finalCurrent
 
+public export
 0 retireGivesRetiredInactive :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
   (before, afterState : SystemState name key value world error) ->

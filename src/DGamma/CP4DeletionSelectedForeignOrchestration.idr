@@ -485,3 +485,21 @@ foreignOrchestrationControlGivesNextEffectBoundary nameEq keyEq selected action
     (foreignOrchestrationControlMatchesEffectOutput nameEq keyEq selected action
       orchestration tag before afterState survivor checked whole step planAfter
       replay)
+
+||| Successful insert views expose the exact fresh endpoint cell.
+public export
+0 foreignInsertTargetFound :
+  (view : ForeignInsertPlanView name key world error value nameEq keyEq actor
+    parent component ambient source tag afterState) ->
+  lookupFiber @{nameEq} actor (registry afterState) =
+    Just (freshFiber component parent)
+foreignInsertTargetFound (MkForeignInsertPlanView absent guards) =
+  lookupInserted actor (freshFiber component parent) source absent
+
+public export
+0 foreignInsertViewAbsent :
+  (view : ForeignInsertPlanView name key world error value nameEq keyEq actor
+    parent component ambient source tag afterState) ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor source = Nothing
+foreignInsertViewAbsent (MkForeignInsertPlanView absent guards) = absent
