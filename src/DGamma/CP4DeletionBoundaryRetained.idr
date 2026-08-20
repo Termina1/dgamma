@@ -87,6 +87,7 @@ record BoundaryActionTransport
     boundaryTransportAfter = True
   boundaryTransportNamed : NamedTransition name key world error value action
     survivorBefore
+  0 boundaryTransportNamedTag : namedTag boundaryTransportNamed = tag
   0 boundaryTransportNamedAfter : namedAfter boundaryTransportNamed =
     boundaryTransportAfter
   0 boundaryTransportFires : fireNamed nameEq keyEq action survivorBefore =
@@ -123,7 +124,7 @@ transportPlanActionToBoundary nameEq keyEq action planBefore planAfter
             0 fired : fireNamed nameEq keyEq action survivorBefore = Just named
             fired = rewrite survivorChecked in Refl
         in MkBoundaryActionTransport survivorAfter survivorRaw afterSnapshots
-          survivorAfterWellFormed named Refl fired
+          survivorAfterWellFormed named Refl Refl fired
 
 0 boundaryTransportWorldFromPlan :
   (transport : BoundaryActionTransport name key world error value nameEq keyEq
@@ -151,13 +152,14 @@ record RetainedNoEpisodeBoundaryStep
   (nameEq : DecEq name) (keyEq : DecEq key)
   (registered : List (RegistrationGeneration name))
   (nextLive : GenerationEnvironment name)
-  (action : Action name key value world error)
+  (action : Action name key value world error) (originalTag : RuleTag)
   (originalAfter, survivorBefore : SystemState name key value world error) where
   constructor MkRetainedNoEpisodeBoundaryStep
   retainedBoundaryNamed : NamedTransition name key world error value action
     survivorBefore
   0 retainedBoundaryFires : fireNamed nameEq keyEq action survivorBefore =
     Just retainedBoundaryNamed
+  0 retainedBoundaryTagSame : namedTag retainedBoundaryNamed = originalTag
   retainedNextBoundary : NoEpisodeReplayBoundary name key world error value
     nameEq keyEq registered nextLive originalAfter
     (namedAfter retainedBoundaryNamed)
@@ -185,7 +187,7 @@ public export
     Just (tag, originalAfter)) ->
   Not (GenerationOwnedActor nameEq registered ordinal live action) ->
   RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
-    registered live action originalAfter survivor
+    registered live action tag originalAfter survivor
 retainedLifecyclePreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
   nameEq keyEq registered ordinal live action lifecycle nonInsert tag commuteOne
   original survivor
@@ -246,8 +248,8 @@ retainedLifecyclePreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
                   survivorWellFormed))
           tag (lifecyclePlanReplayRaw planCommute) survivorWellFormed of
           MkBoundaryActionTransport survivorAfter survivorRaw
-            afterSnapshots survivorAfterWellFormed named namedAfterProof
-            fired =>
+            afterSnapshots survivorAfterWellFormed named namedTagProof
+            namedAfterProof fired =>
                   let 0 survivorAmbientNext : (worldState survivorAfter =
                         worldState originalAfter)
                       survivorAmbientNext = trans
@@ -280,7 +282,7 @@ retainedLifecyclePreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
                         NoEpisodeReplayBoundary name key world error value
                           nameEq keyEq registered live originalAfter candidate}
                         (sym namedAfterProof) nextBoundary
-                  in MkRetainedNoEpisodeBoundaryStep named fired namedBoundary
+                  in MkRetainedNoEpisodeBoundaryStep named fired namedTagProof namedBoundary
 
 ||| Retained non-R L-Begin preserves exact result/control after deleting all
 ||| current R leaves.
@@ -301,7 +303,7 @@ public export
   Not (GenerationOwnedActor nameEq registered ordinal live
     (the (Action name key value world error) (LBegin actor))) ->
   RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
-    registered live (LBegin actor) originalAfter survivor
+    registered live (LBegin actor) tag originalAfter survivor
 retainedBeginPreservesNoEpisodeBoundary nameEq keyEq registered ordinal live
   actor original survivor boundary tag checked retained =
     retainedLifecyclePreservesNoEpisodeBoundary nameEq keyEq registered ordinal
@@ -328,7 +330,7 @@ public export
   Not (GenerationOwnedActor nameEq registered ordinal live
     (the (Action name key value world error) (LAdvance actor))) ->
   RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
-    registered live (LAdvance actor) originalAfter survivor
+    registered live (LAdvance actor) tag originalAfter survivor
 retainedAdvancePreservesNoEpisodeBoundary nameEq keyEq registered ordinal live
   actor original survivor boundary tag checked retained =
     retainedLifecyclePreservesNoEpisodeBoundary nameEq keyEq registered ordinal
@@ -355,7 +357,7 @@ public export
   Not (GenerationOwnedActor nameEq registered ordinal live
     (the (Action name key value world error) (LDivert actor))) ->
   RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
-    registered live (LDivert actor) originalAfter survivor
+    registered live (LDivert actor) tag originalAfter survivor
 retainedDivertPreservesNoEpisodeBoundary nameEq keyEq registered ordinal live
   actor original survivor boundary tag checked retained =
     retainedLifecyclePreservesNoEpisodeBoundary nameEq keyEq registered ordinal
@@ -382,7 +384,7 @@ public export
   Not (GenerationOwnedActor nameEq registered ordinal live
     (the (Action name key value world error) (LLeave actor))) ->
   RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
-    registered live (LLeave actor) originalAfter survivor
+    registered live (LLeave actor) tag originalAfter survivor
 retainedLeavePreservesNoEpisodeBoundary nameEq keyEq registered ordinal live
   actor original survivor boundary tag checked retained =
     retainedLifecyclePreservesNoEpisodeBoundary nameEq keyEq registered ordinal
@@ -409,7 +411,7 @@ public export
   Not (GenerationOwnedActor nameEq registered ordinal live
     (the (Action name key value world error) (LUnload actor))) ->
   RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
-    registered live (LUnload actor) originalAfter survivor
+    registered live (LUnload actor) tag originalAfter survivor
 retainedUnloadPreservesNoEpisodeBoundary nameEq keyEq registered ordinal live
   actor original survivor boundary tag checked retained =
     retainedLifecyclePreservesNoEpisodeBoundary nameEq keyEq registered ordinal
@@ -435,7 +437,7 @@ public export
   Not (GenerationOwnedActor nameEq registered ordinal live action) ->
   RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
     registered (advanceGenerationEnvironment @{nameEq} ordinal action live)
-    action originalAfter survivor
+    action tag originalAfter survivor
 retainedLifecycleHeadPreservesNoEpisodeBoundary nameEq keyEq registered ordinal
   live (OInsert actor parent component) Refl original survivor boundary tag
   checked retained impossible
@@ -625,7 +627,7 @@ public export
   Not (GenerationOwnedActor nameEq registered ordinal live
     (the (Action name key value world error) (ORetire actor))) ->
   RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
-    registered live (ORetire actor) originalAfter survivor
+    registered live (ORetire actor) tag originalAfter survivor
 retainedRetirePreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
   protocol nameEq keyEq registered ordinal live actor original survivor
   (MkNoEpisodeReplayBoundary ambient source originalShape
@@ -698,7 +700,7 @@ retainedRetirePreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
                               ORetireTag canonicalPlanRaw survivorWellFormed of
                               MkBoundaryActionTransport survivorAfter survivorRaw
                                 afterSnapshots survivorAfterWellFormed named
-                                namedAfterProof fired =>
+                                namedTagProof namedAfterProof fired =>
                                 let 0 survivorAmbientNext :
                                       (worldState survivorAfter = ambient)
                                     survivorAmbientNext =
@@ -758,7 +760,7 @@ retainedRetirePreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
                                          candidate}
                                        (sym namedAfterProof)
                                        nextBoundary
-                               in MkRetainedNoEpisodeBoundaryStep named fired
+                               in MkRetainedNoEpisodeBoundaryStep named fired namedTagProof
                                  namedBoundary
 
 0 hasChildFalseAfterInactivePlan :
@@ -803,7 +805,7 @@ public export
     (the (Action name key value world error) (ORemove actor))) ->
   RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
     registered (deleteCurrentGeneration @{nameEq} actor live)
-    (ORemove actor) originalAfter survivor
+    (ORemove actor) tag originalAfter survivor
 retainedRemovePreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
   protocol nameEq keyEq registered ordinal live actor original survivor
   (MkNoEpisodeReplayBoundary ambient source originalShape
@@ -901,8 +903,8 @@ retainedRemovePreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
                     survivorWellFormed))
                 ORemoveTag canonicalPlanRaw survivorWellFormed of
                 MkBoundaryActionTransport survivorAfter survivorRaw
-                  afterSnapshots survivorAfterWellFormed named namedAfterProof
-                  fired =>
+                  afterSnapshots survivorAfterWellFormed named namedTagProof
+                  namedAfterProof fired =>
                   let 0 survivorAmbientNext :
                         (worldState survivorAfter = ambient)
                       survivorAmbientNext =
@@ -949,7 +951,7 @@ retainedRemovePreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
                           (MkSystemState ambient
                             (deleteBinding @{nameEq} actor source)) candidate}
                         (sym namedAfterProof) nextBoundary
-                  in MkRetainedNoEpisodeBoundaryStep named fired namedBoundary
+                  in MkRetainedNoEpisodeBoundaryStep named fired namedTagProof namedBoundary
 
 ||| Retained O-Insert creates a fresh non-R generation in both traces.  Owner
 ||| and parent exclusion commute the insertion through every current R leaf;
@@ -982,7 +984,7 @@ public export
     registered
     (putCurrentGeneration @{nameEq} inserted
       (MkRegistrationGeneration inserted ordinal) live)
-    (OInsert inserted parent component) originalAfter survivor
+    (OInsert inserted parent component) tag originalAfter survivor
 retainedInsertPreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
   protocol nameEq keyEq registered ordinal live inserted parent component
   original survivor
@@ -1070,8 +1072,13 @@ retainedInsertPreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
                       planTag planRaw survivorWellFormed of
                       MkBoundaryActionTransport survivorAfter survivorRaw
                         afterSnapshots survivorAfterWellFormed named
-                        namedAfterProof fired =>
-                        let 0 survivorAmbientNext :
+                        namedTagProof namedAfterProof fired =>
+                        let 0 planTagSame : (planTag = OInsertTag)
+                            planTagSame = case insertSuccessView nameEq keyEq
+                              inserted parent component ambient oldTarget planTag
+                              planAfter planRaw of
+                              MkInsertSuccessView planAbsent => Refl
+                            0 survivorAmbientNext :
                               (worldState survivorAfter = ambient)
                             survivorAmbientNext = trans
                               (sym (cong snapshotWorld afterSnapshots)) planWorld
@@ -1131,7 +1138,7 @@ retainedInsertPreservesNoEpisodeBoundary {name} {key} {world} {error} {value}
                                     originalAbsent)) candidate}
                               (sym namedAfterProof) nextBoundary
                         in MkRetainedNoEpisodeBoundaryStep named fired
-                          namedBoundary
+                          (trans namedTagProof planTagSame) namedBoundary
 
 ||| Exhaustive retained orchestration boundary step.  Lifecycle actions are
 ||| intentionally left to the selected effect/control commutation layer.
@@ -1155,7 +1162,7 @@ public export
   Not (GenerationOwnedActor nameEq registered ordinal live action) ->
   RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
     registered (advanceGenerationEnvironment @{nameEq} ordinal action live)
-    action originalAfter survivor
+    action tag originalAfter survivor
 retainedOrchestrationPreservesNoEpisodeBoundary protocol nameEq keyEq registered
   ordinal live (OInsert inserted parent component) orchestration original survivor
   boundary tag checked rest discipline retained =
@@ -1211,7 +1218,7 @@ public export
   Not (GenerationOwnedActor nameEq registered ordinal live action) ->
   RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
     registered (advanceGenerationEnvironment @{nameEq} ordinal action live)
-    action originalAfter survivor
+    action tag originalAfter survivor
 retainedSuffixHeadPreservesNoEpisodeBoundary protocol nameEq keyEq registered
   ordinal live action original survivor boundary tag checked rest discipline
   retained with (isLifecycleAction action) proof kind

@@ -189,7 +189,7 @@ record RetainedNextPlanPackage
 public export
 retainedStepNextPlanPackage :
   (step : RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
-    registered live action originalAfter survivorBefore) ->
+    registered live action originalTag originalAfter survivorBefore) ->
   RetainedNextPlanPackage name key world error value nameEq registered live
     originalAfter (namedAfter (retainedBoundaryNamed step))
 retainedStepNextPlanPackage step = case retainedNextBoundary step of
@@ -219,7 +219,7 @@ public export
   (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
     keyEq selected registered ordinal live whole before survivor) ->
   (planStep : RetainedNoEpisodeBoundaryStep name key world error value nameEq
-    keyEq registered live (ORetire selected) afterState
+    keyEq registered live (ORetire selected) ORetireTag afterState
     (MkSystemState (worldState before)
       (planTarget
         (completePlanResult (selectedBoundaryPlan boundary))))) ->
@@ -253,7 +253,7 @@ retainedSelectedRetirePreservesEpisodeBoundary
       (the (SystemState name key value world error)
         (MkSystemState survivorWorld survivorRegistry)) = True ->
     RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
-      registered live (ORetire selected) afterState
+      registered live (ORetire selected) ORetireTag afterState
       (MkSystemState planWorld planRegistry) ->
     SelectedRetainedEpisodeStep name key world error value nameEq keyEq selected
       registered ordinal live whole afterState

@@ -188,7 +188,7 @@ packageForeignOrchestrationStep :
     keyEq selected registered ordinal live whole before survivor) ->
   (exactStep : RetainedNoEpisodeBoundaryStep name key world error value nameEq
     keyEq registered
-    (advanceGenerationEnvironment @{nameEq} ordinal action live) action
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) action tag
     afterState
     (MkSystemState (worldState before)
       (planTarget (completePlanResult (selectedBoundaryPlan boundary))))) ->
@@ -321,7 +321,7 @@ public export
     keyEq selected registered ordinal live whole before survivor) ->
   (exactStep : RetainedNoEpisodeBoundaryStep name key world error value nameEq
     keyEq registered
-    (advanceGenerationEnvironment @{nameEq} ordinal action live) action
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) action tag
     afterState
     (MkSystemState (worldState before)
       (planTarget (completePlanResult (selectedBoundaryPlan boundary))))) ->
