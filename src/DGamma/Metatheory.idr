@@ -1501,8 +1501,8 @@ data IteratorStage :
     (tag : RuleTag) ->
     (equation : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
       Just (tag, afterState)) ->
-    OccursIn (Fired {before = before} {afterState = afterState}
-      nameEq keyEq (LAdvance actor) tag equation) trace ->
+    (0 occurs : OccursIn (Fired {before = before} {afterState = afterState}
+      nameEq keyEq (LAdvance actor) tag equation) trace) ->
     (fiber : Fiber name key value world error) ->
     lookupFiber @{nameEq} actor (registry before) = Just fiber ->
     (remaining : List (StepEffect key value world error
@@ -1618,16 +1618,25 @@ data IteratorStageOutcome :
     IteratorContinuation key value world error ->
     IteratorStageOutcome name key value world error
 
-||| Evaluate a reachable stage while retaining both successful yields and the
-||| exact failure outcome recorded by L-Raise (CP4 Finding #13).
+||| Runtime evaluator for an iterator descriptor.  Occurrence and reachability
+||| certificates are deliberately absent, making the executable result
+||| definitionally independent of their erased proof terms.
 public export
-iteratorStageOutcome :
-  IteratorStage name key world error value actor trace ->
+%inline
+iteratorStageOutcomeData :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (fiber : Fiber name key value world error) ->
+  (view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)))) ->
   EffectState name key value world ->
   Maybe (IteratorStageOutcome name key value world error)
-iteratorStageOutcome
-  (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
-    accumulator view lifecycle step rest suffix) state =
+iteratorStageOutcomeData nameEq keyEq actor fiber view step rest state =
   case resolveEffectValues @{keyEq}
     (dependencies (componentDependencies (fiberComponent fiber))) view state of
     Nothing => Nothing
@@ -1647,9 +1656,45 @@ iteratorStageOutcome
               (componentProvisions (fiberComponent fiber)) undo)
             (MkIteratorContinuation rest))
 
+||| Evaluate a reachable stage while retaining both successful yields and the
+||| exact failure outcome recorded by L-Raise (CP4 Finding #13).
+public export
+iteratorStageOutcome :
+  IteratorStage name key world error value actor trace ->
+  EffectState name key value world ->
+  Maybe (IteratorStageOutcome name key value world error)
+iteratorStageOutcome
+  (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+    accumulator view lifecycle step rest suffix) state =
+      iteratorStageOutcomeData nameEq keyEq actor fiber view step rest state
+
 ||| Successful-yield projection retained for Definition 54 and the recovery
 ||| algebra.  Failure remains outside the effect transformation, exactly as the
 ||| L-Raise row of Table 1 uses the identity effect map.
+public export
+%inline
+iteratorStageEffectData :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (fiber : Fiber name key value world error) ->
+  (view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)))) ->
+  EffectState name key value world ->
+  Maybe (EffectState name key value world,
+    PartialEffectMap name key value world,
+    IteratorContinuation key value world error)
+iteratorStageEffectData nameEq keyEq actor fiber view step rest state =
+  case iteratorStageOutcomeData nameEq keyEq actor fiber view step rest state of
+    Nothing => Nothing
+    Just (IteratorRaised failure) => Nothing
+    Just (IteratorYielded after undo continuation) =>
+      Just (after, undo, continuation)
+
 public export
 iteratorStageEffect :
   IteratorStage name key world error value actor trace ->
@@ -1657,11 +1702,10 @@ iteratorStageEffect :
   Maybe (EffectState name key value world,
     PartialEffectMap name key value world,
     IteratorContinuation key value world error)
-iteratorStageEffect stage state = case iteratorStageOutcome stage state of
-  Nothing => Nothing
-  Just (IteratorRaised failure) => Nothing
-  Just (IteratorYielded after undo continuation) =>
-    Just (after, undo, continuation)
+iteratorStageEffect
+  (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+    accumulator view lifecycle step rest suffix) state =
+      iteratorStageEffectData nameEq keyEq actor fiber view step rest state
 
 ||| Equation 54 generators: actual Table-1 maps, every reachable iterator
 ||| forward map, and every inverse yielded by such a stage at every origin.
@@ -1677,8 +1721,8 @@ data TraceEffectGenerator :
     (action : Action name key value world error) -> (tag : RuleTag) ->
     (equation : checkedApplyAction @{nameEq} @{keyEq} action before =
       Just (tag, afterState)) ->
-    OccursIn (Fired {before = before} {afterState = afterState}
-      nameEq keyEq action tag equation) trace ->
+    (0 occurs : OccursIn (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag equation) trace) ->
     actionOwner action = actor ->
     TraceEffectGenerator name key world error value actor trace
   IteratorForwardGenerator :
@@ -1689,21 +1733,84 @@ data TraceEffectGenerator :
     EffectState name key value world ->
     TraceEffectGenerator name key world error value actor trace
 
+||| Proof-free executable descriptor of an Equation-54 generator.  The trace
+||| occurrence remains in `TraceEffectGenerator`, while evaluation uses only
+||| this runtime projection.
+public export
+data TraceEffectGeneratorRuntime :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (actor : name) -> Type where
+  ActualForwardRuntime :
+    (before : SystemState name key value world error) ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+    (action : Action name key value world error) -> (tag : RuleTag) ->
+    TraceEffectGeneratorRuntime name key world error value actor
+  IteratorForwardRuntime :
+    (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+    (fiber : Fiber name key value world error) ->
+    (view : View name
+      (dependencies (componentDependencies (fiberComponent fiber)))) ->
+    (step : StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber))) ->
+    (rest : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber)))) ->
+    TraceEffectGeneratorRuntime name key world error value actor
+  IteratorYieldedRuntime :
+    (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+    (fiber : Fiber name key value world error) ->
+    (view : View name
+      (dependencies (componentDependencies (fiberComponent fiber)))) ->
+    (step : StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber))) ->
+    (rest : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber)))) ->
+    EffectState name key value world ->
+    TraceEffectGeneratorRuntime name key world error value actor
+
+public export
+traceEffectGeneratorRuntime :
+  TraceEffectGenerator name key world error value actor trace ->
+  TraceEffectGeneratorRuntime name key world error value actor
+traceEffectGeneratorRuntime
+  (ActualForwardGenerator before afterState nameEq keyEq action tag equation
+    occurs actorMatches) = ActualForwardRuntime before nameEq keyEq action tag
+traceEffectGeneratorRuntime
+  (IteratorForwardGenerator
+    (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+      accumulator view lifecycle step rest suffix)) =
+        IteratorForwardRuntime nameEq keyEq actor fiber view step rest
+traceEffectGeneratorRuntime
+  (IteratorYieldedGenerator
+    (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+      accumulator view lifecycle step rest suffix) origin) =
+        IteratorYieldedRuntime nameEq keyEq actor fiber view step rest origin
+
+public export
+traceGeneratorRuntimeMap :
+  TraceEffectGeneratorRuntime name key world error value actor ->
+  PartialEffectMap name key value world
+traceGeneratorRuntimeMap (ActualForwardRuntime before nameEq keyEq action tag)
+  state = partialEffectMapFor nameEq keyEq action tag before state
+traceGeneratorRuntimeMap
+  (IteratorForwardRuntime nameEq keyEq actor fiber view step rest) state =
+    map (\(after, undo, continuation) => after)
+      (iteratorStageEffectData nameEq keyEq actor fiber view step rest state)
+traceGeneratorRuntimeMap
+  (IteratorYieldedRuntime nameEq keyEq actor fiber view step rest origin) state =
+    case iteratorStageEffectData nameEq keyEq actor fiber view step rest origin of
+      Nothing => Nothing
+      Just (after, undo, continuation) => undo state
+
 public export
 traceGeneratorMap :
   TraceEffectGenerator name key world error value actor trace ->
   PartialEffectMap name key value world
-traceGeneratorMap
-  (ActualForwardGenerator before afterState nameEq keyEq action tag equation
-    occurs actorMatches) state =
-  partialEffectMapFor nameEq keyEq action tag before state
-traceGeneratorMap (IteratorForwardGenerator stage) state =
-  map (\(after, undo, continuation) => after)
-    (iteratorStageEffect stage state)
-traceGeneratorMap (IteratorYieldedGenerator stage origin) state =
-  case iteratorStageEffect stage origin of
-    Nothing => Nothing
-    Just (after, undo, continuation) => undo state
+traceGeneratorMap generator =
+  traceGeneratorRuntimeMap (traceEffectGeneratorRuntime generator)
 
 ||| The partial transformation monoid M(i) generated by Equation 54.
 public export
@@ -1832,6 +1939,264 @@ record TraceIndependent (name, key, world, error : Type)
     (origin : EffectState name key value world) ->
     IteratorOutcomeStableUnder keyEq stage
       (runTraceEffectTransformation foreign) origin
+
+
+||| Reindex Definition-60 generators along an occurrence embedding.  Keeping
+||| this machinery beside the evaluator definitions makes proof-only occurrence
+||| identities transparent to Idris without assuming proof irrelevance.
+public export
+%inline
+0 embedIteratorStageOccurrence :
+  ({stepBefore, stepAfter : SystemState name key value world error} ->
+    (transition : Transition stepBefore stepAfter) ->
+    OccursIn transition segment -> OccursIn transition whole) ->
+  IteratorStage name key world error value actor segment ->
+  IteratorStage name key world error value actor whole
+embedIteratorStageOccurrence embedding
+  (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+    accumulator view lifecycle step rest suffix) =
+      StageFromAdvance nameEq keyEq actor tag equation
+        (embedding (Fired nameEq keyEq (LAdvance actor) tag equation) occurs)
+        fiber found remaining accumulator view lifecycle step rest suffix
+
+public export
+%inline
+0 embedTraceGeneratorOccurrence :
+  ({stepBefore, stepAfter : SystemState name key value world error} ->
+    (transition : Transition stepBefore stepAfter) ->
+    OccursIn transition segment -> OccursIn transition whole) ->
+  TraceEffectGenerator name key world error value actor segment ->
+  TraceEffectGenerator name key world error value actor whole
+embedTraceGeneratorOccurrence embedding
+  (ActualForwardGenerator before afterState nameEq keyEq action tag equation
+    occurs actorMatches) =
+      ActualForwardGenerator before afterState nameEq keyEq action tag equation
+        (embedding (Fired nameEq keyEq action tag equation) occurs) actorMatches
+embedTraceGeneratorOccurrence embedding (IteratorForwardGenerator stage) =
+  IteratorForwardGenerator (embedIteratorStageOccurrence embedding stage)
+embedTraceGeneratorOccurrence embedding (IteratorYieldedGenerator stage origin) =
+  IteratorYieldedGenerator (embedIteratorStageOccurrence embedding stage) origin
+
+0 embeddedTraceGeneratorMapSame :
+  {segmentFirst, segmentLast, wholeFirst, wholeLast :
+    SystemState name key value world error} ->
+  {segment : Transitions segmentFirst segmentLast} ->
+  {whole : Transitions wholeFirst wholeLast} ->
+  (embedding : {stepBefore, stepAfter : SystemState name key value world error} ->
+    (transition : Transition stepBefore stepAfter) ->
+    OccursIn transition segment -> OccursIn transition whole) ->
+  (generator : TraceEffectGenerator name key world error value actor segment) ->
+  (state : EffectState name key value world) ->
+  traceGeneratorMap (embedTraceGeneratorOccurrence embedding generator) state =
+    traceGeneratorMap generator state
+embeddedTraceGeneratorMapSame embedding
+  (ActualForwardGenerator before afterState nameEq keyEq action tag equation
+    occurs actorMatches) state = Refl
+embeddedTraceGeneratorMapSame embedding
+  (IteratorForwardGenerator
+    (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+      accumulator view lifecycle step rest suffix)) state = Refl
+embeddedTraceGeneratorMapSame embedding
+  (IteratorYieldedGenerator
+    (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+      accumulator view lifecycle step rest suffix) origin) state = Refl
+
+public export
+%inline
+0 embedTraceTransformationOccurrence :
+  ({stepBefore, stepAfter : SystemState name key value world error} ->
+    (transition : Transition stepBefore stepAfter) ->
+    OccursIn transition segment -> OccursIn transition whole) ->
+  TraceEffectTransformation name key world error value actor segment ->
+  TraceEffectTransformation name key world error value actor whole
+embedTraceTransformationOccurrence embedding TraceIdentity = TraceIdentity
+embedTraceTransformationOccurrence embedding (TraceGenerator generator) =
+  TraceGenerator (embedTraceGeneratorOccurrence embedding generator)
+embedTraceTransformationOccurrence embedding (TraceCompose after before) =
+  TraceCompose (embedTraceTransformationOccurrence embedding after)
+    (embedTraceTransformationOccurrence embedding before)
+
+0 embeddedTraceTransformationMapSame :
+  {segmentFirst, segmentLast, wholeFirst, wholeLast :
+    SystemState name key value world error} ->
+  {segment : Transitions segmentFirst segmentLast} ->
+  {whole : Transitions wholeFirst wholeLast} ->
+  (embedding : {stepBefore, stepAfter : SystemState name key value world error} ->
+    (transition : Transition stepBefore stepAfter) ->
+    OccursIn transition segment -> OccursIn transition whole) ->
+  (transformation : TraceEffectTransformation name key world error value actor
+    segment) ->
+  (state : EffectState name key value world) ->
+  runTraceEffectTransformation
+    (embedTraceTransformationOccurrence embedding transformation) state =
+  runTraceEffectTransformation transformation state
+embeddedTraceTransformationMapSame embedding TraceIdentity state = Refl
+embeddedTraceTransformationMapSame embedding (TraceGenerator generator) state =
+  embeddedTraceGeneratorMapSame embedding generator state
+embeddedTraceTransformationMapSame embedding (TraceCompose after before) state
+  with (runTraceEffectTransformation
+    (embedTraceTransformationOccurrence embedding before) state)
+    proof embeddedRun
+  embeddedTraceTransformationMapSame embedding (TraceCompose after before) state |
+    Nothing =
+      let originalRun = trans
+            (sym (embeddedTraceTransformationMapSame embedding before state))
+            embeddedRun
+      in rewrite originalRun in Refl
+  embeddedTraceTransformationMapSame embedding (TraceCompose after before) state |
+    Just middle =
+      let originalRun = trans
+            (sym (embeddedTraceTransformationMapSame embedding before state))
+            embeddedRun
+      in rewrite originalRun in
+        embeddedTraceTransformationMapSame embedding after middle
+
+0 partialComposeMapsCong :
+  (leftBig, leftSmall, rightBig, rightSmall :
+    PartialEffectMap name key value world) ->
+  ((state : EffectState name key value world) -> leftBig state = leftSmall state) ->
+  ((state : EffectState name key value world) -> rightBig state = rightSmall state) ->
+  (state : EffectState name key value world) ->
+  partialCompose leftBig rightBig state = partialCompose leftSmall rightSmall state
+partialComposeMapsCong leftBig leftSmall rightBig rightSmall leftSame rightSame
+  state with (rightBig state) proof bigRun
+  partialComposeMapsCong leftBig leftSmall rightBig rightSmall leftSame rightSame
+    state | Nothing =
+      rewrite sym (rightSame state) in rewrite bigRun in Refl
+  partialComposeMapsCong leftBig leftSmall rightBig rightSmall leftSame rightSame
+    state | Just middle =
+      rewrite sym (rightSame state) in rewrite bigRun in leftSame middle
+
+0 partialCommuteMapsTransport :
+  (leftBig, leftSmall, rightBig, rightSmall :
+    PartialEffectMap name key value world) ->
+  ((state : EffectState name key value world) -> leftBig state = leftSmall state) ->
+  ((state : EffectState name key value world) -> rightBig state = rightSmall state) ->
+  PartialCommute (EffectStateEquivalence keyEq) leftBig rightBig ->
+  PartialCommute (EffectStateEquivalence keyEq) leftSmall rightSmall
+partialCommuteMapsTransport leftBig leftSmall rightBig rightSmall leftSame
+  rightSame commute state =
+    let leftThenRight = partialComposeMapsCong leftBig leftSmall rightBig
+          rightSmall leftSame rightSame state
+        rightThenLeft = partialComposeMapsCong rightBig rightSmall leftBig
+          leftSmall rightSame leftSame state
+        relatedBig = commute state
+        relatedRight = replace
+          {p = \observed => PartialRelated (EffectState name key value world)
+            (EffectStateRelated keyEq)
+            (partialCompose leftBig rightBig state) observed}
+          rightThenLeft relatedBig
+    in replace
+      {p = \observed => PartialRelated (EffectState name key value world)
+        (EffectStateRelated keyEq) observed
+        (partialCompose rightSmall leftSmall state)}
+      leftThenRight relatedRight
+
+0 outcomeStableAtExactRun :
+  (stage : IteratorStage name key world error value actor trace) ->
+  (foreign : PartialEffectMap name key value world) ->
+  (origin, moved : EffectState name key value world) ->
+  foreign origin = Just moved ->
+  IteratorOutcomeStableUnder keyEq stage foreign origin ->
+  IteratorOutcomeAgreement name key value world error keyEq
+    (iteratorStageOutcome stage moved) (iteratorStageOutcome stage origin)
+outcomeStableAtExactRun stage foreign origin moved defined stable
+  with (foreign origin) proof observed
+  outcomeStableAtExactRun stage foreign origin moved defined stable | Nothing =
+    void (nothingIsNotJust defined)
+  outcomeStableAtExactRun stage foreign origin moved defined stable | Just actual =
+    replace
+      {p = \candidate => IteratorOutcomeAgreement name key value world error
+        keyEq (iteratorStageOutcome stage candidate)
+        (iteratorStageOutcome stage origin)}
+      (justInjective defined) stable
+
+0 embeddedIteratorOutcomeSame :
+  {segmentFirst, segmentLast, wholeFirst, wholeLast :
+    SystemState name key value world error} ->
+  {segment : Transitions segmentFirst segmentLast} ->
+  {whole : Transitions wholeFirst wholeLast} ->
+  (embedding : {stepBefore, stepAfter : SystemState name key value world error} ->
+    (transition : Transition stepBefore stepAfter) ->
+    OccursIn transition segment -> OccursIn transition whole) ->
+  (stage : IteratorStage name key world error value actor segment) ->
+  (state : EffectState name key value world) ->
+  iteratorStageOutcome (embedIteratorStageOccurrence embedding stage) state =
+    iteratorStageOutcome stage state
+embeddedIteratorOutcomeSame embedding
+  (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+    accumulator view lifecycle step rest suffix) state = Refl
+
+0 restrictedIteratorOutcomeStable :
+  (embedding : {stepBefore, stepAfter : SystemState name key value world error} ->
+    (transition : Transition stepBefore stepAfter) ->
+    OccursIn transition segment -> OccursIn transition whole) ->
+  (independent : TraceIndependent name key world error value keyEq whole) ->
+  (left, right : name) -> Not (left = right) ->
+  (stage : IteratorStage name key world error value left segment) ->
+  (foreign : TraceEffectTransformation name key world error value right segment) ->
+  (origin : EffectState name key value world) ->
+  IteratorOutcomeStableUnder keyEq stage
+    (runTraceEffectTransformation foreign) origin
+restrictedIteratorOutcomeStable embedding independent left right distinct stage
+  foreign origin with (runTraceEffectTransformation
+    (embedTraceTransformationOccurrence embedding foreign) origin)
+    proof embeddedRun
+  restrictedIteratorOutcomeStable embedding independent left right distinct stage
+    foreign origin | Nothing =
+      let originalRun = trans
+            (sym (embeddedTraceTransformationMapSame embedding foreign origin))
+            embeddedRun
+      in rewrite originalRun in ()
+  restrictedIteratorOutcomeStable embedding independent left right distinct stage
+    foreign origin | Just moved =
+      let originalRun = trans
+            (sym (embeddedTraceTransformationMapSame embedding foreign origin))
+            embeddedRun
+          stable = iteratorYieldsStable independent left right distinct
+            (embedIteratorStageOccurrence embedding stage)
+            (embedTraceTransformationOccurrence embedding foreign) origin
+          globalAgreement = outcomeStableAtExactRun
+            (embedIteratorStageOccurrence embedding stage)
+            (runTraceEffectTransformation
+              (embedTraceTransformationOccurrence embedding foreign))
+            origin moved embeddedRun stable
+          rightTransported = replace
+            {p = \observed => IteratorOutcomeAgreement name key value world
+              error keyEq
+              (iteratorStageOutcome
+                (embedIteratorStageOccurrence embedding stage) moved)
+              observed}
+            (embeddedIteratorOutcomeSame embedding stage origin) globalAgreement
+          bothTransported = replace
+            {p = \observed => IteratorOutcomeAgreement name key value world
+              error keyEq observed (iteratorStageOutcome stage origin)}
+            (embeddedIteratorOutcomeSame embedding stage moved) rightTransported
+      in rewrite originalRun in bothTransported
+
+||| Definition 60 is hereditary under occurrence embeddings.
+public export
+0 traceIndependentUnderEmbedding :
+  (embedding : {stepBefore, stepAfter : SystemState name key value world error} ->
+    (transition : Transition stepBefore stepAfter) ->
+    OccursIn transition segment -> OccursIn transition whole) ->
+  TraceIndependent name key world error value keyEq whole ->
+  TraceIndependent name key world error value keyEq segment
+traceIndependentUnderEmbedding embedding independent = MkTraceIndependent
+  (\left, right, distinct, leftT, rightT =>
+    partialCommuteMapsTransport
+      (runTraceEffectTransformation
+        (embedTraceTransformationOccurrence embedding leftT))
+      (runTraceEffectTransformation leftT)
+      (runTraceEffectTransformation
+        (embedTraceTransformationOccurrence embedding rightT))
+      (runTraceEffectTransformation rightT)
+      (embeddedTraceTransformationMapSame embedding leftT)
+      (embeddedTraceTransformationMapSame embedding rightT)
+      (generatedMonoidsCommute independent left right distinct
+        (embedTraceTransformationOccurrence embedding leftT)
+        (embedTraceTransformationOccurrence embedding rightT)))
+  (restrictedIteratorOutcomeStable embedding independent)
 
 ||| Direct projection used by recovery: each concrete yielded inverse is a
 ||| generator in M(i), so final-accumulator cancellation cannot hide it.

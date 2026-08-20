@@ -80,8 +80,10 @@ public export
   iteratorStageEffect stage origin = Just (after, undo, continuation) ->
   (state : EffectState name key value world) ->
   traceGeneratorMap (IteratorYieldedGenerator stage origin) state = undo state
-yieldedGeneratorMapFromStageRun stage origin after undo continuation stageRuns
-  state = rewrite stageRuns in Refl
+yieldedGeneratorMapFromStageRun
+  (StageFromAdvance nameEq keyEq selected tag equation occurs fiber found
+    remaining accumulator view lifecycle step rest suffix)
+  origin after undo continuation stageRuns state = rewrite stageRuns in Refl
 
 ||| One successful actual L-Advance extends the selected accumulator's generated
 ||| transformation by the exact yielded inverse occurrence. This is the
