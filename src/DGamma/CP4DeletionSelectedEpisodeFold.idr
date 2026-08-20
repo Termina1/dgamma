@@ -23,6 +23,7 @@ import DGamma.CP4DeletionSelectedBoundary
 import DGamma.CP4DeletionSelectedCloseBoundary
 import DGamma.CP4DeletionSelectedEpisodeFoldCore
 import DGamma.CP4DeletionSelectedEpisodeReplay
+import DGamma.CP4DeletionSelectedEpisodeAnchors
 import DGamma.CP4DeletionSelectedStart
 import DGamma.CP4RecoveryModelTrace
 import Data.List.Elem
@@ -501,3 +502,49 @@ selectedClosedEpisodeFold {name} {key} {world} {error} {value}
     in MkSelectedClosedEpisodeFold (S (interiorFinalOrdinal interior))
       (interiorFinalLive interior) (interiorFinalSurvivor interior) fullScan
       fullReady finalUnique finalStamped postClose
+
+||| Public-premise entry point: reconstruct the occurrence-local lifecycle
+||| anchor provider internally, then run the complete selected structural fold.
+public export
+0 selectedClosedEpisodeFoldFromPremises :
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) ->
+  (global : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  RegistrationDiscipline protocol nameEq global ->
+  registryWellFormed @{nameEq} @{keyEq} initial = True ->
+  bindings (registry initial) = [] ->
+  TraceIndependent name key world error value keyEq global ->
+  (selected : name) ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  (registered : List (RegistrationGeneration name)) ->
+  ((generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (episodeStartOrdinal : Nat) ->
+  (episodeStartLive : GenerationEnvironment name) ->
+  (beforeScan : GenerationTraceScan nameEq 0 []
+    (traceBeforeOpening located) episodeStartOrdinal episodeStartLive) ->
+  (registeredDuring : RegisteredGenerationsDuring selected episodeStartOrdinal
+    registered
+    (MoreTransitions
+      (beginTransition (closedOpening (locatedEpisode located)))
+      (closedTransitions (locatedEpisode located)))) ->
+  NoDependentClosingEpisode {nameEq = nameEq} {keyEq = keyEq} selected global ->
+  (noRegistered : NoRegisteredEpisode nameEq registered 0 [] global) ->
+  SelectedClosedEpisodeFold name key world error value nameEq keyEq selected
+    registered episodeStartOrdinal episodeStartLive (locatedEpisode located)
+    (appendTransitions (closedTransitions (locatedEpisode located))
+      (traceAfterClosing located))
+selectedClosedEpisodeFoldFromPremises protocol nameEq keyEq initial finalState
+  global aligned discipline initialWellFormed initialEmpty independent selected
+  located registered selectedOutside episodeStartOrdinal episodeStartLive
+  beforeScan registeredDuring noDependent noRegistered =
+    selectedClosedEpisodeFold protocol nameEq keyEq initial finalState global
+      aligned discipline initialWellFormed independent selected located registered
+      selectedOutside episodeStartOrdinal episodeStartLive beforeScan
+      registeredDuring noDependent noRegistered
+      (selectedEpisodeLifecycleAnchorProvider nameEq keyEq initial finalState
+        global aligned initialWellFormed initialEmpty selected located registered
+        noDependent)
