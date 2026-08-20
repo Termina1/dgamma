@@ -5874,6 +5874,7 @@ installedFiberWitness nameEq selected state installedTrue
   installedFiberWitness nameEq selected state installedTrue | Just fiber =
     (fiber ** Refl)
 
+public export
 0 installedCheckedStepStaticReplacement :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (selected : name) ->
@@ -5922,6 +5923,7 @@ viewProvidersInjective (ProviderView left leftRest)
       Refl => cong (ProviderView right)
         (viewProvidersInjective leftRest rightRest tailEqual)
 
+public export
 0 snapshotComponentStable :
   (sourceSnapshot : CommittedSnapshot name key world error value nameEq selected
     providers before) ->
@@ -5960,6 +5962,7 @@ resolvedViewStableAcrossComponents wanted provider component component Refl
     rewrite viewProvidersInjective targetView sourceView providersEqual in
       sourceResolved
 
+public export
 0 snapshotResolvedLookupStable :
   (wanted : key) -> (provider : name) ->
   (sourceSnapshot : CommittedSnapshot name key world error value nameEq selected
