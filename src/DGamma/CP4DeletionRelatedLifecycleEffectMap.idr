@@ -290,3 +290,25 @@ relatedLifecyclePartialMapOutputs nameEq keyEq (LUnload actor) lifecycle tag
     (sym (unloadAtFound nameEq keyEq actor rightWorld rightRegistry rightOwner
       rightFound state))
     (relatedFiberUnloadOutputs nameEq keyEq actor leftOwner rightOwner owners state)
+
+public export
+0 relatedLifecyclePartialMapOutputsAtStates :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  isLifecycleAction action = True -> (tag : RuleTag) ->
+  (left, right : SystemState name key value world error) ->
+  (leftOwner, rightOwner : Fiber name key value world error) ->
+  lookupFiber @{nameEq} (actionOwner action) (registry left) = Just leftOwner ->
+  lookupFiber @{nameEq} (actionOwner action) (registry right) = Just rightOwner ->
+  FiberControlRelated leftOwner rightOwner ->
+  (state : EffectState name key value world) ->
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    (partialEffectMapFor nameEq keyEq action tag left state)
+    (partialEffectMapFor nameEq keyEq action tag right state)
+relatedLifecyclePartialMapOutputsAtStates nameEq keyEq action lifecycle tag
+  (MkSystemState leftWorld leftRegistry)
+  (MkSystemState rightWorld rightRegistry) leftOwner rightOwner leftFound
+  rightFound owners state =
+    relatedLifecyclePartialMapOutputs nameEq keyEq action lifecycle tag leftWorld
+      rightWorld leftRegistry rightRegistry leftOwner rightOwner leftFound
+      rightFound owners state

@@ -140,6 +140,7 @@ stateRuntimeEta (MkSystemState ambient fibers) = Refl
 0 distinctSymmetric : Not (left = right) -> Not (right = left)
 distinctSymmetric distinct Refl = distinct Refl
 
+public export
 0 foreignActionPreservesCleanInactive :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (action : Action name key value world error) ->
