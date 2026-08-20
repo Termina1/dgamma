@@ -58,6 +58,9 @@ record SelectedEpisodeLifecycleAnchorProvider
     (tag : RuleTag) ->
     (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
       Just (tag, afterState)) ->
+    {restFinal : SystemState name key value world error} ->
+    (rest : Transitions afterState restFinal) ->
+    InstalledTrace name key world error value nameEq keyEq selected rest ->
     (occurs : OccursIn
       (Fired {before = before} {afterState = afterState}
         nameEq keyEq action tag checked) global) ->
@@ -72,6 +75,9 @@ record SelectedEpisodeLifecycleAnchorProvider
       Just leftSelected ->
     lookupFiber @{nameEq} (actionOwner action)
       (planTarget (completePlanResult (selectedBoundaryPlan boundary))) =
+      Just leftOwner ->
+    lookupFiber @{nameEq} selected (registry before) = Just leftSelected ->
+    lookupFiber @{nameEq} (actionOwner action) (registry before) =
       Just leftOwner ->
     lookupFiber @{nameEq} (actionOwner action) (registry survivor) =
       Just rightOwner ->
@@ -368,6 +374,7 @@ selectedEpisodeLocalReplayer {name} {key} {world} {error} {value}
     installedAt @{nameEq} selected afterState = True ->
     {restFinal : SystemState name key value world error} ->
     (rest : Transitions afterState restFinal) ->
+    InstalledTrace name key world error value nameEq keyEq selected rest ->
     (noBegin : IsBeginAction action ->
       GenerationOwnedActor nameEq registered ordinal live action -> Void) ->
     (occurs : OccursIn
@@ -385,8 +392,8 @@ selectedEpisodeLocalReplayer {name} {key} {world} {error} {value}
     SelectedEpisodeRetainedHead name key world error value nameEq keyEq selected
       registered ordinal live whole action afterState survivor
   replayRetained ordinal live unique stamped outside action before afterState
-    survivor tag checked sourceInstalled targetInstalled rest noBegin
-    occurs boundary emptyPlan inactive retained =
+    survivor tag checked sourceInstalled targetInstalled rest selectedRest
+    noBegin occurs boundary emptyPlan inactive retained =
       case decEq @{nameEq} (actionOwner action) selected of
         Yes ownerSelected => selectedCase ownerSelected
         No ownerDistinct => foreignCase ownerDistinct
@@ -582,9 +589,24 @@ selectedEpisodeLocalReplayer {name} {key} {world} {error} {value}
                 leftSelected leftOwner
             evidence = \leftSelected, leftOwner, rightOwner, selectedFound,
               leftFound, rightFound, controls => lifecycleAnchorAt anchors ordinal
-                live action kind distinct before afterState tag checked
+                live action kind distinct before afterState tag checked rest
+                selectedRest
                 (wholeInGlobal (Fired nameEq keyEq action tag checked) occurs)
                 boundary leftSelected leftOwner rightOwner selectedFound leftFound
+                (trans (sym (lookupOutsideInactivePlan nameEq selected
+                  (registry before)
+                  (planTarget (completePlanResult
+                    (selectedBoundaryPlan boundary)))
+                  (inactiveLeafPlan (completePlanResult
+                    (selectedBoundaryPlan boundary))) selectedPlanOutside))
+                  selectedFound)
+                (trans (sym (lookupOutsideInactivePlan nameEq
+                  (actionOwner action) (registry before)
+                  (planTarget (completePlanResult
+                    (selectedBoundaryPlan boundary)))
+                  (inactiveLeafPlan (completePlanResult
+                    (selectedBoundaryPlan boundary))) ownerPlanOutside))
+                  leftFound)
                 rightFound controls
         in case retainedForeignLifecyclePreservesEpisodeBoundary nameEq keyEq
           selected registered ordinal live action kind distinct global noDependent
