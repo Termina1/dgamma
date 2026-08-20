@@ -72,6 +72,8 @@ record SelectedEpisodeLocalReplayer
     (tag : RuleTag) ->
     (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
       Just (tag, afterState)) ->
+    installedAt @{nameEq} selected before = True ->
+    installedAt @{nameEq} selected afterState = True ->
     {restFinal : SystemState name key value world error} ->
     (rest : Transitions afterState restFinal) ->
     RegistrationStepDiscipline protocol nameEq action before rest ->
@@ -102,6 +104,8 @@ record SelectedEpisodeLocalReplayer
     (tag : RuleTag) ->
     (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
       Just (tag, afterState)) ->
+    installedAt @{nameEq} selected before = True ->
+    installedAt @{nameEq} selected afterState = True ->
     {restFinal : SystemState name key value world error} ->
     (rest : Transitions afterState restFinal) ->
     RegistrationStepDiscipline protocol nameEq action before rest ->
@@ -182,6 +186,8 @@ public export
   (original : Transitions originalFirst originalFinal) ->
   (aligned : AlignedTransitions name key world error value nameEq keyEq
     original) ->
+  (installed : InstalledTrace name key world error value nameEq keyEq selected
+    original) ->
   (discipline : RegistrationDiscipline protocol nameEq original) ->
   (noRegistered : NoRegisteredEpisode nameEq registered ordinal live original) ->
   (embed : OccurrenceEmbedding original whole) ->
@@ -199,7 +205,8 @@ public export
     registered ordinal live whole original survivorFirst
 selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
   selectedOutside whole local ordinal live unique stamped NoTransitions
-  AlignedEnd RegistrationDisciplineEnd NoRegisteredEpisodeEnd embed survivorFirst
+  AlignedEnd (InstalledEnd installedEnd) RegistrationDisciplineEnd
+  NoRegisteredEpisodeEnd embed survivorFirst
   boundary inactive empty emptyPlan =
     MkSelectedEpisodeInteriorFold ordinal live survivorFirst
       GenerationTraceScanEnd ReplayReadyEnd boundary
@@ -207,6 +214,7 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
   selectedOutside whole local ordinal live unique stamped
   (MoreTransitions (Fired nameEq keyEq action tag checked) rest)
   (AlignedStep action tag checked rest alignedRest)
+  (InstalledStep action tag checked rest sourceInstalled installedRest)
   (RegistrationDisciplineStep
     (Fired nameEq keyEq action tag checked) rest stepDiscipline restDiscipline)
   (NoRegisteredEpisodeStep
@@ -218,6 +226,7 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
     selectedOutside whole local ordinal live unique stamped
     (MoreTransitions (Fired nameEq keyEq action tag checked) rest)
     (AlignedStep action tag checked rest alignedRest)
+    (InstalledStep action tag checked rest sourceInstalled installedRest)
     (RegistrationDisciplineStep
       (Fired nameEq keyEq action tag checked) rest stepDiscipline restDiscipline)
     (NoRegisteredEpisodeStep
@@ -234,7 +243,8 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
             ordinal live unique action _ _ tag raw noBegin inactive empty
           0 occurs = embed (Fired nameEq keyEq action tag checked) OccursHere
           0 nextBoundary = replayDeletedEpisodeHead local ordinal live unique
-            stamped selectedOutside action _ _ survivorFirst tag checked rest
+            stamped selectedOutside action _ _ survivorFirst tag checked
+            sourceInstalled (installedTraceStart installedRest) rest
             stepDiscipline occurs boundary emptyPlan inactive deleted
           0 nextEmptyPlan : EmptyTableInactivePlan name key world error value
             nameEq (inactiveLeafPlan (completePlanResult
@@ -251,7 +261,7 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
           folded = selectedEpisodeInteriorFold protocol nameEq keyEq selected
             registered selectedOutside whole local (S ordinal)
             (advanceGenerationEnvironment @{nameEq} ordinal action live)
-            nextUnique nextStamped rest alignedRest restDiscipline
+            nextUnique nextStamped rest alignedRest installedRest restDiscipline
             noRegisteredRest tailEmbed survivorFirst nextBoundary nextInactive
             nextEmpty nextEmptyPlan
       in MkSelectedEpisodeInteriorFold
@@ -264,6 +274,7 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
     selectedOutside whole local ordinal live unique stamped
     (MoreTransitions (Fired nameEq keyEq action tag checked) rest)
     (AlignedStep action tag checked rest alignedRest)
+    (InstalledStep action tag checked rest sourceInstalled installedRest)
     (RegistrationDisciplineStep
       (Fired nameEq keyEq action tag checked) rest stepDiscipline restDiscipline)
     (NoRegisteredEpisodeStep
@@ -280,7 +291,8 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
             ordinal live unique action _ _ tag raw noBegin inactive empty
           0 occurs = embed (Fired nameEq keyEq action tag checked) OccursHere
           replay = replayRetainedEpisodeHead local ordinal live unique stamped
-            selectedOutside action _ _ survivorFirst tag checked rest
+            selectedOutside action _ _ survivorFirst tag checked
+            sourceInstalled (installedTraceStart installedRest) rest
             stepDiscipline occurs boundary emptyPlan inactive retained
       in case replay of
         MkSelectedEpisodeRetainedHead
@@ -301,7 +313,7 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
               folded = selectedEpisodeInteriorFold protocol nameEq keyEq
                 selected registered selectedOutside whole local (S ordinal)
                 (advanceGenerationEnvironment @{nameEq} ordinal action live)
-                nextUnique nextStamped rest alignedRest restDiscipline
+                nextUnique nextStamped rest alignedRest installedRest restDiscipline
                 noRegisteredRest tailEmbed namedAfter nextBoundary
                 nextInactive nextEmpty nextEmptyPlan
           in MkSelectedEpisodeInteriorFold
