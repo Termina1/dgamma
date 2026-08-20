@@ -77,6 +77,8 @@ record SelectedEpisodeLocalReplayer
     {restFinal : SystemState name key value world error} ->
     (rest : Transitions afterState restFinal) ->
     RegistrationStepDiscipline protocol nameEq action before rest ->
+    (noBegin : IsBeginAction action ->
+      GenerationOwnedActor nameEq registered ordinal live action -> Void) ->
     (occurs : OccursIn
       (Fired {before = before} {afterState = afterState}
         nameEq keyEq action tag checked) whole) ->
@@ -109,6 +111,8 @@ record SelectedEpisodeLocalReplayer
     {restFinal : SystemState name key value world error} ->
     (rest : Transitions afterState restFinal) ->
     RegistrationStepDiscipline protocol nameEq action before rest ->
+    (noBegin : IsBeginAction action ->
+      GenerationOwnedActor nameEq registered ordinal live action -> Void) ->
     (occurs : OccursIn
       (Fired {before = before} {afterState = afterState}
         nameEq keyEq action tag checked) whole) ->
@@ -245,7 +249,7 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
           0 nextBoundary = replayDeletedEpisodeHead local ordinal live unique
             stamped selectedOutside action _ _ survivorFirst tag checked
             sourceInstalled (installedTraceStart installedRest) rest
-            stepDiscipline occurs boundary emptyPlan inactive deleted
+            stepDiscipline noBegin occurs boundary emptyPlan inactive deleted
           0 nextEmptyPlan : EmptyTableInactivePlan name key world error value
             nameEq (inactiveLeafPlan (completePlanResult
               (selectedBoundaryPlan nextBoundary)))
@@ -293,7 +297,7 @@ selectedEpisodeInteriorFold protocol nameEq keyEq selected registered
           replay = replayRetainedEpisodeHead local ordinal live unique stamped
             selectedOutside action _ _ survivorFirst tag checked
             sourceInstalled (installedTraceStart installedRest) rest
-            stepDiscipline occurs boundary emptyPlan inactive retained
+            stepDiscipline noBegin occurs boundary emptyPlan inactive retained
       in case replay of
         MkSelectedEpisodeRetainedHead
           named@(MkNamedTransition namedAfter namedTag namedTransition sameAction)
