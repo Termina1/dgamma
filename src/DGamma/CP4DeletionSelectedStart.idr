@@ -30,6 +30,7 @@ environmentElemBirthBound
   ((current, currentGeneration) :: rest) (headBound, tailBound) (There later) =
     environmentElemBirthBound rest tailBound later
 
+public export
 0 generationScanPreservesBounded :
   {first, finalState : SystemState name key value world error} ->
   (nameEq : DecEq name) ->
@@ -46,6 +47,7 @@ generationScanPreservesBounded nameEq bounded
       (advanceGenerationEnvironmentBounded nameEq _
         (transitionAction transition) _ bounded) rest tail
 
+public export
 0 noCurrentRegisteredAtEpisodeStart :
   (registered : List (RegistrationGeneration name)) ->
   (live : GenerationEnvironment name) ->
