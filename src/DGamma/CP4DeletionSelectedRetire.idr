@@ -110,6 +110,7 @@ selectedStaticLookupFound nameEq selected left right leftFiber found ordered =
       MkSelectedStaticFiberFound rightFiber
         (trans (lookupFiberAsEntries nameEq selected right) rightFound) static
 
+public export
 0 retireFiberStaticRelated :
   FiberStaticRelated name key world error value left right ->
   FiberStaticRelated name key world error value (retireFiber left)

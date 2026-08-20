@@ -73,6 +73,7 @@ effectFromWorldBindingsPost nameEq keyEq
         effectTableReproofPost nameEq actor leftWorld rightEntries leftUnique
           rightUnique)
 
+public export
 0 postClosePlanExactBoundary :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   GenerationEnvironmentNamesUnique live ->
@@ -124,6 +125,7 @@ lookupFiberFromRuntimeBindings nameEq actor left right bindingsSame rightFound =
     (trans (cong (lookupEntries @{nameEq} actor) bindingsSame)
       (trans (sym (lookupFiberAsEntries nameEq actor right)) rightFound))
 
+public export
 0 systemEtaPost : (state : SystemState name key value world error) ->
   MkSystemState (worldState state) (registry state) = state
 systemEtaPost (MkSystemState ambient fibers) = Refl
@@ -145,7 +147,8 @@ record PostCloseOrchestrationStep
     error value nameEq keyEq selected registered nextOrdinal nextLive
     originalAfter (namedAfter postCloseOrchestrationNamed)
 
-packageForeignPostCloseOrchestration :
+public export
+packagePostCloseOrchestrationWithInvariants :
   (protocol : RegistrationProtocol key value world error) ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (registered : List (RegistrationGeneration name)) ->
@@ -153,7 +156,6 @@ packageForeignPostCloseOrchestration :
   GenerationEnvironmentNamesUnique live ->
   (action : Action name key value world error) ->
   (orchestration : isLifecycleAction action = False) ->
-  (actorDistinct : Not (actionOwner action = selected)) ->
   (original, originalAfter, originalFinal, survivor :
     SystemState name key value world error) ->
   (tag : RuleTag) ->
@@ -180,14 +182,19 @@ packageForeignPostCloseOrchestration :
   (control : ForeignOrchestrationControlReplay name key world error value nameEq
     keyEq selected action (namedTag (retainedBoundaryNamed exactStep))
     (namedAfter (retainedBoundaryNamed exactStep)) survivor) ->
+  InactiveFiberAt name key world error value nameEq selected
+    (namedAfter (retainedBoundaryNamed exactStep)) ->
+  SelectedSurvivorCleanInactive name key world error value nameEq selected
+    (foreignControlAfter control) ->
   PostCloseOrchestrationStep name key world error value nameEq keyEq selected
     registered (S ordinal)
     (advanceGenerationEnvironment @{nameEq} ordinal action live)
     action originalAfter survivor
-packageForeignPostCloseOrchestration protocol nameEq keyEq selected registered
-  ordinal live unique action orchestration actorDistinct original originalAfter
+packagePostCloseOrchestrationWithInvariants protocol nameEq keyEq selected
+  registered ordinal live unique action orchestration original originalAfter
   originalFinal survivor tag checked rest discipline retained noBegin
-  sourceInactive sourceEmpty boundary exactStep control =
+  sourceInactive sourceEmpty boundary exactStep control namedSelectedInactive
+  nextClean =
     let 0 planRaw = namedFireProjectsRaw nameEq keyEq action (plannedSystemState original
           (completePlanResult (postClosePlan boundary))) (retainedBoundaryNamed exactStep)
           (retainedBoundaryFires exactStep)
@@ -256,14 +263,6 @@ packageForeignPostCloseOrchestration protocol nameEq keyEq selected registered
         nextControls = selectedOrderedTransport
           (sym (retainedPackageBindings nextPackage)) Refl
           (foreignControlOrdered controlAtNamed)
-        0 selectedDifferent : Not (selected = actionOwner action)
-        selectedDifferent same = actorDistinct (sym same)
-        0 namedSelectedInactive : (InactiveFiberAt name key world error value
-          nameEq selected (namedAfter (retainedBoundaryNamed exactStep)))
-        namedSelectedInactive = inactiveForeignPost nameEq keyEq selected action
-          selectedDifferent (plannedSystemState original
-          (completePlanResult (postClosePlan boundary))) (namedAfter (retainedBoundaryNamed exactStep))
-          (namedTag (retainedBoundaryNamed exactStep)) planRaw (postClosePlanSelectedInactive boundary)
         0 nextPlanSelectedInactive : InactiveFiberAt name key world error value
           nameEq selected
           (plannedSystemState originalAfter (completePlanResult nextPlan))
@@ -274,12 +273,6 @@ packageForeignPostCloseOrchestration protocol nameEq keyEq selected registered
                 (planTarget (completePlanResult nextPlan))
                 (registry (namedAfter (retainedBoundaryNamed exactStep)))
                 (retainedPackageBindings nextPackage) found)
-        0 nextClean : (SelectedSurvivorCleanInactive name key world error value
-          nameEq selected (foreignControlAfter controlAtNamed))
-        nextClean = foreignActionPreservesCleanInactive nameEq keyEq selected
-          action actorDistinct survivor (foreignControlAfter controlAtNamed)
-          (namedTag (retainedBoundaryNamed exactStep)) (foreignControlRaw controlAtNamed)
-          (postCloseCleanInactive boundary)
         0 raw : (applyAction @{nameEq} @{keyEq} action original =
           Just (tag, originalAfter))
         raw = checkedActionProjects nameEq keyEq action original originalAfter
@@ -379,6 +372,50 @@ retainedForeignPostCloseOrchestration protocol nameEq keyEq selected registered
           (plannedSystemState original
             (completePlanResult (postClosePlan boundary)))
           (retainedBoundaryNamed exactStep) (retainedBoundaryFires exactStep)
+        finish : ForeignOrchestrationControlReplay name key world error value
+          nameEq keyEq selected action
+          (namedTag (retainedBoundaryNamed exactStep))
+          (namedAfter (retainedBoundaryNamed exactStep))
+          (MkSystemState (worldState survivor) (registry survivor)) ->
+          PostCloseOrchestrationStep name key world error value nameEq keyEq
+            selected registered (S ordinal)
+            (advanceGenerationEnvironment @{nameEq} ordinal action live)
+            action originalAfter survivor
+        finish control =
+          let controlExact : ForeignOrchestrationControlReplay name key world
+                error value nameEq keyEq selected action
+                (namedTag (retainedBoundaryNamed exactStep))
+                (namedAfter (retainedBoundaryNamed exactStep)) survivor
+              controlExact = replace
+                {p = \state => ForeignOrchestrationControlReplay name key world
+                  error value nameEq keyEq selected action
+                  (namedTag (retainedBoundaryNamed exactStep))
+                  (namedAfter (retainedBoundaryNamed exactStep)) state}
+                (systemEtaPost survivor) control
+              selectedDifferent : Not (selected = actionOwner action)
+              selectedDifferent same = actorDistinct (sym same)
+              0 planInactive : (InactiveFiberAt name key world error value
+                nameEq selected (namedAfter (retainedBoundaryNamed exactStep)))
+              planInactive = inactiveForeignPost nameEq keyEq selected action
+                selectedDifferent
+                (plannedSystemState original
+                  (completePlanResult (postClosePlan boundary)))
+                (namedAfter (retainedBoundaryNamed exactStep))
+                (namedTag (retainedBoundaryNamed exactStep)) planRaw
+                (postClosePlanSelectedInactive boundary)
+              0 clean : (SelectedSurvivorCleanInactive name key world error
+                value nameEq selected (foreignControlAfter controlExact))
+              clean = foreignActionPreservesCleanInactive nameEq keyEq selected
+                action actorDistinct survivor (foreignControlAfter controlExact)
+                (namedTag (retainedBoundaryNamed exactStep))
+                (foreignControlRaw controlExact)
+                (postCloseCleanInactive boundary)
+          in packagePostCloseOrchestrationWithInvariants protocol nameEq keyEq
+            selected registered ordinal live unique action orchestration original
+            originalAfter originalFinal survivor tag checked rest discipline
+            retained noBegin (postCloseCurrentInactive boundary)
+            (postCloseCurrentEmpty boundary) boundary exactStep controlExact
+            planInactive clean
     in case action of
       OInsert actor parent component =>
         let control = replayForeignInsertControls nameEq keyEq selected actor
@@ -386,18 +423,10 @@ retainedForeignPostCloseOrchestration protocol nameEq keyEq selected registered
               (worldState survivor)
               (planTarget (completePlanResult (postClosePlan boundary)))
               (registry survivor) (postCloseControls boundary)
-              (namedTag (retainedBoundaryNamed exactStep)) (namedAfter (retainedBoundaryNamed exactStep)) planRaw
+              (namedTag (retainedBoundaryNamed exactStep))
+              (namedAfter (retainedBoundaryNamed exactStep)) planRaw
               (postCloseSurvivorWellFormed boundary)
-        in packageForeignPostCloseOrchestration protocol nameEq keyEq selected
-          registered ordinal live unique action orchestration actorDistinct
-          original originalAfter originalFinal survivor tag checked rest
-          discipline retained noBegin (postCloseCurrentInactive boundary)
-          (postCloseCurrentEmpty boundary) boundary exactStep
-          (replace
-            {p = \state => ForeignOrchestrationControlReplay name key world error
-              value nameEq keyEq selected action (namedTag (retainedBoundaryNamed exactStep))
-              (namedAfter (retainedBoundaryNamed exactStep)) state}
-            (systemEtaPost survivor) control)
+        in finish control
       ORetire actor =>
         let control = replayForeignRetireControls nameEq keyEq selected actor
               actorDistinct (worldState original) (worldState survivor)
@@ -405,16 +434,7 @@ retainedForeignPostCloseOrchestration protocol nameEq keyEq selected registered
               (registry survivor) (postCloseControls boundary)
               (namedTag (retainedBoundaryNamed exactStep)) (namedAfter (retainedBoundaryNamed exactStep)) planRaw
               (postCloseSurvivorWellFormed boundary)
-        in packageForeignPostCloseOrchestration protocol nameEq keyEq selected
-          registered ordinal live unique action orchestration actorDistinct
-          original originalAfter originalFinal survivor tag checked rest
-          discipline retained noBegin (postCloseCurrentInactive boundary)
-          (postCloseCurrentEmpty boundary) boundary exactStep
-          (replace
-            {p = \state => ForeignOrchestrationControlReplay name key world error
-              value nameEq keyEq selected action (namedTag (retainedBoundaryNamed exactStep))
-              (namedAfter (retainedBoundaryNamed exactStep)) state}
-            (systemEtaPost survivor) control)
+        in finish control
       ORemove actor =>
         let control = replayForeignRemoveControls nameEq keyEq selected actor
               actorDistinct (worldState original) (worldState survivor)
@@ -422,16 +442,7 @@ retainedForeignPostCloseOrchestration protocol nameEq keyEq selected registered
               (registry survivor) (postCloseControls boundary)
               (namedTag (retainedBoundaryNamed exactStep)) (namedAfter (retainedBoundaryNamed exactStep)) planRaw
               (postCloseSurvivorWellFormed boundary)
-        in packageForeignPostCloseOrchestration protocol nameEq keyEq selected
-          registered ordinal live unique action orchestration actorDistinct
-          original originalAfter originalFinal survivor tag checked rest
-          discipline retained noBegin (postCloseCurrentInactive boundary)
-          (postCloseCurrentEmpty boundary) boundary exactStep
-          (replace
-            {p = \state => ForeignOrchestrationControlReplay name key world error
-              value nameEq keyEq selected action (namedTag (retainedBoundaryNamed exactStep))
-              (namedAfter (retainedBoundaryNamed exactStep)) state}
-            (systemEtaPost survivor) control)
+        in finish control
       LBegin actor => case orchestration of Refl impossible
       LAdvance actor => case orchestration of Refl impossible
       LDivert actor => case orchestration of Refl impossible
