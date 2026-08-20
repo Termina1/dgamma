@@ -2259,9 +2259,14 @@ of every retained post-close action (`postCloseOrchestrationEffects` and
 It also checks `retainedForeignPostCloseOrchestration`, including exact current-R
 plan commutation, all three foreign orchestration constructors, survivor replay,
 selected-static control threading, selected Inactive preservation, and all
-current-R Inactive/empty-plan invariants. The remaining structural prefix cases
-are selected O-Retire and retained foreign lifecycle; selected O-Remove/rebegin
-then dispatch to the already-checked full-control upgrades.
+current-R Inactive/empty-plan invariants. Shift 36 closes the remaining local
+prefix cases. `retainedSelectedPostCloseRetire` applies retirement to both
+selected-static cells and reuses the common post-close packager.
+`retainedForeignPostCloseLifecycle` derives direct provider exclusion from the
+plan-side selected Inactive witness, derives L-Advance outcome agreement from a
+singleton checked stage plus related effects, replays all lifecycle rules, and
+threads the full post-close invariant. The remaining obligation-2 work is now
+only the structural action dispatch/fold and selected O-Remove/rebegin discharge.
 
 For endpoint withdrawal, `currentGenerationAtScanStart` is checked: a generation
 older than the current ordinal that remains current at a scanned suffix endpoint
