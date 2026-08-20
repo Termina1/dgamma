@@ -106,6 +106,20 @@ fireNamed nameEq keyEq action before
     Just (MkNamedTransition afterState tag
       (Fired nameEq keyEq action tag checked) Refl)
 
+public export
+0 fireNamedNothingImpliesCheckedNothing :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (before : SystemState name key value world error) ->
+  fireNamed nameEq keyEq action before = Nothing ->
+  checkedApplyAction @{nameEq} @{keyEq} action before = Nothing
+fireNamedNothingImpliesCheckedNothing nameEq keyEq action before fired
+  with (checkedApplyAction @{nameEq} @{keyEq} action before) proof checked
+  fireNamedNothingImpliesCheckedNothing nameEq keyEq action before fired |
+    Nothing = Refl
+  fireNamedNothingImpliesCheckedNothing nameEq keyEq action before fired |
+    Just (tag, afterState) = case fired of Refl impossible
+
 ||| Existential output of the executable generation filter. The survivor trace
 ||| and the bidirectional keep/delete witness are constructed together, so the
 ||| output cannot silently retain a deletable action.

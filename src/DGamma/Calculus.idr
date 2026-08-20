@@ -5842,8 +5842,8 @@ data Transition : SystemState name key value world error ->
                   SystemState name key value world error -> Type where
   Fired : (nameEq : DecEq name) -> (keyEq : DecEq key) ->
           (action : Action name key value world error) -> (tag : RuleTag) ->
-          checkedApplyAction @{nameEq} @{keyEq} action before =
-            Just (tag, afterState) ->
+          (0 fires : checkedApplyAction @{nameEq} @{keyEq} action before =
+            Just (tag, afterState)) ->
           Transition before afterState
 
 public export

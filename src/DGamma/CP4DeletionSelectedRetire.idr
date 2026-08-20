@@ -173,6 +173,7 @@ record SelectedRetainedEpisodeStep
     value nameEq keyEq selected registered (S ordinal) live whole originalAfter
     (namedAfter selectedRetainedNamed)
 
+public export
 record RetainedNextPlanPackage
   (name, key, world, error : Type) (value : key -> Type)
   (nameEq : DecEq name) (registered : List (RegistrationGeneration name))
@@ -185,6 +186,7 @@ record RetainedNextPlanPackage
     (planTarget (completePlanResult retainedPackagePlan)) =
     bindings (registry namedAfter)
 
+public export
 retainedStepNextPlanPackage :
   (step : RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
     registered live action originalAfter survivorBefore) ->
