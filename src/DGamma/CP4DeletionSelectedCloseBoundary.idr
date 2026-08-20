@@ -141,6 +141,10 @@ record PostCloseSelectedBoundary
     error value selected
     (bindings (planTarget (completePlanResult postClosePlan)))
     (bindings (registry survivor))
+  0 postClosePlanSelectedInactive : InactiveFiberAt name key world error value
+    nameEq selected
+    (MkSystemState (worldState original)
+      (planTarget (completePlanResult postClosePlan)))
   0 postCloseCleanInactive : SelectedSurvivorCleanInactive name key world error
     value nameEq selected survivor
   0 postCloseOriginalWellFormed : registryWellFormed @{nameEq} @{keyEq}
@@ -399,12 +403,40 @@ selectedUnloadClosesPostBoundary
                     (projectEffectState @{nameEq} survivor)
                   planToSurvivor = effectTransitiveClose
                     (effectSymmetricClose afterToPlan) afterToSurvivor
+                  0 nextSelectedOutside : ActorOutsideDeletionPlan selected
+                    (inactiveLeafPlan (completePlanResult nextPlan))
+                  nextSelectedOutside = selectedOutsideBoundaryPlan selected
+                    registered live stamped selectedOutside nextPlan
+                  0 nextPlanSelectedFound : (lookupFiber @{nameEq} selected
+                    (planTarget (completePlanResult nextPlan)) =
+                    Just (closeTargetFiber keyEq component parent retiredFlag
+                      table accumulator outcome (worldState before)))
+                  nextPlanSelectedFound = trans
+                    (lookupOutsideInactivePlan nameEq selected
+                      (registry afterState)
+                      (planTarget (completePlanResult nextPlan))
+                      (inactiveLeafPlan (completePlanResult nextPlan))
+                      nextSelectedOutside)
+                    targetFound
+                  0 nextPlanSelectedInactive : InactiveFiberAt name key world
+                    error value nameEq selected
+                    (MkSystemState (worldState afterState)
+                      (planTarget (completePlanResult nextPlan)))
+                  nextPlanSelectedInactive = MkInactiveFiberAt component parent
+                    retiredFlag
+                    (localTable (accumulator
+                      (MkLocalState (worldState before)
+                        (restrictOwnedPreservingOrder @{keyEq}
+                          (componentProvisions component)
+                          (ownedValues table)))))
+                    outcome nextPlanSelectedFound
                   0 afterWellFormed : registryWellFormed @{nameEq} @{keyEq}
                     afterState = True
                   afterWellFormed = preservationTheoremProof nameEq keyEq
                     (LUnload selected) before afterState LUnloadTag
                     (selectedOriginalWellFormed boundary) raw
               in MkPostCloseSelectedBoundary nextPlan planToSurvivor
-                nextOrdered (selectedBoundarySurvivorCleanInactive boundary)
+                nextOrdered nextPlanSelectedInactive
+                (selectedBoundarySurvivorCleanInactive boundary)
                 afterWellFormed (selectedSurvivorWellFormed boundary)
                 nextInactive nextEmpty nextPlanEmpty
