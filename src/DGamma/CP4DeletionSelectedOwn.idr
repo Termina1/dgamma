@@ -87,6 +87,7 @@ fiberStaticFromEqualFields
     Refl => FibersStaticRelated leftParent rightParent leftRetired rightRetired
       leftTable rightTable leftLifecycle rightLifecycle parentSame retiredSame
 
+public export
 record SelectedReplacementPlanStep
   (name, key, world, error : Type) (value : key -> Type)
   (nameEq : DecEq name) (registered : List (RegistrationGeneration name))
@@ -105,6 +106,7 @@ record SelectedReplacementPlanStep
   0 selectedReplacementStatic : FiberStaticRelated name key world error value
     targetFiber sourceFiber
 
+public export
 0 registryReplacementPreservesPlanAndControls :
   (nameEq : DecEq name) -> (actor : name) ->
   (registered : List (RegistrationGeneration name)) ->

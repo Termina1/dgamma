@@ -78,15 +78,15 @@ wellFormed : DecEq name => DecEq key =>
 wellFormed = registryWellFormed
 
 public export
-0 justInjective : Just left = Just right -> left = right
+justInjective : Just left = Just right -> left = right
 justInjective Refl = Refl
 
 public export
-0 nothingIsNotJust : Nothing = Just x -> Void
+nothingIsNotJust : Nothing = Just x -> Void
 nothingIsNotJust Refl impossible
 
 public export
-0 checkedActionProjects :
+checkedActionProjects :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) ->
   (before, afterState : SystemState name key value world error) ->
