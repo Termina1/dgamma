@@ -208,6 +208,36 @@ registeredLifecycleImpossible nameEq keyEq registered ordinal live
         checked)
       (inactive actor generation member current)
 
+record LocatedRegistrationStep
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name)
+  {globalFirst, globalLast, stepBefore, stepAfter :
+    SystemState name key value world error}
+  (transition : Transition stepBefore stepAfter)
+  (global : Transitions globalFirst globalLast) where
+  constructor MkLocatedRegistrationStep
+  registrationFuture : Transitions stepAfter globalLast
+  0 registrationStepAtOccurrence : RegistrationStepDiscipline protocol nameEq
+    (transitionAction transition) stepBefore registrationFuture
+
+0 registrationDisciplineAtOccurrence :
+  (transition : Transition stepBefore stepAfter) ->
+  (global : Transitions globalFirst globalLast) ->
+  RegistrationDiscipline protocol nameEq global ->
+  OccursIn transition global ->
+  LocatedRegistrationStep protocol nameEq transition global
+registrationDisciplineAtOccurrence transition
+  (MoreTransitions transition rest)
+  (RegistrationDisciplineStep transition rest stepDiscipline tailDiscipline)
+  OccursHere = MkLocatedRegistrationStep rest stepDiscipline
+registrationDisciplineAtOccurrence wanted
+  (MoreTransitions head rest)
+  (RegistrationDisciplineStep head rest stepDiscipline tailDiscipline)
+  (OccursLater later) = case registrationDisciplineAtOccurrence wanted rest
+    tailDiscipline later of
+    MkLocatedRegistrationStep future futureDiscipline =>
+      MkLocatedRegistrationStep future futureDiscipline
+
 ||| Concrete per-head dispatcher used by the simultaneous fold.  Every action
 ||| branch delegates to an already checked local theorem; no evaluator is
 ||| duplicated here.
@@ -220,6 +250,7 @@ public export
     Not (generationName generation = selected)) ->
   (global : Transitions globalFirst globalLast) ->
   AlignedTransitions name key world error value nameEq keyEq global ->
+  RegistrationDiscipline protocol nameEq global ->
   NoDependentClosingEpisode {nameEq = nameEq} {keyEq = keyEq} selected global ->
   TraceIndependent name key world error value keyEq global ->
   (whole : Transitions wholeFirst wholeLast) ->
@@ -230,7 +261,8 @@ public export
     registered protocol whole
 selectedEpisodeLocalReplayer {name} {key} {world} {error} {value}
   protocol nameEq keyEq selected registered
-  selectedOutside global aligned noDependent independent whole wholeInGlobal
+  selectedOutside global aligned globalDiscipline noDependent independent whole
+  wholeInGlobal
   anchors = MkSelectedEpisodeLocalReplayer replayDeleted replayRetained
   where
   0 replayDeleted :
@@ -248,7 +280,6 @@ selectedEpisodeLocalReplayer {name} {key} {world} {error} {value}
     installedAt @{nameEq} selected afterState = True ->
     {restFinal : SystemState name key value world error} ->
     (rest : Transitions afterState restFinal) ->
-    RegistrationStepDiscipline protocol nameEq action before rest ->
     (noBegin : IsBeginAction action ->
       GenerationOwnedActor nameEq registered ordinal live action -> Void) ->
     (occurs : OccursIn
@@ -268,7 +299,7 @@ selectedEpisodeLocalReplayer {name} {key} {world} {error} {value}
       (advanceGenerationEnvironment @{nameEq} ordinal action live) whole
       afterState survivor
   replayDeleted ordinal live unique stamped outside action before afterState
-    survivor tag checked sourceInstalled targetInstalled rest discipline noBegin
+    survivor tag checked sourceInstalled targetInstalled rest noBegin
     occurs boundary oldEmpty inactive
     (DeleteEpisodeGenerationLifecycle owner lifecycle) = case action of
       OInsert actor parent component => case lifecycle of Refl impossible
@@ -300,24 +331,27 @@ selectedEpisodeLocalReplayer {name} {key} {world} {error} {value}
           afterState checked Refl Refl whole occurs targetInstalled survivor
           boundary
   replayDeleted ordinal live unique stamped outside action before afterState
-    survivor tag checked sourceInstalled targetInstalled rest discipline noBegin
+    survivor tag checked sourceInstalled targetInstalled rest noBegin
     occurs boundary oldEmpty inactive (DeleteRegisteredGeneration owned)
     with (isLifecycleAction action) proof kind
     replayDeleted ordinal live unique stamped outside action before afterState
-      survivor tag checked sourceInstalled targetInstalled rest discipline noBegin
+      survivor tag checked sourceInstalled targetInstalled rest noBegin
       occurs boundary oldEmpty inactive (DeleteRegisteredGeneration owned) |
       True = void (registeredLifecycleImpossible nameEq keyEq registered ordinal
         live action kind before afterState tag checked noBegin inactive owned)
     replayDeleted ordinal live unique stamped outside action before afterState
-      survivor tag checked sourceInstalled targetInstalled rest discipline noBegin
+      survivor tag checked sourceInstalled targetInstalled rest noBegin
       occurs boundary oldEmpty inactive (DeleteRegisteredGeneration owned) |
-      False = case
-        deletedRegisteredOrchestrationHeadPreservesEpisodeBoundary protocol
-          nameEq keyEq selected registered ordinal live unique stamped outside
-          action kind before afterState tag checked rest discipline whole survivor
-          boundary oldEmpty owned of
-        MkDeletedRegisteredEpisodeBoundaryStep nextBoundary nextEmpty =>
-          nextBoundary
+      False = case registrationDisciplineAtOccurrence
+        (Fired nameEq keyEq action tag checked) global globalDiscipline
+        (wholeInGlobal (Fired nameEq keyEq action tag checked) occurs) of
+        MkLocatedRegistrationStep future futureDiscipline => case
+          deletedRegisteredOrchestrationHeadPreservesEpisodeBoundary protocol
+            nameEq keyEq selected registered ordinal live unique stamped outside
+            action kind before afterState tag checked future futureDiscipline
+            whole survivor boundary oldEmpty owned of
+          MkDeletedRegisteredEpisodeBoundaryStep nextBoundary nextEmpty =>
+            nextBoundary
 
   0 replayRetained :
     (ordinal : Nat) -> (live : GenerationEnvironment name) ->
@@ -334,7 +368,6 @@ selectedEpisodeLocalReplayer {name} {key} {world} {error} {value}
     installedAt @{nameEq} selected afterState = True ->
     {restFinal : SystemState name key value world error} ->
     (rest : Transitions afterState restFinal) ->
-    RegistrationStepDiscipline protocol nameEq action before rest ->
     (noBegin : IsBeginAction action ->
       GenerationOwnedActor nameEq registered ordinal live action -> Void) ->
     (occurs : OccursIn
@@ -352,7 +385,7 @@ selectedEpisodeLocalReplayer {name} {key} {world} {error} {value}
     SelectedEpisodeRetainedHead name key world error value nameEq keyEq selected
       registered ordinal live whole action afterState survivor
   replayRetained ordinal live unique stamped outside action before afterState
-    survivor tag checked sourceInstalled targetInstalled rest discipline noBegin
+    survivor tag checked sourceInstalled targetInstalled rest noBegin
     occurs boundary emptyPlan inactive retained =
       case decEq @{nameEq} (actionOwner action) selected of
         Yes ownerSelected => selectedCase ownerSelected
@@ -367,13 +400,17 @@ selectedEpisodeLocalReplayer {name} {key} {world} {error} {value}
         (MkSystemState (worldState before)
           (planTarget (completePlanResult
             (selectedBoundaryPlan boundary))))
-    exactStep notOwned = retainedSuffixHeadPreservesNoEpisodeBoundary
-      protocol nameEq keyEq registered ordinal live action before
-      (MkSystemState (worldState before)
-        (planTarget (completePlanResult
-          (selectedBoundaryPlan boundary))))
-      (selectedPlanExactBoundary nameEq keyEq unique boundary) tag checked rest
-      discipline notOwned
+    exactStep notOwned = case registrationDisciplineAtOccurrence
+      (Fired nameEq keyEq action tag checked) global globalDiscipline
+      (wholeInGlobal (Fired nameEq keyEq action tag checked) occurs) of
+      MkLocatedRegistrationStep future futureDiscipline =>
+        retainedSuffixHeadPreservesNoEpisodeBoundary protocol nameEq keyEq
+          registered ordinal live action before
+          (MkSystemState (worldState before)
+            (planTarget (completePlanResult
+              (selectedBoundaryPlan boundary))))
+          (selectedPlanExactBoundary nameEq keyEq unique boundary) tag checked
+          future futureDiscipline notOwned
 
     0 selectedCase :
       actionOwner action = selected ->
@@ -395,13 +432,6 @@ selectedEpisodeLocalReplayer {name} {key} {world} {error} {value}
           let notOwned : Not (GenerationOwnedActor nameEq registered ordinal live
                 (the (Action name key value world error) (ORetire selected)))
               notOwned owned = retained (DeleteRegisteredGeneration owned)
-              0 exactBoundary : NoEpisodeReplayBoundary name key world error
-                value nameEq keyEq registered live before
-                (MkSystemState (worldState before)
-                  (planTarget (completePlanResult
-                    (selectedBoundaryPlan boundary))))
-              exactBoundary = selectedPlanExactBoundary nameEq keyEq unique
-                boundary
               0 step : RetainedNoEpisodeBoundaryStep name key world error value
                 nameEq keyEq registered live
                 (the (Action name key value world error) (ORetire selected)) tag
@@ -409,13 +439,19 @@ selectedEpisodeLocalReplayer {name} {key} {world} {error} {value}
                 (MkSystemState (worldState before)
                   (planTarget (completePlanResult
                     (selectedBoundaryPlan boundary))))
-              step = retainedSuffixHeadPreservesNoEpisodeBoundary protocol nameEq
-                keyEq registered ordinal live
-                (the (Action name key value world error) (ORetire selected)) before
-                (MkSystemState (worldState before)
-                  (planTarget (completePlanResult
-                    (selectedBoundaryPlan boundary))))
-                exactBoundary tag checked rest discipline notOwned
+              step = case registrationDisciplineAtOccurrence
+                (Fired nameEq keyEq (ORetire selected) tag checked) global
+                globalDiscipline
+                (wholeInGlobal
+                  (Fired nameEq keyEq (ORetire selected) tag checked) occurs) of
+                MkLocatedRegistrationStep future futureDiscipline =>
+                  retainedSuffixHeadPreservesNoEpisodeBoundary protocol nameEq
+                    keyEq registered ordinal live (ORetire selected) before
+                    (MkSystemState (worldState before)
+                      (planTarget (completePlanResult
+                        (selectedBoundaryPlan boundary))))
+                    (selectedPlanExactBoundary nameEq keyEq unique boundary) tag
+                    checked future futureDiscipline notOwned
               0 raw : applyAction @{nameEq} @{keyEq} (ORetire selected) before =
                 Just (tag, afterState)
               raw = checkedActionProjects nameEq keyEq (ORetire selected)
