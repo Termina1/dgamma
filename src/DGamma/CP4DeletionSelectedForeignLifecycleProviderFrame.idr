@@ -36,6 +36,12 @@ data ForeignLifecycleProviderFrameEvidence :
       global selected actor currentSelected currentOwner ->
     ForeignLifecycleProviderFrameEvidence name key world error value nameEq keyEq
       global selected actor current currentSelected currentOwner
+  DirectProviderFrameEvidence :
+    ((wanted : key) -> Elem wanted (dependencies
+      (componentDependencies (fiberComponent currentOwner))) ->
+      providerCandidate @{keyEq} wanted currentSelected = False) ->
+    ForeignLifecycleProviderFrameEvidence name key world error value nameEq keyEq
+      global selected actor current currentSelected currentOwner
   RelianceProviderFrameEvidence :
     {selectedPre, selectedAfter : SystemState name key value world error} ->
     (episode : ClosedEpisode name key world error value nameEq keyEq selected
@@ -68,6 +74,10 @@ public export
   Elem wanted (dependencies
     (componentDependencies (fiberComponent currentOwner))) ->
   providerCandidate @{keyEq} wanted currentSelected = False
+lifecycleProviderFrameExcludesSelected nameEq keyEq selected actor actorDistinct
+  global noDependent current currentSelected currentOwner
+  (DirectProviderFrameEvidence excluded) wanted ownerDeclares =
+    excluded wanted ownerDeclares
 lifecycleProviderFrameExcludesSelected nameEq keyEq selected actor actorDistinct
   global noDependent current currentSelected currentOwner
   (PrecedenceProviderFrameEvidence anchor) wanted ownerDeclares =
