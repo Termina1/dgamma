@@ -2087,6 +2087,15 @@ Step-4 work, but do not discharge this final reproducibility debt. The same
 clean run must explicitly rebuild `CP3StatementChecks`, `CP3VestigialChecks`,
 and `CalculusChecks`, whose post-Finding-7 attempts timed out under shared load.
 
+**Registered optional strengthening debt — paper Lemma 56 derivation:** the
+accepted finite-host Theorem-73 premise `SameOrchestrationModuloGenerated`
+bundles the generation bijection, `RegistrationCorrespondenceByGeneration`,
+and `CurrentEndpointRenaming`; these are assumed rather than derived from bare
+same-orchestration inputs. Theorem 73 must use this fixed, generation-aware
+premise and is not gated on weakening it. Mechanizing paper Lemma 56 after
+Theorem 73 would recover the paper's stronger input surface. Record this
+finite-host deviation in the eventual errata/clarifications letter.
+
 For the control-applicability milestone, deleting all eight new TTC/TTM pairs
 and checking `CP4DeletionControlChecks` rebuilt the complete new dependency
 chain (8 modules) in 2.30 seconds. The whole warm package invocation again
