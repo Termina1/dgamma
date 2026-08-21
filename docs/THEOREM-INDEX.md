@@ -1,3 +1,5 @@
+> This detailed theorem correspondence was moved from the project README.
+
 # dgamma
 
 `dgamma` is an executable Idris 2 mechanization of **“A Programming Paradigm for
