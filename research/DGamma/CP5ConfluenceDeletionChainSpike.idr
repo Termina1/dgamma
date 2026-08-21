@@ -158,6 +158,29 @@ public export
 0 checkedDeletionSubroutine : deletionTheorem name key value world error
 checkedDeletionSubroutine = deletionTheoremProof
 
+||| First-class Path-A gate identified by scoping.  The survivor trace contains
+||| freshly reconstructed transitions at relationally changed source states, so
+||| `restrictTraceIndependent` along an occurrence embedding is inapplicable.
+||| The proof must transport every actual/continuation/yielded generator through
+||| the Lemma-72 replay boundary and then rebuild both fields of TraceIndependent.
+public export
+0 traceIndependentAfterDeletionReplaySpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  {original : Transitions initial originalFinal} -> {selected : name} ->
+  {episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected original} ->
+  {registered : List (RegistrationGeneration name)} ->
+  {episodeStartOrdinal : Nat} ->
+  {episodeStartLive : GenerationEnvironment name} ->
+  (result : DeletionResult name key world error value nameEq keyEq original
+    selected episode registered episodeStartOrdinal episodeStartLive) ->
+  TraceIndependent name key world error value keyEq original ->
+  TraceIndependent name key world error value keyEq (survivingTrace result)
+traceIndependentAfterDeletionReplaySpike =
+  ?traceIndependentAfterDeletionReplaySpike_rhs
+
 ||| Spike A: finite maximal selection plus preservation of the recursive public
 ||| premises.  This is expected to be XL even though the actual deletion call is
 ||| now one line, because maximality is over located episodes and the survivor
