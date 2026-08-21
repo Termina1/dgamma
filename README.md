@@ -28,307 +28,329 @@ status of every numbered item is in the [theorem index](docs/THEOREM-INDEX.md).
 
 ## What we found in the paper
 
-This is the most important part of the repository. Mechanization did not simply
-translate the prose: it found paper-level errata, ambiguities, and mistakes in
-our own initially accepted encodings. The examples below use ordinary names:
-`A` and `S` are fibers, `P` is a provider, and `k` is a coeffect key. No Idris
-knowledge is needed to follow them.
+Most of the differences below are formal repairs: places where mathematical
+prose leaves an implementation-relevant quantifier, category, or observation
+implicit. Two findings are more serious. In those two cases, the operational
+rules as written permit a running system to do something that the metatheory
+later declares impossible—with direct consequences for dependency safety,
+teardown, and hot reload.
 
-### Erratum 1: Definition 32 is not an ordinary recursive datatype
+### Bugs with real consequences for a running system
 
-- **Literal claim.** Section 3.3.1, Definition 32, Equation 31 defines
-  `Γ∞ = μΓ. Γ × (Γ → Γ) × Σ` as a recursive context type.
-- **Gap.** Imagine trying to build one finite constructor for `Γ∞`. One field
-  must be a function that accepts another complete `Γ∞`. The recursive type
-  therefore appears to the left of an arrow. Ordinary inductive datatypes allow
-  recursive children, but not a constructor that consumes arbitrary values of
-  its own type: that is a negative, non-strictly-positive occurrence. Idris
-  rejects it because naïvely accepting it would break normalization.
-- **Repair.** [`ContextTower` and
-  `GammaInfinityApprox`](src/DGamma/Unified.idr) are explicit, executable finite
-  approximations. We do **not** claim that they solve the unqualified domain
-  equation. A literal solution needs a guarded or domain-theoretic semantics
-  that the paper does not provide.
+#### A scheduler can wire components into a dependency cycle the framework believes impossible
 
-### Erratum 2: Lemma 35's stated tests cannot observe two yielded inverses
+*(Paper Lemma 68; NOTES erratum #3.)*
 
-- **Literal claim.** Section 3.3.2, Lemma 35 says indistinguishability is the
-  coarsest relation respected by the operations. The surrounding prose tests a
-  fixed inverse at related values.
-- **Counterexample story.** Suppose an operation run at indistinguishable
-  origins `v` and `v'` returns the same visible value but dynamically chooses
-  two different undo functions, `u` and `u'`. Every test that takes one fixed
-  undo and runs that same undo at both values can pass. Yet applying `u` and
-  `u'` to one common probe can produce different answers. The advertised test
-  language never compares the two inverses that were actually yielded, so it
-  cannot prove the coarsest-relation claim.
-- **Repair.** [`FixedInverseStep` and
-  `YieldedInverseStep`](src/DGamma/Unified.idr) distinguish these observations:
-  the latter evaluates the two dynamically yielded inverses on a common probe.
-  The redesigned universal-property statements remain marked `TODO(proof)`;
-  this is an honest open Section 3 item, not an assumed theorem.
-
-### Clarification 1: Definitions 24 and 39 need a partial-map category
-
-- **Literal claim.** Section 3.2.1, Definition 24 allows coeffect operations and
-  inverses with preconditions, while Section 3.1's generated monoids are
-  presented using total endomorphisms.
-- **Gap story.** A `setFresh(k, value)` operation succeeds only while `k` is
-  absent. Run it once and it succeeds; run it again and it fails. Treating that
-  failure as an ordinary total state map—or silently as identity—changes which
-  programs execute and invalidates composition of inverses.
-- **Repair.** [`Coeffects`](src/DGamma/Coeffects.idr) uses `Maybe` for partial
-  operations. [`PartialTransformation` and
-  `PartialEffTransformation`](src/DGamma/Unified.idr) compose with Kleisli
-  composition, so failure remains failure. The clarification the paper needs
-  is simply to name the partial transformation category.
-
-### Clarification 2: Theorem 15's “if and only if” changes quantifier scope
-
-- **Literal claim.** Section 3.1.3, Theorem 15 fixes an origin `γ`, obtains an
-  inverse `g` there, and then gives an “iff” characterization involving all
-  accumulators/probes.
-- **Gap story.** An undo token produced at `γ` may know how to restore exactly
-  the state reached from `γ`. That witness alone says nothing about feeding the
-  same token a state produced from another origin. Moving from “works here” to
-  “works for every `φ` and probe” silently requires a uniformity hypothesis on
-  the whole forward map.
-- **Repair.** [`effectLiftWitnessIff`](src/DGamma/Effects.idr) states the
-  quantifiers explicitly: restoration for every accumulator and probe is
-  equivalent to the yielded inverse being uniform against the forward map. The
-  resulting theorem is proved pointwise, without function extensionality.
-
-### Erratum 3: Lemma 68 assumes provenance that O-Insert does not enforce
-
-- **Literal claim.** Section 4.4.5, Lemma 68 says support is well founded. Its
-  proof argues that a child is registered by a particular activation and hence
-  is born after that activation's L-Begin.
-- **Counterexample story.** Table 1's O-Insert guard originally asks only that
-  parent `A` is present, child name `S` is fresh, and provisions are disjoint.
-  It does not say which iterator step of `A` requested `S`. A scheduler can
-  therefore insert `S` while merely pointing at `A`; with only a phase/order
-  discipline, children from alternating subtrees can be arranged so that the
-  support edges form a cycle. Timely retirement does not recover the missing
-  fact: the birth still was not tied to a yielded registration event.
-- **Repair.** [`RegistrationProvenance`, `ParentRegistrationYield`, and
-  `RegistrationDiscipline`](src/DGamma/CP3.idr) tie each child insertion to the
-  actual nonempty iterator head, a deterministic protocol catalog tag, and
-  strict component ranks; every child also has its own later retirement
-  obligation. The support proof is in
+- **What the paper says.** Section 4.4.5, Lemma 68 says support is well
+  founded. Its proof argues that a child is registered by a particular
+  activation and therefore is born after that activation's L-Begin.
+- **What can actually happen under Table 1.** O-Insert asks only that parent
+  `A` is present, child name `S` is fresh, and provisions are disjoint. It does
+  not record which iterator step of `A` requested `S`. A scheduler can therefore
+  insert `S` while merely pointing at `A`; with only phase/order bookkeeping,
+  children from alternating subtrees can be arranged so their support edges
+  form a cycle. Every individual transition is legal by the letter of Table 1,
+  yet the resulting support graph violates the well-foundedness used by the
+  proof. A teardown or hot-reload traversal that assumes this graph is acyclic
+  may fail to find a leaf and stop making progress.
+- **What a runtime must do.** This is not fixed by rewording Lemma 68. A
+  Cordis-like runtime must track the iterator step that requested each child
+  registration. [`RegistrationProvenance`, `ParentRegistrationYield`, and
+  `RegistrationDiscipline`](src/DGamma/CP3.idr) tie O-Insert to the actual
+  nonempty iterator head, a deterministic protocol catalog tag, and strict
+  component ranks; every child also has its own later retirement obligation.
+  The proof is in
   [`CP4SupportSolution`](src/DGamma/CP4SupportSolution.idr), with executable
   premise regressions in
-  [`CP3StatementChecks`](src/DGamma/CP3StatementChecks.idr). The finite catalog
-  is an explicit host representation: because O-Insert is separate and does
-  not consume the source head, it can license more than one fresh child of the
-  same ranked component. That over-approximation is documented rather than
-  hidden.
+  [`CP3StatementChecks`](src/DGamma/CP3StatementChecks.idr).
 
-### Erratum 4: Lemma 72 cannot delete every step “acting on n”
+The finite catalog is an explicit host representation. Because O-Insert is a
+separate rule and does not consume the source head, it can license more than one
+fresh child of the same ranked component. That is an over-approximation of one
+paper Definition-47 application, and it is documented rather than hidden; each
+admitted child still has a strictly higher rank and an independent retirement
+obligation.
 
-- **Literal claim.** Section 4.4.5, Lemma 72 says to delete the steps acting on
-  the closing fiber `n`. Under Definition 53 that includes orchestration such
-  as O-Retire, although the proof immediately says the deleted steps write only
-  the lifecycle field and Theorem 73 must preserve external inputs.
-- **Counterexample story.** Let the orchestrator insert `A`; `A` opens an
-  episode; the orchestrator retires `A`; then `A` finishes unloading. If we
-  literally delete every action owned by `A`, we also delete O-Retire. The
-  survivor now says `A` was never retired, so its final control state cannot
-  agree with the original outside the intended deletion.
-- **Repair.** [`EpisodeGenerationDeletedActor`](src/DGamma/CP3.idr) deletes the
-  selected fiber's lifecycle actions, not its orchestration. Selected
-  O-Retire/O-Remove survive. The checked implementation is
-  [`deletionTheoremProof`](src/DGamma/CP4DeletionTheorem.idr); the independent
-  review retraced this distinction in
-  [`review-cp4-lemma72-round1.md`](review-cp4-lemma72-round1.md).
+#### Reusing a freed name confuses two different components that lived under it
 
-### Lemma 56 must rename births, not raw names
+*(Paper Lemmas 56 and 72; NOTES ambiguity 7 and CP4 Finding #8.)*
 
-- **Literal claim.** Section 4.3.5, Lemma 56 applies one bijection `χ : N → N`
-  to names. The same section also permits O-Remove followed by reuse of the
-  freed name.
-- **Counterexample story.** In one run, `A` registers a child called `S`; in
-  another run fresh choice calls that historical child `T`. Both children are
-  later removed. The orchestrator then inserts a new root called `S` in both
-  runs. The historical match needs `S ↦ T`, while the current external root
-  must remain `S ↦ S`. No single raw-name bijection can do both.
-- **Repair.** [`RegistrationGenerationBijection`](src/DGamma/CP3.idr) renames
-  `(raw name, birth ordinal)` for historical registration trees.
-  [`CurrentEndpointRenaming`](src/DGamma/CP3.idr) separately renames live
-  endpoint names and fixes external roots. Checked role-change and cross-parent
-  traces live in
-  [`CP3StatementChecks`](src/DGamma/CP3StatementChecks.idr), and the final
+This is the classic identity bug in a hot-module-reload system: a string or
+integer name is not a lifetime identity.
+
+- **Why one raw-name bijection fails.** Section 4.3.5, Lemma 56 applies one
+  bijection `χ : N → N`, while the same section permits O-Remove followed by
+  reuse of the freed name. Suppose one run has a generated child called `S` and
+  another fresh-choice run calls that historical child `T`. Both children are
+  removed. The orchestrator then inserts a new external root called `S` in both
+  runs. Matching history requires `S ↦ T`; matching the current external input
+  requires `S ↦ S`. No single raw-name bijection can express both facts.
+- **How deletion harms an innocent replacement.** Lemma 72 writes `R` as the
+  names registered during `A`'s closing episode and deletes later actions at
+  names in `R`. Let `A` register `S`, retire it, and remove it. Later, legally
+  insert an unrelated root under the now-free name `S`. The literal raw-name
+  filter remembers only `S ∈ R` and withdraws this innocent reissued component
+  as though it still belonged to `A`.
+- **Executable counterexample.** The ten-step trace in
+  [`CP4DeletionGenerationChecks`](src/DGamma/CP4DeletionGenerationChecks.idr)
+  proves that the old filter deletes the later root O-Insert and that the
+  repaired filter keeps it. Role-change and cross-parent traces also live in
+  [`CP3StatementChecks`](src/DGamma/CP3StatementChecks.idr); the final
   adversarial assessment is
   [`review-cp3-round10.md`](review-cp3-round10.md).
+- **Runtime repair.** Identity is `(raw name, birth ordinal)`, not just a raw
+  name. [`RegistrationGenerationBijection`](src/DGamma/CP3.idr) renames
+  historical births; [`CurrentEndpointRenaming`](src/DGamma/CP3.idr) separately
+  renames live names and fixes external roots. Lemma 72's
+  [`GenerationActionSubsequence`](src/DGamma/CP3.idr) and the
+  `CP4DeletionGeneration*` scanners stamp each birth/action. Premises,
+  filtering, outside-control equality, and withdrawal all use the same stamp.
 
-### Lemma 72's registered set also has to be generation-indexed
+### Claims the paper's own tests cannot check
 
-- **Literal claim.** Lemma 72 writes `R` as a set of names registered during the
-  selected episode and deletes all later steps acting on a name in `R`.
-- **Counterexample story.** `A` registers child `S`; `S` is retired and removed;
-  later the orchestrator legally inserts an unrelated root, also called `S`.
-  A raw-name filter remembers only that `S ∈ R`, so it deletes the later root
-  birth as if it belonged to `A`. The resulting endpoint withdraws a component
-  that should survive.
-- **Repair.** [`GenerationActionSubsequence`](src/DGamma/CP3.idr) and the
-  scanner modules under `CP4DeletionGeneration*` stamp every birth and action.
-  The ten-step executable counterexample in
-  [`CP4DeletionGenerationChecks`](src/DGamma/CP4DeletionGenerationChecks.idr)
-  proves the old filter deletes the reissued root and the repaired filter keeps
-  it. Premises, filtering, outside-control equality, and withdrawal all use the
-  same generation stamp.
+In these cases two behaviors can differ in something the runtime later exposes,
+yet pass all observations supplied by the original statement.
 
-### Theorem 73 needs equivalence modulo certified vestigials
+#### Two different yielded undo functions can pass every fixed-undo test
 
-- **Literal claim.** Section 4.4.5, Theorem 73(2) says two canonical runs are
-  equivalent after Lemma-56 renaming. Lemma 57, however, treats an inert
-  vestigial entry as observationally equal to absence, and Lemma 72 guarantees
-  control equality only outside `R`.
-- **Counterexample story.** A closing activation registers `S` and retires it,
-  but no O-Remove occurs. One legal schedule finishes with a clean, empty,
-  childless, unsupported `S` record; another canonical reduction omits `S`.
-  Effects agree, and no component can observe `S`, but literal registry-domain
-  equality is false.
-- **Repair.** [`VestigialEndpointGeneration`,
-  `CurrentEndpointRenaming`, and
+*(Paper Lemma 35; NOTES ambiguity/erratum 2.)*
+
+- **What the paper says.** Section 3.3.2, Lemma 35 says
+  indistinguishability is the coarsest relation respected by operations. The
+  surrounding observer language tests one fixed inverse at related values.
+- **Invisible-to-the-test difference.** Run an operation at indistinguishable
+  origins `v` and `v'`. It returns the same visible value but dynamically
+  yields undo functions `u` and `u'`. Every test that selects one fixed undo
+  and applies that same function on both sides can pass, while `u` and `u'`
+  give different results on one common probe. The paper's tests never compare
+  the two functions that were actually yielded.
+- **Repair and status.** [`FixedInverseStep` and
+  `YieldedInverseStep`](src/DGamma/Unified.idr) make those two observations
+  distinct; the latter applies the dynamically yielded inverses to a common
+  probe. The redesigned universal-property statements remain `TODO(proof)`.
+  This is an honest open Section 3 item, not an assumed theorem.
+
+#### Two visibly different errors counted as the same outcome
+
+*(Paper Definition 60, Equations 54–55; NOTES CP4 Finding #13.)*
+
+- **What the paper says.** Section 4.4.2 says to read `Right` around the
+  yielded triple and compares only projections 2 and 3. It does not require two
+  failing evaluations to raise the same error.
+- **Visible counterexample.** Let one iterator raise `ColdError` when ambient
+  state is cold and `HotError` when it is hot. The old premise projects both
+  runs to “undefined,” so they appear stable. L-Raise then stores the concrete
+  error in `Unloading`, and two schedules finish with observably different
+  controls. Lemmas 71/72 and Theorem 73 cannot transpose that step.
+- **Repair.** [`IteratorStageOutcome` and
+  `IteratorOutcomeAgreement`](src/DGamma/Metatheory.idr) distinguish
+  unavailable, raised, and yielded outcomes and require exact error agreement.
+  [`CP4FailureOutcomeChecks`](src/DGamma/CP4FailureOutcomeChecks.idr) inhabits
+  the old premise, refutes its endpoint conclusion, and also constructs a
+  genuinely failing trace accepted by the repaired premise.
+
+#### A locally witnessed inverse is not automatically uniform everywhere
+
+*(Paper Theorem 15; NOTES clarification 4.)*
+
+- **What the paper says.** Section 3.1.3, Theorem 15 fixes origin `γ`, obtains
+  inverse `g` there, and then gives an “if and only if” characterization over
+  all accumulators/probes.
+- **Quantifier gap.** An undo token produced at `γ` can be known to restore the
+  state reached from `γ`. That local witness says nothing about applying the
+  same token to a state produced from another origin. Moving from “works here”
+  to “works for every `φ` and probe” needs a uniformity hypothesis.
+- **Repair.** [`effectLiftWitnessIff`](src/DGamma/Effects.idr) makes the scope
+  explicit: restoration for every accumulator and probe is equivalent to the
+  yielded inverse being uniform against the complete forward map. The theorem
+  is proved pointwise, without function extensionality.
+
+### Places where prose math and machine-checked math part ways
+
+These are not all runtime bugs. Some are conventional abstractions that are
+reasonable on paper or in TypeScript but require a more precise statement in a
+total proof assistant.
+
+#### The “infinite context” is understandable notation, not a literal inductive datatype
+
+*(Paper Definition 32, Equation 31; NOTES ambiguity/erratum 1.)*
+
+- **Paper convention.** Section 3.3.1 writes
+  `Γ∞ = μΓ. Γ × (Γ → Γ) × Σ`. In ordinary implementation prose, one can imagine
+  an object whose callback accepts another object of the same interface.
+- **Where the literal reading fails.** For an inductive datatype, `Γ` occurs to
+  the left of an arrow: the constructor would consume arbitrary complete
+  values of its own type. This negative, non-strictly-positive occurrence is
+  rejected by Idris because accepting it naïvely breaks normalization. The
+  useful intuition is a ladder of boxes: level `n+1` may contain functions over
+  level `n`, but there is no final inductive box containing the entire ladder.
+- **Repair.** [`ContextTower` and
+  `GammaInfinityApprox`](src/DGamma/Unified.idr) implement those finite levels.
+  We do not claim a solution of the unqualified equation; a literal `Γ∞` needs
+  guarded recursion or domain theory not supplied by the paper.
+
+#### Partial operations do not form the total monoid used in the earlier section
+
+*(Paper Definition 24 and the Definition-39 development; NOTES clarification
+3.)*
+
+- **Paper convention.** Coeffect operations/inverses have preconditions, while
+  Section 3.1 presents generated transformations as total endomorphisms.
+- **Concrete mismatch.** `setFresh(k, value)` succeeds while `k` is absent and
+  fails after `k` exists. Treating that failure as a total state map—or as
+  identity—changes which programs execute and invalidates inverse composition.
+- **Repair.** [`Coeffects`](src/DGamma/Coeffects.idr) represents partial
+  operations with `Maybe`. [`PartialTransformation` and
+  `PartialEffTransformation`](src/DGamma/Unified.idr) use Kleisli composition,
+  so failure remains failure. The missing prose is the name of the partial-map
+  category.
+
+#### “Delete steps acting on A” accidentally includes external orchestration
+
+*(Paper Lemma 72; NOTES erratum #4.)*
+
+- **Literal prose.** Section 4.4.5 says to delete steps acting on closing fiber
+  `A`. Definition 53 makes O-Retire/O-Remove actions of `A`, although the proof
+  immediately says deleted steps write only the lifecycle field and Theorem 73
+  must preserve external inputs.
+- **Small trace.** Insert `A`; let it open; have the orchestrator retire `A`;
+  let `A` unload. Literal deletion also erases O-Retire, leaving a survivor in
+  which `A` was never retired. The final controls cannot agree.
+- **Repair.** [`EpisodeGenerationDeletedActor`](src/DGamma/CP3.idr) deletes the
+  selected lifecycle actions, while selected O-Retire/O-Remove survive. The
+  checked implementation is
+  [`deletionTheoremProof`](src/DGamma/CP4DeletionTheorem.idr), independently
+  retraced in
+  [`review-cp4-lemma72-round1.md`](review-cp4-lemma72-round1.md).
+
+#### Confluence must compare endpoints modulo certified inert leftovers
+
+*(Paper Theorem 73 and Lemma 57; NOTES clarification 8.)*
+
+- **Literal tension.** Theorem 73(2) asks for equivalent final states after
+  renaming. Lemma 57 treats an inert vestigial record as observationally equal
+  to absence, and Lemma 72 guarantees controls only outside registered set `R`.
+- **Small trace.** A closing activation registers `S` and retires it, but no
+  O-Remove occurs. One schedule ends with a clean, empty, childless,
+  unsupported `S`; a reduced schedule omits `S`. Effects agree and no component
+  can observe `S`, but raw registry domains differ.
+- **Repair.** [`VestigialEndpointGeneration`, `CurrentEndpointRenaming`, and
   `SystemEquivalentByRenamingModuloVestigial`](src/DGamma/CP3.idr) permit a
-  mismatch only when the present side has the complete trace-derived Lemma-57
-  certificate. The no-O-Remove 23-step and 27-step executable schedules are in
+  mismatch only with a complete trace-derived Lemma-57 certificate. The
+  no-O-Remove 23-step and 27-step schedules are executable in
   [`CP3VestigialChecks`](src/DGamma/CP3VestigialChecks.idr). This is the accepted
-  statement for Theorem 73, whose proof is still pending.
+  Theorem-73 statement; its proof remains pending.
 
-### Definition 69 must quantify actual interleaved activations
+#### “Total on its provision” has to follow the real interleaved execution
 
-- **Literal claim.** Section 4.4.5, Definition 69 says any activation that
-  finishes has installed every declared provision. Our first encoding checked
-  only uninterrupted execution of the component program.
-- **Counterexample story.** Provider `P` has two steps. Step P1 writes
-  `world = false`; P2 installs key `k` only when it sees `false`. Uninterrupted,
-  `P` always installs `k`. Insert foreign fiber `T` between P1 and P2 and let it
-  set `world = true`: `P` now finishes Active with an empty table. Consumer `A`
-  declares dependency `k`, so the endpoint is quiet and failure-free yet the
-  advertised support/Active equality fails.
+*(Paper Definition 69; NOTES CP4 Finding #4.)*
+
+- **What went wrong in our first encoding.** Definition 69 says an activation
+  that finishes installed every declared provision. We initially checked only
+  uninterrupted execution of the component program.
+- **Concrete trace.** Provider `P` has two steps. P1 writes `world = false`; P2
+  installs key `k` only when it sees `false`. Uninterrupted, `P` always installs
+  `k`. Insert foreign fiber `T` between P1 and P2 and let it set
+  `world = true`: `P` finishes Active with an empty table. Consumer `A` depends
+  on `k`; the endpoint is quiet and failure-free, but support/Active equality
+  fails.
 - **Repair.** [`TraceComponentsTotal`](src/DGamma/CP3.idr) certifies the actual
-  actor table at checked trace boundaries. The complete runnable trace,
-  rejection of the old predicate, and positive repaired version are in
-  [`CP4TotalityChecks`](src/DGamma/CP4TotalityChecks.idr). This was a flaw in our
-  first specialization; the repaired statement matches the paper's literal
-  “an activation ... that finishes.”
+  actor table at checked boundaries. The runnable trace, rejection of the old
+  predicate, and positive repaired case are in
+  [`CP4TotalityChecks`](src/DGamma/CP4TotalityChecks.idr). This repair makes the
+  finite encoding match the paper's literal phrase “an activation ... that
+  finishes.”
 
-### Theorem 66 needs reachable continuation bounds and aligned equality
+#### The progress bound assumes a reachable continuation, not an arbitrary one
 
-- **Literal claim.** Section 4.4.4, Theorem 66 assumes each declared program has
-  length at most `K` and derives the numerical lifecycle bound. Its prose works
-  with states reached by the LTS and one global notion of equality.
-- **Counterexample story.** Take `K = 0` and a component whose declared program
-  is empty, but start the theorem from an arbitrary well-formed state whose
-  lifecycle says `Reloading` with five no-op continuation steps. All five steps
-  fire. The old conclusion requires `5 ≤ (0 + 4)(0 + 1) = 4`. This is not a
-  paper runtime history; it exposes that our finite arbitrary-state theorem
-  forgot the paper's reachability invariant.
-- **Repair.** [`progressTheorem`](src/DGamma/CP3.idr) adds
-  `continuationsBoundedBy K first` and `AlignedTransitions`. The latter is an
+*(Paper Theorem 66; NOTES CP4 Findings #5 and #6.)*
+
+- **Implicit paper convention.** Section 4.4.4 bounds each declared program by
+  `K` and reasons about states reached by the LTS using one global equality.
+- **Counterexample to our old arbitrary-state alias.** Take `K = 0`, an empty
+  declared program, and an arbitrary well-formed starting state whose lifecycle
+  says `Reloading` with five no-op continuations. All five steps fire, but the
+  old conclusion requires `5 ≤ (0 + 4)(0 + 1) = 4`. This is not a valid runtime
+  history; it exposes the missing reachability invariant.
+- **Repair.** [`progressTheorem`](src/DGamma/CP3.idr) requires
+  `continuationsBoundedBy K first` and `AlignedTransitions`. Alignment is an
   Idris encoding obligation: each transition stores the `DecEq` dictionaries
-  used by evaluation, so the trace must use the same global equality as the
-  theorem. Preservation of the continuation bound and the full proof are under
-  [`CP4Progress*`](src/DGamma/CP4ProgressProof.idr). The five-step executable
-  refutation and repaired positive case are in
+  used by evaluation, so the trace must share the theorem's global equality.
+  The proof is under [`CP4Progress*`](src/DGamma/CP4ProgressProof.idr); the
+  five-step refutation and repaired positive case are in
   [`CP4ProgressChecks`](src/DGamma/CP4ProgressChecks.idr).
 
-### Ordered tables and erased proofs: the observable-truth chain
+#### Runtime table order is observable; erased proofs are not automatically equal
 
-This chain comprises CP4 Findings 7, 9, 10, 11, and 12. It is mainly a warning
-about translating the paper into a proof assistant, not five independent paper
-errata.
+*(Paper Definitions 48/60 and Equation 53; NOTES CP4 Findings
+#7/#9/#10/#11/#12.)*
 
-- **Literal claim.** Definitions 48 and 60 use the evaluator's actual local
-  state and maps; Equation 53 compares runtime state. The paper has no separate
-  notion of a reordered host table or identity of erased uniqueness proofs.
-- **Concrete story.** Let a fiber's stored table be `[k2, k1]`, while its
-  declaration lists `[k1, k2]`. A legal callback checks which binding comes
-  first. Our old restriction rebuilt the table in declaration order, so the LTS
-  callback saw `[k2, k1]` while its alleged Definition-60 map saw `[k1, k2]` and
-  could write a different world value. Fixing the order exposed a second issue:
-  the generated inverse chain normalized before every undo, while the lifecycle
-  accumulator normalized only once at unload. The runtime values were equal,
-  but each normalization rebuilt erased `UniqueKeys` proofs.
-- **Why erasure is not proof irrelevance.** Quantity `0` means the proof is not
-  present at runtime. It does not give Idris a theorem that any two proofs are
-  equal. Two `OwnedTable` records with identical runtime bindings and different
-  derivations are observationally the same but not automatically equal terms.
-  Demanding literal record equality would smuggle in proof irrelevance or
-  function extensionality.
+This was a chain of translation mistakes, not five independent paper errata.
+
+- **Paper-level intent.** Definitions 48 and 60 use the evaluator's actual
+  local state/maps, and Equation 53 compares runtime state. The paper does not
+  introduce a reordered host table or identity of erased uniqueness proofs.
+- **Concrete order bug.** Let a fiber store `[k2, k1]` while its declaration is
+  `[k1, k2]`, and let a callback inspect which binding comes first. Our old
+  restriction rebuilt declaration order. The LTS saw `[k2, k1]`; its alleged
+  Definition-60 map saw `[k1, k2]` and could write a different world value.
+- **Normalization/proof trap.** After preserving order, generated inverse
+  composition normalized before every undo while the lifecycle accumulator
+  normalized only once at unload. Runtime bindings agreed, but normalization
+  rebuilt erased `UniqueKeys` proofs. Idris quantity `0` removes a proof at
+  runtime; it does not prove all inhabitants of that proposition equal.
+  Literal equality of proof-bearing records would smuggle in proof irrelevance
+  or function extensionality.
 - **Repair.** [`restrictOwnedPreservingOrder`](src/DGamma/Metatheory.idr) keeps
-  stored order. `pushLocalUndo` normalizes at the same boundaries as generated
-  inverse composition. [`EffectStateRelated`](src/DGamma/Metatheory.idr) retains
-  exact ordered tables rather than lookup-only equality. `StepEffect.stepWitness`
-  states exact recovery on the canonical evaluator domain, and
-  `LocalStateRuntimeRelated`/`AccumulatorRelated` compare ambient values and
-  ordered bindings instead of erased certificate identity. The relational
-  deletion boundary likewise compares executable observations, not proof terms.
+  stored order; `pushLocalUndo` matches generated normalization boundaries;
+  [`EffectStateRelated`](src/DGamma/Metatheory.idr) retains exact ordered tables;
+  `StepEffect.stepWitness` states recovery on the canonical evaluator domain;
+  and `LocalStateRuntimeRelated`/`AccumulatorRelated` compare ambient values and
+  ordered bindings rather than erased certificate identity. The relational
+  deletion boundary likewise compares executable observations.
 - **Executable checks.** [`CP4RestrictionChecks`](src/DGamma/CP4RestrictionChecks.idr)
-  contains the reverse-order and order-blindness regressions;
-  [`CalculusChecks`](src/DGamma/CalculusChecks.idr) checks the multi-undo
-  normalization rhythm; [`CP4AccumulatorControlChecks`](src/DGamma/CP4AccumulatorControlChecks.idr)
-  constructs two proof-distinct but runtime-equivalent accumulators; and
+  contains reverse-order/order-blindness regressions;
+  [`CalculusChecks`](src/DGamma/CalculusChecks.idr) checks multi-undo rhythm;
+  [`CP4AccumulatorControlChecks`](src/DGamma/CP4AccumulatorControlChecks.idr)
+  constructs proof-distinct but runtime-equivalent accumulators; and
   [`CP4RuntimeBindingsChecks`](src/DGamma/CP4RuntimeBindingsChecks.idr) checks
-  action transport across that boundary.
+  action transport across the boundary.
 
-### Definition 60 forgot observable failure agreement
+#### The Confluence premise already bundles the paper's fresh-name lemma
 
-- **Literal claim.** Section 4.4.2, Definition 60, Equations 54–55 say to read
-  `Right` around the yielded triple and compare only projections 2 and 3. They
-  do not require two failing evaluations to raise the same error.
-- **Counterexample story.** One iterator raises `ColdError` when the ambient
-  world is cold and `HotError` when it is hot. Under the old premise both runs
-  project to “undefined,” so they appear stable. But L-Raise stores the error
-  in `Unloading`; two schedules therefore finish with visibly different control
-  outcomes. Lemmas 71/72 and Theorem 73 cannot transpose that step.
-- **Repair.** [`IteratorStageOutcome` and
-  `IteratorOutcomeAgreement`](src/DGamma/Metatheory.idr) distinguish unavailable,
-  raised, and yielded outcomes and require exact agreement of errors. The
-  old premise is inhabited and then constructively refuted at the endpoints in
-  [`CP4FailureOutcomeChecks`](src/DGamma/CP4FailureOutcomeChecks.idr); the same
-  file includes a genuinely failing trace accepted by the repaired premise.
+*(Paper Lemma 56 and Theorem 73; documented finite-host deviation.)*
 
-### Finding 14: a plausible counterexample that was itself wrong
-
-Adversarial review should reject bad proofs, but it should also reject bad
-counterexamples.
-
-- **Initial concern.** A foreign activation `A` opens before selected fiber `S`
-  and closes during `S`'s episode. We tried to make `A` commit key `k`, then
-  insert `S` as a new provider of `k`, apparently invalidating the deletion
-  replay.
-- **Why the story cannot execute.** `A`'s L-Begin already requires an Active
-  provider `P` for `k`. If `S` existed then, `S → A` is already a forbidden
-  precedence edge. If `S` did not exist, O-Insert `S` later fails the
-  provision-disjointness guard while `P` remains. `P` cannot retire/remove
-  while `A`'s committed view relies on it. Reusing a raw name does not evade the
-  same insertion guard.
-- **Checked resolution.** We retracted the proposed weakening.
-  [`committedProviderProvisionPersists`](src/DGamma/CP4DeletionCommittedProviderPersistence.idr)
-  proves that the committed provider remains the relevant provider throughout
-  the installed activation, and
-  [`crossingActivationExcludesSelectedProvider`](src/DGamma/CP4DeletionSelectedForeignLifecycleCrossing.idr)
-  reconstructs the forbidden edge. This is a useful example of the machine
-  model correcting the research process rather than merely confirming it.
-
-### The accepted Theorem 73 premise bundles paper Lemma 56
-
-- **Paper proof.** Theorem 73 starts from two runs with the same orchestration
-  inputs and derives the fresh-registration tree match by invoking Lemma 56.
-- **Finite-host deviation.** Our accepted
-  [`SameOrchestrationModuloGenerated`](src/DGamma/CP3.idr) premise already
-  contains `RegistrationGenerationBijection`,
+- **Paper proof.** Theorem 73 starts from runs with the same orchestration and
+  derives the fresh-registration tree match using Lemma 56.
+- **Our accepted premise.** [`SameOrchestrationModuloGenerated`](src/DGamma/CP3.idr)
+  already contains `RegistrationGenerationBijection`,
   `RegistrationCorrespondenceByGeneration`, and `CurrentEndpointRenaming`.
-  In other words, the structural Lemma-56 match is supplied rather than derived
-  from bare same-input traces.
-- **Status.** Ten CP3 adversarial rounds tested this generation-aware premise,
-  including cross-parent interleavings, reused raw names, and vestigial
-  endpoints. We will keep it fixed for the Confluence proof. Deriving the bundle
-  from bare orchestration inputs is registered as optional post-Theorem-73
-  strengthening debt on the scoping branch, not silently counted as proved
-  paper strength.
+  The structural Lemma-56 match is supplied rather than derived from bare
+  same-input traces.
+- **Status.** Ten CP3 review rounds attacked this generation-aware premise,
+  including cross-parent interleavings, reused names, and vestigial endpoints.
+  It remains fixed for Confluence. Deriving the bundle from bare orchestration
+  inputs is optional post-Theorem-73 strengthening debt on the scoping branch,
+  not silently counted as proved paper strength.
+
+#### A good adversarial process must also reject bad counterexamples
+
+*(NOTES CP4 Finding #14; resolved, not an erratum.)*
+
+- **The false alarm.** We tried to let foreign activation `A` commit dependency
+  key `k`, then insert selected `S` as a new provider of `k` during `A`'s
+  activation, apparently breaking deletion replay.
+- **Why it cannot run.** `A`'s L-Begin already needs Active provider `P` for
+  `k`. If `S` existed then, `S → A` is already a forbidden precedence edge. If
+  `S` was absent, later O-Insert `S` fails provision disjointness while `P`
+  remains. `P` cannot retire/remove while `A`'s committed view relies on it;
+  raw-name reuse hits the same guard.
+- **Checked resolution.** We retracted the weakening.
+  [`committedProviderProvisionPersists`](src/DGamma/CP4DeletionCommittedProviderPersistence.idr)
+  proves persistence throughout the installed activation, and
+  [`crossingActivationExcludesSelectedProvider`](src/DGamma/CP4DeletionSelectedForeignLifecycleCrossing.idr)
+  reconstructs the forbidden edge. The machine model corrected the research
+  process rather than merely confirming it.
 
 ## What is proved
 
