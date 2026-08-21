@@ -2289,8 +2289,8 @@ name reissue.
 **Fully proved:** all previously listed approved Section 3 results; Preservation
 (Theorem 59); Theorems 61, 63, and 64; Corollary 62; finite-specialized Lemmas
 68 and 70; repaired finite Progress/Theorem 66; and **Lemma 72**.
-`DGamma.CP4DeletionTheorem.deletionTheoremProof` inhabits the unchanged public
-`deletionTheorem` type. Its proof composes the selected center fold, complete
+`DGamma.CP4DeletionTheorem.deletionTheoremProof` inhabits the current repaired
+public `deletionTheorem` type. Its proof composes the selected center fold, complete
 post-close structural fold, exact retirement/scanner join, executable dependent
 filter witnesses, and `CP4DeletionEndpoint` effect/control/withdrawal packaging.
 
