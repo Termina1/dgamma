@@ -462,6 +462,64 @@ data FiniteAdjacentSwapDerivation :
     FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq
       original target
 
+||| A nontrivial actor-block transposition cannot use the zero-node terminator.
+||| This family exposes its first concrete orientation/diamond/result and leaves
+||| `FiniteAdjacentSwapDone` available only for the tail after all crossings.
+public export
+data NonEmptyFiniteAdjacentSwapDerivation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  Transitions initial sourceFinal -> Transitions initial targetFinal -> Type where
+  NonEmptyAdjacentSwap :
+    {initial, pairFirst, pairMiddle, pairFinal, originalFinal, targetFinal :
+      SystemState name key value world error} ->
+    (original : Transitions initial originalFinal) ->
+    (prefixTrace : Transitions initial pairFirst) ->
+    (left : Transition pairFirst pairMiddle) ->
+    (right : Transition pairMiddle pairFinal) ->
+    (suffix : Transitions pairFinal originalFinal) ->
+    (orientation : AdjacentSwapOrientationEvidence left right) ->
+    (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+      left right) ->
+    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+      original prefixTrace left right suffix diamond) ->
+    (target : Transitions initial targetFinal) ->
+    (rest : FiniteAdjacentSwapDerivation name key world error value protocol
+      nameEq keyEq (swappedTrace result) target) ->
+    NonEmptyFiniteAdjacentSwapDerivation name key world error value protocol
+      nameEq keyEq original target
+
+public export
+nonEmptyToFiniteAdjacentSwapDerivation :
+  NonEmptyFiniteAdjacentSwapDerivation name key world error value protocol nameEq
+    keyEq source target ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq
+    source target
+nonEmptyToFiniteAdjacentSwapDerivation
+  (NonEmptyAdjacentSwap original prefixTrace left right suffix orientation diamond
+    result target rest) =
+      FiniteAdjacentSwapStep original prefixTrace left right suffix orientation
+        diamond result target rest
+
+public export
+finiteAdjacentSwapNodeCount :
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq
+    source target -> Nat
+finiteAdjacentSwapNodeCount FiniteAdjacentSwapDone = Z
+finiteAdjacentSwapNodeCount
+  (FiniteAdjacentSwapStep _ _ _ _ _ _ _ _ _ rest) =
+    S (finiteAdjacentSwapNodeCount rest)
+
+public export
+nonEmptyAdjacentSwapNodeCount :
+  NonEmptyFiniteAdjacentSwapDerivation name key world error value protocol nameEq
+    keyEq source target -> Nat
+nonEmptyAdjacentSwapNodeCount
+  (NonEmptyAdjacentSwap _ _ _ _ _ _ _ _ _ rest) =
+    S (finiteAdjacentSwapNodeCount rest)
+
 public export
 0 finiteDerivationReplayCorrespondence :
   (derivation : FiniteAdjacentSwapDerivation name key world error value protocol
