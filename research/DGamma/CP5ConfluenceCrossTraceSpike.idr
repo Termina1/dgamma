@@ -126,26 +126,6 @@ record AdjacentActorSwapSafety
     (blockBody (decomposedBlock sourceBlocks (actorRight orderSwap)
       safetyRightInOrder))
 
-||| Exact action/tag occurrence at a zero-based position in one selected block.
-||| Positions distinguish repeated L-Iter steps that share both action and tag.
-public export
-data TraceActionTagAt :
-  {name, key, world, error : Type} -> {value : key -> Type} ->
-  Nat -> {first, finalState : SystemState name key value world error} ->
-  Transitions first finalState -> Action name key value world error -> RuleTag ->
-  Type where
-  TraceActionTagHere :
-    (transition : Transition first middle) ->
-    (rest : Transitions middle finalState) ->
-    transitionAction transition = action ->
-    transitionTag transition = tag ->
-    TraceActionTagAt Z (MoreTransitions transition rest) action tag
-  TraceActionTagLater :
-    (transition : Transition first middle) ->
-    (rest : Transitions middle finalState) ->
-    TraceActionTagAt position rest action tag ->
-    TraceActionTagAt (S position) (MoreTransitions transition rest) action tag
-
 public export
 0 actorBlockTrace :
   (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq actor
@@ -160,26 +140,179 @@ actorBlockTransitionCount :
   Nat
 actorBlockTransitionCount block = S (transitionCount (blockBody block))
 
-||| Labels every concrete adjacent node by the exact source positions of the
-||| selected left/right block transitions that it crosses.  The recursive shape
-||| is indexed by the actual finite derivation, so labels cannot be detached.
+||| Occurrence-authenticated label for one current adjacent node.  The current
+||| occurrence is pinned to the node's exact ordinal, then mapped through the
+||| composed prefix replay correspondence to the original source trace.  Its
+||| source ordinal must equal the selected block's global start plus the claimed
+||| block-local position.  Repeated transitions with identical actions/tags
+||| therefore remain distinct.
+public export
+record NodeCrossesSourceBlockPosition
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {sourceInitial, sourceFinal, currentInitial, currentFinal :
+    SystemState name key value world error}
+  (sourceTrace : Transitions sourceInitial sourceFinal)
+  (currentTrace : Transitions currentInitial currentFinal)
+  (prefixOccurrences : ActionRegistrationReplayCorrespondence name key world
+    error value sourceTrace currentTrace)
+  {actor : name}
+  (sourceBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+    actor sourceTrace)
+  (position : Nat)
+  (action : Action name key value world error)
+  (currentNodeOrdinal : Nat) where
+  constructor MkNodeCrossesSourceBlockPosition
+  currentNodeOccurrence : LocatedActionOccurrence action currentTrace
+  0 currentNodeIsExactOccurrence :
+    locatedActionOrdinal currentNodeOccurrence = currentNodeOrdinal
+  0 sourceNodeIsExactBlockPosition :
+    locatedActionOrdinal
+      (replayActionOrigin prefixOccurrences currentNodeOccurrence) =
+    transitionCount (traceBeforeBlock sourceBlock) + position
+
+public export
+transitionPrefixLength : (earlierTrace : Transitions initial before) ->
+  (step : Transition before after) ->
+  transitionCount (appendTransitions earlierTrace
+    (MoreTransitions step NoTransitions)) = S (transitionCount earlierTrace)
+transitionPrefixLength NoTransitions step = Refl
+transitionPrefixLength (MoreTransitions earlier rest) step =
+  cong S (transitionPrefixLength rest step)
+
+||| The current left node is located constructively from the exact decomposition
+||| already stored by its `AdjacentSwapResult`.
+public export
+0 adjacentLeftNodeOccurrence :
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+    SystemState name key value world error} ->
+  {original : Transitions initial originalFinal} ->
+  {prefixTrace : Transitions initial pairFirst} ->
+  {left : Transition pairFirst pairMiddle} ->
+  {right : Transition pairMiddle pairFinal} ->
+  {suffix : Transitions pairFinal originalFinal} ->
+  {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right} ->
+  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+    original prefixTrace left right suffix diamond) ->
+  LocatedActionOccurrence (transitionAction left) original
+adjacentLeftNodeOccurrence {prefixTrace} {left} {right} {suffix} result =
+  MkLocatedActionOccurrence _ _ prefixTrace left
+    (MoreTransitions right suffix) Refl (originalDecomposition result)
+
+||| The current right node is likewise located with no caller-supplied
+||| occurrence.  Associativity and the checked source decomposition determine
+||| its exact prefix.
+public export
+0 adjacentRightNodeOccurrence :
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+    SystemState name key value world error} ->
+  {original : Transitions initial originalFinal} ->
+  {prefixTrace : Transitions initial pairFirst} ->
+  {left : Transition pairFirst pairMiddle} ->
+  {right : Transition pairMiddle pairFinal} ->
+  {suffix : Transitions pairFinal originalFinal} ->
+  {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right} ->
+  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+    original prefixTrace left right suffix diamond) ->
+  LocatedActionOccurrence (transitionAction right) original
+adjacentRightNodeOccurrence {prefixTrace} {left} {right} {suffix} result =
+  MkLocatedActionOccurrence _ _
+    (appendTransitions prefixTrace (MoreTransitions left NoTransitions)) right
+    suffix Refl
+    (trans (appendTransitionsAssociative prefixTrace
+      (MoreTransitions left NoTransitions) (MoreTransitions right suffix))
+      (originalDecomposition result))
+
+||| Build an authenticated label using only the exact intermediate replay fold
+||| output plus the remaining source-block ordinal equation.
+public export
+0 leftNodeSourceBlockLabel :
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal, sourceInitial,
+    sourceFinal : SystemState name key value world error} ->
+  {sourceTrace : Transitions sourceInitial sourceFinal} ->
+  {original : Transitions initial originalFinal} ->
+  {prefixTrace : Transitions initial pairFirst} ->
+  {left : Transition pairFirst pairMiddle} ->
+  {right : Transition pairMiddle pairFinal} ->
+  {suffix : Transitions pairFinal originalFinal} ->
+  {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right} ->
+  (prefixOccurrences : ActionRegistrationReplayCorrespondence name key world
+    error value sourceTrace original) ->
+  (sourceBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+    actor sourceTrace) ->
+  (position : Nat) ->
+  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+    original prefixTrace left right suffix diamond) ->
+  locatedActionOrdinal (replayActionOrigin prefixOccurrences
+    (adjacentLeftNodeOccurrence result)) =
+      transitionCount (traceBeforeBlock sourceBlock) + position ->
+  NodeCrossesSourceBlockPosition name key world error value nameEq keyEq
+    sourceTrace original prefixOccurrences sourceBlock position
+    (transitionAction left) (transitionCount prefixTrace)
+leftNodeSourceBlockLabel prefixOccurrences sourceBlock position result origin =
+  MkNodeCrossesSourceBlockPosition (adjacentLeftNodeOccurrence result) Refl origin
+
+public export
+0 rightNodeSourceBlockLabel :
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal, sourceInitial,
+    sourceFinal : SystemState name key value world error} ->
+  {sourceTrace : Transitions sourceInitial sourceFinal} ->
+  {original : Transitions initial originalFinal} ->
+  {prefixTrace : Transitions initial pairFirst} ->
+  {left : Transition pairFirst pairMiddle} ->
+  {right : Transition pairMiddle pairFinal} ->
+  {suffix : Transitions pairFinal originalFinal} ->
+  {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right} ->
+  (prefixOccurrences : ActionRegistrationReplayCorrespondence name key world
+    error value sourceTrace original) ->
+  (sourceBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+    actor sourceTrace) ->
+  (position : Nat) ->
+  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+    original prefixTrace left right suffix diamond) ->
+  locatedActionOrdinal (replayActionOrigin prefixOccurrences
+    (adjacentRightNodeOccurrence result)) =
+      transitionCount (traceBeforeBlock sourceBlock) + position ->
+  NodeCrossesSourceBlockPosition name key world error value nameEq keyEq
+    sourceTrace original prefixOccurrences sourceBlock position
+    (transitionAction right) (S (transitionCount prefixTrace))
+rightNodeSourceBlockLabel {prefixTrace} {left} prefixOccurrences sourceBlock
+  position result origin =
+    MkNodeCrossesSourceBlockPosition (adjacentRightNodeOccurrence result)
+      (transitionPrefixLength prefixTrace left) origin
+
+||| Labels every concrete adjacent node by occurrence origins in the original
+||| source blocks.  The prefix correspondence is not caller-selected at each
+||| node: it starts at identity and is definitionally extended by each actual
+||| `AdjacentSwapResult` before the recursive tail.
 public export
 data DerivationCrossesBlockPositions :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  {leftFirst, leftFinal, rightFirst, rightFinal :
+  {sourceInitial, sourceFinal : SystemState name key value world error} ->
+  (sourceTrace : Transitions sourceInitial sourceFinal) ->
+  {leftActor, rightActor : name} ->
+  (leftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+    leftActor sourceTrace) ->
+  (rightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+    rightActor sourceTrace) ->
+  {currentInitial, currentFinal, targetFinal :
     SystemState name key value world error} ->
-  (leftBlockTrace : Transitions leftFirst leftFinal) ->
-  (rightBlockTrace : Transitions rightFirst rightFinal) ->
-  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
-  {source : Transitions initial sourceFinal} ->
-  {target : Transitions initial targetFinal} ->
+  {current : Transitions currentInitial currentFinal} ->
+  (prefixOccurrences : ActionRegistrationReplayCorrespondence name key world
+    error value sourceTrace current) ->
+  {target : Transitions currentInitial targetFinal} ->
   FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq
-    source target -> List (Nat, Nat) -> Type where
+    current target -> List (Nat, Nat) -> Type where
   BlockCrossingsDone :
     DerivationCrossesBlockPositions name key world error value protocol nameEq
-      keyEq leftBlockTrace rightBlockTrace FiniteAdjacentSwapDone []
+      keyEq sourceTrace leftBlock rightBlock prefixOccurrences
+      FiniteAdjacentSwapDone []
   BlockCrossingsStep :
     {initial, pairFirst, pairMiddle, pairFinal, originalFinal, targetFinal :
       SystemState name key value world error} ->
@@ -197,15 +330,21 @@ data DerivationCrossesBlockPositions :
     (target : Transitions initial targetFinal) ->
     (rest : FiniteAdjacentSwapDerivation name key world error value protocol
       nameEq keyEq (swappedTrace result) target) ->
-    TraceActionTagAt leftPosition leftBlockTrace (transitionAction left)
-      (transitionTag left) ->
-    TraceActionTagAt rightPosition rightBlockTrace (transitionAction right)
-      (transitionTag right) ->
+    (prefixOccurrences : ActionRegistrationReplayCorrespondence name key world
+      error value sourceTrace original) ->
+    NodeCrossesSourceBlockPosition name key world error value nameEq keyEq
+      sourceTrace original prefixOccurrences leftBlock leftPosition (transitionAction left)
+      (transitionCount prefixTrace) ->
+    NodeCrossesSourceBlockPosition name key world error value nameEq keyEq
+      sourceTrace original prefixOccurrences rightBlock rightPosition (transitionAction right)
+      (S (transitionCount prefixTrace)) ->
     (restPositions : List (Nat, Nat)) ->
     DerivationCrossesBlockPositions name key world error value protocol nameEq
-      keyEq leftBlockTrace rightBlockTrace rest restPositions ->
+      keyEq sourceTrace leftBlock rightBlock
+      (composeActionRegistrationReplayCorrespondence prefixOccurrences
+        (swappedOccurrenceCorrespondence result)) rest restPositions ->
     DerivationCrossesBlockPositions name key world error value protocol nameEq
-      keyEq leftBlockTrace rightBlockTrace
+      keyEq sourceTrace leftBlock rightBlock prefixOccurrences
       (FiniteAdjacentSwapStep original prefixTrace left right suffix orientation
         diamond result target rest)
       ((leftPosition, rightPosition) :: restPositions)
@@ -234,11 +373,12 @@ record WholeBlockSwapDerivation
     error value protocol nameEq keyEq sourceTrace targetTrace
   crossedSourcePositions : List (Nat, Nat)
   0 blockCrossingLabels : DerivationCrossesBlockPositions name key world error value
-    protocol nameEq keyEq
-    (actorBlockTrace (decomposedBlock sourceBlocks (actorLeft orderSwap)
-      (safetyLeftInOrder safety)))
-    (actorBlockTrace (decomposedBlock sourceBlocks (actorRight orderSwap)
-      (safetyRightInOrder safety)))
+    protocol nameEq keyEq sourceTrace
+    (decomposedBlock sourceBlocks (actorLeft orderSwap)
+      (safetyLeftInOrder safety))
+    (decomposedBlock sourceBlocks (actorRight orderSwap)
+      (safetyRightInOrder safety))
+    (identityActionRegistrationReplayCorrespondence sourceTrace)
     (nonEmptyToFiniteAdjacentSwapDerivation nonEmptyBlockDerivation)
     crossedSourcePositions
   0 everyBlockPairCrossed : (leftPosition, rightPosition : Nat) ->
