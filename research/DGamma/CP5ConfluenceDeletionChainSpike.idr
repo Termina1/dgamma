@@ -128,7 +128,7 @@ record ClosingEpisodeScan
 public export
 closingEpisodeOccurrenceScanSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  {initial, finalState : SystemState name key value world error} ->
+  (initial, finalState : SystemState name key value world error) ->
   (trace : Transitions initial finalState) ->
   ClosingEpisodeScan name key world error value nameEq keyEq trace
 closingEpisodeOccurrenceScanSpike = ?closingEpisodeOccurrenceScanSpike_rhs
@@ -300,7 +300,7 @@ public export
 selectMaximalClosingEpisodeSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
-  {initial, finalState : SystemState name key value world error} ->
+  (initial, finalState : SystemState name key value world error) ->
   (trace : Transitions initial finalState) ->
   (premises : CanonicalizationPremises name key world error value protocol
     nameEq keyEq trace) ->
@@ -464,10 +464,12 @@ public export
     nameEq keyEq trace) ->
   ClosingStepChoice name key world error value protocol nameEq keyEq trace
     premises
-chooseClosingStepSpike nameEq keyEq protocol trace premises =
-  let scan = closingEpisodeOccurrenceScanSpike nameEq keyEq trace in
-    case selectMaximalClosingEpisodeSpike nameEq keyEq protocol trace premises
-      scan of
+chooseClosingStepSpike {initial} {finalState} nameEq keyEq protocol trace
+  premises =
+  let scan = closingEpisodeOccurrenceScanSpike nameEq keyEq initial finalState
+        trace in
+    case selectMaximalClosingEpisodeSpike nameEq keyEq protocol initial finalState
+      trace premises scan of
       NoMaximalClosingEpisode empty =>
         ClosingFree (emptyScanIsClosingFree scan empty)
       SelectedMaximalClosingEpisode candidate selected =>
