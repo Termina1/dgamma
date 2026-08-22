@@ -115,6 +115,8 @@ record SortedClosingFreeTrace
   sortedTrace : Transitions initial sortedFinal
   sortingReplayCorrespondence : RelationalReplayCorrespondence name key world
     error value original sortedTrace
+  sortingOccurrenceCorrespondence : ActionRegistrationReplayCorrespondence name
+    key world error value original sortedTrace
   sortedPremises : ReplayInvariantBundle name key world error value protocol
     nameEq keyEq sortedTrace
   sortedSameInputs : SameExternalOrchestration nameEq original sortedTrace
@@ -194,26 +196,77 @@ public export
     reducedFinal endpoint
 canonicalSupportTransportSpike = ?canonicalSupportTransportSpike_rhs
 
-||| Full external/generated orchestration accounting through deletion followed
-||| by sorting.  The generated field accounts for every retained birth and
-||| every exact deleted generation; the endpoint's withdrawn list is its index.
+||| Research-only authenticity companion for the immutable CP3 registration
+||| tree.  It states exact occurrence equality, not merely equal birth ordinals:
+||| the tree map must be the origin chosen by the deletion/sorting action replay.
+||| Its indices make the proof unusable after replacing either the tree or the
+||| occurrence correspondence.
 public export
-record OneTraceOrchestrationAccounting
+record AuthenticatedCanonicalRegistrationMap
   (name, key, world, error : Type) (value : key -> Type)
-  (nameEq : DecEq name) (keyEq : DecEq key)
   {initial, originalFinal, canonicalFinal :
     SystemState name key value world error}
   (original : Transitions initial originalFinal)
   (canonical : Transitions initial canonicalFinal)
-  (withdrawn : List (RegistrationGeneration name)) where
+  (withdrawn : List (RegistrationGeneration name))
+  (tree : CanonicalRegistrationCorrespondence original canonical withdrawn)
+  (occurrences : ActionRegistrationReplayCorrespondence name key world error value
+    original canonical) where
+  constructor MkAuthenticatedCanonicalRegistrationMap
+  0 canonicalOriginIsReplayOrigin :
+    {child, parent : name} ->
+    {component : Component key value world error} ->
+    (occurrence : LocatedGeneratedRegistration child parent component canonical) ->
+    canonicalToOriginal tree occurrence =
+      replayGeneratedRegistrationOrigin occurrences occurrence
+
+||| The exact occurrence correspondence constructed by deletion followed by
+||| sorting.  There is no caller-selected intermediate map at this boundary.
+public export
+0 deletionSortingOccurrenceCorrespondence :
+  (reduction : ClosingFreeReduction name key world error value protocol nameEq
+    keyEq original) ->
+  {ordering : SupportOrderingCapital name key world error value nameEq keyEq
+    (reducedFinal reduction)} ->
+  (sorted : SortedClosingFreeTrace name key world error value protocol nameEq
+    keyEq (reducedTrace reduction) ordering) ->
+  ActionRegistrationReplayCorrespondence name key world error value original
+    (sortedTrace sorted)
+deletionSortingOccurrenceCorrespondence reduction sorted =
+  composeActionRegistrationReplayCorrespondence
+    (reductionOccurrenceCorrespondence reduction)
+    (sortingOccurrenceCorrespondence sorted)
+
+||| Full external/generated orchestration accounting through deletion followed
+||| by sorting.  The registration map is authenticated against the exact
+||| composed occurrence replay produced by those same indexed fold outputs.
+public export
+record OneTraceOrchestrationAccounting
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, originalFinal : SystemState name key value world error}
+  (original : Transitions initial originalFinal)
+  (reduction : ClosingFreeReduction name key world error value protocol nameEq
+    keyEq original)
+  (ordering : SupportOrderingCapital name key world error value nameEq keyEq
+    (reducedFinal reduction))
+  (sorted : SortedClosingFreeTrace name key world error value protocol nameEq
+    keyEq (reducedTrace reduction) ordering) where
   constructor MkOneTraceOrchestrationAccounting
   accountedEndpoint : CanonicalEndpointRelation name key world error value
-    nameEq keyEq originalFinal canonicalFinal
-  0 accountedWithdrawnExact :
-    endpointWithdrawnGenerations accountedEndpoint = withdrawn
-  accountedExternalInputs : SameExternalOrchestration nameEq original canonical
+    nameEq keyEq originalFinal (sortedFinal sorted)
+  0 accountedWithdrawnExact : endpointWithdrawnGenerations accountedEndpoint =
+    endpointWithdrawnGenerations (cumulativeEndpoint reduction)
+  accountedExternalInputs : SameExternalOrchestration nameEq original
+    (sortedTrace sorted)
   accountedGeneratedRegistrations : CanonicalRegistrationCorrespondence original
-    canonical (endpointWithdrawnGenerations accountedEndpoint)
+    (sortedTrace sorted) (endpointWithdrawnGenerations accountedEndpoint)
+  accountedRegistrationAuthentication : AuthenticatedCanonicalRegistrationMap
+    name key world error value original (sortedTrace sorted)
+    (endpointWithdrawnGenerations accountedEndpoint)
+    accountedGeneratedRegistrations
+    (deletionSortingOccurrenceCorrespondence reduction sorted)
 
 public export
 0 deletionSortingOrchestrationAccountingSpike :
@@ -227,9 +280,8 @@ public export
     (reducedFinal reduction)) ->
   (sorted : SortedClosingFreeTrace name key world error value protocol nameEq
     keyEq (reducedTrace reduction) ordering) ->
-  OneTraceOrchestrationAccounting name key world error value nameEq keyEq original
-    (sortedTrace sorted)
-    (endpointWithdrawnGenerations (cumulativeEndpoint reduction))
+  OneTraceOrchestrationAccounting name key world error value protocol nameEq keyEq
+    original reduction ordering sorted
 deletionSortingOrchestrationAccountingSpike =
   ?deletionSortingOrchestrationAccountingSpike_rhs
 
@@ -251,6 +303,13 @@ record IndependentCanonicalSchedule
     original
   canonicalReplayCorrespondence : RelationalReplayCorrespondence name key world
     error value original (canonicalTrace canonicalSchedule)
+  canonicalOccurrenceCorrespondence : ActionRegistrationReplayCorrespondence name
+    key world error value original (canonicalTrace canonicalSchedule)
+  canonicalRegistrationAuthentication : AuthenticatedCanonicalRegistrationMap
+    name key world error value original (canonicalTrace canonicalSchedule)
+    (endpointWithdrawnGenerations (canonicalEndpoint canonicalSchedule))
+    (canonicalRegistrationTree canonicalSchedule)
+    canonicalOccurrenceCorrespondence
   canonicalReplayPremises : ReplayInvariantBundle name key world error value
     protocol nameEq keyEq (canonicalTrace canonicalSchedule)
   canonicalTraceIndependent : TraceIndependent name key world error value keyEq
@@ -285,8 +344,7 @@ public export
     nameEq keyEq originalFinal (reducedFinal reduction)
       (cumulativeEndpoint reduction)) ->
   (accounting : OneTraceOrchestrationAccounting name key world error value
-    nameEq keyEq original (sortedTrace sorted)
-      (endpointWithdrawnGenerations (cumulativeEndpoint reduction))) ->
+    protocol nameEq keyEq original reduction ordering sorted) ->
   ((generation : RegistrationGeneration name) ->
     Elem generation (endpointWithdrawnGenerations
       (accountedEndpoint accounting)) ->
@@ -317,6 +375,8 @@ assembleIndependentCanonicalSchedule nameEq keyEq protocol original premises
       (composeRelationalReplayCorrespondence
         (reductionReplayCorrespondence reduction)
         (sortingReplayCorrespondence sorted))
+      (deletionSortingOccurrenceCorrespondence reduction sorted)
+      (accountedRegistrationAuthentication accounting)
       (sortedPremises sorted)
       (replayIndependent (sortedPremises sorted))
       classified
@@ -339,9 +399,8 @@ public export
     keyEq (reducedTrace reduction) ordering) ->
   CanonicalSupportTransport name key world error value nameEq keyEq originalFinal
     (reducedFinal reduction) (cumulativeEndpoint reduction) ->
-  OneTraceOrchestrationAccounting name key world error value nameEq keyEq original
-    (sortedTrace sorted)
-    (endpointWithdrawnGenerations (cumulativeEndpoint reduction)) ->
+  OneTraceOrchestrationAccounting name key world error value protocol nameEq keyEq
+    original reduction ordering sorted ->
   IndependentCanonicalSchedule name key world error value protocol nameEq keyEq
     original
 independentCanonicalScheduleSpike = ?independentCanonicalScheduleSpike_rhs
