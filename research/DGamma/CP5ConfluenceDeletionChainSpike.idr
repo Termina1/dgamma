@@ -227,6 +227,8 @@ record DeletionChainStep
     (selectedStartLive candidate)
   deletionReplayCorrespondence : RelationalReplayCorrespondence name key world
     error value trace (survivingTrace deletionResult)
+  deletionOccurrenceCorrespondence : ActionRegistrationReplayCorrespondence name
+    key world error value trace (survivingTrace deletionResult)
   deletionSameExternalInputs : SameExternalOrchestration nameEq trace
     (survivingTrace deletionResult)
   deletionEndpoint : CanonicalEndpointRelation name key world error value nameEq
@@ -352,6 +354,8 @@ record ClosingFreeTraceCore
     coreReducedTrace
   coreReplayCorrespondence : RelationalReplayCorrespondence name key world error
     value original coreReducedTrace
+  coreOccurrenceCorrespondence : ActionRegistrationReplayCorrespondence name key
+    world error value original coreReducedTrace
   coreDeletionGenerationHistory : List
     (generation : RegistrationGeneration name **
       DeletedGenerationClassification name key world error value nameEq original
@@ -378,6 +382,8 @@ record ClosingFreeReduction
   reductionSameExternalInputs : SameExternalOrchestration nameEq original reducedTrace
   reductionReplayCorrespondence : RelationalReplayCorrespondence name key world
     error value original reducedTrace
+  reductionOccurrenceCorrespondence : ActionRegistrationReplayCorrespondence name
+    key world error value original reducedTrace
   deletionGenerationHistory : List
     (generation : RegistrationGeneration name **
       DeletedGenerationClassification name key world error value nameEq original
