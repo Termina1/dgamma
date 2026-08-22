@@ -12,8 +12,8 @@ import Decidable.Equality
 
 %default total
 
-||| One certified adjacent swap of incomparable *supported* names in the right
-||| endpoint partial order.
+||| One certified adjacent swap of incomparable *supported* names in the
+||| endpoint partial order at which the operational trace is replayed.
 public export
 record IncomparableAdjacentOrderSwap
   (name, key, world, error : Type) (value : key -> Type)
@@ -52,11 +52,11 @@ data CertifiedIncomparablePermutation :
     CertifiedIncomparablePermutation name key world error value nameEq keyEq state
       before after
 
-||| Mapped capital is deliberately restricted to actual support orders.  It no
-||| longer maps arbitrary `SupportPath`s whose endpoints/intermediates may be
-||| unsupported vestigials.  Instead it certifies directly that the mapped left
-||| order is another `LinearizesSupport` value for the right endpoint—the exact
-||| common partial-order fact consumed by the adjacent-permutation theorem.
+||| Mapped capital is deliberately restricted to actual supported names.  The
+||| two comparability maps require support-order membership on both endpoints;
+||| they cannot be applied to unsupported vestigials.  Operationally we replay
+||| the left canonical trace, so the certified permutation is indexed at the
+||| left original endpoint and stays in the left raw-name namespace.
 public export
 record MappedCanonicalSupportOrders
   (name, key, world, error : Type) (value : key -> Type)
@@ -80,13 +80,29 @@ record MappedCanonicalSupportOrders
     Elem right (supportOrder leftSchedule) ->
     Not (left = right) ->
     Not (renameForward renaming left = renameForward renaming right)
-  mappedLeftOrderLinearizesRight : LinearizesSupport name key world error value
-    nameEq keyEq rightFinal
-    (map (renameForward renaming) (supportOrder leftSchedule))
-  mappedOrderPermutation : CertifiedIncomparablePermutation name key world error
-    value nameEq keyEq rightFinal
-    (map (renameForward renaming) (supportOrder leftSchedule))
-    (supportOrder rightSchedule)
+  ||| Forward comparability only for two names certified supported by the left
+  ||| schedule.  This is the exact restriction that avoids the round-2
+  ||| vestigial-path contradiction.
+  0 leftSupportedComparabilityForward : (lower, upper : name) ->
+    Elem lower (supportOrder leftSchedule) ->
+    Elem upper (supportOrder leftSchedule) ->
+    SupportPath nameEq leftFinal lower upper ->
+    SupportPath nameEq rightFinal (renameForward renaming lower)
+      (renameForward renaming upper)
+  ||| Symmetric supported comparability reflected into the namespace/state in
+  ||| which the operational left trace is replayed.
+  0 rightSupportedComparabilityBackward : (lower, upper : name) ->
+    Elem lower (supportOrder rightSchedule) ->
+    Elem upper (supportOrder rightSchedule) ->
+    SupportPath nameEq rightFinal lower upper ->
+    SupportPath nameEq leftFinal (renameBackward renaming lower)
+      (renameBackward renaming upper)
+  backwardMappedRightOrderLinearizesLeft : LinearizesSupport name key world error
+    value nameEq keyEq leftFinal
+    (map (renameBackward renaming) (supportOrder rightSchedule))
+  leftOperationalPermutation : CertifiedIncomparablePermutation name key world
+    error value nameEq keyEq leftFinal (supportOrder leftSchedule)
+    (map (renameBackward renaming) (supportOrder rightSchedule))
 
 ||| The matching theorem consumes simultaneous one-trace capitals, not opaque
 ||| public schedules.  Vestigial endpoint names are absent from both support
@@ -110,10 +126,13 @@ public export
     (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)
 canonicalSupportOrdersMatchSpike = ?canonicalSupportOrdersMatchSpike_rhs
 
-||| Operational output of the certified permutation.  The source canonical
-||| bundle is available from `leftCapital`; each recursive `AdjacentSwapResult`
-||| returns the bundle consumed by the next step, and the final bundle and replay
-||| correspondence are retained here with the bridge.
+||| Operational output of the certified *left-state* permutation.  The result
+||| is an enriched schedule for the left original trace, not an unrelated trace:
+||| its support order is definitionally coupled by `permutedTargetOrderExact` to
+||| the inverse-renamed right order, so its `canonicalBlock`,
+||| `blocksFollowOrder`, placement, full replay bundle, and endpoint all describe
+||| that target.  The endpoint quotient is the composition of all adjacent-swap
+||| quotients, and the final bridge is indexed by this very permuted schedule.
 public export
 record CanonicalConvergenceResult
   (name, key, world, error : Type) (value : key -> Type)
@@ -132,17 +151,24 @@ record CanonicalConvergenceResult
     (currentNameBijection (endpointRenaming sameInputs))
     (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)) where
   constructor MkCanonicalConvergenceResult
-  permutedLeftFinal : SystemState name key value world error
-  permutedLeftTrace : Transitions initial permutedLeftFinal
+  permutedLeftCapital : IndependentCanonicalSchedule name key world error value
+    protocol nameEq keyEq leftTrace
+  0 permutedTargetOrderExact :
+    supportOrder (canonicalSchedule permutedLeftCapital) =
+      map (renameBackward (currentNameBijection (endpointRenaming sameInputs)))
+        (supportOrder (canonicalSchedule rightCapital))
   permutationReplayCorrespondence : RelationalReplayCorrespondence name key world
-    error value (canonicalTrace (canonicalSchedule leftCapital)) permutedLeftTrace
-  permutationReplayPremises : ReplayInvariantBundle name key world error value
-    protocol nameEq keyEq permutedLeftTrace
+    error value (canonicalTrace (canonicalSchedule leftCapital))
+      (canonicalTrace (canonicalSchedule permutedLeftCapital))
+  composedPermutationEndpoint : RelationalReplayEndpoint name key world error
+    value nameEq keyEq (canonicalFinal (canonicalSchedule leftCapital))
+      (canonicalFinal (canonicalSchedule permutedLeftCapital))
   permutationSameExternalInputs : SameExternalOrchestration nameEq
-    (canonicalTrace (canonicalSchedule leftCapital)) permutedLeftTrace
+    (canonicalTrace (canonicalSchedule leftCapital))
+      (canonicalTrace (canonicalSchedule permutedLeftCapital))
   convergenceBridge : CanonicalEndpointBridge name key world error value protocol
-    nameEq keyEq leftTrace rightTrace sameInputs (canonicalSchedule leftCapital)
-      (canonicalSchedule rightCapital)
+    nameEq keyEq leftTrace rightTrace sameInputs
+      (canonicalSchedule permutedLeftCapital) (canonicalSchedule rightCapital)
 
 ||| Cross-trace convergence consumes both complete canonical bundles and the
 ||| supported-order permutation.  O/A joins the existing A/A, A/O, and O/O
@@ -168,8 +194,10 @@ public export
     leftTrace rightTrace sameInputs leftCapital rightCapital mapped
 canonicalSchedulesConvergeSpike = ?canonicalSchedulesConvergeSpike_rhs
 
-||| Exact final endpoint bridge consumes the typed accepted-scanner links and
-||| the canonical bridge produced by the bundle-preserving permutation.
+||| Exact final endpoint assembly is complete: it constructs scanner capital
+||| for the *permuted* left enriched schedule and feeds the bridge whose left
+||| endpoint is that same schedule to O21.  There is no independent scanner or
+||| pre-permutation bridge argument that could let a caller bypass replay.
 public export
 0 originalEndpointsConvergeSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -183,8 +211,6 @@ public export
     nameEq keyEq leftTrace) ->
   (rightCapital : IndependentCanonicalSchedule name key world error value protocol
     nameEq keyEq rightTrace) ->
-  (scanner : AcceptedDeletionScannerCapital name key world error value protocol
-    nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital) ->
   {mapped : MappedCanonicalSupportOrders name key world error value protocol
     nameEq keyEq leftTrace rightTrace
     (currentNameBijection (endpointRenaming sameInputs))
@@ -194,7 +220,13 @@ public export
   SystemEquivalentByRenamingModuloVestigial name key world error value nameEq
     keyEq (generatedRegistrationTree sameInputs)
     (currentNameBijection (endpointRenaming sameInputs))
-originalEndpointsConvergeSpike = ?originalEndpointsConvergeSpike_rhs
+originalEndpointsConvergeSpike nameEq keyEq protocol leftTrace rightTrace
+  sameInputs leftCapital rightCapital convergence =
+    canonicalSchedulesToOriginalEndpointSpike nameEq keyEq protocol leftTrace
+      rightTrace sameInputs (permutedLeftCapital convergence) rightCapital
+      (acceptedDeletionScannerCapitalSpike nameEq keyEq protocol leftTrace
+        rightTrace sameInputs (permutedLeftCapital convergence) rightCapital)
+      (convergenceBridge convergence)
 
 ||| Once the two schedules and exact original endpoint bridge are available,
 ||| the accepted result is direct constructor assembly.
