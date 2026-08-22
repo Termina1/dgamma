@@ -83,6 +83,32 @@ record DeletableClosingEpisode
   0 selectedChildrenHaveNoEpisode : NoRegisteredEpisode nameEq
     selectedRegistrations 0 [] trace
 
+||| Semantic classification retained for each withdrawn generation.  It ties
+||| the exact original occurrence to one scanner-shaped registration event and
+||| supplies the closed-parent evidence used by
+||| `RegistrationTraceCorrespondence.Discard*DeletedRegistration`.
+public export
+record DeletedGenerationClassification
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name)
+  {initial, originalFinal : SystemState name key value world error}
+  (original : Transitions initial originalFinal)
+  (generation : RegistrationGeneration name) where
+  constructor MkDeletedGenerationClassification
+  deletedParent : name
+  deletedComponent : Component key value world error
+  deletedOccurrence : LocatedGeneratedRegistration (generationName generation)
+    deletedParent deletedComponent original
+  0 deletedOccurrenceGeneration :
+    registrationGeneration deletedOccurrence = generation
+  deletedEvent : RegistrationEvent name key world error value
+  0 deletedEventChild : eventChild deletedEvent = generationName generation
+  0 deletedEventParent : eventParent deletedEvent = deletedParent
+  0 deletedEventComponent : eventComponent deletedEvent = deletedComponent
+  0 deletedEventGeneration : eventChildGeneration deletedEvent = generation
+  deletedClosingEvidence : DeletedClosingRegistration deletedEvent
+    (afterRegistration deletedOccurrence)
+
 ||| Internal enriched result of one D72 call.  The public `DeletionResult` stays
 ||| immutable, but the checked fold/adapter used by Path A must construct the
 ||| replay correspondence, exact generated-registration accounting, and every
@@ -111,6 +137,11 @@ record DeletionChainStep
     keyEq finalState (survivingFinal deletionResult)
   0 deletionWithdrawnGenerationsExact :
     endpointWithdrawnGenerations deletionEndpoint = selectedRegistrations candidate
+  deletionGenerationClassified :
+    (generation : RegistrationGeneration name) ->
+    Elem generation (selectedRegistrations candidate) ->
+    DeletedGenerationClassification name key world error value nameEq trace
+      generation
   deletionRegistrationAccounting : CanonicalRegistrationCorrespondence trace
     (survivingTrace deletionResult)
     (endpointWithdrawnGenerations deletionEndpoint)
@@ -141,11 +172,17 @@ data ClosingStepChoice :
     ClosingStepChoice name key world error value protocol nameEq keyEq trace
       premises
 
+public export
+classifiedGeneration :
+  (entry : (generation : RegistrationGeneration name **
+    DeletedGenerationClassification name key world error value nameEq original
+      generation)) -> RegistrationGeneration name
+classifiedGeneration (generation ** classification) = generation
+
 ||| Endpoint package after deleting every closing episode.  It now retains the
 ||| exact same-external-input witness and generated-registration correspondence
-||| consumed by `CanonicalSchedule`.  The history equality makes the cumulative
-||| withdrawn-list index explicit instead of trusting unchecked endpoint
-||| metadata.
+||| consumed by `CanonicalSchedule`.  History is a typed list of deleted closing
+||| registrations rather than an unconstrained list-of-lists.
 public export
 record ClosingFreeReduction
   (name, key, world, error : Type) (value : key -> Type)
@@ -163,10 +200,15 @@ record ClosingFreeReduction
   reductionSameExternalInputs : SameExternalOrchestration nameEq original reducedTrace
   reductionReplayCorrespondence : RelationalReplayCorrespondence name key world
     error value original reducedTrace
-  deletionGenerationHistory : List (List (RegistrationGeneration name))
+  deletionGenerationHistory : List
+    (generation : RegistrationGeneration name **
+      DeletedGenerationClassification name key world error value nameEq original
+        generation)
   cumulativeEndpoint : CanonicalEndpointRelation name key world error value
     nameEq keyEq originalFinal reducedFinal
-  0 deletionHistoryAligned : concat deletionGenerationHistory =
+  0 deletionHistoryAligned : map
+    DGamma.CP5ConfluenceDeletionChainSpike.classifiedGeneration
+    deletionGenerationHistory =
     endpointWithdrawnGenerations cumulativeEndpoint
   cumulativeRegistrationAccounting : CanonicalRegistrationCorrespondence original
     reducedTrace (endpointWithdrawnGenerations cumulativeEndpoint)
