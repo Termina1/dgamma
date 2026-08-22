@@ -213,6 +213,48 @@ record AcceptedDeletionScannerCapital
     DeletedGenerationClassification name key world error value nameEq rightTrace
       generation
 
+||| Exact producer boundary for O21 scanner capital.  No deleted-set membership
+||| is accepted as an input: the two one-trace classifiers are fed to the
+||| left/right scanner-discard inductions against the *accepted* correspondence
+||| stored by `sameInputs`.
+public export
+0 acceptedDeletionScannerCapitalSpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (leftTrace : Transitions initial leftFinal) ->
+  (rightTrace : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace
+    rightTrace) ->
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace) ->
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace) ->
+  AcceptedDeletionScannerCapital name key world error value protocol nameEq keyEq
+    leftTrace rightTrace sameInputs leftCapital rightCapital
+acceptedDeletionScannerCapitalSpike nameEq keyEq protocol leftTrace rightTrace
+  sameInputs leftCapital rightCapital =
+    MkAcceptedDeletionScannerCapital
+      (generationTraceCorrespondence (generatedRegistrationTree sameInputs))
+      (\generation, withdrawn =>
+        deletedClassificationForcesLeftScannerDiscardSpike nameEq
+          (generatedGenerationBijection sameInputs)
+          (leftFinalIndex (generatedRegistrationTree sameInputs))
+          (rightFinalIndex (generatedRegistrationTree sameInputs))
+          (generationTraceCorrespondence (generatedRegistrationTree sameInputs))
+          generation
+          (canonicalWithdrawnClassified leftCapital generation withdrawn))
+      (\generation, withdrawn =>
+        deletedClassificationForcesRightScannerDiscardSpike nameEq
+          (generatedGenerationBijection sameInputs)
+          (leftFinalIndex (generatedRegistrationTree sameInputs))
+          (rightFinalIndex (generatedRegistrationTree sameInputs))
+          (generationTraceCorrespondence (generatedRegistrationTree sameInputs))
+          generation
+          (canonicalWithdrawnClassified rightCapital generation withdrawn))
+      (canonicalWithdrawnClassified leftCapital)
+      (canonicalWithdrawnClassified rightCapital)
+
 ||| The corrected O21 interface consumes exactly what one-trace canonicalization
 ||| produces, plus the typed accepted-scanner links above.  These fields are what
 ||| allow every unmatched original-present fiber to inhabit
