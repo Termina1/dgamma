@@ -263,50 +263,105 @@ acceptedDeletionScannerCapitalSpike nameEq keyEq protocol leftTrace rightTrace
       (canonicalWithdrawnClassified leftCapital)
       (canonicalWithdrawnClassified rightCapital)
 
-||| Observable side trace of the accepted scanner.  Requiring both relative
-||| orders below witnesses a genuinely interleaved scan (at least L…R…L or
-||| R…L…R), rather than two isolated one-sided inductions.
+||| Every accepted scanner step now retains its constructor class.  Generated
+||| registration events additionally retain the exact raw name and birth
+||| ordinal; discard evidence can no longer be simulated by an unrelated skip.
 public export
-data ScannerSide = ScannerLeftStep | ScannerRightStep
+data ScannerEvent : Type -> Type where
+  ScannerLeftNonRegistration : Nat -> ScannerEvent name
+  ScannerRightNonRegistration : Nat -> ScannerEvent name
+  ScannerLeftDiscard : RegistrationGeneration name -> ScannerEvent name
+  ScannerRightDiscard : RegistrationGeneration name -> ScannerEvent name
+  ScannerLeftQueue : RegistrationGeneration name -> ScannerEvent name
+  ScannerRightQueue : RegistrationGeneration name -> ScannerEvent name
+  ScannerLeftMatch : RegistrationGeneration name -> ScannerEvent name
+  ScannerRightMatch : RegistrationGeneration name -> ScannerEvent name
 
 public export
-scannerSideSequence :
+0 scannerEventSequence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {renaming : RegistrationGenerationBijection name} ->
+  {leftOrdinal : Nat} -> {leftIndex : RegistrationIndexState name} ->
+  {leftFirst, leftFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} ->
+  {leftResultIndex : RegistrationIndexState name} ->
+  {rightOrdinal : Nat} -> {rightIndex : RegistrationIndexState name} ->
+  {rightFirst, rightFinal : SystemState name key value world error} ->
+  {right : Transitions rightFirst rightFinal} ->
+  {rightResultIndex : RegistrationIndexState name} ->
+  {pendingLeft, pendingRight :
+    List (RegistrationEvent name key world error value)} ->
   RegistrationTraceCorrespondence nameEq renaming leftOrdinal leftIndex left
     leftResultIndex rightOrdinal rightIndex right rightResultIndex pendingLeft
-    pendingRight -> List ScannerSide
-scannerSideSequence RegistrationCorrespondenceEnd = []
-scannerSideSequence (SkipLeftNonRegistration _ _ _ _ _ rest) =
-  ScannerLeftStep :: scannerSideSequence rest
-scannerSideSequence (SkipRightNonRegistration _ _ _ _ _ rest) =
-  ScannerRightStep :: scannerSideSequence rest
-scannerSideSequence (DiscardLeftDeletedRegistration _ _ _ _ rest) =
-  ScannerLeftStep :: scannerSideSequence rest
-scannerSideSequence (DiscardRightDeletedRegistration _ _ _ _ rest) =
-  ScannerRightStep :: scannerSideSequence rest
-scannerSideSequence (QueueLeftGeneratedRegistration _ _ _ _ rest) =
-  ScannerLeftStep :: scannerSideSequence rest
-scannerSideSequence (QueueRightGeneratedRegistration _ _ _ _ rest) =
-  ScannerRightStep :: scannerSideSequence rest
-scannerSideSequence (MatchLeftWithPendingRight _ _ _ _ _ _ _ _ rest) =
-  ScannerLeftStep :: scannerSideSequence rest
-scannerSideSequence (MatchRightWithPendingLeft _ _ _ _ _ _ _ _ rest) =
-  ScannerRightStep :: scannerSideSequence rest
+    pendingRight -> List (ScannerEvent name)
+scannerEventSequence RegistrationCorrespondenceEnd = []
+scannerEventSequence {leftOrdinal}
+  (SkipLeftNonRegistration _ _ _ _ _ rest) =
+    ScannerLeftNonRegistration leftOrdinal :: scannerEventSequence rest
+scannerEventSequence {rightOrdinal}
+  (SkipRightNonRegistration _ _ _ _ _ rest) =
+    ScannerRightNonRegistration rightOrdinal :: scannerEventSequence rest
+scannerEventSequence {leftOrdinal}
+  (DiscardLeftDeletedRegistration {child} _ _ _ _ rest) =
+    ScannerLeftDiscard (MkRegistrationGeneration child leftOrdinal) ::
+      scannerEventSequence rest
+scannerEventSequence {rightOrdinal}
+  (DiscardRightDeletedRegistration {child} _ _ _ _ rest) =
+    ScannerRightDiscard (MkRegistrationGeneration child rightOrdinal) ::
+      scannerEventSequence rest
+scannerEventSequence {leftOrdinal}
+  (QueueLeftGeneratedRegistration {child} _ _ _ _ rest) =
+    ScannerLeftQueue (MkRegistrationGeneration child leftOrdinal) ::
+      scannerEventSequence rest
+scannerEventSequence {rightOrdinal}
+  (QueueRightGeneratedRegistration {child} _ _ _ _ rest) =
+    ScannerRightQueue (MkRegistrationGeneration child rightOrdinal) ::
+      scannerEventSequence rest
+scannerEventSequence {leftOrdinal}
+  (MatchLeftWithPendingRight {child} _ _ _ _ _ _ _ _ rest) =
+    ScannerLeftMatch (MkRegistrationGeneration child leftOrdinal) ::
+      scannerEventSequence rest
+scannerEventSequence {rightOrdinal}
+  (MatchRightWithPendingLeft {child} _ _ _ _ _ _ _ _ rest) =
+    ScannerRightMatch (MkRegistrationGeneration child rightOrdinal) ::
+      scannerEventSequence rest
 
+||| The four exact target discards—not merely four side labels—alternate in the
+||| accepted scanner.  Pairwise `BeforeIn` witnesses tie each ordinal to its
+||| real discard constructor and reject clumped target deletions.
 public export
-ScannerSidesInterleaved :
+0 TargetDiscardsInterleaved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {renaming : RegistrationGenerationBijection name} ->
+  {leftOrdinal : Nat} -> {leftIndex : RegistrationIndexState name} ->
+  {leftFirst, leftFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} ->
+  {leftResultIndex : RegistrationIndexState name} ->
+  {rightOrdinal : Nat} -> {rightIndex : RegistrationIndexState name} ->
+  {rightFirst, rightFinal : SystemState name key value world error} ->
+  {right : Transitions rightFirst rightFinal} ->
+  {rightResultIndex : RegistrationIndexState name} ->
+  {pendingLeft, pendingRight :
+    List (RegistrationEvent name key world error value)} ->
   (correspondence : RegistrationTraceCorrespondence nameEq renaming leftOrdinal
     leftIndex left leftResultIndex rightOrdinal rightIndex right rightResultIndex
-    pendingLeft pendingRight) -> Type
-ScannerSidesInterleaved correspondence =
-  (BeforeIn ScannerLeftStep ScannerRightStep
-    (scannerSideSequence correspondence),
-   BeforeIn ScannerRightStep ScannerLeftStep
-    (scannerSideSequence correspondence))
+    pendingLeft pendingRight) ->
+  (leftEarlier, leftLater, rightEarlier, rightLater :
+    RegistrationGeneration name) -> Type
+TargetDiscardsInterleaved correspondence leftEarlier leftLater rightEarlier
+  rightLater =
+    ( BeforeIn (ScannerLeftDiscard leftEarlier)
+        (ScannerRightDiscard rightEarlier) (scannerEventSequence correspondence)
+    , BeforeIn (ScannerRightDiscard rightEarlier)
+        (ScannerLeftDiscard leftLater) (scannerEventSequence correspondence)
+    , BeforeIn (ScannerLeftDiscard leftLater)
+        (ScannerRightDiscard rightLater) (scannerEventSequence correspondence)
+    )
 
-||| Same-raw-name/multiple-birth regression.  Both sides contain two distinct
-||| birth ordinals for the same raw name; each exact generation—not merely its
-||| name—is shown in the accepted deleted list while the underlying scanner is
-||| explicitly interleaved.
+||| Same-raw-name/multiple-birth regression at accepted indices.  Each exact
+||| generation has both scanner-position evidence and final-list membership.
 public export
 record SameRawNameScannerRegression
   (name, key, world, error : Type) (value : key -> Type)
@@ -323,8 +378,9 @@ record SameRawNameScannerRegression
   (leftEarlier, leftLater, rightEarlier, rightLater :
     RegistrationGeneration name) where
   constructor MkSameRawNameScannerRegression
-  scannerActuallyInterleaved : ScannerSidesInterleaved
+  targetedDiscardsInterleaved : TargetDiscardsInterleaved
     (generationTraceCorrespondence (generatedRegistrationTree sameInputs))
+    leftEarlier leftLater rightEarlier rightLater
   0 leftRawNameReused : generationName leftEarlier = generationName leftLater
   0 rightRawNameReused : generationName rightEarlier = generationName rightLater
   0 leftBirthsDistinct : Not (leftEarlier = leftLater)
@@ -365,8 +421,9 @@ sameRawNameScannerRegression :
     (canonicalEndpoint (canonicalSchedule rightCapital))) ->
   Elem rightLater (endpointWithdrawnGenerations
     (canonicalEndpoint (canonicalSchedule rightCapital))) ->
-  ScannerSidesInterleaved
-    (generationTraceCorrespondence (generatedRegistrationTree sameInputs)) ->
+  TargetDiscardsInterleaved
+    (generationTraceCorrespondence (generatedRegistrationTree sameInputs))
+    leftEarlier leftLater rightEarlier rightLater ->
   SameRawNameScannerRegression name key world error value protocol nameEq keyEq
     leftTrace rightTrace sameInputs leftCapital rightCapital leftEarlier leftLater
     rightEarlier rightLater
@@ -393,6 +450,140 @@ sameRawNameScannerRegression nameEq keyEq protocol leftTrace rightTrace sameInpu
         (acceptedDeletionScannerCapitalSpike nameEq keyEq protocol leftTrace
           rightTrace sameInputs leftCapital rightCapital)
         rightLater rightLaterWithdrawn)
+
+||| Concrete executable scanner-index regression.  It is intentionally retained
+||| in the branch (rather than only in /tmp): the same raw name is born at exact
+||| left ordinals 6/18 and right ordinals 9/14, and two different cross-side
+||| schedules compute the same exact per-side deleted lists.
+FixtureValue : Unit -> Type
+FixtureValue _ = Unit
+
+fixtureSpec : CoeffectSpec Unit
+fixtureSpec = MkCoeffectSpec [] UniqueNil
+
+fixtureComponent : Component Unit FixtureValue Unit String
+fixtureComponent = MkComponent fixtureSpec fixtureSpec []
+
+public export
+record ConcreteScannerIndexes where
+  constructor MkConcreteScannerIndexes
+  concreteLeftIndex : RegistrationIndexState Nat
+  concreteRightIndex : RegistrationIndexState Nat
+
+concreteEmptyIndexes : ConcreteScannerIndexes
+concreteEmptyIndexes = MkConcreteScannerIndexes
+  DGamma.CP3.emptyRegistrationIndex DGamma.CP3.emptyRegistrationIndex
+
+advanceConcreteScannerEvent : ScannerEvent Nat -> ConcreteScannerIndexes ->
+  ConcreteScannerIndexes
+advanceConcreteScannerEvent
+  (ScannerLeftDiscard (MkRegistrationGeneration child ordinal))
+  (MkConcreteScannerIndexes left right) =
+    MkConcreteScannerIndexes
+      (advanceDeletedRegistrationIndex ordinal child 0 fixtureComponent left)
+      right
+advanceConcreteScannerEvent
+  (ScannerRightDiscard (MkRegistrationGeneration child ordinal))
+  (MkConcreteScannerIndexes left right) =
+    MkConcreteScannerIndexes left
+      (advanceDeletedRegistrationIndex ordinal child 0 fixtureComponent right)
+advanceConcreteScannerEvent _ indexes = indexes
+
+runConcreteScannerEvents : List (ScannerEvent Nat) -> ConcreteScannerIndexes ->
+  ConcreteScannerIndexes
+runConcreteScannerEvents [] indexes = indexes
+runConcreteScannerEvents (event :: rest) indexes =
+  runConcreteScannerEvents rest (advanceConcreteScannerEvent event indexes)
+
+leftBirth6 : RegistrationGeneration Nat
+leftBirth6 = MkRegistrationGeneration 1 6
+
+leftBirth18 : RegistrationGeneration Nat
+leftBirth18 = MkRegistrationGeneration 1 18
+
+rightBirth9 : RegistrationGeneration Nat
+rightBirth9 = MkRegistrationGeneration 1 9
+
+rightBirth14 : RegistrationGeneration Nat
+rightBirth14 = MkRegistrationGeneration 1 14
+
+concreteTargetDiscardOrder : List (ScannerEvent Nat)
+concreteTargetDiscardOrder =
+  [ ScannerLeftDiscard leftBirth6
+  , ScannerRightDiscard rightBirth9
+  , ScannerLeftDiscard leftBirth18
+  , ScannerRightDiscard rightBirth14
+  ]
+
+concreteReorderedTargetDiscards : List (ScannerEvent Nat)
+concreteReorderedTargetDiscards =
+  [ ScannerRightDiscard rightBirth9
+  , ScannerLeftDiscard leftBirth6
+  , ScannerRightDiscard rightBirth14
+  , ScannerLeftDiscard leftBirth18
+  ]
+
+concreteTargetFinalIndexes : ConcreteScannerIndexes
+concreteTargetFinalIndexes =
+  runConcreteScannerEvents concreteTargetDiscardOrder concreteEmptyIndexes
+
+concreteReorderedFinalIndexes : ConcreteScannerIndexes
+concreteReorderedFinalIndexes =
+  runConcreteScannerEvents concreteReorderedTargetDiscards concreteEmptyIndexes
+
+public export
+0 concreteTargetIndexesExact :
+  DGamma.CP5ConfluenceRenamingCompositionSpike.concreteTargetFinalIndexes =
+    MkConcreteScannerIndexes
+      (MkRegistrationIndexState
+        [(1, DGamma.CP5ConfluenceRenamingCompositionSpike.leftBirth18)] [] []
+        [ DGamma.CP5ConfluenceRenamingCompositionSpike.leftBirth18
+        , DGamma.CP5ConfluenceRenamingCompositionSpike.leftBirth6 ])
+      (MkRegistrationIndexState
+        [(1, DGamma.CP5ConfluenceRenamingCompositionSpike.rightBirth14)] [] []
+        [ DGamma.CP5ConfluenceRenamingCompositionSpike.rightBirth14
+        , DGamma.CP5ConfluenceRenamingCompositionSpike.rightBirth9 ])
+concreteTargetIndexesExact = Refl
+
+public export
+0 concreteReorderedIndexesExact :
+  DGamma.CP5ConfluenceRenamingCompositionSpike.concreteReorderedFinalIndexes =
+    MkConcreteScannerIndexes
+      (MkRegistrationIndexState
+        [(1, DGamma.CP5ConfluenceRenamingCompositionSpike.leftBirth18)] [] []
+        [ DGamma.CP5ConfluenceRenamingCompositionSpike.leftBirth18
+        , DGamma.CP5ConfluenceRenamingCompositionSpike.leftBirth6 ])
+      (MkRegistrationIndexState
+        [(1, DGamma.CP5ConfluenceRenamingCompositionSpike.rightBirth14)] [] []
+        [ DGamma.CP5ConfluenceRenamingCompositionSpike.rightBirth14
+        , DGamma.CP5ConfluenceRenamingCompositionSpike.rightBirth9 ])
+concreteReorderedIndexesExact = Refl
+
+public export
+0 concreteTargetDeletedListsExact :
+  ( indexedDeletedGenerations (concreteLeftIndex
+      DGamma.CP5ConfluenceRenamingCompositionSpike.concreteTargetFinalIndexes) =
+      [ DGamma.CP5ConfluenceRenamingCompositionSpike.leftBirth18
+      , DGamma.CP5ConfluenceRenamingCompositionSpike.leftBirth6 ]
+  , indexedDeletedGenerations (concreteRightIndex
+      DGamma.CP5ConfluenceRenamingCompositionSpike.concreteTargetFinalIndexes) =
+      [ DGamma.CP5ConfluenceRenamingCompositionSpike.rightBirth14
+      , DGamma.CP5ConfluenceRenamingCompositionSpike.rightBirth9 ]
+  )
+concreteTargetDeletedListsExact = (Refl, Refl)
+
+public export
+0 concreteReorderedDeletedListsExact :
+  ( indexedDeletedGenerations (concreteLeftIndex
+      DGamma.CP5ConfluenceRenamingCompositionSpike.concreteReorderedFinalIndexes) =
+      [ DGamma.CP5ConfluenceRenamingCompositionSpike.leftBirth18
+      , DGamma.CP5ConfluenceRenamingCompositionSpike.leftBirth6 ]
+  , indexedDeletedGenerations (concreteRightIndex
+      DGamma.CP5ConfluenceRenamingCompositionSpike.concreteReorderedFinalIndexes) =
+      [ DGamma.CP5ConfluenceRenamingCompositionSpike.rightBirth14
+      , DGamma.CP5ConfluenceRenamingCompositionSpike.rightBirth9 ]
+  )
+concreteReorderedDeletedListsExact = (Refl, Refl)
 
 ||| Corrected O21 boundary.  Scanner classifications remain indexed by the two
 ||| original canonical schedules, while operational convergence may pass through
