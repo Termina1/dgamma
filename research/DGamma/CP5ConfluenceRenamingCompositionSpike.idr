@@ -495,15 +495,19 @@ runConcreteScannerEvents [] indexes = indexes
 runConcreteScannerEvents (event :: rest) indexes =
   runConcreteScannerEvents rest (advanceConcreteScannerEvent event indexes)
 
+public export
 leftBirth6 : RegistrationGeneration Nat
 leftBirth6 = MkRegistrationGeneration 1 6
 
+public export
 leftBirth18 : RegistrationGeneration Nat
 leftBirth18 = MkRegistrationGeneration 1 18
 
+public export
 rightBirth9 : RegistrationGeneration Nat
 rightBirth9 = MkRegistrationGeneration 1 9
 
+public export
 rightBirth14 : RegistrationGeneration Nat
 rightBirth14 = MkRegistrationGeneration 1 14
 
@@ -523,10 +527,12 @@ concreteReorderedTargetDiscards =
   , ScannerLeftDiscard leftBirth18
   ]
 
+public export
 concreteTargetFinalIndexes : ConcreteScannerIndexes
 concreteTargetFinalIndexes =
   runConcreteScannerEvents concreteTargetDiscardOrder concreteEmptyIndexes
 
+public export
 concreteReorderedFinalIndexes : ConcreteScannerIndexes
 concreteReorderedFinalIndexes =
   runConcreteScannerEvents concreteReorderedTargetDiscards concreteEmptyIndexes
