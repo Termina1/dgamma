@@ -5,6 +5,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionRelationalBoundary
+import DGamma.CP4Support
 import Decidable.Equality
 
 %default total
@@ -45,8 +46,113 @@ data PaperOrchestrationStep :
     transitionAction transition = ORemove actor ->
     PaperOrchestrationStep transition
 
-||| Relational local diamond suitable for splicing by replay rather than by
-||| forbidden equality of function-valued effect tables and accumulators.
+||| A reusable RAR correspondence, not a deletion-only embedding.  Every actual
+||| or yielded generator and every iterator stage of the replayed trace is tied
+||| to one generator/stage in the source trace with the same executable map or
+||| outcome.  This is the exact capital needed to transport both fields of
+||| `TraceIndependent` after deletion, suffix replay, and adjacent swaps.
+public export
+record RelationalReplayCorrespondence
+  (name, key, world, error : Type) (value : key -> Type)
+  {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
+    SystemState name key value world error}
+  (source : Transitions sourceFirst sourceFinal)
+  (replayed : Transitions replayedFirst replayedFinal) where
+  constructor MkRelationalReplayCorrespondence
+  replayGeneratorOrigin : (actor : name) ->
+    TraceEffectGenerator name key world error value actor replayed ->
+    TraceEffectGenerator name key world error value actor source
+  0 replayGeneratorMapPreserved : (actor : name) ->
+    (generator : TraceEffectGenerator name key world error value actor replayed) ->
+    (state : EffectState name key value world) ->
+    traceGeneratorMap (replayGeneratorOrigin actor generator) state =
+      traceGeneratorMap generator state
+  replayIteratorStageOrigin : (actor : name) ->
+    IteratorStage name key world error value actor replayed ->
+    IteratorStage name key world error value actor source
+  0 replayIteratorOutcomePreserved : (actor : name) ->
+    (stage : IteratorStage name key world error value actor replayed) ->
+    (state : EffectState name key value world) ->
+    iteratorStageOutcome stage state =
+      iteratorStageOutcome (replayIteratorStageOrigin actor stage) state
+
+||| Generic independence transport.  Deletion and sorting must construct the
+||| correspondence above as part of their internal replay result; this theorem
+||| deliberately does not claim that an arbitrary public `DeletionResult`
+||| contains enough evidence by itself.
+public export
+0 traceIndependentAfterRelationalReplaySpike :
+  (keyEq : DecEq key) ->
+  {source : Transitions sourceFirst sourceFinal} ->
+  {replayed : Transitions replayedFirst replayedFinal} ->
+  RelationalReplayCorrespondence name key world error value source replayed ->
+  TraceIndependent name key world error value keyEq source ->
+  TraceIndependent name key world error value keyEq replayed
+traceIndependentAfterRelationalReplaySpike =
+  ?traceIndependentAfterRelationalReplaySpike_rhs
+
+||| Every premise consumed again by deletion selection, Lemmas 68/70, or the
+||| next adjacent swap.  Using one shared record prevents the sorting and
+||| deletion recursions from silently dropping capital at their boundaries.
+public export
+record ReplayInvariantBundle
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, finalState : SystemState name key value world error}
+  (trace : Transitions initial finalState) where
+  constructor MkReplayInvariantBundle
+  0 replayAligned : AlignedTransitions name key world error value nameEq keyEq trace
+  0 replayDiscipline : RegistrationDiscipline protocol nameEq trace
+  0 replayInitialWellFormed :
+    registryWellFormed @{nameEq} @{keyEq} initial = True
+  0 replayInitialEmpty : bindings (registry initial) = []
+  0 replayFinalWellFormed :
+    registryWellFormed @{nameEq} @{keyEq} finalState = True
+  0 replayQuiet : quiet @{nameEq} @{keyEq} finalState = True
+  0 replayNoFailure : noFailedFibers finalState = True
+  0 replayTotal : TraceComponentsTotal nameEq keyEq trace
+  0 replayIndependent : TraceIndependent name key world error value keyEq trace
+  0 replayProvenance : RegistrationProvenance protocol nameEq trace
+  0 replayProtocolRanked : RegistryProtocolRanked protocol nameEq finalState
+  0 replayParentRanksIncrease :
+    RegistryParentRanksIncrease protocol nameEq finalState
+  0 replayPrecedenceAcyclic : PrecedenceAcyclic nameEq finalState
+  0 replaySupportWellFounded : SupportWellFounded nameEq finalState
+  0 replaySupportMatchesActive : SupportMatchesActive nameEq keyEq finalState
+
+||| The exact `ReachedFromEmpty` value consumed by Lemmas 68 and 70 is
+||| definitionally reconstructed from each recursive bundle, rather than being
+||| mentioned only in prose.
+public export
+0 replayReachedFromEmpty :
+  {trace : Transitions initial finalState} ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq trace ->
+  ReachedFromEmpty name key world error value nameEq keyEq finalState
+replayReachedFromEmpty premises =
+  MkReachedFromEmpty initial trace (replayAligned premises)
+    (replayInitialEmpty premises) (replayInitialWellFormed premises)
+
+||| Endpoint quotient carried by every suffix replay.  It is strong enough to
+||| compose effects and ordered controls without demanding equality of
+||| function-valued tables or accumulators.
+public export
+record RelationalReplayEndpoint
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (sourceFinal, replayedFinal : SystemState name key value world error) where
+  constructor MkRelationalReplayEndpoint
+  0 replayedEffects : EffectStateRelated keyEq
+    (projectEffectState @{nameEq} sourceFinal)
+    (projectEffectState @{nameEq} replayedFinal)
+  0 replayedControls : OrderedRegistryControlsRelated name key world error value
+    (bindings (registry sourceFinal)) (bindings (registry replayedFinal))
+  0 replayedWellFormed :
+    registryWellFormed @{nameEq} @{keyEq} replayedFinal = True
+
+||| Relational local diamond suitable for splicing by replay.  Action and tag
+||| equalities are both explicit: L-Iter and L-Finish share LAdvance, so action
+||| equality alone cannot recover a located paper activation step.
 public export
 record LocalRelationalDiamond
   (name, key, world, error : Type) (value : key -> Type)
@@ -60,7 +166,17 @@ record LocalRelationalDiamond
   movedRight : Transition first swappedMiddle
   movedLeft : Transition swappedMiddle swappedFinal
   0 movedRightAction : transitionAction movedRight = transitionAction right
+  0 movedRightTag : transitionTag movedRight = transitionTag right
   0 movedLeftAction : transitionAction movedLeft = transitionAction left
+  0 movedLeftTag : transitionTag movedLeft = transitionTag left
+  0 movedRightActivationBranch :
+    PaperActivationStep right -> PaperActivationStep movedRight
+  0 movedLeftActivationBranch :
+    PaperActivationStep left -> PaperActivationStep movedLeft
+  0 movedRightOrchestrationBranch :
+    PaperOrchestrationStep right -> PaperOrchestrationStep movedRight
+  0 movedLeftOrchestrationBranch :
+    PaperOrchestrationStep left -> PaperOrchestrationStep movedLeft
   0 swappedEffects : EffectStateRelated keyEq
     (projectEffectState @{nameEq} originalFinal)
     (projectEffectState @{nameEq} swappedFinal)
@@ -68,10 +184,84 @@ record LocalRelationalDiamond
     (bindings (registry originalFinal)) (bindings (registry swappedFinal))
   0 swappedWellFormed : registryWellFormed @{nameEq} @{keyEq} swappedFinal = True
 
-||| Candidate for paper Lemma 71(1).  The explicit early firing is the paper's
-||| premise that the second activation is already applicable before the first.
-||| The remaining proof should combine two actual effect generators from the
-||| pairwise-independent universe with per-tag control/applicability frames.
+||| Source-sensitive evidence for swapping two orchestration rules.  The early
+||| checked transition proves the moved rule's freshness/applicability at the
+||| source.  Registration discipline plus the generation scan retain exact
+||| birth ordinals/parent-local positions; the negative fields prevent two
+||| yielded insertions from crossing their own licensing births.
+public export
+record OrchestrationSwapSafety
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {first, middle, originalFinal : SystemState name key value world error}
+  (left : Transition first middle)
+  (right : Transition middle originalFinal) where
+  constructor MkOrchestrationSwapSafety
+  earlyRightFinal : SystemState name key value world error
+  earlyRight : Transition first earlyRightFinal
+  0 earlyRightAction : transitionAction earlyRight = transitionAction right
+  0 earlyRightTag : transitionTag earlyRight = transitionTag right
+  0 sourceRegistrationDiscipline : RegistrationDiscipline protocol nameEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))
+  sourceStartOrdinal : Nat
+  sourceStartLive : GenerationEnvironment name
+  sourceEndOrdinal : Nat
+  sourceEndLive : GenerationEnvironment name
+  0 sourceGenerationScan : GenerationTraceScan nameEq sourceStartOrdinal
+    sourceStartLive (MoreTransitions left (MoreTransitions right NoTransitions))
+    sourceEndOrdinal sourceEndLive
+  0 insertedChildrenDistinct :
+    (leftChild, rightChild : name) ->
+    (leftParent, rightParent : Parent name) ->
+    (leftComponent, rightComponent : Component key value world error) ->
+    transitionAction left = OInsert leftChild leftParent leftComponent ->
+    transitionAction right = OInsert rightChild rightParent rightComponent ->
+    Not (leftChild = rightChild)
+  0 generatedLicensesDoNotCross :
+    (leftChild, leftParent, rightChild, rightParent : name) ->
+    (leftComponent, rightComponent : Component key value world error) ->
+    transitionAction left = OInsert leftChild (ChildOf leftParent) leftComponent ->
+    transitionAction right = OInsert rightChild (ChildOf rightParent) rightComponent ->
+    (Not (leftChild = rightParent), Not (rightChild = leftParent))
+
+||| A complete adjacent transposition: the local pair is swapped, the untouched
+||| suffix is replayed, and the next recursion receives the same full premise
+||| bundle.  It also exposes exact same-external-input and generator/stage
+||| correspondence rather than expecting endpoint relations to imply them.
+public export
+record AdjacentSwapResult
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+    SystemState name key value world error}
+  (original : Transitions initial originalFinal)
+  (tracePrefix : Transitions initial pairFirst)
+  (left : Transition pairFirst pairMiddle)
+  (right : Transition pairMiddle pairFinal)
+  (suffix : Transitions pairFinal originalFinal)
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) where
+  constructor MkAdjacentSwapResult
+  replayedFinal : SystemState name key value world error
+  replayedSuffix : Transitions (swappedFinal diamond) replayedFinal
+  swappedTrace : Transitions initial replayedFinal
+  0 originalDecomposition : appendTransitions tracePrefix
+    (MoreTransitions left (MoreTransitions right suffix)) = original
+  0 swappedDecomposition : swappedTrace = appendTransitions tracePrefix
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) replayedSuffix))
+  swappedSameExternalInputs :
+    SameExternalOrchestration nameEq original swappedTrace
+  swappedReplayCorrespondence : RelationalReplayCorrespondence name key world
+    error value original swappedTrace
+  swappedEndpoint : RelationalReplayEndpoint name key world error value nameEq
+    keyEq originalFinal replayedFinal
+  swappedPremises : ReplayInvariantBundle name key world error value protocol
+    nameEq keyEq swappedTrace
+
+||| Candidate for paper Lemma 71(1).
 public export
 0 activationActivationDiamondSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -81,6 +271,7 @@ public export
   (right : Transition middle originalFinal) ->
   (earlyRight : Transition first earlyRightFinal) ->
   transitionAction earlyRight = transitionAction right ->
+  transitionTag earlyRight = transitionTag right ->
   PaperActivationStep left -> PaperActivationStep right ->
   Not (transitionActor left = transitionActor right) ->
   registryWellFormed @{nameEq} @{keyEq} first = True ->
@@ -89,11 +280,7 @@ public export
   LocalRelationalDiamond name key world error value nameEq keyEq left right
 activationActivationDiamondSpike = ?activationActivationDiamondSpike_rhs
 
-||| Candidate for paper Lemma 71(2).  `foreignToRegistrationParent` is the host
-||| specialization of "the activation does not register n" for generated
-||| O-Insert: the moved activation is not the parent whose current iterator head
-||| licenses the child birth.  Root insertion and retire/remove do not need this
-||| field, so the premise is deliberately conditional on the action shape.
+||| Candidate for paper Lemma 71(2).
 public export
 0 activationOrchestrationDiamondSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -111,3 +298,43 @@ public export
     (MoreTransitions left (MoreTransitions right NoTransitions)) ->
   LocalRelationalDiamond name key world error value nameEq keyEq left right
 activationOrchestrationDiamondSpike = ?activationOrchestrationDiamondSpike_rhs
+
+||| Missing Lemma-71 case exposed by yielded child registrations: two checked
+||| orchestration rules, including O-Insert/O-Insert, must transpose under the
+||| exact source freshness/generation/licensing package above.
+public export
+0 orchestrationOrchestrationDiamondSpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {first, middle, originalFinal : SystemState name key value world error} ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  PaperOrchestrationStep left -> PaperOrchestrationStep right ->
+  Not (transitionActor left = transitionActor right) ->
+  OrchestrationSwapSafety name key world error value protocol nameEq keyEq
+    left right ->
+  LocalRelationalDiamond name key world error value nameEq keyEq left right
+orchestrationOrchestrationDiamondSpike =
+  ?orchestrationOrchestrationDiamondSpike_rhs
+
+||| Checked suffix-splice interface consumed by sorting.  It is generic over the
+||| local diamond case (A/A, A/O, or O/O) and returns all recursive capital.
+public export
+0 adjacentSwapSuffixSpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+    SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (tracePrefix : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  appendTransitions tracePrefix (MoreTransitions left (MoreTransitions right suffix)) =
+    original ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  AdjacentSwapResult name key world error value protocol nameEq keyEq original
+    tracePrefix left right suffix diamond
+adjacentSwapSuffixSpike = ?adjacentSwapSuffixSpike_rhs
