@@ -1,230 +1,258 @@
-# Theorem 73 (Confluence) — CP5 scoping plan, revision 3
+# Theorem 73 (Confluence) — CP5 scoping plan, revision 4
 
 Branch: `cp5-thm73-scoping`
 
 Review trail:
 
 - `review-cp5-plan-round1.md` — REJECT, twelve required changes;
-- `review-cp5-plan-round2.md` — REJECT, eight required changes.
+- `review-cp5-plan-round2.md` — REJECT, eight required changes;
+- `review-cp5-plan-round3.md` — REJECT, two localized blockers, two majors,
+  and one minor.
 
 Scope remains research-only planning and interface elaboration. Accepted
-statements and all files under `src/` are immutable. Hole-bearing modules under
-`research/DGamma/` are excluded from `dgamma.ipkg` and must never merge unchanged
-to `main`.
+statements and every file under `src/` are immutable. Hole-bearing modules under
+`research/DGamma/` remain excluded from `dgamma.ipkg` and must never merge
+unchanged to `main`.
 
 ## Executive estimate
 
-The provisional budget is now **60–100 engineering shifts**. The revision-2
-50–90 band is withdrawn. Round 2 changed the risk profile: generic replay
-correspondence looks more structural than first estimated, but cross-trace block
-sorting and endpoint composition were missing O/A transposition, a simultaneous
-schedule/replay package, full canonical replay premises, and typed links into
-the accepted deleted-generation scanner. Two apparently strengthened path
-interfaces were actually uninhabitable in accepted vestigial cases and had to be
-removed.
+The provisional budget is now **65–110 engineering shifts**. Revision 3's
+60–100 band is withdrawn. Round 3 localized both blockers to cross-trace order
+matching/convergence, but showed that the operational left replay needs a second
+namespace/state transport and an exact post-permutation schedule, while O21
+needs an explicit accepted-scanner producer.
 
-This range is still provisional. Re-estimate after these gates have proofs, not
-holes:
+Re-estimate after proof—not interface elaboration—of O4, O9, O15, O19/O20, and
+the O21 scanner induction. A public statement repair invalidates this band.
 
-1. A/A, A/O, **O/A**, and O/O local diamonds plus suffix replay;
-2. one complete D72 step returning typed deleted-generation classification and
-   the next replay bundle;
-3. minimal original/reduced support facts sufficient for schedule assembly in
-   every vestigial case;
-4. bundle-preserving canonical block permutation; and
-5. schedule withdrawal membership in the accepted two-trace scanner followed by
-   the four-way vestigial endpoint proof.
+## 1. Three-part calibration rule
 
-The final `MkConfluenceResult` assembly remains checked and small.
+Every strengthened field must pass all three checks before becoming an
+interface:
 
-## 1. Calibration rule: necessary and inhabitable
+1. **Consumer necessity:** name the later constructor/induction that projects
+   the exact field.
+2. **Producer inhabitability:** construct it in every accepted endpoint case,
+   including original-present/canonical-absent and asymmetric cross-trace
+   vestigials.
+3. **Index discipline:** write a small external positive consumer at the exact
+   state, trace, and raw-name namespace where the operational theorem replays.
 
-Every internal field must pass both tests:
+Round 2 caught violations of producer inhabitability: unrestricted paths through
+vestigial names. Round 3 caught an index-discipline violation: the certified
+permutation lived at `rightFinal` over right names while the declared operational
+consumer replayed the left canonical trace.
 
-1. **Consumer necessity:** which later constructor or induction step projects
-   this exact field?
-2. **Producer inhabitability:** can deletion/sorting construct it for every case
-   admitted by `CanonicalEndpointRelation` and `CurrentEndpointRenaming`,
-   including original-present/reduced-absent and cross-trace vestigials?
+Revision 4 retains no unrestricted path transport. Two-sided comparability is
+stated only for names proved members of the corresponding support orders.
 
-Revision 2 failed the second test twice:
-
-- unrestricted `CanonicalSupportTransport.supportPathToReduced` turned a legal
-  original parent edge ending at a withdrawn retired child into a reduced path
-  ending at an absent fiber;
-- unrestricted `MappedCanonicalSupportOrders.mappedSupportPathForward` forced a
-  renamed target fiber to exist even when accepted current renaming classifies
-  it vestigial/absent.
-
-Revision 3 exposes only the schedule facts actually consumed. Arbitrary paths
-through unsupported or vestigial nodes are not transported.
-
-## 2. Revised producer/consumer pipeline
+## 2. Exact producer/consumer pipeline
 
 | Producer | Output guaranteed by the interface | Immediate consumer |
 |---|---|---|
-| Relational action/suffix replay | `RelationalReplayCorrespondence`, mapping every actual/yielded generator and iterator stage with map/outcome preservation | structural correspondence composition and `TraceIndependent` transport |
-| Any recursive replay state | `ReplayInvariantBundle`: alignment, discipline, empty/well-formed start, endpoint WF, quiet/no-failure, totality, independence, provenance, ranks, `PrecedenceAcyclic`, `SupportWellFounded`, and `SupportMatchesActive` | next deletion or adjacent swap; Lemmas 68/70 |
-| Local A/A, A/O, O/A, or O/O commute | `LocalRelationalDiamond` with action/tag/branch preservation and endpoint quotient | `AdjacentSwapResult` suffix replay |
-| One D72 iteration | `DeletionChainStep` with replay correspondence, external inputs, exact endpoint/registration accounting, typed `DeletedGenerationClassification` for each withdrawn birth, and next premises | delete-all recursion |
-| Delete-all recursion | `ClosingFreeReduction` with a dependent list `(generation ** DeletedGenerationClassification original generation)`, exact endpoint-list equality, registration accounting, and replay capital | shape/order/sorting and one-trace package |
-| Support bridge | Minimal `CanonicalSupportTransport`: support truth equality, reduced-linearization→original-linearization, and reduced-placement→original-placement | exact schedule constructor only |
-| Closing-free sorting | `SortedClosingFreeTrace` with replay correspondence, full sorted premises, blocks/order/coverage, placement, endpoint, and registration tree | simultaneous one-trace package |
-| Deletion + sorting | `OneTraceOrchestrationAccounting` whose endpoint withdrawn list equals the reduction list | simultaneous package |
-| Simultaneous one-trace constructor | `IndependentCanonicalSchedule`: public schedule, original/canonical independence, correspondence indexed by `canonicalTrace schedule`, full canonical `ReplayInvariantBundle`, and typed classification for every schedule withdrawal | cross-trace order matching and swaps; accepted-scanner bridge |
-| Support-order matching | `MappedCanonicalSupportOrders`: mapped supported membership, mapped left order as a direct `LinearizesSupport` value at the right endpoint, and certified adjacent incomparable swaps | canonical block permutation |
-| Bundle-preserving canonical permutation | `CanonicalConvergenceResult` with final replayed trace, replay correspondence, full final bundle, same external inputs, and fixed-bijection canonical endpoint bridge | original endpoint composition |
-| Scanner bridge | `AcceptedDeletionScannerCapital`: exact accepted `RegistrationTraceCorrespondence`, left/right schedule-withdrawal membership in `leftDeletedGenerations`/`rightDeletedGenerations`, and original `DeletedClosingRegistration` classifications | four-way `VestigialEndpointGeneration` cases |
-| Two enriched schedules + scanner capital + canonical bridge | exact `SystemEquivalentByRenamingModuloVestigial` at the two original finals | checked `ConfluenceResult` constructor |
+| Relational action/suffix replay | `RelationalReplayCorrespondence` mapping actual/yielded generators and iterator stages with map/outcome preservation | structural correspondence composition and `TraceIndependent` transport |
+| Any recursive replay state | Full `ReplayInvariantBundle`: alignment, discipline, empty/well-formed start, endpoint WF, quiet/no-failure, totality, independence, provenance, ranks, acyclicity, support well-foundedness, and `SupportMatchesActive` | next deletion or adjacent swap; Lemmas 68/70 |
+| A/A, A/O, O/A, or O/O commute | `LocalRelationalDiamond` with action/tag/branch preservation and endpoint quotient | `AdjacentSwapResult` suffix replay |
+| One D72 iteration | `DeletionChainStep` with replay/external/endpoint/registration capital, exact withdrawn generations, a `DeletedGenerationClassification` for each, and next premises | delete-all recursion |
+| Delete-all recursion | `ClosingFreeReduction` with dependent typed history, exact endpoint-list equality, registration accounting, and replay capital | shape/order/sorting and one-trace assembly |
+| Support bridge | Minimal `CanonicalSupportTransport`: support truth plus exact reduced→original linearization and placement outputs | immutable `CanonicalSchedule` constructor only |
+| Closing-free sorting | `SortedClosingFreeTrace` with replay correspondence, full bundle, exact blocks/order/coverage/placement, endpoint, and registration tree | simultaneous one-trace assembly |
+| Deletion + sorting | `OneTraceOrchestrationAccounting` with exact endpoint withdrawn list | simultaneous assembly |
+| Simultaneous one-trace constructor | `IndependentCanonicalSchedule`: schedule, both independence witnesses, exact replay correspondence, full canonical bundle, and total schedule-withdrawal classification | cross-trace matching; scanner induction |
+| Supported order matching | `MappedCanonicalSupportOrders`: supported membership in both directions; supported comparability forward/backward; inverse-mapped right order linearizing `leftFinal`; `CertifiedIncomparablePermutation leftFinal leftOrder (map renameBackward rightOrder)` | operational replay of the left canonical trace |
+| Bundle-preserving left permutation | `CanonicalConvergenceResult`: enriched `permutedLeftCapital`, exact inverse-mapped target order, left-canonical→permuted replay correspondence, composed endpoint quotient, same inputs, and `CanonicalEndpointBridge` whose left index is exactly the permuted schedule | scanner production and O21 |
+| Scanner-discard induction | `deletedClassificationForcesLeftScannerDiscardSpike` / right: exact located occurrence plus same-parent close implies membership in the accepted scanner's indexed deleted list | complete scanner producer |
+| Scanner producer | Complete `acceptedDeletionScannerCapitalSpike` from exact `sameInputs` and two enriched schedules; no membership premise | O21 four-way vestigial cases |
+| Post-permutation final assembly | Complete `originalEndpointsConvergeSpike`: constructs scanner capital for `permutedLeftCapital`, consumes its exact bridge, and calls O21 | `ConfluenceResult` constructor with the same permuted schedule |
 
-`composeGenerationBijection`, `composeNameBijection`, and now
-`composeRelationalReplayCorrespondence` are complete research proofs.
+The right-state `mappedLeftOrderLinearizesRight` and right-state
+`mappedOrderPermutation` fields from revision 3 were removed: no operational
+consumer replays at that index. The accepted right schedule already carries its
+own right-state linearization.
 
-## 3. Probe-driven corrections
+`composeGenerationBijection`, `composeNameBijection`,
+`composeRelationalReplayCorrespondence`, `assembleIndependentCanonicalSchedule`,
+`acceptedDeletionScannerCapitalSpike`, `originalEndpointsConvergeSpike`, and the
+outer `ConfluenceResult` assembly have complete bodies in research. Their hard
+inputs remain explicitly named proof obligations.
 
-### 3.1 Opaque schedule endpoint reproduced and fixed
+## 3. Probe-driven revision-4 corrections
 
-Before revision, the round-2 positive attempt failed exactly at:
+### 3.1 Left-operational permutation now fits positively
+
+The round-3 negative consumer requested:
 
 ```text
-MkIndependentCanonicalSchedule schedule ... correspondence
-Can't solve constraint between sorted.sortedFinal and schedule.canonicalFinal
+CertifiedIncomparablePermutation leftFinal
+  (supportOrder leftSchedule)
+  (map (renameBackward renaming) (supportOrder rightSchedule))
 ```
 
-The failure was reproduced against `bde35d8` before edits. The public schedule
-returned by an opaque function hid the final/trace used to build the composed
-replay correspondence.
+Revision 3 failed at `rightFinal` versus `leftFinal`. Revision 4's external
+`leftOperationalPermutationNowFits` projects exactly this type and elaborates.
+No trace/state renaming operation is assumed.
 
-Revision 3 moves `IndependentCanonicalSchedule` beside one-trace sorting and
-adds the complete `assembleIndependentCanonicalSchedule`. It constructs
-`MkCanonicalSchedule` inline with the composed original→reduced→sorted replay
-correspondence and `sortedPremises`. This is a fully implemented positive proof,
-not a named hole. A separate external probe projecting the simultaneous package
-also elaborates.
+The producer interface states both supported comparability directions:
 
-### 3.2 Vestigial path counterexamples closed by weakening
+- left `SupportPath` → forward-renamed right `SupportPath`, requiring both names
+  in the left support order;
+- right `SupportPath` → backward-renamed left `SupportPath`, requiring both names
+  in the right support order.
 
-The fields used by `transportForbidsPermittedVestigialChild` and
-`mappedPathsForbidAbsentRenamedTarget` no longer exist. They were not weakened by
-adding ad hoc hypotheses; they were removed because no consumer needs an
-arbitrary path ending at an unsupported actor.
+These membership guards prevent both previously refuted vestigial path
+applications.
 
-The corrected positive probe establishes only:
+### 3.2 Post-permutation schedule and bridge cannot detach
 
-- `linearizationToOriginal` from the minimal support bridge;
-- `mappedLeftOrderLinearizesRight` for the actual support list; and
-- accepted-scanner membership for a schedule-withdrawn generation.
+`CanonicalConvergenceResult` no longer contains an arbitrary
+`permutedLeftTrace` plus an independently selectable bridge. It contains an
+`IndependentCanonicalSchedule` for the left original trace, target-order
+equality, replay correspondence from the input left canonical trace, a composed
+`RelationalReplayEndpoint`, and a bridge indexed by this exact permuted schedule.
+The schedule itself supplies target block decomposition, block order, lifecycle
+coverage, placement, registration accounting, endpoint, full bundle, and both
+independence witnesses.
 
-All three elaborate without asserting endpoint presence for a vestigial name.
+Positive probes project the exact target order and target-indexed bridge and
+complete the post-permutation O21 assembly without scanner/bridge premises. A
+negative probe trying to reinterpret that bridge at the pre-permutation left
+schedule fails on:
 
-### 3.3 O/A orientation
+```text
+convergence.permutedLeftCapital versus leftCapital
+```
 
-`orchestrationActivationDiamondSpike` now takes a checked early activation,
-action/tag equality, O/A branch proofs, actor distinction, child and licensing
-parent exclusions, source well-formedness, and independence. An external
-positive application elaborates in the formerly missing orientation.
+### 3.3 Scanner producer and classification discipline
+
+`DeletedGenerationClassification` no longer stores a misleading freely chosen
+“scanner-shaped event.” It stores the exact original generated-registration
+occurrence, exact generation equality, and same-parent `LUnload` occurrence on
+the exact suffix.
+
+The two scanner-indexed induction theorems state the precise consequence: under
+the accepted `RegistrationTraceCorrespondence` from empty indices, this
+classification forces the located generation into the left/right final
+`indexedDeletedGenerations`. Their proofs must inspect the correspondence at the
+located occurrence: queued/matched surviving branches carry `NoParentUnload` and
+contradict the stored close; the remaining branch is the scanner's own discard
+branch using its exact `registrationEventAt`.
+
+`acceptedDeletionScannerCapitalSpike` is a complete constructor body applying
+those inductions to each schedule withdrawal. External left and right consumers
+project accepted deleted-set membership **without taking scanner capital as a
+premise**.
+
+### 3.4 Retained endpoint calibration probes
+
+Both vestigial variants still elaborate:
+
+1. one-trace original-present/reduced-absent retired child through simultaneous
+   schedule assembly;
+2. asymmetric cross-trace left vestigial/right-renamed-absent through the new
+   left-operational permutation.
+
+The source-sensitive O/A application also remains externally callable.
 
 ## 4. Proof obligations in dependency order
 
-There remain **23 obligations: O1–O22 proof obligations and O23 validation**.
-Grades are S, M, L, XL. They describe risk, not one-shift units.
+There remain **23 obligations: O1–O22 mathematical/proof obligations and O23
+validation/release**. Grades are S, M, L, XL.
 
 | ID | Obligation and produced capital | Depends on | Grade and reason |
 |---|---|---|---|
-| **O1** | Trace/list algebra; external-orchestration reflexivity/transitivity; replay endpoint algebra; proved name/generation/replay-correspondence composition. | accepted CP3/RAR | **M.** Dependent endpoints make routine algebra nontrivial, but shapes are now checked. |
-| **O2** | Lift `RelationalReplayCorrespondence` structurally to arbitrary `TraceEffectTransformation` and prove both `TraceIndependent` fields. | O1 | **L.** Round-2 correspondence composition is short and generator/stage maps are explicit; no longer graded XL. |
-| **O3** | A/A diamonds for L-Begin and L-Iter/L-Finish with exact moved tags, branches, effects, controls, and early applicability. | O2 | **L–XL.** Tag combinations and failure-aware Advance remain case-heavy. |
-| **O4** | Both mixed orientations: A/O and O/A, with early moved-rule applicability, actor/child/parent exclusions, and branch preservation. | O2–O3 | **XL.** O/A is newly scoped and required by whole-block swaps ending in yielded insertion. |
-| **O5** | O/O diamonds, particularly yielded O-Insert/O-Insert, with generation scan, freshness, registration positions, and anti-license-cross conditions. | O1–O2 | **XL gate.** A countermodel forces sorting redesign. |
-| **O6** | Implement `AdjacentSwapResult` for all four orientations; replay suffix and return same inputs, correspondence, quotient endpoint, and complete next bundle. | O1–O5 | **XL.** Exhaustive RAR replay and invariant reconstruction dominate. |
-| **O7** | Executable located closed/open episode scanners, exact begin ordinals, and uniqueness. | GEN | **L.** Finite but heavily indexed under raw-name reuse. |
-| **O8** | Select support/parent-maximal close and derive every D72 negative/generation premise. | O7, Lemmas 68/70 | **XL.** Occurrence/generation maximality is not raw-name maximality. |
-| **O9** | Enrich one internal D72 call with correspondence, typed `DeletedGenerationClassification` per withdrawn birth, exact registration/endpoint accounting, strict decrease, and next bundle. | O2, O8, D72 | **XL.** Requires internal fold evidence, not a stronger public `DeletionResult`. |
+| **O1** | Trace/list algebra; external-input algebra; replay-endpoint algebra; proved name/generation/replay-correspondence composition. | accepted CP3/RAR | **M.** Dependent endpoints remain nontrivial, though interfaces elaborate. |
+| **O2** | Lift generic `RelationalReplayCorrespondence` structurally to both `TraceIndependent` fields. | O1 | **M–L.** Composition is proved; remaining work is structural transformation lifting. |
+| **O3** | A/A diamonds for L-Begin and L-Iter/L-Finish with moved tags, branches, effects, controls, and early applicability. | O2 | **L–XL.** Advance outcomes remain case-heavy. |
+| **O4** | Both mixed A/O and O/A orientations with early applicability and actor/child/licensing-parent exclusions. | O2–O3 | **XL gate.** Required by yielded-registration block crossings. |
+| **O5** | O/O diamonds, especially yielded O-Insert/O-Insert, with source freshness, generations, registration positions, and anti-license crossing. | O1–O2 | **XL gate.** Counterexample forces sorting redesign. |
+| **O6** | Implement `AdjacentSwapResult` for all orientations; suffix replay returns correspondence, composed endpoint, same inputs, and complete next bundle. | O1–O5 | **XL.** Exhaustive RAR replay/invariant reconstruction. |
+| **O7** | Executable closed/open episode scanners, exact begin ordinals, and uniqueness. | GEN | **L.** Finite but indexed under raw-name reuse. |
+| **O8** | Select support/parent-maximal close and derive all D72 negative/generation premises. | O7, Lemmas 68/70 | **XL.** Occurrence/generation maximality is not raw-name maximality. |
+| **O9** | Enrich one D72 call with replay/endpoint/registration capital, exact classifiers, strict decrease, and next bundle. | O2, O8, D72 | **XL.** Requires internal fold evidence, not public-result strengthening. |
 | **O10** | Well-founded delete-all recursion on trace length. | O7–O9 | **L.** Measure is easy; dependent recursion is not. |
-| **O11** | Compose deletion results into `ClosingFreeReduction`, preserving dependent typed history and exact endpoint list/accounting. | O1, O9–O10 | **XL.** Classification/ordinal transport across replayed traces is Lemma-72-scale. |
-| **O12** | Closing-free shape: one supported open begin ordinal, unsupported lifecycle absence, and elimination of non-paper lifecycle tags. | O7, O11 | **L–XL gate.** Counterexample triggers algorithm/statement review. |
-| **O13** | Project/reconstruct Lemma-68/70 capital from each `ReplayInvariantBundle`. | O9 | **S–M.** Round-2 positive projection is complete; remaining work is routine invocation/index plumbing. |
-| **O14** | Construct finite duplicate-free support linearization. | O13 | **M–L.** Enumeration and uniqueness are dependent but no cross-endpoint paths are needed. |
-| **O15** | Prove minimal `CanonicalSupportTransport`: support truth plus the exact linearization and placement outputs, without unrestricted path transport. | O11, O13–O14 | **L–XL gate.** Must be tested against both `VestigialNameWithdrawn` and `NameAlreadyAbsent`. |
-| **O16** | Preserve root input order; place generated births; compose external input and generated-registration accounting with exact withdrawal equality. | O1, O6, O11 | **L–XL.** Root and generated events obey different constraints. |
-| **O17** | Sort actor blocks using A/A, A/O, O/A, O/O; every certified step consumes and returns a `ReplayInvariantBundle`; build `SortedClosingFreeTrace`. | O6, O12–O16 | **XL.** Whole-block replay is a major induction. |
-| **O18** | Construct `IndependentCanonicalSchedule` simultaneously and project accepted `CanonicalSchedule`. | O11, O15–O17 | **S–M assembly.** The constructor is already fully implemented given the hard classification input; hard accounting stays in O11/O16/O17. |
-| **O19** | Prove only supported-order correspondence: mapped membership and a second right-endpoint `LinearizesSupport`, then certified adjacent incomparable permutation. | O14–O18 | **L–XL.** Must reason around unsupported intermediates without mapping them. |
-| **O20** | Execute O19 permutation with enriched canonical capitals; each step receives/returns full bundles; produce `CanonicalConvergenceResult`. | O2–O6, O18–O19 | **XL, expanded.** Includes newly explicit bundle threading and O/A replay. |
-| **O21** | Build `AcceptedDeletionScannerCapital` from both typed histories and accepted `RegistrationTraceCorrespondence`; prove O21 four-way endpoint cases and exact fixed-bijection original equivalence. | O11, O18, O20 | **XL, expanded.** Scanner membership and vestigial classification are now honestly included. |
-| **O22** | Assemble schedules and O21 equivalence into `ConfluenceResult` and inhabit `confluenceTheorem`. | O18, O21 | **S.** Checked constructor already exists. |
-| **O23** | Negative vestigial/O-A regressions, sequential spike/package checks, adversarial reviews, docs, and release branch excluding research holes. | O1–O22 | **M–L.** Review gates remain mandatory. |
+| **O11** | Compose deletions into `ClosingFreeReduction`; transport typed occurrence/classification history and exact endpoint/accounting. | O1, O9–O10 | **XL.** Lemma-72-scale ordinal transport. |
+| **O12** | Closing-free shape: one supported open begin ordinal; unsupported lifecycle absence; eliminate non-paper tags. | O7, O11 | **L–XL gate.** Counterexample triggers algorithm review. |
+| **O13** | Project/reconstruct Lemma-68/70 capital from every bundle. | O9 | **S–M.** Positive projection elaborates. |
+| **O14** | Construct finite duplicate-free support linearization. | O13 | **M–L.** Enumeration and uniqueness only. |
+| **O15** | Prove minimal one-trace support truth/linearization/placement bridge in every vestigial case. | O11, O13–O14 | **L–XL gate.** No unrestricted path claim is available. |
+| **O16** | Preserve root input order; place generated births; compose external/generated registration accounting with exact withdrawals. | O1, O6, O11 | **L–XL.** Root and generated actions obey different constraints. |
+| **O17** | Sort actor blocks via all four local orientations, threading a complete bundle at every adjacent step; build `SortedClosingFreeTrace`. | O6, O12–O16 | **XL.** Major whole-block induction. |
+| **O18** | Assemble and project `IndependentCanonicalSchedule`. | O11, O15–O17 | **S.** Constructor body is proved; hard capital belongs upstream. |
+| **O19** | Prove supported membership plus two-sided supported comparability transport, inverse-mapped right linearization at `leftFinal`, and the left-operational certified permutation. | O14–O18 | **XL.** Cross-state/namespace theorem must avoid all unsupported vestigials. |
+| **O20** | Execute O19 on the left canonical trace; every swap consumes/returns full bundles; construct enriched target-order `permutedLeftCapital`, composed endpoint quotient, and exact permuted→right bridge. | O2–O6, O18–O19 | **XL.** Explicit post-permutation schedule/block/bridge capital is mandatory. |
+| **O21** | Prove both exact scanner-discard inductions; use the complete scanner producer; prove four-way vestigial original equivalence at the fixed accepted bijection. | O9–O11, O18, O20 | **XL.** Raw-name reuse, scanner indices, and occurrence alignment remain Lemma-72-scale. |
+| **O22** | Assemble permuted schedule, right schedule, and O21 equivalence into `ConfluenceResult`; inhabit `confluenceTheorem`. | O20–O21 | **S.** Complete composition body elaborates. |
+| **O23** | Consumer-index probes, both vestigial regressions, O/A, sequential checks, reviews, docs, and release exclusion of holes. | O1–O22 | **M–L.** External review gates remain mandatory. |
 
-## 5. Dependency phases and 60–100 budget
+## 5. Dependency phases and 65–110 budget
 
-These are overlapping critical-path bands; common RAR/scanner infrastructure is
-counted once in the total estimate.
+Phase ranges overlap; common RAR and scanner induction infrastructure is counted
+once in the total.
 
 | Phase | Obligations | Provisional band |
 |---|---|---:|
-| A — replay algebra/independence | O1–O2 | 5–9 |
+| A — replay algebra/independence | O1–O2 | 4–8 |
 | B — four local orientations and suffix replay | O3–O6 | 10–18 |
-| C — scanners, selection, enriched D72 | O7–O9 | 7–13 |
+| C — scanners, selection, enriched D72 | O7–O9 | 8–15 |
 | D — recursion and typed cumulative history | O10–O11 | 8–15 |
 | E — shape, support order, minimal support bridge | O12–O15 | 7–13 |
-| F — orchestration accounting and block sorting | O16–O18 | 9–16 |
-| G — supported mapped order, canonical replay, scanner/O21 | O19–O21 | 12–23 |
+| F — orchestration accounting and one-trace block sorting | O16–O18 | 9–16 |
+| **G — left operational order, enriched permutation, scanner/O21** | **O19–O21** | **18–30** |
 | H — outer theorem and validation | O22–O23 | 2–5 |
 
-Plan **60–100 total** after reuse/overlap. Re-estimate after O4, O9, O15,
-O20, and O21. Any public statement repair invalidates the band.
+Plan **65–110 total** after reuse/overlap. The upper range acknowledges 25 named
+research holes after making final scanner/O21 composition explicit; hole count is
+not a proof-size metric.
 
-## 6. Mathematical gates and architecture decisions
+## 6. Mathematical gates and decisions
 
 | Gate | Pass criterion | Failure consequence |
 |---|---|---|
-| **G1 replay independence** | O2 proves both Definition-60 fields from the generic correspondence. | Enrich internal replay further or evaluate a direct canonical evaluator; public premise changes require statement review. |
-| **G2 four-way local commute** | A/A, A/O, O/A, O/O cover every adjacent crossing generated by block sorting. | Redesign sorting to avoid the failing crossing; never invert source-sensitive diamonds by assertion. |
-| **G3 activation shape** | Closing-free supported blocks contain only L-Begin/L-Iter/L-Finish plus yielded insertions. | Counterexample and canonical algorithm/statement review. |
-| **G4 minimal support bridge** | Direct linearization/placement outputs are proved for all accepted withdrawal cases without arbitrary path transport. | Change internal ordering construction; public `CanonicalSchedule` only after counterexample. |
-| **G5 scanner-linked endpoint composition** | Every schedule withdrawal maps into accepted left/right deleted scanner sets and closes all vestigial endpoint cases. | Strengthen internal typed scanner history; public endpoint records only after counterexample. |
+| **G1 replay independence** | O2 proves both Definition-60 fields from generic correspondence. | Enrich replay or evaluate a direct canonical evaluator; public changes require review. |
+| **G2 four-way local commute** | A/A, A/O, O/A, O/O cover every crossing generated by block sorting. | Redesign sorting to avoid the failing crossing. |
+| **G3 activation shape** | Closing-free supported blocks contain only L-Begin/L-Iter/L-Finish plus yielded insertions. | Counterexample and algorithm/statement review. |
+| **G4 one-trace support bridge** | Direct linearization/placement outputs hold in all accepted withdrawal cases without arbitrary paths. | Change internal ordering; public schedule only after counterexample. |
+| **G5 left-operational comparability** | O19 proves supported two-sided transport and left-state permutation while both vestigial probes remain inhabitable. | Redesign matching/permutation; never replay right-index evidence on a left trace. |
+| **G6 target-coupled permutation** | O20 constructs the exact enriched target schedule, composed quotient, full bundle, and its bridge. | Enrich the result further or redesign block replay. |
+| **G7 scanner-linked endpoint composition** | The exact scanner inductions place every schedule withdrawal in accepted deleted lists and close all four endpoint cases. | Strengthen internal occurrence/index capital; public statement only after counterexample. |
 
-Actual supervisor decisions arise only after a failed gate: replay Path A versus
-direct evaluation; whole-block sorting versus a no-crossing algorithm; further
-internal witness enrichment versus public review; and additional budget.
-`SameOrchestrationModuloGenerated` remains fixed accepted capital.
+`SameOrchestrationModuloGenerated` remains fixed accepted capital. Supervisor
+decisions are requested only after a failed gate or public-statement pressure.
 
-## 7. Round-2 required-change closure
+## 7. Round-3 finding closure map
 
-| # | Required change | Revision-3 response |
+| Finding | Round-3 defect | Revision-4 resolution |
 |---:|---|---|
-| 1 | Add O/A | Added source-sensitive `orchestrationActivationDiamondSpike`, integrated into O4/O6/O17/O20, and checked a positive external application. |
-| 2 | Remove false support paths | `CanonicalSupportTransport` now exposes only support truth, direct linearization, and direct placement. Exact simultaneous schedule assembly still elaborates. |
-| 3 | Remove false mapped paths | `MappedCanonicalSupportOrders` now supplies a mapped supported list that directly linearizes the right endpoint plus certified supported incomparable swaps; no arbitrary path map remains. |
-| 4 | Exact enriched one-trace producer | Added proved replay correspondence composition, `IndependentCanonicalSchedule` with full bundle/classification, fully implemented simultaneous constructor, and a hole only for deriving hard classification capital. The former opaque mismatch is reproduced and then absent in the positive probe. |
-| 5 | Typed deletion classification | Replaced plain history by dependent `DeletedGenerationClassification` values carrying original occurrence, scanner-shaped event, generation equations, and `DeletedClosingRegistration`. |
-| 6 | Cross convergence consumes full capitals | Matching/convergence use enriched schedules; `CanonicalConvergenceResult` returns permutation correspondence and final full bundle; O20 explicitly threads `AdjacentSwapResult` bundle per certified step. |
-| 7 | O21 scanner links | Added exact `AcceptedDeletionScannerCapital` with `RegistrationTraceCorrespondence`, schedule-withdrawal membership in `leftDeletedGenerations`/`rightDeletedGenerations`, and both closing classifications; O21 consumes it. |
-| 8 | Closure/estimate/probes | This matrix replaces revision 2; estimate is 60–100 with O2=L, O13=S–M, O18=S–M, O20/O21 expanded XL. Positive corrected-interface/O-A probes and the original negative vestigial probes are recorded. |
+| **1 blocker** | Right-state/right-name permutation could not replay left canonical trace. | Removed unused right operational theorem. Added support-membership-guarded comparability both ways, inverse-mapped right linearization at `leftFinal`, and exact left-state certified permutation. The former negative consumer now elaborates positively. |
+| **2 blocker** | Arbitrary replayed trace and independent bridge; no target blocks/order/schedule. | `CanonicalConvergenceResult` now owns enriched `permutedLeftCapital`, exact target order, source→target correspondence, composed quotient, and a bridge indexed by the target schedule. Complete post-permutation assembly uses this schedule; detached pre-permutation bridge probe is rejected. |
+| **3 major** | `AcceptedDeletionScannerCapital` had consumers but no producer. | Added complete `acceptedDeletionScannerCapitalSpike` from `sameInputs` plus two enriched schedules. External left/right withdrawal consumers invoke it directly and take no scanner premise. |
+| **4 major** | 60–100 and O19/phase G understated corrected work. | Re-estimated 65–110; O2=M–L, O18=S, O19/O20/O21=XL, phase G=18–30. |
+| **5 minor** | “Scanner-shaped event” comment hid missing event/index equality. | Removed the arbitrary event fields/comment. Classification now stores exact occurrence and same-parent close; two explicit correspondence inductions state the exact accepted deleted-list consequence using the scanner's own `registrationEventAt`. |
 
-## 8. Retained round-1 closure
+## 8. Retained prior-review closure
 
-The valid revision-2 repairs remain: moved tag/branch payload, generic replay
-interface, full `ReplayInvariantBundle`, O/O safety, exact support-state schedule
-indices, fixed composed-bijection coupling, external/generated input accounting,
-23-obligation count, and mathematical gate framing. Round 3 should verify these
-were not regressed while checking the new weakenings.
+The following externally checked repairs remain intact: source-sensitive O/A;
+minimal one-trace support transport; absence of both unrestricted path maps;
+simultaneous schedule/replay/full-bundle assembly; typed cumulative deletion
+history; fixed composed-bijection coupling; exact external/generated accounting;
+all four local orientations in downstream sorting signatures; both vestigial
+interface variants; and exactly 23 obligations.
 
 ## 9. Validation and release boundary
 
-Before authorization, external round-3 review must verify:
+Before proof authorization, external round-4 review must verify:
 
-- the old contradiction probes cannot be reconstructed from corrected fields;
-- the simultaneous package positive proof really shares schedule/replay/bundle
-  indices;
-- O/A conditions suffice for yielded-registration whole-block crossings;
-- every cross-trace operational swap starts with and returns a full bundle;
-- typed one-trace withdrawals reach the accepted scanner deleted lists; and
-- O21 remains fixed to the accepted current-name bijection.
+- the left-operational consumer at `leftFinal` passes exactly;
+- supported comparability guards cannot reconstruct unrestricted vestigial paths;
+- post-permutation target schedule/order/blocks/quotient/bridge share indices;
+- the detached pre-permutation bridge attempt fails for the intended reason;
+- left and right scanner membership project without scanner premises;
+- both vestigial variants and the O/A application still elaborate; and
+- the fixed current-name bijection is unchanged through O21 and outer assembly.
 
-All five spikes must elaborate one Idris process at a time against an exact copy
-of release `src/`. Release `dgamma.ipkg` must remain unaware of research modules.
-An eventual proof implementation must recreate the accepted interfaces as total,
-hole-free `src/DGamma/CP5*` modules and pass adversarial review, package build,
-escape scans, and documentation gates. Theorem 73 remains unproved after this
-scoping revision by design.
+All five spikes must elaborate sequentially, one Idris process at a time, against
+an exact copy of release `src/`. Release `dgamma.ipkg` must remain unaware of
+research modules. Any proof implementation must recreate accepted interfaces as
+total, hole-free `src/DGamma/CP5*` modules and pass adversarial review, package
+build, escape scans, and documentation gates. Theorem 73 remains unproved by
+design after revision 4.
