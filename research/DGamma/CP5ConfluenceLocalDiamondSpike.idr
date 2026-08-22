@@ -117,6 +117,95 @@ composeRelationalReplayCorrespondence left right =
       (replayIteratorOutcomePreserved left actor
         (replayIteratorStageOrigin right actor stage) state))
 
+||| Registration generations need their own permutation when transitions are
+||| swapped: the raw O-Insert action is preserved, but its global birth ordinal
+||| may move.  This composition is deliberately local to operational replay so
+||| it cannot be confused with the accepted left-to-right generation bijection.
+public export
+composeReplayGenerationBijection : RegistrationGenerationBijection name ->
+  RegistrationGenerationBijection name -> RegistrationGenerationBijection name
+composeReplayGenerationBijection left right =
+  MkRegistrationGenerationBijection
+    (generationForward right . generationForward left)
+    (generationBackward left . generationBackward right)
+    (\generation => trans
+      (cong (generationBackward left)
+        (generationLeftInverse right (generationForward left generation)))
+      (generationLeftInverse left generation))
+    (\generation => trans
+      (cong (generationForward right)
+        (generationRightInverse left (generationBackward right generation)))
+      (generationRightInverse right generation))
+
+||| Exact transition-occurrence capital retained by operational permutation.
+||| Target occurrences map back to source occurrences with the same action and
+||| tag.  Generated registrations additionally retain child, parent, component
+||| in their dependent type and relate their changed birth ordinals through an
+||| explicit generation permutation.
+public export
+record ActionRegistrationReplayCorrespondence
+  (name, key, world, error : Type) (value : key -> Type)
+  {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
+    SystemState name key value world error}
+  (source : Transitions sourceFirst sourceFinal)
+  (replayed : Transitions replayedFirst replayedFinal) where
+  constructor MkActionRegistrationReplayCorrespondence
+  replayGenerationRenaming : RegistrationGenerationBijection name
+  replayActionOrigin : {action : Action name key value world error} ->
+    LocatedActionOccurrence action replayed -> LocatedActionOccurrence action source
+  0 replayActionTagPreserved :
+    {action : Action name key value world error} ->
+    (occurrence : LocatedActionOccurrence action replayed) ->
+    transitionTag (locatedTransition (replayActionOrigin occurrence)) =
+      transitionTag (locatedTransition occurrence)
+  replayGeneratedRegistrationOrigin :
+    {child, parent : name} ->
+    {component : Component key value world error} ->
+    LocatedGeneratedRegistration child parent component replayed ->
+    LocatedGeneratedRegistration child parent component source
+  0 replayGeneratedOrdinalPreserved :
+    {child, parent : name} ->
+    {component : Component key value world error} ->
+    (occurrence : LocatedGeneratedRegistration child parent component replayed) ->
+    generationForward replayGenerationRenaming
+      (registrationGeneration (replayGeneratedRegistrationOrigin occurrence)) =
+        registrationGeneration occurrence
+
+public export
+identityActionRegistrationReplayCorrespondence :
+  (trace : Transitions initial finalState) ->
+  ActionRegistrationReplayCorrespondence name key world error value trace trace
+identityActionRegistrationReplayCorrespondence trace =
+  MkActionRegistrationReplayCorrespondence
+    identityRegistrationGenerationBijection id (\occurrence => Refl) id
+    (\occurrence => Refl)
+
+||| Occurrence capital composes in the same direction as trace replay.  The
+||| ordinal equation explicitly uses the composed replay-generation bijection.
+public export
+composeActionRegistrationReplayCorrespondence :
+  {source : Transitions sourceFirst sourceFinal} ->
+  {middle : Transitions middleFirst middleFinal} ->
+  {target : Transitions targetFirst targetFinal} ->
+  ActionRegistrationReplayCorrespondence name key world error value source middle ->
+  ActionRegistrationReplayCorrespondence name key world error value middle target ->
+  ActionRegistrationReplayCorrespondence name key world error value source target
+composeActionRegistrationReplayCorrespondence left right =
+  MkActionRegistrationReplayCorrespondence
+    (composeReplayGenerationBijection (replayGenerationRenaming left)
+      (replayGenerationRenaming right))
+    (\occurrence => replayActionOrigin left (replayActionOrigin right occurrence))
+    (\occurrence => trans
+      (replayActionTagPreserved left (replayActionOrigin right occurrence))
+      (replayActionTagPreserved right occurrence))
+    (\occurrence => replayGeneratedRegistrationOrigin left
+      (replayGeneratedRegistrationOrigin right occurrence))
+    (\occurrence => trans
+      (cong (generationForward (replayGenerationRenaming right))
+        (replayGeneratedOrdinalPreserved left
+          (replayGeneratedRegistrationOrigin right occurrence)))
+      (replayGeneratedOrdinalPreserved right occurrence))
+
 ||| Every premise consumed again by deletion selection, Lemmas 68/70, or the
 ||| next adjacent swap.  Using one shared record prevents the sorting and
 ||| deletion recursions from silently dropping capital at their boundaries.
@@ -304,10 +393,71 @@ record AdjacentSwapResult
     SameExternalOrchestration nameEq original swappedTrace
   swappedReplayCorrespondence : RelationalReplayCorrespondence name key world
     error value original swappedTrace
+  swappedOccurrenceCorrespondence : ActionRegistrationReplayCorrespondence name
+    key world error value original swappedTrace
   swappedEndpoint : RelationalReplayEndpoint name key world error value nameEq
     keyEq originalFinal replayedFinal
   swappedPremises : ReplayInvariantBundle name key world error value protocol
     nameEq keyEq swappedTrace
+
+||| A finite whole-block replay is not an assertion about its endpoint.  It is
+||| an explicit list of source-sensitive adjacent transpositions, each carrying
+||| the concrete A/A, A/O, O/A, or O/O `LocalRelationalDiamond` and the complete
+||| `AdjacentSwapResult` returned by suffix replay.
+public export
+data FiniteAdjacentSwapDerivation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  Transitions initial sourceFinal -> Transitions initial targetFinal -> Type where
+  FiniteAdjacentSwapDone :
+    FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq
+      trace trace
+  FiniteAdjacentSwapStep :
+    {initial, pairFirst, pairMiddle, pairFinal, originalFinal, targetFinal :
+      SystemState name key value world error} ->
+    (original : Transitions initial originalFinal) ->
+    (prefixTrace : Transitions initial pairFirst) ->
+    (left : Transition pairFirst pairMiddle) ->
+    (right : Transition pairMiddle pairFinal) ->
+    (suffix : Transitions pairFinal originalFinal) ->
+    (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+      left right) ->
+    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+      original prefixTrace left right suffix diamond) ->
+    (target : Transitions initial targetFinal) ->
+    (rest : FiniteAdjacentSwapDerivation name key world error value protocol
+      nameEq keyEq (swappedTrace result) target) ->
+    FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq
+      original target
+
+public export
+0 finiteDerivationReplayCorrespondence :
+  (derivation : FiniteAdjacentSwapDerivation name key world error value protocol
+    nameEq keyEq source target) ->
+  RelationalReplayCorrespondence name key world error value source target
+finiteDerivationReplayCorrespondence FiniteAdjacentSwapDone =
+  MkRelationalReplayCorrespondence (\actor, generator => generator)
+    (\actor, generator, state => Refl) (\actor, stage => stage)
+    (\actor, stage, state => Refl)
+finiteDerivationReplayCorrespondence
+  (FiniteAdjacentSwapStep _ _ _ _ _ _ result _ rest) =
+    composeRelationalReplayCorrespondence (swappedReplayCorrespondence result)
+      (finiteDerivationReplayCorrespondence rest)
+
+public export
+0 finiteDerivationOccurrenceCorrespondence :
+  (derivation : FiniteAdjacentSwapDerivation name key world error value protocol
+    nameEq keyEq source target) ->
+  ActionRegistrationReplayCorrespondence name key world error value source target
+finiteDerivationOccurrenceCorrespondence {source}
+  FiniteAdjacentSwapDone = identityActionRegistrationReplayCorrespondence source
+finiteDerivationOccurrenceCorrespondence
+  (FiniteAdjacentSwapStep _ _ _ _ _ _ result _ rest) =
+    composeActionRegistrationReplayCorrespondence
+      (swappedOccurrenceCorrespondence result)
+      (finiteDerivationOccurrenceCorrespondence rest)
 
 ||| Candidate for paper Lemma 71(1).
 public export
