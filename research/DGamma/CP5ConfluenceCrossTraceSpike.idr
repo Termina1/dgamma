@@ -9,6 +9,7 @@ import DGamma.CP5ConfluenceCanonicalSortSpike
 import DGamma.CP5ConfluenceRenamingCompositionSpike
 import Data.List
 import Data.List.Elem
+import Data.Nat
 import Decidable.Equality
 
 %default total
@@ -125,6 +126,155 @@ record AdjacentActorSwapSafety
     (blockBody (decomposedBlock sourceBlocks (actorRight orderSwap)
       safetyRightInOrder))
 
+||| Exact action/tag occurrence at a zero-based position in one selected block.
+||| Positions distinguish repeated L-Iter steps that share both action and tag.
+public export
+data TraceActionTagAt :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  Nat -> {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Action name key value world error -> RuleTag ->
+  Type where
+  TraceActionTagHere :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    transitionAction transition = action ->
+    transitionTag transition = tag ->
+    TraceActionTagAt Z (MoreTransitions transition rest) action tag
+  TraceActionTagLater :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    TraceActionTagAt position rest action tag ->
+    TraceActionTagAt (S position) (MoreTransitions transition rest) action tag
+
+public export
+0 actorBlockTrace :
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq actor
+    global) ->
+  Transitions (blockPreStart block) (blockEnd block)
+actorBlockTrace block =
+  MoreTransitions (beginTransition (blockOpening block)) (blockBody block)
+
+public export
+actorBlockTransitionCount :
+  LocatedOpenEpisodeBlock name key world error value nameEq keyEq actor global ->
+  Nat
+actorBlockTransitionCount block = S (transitionCount (blockBody block))
+
+||| Labels every concrete adjacent node by the exact source positions of the
+||| selected left/right block transitions that it crosses.  The recursive shape
+||| is indexed by the actual finite derivation, so labels cannot be detached.
+public export
+data DerivationCrossesBlockPositions :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal :
+    SystemState name key value world error} ->
+  (leftBlockTrace : Transitions leftFirst leftFinal) ->
+  (rightBlockTrace : Transitions rightFirst rightFinal) ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} ->
+  {target : Transitions initial targetFinal} ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq
+    source target -> List (Nat, Nat) -> Type where
+  BlockCrossingsDone :
+    DerivationCrossesBlockPositions name key world error value protocol nameEq
+      keyEq leftBlockTrace rightBlockTrace FiniteAdjacentSwapDone []
+  BlockCrossingsStep :
+    {initial, pairFirst, pairMiddle, pairFinal, originalFinal, targetFinal :
+      SystemState name key value world error} ->
+    {leftPosition, rightPosition : Nat} ->
+    (original : Transitions initial originalFinal) ->
+    (prefixTrace : Transitions initial pairFirst) ->
+    (left : Transition pairFirst pairMiddle) ->
+    (right : Transition pairMiddle pairFinal) ->
+    (suffix : Transitions pairFinal originalFinal) ->
+    (orientation : AdjacentSwapOrientationEvidence left right) ->
+    (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+      left right) ->
+    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+      original prefixTrace left right suffix diamond) ->
+    (target : Transitions initial targetFinal) ->
+    (rest : FiniteAdjacentSwapDerivation name key world error value protocol
+      nameEq keyEq (swappedTrace result) target) ->
+    TraceActionTagAt leftPosition leftBlockTrace (transitionAction left)
+      (transitionTag left) ->
+    TraceActionTagAt rightPosition rightBlockTrace (transitionAction right)
+      (transitionTag right) ->
+    (restPositions : List (Nat, Nat)) ->
+    DerivationCrossesBlockPositions name key world error value protocol nameEq
+      keyEq leftBlockTrace rightBlockTrace rest restPositions ->
+    DerivationCrossesBlockPositions name key world error value protocol nameEq
+      keyEq leftBlockTrace rightBlockTrace
+      (FiniteAdjacentSwapStep original prefixTrace left right suffix orientation
+        diamond result target rest)
+      ((leftPosition, rightPosition) :: restPositions)
+
+||| A genuine whole-block swap is nonempty and covers the exact Cartesian set
+||| of source transition positions once.  Completeness, sound bounds, uniqueness,
+||| and node count make the selected-block indices semantically non-phantom.
+public export
+record WholeBlockSwapDerivation
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {sourceOrder, targetOrder : List name}
+  (orderSwap : AdjacentActorOrderSwap name sourceOrder targetOrder)
+  {initial, sourceFinal, targetFinal : SystemState name key value world error}
+  (sourceTrace : Transitions initial sourceFinal)
+  (sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq
+    sourceOrder sourceTrace)
+  (sourcePremises : ReplayInvariantBundle name key world error value protocol
+    nameEq keyEq sourceTrace)
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq
+    keyEq orderSwap sourceTrace sourceBlocks sourcePremises)
+  (targetTrace : Transitions initial targetFinal) where
+  constructor MkWholeBlockSwapDerivation
+  nonEmptyBlockDerivation : NonEmptyFiniteAdjacentSwapDerivation name key world
+    error value protocol nameEq keyEq sourceTrace targetTrace
+  crossedSourcePositions : List (Nat, Nat)
+  0 blockCrossingLabels : DerivationCrossesBlockPositions name key world error value
+    protocol nameEq keyEq
+    (actorBlockTrace (decomposedBlock sourceBlocks (actorLeft orderSwap)
+      (safetyLeftInOrder safety)))
+    (actorBlockTrace (decomposedBlock sourceBlocks (actorRight orderSwap)
+      (safetyRightInOrder safety)))
+    (nonEmptyToFiniteAdjacentSwapDerivation nonEmptyBlockDerivation)
+    crossedSourcePositions
+  0 everyBlockPairCrossed : (leftPosition, rightPosition : Nat) ->
+    LTE (S leftPosition)
+      (actorBlockTransitionCount (decomposedBlock sourceBlocks
+        (actorLeft orderSwap) (safetyLeftInOrder safety))) ->
+    LTE (S rightPosition)
+      (actorBlockTransitionCount (decomposedBlock sourceBlocks
+        (actorRight orderSwap) (safetyRightInOrder safety))) ->
+    Elem (leftPosition, rightPosition) crossedSourcePositions
+  0 everyCrossingUsesSelectedBlocks : (leftPosition, rightPosition : Nat) ->
+    Elem (leftPosition, rightPosition) crossedSourcePositions ->
+    ( LTE (S leftPosition)
+        (actorBlockTransitionCount (decomposedBlock sourceBlocks
+          (actorLeft orderSwap) (safetyLeftInOrder safety)))
+    , LTE (S rightPosition)
+        (actorBlockTransitionCount (decomposedBlock sourceBlocks
+          (actorRight orderSwap) (safetyRightInOrder safety)))
+    )
+  0 blockCrossingPositionsUnique : UniqueKeys crossedSourcePositions
+  0 blockCrossingNodeCountExact :
+    nonEmptyAdjacentSwapNodeCount nonEmptyBlockDerivation =
+      actorBlockTransitionCount (decomposedBlock sourceBlocks
+        (actorLeft orderSwap) (safetyLeftInOrder safety)) *
+      actorBlockTransitionCount (decomposedBlock sourceBlocks
+        (actorRight orderSwap) (safetyRightInOrder safety))
+
+public export
+wholeBlockFiniteDerivation :
+  WholeBlockSwapDerivation name key world error value protocol nameEq keyEq
+    orderSwap sourceTrace sourceBlocks sourcePremises safety targetTrace ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq
+    sourceTrace targetTrace
+wholeBlockFiniteDerivation whole =
+  nonEmptyToFiniteAdjacentSwapDerivation (nonEmptyBlockDerivation whole)
+
 ||| One actual whole-block transposition.  The finite derivation is mandatory:
 ||| every transition crossing is classified A/A, A/O, O/A, or O/O and carries
 ||| its concrete `AdjacentSwapResult`, including action/registration occurrence
@@ -147,8 +297,9 @@ record OperationalAdjacentBlockSwap
   constructor MkOperationalAdjacentBlockSwap
   blockSwapFinal : SystemState name key value world error
   blockSwapTrace : Transitions initial blockSwapFinal
-  blockSwapFiniteDerivation : FiniteAdjacentSwapDerivation name key world error
-    value protocol nameEq keyEq sourceTrace blockSwapTrace
+  blockSwapWholeDerivation : WholeBlockSwapDerivation name key world error value
+    protocol nameEq keyEq orderSwap sourceTrace sourceBlocks sourcePremises safety
+      blockSwapTrace
   blockSwapBlocks : ActorBlockDecomposition name key world error value nameEq keyEq
     targetOrder blockSwapTrace
   blockSwapEndpoint : RelationalReplayEndpoint name key world error value nameEq
@@ -165,7 +316,8 @@ public export
   RelationalReplayCorrespondence name key world error value sourceTrace
     (blockSwapTrace step)
 blockSwapReplayCorrespondence step =
-  finiteDerivationReplayCorrespondence (blockSwapFiniteDerivation step)
+  finiteDerivationReplayCorrespondence
+    (wholeBlockFiniteDerivation (blockSwapWholeDerivation step))
 
 public export
 0 blockSwapOccurrenceCorrespondence :
@@ -174,7 +326,8 @@ public export
   ActionRegistrationReplayCorrespondence name key world error value sourceTrace
     (blockSwapTrace step)
 blockSwapOccurrenceCorrespondence step =
-  finiteDerivationOccurrenceCorrespondence (blockSwapFiniteDerivation step)
+  finiteDerivationOccurrenceCorrespondence
+    (wholeBlockFiniteDerivation (blockSwapWholeDerivation step))
 
 ||| Exact one-step operational producer.  Its proof must enumerate the finite
 ||| Cartesian crossing of the two located blocks, derive early applicability and
@@ -567,7 +720,7 @@ record CanonicalConvergenceResult
       operational
   convergenceBridge : ReplayedCanonicalEndpointBridge name key world error value
     protocol nameEq keyEq leftTrace rightTrace sameInputs
-      (canonicalTrace (canonicalSchedule leftCapital))
+      (canonicalSchedule leftCapital)
       (operationalTargetTrace operational)
       (permutationOccurrenceCorrespondence permutedLeftExecution)
       (canonicalSchedule rightCapital)
