@@ -255,6 +255,137 @@ acceptedDeletionScannerCapitalSpike nameEq keyEq protocol leftTrace rightTrace
       (canonicalWithdrawnClassified leftCapital)
       (canonicalWithdrawnClassified rightCapital)
 
+||| Observable side trace of the accepted scanner.  Requiring both relative
+||| orders below witnesses a genuinely interleaved scan (at least L…R…L or
+||| R…L…R), rather than two isolated one-sided inductions.
+public export
+data ScannerSide = ScannerLeftStep | ScannerRightStep
+
+public export
+scannerSideSequence :
+  RegistrationTraceCorrespondence nameEq renaming leftOrdinal leftIndex left
+    leftResultIndex rightOrdinal rightIndex right rightResultIndex pendingLeft
+    pendingRight -> List ScannerSide
+scannerSideSequence RegistrationCorrespondenceEnd = []
+scannerSideSequence (SkipLeftNonRegistration _ _ _ _ _ rest) =
+  ScannerLeftStep :: scannerSideSequence rest
+scannerSideSequence (SkipRightNonRegistration _ _ _ _ _ rest) =
+  ScannerRightStep :: scannerSideSequence rest
+scannerSideSequence (DiscardLeftDeletedRegistration _ _ _ _ rest) =
+  ScannerLeftStep :: scannerSideSequence rest
+scannerSideSequence (DiscardRightDeletedRegistration _ _ _ _ rest) =
+  ScannerRightStep :: scannerSideSequence rest
+scannerSideSequence (QueueLeftGeneratedRegistration _ _ _ _ rest) =
+  ScannerLeftStep :: scannerSideSequence rest
+scannerSideSequence (QueueRightGeneratedRegistration _ _ _ _ rest) =
+  ScannerRightStep :: scannerSideSequence rest
+scannerSideSequence (MatchLeftWithPendingRight _ _ _ _ _ _ _ _ rest) =
+  ScannerLeftStep :: scannerSideSequence rest
+scannerSideSequence (MatchRightWithPendingLeft _ _ _ _ _ _ _ _ rest) =
+  ScannerRightStep :: scannerSideSequence rest
+
+public export
+ScannerSidesInterleaved :
+  (correspondence : RegistrationTraceCorrespondence nameEq renaming leftOrdinal
+    leftIndex left leftResultIndex rightOrdinal rightIndex right rightResultIndex
+    pendingLeft pendingRight) -> Type
+ScannerSidesInterleaved correspondence =
+  (BeforeIn ScannerLeftStep ScannerRightStep
+    (scannerSideSequence correspondence),
+   BeforeIn ScannerRightStep ScannerLeftStep
+    (scannerSideSequence correspondence))
+
+||| Same-raw-name/multiple-birth regression.  Both sides contain two distinct
+||| birth ordinals for the same raw name; each exact generation—not merely its
+||| name—is shown in the accepted deleted list while the underlying scanner is
+||| explicitly interleaved.
+public export
+record SameRawNameScannerRegression
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, leftFinal, rightFinal : SystemState name key value world error}
+  (leftTrace : Transitions initial leftFinal)
+  (rightTrace : Transitions initial rightFinal)
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace)
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace)
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace)
+  (leftEarlier, leftLater, rightEarlier, rightLater :
+    RegistrationGeneration name) where
+  constructor MkSameRawNameScannerRegression
+  scannerActuallyInterleaved : ScannerSidesInterleaved
+    (generationTraceCorrespondence (generatedRegistrationTree sameInputs))
+  0 leftRawNameReused : generationName leftEarlier = generationName leftLater
+  0 rightRawNameReused : generationName rightEarlier = generationName rightLater
+  0 leftBirthsDistinct : Not (leftEarlier = leftLater)
+  0 rightBirthsDistinct : Not (rightEarlier = rightLater)
+  0 leftEarlierDeletedExactly : Elem leftEarlier
+    (leftDeletedGenerations (generatedRegistrationTree sameInputs))
+  0 leftLaterDeletedExactly : Elem leftLater
+    (leftDeletedGenerations (generatedRegistrationTree sameInputs))
+  0 rightEarlierDeletedExactly : Elem rightEarlier
+    (rightDeletedGenerations (generatedRegistrationTree sameInputs))
+  0 rightLaterDeletedExactly : Elem rightLater
+    (rightDeletedGenerations (generatedRegistrationTree sameInputs))
+
+public export
+sameRawNameScannerRegression :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (leftTrace : Transitions initial leftFinal) ->
+  (rightTrace : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace
+    rightTrace) ->
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace) ->
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace) ->
+  (leftEarlier, leftLater, rightEarlier, rightLater :
+    RegistrationGeneration name) ->
+  generationName leftEarlier = generationName leftLater ->
+  generationName rightEarlier = generationName rightLater ->
+  Not (generationBirthOrdinal leftEarlier = generationBirthOrdinal leftLater) ->
+  Not (generationBirthOrdinal rightEarlier = generationBirthOrdinal rightLater) ->
+  Elem leftEarlier (endpointWithdrawnGenerations
+    (canonicalEndpoint (canonicalSchedule leftCapital))) ->
+  Elem leftLater (endpointWithdrawnGenerations
+    (canonicalEndpoint (canonicalSchedule leftCapital))) ->
+  Elem rightEarlier (endpointWithdrawnGenerations
+    (canonicalEndpoint (canonicalSchedule rightCapital))) ->
+  Elem rightLater (endpointWithdrawnGenerations
+    (canonicalEndpoint (canonicalSchedule rightCapital))) ->
+  ScannerSidesInterleaved
+    (generationTraceCorrespondence (generatedRegistrationTree sameInputs)) ->
+  SameRawNameScannerRegression name key world error value protocol nameEq keyEq
+    leftTrace rightTrace sameInputs leftCapital rightCapital leftEarlier leftLater
+    rightEarlier rightLater
+sameRawNameScannerRegression nameEq keyEq protocol leftTrace rightTrace sameInputs
+  leftCapital rightCapital leftEarlier leftLater rightEarlier rightLater
+  leftNames rightNames leftOrdinals rightOrdinals leftEarlierWithdrawn
+  leftLaterWithdrawn rightEarlierWithdrawn rightLaterWithdrawn interleaved =
+    MkSameRawNameScannerRegression interleaved leftNames rightNames
+      (\same => leftOrdinals (cong generationBirthOrdinal same))
+      (\same => rightOrdinals (cong generationBirthOrdinal same))
+      (leftWithdrawnInAcceptedScanner
+        (acceptedDeletionScannerCapitalSpike nameEq keyEq protocol leftTrace
+          rightTrace sameInputs leftCapital rightCapital)
+        leftEarlier leftEarlierWithdrawn)
+      (leftWithdrawnInAcceptedScanner
+        (acceptedDeletionScannerCapitalSpike nameEq keyEq protocol leftTrace
+          rightTrace sameInputs leftCapital rightCapital)
+        leftLater leftLaterWithdrawn)
+      (rightWithdrawnInAcceptedScanner
+        (acceptedDeletionScannerCapitalSpike nameEq keyEq protocol leftTrace
+          rightTrace sameInputs leftCapital rightCapital)
+        rightEarlier rightEarlierWithdrawn)
+      (rightWithdrawnInAcceptedScanner
+        (acceptedDeletionScannerCapitalSpike nameEq keyEq protocol leftTrace
+          rightTrace sameInputs leftCapital rightCapital)
+        rightLater rightLaterWithdrawn)
+
 ||| Corrected O21 boundary.  Scanner classifications remain indexed by the two
 ||| original canonical schedules, while operational convergence may pass through
 ||| a noncanonical target actor order.  The source→replay correspondence,
