@@ -5,6 +5,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5ConfluenceDeletionChainSpike
+import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
 import Data.List.Elem
 import Decidable.Equality
@@ -114,53 +115,52 @@ public export
     (currentNameBijection leftCurrent) (currentNameBijection rightCurrent)
 composeModuloVestigialEndpointSpike = ?composeModuloVestigialEndpointSpike_rhs
 
-||| Exact bridge between the two *canonical endpoints*.  It is intentionally a
-||| trace-local relation because accepted cross-trace registration/current-name
-||| records are indexed by the two original traces.  The fixed-bijection field
-||| prevents a bridge from silently choosing a different current renaming.
+||| Exact bridge from an operationally replayed left block trace to the right
+||| canonical endpoint.  The left trace need not itself be a `CanonicalSchedule`:
+||| round 4 exhibited accepted vestigial intermediates for which the inverse
+||| right order cannot linearize the left full `SupportPath` relation.  The
+||| fixed-bijection field and explicit trace/final indices still prevent bridge
+||| detachment.
 public export
-record CanonicalEndpointBridge
+record ReplayedCanonicalEndpointBridge
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
   (nameEq : DecEq name) (keyEq : DecEq key)
-  {initial, leftFinal, rightFinal : SystemState name key value world error}
+  {initial, leftFinal, rightFinal, replayedLeftFinal :
+    SystemState name key value world error}
   (leftTrace : Transitions initial leftFinal)
   (rightTrace : Transitions initial rightFinal)
   (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace)
-  (leftSchedule : CanonicalSchedule name key world error value protocol nameEq
-    keyEq leftTrace)
+  (replayedLeftTrace : Transitions initial replayedLeftFinal)
   (rightSchedule : CanonicalSchedule name key world error value protocol nameEq
     keyEq rightTrace) where
-  constructor MkCanonicalEndpointBridge
-  canonicalBridgeBijection : NameBijection name
-  0 canonicalBridgeBijectionFixed : canonicalBridgeBijection =
+  constructor MkReplayedCanonicalEndpointBridge
+  replayBridgeBijection : NameBijection name
+  0 replayBridgeBijectionFixed : replayBridgeBijection =
     currentNameBijection (endpointRenaming sameInputs)
-  0 canonicalBridgeAmbient :
-    worldState (canonicalFinal leftSchedule) =
-      worldState (canonicalFinal rightSchedule)
-  0 canonicalBridgeTables : (n : name) -> (k : key) ->
+  0 replayBridgeAmbient : worldState replayedLeftFinal =
+    worldState (canonicalFinal rightSchedule)
+  0 replayBridgeTables : (n : name) -> (k : key) ->
     lookupBinding {key = key} {value = value} k
-      (effectTables (projectEffectState @{nameEq}
-        (canonicalFinal leftSchedule)) n) =
+      (effectTables (projectEffectState @{nameEq} replayedLeftFinal) n) =
     lookupBinding {key = key} {value = value} k
       (effectTables (projectEffectState @{nameEq}
         (canonicalFinal rightSchedule))
-        (renameForward canonicalBridgeBijection n))
-  0 canonicalBridgeControls : (n : name) ->
-    MaybeFiberRelatedBy canonicalBridgeBijection
+        (renameForward replayBridgeBijection n))
+  0 replayBridgeControls : (n : name) ->
+    MaybeFiberRelatedBy replayBridgeBijection
       (lookupFiber @{nameEq} {key = key} {value = value} {world = world}
-        {error = error} n (registry (canonicalFinal leftSchedule)))
+        {error = error} n (registry replayedLeftFinal))
       (lookupFiber @{nameEq} {key = key} {value = value} {world = world}
-        {error = error} (renameForward canonicalBridgeBijection n)
+        {error = error} (renameForward replayBridgeBijection n)
         (registry (canonicalFinal rightSchedule)))
-  0 canonicalGeneratedBirthMatched :
+  0 replayedGeneratedBirthMatched :
     {child, parent : name} ->
     {component : Component key value world error} ->
-    LocatedGeneratedRegistration child parent component
-      (canonicalTrace leftSchedule) ->
+    LocatedGeneratedRegistration child parent component replayedLeftTrace ->
     (rightOccurrence : LocatedGeneratedRegistration
-      (renameForward canonicalBridgeBijection child)
-      (renameForward canonicalBridgeBijection parent) component
+      (renameForward replayBridgeBijection child)
+      (renameForward replayBridgeBijection parent) component
       (canonicalTrace rightSchedule) ** Unit)
 
 ||| Typed link from each one-trace withdrawal to the accepted two-trace
@@ -255,16 +255,18 @@ acceptedDeletionScannerCapitalSpike nameEq keyEq protocol leftTrace rightTrace
       (canonicalWithdrawnClassified leftCapital)
       (canonicalWithdrawnClassified rightCapital)
 
-||| The corrected O21 interface consumes exactly what one-trace canonicalization
-||| produces, plus the typed accepted-scanner links above.  These fields are what
-||| allow every unmatched original-present fiber to inhabit
-||| `VestigialEndpointGeneration` using `leftDeletedGenerations` or
-||| `rightDeletedGenerations`; no plain list history is accepted.
+||| Corrected O21 boundary.  Scanner classifications remain indexed by the two
+||| original canonical schedules, while operational convergence may pass through
+||| a noncanonical target actor order.  The source→replay correspondence,
+||| relational endpoint quotient, and exact replay→right bridge expose every
+||| composition step instead of pretending the replay is another left
+||| `CanonicalSchedule`.
 public export
-0 canonicalSchedulesToOriginalEndpointSpike :
+0 replayedCanonicalToOriginalEndpointSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
-  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {initial, leftFinal, rightFinal, replayedLeftFinal :
+    SystemState name key value world error} ->
   (leftTrace : Transitions initial leftFinal) ->
   (rightTrace : Transitions initial rightFinal) ->
   (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace
@@ -275,11 +277,16 @@ public export
     nameEq keyEq rightTrace) ->
   AcceptedDeletionScannerCapital name key world error value protocol nameEq keyEq
     leftTrace rightTrace sameInputs leftCapital rightCapital ->
-  CanonicalEndpointBridge name key world error value protocol nameEq keyEq
-    leftTrace rightTrace sameInputs (canonicalSchedule leftCapital)
+  (replayedLeftTrace : Transitions initial replayedLeftFinal) ->
+  RelationalReplayCorrespondence name key world error value
+    (canonicalTrace (canonicalSchedule leftCapital)) replayedLeftTrace ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq
+    (canonicalFinal (canonicalSchedule leftCapital)) replayedLeftFinal ->
+  ReplayedCanonicalEndpointBridge name key world error value protocol nameEq keyEq
+    leftTrace rightTrace sameInputs replayedLeftTrace
       (canonicalSchedule rightCapital) ->
   SystemEquivalentByRenamingModuloVestigial name key world error value nameEq
     keyEq (generatedRegistrationTree sameInputs)
     (currentNameBijection (endpointRenaming sameInputs))
-canonicalSchedulesToOriginalEndpointSpike =
-  ?canonicalSchedulesToOriginalEndpointSpike_rhs
+replayedCanonicalToOriginalEndpointSpike =
+  ?replayedCanonicalToOriginalEndpointSpike_rhs
