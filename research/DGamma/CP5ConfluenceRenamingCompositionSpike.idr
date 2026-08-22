@@ -131,25 +131,25 @@ record ReplayedCanonicalEndpointBridge
   (leftTrace : Transitions initial leftFinal)
   (rightTrace : Transitions initial rightFinal)
   (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace)
-  (leftSchedule : CanonicalSchedule name key world error value protocol nameEq
-    keyEq leftTrace)
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace)
   (replayedLeftTrace : Transitions initial replayedLeftFinal)
   (replayedOccurrences : ActionRegistrationReplayCorrespondence name key world
-    error value (canonicalTrace leftSchedule) replayedLeftTrace)
-  (rightSchedule : CanonicalSchedule name key world error value protocol nameEq
-    keyEq rightTrace) where
+    error value (canonicalTrace (canonicalSchedule leftCapital)) replayedLeftTrace)
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace) where
   constructor MkReplayedCanonicalEndpointBridge
   replayBridgeBijection : NameBijection name
   0 replayBridgeBijectionFixed : replayBridgeBijection =
     currentNameBijection (endpointRenaming sameInputs)
   0 replayBridgeAmbient : worldState replayedLeftFinal =
-    worldState (canonicalFinal rightSchedule)
+    worldState (canonicalFinal (canonicalSchedule rightCapital))
   0 replayBridgeTables : (n : name) -> (k : key) ->
     lookupBinding {key = key} {value = value} k
       (effectTables (projectEffectState @{nameEq} replayedLeftFinal) n) =
     lookupBinding {key = key} {value = value} k
       (effectTables (projectEffectState @{nameEq}
-        (canonicalFinal rightSchedule))
+        (canonicalFinal (canonicalSchedule rightCapital)))
         (renameForward replayBridgeBijection n))
   0 replayBridgeControls : (n : name) ->
     MaybeFiberRelatedBy replayBridgeBijection
@@ -157,26 +157,28 @@ record ReplayedCanonicalEndpointBridge
         {error = error} n (registry replayedLeftFinal))
       (lookupFiber @{nameEq} {key = key} {value = value} {world = world}
         {error = error} (renameForward replayBridgeBijection n)
-        (registry (canonicalFinal rightSchedule)))
+        (registry (canonicalFinal (canonicalSchedule rightCapital))))
   0 replayedGeneratedBirthMatched :
     {child, parent : name} ->
     {component : Component key value world error} ->
     (replayedOccurrence : LocatedGeneratedRegistration child parent component
       replayedLeftTrace) ->
     (sourceOccurrence : LocatedGeneratedRegistration child parent component
-      (canonicalTrace leftSchedule) **
+      (canonicalTrace (canonicalSchedule leftCapital)) **
       (sourceOccurrence = replayGeneratedRegistrationOrigin replayedOccurrences
         replayedOccurrence,
        (rightOccurrence : LocatedGeneratedRegistration
          (renameForward replayBridgeBijection child)
          (renameForward replayBridgeBijection parent) component
-         (canonicalTrace rightSchedule) **
+         (canonicalTrace (canonicalSchedule rightCapital)) **
          generationForward (generatedGenerationBijection sameInputs)
            (registrationGeneration
-             (canonicalToOriginal (canonicalRegistrationTree leftSchedule)
+             (replayGeneratedRegistrationOrigin
+               (canonicalOccurrenceCorrespondence leftCapital)
                sourceOccurrence)) =
          registrationGeneration
-           (canonicalToOriginal (canonicalRegistrationTree rightSchedule)
+           (replayGeneratedRegistrationOrigin
+             (canonicalOccurrenceCorrespondence rightCapital)
              rightOccurrence))))
 
 ||| Typed link from each one-trace withdrawal to the accepted two-trace
@@ -670,8 +672,8 @@ public export
     error value (canonicalTrace (canonicalSchedule leftCapital))
       replayedLeftTrace) ->
   ReplayedCanonicalEndpointBridge name key world error value protocol nameEq keyEq
-    leftTrace rightTrace sameInputs (canonicalSchedule leftCapital)
-      replayedLeftTrace replayedOccurrences (canonicalSchedule rightCapital) ->
+    leftTrace rightTrace sameInputs leftCapital replayedLeftTrace
+      replayedOccurrences rightCapital ->
   SystemEquivalentByRenamingModuloVestigial name key world error value nameEq
     keyEq (generatedRegistrationTree sameInputs)
     (currentNameBijection (endpointRenaming sameInputs))
