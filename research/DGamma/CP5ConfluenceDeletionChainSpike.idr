@@ -83,10 +83,12 @@ record DeletableClosingEpisode
   0 selectedChildrenHaveNoEpisode : NoRegisteredEpisode nameEq
     selectedRegistrations 0 [] trace
 
-||| Semantic classification retained for each withdrawn generation.  It ties
-||| the exact original occurrence to one scanner-shaped registration event and
-||| supplies the closed-parent evidence used by
-||| `RegistrationTraceCorrespondence.Discard*DeletedRegistration`.
+||| Semantic classification retained for each withdrawn generation.  It stores
+||| the exact original O-Insert occurrence and the same-parent close on that
+||| occurrence's suffix.  It deliberately does *not* claim that a freely chosen
+||| `RegistrationEvent` is the scanner's `registrationEventAt`: the two
+||| scanner-indexed induction theorems immediately below establish the exact
+||| left/right discard-list consequences.
 public export
 record DeletedGenerationClassification
   (name, key, world, error : Type) (value : key -> Type)
@@ -101,13 +103,57 @@ record DeletedGenerationClassification
     deletedParent deletedComponent original
   0 deletedOccurrenceGeneration :
     registrationGeneration deletedOccurrence = generation
-  deletedEvent : RegistrationEvent name key world error value
-  0 deletedEventChild : eventChild deletedEvent = generationName generation
-  0 deletedEventParent : eventParent deletedEvent = deletedParent
-  0 deletedEventComponent : eventComponent deletedEvent = deletedComponent
-  0 deletedEventGeneration : eventChildGeneration deletedEvent = generation
-  deletedClosingEvidence : DeletedClosingRegistration deletedEvent
+  deletedParentEpisodeCloses : ActionOccurs (LUnload deletedParent)
     (afterRegistration deletedOccurrence)
+
+||| Exact left-scanner induction boundary.  At the located birth the accepted
+||| correspondence cannot take a surviving/queued/matched branch: each such
+||| branch contains `NoParentUnload`, contradicted by
+||| `deletedParentEpisodeCloses`.  Hence the scanner took its own
+||| `DiscardLeftDeletedRegistration` branch, whose indexed update records the
+||| exact located generation in `indexedDeletedGenerations`.
+public export
+0 deletedClassificationForcesLeftScannerDiscardSpike :
+  (nameEq : DecEq name) ->
+  {leftInitial, leftFinal, rightInitial, rightFinal :
+    SystemState name key value world error} ->
+  {left : Transitions leftInitial leftFinal} ->
+  {right : Transitions rightInitial rightFinal} ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (leftFinalIndex, rightFinalIndex : RegistrationIndexState name) ->
+  RegistrationTraceCorrespondence nameEq renaming
+    0 (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)
+    left leftFinalIndex
+    0 (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)
+    right rightFinalIndex [] [] ->
+  (generation : RegistrationGeneration name) ->
+  DeletedGenerationClassification name key world error value nameEq left
+    generation ->
+  Elem generation (indexedDeletedGenerations leftFinalIndex)
+deletedClassificationForcesLeftScannerDiscardSpike =
+  ?deletedClassificationForcesLeftScannerDiscardSpike_rhs
+
+||| Symmetric right-scanner induction boundary.
+public export
+0 deletedClassificationForcesRightScannerDiscardSpike :
+  (nameEq : DecEq name) ->
+  {leftInitial, leftFinal, rightInitial, rightFinal :
+    SystemState name key value world error} ->
+  {left : Transitions leftInitial leftFinal} ->
+  {right : Transitions rightInitial rightFinal} ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (leftFinalIndex, rightFinalIndex : RegistrationIndexState name) ->
+  RegistrationTraceCorrespondence nameEq renaming
+    0 (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)
+    left leftFinalIndex
+    0 (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)
+    right rightFinalIndex [] [] ->
+  (generation : RegistrationGeneration name) ->
+  DeletedGenerationClassification name key world error value nameEq right
+    generation ->
+  Elem generation (indexedDeletedGenerations rightFinalIndex)
+deletedClassificationForcesRightScannerDiscardSpike =
+  ?deletedClassificationForcesRightScannerDiscardSpike_rhs
 
 ||| Internal enriched result of one D72 call.  The public `DeletionResult` stays
 ||| immutable, but the checked fold/adapter used by Path A must construct the
