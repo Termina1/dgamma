@@ -126,12 +126,15 @@ record ReplayedCanonicalEndpointBridge
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
   (nameEq : DecEq name) (keyEq : DecEq key)
-  {initial, leftFinal, rightFinal, replayedLeftFinal :
+  {initial, leftFinal, rightFinal, canonicalLeftFinal, replayedLeftFinal :
     SystemState name key value world error}
   (leftTrace : Transitions initial leftFinal)
   (rightTrace : Transitions initial rightFinal)
   (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace)
+  (sourceCanonicalTrace : Transitions initial canonicalLeftFinal)
   (replayedLeftTrace : Transitions initial replayedLeftFinal)
+  (replayedOccurrences : ActionRegistrationReplayCorrespondence name key world
+    error value sourceCanonicalTrace replayedLeftTrace)
   (rightSchedule : CanonicalSchedule name key world error value protocol nameEq
     keyEq rightTrace) where
   constructor MkReplayedCanonicalEndpointBridge
@@ -157,11 +160,16 @@ record ReplayedCanonicalEndpointBridge
   0 replayedGeneratedBirthMatched :
     {child, parent : name} ->
     {component : Component key value world error} ->
-    LocatedGeneratedRegistration child parent component replayedLeftTrace ->
-    (rightOccurrence : LocatedGeneratedRegistration
-      (renameForward replayBridgeBijection child)
-      (renameForward replayBridgeBijection parent) component
-      (canonicalTrace rightSchedule) ** Unit)
+    (replayedOccurrence : LocatedGeneratedRegistration child parent component
+      replayedLeftTrace) ->
+    (sourceOccurrence : LocatedGeneratedRegistration child parent component
+      sourceCanonicalTrace **
+      (sourceOccurrence = replayGeneratedRegistrationOrigin replayedOccurrences
+        replayedOccurrence,
+       (rightOccurrence : LocatedGeneratedRegistration
+         (renameForward replayBridgeBijection child)
+         (renameForward replayBridgeBijection parent) component
+         (canonicalTrace rightSchedule) ** Unit)))
 
 ||| Typed link from each one-trace withdrawal to the accepted two-trace
 ||| registration scanner.  The trace correspondence is exposed at its exact
@@ -413,9 +421,12 @@ public export
     (canonicalTrace (canonicalSchedule leftCapital)) replayedLeftTrace ->
   RelationalReplayEndpoint name key world error value nameEq keyEq
     (canonicalFinal (canonicalSchedule leftCapital)) replayedLeftFinal ->
+  (replayedOccurrences : ActionRegistrationReplayCorrespondence name key world
+    error value (canonicalTrace (canonicalSchedule leftCapital))
+      replayedLeftTrace) ->
   ReplayedCanonicalEndpointBridge name key world error value protocol nameEq keyEq
-    leftTrace rightTrace sameInputs replayedLeftTrace
-      (canonicalSchedule rightCapital) ->
+    leftTrace rightTrace sameInputs (canonicalTrace (canonicalSchedule leftCapital))
+      replayedLeftTrace replayedOccurrences (canonicalSchedule rightCapital) ->
   SystemEquivalentByRenamingModuloVestigial name key world error value nameEq
     keyEq (generatedRegistrationTree sameInputs)
     (currentNameBijection (endpointRenaming sameInputs))
