@@ -400,6 +400,35 @@ record AdjacentSwapResult
   swappedPremises : ReplayInvariantBundle name key world error value protocol
     nameEq keyEq swappedTrace
 
+||| The finite derivation records which one of the four source-sensitive local
+||| diamonds justified every adjacent transition transposition.  Thus a block
+||| producer cannot hide an unclassified pair behind endpoint assertions.
+public export
+data AdjacentSwapOrientationEvidence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, middle, afterState : SystemState name key value world error} ->
+  Transition before middle -> Transition middle afterState -> Type where
+  AdjacentActivationActivation :
+    (left : Transition before middle) ->
+    (right : Transition middle afterState) ->
+    PaperActivationStep left -> PaperActivationStep right ->
+    AdjacentSwapOrientationEvidence left right
+  AdjacentActivationOrchestration :
+    (left : Transition before middle) ->
+    (right : Transition middle afterState) ->
+    PaperActivationStep left -> PaperOrchestrationStep right ->
+    AdjacentSwapOrientationEvidence left right
+  AdjacentOrchestrationActivation :
+    (left : Transition before middle) ->
+    (right : Transition middle afterState) ->
+    PaperOrchestrationStep left -> PaperActivationStep right ->
+    AdjacentSwapOrientationEvidence left right
+  AdjacentOrchestrationOrchestration :
+    (left : Transition before middle) ->
+    (right : Transition middle afterState) ->
+    PaperOrchestrationStep left -> PaperOrchestrationStep right ->
+    AdjacentSwapOrientationEvidence left right
+
 ||| A finite whole-block replay is not an assertion about its endpoint.  It is
 ||| an explicit list of source-sensitive adjacent transpositions, each carrying
 ||| the concrete A/A, A/O, O/A, or O/O `LocalRelationalDiamond` and the complete
@@ -422,6 +451,7 @@ data FiniteAdjacentSwapDerivation :
     (left : Transition pairFirst pairMiddle) ->
     (right : Transition pairMiddle pairFinal) ->
     (suffix : Transitions pairFinal originalFinal) ->
+    (orientation : AdjacentSwapOrientationEvidence left right) ->
     (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
       left right) ->
     (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
@@ -442,7 +472,7 @@ finiteDerivationReplayCorrespondence FiniteAdjacentSwapDone =
     (\actor, generator, state => Refl) (\actor, stage => stage)
     (\actor, stage, state => Refl)
 finiteDerivationReplayCorrespondence
-  (FiniteAdjacentSwapStep _ _ _ _ _ _ result _ rest) =
+  (FiniteAdjacentSwapStep _ _ _ _ _ _ _ result _ rest) =
     composeRelationalReplayCorrespondence (swappedReplayCorrespondence result)
       (finiteDerivationReplayCorrespondence rest)
 
@@ -454,7 +484,7 @@ public export
 finiteDerivationOccurrenceCorrespondence {source}
   FiniteAdjacentSwapDone = identityActionRegistrationReplayCorrespondence source
 finiteDerivationOccurrenceCorrespondence
-  (FiniteAdjacentSwapStep _ _ _ _ _ _ result _ rest) =
+  (FiniteAdjacentSwapStep _ _ _ _ _ _ _ result _ rest) =
     composeActionRegistrationReplayCorrespondence
       (swappedOccurrenceCorrespondence result)
       (finiteDerivationOccurrenceCorrespondence rest)
