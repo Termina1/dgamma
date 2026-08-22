@@ -91,6 +91,32 @@ public export
 traceIndependentAfterRelationalReplaySpike =
   ?traceIndependentAfterRelationalReplaySpike_rhs
 
+||| Replay correspondence composes structurally.  This checked helper is the
+||| one-trace bridge from original→closing-free and closing-free→sorted replay;
+||| it is kept transparent rather than assumed by an opaque schedule producer.
+public export
+composeRelationalReplayCorrespondence :
+  {source : Transitions sourceFirst sourceFinal} ->
+  {middle : Transitions middleFirst middleFinal} ->
+  {target : Transitions targetFirst targetFinal} ->
+  RelationalReplayCorrespondence name key world error value source middle ->
+  RelationalReplayCorrespondence name key world error value middle target ->
+  RelationalReplayCorrespondence name key world error value source target
+composeRelationalReplayCorrespondence left right =
+  MkRelationalReplayCorrespondence
+    (\actor, generator => replayGeneratorOrigin left actor
+      (replayGeneratorOrigin right actor generator))
+    (\actor, generator, state => trans
+      (replayGeneratorMapPreserved left actor
+        (replayGeneratorOrigin right actor generator) state)
+      (replayGeneratorMapPreserved right actor generator state))
+    (\actor, stage => replayIteratorStageOrigin left actor
+      (replayIteratorStageOrigin right actor stage))
+    (\actor, stage, state => trans
+      (replayIteratorOutcomePreserved right actor stage state)
+      (replayIteratorOutcomePreserved left actor
+        (replayIteratorStageOrigin right actor stage) state))
+
 ||| Every premise consumed again by deletion selection, Lemmas 68/70, or the
 ||| next adjacent swap.  Using one shared record prevents the sorting and
 ||| deletion recursions from silently dropping capital at their boundaries.
@@ -321,6 +347,38 @@ public export
   LocalRelationalDiamond name key world error value nameEq keyEq left right
 activationOrchestrationDiamondSpike = ?activationOrchestrationDiamondSpike_rhs
 
+||| The reverse mixed orientation needed when a yielded O-Insert at the end of
+||| one actor block crosses the following block's activation while bubbling that
+||| block left.  `earlyRight` is the checked activation at the pre-orchestration
+||| source; child/parent exclusions keep the activation independent of the
+||| insertion generation and its licensing parent.
+public export
+0 orchestrationActivationDiamondSpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, originalFinal, earlyRightFinal :
+    SystemState name key value world error} ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  (earlyRight : Transition first earlyRightFinal) ->
+  transitionAction earlyRight = transitionAction right ->
+  transitionTag earlyRight = transitionTag right ->
+  PaperOrchestrationStep left -> PaperActivationStep right ->
+  Not (transitionActor left = transitionActor right) ->
+  ((child : name) -> (parent : Parent name) ->
+    (component : Component key value world error) ->
+    transitionAction left = OInsert child parent component ->
+    Not (transitionActor right = child)) ->
+  ((child, parent : name) ->
+    (component : Component key value world error) ->
+    transitionAction left = OInsert child (ChildOf parent) component ->
+    Not (transitionActor right = parent)) ->
+  registryWellFormed @{nameEq} @{keyEq} first = True ->
+  TraceIndependent name key world error value keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  LocalRelationalDiamond name key world error value nameEq keyEq left right
+orchestrationActivationDiamondSpike =
+  ?orchestrationActivationDiamondSpike_rhs
+
 ||| Missing Lemma-71 case exposed by yielded child registrations: two checked
 ||| orchestration rules, including O-Insert/O-Insert, must transpose under the
 ||| exact source freshness/generation/licensing package above.
@@ -340,7 +398,7 @@ orchestrationOrchestrationDiamondSpike =
   ?orchestrationOrchestrationDiamondSpike_rhs
 
 ||| Checked suffix-splice interface consumed by sorting.  It is generic over the
-||| local diamond case (A/A, A/O, or O/O) and returns all recursive capital.
+||| local diamond case (A/A, A/O, O/A, or O/O) and returns all recursive capital.
 public export
 0 adjacentSwapSuffixSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
