@@ -126,15 +126,16 @@ record ReplayedCanonicalEndpointBridge
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
   (nameEq : DecEq name) (keyEq : DecEq key)
-  {initial, leftFinal, rightFinal, canonicalLeftFinal, replayedLeftFinal :
+  {initial, leftFinal, rightFinal, replayedLeftFinal :
     SystemState name key value world error}
   (leftTrace : Transitions initial leftFinal)
   (rightTrace : Transitions initial rightFinal)
   (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace)
-  (sourceCanonicalTrace : Transitions initial canonicalLeftFinal)
+  (leftSchedule : CanonicalSchedule name key world error value protocol nameEq
+    keyEq leftTrace)
   (replayedLeftTrace : Transitions initial replayedLeftFinal)
   (replayedOccurrences : ActionRegistrationReplayCorrespondence name key world
-    error value sourceCanonicalTrace replayedLeftTrace)
+    error value (canonicalTrace leftSchedule) replayedLeftTrace)
   (rightSchedule : CanonicalSchedule name key world error value protocol nameEq
     keyEq rightTrace) where
   constructor MkReplayedCanonicalEndpointBridge
@@ -163,13 +164,20 @@ record ReplayedCanonicalEndpointBridge
     (replayedOccurrence : LocatedGeneratedRegistration child parent component
       replayedLeftTrace) ->
     (sourceOccurrence : LocatedGeneratedRegistration child parent component
-      sourceCanonicalTrace **
+      (canonicalTrace leftSchedule) **
       (sourceOccurrence = replayGeneratedRegistrationOrigin replayedOccurrences
         replayedOccurrence,
        (rightOccurrence : LocatedGeneratedRegistration
          (renameForward replayBridgeBijection child)
          (renameForward replayBridgeBijection parent) component
-         (canonicalTrace rightSchedule) ** Unit)))
+         (canonicalTrace rightSchedule) **
+         generationForward (generatedGenerationBijection sameInputs)
+           (registrationGeneration
+             (canonicalToOriginal (canonicalRegistrationTree leftSchedule)
+               sourceOccurrence)) =
+         registrationGeneration
+           (canonicalToOriginal (canonicalRegistrationTree rightSchedule)
+             rightOccurrence))))
 
 ||| Typed link from each one-trace withdrawal to the accepted two-trace
 ||| registration scanner.  The trace correspondence is exposed at its exact
@@ -453,7 +461,7 @@ sameRawNameScannerRegression nameEq keyEq protocol leftTrace rightTrace sameInpu
 
 ||| Concrete executable scanner-index regression.  It is intentionally retained
 ||| in the branch (rather than only in /tmp): the same raw name is born at exact
-||| left ordinals 6/18 and right ordinals 9/14, and two different cross-side
+||| left ordinals 6/18 and right ordinals 9/14, and three different cross-side
 ||| schedules compute the same exact per-side deleted lists.
 FixtureValue : Unit -> Type
 FixtureValue _ = Unit
@@ -527,6 +535,14 @@ concreteReorderedTargetDiscards =
   , ScannerLeftDiscard leftBirth18
   ]
 
+concreteThirdTargetDiscards : List (ScannerEvent Nat)
+concreteThirdTargetDiscards =
+  [ ScannerLeftDiscard leftBirth6
+  , ScannerRightDiscard rightBirth9
+  , ScannerRightDiscard rightBirth14
+  , ScannerLeftDiscard leftBirth18
+  ]
+
 public export
 concreteTargetFinalIndexes : ConcreteScannerIndexes
 concreteTargetFinalIndexes =
@@ -536,6 +552,11 @@ public export
 concreteReorderedFinalIndexes : ConcreteScannerIndexes
 concreteReorderedFinalIndexes =
   runConcreteScannerEvents concreteReorderedTargetDiscards concreteEmptyIndexes
+
+public export
+concreteThirdFinalIndexes : ConcreteScannerIndexes
+concreteThirdFinalIndexes =
+  runConcreteScannerEvents concreteThirdTargetDiscards concreteEmptyIndexes
 
 public export
 0 concreteTargetIndexesExact :
@@ -566,6 +587,20 @@ public export
 concreteReorderedIndexesExact = Refl
 
 public export
+0 concreteThirdIndexesExact :
+  DGamma.CP5ConfluenceRenamingCompositionSpike.concreteThirdFinalIndexes =
+    MkConcreteScannerIndexes
+      (MkRegistrationIndexState
+        [(1, DGamma.CP5ConfluenceRenamingCompositionSpike.leftBirth18)] [] []
+        [ DGamma.CP5ConfluenceRenamingCompositionSpike.leftBirth18
+        , DGamma.CP5ConfluenceRenamingCompositionSpike.leftBirth6 ])
+      (MkRegistrationIndexState
+        [(1, DGamma.CP5ConfluenceRenamingCompositionSpike.rightBirth14)] [] []
+        [ DGamma.CP5ConfluenceRenamingCompositionSpike.rightBirth14
+        , DGamma.CP5ConfluenceRenamingCompositionSpike.rightBirth9 ])
+concreteThirdIndexesExact = Refl
+
+public export
 0 concreteTargetDeletedListsExact :
   ( indexedDeletedGenerations (concreteLeftIndex
       DGamma.CP5ConfluenceRenamingCompositionSpike.concreteTargetFinalIndexes) =
@@ -590,6 +625,19 @@ public export
       , DGamma.CP5ConfluenceRenamingCompositionSpike.rightBirth9 ]
   )
 concreteReorderedDeletedListsExact = (Refl, Refl)
+
+public export
+0 concreteThirdDeletedListsExact :
+  ( indexedDeletedGenerations (concreteLeftIndex
+      DGamma.CP5ConfluenceRenamingCompositionSpike.concreteThirdFinalIndexes) =
+      [ DGamma.CP5ConfluenceRenamingCompositionSpike.leftBirth18
+      , DGamma.CP5ConfluenceRenamingCompositionSpike.leftBirth6 ]
+  , indexedDeletedGenerations (concreteRightIndex
+      DGamma.CP5ConfluenceRenamingCompositionSpike.concreteThirdFinalIndexes) =
+      [ DGamma.CP5ConfluenceRenamingCompositionSpike.rightBirth14
+      , DGamma.CP5ConfluenceRenamingCompositionSpike.rightBirth9 ]
+  )
+concreteThirdDeletedListsExact = (Refl, Refl)
 
 ||| Corrected O21 boundary.  Scanner classifications remain indexed by the two
 ||| original canonical schedules, while operational convergence may pass through
@@ -622,7 +670,7 @@ public export
     error value (canonicalTrace (canonicalSchedule leftCapital))
       replayedLeftTrace) ->
   ReplayedCanonicalEndpointBridge name key world error value protocol nameEq keyEq
-    leftTrace rightTrace sameInputs (canonicalTrace (canonicalSchedule leftCapital))
+    leftTrace rightTrace sameInputs (canonicalSchedule leftCapital)
       replayedLeftTrace replayedOccurrences (canonicalSchedule rightCapital) ->
   SystemEquivalentByRenamingModuloVestigial name key world error value nameEq
     keyEq (generatedRegistrationTree sameInputs)
