@@ -5,16 +5,16 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionTheorem
+import DGamma.CP4Support
+import DGamma.CP5ConfluenceLocalDiamondSpike
+import Data.List
 import Data.List.Elem
 import Data.Nat
 import Decidable.Equality
 
 %default total
 
-||| Structural measure proposed for delete-then-match Path A.  It avoids
-||| deciding equality of dependent episode witnesses: every Lemma-72 call drops
-||| at least its selected L-Begin and L-Unload, hence this raw trace measure can
-||| drive well-founded recursion.
+||| Structural measure for delete-then-match Path A.
 public export
 traceLength : Transitions first finalState -> Nat
 traceLength NoTransitions = 0
@@ -31,11 +31,10 @@ NoClosingEpisodes name key world error value nameEq keyEq trace =
   LocatedClosedEpisode name key world error value nameEq keyEq selected trace ->
   Void
 
-||| The public premises that must survive each deletion if Lemma 72 is used as
-||| an iterative subroutine rather than once.  This record exposes an important
-||| proof obligation hidden by the paper prose: totality, alignment, discipline,
-||| independence, quiet, and no-failure must all be restricted/transported to
-||| the freshly constructed survivor trace.
+||| Recursive capital is exactly the shared deletion/swap replay bundle.  In
+||| particular, every survivor carries fresh `ReachedFromEmpty` ingredients,
+||| precedence/support acyclicity, provenance, ranks, Lemma-70 support equality,
+||| and transported Definition-60 independence.
 public export
 record CanonicalizationPremises
   (name, key, world, error : Type) (value : key -> Type)
@@ -44,18 +43,17 @@ record CanonicalizationPremises
   {initial, finalState : SystemState name key value world error}
   (trace : Transitions initial finalState) where
   constructor MkCanonicalizationPremises
-  0 chainAligned : AlignedTransitions name key world error value nameEq keyEq trace
-  0 chainDiscipline : RegistrationDiscipline protocol nameEq trace
-  0 chainInitialWellFormed : registryWellFormed @{nameEq} @{keyEq} initial = True
-  0 chainInitialEmpty : bindings (registry initial) = []
-  0 chainQuiet : quiet @{nameEq} @{keyEq} finalState = True
-  0 chainNoFailure : noFailedFibers finalState = True
-  0 chainTotal : TraceComponentsTotal nameEq keyEq trace
-  0 chainIndependent : TraceIndependent name key world error value keyEq trace
+  chainReplayCapital : ReplayInvariantBundle name key world error value protocol
+    nameEq keyEq trace
 
-||| All occurrence-local inputs needed for one checked Lemma-72 call.  The
-||| maximal-closing selector must derive the final two negative episode fields;
-||| callers should not have to guess them.
+public export
+0 chainReachedFromEmpty :
+  {trace : Transitions initial finalState} ->
+  CanonicalizationPremises name key world error value protocol nameEq keyEq trace ->
+  ReachedFromEmpty name key world error value nameEq keyEq finalState
+chainReachedFromEmpty premises = replayReachedFromEmpty (chainReplayCapital premises)
+
+||| All occurrence-local inputs needed for one checked Lemma-72 call.
 public export
 record DeletableClosingEpisode
   (name, key, world, error : Type) (value : key -> Type)
@@ -85,8 +83,10 @@ record DeletableClosingEpisode
   0 selectedChildrenHaveNoEpisode : NoRegisteredEpisode nameEq
     selectedRegistrations 0 [] trace
 
-||| One decreasing deletion step, including the complete premise-preservation
-||| package needed by the recursive call.
+||| Internal enriched result of one D72 call.  The public `DeletionResult` stays
+||| immutable, but the checked fold/adapter used by Path A must construct the
+||| replay correspondence, exact generated-registration accounting, and every
+||| premise consumed by the next iteration.
 public export
 record DeletionChainStep
   (name, key, world, error : Type) (value : key -> Type)
@@ -103,14 +103,23 @@ record DeletionChainStep
     (selectedActor candidate) (selectedEpisode candidate)
     (selectedRegistrations candidate) (selectedStartOrdinal candidate)
     (selectedStartLive candidate)
+  deletionReplayCorrespondence : RelationalReplayCorrespondence name key world
+    error value trace (survivingTrace deletionResult)
+  deletionSameExternalInputs : SameExternalOrchestration nameEq trace
+    (survivingTrace deletionResult)
+  deletionEndpoint : CanonicalEndpointRelation name key world error value nameEq
+    keyEq finalState (survivingFinal deletionResult)
+  0 deletionWithdrawnGenerationsExact :
+    endpointWithdrawnGenerations deletionEndpoint = selectedRegistrations candidate
+  deletionRegistrationAccounting : CanonicalRegistrationCorrespondence trace
+    (survivingTrace deletionResult)
+    (endpointWithdrawnGenerations deletionEndpoint)
   nextPremises : CanonicalizationPremises name key world error value protocol
     nameEq keyEq (survivingTrace deletionResult)
   0 deletionStrictlyShorter :
     LTE (S (traceLength (survivingTrace deletionResult))) (traceLength trace)
 
-||| Executable/constructive selection boundary for the finite trace.  The
-||| `HasClosingStep` branch must choose a support/parent-maximal closing episode
-||| and manufacture every negative premise required by Lemma 72.
+||| Executable/constructive selection boundary for the finite trace.
 public export
 data ClosingStepChoice :
   (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
@@ -132,9 +141,11 @@ data ClosingStepChoice :
     ClosingStepChoice name key world error value protocol nameEq keyEq trace
       premises
 
-||| Endpoint package after deleting every closing episode.  The cumulative
-||| endpoint relation validates the union of withdrawn raw names and exact birth
-||| generations and is the bridge into orchestration placement/episode sorting.
+||| Endpoint package after deleting every closing episode.  It now retains the
+||| exact same-external-input witness and generated-registration correspondence
+||| consumed by `CanonicalSchedule`.  The history equality makes the cumulative
+||| withdrawn-list index explicit instead of trusting unchecked endpoint
+||| metadata.
 public export
 record ClosingFreeReduction
   (name, key, world, error : Type) (value : key -> Type)
@@ -149,20 +160,58 @@ record ClosingFreeReduction
     nameEq keyEq reducedTrace
   0 reducedClosingFree : NoClosingEpisodes name key world error value nameEq keyEq
     reducedTrace
+  reductionSameExternalInputs : SameExternalOrchestration nameEq original reducedTrace
+  reductionReplayCorrespondence : RelationalReplayCorrespondence name key world
+    error value original reducedTrace
+  deletionGenerationHistory : List (List (RegistrationGeneration name))
   cumulativeEndpoint : CanonicalEndpointRelation name key world error value
     nameEq keyEq originalFinal reducedFinal
+  0 deletionHistoryAligned : concat deletionGenerationHistory =
+    endpointWithdrawnGenerations cumulativeEndpoint
+  cumulativeRegistrationAccounting : CanonicalRegistrationCorrespondence original
+    reducedTrace (endpointWithdrawnGenerations cumulativeEndpoint)
 
-||| The already checked Lemma-72 implementation is available at the exact
-||| public type expected by the chain.
+||| The already checked public Lemma-72 implementation remains available, but
+||| the iterative chain consumes the enriched `DeletionChainStep` above rather
+||| than pretending arbitrary public results expose replay generators.
 public export
 0 checkedDeletionSubroutine : deletionTheorem name key value world error
 checkedDeletionSubroutine = deletionTheoremProof
 
-||| First-class Path-A gate identified by scoping.  The survivor trace contains
-||| freshly reconstructed transitions at relationally changed source states, so
-||| `restrictTraceIndependent` along an occurrence embedding is inapplicable.
-||| The proof must transport every actual/continuation/yielded generator through
-||| the Lemma-72 replay boundary and then rebuild both fields of TraceIndependent.
+||| Same-external-input algebra is a first-class invariant through every
+||| deletion and swap rather than an implicit final assembly assumption.
+public export
+0 sameExternalOrchestrationReflexiveSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  SameExternalOrchestration {name = name} {key = key} {world = world}
+    {error = error} {value = value} nameEq trace trace
+sameExternalOrchestrationReflexiveSpike =
+  ?sameExternalOrchestrationReflexiveSpike_rhs
+
+public export
+0 sameExternalOrchestrationTransitiveSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, middleFirst, middleFinal, rightFirst, rightFinal :
+    SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} ->
+  {middle : Transitions middleFirst middleFinal} ->
+  {right : Transitions rightFirst rightFinal} ->
+  SameExternalOrchestration {name = name} {key = key} {world = world}
+    {error = error} {value = value} nameEq left middle ->
+  SameExternalOrchestration {name = name} {key = key} {world = world}
+    {error = error} {value = value} nameEq middle right ->
+  SameExternalOrchestration {name = name} {key = key} {world = world}
+    {error = error} {value = value} nameEq left right
+sameExternalOrchestrationTransitiveSpike =
+  ?sameExternalOrchestrationTransitiveSpike_rhs
+
+||| The generic RAR theorem is instantiated only after the internal deletion
+||| adapter has produced correspondence capital.  This is type-coherent for an
+||| arbitrary result and avoids the rejected universal public-result claim.
 public export
 0 traceIndependentAfterDeletionReplaySpike :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -176,15 +225,14 @@ public export
   {episodeStartLive : GenerationEnvironment name} ->
   (result : DeletionResult name key world error value nameEq keyEq original
     selected episode registered episodeStartOrdinal episodeStartLive) ->
+  RelationalReplayCorrespondence name key world error value original
+    (survivingTrace result) ->
   TraceIndependent name key world error value keyEq original ->
   TraceIndependent name key world error value keyEq (survivingTrace result)
 traceIndependentAfterDeletionReplaySpike =
   ?traceIndependentAfterDeletionReplaySpike_rhs
 
-||| Spike A: finite maximal selection plus preservation of the recursive public
-||| premises.  This is expected to be XL even though the actual deletion call is
-||| now one line, because maximality is over located episodes and the survivor
-||| is relationally replayed rather than definitionally equal to a subsequence.
+||| Finite maximal selection plus construction of the enriched internal step.
 public export
 0 chooseClosingStepSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -197,8 +245,8 @@ public export
     premises
 chooseClosingStepSpike = ?chooseClosingStepSpike_rhs
 
-||| Spike B: well-founded recursion on `traceLength`, composing each deletion's
-||| exact-generation withdrawal metadata and relational endpoint evidence.
+||| Well-founded recursion on `traceLength`, composing same-external-input,
+||| generated-registration, replay-independence, and exact endpoint metadata.
 public export
 0 deleteAllClosingEpisodesSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
