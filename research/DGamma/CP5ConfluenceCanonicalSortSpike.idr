@@ -70,10 +70,12 @@ record SupportOrderingCapital
   orderedSupportLinearization : LinearizesSupport name key world error value
     nameEq keyEq state orderedSupportNames
 
-||| Mandatory original-endpoint/reduced-endpoint bridge.  `CanonicalSchedule`
-||| indexes support order and input placement at the original endpoint, while
-||| sorting naturally constructs them at the closing-free endpoint.  Every
-||| executable support/parent fact used by those records is transported here.
+||| Minimal original-endpoint/reduced-endpoint bridge.  It deliberately does
+||| not transport arbitrary `SupportPath`s: accepted endpoint withdrawal permits
+||| an unsupported retired child to be present originally and absent after
+||| reduction, and such a child can still terminate a raw parent path.  Consumers
+||| receive only support-set equality and the two complete schedule facts they
+||| actually need.
 public export
 record CanonicalSupportTransport
   (name, key, world, error : Type) (value : key -> Type)
@@ -82,32 +84,9 @@ record CanonicalSupportTransport
   (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
     originalFinal reducedFinal) where
   constructor MkCanonicalSupportTransport
-  0 withdrawnOriginalUnsupported : (n : name) ->
-    Elem n (endpointWithdrawnNames endpoint) ->
-    isSupported @{nameEq} @{keyEq} n originalFinal = False
   0 supportTruthPreserved : (n : name) ->
     isSupported @{nameEq} @{keyEq} n originalFinal =
       isSupported @{nameEq} @{keyEq} n reducedFinal
-  supportPathToReduced : (lower, upper : name) ->
-    SupportPath nameEq originalFinal lower upper ->
-    SupportPath nameEq reducedFinal lower upper
-  supportPathToOriginal : (lower, upper : name) ->
-    SupportPath nameEq reducedFinal lower upper ->
-    SupportPath nameEq originalFinal lower upper
-  parentLookupToReduced : (n : name) ->
-    isSupported @{nameEq} @{keyEq} n originalFinal = True ->
-    (fiber : Fiber name key value world error) ->
-    lookupFiber @{nameEq} n (registry originalFinal) = Just fiber ->
-    (reducedFiber : Fiber name key value world error **
-      (lookupFiber @{nameEq} n (registry reducedFinal) = Just reducedFiber,
-       fiberParent reducedFiber = fiberParent fiber))
-  parentLookupToOriginal : (n : name) ->
-    isSupported @{nameEq} @{keyEq} n reducedFinal = True ->
-    (fiber : Fiber name key value world error) ->
-    lookupFiber @{nameEq} n (registry reducedFinal) = Just fiber ->
-    (originalFiber : Fiber name key value world error **
-      (lookupFiber @{nameEq} n (registry originalFinal) = Just originalFiber,
-       fiberParent originalFiber = fiberParent fiber))
   linearizationToOriginal : (order : List name) ->
     LinearizesSupport name key world error value nameEq keyEq reducedFinal order ->
     LinearizesSupport name key world error value nameEq keyEq originalFinal order
@@ -225,10 +204,13 @@ record OneTraceOrchestrationAccounting
   {initial, originalFinal, canonicalFinal :
     SystemState name key value world error}
   (original : Transitions initial originalFinal)
-  (canonical : Transitions initial canonicalFinal) where
+  (canonical : Transitions initial canonicalFinal)
+  (withdrawn : List (RegistrationGeneration name)) where
   constructor MkOneTraceOrchestrationAccounting
   accountedEndpoint : CanonicalEndpointRelation name key world error value
     nameEq keyEq originalFinal canonicalFinal
+  0 accountedWithdrawnExact :
+    endpointWithdrawnGenerations accountedEndpoint = withdrawn
   accountedExternalInputs : SameExternalOrchestration nameEq original canonical
   accountedGeneratedRegistrations : CanonicalRegistrationCorrespondence original
     canonical (endpointWithdrawnGenerations accountedEndpoint)
@@ -247,15 +229,103 @@ public export
     keyEq (reducedTrace reduction) ordering) ->
   OneTraceOrchestrationAccounting name key world error value nameEq keyEq original
     (sortedTrace sorted)
+    (endpointWithdrawnGenerations (cumulativeEndpoint reduction))
 deletionSortingOrchestrationAccountingSpike =
   ?deletionSortingOrchestrationAccountingSpike_rhs
 
-||| Exact one-trace constructor spike.  Every input is produced by deletion,
-||| support transport, sorting, or the accounting composition immediately
-||| above, and the output is the immutable accepted `CanonicalSchedule original`
-||| indexed at `originalFinal`.
+||| Exact enriched one-trace output.  The public schedule, replay
+||| correspondence, complete canonical premise bundle, both independence
+||| witnesses, and typed deleted-generation history share the schedule's hidden
+||| canonical trace by construction.
 public export
-0 oneTraceCanonicalScheduleSpike :
+record IndependentCanonicalSchedule
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, originalFinal : SystemState name key value world error}
+  (original : Transitions initial originalFinal) where
+  constructor MkIndependentCanonicalSchedule
+  canonicalSchedule : CanonicalSchedule name key world error value protocol
+    nameEq keyEq original
+  originalTraceIndependent : TraceIndependent name key world error value keyEq
+    original
+  canonicalReplayCorrespondence : RelationalReplayCorrespondence name key world
+    error value original (canonicalTrace canonicalSchedule)
+  canonicalReplayPremises : ReplayInvariantBundle name key world error value
+    protocol nameEq keyEq (canonicalTrace canonicalSchedule)
+  canonicalTraceIndependent : TraceIndependent name key world error value keyEq
+    (canonicalTrace canonicalSchedule)
+  canonicalWithdrawnClassified :
+    (generation : RegistrationGeneration name) ->
+    Elem generation
+      (endpointWithdrawnGenerations (canonicalEndpoint canonicalSchedule)) ->
+    DeletedGenerationClassification name key world error value nameEq original
+      generation
+
+||| Positive simultaneous-package constructor.  Unlike the rejected opaque
+||| schedule-then-wrapper attempt, this builds `MkCanonicalSchedule` and the
+||| composed replay correspondence in one definition, so its hidden final/trace
+||| is definitionally the sorting result.  Only the genuinely hard cumulative
+||| deleted-generation classifier remains an explicit input.
+public export
+0 assembleIndependentCanonicalSchedule :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (premises : CanonicalizationPremises name key world error value protocol
+    nameEq keyEq original) ->
+  (reduction : ClosingFreeReduction name key world error value protocol nameEq
+    keyEq original) ->
+  (ordering : SupportOrderingCapital name key world error value nameEq keyEq
+    (reducedFinal reduction)) ->
+  (sorted : SortedClosingFreeTrace name key world error value protocol nameEq
+    keyEq (reducedTrace reduction) ordering) ->
+  (supportTransport : CanonicalSupportTransport name key world error value
+    nameEq keyEq originalFinal (reducedFinal reduction)
+      (cumulativeEndpoint reduction)) ->
+  (accounting : OneTraceOrchestrationAccounting name key world error value
+    nameEq keyEq original (sortedTrace sorted)
+      (endpointWithdrawnGenerations (cumulativeEndpoint reduction))) ->
+  ((generation : RegistrationGeneration name) ->
+    Elem generation (endpointWithdrawnGenerations
+      (accountedEndpoint accounting)) ->
+    DeletedGenerationClassification name key world error value nameEq original
+      generation) ->
+  IndependentCanonicalSchedule name key world error value protocol nameEq keyEq
+    original
+assembleIndependentCanonicalSchedule nameEq keyEq protocol original premises
+  reduction ordering sorted supportTransport accounting classified =
+    MkIndependentCanonicalSchedule
+      (MkCanonicalSchedule
+        (sortedFinal sorted)
+        (sortedTrace sorted)
+        (accountedExternalInputs accounting)
+        (replayDiscipline (chainReplayCapital premises))
+        (replayDiscipline (sortedPremises sorted))
+        (orderedSupportNames ordering)
+        (linearizationToOriginal supportTransport (orderedSupportNames ordering)
+          (orderedSupportLinearization ordering))
+        (sortedBlock sorted)
+        (sortedBlocksFollowOrder sorted)
+        (sortedLifecycleCoverage sorted)
+        (inputPlacementToOriginal supportTransport (orderedSupportNames ordering)
+          (sortedTrace sorted) (sortedInputPlacement sorted))
+        (accountedEndpoint accounting)
+        (accountedGeneratedRegistrations accounting))
+      (replayIndependent (chainReplayCapital premises))
+      (composeRelationalReplayCorrespondence
+        (reductionReplayCorrespondence reduction)
+        (sortingReplayCorrespondence sorted))
+      (sortedPremises sorted)
+      (replayIndependent (sortedPremises sorted))
+      classified
+
+||| The hard producer derives the typed cumulative classification from the
+||| deletion history and returns the simultaneous package above.  Consumers no
+||| longer receive an opaque schedule detached from replay indices.
+public export
+0 independentCanonicalScheduleSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
   {initial, originalFinal : SystemState name key value world error} ->
@@ -270,6 +340,8 @@ public export
   CanonicalSupportTransport name key world error value nameEq keyEq originalFinal
     (reducedFinal reduction) (cumulativeEndpoint reduction) ->
   OneTraceOrchestrationAccounting name key world error value nameEq keyEq original
-    (sortedTrace sorted) ->
-  CanonicalSchedule name key world error value protocol nameEq keyEq original
-oneTraceCanonicalScheduleSpike = ?oneTraceCanonicalScheduleSpike_rhs
+    (sortedTrace sorted)
+    (endpointWithdrawnGenerations (cumulativeEndpoint reduction)) ->
+  IndependentCanonicalSchedule name key world error value protocol nameEq keyEq
+    original
+independentCanonicalScheduleSpike = ?independentCanonicalScheduleSpike_rhs
