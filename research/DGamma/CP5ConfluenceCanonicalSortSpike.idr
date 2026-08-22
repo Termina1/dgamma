@@ -7,6 +7,8 @@ import DGamma.CP3
 import DGamma.CP4DeletionRelationalBoundary
 import DGamma.CP4Support
 import DGamma.CP4SupportSolution
+import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5ConfluenceDeletionChainSpike
 import Data.List.Elem
 import Decidable.Equality
 
@@ -33,9 +35,9 @@ record LocatedInterleavedOpenEpisode
   0 openDecomposition : appendTransitions openPrefix
     (MoreTransitions (beginTransition openBegin) openInside) = global
 
-||| Structural consequence needed after all closing episodes are deleted.
-||| Every supported endpoint actor has exactly one interleaved open episode;
-||| every unsupported actor has no lifecycle occurrence at all.
+||| Structural consequence after every closing episode is deleted.  Uniqueness
+||| is occurrence-indexed by the begin ordinal (`transitionCount openPrefix`),
+||| avoiding the old prose-only claim of “exactly one”.
 public export
 record ClosingFreeTraceShape
   (name, key, world, error : Type) (value : key -> Type)
@@ -47,13 +49,17 @@ record ClosingFreeTraceShape
     isSupported @{nameEq} @{keyEq} selected finalState = True ->
     LocatedInterleavedOpenEpisode name key world error value nameEq keyEq
       selected trace
+  0 supportedOpenEpisodeUnique : (selected : name) ->
+    (supported : isSupported @{nameEq} @{keyEq} selected finalState = True) ->
+    (other : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq
+      selected trace) ->
+    transitionCount (openPrefix (supportedOpenEpisode selected supported)) =
+      transitionCount (openPrefix other)
   unsupportedTakesNoLifecycle : (selected : name) ->
     isSupported @{nameEq} @{keyEq} selected finalState = False ->
     NoLifecycleBy selected trace
 
-||| Finite topological capital for the exact Equation-62 support relation.  The
-||| likely implementation sorts current registry names by protocol rank and
-||| uses CP4Support's strict rank increase along every SupportPath.
+||| Finite topological capital for the exact Equation-62 support relation.
 public export
 record SupportOrderingCapital
   (name, key, world, error : Type) (value : key -> Type)
@@ -64,9 +70,58 @@ record SupportOrderingCapital
   orderedSupportLinearization : LinearizesSupport name key world error value
     nameEq keyEq state orderedSupportNames
 
-||| Sorting-only result.  No generation is deleted here; registrations and the
-||| endpoint are related with empty withdrawal lists.  Composing this value with
-||| `ClosingFreeReduction` is a separate deletion-chain composition obligation.
+||| Mandatory original-endpoint/reduced-endpoint bridge.  `CanonicalSchedule`
+||| indexes support order and input placement at the original endpoint, while
+||| sorting naturally constructs them at the closing-free endpoint.  Every
+||| executable support/parent fact used by those records is transported here.
+public export
+record CanonicalSupportTransport
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (originalFinal, reducedFinal : SystemState name key value world error)
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
+    originalFinal reducedFinal) where
+  constructor MkCanonicalSupportTransport
+  0 withdrawnOriginalUnsupported : (n : name) ->
+    Elem n (endpointWithdrawnNames endpoint) ->
+    isSupported @{nameEq} @{keyEq} n originalFinal = False
+  0 supportTruthPreserved : (n : name) ->
+    isSupported @{nameEq} @{keyEq} n originalFinal =
+      isSupported @{nameEq} @{keyEq} n reducedFinal
+  supportPathToReduced : (lower, upper : name) ->
+    SupportPath nameEq originalFinal lower upper ->
+    SupportPath nameEq reducedFinal lower upper
+  supportPathToOriginal : (lower, upper : name) ->
+    SupportPath nameEq reducedFinal lower upper ->
+    SupportPath nameEq originalFinal lower upper
+  parentLookupToReduced : (n : name) ->
+    isSupported @{nameEq} @{keyEq} n originalFinal = True ->
+    (fiber : Fiber name key value world error) ->
+    lookupFiber @{nameEq} n (registry originalFinal) = Just fiber ->
+    (reducedFiber : Fiber name key value world error **
+      (lookupFiber @{nameEq} n (registry reducedFinal) = Just reducedFiber,
+       fiberParent reducedFiber = fiberParent fiber))
+  parentLookupToOriginal : (n : name) ->
+    isSupported @{nameEq} @{keyEq} n reducedFinal = True ->
+    (fiber : Fiber name key value world error) ->
+    lookupFiber @{nameEq} n (registry reducedFinal) = Just fiber ->
+    (originalFiber : Fiber name key value world error **
+      (lookupFiber @{nameEq} n (registry originalFinal) = Just originalFiber,
+       fiberParent originalFiber = fiberParent fiber))
+  linearizationToOriginal : (order : List name) ->
+    LinearizesSupport name key world error value nameEq keyEq reducedFinal order ->
+    LinearizesSupport name key world error value nameEq keyEq originalFinal order
+  inputPlacementToOriginal : (order : List name) ->
+    {initial, canonicalFinal : SystemState name key value world error} ->
+    (canonical : Transitions initial canonicalFinal) ->
+    CanonicalInputPlacement name key world error value nameEq keyEq reducedFinal
+      order canonical ->
+    CanonicalInputPlacement name key world error value nameEq keyEq originalFinal
+      order canonical
+
+||| Sorting result with every recursive invariant, replay generator/stage
+||| correspondence, external-input witness, and registration-accounting field
+||| required by one-trace schedule assembly.
 public export
 record SortedClosingFreeTrace
   (name, key, world, error : Type) (value : key -> Type)
@@ -79,8 +134,11 @@ record SortedClosingFreeTrace
   constructor MkSortedClosingFreeTrace
   sortedFinal : SystemState name key value world error
   sortedTrace : Transitions initial sortedFinal
+  sortingReplayCorrespondence : RelationalReplayCorrespondence name key world
+    error value original sortedTrace
+  sortedPremises : ReplayInvariantBundle name key world error value protocol
+    nameEq keyEq sortedTrace
   sortedSameInputs : SameExternalOrchestration nameEq original sortedTrace
-  sortedDiscipline : RegistrationDiscipline protocol nameEq sortedTrace
   sortedBlock : (n : name) -> Elem n (orderedSupportNames ordering) ->
     LocatedOpenEpisodeBlock name key world error value nameEq keyEq n sortedTrace
   sortedBlocksFollowOrder : (earlier, later : name) ->
@@ -99,57 +157,81 @@ record SortedClosingFreeTrace
   0 sortedWithdrawsNoGenerations :
     endpointWithdrawnGenerations sortedEndpoint = []
   sortedRegistrationTree : CanonicalRegistrationCorrespondence original
-    sortedTrace []
+    sortedTrace (endpointWithdrawnGenerations sortedEndpoint)
 
-||| Spike A: derive the unique open-episode shape after Path A has removed every
-||| close.  The risk is extracting a located L-Begin/installed suffix from
-||| endpoint activity without an existing executable located-episode scanner.
+||| Derive the unique closing-free shape from the exact recursive bundle.
 public export
 0 closingFreeTraceShapeSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
   {initial, finalState : SystemState name key value world error} ->
   (trace : Transitions initial finalState) ->
-  ((selected : name) ->
-    LocatedClosedEpisode name key world error value nameEq keyEq selected trace ->
-    Void) ->
-  quiet @{nameEq} @{keyEq} finalState = True ->
-  noFailedFibers finalState = True ->
-  SupportMatchesActive nameEq keyEq finalState ->
+  NoClosingEpisodes name key world error value nameEq keyEq trace ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq trace ->
   ClosingFreeTraceShape name key world error value nameEq keyEq trace
 closingFreeTraceShapeSpike = ?closingFreeTraceShapeSpike_rhs
 
-||| Spike B: construct the finite linearization required by CanonicalSchedule.
-||| Lemma 68 gives well-foundedness, but no current module turns the finite
-||| registry into the required duplicate-free topological list.
+||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
-  (state : SystemState name key value world error) ->
-  (reached : ReachedFromEmpty name key world error value nameEq keyEq state) ->
-  RegistrationProvenance protocol nameEq (reachTrace reached) ->
-  RegistryProtocolRanked protocol nameEq state ->
-  RegistryParentRanksIncrease protocol nameEq state ->
-  SupportOrderingCapital name key world error value nameEq keyEq state
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq trace ->
+  SupportOrderingCapital name key world error value nameEq keyEq finalState
 supportOrderingSpike = ?supportOrderingSpike_rhs
 
-||| Spike C: bubble each selected actor's L-Begin/L-Iter/L-Finish steps and its
-||| yielded child O-Inserts into one contiguous block, following the support
-||| order.  This consumes the local diamonds but must also replay the untouched
-||| suffix relationally because accumulator/table functions prevent raw state
-||| equality.
+||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
+||| the sorting-specific recursive transport package, rather than only final
+||| schedule-shaped data.
 public export
 0 sortClosingFreeTraceSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
   {initial, finalState : SystemState name key value world error} ->
   (trace : Transitions initial finalState) ->
-  RegistrationDiscipline protocol nameEq trace ->
-  registryWellFormed @{nameEq} @{keyEq} initial = True ->
-  TraceIndependent name key world error value keyEq trace ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq trace ->
   ClosingFreeTraceShape name key world error value nameEq keyEq trace ->
   (ordering : SupportOrderingCapital name key world error value nameEq keyEq
     finalState) ->
   SortedClosingFreeTrace name key world error value protocol nameEq keyEq trace
     ordering
 sortClosingFreeTraceSpike = ?sortClosingFreeTraceSpike_rhs
+
+||| Prove all support/parent/input-placement transport from the cumulative
+||| endpoint relation and exact generated-registration accounting.
+public export
+0 canonicalSupportTransportSpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, originalFinal, reducedFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (reduced : Transitions initial reducedFinal) ->
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
+    originalFinal reducedFinal) ->
+  CanonicalRegistrationCorrespondence original reduced
+    (endpointWithdrawnGenerations endpoint) ->
+  CanonicalSupportTransport name key world error value nameEq keyEq originalFinal
+    reducedFinal endpoint
+canonicalSupportTransportSpike = ?canonicalSupportTransportSpike_rhs
+
+||| Exact one-trace constructor spike.  Every input is produced by deletion,
+||| support transport, or sorting, and the output is the immutable accepted
+||| `CanonicalSchedule original` indexed at `originalFinal`.
+public export
+0 oneTraceCanonicalScheduleSpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  CanonicalizationPremises name key world error value protocol nameEq keyEq original ->
+  (reduction : ClosingFreeReduction name key world error value protocol nameEq
+    keyEq original) ->
+  (ordering : SupportOrderingCapital name key world error value nameEq keyEq
+    (reducedFinal reduction)) ->
+  (sorted : SortedClosingFreeTrace name key world error value protocol nameEq
+    keyEq (reducedTrace reduction) ordering) ->
+  CanonicalSupportTransport name key world error value nameEq keyEq originalFinal
+    (reducedFinal reduction) (cumulativeEndpoint reduction) ->
+  CanonicalSchedule name key world error value protocol nameEq keyEq original
+oneTraceCanonicalScheduleSpike = ?oneTraceCanonicalScheduleSpike_rhs
