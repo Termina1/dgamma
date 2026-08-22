@@ -859,11 +859,9 @@ record CanonicalConvergenceResult
     protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital
       operational
   convergenceBridge : ReplayedCanonicalEndpointBridge name key world error value
-    protocol nameEq keyEq leftTrace rightTrace sameInputs
-      (canonicalSchedule leftCapital)
+    protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital
       (operationalTargetTrace operational)
-      (permutationOccurrenceCorrespondence permutedLeftExecution)
-      (canonicalSchedule rightCapital)
+      (permutationOccurrenceCorrespondence permutedLeftExecution) rightCapital
 
 ||| O20 no longer quantifies over a public pure certificate.  It accepts only
 ||| O19's package containing exact safety and finite local derivations.
