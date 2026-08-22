@@ -83,6 +83,56 @@ record DeletableClosingEpisode
   0 selectedChildrenHaveNoEpisode : NoRegisteredEpisode nameEq
     selectedRegistrations 0 [] trace
 
+||| O7 scan entry: the dependent pair retains the exact actor and located closed
+||| episode while the executable ordinal distinguishes repeated episodes.
+public export
+ClosingEpisodeOccurrence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  Transitions initial finalState -> Type
+ClosingEpisodeOccurrence name key world error value nameEq keyEq trace =
+  (selected : name **
+    LocatedClosedEpisode name key world error value nameEq keyEq selected trace)
+
+public export
+scannedClosingOrdinal :
+  ClosingEpisodeOccurrence name key world error value nameEq keyEq trace -> Nat
+scannedClosingOrdinal (selected ** episode) =
+  transitionCount (traceBeforeOpening episode)
+
+||| Independently testable O7 output.  The scanner enumerates every located
+||| closing occurrence exactly once by opening ordinal and turns an empty scan
+||| into the executable no-closing predicate consumed by recursion.
+public export
+record ClosingEpisodeScan
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, finalState : SystemState name key value world error}
+  (trace : Transitions initial finalState) where
+  constructor MkClosingEpisodeScan
+  scannedClosingOccurrences : List
+    (ClosingEpisodeOccurrence name key world error value nameEq keyEq trace)
+  0 scannedClosingOrdinalsUnique : UniqueKeys
+    (map DGamma.CP5ConfluenceDeletionChainSpike.scannedClosingOrdinal scannedClosingOccurrences)
+  0 everyClosingOccurrenceScanned :
+    (selected : name) ->
+    (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+      selected trace) ->
+    Elem (transitionCount (traceBeforeOpening episode))
+      (map DGamma.CP5ConfluenceDeletionChainSpike.scannedClosingOrdinal scannedClosingOccurrences)
+  0 emptyScanIsClosingFree : scannedClosingOccurrences = [] ->
+    NoClosingEpisodes name key world error value nameEq keyEq trace
+
+||| O7 is a separate executable producer rather than work hidden in O8/O9.
+public export
+closingEpisodeOccurrenceScanSpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  ClosingEpisodeScan name key world error value nameEq keyEq trace
+closingEpisodeOccurrenceScanSpike = ?closingEpisodeOccurrenceScanSpike_rhs
+
 ||| Semantic classification retained for each withdrawn generation.  It stores
 ||| the exact original O-Insert occurrence and the same-parent close on that
 ||| occurrence's suffix.  It deliberately does *not* claim that a freely chosen
@@ -218,12 +268,94 @@ data ClosingStepChoice :
     ClosingStepChoice name key world error value protocol nameEq keyEq trace
       premises
 
+||| Independently testable O8 result.  A selected maximal/deletable candidate is
+||| tied back to an ordinal produced by the exact O7 scan; the empty branch is
+||| definitionally separated from the O9 deletion adapter.
+public export
+data MaximalClosingSelection :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol
+    nameEq keyEq trace) ->
+  (scan : ClosingEpisodeScan name key world error value nameEq keyEq trace) ->
+  Type where
+  NoMaximalClosingEpisode :
+    scannedClosingOccurrences scan = [] ->
+    MaximalClosingSelection name key world error value protocol nameEq keyEq
+      trace premises scan
+  SelectedMaximalClosingEpisode :
+    (candidate : DeletableClosingEpisode name key world error value nameEq keyEq
+      trace) ->
+    Elem (transitionCount
+      (traceBeforeOpening (selectedEpisode candidate)))
+      (map DGamma.CP5ConfluenceDeletionChainSpike.scannedClosingOrdinal (scannedClosingOccurrences scan)) ->
+    MaximalClosingSelection name key world error value protocol nameEq keyEq
+      trace premises scan
+
+||| O8 maximal candidate selection is no longer bundled with D72 enrichment.
+public export
+selectMaximalClosingEpisodeSpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol
+    nameEq keyEq trace) ->
+  (scan : ClosingEpisodeScan name key world error value nameEq keyEq trace) ->
+  MaximalClosingSelection name key world error value protocol nameEq keyEq trace
+    premises scan
+selectMaximalClosingEpisodeSpike = ?selectMaximalClosingEpisodeSpike_rhs
+
+||| O9 is the separately gateable enriched Lemma-72 adapter.
+public export
+0 enrichDeletionChainStepSpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol
+    nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq
+    trace) ->
+  DeletionChainStep name key world error value protocol nameEq keyEq trace
+    premises candidate
+enrichDeletionChainStepSpike = ?enrichDeletionChainStepSpike_rhs
+
 public export
 classifiedGeneration :
   (entry : (generation : RegistrationGeneration name **
     DeletedGenerationClassification name key world error value nameEq original
       generation)) -> RegistrationGeneration name
 classifiedGeneration (generation ** classification) = generation
+
+||| O10 recursive result before cumulative endpoint/accounting assembly.  This
+||| gate exposes termination, the closing-free trace, replay, and typed deletion
+||| history without hiding O11's quotient construction in the recursion hole.
+public export
+record ClosingFreeTraceCore
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, originalFinal : SystemState name key value world error}
+  (original : Transitions initial originalFinal) where
+  constructor MkClosingFreeTraceCore
+  coreReducedFinal : SystemState name key value world error
+  coreReducedTrace : Transitions initial coreReducedFinal
+  coreReducedPremises : CanonicalizationPremises name key world error value
+    protocol nameEq keyEq coreReducedTrace
+  0 coreClosingFree : NoClosingEpisodes name key world error value nameEq keyEq
+    coreReducedTrace
+  coreSameExternalInputs : SameExternalOrchestration nameEq original
+    coreReducedTrace
+  coreReplayCorrespondence : RelationalReplayCorrespondence name key world error
+    value original coreReducedTrace
+  coreDeletionGenerationHistory : List
+    (generation : RegistrationGeneration name **
+      DeletedGenerationClassification name key world error value nameEq original
+        generation)
 
 ||| Endpoint package after deleting every closing episode.  It now retains the
 ||| exact same-external-input witness and generated-registration correspondence
@@ -320,7 +452,8 @@ public export
 traceIndependentAfterDeletionReplaySpike =
   ?traceIndependentAfterDeletionReplaySpike_rhs
 
-||| Finite maximal selection plus construction of the enriched internal step.
+||| Complete O7→O8→O9 wrapper.  Each hard producer above can be elaborated and
+||| re-estimated independently; this function contains no proof hole.
 public export
 0 chooseClosingStepSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -331,10 +464,43 @@ public export
     nameEq keyEq trace) ->
   ClosingStepChoice name key world error value protocol nameEq keyEq trace
     premises
-chooseClosingStepSpike = ?chooseClosingStepSpike_rhs
+chooseClosingStepSpike nameEq keyEq protocol trace premises =
+  let scan = closingEpisodeOccurrenceScanSpike nameEq keyEq trace in
+    case selectMaximalClosingEpisodeSpike nameEq keyEq protocol trace premises
+      scan of
+      NoMaximalClosingEpisode empty =>
+        ClosingFree (emptyScanIsClosingFree scan empty)
+      SelectedMaximalClosingEpisode candidate selected =>
+        HasClosingStep candidate
+          (enrichDeletionChainStepSpike nameEq keyEq protocol trace premises
+            candidate)
 
-||| Well-founded recursion on `traceLength`, composing same-external-input,
-||| generated-registration, replay-independence, and exact endpoint metadata.
+||| O10: well-founded recursion only.  Cumulative endpoint and registration
+||| accounting are intentionally deferred to the independently gateable O11.
+public export
+0 deleteClosingEpisodesCoreSpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  CanonicalizationPremises name key world error value protocol nameEq keyEq trace ->
+  ClosingFreeTraceCore name key world error value protocol nameEq keyEq trace
+deleteClosingEpisodesCoreSpike = ?deleteClosingEpisodesCoreSpike_rhs
+
+||| O11: assemble cumulative endpoint and generated-registration accounting from
+||| the exact O10 trace/history value.
+public export
+0 assembleClosingFreeAccountingSpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (core : ClosingFreeTraceCore name key world error value protocol nameEq keyEq
+    trace) ->
+  ClosingFreeReduction name key world error value protocol nameEq keyEq trace
+assembleClosingFreeAccountingSpike = ?assembleClosingFreeAccountingSpike_rhs
+
+||| Complete O10→O11 wrapper retained for existing consumers.
 public export
 0 deleteAllClosingEpisodesSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -343,4 +509,6 @@ public export
   (trace : Transitions initial finalState) ->
   CanonicalizationPremises name key world error value protocol nameEq keyEq trace ->
   ClosingFreeReduction name key world error value protocol nameEq keyEq trace
-deleteAllClosingEpisodesSpike = ?deleteAllClosingEpisodesSpike_rhs
+deleteAllClosingEpisodesSpike nameEq keyEq protocol trace premises =
+  assembleClosingFreeAccountingSpike nameEq keyEq protocol trace
+    (deleteClosingEpisodesCoreSpike nameEq keyEq protocol trace premises)
