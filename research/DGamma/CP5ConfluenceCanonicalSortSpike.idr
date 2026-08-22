@@ -215,9 +215,45 @@ public export
     reducedFinal endpoint
 canonicalSupportTransportSpike = ?canonicalSupportTransportSpike_rhs
 
+||| Full external/generated orchestration accounting through deletion followed
+||| by sorting.  The generated field accounts for every retained birth and
+||| every exact deleted generation; the endpoint's withdrawn list is its index.
+public export
+record OneTraceOrchestrationAccounting
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, originalFinal, canonicalFinal :
+    SystemState name key value world error}
+  (original : Transitions initial originalFinal)
+  (canonical : Transitions initial canonicalFinal) where
+  constructor MkOneTraceOrchestrationAccounting
+  accountedEndpoint : CanonicalEndpointRelation name key world error value
+    nameEq keyEq originalFinal canonicalFinal
+  accountedExternalInputs : SameExternalOrchestration nameEq original canonical
+  accountedGeneratedRegistrations : CanonicalRegistrationCorrespondence original
+    canonical (endpointWithdrawnGenerations accountedEndpoint)
+
+public export
+0 deletionSortingOrchestrationAccountingSpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (reduction : ClosingFreeReduction name key world error value protocol nameEq
+    keyEq original) ->
+  (ordering : SupportOrderingCapital name key world error value nameEq keyEq
+    (reducedFinal reduction)) ->
+  (sorted : SortedClosingFreeTrace name key world error value protocol nameEq
+    keyEq (reducedTrace reduction) ordering) ->
+  OneTraceOrchestrationAccounting name key world error value nameEq keyEq original
+    (sortedTrace sorted)
+deletionSortingOrchestrationAccountingSpike =
+  ?deletionSortingOrchestrationAccountingSpike_rhs
+
 ||| Exact one-trace constructor spike.  Every input is produced by deletion,
-||| support transport, or sorting, and the output is the immutable accepted
-||| `CanonicalSchedule original` indexed at `originalFinal`.
+||| support transport, sorting, or the accounting composition immediately
+||| above, and the output is the immutable accepted `CanonicalSchedule original`
+||| indexed at `originalFinal`.
 public export
 0 oneTraceCanonicalScheduleSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -233,5 +269,7 @@ public export
     keyEq (reducedTrace reduction) ordering) ->
   CanonicalSupportTransport name key world error value nameEq keyEq originalFinal
     (reducedFinal reduction) (cumulativeEndpoint reduction) ->
+  OneTraceOrchestrationAccounting name key world error value nameEq keyEq original
+    (sortedTrace sorted) ->
   CanonicalSchedule name key world error value protocol nameEq keyEq original
 oneTraceCanonicalScheduleSpike = ?oneTraceCanonicalScheduleSpike_rhs

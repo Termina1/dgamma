@@ -150,6 +150,28 @@ record RelationalReplayEndpoint
   0 replayedWellFormed :
     registryWellFormed @{nameEq} @{keyEq} replayedFinal = True
 
+||| Quotient adequacy must compose through an arbitrary number of adjacent
+||| swaps; endpoint relations are therefore explicit algebra rather than an
+||| unstated appeal to equality.
+public export
+0 relationalReplayEndpointReflexiveSpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) ->
+  registryWellFormed @{nameEq} @{keyEq} state = True ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq state state
+relationalReplayEndpointReflexiveSpike =
+  ?relationalReplayEndpointReflexiveSpike_rhs
+
+public export
+0 relationalReplayEndpointTransitiveSpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (left, middle, right : SystemState name key value world error) ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq left middle ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq middle right ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq left right
+relationalReplayEndpointTransitiveSpike =
+  ?relationalReplayEndpointTransitiveSpike_rhs
+
 ||| Relational local diamond suitable for splicing by replay.  Action and tag
 ||| equalities are both explicit: L-Iter and L-Finish share LAdvance, so action
 ||| equality alone cannot recover a located paper activation step.
