@@ -4,6 +4,8 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP5ConfluenceDeletionChainSpike
+import DGamma.CP5ConfluenceCanonicalSortSpike
 import Data.List.Elem
 import Decidable.Equality
 
@@ -161,11 +163,61 @@ record CanonicalEndpointBridge
       (renameForward canonicalBridgeBijection parent) component
       (canonicalTrace rightSchedule) ** Unit)
 
+||| Typed link from each one-trace withdrawal to the accepted two-trace
+||| registration scanner.  The trace correspondence is exposed at its exact
+||| index, and every canonical endpoint withdrawal is a member of the scanner's
+||| left/right deleted-generation list with its original closed-parent
+||| classification still available.
+public export
+record AcceptedDeletionScannerCapital
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, leftFinal, rightFinal : SystemState name key value world error}
+  (leftTrace : Transitions initial leftFinal)
+  (rightTrace : Transitions initial rightFinal)
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace)
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace)
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace) where
+  constructor MkAcceptedDeletionScannerCapital
+  acceptedRegistrationTrace : RegistrationTraceCorrespondence nameEq
+    (generatedGenerationBijection sameInputs)
+    0 (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)
+    leftTrace (leftFinalIndex (generatedRegistrationTree sameInputs))
+    0 (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)
+    rightTrace (rightFinalIndex (generatedRegistrationTree sameInputs)) [] []
+  0 leftWithdrawnInAcceptedScanner :
+    (generation : RegistrationGeneration name) ->
+    Elem generation (endpointWithdrawnGenerations
+      (canonicalEndpoint (canonicalSchedule leftCapital))) ->
+    Elem generation (leftDeletedGenerations
+      (generatedRegistrationTree sameInputs))
+  0 rightWithdrawnInAcceptedScanner :
+    (generation : RegistrationGeneration name) ->
+    Elem generation (endpointWithdrawnGenerations
+      (canonicalEndpoint (canonicalSchedule rightCapital))) ->
+    Elem generation (rightDeletedGenerations
+      (generatedRegistrationTree sameInputs))
+  leftDeletedClosingClassification :
+    (generation : RegistrationGeneration name) ->
+    (withdrawn : Elem generation (endpointWithdrawnGenerations
+      (canonicalEndpoint (canonicalSchedule leftCapital)))) ->
+    DeletedGenerationClassification name key world error value nameEq leftTrace
+      generation
+  rightDeletedClosingClassification :
+    (generation : RegistrationGeneration name) ->
+    (withdrawn : Elem generation (endpointWithdrawnGenerations
+      (canonicalEndpoint (canonicalSchedule rightCapital)))) ->
+    DeletedGenerationClassification name key world error value nameEq rightTrace
+      generation
+
 ||| The corrected O21 interface consumes exactly what one-trace canonicalization
-||| produces: two `CanonicalSchedule`s (hence both canonical endpoint relations
-||| and exact withdrawn registration trees), the fixed accepted original-trace
-||| correspondence/renaming, and the canonical endpoint bridge.  Its result is
-||| exactly the original-endpoint equivalence required by `ConfluenceResult`.
+||| produces, plus the typed accepted-scanner links above.  These fields are what
+||| allow every unmatched original-present fiber to inhabit
+||| `VestigialEndpointGeneration` using `leftDeletedGenerations` or
+||| `rightDeletedGenerations`; no plain list history is accepted.
 public export
 0 canonicalSchedulesToOriginalEndpointSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -175,12 +227,15 @@ public export
   (rightTrace : Transitions initial rightFinal) ->
   (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace
     rightTrace) ->
-  (leftSchedule : CanonicalSchedule name key world error value protocol nameEq
-    keyEq leftTrace) ->
-  (rightSchedule : CanonicalSchedule name key world error value protocol nameEq
-    keyEq rightTrace) ->
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace) ->
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace) ->
+  AcceptedDeletionScannerCapital name key world error value protocol nameEq keyEq
+    leftTrace rightTrace sameInputs leftCapital rightCapital ->
   CanonicalEndpointBridge name key world error value protocol nameEq keyEq
-    leftTrace rightTrace sameInputs leftSchedule rightSchedule ->
+    leftTrace rightTrace sameInputs (canonicalSchedule leftCapital)
+      (canonicalSchedule rightCapital) ->
   SystemEquivalentByRenamingModuloVestigial name key world error value nameEq
     keyEq (generatedRegistrationTree sameInputs)
     (currentNameBijection (endpointRenaming sameInputs))
