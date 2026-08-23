@@ -1526,6 +1526,56 @@ providerOfStableAfterForeignActivation {name} {key} {world} {error} {value}
                   chosenDeclares providerDeclares
             in trans chosenFound (cong Just chosenSame)
     
+0 resolveViewStableAfterForeignActivation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) -> (view : View name deps) ->
+  {before, afterState : SystemState name key value world error} ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (activation : PaperActivationStep
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked)) ->
+  registryWellFormed @{nameEq} @{keyEq} afterState = True ->
+  resolveView @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} deps (registry before) = Just view ->
+  resolveView @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} deps (registry afterState) = Just view
+resolveViewStableAfterForeignActivation nameEq keyEq [] EmptyView action tag
+  checked activation afterWellFormed sourceResolved = Refl
+resolveViewStableAfterForeignActivation {name} {key} {world} {error} {value}
+  nameEq keyEq (wanted :: restDeps) view {before} {afterState} action tag
+  checked activation afterWellFormed sourceResolved
+  with (providerOf @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} wanted (registry before)) proof sourceProvider
+  resolveViewStableAfterForeignActivation {name} {key} {world} {error} {value}
+    nameEq keyEq (wanted :: restDeps) view {before} {afterState} action tag
+    checked activation afterWellFormed sourceResolved | Nothing =
+      case sourceResolved of Refl impossible
+  resolveViewStableAfterForeignActivation {name} {key} {world} {error} {value}
+    nameEq keyEq (wanted :: restDeps) view {before} {afterState} action tag
+    checked activation afterWellFormed sourceResolved | Just provider
+    with (resolveView @{nameEq} @{keyEq} {value = value} {world = world}
+      {error = error} restDeps (registry before)) proof sourceRest
+    resolveViewStableAfterForeignActivation {name} {key} {world} {error} {value}
+      nameEq keyEq (wanted :: restDeps) view {before} {afterState} action tag
+      checked activation afterWellFormed sourceResolved | Just provider |
+      Nothing = case sourceResolved of Refl impossible
+    resolveViewStableAfterForeignActivation {name} {key} {world} {error} {value}
+      nameEq keyEq (wanted :: restDeps) view {before} {afterState} action tag
+      checked activation afterWellFormed sourceResolved | Just provider |
+      Just restView =
+        case justInjective sourceResolved of
+          Refl =>
+            let 0 targetProvider = providerOfStableAfterForeignActivation
+                  nameEq keyEq wanted provider action tag checked activation
+                  sourceProvider afterWellFormed
+                0 targetRest = resolveViewStableAfterForeignActivation
+                  nameEq keyEq restDeps restView action tag checked activation
+                  afterWellFormed sourceRest
+            in rewrite targetProvider in rewrite targetRest in Refl
+
 0 advanceTransitionMapOriginCong :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
