@@ -57,6 +57,19 @@ record ActorBlockDecomposition
     BeforeIn earlier later order ->
     BlockBefore name key world error value nameEq keyEq trace earlier later
       (decomposedBlock earlier earlierIn) (decomposedBlock later laterIn)
+  0 decomposedOrderedBlockRangesDisjoint : (earlier, later : name) ->
+    (earlierIn : Elem earlier order) ->
+    (laterIn : Elem later order) ->
+    BeforeIn earlier later order ->
+    (earlierPosition, laterPosition : Nat) ->
+    LTE (S earlierPosition)
+      (S (transitionCount (blockBody (decomposedBlock earlier earlierIn)))) ->
+    LTE (S laterPosition)
+      (S (transitionCount (blockBody (decomposedBlock later laterIn)))) ->
+    Not (transitionCount (traceBeforeBlock (decomposedBlock earlier earlierIn)) +
+      earlierPosition =
+      transitionCount (traceBeforeBlock (decomposedBlock later laterIn)) +
+      laterPosition)
   decomposedLifecycleCoverage : LifecycleActorsCovered order trace
 
 ||| Executable negative evidence used at a whole-block boundary.  In particular,
@@ -139,6 +152,89 @@ actorBlockTransitionCount :
   LocatedOpenEpisodeBlock name key world error value nameEq keyEq actor global ->
   Nat
 actorBlockTransitionCount block = S (transitionCount (blockBody block))
+
+public export
+0 successorEqualityInjective : S left = S right -> left = right
+successorEqualityInjective Refl = Refl
+
+public export
+0 addLeftInjective : (start, left, right : Nat) ->
+  start + left = start + right -> left = right
+addLeftInjective Z left right exact = exact
+addLeftInjective (S start) left right exact =
+  addLeftInjective start left right (successorEqualityInjective exact)
+
+||| Complete coordinate-injectivity package for the two exact blocks selected by
+||| one safety witness.  Cross-block disjointness is producer capital of the
+||| authoritative `ActorBlockDecomposition`; same-block injectivity is proved by
+||| cancellation.  Together these cover all `(block,position)` combinations.
+public export
+record SelectedBlockCoordinateInjectivity
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {sourceOrder, targetOrder : List name}
+  (orderSwap : AdjacentActorOrderSwap name sourceOrder targetOrder)
+  {initial, sourceFinal : SystemState name key value world error}
+  (sourceTrace : Transitions initial sourceFinal)
+  (sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq
+    sourceOrder sourceTrace)
+  (sourcePremises : ReplayInvariantBundle name key world error value protocol
+    nameEq keyEq sourceTrace)
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq
+    keyEq orderSwap sourceTrace sourceBlocks sourcePremises) where
+  constructor MkSelectedBlockCoordinateInjectivity
+  0 selectedLeftPositionsInjective : (first, second : Nat) ->
+    transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
+      (actorLeft orderSwap) (safetyLeftInOrder safety))) + first =
+    transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
+      (actorLeft orderSwap) (safetyLeftInOrder safety))) + second ->
+    first = second
+  0 selectedRightPositionsInjective : (first, second : Nat) ->
+    transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
+      (actorRight orderSwap) (safetyRightInOrder safety))) + first =
+    transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
+      (actorRight orderSwap) (safetyRightInOrder safety))) + second ->
+    first = second
+  0 selectedLeftRightRangesDisjoint : (leftPosition, rightPosition : Nat) ->
+    LTE (S leftPosition) (actorBlockTransitionCount (decomposedBlock sourceBlocks
+      (actorLeft orderSwap) (safetyLeftInOrder safety))) ->
+    LTE (S rightPosition) (actorBlockTransitionCount (decomposedBlock sourceBlocks
+      (actorRight orderSwap) (safetyRightInOrder safety))) ->
+    Not (transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
+      (actorLeft orderSwap) (safetyLeftInOrder safety))) + leftPosition =
+      transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
+        (actorRight orderSwap) (safetyRightInOrder safety))) + rightPosition)
+  0 selectedRightLeftRangesDisjoint : (rightPosition, leftPosition : Nat) ->
+    LTE (S rightPosition) (actorBlockTransitionCount (decomposedBlock sourceBlocks
+      (actorRight orderSwap) (safetyRightInOrder safety))) ->
+    LTE (S leftPosition) (actorBlockTransitionCount (decomposedBlock sourceBlocks
+      (actorLeft orderSwap) (safetyLeftInOrder safety))) ->
+    Not (transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
+      (actorRight orderSwap) (safetyRightInOrder safety))) + rightPosition =
+      transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
+        (actorLeft orderSwap) (safetyLeftInOrder safety))) + leftPosition)
+
+public export
+0 selectedBlockCoordinateInjectivity :
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq
+    keyEq orderSwap sourceTrace sourceBlocks sourcePremises) ->
+  SelectedBlockCoordinateInjectivity name key world error value protocol nameEq
+    keyEq orderSwap sourceTrace sourceBlocks sourcePremises safety
+selectedBlockCoordinateInjectivity {sourceBlocks} {orderSwap} safety =
+  MkSelectedBlockCoordinateInjectivity
+    (\first, second, exact => addLeftInjective _ first second exact)
+    (\first, second, exact => addLeftInjective _ first second exact)
+    (decomposedOrderedBlockRangesDisjoint sourceBlocks
+      (actorLeft orderSwap) (actorRight orderSwap)
+      (safetyLeftInOrder safety) (safetyRightInOrder safety)
+      (safetyLeftBeforeRight safety))
+    (\rightPosition, leftPosition, rightBound, leftBound, exact =>
+      decomposedOrderedBlockRangesDisjoint sourceBlocks
+        (actorLeft orderSwap) (actorRight orderSwap)
+        (safetyLeftInOrder safety) (safetyRightInOrder safety)
+        (safetyLeftBeforeRight safety) leftPosition rightPosition leftBound
+        rightBound (sym exact))
 
 ||| Occurrence-authenticated label for one current adjacent node.  The current
 ||| occurrence is pinned to the node's exact ordinal, then mapped through the
@@ -349,6 +445,92 @@ data DerivationCrossesBlockPositions :
         diamond result target rest)
       ((leftPosition, rightPosition) :: restPositions)
 
+||| Producer-side recursive plan.  It contains only the two source-origin
+||| equations available at each actual intermediate replay node; it does not
+||| assume a prebuilt `DerivationCrossesBlockPositions` value.
+public export
+data BlockCrossingOriginPlan :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {sourceInitial, sourceFinal : SystemState name key value world error} ->
+  (sourceTrace : Transitions sourceInitial sourceFinal) ->
+  {leftActor, rightActor : name} ->
+  (leftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+    leftActor sourceTrace) ->
+  (rightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+    rightActor sourceTrace) ->
+  {currentInitial, currentFinal, targetFinal :
+    SystemState name key value world error} ->
+  {current : Transitions currentInitial currentFinal} ->
+  (prefixOccurrences : ActionRegistrationReplayCorrespondence name key world
+    error value sourceTrace current) ->
+  {target : Transitions currentInitial targetFinal} ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq
+    current target -> List (Nat, Nat) -> Type where
+  CrossingOriginPlanDone :
+    BlockCrossingOriginPlan name key world error value protocol nameEq keyEq
+      sourceTrace leftBlock rightBlock prefixOccurrences FiniteAdjacentSwapDone []
+  CrossingOriginPlanStep :
+    {initial, pairFirst, pairMiddle, pairFinal, originalFinal, targetFinal :
+      SystemState name key value world error} ->
+    {leftPosition, rightPosition : Nat} ->
+    (original : Transitions initial originalFinal) ->
+    (prefixTrace : Transitions initial pairFirst) ->
+    (left : Transition pairFirst pairMiddle) ->
+    (right : Transition pairMiddle pairFinal) ->
+    (suffix : Transitions pairFinal originalFinal) ->
+    (orientation : AdjacentSwapOrientationEvidence left right) ->
+    (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+      left right) ->
+    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+      original prefixTrace left right suffix diamond) ->
+    (target : Transitions initial targetFinal) ->
+    (rest : FiniteAdjacentSwapDerivation name key world error value protocol
+      nameEq keyEq (swappedTrace result) target) ->
+    (prefixOccurrences : ActionRegistrationReplayCorrespondence name key world
+      error value sourceTrace original) ->
+    {leftActor, rightActor : name} ->
+    (leftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+      leftActor sourceTrace) ->
+    (rightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+      rightActor sourceTrace) ->
+    locatedActionOrdinal (replayActionOrigin prefixOccurrences
+      (adjacentLeftNodeOccurrence result)) =
+      transitionCount (traceBeforeBlock leftBlock) + leftPosition ->
+    locatedActionOrdinal (replayActionOrigin prefixOccurrences
+      (adjacentRightNodeOccurrence result)) =
+      transitionCount (traceBeforeBlock rightBlock) + rightPosition ->
+    (restPositions : List (Nat, Nat)) ->
+    BlockCrossingOriginPlan name key world error value protocol nameEq keyEq
+      sourceTrace leftBlock rightBlock
+      (composeActionRegistrationReplayCorrespondence prefixOccurrences
+        (swappedOccurrenceCorrespondence result)) rest restPositions ->
+    BlockCrossingOriginPlan name key world error value protocol nameEq keyEq
+      sourceTrace leftBlock rightBlock prefixOccurrences
+      (FiniteAdjacentSwapStep original prefixTrace left right suffix orientation
+        diamond result target rest)
+      ((leftPosition, rightPosition) :: restPositions)
+
+||| The actual recursive label fold.  Current node occurrences are constructed
+||| from each `AdjacentSwapResult`; the prefix map is threaded definitionally.
+public export
+0 foldBlockCrossingOriginPlan :
+  BlockCrossingOriginPlan name key world error value protocol nameEq keyEq
+    sourceTrace leftBlock rightBlock prefixOccurrences derivation positions ->
+  DerivationCrossesBlockPositions name key world error value protocol nameEq keyEq
+    sourceTrace leftBlock rightBlock prefixOccurrences derivation positions
+foldBlockCrossingOriginPlan CrossingOriginPlanDone = BlockCrossingsDone
+foldBlockCrossingOriginPlan
+  (CrossingOriginPlanStep original prefixTrace left right suffix orientation
+    diamond result target rest prefixOccurrences leftBlock rightBlock leftOrigin
+    rightOrigin restPositions restPlan) =
+      BlockCrossingsStep original prefixTrace left right suffix orientation diamond
+        result target rest prefixOccurrences
+        (leftNodeSourceBlockLabel prefixOccurrences leftBlock _ result leftOrigin)
+        (rightNodeSourceBlockLabel prefixOccurrences rightBlock _ result rightOrigin)
+        restPositions (foldBlockCrossingOriginPlan restPlan)
+
 ||| A genuine whole-block swap is nonempty and covers the exact Cartesian set
 ||| of source transition positions once.  Completeness, sound bounds, uniqueness,
 ||| and node count make the selected-block indices semantically non-phantom.
@@ -372,7 +554,7 @@ record WholeBlockSwapDerivation
   nonEmptyBlockDerivation : NonEmptyFiniteAdjacentSwapDerivation name key world
     error value protocol nameEq keyEq sourceTrace targetTrace
   crossedSourcePositions : List (Nat, Nat)
-  0 blockCrossingLabels : DerivationCrossesBlockPositions name key world error value
+  0 blockCrossingPlan : BlockCrossingOriginPlan name key world error value
     protocol nameEq keyEq sourceTrace
     (decomposedBlock sourceBlocks (actorLeft orderSwap)
       (safetyLeftInOrder safety))
@@ -405,6 +587,21 @@ record WholeBlockSwapDerivation
         (actorLeft orderSwap) (safetyLeftInOrder safety)) *
       actorBlockTransitionCount (decomposedBlock sourceBlocks
         (actorRight orderSwap) (safetyRightInOrder safety))
+
+public export
+0 blockCrossingLabels :
+  (whole : WholeBlockSwapDerivation name key world error value protocol nameEq
+    keyEq orderSwap sourceTrace sourceBlocks sourcePremises safety targetTrace) ->
+  DerivationCrossesBlockPositions name key world error value protocol nameEq keyEq
+    sourceTrace
+    (decomposedBlock sourceBlocks (actorLeft orderSwap)
+      (safetyLeftInOrder safety))
+    (decomposedBlock sourceBlocks (actorRight orderSwap)
+      (safetyRightInOrder safety))
+    (identityActionRegistrationReplayCorrespondence sourceTrace)
+    (nonEmptyToFiniteAdjacentSwapDerivation (nonEmptyBlockDerivation whole))
+    (crossedSourcePositions whole)
+blockCrossingLabels whole = foldBlockCrossingOriginPlan (blockCrossingPlan whole)
 
 public export
 wholeBlockFiniteDerivation :
@@ -616,16 +813,21 @@ public export
     (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)
 canonicalSupportOrdersMatchSpike = ?canonicalSupportOrdersMatchSpike_rhs
 
-||| Canonical schedules expose the exact first-state blocks consumed by O19.
+||| The bridge-facing capital exposes the exact first-state blocks consumed by
+||| O19 together with the producer's disjoint-range invariant.
 public export
 canonicalActorBlockDecomposition :
-  (schedule : CanonicalSchedule name key world error value protocol nameEq keyEq
-    original) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq original) ->
   ActorBlockDecomposition name key world error value nameEq keyEq
-    (supportOrder schedule) (canonicalTrace schedule)
-canonicalActorBlockDecomposition schedule =
-  MkActorBlockDecomposition (canonicalBlock schedule)
-    (blocksFollowOrder schedule) (lifecycleCoverage schedule)
+    (supportOrder (canonicalSchedule capital))
+    (canonicalTrace (canonicalSchedule capital))
+canonicalActorBlockDecomposition
+  (MkIndependentCanonicalSchedule premises reduction ordering sorted
+    supportTransport accounting _ Refl classified) =
+      MkActorBlockDecomposition (sortedBlock sorted)
+        (sortedBlocksFollowOrder sorted) (sortedBlockRangesDisjoint sorted)
+        (sortedLifecycleCoverage sorted)
 
 ||| Sealed-by-evidence O19 output.  The pure certificate and every exact
 ||| intermediate trace are existential fields of the same package as the
@@ -664,7 +866,7 @@ record CertifiedOperationalCanonicalPermutation
   selectedPermutationRealized : OperationalActorPermutation name key world error
     value protocol nameEq keyEq selectedActorPermutation
     (canonicalTrace (canonicalSchedule leftCapital))
-    (canonicalActorBlockDecomposition (canonicalSchedule leftCapital))
+    (canonicalActorBlockDecomposition leftCapital)
     (canonicalReplayPremises leftCapital) operationalTargetTrace
 
 ||| O19 must choose a permutation and realize it simultaneously.  This is the
