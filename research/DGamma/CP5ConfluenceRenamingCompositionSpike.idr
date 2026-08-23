@@ -1597,6 +1597,34 @@ synthesizeRegistrationScanner {pendingLeft}
         (synthesizeRegistrationScanner {pendingLeft = _ :: pendingLeft}
           laterFold rightFold pairing)
 
+0 composeRegistrationCorrespondence :
+  {initial, leftFinal, middleFinal, rightFinal :
+    SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {middleTrace : Transitions initial middleFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  (leftRegistrations : RegistrationCorrespondenceByGeneration nameEq
+    leftRenaming leftTrace middleTrace) ->
+  (rightRegistrations : RegistrationCorrespondenceByGeneration nameEq
+    rightRenaming middleTrace rightTrace) ->
+  RegistrationCorrespondenceByGeneration nameEq
+    (composeGenerationBijection leftRenaming rightRenaming)
+    leftTrace rightTrace
+composeRegistrationCorrespondence leftRegistrations rightRegistrations =
+  case acceptedComposedRegistrationPairing leftRegistrations
+    rightRegistrations of
+    MkAcceptedComposedRegistrationPairing
+      (MkAlignedFiniteRegistrationProjection leftPlan leftScan middleScan
+        leftEvents middleEvents leftPlanFold leftScanFold middleScanFold)
+      (MkAlignedFiniteRegistrationProjection middlePlan otherMiddleScan rightScan
+        otherMiddleEvents rightEvents rightPlanFold otherMiddleScanFold
+        rightScanFold)
+      middleSame pairing =>
+        MkRegistrationCorrespondenceByGeneration
+          (leftFinalIndex leftRegistrations)
+          (rightFinalIndex rightRegistrations)
+          (synthesizeRegistrationScanner leftScanFold rightScanFold pairing)
+
 0 retargetVestigialEndpointIndex :
   {fromIndex, toIndex : RegistrationIndexState name} ->
   fromIndex = toIndex ->
