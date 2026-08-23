@@ -2160,6 +2160,31 @@ invertMovedStepEffect nameEq keyEq actor component parent retiredFlag table step
       Right (localAfter, undo) = MkMovedStepEffectSuccess capability resolved
         localAfter undo ran
 
+0 movedStepSuccessIteratorOutcome :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (component : Component key value world error) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (state, moved : EffectState name key value world) ->
+  (success : MovedStepEffectSuccess name key world error value nameEq keyEq actor
+    component step view state moved) ->
+  iteratorStageOutcomeComponentData nameEq keyEq actor component view step rest
+    state = Just (IteratorYielded
+      (setEffectTable @{nameEq} actor
+        (ownedValues (localTable (movedLocalAfter success)))
+        (setEffectAmbient (localWorld (movedLocalAfter success)) state))
+      (yieldedInverseEffectMap nameEq keyEq actor
+        (componentProvisions component) (movedUndo success))
+      (MkIteratorContinuation rest))
+movedStepSuccessIteratorOutcome nameEq keyEq actor component step rest view state
+  moved (MkMovedStepEffectSuccess capability resolved localAfter undo ran) =
+    rewrite resolved in rewrite ran in Refl
+
 0 localSystemStateEta : (state : SystemState name key value world error) ->
   MkSystemState (worldState state) (registry state) = state
 localSystemStateEta (MkSystemState ambient fibers) = Refl
