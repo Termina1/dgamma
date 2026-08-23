@@ -1341,6 +1341,71 @@ sharedMiddleLiveGenerationsSame synchronization =
 sharedMiddleDeletedGenerationsSame synchronization =
   cong indexedDeletedGenerations (sharedMiddleFinalIndex synchronization)
 
+record AcceptedComposedRegistrationPairing
+  (nameEq : DecEq name)
+  {initial, leftFinal, middleFinal, rightFinal :
+    SystemState name key value world error}
+  (leftTrace : Transitions initial leftFinal)
+  (middleTrace : Transitions initial middleFinal)
+  (rightTrace : Transitions initial rightFinal)
+  (leftRenaming, rightRenaming : RegistrationGenerationBijection name)
+  (leftRegistrations : RegistrationCorrespondenceByGeneration nameEq
+    leftRenaming leftTrace middleTrace)
+  (rightRegistrations : RegistrationCorrespondenceByGeneration nameEq
+    rightRenaming middleTrace rightTrace) where
+  constructor MkAcceptedComposedRegistrationPairing
+  acceptedLeftProjection : AlignedFiniteRegistrationProjection nameEq
+    leftRenaming 0
+    (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)
+    leftTrace (leftFinalIndex leftRegistrations) 0
+    (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)
+    middleTrace (rightFinalIndex leftRegistrations) [] []
+  acceptedRightProjection : AlignedFiniteRegistrationProjection nameEq
+    rightRenaming 0
+    (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)
+    middleTrace (leftFinalIndex rightRegistrations) 0
+    (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)
+    rightTrace (rightFinalIndex rightRegistrations) [] []
+  0 acceptedMiddleEventsSame :
+    alignedRightEvents acceptedLeftProjection =
+      alignedLeftEvents acceptedRightProjection
+  acceptedComposedPairing : RegistrationPairing
+    (composeGenerationBijection leftRenaming rightRenaming)
+    (alignedLeftEvents acceptedLeftProjection)
+    (alignedRightEvents acceptedRightProjection)
+
+0 acceptedComposedRegistrationPairing :
+  (leftRegistrations : RegistrationCorrespondenceByGeneration nameEq
+    leftRenaming leftTrace middleTrace) ->
+  (rightRegistrations : RegistrationCorrespondenceByGeneration nameEq
+    rightRenaming middleTrace rightTrace) ->
+  AcceptedComposedRegistrationPairing nameEq leftTrace middleTrace rightTrace
+    leftRenaming rightRenaming leftRegistrations rightRegistrations
+acceptedComposedRegistrationPairing leftRegistrations rightRegistrations =
+  case alignFiniteRegistrationProjection
+    (generationTraceCorrespondence leftRegistrations) of
+    leftProjection@(MkAlignedFiniteRegistrationProjection leftPlan leftScan
+      middleScan leftEvents middleEvents leftPlanFold leftScanFold
+      middleScanFold) =>
+        case alignFiniteRegistrationProjection
+          (generationTraceCorrespondence rightRegistrations) of
+          rightProjection@(MkAlignedFiniteRegistrationProjection middlePlan
+            otherMiddleScan rightScan otherMiddleEvents rightEvents
+            rightPlanFold otherMiddleScanFold rightScanFold) =>
+              case alignedSideFoldEventsSame middleScanFold
+                otherMiddleScanFold of
+                Refl => MkAcceptedComposedRegistrationPairing
+                  (MkAlignedFiniteRegistrationProjection leftPlan leftScan
+                    middleScan leftEvents middleEvents leftPlanFold leftScanFold
+                    middleScanFold)
+                  (MkAlignedFiniteRegistrationProjection middlePlan
+                    otherMiddleScan rightScan middleEvents rightEvents
+                    rightPlanFold otherMiddleScanFold rightScanFold)
+                  Refl
+                  (composeRegistrationPairings leftRenaming rightRenaming
+                    (matchingPlanPairing leftPlanFold)
+                    (matchingPlanPairing rightPlanFold))
+
 0 retargetVestigialEndpointIndex :
   {fromIndex, toIndex : RegistrationIndexState name} ->
   fromIndex = toIndex ->
