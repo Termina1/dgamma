@@ -1555,6 +1555,48 @@ synthesizeRightRegistrationScanner {pendingLeft}
                           (synthesizeRightRegistrationScanner laterFold
                             laterPairing)
 
+0 synthesizeRegistrationScanner :
+  {leftOrdinal : Nat} -> {leftIndex, leftResultIndex :
+    RegistrationIndexState name} ->
+  {leftFirst, leftFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} ->
+  {leftScan : RegistrationSideScan nameEq leftOrdinal leftIndex left
+    leftResultIndex} ->
+  {leftEvents : List (RegistrationEvent name key world error value)} ->
+  {rightOrdinal : Nat} -> {rightIndex, rightResultIndex :
+    RegistrationIndexState name} ->
+  {rightFirst, rightFinal : SystemState name key value world error} ->
+  {right : Transitions rightFirst rightFinal} ->
+  {rightScan : RegistrationSideScan nameEq rightOrdinal rightIndex right
+    rightResultIndex} ->
+  {rightEvents : List (RegistrationEvent name key world error value)} ->
+  {pendingLeft : List (RegistrationEvent name key world error value)} ->
+  RegistrationSideEventFold leftScan leftEvents ->
+  RegistrationSideEventFold rightScan rightEvents ->
+  RegistrationPairing renaming
+    (pendingChronology pendingLeft leftEvents) rightEvents ->
+  RegistrationTraceCorrespondence nameEq renaming
+    leftOrdinal leftIndex left leftResultIndex
+    rightOrdinal rightIndex right rightResultIndex pendingLeft []
+synthesizeRegistrationScanner RegistrationSideEventFoldEnd rightFold pairing =
+  synthesizeRightRegistrationScanner rightFold pairing
+synthesizeRegistrationScanner
+  (RegistrationSideEventFoldNonRegistration action transition rest actionExact
+    notRegistration laterFold) rightFold pairing =
+      SkipLeftNonRegistration action transition rest actionExact notRegistration
+        (synthesizeRegistrationScanner laterFold rightFold pairing)
+synthesizeRegistrationScanner
+  (RegistrationSideEventFoldDeleted transition rest actionExact deleted
+    laterFold) rightFold pairing =
+      DiscardLeftDeletedRegistration transition rest actionExact deleted
+        (synthesizeRegistrationScanner laterFold rightFold pairing)
+synthesizeRegistrationScanner {pendingLeft}
+  (RegistrationSideEventFoldSurviving transition rest actionExact surviving
+    laterFold) rightFold pairing =
+      QueueLeftGeneratedRegistration transition rest actionExact surviving
+        (synthesizeRegistrationScanner {pendingLeft = _ :: pendingLeft}
+          laterFold rightFold pairing)
+
 0 retargetVestigialEndpointIndex :
   {fromIndex, toIndex : RegistrationIndexState name} ->
   fromIndex = toIndex ->
