@@ -84,6 +84,64 @@ record CoupledComposedModuloVestigialEndpoint
     name key world error value nameEq keyEq composedRegistrations
     composedNameBijection
 
+0 composeRegistrationEventMatch :
+  (leftRenaming, rightRenaming : RegistrationGenerationBijection name) ->
+  {left, middle, right : RegistrationEvent name key world error value} ->
+  RegistrationEventMatch leftRenaming left middle ->
+  RegistrationEventMatch rightRenaming middle right ->
+  RegistrationEventMatch
+    (composeGenerationBijection leftRenaming rightRenaming) left right
+composeRegistrationEventMatch leftRenaming rightRenaming leftMatch rightMatch =
+  let 0 middleActivationSame :
+        (rightMatchedActivation leftMatch = leftMatchedActivation rightMatch)
+      middleActivationSame = justInjective
+        (trans (sym (rightActivationPresent leftMatch))
+          (leftActivationPresent rightMatch))
+  in MkRegistrationEventMatch
+    (trans (matchedComponent leftMatch) (matchedComponent rightMatch))
+    (leftMatchedActivation leftMatch)
+    (rightMatchedActivation rightMatch)
+    (leftActivationPresent leftMatch)
+    (rightActivationPresent rightMatch)
+    (trans
+      (cong (generationForward rightRenaming)
+        (matchedChildGeneration leftMatch))
+      (matchedChildGeneration rightMatch))
+    (trans
+      (cong (generationForward rightRenaming)
+        (matchedParentGeneration leftMatch))
+      (trans
+        (cong
+          (generationForward rightRenaming . activationParentGeneration)
+          middleActivationSame)
+        (matchedParentGeneration rightMatch)))
+    (trans (matchedPerActivationPosition leftMatch)
+      (matchedPerActivationPosition rightMatch))
+
+0 noParentUnloadRejectsOccurrence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {parent : name} -> {trace : Transitions first finalState} ->
+  NoParentUnload parent trace -> ActionOccurs (LUnload parent) trace -> Void
+noParentUnloadRejectsOccurrence NoParentUnloadEnd occurrence impossible
+noParentUnloadRejectsOccurrence
+  (NoParentUnloadStep transition rest different laterSafe)
+  (ActionOccursHere transition rest unload) = different unload
+noParentUnloadRejectsOccurrence
+  (NoParentUnloadStep transition rest different laterSafe)
+  (ActionOccursLater transition rest laterOccurrence) =
+    noParentUnloadRejectsOccurrence laterSafe laterOccurrence
+
+0 survivingDeletedRegistrationImpossible :
+  {event : RegistrationEvent name key world error value} ->
+  {rest : Transitions first finalState} ->
+  SurvivingRegistration event rest -> DeletedClosingRegistration event rest ->
+  Void
+survivingDeletedRegistrationImpossible surviving deleted =
+  noParentUnloadRejectsOccurrence
+    (survivingParentEpisodeOpen surviving)
+    (deletedParentEpisodeCloses deleted)
+
 ||| Generic vestigial transitivity remains useful algebra, now with the coupling
 ||| defect repaired.  It is not misrepresented as the one-trace canonicalization
 ||| bridge: that exact interface appears below.
