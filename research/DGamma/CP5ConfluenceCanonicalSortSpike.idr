@@ -399,13 +399,12 @@ assembleOneTraceAccountingFromReplay reduction ordering sorted endpoint exact
       (replayConstructedTreeAuthentication
         (deletionSortingOccurrenceCorrespondence reduction sorted) laws)
 
-||| Nontrivial producer calibration: two retained generated registrations and one
-||| exact withdrawal around a real deletion/sorting occurrence fold.  The fixture
-||| stores only raw endpoint, external-input, occurrence, and ordinary CP3 laws;
-||| `twoBirthOneWithdrawalAccounting` constructs strong authentication without
-||| accepting `OneTraceOrchestrationAccounting` as a premise.
+||| Abstract O16 assembler only.  It assumes the hard deletion reduction, sorting
+||| derivation, two located births, singleton withdrawal, and every ordinary CP3
+||| replay-accounting law.  It calibrates dependent packaging and Refl
+||| authentication but is explicitly not a concrete nontrivial producer fixture.
 public export
-record TwoBirthOneWithdrawalFixture
+record AbstractTwoBirthOneWithdrawalAssembly
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
   (nameEq : DecEq name) (keyEq : DecEq key)
@@ -417,7 +416,7 @@ record TwoBirthOneWithdrawalFixture
     (reducedFinal reduction))
   (sorted : SortedClosingFreeTrace name key world error value protocol nameEq
     keyEq (reducedTrace reduction) ordering) where
-  constructor MkTwoBirthOneWithdrawalFixture
+  constructor MkAbstractTwoBirthOneWithdrawalAssembly
   fixtureEndpoint : CanonicalEndpointRelation name key world error value nameEq
     keyEq originalFinal (sortedFinal sorted)
   fixtureWithdrawnGeneration : RegistrationGeneration name
@@ -450,11 +449,11 @@ record TwoBirthOneWithdrawalFixture
     (endpointWithdrawnGenerations fixtureEndpoint)
     (deletionSortingOccurrenceCorrespondence reduction sorted)
 
-||| Construct the nontrivial fixture directly from raw trace/fold evidence.  This
-||| is the checked constructor-use missing in round 8; neither the fixture nor an
-||| accounting value is accepted as input.
+||| Construct the abstract assembly record from its complete raw telescope.
+||| Neither the assembly nor final accounting is accepted as input, but the hard
+||| deletion/sorting and CP3 laws remain premises.
 public export
-0 assembleTwoBirthOneWithdrawalFixture :
+0 assembleAbstractTwoBirthOneWithdrawalAssembly :
   {initial, originalFinal : SystemState name key value world error} ->
   {original : Transitions initial originalFinal} ->
   {reduction : ClosingFreeReduction name key world error value protocol nameEq
@@ -485,22 +484,22 @@ public export
   (laws : CanonicalReplayAccountingLaws name key world error value original
     (sortedTrace sorted) (endpointWithdrawnGenerations endpoint)
     (deletionSortingOccurrenceCorrespondence reduction sorted)) ->
-  TwoBirthOneWithdrawalFixture name key world error value protocol nameEq keyEq
+  AbstractTwoBirthOneWithdrawalAssembly name key world error value protocol nameEq keyEq
     original reduction ordering sorted
-assembleTwoBirthOneWithdrawalFixture endpoint withdrawn one exact external
+assembleAbstractTwoBirthOneWithdrawalAssembly endpoint withdrawn one exact external
   firstChild firstParent firstComponent firstBirth secondChild secondParent
   secondComponent secondBirth distinct laws =
-    MkTwoBirthOneWithdrawalFixture endpoint withdrawn one exact external
+    MkAbstractTwoBirthOneWithdrawalAssembly endpoint withdrawn one exact external
       firstChild firstParent firstComponent firstBirth secondChild secondParent
       secondComponent secondBirth distinct laws
 
 public export
-0 twoBirthOneWithdrawalAccounting :
-  (fixture : TwoBirthOneWithdrawalFixture name key world error value protocol
+0 abstractTwoBirthOneWithdrawalAccounting :
+  (fixture : AbstractTwoBirthOneWithdrawalAssembly name key world error value protocol
     nameEq keyEq original reduction ordering sorted) ->
   OneTraceOrchestrationAccounting name key world error value protocol nameEq keyEq
     original reduction ordering sorted
-twoBirthOneWithdrawalAccounting {reduction} {ordering} {sorted} fixture =
+abstractTwoBirthOneWithdrawalAccounting {reduction} {ordering} {sorted} fixture =
   assembleOneTraceAccountingFromReplay reduction ordering sorted
     (fixtureEndpoint fixture) (fixtureWithdrawalMatchesReduction fixture)
     (fixtureExternalInputs fixture) (fixtureReplayAccountingLaws fixture)
