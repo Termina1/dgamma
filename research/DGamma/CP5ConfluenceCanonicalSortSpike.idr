@@ -116,8 +116,8 @@ record SortedClosingFreeTrace
   sortedTrace : Transitions initial sortedFinal
   sortingReplayCorrespondence : RelationalReplayCorrespondence name key world
     error value original sortedTrace
-  sortingOccurrenceCorrespondence : ActionRegistrationReplayCorrespondence name
-    key world error value original sortedTrace
+  sortingAdjacentDerivation : FiniteAdjacentSwapDerivation name key world error
+    value protocol nameEq keyEq original sortedTrace
   sortedPremises : ReplayInvariantBundle name key world error value protocol
     nameEq keyEq sortedTrace
   sortedSameInputs : SameExternalOrchestration nameEq original sortedTrace
@@ -153,6 +153,18 @@ record SortedClosingFreeTrace
     endpointWithdrawnGenerations sortedEndpoint = []
   sortedRegistrationTree : CanonicalRegistrationCorrespondence original
     sortedTrace (endpointWithdrawnGenerations sortedEndpoint)
+
+||| Sorting occurrence provenance is computed from the explicit finite sequence
+||| of O6-sealed adjacent-swap results.  There is no occurrence-map constructor
+||| argument to clone independently of those operational nodes.
+public export
+0 sortingOccurrenceCorrespondence :
+  (sorted : SortedClosingFreeTrace name key world error value protocol nameEq keyEq
+    original ordering) ->
+  ActionRegistrationReplayCorrespondence name key world error value original
+    (sortedTrace sorted)
+sortingOccurrenceCorrespondence sorted =
+  finiteDerivationOccurrenceCorrespondence (sortingAdjacentDerivation sorted)
 
 ||| Derive the unique closing-free shape from the exact recursive bundle.
 public export
