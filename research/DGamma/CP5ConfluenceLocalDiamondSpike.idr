@@ -2185,6 +2185,252 @@ movedStepSuccessIteratorOutcome nameEq keyEq actor component step rest view stat
   moved (MkMovedStepEffectSuccess capability resolved localAfter undo ran) =
     rewrite resolved in rewrite ran in Refl
 
+0 successfulOutcomeAgreementUndoMaps :
+  (movedOutcome, sourceOutcome :
+    Maybe (IteratorStageOutcome name key value world error)) ->
+  (movedAfter, sourceAfter : EffectState name key value world) ->
+  (movedUndo, sourceUndo : PartialEffectMap name key value world) ->
+  (movedContinuation, sourceContinuation :
+    IteratorContinuation key value world error) ->
+  movedOutcome = Just (IteratorYielded movedAfter movedUndo movedContinuation) ->
+  sourceOutcome = Just
+    (IteratorYielded sourceAfter sourceUndo sourceContinuation) ->
+  IteratorOutcomeAgreement name key value world error keyEq movedOutcome
+    sourceOutcome ->
+  PartialMapsEquivalent (EffectStateEquivalence keyEq) movedUndo sourceUndo
+successfulOutcomeAgreementUndoMaps
+  (Just (IteratorYielded movedAfter movedUndo movedContinuation))
+  (Just (IteratorYielded sourceAfter sourceUndo sourceContinuation))
+  movedAfter sourceAfter movedUndo sourceUndo movedContinuation sourceContinuation
+  Refl Refl (IteratorSuccessfulYieldsAgree continuationSame undoMaps) = undoMaps
+
+record PairedAdvanceYield
+  (nameEq : DecEq name) (keyEq : DecEq key) (actor : name)
+  (component : Component key value world error)
+  (table : OwnedTable key value (componentProvisions component))
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)))
+  (view : View name (dependencies (componentDependencies component)))
+  (sourceAmbient, movedAmbient : world)
+  (sourceRegistry, movedRegistry : Registry name key value world error) where
+  constructor MkPairedAdvanceYield
+  pairedSourceCapability : DepValues key value
+    (dependencies (componentDependencies component))
+  pairedMovedCapability : DepValues key value
+    (dependencies (componentDependencies component))
+  pairedSourceAfter : LocalState key value world (componentProvisions component)
+  pairedMovedAfter : LocalState key value world (componentProvisions component)
+  pairedSourceUndo : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)
+  pairedMovedUndo : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)
+  0 pairedSourceResolved : resolveCommittedValues @{nameEq} @{keyEq}
+    {name = name} {key = key} {value = value} {world = world} {error = error}
+    (dependencies (componentDependencies component)) view sourceRegistry =
+    Just pairedSourceCapability
+  0 pairedMovedResolved : resolveCommittedValues @{nameEq} @{keyEq}
+    {name = name} {key = key} {value = value} {world = world} {error = error}
+    (dependencies (componentDependencies component)) view movedRegistry =
+    Just pairedMovedCapability
+  0 pairedSourceRan : runStepEffect step pairedSourceCapability
+    (MkLocalState sourceAmbient
+      (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component)
+        (ownedValues table))) = Right (pairedSourceAfter, pairedSourceUndo)
+  0 pairedMovedRan : runStepEffect step pairedMovedCapability
+    (MkLocalState movedAmbient
+      (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component)
+        (ownedValues table))) = Right (pairedMovedAfter, pairedMovedUndo)
+  0 pairedUndoMaps : PartialMapsEquivalent (EffectStateEquivalence keyEq)
+    (yieldedInverseEffectMap nameEq keyEq actor
+      (componentProvisions component) pairedMovedUndo)
+    (yieldedInverseEffectMap nameEq keyEq actor
+      (componentProvisions component) pairedSourceUndo)
+
+0 pairedAdvanceYieldFromRuns :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (sourceAmbient, movedAmbient : world) ->
+  (sourceRegistry, movedRegistry : Registry name key value world error) ->
+  (sourceOutput, movedOutput : EffectState name key value world) ->
+  (sourceFound : lookupFiber @{nameEq} actor sourceRegistry = Just
+    (MkFiber component parent retiredFlag table
+      (Reloading (step :: rest) accumulator view))) ->
+  (movedFound : lookupFiber @{nameEq} actor movedRegistry = Just
+    (MkFiber component parent retiredFlag table
+      (Reloading (step :: rest) accumulator view))) ->
+  advanceRuntimeEffectMap nameEq keyEq actor
+    (the (SystemState name key value world error)
+      (MkSystemState sourceAmbient sourceRegistry))
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState sourceAmbient sourceRegistry))) = Just sourceOutput ->
+  advanceRuntimeEffectMap nameEq keyEq actor
+    (the (SystemState name key value world error)
+      (MkSystemState movedAmbient movedRegistry))
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState movedAmbient movedRegistry))) = Just movedOutput ->
+  IteratorOutcomeAgreement name key value world error keyEq
+    (iteratorStageOutcomeComponentData nameEq keyEq actor component view step rest
+      (projectEffectState @{nameEq}
+        (the (SystemState name key value world error)
+          (MkSystemState movedAmbient movedRegistry))))
+    (iteratorStageOutcomeComponentData nameEq keyEq actor component view step rest
+      (projectEffectState @{nameEq}
+        (the (SystemState name key value world error)
+          (MkSystemState sourceAmbient sourceRegistry)))) ->
+  PairedAdvanceYield nameEq keyEq actor component table step rest view
+    sourceAmbient movedAmbient sourceRegistry movedRegistry
+pairedAdvanceYieldFromRuns nameEq keyEq actor component parent retiredFlag
+  table step rest accumulator view sourceAmbient movedAmbient
+  sourceRegistry movedRegistry sourceOutput movedOutput sourceFound movedFound
+  sourceMapRuns movedMapRuns agreement =
+    let exactFiber : Fiber name key value world error
+        exactFiber = MkFiber component parent retiredFlag table
+          (Reloading (step :: rest) accumulator view)
+        sourceState : SystemState name key value world error
+        sourceState = MkSystemState sourceAmbient sourceRegistry
+        movedState : SystemState name key value world error
+        movedState = MkSystemState movedAmbient movedRegistry
+        0 sourceFiberRuns : fiberAdvanceRuntimeEffectMap nameEq keyEq actor
+          exactFiber (projectEffectState @{nameEq} sourceState) = Just sourceOutput
+        sourceFiberRuns = trans
+          (sym (advanceRuntimeEffectMapAtFound nameEq keyEq actor sourceAmbient
+            sourceRegistry exactFiber sourceFound
+            (projectEffectState @{nameEq} sourceState))) sourceMapRuns
+        0 movedFiberRuns : fiberAdvanceRuntimeEffectMap nameEq keyEq actor
+          exactFiber (projectEffectState @{nameEq} movedState) = Just movedOutput
+        movedFiberRuns = trans
+          (sym (advanceRuntimeEffectMapAtFound nameEq keyEq actor movedAmbient
+            movedRegistry exactFiber movedFound
+            (projectEffectState @{nameEq} movedState))) movedMapRuns
+        0 sourceSuccess : MovedStepEffectSuccess name key world error value
+          nameEq keyEq actor component step view
+          (projectEffectState @{nameEq} sourceState) sourceOutput
+        sourceSuccess = invertMovedStepEffect nameEq keyEq actor component parent
+          retiredFlag table step rest accumulator view
+          (projectEffectState @{nameEq} sourceState) sourceOutput sourceFiberRuns
+        0 movedSuccess : MovedStepEffectSuccess name key world error value
+          nameEq keyEq actor component step view
+          (projectEffectState @{nameEq} movedState) movedOutput
+        movedSuccess = invertMovedStepEffect nameEq keyEq actor component parent
+          retiredFlag table step rest accumulator view
+          (projectEffectState @{nameEq} movedState) movedOutput movedFiberRuns
+        0 sourceResolved : resolveCommittedValues @{nameEq} @{keyEq}
+          {name = name} {key = key} {value = value} {world = world}
+          {error = error}
+          (dependencies (componentDependencies component)) view sourceRegistry =
+          Just (movedCapability sourceSuccess)
+        sourceResolved = trans
+          (sym (resolveEffectValuesProjected nameEq keyEq
+            (dependencies (componentDependencies component)) view sourceState))
+          (movedCapabilityResolved sourceSuccess)
+        0 movedResolved : resolveCommittedValues @{nameEq} @{keyEq}
+          {name = name} {key = key} {value = value} {world = world}
+          {error = error}
+          (dependencies (componentDependencies component)) view movedRegistry =
+          Just (movedCapability movedSuccess)
+        movedResolved = trans
+          (sym (resolveEffectValuesProjected nameEq keyEq
+            (dependencies (componentDependencies component)) view movedState))
+          (movedCapabilityResolved movedSuccess)
+        0 sourceRan : runStepEffect step (movedCapability sourceSuccess)
+          (MkLocalState sourceAmbient
+            (restrictOwnedPreservingOrder @{keyEq}
+              (componentProvisions component) (ownedValues table))) =
+          Right (movedLocalAfter sourceSuccess, movedUndo sourceSuccess)
+        sourceRan = replace
+          {p = \actorTable => runStepEffect step (movedCapability sourceSuccess)
+            (MkLocalState sourceAmbient
+              (restrictOwnedPreservingOrder @{keyEq}
+                (componentProvisions component) actorTable)) =
+            Right (movedLocalAfter sourceSuccess, movedUndo sourceSuccess)}
+          (projectedActorTable nameEq actor sourceState exactFiber sourceFound)
+          (movedStepRuns sourceSuccess)
+        0 movedRan : runStepEffect step (movedCapability movedSuccess)
+          (MkLocalState movedAmbient
+            (restrictOwnedPreservingOrder @{keyEq}
+              (componentProvisions component) (ownedValues table))) =
+          Right (movedLocalAfter movedSuccess, movedUndo movedSuccess)
+        movedRan = replace
+          {p = \actorTable => runStepEffect step (movedCapability movedSuccess)
+            (MkLocalState movedAmbient
+              (restrictOwnedPreservingOrder @{keyEq}
+                (componentProvisions component) actorTable)) =
+            Right (movedLocalAfter movedSuccess, movedUndo movedSuccess)}
+          (projectedActorTable nameEq actor movedState exactFiber movedFound)
+          (movedStepRuns movedSuccess)
+        0 sourceOutcome : iteratorStageOutcomeComponentData nameEq keyEq actor
+          component view step rest (projectEffectState @{nameEq} sourceState) =
+          Just (IteratorYielded
+            (setEffectTable @{nameEq} actor
+              (ownedValues (localTable (movedLocalAfter sourceSuccess)))
+              (setEffectAmbient (localWorld (movedLocalAfter sourceSuccess))
+                (projectEffectState @{nameEq} sourceState)))
+            (yieldedInverseEffectMap nameEq keyEq actor
+              (componentProvisions component) (movedUndo sourceSuccess))
+            (MkIteratorContinuation rest))
+        sourceOutcome = movedStepSuccessIteratorOutcome nameEq keyEq actor
+          component step rest view (projectEffectState @{nameEq} sourceState)
+          sourceOutput sourceSuccess
+        0 movedOutcome : iteratorStageOutcomeComponentData nameEq keyEq actor
+          component view step rest (projectEffectState @{nameEq} movedState) =
+          Just (IteratorYielded
+            (setEffectTable @{nameEq} actor
+              (ownedValues (localTable (movedLocalAfter movedSuccess)))
+              (setEffectAmbient (localWorld (movedLocalAfter movedSuccess))
+                (projectEffectState @{nameEq} movedState)))
+            (yieldedInverseEffectMap nameEq keyEq actor
+              (componentProvisions component) (movedUndo movedSuccess))
+            (MkIteratorContinuation rest))
+        movedOutcome = movedStepSuccessIteratorOutcome nameEq keyEq actor
+          component step rest view (projectEffectState @{nameEq} movedState)
+          movedOutput movedSuccess
+        0 undoMaps : PartialMapsEquivalent (EffectStateEquivalence keyEq)
+          (yieldedInverseEffectMap nameEq keyEq actor
+            (componentProvisions component) (movedUndo movedSuccess))
+          (yieldedInverseEffectMap nameEq keyEq actor
+            (componentProvisions component) (movedUndo sourceSuccess))
+        undoMaps = successfulOutcomeAgreementUndoMaps
+          (iteratorStageOutcomeComponentData nameEq keyEq actor component view
+            step rest (projectEffectState @{nameEq} movedState))
+          (iteratorStageOutcomeComponentData nameEq keyEq actor component view
+            step rest (projectEffectState @{nameEq} sourceState))
+          (setEffectTable @{nameEq} actor
+            (ownedValues (localTable (movedLocalAfter movedSuccess)))
+            (setEffectAmbient (localWorld (movedLocalAfter movedSuccess))
+              (projectEffectState @{nameEq} movedState)))
+          (setEffectTable @{nameEq} actor
+            (ownedValues (localTable (movedLocalAfter sourceSuccess)))
+            (setEffectAmbient (localWorld (movedLocalAfter sourceSuccess))
+              (projectEffectState @{nameEq} sourceState)))
+          (yieldedInverseEffectMap nameEq keyEq actor
+            (componentProvisions component) (movedUndo movedSuccess))
+          (yieldedInverseEffectMap nameEq keyEq actor
+            (componentProvisions component) (movedUndo sourceSuccess))
+          (MkIteratorContinuation rest) (MkIteratorContinuation rest)
+          movedOutcome sourceOutcome agreement
+    in MkPairedAdvanceYield (movedCapability sourceSuccess)
+      (movedCapability movedSuccess) (movedLocalAfter sourceSuccess)
+      (movedLocalAfter movedSuccess) (movedUndo sourceSuccess)
+      (movedUndo movedSuccess) sourceResolved movedResolved sourceRan movedRan
+      undoMaps
+
 0 localSystemStateEta : (state : SystemState name key value world error) ->
   MkSystemState (worldState state) (registry state) = state
 localSystemStateEta (MkSystemState ambient fibers) = Refl
@@ -3209,25 +3455,6 @@ localPartialEffectRelatedSymmetric (PartialDefined related) =
   PartialMapsEquivalent (EffectStateEquivalence keyEq) right left
 localPartialMapsEquivalentSymmetric maps input =
   localPartialEffectRelatedSymmetric (maps input)
-
-0 successfulOutcomeAgreementUndoMaps :
-  (movedOutcome, sourceOutcome :
-    Maybe (IteratorStageOutcome name key value world error)) ->
-  (movedAfter, sourceAfter : EffectState name key value world) ->
-  (movedUndo, sourceUndo : PartialEffectMap name key value world) ->
-  (movedContinuation, sourceContinuation :
-    IteratorContinuation key value world error) ->
-  movedOutcome = Just (IteratorYielded movedAfter movedUndo movedContinuation) ->
-  sourceOutcome = Just
-    (IteratorYielded sourceAfter sourceUndo sourceContinuation) ->
-  IteratorOutcomeAgreement name key value world error keyEq movedOutcome
-    sourceOutcome ->
-  PartialMapsEquivalent (EffectStateEquivalence keyEq) movedUndo sourceUndo
-successfulOutcomeAgreementUndoMaps
-  (Just (IteratorYielded movedAfter movedUndo movedContinuation))
-  (Just (IteratorYielded sourceAfter sourceUndo sourceContinuation))
-  movedAfter sourceAfter movedUndo sourceUndo movedContinuation sourceContinuation
-  Refl Refl (IteratorSuccessfulYieldsAgree continuationSame undoMaps) = undoMaps
 
 0 pushedAccumulatorRelatedFromMovedUndoMaps :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
