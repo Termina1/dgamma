@@ -8,6 +8,9 @@ import DGamma.Unified
 import DGamma.CP3
 import DGamma.CP4DeletionFrameCore
 import DGamma.CP4DeletionCommuteCore
+import DGamma.CP4DeletionControlCore
+import DGamma.CP4DeletionBoundaryDeleted
+import DGamma.CP4DeletionSelectedForeignOrchestration
 import DGamma.CP4DeletionFrames
 import DGamma.CP4DeletionRelationalBoundary
 import DGamma.CP4DeletionRelationalActionCore
@@ -1432,6 +1435,130 @@ transitionForeignLookup nameEq keyEq selected {before} {afterState} action tag
           raw
     in systemLocalUpdateForeign nameEq selected (actionOwner action) distinct
       before afterState update
+
+0 retireProviderCandidateSame :
+  (keyEq : DecEq key) -> (wanted : key) ->
+  (fiber : Fiber name key value world error) ->
+  (isActive (fiberLifecycle (retireFiber fiber)) &&
+    memberKey @{keyEq} wanted
+      (ownedValues (fiberTable (retireFiber fiber)))) =
+  (isActive (fiberLifecycle fiber) &&
+    memberKey @{keyEq} wanted (ownedValues (fiberTable fiber)))
+retireProviderCandidateSame keyEq wanted
+  (MkFiber component parent retiredFlag table lifecycle) = Refl
+
+0 providerInRetireHead :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (wanted : key) ->
+  (actor : name) -> (fiber : Fiber name key value world error) ->
+  (rest : List (Binding name (FiberAt name key value world error))) ->
+  providerIn @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} wanted
+    (Bind actor (retireFiber fiber) :: rest) =
+  providerIn @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} wanted (Bind actor fiber :: rest)
+providerInRetireHead nameEq keyEq wanted actor fiber rest
+  with (isActive (fiberLifecycle fiber) &&
+    memberKey @{keyEq} wanted (ownedValues (fiberTable fiber))) proof sourceRun
+  providerInRetireHead nameEq keyEq wanted actor fiber rest | False =
+    let targetRun = trans (retireProviderCandidateSame keyEq wanted fiber)
+          sourceRun
+    in rewrite targetRun in Refl
+  providerInRetireHead nameEq keyEq wanted actor fiber rest | True =
+    let targetRun = trans (retireProviderCandidateSame keyEq wanted fiber)
+          sourceRun
+    in rewrite targetRun in Refl
+
+0 providerInRetireEntries :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (wanted : key) ->
+  (actor : name) -> (oldFiber : Fiber name key value world error) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  lookupEntries @{nameEq} actor entries = Just oldFiber ->
+  providerIn @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} wanted
+    (replaceEntries @{nameEq} actor (retireFiber oldFiber) entries) =
+  providerIn @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} wanted entries
+providerInRetireEntries nameEq keyEq wanted actor oldFiber [] found =
+  case found of Refl impossible
+providerInRetireEntries nameEq keyEq wanted actor oldFiber
+  (Bind current fiber :: rest) found with (decEq @{nameEq} actor current)
+  providerInRetireEntries nameEq keyEq wanted current oldFiber
+    (Bind current fiber :: rest) found | Yes Refl =
+      case justInjective found of
+        Refl => providerInRetireHead nameEq keyEq wanted current fiber rest
+  providerInRetireEntries nameEq keyEq wanted actor oldFiber
+    (Bind current fiber :: rest) found | No distinct
+    with (isActive (fiberLifecycle fiber) &&
+      memberKey @{keyEq} wanted (ownedValues (fiberTable fiber)))
+    providerInRetireEntries nameEq keyEq wanted actor oldFiber
+      (Bind current fiber :: rest) found | No distinct | True = Refl
+    providerInRetireEntries nameEq keyEq wanted actor oldFiber
+      (Bind current fiber :: rest) found | No distinct | False =
+        providerInRetireEntries nameEq keyEq wanted actor oldFiber rest found
+
+0 providerOfRetireRegistry :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (wanted : key) ->
+  (actor : name) -> (oldFiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} actor fibers = Just oldFiber ->
+  providerOf @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} wanted
+    (replaceBinding @{nameEq} actor (retireFiber oldFiber) fibers) =
+  providerOf @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} wanted fibers
+providerOfRetireRegistry nameEq keyEq wanted actor oldFiber
+  (MkCoeffectContext entries unique) found =
+    providerInRetireEntries nameEq keyEq wanted actor oldFiber entries found
+
+0 resolveViewRetireRegistry :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deps : List key) ->
+  (actor : name) -> (oldFiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} actor fibers = Just oldFiber ->
+  resolveView @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} deps
+    (replaceBinding @{nameEq} actor (retireFiber oldFiber) fibers) =
+  resolveView @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} deps fibers
+resolveViewRetireRegistry nameEq keyEq [] actor oldFiber fibers found = Refl
+resolveViewRetireRegistry {name} {key} {world} {error} {value}
+  nameEq keyEq (wanted :: rest) actor oldFiber fibers found
+  with (providerOf @{nameEq} @{keyEq} wanted fibers) proof sourceProvider
+  resolveViewRetireRegistry {name} {key} {world} {error} {value}
+    nameEq keyEq (wanted :: rest) actor oldFiber fibers found | Nothing =
+      let targetProvider = trans
+            (providerOfRetireRegistry nameEq keyEq wanted actor oldFiber fibers
+              found)
+            sourceProvider
+      in rewrite targetProvider in Refl
+  resolveViewRetireRegistry {name} {key} {world} {error} {value}
+    nameEq keyEq (wanted :: rest) actor oldFiber fibers found |
+    Just provider =
+      let targetProvider = trans
+            (providerOfRetireRegistry nameEq keyEq wanted actor oldFiber fibers
+              found)
+            sourceProvider
+      in rewrite targetProvider in cong (map (ProviderView provider))
+        (resolveViewRetireRegistry nameEq keyEq rest actor oldFiber fibers found)
+
+0 targetFiberRetireRegistry :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (observed : Fiber name key value world error) ->
+  (actor : name) -> (oldFiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  lookupFiber @{nameEq} actor fibers = Just oldFiber ->
+  targetFiber @{nameEq} @{keyEq} observed
+    (replaceBinding @{nameEq} actor (retireFiber oldFiber) fibers) =
+  targetFiber @{nameEq} @{keyEq} observed fibers
+targetFiberRetireRegistry nameEq keyEq
+  (MkFiber component parent False table lifecycle) actor oldFiber fibers found =
+    resolveViewRetireRegistry nameEq keyEq
+      (dependencies (componentDependencies component)) actor oldFiber fibers
+      found
+targetFiberRetireRegistry nameEq keyEq
+  (MkFiber component parent True table lifecycle) actor oldFiber fibers found =
+    Refl
 
 0 localAndBothTrue : (left, right : Bool) -> left = True -> right = True ->
   left && right = True
