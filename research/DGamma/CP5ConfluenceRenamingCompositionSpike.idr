@@ -269,6 +269,100 @@ rightRegistrationSideScan
       RegistrationSideScanSurviving transition rest actionExact surviving
         (rightRegistrationSideScan correspondence)
 
+0 falseIsNotTrue : False = True -> Void
+falseIsNotTrue Refl impossible
+
+0 nonRegistrationCannotBeGenerated :
+  {transition : Transition first middle} ->
+  transitionAction transition = action ->
+  isGeneratedRegistrationAction action = False ->
+  transitionAction transition = OInsert child (ChildOf parent) component ->
+  Void
+nonRegistrationCannotBeGenerated actionExact notRegistration generatedExact =
+  let actionSame = trans (sym actionExact) generatedExact
+      classifiedAsGenerated = cong isGeneratedRegistrationAction actionSame
+  in falseIsNotTrue (trans (sym notRegistration) classifiedAsGenerated)
+
+||| A trace and starting index have one scanner result.  In particular, the
+||| same shared-middle birth cannot be deleted by one correspondence and
+||| surviving in the other: that would require and forbid the same later
+||| parent unload.  This is the first synchronization theorem needed by the
+||| registration-correspondence composition.
+0 registrationSideScanFinalIndexUnique :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  {ordinal : Nat} -> {index : RegistrationIndexState name} ->
+  {leftResult, rightResult : RegistrationIndexState name} ->
+  (leftScan : RegistrationSideScan nameEq ordinal index trace leftResult) ->
+  (rightScan : RegistrationSideScan nameEq ordinal index trace rightResult) ->
+  leftResult = rightResult
+registrationSideScanFinalIndexUnique RegistrationSideScanEnd
+  RegistrationSideScanEnd = Refl
+registrationSideScanFinalIndexUnique
+  (RegistrationSideScanNonRegistration leftAction transition rest leftExact
+    leftNotRegistration leftLater)
+  (RegistrationSideScanNonRegistration rightAction transition rest rightExact
+    rightNotRegistration rightLater) =
+      case trans (sym leftExact) rightExact of
+        Refl => registrationSideScanFinalIndexUnique leftLater rightLater
+registrationSideScanFinalIndexUnique
+  (RegistrationSideScanNonRegistration action transition rest actionExact
+    notRegistration later)
+  (RegistrationSideScanDeleted transition rest generatedExact deleted
+    rightLater) =
+      void (nonRegistrationCannotBeGenerated actionExact notRegistration
+        generatedExact)
+registrationSideScanFinalIndexUnique
+  (RegistrationSideScanNonRegistration action transition rest actionExact
+    notRegistration later)
+  (RegistrationSideScanSurviving transition rest generatedExact surviving
+    rightLater) =
+      void (nonRegistrationCannotBeGenerated actionExact notRegistration
+        generatedExact)
+registrationSideScanFinalIndexUnique
+  (RegistrationSideScanDeleted transition rest generatedExact deleted leftLater)
+  (RegistrationSideScanNonRegistration action transition rest actionExact
+    notRegistration rightLater) =
+      void (nonRegistrationCannotBeGenerated actionExact notRegistration
+        generatedExact)
+registrationSideScanFinalIndexUnique
+  (RegistrationSideScanSurviving transition rest generatedExact surviving
+    leftLater)
+  (RegistrationSideScanNonRegistration action transition rest actionExact
+    notRegistration rightLater) =
+      void (nonRegistrationCannotBeGenerated actionExact notRegistration
+        generatedExact)
+registrationSideScanFinalIndexUnique
+  (RegistrationSideScanDeleted transition rest leftExact leftDeleted leftLater)
+  (RegistrationSideScanDeleted transition rest rightExact rightDeleted
+    rightLater) =
+      case trans (sym leftExact) rightExact of
+        Refl => registrationSideScanFinalIndexUnique leftLater rightLater
+registrationSideScanFinalIndexUnique
+  (RegistrationSideScanDeleted transition rest leftExact leftDeleted leftLater)
+  (RegistrationSideScanSurviving transition rest rightExact rightSurviving
+    rightLater) =
+      case trans (sym leftExact) rightExact of
+        Refl => void (survivingDeletedRegistrationImpossible rightSurviving
+          leftDeleted)
+registrationSideScanFinalIndexUnique
+  (RegistrationSideScanSurviving transition rest leftExact leftSurviving
+    leftLater)
+  (RegistrationSideScanDeleted transition rest rightExact rightDeleted
+    rightLater) =
+      case trans (sym leftExact) rightExact of
+        Refl => void (survivingDeletedRegistrationImpossible leftSurviving
+          rightDeleted)
+registrationSideScanFinalIndexUnique
+  (RegistrationSideScanSurviving transition rest leftExact leftSurviving
+    leftLater)
+  (RegistrationSideScanSurviving transition rest rightExact rightSurviving
+    rightLater) =
+      case trans (sym leftExact) rightExact of
+        Refl => registrationSideScanFinalIndexUnique leftLater rightLater
+
 ||| Generic vestigial transitivity remains useful algebra, now with the coupling
 ||| defect repaired.  It is not misrepresented as the one-trace canonicalization
 ||| bridge: that exact interface appears below.
