@@ -1274,6 +1274,108 @@ providerInCandidateExists nameEq keyEq wanted provider fiber
         providerInCandidateExists nameEq keyEq wanted provider fiber rest found
           candidate
 
+0 beginSourceOwnerNotActive :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {before, afterState : SystemState name key value world error} ->
+  (tag : RuleTag) ->
+  checkedApplyAction @{nameEq} @{keyEq} (LBegin actor) before =
+    Just (tag, afterState) ->
+  (fiber : Fiber name key value world error **
+    (lookupFiber @{nameEq} actor (registry before) = Just fiber,
+      isActive (fiberLifecycle fiber) = False))
+beginSourceOwnerNotActive nameEq keyEq actor
+  {before = MkSystemState ambient fibers} {afterState} tag checked
+  with (lookupFiber @{nameEq} actor fibers) proof found
+  beginSourceOwnerNotActive nameEq keyEq actor
+    {before = MkSystemState ambient fibers} {afterState} tag checked | Nothing =
+      void (nothingIsNotJust checked)
+  beginSourceOwnerNotActive nameEq keyEq actor
+    {before = MkSystemState ambient fibers} {afterState} tag checked | Just fiber
+    with (fiberLifecycle fiber) proof life
+    beginSourceOwnerNotActive nameEq keyEq actor
+      {before = MkSystemState ambient fibers} {afterState} tag checked |
+      Just fiber | Inactive Nothing =
+        let 0 inactiveProof : (isActive (fiberLifecycle fiber) = False)
+            inactiveProof = rewrite life in Refl
+        in (fiber ** (Refl, inactiveProof))
+    beginSourceOwnerNotActive nameEq keyEq actor
+      {before = MkSystemState ambient fibers} {afterState} tag checked |
+      Just fiber | Inactive (Just failure) = void (nothingIsNotJust checked)
+    beginSourceOwnerNotActive nameEq keyEq actor
+      {before = MkSystemState ambient fibers} {afterState} tag checked |
+      Just fiber | Reloading remaining accumulator view =
+        void (nothingIsNotJust checked)
+    beginSourceOwnerNotActive nameEq keyEq actor
+      {before = MkSystemState ambient fibers} {afterState} tag checked |
+      Just fiber | Active accumulator view = void (nothingIsNotJust checked)
+    beginSourceOwnerNotActive nameEq keyEq actor
+      {before = MkSystemState ambient fibers} {afterState} tag checked |
+      Just fiber | Unloading accumulator view outcome =
+        void (nothingIsNotJust checked)
+
+0 advanceSourceOwnerNotActive :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {before, afterState : SystemState name key value world error} ->
+  (tag : RuleTag) ->
+  checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+    Just (tag, afterState) ->
+  (fiber : Fiber name key value world error **
+    (lookupFiber @{nameEq} actor (registry before) = Just fiber,
+      isActive (fiberLifecycle fiber) = False))
+advanceSourceOwnerNotActive nameEq keyEq actor
+  {before = MkSystemState ambient fibers} {afterState} tag checked
+  with (lookupFiber @{nameEq} actor fibers) proof found
+  advanceSourceOwnerNotActive nameEq keyEq actor
+    {before = MkSystemState ambient fibers} {afterState} tag checked | Nothing =
+      void (nothingIsNotJust checked)
+  advanceSourceOwnerNotActive nameEq keyEq actor
+    {before = MkSystemState ambient fibers} {afterState} tag checked | Just fiber
+    with (fiberLifecycle fiber) proof life
+    advanceSourceOwnerNotActive nameEq keyEq actor
+      {before = MkSystemState ambient fibers} {afterState} tag checked |
+      Just fiber | Inactive outcome = void (nothingIsNotJust checked)
+    advanceSourceOwnerNotActive nameEq keyEq actor
+      {before = MkSystemState ambient fibers} {afterState} tag checked |
+      Just fiber | Reloading remaining accumulator view =
+        let 0 inactiveProof : (isActive (fiberLifecycle fiber) = False)
+            inactiveProof = rewrite life in Refl
+        in (fiber ** (Refl, inactiveProof))
+    advanceSourceOwnerNotActive nameEq keyEq actor
+      {before = MkSystemState ambient fibers} {afterState} tag checked |
+      Just fiber | Active accumulator view = void (nothingIsNotJust checked)
+    advanceSourceOwnerNotActive nameEq keyEq actor
+      {before = MkSystemState ambient fibers} {afterState} tag checked |
+      Just fiber | Unloading accumulator view outcome =
+        void (nothingIsNotJust checked)
+
+0 activationSourceOwnerNotActive :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {before, afterState : SystemState name key value world error} ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  PaperActivationStep
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked) ->
+  (fiber : Fiber name key value world error **
+    (lookupFiber @{nameEq} (actionOwner action) (registry before) = Just fiber,
+      isActive (fiberLifecycle fiber) = False))
+activationSourceOwnerNotActive nameEq keyEq action tag checked
+  (PaperBeginStep actionSame tagSame) =
+    case actionSame of
+      Refl => beginSourceOwnerNotActive nameEq keyEq _ tag checked
+activationSourceOwnerNotActive nameEq keyEq action tag checked
+  (PaperIterStep actionSame tagSame) =
+    case actionSame of
+      Refl => advanceSourceOwnerNotActive nameEq keyEq _ tag checked
+activationSourceOwnerNotActive nameEq keyEq action tag checked
+  (PaperFinishStep actionSame tagSame) =
+    case actionSame of
+      Refl => advanceSourceOwnerNotActive nameEq keyEq _ tag checked
+
 0 advanceTransitionMapOriginCong :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
