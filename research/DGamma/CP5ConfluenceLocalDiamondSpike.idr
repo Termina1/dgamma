@@ -4270,6 +4270,12 @@ record ActivationReplacementComparison
   movedReplacementFiber : Fiber name key value world error
   0 replacementFibersRelated : FiberControlRelated sourceReplacementFiber
     movedReplacementFiber
+  0 sourceReplacementRegistry : registry sourceAfter =
+    replaceBinding @{nameEq} actor sourceReplacementFiber
+      (registry sourceBefore)
+  0 movedReplacementRegistry : registry movedAfter =
+    replaceBinding @{nameEq} actor movedReplacementFiber
+      (registry movedBefore)
   0 sourceReplacementBindings : bindings (registry sourceAfter) =
     replaceEntries @{nameEq} actor sourceReplacementFiber
       (bindings (registry sourceBefore))
@@ -4336,7 +4342,7 @@ beginReplacementComparison nameEq keyEq actor sourceAmbient movedAmbient
     in case sourcePairSame of
       Refl => case movedPairSame of
         Refl => MkActivationReplacementComparison nextFiber nextFiber
-          (fiberControlReflexive nextFiber)
+          (fiberControlReflexive nextFiber) Refl Refl
           (replaceBindingRuntimeBindings nameEq actor nextFiber sourceRegistry)
           (replaceBindingRuntimeBindings nameEq actor nextFiber movedRegistry)
 
@@ -4406,7 +4412,7 @@ emptyFinishReplacementComparison nameEq keyEq actor sourceAmbient movedAmbient
     in case sourcePairSame of
       Refl => case movedPairSame of
         Refl => MkActivationReplacementComparison nextFiber nextFiber
-          (fiberControlReflexive nextFiber)
+          (fiberControlReflexive nextFiber) Refl Refl
           (replaceBindingRuntimeBindings nameEq actor nextFiber sourceRegistry)
           (replaceBindingRuntimeBindings nameEq actor nextFiber movedRegistry)
 
@@ -4576,7 +4582,7 @@ successfulFinishReplacementComparison nameEq keyEq actor sourceAmbient
     in case sourcePairSame of
       Refl => case movedPairSame of
         Refl => MkActivationReplacementComparison sourceNext movedNext
-          nextRelated
+          nextRelated Refl Refl
           (replaceBindingRuntimeBindings nameEq actor sourceNext sourceRegistry)
           (replaceBindingRuntimeBindings nameEq actor movedNext movedRegistry)
 
@@ -4704,7 +4710,7 @@ successfulIterReplacementComparison nameEq keyEq actor sourceAmbient movedAmbien
     in case sourcePairSame of
       Refl => case movedPairSame of
         Refl => MkActivationReplacementComparison sourceNext movedNext
-          nextRelated
+          nextRelated Refl Refl
           (replaceBindingRuntimeBindings nameEq actor sourceNext sourceRegistry)
           (replaceBindingRuntimeBindings nameEq actor movedNext movedRegistry)
 
