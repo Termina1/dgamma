@@ -465,6 +465,228 @@ registrationSideSurvivingEventsUnique {ordinal} {index}
             leftComponent ::)
           (registrationSideSurvivingEventsUnique leftLater rightLater)
 
+0 leftCorrespondenceSurvivingEvents :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {renaming : RegistrationGenerationBijection name} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal :
+    SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} ->
+  {right : Transitions rightFirst rightFinal} ->
+  {leftOrdinal, rightOrdinal : Nat} ->
+  {leftIndex, leftResultIndex, rightIndex, rightResultIndex :
+    RegistrationIndexState name} ->
+  {pendingLeft, pendingRight :
+    List (RegistrationEvent name key world error value)} ->
+  RegistrationTraceCorrespondence nameEq renaming
+    leftOrdinal leftIndex left leftResultIndex
+    rightOrdinal rightIndex right rightResultIndex pendingLeft pendingRight ->
+  List (RegistrationEvent name key world error value)
+leftCorrespondenceSurvivingEvents RegistrationCorrespondenceEnd = []
+leftCorrespondenceSurvivingEvents
+  (SkipLeftNonRegistration _ _ _ _ _ correspondence) =
+    leftCorrespondenceSurvivingEvents correspondence
+leftCorrespondenceSurvivingEvents
+  (SkipRightNonRegistration _ _ _ _ _ correspondence) =
+    leftCorrespondenceSurvivingEvents correspondence
+leftCorrespondenceSurvivingEvents
+  (DiscardLeftDeletedRegistration _ _ _ _ correspondence) =
+    leftCorrespondenceSurvivingEvents correspondence
+leftCorrespondenceSurvivingEvents
+  (DiscardRightDeletedRegistration _ _ _ _ correspondence) =
+    leftCorrespondenceSurvivingEvents correspondence
+leftCorrespondenceSurvivingEvents {leftOrdinal} {leftIndex}
+  (QueueLeftGeneratedRegistration {child} {parent} {component}
+    _ _ _ _ correspondence) =
+      registrationEventAt @{nameEq} leftOrdinal leftIndex child parent component ::
+        leftCorrespondenceSurvivingEvents correspondence
+leftCorrespondenceSurvivingEvents
+  (QueueRightGeneratedRegistration _ _ _ _ correspondence) =
+    leftCorrespondenceSurvivingEvents correspondence
+leftCorrespondenceSurvivingEvents {leftOrdinal} {leftIndex}
+  (MatchLeftWithPendingRight {child} {parent} {component}
+    _ _ _ _ _ _ _ _ correspondence) =
+      registrationEventAt @{nameEq} leftOrdinal leftIndex child parent component ::
+        leftCorrespondenceSurvivingEvents correspondence
+leftCorrespondenceSurvivingEvents
+  (MatchRightWithPendingLeft _ _ _ _ _ _ _ _ correspondence) =
+    leftCorrespondenceSurvivingEvents correspondence
+
+0 rightCorrespondenceSurvivingEvents :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {renaming : RegistrationGenerationBijection name} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal :
+    SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} ->
+  {right : Transitions rightFirst rightFinal} ->
+  {leftOrdinal, rightOrdinal : Nat} ->
+  {leftIndex, leftResultIndex, rightIndex, rightResultIndex :
+    RegistrationIndexState name} ->
+  {pendingLeft, pendingRight :
+    List (RegistrationEvent name key world error value)} ->
+  RegistrationTraceCorrespondence nameEq renaming
+    leftOrdinal leftIndex left leftResultIndex
+    rightOrdinal rightIndex right rightResultIndex pendingLeft pendingRight ->
+  List (RegistrationEvent name key world error value)
+rightCorrespondenceSurvivingEvents RegistrationCorrespondenceEnd = []
+rightCorrespondenceSurvivingEvents
+  (SkipLeftNonRegistration _ _ _ _ _ correspondence) =
+    rightCorrespondenceSurvivingEvents correspondence
+rightCorrespondenceSurvivingEvents
+  (SkipRightNonRegistration _ _ _ _ _ correspondence) =
+    rightCorrespondenceSurvivingEvents correspondence
+rightCorrespondenceSurvivingEvents
+  (DiscardLeftDeletedRegistration _ _ _ _ correspondence) =
+    rightCorrespondenceSurvivingEvents correspondence
+rightCorrespondenceSurvivingEvents
+  (DiscardRightDeletedRegistration _ _ _ _ correspondence) =
+    rightCorrespondenceSurvivingEvents correspondence
+rightCorrespondenceSurvivingEvents
+  (QueueLeftGeneratedRegistration _ _ _ _ correspondence) =
+    rightCorrespondenceSurvivingEvents correspondence
+rightCorrespondenceSurvivingEvents {rightOrdinal} {rightIndex}
+  (QueueRightGeneratedRegistration {child} {parent} {component}
+    _ _ _ _ correspondence) =
+      registrationEventAt @{nameEq} rightOrdinal rightIndex child parent component ::
+        rightCorrespondenceSurvivingEvents correspondence
+rightCorrespondenceSurvivingEvents
+  (MatchLeftWithPendingRight _ _ _ _ _ _ _ _ correspondence) =
+    rightCorrespondenceSurvivingEvents correspondence
+rightCorrespondenceSurvivingEvents {rightOrdinal} {rightIndex}
+  (MatchRightWithPendingLeft {child} {parent} {component}
+    _ _ _ _ _ _ _ _ correspondence) =
+      registrationEventAt @{nameEq} rightOrdinal rightIndex child parent component ::
+        rightCorrespondenceSurvivingEvents correspondence
+
+||| Finite matching semantics of the scanner's two pending lists. Queue
+||| constructors retain an unmatched event; match constructors remove an exact
+||| pending occurrence. Thus a value indexed by `[] []` is a perfect finite
+||| matching process, not merely a list of independently supplied event pairs.
+data FiniteRegistrationMatchingPlan :
+  (renaming : RegistrationGenerationBijection name) ->
+  (pendingLeft, pendingRight :
+    List (RegistrationEvent name key world error value)) -> Type where
+  FiniteRegistrationMatchingEnd :
+    FiniteRegistrationMatchingPlan renaming [] []
+  FiniteRegistrationMatchingQueueLeft :
+    (event : RegistrationEvent name key world error value) ->
+    FiniteRegistrationMatchingPlan renaming (event :: pendingLeft) pendingRight ->
+    FiniteRegistrationMatchingPlan renaming pendingLeft pendingRight
+  FiniteRegistrationMatchingQueueRight :
+    (event : RegistrationEvent name key world error value) ->
+    FiniteRegistrationMatchingPlan renaming pendingLeft (event :: pendingRight) ->
+    FiniteRegistrationMatchingPlan renaming pendingLeft pendingRight
+  FiniteRegistrationMatchingMatchLeft :
+    (leftEvent : RegistrationEvent name key world error value) ->
+    (rightPrefix : List (RegistrationEvent name key world error value)) ->
+    (rightEvent : RegistrationEvent name key world error value) ->
+    (rightSuffix : List (RegistrationEvent name key world error value)) ->
+    RegistrationEventMatch renaming leftEvent rightEvent ->
+    FiniteRegistrationMatchingPlan renaming pendingLeft
+      (rightPrefix ++ rightSuffix) ->
+    FiniteRegistrationMatchingPlan renaming pendingLeft
+      (rightPrefix ++ (rightEvent :: rightSuffix))
+  FiniteRegistrationMatchingMatchRight :
+    (rightEvent : RegistrationEvent name key world error value) ->
+    (leftPrefix : List (RegistrationEvent name key world error value)) ->
+    (leftEvent : RegistrationEvent name key world error value) ->
+    (leftSuffix : List (RegistrationEvent name key world error value)) ->
+    RegistrationEventMatch renaming leftEvent rightEvent ->
+    FiniteRegistrationMatchingPlan renaming
+      (leftPrefix ++ leftSuffix) pendingRight ->
+    FiniteRegistrationMatchingPlan renaming
+      (leftPrefix ++ (leftEvent :: leftSuffix)) pendingRight
+
+0 finiteRegistrationMatchingPlan :
+  RegistrationTraceCorrespondence nameEq renaming
+    leftOrdinal leftIndex left leftResultIndex
+    rightOrdinal rightIndex right rightResultIndex pendingLeft pendingRight ->
+  FiniteRegistrationMatchingPlan renaming pendingLeft pendingRight
+finiteRegistrationMatchingPlan RegistrationCorrespondenceEnd =
+  FiniteRegistrationMatchingEnd
+finiteRegistrationMatchingPlan
+  (SkipLeftNonRegistration _ _ _ _ _ correspondence) =
+    finiteRegistrationMatchingPlan correspondence
+finiteRegistrationMatchingPlan
+  (SkipRightNonRegistration _ _ _ _ _ correspondence) =
+    finiteRegistrationMatchingPlan correspondence
+finiteRegistrationMatchingPlan
+  (DiscardLeftDeletedRegistration _ _ _ _ correspondence) =
+    finiteRegistrationMatchingPlan correspondence
+finiteRegistrationMatchingPlan
+  (DiscardRightDeletedRegistration _ _ _ _ correspondence) =
+    finiteRegistrationMatchingPlan correspondence
+finiteRegistrationMatchingPlan {leftOrdinal} {leftIndex}
+  (QueueLeftGeneratedRegistration {child} {parent} {component}
+    _ _ _ _ correspondence) =
+      FiniteRegistrationMatchingQueueLeft
+        (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent
+          component)
+        (finiteRegistrationMatchingPlan correspondence)
+finiteRegistrationMatchingPlan {rightOrdinal} {rightIndex}
+  (QueueRightGeneratedRegistration {child} {parent} {component}
+    _ _ _ _ correspondence) =
+      FiniteRegistrationMatchingQueueRight
+        (registrationEventAt @{nameEq} rightOrdinal rightIndex child parent
+          component)
+        (finiteRegistrationMatchingPlan correspondence)
+finiteRegistrationMatchingPlan {leftOrdinal} {leftIndex}
+  (MatchLeftWithPendingRight {child} {parent} {component}
+    _ _ _ _ rightPrefix rightEvent rightSuffix matched correspondence) =
+      FiniteRegistrationMatchingMatchLeft
+        (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent
+          component)
+        rightPrefix rightEvent rightSuffix matched
+        (finiteRegistrationMatchingPlan correspondence)
+finiteRegistrationMatchingPlan {rightOrdinal} {rightIndex}
+  (MatchRightWithPendingLeft {child} {parent} {component}
+    _ _ _ _ leftPrefix leftEvent leftSuffix matched correspondence) =
+      FiniteRegistrationMatchingMatchRight
+        (registrationEventAt @{nameEq} rightOrdinal rightIndex child parent
+          component)
+        leftPrefix leftEvent leftSuffix matched
+        (finiteRegistrationMatchingPlan correspondence)
+
+0 matchingPlanLeftEvents :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {renaming : RegistrationGenerationBijection name} ->
+  {pendingLeft, pendingRight :
+    List (RegistrationEvent name key world error value)} ->
+  FiniteRegistrationMatchingPlan renaming pendingLeft pendingRight ->
+  List (RegistrationEvent name key world error value)
+matchingPlanLeftEvents FiniteRegistrationMatchingEnd = []
+matchingPlanLeftEvents (FiniteRegistrationMatchingQueueLeft event later) =
+  event :: matchingPlanLeftEvents later
+matchingPlanLeftEvents (FiniteRegistrationMatchingQueueRight event later) =
+  matchingPlanLeftEvents later
+matchingPlanLeftEvents
+  (FiniteRegistrationMatchingMatchLeft leftEvent _ _ _ _ later) =
+    leftEvent :: matchingPlanLeftEvents later
+matchingPlanLeftEvents
+  (FiniteRegistrationMatchingMatchRight _ _ _ _ _ later) =
+    matchingPlanLeftEvents later
+
+0 matchingPlanRightEvents :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {renaming : RegistrationGenerationBijection name} ->
+  {pendingLeft, pendingRight :
+    List (RegistrationEvent name key world error value)} ->
+  FiniteRegistrationMatchingPlan renaming pendingLeft pendingRight ->
+  List (RegistrationEvent name key world error value)
+matchingPlanRightEvents FiniteRegistrationMatchingEnd = []
+matchingPlanRightEvents (FiniteRegistrationMatchingQueueLeft event later) =
+  matchingPlanRightEvents later
+matchingPlanRightEvents (FiniteRegistrationMatchingQueueRight event later) =
+  event :: matchingPlanRightEvents later
+matchingPlanRightEvents
+  (FiniteRegistrationMatchingMatchLeft _ _ _ _ _ later) =
+    matchingPlanRightEvents later
+matchingPlanRightEvents
+  (FiniteRegistrationMatchingMatchRight rightEvent _ _ _ _ later) =
+    rightEvent :: matchingPlanRightEvents later
+
+
 ||| Checked synchronization capital for the shared middle trace of two scanner
 ||| correspondences.  The asynchronous interleavings may differ, but their
 ||| side projections make exactly the same surviving/deleted decision and
