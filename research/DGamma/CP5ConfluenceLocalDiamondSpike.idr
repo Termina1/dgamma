@@ -1341,6 +1341,189 @@ activationMapStableAfterForeignTransition nameEq keyEq activationAction
       (sym (transitionForeignLookup nameEq keyEq (actionOwner activationAction)
         foreignAction foreignTag foreignChecked distinct)) state
 
+0 actualForwardGeneratorMapSame :
+  (before, afterState : SystemState name key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (occurs : OccursIn
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked) trace) ->
+  (ownerSame : actionOwner action = actor) ->
+  (state : EffectState name key value world) ->
+  traceGeneratorMap
+    (ActualForwardGenerator before afterState nameEq keyEq action tag checked
+      occurs ownerSame) state =
+  partialEffectMapFor nameEq keyEq action tag before state
+actualForwardGeneratorMapSame before afterState nameEq keyEq action tag checked
+  occurs ownerSame state = Refl
+
+record ActivationPairEffectOutput
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (leftAction : Action name key value world error) (leftTag : RuleTag)
+  (earlyRightFinal, originalFinal : SystemState name key value world error) where
+  constructor MkActivationPairEffectOutput
+  0 activationPairEffectState : EffectState name key value world
+  0 movedLeftEffectMapRuns :
+    partialEffectMapFor nameEq keyEq leftAction leftTag earlyRightFinal
+      (projectEffectState @{nameEq} earlyRightFinal) =
+    Just activationPairEffectState
+  0 originalToMovedEffects : EffectStateRelated keyEq
+    (projectEffectState @{nameEq} originalFinal) activationPairEffectState
+
+0 activationPairEffectOutput :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, originalFinal, earlyRightFinal :
+    SystemState name key value world error} ->
+  (leftAction, rightAction : Action name key value world error) ->
+  (leftTag, rightTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first =
+    Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq} rightAction middle =
+    Just (rightTag, originalFinal)) ->
+  (earlyRightChecked : checkedApplyAction @{nameEq} @{keyEq} rightAction first =
+    Just (rightTag, earlyRightFinal)) ->
+  PaperActivationStep
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked) ->
+  PaperActivationStep
+    (Fired {before = middle} {afterState = originalFinal}
+      nameEq keyEq rightAction rightTag rightChecked) ->
+  Not (actionOwner leftAction = actionOwner rightAction) ->
+  TraceIndependent name key world error value keyEq
+    (MoreTransitions
+      (Fired {before = first} {afterState = middle}
+        nameEq keyEq leftAction leftTag leftChecked)
+      (MoreTransitions
+        (Fired {before = middle} {afterState = originalFinal}
+          nameEq keyEq rightAction rightTag rightChecked)
+        NoTransitions)) ->
+  ActivationPairEffectOutput nameEq keyEq leftAction leftTag earlyRightFinal
+    originalFinal
+activationPairEffectOutput nameEq keyEq {first} {middle} {originalFinal}
+  {earlyRightFinal} leftAction rightAction leftTag rightTag leftChecked
+  rightChecked earlyRightChecked leftActivation rightActivation distinct
+  independent =
+    let 0 pairTrace : Transitions first originalFinal
+        pairTrace = MoreTransitions
+          (Fired {before = first} {afterState = middle}
+            nameEq keyEq leftAction leftTag leftChecked)
+          (MoreTransitions
+            (Fired {before = middle} {afterState = originalFinal}
+              nameEq keyEq rightAction rightTag rightChecked)
+            NoTransitions)
+        0 leftOccurs : OccursIn
+          (Fired {before = first} {afterState = middle}
+            nameEq keyEq leftAction leftTag leftChecked) pairTrace
+        leftOccurs = OccursHere
+        0 rightOccurs : OccursIn
+          (Fired {before = middle} {afterState = originalFinal}
+            nameEq keyEq rightAction rightTag rightChecked) pairTrace
+        rightOccurs = OccursLater OccursHere
+        0 leftGenerator : TraceEffectGenerator name key world error value
+          (actionOwner leftAction) pairTrace
+        leftGenerator = ActualForwardGenerator first middle nameEq keyEq
+          leftAction leftTag leftChecked leftOccurs Refl
+        0 rightGenerator : TraceEffectGenerator name key world error value
+          (actionOwner rightAction) pairTrace
+        rightGenerator = ActualForwardGenerator middle originalFinal nameEq keyEq
+          rightAction rightTag rightChecked rightOccurs Refl
+        0 rightLookup :
+          lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+            {error = error} (actionOwner rightAction) (registry middle) =
+          lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+            {error = error} (actionOwner rightAction) (registry first)
+        rightLookup = transitionForeignLookup nameEq keyEq
+          (actionOwner rightAction) leftAction leftTag leftChecked
+          (\same => distinct (sym same))
+        0 leftMap : PartialEffectMap name key value world
+        leftMap = partialEffectMapFor nameEq keyEq leftAction leftTag first
+        0 rightMap : PartialEffectMap name key value world
+        rightMap = partialEffectMapFor nameEq keyEq rightAction rightTag middle
+        0 earlyRightMap : PartialEffectMap name key value world
+        earlyRightMap = partialEffectMapFor nameEq keyEq rightAction rightTag first
+        0 rightOriginSame : (state : EffectState name key value world) ->
+          rightMap state = earlyRightMap state
+        rightOriginSame = activationTransitionMapOriginCong nameEq keyEq
+          rightAction rightTag rightChecked rightActivation rightLookup
+        0 leftGeneratorMapSame : (state : EffectState name key value world) ->
+          traceGeneratorMap leftGenerator state = leftMap state
+        leftGeneratorMapSame = actualForwardGeneratorMapSame first middle nameEq
+          keyEq leftAction leftTag leftChecked leftOccurs Refl
+        0 rightGeneratorMapSame : (state : EffectState name key value world) ->
+          traceGeneratorMap rightGenerator state = rightMap state
+        rightGeneratorMapSame = actualForwardGeneratorMapSame middle originalFinal
+          nameEq keyEq rightAction rightTag rightChecked rightOccurs Refl
+        0 generatorCommute : PartialCommute (EffectStateEquivalence keyEq)
+          (traceGeneratorMap leftGenerator) (traceGeneratorMap rightGenerator)
+        generatorCommute = generatedMonoidsCommute independent
+          (actionOwner leftAction) (actionOwner rightAction) distinct
+          (TraceGenerator leftGenerator) (TraceGenerator rightGenerator)
+        0 commute : PartialCommute (EffectStateEquivalence keyEq) leftMap rightMap
+        commute = replayPartialCommuteTransport
+          (traceGeneratorMap leftGenerator) leftMap
+          (traceGeneratorMap rightGenerator) rightMap
+          leftGeneratorMapSame rightGeneratorMapSame generatorCommute
+        0 leftFrame : PartialRelated (EffectState name key value world)
+          (EffectStateRelated keyEq)
+          (leftMap (projectEffectState @{nameEq} first))
+          (Just (projectEffectState @{nameEq} middle))
+        leftFrame = checkedEffectFrameRelation nameEq keyEq leftAction leftTag
+          first middle leftChecked
+        0 rightFrame : PartialRelated (EffectState name key value world)
+          (EffectStateRelated keyEq)
+          (rightMap (projectEffectState @{nameEq} middle))
+          (Just (projectEffectState @{nameEq} originalFinal))
+        rightFrame = checkedEffectFrameRelation nameEq keyEq rightAction rightTag
+          middle originalFinal rightChecked
+        0 rawEarlyFrame : PartialRelated (EffectState name key value world)
+          (EffectStateRelated keyEq)
+          (earlyRightMap (projectEffectState @{nameEq} first))
+          (Just (projectEffectState @{nameEq} earlyRightFinal))
+        rawEarlyFrame = checkedEffectFrameRelation nameEq keyEq rightAction rightTag
+          first earlyRightFinal earlyRightChecked
+        0 earlyFrame : PartialRelated (EffectState name key value world)
+          (EffectStateRelated keyEq)
+          (rightMap (projectEffectState @{nameEq} first))
+          (Just (projectEffectState @{nameEq} earlyRightFinal))
+        earlyFrame = localPartialRelatedRewrite
+          {leftBefore = earlyRightMap (projectEffectState @{nameEq} first)}
+          {leftAfter = rightMap (projectEffectState @{nameEq} first)}
+          {rightBefore = Just (projectEffectState @{nameEq} earlyRightFinal)}
+          {rightAfter = Just (projectEffectState @{nameEq} earlyRightFinal)}
+          (sym (rightOriginSame (projectEffectState @{nameEq} first))) Refl
+          rawEarlyFrame
+        0 commuted : CommutedEffectOutput keyEq leftMap rightMap
+          (projectEffectState @{nameEq} first)
+          (projectEffectState @{nameEq} middle)
+          (projectEffectState @{nameEq} originalFinal)
+          (projectEffectState @{nameEq} earlyRightFinal)
+        commuted = commuteEffectFrames keyEq leftMap rightMap
+          (partialEffectMapForRespects nameEq keyEq leftAction leftTag first)
+          (partialEffectMapForRespects nameEq keyEq rightAction rightTag middle)
+          commute (projectEffectState @{nameEq} first)
+          (projectEffectState @{nameEq} middle)
+          (projectEffectState @{nameEq} originalFinal)
+          (projectEffectState @{nameEq} earlyRightFinal)
+          leftFrame rightFrame earlyFrame
+        0 movedMapSame : (state : EffectState name key value world) ->
+          leftMap state =
+            partialEffectMapFor nameEq keyEq leftAction leftTag earlyRightFinal
+              state
+        movedMapSame = activationMapStableAfterForeignTransition nameEq keyEq
+          leftAction rightAction leftTag rightTag leftChecked earlyRightChecked
+          leftActivation distinct
+        0 movedRuns :
+          partialEffectMapFor nameEq keyEq leftAction leftTag earlyRightFinal
+            (projectEffectState @{nameEq} earlyRightFinal) =
+          Just (commutedOutput commuted)
+        movedRuns = trans
+          (sym (movedMapSame (projectEffectState @{nameEq} earlyRightFinal)))
+          (commutedLeftRuns commuted)
+    in MkActivationPairEffectOutput (commutedOutput commuted) movedRuns
+      (originalFinalToCommuted commuted)
+
 ||| Candidate for paper Lemma 71(1).
 public export
 0 activationActivationDiamondSpike :
