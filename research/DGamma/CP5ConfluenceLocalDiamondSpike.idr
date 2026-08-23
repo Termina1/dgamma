@@ -4268,6 +4268,20 @@ record ActivationReplacementComparison
   constructor MkActivationReplacementComparison
   sourceReplacementFiber : Fiber name key value world error
   movedReplacementFiber : Fiber name key value world error
+  sourcePreviousFiber : Fiber name key value world error
+  movedPreviousFiber : Fiber name key value world error
+  0 sourcePreviousFound : lookupFiber @{nameEq} actor (registry sourceBefore) =
+    Just sourcePreviousFiber
+  0 movedPreviousFound : lookupFiber @{nameEq} actor (registry movedBefore) =
+    Just movedPreviousFiber
+  0 sourceReplacementStaticComponent :
+    fiberComponent sourceReplacementFiber = fiberComponent sourcePreviousFiber
+  0 movedReplacementStaticComponent :
+    fiberComponent movedReplacementFiber = fiberComponent movedPreviousFiber
+  0 sourceReplacementStaticParent :
+    fiberParent sourceReplacementFiber = fiberParent sourcePreviousFiber
+  0 movedReplacementStaticParent :
+    fiberParent movedReplacementFiber = fiberParent movedPreviousFiber
   0 replacementFibersRelated : FiberControlRelated sourceReplacementFiber
     movedReplacementFiber
   0 sourceReplacementRegistry : registry sourceAfter =
@@ -4342,6 +4356,7 @@ beginReplacementComparison nameEq keyEq actor sourceAmbient movedAmbient
     in case sourcePairSame of
       Refl => case movedPairSame of
         Refl => MkActivationReplacementComparison nextFiber nextFiber
+          oldFiber oldFiber sourceFound movedFound Refl Refl Refl Refl
           (fiberControlReflexive nextFiber) Refl Refl
           (replaceBindingRuntimeBindings nameEq actor nextFiber sourceRegistry)
           (replaceBindingRuntimeBindings nameEq actor nextFiber movedRegistry)
@@ -4412,6 +4427,7 @@ emptyFinishReplacementComparison nameEq keyEq actor sourceAmbient movedAmbient
     in case sourcePairSame of
       Refl => case movedPairSame of
         Refl => MkActivationReplacementComparison nextFiber nextFiber
+          oldFiber oldFiber sourceFound movedFound Refl Refl Refl Refl
           (fiberControlReflexive nextFiber) Refl Refl
           (replaceBindingRuntimeBindings nameEq actor nextFiber sourceRegistry)
           (replaceBindingRuntimeBindings nameEq actor nextFiber movedRegistry)
@@ -4582,6 +4598,7 @@ successfulFinishReplacementComparison nameEq keyEq actor sourceAmbient
     in case sourcePairSame of
       Refl => case movedPairSame of
         Refl => MkActivationReplacementComparison sourceNext movedNext
+          oldFiber oldFiber sourceFound movedFound Refl Refl Refl Refl
           nextRelated Refl Refl
           (replaceBindingRuntimeBindings nameEq actor sourceNext sourceRegistry)
           (replaceBindingRuntimeBindings nameEq actor movedNext movedRegistry)
@@ -4710,6 +4727,7 @@ successfulIterReplacementComparison nameEq keyEq actor sourceAmbient movedAmbien
     in case sourcePairSame of
       Refl => case movedPairSame of
         Refl => MkActivationReplacementComparison sourceNext movedNext
+          oldFiber oldFiber sourceFound movedFound Refl Refl Refl Refl
           nextRelated Refl Refl
           (replaceBindingRuntimeBindings nameEq actor sourceNext sourceRegistry)
           (replaceBindingRuntimeBindings nameEq actor movedNext movedRegistry)
