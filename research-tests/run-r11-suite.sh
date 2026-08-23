@@ -4,16 +4,12 @@ set -euo pipefail
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 cd "$ROOT"
 IDRIS2=${IDRIS2:-idris2}
-
-# Populate production TTCs in a fresh archive, then check every research unit
-# with one Idris process at a time. Research tests remain outside dgamma.ipkg.
-"$IDRIS2" --build dgamma.ipkg
-TTC_ROOT=$(find build/ttc -mindepth 1 -maxdepth 1 -type d | head -n 1)
-if [ -z "$TTC_ROOT" ]; then
-  echo "No build/ttc version directory found" >&2
-  exit 1
-fi
-export IDRIS2_PATH="$ROOT/$TTC_ROOT${IDRIS2_PATH:+:$IDRIS2_PATH}"
+FRESH=0
+case "${1:-}" in
+  "") ;;
+  --fresh) FRESH=1 ;;
+  *) echo "usage: $0 [--fresh]" >&2; exit 2 ;;
+esac
 
 SPIKES=(
   CP5ConfluenceLocalDiamondSpike
@@ -22,10 +18,6 @@ SPIKES=(
   CP5ConfluenceRenamingCompositionSpike
   CP5ConfluenceCrossTraceSpike
 )
-for module in "${SPIKES[@]}"; do
-  echo "SPIKE $module"
-  "$IDRIS2" --source-dir research --check "research/DGamma/$module.idr"
-done
 
 POSITIVE=(
   R10ProvenanceProjectionPositive
@@ -56,14 +48,9 @@ POSITIVE=(
   R9WholeBlockTwoByOnePositive
   R9WholeBlockTwoByTwoPositive
 )
-for module in "${POSITIVE[@]}"; do
-  echo "POSITIVE $module"
-  "$IDRIS2" --source-dir research-tests --check \
-    "research-tests/DGamma/$module.idr"
-done
 
 # Each expected failure has its own mandatory diagnostic fragment and source
-# declaration. A generic dependent error is no longer enough to pass the suite.
+# declaration. A generic dependent error is not enough to pass the suite.
 NEGATIVE_SPECS=(
   "R11AdjacentPrefixCollapsedCertificateNegative|targetOrdinal and sourceOrdinal|collapsedPrefixCannotInhabitOrdinalCertificate"
   "R11DeletionFillerMapCertificateNegative|generationSubsequenceSourceOrdinal|fillerMapCannotConstructDeletionCertificate"
@@ -92,10 +79,104 @@ NEGATIVE_SPECS=(
   "R8WrongTraceBridgeNegative|operationalTargetFinal and otherFinal|wrongTraceBridge"
   "R8ZeroDerivationOperationalStepNegative|FiniteAdjacentSwapDerivation|zeroDerivationOperationalStepStillAccepted"
 )
+
+TEMP_OUTPUTS=()
+cleanup_outputs() {
+  if [ "${#TEMP_OUTPUTS[@]}" -gt 0 ]; then
+    rm -f "${TEMP_OUTPUTS[@]}"
+  fi
+}
+trap cleanup_outputs EXIT
+
+# Idris 2 v0.8.0 can emit declaration errors while returning zero. Every unit
+# expected to succeed is therefore accepted only when its exit status is zero,
+# its captured diagnostics contain no Error:, and (in fresh mode) it emits its
+# own successful build marker.
+SUCCESSFUL_BUILD_MARKERS=0
+run_successful_unit() {
+  local category=$1
+  local module=$2
+  shift 2
+  local output
+  output=$(mktemp)
+  TEMP_OUTPUTS+=("$output")
+  set +e
+  "$@" >"$output" 2>&1
+  local status=$?
+  set -e
+  if [ "$status" -ne 0 ] || grep -Fq 'Error:' "$output"; then
+    cat "$output" >&2
+    echo "$category $module failed: exit=$status or Error: diagnostic present" >&2
+    exit 1
+  fi
+  if [ "$FRESH" -eq 1 ]; then
+    if ! grep -Fq "Building DGamma.$module" "$output"; then
+      cat "$output" >&2
+      echo "$category $module did not emit its required fresh build marker" >&2
+      exit 1
+    fi
+    SUCCESSFUL_BUILD_MARKERS=$((SUCCESSFUL_BUILD_MARKERS + 1))
+  fi
+  cat "$output"
+}
+
+# Package population is hardened against the same status-zero Error: behavior,
+# but does not contribute to the 5+27 research-unit marker count.
+run_package_build() {
+  local output
+  output=$(mktemp)
+  TEMP_OUTPUTS+=("$output")
+  set +e
+  "$IDRIS2" --build dgamma.ipkg >"$output" 2>&1
+  local status=$?
+  set -e
+  if [ "$status" -ne 0 ] || grep -Fq 'Error:' "$output"; then
+    cat "$output" >&2
+    echo "Production package build failed: exit=$status or Error: diagnostic present" >&2
+    exit 1
+  fi
+  cat "$output"
+}
+
+run_package_build
+TTC_ROOT=$(find build/ttc -mindepth 1 -maxdepth 1 -type d -print -quit)
+if [ -z "$TTC_ROOT" ]; then
+  echo "No build/ttc version directory found" >&2
+  exit 1
+fi
+export IDRIS2_PATH="$ROOT/$TTC_ROOT${IDRIS2_PATH:+:$IDRIS2_PATH}"
+
+if [ "$FRESH" -eq 1 ]; then
+  # Idris writes these direct --check interfaces into the package TTC root, not
+  # source-relative research directories. Delete exactly the 5+53 suite units.
+  all_modules=("${SPIKES[@]}" "${POSITIVE[@]}")
+  for specification in "${NEGATIVE_SPECS[@]}"; do
+    IFS='|' read -r module _ _ <<<"$specification"
+    all_modules+=("$module")
+  done
+  for module in "${all_modules[@]}"; do
+    rm -f "$TTC_ROOT/DGamma/$module.ttc" "$TTC_ROOT/DGamma/$module.ttm"
+  done
+fi
+
+for module in "${SPIKES[@]}"; do
+  echo "SPIKE $module"
+  run_successful_unit SPIKE "$module" \
+    "$IDRIS2" --source-dir research --check "research/DGamma/$module.idr"
+done
+
+for module in "${POSITIVE[@]}"; do
+  echo "POSITIVE $module"
+  run_successful_unit POSITIVE "$module" \
+    "$IDRIS2" --source-dir research-tests --check \
+    "research-tests/DGamma/$module.idr"
+done
+
 for specification in "${NEGATIVE_SPECS[@]}"; do
   IFS='|' read -r module expected symbol <<<"$specification"
   echo "NEGATIVE $module"
   output=$(mktemp)
+  TEMP_OUTPUTS+=("$output")
   set +e
   "$IDRIS2" --source-dir research-tests --check \
     "research-tests/DGamma/$module.idr" >"$output" 2>&1
@@ -104,16 +185,21 @@ for specification in "${NEGATIVE_SPECS[@]}"; do
   if [ "$status" -eq 0 ]; then
     cat "$output" >&2
     echo "Expected rejection unexpectedly elaborated: $module" >&2
-    rm -f "$output"
     exit 1
   fi
   if ! grep -Fq "$expected" "$output" || ! grep -Fq "$symbol" "$output"; then
     cat "$output" >&2
     echo "Wrong rejection boundary for $module; expected '$expected' at '$symbol'" >&2
-    rm -f "$output"
     exit 1
   fi
-  rm -f "$output"
 done
+
+if [ "$FRESH" -eq 1 ]; then
+  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 32 ]; then
+    echo "Expected 32 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
+    exit 1
+  fi
+  echo "R11_FRESH_SUCCESSFUL_BUILD_MARKERS=$SUCCESSFUL_BUILD_MARKERS"
+fi
 
 echo "R11_REPRODUCIBLE_SUITE=passed"
