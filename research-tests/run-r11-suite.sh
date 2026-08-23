@@ -20,6 +20,7 @@ SPIKES=(
 )
 
 POSITIVE=(
+  R13O3AlignedProducerPositive
   R10ProvenanceProjectionPositive
   R10ActorBlockDecompositionFixturesPositive
   R9WholeBlockSingletonPositive
@@ -52,6 +53,7 @@ POSITIVE=(
 # Each expected failure has its own mandatory diagnostic fragment and source
 # declaration. A generic dependent error is not enough to pass the suite.
 NEGATIVE_SPECS=(
+  "R13O3IndependentDictionaryNegative|alternateKeyEq and keyEq|independentDictionariesCannotAlign"
   "R11AdjacentPrefixCollapsedCertificateNegative|targetOrdinal and sourceOrdinal|collapsedPrefixCannotInhabitOrdinalCertificate"
   "R11DeletionFillerMapCertificateNegative|generationSubsequenceSourceOrdinal|fillerMapCannotConstructDeletionCertificate"
   "R11DirectDeletionStepCloneNegative|occurrences and alternate|cloneDeletionStepWithAlternateMap"
