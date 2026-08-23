@@ -615,6 +615,208 @@ public export
 0 checkedDeletionSubroutine : deletionTheorem name key value world error
 checkedDeletionSubroutine = deletionTheoremProof
 
+||| Private decision procedure used only to make reflexivity constructive.
+||| Root O-Retire/O-Remove classification is state-sensitive, so action shape
+||| alone is insufficient.
+0 localLifecycleCannotBeRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  isLifecycleAction (transitionAction transition) = True ->
+  RootOrchestrationStep nameEq transition -> Void
+localLifecycleCannotBeRoot nameEq transition lifecycle (RootInsertStep action) =
+  case trans (sym (cong isLifecycleAction action)) lifecycle of Refl impossible
+localLifecycleCannotBeRoot nameEq transition lifecycle
+  (RootRetireStep fiber found parent action) =
+    case trans (sym (cong isLifecycleAction action)) lifecycle of Refl impossible
+localLifecycleCannotBeRoot nameEq transition lifecycle
+  (RootRemoveStep fiber found parent action) =
+    case trans (sym (cong isLifecycleAction action)) lifecycle of Refl impossible
+
+0 localChildInsertCannotBeRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {child, parent : name} ->
+  {component : Component key value world error} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  transitionAction transition = OInsert child (ChildOf parent) component ->
+  RootOrchestrationStep nameEq transition -> Void
+localChildInsertCannotBeRoot nameEq transition childAction (RootInsertStep rootAction) =
+  case trans (sym childAction) rootAction of Refl impossible
+localChildInsertCannotBeRoot nameEq transition childAction
+  (RootRetireStep fiber found parent rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+localChildInsertCannotBeRoot nameEq transition childAction
+  (RootRemoveStep fiber found parent rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+
+0 localMissingRetireCannotBeRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {child : name} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  transitionAction transition = ORetire child ->
+  lookupFiber @{nameEq} child (registry before) =
+    the (Maybe (Fiber name key value world error)) Nothing ->
+  RootOrchestrationStep nameEq transition -> Void
+localMissingRetireCannotBeRoot nameEq transition childAction missing
+  (RootInsertStep rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+localMissingRetireCannotBeRoot nameEq transition childAction missing
+  (RootRetireStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of
+      Refl => case trans (sym missing) rootFound of Refl impossible
+localMissingRetireCannotBeRoot nameEq transition childAction missing
+  (RootRemoveStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+
+0 localChildRetireCannotBeRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {child, parent : name} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  transitionAction transition = ORetire child ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} child (registry before) = Just fiber ->
+  fiberParent fiber = ChildOf parent ->
+  RootOrchestrationStep nameEq transition -> Void
+localChildRetireCannotBeRoot nameEq transition childAction fiber childFound
+  childParent (RootInsertStep rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+localChildRetireCannotBeRoot nameEq transition childAction fiber childFound
+  childParent (RootRetireStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of
+      Refl =>
+        let sameFiber = justInjective (trans (sym childFound) rootFound)
+            roleConflict : (ChildOf parent = Root)
+            roleConflict = trans (sym childParent)
+              (trans (cong fiberParent sameFiber) rootParent)
+        in case roleConflict of Refl impossible
+localChildRetireCannotBeRoot nameEq transition childAction fiber childFound
+  childParent (RootRemoveStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+
+0 localMissingRemoveCannotBeRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {child : name} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  transitionAction transition = ORemove child ->
+  lookupFiber @{nameEq} child (registry before) =
+    the (Maybe (Fiber name key value world error)) Nothing ->
+  RootOrchestrationStep nameEq transition -> Void
+localMissingRemoveCannotBeRoot nameEq transition childAction missing
+  (RootInsertStep rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+localMissingRemoveCannotBeRoot nameEq transition childAction missing
+  (RootRetireStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+localMissingRemoveCannotBeRoot nameEq transition childAction missing
+  (RootRemoveStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of
+      Refl => case trans (sym missing) rootFound of Refl impossible
+
+0 localChildRemoveCannotBeRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {child, parent : name} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  transitionAction transition = ORemove child ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} child (registry before) = Just fiber ->
+  fiberParent fiber = ChildOf parent ->
+  RootOrchestrationStep nameEq transition -> Void
+localChildRemoveCannotBeRoot nameEq transition childAction fiber childFound
+  childParent (RootInsertStep rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+localChildRemoveCannotBeRoot nameEq transition childAction fiber childFound
+  childParent (RootRetireStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+localChildRemoveCannotBeRoot nameEq transition childAction fiber childFound
+  childParent (RootRemoveStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of
+      Refl =>
+        let sameFiber = justInjective (trans (sym childFound) rootFound)
+            roleConflict : (ChildOf parent = Root)
+            roleConflict = trans (sym childParent)
+              (trans (cong fiberParent sameFiber) rootParent)
+        in case roleConflict of Refl impossible
+
+0 decideRetireRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {child : name} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  transitionAction transition = ORetire child ->
+  Dec (RootOrchestrationStep nameEq transition)
+decideRetireRoot {before = MkSystemState ambient fibers} nameEq transition action
+  with (lookupFiber @{nameEq} child fibers) proof found
+  decideRetireRoot nameEq transition action | Nothing =
+    No (localMissingRetireCannotBeRoot nameEq transition action found)
+  decideRetireRoot nameEq transition action | Just fiber
+    with (fiberParent fiber) proof parent
+    decideRetireRoot nameEq transition action | Just fiber | Root =
+      Yes (RootRetireStep fiber found parent action)
+    decideRetireRoot nameEq transition action | Just fiber | ChildOf owner =
+      No (localChildRetireCannotBeRoot nameEq transition action fiber found
+        parent)
+
+0 decideRemoveRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {child : name} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  transitionAction transition = ORemove child ->
+  Dec (RootOrchestrationStep nameEq transition)
+decideRemoveRoot {before = MkSystemState ambient fibers} nameEq transition action
+  with (lookupFiber @{nameEq} child fibers) proof found
+  decideRemoveRoot nameEq transition action | Nothing =
+    No (localMissingRemoveCannotBeRoot nameEq transition action found)
+  decideRemoveRoot nameEq transition action | Just fiber
+    with (fiberParent fiber) proof parent
+    decideRemoveRoot nameEq transition action | Just fiber | Root =
+      Yes (RootRemoveStep fiber found parent action)
+    decideRemoveRoot nameEq transition action | Just fiber | ChildOf owner =
+      No (localChildRemoveCannotBeRoot nameEq transition action fiber found
+        parent)
+
+0 rootOrchestrationDecision :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  Dec (RootOrchestrationStep nameEq transition)
+rootOrchestrationDecision nameEq transition@(Fired _ _
+  (OInsert child Root component) tag fires) =
+    Yes (RootInsertStep Refl)
+rootOrchestrationDecision nameEq transition@(Fired _ _
+  (OInsert child (ChildOf parent) component) tag fires) =
+    No (localChildInsertCannotBeRoot nameEq transition Refl)
+rootOrchestrationDecision nameEq
+  transition@(Fired _ _ (ORetire child) tag fires) =
+    decideRetireRoot nameEq transition Refl
+rootOrchestrationDecision nameEq
+  transition@(Fired _ _ (ORemove child) tag fires) =
+    decideRemoveRoot nameEq transition Refl
+rootOrchestrationDecision nameEq transition@(Fired _ _ (LBegin actor) tag fires) =
+  No (localLifecycleCannotBeRoot nameEq transition Refl)
+rootOrchestrationDecision nameEq transition@(Fired _ _ (LAdvance actor) tag fires) =
+  No (localLifecycleCannotBeRoot nameEq transition Refl)
+rootOrchestrationDecision nameEq transition@(Fired _ _ (LDivert actor) tag fires) =
+  No (localLifecycleCannotBeRoot nameEq transition Refl)
+rootOrchestrationDecision nameEq transition@(Fired _ _ (LLeave actor) tag fires) =
+  No (localLifecycleCannotBeRoot nameEq transition Refl)
+rootOrchestrationDecision nameEq transition@(Fired _ _ (LUnload actor) tag fires) =
+  No (localLifecycleCannotBeRoot nameEq transition Refl)
+
 ||| Same-external-input algebra is a first-class invariant through every
 ||| deletion and swap rather than an implicit final assembly assumption.
 public export
@@ -625,8 +827,21 @@ public export
   (trace : Transitions initial finalState) ->
   SameExternalOrchestration {name = name} {key = key} {world = world}
     {error = error} {value = value} nameEq trace trace
-sameExternalOrchestrationReflexiveSpike =
-  ?sameExternalOrchestrationReflexiveSpike_rhs
+sameExternalOrchestrationReflexiveSpike nameEq NoTransitions =
+  SameExternalOrchestrationEnd
+sameExternalOrchestrationReflexiveSpike nameEq
+  (MoreTransitions transition rest) with
+    (rootOrchestrationDecision nameEq transition)
+  sameExternalOrchestrationReflexiveSpike nameEq
+    (MoreTransitions transition rest) | Yes external =
+      MatchExternalInput (transitionAction transition) transition rest external
+        transition rest external Refl Refl
+        (sameExternalOrchestrationReflexiveSpike nameEq rest)
+  sameExternalOrchestrationReflexiveSpike nameEq
+    (MoreTransitions transition rest) | No internal =
+      SkipLeftInternal transition rest internal
+        (SkipRightInternal transition rest internal
+          (sameExternalOrchestrationReflexiveSpike nameEq rest))
 
 public export
 0 sameExternalOrchestrationTransitiveSpike :
