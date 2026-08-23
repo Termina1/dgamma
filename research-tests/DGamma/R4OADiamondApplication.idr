@@ -16,6 +16,10 @@ import Decidable.Equality
   (left : Transition first middle) ->
   (right : Transition middle originalFinal) ->
   (earlyRight : Transition first earlyRightFinal) ->
+  (0 sourceAligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  (0 earlyRightAligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions earlyRight NoTransitions)) ->
   transitionAction earlyRight = transitionAction right ->
   transitionTag earlyRight = transitionTag right ->
   PaperOrchestrationStep left -> PaperActivationStep right ->
@@ -32,8 +36,9 @@ import Decidable.Equality
   TraceIndependent name key world error value keyEq
     (MoreTransitions left (MoreTransitions right NoTransitions)) ->
   LocalRelationalDiamond name key world error value nameEq keyEq left right
-applyReverseMixedOrientation nameEq keyEq left right earlyRight actionEq tagEq
-  leftO rightA distinct childSafe parentSafe wellFormed independent =
+applyReverseMixedOrientation nameEq keyEq left right earlyRight sourceAligned
+  earlyRightAligned actionEq tagEq leftO rightA distinct childSafe parentSafe
+  wellFormed independent =
     DGamma.CP5ConfluenceLocalDiamondSpike.orchestrationActivationDiamondSpike
-      nameEq keyEq left right earlyRight actionEq tagEq leftO rightA distinct
-      childSafe parentSafe wellFormed independent
+      nameEq keyEq left right earlyRight sourceAligned earlyRightAligned actionEq
+      tagEq leftO rightA distinct childSafe parentSafe wellFormed independent

@@ -20,6 +20,7 @@ SPIKES=(
 )
 
 POSITIVE=(
+  R14O4AlignedProducerPositive
   R13O3AlignedProducerPositive
   R10ProvenanceProjectionPositive
   R10ActorBlockDecompositionFixturesPositive
@@ -53,6 +54,7 @@ POSITIVE=(
 # Each expected failure has its own mandatory diagnostic fragment and source
 # declaration. A generic dependent error is not enough to pass the suite.
 NEGATIVE_SPECS=(
+  "R14O4IndependentDictionaryNegative|alternateKeyEq and keyEq|independentMixedPairCannotAlign"
   "R13O3IndependentDictionaryNegative|alternateKeyEq and keyEq|independentDictionariesCannotAlign"
   "R11AdjacentPrefixCollapsedCertificateNegative|targetOrdinal and sourceOrdinal|collapsedPrefixCannotInhabitOrdinalCertificate"
   "R11DeletionFillerMapCertificateNegative|generationSubsequenceSourceOrdinal|fillerMapCannotConstructDeletionCertificate"
@@ -123,7 +125,7 @@ run_successful_unit() {
 }
 
 # Package population is hardened against the same status-zero Error: behavior,
-# but does not contribute to the 5+28 research-unit marker count.
+# but does not contribute to the 5+29 research-unit marker count.
 run_package_build() {
   local output
   output=$(mktemp)
@@ -150,7 +152,7 @@ export IDRIS2_PATH="$ROOT/$TTC_ROOT${IDRIS2_PATH:+:$IDRIS2_PATH}"
 
 if [ "$FRESH" -eq 1 ]; then
   # Idris writes these direct --check interfaces into the package TTC root, not
-  # source-relative research directories. Delete exactly the 5+55 suite units.
+  # source-relative research directories. Delete exactly the 5+57 suite units.
   all_modules=("${SPIKES[@]}" "${POSITIVE[@]}")
   for specification in "${NEGATIVE_SPECS[@]}"; do
     IFS='|' read -r module _ _ <<<"$specification"
@@ -197,8 +199,8 @@ for specification in "${NEGATIVE_SPECS[@]}"; do
 done
 
 if [ "$FRESH" -eq 1 ]; then
-  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 33 ]; then
-    echo "Expected 33 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
+  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 34 ]; then
+    echo "Expected 34 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
     exit 1
   fi
   echo "R11_FRESH_SUCCESSFUL_BUILD_MARKERS=$SUCCESSFUL_BUILD_MARKERS"
