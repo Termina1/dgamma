@@ -3185,6 +3185,52 @@ advanceRawAfterForeignActivation nameEq keyEq leftActor leftTag foreignAction
           earlyWellFormed sourceTarget)
       paperTag movedEffect mapRuns
 
+0 activationRawAfterForeignState :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, movedBefore : SystemState name key value world error} ->
+  (leftAction, foreignAction : Action name key value world error) ->
+  (leftTag, foreignTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first =
+    Just (leftTag, middle)) ->
+  (foreignChecked : checkedApplyAction @{nameEq} @{keyEq} foreignAction first =
+    Just (foreignTag, movedBefore)) ->
+  (leftActivation : PaperActivationStep
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked)) ->
+  Not (actionOwner leftAction = actionOwner foreignAction) ->
+  ((fiber : Fiber name key value world error) ->
+    (view : View name (dependencies
+      (componentDependencies (fiberComponent fiber)))) ->
+    targetFiber @{nameEq} @{keyEq} fiber (registry first) = Just view ->
+    targetFiber @{nameEq} @{keyEq} fiber (registry movedBefore) = Just view) ->
+  (movedEffect : EffectState name key value world) ->
+  partialEffectMapFor nameEq keyEq leftAction leftTag movedBefore
+    (projectEffectState @{nameEq} movedBefore) = Just movedEffect ->
+  RawActivationMove nameEq keyEq leftAction leftTag movedBefore
+activationRawAfterForeignState nameEq keyEq leftAction foreignAction leftTag
+  foreignTag leftChecked foreignChecked
+  (PaperBeginStep actionSame tagSame) distinct targets movedEffect mapRuns =
+    case actionSame of
+      Refl => case tagSame of
+        Refl => beginRawAfterForeignState nameEq keyEq _ foreignAction foreignTag
+          leftChecked foreignChecked distinct targets
+activationRawAfterForeignState nameEq keyEq leftAction foreignAction leftTag
+  foreignTag leftChecked foreignChecked
+  (PaperIterStep actionSame tagSame) distinct targets movedEffect mapRuns =
+    case actionSame of
+      Refl => case tagSame of
+        Refl => advanceRawAfterForeignState nameEq keyEq _ LIterTag
+          foreignAction foreignTag leftChecked foreignChecked distinct targets
+          (Left Refl) movedEffect mapRuns
+activationRawAfterForeignState nameEq keyEq leftAction foreignAction leftTag
+  foreignTag leftChecked foreignChecked
+  (PaperFinishStep actionSame tagSame) distinct targets movedEffect mapRuns =
+    case actionSame of
+      Refl => case tagSame of
+        Refl => advanceRawAfterForeignState nameEq keyEq _ LFinishTag
+          foreignAction foreignTag leftChecked foreignChecked distinct targets
+          (Right Refl) movedEffect mapRuns
+
 0 activationRawAfterForeignActivation :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   {first, middle, earlyRightFinal : SystemState name key value world error} ->
