@@ -142,6 +142,133 @@ survivingDeletedRegistrationImpossible surviving deleted =
     (survivingParentEpisodeOpen surviving)
     (deletedParentEpisodeCloses deleted)
 
+||| One side of the accepted asynchronous registration scanner.  This private
+||| projection forgets only the interleaving and pending-list bookkeeping; it
+||| retains every exact index transition and the surviving/deleted decision at
+||| each generated birth.  Scanner composition will use the two projections of
+||| the shared middle trace as its synchronization spine.
+data RegistrationSideScan :
+  (nameEq : DecEq name) ->
+  (ordinal : Nat) -> (index : RegistrationIndexState name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  (finalIndex : RegistrationIndexState name) -> Type where
+  RegistrationSideScanEnd :
+    RegistrationSideScan nameEq ordinal index NoTransitions index
+  RegistrationSideScanNonRegistration :
+    (action : Action name key value world error) ->
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    transitionAction transition = action ->
+    isGeneratedRegistrationAction action = False ->
+    RegistrationSideScan nameEq (S ordinal)
+      (advanceRegistrationIndex @{nameEq} ordinal action index)
+      rest finalIndex ->
+    RegistrationSideScan nameEq ordinal index
+      (MoreTransitions transition rest) finalIndex
+  RegistrationSideScanDeleted :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    transitionAction transition = OInsert child (ChildOf parent) component ->
+    DeletedClosingRegistration
+      (registrationEventAt @{nameEq} ordinal index child parent component)
+      rest ->
+    RegistrationSideScan nameEq (S ordinal)
+      (advanceDeletedRegistrationIndex @{nameEq} ordinal child parent component
+        index)
+      rest finalIndex ->
+    RegistrationSideScan nameEq ordinal index
+      (MoreTransitions transition rest) finalIndex
+  RegistrationSideScanSurviving :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    transitionAction transition = OInsert child (ChildOf parent) component ->
+    SurvivingRegistration
+      (registrationEventAt @{nameEq} ordinal index child parent component)
+      rest ->
+    RegistrationSideScan nameEq (S ordinal)
+      (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component
+        index)
+      rest finalIndex ->
+    RegistrationSideScan nameEq ordinal index
+      (MoreTransitions transition rest) finalIndex
+
+0 leftRegistrationSideScan :
+  RegistrationTraceCorrespondence nameEq renaming
+    leftOrdinal leftIndex left leftResultIndex
+    rightOrdinal rightIndex right rightResultIndex pendingLeft pendingRight ->
+  RegistrationSideScan nameEq leftOrdinal leftIndex left leftResultIndex
+leftRegistrationSideScan RegistrationCorrespondenceEnd = RegistrationSideScanEnd
+leftRegistrationSideScan
+  (SkipLeftNonRegistration action transition rest actionExact notRegistration
+    correspondence) =
+      RegistrationSideScanNonRegistration action transition rest actionExact
+        notRegistration (leftRegistrationSideScan correspondence)
+leftRegistrationSideScan (SkipRightNonRegistration _ _ _ _ _ correspondence) =
+  leftRegistrationSideScan correspondence
+leftRegistrationSideScan
+  (DiscardLeftDeletedRegistration transition rest actionExact deleted
+    correspondence) =
+      RegistrationSideScanDeleted transition rest actionExact deleted
+        (leftRegistrationSideScan correspondence)
+leftRegistrationSideScan
+  (DiscardRightDeletedRegistration _ _ _ _ correspondence) =
+    leftRegistrationSideScan correspondence
+leftRegistrationSideScan
+  (QueueLeftGeneratedRegistration transition rest actionExact surviving
+    correspondence) =
+      RegistrationSideScanSurviving transition rest actionExact surviving
+        (leftRegistrationSideScan correspondence)
+leftRegistrationSideScan
+  (QueueRightGeneratedRegistration _ _ _ _ correspondence) =
+    leftRegistrationSideScan correspondence
+leftRegistrationSideScan
+  (MatchLeftWithPendingRight transition rest actionExact surviving _ _ _ _
+    correspondence) =
+      RegistrationSideScanSurviving transition rest actionExact surviving
+        (leftRegistrationSideScan correspondence)
+leftRegistrationSideScan
+  (MatchRightWithPendingLeft _ _ _ _ _ _ _ _ correspondence) =
+    leftRegistrationSideScan correspondence
+
+0 rightRegistrationSideScan :
+  RegistrationTraceCorrespondence nameEq renaming
+    leftOrdinal leftIndex left leftResultIndex
+    rightOrdinal rightIndex right rightResultIndex pendingLeft pendingRight ->
+  RegistrationSideScan nameEq rightOrdinal rightIndex right rightResultIndex
+rightRegistrationSideScan RegistrationCorrespondenceEnd = RegistrationSideScanEnd
+rightRegistrationSideScan (SkipLeftNonRegistration _ _ _ _ _ correspondence) =
+  rightRegistrationSideScan correspondence
+rightRegistrationSideScan
+  (SkipRightNonRegistration action transition rest actionExact notRegistration
+    correspondence) =
+      RegistrationSideScanNonRegistration action transition rest actionExact
+        notRegistration (rightRegistrationSideScan correspondence)
+rightRegistrationSideScan
+  (DiscardLeftDeletedRegistration _ _ _ _ correspondence) =
+    rightRegistrationSideScan correspondence
+rightRegistrationSideScan
+  (DiscardRightDeletedRegistration transition rest actionExact deleted
+    correspondence) =
+      RegistrationSideScanDeleted transition rest actionExact deleted
+        (rightRegistrationSideScan correspondence)
+rightRegistrationSideScan
+  (QueueLeftGeneratedRegistration _ _ _ _ correspondence) =
+    rightRegistrationSideScan correspondence
+rightRegistrationSideScan
+  (QueueRightGeneratedRegistration transition rest actionExact surviving
+    correspondence) =
+      RegistrationSideScanSurviving transition rest actionExact surviving
+        (rightRegistrationSideScan correspondence)
+rightRegistrationSideScan
+  (MatchLeftWithPendingRight _ _ _ _ _ _ _ _ correspondence) =
+    rightRegistrationSideScan correspondence
+rightRegistrationSideScan
+  (MatchRightWithPendingLeft transition rest actionExact surviving _ _ _ _
+    correspondence) =
+      RegistrationSideScanSurviving transition rest actionExact surviving
+        (rightRegistrationSideScan correspondence)
+
 ||| Generic vestigial transitivity remains useful algebra, now with the coupling
 ||| defect repaired.  It is not misrepresented as the one-trace canonicalization
 ||| bridge: that exact interface appears below.
