@@ -1718,6 +1718,7 @@ data PaperAdvanceSource :
     {name, key, world, error : Type} -> {value : key -> Type} ->
     {nameEq : DecEq name} -> {keyEq : DecEq key} -> {actor : name} ->
     {ambient : world} -> {fibers : Registry name key value world error} ->
+    {before : SystemState name key value world error} ->
     {component : Component key value world error} -> {parent : Parent name} ->
     {retiredFlag : Bool} ->
     {table : OwnedTable key value (componentProvisions component)} ->
@@ -1732,6 +1733,7 @@ data PaperAdvanceSource :
       LocalState key value world (componentProvisions component)} ->
     {view : View name
       (dependencies (componentDependencies component))} ->
+    MkSystemState ambient fibers = before ->
     lookupFiber @{nameEq} actor fibers =
       Just (MkFiber component parent retiredFlag table
         (Reloading (step :: next :: more) accumulator view)) ->
@@ -1739,11 +1741,12 @@ data PaperAdvanceSource :
       (MkFiber component parent retiredFlag table
         (Reloading (step :: next :: more) accumulator view)) fibers = Just view ->
     PaperAdvanceSource name key world error value nameEq keyEq actor LIterTag
-      (MkSystemState ambient fibers)
+      before
   AdvanceSourceFinishEmpty :
     {name, key, world, error : Type} -> {value : key -> Type} ->
     {nameEq : DecEq name} -> {keyEq : DecEq key} -> {actor : name} ->
     {ambient : world} -> {fibers : Registry name key value world error} ->
+    {before : SystemState name key value world error} ->
     {component : Component key value world error} -> {parent : Parent name} ->
     {retiredFlag : Bool} ->
     {table : OwnedTable key value (componentProvisions component)} ->
@@ -1752,6 +1755,7 @@ data PaperAdvanceSource :
       LocalState key value world (componentProvisions component)} ->
     {view : View name
       (dependencies (componentDependencies component))} ->
+    MkSystemState ambient fibers = before ->
     lookupFiber @{nameEq} actor fibers =
       Just (MkFiber component parent retiredFlag table
         (Reloading [] accumulator view)) ->
@@ -1759,11 +1763,12 @@ data PaperAdvanceSource :
       (MkFiber component parent retiredFlag table
         (Reloading [] accumulator view)) fibers = Just view ->
     PaperAdvanceSource name key world error value nameEq keyEq actor LFinishTag
-      (MkSystemState ambient fibers)
+      before
   AdvanceSourceFinishOne :
     {name, key, world, error : Type} -> {value : key -> Type} ->
     {nameEq : DecEq name} -> {keyEq : DecEq key} -> {actor : name} ->
     {ambient : world} -> {fibers : Registry name key value world error} ->
+    {before : SystemState name key value world error} ->
     {component : Component key value world error} -> {parent : Parent name} ->
     {retiredFlag : Bool} ->
     {table : OwnedTable key value (componentProvisions component)} ->
@@ -1775,6 +1780,7 @@ data PaperAdvanceSource :
       LocalState key value world (componentProvisions component)} ->
     {view : View name
       (dependencies (componentDependencies component))} ->
+    MkSystemState ambient fibers = before ->
     lookupFiber @{nameEq} actor fibers =
       Just (MkFiber component parent retiredFlag table
         (Reloading [step] accumulator view)) ->
@@ -1782,7 +1788,7 @@ data PaperAdvanceSource :
       (MkFiber component parent retiredFlag table
         (Reloading [step] accumulator view)) fibers = Just view ->
     PaperAdvanceSource name key world error value nameEq keyEq actor LFinishTag
-      (MkSystemState ambient fibers)
+      before
 
 0 paperAdvanceSource :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
@@ -1835,7 +1841,7 @@ paperAdvanceSource {name} {key} {world} {error} {value}
         raw paperTag | Just (MkFiber component parent retiredFlag table lifecycle) |
         Reloading [] accumulator view | True =
           case justInjective raw of
-            Refl => AdvanceSourceFinishEmpty found
+            Refl => AdvanceSourceFinishEmpty Refl found
               (targetMatchesExact nameEq _ view matches)
     paperAdvanceSource {name} {key} {world} {error} {value}
       nameEq keyEq actor {before = MkSystemState ambient fibers} {afterState} tag
@@ -1891,7 +1897,7 @@ paperAdvanceSource {name} {key} {world} {error} {value}
             Just (MkFiber component parent retiredFlag table lifecycle) |
             Reloading (step :: []) accumulator view | Just capability |
             Right (localAfter, undo) | True = case justInjective raw of
-              Refl => AdvanceSourceFinishOne found
+              Refl => AdvanceSourceFinishOne Refl found
                 (targetMatchesExact nameEq _ view matches)
           paperAdvanceSource {name} {key} {world} {error} {value}
             nameEq keyEq actor {before = MkSystemState ambient fibers}
@@ -1899,8 +1905,410 @@ paperAdvanceSource {name} {key} {world} {error} {value}
             Just (MkFiber component parent retiredFlag table lifecycle) |
             Reloading (step :: next :: more) accumulator view | Just capability |
             Right (localAfter, undo) | True = case justInjective raw of
-              Refl => AdvanceSourceIter found
+              Refl => AdvanceSourceIter Refl found
                 (targetMatchesExact nameEq _ view matches)
+
+0 advanceRuntimeEffectMapAtFound :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} actor fibers = Just fiber ->
+  (state : EffectState name key value world) ->
+  advanceRuntimeEffectMap nameEq keyEq actor
+    (the (SystemState name key value world error)
+      (MkSystemState ambient fibers)) state =
+  fiberAdvanceRuntimeEffectMap nameEq keyEq actor fiber state
+advanceRuntimeEffectMapAtFound nameEq keyEq actor ambient fibers fiber found
+  state = rewrite found in Refl
+
+record MovedStepEffectSuccess
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (actor : name)
+  (component : Component key value world error)
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))
+  (view : View name (dependencies (componentDependencies component)))
+  (state : EffectState name key value world)
+  (moved : EffectState name key value world) where
+  constructor MkMovedStepEffectSuccess
+  movedCapability : DepValues key value
+    (dependencies (componentDependencies component))
+  0 movedCapabilityResolved : resolveEffectValues @{keyEq}
+    (dependencies (componentDependencies component)) view state =
+    Just movedCapability
+  movedLocalAfter : LocalState key value world
+    (componentProvisions component)
+  movedUndo : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)
+  0 movedStepRuns : runStepEffect step movedCapability
+    (MkLocalState (effectAmbient state)
+      (restrictOwnedPreservingOrder (componentProvisions component)
+        (effectTables state actor))) = Right (movedLocalAfter, movedUndo)
+
+0 invertMovedStepEffect :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world
+      (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (state, moved : EffectState name key value world) ->
+  fiberAdvanceRuntimeEffectMap nameEq keyEq actor
+    (MkFiber component parent retiredFlag table
+      (Reloading (step :: rest) accumulator view)) state = Just moved ->
+  MovedStepEffectSuccess name key world error value nameEq keyEq actor component
+    step view state moved
+invertMovedStepEffect nameEq keyEq actor component parent retiredFlag table step
+  rest accumulator view state moved mapRuns
+  with (resolveEffectValues @{keyEq}
+    (dependencies (componentDependencies component)) view state) proof resolved
+  invertMovedStepEffect nameEq keyEq actor component parent retiredFlag table step
+    rest accumulator view state moved mapRuns | Nothing =
+      void (nothingIsNotJust mapRuns)
+  invertMovedStepEffect nameEq keyEq actor component parent retiredFlag table step
+    rest accumulator view state moved mapRuns | Just capability
+    with (runStepEffect step capability
+      (MkLocalState (effectAmbient state)
+        (restrictOwnedPreservingOrder (componentProvisions component)
+          (effectTables state actor)))) proof ran
+    invertMovedStepEffect nameEq keyEq actor component parent retiredFlag table
+      step rest accumulator view state moved mapRuns | Just capability |
+      Left failure = void (nothingIsNotJust mapRuns)
+    invertMovedStepEffect nameEq keyEq actor component parent retiredFlag table
+      step rest accumulator view state moved mapRuns | Just capability |
+      Right (localAfter, undo) = MkMovedStepEffectSuccess capability resolved
+        localAfter undo ran
+
+0 localSystemStateEta : (state : SystemState name key value world error) ->
+  MkSystemState (worldState state) (registry state) = state
+localSystemStateEta (MkSystemState ambient fibers) = Refl
+
+0 advanceRawAfterForeignActivation :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (leftActor : name) ->
+  {first, middle, earlyRightFinal : SystemState name key value world error} ->
+  (leftTag : RuleTag) ->
+  (foreignAction : Action name key value world error) ->
+  (foreignTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance leftActor)
+    first = Just (leftTag, middle)) ->
+  (foreignChecked : checkedApplyAction @{nameEq} @{keyEq} foreignAction first =
+    Just (foreignTag, earlyRightFinal)) ->
+  (foreignActivation : PaperActivationStep
+    (Fired {before = first} {afterState = earlyRightFinal}
+      nameEq keyEq foreignAction foreignTag foreignChecked)) ->
+  Not (leftActor = actionOwner foreignAction) ->
+  registryWellFormed @{nameEq} @{keyEq} earlyRightFinal = True ->
+  (paperTag : Either (leftTag = LIterTag) (leftTag = LFinishTag)) ->
+  (movedEffect : EffectState name key value world) ->
+  partialEffectMapFor nameEq keyEq (LAdvance leftActor) leftTag earlyRightFinal
+    (projectEffectState @{nameEq} earlyRightFinal) = Just movedEffect ->
+  RawActivationMove nameEq keyEq (LAdvance leftActor) leftTag earlyRightFinal
+advanceRawAfterForeignActivation {name} {key} {world} {error} {value}
+  nameEq keyEq leftActor {first} {middle} {earlyRightFinal} leftTag
+  foreignAction foreignTag leftChecked foreignChecked foreignActivation distinct
+  earlyWellFormed paperTag movedEffect mapRuns =
+    let sourceAmbient : world
+        sourceAmbient = worldState first
+        sourceFibers : Registry name key value world error
+        sourceFibers = registry first
+        movedAmbient : world
+        movedAmbient = worldState earlyRightFinal
+        movedFibers : Registry name key value world error
+        movedFibers = registry earlyRightFinal
+        0 firstShape : (MkSystemState sourceAmbient sourceFibers = first)
+        firstShape = localSystemStateEta first
+        0 earlyShape : (MkSystemState movedAmbient movedFibers =
+          earlyRightFinal)
+        earlyShape = localSystemStateEta earlyRightFinal
+        0 concreteMapRuns : (partialEffectMapFor nameEq keyEq
+          (LAdvance leftActor) leftTag
+          (the (SystemState name key value world error)
+            (MkSystemState movedAmbient movedFibers))
+          (projectEffectState @{nameEq}
+            (the (SystemState name key value world error)
+              (MkSystemState movedAmbient movedFibers))) = Just movedEffect)
+        concreteMapRuns = replace
+          {p = \state => partialEffectMapFor nameEq keyEq
+            (LAdvance leftActor) leftTag state
+            (projectEffectState @{nameEq} state) = Just movedEffect}
+          (sym earlyShape) mapRuns
+        0 leftRaw : (applyAction @{nameEq} @{keyEq} (LAdvance leftActor)
+          first = Just (leftTag, middle))
+        leftRaw = checkedActionProjects nameEq keyEq (LAdvance leftActor)
+          first middle leftTag leftChecked
+    in case paperAdvanceSource nameEq keyEq leftActor {before = first}
+      {afterState = middle} leftTag leftRaw paperTag of
+      AdvanceSourceFinishEmpty {ambient = observedAmbient}
+        {fibers = observedFibers} {component} {parent} {retiredFlag} {table}
+        {accumulator} {view} sourceShape sourceFound sourceTarget =>
+          let exactFiber : Fiber name key value world error
+              exactFiber = MkFiber component parent retiredFlag table
+                (Reloading [] accumulator view)
+              0 observedSourceShape :
+                ((the (SystemState name key value world error)
+                  (MkSystemState observedAmbient observedFibers)) =
+                 (the (SystemState name key value world error)
+                  (MkSystemState sourceAmbient sourceFibers)))
+              observedSourceShape = trans sourceShape (sym firstShape)
+              0 sourceFoundAtFirst : (lookupFiber @{nameEq} leftActor
+                sourceFibers = Just exactFiber)
+              sourceFoundAtFirst = replace
+                {p = \state => lookupFiber @{nameEq} leftActor
+                  (registry state) = Just exactFiber}
+                observedSourceShape sourceFound
+              0 sourceTargetAtFirst : (targetFiber @{nameEq} @{keyEq}
+                exactFiber sourceFibers = Just view)
+              sourceTargetAtFirst = replace
+                {p = \state => targetFiber @{nameEq} @{keyEq} exactFiber
+                  (registry state) = Just view}
+                observedSourceShape sourceTarget
+              0 foundAtMoved : (lookupFiber @{nameEq} leftActor movedFibers =
+                Just exactFiber)
+              foundAtMoved = trans
+                (transitionForeignLookup nameEq keyEq leftActor foreignAction
+                  foreignTag foreignChecked distinct)
+                sourceFoundAtFirst
+              0 targetAtMoved : (targetFiber @{nameEq} @{keyEq} exactFiber
+                movedFibers = Just view)
+              targetAtMoved = targetFiberStableAfterForeignActivation nameEq
+                keyEq exactFiber view foreignAction foreignTag foreignChecked
+                foreignActivation earlyWellFormed sourceTargetAtFirst
+              movedAfter : SystemState name key value world error
+              movedAfter = MkSystemState movedAmbient
+                (replaceBinding @{nameEq} leftActor
+                  (setFiberLifecycle exactFiber (Active accumulator view))
+                  movedFibers)
+              0 movedRawConcrete : (applyAction @{nameEq} @{keyEq}
+                (LAdvance leftActor) (MkSystemState movedAmbient movedFibers) =
+                Just (LFinishTag, movedAfter))
+              movedRawConcrete = rewrite foundAtMoved in rewrite targetAtMoved in
+                rewrite localViewEqRefl nameEq view in Refl
+              0 movedRaw : (applyAction @{nameEq} @{keyEq}
+                (LAdvance leftActor) earlyRightFinal =
+                Just (LFinishTag, movedAfter))
+              movedRaw = replace
+                {p = \state => applyAction @{nameEq} @{keyEq}
+                  (LAdvance leftActor) state = Just (LFinishTag, movedAfter)}
+                earlyShape movedRawConcrete
+          in MkRawActivationMove movedAfter movedRaw
+      AdvanceSourceFinishOne {ambient = observedAmbient}
+        {fibers = observedFibers} {component} {parent} {retiredFlag} {table}
+        {step} {accumulator} {view} sourceShape sourceFound sourceTarget =>
+          let exactFiber : Fiber name key value world error
+              exactFiber = MkFiber component parent retiredFlag table
+                (Reloading [step] accumulator view)
+              0 observedSourceShape :
+                ((the (SystemState name key value world error)
+                  (MkSystemState observedAmbient observedFibers)) =
+                 (the (SystemState name key value world error)
+                  (MkSystemState sourceAmbient sourceFibers)))
+              observedSourceShape = trans sourceShape (sym firstShape)
+              0 sourceFoundAtFirst : (lookupFiber @{nameEq} leftActor
+                sourceFibers = Just exactFiber)
+              sourceFoundAtFirst = replace
+                {p = \state => lookupFiber @{nameEq} leftActor
+                  (registry state) = Just exactFiber}
+                observedSourceShape sourceFound
+              0 sourceTargetAtFirst : (targetFiber @{nameEq} @{keyEq}
+                exactFiber sourceFibers = Just view)
+              sourceTargetAtFirst = replace
+                {p = \state => targetFiber @{nameEq} @{keyEq} exactFiber
+                  (registry state) = Just view}
+                observedSourceShape sourceTarget
+              0 foundAtMoved : (lookupFiber @{nameEq} leftActor movedFibers =
+                Just exactFiber)
+              foundAtMoved = trans
+                (transitionForeignLookup nameEq keyEq leftActor foreignAction
+                  foreignTag foreignChecked distinct)
+                sourceFoundAtFirst
+              0 fiberMapRuns : (fiberAdvanceRuntimeEffectMap nameEq keyEq
+                leftActor exactFiber
+                (projectEffectState @{nameEq}
+                  (the (SystemState name key value world error)
+                    (MkSystemState movedAmbient movedFibers))) =
+                Just movedEffect)
+              fiberMapRuns = trans
+                (sym (advanceRuntimeEffectMapAtFound nameEq keyEq leftActor
+                  movedAmbient movedFibers exactFiber foundAtMoved
+                  (projectEffectState @{nameEq}
+                    (the (SystemState name key value world error)
+                      (MkSystemState movedAmbient movedFibers)))))
+                concreteMapRuns
+              0 targetAtMoved : (targetFiber @{nameEq} @{keyEq} exactFiber
+                movedFibers = Just view)
+              targetAtMoved = targetFiberStableAfterForeignActivation nameEq
+                keyEq exactFiber view foreignAction foreignTag foreignChecked
+                foreignActivation earlyWellFormed sourceTargetAtFirst
+          in case invertMovedStepEffect nameEq keyEq leftActor component parent
+            retiredFlag table step [] accumulator view
+            (projectEffectState @{nameEq}
+              (the (SystemState name key value world error)
+                (MkSystemState movedAmbient movedFibers))) movedEffect
+            fiberMapRuns of
+            MkMovedStepEffectSuccess capability effectResolved localAfter undo
+              effectStepRuns =>
+                let 0 committedResolved :
+                      (resolveCommittedValues @{nameEq} @{keyEq} {name = name} {key = key}
+                        {value = value} {world = world} {error = error}
+                        (dependencies (componentDependencies component)) view
+                        movedFibers = Just capability)
+                    committedResolved = trans
+                      (sym (resolveEffectValuesProjected nameEq keyEq
+                        (dependencies (componentDependencies component)) view
+                        (MkSystemState movedAmbient movedFibers)))
+                      effectResolved
+                    0 ranAtTable : (runStepEffect step capability
+                      (MkLocalState movedAmbient
+                        (restrictOwnedPreservingOrder
+                          (componentProvisions component) (ownedValues table))) =
+                      Right (localAfter, undo))
+                    ranAtTable = replace
+                      {p = \actorTable => runStepEffect step capability
+                        (MkLocalState movedAmbient
+                          (restrictOwnedPreservingOrder
+                            (componentProvisions component) actorTable)) =
+                        Right (localAfter, undo)}
+                      (projectedActorTable nameEq leftActor
+                        (MkSystemState movedAmbient movedFibers) exactFiber
+                        foundAtMoved) effectStepRuns
+                    movedAfter : SystemState name key value world error
+                    movedAfter = MkSystemState (localWorld localAfter)
+                      (replaceBinding @{nameEq} leftActor
+                        (setFiberRuntime exactFiber (localTable localAfter)
+                          (Active
+                            (pushLocalUndo (componentProvisions component)
+                              accumulator undo) view)) movedFibers)
+                    0 movedRawConcrete : (applyAction @{nameEq} @{keyEq}
+                      (LAdvance leftActor)
+                      (MkSystemState movedAmbient movedFibers) =
+                      Just (LFinishTag, movedAfter))
+                    movedRawConcrete = rewrite foundAtMoved in
+                      rewrite committedResolved in rewrite ranAtTable in
+                      rewrite targetAtMoved in
+                      rewrite localViewEqRefl nameEq view in Refl
+                    0 movedRaw : (applyAction @{nameEq} @{keyEq}
+                      (LAdvance leftActor) earlyRightFinal =
+                      Just (LFinishTag, movedAfter))
+                    movedRaw = replace
+                      {p = \state => applyAction @{nameEq} @{keyEq}
+                        (LAdvance leftActor) state =
+                        Just (LFinishTag, movedAfter)}
+                      earlyShape movedRawConcrete
+                in MkRawActivationMove movedAfter movedRaw
+      AdvanceSourceIter {ambient = observedAmbient}
+        {fibers = observedFibers} {component} {parent} {retiredFlag} {table}
+        {step} {next} {more} {accumulator} {view} sourceShape sourceFound
+        sourceTarget =>
+          let exactFiber : Fiber name key value world error
+              exactFiber = MkFiber component parent retiredFlag table
+                (Reloading (step :: next :: more) accumulator view)
+              0 observedSourceShape :
+                ((the (SystemState name key value world error)
+                  (MkSystemState observedAmbient observedFibers)) =
+                 (the (SystemState name key value world error)
+                  (MkSystemState sourceAmbient sourceFibers)))
+              observedSourceShape = trans sourceShape (sym firstShape)
+              0 sourceFoundAtFirst : (lookupFiber @{nameEq} leftActor
+                sourceFibers = Just exactFiber)
+              sourceFoundAtFirst = replace
+                {p = \state => lookupFiber @{nameEq} leftActor
+                  (registry state) = Just exactFiber}
+                observedSourceShape sourceFound
+              0 sourceTargetAtFirst : (targetFiber @{nameEq} @{keyEq}
+                exactFiber sourceFibers = Just view)
+              sourceTargetAtFirst = replace
+                {p = \state => targetFiber @{nameEq} @{keyEq} exactFiber
+                  (registry state) = Just view}
+                observedSourceShape sourceTarget
+              0 foundAtMoved : (lookupFiber @{nameEq} leftActor movedFibers =
+                Just exactFiber)
+              foundAtMoved = trans
+                (transitionForeignLookup nameEq keyEq leftActor foreignAction
+                  foreignTag foreignChecked distinct)
+                sourceFoundAtFirst
+              0 fiberMapRuns : (fiberAdvanceRuntimeEffectMap nameEq keyEq
+                leftActor exactFiber
+                (projectEffectState @{nameEq}
+                  (the (SystemState name key value world error)
+                    (MkSystemState movedAmbient movedFibers))) =
+                Just movedEffect)
+              fiberMapRuns = trans
+                (sym (advanceRuntimeEffectMapAtFound nameEq keyEq leftActor
+                  movedAmbient movedFibers exactFiber foundAtMoved
+                  (projectEffectState @{nameEq}
+                    (the (SystemState name key value world error)
+                      (MkSystemState movedAmbient movedFibers)))))
+                concreteMapRuns
+              0 targetAtMoved : (targetFiber @{nameEq} @{keyEq} exactFiber
+                movedFibers = Just view)
+              targetAtMoved = targetFiberStableAfterForeignActivation nameEq
+                keyEq exactFiber view foreignAction foreignTag foreignChecked
+                foreignActivation earlyWellFormed sourceTargetAtFirst
+          in case invertMovedStepEffect nameEq keyEq leftActor component parent
+            retiredFlag table step (next :: more) accumulator view
+            (projectEffectState @{nameEq}
+              (the (SystemState name key value world error)
+                (MkSystemState movedAmbient movedFibers))) movedEffect
+            fiberMapRuns of
+            MkMovedStepEffectSuccess capability effectResolved localAfter undo
+              effectStepRuns =>
+                let 0 committedResolved :
+                      (resolveCommittedValues @{nameEq} @{keyEq} {name = name} {key = key}
+                        {value = value} {world = world} {error = error}
+                        (dependencies (componentDependencies component)) view
+                        movedFibers = Just capability)
+                    committedResolved = trans
+                      (sym (resolveEffectValuesProjected nameEq keyEq
+                        (dependencies (componentDependencies component)) view
+                        (MkSystemState movedAmbient movedFibers)))
+                      effectResolved
+                    0 ranAtTable : (runStepEffect step capability
+                      (MkLocalState movedAmbient
+                        (restrictOwnedPreservingOrder
+                          (componentProvisions component) (ownedValues table))) =
+                      Right (localAfter, undo))
+                    ranAtTable = replace
+                      {p = \actorTable => runStepEffect step capability
+                        (MkLocalState movedAmbient
+                          (restrictOwnedPreservingOrder
+                            (componentProvisions component) actorTable)) =
+                        Right (localAfter, undo)}
+                      (projectedActorTable nameEq leftActor
+                        (MkSystemState movedAmbient movedFibers) exactFiber
+                        foundAtMoved) effectStepRuns
+                    movedAfter : SystemState name key value world error
+                    movedAfter = MkSystemState (localWorld localAfter)
+                      (replaceBinding @{nameEq} leftActor
+                        (setFiberRuntime exactFiber (localTable localAfter)
+                          (Reloading (next :: more)
+                            (pushLocalUndo (componentProvisions component)
+                              accumulator undo) view)) movedFibers)
+                    0 movedRawConcrete : (applyAction @{nameEq} @{keyEq}
+                      (LAdvance leftActor)
+                      (MkSystemState movedAmbient movedFibers) =
+                      Just (LIterTag, movedAfter))
+                    movedRawConcrete = rewrite foundAtMoved in
+                      rewrite committedResolved in rewrite ranAtTable in
+                      rewrite targetAtMoved in
+                      rewrite localViewEqRefl nameEq view in Refl
+                    0 movedRaw : (applyAction @{nameEq} @{keyEq}
+                      (LAdvance leftActor) earlyRightFinal =
+                      Just (LIterTag, movedAfter))
+                    movedRaw = replace
+                      {p = \state => applyAction @{nameEq} @{keyEq}
+                        (LAdvance leftActor) state =
+                        Just (LIterTag, movedAfter)}
+                      earlyShape movedRawConcrete
+                in MkRawActivationMove movedAfter movedRaw
 
 0 advanceTransitionMapOriginCong :
   {name, key, world, error : Type} -> {value : key -> Type} ->
