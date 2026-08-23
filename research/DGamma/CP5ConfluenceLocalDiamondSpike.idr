@@ -996,6 +996,19 @@ localPartialRelatedRewrite Refl Refl related = related
   PartialRelated state rel (Just left) (Just right) -> rel left right
 localPartialDefinedRelation (PartialDefined related) = related
 
+0 localEffectStateSymmetric : EffectStateRelated keyEq left right ->
+  EffectStateRelated keyEq right left
+localEffectStateSymmetric (MkEffectStateRelated ambient tables) =
+  MkEffectStateRelated (sym ambient) (\actor => sym (tables actor))
+
+0 localEffectStateTransitive : EffectStateRelated keyEq left middle ->
+  EffectStateRelated keyEq middle right -> EffectStateRelated keyEq left right
+localEffectStateTransitive
+  (MkEffectStateRelated firstAmbient firstTables)
+  (MkEffectStateRelated secondAmbient secondTables) =
+    MkEffectStateRelated (trans firstAmbient secondAmbient)
+      (\actor => trans (firstTables actor) (secondTables actor))
+
 record FramedEffectOutput
   (keyEq : DecEq key) (effectMap : PartialEffectMap name key value world)
   (input, target : EffectState name key value world) where
@@ -1048,6 +1061,100 @@ effectMapOutputOnRelatedRight keyEq effectMap respects left right leftOutput
             (localPartialRelatedRewrite leftRuns rightRuns
               (respects left right related))
       in MkRelatedEffectMapOutput rightOutput rightRuns outputs
+
+0 localPartialComposeDefined :
+  (after, before : PartialMap state) -> (origin, middle, final : state) ->
+  before origin = Just middle -> after middle = Just final ->
+  partialCompose after before origin = Just final
+localPartialComposeDefined after before origin middle final beforeRuns afterRuns
+  with (before origin)
+  localPartialComposeDefined after before origin middle final beforeRuns afterRuns |
+    Nothing = void (nothingIsNotJust beforeRuns)
+  localPartialComposeDefined after before origin middle final beforeRuns afterRuns |
+    Just actual = case justInjective beforeRuns of
+      Refl => rewrite afterRuns in Refl
+
+0 localPartialComposeAfterRun :
+  (after, before : PartialMap state) -> (origin, middle, final : state) ->
+  before origin = Just middle ->
+  partialCompose after before origin = Just final ->
+  after middle = Just final
+localPartialComposeAfterRun after before origin middle final beforeRuns composed
+  with (before origin)
+  localPartialComposeAfterRun after before origin middle final beforeRuns composed |
+    Nothing = void (nothingIsNotJust beforeRuns)
+  localPartialComposeAfterRun after before origin middle final beforeRuns composed |
+    Just actual = case justInjective beforeRuns of
+      Refl => composed
+
+record CommutedEffectOutput
+  (keyEq : DecEq key)
+  (leftMap, rightMap : PartialEffectMap name key value world)
+  (source, middle, originalFinal, earlyMiddle :
+    EffectState name key value world) where
+  constructor MkCommutedEffectOutput
+  0 commutedOutput : EffectState name key value world
+  0 commutedLeftRuns : leftMap earlyMiddle = Just commutedOutput
+  0 originalFinalToCommuted :
+    EffectStateRelated keyEq originalFinal commutedOutput
+
+0 commuteEffectFrames :
+  (keyEq : DecEq key) ->
+  (leftMap, rightMap : PartialEffectMap name key value world) ->
+  EffectPartialMapRespects keyEq leftMap ->
+  EffectPartialMapRespects keyEq rightMap ->
+  PartialCommute (EffectStateEquivalence keyEq) leftMap rightMap ->
+  (source, middle, originalFinal, earlyMiddle :
+    EffectState name key value world) ->
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    (leftMap source) (Just middle) ->
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    (rightMap middle) (Just originalFinal) ->
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    (rightMap source) (Just earlyMiddle) ->
+  CommutedEffectOutput keyEq leftMap rightMap source middle originalFinal
+    earlyMiddle
+commuteEffectFrames keyEq leftMap rightMap leftRespects rightRespects commute
+  source middle originalFinal earlyMiddle leftFrame rightFrame earlyRightFrame =
+    let leftSource = framedEffectOutput keyEq leftMap source middle leftFrame
+        rightMiddle = framedEffectOutput keyEq rightMap middle originalFinal
+          rightFrame
+        rightSource = framedEffectOutput keyEq rightMap source earlyMiddle
+          earlyRightFrame
+        rightAfterLeft = effectMapOutputOnRelatedRight keyEq rightMap
+          rightRespects middle (framedOutput leftSource)
+          (framedOutput rightMiddle)
+          (localEffectStateSymmetric (framedOutputRelated leftSource))
+          (framedMapRuns rightMiddle)
+        originalCompositionRuns = localPartialComposeDefined rightMap leftMap
+          source (framedOutput leftSource) (relatedMapOutput rightAfterLeft)
+          (framedMapRuns leftSource) (relatedMapRuns rightAfterLeft)
+        commutedAtSource = localPartialRelatedRewrite Refl
+          originalCompositionRuns (commute source)
+        swappedComposition = framedEffectOutput keyEq
+          (partialCompose leftMap rightMap) source
+          (relatedMapOutput rightAfterLeft) commutedAtSource
+        leftAfterRightRuns = localPartialComposeAfterRun leftMap rightMap source
+          (framedOutput rightSource) (framedOutput swappedComposition)
+          (framedMapRuns rightSource) (framedMapRuns swappedComposition)
+        leftAtEarlyMiddle = effectMapOutputOnRelatedRight keyEq leftMap
+          leftRespects (framedOutput rightSource) earlyMiddle
+          (framedOutput swappedComposition) (framedOutputRelated rightSource)
+          leftAfterRightRuns
+        originalToRightMiddle = localEffectStateSymmetric
+          (framedOutputRelated rightMiddle)
+        rightMiddleToOriginalComposition = relatedMapOutputs rightAfterLeft
+        originalCompositionToSwapped = localEffectStateSymmetric
+          (framedOutputRelated swappedComposition)
+        swappedToMoved = relatedMapOutputs leftAtEarlyMiddle
+        0 originalToMoved : EffectStateRelated keyEq originalFinal
+          (relatedMapOutput leftAtEarlyMiddle)
+        originalToMoved = localEffectStateTransitive originalToRightMiddle
+          (localEffectStateTransitive rightMiddleToOriginalComposition
+            (localEffectStateTransitive originalCompositionToSwapped
+              swappedToMoved))
+    in MkCommutedEffectOutput (relatedMapOutput leftAtEarlyMiddle)
+      (relatedMapRuns leftAtEarlyMiddle) originalToMoved
 
 0 advanceRuntimeEffectMapOriginLookupCong :
   {name, key, world, error : Type} -> {value : key -> Type} ->
