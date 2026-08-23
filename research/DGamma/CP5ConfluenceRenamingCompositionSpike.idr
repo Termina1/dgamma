@@ -1019,6 +1019,115 @@ alignFiniteRegistrationProjection {rightOrdinal} {rightIndex}
               (RegistrationSideEventFoldSurviving transition rest actionExact
                 surviving rightFold)
 
+||| Pending lists are newest-first.  `pendingChronology pending future` restores
+||| their occurrence order before the not-yet-scanned future, and reduces
+||| definitionally across queue constructors.
+pendingChronology : List a -> List a -> List a
+pendingChronology [] future = future
+pendingChronology (event :: pending) future =
+  pendingChronology pending (event :: future)
+
+data RemoveListOccurrence : a -> List a -> List a -> Type where
+  RemoveListHere : RemoveListOccurrence event (event :: rest) rest
+  RemoveListThere : RemoveListOccurrence event events remainder ->
+    RemoveListOccurrence event (other :: events) (other :: remainder)
+
+0 removeAfterPrefix :
+  {eventType : Type} ->
+  (before : List eventType) -> (selected : eventType) ->
+  {future : List eventType} ->
+  RemoveListOccurrence selected (before ++ (selected :: future))
+    (before ++ future)
+removeAfterPrefix [] selected = RemoveListHere
+removeAfterPrefix (event :: before) selected =
+  RemoveListThere (removeAfterPrefix before selected)
+
+0 removeChronologyFutureAfter :
+  {eventType : Type} ->
+  (pending, before : List eventType) -> (selected : eventType) ->
+  {future : List eventType} ->
+  RemoveListOccurrence selected
+    (pendingChronology pending (before ++ (selected :: future)))
+    (pendingChronology pending (before ++ future))
+removeChronologyFutureAfter [] before selected =
+  removeAfterPrefix before selected
+removeChronologyFutureAfter (event :: pending) before selected =
+  removeChronologyFutureAfter pending (event :: before) selected
+
+0 removeChronologyFutureHead :
+  {eventType : Type} ->
+  (pending : List eventType) -> (selected : eventType) ->
+  {future : List eventType} ->
+  RemoveListOccurrence selected
+    (pendingChronology pending (selected :: future))
+    (pendingChronology pending future)
+removeChronologyFutureHead pending selected =
+  removeChronologyFutureAfter pending [] selected
+
+0 queuedEventRemoval :
+  {eventType : Type} ->
+  (before : List eventType) -> (selected : eventType) ->
+  (suffix : List eventType) ->
+  {future : List eventType} ->
+  RemoveListOccurrence selected
+    (pendingChronology (before ++ (selected :: suffix)) future)
+    (pendingChronology (before ++ suffix) future)
+queuedEventRemoval [] selected suffix =
+  removeChronologyFutureHead suffix selected
+queuedEventRemoval (event :: before) selected suffix =
+  queuedEventRemoval before selected suffix
+
+||| An occurrence-authenticated perfect matching.  Each step removes the exact
+||| left and right occurrences justified by one scanner-produced event match.
+data RegistrationPairing :
+  (renaming : RegistrationGenerationBijection name) ->
+  List (RegistrationEvent name key world error value) ->
+  List (RegistrationEvent name key world error value) -> Type where
+  RegistrationPairingEnd : RegistrationPairing renaming [] []
+  RegistrationPairingStep :
+    {leftEvent, rightEvent : RegistrationEvent name key world error value} ->
+    {leftEvents, leftRemainder, rightEvents, rightRemainder :
+      List (RegistrationEvent name key world error value)} ->
+    RegistrationEventMatch renaming leftEvent rightEvent ->
+    RemoveListOccurrence leftEvent leftEvents leftRemainder ->
+    RemoveListOccurrence rightEvent rightEvents rightRemainder ->
+    RegistrationPairing renaming leftRemainder rightRemainder ->
+    RegistrationPairing renaming leftEvents rightEvents
+
+||| Normalize pending-list execution into an occurrence-removal pairing. Queue
+||| steps disappear definitionally; match steps become exact paired removals.
+0 matchingPlanPairing :
+  {pendingLeft, pendingRight :
+    List (RegistrationEvent name key world error value)} ->
+  {plan : FiniteRegistrationMatchingPlan renaming pendingLeft pendingRight} ->
+  {leftEvents, rightEvents :
+    List (RegistrationEvent name key world error value)} ->
+  MatchingPlanEventFold plan leftEvents rightEvents ->
+  RegistrationPairing renaming
+    (pendingChronology pendingLeft leftEvents)
+    (pendingChronology pendingRight rightEvents)
+matchingPlanPairing MatchingPlanEventFoldEnd = RegistrationPairingEnd
+matchingPlanPairing
+  (MatchingPlanEventFoldQueueLeft event laterFold) =
+    matchingPlanPairing laterFold
+matchingPlanPairing
+  (MatchingPlanEventFoldQueueRight event laterFold) =
+    matchingPlanPairing laterFold
+matchingPlanPairing {pendingLeft}
+  (MatchingPlanEventFoldMatchLeft leftEvent rightPrefix rightEvent rightSuffix
+    matched laterFold) =
+      RegistrationPairingStep matched
+        (removeChronologyFutureHead pendingLeft leftEvent)
+        (queuedEventRemoval rightPrefix rightEvent rightSuffix)
+        (matchingPlanPairing laterFold)
+matchingPlanPairing {pendingRight}
+  (MatchingPlanEventFoldMatchRight rightEvent leftPrefix leftEvent leftSuffix
+    matched laterFold) =
+      RegistrationPairingStep matched
+        (queuedEventRemoval leftPrefix leftEvent leftSuffix)
+        (removeChronologyFutureHead pendingRight rightEvent)
+        (matchingPlanPairing laterFold)
+
 ||| Checked synchronization capital for the shared middle trace of two scanner
 ||| correspondences.  The asynchronous interleavings may differ, but their
 ||| side projections make exactly the same surviving/deleted decision and
