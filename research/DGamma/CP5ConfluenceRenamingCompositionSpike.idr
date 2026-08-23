@@ -51,42 +51,6 @@ composeNameBijection left right =
         (renameRightInverse left (renameBackward right n)))
       (renameRightInverse right n))
 
-||| Corrected generic transitivity package.  Unlike the round-1 record, the
-||| `CurrentEndpointRenaming` is propositionally coupled to the same composed
-||| raw-name bijection that indexes the endpoint equivalence.
-public export
-record CoupledComposedModuloVestigialEndpoint
-  (name, key, world, error : Type) (value : key -> Type)
-  (nameEq : DecEq name) (keyEq : DecEq key)
-  {initial, leftFinal, middleFinal, rightFinal :
-    SystemState name key value world error}
-  (leftTrace : Transitions initial leftFinal)
-  (middleTrace : Transitions initial middleFinal)
-  (rightTrace : Transitions initial rightFinal)
-  (leftGenerationRenaming : RegistrationGenerationBijection name)
-  (rightGenerationRenaming : RegistrationGenerationBijection name)
-  (leftRegistrations : RegistrationCorrespondenceByGeneration nameEq
-    leftGenerationRenaming leftTrace middleTrace)
-  (rightRegistrations : RegistrationCorrespondenceByGeneration nameEq
-    rightGenerationRenaming middleTrace rightTrace)
-  (leftCurrentRenaming : NameBijection name)
-  (rightCurrentRenaming : NameBijection name) where
-  constructor MkCoupledComposedModuloVestigialEndpoint
-  composedRegistrations : RegistrationCorrespondenceByGeneration nameEq
-    (composeGenerationBijection leftGenerationRenaming rightGenerationRenaming)
-    leftTrace rightTrace
-  composedNameBijection : NameBijection name
-  0 composedNameBijectionExact : composedNameBijection =
-    composeNameBijection leftCurrentRenaming rightCurrentRenaming
-  composedCurrentEndpoint : CurrentEndpointRenaming nameEq keyEq
-    (composeGenerationBijection leftGenerationRenaming rightGenerationRenaming)
-    leftTrace rightTrace composedRegistrations
-  0 composedCurrentUsesBijection :
-    currentNameBijection composedCurrentEndpoint = composedNameBijection
-  composedEndpointRelation : SystemEquivalentByRenamingModuloVestigial
-    name key world error value nameEq keyEq composedRegistrations
-    composedNameBijection
-
 0 composeRegistrationEventMatch :
   (leftRenaming, rightRenaming : RegistrationGenerationBijection name) ->
   {left, middle, right : RegistrationEvent name key world error value} ->
@@ -1763,37 +1727,6 @@ classifyReverseCurrentGeneration leftRenaming rightRenaming leftRegistrations
     (indexedLiveGenerations toIndex) (indexedDeletedGenerations toIndex)
     selected state
 retargetVestigialEndpointIndex Refl vestigial = vestigial
-
-||| Generic vestigial transitivity remains useful algebra, now with the coupling
-||| defect repaired.  It is not misrepresented as the one-trace canonicalization
-||| bridge: that exact interface appears below.
-public export
-0 composeModuloVestigialEndpointSpike :
-  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  {initial, leftFinal, middleFinal, rightFinal :
-    SystemState name key value world error} ->
-  (leftTrace : Transitions initial leftFinal) ->
-  (middleTrace : Transitions initial middleFinal) ->
-  (rightTrace : Transitions initial rightFinal) ->
-  (leftGenerationRenaming : RegistrationGenerationBijection name) ->
-  (rightGenerationRenaming : RegistrationGenerationBijection name) ->
-  (leftRegistrations : RegistrationCorrespondenceByGeneration nameEq
-    leftGenerationRenaming leftTrace middleTrace) ->
-  (rightRegistrations : RegistrationCorrespondenceByGeneration nameEq
-    rightGenerationRenaming middleTrace rightTrace) ->
-  (leftCurrent : CurrentEndpointRenaming nameEq keyEq leftGenerationRenaming
-    leftTrace middleTrace leftRegistrations) ->
-  (rightCurrent : CurrentEndpointRenaming nameEq keyEq rightGenerationRenaming
-    middleTrace rightTrace rightRegistrations) ->
-  (leftRelation : SystemEquivalentByRenamingModuloVestigial name key world error
-    value nameEq keyEq leftRegistrations (currentNameBijection leftCurrent)) ->
-  (rightRelation : SystemEquivalentByRenamingModuloVestigial name key world error
-    value nameEq keyEq rightRegistrations (currentNameBijection rightCurrent)) ->
-  CoupledComposedModuloVestigialEndpoint name key world error value nameEq keyEq
-    leftTrace middleTrace rightTrace leftGenerationRenaming
-    rightGenerationRenaming leftRegistrations rightRegistrations
-    (currentNameBijection leftCurrent) (currentNameBijection rightCurrent)
-composeModuloVestigialEndpointSpike = ?composeModuloVestigialEndpointSpike_rhs
 
 ||| Exact bridge from an operationally replayed left block trace to the right
 ||| canonical endpoint.  The left trace need not itself be a `CanonicalSchedule`:
