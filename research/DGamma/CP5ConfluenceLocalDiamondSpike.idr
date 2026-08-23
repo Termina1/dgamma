@@ -1560,6 +1560,84 @@ targetFiberRetireRegistry nameEq keyEq
   (MkFiber component parent True table lifecycle) actor oldFiber fibers found =
     Refl
 
+0 inactiveLifecycleFromRemovalGuard :
+  (retiredFlag : Bool) ->
+  (lifecycle : Lifecycle key value world error name deps provision) ->
+  (childPresent : Bool) ->
+  retiredFlag && isInactive lifecycle && not childPresent = True ->
+  (outcome : Maybe error ** lifecycle = Inactive outcome)
+inactiveLifecycleFromRemovalGuard retiredFlag (Inactive outcome) childPresent
+  valid = (outcome ** Refl)
+inactiveLifecycleFromRemovalGuard False (Reloading remaining accumulator view)
+  childPresent valid = case valid of Refl impossible
+inactiveLifecycleFromRemovalGuard True (Reloading remaining accumulator view)
+  childPresent valid = case valid of Refl impossible
+inactiveLifecycleFromRemovalGuard False (Active accumulator view) childPresent
+  valid = case valid of Refl impossible
+inactiveLifecycleFromRemovalGuard True (Active accumulator view) childPresent
+  valid = case valid of Refl impossible
+inactiveLifecycleFromRemovalGuard False (Unloading accumulator view outcome)
+  childPresent valid = case valid of Refl impossible
+inactiveLifecycleFromRemovalGuard True (Unloading accumulator view outcome)
+  childPresent valid = case valid of Refl impossible
+
+0 targetFiberStableAfterPaperOrchestration :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {before, afterState : SystemState name key value world error} ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  PaperOrchestrationStep
+    (Fired {before} {afterState} nameEq keyEq action tag checked) ->
+  (observed : Fiber name key value world error) ->
+  targetFiber @{nameEq} @{keyEq} observed (registry afterState) =
+    targetFiber @{nameEq} @{keyEq} observed (registry before)
+targetFiberStableAfterPaperOrchestration {name} {key} {world} {error} {value}
+  nameEq keyEq action tag {before = MkSystemState ambient source} {afterState}
+  checked (PaperInsertStep {actor} {parent} {component} actionSame) observed =
+    case actionSame of
+      Refl =>
+        let raw = checkedActionProjects nameEq keyEq
+              (OInsert actor parent component) (MkSystemState ambient source)
+              afterState tag checked
+        in case foreignInsertPlanView nameEq keyEq actor parent component ambient
+          source tag afterState raw of
+          MkForeignInsertPlanView absent guards => case observed of
+            MkFiber observedComponent observedParent False observedTable
+              observedLifecycle =>
+                resolveViewInactiveInsert nameEq keyEq
+                  (dependencies
+                    (componentDependencies observedComponent)) actor component
+                  parent source absent
+            MkFiber observedComponent observedParent True observedTable
+              observedLifecycle => Refl
+targetFiberStableAfterPaperOrchestration {name} {key} {world} {error} {value}
+  nameEq keyEq action tag {before = MkSystemState ambient source} {afterState}
+  checked (PaperRetireStep {actor} actionSame) observed = case actionSame of
+    Refl =>
+      let raw = checkedActionProjects nameEq keyEq (ORetire actor)
+            (MkSystemState ambient source) afterState tag checked
+      in case retireSuccessView nameEq keyEq actor ambient source tag afterState
+        raw of
+        MkRetireSuccessView oldFiber oldFound =>
+          targetFiberRetireRegistry nameEq keyEq observed actor oldFiber source
+            oldFound
+targetFiberStableAfterPaperOrchestration {name} {key} {world} {error} {value}
+  nameEq keyEq action tag {before = MkSystemState ambient source} {afterState}
+  checked (PaperRemoveStep {actor} actionSame) observed = case actionSame of
+    Refl =>
+      let raw = checkedActionProjects nameEq keyEq (ORemove actor)
+            (MkSystemState ambient source) afterState tag checked
+      in case removeSuccessView nameEq keyEq actor ambient source tag afterState
+        raw of
+        MkRemoveSuccessView
+          (MkFiber component parent retiredFlag table lifecycle)
+          oldFound removable noChild =>
+            case inactiveLifecycleFromRemovalGuard retiredFlag lifecycle
+              (hasChild @{nameEq} actor source) removable of
+              (outcome ** Refl) => targetFiberInactiveDelete nameEq keyEq observed
+                actor component parent retiredFlag table outcome source oldFound
+
 0 localAndBothTrue : (left, right : Bool) -> left = True -> right = True ->
   left && right = True
 localAndBothTrue True True Refl Refl = Refl
