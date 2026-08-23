@@ -2840,7 +2840,7 @@ pairedAdvanceYieldFromRuns nameEq keyEq actor component parent retiredFlag
   MkSystemState (worldState state) (registry state) = state
 localSystemStateEta (MkSystemState ambient fibers) = Refl
 
-0 advanceRawAfterForeignActivation :
+0 advanceRawAfterForeignState :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (leftActor : name) ->
   {first, middle, earlyRightFinal : SystemState name key value world error} ->
   (leftTag : RuleTag) ->
@@ -2850,20 +2850,22 @@ localSystemStateEta (MkSystemState ambient fibers) = Refl
     first = Just (leftTag, middle)) ->
   (foreignChecked : checkedApplyAction @{nameEq} @{keyEq} foreignAction first =
     Just (foreignTag, earlyRightFinal)) ->
-  (foreignActivation : PaperActivationStep
-    (Fired {before = first} {afterState = earlyRightFinal}
-      nameEq keyEq foreignAction foreignTag foreignChecked)) ->
   Not (leftActor = actionOwner foreignAction) ->
-  registryWellFormed @{nameEq} @{keyEq} earlyRightFinal = True ->
+  ((fiber : Fiber name key value world error) ->
+    (view : View name (dependencies
+      (componentDependencies (fiberComponent fiber)))) ->
+    targetFiber @{nameEq} @{keyEq} fiber (registry first) = Just view ->
+    targetFiber @{nameEq} @{keyEq} fiber
+      (registry earlyRightFinal) = Just view) ->
   (paperTag : Either (leftTag = LIterTag) (leftTag = LFinishTag)) ->
   (movedEffect : EffectState name key value world) ->
   partialEffectMapFor nameEq keyEq (LAdvance leftActor) leftTag earlyRightFinal
     (projectEffectState @{nameEq} earlyRightFinal) = Just movedEffect ->
   RawActivationMove nameEq keyEq (LAdvance leftActor) leftTag earlyRightFinal
-advanceRawAfterForeignActivation {name} {key} {world} {error} {value}
+advanceRawAfterForeignState {name} {key} {world} {error} {value}
   nameEq keyEq leftActor {first} {middle} {earlyRightFinal} leftTag
-  foreignAction foreignTag leftChecked foreignChecked foreignActivation distinct
-  earlyWellFormed paperTag movedEffect mapRuns =
+  foreignAction foreignTag leftChecked foreignChecked distinct targets paperTag
+  movedEffect mapRuns =
     let sourceAmbient : world
         sourceAmbient = worldState first
         sourceFibers : Registry name key value world error
@@ -2927,9 +2929,7 @@ advanceRawAfterForeignActivation {name} {key} {world} {error} {value}
                 sourceFoundAtFirst
               0 targetAtMoved : (targetFiber @{nameEq} @{keyEq} exactFiber
                 movedFibers = Just view)
-              targetAtMoved = targetFiberStableAfterForeignActivation nameEq
-                keyEq exactFiber view foreignAction foreignTag foreignChecked
-                foreignActivation earlyWellFormed sourceTargetAtFirst
+              targetAtMoved = targets exactFiber view sourceTargetAtFirst
               movedAfter : SystemState name key value world error
               movedAfter = MkSystemState movedAmbient
                 (replaceBinding @{nameEq} leftActor
@@ -2993,9 +2993,7 @@ advanceRawAfterForeignActivation {name} {key} {world} {error} {value}
                 concreteMapRuns
               0 targetAtMoved : (targetFiber @{nameEq} @{keyEq} exactFiber
                 movedFibers = Just view)
-              targetAtMoved = targetFiberStableAfterForeignActivation nameEq
-                keyEq exactFiber view foreignAction foreignTag foreignChecked
-                foreignActivation earlyWellFormed sourceTargetAtFirst
+              targetAtMoved = targets exactFiber view sourceTargetAtFirst
           in case invertMovedStepEffect nameEq keyEq leftActor component parent
             retiredFlag table step [] accumulator view
             (projectEffectState @{nameEq}
@@ -3098,9 +3096,7 @@ advanceRawAfterForeignActivation {name} {key} {world} {error} {value}
                 concreteMapRuns
               0 targetAtMoved : (targetFiber @{nameEq} @{keyEq} exactFiber
                 movedFibers = Just view)
-              targetAtMoved = targetFiberStableAfterForeignActivation nameEq
-                keyEq exactFiber view foreignAction foreignTag foreignChecked
-                foreignActivation earlyWellFormed sourceTargetAtFirst
+              targetAtMoved = targets exactFiber view sourceTargetAtFirst
           in case invertMovedStepEffect nameEq keyEq leftActor component parent
             retiredFlag table step (next :: more) accumulator view
             (projectEffectState @{nameEq}
@@ -3157,6 +3153,37 @@ advanceRawAfterForeignActivation {name} {key} {world} {error} {value}
                         Just (LIterTag, movedAfter)}
                       earlyShape movedRawConcrete
                 in MkRawActivationMove movedAfter movedRaw
+
+0 advanceRawAfterForeignActivation :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (leftActor : name) ->
+  {first, middle, earlyRightFinal : SystemState name key value world error} ->
+  (leftTag : RuleTag) ->
+  (foreignAction : Action name key value world error) ->
+  (foreignTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance leftActor)
+    first = Just (leftTag, middle)) ->
+  (foreignChecked : checkedApplyAction @{nameEq} @{keyEq} foreignAction first =
+    Just (foreignTag, earlyRightFinal)) ->
+  (foreignActivation : PaperActivationStep
+    (Fired {before = first} {afterState = earlyRightFinal}
+      nameEq keyEq foreignAction foreignTag foreignChecked)) ->
+  Not (leftActor = actionOwner foreignAction) ->
+  registryWellFormed @{nameEq} @{keyEq} earlyRightFinal = True ->
+  (paperTag : Either (leftTag = LIterTag) (leftTag = LFinishTag)) ->
+  (movedEffect : EffectState name key value world) ->
+  partialEffectMapFor nameEq keyEq (LAdvance leftActor) leftTag earlyRightFinal
+    (projectEffectState @{nameEq} earlyRightFinal) = Just movedEffect ->
+  RawActivationMove nameEq keyEq (LAdvance leftActor) leftTag earlyRightFinal
+advanceRawAfterForeignActivation nameEq keyEq leftActor leftTag foreignAction
+  foreignTag leftChecked foreignChecked foreignActivation distinct
+  earlyWellFormed paperTag movedEffect mapRuns =
+    advanceRawAfterForeignState nameEq keyEq leftActor leftTag foreignAction
+      foreignTag leftChecked foreignChecked distinct
+      (\fiber, view, sourceTarget =>
+        targetFiberStableAfterForeignActivation nameEq keyEq fiber view
+          foreignAction foreignTag foreignChecked foreignActivation
+          earlyWellFormed sourceTarget)
+      paperTag movedEffect mapRuns
 
 0 activationRawAfterForeignActivation :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
