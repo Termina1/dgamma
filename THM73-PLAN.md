@@ -304,7 +304,7 @@ There remain **23 obligations**.
 
 | ID | Obligation | Status | Grade |
 |---|---|---|---|
-| **O1** | External/replay/endpoint/generation and coherent occurrence algebra. | **4 holes; endpoint reflexivity proved.** | **L.** |
+| **O1** | External/replay/endpoint/generation and coherent occurrence algebra. | **3 holes; endpoint relation laws proved.** | **L.** |
 | **O2** | Transport both independence fields. | **2 holes.** | **M–L.** |
 | **O3** | A/A diamonds. | **1 hole.** | **L–XL.** |
 | **O4** | A/O and O/A licensing/applicability. | **2 holes.** | **XL gate.** |
@@ -330,25 +330,25 @@ There remain **23 obligations**.
 
 ## 11. Exact hole reconciliation
 
-After grind shift 1's first O1 proof, **31 deliberate named research holes remain**:
+After grind shift 1's first two O1 proofs, **30 deliberate named research holes remain**:
 
 - canonical sort: 6;
 - cross-trace: 4;
 - deletion chain: 11;
-- local diamonds: 8;
+- local diamonds: 7;
 - renaming/O21: 2.
 
-No hole was moved or renamed; `relationalReplayEndpointReflexiveSpike_rhs` was
-filled in place.
+No hole was moved or renamed; the two `relationalReplayEndpoint...Spike` bodies
+were filled in place.
 
 Forward/reverse map:
 
-- O1=4, O2=2, O3=1, O4=2, O5=1, O6=3;
+- O1=3, O2=2, O3=1, O4=2, O5=1, O6=3;
 - O7=1, O8=1, O9=2, O10=1, O11=1, O12=1;
 - O13=0, O14=1, O15=1, O16=1, O17=1, O18=1;
 - O19=2, O20=1, O21=3, O22=0, O23=0.
 
-The values sum to 31.
+The values sum to 30.
 
 ## 12. Post-repair phase arithmetic: 148–257
 
@@ -385,7 +385,7 @@ The rows sum exactly to **148–257**. No overlap deduction is applied.
 | 4 | O9 under-specification negatives | Filler-map and direct full-constructor clone tracked; downstream attacks retained. |
 | 5 | Honest origin calibration | Option (a), renamed generic repackager and disclosed supplied capital. |
 | 6 | Repair suite coverage/diagnostics | Missing tests tracked; runner upgraded to exact per-module expectations. |
-| 7 | Reconcile/estimate/path coherence | 31 holes remain; 148–257 original budget; per-derivation authority rationale explicit. |
+| 7 | Reconcile/estimate/path coherence | 30 holes remain; 148–257 original budget; per-derivation authority rationale explicit. |
 | 8 | Release closure | Serial suite, scans, immutable production, seeded 207/207, best-effort unseeded, clean index required. |
 
 ## 15. Release boundary

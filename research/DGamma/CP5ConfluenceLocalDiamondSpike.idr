@@ -316,8 +316,37 @@ public export
   RelationalReplayEndpoint name key world error value nameEq keyEq left middle ->
   RelationalReplayEndpoint name key world error value nameEq keyEq middle right ->
   RelationalReplayEndpoint name key world error value nameEq keyEq left right
-relationalReplayEndpointTransitiveSpike =
-  ?relationalReplayEndpointTransitiveSpike_rhs
+relationalReplayEndpointTransitiveSpike nameEq keyEq left middle right
+  (MkRelationalReplayEndpoint firstEffects firstControls middleWellFormed)
+  (MkRelationalReplayEndpoint secondEffects secondControls rightWellFormed) =
+    MkRelationalReplayEndpoint
+      (effectsTransitive firstEffects secondEffects)
+      (controlsTransitive firstControls secondControls)
+      rightWellFormed
+  where
+  0 effectsTransitive :
+    EffectStateRelated keyEq leftEffect middleEffect ->
+    EffectStateRelated keyEq middleEffect rightEffect ->
+    EffectStateRelated keyEq leftEffect rightEffect
+  effectsTransitive
+    (MkEffectStateRelated firstAmbient firstTables)
+    (MkEffectStateRelated secondAmbient secondTables) =
+      MkEffectStateRelated (trans firstAmbient secondAmbient)
+        (\actor => trans (firstTables actor) (secondTables actor))
+
+  0 controlsTransitive :
+    OrderedRegistryControlsRelated name key world error value leftEntries
+      middleEntries ->
+    OrderedRegistryControlsRelated name key world error value middleEntries
+      rightEntries ->
+    OrderedRegistryControlsRelated name key world error value leftEntries
+      rightEntries
+  controlsTransitive OrderedControlsNil OrderedControlsNil = OrderedControlsNil
+  controlsTransitive
+    (OrderedControlsCons actor first firstRest)
+    (OrderedControlsCons actor second secondRest) =
+      OrderedControlsCons actor (fiberControlTransitive first second)
+        (controlsTransitive firstRest secondRest)
 
 ||| Relational local diamond suitable for splicing by replay.  Action and tag
 ||| equalities are both explicit: L-Iter and L-Finish share LAdvance, so action
