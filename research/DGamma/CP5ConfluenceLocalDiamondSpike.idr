@@ -2310,6 +2310,79 @@ advanceRawAfterForeignActivation {name} {key} {world} {error} {value}
                       earlyShape movedRawConcrete
                 in MkRawActivationMove movedAfter movedRaw
 
+0 activationRawAfterForeignActivation :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, earlyRightFinal : SystemState name key value world error} ->
+  (leftAction, foreignAction : Action name key value world error) ->
+  (leftTag, foreignTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first =
+    Just (leftTag, middle)) ->
+  (foreignChecked : checkedApplyAction @{nameEq} @{keyEq} foreignAction first =
+    Just (foreignTag, earlyRightFinal)) ->
+  (leftActivation : PaperActivationStep
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked)) ->
+  (foreignActivation : PaperActivationStep
+    (Fired {before = first} {afterState = earlyRightFinal}
+      nameEq keyEq foreignAction foreignTag foreignChecked)) ->
+  Not (actionOwner leftAction = actionOwner foreignAction) ->
+  registryWellFormed @{nameEq} @{keyEq} earlyRightFinal = True ->
+  (movedEffect : EffectState name key value world) ->
+  partialEffectMapFor nameEq keyEq leftAction leftTag earlyRightFinal
+    (projectEffectState @{nameEq} earlyRightFinal) = Just movedEffect ->
+  RawActivationMove nameEq keyEq leftAction leftTag earlyRightFinal
+activationRawAfterForeignActivation nameEq keyEq leftAction foreignAction
+  leftTag foreignTag leftChecked foreignChecked
+  (PaperBeginStep actionSame tagSame) foreignActivation distinct earlyWellFormed
+  movedEffect mapRuns = case actionSame of
+    Refl => case tagSame of
+      Refl => beginRawAfterForeignActivation nameEq keyEq _ foreignAction
+        foreignTag leftChecked foreignChecked foreignActivation distinct
+        earlyWellFormed
+activationRawAfterForeignActivation nameEq keyEq leftAction foreignAction
+  leftTag foreignTag leftChecked foreignChecked
+  (PaperIterStep actionSame tagSame) foreignActivation distinct earlyWellFormed
+  movedEffect mapRuns = case actionSame of
+    Refl => case tagSame of
+      Refl => advanceRawAfterForeignActivation nameEq keyEq _ LIterTag
+        foreignAction foreignTag leftChecked foreignChecked foreignActivation
+        distinct earlyWellFormed (Left Refl) movedEffect mapRuns
+activationRawAfterForeignActivation nameEq keyEq leftAction foreignAction
+  leftTag foreignTag leftChecked foreignChecked
+  (PaperFinishStep actionSame tagSame) foreignActivation distinct earlyWellFormed
+  movedEffect mapRuns = case actionSame of
+    Refl => case tagSame of
+      Refl => advanceRawAfterForeignActivation nameEq keyEq _ LFinishTag
+        foreignAction foreignTag leftChecked foreignChecked foreignActivation
+        distinct earlyWellFormed (Right Refl) movedEffect mapRuns
+
+record CheckedActivationMove
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (action : Action name key value world error) (tag : RuleTag)
+  (before : SystemState name key value world error) where
+  constructor MkCheckedActivationMove
+  checkedActivationAfter : SystemState name key value world error
+  0 checkedActivationRuns : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, checkedActivationAfter)
+  checkedActivationTransition : Transition before checkedActivationAfter
+
+0 checkRawActivationMove :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (before : SystemState name key value world error) ->
+  registryWellFormed @{nameEq} @{keyEq} before = True ->
+  RawActivationMove nameEq keyEq action tag before ->
+  CheckedActivationMove nameEq keyEq action tag before
+checkRawActivationMove nameEq keyEq action tag before sourceWellFormed
+  (MkRawActivationMove afterState raw) =
+    let 0 afterWellFormed = preservationTheoremProof nameEq keyEq action before
+          afterState tag sourceWellFormed raw
+        0 checked : (checkedApplyAction @{nameEq} @{keyEq} action before =
+          Just (tag, afterState))
+        checked = rewrite raw in rewrite afterWellFormed in Refl
+    in MkCheckedActivationMove afterState checked
+      (Fired nameEq keyEq action tag checked)
+
 0 advanceTransitionMapOriginCong :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
