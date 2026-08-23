@@ -2744,6 +2744,59 @@ activationPairEffectOutput nameEq keyEq {first} {middle} {originalFinal}
     in MkActivationPairEffectOutput (commutedOutput commuted) movedRuns
       (originalFinalToCommuted commuted)
 
+record CheckedActivationEndpoint
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (action : Action name key value world error) (tag : RuleTag)
+  (before, originalFinal : SystemState name key value world error) where
+  constructor MkCheckedActivationEndpoint
+  checkedEndpointAfter : SystemState name key value world error
+  checkedEndpointTransition : Transition before checkedEndpointAfter
+  0 checkedEndpointEffects : EffectStateRelated keyEq
+    (projectEffectState @{nameEq} originalFinal)
+    (projectEffectState @{nameEq} checkedEndpointAfter)
+  0 checkedEndpointWellFormed : registryWellFormed @{nameEq} @{keyEq}
+    checkedEndpointAfter = True
+
+0 checkActivationEndpoint :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (before, originalFinal : SystemState name key value world error) ->
+  registryWellFormed @{nameEq} @{keyEq} before = True ->
+  (effectOutput : ActivationPairEffectOutput nameEq keyEq action tag before
+    originalFinal) ->
+  RawActivationMove nameEq keyEq action tag before ->
+  CheckedActivationEndpoint nameEq keyEq action tag before originalFinal
+checkActivationEndpoint nameEq keyEq action tag before originalFinal
+  sourceWellFormed effectOutput rawMove =
+    case checkRawActivationMove nameEq keyEq action tag before sourceWellFormed
+      rawMove of
+      MkCheckedActivationMove afterState checked transition =>
+        let 0 actualFrame = checkedEffectFrameRelation nameEq keyEq action tag
+              before afterState checked
+            0 exactFrame : PartialRelated (EffectState name key value world)
+              (EffectStateRelated keyEq)
+              (Just (activationPairEffectState effectOutput))
+              (Just (projectEffectState @{nameEq} afterState))
+            exactFrame = localPartialRelatedRewrite
+              (movedLeftEffectMapRuns effectOutput) Refl actualFrame
+            0 commutedToActual : EffectStateRelated keyEq
+              (activationPairEffectState effectOutput)
+              (projectEffectState @{nameEq} afterState)
+            commutedToActual = localPartialDefinedRelation exactFrame
+            0 originalToActual : EffectStateRelated keyEq
+              (projectEffectState @{nameEq} originalFinal)
+              (projectEffectState @{nameEq} afterState)
+            originalToActual = localEffectStateTransitive
+              (originalToMovedEffects effectOutput) commutedToActual
+            0 afterWellFormed : (registryWellFormed @{nameEq} @{keyEq}
+              afterState = True)
+            afterWellFormed = preservationTheoremProof nameEq keyEq action
+              before afterState tag sourceWellFormed
+              (checkedActionProjects nameEq keyEq action before afterState tag
+                checked)
+        in MkCheckedActivationEndpoint afterState transition originalToActual
+          afterWellFormed
+
 ||| Candidate for paper Lemma 71(1).
 public export
 0 activationActivationDiamondSpike :
