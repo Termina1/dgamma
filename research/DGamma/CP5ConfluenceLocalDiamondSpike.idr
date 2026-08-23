@@ -2204,14 +2204,78 @@ successfulOutcomeAgreementUndoMaps
   movedAfter sourceAfter movedUndo sourceUndo movedContinuation sourceContinuation
   Refl Refl (IteratorSuccessfulYieldsAgree continuationSame undoMaps) = undoMaps
 
+0 applyActionTagTransport :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {action : Action name key value world error} ->
+  {before, afterState : SystemState name key value world error} ->
+  {leftTag, rightTag : RuleTag} ->
+  leftTag = rightTag ->
+  applyAction @{nameEq} @{keyEq} action before = Just (leftTag, afterState) ->
+  applyAction @{nameEq} @{keyEq} action before = Just (rightTag, afterState)
+applyActionTagTransport Refl raw = raw
+
+data TaggedPaperAdvanceSource :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (tag : RuleTag) -> (before : SystemState name key value world error) -> Type where
+  TaggedIterSource : tag = LIterTag ->
+    PaperAdvanceSource name key world error value nameEq keyEq actor LIterTag
+      before ->
+    TaggedPaperAdvanceSource name key world error value nameEq keyEq actor tag
+      before
+  TaggedFinishSource : tag = LFinishTag ->
+    PaperAdvanceSource name key world error value nameEq keyEq actor LFinishTag
+      before ->
+    TaggedPaperAdvanceSource name key world error value nameEq keyEq actor tag
+      before
+
+0 taggedPaperAdvanceSource :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {before, afterState : SystemState name key value world error} ->
+  (tag : RuleTag) ->
+  (raw : applyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+    Just (tag, afterState)) ->
+  (paperTag : Either (tag = LIterTag) (tag = LFinishTag)) ->
+  TaggedPaperAdvanceSource name key world error value nameEq keyEq actor tag
+    before
+taggedPaperAdvanceSource nameEq keyEq actor {before} {afterState} tag raw
+  (Left tagIsIter) = case tagIsIter of
+    Refl => TaggedIterSource Refl
+      (paperAdvanceSource nameEq keyEq actor {before} {afterState} LIterTag raw
+        (Left Refl))
+taggedPaperAdvanceSource nameEq keyEq actor {before} {afterState} tag raw
+  (Right tagIsFinish) = case tagIsFinish of
+    Refl => TaggedFinishSource Refl
+      (paperAdvanceSource nameEq keyEq actor {before} {afterState} LFinishTag raw
+        (Right Refl))
+
+0 paperAdvanceSourcePaperTag :
+  PaperAdvanceSource name key world error value nameEq keyEq actor tag before ->
+  Either (tag = LIterTag) (tag = LFinishTag)
+paperAdvanceSourcePaperTag (AdvanceSourceIter _ _ _) = Left Refl
+paperAdvanceSourcePaperTag (AdvanceSourceFinishEmpty _ _ _) = Right Refl
+paperAdvanceSourcePaperTag (AdvanceSourceFinishOne _ _ _) = Right Refl
+
+0 paperAdvanceRuntimeEffectRun :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (tag : RuleTag) -> Either (tag = LIterTag) (tag = LFinishTag) ->
+  (state : SystemState name key value world error) ->
+  (output : EffectState name key value world) ->
+  partialEffectMapFor nameEq keyEq (LAdvance actor) tag state
+    (projectEffectState @{nameEq} state) = Just output ->
+  advanceRuntimeEffectMap nameEq keyEq actor state
+    (projectEffectState @{nameEq} state) = Just output
+paperAdvanceRuntimeEffectRun nameEq keyEq actor tag (Left tagIsIter) state output
+  runs = case tagIsIter of Refl => runs
+paperAdvanceRuntimeEffectRun nameEq keyEq actor tag (Right tagIsFinish) state output
+  runs = case tagIsFinish of Refl => runs
+
 0 paperAdvanceTargetAtKnownFiber :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
   (ambient : world) -> (fibers : Registry name key value world error) ->
-  {afterState : SystemState name key value world error} ->
-  (tag : RuleTag) ->
-  (raw : applyAction @{nameEq} @{keyEq} (LAdvance actor)
-    (MkSystemState ambient fibers) = Just (tag, afterState)) ->
-  Either (tag = LIterTag) (tag = LFinishTag) ->
+  (source : PaperAdvanceSource name key world error value nameEq keyEq actor tag
+    (MkSystemState ambient fibers)) ->
   (component : Component key value world error) ->
   (parent : Parent name) -> (retiredFlag : Bool) ->
   (table : OwnedTable key value (componentProvisions component)) ->
@@ -2227,10 +2291,9 @@ successfulOutcomeAgreementUndoMaps
   targetFiber @{nameEq} @{keyEq}
     (MkFiber component parent retiredFlag table
       (Reloading remaining accumulator view)) fibers = Just view
-paperAdvanceTargetAtKnownFiber nameEq keyEq actor ambient fibers {afterState} tag
-  raw paperTag component parent retiredFlag table remaining accumulator view found =
-    case paperAdvanceSource nameEq keyEq actor
-      {before = MkSystemState ambient fibers} {afterState} tag raw paperTag of
+paperAdvanceTargetAtKnownFiber nameEq keyEq actor ambient fibers source
+  component parent retiredFlag table remaining accumulator view found =
+    case source of
       AdvanceSourceFinishEmpty {ambient = observedAmbient}
         {fibers = observedFibers} {component = observedComponent}
         {parent = observedParent} {retiredFlag = observedRetired}
@@ -3795,6 +3858,249 @@ successfulIterReplacementComparison nameEq keyEq actor sourceAmbient movedAmbien
           nextRelated
           (replaceBindingRuntimeBindings nameEq actor sourceNext sourceRegistry)
           (replaceBindingRuntimeBindings nameEq actor movedNext movedRegistry)
+
+0 advanceReplacementComparisonFromAgreement :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {traceFirst, traceLast : SystemState name key value world error} ->
+  (trace : Transitions traceFirst traceLast) ->
+  (sourceAmbient, movedAmbient : world) ->
+  (sourceRegistry, movedRegistry : Registry name key value world error) ->
+  (sourceAfter, movedAfter : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (the (SystemState name key value world error)
+      (MkSystemState sourceAmbient sourceRegistry)) = Just (tag, sourceAfter)) ->
+  (movedChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (the (SystemState name key value world error)
+      (MkSystemState movedAmbient movedRegistry)) = Just (tag, movedAfter)) ->
+  (0 sourceOccurs : OccursIn
+    (Fired {before = the (SystemState name key value world error)
+      (MkSystemState sourceAmbient sourceRegistry)}
+      {afterState = sourceAfter} nameEq keyEq (LAdvance actor) tag sourceChecked)
+    trace) ->
+  (paperTag : Either (tag = LIterTag) (tag = LFinishTag)) ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor movedRegistry =
+    lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} actor sourceRegistry ->
+  ((stage : IteratorStage name key world error value actor trace) ->
+    IteratorOutcomeAgreement name key value world error keyEq
+      (iteratorStageOutcome stage
+        (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState movedAmbient movedRegistry))))
+      (iteratorStageOutcome stage
+        (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState sourceAmbient sourceRegistry))))) ->
+  ActivationReplacementComparison nameEq actor
+    (the (SystemState name key value world error)
+      (MkSystemState sourceAmbient sourceRegistry)) sourceAfter
+    (the (SystemState name key value world error)
+      (MkSystemState movedAmbient movedRegistry)) movedAfter
+advanceReplacementComparisonFromAgreement nameEq keyEq actor trace sourceAmbient
+  movedAmbient sourceRegistry movedRegistry sourceAfter movedAfter tag
+  sourceChecked movedChecked sourceOccurs paperTag lookupSame outcomeAgreement =
+    let sourceState : SystemState name key value world error
+        sourceState = MkSystemState sourceAmbient sourceRegistry
+        movedState : SystemState name key value world error
+        movedState = MkSystemState movedAmbient movedRegistry
+        0 sourceRaw : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+          sourceState = Just (tag, sourceAfter)
+        sourceRaw = checkedActionProjects nameEq keyEq (LAdvance actor)
+          sourceState sourceAfter tag sourceChecked
+        0 movedRaw : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+          movedState = Just (tag, movedAfter)
+        movedRaw = checkedActionProjects nameEq keyEq (LAdvance actor)
+          movedState movedAfter tag movedChecked
+        0 sourceFrame : FramedEffectOutput keyEq
+          (partialEffectMapFor nameEq keyEq (LAdvance actor) tag sourceState)
+          (projectEffectState @{nameEq} sourceState)
+          (projectEffectState @{nameEq} sourceAfter)
+        sourceFrame = framedEffectOutput keyEq
+          (partialEffectMapFor nameEq keyEq (LAdvance actor) tag sourceState)
+          (projectEffectState @{nameEq} sourceState)
+          (projectEffectState @{nameEq} sourceAfter)
+          (checkedEffectFrameRelation nameEq keyEq (LAdvance actor) tag
+            sourceState sourceAfter sourceChecked)
+        0 movedFrame : FramedEffectOutput keyEq
+          (partialEffectMapFor nameEq keyEq (LAdvance actor) tag movedState)
+          (projectEffectState @{nameEq} movedState)
+          (projectEffectState @{nameEq} movedAfter)
+        movedFrame = framedEffectOutput keyEq
+          (partialEffectMapFor nameEq keyEq (LAdvance actor) tag movedState)
+          (projectEffectState @{nameEq} movedState)
+          (projectEffectState @{nameEq} movedAfter)
+          (checkedEffectFrameRelation nameEq keyEq (LAdvance actor) tag
+            movedState movedAfter movedChecked)
+        0 sourceAdvanceRuns : advanceRuntimeEffectMap nameEq keyEq actor
+          sourceState (projectEffectState @{nameEq} sourceState) =
+          Just (framedOutput sourceFrame)
+        sourceAdvanceRuns = paperAdvanceRuntimeEffectRun nameEq keyEq actor tag
+          paperTag sourceState (framedOutput sourceFrame)
+          (framedMapRuns sourceFrame)
+        0 movedAdvanceRuns : advanceRuntimeEffectMap nameEq keyEq actor movedState
+          (projectEffectState @{nameEq} movedState) =
+          Just (framedOutput movedFrame)
+        movedAdvanceRuns = paperAdvanceRuntimeEffectRun nameEq keyEq actor tag
+          paperTag movedState (framedOutput movedFrame) (framedMapRuns movedFrame)
+        0 movedPaper : PaperAdvanceSource name key world error value nameEq keyEq
+          actor tag movedState
+        movedPaper = paperAdvanceSource nameEq keyEq actor {before = movedState}
+          {afterState = movedAfter} tag movedRaw paperTag
+    in case taggedPaperAdvanceSource nameEq keyEq actor {before = sourceState}
+      {afterState = sourceAfter} tag sourceRaw paperTag of
+      TaggedFinishSource exactTag sourcePaper => case sourcePaper of
+        AdvanceSourceFinishEmpty {ambient = observedAmbient}
+          {fibers = observedFibers} {component} {parent} {retiredFlag} {table}
+          {accumulator} {view} sourceShape sourceFound sourceTarget =>
+            case sourceShape of
+              Refl =>
+                let exactFiber : Fiber name key value world error
+                    exactFiber = MkFiber component parent retiredFlag table
+                      (Reloading [] accumulator view)
+                    0 movedFound : lookupFiber @{nameEq} actor movedRegistry =
+                      Just exactFiber
+                    movedFound = trans lookupSame sourceFound
+                    0 movedTarget : targetFiber @{nameEq} @{keyEq} exactFiber
+                      movedRegistry = Just view
+                    movedTarget = paperAdvanceTargetAtKnownFiber nameEq keyEq actor
+                      movedAmbient movedRegistry movedPaper component parent
+                      retiredFlag table [] accumulator view movedFound
+                    0 sourceFinishRaw : applyAction @{nameEq} @{keyEq}
+                      (LAdvance actor) sourceState = Just (LFinishTag, sourceAfter)
+                    sourceFinishRaw = applyActionTagTransport {nameEq = nameEq} {keyEq = keyEq}
+                      {action = LAdvance actor} {before = sourceState}
+                      {afterState = sourceAfter} exactTag sourceRaw
+                    0 movedFinishRaw : applyAction @{nameEq} @{keyEq}
+                      (LAdvance actor) movedState = Just (LFinishTag, movedAfter)
+                    movedFinishRaw = applyActionTagTransport {nameEq = nameEq} {keyEq = keyEq}
+                      {action = LAdvance actor} {before = movedState}
+                      {afterState = movedAfter} exactTag movedRaw
+                in emptyFinishReplacementComparison nameEq keyEq actor
+                  sourceAmbient movedAmbient sourceRegistry movedRegistry component
+                  parent retiredFlag table accumulator view sourceAfter movedAfter
+                  sourceFound movedFound sourceTarget movedTarget sourceFinishRaw
+                  movedFinishRaw
+        AdvanceSourceFinishOne {ambient = observedAmbient}
+          {fibers = observedFibers} {component} {parent} {retiredFlag} {table}
+          {step} {accumulator} {view} sourceShape sourceFound sourceTarget =>
+            case sourceShape of
+              Refl =>
+                let exactFiber : Fiber name key value world error
+                    exactFiber = MkFiber component parent retiredFlag table
+                      (Reloading [step] accumulator view)
+                    0 movedFound : lookupFiber @{nameEq} actor movedRegistry =
+                      Just exactFiber
+                    movedFound = trans lookupSame sourceFound
+                    0 movedTarget : targetFiber @{nameEq} @{keyEq} exactFiber
+                      movedRegistry = Just view
+                    movedTarget = paperAdvanceTargetAtKnownFiber nameEq keyEq actor
+                      movedAmbient movedRegistry movedPaper component parent
+                      retiredFlag table [step] accumulator view movedFound
+                    0 stage : IteratorStage name key world error value actor trace
+                    stage = StageFromAdvance nameEq keyEq actor tag sourceChecked
+                      sourceOccurs exactFiber sourceFound [step] accumulator view
+                      Refl step [] SuffixHere
+                    0 agreement : IteratorOutcomeAgreement name key value world
+                      error keyEq
+                      (iteratorStageOutcome stage
+                        (projectEffectState @{nameEq} movedState))
+                      (iteratorStageOutcome stage
+                        (projectEffectState @{nameEq} sourceState))
+                    agreement = outcomeAgreement stage
+                    0 sourceFinishRaw : applyAction @{nameEq} @{keyEq}
+                      (LAdvance actor) sourceState = Just (LFinishTag, sourceAfter)
+                    sourceFinishRaw = applyActionTagTransport {nameEq = nameEq} {keyEq = keyEq}
+                      {action = LAdvance actor} {before = sourceState}
+                      {afterState = sourceAfter} exactTag sourceRaw
+                    0 movedFinishRaw : applyAction @{nameEq} @{keyEq}
+                      (LAdvance actor) movedState = Just (LFinishTag, movedAfter)
+                    movedFinishRaw = applyActionTagTransport {nameEq = nameEq} {keyEq = keyEq}
+                      {action = LAdvance actor} {before = movedState}
+                      {afterState = movedAfter} exactTag movedRaw
+                    0 paired : PairedAdvanceYield nameEq keyEq actor component
+                      table step [] view sourceAmbient movedAmbient sourceRegistry
+                      movedRegistry
+                    paired = pairedAdvanceYieldFromRuns nameEq keyEq actor
+                      component parent retiredFlag table step [] accumulator view
+                      sourceAmbient movedAmbient sourceRegistry movedRegistry
+                      (framedOutput sourceFrame) (framedOutput movedFrame)
+                      sourceFound movedFound sourceAdvanceRuns movedAdvanceRuns
+                      agreement
+                in successfulFinishReplacementComparison nameEq keyEq actor
+                  sourceAmbient movedAmbient sourceRegistry movedRegistry component
+                  parent retiredFlag table step accumulator view sourceAfter
+                  movedAfter sourceFound movedFound
+                  (pairedSourceCapability paired) (pairedMovedCapability paired)
+                  (pairedSourceResolved paired) (pairedMovedResolved paired)
+                  (pairedSourceAfter paired) (pairedMovedAfter paired)
+                  (pairedSourceUndo paired) (pairedMovedUndo paired)
+                  (pairedSourceRan paired) (pairedMovedRan paired)
+                  (pairedUndoMaps paired) sourceTarget movedTarget sourceFinishRaw
+                  movedFinishRaw
+
+      TaggedIterSource exactTag sourcePaper => case sourcePaper of
+        AdvanceSourceIter {ambient = observedAmbient}
+          {fibers = observedFibers} {component} {parent} {retiredFlag} {table}
+          {step} {next} {more} {accumulator} {view} sourceShape sourceFound
+          sourceTarget =>
+            case sourceShape of
+              Refl =>
+                let exactFiber : Fiber name key value world error
+                    exactFiber = MkFiber component parent retiredFlag table
+                      (Reloading (step :: next :: more) accumulator view)
+                    0 movedFound : lookupFiber @{nameEq} actor movedRegistry =
+                      Just exactFiber
+                    movedFound = trans lookupSame sourceFound
+                    0 movedTarget : targetFiber @{nameEq} @{keyEq} exactFiber
+                      movedRegistry = Just view
+                    movedTarget = paperAdvanceTargetAtKnownFiber nameEq keyEq actor
+                      movedAmbient movedRegistry movedPaper component parent
+                      retiredFlag table (step :: next :: more) accumulator view
+                      movedFound
+                    0 stage : IteratorStage name key world error value actor trace
+                    stage = StageFromAdvance nameEq keyEq actor tag sourceChecked
+                      sourceOccurs exactFiber sourceFound (step :: next :: more)
+                      accumulator view Refl step (next :: more) SuffixHere
+                    0 agreement : IteratorOutcomeAgreement name key value world
+                      error keyEq
+                      (iteratorStageOutcome stage
+                        (projectEffectState @{nameEq} movedState))
+                      (iteratorStageOutcome stage
+                        (projectEffectState @{nameEq} sourceState))
+                    agreement = outcomeAgreement stage
+                    0 sourceIterRaw : applyAction @{nameEq} @{keyEq}
+                      (LAdvance actor) sourceState = Just (LIterTag, sourceAfter)
+                    sourceIterRaw = applyActionTagTransport {nameEq = nameEq} {keyEq = keyEq}
+                      {action = LAdvance actor} {before = sourceState}
+                      {afterState = sourceAfter} exactTag sourceRaw
+                    0 movedIterRaw : applyAction @{nameEq} @{keyEq}
+                      (LAdvance actor) movedState = Just (LIterTag, movedAfter)
+                    movedIterRaw = applyActionTagTransport {nameEq = nameEq} {keyEq = keyEq}
+                      {action = LAdvance actor} {before = movedState}
+                      {afterState = movedAfter} exactTag movedRaw
+                    0 paired : PairedAdvanceYield nameEq keyEq actor component
+                      table step (next :: more) view sourceAmbient movedAmbient
+                      sourceRegistry movedRegistry
+                    paired = pairedAdvanceYieldFromRuns nameEq keyEq actor
+                      component parent retiredFlag table step (next :: more)
+                      accumulator view sourceAmbient movedAmbient sourceRegistry
+                      movedRegistry (framedOutput sourceFrame)
+                      (framedOutput movedFrame) sourceFound movedFound
+                      sourceAdvanceRuns movedAdvanceRuns agreement
+                in successfulIterReplacementComparison nameEq keyEq actor
+                  sourceAmbient movedAmbient sourceRegistry movedRegistry component
+                  parent retiredFlag table step next more accumulator view sourceAfter
+                  movedAfter sourceFound movedFound
+                  (pairedSourceCapability paired) (pairedMovedCapability paired)
+                  (pairedSourceResolved paired) (pairedMovedResolved paired)
+                  (pairedSourceAfter paired) (pairedMovedAfter paired)
+                  (pairedSourceUndo paired) (pairedMovedUndo paired)
+                  (pairedSourceRan paired) (pairedMovedRan paired)
+                  (pairedUndoMaps paired) sourceTarget movedTarget sourceIterRaw
+                  movedIterRaw
 
 record ActivationActivationCheckedCore
   (nameEq : DecEq name) (keyEq : DecEq key)
