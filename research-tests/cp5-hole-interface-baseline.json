@@ -1,0 +1,197 @@
+{
+  "baseline": "7d467e0556ab8ef62fa0d6c21b049f4346f1245d",
+  "holes": [
+    {
+      "function": "closingFreeTraceShapeSpike",
+      "hole": "closingFreeTraceShapeSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "signature": "0 closingFreeTraceShapeSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (protocol : RegistrationProtocol key value world error) ->\n  {initial, finalState : SystemState name key value world error} ->\n  (trace : Transitions initial finalState) ->\n  NoClosingEpisodes name key world error value nameEq keyEq trace ->\n  ReplayInvariantBundle name key world error value protocol nameEq keyEq trace ->\n  ClosingFreeTraceShape name key world error value nameEq keyEq trace"
+    },
+    {
+      "function": "supportOrderingSpike",
+      "hole": "supportOrderingSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "signature": "0 supportOrderingSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (protocol : RegistrationProtocol key value world error) ->\n  {initial, finalState : SystemState name key value world error} ->\n  (trace : Transitions initial finalState) ->\n  ReplayInvariantBundle name key world error value protocol nameEq keyEq trace ->\n  SupportOrderingCapital name key world error value nameEq keyEq finalState"
+    },
+    {
+      "function": "sortClosingFreeTraceSpike",
+      "hole": "sortClosingFreeTraceSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "signature": "0 sortClosingFreeTraceSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (protocol : RegistrationProtocol key value world error) ->\n  {initial, finalState : SystemState name key value world error} ->\n  (trace : Transitions initial finalState) ->\n  ReplayInvariantBundle name key world error value protocol nameEq keyEq trace ->\n  ClosingFreeTraceShape name key world error value nameEq keyEq trace ->\n  (ordering : SupportOrderingCapital name key world error value nameEq keyEq\n    finalState) ->\n  SortedClosingFreeTrace name key world error value protocol nameEq keyEq trace\n    ordering"
+    },
+    {
+      "function": "canonicalSupportTransportSpike",
+      "hole": "canonicalSupportTransportSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "signature": "0 canonicalSupportTransportSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  {initial, originalFinal, reducedFinal : SystemState name key value world error} ->\n  (original : Transitions initial originalFinal) ->\n  (reduced : Transitions initial reducedFinal) ->\n  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq\n    originalFinal reducedFinal) ->\n  CanonicalRegistrationCorrespondence original reduced\n    (endpointWithdrawnGenerations endpoint) ->\n  CanonicalSupportTransport name key world error value nameEq keyEq originalFinal\n    reducedFinal endpoint"
+    },
+    {
+      "function": "deletionSortingOrchestrationAccountingSpike",
+      "hole": "deletionSortingOrchestrationAccountingSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "signature": "0 deletionSortingOrchestrationAccountingSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (protocol : RegistrationProtocol key value world error) ->\n  {initial, originalFinal : SystemState name key value world error} ->\n  (original : Transitions initial originalFinal) ->\n  (reduction : ClosingFreeReduction name key world error value protocol nameEq\n    keyEq original) ->\n  (ordering : SupportOrderingCapital name key world error value nameEq keyEq\n    (reducedFinal reduction)) ->\n  (sorted : SortedClosingFreeTrace name key world error value protocol nameEq\n    keyEq (reducedTrace reduction) ordering) ->\n  OneTraceOrchestrationAccounting name key world error value protocol nameEq keyEq\n    original reduction ordering sorted"
+    },
+    {
+      "function": "independentCanonicalScheduleSpike",
+      "hole": "independentCanonicalScheduleSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "signature": "0 independentCanonicalScheduleSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (protocol : RegistrationProtocol key value world error) ->\n  {initial, originalFinal : SystemState name key value world error} ->\n  (original : Transitions initial originalFinal) ->\n  CanonicalizationPremises name key world error value protocol nameEq keyEq original ->\n  (reduction : ClosingFreeReduction name key world error value protocol nameEq\n    keyEq original) ->\n  (ordering : SupportOrderingCapital name key world error value nameEq keyEq\n    (reducedFinal reduction)) ->\n  (sorted : SortedClosingFreeTrace name key world error value protocol nameEq\n    keyEq (reducedTrace reduction) ordering) ->\n  CanonicalSupportTransport name key world error value nameEq keyEq originalFinal\n    (reducedFinal reduction) (cumulativeEndpoint reduction) ->\n  OneTraceOrchestrationAccounting name key world error value protocol nameEq keyEq\n    original reduction ordering sorted ->\n  IndependentCanonicalSchedule name key world error value protocol nameEq keyEq\n    original"
+    },
+    {
+      "function": "operationalAdjacentBlockSwapSpike",
+      "hole": "operationalAdjacentBlockSwapSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "signature": "0 operationalAdjacentBlockSwapSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (protocol : RegistrationProtocol key value world error) ->\n  {sourceOrder, targetOrder : List name} ->\n  (orderSwap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->\n  {initial, sourceFinal : SystemState name key value world error} ->\n  (sourceTrace : Transitions initial sourceFinal) ->\n  (sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq\n    sourceOrder sourceTrace) ->\n  (sourcePremises : ReplayInvariantBundle name key world error value protocol\n    nameEq keyEq sourceTrace) ->\n  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq\n    keyEq orderSwap sourceTrace sourceBlocks sourcePremises) ->\n  OperationalAdjacentBlockSwap name key world error value protocol nameEq keyEq\n    orderSwap sourceTrace sourceBlocks sourcePremises safety"
+    },
+    {
+      "function": "canonicalSupportOrdersMatchSpike",
+      "hole": "canonicalSupportOrdersMatchSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "signature": "0 canonicalSupportOrdersMatchSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (protocol : RegistrationProtocol key value world error) ->\n  {initial, leftFinal, rightFinal : SystemState name key value world error} ->\n  (leftTrace : Transitions initial leftFinal) ->\n  (rightTrace : Transitions initial rightFinal) ->\n  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace\n    rightTrace) ->\n  (leftCapital : IndependentCanonicalSchedule name key world error value protocol\n    nameEq keyEq leftTrace) ->\n  (rightCapital : IndependentCanonicalSchedule name key world error value protocol\n    nameEq keyEq rightTrace) ->\n  MappedCanonicalSupportOrders name key world error value protocol nameEq keyEq\n    leftTrace rightTrace\n    (currentNameBijection (endpointRenaming sameInputs))\n    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)"
+    },
+    {
+      "function": "selectOperationalCanonicalPermutationSpike",
+      "hole": "selectOperationalCanonicalPermutationSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "signature": "0 selectOperationalCanonicalPermutationSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (protocol : RegistrationProtocol key value world error) ->\n  {initial, leftFinal, rightFinal : SystemState name key value world error} ->\n  (leftTrace : Transitions initial leftFinal) ->\n  (rightTrace : Transitions initial rightFinal) ->\n  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace\n    rightTrace) ->\n  (leftCapital : IndependentCanonicalSchedule name key world error value protocol\n    nameEq keyEq leftTrace) ->\n  (rightCapital : IndependentCanonicalSchedule name key world error value protocol\n    nameEq keyEq rightTrace) ->\n  (matching : MappedCanonicalSupportOrders name key world error value protocol\n    nameEq keyEq leftTrace rightTrace\n    (currentNameBijection (endpointRenaming sameInputs))\n    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)) ->\n  CertifiedOperationalCanonicalPermutation name key world error value protocol\n    nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital matching"
+    },
+    {
+      "function": "canonicalSchedulesConvergeSpike",
+      "hole": "canonicalSchedulesConvergeSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "signature": "0 canonicalSchedulesConvergeSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (protocol : RegistrationProtocol key value world error) ->\n  {initial, leftFinal, rightFinal : SystemState name key value world error} ->\n  (leftTrace : Transitions initial leftFinal) ->\n  (rightTrace : Transitions initial rightFinal) ->\n  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace\n    rightTrace) ->\n  (leftCapital : IndependentCanonicalSchedule name key world error value protocol\n    nameEq keyEq leftTrace) ->\n  (rightCapital : IndependentCanonicalSchedule name key world error value protocol\n    nameEq keyEq rightTrace) ->\n  {matching : MappedCanonicalSupportOrders name key world error value protocol\n    nameEq keyEq leftTrace rightTrace\n    (currentNameBijection (endpointRenaming sameInputs))\n    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->\n  (operational : CertifiedOperationalCanonicalPermutation name key world error\n    value protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital\n      rightCapital matching) ->\n  CanonicalConvergenceResult name key world error value protocol nameEq keyEq\n    leftTrace rightTrace sameInputs leftCapital rightCapital operational"
+    },
+    {
+      "function": "closingEpisodeOccurrenceScanSpike",
+      "hole": "closingEpisodeOccurrenceScanSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+      "signature": "closingEpisodeOccurrenceScanSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (initial, finalState : SystemState name key value world error) ->\n  (trace : Transitions initial finalState) ->\n  ClosingEpisodeScan name key world error value nameEq keyEq trace"
+    },
+    {
+      "function": "deletedClassificationForcesLeftScannerDiscardSpike",
+      "hole": "deletedClassificationForcesLeftScannerDiscardSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+      "signature": "0 deletedClassificationForcesLeftScannerDiscardSpike :\n  (nameEq : DecEq name) ->\n  {leftInitial, leftFinal, rightInitial, rightFinal :\n    SystemState name key value world error} ->\n  {left : Transitions leftInitial leftFinal} ->\n  {right : Transitions rightInitial rightFinal} ->\n  (renaming : RegistrationGenerationBijection name) ->\n  (leftFinalIndex, rightFinalIndex : RegistrationIndexState name) ->\n  RegistrationTraceCorrespondence nameEq renaming\n    0 (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)\n    left leftFinalIndex\n    0 (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)\n    right rightFinalIndex [] [] ->\n  (generation : RegistrationGeneration name) ->\n  DeletedGenerationClassification name key world error value nameEq left\n    generation ->\n  Elem generation (indexedDeletedGenerations leftFinalIndex)"
+    },
+    {
+      "function": "deletedClassificationForcesRightScannerDiscardSpike",
+      "hole": "deletedClassificationForcesRightScannerDiscardSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+      "signature": "0 deletedClassificationForcesRightScannerDiscardSpike :\n  (nameEq : DecEq name) ->\n  {leftInitial, leftFinal, rightInitial, rightFinal :\n    SystemState name key value world error} ->\n  {left : Transitions leftInitial leftFinal} ->\n  {right : Transitions rightInitial rightFinal} ->\n  (renaming : RegistrationGenerationBijection name) ->\n  (leftFinalIndex, rightFinalIndex : RegistrationIndexState name) ->\n  RegistrationTraceCorrespondence nameEq renaming\n    0 (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)\n    left leftFinalIndex\n    0 (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)\n    right rightFinalIndex [] [] ->\n  (generation : RegistrationGeneration name) ->\n  DeletedGenerationClassification name key world error value nameEq right\n    generation ->\n  Elem generation (indexedDeletedGenerations rightFinalIndex)"
+    },
+    {
+      "function": "deletionStepOperationalOccurrenceFoldSpike",
+      "hole": "deletionStepOperationalOccurrenceFoldSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+      "signature": "0 deletionStepOperationalOccurrenceFoldSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (protocol : RegistrationProtocol key value world error) ->\n  {initial, finalState : SystemState name key value world error} ->\n  (trace : Transitions initial finalState) ->\n  (premises : CanonicalizationPremises name key world error value protocol\n    nameEq keyEq trace) ->\n  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq\n    trace) ->\n  (result : DeletionResult name key world error value nameEq keyEq trace\n    (selectedActor candidate) (selectedEpisode candidate)\n    (selectedRegistrations candidate) (selectedStartOrdinal candidate)\n    (selectedStartLive candidate)) ->\n  DeletionOperationalOccurrenceCertificate name key world error value nameEq\n    keyEq trace (selectedActor candidate) (selectedEpisode candidate)\n    (selectedRegistrations candidate) (selectedStartOrdinal candidate)\n    (selectedStartLive candidate) result"
+    },
+    {
+      "function": "selectMaximalClosingEpisodeSpike",
+      "hole": "selectMaximalClosingEpisodeSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+      "signature": "selectMaximalClosingEpisodeSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (protocol : RegistrationProtocol key value world error) ->\n  (initial, finalState : SystemState name key value world error) ->\n  (trace : Transitions initial finalState) ->\n  (premises : CanonicalizationPremises name key world error value protocol\n    nameEq keyEq trace) ->\n  (scan : ClosingEpisodeScan name key world error value nameEq keyEq trace) ->\n  MaximalClosingSelection name key world error value protocol nameEq keyEq trace\n    premises scan"
+    },
+    {
+      "function": "enrichDeletionChainStepSpike",
+      "hole": "enrichDeletionChainStepSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+      "signature": "0 enrichDeletionChainStepSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (protocol : RegistrationProtocol key value world error) ->\n  {initial, finalState : SystemState name key value world error} ->\n  (trace : Transitions initial finalState) ->\n  (premises : CanonicalizationPremises name key world error value protocol\n    nameEq keyEq trace) ->\n  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq\n    trace) ->\n  DeletionChainStep name key world error value protocol nameEq keyEq trace\n    premises candidate"
+    },
+    {
+      "function": "sameExternalOrchestrationReflexiveSpike",
+      "hole": "sameExternalOrchestrationReflexiveSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+      "signature": "0 sameExternalOrchestrationReflexiveSpike :\n  {name, key, world, error : Type} -> {value : key -> Type} ->\n  (nameEq : DecEq name) ->\n  {initial, finalState : SystemState name key value world error} ->\n  (trace : Transitions initial finalState) ->\n  SameExternalOrchestration {name = name} {key = key} {world = world}\n    {error = error} {value = value} nameEq trace trace"
+    },
+    {
+      "function": "sameExternalOrchestrationTransitiveSpike",
+      "hole": "sameExternalOrchestrationTransitiveSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+      "signature": "0 sameExternalOrchestrationTransitiveSpike :\n  {name, key, world, error : Type} -> {value : key -> Type} ->\n  (nameEq : DecEq name) ->\n  {leftFirst, leftFinal, middleFirst, middleFinal, rightFirst, rightFinal :\n    SystemState name key value world error} ->\n  {left : Transitions leftFirst leftFinal} ->\n  {middle : Transitions middleFirst middleFinal} ->\n  {right : Transitions rightFirst rightFinal} ->\n  SameExternalOrchestration {name = name} {key = key} {world = world}\n    {error = error} {value = value} nameEq left middle ->\n  SameExternalOrchestration {name = name} {key = key} {world = world}\n    {error = error} {value = value} nameEq middle right ->\n  SameExternalOrchestration {name = name} {key = key} {world = world}\n    {error = error} {value = value} nameEq left right"
+    },
+    {
+      "function": "traceIndependentAfterDeletionReplaySpike",
+      "hole": "traceIndependentAfterDeletionReplaySpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+      "signature": "0 traceIndependentAfterDeletionReplaySpike :\n  {name, key, world, error : Type} -> {value : key -> Type} ->\n  {nameEq : DecEq name} -> {keyEq : DecEq key} ->\n  {initial, originalFinal : SystemState name key value world error} ->\n  {original : Transitions initial originalFinal} -> {selected : name} ->\n  {episode : LocatedClosedEpisode name key world error value nameEq keyEq\n    selected original} ->\n  {registered : List (RegistrationGeneration name)} ->\n  {episodeStartOrdinal : Nat} ->\n  {episodeStartLive : GenerationEnvironment name} ->\n  (result : DeletionResult name key world error value nameEq keyEq original\n    selected episode registered episodeStartOrdinal episodeStartLive) ->\n  RelationalReplayCorrespondence name key world error value original\n    (survivingTrace result) ->\n  TraceIndependent name key world error value keyEq original ->\n  TraceIndependent name key world error value keyEq (survivingTrace result)"
+    },
+    {
+      "function": "deleteClosingEpisodesCoreSpike",
+      "hole": "deleteClosingEpisodesCoreSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+      "signature": "0 deleteClosingEpisodesCoreSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (protocol : RegistrationProtocol key value world error) ->\n  {initial, finalState : SystemState name key value world error} ->\n  (trace : Transitions initial finalState) ->\n  CanonicalizationPremises name key world error value protocol nameEq keyEq trace ->\n  ClosingFreeTraceCore name key world error value protocol nameEq keyEq trace"
+    },
+    {
+      "function": "assembleClosingFreeAccountingSpike",
+      "hole": "assembleClosingFreeAccountingSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+      "signature": "0 assembleClosingFreeAccountingSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (protocol : RegistrationProtocol key value world error) ->\n  {initial, finalState : SystemState name key value world error} ->\n  (trace : Transitions initial finalState) ->\n  (core : ClosingFreeTraceCore name key world error value protocol nameEq keyEq\n    trace) ->\n  ClosingFreeReduction name key world error value protocol nameEq keyEq trace"
+    },
+    {
+      "function": "traceIndependentAfterRelationalReplaySpike",
+      "hole": "traceIndependentAfterRelationalReplaySpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "signature": "0 traceIndependentAfterRelationalReplaySpike :\n  (keyEq : DecEq key) ->\n  {source : Transitions sourceFirst sourceFinal} ->\n  {replayed : Transitions replayedFirst replayedFinal} ->\n  RelationalReplayCorrespondence name key world error value source replayed ->\n  TraceIndependent name key world error value keyEq source ->\n  TraceIndependent name key world error value keyEq replayed"
+    },
+    {
+      "function": "relationalReplayEndpointReflexiveSpike",
+      "hole": "relationalReplayEndpointReflexiveSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "signature": "0 relationalReplayEndpointReflexiveSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (state : SystemState name key value world error) ->\n  registryWellFormed @{nameEq} @{keyEq} state = True ->\n  RelationalReplayEndpoint name key world error value nameEq keyEq state state"
+    },
+    {
+      "function": "relationalReplayEndpointTransitiveSpike",
+      "hole": "relationalReplayEndpointTransitiveSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "signature": "0 relationalReplayEndpointTransitiveSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (left, middle, right : SystemState name key value world error) ->\n  RelationalReplayEndpoint name key world error value nameEq keyEq left middle ->\n  RelationalReplayEndpoint name key world error value nameEq keyEq middle right ->\n  RelationalReplayEndpoint name key world error value nameEq keyEq left right"
+    },
+    {
+      "function": "adjacentSwapOperationalOccurrenceFoldSpike",
+      "hole": "adjacentSwapOperationalOccurrenceFoldSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "signature": "0 adjacentSwapOperationalOccurrenceFoldSpike :\n  (original : Transitions initial originalFinal) ->\n  (prefixTrace : Transitions initial pairFirst) ->\n  (left : Transition pairFirst pairMiddle) ->\n  (right : Transition pairMiddle pairFinal) ->\n  (suffix : Transitions pairFinal originalFinal) ->\n  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq\n    left right) ->\n  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->\n  (swappedTrace : Transitions initial replayedFinal) ->\n  appendTransitions prefixTrace (MoreTransitions left (MoreTransitions right suffix)) =\n    original ->\n  appendTransitions prefixTrace\n    (MoreTransitions (movedRight diamond)\n      (MoreTransitions (movedLeft diamond) replayedSuffix)) = swappedTrace ->\n  AdjacentSwapOperationalOccurrenceFold name key world error value original prefixTrace\n    left right suffix (movedRight diamond) (movedLeft diamond) replayedSuffix\n    swappedTrace"
+    },
+    {
+      "function": "activationActivationDiamondSpike",
+      "hole": "activationActivationDiamondSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "signature": "0 activationActivationDiamondSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  {first, middle, originalFinal, earlyRightFinal :\n    SystemState name key value world error} ->\n  (left : Transition first middle) ->\n  (right : Transition middle originalFinal) ->\n  (earlyRight : Transition first earlyRightFinal) ->\n  transitionAction earlyRight = transitionAction right ->\n  transitionTag earlyRight = transitionTag right ->\n  PaperActivationStep left -> PaperActivationStep right ->\n  Not (transitionActor left = transitionActor right) ->\n  registryWellFormed @{nameEq} @{keyEq} first = True ->\n  TraceIndependent name key world error value keyEq\n    (MoreTransitions left (MoreTransitions right NoTransitions)) ->\n  LocalRelationalDiamond name key world error value nameEq keyEq left right"
+    },
+    {
+      "function": "activationOrchestrationDiamondSpike",
+      "hole": "activationOrchestrationDiamondSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "signature": "0 activationOrchestrationDiamondSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  {first, middle, originalFinal : SystemState name key value world error} ->\n  (left : Transition first middle) ->\n  (right : Transition middle originalFinal) ->\n  PaperActivationStep left -> PaperOrchestrationStep right ->\n  Not (transitionActor left = transitionActor right) ->\n  ((child, parent : name) ->\n    (component : Component key value world error) ->\n    transitionAction right = OInsert child (ChildOf parent) component ->\n    Not (transitionActor left = parent)) ->\n  registryWellFormed @{nameEq} @{keyEq} first = True ->\n  TraceIndependent name key world error value keyEq\n    (MoreTransitions left (MoreTransitions right NoTransitions)) ->\n  LocalRelationalDiamond name key world error value nameEq keyEq left right"
+    },
+    {
+      "function": "orchestrationActivationDiamondSpike",
+      "hole": "orchestrationActivationDiamondSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "signature": "0 orchestrationActivationDiamondSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  {first, middle, originalFinal, earlyRightFinal :\n    SystemState name key value world error} ->\n  (left : Transition first middle) ->\n  (right : Transition middle originalFinal) ->\n  (earlyRight : Transition first earlyRightFinal) ->\n  transitionAction earlyRight = transitionAction right ->\n  transitionTag earlyRight = transitionTag right ->\n  PaperOrchestrationStep left -> PaperActivationStep right ->\n  Not (transitionActor left = transitionActor right) ->\n  ((child : name) -> (parent : Parent name) ->\n    (component : Component key value world error) ->\n    transitionAction left = OInsert child parent component ->\n    Not (transitionActor right = child)) ->\n  ((child, parent : name) ->\n    (component : Component key value world error) ->\n    transitionAction left = OInsert child (ChildOf parent) component ->\n    Not (transitionActor right = parent)) ->\n  registryWellFormed @{nameEq} @{keyEq} first = True ->\n  TraceIndependent name key world error value keyEq\n    (MoreTransitions left (MoreTransitions right NoTransitions)) ->\n  LocalRelationalDiamond name key world error value nameEq keyEq left right"
+    },
+    {
+      "function": "orchestrationOrchestrationDiamondSpike",
+      "hole": "orchestrationOrchestrationDiamondSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "signature": "0 orchestrationOrchestrationDiamondSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (protocol : RegistrationProtocol key value world error) ->\n  {first, middle, originalFinal : SystemState name key value world error} ->\n  (left : Transition first middle) ->\n  (right : Transition middle originalFinal) ->\n  PaperOrchestrationStep left -> PaperOrchestrationStep right ->\n  Not (transitionActor left = transitionActor right) ->\n  OrchestrationSwapSafety name key world error value protocol nameEq keyEq\n    left right ->\n  LocalRelationalDiamond name key world error value nameEq keyEq left right"
+    },
+    {
+      "function": "adjacentSwapSuffixSpike",
+      "hole": "adjacentSwapSuffixSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "signature": "0 adjacentSwapSuffixSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (protocol : RegistrationProtocol key value world error) ->\n  {initial, pairFirst, pairMiddle, pairFinal, originalFinal :\n    SystemState name key value world error} ->\n  (original : Transitions initial originalFinal) ->\n  (tracePrefix : Transitions initial pairFirst) ->\n  (left : Transition pairFirst pairMiddle) ->\n  (right : Transition pairMiddle pairFinal) ->\n  (suffix : Transitions pairFinal originalFinal) ->\n  appendTransitions tracePrefix (MoreTransitions left (MoreTransitions right suffix)) =\n    original ->\n  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->\n  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq\n    left right) ->\n  AdjacentSwapResult name key world error value protocol nameEq keyEq original\n    tracePrefix left right suffix diamond"
+    },
+    {
+      "function": "composeModuloVestigialEndpointSpike",
+      "hole": "composeModuloVestigialEndpointSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+      "signature": "0 composeModuloVestigialEndpointSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  {initial, leftFinal, middleFinal, rightFinal :\n    SystemState name key value world error} ->\n  (leftTrace : Transitions initial leftFinal) ->\n  (middleTrace : Transitions initial middleFinal) ->\n  (rightTrace : Transitions initial rightFinal) ->\n  (leftGenerationRenaming : RegistrationGenerationBijection name) ->\n  (rightGenerationRenaming : RegistrationGenerationBijection name) ->\n  (leftRegistrations : RegistrationCorrespondenceByGeneration nameEq\n    leftGenerationRenaming leftTrace middleTrace) ->\n  (rightRegistrations : RegistrationCorrespondenceByGeneration nameEq\n    rightGenerationRenaming middleTrace rightTrace) ->\n  (leftCurrent : CurrentEndpointRenaming nameEq keyEq leftGenerationRenaming\n    leftTrace middleTrace leftRegistrations) ->\n  (rightCurrent : CurrentEndpointRenaming nameEq keyEq rightGenerationRenaming\n    middleTrace rightTrace rightRegistrations) ->\n  (leftRelation : SystemEquivalentByRenamingModuloVestigial name key world error\n    value nameEq keyEq leftRegistrations (currentNameBijection leftCurrent)) ->\n  (rightRelation : SystemEquivalentByRenamingModuloVestigial name key world error\n    value nameEq keyEq rightRegistrations (currentNameBijection rightCurrent)) ->\n  CoupledComposedModuloVestigialEndpoint name key world error value nameEq keyEq\n    leftTrace middleTrace rightTrace leftGenerationRenaming\n    rightGenerationRenaming leftRegistrations rightRegistrations\n    (currentNameBijection leftCurrent) (currentNameBijection rightCurrent)"
+    },
+    {
+      "function": "replayedCanonicalToOriginalEndpointSpike",
+      "hole": "replayedCanonicalToOriginalEndpointSpike_rhs",
+      "module": "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+      "signature": "0 replayedCanonicalToOriginalEndpointSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (protocol : RegistrationProtocol key value world error) ->\n  {initial, leftFinal, rightFinal, replayedLeftFinal :\n    SystemState name key value world error} ->\n  (leftTrace : Transitions initial leftFinal) ->\n  (rightTrace : Transitions initial rightFinal) ->\n  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace\n    rightTrace) ->\n  (leftCapital : IndependentCanonicalSchedule name key world error value protocol\n    nameEq keyEq leftTrace) ->\n  (rightCapital : IndependentCanonicalSchedule name key world error value protocol\n    nameEq keyEq rightTrace) ->\n  AcceptedDeletionScannerCapital name key world error value protocol nameEq keyEq\n    leftTrace rightTrace sameInputs leftCapital rightCapital ->\n  (replayedLeftTrace : Transitions initial replayedLeftFinal) ->\n  RelationalReplayCorrespondence name key world error value\n    (canonicalTrace (canonicalSchedule leftCapital)) replayedLeftTrace ->\n  RelationalReplayEndpoint name key world error value nameEq keyEq\n    (canonicalFinal (canonicalSchedule leftCapital)) replayedLeftFinal ->\n  (replayedOccurrences : ActionRegistrationReplayCorrespondence name key world\n    error value (canonicalTrace (canonicalSchedule leftCapital))\n      replayedLeftTrace) ->\n  ReplayedCanonicalEndpointBridge name key world error value protocol nameEq keyEq\n    leftTrace rightTrace sameInputs leftCapital replayedLeftTrace\n      replayedOccurrences rightCapital ->\n  SystemEquivalentByRenamingModuloVestigial name key world error value nameEq\n    keyEq (generatedRegistrationTree sameInputs)\n    (currentNameBijection (endpointRenaming sameInputs))"
+    }
+  ]
+}

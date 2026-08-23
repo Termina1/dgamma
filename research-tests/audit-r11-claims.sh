@@ -82,6 +82,8 @@ PY
 git ls-files --error-unmatch research-tests/run-r11-suite.sh >/dev/null
 git ls-files --error-unmatch research-tests/audit-r11-claims.sh >/dev/null
 git ls-files --error-unmatch research-tests/test-r12-harness.sh >/dev/null
+git ls-files --error-unmatch \
+  research-tests/cp5-hole-interface-baseline.json >/dev/null
 
 echo 'R12_RUNNER_INVENTORY=passed'
 if [ "$MODE" = "--inventory-only" ]; then
@@ -94,8 +96,63 @@ CP3_BLOB=2c697e532e83989de8591fa6a4378747c6a501c0
 git cat-file -e "$BASELINE^{commit}"
 git diff --exit-code "$BASELINE" -- src dgamma.ipkg
 test "$(git hash-object src/DGamma/CP3.idr)" = "$CP3_BLOB"
-# Shift 54 is harness-only: no research type or hole may differ from its gate.
-git diff --exit-code 6773ffc -- research
+
+# Grind-time interface guard. Every baseline hole function keeps its exact
+# public declaration, filled or not; surviving hole names must be a unique
+# subset of the immutable baseline, and no new hole name may appear.
+python3 - <<'PY'
+from collections import Counter
+from pathlib import Path
+import json
+import re
+
+manifest_path = Path('research-tests/cp5-hole-interface-baseline.json')
+manifest = json.loads(manifest_path.read_text())
+if manifest.get('baseline') != '7d467e0556ab8ef62fa0d6c21b049f4346f1245d':
+    raise SystemExit('wrong CP5 hole-interface baseline coordinate')
+entries = manifest.get('holes', [])
+if len(entries) != 32:
+    raise SystemExit(f'baseline manifest has {len(entries)} holes, expected 32')
+baseline_holes = [entry['hole'] for entry in entries]
+if len(set(baseline_holes)) != 32:
+    raise SystemExit('baseline manifest contains duplicate hole names')
+
+def current_signature(path, function):
+    lines = Path(path).read_text().splitlines()
+    declaration_pattern = re.compile(r'^(?:0\s+)?' + re.escape(function) + r'\s*:')
+    declaration_lines = [i for i, line in enumerate(lines)
+                         if declaration_pattern.match(line)]
+    if len(declaration_lines) != 1:
+        raise SystemExit(
+            f'{path}:{function} has {len(declaration_lines)} declarations, expected 1'
+        )
+    start = declaration_lines[0]
+    definition_pattern = re.compile(r'^' + re.escape(function) + r'\b')
+    definitions = [i for i in range(start + 1, len(lines))
+                   if definition_pattern.match(lines[i])]
+    if not definitions:
+        raise SystemExit(f'{path}:{function} has no definition')
+    return '\n'.join(lines[start:definitions[0]])
+
+for entry in entries:
+    actual = current_signature(entry['module'], entry['function'])
+    if actual != entry['signature']:
+        raise SystemExit(
+            f"immutable hole declaration changed: {entry['module']}:{entry['function']}"
+        )
+
+current_occurrences = []
+for path in sorted(Path('research/DGamma').glob('CP5Confluence*Spike.idr')):
+    for hole in re.findall(r'\?([A-Za-z0-9_]+)', path.read_text()):
+        current_occurrences.append((hole, str(path)))
+counts = Counter(hole for hole, _ in current_occurrences)
+duplicates = sorted(hole for hole, count in counts.items() if count != 1)
+if duplicates:
+    raise SystemExit(f'remaining hole names are not unique: {duplicates}')
+new_holes = sorted(set(counts) - set(baseline_holes))
+if new_holes:
+    raise SystemExit(f'new hole names outside immutable baseline: {new_holes}')
+PY
 
 assert_no_matches() {
   local description=$1
