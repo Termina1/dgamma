@@ -1069,6 +1069,79 @@ effectMapOutputOnRelatedRight keyEq effectMap respects left right leftOutput
               (respects left right related))
       in MkRelatedEffectMapOutput rightOutput rightRuns outputs
 
+0 replaceEntriesDistinctCommute :
+  (keyEq : DecEq key) -> (left, right : key) -> Not (left = right) ->
+  (leftNext : value left) -> (rightNext : value right) ->
+  (entries : List (Binding key value)) ->
+  replaceEntries @{keyEq} left leftNext
+    (replaceEntries @{keyEq} right rightNext entries) =
+  replaceEntries @{keyEq} right rightNext
+    (replaceEntries @{keyEq} left leftNext entries)
+replaceEntriesDistinctCommute keyEq left right distinct leftNext rightNext [] =
+  Refl
+replaceEntriesDistinctCommute keyEq left right distinct leftNext rightNext
+  (Bind current old :: rest)
+  with (decEq @{keyEq} right current) proof rightCurrent
+  replaceEntriesDistinctCommute keyEq left current distinct leftNext rightNext
+    (Bind current old :: rest) | Yes Refl
+    with (decEq @{keyEq} left current) proof leftCurrent
+    replaceEntriesDistinctCommute keyEq current current distinct leftNext
+      rightNext (Bind current old :: rest) | Yes Refl | Yes Refl =
+        void (distinct Refl)
+    replaceEntriesDistinctCommute keyEq left current distinct leftNext rightNext
+      (Bind current old :: rest) | Yes Refl | No notLeft
+      with (decEq @{keyEq} current current)
+      replaceEntriesDistinctCommute keyEq left current distinct leftNext
+        rightNext (Bind current old :: rest) | Yes Refl | No notLeft |
+        Yes Refl
+        with (decEq @{keyEq} left current)
+        replaceEntriesDistinctCommute keyEq current current distinct leftNext
+          rightNext (Bind current old :: rest) | Yes Refl | No notLeft |
+          Yes Refl | Yes Refl = void (notLeft Refl)
+        replaceEntriesDistinctCommute keyEq left current distinct leftNext
+          rightNext (Bind current old :: rest) | Yes Refl | No notLeft |
+          Yes Refl | No stillNotLeft = Refl
+      replaceEntriesDistinctCommute keyEq left current distinct leftNext
+        rightNext (Bind current old :: rest) | Yes Refl | No notLeft |
+        No absurd = void (absurd Refl)
+  replaceEntriesDistinctCommute keyEq left right distinct leftNext rightNext
+    (Bind current old :: rest) | No notRight
+    with (decEq @{keyEq} left current) proof leftCurrent
+    replaceEntriesDistinctCommute keyEq current right distinct leftNext rightNext
+      (Bind current old :: rest) | No notRight | Yes Refl
+      with (decEq @{keyEq} right current)
+      replaceEntriesDistinctCommute keyEq current current distinct leftNext
+        rightNext (Bind current old :: rest) | No notRight | Yes Refl |
+        Yes Refl = void (notRight Refl)
+      replaceEntriesDistinctCommute keyEq current right distinct leftNext
+        rightNext (Bind current old :: rest) | No notRight | Yes Refl |
+        No stillNotRight
+        with (decEq @{keyEq} current current)
+        replaceEntriesDistinctCommute keyEq current right distinct leftNext
+          rightNext (Bind current old :: rest) | No notRight | Yes Refl |
+          No stillNotRight | Yes Refl = Refl
+        replaceEntriesDistinctCommute keyEq current right distinct leftNext
+          rightNext (Bind current old :: rest) | No notRight | Yes Refl |
+          No stillNotRight | No absurd = void (absurd Refl)
+    replaceEntriesDistinctCommute keyEq left right distinct leftNext rightNext
+      (Bind current old :: rest) | No notRight | No notLeft
+      with (decEq @{keyEq} left current)
+      replaceEntriesDistinctCommute keyEq current right distinct leftNext
+        rightNext (Bind current old :: rest) | No notRight | No notLeft |
+        Yes Refl = void (notLeft Refl)
+      replaceEntriesDistinctCommute keyEq left right distinct leftNext rightNext
+        (Bind current old :: rest) | No notRight | No notLeft | No stillNotLeft
+        with (decEq @{keyEq} right current)
+        replaceEntriesDistinctCommute keyEq left current distinct leftNext
+          rightNext (Bind current old :: rest) | No notRight | No notLeft |
+          No stillNotLeft | Yes Refl = void (notRight Refl)
+        replaceEntriesDistinctCommute keyEq left right distinct leftNext
+          rightNext (Bind current old :: rest) | No notRight | No notLeft |
+          No stillNotLeft | No stillNotRight =
+            cong (Bind current old ::)
+              (replaceEntriesDistinctCommute keyEq left right distinct leftNext
+                rightNext rest)
+
 0 localPartialEffectRelatedTransitive :
   PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
     first middle ->
