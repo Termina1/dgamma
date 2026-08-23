@@ -1213,6 +1213,27 @@ localIteratorOutcomeAgreementTransitive
       (\input => localPartialEffectRelatedTransitive
         (firstUndo input) (secondUndo input))
 
+0 localPartialRelatedSymmetric :
+  (eq : Equivalence state) ->
+  PartialRelated state (relation eq) left right ->
+  PartialRelated state (relation eq) right left
+localPartialRelatedSymmetric eq PartialUndefined = PartialUndefined
+localPartialRelatedSymmetric eq (PartialDefined related) =
+  PartialDefined (DGamma.Core.Equivalence.symmetric eq related)
+
+0 localIteratorOutcomeAgreementSymmetric :
+  IteratorOutcomeAgreement name key value world error keyEq left right ->
+  IteratorOutcomeAgreement name key value world error keyEq right left
+localIteratorOutcomeAgreementSymmetric IteratorOutcomesUndefined =
+  IteratorOutcomesUndefined
+localIteratorOutcomeAgreementSymmetric (IteratorFailuresAgree errorsSame) =
+  IteratorFailuresAgree (sym errorsSame)
+localIteratorOutcomeAgreementSymmetric
+  (IteratorSuccessfulYieldsAgree continuationSame undoMaps) =
+    IteratorSuccessfulYieldsAgree (sym continuationSame)
+      (\input => localPartialRelatedSymmetric (EffectStateEquivalence keyEq)
+        (undoMaps input))
+
 0 iteratorOutcomeAfterFramedForeign :
   (keyEq : DecEq key) ->
   {trace : Transitions traceFirst traceLast} ->
