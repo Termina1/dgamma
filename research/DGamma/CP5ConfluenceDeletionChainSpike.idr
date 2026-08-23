@@ -205,10 +205,131 @@ public export
 deletedClassificationForcesRightScannerDiscardSpike =
   ?deletedClassificationForcesRightScannerDiscardSpike_rhs
 
+||| Executable retained-position embedding induced by one exact
+||| generation-aware subsequence. Keep advances both ordinals; delete advances
+||| only the source. `Nothing` means the requested survivor ordinal is outside
+||| this segment.
+public export
+generationSubsequenceSourceOrdinal :
+  GenerationActionSubsequence nameEq deletable ordinal live original surviving ->
+  Nat -> Maybe Nat
+generationSubsequenceSourceOrdinal GenerationActionSubsequenceEnd target = Nothing
+generationSubsequenceSourceOrdinal
+  (KeepGenerationAction originalTransition originalRest survivingTransition
+    survivingRest kept sameAction rest) Z = Just Z
+generationSubsequenceSourceOrdinal
+  (KeepGenerationAction originalTransition originalRest survivingTransition
+    survivingRest kept sameAction rest) (S target) =
+      map S (generationSubsequenceSourceOrdinal rest target)
+generationSubsequenceSourceOrdinal
+  (DeleteGenerationAction originalTransition originalRest deleted rest) target =
+    map S (generationSubsequenceSourceOrdinal rest target)
+
+public export
+deletionSurvivingBeforeCount :
+  (result : DeletionResult name key world error value nameEq keyEq original
+    selected episode registered episodeStartOrdinal episodeStartLive) -> Nat
+deletionSurvivingBeforeCount result = transitionCount (survivingBefore result)
+
+public export
+deletionSurvivingEpisodeCount :
+  (result : DeletionResult name key world error value nameEq keyEq original
+    selected episode registered episodeStartOrdinal episodeStartLive) -> Nat
+deletionSurvivingEpisodeCount result = transitionCount (survivingEpisode result)
+
+public export
+deletionOriginalBeforeCount :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  {original : Transitions initial originalFinal} ->
+  {selected : name} ->
+  {episode : LocatedClosedEpisode name key world error value nameEq keyEq selected
+    original} ->
+  {registered : List (RegistrationGeneration name)} ->
+  {episodeStartOrdinal : Nat} ->
+  {episodeStartLive : GenerationEnvironment name} ->
+  (result : DeletionResult name key world error value nameEq keyEq original
+    selected episode registered episodeStartOrdinal episodeStartLive) -> Nat
+deletionOriginalBeforeCount {episode} result =
+  transitionCount (traceBeforeOpening episode)
+
+public export
+deletionOriginalEpisodeCount :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  {original : Transitions initial originalFinal} ->
+  {selected : name} ->
+  {episode : LocatedClosedEpisode name key world error value nameEq keyEq selected
+    original} ->
+  {registered : List (RegistrationGeneration name)} ->
+  {episodeStartOrdinal : Nat} ->
+  {episodeStartLive : GenerationEnvironment name} ->
+  (result : DeletionResult name key world error value nameEq keyEq original
+    selected episode registered episodeStartOrdinal episodeStartLive) -> Nat
+deletionOriginalEpisodeCount {episode} result = transitionCount
+  (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode)))
+    (closedTransitions (locatedEpisode episode)))
+
+||| The three immutable Lemma-72 subsequences are embedded into the full source
+||| and survivor traces with their exact segment offsets.
+public export
+data DeletionSurvivingOrdinalEmbedding :
+  (result : DeletionResult name key world error value nameEq keyEq original
+    selected episode registered episodeStartOrdinal episodeStartLive) ->
+  (survivingOrdinal, originalOrdinal : Nat) -> Type where
+  DeletionBeforeEmbedding :
+    generationSubsequenceSourceOrdinal (beforeDeletion result)
+      survivingOrdinal = Just originalOrdinal ->
+    DeletionSurvivingOrdinalEmbedding result survivingOrdinal originalOrdinal
+  DeletionEpisodeEmbedding :
+    generationSubsequenceSourceOrdinal (episodeDeletion result)
+      survivingOrdinal = Just originalOrdinal ->
+    DeletionSurvivingOrdinalEmbedding result
+      (deletionSurvivingBeforeCount result + survivingOrdinal)
+      (deletionOriginalBeforeCount result + originalOrdinal)
+  DeletionAfterEmbedding :
+    generationSubsequenceSourceOrdinal (afterDeletion result)
+      survivingOrdinal = Just originalOrdinal ->
+    DeletionSurvivingOrdinalEmbedding result
+      ((deletionSurvivingBeforeCount result +
+        deletionSurvivingEpisodeCount result) + survivingOrdinal)
+      ((deletionOriginalBeforeCount result +
+        deletionOriginalEpisodeCount result) + originalOrdinal)
+
+||| Operational O9 certificate.  Every occurrence in the actual survivor trace
+||| maps to a source occurrence whose ordinal is justified by one of the exact
+||| before/episode/after generation-subsequence embeddings.  Generated/action
+||| coherence remains part of the carried generic correspondence.
+public export
+record DeletionOperationalOccurrenceCertificate
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, originalFinal : SystemState name key value world error}
+  (original : Transitions initial originalFinal)
+  (selected : name)
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq selected
+    original)
+  (registered : List (RegistrationGeneration name))
+  (episodeStartOrdinal : Nat)
+  (episodeStartLive : GenerationEnvironment name)
+  (result : DeletionResult name key world error value nameEq keyEq original
+    selected episode registered episodeStartOrdinal episodeStartLive) where
+  constructor MkDeletionOperationalOccurrenceCertificate
+  deletionOperationalCorrespondence : ActionRegistrationReplayCorrespondence name
+    key world error value original (survivingTrace result)
+  0 everySurvivingOccurrenceEmbedded :
+    {action : Action name key value world error} ->
+    (occurrence : LocatedActionOccurrence action (survivingTrace result)) ->
+    DeletionSurvivingOrdinalEmbedding result
+      (locatedActionOrdinal occurrence)
+      (locatedActionOrdinal
+        (replayActionOrigin deletionOperationalCorrespondence occurrence))
+
 ||| O9's first-source occurrence fold.  The immutable Lemma-72 result fixes the
-||| surviving trace; this globally named proof obligation fixes the all-action
-||| and generated-registration origins for that exact deletion.  A caller may
-||| not select a second coherent map and attach it to the same result.
+||| surviving trace and all three subsequences; this globally named obligation
+||| returns the complete operational certificate, not a bare coherent map.
 public export
 0 deletionStepOperationalOccurrenceFoldSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -223,8 +344,10 @@ public export
     (selectedActor candidate) (selectedEpisode candidate)
     (selectedRegistrations candidate) (selectedStartOrdinal candidate)
     (selectedStartLive candidate)) ->
-  ActionRegistrationReplayCorrespondence name key world error value trace
-    (survivingTrace result)
+  DeletionOperationalOccurrenceCertificate name key world error value nameEq
+    keyEq trace (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate)
+    (selectedStartLive candidate) result
 deletionStepOperationalOccurrenceFoldSpike =
   ?deletionStepOperationalOccurrenceFoldSpike_rhs
 
@@ -253,9 +376,9 @@ record DeletionChainStep
   deletionOccurrenceCorrespondence : ActionRegistrationReplayCorrespondence name
     key world error value trace (survivingTrace deletionResult)
   0 deletionOccurrenceCorrespondenceExact :
-    deletionOccurrenceCorrespondence =
-      deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol trace
-        premises candidate deletionResult
+    deletionOccurrenceCorrespondence = deletionOperationalCorrespondence
+      (deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol trace
+        premises candidate deletionResult)
   deletionSameExternalInputs : SameExternalOrchestration nameEq trace
     (survivingTrace deletionResult)
   deletionEndpoint : CanonicalEndpointRelation name key world error value nameEq
