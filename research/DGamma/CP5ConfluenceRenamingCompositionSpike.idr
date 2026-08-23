@@ -1128,6 +1128,36 @@ matchingPlanPairing {pendingRight}
         (removeChronologyFutureHead pendingRight rightEvent)
         (matchingPlanPairing laterFold)
 
+0 registrationSideEventFoldExact :
+  {scan : RegistrationSideScan nameEq ordinal index trace finalIndex} ->
+  {events : List (RegistrationEvent name key world error value)} ->
+  RegistrationSideEventFold scan events ->
+  events = registrationSideSurvivingEvents scan
+registrationSideEventFoldExact RegistrationSideEventFoldEnd = Refl
+registrationSideEventFoldExact
+  (RegistrationSideEventFoldNonRegistration _ _ _ _ _ laterFold) =
+    case registrationSideEventFoldExact laterFold of Refl => Refl
+registrationSideEventFoldExact
+  (RegistrationSideEventFoldDeleted _ _ _ _ laterFold) =
+    case registrationSideEventFoldExact laterFold of Refl => Refl
+registrationSideEventFoldExact
+  (RegistrationSideEventFoldSurviving _ _ _ _ laterFold) =
+    case registrationSideEventFoldExact laterFold of Refl => Refl
+
+0 alignedSideFoldEventsSame :
+  {leftScan : RegistrationSideScan nameEq ordinal index trace leftFinalIndex} ->
+  {rightScan : RegistrationSideScan nameEq ordinal index trace
+    rightFinalIndex} ->
+  {leftEvents, rightEvents :
+    List (RegistrationEvent name key world error value)} ->
+  RegistrationSideEventFold leftScan leftEvents ->
+  RegistrationSideEventFold rightScan rightEvents ->
+  leftEvents = rightEvents
+alignedSideFoldEventsSame leftFold rightFold =
+  trans (registrationSideEventFoldExact leftFold)
+    (trans (registrationSideSurvivingEventsUnique _ _)
+      (sym (registrationSideEventFoldExact rightFold)))
+
 0 compareListRemovals :
   (first : RemoveListOccurrence firstEvent source firstRemainder) ->
   (second : RemoveListOccurrence secondEvent source secondRemainder) ->
