@@ -7,6 +7,7 @@ import DGamma.Core
 import DGamma.Unified
 import DGamma.CP3
 import DGamma.CP4DeletionFrameCore
+import DGamma.CP4DeletionCommuteCore
 import DGamma.CP4DeletionFrames
 import DGamma.CP4DeletionRelationalBoundary
 import DGamma.CP4DeletionRelationalActionCore
@@ -3018,6 +3019,155 @@ transitionActorFiredActionOwner nameEq keyEq (LAdvance actor) tag checked = Refl
 transitionActorFiredActionOwner nameEq keyEq (LDivert actor) tag checked = Refl
 transitionActorFiredActionOwner nameEq keyEq (LLeave actor) tag checked = Refl
 transitionActorFiredActionOwner nameEq keyEq (LUnload actor) tag checked = Refl
+
+record ActivationReplacementComparison
+  (nameEq : DecEq name) (actor : name)
+  (sourceBefore, sourceAfter, movedBefore, movedAfter :
+    SystemState name key value world error) where
+  constructor MkActivationReplacementComparison
+  sourceReplacementFiber : Fiber name key value world error
+  movedReplacementFiber : Fiber name key value world error
+  0 replacementFibersRelated : FiberControlRelated sourceReplacementFiber
+    movedReplacementFiber
+  0 sourceReplacementBindings : bindings (registry sourceAfter) =
+    replaceEntries @{nameEq} actor sourceReplacementFiber
+      (bindings (registry sourceBefore))
+  0 movedReplacementBindings : bindings (registry movedAfter) =
+    replaceEntries @{nameEq} actor movedReplacementFiber
+      (bindings (registry movedBefore))
+
+0 beginReplacementComparison :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (sourceAmbient, movedAmbient : world) ->
+  (sourceRegistry, movedRegistry : Registry name key value world error) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (sourceAfter, movedAfter : SystemState name key value world error) ->
+  (sourceFound : lookupFiber @{nameEq} actor sourceRegistry = Just
+    (MkFiber component parent False table (Inactive Nothing))) ->
+  (movedFound : lookupFiber @{nameEq} actor movedRegistry = Just
+    (MkFiber component parent False table (Inactive Nothing))) ->
+  targetFiber @{nameEq} @{keyEq}
+    (MkFiber component parent False table (Inactive Nothing)) sourceRegistry =
+    Just view ->
+  targetFiber @{nameEq} @{keyEq}
+    (MkFiber component parent False table (Inactive Nothing)) movedRegistry =
+    Just view ->
+  applyAction @{nameEq} @{keyEq} (LBegin actor)
+    (MkSystemState sourceAmbient sourceRegistry) =
+    Just (LBeginTag, sourceAfter) ->
+  applyAction @{nameEq} @{keyEq} (LBegin actor)
+    (MkSystemState movedAmbient movedRegistry) =
+    Just (LBeginTag, movedAfter) ->
+  ActivationReplacementComparison nameEq actor
+    (MkSystemState sourceAmbient sourceRegistry) sourceAfter
+    (MkSystemState movedAmbient movedRegistry) movedAfter
+beginReplacementComparison nameEq keyEq actor sourceAmbient movedAmbient
+  sourceRegistry movedRegistry component parent table view sourceAfter movedAfter
+  sourceFound movedFound sourceTarget movedTarget sourceRaw movedRaw =
+    let oldFiber : Fiber name key value world error
+        oldFiber = MkFiber component parent False table (Inactive Nothing)
+        nextFiber : Fiber name key value world error
+        nextFiber = setFiberLifecycle oldFiber
+          (Reloading (componentProgram component) id view)
+        sourceExpected : SystemState name key value world error
+        sourceExpected = MkSystemState sourceAmbient
+          (replaceBinding @{nameEq} actor nextFiber sourceRegistry)
+        movedExpected : SystemState name key value world error
+        movedExpected = MkSystemState movedAmbient
+          (replaceBinding @{nameEq} actor nextFiber movedRegistry)
+        0 sourceConcrete : applyAction @{nameEq} @{keyEq} (LBegin actor)
+          (MkSystemState sourceAmbient sourceRegistry) =
+          Just (LBeginTag, sourceExpected)
+        sourceConcrete = rewrite sourceFound in rewrite sourceTarget in Refl
+        0 movedConcrete : applyAction @{nameEq} @{keyEq} (LBegin actor)
+          (MkSystemState movedAmbient movedRegistry) =
+          Just (LBeginTag, movedExpected)
+        movedConcrete = rewrite movedFound in rewrite movedTarget in Refl
+        0 sourcePairSame : (LBeginTag, sourceExpected) =
+          (LBeginTag, sourceAfter)
+        sourcePairSame = justInjective (trans (sym sourceConcrete) sourceRaw)
+        0 movedPairSame : (LBeginTag, movedExpected) =
+          (LBeginTag, movedAfter)
+        movedPairSame = justInjective (trans (sym movedConcrete) movedRaw)
+    in case sourcePairSame of
+      Refl => case movedPairSame of
+        Refl => MkActivationReplacementComparison nextFiber nextFiber
+          (fiberControlReflexive nextFiber)
+          (replaceBindingRuntimeBindings nameEq actor nextFiber sourceRegistry)
+          (replaceBindingRuntimeBindings nameEq actor nextFiber movedRegistry)
+
+0 emptyFinishReplacementComparison :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (sourceAmbient, movedAmbient : world) ->
+  (sourceRegistry, movedRegistry : Registry name key value world error) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (sourceAfter, movedAfter : SystemState name key value world error) ->
+  (sourceFound : lookupFiber @{nameEq} actor sourceRegistry = Just
+    (MkFiber component parent retiredFlag table
+      (Reloading [] accumulator view))) ->
+  (movedFound : lookupFiber @{nameEq} actor movedRegistry = Just
+    (MkFiber component parent retiredFlag table
+      (Reloading [] accumulator view))) ->
+  targetFiber @{nameEq} @{keyEq}
+    (MkFiber component parent retiredFlag table
+      (Reloading [] accumulator view)) sourceRegistry = Just view ->
+  targetFiber @{nameEq} @{keyEq}
+    (MkFiber component parent retiredFlag table
+      (Reloading [] accumulator view)) movedRegistry = Just view ->
+  applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState sourceAmbient sourceRegistry) =
+    Just (LFinishTag, sourceAfter) ->
+  applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState movedAmbient movedRegistry) =
+    Just (LFinishTag, movedAfter) ->
+  ActivationReplacementComparison nameEq actor
+    (MkSystemState sourceAmbient sourceRegistry) sourceAfter
+    (MkSystemState movedAmbient movedRegistry) movedAfter
+emptyFinishReplacementComparison nameEq keyEq actor sourceAmbient movedAmbient
+  sourceRegistry movedRegistry component parent retiredFlag table accumulator view
+  sourceAfter movedAfter sourceFound movedFound sourceTarget movedTarget sourceRaw
+  movedRaw =
+    let oldFiber : Fiber name key value world error
+        oldFiber = MkFiber component parent retiredFlag table
+          (Reloading [] accumulator view)
+        nextFiber : Fiber name key value world error
+        nextFiber = setFiberLifecycle oldFiber (Active accumulator view)
+        sourceExpected : SystemState name key value world error
+        sourceExpected = MkSystemState sourceAmbient
+          (replaceBinding @{nameEq} actor nextFiber sourceRegistry)
+        movedExpected : SystemState name key value world error
+        movedExpected = MkSystemState movedAmbient
+          (replaceBinding @{nameEq} actor nextFiber movedRegistry)
+        0 sourceConcrete : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+          (MkSystemState sourceAmbient sourceRegistry) =
+          Just (LFinishTag, sourceExpected)
+        sourceConcrete = rewrite sourceFound in rewrite sourceTarget in
+          rewrite localViewEqRefl nameEq view in Refl
+        0 movedConcrete : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+          (MkSystemState movedAmbient movedRegistry) =
+          Just (LFinishTag, movedExpected)
+        movedConcrete = rewrite movedFound in rewrite movedTarget in
+          rewrite localViewEqRefl nameEq view in Refl
+        0 sourcePairSame : (LFinishTag, sourceExpected) =
+          (LFinishTag, sourceAfter)
+        sourcePairSame = justInjective (trans (sym sourceConcrete) sourceRaw)
+        0 movedPairSame : (LFinishTag, movedExpected) =
+          (LFinishTag, movedAfter)
+        movedPairSame = justInjective (trans (sym movedConcrete) movedRaw)
+    in case sourcePairSame of
+      Refl => case movedPairSame of
+        Refl => MkActivationReplacementComparison nextFiber nextFiber
+          (fiberControlReflexive nextFiber)
+          (replaceBindingRuntimeBindings nameEq actor nextFiber sourceRegistry)
+          (replaceBindingRuntimeBindings nameEq actor nextFiber movedRegistry)
 
 record ActivationActivationCheckedCore
   (nameEq : DecEq name) (keyEq : DecEq key)
