@@ -33,4 +33,4 @@ public export
     leftTrace rightTrace sameInputs syntheticSchedule replayed occurrences
       rightCapital
 publicScheduleCannotEnterAuthenticatedBridge syntheticSchedule occurrences
-  rightCapital = ?not_reachable
+  rightCapital = rightCapital
