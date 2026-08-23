@@ -1069,6 +1069,64 @@ effectMapOutputOnRelatedRight keyEq effectMap respects left right leftOutput
               (respects left right related))
       in MkRelatedEffectMapOutput rightOutput rightRuns outputs
 
+0 localPartialEffectRelatedTransitive :
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    first middle ->
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    middle finalState ->
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    first finalState
+localPartialEffectRelatedTransitive PartialUndefined PartialUndefined =
+  PartialUndefined
+localPartialEffectRelatedTransitive (PartialDefined first)
+  (PartialDefined second) =
+    PartialDefined (localEffectStateTransitive first second)
+
+0 localIteratorOutcomeAgreementTransitive :
+  IteratorOutcomeAgreement name key value world error keyEq first middle ->
+  IteratorOutcomeAgreement name key value world error keyEq middle finalOutcome ->
+  IteratorOutcomeAgreement name key value world error keyEq first finalOutcome
+localIteratorOutcomeAgreementTransitive IteratorOutcomesUndefined
+  IteratorOutcomesUndefined = IteratorOutcomesUndefined
+localIteratorOutcomeAgreementTransitive
+  (IteratorFailuresAgree firstError) (IteratorFailuresAgree secondError) =
+    IteratorFailuresAgree (trans firstError secondError)
+localIteratorOutcomeAgreementTransitive
+  (IteratorSuccessfulYieldsAgree firstContinuation firstUndo)
+  (IteratorSuccessfulYieldsAgree secondContinuation secondUndo) =
+    IteratorSuccessfulYieldsAgree
+      (trans firstContinuation secondContinuation)
+      (\input => localPartialEffectRelatedTransitive
+        (firstUndo input) (secondUndo input))
+
+0 iteratorOutcomeAfterFramedForeign :
+  (keyEq : DecEq key) ->
+  {trace : Transitions traceFirst traceLast} ->
+  TraceIndependent name key world error value keyEq trace ->
+  (selected, foreignActor : name) -> Not (selected = foreignActor) ->
+  (stage : IteratorStage name key world error value selected trace) ->
+  (foreign : TraceEffectTransformation name key world error value foreignActor
+    trace) ->
+  (origin, target : EffectState name key value world) ->
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    (runTraceEffectTransformation foreign origin) (Just target) ->
+  IteratorOutcomeAgreement name key value world error keyEq
+    (iteratorStageOutcome stage target) (iteratorStageOutcome stage origin)
+iteratorOutcomeAfterFramedForeign keyEq independent selected foreignActor
+  distinct stage foreign origin target frame =
+    let 0 framed = framedEffectOutput keyEq
+          (runTraceEffectTransformation foreign) origin target frame
+        0 targetToGenerated = iteratorStageOutcomeRelated keyEq stage target
+          (framedOutput framed)
+          (localEffectStateSymmetric (framedOutputRelated framed))
+        0 generatedToOrigin = replayOutcomeStableAtExactRun stage
+          (runTraceEffectTransformation foreign) origin (framedOutput framed)
+          (framedMapRuns framed)
+          (iteratorYieldsStable independent selected foreignActor distinct stage
+            foreign origin)
+    in localIteratorOutcomeAgreementTransitive targetToGenerated
+      generatedToOrigin
+
 0 localPartialComposeDefined :
   (after, before : PartialMap state) -> (origin, middle, final : state) ->
   before origin = Just middle -> after middle = Just final ->
