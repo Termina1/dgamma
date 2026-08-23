@@ -3335,6 +3335,8 @@ record CheckedActivationEndpoint
   constructor MkCheckedActivationEndpoint
   checkedEndpointAfter : SystemState name key value world error
   checkedEndpointTransition : Transition before checkedEndpointAfter
+  0 checkedEndpointEquation : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, checkedEndpointAfter)
   0 checkedEndpointAction :
     transitionAction checkedEndpointTransition = action
   0 checkedEndpointTag : transitionTag checkedEndpointTransition = tag
@@ -3383,7 +3385,7 @@ checkActivationEndpoint nameEq keyEq action tag before originalFinal
                 checked)
             exactTransition : Transition before afterState
             exactTransition = Fired nameEq keyEq action tag checked
-        in MkCheckedActivationEndpoint afterState exactTransition Refl Refl
+        in MkCheckedActivationEndpoint afterState exactTransition checked Refl Refl
           originalToActual afterWellFormed
 
 0 paperActivationStepTransport :
@@ -3401,6 +3403,36 @@ paperActivationStepTransport actionSame tagSame
 paperActivationStepTransport actionSame tagSame
   (PaperFinishStep actionIsAdvance tagIsFinish) =
     PaperFinishStep (trans actionSame actionIsAdvance) (trans tagSame tagIsFinish)
+
+0 paperActivationOrchestrationImpossible :
+  PaperActivationStep transition -> PaperOrchestrationStep transition -> Void
+paperActivationOrchestrationImpossible (PaperBeginStep activationAction tag)
+  (PaperInsertStep orchestrationAction) =
+    case trans (sym activationAction) orchestrationAction of Refl impossible
+paperActivationOrchestrationImpossible (PaperBeginStep activationAction tag)
+  (PaperRetireStep orchestrationAction) =
+    case trans (sym activationAction) orchestrationAction of Refl impossible
+paperActivationOrchestrationImpossible (PaperBeginStep activationAction tag)
+  (PaperRemoveStep orchestrationAction) =
+    case trans (sym activationAction) orchestrationAction of Refl impossible
+paperActivationOrchestrationImpossible (PaperIterStep activationAction tag)
+  (PaperInsertStep orchestrationAction) =
+    case trans (sym activationAction) orchestrationAction of Refl impossible
+paperActivationOrchestrationImpossible (PaperIterStep activationAction tag)
+  (PaperRetireStep orchestrationAction) =
+    case trans (sym activationAction) orchestrationAction of Refl impossible
+paperActivationOrchestrationImpossible (PaperIterStep activationAction tag)
+  (PaperRemoveStep orchestrationAction) =
+    case trans (sym activationAction) orchestrationAction of Refl impossible
+paperActivationOrchestrationImpossible (PaperFinishStep activationAction tag)
+  (PaperInsertStep orchestrationAction) =
+    case trans (sym activationAction) orchestrationAction of Refl impossible
+paperActivationOrchestrationImpossible (PaperFinishStep activationAction tag)
+  (PaperRetireStep orchestrationAction) =
+    case trans (sym activationAction) orchestrationAction of Refl impossible
+paperActivationOrchestrationImpossible (PaperFinishStep activationAction tag)
+  (PaperRemoveStep orchestrationAction) =
+    case trans (sym activationAction) orchestrationAction of Refl impossible
 
 0 checkedActivationEquationTransport :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -4342,6 +4374,53 @@ activationReplacementComparisonAcrossForeign nameEq keyEq action tag trace
           movedAfter LFinishTag sourceChecked movedChecked stageOccurs
           (Right Refl) lookupSame outcomeAgreement
 
+0 activationReplacementComparisonAcrossForeignStates :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  {traceFirst, traceLast : SystemState name key value world error} ->
+  (trace : Transitions traceFirst traceLast) ->
+  {sourceBefore, movedBefore, sourceAfter, movedAfter :
+    SystemState name key value world error} ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} action sourceBefore =
+    Just (tag, sourceAfter)) ->
+  (movedChecked : checkedApplyAction @{nameEq} @{keyEq} action movedBefore =
+    Just (tag, movedAfter)) ->
+  (0 stageOccurs : Either
+    (OccursIn (Fired {before = sourceBefore} {afterState = sourceAfter}
+      nameEq keyEq action tag sourceChecked) trace)
+    (OccursIn (Fired {before = movedBefore} {afterState = movedAfter}
+      nameEq keyEq action tag movedChecked) trace)) ->
+  (sourceActivation : PaperActivationStep
+    (Fired {before = sourceBefore} {afterState = sourceAfter}
+      nameEq keyEq action tag sourceChecked)) ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} (actionOwner action)
+    (registry movedBefore) =
+    lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} (actionOwner action)
+      (registry sourceBefore) ->
+  ((fiber : Fiber name key value world error) ->
+    (view : View name
+      (dependencies (componentDependencies (fiberComponent fiber)))) ->
+    targetFiber @{nameEq} @{keyEq} fiber (registry sourceBefore) = Just view ->
+    targetFiber @{nameEq} @{keyEq} fiber (registry movedBefore) = Just view) ->
+  ((stage : IteratorStage name key world error value (actionOwner action) trace) ->
+    IteratorOutcomeAgreement name key value world error keyEq
+      (iteratorStageOutcome stage (projectEffectState @{nameEq} movedBefore))
+      (iteratorStageOutcome stage (projectEffectState @{nameEq} sourceBefore))) ->
+  ActivationReplacementComparison nameEq (actionOwner action) sourceBefore
+    sourceAfter movedBefore movedAfter
+activationReplacementComparisonAcrossForeignStates nameEq keyEq action tag trace
+  {sourceBefore = MkSystemState sourceAmbient sourceRegistry}
+  {movedBefore = MkSystemState movedAmbient movedRegistry}
+  {sourceAfter} {movedAfter} sourceChecked movedChecked stageOccurs
+  sourceActivation lookupSame targetPreserved outcomeAgreement =
+    activationReplacementComparisonAcrossForeign nameEq keyEq action tag trace
+      sourceAmbient movedAmbient sourceRegistry movedRegistry sourceAfter movedAfter
+      sourceChecked movedChecked stageOccurs sourceActivation lookupSame
+      targetPreserved outcomeAgreement
+
 record ActivationActivationCheckedCore
   (nameEq : DecEq name) (keyEq : DecEq key)
   {first, middle, originalFinal, earlyRightFinal :
@@ -4352,6 +4431,9 @@ record ActivationActivationCheckedCore
   constructor MkActivationActivationCheckedCore
   checkedCoreFinal : SystemState name key value world error
   checkedCoreMovedLeft : Transition earlyRightFinal checkedCoreFinal
+  0 checkedCoreMovedLeftChecked : checkedApplyAction @{nameEq} @{keyEq}
+    (transitionAction left) earlyRightFinal =
+    Just (transitionTag left, checkedCoreFinal)
   0 checkedCoreMovedLeftAction :
     transitionAction checkedCoreMovedLeft = transitionAction left
   0 checkedCoreMovedLeftTag :
@@ -4437,6 +4519,7 @@ activationActivationCheckedCore nameEq keyEq left right earlyRight
               in MkActivationActivationCheckedCore
                 (checkedEndpointAfter endpoint)
                 (checkedEndpointTransition endpoint)
+                (checkedEndpointEquation endpoint)
                 (checkedEndpointAction endpoint)
                 (checkedEndpointTag endpoint) earlyActivation
                 movedLeftActivation (checkedEndpointEffects endpoint)
@@ -4463,7 +4546,330 @@ public export
   TraceIndependent name key world error value keyEq
     (MoreTransitions left (MoreTransitions right NoTransitions)) ->
   LocalRelationalDiamond name key world error value nameEq keyEq left right
-activationActivationDiamondSpike = ?activationActivationDiamondSpike_rhs
+activationActivationDiamondSpike nameEq keyEq left right earlyRight
+  sourceAligned earlyRightAligned sameAction sameTag leftActivation
+  rightActivation distinct sourceWellFormed independent =
+    case sourceAligned of
+      AlignedStep leftAction leftTag leftChecked _
+        (AlignedStep rightAction rightTag rightChecked _ AlignedEnd) =>
+          case earlyRightAligned of
+            AlignedStep earlyAction earlyTag earlyChecked _ AlignedEnd =>
+              let 0 earlyCheckedRight = checkedActivationEquationTransport
+                    nameEq keyEq earlyAction rightAction sameAction earlyTag
+                    rightTag sameTag earlyChecked
+                  0 earlyActivation : PaperActivationStep
+                    (Fired {before = first} {afterState = earlyRightFinal}
+                      nameEq keyEq rightAction rightTag earlyCheckedRight)
+                  earlyActivation = paperActivationStepTransport Refl Refl
+                    rightActivation
+                  0 middleWellFormed : registryWellFormed @{nameEq} @{keyEq}
+                    middle = True
+                  middleWellFormed = preservationTheoremProof nameEq keyEq
+                    leftAction first middle leftTag sourceWellFormed
+                    (checkedActionProjects nameEq keyEq leftAction first middle
+                      leftTag leftChecked)
+                  0 earlyWellFormed : registryWellFormed @{nameEq} @{keyEq}
+                    earlyRightFinal = True
+                  earlyWellFormed = preservationTheoremProof nameEq keyEq
+                    rightAction first earlyRightFinal rightTag sourceWellFormed
+                    (checkedActionProjects nameEq keyEq rightAction first
+                      earlyRightFinal rightTag earlyCheckedRight)
+                  0 distinctOwners :
+                    Not (actionOwner leftAction = actionOwner rightAction)
+                  distinctOwners sameOwner = distinct
+                    (trans
+                      (transitionActorFiredActionOwner nameEq keyEq leftAction
+                        leftTag leftChecked)
+                      (trans sameOwner
+                        (sym (transitionActorFiredActionOwner nameEq keyEq
+                          rightAction rightTag rightChecked))))
+                  0 reverseDistinctOwners :
+                    Not (actionOwner rightAction = actionOwner leftAction)
+                  reverseDistinctOwners sameOwner = distinctOwners (sym sameOwner)
+                  pairTrace : Transitions first originalFinal
+                  pairTrace = MoreTransitions
+                    (Fired {before = first} {afterState = middle}
+                      nameEq keyEq leftAction leftTag leftChecked)
+                    (MoreTransitions
+                      (Fired {before = middle} {afterState = originalFinal}
+                        nameEq keyEq rightAction rightTag rightChecked)
+                      NoTransitions)
+                  0 leftOccurs : OccursIn
+                    (Fired {before = first} {afterState = middle}
+                      nameEq keyEq leftAction leftTag leftChecked) pairTrace
+                  leftOccurs = OccursHere
+                  0 rightOccurs : OccursIn
+                    (Fired {before = middle} {afterState = originalFinal}
+                      nameEq keyEq rightAction rightTag rightChecked) pairTrace
+                  rightOccurs = OccursLater OccursHere
+                  leftGenerator : TraceEffectGenerator name key world error value
+                    (actionOwner leftAction) pairTrace
+                  leftGenerator = ActualForwardGenerator first middle nameEq keyEq
+                    leftAction leftTag leftChecked leftOccurs Refl
+                  rightGenerator : TraceEffectGenerator name key world error value
+                    (actionOwner rightAction) pairTrace
+                  rightGenerator = ActualForwardGenerator middle originalFinal
+                    nameEq keyEq rightAction rightTag rightChecked rightOccurs Refl
+                  leftMap : PartialEffectMap name key value world
+                  leftMap = partialEffectMapFor nameEq keyEq leftAction leftTag first
+                  rightMap : PartialEffectMap name key value world
+                  rightMap = partialEffectMapFor nameEq keyEq rightAction rightTag
+                    middle
+                  earlyRightMap : PartialEffectMap name key value world
+                  earlyRightMap = partialEffectMapFor nameEq keyEq rightAction
+                    rightTag first
+                  0 rightLookup : lookupFiber @{nameEq} {name = name}
+                    {key = key} {value = value} {world = world} {error = error}
+                    (actionOwner rightAction) (registry middle) =
+                    lookupFiber @{nameEq} {name = name} {key = key}
+                      {value = value} {world = world} {error = error}
+                      (actionOwner rightAction) (registry first)
+                  rightLookup = transitionForeignLookup nameEq keyEq
+                    (actionOwner rightAction) leftAction leftTag leftChecked
+                    reverseDistinctOwners
+                  0 rightOriginSame : (state : EffectState name key value world) ->
+                    rightMap state = earlyRightMap state
+                  rightOriginSame = activationTransitionMapOriginCong nameEq keyEq
+                    rightAction rightTag rightChecked rightActivation rightLookup
+                  0 leftGeneratorMapSame :
+                    (state : EffectState name key value world) ->
+                    traceGeneratorMap leftGenerator state = leftMap state
+                  leftGeneratorMapSame = actualForwardGeneratorMapSame first middle
+                    nameEq keyEq leftAction leftTag leftChecked leftOccurs Refl
+                  0 rightGeneratorMapSame :
+                    (state : EffectState name key value world) ->
+                    traceGeneratorMap rightGenerator state = rightMap state
+                  rightGeneratorMapSame = actualForwardGeneratorMapSame middle
+                    originalFinal nameEq keyEq rightAction rightTag rightChecked
+                    rightOccurs Refl
+                  0 leftFrame : PartialRelated
+                    (EffectState name key value world) (EffectStateRelated keyEq)
+                    (leftMap (projectEffectState @{nameEq} first))
+                    (Just (projectEffectState @{nameEq} middle))
+                  leftFrame = checkedEffectFrameRelation nameEq keyEq leftAction
+                    leftTag first middle leftChecked
+                  0 rawEarlyFrame : PartialRelated
+                    (EffectState name key value world) (EffectStateRelated keyEq)
+                    (earlyRightMap (projectEffectState @{nameEq} first))
+                    (Just (projectEffectState @{nameEq} earlyRightFinal))
+                  rawEarlyFrame = checkedEffectFrameRelation nameEq keyEq
+                    rightAction rightTag first earlyRightFinal earlyCheckedRight
+                  0 earlyFrame : PartialRelated
+                    (EffectState name key value world) (EffectStateRelated keyEq)
+                    (rightMap (projectEffectState @{nameEq} first))
+                    (Just (projectEffectState @{nameEq} earlyRightFinal))
+                  earlyFrame = localPartialRelatedRewrite
+                    (sym (rightOriginSame (projectEffectState @{nameEq} first)))
+                    Refl rawEarlyFrame
+                  0 leftGeneratorFrame : PartialRelated
+                    (EffectState name key value world) (EffectStateRelated keyEq)
+                    (traceGeneratorMap leftGenerator
+                      (projectEffectState @{nameEq} first))
+                    (Just (projectEffectState @{nameEq} middle))
+                  leftGeneratorFrame = localPartialRelatedRewrite
+                    (leftGeneratorMapSame (projectEffectState @{nameEq} first))
+                    Refl leftFrame
+                  0 rightGeneratorFrame : PartialRelated
+                    (EffectState name key value world) (EffectStateRelated keyEq)
+                    (traceGeneratorMap rightGenerator
+                      (projectEffectState @{nameEq} first))
+                    (Just (projectEffectState @{nameEq} earlyRightFinal))
+                  rightGeneratorFrame = localPartialRelatedRewrite
+                    (rightGeneratorMapSame (projectEffectState @{nameEq} first))
+                    Refl earlyFrame
+                  0 effectOutput : ActivationPairEffectOutput nameEq keyEq
+                    leftAction leftTag earlyRightFinal originalFinal
+                  effectOutput = activationPairEffectOutput nameEq keyEq
+                    leftAction rightAction leftTag rightTag leftChecked
+                    rightChecked earlyCheckedRight leftActivation rightActivation
+                    distinctOwners independent
+                  0 rawMove : RawActivationMove nameEq keyEq leftAction leftTag
+                    earlyRightFinal
+                  rawMove = activationRawAfterForeignActivation nameEq keyEq
+                    leftAction rightAction leftTag rightTag leftChecked
+                    earlyCheckedRight leftActivation earlyActivation distinctOwners
+                    earlyWellFormed (activationPairEffectState effectOutput)
+                    (movedLeftEffectMapRuns effectOutput)
+                  0 endpoint : CheckedActivationEndpoint nameEq keyEq leftAction
+                    leftTag earlyRightFinal originalFinal
+                  endpoint = checkActivationEndpoint nameEq keyEq leftAction
+                    leftTag earlyRightFinal originalFinal earlyWellFormed
+                    effectOutput rawMove
+                  swappedFinal : SystemState name key value world error
+                  swappedFinal = checkedEndpointAfter endpoint
+                  0 movedCheckedLeft : checkedApplyAction @{nameEq} @{keyEq}
+                    leftAction earlyRightFinal = Just (leftTag, swappedFinal)
+                  movedCheckedLeft = checkedEndpointEquation endpoint
+                  0 movedRightActivation : PaperActivationStep
+                    (Fired {before = first} {afterState = earlyRightFinal}
+                      nameEq keyEq rightAction rightTag earlyCheckedRight)
+                  movedRightActivation = earlyActivation
+                  0 movedLeftActivation : PaperActivationStep
+                    (Fired {before = earlyRightFinal} {afterState = swappedFinal}
+                      nameEq keyEq leftAction leftTag movedCheckedLeft)
+                  movedLeftActivation = paperActivationStepTransport Refl Refl
+                    leftActivation
+                  0 effectsRelated : EffectStateRelated keyEq
+                    (projectEffectState @{nameEq} originalFinal)
+                    (projectEffectState @{nameEq} swappedFinal)
+                  effectsRelated = checkedEndpointEffects endpoint
+                  0 finalWellFormed : registryWellFormed @{nameEq} @{keyEq}
+                    swappedFinal = True
+                  finalWellFormed = checkedEndpointWellFormed endpoint
+                  0 leftLookup : (lookupFiber @{nameEq} {name = name}
+                    {key = key} {value = value} {world = world}
+                    {error = error} (actionOwner leftAction)
+                    (registry earlyRightFinal) = lookupFiber @{nameEq}
+                      {name = name} {key = key} {value = value}
+                      {world = world} {error = error}
+                      (actionOwner leftAction) (registry first))
+                  leftLookup = transitionForeignLookup nameEq keyEq
+                    (actionOwner leftAction) rightAction rightTag
+                    earlyCheckedRight distinctOwners
+                  0 movedRightLookup : (lookupFiber @{nameEq}
+                    {name = name} {key = key} {value = value}
+                    {world = world} {error = error}
+                    (actionOwner rightAction) (registry middle) =
+                    lookupFiber @{nameEq} {name = name} {key = key}
+                      {value = value} {world = world} {error = error}
+                      (actionOwner rightAction) (registry first))
+                  movedRightLookup = rightLookup
+                  0 leftTargets : (fiber : Fiber name key value world error) ->
+                    (view : View name (dependencies
+                      (componentDependencies
+                        (fiberComponent fiber)))) ->
+                    targetFiber @{nameEq} @{keyEq} fiber
+                      (registry first) = Just view ->
+                    targetFiber @{nameEq} @{keyEq} fiber
+                      (registry earlyRightFinal) = Just view
+                  leftTargets = \fiber, view, target =>
+                    targetFiberStableAfterForeignActivation nameEq
+                      keyEq fiber view rightAction rightTag
+                      earlyCheckedRight earlyActivation earlyWellFormed
+                      target
+                  0 rightTargets : (fiber : Fiber name key value world error) ->
+                    (view : View name (dependencies
+                      (componentDependencies
+                        (fiberComponent fiber)))) ->
+                    targetFiber @{nameEq} @{keyEq} fiber
+                      (registry first) = Just view ->
+                    targetFiber @{nameEq} @{keyEq} fiber
+                      (registry middle) = Just view
+                  rightTargets = \fiber, view, target =>
+                    targetFiberStableAfterForeignActivation nameEq
+                      keyEq fiber view leftAction leftTag leftChecked
+                      leftActivation middleWellFormed target
+                  0 leftOutcomes : (stage : IteratorStage name key
+                    world error value (actionOwner leftAction)
+                    pairTrace) -> IteratorOutcomeAgreement name key
+                      value world error keyEq
+                      (iteratorStageOutcome stage
+                        (projectEffectState @{nameEq}
+                          earlyRightFinal))
+                      (iteratorStageOutcome stage
+                        (projectEffectState @{nameEq} first))
+                  leftOutcomes = \stage =>
+                    iteratorOutcomeAfterFramedForeign keyEq independent
+                      (actionOwner leftAction)
+                      (actionOwner rightAction) distinctOwners stage
+                      (TraceGenerator rightGenerator)
+                      (projectEffectState @{nameEq} first)
+                      (projectEffectState @{nameEq} earlyRightFinal)
+                      rightGeneratorFrame
+                  0 rightOutcomes : (stage : IteratorStage name key
+                    world error value (actionOwner rightAction)
+                    pairTrace) -> IteratorOutcomeAgreement name key
+                      value world error keyEq
+                      (iteratorStageOutcome stage
+                        (projectEffectState @{nameEq} middle))
+                      (iteratorStageOutcome stage
+                        (projectEffectState @{nameEq} first))
+                  rightOutcomes = \stage =>
+                    iteratorOutcomeAfterFramedForeign keyEq independent
+                      (actionOwner rightAction)
+                      (actionOwner leftAction) reverseDistinctOwners
+                      stage (TraceGenerator leftGenerator)
+                      (projectEffectState @{nameEq} first)
+                      (projectEffectState @{nameEq} middle)
+                      leftGeneratorFrame
+                  0 leftComparison : ActivationReplacementComparison
+                    nameEq (actionOwner leftAction) first middle
+                    earlyRightFinal swappedFinal
+                  leftComparison =
+                    activationReplacementComparisonAcrossForeignStates
+                      nameEq keyEq leftAction leftTag pairTrace
+                      {sourceBefore = first}
+                      {movedBefore = earlyRightFinal}
+                      {sourceAfter = middle} {movedAfter = swappedFinal}
+                      leftChecked movedCheckedLeft (Left leftOccurs)
+                      leftActivation leftLookup leftTargets leftOutcomes
+                  0 rightComparison : ActivationReplacementComparison
+                    nameEq (actionOwner rightAction) first
+                    earlyRightFinal middle originalFinal
+                  rightComparison =
+                    activationReplacementComparisonAcrossForeignStates
+                      nameEq keyEq rightAction rightTag pairTrace
+                      {sourceBefore = first} {movedBefore = middle}
+                      {sourceAfter = earlyRightFinal}
+                      {movedAfter = originalFinal} earlyCheckedRight
+                      rightChecked (Right rightOccurs) earlyActivation
+                      movedRightLookup rightTargets rightOutcomes
+                  0 originalShape : bindings (registry originalFinal) =
+                    replaceEntries @{nameEq} (actionOwner rightAction)
+                      (movedReplacementFiber rightComparison)
+                      (replaceEntries @{nameEq} (actionOwner leftAction)
+                        (sourceReplacementFiber leftComparison)
+                        (bindings (registry first)))
+                  originalShape = trans
+                    (movedReplacementBindings rightComparison)
+                    (cong (replaceEntries @{nameEq}
+                      (actionOwner rightAction)
+                      (movedReplacementFiber rightComparison))
+                      (sourceReplacementBindings leftComparison))
+                  0 swappedShape : bindings (registry swappedFinal) =
+                    replaceEntries @{nameEq} (actionOwner leftAction)
+                      (movedReplacementFiber leftComparison)
+                      (replaceEntries @{nameEq} (actionOwner rightAction)
+                        (sourceReplacementFiber rightComparison)
+                        (bindings (registry first)))
+                  swappedShape = trans
+                    (movedReplacementBindings leftComparison)
+                    (cong (replaceEntries @{nameEq}
+                      (actionOwner leftAction)
+                      (movedReplacementFiber leftComparison))
+                      (sourceReplacementBindings rightComparison))
+                  0 controls : OrderedRegistryControlsRelated name key world
+                    error value (bindings (registry originalFinal))
+                      (bindings (registry swappedFinal))
+                  controls = orderedControlsAfterDistinctReplacements
+                    nameEq (actionOwner leftAction)
+                    (actionOwner rightAction) distinctOwners
+                    (bindings (registry first))
+                    (bindings (registry originalFinal))
+                    (bindings (registry swappedFinal))
+                    (sourceReplacementFiber leftComparison)
+                    (movedReplacementFiber leftComparison)
+                    (movedReplacementFiber rightComparison)
+                    (sourceReplacementFiber rightComparison)
+                    (replacementFibersRelated leftComparison)
+                    (fiberControlSymmetric
+                      (replacementFibersRelated rightComparison))
+                    originalShape swappedShape
+              in MkLocalRelationalDiamond earlyRightFinal swappedFinal
+                earlyRight
+                (Fired nameEq keyEq leftAction leftTag movedCheckedLeft)
+                sameAction sameTag Refl Refl
+                (\_ => paperActivationStepTransport sameAction sameTag
+                  rightActivation)
+                (\_ => paperActivationStepTransport Refl Refl
+                  leftActivation)
+                (\orchestration => void
+                  (paperActivationOrchestrationImpossible
+                    rightActivation orchestration))
+                (\orchestration => void
+                  (paperActivationOrchestrationImpossible
+                    leftActivation orchestration))
+                effectsRelated controls finalWellFormed
 
 ||| Candidate for paper Lemma 71(2).
 public export
