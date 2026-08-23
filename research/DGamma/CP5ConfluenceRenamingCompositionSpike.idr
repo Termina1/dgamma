@@ -832,6 +832,193 @@ data RegistrationSideEventFold :
       (registrationEventAt @{nameEq} ordinal index child parent component ::
         events)
 
+||| A simultaneous standalone projection.  The same event-list values index
+||| both the pending plan fold and the exact side scanner folds, so downstream
+||| composition does not need nested equality rewriting.
+record AlignedFiniteRegistrationProjection
+  (nameEq : DecEq name) (renaming : RegistrationGenerationBijection name)
+  (leftOrdinal : Nat) (leftIndex : RegistrationIndexState name)
+  {leftFirst, leftFinal : SystemState name key value world error}
+  (left : Transitions leftFirst leftFinal)
+  (leftResultIndex : RegistrationIndexState name)
+  (rightOrdinal : Nat) (rightIndex : RegistrationIndexState name)
+  {rightFirst, rightFinal : SystemState name key value world error}
+  (right : Transitions rightFirst rightFinal)
+  (rightResultIndex : RegistrationIndexState name)
+  (pendingLeft, pendingRight :
+    List (RegistrationEvent name key world error value)) where
+  constructor MkAlignedFiniteRegistrationProjection
+  alignedMatchingPlan : FiniteRegistrationMatchingPlan renaming pendingLeft
+    pendingRight
+  alignedLeftScan : RegistrationSideScan nameEq leftOrdinal leftIndex left
+    leftResultIndex
+  alignedRightScan : RegistrationSideScan nameEq rightOrdinal rightIndex right
+    rightResultIndex
+  alignedLeftEvents : List (RegistrationEvent name key world error value)
+  alignedRightEvents : List (RegistrationEvent name key world error value)
+  0 alignedMatchingFold : MatchingPlanEventFold alignedMatchingPlan
+    alignedLeftEvents alignedRightEvents
+  0 alignedLeftFold : RegistrationSideEventFold alignedLeftScan alignedLeftEvents
+  0 alignedRightFold : RegistrationSideEventFold alignedRightScan
+    alignedRightEvents
+
+0 alignFiniteRegistrationProjection :
+  RegistrationTraceCorrespondence nameEq renaming
+    leftOrdinal leftIndex left leftResultIndex
+    rightOrdinal rightIndex right rightResultIndex pendingLeft pendingRight ->
+  AlignedFiniteRegistrationProjection nameEq renaming leftOrdinal leftIndex left
+    leftResultIndex rightOrdinal rightIndex right rightResultIndex pendingLeft
+    pendingRight
+alignFiniteRegistrationProjection RegistrationCorrespondenceEnd =
+  MkAlignedFiniteRegistrationProjection
+    FiniteRegistrationMatchingEnd RegistrationSideScanEnd
+    RegistrationSideScanEnd [] [] MatchingPlanEventFoldEnd
+    RegistrationSideEventFoldEnd RegistrationSideEventFoldEnd
+alignFiniteRegistrationProjection
+  (SkipLeftNonRegistration action transition rest actionExact notRegistration
+    correspondence) =
+      case alignFiniteRegistrationProjection correspondence of
+        MkAlignedFiniteRegistrationProjection plan leftScan rightScan leftEvents
+          rightEvents planFold leftFold rightFold =>
+            MkAlignedFiniteRegistrationProjection plan
+              (RegistrationSideScanNonRegistration action transition rest
+                actionExact notRegistration leftScan)
+              rightScan leftEvents rightEvents planFold
+              (RegistrationSideEventFoldNonRegistration action transition rest
+                actionExact notRegistration leftFold)
+              rightFold
+alignFiniteRegistrationProjection
+  (SkipRightNonRegistration action transition rest actionExact notRegistration
+    correspondence) =
+      case alignFiniteRegistrationProjection correspondence of
+        MkAlignedFiniteRegistrationProjection plan leftScan rightScan leftEvents
+          rightEvents planFold leftFold rightFold =>
+            MkAlignedFiniteRegistrationProjection plan leftScan
+              (RegistrationSideScanNonRegistration action transition rest
+                actionExact notRegistration rightScan)
+              leftEvents rightEvents planFold leftFold
+              (RegistrationSideEventFoldNonRegistration action transition rest
+                actionExact notRegistration rightFold)
+alignFiniteRegistrationProjection
+  (DiscardLeftDeletedRegistration transition rest actionExact deleted
+    correspondence) =
+      case alignFiniteRegistrationProjection correspondence of
+        MkAlignedFiniteRegistrationProjection plan leftScan rightScan leftEvents
+          rightEvents planFold leftFold rightFold =>
+            MkAlignedFiniteRegistrationProjection plan
+              (RegistrationSideScanDeleted transition rest actionExact deleted
+                leftScan)
+              rightScan leftEvents rightEvents planFold
+              (RegistrationSideEventFoldDeleted transition rest actionExact
+                deleted leftFold)
+              rightFold
+alignFiniteRegistrationProjection
+  (DiscardRightDeletedRegistration transition rest actionExact deleted
+    correspondence) =
+      case alignFiniteRegistrationProjection correspondence of
+        MkAlignedFiniteRegistrationProjection plan leftScan rightScan leftEvents
+          rightEvents planFold leftFold rightFold =>
+            MkAlignedFiniteRegistrationProjection plan leftScan
+              (RegistrationSideScanDeleted transition rest actionExact deleted
+                rightScan)
+              leftEvents rightEvents planFold leftFold
+              (RegistrationSideEventFoldDeleted transition rest actionExact
+                deleted rightFold)
+alignFiniteRegistrationProjection {leftOrdinal} {leftIndex}
+  (QueueLeftGeneratedRegistration {child} {parent} {component}
+    transition rest actionExact surviving correspondence) =
+      case alignFiniteRegistrationProjection correspondence of
+        MkAlignedFiniteRegistrationProjection plan leftScan rightScan leftEvents
+          rightEvents planFold leftFold rightFold =>
+            MkAlignedFiniteRegistrationProjection
+              (FiniteRegistrationMatchingQueueLeft
+                (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent
+                  component) plan)
+              (RegistrationSideScanSurviving transition rest actionExact
+                surviving leftScan)
+              rightScan
+              (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent
+                component :: leftEvents)
+              rightEvents
+              (MatchingPlanEventFoldQueueLeft
+                (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent
+                  component) planFold)
+              (RegistrationSideEventFoldSurviving transition rest actionExact
+                surviving leftFold)
+              rightFold
+alignFiniteRegistrationProjection {rightOrdinal} {rightIndex}
+  (QueueRightGeneratedRegistration {child} {parent} {component}
+    transition rest actionExact surviving correspondence) =
+      case alignFiniteRegistrationProjection correspondence of
+        MkAlignedFiniteRegistrationProjection plan leftScan rightScan leftEvents
+          rightEvents planFold leftFold rightFold =>
+            MkAlignedFiniteRegistrationProjection
+              (FiniteRegistrationMatchingQueueRight
+                (registrationEventAt @{nameEq} rightOrdinal rightIndex child
+                  parent component) plan)
+              leftScan
+              (RegistrationSideScanSurviving transition rest actionExact
+                surviving rightScan)
+              leftEvents
+              (registrationEventAt @{nameEq} rightOrdinal rightIndex child parent
+                component :: rightEvents)
+              (MatchingPlanEventFoldQueueRight
+                (registrationEventAt @{nameEq} rightOrdinal rightIndex child
+                  parent component) planFold)
+              leftFold
+              (RegistrationSideEventFoldSurviving transition rest actionExact
+                surviving rightFold)
+alignFiniteRegistrationProjection {leftOrdinal} {leftIndex}
+  (MatchLeftWithPendingRight {child} {parent} {component}
+    transition rest actionExact surviving rightPrefix rightEvent rightSuffix
+    matched correspondence) =
+      case alignFiniteRegistrationProjection correspondence of
+        MkAlignedFiniteRegistrationProjection plan leftScan rightScan leftEvents
+          rightEvents planFold leftFold rightFold =>
+            MkAlignedFiniteRegistrationProjection
+              (FiniteRegistrationMatchingMatchLeft
+                (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent
+                  component)
+                rightPrefix rightEvent rightSuffix matched plan)
+              (RegistrationSideScanSurviving transition rest actionExact
+                surviving leftScan)
+              rightScan
+              (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent
+                component :: leftEvents)
+              rightEvents
+              (MatchingPlanEventFoldMatchLeft
+                (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent
+                  component)
+                rightPrefix rightEvent rightSuffix matched planFold)
+              (RegistrationSideEventFoldSurviving transition rest actionExact
+                surviving leftFold)
+              rightFold
+alignFiniteRegistrationProjection {rightOrdinal} {rightIndex}
+  (MatchRightWithPendingLeft {child} {parent} {component}
+    transition rest actionExact surviving leftPrefix leftEvent leftSuffix
+    matched correspondence) =
+      case alignFiniteRegistrationProjection correspondence of
+        MkAlignedFiniteRegistrationProjection plan leftScan rightScan leftEvents
+          rightEvents planFold leftFold rightFold =>
+            MkAlignedFiniteRegistrationProjection
+              (FiniteRegistrationMatchingMatchRight
+                (registrationEventAt @{nameEq} rightOrdinal rightIndex child
+                  parent component)
+                leftPrefix leftEvent leftSuffix matched plan)
+              leftScan
+              (RegistrationSideScanSurviving transition rest actionExact
+                surviving rightScan)
+              leftEvents
+              (registrationEventAt @{nameEq} rightOrdinal rightIndex child parent
+                component :: rightEvents)
+              (MatchingPlanEventFoldMatchRight
+                (registrationEventAt @{nameEq} rightOrdinal rightIndex child
+                  parent component)
+                leftPrefix leftEvent leftSuffix matched planFold)
+              leftFold
+              (RegistrationSideEventFoldSurviving transition rest actionExact
+                surviving rightFold)
+
 ||| Checked synchronization capital for the shared middle trace of two scanner
 ||| correspondences.  The asynchronous interleavings may differ, but their
 ||| side projections make exactly the same surviving/deleted decision and
