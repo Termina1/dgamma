@@ -686,6 +686,20 @@ matchingPlanRightEvents
   (FiniteRegistrationMatchingMatchRight rightEvent _ _ _ _ later) =
     rightEvent :: matchingPlanRightEvents later
 
+0 acceptedFiniteRegistrationMatchingPlan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {renaming : RegistrationGenerationBijection name} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal :
+    SystemState name key value world error} ->
+  {leftTrace : Transitions leftFirst leftFinal} ->
+  {rightTrace : Transitions rightFirst rightFinal} ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq renaming
+    leftTrace rightTrace) ->
+  FiniteRegistrationMatchingPlan {key = key} {value = value} {world = world}
+    {error = error} renaming [] []
+acceptedFiniteRegistrationMatchingPlan registrations =
+  finiteRegistrationMatchingPlan (generationTraceCorrespondence registrations)
 
 ||| Checked synchronization capital for the shared middle trace of two scanner
 ||| correspondences.  The asynchronous interleavings may differ, but their
@@ -727,6 +741,16 @@ synchronizeMiddleRegistrationScanners leftRegistrations rightRegistrations =
         (generationTraceCorrespondence rightRegistrations)
   in MkSharedMiddleRegistrationSynchronization leftScan rightScan
     (registrationSideScanFinalIndexUnique leftScan rightScan)
+
+0 sharedMiddleSurvivingEventsSame :
+  (synchronization : SharedMiddleRegistrationSynchronization nameEq leftTrace
+    middleTrace rightTrace leftRenaming rightRenaming leftRegistrations
+    rightRegistrations) ->
+  registrationSideSurvivingEvents (middleAsRightScan synchronization) =
+    registrationSideSurvivingEvents (middleAsLeftScan synchronization)
+sharedMiddleSurvivingEventsSame synchronization =
+  registrationSideSurvivingEventsUnique (middleAsRightScan synchronization)
+    (middleAsLeftScan synchronization)
 
 0 sharedMiddleLiveGenerationsSame :
   (synchronization : SharedMiddleRegistrationSynchronization nameEq leftTrace
