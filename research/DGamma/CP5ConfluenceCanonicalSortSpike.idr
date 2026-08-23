@@ -10,6 +10,7 @@ import DGamma.CP4SupportSolution
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import Data.List.Elem
+import Data.Nat
 import Decidable.Equality
 
 %default total
@@ -128,6 +129,19 @@ record SortedClosingFreeTrace
     BeforeIn earlier later (orderedSupportNames ordering) ->
     BlockBefore name key world error value nameEq keyEq sortedTrace earlier later
       (sortedBlock earlier earlierIn) (sortedBlock later laterIn)
+  0 sortedBlockRangesDisjoint : (earlier, later : name) ->
+    (earlierIn : Elem earlier (orderedSupportNames ordering)) ->
+    (laterIn : Elem later (orderedSupportNames ordering)) ->
+    BeforeIn earlier later (orderedSupportNames ordering) ->
+    (earlierPosition, laterPosition : Nat) ->
+    LTE (S earlierPosition)
+      (S (transitionCount (blockBody (sortedBlock earlier earlierIn)))) ->
+    LTE (S laterPosition)
+      (S (transitionCount (blockBody (sortedBlock later laterIn)))) ->
+    Not (transitionCount (traceBeforeBlock (sortedBlock earlier earlierIn)) +
+      earlierPosition =
+      transitionCount (traceBeforeBlock (sortedBlock later laterIn)) +
+      laterPosition)
   sortedLifecycleCoverage : LifecycleActorsCovered
     (orderedSupportNames ordering) sortedTrace
   sortedInputPlacement : CanonicalInputPlacement name key world error value
@@ -285,6 +299,43 @@ public export
 deletionSortingOrchestrationAccountingSpike =
   ?deletionSortingOrchestrationAccountingSpike_rhs
 
+||| Erased producer schedule used to seal the runtime schedule stored by the
+||| bridge-facing capital.  All proof fields come from the exact indexed chain.
+public export
+0 producerCanonicalSchedule :
+  (premises : CanonicalizationPremises name key world error value protocol
+    nameEq keyEq original) ->
+  (reduction : ClosingFreeReduction name key world error value protocol nameEq
+    keyEq original) ->
+  (ordering : SupportOrderingCapital name key world error value nameEq keyEq
+    (reducedFinal reduction)) ->
+  (sorted : SortedClosingFreeTrace name key world error value protocol nameEq
+    keyEq (reducedTrace reduction) ordering) ->
+  (supportTransport : CanonicalSupportTransport name key world error value
+    nameEq keyEq originalFinal (reducedFinal reduction)
+      (cumulativeEndpoint reduction)) ->
+  (accounting : OneTraceOrchestrationAccounting name key world error value
+    protocol nameEq keyEq original reduction ordering sorted) ->
+  CanonicalSchedule name key world error value protocol nameEq keyEq original
+producerCanonicalSchedule premises reduction ordering sorted supportTransport
+  accounting =
+    MkCanonicalSchedule
+      (sortedFinal sorted)
+      (sortedTrace sorted)
+      (accountedExternalInputs accounting)
+      (replayDiscipline (chainReplayCapital premises))
+      (replayDiscipline (sortedPremises sorted))
+      (orderedSupportNames ordering)
+      (linearizationToOriginal supportTransport (orderedSupportNames ordering)
+        (orderedSupportLinearization ordering))
+      (sortedBlock sorted)
+      (sortedBlocksFollowOrder sorted)
+      (sortedLifecycleCoverage sorted)
+      (inputPlacementToOriginal supportTransport (orderedSupportNames ordering)
+        (sortedTrace sorted) (sortedInputPlacement sorted))
+      (accountedEndpoint accounting)
+      (accountedGeneratedRegistrations accounting)
+
 ||| Bridge-facing capital preserves the exact producer chain.  No canonical
 ||| schedule, occurrence correspondence, or authentication pair is freely stored:
 ||| every trusted consumer projection below is definitionally reconstructed from
@@ -310,6 +361,11 @@ record IndependentCanonicalSchedule
       (cumulativeEndpoint capitalReduction)
   capitalAccounting : OneTraceOrchestrationAccounting name key world error value
     protocol nameEq keyEq original capitalReduction capitalOrdering capitalSorted
+  capitalCanonicalSchedule : CanonicalSchedule name key world error value protocol
+    nameEq keyEq original
+  0 capitalCanonicalScheduleExact : capitalCanonicalSchedule =
+    producerCanonicalSchedule capitalPremises capitalReduction capitalOrdering
+      capitalSorted capitalSupportTransport capitalAccounting
   capitalWithdrawnClassified :
     (generation : RegistrationGeneration name) ->
     Elem generation (endpointWithdrawnGenerations
@@ -321,30 +377,11 @@ record IndependentCanonicalSchedule
 ||| constructor argument.  A coherent caller-selected `(tree,map)` pair has no
 ||| field through which it can enter this value.
 public export
-0 canonicalSchedule :
+canonicalSchedule :
   IndependentCanonicalSchedule name key world error value protocol nameEq keyEq
     original ->
   CanonicalSchedule name key world error value protocol nameEq keyEq original
-canonicalSchedule capital =
-  MkCanonicalSchedule
-    (sortedFinal (capitalSorted capital))
-    (sortedTrace (capitalSorted capital))
-    (accountedExternalInputs (capitalAccounting capital))
-    (replayDiscipline (chainReplayCapital (capitalPremises capital)))
-    (replayDiscipline (sortedPremises (capitalSorted capital)))
-    (orderedSupportNames (capitalOrdering capital))
-    (linearizationToOriginal (capitalSupportTransport capital)
-      (orderedSupportNames (capitalOrdering capital))
-      (orderedSupportLinearization (capitalOrdering capital)))
-    (sortedBlock (capitalSorted capital))
-    (sortedBlocksFollowOrder (capitalSorted capital))
-    (sortedLifecycleCoverage (capitalSorted capital))
-    (inputPlacementToOriginal (capitalSupportTransport capital)
-      (orderedSupportNames (capitalOrdering capital))
-      (sortedTrace (capitalSorted capital))
-      (sortedInputPlacement (capitalSorted capital)))
-    (accountedEndpoint (capitalAccounting capital))
-    (accountedGeneratedRegistrations (capitalAccounting capital))
+canonicalSchedule capital = capitalCanonicalSchedule capital
 
 public export
 0 originalTraceIndependent :
@@ -360,10 +397,12 @@ public export
     nameEq keyEq original) ->
   RelationalReplayCorrespondence name key world error value original
     (canonicalTrace (canonicalSchedule capital))
-canonicalReplayCorrespondence capital =
-  composeRelationalReplayCorrespondence
-    (reductionReplayCorrespondence (capitalReduction capital))
-    (sortingReplayCorrespondence (capitalSorted capital))
+canonicalReplayCorrespondence
+  (MkIndependentCanonicalSchedule premises reduction ordering sorted
+    supportTransport accounting _ Refl classified) =
+      composeRelationalReplayCorrespondence
+        (reductionReplayCorrespondence reduction)
+        (sortingReplayCorrespondence sorted)
 
 public export
 0 canonicalOccurrenceCorrespondence :
@@ -371,9 +410,10 @@ public export
     nameEq keyEq original) ->
   ActionRegistrationReplayCorrespondence name key world error value original
     (canonicalTrace (canonicalSchedule capital))
-canonicalOccurrenceCorrespondence capital =
-  deletionSortingOccurrenceCorrespondence (capitalReduction capital)
-    (capitalSorted capital)
+canonicalOccurrenceCorrespondence
+  (MkIndependentCanonicalSchedule premises reduction ordering sorted
+    supportTransport accounting _ Refl classified) =
+      deletionSortingOccurrenceCorrespondence reduction sorted
 
 public export
 0 canonicalRegistrationAuthentication :
@@ -384,8 +424,10 @@ public export
     (endpointWithdrawnGenerations (canonicalEndpoint (canonicalSchedule capital)))
     (canonicalRegistrationTree (canonicalSchedule capital))
     (canonicalOccurrenceCorrespondence capital)
-canonicalRegistrationAuthentication capital =
-  accountedRegistrationAuthentication (capitalAccounting capital)
+canonicalRegistrationAuthentication
+  (MkIndependentCanonicalSchedule premises reduction ordering sorted
+    supportTransport accounting _ Refl classified) =
+      accountedRegistrationAuthentication accounting
 
 public export
 0 canonicalReplayPremises :
@@ -393,7 +435,9 @@ public export
     nameEq keyEq original) ->
   ReplayInvariantBundle name key world error value protocol nameEq keyEq
     (canonicalTrace (canonicalSchedule capital))
-canonicalReplayPremises capital = sortedPremises (capitalSorted capital)
+canonicalReplayPremises
+  (MkIndependentCanonicalSchedule premises reduction ordering sorted
+    supportTransport accounting _ Refl classified) = sortedPremises sorted
 
 public export
 0 canonicalTraceIndependent :
@@ -401,8 +445,10 @@ public export
     nameEq keyEq original) ->
   TraceIndependent name key world error value keyEq
     (canonicalTrace (canonicalSchedule capital))
-canonicalTraceIndependent capital =
-  replayIndependent (sortedPremises (capitalSorted capital))
+canonicalTraceIndependent
+  (MkIndependentCanonicalSchedule premises reduction ordering sorted
+    supportTransport accounting _ Refl classified) =
+      replayIndependent (sortedPremises sorted)
 
 public export
 0 canonicalWithdrawnClassified :
@@ -413,7 +459,9 @@ public export
     (canonicalEndpoint (canonicalSchedule capital))) ->
   DeletedGenerationClassification name key world error value nameEq original
     generation
-canonicalWithdrawnClassified capital = capitalWithdrawnClassified capital
+canonicalWithdrawnClassified
+  (MkIndependentCanonicalSchedule premises reduction ordering sorted
+    supportTransport accounting _ Refl classified) = classified
 
 ||| Complete simultaneous-package constructor.  It merely seals the exact
 ||| producer values; all consumer-facing maps and schedules are derived above.
@@ -446,7 +494,10 @@ public export
 assembleIndependentCanonicalSchedule nameEq keyEq protocol original premises
   reduction ordering sorted supportTransport accounting classified =
     MkIndependentCanonicalSchedule premises reduction ordering sorted
-      supportTransport accounting classified
+      supportTransport accounting
+      (producerCanonicalSchedule premises reduction ordering sorted
+        supportTransport accounting)
+      Refl classified
 
 ||| The hard producer derives the typed cumulative classification from the
 ||| deletion history and returns the simultaneous package above.  Consumers no
