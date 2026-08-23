@@ -30,6 +30,7 @@ done
 POSITIVE=(
   R10ProvenanceProjectionPositive
   R10OperationalOriginPlanFixturesPositive
+  R10ActorBlockDecompositionFixturesPositive
   R4OADiamondApplication
   R4ScannerProducerConsumers
   R4VestigialSimultaneous

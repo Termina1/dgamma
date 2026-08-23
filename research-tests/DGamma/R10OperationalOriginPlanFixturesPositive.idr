@@ -6,6 +6,9 @@ import DGamma.CP3
 import DGamma.Metatheory
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCrossTraceSpike
+import DGamma.R9WholeBlockSingletonPositive
+import DGamma.R9WholeBlockTwoByOnePositive
+import DGamma.R9WholeBlockTwoByTwoPositive
 import Data.Nat
 import Decidable.Equality
 
@@ -187,6 +190,62 @@ materializeOperationalOriginPlan
           target restDerivation prefixOccurrences leftBlock rightBlock leftOrigin
           rightOrigin restPositions restPlan)
 
+||| Nonempty materialization packages the concrete first result, the tail fold,
+||| and the recursive origin plan under one definitional derivation index.
+public export
+record MaterializedNonEmptyOperationalOriginPlan
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {sourceInitial, sourceFinal : SystemState name key value world error}
+  (sourceTrace : Transitions sourceInitial sourceFinal)
+  {leftActor, rightActor : name}
+  (leftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+    leftActor sourceTrace)
+  (rightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+    rightActor sourceTrace)
+  {targetFinal : SystemState name key value world error}
+  (target : Transitions sourceInitial targetFinal)
+  (positions : List (Nat, Nat)) where
+  constructor MkMaterializedNonEmptyOperationalOriginPlan
+  materializedNonEmptyDerivation : NonEmptyFiniteAdjacentSwapDerivation name key
+    world error value protocol nameEq keyEq sourceTrace target
+  materializedNonEmptyPlan : BlockCrossingOriginPlan name key world error value
+    protocol nameEq keyEq sourceTrace leftBlock rightBlock
+    (identityActionRegistrationReplayCorrespondence sourceTrace)
+    (nonEmptyToFiniteAdjacentSwapDerivation materializedNonEmptyDerivation)
+    positions
+
+public export
+0 materializeNonEmptyOperationalOriginPlan :
+  (raw : RawOperationalOriginPlan name key world error value protocol nameEq keyEq
+    sourceTrace leftBlock rightBlock sourceTrace
+    (identityActionRegistrationReplayCorrespondence sourceTrace) target
+    (firstPosition :: restPositions)) ->
+  MaterializedNonEmptyOperationalOriginPlan name key world error value protocol
+    nameEq keyEq sourceTrace leftBlock rightBlock target
+    (firstPosition :: restPositions)
+materializeNonEmptyOperationalOriginPlan
+  (RawOriginStep {replayedFinal} sourceTrace leftBlock rightBlock sourceTrace
+    tracePrefix left right suffix orientation diamond replayedSuffix swappedTrace
+    originalExact swappedExact external replay endpoint premises _
+    leftOrigin rightOrigin target restPositions rest) =
+  case materializeOperationalOriginPlan rest of
+    MkMaterializedOperationalOriginPlan restDerivation restPlan =>
+      MkMaterializedNonEmptyOperationalOriginPlan
+        (NonEmptyAdjacentSwap sourceTrace tracePrefix left right suffix orientation
+          diamond
+          (MkAdjacentSwapResult replayedFinal replayedSuffix swappedTrace
+            originalExact swappedExact external replay endpoint premises)
+          target restDerivation)
+        (CrossingOriginPlanStep sourceTrace tracePrefix left right suffix orientation
+          diamond
+          (MkAdjacentSwapResult replayedFinal replayedSuffix swappedTrace
+            originalExact swappedExact external replay endpoint premises)
+          target restDerivation
+          (identityActionRegistrationReplayCorrespondence sourceTrace)
+          leftBlock rightBlock leftOrigin rightOrigin restPositions restPlan)
+
 ||| A one-node raw fixture materializes both an actual sealed result and a real
 ||| `CrossingOriginPlanStep`; no prebuilt result/plan/label is an input.
 public export
@@ -253,3 +312,110 @@ public export
      (the Nat 1, the Nat 0), (the Nat 1, the Nat 1)]
 repeatedIterTwoByTwoMaterializesPlan raw iter =
   materializeOperationalOriginPlan raw
+
+||| End-to-end whole-record constructors from raw operational nodes.  These call
+||| `MkWholeBlockSwapDerivation` through the checked Cartesian wrappers, but the
+||| derivation and origin plan are produced by the materializer above.
+public export
+0 oneByOneWholeFromRaw :
+  {sourceOrder, targetOrder : List name} ->
+  {orderSwap : AdjacentActorOrderSwap name sourceOrder targetOrder} ->
+  {sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq
+    sourceOrder sourceTrace} ->
+  {sourcePremises : ReplayInvariantBundle name key world error value protocol
+    nameEq keyEq sourceTrace} ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq
+    keyEq orderSwap sourceTrace sourceBlocks sourcePremises) ->
+  (raw : RawOperationalOriginPlan name key world error value protocol nameEq keyEq
+    sourceTrace
+    (decomposedBlock sourceBlocks (actorLeft orderSwap)
+      (safetyLeftInOrder safety))
+    (decomposedBlock sourceBlocks (actorRight orderSwap)
+      (safetyRightInOrder safety))
+    sourceTrace (identityActionRegistrationReplayCorrespondence sourceTrace)
+    targetTrace [(the Nat 0, the Nat 0)]) ->
+  actorBlockTransitionCount (decomposedBlock sourceBlocks (actorLeft orderSwap)
+    (safetyLeftInOrder safety)) = 1 ->
+  actorBlockTransitionCount (decomposedBlock sourceBlocks (actorRight orderSwap)
+    (safetyRightInOrder safety)) = 1 ->
+  nonEmptyAdjacentSwapNodeCount
+    (materializedNonEmptyDerivation
+      (materializeNonEmptyOperationalOriginPlan raw)) = 1 ->
+  WholeBlockSwapDerivation name key world error value protocol nameEq keyEq
+    orderSwap sourceTrace sourceBlocks sourcePremises safety targetTrace
+oneByOneWholeFromRaw safety raw leftOne rightOne oneNode =
+  singletonWholeBlockWitness safety
+    (materializedNonEmptyDerivation
+      (materializeNonEmptyOperationalOriginPlan raw))
+    (materializedNonEmptyPlan
+      (materializeNonEmptyOperationalOriginPlan raw)) leftOne rightOne oneNode
+
+public export
+0 twoByOneWholeFromRaw :
+  {sourceOrder, targetOrder : List name} ->
+  {orderSwap : AdjacentActorOrderSwap name sourceOrder targetOrder} ->
+  {sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq
+    sourceOrder sourceTrace} ->
+  {sourcePremises : ReplayInvariantBundle name key world error value protocol
+    nameEq keyEq sourceTrace} ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq
+    keyEq orderSwap sourceTrace sourceBlocks sourcePremises) ->
+  (raw : RawOperationalOriginPlan name key world error value protocol nameEq keyEq
+    sourceTrace
+    (decomposedBlock sourceBlocks (actorLeft orderSwap)
+      (safetyLeftInOrder safety))
+    (decomposedBlock sourceBlocks (actorRight orderSwap)
+      (safetyRightInOrder safety))
+    sourceTrace (identityActionRegistrationReplayCorrespondence sourceTrace)
+    targetTrace [(the Nat 0, the Nat 0), (the Nat 1, the Nat 0)]) ->
+  actorBlockTransitionCount (decomposedBlock sourceBlocks (actorLeft orderSwap)
+    (safetyLeftInOrder safety)) = 2 ->
+  actorBlockTransitionCount (decomposedBlock sourceBlocks (actorRight orderSwap)
+    (safetyRightInOrder safety)) = 1 ->
+  nonEmptyAdjacentSwapNodeCount
+    (materializedNonEmptyDerivation
+      (materializeNonEmptyOperationalOriginPlan raw)) = 2 ->
+  WholeBlockSwapDerivation name key world error value protocol nameEq keyEq
+    orderSwap sourceTrace sourceBlocks sourcePremises safety targetTrace
+twoByOneWholeFromRaw safety raw leftTwo rightOne twoNodes =
+  twoByOneWholeBlockWitness safety
+    (materializedNonEmptyDerivation
+      (materializeNonEmptyOperationalOriginPlan raw))
+    (materializedNonEmptyPlan
+      (materializeNonEmptyOperationalOriginPlan raw)) leftTwo rightOne twoNodes
+
+public export
+0 repeatedIterTwoByTwoWholeFromRaw :
+  {sourceOrder, targetOrder : List name} ->
+  {orderSwap : AdjacentActorOrderSwap name sourceOrder targetOrder} ->
+  {sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq
+    sourceOrder sourceTrace} ->
+  {sourcePremises : ReplayInvariantBundle name key world error value protocol
+    nameEq keyEq sourceTrace} ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq
+    keyEq orderSwap sourceTrace sourceBlocks sourcePremises) ->
+  (raw : RawOperationalOriginPlan name key world error value protocol nameEq keyEq
+    sourceTrace
+    (decomposedBlock sourceBlocks (actorLeft orderSwap)
+      (safetyLeftInOrder safety))
+    (decomposedBlock sourceBlocks (actorRight orderSwap)
+      (safetyRightInOrder safety))
+    sourceTrace (identityActionRegistrationReplayCorrespondence sourceTrace)
+    targetTrace [(the Nat 0, the Nat 0), (the Nat 0, the Nat 1),
+      (the Nat 1, the Nat 0), (the Nat 1, the Nat 1)]) ->
+  RawPlanIsRepeatedIter raw ->
+  actorBlockTransitionCount (decomposedBlock sourceBlocks (actorLeft orderSwap)
+    (safetyLeftInOrder safety)) = 2 ->
+  actorBlockTransitionCount (decomposedBlock sourceBlocks (actorRight orderSwap)
+    (safetyRightInOrder safety)) = 2 ->
+  nonEmptyAdjacentSwapNodeCount
+    (materializedNonEmptyDerivation
+      (materializeNonEmptyOperationalOriginPlan raw)) = S (S (S (S Z))) ->
+  WholeBlockSwapDerivation name key world error value protocol nameEq keyEq
+    orderSwap sourceTrace sourceBlocks sourcePremises safety targetTrace
+repeatedIterTwoByTwoWholeFromRaw safety raw iter leftTwo rightTwo fourNodes =
+  twoByTwoWholeBlockWitness safety
+    (materializedNonEmptyDerivation
+      (materializeNonEmptyOperationalOriginPlan raw))
+    (materializedNonEmptyPlan
+      (materializeNonEmptyOperationalOriginPlan raw)) leftTwo rightTwo fourNodes
