@@ -1,12 +1,15 @@
-# Theorem 73 (Confluence) — CP5 scoping plan, revision 11
+# Theorem 73 (Confluence) — CP5 proof plan, revision 12 retirement draft
 
 Branch: `cp5-thm73-scoping`
 
 Review trail:
 
 - rounds 1–10: REJECT;
-- `review-cp5-plan-round10.md`: two under-specified hole-signature blockers,
-  two evidence/calibration majors, and one suite-diagnostic minor.
+- round 11: accepted the frozen 32-hole scoping interfaces;
+- grind shifts 1–9 filled six holes and retired one audited false/orphan generic
+  composition declaration, leaving 25 holes;
+- the revision-12 retirement delta awaits its mandated scoped fresh-context
+  adversarial review before proof grind resumes.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -15,11 +18,15 @@ remain excluded from the package.
 
 ## Executive estimate
 
-The post-repair provisional budget is **148–257 engineering shifts**. Revision
-10's 129–226 is withdrawn. The increase charges complete O6 ordinal semantics,
-O9 retained-subsequence certificate construction, downstream certificate
-threading through O16/O20, the still-unproved reachable repeated-Iter producer,
-and the still-unproved concrete O16 example.
+The post-retirement provisional budget is **148–249 engineering shifts**:
+Phase A closed in 9 grind shifts, and phases B–H retain a **139–240** remaining
+band. Revision 10's 129–226 is withdrawn. The increase charges complete O6
+ordinal semantics, O9 retained-subsequence certificate construction,
+downstream certificate threading through O16/O20, the still-unproved reachable
+repeated-Iter producer, and the still-unproved concrete O16 example. The scoped
+fresh-context retirement review is a separate one-round gate; counting it as an
+engineering shift gives an all-in projection of **149–250**, of which
+**140–241** remains at this revision.
 
 Mandatory re-estimation gates:
 
@@ -298,13 +305,25 @@ The honest round-10 withdrawal is retained unchanged:
 | O21 | vestigial endpoint equivalence | O22 |
 | O22 | immutable `ConfluenceResult` | theorem statement |
 
+### O1 generic-composition retirement
+
+The audit in `research-tests/O1-INTERFACE-REPAIR-AUDIT.md` found no producer of
+two adjacent raw modulo-vestigial endpoint relations and no consumer of their
+generic composed result. The immutable theorem chain is heterogeneous and is
+already sealed at `replayedCanonicalToOriginalEndpointSpike` (O21): it composes
+the two canonical endpoint relations, the relational replay endpoint, and the
+exact replay-to-right bridge under the single accepted outer registration/current
+capital. Therefore the false, orphan generic pairwise-transitivity declaration
+was retired. Proven generation/name/scanner composition helpers remain checked
+research capital; no CP3 production declaration changed.
+
 ## 10. Obligations and status
 
 There remain **23 obligations**.
 
 | ID | Obligation | Status | Grade |
 |---|---|---|---|
-| **O1** | External/replay/endpoint/generation and coherent occurrence algebra. | **1 hole; endpoint and external-input relation laws proved.** | **L.** |
+| **O1** | External/replay/endpoint/generation and coherent occurrence algebra. | **Complete after authorized retirement of the false/orphan generic endpoint-transitivity claim; pure composition helpers retained.** | **9 grind shifts actual for Phase A with O2.** |
 | **O2** | Transport both independence fields. | **Complete.** | **M–L.** |
 | **O3** | A/A diamonds. | **1 hole.** | **L–XL.** |
 | **O4** | A/O and O/A licensing/applicability. | **2 holes.** | **XL gate.** |
@@ -330,31 +349,34 @@ There remain **23 obligations**.
 
 ## 11. Exact hole reconciliation
 
-After grind shift 2 completed O2, **26 deliberate named research holes remain**:
+After authorized retirement of the orphan O1 declaration, **25 deliberate
+named research holes remain**:
 
 - canonical sort: 6;
 - cross-trace: 4;
 - deletion chain: 8;
 - local diamonds: 6;
-- renaming/O21: 2.
+- renaming/O21: 1.
 
-No hole was moved or renamed; four O1 relation-law bodies and both O2
-replay-independence transport bodies were filled in place.
+No hole was moved or renamed. Four O1 relation-law bodies and both O2
+replay-independence transport bodies were filled in place; the remaining O1 hole
+was retired only after the producer/consumer audit and decomposition gate proved
+that its generic result was orphaned and its premise was not producer-suppliable.
 
 Forward/reverse map:
 
-- O1=1, O2=0, O3=1, O4=2, O5=1, O6=3;
+- O1=0, O2=0, O3=1, O4=2, O5=1, O6=3;
 - O7=1, O8=1, O9=2, O10=1, O11=1, O12=1;
 - O13=0, O14=1, O15=1, O16=1, O17=1, O18=1;
 - O19=2, O20=1, O21=3, O22=0, O23=0.
 
-The values sum to 26.
+The values sum to 25.
 
-## 12. Post-repair phase arithmetic: 148–257
+## 12. Post-retirement phase arithmetic: 148–249 total, 139–240 remaining
 
 | Phase | Obligations | Raw band |
 |---|---|---:|
-| A — occurrence algebra and independence | O1–O2 | 9–17 |
+| A — occurrence algebra and independence | O1–O2 | 9–9 |
 | B — diamonds, exhaustive O6 certificate, reachable whole replay | O3–O6 | 32–55 |
 | C — scan, selection, O9 retained-subsequence certificate | O7–O9 | 15–26 |
 | D — recursive certified deletion/accounting | O10–O11 | 14–27 |
@@ -363,7 +385,10 @@ The values sum to 26.
 | G — matching, per-derivation O20 bridge, scanners/O21 | O19–O21 | 39–64 |
 | H — outer theorem and exact validation | O22–O23 | 5–8 |
 
-The rows sum exactly to **148–257**. No overlap deduction is applied.
+The rows sum exactly to **148–249** including Phase A's actual 9 shifts. The
+uncompleted B–H rows sum to **139–240**. No overlap deduction is applied. The
+mandatory one-round retirement review is reported separately rather than hidden
+inside a proof-phase band.
 
 ## 13. Round-10 finding closure
 
@@ -385,7 +410,7 @@ The rows sum exactly to **148–257**. No overlap deduction is applied.
 | 4 | O9 under-specification negatives | Filler-map and direct full-constructor clone tracked; downstream attacks retained. |
 | 5 | Honest origin calibration | Option (a), renamed generic repackager and disclosed supplied capital. |
 | 6 | Repair suite coverage/diagnostics | Missing tests tracked; runner upgraded to exact per-module expectations. |
-| 7 | Reconcile/estimate/path coherence | 26 holes remain; 148–257 original budget; per-derivation authority rationale explicit. |
+| 7 | Reconcile/estimate/path coherence | 25 holes remain after audited O1 retirement; 148–249 total / 139–240 implementation remaining; per-derivation authority rationale explicit. |
 | 8 | Release closure | Serial suite, scans, immutable production, seeded 207/207, best-effort unseeded, clean index required. |
 
 ## 15. Release boundary

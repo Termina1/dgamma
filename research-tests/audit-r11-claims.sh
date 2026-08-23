@@ -111,10 +111,10 @@ manifest = json.loads(manifest_path.read_text())
 if manifest.get('baseline') != '7d467e0556ab8ef62fa0d6c21b049f4346f1245d':
     raise SystemExit('wrong CP5 hole-interface baseline coordinate')
 entries = manifest.get('holes', [])
-if len(entries) != 32:
-    raise SystemExit(f'baseline manifest has {len(entries)} holes, expected 32')
+if len(entries) != 31:
+    raise SystemExit(f'baseline manifest has {len(entries)} holes, expected 31')
 baseline_holes = [entry['hole'] for entry in entries]
-if len(set(baseline_holes)) != 32:
+if len(set(baseline_holes)) != 31:
     raise SystemExit('baseline manifest contains duplicate hole names')
 
 def current_signature(path, function):
@@ -188,7 +188,7 @@ expected = {
     'CP5ConfluenceCrossTraceSpike.idr': 4,
     'CP5ConfluenceDeletionChainSpike.idr': 8,
     'CP5ConfluenceLocalDiamondSpike.idr': 6,
-    'CP5ConfluenceRenamingCompositionSpike.idr': 2,
+    'CP5ConfluenceRenamingCompositionSpike.idr': 1,
 }
 actual = {}
 for filename, count in expected.items():
@@ -197,7 +197,7 @@ for filename, count in expected.items():
     actual[filename] = len(holes)
 if actual != expected:
     raise SystemExit(f'hole split mismatch: {actual}, expected {expected}')
-if sum(actual.values()) != 26:
+if sum(actual.values()) != 25:
     raise SystemExit(f'hole total mismatch: {sum(actual.values())}')
 
 plan = Path('THM73-PLAN.md').read_text()
@@ -207,13 +207,16 @@ for line in plan.splitlines():
     if match:
         rows.append((match.group(1), int(match.group(2)), int(match.group(3))))
 expected_rows = [
-    ('A', 9, 17), ('B', 32, 55), ('C', 15, 26), ('D', 14, 27),
+    ('A', 9, 9), ('B', 32, 55), ('C', 15, 26), ('D', 14, 27),
     ('E', 7, 13), ('F', 27, 47), ('G', 39, 64), ('H', 5, 8),
 ]
 if rows != expected_rows:
     raise SystemExit(f'phase rows mismatch: {rows}, expected {expected_rows}')
-if (sum(row[1] for row in rows), sum(row[2] for row in rows)) != (148, 257):
-    raise SystemExit('phase sum is not 148–257')
+if (sum(row[1] for row in rows), sum(row[2] for row in rows)) != (148, 249):
+    raise SystemExit('phase sum is not 148–249')
+if (sum(row[1] for row in rows[1:]),
+    sum(row[2] for row in rows[1:])) != (139, 240):
+    raise SystemExit('remaining phase sum is not 139–240')
 PY
 
 # The broad audit ends by executing the hardened, forced-fresh, serial suite.
