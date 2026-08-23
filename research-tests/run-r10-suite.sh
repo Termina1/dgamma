@@ -62,6 +62,7 @@ done
 NEGATIVE=(
   R10AdjacentSwapMapCloneNegative
   R10ReductionMapCloneNegative
+  R10DeletionStepMapCloneNegative
   R10SortedMapCloneNegative
   R10CoherentBothHalvesCapitalNegative
   R6MixedScheduleNegative
