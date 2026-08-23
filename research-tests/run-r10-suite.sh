@@ -29,6 +29,7 @@ done
 
 POSITIVE=(
   R10ProvenanceProjectionPositive
+  R10OperationalOriginPlanFixturesPositive
   R4OADiamondApplication
   R4ScannerProducerConsumers
   R4VestigialSimultaneous
@@ -47,6 +48,9 @@ POSITIVE=(
   R8FullPipeline
   R9CoordinateBoundaryPositive
   R9WholeBlockShiftedAliasContradictionPositive
+  R9WholeBlockSingletonPositive
+  R9WholeBlockTwoByOnePositive
+  R9WholeBlockTwoByTwoPositive
 )
 for module in "${POSITIVE[@]}"; do
   echo "POSITIVE $module"
