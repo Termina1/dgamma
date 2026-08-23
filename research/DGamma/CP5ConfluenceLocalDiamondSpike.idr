@@ -1709,6 +1709,199 @@ beginRawAfterForeignActivation {name} {key} {world} {error} {value}
                         rewrite targetAtEarly in Refl
                   in MkRawActivationMove movedAfter movedRaw
 
+data PaperAdvanceSource :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (tag : RuleTag) ->
+  SystemState name key value world error -> Type where
+  AdvanceSourceIter :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} -> {actor : name} ->
+    {ambient : world} -> {fibers : Registry name key value world error} ->
+    {component : Component key value world error} -> {parent : Parent name} ->
+    {retiredFlag : Bool} ->
+    {table : OwnedTable key value (componentProvisions component)} ->
+    {step, next : StepEffect key value world error
+      (dependencies (componentDependencies component))
+      (componentProvisions component)} ->
+    {more : List (StepEffect key value world error
+      (dependencies (componentDependencies component))
+      (componentProvisions component))} ->
+    {accumulator : LocalState key value world
+        (componentProvisions component) ->
+      LocalState key value world (componentProvisions component)} ->
+    {view : View name
+      (dependencies (componentDependencies component))} ->
+    lookupFiber @{nameEq} actor fibers =
+      Just (MkFiber component parent retiredFlag table
+        (Reloading (step :: next :: more) accumulator view)) ->
+    targetFiber @{nameEq} @{keyEq}
+      (MkFiber component parent retiredFlag table
+        (Reloading (step :: next :: more) accumulator view)) fibers = Just view ->
+    PaperAdvanceSource name key world error value nameEq keyEq actor LIterTag
+      (MkSystemState ambient fibers)
+  AdvanceSourceFinishEmpty :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} -> {actor : name} ->
+    {ambient : world} -> {fibers : Registry name key value world error} ->
+    {component : Component key value world error} -> {parent : Parent name} ->
+    {retiredFlag : Bool} ->
+    {table : OwnedTable key value (componentProvisions component)} ->
+    {accumulator : LocalState key value world
+        (componentProvisions component) ->
+      LocalState key value world (componentProvisions component)} ->
+    {view : View name
+      (dependencies (componentDependencies component))} ->
+    lookupFiber @{nameEq} actor fibers =
+      Just (MkFiber component parent retiredFlag table
+        (Reloading [] accumulator view)) ->
+    targetFiber @{nameEq} @{keyEq}
+      (MkFiber component parent retiredFlag table
+        (Reloading [] accumulator view)) fibers = Just view ->
+    PaperAdvanceSource name key world error value nameEq keyEq actor LFinishTag
+      (MkSystemState ambient fibers)
+  AdvanceSourceFinishOne :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} -> {actor : name} ->
+    {ambient : world} -> {fibers : Registry name key value world error} ->
+    {component : Component key value world error} -> {parent : Parent name} ->
+    {retiredFlag : Bool} ->
+    {table : OwnedTable key value (componentProvisions component)} ->
+    {step : StepEffect key value world error
+      (dependencies (componentDependencies component))
+      (componentProvisions component)} ->
+    {accumulator : LocalState key value world
+        (componentProvisions component) ->
+      LocalState key value world (componentProvisions component)} ->
+    {view : View name
+      (dependencies (componentDependencies component))} ->
+    lookupFiber @{nameEq} actor fibers =
+      Just (MkFiber component parent retiredFlag table
+        (Reloading [step] accumulator view)) ->
+    targetFiber @{nameEq} @{keyEq}
+      (MkFiber component parent retiredFlag table
+        (Reloading [step] accumulator view)) fibers = Just view ->
+    PaperAdvanceSource name key world error value nameEq keyEq actor LFinishTag
+      (MkSystemState ambient fibers)
+
+0 paperAdvanceSource :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {before, afterState : SystemState name key value world error} ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+    Just (tag, afterState) ->
+  Either (tag = LIterTag) (tag = LFinishTag) ->
+  PaperAdvanceSource name key world error value nameEq keyEq actor tag before
+paperAdvanceSource {name} {key} {world} {error} {value}
+  nameEq keyEq actor {before = MkSystemState ambient fibers} {afterState} tag
+  raw paperTag with (lookupFiber @{nameEq} actor fibers) proof found
+  paperAdvanceSource {name} {key} {world} {error} {value}
+    nameEq keyEq actor {before = MkSystemState ambient fibers} {afterState} tag
+    raw paperTag | Nothing = void (nothingIsNotJust raw)
+  paperAdvanceSource {name} {key} {world} {error} {value}
+    nameEq keyEq actor {before = MkSystemState ambient fibers} {afterState} tag
+    raw paperTag | Just (MkFiber component parent retiredFlag table lifecycle)
+    with (lifecycle) proof life
+    paperAdvanceSource {name} {key} {world} {error} {value}
+      nameEq keyEq actor {before = MkSystemState ambient fibers} {afterState} tag
+      raw paperTag | Just (MkFiber component parent retiredFlag table lifecycle) |
+      Inactive outcome = void (nothingIsNotJust raw)
+    paperAdvanceSource {name} {key} {world} {error} {value}
+      nameEq keyEq actor {before = MkSystemState ambient fibers} {afterState} tag
+      raw paperTag | Just (MkFiber component parent retiredFlag table lifecycle) |
+      Active accumulator view = void (nothingIsNotJust raw)
+    paperAdvanceSource {name} {key} {world} {error} {value}
+      nameEq keyEq actor {before = MkSystemState ambient fibers} {afterState} tag
+      raw paperTag | Just (MkFiber component parent retiredFlag table lifecycle) |
+      Unloading accumulator view outcome = void (nothingIsNotJust raw)
+    paperAdvanceSource {name} {key} {world} {error} {value}
+      nameEq keyEq actor {before = MkSystemState ambient fibers} {afterState} tag
+      raw paperTag | Just (MkFiber component parent retiredFlag table lifecycle) |
+      Reloading [] accumulator view
+      with (targetMatches @{nameEq}
+        (targetFiber @{nameEq} @{keyEq}
+          (MkFiber component parent retiredFlag table
+            (Reloading [] accumulator view)) fibers) view) proof matches
+      paperAdvanceSource {name} {key} {world} {error} {value}
+        nameEq keyEq actor {before = MkSystemState ambient fibers} {afterState} tag
+        raw paperTag | Just (MkFiber component parent retiredFlag table lifecycle) |
+        Reloading [] accumulator view | False =
+          case justInjective raw of
+            Refl => case paperTag of
+              Left Refl impossible
+              Right Refl impossible
+      paperAdvanceSource {name} {key} {world} {error} {value}
+        nameEq keyEq actor {before = MkSystemState ambient fibers} {afterState} tag
+        raw paperTag | Just (MkFiber component parent retiredFlag table lifecycle) |
+        Reloading [] accumulator view | True =
+          case justInjective raw of
+            Refl => AdvanceSourceFinishEmpty found
+              (targetMatchesExact nameEq _ view matches)
+    paperAdvanceSource {name} {key} {world} {error} {value}
+      nameEq keyEq actor {before = MkSystemState ambient fibers} {afterState} tag
+      raw paperTag | Just (MkFiber component parent retiredFlag table lifecycle) |
+      Reloading (step :: rest) accumulator view
+      with (resolveCommittedValues @{nameEq} @{keyEq}
+        (dependencies (componentDependencies component)) view fibers)
+      paperAdvanceSource {name} {key} {world} {error} {value}
+        nameEq keyEq actor {before = MkSystemState ambient fibers} {afterState} tag
+        raw paperTag | Just (MkFiber component parent retiredFlag table lifecycle) |
+        Reloading (step :: rest) accumulator view | Nothing =
+          void (nothingIsNotJust raw)
+      paperAdvanceSource {name} {key} {world} {error} {value}
+        nameEq keyEq actor {before = MkSystemState ambient fibers} {afterState} tag
+        raw paperTag | Just (MkFiber component parent retiredFlag table lifecycle) |
+        Reloading (step :: rest) accumulator view | Just capability
+        with (runStepEffect step capability
+          (MkLocalState ambient
+            (restrictOwnedPreservingOrder (componentProvisions component)
+              (ownedValues table))))
+        paperAdvanceSource {name} {key} {world} {error} {value}
+          nameEq keyEq actor {before = MkSystemState ambient fibers} {afterState}
+          tag raw paperTag |
+          Just (MkFiber component parent retiredFlag table lifecycle) |
+          Reloading (step :: rest) accumulator view | Just capability |
+          Left failure = case justInjective raw of
+            Refl => case paperTag of
+              Left Refl impossible
+              Right Refl impossible
+        paperAdvanceSource {name} {key} {world} {error} {value}
+          nameEq keyEq actor {before = MkSystemState ambient fibers} {afterState}
+          tag raw paperTag |
+          Just (MkFiber component parent retiredFlag table lifecycle) |
+          Reloading (step :: rest) accumulator view | Just capability |
+          Right (localAfter, undo)
+          with (targetMatches @{nameEq}
+            (targetFiber @{nameEq} @{keyEq}
+              (MkFiber component parent retiredFlag table
+                (Reloading (step :: rest) accumulator view)) fibers) view)
+            proof matches
+          paperAdvanceSource {name} {key} {world} {error} {value}
+            nameEq keyEq actor {before = MkSystemState ambient fibers}
+            {afterState} tag raw paperTag |
+            Just (MkFiber component parent retiredFlag table lifecycle) |
+            Reloading (step :: rest) accumulator view | Just capability |
+            Right (localAfter, undo) | False = case justInjective raw of
+              Refl => case paperTag of
+                Left Refl impossible
+                Right Refl impossible
+          paperAdvanceSource {name} {key} {world} {error} {value}
+            nameEq keyEq actor {before = MkSystemState ambient fibers}
+            {afterState} tag raw paperTag |
+            Just (MkFiber component parent retiredFlag table lifecycle) |
+            Reloading (step :: []) accumulator view | Just capability |
+            Right (localAfter, undo) | True = case justInjective raw of
+              Refl => AdvanceSourceFinishOne found
+                (targetMatchesExact nameEq _ view matches)
+          paperAdvanceSource {name} {key} {world} {error} {value}
+            nameEq keyEq actor {before = MkSystemState ambient fibers}
+            {afterState} tag raw paperTag |
+            Just (MkFiber component parent retiredFlag table lifecycle) |
+            Reloading (step :: next :: more) accumulator view | Just capability |
+            Right (localAfter, undo) | True = case justInjective raw of
+              Refl => AdvanceSourceIter found
+                (targetMatchesExact nameEq _ view matches)
+
 0 advanceTransitionMapOriginCong :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
