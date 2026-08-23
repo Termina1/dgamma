@@ -7,6 +7,7 @@ import DGamma.Core
 import DGamma.Unified
 import DGamma.CP3
 import DGamma.CP4DeletionRelationalBoundary
+import DGamma.CP4RecoveryEffectRespect
 import DGamma.CP4Support
 import Data.Nat
 import Decidable.Equality
@@ -984,6 +985,69 @@ finiteDerivationOccurrenceCorrespondence
     composeActionRegistrationReplayCorrespondence
       (swappedOccurrenceCorrespondence result)
       (finiteDerivationOccurrenceCorrespondence rest)
+
+0 localPartialRelatedRewrite :
+  leftBefore = leftAfter -> rightBefore = rightAfter ->
+  PartialRelated state rel leftBefore rightBefore ->
+  PartialRelated state rel leftAfter rightAfter
+localPartialRelatedRewrite Refl Refl related = related
+
+0 localPartialDefinedRelation :
+  PartialRelated state rel (Just left) (Just right) -> rel left right
+localPartialDefinedRelation (PartialDefined related) = related
+
+record FramedEffectOutput
+  (keyEq : DecEq key) (effectMap : PartialEffectMap name key value world)
+  (input, target : EffectState name key value world) where
+  constructor MkFramedEffectOutput
+  0 framedOutput : EffectState name key value world
+  0 framedMapRuns : effectMap input = Just framedOutput
+  0 framedOutputRelated : EffectStateRelated keyEq framedOutput target
+
+0 framedEffectOutput :
+  (keyEq : DecEq key) ->
+  (effectMap : PartialEffectMap name key value world) ->
+  (input, target : EffectState name key value world) ->
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    (effectMap input) (Just target) ->
+  FramedEffectOutput keyEq effectMap input target
+framedEffectOutput keyEq effectMap input target frame
+  with (effectMap input) proof runs
+  framedEffectOutput keyEq effectMap input target frame | Nothing =
+    case frame of _ impossible
+  framedEffectOutput keyEq effectMap input target frame | Just output =
+    MkFramedEffectOutput output runs (localPartialDefinedRelation frame)
+
+record RelatedEffectMapOutput
+  (keyEq : DecEq key) (effectMap : PartialEffectMap name key value world)
+  (left, right, leftOutput : EffectState name key value world) where
+  constructor MkRelatedEffectMapOutput
+  0 relatedMapOutput : EffectState name key value world
+  0 relatedMapRuns : effectMap right = Just relatedMapOutput
+  0 relatedMapOutputs : EffectStateRelated keyEq leftOutput relatedMapOutput
+
+0 effectMapOutputOnRelatedRight :
+  (keyEq : DecEq key) ->
+  (effectMap : PartialEffectMap name key value world) ->
+  EffectPartialMapRespects keyEq effectMap ->
+  (left, right, leftOutput : EffectState name key value world) ->
+  EffectStateRelated keyEq left right ->
+  effectMap left = Just leftOutput ->
+  RelatedEffectMapOutput keyEq effectMap left right leftOutput
+effectMapOutputOnRelatedRight keyEq effectMap respects left right leftOutput
+  related leftRuns with (effectMap right) proof rightRuns
+  effectMapOutputOnRelatedRight keyEq effectMap respects left right leftOutput
+    related leftRuns | Nothing =
+      let contradiction = localPartialRelatedRewrite leftRuns rightRuns
+            (respects left right related)
+      in case contradiction of _ impossible
+  effectMapOutputOnRelatedRight keyEq effectMap respects left right leftOutput
+    related leftRuns | Just rightOutput =
+      let 0 outputs : EffectStateRelated keyEq leftOutput rightOutput
+          outputs = localPartialDefinedRelation
+            (localPartialRelatedRewrite leftRuns rightRuns
+              (respects left right related))
+      in MkRelatedEffectMapOutput rightOutput rightRuns outputs
 
 0 advanceRuntimeEffectMapOriginLookupCong :
   {name, key, world, error : Type} -> {value : key -> Type} ->
