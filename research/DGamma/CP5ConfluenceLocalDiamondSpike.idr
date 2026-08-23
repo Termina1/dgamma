@@ -985,6 +985,109 @@ finiteDerivationOccurrenceCorrespondence
       (swappedOccurrenceCorrespondence result)
       (finiteDerivationOccurrenceCorrespondence rest)
 
+0 advanceRuntimeEffectMapOriginLookupCong :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (left, right : SystemState name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} actor (registry left) =
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} actor (registry right) ->
+  (state : EffectState name key value world) ->
+  advanceRuntimeEffectMap nameEq keyEq actor left state =
+    advanceRuntimeEffectMap nameEq keyEq actor right state
+advanceRuntimeEffectMapOriginLookupCong nameEq keyEq actor
+  (MkSystemState leftWorld leftRegistry)
+  (MkSystemState rightWorld rightRegistry) same state
+  with (lookupFiber @{nameEq} actor leftRegistry)
+  advanceRuntimeEffectMapOriginLookupCong nameEq keyEq actor
+    (MkSystemState leftWorld leftRegistry)
+    (MkSystemState rightWorld rightRegistry) same state | Nothing
+    with (lookupFiber @{nameEq} actor rightRegistry)
+    advanceRuntimeEffectMapOriginLookupCong nameEq keyEq actor
+      (MkSystemState leftWorld leftRegistry)
+      (MkSystemState rightWorld rightRegistry) same state | Nothing | Nothing =
+        Refl
+    advanceRuntimeEffectMapOriginLookupCong nameEq keyEq actor
+      (MkSystemState leftWorld leftRegistry)
+      (MkSystemState rightWorld rightRegistry) same state | Nothing |
+      Just rightFiber = case same of Refl impossible
+  advanceRuntimeEffectMapOriginLookupCong nameEq keyEq actor
+    (MkSystemState leftWorld leftRegistry)
+    (MkSystemState rightWorld rightRegistry) same state | Just leftFiber
+    with (lookupFiber @{nameEq} actor rightRegistry)
+    advanceRuntimeEffectMapOriginLookupCong nameEq keyEq actor
+      (MkSystemState leftWorld leftRegistry)
+      (MkSystemState rightWorld rightRegistry) same state | Just leftFiber |
+      Nothing = case same of Refl impossible
+    advanceRuntimeEffectMapOriginLookupCong nameEq keyEq actor
+      (MkSystemState leftWorld leftRegistry)
+      (MkSystemState rightWorld rightRegistry) same state | Just leftFiber |
+      Just rightFiber = case justInjective same of
+        Refl => Refl
+
+0 transitionForeignLookup :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) ->
+  {before, afterState : SystemState name key value world error} ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  Not (selected = actionOwner action) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} selected (registry afterState) =
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} selected (registry before)
+transitionForeignLookup nameEq keyEq selected {before} {afterState} action tag
+  checked distinct =
+    let raw = checkedActionProjects nameEq keyEq action before afterState tag
+          checked
+        update = applyActionLocalUpdate nameEq keyEq action before afterState tag
+          raw
+    in systemLocalUpdateForeign nameEq selected (actionOwner action) distinct
+      before afterState update
+
+0 advanceTransitionMapOriginCong :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (tag : RuleTag) ->
+  {before, afterState, other : SystemState name key value world error} ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+    Just (tag, afterState)) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} actor (registry before) =
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} actor (registry other) ->
+  (state : EffectState name key value world) ->
+  partialEffectMap
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq (LAdvance actor) tag checked) state =
+  partialEffectMapFor nameEq keyEq (LAdvance actor) tag other state
+advanceTransitionMapOriginCong nameEq keyEq actor LIterTag checked same state =
+  advanceRuntimeEffectMapOriginLookupCong nameEq keyEq actor before other same
+    state
+advanceTransitionMapOriginCong nameEq keyEq actor LFinishTag checked same state =
+  advanceRuntimeEffectMapOriginLookupCong nameEq keyEq actor before other same
+    state
+advanceTransitionMapOriginCong nameEq keyEq actor LDivertTag checked same state =
+  advanceRuntimeEffectMapOriginLookupCong nameEq keyEq actor before other same
+    state
+advanceTransitionMapOriginCong nameEq keyEq actor LRaiseTag checked same state =
+  Refl
+advanceTransitionMapOriginCong nameEq keyEq actor OInsertTag checked same state =
+  Refl
+advanceTransitionMapOriginCong nameEq keyEq actor ORetireTag checked same state =
+  Refl
+advanceTransitionMapOriginCong nameEq keyEq actor ORemoveTag checked same state =
+  Refl
+advanceTransitionMapOriginCong nameEq keyEq actor LBeginTag checked same state =
+  Refl
+advanceTransitionMapOriginCong nameEq keyEq actor LLeaveTag checked same state =
+  Refl
+advanceTransitionMapOriginCong nameEq keyEq actor LUnloadTag checked same state =
+  Refl
+
 ||| Candidate for paper Lemma 71(1).
 public export
 0 activationActivationDiamondSpike :
