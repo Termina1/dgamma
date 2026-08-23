@@ -6,6 +6,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionRelationalBoundary
 import DGamma.CP4Support
+import Data.Nat
 import Decidable.Equality
 
 %default total
@@ -390,6 +391,114 @@ record OrchestrationSwapSafety
     transitionAction right = OInsert rightChild (ChildOf rightParent) rightComponent ->
     (Not (leftChild = rightParent), Not (rightChild = leftParent))
 
+||| Locate the first transition after an exact prefixTrace decomposition.  The
+||| operational occurrence fold below uses this constructor for the moved-right
+||| node rather than accepting a caller-selected occurrence.
+public export
+0 locatedFirstAfterPrefix :
+  {initial, pairFirst, pairMiddle, finalState :
+    SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (first : Transition pairFirst pairMiddle) ->
+  (rest : Transitions pairMiddle finalState) ->
+  appendTransitions prefixTrace (MoreTransitions first rest) = global ->
+  LocatedActionOccurrence (transitionAction first) global
+locatedFirstAfterPrefix global prefixTrace first rest decomposition =
+  MkLocatedActionOccurrence _ _ prefixTrace first rest Refl decomposition
+
+||| Locate the second transition after an exact prefixTrace decomposition.
+public export
+0 locatedSecondAfterPrefix :
+  {initial, pairFirst, pairMiddle, pairFinal, finalState :
+    SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (first : Transition pairFirst pairMiddle) ->
+  (second : Transition pairMiddle pairFinal) ->
+  (rest : Transitions pairFinal finalState) ->
+  appendTransitions prefixTrace
+    (MoreTransitions first (MoreTransitions second rest)) = global ->
+  LocatedActionOccurrence (transitionAction second) global
+locatedSecondAfterPrefix global prefixTrace first second rest decomposition =
+  MkLocatedActionOccurrence _ _
+    (appendTransitions prefixTrace (MoreTransitions first NoTransitions)) second rest
+    Refl
+    (trans (appendTransitionsAssociative prefixTrace
+      (MoreTransitions first NoTransitions) (MoreTransitions second rest))
+      decomposition)
+
+||| First-source authenticity for one adjacent swap.  The occurrence map is
+||| produced by one globally fixed suffix-replay fold.  Its type pins the two
+||| moved nodes to their opposite source ordinals and pins every recursive
+||| suffix occurrence to the same absolute source ordinal.
+public export
+record AdjacentSwapOperationalOccurrenceFold
+  (name, key, world, error : Type) (value : key -> Type)
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal, swappedMiddle,
+    swappedFinal, replayedFinal : SystemState name key value world error}
+  (original : Transitions initial originalFinal)
+  (prefixTrace : Transitions initial pairFirst)
+  (left : Transition pairFirst pairMiddle)
+  (right : Transition pairMiddle pairFinal)
+  (suffix : Transitions pairFinal originalFinal)
+  (movedRight : Transition pairFirst swappedMiddle)
+  (movedLeft : Transition swappedMiddle swappedFinal)
+  (replayedSuffix : Transitions swappedFinal replayedFinal)
+  (swappedTrace : Transitions initial replayedFinal) where
+  constructor MkAdjacentSwapOperationalOccurrenceFold
+  operationalOriginalDecomposition : appendTransitions prefixTrace
+    (MoreTransitions left (MoreTransitions right suffix)) = original
+  operationalSwappedDecomposition : appendTransitions prefixTrace
+    (MoreTransitions movedRight (MoreTransitions movedLeft replayedSuffix)) =
+      swappedTrace
+  operationalOccurrenceCorrespondence : ActionRegistrationReplayCorrespondence
+    name key world error value original swappedTrace
+  0 operationalMovedRightOriginOrdinal : locatedActionOrdinal
+    (replayActionOrigin operationalOccurrenceCorrespondence
+      (locatedFirstAfterPrefix swappedTrace prefixTrace movedRight
+        (MoreTransitions movedLeft replayedSuffix)
+        operationalSwappedDecomposition)) =
+    S (transitionCount prefixTrace)
+  0 operationalMovedLeftOriginOrdinal : locatedActionOrdinal
+    (replayActionOrigin operationalOccurrenceCorrespondence
+      (locatedSecondAfterPrefix swappedTrace prefixTrace movedRight movedLeft
+        replayedSuffix operationalSwappedDecomposition)) =
+    transitionCount prefixTrace
+  0 operationalSuffixOriginOrdinal :
+    {action : Action name key value world error} ->
+    (occurrence : LocatedActionOccurrence action swappedTrace) ->
+    LTE (S (S (transitionCount prefixTrace))) (locatedActionOrdinal occurrence) ->
+    locatedActionOrdinal
+      (replayActionOrigin operationalOccurrenceCorrespondence occurrence) =
+    locatedActionOrdinal occurrence
+
+||| O6's explicit suffix-replay fold signature.  The body is deliberately the
+||| named proof obligation, but callers cannot substitute another coherent map:
+||| `AdjacentSwapResult` projects only this globally fixed function applied to
+||| its exact decompositions and moved transitions.
+public export
+0 adjacentSwapOperationalOccurrenceFoldSpike :
+  (original : Transitions initial originalFinal) ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  (swappedTrace : Transitions initial replayedFinal) ->
+  appendTransitions prefixTrace (MoreTransitions left (MoreTransitions right suffix)) =
+    original ->
+  appendTransitions prefixTrace
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) replayedSuffix)) = swappedTrace ->
+  AdjacentSwapOperationalOccurrenceFold name key world error value original prefixTrace
+    left right suffix (movedRight diamond) (movedLeft diamond) replayedSuffix
+    swappedTrace
+adjacentSwapOperationalOccurrenceFoldSpike =
+  ?adjacentSwapOperationalOccurrenceFoldSpike_rhs
+
 ||| A complete adjacent transposition: the local pair is swapped, the untouched
 ||| suffix is replayed, and the next recursion receives the same full premise
 ||| bundle.  It also exposes exact same-external-input and generator/stage
@@ -421,12 +530,34 @@ record AdjacentSwapResult
     SameExternalOrchestration nameEq original swappedTrace
   swappedReplayCorrespondence : RelationalReplayCorrespondence name key world
     error value original swappedTrace
-  swappedOccurrenceCorrespondence : ActionRegistrationReplayCorrespondence name
-    key world error value original swappedTrace
   swappedEndpoint : RelationalReplayEndpoint name key world error value nameEq
     keyEq originalFinal replayedFinal
   swappedPremises : ReplayInvariantBundle name key world error value protocol
     nameEq keyEq swappedTrace
+
+||| The first operational occurrence certificate is definitionally the global
+||| suffix-replay fold applied to this result's exact decompositions.
+public export
+0 swappedOccurrenceFold :
+  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+    original tracePrefix left right suffix diamond) ->
+  AdjacentSwapOperationalOccurrenceFold name key world error value original tracePrefix
+    left right suffix (movedRight diamond) (movedLeft diamond)
+    (replayedSuffix result) (swappedTrace result)
+swappedOccurrenceFold {original} {tracePrefix} {left} {right} {suffix} {diamond}
+  result =
+    adjacentSwapOperationalOccurrenceFoldSpike original tracePrefix left right suffix
+      diamond (replayedSuffix result) (swappedTrace result)
+      (originalDecomposition result) (sym (swappedDecomposition result))
+
+public export
+0 swappedOccurrenceCorrespondence :
+  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+    original tracePrefix left right suffix diamond) ->
+  ActionRegistrationReplayCorrespondence name key world error value original
+    (swappedTrace result)
+swappedOccurrenceCorrespondence result =
+  operationalOccurrenceCorrespondence (swappedOccurrenceFold result)
 
 ||| The finite derivation records which one of the four source-sensitive local
 ||| diamonds justified every adjacent transition transposition.  Thus a block
