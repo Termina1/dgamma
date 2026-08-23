@@ -643,8 +643,47 @@ public export
     {error = error} {value = value} nameEq middle right ->
   SameExternalOrchestration {name = name} {key = key} {world = world}
     {error = error} {value = value} nameEq left right
-sameExternalOrchestrationTransitiveSpike =
-  ?sameExternalOrchestrationTransitiveSpike_rhs
+sameExternalOrchestrationTransitiveSpike nameEq first second =
+  compose first second
+  where
+  0 compose :
+    SameExternalOrchestration {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq leftTrace middleTrace ->
+    SameExternalOrchestration {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq middleTrace rightTrace ->
+    SameExternalOrchestration {name = name} {key = key} {world = world}
+      {error = error} {value = value} nameEq leftTrace rightTrace
+  compose SameExternalOrchestrationEnd SameExternalOrchestrationEnd =
+    SameExternalOrchestrationEnd
+  compose (SkipLeftInternal transition rest internal remaining) rightRelation =
+    SkipLeftInternal transition rest internal (compose remaining rightRelation)
+  compose leftRelation
+    (SkipRightInternal transition rest internal remaining) =
+      SkipRightInternal transition rest internal (compose leftRelation remaining)
+  compose (SkipRightInternal transition rest internal remaining)
+    (SkipLeftInternal transition rest alsoInternal rightRelation) =
+      compose remaining rightRelation
+  compose (SkipRightInternal transition rest internal remaining)
+    (MatchExternalInput action transition rest external rightTransition rightRest
+      rightExternal transitionAction rightAction rightRelation) =
+        void (internal external)
+  compose
+    (MatchExternalInput action leftTransition leftRest leftExternal
+      middleTransition middleRest middleExternal leftAction middleAction
+      leftRelation)
+    (SkipLeftInternal middleTransition middleRest internal rightRelation) =
+      void (internal middleExternal)
+  compose
+    (MatchExternalInput action leftTransition leftRest leftExternal
+      middleTransition middleRest middleExternal leftAction middleAction
+      leftRelation)
+    (MatchExternalInput rightActionName middleTransition middleRest
+      secondMiddleExternal rightTransition rightRest rightExternal
+      secondMiddleAction rightAction rightRelation) =
+        MatchExternalInput action leftTransition leftRest leftExternal
+          rightTransition rightRest rightExternal leftAction
+          (trans rightAction (trans (sym secondMiddleAction) middleAction))
+          (compose leftRelation rightRelation)
 
 ||| The generic RAR theorem is instantiated only after the internal deletion
 ||| adapter has produced correspondence capital.  This is type-coherent for an
