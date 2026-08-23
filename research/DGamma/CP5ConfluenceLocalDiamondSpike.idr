@@ -137,11 +137,27 @@ composeReplayGenerationBijection left right =
         (generationRightInverse left (generationBackward right generation)))
       (generationRightInverse right generation))
 
+||| Convert the specialized generated-registration occurrence to the exact
+||| all-action occurrence used by the general replay map.  Both views retain the
+||| same dependent prefix, transition, suffix, action, and decomposition.
+public export
+0 generatedRegistrationActionOccurrence :
+  LocatedGeneratedRegistration child parent component trace ->
+  LocatedActionOccurrence (OInsert child (ChildOf parent) component) trace
+generatedRegistrationActionOccurrence occurrence =
+  MkLocatedActionOccurrence
+    (registrationBefore occurrence)
+    (registrationAfter occurrence)
+    (beforeRegistration occurrence)
+    (registrationTransition occurrence)
+    (afterRegistration occurrence)
+    (registrationAction occurrence)
+    (registrationDecomposition occurrence)
+
 ||| Exact transition-occurrence capital retained by operational permutation.
-||| Target occurrences map back to source occurrences with the same action and
-||| tag.  Generated registrations additionally retain child, parent, component
-||| in their dependent type and relate their changed birth ordinals through an
-||| explicit generation permutation.
+||| Generated registrations are not an independently replaceable second map:
+||| their specialized origin must convert to exactly the all-action origin of
+||| the same replayed O-Insert occurrence.
 public export
 record ActionRegistrationReplayCorrespondence
   (name, key, world, error : Type) (value : key -> Type)
@@ -163,6 +179,13 @@ record ActionRegistrationReplayCorrespondence
     {component : Component key value world error} ->
     LocatedGeneratedRegistration child parent component replayed ->
     LocatedGeneratedRegistration child parent component source
+  0 replayGeneratedActionOriginCoherent :
+    {child, parent : name} ->
+    {component : Component key value world error} ->
+    (occurrence : LocatedGeneratedRegistration child parent component replayed) ->
+    generatedRegistrationActionOccurrence
+      (replayGeneratedRegistrationOrigin occurrence) =
+    replayActionOrigin (generatedRegistrationActionOccurrence occurrence)
   0 replayGeneratedOrdinalPreserved :
     {child, parent : name} ->
     {component : Component key value world error} ->
@@ -178,7 +201,7 @@ identityActionRegistrationReplayCorrespondence :
 identityActionRegistrationReplayCorrespondence trace =
   MkActionRegistrationReplayCorrespondence
     identityRegistrationGenerationBijection id (\occurrence => Refl) id
-    (\occurrence => Refl)
+    (\occurrence => Refl) (\occurrence => Refl)
 
 ||| Occurrence capital composes in the same direction as trace replay.  The
 ||| ordinal equation explicitly uses the composed replay-generation bijection.
@@ -200,6 +223,11 @@ composeActionRegistrationReplayCorrespondence left right =
       (replayActionTagPreserved right occurrence))
     (\occurrence => replayGeneratedRegistrationOrigin left
       (replayGeneratedRegistrationOrigin right occurrence))
+    (\occurrence => trans
+      (replayGeneratedActionOriginCoherent left
+        (replayGeneratedRegistrationOrigin right occurrence))
+      (cong (replayActionOrigin left)
+        (replayGeneratedActionOriginCoherent right occurrence)))
     (\occurrence => trans
       (cong (generationForward (replayGenerationRenaming right))
         (replayGeneratedOrdinalPreserved left
