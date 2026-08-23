@@ -9,6 +9,7 @@ import DGamma.CP3
 import DGamma.CP4DeletionFrameCore
 import DGamma.CP4DeletionCommuteCore
 import DGamma.CP4DeletionControlCore
+import DGamma.CP4DeletionChildlessInvariant
 import DGamma.CP4DeletionBoundaryDeleted
 import DGamma.CP4DeletionSelectedForeignOrchestration
 import DGamma.CP4DeletionFrames
@@ -2113,6 +2114,148 @@ record RawActivationMove
   rawActivationAfter : SystemState name key value world error
   0 rawActivationRuns : applyAction @{nameEq} @{keyEq} action before =
     Just (tag, rawActivationAfter)
+
+0 orchestrationRawAfterForeignReplacement :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {sourceAfter : SystemState name key value world error} ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (sourceAmbient, movedAmbient : world) ->
+  (source : Registry name key value world error) ->
+  (changed : name) -> (next, old : Fiber name key value world error) ->
+  (oldFound : lookupFiber @{nameEq} changed source = Just old) ->
+  (staticComponent : fiberComponent next = fiberComponent old) ->
+  (staticParent : fiberParent next = fiberParent old) ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} action
+    (MkSystemState sourceAmbient source) = Just (tag, sourceAfter)) ->
+  (paper : PaperOrchestrationStep
+    (Fired {before = MkSystemState sourceAmbient source}
+      {afterState = sourceAfter} nameEq keyEq action tag sourceChecked)) ->
+  Not (actionOwner action = changed) ->
+  RawActivationMove nameEq keyEq action tag
+    (MkSystemState movedAmbient
+      (replaceBinding @{nameEq} changed next source))
+orchestrationRawAfterForeignReplacement {name} {key} {world} {error} {value}
+  nameEq keyEq action tag sourceAmbient movedAmbient source changed next old
+  oldFound staticComponent staticParent sourceChecked
+  (PaperInsertStep {actor} {parent} {component} actionSame) distinct =
+    case actionSame of
+      Refl =>
+        let sourceRaw = checkedActionProjects nameEq keyEq
+              (OInsert actor parent component) (MkSystemState sourceAmbient source)
+              sourceAfter tag sourceChecked
+        in case foreignInsertPlanView nameEq keyEq actor parent component
+          sourceAmbient source tag sourceAfter sourceRaw of
+          MkForeignInsertPlanView absent guards =>
+            let movedRegistry : Registry name key value world error
+                movedRegistry = replaceBinding @{nameEq} changed next source
+                0 movedAbsent : lookupFiber @{nameEq} {name = name} {key = key}
+                  {value = value} {world = world} {error = error} actor
+                  movedRegistry = Nothing
+                movedAbsent = trans
+                  (lookupReplaceOther actor changed distinct next source) absent
+                0 parentSame : parentPresent @{nameEq} {name = name} {key = key}
+                  {value = value} {world = world} {error = error} parent
+                  movedRegistry = parentPresent @{nameEq} {name = name}
+                  {key = key} {value = value} {world = world} {error = error}
+                  parent source
+                parentSame = parentPresentStaticReplacement nameEq parent changed
+                  next old source oldFound
+                0 provisionsSame : provisionsDisjointFrom @{keyEq}
+                    {name = name} {key = key} {value = value} {world = world}
+                    {error = error} (componentProvisions component)
+                    (bindings movedRegistry) = provisionsDisjointFrom @{keyEq}
+                    {name = name} {key = key} {value = value} {world = world}
+                    {error = error} (componentProvisions component)
+                    (bindings source)
+                provisionsSame = provisionsDisjointStaticReplacement nameEq keyEq
+                  (componentProvisions component) changed next old source oldFound
+                  staticComponent
+                0 movedGuards : (parentPresent @{nameEq} {name = name}
+                  {key = key} {value = value} {world = world} {error = error}
+                  parent movedRegistry && provisionsDisjointFrom @{keyEq}
+                    {name = name} {key = key} {value = value} {world = world}
+                    {error = error} (componentProvisions component)
+                    (bindings movedRegistry) = True)
+                movedGuards = rewrite parentSame in rewrite provisionsSame in guards
+            in case setFreshFromAbsent nameEq actor (freshFiber component parent)
+              movedRegistry movedAbsent of
+              (applied ** inserted) =>
+                let movedAfter : SystemState name key value world error
+                    movedAfter = MkSystemState movedAmbient (coeffectAfter applied)
+                    0 movedRaw : applyAction @{nameEq} @{keyEq}
+                      (OInsert actor parent component)
+                      (MkSystemState movedAmbient movedRegistry) =
+                      Just (OInsertTag, movedAfter)
+                    movedRaw = rewrite movedGuards in rewrite inserted in Refl
+                in MkRawActivationMove movedAfter movedRaw
+orchestrationRawAfterForeignReplacement {name} {key} {world} {error} {value}
+  nameEq keyEq action tag sourceAmbient movedAmbient source changed next old
+  oldFound staticComponent staticParent sourceChecked
+  (PaperRetireStep {actor} actionSame) distinct = case actionSame of
+    Refl =>
+      let sourceRaw = checkedActionProjects nameEq keyEq (ORetire actor)
+            (MkSystemState sourceAmbient source) sourceAfter tag sourceChecked
+      in case retireSuccessView nameEq keyEq actor sourceAmbient source tag
+        sourceAfter sourceRaw of
+        MkRetireSuccessView actorFiber actorFound =>
+          let movedRegistry : Registry name key value world error
+              movedRegistry = replaceBinding @{nameEq} changed next source
+              0 movedFound : lookupFiber @{nameEq} {name = name} {key = key}
+                {value = value} {world = world} {error = error} actor
+                movedRegistry = Just actorFiber
+              movedFound = trans
+                (lookupReplaceOther actor changed distinct next source) actorFound
+              movedAfter : SystemState name key value world error
+              movedAfter = MkSystemState movedAmbient
+                (replaceBinding @{nameEq} actor (retireFiber actorFiber)
+                  movedRegistry)
+              0 movedRaw : applyAction @{nameEq} @{keyEq} (ORetire actor)
+                (MkSystemState movedAmbient movedRegistry) =
+                Just (ORetireTag, movedAfter)
+              movedRaw = rewrite movedFound in Refl
+          in MkRawActivationMove movedAfter movedRaw
+orchestrationRawAfterForeignReplacement {name} {key} {world} {error} {value}
+  nameEq keyEq action tag sourceAmbient movedAmbient source changed next old
+  oldFound staticComponent staticParent sourceChecked
+  (PaperRemoveStep {actor} actionSame) distinct = case actionSame of
+    Refl =>
+      let sourceRaw = checkedActionProjects nameEq keyEq (ORemove actor)
+            (MkSystemState sourceAmbient source) sourceAfter tag sourceChecked
+      in case removeSuccessView nameEq keyEq actor sourceAmbient source tag
+        sourceAfter sourceRaw of
+        MkRemoveSuccessView actorFiber actorFound removable noChild =>
+          let movedRegistry : Registry name key value world error
+              movedRegistry = replaceBinding @{nameEq} changed next source
+              0 movedFound : lookupFiber @{nameEq} {name = name} {key = key}
+                {value = value} {world = world} {error = error} actor
+                movedRegistry = Just actorFiber
+              movedFound = trans
+                (lookupReplaceOther actor changed distinct next source) actorFound
+              0 movedNoChild : hasChild @{nameEq} {name = name} {key = key}
+                {value = value} {world = world} {error = error} actor
+                movedRegistry = False
+              movedNoChild = hasChildReplaceFalse nameEq actor changed next old
+                source oldFound staticParent noChild
+              0 normalizedGuard : (retired actorFiber &&
+                isInactive (fiberLifecycle actorFiber) && not False = True)
+              normalizedGuard = replace
+                {p = \child => retired actorFiber &&
+                  isInactive (fiberLifecycle actorFiber) && not child = True}
+                noChild removable
+              0 movedGuard : (retired actorFiber &&
+                isInactive (fiberLifecycle actorFiber) &&
+                not (hasChild @{nameEq} {name = name} {key = key}
+                  {value = value} {world = world} {error = error} actor
+                  movedRegistry) = True)
+              movedGuard = rewrite movedNoChild in normalizedGuard
+              movedAfter : SystemState name key value world error
+              movedAfter = MkSystemState movedAmbient
+                (deleteBinding @{nameEq} actor movedRegistry)
+              0 movedRaw : applyAction @{nameEq} @{keyEq} (ORemove actor)
+                (MkSystemState movedAmbient movedRegistry) =
+                Just (ORemoveTag, movedAfter)
+              movedRaw = rewrite movedFound in rewrite movedGuard in Refl
+          in MkRawActivationMove movedAfter movedRaw
 
 0 beginRawAfterForeignState :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
