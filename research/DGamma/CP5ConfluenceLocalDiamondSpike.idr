@@ -428,10 +428,91 @@ locatedSecondAfterPrefix global prefixTrace first second rest decomposition =
       (MoreTransitions first NoTransitions) (MoreTransitions second rest))
       decomposition)
 
+||| Exhaustive ordinal semantics of one adjacent transposition.  Prefix and
+||| suffix occurrences retain their absolute ordinal; moved-right and moved-left
+||| exchange the two adjacent source ordinals.
+public export
+data AdjacentSwapOrdinalRelation :
+  (prefixCount, targetOrdinal, sourceOrdinal : Nat) -> Type where
+  AdjacentPrefixOrdinal : LT targetOrdinal prefixCount ->
+    AdjacentSwapOrdinalRelation prefixCount targetOrdinal targetOrdinal
+  AdjacentMovedRightOrdinal :
+    AdjacentSwapOrdinalRelation prefixCount prefixCount (S prefixCount)
+  AdjacentMovedLeftOrdinal :
+    AdjacentSwapOrdinalRelation prefixCount (S prefixCount) prefixCount
+  AdjacentSuffixOrdinal : LTE (S (S prefixCount)) targetOrdinal ->
+    AdjacentSwapOrdinalRelation prefixCount targetOrdinal targetOrdinal
+
+||| The four regions cover every target ordinal.  This executable classifier is
+||| independent of occurrence actions/tags, so repeated identical Iter nodes do
+||| not create an unclassified case.
+public export
+adjacentSwapOrdinalExhaustive : (prefixCount, targetOrdinal : Nat) ->
+  (sourceOrdinal : Nat **
+    AdjacentSwapOrdinalRelation prefixCount targetOrdinal sourceOrdinal)
+adjacentSwapOrdinalExhaustive Z Z =
+  (S Z ** AdjacentMovedRightOrdinal)
+adjacentSwapOrdinalExhaustive Z (S Z) =
+  (Z ** AdjacentMovedLeftOrdinal)
+adjacentSwapOrdinalExhaustive Z (S (S later)) =
+  (S (S later) ** AdjacentSuffixOrdinal (LTESucc (LTESucc LTEZero)))
+adjacentSwapOrdinalExhaustive (S prefixCount) Z =
+  (Z ** AdjacentPrefixOrdinal (LTESucc LTEZero))
+adjacentSwapOrdinalExhaustive (S prefixCount) (S targetOrdinal) =
+  case adjacentSwapOrdinalExhaustive prefixCount targetOrdinal of
+    (_ ** AdjacentPrefixOrdinal before) =>
+      (S targetOrdinal ** AdjacentPrefixOrdinal (LTESucc before))
+    (_ ** AdjacentMovedRightOrdinal) =>
+      (S (S prefixCount) ** AdjacentMovedRightOrdinal)
+    (_ ** AdjacentMovedLeftOrdinal) =>
+      (S prefixCount ** AdjacentMovedLeftOrdinal)
+    (_ ** AdjacentSuffixOrdinal after) =>
+      (S targetOrdinal ** AdjacentSuffixOrdinal (LTESucc after))
+
+public export
+0 adjacentTwoSuccNotLTE : LTE (S (S n)) n -> Void
+adjacentTwoSuccNotLTE {n = Z} LTEZero impossible
+adjacentTwoSuccNotLTE {n = S later} (LTESucc before) =
+  adjacentTwoSuccNotLTE before
+
+public export
+0 adjacentSeparatedBoundsImpossible :
+  LTE (S (S upper)) lower -> LTE (S lower) upper -> Void
+adjacentSeparatedBoundsImpossible {upper = Z} after LTEZero impossible
+adjacentSeparatedBoundsImpossible {upper = S upper} {lower = Z}
+  LTEZero before impossible
+adjacentSeparatedBoundsImpossible {upper = S upper} {lower = S lower}
+  (LTESucc after) (LTESucc before) =
+    adjacentSeparatedBoundsImpossible after before
+
+||| Pairwise arithmetic disjointness of the four regions.
+public export
+0 adjacentPrefixNotMovedRight : LT prefixCount prefixCount -> Void
+adjacentPrefixNotMovedRight = succNotLTEpred
+
+public export
+0 adjacentPrefixNotMovedLeft : LT (S prefixCount) prefixCount -> Void
+adjacentPrefixNotMovedLeft = adjacentTwoSuccNotLTE
+
+public export
+0 adjacentPrefixNotSuffix :
+  LT targetOrdinal prefixCount ->
+  LTE (S (S prefixCount)) targetOrdinal -> Void
+adjacentPrefixNotSuffix before after =
+  adjacentSeparatedBoundsImpossible after before
+
+public export
+0 adjacentMovedRightNotSuffix : LTE (S (S prefixCount)) prefixCount -> Void
+adjacentMovedRightNotSuffix = adjacentTwoSuccNotLTE
+
+public export
+0 adjacentMovedLeftNotSuffix : LTE (S (S prefixCount)) (S prefixCount) -> Void
+adjacentMovedLeftNotSuffix = succNotLTEpred
+
 ||| First-source authenticity for one adjacent swap.  The occurrence map is
-||| produced by one globally fixed suffix-replay fold.  Its type pins the two
-||| moved nodes to their opposite source ordinals and pins every recursive
-||| suffix occurrence to the same absolute source ordinal.
+||| produced by one globally fixed suffix-replay fold, and every target
+||| occurrence—prefix, moved pair, or suffix—must satisfy the exhaustive ordinal
+||| relation above.
 public export
 record AdjacentSwapOperationalOccurrenceFold
   (name, key, world, error : Type) (value : key -> Type)
@@ -454,24 +535,13 @@ record AdjacentSwapOperationalOccurrenceFold
       swappedTrace
   operationalOccurrenceCorrespondence : ActionRegistrationReplayCorrespondence
     name key world error value original swappedTrace
-  0 operationalMovedRightOriginOrdinal : locatedActionOrdinal
-    (replayActionOrigin operationalOccurrenceCorrespondence
-      (locatedFirstAfterPrefix swappedTrace prefixTrace movedRight
-        (MoreTransitions movedLeft replayedSuffix)
-        operationalSwappedDecomposition)) =
-    S (transitionCount prefixTrace)
-  0 operationalMovedLeftOriginOrdinal : locatedActionOrdinal
-    (replayActionOrigin operationalOccurrenceCorrespondence
-      (locatedSecondAfterPrefix swappedTrace prefixTrace movedRight movedLeft
-        replayedSuffix operationalSwappedDecomposition)) =
-    transitionCount prefixTrace
-  0 operationalSuffixOriginOrdinal :
+  0 operationalOrdinalRelation :
     {action : Action name key value world error} ->
     (occurrence : LocatedActionOccurrence action swappedTrace) ->
-    LTE (S (S (transitionCount prefixTrace))) (locatedActionOrdinal occurrence) ->
-    locatedActionOrdinal
-      (replayActionOrigin operationalOccurrenceCorrespondence occurrence) =
-    locatedActionOrdinal occurrence
+    AdjacentSwapOrdinalRelation (transitionCount prefixTrace)
+      (locatedActionOrdinal occurrence)
+      (locatedActionOrdinal
+        (replayActionOrigin operationalOccurrenceCorrespondence occurrence))
 
 ||| O6's explicit suffix-replay fold signature.  The body is deliberately the
 ||| named proof obligation, but callers cannot substitute another coherent map:
