@@ -304,7 +304,7 @@ There remain **23 obligations**.
 
 | ID | Obligation | Status | Grade |
 |---|---|---|---|
-| **O1** | External/replay/endpoint/generation and coherent occurrence algebra. | **5 holes.** | **L.** |
+| **O1** | External/replay/endpoint/generation and coherent occurrence algebra. | **4 holes; endpoint reflexivity proved.** | **L.** |
 | **O2** | Transport both independence fields. | **2 holes.** | **M–L.** |
 | **O3** | A/A diamonds. | **1 hole.** | **L–XL.** |
 | **O4** | A/O and O/A licensing/applicability. | **2 holes.** | **XL gate.** |
@@ -330,24 +330,25 @@ There remain **23 obligations**.
 
 ## 11. Exact hole reconciliation
 
-Revision 11 contains **32 deliberate named research holes**:
+After grind shift 1's first O1 proof, **31 deliberate named research holes remain**:
 
 - canonical sort: 6;
 - cross-trace: 4;
 - deletion chain: 11;
-- local diamonds: 9;
+- local diamonds: 8;
 - renaming/O21: 2.
 
-No new hole was added: the existing O6 and O9 hole codomains were strengthened.
+No hole was moved or renamed; `relationalReplayEndpointReflexiveSpike_rhs` was
+filled in place.
 
 Forward/reverse map:
 
-- O1=5, O2=2, O3=1, O4=2, O5=1, O6=3;
+- O1=4, O2=2, O3=1, O4=2, O5=1, O6=3;
 - O7=1, O8=1, O9=2, O10=1, O11=1, O12=1;
 - O13=0, O14=1, O15=1, O16=1, O17=1, O18=1;
 - O19=2, O20=1, O21=3, O22=0, O23=0.
 
-The values sum to 32.
+The values sum to 31.
 
 ## 12. Post-repair phase arithmetic: 148–257
 
@@ -384,7 +385,7 @@ The rows sum exactly to **148–257**. No overlap deduction is applied.
 | 4 | O9 under-specification negatives | Filler-map and direct full-constructor clone tracked; downstream attacks retained. |
 | 5 | Honest origin calibration | Option (a), renamed generic repackager and disclosed supplied capital. |
 | 6 | Repair suite coverage/diagnostics | Missing tests tracked; runner upgraded to exact per-module expectations. |
-| 7 | Reconcile/estimate/path coherence | 32 holes; 148–257; per-derivation authority rationale explicit. |
+| 7 | Reconcile/estimate/path coherence | 31 holes remain; 148–257 original budget; per-derivation authority rationale explicit. |
 | 8 | Release closure | Serial suite, scans, immutable production, seeded 207/207, best-effort unseeded, clean index required. |
 
 ## 15. Release boundary
@@ -396,7 +397,7 @@ External round-11 review must verify only tracked HEAD artifacts:
 - honest repackager names/comments with no fixture claim;
 - exact 53-module runner coverage and module-specific diagnostics;
 - generated-only, tree-only, producer-assembly, and bridge-generation tests;
-- exact 32-hole reverse map and 148–257 arithmetic;
+- exact current hole reverse map and 148–257 original-budget arithmetic;
 - all five spikes and every tracked test serially;
 - exact CP3 blob and empty `src/`/package diff;
 - research isolation and empty escape scans;

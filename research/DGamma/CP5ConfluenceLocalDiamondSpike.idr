@@ -303,8 +303,11 @@ public export
   (state : SystemState name key value world error) ->
   registryWellFormed @{nameEq} @{keyEq} state = True ->
   RelationalReplayEndpoint name key world error value nameEq keyEq state state
-relationalReplayEndpointReflexiveSpike =
-  ?relationalReplayEndpointReflexiveSpike_rhs
+relationalReplayEndpointReflexiveSpike nameEq keyEq state wellFormed =
+  MkRelationalReplayEndpoint
+    (effectStateReflexive keyEq (projectEffectState @{nameEq} state))
+    (orderedControlsReflexive (bindings (registry state)))
+    wellFormed
 
 public export
 0 relationalReplayEndpointTransitiveSpike :
