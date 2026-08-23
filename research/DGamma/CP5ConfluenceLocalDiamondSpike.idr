@@ -2045,6 +2045,65 @@ record RawActivationMove
   0 rawActivationRuns : applyAction @{nameEq} @{keyEq} action before =
     Just (tag, rawActivationAfter)
 
+0 beginRawAfterForeignState :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (leftActor : name) ->
+  {first, middle, movedBefore : SystemState name key value world error} ->
+  (foreignAction : Action name key value world error) ->
+  (foreignTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} (LBegin leftActor)
+    first = Just (LBeginTag, middle)) ->
+  (foreignChecked : checkedApplyAction @{nameEq} @{keyEq} foreignAction first =
+    Just (foreignTag, movedBefore)) ->
+  Not (leftActor = actionOwner foreignAction) ->
+  ((fiber : Fiber name key value world error) ->
+    (view : View name (dependencies
+      (componentDependencies (fiberComponent fiber)))) ->
+    targetFiber @{nameEq} @{keyEq} fiber (registry first) = Just view ->
+    targetFiber @{nameEq} @{keyEq} fiber (registry movedBefore) = Just view) ->
+  RawActivationMove nameEq keyEq (LBegin leftActor) LBeginTag movedBefore
+beginRawAfterForeignState {name} {key} {world} {error} {value}
+  nameEq keyEq leftActor
+  {first = MkSystemState firstWorld firstRegistry} {middle} {movedBefore}
+  foreignAction foreignTag leftChecked foreignChecked distinct targets =
+    let 0 leftRaw : (applyAction @{nameEq} @{keyEq} (LBegin leftActor)
+          (MkSystemState firstWorld firstRegistry) = Just (LBeginTag, middle))
+        leftRaw = checkedActionProjects nameEq keyEq (LBegin leftActor)
+          (MkSystemState firstWorld firstRegistry) middle LBeginTag leftChecked
+    in case beginSourceOwnerNotActive nameEq keyEq leftActor
+      {before = MkSystemState firstWorld firstRegistry} {afterState = middle}
+      LBeginTag leftChecked of
+      (sourceFiber ** (sourceFound, sourceInactive)) =>
+        case foreignBeginPlanView nameEq keyEq leftActor firstWorld firstRegistry
+          sourceFiber sourceFound LBeginTag middle leftRaw of
+          MkForeignBeginPlanView {component} {parent} {table} view ownerShape
+            sourceTarget tagShape afterShape => case ownerShape of
+              Refl =>
+                let exactFiber : Fiber name key value world error
+                    exactFiber = MkFiber component parent False table
+                      (Inactive Nothing)
+                    0 targetAtMoved : (targetFiber @{nameEq} @{keyEq}
+                      exactFiber (registry movedBefore) = Just view)
+                    targetAtMoved = targets exactFiber view sourceTarget
+                    0 foundAtMoved : (lookupFiber @{nameEq} leftActor
+                      (registry movedBefore) = Just exactFiber)
+                    foundAtMoved = trans
+                      (transitionForeignLookup nameEq keyEq leftActor
+                        foreignAction foreignTag foreignChecked distinct)
+                      sourceFound
+                    movedAfter : SystemState name key value world error
+                    movedAfter = MkSystemState (worldState movedBefore)
+                      (replaceBinding @{nameEq} leftActor
+                        (setFiberLifecycle exactFiber
+                          (Reloading (componentProgram component) id view))
+                        (registry movedBefore))
+                    0 movedRaw : (applyAction @{nameEq} @{keyEq}
+                      (LBegin leftActor) movedBefore =
+                      Just (LBeginTag, movedAfter))
+                    movedRaw = rewrite foundAtMoved in
+                      rewrite targetAtMoved in Refl
+                in MkRawActivationMove movedAfter movedRaw
+
 0 beginRawAfterForeignActivation :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (leftActor : name) ->
