@@ -15,6 +15,7 @@ import DGamma.CP4DeletionSelectedForeignLifecycleCore
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorOpen
 import DGamma.CP4DeletionSelectedForeignLifecycleBegin
 import DGamma.CP4RecoveryEffectRespect
+import DGamma.CP4DeletionSelectedForeignLifecycleAdvanceOutcome
 import DGamma.CP4Support
 import Data.Nat
 import Data.Maybe
@@ -3168,6 +3169,304 @@ emptyFinishReplacementComparison nameEq keyEq actor sourceAmbient movedAmbient
           (fiberControlReflexive nextFiber)
           (replaceBindingRuntimeBindings nameEq actor nextFiber sourceRegistry)
           (replaceBindingRuntimeBindings nameEq actor nextFiber movedRegistry)
+
+0 localPartialEffectRelatedSymmetric :
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    left right ->
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    right left
+localPartialEffectRelatedSymmetric PartialUndefined = PartialUndefined
+localPartialEffectRelatedSymmetric (PartialDefined related) =
+  PartialDefined (localEffectStateSymmetric related)
+
+0 localPartialMapsEquivalentSymmetric :
+  PartialMapsEquivalent (EffectStateEquivalence keyEq) left right ->
+  PartialMapsEquivalent (EffectStateEquivalence keyEq) right left
+localPartialMapsEquivalentSymmetric maps input =
+  localPartialEffectRelatedSymmetric (maps input)
+
+0 pushedAccumulatorRelatedFromMovedUndoMaps :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (provision : CoeffectSpec key) ->
+  (accumulator : LocalState key value world provision ->
+    LocalState key value world provision) ->
+  (sourceUndo, movedUndo : LocalState key value world provision ->
+    LocalState key value world provision) ->
+  PartialMapsEquivalent (EffectStateEquivalence keyEq)
+    (yieldedInverseEffectMap nameEq keyEq actor provision movedUndo)
+    (yieldedInverseEffectMap nameEq keyEq actor provision sourceUndo) ->
+  AccumulatorRelated
+    (pushLocalUndo @{keyEq} provision accumulator sourceUndo)
+    (pushLocalUndo @{keyEq} provision accumulator movedUndo)
+pushedAccumulatorRelatedFromMovedUndoMaps nameEq keyEq actor provision
+  accumulator sourceUndo movedUndo movedToSourceUndo =
+    let 0 sourceToMovedUndo : PartialMapsEquivalent
+          (EffectStateEquivalence keyEq)
+          (yieldedInverseEffectMap nameEq keyEq actor provision sourceUndo)
+          (yieldedInverseEffectMap nameEq keyEq actor provision movedUndo)
+        sourceToMovedUndo = localPartialMapsEquivalentSymmetric movedToSourceUndo
+        0 undosRelated : (input : LocalState key value world provision) ->
+          LocalStateRuntimeRelated
+            (sourceUndo (normalizeLocal @{keyEq} provision input))
+            (movedUndo (normalizeLocal @{keyEq} provision input))
+        undosRelated = yieldedMapsGiveLocalUndoRuntimeRelated nameEq keyEq actor
+          provision sourceUndo movedUndo sourceToMovedUndo
+    in pushLocalUndoRuntimeRelated keyEq provision accumulator accumulator
+      sourceUndo movedUndo (\input => localStateRuntimeReflexive _) undosRelated
+
+0 successfulFinishReplacementComparison :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (sourceAmbient, movedAmbient : world) ->
+  (sourceRegistry, movedRegistry : Registry name key value world error) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (sourceAfter, movedAfter : SystemState name key value world error) ->
+  (sourceFound : lookupFiber @{nameEq} actor sourceRegistry = Just
+    (MkFiber component parent retiredFlag table
+      (Reloading [step] accumulator view))) ->
+  (movedFound : lookupFiber @{nameEq} actor movedRegistry = Just
+    (MkFiber component parent retiredFlag table
+      (Reloading [step] accumulator view))) ->
+  (sourceCapability, movedCapability : DepValues key value
+    (dependencies (componentDependencies component))) ->
+  resolveCommittedValues @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error}
+    (dependencies (componentDependencies component)) view sourceRegistry =
+    Just sourceCapability ->
+  resolveCommittedValues @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error}
+    (dependencies (componentDependencies component)) view movedRegistry =
+    Just movedCapability ->
+  (sourceLocalAfter, movedLocalAfter :
+    LocalState key value world (componentProvisions component)) ->
+  (sourceUndo, movedUndo :
+    LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  runStepEffect step sourceCapability
+    (MkLocalState sourceAmbient
+      (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component)
+        (ownedValues table))) = Right (sourceLocalAfter, sourceUndo) ->
+  runStepEffect step movedCapability
+    (MkLocalState movedAmbient
+      (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component)
+        (ownedValues table))) = Right (movedLocalAfter, movedUndo) ->
+  PartialMapsEquivalent (EffectStateEquivalence keyEq)
+    (yieldedInverseEffectMap nameEq keyEq actor
+      (componentProvisions component) movedUndo)
+    (yieldedInverseEffectMap nameEq keyEq actor
+      (componentProvisions component) sourceUndo) ->
+  targetFiber @{nameEq} @{keyEq}
+    (MkFiber component parent retiredFlag table
+      (Reloading [step] accumulator view)) sourceRegistry = Just view ->
+  targetFiber @{nameEq} @{keyEq}
+    (MkFiber component parent retiredFlag table
+      (Reloading [step] accumulator view)) movedRegistry = Just view ->
+  applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState sourceAmbient sourceRegistry) =
+    Just (LFinishTag, sourceAfter) ->
+  applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState movedAmbient movedRegistry) =
+    Just (LFinishTag, movedAfter) ->
+  ActivationReplacementComparison nameEq actor
+    (MkSystemState sourceAmbient sourceRegistry) sourceAfter
+    (MkSystemState movedAmbient movedRegistry) movedAfter
+successfulFinishReplacementComparison nameEq keyEq actor sourceAmbient
+  movedAmbient sourceRegistry movedRegistry component parent retiredFlag table
+  step accumulator view sourceAfter movedAfter sourceFound movedFound
+  sourceCapability movedCapability sourceResolved movedResolved sourceLocalAfter
+  movedLocalAfter sourceUndo movedUndo sourceRan movedRan movedToSourceUndo
+  sourceTarget movedTarget sourceRaw movedRaw =
+    let oldFiber : Fiber name key value world error
+        oldFiber = MkFiber component parent retiredFlag table
+          (Reloading [step] accumulator view)
+        sourcePushed = pushLocalUndo @{keyEq}
+          (componentProvisions component) accumulator sourceUndo
+        movedPushed = pushLocalUndo @{keyEq}
+          (componentProvisions component) accumulator movedUndo
+        sourceNext : Fiber name key value world error
+        sourceNext = setFiberRuntime oldFiber (localTable sourceLocalAfter)
+          (Active sourcePushed view)
+        movedNext : Fiber name key value world error
+        movedNext = setFiberRuntime oldFiber (localTable movedLocalAfter)
+          (Active movedPushed view)
+        0 pushedRelated : AccumulatorRelated
+          (pushLocalUndo @{keyEq} (componentProvisions component) accumulator
+            sourceUndo)
+          (pushLocalUndo @{keyEq} (componentProvisions component) accumulator
+            movedUndo)
+        pushedRelated = pushedAccumulatorRelatedFromMovedUndoMaps nameEq keyEq
+          actor (componentProvisions component) accumulator sourceUndo movedUndo
+          movedToSourceUndo
+        0 nextRelated : FiberControlRelated sourceNext movedNext
+        nextRelated = FibersControlRelated parent parent retiredFlag retiredFlag
+          (localTable sourceLocalAfter) (localTable movedLocalAfter)
+          (Active sourcePushed view) (Active movedPushed view)
+          Refl Refl (ActiveControls {error = error} pushedRelated Refl)
+        sourceExpected : SystemState name key value world error
+        sourceExpected = MkSystemState (localWorld sourceLocalAfter)
+          (replaceBinding @{nameEq} actor sourceNext sourceRegistry)
+        movedExpected : SystemState name key value world error
+        movedExpected = MkSystemState (localWorld movedLocalAfter)
+          (replaceBinding @{nameEq} actor movedNext movedRegistry)
+        0 sourceConcrete : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+          (MkSystemState sourceAmbient sourceRegistry) =
+          Just (LFinishTag, sourceExpected)
+        sourceConcrete = rewrite sourceFound in rewrite sourceResolved in
+          rewrite sourceRan in rewrite sourceTarget in
+          rewrite localViewEqRefl nameEq view in Refl
+        0 movedConcrete : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+          (MkSystemState movedAmbient movedRegistry) =
+          Just (LFinishTag, movedExpected)
+        movedConcrete = rewrite movedFound in rewrite movedResolved in
+          rewrite movedRan in rewrite movedTarget in
+          rewrite localViewEqRefl nameEq view in Refl
+        0 sourcePairSame : (LFinishTag, sourceExpected) =
+          (LFinishTag, sourceAfter)
+        sourcePairSame = justInjective (trans (sym sourceConcrete) sourceRaw)
+        0 movedPairSame : (LFinishTag, movedExpected) =
+          (LFinishTag, movedAfter)
+        movedPairSame = justInjective (trans (sym movedConcrete) movedRaw)
+    in case sourcePairSame of
+      Refl => case movedPairSame of
+        Refl => MkActivationReplacementComparison sourceNext movedNext
+          nextRelated
+          (replaceBindingRuntimeBindings nameEq actor sourceNext sourceRegistry)
+          (replaceBindingRuntimeBindings nameEq actor movedNext movedRegistry)
+
+0 successfulIterReplacementComparison :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (sourceAmbient, movedAmbient : world) ->
+  (sourceRegistry, movedRegistry : Registry name key value world error) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step, next : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (more : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (sourceAfter, movedAfter : SystemState name key value world error) ->
+  (sourceFound : lookupFiber @{nameEq} actor sourceRegistry = Just
+    (MkFiber component parent retiredFlag table
+      (Reloading (step :: next :: more) accumulator view))) ->
+  (movedFound : lookupFiber @{nameEq} actor movedRegistry = Just
+    (MkFiber component parent retiredFlag table
+      (Reloading (step :: next :: more) accumulator view))) ->
+  (sourceCapability, movedCapability : DepValues key value
+    (dependencies (componentDependencies component))) ->
+  resolveCommittedValues @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error}
+    (dependencies (componentDependencies component)) view sourceRegistry =
+    Just sourceCapability ->
+  resolveCommittedValues @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error}
+    (dependencies (componentDependencies component)) view movedRegistry =
+    Just movedCapability ->
+  (sourceLocalAfter, movedLocalAfter :
+    LocalState key value world (componentProvisions component)) ->
+  (sourceUndo, movedUndo :
+    LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  runStepEffect step sourceCapability
+    (MkLocalState sourceAmbient
+      (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component)
+        (ownedValues table))) = Right (sourceLocalAfter, sourceUndo) ->
+  runStepEffect step movedCapability
+    (MkLocalState movedAmbient
+      (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component)
+        (ownedValues table))) = Right (movedLocalAfter, movedUndo) ->
+  PartialMapsEquivalent (EffectStateEquivalence keyEq)
+    (yieldedInverseEffectMap nameEq keyEq actor
+      (componentProvisions component) movedUndo)
+    (yieldedInverseEffectMap nameEq keyEq actor
+      (componentProvisions component) sourceUndo) ->
+  targetFiber @{nameEq} @{keyEq}
+    (MkFiber component parent retiredFlag table
+      (Reloading (step :: next :: more) accumulator view)) sourceRegistry =
+    Just view ->
+  targetFiber @{nameEq} @{keyEq}
+    (MkFiber component parent retiredFlag table
+      (Reloading (step :: next :: more) accumulator view)) movedRegistry =
+    Just view ->
+  applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState sourceAmbient sourceRegistry) = Just (LIterTag, sourceAfter) ->
+  applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState movedAmbient movedRegistry) = Just (LIterTag, movedAfter) ->
+  ActivationReplacementComparison nameEq actor
+    (MkSystemState sourceAmbient sourceRegistry) sourceAfter
+    (MkSystemState movedAmbient movedRegistry) movedAfter
+successfulIterReplacementComparison nameEq keyEq actor sourceAmbient movedAmbient
+  sourceRegistry movedRegistry component parent retiredFlag table step next more
+  accumulator view sourceAfter movedAfter sourceFound movedFound sourceCapability
+  movedCapability sourceResolved movedResolved sourceLocalAfter movedLocalAfter
+  sourceUndo movedUndo sourceRan movedRan movedToSourceUndo sourceTarget
+  movedTarget sourceRaw movedRaw =
+    let oldFiber : Fiber name key value world error
+        oldFiber = MkFiber component parent retiredFlag table
+          (Reloading (step :: next :: more) accumulator view)
+        sourcePushed = pushLocalUndo @{keyEq}
+          (componentProvisions component) accumulator sourceUndo
+        movedPushed = pushLocalUndo @{keyEq}
+          (componentProvisions component) accumulator movedUndo
+        sourceNext : Fiber name key value world error
+        sourceNext = setFiberRuntime oldFiber (localTable sourceLocalAfter)
+          (Reloading (next :: more) sourcePushed view)
+        movedNext : Fiber name key value world error
+        movedNext = setFiberRuntime oldFiber (localTable movedLocalAfter)
+          (Reloading (next :: more) movedPushed view)
+        0 pushedRelated : AccumulatorRelated
+          (pushLocalUndo @{keyEq} (componentProvisions component) accumulator
+            sourceUndo)
+          (pushLocalUndo @{keyEq} (componentProvisions component) accumulator
+            movedUndo)
+        pushedRelated = pushedAccumulatorRelatedFromMovedUndoMaps nameEq keyEq
+          actor (componentProvisions component) accumulator sourceUndo movedUndo
+          movedToSourceUndo
+        0 nextRelated : FiberControlRelated sourceNext movedNext
+        nextRelated = FibersControlRelated parent parent retiredFlag retiredFlag
+          (localTable sourceLocalAfter) (localTable movedLocalAfter)
+          (Reloading (next :: more) sourcePushed view)
+          (Reloading (next :: more) movedPushed view) Refl Refl
+          (ReloadingControls Refl pushedRelated Refl)
+        sourceExpected : SystemState name key value world error
+        sourceExpected = MkSystemState (localWorld sourceLocalAfter)
+          (replaceBinding @{nameEq} actor sourceNext sourceRegistry)
+        movedExpected : SystemState name key value world error
+        movedExpected = MkSystemState (localWorld movedLocalAfter)
+          (replaceBinding @{nameEq} actor movedNext movedRegistry)
+        0 sourceConcrete : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+          (MkSystemState sourceAmbient sourceRegistry) =
+          Just (LIterTag, sourceExpected)
+        sourceConcrete = rewrite sourceFound in rewrite sourceResolved in
+          rewrite sourceRan in rewrite sourceTarget in
+          rewrite localViewEqRefl nameEq view in Refl
+        0 movedConcrete : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+          (MkSystemState movedAmbient movedRegistry) =
+          Just (LIterTag, movedExpected)
+        movedConcrete = rewrite movedFound in rewrite movedResolved in
+          rewrite movedRan in rewrite movedTarget in
+          rewrite localViewEqRefl nameEq view in Refl
+        0 sourcePairSame : (LIterTag, sourceExpected) = (LIterTag, sourceAfter)
+        sourcePairSame = justInjective (trans (sym sourceConcrete) sourceRaw)
+        0 movedPairSame : (LIterTag, movedExpected) = (LIterTag, movedAfter)
+        movedPairSame = justInjective (trans (sym movedConcrete) movedRaw)
+    in case sourcePairSame of
+      Refl => case movedPairSame of
+        Refl => MkActivationReplacementComparison sourceNext movedNext
+          nextRelated
+          (replaceBindingRuntimeBindings nameEq actor sourceNext sourceRegistry)
+          (replaceBindingRuntimeBindings nameEq actor movedNext movedRegistry)
 
 record ActivationActivationCheckedCore
   (nameEq : DecEq name) (keyEq : DecEq key)
