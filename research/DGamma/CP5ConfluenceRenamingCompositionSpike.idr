@@ -1625,6 +1625,76 @@ composeRegistrationCorrespondence leftRegistrations rightRegistrations =
           (rightFinalIndex rightRegistrations)
           (synthesizeRegistrationScanner leftScanFold rightScanFold pairing)
 
+data CurrentGenerationCompositionResult :
+  (outerVestigial, middleVestigial : Type) ->
+  (mappedThrough : RegistrationGeneration name -> Type) -> Type where
+  CurrentOuterVestigial : outerVestigial ->
+    CurrentGenerationCompositionResult outerVestigial middleVestigial
+      mappedThrough
+  CurrentMiddleVestigial : middleVestigial ->
+    CurrentGenerationCompositionResult outerVestigial middleVestigial
+      mappedThrough
+  CurrentMappedThrough :
+    (generation : RegistrationGeneration name) -> mappedThrough generation ->
+    CurrentGenerationCompositionResult outerVestigial middleVestigial
+      mappedThrough
+
+0 classifyForwardCurrentGeneration :
+  {initial, leftFinal, middleFinal, rightFinal :
+    SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {middleTrace : Transitions initial middleFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  (leftRenaming, rightRenaming : RegistrationGenerationBijection name) ->
+  (leftRegistrations : RegistrationCorrespondenceByGeneration nameEq
+    leftRenaming leftTrace middleTrace) ->
+  (rightRegistrations : RegistrationCorrespondenceByGeneration nameEq
+    rightRenaming middleTrace rightTrace) ->
+  (leftCurrent : CurrentEndpointRenaming nameEq keyEq leftRenaming leftTrace
+    middleTrace leftRegistrations) ->
+  (rightCurrent : CurrentEndpointRenaming nameEq keyEq rightRenaming middleTrace
+    rightTrace rightRegistrations) ->
+  (selected : name) -> (leftGeneration : RegistrationGeneration name) ->
+  lookupCurrentGeneration @{nameEq} selected
+    (leftFinalGenerations leftRegistrations) = Just leftGeneration ->
+  CurrentGenerationCompositionResult
+    (VestigialEndpointGeneration name key world error value nameEq keyEq
+      (leftFinalGenerations leftRegistrations)
+      (leftDeletedGenerations leftRegistrations) selected leftFinal)
+    (VestigialEndpointGeneration name key world error value nameEq keyEq
+      (leftFinalGenerations rightRegistrations)
+      (leftDeletedGenerations rightRegistrations)
+      (renameForward (currentNameBijection leftCurrent) selected) middleFinal)
+    (\rightGeneration =>
+      (generationForward
+          (composeGenerationBijection leftRenaming rightRenaming)
+          leftGeneration = rightGeneration,
+       lookupCurrentGeneration @{nameEq}
+         (renameForward (currentNameBijection rightCurrent)
+           (renameForward (currentNameBijection leftCurrent) selected))
+         (rightFinalGenerations rightRegistrations) = Just rightGeneration))
+classifyForwardCurrentGeneration leftRenaming rightRenaming leftRegistrations
+  rightRegistrations leftCurrent rightCurrent selected leftGeneration found =
+    case leftCurrentGenerationMapped leftCurrent selected leftGeneration found of
+      Left vestigial => CurrentOuterVestigial vestigial
+      Right (middleGeneration ** (leftMapped, middleFound)) =>
+        let synchronization = synchronizeMiddleRegistrationScanners
+              leftRegistrations rightRegistrations
+            transportedMiddleFound = replace
+              {p = \generations => lookupCurrentGeneration @{nameEq}
+                (renameForward (currentNameBijection leftCurrent) selected)
+                generations = Just middleGeneration}
+              (sharedMiddleLiveGenerationsSame synchronization) middleFound
+        in case leftCurrentGenerationMapped rightCurrent
+          (renameForward (currentNameBijection leftCurrent) selected)
+          middleGeneration transportedMiddleFound of
+          Left vestigial => CurrentMiddleVestigial vestigial
+          Right (rightGeneration ** (rightMapped, rightFound)) =>
+            CurrentMappedThrough rightGeneration
+              (trans (cong (generationForward rightRenaming) leftMapped)
+                rightMapped,
+               rightFound)
+
 0 retargetVestigialEndpointIndex :
   {fromIndex, toIndex : RegistrationIndexState name} ->
   fromIndex = toIndex ->
