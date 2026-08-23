@@ -5263,6 +5263,63 @@ activationSelfReplacementComparison nameEq keyEq {before} {afterState} action
       (\stage => iteratorOutcomeAgreementReflexive keyEq stage
         (projectEffectState @{nameEq} before))
 
+0 orchestrationRawAfterCheckedActivation :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, orchestrationAfter, activationAfter :
+    SystemState name key value world error} ->
+  (orchestrationAction, activationAction : Action name key value world error) ->
+  (orchestrationTag, activationTag : RuleTag) ->
+  (orchestrationChecked : checkedApplyAction @{nameEq} @{keyEq}
+    orchestrationAction first = Just (orchestrationTag, orchestrationAfter)) ->
+  (activationChecked : checkedApplyAction @{nameEq} @{keyEq}
+    activationAction first = Just (activationTag, activationAfter)) ->
+  (orchestration : PaperOrchestrationStep
+    (Fired {before = first} {afterState = orchestrationAfter}
+      nameEq keyEq orchestrationAction orchestrationTag
+      orchestrationChecked)) ->
+  (activation : PaperActivationStep
+    (Fired {before = first} {afterState = activationAfter}
+      nameEq keyEq activationAction activationTag activationChecked)) ->
+  Not (actionOwner orchestrationAction = actionOwner activationAction) ->
+  RawActivationMove nameEq keyEq orchestrationAction orchestrationTag
+    activationAfter
+orchestrationRawAfterCheckedActivation nameEq keyEq
+  {first = MkSystemState sourceAmbient sourceRegistry} {orchestrationAfter}
+  {activationAfter} orchestrationAction activationAction orchestrationTag
+  activationTag orchestrationChecked activationChecked orchestration activation
+  distinct =
+    let 0 comparison : ActivationReplacementComparison nameEq
+          (actionOwner activationAction)
+          (MkSystemState sourceAmbient sourceRegistry) activationAfter
+          (MkSystemState sourceAmbient sourceRegistry) activationAfter
+        comparison = activationSelfReplacementComparison nameEq keyEq
+          activationAction activationTag activationChecked activation
+        movedAmbient : world
+        movedAmbient = worldState activationAfter
+        canonicalBefore : SystemState name key value world error
+        canonicalBefore = MkSystemState movedAmbient
+          (replaceBinding @{nameEq} (actionOwner activationAction)
+            (sourceReplacementFiber comparison) sourceRegistry)
+        0 canonicalSame : canonicalBefore = activationAfter
+        canonicalSame = case activationAfter of
+          MkSystemState observedAmbient observedRegistry =>
+            cong (MkSystemState observedAmbient)
+              (sym (sourceReplacementRegistry comparison))
+        0 canonicalRaw : RawActivationMove nameEq keyEq orchestrationAction
+          orchestrationTag canonicalBefore
+        canonicalRaw = orchestrationRawAfterForeignReplacement nameEq keyEq
+          orchestrationAction orchestrationTag sourceAmbient movedAmbient
+          sourceRegistry (actionOwner activationAction)
+          (sourceReplacementFiber comparison) (sourcePreviousFiber comparison)
+          (sourcePreviousFound comparison)
+          (sourceReplacementStaticComponent comparison)
+          (sourceReplacementStaticParent comparison) orchestrationChecked
+          orchestration distinct
+    in replace
+      {p = \before => RawActivationMove nameEq keyEq orchestrationAction
+        orchestrationTag before}
+      canonicalSame canonicalRaw
+
 record ActivationActivationCheckedCore
   (nameEq : DecEq name) (keyEq : DecEq key)
   {first, middle, originalFinal, earlyRightFinal :
