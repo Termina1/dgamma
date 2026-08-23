@@ -7,8 +7,11 @@ import DGamma.CP3
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
+import Data.List
 import Data.List.Elem
 import Decidable.Equality
+
+%hide Data.List.index
 
 %default total
 
@@ -1031,6 +1034,79 @@ data RemoveListOccurrence : a -> List a -> List a -> Type where
   RemoveListHere : RemoveListOccurrence event (event :: rest) rest
   RemoveListThere : RemoveListOccurrence event events remainder ->
     RemoveListOccurrence event (other :: events) (other :: remainder)
+
+0 appendNilRightLocal : (items : List a) -> items ++ [] = items
+appendNilRightLocal [] = Refl
+appendNilRightLocal (item :: items) =
+  cong (item ::) (appendNilRightLocal items)
+
+0 appendAssociativeLocal :
+  (left, middle, right : List a) ->
+  (left ++ middle) ++ right = left ++ (middle ++ right)
+appendAssociativeLocal [] middle right = Refl
+appendAssociativeLocal (item :: left) middle right =
+  cong (item ::) (appendAssociativeLocal left middle right)
+
+record ReversedRemovalDecomposition
+  (selected : event) (source, remainder : List event) where
+  constructor MkReversedRemovalDecomposition
+  reversedPrefix : List event
+  reversedSuffix : List event
+  0 reversedSourceSplit : reverse source =
+    reversedPrefix ++ (selected :: reversedSuffix)
+  0 reversedRemainderSplit : reverse remainder =
+    reversedPrefix ++ reversedSuffix
+
+0 reverseRemovalDecomposition :
+  RemoveListOccurrence selected source remainder ->
+  ReversedRemovalDecomposition selected source remainder
+reverseRemovalDecomposition {remainder = rest} RemoveListHere =
+  MkReversedRemovalDecomposition (reverse rest) []
+    (sym (revAppend [selected] rest))
+    (sym (appendNilRightLocal (reverse rest)))
+reverseRemovalDecomposition {source = other :: sourceTail}
+  {remainder = other :: remainderTail} (RemoveListThere later) =
+    case reverseRemovalDecomposition later of
+      MkReversedRemovalDecomposition before after sourceSplit remainderSplit =>
+        MkReversedRemovalDecomposition before (after ++ [other])
+          (trans (sym (revAppend [other] sourceTail))
+            (trans (cong (++ [other]) sourceSplit)
+              (appendAssociativeLocal before (selected :: after) [other])))
+          (trans (sym (revAppend [other] remainderTail))
+            (trans (cong (++ [other]) remainderSplit)
+              (appendAssociativeLocal before after [other])))
+
+0 reversePendingChronology :
+  (pending, future : List event) ->
+  reverse (pendingChronology pending future) = reverse future ++ pending
+reversePendingChronology [] future =
+  sym (appendNilRightLocal (reverse future))
+reversePendingChronology (queued :: pending) future =
+  trans (reversePendingChronology pending (queued :: future))
+    (trans
+      (cong (++ pending) (sym (revAppend [queued] future)))
+      (appendAssociativeLocal (reverse future) [queued] pending))
+
+record PendingRemovalDecomposition
+  (selected : event) (pending, chronologicalRemainder : List event) where
+  constructor MkPendingRemovalDecomposition
+  pendingPrefix : List event
+  pendingSuffix : List event
+  0 pendingSourceSplit : pending =
+    pendingPrefix ++ (selected :: pendingSuffix)
+  0 pendingRemainderSplit : reverse chronologicalRemainder =
+    pendingPrefix ++ pendingSuffix
+
+0 pendingRemovalDecomposition :
+  RemoveListOccurrence selected (pendingChronology pending [])
+    chronologicalRemainder ->
+  PendingRemovalDecomposition selected pending chronologicalRemainder
+pendingRemovalDecomposition removal =
+  case reverseRemovalDecomposition removal of
+    MkReversedRemovalDecomposition before after sourceSplit remainderSplit =>
+      MkPendingRemovalDecomposition before after
+        (trans (sym (reversePendingChronology pending [])) sourceSplit)
+        remainderSplit
 
 0 removeAfterPrefix :
   {eventType : Type} ->
