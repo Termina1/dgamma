@@ -5217,6 +5217,28 @@ activationReplacementComparisonAcrossForeignStates nameEq keyEq action tag trace
       sourceChecked movedChecked stageOccurs sourceActivation lookupSame
       targetPreserved outcomeAgreement
 
+0 activationSelfReplacementComparison :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {before, afterState : SystemState name key value world error} ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  PaperActivationStep
+    (Fired {before} {afterState} nameEq keyEq action tag checked) ->
+  ActivationReplacementComparison nameEq (actionOwner action) before afterState
+    before afterState
+activationSelfReplacementComparison nameEq keyEq {before} {afterState} action
+  tag checked paper =
+    let trace : Transitions before afterState
+        trace = MoreTransitions
+          (Fired {before} {afterState} nameEq keyEq action tag checked)
+          NoTransitions
+    in activationReplacementComparisonAcrossForeignStates nameEq keyEq action tag
+      trace checked checked (Left OccursHere) paper Refl
+      (\fiber, view, target => target)
+      (\stage => iteratorOutcomeAgreementReflexive keyEq stage
+        (projectEffectState @{nameEq} before))
+
 record ActivationActivationCheckedCore
   (nameEq : DecEq name) (keyEq : DecEq key)
   {first, middle, originalFinal, earlyRightFinal :
