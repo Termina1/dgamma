@@ -1359,6 +1359,78 @@ activationMapStableAfterForeignTransition nameEq keyEq activationAction
 actualForwardGeneratorMapSame before afterState nameEq keyEq action tag checked
   occurs ownerSame state = Refl
 
+0 advanceSourceReloadingSnapshot :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {before, afterState : SystemState name key value world error} ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+    Just (tag, afterState)) ->
+  (tagIsPaper : Either (tag = LIterTag) (tag = LFinishTag)) ->
+  (providers : List name ** ReloadingSnapshot name key world error value nameEq
+    actor providers before)
+advanceSourceReloadingSnapshot nameEq keyEq actor {before} {afterState} tag
+  checked tagIsPaper =
+    let raw = checkedActionProjects nameEq keyEq (LAdvance actor) before
+          afterState tag checked
+        structure = advanceStructureTheorem nameEq keyEq actor before afterState
+          tag raw
+    in case structure of
+      IterAdvance fiber found
+        (remaining ** (accumulator ** (view ** (lifecycle, matches)))) endpoint =>
+          (viewProviders view ** MkReloadingSnapshot fiber found remaining
+            accumulator view lifecycle Refl)
+      FinishAdvance fiber found
+        (remaining ** (accumulator ** (view ** (lifecycle, matches)))) endpoint =>
+          (viewProviders view ** MkReloadingSnapshot fiber found remaining
+            accumulator view lifecycle Refl)
+      DivertAdvance endpoint => case tagIsPaper of
+        Left Refl impossible
+        Right Refl impossible
+      RaiseAdvance endpoint => case tagIsPaper of
+        Left Refl impossible
+        Right Refl impossible
+
+0 reloadingSnapshotAfterForeignTransition :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) -> (providers : List name) ->
+  {before, afterState : SystemState name key value world error} ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  Not (selected = actionOwner action) ->
+  ReloadingSnapshot name key world error value nameEq selected providers before ->
+  ReloadingSnapshot name key world error value nameEq selected providers afterState
+reloadingSnapshotAfterForeignTransition nameEq keyEq selected providers action tag
+  checked distinct snapshot =
+    MkReloadingSnapshot (snapshotFiber snapshot)
+      (trans (transitionForeignLookup nameEq keyEq selected action tag checked
+        distinct) (snapshotLookup snapshot))
+      (snapshotRemaining snapshot) (snapshotAccumulator snapshot)
+      (snapshotView snapshot) (snapshotReloading snapshot)
+      (snapshotProviders snapshot)
+
+0 advanceSourceSnapshotAfterForeignActivation :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (leftActor, rightActor : name) -> Not (leftActor = rightActor) ->
+  {first, middle, earlyRightFinal :
+    SystemState name key value world error} ->
+  (leftTag, rightTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance leftActor)
+    first = Just (leftTag, middle)) ->
+  (earlyRightChecked : checkedApplyAction @{nameEq} @{keyEq}
+    (LAdvance rightActor) first = Just (rightTag, earlyRightFinal)) ->
+  Either (leftTag = LIterTag) (leftTag = LFinishTag) ->
+  (providers : List name ** ReloadingSnapshot name key world error value nameEq
+    leftActor providers earlyRightFinal)
+advanceSourceSnapshotAfterForeignActivation nameEq keyEq leftActor rightActor
+  distinct leftTag rightTag leftChecked earlyRightChecked paperTag =
+    case advanceSourceReloadingSnapshot nameEq keyEq leftActor leftTag
+      leftChecked paperTag of
+        (providers ** snapshot) =>
+          (providers ** reloadingSnapshotAfterForeignTransition nameEq keyEq
+            leftActor providers (LAdvance rightActor) rightTag earlyRightChecked
+            distinct snapshot)
+
 record ActivationPairEffectOutput
   (nameEq : DecEq name) (keyEq : DecEq key)
   (leftAction : Action name key value world error) (leftTag : RuleTag)
