@@ -1576,6 +1576,46 @@ resolveViewStableAfterForeignActivation {name} {key} {world} {error} {value}
                   afterWellFormed sourceRest
             in rewrite targetProvider in rewrite targetRest in Refl
 
+0 targetFiberStableAfterForeignActivation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (fiber : Fiber name key value world error) ->
+  (view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))) ->
+  {before, afterState : SystemState name key value world error} ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (activation : PaperActivationStep
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked)) ->
+  registryWellFormed @{nameEq} @{keyEq} afterState = True ->
+  targetFiber @{nameEq} @{keyEq} fiber (registry before) = Just view ->
+  targetFiber @{nameEq} @{keyEq} fiber (registry afterState) = Just view
+targetFiberStableAfterForeignActivation {name} {key} {world} {error} {value}
+  nameEq keyEq fiber view {before} {afterState} action tag checked activation
+  afterWellFormed sourceTarget with (retired fiber)
+  targetFiberStableAfterForeignActivation {name} {key} {world} {error} {value}
+    nameEq keyEq fiber view {before} {afterState} action tag checked activation
+    afterWellFormed sourceTarget | True =
+      case sourceTarget of Refl impossible
+  targetFiberStableAfterForeignActivation {name} {key} {world} {error} {value}
+    nameEq keyEq fiber view {before} {afterState} action tag checked activation
+    afterWellFormed sourceTarget | False =
+      resolveViewStableAfterForeignActivation nameEq keyEq
+        (dependencies (componentDependencies (fiberComponent fiber))) view
+        action tag checked activation afterWellFormed sourceTarget
+
+0 localViewEqRefl : (nameEq : DecEq name) -> (view : View name deps) ->
+  viewEq @{nameEq} view view = True
+localViewEqRefl nameEq EmptyView = Refl
+localViewEqRefl nameEq (ProviderView provider rest)
+  with (decEq @{nameEq} provider provider)
+  localViewEqRefl nameEq (ProviderView provider rest) | Yes Refl =
+    localViewEqRefl nameEq rest
+  localViewEqRefl nameEq (ProviderView provider rest) | No contra =
+    void (contra Refl)
+
 0 advanceTransitionMapOriginCong :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
