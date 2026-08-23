@@ -3859,6 +3859,67 @@ successfulIterReplacementComparison nameEq keyEq actor sourceAmbient movedAmbien
           (replaceBindingRuntimeBindings nameEq actor sourceNext sourceRegistry)
           (replaceBindingRuntimeBindings nameEq actor movedNext movedRegistry)
 
+0 beginReplacementComparisonFromChecked :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (sourceAmbient, movedAmbient : world) ->
+  (sourceRegistry, movedRegistry : Registry name key value world error) ->
+  (sourceAfter, movedAfter : SystemState name key value world error) ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} (LBegin actor)
+    (MkSystemState sourceAmbient sourceRegistry) =
+    Just (LBeginTag, sourceAfter)) ->
+  (movedChecked : checkedApplyAction @{nameEq} @{keyEq} (LBegin actor)
+    (MkSystemState movedAmbient movedRegistry) =
+    Just (LBeginTag, movedAfter)) ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor movedRegistry =
+    lookupFiber @{nameEq} actor sourceRegistry ->
+  ((fiber : Fiber name key value world error) ->
+    (view : View name
+      (dependencies (componentDependencies (fiberComponent fiber)))) ->
+    targetFiber @{nameEq} @{keyEq} fiber sourceRegistry = Just view ->
+    targetFiber @{nameEq} @{keyEq} fiber movedRegistry = Just view) ->
+  ActivationReplacementComparison nameEq actor
+    (MkSystemState sourceAmbient sourceRegistry) sourceAfter
+    (MkSystemState movedAmbient movedRegistry) movedAfter
+beginReplacementComparisonFromChecked nameEq keyEq actor sourceAmbient
+  movedAmbient sourceRegistry movedRegistry sourceAfter movedAfter sourceChecked
+  movedChecked lookupSame targetPreserved =
+    let sourceState : SystemState name key value world error
+        sourceState = MkSystemState sourceAmbient sourceRegistry
+        movedState : SystemState name key value world error
+        movedState = MkSystemState movedAmbient movedRegistry
+        0 sourceRaw : applyAction @{nameEq} @{keyEq} (LBegin actor) sourceState =
+          Just (LBeginTag, sourceAfter)
+        sourceRaw = checkedActionProjects nameEq keyEq (LBegin actor) sourceState
+          sourceAfter LBeginTag sourceChecked
+        0 movedRaw : applyAction @{nameEq} @{keyEq} (LBegin actor) movedState =
+          Just (LBeginTag, movedAfter)
+        movedRaw = checkedActionProjects nameEq keyEq (LBegin actor) movedState
+          movedAfter LBeginTag movedChecked
+    in case beginSourceOwnerNotActive nameEq keyEq actor
+      {before = sourceState} {afterState = sourceAfter} LBeginTag sourceChecked of
+      (sourceFiber ** (sourceFound, sourceInactive)) =>
+        case foreignBeginPlanView nameEq keyEq actor sourceAmbient sourceRegistry
+          sourceFiber sourceFound LBeginTag sourceAfter sourceRaw of
+          MkForeignBeginPlanView {component} {parent} {table} view ownerShape
+            sourceTarget sourceTagShape sourceAfterShape =>
+              case ownerShape of
+                Refl =>
+                  let exactFiber : Fiber name key value world error
+                      exactFiber = MkFiber component parent False table
+                        (Inactive Nothing)
+                      0 movedFound : lookupFiber @{nameEq} actor movedRegistry =
+                        Just exactFiber
+                      movedFound = trans lookupSame sourceFound
+                      0 movedTarget : targetFiber @{nameEq} @{keyEq} exactFiber
+                        movedRegistry = Just view
+                      movedTarget = targetPreserved exactFiber view sourceTarget
+                  in beginReplacementComparison nameEq keyEq actor sourceAmbient
+                    movedAmbient sourceRegistry movedRegistry component parent
+                    table view sourceAfter movedAfter sourceFound movedFound
+                    sourceTarget movedTarget sourceRaw movedRaw
+
 0 advanceReplacementComparisonFromAgreement :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
