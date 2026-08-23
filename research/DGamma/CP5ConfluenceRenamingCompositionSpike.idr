@@ -363,6 +363,47 @@ registrationSideScanFinalIndexUnique
       case trans (sym leftExact) rightExact of
         Refl => registrationSideScanFinalIndexUnique leftLater rightLater
 
+||| Checked synchronization capital for the shared middle trace of two scanner
+||| correspondences.  The asynchronous interleavings may differ, but their
+||| side projections make exactly the same surviving/deleted decision and
+||| therefore compute the same full registration index.
+record SharedMiddleRegistrationSynchronization
+  (nameEq : DecEq name)
+  {initial, leftFinal, middleFinal, rightFinal :
+    SystemState name key value world error}
+  (leftTrace : Transitions initial leftFinal)
+  (middleTrace : Transitions initial middleFinal)
+  (rightTrace : Transitions initial rightFinal)
+  (leftRenaming, rightRenaming : RegistrationGenerationBijection name)
+  (leftRegistrations : RegistrationCorrespondenceByGeneration nameEq
+    leftRenaming leftTrace middleTrace)
+  (rightRegistrations : RegistrationCorrespondenceByGeneration nameEq
+    rightRenaming middleTrace rightTrace) where
+  constructor MkSharedMiddleRegistrationSynchronization
+  middleAsRightScan : RegistrationSideScan nameEq 0
+    (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)
+    middleTrace (rightFinalIndex leftRegistrations)
+  middleAsLeftScan : RegistrationSideScan nameEq 0
+    (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)
+    middleTrace (leftFinalIndex rightRegistrations)
+  0 sharedMiddleFinalIndex : rightFinalIndex leftRegistrations =
+    leftFinalIndex rightRegistrations
+
+0 synchronizeMiddleRegistrationScanners :
+  (leftRegistrations : RegistrationCorrespondenceByGeneration nameEq
+    leftRenaming leftTrace middleTrace) ->
+  (rightRegistrations : RegistrationCorrespondenceByGeneration nameEq
+    rightRenaming middleTrace rightTrace) ->
+  SharedMiddleRegistrationSynchronization nameEq leftTrace middleTrace
+    rightTrace leftRenaming rightRenaming leftRegistrations rightRegistrations
+synchronizeMiddleRegistrationScanners leftRegistrations rightRegistrations =
+  let leftScan = rightRegistrationSideScan
+        (generationTraceCorrespondence leftRegistrations)
+      rightScan = leftRegistrationSideScan
+        (generationTraceCorrespondence rightRegistrations)
+  in MkSharedMiddleRegistrationSynchronization leftScan rightScan
+    (registrationSideScanFinalIndexUnique leftScan rightScan)
+
 ||| Generic vestigial transitivity remains useful algebra, now with the coupling
 ||| defect repaired.  It is not misrepresented as the one-trace canonicalization
 ||| bridge: that exact interface appears below.
