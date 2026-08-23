@@ -186,7 +186,7 @@ import re
 expected = {
     'CP5ConfluenceCanonicalSortSpike.idr': 6,
     'CP5ConfluenceCrossTraceSpike.idr': 4,
-    'CP5ConfluenceDeletionChainSpike.idr': 9,
+    'CP5ConfluenceDeletionChainSpike.idr': 8,
     'CP5ConfluenceLocalDiamondSpike.idr': 6,
     'CP5ConfluenceRenamingCompositionSpike.idr': 2,
 }
@@ -197,7 +197,7 @@ for filename, count in expected.items():
     actual[filename] = len(holes)
 if actual != expected:
     raise SystemExit(f'hole split mismatch: {actual}, expected {expected}')
-if sum(actual.values()) != 27:
+if sum(actual.values()) != 26:
     raise SystemExit(f'hole total mismatch: {sum(actual.values())}')
 
 plan = Path('THM73-PLAN.md').read_text()

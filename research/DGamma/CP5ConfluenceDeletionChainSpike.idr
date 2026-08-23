@@ -920,8 +920,9 @@ public export
     (survivingTrace result) ->
   TraceIndependent name key world error value keyEq original ->
   TraceIndependent name key world error value keyEq (survivingTrace result)
-traceIndependentAfterDeletionReplaySpike =
-  ?traceIndependentAfterDeletionReplaySpike_rhs
+traceIndependentAfterDeletionReplaySpike {keyEq} result correspondence
+  independent =
+    traceIndependentAfterRelationalReplaySpike keyEq correspondence independent
 
 ||| Complete O7→O8→O9 wrapper.  Each hard producer above can be elaborated and
 ||| re-estimated independently; this function contains no proof hole.
