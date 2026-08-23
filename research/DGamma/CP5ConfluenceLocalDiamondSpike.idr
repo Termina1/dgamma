@@ -2806,6 +2806,10 @@ public export
   (left : Transition first middle) ->
   (right : Transition middle originalFinal) ->
   (earlyRight : Transition first earlyRightFinal) ->
+  (0 sourceAligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  (0 earlyRightAligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions earlyRight NoTransitions)) ->
   transitionAction earlyRight = transitionAction right ->
   transitionTag earlyRight = transitionTag right ->
   PaperActivationStep left -> PaperActivationStep right ->
