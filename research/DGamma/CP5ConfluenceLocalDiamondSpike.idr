@@ -4878,6 +4878,8 @@ public export
   {first, middle, originalFinal : SystemState name key value world error} ->
   (left : Transition first middle) ->
   (right : Transition middle originalFinal) ->
+  (0 sourceAligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))) ->
   PaperActivationStep left -> PaperOrchestrationStep right ->
   Not (transitionActor left = transitionActor right) ->
   ((child, parent : name) ->
@@ -4903,6 +4905,10 @@ public export
   (left : Transition first middle) ->
   (right : Transition middle originalFinal) ->
   (earlyRight : Transition first earlyRightFinal) ->
+  (0 sourceAligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  (0 earlyRightAligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions earlyRight NoTransitions)) ->
   transitionAction earlyRight = transitionAction right ->
   transitionTag earlyRight = transitionTag right ->
   PaperOrchestrationStep left -> PaperActivationStep right ->
