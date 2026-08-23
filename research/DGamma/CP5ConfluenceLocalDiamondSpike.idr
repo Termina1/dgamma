@@ -9,6 +9,7 @@ import DGamma.CP3
 import DGamma.CP4DeletionFrameCore
 import DGamma.CP4DeletionFrames
 import DGamma.CP4DeletionRelationalBoundary
+import DGamma.CP4DeletionRelationalActionCore
 import DGamma.CP4DeletionSelectedForeignLifecycleCore
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorOpen
 import DGamma.CP4DeletionSelectedForeignLifecycleBegin
@@ -1141,6 +1142,44 @@ replaceEntriesDistinctCommute keyEq left right distinct leftNext rightNext
             cong (Bind current old ::)
               (replaceEntriesDistinctCommute keyEq left right distinct leftNext
                 rightNext rest)
+
+0 orderedControlsAfterDistinctReplacements :
+  (nameEq : DecEq name) -> (leftActor, rightActor : name) ->
+  Not (leftActor = rightActor) ->
+  (source, original, swapped :
+    List (Binding name (FiberAt name key value world error))) ->
+  (leftOriginal, leftMoved, rightOriginal, rightEarly :
+    Fiber name key value world error) ->
+  FiberControlRelated leftOriginal leftMoved ->
+  FiberControlRelated rightOriginal rightEarly ->
+  original = replaceEntries @{nameEq} rightActor rightOriginal
+    (replaceEntries @{nameEq} leftActor leftOriginal source) ->
+  swapped = replaceEntries @{nameEq} leftActor leftMoved
+    (replaceEntries @{nameEq} rightActor rightEarly source) ->
+  OrderedRegistryControlsRelated name key world error value original swapped
+orderedControlsAfterDistinctReplacements nameEq leftActor rightActor distinct
+  source original swapped leftOriginal leftMoved rightOriginal rightEarly
+  leftRelated rightRelated originalShape swappedShape =
+    let 0 sourceRelated = orderedControlsReflexive source
+        0 leftReplaced = orderedControlsReplace nameEq leftActor leftOriginal
+          leftMoved leftRelated source source sourceRelated
+        0 bothReplaced = orderedControlsReplace nameEq rightActor rightOriginal
+          rightEarly rightRelated
+          (replaceEntries @{nameEq} leftActor leftOriginal source)
+          (replaceEntries @{nameEq} leftActor leftMoved source) leftReplaced
+        0 swappedToCanonical = trans swappedShape
+          (replaceEntriesDistinctCommute nameEq leftActor rightActor distinct
+            leftMoved rightEarly source)
+        0 atOriginal = replace
+          {p = \entries => OrderedRegistryControlsRelated name key world error
+            value entries
+            (replaceEntries @{nameEq} rightActor rightEarly
+              (replaceEntries @{nameEq} leftActor leftMoved source))}
+          (sym originalShape) bothReplaced
+    in replace
+      {p = \entries => OrderedRegistryControlsRelated name key world error value
+        original entries}
+      (sym swappedToCanonical) atOriginal
 
 0 localPartialEffectRelatedTransitive :
   PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
