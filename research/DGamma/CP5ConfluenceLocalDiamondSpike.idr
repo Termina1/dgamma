@@ -3185,6 +3185,25 @@ localPartialEffectRelatedSymmetric (PartialDefined related) =
 localPartialMapsEquivalentSymmetric maps input =
   localPartialEffectRelatedSymmetric (maps input)
 
+0 successfulOutcomeAgreementUndoMaps :
+  (movedOutcome, sourceOutcome :
+    Maybe (IteratorStageOutcome name key value world error)) ->
+  (movedAfter, sourceAfter : EffectState name key value world) ->
+  (movedUndo, sourceUndo : PartialEffectMap name key value world) ->
+  (movedContinuation, sourceContinuation :
+    IteratorContinuation key value world error) ->
+  movedOutcome = Just (IteratorYielded movedAfter movedUndo movedContinuation) ->
+  sourceOutcome = Just
+    (IteratorYielded sourceAfter sourceUndo sourceContinuation) ->
+  IteratorOutcomeAgreement name key value world error keyEq movedOutcome
+    sourceOutcome ->
+  PartialMapsEquivalent (EffectStateEquivalence keyEq) movedUndo sourceUndo
+successfulOutcomeAgreementUndoMaps
+  (Just (IteratorYielded movedAfter movedUndo movedContinuation))
+  (Just (IteratorYielded sourceAfter sourceUndo sourceContinuation))
+  movedAfter sourceAfter movedUndo sourceUndo movedContinuation sourceContinuation
+  Refl Refl (IteratorSuccessfulYieldsAgree continuationSame undoMaps) = undoMaps
+
 0 pushedAccumulatorRelatedFromMovedUndoMaps :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
   (provision : CoeffectSpec key) ->
