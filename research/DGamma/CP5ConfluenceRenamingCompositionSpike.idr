@@ -404,6 +404,35 @@ synchronizeMiddleRegistrationScanners leftRegistrations rightRegistrations =
   in MkSharedMiddleRegistrationSynchronization leftScan rightScan
     (registrationSideScanFinalIndexUnique leftScan rightScan)
 
+0 sharedMiddleLiveGenerationsSame :
+  (synchronization : SharedMiddleRegistrationSynchronization nameEq leftTrace
+    middleTrace rightTrace leftRenaming rightRenaming leftRegistrations
+    rightRegistrations) ->
+  rightFinalGenerations leftRegistrations =
+    leftFinalGenerations rightRegistrations
+sharedMiddleLiveGenerationsSame synchronization =
+  cong indexedLiveGenerations (sharedMiddleFinalIndex synchronization)
+
+0 sharedMiddleDeletedGenerationsSame :
+  (synchronization : SharedMiddleRegistrationSynchronization nameEq leftTrace
+    middleTrace rightTrace leftRenaming rightRenaming leftRegistrations
+    rightRegistrations) ->
+  rightDeletedGenerations leftRegistrations =
+    leftDeletedGenerations rightRegistrations
+sharedMiddleDeletedGenerationsSame synchronization =
+  cong indexedDeletedGenerations (sharedMiddleFinalIndex synchronization)
+
+0 retargetVestigialEndpointIndex :
+  {fromIndex, toIndex : RegistrationIndexState name} ->
+  fromIndex = toIndex ->
+  VestigialEndpointGeneration name key world error value nameEq keyEq
+    (indexedLiveGenerations fromIndex) (indexedDeletedGenerations fromIndex)
+    selected state ->
+  VestigialEndpointGeneration name key world error value nameEq keyEq
+    (indexedLiveGenerations toIndex) (indexedDeletedGenerations toIndex)
+    selected state
+retargetVestigialEndpointIndex Refl vestigial = vestigial
+
 ||| Generic vestigial transitivity remains useful algebra, now with the coupling
 ||| defect repaired.  It is not misrepresented as the one-trace canonicalization
 ||| bridge: that exact interface appears below.
