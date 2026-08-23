@@ -15,6 +15,7 @@ import DGamma.CP4RecoveryEffectRespect
 import DGamma.CP4Support
 import Data.Nat
 import Data.Maybe
+import Data.List.Elem
 import Decidable.Equality
 
 %default total
@@ -1376,6 +1377,155 @@ activationSourceOwnerNotActive nameEq keyEq action tag checked
     case actionSame of
       Refl => advanceSourceOwnerNotActive nameEq keyEq _ tag checked
 
+0 valueFromProviderLookupMember :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provider : name) -> (wanted : key) ->
+  (fibers : Registry name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} provider fibers = Just fiber ->
+  isJust (valueFromProvider @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} provider wanted fibers) = True ->
+  memberKey @{keyEq} {value = value} wanted
+    (ownedValues (fiberTable fiber)) = True
+valueFromProviderLookupMember nameEq keyEq provider wanted
+  (MkCoeffectContext entries unique) fiber found present
+  with (lookupEntries @{nameEq} provider entries) proof observed
+  valueFromProviderLookupMember nameEq keyEq provider wanted
+    (MkCoeffectContext entries unique) fiber found present | Nothing =
+      case found of Refl impossible
+  valueFromProviderLookupMember nameEq keyEq provider wanted
+    (MkCoeffectContext entries unique) fiber found present | Just observedFiber =
+      case justInjective found of
+        Refl => present
+
+0 providerOfStableAfterForeignActivation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (provider : name) ->
+  {before, afterState : SystemState name key value world error} ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (activation : PaperActivationStep
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked)) ->
+  providerOf @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} wanted (registry before) = Just provider ->
+  registryWellFormed @{nameEq} @{keyEq} afterState = True ->
+  providerOf @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} wanted (registry afterState) = Just provider
+providerOfStableAfterForeignActivation {name} {key} {world} {error} {value}
+  nameEq keyEq wanted provider {before} {afterState} action tag checked
+  activation sourceProvider afterWellFormed =
+    case activationSourceOwnerNotActive nameEq keyEq action tag checked
+      activation of
+      (ownerFiber ** (ownerFound, ownerInactive)) =>
+        let sourceSound = providerOfSound {name = name} {key = key}
+              {world = world} {error = error} {value = value} nameEq keyEq wanted
+              provider (registry before) sourceProvider
+            0 providerFiber : Fiber name key value world error
+            providerFiber = providerOfFiber sourceSound
+            0 providerFound : (lookupFiber @{nameEq} provider (registry before) =
+              Just providerFiber)
+            providerFound = providerOfLookup sourceSound
+            0 providerActive : (isActive (fiberLifecycle providerFiber) = True)
+            providerActive = providerOfActive sourceSound
+            0 providerMember : (memberKey @{keyEq} wanted
+              (ownedValues (fiberTable providerFiber)) = True)
+            providerMember = valueFromProviderLookupMember nameEq keyEq
+              provider wanted (registry before) providerFiber providerFound
+              (providerOfValue sourceSound)
+            0 providerCandidateSource : (providerCandidate @{keyEq}
+              {value = value} {world = world} {error = error} wanted providerFiber =
+              True)
+            providerCandidateSource = rewrite providerActive in
+              rewrite providerMember in Refl
+            0 providerDistinct : Not (provider = actionOwner action)
+            providerDistinct same =
+              let 0 ownerFoundAtProvider : (lookupFiber @{nameEq} provider
+                    (registry before) = Just ownerFiber)
+                  ownerFoundAtProvider = replace
+                    {p = \candidate => lookupFiber @{nameEq} candidate
+                      (registry before) = Just ownerFiber}
+                    (sym same) ownerFound
+                  fiberSame : providerFiber = ownerFiber
+                  fiberSame = justInjective
+                    (trans (sym providerFound) ownerFoundAtProvider)
+                  0 providerInactive : (isActive (fiberLifecycle providerFiber) =
+                    False)
+                  providerInactive = replace
+                    {p = \fiber => isActive (fiberLifecycle fiber) = False}
+                    (sym fiberSame) ownerInactive
+              in case trans (sym providerActive) providerInactive of Refl impossible
+            0 raw : (applyAction @{nameEq} @{keyEq} action before =
+              Just (tag, afterState))
+            raw = checkedActionProjects nameEq keyEq action before afterState
+              tag checked
+            0 update : SystemLocalUpdate name key world error value nameEq
+              (actionOwner action) before afterState
+            update = applyActionLocalUpdate nameEq keyEq action before
+              afterState tag raw
+            0 targetProviderFound : (lookupFiber @{nameEq} provider
+              (registry afterState) = Just providerFiber)
+            targetProviderFound = trans
+              (systemLocalUpdateForeign nameEq provider (actionOwner action)
+                providerDistinct before afterState update)
+              providerFound
+            0 pairwise : (pairwiseProvisionInvariant @{keyEq} {value = value}
+              {world = world} {error = error}
+              (bindings (registry afterState)) = True)
+            pairwise = registryWellFormedPairwiseOpenAnchor nameEq keyEq
+              afterState afterWellFormed
+            0 providerEntry : (Elem (Bind provider providerFiber)
+              (bindings (registry afterState)))
+            providerEntry = lookupEntryElemOpenAnchor nameEq provider
+              (bindings (registry afterState)) providerFiber
+              (lookupFiberEntries nameEq provider providerFiber
+                (registry afterState) targetProviderFound)
+            0 providerDeclares : (Elem wanted (dependencies
+              (componentProvisions (fiberComponent providerFiber))))
+            providerDeclares = ownedSound (fiberTable providerFiber) wanted
+              (memberKeyTrueElemOpenAnchor keyEq wanted
+                (ownedValues (fiberTable providerFiber)) providerMember)
+        in case providerInCandidateExists nameEq keyEq wanted provider providerFiber
+          (bindings (registry afterState))
+          (lookupFiberEntries nameEq provider providerFiber
+            (registry afterState) targetProviderFound)
+          providerCandidateSource of
+          (chosen ** chosenFound) =>
+            let chosenSound = providerOfSound {name = name} {key = key}
+                  {world = world} {error = error} {value = value} nameEq keyEq wanted
+                  chosen (registry afterState) chosenFound
+                0 chosenFiber : Fiber name key value world error
+                chosenFiber = providerOfFiber chosenSound
+                0 chosenFoundInRegistry : (lookupFiber @{nameEq} chosen
+                  (registry afterState) = Just chosenFiber)
+                chosenFoundInRegistry = providerOfLookup chosenSound
+                0 chosenEntry : (Elem (Bind chosen chosenFiber)
+                  (bindings (registry afterState)))
+                chosenEntry = lookupEntryElemOpenAnchor nameEq chosen
+                  (bindings (registry afterState)) chosenFiber
+                  (lookupFiberEntries nameEq chosen chosenFiber
+                    (registry afterState) chosenFoundInRegistry)
+                0 chosenMember : (memberKey @{keyEq} wanted
+                  (ownedValues (fiberTable chosenFiber)) = True)
+                chosenMember = valueFromProviderLookupMember nameEq keyEq
+                  chosen wanted (registry afterState) chosenFiber
+                  chosenFoundInRegistry (providerOfValue chosenSound)
+                0 chosenDeclares : (Elem wanted (dependencies
+                  (componentProvisions (fiberComponent chosenFiber))))
+                chosenDeclares = ownedSound (fiberTable chosenFiber) wanted
+                  (memberKeyTrueElemOpenAnchor keyEq wanted
+                    (ownedValues (fiberTable chosenFiber)) chosenMember)
+                0 chosenSame : (chosen = provider)
+                chosenSame = pairwiseSharedProvisionSameName keyEq
+                  (bindings (registry afterState)) pairwise chosen provider
+                  chosenFiber providerFiber chosenEntry providerEntry wanted
+                  chosenDeclares providerDeclares
+            in trans chosenFound (cong Just chosenSame)
+    
 0 advanceTransitionMapOriginCong :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
