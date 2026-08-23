@@ -6,6 +6,8 @@ import DGamma.Metatheory
 import DGamma.Core
 import DGamma.Unified
 import DGamma.CP3
+import DGamma.CP4DeletionFrameCore
+import DGamma.CP4DeletionFrames
 import DGamma.CP4DeletionRelationalBoundary
 import DGamma.CP4RecoveryEffectRespect
 import DGamma.CP4Support
@@ -1155,6 +1157,20 @@ commuteEffectFrames keyEq leftMap rightMap leftRespects rightRespects commute
               swappedToMoved))
     in MkCommutedEffectOutput (relatedMapOutput leftAtEarlyMiddle)
       (relatedMapRuns leftAtEarlyMiddle) originalToMoved
+
+0 checkedEffectFrameRelation :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    (partialEffectMapFor nameEq keyEq action tag before
+      (projectEffectState @{nameEq} before))
+    (Just (projectEffectState @{nameEq} afterState))
+checkedEffectFrameRelation nameEq keyEq action tag before afterState checked =
+  case actualTransitionEffectFrame nameEq keyEq action tag before afterState
+    checked of
+      MkActualEffectFrame related => related
 
 0 advanceRuntimeEffectMapOriginLookupCong :
   {name, key, world, error : Type} -> {value : key -> Type} ->
