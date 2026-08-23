@@ -1482,6 +1482,79 @@ acceptedComposedRegistrationPairing leftRegistrations rightRegistrations =
                     (matchingPlanPairing leftPlanFold)
                     (matchingPlanPairing rightPlanFold))
 
+0 pendingChronologyEmptyIsReverse :
+  (pending : List event) -> pendingChronology pending [] = reverse pending
+pendingChronologyEmptyIsReverse pending =
+  trans (sym (reverseInvolutive (pendingChronology pending [])))
+    (cong reverse (reversePendingChronology pending []))
+
+0 pendingChronologyFromReversed :
+  (chronological, pending : List event) ->
+  reverse chronological = pending ->
+  pendingChronology pending [] = chronological
+pendingChronologyFromReversed chronological pending reversed =
+  trans (pendingChronologyEmptyIsReverse pending)
+    (trans (cong reverse (sym reversed))
+      (reverseInvolutive chronological))
+
+0 pendingChronologyEmptyForcesPendingEmpty :
+  (pending : List event) -> pendingChronology pending [] = [] -> pending = []
+pendingChronologyEmptyForcesPendingEmpty pending chronologicalEmpty =
+  trans (sym (reversePendingChronology pending []))
+    (cong reverse chronologicalEmpty)
+
+0 synthesizeRightRegistrationScanner :
+  {leftOrdinal : Nat} -> {leftIndex : RegistrationIndexState name} ->
+  {pendingLeft : List (RegistrationEvent name key world error value)} ->
+  {rightOrdinal : Nat} -> {rightIndex, rightResultIndex :
+    RegistrationIndexState name} ->
+  {rightFirst, rightFinal : SystemState name key value world error} ->
+  {right : Transitions rightFirst rightFinal} ->
+  {rightScan : RegistrationSideScan nameEq rightOrdinal rightIndex right
+    rightResultIndex} ->
+  {rightEvents : List (RegistrationEvent name key world error value)} ->
+  RegistrationSideEventFold rightScan rightEvents ->
+  RegistrationPairing renaming (pendingChronology pendingLeft []) rightEvents ->
+  RegistrationTraceCorrespondence nameEq renaming
+    leftOrdinal leftIndex NoTransitions leftIndex
+    rightOrdinal rightIndex right rightResultIndex pendingLeft []
+synthesizeRightRegistrationScanner {pendingLeft}
+  RegistrationSideEventFoldEnd pairing =
+  case pairingRightEmptyForcesLeftEmpty pairing of
+    chronologicalEmpty =>
+      case pendingChronologyEmptyForcesPendingEmpty pendingLeft
+        chronologicalEmpty of
+        Refl => RegistrationCorrespondenceEnd
+synthesizeRightRegistrationScanner
+  (RegistrationSideEventFoldNonRegistration action transition rest actionExact
+    notRegistration laterFold) pairing =
+      SkipRightNonRegistration action transition rest actionExact
+        notRegistration
+        (synthesizeRightRegistrationScanner laterFold pairing)
+synthesizeRightRegistrationScanner
+  (RegistrationSideEventFoldDeleted transition rest actionExact deleted
+    laterFold) pairing =
+      DiscardRightDeletedRegistration transition rest actionExact deleted
+        (synthesizeRightRegistrationScanner laterFold pairing)
+synthesizeRightRegistrationScanner {pendingLeft}
+  (RegistrationSideEventFoldSurviving transition rest actionExact surviving
+    laterFold) pairing =
+      case extractPairingRight pairing RemoveListHere of
+        MkPairingRightExtraction leftEvent chronologicalRemainder matched
+          leftRemoval laterPairing =>
+            case pendingRemovalDecomposition {pending = pendingLeft}
+              leftRemoval of
+              MkPendingRemovalDecomposition before after pendingSplit
+                remainderSplit =>
+                  case pendingSplit of
+                    Refl =>
+                      case pendingChronologyFromReversed chronologicalRemainder
+                        (before ++ after) remainderSplit of
+                        Refl => MatchRightWithPendingLeft transition rest
+                          actionExact surviving before leftEvent after matched
+                          (synthesizeRightRegistrationScanner laterFold
+                            laterPairing)
+
 0 retargetVestigialEndpointIndex :
   {fromIndex, toIndex : RegistrationIndexState name} ->
   fromIndex = toIndex ->
