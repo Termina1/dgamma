@@ -701,6 +701,137 @@ matchingPlanRightEvents
 acceptedFiniteRegistrationMatchingPlan registrations =
   finiteRegistrationMatchingPlan (generationTraceCorrespondence registrations)
 
+||| Structural event folds avoid relying on reduction of nested dependent
+||| projections.  Both folds expose the exact event list while retaining the
+||| producer-built plan/scan value that authorized each event.
+data MatchingPlanEventFold :
+  {renaming : RegistrationGenerationBijection name} ->
+  {pendingLeft, pendingRight :
+    List (RegistrationEvent name key world error value)} ->
+  FiniteRegistrationMatchingPlan renaming pendingLeft pendingRight ->
+  List (RegistrationEvent name key world error value) ->
+  List (RegistrationEvent name key world error value) -> Type where
+  MatchingPlanEventFoldEnd :
+    MatchingPlanEventFold FiniteRegistrationMatchingEnd [] []
+  MatchingPlanEventFoldQueueLeft :
+    (event : RegistrationEvent name key world error value) ->
+    {pendingLeft, pendingRight :
+      List (RegistrationEvent name key world error value)} ->
+    {later : FiniteRegistrationMatchingPlan renaming
+      (event :: pendingLeft) pendingRight} ->
+    MatchingPlanEventFold later leftEvents rightEvents ->
+    MatchingPlanEventFold
+      (FiniteRegistrationMatchingQueueLeft event later)
+      (event :: leftEvents) rightEvents
+  MatchingPlanEventFoldQueueRight :
+    (event : RegistrationEvent name key world error value) ->
+    {pendingLeft, pendingRight :
+      List (RegistrationEvent name key world error value)} ->
+    {later : FiniteRegistrationMatchingPlan renaming pendingLeft
+      (event :: pendingRight)} ->
+    MatchingPlanEventFold later leftEvents rightEvents ->
+    MatchingPlanEventFold
+      (FiniteRegistrationMatchingQueueRight event later)
+      leftEvents (event :: rightEvents)
+  MatchingPlanEventFoldMatchLeft :
+    (leftEvent : RegistrationEvent name key world error value) ->
+    (rightPrefix : List (RegistrationEvent name key world error value)) ->
+    (rightEvent : RegistrationEvent name key world error value) ->
+    (rightSuffix : List (RegistrationEvent name key world error value)) ->
+    (matched : RegistrationEventMatch renaming leftEvent rightEvent) ->
+    {pendingLeft : List (RegistrationEvent name key world error value)} ->
+    {later : FiniteRegistrationMatchingPlan renaming pendingLeft
+      (rightPrefix ++ rightSuffix)} ->
+    MatchingPlanEventFold later leftEvents rightEvents ->
+    MatchingPlanEventFold
+      (FiniteRegistrationMatchingMatchLeft leftEvent rightPrefix rightEvent
+        rightSuffix matched later)
+      (leftEvent :: leftEvents) rightEvents
+  MatchingPlanEventFoldMatchRight :
+    (rightEvent : RegistrationEvent name key world error value) ->
+    (leftPrefix : List (RegistrationEvent name key world error value)) ->
+    (leftEvent : RegistrationEvent name key world error value) ->
+    (leftSuffix : List (RegistrationEvent name key world error value)) ->
+    (matched : RegistrationEventMatch renaming leftEvent rightEvent) ->
+    {pendingRight : List (RegistrationEvent name key world error value)} ->
+    {later : FiniteRegistrationMatchingPlan renaming
+      (leftPrefix ++ leftSuffix) pendingRight} ->
+    MatchingPlanEventFold later leftEvents rightEvents ->
+    MatchingPlanEventFold
+      (FiniteRegistrationMatchingMatchRight rightEvent leftPrefix leftEvent
+        leftSuffix matched later)
+      leftEvents (rightEvent :: rightEvents)
+
+data RegistrationSideEventFold :
+  {nameEq : DecEq name} ->
+  {ordinal : Nat} -> {index : RegistrationIndexState name} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  {finalIndex : RegistrationIndexState name} ->
+  RegistrationSideScan nameEq ordinal index trace finalIndex ->
+  List (RegistrationEvent name key world error value) -> Type where
+  RegistrationSideEventFoldEnd :
+    RegistrationSideEventFold RegistrationSideScanEnd []
+  RegistrationSideEventFoldNonRegistration :
+    {ordinal : Nat} ->
+    {index, finalIndex : RegistrationIndexState name} ->
+    {events : List (RegistrationEvent name key world error value)} ->
+    (action : Action name key value world error) ->
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    (actionExact : transitionAction transition = action) ->
+    (notRegistration : isGeneratedRegistrationAction action = False) ->
+    {later : RegistrationSideScan nameEq (S ordinal)
+      (advanceRegistrationIndex @{nameEq} ordinal action index)
+      rest finalIndex} ->
+    RegistrationSideEventFold later events ->
+    RegistrationSideEventFold
+      (RegistrationSideScanNonRegistration {ordinal = ordinal} {index = index}
+        action transition rest actionExact notRegistration later) events
+  RegistrationSideEventFoldDeleted :
+    {ordinal : Nat} ->
+    {index, finalIndex : RegistrationIndexState name} ->
+    {child, parent : name} ->
+    {component : Component key value world error} ->
+    {events : List (RegistrationEvent name key world error value)} ->
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    (actionExact : transitionAction transition =
+      OInsert child (ChildOf parent) component) ->
+    (deleted : DeletedClosingRegistration
+      (registrationEventAt @{nameEq} ordinal index child parent component)
+      rest) ->
+    {later : RegistrationSideScan nameEq (S ordinal)
+      (advanceDeletedRegistrationIndex @{nameEq} ordinal child parent component
+        index) rest finalIndex} ->
+    RegistrationSideEventFold later events ->
+    RegistrationSideEventFold
+      (RegistrationSideScanDeleted {ordinal = ordinal} {index = index}
+        transition rest actionExact deleted later)
+      events
+  RegistrationSideEventFoldSurviving :
+    {ordinal : Nat} ->
+    {index, finalIndex : RegistrationIndexState name} ->
+    {child, parent : name} ->
+    {component : Component key value world error} ->
+    {events : List (RegistrationEvent name key world error value)} ->
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    (actionExact : transitionAction transition =
+      OInsert child (ChildOf parent) component) ->
+    (surviving : SurvivingRegistration
+      (registrationEventAt @{nameEq} ordinal index child parent component)
+      rest) ->
+    {later : RegistrationSideScan nameEq (S ordinal)
+      (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent
+        component index) rest finalIndex} ->
+    RegistrationSideEventFold later events ->
+    RegistrationSideEventFold
+      (RegistrationSideScanSurviving {ordinal = ordinal} {index = index}
+        transition rest actionExact surviving later)
+      (registrationEventAt @{nameEq} ordinal index child parent component ::
+        events)
+
 ||| Checked synchronization capital for the shared middle trace of two scanner
 ||| correspondences.  The asynchronous interleavings may differ, but their
 ||| side projections make exactly the same surviving/deleted decision and
