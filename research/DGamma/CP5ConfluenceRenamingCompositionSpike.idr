@@ -1145,9 +1145,9 @@ registrationSideEventFoldExact
     case registrationSideEventFoldExact laterFold of Refl => Refl
 
 0 alignedSideFoldEventsSame :
-  {leftScan : RegistrationSideScan nameEq ordinal index trace leftFinalIndex} ->
+  {leftScan : RegistrationSideScan nameEq ordinal index trace leftResultIndex} ->
   {rightScan : RegistrationSideScan nameEq ordinal index trace
-    rightFinalIndex} ->
+    rightResultIndex} ->
   {leftEvents, rightEvents :
     List (RegistrationEvent name key world error value)} ->
   RegistrationSideEventFold leftScan leftEvents ->
