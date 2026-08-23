@@ -2204,6 +2204,63 @@ successfulOutcomeAgreementUndoMaps
   movedAfter sourceAfter movedUndo sourceUndo movedContinuation sourceContinuation
   Refl Refl (IteratorSuccessfulYieldsAgree continuationSame undoMaps) = undoMaps
 
+0 paperAdvanceTargetAtKnownFiber :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  {afterState : SystemState name key value world error} ->
+  (tag : RuleTag) ->
+  (raw : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState ambient fibers) = Just (tag, afterState)) ->
+  Either (tag = LIterTag) (tag = LFinishTag) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  lookupFiber @{nameEq} actor fibers = Just
+    (MkFiber component parent retiredFlag table
+      (Reloading remaining accumulator view)) ->
+  targetFiber @{nameEq} @{keyEq}
+    (MkFiber component parent retiredFlag table
+      (Reloading remaining accumulator view)) fibers = Just view
+paperAdvanceTargetAtKnownFiber nameEq keyEq actor ambient fibers {afterState} tag
+  raw paperTag component parent retiredFlag table remaining accumulator view found =
+    case paperAdvanceSource nameEq keyEq actor
+      {before = MkSystemState ambient fibers} {afterState} tag raw paperTag of
+      AdvanceSourceFinishEmpty {ambient = observedAmbient}
+        {fibers = observedFibers} {component = observedComponent}
+        {parent = observedParent} {retiredFlag = observedRetired}
+        {table = observedTable} {accumulator = observedAccumulator}
+        {view = observedView} sourceShape observedFound observedTarget =>
+          case sourceShape of
+            Refl =>
+              let 0 fiberSame = justInjective (trans (sym found) observedFound)
+              in case fiberSame of Refl => observedTarget
+      AdvanceSourceFinishOne {ambient = observedAmbient}
+        {fibers = observedFibers} {component = observedComponent}
+        {parent = observedParent} {retiredFlag = observedRetired}
+        {table = observedTable} {step = observedStep}
+        {accumulator = observedAccumulator} {view = observedView}
+        sourceShape observedFound observedTarget =>
+          case sourceShape of
+            Refl =>
+              let 0 fiberSame = justInjective (trans (sym found) observedFound)
+              in case fiberSame of Refl => observedTarget
+      AdvanceSourceIter {ambient = observedAmbient} {fibers = observedFibers}
+        {component = observedComponent} {parent = observedParent}
+        {retiredFlag = observedRetired} {table = observedTable}
+        {step = observedStep} {next = observedNext} {more = observedMore}
+        {accumulator = observedAccumulator} {view = observedView}
+        sourceShape observedFound observedTarget =>
+          case sourceShape of
+            Refl =>
+              let 0 fiberSame = justInjective (trans (sym found) observedFound)
+              in case fiberSame of Refl => observedTarget
+
 record PairedAdvanceYield
   (nameEq : DecEq name) (keyEq : DecEq key) (actor : name)
   (component : Component key value world error)
