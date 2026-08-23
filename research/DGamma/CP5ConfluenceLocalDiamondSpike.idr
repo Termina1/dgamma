@@ -1125,6 +1125,35 @@ activationTransitionMapOriginCong nameEq keyEq action tag checked
         Refl => advanceTransitionMapOriginCong nameEq keyEq _ LFinishTag checked
           lookupSame state
 
+0 activationMapStableAfterForeignTransition :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, activationAfter, foreignAfter :
+    SystemState name key value world error} ->
+  (activationAction, foreignAction : Action name key value world error) ->
+  (activationTag, foreignTag : RuleTag) ->
+  (activationChecked : checkedApplyAction @{nameEq} @{keyEq} activationAction
+    first = Just (activationTag, activationAfter)) ->
+  (foreignChecked : checkedApplyAction @{nameEq} @{keyEq} foreignAction first =
+    Just (foreignTag, foreignAfter)) ->
+  PaperActivationStep
+    (Fired {before = first} {afterState = activationAfter}
+      nameEq keyEq activationAction activationTag activationChecked) ->
+  Not (actionOwner activationAction = actionOwner foreignAction) ->
+  (state : EffectState name key value world) ->
+  partialEffectMap
+    (Fired {before = first} {afterState = activationAfter}
+      nameEq keyEq activationAction activationTag activationChecked) state =
+  partialEffectMapFor nameEq keyEq activationAction activationTag foreignAfter
+    state
+activationMapStableAfterForeignTransition nameEq keyEq activationAction
+  foreignAction activationTag foreignTag activationChecked foreignChecked
+  activation distinct state =
+    activationTransitionMapOriginCong nameEq keyEq activationAction activationTag
+      activationChecked activation
+      (sym (transitionForeignLookup nameEq keyEq (actionOwner activationAction)
+        foreignAction foreignTag foreignChecked distinct)) state
+
 ||| Candidate for paper Lemma 71(1).
 public export
 0 activationActivationDiamondSpike :
