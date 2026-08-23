@@ -1616,6 +1616,36 @@ localViewEqRefl nameEq (ProviderView provider rest)
   localViewEqRefl nameEq (ProviderView provider rest) | No contra =
     void (contra Refl)
 
+0 localViewEqTrueEqual : (nameEq : DecEq name) ->
+  (left, right : View name deps) -> viewEq @{nameEq} left right = True ->
+  left = right
+localViewEqTrueEqual nameEq EmptyView EmptyView valid = Refl
+localViewEqTrueEqual nameEq (ProviderView left leftRest)
+  (ProviderView right rightRest) valid with (decEq @{nameEq} left right)
+  localViewEqTrueEqual nameEq (ProviderView right leftRest)
+    (ProviderView right rightRest) valid | Yes Refl =
+      cong (ProviderView right)
+        (localViewEqTrueEqual nameEq leftRest rightRest valid)
+  localViewEqTrueEqual nameEq (ProviderView left leftRest)
+    (ProviderView right rightRest) valid | No distinct =
+      case valid of Refl impossible
+
+0 targetMatchesExact : (nameEq : DecEq name) ->
+  (candidate : Maybe (View name deps)) -> (view : View name deps) ->
+  targetMatches @{nameEq} candidate view = True -> candidate = Just view
+targetMatchesExact nameEq Nothing view matches = case matches of Refl impossible
+targetMatchesExact nameEq (Just target) view matches =
+  cong Just (localViewEqTrueEqual nameEq target view matches)
+
+record RawActivationMove
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (action : Action name key value world error) (tag : RuleTag)
+  (before : SystemState name key value world error) where
+  constructor MkRawActivationMove
+  rawActivationAfter : SystemState name key value world error
+  0 rawActivationRuns : applyAction @{nameEq} @{keyEq} action before =
+    Just (tag, rawActivationAfter)
+
 0 advanceTransitionMapOriginCong :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
