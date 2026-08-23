@@ -415,18 +415,18 @@ inside a proof-phase band.
 
 ## 15. Release boundary
 
-External round-11 review must verify only tracked HEAD artifacts:
+External round-12 review must verify only tracked HEAD artifacts:
 
 - O6 classifier/region laws and malicious-prefix modules;
 - O9 executable subsequence fold/certificate and filler/direct-clone modules;
 - honest repackager names/comments with no fixture claim;
 - exact 53-module runner coverage and module-specific diagnostics;
 - generated-only, tree-only, producer-assembly, and bridge-generation tests;
-- exact current hole reverse map and 148–257 original-budget arithmetic;
+- exact current hole reverse map and 148–249 total / 139–240 implementation-remaining arithmetic;
 - all five spikes and every tracked test serially;
 - exact CP3 blob and empty `src/`/package diff;
 - research isolation and empty escape scans;
 - seeded exact 207/207 build and best-effort unseeded result; and
 - no tracked/staged changes.
 
-Theorem 73 remains unproved by design after revision 11.
+Theorem 73 remains unproved by design after revision 12.
