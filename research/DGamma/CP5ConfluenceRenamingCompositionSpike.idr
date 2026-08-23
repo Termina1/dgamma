@@ -363,6 +363,108 @@ registrationSideScanFinalIndexUnique
       case trans (sym leftExact) rightExact of
         Refl => registrationSideScanFinalIndexUnique leftLater rightLater
 
+0 registrationSideSurvivingEvents :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  {ordinal : Nat} -> {index, finalIndex : RegistrationIndexState name} ->
+  RegistrationSideScan nameEq ordinal index trace finalIndex ->
+  List (RegistrationEvent name key world error value)
+registrationSideSurvivingEvents RegistrationSideScanEnd = []
+registrationSideSurvivingEvents
+  (RegistrationSideScanNonRegistration _ _ _ _ _ later) =
+    registrationSideSurvivingEvents later
+registrationSideSurvivingEvents
+  (RegistrationSideScanDeleted _ _ _ _ later) =
+    registrationSideSurvivingEvents later
+registrationSideSurvivingEvents {ordinal} {index}
+  (RegistrationSideScanSurviving {child} {parent} {component}
+    transition rest actionExact surviving later) =
+      registrationEventAt @{nameEq} ordinal index child parent component ::
+        registrationSideSurvivingEvents later
+
+0 registrationSideSurvivingEventsUnique :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  {ordinal : Nat} -> {index : RegistrationIndexState name} ->
+  {leftResult, rightResult : RegistrationIndexState name} ->
+  (leftScan : RegistrationSideScan nameEq ordinal index trace leftResult) ->
+  (rightScan : RegistrationSideScan nameEq ordinal index trace rightResult) ->
+  registrationSideSurvivingEvents leftScan =
+    registrationSideSurvivingEvents rightScan
+registrationSideSurvivingEventsUnique RegistrationSideScanEnd
+  RegistrationSideScanEnd = Refl
+registrationSideSurvivingEventsUnique
+  (RegistrationSideScanNonRegistration leftAction transition rest leftExact
+    leftNotRegistration leftLater)
+  (RegistrationSideScanNonRegistration rightAction transition rest rightExact
+    rightNotRegistration rightLater) =
+      case trans (sym leftExact) rightExact of
+        Refl => registrationSideSurvivingEventsUnique leftLater rightLater
+registrationSideSurvivingEventsUnique
+  (RegistrationSideScanNonRegistration action transition rest actionExact
+    notRegistration later)
+  (RegistrationSideScanDeleted transition rest generatedExact deleted
+    rightLater) =
+      void (nonRegistrationCannotBeGenerated actionExact notRegistration
+        generatedExact)
+registrationSideSurvivingEventsUnique
+  (RegistrationSideScanNonRegistration action transition rest actionExact
+    notRegistration later)
+  (RegistrationSideScanSurviving transition rest generatedExact surviving
+    rightLater) =
+      void (nonRegistrationCannotBeGenerated actionExact notRegistration
+        generatedExact)
+registrationSideSurvivingEventsUnique
+  (RegistrationSideScanDeleted transition rest generatedExact deleted leftLater)
+  (RegistrationSideScanNonRegistration action transition rest actionExact
+    notRegistration rightLater) =
+      void (nonRegistrationCannotBeGenerated actionExact notRegistration
+        generatedExact)
+registrationSideSurvivingEventsUnique
+  (RegistrationSideScanSurviving transition rest generatedExact surviving
+    leftLater)
+  (RegistrationSideScanNonRegistration action transition rest actionExact
+    notRegistration rightLater) =
+      void (nonRegistrationCannotBeGenerated actionExact notRegistration
+        generatedExact)
+registrationSideSurvivingEventsUnique
+  (RegistrationSideScanDeleted transition rest leftExact leftDeleted leftLater)
+  (RegistrationSideScanDeleted transition rest rightExact rightDeleted
+    rightLater) =
+      case trans (sym leftExact) rightExact of
+        Refl => registrationSideSurvivingEventsUnique leftLater rightLater
+registrationSideSurvivingEventsUnique
+  (RegistrationSideScanDeleted transition rest leftExact leftDeleted leftLater)
+  (RegistrationSideScanSurviving transition rest rightExact rightSurviving
+    rightLater) =
+      case trans (sym leftExact) rightExact of
+        Refl => void (survivingDeletedRegistrationImpossible rightSurviving
+          leftDeleted)
+registrationSideSurvivingEventsUnique
+  (RegistrationSideScanSurviving transition rest leftExact leftSurviving
+    leftLater)
+  (RegistrationSideScanDeleted transition rest rightExact rightDeleted
+    rightLater) =
+      case trans (sym leftExact) rightExact of
+        Refl => void (survivingDeletedRegistrationImpossible leftSurviving
+          rightDeleted)
+registrationSideSurvivingEventsUnique {ordinal} {index}
+  (RegistrationSideScanSurviving {child = leftChild} {parent = leftParent}
+    {component = leftComponent} transition rest leftExact leftSurviving
+    leftLater)
+  (RegistrationSideScanSurviving {child = rightChild} {parent = rightParent}
+    {component = rightComponent} transition rest rightExact rightSurviving
+    rightLater) =
+      case trans (sym leftExact) rightExact of
+        Refl => cong
+          (registrationEventAt @{nameEq} ordinal index leftChild leftParent
+            leftComponent ::)
+          (registrationSideSurvivingEventsUnique leftLater rightLater)
+
 ||| Checked synchronization capital for the shared middle trace of two scanner
 ||| correspondences.  The asynchronous interleavings may differ, but their
 ||| side projections make exactly the same surviving/deleted decision and
