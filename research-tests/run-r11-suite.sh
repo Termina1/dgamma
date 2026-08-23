@@ -22,6 +22,9 @@ SPIKES=(
 POSITIVE=(
   R10ProvenanceProjectionPositive
   R10ActorBlockDecompositionFixturesPositive
+  R9WholeBlockSingletonPositive
+  R9WholeBlockTwoByOnePositive
+  R9WholeBlockTwoByTwoPositive
   R11GenericRawPlanRepackagerPositive
   R11AdjacentPrefixMalicePositive
   R11DeletionCertificateProjectionPositive
@@ -44,9 +47,6 @@ POSITIVE=(
   R8FullPipeline
   R9CoordinateBoundaryPositive
   R9WholeBlockShiftedAliasContradictionPositive
-  R9WholeBlockSingletonPositive
-  R9WholeBlockTwoByOnePositive
-  R9WholeBlockTwoByTwoPositive
 )
 
 # Each expected failure has its own mandatory diagnostic fragment and source
