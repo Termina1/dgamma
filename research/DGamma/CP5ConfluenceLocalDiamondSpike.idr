@@ -4184,6 +4184,68 @@ advanceReplacementComparisonFromAgreement nameEq keyEq actor trace sourceAmbient
                   (pairedUndoMaps paired) sourceTarget movedTarget sourceIterRaw
                   movedIterRaw
 
+0 activationReplacementComparisonAcrossForeign :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  {traceFirst, traceLast : SystemState name key value world error} ->
+  (trace : Transitions traceFirst traceLast) ->
+  (sourceAmbient, movedAmbient : world) ->
+  (sourceRegistry, movedRegistry : Registry name key value world error) ->
+  (sourceAfter, movedAfter : SystemState name key value world error) ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} action
+    (MkSystemState sourceAmbient sourceRegistry) = Just (tag, sourceAfter)) ->
+  (movedChecked : checkedApplyAction @{nameEq} @{keyEq} action
+    (MkSystemState movedAmbient movedRegistry) = Just (tag, movedAfter)) ->
+  (0 sourceOccurs : OccursIn
+    (Fired {before = MkSystemState sourceAmbient sourceRegistry}
+      {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) trace) ->
+  (sourceActivation : PaperActivationStep
+    (Fired {before = MkSystemState sourceAmbient sourceRegistry}
+      {afterState = sourceAfter} nameEq keyEq action tag sourceChecked)) ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} (actionOwner action) movedRegistry =
+    lookupFiber @{nameEq} (actionOwner action) sourceRegistry ->
+  ((fiber : Fiber name key value world error) ->
+    (view : View name
+      (dependencies (componentDependencies (fiberComponent fiber)))) ->
+    targetFiber @{nameEq} @{keyEq} fiber sourceRegistry = Just view ->
+    targetFiber @{nameEq} @{keyEq} fiber movedRegistry = Just view) ->
+  ((stage : IteratorStage name key world error value (actionOwner action) trace) ->
+    IteratorOutcomeAgreement name key value world error keyEq
+      (iteratorStageOutcome stage
+        (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState movedAmbient movedRegistry))))
+      (iteratorStageOutcome stage
+        (projectEffectState @{nameEq}
+          (the (SystemState name key value world error)
+            (MkSystemState sourceAmbient sourceRegistry))))) ->
+  ActivationReplacementComparison nameEq (actionOwner action)
+    (MkSystemState sourceAmbient sourceRegistry) sourceAfter
+    (MkSystemState movedAmbient movedRegistry) movedAfter
+activationReplacementComparisonAcrossForeign nameEq keyEq action tag trace
+  sourceAmbient movedAmbient sourceRegistry movedRegistry sourceAfter movedAfter
+  sourceChecked movedChecked sourceOccurs sourceActivation lookupSame
+  targetPreserved outcomeAgreement = case sourceActivation of
+    PaperBeginStep actionIsBegin tagIsBegin => case actionIsBegin of
+      Refl => case tagIsBegin of
+        Refl => beginReplacementComparisonFromChecked nameEq keyEq _
+          sourceAmbient movedAmbient sourceRegistry movedRegistry sourceAfter
+          movedAfter sourceChecked movedChecked lookupSame targetPreserved
+    PaperIterStep actionIsAdvance tagIsIter => case actionIsAdvance of
+      Refl => case tagIsIter of
+        Refl => advanceReplacementComparisonFromAgreement nameEq keyEq _ trace
+          sourceAmbient movedAmbient sourceRegistry movedRegistry sourceAfter
+          movedAfter LIterTag sourceChecked movedChecked sourceOccurs (Left Refl)
+          lookupSame outcomeAgreement
+    PaperFinishStep actionIsAdvance tagIsFinish => case actionIsAdvance of
+      Refl => case tagIsFinish of
+        Refl => advanceReplacementComparisonFromAgreement nameEq keyEq _ trace
+          sourceAmbient movedAmbient sourceRegistry movedRegistry sourceAfter
+          movedAfter LFinishTag sourceChecked movedChecked sourceOccurs
+          (Right Refl) lookupSame outcomeAgreement
+
 record ActivationActivationCheckedCore
   (nameEq : DecEq name) (keyEq : DecEq key)
   {first, middle, originalFinal, earlyRightFinal :
