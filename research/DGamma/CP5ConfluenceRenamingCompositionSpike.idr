@@ -1128,6 +1128,120 @@ matchingPlanPairing {pendingRight}
         (removeChronologyFutureHead pendingRight rightEvent)
         (matchingPlanPairing laterFold)
 
+0 compareListRemovals :
+  (first : RemoveListOccurrence firstEvent source firstRemainder) ->
+  (second : RemoveListOccurrence secondEvent source secondRemainder) ->
+  Either
+    (firstEvent = secondEvent, firstRemainder = secondRemainder)
+    (commonRemainder : List event **
+      (RemoveListOccurrence secondEvent firstRemainder commonRemainder,
+       RemoveListOccurrence firstEvent secondRemainder commonRemainder))
+compareListRemovals RemoveListHere RemoveListHere = Left (Refl, Refl)
+compareListRemovals RemoveListHere (RemoveListThere second) =
+  Right (_ ** (second, RemoveListHere))
+compareListRemovals (RemoveListThere first) RemoveListHere =
+  Right (_ ** (RemoveListHere, first))
+compareListRemovals {source = other :: sourceTail}
+  (RemoveListThere first) (RemoveListThere second) =
+  case compareListRemovals first second of
+    Left (eventSame, remainderSame) =>
+      Left (eventSame, cong (other ::) remainderSame)
+    Right (common ** (secondAfterFirst, firstAfterSecond)) =>
+      Right (_ ** (RemoveListThere secondAfterFirst,
+        RemoveListThere firstAfterSecond))
+
+0 commuteRemovalAfter :
+  RemoveListOccurrence firstEvent source firstRemainder ->
+  RemoveListOccurrence secondEvent firstRemainder commonRemainder ->
+  (secondRemainder : List event **
+    (RemoveListOccurrence secondEvent source secondRemainder,
+     RemoveListOccurrence firstEvent secondRemainder commonRemainder))
+commuteRemovalAfter RemoveListHere second =
+  (_ ** (RemoveListThere second, RemoveListHere))
+commuteRemovalAfter (RemoveListThere first) RemoveListHere =
+  (_ ** (RemoveListHere, first))
+commuteRemovalAfter (RemoveListThere first) (RemoveListThere second) =
+  case commuteRemovalAfter first second of
+    (secondRemainder ** (secondFromSource, firstFromSecond)) =>
+      (_ ** (RemoveListThere secondFromSource,
+        RemoveListThere firstFromSecond))
+
+record PairingRightExtraction
+  (renaming : RegistrationGenerationBijection name)
+  (selectedRight : RegistrationEvent name key world error value)
+  (leftEvents, rightEvents, rightRemainder :
+    List (RegistrationEvent name key world error value)) where
+  constructor MkPairingRightExtraction
+  extractedLeftEvent : RegistrationEvent name key world error value
+  extractedLeftRemainder :
+    List (RegistrationEvent name key world error value)
+  0 extractedEventMatch : RegistrationEventMatch renaming extractedLeftEvent
+    selectedRight
+  0 extractedLeftRemoval : RemoveListOccurrence extractedLeftEvent leftEvents
+    extractedLeftRemainder
+  0 extractedRemainderPairing : RegistrationPairing renaming
+    extractedLeftRemainder rightRemainder
+
+0 extractPairingRight :
+  RegistrationPairing renaming leftEvents rightEvents ->
+  RemoveListOccurrence selectedRight rightEvents rightRemainder ->
+  PairingRightExtraction renaming selectedRight leftEvents rightEvents
+    rightRemainder
+extractPairingRight RegistrationPairingEnd removal impossible
+extractPairingRight
+  (RegistrationPairingStep matched leftRemoval rightRemoval laterPairing)
+  selectedRemoval =
+    case compareListRemovals rightRemoval selectedRemoval of
+      Left (eventSame, remainderSame) =>
+        case eventSame of
+          Refl => case remainderSame of
+            Refl => MkPairingRightExtraction _ _ matched leftRemoval laterPairing
+      Right (common ** (selectedAfterRight, rightAfterSelected)) =>
+        case extractPairingRight laterPairing selectedAfterRight of
+          MkPairingRightExtraction selectedLeft selectedLeftRemainder
+            selectedMatch selectedLeftAfterRight selectedLaterPairing =>
+              case commuteRemovalAfter leftRemoval selectedLeftAfterRight of
+                (leftAfterSelected **
+                  (selectedFromLeft, rightFromLeftAfterSelected)) =>
+                    MkPairingRightExtraction selectedLeft leftAfterSelected
+                      selectedMatch selectedFromLeft
+                      (RegistrationPairingStep matched
+                        rightFromLeftAfterSelected rightAfterSelected
+                        selectedLaterPairing)
+
+0 pairingRightEmptyForcesLeftEmpty :
+  RegistrationPairing renaming leftEvents [] -> leftEvents = []
+pairingRightEmptyForcesLeftEmpty RegistrationPairingEnd = Refl
+pairingRightEmptyForcesLeftEmpty
+  (RegistrationPairingStep matched leftRemoval rightRemoval later) impossible
+
+0 composeRegistrationPairings :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftEvents, middleEvents, rightEvents :
+    List (RegistrationEvent name key world error value)} ->
+  (leftRenaming, rightRenaming : RegistrationGenerationBijection name) ->
+  RegistrationPairing leftRenaming leftEvents middleEvents ->
+  RegistrationPairing rightRenaming middleEvents rightEvents ->
+  RegistrationPairing
+    (composeGenerationBijection leftRenaming rightRenaming)
+    leftEvents rightEvents
+composeRegistrationPairings leftRenaming rightRenaming leftPairing
+  RegistrationPairingEnd =
+    case pairingRightEmptyForcesLeftEmpty leftPairing of
+      Refl => RegistrationPairingEnd
+composeRegistrationPairings leftRenaming rightRenaming leftPairing
+  (RegistrationPairingStep middleRightMatch middleRemoval rightRemoval
+    rightLater) =
+      case extractPairingRight leftPairing middleRemoval of
+        MkPairingRightExtraction leftEvent leftRemainder leftMiddleMatch
+          leftRemoval leftLater =>
+            RegistrationPairingStep
+              (composeRegistrationEventMatch leftRenaming rightRenaming
+                leftMiddleMatch middleRightMatch)
+              leftRemoval rightRemoval
+              (composeRegistrationPairings leftRenaming rightRenaming leftLater
+                rightLater)
+
 ||| Checked synchronization capital for the shared middle trace of two scanner
 ||| correspondences.  The asynchronous interleavings may differ, but their
 ||| side projections make exactly the same surviving/deleted decision and
