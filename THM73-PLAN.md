@@ -281,10 +281,10 @@ research-tests/run-r11-suite.sh
 It runs serially:
 
 - five research spikes;
-- 27 tracked positive modules; and
-- 26 tracked expected-failure modules.
+- 28 tracked positive modules; and
+- 27 tracked expected-failure modules.
 
-All 53 tracked Idris test modules occur exactly once. Every negative specification
+All 55 tracked Idris test modules occur exactly once. Every negative specification
 contains its own mandatory diagnostic substring and source declaration name. A
 generic dependent error no longer suffices.
 
@@ -368,7 +368,7 @@ closure, **24 deliberate named research holes remain**:
 - canonical sort: 6;
 - cross-trace: 4;
 - deletion chain: 8;
-- local diamonds: 6;
+- local diamonds: 5;
 - renaming/O21: 1.
 
 No hole was moved or renamed. Four O1 relation-law bodies and both O2
@@ -428,14 +428,19 @@ inside a proof-phase band.
 
 ## 15. Release boundary
 
-External round-12 review must verify only tracked HEAD artifacts:
+The scoped revision-13/O3 closure review must verify only tracked HEAD artifacts:
 
-- O6 classifier/region laws and malicious-prefix modules;
-- O9 executable subsequence fold/certificate and filler/direct-clone modules;
-- honest repackager names/comments with no fixture claim;
-- exact 53-module runner coverage and module-specific diagnostics;
-- generated-only, tree-only, producer-assembly, and bridge-generation tests;
-- exact current hole reverse map and 148–249 total / 139–240 implementation-remaining arithmetic;
+- the O3 interface delta is exactly the two erased `AlignedTransitions` premises;
+- those premises are constructible at the actual O6, O17, O19, and immutable
+  statement-input consumer boundaries;
+- the tracked R13 positive producer probe succeeds and the independent-dictionary
+  negative fails at the intended dictionary-index mismatch;
+- the closed O3 body genuinely consumes alignment, checked execution,
+  independence, exact replacement shapes, and ordered controls without escape
+  hatches or surviving-hole dependencies;
+- exact 55-module runner coverage with module-specific negative diagnostics;
+- exact current 6/4/8/5/1 hole split and 148–249 total / 139–240
+  implementation-remaining arithmetic;
 - all five spikes and every tracked test serially;
 - exact CP3 blob and empty `src/`/package diff;
 - research isolation and empty escape scans;
