@@ -111,10 +111,10 @@ manifest = json.loads(manifest_path.read_text())
 if manifest.get('baseline') != '7d467e0556ab8ef62fa0d6c21b049f4346f1245d':
     raise SystemExit('wrong CP5 hole-interface baseline coordinate')
 entries = manifest.get('holes', [])
-if len(entries) != 31:
-    raise SystemExit(f'baseline manifest has {len(entries)} holes, expected 31')
+if len(entries) != 30:
+    raise SystemExit(f'baseline manifest has {len(entries)} holes, expected 30')
 baseline_holes = [entry['hole'] for entry in entries]
-if len(set(baseline_holes)) != 31:
+if len(set(baseline_holes)) != 30:
     raise SystemExit('baseline manifest contains duplicate hole names')
 
 def current_signature(path, function):
@@ -187,7 +187,7 @@ expected = {
     'CP5ConfluenceCanonicalSortSpike.idr': 6,
     'CP5ConfluenceCrossTraceSpike.idr': 4,
     'CP5ConfluenceDeletionChainSpike.idr': 8,
-    'CP5ConfluenceLocalDiamondSpike.idr': 6,
+    'CP5ConfluenceLocalDiamondSpike.idr': 5,
     'CP5ConfluenceRenamingCompositionSpike.idr': 1,
 }
 actual = {}
@@ -197,7 +197,7 @@ for filename, count in expected.items():
     actual[filename] = len(holes)
 if actual != expected:
     raise SystemExit(f'hole split mismatch: {actual}, expected {expected}')
-if sum(actual.values()) != 25:
+if sum(actual.values()) != 24:
     raise SystemExit(f'hole total mismatch: {sum(actual.values())}')
 
 plan = Path('THM73-PLAN.md').read_text()

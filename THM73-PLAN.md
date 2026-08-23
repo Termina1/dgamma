@@ -7,9 +7,12 @@ Review trail:
 - rounds 1–10: REJECT;
 - round 11: accepted the frozen 32-hole scoping interfaces;
 - grind shifts 1–9 filled six holes and retired one audited false/orphan generic
-  composition declaration, leaving 25 holes;
-- revision 12 accepted that retirement after scoped fresh-context review; and
-- revision 13 authorizes only the O3 dictionary-alignment repair audited below.
+  composition declaration;
+- revision 12 accepted that retirement after scoped fresh-context review;
+- revision 13 authorized only the O3 dictionary-alignment repair audited below;
+  and
+- grind shifts 15–17 supplied that repair and constructively closed O3, leaving
+  24 holes.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -23,9 +26,9 @@ sorting, and O19 consumers and shows that their `ReplayInvariantBundle` already
 carries literal `AlignedTransitions ... nameEq keyEq` evidence. Revision 13 adds
 to `activationActivationDiamondSpike` only the erased source-pair and singleton
 `earlyRight` alignment premises that those producers supply definitionally. It
-does not authorize the analogous O4 change. The adversarial review of this small
-interface delta is deferred until O3 closes (or an independently gated O4 repair,
-whichever occurs first).
+does not authorize the analogous O4 change. O3 is now closed, so the deferred
+scoped adversarial review of this small interface delta is **due now**; this does
+not authorize any O4 declaration change.
 
 ## Executive estimate
 
@@ -35,8 +38,8 @@ band. Revision 10's 129–226 is withdrawn. The increase charges complete O6
 ordinal semantics, O9 retained-subsequence certificate construction,
 downstream certificate threading through O16/O20, the still-unproved reachable
 repeated-Iter producer, and the still-unproved concrete O16 example. Revision 13
-does not change this phase band: after the alignment repair, O3 has an accepted
-**4–7-shift** remainder inside Phase B.
+did not change this phase band. O3 subsequently closed in two proof shifts after
+the alignment-repair shift, within the accepted revised remainder.
 
 Mandatory re-estimation gates:
 
@@ -335,7 +338,7 @@ There remain **23 obligations**.
 |---|---|---|---|
 | **O1** | External/replay/endpoint/generation and coherent occurrence algebra. | **Complete after authorized retirement of the false/orphan generic endpoint-transitivity claim; pure composition helpers retained.** | **9 grind shifts actual for Phase A with O2.** |
 | **O2** | Transport both independence fields. | **Complete.** | **M–L.** |
-| **O3** | A/A diamonds. | **1 hole; revision-13 source-pair and `earlyRight` alignment premises accepted and producer-suppliable.** | **L; 4–7 shifts remaining after the repair.** |
+| **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`. Deferred revision-13 scoped review is due.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **2 holes.** | **XL gate.** |
 | **O5** | O/O freshness/generation discipline. | **1 hole.** | **XL gate.** |
 | **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes**; certificate/interface complete. | **XL gate.** |
@@ -359,8 +362,8 @@ There remain **23 obligations**.
 
 ## 11. Exact hole reconciliation
 
-After authorized retirement of the orphan O1 declaration, **25 deliberate
-named research holes remain**:
+After authorized retirement of the orphan O1 declaration and constructive O3
+closure, **24 deliberate named research holes remain**:
 
 - canonical sort: 6;
 - cross-trace: 4;
@@ -375,12 +378,12 @@ that its generic result was orphaned and its premise was not producer-suppliable
 
 Forward/reverse map:
 
-- O1=0, O2=0, O3=1, O4=2, O5=1, O6=3;
+- O1=0, O2=0, O3=0, O4=2, O5=1, O6=3;
 - O7=1, O8=1, O9=2, O10=1, O11=1, O12=1;
 - O13=0, O14=1, O15=1, O16=1, O17=1, O18=1;
 - O19=2, O20=1, O21=3, O22=0, O23=0.
 
-The values sum to 25.
+The values sum to 24.
 
 ## 12. Post-retirement phase arithmetic: 148–249 total, 139–240 remaining
 
@@ -420,7 +423,7 @@ inside a proof-phase band.
 | 4 | O9 under-specification negatives | Filler-map and direct full-constructor clone tracked; downstream attacks retained. |
 | 5 | Honest origin calibration | Option (a), renamed generic repackager and disclosed supplied capital. |
 | 6 | Repair suite coverage/diagnostics | Missing tests tracked; runner upgraded to exact per-module expectations. |
-| 7 | Reconcile/estimate/path coherence | 25 holes remain after audited O1 retirement; 148–249 total / 139–240 implementation remaining; per-derivation authority rationale explicit. |
+| 7 | Reconcile/estimate/path coherence | 24 holes remain after audited O1 retirement and O3 closure; phase bands remain planning bounds; per-derivation authority rationale explicit. |
 | 8 | Release closure | Serial suite, scans, immutable production, seeded 207/207, best-effort unseeded, clean index required. |
 
 ## 15. Release boundary
@@ -439,4 +442,5 @@ External round-12 review must verify only tracked HEAD artifacts:
 - seeded exact 207/207 build and best-effort unseeded result; and
 - no tracked/staged changes.
 
-Theorem 73 remains unproved by design after the revision-13 O3 alignment repair.
+Theorem 73 remains unproved by design after constructive O3 closure; the other
+24 named obligations remain isolated in research modules.
