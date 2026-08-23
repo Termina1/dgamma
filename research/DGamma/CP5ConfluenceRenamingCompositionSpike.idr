@@ -1695,6 +1695,64 @@ classifyForwardCurrentGeneration leftRenaming rightRenaming leftRegistrations
                 rightMapped,
                rightFound)
 
+0 classifyReverseCurrentGeneration :
+  {initial, leftFinal, middleFinal, rightFinal :
+    SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {middleTrace : Transitions initial middleFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  (leftRenaming, rightRenaming : RegistrationGenerationBijection name) ->
+  (leftRegistrations : RegistrationCorrespondenceByGeneration nameEq
+    leftRenaming leftTrace middleTrace) ->
+  (rightRegistrations : RegistrationCorrespondenceByGeneration nameEq
+    rightRenaming middleTrace rightTrace) ->
+  (leftCurrent : CurrentEndpointRenaming nameEq keyEq leftRenaming leftTrace
+    middleTrace leftRegistrations) ->
+  (rightCurrent : CurrentEndpointRenaming nameEq keyEq rightRenaming middleTrace
+    rightTrace rightRegistrations) ->
+  (selected : name) -> (rightGeneration : RegistrationGeneration name) ->
+  lookupCurrentGeneration @{nameEq} selected
+    (rightFinalGenerations rightRegistrations) = Just rightGeneration ->
+  CurrentGenerationCompositionResult
+    (VestigialEndpointGeneration name key world error value nameEq keyEq
+      (rightFinalGenerations rightRegistrations)
+      (rightDeletedGenerations rightRegistrations) selected rightFinal)
+    (VestigialEndpointGeneration name key world error value nameEq keyEq
+      (rightFinalGenerations leftRegistrations)
+      (rightDeletedGenerations leftRegistrations)
+      (renameBackward (currentNameBijection rightCurrent) selected) middleFinal)
+    (\leftGeneration =>
+      (generationBackward
+          (composeGenerationBijection leftRenaming rightRenaming)
+          rightGeneration = leftGeneration,
+       lookupCurrentGeneration @{nameEq}
+         (renameBackward (currentNameBijection leftCurrent)
+           (renameBackward (currentNameBijection rightCurrent) selected))
+         (leftFinalGenerations leftRegistrations) = Just leftGeneration))
+classifyReverseCurrentGeneration leftRenaming rightRenaming leftRegistrations
+  rightRegistrations leftCurrent rightCurrent selected rightGeneration found =
+    case rightCurrentGenerationMapped rightCurrent selected rightGeneration
+      found of
+      Left vestigial => CurrentOuterVestigial vestigial
+      Right (middleGeneration ** (rightMapped, middleFound)) =>
+        let synchronization = synchronizeMiddleRegistrationScanners
+              leftRegistrations rightRegistrations
+            transportedMiddleFound = replace
+              {p = \generations => lookupCurrentGeneration @{nameEq}
+                (renameBackward (currentNameBijection rightCurrent) selected)
+                generations = Just middleGeneration}
+              (sym (sharedMiddleLiveGenerationsSame synchronization))
+              middleFound
+        in case rightCurrentGenerationMapped leftCurrent
+          (renameBackward (currentNameBijection rightCurrent) selected)
+          middleGeneration transportedMiddleFound of
+          Left vestigial => CurrentMiddleVestigial vestigial
+          Right (leftGeneration ** (leftMapped, leftFound)) =>
+            CurrentMappedThrough leftGeneration
+              (trans (cong (generationBackward leftRenaming) rightMapped)
+                leftMapped,
+               leftFound)
+
 0 retargetVestigialEndpointIndex :
   {fromIndex, toIndex : RegistrationIndexState name} ->
   fromIndex = toIndex ->
