@@ -2751,6 +2751,9 @@ record CheckedActivationEndpoint
   constructor MkCheckedActivationEndpoint
   checkedEndpointAfter : SystemState name key value world error
   checkedEndpointTransition : Transition before checkedEndpointAfter
+  0 checkedEndpointAction :
+    transitionAction checkedEndpointTransition = action
+  0 checkedEndpointTag : transitionTag checkedEndpointTransition = tag
   0 checkedEndpointEffects : EffectStateRelated keyEq
     (projectEffectState @{nameEq} originalFinal)
     (projectEffectState @{nameEq} checkedEndpointAfter)
@@ -2794,8 +2797,157 @@ checkActivationEndpoint nameEq keyEq action tag before originalFinal
               before afterState tag sourceWellFormed
               (checkedActionProjects nameEq keyEq action before afterState tag
                 checked)
-        in MkCheckedActivationEndpoint afterState transition originalToActual
-          afterWellFormed
+            exactTransition : Transition before afterState
+            exactTransition = Fired nameEq keyEq action tag checked
+        in MkCheckedActivationEndpoint afterState exactTransition Refl Refl
+          originalToActual afterWellFormed
+
+0 paperActivationStepTransport :
+  {left : Transition leftBefore leftAfter} ->
+  {right : Transition rightBefore rightAfter} ->
+  transitionAction right = transitionAction left ->
+  transitionTag right = transitionTag left ->
+  PaperActivationStep left -> PaperActivationStep right
+paperActivationStepTransport actionSame tagSame
+  (PaperBeginStep actionIsBegin tagIsBegin) =
+    PaperBeginStep (trans actionSame actionIsBegin) (trans tagSame tagIsBegin)
+paperActivationStepTransport actionSame tagSame
+  (PaperIterStep actionIsAdvance tagIsIter) =
+    PaperIterStep (trans actionSame actionIsAdvance) (trans tagSame tagIsIter)
+paperActivationStepTransport actionSame tagSame
+  (PaperFinishStep actionIsAdvance tagIsFinish) =
+    PaperFinishStep (trans actionSame actionIsAdvance) (trans tagSame tagIsFinish)
+
+0 checkedActivationEquationTransport :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (fromAction, toAction : Action name key value world error) ->
+  fromAction = toAction ->
+  (fromTag, toTag : RuleTag) -> fromTag = toTag ->
+  {before, afterState : SystemState name key value world error} ->
+  checkedApplyAction @{nameEq} @{keyEq} fromAction before =
+    Just (fromTag, afterState) ->
+  checkedApplyAction @{nameEq} @{keyEq} toAction before =
+    Just (toTag, afterState)
+checkedActivationEquationTransport nameEq keyEq fromAction fromAction Refl
+  fromTag fromTag Refl checked = checked
+
+0 transitionActorFiredActionOwner :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  {before, afterState : SystemState name key value world error} ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  transitionActor (Fired {before} {afterState}
+    nameEq keyEq action tag checked) = actionOwner action
+transitionActorFiredActionOwner nameEq keyEq (OInsert actor parent component)
+  tag checked = Refl
+transitionActorFiredActionOwner nameEq keyEq (ORetire actor) tag checked = Refl
+transitionActorFiredActionOwner nameEq keyEq (ORemove actor) tag checked = Refl
+transitionActorFiredActionOwner nameEq keyEq (LBegin actor) tag checked = Refl
+transitionActorFiredActionOwner nameEq keyEq (LAdvance actor) tag checked = Refl
+transitionActorFiredActionOwner nameEq keyEq (LDivert actor) tag checked = Refl
+transitionActorFiredActionOwner nameEq keyEq (LLeave actor) tag checked = Refl
+transitionActorFiredActionOwner nameEq keyEq (LUnload actor) tag checked = Refl
+
+record ActivationActivationCheckedCore
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {first, middle, originalFinal, earlyRightFinal :
+    SystemState name key value world error}
+  (left : Transition first middle)
+  (right : Transition middle originalFinal)
+  (earlyRight : Transition first earlyRightFinal) where
+  constructor MkActivationActivationCheckedCore
+  checkedCoreFinal : SystemState name key value world error
+  checkedCoreMovedLeft : Transition earlyRightFinal checkedCoreFinal
+  0 checkedCoreMovedLeftAction :
+    transitionAction checkedCoreMovedLeft = transitionAction left
+  0 checkedCoreMovedLeftTag :
+    transitionTag checkedCoreMovedLeft = transitionTag left
+  0 checkedCoreMovedRightActivation : PaperActivationStep earlyRight
+  0 checkedCoreMovedLeftActivation : PaperActivationStep checkedCoreMovedLeft
+  0 checkedCoreEffects : EffectStateRelated keyEq
+    (projectEffectState @{nameEq} originalFinal)
+    (projectEffectState @{nameEq} checkedCoreFinal)
+  0 checkedCoreWellFormed : registryWellFormed @{nameEq} @{keyEq}
+    checkedCoreFinal = True
+
+0 activationActivationCheckedCore :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, originalFinal, earlyRightFinal :
+    SystemState name key value world error} ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  (earlyRight : Transition first earlyRightFinal) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions earlyRight NoTransitions) ->
+  transitionAction earlyRight = transitionAction right ->
+  transitionTag earlyRight = transitionTag right ->
+  PaperActivationStep left -> PaperActivationStep right ->
+  Not (transitionActor left = transitionActor right) ->
+  registryWellFormed @{nameEq} @{keyEq} first = True ->
+  TraceIndependent name key world error value keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  ActivationActivationCheckedCore nameEq keyEq left right earlyRight
+activationActivationCheckedCore nameEq keyEq left right earlyRight
+  sourceAligned earlyRightAligned sameAction sameTag leftActivation
+  rightActivation distinct sourceWellFormed independent =
+    case sourceAligned of
+      AlignedStep leftAction leftTag leftChecked _
+        (AlignedStep rightAction rightTag rightChecked _ AlignedEnd) =>
+          case earlyRightAligned of
+            AlignedStep earlyAction earlyTag earlyChecked _ AlignedEnd =>
+              let 0 earlyCheckedRight = checkedActivationEquationTransport
+                    nameEq keyEq earlyAction rightAction sameAction earlyTag
+                    rightTag sameTag earlyChecked
+                  0 earlyActivation = paperActivationStepTransport sameAction
+                    sameTag rightActivation
+                  0 earlyWellFormed = preservationTheoremProof nameEq keyEq
+                    rightAction first earlyRightFinal rightTag sourceWellFormed
+                    (checkedActionProjects nameEq keyEq rightAction first
+                      earlyRightFinal rightTag earlyCheckedRight)
+                  0 distinctOwners :
+                    Not (actionOwner leftAction = actionOwner rightAction)
+                  distinctOwners sameOwner = distinct
+                    (trans
+                      (transitionActorFiredActionOwner nameEq keyEq leftAction
+                        leftTag leftChecked)
+                      (trans sameOwner
+                        (sym (transitionActorFiredActionOwner nameEq keyEq
+                          rightAction rightTag rightChecked))))
+                  0 effectOutput : ActivationPairEffectOutput nameEq keyEq
+                    leftAction leftTag earlyRightFinal originalFinal
+                  effectOutput = activationPairEffectOutput nameEq keyEq
+                    leftAction rightAction leftTag rightTag leftChecked
+                    rightChecked earlyCheckedRight leftActivation rightActivation
+                    distinctOwners independent
+                  0 rawMove : RawActivationMove nameEq keyEq leftAction leftTag
+                    earlyRightFinal
+                  rawMove = activationRawAfterForeignActivation nameEq keyEq
+                    leftAction rightAction leftTag rightTag leftChecked
+                    earlyCheckedRight leftActivation
+                    (paperActivationStepTransport Refl Refl rightActivation)
+                    distinctOwners earlyWellFormed
+                    (activationPairEffectState effectOutput)
+                    (movedLeftEffectMapRuns effectOutput)
+                  0 endpoint : CheckedActivationEndpoint nameEq keyEq leftAction
+                    leftTag earlyRightFinal originalFinal
+                  endpoint = checkActivationEndpoint nameEq keyEq leftAction
+                    leftTag earlyRightFinal originalFinal earlyWellFormed
+                    effectOutput rawMove
+                  0 movedLeftActivation : PaperActivationStep
+                    (checkedEndpointTransition endpoint)
+                  movedLeftActivation = paperActivationStepTransport
+                    (checkedEndpointAction endpoint)
+                    (checkedEndpointTag endpoint) leftActivation
+              in MkActivationActivationCheckedCore
+                (checkedEndpointAfter endpoint)
+                (checkedEndpointTransition endpoint)
+                (checkedEndpointAction endpoint)
+                (checkedEndpointTag endpoint) earlyActivation
+                movedLeftActivation (checkedEndpointEffects endpoint)
+                (checkedEndpointWellFormed endpoint)
 
 ||| Candidate for paper Lemma 71(1).
 public export
