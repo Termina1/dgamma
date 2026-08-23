@@ -3956,11 +3956,17 @@ beginReplacementComparisonFromChecked nameEq keyEq actor sourceAmbient
   (movedChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
     (the (SystemState name key value world error)
       (MkSystemState movedAmbient movedRegistry)) = Just (tag, movedAfter)) ->
-  (0 sourceOccurs : OccursIn
-    (Fired {before = the (SystemState name key value world error)
-      (MkSystemState sourceAmbient sourceRegistry)}
-      {afterState = sourceAfter} nameEq keyEq (LAdvance actor) tag sourceChecked)
-    trace) ->
+  (0 stageOccurs : Either
+    (OccursIn
+      (Fired {before = the (SystemState name key value world error)
+        (MkSystemState sourceAmbient sourceRegistry)}
+        {afterState = sourceAfter} nameEq keyEq (LAdvance actor) tag sourceChecked)
+      trace)
+    (OccursIn
+      (Fired {before = the (SystemState name key value world error)
+        (MkSystemState movedAmbient movedRegistry)}
+        {afterState = movedAfter} nameEq keyEq (LAdvance actor) tag movedChecked)
+      trace)) ->
   (paperTag : Either (tag = LIterTag) (tag = LFinishTag)) ->
   lookupFiber @{nameEq} {name = name} {key = key} {value = value}
     {world = world} {error = error} actor movedRegistry =
@@ -3983,7 +3989,7 @@ beginReplacementComparisonFromChecked nameEq keyEq actor sourceAmbient
       (MkSystemState movedAmbient movedRegistry)) movedAfter
 advanceReplacementComparisonFromAgreement nameEq keyEq actor trace sourceAmbient
   movedAmbient sourceRegistry movedRegistry sourceAfter movedAfter tag
-  sourceChecked movedChecked sourceOccurs paperTag lookupSame outcomeAgreement =
+  sourceChecked movedChecked stageOccurs paperTag lookupSame outcomeAgreement =
     let sourceState : SystemState name key value world error
         sourceState = MkSystemState sourceAmbient sourceRegistry
         movedState : SystemState name key value world error
@@ -4082,9 +4088,13 @@ advanceReplacementComparisonFromAgreement nameEq keyEq actor trace sourceAmbient
                       movedAmbient movedRegistry movedPaper component parent
                       retiredFlag table [step] accumulator view movedFound
                     0 stage : IteratorStage name key world error value actor trace
-                    stage = StageFromAdvance nameEq keyEq actor tag sourceChecked
-                      sourceOccurs exactFiber sourceFound [step] accumulator view
-                      Refl step [] SuffixHere
+                    stage = case stageOccurs of
+                      Left sourceOccurs => StageFromAdvance nameEq keyEq actor tag
+                        sourceChecked sourceOccurs exactFiber sourceFound [step]
+                        accumulator view Refl step [] SuffixHere
+                      Right movedOccurs => StageFromAdvance nameEq keyEq actor tag
+                        movedChecked movedOccurs exactFiber movedFound [step]
+                        accumulator view Refl step [] SuffixHere
                     0 agreement : IteratorOutcomeAgreement name key value world
                       error keyEq
                       (iteratorStageOutcome stage
@@ -4092,6 +4102,44 @@ advanceReplacementComparisonFromAgreement nameEq keyEq actor trace sourceAmbient
                       (iteratorStageOutcome stage
                         (projectEffectState @{nameEq} sourceState))
                     agreement = outcomeAgreement stage
+                    0 movedOutcomeSame : iteratorStageOutcome stage
+                      (projectEffectState @{nameEq} movedState) =
+                      iteratorStageOutcomeComponentData nameEq keyEq actor
+                        component view step []
+                        (projectEffectState @{nameEq} movedState)
+                    movedOutcomeSame = case stageOccurs of
+                      Left sourceOccurs => Refl
+                      Right movedOccurs => Refl
+                    0 sourceOutcomeSame : iteratorStageOutcome stage
+                      (projectEffectState @{nameEq} sourceState) =
+                      iteratorStageOutcomeComponentData nameEq keyEq actor
+                        component view step []
+                        (projectEffectState @{nameEq} sourceState)
+                    sourceOutcomeSame = case stageOccurs of
+                      Left sourceOccurs => Refl
+                      Right movedOccurs => Refl
+                    0 componentAgreement : IteratorOutcomeAgreement name key value
+                      world error keyEq
+                      (iteratorStageOutcomeComponentData nameEq keyEq actor
+                        component view step []
+                        (projectEffectState @{nameEq} movedState))
+                      (iteratorStageOutcomeComponentData nameEq keyEq actor
+                        component view step []
+                        (projectEffectState @{nameEq} sourceState))
+                    componentAgreement = replace
+                      {p = \leftOutcome => IteratorOutcomeAgreement name key value
+                        world error keyEq leftOutcome
+                          (iteratorStageOutcomeComponentData nameEq keyEq actor
+                            component view step []
+                            (projectEffectState @{nameEq} sourceState))}
+                      movedOutcomeSame
+                      (replace
+                        {p = \rightOutcome => IteratorOutcomeAgreement name key
+                          value world error keyEq
+                            (iteratorStageOutcome stage
+                              (projectEffectState @{nameEq} movedState))
+                            rightOutcome}
+                        sourceOutcomeSame agreement)
                     0 sourceFinishRaw : applyAction @{nameEq} @{keyEq}
                       (LAdvance actor) sourceState = Just (LFinishTag, sourceAfter)
                     sourceFinishRaw = applyActionTagTransport {nameEq = nameEq} {keyEq = keyEq}
@@ -4110,7 +4158,7 @@ advanceReplacementComparisonFromAgreement nameEq keyEq actor trace sourceAmbient
                       sourceAmbient movedAmbient sourceRegistry movedRegistry
                       (framedOutput sourceFrame) (framedOutput movedFrame)
                       sourceFound movedFound sourceAdvanceRuns movedAdvanceRuns
-                      agreement
+                      componentAgreement
                 in successfulFinishReplacementComparison nameEq keyEq actor
                   sourceAmbient movedAmbient sourceRegistry movedRegistry component
                   parent retiredFlag table step accumulator view sourceAfter
@@ -4143,9 +4191,15 @@ advanceReplacementComparisonFromAgreement nameEq keyEq actor trace sourceAmbient
                       retiredFlag table (step :: next :: more) accumulator view
                       movedFound
                     0 stage : IteratorStage name key world error value actor trace
-                    stage = StageFromAdvance nameEq keyEq actor tag sourceChecked
-                      sourceOccurs exactFiber sourceFound (step :: next :: more)
-                      accumulator view Refl step (next :: more) SuffixHere
+                    stage = case stageOccurs of
+                      Left sourceOccurs => StageFromAdvance nameEq keyEq actor tag
+                        sourceChecked sourceOccurs exactFiber sourceFound
+                        (step :: next :: more) accumulator view Refl step
+                        (next :: more) SuffixHere
+                      Right movedOccurs => StageFromAdvance nameEq keyEq actor tag
+                        movedChecked movedOccurs exactFiber movedFound
+                        (step :: next :: more) accumulator view Refl step
+                        (next :: more) SuffixHere
                     0 agreement : IteratorOutcomeAgreement name key value world
                       error keyEq
                       (iteratorStageOutcome stage
@@ -4153,6 +4207,44 @@ advanceReplacementComparisonFromAgreement nameEq keyEq actor trace sourceAmbient
                       (iteratorStageOutcome stage
                         (projectEffectState @{nameEq} sourceState))
                     agreement = outcomeAgreement stage
+                    0 movedOutcomeSame : iteratorStageOutcome stage
+                      (projectEffectState @{nameEq} movedState) =
+                      iteratorStageOutcomeComponentData nameEq keyEq actor
+                        component view step (next :: more)
+                        (projectEffectState @{nameEq} movedState)
+                    movedOutcomeSame = case stageOccurs of
+                      Left sourceOccurs => Refl
+                      Right movedOccurs => Refl
+                    0 sourceOutcomeSame : iteratorStageOutcome stage
+                      (projectEffectState @{nameEq} sourceState) =
+                      iteratorStageOutcomeComponentData nameEq keyEq actor
+                        component view step (next :: more)
+                        (projectEffectState @{nameEq} sourceState)
+                    sourceOutcomeSame = case stageOccurs of
+                      Left sourceOccurs => Refl
+                      Right movedOccurs => Refl
+                    0 componentAgreement : IteratorOutcomeAgreement name key value
+                      world error keyEq
+                      (iteratorStageOutcomeComponentData nameEq keyEq actor
+                        component view step (next :: more)
+                        (projectEffectState @{nameEq} movedState))
+                      (iteratorStageOutcomeComponentData nameEq keyEq actor
+                        component view step (next :: more)
+                        (projectEffectState @{nameEq} sourceState))
+                    componentAgreement = replace
+                      {p = \leftOutcome => IteratorOutcomeAgreement name key value
+                        world error keyEq leftOutcome
+                          (iteratorStageOutcomeComponentData nameEq keyEq actor
+                            component view step (next :: more)
+                            (projectEffectState @{nameEq} sourceState))}
+                      movedOutcomeSame
+                      (replace
+                        {p = \rightOutcome => IteratorOutcomeAgreement name key
+                          value world error keyEq
+                            (iteratorStageOutcome stage
+                              (projectEffectState @{nameEq} movedState))
+                            rightOutcome}
+                        sourceOutcomeSame agreement)
                     0 sourceIterRaw : applyAction @{nameEq} @{keyEq}
                       (LAdvance actor) sourceState = Just (LIterTag, sourceAfter)
                     sourceIterRaw = applyActionTagTransport {nameEq = nameEq} {keyEq = keyEq}
@@ -4171,7 +4263,7 @@ advanceReplacementComparisonFromAgreement nameEq keyEq actor trace sourceAmbient
                       accumulator view sourceAmbient movedAmbient sourceRegistry
                       movedRegistry (framedOutput sourceFrame)
                       (framedOutput movedFrame) sourceFound movedFound
-                      sourceAdvanceRuns movedAdvanceRuns agreement
+                      sourceAdvanceRuns movedAdvanceRuns componentAgreement
                 in successfulIterReplacementComparison nameEq keyEq actor
                   sourceAmbient movedAmbient sourceRegistry movedRegistry component
                   parent retiredFlag table step next more accumulator view sourceAfter
@@ -4197,9 +4289,13 @@ advanceReplacementComparisonFromAgreement nameEq keyEq actor trace sourceAmbient
     (MkSystemState sourceAmbient sourceRegistry) = Just (tag, sourceAfter)) ->
   (movedChecked : checkedApplyAction @{nameEq} @{keyEq} action
     (MkSystemState movedAmbient movedRegistry) = Just (tag, movedAfter)) ->
-  (0 sourceOccurs : OccursIn
-    (Fired {before = MkSystemState sourceAmbient sourceRegistry}
-      {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) trace) ->
+  (0 stageOccurs : Either
+    (OccursIn
+      (Fired {before = MkSystemState sourceAmbient sourceRegistry}
+        {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) trace)
+    (OccursIn
+      (Fired {before = MkSystemState movedAmbient movedRegistry}
+        {afterState = movedAfter} nameEq keyEq action tag movedChecked) trace)) ->
   (sourceActivation : PaperActivationStep
     (Fired {before = MkSystemState sourceAmbient sourceRegistry}
       {afterState = sourceAfter} nameEq keyEq action tag sourceChecked)) ->
@@ -4226,7 +4322,7 @@ advanceReplacementComparisonFromAgreement nameEq keyEq actor trace sourceAmbient
     (MkSystemState movedAmbient movedRegistry) movedAfter
 activationReplacementComparisonAcrossForeign nameEq keyEq action tag trace
   sourceAmbient movedAmbient sourceRegistry movedRegistry sourceAfter movedAfter
-  sourceChecked movedChecked sourceOccurs sourceActivation lookupSame
+  sourceChecked movedChecked stageOccurs sourceActivation lookupSame
   targetPreserved outcomeAgreement = case sourceActivation of
     PaperBeginStep actionIsBegin tagIsBegin => case actionIsBegin of
       Refl => case tagIsBegin of
@@ -4237,13 +4333,13 @@ activationReplacementComparisonAcrossForeign nameEq keyEq action tag trace
       Refl => case tagIsIter of
         Refl => advanceReplacementComparisonFromAgreement nameEq keyEq _ trace
           sourceAmbient movedAmbient sourceRegistry movedRegistry sourceAfter
-          movedAfter LIterTag sourceChecked movedChecked sourceOccurs (Left Refl)
+          movedAfter LIterTag sourceChecked movedChecked stageOccurs (Left Refl)
           lookupSame outcomeAgreement
     PaperFinishStep actionIsAdvance tagIsFinish => case actionIsAdvance of
       Refl => case tagIsFinish of
         Refl => advanceReplacementComparisonFromAgreement nameEq keyEq _ trace
           sourceAmbient movedAmbient sourceRegistry movedRegistry sourceAfter
-          movedAfter LFinishTag sourceChecked movedChecked sourceOccurs
+          movedAfter LFinishTag sourceChecked movedChecked stageOccurs
           (Right Refl) lookupSame outcomeAgreement
 
 record ActivationActivationCheckedCore
