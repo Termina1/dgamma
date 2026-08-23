@@ -251,6 +251,81 @@ deletionSortingOccurrenceCorrespondence reduction sorted =
     (reductionOccurrenceCorrespondence reduction)
     (sortingOccurrenceCorrespondence sorted)
 
+||| Ordinary CP3 registration-accounting laws stated directly over the exact
+||| deletion/sorting occurrence fold.  They contain no strong-authentication
+||| equality and no `OneTraceOrchestrationAccounting` value.
+public export
+record CanonicalReplayAccountingLaws
+  (name, key, world, error : Type) (value : key -> Type)
+  {initial, originalFinal, canonicalFinal :
+    SystemState name key value world error}
+  (original : Transitions initial originalFinal)
+  (canonical : Transitions initial canonicalFinal)
+  (withdrawn : List (RegistrationGeneration name))
+  (occurrences : ActionRegistrationReplayCorrespondence name key world error value
+    original canonical) where
+  constructor MkCanonicalReplayAccountingLaws
+  replayOriginalRegistrationAccounted :
+    {child, parent : name} ->
+    {component : Component key value world error} ->
+    (occurrence : LocatedGeneratedRegistration child parent component original) ->
+    Either (Elem (registrationGeneration occurrence) withdrawn)
+      (canonicalOccurrence : LocatedGeneratedRegistration child parent component
+        canonical **
+       registrationGeneration
+         (replayGeneratedRegistrationOrigin occurrences canonicalOccurrence) =
+       registrationGeneration occurrence)
+  0 replayCanonicalOccurrenceInjective :
+    {child, parent : name} ->
+    {component : Component key value world error} ->
+    (leftOccurrence, rightOccurrence : LocatedGeneratedRegistration child parent
+      component canonical) ->
+    registrationGeneration (replayGeneratedRegistrationOrigin occurrences
+      leftOccurrence) =
+    registrationGeneration (replayGeneratedRegistrationOrigin occurrences
+      rightOccurrence) ->
+    registrationGeneration leftOccurrence = registrationGeneration rightOccurrence
+  0 replayWithdrawnRegistrationRemoved :
+    (generation : RegistrationGeneration name) -> Elem generation withdrawn ->
+    (parent : name ** component : Component key value world error **
+     occurrence : LocatedGeneratedRegistration (generationName generation)
+       parent component original **
+     (registrationGeneration occurrence = generation,
+      (canonicalParent : name) ->
+      (canonicalComponent : Component key value world error) ->
+      (canonicalOccurrence : LocatedGeneratedRegistration
+        (generationName generation) canonicalParent canonicalComponent canonical) ->
+      registrationGeneration (replayGeneratedRegistrationOrigin occurrences
+        canonicalOccurrence) = generation -> Void))
+
+||| Construct the immutable CP3 tree by definition from the occurrence fold.
+||| Consequently the strong authentication proof below is `Refl`.
+public export
+0 canonicalRegistrationTreeFromReplay :
+  (occurrences : ActionRegistrationReplayCorrespondence name key world error value
+    original canonical) ->
+  (laws : CanonicalReplayAccountingLaws name key world error value original
+    canonical withdrawn occurrences) ->
+  CanonicalRegistrationCorrespondence original canonical withdrawn
+canonicalRegistrationTreeFromReplay occurrences laws =
+  MkCanonicalRegistrationCorrespondence
+    (replayGeneratedRegistrationOrigin occurrences)
+    (replayOriginalRegistrationAccounted laws)
+    (replayCanonicalOccurrenceInjective laws)
+    (replayWithdrawnRegistrationRemoved laws)
+
+public export
+0 replayConstructedTreeAuthentication :
+  (occurrences : ActionRegistrationReplayCorrespondence name key world error value
+    original canonical) ->
+  (laws : CanonicalReplayAccountingLaws name key world error value original
+    canonical withdrawn occurrences) ->
+  AuthenticatedCanonicalRegistrationMap name key world error value original
+    canonical withdrawn (canonicalRegistrationTreeFromReplay occurrences laws)
+    occurrences
+replayConstructedTreeAuthentication occurrences laws =
+  MkAuthenticatedCanonicalRegistrationMap (\occurrence => Refl)
+
 ||| Full external/generated orchestration accounting through deletion followed
 ||| by sorting.  The registration map is authenticated against the exact
 ||| composed occurrence replay produced by those same indexed fold outputs.
@@ -281,6 +356,98 @@ record OneTraceOrchestrationAccounting
     (endpointWithdrawnGenerations accountedEndpoint)
     accountedGeneratedRegistrations
     (deletionSortingOccurrenceCorrespondence reduction sorted)
+
+||| Checked strong-authentication producer from the raw fold and ordinary CP3
+||| accounting laws.  This function does not assume the result accounting value.
+public export
+0 assembleOneTraceAccountingFromReplay :
+  {initial, originalFinal : SystemState name key value world error} ->
+  {original : Transitions initial originalFinal} ->
+  (reduction : ClosingFreeReduction name key world error value protocol nameEq
+    keyEq original) ->
+  (ordering : SupportOrderingCapital name key world error value nameEq keyEq
+    (reducedFinal reduction)) ->
+  (sorted : SortedClosingFreeTrace name key world error value protocol nameEq
+    keyEq (reducedTrace reduction) ordering) ->
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
+    originalFinal (sortedFinal sorted)) ->
+  endpointWithdrawnGenerations endpoint =
+    endpointWithdrawnGenerations (cumulativeEndpoint reduction) ->
+  SameExternalOrchestration nameEq original (sortedTrace sorted) ->
+  (laws : CanonicalReplayAccountingLaws name key world error value original
+    (sortedTrace sorted) (endpointWithdrawnGenerations endpoint)
+    (deletionSortingOccurrenceCorrespondence reduction sorted)) ->
+  OneTraceOrchestrationAccounting name key world error value protocol nameEq keyEq
+    original reduction ordering sorted
+assembleOneTraceAccountingFromReplay reduction ordering sorted endpoint exact
+  external laws =
+    MkOneTraceOrchestrationAccounting endpoint exact external
+      (canonicalRegistrationTreeFromReplay
+        (deletionSortingOccurrenceCorrespondence reduction sorted) laws)
+      (replayConstructedTreeAuthentication
+        (deletionSortingOccurrenceCorrespondence reduction sorted) laws)
+
+||| Nontrivial producer calibration: two retained generated registrations and one
+||| exact withdrawal around a real deletion/sorting occurrence fold.  The fixture
+||| stores only raw endpoint, external-input, occurrence, and ordinary CP3 laws;
+||| `twoBirthOneWithdrawalAccounting` constructs strong authentication without
+||| accepting `OneTraceOrchestrationAccounting` as a premise.
+public export
+record TwoBirthOneWithdrawalFixture
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, originalFinal : SystemState name key value world error}
+  (original : Transitions initial originalFinal)
+  (reduction : ClosingFreeReduction name key world error value protocol nameEq
+    keyEq original)
+  (ordering : SupportOrderingCapital name key world error value nameEq keyEq
+    (reducedFinal reduction))
+  (sorted : SortedClosingFreeTrace name key world error value protocol nameEq
+    keyEq (reducedTrace reduction) ordering) where
+  constructor MkTwoBirthOneWithdrawalFixture
+  fixtureEndpoint : CanonicalEndpointRelation name key world error value nameEq
+    keyEq originalFinal (sortedFinal sorted)
+  fixtureWithdrawnGeneration : RegistrationGeneration name
+  0 fixtureOneWithdrawal : endpointWithdrawnGenerations fixtureEndpoint =
+    [fixtureWithdrawnGeneration]
+  0 fixtureWithdrawalMatchesReduction :
+    endpointWithdrawnGenerations fixtureEndpoint =
+      endpointWithdrawnGenerations (cumulativeEndpoint reduction)
+  fixtureExternalInputs : SameExternalOrchestration nameEq original
+    (sortedTrace sorted)
+  fixtureFirstChild : name
+  fixtureFirstParent : name
+  fixtureFirstComponent : Component key value world error
+  fixtureFirstBirth : LocatedGeneratedRegistration fixtureFirstChild
+    fixtureFirstParent fixtureFirstComponent (sortedTrace sorted)
+  fixtureSecondChild : name
+  fixtureSecondParent : name
+  fixtureSecondComponent : Component key value world error
+  fixtureSecondBirth : LocatedGeneratedRegistration fixtureSecondChild
+    fixtureSecondParent fixtureSecondComponent (sortedTrace sorted)
+  0 fixtureOriginalBirthsDistinct : Not
+    (registrationGeneration (replayGeneratedRegistrationOrigin
+      (deletionSortingOccurrenceCorrespondence reduction sorted)
+      fixtureFirstBirth) =
+     registrationGeneration (replayGeneratedRegistrationOrigin
+      (deletionSortingOccurrenceCorrespondence reduction sorted)
+      fixtureSecondBirth))
+  fixtureReplayAccountingLaws : CanonicalReplayAccountingLaws name key world
+    error value original (sortedTrace sorted)
+    (endpointWithdrawnGenerations fixtureEndpoint)
+    (deletionSortingOccurrenceCorrespondence reduction sorted)
+
+public export
+0 twoBirthOneWithdrawalAccounting :
+  (fixture : TwoBirthOneWithdrawalFixture name key world error value protocol
+    nameEq keyEq original reduction ordering sorted) ->
+  OneTraceOrchestrationAccounting name key world error value protocol nameEq keyEq
+    original reduction ordering sorted
+twoBirthOneWithdrawalAccounting {reduction} {ordering} {sorted} fixture =
+  assembleOneTraceAccountingFromReplay reduction ordering sorted
+    (fixtureEndpoint fixture) (fixtureWithdrawalMatchesReduction fixture)
+    (fixtureExternalInputs fixture) (fixtureReplayAccountingLaws fixture)
 
 public export
 0 deletionSortingOrchestrationAccountingSpike :
