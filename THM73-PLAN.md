@@ -1,11 +1,12 @@
-# Theorem 73 (Confluence) — CP5 scoping plan, revision 7
+# Theorem 73 (Confluence) — CP5 scoping plan, revision 8
 
 Branch: `cp5-thm73-scoping`
 
 Review trail:
 
-- rounds 1–6: REJECT;
-- `review-cp5-plan-round6.md`: one wrong-birth bridge blocker and two producer-boundary majors.
+- rounds 1–7: REJECT;
+- `review-cp5-plan-round7.md`: two caller-authenticity blockers and one estimate
+  major.
 
 This remains research-only interface scoping. Accepted statements, every file
 under `src/`, `dgamma.ipkg`, and `confluenceTheorem` are immutable. Hole-bearing
@@ -14,236 +15,260 @@ must not merge unchanged to `main`.
 
 ## Executive estimate
 
-The provisional raw proof budget is **82–142 engineering shifts**. Revision 6's
-75–130 is withdrawn rather than silently retained: accepted-generation bridge
-matching, a nonempty Cartesian whole-block witness, independent O7/O8/O9 gates,
-and separate O10/O11 producers add measurable work.
+The provisional raw proof budget is now **94–163 engineering shifts**. Revision
+7's 82–142 is withdrawn. Phase B now includes occurrence-authenticated Cartesian
+nodes, phase F constructs and carries exact deletion/sorting canonical-map
+authentication, phase G consumes only authenticated originals, and phase D
+retains the occurrence capital needed by the one-trace producer.
 
-Mandatory re-estimation gates remain:
+Mandatory re-estimation gates:
 
-1. the first complete singleton and general
-   `operationalAdjacentBlockSwapSpike`, including its exact Cartesian labels;
+1. the first complete general `operationalAdjacentBlockSwapSpike`, including
+   occurrence-authenticated 2×2 and repeated-Iter crossings;
 2. the first complete O7 scan plus O8 maximal selector plus O9 enriched D72
-   step; and
+   step, with occurrence provenance carried through O10/O11; and
 3. the first complete accepted-correspondence same-name scanner proof matching
    the concrete 6/18 and 9/14 fixtures.
 
 No proof grind is authorized before external ACCEPT and user budget approval.
 
-## 1. Retained revision-6 sealing
+## 1. Round-7 results retained
 
-Round 6 confirmed that the sealing design survives every tested attack:
+The following round-7 repairs were accepted and remain unchanged:
 
-- public `MappedCanonicalSupportOrders` contains membership only;
-- a pure polluted certificate cannot reach O20;
-- an outer sealed package cannot be rebuilt around a polluted inner
-  certificate;
-- `AdjacentActorSwapSafety` cannot detach from its exact current
-  trace/blocks/bundle;
-- a generated child contradicts the licensing safety before O20; and
-- wrong trace, stale quotient, mixed schedule, and wrong occurrence-relation
-  substitutions remain rejected.
+- O7 scanner, O8 selector, O9 enrichment, O10 recursion, and O11 accounting are
+  independent producers; compatibility functions are complete wrappers;
+- `FiniteAdjacentSwapDone` cannot inhabit a nontrivial operational actor step;
+- whole-block witnesses remain nonempty, in-bounds, Cartesian-complete,
+  duplicate-label-free, and exact-counted;
+- the fixed-map arbitrary-right-birth bridge attack still fails at its accepted
+  generation equation; and
+- certificate sealing, safety coupling, scanner fixtures, and honest static
+  labeling remain intact.
 
-Revision 7 preserves these types. O19 still returns
-`CertifiedOperationalCanonicalPermutation`, existentially coupling its selected
-actor permutation to the exact operational recursive realization. Safe-selector
-existence for schedules whose support relations differ through withdrawn
-intermediates remains an explicit XL mathematical risk.
+Revision 8 changes only the authority behind canonical maps and block-position
+labels.
 
-## 2. Accepted-generation bridge matching
+## 2. Canonical-map authenticity
 
-### 2.1 Round-6 defect
+### 2.1 Exact companion without changing CP3
 
-The bridge exposed the exact replay→canonical-left source occurrence but allowed
-any canonical-right occurrence with the same renamed child, parent, and
-component. Under raw-name reuse, another birth can have the same action while
-representing a different original generation.
+`AuthenticatedCanonicalRegistrationMap` is a research-only companion indexed by:
 
-### 2.2 Revision-7 equation
+- original and canonical traces;
+- the exact withdrawn generations;
+- one immutable-CP3 `CanonicalRegistrationCorrespondence`; and
+- one `ActionRegistrationReplayCorrespondence`.
 
-`ReplayedCanonicalEndpointBridge` now consumes the full left and right
-`CanonicalSchedule`s. For every replayed generated occurrence it returns:
+For every canonical generated occurrence it proves exact dependent occurrence
+equality:
 
-1. the exact canonical-left occurrence selected by
-   `ActionRegistrationReplayCorrespondence`;
-2. a canonical-right occurrence with renamed child/parent and equal component;
+```text
+canonicalToOriginal tree canonicalOccurrence
+=
+replayGeneratedRegistrationOrigin occurrences canonicalOccurrence
+```
+
+Revision 8 therefore uses the stronger option requested by review, not merely
+generation equality plus injectivity.
+
+### 2.2 Producer authority
+
+Occurrence provenance is retained through the actual producer chain:
+
+- `DeletionChainStep.deletionOccurrenceCorrespondence`;
+- `ClosingFreeTraceCore.coreOccurrenceCorrespondence`;
+- `ClosingFreeReduction.reductionOccurrenceCorrespondence`; and
+- `SortedClosingFreeTrace.sortingOccurrenceCorrespondence`.
+
+`deletionSortingOccurrenceCorrespondence` is a complete function composing the
+exact reduction and sorting outputs. `OneTraceOrchestrationAccounting` is indexed
+by those same reduction/order/sorted values and authenticates its registration
+tree against that definitional composition. The O16 producer must construct this
+value.
+
+`IndependentCanonicalSchedule` carries the composed occurrence correspondence
+and a schedule-indexed authenticity proof. Its complete simultaneous assembler
+uses the O16 authentication directly. Replacing only
+`canonicalRegistrationTree` changes the authenticity index, so the round-7
+Probe-81 clone cannot reuse the old proof.
+
+### 2.3 Anti-overshoot choice
+
+Exact occurrence equality is available at this boundary because both the CP3
+map and the action replay map return the same
+`LocatedGeneratedRegistration ... original` type. No equality between traces at
+different intermediate states is required. This is stronger than the reviewer's
+minimum and remains constructible from the exact deletion/sorting fold outputs.
+
+## 3. Bridge consumes authenticated capitals
+
+`ReplayedCanonicalEndpointBridge` no longer accepts arbitrary public
+`CanonicalSchedule`s. It accepts the full left and right
+`IndependentCanonicalSchedule` values.
+
+For each operationally replayed generated occurrence it returns:
+
+1. the exact canonical-left source selected by the operational replay map;
+2. a right canonical occurrence with renamed child/parent and equal component;
    and
-3. the erased equation
+3. the equation
 
 ```text
 generationForward (generatedGenerationBijection sameInputs)
   (registrationGeneration
-    (canonicalToOriginal (canonicalRegistrationTree leftSchedule)
-      sourceOccurrence))
+    (replayGeneratedRegistrationOrigin
+      (canonicalOccurrenceCorrespondence leftCapital)
+      leftCanonicalOccurrence))
 =
 registrationGeneration
-  (canonicalToOriginal (canonicalRegistrationTree rightSchedule)
-    rightOccurrence)
+  (replayGeneratedRegistrationOrigin
+    (canonicalOccurrenceCorrespondence rightCapital)
+    rightCanonicalOccurrence)
 ```
 
-The direction is deliberate:
+Both originals are therefore producer-authenticated deletion/sorting origins.
+The equation is no longer interpreted through caller-replaceable schedule maps.
 
-`replayed target → canonical-left source → original-left generation → accepted
-forward bijection → original-right generation`.
+Checked calibration:
 
-The positive producer probe constructs exactly this dependent tuple. The
-round-6 alternate same-action right-birth reconstruction now fails at the
-original-generation equation, not at an incidental import or trace index.
+- the complete enriched-map clone fails before bridge construction because its
+  old authentication is indexed by the old tree;
+- the no-withdrawal synthetic schedule cannot enter the bridge without first
+  constructing the exact enriched authentication;
+- the actual forward direction elaborates; and
+- the fixed-capital arbitrary-right-birth attack still fails at the generation
+  equation.
 
-## 3. Nonempty Cartesian whole-block derivations
+## 4. Occurrence-authenticated block crossings
 
-### 3.1 Zero-node removal
+### 4.1 Removed action/tag authority
 
-`FiniteAdjacentSwapDone` remains the recursion terminator for an exhausted
-finite fold. It no longer inhabits a nontrivial `OperationalAdjacentBlockSwap`.
-That record now requires `WholeBlockSwapDerivation`, whose first field is a
-`NonEmptyFiniteAdjacentSwapDerivation` exposing a real orientation, local
-diamond, and `AdjacentSwapResult`.
+`TraceActionTagAt` is no longer used by `WholeBlockSwapDerivation`. Equal action
+and rule tag are insufficient for repeated identical L-Iter steps.
 
-### 3.2 Exact selected-block indexing
+### 4.2 Exact current node and source origin
 
-The whole-block witness is indexed by the exact:
+`NodeCrossesSourceBlockPosition` is indexed by:
 
-- `AdjacentActorOrderSwap`;
-- current source trace;
-- source `ActorBlockDecomposition`;
-- current `ReplayInvariantBundle`;
-- `AdjacentActorSwapSafety`; and
-- target trace.
+- the original source trace;
+- the exact current intermediate trace;
+- the composed prefix `ActionRegistrationReplayCorrespondence`;
+- one exact selected source block and local position;
+- the node action; and
+- the current node ordinal.
 
-Every adjacent node is labeled by a pair of zero-based positions in the selected
-left and right located blocks. `TraceActionTagAt` ties those positions to the
-node's concrete transition action and tag, distinguishing repeated Iter steps.
-The witness additionally proves:
+It contains a `LocatedActionOccurrence` in the current trace, proves that its
+ordinal is exactly the current adjacent node's ordinal, maps it through the
+prefix correspondence, and proves that the source ordinal is exactly:
 
-- every in-bounds left/right position pair occurs;
-- every labeled node uses in-bounds positions of those selected blocks;
-- crossing-position pairs are unique; and
-- node count equals the product of the two nonempty block transition counts.
+```text
+transitionCount (traceBeforeBlock selectedSourceBlock) + localPosition
+```
 
-Thus it represents the Cartesian crossing rather than a phantom derivation
-indexed only by endpoint traces.
+This ordinal law identifies the exact transition occurrence in the linear source
+trace. Full equality with a separately block-local occurrence is deliberately
+not required: those values have different trace indices and the actual fold does
+not need such transport.
 
-### 3.3 Weak→strong calibration
+### 4.3 Prefix authority comes from the derivation
 
-The positive single-crossing probe constructs a whole-block witness from one
-real orientation/diamond/result when both blocks contain exactly one transition.
-It proves the strengthened interface does not require a second node and does not
-exclude the singleton boundary case. The old zero-node producer is a required
-negative and now fails because `FiniteAdjacentSwapDerivation` cannot replace
-`WholeBlockSwapDerivation`.
+`DerivationCrossesBlockPositions` starts with the identity source
+correspondence. After each concrete `AdjacentSwapResult`, the recursive tail is
+indexed by:
 
-## 4. Independent deletion-chain gates
+```text
+composeActionRegistrationReplayCorrespondence
+  prefixOccurrences
+  (swappedOccurrenceCorrespondence result)
+```
 
-Revision 6's exact 27-hole count hid O7 and O9 inside O8's selector hole. Revision
-7 exposes five independently testable producers and keeps legacy consumers as
-complete wrappers.
+A caller cannot select an unrelated per-node origin map. Complete helper
+functions construct each current left/right occurrence from
+`AdjacentSwapResult.originalDecomposition`; the only remaining local obligation
+is the source-block ordinal equation tracked by the actual fold.
 
-### O7 — executable occurrence scan
+### 4.4 Calibration probes
 
-`closingEpisodeOccurrenceScanSpike` takes explicit initial/final state handles
-and a checked trace. It returns `ClosingEpisodeScan` containing dependent
-located closed occurrences, unique opening ordinals, completeness, and an empty
-scan→`NoClosingEpisodes` proof.
+- authenticated 1×1, 2×1, and 2×2 whole-block producers elaborate;
+- the 2×2 producer consumes only the strengthened recursive fold-label output,
+  with no premise absent from an actual intermediate replay fold;
+- the old literal duplicate pair remains rejected; and
+- reusing the exact same node/origin while changing its position 0→1 fails with
+  `Mismatch between: 0 and 1`.
 
-### O8 — maximal candidate selection
+Thus repeated identical actions cannot be shifted to an unused Cartesian label.
 
-`selectMaximalClosingEpisodeSpike` consumes the exact O7 scan and full
-canonicalization premises. Its selected branch returns a
-`DeletableClosingEpisode` tied to an ordinal in that scan; its empty branch is
-separate from deletion enrichment.
+## 5. Retained sealing, scanner, and static regressions
 
-### O9 — enriched one-step D72 adapter
+Revision 8 preserves:
 
-`enrichDeletionChainStepSpike` consumes one exact O8 candidate and returns
-`DeletionChainStep`, including D72, replay/effect/occurrence capital, typed
-classification, registration accounting, the next full bundle, and strict
-length decrease.
+- pure and outer certificate-pollution rejection;
+- exact safety-state coupling and generated-child licensing exclusion;
+- wrong operational trace, stale quotient, mixed schedule, and wrong occurrence
+  correspondence rejection;
+- exact scanner events and generations;
+- all three cross-side scanner orders for left births 6/18 and right births
+  9/14, with identical full final indices and exact deleted lists;
+- wrong-generation rejection;
+- source-sensitive O/A consumption and occurrence-fold positives; and
+- honestly labeled one-, moved-, and two-intermediate static/interface models.
 
-`chooseClosingStepSpike` is now a complete O7→O8→O9 wrapper with no hole.
-
-### O10/O11 split
-
-`deleteClosingEpisodesCoreSpike` performs only well-founded recursion and
-returns `ClosingFreeTraceCore`: closing-free trace, next premises, same external
-inputs, replay correspondence, and typed history.
-
-`assembleClosingFreeAccountingSpike` separately constructs cumulative endpoint
-and canonical-registration accounting from that exact core. The old
-`deleteAllClosingEpisodesSpike` is a complete O10→O11 wrapper.
-
-## 5. Scanner and static regression retention
-
-All revision-6 scanner and static results remain:
-
-- scanner events retain constructor kind and exact generation;
-- target-specific interleaving is tied to exact discard positions;
-- same-name births are left 6/18 and right 9/14;
-- full final index and exact deleted-list equalities hold for all three retained
-  cross-side orders:
-  - L6, R9, L18, R14;
-  - R9, L6, R14, L18;
-  - L6, R9, R14, L18;
-- wrong-generation substitution is rejected; and
-- one-, moved-, and two-intermediate four/five-fiber artifacts remain honestly
-  labeled static/interface tests, not reachable O19/O20 executions.
+No static model is promoted to a concrete reachable O19/O20 claim.
 
 ## 6. Exact producer/consumer pipeline
 
 | Producer | Exact output | Immediate consumer |
 |---|---|---|
-| Replay/occurrence algebra | effect plus action/tag/generated-generation correspondence | diamonds, deletion, operational fold, bridge |
+| Replay/occurrence algebra | effect plus action/tag/generated-generation correspondence | diamonds, deletion, sorting, operational fold |
+| O9/O10/O11 deletion | exact deletion occurrence provenance plus endpoint/accounting | one-trace sorting/accounting |
+| One-trace sorting | exact sorting occurrence provenance | O16 authentication |
+| O16 accounting | CP3 tree authenticated against composed deletion/sorting origins | O18 assembler |
+| O18 | authenticated `IndependentCanonicalSchedule` | O19, O20, O21 |
 | Local A/A, A/O, O/A, O/O | source-sensitive `LocalRelationalDiamond` | `AdjacentSwapResult` |
-| Adjacent suffix replay | next trace, endpoint, both correspondences, next full bundle | nonempty Cartesian derivation |
-| Whole-block producer | safety-indexed nonempty exact block-position crossing | operational actor recursion |
-| O7 scanner | unique complete located closing occurrences | O8 selector |
-| O8 selector | scan-indexed maximal deletable candidate or empty | O9/closing-free branch |
-| O9 adapter | enriched `DeletionChainStep` | O10 recursion |
-| O10 recursion | `ClosingFreeTraceCore` | O11 accounting |
-| O11 accounting | `ClosingFreeReduction` | sorting |
-| One-trace sorting | `IndependentCanonicalSchedule` | O19 and scanner producer |
-| O19 | membership match plus sealed operational permutation | O20 |
-| O20 | noncanonical execution, composed replay/occurrence/quotient, generation-coupled bridge | O21 |
+| Adjacent suffix replay | next trace, endpoint, occurrence map, next full bundle | authenticated Cartesian derivation |
+| Whole-block producer | nonempty exact block-position crossings through accumulated occurrence origins | operational actor recursion |
+| O19 | membership match plus sealed safe operational permutation | O20 |
+| O20 | noncanonical execution, composed replay/occurrence/quotient, authenticated bridge | O21 |
 | O21 | endpoint equivalence modulo exact vestigial generations | outer wrapper |
 | O22 wrapper | original schedules plus equivalence | immutable `ConfluenceResult` |
 
-No cross-endpoint `SupportPath`, comparability, incomparability, or false left
-linearization has been reintroduced.
+No cross-endpoint `SupportPath` transport or public pure certificate has been
+reintroduced.
 
 ## 7. Proof obligations and independently testable status
 
-There remain **23 obligations**. Every row names an independent hole-bearing
-producer or is explicitly marked complete/record-only.
+There remain **23 obligations**.
 
 | ID | Obligation | Producer status | Grade |
 |---|---|---|---|
-| **O1** | Trace/external-input/endpoint/generation and occurrence algebra. | **5 named holes**; occurrence composition helpers complete. | **M–L.** |
+| **O1** | Trace/external-input/endpoint/generation and occurrence algebra. | **5 named holes**; occurrence composition complete. | **M–L.** |
 | **O2** | Transport both `TraceIndependent` fields. | **2 named holes.** | **M–L.** |
 | **O3** | A/A diamonds with exact tags/outcomes/effects/controls. | **1 named hole.** | **L–XL.** |
 | **O4** | A/O and O/A with applicability and licensing exclusions. | **2 named holes.** | **XL gate.** |
 | **O5** | O/O with exact freshness/generation discipline. | **1 named hole.** | **XL gate.** |
-| **O6** | Adjacent suffix replay and nonempty Cartesian whole-block producer. | **2 independently callable named holes.** | **XL gate.** |
-| **O7** | Executable complete/unique closing-occurrence scan. | **1 named hole**, explicit state-handle API. | **L–XL gate.** |
+| **O6** | Adjacent suffix replay and occurrence-authenticated Cartesian whole-block producer. | **2 independently callable named holes.** | **XL gate.** |
+| **O7** | Executable complete/unique closing-occurrence scan. | **1 named hole.** | **L–XL gate.** |
 | **O8** | Scan-indexed maximal deletable candidate. | **1 named hole.** | **XL gate.** |
-| **O9** | Enriched one-step D72 producer. | **1 named hole.** | **XL gate.** |
-| **O10** | Well-founded delete recursion to `ClosingFreeTraceCore`. | **1 named hole.** | **L–XL.** |
-| **O11** | Cumulative endpoint/history/registration accounting. | **1 named hole**; O10→O11 wrapper complete. | **XL.** |
+| **O9** | Enriched one-step D72 producer, including occurrence provenance. | **1 named hole.** | **XL gate.** |
+| **O10** | Well-founded recursion retaining composed occurrence provenance. | **1 named hole.** | **L–XL.** |
+| **O11** | Cumulative endpoint/history/registration accounting retaining provenance. | **1 named hole**; wrapper complete. | **XL.** |
 | **O12** | Closing-free supported open-block shape. | **1 named hole.** | **L–XL.** |
-| **O13** | Project reached-state/Lemma-68/70 capital from bundles. | **Complete record projections; no hole.** | **S–M.** |
+| **O13** | Project reached-state/Lemma-68/70 capital from bundles. | **Complete projections; no hole.** | **S–M.** |
 | **O14** | Duplicate-free support ordering. | **1 named hole.** | **M–L.** |
 | **O15** | Minimal support truth/placement bridge under vestigials. | **1 named hole.** | **L–XL gate.** |
-| **O16** | Root/generated input placement and orchestration accounting. | **1 named hole.** | **L–XL.** |
-| **O17** | One-trace block sorting with full recursive capital. | **1 named hole.** | **XL.** |
-| **O18** | Assemble `IndependentCanonicalSchedule`. | **1 named hole** with complete simultaneous result record. | **S–M.** |
+| **O16** | Input/orchestration accounting plus exact canonical-map authentication. | **1 named hole.** | **XL.** |
+| **O17** | One-trace block sorting with full replay and occurrence capital. | **1 named hole.** | **XL.** |
+| **O18** | Assemble authenticated `IndependentCanonicalSchedule`. | **1 named hole**; simultaneous assembler complete. | **M.** |
 | **O19** | Renamed actor matching plus sealed safe operational selector. | **2 independently callable named holes.** | **XL gate.** |
-| **O20** | Aggregate operational replay/occurrence/quotient and generation-coupled bridge. | **1 named hole**; fold composition helpers complete. | **L–XL.** |
+| **O20** | Aggregate operational replay/occurrence/quotient and authenticated bridge. | **1 named hole**; folds complete. | **XL.** |
 | **O21** | Two accepted scanner inductions and four-way vestigial composition. | **3 named holes.** | **XL gate.** |
 | **O22** | Build immutable `ConfluenceResult`. | **Complete wrapper; no hole.** | **S.** |
-| **O23** | Adversarial validation and release isolation. | **Record/probe-only; no proof hole.** | **M–L.** |
+| **O23** | Adversarial validation and release isolation. | **Probe-only; no proof hole.** | **M–L.** |
 
 ## 8. Exact hole reconciliation
 
-Revision 7 contains **30 deliberate named research holes**:
+Revision 8 still contains **30 deliberate named research holes**:
 
 - canonical sort: 6;
 - cross-trace: 4;
@@ -251,70 +276,68 @@ Revision 7 contains **30 deliberate named research holes**:
 - local diamonds: 8;
 - renaming/O21: 2.
 
-The count increased 27→30 because:
+Authentication adds no opaque top-level hole. It strengthens existing coherent
+producer boundaries:
 
-- O7 scan, O8 selection, and O9 enrichment replace one combined selector hole
-  (**+2**); and
-- O10 recursion and O11 accounting replace one combined delete-all hole
-  (**+1**).
+- O9/O10/O11 must retain deletion occurrence provenance;
+- O17 retains sorting occurrence provenance;
+- O16 constructs the exact authentication companion; and
+- O18's complete assembler carries it.
 
-Forward and reverse mapping is exact:
+Forward and reverse mapping remains exact:
 
 - O1=5, O2=2, O3=1, O4=2, O5=1, O6=2;
 - O7=1, O8=1, O9=1, O10=1, O11=1, O12=1;
 - O13=0 complete, O14=1, O15=1, O16=1, O17=1, O18=1;
 - O19=2, O20=1, O21=3, O22=0 complete, O23=0 validation.
 
-These values sum to 30. No table obligation is silently hidden inside another
-hole.
+These values sum to 30.
 
-## 9. Phase arithmetic: 82–142
+## 9. Phase arithmetic: 94–163
 
 | Phase | Obligations | Raw band |
 |---|---|---:|
 | A — replay/occurrence algebra and independence | O1–O2 | 4–8 |
-| B — four orientations, suffix replay, Cartesian block producer | O3–O6 | 14–24 |
-| C — independently gated scan, maximal selection, enriched D72 | O7–O9 | 10–18 |
-| D — split recursion and cumulative accounting | O10–O11 | 9–17 |
+| B — four orientations, replay, authenticated Cartesian producer | O3–O6 | 18–31 |
+| C — scan, maximal selection, enriched D72 | O7–O9 | 10–18 |
+| D — recursion/accounting with retained occurrence provenance | O10–O11 | 10–19 |
 | E — shape/support/minimal bridge | O12–O15 | 7–13 |
-| F — one-trace accounting and sorting | O16–O18 | 9–16 |
-| G — sealed matching, accepted-generation bridge, scanner/O21 | O19–O21 | 27–41 |
+| F — one-trace sorting and exact map authentication | O16–O18 | 12–21 |
+| G — sealed matching, authenticated bridge, scanner/O21 | O19–O21 | 31–48 |
 | H — outer theorem and validation | O22–O23 | 2–5 |
 
-The rows sum exactly to **82–142**. No overlap deduction is applied.
+The rows sum exactly to **94–163**. No overlap deduction is applied.
 
-## 10. Round-6 finding closure
+## 10. Round-7 finding closure
 
-| Finding | Revision-7 resolution |
+| Finding | Revision-8 resolution |
 |---:|---|
-| **1 blocker — wrong same-action right birth** | Bridge consumes both schedules and requires accepted original-generation equality. Actual-direction positive passes; Probe 24 reconstruction fails at that equation. |
-| **2 major — zero-node/unindexed block derivation** | Added nonempty head, exact selected-block position labels, Cartesian completeness/soundness/uniqueness/count, singleton positive, and zero-node negative. |
-| **3 major — O7/O9 hidden inside selector** | Added independent O7 scan, O8 selection, O9 D72, O10 core recursion, and O11 accounting producers; legacy functions are complete wrappers. |
+| **1 blocker — forgeable canonical maps** | Added exact occurrence-equality companion indexed by tree and composed deletion/sorting occurrence map; carried in enriched capitals; bridge accepts capitals only. Probe-81 clone and Probe-27 synthetic-map path fail before a bridge equation. |
+| **2 blocker — action/tag-only Cartesian labels** | Replaced with exact current occurrence/ordinal plus accumulated-prefix source ordinal at the selected block position. Same-node 0→1 relabeling fails; 1×1, 2×1, 2×2 pass. |
+| **3 major — estimate excludes authenticity work** | Re-estimated B, D, F, and G after elaborated interfaces; exact raw sum is 94–163. |
 
-## 11. Seven exact round-7 changes
+## 11. Six exact round-8 changes
 
 | # | Required change | Resolution |
 |---:|---|---|
-| 1 | Couple bridge by accepted generation | Full left/right schedules plus canonical→original and accepted-generation equation; duplicate-birth reconstruction rejected. |
-| 2 | Nonempty block-indexed Cartesian derivation | `WholeBlockSwapDerivation`; single-crossing/singleton positive and zero-node negative. |
-| 3 | Split O7/O8/O9 and preferably O10/O11 | Five separate producer gates; two complete compatibility wrappers. |
-| 4 | Retain sealing/coupling negatives | Old/outer pollution, safety detachment, generated-child, wrong trace, stale quotient, mixed schedule, wrong occurrence all retained. |
-| 5 | Retain scanner/static tests | Three scanner orders, wrong generation, honest one/moved/two-intermediate tests retained. |
-| 6 | Reconcile/re-estimate | Exact 30-hole two-way map and exact raw 82–142 sum. |
-| 7 | Release hygiene | Immutable production/CP3, research isolation, external 207/207, and index hygiene remain required. |
+| 1 | Authenticate each canonical map without CP3 changes | Exact research companion; constructed at indexed one-trace accounting and carried in enriched capital. |
+| 2 | Bridge consumes authenticated capitals | Both accepted-generation operands are deletion/sorting replay origins; fixed-map positives/negatives retained. |
+| 3 | Occurrence-authenticated Cartesian labels | Exact current node ordinal and accumulated-prefix source-block ordinal replace action/tag matching. |
+| 4 | Shifted-node negative plus positive sizes | Same-node 0→1 fails; duplicate label remains rejected; 1×1, 2×1, 2×2 pass without extra fold premises. |
+| 5 | Hole map and estimate | Exact 30-hole reverse map retained; phases sum to 94–163. |
+| 6 | Closure/hygiene | Full negative/scanner/static/pipeline suite, five spikes, immutable CP3, production diff, research isolation, 207/207, and clean index remain mandatory. |
 
 ## 12. Validation and release boundary
 
-External round-7 review must verify:
+External round-8 review must verify:
 
-- Probe 24 cannot replace the right birth without the accepted-generation
-  equation;
-- the equation's forward direction composes with the actual replay fold and both
-  canonical registration trees;
-- `FiniteAdjacentSwapDone` cannot inhabit an actor-step output;
-- a real one-node crossing inhabits the interface for singleton blocks;
-- Cartesian labels remain tied to exact current blocks/safety;
-- O7/O8/O9 and O10/O11 are independently callable and wrappers contain no holes;
+- the exact occurrence-equality companion is indexed by both tree and replay map;
+- a replaced CP3 tree cannot reuse the old enriched authentication;
+- an arbitrary public schedule cannot enter the bridge;
+- actual-direction bridge construction and fixed-capital wrong-birth rejection;
+- every recursive block label uses identity/actual composed prefix maps;
+- Probe 50's same-node position shift fails for source ordinal reasons;
+- authenticated 1×1, 2×1, and 2×2 producers require no unavailable premise;
 - all retained sealing, detachment, scanner, static, and full-pipeline probes;
 - exactly 30 named holes and the reverse obligation map;
 - all five spikes elaborate serially;
@@ -322,4 +345,4 @@ External round-7 review must verify:
 - `src/`, `dgamma.ipkg`, and CP3 remain byte-identical to the accepted baseline.
 
 Production remains hole-free and research-unreachable. Theorem 73 remains
-unproved by design after revision 7.
+unproved by design after revision 8.
