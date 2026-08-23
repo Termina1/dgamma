@@ -1,4 +1,4 @@
-# Theorem 73 (Confluence) — CP5 proof plan, revision 13 O3 alignment repair
+# Theorem 73 (Confluence) — CP5 proof plan, revision 14 O4 alignment repair
 
 Branch: `cp5-thm73-scoping`
 
@@ -10,9 +10,11 @@ Review trail:
   composition declaration;
 - revision 12 accepted that retirement after scoped fresh-context review;
 - revision 13 authorized only the O3 dictionary-alignment repair audited below;
-  and
 - grind shifts 15–17 supplied that repair and constructively closed O3, leaving
-  24 holes.
+  24 holes;
+- the scoped revision-13 review accepted O3 with two bookkeeping changes, closed
+  at `91118c7` and `3ead7d0`; and
+- revision 14 authorizes only the O4 dictionary-alignment repair audited below.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -25,10 +27,26 @@ remain excluded from the package.
 sorting, and O19 consumers and shows that their `ReplayInvariantBundle` already
 carries literal `AlignedTransitions ... nameEq keyEq` evidence. Revision 13 adds
 to `activationActivationDiamondSpike` only the erased source-pair and singleton
-`earlyRight` alignment premises that those producers supply definitionally. It
-does not authorize the analogous O4 change. O3 is now closed, so the deferred
-scoped adversarial review of this small interface delta is **due now**; this does
-not authorize any O4 declaration change.
+`earlyRight` alignment premises that those producers supply definitionally. O3
+is closed, and `review-cp5-r13-scoped.md` accepted the repair and proof with two
+minor bookkeeping changes; both are now closed.
+
+### Revision 14: O4 dictionary alignment
+
+`research-tests/O4-DICTIONARY-COHERENCE-AUDIT.md` reproduces the same executable
+`DecEq` mismatch for the A/O and O/A bodies, traces the exact O6/O17/O19
+consumers, and shows that their replay bundles supply the pair alignment. A
+checked early O/A activation supplies its singleton alignment definitionally.
+Revision 14 therefore adds only:
+
+- one erased source-pair `AlignedTransitions` premise to A/O; and
+- that same erased source-pair premise plus one erased singleton `earlyRight`
+  premise to O/A.
+
+The O4-specific aligned producer and independent-dictionary negative are tracked.
+No O/O declaration, raw dictionary equality, caller-selected map, transition, or
+evaluator output is authorized. Scoped adversarial review of this delta is
+deferred until both O4 holes close.
 
 ## Executive estimate
 
@@ -281,10 +299,10 @@ research-tests/run-r11-suite.sh
 It runs serially:
 
 - five research spikes;
-- 28 tracked positive modules; and
-- 27 tracked expected-failure modules.
+- 29 tracked positive modules; and
+- 28 tracked expected-failure modules.
 
-All 55 tracked Idris test modules occur exactly once. Every negative specification
+All 57 tracked Idris test modules occur exactly once. Every negative specification
 contains its own mandatory diagnostic substring and source declaration name. A
 generic dependent error no longer suffices.
 
@@ -338,8 +356,8 @@ There remain **23 obligations**.
 |---|---|---|---|
 | **O1** | External/replay/endpoint/generation and coherent occurrence algebra. | **Complete after authorized retirement of the false/orphan generic endpoint-transitivity claim; pure composition helpers retained.** | **9 grind shifts actual for Phase A with O2.** |
 | **O2** | Transport both independence fields. | **Complete.** | **M–L.** |
-| **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`. Deferred revision-13 scoped review is due.** | **Closed in shifts 15–17.** |
-| **O4** | A/O and O/A licensing/applicability. | **2 holes.** | **XL gate.** |
+| **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
+| **O4** | A/O and O/A licensing/applicability. | **2 holes; revision-14 pair/singleton alignment premises authorized and producer-probed.** | **XL gate.** |
 | **O5** | O/O freshness/generation discipline. | **1 hole.** | **XL gate.** |
 | **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes**; certificate/interface complete. | **XL gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
@@ -428,17 +446,19 @@ inside a proof-phase band.
 
 ## 15. Release boundary
 
-The scoped revision-13/O3 closure review must verify only tracked HEAD artifacts:
+The deferred scoped revision-14/O4 closure review must verify only tracked HEAD
+artifacts:
 
-- the O3 interface delta is exactly the two erased `AlignedTransitions` premises;
+- the O4 interface delta is exactly the three authorized erased
+  `AlignedTransitions` premise occurrences;
 - those premises are constructible at the actual O6, O17, O19, and immutable
   statement-input consumer boundaries;
-- the tracked R13 positive producer probe succeeds and the independent-dictionary
+- the tracked R14 positive producer probe succeeds and its independent-dictionary
   negative fails at the intended dictionary-index mismatch;
-- the closed O3 body genuinely consumes alignment, checked execution,
-  independence, exact replacement shapes, and ordered controls without escape
-  hatches or surviving-hole dependencies;
-- exact 55-module runner coverage with module-specific negative diagnostics;
+- both closed O4 bodies genuinely consume alignment, checked execution,
+  independence, licensing/applicability exclusions, effects, and ordered controls
+  without escape hatches or surviving-hole dependencies;
+- exact 57-module runner coverage with module-specific negative diagnostics;
 - exact current 6/4/8/5/1 hole split and 148–249 total / 139–240
   implementation-remaining arithmetic;
 - all five spikes and every tracked test serially;
