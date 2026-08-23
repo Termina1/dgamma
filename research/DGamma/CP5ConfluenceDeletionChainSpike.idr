@@ -205,6 +205,29 @@ public export
 deletedClassificationForcesRightScannerDiscardSpike =
   ?deletedClassificationForcesRightScannerDiscardSpike_rhs
 
+||| O9's first-source occurrence fold.  The immutable Lemma-72 result fixes the
+||| surviving trace; this globally named proof obligation fixes the all-action
+||| and generated-registration origins for that exact deletion.  A caller may
+||| not select a second coherent map and attach it to the same result.
+public export
+0 deletionStepOperationalOccurrenceFoldSpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol
+    nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq
+    trace) ->
+  (result : DeletionResult name key world error value nameEq keyEq trace
+    (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate)
+    (selectedStartLive candidate)) ->
+  ActionRegistrationReplayCorrespondence name key world error value trace
+    (survivingTrace result)
+deletionStepOperationalOccurrenceFoldSpike =
+  ?deletionStepOperationalOccurrenceFoldSpike_rhs
+
 ||| Internal enriched result of one D72 call.  The public `DeletionResult` stays
 ||| immutable, but the checked fold/adapter used by Path A must construct the
 ||| replay correspondence, exact generated-registration accounting, and every
@@ -229,6 +252,10 @@ record DeletionChainStep
     error value trace (survivingTrace deletionResult)
   deletionOccurrenceCorrespondence : ActionRegistrationReplayCorrespondence name
     key world error value trace (survivingTrace deletionResult)
+  0 deletionOccurrenceCorrespondenceExact :
+    deletionOccurrenceCorrespondence =
+      deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol trace
+        premises candidate deletionResult
   deletionSameExternalInputs : SameExternalOrchestration nameEq trace
     (survivingTrace deletionResult)
   deletionEndpoint : CanonicalEndpointRelation name key world error value nameEq
@@ -333,6 +360,47 @@ classifiedGeneration :
       generation)) -> RegistrationGeneration name
 classifiedGeneration (generation ** classification) = generation
 
+||| Explicit recursive deletion derivation.  Each node contains the actual
+||| enriched Lemma-72 result and therefore its O9-sealed occurrence fold.  The
+||| output occurrence map below is computed by composition over this family.
+public export
+data ClosingFreeDeletionDerivation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  Transitions initial sourceFinal -> Transitions initial targetFinal -> Type where
+  ClosingFreeDeletionDone :
+    (trace : Transitions initial finalState) ->
+    ClosingFreeDeletionDerivation name key world error value protocol nameEq keyEq
+      trace trace
+  ClosingFreeDeletionStep :
+    (trace : Transitions initial finalState) ->
+    (premises : CanonicalizationPremises name key world error value protocol
+      nameEq keyEq trace) ->
+    (candidate : DeletableClosingEpisode name key world error value nameEq keyEq
+      trace) ->
+    (step : DeletionChainStep name key world error value protocol nameEq keyEq
+      trace premises candidate) ->
+    (target : Transitions initial targetFinal) ->
+    (rest : ClosingFreeDeletionDerivation name key world error value protocol
+      nameEq keyEq (survivingTrace (deletionResult step)) target) ->
+    ClosingFreeDeletionDerivation name key world error value protocol nameEq keyEq
+      trace target
+
+public export
+0 closingFreeDeletionOccurrenceFold :
+  (derivation : ClosingFreeDeletionDerivation name key world error value protocol
+    nameEq keyEq source target) ->
+  ActionRegistrationReplayCorrespondence name key world error value source target
+closingFreeDeletionOccurrenceFold (ClosingFreeDeletionDone trace) =
+  identityActionRegistrationReplayCorrespondence trace
+closingFreeDeletionOccurrenceFold
+  (ClosingFreeDeletionStep trace premises candidate step target rest) =
+    composeActionRegistrationReplayCorrespondence
+      (deletionOccurrenceCorrespondence step)
+      (closingFreeDeletionOccurrenceFold rest)
+
 ||| O10 recursive result before cumulative endpoint/accounting assembly.  This
 ||| gate exposes termination, the closing-free trace, replay, and typed deletion
 ||| history without hiding O11's quotient construction in the recursion hole.
@@ -354,12 +422,21 @@ record ClosingFreeTraceCore
     coreReducedTrace
   coreReplayCorrespondence : RelationalReplayCorrespondence name key world error
     value original coreReducedTrace
-  coreOccurrenceCorrespondence : ActionRegistrationReplayCorrespondence name key
-    world error value original coreReducedTrace
+  coreDeletionDerivation : ClosingFreeDeletionDerivation name key world error value
+    protocol nameEq keyEq original coreReducedTrace
   coreDeletionGenerationHistory : List
     (generation : RegistrationGeneration name **
       DeletedGenerationClassification name key world error value nameEq original
         generation)
+
+public export
+0 coreOccurrenceCorrespondence :
+  (core : ClosingFreeTraceCore name key world error value protocol nameEq keyEq
+    original) ->
+  ActionRegistrationReplayCorrespondence name key world error value original
+    (coreReducedTrace core)
+coreOccurrenceCorrespondence core =
+  closingFreeDeletionOccurrenceFold (coreDeletionDerivation core)
 
 ||| Endpoint package after deleting every closing episode.  It now retains the
 ||| exact same-external-input witness and generated-registration correspondence
@@ -382,8 +459,8 @@ record ClosingFreeReduction
   reductionSameExternalInputs : SameExternalOrchestration nameEq original reducedTrace
   reductionReplayCorrespondence : RelationalReplayCorrespondence name key world
     error value original reducedTrace
-  reductionOccurrenceCorrespondence : ActionRegistrationReplayCorrespondence name
-    key world error value original reducedTrace
+  reductionDeletionDerivation : ClosingFreeDeletionDerivation name key world error
+    value protocol nameEq keyEq original reducedTrace
   deletionGenerationHistory : List
     (generation : RegistrationGeneration name **
       DeletedGenerationClassification name key world error value nameEq original
@@ -396,6 +473,17 @@ record ClosingFreeReduction
     endpointWithdrawnGenerations cumulativeEndpoint
   cumulativeRegistrationAccounting : CanonicalRegistrationCorrespondence original
     reducedTrace (endpointWithdrawnGenerations cumulativeEndpoint)
+
+||| The reduction's exported occurrence correspondence is a projection of its
+||| recursive deletion derivation; it is not a constructor field.
+public export
+0 reductionOccurrenceCorrespondence :
+  (reduction : ClosingFreeReduction name key world error value protocol nameEq
+    keyEq original) ->
+  ActionRegistrationReplayCorrespondence name key world error value original
+    (reducedTrace reduction)
+reductionOccurrenceCorrespondence reduction =
+  closingFreeDeletionOccurrenceFold (reductionDeletionDerivation reduction)
 
 ||| The already checked public Lemma-72 implementation remains available, but
 ||| the iterative chain consumes the enriched `DeletionChainStep` above rather
