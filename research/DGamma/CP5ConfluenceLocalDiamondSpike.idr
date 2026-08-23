@@ -11,6 +11,7 @@ import DGamma.CP4DeletionFrames
 import DGamma.CP4DeletionRelationalBoundary
 import DGamma.CP4DeletionSelectedForeignLifecycleCore
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorOpen
+import DGamma.CP4DeletionSelectedForeignLifecycleBegin
 import DGamma.CP4RecoveryEffectRespect
 import DGamma.CP4Support
 import Data.Nat
@@ -1645,6 +1646,68 @@ record RawActivationMove
   rawActivationAfter : SystemState name key value world error
   0 rawActivationRuns : applyAction @{nameEq} @{keyEq} action before =
     Just (tag, rawActivationAfter)
+
+0 beginRawAfterForeignActivation :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (leftActor : name) ->
+  {first, middle, earlyRightFinal : SystemState name key value world error} ->
+  (foreignAction : Action name key value world error) ->
+  (foreignTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} (LBegin leftActor)
+    first = Just (LBeginTag, middle)) ->
+  (foreignChecked : checkedApplyAction @{nameEq} @{keyEq} foreignAction first =
+    Just (foreignTag, earlyRightFinal)) ->
+  (foreignActivation : PaperActivationStep
+    (Fired {before = first} {afterState = earlyRightFinal}
+      nameEq keyEq foreignAction foreignTag foreignChecked)) ->
+  Not (leftActor = actionOwner foreignAction) ->
+  registryWellFormed @{nameEq} @{keyEq} earlyRightFinal = True ->
+  RawActivationMove nameEq keyEq (LBegin leftActor) LBeginTag earlyRightFinal
+beginRawAfterForeignActivation {name} {key} {world} {error} {value}
+  nameEq keyEq leftActor
+  {first = MkSystemState firstWorld firstRegistry} {middle} {earlyRightFinal}
+  foreignAction foreignTag leftChecked foreignChecked foreignActivation distinct
+  earlyWellFormed =
+    let 0 leftRaw : (applyAction @{nameEq} @{keyEq} (LBegin leftActor)
+          (MkSystemState firstWorld firstRegistry) = Just (LBeginTag, middle))
+        leftRaw = checkedActionProjects nameEq keyEq (LBegin leftActor)
+          (MkSystemState firstWorld firstRegistry) middle LBeginTag leftChecked
+    in case beginSourceOwnerNotActive nameEq keyEq leftActor
+      {before = MkSystemState firstWorld firstRegistry} {afterState = middle}
+      LBeginTag leftChecked of
+      (sourceFiber ** (sourceFound, sourceInactive)) =>
+        case foreignBeginPlanView nameEq keyEq leftActor firstWorld firstRegistry
+          sourceFiber sourceFound LBeginTag middle leftRaw of
+          MkForeignBeginPlanView {component} {parent} {table} view ownerShape
+            sourceTarget tagShape afterShape =>
+              case ownerShape of
+                Refl =>
+                  let exactFiber : Fiber name key value world error
+                      exactFiber = MkFiber component parent False table
+                        (Inactive Nothing)
+                      0 targetAtEarly : (targetFiber @{nameEq} @{keyEq}
+                        exactFiber (registry earlyRightFinal) = Just view)
+                      targetAtEarly = targetFiberStableAfterForeignActivation
+                        nameEq keyEq exactFiber view foreignAction foreignTag
+                        foreignChecked foreignActivation earlyWellFormed sourceTarget
+                      0 foundAtEarly : (lookupFiber @{nameEq} leftActor
+                        (registry earlyRightFinal) = Just exactFiber)
+                      foundAtEarly = trans
+                        (transitionForeignLookup nameEq keyEq leftActor
+                          foreignAction foreignTag foreignChecked distinct)
+                        sourceFound
+                      movedAfter : SystemState name key value world error
+                      movedAfter = MkSystemState (worldState earlyRightFinal)
+                        (replaceBinding @{nameEq} leftActor
+                          (setFiberLifecycle exactFiber
+                            (Reloading (componentProgram component) id view))
+                          (registry earlyRightFinal))
+                      0 movedRaw : (applyAction @{nameEq} @{keyEq}
+                        (LBegin leftActor) earlyRightFinal =
+                        Just (LBeginTag, movedAfter))
+                      movedRaw = rewrite foundAtEarly in
+                        rewrite targetAtEarly in Refl
+                  in MkRawActivationMove movedAfter movedRaw
 
 0 advanceTransitionMapOriginCong :
   {name, key, world, error : Type} -> {value : key -> Type} ->
