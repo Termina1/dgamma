@@ -171,10 +171,10 @@ assert_no_matches() {
 assert_no_matches 'Production package reaches research CP5 modules' \
   'research/|DGamma\.CP5Confluence' src dgamma.ipkg
 assert_no_matches 'Production escape or hole found' \
-  '\?[A-Za-z_][A-Za-z0-9_]*|believe_me|assert_total|^[[:space:]]*postulate[[:space:]]|%default partial' \
+  '\?[A-Za-z_][A-Za-z0-9_]*|believe_me|assert_total|unsafePerformIO|^[[:space:]]*postulate[[:space:]]|%default partial' \
   src --include='*.idr'
 assert_no_matches 'Non-hole research escape found' \
-  'believe_me|assert_total|^[[:space:]]*postulate[[:space:]]|%default partial' \
+  'believe_me|assert_total|unsafePerformIO|^[[:space:]]*postulate[[:space:]]|%default partial' \
   research research-tests --include='*.idr'
 assert_no_matches 'Tracked test contains a hole' \
   '\?[A-Za-z_][A-Za-z0-9_]*' research-tests --include='*.idr'
