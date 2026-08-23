@@ -1,4 +1,4 @@
-# Theorem 73 (Confluence) — CP5 proof plan, revision 12 retirement draft
+# Theorem 73 (Confluence) — CP5 proof plan, revision 13 O3 alignment repair
 
 Branch: `cp5-thm73-scoping`
 
@@ -8,13 +8,24 @@ Review trail:
 - round 11: accepted the frozen 32-hole scoping interfaces;
 - grind shifts 1–9 filled six holes and retired one audited false/orphan generic
   composition declaration, leaving 25 holes;
-- the revision-12 retirement delta awaits its mandated scoped fresh-context
-  adversarial review before proof grind resumes.
+- revision 12 accepted that retirement after scoped fresh-context review; and
+- revision 13 authorizes only the O3 dictionary-alignment repair audited below.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
 module graph remain unchanged. Hole-bearing modules under `research/DGamma/`
 remain excluded from the package.
+
+### Revision 13: O3 dictionary alignment
+
+`research-tests/O3-DICTIONARY-COHERENCE-AUDIT.md` traces the genuine adjacent-swap,
+sorting, and O19 consumers and shows that their `ReplayInvariantBundle` already
+carries literal `AlignedTransitions ... nameEq keyEq` evidence. Revision 13 adds
+to `activationActivationDiamondSpike` only the erased source-pair and singleton
+`earlyRight` alignment premises that those producers supply definitionally. It
+does not authorize the analogous O4 change. The adversarial review of this small
+interface delta is deferred until O3 closes (or an independently gated O4 repair,
+whichever occurs first).
 
 ## Executive estimate
 
@@ -23,10 +34,9 @@ Phase A closed in 9 grind shifts, and phases B–H retain a **139–240** remain
 band. Revision 10's 129–226 is withdrawn. The increase charges complete O6
 ordinal semantics, O9 retained-subsequence certificate construction,
 downstream certificate threading through O16/O20, the still-unproved reachable
-repeated-Iter producer, and the still-unproved concrete O16 example. The scoped
-fresh-context retirement review is a separate one-round gate; counting it as an
-engineering shift gives an all-in projection of **149–250**, of which
-**140–241** remains at this revision.
+repeated-Iter producer, and the still-unproved concrete O16 example. Revision 13
+does not change this phase band: after the alignment repair, O3 has an accepted
+**4–7-shift** remainder inside Phase B.
 
 Mandatory re-estimation gates:
 
@@ -325,7 +335,7 @@ There remain **23 obligations**.
 |---|---|---|---|
 | **O1** | External/replay/endpoint/generation and coherent occurrence algebra. | **Complete after authorized retirement of the false/orphan generic endpoint-transitivity claim; pure composition helpers retained.** | **9 grind shifts actual for Phase A with O2.** |
 | **O2** | Transport both independence fields. | **Complete.** | **M–L.** |
-| **O3** | A/A diamonds. | **1 hole.** | **L–XL.** |
+| **O3** | A/A diamonds. | **1 hole; revision-13 source-pair and `earlyRight` alignment premises accepted and producer-suppliable.** | **L; 4–7 shifts remaining after the repair.** |
 | **O4** | A/O and O/A licensing/applicability. | **2 holes.** | **XL gate.** |
 | **O5** | O/O freshness/generation discipline. | **1 hole.** | **XL gate.** |
 | **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes**; certificate/interface complete. | **XL gate.** |
@@ -429,4 +439,4 @@ External round-12 review must verify only tracked HEAD artifacts:
 - seeded exact 207/207 build and best-effort unseeded result; and
 - no tracked/staged changes.
 
-Theorem 73 remains unproved by design after revision 12.
+Theorem 73 remains unproved by design after the revision-13 O3 alignment repair.
