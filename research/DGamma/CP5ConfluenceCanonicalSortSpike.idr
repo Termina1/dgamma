@@ -438,6 +438,50 @@ record TwoBirthOneWithdrawalFixture
     (endpointWithdrawnGenerations fixtureEndpoint)
     (deletionSortingOccurrenceCorrespondence reduction sorted)
 
+||| Construct the nontrivial fixture directly from raw trace/fold evidence.  This
+||| is the checked constructor-use missing in round 8; neither the fixture nor an
+||| accounting value is accepted as input.
+public export
+0 assembleTwoBirthOneWithdrawalFixture :
+  {initial, originalFinal : SystemState name key value world error} ->
+  {original : Transitions initial originalFinal} ->
+  {reduction : ClosingFreeReduction name key world error value protocol nameEq
+    keyEq original} ->
+  {ordering : SupportOrderingCapital name key world error value nameEq keyEq
+    (reducedFinal reduction)} ->
+  {sorted : SortedClosingFreeTrace name key world error value protocol nameEq
+    keyEq (reducedTrace reduction) ordering} ->
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
+    originalFinal (sortedFinal sorted)) ->
+  (withdrawn : RegistrationGeneration name) ->
+  endpointWithdrawnGenerations endpoint = [withdrawn] ->
+  endpointWithdrawnGenerations endpoint =
+    endpointWithdrawnGenerations (cumulativeEndpoint reduction) ->
+  (external : SameExternalOrchestration nameEq original (sortedTrace sorted)) ->
+  (firstChild, firstParent : name) ->
+  (firstComponent : Component key value world error) ->
+  (firstBirth : LocatedGeneratedRegistration firstChild firstParent firstComponent
+    (sortedTrace sorted)) ->
+  (secondChild, secondParent : name) ->
+  (secondComponent : Component key value world error) ->
+  (secondBirth : LocatedGeneratedRegistration secondChild secondParent
+    secondComponent (sortedTrace sorted)) ->
+  Not (registrationGeneration (replayGeneratedRegistrationOrigin
+    (deletionSortingOccurrenceCorrespondence reduction sorted) firstBirth) =
+    registrationGeneration (replayGeneratedRegistrationOrigin
+      (deletionSortingOccurrenceCorrespondence reduction sorted) secondBirth)) ->
+  (laws : CanonicalReplayAccountingLaws name key world error value original
+    (sortedTrace sorted) (endpointWithdrawnGenerations endpoint)
+    (deletionSortingOccurrenceCorrespondence reduction sorted)) ->
+  TwoBirthOneWithdrawalFixture name key world error value protocol nameEq keyEq
+    original reduction ordering sorted
+assembleTwoBirthOneWithdrawalFixture endpoint withdrawn one exact external
+  firstChild firstParent firstComponent firstBirth secondChild secondParent
+  secondComponent secondBirth distinct laws =
+    MkTwoBirthOneWithdrawalFixture endpoint withdrawn one exact external
+      firstChild firstParent firstComponent firstBirth secondChild secondParent
+      secondComponent secondBirth distinct laws
+
 public export
 0 twoBirthOneWithdrawalAccounting :
   (fixture : TwoBirthOneWithdrawalFixture name key world error value protocol
