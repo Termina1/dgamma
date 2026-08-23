@@ -9,9 +9,12 @@ import DGamma.CP3
 import DGamma.CP4DeletionFrameCore
 import DGamma.CP4DeletionFrames
 import DGamma.CP4DeletionRelationalBoundary
+import DGamma.CP4DeletionSelectedForeignLifecycleCore
+import DGamma.CP4DeletionSelectedForeignLifecycleAnchorOpen
 import DGamma.CP4RecoveryEffectRespect
 import DGamma.CP4Support
 import Data.Nat
+import Data.Maybe
 import Decidable.Equality
 
 %default total
@@ -1234,6 +1237,42 @@ transitionForeignLookup nameEq keyEq selected {before} {afterState} action tag
           raw
     in systemLocalUpdateForeign nameEq selected (actionOwner action) distinct
       before afterState update
+
+0 localAndBothTrue : (left, right : Bool) -> left = True -> right = True ->
+  left && right = True
+localAndBothTrue True True Refl Refl = Refl
+
+0 providerInCandidateExists :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (provider : name) ->
+  (fiber : Fiber name key value world error) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  lookupEntries @{nameEq} provider entries = Just fiber ->
+  providerCandidate @{keyEq} {value = value} {world = world} {error = error}
+    wanted fiber = True ->
+  (chosen : name ** providerIn @{nameEq} @{keyEq} {value = value}
+    {world = world} {error = error} wanted entries = Just chosen)
+providerInCandidateExists nameEq keyEq wanted provider fiber [] found candidate =
+  case found of Refl impossible
+providerInCandidateExists nameEq keyEq wanted provider fiber
+  (Bind current observed :: rest) found candidate
+  with (decEq @{nameEq} provider current)
+  providerInCandidateExists nameEq keyEq wanted current fiber
+    (Bind current observed :: rest) found candidate | Yes Refl =
+      case justInjective found of
+        Refl => rewrite candidate in (current ** Refl)
+  providerInCandidateExists nameEq keyEq wanted provider fiber
+    (Bind current observed :: rest) found candidate | No distinct
+    with (providerCandidate @{keyEq} {value = value} {world = world}
+      {error = error} wanted observed) proof currentCandidate
+    providerInCandidateExists nameEq keyEq wanted provider fiber
+      (Bind current observed :: rest) found candidate | No distinct | True =
+        (current ** Refl)
+    providerInCandidateExists nameEq keyEq wanted provider fiber
+      (Bind current observed :: rest) found candidate | No distinct | False =
+        providerInCandidateExists nameEq keyEq wanted provider fiber rest found
+          candidate
 
 0 advanceTransitionMapOriginCong :
   {name, key, world, error : Type} -> {value : key -> Type} ->
