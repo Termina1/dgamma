@@ -3,6 +3,8 @@ module DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
+import DGamma.Core
+import DGamma.Unified
 import DGamma.CP3
 import DGamma.CP4DeletionRelationalBoundary
 import DGamma.CP4Support
@@ -77,6 +79,167 @@ record RelationalReplayCorrespondence
     iteratorStageOutcome stage state =
       iteratorStageOutcome (replayIteratorStageOrigin actor stage) state
 
+0 replayTransformationOrigin :
+  {source : Transitions sourceFirst sourceFinal} ->
+  {replayed : Transitions replayedFirst replayedFinal} ->
+  RelationalReplayCorrespondence name key world error value source replayed ->
+  TraceEffectTransformation name key world error value actor replayed ->
+  TraceEffectTransformation name key world error value actor source
+replayTransformationOrigin correspondence TraceIdentity = TraceIdentity
+replayTransformationOrigin correspondence (TraceGenerator generator) =
+  TraceGenerator (replayGeneratorOrigin correspondence actor generator)
+replayTransformationOrigin correspondence (TraceCompose after before) =
+  TraceCompose (replayTransformationOrigin correspondence after)
+    (replayTransformationOrigin correspondence before)
+
+0 replayTransformationMapPreserved :
+  {source : Transitions sourceFirst sourceFinal} ->
+  {replayed : Transitions replayedFirst replayedFinal} ->
+  (correspondence : RelationalReplayCorrespondence name key world error value
+    source replayed) ->
+  (transformation : TraceEffectTransformation name key world error value actor
+    replayed) ->
+  (state : EffectState name key value world) ->
+  runTraceEffectTransformation
+    (replayTransformationOrigin correspondence transformation) state =
+  runTraceEffectTransformation transformation state
+replayTransformationMapPreserved correspondence TraceIdentity state = Refl
+replayTransformationMapPreserved correspondence (TraceGenerator generator) state =
+  replayGeneratorMapPreserved correspondence actor generator state
+replayTransformationMapPreserved correspondence (TraceCompose after before) state
+  with (runTraceEffectTransformation
+    (replayTransformationOrigin correspondence before) state) proof sourceRun
+  replayTransformationMapPreserved correspondence (TraceCompose after before)
+    state | Nothing =
+      let targetRun = trans
+            (sym (replayTransformationMapPreserved correspondence before state))
+            sourceRun
+      in rewrite targetRun in Refl
+  replayTransformationMapPreserved correspondence (TraceCompose after before)
+    state | Just middle =
+      let targetRun = trans
+            (sym (replayTransformationMapPreserved correspondence before state))
+            sourceRun
+      in rewrite targetRun in
+        replayTransformationMapPreserved correspondence after middle
+
+0 replayPartialComposeCong :
+  (leftSource, leftTarget, rightSource, rightTarget :
+    PartialEffectMap name key value world) ->
+  ((state : EffectState name key value world) ->
+    leftSource state = leftTarget state) ->
+  ((state : EffectState name key value world) ->
+    rightSource state = rightTarget state) ->
+  (state : EffectState name key value world) ->
+  partialCompose leftSource rightSource state =
+    partialCompose leftTarget rightTarget state
+replayPartialComposeCong leftSource leftTarget rightSource rightTarget leftSame
+  rightSame state with (rightSource state) proof sourceRun
+  replayPartialComposeCong leftSource leftTarget rightSource rightTarget leftSame
+    rightSame state | Nothing =
+      rewrite sym (rightSame state) in rewrite sourceRun in Refl
+  replayPartialComposeCong leftSource leftTarget rightSource rightTarget leftSame
+    rightSame state | Just middle =
+      rewrite sym (rightSame state) in rewrite sourceRun in leftSame middle
+
+0 replayPartialCommuteTransport :
+  (leftSource, leftTarget, rightSource, rightTarget :
+    PartialEffectMap name key value world) ->
+  ((state : EffectState name key value world) ->
+    leftSource state = leftTarget state) ->
+  ((state : EffectState name key value world) ->
+    rightSource state = rightTarget state) ->
+  PartialCommute (EffectStateEquivalence keyEq) leftSource rightSource ->
+  PartialCommute (EffectStateEquivalence keyEq) leftTarget rightTarget
+replayPartialCommuteTransport leftSource leftTarget rightSource rightTarget
+  leftSame rightSame commute state =
+    let leftThenRight = replayPartialComposeCong leftSource leftTarget rightSource
+          rightTarget leftSame rightSame state
+        rightThenLeft = replayPartialComposeCong rightSource rightTarget leftSource
+          leftTarget rightSame leftSame state
+        relatedSource = commute state
+        relatedRight = replace
+          {p = \observed => PartialRelated (EffectState name key value world)
+            (EffectStateRelated keyEq)
+            (partialCompose leftSource rightSource state) observed}
+          rightThenLeft relatedSource
+    in replace
+      {p = \observed => PartialRelated (EffectState name key value world)
+        (EffectStateRelated keyEq) observed
+        (partialCompose rightTarget leftTarget state)}
+      leftThenRight relatedRight
+
+0 replayOutcomeStableAtExactRun :
+  (stage : IteratorStage name key world error value actor trace) ->
+  (foreign : PartialEffectMap name key value world) ->
+  (origin, moved : EffectState name key value world) ->
+  foreign origin = Just moved ->
+  IteratorOutcomeStableUnder keyEq stage foreign origin ->
+  IteratorOutcomeAgreement name key value world error keyEq
+    (iteratorStageOutcome stage moved) (iteratorStageOutcome stage origin)
+replayOutcomeStableAtExactRun stage foreign origin moved defined stable
+  with (foreign origin) proof observed
+  replayOutcomeStableAtExactRun stage foreign origin moved defined stable |
+    Nothing = void (nothingIsNotJust defined)
+  replayOutcomeStableAtExactRun stage foreign origin moved defined stable |
+    Just actual =
+      replace
+        {p = \candidate => IteratorOutcomeAgreement name key value world error
+          keyEq (iteratorStageOutcome stage candidate)
+          (iteratorStageOutcome stage origin)}
+        (justInjective defined) stable
+
+0 replayIteratorStable :
+  {source : Transitions sourceFirst sourceFinal} ->
+  {replayed : Transitions replayedFirst replayedFinal} ->
+  (correspondence : RelationalReplayCorrespondence name key world error value
+    source replayed) ->
+  TraceIndependent name key world error value keyEq source ->
+  (left, right : name) -> Not (left = right) ->
+  (stage : IteratorStage name key world error value left replayed) ->
+  (foreign : TraceEffectTransformation name key world error value right
+    replayed) ->
+  (origin : EffectState name key value world) ->
+  IteratorOutcomeStableUnder keyEq stage
+    (runTraceEffectTransformation foreign) origin
+replayIteratorStable correspondence independent left right distinct stage foreign
+  origin with (runTraceEffectTransformation foreign origin) proof targetRun
+  replayIteratorStable correspondence independent left right distinct stage
+    foreign origin | Nothing = ()
+  replayIteratorStable correspondence independent left right distinct stage
+    foreign origin | Just moved =
+      let sourceRun : (runTraceEffectTransformation
+            (replayTransformationOrigin correspondence foreign) origin =
+              Just moved)
+          sourceRun = trans
+            (replayTransformationMapPreserved correspondence foreign origin)
+            targetRun
+          0 sourceStable : IteratorOutcomeStableUnder keyEq (replayIteratorStageOrigin correspondence left stage)
+            (runTraceEffectTransformation
+              (replayTransformationOrigin correspondence foreign)) origin
+          sourceStable = iteratorYieldsStable independent left right distinct
+            (replayIteratorStageOrigin correspondence left stage) (replayTransformationOrigin correspondence foreign) origin
+          0 sourceAgreement : IteratorOutcomeAgreement name key value world error
+            keyEq (iteratorStageOutcome (replayIteratorStageOrigin correspondence left stage) moved)
+              (iteratorStageOutcome (replayIteratorStageOrigin correspondence left stage) origin)
+          sourceAgreement = replayOutcomeStableAtExactRun (replayIteratorStageOrigin correspondence left stage)
+            (runTraceEffectTransformation
+              (replayTransformationOrigin correspondence foreign))
+            origin moved sourceRun sourceStable
+          0 originAdjusted : IteratorOutcomeAgreement name key value world error
+            keyEq (iteratorStageOutcome (replayIteratorStageOrigin correspondence left stage) moved)
+              (iteratorStageOutcome stage origin)
+          originAdjusted = replace
+            {p = \outcome => IteratorOutcomeAgreement name key value world error
+              keyEq (iteratorStageOutcome (replayIteratorStageOrigin correspondence left stage) moved) outcome}
+            (sym (replayIteratorOutcomePreserved correspondence left stage origin))
+            sourceAgreement
+      in replace
+        {p = \outcome => IteratorOutcomeAgreement name key value world error
+          keyEq outcome (iteratorStageOutcome stage origin)}
+        (sym (replayIteratorOutcomePreserved correspondence left stage moved))
+        originAdjusted
+
 ||| Generic independence transport.  Deletion and sorting must construct the
 ||| correspondence above as part of their internal replay result; this theorem
 ||| deliberately does not claim that an arbitrary public `DeletionResult`
@@ -89,8 +252,22 @@ public export
   RelationalReplayCorrespondence name key world error value source replayed ->
   TraceIndependent name key world error value keyEq source ->
   TraceIndependent name key world error value keyEq replayed
-traceIndependentAfterRelationalReplaySpike =
-  ?traceIndependentAfterRelationalReplaySpike_rhs
+traceIndependentAfterRelationalReplaySpike keyEq correspondence independent =
+  MkTraceIndependent
+    (\left, right, distinct, leftTransformation, rightTransformation =>
+      replayPartialCommuteTransport
+        (runTraceEffectTransformation
+          (replayTransformationOrigin correspondence leftTransformation))
+        (runTraceEffectTransformation leftTransformation)
+        (runTraceEffectTransformation
+          (replayTransformationOrigin correspondence rightTransformation))
+        (runTraceEffectTransformation rightTransformation)
+        (replayTransformationMapPreserved correspondence leftTransformation)
+        (replayTransformationMapPreserved correspondence rightTransformation)
+        (generatedMonoidsCommute independent left right distinct
+          (replayTransformationOrigin correspondence leftTransformation)
+          (replayTransformationOrigin correspondence rightTransformation)))
+    (replayIteratorStable correspondence independent)
 
 ||| Replay correspondence composes structurally.  This checked helper is the
 ||| one-trace bridge from original→closing-free and closing-free→sorted replay;
