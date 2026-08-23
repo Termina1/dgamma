@@ -1638,6 +1638,75 @@ targetFiberStableAfterPaperOrchestration {name} {key} {world} {error} {value}
               (outcome ** Refl) => targetFiberInactiveDelete nameEq keyEq observed
                 actor component parent retiredFlag table outcome source oldFound
 
+0 parentPresentStaticReplacement :
+  (nameEq : DecEq name) -> (parent : Parent name) -> (changed : name) ->
+  (next, old : Fiber name key value world error) ->
+  (source : Registry name key value world error) ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} changed source = Just old ->
+  parentPresent @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} parent
+    (replaceBinding @{nameEq} changed next source) =
+  parentPresent @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} parent source
+parentPresentStaticReplacement nameEq Root changed next old source found = Refl
+parentPresentStaticReplacement nameEq (ChildOf parent) changed next old source
+  found with (decEq @{nameEq} parent changed)
+  parentPresentStaticReplacement nameEq (ChildOf changed) changed next old source
+    found | Yes Refl =
+      rewrite lookupReplacedFiber changed old next source found in
+      rewrite found in Refl
+  parentPresentStaticReplacement nameEq (ChildOf parent) changed next old source
+    found | No distinct = rewrite lookupReplaceOther parent changed distinct next
+      source in Refl
+
+0 provisionsDisjointStaticReplacementEntries :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provision : CoeffectSpec key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (changed : name) -> (next, old : Fiber name key value world error) ->
+  lookupEntries @{nameEq} changed entries = Just old ->
+  fiberComponent next = fiberComponent old ->
+  provisionsDisjointFrom @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} provision
+    (replaceEntries @{nameEq} changed next entries) =
+  provisionsDisjointFrom @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} provision entries
+provisionsDisjointStaticReplacementEntries nameEq keyEq provision [] changed
+  next old found staticComponent = case found of Refl impossible
+provisionsDisjointStaticReplacementEntries nameEq keyEq provision
+  (Bind current observed :: rest) changed next old found staticComponent
+  with (decEq @{nameEq} changed current)
+  provisionsDisjointStaticReplacementEntries nameEq keyEq provision
+    (Bind current observed :: rest) current next old found staticComponent |
+    Yes Refl = case justInjective found of
+      Refl => rewrite staticComponent in Refl
+  provisionsDisjointStaticReplacementEntries nameEq keyEq provision
+    (Bind current observed :: rest) changed next old found staticComponent |
+    No distinct = cong
+      (not (provisionOverlap @{keyEq} provision
+        (componentProvisions (fiberComponent observed))) &&)
+      (provisionsDisjointStaticReplacementEntries nameEq keyEq provision rest
+        changed next old found staticComponent)
+
+0 provisionsDisjointStaticReplacement :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provision : CoeffectSpec key) ->
+  (changed : name) -> (next, old : Fiber name key value world error) ->
+  (source : Registry name key value world error) ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} changed source = Just old ->
+  fiberComponent next = fiberComponent old ->
+  provisionsDisjointFrom @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} provision
+    (bindings (replaceBinding @{nameEq} changed next source)) =
+  provisionsDisjointFrom @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} provision (bindings source)
+provisionsDisjointStaticReplacement nameEq keyEq provision changed next old
+  (MkCoeffectContext entries unique) found staticComponent =
+    provisionsDisjointStaticReplacementEntries nameEq keyEq provision entries
+      changed next old found staticComponent
+
 0 localAndBothTrue : (left, right : Bool) -> left = True -> right = True ->
   left && right = True
 localAndBothTrue True True Refl Refl = Refl
