@@ -603,6 +603,29 @@ public export
     (crossedSourcePositions whole)
 blockCrossingLabels whole = foldBlockCrossingOriginPlan (blockCrossingPlan whole)
 
+||| A shifted block-start/compensating-position alias is impossible at the
+||| authoritative whole-block boundary, even though isolated caller blocks can
+||| be arithmetically aliased.
+public export
+0 wholeSelectedCoordinateAliasImpossible :
+  (whole : WholeBlockSwapDerivation name key world error value protocol nameEq
+    keyEq orderSwap sourceTrace sourceBlocks sourcePremises safety targetTrace) ->
+  (leftPosition, rightPosition : Nat) ->
+  LTE (S leftPosition) (actorBlockTransitionCount (decomposedBlock sourceBlocks
+    (actorLeft orderSwap) (safetyLeftInOrder safety))) ->
+  LTE (S rightPosition) (actorBlockTransitionCount (decomposedBlock sourceBlocks
+    (actorRight orderSwap) (safetyRightInOrder safety))) ->
+  transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
+    (actorLeft orderSwap) (safetyLeftInOrder safety))) + leftPosition =
+  transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
+    (actorRight orderSwap) (safetyRightInOrder safety))) + rightPosition ->
+  Void
+wholeSelectedCoordinateAliasImpossible {safety} whole leftPosition rightPosition
+  leftBound rightBound exact =
+    selectedLeftRightRangesDisjoint
+      (selectedBlockCoordinateInjectivity safety)
+      leftPosition rightPosition leftBound rightBound exact
+
 public export
 wholeBlockFiniteDerivation :
   WholeBlockSwapDerivation name key world error value protocol nameEq keyEq
