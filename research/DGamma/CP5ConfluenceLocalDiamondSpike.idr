@@ -1088,6 +1088,43 @@ advanceTransitionMapOriginCong nameEq keyEq actor LLeaveTag checked same state =
 advanceTransitionMapOriginCong nameEq keyEq actor LUnloadTag checked same state =
   Refl
 
+0 activationTransitionMapOriginCong :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {before, afterState, other : SystemState name key value world error} ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  PaperActivationStep
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked) ->
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} (actionOwner action) (registry before) =
+  lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+    {error = error} (actionOwner action) (registry other) ->
+  (state : EffectState name key value world) ->
+  partialEffectMap
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked) state =
+  partialEffectMapFor nameEq keyEq action tag other state
+activationTransitionMapOriginCong nameEq keyEq action tag checked
+  (PaperBeginStep actionSame tagSame) lookupSame state =
+    case actionSame of
+      Refl => case tagSame of
+        Refl => Refl
+activationTransitionMapOriginCong nameEq keyEq action tag checked
+  (PaperIterStep actionSame tagSame) lookupSame state =
+    case actionSame of
+      Refl => case tagSame of
+        Refl => advanceTransitionMapOriginCong nameEq keyEq _ LIterTag checked
+          lookupSame state
+activationTransitionMapOriginCong nameEq keyEq action tag checked
+  (PaperFinishStep actionSame tagSame) lookupSame state =
+    case actionSame of
+      Refl => case tagSame of
+        Refl => advanceTransitionMapOriginCong nameEq keyEq _ LFinishTag checked
+          lookupSame state
+
 ||| Candidate for paper Lemma 71(1).
 public export
 0 activationActivationDiamondSpike :
