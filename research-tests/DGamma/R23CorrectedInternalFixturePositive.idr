@@ -7,6 +7,7 @@ import DGamma.Metatheory
 import DGamma.Unified
 import DGamma.CP3
 import DGamma.CP3StatementChecks
+import DGamma.CP3Support
 import DGamma.CP4Support
 import DGamma.CP4SupportSolution
 import DGamma.CP4SupportQuiescence
@@ -951,3 +952,224 @@ r23SourceBundle =
        r23InitialWellFormed r23InitialEmpty r23FinalWellFormed r23FinalQuiet
        r23FinalNoFailure r23SourceTotal r23SourceIndependent provenance ranked
        parentRanks acyclic supportWellFounded supportMatches
+
+
+-- Revision 24: declaration-local, pointwise replay of the two checked suffix
+-- heads.  Ordered registry control is deliberately absent from every type.
+
+0 controlEquivalentAfterRelatedReplacement :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (leftWorld, rightWorld : world) ->
+  (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (leftOld, rightOld, leftNext, rightNext : Fiber name key value world error) ->
+  lookupFiber @{nameEq} actor leftRegistry = Just leftOld ->
+  lookupFiber @{nameEq} actor rightRegistry = Just rightOld ->
+  FiberControlRelated leftNext rightNext ->
+  ControlEquivalent name key world error value nameEq
+    (MkSystemState leftWorld leftRegistry)
+    (MkSystemState rightWorld rightRegistry) ->
+  ControlEquivalent name key world error value nameEq
+    (MkSystemState leftWorld
+      (replaceBinding @{nameEq} actor leftNext leftRegistry))
+    (MkSystemState rightWorld
+      (replaceBinding @{nameEq} actor rightNext rightRegistry))
+controlEquivalentAfterRelatedReplacement nameEq actor leftWorld rightWorld
+  leftRegistry rightRegistry leftOld rightOld leftNext rightNext leftFound
+  rightFound nextRelated controls = MkControlEquivalent pointwise
+  where
+  0 pointwise : (selected : name) -> FiberControlMaybeRelated
+    {name = name} {key = key} {value = value} {world = world} {error = error}
+    (lookupFiber @{nameEq} selected
+      (replaceBinding @{nameEq} actor leftNext leftRegistry))
+    (lookupFiber @{nameEq} selected
+      (replaceBinding @{nameEq} actor rightNext rightRegistry))
+  pointwise selected with (decEq @{nameEq} selected actor)
+    pointwise selected | Yes same = case same of
+      Refl => rewrite lookupReplacedFiber actor leftOld leftNext leftRegistry
+        leftFound in rewrite lookupReplacedFiber actor rightOld rightNext
+          rightRegistry rightFound in SomeControlFibers nextRelated
+    pointwise selected | No distinct =
+      rewrite lookupReplaceOther selected actor distinct leftNext leftRegistry in
+      rewrite lookupReplaceOther selected actor distinct rightNext rightRegistry in
+        controlPointwise controls selected
+
+r24ReplaceActive : Nat -> Registry Nat R23Key R23Value Unit Unit ->
+  Registry Nat R23Key R23Value Unit Unit
+r24ReplaceActive actor registry = replaceBinding @{r23NameEq} actor r23Active
+  registry
+
+record R24DerivedTargetFinish
+  (actor : Nat)
+  (replayedBefore : SystemState Nat R23Key R23Value Unit Unit)
+  (oldFiber : Fiber Nat R23Key R23Value Unit Unit)
+  (oldFound : lookupFiber @{r23NameEq} actor (registry replayedBefore) =
+    Just oldFiber) where
+  constructor MkR24DerivedTargetFinish
+  nextFiber : Fiber Nat R23Key R23Value Unit Unit
+  targetState : SystemState Nat R23Key R23Value Unit Unit
+  0 targetStateExact : targetState = MkSystemState (worldState replayedBefore)
+    (replaceBinding @{r23NameEq} actor nextFiber (registry replayedBefore))
+  0 targetRaw : applyAction @{r23NameEq} @{r23KeyEq} (LAdvance actor)
+    replayedBefore = Just (LFinishTag, targetState)
+  0 sourceToNextControl : FiberControlRelated r23Active nextFiber
+
+0 r24DeriveTargetFinish :
+  (actor : Nat) ->
+  (replayedBefore : SystemState Nat R23Key R23Value Unit Unit) ->
+  (oldFiber : Fiber Nat R23Key R23Value Unit Unit) ->
+  (oldFound : lookupFiber @{r23NameEq} actor (registry replayedBefore) =
+    Just oldFiber) ->
+  FiberControlRelated oldFiber r23Begun ->
+  R24DerivedTargetFinish actor replayedBefore oldFiber oldFound
+r24DeriveTargetFinish actor (MkSystemState replayedWorld replayedRegistry)
+  (MkFiber _ targetParent targetRetired targetTable targetLifecycle)
+  oldFound
+  (FibersControlRelated targetParent Root targetRetired False targetTable
+    _ targetLifecycle (Reloading [] _ EmptyView) parentSame
+    retiredSame lifecycleRelated) = case retiredSame of
+      Refl => case lifecycleRelated of
+        ReloadingControls {leftAccumulator = targetAccumulator}
+          {leftView = targetView} remainingSame accumulatorsSame viewSame =>
+            case remainingSame of
+              Refl => case viewSame of
+                Refl =>
+                  let next : Fiber Nat R23Key R23Value Unit Unit
+                      next = MkFiber r23Component targetParent False targetTable
+                        (Active targetAccumulator targetView)
+                      after : SystemState Nat R23Key R23Value Unit Unit
+                      after = MkSystemState replayedWorld
+                        (replaceBinding @{r23NameEq} actor next replayedRegistry)
+                      0 raw : applyAction @{r23NameEq} @{r23KeyEq}
+                        (LAdvance actor)
+                        (MkSystemState replayedWorld replayedRegistry) =
+                          Just (LFinishTag, after)
+                      raw = rewrite oldFound in Refl
+                      0 nextRelated : FiberControlRelated r23Active next
+                      nextRelated = FibersControlRelated Root targetParent False
+                        False (fiberTable r23Begun) targetTable
+                        (Active id EmptyView)
+                        (Active targetAccumulator targetView) (sym parentSame)
+                        Refl (ActiveControls {error = Unit}
+                          (\input => localStateRuntimeSymmetric
+                            (accumulatorsSame input)) Refl)
+                  in MkR24DerivedTargetFinish next after Refl raw nextRelated
+
+public export
+record R24CheckedEmptyFinishReplay
+  (actor : Nat)
+  (sourceBefore, sourceAfter, replayedBefore :
+    SystemState Nat R23Key R23Value Unit Unit)
+  (sourceChecked : checkedApplyAction @{r23NameEq} @{r23KeyEq}
+    (LAdvance actor) sourceBefore = Just (LFinishTag, sourceAfter)) where
+  constructor MkR24CheckedEmptyFinishReplay
+  replayedAfter : SystemState Nat R23Key R23Value Unit Unit
+  0 replayedChecked : checkedApplyAction @{r23NameEq} @{r23KeyEq}
+    (LAdvance actor) replayedBefore = Just (LFinishTag, replayedAfter)
+  replayedTransition : Transition replayedBefore replayedAfter
+  0 replayedEndpoint : RelationalReplayEndpoint Nat R23Key Unit Unit R23Value
+    r23NameEq r23KeyEq sourceAfter replayedAfter
+
+0 r24ProduceEmptyFinish :
+  (actor : Nat) ->
+  (sourceBefore, sourceAfter, replayedBefore :
+    SystemState Nat R23Key R23Value Unit Unit) ->
+  (sourceChecked : checkedApplyAction @{r23NameEq} @{r23KeyEq}
+    (LAdvance actor) sourceBefore = Just (LFinishTag, sourceAfter)) ->
+  registryWellFormed @{r23NameEq} @{r23KeyEq} sourceBefore = True ->
+  lookupFiber @{r23NameEq} actor (registry sourceBefore) = Just r23Begun ->
+  RelationalReplayEndpoint Nat R23Key Unit Unit R23Value r23NameEq r23KeyEq
+    sourceBefore replayedBefore ->
+  R24CheckedEmptyFinishReplay actor sourceBefore sourceAfter replayedBefore
+    sourceChecked
+r24ProduceEmptyFinish actor
+  (MkSystemState sourceWorld sourceRegistry) sourceAfter
+  (MkSystemState replayedWorld replayedRegistry) sourceChecked sourceWellFormed
+  sourceFound beforeEndpoint =
+    case controlEquivalentTargetHasSource r23NameEq
+      (MkSystemState replayedWorld replayedRegistry)
+      (MkSystemState sourceWorld sourceRegistry)
+      (controlEquivalentSymmetric (replayedControls beforeEndpoint)) actor
+      r23Begun sourceFound of
+      MkControlledSourceForTarget replayedFiber replayedFound targetToSource =>
+        case r24DeriveTargetFinish actor
+          (MkSystemState replayedWorld replayedRegistry) replayedFiber
+          replayedFound targetToSource of
+          MkR24DerivedTargetFinish rightNext targetAfter targetStateExact
+            targetRaw nextLifecycle =>
+              let 0 targetWellFormed : (registryWellFormed
+                    @{r23NameEq} @{r23KeyEq} targetAfter = True)
+                  targetWellFormed = preservationTheoremProof r23NameEq
+                    r23KeyEq (LAdvance actor)
+                    (MkSystemState replayedWorld replayedRegistry) targetAfter
+                    LFinishTag (replayedWellFormed beforeEndpoint) targetRaw
+                  0 targetChecked : checkedApplyAction @{r23NameEq} @{r23KeyEq}
+                    (LAdvance actor)
+                    (MkSystemState replayedWorld replayedRegistry) =
+                      Just (LFinishTag, targetAfter)
+                  targetChecked = rewrite targetRaw in
+                    rewrite targetWellFormed in Refl
+                  0 nextControlsConcrete : ControlEquivalent Nat R23Key Unit Unit
+                    R23Value r23NameEq
+                    (MkSystemState sourceWorld
+                      (replaceBinding @{r23NameEq} actor r23Active
+                        sourceRegistry)) targetAfter
+                  nextControlsConcrete = replace
+                    {p = \observed => ControlEquivalent Nat R23Key Unit Unit
+                      R23Value r23NameEq
+                      (MkSystemState sourceWorld
+                        (replaceBinding @{r23NameEq} actor r23Active
+                          sourceRegistry)) observed}
+                    (sym targetStateExact)
+                    (controlEquivalentAfterRelatedReplacement r23NameEq actor
+                      sourceWorld replayedWorld sourceRegistry replayedRegistry
+                      r23Begun replayedFiber r23Active rightNext sourceFound
+                      replayedFound nextLifecycle
+                      (replayedControls beforeEndpoint))
+                  0 sourceRaw : applyAction @{r23NameEq} @{r23KeyEq}
+                    (LAdvance actor) (MkSystemState sourceWorld sourceRegistry) =
+                      Just (LFinishTag, sourceAfter)
+                  sourceRaw = checkedActionProjects r23NameEq r23KeyEq
+                    (LAdvance actor) (MkSystemState sourceWorld sourceRegistry)
+                    sourceAfter LFinishTag sourceChecked
+                  0 sourceConcrete : applyAction @{r23NameEq} @{r23KeyEq}
+                    (LAdvance actor) (MkSystemState sourceWorld sourceRegistry) =
+                      Just (LFinishTag,
+                        the (SystemState Nat R23Key R23Value Unit Unit)
+                          (MkSystemState sourceWorld
+                            (r24ReplaceActive actor sourceRegistry)))
+                  sourceConcrete = rewrite sourceFound in Refl
+                  0 sourceAfterExact : MkSystemState sourceWorld
+                    (replaceBinding @{r23NameEq} actor r23Active sourceRegistry) =
+                      sourceAfter
+                  sourceAfterExact = cong snd
+                    (justInjective (trans (sym sourceConcrete) sourceRaw))
+                  0 nextControls : ControlEquivalent Nat R23Key Unit Unit
+                    R23Value r23NameEq sourceAfter targetAfter
+                  nextControls = replace
+                    {p = \observed => ControlEquivalent Nat R23Key Unit Unit
+                      R23Value r23NameEq observed targetAfter}
+                    sourceAfterExact nextControlsConcrete
+                  0 nextEffects : EffectStateRelated r23KeyEq
+                    (projectEffectState @{r23NameEq} sourceAfter)
+                    (projectEffectState @{r23NameEq} targetAfter)
+                  nextEffects = r23AllEffectStatesRelated _ _
+                  targetTransition : Transition
+                    (MkSystemState replayedWorld replayedRegistry) targetAfter
+                  targetTransition = Fired r23NameEq r23KeyEq
+                    (LAdvance actor) LFinishTag targetChecked
+              in MkR24CheckedEmptyFinishReplay targetAfter targetChecked
+                targetTransition (MkRelationalReplayEndpoint nextEffects
+                  nextControls targetWellFormed)
+
+0 r24PairEndpoint : RelationalReplayEndpoint Nat R23Key Unit Unit R23Value
+  r23NameEq r23KeyEq r23AfterPair (swappedFinal r23Diamond)
+r24PairEndpoint = MkRelationalReplayEndpoint (swappedEffects r23Diamond)
+  (swappedControlEquivalent r23Diamond) (swappedWellFormed r23Diamond)
+
+public export
+0 r24FirstFinishReplay : R24CheckedEmptyFinishReplay 1 r23AfterPair
+  r23AfterAdvance1 (swappedFinal r23Diamond) r23Advance1Checked
+r24FirstFinishReplay = r24ProduceEmptyFinish 1 r23AfterPair r23AfterAdvance1
+  (swappedFinal r23Diamond) r23Advance1Checked r23AfterPairWellFormed Refl
+  r24PairEndpoint
