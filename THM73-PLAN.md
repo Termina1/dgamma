@@ -35,7 +35,12 @@ Review trail:
   with only stale inventory minor M1; M1 is closed at `40a401b`; and
 - opening O6 body work exposes a new structural evidence gap in the frozen
   operational-occurrence fold; `O6-OCCURRENCE-FOLD-EVIDENCE-AUDIT.md` records the
-  stop-audit gate without changing a research declaration or body.
+  stop-audit gate without changing a research declaration or body; and
+- revision-19 Option C scoping at
+  `research-tests/O6-SEALED-REPLAY-CERTIFICATE-SCOPING.md` traces all consumers,
+  pre-declares the exact boundary delta, and checks constructor-sealed base and
+  nonempty recursion shapes; frozen declarations remain unchanged pending the
+  cross-state one-step probe and narrow boundary gate.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -185,6 +190,25 @@ next scope is a sealed simultaneous suffix-replay certificate, not loose
 caller-selected correspondence premises. Opening remaining O6 estimate:
 **15–25 implementation shifts**, re-estimated after the first genuine one-step
 suffix certificate and the first complete suffix splice.
+
+### Revision 19: sealed simultaneous replay certificate scoping
+
+`research-tests/O6-SEALED-REPLAY-CERTIFICATE-SCOPING.md` completes the authorized
+consumer audit across `AdjacentSwapResult`, finite derivations, O17, O19, O20,
+and the R12/R16 full theorem-assembly path. It pre-declares exactly one frozen
+hole-signature change: retire/narrow
+`adjacentSwapOperationalOccurrenceFoldSpike` to a total sealed projection.
+`adjacentSwapSuffixSpike` and the other 25 frozen declarations remain unchanged.
+
+The candidate `ScopedSealedSuffixReplayCertificate` owns exact source/replayed
+suffixes, recursive spine, RAR, endpoint, next bundle, external relation,
+action/generated occurrence correspondence, and relative ordinal law. The
+tracked suffix-free and checked one-step producers derive those fields without
+accepting output-shaped capital. `R19SealedReplayConstructorNegative` confirms
+importing callers cannot construct a detached recursive tail. The one-step probe
+is genuinely nonempty but identity-replayed; a checked cross-state one-step
+certificate remains mandatory before the boundary-change gate. O6 bodies stay
+stopped and the 15–25 implementation band is unchanged.
 
 ## Executive estimate
 
@@ -437,10 +461,10 @@ research-tests/run-r11-suite.sh
 It runs serially:
 
 - five research spikes;
-- 35 tracked positive modules; and
-- 30 tracked expected-failure modules.
+- 36 tracked positive modules; and
+- 31 tracked expected-failure modules.
 
-All 65 tracked Idris test modules occur exactly once. Every negative specification
+All 67 tracked Idris test modules occur exactly once. Every negative specification
 contains its own mandatory diagnostic substring and source declaration name. A
 generic dependent error no longer suffices.
 
@@ -497,7 +521,7 @@ There remain **21 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; current fold signature is structurally uninhabitable for arbitrary nonempty replayed suffix. Stop-audit gate active; no body changed.** | **XL, opening 15–25-shift remainder after an accepted sealed evidence-boundary repair.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; revision-19 sealed-boundary scoping and base/nonempty shape probes complete. Frozen declarations unchanged; cross-state one-step probe and boundary gate pending.** | **XL, opening 15–25 implementation shifts; re-estimate at cross-state one-step and complete suffix splice.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -609,10 +633,10 @@ local O5 body. Current gate evidence is:
   dependencies;
 - `R16ConfluenceTheoremAssemblyPositive` remains only an assembly-through-holes
   check and is not evidence that O6 is producer-suppliable;
-- exact 65-module runner coverage with module-specific negative diagnostics,
+- exact 67-module runner coverage with module-specific negative diagnostics,
   including theorem assembly, root-order and arbitrary-suffix impossibility
-  proofs, revision-17 wrong-lookup rejection, and genuine revision-18 O17/O19
-  producers;
+  proofs, revision-17 wrong-lookup rejection, genuine revision-18 O17/O19
+  producers, and revision-19 sealed base/nonempty probes;
 - exact current 6/4/8/2/1 hole split and 148–249 total / 139–240
   implementation-remaining arithmetic;
 - all five spikes and every tracked test serially;
@@ -623,5 +647,6 @@ local O5 body. Current gate evidence is:
 
 Theorem 73 remains unproved with 21 research holes. Revision-17 endpoint and
 revision-18 external-order work are ratified; O5 remains only locally closed.
-O6 body work is stopped at the operational-occurrence evidence gap pending a
-narrow sealed-producer decision and scoped review.
+Revision-19 scoping is complete with no declaration change. O6 body work remains
+stopped pending the genuine cross-state one-step probe, narrow boundary gate,
+and scoped review.

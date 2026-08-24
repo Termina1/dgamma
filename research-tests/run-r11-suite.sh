@@ -53,6 +53,7 @@ POSITIVE=(
   R17FullResultImpossibility
   R18ExternalOrderProducerPositive
   R18OccurrenceFoldArbitrarySuffixImpossibilityPositive
+  R19SealedReplayCertificateScopingPositive
   R9CoordinateBoundaryPositive
   R9WholeBlockShiftedAliasContradictionPositive
 )
@@ -60,6 +61,7 @@ POSITIVE=(
 # Each expected failure has its own mandatory diagnostic fragment and source
 # declaration. A generic dependent error is not enough to pass the suite.
 NEGATIVE_SPECS=(
+  "R19SealedReplayConstructorNegative|ScopedReplayEnd is private|forgedScopedReplaySpine"
   "R17WrongLookupControlNegative|Nothing and with block in lookupEntries|wrongLookupControlPairRejected"
   "R15O5IndependentDictionaryNegative|alternateKeyEq and keyEq|independentEarlyOrchestrationCannotAlign"
   "R14O4IndependentDictionaryNegative|alternateKeyEq and keyEq|independentMixedPairCannotAlign"
@@ -133,7 +135,7 @@ run_successful_unit() {
 }
 
 # Package population is hardened against the same status-zero Error: behavior,
-# but does not contribute to the 5+35 research-unit marker count.
+# but does not contribute to the 5+36 research-unit marker count.
 run_package_build() {
   local output
   output=$(mktemp)
@@ -160,7 +162,7 @@ export IDRIS2_PATH="$ROOT/$TTC_ROOT${IDRIS2_PATH:+:$IDRIS2_PATH}"
 
 if [ "$FRESH" -eq 1 ]; then
   # Idris writes these direct --check interfaces into the package TTC root, not
-  # source-relative research directories. Delete exactly the 5+65 suite units.
+  # source-relative research directories. Delete exactly the 5+67 suite units.
   all_modules=("${SPIKES[@]}" "${POSITIVE[@]}")
   for specification in "${NEGATIVE_SPECS[@]}"; do
     IFS='|' read -r module _ _ <<<"$specification"
@@ -207,8 +209,8 @@ for specification in "${NEGATIVE_SPECS[@]}"; do
 done
 
 if [ "$FRESH" -eq 1 ]; then
-  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 40 ]; then
-    echo "Expected 40 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
+  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 41 ]; then
+    echo "Expected 41 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
     exit 1
   fi
   echo "R11_FRESH_SUCCESSFUL_BUILD_MARKERS=$SUCCESSFUL_BUILD_MARKERS"
