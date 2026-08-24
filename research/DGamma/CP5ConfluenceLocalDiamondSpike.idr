@@ -5433,6 +5433,223 @@ orchestrationRawAfterCheckedActivation nameEq keyEq
         orchestrationTag before}
       canonicalSame canonicalRaw
 
+0 localBoolAndLeftTrue : (left, right : Bool) ->
+  left && right = True -> left = True
+localBoolAndLeftTrue False right both = case both of Refl impossible
+localBoolAndLeftTrue True right both = Refl
+
+0 localBoolAndRightTrue : (left, right : Bool) ->
+  left && right = True -> right = True
+localBoolAndRightTrue False right both = case both of Refl impossible
+localBoolAndRightTrue True False both = case both of Refl impossible
+localBoolAndRightTrue True True both = Refl
+
+0 localBoolAndTrue : (left, right : Bool) ->
+  left = True -> right = True -> left && right = True
+localBoolAndTrue False right leftTrue rightTrue = case leftTrue of Refl impossible
+localBoolAndTrue True False leftTrue rightTrue = case rightTrue of Refl impossible
+localBoolAndTrue True True leftTrue rightTrue = Refl
+
+0 orchestrationRawBeforeCheckedActivation :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, originalFinal : SystemState name key value world error} ->
+  (activationAction, orchestrationAction : Action name key value world error) ->
+  (activationTag, orchestrationTag : RuleTag) ->
+  (activationChecked : checkedApplyAction @{nameEq} @{keyEq}
+    activationAction first = Just (activationTag, middle)) ->
+  (orchestrationChecked : checkedApplyAction @{nameEq} @{keyEq}
+    orchestrationAction middle = Just (orchestrationTag, originalFinal)) ->
+  (activation : PaperActivationStep
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq activationAction activationTag activationChecked)) ->
+  (orchestration : PaperOrchestrationStep
+    (Fired {before = middle} {afterState = originalFinal}
+      nameEq keyEq orchestrationAction orchestrationTag
+      orchestrationChecked)) ->
+  Not (actionOwner activationAction = actionOwner orchestrationAction) ->
+  RawActivationMove nameEq keyEq orchestrationAction orchestrationTag first
+orchestrationRawBeforeCheckedActivation {name} {key} {world} {error} {value}
+  nameEq keyEq {first = MkSystemState firstAmbient firstRegistry} {middle}
+  {originalFinal} activationAction orchestrationAction activationTag
+  orchestrationTag activationChecked orchestrationChecked activation
+  (PaperInsertStep {actor} {parent} {component} actionSame) distinct =
+    case actionSame of
+      Refl =>
+        let 0 comparison : ActivationReplacementComparison nameEq
+              (actionOwner activationAction)
+              (MkSystemState firstAmbient firstRegistry) middle
+              (MkSystemState firstAmbient firstRegistry) middle
+            comparison = activationSelfReplacementComparison nameEq keyEq
+              activationAction activationTag activationChecked activation
+            0 reverseDistinct : Not (actor = actionOwner activationAction)
+            reverseDistinct same = distinct (sym same)
+            0 sourceRaw : applyAction @{nameEq} @{keyEq}
+              (OInsert actor parent component) middle =
+              Just (orchestrationTag, originalFinal)
+            sourceRaw = checkedActionProjects nameEq keyEq
+              (OInsert actor parent component) middle originalFinal
+              orchestrationTag orchestrationChecked
+            0 concreteSourceRaw : applyAction @{nameEq} @{keyEq}
+              (OInsert actor parent component)
+              (MkSystemState (worldState middle) (registry middle)) =
+              Just (orchestrationTag, originalFinal)
+            concreteSourceRaw = trans
+              (cong (applyAction @{nameEq} @{keyEq}
+                (OInsert actor parent component)) (localSystemStateEta middle))
+              sourceRaw
+        in case foreignInsertPlanView nameEq keyEq actor parent component
+          (worldState middle) (registry middle) orchestrationTag originalFinal
+          concreteSourceRaw of
+          MkForeignInsertPlanView sourceAbsent sourceGuards =>
+            let 0 beforeAbsent = trans
+                  (lookupBeforeForeignReplacement nameEq actor
+                    (actionOwner activationAction) reverseDistinct
+                    (sourceReplacementFiber comparison) firstRegistry
+                    (registry middle) (sourceReplacementRegistry comparison))
+                  sourceAbsent
+                0 parentMiddleToFirst = trans
+                  (cong (parentPresent @{nameEq} {name = name} {key = key}
+                    {value = value} {world = world} {error = error} parent)
+                    (sourceReplacementRegistry comparison))
+                  (parentPresentStaticReplacement nameEq parent
+                    (actionOwner activationAction)
+                    (sourceReplacementFiber comparison)
+                    (sourcePreviousFiber comparison) firstRegistry
+                    (sourcePreviousFound comparison))
+                0 provisionsMiddleToFirst = trans
+                  (cong (\registry => provisionsDisjointFrom @{keyEq}
+                    {name = name} {key = key} {value = value} {world = world}
+                    {error = error} (componentProvisions component)
+                    (bindings registry)) (sourceReplacementRegistry comparison))
+                  (provisionsDisjointStaticReplacement nameEq keyEq
+                    (componentProvisions component)
+                    (actionOwner activationAction)
+                    (sourceReplacementFiber comparison)
+                    (sourcePreviousFiber comparison) firstRegistry
+                    (sourcePreviousFound comparison)
+                    (sourceReplacementStaticComponent comparison))
+                0 parentBeforeTrue = trans (sym parentMiddleToFirst)
+                  (localBoolAndLeftTrue _ _ sourceGuards)
+                0 provisionsBeforeTrue = trans (sym provisionsMiddleToFirst)
+                  (localBoolAndRightTrue _ _ sourceGuards)
+                0 beforeGuards = localBoolAndTrue _ _ parentBeforeTrue
+                  provisionsBeforeTrue
+            in case setFreshFromAbsent nameEq actor (freshFiber component parent)
+              firstRegistry beforeAbsent of
+              (applied ** inserted) =>
+                let earlyAfter : SystemState name key value world error
+                    earlyAfter = MkSystemState firstAmbient (coeffectAfter applied)
+                    0 earlyRaw : applyAction @{nameEq} @{keyEq}
+                      (OInsert actor parent component)
+                      (MkSystemState firstAmbient firstRegistry) =
+                      Just (OInsertTag, earlyAfter)
+                    earlyRaw = rewrite beforeGuards in rewrite inserted in Refl
+                in MkRawActivationMove earlyAfter earlyRaw
+orchestrationRawBeforeCheckedActivation {name} {key} {world} {error} {value}
+  nameEq keyEq {first = MkSystemState firstAmbient firstRegistry} {middle}
+  {originalFinal} activationAction orchestrationAction activationTag
+  orchestrationTag activationChecked orchestrationChecked activation
+  (PaperRetireStep {actor} actionSame) distinct = case actionSame of
+    Refl =>
+      let 0 comparison : ActivationReplacementComparison nameEq
+            (actionOwner activationAction)
+            (MkSystemState firstAmbient firstRegistry) middle
+            (MkSystemState firstAmbient firstRegistry) middle
+          comparison = activationSelfReplacementComparison nameEq keyEq
+            activationAction activationTag activationChecked activation
+          0 reverseDistinct : Not (actor = actionOwner activationAction)
+          reverseDistinct same = distinct (sym same)
+          0 sourceRaw : applyAction @{nameEq} @{keyEq} (ORetire actor) middle =
+            Just (orchestrationTag, originalFinal)
+          sourceRaw = checkedActionProjects nameEq keyEq (ORetire actor) middle
+            originalFinal orchestrationTag orchestrationChecked
+          0 concreteSourceRaw : applyAction @{nameEq} @{keyEq} (ORetire actor)
+            (MkSystemState (worldState middle) (registry middle)) =
+            Just (orchestrationTag, originalFinal)
+          concreteSourceRaw = trans
+            (cong (applyAction @{nameEq} @{keyEq} (ORetire actor))
+              (localSystemStateEta middle)) sourceRaw
+      in case retireSuccessView nameEq keyEq actor (worldState middle)
+        (registry middle) orchestrationTag originalFinal concreteSourceRaw of
+        MkRetireSuccessView actorFiber sourceFound =>
+          let 0 beforeFound = trans
+                (lookupBeforeForeignReplacement nameEq actor
+                  (actionOwner activationAction) reverseDistinct
+                  (sourceReplacementFiber comparison) firstRegistry
+                  (registry middle) (sourceReplacementRegistry comparison))
+                sourceFound
+              earlyAfter : SystemState name key value world error
+              earlyAfter = MkSystemState firstAmbient
+                (replaceBinding @{nameEq} actor (retireFiber actorFiber)
+                  firstRegistry)
+              0 earlyRaw : applyAction @{nameEq} @{keyEq} (ORetire actor)
+                (MkSystemState firstAmbient firstRegistry) =
+                Just (ORetireTag, earlyAfter)
+              earlyRaw = rewrite beforeFound in Refl
+          in MkRawActivationMove earlyAfter earlyRaw
+orchestrationRawBeforeCheckedActivation {name} {key} {world} {error} {value}
+  nameEq keyEq {first = MkSystemState firstAmbient firstRegistry} {middle}
+  {originalFinal} activationAction orchestrationAction activationTag
+  orchestrationTag activationChecked orchestrationChecked activation
+  (PaperRemoveStep {actor} actionSame) distinct = case actionSame of
+    Refl =>
+      let 0 comparison : ActivationReplacementComparison nameEq
+            (actionOwner activationAction)
+            (MkSystemState firstAmbient firstRegistry) middle
+            (MkSystemState firstAmbient firstRegistry) middle
+          comparison = activationSelfReplacementComparison nameEq keyEq
+            activationAction activationTag activationChecked activation
+          0 reverseDistinct : Not (actor = actionOwner activationAction)
+          reverseDistinct same = distinct (sym same)
+          0 sourceRaw : applyAction @{nameEq} @{keyEq} (ORemove actor) middle =
+            Just (orchestrationTag, originalFinal)
+          sourceRaw = checkedActionProjects nameEq keyEq (ORemove actor) middle
+            originalFinal orchestrationTag orchestrationChecked
+          0 concreteSourceRaw : applyAction @{nameEq} @{keyEq} (ORemove actor)
+            (MkSystemState (worldState middle) (registry middle)) =
+            Just (orchestrationTag, originalFinal)
+          concreteSourceRaw = trans
+            (cong (applyAction @{nameEq} @{keyEq} (ORemove actor))
+              (localSystemStateEta middle)) sourceRaw
+      in case removeSuccessView nameEq keyEq actor (worldState middle)
+        (registry middle) orchestrationTag originalFinal concreteSourceRaw of
+        MkRemoveSuccessView actorFiber sourceFound removable sourceNoChild =>
+          let 0 beforeFound = trans
+                (lookupBeforeForeignReplacement nameEq actor
+                  (actionOwner activationAction) reverseDistinct
+                  (sourceReplacementFiber comparison) firstRegistry
+                  (registry middle) (sourceReplacementRegistry comparison))
+                sourceFound
+              0 childMiddleToFirst = trans
+                (cong (hasChild @{nameEq} {name = name} {key = key}
+                  {value = value} {world = world} {error = error} actor)
+                  (sourceReplacementRegistry comparison))
+                (hasChildStaticReplacement nameEq actor
+                  (actionOwner activationAction)
+                  (sourceReplacementFiber comparison)
+                  (sourcePreviousFiber comparison) firstRegistry
+                  (sourcePreviousFound comparison)
+                  (sourceReplacementStaticParent comparison))
+              0 beforeNoChild = trans (sym childMiddleToFirst) sourceNoChild
+              0 normalizedGuard = replace
+                {p = \child => retired actorFiber &&
+                  isInactive (fiberLifecycle actorFiber) && not child = True}
+                sourceNoChild removable
+              0 beforeGuard : Equal
+                (retired actorFiber && isInactive (fiberLifecycle actorFiber) &&
+                  not (hasChild @{nameEq} {name = name} {key = key}
+                    {value = value} {world = world} {error = error} actor
+                    firstRegistry)) True
+              beforeGuard = rewrite beforeNoChild in normalizedGuard
+              earlyAfter : SystemState name key value world error
+              earlyAfter = MkSystemState firstAmbient
+                (deleteBinding @{nameEq} actor firstRegistry)
+              0 earlyRaw : applyAction @{nameEq} @{keyEq} (ORemove actor)
+                (MkSystemState firstAmbient firstRegistry) =
+                Just (ORemoveTag, earlyAfter)
+              earlyRaw = rewrite beforeFound in rewrite beforeGuard in Refl
+          in MkRawActivationMove earlyAfter earlyRaw
+
 record RetireBindingObservation
   (nameEq : DecEq name) (actor : name)
   (source : Registry name key value world error)
