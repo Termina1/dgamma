@@ -248,33 +248,35 @@ r23Advance2Checked = rewrite r23Advance2Raw in Refl
 
 r23Insert1 : Transition r23Initial r23AfterInsert1
 r23Insert1 = Fired r23NameEq r23KeyEq (OInsert 1 Root r23Component) OInsertTag
-  r23Insert1Checked
+  (rewrite r23Insert1Raw in Refl)
 
 r23Insert2 : Transition r23AfterInsert1 r23AfterInsert2
 r23Insert2 = Fired r23NameEq r23KeyEq (OInsert 2 Root r23Component) OInsertTag
-  r23Insert2Checked
+  (rewrite r23Insert2Raw in Refl)
 
 r23Begin1 : Transition r23AfterInsert2 r23AfterBegin1
-r23Begin1 = Fired r23NameEq r23KeyEq (LBegin 1) LBeginTag r23Begin1Checked
+r23Begin1 = Fired r23NameEq r23KeyEq (LBegin 1) LBeginTag
+  (rewrite r23Begin1Raw in Refl)
 
 r23Begin2 : Transition r23AfterBegin1 r23AfterPair
-r23Begin2 = Fired r23NameEq r23KeyEq (LBegin 2) LBeginTag r23Begin2Checked
+r23Begin2 = Fired r23NameEq r23KeyEq (LBegin 2) LBeginTag
+  (rewrite r23Begin2Raw in Refl)
 
 r23EarlyBegin2 : Transition r23AfterInsert2 r23AfterEarlyBegin2
 r23EarlyBegin2 = Fired r23NameEq r23KeyEq (LBegin 2) LBeginTag
-  r23EarlyBegin2Checked
+  (rewrite r23EarlyBegin2Raw in Refl)
 
 r23MovedBegin1 : Transition r23AfterEarlyBegin2 r23AfterSwappedPair
 r23MovedBegin1 = Fired r23NameEq r23KeyEq (LBegin 1) LBeginTag
-  r23MovedBegin1Checked
+  (rewrite r23MovedBegin1Raw in Refl)
 
 r23Advance1 : Transition r23AfterPair r23AfterAdvance1
 r23Advance1 = Fired r23NameEq r23KeyEq (LAdvance 1) LFinishTag
-  r23Advance1Checked
+  (rewrite r23Advance1Raw in Refl)
 
 r23Advance2 : Transition r23AfterAdvance1 r23Final
 r23Advance2 = Fired r23NameEq r23KeyEq (LAdvance 2) LFinishTag
-  r23Advance2Checked
+  (rewrite r23Advance2Raw in Refl)
 
 public export
 r23SourceTrace : Transitions r23Initial r23Final
@@ -525,3 +527,427 @@ r23SourceTotal = TraceComponentsTotalStep r23Insert1 _ r23Insert1Total
         (TraceComponentsTotalStep r23Advance1 _ r23Advance1Total
           (TraceComponentsTotalStep r23Advance2 NoTransitions r23Advance2Total
             TraceComponentsTotalEnd)))))
+
+
+public export
+record TransitionBoundaryObservation
+  {name, key, world, error : Type} {value : key -> Type}
+  {selectedBefore, selectedAfter, headBefore, headAfter :
+    SystemState name key value world error}
+  (selected : Transition selectedBefore selectedAfter)
+  (head : Transition headBefore headAfter) where
+  constructor MkTransitionBoundaryObservation
+  0 boundaryBeforeExact : selectedBefore = headBefore
+  0 boundaryActionExact : transitionAction selected = transitionAction head
+  0 boundaryTagExact : transitionTag selected = transitionTag head
+
+0 headOrTailBoundaryObservation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {selectedBefore, selectedAfter, first, middle, finalState :
+    SystemState name key value world error} ->
+  (selected : Transition selectedBefore selectedAfter) ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  OccursIn selected (MoreTransitions head rest) ->
+  Either (TransitionBoundaryObservation selected head) (OccursIn selected rest)
+headOrTailBoundaryObservation head head rest OccursHere =
+  Left (MkTransitionBoundaryObservation Refl Refl Refl)
+headOrTailBoundaryObservation selected head rest (OccursLater later) = Right later
+
+public export
+data R23SourcePosition :
+  SystemState Nat R23Key R23Value Unit Unit ->
+  Action Nat R23Key R23Value Unit Unit -> RuleTag -> Type where
+  R23AtInsert1 : R23SourcePosition r23Initial
+    (OInsert 1 Root r23Component) OInsertTag
+  R23AtInsert2 : R23SourcePosition r23AfterInsert1
+    (OInsert 2 Root r23Component) OInsertTag
+  R23AtBegin1 : R23SourcePosition r23AfterInsert2 (LBegin 1) LBeginTag
+  R23AtBegin2 : R23SourcePosition r23AfterBegin1 (LBegin 2) LBeginTag
+  R23AtAdvance1 : R23SourcePosition r23AfterPair (LAdvance 1) LFinishTag
+  R23AtAdvance2 : R23SourcePosition r23AfterAdvance1 (LAdvance 2) LFinishTag
+
+0 r23ObserveAs :
+  {before, expectedBefore : SystemState Nat R23Key R23Value Unit Unit} ->
+  {action, expectedAction : Action Nat R23Key R23Value Unit Unit} ->
+  {tag, expectedTag : RuleTag} ->
+  before = expectedBefore -> action = expectedAction -> tag = expectedTag ->
+  R23SourcePosition expectedBefore expectedAction expectedTag ->
+  R23SourcePosition before action tag
+r23ObserveAs Refl Refl Refl position = position
+
+0 r23SourceOccurrencePosition :
+  {before, afterState : SystemState Nat R23Key R23Value Unit Unit} ->
+  (nameEq : DecEq Nat) -> (keyEq : DecEq R23Key) ->
+  (action : Action Nat R23Key R23Value Unit Unit) -> (tag : RuleTag) ->
+  (equation : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  OccursIn (Fired {before = before} {afterState = afterState}
+    nameEq keyEq action tag equation) r23SourceTrace ->
+  R23SourcePosition before action tag
+r23SourceOccurrencePosition nameEq keyEq action tag equation occurs =
+  case headOrTailBoundaryObservation _ r23Insert1 _ occurs of
+    Left observation => r23ObserveAs (boundaryBeforeExact observation)
+      (boundaryActionExact observation) (boundaryTagExact observation)
+      R23AtInsert1
+    Right afterInsert1 =>
+      case headOrTailBoundaryObservation _ r23Insert2 _ afterInsert1 of
+        Left observation => r23ObserveAs (boundaryBeforeExact observation)
+          (boundaryActionExact observation) (boundaryTagExact observation)
+          R23AtInsert2
+        Right afterInsert2 =>
+          case headOrTailBoundaryObservation _ r23Begin1 _ afterInsert2 of
+            Left observation => r23ObserveAs (boundaryBeforeExact observation)
+              (boundaryActionExact observation) (boundaryTagExact observation)
+              R23AtBegin1
+            Right afterBegin1 =>
+              case headOrTailBoundaryObservation _ r23Begin2 _ afterBegin1 of
+                Left observation => r23ObserveAs
+                  (boundaryBeforeExact observation)
+                  (boundaryActionExact observation) (boundaryTagExact observation)
+                  R23AtBegin2
+                Right afterPair =>
+                  case headOrTailBoundaryObservation _ r23Advance1 _ afterPair of
+                    Left observation => r23ObserveAs
+                      (boundaryBeforeExact observation)
+                      (boundaryActionExact observation)
+                      (boundaryTagExact observation) R23AtAdvance1
+                    Right afterAdvance1 =>
+                      case headOrTailBoundaryObservation _ r23Advance2 _
+                        afterAdvance1 of
+                        Left observation => r23ObserveAs
+                          (boundaryBeforeExact observation)
+                          (boundaryActionExact observation)
+                          (boundaryTagExact observation) R23AtAdvance2
+                        Right empty => void (noOccurrenceInEmpty empty)
+
+0 iteratorBoundaryImpossible :
+  {before, afterState : SystemState Nat R23Key R23Value Unit Unit} ->
+  (transition : Transition before afterState) -> Type
+iteratorBoundaryImpossible {before}
+  (Fired nameEq keyEq action tag equation) =
+  (actor : Nat) -> action = LAdvance actor ->
+  (fiber : Fiber Nat R23Key R23Value Unit Unit) ->
+  lookupFiber @{nameEq} actor (registry before) = Just fiber ->
+  (remaining : List (StepEffect R23Key R23Value Unit Unit
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)))) ->
+  (accumulator : LocalState R23Key R23Value Unit
+    (componentProvisions (fiberComponent fiber)) ->
+    LocalState R23Key R23Value Unit
+      (componentProvisions (fiberComponent fiber))) ->
+  (view : View Nat
+    (dependencies (componentDependencies (fiberComponent fiber)))) ->
+  fiberLifecycle fiber = Reloading remaining accumulator view ->
+  (step : StepEffect R23Key R23Value Unit Unit
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (rest : List (StepEffect R23Key R23Value Unit Unit
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)))) ->
+  ReachableSuffix remaining (step :: rest) -> Void
+
+0 r23Insert1NotAdvance :
+  (actor : Nat) -> transitionAction r23Insert1 = LAdvance actor -> Void
+r23Insert1NotAdvance actor Refl impossible
+
+0 r23Insert2NotAdvance :
+  (actor : Nat) -> transitionAction r23Insert2 = LAdvance actor -> Void
+r23Insert2NotAdvance actor Refl impossible
+
+0 r23Begin1NotAdvance :
+  (actor : Nat) -> transitionAction r23Begin1 = LAdvance actor -> Void
+r23Begin1NotAdvance actor Refl impossible
+
+0 r23Begin2NotAdvance :
+  (actor : Nat) -> transitionAction r23Begin2 = LAdvance actor -> Void
+r23Begin2NotAdvance actor Refl impossible
+
+0 r23Insert1BoundaryImpossible : iteratorBoundaryImpossible r23Insert1
+r23Insert1BoundaryImpossible actor actionSame fiber found remaining accumulator
+  view lifecycle step rest suffix = r23Insert1NotAdvance actor actionSame
+
+0 r23Insert2BoundaryImpossible : iteratorBoundaryImpossible r23Insert2
+r23Insert2BoundaryImpossible actor actionSame fiber found remaining accumulator
+  view lifecycle step rest suffix = r23Insert2NotAdvance actor actionSame
+
+0 r23Begin1BoundaryImpossible : iteratorBoundaryImpossible r23Begin1
+r23Begin1BoundaryImpossible actor actionSame fiber found remaining accumulator
+  view lifecycle step rest suffix = r23Begin1NotAdvance actor actionSame
+
+0 r23Begin2BoundaryImpossible : iteratorBoundaryImpossible r23Begin2
+r23Begin2BoundaryImpossible actor actionSame fiber found remaining accumulator
+  view lifecycle step rest suffix = r23Begin2NotAdvance actor actionSame
+
+0 noNonemptyReachableFromEmpty :
+  {a : Type} -> {step : a} -> {rest : List a} ->
+  ReachableSuffix [] (step :: rest) -> Void
+noNonemptyReachableFromEmpty SuffixHere impossible
+
+0 r23Advance1BoundaryImpossible : iteratorBoundaryImpossible r23Advance1
+r23Advance1BoundaryImpossible actor actionSame fiber found remaining accumulator
+  view lifecycle step rest suffix = case actionSame of
+    Refl => case found of
+      Refl => case lifecycle of
+        Refl => noNonemptyReachableFromEmpty suffix
+
+0 r23Advance2BoundaryImpossible : iteratorBoundaryImpossible r23Advance2
+r23Advance2BoundaryImpossible actor actionSame fiber found remaining accumulator
+  view lifecycle step rest suffix = case actionSame of
+    Refl => case found of
+      Refl => case lifecycle of
+        Refl => noNonemptyReachableFromEmpty suffix
+
+public export
+data IteratorFreeTrace :
+  {first, finalState : SystemState Nat R23Key R23Value Unit Unit} ->
+  Transitions first finalState -> Type where
+  IteratorFreeEnd : {state : SystemState Nat R23Key R23Value Unit Unit} ->
+    IteratorFreeTrace (NoTransitions {state = state})
+  IteratorFreeStep :
+    {first, middle, finalState : SystemState Nat R23Key R23Value Unit Unit} ->
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    iteratorBoundaryImpossible transition ->
+    IteratorFreeTrace rest ->
+    IteratorFreeTrace (MoreTransitions transition rest)
+
+0 iteratorFreeTraceHasNoStage :
+  {first, finalState : SystemState Nat R23Key R23Value Unit Unit} ->
+  {trace : Transitions first finalState} -> {actor : Nat} ->
+  (free : IteratorFreeTrace trace) ->
+  IteratorStage Nat R23Key Unit Unit R23Value actor trace -> Void
+iteratorFreeTraceHasNoStage IteratorFreeEnd
+  (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+    accumulator view lifecycle step tail suffix) = noOccurrenceInEmpty occurs
+iteratorFreeTraceHasNoStage
+  (IteratorFreeStep _ rest boundary freeRest)
+  (StageFromAdvance nameEq keyEq actor tag equation OccursHere fiber found
+    remaining accumulator view lifecycle step tail suffix) =
+      boundary actor Refl fiber found remaining accumulator view lifecycle step
+        tail suffix
+iteratorFreeTraceHasNoStage
+  (IteratorFreeStep _ rest boundary freeRest)
+  (StageFromAdvance nameEq keyEq actor tag equation (OccursLater later) fiber found
+    remaining accumulator view lifecycle step tail suffix) =
+      iteratorFreeTraceHasNoStage freeRest
+        (StageFromAdvance nameEq keyEq actor tag equation later fiber found
+          remaining accumulator view lifecycle step tail suffix)
+
+0 r23IteratorFree : IteratorFreeTrace r23SourceTrace
+r23IteratorFree = IteratorFreeStep r23Insert1 _ r23Insert1BoundaryImpossible
+  (IteratorFreeStep r23Insert2 _ r23Insert2BoundaryImpossible
+    (IteratorFreeStep r23Begin1 _ r23Begin1BoundaryImpossible
+      (IteratorFreeStep r23Begin2 _ r23Begin2BoundaryImpossible
+        (IteratorFreeStep r23Advance1 _ r23Advance1BoundaryImpossible
+          (IteratorFreeStep r23Advance2 NoTransitions
+            r23Advance2BoundaryImpossible IteratorFreeEnd)))))
+
+0 r23NoSourceIterator :
+  {actor : Nat} ->
+  IteratorStage Nat R23Key Unit Unit R23Value actor r23SourceTrace -> Void
+r23NoSourceIterator = iteratorFreeTraceHasNoStage r23IteratorFree
+
+0 transitionActualMapTotal :
+  {before, afterState : SystemState Nat R23Key R23Value Unit Unit} ->
+  (transition : Transition before afterState) -> Type
+transitionActualMapTotal transition =
+  (state : EffectState Nat R23Key R23Value Unit) ->
+  (next : EffectState Nat R23Key R23Value Unit **
+    partialEffectMap transition state = Just next)
+
+public export
+data ActualMapsTotalTrace :
+  {first, finalState : SystemState Nat R23Key R23Value Unit Unit} ->
+  Transitions first finalState -> Type where
+  ActualMapsTotalEnd : {state : SystemState Nat R23Key R23Value Unit Unit} ->
+    ActualMapsTotalTrace (NoTransitions {state = state})
+  ActualMapsTotalStep :
+    {first, middle, finalState : SystemState Nat R23Key R23Value Unit Unit} ->
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    transitionActualMapTotal transition ->
+    ActualMapsTotalTrace rest ->
+    ActualMapsTotalTrace (MoreTransitions transition rest)
+
+public export
+0 actualMapTotalFromTrace :
+  {first, finalState : SystemState Nat R23Key R23Value Unit Unit} ->
+  {trace : Transitions first finalState} ->
+  (maps : ActualMapsTotalTrace trace) ->
+  {before, afterState : SystemState Nat R23Key R23Value Unit Unit} ->
+  (nameEq : DecEq Nat) -> (keyEq : DecEq R23Key) ->
+  (action : Action Nat R23Key R23Value Unit Unit) -> (tag : RuleTag) ->
+  (equation : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (occurs : OccursIn (Fired {before = before} {afterState = afterState}
+    nameEq keyEq action tag equation) trace) ->
+  (state : EffectState Nat R23Key R23Value Unit) ->
+  (next : EffectState Nat R23Key R23Value Unit **
+    partialEffectMapFor nameEq keyEq action tag before state = Just next)
+actualMapTotalFromTrace ActualMapsTotalEnd nameEq keyEq action tag equation occurs
+  state = void (noOccurrenceInEmpty occurs)
+actualMapTotalFromTrace
+  (ActualMapsTotalStep _ rest boundary totalRest)
+  nameEq keyEq action tag equation OccursHere state = boundary state
+actualMapTotalFromTrace
+  (ActualMapsTotalStep _ rest boundary totalRest)
+  nameEq keyEq action tag equation (OccursLater later) state =
+    actualMapTotalFromTrace totalRest nameEq keyEq action tag equation later state
+
+0 r23Insert1MapTotal : transitionActualMapTotal r23Insert1
+r23Insert1MapTotal state = (_ ** Refl)
+
+0 r23Insert2MapTotal : transitionActualMapTotal r23Insert2
+r23Insert2MapTotal state = (_ ** Refl)
+
+0 r23Begin1MapTotal : transitionActualMapTotal r23Begin1
+r23Begin1MapTotal state = (state ** Refl)
+
+0 r23Begin2MapTotal : transitionActualMapTotal r23Begin2
+r23Begin2MapTotal state = (state ** Refl)
+
+0 r23Advance1MapTotal : transitionActualMapTotal r23Advance1
+r23Advance1MapTotal state = (state ** Refl)
+
+0 r23Advance2MapTotal : transitionActualMapTotal r23Advance2
+r23Advance2MapTotal state = (state ** Refl)
+
+0 r23ActualMapsTotal : ActualMapsTotalTrace r23SourceTrace
+r23ActualMapsTotal = ActualMapsTotalStep r23Insert1 _ r23Insert1MapTotal
+  (ActualMapsTotalStep r23Insert2 _ r23Insert2MapTotal
+    (ActualMapsTotalStep r23Begin1 _ r23Begin1MapTotal
+      (ActualMapsTotalStep r23Begin2 _ r23Begin2MapTotal
+        (ActualMapsTotalStep r23Advance1 _ r23Advance1MapTotal
+          (ActualMapsTotalStep r23Advance2 NoTransitions r23Advance2MapTotal
+            ActualMapsTotalEnd)))))
+
+0 r23ActualSourceGeneratorTotal :
+  {before, afterState : SystemState Nat R23Key R23Value Unit Unit} ->
+  (nameEq : DecEq Nat) -> (keyEq : DecEq R23Key) ->
+  (action : Action Nat R23Key R23Value Unit Unit) -> (tag : RuleTag) ->
+  (equation : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (occurs : OccursIn (Fired {before = before} {afterState = afterState}
+    nameEq keyEq action tag equation) r23SourceTrace) ->
+  (state : EffectState Nat R23Key R23Value Unit) ->
+  (next : EffectState Nat R23Key R23Value Unit **
+    partialEffectMapFor nameEq keyEq action tag before state = Just next)
+r23ActualSourceGeneratorTotal = actualMapTotalFromTrace r23ActualMapsTotal
+
+0 r23SourceGeneratorTotal :
+  {actor : Nat} ->
+  (generator : TraceEffectGenerator Nat R23Key Unit Unit R23Value actor
+    r23SourceTrace) ->
+  (state : EffectState Nat R23Key R23Value Unit) ->
+  (next : EffectState Nat R23Key R23Value Unit **
+    traceGeneratorMap generator state = Just next)
+r23SourceGeneratorTotal
+  (ActualForwardGenerator before afterState nameEq keyEq action tag equation
+    occurs actorMatches) state =
+      r23ActualSourceGeneratorTotal nameEq keyEq action tag equation occurs state
+r23SourceGeneratorTotal (IteratorForwardGenerator stage) state =
+  void (r23NoSourceIterator stage)
+r23SourceGeneratorTotal (IteratorYieldedGenerator stage origin) state =
+  void (r23NoSourceIterator stage)
+
+0 r23SourceTransformationTotal :
+  {actor : Nat} ->
+  (transformation : TraceEffectTransformation Nat R23Key Unit Unit R23Value actor
+    r23SourceTrace) ->
+  (state : EffectState Nat R23Key R23Value Unit) ->
+  (next : EffectState Nat R23Key R23Value Unit **
+    runTraceEffectTransformation transformation state = Just next)
+r23SourceTransformationTotal TraceIdentity state = (state ** Refl)
+r23SourceTransformationTotal (TraceGenerator generator) state =
+  r23SourceGeneratorTotal generator state
+r23SourceTransformationTotal (TraceCompose after before) state =
+  case r23SourceTransformationTotal before state of
+    (middle ** beforeRuns) =>
+      case r23SourceTransformationTotal after middle of
+        (finalState ** afterRuns) =>
+          (finalState ** rewrite beforeRuns in rewrite afterRuns in Refl)
+
+0 r23EmptyKeyContextBindings :
+  (context : CoeffectContext R23Key R23Value) -> bindings context = []
+r23EmptyKeyContextBindings (MkCoeffectContext [] unique) = Refl
+r23EmptyKeyContextBindings (MkCoeffectContext (Bind key value :: rest) unique) =
+  case key of _ impossible
+
+0 r23AllEffectStatesRelated :
+  (left, right : EffectState Nat R23Key R23Value Unit) ->
+  EffectStateRelated r23KeyEq left right
+r23AllEffectStatesRelated (MkEffectState () leftTables)
+  (MkEffectState () rightTables) = MkEffectStateRelated Refl
+    (\selected => trans (r23EmptyKeyContextBindings (leftTables selected))
+      (sym (r23EmptyKeyContextBindings (rightTables selected))))
+
+0 r23SourceIndependent : TraceIndependent Nat R23Key Unit Unit R23Value
+  r23KeyEq r23SourceTrace
+r23SourceIndependent = MkTraceIndependent commute stable
+  where
+  0 commute :
+    (left, right : Nat) -> Not (left = right) ->
+    (leftT : TraceEffectTransformation Nat R23Key Unit Unit R23Value left
+      r23SourceTrace) ->
+    (rightT : TraceEffectTransformation Nat R23Key Unit Unit R23Value right
+      r23SourceTrace) ->
+    PartialCommute (EffectStateEquivalence r23KeyEq)
+      (runTraceEffectTransformation leftT) (runTraceEffectTransformation rightT)
+  commute left right distinct leftT rightT state =
+    case r23SourceTransformationTotal rightT state of
+      (afterRight ** rightRuns) =>
+        case r23SourceTransformationTotal leftT afterRight of
+          (leftAfterRight ** leftAfterRightRuns) =>
+            case r23SourceTransformationTotal leftT state of
+              (afterLeft ** leftRuns) =>
+                case r23SourceTransformationTotal rightT afterLeft of
+                  (rightAfterLeft ** rightAfterLeftRuns) =>
+                    rewrite rightRuns in rewrite leftAfterRightRuns in
+                    rewrite leftRuns in rewrite rightAfterLeftRuns in
+                      PartialDefined
+                        (r23AllEffectStatesRelated leftAfterRight rightAfterLeft)
+
+  0 stable :
+    (left, right : Nat) -> Not (left = right) ->
+    (stage : IteratorStage Nat R23Key Unit Unit R23Value left r23SourceTrace) ->
+    (foreign : TraceEffectTransformation Nat R23Key Unit Unit R23Value right
+      r23SourceTrace) ->
+    (origin : EffectState Nat R23Key R23Value Unit) ->
+    IteratorOutcomeStableUnder r23KeyEq stage
+      (runTraceEffectTransformation foreign) origin
+  stable left right distinct stage foreign origin = void (r23NoSourceIterator stage)
+
+
+public export
+0 r23SourceBundle : ReplayInvariantBundle Nat R23Key Unit Unit R23Value
+  r23Protocol r23NameEq r23KeyEq r23SourceTrace
+r23SourceBundle =
+  let reached : ReachedFromEmpty Nat R23Key Unit Unit R23Value r23NameEq r23KeyEq
+        r23Final
+      reached = MkReachedFromEmpty r23Initial r23SourceTrace r23SourceAligned
+        r23InitialEmpty r23InitialWellFormed
+      0 provenance : RegistrationProvenance r23Protocol r23NameEq r23SourceTrace
+      provenance = registrationDisciplineProvenance r23Protocol r23NameEq
+        r23SourceTrace r23SourceDiscipline
+      0 ranked : RegistryProtocolRanked r23Protocol r23NameEq r23Final
+      ranked = reachedRegistryProtocolRanked r23Protocol r23NameEq r23KeyEq
+        reached provenance
+      0 parentRanks : RegistryParentRanksIncrease r23Protocol r23NameEq r23Final
+      parentRanks = reachedRegistryParentRanksIncrease r23Protocol r23NameEq
+        r23KeyEq reached provenance
+      0 acyclic : PrecedenceAcyclic r23NameEq r23Final
+      acyclic = disciplinedEndpointPrecedenceAcyclic r23Protocol r23NameEq
+        r23KeyEq r23Final reached r23SourceDiscipline
+      0 supportWellFounded : SupportWellFounded r23NameEq r23Final
+      supportWellFounded = supportCombinedWellFounded r23Protocol r23NameEq
+        r23Final ranked parentRanks
+      0 supportMatches : SupportMatchesActive r23NameEq r23KeyEq r23Final
+      supportMatches = deletionPremisesGiveSupportMatchesActive r23Protocol
+        r23NameEq r23KeyEq r23Initial r23Final r23SourceTrace r23SourceAligned
+        r23SourceDiscipline r23InitialWellFormed r23InitialEmpty r23FinalQuiet
+        r23FinalNoFailure r23SourceTotal
+  in MkReplayInvariantBundle r23SourceAligned r23SourceDiscipline
+       r23InitialWellFormed r23InitialEmpty r23FinalWellFormed r23FinalQuiet
+       r23FinalNoFailure r23SourceTotal r23SourceIndependent provenance ranked
+       parentRanks acyclic supportWellFounded supportMatches
