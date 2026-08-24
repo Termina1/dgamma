@@ -1678,3 +1678,62 @@ public export
 0 r25FinalEndpoint : RelationalReplayEndpoint Nat R23Key Unit Unit R23Value
   r23NameEq r23KeyEq r23Final (replayedAfter r25SecondFinishReplay)
 r25FinalEndpoint = r24FinalEndpoint
+
+public export
+0 r25WholeTargetTrace : Transitions r23Initial
+  (replayedAfter r25SecondFinishReplay)
+r25WholeTargetTrace = MoreTransitions r23Insert1
+  (MoreTransitions r23Insert2
+    (MoreTransitions (movedRight (baseDiamond r25AlignedDiamond))
+      (MoreTransitions (movedLeft (baseDiamond r25AlignedDiamond))
+        (MoreTransitions (replayedTransition r25FirstFinishReplay)
+          (MoreTransitions (replayedTransition r25SecondFinishReplay)
+            NoTransitions)))))
+
+0 r25AppendAligned :
+  {first, middle, finalState : SystemState Nat R23Key R23Value Unit Unit} ->
+  {left : Transitions first middle} ->
+  {right : Transitions middle finalState} ->
+  AlignedTransitions Nat R23Key Unit Unit R23Value r23NameEq r23KeyEq left ->
+  AlignedTransitions Nat R23Key Unit Unit R23Value r23NameEq r23KeyEq right ->
+  AlignedTransitions Nat R23Key Unit Unit R23Value r23NameEq r23KeyEq
+    (appendTransitions left right)
+r25AppendAligned AlignedEnd rightAligned = rightAligned
+r25AppendAligned (AlignedStep action tag checked rest restAligned) rightAligned =
+  AlignedStep action tag checked (appendTransitions rest right)
+    (r25AppendAligned restAligned rightAligned)
+
+0 r25WholeAligned : AlignedTransitions Nat R23Key Unit Unit R23Value r23NameEq
+  r23KeyEq r25WholeTargetTrace
+r25WholeAligned = r25AppendAligned r24PrefixAligned
+  (r25AppendAligned (movedPairAligned r25AlignedDiamond) r24SuffixAligned)
+
+0 r25FinishStepDiscipline :
+  {actor : Nat} ->
+  {sourceBefore, sourceAfter, replayedBefore :
+    SystemState Nat R23Key R23Value Unit Unit} ->
+  {finalState : SystemState Nat R23Key R23Value Unit Unit} ->
+  {sourceChecked : checkedApplyAction @{r23NameEq} @{r23KeyEq}
+    (LAdvance actor) sourceBefore = Just (LFinishTag, sourceAfter)} ->
+  (replay : R24CheckedEmptyFinishReplay actor sourceBefore sourceAfter
+    replayedBefore sourceChecked) ->
+  (rest : Transitions (replayedAfter replay) finalState) ->
+  RegistrationStepDiscipline r23Protocol r23NameEq
+    (transitionAction (replayedTransition replay)) replayedBefore rest
+r25FinishStepDiscipline replay rest = rewrite replayedActionExact replay in ()
+
+0 r25WholeDiscipline : RegistrationDiscipline r23Protocol r23NameEq
+  r25WholeTargetTrace
+r25WholeDiscipline = RegistrationDisciplineStep r23Insert1 _ (Z ** Refl)
+  (RegistrationDisciplineStep r23Insert2 _ (Z ** Refl)
+    (RegistrationDisciplineStep
+      (movedRight (baseDiamond r25AlignedDiamond)) _ ()
+      (RegistrationDisciplineStep
+        (movedLeft (baseDiamond r25AlignedDiamond)) _ ()
+        (RegistrationDisciplineStep
+          (replayedTransition r25FirstFinishReplay) _
+          (r25FinishStepDiscipline r25FirstFinishReplay _)
+          (RegistrationDisciplineStep
+            (replayedTransition r25SecondFinishReplay) NoTransitions
+            (r25FinishStepDiscipline r25SecondFinishReplay NoTransitions)
+            RegistrationDisciplineEnd)))))
