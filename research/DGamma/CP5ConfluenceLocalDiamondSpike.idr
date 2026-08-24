@@ -2363,6 +2363,36 @@ orchestrationRawAfterForeignReplacement {name} {key} {world} {error} {value}
               movedRaw = rewrite movedFound in rewrite movedGuard in Refl
           in MkRawActivationMove movedAfter movedRaw
 
+0 orchestrationRawAfterCheckedRetire :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, earlyRightFinal : SystemState name key value world error} ->
+  (leftAction : Action name key value world error) -> (leftTag : RuleTag) ->
+  (rightActor : name) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first =
+    Just (leftTag, middle)) ->
+  (earlyRightChecked : checkedApplyAction @{nameEq} @{keyEq}
+    (ORetire rightActor) first = Just (ORetireTag, earlyRightFinal)) ->
+  (leftPaper : PaperOrchestrationStep
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked)) ->
+  Not (actionOwner leftAction = rightActor) ->
+  RawActivationMove nameEq keyEq leftAction leftTag earlyRightFinal
+orchestrationRawAfterCheckedRetire {name} {key} {world} {error} {value}
+  nameEq keyEq {first = MkSystemState ambient source} {middle}
+  {earlyRightFinal} leftAction leftTag rightActor leftChecked
+  earlyRightChecked leftPaper distinct =
+    let 0 earlyRaw = checkedActionProjects nameEq keyEq (ORetire rightActor)
+          (MkSystemState ambient source) earlyRightFinal ORetireTag
+          earlyRightChecked
+    in case retireSuccessView nameEq keyEq rightActor ambient source ORetireTag
+      earlyRightFinal earlyRaw of
+      MkRetireSuccessView oldFiber oldFound =>
+        orchestrationRawAfterForeignReplacement nameEq keyEq leftAction leftTag
+          ambient ambient source rightActor (retireFiber oldFiber) oldFiber
+          oldFound (fiberComponentRetire oldFiber)
+          (fiberParentRetireHint oldFiber)
+          leftChecked leftPaper distinct
+
 0 beginRawAfterForeignState :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (leftActor : name) ->
