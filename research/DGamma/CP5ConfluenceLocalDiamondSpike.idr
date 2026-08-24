@@ -6477,7 +6477,209 @@ public export
   TraceIndependent name key world error value keyEq
     (MoreTransitions left (MoreTransitions right NoTransitions)) ->
   LocalRelationalDiamond name key world error value nameEq keyEq left right
-activationOrchestrationDiamondSpike = ?activationOrchestrationDiamondSpike_rhs
+activationOrchestrationDiamondSpike nameEq keyEq left right sourceAligned
+  leftActivation rightOrchestration distinct parentSafe sourceWellFormed
+  independent =
+    case sourceAligned of
+      AlignedStep leftAction leftTag leftChecked _
+        (AlignedStep rightAction rightTag rightChecked _ AlignedEnd) =>
+          let 0 distinctOwners :
+                Not (actionOwner leftAction = actionOwner rightAction)
+              distinctOwners sameOwner = distinct
+                (trans
+                  (transitionActorFiredActionOwner nameEq keyEq leftAction
+                    leftTag leftChecked)
+                  (trans sameOwner
+                    (sym (transitionActorFiredActionOwner nameEq keyEq
+                      rightAction rightTag rightChecked))))
+              0 reverseDistinctOwners :
+                Not (actionOwner rightAction = actionOwner leftAction)
+              reverseDistinctOwners sameOwner = distinctOwners (sym sameOwner)
+              0 rawEarlyRight : RawActivationMove nameEq keyEq rightAction
+                rightTag first
+              rawEarlyRight = orchestrationRawBeforeCheckedActivation nameEq
+                keyEq leftAction rightAction leftTag rightTag leftChecked
+                rightChecked leftActivation rightOrchestration distinctOwners
+          in case checkRawActivationMove nameEq keyEq rightAction rightTag first
+            sourceWellFormed rawEarlyRight of
+            MkCheckedActivationMove earlyRightFinal earlyRightChecked _ =>
+                let earlyRightTransition : Transition first earlyRightFinal
+                    earlyRightTransition = Fired nameEq keyEq rightAction
+                      rightTag earlyRightChecked
+                    0 earlyRightOrchestration : PaperOrchestrationStep
+                      earlyRightTransition
+                    earlyRightOrchestration = paperOrchestrationStepTransport
+                      Refl Refl rightOrchestration
+                    0 earlyRightWellFormed : registryWellFormed @{nameEq}
+                      @{keyEq} earlyRightFinal = True
+                    earlyRightWellFormed = preservationTheoremProof nameEq keyEq
+                      rightAction first earlyRightFinal rightTag sourceWellFormed
+                      (checkedActionProjects nameEq keyEq rightAction first
+                        earlyRightFinal rightTag earlyRightChecked)
+                    pairTrace : Transitions first originalFinal
+                    pairTrace = MoreTransitions
+                      (Fired {before = first} {afterState = middle}
+                        nameEq keyEq leftAction leftTag leftChecked)
+                      (MoreTransitions
+                        (Fired {before = middle} {afterState = originalFinal}
+                          nameEq keyEq rightAction rightTag rightChecked)
+                        NoTransitions)
+                    0 leftOccurs : OccursIn
+                      (Fired {before = first} {afterState = middle}
+                        nameEq keyEq leftAction leftTag leftChecked) pairTrace
+                    leftOccurs = OccursHere
+                    0 rightOccurs : OccursIn
+                      (Fired {before = middle} {afterState = originalFinal}
+                        nameEq keyEq rightAction rightTag rightChecked) pairTrace
+                    rightOccurs = OccursLater OccursHere
+                    rightGenerator : TraceEffectGenerator name key world error
+                      value (actionOwner rightAction) pairTrace
+                    rightGenerator = ActualForwardGenerator middle originalFinal
+                      nameEq keyEq rightAction rightTag rightChecked rightOccurs
+                      Refl
+                    0 rightGeneratorMapSame :
+                      (state : EffectState name key value world) ->
+                      traceGeneratorMap rightGenerator state =
+                        partialEffectMapFor nameEq keyEq rightAction rightTag
+                          middle state
+                    rightGeneratorMapSame = actualForwardGeneratorMapSame middle
+                      originalFinal nameEq keyEq rightAction rightTag rightChecked
+                      rightOccurs Refl
+                    0 rightOriginSame :
+                      (state : EffectState name key value world) ->
+                      partialEffectMapFor nameEq keyEq rightAction rightTag
+                        middle state =
+                      partialEffectMapFor nameEq keyEq rightAction rightTag
+                        first state
+                    rightOriginSame = orchestrationTransitionMapOriginCong
+                      nameEq keyEq rightAction rightTag rightChecked
+                      rightOrchestration middle first
+                    0 earlyRightFrame : PartialRelated
+                      (EffectState name key value world)
+                      (EffectStateRelated keyEq)
+                      (partialEffectMapFor nameEq keyEq rightAction rightTag first
+                        (projectEffectState @{nameEq} first))
+                      (Just (projectEffectState @{nameEq} earlyRightFinal))
+                    earlyRightFrame = checkedEffectFrameRelation nameEq keyEq
+                      rightAction rightTag first earlyRightFinal
+                      earlyRightChecked
+                    0 rightGeneratorAtFirst : Equal
+                      (traceGeneratorMap rightGenerator
+                        (projectEffectState @{nameEq} first))
+                      (partialEffectMapFor nameEq keyEq rightAction rightTag first
+                        (projectEffectState @{nameEq} first))
+                    rightGeneratorAtFirst = trans
+                      (rightGeneratorMapSame
+                        (projectEffectState @{nameEq} first))
+                      (rightOriginSame
+                        (projectEffectState @{nameEq} first))
+                    0 rightGeneratorFrame : PartialRelated
+                      (EffectState name key value world)
+                      (EffectStateRelated keyEq)
+                      (traceGeneratorMap rightGenerator
+                        (projectEffectState @{nameEq} first))
+                      (Just (projectEffectState @{nameEq} earlyRightFinal))
+                    rightGeneratorFrame = localPartialRelatedRewrite
+                      (sym rightGeneratorAtFirst) Refl earlyRightFrame
+                    0 targetPreserved :
+                      (fiber : Fiber name key value world error) ->
+                      (view : View name (dependencies
+                        (componentDependencies (fiberComponent fiber)))) ->
+                      targetFiber @{nameEq} @{keyEq} fiber (registry first) =
+                        Just view ->
+                      targetFiber @{nameEq} @{keyEq} fiber
+                        (registry earlyRightFinal) = Just view
+                    targetPreserved = \fiber, view, sourceTarget =>
+                      trans
+                        (targetFiberStableAfterPaperOrchestration nameEq keyEq
+                          rightAction rightTag earlyRightChecked
+                          earlyRightOrchestration fiber)
+                        sourceTarget
+                    0 effectOutput : ActivationPairEffectOutput nameEq keyEq
+                      leftAction leftTag earlyRightFinal originalFinal
+                    effectOutput = activationOrchestrationPairEffectOutput nameEq
+                      keyEq leftAction rightAction leftTag rightTag leftChecked
+                      rightChecked earlyRightChecked leftActivation
+                      rightOrchestration distinctOwners independent
+                    0 rawMovedLeft : RawActivationMove nameEq keyEq leftAction
+                      leftTag earlyRightFinal
+                    rawMovedLeft = activationRawAfterForeignState nameEq keyEq
+                      leftAction rightAction leftTag rightTag leftChecked
+                      earlyRightChecked leftActivation distinctOwners
+                      targetPreserved (activationPairEffectState effectOutput)
+                      (movedLeftEffectMapRuns effectOutput)
+                    0 endpoint : CheckedActivationEndpoint nameEq keyEq
+                      leftAction leftTag earlyRightFinal originalFinal
+                    endpoint = checkActivationEndpoint nameEq keyEq leftAction
+                      leftTag earlyRightFinal originalFinal earlyRightWellFormed
+                      effectOutput rawMovedLeft
+                    swappedFinal : SystemState name key value world error
+                    swappedFinal = checkedEndpointAfter endpoint
+                    0 movedLeftChecked : checkedApplyAction @{nameEq} @{keyEq}
+                      leftAction earlyRightFinal = Just (leftTag, swappedFinal)
+                    movedLeftChecked = checkedEndpointEquation endpoint
+                    0 movedLeftActivation : PaperActivationStep
+                      (checkedEndpointTransition endpoint)
+                    movedLeftActivation = paperActivationStepTransport
+                      (checkedEndpointAction endpoint)
+                      (checkedEndpointTag endpoint) leftActivation
+                    0 leftLookup : lookupFiber @{nameEq} {name = name}
+                      {key = key} {value = value} {world = world}
+                      {error = error} (actionOwner leftAction)
+                      (registry earlyRightFinal) = lookupFiber @{nameEq}
+                      (actionOwner leftAction) (registry first)
+                    leftLookup = transitionForeignLookup nameEq keyEq
+                      (actionOwner leftAction) rightAction rightTag
+                      earlyRightChecked distinctOwners
+                    0 leftOutcomes :
+                      (stage : IteratorStage name key world error value
+                        (actionOwner leftAction) pairTrace) ->
+                      IteratorOutcomeAgreement name key value world error keyEq
+                        (iteratorStageOutcome stage
+                          (projectEffectState @{nameEq} earlyRightFinal))
+                        (iteratorStageOutcome stage
+                          (projectEffectState @{nameEq} first))
+                    leftOutcomes = \stage => iteratorOutcomeAfterFramedForeign
+                      keyEq independent (actionOwner leftAction)
+                      (actionOwner rightAction) distinctOwners stage
+                      (TraceGenerator rightGenerator)
+                      (projectEffectState @{nameEq} first)
+                      (projectEffectState @{nameEq} earlyRightFinal)
+                      rightGeneratorFrame
+                    0 leftComparison : ActivationReplacementComparison nameEq
+                      (actionOwner leftAction) first middle earlyRightFinal
+                      swappedFinal
+                    leftComparison =
+                      activationReplacementComparisonAcrossForeignStates nameEq
+                        keyEq leftAction leftTag pairTrace leftChecked
+                        movedLeftChecked (Left leftOccurs) leftActivation
+                        leftLookup targetPreserved leftOutcomes
+                    0 reverseControls : OrderedRegistryControlsRelated name key
+                      world error value (bindings (registry swappedFinal))
+                      (bindings (registry originalFinal))
+                    reverseControls = orderedControlsAfterOrchestrationActivation
+                      nameEq keyEq rightAction leftAction rightTag leftTag
+                      earlyRightChecked movedLeftChecked leftChecked rightChecked
+                      earlyRightOrchestration reverseDistinctOwners
+                      (activationReplacementComparisonSymmetric leftComparison)
+                    0 controls : OrderedRegistryControlsRelated name key world
+                      error value (bindings (registry originalFinal))
+                      (bindings (registry swappedFinal))
+                    controls = orderedControlsSymmetric reverseControls
+                in MkLocalRelationalDiamond earlyRightFinal swappedFinal
+                  earlyRightTransition (checkedEndpointTransition endpoint)
+                  Refl Refl (checkedEndpointAction endpoint)
+                  (checkedEndpointTag endpoint)
+                  (\activation => void
+                    (paperActivationOrchestrationImpossible activation
+                      rightOrchestration))
+                  (\_ => movedLeftActivation)
+                  (\_ => earlyRightOrchestration)
+                  (\orchestration => void
+                    (paperActivationOrchestrationImpossible leftActivation
+                      orchestration))
+                  (checkedEndpointEffects endpoint) controls
+                  (checkedEndpointWellFormed endpoint)
 
 ||| The reverse mixed orientation needed when a yielded O-Insert at the end of
 ||| one actor block crosses the following block's activation while bubbling that
