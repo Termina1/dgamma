@@ -3595,6 +3595,28 @@ activationRawAfterForeignActivation nameEq keyEq leftAction foreignAction
         foreignAction foreignTag leftChecked foreignChecked foreignActivation
         distinct earlyWellFormed (Right Refl) movedEffect mapRuns
 
+0 checkedTargetWellFormed :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState) ->
+  registryWellFormed @{nameEq} @{keyEq} afterState = True
+checkedTargetWellFormed nameEq keyEq action before afterState tag checked
+  with (applyAction @{nameEq} @{keyEq} action before) proof raw
+  checkedTargetWellFormed nameEq keyEq action before afterState tag checked |
+    Nothing = case checked of Refl impossible
+  checkedTargetWellFormed nameEq keyEq action before afterState tag checked |
+    Just (actualTag, actualAfter)
+    with (registryWellFormed @{nameEq} @{keyEq} actualAfter) proof wellFormed
+    checkedTargetWellFormed nameEq keyEq action before afterState tag checked |
+      Just (actualTag, actualAfter) | False = case checked of Refl impossible
+    checkedTargetWellFormed nameEq keyEq action before afterState tag checked |
+      Just (actualTag, actualAfter) | True =
+        case justInjective checked of
+          Refl => wellFormed
+
 record CheckedActivationMove
   (nameEq : DecEq name) (keyEq : DecEq key)
   (action : Action name key value world error) (tag : RuleTag)
