@@ -2645,9 +2645,37 @@ localLookupDeleteSelfO5 nameEq removed
   (MkCoeffectContext entries unique) =
     localLookupDeleteEntriesSelfO5 nameEq removed entries unique
 
+0 localParentPresentTransportO5 :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (parent : Parent name) -> (selected : name) ->
+  (source : Registry name key value world error) ->
+  parent = ChildOf selected ->
+  parentPresent @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} parent source = True ->
+  isJust (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} selected source) = True
+localParentPresentTransportO5 nameEq (ChildOf selected) selected source Refl
+  present = present
+
+0 localIsJustNothingImpossibleO5 : {observed : Maybe a} ->
+  observed = Nothing -> isJust observed = True -> Void
+localIsJustNothingImpossibleO5 Refl present = case present of Refl impossible
+
+0 localDeletedParentNotPresentO5 :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (removed : name) ->
+  (source : Registry name key value world error) ->
+  isJust (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} removed
+    (deleteBinding @{nameEq} removed source)) = True -> Void
+localDeletedParentNotPresentO5 nameEq removed source present =
+  localIsJustNothingImpossibleO5
+    (localLookupDeleteSelfO5 nameEq removed source) present
+
 0 localParentPresentAfterInsert :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (parent : Parent name) -> (inserted : name) ->
+  (insertParent : Parent name) ->
   (component : Component key value world error) ->
   (source : Registry name key value world error) ->
   (absent : lookupFiber @{nameEq} {name = name} {key = key} {value = value}
@@ -2656,20 +2684,20 @@ localLookupDeleteSelfO5 nameEq removed
     {world = world} {error = error} parent source = True ->
   parentPresent @{nameEq} {name = name} {key = key} {value = value}
     {world = world} {error = error} parent
-    (insertBinding @{nameEq} inserted (freshFiber component parent) source
-      absent) = True
-localParentPresentAfterInsert nameEq Root inserted component source absent
-  present = Refl
-localParentPresentAfterInsert nameEq (ChildOf parent) inserted component source
-  absent present with (decEq @{nameEq} parent inserted)
-  localParentPresentAfterInsert nameEq (ChildOf inserted) inserted component
-    source absent present | Yes Refl =
-      rewrite lookupInserted inserted (freshFiber component (ChildOf inserted))
+    (insertBinding @{nameEq} inserted (freshFiber component insertParent)
+      source absent) = True
+localParentPresentAfterInsert nameEq Root inserted insertParent component source
+  absent present = Refl
+localParentPresentAfterInsert nameEq (ChildOf parent) inserted insertParent
+  component source absent present with (decEq @{nameEq} parent inserted)
+  localParentPresentAfterInsert nameEq (ChildOf inserted) inserted insertParent
+    component source absent present | Yes Refl =
+      rewrite lookupInserted inserted (freshFiber component insertParent)
         source absent in Refl
-  localParentPresentAfterInsert nameEq (ChildOf parent) inserted component source
-    absent present | No distinct =
+  localParentPresentAfterInsert nameEq (ChildOf parent) inserted insertParent
+    component source absent present | No distinct =
       rewrite lookupInsertOther parent inserted distinct
-        (freshFiber component (ChildOf parent)) source absent in present
+        (freshFiber component insertParent) source absent in present
 
 0 localProvisionsDisjointAfterInsert :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -2692,6 +2720,11 @@ localProvisionsDisjointAfterInsert nameEq keyEq provision inserted insertParent
     rewrite insertBindingRuntimeBindings nameEq inserted
       (freshFiber component insertParent) source absent in
     rewrite pairDisjoint in sourceDisjoint
+
+0 localNotTrueFalseO5 : (observed : Bool) -> not observed = True ->
+  observed = False
+localNotTrueFalseO5 False equation = Refl
+localNotTrueFalseO5 True equation = case equation of Refl impossible
 
 0 localParentPresentAfterDelete :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -2939,6 +2972,366 @@ orchestrationRawAfterCheckedRetire {name} {key} {world} {error} {value}
           oldFound (fiberComponentRetire oldFiber)
           (fiberParentRetireHint oldFiber)
           leftChecked leftPaper distinct
+
+
+0 orchestrationRawAfterCheckedInsert :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, originalFinal, earlyRightFinal :
+    SystemState name key value world error} ->
+  (leftAction : Action name key value world error) -> (leftTag : RuleTag) ->
+  (rightActor : name) -> (rightParent : Parent name) ->
+  (rightComponent : Component key value world error) ->
+  (rightTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first =
+    Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq}
+    (OInsert rightActor rightParent rightComponent) middle =
+    Just (rightTag, originalFinal)) ->
+  (earlyRightChecked : checkedApplyAction @{nameEq} @{keyEq}
+    (OInsert rightActor rightParent rightComponent) first =
+    Just (rightTag, earlyRightFinal)) ->
+  (leftPaper : PaperOrchestrationStep
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked)) ->
+  Not (actionOwner leftAction = rightActor) ->
+  RawActivationMove nameEq keyEq leftAction leftTag earlyRightFinal
+orchestrationRawAfterCheckedInsert {name} {key} {world} {error} {value}
+  nameEq keyEq {first = MkSystemState ambient source} {middle} {originalFinal}
+  {earlyRightFinal} leftAction leftTag rightActor rightParent rightComponent
+  rightTag leftChecked rightChecked earlyRightChecked leftPaper distinct =
+    let 0 earlyRaw : Equal
+          (applyAction @{nameEq} @{keyEq}
+            (OInsert rightActor rightParent rightComponent)
+            (MkSystemState ambient source))
+          (Just (rightTag, earlyRightFinal))
+        earlyRaw = checkedActionProjects nameEq keyEq
+          (OInsert rightActor rightParent rightComponent)
+          (MkSystemState ambient source) earlyRightFinal rightTag
+          earlyRightChecked
+        0 earlyView : ForeignInsertPlanView name key world error value nameEq
+          keyEq rightActor rightParent rightComponent ambient source rightTag
+          earlyRightFinal
+        earlyView = foreignInsertPlanView nameEq keyEq rightActor rightParent
+          rightComponent ambient source rightTag earlyRightFinal earlyRaw
+        0 rightTagSame : Equal rightTag OInsertTag
+        rightTagSame = localForeignInsertViewTag rightTag earlyView
+        0 exactRightChecked : Equal
+          (checkedApplyAction @{nameEq} @{keyEq}
+            (OInsert rightActor rightParent rightComponent) middle)
+          (Just (OInsertTag, originalFinal))
+        exactRightChecked = replace
+          {p = \observedTag => Equal
+            (checkedApplyAction @{nameEq} @{keyEq}
+              (OInsert rightActor rightParent rightComponent) middle)
+            (Just (observedTag, originalFinal))}
+          rightTagSame rightChecked
+    in case earlyView of
+      MkForeignInsertPlanView rightAbsent rightGuards =>
+        let canonicalEarly : SystemState name key value world error
+            canonicalEarly = MkSystemState ambient
+              (insertBinding @{nameEq} rightActor
+                (freshFiber rightComponent rightParent) source rightAbsent)
+            0 earlyShape : Equal canonicalEarly earlyRightFinal
+            earlyShape = Refl
+            0 leftRaw : Equal
+              (applyAction @{nameEq} @{keyEq} leftAction
+                (MkSystemState ambient source)) (Just (leftTag, middle))
+            leftRaw = checkedActionProjects nameEq keyEq leftAction
+              (MkSystemState ambient source) middle leftTag leftChecked
+            0 canonicalMove : RawActivationMove nameEq keyEq leftAction leftTag
+              canonicalEarly
+            canonicalMove = case leftPaper of
+              PaperInsertStep {actor = leftActor} {parent = leftParent}
+                {component = leftComponent} actionSame => case actionSame of
+                Refl =>
+                  let 0 sourceView : ForeignInsertPlanView name key world error
+                        value nameEq keyEq leftActor leftParent leftComponent
+                        ambient source leftTag middle
+                      sourceView = foreignInsertPlanView nameEq keyEq leftActor
+                        leftParent leftComponent ambient source leftTag middle
+                        leftRaw
+                      0 tagSame : Equal leftTag OInsertTag
+                      tagSame = localForeignInsertViewTag leftTag sourceView
+                  in case sourceView of
+                    MkForeignInsertPlanView leftAbsent leftGuards =>
+                      let canonicalMiddle : SystemState name key value world error
+                          canonicalMiddle = MkSystemState ambient
+                            (insertBinding @{nameEq} leftActor
+                              (freshFiber leftComponent leftParent) source
+                              leftAbsent)
+                          0 middleShape : Equal canonicalMiddle middle
+                          middleShape = Refl
+                          0 laterRightRaw : Equal
+                            (applyAction @{nameEq} @{keyEq}
+                              (OInsert rightActor rightParent rightComponent)
+                              middle) (Just (OInsertTag, originalFinal))
+                          laterRightRaw = checkedActionProjects nameEq keyEq
+                            (OInsert rightActor rightParent rightComponent)
+                            middle originalFinal OInsertTag exactRightChecked
+                          0 laterRightView : ForeignInsertPlanView name key
+                            world error value nameEq keyEq rightActor rightParent
+                            rightComponent ambient (registry middle) OInsertTag
+                            originalFinal
+                          laterRightView = foreignInsertPlanView nameEq keyEq
+                            rightActor rightParent rightComponent ambient
+                            (registry middle) OInsertTag originalFinal laterRightRaw
+                      in case laterRightView of
+                        MkForeignInsertPlanView laterRightAbsent
+                          laterRightGuards =>
+                            let target : Registry name key value world error
+                                target = insertBinding @{nameEq} rightActor
+                                  (freshFiber rightComponent rightParent) source
+                                  rightAbsent
+                                0 targetAbsent : lookupFiber @{nameEq}
+                                  {name = name} {key = key} {value = value}
+                                  {world = world} {error = error} leftActor
+                                  target = Nothing
+                                targetAbsent = trans
+                                  (lookupInsertOther leftActor rightActor distinct
+                                    (freshFiber rightComponent rightParent)
+                                    source rightAbsent) leftAbsent
+                                0 leftParentPresent : parentPresent @{nameEq}
+                                  {name = name} {key = key} {value = value}
+                                  {world = world} {error = error} leftParent
+                                  source = True
+                                leftParentPresent = localAndLeftTrueO5 _ _
+                                  leftGuards
+                                0 targetParentPresent : parentPresent @{nameEq}
+                                  {name = name} {key = key} {value = value}
+                                  {world = world} {error = error} leftParent
+                                  target = True
+                                targetParentPresent = localParentPresentAfterInsert
+                                  nameEq leftParent rightActor rightParent
+                                  rightComponent source rightAbsent
+                                  leftParentPresent
+                                0 leftSourceDisjoint : provisionsDisjointFrom
+                                  @{keyEq} {name = name} {key = key}
+                                  {value = value} {world = world} {error = error}
+                                  (componentProvisions leftComponent)
+                                  (bindings source) = True
+                                leftSourceDisjoint = localAndRightTrueO5 _ _
+                                  leftGuards
+                                0 canonicalRightDisjoint :
+                                  provisionsDisjointFrom @{keyEq} {name = name}
+                                    {key = key} {value = value} {world = world}
+                                    {error = error}
+                                    (componentProvisions rightComponent)
+                                    (bindings (registry canonicalMiddle)) = True
+                                canonicalRightDisjoint = localAndRightTrueO5 _ _
+                                  laterRightGuards
+                                0 canonicalBindings : bindings
+                                  (registry canonicalMiddle) =
+                                  Bind leftActor
+                                    (freshFiber leftComponent leftParent) ::
+                                    bindings source
+                                canonicalBindings = insertBindingRuntimeBindings
+                                  nameEq leftActor
+                                  (freshFiber leftComponent leftParent) source
+                                  leftAbsent
+                                0 explicitRightDisjoint :
+                                  provisionsDisjointFrom @{keyEq} {name = name}
+                                    {key = key} {value = value} {world = world}
+                                    {error = error}
+                                    (componentProvisions rightComponent)
+                                    (Bind leftActor
+                                      (freshFiber leftComponent leftParent) ::
+                                      bindings source) = True
+                                explicitRightDisjoint = replace
+                                  {p = \entries => provisionsDisjointFrom @{keyEq}
+                                    (componentProvisions rightComponent) entries =
+                                    True}
+                                  canonicalBindings canonicalRightDisjoint
+                                0 laterRightDisjoint : provisionsDisjointFrom
+                                  @{keyEq} {name = name} {key = key}
+                                  {value = value} {world = world} {error = error}
+                                  (componentProvisions rightComponent)
+                                  (bindings (registry middle)) = True
+                                laterRightDisjoint = replace
+                                  {p = \state => provisionsDisjointFrom @{keyEq}
+                                    (componentProvisions rightComponent)
+                                    (bindings (registry state)) = True}
+                                  middleShape canonicalRightDisjoint
+                                0 reverseNotOverlap : not
+                                  (provisionOverlap @{keyEq}
+                                    (componentProvisions rightComponent)
+                                    (componentProvisions leftComponent)) = True
+                                reverseNotOverlap = localAndLeftTrueO5 _ _
+                                  explicitRightDisjoint
+                                0 reverseNoOverlap : provisionOverlap @{keyEq}
+                                  (componentProvisions rightComponent)
+                                  (componentProvisions leftComponent) = False
+                                reverseNoOverlap = localNotTrueFalseO5 _
+                                  reverseNotOverlap
+                                0 forwardNoOverlap : provisionOverlap @{keyEq}
+                                  (componentProvisions leftComponent)
+                                  (componentProvisions rightComponent) = False
+                                forwardNoOverlap =
+                                  localProvisionOverlapFalseSymmetricO5 keyEq
+                                    (componentProvisions leftComponent)
+                                    (componentProvisions rightComponent)
+                                    reverseNoOverlap
+                                0 targetDisjoint : provisionsDisjointFrom
+                                  @{keyEq} {name = name} {key = key}
+                                  {value = value} {world = world} {error = error}
+                                  (componentProvisions leftComponent)
+                                  (bindings target) = True
+                                targetDisjoint = localProvisionsDisjointAfterInsert
+                                  nameEq keyEq
+                                  (componentProvisions leftComponent) rightActor
+                                  rightParent rightComponent source rightAbsent
+                                  forwardNoOverlap leftSourceDisjoint
+                            in case setFreshFromAbsent nameEq leftActor
+                              (freshFiber leftComponent leftParent) target
+                              targetAbsent of
+                              (applied ** inserted) =>
+                                let movedAfter : SystemState name key value
+                                      world error
+                                    movedAfter = MkSystemState ambient
+                                      (coeffectAfter applied)
+                                    0 movedRaw : applyAction @{nameEq} @{keyEq}
+                                      (OInsert leftActor leftParent leftComponent)
+                                      (MkSystemState ambient target) =
+                                      Just (OInsertTag, movedAfter)
+                                    movedRaw = rewrite targetParentPresent in
+                                      rewrite targetDisjoint in
+                                      rewrite inserted in Refl
+                                in case tagSame of
+                                  Refl => MkRawActivationMove movedAfter movedRaw
+              PaperRetireStep {actor = leftActor} actionSame => case actionSame of
+                Refl =>
+                  case retireSuccessView nameEq keyEq leftActor ambient source
+                    leftTag middle leftRaw of
+                    sourceView@(MkRetireSuccessView leftFiber leftFound) =>
+                      let target : Registry name key value world error
+                          target = insertBinding @{nameEq} rightActor
+                            (freshFiber rightComponent rightParent) source
+                            rightAbsent
+                          0 targetFound : lookupFiber @{nameEq} {name = name}
+                            {key = key} {value = value} {world = world}
+                            {error = error} leftActor target = Just leftFiber
+                          targetFound = trans
+                            (lookupInsertOther leftActor rightActor distinct
+                              (freshFiber rightComponent rightParent) source
+                              rightAbsent) leftFound
+                          movedAfter : SystemState name key value world error
+                          movedAfter = MkSystemState ambient
+                            (replaceBinding @{nameEq} leftActor
+                              (retireFiber leftFiber) target)
+                          0 movedRaw : applyAction @{nameEq} @{keyEq}
+                            (ORetire leftActor) (MkSystemState ambient target) =
+                            Just (ORetireTag, movedAfter)
+                          movedRaw = rewrite targetFound in Refl
+                          0 tagSame : leftTag = ORetireTag
+                          tagSame = localRetireViewTag leftTag sourceView
+                      in case tagSame of
+                        Refl => MkRawActivationMove movedAfter movedRaw
+              PaperRemoveStep {actor = leftActor} actionSame => case actionSame of
+                Refl =>
+                  let 0 sourceView : RemoveSuccessView name key world error value
+                        nameEq leftActor ambient source leftTag middle
+                      sourceView = removeSuccessView nameEq keyEq leftActor
+                        ambient source leftTag middle leftRaw
+                      0 tagSame : Equal leftTag ORemoveTag
+                      tagSame = localRemoveViewTag leftTag sourceView
+                  in case sourceView of
+                    MkRemoveSuccessView leftFiber leftFound removable
+                      leftNoChild =>
+                        let canonicalMiddle : SystemState name key value
+                              world error
+                            canonicalMiddle = MkSystemState ambient
+                              (deleteBinding @{nameEq} leftActor source)
+                            0 middleShape : Equal canonicalMiddle middle
+                            middleShape = Refl
+                            0 laterRightRaw : Equal
+                              (applyAction @{nameEq} @{keyEq}
+                                (OInsert rightActor rightParent rightComponent)
+                                middle) (Just (OInsertTag, originalFinal))
+                            laterRightRaw = checkedActionProjects nameEq keyEq
+                              (OInsert rightActor rightParent rightComponent)
+                              middle originalFinal OInsertTag exactRightChecked
+                            0 laterRightView : ForeignInsertPlanView name key
+                              world error value nameEq keyEq rightActor
+                              rightParent rightComponent ambient
+                              (registry middle) OInsertTag originalFinal
+                            laterRightView = foreignInsertPlanView nameEq keyEq
+                              rightActor rightParent rightComponent ambient
+                              (registry middle) OInsertTag originalFinal
+                              laterRightRaw
+                        in case laterRightView of
+                          MkForeignInsertPlanView laterRightAbsent
+                            laterRightGuards =>
+                              let 0 laterParentPresent : Equal
+                                    (parentPresent @{nameEq} {name = name}
+                                      {key = key} {value = value} {world = world}
+                                      {error = error} rightParent
+                                      (deleteBinding @{nameEq} leftActor source))
+                                    True
+                                  laterParentPresent = localAndLeftTrueO5 _ _
+                                    laterRightGuards
+                                  0 parentDifferent : Not
+                                    (rightParent = ChildOf leftActor)
+                                  parentDifferent = case rightParent of
+                                    Root => \same => case same of Refl impossible
+                                    ChildOf candidate => \same =>
+                                      localDeletedParentNotPresentO5 nameEq
+                                        leftActor source
+                                        (localParentPresentTransportO5 nameEq
+                                          (ChildOf candidate) leftActor
+                                          (deleteBinding @{nameEq} leftActor
+                                            source) same laterParentPresent)
+                                  target : Registry name key value world error
+                                  target = insertBinding @{nameEq} rightActor
+                                    (freshFiber rightComponent rightParent)
+                                    source rightAbsent
+                                  0 targetFound : lookupFiber @{nameEq}
+                                    {name = name} {key = key} {value = value}
+                                    {world = world} {error = error} leftActor
+                                    target = Just leftFiber
+                                  targetFound = trans
+                                    (lookupInsertOther leftActor rightActor
+                                      distinct
+                                      (freshFiber rightComponent rightParent)
+                                      source rightAbsent) leftFound
+                                  0 targetNoChild : hasChild @{nameEq}
+                                    {name = name} {key = key} {value = value}
+                                    {world = world} {error = error} leftActor
+                                    target = False
+                                  targetNoChild = hasChildInsertFalse nameEq
+                                    leftActor rightActor rightComponent
+                                    rightParent source rightAbsent
+                                    parentDifferent leftNoChild
+                                  0 normalizedGuard : retired leftFiber &&
+                                    isInactive (fiberLifecycle leftFiber) &&
+                                    not False = True
+                                  normalizedGuard = replace
+                                    {p = \child => retired leftFiber &&
+                                      isInactive (fiberLifecycle leftFiber) &&
+                                      not child = True}
+                                    leftNoChild removable
+                                  0 targetGuard : retired leftFiber &&
+                                    isInactive (fiberLifecycle leftFiber) &&
+                                    not (hasChild @{nameEq} {name = name}
+                                      {key = key} {value = value}
+                                      {world = world} {error = error} leftActor
+                                      target) = True
+                                  targetGuard = rewrite targetNoChild in
+                                    normalizedGuard
+                                  movedAfter : SystemState name key value
+                                    world error
+                                  movedAfter = MkSystemState ambient
+                                    (deleteBinding @{nameEq} leftActor target)
+                                  0 movedRaw : applyAction @{nameEq} @{keyEq}
+                                    (ORemove leftActor)
+                                    (MkSystemState ambient target) =
+                                    Just (ORemoveTag, movedAfter)
+                                  movedRaw = rewrite targetFound in
+                                    rewrite targetGuard in Refl
+                              in case tagSame of
+                                Refl => MkRawActivationMove movedAfter movedRaw
+        in replace
+          {p = \before => RawActivationMove nameEq keyEq leftAction leftTag
+            before}
+          earlyShape canonicalMove
 
 0 beginRawAfterForeignState :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
