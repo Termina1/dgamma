@@ -8706,6 +8706,73 @@ orchestrationOrchestrationDiamondSpike nameEq keyEq protocol left right
                         controlEquivalent
                         (checkedEndpointWellFormed endpoint)
 
+||| Same-external-input relations compose across exact trace concatenation.
+||| This is the structural capital used by O6: prefix identity, the authorized
+||| pair-local crossing, and recursive suffix replay stay separately indexed.
+public export
+0 sameExternalAppendSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFirst, leftMiddle, leftFinal, rightFirst, rightMiddle, rightFinal :
+    SystemState name key value world error} ->
+  (nameEq : DecEq name) ->
+  {leftPrefix : Transitions leftFirst leftMiddle} ->
+  {leftSuffix : Transitions leftMiddle leftFinal} ->
+  {rightPrefix : Transitions rightFirst rightMiddle} ->
+  {rightSuffix : Transitions rightMiddle rightFinal} ->
+  SameExternalOrchestration nameEq leftPrefix rightPrefix ->
+  SameExternalOrchestration nameEq leftSuffix rightSuffix ->
+  SameExternalOrchestration nameEq
+    (appendTransitions leftPrefix leftSuffix)
+    (appendTransitions rightPrefix rightSuffix)
+sameExternalAppendSpike nameEq SameExternalOrchestrationEnd suffixRelation =
+  suffixRelation
+sameExternalAppendSpike nameEq
+  (SkipLeftInternal transition rest internal remaining) suffixRelation =
+    SkipLeftInternal transition (appendTransitions rest leftSuffix) internal
+      (sameExternalAppendSpike nameEq remaining suffixRelation)
+sameExternalAppendSpike nameEq
+  (SkipRightInternal transition rest internal remaining) suffixRelation =
+    SkipRightInternal transition (appendTransitions rest rightSuffix) internal
+      (sameExternalAppendSpike nameEq remaining suffixRelation)
+sameExternalAppendSpike nameEq
+  (MatchExternalInput action leftTransition leftRest leftExternal
+    rightTransition rightRest rightExternal leftAction rightAction remaining)
+  suffixRelation =
+    MatchExternalInput action leftTransition
+      (appendTransitions leftRest leftSuffix) leftExternal rightTransition
+      (appendTransitions rightRest rightSuffix) rightExternal leftAction
+      rightAction (sameExternalAppendSpike nameEq remaining suffixRelation)
+
+||| Exact whole-trace framing for the narrowed revision-18 premise. Neither the
+||| prefix nor suffix relation can describe a different pair or endpoint.
+public export
+0 framePairExternalOrderSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal, swappedMiddle,
+    swappedFinal, replayedFinal : SystemState name key value world error} ->
+  (nameEq : DecEq name) ->
+  (tracePrefix : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (movedRight : Transition pairFirst swappedMiddle) ->
+  (movedLeft : Transition swappedMiddle swappedFinal) ->
+  (replayedSuffix : Transitions swappedFinal replayedFinal) ->
+  SameExternalOrchestration nameEq tracePrefix tracePrefix ->
+  SameExternalOrchestration nameEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))
+    (MoreTransitions movedRight (MoreTransitions movedLeft NoTransitions)) ->
+  SameExternalOrchestration nameEq suffix replayedSuffix ->
+  SameExternalOrchestration nameEq
+    (appendTransitions tracePrefix
+      (MoreTransitions left (MoreTransitions right suffix)))
+    (appendTransitions tracePrefix
+      (MoreTransitions movedRight (MoreTransitions movedLeft replayedSuffix)))
+framePairExternalOrderSpike nameEq tracePrefix left right suffix movedRight
+  movedLeft replayedSuffix prefixExternal pairExternal suffixExternal =
+    sameExternalAppendSpike nameEq prefixExternal
+      (sameExternalAppendSpike nameEq pairExternal suffixExternal)
+
 ||| Checked suffix-splice interface consumed by sorting.  It is generic over the
 ||| local diamond case (A/A, A/O, O/A, or O/O) and returns all recursive capital.
 public export
