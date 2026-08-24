@@ -14,6 +14,7 @@ import DGamma.CP4SupportQuiescence
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorEndpoint
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.R18ExternalOrderProducerPositive
+import DGamma.R21MovedOutputAlignmentScopingPositive
 import DGamma.R22QuietnessDomainAuditPositive
 import Decidable.Equality
 import Data.List.Elem
@@ -441,6 +442,33 @@ r23Diamond = activationActivationDiamondSpike r23NameEq r23KeyEq r23Begin1
   (PaperBeginStep Refl Refl) (PaperBeginStep Refl Refl)
   (\same => case same of Refl impossible) r23AfterInsert2WellFormed
   r23PairIndependent
+
+||| Revision 25 test-local prototype of combined-boundary field A.  The base is
+||| definitionally the existing R23 diamond; its erased alignment is populated
+||| only from the exact moved-left checked equation created by that same concrete
+||| A/A producer invocation and the already checked early-right singleton.
+0 r25SealConcreteMoved :
+  (moved : Transition (swappedMiddle r23Diamond) (swappedFinal r23Diamond)) ->
+  (0 exactMoved : moved === movedLeft r23Diamond) ->
+  CandidateAlignedLocalRelationalDiamond Nat R23Key Unit Unit R23Value
+    r23NameEq r23KeyEq r23Begin1 r23Begin2
+r25SealConcreteMoved
+  (Fired storedNameEq storedKeyEq movedAction movedTag movedChecked) exactMoved =
+    case exactMoved of
+      Refl => sealAlignedLocalRelationalDiamond r23Diamond
+        (activationActivationConstructorMovedAlignment r23NameEq r23KeyEq
+          r23EarlyBegin2 r23EarlyBegin2Aligned movedAction movedTag movedChecked)
+
+public export
+0 r25AlignedDiamond : CandidateAlignedLocalRelationalDiamond Nat R23Key Unit Unit
+  R23Value r23NameEq r23KeyEq r23Begin1 r23Begin2
+r25AlignedDiamond = r25SealConcreteMoved (movedLeft r23Diamond) Refl
+
+||| The envelope is a conservative producer wrapper, not a second diamond.
+||| All existing replay terms continue to index the very same base projection.
+public export
+0 r25BaseIsR23 : baseDiamond r25AlignedDiamond = r23Diamond
+r25BaseIsR23 = Refl
 
 0 r23PairExternalOrder : SameExternalOrchestration r23NameEq
   (MoreTransitions r23Begin1 (MoreTransitions r23Begin2 NoTransitions))
@@ -1632,3 +1660,21 @@ public export
 0 r24FinalEndpoint : RelationalReplayEndpoint Nat R23Key Unit Unit R23Value
   r23NameEq r23KeyEq r23Final (replayedAfter r24SecondFinishReplay)
 r24FinalEndpoint = replayedEndpoint r24SecondFinishReplay
+
+||| Definition-only transfer checks for the corrected envelope.  These RHSs
+||| contain no rewrite, transport lemma, or reconstructed replay proof.
+public export
+0 r25FirstFinishReplay : R24CheckedEmptyFinishReplay 1 r23AfterPair
+  r23AfterAdvance1 (swappedFinal (baseDiamond r25AlignedDiamond))
+  r23Advance1Checked
+r25FirstFinishReplay = r24FirstFinishReplay
+
+public export
+0 r25SecondFinishReplay : R24CheckedEmptyFinishReplay 2 r23AfterAdvance1 r23Final
+  (replayedAfter r25FirstFinishReplay) r23Advance2Checked
+r25SecondFinishReplay = r24SecondFinishReplay
+
+public export
+0 r25FinalEndpoint : RelationalReplayEndpoint Nat R23Key Unit Unit R23Value
+  r23NameEq r23KeyEq r23Final (replayedAfter r25SecondFinishReplay)
+r25FinalEndpoint = r24FinalEndpoint
