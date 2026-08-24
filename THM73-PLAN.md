@@ -1,4 +1,4 @@
-# Theorem 73 (Confluence) — CP5 proof plan, revision 15 O5 alignment repair
+# Theorem 73 (Confluence) — CP5 proof plan, revision 16 O5 control retirement
 
 Branch: `cp5-thm73-scoping`
 
@@ -17,7 +17,10 @@ Review trail:
 - revision 14 authorized the O4 dictionary-alignment repair; both O4 diamonds
   closed constructively and the scoped review accepted them with zero findings at
   `117f179`; and
-- revision 15 authorizes only the O5 dictionary-alignment repair audited below.
+- revision 15 authorizes only the O5 dictionary-alignment repair audited below;
+  and
+- revision 16 retires the zero-consumer, structurally unsuppliable
+  `LocalRelationalDiamond.swappedControls` field.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -66,6 +69,26 @@ The O5-specific genuine producer and independent-dictionary negative are tracked
 caller-selected maps, transitions, evaluator outputs, effects, controls, and
 endpoints remain unchanged. Scoped review of revision 15 is deferred until O5
 closure.
+
+### Revision 16: retire unsuppliable ordered local controls
+
+`research-tests/O5-ORDERED-CONTROL-ORDER-AUDIT.md` proves that two distinct
+successful prepending insertions necessarily yield opposite binding-head orders:
+`right :: left :: source` in the original execution and
+`left :: right :: source` after transposition. `OrderedRegistryControlsRelated`
+requires identical head actors, so the former `LocalRelationalDiamond` field was
+not producer-suppliable for the accepted O-Insert/O-Insert case. A repository-wide
+consumer audit found zero projections of `swappedControls`; checked moved
+transitions already determine the exact endpoint states. Revision 16 therefore
+removes only that record field and the corresponding argument at the three
+closed O3/O4 constructor sites. All ordered-control lemmas and their existing
+private producers remain available for any future consumer-authenticated gate.
+No speculative permutation relation is introduced.
+
+The deferred O5 scoped review covers revisions 15 and 16 together. It must repeat
+the zero-consumer check and reject closure unless a mandatory round-12-style,
+hole-free `confluenceTheorem` assembly typechecks against the modified research
+pipeline.
 
 ## Executive estimate
 
@@ -377,7 +400,7 @@ There remain **22 obligations**.
 | **O2** | Transport both independence fields. | **Complete.** | **M–L.** |
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20; the Phase-B 32–55 band remains honest because O5/O6 are still XL gates.** |
-| **O5** | O/O freshness/generation discipline. | **1 hole; revision-15 pair/singleton alignment premises authorized and producer-probed; nine rule-pair proof active.** | **XL gate.** |
+| **O5** | O/O freshness/generation discipline. | **1 hole; revision-15 alignment is producer-probed, revision-16 retires the unsuppliable zero-consumer ordered-control field, and all nine raw rule-pair replays are constructive; checked endpoint/effect assembly remains active.** | **XL gate.** |
 | **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes**; certificate/interface complete. | **XL gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
@@ -465,19 +488,27 @@ inside a proof-phase band.
 
 ## 15. Release boundary
 
-Revision-14/O4 is accepted at `117f179`. The deferred scoped revision-15/O5
-closure review must verify only tracked HEAD artifacts:
+Revision-14/O4 is accepted at `117f179`. The deferred scoped
+revision-15/revision-16 O5 closure review must verify only tracked HEAD artifacts:
 
-- the O5 interface delta is exactly the two authorized erased
-  `AlignedTransitions` premise occurrences, with O3/O4 and
-  `OrchestrationSwapSafety` unchanged from their reviewed coordinates;
+- the O5 theorem delta is exactly the two authorized erased
+  `AlignedTransitions` premise occurrences, with `OrchestrationSwapSafety`
+  unchanged from its reviewed coordinate;
+- revision 16 removes exactly the zero-consumer `swappedControls` field and the
+  corresponding argument at the three closed O3/O4 constructor sites, while
+  retaining all private ordered-control lemma capital;
+- a fresh repository-wide scan still finds zero projections or consumers of the
+  retired field;
 - those premises are constructible at the actual O6, O17, O19, and exact checked
   early-orchestration producer boundaries;
 - the tracked R15 positive producer probe succeeds and its independent-dictionary
   negative fails at the intended dictionary-index mismatch;
 - the closed O5 body genuinely consumes alignment, checked execution,
-  `OrchestrationSwapSafety`, effects, and ordered controls without escape hatches
-  or surviving-hole dependencies;
+  `OrchestrationSwapSafety`, and effects without escape hatches or surviving-hole
+  dependencies;
+- a mandatory round-12-style full-coverage probe typechecks a hole-free
+  `confluenceTheorem` assembly against the modified research pipeline; absence or
+  failure of this probe is an explicit REJECT;
 - exact 59-module runner coverage with module-specific negative diagnostics;
 - exact current 6/4/8/3/1 hole split and 148–249 total / 139–240
   implementation-remaining arithmetic;
@@ -488,5 +519,5 @@ closure review must verify only tracked HEAD artifacts:
 - no tracked/staged changes.
 
 Theorem 73 remains unproved by design after accepted constructive O3/O4 closure;
-the other 22 named obligations remain isolated in research modules. Revision-15
-scoped review is deferred until O5 closes.
+the other 22 named obligations remain isolated in research modules. The combined
+revision-15/revision-16 scoped review is deferred until O5 closes.
