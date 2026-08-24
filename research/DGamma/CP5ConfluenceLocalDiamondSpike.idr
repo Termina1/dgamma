@@ -7993,7 +7993,10 @@ activationActivationDiamondSpike nameEq keyEq left right earlyRight
                 (\orchestration => void
                   (paperActivationOrchestrationImpossible
                     leftActivation orchestration))
-                effectsRelated finalWellFormed
+                effectsRelated
+                (orderedControlsGiveControlEquivalent nameEq originalFinal
+                  swappedFinal controls)
+                finalWellFormed
 
 ||| Candidate for paper Lemma 71(2).
 public export
@@ -8216,6 +8219,8 @@ activationOrchestrationDiamondSpike nameEq keyEq left right sourceAligned
                     (paperActivationOrchestrationImpossible leftActivation
                       orchestration))
                   (checkedEndpointEffects endpoint)
+                  (orderedControlsGiveControlEquivalent nameEq originalFinal
+                    swappedFinal controls)
                   (checkedEndpointWellFormed endpoint)
 
 ||| The reverse mixed orientation needed when a yielded O-Insert at the end of
@@ -8416,6 +8421,8 @@ orchestrationActivationDiamondSpike nameEq keyEq left right earlyRight
                     orchestration))
                 (\_ => movedLeftOrchestration)
                 (checkedEndpointEffects endpoint)
+                (orderedControlsGiveControlEquivalent nameEq originalFinal
+                  swappedFinal controls)
                 (checkedEndpointWellFormed endpoint)
 
 
@@ -8675,6 +8682,12 @@ orchestrationOrchestrationDiamondSpike nameEq keyEq protocol left right
                               nameEq keyEq leftAction leftTag movedLeftChecked)
                           movedLeftOrchestration = paperOrchestrationStepTransport
                             Refl Refl leftOuter
+                          0 controlEquivalent : ControlEquivalent name key world
+                            error value nameEq originalFinal swappedFinal
+                          controlEquivalent = orchestrationPairControlEquivalent
+                            nameEq keyEq leftAction rightAction leftTag rightTag
+                            leftChecked rightChecked earlyCheckedRight
+                            movedLeftChecked leftOuter rightOuter distinctOwners
                       in MkLocalRelationalDiamond
                         (earlyRightFinal safety) swappedFinal
                         (earlyRight safety)
@@ -8690,6 +8703,7 @@ orchestrationOrchestrationDiamondSpike nameEq keyEq protocol left right
                         (\_ => movedRightOrchestration)
                         (\_ => movedLeftOrchestration)
                         (checkedEndpointEffects endpoint)
+                        controlEquivalent
                         (checkedEndpointWellFormed endpoint)
 
 ||| Checked suffix-splice interface consumed by sorting.  It is generic over the
