@@ -28,10 +28,14 @@ Review trail:
   scoped review `ea7def9` ratifies the repair and every producer (N1), but returns
   **REJECT** on a distinct pre-existing obstruction: generic O6 cannot transpose
   two distinct root-external inputs while preserving `SameExternalOrchestration`;
-- revision 18 Option A1 is conditionally authorized from
+- revision 18 Option A1 is authorized from
   `research-tests/O6-EXTERNAL-ORDER-AUDIT.md`; genuine O17/O19 producer probes
-  passed before the single suffix-signature narrowing, which is implemented and
-  awaiting its mandatory immediate scoped review.
+  passed before the single suffix-signature narrowing;
+- scoped review `056af0e` returns **ACCEPT-WITH-CHANGES**, ratifying revision 18
+  with only stale inventory minor M1; M1 is closed at `40a401b`; and
+- opening O6 body work exposes a new structural evidence gap in the frozen
+  operational-occurrence fold; `O6-OCCURRENCE-FOLD-EVIDENCE-AUDIT.md` records the
+  stop-audit gate without changing a research declaration or body.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -163,7 +167,24 @@ hole body is changed. The historical/current `R17FullResultImpossibility` remain
 total: it shows why root/root has no applicable pair witness, rather than
 contradicting the narrowed function. Revision 18 landed in the first shift of the
 accepted 4–7-shift repair band by reusing checked local-update and immutable
-external-relation capital; mandatory scoped review remains outstanding.
+external-relation capital. Scoped review `056af0e` ratified the narrowing; its
+sole bookkeeping minor M1 is closed at `40a401b`.
+
+### O6 occurrence-fold stop-audit gate
+
+`research-tests/O6-OCCURRENCE-FOLD-EVIDENCE-AUDIT.md` and the total tracked
+`R18OccurrenceFoldArbitrarySuffixImpossibilityPositive` show that the frozen fold
+accepts an arbitrary replayed suffix without source occurrence correspondence.
+For an empty source suffix and one-step replayed suffix, its own ordinal contract
+forces a source occurrence at ordinal two in a two-node source. Thus no total body
+can inhabit the current declaration.
+
+Revision-17 controls and revision-18 external order remain ratified. Both O6
+bodies are stopped pending a narrow evidence-boundary decision. The recommended
+next scope is a sealed simultaneous suffix-replay certificate, not loose
+caller-selected correspondence premises. Opening remaining O6 estimate:
+**15–25 implementation shifts**, re-estimated after the first genuine one-step
+suffix certificate and the first complete suffix splice.
 
 ## Executive estimate
 
@@ -416,10 +437,10 @@ research-tests/run-r11-suite.sh
 It runs serially:
 
 - five research spikes;
-- 34 tracked positive modules; and
+- 35 tracked positive modules; and
 - 30 tracked expected-failure modules.
 
-All 64 tracked Idris test modules occur exactly once. Every negative specification
+All 65 tracked Idris test modules occur exactly once. Every negative specification
 contains its own mandatory diagnostic substring and source declaration name. A
 generic dependent error no longer suffices.
 
@@ -475,8 +496,8 @@ There remain **21 obligations**.
 | **O2** | Transport both independence fields. | **Complete.** | **M–L.** |
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
-| **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint repair ratified. Full-result splicing remains blocked at O6 external-order applicability.** | **Local body closed in shifts 21–23; endpoint producer repaired in shift 25; no O5 change proposed for revision 18.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; revision-18 pair-local external-order narrowing is implemented with genuine O17/O19 probes and framing, pending scoped review. No body changed.** | **XL gate. The authorized 4–7-shift interface repair landed in shift 1; proof work remains prohibited through review.** |
+| **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; current fold signature is structurally uninhabitable for arbitrary nonempty replayed suffix. Stop-audit gate active; no body changed.** | **XL, opening 15–25-shift remainder after an accepted sealed evidence-boundary repair.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -588,9 +609,10 @@ local O5 body. Current gate evidence is:
   dependencies;
 - `R16ConfluenceTheoremAssemblyPositive` remains only an assembly-through-holes
   check and is not evidence that O6 is producer-suppliable;
-- exact 64-module runner coverage with module-specific negative diagnostics,
-  including theorem assembly, both tracked impossibility proofs, revision-17
-  wrong-lookup rejection, and genuine revision-18 O17/O19 producers;
+- exact 65-module runner coverage with module-specific negative diagnostics,
+  including theorem assembly, root-order and arbitrary-suffix impossibility
+  proofs, revision-17 wrong-lookup rejection, and genuine revision-18 O17/O19
+  producers;
 - exact current 6/4/8/2/1 hole split and 148–249 total / 139–240
   implementation-remaining arithmetic;
 - all five spikes and every tracked test serially;
@@ -599,7 +621,7 @@ local O5 body. Current gate evidence is:
 - seeded exact 207/207 build and best-effort unseeded result; and
 - no tracked/staged changes.
 
-Theorem 73 remains unproved with 21 research holes. Revision-17 endpoint work is
-ratified, and revision-18 external-order narrowing is implemented but not yet
-accepted. O5 remains only locally closed. O6 body work is stopped pending the
-mandatory immediate revision-18 scoped adversarial review.
+Theorem 73 remains unproved with 21 research holes. Revision-17 endpoint and
+revision-18 external-order work are ratified; O5 remains only locally closed.
+O6 body work is stopped at the operational-occurrence evidence gap pending a
+narrow sealed-producer decision and scoped review.
