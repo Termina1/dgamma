@@ -104,9 +104,11 @@ through O6, O17, O19, O20, O21, endpoint transitivity, canonical sorting, and th
 final renamed bridge. It recommends replacing the research endpoint control
 field with existing actor-name-indexed `ControlEquivalent`, and restoring exactly
 that consumer-needed weak field on `LocalRelationalDiamond`. Revision 17 option
-(b) is authorized exactly to implement this repair. Existing O3/O4 ordered proofs
-coerce through `orderedControlsGiveControlEquivalent`; O5 must produce the weak
-relation for all nine genuine checked pairs. No permutation certificate, new
+(b) is authorized exactly to implement this repair and is now constructively
+implemented. Existing O3/O4 ordered proofs coerce through
+`orderedControlsGiveControlEquivalent`; O5 derives the weak relation for all nine
+genuine checked pairs by owner-output comparison plus foreign-lookup framing. No
+permutation certificate, new
 operational input, O6 body change, production change, or unrelated hole-signature
 change is authorized.
 
@@ -427,8 +429,8 @@ There remain **21 obligations**.
 | **O2** | Transport both independence fields. | **Complete.** | **M–L.** |
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
-| **O5** | O/O freshness/generation discipline. | **Locally proved and revision-17 pipeline unblock in progress: revision-15 alignment and all nine checked pairs/effects passed review; the replacement ControlEquivalent endpoint is authorized.** | **Local body closed in shifts 21–23; revision-17 producer update pending in shift 25.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; revision-17 repairs the endpoint interface before any O6 body work.** | **XL gate after the accepted 5–9-shift revision-17 estimate; currently shift 1 of that band.** |
+| **O5** | O/O freshness/generation discipline. | **Constructively pipeline-unblocked: revision-15 alignment, all nine checked pairs/effects, and revision-17 pointwise controls are supplied; scoped revision-17 review due.** | **Local body closed in shifts 21–23; endpoint producer repaired in shift 25.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; revision-17 endpoint interface is now producer-suppliable, but no O6 body was changed.** | **XL gate after revision-17 review. The repair implementation landed in shift 1 of the original conservative 5–9-shift estimate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -523,8 +525,9 @@ local O5 body. Current gate evidence is:
 - the O5 theorem delta is exactly the two authorized erased
   `AlignedTransitions` premise occurrences, with `OrchestrationSwapSafety`
   unchanged from its reviewed coordinate;
-- revision 16 removed exactly local `swappedControls`, but the equivalent ordered
-  obligation survives as `RelationalReplayEndpoint.replayedControls`;
+- revision 17 replaces the surviving ordered replay obligation with existing
+  actor-name-indexed `ControlEquivalent` and restores only that consumer-needed
+  relation on the local diamond;
 - `R16EndpointControlsImpossibilityPositive` locally pins and constructively
   rejects the retired ordered endpoint, without rejecting the repaired result;
 - those premises are constructible at the actual O6, O17, O19, and exact checked
@@ -549,5 +552,6 @@ local O5 body. Current gate evidence is:
 - no tracked/staged changes.
 
 Theorem 73 remains unproved with 21 research holes. Revision-17 producer work is
-in progress; O6 proof work remains stopped until the repaired boundary passes its
-own scoped adversarial review.
+constructively complete in shift 25, below the conservative 5–9-shift estimate;
+O6 proof work remains stopped until the repaired boundary passes its own scoped
+adversarial review.
