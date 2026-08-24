@@ -47,8 +47,12 @@ Review trail:
 - revision 20 checks the corrected local/global record split and constructs a
   from-empty prefix, genuine root/root diamond, and checked cross-state retire
   head, but `O6-R20-WHOLE-BUNDLE-ALIGNMENT-GAP-AUDIT.md` stops whole-bundle
-  production at the exact moved-transition `AlignedTransitions` field. Frozen
-  declarations remain unchanged.
+  production at the exact moved-transition `AlignedTransitions` field; and
+- revision 21 proves the producer-carried moved-alignment candidate for all four
+  operational diamonds and the actual full suffix-free fixture, but
+  `O6-R21-MOVED-OUTPUT-ALIGNMENT-PRODUCER-AUDIT.md` stops on the zero-consumer
+  `repeatedIterIdentityDiamond`, whose arbitrary reused transitions may store
+  unrelated dictionaries. Frozen declarations remain unchanged.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -254,6 +258,26 @@ quotients do not identify dictionary closures. The prior nine-plus-two adjacent
 result proposal is therefore necessary but insufficient; no boundary gate or
 fold retirement is active. A new reviewed moved-output alignment boundary is
 required first. Remaining O6 work is re-estimated at **21–35 shifts**.
+
+### Revision 21: exhaustive moved-output producer audit
+
+`R21MovedOutputAlignmentScopingPositive` checks a test-local
+`CandidateAlignedLocalRelationalDiamond` with exact erased `movedPairAligned`.
+Constructor-local probes show that A/A, A/O, O/A, and O/O already own the literal
+outer-dictionary checked equations needed for the field. The actual exported
+suffix-free certificate also projects it from its source bundle. O1/O2 have no
+local-diamond producer, and every wrapper inherits one of the four operational
+results.
+
+The exhaustive six-application constructor search finds one blocker:
+`repeatedIterIdentityDiamond` directly reuses arbitrary `left`/`right`
+transitions but accepts no alignment. `R21RepeatedIterProducerAlignmentNegative`
+fails at `storedRightKeyEq and storedLeftKeyEq`; the separate candidate forgery
+fails at `storedRightKeyEq and keyEq`. The helper has zero consumers, while the
+actual full fixture is aligned. The combined moved-field plus opaque 9+2 result
+package and its manifest impact are pre-declared, but no interface gate is active
+until this helper is retired or narrowed under a separate authorization. The
+band remains **21–35 shifts**.
 
 ## Executive estimate
 
@@ -506,10 +530,10 @@ research-tests/run-r11-suite.sh
 It runs serially:
 
 - five research spikes;
-- 40 tracked positive modules; and
-- 32 tracked expected-failure modules.
+- 41 tracked positive modules; and
+- 34 tracked expected-failure modules.
 
-All 72 tracked Idris test modules occur exactly once. Every negative specification
+All 75 tracked Idris test modules occur exactly once. Every negative specification
 contains its own mandatory diagnostic substring and source declaration name. A
 generic dependent error no longer suffices.
 
@@ -566,7 +590,7 @@ There remain **21 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; corrected record split, from-empty prefix, root/root diamond, and cross-state retire pass, but whole `replayAligned` cannot be recovered from `LocalRelationalDiamond` stored dictionaries. Stop gate active; declarations unchanged.** | **XL, revised 21–35 shifts for moved-output alignment repair, whole bundle, boundary, recursion, and review.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; moved alignment is proved constructible for all four operational producers and the actual full fixture, but one zero-consumer repeated-Iter helper lacks dictionary alignment. Combined gate prepared but blocked; declarations unchanged.** | **XL, 21–35 shifts for helper migration, combined boundary, whole bundle, recursion, and review.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -678,7 +702,7 @@ local O5 body. Current gate evidence is:
   dependencies;
 - `R16ConfluenceTheoremAssemblyPositive` remains only an assembly-through-holes
   check and is not evidence that O6 is producer-suppliable;
-- exact 72-module runner coverage with module-specific negative diagnostics,
+- exact 75-module runner coverage with module-specific negative diagnostics,
   including theorem assembly, root-order and arbitrary-suffix impossibility
   proofs, revision-17 wrong-lookup rejection, genuine revision-18 O17/O19
   producers, and revision-19 sealed base/nonempty probes;
@@ -692,8 +716,9 @@ local O5 body. Current gate evidence is:
 
 Theorem 73 remains unproved with 21 research holes. Revision-17 endpoint and
 revision-18 external-order work are ratified; O5 remains only locally closed.
-Revision-20 checks the corrected local/global split and a genuine from-empty
-cross-state fixture with no declaration change, but whole-bundle production is
-blocked at moved-transition dictionary alignment. O6 body work remains stopped
-pending a reviewed producer-owned moved-alignment repair, the completed whole
-bundle fixture, a new narrow boundary gate, and scoped review.
+Revision-21 checks the producer-owned moved-alignment candidate and every
+operational constructor with no declaration change, but one zero-consumer
+repeated-Iter fixture helper cannot supply the field from its current premises.
+O6 body work remains stopped pending an authorized helper retirement/narrowing,
+the completed whole bundle fixture, the combined boundary gate, and scoped
+review.

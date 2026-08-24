@@ -58,6 +58,7 @@ POSITIVE=(
   R19CrossStateRetireReplayProbePositive
   R20CorrectedSealedReplayEnvelopeScopingPositive
   R20WholeBundleAlignmentGapPositive
+  R21MovedOutputAlignmentScopingPositive
   R9CoordinateBoundaryPositive
   R9WholeBlockShiftedAliasContradictionPositive
 )
@@ -67,6 +68,8 @@ POSITIVE=(
 NEGATIVE_SPECS=(
   "R19SealedReplayConstructorNegative|ScopedReplayEnd is private|forgedScopedReplaySpine"
   "R20WholeBundleMovedAlignmentNegative|storedRightKeyEq and keyEq|localDiamondCannotSupplyMovedAlignment"
+  "R21CandidateIndependentDictionaryNegative|storedRightKeyEq and keyEq|forgeCandidateFromIndependentDictionaries"
+  "R21RepeatedIterProducerAlignmentNegative|storedRightKeyEq and storedLeftKeyEq|repeatedIterPremisesCannotSupplyMovedAlignment"
   "R17WrongLookupControlNegative|Nothing and with block in lookupEntries|wrongLookupControlPairRejected"
   "R15O5IndependentDictionaryNegative|alternateKeyEq and keyEq|independentEarlyOrchestrationCannotAlign"
   "R14O4IndependentDictionaryNegative|alternateKeyEq and keyEq|independentMixedPairCannotAlign"
@@ -140,7 +143,7 @@ run_successful_unit() {
 }
 
 # Package population is hardened against the same status-zero Error: behavior,
-# but does not contribute to the 5+40 research-unit marker count.
+# but does not contribute to the 5+41 research-unit marker count.
 run_package_build() {
   local output
   output=$(mktemp)
@@ -167,7 +170,7 @@ export IDRIS2_PATH="$ROOT/$TTC_ROOT${IDRIS2_PATH:+:$IDRIS2_PATH}"
 
 if [ "$FRESH" -eq 1 ]; then
   # Idris writes these direct --check interfaces into the package TTC root, not
-  # source-relative research directories. Delete exactly the 5+72 suite units.
+  # source-relative research directories. Delete exactly the 5+75 suite units.
   all_modules=("${SPIKES[@]}" "${POSITIVE[@]}")
   for specification in "${NEGATIVE_SPECS[@]}"; do
     IFS='|' read -r module _ _ <<<"$specification"
@@ -214,8 +217,8 @@ for specification in "${NEGATIVE_SPECS[@]}"; do
 done
 
 if [ "$FRESH" -eq 1 ]; then
-  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 45 ]; then
-    echo "Expected 45 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
+  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 46 ]; then
+    echo "Expected 46 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
     exit 1
   fi
   echo "R11_FRESH_SUCCESSFUL_BUILD_MARKERS=$SUCCESSFUL_BUILD_MARKERS"
