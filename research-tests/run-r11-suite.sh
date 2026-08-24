@@ -57,6 +57,7 @@ POSITIVE=(
 # Each expected failure has its own mandatory diagnostic fragment and source
 # declaration. A generic dependent error is not enough to pass the suite.
 NEGATIVE_SPECS=(
+  "R17WrongLookupControlNegative|Nothing and with block in lookupEntries|wrongLookupControlPairRejected"
   "R15O5IndependentDictionaryNegative|alternateKeyEq and keyEq|independentEarlyOrchestrationCannotAlign"
   "R14O4IndependentDictionaryNegative|alternateKeyEq and keyEq|independentMixedPairCannotAlign"
   "R13O3IndependentDictionaryNegative|alternateKeyEq and keyEq|independentDictionariesCannotAlign"
@@ -156,7 +157,7 @@ export IDRIS2_PATH="$ROOT/$TTC_ROOT${IDRIS2_PATH:+:$IDRIS2_PATH}"
 
 if [ "$FRESH" -eq 1 ]; then
   # Idris writes these direct --check interfaces into the package TTC root, not
-  # source-relative research directories. Delete exactly the 5+61 suite units.
+  # source-relative research directories. Delete exactly the 5+62 suite units.
   all_modules=("${SPIKES[@]}" "${POSITIVE[@]}")
   for specification in "${NEGATIVE_SPECS[@]}"; do
     IFS='|' read -r module _ _ <<<"$specification"

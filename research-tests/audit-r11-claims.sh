@@ -43,7 +43,7 @@ cross_duplicates = sorted(name for name, count in Counter(all_names).items() if 
 if cross_duplicates:
     raise SystemExit(f'within/cross-category duplicates: {cross_duplicates}')
 
-expected_lengths = (5, 32, 29)
+expected_lengths = (5, 32, 30)
 actual_lengths = (len(spikes), len(positives), len(negatives))
 if actual_lengths != expected_lengths:
     raise SystemExit(f'category lengths {actual_lengths}, expected {expected_lengths}')
@@ -59,8 +59,8 @@ if sorted(tracked) != expected_tests:
         f'tracked test mismatch: missing={sorted(set(expected_tests)-set(tracked))} '
         f'extra={sorted(set(tracked)-set(expected_tests))}'
     )
-if len(tracked) != 61:
-    raise SystemExit(f'expected 61 tracked tests, found {len(tracked)}')
+if len(tracked) != 62:
+    raise SystemExit(f'expected 62 tracked tests, found {len(tracked)}')
 
 tracked_spikes = subprocess.check_output(
     ['git', 'ls-files', 'research/DGamma/CP5Confluence*Spike.idr'], text=True
@@ -139,6 +139,18 @@ for entry in entries:
     if actual != entry['signature']:
         raise SystemExit(
             f"immutable hole declaration changed: {entry['module']}:{entry['function']}"
+        )
+
+approved_fields = manifest.get('approvedRecordFieldRevisions', [])
+if len(approved_fields) != 2 or any(entry.get('revision') != 17 for entry in approved_fields):
+    raise SystemExit('revision-17 record-field manifest is missing or malformed')
+for entry in approved_fields:
+    if entry.get('audit') != 'research-tests/O6-ENDPOINT-CONTROLS-AUDIT.md':
+        raise SystemExit('revision-17 record field lacks its authorized audit')
+    text = Path(entry['module']).read_text()
+    if text.count(entry['signature']) != 1:
+        raise SystemExit(
+            f"approved record field changed: {entry['record']}.{entry['field']}"
         )
 
 current_occurrences = []
