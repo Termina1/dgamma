@@ -13,6 +13,7 @@ import DGamma.R21MovedOutputAlignmentScopingPositive
 import DGamma.R20CorrectedSealedReplayEnvelopeScopingPositive
 import Data.Nat
 import Decidable.Equality
+import Data.Maybe
 
 %default total
 
@@ -564,3 +565,48 @@ r21WholeBundlePrefixAfterRetainedO5 retainedO5Output =
     DGamma.R20WholeBundleAlignmentGapPositive.r21WholeReplayInitialWellFormed
     DGamma.R20WholeBundleAlignmentGapPositive.r21WholeReplayInitialEmpty
     DGamma.R20WholeBundleAlignmentGapPositive.r21WholeReplayFinalWellFormed
+
+
+0 r21FreshFiberNotQuietAtOriginal : quietFiber
+  @{DGamma.R20WholeBundleAlignmentGapPositive.r20NameEq}
+  @{DGamma.R20WholeBundleAlignmentGapPositive.r20KeyEq}
+  DGamma.R20WholeBundleAlignmentGapPositive.r20Fiber
+  (registry DGamma.R20WholeBundleAlignmentGapPositive.r20OriginalFinal) = False
+r21FreshFiberNotQuietAtOriginal = Refl
+
+public export
+0 r21OriginalRetireFinalNotQuiet : quiet
+  @{DGamma.R20WholeBundleAlignmentGapPositive.r20NameEq}
+  @{DGamma.R20WholeBundleAlignmentGapPositive.r20KeyEq}
+  DGamma.R20WholeBundleAlignmentGapPositive.r20OriginalFinal = False
+r21OriginalRetireFinalNotQuiet =
+  rewrite DGamma.R20WholeBundleAlignmentGapPositive.r21FreshFiberNotQuietAtOriginal in
+    Refl
+
+0 r22OriginalWholeTrace : Transitions
+  DGamma.R20WholeBundleAlignmentGapPositive.r20Initial
+  DGamma.R20WholeBundleAlignmentGapPositive.r20OriginalFinal
+r22OriginalWholeTrace = MoreTransitions
+  DGamma.R20WholeBundleAlignmentGapPositive.r20PrefixTransition
+  (MoreTransitions
+    DGamma.R20WholeBundleAlignmentGapPositive.r20LeftTransition
+    (MoreTransitions
+      DGamma.R20WholeBundleAlignmentGapPositive.r20RightTransition
+      (MoreTransitions
+        DGamma.R20WholeBundleAlignmentGapPositive.r20OriginalRetireTransition
+        NoTransitions)))
+
+||| Stronger revision-22 diagnostic: the alleged authenticated source bundle for
+||| this fixture is itself uninhabited. Actors 1 and 2 remain fresh Inactive-
+||| Nothing roots, which are not quiet because their empty target view resolves.
+public export
+0 r22R20SourceBundleImpossible :
+  ReplayInvariantBundle Nat R20Key Unit Unit R20Value
+    DGamma.R20WholeBundleAlignmentGapPositive.r20Protocol
+    DGamma.R20WholeBundleAlignmentGapPositive.r20NameEq
+    DGamma.R20WholeBundleAlignmentGapPositive.r20KeyEq
+    DGamma.R20WholeBundleAlignmentGapPositive.r22OriginalWholeTrace -> Void
+r22R20SourceBundleImpossible bundle =
+  case trans (sym (replayQuiet bundle))
+    DGamma.R20WholeBundleAlignmentGapPositive.r21OriginalRetireFinalNotQuiet of
+      Refl impossible
