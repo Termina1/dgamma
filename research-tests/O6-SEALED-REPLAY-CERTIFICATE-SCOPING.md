@@ -1,5 +1,11 @@
 # O6 sealed replay certificate — revision-19 scoping audit
 
+> **Checkpoint supersession:** the recursive spine and outer sealing decision
+> remain accepted, but the test candidate's suffix-local `ReplayInvariantBundle`
+> field is rejected by `O6-R19-CROSS-STATE-BUNDLE-MISMATCH-AUDIT.md`.  The
+> corrected spine owns local replay capital only; `AdjacentSwapResult` owns the
+> whole-trace next bundle.  No boundary implementation is authorized yet.
+
 Scoping coordinate: `cp5-thm73-scoping@8261356` from audited base `ff81eb0`.
 This shift changes no frozen declaration, research record, or hole body. The
 candidate types exist only in tracked probes under `research-tests/`.

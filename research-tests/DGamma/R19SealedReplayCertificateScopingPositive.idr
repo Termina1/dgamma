@@ -9,6 +9,12 @@ import Decidable.Equality
 
 %default total
 
+||| Historical revision-19 scoping probe.  The recursive spine remains accepted,
+||| but the certificate's suffix-local `ReplayInvariantBundle` field was rejected
+||| by the first cross-state checkpoint: that bundle is global-from-empty capital.
+||| See `O6-R19-CROSS-STATE-BUNDLE-MISMATCH-AUDIT.md`.  The declarations stay as
+||| a checked pin of the superseded candidate and are not the next boundary.
+
 ||| Candidate recursive spine for revision-19 scoping. `export` exposes the type
 ||| but not its constructors to importing modules. Each nonempty node owns exact
 ||| checked source/replayed transitions and the already sealed recursive tail;
@@ -50,9 +56,10 @@ identityRelationalReplayCorrespondenceR19 trace =
     locatedActionOrdinal occurrence
 identityActionOrdinalR19 trace occurrence = Refl
 
-||| Suffix-relative candidate owned by the future simultaneous producer. It
-||| carries every recursively composable observation rather than accepting them
-||| later at the occurrence-fold projection boundary.
+||| Superseded suffix-relative candidate.  `scopedNextBundle` is intentionally
+||| retained as the checked historical mistake: the corrected recursive spine
+||| omits it, while the opaque outer adjacent envelope owns the whole-trace
+||| bundle.
 export
 record ScopedSealedSuffixReplayCertificate
   (name, key, world, error : Type) (value : key -> Type)
@@ -81,9 +88,9 @@ record ScopedSealedSuffixReplayCertificate
       (replayActionOrigin scopedOccurrences occurrence) =
       locatedActionOrdinal occurrence
 
-||| Suffix-free base producer. All capital is derived from the exact empty trace
-||| bundle; no replayed trace, endpoint, occurrence map, or ordinal function is
-||| accepted from its caller.
+||| Historical empty-state producer for the superseded candidate.  It works only
+||| because the suffix state is itself globally empty and is not evidence that a
+||| normal post-swap empty suffix can carry `ReplayInvariantBundle`.
 export
 0 scopedSuffixFreeCertificateProducer :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -104,13 +111,10 @@ scopedSuffixFreeCertificateProducer nameEq keyEq protocol bundle =
        (identityActionRegistrationReplayCorrespondence NoTransitions)
        (identityActionOrdinalR19 NoTransitions)
 
-||| Genuine checked one-step shape. The transition already owns its evaluator
-||| equation. The producer chooses the replayed trace definitionally, builds the
-||| sealed nonempty spine from that checked transition plus the sealed base, and
-||| derives every certificate field by identity. This validates the recursive
-||| ownership boundary; the future cross-state producer must replace only the
-||| identity head with its checked replayed head while retaining the same sealed
-||| tail discipline.
+||| Historical checked identity one-step shape.  It still validates constructor
+||| sealing, but its caller-supplied whole bundle cannot become suffix-local
+||| recursive capital.  The checked cross-state retire probe derives the actual
+||| replacement head without this premise.
 export
 0 scopedOneStepCertificateProducer :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
