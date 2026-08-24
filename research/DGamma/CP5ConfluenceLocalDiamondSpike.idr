@@ -2116,6 +2116,83 @@ record RawActivationMove
   0 rawActivationRuns : applyAction @{nameEq} @{keyEq} action before =
     Just (tag, rawActivationAfter)
 
+0 localIsSelectedParent : DecEq name -> name -> Parent name -> Bool
+localIsSelectedParent nameEq selected Root = False
+localIsSelectedParent nameEq selected (ChildOf candidate) =
+  case decEq @{nameEq} selected candidate of
+    Yes Refl => True
+    No different => False
+
+0 localIsChildOfParentEquation :
+  (nameEq : DecEq name) -> (selected, observed : name) ->
+  (fiber : Fiber name key value world error) ->
+  isChildOf @{nameEq} selected (Bind observed fiber) =
+    localIsSelectedParent nameEq selected (fiberParent fiber)
+localIsChildOfParentEquation nameEq selected observed
+  (MkFiber component Root retiredFlag table lifecycle) = Refl
+localIsChildOfParentEquation nameEq selected observed
+  (MkFiber component (ChildOf candidate) retiredFlag table lifecycle)
+  with (decEq @{nameEq} selected candidate)
+  localIsChildOfParentEquation nameEq candidate observed
+    (MkFiber component (ChildOf candidate) retiredFlag table lifecycle) |
+    Yes Refl = Refl
+  localIsChildOfParentEquation nameEq selected observed
+    (MkFiber component (ChildOf candidate) retiredFlag table lifecycle) |
+    No different = Refl
+
+0 localIsChildOfSameParent :
+  (nameEq : DecEq name) -> (selected, observed : name) ->
+  (next, old : Fiber name key value world error) ->
+  fiberParent next = fiberParent old ->
+  isChildOf @{nameEq} selected (Bind observed next) =
+    isChildOf @{nameEq} selected (Bind observed old)
+localIsChildOfSameParent nameEq selected observed next old sameParent =
+  trans (localIsChildOfParentEquation nameEq selected observed next)
+    (trans (cong (localIsSelectedParent nameEq selected) sameParent)
+      (sym (localIsChildOfParentEquation nameEq selected observed old)))
+
+0 hasChildInStaticReplacement :
+  (nameEq : DecEq name) -> (selected, changed : name) ->
+  (next, old : Fiber name key value world error) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  lookupEntries @{nameEq} changed entries = Just old ->
+  fiberParent next = fiberParent old ->
+  hasChildIn @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} selected
+    (replaceEntries @{nameEq} changed next entries) =
+  hasChildIn @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} selected entries
+hasChildInStaticReplacement nameEq selected changed next old [] found sameParent =
+  case found of Refl impossible
+hasChildInStaticReplacement nameEq selected changed next old
+  (Bind current observed :: rest) found sameParent
+  with (decEq @{nameEq} changed current) proof changedCurrent
+  hasChildInStaticReplacement nameEq selected current next old
+    (Bind current observed :: rest) found sameParent | Yes Refl =
+      rewrite localIsChildOfSameParent nameEq selected current next observed
+        (trans sameParent (cong fiberParent (sym (justInjective found)))) in Refl
+  hasChildInStaticReplacement nameEq selected changed next old
+    (Bind current observed :: rest) found sameParent | No different =
+      cong (isChildOf @{nameEq} selected (Bind current observed) ||)
+        (hasChildInStaticReplacement nameEq selected changed next old rest found
+          sameParent)
+
+0 hasChildStaticReplacement :
+  (nameEq : DecEq name) -> (selected, changed : name) ->
+  (next, old : Fiber name key value world error) ->
+  (source : Registry name key value world error) ->
+  lookupFiber @{nameEq} changed source = Just old ->
+  fiberParent next = fiberParent old ->
+  hasChild @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} selected
+    (replaceBinding @{nameEq} changed next source) =
+  hasChild @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} selected source
+hasChildStaticReplacement nameEq selected changed next old
+  (MkCoeffectContext entries unique) found sameParent =
+    hasChildInStaticReplacement nameEq selected changed next old entries found
+      sameParent
+
 0 orchestrationRawAfterForeignReplacement :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   {sourceAfter : SystemState name key value world error} ->
