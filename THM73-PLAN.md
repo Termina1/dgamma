@@ -43,8 +43,12 @@ Review trail:
 - the first cross-state checkpoint derives a checked `O-Retire` replay, RAR,
   endpoint, occurrence, and ordinal capital, but
   `O6-R19-CROSS-STATE-BUNDLE-MISMATCH-AUDIT.md` rejects the candidate's
-  suffix-local `ReplayInvariantBundle`; frozen declarations remain unchanged and
-  the stop-audit gate is active.
+  suffix-local `ReplayInvariantBundle`; and
+- revision 20 checks the corrected local/global record split and constructs a
+  from-empty prefix, genuine root/root diamond, and checked cross-state retire
+  head, but `O6-R20-WHOLE-BUNDLE-ALIGNMENT-GAP-AUDIT.md` stops whole-bundle
+  production at the exact moved-transition `AlignedTransitions` field. Frozen
+  declarations remain unchanged.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -231,6 +235,25 @@ to be empty.  The corrected recursive spine omits this field; the opaque outer
 adjacent envelope alone owns `swappedPremises` for the exact whole trace.  A
 corrected whole-bundle fixture is required before the boundary gate.  The first
 checkpoint re-estimates the remaining O6 band at **18–30 implementation shifts**.
+
+### Revision 20: whole-bundle moved-alignment stop gate
+
+`R20CorrectedSealedReplayEnvelopeScopingPositive` implements the authorized
+corrected test-local records: the recursive spine owns only checked per-step
+capital and no bundle, while the opaque outer envelope owns the exact whole
+bundle and the two proposed seals. `R20WholeBundleAlignmentGapPositive` then
+constructs a concrete empty-start prefix insert, a genuine distinct root/root O5
+diamond, and the successful checked cross-state retire suffix head.
+
+The target whole bundle cannot construct its first field. The moved transitions
+inside `LocalRelationalDiamond` retain arbitrary stored `DecEq` dictionaries,
+whereas `AlignedTransitions` requires the literal outer dictionaries.
+`R20WholeBundleMovedAlignmentNegative` pins the exact
+`storedRightKeyEq and keyEq` mismatch. Action/tag equalities and endpoint
+quotients do not identify dictionary closures. The prior nine-plus-two adjacent
+result proposal is therefore necessary but insufficient; no boundary gate or
+fold retirement is active. A new reviewed moved-output alignment boundary is
+required first. Remaining O6 work is re-estimated at **21–35 shifts**.
 
 ## Executive estimate
 
@@ -483,10 +506,10 @@ research-tests/run-r11-suite.sh
 It runs serially:
 
 - five research spikes;
-- 38 tracked positive modules; and
-- 31 tracked expected-failure modules.
+- 40 tracked positive modules; and
+- 32 tracked expected-failure modules.
 
-All 69 tracked Idris test modules occur exactly once. Every negative specification
+All 72 tracked Idris test modules occur exactly once. Every negative specification
 contains its own mandatory diagnostic substring and source declaration name. A
 generic dependent error no longer suffices.
 
@@ -543,7 +566,7 @@ There remain **21 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; suffix-free full fixture and cross-state retire replay pass through RAR/endpoint/occurrence/ordinal, but the suffix-local global bundle is rejected. Stop gate active; declarations unchanged.** | **XL, revised 18–30 implementation shifts for corrected whole-bundle fixture, boundary, recursion, and review.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; corrected record split, from-empty prefix, root/root diamond, and cross-state retire pass, but whole `replayAligned` cannot be recovered from `LocalRelationalDiamond` stored dictionaries. Stop gate active; declarations unchanged.** | **XL, revised 21–35 shifts for moved-output alignment repair, whole bundle, boundary, recursion, and review.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -655,7 +678,7 @@ local O5 body. Current gate evidence is:
   dependencies;
 - `R16ConfluenceTheoremAssemblyPositive` remains only an assembly-through-holes
   check and is not evidence that O6 is producer-suppliable;
-- exact 69-module runner coverage with module-specific negative diagnostics,
+- exact 72-module runner coverage with module-specific negative diagnostics,
   including theorem assembly, root-order and arbitrary-suffix impossibility
   proofs, revision-17 wrong-lookup rejection, genuine revision-18 O17/O19
   producers, and revision-19 sealed base/nonempty probes;
@@ -669,7 +692,8 @@ local O5 body. Current gate evidence is:
 
 Theorem 73 remains unproved with 21 research holes. Revision-17 endpoint and
 revision-18 external-order work are ratified; O5 remains only locally closed.
-Revision-19 cross-state per-action replay is checked with no declaration change,
-but the candidate suffix-local global bundle is structurally misindexed. O6 body
-work remains stopped pending a corrected whole-trace bundle fixture, a new
-narrow boundary gate, and scoped review.
+Revision-20 checks the corrected local/global split and a genuine from-empty
+cross-state fixture with no declaration change, but whole-bundle production is
+blocked at moved-transition dictionary alignment. O6 body work remains stopped
+pending a reviewed producer-owned moved-alignment repair, the completed whole
+bundle fixture, a new narrow boundary gate, and scoped review.

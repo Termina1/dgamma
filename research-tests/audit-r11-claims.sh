@@ -43,7 +43,7 @@ cross_duplicates = sorted(name for name, count in Counter(all_names).items() if 
 if cross_duplicates:
     raise SystemExit(f'within/cross-category duplicates: {cross_duplicates}')
 
-expected_lengths = (5, 38, 31)
+expected_lengths = (5, 40, 32)
 actual_lengths = (len(spikes), len(positives), len(negatives))
 if actual_lengths != expected_lengths:
     raise SystemExit(f'category lengths {actual_lengths}, expected {expected_lengths}')
@@ -59,8 +59,8 @@ if sorted(tracked) != expected_tests:
         f'tracked test mismatch: missing={sorted(set(expected_tests)-set(tracked))} '
         f'extra={sorted(set(tracked)-set(expected_tests))}'
     )
-if len(tracked) != 69:
-    raise SystemExit(f'expected 69 tracked tests, found {len(tracked)}')
+if len(tracked) != 72:
+    raise SystemExit(f'expected 72 tracked tests, found {len(tracked)}')
 
 tracked_spikes = subprocess.check_output(
     ['git', 'ls-files', 'research/DGamma/CP5Confluence*Spike.idr'], text=True

@@ -1,5 +1,10 @@
 # Revision-19 cross-state replay bundle mismatch — stop audit
 
+> **Revision-20 checkpoint:** the corrected local/global bundle split is now
+> checked, but whole-bundle production stops earlier at moved-transition
+> dictionary alignment.  See `O6-R20-WHOLE-BUNDLE-ALIGNMENT-GAP-AUDIT.md`.
+> No adjacent-result boundary gate is currently active.
+
 Coordinate: `cp5-thm73-scoping@2454b78` from the accepted revision-19 scoping
 coordinate `c76b521`.
 
