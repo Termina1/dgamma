@@ -54,11 +54,13 @@ Review trail:
   field shapes through final well-formedness; and
 - revision 22 proves pointwise target-domain and local no-failure reconstruction,
   then constructively rejects the non-quiet R20 source bundle; and
-- revision 23 selects an O19 opening/opening internal crossing, constructs its
-  full quiet/non-failed source `ReplayInvariantBundle`, and stops at the first
-  target L-Advance replay: the endpoint owns pointwise `ControlEquivalent`, but
-  the older generic lifecycle replayer still requires ordered-list controls.
-  Frozen declarations remain unchanged.
+- revision 23 selects an O19 opening/opening internal crossing and constructs
+  its full quiet/non-failed source `ReplayInvariantBundle`; and
+- revision 24 replays both empty-program L-Finish suffix heads pointwise with
+  checked transition/RAR/endpoint/occurrence/ordinal capital, then stops at
+  target-bundle field 1: the live diamond has forgotten producer-owned moved
+  alignment, failing at `storedRightKeyEq and keyEq`. Frozen declarations remain
+  unchanged.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -335,6 +337,27 @@ L-Finish replay, analogous to revision 19's retire replay, owning its transition
 and next endpoint. The combined package remains unissued; the **25–42 shift**
 band is retained.
 
+### Revision 24: both pointwise suffix heads close; whole alignment stops
+
+`R24CheckedEmptyFinishReplay` reconstructs the exact target Reloading-empty
+owner from `ControlEquivalent` lookups, executes the checked L-Finish branch,
+and owns the resulting transition, singleton alignment, RAR, endpoint,
+occurrence correspondence, and relative ordinal theorem. No ordered-list
+control or detached per-step evidence is accepted.
+
+`r24FirstFinishReplay` starts at `swappedFinal r23Diamond`.
+`r24SecondFinishReplay` starts exactly at the first result's checked endpoint.
+`R24CheckedTwoHeadSuffix` seals both source/target heads, and
+`r24FinalEndpoint` relates the original and target finals.
+
+Whole-bundle construction resumes at field 1. Prefix and suffix alignments pass,
+but `R24CorrectedWholeAlignmentNegative` proves that destructing the live
+`LocalRelationalDiamond` cannot recover revision-21 producer alignment; the
+exact failure is `storedRightKeyEq and keyEq`. This is combined item A, not a
+new detached premise opportunity. Quietness and later fields therefore remain
+unattempted in declaration order. The atomic gate ordering now needs a decision,
+and the band is revised to **26–44 shifts**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -587,9 +610,9 @@ It runs serially:
 
 - five research spikes;
 - 43 tracked positive modules; and
-- 36 tracked expected-failure modules.
+- 37 tracked expected-failure modules.
 
-All 79 tracked Idris test modules occur exactly once. Every negative specification
+All 80 tracked Idris test modules occur exactly once. Every negative specification
 contains its own mandatory diagnostic substring and source declaration name. A
 generic dependent error no longer suffices.
 
@@ -646,7 +669,7 @@ There remain **21 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; the corrected O19-internal source fixture now has a complete authenticated bundle. Target replay stops before quietness because pointwise endpoint controls cannot be passed to the ordered-list L-Advance replayer. A pointwise checked advance producer is next; combined gate not issued.** | **XL, 25–42 shifts retained for pointwise suffix replay, target invariants, combined boundary, recursion, and review.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; both corrected target L-Finish suffix heads now replay with checked per-step capital. Whole bundle stops at field 1 because the unmodified diamond lacks producer-owned `movedPairAligned`; the exact dictionary mismatch is pinned. Combined gate not issued.** | **XL, 26–44 shifts for resolving the atomic A/bundle ordering, target invariants, combined boundary, recursion, and review.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -758,7 +781,7 @@ local O5 body. Current gate evidence is:
   dependencies;
 - `R16ConfluenceTheoremAssemblyPositive` remains only an assembly-through-holes
   check and is not evidence that O6 is producer-suppliable;
-- exact 79-module runner coverage with module-specific negative diagnostics,
+- exact 80-module runner coverage with module-specific negative diagnostics,
   including theorem assembly, root-order and arbitrary-suffix impossibility
   proofs, revision-17 wrong-lookup rejection, genuine revision-18 O17/O19
   producers, and revision-19 sealed base/nonempty probes;
@@ -772,8 +795,8 @@ local O5 body. Current gate evidence is:
 
 Theorem 73 remains unproved with 21 research holes. Revision-17 endpoint and
 revision-18 external-order work are ratified; O5 remains only locally closed.
-Revision-23 constructs a complete source `ReplayInvariantBundle` for a quiet,
-non-failed O19-internal opening crossing. Target suffix replay now stops at the
-pointwise/ordered lifecycle interface mismatch before quietness; a checked
-pointwise L-Advance producer is the next declaration-free checkpoint. The
-combined boundary gate remains unissued.
+Revision-24 closes both pointwise checked L-Finish suffix heads and their
+per-step RAR/endpoint/occurrence/ordinal capital. Whole target bundle assembly
+stops at `replayAligned`: producer-owned moved-pair dictionary alignment was
+lost by the unmodified diamond boundary. The combined boundary gate remains
+unissued pending an atomic-ordering decision.

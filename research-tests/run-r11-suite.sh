@@ -74,6 +74,7 @@ NEGATIVE_SPECS=(
   "R21RepeatedIterProducerAlignmentNegative|storedRightKeyEq and storedLeftKeyEq|repeatedIterPremisesCannotSupplyMovedAlignment"
   "R21WholeBundleQuietTransportNegative|source and target|relationalEndpointDoesNotDirectlyTransportQuiet"
   "R23PointwiseAdvanceReplayNegative|ControlEquivalent name key world error value nameEq sourceBefore replayedBefore and OrderedRegistryControlsRelated|relationalEndpointDoesNotSupplyOrderedAdvanceReplay"
+  "R24CorrectedWholeAlignmentNegative|storedRightKeyEq and keyEq|correctedFixtureCannotRecoverMovedPairAlignment"
   "R17WrongLookupControlNegative|Nothing and with block in lookupEntries|wrongLookupControlPairRejected"
   "R15O5IndependentDictionaryNegative|alternateKeyEq and keyEq|independentEarlyOrchestrationCannotAlign"
   "R14O4IndependentDictionaryNegative|alternateKeyEq and keyEq|independentMixedPairCannotAlign"
@@ -174,7 +175,7 @@ export IDRIS2_PATH="$ROOT/$TTC_ROOT${IDRIS2_PATH:+:$IDRIS2_PATH}"
 
 if [ "$FRESH" -eq 1 ]; then
   # Idris writes these direct --check interfaces into the package TTC root, not
-  # source-relative research directories. Delete exactly the 5+79 suite units.
+  # source-relative research directories. Delete exactly the 5+80 suite units.
   all_modules=("${SPIKES[@]}" "${POSITIVE[@]}")
   for specification in "${NEGATIVE_SPECS[@]}"; do
     IFS='|' read -r module _ _ <<<"$specification"
