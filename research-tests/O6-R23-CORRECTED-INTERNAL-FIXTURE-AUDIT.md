@@ -73,8 +73,94 @@ Implementation proceeds in this order:
 A caller-selected quietness, no-failure, domain relation, external relation,
 independence witness, or later endpoint invariant is forbidden.
 
-## 3. Current status
+## 3. Constructive source result
 
-Pair selection and rationale are fixed by this commit **before Idris fixture
-construction begins**. The source bundle is not yet claimed. The combined
-A/B/C/D package remains prepared and unissued.
+`R23CorrectedInternalFixturePositive` now constructs the exact six-node source
+trace and its complete `ReplayInvariantBundle`.
+
+The construction is not a Boolean fixture assertion:
+
+- all six transitions use checked evaluator equations;
+- the two moved L-Begin transitions form the actual O3 local diamond;
+- `r23PairExternalOrder` skips the source and moved pair as lifecycle-internal;
+- quietness and no-failure compute on the final two Active/EmptyView fibers;
+- transition totality is discharged because `R23Key` is empty;
+- `IteratorFreeTrace` proves no reachable iterator stage exists: the only
+  L-Advance heads start from `Reloading []`, and `ReachableSuffix [] (step ::
+  rest)` is impossible;
+- `ActualMapsTotalTrace` proves every actual Equation-54 forward generator is
+  total without identifying independently stored dictionaries;
+- every two effect outputs are `EffectStateRelated` in this concrete model:
+  ambient values are `Unit`, and every `CoeffectContext R23Key R23Value` has an
+  empty binding list because `R23Key` is uninhabited;
+- those facts construct `r23SourceIndependent` directly, including the
+  iterator-stability branch by iterator-stage impossibility; and
+- provenance, protocol rank, parent-rank, precedence acyclicity, support
+  well-foundedness, and support/active matching are derived through the existing
+  reached-from-empty theorems.
+
+The final theorem is:
+
+```idris
+r23SourceBundle : ReplayInvariantBundle Nat R23Key Unit Unit R23Value
+  r23Protocol r23NameEq r23KeyEq r23SourceTrace
+```
+
+Thus the authorized next checkpoint—an authenticated source bundle for a quiet,
+non-failed, revision-18-applicable internal crossing—is closed.
+
+## 4. First target replay stop
+
+Target transport cannot yet reach `replayQuiet`, because the first suffix head
+cannot be constructed through the available generic lifecycle replayer.
+
+The local diamond correctly exposes:
+
+```idris
+ControlEquivalent ... sourcePairFinal (swappedFinal diamond)
+```
+
+Revision 17 intentionally replaced ordered list controls with this pointwise
+relation. `replayRelatedAdvance`, however, is an older Lemma-72 interface and
+still consumes:
+
+```idris
+OrderedRegistryControlsRelated
+  (bindings (registry sourceBefore))
+  (bindings (registry replayedBefore))
+```
+
+`R23PointwiseAdvanceReplayNegative` attempts the exact first L-Advance replay
+using the endpoint's effects, controls, and target well-formedness. It fails at:
+
+```text
+Mismatch between: ControlEquivalent ... and OrderedRegistryControlsRelated ...
+```
+
+This is not evidence that the target action is unreplayable, and it does not
+justify restoring ordered controls to `RelationalReplayEndpoint`. The concrete
+L-Advance/empty-program case should be reconstructed from a target lookup via
+`controlEquivalentTargetHasSource`/its source-to-target counterpart, the exact
+`FiberControlRelated` lifecycle payload, effect relation, and target
+well-formedness, analogously to revision 19's checked cross-state retire
+producer. Its output must own the checked target transition and next relational
+endpoint; ordered list evidence may not be accepted loose.
+
+The strict whole-bundle field order remains intact. No target field is claimed,
+because the checked suffix spine itself has not advanced past its first head.
+Quietness/no-failure transport is therefore not yet applicable, although the
+R22 pointwise lemmas remain sufficient once the suffix endpoint exists.
+
+## 5. Gate status and next work
+
+This phase closes the source checkpoint and stops at a new declaration-free
+producer obligation: a pointwise `CheckedCrossStateAdvanceReplay` for the exact
+empty-program L-Finish head, followed by the second head and the sealed suffix
+spine. Stop if lifecycle/effect/control reconstruction fails; do not add ordered
+controls or any desired target invariant as input capital.
+
+The combined A/B/C/D package remains prepared and unissued. No frozen
+declaration, O6 body, manifest, production source, package, or CP3 file changes.
+The accepted **25–42 shift** band remains honest; this shift closes fixture
+selection/source authentication but exposes the pointwise lifecycle replay
+bridge before target quietness.

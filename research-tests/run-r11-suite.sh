@@ -59,6 +59,7 @@ POSITIVE=(
   R20CorrectedSealedReplayEnvelopeScopingPositive
   R21MovedOutputAlignmentScopingPositive
   R22QuietnessDomainAuditPositive
+  R23CorrectedInternalFixturePositive
   R20WholeBundleAlignmentGapPositive
   R9CoordinateBoundaryPositive
   R9WholeBlockShiftedAliasContradictionPositive
@@ -72,6 +73,7 @@ NEGATIVE_SPECS=(
   "R21CandidateIndependentDictionaryNegative|storedRightKeyEq and keyEq|forgeCandidateFromIndependentDictionaries"
   "R21RepeatedIterProducerAlignmentNegative|storedRightKeyEq and storedLeftKeyEq|repeatedIterPremisesCannotSupplyMovedAlignment"
   "R21WholeBundleQuietTransportNegative|source and target|relationalEndpointDoesNotDirectlyTransportQuiet"
+  "R23PointwiseAdvanceReplayNegative|ControlEquivalent name key world error value nameEq sourceBefore replayedBefore and OrderedRegistryControlsRelated|relationalEndpointDoesNotSupplyOrderedAdvanceReplay"
   "R17WrongLookupControlNegative|Nothing and with block in lookupEntries|wrongLookupControlPairRejected"
   "R15O5IndependentDictionaryNegative|alternateKeyEq and keyEq|independentEarlyOrchestrationCannotAlign"
   "R14O4IndependentDictionaryNegative|alternateKeyEq and keyEq|independentMixedPairCannotAlign"
@@ -145,7 +147,7 @@ run_successful_unit() {
 }
 
 # Package population is hardened against the same status-zero Error: behavior,
-# but does not contribute to the 5+42 research-unit marker count.
+# but does not contribute to the 5+43 research-unit marker count.
 run_package_build() {
   local output
   output=$(mktemp)
@@ -172,7 +174,7 @@ export IDRIS2_PATH="$ROOT/$TTC_ROOT${IDRIS2_PATH:+:$IDRIS2_PATH}"
 
 if [ "$FRESH" -eq 1 ]; then
   # Idris writes these direct --check interfaces into the package TTC root, not
-  # source-relative research directories. Delete exactly the 5+77 suite units.
+  # source-relative research directories. Delete exactly the 5+79 suite units.
   all_modules=("${SPIKES[@]}" "${POSITIVE[@]}")
   for specification in "${NEGATIVE_SPECS[@]}"; do
     IFS='|' read -r module _ _ <<<"$specification"
@@ -219,8 +221,8 @@ for specification in "${NEGATIVE_SPECS[@]}"; do
 done
 
 if [ "$FRESH" -eq 1 ]; then
-  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 47 ]; then
-    echo "Expected 47 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
+  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 48 ]; then
+    echo "Expected 48 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
     exit 1
   fi
   echo "R11_FRESH_SUCCESSFUL_BUILD_MARKERS=$SUCCESSFUL_BUILD_MARKERS"
