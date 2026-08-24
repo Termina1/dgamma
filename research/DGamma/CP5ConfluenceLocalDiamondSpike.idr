@@ -4995,6 +4995,267 @@ orchestrationTransitionMapOriginCong nameEq keyEq action tag checked
   (PaperRemoveStep actionSame) left right state = case actionSame of
     Refl => Refl
 
+
+0 localSetEffectTableDistinctLookup :
+  (nameEq : DecEq name) -> (candidate, left, right : name) ->
+  Not (left = right) ->
+  (leftTable, rightTable : CoeffectContext key value) ->
+  (state : EffectState name key value world) ->
+  effectTables
+    (setEffectTable @{nameEq} left leftTable
+      (setEffectTable @{nameEq} right rightTable state)) candidate =
+  effectTables
+    (setEffectTable @{nameEq} right rightTable
+      (setEffectTable @{nameEq} left leftTable state)) candidate
+localSetEffectTableDistinctLookup nameEq candidate left right distinct leftTable
+  rightTable state with (decEq @{nameEq} candidate left)
+  localSetEffectTableDistinctLookup nameEq left left right distinct leftTable
+    rightTable state | Yes Refl with (decEq @{nameEq} left right)
+    localSetEffectTableDistinctLookup nameEq right right right distinct leftTable
+      rightTable state | Yes Refl | Yes Refl = void (distinct Refl)
+    localSetEffectTableDistinctLookup nameEq left left right distinct leftTable
+      rightTable state | Yes Refl | No different
+      with (decEq @{nameEq} left left)
+      localSetEffectTableDistinctLookup nameEq left left right distinct leftTable
+        rightTable state | Yes Refl | No different | Yes Refl = Refl
+      localSetEffectTableDistinctLookup nameEq left left right distinct leftTable
+        rightTable state | Yes Refl | No different | No absurd =
+          void (absurd Refl)
+  localSetEffectTableDistinctLookup nameEq candidate left right distinct leftTable
+    rightTable state | No notLeft with (decEq @{nameEq} candidate right)
+    localSetEffectTableDistinctLookup nameEq right left right distinct leftTable
+      rightTable state | No notLeft | Yes Refl with (decEq @{nameEq} right left)
+      localSetEffectTableDistinctLookup nameEq left left left distinct leftTable
+        rightTable state | No notLeft | Yes Refl | Yes Refl =
+          void (notLeft Refl)
+      localSetEffectTableDistinctLookup nameEq right left right distinct leftTable
+        rightTable state | No notLeft | Yes Refl | No different
+        with (decEq @{nameEq} right right)
+        localSetEffectTableDistinctLookup nameEq right left right distinct
+          leftTable rightTable state | No notLeft | Yes Refl | No different |
+          Yes Refl = Refl
+        localSetEffectTableDistinctLookup nameEq right left right distinct
+          leftTable rightTable state | No notLeft | Yes Refl | No different |
+          No absurd = void (absurd Refl)
+    localSetEffectTableDistinctLookup nameEq candidate left right distinct
+      leftTable rightTable state | No notLeft | No notRight
+      with (decEq @{nameEq} candidate left)
+      localSetEffectTableDistinctLookup nameEq left left right distinct leftTable
+        rightTable state | No notLeft | No notRight | Yes Refl =
+          void (notLeft Refl)
+      localSetEffectTableDistinctLookup nameEq candidate left right distinct
+        leftTable rightTable state | No notLeft | No notRight | No stillNotLeft
+        with (decEq @{nameEq} candidate right)
+        localSetEffectTableDistinctLookup nameEq right left right distinct
+          leftTable rightTable state | No notLeft | No notRight |
+          No stillNotLeft | Yes Refl = void (notRight Refl)
+        localSetEffectTableDistinctLookup nameEq candidate left right distinct
+          leftTable rightTable state | No notLeft | No notRight |
+          No stillNotLeft | No stillNotRight = Refl
+
+0 setEffectTablesDistinctRelated :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (left, right : name) -> Not (left = right) ->
+  (leftTable, rightTable : CoeffectContext key value) ->
+  (state : EffectState name key value world) ->
+  EffectStateRelated keyEq
+    (setEffectTable @{nameEq} left leftTable
+      (setEffectTable @{nameEq} right rightTable state))
+    (setEffectTable @{nameEq} right rightTable
+      (setEffectTable @{nameEq} left leftTable state))
+setEffectTablesDistinctRelated nameEq keyEq left right distinct leftTable
+  rightTable state = MkEffectStateRelated Refl
+    (\candidate => cong bindings
+      (localSetEffectTableDistinctLookup nameEq candidate left right distinct
+        leftTable rightTable state))
+
+0 effectSetTablesDistinctCommute :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (left, right : name) -> Not (left = right) ->
+  (leftTable, rightTable : CoeffectContext key value) ->
+  PartialCommute (EffectStateEquivalence keyEq)
+    (\state => Just (setEffectTable @{nameEq} left leftTable state))
+    (\state => Just (setEffectTable @{nameEq} right rightTable state))
+effectSetTablesDistinctCommute nameEq keyEq left right distinct leftTable
+  rightTable state = PartialDefined
+    (setEffectTablesDistinctRelated nameEq keyEq left right distinct leftTable
+      rightTable state)
+
+0 orchestrationEffectMapsCommute :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, originalFinal : SystemState name key value world error} ->
+  (leftAction, rightAction : Action name key value world error) ->
+  (leftTag, rightTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first =
+    Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq} rightAction middle =
+    Just (rightTag, originalFinal)) ->
+  (leftPaper : PaperOrchestrationStep
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked)) ->
+  (rightPaper : PaperOrchestrationStep
+    (Fired {before = middle} {afterState = originalFinal}
+      nameEq keyEq rightAction rightTag rightChecked)) ->
+  Not (actionOwner leftAction = actionOwner rightAction) ->
+  PartialCommute (EffectStateEquivalence keyEq)
+    (partialEffectMapFor nameEq keyEq leftAction leftTag first)
+    (partialEffectMapFor nameEq keyEq rightAction rightTag middle)
+orchestrationEffectMapsCommute nameEq keyEq leftAction rightAction leftTag
+  rightTag leftChecked rightChecked
+  (PaperInsertStep {actor = leftActor} {parent = leftParent}
+    {component = leftComponent} leftSame)
+  (PaperInsertStep {actor = rightActor} rightSame) distinct =
+    case leftSame of
+      Refl => case rightSame of
+        Refl => effectSetTablesDistinctCommute nameEq keyEq leftActor rightActor
+          distinct emptyContext emptyContext
+orchestrationEffectMapsCommute nameEq keyEq leftAction rightAction leftTag
+  rightTag leftChecked rightChecked
+  (PaperInsertStep {actor = leftActor} {parent = leftParent}
+    {component = leftComponent} leftSame)
+  (PaperRetireStep {actor = rightActor} rightSame) distinct =
+    case leftSame of
+      Refl => case rightSame of
+        Refl => effectIdentityOnRightCommutes keyEq
+          (partialEffectMapFor nameEq keyEq
+            (OInsert leftActor leftParent leftComponent) leftTag first)
+          (partialEffectMapFor nameEq keyEq (ORetire rightActor) rightTag middle)
+          (\state => Refl)
+orchestrationEffectMapsCommute nameEq keyEq leftAction rightAction leftTag
+  rightTag leftChecked rightChecked
+  (PaperInsertStep {actor = leftActor} leftSame)
+  (PaperRemoveStep {actor = rightActor} rightSame) distinct =
+    case leftSame of
+      Refl => case rightSame of
+        Refl => effectSetTablesDistinctCommute nameEq keyEq leftActor rightActor
+          distinct emptyContext emptyContext
+orchestrationEffectMapsCommute nameEq keyEq leftAction rightAction leftTag
+  rightTag leftChecked rightChecked
+  (PaperRetireStep {actor = leftActor} leftSame) rightPaper distinct =
+    case leftSame of
+      Refl => effectIdentityOnLeftCommutes keyEq
+        (partialEffectMapFor nameEq keyEq (ORetire leftActor) leftTag first)
+        (\state => Refl)
+        (partialEffectMapFor nameEq keyEq rightAction rightTag middle)
+orchestrationEffectMapsCommute nameEq keyEq leftAction rightAction leftTag
+  rightTag leftChecked rightChecked
+  (PaperRemoveStep {actor = leftActor} leftSame)
+  (PaperInsertStep {actor = rightActor} rightSame) distinct =
+    case leftSame of
+      Refl => case rightSame of
+        Refl => effectSetTablesDistinctCommute nameEq keyEq leftActor rightActor
+          distinct emptyContext emptyContext
+orchestrationEffectMapsCommute nameEq keyEq leftAction rightAction leftTag
+  rightTag leftChecked rightChecked
+  (PaperRemoveStep {actor = leftActor} leftSame)
+  (PaperRetireStep {actor = rightActor} rightSame) distinct =
+    case leftSame of
+      Refl => case rightSame of
+        Refl => effectIdentityOnRightCommutes keyEq
+          (partialEffectMapFor nameEq keyEq (ORemove leftActor) leftTag first)
+          (partialEffectMapFor nameEq keyEq (ORetire rightActor) rightTag middle)
+          (\state => Refl)
+orchestrationEffectMapsCommute nameEq keyEq leftAction rightAction leftTag
+  rightTag leftChecked rightChecked
+  (PaperRemoveStep {actor = leftActor} leftSame)
+  (PaperRemoveStep {actor = rightActor} rightSame) distinct =
+    case leftSame of
+      Refl => case rightSame of
+        Refl => effectSetTablesDistinctCommute nameEq keyEq leftActor rightActor
+          distinct emptyContext emptyContext
+
+0 orchestrationPairEffectOutput :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, originalFinal, earlyRightFinal :
+    SystemState name key value world error} ->
+  (leftAction, rightAction : Action name key value world error) ->
+  (leftTag, rightTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first =
+    Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq} rightAction middle =
+    Just (rightTag, originalFinal)) ->
+  (earlyRightChecked : checkedApplyAction @{nameEq} @{keyEq} rightAction first =
+    Just (rightTag, earlyRightFinal)) ->
+  (leftPaper : PaperOrchestrationStep
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked)) ->
+  (rightPaper : PaperOrchestrationStep
+    (Fired {before = middle} {afterState = originalFinal}
+      nameEq keyEq rightAction rightTag rightChecked)) ->
+  Not (actionOwner leftAction = actionOwner rightAction) ->
+  ActivationPairEffectOutput nameEq keyEq leftAction leftTag earlyRightFinal
+    originalFinal
+orchestrationPairEffectOutput nameEq keyEq {first} {middle} {originalFinal}
+  {earlyRightFinal} leftAction rightAction leftTag rightTag leftChecked
+  rightChecked earlyRightChecked leftPaper rightPaper distinct =
+    let 0 leftMap : PartialEffectMap name key value world
+        leftMap = partialEffectMapFor nameEq keyEq leftAction leftTag first
+        0 rightMap : PartialEffectMap name key value world
+        rightMap = partialEffectMapFor nameEq keyEq rightAction rightTag middle
+        0 earlyRightMap : PartialEffectMap name key value world
+        earlyRightMap = partialEffectMapFor nameEq keyEq rightAction rightTag first
+        0 leftFrame : PartialRelated (EffectState name key value world)
+          (EffectStateRelated keyEq)
+          (leftMap (projectEffectState @{nameEq} first))
+          (Just (projectEffectState @{nameEq} middle))
+        leftFrame = checkedEffectFrameRelation nameEq keyEq leftAction leftTag
+          first middle leftChecked
+        0 rightFrame : PartialRelated (EffectState name key value world)
+          (EffectStateRelated keyEq)
+          (rightMap (projectEffectState @{nameEq} middle))
+          (Just (projectEffectState @{nameEq} originalFinal))
+        rightFrame = checkedEffectFrameRelation nameEq keyEq rightAction rightTag
+          middle originalFinal rightChecked
+        0 rawEarlyFrame : PartialRelated (EffectState name key value world)
+          (EffectStateRelated keyEq)
+          (earlyRightMap (projectEffectState @{nameEq} first))
+          (Just (projectEffectState @{nameEq} earlyRightFinal))
+        rawEarlyFrame = checkedEffectFrameRelation nameEq keyEq rightAction
+          rightTag first earlyRightFinal earlyRightChecked
+        0 rightOriginSame : (state : EffectState name key value world) ->
+          rightMap state = earlyRightMap state
+        rightOriginSame = orchestrationTransitionMapOriginCong nameEq keyEq
+          rightAction rightTag rightChecked rightPaper middle first
+        0 earlyFrame : PartialRelated (EffectState name key value world)
+          (EffectStateRelated keyEq)
+          (rightMap (projectEffectState @{nameEq} first))
+          (Just (projectEffectState @{nameEq} earlyRightFinal))
+        earlyFrame = localPartialRelatedRewrite
+          (sym (rightOriginSame (projectEffectState @{nameEq} first))) Refl
+          rawEarlyFrame
+        0 commute : PartialCommute (EffectStateEquivalence keyEq) leftMap rightMap
+        commute = orchestrationEffectMapsCommute nameEq keyEq leftAction
+          rightAction leftTag rightTag leftChecked rightChecked leftPaper
+          rightPaper distinct
+        0 commuted : CommutedEffectOutput keyEq leftMap rightMap
+          (projectEffectState @{nameEq} first)
+          (projectEffectState @{nameEq} middle)
+          (projectEffectState @{nameEq} originalFinal)
+          (projectEffectState @{nameEq} earlyRightFinal)
+        commuted = commuteEffectFrames keyEq leftMap rightMap
+          (partialEffectMapForRespects nameEq keyEq leftAction leftTag first)
+          (partialEffectMapForRespects nameEq keyEq rightAction rightTag middle)
+          commute (projectEffectState @{nameEq} first)
+          (projectEffectState @{nameEq} middle)
+          (projectEffectState @{nameEq} originalFinal)
+          (projectEffectState @{nameEq} earlyRightFinal)
+          leftFrame rightFrame earlyFrame
+        0 leftMovedSame : (state : EffectState name key value world) ->
+          leftMap state =
+            partialEffectMapFor nameEq keyEq leftAction leftTag earlyRightFinal
+              state
+        leftMovedSame = orchestrationTransitionMapOriginCong nameEq keyEq
+          leftAction leftTag leftChecked leftPaper first earlyRightFinal
+        0 movedRuns :
+          partialEffectMapFor nameEq keyEq leftAction leftTag earlyRightFinal
+            (projectEffectState @{nameEq} earlyRightFinal) =
+          Just (commutedOutput commuted)
+        movedRuns = trans
+          (sym (leftMovedSame (projectEffectState @{nameEq} earlyRightFinal)))
+          (commutedLeftRuns commuted)
+    in MkActivationPairEffectOutput (commutedOutput commuted) movedRuns
+      (originalFinalToCommuted commuted)
+
 0 pairEffectOutputFromOriginCong :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   {first, middle, originalFinal, earlyRightFinal :
