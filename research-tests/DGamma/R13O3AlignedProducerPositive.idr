@@ -50,3 +50,35 @@ genuineO3AlignmentsPositive nameEq keyEq premises earlyAction earlyTag
     ( alignedPairFromReplayBundle premises
     , AlignedStep earlyAction earlyTag earlyChecked NoTransitions AlignedEnd
     )
+
+||| Revision 17: the genuine A/A local producer exports exactly the
+||| actor-name-indexed control relation consumed by suffix replay.
+0 genuineAAControlProducer :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, originalFinal, earlyRightFinal :
+    SystemState name key value world error} ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  (earlyRight : Transition first earlyRightFinal) ->
+  (0 sourceAligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  (0 earlyRightAligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions earlyRight NoTransitions)) ->
+  (actionEq : transitionAction earlyRight = transitionAction right) ->
+  (tagEq : transitionTag earlyRight = transitionTag right) ->
+  (leftPaper : PaperActivationStep left) ->
+  (rightPaper : PaperActivationStep right) ->
+  (distinct : Not (transitionActor left = transitionActor right)) ->
+  (wellFormed : registryWellFormed @{nameEq} @{keyEq} first = True) ->
+  (independent : TraceIndependent name key world error value keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  ControlEquivalent name key world error value nameEq originalFinal
+    (swappedFinal (activationActivationDiamondSpike nameEq keyEq left right
+      earlyRight sourceAligned earlyRightAligned actionEq tagEq leftPaper
+      rightPaper distinct wellFormed independent))
+genuineAAControlProducer nameEq keyEq left right earlyRight sourceAligned
+  earlyRightAligned actionEq tagEq leftPaper rightPaper distinct wellFormed
+  independent = swappedControlEquivalent
+    (activationActivationDiamondSpike nameEq keyEq left right earlyRight
+      sourceAligned earlyRightAligned actionEq tagEq leftPaper rightPaper distinct
+      wellFormed independent)

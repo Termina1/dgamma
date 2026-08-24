@@ -122,3 +122,103 @@ genuineSafetyIndexedO5Application nameEq keyEq protocol left right sourceAligned
           earlyChecked NoTransitions AlignedEnd
     in orchestrationOrchestrationDiamondSpike nameEq keyEq protocol left right
       sourceAligned leftPaper rightPaper distinct safety earlyAligned
+
+||| Revision 17 replacement witness for the exact case that made the retired
+||| ordered endpoint Void: two distinct checked, prepending O-Insert actions,
+||| no suffix, and the genuine outer dictionaries. The endpoint is now directly
+||| constructible because controls are compared by actor-name lookup.
+0 genuineSuffixFreeDistinctInsertEndpoint :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {first, middle, originalFinal, earlyFinal :
+    SystemState name key value world error} ->
+  (leftActor, rightActor : name) ->
+  (distinct : Not (leftActor = rightActor)) ->
+  (leftParent, rightParent : Parent name) ->
+  (leftComponent, rightComponent : Component key value world error) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq}
+    (OInsert leftActor leftParent leftComponent) first =
+      Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq}
+    (OInsert rightActor rightParent rightComponent) middle =
+      Just (rightTag, originalFinal)) ->
+  (earlyChecked : checkedApplyAction @{nameEq} @{keyEq}
+    (OInsert rightActor rightParent rightComponent) first =
+      Just (rightTag, earlyFinal)) ->
+  (sourceDiscipline : RegistrationDiscipline protocol nameEq
+    (MoreTransitions
+      (Fired nameEq keyEq (OInsert leftActor leftParent leftComponent)
+        leftTag leftChecked)
+      (MoreTransitions
+        (Fired nameEq keyEq (OInsert rightActor rightParent rightComponent)
+          rightTag rightChecked)
+        NoTransitions))) ->
+  (startOrdinal : Nat) -> (startLive : GenerationEnvironment name) ->
+  (endOrdinal : Nat) -> (endLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq startOrdinal startLive
+    (MoreTransitions
+      (Fired nameEq keyEq (OInsert leftActor leftParent leftComponent)
+        leftTag leftChecked)
+      (MoreTransitions
+        (Fired nameEq keyEq (OInsert rightActor rightParent rightComponent)
+          rightTag rightChecked)
+        NoTransitions)) endOrdinal endLive ->
+  (licenses : (leftChild, leftParentName, rightChild, rightParentName : name) ->
+    (candidateLeft, candidateRight : Component key value world error) ->
+    OInsert leftActor leftParent leftComponent =
+      OInsert leftChild (ChildOf leftParentName) candidateLeft ->
+    OInsert rightActor rightParent rightComponent =
+      OInsert rightChild (ChildOf rightParentName) candidateRight ->
+    (Not (leftChild = rightParentName),
+     Not (rightChild = leftParentName))) ->
+  (swapped : SystemState name key value world error **
+    RelationalReplayEndpoint name key world error value nameEq keyEq
+      originalFinal swapped)
+genuineSuffixFreeDistinctInsertEndpoint nameEq keyEq protocol leftActor rightActor
+  distinct leftParent rightParent leftComponent rightComponent leftChecked
+  rightChecked earlyChecked sourceDiscipline startOrdinal startLive endOrdinal
+  endLive scan licenses =
+    let left : Transition first middle
+        left = Fired nameEq keyEq
+          (OInsert leftActor leftParent leftComponent) leftTag leftChecked
+        right : Transition middle originalFinal
+        right = Fired nameEq keyEq
+          (OInsert rightActor rightParent rightComponent) rightTag rightChecked
+        0 sourceAligned : AlignedTransitions name key world error value nameEq
+          keyEq (MoreTransitions left (MoreTransitions right NoTransitions))
+        sourceAligned = AlignedStep
+          (OInsert leftActor leftParent leftComponent) leftTag leftChecked
+          (MoreTransitions right NoTransitions)
+          (AlignedStep (OInsert rightActor rightParent rightComponent) rightTag
+            rightChecked NoTransitions AlignedEnd)
+        early : Transition first earlyFinal
+        early = Fired nameEq keyEq
+          (OInsert rightActor rightParent rightComponent) rightTag earlyChecked
+        insertedDistinct : (leftChild, rightChild : name) ->
+          (candidateLeftParent, candidateRightParent : Parent name) ->
+          (candidateLeft, candidateRight : Component key value world error) ->
+          transitionAction left =
+            OInsert leftChild candidateLeftParent candidateLeft ->
+          transitionAction right =
+            OInsert rightChild candidateRightParent candidateRight ->
+          Not (leftChild = rightChild)
+        insertedDistinct leftActor rightActor leftParent rightParent leftComponent
+          rightComponent Refl Refl = distinct
+        safety : OrchestrationSwapSafety name key world error value protocol
+          nameEq keyEq left right
+        safety = MkOrchestrationSwapSafety earlyFinal early Refl Refl
+          sourceDiscipline startOrdinal startLive endOrdinal endLive scan
+          insertedDistinct licenses
+        0 earlyAligned : AlignedTransitions name key world error value nameEq
+          keyEq (MoreTransitions (earlyRight safety) NoTransitions)
+        earlyAligned = AlignedStep
+          (OInsert rightActor rightParent rightComponent) rightTag earlyChecked
+          NoTransitions AlignedEnd
+        diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+          left right
+        diamond = orchestrationOrchestrationDiamondSpike nameEq keyEq protocol
+          left right sourceAligned (PaperInsertStep Refl) (PaperInsertStep Refl)
+          distinct safety earlyAligned
+    in (swappedFinal diamond **
+      MkRelationalReplayEndpoint (swappedEffects diamond)
+        (swappedControlEquivalent diamond) (swappedWellFormed diamond))
