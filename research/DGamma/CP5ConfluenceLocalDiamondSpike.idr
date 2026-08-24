@@ -11,6 +11,7 @@ import DGamma.CP4DeletionCommuteCore
 import DGamma.CP4DeletionControlCore
 import DGamma.CP4DeletionControlOrchestration
 import DGamma.CP4DeletionChildlessInvariant
+import DGamma.CP4DeletionPlanSuccess
 import DGamma.CP4DeletionBoundaryDeleted
 import DGamma.CP4DeletionBoundaryRetained
 import DGamma.CP4DeletionSelectedForeignOrchestration
@@ -2378,6 +2379,23 @@ paperOrchestrationNonLifecycle
   {transition = Fired nameEq keyEq action tag checked}
   (PaperRemoveStep actionSame) = case actionSame of Refl => Refl
 
+0 localForeignInsertViewTag : (tag : RuleTag) ->
+  ForeignInsertPlanView name key world error value nameEq keyEq actor parent
+    component ambient source tag afterState -> tag = OInsertTag
+localForeignInsertViewTag OInsertTag
+  (MkForeignInsertPlanView absent guards) = Refl
+
+0 localRetireViewTag : (tag : RuleTag) ->
+  RetireSuccessView name key world error value nameEq actor ambient source tag
+    afterState -> tag = ORetireTag
+localRetireViewTag ORetireTag (MkRetireSuccessView fiber found) = Refl
+
+0 localRemoveViewTag : (tag : RuleTag) ->
+  RemoveSuccessView name key world error value nameEq actor ambient source tag
+    afterState -> tag = ORemoveTag
+localRemoveViewTag ORemoveTag
+  (MkRemoveSuccessView fiber found guard noChild) = Refl
+
 0 localOrchestrationSuccessfulTagsSame :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   {leftBefore, leftAfter : SystemState name key value world error} ->
@@ -2495,6 +2513,234 @@ insertionParentOutsideFromLaterRemove nameEq keyEq leftAction leftTag removed
 insertionParentOutsideFromLaterRemove nameEq keyEq leftAction leftTag removed
   rightTag leftChecked rightChecked (PaperRemoveStep actionSame) =
     case actionSame of Refl => ()
+
+0 localAndLeftTrueO5 : (left, right : Bool) ->
+  left && right = True -> left = True
+localAndLeftTrueO5 False right both = case both of Refl impossible
+localAndLeftTrueO5 True right both = Refl
+
+0 localAndRightTrueO5 : (left, right : Bool) ->
+  left && right = True -> right = True
+localAndRightTrueO5 False right both = case both of Refl impossible
+localAndRightTrueO5 True False both = case both of Refl impossible
+localAndRightTrueO5 True True both = Refl
+
+0 localParentPresentAfterDelete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (parent : Parent name) -> (removed : name) ->
+  ParentOutside parent removed ->
+  (source : Registry name key value world error) ->
+  parentPresent @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} parent source = True ->
+  parentPresent @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} parent
+    (deleteBinding @{nameEq} removed source) = True
+localParentPresentAfterDelete nameEq Root removed outside source present = Refl
+localParentPresentAfterDelete nameEq (ChildOf parent) removed distinct source
+  present = rewrite lookupDeleteOther parent removed distinct source in present
+
+0 orchestrationRawAfterDelete :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {sourceAfter : SystemState name key value world error} ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (removed : name) -> Not (actionOwner action = removed) ->
+  InsertionParentOutside action removed ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} action
+    (MkSystemState ambient source) = Just (tag, sourceAfter)) ->
+  (paper : PaperOrchestrationStep
+    (Fired {before = MkSystemState ambient source} {afterState = sourceAfter}
+      nameEq keyEq action tag sourceChecked)) ->
+  RawActivationMove nameEq keyEq action tag
+    (MkSystemState ambient (deleteBinding @{nameEq} removed source))
+orchestrationRawAfterDelete {name} {key} {world} {error} {value}
+  nameEq keyEq action tag ambient source removed distinct parentOutside
+  sourceChecked (PaperInsertStep {actor} {parent} {component} actionSame) =
+    case actionSame of
+      Refl =>
+        let 0 sourceRaw = checkedActionProjects nameEq keyEq
+              (OInsert actor parent component) (MkSystemState ambient source)
+              sourceAfter tag sourceChecked
+            sourceView = foreignInsertPlanView nameEq keyEq actor parent
+              component ambient source tag sourceAfter sourceRaw
+            0 tagSame : Equal tag OInsertTag
+            tagSame = localForeignInsertViewTag tag sourceView
+        in case sourceView of
+          MkForeignInsertPlanView sourceAbsent sourceGuards =>
+            let target : Registry name key value world error
+                target = deleteBinding @{nameEq} removed source
+                0 sourceParent : parentPresent @{nameEq} {name = name}
+                  {key = key} {value = value} {world = world} {error = error}
+                  parent source = True
+                sourceParent = localAndLeftTrueO5 _ _ sourceGuards
+                0 sourceDisjoint : provisionsDisjointFrom @{keyEq}
+                  {name = name} {key = key} {value = value} {world = world}
+                  {error = error} (componentProvisions component)
+                  (bindings source) = True
+                sourceDisjoint = localAndRightTrueO5 _ _ sourceGuards
+                0 targetParent : parentPresent @{nameEq} {name = name}
+                  {key = key} {value = value} {world = world} {error = error}
+                  parent target = True
+                targetParent = localParentPresentAfterDelete nameEq parent
+                  removed parentOutside source sourceParent
+                0 deletedDisjoint : provisionsDisjointFrom @{keyEq}
+                  {name = name} {key = key} {value = value} {world = world}
+                  {error = error} (componentProvisions component)
+                  (deleteEntries @{nameEq} removed (bindings source)) = True
+                deletedDisjoint = provisionsDisjointDelete nameEq keyEq
+                  (componentProvisions component) (bindings source) removed
+                  sourceDisjoint
+                0 targetBindings : bindings target =
+                  deleteEntries @{nameEq} removed (bindings source)
+                targetBindings = deleteBindingRuntimeBindings nameEq removed
+                  source
+                0 targetDisjoint : provisionsDisjointFrom @{keyEq}
+                  {name = name} {key = key} {value = value} {world = world}
+                  {error = error} (componentProvisions component)
+                  (bindings target) = True
+                targetDisjoint = replace
+                  {p = \entries => provisionsDisjointFrom @{keyEq}
+                    (componentProvisions component) entries = True}
+                  (sym targetBindings) deletedDisjoint
+                0 targetAbsent : lookupFiber @{nameEq} {name = name}
+                  {key = key} {value = value} {world = world} {error = error}
+                  actor target = Nothing
+                targetAbsent = trans
+                  (lookupDeleteOther actor removed distinct source) sourceAbsent
+            in case setFreshFromAbsent nameEq actor
+              (freshFiber component parent) target targetAbsent of
+              (applied ** inserted) =>
+                let movedAfter : SystemState name key value world error
+                    movedAfter = MkSystemState ambient (coeffectAfter applied)
+                    0 movedRaw : applyAction @{nameEq} @{keyEq}
+                      (OInsert actor parent component)
+                      (MkSystemState ambient target) =
+                      Just (OInsertTag, movedAfter)
+                    movedRaw = rewrite targetParent in rewrite targetDisjoint in
+                      rewrite inserted in Refl
+                in case tagSame of
+                  Refl => MkRawActivationMove movedAfter movedRaw
+orchestrationRawAfterDelete {name} {key} {world} {error} {value}
+  nameEq keyEq action tag ambient source removed distinct parentOutside
+  sourceChecked (PaperRetireStep {actor} actionSame) = case actionSame of
+    Refl =>
+      let 0 sourceRaw = checkedActionProjects nameEq keyEq (ORetire actor)
+            (MkSystemState ambient source) sourceAfter tag sourceChecked
+          sourceView = retireSuccessView nameEq keyEq actor ambient source tag
+            sourceAfter sourceRaw
+          0 tagSame : Equal tag ORetireTag
+          tagSame = localRetireViewTag tag sourceView
+      in case sourceView of
+        MkRetireSuccessView actorFiber actorFound =>
+          let target : Registry name key value world error
+              target = deleteBinding @{nameEq} removed source
+              0 targetFound : lookupFiber @{nameEq} {name = name}
+                {key = key} {value = value} {world = world} {error = error}
+                actor target = Just actorFiber
+              targetFound = trans
+                (lookupDeleteOther actor removed distinct source) actorFound
+              movedAfter : SystemState name key value world error
+              movedAfter = MkSystemState ambient
+                (replaceBinding @{nameEq} actor (retireFiber actorFiber) target)
+              0 movedRaw : applyAction @{nameEq} @{keyEq} (ORetire actor)
+                (MkSystemState ambient target) = Just (ORetireTag, movedAfter)
+              movedRaw = rewrite targetFound in Refl
+          in case tagSame of
+            Refl => MkRawActivationMove movedAfter movedRaw
+orchestrationRawAfterDelete {name} {key} {world} {error} {value}
+  nameEq keyEq action tag ambient source removed distinct parentOutside
+  sourceChecked (PaperRemoveStep {actor} actionSame) = case actionSame of
+    Refl =>
+      let 0 sourceRaw = checkedActionProjects nameEq keyEq (ORemove actor)
+            (MkSystemState ambient source) sourceAfter tag sourceChecked
+          sourceView = removeSuccessView nameEq keyEq actor ambient source tag
+            sourceAfter sourceRaw
+          0 tagSame : Equal tag ORemoveTag
+          tagSame = localRemoveViewTag tag sourceView
+      in case sourceView of
+        MkRemoveSuccessView actorFiber actorFound removable sourceNoChild =>
+          let target : Registry name key value world error
+              target = deleteBinding @{nameEq} removed source
+              0 targetFound : lookupFiber @{nameEq} {name = name}
+                {key = key} {value = value} {world = world} {error = error}
+                actor target = Just actorFiber
+              targetFound = trans
+                (lookupDeleteOther actor removed distinct source) actorFound
+              0 targetNoChild : hasChild @{nameEq} {name = name} {key = key}
+                {value = value} {world = world} {error = error} actor target =
+                False
+              targetNoChild = hasChildDeleteFalse nameEq actor removed source
+                sourceNoChild
+              0 normalizedGuard : (retired actorFiber &&
+                isInactive (fiberLifecycle actorFiber) && not False = True)
+              normalizedGuard = replace
+                {p = \child => retired actorFiber &&
+                  isInactive (fiberLifecycle actorFiber) && not child = True}
+                sourceNoChild removable
+              0 targetGuard : (retired actorFiber &&
+                isInactive (fiberLifecycle actorFiber) &&
+                not (hasChild @{nameEq} {name = name} {key = key}
+                  {value = value} {world = world} {error = error} actor target) =
+                True)
+              targetGuard = rewrite targetNoChild in normalizedGuard
+              movedAfter : SystemState name key value world error
+              movedAfter = MkSystemState ambient
+                (deleteBinding @{nameEq} actor target)
+              0 movedRaw : applyAction @{nameEq} @{keyEq} (ORemove actor)
+                (MkSystemState ambient target) = Just (ORemoveTag, movedAfter)
+              movedRaw = rewrite targetFound in rewrite targetGuard in Refl
+          in case tagSame of
+            Refl => MkRawActivationMove movedAfter movedRaw
+
+0 orchestrationRawAfterCheckedRemove :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, originalFinal, earlyRightFinal :
+    SystemState name key value world error} ->
+  (leftAction : Action name key value world error) -> (leftTag : RuleTag) ->
+  (removed : name) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first =
+    Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq} (ORemove removed)
+    middle = Just (ORemoveTag, originalFinal)) ->
+  (earlyRightChecked : checkedApplyAction @{nameEq} @{keyEq}
+    (ORemove removed) first = Just (ORemoveTag, earlyRightFinal)) ->
+  (leftPaper : PaperOrchestrationStep
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked)) ->
+  Not (actionOwner leftAction = removed) ->
+  RawActivationMove nameEq keyEq leftAction leftTag earlyRightFinal
+orchestrationRawAfterCheckedRemove {name} {key} {world} {error} {value}
+  nameEq keyEq {first = MkSystemState ambient source} {middle} {originalFinal}
+  {earlyRightFinal} leftAction leftTag removed leftChecked rightChecked
+  earlyRightChecked leftPaper distinct =
+    let 0 earlyRaw = checkedActionProjects nameEq keyEq (ORemove removed)
+          (MkSystemState ambient source) earlyRightFinal ORemoveTag
+          earlyRightChecked
+    in case removeSuccessView nameEq keyEq removed ambient source ORemoveTag
+      earlyRightFinal earlyRaw of
+      MkRemoveSuccessView removedFiber removedFound removable removedNoChild =>
+        let canonicalEarly : SystemState name key value world error
+            canonicalEarly = MkSystemState ambient
+              (deleteBinding @{nameEq} removed source)
+            0 earlyShape : canonicalEarly = earlyRightFinal
+            earlyShape = Refl
+            0 leftRaw : applyAction @{nameEq} @{keyEq} leftAction
+              (MkSystemState ambient source) = Just (leftTag, middle)
+            leftRaw = checkedActionProjects nameEq keyEq leftAction
+              (MkSystemState ambient source) middle leftTag leftChecked
+            0 parentOutside : InsertionParentOutside leftAction removed
+            parentOutside = insertionParentOutsideFromLaterRemove nameEq keyEq
+              leftAction leftTag removed ORemoveTag leftChecked rightChecked
+              leftPaper
+            0 canonicalMove : RawActivationMove nameEq keyEq leftAction leftTag
+              canonicalEarly
+            canonicalMove = orchestrationRawAfterDelete nameEq keyEq leftAction
+              leftTag ambient source removed distinct parentOutside leftChecked
+              leftPaper
+        in replace
+          {p = \before => RawActivationMove nameEq keyEq leftAction leftTag
+            before}
+          earlyShape canonicalMove
 
 0 orchestrationRawAfterCheckedRetire :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
