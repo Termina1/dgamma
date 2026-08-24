@@ -2193,6 +2193,25 @@ hasChildStaticReplacement nameEq selected changed next old
     hasChildInStaticReplacement nameEq selected changed next old entries found
       sameParent
 
+0 lookupBeforeForeignReplacement :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (wanted, changed : name) ->
+  Not (wanted = changed) ->
+  (next : Fiber name key value world error) ->
+  (source, after : Registry name key value world error) ->
+  after = replaceBinding @{nameEq} changed next source ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} wanted source =
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} wanted after
+lookupBeforeForeignReplacement {name} {key} {world} {error} {value}
+  nameEq wanted changed distinct next source after afterShape =
+    trans (sym (lookupReplaceOther @{nameEq} {key = name}
+      {value = FiberAt name key value world error} wanted changed distinct next
+      source))
+      (sym (cong (lookupFiber @{nameEq} {name = name} {key = key}
+        {value = value} {world = world} {error = error} wanted) afterShape))
+
 0 orchestrationRawAfterForeignReplacement :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   {sourceAfter : SystemState name key value world error} ->
