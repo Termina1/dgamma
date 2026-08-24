@@ -573,8 +573,6 @@ record LocalRelationalDiamond
   0 swappedEffects : EffectStateRelated keyEq
     (projectEffectState @{nameEq} originalFinal)
     (projectEffectState @{nameEq} swappedFinal)
-  0 swappedControls : OrderedRegistryControlsRelated name key world error value
-    (bindings (registry originalFinal)) (bindings (registry swappedFinal))
   0 swappedWellFormed : registryWellFormed @{nameEq} @{keyEq} swappedFinal = True
 
 ||| Source-sensitive evidence for swapping two orchestration rules.  The early
@@ -7448,7 +7446,7 @@ activationActivationDiamondSpike nameEq keyEq left right earlyRight
                 (\orchestration => void
                   (paperActivationOrchestrationImpossible
                     leftActivation orchestration))
-                effectsRelated controls finalWellFormed
+                effectsRelated finalWellFormed
 
 ||| Candidate for paper Lemma 71(2).
 public export
@@ -7670,7 +7668,7 @@ activationOrchestrationDiamondSpike nameEq keyEq left right sourceAligned
                   (\orchestration => void
                     (paperActivationOrchestrationImpossible leftActivation
                       orchestration))
-                  (checkedEndpointEffects endpoint) controls
+                  (checkedEndpointEffects endpoint)
                   (checkedEndpointWellFormed endpoint)
 
 ||| The reverse mixed orientation needed when a yielded O-Insert at the end of
@@ -7870,7 +7868,7 @@ orchestrationActivationDiamondSpike nameEq keyEq left right earlyRight
                   (paperActivationOrchestrationImpossible rightActivation
                     orchestration))
                 (\_ => movedLeftOrchestration)
-                (checkedEndpointEffects endpoint) controls
+                (checkedEndpointEffects endpoint)
                 (checkedEndpointWellFormed endpoint)
 
 ||| Missing Lemma-71 case exposed by yielded child registrations: two checked
