@@ -1150,6 +1150,15 @@ replaceEntriesDistinctCommute keyEq left right distinct leftNext rightNext
               (replaceEntriesDistinctCommute keyEq left right distinct leftNext
                 rightNext rest)
 
+0 orderedControlsSymmetric :
+  OrderedRegistryControlsRelated name key world error value left right ->
+  OrderedRegistryControlsRelated name key world error value right left
+orderedControlsSymmetric OrderedControlsNil = OrderedControlsNil
+orderedControlsSymmetric
+  (OrderedControlsCons actor related rest) =
+    OrderedControlsCons actor (fiberControlSymmetric related)
+      (orderedControlsSymmetric rest)
+
 0 orderedControlsAfterDistinctReplacements :
   (nameEq : DecEq name) -> (leftActor, rightActor : name) ->
   Not (leftActor = rightActor) ->
@@ -4409,6 +4418,21 @@ record ActivationReplacementComparison
   0 movedReplacementBindings : bindings (registry movedAfter) =
     replaceEntries @{nameEq} actor movedReplacementFiber
       (bindings (registry movedBefore))
+
+0 activationReplacementComparisonSymmetric :
+  ActivationReplacementComparison nameEq actor sourceBefore sourceAfter
+    movedBefore movedAfter ->
+  ActivationReplacementComparison nameEq actor movedBefore movedAfter
+    sourceBefore sourceAfter
+activationReplacementComparisonSymmetric
+  (MkActivationReplacementComparison sourceNext movedNext sourceOld movedOld
+    sourceFound movedFound sourceComponent movedComponent sourceParent
+    movedParent related sourceRegistry movedRegistry sourceBindings
+    movedBindings) =
+      MkActivationReplacementComparison movedNext sourceNext movedOld sourceOld
+        movedFound sourceFound movedComponent sourceComponent movedParent
+        sourceParent (fiberControlSymmetric related) movedRegistry sourceRegistry
+        movedBindings sourceBindings
 
 0 beginReplacementComparison :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
