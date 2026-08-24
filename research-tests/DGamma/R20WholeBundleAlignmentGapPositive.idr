@@ -9,6 +9,7 @@ import DGamma.CP4SupportSolution
 import DGamma.CP4Lemma70
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.R19CrossStateRetireReplayProbePositive
+import DGamma.R21MovedOutputAlignmentScopingPositive
 import DGamma.R20CorrectedSealedReplayEnvelopeScopingPositive
 import Data.Nat
 import Decidable.Equality
@@ -331,3 +332,235 @@ public export
     DGamma.R20WholeBundleAlignmentGapPositive.r20KeyEq
     DGamma.R20WholeBundleAlignmentGapPositive.r20CandidateSwappedTrace
 wholeBundleRequiresExactMovedAlignment bundle = replayAligned bundle
+
+||| Revision-21 boundary simulation: use the outer checked equation retained by
+||| the cross-state replay producer rather than its legacy unaligned transition
+||| projection.  After `movedPairAligned` lands on the O5 result, this is the
+||| exact whole target trace consumed by the bundle.
+0 r21RetainedRetireTransition : Transition
+  (swappedFinal DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+  (replayedAfter DGamma.R20WholeBundleAlignmentGapPositive.r20CrossRetire)
+r21RetainedRetireTransition = Fired
+  DGamma.R20WholeBundleAlignmentGapPositive.r20NameEq
+  DGamma.R20WholeBundleAlignmentGapPositive.r20KeyEq
+  (ORetire 0) ORetireTag
+  (replayedChecked DGamma.R20WholeBundleAlignmentGapPositive.r20CrossRetire)
+
+0 r21RetainedSwappedTrace : Transitions
+  DGamma.R20WholeBundleAlignmentGapPositive.r20Initial
+  (replayedAfter DGamma.R20WholeBundleAlignmentGapPositive.r20CrossRetire)
+r21RetainedSwappedTrace = MoreTransitions
+  DGamma.R20WholeBundleAlignmentGapPositive.r20PrefixTransition
+  (MoreTransitions
+    (movedRight DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+    (MoreTransitions
+      (movedLeft DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+      (MoreTransitions
+        DGamma.R20WholeBundleAlignmentGapPositive.r21RetainedRetireTransition
+        NoTransitions)))
+
+0 r21AppendAligned :
+  {leftFirst, leftFinal, rightFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} ->
+  {right : Transitions leftFinal rightFinal} ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  AlignedTransitions name key world error value nameEq keyEq right ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (appendTransitions left right)
+r21AppendAligned {left = NoTransitions} AlignedEnd rightAligned = rightAligned
+r21AppendAligned
+  (AlignedStep action tag checked rest alignedRest) rightAligned =
+    AlignedStep action tag checked (appendTransitions rest right)
+      (r21AppendAligned alignedRest rightAligned)
+
+||| The first whole-bundle field now closes from the exact proposed O5 output.
+||| This argument is not loose replay capital: its type is exactly the erased
+||| `movedPairAligned` field indexed by this concrete producer result.
+public export
+0 r21WholeReplayAlignedAfterRetainedO5 :
+  (0 retainedO5Output : AlignedTransitions Nat R20Key Unit Unit R20Value
+    DGamma.R20WholeBundleAlignmentGapPositive.r20NameEq
+    DGamma.R20WholeBundleAlignmentGapPositive.r20KeyEq
+    (MoreTransitions
+      (movedRight DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+      (MoreTransitions
+        (movedLeft DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+        NoTransitions))) ->
+  AlignedTransitions Nat R20Key Unit Unit R20Value
+    DGamma.R20WholeBundleAlignmentGapPositive.r20NameEq
+    DGamma.R20WholeBundleAlignmentGapPositive.r20KeyEq
+    DGamma.R20WholeBundleAlignmentGapPositive.r21RetainedSwappedTrace
+r21WholeReplayAlignedAfterRetainedO5 retainedO5Output =
+  AlignedStep
+    (OInsert 0 Root DGamma.R20WholeBundleAlignmentGapPositive.r20Component)
+    OInsertTag DGamma.R20WholeBundleAlignmentGapPositive.r20PrefixChecked
+    (MoreTransitions
+      (movedRight DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+      (MoreTransitions
+        (movedLeft DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+        (MoreTransitions
+          DGamma.R20WholeBundleAlignmentGapPositive.r21RetainedRetireTransition
+          NoTransitions)))
+    (r21AppendAligned retainedO5Output
+      (AlignedStep (ORetire 0) ORetireTag
+        (replayedChecked DGamma.R20WholeBundleAlignmentGapPositive.r20CrossRetire)
+        NoTransitions AlignedEnd))
+
+0 r21RootStepDisciplineFromAction :
+  (action : Action Nat R20Key R20Value Unit Unit) ->
+  (actor : Nat) ->
+  (before : SystemState Nat R20Key R20Value Unit Unit) ->
+  (rest : Transitions afterState finalState) ->
+  action = OInsert actor Root DGamma.R20WholeBundleAlignmentGapPositive.r20Component ->
+  RegistrationStepDiscipline
+    DGamma.R20WholeBundleAlignmentGapPositive.r20Protocol
+    DGamma.R20WholeBundleAlignmentGapPositive.r20NameEq action before rest
+r21RootStepDisciplineFromAction
+  (OInsert actor Root DGamma.R20WholeBundleAlignmentGapPositive.r20Component)
+  actor before rest Refl = (Z ** Refl)
+
+0 r21MovedRightRootDiscipline : RegistrationStepDiscipline
+  DGamma.R20WholeBundleAlignmentGapPositive.r20Protocol
+  DGamma.R20WholeBundleAlignmentGapPositive.r20NameEq
+  (transitionAction
+    (movedRight DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond))
+  DGamma.R20WholeBundleAlignmentGapPositive.r20PrefixFinal
+  (MoreTransitions
+    (movedLeft DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+    (MoreTransitions
+      DGamma.R20WholeBundleAlignmentGapPositive.r21RetainedRetireTransition
+      NoTransitions))
+r21MovedRightRootDiscipline = r21RootStepDisciplineFromAction
+  (transitionAction
+    (movedRight DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond))
+  2 DGamma.R20WholeBundleAlignmentGapPositive.r20PrefixFinal
+  (MoreTransitions
+    (movedLeft DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+    (MoreTransitions
+      DGamma.R20WholeBundleAlignmentGapPositive.r21RetainedRetireTransition
+      NoTransitions))
+  (movedRightAction DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+
+0 r21MovedLeftRootDiscipline : RegistrationStepDiscipline
+  DGamma.R20WholeBundleAlignmentGapPositive.r20Protocol
+  DGamma.R20WholeBundleAlignmentGapPositive.r20NameEq
+  (transitionAction
+    (movedLeft DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond))
+  (swappedMiddle DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+  (MoreTransitions
+    DGamma.R20WholeBundleAlignmentGapPositive.r21RetainedRetireTransition
+    NoTransitions)
+r21MovedLeftRootDiscipline = r21RootStepDisciplineFromAction
+  (transitionAction
+    (movedLeft DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond))
+  1 (swappedMiddle DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+  (MoreTransitions
+    DGamma.R20WholeBundleAlignmentGapPositive.r21RetainedRetireTransition
+    NoTransitions)
+  (movedLeftAction DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+
+||| The next bundle field also closes independently of dictionary identity.
+public export
+0 r21WholeReplayDiscipline : RegistrationDiscipline
+  DGamma.R20WholeBundleAlignmentGapPositive.r20Protocol
+  DGamma.R20WholeBundleAlignmentGapPositive.r20NameEq
+  DGamma.R20WholeBundleAlignmentGapPositive.r21RetainedSwappedTrace
+r21WholeReplayDiscipline = RegistrationDisciplineStep
+  DGamma.R20WholeBundleAlignmentGapPositive.r20PrefixTransition
+  (MoreTransitions
+    (movedRight DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+    (MoreTransitions
+      (movedLeft DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+      (MoreTransitions
+        DGamma.R20WholeBundleAlignmentGapPositive.r21RetainedRetireTransition
+        NoTransitions)))
+  (Z ** Refl)
+  (RegistrationDisciplineStep
+    (movedRight DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+    (MoreTransitions
+      (movedLeft DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+      (MoreTransitions
+        DGamma.R20WholeBundleAlignmentGapPositive.r21RetainedRetireTransition
+        NoTransitions))
+    DGamma.R20WholeBundleAlignmentGapPositive.r21MovedRightRootDiscipline
+    (RegistrationDisciplineStep
+      (movedLeft DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+      (MoreTransitions
+        DGamma.R20WholeBundleAlignmentGapPositive.r21RetainedRetireTransition
+        NoTransitions)
+      DGamma.R20WholeBundleAlignmentGapPositive.r21MovedLeftRootDiscipline
+      (RegistrationDisciplineStep
+        DGamma.R20WholeBundleAlignmentGapPositive.r21RetainedRetireTransition
+        NoTransitions () RegistrationDisciplineEnd)))
+
+0 r21WholeReplayInitialWellFormed :
+  registryWellFormed
+    @{DGamma.R20WholeBundleAlignmentGapPositive.r20NameEq}
+    @{DGamma.R20WholeBundleAlignmentGapPositive.r20KeyEq}
+    DGamma.R20WholeBundleAlignmentGapPositive.r20Initial = True
+r21WholeReplayInitialWellFormed = Refl
+
+0 r21WholeReplayInitialEmpty :
+  bindings (registry DGamma.R20WholeBundleAlignmentGapPositive.r20Initial) = []
+r21WholeReplayInitialEmpty = Refl
+
+0 r21WholeReplayFinalWellFormed :
+  registryWellFormed
+    @{DGamma.R20WholeBundleAlignmentGapPositive.r20NameEq}
+    @{DGamma.R20WholeBundleAlignmentGapPositive.r20KeyEq}
+    (replayedAfter DGamma.R20WholeBundleAlignmentGapPositive.r20CrossRetire) = True
+r21WholeReplayFinalWellFormed = replayedWellFormed
+  (perStepEndpoint DGamma.R20WholeBundleAlignmentGapPositive.r20CrossRetire)
+
+
+||| Exact whole-bundle prefix reached after the proposed O5 field is retained.
+||| The fields mirror `ReplayInvariantBundle` in declaration order through
+||| `replayFinalWellFormed`; no later invariant is accepted.
+public export
+record R21WholeBundleThroughFinalWellFormed
+  (0 retainedO5Output : AlignedTransitions Nat R20Key Unit Unit R20Value
+    DGamma.R20WholeBundleAlignmentGapPositive.r20NameEq
+    DGamma.R20WholeBundleAlignmentGapPositive.r20KeyEq
+    (MoreTransitions
+      (movedRight DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+      (MoreTransitions
+        (movedLeft DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+        NoTransitions))) where
+  constructor MkR21WholeBundleThroughFinalWellFormed
+  0 throughAligned : AlignedTransitions Nat R20Key Unit Unit R20Value
+    DGamma.R20WholeBundleAlignmentGapPositive.r20NameEq
+    DGamma.R20WholeBundleAlignmentGapPositive.r20KeyEq
+    DGamma.R20WholeBundleAlignmentGapPositive.r21RetainedSwappedTrace
+  0 throughDiscipline : RegistrationDiscipline
+    DGamma.R20WholeBundleAlignmentGapPositive.r20Protocol
+    DGamma.R20WholeBundleAlignmentGapPositive.r20NameEq
+    DGamma.R20WholeBundleAlignmentGapPositive.r21RetainedSwappedTrace
+  0 throughInitialWellFormed : registryWellFormed
+    @{DGamma.R20WholeBundleAlignmentGapPositive.r20NameEq}
+    @{DGamma.R20WholeBundleAlignmentGapPositive.r20KeyEq}
+    DGamma.R20WholeBundleAlignmentGapPositive.r20Initial = True
+  0 throughInitialEmpty : bindings
+    (registry DGamma.R20WholeBundleAlignmentGapPositive.r20Initial) = []
+  0 throughFinalWellFormed : registryWellFormed
+    @{DGamma.R20WholeBundleAlignmentGapPositive.r20NameEq}
+    @{DGamma.R20WholeBundleAlignmentGapPositive.r20KeyEq}
+    (replayedAfter DGamma.R20WholeBundleAlignmentGapPositive.r20CrossRetire) = True
+
+public export
+0 r21WholeBundlePrefixAfterRetainedO5 :
+  (0 retainedO5Output : AlignedTransitions Nat R20Key Unit Unit R20Value
+    DGamma.R20WholeBundleAlignmentGapPositive.r20NameEq
+    DGamma.R20WholeBundleAlignmentGapPositive.r20KeyEq
+    (MoreTransitions
+      (movedRight DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+      (MoreTransitions
+        (movedLeft DGamma.R20WholeBundleAlignmentGapPositive.r20Diamond)
+        NoTransitions))) ->
+  R21WholeBundleThroughFinalWellFormed retainedO5Output
+r21WholeBundlePrefixAfterRetainedO5 retainedO5Output =
+  MkR21WholeBundleThroughFinalWellFormed
+    (r21WholeReplayAlignedAfterRetainedO5 retainedO5Output)
+    DGamma.R20WholeBundleAlignmentGapPositive.r21WholeReplayDiscipline
+    DGamma.R20WholeBundleAlignmentGapPositive.r21WholeReplayInitialWellFormed
+    DGamma.R20WholeBundleAlignmentGapPositive.r21WholeReplayInitialEmpty
+    DGamma.R20WholeBundleAlignmentGapPositive.r21WholeReplayFinalWellFormed
