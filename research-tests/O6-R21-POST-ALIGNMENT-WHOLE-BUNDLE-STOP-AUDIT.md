@@ -1,5 +1,11 @@
 # Revision-21 post-alignment whole-bundle checkpoint — quietness stop
 
+> **Revision-22 correction:** pointwise target-domain reconstruction passes, but
+> the concrete R20 source trace is itself not quiet, so it admits no source
+> `ReplayInvariantBundle`. The generic transport mismatch below is historical,
+> not the active blocker. See
+> `O6-R22-QUIETNESS-FIXTURE-INVALID-STOP-AUDIT.md`.
+
 Coordinate: `cp5-thm73-scoping@d69ea26`.
 
 ## Decision

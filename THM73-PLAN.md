@@ -51,9 +51,12 @@ Review trail:
 - revision 21 proves the producer-carried moved-alignment candidate for all four
   operational diamonds and the actual full suffix-free fixture, retires the
   authorized zero-consumer `repeatedIterIdentityDiamond`, and advances the R20
-  whole bundle through alignment, discipline, empty-start facts, and final
-  well-formedness. `O6-R21-POST-ALIGNMENT-WHOLE-BUNDLE-STOP-AUDIT.md` stops at
-  the next field, target quietness. Frozen declarations remain unchanged.
+  field shapes through final well-formedness; and
+- revision 22 proves pointwise target-domain and local no-failure reconstruction,
+  then `O6-R22-QUIETNESS-FIXTURE-INVALID-STOP-AUDIT.md` constructively rejects
+  the R20 source bundle itself: actors 1 and 2 remain fresh non-retired
+  `Inactive Nothing` roots, so the source endpoint is not quiet. Frozen
+  declarations remain unchanged.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -285,6 +288,28 @@ pointwise control endpoint; its negative fails at `source and target`. The
 combined moved-field plus opaque 9+2 package remains pre-declared but is not
 issued while this final-invariant stop is active. The band remains **21–35
 shifts**.
+
+### Revision 22: pointwise domain passes; R20 source bundle is impossible
+
+`R22QuietnessDomainAuditPositive` proves that `ControlEquivalent` can recover a
+source lookup and exact `FiberControlRelated` witness for every target binding.
+It also checks every lifecycle quietness branch, proves per-fiber no-failure
+preservation, and derives target-head no-failure from source whole-state
+no-failure. No new registry-domain field is justified.
+
+The active blocker is earlier. The R20 source schedule inserts fresh roots 1 and
+2 and retires only actor 0. With empty dependencies, each non-retired fresh
+`Inactive Nothing` fiber resolves `Just EmptyView`, so it is not quiet.
+`r21OriginalRetireFinalNotQuiet` computes the source endpoint's quietness to
+`False`; `r22R20SourceBundleImpossible` derives `Void` from any claimed source
+`ReplayInvariantBundle`. Thus revision 21's first-five-field record was only a
+field-shape checkpoint, not a valid bundle transport.
+
+A corrected fixture must be quiescent/non-failed and must also satisfy
+revision-18 pair-local external order; the current distinct root/root
+transposition is known to be unsuitable for that final requirement. The
+combined interface package remains prepared but is not issued. Fixture redesign
+and additional checked suffix replay revise the band to **25–42 shifts**.
 
 ## Executive estimate
 
@@ -537,10 +562,10 @@ research-tests/run-r11-suite.sh
 It runs serially:
 
 - five research spikes;
-- 41 tracked positive modules; and
+- 42 tracked positive modules; and
 - 35 tracked expected-failure modules.
 
-All 76 tracked Idris test modules occur exactly once. Every negative specification
+All 77 tracked Idris test modules occur exactly once. Every negative specification
 contains its own mandatory diagnostic substring and source declaration name. A
 generic dependent error no longer suffices.
 
@@ -597,7 +622,7 @@ There remain **21 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; all genuine moved-alignment producers pass and the fake helper is retired. Whole bundle reaches final well-formedness but stops at target quietness transport. Combined gate prepared but not issued; declarations unchanged.** | **XL, 21–35 shifts for quiet/final invariants, combined boundary, recursion, and review.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; genuine moved alignment and pointwise target-domain/no-failure heads pass, but the R20 source bundle is constructively impossible because its final fresh roots are not quiet. Fixture redesign required; combined gate not issued.** | **XL, revised 25–42 shifts for a quiescent O6-applicable fixture, whole invariants, combined boundary, recursion, and review.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -709,7 +734,7 @@ local O5 body. Current gate evidence is:
   dependencies;
 - `R16ConfluenceTheoremAssemblyPositive` remains only an assembly-through-holes
   check and is not evidence that O6 is producer-suppliable;
-- exact 76-module runner coverage with module-specific negative diagnostics,
+- exact 77-module runner coverage with module-specific negative diagnostics,
   including theorem assembly, root-order and arbitrary-suffix impossibility
   proofs, revision-17 wrong-lookup rejection, genuine revision-18 O17/O19
   producers, and revision-19 sealed base/nonempty probes;
@@ -723,8 +748,8 @@ local O5 body. Current gate evidence is:
 
 Theorem 73 remains unproved with 21 research holes. Revision-17 endpoint and
 revision-18 external-order work are ratified; O5 remains only locally closed.
-Revision-21 checks the producer-owned moved-alignment candidate and every
-operational constructor, retires the authorized zero-consumer fixture helper,
-and advances the whole bundle through final well-formedness. O6 body work
-remains stopped at target quietness transport, before the combined boundary
-gate and scoped review.
+Revision-22 proves pointwise target-domain and local no-failure reconstruction,
+but constructively refutes the R20 source `ReplayInvariantBundle` because its
+fresh roots are not quiet. O6 body work remains stopped pending a quiescent,
+revision-18-applicable replacement fixture, before the combined boundary gate
+and scoped review.
