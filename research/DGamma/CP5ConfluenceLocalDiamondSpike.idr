@@ -2402,6 +2402,7 @@ orchestrationRawAfterForeignReplacement {name} {key} {world} {error} {value}
               movedRaw = rewrite movedFound in rewrite movedGuard in Refl
           in MkRawActivationMove movedAfter movedRaw
 
+
 0 paperOrchestrationNonLifecycle :
   {transition : Transition before afterState} ->
   PaperOrchestrationStep transition ->
@@ -2681,6 +2682,19 @@ localLookupDeleteEntriesSelfO5 eq removed (Bind current observed :: rest)
 localLookupDeleteSelfO5 nameEq removed
   (MkCoeffectContext entries unique) =
     localLookupDeleteEntriesSelfO5 nameEq removed entries unique
+
+0 localLookupReplaceSelfO5 :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (old, next : Fiber name key value world error) ->
+  (source : Registry name key value world error) ->
+  lookupFiber @{nameEq} actor source = Just old ->
+  lookupFiber @{nameEq} actor
+    (replaceBinding @{nameEq} actor next source) = Just next
+localLookupReplaceSelfO5 nameEq actor old next
+  (MkCoeffectContext entries unique) found =
+    DGamma.Coeffects.lookupReplaceEntries @{nameEq}
+      {value = FiberAt name key value world error} actor old next entries found
 
 0 localParentPresentTransportO5 :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -3370,6 +3384,127 @@ orchestrationRawAfterCheckedInsert {name} {key} {world} {error} {value}
             before}
           earlyShape canonicalMove
 
+
+0 orchestrationOwnerOutputsRelated :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {firstBefore, firstAfter, secondBefore, secondAfter :
+    SystemState name key value world error} ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (firstChecked : checkedApplyAction @{nameEq} @{keyEq} action firstBefore =
+    Just (tag, firstAfter)) ->
+  (secondChecked : checkedApplyAction @{nameEq} @{keyEq} action secondBefore =
+    Just (tag, secondAfter)) ->
+  PaperOrchestrationStep
+    (Fired {before = firstBefore} {afterState = firstAfter}
+      nameEq keyEq action tag firstChecked) ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} (actionOwner action)
+      (registry firstBefore) =
+    lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} (actionOwner action)
+        (registry secondBefore) ->
+  FiberControlMaybeRelated
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} (actionOwner action)
+        (registry firstAfter))
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} (actionOwner action)
+        (registry secondAfter))
+orchestrationOwnerOutputsRelated nameEq keyEq {firstBefore} {firstAfter}
+  {secondBefore} {secondAfter} action tag firstChecked secondChecked
+  (PaperInsertStep {actor} {parent} {component} actionSame) sourceSame =
+    case actionSame of
+      Refl => case firstBefore of
+        MkSystemState firstWorld firstRegistry =>
+          let 0 firstRaw = checkedActionProjects nameEq keyEq
+                (OInsert actor parent component)
+                (MkSystemState firstWorld firstRegistry) firstAfter tag
+                firstChecked
+              firstView = foreignInsertPlanView nameEq keyEq actor parent component
+                firstWorld firstRegistry tag firstAfter firstRaw
+              0 tagSame : Equal tag OInsertTag
+              tagSame = localForeignInsertViewTag tag firstView
+          in case tagSame of
+            Refl => case firstView of
+              MkForeignInsertPlanView firstAbsent firstGuards =>
+                case secondBefore of
+                  MkSystemState secondWorld secondRegistry =>
+                    let 0 secondRaw = checkedActionProjects nameEq keyEq
+                          (OInsert actor parent component)
+                          (MkSystemState secondWorld secondRegistry) secondAfter
+                          OInsertTag secondChecked
+                    in case foreignInsertPlanView nameEq keyEq actor parent
+                      component secondWorld secondRegistry OInsertTag secondAfter
+                      secondRaw of
+                      MkForeignInsertPlanView secondAbsent secondGuards =>
+                        rewrite lookupInserted actor (freshFiber component parent)
+                          firstRegistry firstAbsent in
+                        rewrite lookupInserted actor (freshFiber component parent)
+                          secondRegistry secondAbsent in
+                        SomeControlFibers
+                          (fiberControlReflexive (freshFiber component parent))
+orchestrationOwnerOutputsRelated nameEq keyEq {firstBefore} {firstAfter}
+  {secondBefore} {secondAfter} action tag firstChecked secondChecked
+  (PaperRetireStep {actor} actionSame) sourceSame = case actionSame of
+    Refl => case firstBefore of
+      MkSystemState firstWorld firstRegistry =>
+        let 0 firstRaw = checkedActionProjects nameEq keyEq (ORetire actor)
+              (MkSystemState firstWorld firstRegistry) firstAfter tag firstChecked
+            firstView = retireSuccessView nameEq keyEq actor firstWorld
+              firstRegistry tag firstAfter firstRaw
+            0 tagSame : Equal tag ORetireTag
+            tagSame = localRetireViewTag tag firstView
+        in case tagSame of
+          Refl => case firstView of
+            MkRetireSuccessView firstFiber firstFound => case secondBefore of
+              MkSystemState secondWorld secondRegistry =>
+                let 0 secondRaw = checkedActionProjects nameEq keyEq
+                      (ORetire actor) (MkSystemState secondWorld secondRegistry)
+                      secondAfter ORetireTag secondChecked
+                in case retireSuccessView nameEq keyEq actor secondWorld
+                  secondRegistry ORetireTag secondAfter secondRaw of
+                  MkRetireSuccessView secondFiber secondFound =>
+                    case justInjective
+                      (trans (sym firstFound) (trans sourceSame secondFound)) of
+                      Refl =>
+                        rewrite localLookupReplaceSelfO5 nameEq actor firstFiber
+                          (retireFiber firstFiber) firstRegistry firstFound in
+                        rewrite localLookupReplaceSelfO5 nameEq actor firstFiber
+                          (retireFiber firstFiber) secondRegistry secondFound in
+                        SomeControlFibers
+                          (fiberControlReflexive (retireFiber firstFiber))
+orchestrationOwnerOutputsRelated nameEq keyEq {firstBefore} {firstAfter}
+  {secondBefore} {secondAfter} action tag firstChecked secondChecked
+  (PaperRemoveStep {actor} actionSame) sourceSame = case actionSame of
+    Refl => case firstBefore of
+      MkSystemState firstWorld firstRegistry =>
+        let 0 firstRaw = checkedActionProjects nameEq keyEq (ORemove actor)
+              (MkSystemState firstWorld firstRegistry) firstAfter tag firstChecked
+            firstView = removeSuccessView nameEq keyEq actor firstWorld
+              firstRegistry tag firstAfter firstRaw
+            0 tagSame : Equal tag ORemoveTag
+            tagSame = localRemoveViewTag tag firstView
+        in case tagSame of
+          Refl => case firstView of
+            MkRemoveSuccessView firstFiber firstFound firstGuard firstNoChild =>
+              case secondBefore of
+                MkSystemState secondWorld secondRegistry =>
+                  let 0 secondRaw = checkedActionProjects nameEq keyEq
+                        (ORemove actor)
+                        (MkSystemState secondWorld secondRegistry) secondAfter
+                        ORemoveTag secondChecked
+                  in case removeSuccessView nameEq keyEq actor secondWorld
+                    secondRegistry ORemoveTag secondAfter secondRaw of
+                    MkRemoveSuccessView secondFiber secondFound secondGuard
+                      secondNoChild =>
+                        rewrite localLookupDeleteSelfO5 {key = key}
+                          {value = value} {world = world} {error = error}
+                          nameEq actor firstRegistry in
+                        rewrite localLookupDeleteSelfO5 {key = key}
+                          {value = value} {world = world} {error = error}
+                          nameEq actor secondRegistry in
+                        NoControlFibers
 
 0 orchestrationRawAfterCheckedOrchestration :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
