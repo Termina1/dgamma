@@ -51,6 +51,7 @@ POSITIVE=(
   R16ConfluenceTheoremAssemblyPositive
   R16EndpointControlsImpossibilityPositive
   R17FullResultImpossibility
+  R18ExternalOrderProducerPositive
   R9CoordinateBoundaryPositive
   R9WholeBlockShiftedAliasContradictionPositive
 )
@@ -131,7 +132,7 @@ run_successful_unit() {
 }
 
 # Package population is hardened against the same status-zero Error: behavior,
-# but does not contribute to the 5+33 research-unit marker count.
+# but does not contribute to the 5+34 research-unit marker count.
 run_package_build() {
   local output
   output=$(mktemp)
@@ -158,7 +159,7 @@ export IDRIS2_PATH="$ROOT/$TTC_ROOT${IDRIS2_PATH:+:$IDRIS2_PATH}"
 
 if [ "$FRESH" -eq 1 ]; then
   # Idris writes these direct --check interfaces into the package TTC root, not
-  # source-relative research directories. Delete exactly the 5+63 suite units.
+  # source-relative research directories. Delete exactly the 5+64 suite units.
   all_modules=("${SPIKES[@]}" "${POSITIVE[@]}")
   for specification in "${NEGATIVE_SPECS[@]}"; do
     IFS='|' read -r module _ _ <<<"$specification"
@@ -205,8 +206,8 @@ for specification in "${NEGATIVE_SPECS[@]}"; do
 done
 
 if [ "$FRESH" -eq 1 ]; then
-  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 38 ]; then
-    echo "Expected 38 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
+  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 39 ]; then
+    echo "Expected 39 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
     exit 1
   fi
   echo "R11_FRESH_SUCCESSFUL_BUILD_MARKERS=$SUCCESSFUL_BUILD_MARKERS"

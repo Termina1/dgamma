@@ -27,7 +27,11 @@ Review trail:
 - revision 17 replaces that endpoint field with existing `ControlEquivalent`;
   scoped review `ea7def9` ratifies the repair and every producer (N1), but returns
   **REJECT** on a distinct pre-existing obstruction: generic O6 cannot transpose
-  two distinct root-external inputs while preserving `SameExternalOrchestration`.
+  two distinct root-external inputs while preserving `SameExternalOrchestration`;
+- revision 18 Option A1 is conditionally authorized from
+  `research-tests/O6-EXTERNAL-ORDER-AUDIT.md`; genuine O17/O19 producer probes
+  passed before the single suffix-signature narrowing, which is implemented and
+  awaiting its mandatory immediate scoped review.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -130,6 +134,36 @@ root O-Insert/O-Insert, the occurrence fold forces an empty replayed suffix and
 and scopes revision 18: canonical production does not need root/root exchange,
 but each O6 splice must carry exact external-order legality. The reviewer's total
 counterexample is tracked as `R17FullResultImpossibility`.
+
+### Revision 18: pair-local external-order applicability
+
+Option A1 adds one erased `pairExternalOrder` premise to
+`adjacentSwapSuffixSpike` only. Its indices are the exact two-node source pair and
+the exact moved pair projected from the supplied local diamond. The occurrence
+fold, O5/local diamonds, `AdjacentSwapResult`, finite derivations, operational
+inputs, and production remain unchanged.
+
+The hard probe-first condition is discharged by
+`R18ExternalOrderProducerPositive` before the signature commit:
+
+- exact O19 block nodes are derived from `ActorLifecycleOnly` or `BeginStep`;
+  lifecycle and yielded-child nodes are non-root on both source and moved sides;
+- stable O17 internal/root and root/internal crossings construct the exact
+  pair-local `SameExternalOrchestration`;
+- moved Root-O-Retire and Root-O-Remove proofs transport the actual fiber lookup
+  and `Root` parent through checked foreign transitions using
+  `applyActionLocalUpdate` and `systemLocalUpdateForeign`; and
+- source/moved checked transitions are recovered from actual
+  `AlignedTransitions`, not independent dictionary identity or caller-selected
+  maps.
+
+`sameExternalAppendSpike` and `framePairExternalOrderSpike` now compose prefix,
+exact pair, and suffix relations into the existing whole-trace consumer. No O6
+hole body is changed. The historical/current `R17FullResultImpossibility` remains
+total: it shows why root/root has no applicable pair witness, rather than
+contradicting the narrowed function. Revision 18 landed in the first shift of the
+accepted 4–7-shift repair band by reusing checked local-update and immutable
+external-relation capital; mandatory scoped review remains outstanding.
 
 ## Executive estimate
 
@@ -442,7 +476,7 @@ There remain **21 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint repair ratified. Full-result splicing remains blocked at O6 external-order applicability.** | **Local body closed in shifts 21–23; endpoint producer repaired in shift 25; no O5 change proposed for revision 18.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; generic suffix statement is uninhabitable for distinct root/root pairs. Revision-18 narrowing decision required.** | **XL gate plus estimated 4–7-shift external-legality repair before remaining O6 proof work.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; revision-18 pair-local external-order narrowing is implemented with genuine O17/O19 probes and framing, pending scoped review. No body changed.** | **XL gate. The authorized 4–7-shift interface repair landed in shift 1; proof work remains prohibited through review.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -554,9 +588,9 @@ local O5 body. Current gate evidence is:
   dependencies;
 - `R16ConfluenceTheoremAssemblyPositive` remains only an assembly-through-holes
   check and is not evidence that O6 is producer-suppliable;
-- exact 63-module runner coverage with module-specific negative diagnostics,
-  including theorem assembly, both tracked impossibility proofs, and the
-  revision-17 wrong-lookup rejection;
+- exact 64-module runner coverage with module-specific negative diagnostics,
+  including theorem assembly, both tracked impossibility proofs, revision-17
+  wrong-lookup rejection, and genuine revision-18 O17/O19 producers;
 - exact current 6/4/8/2/1 hole split and 148–249 total / 139–240
   implementation-remaining arithmetic;
 - all five spikes and every tracked test serially;
@@ -566,5 +600,6 @@ local O5 body. Current gate evidence is:
 - no tracked/staged changes.
 
 Theorem 73 remains unproved with 21 research holes. Revision-17 endpoint work is
-ratified, but O5 is only locally closed and full-result splicing is blocked.
-O6 proof work remains stopped pending the revision-18 external-legality decision.
+ratified, and revision-18 external-order narrowing is implemented but not yet
+accepted. O5 remains only locally closed. O6 body work is stopped pending the
+mandatory immediate revision-18 scoped adversarial review.

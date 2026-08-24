@@ -43,7 +43,7 @@ cross_duplicates = sorted(name for name, count in Counter(all_names).items() if 
 if cross_duplicates:
     raise SystemExit(f'within/cross-category duplicates: {cross_duplicates}')
 
-expected_lengths = (5, 33, 30)
+expected_lengths = (5, 34, 30)
 actual_lengths = (len(spikes), len(positives), len(negatives))
 if actual_lengths != expected_lengths:
     raise SystemExit(f'category lengths {actual_lengths}, expected {expected_lengths}')
@@ -59,8 +59,8 @@ if sorted(tracked) != expected_tests:
         f'tracked test mismatch: missing={sorted(set(expected_tests)-set(tracked))} '
         f'extra={sorted(set(tracked)-set(expected_tests))}'
     )
-if len(tracked) != 63:
-    raise SystemExit(f'expected 63 tracked tests, found {len(tracked)}')
+if len(tracked) != 64:
+    raise SystemExit(f'expected 64 tracked tests, found {len(tracked)}')
 
 tracked_spikes = subprocess.check_output(
     ['git', 'ls-files', 'research/DGamma/CP5Confluence*Spike.idr'], text=True
@@ -138,8 +138,28 @@ for entry in entries:
     actual = current_signature(entry['module'], entry['function'])
     if actual != entry['signature']:
         raise SystemExit(
-            f"immutable hole declaration changed: {entry['module']}:{entry['function']}"
+            f"immutable or explicitly revised hole declaration changed: "
+            f"{entry['module']}:{entry['function']}"
         )
+
+approved_hole_revisions = manifest.get('approvedHoleSignatureRevisions', [])
+if len(approved_hole_revisions) != 1:
+    raise SystemExit('revision-18 hole-signature manifest is missing or malformed')
+revision18 = approved_hole_revisions[0]
+if (revision18.get('revision') != 18 or
+        revision18.get('audit') != 'research-tests/O6-EXTERNAL-ORDER-AUDIT.md' or
+        revision18.get('function') != 'adjacentSwapSuffixSpike'):
+    raise SystemExit('revision-18 hole signature lacks its authorized audit')
+revision18_text = Path(revision18['module']).read_text()
+if revision18_text.count(revision18['premise']) != 1:
+    raise SystemExit('revision-18 pair-local external-order premise changed')
+for forbidden in [
+    'adjacentSwapOperationalOccurrenceFoldSpike :',
+    'record LocalRelationalDiamond',
+    'record AdjacentSwapResult',
+]:
+    if forbidden in revision18['premise']:
+        raise SystemExit('revision-18 authorization widened beyond suffix signature')
 
 approved_fields = manifest.get('approvedRecordFieldRevisions', [])
 if len(approved_fields) != 2 or any(entry.get('revision') != 17 for entry in approved_fields):
