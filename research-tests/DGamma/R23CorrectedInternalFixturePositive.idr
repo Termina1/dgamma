@@ -1552,3 +1552,10 @@ public export
 r24FirstFinishReplay = r24ProduceEmptyFinish 1 r23AfterPair r23AfterAdvance1
   (swappedFinal r23Diamond) r23Advance1Checked r23AfterPairWellFormed Refl
   r24PairEndpoint
+
+public export
+0 r24SecondFinishReplay : R24CheckedEmptyFinishReplay 2 r23AfterAdvance1
+  r23Final (replayedAfter r24FirstFinishReplay) r23Advance2Checked
+r24SecondFinishReplay = r24ProduceEmptyFinish 2 r23AfterAdvance1 r23Final
+  (replayedAfter r24FirstFinishReplay) r23Advance2Checked
+  r23AfterAdvance1WellFormed Refl (replayedEndpoint r24FirstFinishReplay)
