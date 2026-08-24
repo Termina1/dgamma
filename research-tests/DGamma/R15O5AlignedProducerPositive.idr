@@ -136,6 +136,7 @@ genuineSafetyIndexedO5Application nameEq keyEq protocol left right sourceAligned
   (distinct : Not (leftActor = rightActor)) ->
   (leftParent, rightParent : Parent name) ->
   (leftComponent, rightComponent : Component key value world error) ->
+  (leftTag, rightTag : RuleTag) ->
   (leftChecked : checkedApplyAction @{nameEq} @{keyEq}
     (OInsert leftActor leftParent leftComponent) first =
       Just (leftTag, middle)) ->
@@ -147,21 +148,21 @@ genuineSafetyIndexedO5Application nameEq keyEq protocol left right sourceAligned
       Just (rightTag, earlyFinal)) ->
   (sourceDiscipline : RegistrationDiscipline protocol nameEq
     (MoreTransitions
-      (Fired nameEq keyEq (OInsert leftActor leftParent leftComponent)
-        leftTag leftChecked)
+      (Fired {before = first} {afterState = middle} nameEq keyEq
+        (OInsert leftActor leftParent leftComponent) leftTag leftChecked)
       (MoreTransitions
-        (Fired nameEq keyEq (OInsert rightActor rightParent rightComponent)
-          rightTag rightChecked)
+        (Fired {before = middle} {afterState = originalFinal} nameEq keyEq
+          (OInsert rightActor rightParent rightComponent) rightTag rightChecked)
         NoTransitions))) ->
   (startOrdinal : Nat) -> (startLive : GenerationEnvironment name) ->
   (endOrdinal : Nat) -> (endLive : GenerationEnvironment name) ->
   GenerationTraceScan nameEq startOrdinal startLive
     (MoreTransitions
-      (Fired nameEq keyEq (OInsert leftActor leftParent leftComponent)
-        leftTag leftChecked)
+      (Fired {before = first} {afterState = middle} nameEq keyEq
+        (OInsert leftActor leftParent leftComponent) leftTag leftChecked)
       (MoreTransitions
-        (Fired nameEq keyEq (OInsert rightActor rightParent rightComponent)
-          rightTag rightChecked)
+        (Fired {before = middle} {afterState = originalFinal} nameEq keyEq
+          (OInsert rightActor rightParent rightComponent) rightTag rightChecked)
         NoTransitions)) endOrdinal endLive ->
   (licenses : (leftChild, leftParentName, rightChild, rightParentName : name) ->
     (candidateLeft, candidateRight : Component key value world error) ->
@@ -175,14 +176,14 @@ genuineSafetyIndexedO5Application nameEq keyEq protocol left right sourceAligned
     RelationalReplayEndpoint name key world error value nameEq keyEq
       originalFinal swapped)
 genuineSuffixFreeDistinctInsertEndpoint nameEq keyEq protocol leftActor rightActor
-  distinct leftParent rightParent leftComponent rightComponent leftChecked
-  rightChecked earlyChecked sourceDiscipline startOrdinal startLive endOrdinal
+  distinct leftParent rightParent leftComponent rightComponent leftTag rightTag
+  leftChecked rightChecked earlyChecked sourceDiscipline startOrdinal startLive endOrdinal
   endLive scan licenses =
     let left : Transition first middle
-        left = Fired nameEq keyEq
+        left = Fired {before = first} {afterState = middle} nameEq keyEq
           (OInsert leftActor leftParent leftComponent) leftTag leftChecked
         right : Transition middle originalFinal
-        right = Fired nameEq keyEq
+        right = Fired {before = middle} {afterState = originalFinal} nameEq keyEq
           (OInsert rightActor rightParent rightComponent) rightTag rightChecked
         0 sourceAligned : AlignedTransitions name key world error value nameEq
           keyEq (MoreTransitions left (MoreTransitions right NoTransitions))
@@ -192,7 +193,7 @@ genuineSuffixFreeDistinctInsertEndpoint nameEq keyEq protocol leftActor rightAct
           (AlignedStep (OInsert rightActor rightParent rightComponent) rightTag
             rightChecked NoTransitions AlignedEnd)
         early : Transition first earlyFinal
-        early = Fired nameEq keyEq
+        early = Fired {before = first} {afterState = earlyFinal} nameEq keyEq
           (OInsert rightActor rightParent rightComponent) rightTag earlyChecked
         insertedDistinct : (leftChild, rightChild : name) ->
           (candidateLeftParent, candidateRightParent : Parent name) ->
@@ -202,8 +203,11 @@ genuineSuffixFreeDistinctInsertEndpoint nameEq keyEq protocol leftActor rightAct
           transitionAction right =
             OInsert rightChild candidateRightParent candidateRight ->
           Not (leftChild = rightChild)
-        insertedDistinct leftActor rightActor leftParent rightParent leftComponent
-          rightComponent Refl Refl = distinct
+        insertedDistinct leftChild rightChild candidateLeftParent
+          candidateRightParent candidateLeft candidateRight leftSame rightSame =
+            case leftSame of
+              Refl => case rightSame of
+                Refl => distinct
         safety : OrchestrationSwapSafety name key world error value protocol
           nameEq keyEq left right
         safety = MkOrchestrationSwapSafety earlyFinal early Refl Refl
