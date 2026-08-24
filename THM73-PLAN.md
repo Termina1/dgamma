@@ -416,10 +416,10 @@ research-tests/run-r11-suite.sh
 It runs serially:
 
 - five research spikes;
-- 29 tracked positive modules; and
-- 28 tracked expected-failure modules.
+- 34 tracked positive modules; and
+- 30 tracked expected-failure modules.
 
-All 57 tracked Idris test modules occur exactly once. Every negative specification
+All 64 tracked Idris test modules occur exactly once. Every negative specification
 contains its own mandatory diagnostic substring and source declaration name. A
 generic dependent error no longer suffices.
 
