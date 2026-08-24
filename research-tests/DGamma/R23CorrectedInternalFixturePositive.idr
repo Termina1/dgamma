@@ -433,6 +433,7 @@ r23PairIndependent = MkTraceIndependent commute stable
     rewrite r23PairTransformationIdentity foreign origin in
       iteratorOutcomeAgreementReflexive r23KeyEq stage origin
 
+public export
 0 r23Diamond : LocalRelationalDiamond Nat R23Key Unit Unit R23Value r23NameEq
   r23KeyEq r23Begin1 r23Begin2
 r23Diamond = activationActivationDiamondSpike r23NameEq r23KeyEq r23Begin1
@@ -1372,6 +1373,12 @@ record R24CheckedEmptyFinishReplay
   0 replayedChecked : checkedApplyAction @{r23NameEq} @{r23KeyEq}
     (LAdvance actor) replayedBefore = Just (LFinishTag, replayedAfter)
   replayedTransition : Transition replayedBefore replayedAfter
+  0 replayedTransitionExact : replayedTransition =
+    r24FinishTransition actor replayedBefore replayedAfter replayedChecked
+  0 replayedActionExact : transitionAction replayedTransition = LAdvance actor
+  0 replayedTagExact : transitionTag replayedTransition = LFinishTag
+  0 replayedSingletonAligned : AlignedTransitions Nat R23Key Unit Unit R23Value
+    r23NameEq r23KeyEq (MoreTransitions replayedTransition NoTransitions)
   0 replayedEndpoint : RelationalReplayEndpoint Nat R23Key Unit Unit R23Value
     r23NameEq r23KeyEq sourceAfter replayedAfter
   0 perStepRAR : RelationalReplayCorrespondence Nat R23Key Unit Unit R23Value
@@ -1538,8 +1545,11 @@ r24ProduceEmptyFinish actor
                         void (r24SingletonPrefixTooLong head tail located suffix
                           targetTransition decomposition)
               in MkR24CheckedEmptyFinishReplay targetAfter targetChecked
-                targetTransition (MkRelationalReplayEndpoint nextEffects
-                  nextControls targetWellFormed) rar occurrence ordinal
+                targetTransition Refl Refl Refl
+                (AlignedStep (LAdvance actor) LFinishTag targetChecked
+                  NoTransitions AlignedEnd)
+                (MkRelationalReplayEndpoint nextEffects nextControls
+                  targetWellFormed) rar occurrence ordinal
 
 0 r24PairEndpoint : RelationalReplayEndpoint Nat R23Key Unit Unit R23Value
   r23NameEq r23KeyEq r23AfterPair (swappedFinal r23Diamond)
@@ -1559,3 +1569,66 @@ public export
 r24SecondFinishReplay = r24ProduceEmptyFinish 2 r23AfterAdvance1 r23Final
   (replayedAfter r24FirstFinishReplay) r23Advance2Checked
   r23AfterAdvance1WellFormed Refl (replayedEndpoint r24FirstFinishReplay)
+
+public export
+0 r24ReplayedSuffix : Transitions (swappedFinal r23Diamond)
+  (replayedAfter r24SecondFinishReplay)
+r24ReplayedSuffix = MoreTransitions
+  (replayedTransition r24FirstFinishReplay)
+  (MoreTransitions (replayedTransition r24SecondFinishReplay) NoTransitions)
+
+record R24CheckedTwoHeadSuffix where
+  constructor MkR24CheckedTwoHeadSuffix
+  0 firstHead : R24CheckedEmptyFinishReplay 1 r23AfterPair r23AfterAdvance1
+    (swappedFinal r23Diamond) r23Advance1Checked
+  0 secondHead : R24CheckedEmptyFinishReplay 2 r23AfterAdvance1 r23Final
+    (replayedAfter firstHead) r23Advance2Checked
+  0 exactSourceSuffix : Transitions r23AfterPair r23Final
+  0 exactTargetSuffix : Transitions (swappedFinal r23Diamond)
+    (replayedAfter secondHead)
+  0 sourceSuffixExact : exactSourceSuffix = r23Suffix
+  0 targetSuffixExact : exactTargetSuffix = MoreTransitions
+    (replayedTransition firstHead)
+    (MoreTransitions (replayedTransition secondHead) NoTransitions)
+
+0 r24SealedSuffix : R24CheckedTwoHeadSuffix
+r24SealedSuffix = MkR24CheckedTwoHeadSuffix r24FirstFinishReplay
+  r24SecondFinishReplay r23Suffix r24ReplayedSuffix Refl Refl
+
+public export
+0 r24WholeTargetTrace : Transitions r23Initial
+  (replayedAfter r24SecondFinishReplay)
+r24WholeTargetTrace = MoreTransitions r23Insert1
+  (MoreTransitions r23Insert2
+    (MoreTransitions (movedRight r23Diamond)
+      (MoreTransitions (movedLeft r23Diamond) r24ReplayedSuffix)))
+
+0 r24PrefixAligned : AlignedTransitions Nat R23Key Unit Unit R23Value
+  r23NameEq r23KeyEq r23PairPrefix
+r24PrefixAligned = AlignedStep (OInsert 1 Root r23Component) OInsertTag
+  r23Insert1Checked _ (AlignedStep (OInsert 2 Root r23Component) OInsertTag
+    r23Insert2Checked NoTransitions AlignedEnd)
+
+0 prependAlignedSingleton :
+  {first, middle, finalState : SystemState Nat R23Key R23Value Unit Unit} ->
+  {step : Transition first middle} ->
+  {tail : Transitions middle finalState} ->
+  AlignedTransitions Nat R23Key Unit Unit R23Value r23NameEq r23KeyEq
+    (MoreTransitions step NoTransitions) ->
+  AlignedTransitions Nat R23Key Unit Unit R23Value r23NameEq r23KeyEq tail ->
+  AlignedTransitions Nat R23Key Unit Unit R23Value r23NameEq r23KeyEq
+    (MoreTransitions step tail)
+prependAlignedSingleton
+  (AlignedStep action tag checked NoTransitions AlignedEnd) tailAligned =
+    AlignedStep action tag checked tail tailAligned
+
+0 r24SuffixAligned : AlignedTransitions Nat R23Key Unit Unit R23Value
+  r23NameEq r23KeyEq r24ReplayedSuffix
+r24SuffixAligned = prependAlignedSingleton
+  (replayedSingletonAligned r24FirstFinishReplay)
+  (replayedSingletonAligned r24SecondFinishReplay)
+
+public export
+0 r24FinalEndpoint : RelationalReplayEndpoint Nat R23Key Unit Unit R23Value
+  r23NameEq r23KeyEq r23Final (replayedAfter r24SecondFinishReplay)
+r24FinalEndpoint = replayedEndpoint r24SecondFinishReplay
