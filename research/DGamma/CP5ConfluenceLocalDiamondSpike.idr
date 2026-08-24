@@ -9,6 +9,7 @@ import DGamma.CP3
 import DGamma.CP4DeletionFrameCore
 import DGamma.CP4DeletionCommuteCore
 import DGamma.CP4DeletionControlCore
+import DGamma.CP4DeletionControlOrchestration
 import DGamma.CP4DeletionChildlessInvariant
 import DGamma.CP4DeletionBoundaryDeleted
 import DGamma.CP4DeletionBoundaryRetained
@@ -2362,6 +2363,85 @@ orchestrationRawAfterForeignReplacement {name} {key} {world} {error} {value}
                 Just (ORemoveTag, movedAfter)
               movedRaw = rewrite movedFound in rewrite movedGuard in Refl
           in MkRawActivationMove movedAfter movedRaw
+
+0 paperOrchestrationNonLifecycle :
+  {transition : Transition before afterState} ->
+  PaperOrchestrationStep transition ->
+  isLifecycleAction (transitionAction transition) = False
+paperOrchestrationNonLifecycle
+  {transition = Fired nameEq keyEq action tag checked}
+  (PaperInsertStep actionSame) = case actionSame of Refl => Refl
+paperOrchestrationNonLifecycle
+  {transition = Fired nameEq keyEq action tag checked}
+  (PaperRetireStep actionSame) = case actionSame of Refl => Refl
+paperOrchestrationNonLifecycle
+  {transition = Fired nameEq keyEq action tag checked}
+  (PaperRemoveStep actionSame) = case actionSame of Refl => Refl
+
+0 localOrchestrationSuccessfulTagsSame :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftBefore, leftAfter : SystemState name key value world error} ->
+  (action : Action name key value world error) ->
+  isLifecycleAction action = False ->
+  (leftTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} action leftBefore =
+    Just (leftTag, leftAfter)) ->
+  (rightBefore, rightAfter : SystemState name key value world error) ->
+  (rightTag : RuleTag) ->
+  (rightRaw : applyAction @{nameEq} @{keyEq} action rightBefore =
+    Just (rightTag, rightAfter)) ->
+  leftTag = rightTag
+localOrchestrationSuccessfulTagsSame nameEq keyEq
+  (OInsert actor parent component) orchestration leftTag leftChecked
+  (MkSystemState rightWorld rightRegistry) rightAfter rightTag rightRaw =
+    let leftRaw = checkedActionProjects nameEq keyEq
+          (OInsert actor parent component) leftBefore leftAfter leftTag
+          leftChecked
+    in case leftBefore of
+      MkSystemState leftWorld leftRegistry =>
+        case foreignInsertPlanView nameEq keyEq actor parent component
+          leftWorld leftRegistry leftTag leftAfter leftRaw of
+          MkForeignInsertPlanView leftAbsent leftGuards =>
+            case foreignInsertPlanView nameEq keyEq actor parent component
+              rightWorld rightRegistry rightTag rightAfter rightRaw of
+              MkForeignInsertPlanView rightAbsent rightGuards => Refl
+localOrchestrationSuccessfulTagsSame nameEq keyEq (ORetire actor)
+  orchestration leftTag leftChecked (MkSystemState rightWorld rightRegistry)
+  rightAfter rightTag rightRaw =
+    let leftRaw = checkedActionProjects nameEq keyEq (ORetire actor)
+          leftBefore leftAfter leftTag leftChecked
+    in case leftBefore of
+      MkSystemState leftWorld leftRegistry =>
+        case retireSuccessView nameEq keyEq actor leftWorld leftRegistry
+          leftTag leftAfter leftRaw of
+          MkRetireSuccessView leftFiber leftFound =>
+            case retireSuccessView nameEq keyEq actor rightWorld rightRegistry
+              rightTag rightAfter rightRaw of
+              MkRetireSuccessView rightFiber rightFound => Refl
+localOrchestrationSuccessfulTagsSame nameEq keyEq (ORemove actor)
+  orchestration leftTag leftChecked (MkSystemState rightWorld rightRegistry)
+  rightAfter rightTag rightRaw =
+    let leftRaw = checkedActionProjects nameEq keyEq (ORemove actor)
+          leftBefore leftAfter leftTag leftChecked
+    in case leftBefore of
+      MkSystemState leftWorld leftRegistry =>
+        case removeSuccessView nameEq keyEq actor leftWorld leftRegistry
+          leftTag leftAfter leftRaw of
+          MkRemoveSuccessView leftFiber leftFound leftGuard leftNoChild =>
+            case removeSuccessView nameEq keyEq actor rightWorld rightRegistry
+              rightTag rightAfter rightRaw of
+              MkRemoveSuccessView rightFiber rightFound rightGuard
+                rightNoChild => Refl
+localOrchestrationSuccessfulTagsSame nameEq keyEq (LBegin actor) Refl leftTag
+  leftChecked rightBefore rightAfter rightTag rightRaw impossible
+localOrchestrationSuccessfulTagsSame nameEq keyEq (LAdvance actor) Refl leftTag
+  leftChecked rightBefore rightAfter rightTag rightRaw impossible
+localOrchestrationSuccessfulTagsSame nameEq keyEq (LDivert actor) Refl leftTag
+  leftChecked rightBefore rightAfter rightTag rightRaw impossible
+localOrchestrationSuccessfulTagsSame nameEq keyEq (LLeave actor) Refl leftTag
+  leftChecked rightBefore rightAfter rightTag rightRaw impossible
+localOrchestrationSuccessfulTagsSame nameEq keyEq (LUnload actor) Refl leftTag
+  leftChecked rightBefore rightAfter rightTag rightRaw impossible
 
 0 orchestrationRawAfterCheckedRetire :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
