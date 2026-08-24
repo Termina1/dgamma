@@ -460,3 +460,68 @@ r23PairExternalOrder =
            movedRightInternal
            (SkipRightInternal (movedLeft r23Diamond) NoTransitions
              movedLeftInternal SameExternalOrchestrationEnd)))
+
+
+0 r23SourceAligned : AlignedTransitions Nat R23Key Unit Unit R23Value r23NameEq
+  r23KeyEq r23SourceTrace
+r23SourceAligned = AlignedStep (OInsert 1 Root r23Component) OInsertTag
+  r23Insert1Checked _
+  (AlignedStep (OInsert 2 Root r23Component) OInsertTag r23Insert2Checked _
+    (AlignedStep (LBegin 1) LBeginTag r23Begin1Checked _
+      (AlignedStep (LBegin 2) LBeginTag r23Begin2Checked _
+        (AlignedStep (LAdvance 1) LFinishTag r23Advance1Checked _
+          (AlignedStep (LAdvance 2) LFinishTag r23Advance2Checked
+            NoTransitions AlignedEnd)))))
+
+0 r23SourceDiscipline : RegistrationDiscipline r23Protocol r23NameEq
+  r23SourceTrace
+r23SourceDiscipline = RegistrationDisciplineStep r23Insert1 _ (Z ** Refl)
+  (RegistrationDisciplineStep r23Insert2 _ (Z ** Refl)
+    (RegistrationDisciplineStep r23Begin1 _ ()
+      (RegistrationDisciplineStep r23Begin2 _ ()
+        (RegistrationDisciplineStep r23Advance1 _ ()
+          (RegistrationDisciplineStep r23Advance2 NoTransitions ()
+            RegistrationDisciplineEnd)))))
+
+0 r23InitialEmpty : bindings (registry r23Initial) = []
+r23InitialEmpty = Refl
+
+0 r23FinalQuiet : quiet @{r23NameEq} @{r23KeyEq} r23Final = True
+r23FinalQuiet = Refl
+
+0 r23FinalNoFailure : noFailedFibers r23Final = True
+r23FinalNoFailure = Refl
+
+0 r23AnyTransitionTotal :
+  {before, afterState : SystemState Nat R23Key R23Value Unit Unit} ->
+  (transition : Transition before afterState) ->
+  TransitionComponentTotal r23NameEq r23KeyEq transition
+r23AnyTransitionTotal transition fiber found active key occurrence =
+  case key of _ impossible
+
+0 r23Insert1Total : TransitionComponentTotal r23NameEq r23KeyEq r23Insert1
+r23Insert1Total = r23AnyTransitionTotal r23Insert1
+
+0 r23Insert2Total : TransitionComponentTotal r23NameEq r23KeyEq r23Insert2
+r23Insert2Total = r23AnyTransitionTotal r23Insert2
+
+0 r23Begin1Total : TransitionComponentTotal r23NameEq r23KeyEq r23Begin1
+r23Begin1Total = r23AnyTransitionTotal r23Begin1
+
+0 r23Begin2Total : TransitionComponentTotal r23NameEq r23KeyEq r23Begin2
+r23Begin2Total = r23AnyTransitionTotal r23Begin2
+
+0 r23Advance1Total : TransitionComponentTotal r23NameEq r23KeyEq r23Advance1
+r23Advance1Total = r23AnyTransitionTotal r23Advance1
+
+0 r23Advance2Total : TransitionComponentTotal r23NameEq r23KeyEq r23Advance2
+r23Advance2Total = r23AnyTransitionTotal r23Advance2
+
+0 r23SourceTotal : TraceComponentsTotal r23NameEq r23KeyEq r23SourceTrace
+r23SourceTotal = TraceComponentsTotalStep r23Insert1 _ r23Insert1Total
+  (TraceComponentsTotalStep r23Insert2 _ r23Insert2Total
+    (TraceComponentsTotalStep r23Begin1 _ r23Begin1Total
+      (TraceComponentsTotalStep r23Begin2 _ r23Begin2Total
+        (TraceComponentsTotalStep r23Advance1 _ r23Advance1Total
+          (TraceComponentsTotalStep r23Advance2 NoTransitions r23Advance2Total
+            TraceComponentsTotalEnd)))))
