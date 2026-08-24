@@ -6,6 +6,7 @@ import DGamma.Metatheory
 import DGamma.Core
 import DGamma.Unified
 import DGamma.CP3
+import DGamma.CP3Support
 import DGamma.CP4DeletionFrameCore
 import DGamma.CP4DeletionCommuteCore
 import DGamma.CP4DeletionControlCore
@@ -473,8 +474,8 @@ replayReachedFromEmpty premises =
     (replayInitialEmpty premises) (replayInitialWellFormed premises)
 
 ||| Endpoint quotient carried by every suffix replay.  It is strong enough to
-||| compose effects and ordered controls without demanding equality of
-||| function-valued tables or accumulators.
+||| compose effects and actor-name-indexed controls without demanding equality
+||| of function-valued tables, registry order, or accumulators.
 public export
 record RelationalReplayEndpoint
   (name, key, world, error : Type) (value : key -> Type)
@@ -501,7 +502,9 @@ public export
 relationalReplayEndpointReflexiveSpike nameEq keyEq state wellFormed =
   MkRelationalReplayEndpoint
     (effectStateReflexive keyEq (projectEffectState @{nameEq} state))
-    (orderedControlsReflexive (bindings (registry state)))
+    (MkControlEquivalent
+      (\actor => fiberControlMaybeReflexive
+        (lookupFiber @{nameEq} actor (registry state))))
     wellFormed
 
 public export
@@ -516,7 +519,7 @@ relationalReplayEndpointTransitiveSpike nameEq keyEq left middle right
   (MkRelationalReplayEndpoint secondEffects secondControls rightWellFormed) =
     MkRelationalReplayEndpoint
       (effectsTransitive firstEffects secondEffects)
-      (controlsTransitive firstControls secondControls)
+      (controlEquivalentTransitive firstControls secondControls)
       rightWellFormed
   where
   0 effectsTransitive :
@@ -528,20 +531,6 @@ relationalReplayEndpointTransitiveSpike nameEq keyEq left middle right
     (MkEffectStateRelated secondAmbient secondTables) =
       MkEffectStateRelated (trans firstAmbient secondAmbient)
         (\actor => trans (firstTables actor) (secondTables actor))
-
-  0 controlsTransitive :
-    OrderedRegistryControlsRelated name key world error value leftEntries
-      middleEntries ->
-    OrderedRegistryControlsRelated name key world error value middleEntries
-      rightEntries ->
-    OrderedRegistryControlsRelated name key world error value leftEntries
-      rightEntries
-  controlsTransitive OrderedControlsNil OrderedControlsNil = OrderedControlsNil
-  controlsTransitive
-    (OrderedControlsCons actor first firstRest)
-    (OrderedControlsCons actor second secondRest) =
-      OrderedControlsCons actor (fiberControlTransitive first second)
-        (controlsTransitive firstRest secondRest)
 
 ||| Relational local diamond suitable for splicing by replay.  Action and tag
 ||| equalities are both explicit: L-Iter and L-Finish share LAdvance, so action
