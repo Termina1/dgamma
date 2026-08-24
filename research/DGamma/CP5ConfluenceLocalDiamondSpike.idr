@@ -3331,6 +3331,118 @@ orchestrationRawAfterCheckedInsert {name} {key} {world} {error} {value}
             before}
           earlyShape canonicalMove
 
+
+0 orchestrationRawAfterCheckedOrchestration :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, originalFinal, earlyRightFinal :
+    SystemState name key value world error} ->
+  (leftAction, rightAction : Action name key value world error) ->
+  (leftTag, rightTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first =
+    Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq} rightAction middle =
+    Just (rightTag, originalFinal)) ->
+  (earlyRightChecked : checkedApplyAction @{nameEq} @{keyEq} rightAction first =
+    Just (rightTag, earlyRightFinal)) ->
+  (leftPaper : PaperOrchestrationStep
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked)) ->
+  (rightPaper : PaperOrchestrationStep
+    (Fired {before = middle} {afterState = originalFinal}
+      nameEq keyEq rightAction rightTag rightChecked)) ->
+  Not (actionOwner leftAction = actionOwner rightAction) ->
+  RawActivationMove nameEq keyEq leftAction leftTag earlyRightFinal
+orchestrationRawAfterCheckedOrchestration {name} {key} {world} {error} {value}
+  nameEq keyEq {first = MkSystemState ambient source} {middle} {originalFinal}
+  {earlyRightFinal} leftAction rightAction leftTag rightTag leftChecked
+  rightChecked earlyRightChecked leftPaper
+  (PaperInsertStep {actor = rightActor} {parent = rightParent}
+    {component = rightComponent} actionSame) distinct =
+      case actionSame of
+        Refl => orchestrationRawAfterCheckedInsert nameEq keyEq leftAction
+          leftTag rightActor rightParent rightComponent rightTag leftChecked
+          rightChecked earlyRightChecked leftPaper distinct
+orchestrationRawAfterCheckedOrchestration {name} {key} {world} {error} {value}
+  nameEq keyEq {first = MkSystemState ambient source} {middle} {originalFinal}
+  {earlyRightFinal} leftAction rightAction leftTag rightTag leftChecked
+  rightChecked earlyRightChecked leftPaper
+  (PaperRetireStep {actor = rightActor} actionSame) distinct =
+    case actionSame of
+      Refl =>
+        let 0 earlyRaw : Equal
+              (applyAction @{nameEq} @{keyEq} (ORetire rightActor)
+                (the (SystemState name key value world error)
+                  (MkSystemState ambient source)))
+              (Just (rightTag, earlyRightFinal))
+            earlyRaw = checkedActionProjects nameEq keyEq (ORetire rightActor)
+              (the (SystemState name key value world error)
+                  (MkSystemState ambient source)) earlyRightFinal rightTag
+              earlyRightChecked
+            0 earlyView : RetireSuccessView name key world error value nameEq
+              rightActor ambient source rightTag earlyRightFinal
+            earlyView = retireSuccessView nameEq keyEq rightActor ambient source
+              rightTag earlyRightFinal earlyRaw
+            0 tagSame : Equal rightTag ORetireTag
+            tagSame = localRetireViewTag rightTag earlyView
+            0 exactEarly : Equal
+              (checkedApplyAction @{nameEq} @{keyEq} (ORetire rightActor)
+                (the (SystemState name key value world error)
+                  (MkSystemState ambient source)))
+              (Just (ORetireTag, earlyRightFinal))
+            exactEarly = replace
+              {p = \observedTag => Equal
+                (checkedApplyAction @{nameEq} @{keyEq} (ORetire rightActor)
+                  (the (SystemState name key value world error)
+                  (MkSystemState ambient source)))
+                (Just (observedTag, earlyRightFinal))}
+              tagSame earlyRightChecked
+        in orchestrationRawAfterCheckedRetire nameEq keyEq leftAction leftTag
+          rightActor leftChecked exactEarly leftPaper distinct
+orchestrationRawAfterCheckedOrchestration {name} {key} {world} {error} {value}
+  nameEq keyEq {first = MkSystemState ambient source} {middle} {originalFinal}
+  {earlyRightFinal} leftAction rightAction leftTag rightTag leftChecked
+  rightChecked earlyRightChecked leftPaper
+  (PaperRemoveStep {actor = rightActor} actionSame) distinct =
+    case actionSame of
+      Refl =>
+        let 0 earlyRaw : Equal
+              (applyAction @{nameEq} @{keyEq} (ORemove rightActor)
+                (the (SystemState name key value world error)
+                  (MkSystemState ambient source)))
+              (Just (rightTag, earlyRightFinal))
+            earlyRaw = checkedActionProjects nameEq keyEq (ORemove rightActor)
+              (the (SystemState name key value world error)
+                  (MkSystemState ambient source)) earlyRightFinal rightTag
+              earlyRightChecked
+            0 earlyView : RemoveSuccessView name key world error value nameEq
+              rightActor ambient source rightTag earlyRightFinal
+            earlyView = removeSuccessView nameEq keyEq rightActor ambient source
+              rightTag earlyRightFinal earlyRaw
+            0 tagSame : Equal rightTag ORemoveTag
+            tagSame = localRemoveViewTag rightTag earlyView
+            0 exactRight : Equal
+              (checkedApplyAction @{nameEq} @{keyEq} (ORemove rightActor) middle)
+              (Just (ORemoveTag, originalFinal))
+            exactRight = replace
+              {p = \observedTag => Equal
+                (checkedApplyAction @{nameEq} @{keyEq} (ORemove rightActor)
+                  middle) (Just (observedTag, originalFinal))}
+              tagSame rightChecked
+            0 exactEarly : Equal
+              (checkedApplyAction @{nameEq} @{keyEq} (ORemove rightActor)
+                (the (SystemState name key value world error)
+                  (MkSystemState ambient source)))
+              (Just (ORemoveTag, earlyRightFinal))
+            exactEarly = replace
+              {p = \observedTag => Equal
+                (checkedApplyAction @{nameEq} @{keyEq} (ORemove rightActor)
+                  (the (SystemState name key value world error)
+                  (MkSystemState ambient source)))
+                (Just (observedTag, earlyRightFinal))}
+              tagSame earlyRightChecked
+        in orchestrationRawAfterCheckedRemove nameEq keyEq leftAction leftTag
+          rightActor leftChecked exactRight exactEarly leftPaper distinct
+
 0 beginRawAfterForeignState :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (leftActor : name) ->
