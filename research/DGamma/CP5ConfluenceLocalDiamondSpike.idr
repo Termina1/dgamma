@@ -2525,6 +2525,86 @@ localAndRightTrueO5 False right both = case both of Refl impossible
 localAndRightTrueO5 True False both = case both of Refl impossible
 localAndRightTrueO5 True True both = Refl
 
+0 localElemDecTrueElemO5 : DecEq a => (wanted : a) -> (values : List a) ->
+  elemDec wanted values = True -> Elem wanted values
+localElemDecTrueElemO5 wanted [] present = case present of Refl impossible
+localElemDecTrueElemO5 wanted (current :: rest) present
+  with (decEq wanted current)
+  localElemDecTrueElemO5 current (current :: rest) present | Yes Refl = Here
+  localElemDecTrueElemO5 wanted (current :: rest) present | No distinct =
+    There (localElemDecTrueElemO5 wanted rest present)
+
+0 localElemDecFromElemO5 : (eq : DecEq a) -> (candidate : a) ->
+  (values : List a) -> Elem candidate values ->
+  elemDec @{eq} candidate values = True
+localElemDecFromElemO5 eq candidate (candidate :: later) Here
+  with (decEq @{eq} candidate candidate)
+  localElemDecFromElemO5 eq candidate (candidate :: later) Here | Yes Refl = Refl
+  localElemDecFromElemO5 eq candidate (candidate :: later) Here | No contra =
+    void (contra Refl)
+localElemDecFromElemO5 eq candidate (current :: later) (There member)
+  with (decEq @{eq} candidate current)
+  localElemDecFromElemO5 eq current (current :: later) (There member) |
+    Yes Refl = Refl
+  localElemDecFromElemO5 eq candidate (current :: later) (There member) |
+    No distinct = localElemDecFromElemO5 eq candidate later member
+
+0 localFoldlOrTrueO5 : (predicate : a -> Bool) -> (values : List a) ->
+  foldl (\accepted, value => accepted || predicate value) True values = True
+localFoldlOrTrueO5 predicate [] = Refl
+localFoldlOrTrueO5 predicate (value :: rest) =
+  localFoldlOrTrueO5 predicate rest
+
+0 localSharedAnyO5 : (eq : DecEq a) -> (wanted : a) ->
+  (left, right : List a) -> Elem wanted left -> Elem wanted right ->
+  any (\candidate => elemDec @{eq} candidate right) left = True
+localSharedAnyO5 eq wanted (wanted :: rest) right Here rightMember =
+  rewrite localElemDecFromElemO5 eq wanted right rightMember in
+    localFoldlOrTrueO5 (\candidate => elemDec @{eq} candidate right) rest
+localSharedAnyO5 eq wanted (current :: rest) right (There leftMember)
+  rightMember with (elemDec @{eq} current right)
+  localSharedAnyO5 eq wanted (current :: rest) right (There leftMember)
+    rightMember | True =
+      localFoldlOrTrueO5 (\candidate => elemDec @{eq} candidate right) rest
+  localSharedAnyO5 eq wanted (current :: rest) right (There leftMember)
+    rightMember | False = localSharedAnyO5 eq wanted rest right leftMember
+      rightMember
+
+0 localOverlapWitnessO5 : DecEq a => (left, right : List a) ->
+  any (\candidate => elemDec candidate right) left = True ->
+  (wanted : a ** (Elem wanted left, Elem wanted right))
+localOverlapWitnessO5 [] right overlap = case overlap of Refl impossible
+localOverlapWitnessO5 (current :: rest) right overlap
+  with (elemDec current right) proof currentMember
+  localOverlapWitnessO5 (current :: rest) right overlap | True =
+    (current ** (Here, localElemDecTrueElemO5 current right currentMember))
+  localOverlapWitnessO5 (current :: rest) right overlap | False =
+    case localOverlapWitnessO5 rest right overlap of
+      (wanted ** (leftMember, rightMember)) =>
+        (wanted ** (There leftMember, rightMember))
+
+0 localProvisionOverlapFalseSymmetricO5 :
+  (keyEq : DecEq key) -> (left, right : CoeffectSpec key) ->
+  provisionOverlap @{keyEq} right left = False ->
+  provisionOverlap @{keyEq} left right = False
+localProvisionOverlapFalseSymmetricO5 keyEq
+  (MkCoeffectSpec left leftUnique) (MkCoeffectSpec right rightUnique)
+  reverseFalse with (any (\candidate => elemDec candidate right) left)
+    proof forward
+  localProvisionOverlapFalseSymmetricO5 keyEq
+    (MkCoeffectSpec left leftUnique) (MkCoeffectSpec right rightUnique)
+    reverseFalse | False = Refl
+  localProvisionOverlapFalseSymmetricO5 keyEq
+    (MkCoeffectSpec left leftUnique) (MkCoeffectSpec right rightUnique)
+    reverseFalse | True =
+      case localOverlapWitnessO5 left right forward of
+        (wanted ** (leftMember, rightMember)) =>
+          let 0 reverseTrue : Equal
+                (any (\candidate => elemDec @{keyEq} candidate left) right) True
+              reverseTrue = localSharedAnyO5 keyEq wanted right left rightMember
+                leftMember
+          in case trans (sym reverseTrue) reverseFalse of Refl impossible
+
 0 localParentPresentAfterDelete :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (parent : Parent name) -> (removed : name) ->
