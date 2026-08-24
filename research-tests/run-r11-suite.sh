@@ -57,8 +57,8 @@ POSITIVE=(
   R19SuffixFreeFullAdjacentCertificatePositive
   R19CrossStateRetireReplayProbePositive
   R20CorrectedSealedReplayEnvelopeScopingPositive
-  R20WholeBundleAlignmentGapPositive
   R21MovedOutputAlignmentScopingPositive
+  R20WholeBundleAlignmentGapPositive
   R9CoordinateBoundaryPositive
   R9WholeBlockShiftedAliasContradictionPositive
 )
