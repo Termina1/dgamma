@@ -1012,6 +1012,14 @@ record R24DerivedTargetFinish
     (replaceBinding @{r23NameEq} actor nextFiber (registry replayedBefore))
   0 targetRaw : applyAction @{r23NameEq} @{r23KeyEq} (LAdvance actor)
     replayedBefore = Just (LFinishTag, targetState)
+  0 oldAccumulator : LocalState R23Key R23Value Unit
+    (componentProvisions (fiberComponent oldFiber)) ->
+    LocalState R23Key R23Value Unit
+      (componentProvisions (fiberComponent oldFiber))
+  0 oldView : View Nat
+    (dependencies (componentDependencies (fiberComponent oldFiber)))
+  0 oldLifecycleExact : fiberLifecycle oldFiber =
+    Reloading [] oldAccumulator oldView
   0 sourceToNextControl : FiberControlRelated r23Active nextFiber
 
 0 r24DeriveTargetFinish :
@@ -1053,7 +1061,304 @@ r24DeriveTargetFinish actor (MkSystemState replayedWorld replayedRegistry)
                         Refl (ActiveControls {error = Unit}
                           (\input => localStateRuntimeSymmetric
                             (accumulatorsSame input)) Refl)
-                  in MkR24DerivedTargetFinish next after Refl raw nextRelated
+                  in MkR24DerivedTargetFinish next after Refl raw
+                    targetAccumulator targetView Refl nextRelated
+
+0 r24SingletonOccursSelected :
+  {selectedBefore, selectedAfter, first, finalState :
+    SystemState Nat R23Key R23Value Unit Unit} ->
+  {selected : Transition selectedBefore selectedAfter} ->
+  {only : Transition first finalState} ->
+  OccursIn selected (MoreTransitions only NoTransitions) -> selected = only
+r24SingletonOccursSelected OccursHere = Refl
+r24SingletonOccursSelected (OccursLater later) impossible
+
+0 r24EmptyFinishNoIterator :
+  (actor : Nat) ->
+  (before, afterState : SystemState Nat R23Key R23Value Unit Unit) ->
+  (checked : checkedApplyAction @{r23NameEq} @{r23KeyEq} (LAdvance actor)
+    before = Just (LFinishTag, afterState)) ->
+  (oldFiber : Fiber Nat R23Key R23Value Unit Unit) ->
+  (found : lookupFiber @{r23NameEq} actor (registry before) = Just oldFiber) ->
+  (accumulator : LocalState R23Key R23Value Unit
+    (componentProvisions (fiberComponent oldFiber)) ->
+    LocalState R23Key R23Value Unit
+      (componentProvisions (fiberComponent oldFiber))) ->
+  (view : View Nat
+    (dependencies (componentDependencies (fiberComponent oldFiber)))) ->
+  fiberLifecycle oldFiber = Reloading [] accumulator view ->
+  (selected : Nat) -> IteratorStage Nat R23Key Unit Unit R23Value selected
+    (MoreTransitions
+      (Fired {before = before} {afterState = afterState}
+        r23NameEq r23KeyEq (LAdvance actor) LFinishTag checked)
+      NoTransitions) -> Void
+r24EmptyFinishNoIterator actor before afterState checked oldFiber found
+  accumulator view lifecycle selected
+  (StageFromAdvance storedNameEq storedKeyEq selected tag equation occurs fiber
+    stageFound remaining stageAccumulator stageView stageLifecycle step rest
+    suffix) = case r24SingletonOccursSelected occurs of
+      Refl => case justInjective (trans (sym found) stageFound) of
+        Refl => case trans (sym lifecycle) stageLifecycle of
+          Refl => noNonemptyReachableFromEmpty suffix
+
+r24FinishTransition :
+  (actor : Nat) ->
+  (before, afterState : SystemState Nat R23Key R23Value Unit Unit) ->
+  checkedApplyAction @{r23NameEq} @{r23KeyEq} (LAdvance actor) before =
+    Just (LFinishTag, afterState) -> Transition before afterState
+r24FinishTransition actor before afterState checked =
+  Fired r23NameEq r23KeyEq (LAdvance actor) LFinishTag checked
+
+0 r24SingletonFinishGeneratorOrigin :
+  (actor : Nat) ->
+  (sourceBefore, sourceAfter, replayedBefore, replayedAfter :
+    SystemState Nat R23Key R23Value Unit Unit) ->
+  (sourceChecked : checkedApplyAction @{r23NameEq} @{r23KeyEq}
+    (LAdvance actor) sourceBefore = Just (LFinishTag, sourceAfter)) ->
+  (replayedChecked : checkedApplyAction @{r23NameEq} @{r23KeyEq}
+    (LAdvance actor) replayedBefore = Just (LFinishTag, replayedAfter)) ->
+  ((selected : Nat) -> IteratorStage Nat R23Key Unit Unit R23Value selected
+    (MoreTransitions
+      (r24FinishTransition actor replayedBefore replayedAfter replayedChecked)
+      NoTransitions) -> Void) ->
+  (selected : Nat) ->
+  TraceEffectGenerator Nat R23Key Unit Unit R23Value selected
+    (MoreTransitions
+      (r24FinishTransition actor replayedBefore replayedAfter replayedChecked)
+      NoTransitions) ->
+  TraceEffectGenerator Nat R23Key Unit Unit R23Value selected
+    (MoreTransitions
+      (r24FinishTransition actor sourceBefore sourceAfter sourceChecked)
+      NoTransitions)
+r24SingletonFinishGeneratorOrigin actor sourceBefore sourceAfter replayedBefore
+  replayedAfter sourceChecked replayedChecked noTargetIterator selected
+  (ActualForwardGenerator before afterState storedNameEq storedKeyEq action tag
+    equation occurs actorMatches) = case r24SingletonOccursSelected occurs of
+      Refl => ActualForwardGenerator sourceBefore sourceAfter r23NameEq r23KeyEq
+        (LAdvance actor) LFinishTag sourceChecked OccursHere actorMatches
+r24SingletonFinishGeneratorOrigin actor sourceBefore sourceAfter replayedBefore
+  replayedAfter sourceChecked replayedChecked noTargetIterator selected
+  (IteratorForwardGenerator stage) = void (noTargetIterator selected stage)
+r24SingletonFinishGeneratorOrigin actor sourceBefore sourceAfter replayedBefore
+  replayedAfter sourceChecked replayedChecked noTargetIterator selected
+  (IteratorYieldedGenerator stage origin) = void (noTargetIterator selected stage)
+
+0 r24SingletonFinishGeneratorRunsIdentity :
+  {before, afterState : SystemState Nat R23Key R23Value Unit Unit} ->
+  {actor, selected : Nat} ->
+  (finish : Transition before afterState) ->
+  (actionExact : transitionAction finish = LAdvance actor) ->
+  (tagExact : transitionTag finish = LFinishTag) ->
+  ((selected : Nat) -> IteratorStage Nat R23Key Unit Unit R23Value selected
+    (MoreTransitions finish NoTransitions) -> Void) ->
+  ((state : EffectState Nat R23Key R23Value Unit) ->
+    partialEffectMap finish state = Just state) ->
+  (generator : TraceEffectGenerator Nat R23Key Unit Unit R23Value selected
+    (MoreTransitions finish NoTransitions)) ->
+  (state : EffectState Nat R23Key R23Value Unit) ->
+  traceGeneratorMap generator state = Just state
+r24SingletonFinishGeneratorRunsIdentity
+  (Fired storedNameEq storedKeyEq action tag equation) actionExact tagExact
+  noIterator mapIdentity
+  (ActualForwardGenerator before afterState storedNameEq storedKeyEq action tag
+    equation OccursHere actorMatches) state = mapIdentity state
+r24SingletonFinishGeneratorRunsIdentity finish actionExact tagExact noIterator
+  mapIdentity
+  (ActualForwardGenerator before afterState storedNameEq storedKeyEq action tag
+    equation (OccursLater later) actorMatches) state =
+      void (noOccurrenceInEmpty later)
+r24SingletonFinishGeneratorRunsIdentity finish actionExact tagExact noIterator
+  mapIdentity (IteratorForwardGenerator stage) state =
+    void (noIterator selected stage)
+r24SingletonFinishGeneratorRunsIdentity finish actionExact tagExact noIterator
+  mapIdentity (IteratorYieldedGenerator stage origin) state =
+    void (noIterator selected stage)
+
+0 r24SingletonFinishRAR :
+  (actor : Nat) ->
+  (sourceBefore, sourceAfter, replayedBefore, replayedAfter :
+    SystemState Nat R23Key R23Value Unit Unit) ->
+  (sourceChecked : checkedApplyAction @{r23NameEq} @{r23KeyEq}
+    (LAdvance actor) sourceBefore = Just (LFinishTag, sourceAfter)) ->
+  (replayedChecked : checkedApplyAction @{r23NameEq} @{r23KeyEq}
+    (LAdvance actor) replayedBefore = Just (LFinishTag, replayedAfter)) ->
+  ((selected : Nat) -> IteratorStage Nat R23Key Unit Unit R23Value selected
+    (MoreTransitions
+      (r24FinishTransition actor sourceBefore sourceAfter sourceChecked)
+      NoTransitions) -> Void) ->
+  ((selected : Nat) -> IteratorStage Nat R23Key Unit Unit R23Value selected
+    (MoreTransitions
+      (r24FinishTransition actor replayedBefore replayedAfter replayedChecked)
+      NoTransitions) -> Void) ->
+  ((state : EffectState Nat R23Key R23Value Unit) ->
+    partialEffectMap
+      (r24FinishTransition actor sourceBefore sourceAfter sourceChecked) state =
+      Just state) ->
+  ((state : EffectState Nat R23Key R23Value Unit) ->
+    partialEffectMap
+      (r24FinishTransition actor replayedBefore replayedAfter replayedChecked)
+      state = Just state) ->
+  RelationalReplayCorrespondence Nat R23Key Unit Unit R23Value
+    (MoreTransitions
+      (r24FinishTransition actor sourceBefore sourceAfter sourceChecked)
+      NoTransitions)
+    (MoreTransitions
+      (r24FinishTransition actor replayedBefore replayedAfter replayedChecked)
+      NoTransitions)
+r24SingletonFinishRAR actor sourceBefore sourceAfter replayedBefore replayedAfter
+  sourceChecked replayedChecked noSourceIterator noTargetIterator
+  sourceIdentity targetIdentity =
+    MkRelationalReplayCorrespondence
+      (r24SingletonFinishGeneratorOrigin actor sourceBefore sourceAfter
+        replayedBefore replayedAfter sourceChecked replayedChecked
+        noTargetIterator)
+      mapPreserved
+      (\selected, stage => void (noTargetIterator selected stage))
+      (\selected, stage, state => void (noTargetIterator selected stage))
+  where
+  0 mapPreserved : (selected : Nat) ->
+    (generator : TraceEffectGenerator Nat R23Key Unit Unit R23Value selected
+      (MoreTransitions
+        (r24FinishTransition actor replayedBefore replayedAfter replayedChecked)
+        NoTransitions)) ->
+    (state : EffectState Nat R23Key R23Value Unit) ->
+    traceGeneratorMap
+      (r24SingletonFinishGeneratorOrigin actor sourceBefore sourceAfter
+        replayedBefore replayedAfter sourceChecked replayedChecked
+        noTargetIterator selected generator) state = traceGeneratorMap generator state
+  mapPreserved selected
+    (ActualForwardGenerator before afterState storedNameEq storedKeyEq action tag
+      equation occurs actorMatches) state =
+        case r24SingletonOccursSelected occurs of
+          Refl => trans
+            (r24SingletonFinishGeneratorRunsIdentity
+              (r24FinishTransition actor sourceBefore sourceAfter sourceChecked)
+              Refl Refl noSourceIterator sourceIdentity
+              (r24SingletonFinishGeneratorOrigin actor sourceBefore sourceAfter
+                replayedBefore replayedAfter sourceChecked replayedChecked
+                noTargetIterator selected
+                (ActualForwardGenerator before afterState storedNameEq storedKeyEq
+                  action tag equation occurs actorMatches)) state)
+            (sym (r24SingletonFinishGeneratorRunsIdentity
+              (r24FinishTransition actor replayedBefore replayedAfter
+                replayedChecked) Refl Refl noTargetIterator targetIdentity
+              (ActualForwardGenerator before afterState storedNameEq storedKeyEq
+                action tag equation occurs actorMatches) state))
+  mapPreserved selected (IteratorForwardGenerator stage) state =
+    void (noTargetIterator selected stage)
+  mapPreserved selected (IteratorYieldedGenerator stage origin) state =
+    void (noTargetIterator selected stage)
+
+0 r24SingletonPrefixTooLong :
+  {first, point, beforeLocated, afterLocated, finalState :
+    SystemState Nat R23Key R23Value Unit Unit} ->
+  (prefixStep : Transition first point) ->
+  (prefixRest : Transitions point beforeLocated) ->
+  (located : Transition beforeLocated afterLocated) ->
+  (suffix : Transitions afterLocated finalState) ->
+  (only : Transition first finalState) ->
+  appendTransitions (MoreTransitions prefixStep prefixRest)
+    (MoreTransitions located suffix) = MoreTransitions only NoTransitions -> Void
+r24SingletonPrefixTooLong prefixStep NoTransitions located suffix only
+  decomposition = case cong transitionCount decomposition of Refl impossible
+r24SingletonPrefixTooLong prefixStep (MoreTransitions head tail) located suffix
+  only decomposition = case cong transitionCount decomposition of Refl impossible
+
+0 r24SingletonActionOrigin :
+  {sourceBefore, sourceAfter, replayedBefore, replayedAfter :
+    SystemState Nat R23Key R23Value Unit Unit} ->
+  {actor : Nat} ->
+  {action : Action Nat R23Key R23Value Unit Unit} ->
+  (source : Transition sourceBefore sourceAfter) ->
+  (replayed : Transition replayedBefore replayedAfter) ->
+  (sourceAction : transitionAction source = LAdvance actor) ->
+  (replayedAction : transitionAction replayed = LAdvance actor) ->
+  LocatedActionOccurrence action (MoreTransitions replayed NoTransitions) ->
+  LocatedActionOccurrence action (MoreTransitions source NoTransitions)
+r24SingletonActionOrigin source replayed sourceAction replayedAction
+  (MkLocatedActionOccurrence _ _ NoTransitions _ NoTransitions same Refl) =
+    MkLocatedActionOccurrence _ _ NoTransitions source NoTransitions
+      (trans sourceAction (trans (sym replayedAction) same)) Refl
+r24SingletonActionOrigin source replayed sourceAction replayedAction
+  (MkLocatedActionOccurrence _ _ (MoreTransitions head tail) located suffix same
+    decomposition) = void (r24SingletonPrefixTooLong head tail located suffix
+      replayed decomposition)
+
+0 r24SingletonTagPreserved :
+  {sourceBefore, sourceAfter, replayedBefore, replayedAfter :
+    SystemState Nat R23Key R23Value Unit Unit} ->
+  {actor : Nat} ->
+  {action : Action Nat R23Key R23Value Unit Unit} ->
+  (source : Transition sourceBefore sourceAfter) ->
+  (replayed : Transition replayedBefore replayedAfter) ->
+  (sourceAction : transitionAction source = LAdvance actor) ->
+  (replayedAction : transitionAction replayed = LAdvance actor) ->
+  transitionTag source = LFinishTag -> transitionTag replayed = LFinishTag ->
+  (occurrence : LocatedActionOccurrence action
+    (MoreTransitions replayed NoTransitions)) ->
+  transitionTag (locatedTransition
+    (r24SingletonActionOrigin source replayed sourceAction replayedAction
+      occurrence)) = transitionTag (locatedTransition occurrence)
+r24SingletonTagPreserved source replayed sourceAction replayedAction sourceTag
+  replayedTag (MkLocatedActionOccurrence _ _ NoTransitions _ NoTransitions same
+    Refl) = trans sourceTag (sym replayedTag)
+r24SingletonTagPreserved source replayed sourceAction replayedAction sourceTag
+  replayedTag (MkLocatedActionOccurrence _ _ (MoreTransitions head tail) located
+    suffix same decomposition) = void (r24SingletonPrefixTooLong head tail located
+      suffix replayed decomposition)
+
+0 r24SingletonOccurrenceAction :
+  {replayedBefore, replayedAfter :
+    SystemState Nat R23Key R23Value Unit Unit} ->
+  {actor : Nat} ->
+  {action : Action Nat R23Key R23Value Unit Unit} ->
+  (replayed : Transition replayedBefore replayedAfter) ->
+  transitionAction replayed = LAdvance actor ->
+  LocatedActionOccurrence action (MoreTransitions replayed NoTransitions) ->
+  action = LAdvance actor
+r24SingletonOccurrenceAction replayed replayedAction
+  (MkLocatedActionOccurrence _ _ NoTransitions _ NoTransitions same Refl) =
+    trans (sym same) replayedAction
+r24SingletonOccurrenceAction replayed replayedAction
+  (MkLocatedActionOccurrence _ _ (MoreTransitions head tail) located suffix same
+    decomposition) = void (r24SingletonPrefixTooLong head tail located suffix
+      replayed decomposition)
+
+0 r24SingletonNoGenerated :
+  {replayedBefore, replayedAfter :
+    SystemState Nat R23Key R23Value Unit Unit} ->
+  {actor, child, parent : Nat} ->
+  {component : Component R23Key R23Value Unit Unit} ->
+  (replayed : Transition replayedBefore replayedAfter) ->
+  transitionAction replayed = LAdvance actor ->
+  LocatedGeneratedRegistration child parent component
+    (MoreTransitions replayed NoTransitions) -> Void
+r24SingletonNoGenerated replayed replayedAction generated =
+  case r24SingletonOccurrenceAction replayed replayedAction
+    (generatedRegistrationActionOccurrence generated) of Refl impossible
+
+0 r24SingletonOccurrences :
+  {sourceBefore, sourceAfter, replayedBefore, replayedAfter :
+    SystemState Nat R23Key R23Value Unit Unit} ->
+  {actor : Nat} ->
+  (source : Transition sourceBefore sourceAfter) ->
+  (replayed : Transition replayedBefore replayedAfter) ->
+  (sourceAction : transitionAction source = LAdvance actor) ->
+  (replayedAction : transitionAction replayed = LAdvance actor) ->
+  (sourceTag : transitionTag source = LFinishTag) ->
+  (replayedTag : transitionTag replayed = LFinishTag) ->
+  ActionRegistrationReplayCorrespondence Nat R23Key Unit Unit R23Value
+    (MoreTransitions source NoTransitions)
+    (MoreTransitions replayed NoTransitions)
+r24SingletonOccurrences source replayed sourceAction replayedAction sourceTag
+  replayedTag = MkActionRegistrationReplayCorrespondence
+    identityRegistrationGenerationBijection
+    (r24SingletonActionOrigin source replayed sourceAction replayedAction)
+    (r24SingletonTagPreserved source replayed sourceAction replayedAction
+      sourceTag replayedTag)
+    (\generated => void (r24SingletonNoGenerated replayed replayedAction generated))
+    (\generated => void (r24SingletonNoGenerated replayed replayedAction generated))
+    (\generated => void (r24SingletonNoGenerated replayed replayedAction generated))
 
 public export
 record R24CheckedEmptyFinishReplay
@@ -1069,6 +1374,23 @@ record R24CheckedEmptyFinishReplay
   replayedTransition : Transition replayedBefore replayedAfter
   0 replayedEndpoint : RelationalReplayEndpoint Nat R23Key Unit Unit R23Value
     r23NameEq r23KeyEq sourceAfter replayedAfter
+  0 perStepRAR : RelationalReplayCorrespondence Nat R23Key Unit Unit R23Value
+    (MoreTransitions
+      (r24FinishTransition actor sourceBefore sourceAfter sourceChecked)
+      NoTransitions)
+    (MoreTransitions replayedTransition NoTransitions)
+  0 perStepOccurrence : ActionRegistrationReplayCorrespondence Nat R23Key Unit
+    Unit R23Value
+    (MoreTransitions
+      (r24FinishTransition actor sourceBefore sourceAfter sourceChecked)
+      NoTransitions)
+    (MoreTransitions replayedTransition NoTransitions)
+  0 perStepRelativeOrdinal :
+    {action : Action Nat R23Key R23Value Unit Unit} ->
+    (occurrence : LocatedActionOccurrence action
+      (MoreTransitions replayedTransition NoTransitions)) ->
+    locatedActionOrdinal occurrence = locatedActionOrdinal
+      (replayActionOrigin perStepOccurrence occurrence)
 
 0 r24ProduceEmptyFinish :
   (actor : Nat) ->
@@ -1096,7 +1418,8 @@ r24ProduceEmptyFinish actor
           (MkSystemState replayedWorld replayedRegistry) replayedFiber
           replayedFound targetToSource of
           MkR24DerivedTargetFinish rightNext targetAfter targetStateExact
-            targetRaw nextLifecycle =>
+            targetRaw targetAccumulator targetView targetLifecycle
+            nextLifecycle =>
               let 0 targetWellFormed : (registryWellFormed
                     @{r23NameEq} @{r23KeyEq} targetAfter = True)
                   targetWellFormed = preservationTheoremProof r23NameEq
@@ -1156,11 +1479,67 @@ r24ProduceEmptyFinish actor
                   nextEffects = r23AllEffectStatesRelated _ _
                   targetTransition : Transition
                     (MkSystemState replayedWorld replayedRegistry) targetAfter
-                  targetTransition = Fired r23NameEq r23KeyEq
-                    (LAdvance actor) LFinishTag targetChecked
+                  targetTransition = r24FinishTransition actor
+                    (MkSystemState replayedWorld replayedRegistry) targetAfter
+                    targetChecked
+                  sourceTransition : Transition
+                    (MkSystemState sourceWorld sourceRegistry) sourceAfter
+                  sourceTransition = r24FinishTransition actor
+                    (MkSystemState sourceWorld sourceRegistry) sourceAfter
+                    sourceChecked
+                  0 sourceNoIterator : (selected : Nat) -> IteratorStage Nat
+                    R23Key Unit Unit R23Value selected
+                    (MoreTransitions sourceTransition NoTransitions) -> Void
+                  sourceNoIterator = r24EmptyFinishNoIterator actor
+                    (MkSystemState sourceWorld sourceRegistry) sourceAfter
+                    sourceChecked r23Begun sourceFound id EmptyView Refl
+                  0 targetNoIterator : (selected : Nat) -> IteratorStage Nat
+                    R23Key Unit Unit R23Value selected
+                    (MoreTransitions targetTransition NoTransitions) -> Void
+                  targetNoIterator = r24EmptyFinishNoIterator actor
+                    (MkSystemState replayedWorld replayedRegistry) targetAfter
+                    targetChecked replayedFiber replayedFound targetAccumulator
+                    targetView targetLifecycle
+                  0 sourceMapIdentity :
+                    (state : EffectState Nat R23Key R23Value Unit) ->
+                    partialEffectMap sourceTransition state = Just state
+                  sourceMapIdentity state = rewrite sourceFound in Refl
+                  0 targetMapIdentity :
+                    (state : EffectState Nat R23Key R23Value Unit) ->
+                    partialEffectMap targetTransition state = Just state
+                  targetMapIdentity state = rewrite replayedFound in
+                    rewrite targetLifecycle in Refl
+                  0 rar : RelationalReplayCorrespondence Nat R23Key Unit Unit
+                    R23Value (MoreTransitions sourceTransition NoTransitions)
+                    (MoreTransitions targetTransition NoTransitions)
+                  rar = r24SingletonFinishRAR actor
+                    (MkSystemState sourceWorld sourceRegistry) sourceAfter
+                    (MkSystemState replayedWorld replayedRegistry) targetAfter
+                    sourceChecked targetChecked sourceNoIterator targetNoIterator
+                    sourceMapIdentity targetMapIdentity
+                  0 occurrence : ActionRegistrationReplayCorrespondence Nat
+                    R23Key Unit Unit R23Value
+                    (MoreTransitions sourceTransition NoTransitions)
+                    (MoreTransitions targetTransition NoTransitions)
+                  occurrence = r24SingletonOccurrences sourceTransition
+                    targetTransition Refl Refl Refl Refl
+                  0 ordinal :
+                    {action : Action Nat R23Key R23Value Unit Unit} ->
+                    (located : LocatedActionOccurrence action
+                      (MoreTransitions targetTransition NoTransitions)) ->
+                    locatedActionOrdinal located = locatedActionOrdinal
+                      (replayActionOrigin occurrence located)
+                  ordinal
+                    (MkLocatedActionOccurrence _ _ NoTransitions _ NoTransitions
+                      same Refl) = Refl
+                  ordinal
+                    (MkLocatedActionOccurrence _ _ (MoreTransitions head tail)
+                      located suffix same decomposition) =
+                        void (r24SingletonPrefixTooLong head tail located suffix
+                          targetTransition decomposition)
               in MkR24CheckedEmptyFinishReplay targetAfter targetChecked
                 targetTransition (MkRelationalReplayEndpoint nextEffects
-                  nextControls targetWellFormed)
+                  nextControls targetWellFormed) rar occurrence ordinal
 
 0 r24PairEndpoint : RelationalReplayEndpoint Nat R23Key Unit Unit R23Value
   r23NameEq r23KeyEq r23AfterPair (swappedFinal r23Diamond)
