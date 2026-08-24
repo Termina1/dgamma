@@ -363,10 +363,15 @@ the evidence meaningful after repair.
 `swappedOccurrenceFold`. They should continue unchanged if that name becomes the
 sealed projection. Their proofs must elaborate at the boundary commit.
 
-`R11GenericRawPlanRepackagerPositive` must be migrated explicitly because it is
-the only external result-constructor client. Preferred treatment: pin a local
-retired open result record and rename its materializer as historical raw
-repackaging. Do not grant it a public escape hatch into the new constructor.
+`R11GenericRawPlanRepackagerPositive` was migrated explicitly because it was
+the only external result-constructor client.  The chosen treatment is a local
+`RetiredOpenAdjacentSwapResult` plus
+`materializeRetiredOpenAdjacentSwapResult`; the live `MkAdjacentSwapResult`
+constructor is no longer referenced.  This most faithfully preserves the
+accepted revision-11 claim—caller-supplied semantic fields can be mechanically
+repackaged—while withdrawing its former ability to enter O17/O19.  The larger
+supplied recursive wrappers were derivative packaging, had no external consumer,
+and were removed rather than being granted a current constructor escape hatch.
 
 Clone/provenance positives and negatives (`R10AdjacentSwapMapCloneNegative`,
 `R10ProvenanceProjectionPositive`, `R11AdjacentPrefixMalicePositive`) must retain
