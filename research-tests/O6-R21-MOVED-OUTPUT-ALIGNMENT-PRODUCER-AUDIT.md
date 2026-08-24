@@ -1,5 +1,13 @@
 # Revision-21 moved-output alignment — exhaustive producer stop audit
 
+> **Post-review resolution:** the supervisor accepted this stop audit and
+> authorized retirement of the zero-consumer helper. Commit `98dbd09` retires
+> it while preserving the historical negative. All remaining genuine producers
+> now pass. The R20 chain subsequently closes alignment through final
+> well-formedness and stops at `replayQuiet`; see
+> `O6-R21-POST-ALIGNMENT-WHOLE-BUNDLE-STOP-AUDIT.md`. The combined boundary is
+> still not issued.
+
 Authorized base: `cp5-thm73-scoping@8a92d8e`.
 
 Test-local candidate proof commit: `d943661`.

@@ -49,10 +49,11 @@ Review trail:
   head, but `O6-R20-WHOLE-BUNDLE-ALIGNMENT-GAP-AUDIT.md` stops whole-bundle
   production at the exact moved-transition `AlignedTransitions` field; and
 - revision 21 proves the producer-carried moved-alignment candidate for all four
-  operational diamonds and the actual full suffix-free fixture, but
-  `O6-R21-MOVED-OUTPUT-ALIGNMENT-PRODUCER-AUDIT.md` stops on the zero-consumer
-  `repeatedIterIdentityDiamond`, whose arbitrary reused transitions may store
-  unrelated dictionaries. Frozen declarations remain unchanged.
+  operational diamonds and the actual full suffix-free fixture, retires the
+  authorized zero-consumer `repeatedIterIdentityDiamond`, and advances the R20
+  whole bundle through alignment, discipline, empty-start facts, and final
+  well-formedness. `O6-R21-POST-ALIGNMENT-WHOLE-BUNDLE-STOP-AUDIT.md` stops at
+  the next field, target quietness. Frozen declarations remain unchanged.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -269,15 +270,21 @@ suffix-free certificate also projects it from its source bundle. O1/O2 have no
 local-diamond producer, and every wrapper inherits one of the four operational
 results.
 
-The exhaustive six-application constructor search finds one blocker:
-`repeatedIterIdentityDiamond` directly reuses arbitrary `left`/`right`
-transitions but accepts no alignment. `R21RepeatedIterProducerAlignmentNegative`
-fails at `storedRightKeyEq and storedLeftKeyEq`; the separate candidate forgery
-fails at `storedRightKeyEq and keyEq`. The helper has zero consumers, while the
-actual full fixture is aligned. The combined moved-field plus opaque 9+2 result
-package and its manifest impact are pre-declared, but no interface gate is active
-until this helper is retired or narrowed under a separate authorization. The
-band remains **21–35 shifts**.
+The exhaustive six-application constructor search initially found one blocker:
+`repeatedIterIdentityDiamond` directly reused arbitrary `left`/`right`
+transitions without alignment. Its historical negative fails at
+`storedRightKeyEq and storedLeftKeyEq`, and the candidate forgery fails at
+`storedRightKeyEq and keyEq`. The supervisor authorized retirement of this
+zero-consumer helper at `98dbd09`; all five remaining applications now pass.
+
+The exact retained O5 alignment then closes whole `replayAligned`. The R20 chain
+also constructs `replayDiscipline`, initial well-formedness/emptiness, and final
+well-formedness. `R21WholeBundleThroughFinalWellFormed` pins that prefix. The
+next field, `replayQuiet`, lacks a constructive transport from the current
+pointwise control endpoint; its negative fails at `source and target`. The
+combined moved-field plus opaque 9+2 package remains pre-declared but is not
+issued while this final-invariant stop is active. The band remains **21–35
+shifts**.
 
 ## Executive estimate
 
@@ -531,9 +538,9 @@ It runs serially:
 
 - five research spikes;
 - 41 tracked positive modules; and
-- 34 tracked expected-failure modules.
+- 35 tracked expected-failure modules.
 
-All 75 tracked Idris test modules occur exactly once. Every negative specification
+All 76 tracked Idris test modules occur exactly once. Every negative specification
 contains its own mandatory diagnostic substring and source declaration name. A
 generic dependent error no longer suffices.
 
@@ -590,7 +597,7 @@ There remain **21 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; moved alignment is proved constructible for all four operational producers and the actual full fixture, but one zero-consumer repeated-Iter helper lacks dictionary alignment. Combined gate prepared but blocked; declarations unchanged.** | **XL, 21–35 shifts for helper migration, combined boundary, whole bundle, recursion, and review.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; all genuine moved-alignment producers pass and the fake helper is retired. Whole bundle reaches final well-formedness but stops at target quietness transport. Combined gate prepared but not issued; declarations unchanged.** | **XL, 21–35 shifts for quiet/final invariants, combined boundary, recursion, and review.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -702,7 +709,7 @@ local O5 body. Current gate evidence is:
   dependencies;
 - `R16ConfluenceTheoremAssemblyPositive` remains only an assembly-through-holes
   check and is not evidence that O6 is producer-suppliable;
-- exact 75-module runner coverage with module-specific negative diagnostics,
+- exact 76-module runner coverage with module-specific negative diagnostics,
   including theorem assembly, root-order and arbitrary-suffix impossibility
   proofs, revision-17 wrong-lookup rejection, genuine revision-18 O17/O19
   producers, and revision-19 sealed base/nonempty probes;
@@ -717,8 +724,7 @@ local O5 body. Current gate evidence is:
 Theorem 73 remains unproved with 21 research holes. Revision-17 endpoint and
 revision-18 external-order work are ratified; O5 remains only locally closed.
 Revision-21 checks the producer-owned moved-alignment candidate and every
-operational constructor with no declaration change, but one zero-consumer
-repeated-Iter fixture helper cannot supply the field from its current premises.
-O6 body work remains stopped pending an authorized helper retirement/narrowing,
-the completed whole bundle fixture, the combined boundary gate, and scoped
-review.
+operational constructor, retires the authorized zero-consumer fixture helper,
+and advances the whole bundle through final well-formedness. O6 body work
+remains stopped at target quietness transport, before the combined boundary
+gate and scoped review.
