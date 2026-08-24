@@ -575,6 +575,54 @@ record LocalRelationalDiamond
     (projectEffectState @{nameEq} swappedFinal)
   0 swappedWellFormed : registryWellFormed @{nameEq} @{keyEq} swappedFinal = True
 
+record LocalAlignedHeadView
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {before, afterState, finalState : SystemState name key value world error}
+  (transition : Transition before afterState)
+  (rest : Transitions afterState finalState) where
+  constructor MkLocalAlignedHeadView
+  alignedHeadAction : Action name key value world error
+  alignedHeadTag : RuleTag
+  0 alignedHeadChecked : checkedApplyAction @{nameEq} @{keyEq}
+    alignedHeadAction before = Just (alignedHeadTag, afterState)
+  0 alignedHeadActionProjection : transitionAction transition =
+    alignedHeadAction
+  0 alignedHeadTagProjection : transitionTag transition = alignedHeadTag
+
+0 localAlignedHeadView :
+  (aligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions transition rest)) ->
+  LocalAlignedHeadView name key world error value nameEq keyEq transition rest
+localAlignedHeadView (AlignedStep action tag checked rest alignedRest) =
+  MkLocalAlignedHeadView action tag checked Refl Refl
+
+0 localTransitionActorActionOwner :
+  (transition : Transition before afterState) ->
+  transitionActor transition = actionOwner (transitionAction transition)
+localTransitionActorActionOwner
+  (Fired nameEq keyEq (OInsert actor parent component) tag checked) = Refl
+localTransitionActorActionOwner
+  (Fired nameEq keyEq (ORetire actor) tag checked) = Refl
+localTransitionActorActionOwner
+  (Fired nameEq keyEq (ORemove actor) tag checked) = Refl
+localTransitionActorActionOwner
+  (Fired nameEq keyEq (LBegin actor) tag checked) = Refl
+localTransitionActorActionOwner
+  (Fired nameEq keyEq (LAdvance actor) tag checked) = Refl
+localTransitionActorActionOwner
+  (Fired nameEq keyEq (LDivert actor) tag checked) = Refl
+localTransitionActorActionOwner
+  (Fired nameEq keyEq (LLeave actor) tag checked) = Refl
+localTransitionActorActionOwner
+  (Fired nameEq keyEq (LUnload actor) tag checked) = Refl
+
+0 localAlignedTail :
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions transition rest) ->
+  AlignedTransitions name key world error value nameEq keyEq rest
+localAlignedTail (AlignedStep action tag checked rest alignedRest) = alignedRest
+
 ||| Source-sensitive evidence for swapping two orchestration rules.  The early
 ||| checked transition proves the moved rule's freshness/applicability at the
 ||| source.  Registration discipline plus the generation scan retain exact
@@ -8263,8 +8311,117 @@ public export
   (0 earlyRightAligned : AlignedTransitions name key world error value nameEq
     keyEq (MoreTransitions (earlyRight safety) NoTransitions)) ->
   LocalRelationalDiamond name key world error value nameEq keyEq left right
-orchestrationOrchestrationDiamondSpike =
-  ?orchestrationOrchestrationDiamondSpike_rhs
+orchestrationOrchestrationDiamondSpike nameEq keyEq protocol left right
+  sourceAligned leftOrchestration rightOrchestration distinct safety
+  earlyRightAligned =
+    case localAlignedHeadView sourceAligned of
+      MkLocalAlignedHeadView leftAction leftTag leftChecked leftActionProjection
+        leftTagProjection =>
+          case localAlignedHeadView (localAlignedTail sourceAligned) of
+            MkLocalAlignedHeadView rightAction rightTag rightChecked
+              rightActionProjection rightTagProjection =>
+                case localAlignedHeadView earlyRightAligned of
+                  MkLocalAlignedHeadView earlyAction earlyTag earlyChecked
+                    earlyActionProjection earlyTagProjection =>
+                      let 0 sameAction : Equal earlyAction rightAction
+                          sameAction = trans (sym earlyActionProjection)
+                            (trans (earlyRightAction safety)
+                              rightActionProjection)
+                          0 sameTag : Equal earlyTag rightTag
+                          sameTag = trans (sym earlyTagProjection)
+                            (trans (earlyRightTag safety) rightTagProjection)
+                          0 leftOuter : PaperOrchestrationStep
+                            (Fired {before = first} {afterState = middle}
+                              nameEq keyEq leftAction leftTag leftChecked)
+                          leftOuter = paperOrchestrationStepTransport
+                            (sym leftActionProjection) (sym leftTagProjection)
+                            leftOrchestration
+                          0 rightOuter : PaperOrchestrationStep
+                            (Fired {before = middle} {afterState = originalFinal}
+                              nameEq keyEq rightAction rightTag rightChecked)
+                          rightOuter = paperOrchestrationStepTransport
+                            (sym rightActionProjection) (sym rightTagProjection)
+                            rightOrchestration
+                          0 earlyCheckedRight : checkedApplyAction @{nameEq}
+                            @{keyEq} rightAction first =
+                            Just (rightTag, earlyRightFinal safety)
+                          earlyCheckedRight = checkedActivationEquationTransport
+                            nameEq keyEq earlyAction rightAction sameAction
+                            earlyTag rightTag sameTag earlyChecked
+                          0 earlyRightOuter : PaperOrchestrationStep
+                            (Fired {before = first}
+                              {afterState = earlyRightFinal safety}
+                              nameEq keyEq rightAction rightTag
+                              earlyCheckedRight)
+                          earlyRightOuter = paperOrchestrationStepTransport Refl
+                            Refl rightOuter
+                          0 movedRightOrchestration : PaperOrchestrationStep
+                            (earlyRight safety)
+                          movedRightOrchestration = paperOrchestrationStepTransport
+                            (earlyRightAction safety) (earlyRightTag safety)
+                            rightOrchestration
+                          0 earlyWellFormed : registryWellFormed @{nameEq}
+                            @{keyEq} (earlyRightFinal safety) = True
+                          earlyWellFormed = checkedTargetWellFormed nameEq keyEq
+                            rightAction first (earlyRightFinal safety) rightTag
+                            earlyCheckedRight
+                          0 distinctOwners : Not
+                            (actionOwner leftAction = actionOwner rightAction)
+                          distinctOwners sameOwner = distinct
+                            (trans (localTransitionActorActionOwner left)
+                              (trans (cong actionOwner leftActionProjection)
+                                (trans sameOwner
+                                  (sym (trans
+                                    (localTransitionActorActionOwner right)
+                                    (cong actionOwner
+                                      rightActionProjection))))))
+                          0 effectOutput : ActivationPairEffectOutput nameEq keyEq
+                            leftAction leftTag (earlyRightFinal safety)
+                            originalFinal
+                          effectOutput = orchestrationPairEffectOutput nameEq
+                            keyEq leftAction rightAction leftTag rightTag
+                            leftChecked rightChecked earlyCheckedRight leftOuter
+                            rightOuter distinctOwners
+                          0 rawMove : RawActivationMove nameEq keyEq leftAction
+                            leftTag (earlyRightFinal safety)
+                          rawMove = orchestrationRawAfterCheckedOrchestration
+                            nameEq keyEq leftAction rightAction leftTag rightTag
+                            leftChecked rightChecked earlyCheckedRight leftOuter
+                            rightOuter distinctOwners
+                          0 endpoint : CheckedActivationEndpoint nameEq keyEq
+                            leftAction leftTag (earlyRightFinal safety)
+                            originalFinal
+                          endpoint = checkActivationEndpoint nameEq keyEq
+                            leftAction leftTag (earlyRightFinal safety)
+                            originalFinal earlyWellFormed effectOutput rawMove
+                          swappedFinal : SystemState name key value world error
+                          swappedFinal = checkedEndpointAfter endpoint
+                          0 movedLeftChecked : checkedApplyAction @{nameEq}
+                            @{keyEq} leftAction (earlyRightFinal safety) =
+                            Just (leftTag, swappedFinal)
+                          movedLeftChecked = checkedEndpointEquation endpoint
+                          0 movedLeftOrchestration : PaperOrchestrationStep
+                            (Fired {before = earlyRightFinal safety}
+                              {afterState = swappedFinal}
+                              nameEq keyEq leftAction leftTag movedLeftChecked)
+                          movedLeftOrchestration = paperOrchestrationStepTransport
+                            Refl Refl leftOuter
+                      in MkLocalRelationalDiamond
+                        (earlyRightFinal safety) swappedFinal
+                        (earlyRight safety)
+                        (Fired nameEq keyEq leftAction leftTag movedLeftChecked)
+                        (earlyRightAction safety) (earlyRightTag safety)
+                        (sym leftActionProjection) (sym leftTagProjection)
+                        (\activation => void
+                          (paperActivationOrchestrationImpossible activation
+                            rightOrchestration))
+                        (\activation => void
+                          (paperActivationOrchestrationImpossible activation
+                            leftOrchestration))
+                        (\_ => movedRightOrchestration)
+                        (\_ => movedLeftOrchestration)
+                        (checkedEndpointEffects endpoint)
+                        (checkedEndpointWellFormed endpoint)
 
 ||| Checked suffix-splice interface consumed by sorting.  It is generic over the
 ||| local diamond case (A/A, A/O, O/A, or O/O) and returns all recursive capital.
