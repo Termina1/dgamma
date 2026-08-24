@@ -8418,6 +8418,149 @@ orchestrationActivationDiamondSpike nameEq keyEq left right earlyRight
                 (checkedEndpointEffects endpoint)
                 (checkedEndpointWellFormed endpoint)
 
+
+0 fiberControlMaybeFromEqual :
+  (left, right : Maybe (Fiber name key value world error)) ->
+  left = right -> FiberControlMaybeRelated left right
+fiberControlMaybeFromEqual left left Refl = fiberControlMaybeReflexive left
+
+0 orchestrationPairControlEquivalent :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, originalFinal, earlyRightFinal, swappedFinal :
+    SystemState name key value world error} ->
+  (leftAction, rightAction : Action name key value world error) ->
+  (leftTag, rightTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first =
+    Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq} rightAction middle =
+    Just (rightTag, originalFinal)) ->
+  (earlyRightChecked : checkedApplyAction @{nameEq} @{keyEq} rightAction first =
+    Just (rightTag, earlyRightFinal)) ->
+  (movedLeftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction
+    earlyRightFinal = Just (leftTag, swappedFinal)) ->
+  (leftPaper : PaperOrchestrationStep
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked)) ->
+  (rightPaper : PaperOrchestrationStep
+    (Fired {before = middle} {afterState = originalFinal}
+      nameEq keyEq rightAction rightTag rightChecked)) ->
+  Not (actionOwner leftAction = actionOwner rightAction) ->
+  ControlEquivalent name key world error value nameEq originalFinal swappedFinal
+orchestrationPairControlEquivalent nameEq keyEq {first} {middle}
+  {originalFinal} {earlyRightFinal} {swappedFinal} leftAction rightAction
+  leftTag rightTag leftChecked rightChecked earlyRightChecked movedLeftChecked
+  leftPaper rightPaper distinctOwners = MkControlEquivalent pointwise
+  where
+  0 reverseDistinct : Not (actionOwner rightAction = actionOwner leftAction)
+  reverseDistinct same = distinctOwners (sym same)
+
+  0 leftOwnerRelated : FiberControlMaybeRelated
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction) (registry originalFinal))
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction) (registry swappedFinal))
+  leftOwnerRelated =
+    let 0 sourceSame : Equal
+          (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction) (registry first))
+          (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction)
+            (registry earlyRightFinal))
+        sourceSame = sym (transitionForeignLookup nameEq keyEq
+          (actionOwner leftAction) rightAction rightTag earlyRightChecked
+          distinctOwners)
+        0 ownerRelated : FiberControlMaybeRelated
+          (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+            {world = world} {error = error} (actionOwner leftAction)
+              (registry middle))
+          (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+            {world = world} {error = error} (actionOwner leftAction)
+              (registry swappedFinal))
+        ownerRelated = orchestrationOwnerOutputsRelated nameEq keyEq leftAction
+          leftTag leftChecked movedLeftChecked leftPaper sourceSame
+        0 originalFrame : Equal
+          (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction)
+            (registry originalFinal))
+          (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction) (registry middle))
+        originalFrame = transitionForeignLookup nameEq keyEq
+          (actionOwner leftAction) rightAction rightTag rightChecked
+          distinctOwners
+    in replace
+      {p = \observed => FiberControlMaybeRelated observed
+        (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction)
+          (registry swappedFinal))}
+      (sym originalFrame) ownerRelated
+
+  0 rightOwnerRelated : FiberControlMaybeRelated
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction) (registry originalFinal))
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction) (registry swappedFinal))
+  rightOwnerRelated =
+    let 0 sourceSame : Equal
+          (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction) (registry middle))
+          (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction) (registry first))
+        sourceSame = transitionForeignLookup nameEq keyEq
+          (actionOwner rightAction) leftAction leftTag leftChecked reverseDistinct
+        0 ownerRelated : FiberControlMaybeRelated
+          (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+            {world = world} {error = error} (actionOwner rightAction)
+              (registry originalFinal))
+          (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+            {world = world} {error = error} (actionOwner rightAction)
+              (registry earlyRightFinal))
+        ownerRelated = orchestrationOwnerOutputsRelated nameEq keyEq rightAction
+          rightTag rightChecked earlyRightChecked rightPaper sourceSame
+        0 swappedFrame : Equal
+          (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction)
+            (registry swappedFinal))
+          (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction)
+            (registry earlyRightFinal))
+        swappedFrame = transitionForeignLookup nameEq keyEq
+          (actionOwner rightAction) leftAction leftTag movedLeftChecked
+          reverseDistinct
+    in replace
+      {p = \observed => FiberControlMaybeRelated
+        (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction)
+          (registry originalFinal)) observed}
+      (sym swappedFrame) ownerRelated
+
+  0 outsideRelated : (selected : name) ->
+    Not (selected = actionOwner leftAction) ->
+    Not (selected = actionOwner rightAction) ->
+    FiberControlMaybeRelated
+      (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} selected (registry originalFinal))
+      (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} selected (registry swappedFinal))
+  outsideRelated selected notLeft notRight =
+    let 0 originalRightFrame = transitionForeignLookup nameEq keyEq selected
+          rightAction rightTag rightChecked notRight
+        0 originalLeftFrame = transitionForeignLookup nameEq keyEq selected
+          leftAction leftTag leftChecked notLeft
+        0 swappedLeftFrame = transitionForeignLookup nameEq keyEq selected
+          leftAction leftTag movedLeftChecked notLeft
+        0 swappedRightFrame = transitionForeignLookup nameEq keyEq selected
+          rightAction rightTag earlyRightChecked notRight
+        0 sameLookup : Equal
+          (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} selected (registry originalFinal))
+          (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} selected (registry swappedFinal))
+        sameLookup = trans originalRightFrame
+          (trans originalLeftFrame
+            (sym (trans swappedLeftFrame swappedRightFrame)))
+    in fiberControlMaybeFromEqual _ _ sameLookup
+
+  0 pointwise : (selected : name) -> FiberControlMaybeRelated
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} selected (registry originalFinal))
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} selected (registry swappedFinal))
+  pointwise selected = case decEq @{nameEq} selected (actionOwner leftAction) of
+    Yes selectedLeft => replace
+      {p = \actor => FiberControlMaybeRelated
+        (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor (registry originalFinal))
+        (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor (registry swappedFinal))}
+      (sym selectedLeft) leftOwnerRelated
+    No notLeft => case decEq @{nameEq} selected (actionOwner rightAction) of
+      Yes selectedRight => replace
+        {p = \actor => FiberControlMaybeRelated
+          (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor (registry originalFinal))
+          (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor (registry swappedFinal))}
+        (sym selectedRight) rightOwnerRelated
+      No notRight => outsideRelated selected notLeft notRight
+
 ||| Missing Lemma-71 case exposed by yielded child registrations: two checked
 ||| orchestration rules, including O-Insert/O-Insert, must transpose under the
 ||| exact source freshness/generation/licensing package above.
