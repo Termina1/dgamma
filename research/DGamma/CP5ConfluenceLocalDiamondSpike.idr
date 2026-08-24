@@ -484,8 +484,8 @@ record RelationalReplayEndpoint
   0 replayedEffects : EffectStateRelated keyEq
     (projectEffectState @{nameEq} sourceFinal)
     (projectEffectState @{nameEq} replayedFinal)
-  0 replayedControls : OrderedRegistryControlsRelated name key world error value
-    (bindings (registry sourceFinal)) (bindings (registry replayedFinal))
+  0 replayedControls : ControlEquivalent name key world error value nameEq
+    sourceFinal replayedFinal
   0 replayedWellFormed :
     registryWellFormed @{nameEq} @{keyEq} replayedFinal = True
 
@@ -573,6 +573,8 @@ record LocalRelationalDiamond
   0 swappedEffects : EffectStateRelated keyEq
     (projectEffectState @{nameEq} originalFinal)
     (projectEffectState @{nameEq} swappedFinal)
+  0 swappedControlEquivalent : ControlEquivalent name key world error value nameEq
+    originalFinal swappedFinal
   0 swappedWellFormed : registryWellFormed @{nameEq} @{keyEq} swappedFinal = True
 
 record LocalAlignedHeadView
