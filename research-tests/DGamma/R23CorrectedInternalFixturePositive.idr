@@ -1866,3 +1866,52 @@ r25TargetQuiet with (replayedAfter r25SecondFinishReplay) proof targetExact
             targetExact (replayedControls r25FinalEndpoint)
       in r25AllTargetEntriesQuiet targetWorld targetEntries targetUnique controls
            targetEntries (\entry, present => present)
+
+0 r25AllTargetEntriesNoFailure :
+  (targetWorld : Unit) ->
+  (targetEntries : List
+    (Binding Nat (FiberAt Nat R23Key R23Value Unit Unit))) ->
+  (targetUnique : UniqueKeys (bindingKeys targetEntries)) ->
+  ControlEquivalent Nat R23Key Unit Unit R23Value r23NameEq r23Final
+    (MkSystemState targetWorld (MkCoeffectContext targetEntries targetUnique)) ->
+  (remaining : List
+    (Binding Nat (FiberAt Nat R23Key R23Value Unit Unit))) ->
+  ((entry : Binding Nat (FiberAt Nat R23Key R23Value Unit Unit)) ->
+    Elem entry remaining -> Elem entry targetEntries) ->
+  allList (notFailedEntry {name = Nat} {key = R23Key} {value = R23Value}
+    {world = Unit} {error = Unit}) remaining = True
+r25AllTargetEntriesNoFailure targetWorld targetEntries targetUnique controls []
+  member = Refl
+r25AllTargetEntriesNoFailure targetWorld targetEntries targetUnique controls
+  (Bind selected targetFiber :: rest) member =
+    let 0 targetFound : lookupFiber @{r23NameEq} selected
+          (MkCoeffectContext targetEntries targetUnique) === Just targetFiber
+        targetFound = r25LookupEntry targetEntries targetUnique selected targetFiber
+          (member (Bind selected targetFiber) Here)
+        0 headSafe : fiberNotFailed targetFiber = True
+        headSafe = targetEntryNotFailedFromSource r23NameEq r23Final
+          (MkSystemState targetWorld
+            (MkCoeffectContext targetEntries targetUnique)) controls
+          r23FinalNoFailure selected targetFiber targetFound
+        0 restSafe : allList
+          (notFailedEntry {name = Nat} {key = R23Key} {value = R23Value}
+            {world = Unit} {error = Unit}) rest = True
+        restSafe = r25AllTargetEntriesNoFailure targetWorld targetEntries
+          targetUnique controls rest (\entry, later => member entry (There later))
+    in rewrite headSafe in rewrite restSafe in Refl
+
+0 r25TargetNoFailure : noFailedFibers
+  (replayedAfter r25SecondFinishReplay) = True
+r25TargetNoFailure with (replayedAfter r25SecondFinishReplay) proof targetExact
+  r25TargetNoFailure | MkSystemState targetWorld
+    (MkCoeffectContext targetEntries targetUnique) =
+      let 0 controls : ControlEquivalent Nat R23Key Unit Unit R23Value
+            r23NameEq r23Final
+            (MkSystemState targetWorld
+              (MkCoeffectContext targetEntries targetUnique))
+          controls = replace
+            {p = \target => ControlEquivalent Nat R23Key Unit Unit R23Value
+              r23NameEq r23Final target}
+            targetExact (replayedControls r25FinalEndpoint)
+      in r25AllTargetEntriesNoFailure targetWorld targetEntries targetUnique
+           controls targetEntries (\entry, present => present)
