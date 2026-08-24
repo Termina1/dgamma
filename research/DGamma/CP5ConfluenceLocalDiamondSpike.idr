@@ -2443,6 +2443,59 @@ localOrchestrationSuccessfulTagsSame nameEq keyEq (LLeave actor) Refl leftTag
 localOrchestrationSuccessfulTagsSame nameEq keyEq (LUnload actor) Refl leftTag
   leftChecked rightBefore rightAfter rightTag rightRaw impossible
 
+0 insertionParentOutsideFromLaterRemove :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, originalFinal : SystemState name key value world error} ->
+  (leftAction : Action name key value world error) -> (leftTag : RuleTag) ->
+  (removed : name) -> (rightTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first =
+    Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq} (ORemove removed)
+    middle = Just (rightTag, originalFinal)) ->
+  (leftPaper : PaperOrchestrationStep
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked)) ->
+  InsertionParentOutside leftAction removed
+insertionParentOutsideFromLaterRemove {name} {key} {world} {error} {value}
+  nameEq keyEq {first = MkSystemState ambient source} {middle} {originalFinal}
+  leftAction leftTag removed rightTag leftChecked rightChecked
+  (PaperInsertStep {actor} {parent = Root} {component} actionSame) =
+    case actionSame of Refl => ()
+insertionParentOutsideFromLaterRemove {name} {key} {world} {error} {value}
+  nameEq keyEq {first = MkSystemState ambient source} {middle} {originalFinal}
+  leftAction leftTag removed rightTag leftChecked rightChecked
+  (PaperInsertStep {actor} {parent = ChildOf parent} {component} actionSame) =
+    case actionSame of
+      Refl =>
+        let 0 leftRaw = checkedActionProjects nameEq keyEq
+              (OInsert actor (ChildOf parent) component)
+              (MkSystemState ambient source) middle leftTag leftChecked
+        in case foreignInsertPlanView nameEq keyEq actor (ChildOf parent)
+          component ambient source leftTag middle leftRaw of
+          leftView@(MkForeignInsertPlanView leftAbsent leftGuards) =>
+            let middleRegistry : Registry name key value world error
+                middleRegistry = insertBinding @{nameEq} actor
+                  (freshFiber component (ChildOf parent)) source leftAbsent
+                0 rightRaw : applyAction @{nameEq} @{keyEq} (ORemove removed)
+                  (MkSystemState ambient middleRegistry) =
+                  Just (rightTag, originalFinal)
+                rightRaw = checkedActionProjects nameEq keyEq
+                  (ORemove removed) middle originalFinal rightTag rightChecked
+            in case removeSuccessView nameEq keyEq removed ambient
+              middleRegistry rightTag originalFinal rightRaw of
+              MkRemoveSuccessView removedFiber removedFound removable
+                removedNoChild =>
+                  \same => noChildLookupParentDistinct nameEq removed actor
+                    (freshFiber component (ChildOf parent)) middleRegistry
+                    removedNoChild (foreignInsertTargetFound leftView)
+                    (cong ChildOf same)
+insertionParentOutsideFromLaterRemove nameEq keyEq leftAction leftTag removed
+  rightTag leftChecked rightChecked (PaperRetireStep actionSame) =
+    case actionSame of Refl => ()
+insertionParentOutsideFromLaterRemove nameEq keyEq leftAction leftTag removed
+  rightTag leftChecked rightChecked (PaperRemoveStep actionSame) =
+    case actionSame of Refl => ()
+
 0 orchestrationRawAfterCheckedRetire :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   {first, middle, earlyRightFinal : SystemState name key value world error} ->
