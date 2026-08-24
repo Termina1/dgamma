@@ -20,7 +20,6 @@ SPIKES=(
 )
 
 POSITIVE=(
-  R16ConfluenceTheoremAssemblyPositive
   R15O5AlignedProducerPositive
   R14O4AlignedProducerPositive
   R13O3AlignedProducerPositive
@@ -49,6 +48,7 @@ POSITIVE=(
   R8AuthenticationProjectionPositive
   R8BridgeAuthenticatedDirectionPositive
   R8FullPipeline
+  R16ConfluenceTheoremAssemblyPositive
   R9CoordinateBoundaryPositive
   R9WholeBlockShiftedAliasContradictionPositive
 )
