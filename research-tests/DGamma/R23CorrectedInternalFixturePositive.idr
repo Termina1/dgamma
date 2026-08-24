@@ -1,9 +1,12 @@
 module DGamma.R23CorrectedInternalFixturePositive
 
+import DGamma.Core
 import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
+import DGamma.Unified
 import DGamma.CP3
+import DGamma.CP3StatementChecks
 import DGamma.CP4Support
 import DGamma.CP4SupportSolution
 import DGamma.CP4SupportQuiescence
@@ -301,3 +304,159 @@ r23Begin1Node = O19LifecycleNode Refl
 
 0 r23Begin2Node : O19BlockNode 2 r23Begin2
 r23Begin2Node = O19LifecycleNode Refl
+
+
+0 r23PairAligned : AlignedTransitions Nat R23Key Unit Unit R23Value r23NameEq
+  r23KeyEq (MoreTransitions r23Begin1 (MoreTransitions r23Begin2 NoTransitions))
+r23PairAligned = AlignedStep (LBegin 1) LBeginTag r23Begin1Checked
+  (MoreTransitions r23Begin2 NoTransitions)
+  (AlignedStep (LBegin 2) LBeginTag r23Begin2Checked NoTransitions AlignedEnd)
+
+0 r23EarlyBegin2Aligned : AlignedTransitions Nat R23Key Unit Unit R23Value
+  r23NameEq r23KeyEq (MoreTransitions r23EarlyBegin2 NoTransitions)
+r23EarlyBegin2Aligned = AlignedStep (LBegin 2) LBeginTag
+  r23EarlyBegin2Checked NoTransitions AlignedEnd
+
+0 twoStepActionTagObservation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {selectedBefore, selectedAfter, first, middle, finalState :
+    SystemState name key value world error} ->
+  (selected : Transition selectedBefore selectedAfter) ->
+  (left : Transition first middle) ->
+  (right : Transition middle finalState) ->
+  OccursIn selected (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  Either
+    (transitionAction selected = transitionAction left,
+     transitionTag selected = transitionTag left)
+    (transitionAction selected = transitionAction right,
+     transitionTag selected = transitionTag right)
+twoStepActionTagObservation left left right OccursHere = Left (Refl, Refl)
+twoStepActionTagObservation right left right (OccursLater OccursHere) =
+  Right (Refl, Refl)
+twoStepActionTagObservation selected left right
+  (OccursLater (OccursLater later)) = void (noOccurrenceInEmpty later)
+
+0 r23ActualPairGeneratorIdentity :
+  {before, afterState : SystemState Nat R23Key R23Value Unit Unit} ->
+  (nameEq : DecEq Nat) -> (keyEq : DecEq R23Key) ->
+  (action : Action Nat R23Key R23Value Unit Unit) -> (tag : RuleTag) ->
+  (equation : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (occurs : OccursIn (Fired {before = before} {afterState = afterState}
+    nameEq keyEq action tag equation)
+    (MoreTransitions r23Begin1 (MoreTransitions r23Begin2 NoTransitions))) ->
+  (state : EffectState Nat R23Key R23Value Unit) ->
+  partialEffectMapFor nameEq keyEq action tag before state = Just state
+r23ActualPairGeneratorIdentity nameEq keyEq action tag equation occurs state =
+  case twoStepActionTagObservation _ r23Begin1 r23Begin2 occurs of
+    Left (actionSame, tagSame) => rewrite actionSame in Refl
+    Right (actionSame, tagSame) => rewrite actionSame in Refl
+
+0 r23NoAdvanceInPair :
+  {before, afterState : SystemState Nat R23Key R23Value Unit Unit} ->
+  (nameEq : DecEq Nat) -> (keyEq : DecEq R23Key) -> (actor : Nat) ->
+  (tag : RuleTag) ->
+  (equation : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+    Just (tag, afterState)) ->
+  (occurs : OccursIn (Fired {before = before} {afterState = afterState}
+    nameEq keyEq (LAdvance actor) tag equation)
+    (MoreTransitions r23Begin1 (MoreTransitions r23Begin2 NoTransitions))) -> Void
+r23NoAdvanceInPair nameEq keyEq actor tag equation occurs =
+  case twoStepActionTagObservation _ r23Begin1 r23Begin2 occurs of
+    Left (actionSame, tagSame) => case actionSame of Refl impossible
+    Right (actionSame, tagSame) => case actionSame of Refl impossible
+
+0 r23PairGeneratorIdentity :
+  {actor : Nat} ->
+  (generator : TraceEffectGenerator Nat R23Key Unit Unit R23Value actor
+    (MoreTransitions r23Begin1 (MoreTransitions r23Begin2 NoTransitions))) ->
+  (state : EffectState Nat R23Key R23Value Unit) ->
+  traceGeneratorMap generator state = Just state
+r23PairGeneratorIdentity
+  (ActualForwardGenerator before afterState nameEq keyEq action tag equation
+    occurs actorMatches) state =
+      r23ActualPairGeneratorIdentity nameEq keyEq action tag equation occurs state
+r23PairGeneratorIdentity
+  (IteratorForwardGenerator
+    (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found
+      remaining accumulator view lifecycle step rest suffix)) state =
+        void (r23NoAdvanceInPair nameEq keyEq actor tag equation occurs)
+r23PairGeneratorIdentity
+  (IteratorYieldedGenerator
+    (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found
+      remaining accumulator view lifecycle step rest suffix) origin) state =
+        void (r23NoAdvanceInPair nameEq keyEq actor tag equation occurs)
+
+0 r23PairTransformationIdentity :
+  {actor : Nat} ->
+  (transformation : TraceEffectTransformation Nat R23Key Unit Unit R23Value actor
+    (MoreTransitions r23Begin1 (MoreTransitions r23Begin2 NoTransitions))) ->
+  (state : EffectState Nat R23Key R23Value Unit) ->
+  runTraceEffectTransformation transformation state = Just state
+r23PairTransformationIdentity TraceIdentity state = Refl
+r23PairTransformationIdentity (TraceGenerator generator) state =
+  r23PairGeneratorIdentity generator state
+r23PairTransformationIdentity (TraceCompose after before) state =
+  rewrite r23PairTransformationIdentity before state in
+    r23PairTransformationIdentity after state
+
+0 r23PairIndependent : TraceIndependent Nat R23Key Unit Unit R23Value r23KeyEq
+  (MoreTransitions r23Begin1 (MoreTransitions r23Begin2 NoTransitions))
+r23PairIndependent = MkTraceIndependent commute stable
+  where
+  0 commute :
+    (left, right : Nat) -> Not (left = right) ->
+    (leftT : TraceEffectTransformation Nat R23Key Unit Unit R23Value left
+      (MoreTransitions r23Begin1 (MoreTransitions r23Begin2 NoTransitions))) ->
+    (rightT : TraceEffectTransformation Nat R23Key Unit Unit R23Value right
+      (MoreTransitions r23Begin1 (MoreTransitions r23Begin2 NoTransitions))) ->
+    PartialCommute (EffectStateEquivalence r23KeyEq)
+      (runTraceEffectTransformation leftT) (runTraceEffectTransformation rightT)
+  commute left right distinct leftT rightT =
+    effectIdentityOnLeftCommutes r23KeyEq (runTraceEffectTransformation leftT)
+      (r23PairTransformationIdentity leftT)
+      (runTraceEffectTransformation rightT)
+
+  0 stable :
+    (left, right : Nat) -> Not (left = right) ->
+    (stage : IteratorStage Nat R23Key Unit Unit R23Value left
+      (MoreTransitions r23Begin1 (MoreTransitions r23Begin2 NoTransitions))) ->
+    (foreign : TraceEffectTransformation Nat R23Key Unit Unit R23Value right
+      (MoreTransitions r23Begin1 (MoreTransitions r23Begin2 NoTransitions))) ->
+    (origin : EffectState Nat R23Key R23Value Unit) ->
+    IteratorOutcomeStableUnder r23KeyEq stage
+      (runTraceEffectTransformation foreign) origin
+  stable left right distinct stage foreign origin =
+    rewrite r23PairTransformationIdentity foreign origin in
+      iteratorOutcomeAgreementReflexive r23KeyEq stage origin
+
+0 r23Diamond : LocalRelationalDiamond Nat R23Key Unit Unit R23Value r23NameEq
+  r23KeyEq r23Begin1 r23Begin2
+r23Diamond = activationActivationDiamondSpike r23NameEq r23KeyEq r23Begin1
+  r23Begin2 r23EarlyBegin2 r23PairAligned r23EarlyBegin2Aligned Refl Refl
+  (PaperBeginStep Refl Refl) (PaperBeginStep Refl Refl)
+  (\same => case same of Refl impossible) r23AfterInsert2WellFormed
+  r23PairIndependent
+
+0 r23PairExternalOrder : SameExternalOrchestration r23NameEq
+  (MoreTransitions r23Begin1 (MoreTransitions r23Begin2 NoTransitions))
+  (MoreTransitions (movedRight r23Diamond)
+    (MoreTransitions (movedLeft r23Diamond) NoTransitions))
+r23PairExternalOrder =
+  let 0 movedRightInternal : RootOrchestrationStep r23NameEq
+          (movedRight r23Diamond) -> Void
+      movedRightInternal = lifecycleCannotBeRoot (movedRight r23Diamond)
+        (trans (cong isLifecycleAction (movedRightAction r23Diamond)) Refl)
+      0 movedLeftInternal : RootOrchestrationStep r23NameEq
+          (movedLeft r23Diamond) -> Void
+      movedLeftInternal = lifecycleCannotBeRoot (movedLeft r23Diamond)
+        (trans (cong isLifecycleAction (movedLeftAction r23Diamond)) Refl)
+  in SkipLeftInternal r23Begin1 (MoreTransitions r23Begin2 NoTransitions)
+       (lifecycleCannotBeRoot r23Begin1 Refl)
+       (SkipLeftInternal r23Begin2 NoTransitions
+         (lifecycleCannotBeRoot r23Begin2 Refl)
+         (SkipRightInternal (movedRight r23Diamond)
+           (MoreTransitions (movedLeft r23Diamond) NoTransitions)
+           movedRightInternal
+           (SkipRightInternal (movedLeft r23Diamond) NoTransitions
+             movedLeftInternal SameExternalOrchestrationEnd)))
