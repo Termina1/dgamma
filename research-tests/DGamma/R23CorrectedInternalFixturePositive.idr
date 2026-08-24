@@ -1915,3 +1915,15 @@ r25TargetNoFailure with (replayedAfter r25SecondFinishReplay) proof targetExact
             targetExact (replayedControls r25FinalEndpoint)
       in r25AllTargetEntriesNoFailure targetWorld targetEntries targetUnique
            controls targetEntries (\entry, present => present)
+
+0 r25TraceTotal :
+  {first, finalState : SystemState Nat R23Key R23Value Unit Unit} ->
+  (trace : Transitions first finalState) ->
+  TraceComponentsTotal r23NameEq r23KeyEq trace
+r25TraceTotal NoTransitions = TraceComponentsTotalEnd
+r25TraceTotal (MoreTransitions transition rest) =
+  TraceComponentsTotalStep transition rest (r23AnyTransitionTotal transition)
+    (r25TraceTotal rest)
+
+0 r25WholeTotal : TraceComponentsTotal r23NameEq r23KeyEq r25WholeTargetTrace
+r25WholeTotal = r25TraceTotal r25WholeTargetTrace
