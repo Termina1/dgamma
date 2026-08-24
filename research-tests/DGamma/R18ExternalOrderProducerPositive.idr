@@ -137,6 +137,41 @@ genuineO19BeginBeginExternalProducer nameEq leftOpening rightOpening diamond =
     (beginTransition rightOpening) diamond (o19BeginNode leftOpening)
     (o19BeginNode rightOpening)
 
+||| Genuine mixed Cartesian node: the left side is an exact stored opening and
+||| the right side is an exact lifecycle-or-yielded-child body occurrence.
+0 genuineO19BeginBodyExternalProducer :
+  (nameEq : DecEq name) ->
+  (leftOpening : BeginStep nameEq keyEq leftActor first middle) ->
+  (right : Transition middle originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    (beginTransition leftOpening) right) ->
+  ActorLifecycleOnly rightActor (MoreTransitions right rightRest) ->
+  SameExternalOrchestration nameEq
+    (MoreTransitions (beginTransition leftOpening)
+      (MoreTransitions right NoTransitions))
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) NoTransitions))
+genuineO19BeginBodyExternalProducer nameEq leftOpening right diamond rightOnly =
+  o19InternalPairExternal nameEq keyEq (beginTransition leftOpening) right
+    diamond (o19BeginNode leftOpening) (o19BodyHeadNode rightOnly)
+
+||| Symmetric genuine mixed Cartesian node.
+0 genuineO19BodyBeginExternalProducer :
+  (nameEq : DecEq name) ->
+  (left : Transition first middle) ->
+  (rightOpening : BeginStep nameEq keyEq rightActor middle originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left (beginTransition rightOpening)) ->
+  ActorLifecycleOnly leftActor (MoreTransitions left leftRest) ->
+  SameExternalOrchestration nameEq
+    (MoreTransitions left
+      (MoreTransitions (beginTransition rightOpening) NoTransitions))
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) NoTransitions))
+genuineO19BodyBeginExternalProducer nameEq left rightOpening diamond leftOnly =
+  o19InternalPairExternal nameEq keyEq left (beginTransition rightOpening)
+    diamond (o19BodyHeadNode leftOnly) (o19BeginNode rightOpening)
+
 ||| Lookup framing derived only from a genuinely checked foreign transition.
 ||| This is the operational fact needed for state-sensitive root retire/remove;
 ||| it is not caller-selected registry equality.
