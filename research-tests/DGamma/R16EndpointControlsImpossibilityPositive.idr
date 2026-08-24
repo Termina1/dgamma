@@ -243,6 +243,23 @@ outerProducerCallsO5 nameEq keyEq protocol left right sourceAligned leftPaper
     in orchestrationOrchestrationDiamondSpike nameEq keyEq protocol left right
       sourceAligned leftPaper rightPaper distinct safety earlyAligned
 
+||| Historical pin of revision 16's retired endpoint. Keeping the ordered field
+||| local preserves the constructive Void evidence without re-exporting it into
+||| the repaired research interface.
+record RetiredOrderedReplayEndpoint
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (sourceFinal, replayedFinal : SystemState name key value world error) where
+  constructor MkRetiredOrderedReplayEndpoint
+  0 retiredReplayedEffects : EffectStateRelated keyEq
+    (projectEffectState @{nameEq} sourceFinal)
+    (projectEffectState @{nameEq} replayedFinal)
+  0 retiredReplayedControls : OrderedRegistryControlsRelated name key world
+    error value (bindings (registry sourceFinal))
+      (bindings (registry replayedFinal))
+  0 retiredReplayedWellFormed :
+    registryWellFormed @{nameEq} @{keyEq} replayedFinal = True
+
 ||| Structural inversion of OrderedRegistryControlsRelated: two lists whose
 ||| distinct actors are transposed at their heads cannot be related.
 0 transposedDistinctHeadsCannotRelate :
@@ -370,14 +387,14 @@ checkedInsertSwapEndpointControlsImpossible nameEq keyEq
   (movedChecked : checkedApplyAction @{nameEq} @{keyEq}
     (OInsert leftActor leftParent leftComponent) earlyFinal =
       Just (movedTag, swappedFinal)) ->
-  RelationalReplayEndpoint name key world error value nameEq keyEq
+  RetiredOrderedReplayEndpoint name key world error value nameEq keyEq
     originalFinal swappedFinal -> Void
 emptySuffixReplayEndpointImpossible nameEq keyEq leftActor rightActor distinct
   leftParent rightParent leftComponent rightComponent leftChecked rightChecked
   earlyChecked movedChecked endpoint =
     checkedInsertSwapEndpointControlsImpossible nameEq keyEq leftActor rightActor
       distinct leftParent rightParent leftComponent rightComponent leftChecked
-      rightChecked earlyChecked movedChecked (replayedControls endpoint)
+      rightChecked earlyChecked movedChecked (retiredReplayedControls endpoint)
 
 ||| A two-node source trace has no located occurrence at ordinal two.
 0 twoNodeTraceHasNoOrdinalTwo :
@@ -453,10 +470,9 @@ pairFoldForcesEmptyReplayedSuffix left right movedRight movedLeft
           (replayActionOrigin (operationalOccurrenceCorrespondence fold)
             atThirdExplicit) sourceAtTwo)
 
-||| Simultaneous closure of the two O6 holes is impossible for the genuine
-||| suffix-free distinct OInsert/OInsert diamond: the occurrence fold forces an
-||| empty replayed suffix, after which swappedEndpoint exposes the retained
-||| impossible ordered-controls relation.
+||| Historical revision-16 statement, now self-contained: adding the retired
+||| ordered endpoint to a genuine suffix-free distinct OInsert/OInsert result is
+||| impossible. The current result itself carries only ControlEquivalent.
 0 suffixFreeInsertSwapResultImpossible :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
@@ -486,11 +502,13 @@ pairFoldForcesEmptyReplayedSuffix left right movedRight movedLeft
       Just (movedTag, swappedFinal diamond)) ->
   (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
     (MoreTransitions left (MoreTransitions right NoTransitions)) NoTransitions
-    left right NoTransitions diamond) -> Void
+    left right NoTransitions diamond) ->
+  (retiredEndpoint : RetiredOrderedReplayEndpoint name key world error value
+    nameEq keyEq originalFinal (replayedFinal result)) -> Void
 suffixFreeInsertSwapResultImpossible nameEq keyEq protocol leftActor rightActor
   distinct leftParent rightParent leftComponent rightComponent leftChecked
   rightChecked {left} {right} leftShape rightShape diamond earlyChecked
-  movedChecked result = case leftShape of
+  movedChecked result retiredEndpoint = case leftShape of
     Refl => case rightShape of
       Refl =>
         let fold = swappedOccurrenceFold result
@@ -503,12 +521,12 @@ suffixFreeInsertSwapResultImpossible nameEq keyEq protocol leftActor rightActor
               (swappedTrace result) fold
             0 finalSame : Equal (replayedFinal result) (swappedFinal diamond)
             finalSame = reviewTraceEmptyFinalSame (replayedSuffix result) empty
-            0 endpointAtSwap : RelationalReplayEndpoint name key world error
+            0 endpointAtSwap : RetiredOrderedReplayEndpoint name key world error
               value nameEq keyEq originalFinal (swappedFinal diamond)
             endpointAtSwap = replace
-              {p = \target => RelationalReplayEndpoint name key world error value
-                nameEq keyEq originalFinal target}
-              finalSame (swappedEndpoint result)
+              {p = \target => RetiredOrderedReplayEndpoint name key world error
+                value nameEq keyEq originalFinal target}
+              finalSame retiredEndpoint
         in emptySuffixReplayEndpointImpossible nameEq keyEq leftActor rightActor
           distinct leftParent rightParent leftComponent rightComponent leftChecked
           rightChecked earlyChecked movedChecked endpointAtSwap
