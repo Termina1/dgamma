@@ -2605,6 +2605,94 @@ localProvisionOverlapFalseSymmetricO5 keyEq
                 leftMember
           in case trans (sym reverseTrue) reverseFalse of Refl impossible
 
+0 localLookupNotElemNothingO5 : (eq : DecEq a) -> (wanted : a) ->
+  (entries : List (Binding a value)) ->
+  Not (Elem wanted (bindingKeys entries)) ->
+  lookupEntries @{eq} wanted entries = Nothing
+localLookupNotElemNothingO5 eq wanted [] absent = Refl
+localLookupNotElemNothingO5 eq wanted (Bind current observed :: rest) absent
+  with (decEq @{eq} wanted current)
+  localLookupNotElemNothingO5 eq current (Bind current observed :: rest) absent |
+    Yes Refl = void (absent Here)
+  localLookupNotElemNothingO5 eq wanted (Bind current observed :: rest) absent |
+    No distinct = localLookupNotElemNothingO5 eq wanted rest
+      (\later => absent (There later))
+
+0 localLookupDeleteEntriesSelfO5 : (eq : DecEq a) -> (removed : a) ->
+  (entries : List (Binding a value)) ->
+  UniqueKeys (bindingKeys entries) ->
+  lookupEntries @{eq} removed (deleteEntries @{eq} removed entries) = Nothing
+localLookupDeleteEntriesSelfO5 eq removed [] UniqueNil = Refl
+localLookupDeleteEntriesSelfO5 eq removed (Bind current observed :: rest)
+  (UniqueCons currentAbsent restUnique)
+  with (decEq @{eq} removed current) proof compared
+  localLookupDeleteEntriesSelfO5 eq current
+    (Bind current observed :: rest) (UniqueCons currentAbsent restUnique) |
+    Yes Refl = localLookupNotElemNothingO5 eq current rest currentAbsent
+  localLookupDeleteEntriesSelfO5 eq removed
+    (Bind current observed :: rest) (UniqueCons currentAbsent restUnique) |
+    No distinct = rewrite compared in
+      localLookupDeleteEntriesSelfO5 eq removed rest restUnique
+
+0 localLookupDeleteSelfO5 :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (removed : name) ->
+  (source : Registry name key value world error) ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} removed
+    (deleteBinding @{nameEq} removed source) = Nothing
+localLookupDeleteSelfO5 nameEq removed
+  (MkCoeffectContext entries unique) =
+    localLookupDeleteEntriesSelfO5 nameEq removed entries unique
+
+0 localParentPresentAfterInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (parent : Parent name) -> (inserted : name) ->
+  (component : Component key value world error) ->
+  (source : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} inserted source = Nothing) ->
+  parentPresent @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} parent source = True ->
+  parentPresent @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} parent
+    (insertBinding @{nameEq} inserted (freshFiber component parent) source
+      absent) = True
+localParentPresentAfterInsert nameEq Root inserted component source absent
+  present = Refl
+localParentPresentAfterInsert nameEq (ChildOf parent) inserted component source
+  absent present with (decEq @{nameEq} parent inserted)
+  localParentPresentAfterInsert nameEq (ChildOf inserted) inserted component
+    source absent present | Yes Refl =
+      rewrite lookupInserted inserted (freshFiber component (ChildOf inserted))
+        source absent in Refl
+  localParentPresentAfterInsert nameEq (ChildOf parent) inserted component source
+    absent present | No distinct =
+      rewrite lookupInsertOther parent inserted distinct
+        (freshFiber component (ChildOf parent)) source absent in present
+
+0 localProvisionsDisjointAfterInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provision : CoeffectSpec key) -> (inserted : name) ->
+  (insertParent : Parent name) ->
+  (component : Component key value world error) ->
+  (source : Registry name key value world error) ->
+  (absent : lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} inserted source = Nothing) ->
+  provisionOverlap @{keyEq} provision (componentProvisions component) = False ->
+  provisionsDisjointFrom @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} provision (bindings source) = True ->
+  provisionsDisjointFrom @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} provision
+    (bindings (insertBinding @{nameEq} inserted
+      (freshFiber component insertParent) source absent)) = True
+localProvisionsDisjointAfterInsert nameEq keyEq provision inserted insertParent
+  component source absent pairDisjoint sourceDisjoint =
+    rewrite insertBindingRuntimeBindings nameEq inserted
+      (freshFiber component insertParent) source absent in
+    rewrite pairDisjoint in sourceDisjoint
+
 0 localParentPresentAfterDelete :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (parent : Parent name) -> (removed : name) ->
