@@ -1737,3 +1737,132 @@ r25WholeDiscipline = RegistrationDisciplineStep r23Insert1 _ (Z ** Refl)
             (replayedTransition r25SecondFinishReplay) NoTransitions
             (r25FinishStepDiscipline r25SecondFinishReplay NoTransitions)
             RegistrationDisciplineEnd)))))
+
+0 r25InitialWellFormed :
+  registryWellFormed @{r23NameEq} @{r23KeyEq} r23Initial = True
+r25InitialWellFormed = r23InitialWellFormed
+
+0 r25InitialEmpty : bindings (registry r23Initial) = []
+r25InitialEmpty = r23InitialEmpty
+
+0 r25FinalWellFormed : registryWellFormed @{r23NameEq} @{r23KeyEq}
+  (replayedAfter r25SecondFinishReplay) = True
+r25FinalWellFormed = replayedWellFormed r25FinalEndpoint
+
+0 r25BindingKeyElem :
+  (entry : Binding Nat (FiberAt Nat R23Key R23Value Unit Unit)) ->
+  (entries : List (Binding Nat (FiberAt Nat R23Key R23Value Unit Unit))) ->
+  Elem entry entries -> Elem (bindingKey entry) (bindingKeys entries)
+r25BindingKeyElem entry (entry :: rest) Here = Here
+r25BindingKeyElem entry (other :: rest) (There later) =
+  There (r25BindingKeyElem entry rest later)
+
+0 r25LookupEntry :
+  (entries : List (Binding Nat (FiberAt Nat R23Key R23Value Unit Unit))) ->
+  UniqueKeys (bindingKeys entries) ->
+  (selected : Nat) -> (fiber : Fiber Nat R23Key R23Value Unit Unit) ->
+  Elem (Bind selected fiber) entries ->
+  lookupEntries @{r23NameEq} selected entries = Just fiber
+r25LookupEntry [] UniqueNil selected fiber present impossible
+r25LookupEntry (Bind current observed :: rest)
+  (UniqueCons headFresh tailUnique) selected fiber present
+  with (decEq @{r23NameEq} selected current)
+  r25LookupEntry (Bind selected observed :: rest)
+    (UniqueCons headFresh tailUnique) selected fiber present | Yes Refl =
+      case present of
+        Here => Refl
+        There later => void (headFresh
+          (r25BindingKeyElem (Bind selected fiber) rest later))
+  r25LookupEntry (Bind current observed :: rest)
+    (UniqueCons headFresh tailUnique) selected fiber present | No distinct =
+      case present of
+        Here => void (distinct Refl)
+        There later => r25LookupEntry rest tailUnique selected fiber later
+
+0 r25SourceFoundIsActive :
+  (selected : Nat) -> (fiber : Fiber Nat R23Key R23Value Unit Unit) ->
+  lookupFiber @{r23NameEq} selected (registry r23Final) = Just fiber ->
+  fiber = r23Active
+r25SourceFoundIsActive selected fiber found
+  with (decEq @{r23NameEq} selected 2)
+  r25SourceFoundIsActive 2 fiber found | Yes Refl = case found of Refl => Refl
+  r25SourceFoundIsActive selected fiber found | No notTwo
+    with (decEq @{r23NameEq} selected 1)
+    r25SourceFoundIsActive 1 fiber found | No notTwo | Yes Refl =
+      case found of Refl => Refl
+    r25SourceFoundIsActive selected fiber found | No notTwo | No notOne =
+      case found of Refl impossible
+
+0 r25ActiveControlQuiet :
+  (targetFiber : Fiber Nat R23Key R23Value Unit Unit) ->
+  FiberControlRelated r23Active targetFiber ->
+  (targetRegistry : Registry Nat R23Key R23Value Unit Unit) ->
+  quietFiber @{r23NameEq} @{r23KeyEq} targetFiber targetRegistry = True
+r25ActiveControlQuiet targetFiber related targetRegistry = case related of
+  FibersControlRelated _ targetParent _ targetRetired _ targetTable _
+    targetLifecycle _ retiredSame lifecycleRelated =>
+      case retiredSame of
+        Refl => case lifecycleRelated of
+          ActiveControls accumulatorRelated viewSame => case viewSame of
+            Refl => Refl
+
+0 r25AllTargetEntriesQuiet :
+  (targetWorld : Unit) ->
+  (targetEntries : List
+    (Binding Nat (FiberAt Nat R23Key R23Value Unit Unit))) ->
+  (targetUnique : UniqueKeys (bindingKeys targetEntries)) ->
+  ControlEquivalent Nat R23Key Unit Unit R23Value r23NameEq r23Final
+    (MkSystemState targetWorld (MkCoeffectContext targetEntries targetUnique)) ->
+  (remaining : List
+    (Binding Nat (FiberAt Nat R23Key R23Value Unit Unit))) ->
+  ((entry : Binding Nat (FiberAt Nat R23Key R23Value Unit Unit)) ->
+    Elem entry remaining -> Elem entry targetEntries) ->
+  allRecursive
+    (quietEntryFor {name = Nat} {key = R23Key} {value = R23Value}
+      {world = Unit} {error = Unit}
+      (MkCoeffectContext targetEntries targetUnique)) remaining = True
+r25AllTargetEntriesQuiet targetWorld targetEntries targetUnique controls []
+  member = Refl
+r25AllTargetEntriesQuiet targetWorld targetEntries targetUnique controls
+  (Bind selected targetFiber :: rest) member =
+    let 0 targetFound : lookupFiber @{r23NameEq} selected
+          (MkCoeffectContext targetEntries targetUnique) === Just targetFiber
+        targetFound = r25LookupEntry targetEntries targetUnique selected targetFiber
+          (member (Bind selected targetFiber) Here)
+    in case controlEquivalentTargetHasSource r23NameEq r23Final
+      (MkSystemState targetWorld (MkCoeffectContext targetEntries targetUnique))
+      controls selected targetFiber targetFound of
+      MkControlledSourceForTarget sourceFiber sourceFound targetControl =>
+        let 0 sourceExact : sourceFiber === r23Active
+            sourceExact = r25SourceFoundIsActive selected sourceFiber sourceFound
+            0 activeControl : FiberControlRelated r23Active targetFiber
+            activeControl = replace
+              {p = \observed => FiberControlRelated observed targetFiber}
+              sourceExact targetControl
+            0 headQuiet : quietFiber @{r23NameEq} @{r23KeyEq} targetFiber
+              (MkCoeffectContext targetEntries targetUnique) = True
+            headQuiet = r25ActiveControlQuiet targetFiber activeControl
+              (MkCoeffectContext targetEntries targetUnique)
+            0 restQuiet : allRecursive
+              (quietEntryFor {name = Nat} {key = R23Key} {value = R23Value}
+                {world = Unit} {error = Unit}
+                (MkCoeffectContext targetEntries targetUnique)) rest = True
+            restQuiet = r25AllTargetEntriesQuiet targetWorld targetEntries
+              targetUnique controls rest (\entry, later => member entry (There later))
+        in rewrite headQuiet in rewrite restQuiet in Refl
+
+0 r25TargetQuiet : quiet @{r23NameEq} @{r23KeyEq}
+  (replayedAfter r25SecondFinishReplay) = True
+r25TargetQuiet with (replayedAfter r25SecondFinishReplay) proof targetExact
+  r25TargetQuiet | MkSystemState targetWorld
+    (MkCoeffectContext targetEntries targetUnique) =
+      let 0 controls : ControlEquivalent Nat R23Key Unit Unit R23Value
+            r23NameEq r23Final
+            (MkSystemState targetWorld
+              (MkCoeffectContext targetEntries targetUnique))
+          controls = replace
+            {p = \target => ControlEquivalent Nat R23Key Unit Unit R23Value
+              r23NameEq r23Final target}
+            targetExact (replayedControls r25FinalEndpoint)
+      in r25AllTargetEntriesQuiet targetWorld targetEntries targetUnique controls
+           targetEntries (\entry, present => present)
