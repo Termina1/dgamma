@@ -1,4 +1,4 @@
-# Theorem 73 (Confluence) — CP5 proof plan, revision 14 O4 alignment repair
+# Theorem 73 (Confluence) — CP5 proof plan, revision 15 O5 alignment repair
 
 Branch: `cp5-thm73-scoping`
 
@@ -13,8 +13,11 @@ Review trail:
 - grind shifts 15–17 supplied that repair and constructively closed O3, leaving
   24 holes;
 - the scoped revision-13 review accepted O3 with two bookkeeping changes, closed
-  at `91118c7` and `3ead7d0`; and
-- revision 14 authorizes only the O4 dictionary-alignment repair audited below.
+  at `91118c7` and `3ead7d0`;
+- revision 14 authorized the O4 dictionary-alignment repair; both O4 diamonds
+  closed constructively and the scoped review accepted them with zero findings at
+  `117f179`; and
+- revision 15 authorizes only the O5 dictionary-alignment repair audited below.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -44,9 +47,25 @@ Revision 14 therefore adds only:
   premise to O/A.
 
 The O4-specific aligned producer and independent-dictionary negative are tracked.
-No O/O declaration, raw dictionary equality, caller-selected map, transition, or
-evaluator output is authorized. Scoped adversarial review of this delta is
-deferred until both O4 holes close.
+Both O4 holes are closed. `review-cp5-r14-scoped.md` accepted the batched repair
+and proofs with zero blockers, majors, or minors at `117f179`; its N1 provenance
+premises remain retained and its N2 coordinate-attestation rule remains binding.
+
+### Revision 15: O5 dictionary alignment
+
+`research-tests/O5-DICTIONARY-COHERENCE-AUDIT.md` independently reproduces the
+same executable `DecEq` mismatch for O/O, traces the exact O6/O17/O19 consumers,
+and records why both source-pair and exact `earlyRight safety` authentication are
+needed. Revision 15 adds only:
+
+- one erased source-pair `AlignedTransitions` premise; and
+- one erased singleton premise indexed by the exact `earlyRight safety`.
+
+The O5-specific genuine producer and independent-dictionary negative are tracked.
+`OrchestrationSwapSafety`, closed O3/O4 interfaces, O6, raw dictionary equalities,
+caller-selected maps, transitions, evaluator outputs, effects, controls, and
+endpoints remain unchanged. Scoped review of revision 15 is deferred until O5
+closure.
 
 ## Executive estimate
 
@@ -357,8 +376,8 @@ There remain **22 obligations**.
 | **O1** | External/replay/endpoint/generation and coherent occurrence algebra. | **Complete after authorized retirement of the false/orphan generic endpoint-transitivity claim; pure composition helpers retained.** | **9 grind shifts actual for Phase A with O2.** |
 | **O2** | Transport both independence fields. | **Complete.** | **M–L.** |
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
-| **O4** | A/O and O/A licensing/applicability. | **Complete: both mixed diamonds are constructive; revision-14 alignment premises remain producer-probed. The batched scoped review is now due.** | **Closed in shifts 18–20; the Phase-B 32–55 band remains honest because O5/O6 are still XL gates.** |
-| **O5** | O/O freshness/generation discipline. | **1 hole.** | **XL gate.** |
+| **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20; the Phase-B 32–55 band remains honest because O5/O6 are still XL gates.** |
+| **O5** | O/O freshness/generation discipline. | **1 hole; revision-15 pair/singleton alignment premises authorized and producer-probed; nine rule-pair proof active.** | **XL gate.** |
 | **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes**; certificate/interface complete. | **XL gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
@@ -446,21 +465,20 @@ inside a proof-phase band.
 
 ## 15. Release boundary
 
-The scoped revision-14/O4 closure review is now due and must verify only tracked
-HEAD artifacts:
+Revision-14/O4 is accepted at `117f179`. The deferred scoped revision-15/O5
+closure review must verify only tracked HEAD artifacts:
 
-- the O4 interface delta is exactly the three authorized erased
-  `AlignedTransitions` premise occurrences;
-- those premises are constructible at the actual O6, O17, O19, and immutable
-  statement-input consumer boundaries;
-- the tracked R14 positive producer probe succeeds and its independent-dictionary
+- the O5 interface delta is exactly the two authorized erased
+  `AlignedTransitions` premise occurrences, with O3/O4 and
+  `OrchestrationSwapSafety` unchanged from their reviewed coordinates;
+- those premises are constructible at the actual O6, O17, O19, and exact checked
+  early-orchestration producer boundaries;
+- the tracked R15 positive producer probe succeeds and its independent-dictionary
   negative fails at the intended dictionary-index mismatch;
-- both closed O4 bodies genuinely consume alignment, checked execution,
-  independence, effects, and ordered controls without escape hatches or
-  surviving-hole dependencies; the review must confirm that their stronger
-  static-component/static-parent framing honestly makes the retained paper
-  licensing/applicability exclusion arguments unnecessary rather than vacuous;
-- exact 57-module runner coverage with module-specific negative diagnostics;
+- the closed O5 body genuinely consumes alignment, checked execution,
+  `OrchestrationSwapSafety`, effects, and ordered controls without escape hatches
+  or surviving-hole dependencies;
+- exact 59-module runner coverage with module-specific negative diagnostics;
 - exact current 6/4/8/3/1 hole split and 148–249 total / 139–240
   implementation-remaining arithmetic;
 - all five spikes and every tracked test serially;
@@ -469,6 +487,6 @@ HEAD artifacts:
 - seeded exact 207/207 build and best-effort unseeded result; and
 - no tracked/staged changes.
 
-Theorem 73 remains unproved by design after constructive O3/O4 closure; the
-other 22 named obligations remain isolated in research modules. The batched
-revision-14 scoped review over both O4 declarations is now due.
+Theorem 73 remains unproved by design after accepted constructive O3/O4 closure;
+the other 22 named obligations remain isolated in research modules. Revision-15
+scoped review is deferred until O5 closes.
