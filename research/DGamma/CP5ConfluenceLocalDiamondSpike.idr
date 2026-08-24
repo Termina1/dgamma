@@ -8724,6 +8724,10 @@ public export
   ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
   (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
     left right) ->
+  (0 pairExternalOrder : SameExternalOrchestration nameEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) NoTransitions))) ->
   AdjacentSwapResult name key world error value protocol nameEq keyEq original
     tracePrefix left right suffix diamond
 adjacentSwapSuffixSpike = ?adjacentSwapSuffixSpike_rhs
