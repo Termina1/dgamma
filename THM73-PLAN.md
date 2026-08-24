@@ -392,15 +392,15 @@ research capital; no CP3 production declaration changed.
 
 ## 10. Obligations and status
 
-There remain **22 obligations**.
+There remain **21 obligations**.
 
 | ID | Obligation | Status | Grade |
 |---|---|---|---|
 | **O1** | External/replay/endpoint/generation and coherent occurrence algebra. | **Complete after authorized retirement of the false/orphan generic endpoint-transitivity claim; pure composition helpers retained.** | **9 grind shifts actual for Phase A with O2.** |
 | **O2** | Transport both independence fields. | **Complete.** | **M–L.** |
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
-| **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20; the Phase-B 32–55 band remains honest because O5/O6 are still XL gates.** |
-| **O5** | O/O freshness/generation discipline. | **1 hole; revision-15 alignment is producer-probed, revision-16 retires the unsuppliable zero-consumer ordered-control field, and all nine raw rule-pair replays are constructive; checked endpoint/effect assembly remains active.** | **XL gate.** |
+| **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
+| **O5** | O/O freshness/generation discipline. | **Complete: revision-15 alignment is producer-probed; revision-16 retires the unsuppliable zero-consumer ordered-control field; all nine raw rule-pair replays, direct orchestration-effect commutation, checked moved-left endpoint, and `LocalRelationalDiamond` are constructive. Combined scoped review due.** | **Closed in shifts 21–23; the Phase-B 32–55 band remains honest because O6 remains an XL gate.** |
 | **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes**; certificate/interface complete. | **XL gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
@@ -422,13 +422,13 @@ There remain **22 obligations**.
 
 ## 11. Exact hole reconciliation
 
-After authorized retirement of the orphan O1 declaration and constructive O3
-and O4 closure, **22 deliberate named research holes remain**:
+After authorized retirement of the orphan O1 declaration and constructive O3,
+O4, and O5 closure, **21 deliberate named research holes remain**:
 
 - canonical sort: 6;
 - cross-trace: 4;
 - deletion chain: 8;
-- local diamonds: 3;
+- local diamonds: 2;
 - renaming/O21: 1.
 
 No hole was moved or renamed. Four O1 relation-law bodies and both O2
@@ -438,12 +438,12 @@ that its generic result was orphaned and its premise was not producer-suppliable
 
 Forward/reverse map:
 
-- O1=0, O2=0, O3=0, O4=0, O5=1, O6=3;
+- O1=0, O2=0, O3=0, O4=0, O5=0, O6=3;
 - O7=1, O8=1, O9=2, O10=1, O11=1, O12=1;
 - O13=0, O14=1, O15=1, O16=1, O17=1, O18=1;
 - O19=2, O20=1, O21=3, O22=0, O23=0.
 
-The values sum to 22.
+The values sum to 21.
 
 ## 12. Post-retirement phase arithmetic: 148–249 total, 139–240 remaining
 
@@ -483,7 +483,7 @@ inside a proof-phase band.
 | 4 | O9 under-specification negatives | Filler-map and direct full-constructor clone tracked; downstream attacks retained. |
 | 5 | Honest origin calibration | Option (a), renamed generic repackager and disclosed supplied capital. |
 | 6 | Repair suite coverage/diagnostics | Missing tests tracked; runner upgraded to exact per-module expectations. |
-| 7 | Reconcile/estimate/path coherence | 22 holes remain after audited O1 retirement and constructive O3/O4 closure; Phase B remains inside its accepted 32–55 band because O5/O6 are still XL; per-derivation authority rationale explicit. |
+| 7 | Reconcile/estimate/path coherence | 21 holes remain after audited O1 retirement and constructive O3/O4/O5 closure; Phase B remains inside its accepted 32–55 band because O6 remains XL; per-derivation authority rationale explicit. |
 | 8 | Release closure | Serial suite, scans, immutable production, seeded 207/207, best-effort unseeded, clean index required. |
 
 ## 15. Release boundary
@@ -509,8 +509,9 @@ revision-15/revision-16 O5 closure review must verify only tracked HEAD artifact
 - a mandatory round-12-style full-coverage probe typechecks a hole-free
   `confluenceTheorem` assembly against the modified research pipeline; absence or
   failure of this probe is an explicit REJECT;
-- exact 59-module runner coverage with module-specific negative diagnostics;
-- exact current 6/4/8/3/1 hole split and 148–249 total / 139–240
+- exact 60-module runner coverage with module-specific negative diagnostics,
+  including `R16ConfluenceTheoremAssemblyPositive` at the immutable theorem type;
+- exact current 6/4/8/2/1 hole split and 148–249 total / 139–240
   implementation-remaining arithmetic;
 - all five spikes and every tracked test serially;
 - exact CP3 blob and empty `src/`/package diff;
@@ -518,6 +519,6 @@ revision-15/revision-16 O5 closure review must verify only tracked HEAD artifact
 - seeded exact 207/207 build and best-effort unseeded result; and
 - no tracked/staged changes.
 
-Theorem 73 remains unproved by design after accepted constructive O3/O4 closure;
-the other 22 named obligations remain isolated in research modules. The combined
-revision-15/revision-16 scoped review is deferred until O5 closes.
+Theorem 73 remains unproved by design after constructive O3/O4/O5 closure; the
+other 21 named obligations remain isolated in research modules. The combined
+revision-15/revision-16 scoped review is now due.

@@ -43,7 +43,7 @@ cross_duplicates = sorted(name for name, count in Counter(all_names).items() if 
 if cross_duplicates:
     raise SystemExit(f'within/cross-category duplicates: {cross_duplicates}')
 
-expected_lengths = (5, 30, 29)
+expected_lengths = (5, 31, 29)
 actual_lengths = (len(spikes), len(positives), len(negatives))
 if actual_lengths != expected_lengths:
     raise SystemExit(f'category lengths {actual_lengths}, expected {expected_lengths}')
@@ -59,8 +59,8 @@ if sorted(tracked) != expected_tests:
         f'tracked test mismatch: missing={sorted(set(expected_tests)-set(tracked))} '
         f'extra={sorted(set(tracked)-set(expected_tests))}'
     )
-if len(tracked) != 59:
-    raise SystemExit(f'expected 59 tracked tests, found {len(tracked)}')
+if len(tracked) != 60:
+    raise SystemExit(f'expected 60 tracked tests, found {len(tracked)}')
 
 tracked_spikes = subprocess.check_output(
     ['git', 'ls-files', 'research/DGamma/CP5Confluence*Spike.idr'], text=True
@@ -111,10 +111,10 @@ manifest = json.loads(manifest_path.read_text())
 if manifest.get('baseline') != '7d467e0556ab8ef62fa0d6c21b049f4346f1245d':
     raise SystemExit('wrong CP5 hole-interface baseline coordinate')
 entries = manifest.get('holes', [])
-if len(entries) != 28:
-    raise SystemExit(f'baseline manifest has {len(entries)} holes, expected 28')
+if len(entries) != 27:
+    raise SystemExit(f'baseline manifest has {len(entries)} holes, expected 27')
 baseline_holes = [entry['hole'] for entry in entries]
-if len(set(baseline_holes)) != 28:
+if len(set(baseline_holes)) != 27:
     raise SystemExit('baseline manifest contains duplicate hole names')
 
 def current_signature(path, function):
@@ -187,7 +187,7 @@ expected = {
     'CP5ConfluenceCanonicalSortSpike.idr': 6,
     'CP5ConfluenceCrossTraceSpike.idr': 4,
     'CP5ConfluenceDeletionChainSpike.idr': 8,
-    'CP5ConfluenceLocalDiamondSpike.idr': 3,
+    'CP5ConfluenceLocalDiamondSpike.idr': 2,
     'CP5ConfluenceRenamingCompositionSpike.idr': 1,
 }
 actual = {}
@@ -197,7 +197,7 @@ for filename, count in expected.items():
     actual[filename] = len(holes)
 if actual != expected:
     raise SystemExit(f'hole split mismatch: {actual}, expected {expected}')
-if sum(actual.values()) != 22:
+if sum(actual.values()) != 21:
     raise SystemExit(f'hole total mismatch: {sum(actual.values())}')
 
 plan = Path('THM73-PLAN.md').read_text()

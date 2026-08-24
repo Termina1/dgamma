@@ -152,12 +152,6 @@
       "signature": "0 adjacentSwapOperationalOccurrenceFoldSpike :\n  (original : Transitions initial originalFinal) ->\n  (prefixTrace : Transitions initial pairFirst) ->\n  (left : Transition pairFirst pairMiddle) ->\n  (right : Transition pairMiddle pairFinal) ->\n  (suffix : Transitions pairFinal originalFinal) ->\n  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq\n    left right) ->\n  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->\n  (swappedTrace : Transitions initial replayedFinal) ->\n  appendTransitions prefixTrace (MoreTransitions left (MoreTransitions right suffix)) =\n    original ->\n  appendTransitions prefixTrace\n    (MoreTransitions (movedRight diamond)\n      (MoreTransitions (movedLeft diamond) replayedSuffix)) = swappedTrace ->\n  AdjacentSwapOperationalOccurrenceFold name key world error value original prefixTrace\n    left right suffix (movedRight diamond) (movedLeft diamond) replayedSuffix\n    swappedTrace"
     },
     {
-      "function": "orchestrationOrchestrationDiamondSpike",
-      "hole": "orchestrationOrchestrationDiamondSpike_rhs",
-      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
-      "signature": "0 orchestrationOrchestrationDiamondSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (protocol : RegistrationProtocol key value world error) ->\n  {first, middle, originalFinal : SystemState name key value world error} ->\n  (left : Transition first middle) ->\n  (right : Transition middle originalFinal) ->\n  (0 sourceAligned : AlignedTransitions name key world error value nameEq keyEq\n    (MoreTransitions left (MoreTransitions right NoTransitions))) ->\n  PaperOrchestrationStep left -> PaperOrchestrationStep right ->\n  Not (transitionActor left = transitionActor right) ->\n  (safety : OrchestrationSwapSafety name key world error value protocol nameEq\n    keyEq left right) ->\n  (0 earlyRightAligned : AlignedTransitions name key world error value nameEq\n    keyEq (MoreTransitions (earlyRight safety) NoTransitions)) ->\n  LocalRelationalDiamond name key world error value nameEq keyEq left right"
-    },
-    {
       "function": "adjacentSwapSuffixSpike",
       "hole": "adjacentSwapSuffixSpike_rhs",
       "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
