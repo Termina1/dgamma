@@ -48,37 +48,11 @@ twoNodePrefixTooLong prefixFirst prefixSecond prefixRest located suffix left rig
   decomposition = appendedTraceCountNonZero prefixRest located suffix
     (twoSuccCountInjective (cong transitionCount decomposition))
 
-||| Two consecutive checked Iter steps for the same actor have identical action
-||| and tag labels.  Reusing the checked source transitions therefore gives a
-||| genuine suffix-free semantic transposition whose runtime trace is unchanged,
-||| while the occurrence certificate still swaps the two adjacent ordinals.
-0 repeatedIterIdentityDiamond :
-  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (actor : name) ->
-  {first, middle, finalState : SystemState name key value world error} ->
-  (left : Transition first middle) ->
-  (right : Transition middle finalState) ->
-  (leftAdvance : transitionAction left = LAdvance actor) ->
-  (leftIter : transitionTag left = LIterTag) ->
-  (rightAdvance : transitionAction right = LAdvance actor) ->
-  (rightIter : transitionTag right = LIterTag) ->
-  registryWellFormed @{nameEq} @{keyEq} finalState = True ->
-  LocalRelationalDiamond name key world error value nameEq keyEq left right
-repeatedIterIdentityDiamond nameEq keyEq actor left right leftAdvance leftIter
-  rightAdvance rightIter finalWellFormed =
-    case relationalReplayEndpointReflexiveSpike nameEq keyEq finalState
-      finalWellFormed of
-      MkRelationalReplayEndpoint effects controls wellFormed =>
-        MkLocalRelationalDiamond middle finalState left right
-          (trans leftAdvance (sym rightAdvance))
-          (trans leftIter (sym rightIter))
-          (trans rightAdvance (sym leftAdvance))
-          (trans rightIter (sym leftIter))
-          (\paper => PaperIterStep leftAdvance leftIter)
-          (\paper => PaperIterStep rightAdvance rightIter)
-          (\paper => void (advanceIsNotOrchestration rightAdvance paper))
-          (\paper => void (advanceIsNotOrchestration leftAdvance paper))
-          effects controls wellFormed
+||| Historical note: the former zero-consumer `repeatedIterIdentityDiamond`
+||| helper was retired in revision 21.  It accepted arbitrary dictionary-storing
+||| transitions without source alignment.  The live full-certificate producer
+||| below retains the genuine identity-pair construction because it consumes an
+||| authenticated `ReplayInvariantBundle` and can project `replayAligned`.
 
 public export
 record TwoAdvanceOccurrenceCertificate

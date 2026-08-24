@@ -7,10 +7,11 @@ import Decidable.Equality
 
 %default total
 
-||| Exact capital audit for the zero-consumer `repeatedIterIdentityDiamond`
-||| fixture producer.  Its legacy premises constrain only action/tag projections
-||| and the final state; they do not align either reused transition's stored
-||| dictionaries with the outer `nameEq`/`keyEq`.
+||| Historical capital pin for the retired zero-consumer
+||| `repeatedIterIdentityDiamond` fixture producer. Its former premises
+||| constrained only action/tag projections and the final state; they did not
+||| align either reused transition's stored dictionaries with the outer
+||| `nameEq`/`keyEq`.
 0 repeatedIterPremisesCannotSupplyMovedAlignment :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (actor : name) ->
