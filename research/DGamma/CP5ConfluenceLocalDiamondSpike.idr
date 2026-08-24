@@ -6891,10 +6891,14 @@ public export
   {first, middle, originalFinal : SystemState name key value world error} ->
   (left : Transition first middle) ->
   (right : Transition middle originalFinal) ->
+  (0 sourceAligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))) ->
   PaperOrchestrationStep left -> PaperOrchestrationStep right ->
   Not (transitionActor left = transitionActor right) ->
-  OrchestrationSwapSafety name key world error value protocol nameEq keyEq
-    left right ->
+  (safety : OrchestrationSwapSafety name key world error value protocol nameEq
+    keyEq left right) ->
+  (0 earlyRightAligned : AlignedTransitions name key world error value nameEq
+    keyEq (MoreTransitions (earlyRight safety) NoTransitions)) ->
   LocalRelationalDiamond name key world error value nameEq keyEq left right
 orchestrationOrchestrationDiamondSpike =
   ?orchestrationOrchestrationDiamondSpike_rhs
