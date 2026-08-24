@@ -1,4 +1,4 @@
-# Theorem 73 (Confluence) — CP5 proof plan, O6 endpoint-controls B1 audit
+# Theorem 73 (Confluence) — CP5 proof plan, O6 external-order audit
 
 Branch: `cp5-thm73-scoping`
 
@@ -23,8 +23,11 @@ Review trail:
   `LocalRelationalDiamond.swappedControls` field; and
 - the combined revision-15/revision-16 review at `ad21f1d` accepts revision 15,
   all nine local O5 pairs, and the mechanical retirement, but returns **REJECT**
-  on B1 because `RelationalReplayEndpoint.replayedControls` transfers the same
-  ordered-list obstruction to O6.
+  on the ordered endpoint obstruction;
+- revision 17 replaces that endpoint field with existing `ControlEquivalent`;
+  scoped review `ea7def9` ratifies the repair and every producer (N1), but returns
+  **REJECT** on a distinct pre-existing obstruction: generic O6 cannot transpose
+  two distinct root-external inputs while preserving `SameExternalOrchestration`.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -115,9 +118,18 @@ change is authorized.
 The historical `R16EndpointControlsImpossibilityPositive` remains tracked. It now
 pins the retired ordered replay endpoint locally and proves that adding that old
 field to the repaired suffix-free result is Void; it no longer claims that the
-new result itself is impossible. Revision-17 probes require all four local
-families, the exact distinct O-Insert/O-Insert endpoint that replaces the old
-Void, and rejection of a wrong actor lookup pair.
+new endpoint itself is impossible. Scoped review `ea7def9` ratifies both field
+edits, all four genuine local-family producers, the wrong-lookup negative, the
+historical pin, full theorem assembly, and downstream O17/O19/O20/O21 control
+sufficiency.
+
+The same review rejects the broader full-result claim. For suffix-free distinct
+root O-Insert/O-Insert, the occurrence fold forces an empty replayed suffix and
+`SameExternalOrchestration` cannot skip either root or match distinct actions.
+`research-tests/O6-EXTERNAL-ORDER-AUDIT.md` traces genuine O17/O19/O20 consumers
+and scopes revision 18: canonical production does not need root/root exchange,
+but each O6 splice must carry exact external-order legality. The reviewer's total
+counterexample is tracked as `R17FullResultImpossibility`.
 
 ## Executive estimate
 
@@ -429,8 +441,8 @@ There remain **21 obligations**.
 | **O2** | Transport both independence fields. | **Complete.** | **M–L.** |
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
-| **O5** | O/O freshness/generation discipline. | **Constructively pipeline-unblocked: revision-15 alignment, all nine checked pairs/effects, and revision-17 pointwise controls are supplied; scoped revision-17 review due.** | **Local body closed in shifts 21–23; endpoint producer repaired in shift 25.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; revision-17 endpoint interface is now producer-suppliable, but no O6 body was changed.** | **XL gate after revision-17 review. The repair implementation landed in shift 1 of the original conservative 5–9-shift estimate.** |
+| **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint repair ratified. Full-result splicing remains blocked at O6 external-order applicability.** | **Local body closed in shifts 21–23; endpoint producer repaired in shift 25; no O5 change proposed for revision 18.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; generic suffix statement is uninhabitable for distinct root/root pairs. Revision-18 narrowing decision required.** | **XL gate plus estimated 4–7-shift external-legality repair before remaining O6 proof work.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -453,7 +465,8 @@ There remain **21 obligations**.
 
 After authorized retirement of the orphan O1 declaration, constructive O3/O4
 closure, and local O5 proof, **21 deliberate named research holes remain**.
-Revision 17 repairs B1 without filling an O6 hole:
+Revision 17 repairs the endpoint-control layer without filling an O6 hole; the
+external-order layer remains blocked:
 
 - canonical sort: 6;
 - cross-trace: 4;
@@ -513,7 +526,7 @@ inside a proof-phase band.
 | 4 | O9 under-specification negatives | Filler-map and direct full-constructor clone tracked; downstream attacks retained. |
 | 5 | Honest origin calibration | Option (a), renamed generic repackager and disclosed supplied capital. |
 | 6 | Repair suite coverage/diagnostics | Missing tests tracked; runner upgraded to exact per-module expectations. |
-| 7 | Reconcile/estimate/path coherence | 21 holes remain after audited O1 retirement and constructive O3/O4/O5 closure; Phase B remains inside its accepted 32–55 band because O6 remains XL; per-derivation authority rationale explicit. |
+| 7 | Reconcile/estimate/path coherence | 21 holes remain after audited O1 retirement, constructive O3/O4, and local O5 closure; Phase B remains inside its accepted 32–55 band because O6 external-order narrowing and proof remain XL; per-derivation authority rationale explicit. |
 | 8 | Release closure | Serial suite, scans, immutable production, seeded 207/207, best-effort unseeded, clean index required. |
 
 ## 15. Release boundary
@@ -525,9 +538,10 @@ local O5 body. Current gate evidence is:
 - the O5 theorem delta is exactly the two authorized erased
   `AlignedTransitions` premise occurrences, with `OrchestrationSwapSafety`
   unchanged from its reviewed coordinate;
-- revision 17 replaces the surviving ordered replay obligation with existing
-  actor-name-indexed `ControlEquivalent` and restores only that consumer-needed
-  relation on the local diamond;
+- revision-17 scoped review `ea7def9` ratifies the minimal
+  `ControlEquivalent` repair and producers, but rejects full O6 closure at the
+  unchanged external-order field;
+- `R17FullResultImpossibility` tracks the current root/root full-result Void proof;
 - `R16EndpointControlsImpossibilityPositive` locally pins and constructively
   rejects the retired ordered endpoint, without rejecting the repaired result;
 - those premises are constructible at the actual O6, O17, O19, and exact checked
@@ -540,9 +554,9 @@ local O5 body. Current gate evidence is:
   dependencies;
 - `R16ConfluenceTheoremAssemblyPositive` remains only an assembly-through-holes
   check and is not evidence that O6 is producer-suppliable;
-- exact 62-module runner coverage with module-specific negative diagnostics,
-  including the theorem assembly, tracked historical B1 proof, and revision-17
-  wrong-lookup rejection;
+- exact 63-module runner coverage with module-specific negative diagnostics,
+  including theorem assembly, both tracked impossibility proofs, and the
+  revision-17 wrong-lookup rejection;
 - exact current 6/4/8/2/1 hole split and 148–249 total / 139–240
   implementation-remaining arithmetic;
 - all five spikes and every tracked test serially;
@@ -551,7 +565,6 @@ local O5 body. Current gate evidence is:
 - seeded exact 207/207 build and best-effort unseeded result; and
 - no tracked/staged changes.
 
-Theorem 73 remains unproved with 21 research holes. Revision-17 producer work is
-constructively complete in shift 25, below the conservative 5–9-shift estimate;
-O6 proof work remains stopped until the repaired boundary passes its own scoped
-adversarial review.
+Theorem 73 remains unproved with 21 research holes. Revision-17 endpoint work is
+ratified, but O5 is only locally closed and full-result splicing is blocked.
+O6 proof work remains stopped pending the revision-18 external-legality decision.
