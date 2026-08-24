@@ -66,3 +66,59 @@ genuineO5AlignmentCapital nameEq keyEq premises earlyAction earlyTag
     , alignedEarlyOrchestrationFromChecked nameEq keyEq earlyAction earlyTag
         earlyChecked
     )
+
+||| Strong revision-15 producer check: construct `OrchestrationSwapSafety` around
+||| the actual outer-dictionary early transition, build the singleton indexed by
+||| exactly `earlyRight safety`, and call O5 without transporting dictionaries.
+0 genuineSafetyIndexedO5Application :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {first, middle, originalFinal, earlyFinal :
+    SystemState name key value world error} ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  (0 sourceAligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  PaperOrchestrationStep left -> PaperOrchestrationStep right ->
+  Not (transitionActor left = transitionActor right) ->
+  (earlyChecked : checkedApplyAction @{nameEq} @{keyEq}
+    (transitionAction right) first =
+      Just (transitionTag right, earlyFinal)) ->
+  (sourceDiscipline : RegistrationDiscipline protocol nameEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  (startOrdinal : Nat) -> (startLive : GenerationEnvironment name) ->
+  (endOrdinal : Nat) -> (endLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq startOrdinal startLive
+    (MoreTransitions left (MoreTransitions right NoTransitions))
+    endOrdinal endLive ->
+  ((leftChild, rightChild : name) ->
+    (leftParent, rightParent : Parent name) ->
+    (leftComponent, rightComponent : Component key value world error) ->
+    transitionAction left = OInsert leftChild leftParent leftComponent ->
+    transitionAction right = OInsert rightChild rightParent rightComponent ->
+    Not (leftChild = rightChild)) ->
+  ((leftChild, leftParent, rightChild, rightParent : name) ->
+    (leftComponent, rightComponent : Component key value world error) ->
+    transitionAction left =
+      OInsert leftChild (ChildOf leftParent) leftComponent ->
+    transitionAction right =
+      OInsert rightChild (ChildOf rightParent) rightComponent ->
+    (Not (leftChild = rightParent), Not (rightChild = leftParent))) ->
+  LocalRelationalDiamond name key world error value nameEq keyEq left right
+genuineSafetyIndexedO5Application nameEq keyEq protocol left right sourceAligned
+  leftPaper rightPaper distinct earlyChecked sourceDiscipline startOrdinal
+  startLive endOrdinal endLive scan insertedDistinct licenses =
+    let early : Transition first earlyFinal
+        early = Fired nameEq keyEq (transitionAction right)
+          (transitionTag right) earlyChecked
+        safety : OrchestrationSwapSafety name key world error value protocol
+          nameEq keyEq left right
+        safety = MkOrchestrationSwapSafety earlyFinal early Refl Refl
+          sourceDiscipline startOrdinal startLive endOrdinal endLive scan
+          insertedDistinct licenses
+        0 earlyAligned : AlignedTransitions name key world error value nameEq
+          keyEq (MoreTransitions (earlyRight safety) NoTransitions)
+        earlyAligned = AlignedStep (transitionAction right) (transitionTag right)
+          earlyChecked NoTransitions AlignedEnd
+    in orchestrationOrchestrationDiamondSpike nameEq keyEq protocol left right
+      sourceAligned leftPaper rightPaper distinct safety earlyAligned
