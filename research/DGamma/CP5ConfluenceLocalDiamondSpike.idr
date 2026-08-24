@@ -11,6 +11,7 @@ import DGamma.CP4DeletionCommuteCore
 import DGamma.CP4DeletionControlCore
 import DGamma.CP4DeletionChildlessInvariant
 import DGamma.CP4DeletionBoundaryDeleted
+import DGamma.CP4DeletionBoundaryRetained
 import DGamma.CP4DeletionSelectedForeignOrchestration
 import DGamma.CP4DeletionFrames
 import DGamma.CP4DeletionRelationalBoundary
@@ -5319,6 +5320,340 @@ orchestrationRawAfterCheckedActivation nameEq keyEq
       {p = \before => RawActivationMove nameEq keyEq orchestrationAction
         orchestrationTag before}
       canonicalSame canonicalRaw
+
+record RetireBindingObservation
+  (nameEq : DecEq name) (actor : name)
+  (source : Registry name key value world error)
+  (afterState : SystemState name key value world error) where
+  constructor MkRetireBindingObservation
+  retiredSourceFiber : Fiber name key value world error
+  0 retiredSourceFound : lookupFiber @{nameEq} actor source =
+    Just retiredSourceFiber
+  0 retiredObservedBindings : bindings (registry afterState) =
+    replaceEntries @{nameEq} actor (retireFiber retiredSourceFiber)
+      (bindings source)
+
+0 retireBindingObservation :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  applyAction @{nameEq} @{keyEq} (ORetire actor)
+    (MkSystemState ambient source) = Just (tag, afterState) ->
+  RetireBindingObservation nameEq actor source afterState
+retireBindingObservation nameEq keyEq actor ambient source tag afterState raw =
+  case retireSuccessView nameEq keyEq actor ambient source tag afterState raw of
+    MkRetireSuccessView oldFiber found =>
+      MkRetireBindingObservation oldFiber found
+        (replaceBindingRuntimeBindings nameEq actor (retireFiber oldFiber) source)
+
+record RemoveBindingObservation
+  (nameEq : DecEq name) (actor : name)
+  (source : Registry name key value world error)
+  (afterState : SystemState name key value world error) where
+  constructor MkRemoveBindingObservation
+  removedSourceFiber : Fiber name key value world error
+  0 removedSourceFound : lookupFiber @{nameEq} actor source =
+    Just removedSourceFiber
+  0 removedObservedBindings : bindings (registry afterState) =
+    deleteEntries @{nameEq} actor (bindings source)
+
+0 removeBindingObservation :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  applyAction @{nameEq} @{keyEq} (ORemove actor)
+    (MkSystemState ambient source) = Just (tag, afterState) ->
+  RemoveBindingObservation nameEq actor source afterState
+removeBindingObservation nameEq keyEq actor ambient source tag afterState raw =
+  case removeSuccessView nameEq keyEq actor ambient source tag afterState raw of
+    MkRemoveSuccessView oldFiber found guard noChild =>
+      MkRemoveBindingObservation oldFiber found
+        (deleteBindingRuntimeBindings nameEq actor source)
+
+0 localReplaceEntriesOtherHead :
+  (nameEq : DecEq name) -> (changed, current : name) ->
+  Not (changed = current) ->
+  (next : Fiber name key value world error) ->
+  (old : Fiber name key value world error) ->
+  (rest : List (Binding name (FiberAt name key value world error))) ->
+  replaceEntries @{nameEq} changed next (Bind current old :: rest) =
+    Bind current old :: replaceEntries @{nameEq} changed next rest
+localReplaceEntriesOtherHead nameEq changed current distinct next old rest
+  with (decEq @{nameEq} changed current)
+  localReplaceEntriesOtherHead nameEq current current distinct next old rest |
+    Yes Refl = void (distinct Refl)
+  localReplaceEntriesOtherHead nameEq changed current distinct next old rest |
+    No different = Refl
+
+0 orderedControlsAfterOrchestrationActivation :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, orchestrationAfter, activationAfter, originalFinal, swappedFinal :
+    SystemState name key value world error} ->
+  (orchestrationAction, activationAction : Action name key value world error) ->
+  (orchestrationTag, activationTag : RuleTag) ->
+  (orchestrationChecked : checkedApplyAction @{nameEq} @{keyEq}
+    orchestrationAction first =
+      Just (orchestrationTag, orchestrationAfter)) ->
+  (activationChecked : checkedApplyAction @{nameEq} @{keyEq}
+    activationAction orchestrationAfter = Just (activationTag, originalFinal)) ->
+  (earlyActivationChecked : checkedApplyAction @{nameEq} @{keyEq}
+    activationAction first = Just (activationTag, activationAfter)) ->
+  (movedOrchestrationChecked : checkedApplyAction @{nameEq} @{keyEq}
+    orchestrationAction activationAfter =
+      Just (orchestrationTag, swappedFinal)) ->
+  (orchestration : PaperOrchestrationStep
+    (Fired {before = first} {afterState = orchestrationAfter}
+      nameEq keyEq orchestrationAction orchestrationTag
+      orchestrationChecked)) ->
+  Not (actionOwner orchestrationAction = actionOwner activationAction) ->
+  (comparison : ActivationReplacementComparison nameEq
+    (actionOwner activationAction) orchestrationAfter originalFinal first
+    activationAfter) ->
+  OrderedRegistryControlsRelated name key world error value
+    (bindings (registry originalFinal)) (bindings (registry swappedFinal))
+orderedControlsAfterOrchestrationActivation {name} {key} {world} {error} {value}
+  nameEq keyEq {first = MkSystemState sourceAmbient sourceRegistry}
+  {orchestrationAfter} {activationAfter} {originalFinal} {swappedFinal}
+  orchestrationAction activationAction orchestrationTag activationTag
+  orchestrationChecked activationChecked earlyActivationChecked
+  movedOrchestrationChecked
+  (PaperInsertStep {actor} {parent} {component} actionSame) distinct comparison =
+    case actionSame of
+      Refl =>
+        let sourceRaw = checkedActionProjects nameEq keyEq
+              (OInsert actor parent component)
+              (MkSystemState sourceAmbient sourceRegistry) orchestrationAfter
+              orchestrationTag orchestrationChecked
+            0 sourceObservation : InsertRuntimeObservation name key world error
+              value actor component parent sourceAmbient sourceRegistry
+              orchestrationTag orchestrationAfter
+            sourceObservation = insertRuntimeObservation nameEq keyEq actor parent
+              component sourceAmbient sourceRegistry orchestrationTag
+              orchestrationAfter sourceRaw
+        in case activationAfter of
+          MkSystemState movedAmbient movedRegistry =>
+            let movedRaw = checkedActionProjects nameEq keyEq
+                  (OInsert actor parent component)
+                  (MkSystemState movedAmbient movedRegistry) swappedFinal
+                  orchestrationTag movedOrchestrationChecked
+                0 movedObservation : InsertRuntimeObservation name key world
+                  error value actor component parent movedAmbient movedRegistry
+                  orchestrationTag swappedFinal
+                movedObservation = insertRuntimeObservation nameEq keyEq actor
+                  parent component movedAmbient movedRegistry orchestrationTag
+                  swappedFinal movedRaw
+                insertedFiber : Fiber name key value world error
+                insertedFiber = freshFiber component parent
+                0 sourceInsertShape : bindings (registry orchestrationAfter) =
+                  Bind actor insertedFiber :: bindings sourceRegistry
+                sourceInsertShape = insertObservedBindings sourceObservation
+                0 movedInsertShape : bindings (registry swappedFinal) =
+                  Bind actor insertedFiber :: bindings movedRegistry
+                movedInsertShape = insertObservedBindings movedObservation
+                reverseDistinct : Not (actionOwner activationAction = actor)
+                reverseDistinct = \same => distinct (sym same)
+                0 replacedSourceShape : replaceEntries @{nameEq}
+                    (actionOwner activationAction)
+                    (sourceReplacementFiber comparison)
+                    (bindings (registry orchestrationAfter)) =
+                  replaceEntries @{nameEq} (actionOwner activationAction)
+                    (sourceReplacementFiber comparison)
+                    (Bind actor insertedFiber :: bindings sourceRegistry)
+                replacedSourceShape = cong (replaceEntries @{nameEq}
+                  (actionOwner activationAction)
+                  (sourceReplacementFiber comparison)) sourceInsertShape
+                0 originalShape : bindings (registry originalFinal) =
+                  Bind actor insertedFiber :: replaceEntries @{nameEq}
+                    (actionOwner activationAction)
+                    (sourceReplacementFiber comparison)
+                    (bindings sourceRegistry)
+                originalShape = trans (sourceReplacementBindings comparison)
+                  (trans replacedSourceShape
+                    (localReplaceEntriesOtherHead nameEq
+                      (actionOwner activationAction) actor reverseDistinct
+                      (sourceReplacementFiber comparison) insertedFiber
+                      (bindings sourceRegistry)))
+                0 swappedShape : bindings (registry swappedFinal) =
+                  Bind actor insertedFiber :: replaceEntries @{nameEq}
+                    (actionOwner activationAction)
+                    (movedReplacementFiber comparison)
+                    (bindings sourceRegistry)
+                swappedShape = trans movedInsertShape
+                  (cong (Bind actor insertedFiber ::)
+                    (movedReplacementBindings comparison))
+                0 canonical : OrderedRegistryControlsRelated name key world error
+                  value
+                  (Bind actor insertedFiber :: replaceEntries @{nameEq}
+                    (actionOwner activationAction)
+                    (sourceReplacementFiber comparison)
+                    (bindings sourceRegistry))
+                  (Bind actor insertedFiber :: replaceEntries @{nameEq}
+                    (actionOwner activationAction)
+                    (movedReplacementFiber comparison)
+                    (bindings sourceRegistry))
+                canonical = OrderedControlsCons actor
+                  (fiberControlReflexive insertedFiber)
+                  (orderedControlsReplace nameEq (actionOwner activationAction)
+                    (sourceReplacementFiber comparison)
+                    (movedReplacementFiber comparison)
+                    (replacementFibersRelated comparison)
+                    (bindings sourceRegistry) (bindings sourceRegistry)
+                    (orderedControlsReflexive (bindings sourceRegistry)))
+            in orderedControlsTransport (sym originalShape) (sym swappedShape)
+              canonical
+orderedControlsAfterOrchestrationActivation {name} {key} {world} {error} {value}
+  nameEq keyEq {first = MkSystemState sourceAmbient sourceRegistry}
+  {orchestrationAfter} {activationAfter} {originalFinal} {swappedFinal}
+  orchestrationAction activationAction orchestrationTag activationTag
+  orchestrationChecked activationChecked earlyActivationChecked
+  movedOrchestrationChecked (PaperRetireStep {actor} actionSame) distinct
+  comparison = case actionSame of
+    Refl =>
+      let sourceRaw = checkedActionProjects nameEq keyEq (ORetire actor)
+            (MkSystemState sourceAmbient sourceRegistry) orchestrationAfter
+            orchestrationTag orchestrationChecked
+          0 sourceObservation : RetireBindingObservation nameEq actor
+            sourceRegistry orchestrationAfter
+          sourceObservation = retireBindingObservation nameEq keyEq actor
+            sourceAmbient sourceRegistry orchestrationTag orchestrationAfter
+            sourceRaw
+      in case activationAfter of
+        MkSystemState movedAmbient movedRegistry =>
+          let movedRaw = checkedActionProjects nameEq keyEq (ORetire actor)
+                (MkSystemState movedAmbient movedRegistry) swappedFinal
+                orchestrationTag movedOrchestrationChecked
+              0 movedObservation : RetireBindingObservation nameEq actor
+                movedRegistry swappedFinal
+              movedObservation = retireBindingObservation nameEq keyEq actor
+                movedAmbient movedRegistry orchestrationTag swappedFinal movedRaw
+              0 lookupSame : (lookupFiber @{nameEq} {name = name} {key = key}
+                    {value = value} {world = world} {error = error} actor
+                    movedRegistry = lookupFiber @{nameEq} {name = name}
+                    {key = key} {value = value} {world = world} {error = error}
+                    actor sourceRegistry)
+              lookupSame = transitionForeignLookup nameEq keyEq actor
+                activationAction activationTag earlyActivationChecked distinct
+              0 fiberSame : retiredSourceFiber movedObservation =
+                retiredSourceFiber sourceObservation
+              fiberSame = justInjective
+                (trans (sym (retiredSourceFound movedObservation))
+                  (trans lookupSame (retiredSourceFound sourceObservation)))
+          in let sourceRetired : Fiber name key value world error
+                 sourceRetired = retireFiber
+                   (retiredSourceFiber sourceObservation)
+                 movedRetired : Fiber name key value world error
+                 movedRetired = retireFiber
+                   (retiredSourceFiber movedObservation)
+                 0 retiredSame : movedRetired = sourceRetired
+                 retiredSame = cong retireFiber fiberSame
+                 0 retiredRelated : FiberControlRelated sourceRetired movedRetired
+                 retiredRelated = replace
+                   {p = \candidate => FiberControlRelated sourceRetired candidate}
+                   (sym retiredSame) (fiberControlReflexive sourceRetired)
+                 0 sourceShape : (bindings (registry orchestrationAfter) =
+                   replaceEntries @{nameEq} actor sourceRetired
+                     (bindings sourceRegistry))
+                 sourceShape = retiredObservedBindings sourceObservation
+                 0 movedShape : (bindings (registry swappedFinal) =
+                   replaceEntries @{nameEq} actor movedRetired
+                     (bindings movedRegistry))
+                 movedShape = retiredObservedBindings movedObservation
+                 0 originalShape : bindings (registry originalFinal) =
+                   replaceEntries @{nameEq} (actionOwner activationAction)
+                     (sourceReplacementFiber comparison)
+                     (replaceEntries @{nameEq} actor sourceRetired
+                       (bindings sourceRegistry))
+                 originalShape = trans (sourceReplacementBindings comparison)
+                   (cong (replaceEntries @{nameEq}
+                     (actionOwner activationAction)
+                     (sourceReplacementFiber comparison)) sourceShape)
+                 0 swappedShape : bindings (registry swappedFinal) =
+                   replaceEntries @{nameEq} actor movedRetired
+                     (replaceEntries @{nameEq} (actionOwner activationAction)
+                       (movedReplacementFiber comparison)
+                       (bindings sourceRegistry))
+                 swappedShape = trans movedShape
+                   (cong (replaceEntries @{nameEq} actor movedRetired)
+                     (movedReplacementBindings comparison))
+             in orderedControlsAfterDistinctReplacements nameEq actor
+               (actionOwner activationAction) distinct (bindings sourceRegistry)
+               (bindings (registry originalFinal))
+               (bindings (registry swappedFinal)) sourceRetired movedRetired
+               (sourceReplacementFiber comparison)
+               (movedReplacementFiber comparison) retiredRelated
+               (replacementFibersRelated comparison) originalShape swappedShape
+
+orderedControlsAfterOrchestrationActivation {name} {key} {world} {error} {value}
+  nameEq keyEq {first = MkSystemState sourceAmbient sourceRegistry}
+  {orchestrationAfter} {activationAfter} {originalFinal} {swappedFinal}
+  orchestrationAction activationAction orchestrationTag activationTag
+  orchestrationChecked activationChecked earlyActivationChecked
+  movedOrchestrationChecked (PaperRemoveStep {actor} actionSame) distinct
+  comparison = case actionSame of
+    Refl =>
+      let sourceRaw = checkedActionProjects nameEq keyEq (ORemove actor)
+            (MkSystemState sourceAmbient sourceRegistry) orchestrationAfter
+            orchestrationTag orchestrationChecked
+          0 sourceObservation : RemoveBindingObservation nameEq actor
+            sourceRegistry orchestrationAfter
+          sourceObservation = removeBindingObservation nameEq keyEq actor
+            sourceAmbient sourceRegistry orchestrationTag orchestrationAfter
+            sourceRaw
+      in case activationAfter of
+        MkSystemState movedAmbient movedRegistry =>
+          let movedRaw = checkedActionProjects nameEq keyEq (ORemove actor)
+                (MkSystemState movedAmbient movedRegistry) swappedFinal
+                orchestrationTag movedOrchestrationChecked
+              0 movedObservation : RemoveBindingObservation nameEq actor
+                movedRegistry swappedFinal
+              movedObservation = removeBindingObservation nameEq keyEq actor
+                movedAmbient movedRegistry orchestrationTag swappedFinal movedRaw
+              0 sourceShape : (bindings (registry orchestrationAfter) =
+                deleteEntries @{nameEq} actor (bindings sourceRegistry))
+              sourceShape = removedObservedBindings sourceObservation
+              0 movedShape : (bindings (registry swappedFinal) =
+                deleteEntries @{nameEq} actor (bindings movedRegistry))
+              movedShape = removedObservedBindings movedObservation
+              reverseDistinct : Not (actionOwner activationAction = actor)
+              reverseDistinct = \same => distinct (sym same)
+              0 originalShape : bindings (registry originalFinal) =
+                replaceEntries @{nameEq} (actionOwner activationAction)
+                  (sourceReplacementFiber comparison)
+                  (deleteEntries @{nameEq} actor (bindings sourceRegistry))
+              originalShape = trans (sourceReplacementBindings comparison)
+                (cong (replaceEntries @{nameEq} (actionOwner activationAction)
+                  (sourceReplacementFiber comparison)) sourceShape)
+              0 swappedShape : bindings (registry swappedFinal) =
+                replaceEntries @{nameEq} (actionOwner activationAction)
+                  (movedReplacementFiber comparison)
+                  (deleteEntries @{nameEq} actor (bindings sourceRegistry))
+              swappedShape = trans movedShape
+                (trans
+                  (cong (deleteEntries @{nameEq} actor)
+                    (movedReplacementBindings comparison))
+                  (deleteEntriesAfterDistinctReplace nameEq
+                    (actionOwner activationAction) actor reverseDistinct
+                    (movedReplacementFiber comparison)
+                    (bindings sourceRegistry)))
+              0 canonical : OrderedRegistryControlsRelated name key world error
+                value
+                (replaceEntries @{nameEq} (actionOwner activationAction)
+                  (sourceReplacementFiber comparison)
+                  (deleteEntries @{nameEq} actor (bindings sourceRegistry)))
+                (replaceEntries @{nameEq} (actionOwner activationAction)
+                  (movedReplacementFiber comparison)
+                  (deleteEntries @{nameEq} actor (bindings sourceRegistry)))
+              canonical = orderedControlsReplace nameEq
+                (actionOwner activationAction)
+                (sourceReplacementFiber comparison)
+                (movedReplacementFiber comparison)
+                (replacementFibersRelated comparison)
+                (deleteEntries @{nameEq} actor (bindings sourceRegistry))
+                (deleteEntries @{nameEq} actor (bindings sourceRegistry))
+                (orderedControlsReflexive
+                  (deleteEntries @{nameEq} actor (bindings sourceRegistry)))
+          in orderedControlsTransport (sym originalShape) (sym swappedShape)
+            canonical
 
 record ActivationActivationCheckedCore
   (nameEq : DecEq name) (keyEq : DecEq key)
