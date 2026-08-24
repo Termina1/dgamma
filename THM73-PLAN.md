@@ -350,14 +350,14 @@ research capital; no CP3 production declaration changed.
 
 ## 10. Obligations and status
 
-There remain **23 obligations**.
+There remain **22 obligations**.
 
 | ID | Obligation | Status | Grade |
 |---|---|---|---|
 | **O1** | External/replay/endpoint/generation and coherent occurrence algebra. | **Complete after authorized retirement of the false/orphan generic endpoint-transitivity claim; pure composition helpers retained.** | **9 grind shifts actual for Phase A with O2.** |
 | **O2** | Transport both independence fields. | **Complete.** | **M–L.** |
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
-| **O4** | A/O and O/A licensing/applicability. | **1 hole: O/A is constructively proved; A/O remains. Revision-14 alignment premises are producer-probed.** | **XL gate.** |
+| **O4** | A/O and O/A licensing/applicability. | **Complete: both mixed diamonds are constructive; revision-14 alignment premises remain producer-probed. The batched scoped review is now due.** | **Closed in shifts 18–20; the Phase-B 32–55 band remains honest because O5/O6 are still XL gates.** |
 | **O5** | O/O freshness/generation discipline. | **1 hole.** | **XL gate.** |
 | **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes**; certificate/interface complete. | **XL gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
@@ -380,14 +380,13 @@ There remain **23 obligations**.
 
 ## 11. Exact hole reconciliation
 
-After authorized retirement of the orphan O1 declaration, constructive O3
-closure, and the proved O/A half of O4, **23 deliberate named research holes
-remain**:
+After authorized retirement of the orphan O1 declaration and constructive O3
+and O4 closure, **22 deliberate named research holes remain**:
 
 - canonical sort: 6;
 - cross-trace: 4;
 - deletion chain: 8;
-- local diamonds: 4;
+- local diamonds: 3;
 - renaming/O21: 1.
 
 No hole was moved or renamed. Four O1 relation-law bodies and both O2
@@ -397,12 +396,12 @@ that its generic result was orphaned and its premise was not producer-suppliable
 
 Forward/reverse map:
 
-- O1=0, O2=0, O3=0, O4=1, O5=1, O6=3;
+- O1=0, O2=0, O3=0, O4=0, O5=1, O6=3;
 - O7=1, O8=1, O9=2, O10=1, O11=1, O12=1;
 - O13=0, O14=1, O15=1, O16=1, O17=1, O18=1;
 - O19=2, O20=1, O21=3, O22=0, O23=0.
 
-The values sum to 23.
+The values sum to 22.
 
 ## 12. Post-retirement phase arithmetic: 148–249 total, 139–240 remaining
 
@@ -442,13 +441,13 @@ inside a proof-phase band.
 | 4 | O9 under-specification negatives | Filler-map and direct full-constructor clone tracked; downstream attacks retained. |
 | 5 | Honest origin calibration | Option (a), renamed generic repackager and disclosed supplied capital. |
 | 6 | Repair suite coverage/diagnostics | Missing tests tracked; runner upgraded to exact per-module expectations. |
-| 7 | Reconcile/estimate/path coherence | 23 holes remain after audited O1 retirement, O3 closure, and O/A closure; phase bands remain planning bounds; per-derivation authority rationale explicit. |
+| 7 | Reconcile/estimate/path coherence | 22 holes remain after audited O1 retirement and constructive O3/O4 closure; Phase B remains inside its accepted 32–55 band because O5/O6 are still XL; per-derivation authority rationale explicit. |
 | 8 | Release closure | Serial suite, scans, immutable production, seeded 207/207, best-effort unseeded, clean index required. |
 
 ## 15. Release boundary
 
-The deferred scoped revision-14/O4 closure review must verify only tracked HEAD
-artifacts:
+The scoped revision-14/O4 closure review is now due and must verify only tracked
+HEAD artifacts:
 
 - the O4 interface delta is exactly the three authorized erased
   `AlignedTransitions` premise occurrences;
@@ -457,10 +456,12 @@ artifacts:
 - the tracked R14 positive producer probe succeeds and its independent-dictionary
   negative fails at the intended dictionary-index mismatch;
 - both closed O4 bodies genuinely consume alignment, checked execution,
-  independence, licensing/applicability exclusions, effects, and ordered controls
-  without escape hatches or surviving-hole dependencies;
+  independence, effects, and ordered controls without escape hatches or
+  surviving-hole dependencies; the review must confirm that their stronger
+  static-component/static-parent framing honestly makes the retained paper
+  licensing/applicability exclusion arguments unnecessary rather than vacuous;
 - exact 57-module runner coverage with module-specific negative diagnostics;
-- exact current 6/4/8/4/1 hole split and 148–249 total / 139–240
+- exact current 6/4/8/3/1 hole split and 148–249 total / 139–240
   implementation-remaining arithmetic;
 - all five spikes and every tracked test serially;
 - exact CP3 blob and empty `src/`/package diff;
@@ -468,5 +469,6 @@ artifacts:
 - seeded exact 207/207 build and best-effort unseeded result; and
 - no tracked/staged changes.
 
-Theorem 73 remains unproved by design after constructive O3 and O/A closure;
-the other 23 named obligations remain isolated in research modules.
+Theorem 73 remains unproved by design after constructive O3/O4 closure; the
+other 22 named obligations remain isolated in research modules. The batched
+revision-14 scoped review over both O4 declarations is now due.
