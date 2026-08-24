@@ -40,40 +40,84 @@ zeroTwoSuffixRelationHasSourceTwo AdjacentMovedRightOrdinal impossible
 zeroTwoSuffixRelationHasSourceTwo AdjacentMovedLeftOrdinal impossible
 zeroTwoSuffixRelationHasSourceTwo (AdjacentSuffixOrdinal after) = Refl
 
-||| The current occurrence-fold signature accepts an arbitrary replayed suffix
-||| with no correspondence to the source suffix. Instantiating an empty source
-||| suffix and a one-step replayed suffix makes its own ordinal contract map the
-||| target ordinal two to a source ordinal two, which cannot exist.
+||| Self-contained historical copy of the unrestricted revision-18 output
+||| record.  It deliberately does not mention the live research fold.  When the
+||| false fold declaration is retired, this record continues to pin the exact
+||| contract that accepted an arbitrary replayed suffix yet promised complete
+||| source occurrence authenticity.
+public export
+record RetiredUnrestrictedAdjacentSwapOperationalOccurrenceFold
+  (name, key, world, error : Type) (value : key -> Type)
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal, swappedMiddle,
+    swappedFinal, replayedFinal : SystemState name key value world error}
+  (original : Transitions initial originalFinal)
+  (prefixTrace : Transitions initial pairFirst)
+  (left : Transition pairFirst pairMiddle)
+  (right : Transition pairMiddle pairFinal)
+  (suffix : Transitions pairFinal originalFinal)
+  (movedRight : Transition pairFirst swappedMiddle)
+  (movedLeft : Transition swappedMiddle swappedFinal)
+  (replayedSuffix : Transitions swappedFinal replayedFinal)
+  (swappedTrace : Transitions initial replayedFinal) where
+  constructor MkRetiredUnrestrictedAdjacentSwapOperationalOccurrenceFold
+  retiredOriginalDecomposition : appendTransitions prefixTrace
+    (MoreTransitions left (MoreTransitions right suffix)) = original
+  retiredSwappedDecomposition : appendTransitions prefixTrace
+    (MoreTransitions movedRight (MoreTransitions movedLeft replayedSuffix)) =
+      swappedTrace
+  retiredOccurrenceCorrespondence : ActionRegistrationReplayCorrespondence
+    name key world error value original swappedTrace
+  0 retiredOrdinalRelation :
+    {action : Action name key value world error} ->
+    (occurrence : LocatedActionOccurrence action swappedTrace) ->
+    AdjacentSwapOrdinalRelation (transitionCount prefixTrace)
+      (locatedActionOrdinal occurrence)
+      (locatedActionOrdinal
+        (replayActionOrigin retiredOccurrenceCorrespondence occurrence))
+
+||| The retired unrestricted producer accepts an arbitrary replayed suffix with
+||| no correspondence to the source suffix. Instantiating an empty source suffix
+||| and a one-step replayed suffix makes its own ordinal contract map target
+||| ordinal two to source ordinal two, which cannot exist.
 |||
-||| Therefore a total body for the current declaration would prove every
-||| transition out of `swappedFinal diamond` impossible. A genuine suffix replay
-||| needs source-authenticated occurrence correspondence as an input or must be
-||| sealed inside a producer that constructs the replayed suffix simultaneously.
+||| This theorem quantifies the retired producer explicitly instead of invoking
+||| the live hole.  It therefore remains a meaningful historical impossibility
+||| pin after the production-facing fold is narrowed or removed.
 0 arbitraryNonemptyReplayedSuffixMakesFoldVoid :
-  (original : Transitions first originalFinal) ->
+  (original : Transitions first pairFinal) ->
   (left : Transition first middle) ->
   (right : Transition middle pairFinal) ->
   (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
     left right) ->
   (extra : Transition (swappedFinal diamond) replayedFinal) ->
   original = MoreTransitions left (MoreTransitions right NoTransitions) ->
+  (0 retiredFold :
+    (0 anyReplayedFinal : SystemState name key value world error) ->
+    (replayedSuffix : Transitions (swappedFinal diamond) anyReplayedFinal) ->
+    (swappedTrace : Transitions first anyReplayedFinal) ->
+    appendTransitions NoTransitions
+      (MoreTransitions left (MoreTransitions right NoTransitions)) = original ->
+    appendTransitions NoTransitions
+      (MoreTransitions (movedRight diamond)
+        (MoreTransitions (movedLeft diamond) replayedSuffix)) = swappedTrace ->
+    RetiredUnrestrictedAdjacentSwapOperationalOccurrenceFold name key world error
+      value original NoTransitions left right NoTransitions
+      (movedRight diamond) (movedLeft diamond) replayedSuffix swappedTrace) ->
   Void
 arbitraryNonemptyReplayedSuffixMakesFoldVoid original left right diamond extra
-  decomposition = case decomposition of
+  decomposition retiredFold = case decomposition of
   Refl =>
     let replayedSuffix : Transitions (swappedFinal diamond) replayedFinal
         replayedSuffix = MoreTransitions extra NoTransitions
         swappedTrace : Transitions first replayedFinal
         swappedTrace = MoreTransitions (movedRight diamond)
           (MoreTransitions (movedLeft diamond) replayedSuffix)
-        0 fold : AdjacentSwapOperationalOccurrenceFold name key world error value
+        0 fold : RetiredUnrestrictedAdjacentSwapOperationalOccurrenceFold
+          name key world error value
           (MoreTransitions left (MoreTransitions right NoTransitions))
           NoTransitions left right NoTransitions (movedRight diamond)
           (movedLeft diamond) replayedSuffix swappedTrace
-        fold = adjacentSwapOperationalOccurrenceFoldSpike
-          (MoreTransitions left (MoreTransitions right NoTransitions))
-          NoTransitions left right NoTransitions diamond replayedSuffix
-          swappedTrace Refl Refl
+        fold = retiredFold replayedFinal replayedSuffix swappedTrace Refl Refl
         0 extraOccurrence : LocatedActionOccurrence (transitionAction extra)
           swappedTrace
         extraOccurrence = MkLocatedActionOccurrence _ _
@@ -82,13 +126,13 @@ arbitraryNonemptyReplayedSuffixMakesFoldVoid original left right diamond extra
           extra NoTransitions Refl Refl
         0 relation : AdjacentSwapOrdinalRelation Z (S (S Z))
           (locatedActionOrdinal
-            (replayActionOrigin (operationalOccurrenceCorrespondence fold)
+            (replayActionOrigin (retiredOccurrenceCorrespondence fold)
               extraOccurrence))
-        relation = operationalOrdinalRelation fold extraOccurrence
+        relation = retiredOrdinalRelation fold extraOccurrence
         0 sourceAtTwo : locatedActionOrdinal
-          (replayActionOrigin (operationalOccurrenceCorrespondence fold)
+          (replayActionOrigin (retiredOccurrenceCorrespondence fold)
             extraOccurrence) = S (S Z)
         sourceAtTwo = zeroTwoSuffixRelationHasSourceTwo relation
     in twoNodeSourceHasNoOrdinalTwo
-      (replayActionOrigin (operationalOccurrenceCorrespondence fold)
+      (replayActionOrigin (retiredOccurrenceCorrespondence fold)
         extraOccurrence) sourceAtTwo
