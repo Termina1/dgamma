@@ -20,6 +20,7 @@ SPIKES=(
 )
 
 POSITIVE=(
+  R15O5AlignedProducerPositive
   R14O4AlignedProducerPositive
   R13O3AlignedProducerPositive
   R10ProvenanceProjectionPositive
@@ -54,6 +55,7 @@ POSITIVE=(
 # Each expected failure has its own mandatory diagnostic fragment and source
 # declaration. A generic dependent error is not enough to pass the suite.
 NEGATIVE_SPECS=(
+  "R15O5IndependentDictionaryNegative|alternateKeyEq and keyEq|independentEarlyOrchestrationCannotAlign"
   "R14O4IndependentDictionaryNegative|alternateKeyEq and keyEq|independentMixedPairCannotAlign"
   "R13O3IndependentDictionaryNegative|alternateKeyEq and keyEq|independentDictionariesCannotAlign"
   "R11AdjacentPrefixCollapsedCertificateNegative|targetOrdinal and sourceOrdinal|collapsedPrefixCannotInhabitOrdinalCertificate"
