@@ -1,4 +1,4 @@
-# Theorem 73 (Confluence) — CP5 proof plan, revision 16 O5 control retirement
+# Theorem 73 (Confluence) — CP5 proof plan, O6 endpoint-controls B1 audit
 
 Branch: `cp5-thm73-scoping`
 
@@ -20,7 +20,11 @@ Review trail:
 - revision 15 authorizes only the O5 dictionary-alignment repair audited below;
   and
 - revision 16 retires the zero-consumer, structurally unsuppliable
-  `LocalRelationalDiamond.swappedControls` field.
+  `LocalRelationalDiamond.swappedControls` field; and
+- the combined revision-15/revision-16 review at `ad21f1d` accepts revision 15,
+  all nine local O5 pairs, and the mechanical retirement, but returns **REJECT**
+  on B1 because `RelationalReplayEndpoint.replayedControls` transfers the same
+  ordered-list obstruction to O6.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -67,8 +71,10 @@ needed. Revision 15 adds only:
 The O5-specific genuine producer and independent-dictionary negative are tracked.
 `OrchestrationSwapSafety`, closed O3/O4 interfaces, O6, raw dictionary equalities,
 caller-selected maps, transitions, evaluator outputs, effects, controls, and
-endpoints remain unchanged. Scoped review of revision 15 is deferred until O5
-closure.
+endpoints remain unchanged. The review accepted these revision-15 premises and
+local O5 consumers. `R15O5AlignedProducerPositive` now additionally constructs
+`OrchestrationSwapSafety` and the singleton indexed by exactly
+`earlyRight safety`, closing review note N1.
 
 ### Revision 16: retire unsuppliable ordered local controls
 
@@ -85,10 +91,22 @@ closed O3/O4 constructor sites. All ordered-control lemmas and their existing
 private producers remain available for any future consumer-authenticated gate.
 No speculative permutation relation is introduced.
 
-The deferred O5 scoped review covers revisions 15 and 16 together. It must repeat
-the zero-consumer check and reject closure unless a mandatory round-12-style,
-hole-free `confluenceTheorem` assembly typechecks against the modified research
-pipeline.
+The combined scoped review verified that retirement mechanically, but rejected
+pipeline closure: `AdjacentSwapResult.swappedEndpoint` still embeds
+`RelationalReplayEndpoint.replayedControls`, whose ordered list relation is
+uninhabitable for suffix-free distinct O-Insert/O-Insert. The hole-free
+`confluenceTheorem` assembly passed only because both O6 producers remain holes.
+
+### B1 and pending revision 17
+
+`research-tests/O6-ENDPOINT-CONTROLS-AUDIT.md` traces the surviving requirement
+through O6, O17, O19, O20, O21, endpoint transitivity, canonical sorting, and the
+final renamed bridge. It recommends replacing the research endpoint control
+field with existing actor-name-indexed `ControlEquivalent`, and restoring exactly
+that consumer-needed weak field on `LocalRelationalDiamond`. Existing O3/O4
+ordered proofs coerce through `orderedControlsGiveControlEquivalent`; O5 must
+produce the weak relation for all nine genuine checked pairs. No revision-17
+declaration change is authorized yet.
 
 ## Executive estimate
 
@@ -400,8 +418,8 @@ There remain **21 obligations**.
 | **O2** | Transport both independence fields. | **Complete.** | **M–L.** |
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
-| **O5** | O/O freshness/generation discipline. | **Complete: revision-15 alignment is producer-probed; revision-16 retires the unsuppliable zero-consumer ordered-control field; all nine raw rule-pair replays, direct orchestration-effect commutation, checked moved-left endpoint, and `LocalRelationalDiamond` are constructive. Combined scoped review due.** | **Closed in shifts 21–23; the Phase-B 32–55 band remains honest because O6 remains an XL gate.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes**; certificate/interface complete. | **XL gate.** |
+| **O5** | O/O freshness/generation discipline. | **Locally proved: revision-15 alignment and all nine checked pairs/effects passed review. Pipeline-blocked by O6 B1 until revision 17 supplies a composable actor-name-indexed endpoint-control relation.** | **Local body closed in shifts 21–23; not called pipeline-closed.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; current endpoint interface is unfillable for suffix-free distinct O-Insert/O-Insert. Revision-17 decision required before proof work.** | **XL gate plus 5–9-shift interface repair estimate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -422,8 +440,9 @@ There remain **21 obligations**.
 
 ## 11. Exact hole reconciliation
 
-After authorized retirement of the orphan O1 declaration and constructive O3,
-O4, and O5 closure, **21 deliberate named research holes remain**:
+After authorized retirement of the orphan O1 declaration, constructive O3/O4
+closure, and local O5 proof, **21 deliberate named research holes remain**. O5 is
+pipeline-blocked by O6 B1 until revision 17:
 
 - canonical sort: 6;
 - cross-trace: 4;
@@ -488,29 +507,29 @@ inside a proof-phase band.
 
 ## 15. Release boundary
 
-Revision-14/O4 is accepted at `117f179`. The deferred scoped
-revision-15/revision-16 O5 closure review must verify only tracked HEAD artifacts:
+Revision-14/O4 is accepted at `117f179`. The combined revision-15/revision-16
+review at `ad21f1d` returned **REJECT** with B1 while accepting revision 15 and the
+local O5 body. Current gate evidence is:
 
 - the O5 theorem delta is exactly the two authorized erased
   `AlignedTransitions` premise occurrences, with `OrchestrationSwapSafety`
   unchanged from its reviewed coordinate;
-- revision 16 removes exactly the zero-consumer `swappedControls` field and the
-  corresponding argument at the three closed O3/O4 constructor sites, while
-  retaining all private ordered-control lemma capital;
-- a fresh repository-wide scan still finds zero projections or consumers of the
-  retired field;
+- revision 16 removed exactly local `swappedControls`, but the equivalent ordered
+  obligation survives as `RelationalReplayEndpoint.replayedControls`;
+- `R16EndpointControlsImpossibilityPositive` constructively proves the exact
+  suffix-free O6 contradiction and is now tracked;
 - those premises are constructible at the actual O6, O17, O19, and exact checked
   early-orchestration producer boundaries;
-- the tracked R15 positive producer probe succeeds and its independent-dictionary
-  negative fails at the intended dictionary-index mismatch;
-- the closed O5 body genuinely consumes alignment, checked execution,
+- the strengthened tracked R15 positive constructs the safety record and exact
+  dependent singleton; its independent-dictionary negative still fails at the
+  intended dictionary-index mismatch;
+- the locally proved O5 body genuinely consumes alignment, checked execution,
   `OrchestrationSwapSafety`, and effects without escape hatches or surviving-hole
   dependencies;
-- a mandatory round-12-style full-coverage probe typechecks a hole-free
-  `confluenceTheorem` assembly against the modified research pipeline; absence or
-  failure of this probe is an explicit REJECT;
-- exact 60-module runner coverage with module-specific negative diagnostics,
-  including `R16ConfluenceTheoremAssemblyPositive` at the immutable theorem type;
+- `R16ConfluenceTheoremAssemblyPositive` remains only an assembly-through-holes
+  check and is not evidence that O6 is producer-suppliable;
+- exact 61-module runner coverage with module-specific negative diagnostics,
+  including both the theorem assembly and tracked B1 impossibility proof;
 - exact current 6/4/8/2/1 hole split and 148–249 total / 139–240
   implementation-remaining arithmetic;
 - all five spikes and every tracked test serially;
@@ -519,6 +538,5 @@ revision-15/revision-16 O5 closure review must verify only tracked HEAD artifact
 - seeded exact 207/207 build and best-effort unseeded result; and
 - no tracked/staged changes.
 
-Theorem 73 remains unproved by design after constructive O3/O4/O5 closure; the
-other 21 named obligations remain isolated in research modules. The combined
-revision-15/revision-16 scoped review is now due.
+Theorem 73 remains unproved with 21 research holes. O5 is locally proved but
+pipeline-blocked; O6 proof work is stopped pending the revision-17 decision.
