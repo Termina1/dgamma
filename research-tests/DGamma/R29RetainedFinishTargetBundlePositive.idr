@@ -29,3 +29,9 @@ public export
   r27WholeTargetTrace
 r29Provenance = registrationDisciplineProvenance r23Protocol r23NameEq
   r27WholeTargetTrace r27WholeDiscipline
+
+public export
+0 r29ProtocolRanked : RegistryProtocolRanked r23Protocol r23NameEq
+  (replayedAfter (baseFinishReplay r27SecondFinishEnvelope))
+r29ProtocolRanked = reachedRegistryProtocolRanked r23Protocol r23NameEq r23KeyEq
+  r29Reached r29Provenance
