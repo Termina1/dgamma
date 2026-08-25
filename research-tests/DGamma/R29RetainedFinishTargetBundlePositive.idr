@@ -56,3 +56,22 @@ public export
 r29SupportWellFounded = supportCombinedWellFounded r23Protocol r23NameEq
   (replayedAfter (baseFinishReplay r27SecondFinishEnvelope)) r29ProtocolRanked
   r29ParentRanksIncrease
+
+public export
+0 r29SupportMatchesActive : SupportMatchesActive r23NameEq r23KeyEq
+  (replayedAfter (baseFinishReplay r27SecondFinishEnvelope))
+r29SupportMatchesActive = deletionPremisesGiveSupportMatchesActive r23Protocol
+  r23NameEq r23KeyEq _
+  (replayedAfter (baseFinishReplay r27SecondFinishEnvelope))
+  r27WholeTargetTrace r27WholeAligned r27WholeDiscipline
+  r27InitialWellFormed r27InitialEmpty r27TargetQuiet r27TargetNoFailure
+  r27WholeTotal
+
+public export
+0 r29TargetBundle : ReplayInvariantBundle Nat R23Key Unit Unit R23Value
+  r23Protocol r23NameEq r23KeyEq r27WholeTargetTrace
+r29TargetBundle = MkReplayInvariantBundle r27WholeAligned r27WholeDiscipline
+  r27InitialWellFormed r27InitialEmpty r27FinalWellFormed r27TargetQuiet
+  r27TargetNoFailure r27WholeTotal r28WholeIndependent r29Provenance
+  r29ProtocolRanked r29ParentRanksIncrease r29PrecedenceAcyclic
+  r29SupportWellFounded r29SupportMatchesActive
