@@ -81,7 +81,11 @@ Review trail:
   packaging, and closes the first fully generic pointwise `O-Retire` head; and
 - revision 31 closes pointwise O-Insert lookup/parent/provision guards,
   post-insert controls, and the checked empty-table effect frame, then reverts a
-  bounded full-head attempt at the exact source-endpoint indexing diagnostic.
+  bounded full-head attempt at the exact source-endpoint indexing diagnostic;
+  and
+- revision 32 derives the unindexed source package directly from `applyAction`,
+  closes the full pointwise O-Insert head, transports childlessness for
+  O-Remove, and stops its source normalizer at the bounded lazy-guard diagnostic.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -483,6 +487,28 @@ roughly two. The remaining band is revised from **22–38** to **20–36 shifts*
 Seven action heads remain open, although O-Insert now owns only final source
 packaging and assembly. Holes remain **20**, split **6/4/8/1/1**.
 
+### Revision 32: O-Insert closure and O-Remove guard stop
+
+`research-tests/O6-R32-INSERT-CLOSED-REMOVE-GUARD-STOP-AUDIT.md` records the
+corrected producer. `insertSourceIngredientsPointwise` evaluates `applyAction`
+directly and retains exact absence, guards, and the concrete endpoint equation
+without refining away the caller's source index. `replayPointwiseInsertHead`
+then constructs the checked target, endpoint effects/controls, exact map,
+non-advance RAR, occurrences, ordinal, alignment, and sealed head. O-Insert is
+fully closed without new capital.
+
+For O-Remove, pointwise childlessness and the checked empty-table effect frame
+are proved. Its unindexed source normalizer exhausted the bounded attempt at the
+nested lazy-Boolean guard equation and was reverted. This is an internal
+normalization stop, not an output-shaped or uninhabited obligation. No lifecycle
+family was opened after the per-family stop.
+
+Six action heads remain: O-Remove, L-Begin, L-Divert, L-Leave, L-Unload, and
+L-Advance. The remaining estimate falls from **20–36** to **18–34 shifts**:
+O-Insert closed in two shifts and the O-Remove foundations are retained, while
+its staged guard normalizer remains charged. Holes remain **20**, split
+**6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -794,7 +820,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; revision 30 closes generic spine recursion and O-Retire. Revision 31 closes O-Insert lookup/parent/provision guards, post-controls, and checked effect frame; final O-Insert source packaging plus six other heads and whole-result assembly remain.** | **XL, 20–36 remaining shifts after the bounded O-Insert foundation checkpoint.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; generic spine recursion plus full O-Retire and O-Insert heads are closed. O-Remove owns childlessness/effect foundations but its staged source guard remains; five lifecycle heads and whole-result assembly follow.** | **XL, 18–34 remaining shifts after O-Insert closure and the O-Remove guard stop.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
