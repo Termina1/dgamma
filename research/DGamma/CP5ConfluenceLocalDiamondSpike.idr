@@ -940,7 +940,7 @@ namespace AdjacentSwapResult
       tracePrefix left right suffix diamond ->
     SystemState name key value world error
   replayedFinal = adjacentReplayedFinal
-  
+
   public export
   replayedSuffix :
     {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
@@ -956,7 +956,7 @@ namespace AdjacentSwapResult
       original tracePrefix left right suffix diamond) ->
     Transitions (swappedFinal diamond) (replayedFinal result)
   replayedSuffix = adjacentReplayedSuffix
-  
+
   public export
   swappedTrace :
     {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
@@ -972,7 +972,7 @@ namespace AdjacentSwapResult
       original tracePrefix left right suffix diamond) ->
     Transitions initial (replayedFinal result)
   swappedTrace result = adjacentSwappedTrace result
-  
+
   public export
   0 originalDecomposition :
     {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
@@ -989,7 +989,7 @@ namespace AdjacentSwapResult
     appendTransitions tracePrefix
       (MoreTransitions left (MoreTransitions right suffix)) = original
   originalDecomposition = adjacentOriginalDecomposition
-  
+
   public export
   0 swappedDecomposition :
     {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
@@ -1007,7 +1007,7 @@ namespace AdjacentSwapResult
       (MoreTransitions (movedRight diamond)
         (MoreTransitions (movedLeft diamond) (replayedSuffix result)))
   swappedDecomposition result = adjacentSwappedDecomposition result
-  
+
   public export
   swappedSameExternalInputs :
     {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
@@ -1023,7 +1023,7 @@ namespace AdjacentSwapResult
       original tracePrefix left right suffix diamond) ->
     SameExternalOrchestration nameEq original (swappedTrace result)
   swappedSameExternalInputs result = adjacentSameExternalInputs result
-  
+
   public export
   swappedReplayCorrespondence :
     {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
@@ -1040,7 +1040,7 @@ namespace AdjacentSwapResult
     RelationalReplayCorrespondence name key world error value original
       (swappedTrace result)
   swappedReplayCorrespondence result = adjacentReplayCorrespondence result
-  
+
   public export
   swappedEndpoint :
     {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
@@ -1057,7 +1057,7 @@ namespace AdjacentSwapResult
     RelationalReplayEndpoint name key world error value nameEq keyEq originalFinal
       (replayedFinal result)
   swappedEndpoint result = adjacentEndpoint result
-  
+
   public export
   swappedPremises :
     {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
@@ -1074,7 +1074,7 @@ namespace AdjacentSwapResult
     ReplayInvariantBundle name key world error value protocol nameEq keyEq
       (swappedTrace result)
   swappedPremises result = adjacentPremises result
-  
+
   public export
   0 sealedSuffixReplay :
     {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
@@ -1091,7 +1091,7 @@ namespace AdjacentSwapResult
     SealedSuffixReplaySpine name key world error value nameEq keyEq suffix
       (replayedSuffix result)
   sealedSuffixReplay = adjacentSealedSuffixReplay
-  
+
   public export
   0 sealedOccurrenceFold :
     {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
@@ -2280,7 +2280,7 @@ providerOfStableAfterForeignActivation {name} {key} {world} {error} {value}
                   chosenFiber providerFiber chosenEntry providerEntry wanted
                   chosenDeclares providerDeclares
             in trans chosenFound (cong Just chosenSame)
-    
+
 0 resolveViewStableAfterForeignActivation :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
