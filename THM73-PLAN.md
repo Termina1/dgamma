@@ -63,7 +63,13 @@ Review trail:
   the whole target bundle through totality; and
 - revision 26 stops at independence: an actual generator transported through
   the exact replay-transition projection does not definitionally reduce to the
-  projected transition's partial map. Frozen declarations remain unchanged.
+  projected transition's partial map;
+- revision 27 retains the already-proved target map inside the genuine finish
+  producer while projecting both replay results and fields 1–8 definitionally;
+- revision 28 closes target independence from retained maps and authenticated
+  empty-program iterator replay; and
+- revision 29 closes provenance, ranking, acyclicity, support, and the complete
+  whole-target `ReplayInvariantBundle`. Frozen declarations remain unchanged.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -383,6 +389,27 @@ map identity while constructing its RAR, but that equality is not retained in
 mismatch is pinned by `R26FinishMapProjectionNegative`. The combined package
 remains unissued, holes remain 21, and the **26–44 shift** band is retained.
 
+### Revisions 27–29: finish-map retention closes the whole target bundle
+
+`R27MapRetainedFinishReplay` is populated inside the original finish producer
+at the exact point where its target map identity was already proved. The old
+producer is definitionally its base projection. First/second replay, final
+endpoint, target trace, and fields 1–8 transfer by `Refl` or direct aliases with
+no rewrite or re-proof. `R27FinishMapEnvelopeForgeryNegative` rejects a detached
+canonical map at the exact Fired/projection index.
+
+The retained maps close actual transformation totality, while per-step RAR maps
+all hypothetical L-Finish iterator stages back to impossible source stages.
+`r28WholeIndependent` closes field 9. Revision 29 then constructs provenance,
+protocol rank, increasing parent rank, precedence acyclicity, support
+well-foundedness, and support/active matching in record order. The complete
+result is `r29TargetBundle`.
+
+End-to-end closure authorizes the combined A/B/C/D/E review package. E is
+producer-owned per-head map preservation retained before transition projection.
+No package item is landed yet; the manifest and hole count remain unchanged.
+The remaining estimate is revised to **20–35 shifts**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -634,10 +661,10 @@ research-tests/run-r11-suite.sh
 It runs serially:
 
 - five research spikes;
-- 43 tracked positive modules; and
-- 39 tracked expected-failure modules.
+- 45 tracked positive modules; and
+- 40 tracked expected-failure modules.
 
-All 82 tracked Idris test modules occur exactly once. Every negative specification
+All 85 tracked Idris test modules occur exactly once. Every negative specification
 contains its own mandatory diagnostic substring and source declaration name. A
 generic dependent error no longer suffices.
 
@@ -694,7 +721,7 @@ There remain **21 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; the test-local aligned envelope closes item A's consumer path and the target bundle advances through totality. Independence stops because the finish replay record does not retain its producer-proved target map identity; the exact projection mismatch is pinned. Combined gate not issued.** | **XL, 26–44 shifts for producer-owned finish-map retention, later target invariants, combined boundary, recursion, and review.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; producer-owned finish-map retention closes target independence and every later bundle field. `r29TargetBundle` is complete. Atomic A/B/C/D/E gate prepared and unissued pending review.** | **XL, 20–35 shifts for atomic promotion/review, adjacent suffix body, block recursion, and downstream review.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -806,7 +833,7 @@ local O5 body. Current gate evidence is:
   dependencies;
 - `R16ConfluenceTheoremAssemblyPositive` remains only an assembly-through-holes
   check and is not evidence that O6 is producer-suppliable;
-- exact 82-module runner coverage with module-specific negative diagnostics,
+- exact 85-module runner coverage with module-specific negative diagnostics,
   including theorem assembly, root-order and arbitrary-suffix impossibility
   proofs, revision-17 wrong-lookup rejection, genuine revision-18 O17/O19
   producers, and revision-19 sealed base/nonempty probes;
@@ -820,8 +847,7 @@ local O5 body. Current gate evidence is:
 
 Theorem 73 remains unproved with 21 research holes. Revision-17 endpoint and
 revision-18 external-order work are ratified; O5 remains only locally closed.
-Revisions 25–26 close the producer-owned aligned-diamond envelope and advance
-the whole target bundle through `replayTotal`. `replayIndependent` is the first
-remaining field: the per-finish producer's internal target-map identity was not
-retained across its exact transition projection. The exact mismatch is tracked;
-the combined boundary gate remains unissued.
+Revisions 27–29 retain target-map identity at the finish producer, close
+independence, and assemble the complete target `ReplayInvariantBundle` through
+support/active matching. The atomic A/B/C/D/E boundary is prepared but remains
+unissued pending the combined frozen-interface review.
