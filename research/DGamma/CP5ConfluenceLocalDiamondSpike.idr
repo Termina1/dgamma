@@ -1718,6 +1718,52 @@ insertEffectFrameRelated nameEq keyEq actor parent component before afterState
     (OInsert actor parent component) OInsertTag before afterState checked of
       MkActualEffectFrame (PartialDefined related) => related
 
+0 nothingNotJustInsertPointwise : Nothing = Just value -> Void
+nothingNotJustInsertPointwise Refl impossible
+
+||| Unindexed source evidence for a successful checked O-Insert. Unlike the
+||| imported indexed view, this result keeps the caller's `afterState` abstract
+||| and carries the concrete endpoint equation as producer-owned evidence.
+0 insertSourceIngredientsPointwise :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) ->
+  applyAction @{nameEq} @{keyEq} (OInsert actor parent component)
+    (MkSystemState ambient source) = Just (OInsertTag, afterState) ->
+  (absent : lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} actor source = Nothing **
+    (parentPresent @{nameEq} {name = name} {key = key} {value = value}
+       {world = world} {error = error} parent source &&
+       provisionsDisjointFrom @{keyEq} {name = name} {key = key}
+         {value = value} {world = world} {error = error}
+         (componentProvisions component) (bindings source) = True,
+     MkSystemState ambient
+       (insertBinding @{nameEq} actor (freshFiber component parent) source
+         absent) = afterState))
+insertSourceIngredientsPointwise nameEq keyEq actor parent component ambient source
+  afterState raw with (parentPresent @{nameEq} parent source &&
+    provisionsDisjointFrom @{keyEq} (componentProvisions component)
+      (bindings source)) proof guards
+  insertSourceIngredientsPointwise nameEq keyEq actor parent component ambient
+    source afterState raw | False = void (nothingNotJustInsertPointwise raw)
+  insertSourceIngredientsPointwise nameEq keyEq actor parent component ambient
+    source afterState raw | True
+    with (setFresh @{nameEq} actor (freshFiber component parent) source)
+      proof inserted
+    insertSourceIngredientsPointwise nameEq keyEq actor parent component ambient
+      source afterState raw | True | Nothing =
+        void (nothingNotJustInsertPointwise raw)
+    insertSourceIngredientsPointwise nameEq keyEq actor parent component ambient
+      source afterState raw | True | Just applied =
+        case justInjective raw of
+          Refl => rewrite setFreshAfter nameEq actor
+            (freshFiber component parent) source applied inserted in
+              (setFreshAbsent nameEq actor (freshFiber component parent) source
+                applied inserted ** (Refl, Refl))
+
 ||| First concrete branch of the private pointwise head replayer.  O-Retire is
 ||| control-only, so its map is definitionally identity; applicability and the
 ||| next quotient are reconstructed from the exact source transition plus the
