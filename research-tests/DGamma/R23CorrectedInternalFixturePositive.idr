@@ -2027,33 +2027,41 @@ public export
   (replayedAfter (baseFinishReplay r27SecondFinishEnvelope))
 r27WholeTargetTrace = r25WholeTargetTrace
 
+public export
 0 r27WholeAligned : AlignedTransitions Nat R23Key Unit Unit R23Value r23NameEq
   r23KeyEq r27WholeTargetTrace
 r27WholeAligned = r25WholeAligned
 
+public export
 0 r27WholeDiscipline : RegistrationDiscipline r23Protocol r23NameEq
   r27WholeTargetTrace
 r27WholeDiscipline = r25WholeDiscipline
 
+public export
 0 r27InitialWellFormed :
   registryWellFormed @{r23NameEq} @{r23KeyEq} r23Initial = True
 r27InitialWellFormed = r25InitialWellFormed
 
+public export
 0 r27InitialEmpty : bindings (registry r23Initial) = []
 r27InitialEmpty = r25InitialEmpty
 
+public export
 0 r27FinalWellFormed : registryWellFormed @{r23NameEq} @{r23KeyEq}
   (replayedAfter (baseFinishReplay r27SecondFinishEnvelope)) = True
 r27FinalWellFormed = r25FinalWellFormed
 
+public export
 0 r27TargetQuiet : quiet @{r23NameEq} @{r23KeyEq}
   (replayedAfter (baseFinishReplay r27SecondFinishEnvelope)) = True
 r27TargetQuiet = r25TargetQuiet
 
+public export
 0 r27TargetNoFailure : noFailedFibers
   (replayedAfter (baseFinishReplay r27SecondFinishEnvelope)) = True
 r27TargetNoFailure = r25TargetNoFailure
 
+public export
 0 r27WholeTotal : TraceComponentsTotal r23NameEq r23KeyEq r27WholeTargetTrace
 r27WholeTotal = r25WholeTotal
 
