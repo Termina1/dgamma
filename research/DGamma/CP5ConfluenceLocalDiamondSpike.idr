@@ -1699,6 +1699,25 @@ packagePointwiseRelationalHeadReplay nameEq keyEq sourceStep sourceAligned
       sameTag replayedAligned rar mapPreserved endpoint occurrences
       relativeOrdinal
 
+||| The O-Insert actual frame specializes the generic checked transition frame
+||| to the installed empty effect table. This is retained beside the pointwise
+||| applicability lemmas for the next bounded O-Insert attempt.
+0 insertEffectFrameRelated :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  checkedApplyAction @{nameEq} @{keyEq} (OInsert actor parent component) before =
+    Just (OInsertTag, afterState) ->
+  EffectStateRelated keyEq
+    (setEffectTable @{nameEq} actor (emptyContext {key = key} {value = value})
+      (projectEffectState @{nameEq} before))
+    (projectEffectState @{nameEq} afterState)
+insertEffectFrameRelated nameEq keyEq actor parent component before afterState
+  checked = case actualTransitionEffectFrame nameEq keyEq
+    (OInsert actor parent component) OInsertTag before afterState checked of
+      MkActualEffectFrame (PartialDefined related) => related
+
 ||| First concrete branch of the private pointwise head replayer.  O-Retire is
 ||| control-only, so its map is definitionally identity; applicability and the
 ||| next quotient are reconstructed from the exact source transition plus the
