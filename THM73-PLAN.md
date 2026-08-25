@@ -72,7 +72,13 @@ Review trail:
   whole-target `ReplayInvariantBundle`; and
 - assembled revision 19 atomically lands A/B/C/D/E: moved-pair alignment,
   bundle-free sealed replay, opaque adjacent results, false-fold retirement,
-  and producer-owned map preservation. The suffix body remains untouched.
+  and producer-owned map preservation;
+- `review-cp5-r19-scoped.md` returns ACCEPT-WITH-CHANGES: the frozen boundary
+  passes every independent attack and requires only the current 20-hole plan
+  reconciliation; and
+- revision 30 opens the authorized suffix implementation privately, constructs
+  the exact generic sealed-spine recursion and singleton occurrence/RAR
+  packaging, and closes the first fully generic pointwise `O-Retire` head.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -432,8 +438,24 @@ generic source/target head-map equality in addition to its finish identity.
 Independent-dictionary, hidden-constructor, and detached-map forgeries remain
 rejected at their intended indices. The manifest cites
 `O6-R29-FINISH-MAP-END-TO-END-AUDIT.md`. Holes fall from 21 to **20**, split
-**6/4/8/1/1**. O6 body work is blocked pending the assembled revision-19 scoped
-adversarial review.
+**6/4/8/1/1**. The assembled revision-19 review returned ACCEPT-WITH-CHANGES;
+its sole major was the stale reconciliation repaired in section 11.
+
+### Revision 30: first generic sealed-spine recursion
+
+`research-tests/O6-R30-GENERIC-SPINE-FIRST-HEAD-AUDIT.md` records the first
+body-work checkpoint. The private producer now owns an exact checked head
+envelope and derives singleton occurrence, generation, ordinal, map, and RAR
+capital at the construction point. `replayPointwiseSuffixSpineWith` structurally
+recurses over the exact aligned source suffix, threads only producer-owned
+endpoints, and seals each recursive tail. The fully generic `O-Retire` branch
+constructively replays across pointwise `ControlEquivalent`; no ordered-control
+or output-shaped premise is introduced.
+
+The other seven action constructors, whole-suffix RAR/ordinal composition, and
+the global target bundle remain. At this first generic recursion the remaining
+O6 band is re-estimated from **20–35** to **22–38 shifts**. Holes remain 20 until
+the existing adjacent suffix body is fully assembled; closure forecasts 19.
 
 ## Executive estimate
 
@@ -746,7 +768,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; `r29TargetBundle` is complete and atomic A/B/C/D/E is landed. The false unrestricted fold is retired. The assembled revision-19 review returned ACCEPT-WITH-CHANGES; after this reconciliation, the byte-identical adjacent suffix body is authorized against the sealed boundary.** | **XL, 20–35 shifts for adjacent suffix body, block recursion, and downstream review; re-estimate at the first generic spine recursion.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; `r29TargetBundle` and atomic A/B/C/D/E are complete. Revision 30 constructs the private generic spine recursion, singleton occurrence/RAR packaging, and generic pointwise `O-Retire` head; seven action branches and whole-result assembly remain.** | **XL, 22–38 remaining shifts after the first generic-recursion re-estimate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
