@@ -881,6 +881,64 @@ data SealedSuffixReplaySpine :
       (MoreTransitions sourceStep sourceTail)
       (MoreTransitions replayedStep replayedTail)
 
+||| Producer-local result of replaying one exact checked suffix head from a
+||| pointwise-related state.  This is deliberately not exported: it is the
+||| recursive implementation unit for `adjacentSwapSuffixSpike`, not a new
+||| caller-supplied boundary.  Every field is indexed by the source transition
+||| and the checked replay transition constructed at this point.
+record PointwiseRelationalHeadReplay
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {sourceBefore, sourceAfter, replayedBefore :
+    SystemState name key value world error}
+  (sourceStep : Transition sourceBefore sourceAfter) where
+  constructor MkPointwiseRelationalHeadReplay
+  headReplayedAfter : SystemState name key value world error
+  headReplayedStep : Transition replayedBefore headReplayedAfter
+  0 headSameAction : transitionAction headReplayedStep =
+    transitionAction sourceStep
+  0 headSameTag : transitionTag headReplayedStep = transitionTag sourceStep
+  0 headAligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions headReplayedStep NoTransitions)
+  0 headReplayRAR : RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceStep NoTransitions)
+    (MoreTransitions headReplayedStep NoTransitions)
+  0 headReplayMapPreserved :
+    (state : EffectState name key value world) ->
+    partialEffectMap sourceStep state = partialEffectMap headReplayedStep state
+  0 headReplayEndpoint : RelationalReplayEndpoint name key world error value
+    nameEq keyEq sourceAfter headReplayedAfter
+  0 headReplayOccurrences : ActionRegistrationReplayCorrespondence name key
+    world error value (MoreTransitions sourceStep NoTransitions)
+    (MoreTransitions headReplayedStep NoTransitions)
+  0 headReplayRelativeOrdinal :
+    {action : Action name key value world error} ->
+    (occurrence : LocatedActionOccurrence action
+      (MoreTransitions headReplayedStep NoTransitions)) ->
+    locatedActionOrdinal occurrence = locatedActionOrdinal
+      (replayActionOrigin headReplayOccurrences occurrence)
+
+||| Once the exact head producer and recursive tail have been constructed, the
+||| frozen spine node is definition-only.  In particular, no map, endpoint, or
+||| occurrence proof can enter here independently of its owning head result.
+0 sealPointwiseRelationalHead :
+  {sourceStep : Transition sourceFirst sourceMiddle} ->
+  {sourceTail : Transitions sourceMiddle sourceFinal} ->
+  (head : PointwiseRelationalHeadReplay name key world error value nameEq keyEq
+    sourceStep) ->
+  {replayedTail : Transitions
+    (headReplayedAfter head) replayedFinal} ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq sourceTail
+    replayedTail ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq
+    (MoreTransitions sourceStep sourceTail)
+    (MoreTransitions (headReplayedStep head) replayedTail)
+sealPointwiseRelationalHead head tail =
+  SealedSuffixReplayStep _ _ _ _
+    (headSameAction head) (headSameTag head) (headReplayRAR head)
+    (headReplayMapPreserved head) (headReplayEndpoint head)
+    (headReplayOccurrences head) (headReplayRelativeOrdinal head) tail
+
 ||| A complete adjacent transposition: the local pair is swapped, the untouched
 ||| suffix is replayed, and the next recursion receives the same full premise
 ||| bundle.  It also exposes exact same-external-input and generator/stage
