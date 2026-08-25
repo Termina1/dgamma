@@ -834,37 +834,58 @@ record AdjacentSwapOperationalOccurrenceFold
       (locatedActionOrdinal
         (replayActionOrigin operationalOccurrenceCorrespondence occurrence))
 
-||| O6's explicit suffix-replay fold signature.  The body is deliberately the
-||| named proof obligation, but callers cannot substitute another coherent map:
-||| `AdjacentSwapResult` projects only this globally fixed function applied to
-||| its exact decompositions and moved transitions.
-public export
-0 adjacentSwapOperationalOccurrenceFoldSpike :
-  (original : Transitions initial originalFinal) ->
-  (prefixTrace : Transitions initial pairFirst) ->
-  (left : Transition pairFirst pairMiddle) ->
-  (right : Transition pairMiddle pairFinal) ->
-  (suffix : Transitions pairFinal originalFinal) ->
-  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
-    left right) ->
-  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
-  (swappedTrace : Transitions initial replayedFinal) ->
-  appendTransitions prefixTrace (MoreTransitions left (MoreTransitions right suffix)) =
-    original ->
-  appendTransitions prefixTrace
-    (MoreTransitions (movedRight diamond)
-      (MoreTransitions (movedLeft diamond) replayedSuffix)) = swappedTrace ->
-  AdjacentSwapOperationalOccurrenceFold name key world error value original prefixTrace
-    left right suffix (movedRight diamond) (movedLeft diamond) replayedSuffix
-    swappedTrace
-adjacentSwapOperationalOccurrenceFoldSpike =
-  ?adjacentSwapOperationalOccurrenceFoldSpike_rhs
+||| Producer-sealed recursive suffix replay.  Every node owns its exact checked
+||| source and target heads and their relational/occurrence capital.  It carries
+||| no `ReplayInvariantBundle`: only the outer whole trace starts at the
+||| authenticated empty registry.  Constructors are deliberately hidden from
+||| importers; only the O6 producer in this module may assemble the spine.
+export
+data SealedSuffixReplaySpine :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
+    SystemState name key value world error} ->
+  Transitions sourceFirst sourceFinal ->
+  Transitions replayedFirst replayedFinal -> Type where
+  SealedSuffixReplayEnd :
+    SealedSuffixReplaySpine name key world error value nameEq keyEq
+      NoTransitions NoTransitions
+  SealedSuffixReplayStep :
+    (sourceStep : Transition sourceFirst sourceMiddle) ->
+    (replayedStep : Transition replayedFirst replayedMiddle) ->
+    (sourceTail : Transitions sourceMiddle sourceFinal) ->
+    (replayedTail : Transitions replayedMiddle replayedFinal) ->
+    (0 sameAction : transitionAction replayedStep =
+      transitionAction sourceStep) ->
+    (0 sameTag : transitionTag replayedStep = transitionTag sourceStep) ->
+    (0 headRAR : RelationalReplayCorrespondence name key world error value
+      (MoreTransitions sourceStep NoTransitions)
+      (MoreTransitions replayedStep NoTransitions)) ->
+    (0 headMapPreserved :
+      (state : EffectState name key value world) ->
+      partialEffectMap sourceStep state = partialEffectMap replayedStep state) ->
+    (0 headEndpoint : RelationalReplayEndpoint name key world error value nameEq
+      keyEq sourceMiddle replayedMiddle) ->
+    (0 headOccurrences : ActionRegistrationReplayCorrespondence name key world
+      error value (MoreTransitions sourceStep NoTransitions)
+      (MoreTransitions replayedStep NoTransitions)) ->
+    (0 headRelativeOrdinal :
+      {action : Action name key value world error} ->
+      (occurrence : LocatedActionOccurrence action
+        (MoreTransitions replayedStep NoTransitions)) ->
+      locatedActionOrdinal occurrence = locatedActionOrdinal
+        (replayActionOrigin headOccurrences occurrence)) ->
+    SealedSuffixReplaySpine name key world error value nameEq keyEq sourceTail
+      replayedTail ->
+    SealedSuffixReplaySpine name key world error value nameEq keyEq
+      (MoreTransitions sourceStep sourceTail)
+      (MoreTransitions replayedStep replayedTail)
 
 ||| A complete adjacent transposition: the local pair is swapped, the untouched
 ||| suffix is replayed, and the next recursion receives the same full premise
 ||| bundle.  It also exposes exact same-external-input and generator/stage
 ||| correspondence rather than expecting endpoint relations to imply them.
-public export
+export
 record AdjacentSwapResult
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
@@ -895,9 +916,14 @@ record AdjacentSwapResult
     keyEq originalFinal replayedFinal
   swappedPremises : ReplayInvariantBundle name key world error value protocol
     nameEq keyEq swappedTrace
+  0 sealedSuffixReplay : SealedSuffixReplaySpine name key world error value nameEq
+    keyEq suffix replayedSuffix
+  0 sealedOccurrenceFold : AdjacentSwapOperationalOccurrenceFold name key world
+    error value original tracePrefix left right suffix (movedRight diamond)
+    (movedLeft diamond) replayedSuffix swappedTrace
 
-||| The first operational occurrence certificate is definitionally the global
-||| suffix-replay fold applied to this result's exact decompositions.
+||| The first operational occurrence certificate is the exact producer-owned
+||| fold sealed inside this opaque adjacent result.
 public export
 0 swappedOccurrenceFold :
   (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
@@ -905,11 +931,7 @@ public export
   AdjacentSwapOperationalOccurrenceFold name key world error value original tracePrefix
     left right suffix (movedRight diamond) (movedLeft diamond)
     (replayedSuffix result) (swappedTrace result)
-swappedOccurrenceFold {original} {tracePrefix} {left} {right} {suffix} {diamond}
-  result =
-    adjacentSwapOperationalOccurrenceFoldSpike original tracePrefix left right suffix
-      diamond (replayedSuffix result) (swappedTrace result)
-      (originalDecomposition result) (sym (swappedDecomposition result))
+swappedOccurrenceFold result = sealedOccurrenceFold result
 
 public export
 0 swappedOccurrenceCorrespondence :
