@@ -72,6 +72,7 @@ POSITIVE=(
 NEGATIVE_SPECS=(
   "R19SealedReplayConstructorNegative|SealedSuffixReplayEnd is private|forgedScopedReplaySpine"
   "R30AdjacentSwapResultConstructorNegative|MkAdjacentSwapResult is private|forgeOpaqueAdjacentResult"
+  "R34RemoveChildOrientationNegative|hasChildIn actor (source .bindings) and False|removeChildOrientationProbe"
   "R20WholeBundleMovedAlignmentNegative|storedRightKeyEq and keyEq|localDiamondCannotSupplyMovedAlignment"
   "R21CandidateIndependentDictionaryNegative|storedRightKeyEq and keyEq|forgeCandidateFromIndependentDictionaries"
   "R21RepeatedIterProducerAlignmentNegative|storedRightKeyEq and storedLeftKeyEq|repeatedIterPremisesCannotSupplyMovedAlignment"
@@ -181,7 +182,7 @@ export IDRIS2_PATH="$ROOT/$TTC_ROOT${IDRIS2_PATH:+:$IDRIS2_PATH}"
 
 if [ "$FRESH" -eq 1 ]; then
   # Idris writes these direct --check interfaces into the package TTC root, not
-  # source-relative research directories. Delete exactly the 5+86 suite units.
+  # source-relative research directories. Delete exactly the 5+87 suite units.
   all_modules=("${SPIKES[@]}" "${POSITIVE[@]}")
   for specification in "${NEGATIVE_SPECS[@]}"; do
     IFS='|' read -r module _ _ <<<"$specification"
