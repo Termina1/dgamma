@@ -1509,6 +1509,51 @@ pointwiseProvisionsDisjointFromTrue nameEq keyEq provision
         in case related of
           FibersControlRelated _ _ _ _ _ _ _ _ _ _ _ => sourceHead
 
+0 pointwiseControlAfterInsert :
+  (nameEq : DecEq name) -> (actor : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (leftWorld, rightWorld : world) ->
+  (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (leftAbsent : lookupFiber @{nameEq} actor leftRegistry = Nothing) ->
+  (rightAbsent : lookupFiber @{nameEq} actor rightRegistry = Nothing) ->
+  ControlEquivalent name key world error value nameEq
+    (MkSystemState leftWorld leftRegistry)
+    (MkSystemState rightWorld rightRegistry) ->
+  ControlEquivalent name key world error value nameEq
+    (MkSystemState leftWorld
+      (insertBinding @{nameEq} actor (freshFiber component parent) leftRegistry
+        leftAbsent))
+    (MkSystemState rightWorld
+      (insertBinding @{nameEq} actor (freshFiber component parent) rightRegistry
+        rightAbsent))
+pointwiseControlAfterInsert nameEq actor parent component leftWorld rightWorld
+  leftRegistry rightRegistry leftAbsent rightAbsent controls =
+    MkControlEquivalent pointwise
+  where
+  0 pointwise : (selected : name) -> FiberControlMaybeRelated
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} selected
+      (insertBinding @{nameEq} actor (freshFiber component parent) leftRegistry
+        leftAbsent))
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} selected
+      (insertBinding @{nameEq} actor (freshFiber component parent) rightRegistry
+        rightAbsent))
+  pointwise selected with (decEq @{nameEq} selected actor)
+    pointwise selected | Yes same = case same of
+      Refl =>
+        rewrite lookupInserted actor (freshFiber component parent) leftRegistry
+          leftAbsent in
+        rewrite lookupInserted actor (freshFiber component parent) rightRegistry
+          rightAbsent in
+          SomeControlFibers (fiberControlReflexive (freshFiber component parent))
+    pointwise selected | No distinct =
+      rewrite lookupInsertOther selected actor distinct
+        (freshFiber component parent) leftRegistry leftAbsent in
+      rewrite lookupInsertOther selected actor distinct
+        (freshFiber component parent) rightRegistry rightAbsent in
+        controlPointwise controls selected
+
 0 retireFiberControlRelated :
   FiberControlRelated left right ->
   FiberControlRelated (retireFiber left) (retireFiber right)
