@@ -57,10 +57,13 @@ Review trail:
 - revision 23 selects an O19 opening/opening internal crossing and constructs
   its full quiet/non-failed source `ReplayInvariantBundle`; and
 - revision 24 replays both empty-program L-Finish suffix heads pointwise with
-  checked transition/RAR/endpoint/occurrence/ordinal capital, then stops at
-  target-bundle field 1: the live diamond has forgotten producer-owned moved
-  alignment, failing at `storedRightKeyEq and keyEq`. Frozen declarations remain
-  unchanged.
+  checked transition/RAR/endpoint/occurrence/ordinal capital;
+- revision 25 builds the authorized producer-owned aligned-diamond envelope,
+  transfers both replays and their final endpoint definitionally, and advances
+  the whole target bundle through totality; and
+- revision 26 stops at independence: an actual generator transported through
+  the exact replay-transition projection does not definitionally reduce to the
+  projected transition's partial map. Frozen declarations remain unchanged.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -358,6 +361,28 @@ new detached premise opportunity. Quietness and later fields therefore remain
 unattempted in declaration order. The atomic gate ordering now needs a decision,
 and the band is revised to **26–44 shifts**.
 
+### Revisions 25–26: aligned envelope closes; target bundle reaches independence
+
+`r25AlignedDiamond` seals the concrete R23 A/A result with the existing
+`activationActivationConstructorMovedAlignment` lemma. `r25BaseIsR23 = Refl`,
+and the first replay, second replay, and final endpoint transfer by direct RHS
+aliases without rewrite or re-proof. `R25AlignedEnvelopeForgeryNegative` rejects
+independent stored dictionaries at `storedRightKeyEq and keyEq`.
+
+Against that envelope, the whole target trace now constructs alignment,
+registration discipline, initial well-formedness/emptiness, final
+well-formedness, quietness, no-failure, and component totality in strict bundle
+order. Quietness and no-failure are pointwise target-entry inductions driven by
+the R22 domain/control lemmas and the authenticated final endpoint.
+
+`replayIndependent` is the first stop. The L-Finish producer internally proved
+map identity while constructing its RAR, but that equality is not retained in
+`R24CheckedEmptyFinishReplay`. Transporting a canonical actual generator along
+`r25CanonicalTransitionExact` does not make its executable map reduce to
+`partialEffectMap (replayedTransition replay)`. The exact Fired/projection
+mismatch is pinned by `R26FinishMapProjectionNegative`. The combined package
+remains unissued, holes remain 21, and the **26–44 shift** band is retained.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -610,9 +635,9 @@ It runs serially:
 
 - five research spikes;
 - 43 tracked positive modules; and
-- 37 tracked expected-failure modules.
+- 39 tracked expected-failure modules.
 
-All 80 tracked Idris test modules occur exactly once. Every negative specification
+All 82 tracked Idris test modules occur exactly once. Every negative specification
 contains its own mandatory diagnostic substring and source declaration name. A
 generic dependent error no longer suffices.
 
@@ -669,7 +694,7 @@ There remain **21 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; both corrected target L-Finish suffix heads now replay with checked per-step capital. Whole bundle stops at field 1 because the unmodified diamond lacks producer-owned `movedPairAligned`; the exact dictionary mismatch is pinned. Combined gate not issued.** | **XL, 26–44 shifts for resolving the atomic A/bundle ordering, target invariants, combined boundary, recursion, and review.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; the test-local aligned envelope closes item A's consumer path and the target bundle advances through totality. Independence stops because the finish replay record does not retain its producer-proved target map identity; the exact projection mismatch is pinned. Combined gate not issued.** | **XL, 26–44 shifts for producer-owned finish-map retention, later target invariants, combined boundary, recursion, and review.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -781,7 +806,7 @@ local O5 body. Current gate evidence is:
   dependencies;
 - `R16ConfluenceTheoremAssemblyPositive` remains only an assembly-through-holes
   check and is not evidence that O6 is producer-suppliable;
-- exact 80-module runner coverage with module-specific negative diagnostics,
+- exact 82-module runner coverage with module-specific negative diagnostics,
   including theorem assembly, root-order and arbitrary-suffix impossibility
   proofs, revision-17 wrong-lookup rejection, genuine revision-18 O17/O19
   producers, and revision-19 sealed base/nonempty probes;
@@ -795,8 +820,8 @@ local O5 body. Current gate evidence is:
 
 Theorem 73 remains unproved with 21 research holes. Revision-17 endpoint and
 revision-18 external-order work are ratified; O5 remains only locally closed.
-Revision-24 closes both pointwise checked L-Finish suffix heads and their
-per-step RAR/endpoint/occurrence/ordinal capital. Whole target bundle assembly
-stops at `replayAligned`: producer-owned moved-pair dictionary alignment was
-lost by the unmodified diamond boundary. The combined boundary gate remains
-unissued pending an atomic-ordering decision.
+Revisions 25–26 close the producer-owned aligned-diamond envelope and advance
+the whole target bundle through `replayTotal`. `replayIndependent` is the first
+remaining field: the per-finish producer's internal target-map identity was not
+retained across its exact transition projection. The exact mismatch is tracked;
+the combined boundary gate remains unissued.
