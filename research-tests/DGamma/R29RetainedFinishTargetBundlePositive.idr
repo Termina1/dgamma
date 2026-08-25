@@ -41,3 +41,11 @@ public export
   (replayedAfter (baseFinishReplay r27SecondFinishEnvelope))
 r29ParentRanksIncrease = reachedRegistryParentRanksIncrease r23Protocol
   r23NameEq r23KeyEq r29Reached r29Provenance
+
+public export
+0 r29PrecedenceAcyclic : PrecedenceAcyclic r23NameEq
+  (replayedAfter (baseFinishReplay r27SecondFinishEnvelope))
+r29PrecedenceAcyclic = disciplinedEndpointPrecedenceAcyclic r23Protocol
+  r23NameEq r23KeyEq
+  (replayedAfter (baseFinishReplay r27SecondFinishEnvelope)) r29Reached
+  r27WholeDiscipline
