@@ -85,7 +85,12 @@ Review trail:
   and
 - revision 32 derives the unindexed source package directly from `applyAction`,
   closes the full pointwise O-Insert head, transports childlessness for
-  O-Remove, and stops its source normalizer at the bounded lazy-guard diagnostic.
+  O-Remove, and stops its source normalizer at the bounded lazy-guard diagnostic;
+  and
+- revision 33 reaches the smaller staged O-Remove child-proof orientation,
+  records the bounded L-Begin source-index stop, and retains pointwise lifecycle
+  replacement, identity effect frames, and order-independent provider-candidate
+  foundations for the lighter lifecycle heads.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -509,6 +514,28 @@ O-Insert closed in two shifts and the O-Remove foundations are retained, while
 its staged guard normalizer remains charged. Holes remain **20**, split
 **6/4/8/1/1**.
 
+### Revision 33: pointwise lifecycle/provider foundations
+
+`research-tests/O6-R33-POINTWISE-LIFECYCLE-PROVIDER-FOUNDATIONS-AUDIT.md`
+records the next bounded checkpoint. The staged O-Remove evaluator no longer
+hits the composite lazy-guard wall; it stops at the final `hasChild` proof
+orientation, so revision 32's conditional same-wall negative-probe trigger did
+not fire. A separate L-Begin wrapper stops at lookup refinement of the public
+plan view. Both uncommitted source helpers were reverted after three attempts.
+
+The retained proofs preserve pointwise controls across related lifecycle
+replacement, specialize checked effect frames for L-Begin/L-Divert/L-Leave,
+transport runtime-provider candidacy from pointwise control plus actor-table
+effects, locate the related target candidate, and recover a provider scan from
+any located true candidate. These are order-independent foundations; ordered
+registry controls are not restored.
+
+No new semantic head closes. Six heads still remain, and L-Unload/L-Advance are
+not opened before the lighter provider-selection dependency closes. The
+remaining band therefore stays **18–34 shifts**: the reusable foundations reduce
+later bodies while both bounded source normalizers remain charged. Holes remain
+**20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -820,7 +847,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; generic spine recursion plus full O-Retire and O-Insert heads are closed. O-Remove owns childlessness/effect foundations but its staged source guard remains; five lifecycle heads and whole-result assembly follow.** | **XL, 18–34 remaining shifts after O-Insert closure and the O-Remove guard stop.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; generic spine plus O-Retire/O-Insert are closed. O-Remove and L-Begin have bounded source-normalization stops; lifecycle replacement, three identity frames, and pointwise provider-candidate/scan foundations are retained. Six heads and whole-result assembly remain.** | **XL, 18–34 remaining shifts after revision-33 lifecycle/provider foundations.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
