@@ -312,6 +312,7 @@ scopedFullSuffixFreeAdjacentCertificateProducer nameEq keyEq protocol actor left
         let diamond : LocalRelationalDiamond name key world error value nameEq
               keyEq left right
             diamond = MkLocalRelationalDiamond middle finalState left right
+              (replayAligned source)
               (trans leftAdvance (sym rightAdvance))
               (trans leftIter (sym rightIter))
               (trans rightAdvance (sym leftAdvance))

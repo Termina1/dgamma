@@ -547,6 +547,8 @@ record LocalRelationalDiamond
   swappedFinal : SystemState name key value world error
   movedRight : Transition first swappedMiddle
   movedLeft : Transition swappedMiddle swappedFinal
+  0 movedPairAligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions movedRight (MoreTransitions movedLeft NoTransitions))
   0 movedRightAction : transitionAction movedRight = transitionAction right
   0 movedRightTag : transitionTag movedRight = transitionTag right
   0 movedLeftAction : transitionAction movedLeft = transitionAction left
@@ -565,6 +567,31 @@ record LocalRelationalDiamond
   0 swappedControlEquivalent : ControlEquivalent name key world error value nameEq
     originalFinal swappedFinal
   0 swappedWellFormed : registryWellFormed @{nameEq} @{keyEq} swappedFinal = True
+
+0 alignedMovedPairWithCheckedTail :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, movedMiddle, movedFinal : SystemState name key value world error} ->
+  (movedRight : Transition first movedMiddle) ->
+  (0 movedRightAligned : AlignedTransitions name key world error value nameEq
+    keyEq (MoreTransitions movedRight NoTransitions)) ->
+  (leftAction : Action name key value world error) -> (leftTag : RuleTag) ->
+  (0 leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction movedMiddle =
+    Just (leftTag, movedFinal)) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions movedRight
+      (MoreTransitions
+        (Fired {before = movedMiddle} {afterState = movedFinal}
+          nameEq keyEq leftAction leftTag leftChecked)
+        NoTransitions))
+alignedMovedPairWithCheckedTail nameEq keyEq movedRight movedRightAligned
+  leftAction leftTag leftChecked = case movedRightAligned of
+    AlignedStep rightAction rightTag rightChecked NoTransitions AlignedEnd =>
+      AlignedStep rightAction rightTag rightChecked
+        (MoreTransitions
+          (Fired {before = movedMiddle} {afterState = movedFinal}
+            nameEq keyEq leftAction leftTag leftChecked)
+          NoTransitions)
+        (AlignedStep leftAction leftTag leftChecked NoTransitions AlignedEnd)
 
 record LocalAlignedHeadView
   (name, key, world, error : Type) (value : key -> Type)
@@ -5776,6 +5803,8 @@ record CheckedActivationEndpoint
   checkedEndpointTransition : Transition before checkedEndpointAfter
   0 checkedEndpointEquation : checkedApplyAction @{nameEq} @{keyEq} action before =
     Just (tag, checkedEndpointAfter)
+  0 checkedEndpointTransitionExact : checkedEndpointTransition =
+    Fired nameEq keyEq action tag checkedEndpointEquation
   0 checkedEndpointAction :
     transitionAction checkedEndpointTransition = action
   0 checkedEndpointTag : transitionTag checkedEndpointTransition = tag
@@ -5824,8 +5853,8 @@ checkActivationEndpoint nameEq keyEq action tag before originalFinal
                 checked)
             exactTransition : Transition before afterState
             exactTransition = Fired nameEq keyEq action tag checked
-        in MkCheckedActivationEndpoint afterState exactTransition checked Refl Refl
-          originalToActual afterWellFormed
+        in MkCheckedActivationEndpoint afterState exactTransition checked Refl
+          Refl Refl originalToActual afterWellFormed
 
 0 paperActivationStepTransport :
   {left : Transition leftBefore leftAfter} ->
@@ -7982,6 +8011,8 @@ activationActivationDiamondSpike nameEq keyEq left right earlyRight
               in MkLocalRelationalDiamond earlyRightFinal swappedFinal
                 earlyRight
                 (Fired nameEq keyEq leftAction leftTag movedCheckedLeft)
+                (alignedMovedPairWithCheckedTail nameEq keyEq earlyRight
+                  earlyRightAligned leftAction leftTag movedCheckedLeft)
                 sameAction sameTag Refl Refl
                 (\_ => paperActivationStepTransport sameAction sameTag
                   rightActivation)
@@ -8208,6 +8239,15 @@ activationOrchestrationDiamondSpike nameEq keyEq left right sourceAligned
                     controls = orderedControlsSymmetric reverseControls
                 in MkLocalRelationalDiamond earlyRightFinal swappedFinal
                   earlyRightTransition (checkedEndpointTransition endpoint)
+                  (rewrite checkedEndpointTransitionExact endpoint in
+                    AlignedStep rightAction rightTag earlyRightChecked
+                      (MoreTransitions
+                        (Fired nameEq keyEq leftAction leftTag
+                          (checkedEndpointEquation endpoint))
+                        NoTransitions)
+                      (AlignedStep leftAction leftTag
+                        (checkedEndpointEquation endpoint) NoTransitions
+                        AlignedEnd))
                   Refl Refl (checkedEndpointAction endpoint)
                   (checkedEndpointTag endpoint)
                   (\activation => void
@@ -8410,6 +8450,8 @@ orchestrationActivationDiamondSpike nameEq keyEq left right earlyRight
                     leftOrchestration distinctOwners comparison
               in MkLocalRelationalDiamond earlyRightFinal swappedFinal earlyRight
                 (Fired nameEq keyEq leftAction leftTag movedCheckedLeft)
+                (alignedMovedPairWithCheckedTail nameEq keyEq earlyRight
+                  earlyRightAligned leftAction leftTag movedCheckedLeft)
                 sameAction sameTag Refl Refl
                 (\_ => paperActivationStepTransport sameAction sameTag
                   rightActivation)
@@ -8692,6 +8734,9 @@ orchestrationOrchestrationDiamondSpike nameEq keyEq protocol left right
                         (earlyRightFinal safety) swappedFinal
                         (earlyRight safety)
                         (Fired nameEq keyEq leftAction leftTag movedLeftChecked)
+                        (alignedMovedPairWithCheckedTail nameEq keyEq
+                          (earlyRight safety) earlyRightAligned
+                          leftAction leftTag movedLeftChecked)
                         (earlyRightAction safety) (earlyRightTag safety)
                         (sym leftActionProjection) (sym leftTagProjection)
                         (\activation => void
