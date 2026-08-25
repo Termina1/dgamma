@@ -1843,6 +1843,22 @@ insertSourceIngredientsPointwise nameEq keyEq actor parent component ambient sou
               (setFreshAbsent nameEq actor (freshFiber component parent) source
                 applied inserted ** (Refl, Refl))
 
+||| O-Remove installs the empty effect table at its actor. The checked actual
+||| frame is independent of the still-open source guard normalizer.
+0 removeEffectFrameRelated :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  checkedApplyAction @{nameEq} @{keyEq} (ORemove actor) before =
+    Just (ORemoveTag, afterState) ->
+  EffectStateRelated keyEq
+    (setEffectTable @{nameEq} actor (emptyContext {key = key} {value = value})
+      (projectEffectState @{nameEq} before))
+    (projectEffectState @{nameEq} afterState)
+removeEffectFrameRelated nameEq keyEq actor before afterState checked =
+  case actualTransitionEffectFrame nameEq keyEq (ORemove actor) ORemoveTag
+    before afterState checked of
+      MkActualEffectFrame (PartialDefined related) => related
+
 ||| Complete pointwise O-Insert head. Applicability, checked target, endpoint,
 ||| map, RAR, occurrence, and ordinal evidence are all constructed together.
 0 replayPointwiseInsertHead :
