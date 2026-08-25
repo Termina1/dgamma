@@ -1253,6 +1253,40 @@ singletonNonAdvanceRAR nameEq keyEq action tag sourceBefore sourceAfter
   FiberControlMaybeRelated (Just fiber) Nothing -> Void
 pointwiseSomeNoControlImpossible relation impossible
 
+0 pointwiseNoSomeControlImpossible :
+  FiberControlMaybeRelated Nothing (Just fiber) -> Void
+pointwiseNoSomeControlImpossible relation impossible
+
+0 fiberControlNothingRight :
+  FiberControlMaybeRelated Nothing right -> right = Nothing
+fiberControlNothingRight NoControlFibers = Refl
+
+0 pointwiseControlLookupAbsent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (left, right : SystemState name key value world error) ->
+  ControlEquivalent name key world error value nameEq left right ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor (registry left) = Nothing ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor (registry right) = Nothing
+pointwiseControlLookupAbsent nameEq actor left right controls leftAbsent =
+  let 0 relatedRight : FiberControlMaybeRelated
+        (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+          {world = world} {error = error} actor (registry left))
+        (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+          {world = world} {error = error} actor (registry right))
+      relatedRight = controlPointwise controls actor
+      0 absentRelated : FiberControlMaybeRelated Nothing
+        (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+          {world = world} {error = error} actor (registry right))
+      absentRelated = replace
+        {p = \observed => FiberControlMaybeRelated observed
+          (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+            {world = world} {error = error} actor (registry right))}
+        leftAbsent relatedRight
+  in fiberControlNothingRight absentRelated
+
 0 pointwiseControlLookupFound :
   (nameEq : DecEq name) -> (actor : name) ->
   (left, right : SystemState name key value world error) ->
@@ -1293,6 +1327,39 @@ pointwiseControlLookupFound nameEq actor left right controls leftFiber leftFound
       in case exactRelation of
         SomeControlFibers fibersRelated =>
           (rightFiber ** (Refl, fibersRelated))
+
+0 pointwiseControlLookupPresenceSame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (left, right : SystemState name key value world error) ->
+  ControlEquivalent name key world error value nameEq left right ->
+  isJust (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor (registry left)) =
+  isJust (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor (registry right))
+pointwiseControlLookupPresenceSame nameEq actor left right controls
+  with (lookupFiber @{nameEq} actor (registry left)) proof leftFound
+  pointwiseControlLookupPresenceSame nameEq actor left right controls |
+    Nothing = rewrite pointwiseControlLookupAbsent nameEq actor left right
+      controls leftFound in Refl
+  pointwiseControlLookupPresenceSame nameEq actor left right controls |
+    Just leftFiber =
+      case pointwiseControlLookupFound nameEq actor left right controls leftFiber
+        leftFound of
+        (rightFiber ** (rightFound, related)) => rewrite rightFound in Refl
+
+0 pointwiseParentPresentSame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (parent : Parent name) ->
+  (left, right : SystemState name key value world error) ->
+  ControlEquivalent name key world error value nameEq left right ->
+  parentPresent @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} parent (registry left) =
+  parentPresent @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} parent (registry right)
+pointwiseParentPresentSame nameEq Root left right controls = Refl
+pointwiseParentPresentSame nameEq (ChildOf actor) left right controls =
+  pointwiseControlLookupPresenceSame nameEq actor left right controls
 
 0 retireFiberControlRelated :
   FiberControlRelated left right ->
