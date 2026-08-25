@@ -111,10 +111,10 @@ manifest = json.loads(manifest_path.read_text())
 if manifest.get('baseline') != '7d467e0556ab8ef62fa0d6c21b049f4346f1245d':
     raise SystemExit('wrong CP5 hole-interface baseline coordinate')
 entries = manifest.get('holes', [])
-if len(entries) != 27:
-    raise SystemExit(f'baseline manifest has {len(entries)} holes, expected 27')
+if len(entries) != 26:
+    raise SystemExit(f'revision-19 manifest has {len(entries)} hole interfaces, expected 26')
 baseline_holes = [entry['hole'] for entry in entries]
-if len(set(baseline_holes)) != 27:
+if len(set(baseline_holes)) != 26:
     raise SystemExit('baseline manifest contains duplicate hole names')
 
 def current_signature(path, function):
@@ -162,16 +162,63 @@ for forbidden in [
         raise SystemExit('revision-18 authorization widened beyond suffix signature')
 
 approved_fields = manifest.get('approvedRecordFieldRevisions', [])
-if len(approved_fields) != 2 or any(entry.get('revision') != 17 for entry in approved_fields):
-    raise SystemExit('revision-17 record-field manifest is missing or malformed')
-for entry in approved_fields:
+revision17_fields = [entry for entry in approved_fields if entry.get('revision') == 17]
+revision19_fields = [entry for entry in approved_fields if entry.get('revision') == 19]
+if len(approved_fields) != 5 or len(revision17_fields) != 2 or len(revision19_fields) != 3:
+    raise SystemExit('approved record-field manifest is missing or malformed')
+for entry in revision17_fields:
     if entry.get('audit') != 'research-tests/O6-ENDPOINT-CONTROLS-AUDIT.md':
         raise SystemExit('revision-17 record field lacks its authorized audit')
+for entry in revision19_fields:
+    if entry.get('audit') != 'research-tests/O6-R29-FINISH-MAP-END-TO-END-AUDIT.md':
+        raise SystemExit('revision-19 record field lacks its authorized audit')
+for entry in approved_fields:
     text = Path(entry['module']).read_text()
     if text.count(entry['signature']) != 1:
         raise SystemExit(
             f"approved record field changed: {entry['record']}.{entry['field']}"
         )
+
+type_additions = manifest.get('approvedTypeAdditions', [])
+if len(type_additions) != 1:
+    raise SystemExit('revision-19 sealed-spine addition is missing or malformed')
+for entry in type_additions:
+    if (entry.get('revision') != 19 or entry.get('visibility') != 'export' or
+            entry.get('audit') !=
+              'research-tests/O6-R29-FINISH-MAP-END-TO-END-AUDIT.md'):
+        raise SystemExit('revision-19 sealed-spine addition lacks authorization')
+    if Path(entry['module']).read_text().count(entry['signature']) != 1:
+        raise SystemExit('revision-19 sealed-spine declaration changed')
+
+constructor_revisions = manifest.get('approvedConstructorRevisions', [])
+if len(constructor_revisions) != 2:
+    raise SystemExit('revision-19 constructor revisions are missing or malformed')
+for entry in constructor_revisions:
+    if (entry.get('revision') != 19 or entry.get('visibility') != 'private' or
+            entry.get('audit') !=
+              'research-tests/O6-R29-FINISH-MAP-END-TO-END-AUDIT.md'):
+        raise SystemExit('revision-19 constructor revision lacks authorization')
+    text = Path(entry['module']).read_text()
+    for constructor in entry['constructors']:
+        if text.count(constructor) < 1:
+            raise SystemExit(f'revision-19 constructor missing: {constructor}')
+    if 'requiredCapital' in entry and text.count(entry['requiredCapital']) != 1:
+        raise SystemExit('revision-19 producer-owned map capital changed')
+    if 'declaration' in entry and text.count(entry['declaration']) != 1:
+        raise SystemExit('revision-19 opaque adjacent record declaration changed')
+
+projection_revisions = manifest.get('approvedProjectionRevisions', [])
+if len(projection_revisions) != 1:
+    raise SystemExit('revision-19 occurrence projection revision is missing')
+projection = projection_revisions[0]
+if (projection.get('revision') != 19 or projection.get('audit') !=
+      'research-tests/O6-R29-FINISH-MAP-END-TO-END-AUDIT.md'):
+    raise SystemExit('revision-19 occurrence projection lacks authorization')
+if Path(projection['module']).read_text().count(projection['implementation']) != 1:
+    raise SystemExit('revision-19 sealed occurrence projection changed')
+if 'adjacentSwapOperationalOccurrenceFoldSpike' in Path(
+        'research/DGamma/CP5ConfluenceLocalDiamondSpike.idr').read_text():
+    raise SystemExit('retired unrestricted occurrence fold remains live')
 
 current_occurrences = []
 for path in sorted(Path('research/DGamma').glob('CP5Confluence*Spike.idr')):
@@ -219,7 +266,7 @@ expected = {
     'CP5ConfluenceCanonicalSortSpike.idr': 6,
     'CP5ConfluenceCrossTraceSpike.idr': 4,
     'CP5ConfluenceDeletionChainSpike.idr': 8,
-    'CP5ConfluenceLocalDiamondSpike.idr': 2,
+    'CP5ConfluenceLocalDiamondSpike.idr': 1,
     'CP5ConfluenceRenamingCompositionSpike.idr': 1,
 }
 actual = {}
@@ -229,7 +276,7 @@ for filename, count in expected.items():
     actual[filename] = len(holes)
 if actual != expected:
     raise SystemExit(f'hole split mismatch: {actual}, expected {expected}')
-if sum(actual.values()) != 21:
+if sum(actual.values()) != 20:
     raise SystemExit(f'hole total mismatch: {sum(actual.values())}')
 
 plan = Path('THM73-PLAN.md').read_text()

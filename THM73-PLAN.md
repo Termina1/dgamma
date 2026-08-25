@@ -69,7 +69,10 @@ Review trail:
 - revision 28 closes target independence from retained maps and authenticated
   empty-program iterator replay; and
 - revision 29 closes provenance, ranking, acyclicity, support, and the complete
-  whole-target `ReplayInvariantBundle`. Frozen declarations remain unchanged.
+  whole-target `ReplayInvariantBundle`; and
+- assembled revision 19 atomically lands A/B/C/D/E: moved-pair alignment,
+  bundle-free sealed replay, opaque adjacent results, false-fold retirement,
+  and producer-owned map preservation. The suffix body remains untouched.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -405,10 +408,32 @@ protocol rank, increasing parent rank, precedence acyclicity, support
 well-foundedness, and support/active matching in record order. The complete
 result is `r29TargetBundle`.
 
-End-to-end closure authorizes the combined A/B/C/D/E review package. E is
+End-to-end closure authorized the combined A/B/C/D/E review package. E is
 producer-owned per-head map preservation retained before transition projection.
-No package item is landed yet; the manifest and hole count remain unchanged.
 The remaining estimate is revised to **20–35 shifts**.
+
+### Assembled revision 19: atomic A/B/C/D/E boundary landing
+
+The package approved from the revision-29 audit is landed as one boundary:
+
+- `LocalRelationalDiamond.movedPairAligned` is erased and populated at all five
+  genuine producers;
+- `SealedSuffixReplaySpine` has private constructors, no suffix-local bundle,
+  exact per-step replay capital, and producer-owned `headMapPreserved` beside
+  `headRAR`;
+- `AdjacentSwapResult` is opaque, retains its nine prior fields, and adds only
+  `sealedSuffixReplay` and `sealedOccurrenceFold`;
+- `swappedOccurrenceFold` is the sealed projection; and
+- the false unrestricted `adjacentSwapOperationalOccurrenceFoldSpike` is
+  retired while `adjacentSwapSuffixSpike` remains byte-identical.
+
+R21/R25 now consume the frozen moved-pair field directly. R27 retains the exact
+generic source/target head-map equality in addition to its finish identity.
+Independent-dictionary, hidden-constructor, and detached-map forgeries remain
+rejected at their intended indices. The manifest cites
+`O6-R29-FINISH-MAP-END-TO-END-AUDIT.md`. Holes fall from 21 to **20**, split
+**6/4/8/1/1**. O6 body work is blocked pending the assembled revision-19 scoped
+adversarial review.
 
 ## Executive estimate
 
@@ -423,8 +448,8 @@ the alignment-repair shift, within the accepted revised remainder.
 
 Mandatory re-estimation gates:
 
-1. the first proved `adjacentSwapOperationalOccurrenceFoldSpike` body, including
-   repeated identical prefix actions;
+1. the first proved `adjacentSwapSuffixSpike` body using the producer-sealed
+   occurrence fold, including repeated identical prefix actions;
 2. the first proved O9 `DeletionOperationalOccurrenceCertificate` from all three
    immutable `GenerationActionSubsequence` values;
 3. the first reachable repeated-Iter 2×2 execution;
@@ -721,7 +746,7 @@ There remain **21 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **3 holes; producer-owned finish-map retention closes target independence and every later bundle field. `r29TargetBundle` is complete. Atomic A/B/C/D/E gate prepared and unissued pending review.** | **XL, 20–35 shifts for atomic promotion/review, adjacent suffix body, block recursion, and downstream review.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; `r29TargetBundle` is complete and atomic A/B/C/D/E is landed. The false unrestricted fold is retired. Scoped assembled-revision-19 review is mandatory before the byte-identical adjacent suffix body is attempted.** | **XL, 20–35 shifts for scoped review, adjacent suffix body, block recursion, and downstream review.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -837,7 +862,7 @@ local O5 body. Current gate evidence is:
   including theorem assembly, root-order and arbitrary-suffix impossibility
   proofs, revision-17 wrong-lookup rejection, genuine revision-18 O17/O19
   producers, and revision-19 sealed base/nonempty probes;
-- exact current 6/4/8/2/1 hole split and 148–249 total / 139–240
+- exact current 6/4/8/1/1 hole split and 148–249 total / 139–240
   implementation-remaining arithmetic;
 - all five spikes and every tracked test serially;
 - exact CP3 blob and empty `src/`/package diff;
@@ -845,9 +870,9 @@ local O5 body. Current gate evidence is:
 - seeded exact 207/207 build and best-effort unseeded result; and
 - no tracked/staged changes.
 
-Theorem 73 remains unproved with 21 research holes. Revision-17 endpoint and
+Theorem 73 remains unproved with 20 research holes. Revision-17 endpoint and
 revision-18 external-order work are ratified; O5 remains only locally closed.
 Revisions 27–29 retain target-map identity at the finish producer, close
 independence, and assemble the complete target `ReplayInvariantBundle` through
-support/active matching. The atomic A/B/C/D/E boundary is prepared but remains
-unissued pending the combined frozen-interface review.
+support/active matching. The atomic A/B/C/D/E boundary is landed; no O6 body
+work is authorized before the assembled revision-19 scoped adversarial review.

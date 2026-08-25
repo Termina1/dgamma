@@ -146,12 +146,6 @@
       "signature": "0 relationalReplayEndpointTransitiveSpike :\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n  (left, middle, right : SystemState name key value world error) ->\n  RelationalReplayEndpoint name key world error value nameEq keyEq left middle ->\n  RelationalReplayEndpoint name key world error value nameEq keyEq middle right ->\n  RelationalReplayEndpoint name key world error value nameEq keyEq left right"
     },
     {
-      "function": "adjacentSwapOperationalOccurrenceFoldSpike",
-      "hole": "adjacentSwapOperationalOccurrenceFoldSpike_rhs",
-      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
-      "signature": "0 adjacentSwapOperationalOccurrenceFoldSpike :\n  (original : Transitions initial originalFinal) ->\n  (prefixTrace : Transitions initial pairFirst) ->\n  (left : Transition pairFirst pairMiddle) ->\n  (right : Transition pairMiddle pairFinal) ->\n  (suffix : Transitions pairFinal originalFinal) ->\n  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq\n    left right) ->\n  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->\n  (swappedTrace : Transitions initial replayedFinal) ->\n  appendTransitions prefixTrace (MoreTransitions left (MoreTransitions right suffix)) =\n    original ->\n  appendTransitions prefixTrace\n    (MoreTransitions (movedRight diamond)\n      (MoreTransitions (movedLeft diamond) replayedSuffix)) = swappedTrace ->\n  AdjacentSwapOperationalOccurrenceFold name key world error value original prefixTrace\n    left right suffix (movedRight diamond) (movedLeft diamond) replayedSuffix\n    swappedTrace"
-    },
-    {
       "function": "adjacentSwapSuffixSpike",
       "hole": "adjacentSwapSuffixSpike_rhs",
       "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
@@ -189,6 +183,74 @@
       "record": "LocalRelationalDiamond",
       "field": "swappedControlEquivalent",
       "signature": "  0 swappedControlEquivalent : ControlEquivalent name key world error value nameEq\n    originalFinal swappedFinal"
+    },
+    {
+      "revision": 19,
+      "audit": "research-tests/O6-R29-FINISH-MAP-END-TO-END-AUDIT.md",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "record": "LocalRelationalDiamond",
+      "field": "movedPairAligned",
+      "signature": "  0 movedPairAligned : AlignedTransitions name key world error value nameEq keyEq\n    (MoreTransitions movedRight (MoreTransitions movedLeft NoTransitions))"
+    },
+    {
+      "revision": 19,
+      "audit": "research-tests/O6-R29-FINISH-MAP-END-TO-END-AUDIT.md",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "record": "AdjacentSwapResult",
+      "field": "sealedSuffixReplay",
+      "signature": "  0 sealedSuffixReplay : SealedSuffixReplaySpine name key world error value nameEq\n    keyEq suffix replayedSuffix"
+    },
+    {
+      "revision": 19,
+      "audit": "research-tests/O6-R29-FINISH-MAP-END-TO-END-AUDIT.md",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "record": "AdjacentSwapResult",
+      "field": "sealedOccurrenceFold",
+      "signature": "  0 sealedOccurrenceFold : AdjacentSwapOperationalOccurrenceFold name key world\n    error value original tracePrefix left right suffix (movedRight diamond)\n    (movedLeft diamond) replayedSuffix swappedTrace"
+    }
+  ],
+  "approvedTypeAdditions": [
+    {
+      "revision": 19,
+      "audit": "research-tests/O6-R29-FINISH-MAP-END-TO-END-AUDIT.md",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "type": "SealedSuffixReplaySpine",
+      "visibility": "export",
+      "signature": "data SealedSuffixReplaySpine :\n  (name, key, world, error : Type) -> (value : key -> Type) ->\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->"
+    }
+  ],
+  "approvedConstructorRevisions": [
+    {
+      "revision": 19,
+      "audit": "research-tests/O6-R29-FINISH-MAP-END-TO-END-AUDIT.md",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "type": "SealedSuffixReplaySpine",
+      "constructors": [
+        "SealedSuffixReplayEnd",
+        "SealedSuffixReplayStep"
+      ],
+      "visibility": "private",
+      "requiredCapital": "    (0 headMapPreserved :\n      (state : EffectState name key value world) ->\n      partialEffectMap sourceStep state = partialEffectMap replayedStep state) ->"
+    },
+    {
+      "revision": 19,
+      "audit": "research-tests/O6-R29-FINISH-MAP-END-TO-END-AUDIT.md",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "type": "AdjacentSwapResult",
+      "constructors": [
+        "MkAdjacentSwapResult"
+      ],
+      "visibility": "private",
+      "declaration": "export\nrecord AdjacentSwapResult"
+    }
+  ],
+  "approvedProjectionRevisions": [
+    {
+      "revision": 19,
+      "audit": "research-tests/O6-R29-FINISH-MAP-END-TO-END-AUDIT.md",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "projection": "swappedOccurrenceFold",
+      "implementation": "swappedOccurrenceFold result = sealedOccurrenceFold result"
     }
   ]
 }
