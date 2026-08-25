@@ -1081,6 +1081,173 @@ singletonActionRegistrationReplay source replayed sameAction sameTag =
     (singletonGeneratedOriginCoherent source replayed sameAction)
     (singletonGeneratedGenerationSame source replayed sameAction)
 
+0 singletonOccursSelected :
+  {selected : Transition selectedBefore selectedAfter} ->
+  {only : Transition first finalState} ->
+  OccursIn selected (MoreTransitions only NoTransitions) -> selected = only
+singletonOccursSelected OccursHere = Refl
+singletonOccursSelected (OccursLater later) = void (noOccurrenceInEmpty later)
+
+0 noIteratorStageInSingletonNonAdvance :
+  (transition : Transition before afterState) ->
+  (action : Action name key value world error) ->
+  transitionAction transition = action ->
+  ((actor : name) -> Not (action = LAdvance actor)) ->
+  IteratorStage name key world error value selected
+    (MoreTransitions transition NoTransitions) -> Void
+noIteratorStageInSingletonNonAdvance transition action actionExact notAdvance
+  (StageFromAdvance nameEq keyEq selected tag equation occurs fiber found
+    remaining accumulator view lifecycle step rest suffix) =
+      case singletonOccursSelected occurs of
+        Refl => notAdvance selected (sym actionExact)
+
+0 singletonNonAdvanceGeneratorOrigin :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, replayedBefore, replayedAfter :
+    SystemState name key value world error) ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} action sourceBefore =
+    Just (tag, sourceAfter)) ->
+  (replayedChecked : checkedApplyAction @{nameEq} @{keyEq} action replayedBefore =
+    Just (tag, replayedAfter)) ->
+  ((actor : name) -> Not (action = LAdvance actor)) ->
+  (selected : name) ->
+  TraceEffectGenerator name key world error value selected
+    (MoreTransitions
+      (Fired {before = replayedBefore} {afterState = replayedAfter}
+        nameEq keyEq action tag replayedChecked) NoTransitions) ->
+  TraceEffectGenerator name key world error value selected
+    (MoreTransitions
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq action tag sourceChecked) NoTransitions)
+singletonNonAdvanceGeneratorOrigin nameEq keyEq action tag sourceBefore
+  sourceAfter replayedBefore replayedAfter sourceChecked replayedChecked
+  notAdvance selected
+  (ActualForwardGenerator _ _ _ _ _ _ _ occurs actorMatches) =
+    case singletonOccursSelected occurs of
+      Refl => ActualForwardGenerator sourceBefore sourceAfter nameEq keyEq action
+        tag sourceChecked OccursHere actorMatches
+singletonNonAdvanceGeneratorOrigin nameEq keyEq action tag sourceBefore
+  sourceAfter replayedBefore replayedAfter sourceChecked replayedChecked
+  notAdvance selected (IteratorForwardGenerator stage) =
+    void (noIteratorStageInSingletonNonAdvance
+      (Fired nameEq keyEq action tag replayedChecked) action Refl notAdvance stage)
+singletonNonAdvanceGeneratorOrigin nameEq keyEq action tag sourceBefore
+  sourceAfter replayedBefore replayedAfter sourceChecked replayedChecked
+  notAdvance selected (IteratorYieldedGenerator stage origin) =
+    void (noIteratorStageInSingletonNonAdvance
+      (Fired nameEq keyEq action tag replayedChecked) action Refl notAdvance stage)
+
+0 singletonNonAdvanceGeneratorUsesTransitionMap :
+  (transition : Transition before afterState) ->
+  (action : Action name key value world error) ->
+  (actionExact : transitionAction transition = action) ->
+  ((actor : name) -> Not (action = LAdvance actor)) ->
+  (generator : TraceEffectGenerator name key world error value selected
+    (MoreTransitions transition NoTransitions)) ->
+  (state : EffectState name key value world) ->
+  traceGeneratorMap generator state = partialEffectMap transition state
+singletonNonAdvanceGeneratorUsesTransitionMap transition action actionExact
+  notAdvance
+  (ActualForwardGenerator _ _ _ _ _ _ _ occurs actorMatches) state =
+    case singletonOccursSelected occurs of Refl => Refl
+singletonNonAdvanceGeneratorUsesTransitionMap transition action actionExact
+  notAdvance (IteratorForwardGenerator stage) state =
+    void (noIteratorStageInSingletonNonAdvance transition action actionExact
+      notAdvance stage)
+singletonNonAdvanceGeneratorUsesTransitionMap transition action actionExact
+  notAdvance (IteratorYieldedGenerator stage origin) state =
+    void (noIteratorStageInSingletonNonAdvance transition action actionExact
+      notAdvance stage)
+
+0 singletonNonAdvanceGeneratorMapPreserved :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, replayedBefore, replayedAfter :
+    SystemState name key value world error) ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} action sourceBefore =
+    Just (tag, sourceAfter)) ->
+  (replayedChecked : checkedApplyAction @{nameEq} @{keyEq} action replayedBefore =
+    Just (tag, replayedAfter)) ->
+  (notAdvance : (actor : name) -> Not (action = LAdvance actor)) ->
+  ((state : EffectState name key value world) ->
+    partialEffectMap
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq action tag sourceChecked) state =
+    partialEffectMap
+      (Fired {before = replayedBefore} {afterState = replayedAfter}
+        nameEq keyEq action tag replayedChecked) state) ->
+  (selected : name) ->
+  (generator : TraceEffectGenerator name key world error value selected
+    (MoreTransitions
+      (Fired {before = replayedBefore} {afterState = replayedAfter}
+        nameEq keyEq action tag replayedChecked) NoTransitions)) ->
+  (state : EffectState name key value world) ->
+  traceGeneratorMap
+    (singletonNonAdvanceGeneratorOrigin nameEq keyEq action tag sourceBefore
+      sourceAfter replayedBefore replayedAfter sourceChecked replayedChecked
+      notAdvance selected generator) state =
+  traceGeneratorMap generator state
+singletonNonAdvanceGeneratorMapPreserved nameEq keyEq action tag sourceBefore
+  sourceAfter replayedBefore replayedAfter sourceChecked replayedChecked
+  notAdvance mapPreserved selected
+  generator state =
+    trans
+      (singletonNonAdvanceGeneratorUsesTransitionMap
+        (Fired {before = sourceBefore} {afterState = sourceAfter}
+          nameEq keyEq action tag sourceChecked)
+        action Refl notAdvance
+        (singletonNonAdvanceGeneratorOrigin nameEq keyEq action tag sourceBefore
+          sourceAfter replayedBefore replayedAfter sourceChecked replayedChecked
+          notAdvance selected generator) state)
+      (trans (mapPreserved state)
+        (sym (singletonNonAdvanceGeneratorUsesTransitionMap
+          (Fired {before = replayedBefore} {afterState = replayedAfter}
+            nameEq keyEq action tag replayedChecked)
+          action Refl notAdvance generator state)))
+
+0 singletonNonAdvanceRAR :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, replayedBefore, replayedAfter :
+    SystemState name key value world error) ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} action sourceBefore =
+    Just (tag, sourceAfter)) ->
+  (replayedChecked : checkedApplyAction @{nameEq} @{keyEq} action replayedBefore =
+    Just (tag, replayedAfter)) ->
+  (notAdvance : (actor : name) -> Not (action = LAdvance actor)) ->
+  ((state : EffectState name key value world) ->
+    partialEffectMap
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq action tag sourceChecked) state =
+    partialEffectMap
+      (Fired {before = replayedBefore} {afterState = replayedAfter}
+        nameEq keyEq action tag replayedChecked) state) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions
+      (Fired {before = replayedBefore} {afterState = replayedAfter}
+        nameEq keyEq action tag replayedChecked) NoTransitions)
+singletonNonAdvanceRAR nameEq keyEq action tag sourceBefore sourceAfter
+  replayedBefore replayedAfter sourceChecked replayedChecked notAdvance
+  mapPreserved =
+    MkRelationalReplayCorrespondence
+      (singletonNonAdvanceGeneratorOrigin nameEq keyEq action tag sourceBefore
+        sourceAfter replayedBefore replayedAfter sourceChecked replayedChecked
+        notAdvance)
+      (singletonNonAdvanceGeneratorMapPreserved nameEq keyEq action tag
+        sourceBefore sourceAfter replayedBefore replayedAfter sourceChecked
+        replayedChecked notAdvance mapPreserved)
+      (\selected, stage => void (noIteratorStageInSingletonNonAdvance
+        (Fired nameEq keyEq action tag replayedChecked) action Refl notAdvance
+        stage))
+      (\selected, stage, state => void
+        (noIteratorStageInSingletonNonAdvance
+          (Fired nameEq keyEq action tag replayedChecked) action Refl notAdvance
+          stage))
+
 ||| Package an already-derived checked target head into the exact frozen
 ||| producer envelope.  Occurrence and relative-ordinal evidence is rebuilt here
 ||| from the owned source/target transitions, rather than accepted independently.
