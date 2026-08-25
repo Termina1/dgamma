@@ -2015,3 +2015,44 @@ r25TraceTotal (MoreTransitions transition rest) =
 
 0 r25WholeTotal : TraceComponentsTotal r23NameEq r23KeyEq r25WholeTargetTrace
 r25WholeTotal = r25TraceTotal r25WholeTargetTrace
+
+||| Revision 27 projection audit. Every closed field is a direct alias; no
+||| transport, rewrite, or reconstructed proof is permitted in this block.
+public export
+0 r27FinalEndpointIsR25 : r27FinalEndpoint = r25FinalEndpoint
+r27FinalEndpointIsR25 = Refl
+
+public export
+0 r27WholeTargetTrace : Transitions r23Initial
+  (replayedAfter (baseFinishReplay r27SecondFinishEnvelope))
+r27WholeTargetTrace = r25WholeTargetTrace
+
+0 r27WholeAligned : AlignedTransitions Nat R23Key Unit Unit R23Value r23NameEq
+  r23KeyEq r27WholeTargetTrace
+r27WholeAligned = r25WholeAligned
+
+0 r27WholeDiscipline : RegistrationDiscipline r23Protocol r23NameEq
+  r27WholeTargetTrace
+r27WholeDiscipline = r25WholeDiscipline
+
+0 r27InitialWellFormed :
+  registryWellFormed @{r23NameEq} @{r23KeyEq} r23Initial = True
+r27InitialWellFormed = r25InitialWellFormed
+
+0 r27InitialEmpty : bindings (registry r23Initial) = []
+r27InitialEmpty = r25InitialEmpty
+
+0 r27FinalWellFormed : registryWellFormed @{r23NameEq} @{r23KeyEq}
+  (replayedAfter (baseFinishReplay r27SecondFinishEnvelope)) = True
+r27FinalWellFormed = r25FinalWellFormed
+
+0 r27TargetQuiet : quiet @{r23NameEq} @{r23KeyEq}
+  (replayedAfter (baseFinishReplay r27SecondFinishEnvelope)) = True
+r27TargetQuiet = r25TargetQuiet
+
+0 r27TargetNoFailure : noFailedFibers
+  (replayedAfter (baseFinishReplay r27SecondFinishEnvelope)) = True
+r27TargetNoFailure = r25TargetNoFailure
+
+0 r27WholeTotal : TraceComponentsTotal r23NameEq r23KeyEq r27WholeTargetTrace
+r27WholeTotal = r25WholeTotal
