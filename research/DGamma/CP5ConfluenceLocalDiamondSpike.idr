@@ -1638,6 +1638,33 @@ pointwiseProviderCandidateSame nameEq keyEq wanted actor left right
                 (ownedValues leftTable) (ownedValues rightTable) tablesSame
           in rewrite activeSame in cong (isActive rightLifecycle &&) memberSame
 
+||| A named source candidate has one pointwise-related target candidate with the
+||| same executable provider predicate.
+0 pointwiseProviderCandidateAtName :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (actor : name) ->
+  (left, right : SystemState name key value world error) ->
+  ControlEquivalent name key world error value nameEq left right ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} left)
+    (projectEffectState @{nameEq} right) ->
+  (leftFiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} actor (registry left) = Just leftFiber ->
+  (rightFiber : Fiber name key value world error **
+    (lookupFiber @{nameEq} actor (registry right) = Just rightFiber,
+     FiberControlRelated leftFiber rightFiber,
+     (isActive (fiberLifecycle leftFiber) &&
+       memberKey @{keyEq} wanted (ownedValues (fiberTable leftFiber))) =
+     (isActive (fiberLifecycle rightFiber) &&
+       memberKey @{keyEq} wanted (ownedValues (fiberTable rightFiber)))))
+pointwiseProviderCandidateAtName nameEq keyEq wanted actor left right controls
+  effects leftFiber leftFound =
+    case pointwiseControlLookupFound nameEq actor left right controls leftFiber
+      leftFound of
+      (rightFiber ** (rightFound, related)) =>
+        (rightFiber ** (rightFound, related,
+          pointwiseProviderCandidateSame nameEq keyEq wanted actor left right
+            leftFiber rightFiber leftFound rightFound related effects))
+
 0 pointwiseControlAfterInsert :
   (nameEq : DecEq name) -> (actor : name) -> (parent : Parent name) ->
   (component : Component key value world error) ->
