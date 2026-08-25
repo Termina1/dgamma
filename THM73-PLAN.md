@@ -687,9 +687,9 @@ It runs serially:
 
 - five research spikes;
 - 45 tracked positive modules; and
-- 40 tracked expected-failure modules.
+- 41 tracked expected-failure modules.
 
-All 85 tracked Idris test modules occur exactly once. Every negative specification
+All 86 tracked Idris test modules occur exactly once. Every negative specification
 contains its own mandatory diagnostic substring and source declaration name. A
 generic dependent error no longer suffices.
 
@@ -858,7 +858,7 @@ local O5 body. Current gate evidence is:
   dependencies;
 - `R16ConfluenceTheoremAssemblyPositive` remains only an assembly-through-holes
   check and is not evidence that O6 is producer-suppliable;
-- exact 85-module runner coverage with module-specific negative diagnostics,
+- exact 86-module runner coverage with module-specific negative diagnostics,
   including theorem assembly, root-order and arbitrary-suffix impossibility
   proofs, revision-17 wrong-lookup rejection, genuine revision-18 O17/O19
   producers, and revision-19 sealed base/nonempty probes;

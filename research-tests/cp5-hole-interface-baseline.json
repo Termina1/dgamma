@@ -198,7 +198,7 @@
       "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
       "record": "AdjacentSwapResult",
       "field": "sealedSuffixReplay",
-      "signature": "  0 sealedSuffixReplay : SealedSuffixReplaySpine name key world error value nameEq\n    keyEq suffix replayedSuffix"
+      "signature": "  0 sealedSuffixReplay :\n    {initial, pairFirst, pairMiddle, pairFinal, originalFinal :\n      SystemState name key value world error} ->\n    {original : Transitions initial originalFinal} ->\n    {tracePrefix : Transitions initial pairFirst} ->\n    {left : Transition pairFirst pairMiddle} ->\n    {right : Transition pairMiddle pairFinal} ->\n    {suffix : Transitions pairFinal originalFinal} ->\n    {diamond : LocalRelationalDiamond name key world error value nameEq keyEq\n      left right} ->\n    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq\n      original tracePrefix left right suffix diamond) ->\n    SealedSuffixReplaySpine name key world error value nameEq keyEq suffix\n      (replayedSuffix result)"
     },
     {
       "revision": 19,
@@ -206,7 +206,7 @@
       "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
       "record": "AdjacentSwapResult",
       "field": "sealedOccurrenceFold",
-      "signature": "  0 sealedOccurrenceFold : AdjacentSwapOperationalOccurrenceFold name key world\n    error value original tracePrefix left right suffix (movedRight diamond)\n    (movedLeft diamond) replayedSuffix swappedTrace"
+      "signature": "  0 sealedOccurrenceFold :\n    {initial, pairFirst, pairMiddle, pairFinal, originalFinal :\n      SystemState name key value world error} ->\n    {original : Transitions initial originalFinal} ->\n    {tracePrefix : Transitions initial pairFirst} ->\n    {left : Transition pairFirst pairMiddle} ->\n    {right : Transition pairMiddle pairFinal} ->\n    {suffix : Transitions pairFinal originalFinal} ->\n    {diamond : LocalRelationalDiamond name key world error value nameEq keyEq\n      left right} ->\n    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq\n      original tracePrefix left right suffix diamond) ->\n    AdjacentSwapOperationalOccurrenceFold name key world error value original\n      tracePrefix left right suffix (movedRight diamond) (movedLeft diamond)\n      (replayedSuffix result) (swappedTrace result)"
     }
   ],
   "approvedTypeAdditions": [
