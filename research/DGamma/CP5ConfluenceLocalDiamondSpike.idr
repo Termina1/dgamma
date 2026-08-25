@@ -17,6 +17,7 @@ import DGamma.CP4DeletionBoundaryDeleted
 import DGamma.CP4DeletionBoundaryRetained
 import DGamma.CP4DeletionSelectedForeignOrchestration
 import DGamma.CP4DeletionFrames
+import DGamma.CP4DeletionFrameRetire
 import DGamma.CP4DeletionRelationalBoundary
 import DGamma.CP4DeletionRelationalActionCore
 import DGamma.CP4DeletionSelectedForeignLifecycleCore
@@ -1248,6 +1249,128 @@ singletonNonAdvanceRAR nameEq keyEq action tag sourceBefore sourceAfter
           (Fired nameEq keyEq action tag replayedChecked) action Refl notAdvance
           stage))
 
+0 pointwiseSomeNoControlImpossible :
+  FiberControlMaybeRelated (Just fiber) Nothing -> Void
+pointwiseSomeNoControlImpossible relation impossible
+
+0 pointwiseControlLookupFound :
+  (nameEq : DecEq name) -> (actor : name) ->
+  (left, right : SystemState name key value world error) ->
+  ControlEquivalent name key world error value nameEq left right ->
+  (leftFiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} actor (registry left) = Just leftFiber ->
+  (rightFiber : Fiber name key value world error **
+    (lookupFiber @{nameEq} actor (registry right) = Just rightFiber,
+     FiberControlRelated leftFiber rightFiber))
+pointwiseControlLookupFound nameEq actor left right controls leftFiber leftFound
+  with (lookupFiber @{nameEq} actor (registry right)) proof rightFound
+  pointwiseControlLookupFound nameEq actor left right controls leftFiber
+    leftFound | Nothing =
+      let 0 relatedRight : FiberControlMaybeRelated (Just leftFiber)
+            (lookupFiber @{nameEq} actor (registry right))
+          relatedRight = replace
+            {p = \observed => FiberControlMaybeRelated observed
+              (lookupFiber @{nameEq} actor (registry right))}
+            leftFound (controlPointwise controls actor)
+          0 impossibleRelation : FiberControlMaybeRelated (Just leftFiber) Nothing
+          impossibleRelation = replace
+            {p = \observed => FiberControlMaybeRelated (Just leftFiber) observed}
+            rightFound relatedRight
+      in void (pointwiseSomeNoControlImpossible impossibleRelation)
+  pointwiseControlLookupFound nameEq actor left right controls leftFiber
+    leftFound | Just rightFiber =
+      let 0 relatedRight : FiberControlMaybeRelated (Just leftFiber)
+            (lookupFiber @{nameEq} actor (registry right))
+          relatedRight = replace
+            {p = \observed => FiberControlMaybeRelated observed
+              (lookupFiber @{nameEq} actor (registry right))}
+            leftFound (controlPointwise controls actor)
+          0 exactRelation : FiberControlMaybeRelated (Just leftFiber)
+            (Just rightFiber)
+          exactRelation = replace
+            {p = \observed => FiberControlMaybeRelated (Just leftFiber) observed}
+            rightFound relatedRight
+      in case exactRelation of
+        SomeControlFibers fibersRelated =>
+          (rightFiber ** (Refl, fibersRelated))
+
+0 retireFiberControlRelated :
+  FiberControlRelated left right ->
+  FiberControlRelated (retireFiber left) (retireFiber right)
+retireFiberControlRelated
+  (FibersControlRelated {component} leftParent rightParent leftRetired
+    rightRetired leftTable rightTable leftLifecycle rightLifecycle parentSame
+    retiredSame lifecycleSame) =
+      FibersControlRelated {component = component} leftParent rightParent True True
+        leftTable rightTable leftLifecycle rightLifecycle parentSame Refl
+        lifecycleSame
+
+0 pointwiseControlAfterRetire :
+  (nameEq : DecEq name) -> (actor : name) ->
+  (leftWorld, rightWorld : world) ->
+  (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (leftFiber, rightFiber : Fiber name key value world error) ->
+  (leftFound : lookupFiber @{nameEq} actor leftRegistry = Just leftFiber) ->
+  (rightFound : lookupFiber @{nameEq} actor rightRegistry = Just rightFiber) ->
+  FiberControlRelated leftFiber rightFiber ->
+  ControlEquivalent name key world error value nameEq
+    (MkSystemState leftWorld leftRegistry)
+    (MkSystemState rightWorld rightRegistry) ->
+  ControlEquivalent name key world error value nameEq
+    (MkSystemState leftWorld
+      (replaceBinding @{nameEq} actor (retireFiber leftFiber) leftRegistry))
+    (MkSystemState rightWorld
+      (replaceBinding @{nameEq} actor (retireFiber rightFiber) rightRegistry))
+pointwiseControlAfterRetire nameEq actor leftWorld rightWorld leftRegistry
+  rightRegistry leftFiber rightFiber leftFound rightFound fibersRelated controls =
+    MkControlEquivalent pointwise
+  where
+  0 pointwise : (selected : name) -> FiberControlMaybeRelated
+    {name = name} {key = key} {value = value} {world = world} {error = error}
+    (lookupFiber @{nameEq} selected
+      (replaceBinding @{nameEq} actor (retireFiber leftFiber) leftRegistry))
+    (lookupFiber @{nameEq} selected
+      (replaceBinding @{nameEq} actor (retireFiber rightFiber) rightRegistry))
+  pointwise selected with (decEq @{nameEq} selected actor)
+    pointwise selected | Yes same = case same of
+      Refl => rewrite lookupReplacedFiber actor leftFiber (retireFiber leftFiber)
+        leftRegistry leftFound in
+        rewrite lookupReplacedFiber actor rightFiber (retireFiber rightFiber)
+          rightRegistry rightFound in
+            SomeControlFibers (retireFiberControlRelated fibersRelated)
+    pointwise selected | No distinct =
+      rewrite lookupReplaceOther selected actor distinct (retireFiber leftFiber)
+        leftRegistry in
+      rewrite lookupReplaceOther selected actor distinct (retireFiber rightFiber)
+        rightRegistry in controlPointwise controls selected
+
+0 retireSourceIngredients :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) ->
+  applyAction @{nameEq} @{keyEq} (ORetire actor)
+    (MkSystemState ambient source) = Just (ORetireTag, afterState) ->
+  (oldFiber : Fiber name key value world error **
+    (lookupFiber @{nameEq} actor source = Just oldFiber,
+     MkSystemState ambient
+       (replaceBinding @{nameEq} actor (retireFiber oldFiber) source) =
+       afterState))
+retireSourceIngredients nameEq keyEq actor ambient source afterState raw =
+  case retireSuccessView nameEq keyEq actor ambient source ORetireTag afterState
+    raw of
+    MkRetireSuccessView oldFiber found => (oldFiber ** (found, Refl))
+
+0 retireEffectFrameRelated :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  applyAction @{nameEq} @{keyEq} (ORetire actor) before =
+    Just (ORetireTag, afterState) ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} before)
+    (projectEffectState @{nameEq} afterState)
+retireEffectFrameRelated nameEq keyEq actor before afterState raw =
+  case retireActualEffectFrame nameEq keyEq actor before afterState ORetireTag raw of
+    MkActualEffectFrame (PartialDefined related) => related
+
 ||| Package an already-derived checked target head into the exact frozen
 ||| producer envelope.  Occurrence and relative-ordinal evidence is rebuilt here
 ||| from the owned source/target transitions, rather than accepted independently.
@@ -1315,6 +1438,123 @@ packagePointwiseRelationalHeadReplay nameEq keyEq sourceStep sourceAligned
     in MkPointwiseRelationalHeadReplay replayedAfter replayedStep sameAction
       sameTag replayedAligned rar mapPreserved endpoint occurrences
       relativeOrdinal
+
+||| First concrete branch of the private pointwise head replayer.  O-Retire is
+||| control-only, so its map is definitionally identity; applicability and the
+||| next quotient are reconstructed from the exact source transition plus the
+||| incoming pointwise endpoint.
+0 replayPointwiseRetireHead :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {sourceBefore, sourceAfter, replayedBefore :
+    SystemState name key value world error} ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} (ORetire actor)
+    sourceBefore = Just (ORetireTag, sourceAfter)) ->
+  registryWellFormed @{nameEq} @{keyEq} sourceBefore = True ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq sourceBefore
+    replayedBefore ->
+  PointwiseRelationalHeadReplay name key world error value nameEq keyEq
+    (Fired {before = sourceBefore} {afterState = sourceAfter}
+      nameEq keyEq (ORetire actor) ORetireTag sourceChecked)
+    replayedBefore
+replayPointwiseRetireHead nameEq keyEq actor
+  {sourceBefore = MkSystemState sourceWorld sourceRegistry}
+  {sourceAfter} {replayedBefore = MkSystemState replayedWorld replayedRegistry}
+  sourceChecked sourceWellFormed beforeEndpoint =
+    let sourceState : SystemState name key value world error
+        sourceState = MkSystemState sourceWorld sourceRegistry
+        replayedState : SystemState name key value world error
+        replayedState = MkSystemState replayedWorld replayedRegistry
+        0 sourceRaw : applyAction @{nameEq} @{keyEq} (ORetire actor)
+          sourceState = Just (ORetireTag, sourceAfter)
+        sourceRaw = checkedActionProjects nameEq keyEq (ORetire actor)
+          sourceState sourceAfter ORetireTag sourceChecked
+    in case retireSourceIngredients nameEq keyEq actor sourceWorld sourceRegistry
+      sourceAfter sourceRaw of
+      (sourceFiber ** (sourceFound, sourceAfterExact)) =>
+        case pointwiseControlLookupFound nameEq actor sourceState replayedState
+          (replayedControls beforeEndpoint) sourceFiber sourceFound of
+          (replayedFiber ** (replayedFound, fibersRelated)) =>
+            let targetState : SystemState name key value world error
+                targetState = MkSystemState replayedWorld
+                  (replaceBinding @{nameEq} actor (retireFiber replayedFiber)
+                    replayedRegistry)
+                0 targetRaw : applyAction @{nameEq} @{keyEq} (ORetire actor)
+                  replayedState = Just (ORetireTag, targetState)
+                targetRaw = rewrite replayedFound in Refl
+                0 targetWellFormed : registryWellFormed @{nameEq} @{keyEq}
+                  targetState = True
+                targetWellFormed = preservationTheoremProof nameEq keyEq
+                  (ORetire actor) replayedState targetState ORetireTag
+                  (replayedWellFormed beforeEndpoint) targetRaw
+                0 targetChecked : checkedApplyAction @{nameEq} @{keyEq}
+                  (ORetire actor) replayedState =
+                  Just (ORetireTag, targetState)
+                targetChecked = rewrite targetRaw in
+                  rewrite targetWellFormed in Refl
+                0 sourceFrame : EffectStateRelated keyEq
+                  (projectEffectState @{nameEq} sourceState)
+                  (projectEffectState @{nameEq} sourceAfter)
+                sourceFrame = retireEffectFrameRelated nameEq keyEq actor
+                  sourceState sourceAfter sourceRaw
+                0 targetFrame : EffectStateRelated keyEq
+                  (projectEffectState @{nameEq} replayedState)
+                  (projectEffectState @{nameEq} targetState)
+                targetFrame = retireEffectFrameRelated nameEq keyEq actor
+                  replayedState targetState targetRaw
+                0 nextEffects : EffectStateRelated keyEq
+                  (projectEffectState @{nameEq} sourceAfter)
+                  (projectEffectState @{nameEq} targetState)
+                nextEffects = effectStateRelatedTransitive
+                  (effectStateRelatedSymmetric sourceFrame)
+                  (effectStateRelatedTransitive (replayedEffects beforeEndpoint)
+                    targetFrame)
+                0 nextControlsConcrete : ControlEquivalent name key world error
+                  value nameEq
+                  (MkSystemState sourceWorld
+                    (replaceBinding @{nameEq} actor (retireFiber sourceFiber)
+                      sourceRegistry)) targetState
+                nextControlsConcrete = pointwiseControlAfterRetire nameEq actor
+                  sourceWorld replayedWorld sourceRegistry replayedRegistry
+                  sourceFiber replayedFiber sourceFound replayedFound
+                  fibersRelated (replayedControls beforeEndpoint)
+                0 nextControls : ControlEquivalent name key world error value
+                  nameEq sourceAfter targetState
+                nextControls = replace
+                  {p = \observed => ControlEquivalent name key world error value
+                    nameEq observed targetState}
+                  sourceAfterExact nextControlsConcrete
+                sourceStep : Transition sourceState sourceAfter
+                sourceStep = Fired nameEq keyEq (ORetire actor) ORetireTag
+                  sourceChecked
+                replayedStep : Transition replayedState targetState
+                replayedStep = Fired nameEq keyEq (ORetire actor) ORetireTag
+                  targetChecked
+                0 mapPreserved :
+                  (state : EffectState name key value world) ->
+                  partialEffectMap sourceStep state =
+                    partialEffectMap replayedStep state
+                mapPreserved state = Refl
+                0 notAdvance : (selected : name) -> Not
+                  (the (Action name key value world error) (ORetire actor) =
+                    LAdvance selected)
+                notAdvance selected Refl impossible
+                0 rar : RelationalReplayCorrespondence name key world error value
+                  (MoreTransitions sourceStep NoTransitions)
+                  (MoreTransitions replayedStep NoTransitions)
+                rar = singletonNonAdvanceRAR nameEq keyEq (ORetire actor)
+                  ORetireTag sourceState sourceAfter replayedState targetState
+                  sourceChecked targetChecked notAdvance mapPreserved
+                0 nextEndpoint : RelationalReplayEndpoint name key world error
+                  value nameEq keyEq sourceAfter targetState
+                nextEndpoint = MkRelationalReplayEndpoint nextEffects nextControls
+                  targetWellFormed
+                sourceAligned : AlignedTransitions name key world error value
+                  nameEq keyEq (MoreTransitions sourceStep NoTransitions)
+                sourceAligned = AlignedStep (ORetire actor) ORetireTag
+                  sourceChecked NoTransitions AlignedEnd
+            in packagePointwiseRelationalHeadReplay nameEq keyEq sourceStep
+              sourceAligned targetState (ORetire actor) ORetireTag targetChecked
+              Refl Refl rar mapPreserved nextEndpoint
 
 ||| Internal one-step evaluator used by the structural suffix recursion.  Its
 ||| endpoint input is exactly the result of the preceding checked replay (or the
