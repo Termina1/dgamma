@@ -1633,6 +1633,45 @@ pointwiseControlAfterInsert nameEq actor parent component leftWorld rightWorld
         (freshFiber component parent) rightRegistry rightAbsent in
         controlPointwise controls selected
 
+||| Replacing the same named owner with newly related control states preserves
+||| pointwise control even when the two registries use different list orders.
+0 pointwiseControlAfterReplace :
+  (nameEq : DecEq name) -> (actor : name) ->
+  (leftWorld, rightWorld : world) ->
+  (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (leftOld, rightOld, leftNext, rightNext : Fiber name key value world error) ->
+  (leftFound : lookupFiber @{nameEq} actor leftRegistry = Just leftOld) ->
+  (rightFound : lookupFiber @{nameEq} actor rightRegistry = Just rightOld) ->
+  FiberControlRelated leftNext rightNext ->
+  ControlEquivalent name key world error value nameEq
+    (MkSystemState leftWorld leftRegistry)
+    (MkSystemState rightWorld rightRegistry) ->
+  ControlEquivalent name key world error value nameEq
+    (MkSystemState leftWorld
+      (replaceBinding @{nameEq} actor leftNext leftRegistry))
+    (MkSystemState rightWorld
+      (replaceBinding @{nameEq} actor rightNext rightRegistry))
+pointwiseControlAfterReplace nameEq actor leftWorld rightWorld leftRegistry
+  rightRegistry leftOld rightOld leftNext rightNext leftFound rightFound
+  nextRelated controls = MkControlEquivalent pointwise
+  where
+  0 pointwise : (selected : name) -> FiberControlMaybeRelated
+    {name = name} {key = key} {value = value} {world = world} {error = error}
+    (lookupFiber @{nameEq} selected
+      (replaceBinding @{nameEq} actor leftNext leftRegistry))
+    (lookupFiber @{nameEq} selected
+      (replaceBinding @{nameEq} actor rightNext rightRegistry))
+  pointwise selected with (decEq @{nameEq} selected actor)
+    pointwise selected | Yes same = case same of
+      Refl => rewrite lookupReplacedFiber actor leftOld leftNext leftRegistry
+        leftFound in
+        rewrite lookupReplacedFiber actor rightOld rightNext rightRegistry
+          rightFound in SomeControlFibers nextRelated
+    pointwise selected | No distinct =
+      rewrite lookupReplaceOther selected actor distinct leftNext leftRegistry in
+      rewrite lookupReplaceOther selected actor distinct rightNext rightRegistry in
+        controlPointwise controls selected
+
 0 retireFiberControlRelated :
   FiberControlRelated left right ->
   FiberControlRelated (retireFiber left) (retireFiber right)
