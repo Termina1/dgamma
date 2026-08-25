@@ -961,6 +961,194 @@ checkedTargetWellFormed nameEq keyEq action before afterState tag checked
         case justInjective checked of
           Refl => wellFormed
 
+0 singletonPrefixTooLong :
+  {first, point, beforeLocated, afterLocated, finalState :
+    SystemState name key value world error} ->
+  (prefixStep : Transition first point) ->
+  (prefixRest : Transitions point beforeLocated) ->
+  (located : Transition beforeLocated afterLocated) ->
+  (suffix : Transitions afterLocated finalState) ->
+  (only : Transition first finalState) ->
+  appendTransitions (MoreTransitions prefixStep prefixRest)
+    (MoreTransitions located suffix) = MoreTransitions only NoTransitions -> Void
+singletonPrefixTooLong prefixStep NoTransitions located suffix only
+  decomposition = case cong transitionCount decomposition of Refl impossible
+singletonPrefixTooLong prefixStep (MoreTransitions head tail) located suffix only
+  decomposition = case cong transitionCount decomposition of Refl impossible
+
+0 singletonActionOrigin :
+  (source : Transition sourceBefore sourceAfter) ->
+  (replayed : Transition replayedBefore replayedAfter) ->
+  transitionAction replayed = transitionAction source ->
+  LocatedActionOccurrence action (MoreTransitions replayed NoTransitions) ->
+  LocatedActionOccurrence action (MoreTransitions source NoTransitions)
+singletonActionOrigin source replayed sameAction
+  (MkLocatedActionOccurrence _ _ NoTransitions _ NoTransitions located Refl) =
+    MkLocatedActionOccurrence _ _ NoTransitions source NoTransitions
+      (trans (sym sameAction) located) Refl
+singletonActionOrigin source replayed sameAction
+  (MkLocatedActionOccurrence _ _ (MoreTransitions head tail) located suffix
+    actionSame decomposition) =
+      void (singletonPrefixTooLong head tail located suffix replayed decomposition)
+
+0 singletonTagPreserved :
+  (source : Transition sourceBefore sourceAfter) ->
+  (replayed : Transition replayedBefore replayedAfter) ->
+  (sameAction : transitionAction replayed = transitionAction source) ->
+  transitionTag replayed = transitionTag source ->
+  (occurrence : LocatedActionOccurrence action
+    (MoreTransitions replayed NoTransitions)) ->
+  transitionTag (locatedTransition
+    (singletonActionOrigin source replayed sameAction occurrence)) =
+  transitionTag (locatedTransition occurrence)
+singletonTagPreserved source replayed sameAction sameTag
+  (MkLocatedActionOccurrence _ _ NoTransitions _ NoTransitions located Refl) =
+    sym sameTag
+singletonTagPreserved source replayed sameAction sameTag
+  (MkLocatedActionOccurrence _ _ (MoreTransitions head tail) located suffix
+    actionSame decomposition) =
+      void (singletonPrefixTooLong head tail located suffix replayed decomposition)
+
+0 singletonGeneratedOrigin :
+  (source : Transition sourceBefore sourceAfter) ->
+  (replayed : Transition replayedBefore replayedAfter) ->
+  transitionAction replayed = transitionAction source ->
+  LocatedGeneratedRegistration child parent component
+    (MoreTransitions replayed NoTransitions) ->
+  LocatedGeneratedRegistration child parent component
+    (MoreTransitions source NoTransitions)
+singletonGeneratedOrigin source replayed sameAction
+  (MkLocatedGeneratedRegistration _ _ NoTransitions _ NoTransitions located
+    Refl) =
+      MkLocatedGeneratedRegistration _ _ NoTransitions source NoTransitions
+        (trans (sym sameAction) located) Refl
+singletonGeneratedOrigin source replayed sameAction
+  (MkLocatedGeneratedRegistration _ _ (MoreTransitions head tail) located suffix
+    actionSame decomposition) =
+      void (singletonPrefixTooLong head tail located suffix replayed decomposition)
+
+0 singletonGeneratedOriginCoherent :
+  (source : Transition sourceBefore sourceAfter) ->
+  (replayed : Transition replayedBefore replayedAfter) ->
+  (sameAction : transitionAction replayed = transitionAction source) ->
+  (occurrence : LocatedGeneratedRegistration child parent component
+    (MoreTransitions replayed NoTransitions)) ->
+  generatedRegistrationActionOccurrence
+    (singletonGeneratedOrigin source replayed sameAction occurrence) =
+  singletonActionOrigin source replayed sameAction
+    (generatedRegistrationActionOccurrence occurrence)
+singletonGeneratedOriginCoherent source replayed sameAction
+  (MkLocatedGeneratedRegistration _ _ NoTransitions _ NoTransitions located
+    Refl) = Refl
+singletonGeneratedOriginCoherent source replayed sameAction
+  (MkLocatedGeneratedRegistration _ _ (MoreTransitions head tail) located suffix
+    actionSame decomposition) =
+      void (singletonPrefixTooLong head tail located suffix replayed decomposition)
+
+0 singletonGeneratedGenerationSame :
+  (source : Transition sourceBefore sourceAfter) ->
+  (replayed : Transition replayedBefore replayedAfter) ->
+  (sameAction : transitionAction replayed = transitionAction source) ->
+  (occurrence : LocatedGeneratedRegistration child parent component
+    (MoreTransitions replayed NoTransitions)) ->
+  registrationGeneration
+    (singletonGeneratedOrigin source replayed sameAction occurrence) =
+  registrationGeneration occurrence
+singletonGeneratedGenerationSame source replayed sameAction
+  (MkLocatedGeneratedRegistration _ _ NoTransitions _ NoTransitions located
+    Refl) = Refl
+singletonGeneratedGenerationSame source replayed sameAction
+  (MkLocatedGeneratedRegistration _ _ (MoreTransitions head tail) located suffix
+    actionSame decomposition) =
+      void (singletonPrefixTooLong head tail located suffix replayed decomposition)
+
+%inline
+0 singletonActionRegistrationReplay :
+  (source : Transition sourceBefore sourceAfter) ->
+  (replayed : Transition replayedBefore replayedAfter) ->
+  (sameAction : transitionAction replayed = transitionAction source) ->
+  (sameTag : transitionTag replayed = transitionTag source) ->
+  ActionRegistrationReplayCorrespondence name key world error value
+    (MoreTransitions source NoTransitions)
+    (MoreTransitions replayed NoTransitions)
+singletonActionRegistrationReplay source replayed sameAction sameTag =
+  MkActionRegistrationReplayCorrespondence
+    (MkRegistrationGenerationBijection id id
+      (\generation => Refl) (\generation => Refl))
+    (singletonActionOrigin source replayed sameAction)
+    (singletonTagPreserved source replayed sameAction sameTag)
+    (singletonGeneratedOrigin source replayed sameAction)
+    (singletonGeneratedOriginCoherent source replayed sameAction)
+    (singletonGeneratedGenerationSame source replayed sameAction)
+
+||| Package an already-derived checked target head into the exact frozen
+||| producer envelope.  Occurrence and relative-ordinal evidence is rebuilt here
+||| from the owned source/target transitions, rather than accepted independently.
+0 packagePointwiseRelationalHeadReplay :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {sourceBefore, sourceAfter, replayedBefore :
+    SystemState name key value world error} ->
+  (sourceStep : Transition sourceBefore sourceAfter) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions sourceStep NoTransitions) ->
+  (replayedAfter : SystemState name key value world error) ->
+  (action : Action name key value world error) ->
+  (tag : RuleTag) ->
+  (0 targetChecked : checkedApplyAction @{nameEq} @{keyEq} action
+    replayedBefore = Just (tag, replayedAfter)) ->
+  transitionAction sourceStep = action ->
+  transitionTag sourceStep = tag ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceStep NoTransitions)
+    (MoreTransitions
+      (Fired {before = replayedBefore} {afterState = replayedAfter}
+        nameEq keyEq action tag targetChecked)
+      NoTransitions) ->
+  ((state : EffectState name key value world) ->
+    partialEffectMap sourceStep state =
+    partialEffectMap
+      (Fired {before = replayedBefore} {afterState = replayedAfter}
+        nameEq keyEq action tag targetChecked) state) ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq sourceAfter
+    replayedAfter ->
+  PointwiseRelationalHeadReplay name key world error value nameEq keyEq sourceStep
+    replayedBefore
+packagePointwiseRelationalHeadReplay nameEq keyEq sourceStep sourceAligned
+  replayedAfter action tag targetChecked sourceAction sourceTag rar mapPreserved
+  endpoint =
+    let replayedStep : Transition replayedBefore replayedAfter
+        replayedStep = Fired nameEq keyEq action tag targetChecked
+        0 sameAction : transitionAction replayedStep = transitionAction sourceStep
+        sameAction = sym sourceAction
+        0 sameTag : transitionTag replayedStep = transitionTag sourceStep
+        sameTag = sym sourceTag
+        0 replayedAligned : AlignedTransitions name key world error value nameEq
+          keyEq (MoreTransitions replayedStep NoTransitions)
+        replayedAligned = AlignedStep action tag targetChecked NoTransitions
+          AlignedEnd
+        0 occurrences : ActionRegistrationReplayCorrespondence name key world
+          error value (MoreTransitions sourceStep NoTransitions)
+          (MoreTransitions replayedStep NoTransitions)
+        occurrences = singletonActionRegistrationReplay sourceStep replayedStep
+          sameAction sameTag
+        0 relativeOrdinal :
+          {observed : Action name key value world error} ->
+          (occurrence : LocatedActionOccurrence observed
+            (MoreTransitions replayedStep NoTransitions)) ->
+          locatedActionOrdinal occurrence = locatedActionOrdinal
+            (replayActionOrigin occurrences occurrence)
+        relativeOrdinal
+          (MkLocatedActionOccurrence _ _ NoTransitions _ NoTransitions located
+            Refl) = Refl
+        relativeOrdinal
+          (MkLocatedActionOccurrence _ _ (MoreTransitions head tail) located
+            suffix actionSame decomposition) =
+              void (singletonPrefixTooLong head tail located suffix replayedStep
+                decomposition)
+    in MkPointwiseRelationalHeadReplay replayedAfter replayedStep sameAction
+      sameTag replayedAligned rar mapPreserved endpoint occurrences
+      relativeOrdinal
+
 ||| Internal one-step evaluator used by the structural suffix recursion.  Its
 ||| endpoint input is exactly the result of the preceding checked replay (or the
 ||| local diamond for the first head); it is never exposed as a premise of the
