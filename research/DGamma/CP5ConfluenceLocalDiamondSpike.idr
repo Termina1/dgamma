@@ -1764,6 +1764,203 @@ insertSourceIngredientsPointwise nameEq keyEq actor parent component ambient sou
               (setFreshAbsent nameEq actor (freshFiber component parent) source
                 applied inserted ** (Refl, Refl))
 
+||| Complete pointwise O-Insert head. Applicability, checked target, endpoint,
+||| map, RAR, occurrence, and ordinal evidence are all constructed together.
+0 replayPointwiseInsertHead :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  {sourceBefore, sourceAfter, replayedBefore :
+    SystemState name key value world error} ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq}
+    (OInsert actor parent component) sourceBefore =
+    Just (OInsertTag, sourceAfter)) ->
+  registryWellFormed @{nameEq} @{keyEq} sourceBefore = True ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq sourceBefore
+    replayedBefore ->
+  PointwiseRelationalHeadReplay name key world error value nameEq keyEq
+    (Fired {before = sourceBefore} {afterState = sourceAfter}
+      nameEq keyEq (OInsert actor parent component) OInsertTag sourceChecked)
+    replayedBefore
+replayPointwiseInsertHead nameEq keyEq actor parent component
+  {sourceBefore = MkSystemState sourceWorld sourceRegistry}
+  {sourceAfter} {replayedBefore = MkSystemState replayedWorld replayedRegistry}
+  sourceChecked sourceWellFormed beforeEndpoint =
+    let sourceState : SystemState name key value world error
+        sourceState = MkSystemState sourceWorld sourceRegistry
+        replayedState : SystemState name key value world error
+        replayedState = MkSystemState replayedWorld replayedRegistry
+        0 sourceRaw : applyAction @{nameEq} @{keyEq}
+          (OInsert actor parent component) sourceState =
+          Just (OInsertTag, sourceAfter)
+        sourceRaw = checkedActionProjects nameEq keyEq
+          (OInsert actor parent component) sourceState sourceAfter OInsertTag
+          sourceChecked
+    in case insertSourceIngredientsPointwise nameEq keyEq actor parent component
+      sourceWorld sourceRegistry sourceAfter sourceRaw of
+      (sourceAbsent ** (sourceGuards, sourceAfterExact)) =>
+        let 0 targetAbsent : (lookupFiber @{nameEq} {name = name} {key = key}
+              {value = value} {world = world} {error = error} actor
+              replayedRegistry = Nothing)
+            targetAbsent = pointwiseControlLookupAbsent nameEq actor sourceState
+              replayedState (replayedControls beforeEndpoint) sourceAbsent
+            0 parentSame : (parentPresent @{nameEq} {name = name} {key = key}
+              {value = value} {world = world} {error = error} parent
+              sourceRegistry = parentPresent @{nameEq} {name = name} {key = key}
+                {value = value} {world = world} {error = error} parent
+                replayedRegistry)
+            parentSame = pointwiseParentPresentSame nameEq parent sourceState
+              replayedState (replayedControls beforeEndpoint)
+            0 sourceParent : (parentPresent @{nameEq} {name = name} {key = key}
+              {value = value} {world = world} {error = error} parent
+              sourceRegistry = True)
+            sourceParent = boolAndLeftPointwise _ _ sourceGuards
+            0 targetParent : (parentPresent @{nameEq} {name = name} {key = key}
+              {value = value} {world = world} {error = error} parent
+              replayedRegistry = True)
+            targetParent = trans (sym parentSame) sourceParent
+            0 sourceDisjoint : (provisionsDisjointFrom @{keyEq} {name = name}
+              {key = key} {value = value} {world = world} {error = error}
+              (componentProvisions component) (bindings sourceRegistry) = True)
+            sourceDisjoint = boolAndRightPointwise _ _ sourceGuards
+            0 targetDisjoint : (provisionsDisjointFrom @{keyEq} {name = name}
+              {key = key} {value = value} {world = world} {error = error}
+              (componentProvisions component) (bindings replayedRegistry) = True)
+            targetDisjoint = pointwiseProvisionsDisjointFromTrue nameEq keyEq
+              (componentProvisions component) sourceState replayedState
+              (replayedControls beforeEndpoint) sourceDisjoint
+            0 targetGuards : (parentPresent @{nameEq} {name = name} {key = key}
+              {value = value} {world = world} {error = error} parent
+              replayedRegistry && provisionsDisjointFrom @{keyEq} {name = name}
+                {key = key} {value = value} {world = world} {error = error}
+                (componentProvisions component) (bindings replayedRegistry) = True)
+            targetGuards = boolAndBothPointwise _ _ targetParent targetDisjoint
+        in case setFreshFromAbsent nameEq actor (freshFiber component parent)
+          replayedRegistry targetAbsent of
+          (applied ** inserted) =>
+            let targetState : SystemState name key value world error
+                targetState = MkSystemState replayedWorld (coeffectAfter applied)
+                0 targetRaw : applyAction @{nameEq} @{keyEq}
+                  (OInsert actor parent component) replayedState =
+                  Just (OInsertTag, targetState)
+                targetRaw = rewrite targetGuards in rewrite inserted in Refl
+                0 targetWellFormed : registryWellFormed @{nameEq} @{keyEq}
+                  targetState = True
+                targetWellFormed = preservationTheoremProof nameEq keyEq
+                  (OInsert actor parent component) replayedState targetState
+                  OInsertTag (replayedWellFormed beforeEndpoint) targetRaw
+                0 targetChecked : checkedApplyAction @{nameEq} @{keyEq}
+                  (OInsert actor parent component) replayedState =
+                  Just (OInsertTag, targetState)
+                targetChecked = rewrite targetRaw in
+                  rewrite targetWellFormed in Refl
+                0 setRelated : EffectStateRelated keyEq
+                  (setEffectTable @{nameEq} actor
+                    (emptyContext {key = key} {value = value})
+                    (projectEffectState @{nameEq} sourceState))
+                  (setEffectTable @{nameEq} actor
+                    (emptyContext {key = key} {value = value})
+                    (projectEffectState @{nameEq} replayedState))
+                setRelated = setRelatedEffectTables nameEq keyEq actor
+                  (emptyContext {key = key} {value = value})
+                  (emptyContext {key = key} {value = value}) Refl
+                  (replayedEffects beforeEndpoint)
+                0 sourceFrame : EffectStateRelated keyEq
+                  (setEffectTable @{nameEq} actor
+                    (emptyContext {key = key} {value = value})
+                    (projectEffectState @{nameEq} sourceState))
+                  (projectEffectState @{nameEq} sourceAfter)
+                sourceFrame = insertEffectFrameRelated nameEq keyEq actor parent
+                  component sourceState sourceAfter sourceChecked
+                0 targetFrame : EffectStateRelated keyEq
+                  (setEffectTable @{nameEq} actor
+                    (emptyContext {key = key} {value = value})
+                    (projectEffectState @{nameEq} replayedState))
+                  (projectEffectState @{nameEq} targetState)
+                targetFrame = insertEffectFrameRelated nameEq keyEq actor parent
+                  component replayedState targetState targetChecked
+                0 nextEffects : EffectStateRelated keyEq
+                  (projectEffectState @{nameEq} sourceAfter)
+                  (projectEffectState @{nameEq} targetState)
+                nextEffects = effectStateRelatedTransitive
+                  (effectStateRelatedSymmetric sourceFrame)
+                  (effectStateRelatedTransitive setRelated targetFrame)
+                0 targetShape : (coeffectAfter applied =
+                  insertBinding @{nameEq} actor (freshFiber component parent)
+                    replayedRegistry
+                    (setFreshAbsent nameEq actor (freshFiber component parent)
+                      replayedRegistry applied inserted))
+                targetShape = setFreshAfter nameEq actor
+                  (freshFiber component parent) replayedRegistry applied inserted
+                0 nextControlsConcrete : ControlEquivalent name key world error
+                  value nameEq
+                  (MkSystemState sourceWorld
+                    (insertBinding @{nameEq} actor
+                      (freshFiber component parent) sourceRegistry sourceAbsent))
+                  (MkSystemState replayedWorld
+                    (insertBinding @{nameEq} actor
+                      (freshFiber component parent) replayedRegistry
+                      (setFreshAbsent nameEq actor (freshFiber component parent)
+                        replayedRegistry applied inserted)))
+                nextControlsConcrete = pointwiseControlAfterInsert nameEq actor
+                  parent component sourceWorld replayedWorld sourceRegistry
+                  replayedRegistry sourceAbsent
+                  (setFreshAbsent nameEq actor (freshFiber component parent)
+                    replayedRegistry applied inserted)
+                  (replayedControls beforeEndpoint)
+                0 nextControlsInserted : ControlEquivalent name key world error
+                  value nameEq sourceAfter
+                  (MkSystemState replayedWorld
+                    (insertBinding @{nameEq} actor
+                      (freshFiber component parent) replayedRegistry
+                      (setFreshAbsent nameEq actor (freshFiber component parent)
+                        replayedRegistry applied inserted)))
+                nextControlsInserted = replace
+                  {p = \observed => ControlEquivalent name key world error value
+                    nameEq observed
+                    (MkSystemState replayedWorld
+                      (insertBinding @{nameEq} actor
+                        (freshFiber component parent) replayedRegistry
+                        (setFreshAbsent nameEq actor
+                          (freshFiber component parent) replayedRegistry applied
+                          inserted)))}
+                  sourceAfterExact nextControlsConcrete
+                0 nextControls : ControlEquivalent name key world error value
+                  nameEq sourceAfter targetState
+                nextControls = rewrite targetShape in nextControlsInserted
+                sourceStep : Transition sourceState sourceAfter
+                sourceStep = Fired nameEq keyEq
+                  (OInsert actor parent component) OInsertTag sourceChecked
+                replayedStep : Transition replayedState targetState
+                replayedStep = Fired nameEq keyEq
+                  (OInsert actor parent component) OInsertTag targetChecked
+                0 mapPreserved :
+                  (state : EffectState name key value world) ->
+                  partialEffectMap sourceStep state =
+                    partialEffectMap replayedStep state
+                mapPreserved state = Refl
+                0 notAdvance : (selected : name) -> Not
+                  (the (Action name key value world error)
+                    (OInsert actor parent component) = LAdvance selected)
+                notAdvance selected Refl impossible
+                0 rar : RelationalReplayCorrespondence name key world error value
+                  (MoreTransitions sourceStep NoTransitions)
+                  (MoreTransitions replayedStep NoTransitions)
+                rar = singletonNonAdvanceRAR nameEq keyEq
+                  (OInsert actor parent component) OInsertTag sourceState
+                  sourceAfter replayedState targetState sourceChecked targetChecked
+                  notAdvance mapPreserved
+                0 nextEndpoint : RelationalReplayEndpoint name key world error
+                  value nameEq keyEq sourceAfter targetState
+                nextEndpoint = MkRelationalReplayEndpoint nextEffects nextControls
+                  targetWellFormed
+                sourceAligned : AlignedTransitions name key world error value
+                  nameEq keyEq (MoreTransitions sourceStep NoTransitions)
+                sourceAligned = AlignedStep (OInsert actor parent component)
+                  OInsertTag sourceChecked NoTransitions AlignedEnd
+            in packagePointwiseRelationalHeadReplay nameEq keyEq sourceStep
+              sourceAligned targetState (OInsert actor parent component)
+              OInsertTag targetChecked Refl Refl rar mapPreserved nextEndpoint
+
 ||| First concrete branch of the private pointwise head replayer.  O-Retire is
 ||| control-only, so its map is definitionally identity; applicability and the
 ||| next quotient are reconstructed from the exact source transition plus the
