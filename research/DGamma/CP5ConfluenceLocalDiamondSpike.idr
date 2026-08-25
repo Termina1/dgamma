@@ -1665,6 +1665,32 @@ pointwiseProviderCandidateAtName nameEq keyEq wanted actor left right controls
           pointwiseProviderCandidateSame nameEq keyEq wanted actor left right
             leftFiber rightFiber leftFound rightFound related effects))
 
+0 providerInFromLocatedCandidate :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (wanted : key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (actor : name) -> (fiber : Fiber name key value world error) ->
+  Elem (Bind actor fiber) entries ->
+  (isActive (fiberLifecycle fiber) &&
+    memberKey @{keyEq} wanted (ownedValues (fiberTable fiber))) = True ->
+  (provider : name ** providerIn @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} wanted entries =
+    Just provider)
+providerInFromLocatedCandidate nameEq keyEq wanted
+  (Bind actor fiber :: rest) actor fiber Here candidate =
+    rewrite candidate in (actor ** Refl)
+providerInFromLocatedCandidate nameEq keyEq wanted
+  (Bind current observed :: rest) actor fiber (There later) candidate
+  with (isActive (fiberLifecycle observed) &&
+    memberKey @{keyEq} wanted (ownedValues (fiberTable observed))) proof current
+  providerInFromLocatedCandidate nameEq keyEq wanted
+    (Bind current observed :: rest) actor fiber (There later) candidate | True =
+      (current ** Refl)
+  providerInFromLocatedCandidate nameEq keyEq wanted
+    (Bind current observed :: rest) actor fiber (There later) candidate | False =
+      case providerInFromLocatedCandidate nameEq keyEq wanted rest actor fiber
+        later candidate of
+        (provider ** found) => (provider ** found)
+
 0 pointwiseControlAfterInsert :
   (nameEq : DecEq name) -> (actor : name) -> (parent : Parent name) ->
   (component : Component key value world error) ->
