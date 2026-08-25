@@ -78,7 +78,10 @@ Review trail:
   reconciliation; and
 - revision 30 opens the authorized suffix implementation privately, constructs
   the exact generic sealed-spine recursion and singleton occurrence/RAR
-  packaging, and closes the first fully generic pointwise `O-Retire` head.
+  packaging, and closes the first fully generic pointwise `O-Retire` head; and
+- revision 31 closes pointwise O-Insert lookup/parent/provision guards,
+  post-insert controls, and the checked empty-table effect frame, then reverts a
+  bounded full-head attempt at the exact source-endpoint indexing diagnostic.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -457,6 +460,29 @@ the global target bundle remain. At this first generic recursion the remaining
 O6 band is re-estimated from **20–35** to **22–38 shifts**. Holes remain 20 until
 the existing adjacent suffix body is fully assembled; closure forecasts 19.
 
+### Revision 31: pointwise O-Insert foundations
+
+`research-tests/O6-R31-POINTWISE-INSERT-FOUNDATIONS-AUDIT.md` records four
+private lemma commits. Target absence and parent presence now follow directly
+from pointwise lookup control. Provision disjointness is transported without
+ordered lists by auditing every unique target entry against its same-component
+source entry. Fresh insertion preserves pointwise control, and the checked
+O-Insert effect frame is specialized to the installed empty table.
+
+A full O-Insert head attempt was reverted under the bounded-attempt rule. It
+reached the checked target, endpoint effects/controls, map equality, and
+non-advance RAR path, but direct matching on the indexed source view refined the
+concrete after-state away from the independently stored `sourceAfter` index. An
+unindexed wrapper then met the exact private-helper accessibility diagnostic.
+Neither is an output-shaped-capital or uninhabited-family finding. The next
+attempt must derive an unindexed source ingredient package directly from
+`applyAction`; it may not widen the frozen boundary.
+
+Four foundation shifts were consumed while the packaging diagnostic adds back
+roughly two. The remaining band is revised from **22–38** to **20–36 shifts**.
+Seven action heads remain open, although O-Insert now owns only final source
+packaging and assembly. Holes remain **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -768,7 +794,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; `r29TargetBundle` and atomic A/B/C/D/E are complete. Revision 30 constructs the private generic spine recursion, singleton occurrence/RAR packaging, and generic pointwise `O-Retire` head; seven action branches and whole-result assembly remain.** | **XL, 22–38 remaining shifts after the first generic-recursion re-estimate.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; revision 30 closes generic spine recursion and O-Retire. Revision 31 closes O-Insert lookup/parent/provision guards, post-controls, and checked effect frame; final O-Insert source packaging plus six other heads and whole-result assembly remain.** | **XL, 20–36 remaining shifts after the bounded O-Insert foundation checkpoint.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
