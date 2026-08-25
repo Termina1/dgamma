@@ -35,3 +35,9 @@ public export
   (replayedAfter (baseFinishReplay r27SecondFinishEnvelope))
 r29ProtocolRanked = reachedRegistryProtocolRanked r23Protocol r23NameEq r23KeyEq
   r29Reached r29Provenance
+
+public export
+0 r29ParentRanksIncrease : RegistryParentRanksIncrease r23Protocol r23NameEq
+  (replayedAfter (baseFinishReplay r27SecondFinishEnvelope))
+r29ParentRanksIncrease = reachedRegistryParentRanksIncrease r23Protocol
+  r23NameEq r23KeyEq r29Reached r29Provenance
