@@ -1361,6 +1361,154 @@ pointwiseParentPresentSame nameEq Root left right controls = Refl
 pointwiseParentPresentSame nameEq (ChildOf actor) left right controls =
   pointwiseControlLookupPresenceSame nameEq actor left right controls
 
+0 boolAndLeftPointwise :
+  (left, right : Bool) -> left && right = True -> left = True
+boolAndLeftPointwise False right valid = case valid of Refl impossible
+boolAndLeftPointwise True right valid = Refl
+
+0 boolAndRightPointwise :
+  (left, right : Bool) -> left && right = True -> right = True
+boolAndRightPointwise False right valid = case valid of Refl impossible
+boolAndRightPointwise True False valid = case valid of Refl impossible
+boolAndRightPointwise True True valid = Refl
+
+0 boolAndBothPointwise :
+  (left, right : Bool) -> left = True -> right = True -> left && right = True
+boolAndBothPointwise True True Refl Refl = Refl
+
+0 bindingKeyElemPointwise :
+  (entry : Binding key value) -> (entries : List (Binding key value)) ->
+  Elem entry entries -> Elem (bindingKey entry) (bindingKeys entries)
+bindingKeyElemPointwise entry (entry :: rest) Here = Here
+bindingKeyElemPointwise entry (other :: rest) (There later) =
+  There (bindingKeyElemPointwise entry rest later)
+
+0 entryLookupFromElemPointwise :
+  (nameEq : DecEq name) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  UniqueKeys (bindingKeys entries) ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  Elem (Bind selected fiber) entries ->
+  lookupEntries @{nameEq} selected entries = Just fiber
+entryLookupFromElemPointwise nameEq [] UniqueNil selected fiber present impossible
+entryLookupFromElemPointwise nameEq (Bind current observed :: rest)
+  (UniqueCons headFresh tailUnique) selected fiber present
+  with (decEq @{nameEq} selected current)
+  entryLookupFromElemPointwise nameEq (Bind selected observed :: rest)
+    (UniqueCons headFresh tailUnique) selected fiber present | Yes Refl =
+      let 0 sameFiber : (observed = fiber)
+          sameFiber = case present of
+            Here => Refl
+            There later => void (headFresh
+              (bindingKeyElemPointwise (Bind selected fiber) rest later))
+      in case sameFiber of Refl => Refl
+  entryLookupFromElemPointwise nameEq (Bind current observed :: rest)
+    (UniqueCons headFresh tailUnique) selected fiber present | No distinct =
+      case present of
+        Here => void (distinct Refl)
+        There later => entryLookupFromElemPointwise nameEq rest tailUnique
+          selected fiber later
+
+0 provisionsDisjointFromElemPointwise :
+  (keyEq : DecEq key) -> (provision : CoeffectSpec key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  Elem (Bind selected fiber) entries ->
+  provisionsDisjointFrom @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} provision entries = True ->
+  not (provisionOverlap @{keyEq} provision
+    (componentProvisions (fiberComponent fiber))) = True
+provisionsDisjointFromElemPointwise keyEq provision
+  (Bind selected fiber :: rest) selected fiber Here valid =
+    boolAndLeftPointwise _ _ valid
+provisionsDisjointFromElemPointwise keyEq provision
+  (Bind current observed :: rest) selected fiber (There later) valid =
+    provisionsDisjointFromElemPointwise keyEq provision rest selected fiber later
+      (boolAndRightPointwise _ _ valid)
+
+0 provisionsDisjointFromAllEntriesPointwise :
+  (keyEq : DecEq key) -> (provision : CoeffectSpec key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  ((selected : name) -> (fiber : Fiber name key value world error) ->
+    Elem (Bind selected fiber) entries ->
+    not (provisionOverlap @{keyEq} provision
+      (componentProvisions (fiberComponent fiber))) = True) ->
+  provisionsDisjointFrom @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} provision entries = True
+provisionsDisjointFromAllEntriesPointwise keyEq provision [] each = Refl
+provisionsDisjointFromAllEntriesPointwise keyEq provision
+  (Bind selected fiber :: rest) each =
+    boolAndBothPointwise _ _ (each selected fiber Here)
+      (provisionsDisjointFromAllEntriesPointwise keyEq provision rest
+        (\later, observed, present => each later observed (There present)))
+
+0 entryElemFromLookupPointwise :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (fiber : Fiber name key value world error) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  UniqueKeys (bindingKeys entries) ->
+  lookupEntries @{nameEq} selected entries = Just fiber ->
+  Elem (Bind selected fiber) entries
+entryElemFromLookupPointwise nameEq selected fiber [] UniqueNil found impossible
+entryElemFromLookupPointwise nameEq selected fiber
+  (Bind current observed :: rest) (UniqueCons headFresh tailUnique) found
+  with (decEq @{nameEq} selected current)
+  entryElemFromLookupPointwise nameEq current fiber
+    (Bind current observed :: rest) (UniqueCons headFresh tailUnique) found |
+    Yes Refl = case justInjective found of Refl => Here
+  entryElemFromLookupPointwise nameEq selected fiber
+    (Bind current observed :: rest) (UniqueCons headFresh tailUnique) found |
+    No distinct = There (entryElemFromLookupPointwise nameEq selected fiber
+      rest tailUnique found)
+
+0 pointwiseProvisionsDisjointFromTrue :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (provision : CoeffectSpec key) ->
+  (left, right : SystemState name key value world error) ->
+  ControlEquivalent name key world error value nameEq left right ->
+  provisionsDisjointFrom @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} provision (bindings (registry left)) = True ->
+  provisionsDisjointFrom @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} provision (bindings (registry right)) = True
+pointwiseProvisionsDisjointFromTrue nameEq keyEq provision
+  (MkSystemState leftWorld (MkCoeffectContext leftEntries leftUnique))
+  (MkSystemState rightWorld (MkCoeffectContext rightEntries rightUnique))
+  controls sourceDisjoint =
+    provisionsDisjointFromAllEntriesPointwise keyEq provision rightEntries
+      targetEntry
+  where
+  0 targetEntry : (selected : name) ->
+    (targetFiber : Fiber name key value world error) ->
+    Elem (Bind selected targetFiber) rightEntries ->
+    not (provisionOverlap @{keyEq} provision
+      (componentProvisions (fiberComponent targetFiber))) = True
+  targetEntry selected targetFiber present =
+    let 0 targetFoundEntries : (lookupEntries @{nameEq} selected rightEntries =
+          Just targetFiber)
+        targetFoundEntries = entryLookupFromElemPointwise nameEq rightEntries
+          rightUnique selected targetFiber present
+        0 targetFound : (lookupFiber @{nameEq} selected
+          (MkCoeffectContext rightEntries rightUnique) = Just targetFiber)
+        targetFound = targetFoundEntries
+    in case pointwiseControlLookupFound nameEq selected
+      (MkSystemState rightWorld (MkCoeffectContext rightEntries rightUnique))
+      (MkSystemState leftWorld (MkCoeffectContext leftEntries leftUnique))
+      (controlEquivalentSymmetric controls) targetFiber targetFound of
+      (sourceFiber ** (sourceFound, related)) =>
+        let 0 sourceFoundEntries : (lookupEntries @{nameEq} selected leftEntries =
+              Just sourceFiber)
+            sourceFoundEntries = lookupFiberEntries nameEq selected sourceFiber
+              (MkCoeffectContext leftEntries leftUnique) sourceFound
+            0 sourceEntryPresent : Elem (Bind selected sourceFiber) leftEntries
+            sourceEntryPresent = entryElemFromLookupPointwise nameEq selected
+              sourceFiber leftEntries leftUnique sourceFoundEntries
+            0 sourceHead : not (provisionOverlap @{keyEq} provision
+              (componentProvisions (fiberComponent sourceFiber))) = True
+            sourceHead = provisionsDisjointFromElemPointwise keyEq provision
+              leftEntries selected sourceFiber sourceEntryPresent sourceDisjoint
+        in case related of
+          FibersControlRelated _ _ _ _ _ _ _ _ _ _ _ => sourceHead
+
 0 retireFiberControlRelated :
   FiberControlRelated left right ->
   FiberControlRelated (retireFiber left) (retireFiber right)
