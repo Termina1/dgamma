@@ -1663,6 +1663,23 @@ r24FinalEndpoint = replayedEndpoint r24SecondFinishReplay
 
 ||| Definition-only transfer checks for the corrected envelope.  These RHSs
 ||| contain no rewrite, transport lemma, or reconstructed replay proof.
+||| Public test-local normalization of the authenticated replay transition.  It
+||| exposes no new caller premise: it is exactly the producer-owned transition
+||| equality with the transparent canonical constructor made explicit.
+public export
+0 r25CanonicalTransitionExact :
+  {actor : Nat} ->
+  {sourceBefore, sourceAfter, replayedBefore :
+    SystemState Nat R23Key R23Value Unit Unit} ->
+  {sourceChecked : checkedApplyAction @{r23NameEq} @{r23KeyEq}
+    (LAdvance actor) sourceBefore = Just (LFinishTag, sourceAfter)} ->
+  (replay : R24CheckedEmptyFinishReplay actor sourceBefore sourceAfter
+    replayedBefore sourceChecked) ->
+  replayedTransition replay =
+    Fired r23NameEq r23KeyEq (LAdvance actor) LFinishTag
+      (replayedChecked replay)
+r25CanonicalTransitionExact replay = replayedTransitionExact replay
+
 public export
 0 r25FirstFinishReplay : R24CheckedEmptyFinishReplay 1 r23AfterPair
   r23AfterAdvance1 (swappedFinal (baseDiamond r25AlignedDiamond))
