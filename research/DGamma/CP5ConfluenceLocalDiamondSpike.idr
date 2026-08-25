@@ -1898,6 +1898,45 @@ removeEffectFrameRelated nameEq keyEq actor before afterState checked =
     before afterState checked of
       MkActualEffectFrame (PartialDefined related) => related
 
+||| L-Begin, L-Divert, and L-Leave are control-only replacements. Their checked
+||| actual frames therefore relate the pre-state effect projection directly to
+||| the exact operational endpoint.
+0 beginEffectFrameRelated :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  checkedApplyAction @{nameEq} @{keyEq} (LBegin actor) before =
+    Just (LBeginTag, afterState) ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} before)
+    (projectEffectState @{nameEq} afterState)
+beginEffectFrameRelated nameEq keyEq actor before afterState checked =
+  case actualTransitionEffectFrame nameEq keyEq (LBegin actor) LBeginTag before
+    afterState checked of
+      MkActualEffectFrame (PartialDefined related) => related
+
+0 divertEffectFrameRelated :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  checkedApplyAction @{nameEq} @{keyEq} (LDivert actor) before =
+    Just (LDivertTag, afterState) ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} before)
+    (projectEffectState @{nameEq} afterState)
+divertEffectFrameRelated nameEq keyEq actor before afterState checked =
+  case actualTransitionEffectFrame nameEq keyEq (LDivert actor) LDivertTag before
+    afterState checked of
+      MkActualEffectFrame (PartialDefined related) => related
+
+0 leaveEffectFrameRelated :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  checkedApplyAction @{nameEq} @{keyEq} (LLeave actor) before =
+    Just (LLeaveTag, afterState) ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} before)
+    (projectEffectState @{nameEq} afterState)
+leaveEffectFrameRelated nameEq keyEq actor before afterState checked =
+  case actualTransitionEffectFrame nameEq keyEq (LLeave actor) LLeaveTag before
+    afterState checked of
+      MkActualEffectFrame (PartialDefined related) => related
+
 ||| Complete pointwise O-Insert head. Applicability, checked target, endpoint,
 ||| map, RAR, occurrence, and ordinal evidence are all constructed together.
 0 replayPointwiseInsertHead :
