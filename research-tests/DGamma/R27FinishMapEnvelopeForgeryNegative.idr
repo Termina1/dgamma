@@ -21,12 +21,22 @@ import DGamma.R23CorrectedInternalFixturePositive
     replayedBefore sourceChecked) ->
   ((state : EffectState Nat R23Key R23Value Unit) ->
     partialEffectMap
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        r23NameEq r23KeyEq (LAdvance actor) LFinishTag sourceChecked) state =
+    partialEffectMap
+      (Fired {before = replayedBefore} {afterState = replayedAfter replay}
+        r23NameEq r23KeyEq (LAdvance actor) LFinishTag
+        (replayedChecked replay)) state) ->
+  ((state : EffectState Nat R23Key R23Value Unit) ->
+    partialEffectMap
       (Fired {before = replayedBefore} {afterState = replayedAfter replay}
         r23NameEq r23KeyEq (LAdvance actor) LFinishTag
         (replayedChecked replay)) state = Just state) ->
   R27MapRetainedFinishReplay actor sourceBefore sourceAfter replayedBefore
     sourceChecked
-forgeFinishMapEnvelopeFromDetachedCanonicalMap replay detachedMap =
-  MkR27MapRetainedFinishReplay replay
+forgeFinishMapEnvelopeFromDetachedCanonicalMap replay detachedPreserved
+  detachedIdentity = MkR27MapRetainedFinishReplay replay
     (\state => case r25CanonicalTransitionExact replay of
-      Refl => detachedMap state)
+      Refl => detachedPreserved state)
+    (\state => case r25CanonicalTransitionExact replay of
+      Refl => detachedIdentity state)

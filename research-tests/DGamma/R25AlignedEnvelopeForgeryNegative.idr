@@ -9,26 +9,23 @@ import Decidable.Equality
 
 %default total
 
-||| Revision 25's envelope is safe only because its moved transition is the
-||| exact transition returned by the concrete A/A producer.  A caller cannot
-||| reproduce that population step for an arbitrary legacy diamond whose moved
-||| transitions store independently chosen executable dictionaries.
+||| Revision 25 now consumes the frozen producer-owned alignment.  A caller
+||| still cannot manufacture that field for independently stored executable
+||| dictionaries: the exact outer-dictionary index rejects the forgery.
 0 forgeAlignedEnvelopeFromIndependentDictionaries :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (left : Transition first middle) ->
-  (right : Transition middle originalFinal) ->
-  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
-    left right) ->
-  CandidateAlignedLocalRelationalDiamond name key world error value nameEq keyEq
-    left right
-forgeAlignedEnvelopeFromIndependentDictionaries nameEq keyEq left right diamond =
-  case movedRight diamond of
+  (movedRight : Transition first movedMiddle) ->
+  (movedLeft : Transition movedMiddle movedFinal) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions movedRight (MoreTransitions movedLeft NoTransitions))
+forgeAlignedEnvelopeFromIndependentDictionaries nameEq keyEq movedRight movedLeft =
+  case movedRight of
     Fired storedRightNameEq storedRightKeyEq rightAction rightTag rightChecked =>
-      case movedLeft diamond of
+      case movedLeft of
         Fired storedLeftNameEq storedLeftKeyEq leftAction leftTag leftChecked =>
-          sealAlignedLocalRelationalDiamond diamond
-            (activationActivationConstructorMovedAlignment nameEq keyEq
-              (movedRight diamond)
-              (AlignedStep rightAction rightTag rightChecked NoTransitions
-                AlignedEnd)
-              leftAction leftTag leftChecked)
+          activationActivationConstructorMovedAlignment nameEq keyEq
+            (Fired storedRightNameEq storedRightKeyEq rightAction rightTag
+              rightChecked)
+            (AlignedStep rightAction rightTag rightChecked NoTransitions
+              AlignedEnd)
+            leftAction leftTag leftChecked

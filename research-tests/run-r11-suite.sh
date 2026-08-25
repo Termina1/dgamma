@@ -70,7 +70,7 @@ POSITIVE=(
 # Each expected failure has its own mandatory diagnostic fragment and source
 # declaration. A generic dependent error is not enough to pass the suite.
 NEGATIVE_SPECS=(
-  "R19SealedReplayConstructorNegative|ScopedReplayEnd is private|forgedScopedReplaySpine"
+  "R19SealedReplayConstructorNegative|SealedSuffixReplayEnd is private|forgedScopedReplaySpine"
   "R20WholeBundleMovedAlignmentNegative|storedRightKeyEq and keyEq|localDiamondCannotSupplyMovedAlignment"
   "R21CandidateIndependentDictionaryNegative|storedRightKeyEq and keyEq|forgeCandidateFromIndependentDictionaries"
   "R21RepeatedIterProducerAlignmentNegative|storedRightKeyEq and storedLeftKeyEq|repeatedIterPremisesCannotSupplyMovedAlignment"

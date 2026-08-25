@@ -2,14 +2,14 @@ module DGamma.R19SealedReplayConstructorNegative
 
 import DGamma.Calculus
 import DGamma.CP3
-import DGamma.R19SealedReplayCertificateScopingPositive
+import DGamma.CP5ConfluenceLocalDiamondSpike
+import Decidable.Equality
 
 %default total
 
-||| The scoping candidate exports its indexed certificate types and producer
-||| functions, but importing consumers must not construct a detached recursive
-||| spine or certificate.
+||| The frozen spine type is exported for producer-owned projections, but an
+||| importing consumer must not construct even its empty case independently.
 0 forgedScopedReplaySpine :
-  ScopedReplaySpine {name = name} {key = key} {world = world} {error = error}
-    {value = value} (the (Transitions state state) NoTransitions) NoTransitions
-forgedScopedReplaySpine = ScopedReplayEnd
+  SealedSuffixReplaySpine name key world error value nameEq keyEq
+    (the (Transitions state state) NoTransitions) NoTransitions
+forgedScopedReplaySpine = SealedSuffixReplayEnd

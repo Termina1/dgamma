@@ -8,24 +8,23 @@ import Decidable.Equality
 
 %default total
 
-||| An arbitrary legacy diamond may store independent executable dictionaries.
-||| The candidate cannot be sealed by reusing its checked equations under the
-||| caller's outer dictionaries; the exact alignment index rejects the forgery.
+||| Detached checked transitions may store independent executable dictionaries.
+||| They cannot populate the frozen `movedPairAligned` field under a caller's
+||| outer dictionaries; the exact field index rejects this attempted forgery.
 0 forgeCandidateFromIndependentDictionaries :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (left : Transition first middle) ->
-  (right : Transition middle originalFinal) ->
-  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
-    left right) ->
-  CandidateAlignedLocalRelationalDiamond name key world error value nameEq keyEq
-    left right
-forgeCandidateFromIndependentDictionaries nameEq keyEq left right diamond =
-  case movedRight diamond of
+  (movedRight : Transition first movedMiddle) ->
+  (movedLeft : Transition movedMiddle movedFinal) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions movedRight (MoreTransitions movedLeft NoTransitions))
+forgeCandidateFromIndependentDictionaries nameEq keyEq movedRight movedLeft =
+  case movedRight of
     Fired storedRightNameEq storedRightKeyEq rightAction rightTag rightChecked =>
-      case movedLeft diamond of
+      case movedLeft of
         Fired storedLeftNameEq storedLeftKeyEq leftAction leftTag leftChecked =>
-          sealAlignedLocalRelationalDiamond diamond
-            (AlignedStep rightAction rightTag rightChecked
-              (MoreTransitions (movedLeft diamond) NoTransitions)
-              (AlignedStep leftAction leftTag leftChecked NoTransitions
-                AlignedEnd))
+          activationActivationConstructorMovedAlignment nameEq keyEq
+            (Fired storedRightNameEq storedRightKeyEq rightAction rightTag
+              rightChecked)
+            (AlignedStep rightAction rightTag rightChecked NoTransitions
+              AlignedEnd)
+            leftAction leftTag leftChecked
