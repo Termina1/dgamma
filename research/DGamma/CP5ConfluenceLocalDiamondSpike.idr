@@ -1509,6 +1509,85 @@ pointwiseProvisionsDisjointFromTrue nameEq keyEq provision
         in case related of
           FibersControlRelated _ _ _ _ _ _ _ _ _ _ _ => sourceHead
 
+0 boolOrBothFalsePointwise :
+  (left, right : Bool) -> left = False -> right = False -> left || right = False
+boolOrBothFalsePointwise False False Refl Refl = Refl
+
+0 parentDistinctMakesNotChildPointwise :
+  (nameEq : DecEq name) -> (parent, child : name) ->
+  (fiber : Fiber name key value world error) ->
+  Not (fiberParent fiber = ChildOf parent) ->
+  isChildOf @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} parent (Bind child fiber) = False
+parentDistinctMakesNotChildPointwise nameEq parent child
+  (MkFiber component Root retired table lifecycle) distinct = Refl
+parentDistinctMakesNotChildPointwise nameEq parent child
+  (MkFiber component (ChildOf candidate) retired table lifecycle) distinct
+  with (decEq @{nameEq} parent candidate)
+  parentDistinctMakesNotChildPointwise nameEq candidate child
+    (MkFiber component (ChildOf candidate) retired table lifecycle) distinct |
+    Yes Refl = void (distinct Refl)
+  parentDistinctMakesNotChildPointwise nameEq parent child
+    (MkFiber component (ChildOf candidate) retired table lifecycle) distinct |
+    No different = Refl
+
+0 hasChildInFromEntryParentsPointwise :
+  (nameEq : DecEq name) -> (parent : name) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  ((child : name) -> (fiber : Fiber name key value world error) ->
+    Elem (Bind child fiber) entries ->
+    Not (fiberParent fiber = ChildOf parent)) ->
+  hasChildIn @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} parent entries = False
+hasChildInFromEntryParentsPointwise nameEq parent [] each = Refl
+hasChildInFromEntryParentsPointwise nameEq parent
+  (Bind child fiber :: rest) each =
+    boolOrBothFalsePointwise _ _
+      (parentDistinctMakesNotChildPointwise nameEq parent child fiber
+        (each child fiber Here))
+      (hasChildInFromEntryParentsPointwise nameEq parent rest
+        (\later, observed, present => each later observed (There present)))
+
+0 pointwiseNoChildPreserved :
+  (nameEq : DecEq name) -> (parent : name) ->
+  (left, right : SystemState name key value world error) ->
+  ControlEquivalent name key world error value nameEq left right ->
+  hasChild @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} parent (registry left) = False ->
+  hasChild @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} parent (registry right) = False
+pointwiseNoChildPreserved nameEq parent
+  (MkSystemState leftWorld (MkCoeffectContext leftEntries leftUnique))
+  (MkSystemState rightWorld (MkCoeffectContext rightEntries rightUnique))
+  controls sourceNoChild =
+    hasChildInFromEntryParentsPointwise nameEq parent rightEntries targetParent
+  where
+  0 targetParent : (child : name) ->
+    (targetFiber : Fiber name key value world error) ->
+    Elem (Bind child targetFiber) rightEntries ->
+    Not (fiberParent targetFiber = ChildOf parent)
+  targetParent child targetFiber present =
+    let 0 targetFoundEntries : (lookupEntries @{nameEq} child rightEntries =
+          Just targetFiber)
+        targetFoundEntries = entryLookupFromElemPointwise nameEq rightEntries
+          rightUnique child targetFiber present
+        0 targetFound : (lookupFiber @{nameEq} child
+          (MkCoeffectContext rightEntries rightUnique) = Just targetFiber)
+        targetFound = targetFoundEntries
+    in case pointwiseControlLookupFound nameEq child
+      (MkSystemState rightWorld (MkCoeffectContext rightEntries rightUnique))
+      (MkSystemState leftWorld (MkCoeffectContext leftEntries leftUnique))
+      (controlEquivalentSymmetric controls) targetFiber targetFound of
+      (sourceFiber ** (sourceFound, related)) =>
+        let 0 sourceDistinct : Not
+              (fiberParent sourceFiber = ChildOf parent)
+            sourceDistinct = noChildLookupParentDistinct nameEq parent child
+              sourceFiber (MkCoeffectContext leftEntries leftUnique)
+              sourceNoChild sourceFound
+        in case related of
+          FibersControlRelated _ _ _ _ _ _ _ _ parentSame _ _ =>
+            \targetSame => sourceDistinct (trans (sym parentSame) targetSame)
+
 0 pointwiseControlAfterInsert :
   (nameEq : DecEq name) -> (actor : name) -> (parent : Parent name) ->
   (component : Component key value world error) ->
