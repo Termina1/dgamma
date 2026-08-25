@@ -1427,7 +1427,24 @@ record R24CheckedEmptyFinishReplay
     locatedActionOrdinal occurrence = locatedActionOrdinal
       (replayActionOrigin perStepOccurrence occurrence)
 
-0 r24ProduceEmptyFinish :
+||| Test-local candidate for frozen interface item E.  The existing replay is
+||| retained definitionally while the exact target map theorem remains indexed
+||| by that replay's owned checked transition.
+public export
+record R27MapRetainedFinishReplay
+  (actor : Nat)
+  (sourceBefore, sourceAfter, replayedBefore :
+    SystemState Nat R23Key R23Value Unit Unit)
+  (sourceChecked : checkedApplyAction @{r23NameEq} @{r23KeyEq}
+    (LAdvance actor) sourceBefore = Just (LFinishTag, sourceAfter)) where
+  constructor MkR27MapRetainedFinishReplay
+  baseFinishReplay : R24CheckedEmptyFinishReplay actor sourceBefore sourceAfter
+    replayedBefore sourceChecked
+  0 retainedTargetMapIdentity :
+    (state : EffectState Nat R23Key R23Value Unit) ->
+    partialEffectMap (replayedTransition baseFinishReplay) state = Just state
+
+0 r27ProduceMapRetainedFinish :
   (actor : Nat) ->
   (sourceBefore, sourceAfter, replayedBefore :
     SystemState Nat R23Key R23Value Unit Unit) ->
@@ -1437,9 +1454,9 @@ record R24CheckedEmptyFinishReplay
   lookupFiber @{r23NameEq} actor (registry sourceBefore) = Just r23Begun ->
   RelationalReplayEndpoint Nat R23Key Unit Unit R23Value r23NameEq r23KeyEq
     sourceBefore replayedBefore ->
-  R24CheckedEmptyFinishReplay actor sourceBefore sourceAfter replayedBefore
+  R27MapRetainedFinishReplay actor sourceBefore sourceAfter replayedBefore
     sourceChecked
-r24ProduceEmptyFinish actor
+r27ProduceMapRetainedFinish actor
   (MkSystemState sourceWorld sourceRegistry) sourceAfter
   (MkSystemState replayedWorld replayedRegistry) sourceChecked sourceWellFormed
   sourceFound beforeEndpoint =
@@ -1572,12 +1589,34 @@ r24ProduceEmptyFinish actor
                       located suffix same decomposition) =
                         void (r24SingletonPrefixTooLong head tail located suffix
                           targetTransition decomposition)
-              in MkR24CheckedEmptyFinishReplay targetAfter targetChecked
-                targetTransition Refl Refl Refl
-                (AlignedStep (LAdvance actor) LFinishTag targetChecked
-                  NoTransitions AlignedEnd)
-                (MkRelationalReplayEndpoint nextEffects nextControls
-                  targetWellFormed) rar occurrence ordinal
+              in MkR27MapRetainedFinishReplay
+                (MkR24CheckedEmptyFinishReplay targetAfter targetChecked
+                  targetTransition Refl Refl Refl
+                  (AlignedStep (LAdvance actor) LFinishTag targetChecked
+                    NoTransitions AlignedEnd)
+                  (MkRelationalReplayEndpoint nextEffects nextControls
+                    targetWellFormed) rar occurrence ordinal)
+                targetMapIdentity
+
+||| The revision-24 projection is intentionally definition-only.  Existing
+||| clients therefore keep their exact terms while revision 27 retains the
+||| additional producer proof.
+0 r24ProduceEmptyFinish :
+  (actor : Nat) ->
+  (sourceBefore, sourceAfter, replayedBefore :
+    SystemState Nat R23Key R23Value Unit Unit) ->
+  (sourceChecked : checkedApplyAction @{r23NameEq} @{r23KeyEq}
+    (LAdvance actor) sourceBefore = Just (LFinishTag, sourceAfter)) ->
+  registryWellFormed @{r23NameEq} @{r23KeyEq} sourceBefore = True ->
+  lookupFiber @{r23NameEq} actor (registry sourceBefore) = Just r23Begun ->
+  RelationalReplayEndpoint Nat R23Key Unit Unit R23Value r23NameEq r23KeyEq
+    sourceBefore replayedBefore ->
+  R24CheckedEmptyFinishReplay actor sourceBefore sourceAfter replayedBefore
+    sourceChecked
+r24ProduceEmptyFinish actor sourceBefore sourceAfter replayedBefore sourceChecked
+  sourceWellFormed sourceFound beforeEndpoint = baseFinishReplay
+    (r27ProduceMapRetainedFinish actor sourceBefore sourceAfter replayedBefore
+      sourceChecked sourceWellFormed sourceFound beforeEndpoint)
 
 0 r24PairEndpoint : RelationalReplayEndpoint Nat R23Key Unit Unit R23Value
   r23NameEq r23KeyEq r23AfterPair (swappedFinal r23Diamond)
@@ -1597,6 +1636,38 @@ public export
 r24SecondFinishReplay = r24ProduceEmptyFinish 2 r23AfterAdvance1 r23Final
   (replayedAfter r24FirstFinishReplay) r23Advance2Checked
   r23AfterAdvance1WellFormed Refl (replayedEndpoint r24FirstFinishReplay)
+
+public export
+0 r27FirstFinishEnvelope : R27MapRetainedFinishReplay 1 r23AfterPair
+  r23AfterAdvance1 (swappedFinal r23Diamond) r23Advance1Checked
+r27FirstFinishEnvelope = r27ProduceMapRetainedFinish 1 r23AfterPair
+  r23AfterAdvance1 (swappedFinal r23Diamond) r23Advance1Checked
+  r23AfterPairWellFormed Refl r24PairEndpoint
+
+public export
+0 r27FirstBaseIsR24 : baseFinishReplay r27FirstFinishEnvelope =
+  r24FirstFinishReplay
+r27FirstBaseIsR24 = Refl
+
+public export
+0 r27SecondFinishEnvelope : R27MapRetainedFinishReplay 2 r23AfterAdvance1
+  r23Final (replayedAfter (baseFinishReplay r27FirstFinishEnvelope))
+  r23Advance2Checked
+r27SecondFinishEnvelope = r27ProduceMapRetainedFinish 2 r23AfterAdvance1 r23Final
+  (replayedAfter (baseFinishReplay r27FirstFinishEnvelope)) r23Advance2Checked
+  r23AfterAdvance1WellFormed Refl
+  (replayedEndpoint (baseFinishReplay r27FirstFinishEnvelope))
+
+public export
+0 r27SecondBaseIsR24 : baseFinishReplay r27SecondFinishEnvelope =
+  r24SecondFinishReplay
+r27SecondBaseIsR24 = Refl
+
+public export
+0 r27FinalEndpoint : RelationalReplayEndpoint Nat R23Key Unit Unit R23Value
+  r23NameEq r23KeyEq r23Final
+  (replayedAfter (baseFinishReplay r27SecondFinishEnvelope))
+r27FinalEndpoint = replayedEndpoint (baseFinishReplay r27SecondFinishEnvelope)
 
 public export
 0 r24ReplayedSuffix : Transitions (swappedFinal r23Diamond)
