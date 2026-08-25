@@ -2155,6 +2155,7 @@ r27IteratorFree = IteratorFreeStep r23Insert1 _ r23Insert1BoundaryImpossible
             (replayedTransition (baseFinishReplay r27SecondFinishEnvelope))
             NoTransitions r27SecondBoundaryImpossible IteratorFreeEnd)))))
 
+public export
 0 r27NoIterator :
   {actor : Nat} ->
   IteratorStage Nat R23Key Unit Unit R23Value actor r27WholeTargetTrace -> Void
@@ -2184,6 +2185,7 @@ r27MovedLeftMapIdentity = r27BeginMapIdentity
   (movedLeft (baseDiamond r25AlignedDiamond)) 1
   (movedLeftAction (baseDiamond r25AlignedDiamond))
 
+public export
 0 r27ActualMapsTotal : ActualMapsTotalTrace r27WholeTargetTrace
 r27ActualMapsTotal = ActualMapsTotalStep r23Insert1 _ r23Insert1MapTotal
   (ActualMapsTotalStep r23Insert2 _ r23Insert2MapTotal
