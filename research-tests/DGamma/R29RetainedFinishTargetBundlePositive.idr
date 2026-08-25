@@ -49,3 +49,10 @@ r29PrecedenceAcyclic = disciplinedEndpointPrecedenceAcyclic r23Protocol
   r23NameEq r23KeyEq
   (replayedAfter (baseFinishReplay r27SecondFinishEnvelope)) r29Reached
   r27WholeDiscipline
+
+public export
+0 r29SupportWellFounded : SupportWellFounded r23NameEq
+  (replayedAfter (baseFinishReplay r27SecondFinishEnvelope))
+r29SupportWellFounded = supportCombinedWellFounded r23Protocol r23NameEq
+  (replayedAfter (baseFinishReplay r27SecondFinishEnvelope)) r29ProtocolRanked
+  r29ParentRanksIncrease
