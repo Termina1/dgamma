@@ -2056,3 +2056,148 @@ r27TargetNoFailure = r25TargetNoFailure
 
 0 r27WholeTotal : TraceComponentsTotal r23NameEq r23KeyEq r27WholeTargetTrace
 r27WholeTotal = r25WholeTotal
+
+0 r27MovedRightBoundaryImpossible : iteratorBoundaryImpossible
+  (movedRight (baseDiamond r25AlignedDiamond))
+r27MovedRightBoundaryImpossible actor actionSame fiber found remaining accumulator
+  view lifecycle step rest suffix = r23Begin2NotAdvance actor
+    (trans (sym (movedRightAction (baseDiamond r25AlignedDiamond))) actionSame)
+
+0 r27MovedLeftBoundaryImpossible : iteratorBoundaryImpossible
+  (movedLeft (baseDiamond r25AlignedDiamond))
+r27MovedLeftBoundaryImpossible actor actionSame fiber found remaining accumulator
+  view lifecycle step rest suffix = r23Begin1NotAdvance actor
+    (trans (sym (movedLeftAction (baseDiamond r25AlignedDiamond))) actionSame)
+
+0 r27CanonicalFinishBoundary :
+  {sourceActor : Nat} ->
+  {sourceBefore, sourceAfter, replayedBefore :
+    SystemState Nat R23Key R23Value Unit Unit} ->
+  {sourceChecked : checkedApplyAction @{r23NameEq} @{r23KeyEq}
+    (LAdvance sourceActor) sourceBefore = Just (LFinishTag, sourceAfter)} ->
+  (replay : R24CheckedEmptyFinishReplay sourceActor sourceBefore sourceAfter
+    replayedBefore sourceChecked) ->
+  ((selected : Nat) -> IteratorStage Nat R23Key Unit Unit R23Value selected
+    (MoreTransitions
+      (r24FinishTransition sourceActor sourceBefore sourceAfter sourceChecked)
+      NoTransitions) -> Void) ->
+  iteratorBoundaryImpossible
+    (Fired {before = replayedBefore} {afterState = replayedAfter replay}
+      r23NameEq r23KeyEq (LAdvance sourceActor) LFinishTag
+      (replayedChecked replay))
+r27CanonicalFinishBoundary replay sourceNoIterator actor actionSame fiber found
+  remaining accumulator view lifecycle step rest suffix = case actionSame of
+    Refl =>
+      let 0 canonicalStage : IteratorStage Nat R23Key Unit Unit R23Value actor
+            (MoreTransitions
+              (Fired {before = replayedBefore}
+                {afterState = replayedAfter replay}
+                r23NameEq r23KeyEq (LAdvance sourceActor) LFinishTag
+                (replayedChecked replay)) NoTransitions)
+          canonicalStage = StageFromAdvance r23NameEq r23KeyEq actor LFinishTag
+            (replayedChecked replay) OccursHere fiber found remaining accumulator
+            view lifecycle step rest suffix
+          0 localStage : IteratorStage Nat R23Key Unit Unit R23Value actor
+            (MoreTransitions (replayedTransition replay) NoTransitions)
+          localStage = replace
+            {p = \transition => IteratorStage Nat R23Key Unit Unit R23Value
+              actor (MoreTransitions transition NoTransitions)}
+            (sym (r25CanonicalTransitionExact replay)) canonicalStage
+          0 sourceStage : IteratorStage Nat R23Key Unit Unit R23Value actor
+            (MoreTransitions
+              (r24FinishTransition sourceActor sourceBefore sourceAfter
+                sourceChecked) NoTransitions)
+          sourceStage = replayIteratorStageOrigin (perStepRAR replay) actor
+            localStage
+      in sourceNoIterator actor sourceStage
+
+0 r27FinishBoundary :
+  {sourceActor : Nat} ->
+  {sourceBefore, sourceAfter, replayedBefore :
+    SystemState Nat R23Key R23Value Unit Unit} ->
+  {sourceChecked : checkedApplyAction @{r23NameEq} @{r23KeyEq}
+    (LAdvance sourceActor) sourceBefore = Just (LFinishTag, sourceAfter)} ->
+  (envelope : R27MapRetainedFinishReplay sourceActor sourceBefore sourceAfter
+    replayedBefore sourceChecked) ->
+  ((selected : Nat) -> IteratorStage Nat R23Key Unit Unit R23Value selected
+    (MoreTransitions
+      (r24FinishTransition sourceActor sourceBefore sourceAfter sourceChecked)
+      NoTransitions) -> Void) ->
+  iteratorBoundaryImpossible (replayedTransition (baseFinishReplay envelope))
+r27FinishBoundary envelope sourceNoIterator = replace
+  {p = \transition => iteratorBoundaryImpossible transition}
+  (sym (r25CanonicalTransitionExact (baseFinishReplay envelope)))
+  (r27CanonicalFinishBoundary (baseFinishReplay envelope) sourceNoIterator)
+
+0 r27FirstBoundaryImpossible : iteratorBoundaryImpossible
+  (replayedTransition (baseFinishReplay r27FirstFinishEnvelope))
+r27FirstBoundaryImpossible = r27FinishBoundary r27FirstFinishEnvelope
+  (r24EmptyFinishNoIterator 1 r23AfterPair r23AfterAdvance1
+    r23Advance1Checked r23Begun Refl id EmptyView Refl)
+
+0 r27SecondBoundaryImpossible : iteratorBoundaryImpossible
+  (replayedTransition (baseFinishReplay r27SecondFinishEnvelope))
+r27SecondBoundaryImpossible = r27FinishBoundary r27SecondFinishEnvelope
+  (r24EmptyFinishNoIterator 2 r23AfterAdvance1 r23Final
+    r23Advance2Checked r23Begun Refl id EmptyView Refl)
+
+0 r27IteratorFree : IteratorFreeTrace r27WholeTargetTrace
+r27IteratorFree = IteratorFreeStep r23Insert1 _ r23Insert1BoundaryImpossible
+  (IteratorFreeStep r23Insert2 _ r23Insert2BoundaryImpossible
+    (IteratorFreeStep (movedRight (baseDiamond r25AlignedDiamond)) _
+      r27MovedRightBoundaryImpossible
+      (IteratorFreeStep (movedLeft (baseDiamond r25AlignedDiamond)) _
+        r27MovedLeftBoundaryImpossible
+        (IteratorFreeStep
+          (replayedTransition (baseFinishReplay r27FirstFinishEnvelope)) _
+          r27FirstBoundaryImpossible
+          (IteratorFreeStep
+            (replayedTransition (baseFinishReplay r27SecondFinishEnvelope))
+            NoTransitions r27SecondBoundaryImpossible IteratorFreeEnd)))))
+
+0 r27NoIterator :
+  {actor : Nat} ->
+  IteratorStage Nat R23Key Unit Unit R23Value actor r27WholeTargetTrace -> Void
+r27NoIterator = iteratorFreeTraceHasNoStage r27IteratorFree
+
+0 r27BeginMapIdentity :
+  {before, afterState : SystemState Nat R23Key R23Value Unit Unit} ->
+  (transition : Transition before afterState) ->
+  (actor : Nat) ->
+  transitionAction transition = LBegin actor ->
+  (state : EffectState Nat R23Key R23Value Unit) ->
+  partialEffectMap transition state = Just state
+r27BeginMapIdentity (Fired nameEq keyEq action tag checked) actor actionExact
+  state = case actionExact of Refl => Refl
+
+0 r27MovedRightMapIdentity :
+  (state : EffectState Nat R23Key R23Value Unit) ->
+  partialEffectMap (movedRight (baseDiamond r25AlignedDiamond)) state = Just state
+r27MovedRightMapIdentity = r27BeginMapIdentity
+  (movedRight (baseDiamond r25AlignedDiamond)) 2
+  (movedRightAction (baseDiamond r25AlignedDiamond))
+
+0 r27MovedLeftMapIdentity :
+  (state : EffectState Nat R23Key R23Value Unit) ->
+  partialEffectMap (movedLeft (baseDiamond r25AlignedDiamond)) state = Just state
+r27MovedLeftMapIdentity = r27BeginMapIdentity
+  (movedLeft (baseDiamond r25AlignedDiamond)) 1
+  (movedLeftAction (baseDiamond r25AlignedDiamond))
+
+0 r27ActualMapsTotal : ActualMapsTotalTrace r27WholeTargetTrace
+r27ActualMapsTotal = ActualMapsTotalStep r23Insert1 _ r23Insert1MapTotal
+  (ActualMapsTotalStep r23Insert2 _ r23Insert2MapTotal
+    (ActualMapsTotalStep (movedRight (baseDiamond r25AlignedDiamond)) _
+      (\state => (state ** r27MovedRightMapIdentity state))
+      (ActualMapsTotalStep (movedLeft (baseDiamond r25AlignedDiamond)) _
+        (\state => (state ** r27MovedLeftMapIdentity state))
+        (ActualMapsTotalStep
+          (replayedTransition (baseFinishReplay r27FirstFinishEnvelope)) _
+          (\state => (state **
+            retainedTargetMapIdentity r27FirstFinishEnvelope state))
+          (ActualMapsTotalStep
+            (replayedTransition (baseFinishReplay r27SecondFinishEnvelope))
+            NoTransitions
+            (\state => (state **
+              retainedTargetMapIdentity r27SecondFinishEnvelope state))
+            ActualMapsTotalEnd)))))
