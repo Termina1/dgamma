@@ -900,27 +900,215 @@ record AdjacentSwapResult
   (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
     left right) where
   constructor MkAdjacentSwapResult
-  replayedFinal : SystemState name key value world error
-  replayedSuffix : Transitions (swappedFinal diamond) replayedFinal
-  swappedTrace : Transitions initial replayedFinal
-  0 originalDecomposition : appendTransitions tracePrefix
+  adjacentReplayedFinal : SystemState name key value world error
+  adjacentReplayedSuffix :
+    Transitions (swappedFinal diamond) adjacentReplayedFinal
+  adjacentSwappedTrace : Transitions initial adjacentReplayedFinal
+  0 adjacentOriginalDecomposition : appendTransitions tracePrefix
     (MoreTransitions left (MoreTransitions right suffix)) = original
-  0 swappedDecomposition : swappedTrace = appendTransitions tracePrefix
-    (MoreTransitions (movedRight diamond)
-      (MoreTransitions (movedLeft diamond) replayedSuffix))
+  0 adjacentSwappedDecomposition : adjacentSwappedTrace =
+    appendTransitions tracePrefix
+      (MoreTransitions (movedRight diamond)
+        (MoreTransitions (movedLeft diamond) adjacentReplayedSuffix))
+  adjacentSameExternalInputs :
+    SameExternalOrchestration nameEq original adjacentSwappedTrace
+  adjacentReplayCorrespondence : RelationalReplayCorrespondence name key world
+    error value original adjacentSwappedTrace
+  adjacentEndpoint : RelationalReplayEndpoint name key world error value nameEq
+    keyEq originalFinal adjacentReplayedFinal
+  adjacentPremises : ReplayInvariantBundle name key world error value protocol
+    nameEq keyEq adjacentSwappedTrace
+  0 adjacentSealedSuffixReplay : SealedSuffixReplaySpine name key world error
+    value nameEq keyEq suffix adjacentReplayedSuffix
+  0 adjacentSealedOccurrenceFold : AdjacentSwapOperationalOccurrenceFold name key
+    world error value original tracePrefix left right suffix (movedRight diamond)
+    (movedLeft diamond) adjacentReplayedSuffix adjacentSwappedTrace
+
+namespace AdjacentSwapResult
+  public export
+  replayedFinal :
+    {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+      SystemState name key value world error} ->
+    {original : Transitions initial originalFinal} ->
+    {tracePrefix : Transitions initial pairFirst} ->
+    {left : Transition pairFirst pairMiddle} ->
+    {right : Transition pairMiddle pairFinal} ->
+    {suffix : Transitions pairFinal originalFinal} ->
+    {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+      left right} ->
+    AdjacentSwapResult name key world error value protocol nameEq keyEq original
+      tracePrefix left right suffix diamond ->
+    SystemState name key value world error
+  replayedFinal = adjacentReplayedFinal
+  
+  public export
+  replayedSuffix :
+    {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+      SystemState name key value world error} ->
+    {original : Transitions initial originalFinal} ->
+    {tracePrefix : Transitions initial pairFirst} ->
+    {left : Transition pairFirst pairMiddle} ->
+    {right : Transition pairMiddle pairFinal} ->
+    {suffix : Transitions pairFinal originalFinal} ->
+    {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+      left right} ->
+    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+      original tracePrefix left right suffix diamond) ->
+    Transitions (swappedFinal diamond) (replayedFinal result)
+  replayedSuffix = adjacentReplayedSuffix
+  
+  public export
+  swappedTrace :
+    {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+      SystemState name key value world error} ->
+    {original : Transitions initial originalFinal} ->
+    {tracePrefix : Transitions initial pairFirst} ->
+    {left : Transition pairFirst pairMiddle} ->
+    {right : Transition pairMiddle pairFinal} ->
+    {suffix : Transitions pairFinal originalFinal} ->
+    {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+      left right} ->
+    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+      original tracePrefix left right suffix diamond) ->
+    Transitions initial (replayedFinal result)
+  swappedTrace result = adjacentSwappedTrace result
+  
+  public export
+  0 originalDecomposition :
+    {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+      SystemState name key value world error} ->
+    {original : Transitions initial originalFinal} ->
+    {tracePrefix : Transitions initial pairFirst} ->
+    {left : Transition pairFirst pairMiddle} ->
+    {right : Transition pairMiddle pairFinal} ->
+    {suffix : Transitions pairFinal originalFinal} ->
+    {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+      left right} ->
+    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+      original tracePrefix left right suffix diamond) ->
+    appendTransitions tracePrefix
+      (MoreTransitions left (MoreTransitions right suffix)) = original
+  originalDecomposition = adjacentOriginalDecomposition
+  
+  public export
+  0 swappedDecomposition :
+    {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+      SystemState name key value world error} ->
+    {original : Transitions initial originalFinal} ->
+    {tracePrefix : Transitions initial pairFirst} ->
+    {left : Transition pairFirst pairMiddle} ->
+    {right : Transition pairMiddle pairFinal} ->
+    {suffix : Transitions pairFinal originalFinal} ->
+    {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+      left right} ->
+    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+      original tracePrefix left right suffix diamond) ->
+    swappedTrace result = appendTransitions tracePrefix
+      (MoreTransitions (movedRight diamond)
+        (MoreTransitions (movedLeft diamond) (replayedSuffix result)))
+  swappedDecomposition result = adjacentSwappedDecomposition result
+  
+  public export
   swappedSameExternalInputs :
-    SameExternalOrchestration nameEq original swappedTrace
-  swappedReplayCorrespondence : RelationalReplayCorrespondence name key world
-    error value original swappedTrace
-  swappedEndpoint : RelationalReplayEndpoint name key world error value nameEq
-    keyEq originalFinal replayedFinal
-  swappedPremises : ReplayInvariantBundle name key world error value protocol
-    nameEq keyEq swappedTrace
-  0 sealedSuffixReplay : SealedSuffixReplaySpine name key world error value nameEq
-    keyEq suffix replayedSuffix
-  0 sealedOccurrenceFold : AdjacentSwapOperationalOccurrenceFold name key world
-    error value original tracePrefix left right suffix (movedRight diamond)
-    (movedLeft diamond) replayedSuffix swappedTrace
+    {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+      SystemState name key value world error} ->
+    {original : Transitions initial originalFinal} ->
+    {tracePrefix : Transitions initial pairFirst} ->
+    {left : Transition pairFirst pairMiddle} ->
+    {right : Transition pairMiddle pairFinal} ->
+    {suffix : Transitions pairFinal originalFinal} ->
+    {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+      left right} ->
+    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+      original tracePrefix left right suffix diamond) ->
+    SameExternalOrchestration nameEq original (swappedTrace result)
+  swappedSameExternalInputs result = adjacentSameExternalInputs result
+  
+  public export
+  swappedReplayCorrespondence :
+    {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+      SystemState name key value world error} ->
+    {original : Transitions initial originalFinal} ->
+    {tracePrefix : Transitions initial pairFirst} ->
+    {left : Transition pairFirst pairMiddle} ->
+    {right : Transition pairMiddle pairFinal} ->
+    {suffix : Transitions pairFinal originalFinal} ->
+    {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+      left right} ->
+    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+      original tracePrefix left right suffix diamond) ->
+    RelationalReplayCorrespondence name key world error value original
+      (swappedTrace result)
+  swappedReplayCorrespondence result = adjacentReplayCorrespondence result
+  
+  public export
+  swappedEndpoint :
+    {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+      SystemState name key value world error} ->
+    {original : Transitions initial originalFinal} ->
+    {tracePrefix : Transitions initial pairFirst} ->
+    {left : Transition pairFirst pairMiddle} ->
+    {right : Transition pairMiddle pairFinal} ->
+    {suffix : Transitions pairFinal originalFinal} ->
+    {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+      left right} ->
+    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+      original tracePrefix left right suffix diamond) ->
+    RelationalReplayEndpoint name key world error value nameEq keyEq originalFinal
+      (replayedFinal result)
+  swappedEndpoint result = adjacentEndpoint result
+  
+  public export
+  swappedPremises :
+    {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+      SystemState name key value world error} ->
+    {original : Transitions initial originalFinal} ->
+    {tracePrefix : Transitions initial pairFirst} ->
+    {left : Transition pairFirst pairMiddle} ->
+    {right : Transition pairMiddle pairFinal} ->
+    {suffix : Transitions pairFinal originalFinal} ->
+    {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+      left right} ->
+    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+      original tracePrefix left right suffix diamond) ->
+    ReplayInvariantBundle name key world error value protocol nameEq keyEq
+      (swappedTrace result)
+  swappedPremises result = adjacentPremises result
+  
+  public export
+  0 sealedSuffixReplay :
+    {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+      SystemState name key value world error} ->
+    {original : Transitions initial originalFinal} ->
+    {tracePrefix : Transitions initial pairFirst} ->
+    {left : Transition pairFirst pairMiddle} ->
+    {right : Transition pairMiddle pairFinal} ->
+    {suffix : Transitions pairFinal originalFinal} ->
+    {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+      left right} ->
+    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+      original tracePrefix left right suffix diamond) ->
+    SealedSuffixReplaySpine name key world error value nameEq keyEq suffix
+      (replayedSuffix result)
+  sealedSuffixReplay = adjacentSealedSuffixReplay
+  
+  public export
+  0 sealedOccurrenceFold :
+    {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+      SystemState name key value world error} ->
+    {original : Transitions initial originalFinal} ->
+    {tracePrefix : Transitions initial pairFirst} ->
+    {left : Transition pairFirst pairMiddle} ->
+    {right : Transition pairMiddle pairFinal} ->
+    {suffix : Transitions pairFinal originalFinal} ->
+    {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+      left right} ->
+    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+      original tracePrefix left right suffix diamond) ->
+    AdjacentSwapOperationalOccurrenceFold name key world error value original
+      tracePrefix left right suffix (movedRight diamond) (movedLeft diamond)
+      (replayedSuffix result) (swappedTrace result)
+  sealedOccurrenceFold result = adjacentSealedOccurrenceFold result
 
 ||| The first operational occurrence certificate is the exact producer-owned
 ||| fold sealed inside this opaque adjacent result.
