@@ -227,8 +227,8 @@ for specification in "${NEGATIVE_SPECS[@]}"; do
 done
 
 if [ "$FRESH" -eq 1 ]; then
-  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 48 ]; then
-    echo "Expected 48 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
+  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 50 ]; then
+    echo "Expected 50 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
     exit 1
   fi
   echo "R11_FRESH_SUCCESSFUL_BUILD_MARKERS=$SUCCESSFUL_BUILD_MARKERS"
