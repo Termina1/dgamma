@@ -889,9 +889,9 @@ data SealedSuffixReplaySpine :
 record PointwiseRelationalHeadReplay
   (name, key, world, error : Type) (value : key -> Type)
   (nameEq : DecEq name) (keyEq : DecEq key)
-  {sourceBefore, sourceAfter, replayedBefore :
-    SystemState name key value world error}
-  (sourceStep : Transition sourceBefore sourceAfter) where
+  {sourceBefore, sourceAfter : SystemState name key value world error}
+  (sourceStep : Transition sourceBefore sourceAfter)
+  (replayedBefore : SystemState name key value world error) where
   constructor MkPointwiseRelationalHeadReplay
   headReplayedAfter : SystemState name key value world error
   headReplayedStep : Transition replayedBefore headReplayedAfter
@@ -925,7 +925,7 @@ record PointwiseRelationalHeadReplay
   {sourceStep : Transition sourceFirst sourceMiddle} ->
   {sourceTail : Transitions sourceMiddle sourceFinal} ->
   (head : PointwiseRelationalHeadReplay name key world error value nameEq keyEq
-    sourceStep) ->
+    sourceStep replayedFirst) ->
   {replayedTail : Transitions
     (headReplayedAfter head) replayedFinal} ->
   SealedSuffixReplaySpine name key world error value nameEq keyEq sourceTail
@@ -938,6 +938,103 @@ sealPointwiseRelationalHead head tail =
     (headSameAction head) (headSameTag head) (headReplayRAR head)
     (headReplayMapPreserved head) (headReplayEndpoint head)
     (headReplayOccurrences head) (headReplayRelativeOrdinal head) tail
+
+0 checkedTargetWellFormed :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState) ->
+  registryWellFormed @{nameEq} @{keyEq} afterState = True
+checkedTargetWellFormed nameEq keyEq action before afterState tag checked
+  with (applyAction @{nameEq} @{keyEq} action before) proof raw
+  checkedTargetWellFormed nameEq keyEq action before afterState tag checked |
+    Nothing = case checked of Refl impossible
+  checkedTargetWellFormed nameEq keyEq action before afterState tag checked |
+    Just (actualTag, actualAfter)
+    with (registryWellFormed @{nameEq} @{keyEq} actualAfter) proof wellFormed
+    checkedTargetWellFormed nameEq keyEq action before afterState tag checked |
+      Just (actualTag, actualAfter) | False = case checked of Refl impossible
+    checkedTargetWellFormed nameEq keyEq action before afterState tag checked |
+      Just (actualTag, actualAfter) | True =
+        case justInjective checked of
+          Refl => wellFormed
+
+||| Internal one-step evaluator used by the structural suffix recursion.  Its
+||| endpoint input is exactly the result of the preceding checked replay (or the
+||| local diamond for the first head); it is never exposed as a premise of the
+||| public adjacent-swap theorem.
+PointwiseRelationalHeadReplayer :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> Type
+PointwiseRelationalHeadReplayer name key world error value nameEq keyEq =
+  {sourceBefore, sourceAfter, replayedBefore :
+    SystemState name key value world error} ->
+  (sourceStep : Transition sourceBefore sourceAfter) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions sourceStep NoTransitions) ->
+  registryWellFormed @{nameEq} @{keyEq} sourceBefore = True ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq
+    sourceBefore replayedBefore ->
+  PointwiseRelationalHeadReplay name key world error value nameEq keyEq sourceStep
+    replayedBefore
+
+||| Exact existential returned by the first genuine generic spine recursion.
+||| It exposes no caller-selected evidence: target trace, endpoint, and seal are
+||| all produced together under the source suffix and replay start indices.
+record PointwiseSuffixSpineReplay
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {sourceFirst, sourceFinal : SystemState name key value world error}
+  (source : Transitions sourceFirst sourceFinal)
+  (replayedFirst : SystemState name key value world error) where
+  constructor MkPointwiseSuffixSpineReplay
+  spineReplayedFinal : SystemState name key value world error
+  spineReplayedTrace : Transitions replayedFirst spineReplayedFinal
+  0 spineReplayEndpoint : RelationalReplayEndpoint name key world error value
+    nameEq keyEq sourceFinal spineReplayedFinal
+  0 spineReplaySeal : SealedSuffixReplaySpine name key world error value nameEq
+    keyEq source spineReplayedTrace
+
+||| Structural recursion over the exact aligned suffix.  The only semantic
+||| subproblem is the private per-action head replayer.  Once a head is produced,
+||| its checked endpoint is threaded into the recursive call and all frozen
+||| spine capital is sealed definitionally.
+0 replayPointwiseSuffixSpineWith :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  PointwiseRelationalHeadReplayer name key world error value nameEq keyEq ->
+  {sourceFirst, sourceFinal, replayedFirst :
+    SystemState name key value world error} ->
+  (source : Transitions sourceFirst sourceFinal) ->
+  AlignedTransitions name key world error value nameEq keyEq source ->
+  registryWellFormed @{nameEq} @{keyEq} sourceFirst = True ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq
+    sourceFirst replayedFirst ->
+  PointwiseSuffixSpineReplay name key world error value nameEq keyEq source
+    replayedFirst
+replayPointwiseSuffixSpineWith nameEq keyEq replayHead NoTransitions AlignedEnd
+  sourceWellFormed endpoint =
+    MkPointwiseSuffixSpineReplay _ NoTransitions endpoint SealedSuffixReplayEnd
+replayPointwiseSuffixSpineWith nameEq keyEq replayHead
+  (MoreTransitions {middle = sourceMiddle}
+    (Fired {before = sourceFirst} {afterState = sourceMiddle}
+      nameEq keyEq action tag checked) sourceTail)
+  (AlignedStep action tag checked sourceTail alignedTail) sourceWellFormed
+  endpoint =
+    let head = replayHead
+          (Fired {before = sourceFirst} {afterState = sourceMiddle}
+            nameEq keyEq action tag checked)
+          (AlignedStep action tag checked NoTransitions AlignedEnd)
+          sourceWellFormed endpoint
+        0 sourceMiddleWellFormed = checkedTargetWellFormed nameEq keyEq action
+          _ _ tag checked
+        tail = replayPointwiseSuffixSpineWith nameEq keyEq replayHead sourceTail
+          alignedTail sourceMiddleWellFormed (headReplayEndpoint head)
+    in MkPointwiseSuffixSpineReplay (spineReplayedFinal tail)
+      (MoreTransitions (headReplayedStep head) (spineReplayedTrace tail))
+      (spineReplayEndpoint tail)
+      (sealPointwiseRelationalHead head (spineReplaySeal tail))
 
 ||| A complete adjacent transposition: the local pair is swapped, the untouched
 ||| suffix is replayed, and the next recursion receives the same full premise
@@ -5143,28 +5240,6 @@ activationRawAfterForeignActivation nameEq keyEq leftAction foreignAction
       Refl => advanceRawAfterForeignActivation nameEq keyEq _ LFinishTag
         foreignAction foreignTag leftChecked foreignChecked foreignActivation
         distinct earlyWellFormed (Right Refl) movedEffect mapRuns
-
-0 checkedTargetWellFormed :
-  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) ->
-  (before, afterState : SystemState name key value world error) ->
-  (tag : RuleTag) ->
-  checkedApplyAction @{nameEq} @{keyEq} action before =
-    Just (tag, afterState) ->
-  registryWellFormed @{nameEq} @{keyEq} afterState = True
-checkedTargetWellFormed nameEq keyEq action before afterState tag checked
-  with (applyAction @{nameEq} @{keyEq} action before) proof raw
-  checkedTargetWellFormed nameEq keyEq action before afterState tag checked |
-    Nothing = case checked of Refl impossible
-  checkedTargetWellFormed nameEq keyEq action before afterState tag checked |
-    Just (actualTag, actualAfter)
-    with (registryWellFormed @{nameEq} @{keyEq} actualAfter) proof wellFormed
-    checkedTargetWellFormed nameEq keyEq action before afterState tag checked |
-      Just (actualTag, actualAfter) | False = case checked of Refl impossible
-    checkedTargetWellFormed nameEq keyEq action before afterState tag checked |
-      Just (actualTag, actualAfter) | True =
-        case justInjective checked of
-          Refl => wellFormed
 
 record CheckedActivationMove
   (nameEq : DecEq name) (keyEq : DecEq key)
