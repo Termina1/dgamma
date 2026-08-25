@@ -9,37 +9,26 @@ import Decidable.Equality
 
 %default total
 
-||| Test-local candidate for the exact producer-carried delta.  The live record
-||| is unchanged; this wrapper makes the proposed erased field consumer-visible
-||| while keeping it indexed by the exact moved transitions of the sealed base.
+||| Compatibility name for the now-frozen aligned local diamond.  Revision 21
+||| no longer wraps or accepts detached alignment capital: the live producer
+||| record owns the exact erased `movedPairAligned` field.
 public export
-record CandidateAlignedLocalRelationalDiamond
-  (name, key, world, error : Type) (value : key -> Type)
-  (nameEq : DecEq name) (keyEq : DecEq key)
-  {first, middle, originalFinal : SystemState name key value world error}
-  (left : Transition first middle)
-  (right : Transition middle originalFinal) where
-  constructor MkCandidateAlignedLocalRelationalDiamond
-  baseDiamond : LocalRelationalDiamond name key world error value nameEq keyEq
+CandidateAlignedLocalRelationalDiamond :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, originalFinal : SystemState name key value world error} ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) -> Type
+CandidateAlignedLocalRelationalDiamond name key world error value nameEq keyEq
+  left right = LocalRelationalDiamond name key world error value nameEq keyEq
     left right
-  0 movedPairAligned : AlignedTransitions name key world error value nameEq keyEq
-    (MoreTransitions (movedRight baseDiamond)
-      (MoreTransitions (movedLeft baseDiamond) NoTransitions))
 
-||| Candidate constructor.  Its second argument cannot be detached from the
-||| moved projections: the negative probe supplies an arbitrary dictionary-
-||| storing base and is rejected exactly at this index.
 public export
-0 sealAlignedLocalRelationalDiamond :
-  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
-    left right) ->
-  (0 aligned : AlignedTransitions name key world error value nameEq keyEq
-    (MoreTransitions (movedRight diamond)
-      (MoreTransitions (movedLeft diamond) NoTransitions))) ->
+0 baseDiamond :
   CandidateAlignedLocalRelationalDiamond name key world error value nameEq keyEq
-    left right
-sealAlignedLocalRelationalDiamond diamond aligned =
-  MkCandidateAlignedLocalRelationalDiamond diamond aligned
+    left right ->
+  LocalRelationalDiamond name key world error value nameEq keyEq left right
+baseDiamond diamond = diamond
 
 ||| Both moved steps were just checked with the outer dictionaries.  This is
 ||| precisely the constructor-local capital held by the A/O implementation.
@@ -161,4 +150,4 @@ public export
   AlignedTransitions name key world error value nameEq keyEq
     (MoreTransitions (movedRight (baseDiamond candidate))
       (MoreTransitions (movedLeft (baseDiamond candidate)) NoTransitions))
-candidateMovedAlignmentProjection = movedPairAligned
+candidateMovedAlignmentProjection candidate = movedPairAligned candidate

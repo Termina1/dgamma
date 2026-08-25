@@ -9,48 +9,9 @@ import Decidable.Equality
 
 %default total
 
-||| Corrected revision-20 recursive replay spine.  A node owns only capital whose
-||| indices are local to the exact source/replayed suffix head.  In particular it
-||| has no `ReplayInvariantBundle`: that package starts at the globally empty
-||| state and belongs only to the outer whole-trace envelope.
-export
-data SealedSuffixReplaySpine :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
-    SystemState name key value world error} ->
-  Transitions sourceFirst sourceFinal ->
-  Transitions replayedFirst replayedFinal -> Type where
-  SealedSuffixReplayEnd :
-    SealedSuffixReplaySpine name key world error value nameEq keyEq
-      NoTransitions NoTransitions
-  SealedSuffixReplayStep :
-    (sourceStep : Transition sourceFirst sourceMiddle) ->
-    (replayedStep : Transition replayedFirst replayedMiddle) ->
-    (sourceTail : Transitions sourceMiddle sourceFinal) ->
-    (replayedTail : Transitions replayedMiddle replayedFinal) ->
-    (0 sameAction : transitionAction replayedStep =
-      transitionAction sourceStep) ->
-    (0 sameTag : transitionTag replayedStep = transitionTag sourceStep) ->
-    (0 headRAR : RelationalReplayCorrespondence name key world error value
-      (MoreTransitions sourceStep NoTransitions)
-      (MoreTransitions replayedStep NoTransitions)) ->
-    (0 headEndpoint : RelationalReplayEndpoint name key world error value nameEq
-      keyEq sourceMiddle replayedMiddle) ->
-    (0 headOccurrences : ActionRegistrationReplayCorrespondence name key world
-      error value (MoreTransitions sourceStep NoTransitions)
-      (MoreTransitions replayedStep NoTransitions)) ->
-    (0 headRelativeOrdinal :
-      {action : Action name key value world error} ->
-      (occurrence : LocatedActionOccurrence action
-        (MoreTransitions replayedStep NoTransitions)) ->
-      locatedActionOrdinal occurrence = locatedActionOrdinal
-        (replayActionOrigin headOccurrences occurrence)) ->
-    SealedSuffixReplaySpine name key world error value nameEq keyEq sourceTail
-      replayedTail ->
-    SealedSuffixReplaySpine name key world error value nameEq keyEq
-      (MoreTransitions sourceStep sourceTail)
-      (MoreTransitions replayedStep replayedTail)
+||| Revision 20 now consumes the frozen bundle-free replay spine directly.
+||| Its constructors remain hidden in `CP5ConfluenceLocalDiamondSpike`; this
+||| test-local outer envelope can only store producer-owned spine capital.
 
 ||| Test-local corrected outer envelope.  Its constructor is not exported.  It
 ||| mirrors the nine live `AdjacentSwapResult` fields and adds only the two

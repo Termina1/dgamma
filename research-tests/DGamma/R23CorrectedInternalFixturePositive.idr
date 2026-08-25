@@ -443,31 +443,17 @@ r23Diamond = activationActivationDiamondSpike r23NameEq r23KeyEq r23Begin1
   (\same => case same of Refl impossible) r23AfterInsert2WellFormed
   r23PairIndependent
 
-||| Revision 25 test-local prototype of combined-boundary field A.  The base is
-||| definitionally the existing R23 diamond; its erased alignment is populated
-||| only from the exact moved-left checked equation created by that same concrete
-||| A/A producer invocation and the already checked early-right singleton.
-0 r25SealConcreteMoved :
-  (moved : Transition (swappedMiddle r23Diamond) (swappedFinal r23Diamond)) ->
-  (0 exactMoved : moved === movedLeft r23Diamond) ->
-  CandidateAlignedLocalRelationalDiamond Nat R23Key Unit Unit R23Value
-    r23NameEq r23KeyEq r23Begin1 r23Begin2
-r25SealConcreteMoved
-  (Fired storedNameEq storedKeyEq movedAction movedTag movedChecked) exactMoved =
-    case exactMoved of
-      Refl => sealAlignedLocalRelationalDiamond r23Diamond
-        (activationActivationConstructorMovedAlignment r23NameEq r23KeyEq
-          r23EarlyBegin2 r23EarlyBegin2Aligned movedAction movedTag movedChecked)
-
+||| Revision 25 now consumes combined-boundary field A directly from the
+||| existing concrete A/A producer.  No test-local alignment wrapper remains.
 public export
 0 r25AlignedDiamond : CandidateAlignedLocalRelationalDiamond Nat R23Key Unit Unit
   R23Value r23NameEq r23KeyEq r23Begin1 r23Begin2
-r25AlignedDiamond = r25SealConcreteMoved (movedLeft r23Diamond) Refl
+r25AlignedDiamond = r23Diamond
 
-||| The envelope is a conservative producer wrapper, not a second diamond.
+||| The former envelope name now aliases the frozen producer-owned diamond.
 ||| All existing replay terms continue to index the very same base projection.
 public export
-0 r25BaseIsR23 : baseDiamond r25AlignedDiamond = r23Diamond
+0 r25BaseIsR23 : r25AlignedDiamond = r23Diamond
 r25BaseIsR23 = Refl
 
 0 r23PairExternalOrder : SameExternalOrchestration r23NameEq
@@ -1440,6 +1426,11 @@ record R27MapRetainedFinishReplay
   constructor MkR27MapRetainedFinishReplay
   baseFinishReplay : R24CheckedEmptyFinishReplay actor sourceBefore sourceAfter
     replayedBefore sourceChecked
+  0 retainedHeadMapPreserved :
+    (state : EffectState Nat R23Key R23Value Unit) ->
+    partialEffectMap
+      (r24FinishTransition actor sourceBefore sourceAfter sourceChecked) state =
+    partialEffectMap (replayedTransition baseFinishReplay) state
   0 retainedTargetMapIdentity :
     (state : EffectState Nat R23Key R23Value Unit) ->
     partialEffectMap (replayedTransition baseFinishReplay) state = Just state
@@ -1596,6 +1587,8 @@ r27ProduceMapRetainedFinish actor
                     NoTransitions AlignedEnd)
                   (MkRelationalReplayEndpoint nextEffects nextControls
                     targetWellFormed) rar occurrence ordinal)
+                (\state => trans (sourceMapIdentity state)
+                  (sym (targetMapIdentity state)))
                 targetMapIdentity
 
 ||| The revision-24 projection is intentionally definition-only.  Existing
@@ -1753,7 +1746,7 @@ r25CanonicalTransitionExact replay = replayedTransitionExact replay
 
 public export
 0 r25FirstFinishReplay : R24CheckedEmptyFinishReplay 1 r23AfterPair
-  r23AfterAdvance1 (swappedFinal (baseDiamond r25AlignedDiamond))
+  r23AfterAdvance1 (swappedFinal (r25AlignedDiamond))
   r23Advance1Checked
 r25FirstFinishReplay = r24FirstFinishReplay
 
@@ -1772,8 +1765,8 @@ public export
   (replayedAfter r25SecondFinishReplay)
 r25WholeTargetTrace = MoreTransitions r23Insert1
   (MoreTransitions r23Insert2
-    (MoreTransitions (movedRight (baseDiamond r25AlignedDiamond))
-      (MoreTransitions (movedLeft (baseDiamond r25AlignedDiamond))
+    (MoreTransitions (movedRight (r25AlignedDiamond))
+      (MoreTransitions (movedLeft (r25AlignedDiamond))
         (MoreTransitions (replayedTransition r25FirstFinishReplay)
           (MoreTransitions (replayedTransition r25SecondFinishReplay)
             NoTransitions)))))
@@ -1815,9 +1808,9 @@ r25FinishStepDiscipline replay rest = rewrite replayedActionExact replay in ()
 r25WholeDiscipline = RegistrationDisciplineStep r23Insert1 _ (Z ** Refl)
   (RegistrationDisciplineStep r23Insert2 _ (Z ** Refl)
     (RegistrationDisciplineStep
-      (movedRight (baseDiamond r25AlignedDiamond)) _ ()
+      (movedRight (r25AlignedDiamond)) _ ()
       (RegistrationDisciplineStep
-        (movedLeft (baseDiamond r25AlignedDiamond)) _ ()
+        (movedLeft (r25AlignedDiamond)) _ ()
         (RegistrationDisciplineStep
           (replayedTransition r25FirstFinishReplay) _
           (r25FinishStepDiscipline r25FirstFinishReplay _)
@@ -2066,16 +2059,16 @@ public export
 r27WholeTotal = r25WholeTotal
 
 0 r27MovedRightBoundaryImpossible : iteratorBoundaryImpossible
-  (movedRight (baseDiamond r25AlignedDiamond))
+  (movedRight (r25AlignedDiamond))
 r27MovedRightBoundaryImpossible actor actionSame fiber found remaining accumulator
   view lifecycle step rest suffix = r23Begin2NotAdvance actor
-    (trans (sym (movedRightAction (baseDiamond r25AlignedDiamond))) actionSame)
+    (trans (sym (movedRightAction (r25AlignedDiamond))) actionSame)
 
 0 r27MovedLeftBoundaryImpossible : iteratorBoundaryImpossible
-  (movedLeft (baseDiamond r25AlignedDiamond))
+  (movedLeft (r25AlignedDiamond))
 r27MovedLeftBoundaryImpossible actor actionSame fiber found remaining accumulator
   view lifecycle step rest suffix = r23Begin1NotAdvance actor
-    (trans (sym (movedLeftAction (baseDiamond r25AlignedDiamond))) actionSame)
+    (trans (sym (movedLeftAction (r25AlignedDiamond))) actionSame)
 
 0 r27CanonicalFinishBoundary :
   {sourceActor : Nat} ->
@@ -2152,9 +2145,9 @@ r27SecondBoundaryImpossible = r27FinishBoundary r27SecondFinishEnvelope
 0 r27IteratorFree : IteratorFreeTrace r27WholeTargetTrace
 r27IteratorFree = IteratorFreeStep r23Insert1 _ r23Insert1BoundaryImpossible
   (IteratorFreeStep r23Insert2 _ r23Insert2BoundaryImpossible
-    (IteratorFreeStep (movedRight (baseDiamond r25AlignedDiamond)) _
+    (IteratorFreeStep (movedRight (r25AlignedDiamond)) _
       r27MovedRightBoundaryImpossible
-      (IteratorFreeStep (movedLeft (baseDiamond r25AlignedDiamond)) _
+      (IteratorFreeStep (movedLeft (r25AlignedDiamond)) _
         r27MovedLeftBoundaryImpossible
         (IteratorFreeStep
           (replayedTransition (baseFinishReplay r27FirstFinishEnvelope)) _
@@ -2181,25 +2174,25 @@ r27BeginMapIdentity (Fired nameEq keyEq action tag checked) actor actionExact
 
 0 r27MovedRightMapIdentity :
   (state : EffectState Nat R23Key R23Value Unit) ->
-  partialEffectMap (movedRight (baseDiamond r25AlignedDiamond)) state = Just state
+  partialEffectMap (movedRight (r25AlignedDiamond)) state = Just state
 r27MovedRightMapIdentity = r27BeginMapIdentity
-  (movedRight (baseDiamond r25AlignedDiamond)) 2
-  (movedRightAction (baseDiamond r25AlignedDiamond))
+  (movedRight (r25AlignedDiamond)) 2
+  (movedRightAction (r25AlignedDiamond))
 
 0 r27MovedLeftMapIdentity :
   (state : EffectState Nat R23Key R23Value Unit) ->
-  partialEffectMap (movedLeft (baseDiamond r25AlignedDiamond)) state = Just state
+  partialEffectMap (movedLeft (r25AlignedDiamond)) state = Just state
 r27MovedLeftMapIdentity = r27BeginMapIdentity
-  (movedLeft (baseDiamond r25AlignedDiamond)) 1
-  (movedLeftAction (baseDiamond r25AlignedDiamond))
+  (movedLeft (r25AlignedDiamond)) 1
+  (movedLeftAction (r25AlignedDiamond))
 
 public export
 0 r27ActualMapsTotal : ActualMapsTotalTrace r27WholeTargetTrace
 r27ActualMapsTotal = ActualMapsTotalStep r23Insert1 _ r23Insert1MapTotal
   (ActualMapsTotalStep r23Insert2 _ r23Insert2MapTotal
-    (ActualMapsTotalStep (movedRight (baseDiamond r25AlignedDiamond)) _
+    (ActualMapsTotalStep (movedRight (r25AlignedDiamond)) _
       (\state => (state ** r27MovedRightMapIdentity state))
-      (ActualMapsTotalStep (movedLeft (baseDiamond r25AlignedDiamond)) _
+      (ActualMapsTotalStep (movedLeft (r25AlignedDiamond)) _
         (\state => (state ** r27MovedLeftMapIdentity state))
         (ActualMapsTotalStep
           (replayedTransition (baseFinishReplay r27FirstFinishEnvelope)) _
