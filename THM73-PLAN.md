@@ -737,7 +737,7 @@ research capital; no CP3 production declaration changed.
 
 ## 10. Obligations and status
 
-There remain **21 obligations**.
+There remain **20 obligations**.
 
 | ID | Obligation | Status | Grade |
 |---|---|---|---|
@@ -746,7 +746,7 @@ There remain **21 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; `r29TargetBundle` is complete and atomic A/B/C/D/E is landed. The false unrestricted fold is retired. Scoped assembled-revision-19 review is mandatory before the byte-identical adjacent suffix body is attempted.** | **XL, 20–35 shifts for scoped review, adjacent suffix body, block recursion, and downstream review.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; `r29TargetBundle` is complete and atomic A/B/C/D/E is landed. The false unrestricted fold is retired. The assembled revision-19 review returned ACCEPT-WITH-CHANGES; after this reconciliation, the byte-identical adjacent suffix body is authorized against the sealed boundary.** | **XL, 20–35 shifts for adjacent suffix body, block recursion, and downstream review; re-estimate at the first generic spine recursion.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -768,29 +768,34 @@ There remain **21 obligations**.
 ## 11. Exact hole reconciliation
 
 After authorized retirement of the orphan O1 declaration, constructive O3/O4
-closure, and local O5 proof, **21 deliberate named research holes remain**.
-Revision 17 repairs the endpoint-control layer without filling an O6 hole; the
-external-order layer remains blocked:
+closure, local O5 proof, and revision-19 retirement of the false unrestricted
+adjacent occurrence fold, **20 deliberate named research holes remain**. The
+current source scan and manifest reconciliation give the canonical module-family
+split:
 
 - canonical sort: 6;
 - cross-trace: 4;
 - deletion chain: 8;
-- local diamonds: 2;
+- local diamonds: 1 (`adjacentSwapSuffixSpike` only);
 - renaming/O21: 1.
 
-No hole was moved or renamed. Four O1 relation-law bodies and both O2
+No surviving hole was moved or renamed. Four O1 relation-law bodies and both O2
 replay-independence transport bodies were filled in place; the remaining O1 hole
 was retired only after the producer/consumer audit and decomposition gate proved
 that its generic result was orphaned and its premise was not producer-suppliable.
+Revision 19 then removed only the uninhabitable unrestricted occurrence-fold
+hole from the manifest, reducing O6 from three holes to two.
 
-Forward/reverse map:
+The recomputed per-obligation-family map is:
 
-- O1=0, O2=0, O3=0, O4=0, O5=0, O6=3;
+- O1=0, O2=0, O3=0, O4=0, O5=0, O6=2;
 - O7=1, O8=1, O9=2, O10=1, O11=1, O12=1;
 - O13=0, O14=1, O15=1, O16=1, O17=1, O18=1;
 - O19=2, O20=1, O21=3, O22=0, O23=0.
 
-The values sum to 21.
+The values sum to 20 and agree with the `6/4/8/1/1` source split. O6's two
+remaining obligations are the adjacent-swap suffix producer and its downstream
+finite adjacent-block composition; only the former is a LocalDiamond hole.
 
 ## 12. Post-retirement phase arithmetic: 148–249 total, 139–240 remaining
 
