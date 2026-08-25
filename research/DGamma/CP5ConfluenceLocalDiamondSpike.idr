@@ -1588,6 +1588,56 @@ pointwiseNoChildPreserved nameEq parent
           FibersControlRelated _ _ _ _ _ _ _ _ parentSame _ _ =>
             \targetSame => sourceDistinct (trans (sym parentSame) targetSame)
 
+0 pointwiseLifecycleActiveSame : LifecycleControlRelated left right ->
+  isActive left = isActive right
+pointwiseLifecycleActiveSame (InactiveControls outcome) = Refl
+pointwiseLifecycleActiveSame (ReloadingControls remaining accumulator view) = Refl
+pointwiseLifecycleActiveSame (ActiveControls accumulator view) = Refl
+pointwiseLifecycleActiveSame (UnloadingControls accumulator view outcome) = Refl
+
+0 pointwiseMemberKeyFromBindings :
+  (keyEq : DecEq key) -> (wanted : key) ->
+  (left, right : CoeffectContext key value) ->
+  bindings left = bindings right ->
+  memberKey @{keyEq} wanted left = memberKey @{keyEq} wanted right
+pointwiseMemberKeyFromBindings keyEq wanted
+  (MkCoeffectContext leftEntries leftUnique)
+  (MkCoeffectContext rightEntries rightUnique) same = case same of Refl => Refl
+
+||| Runtime-provider candidacy is name-local: pointwise control fixes activity
+||| while the relational effect boundary fixes that actor's owned table.
+0 pointwiseProviderCandidateSame :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (actor : name) ->
+  (left, right : SystemState name key value world error) ->
+  (leftFiber, rightFiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} actor (registry left) = Just leftFiber ->
+  lookupFiber @{nameEq} actor (registry right) = Just rightFiber ->
+  FiberControlRelated leftFiber rightFiber ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} left)
+    (projectEffectState @{nameEq} right) ->
+  (isActive (fiberLifecycle leftFiber) &&
+    memberKey @{keyEq} wanted (ownedValues (fiberTable leftFiber))) =
+  (isActive (fiberLifecycle rightFiber) &&
+    memberKey @{keyEq} wanted (ownedValues (fiberTable rightFiber)))
+pointwiseProviderCandidateSame nameEq keyEq wanted actor left right
+  leftFiber rightFiber leftFound rightFound fibersRelated effects =
+    case fibersRelated of
+      FibersControlRelated leftParent rightParent leftRetired rightRetired
+        leftTable rightTable leftLifecycle rightLifecycle parentSame retiredSame
+        lifecycleSame =>
+          let 0 activeSame : (isActive leftLifecycle = isActive rightLifecycle)
+              activeSame = pointwiseLifecycleActiveSame lifecycleSame
+              0 tablesSame : bindings (ownedValues leftTable) =
+                bindings (ownedValues rightTable)
+              tablesSame = relatedLocatedFiberTablesSame nameEq actor left right
+                leftFiber rightFiber leftFound rightFound effects
+              0 memberSame : memberKey @{keyEq} wanted (ownedValues leftTable) =
+                memberKey @{keyEq} wanted (ownedValues rightTable)
+              memberSame = pointwiseMemberKeyFromBindings keyEq wanted
+                (ownedValues leftTable) (ownedValues rightTable) tablesSame
+          in rewrite activeSame in cong (isActive rightLifecycle &&) memberSame
+
 0 pointwiseControlAfterInsert :
   (nameEq : DecEq name) -> (actor : name) -> (parent : Parent name) ->
   (component : Component key value world error) ->
