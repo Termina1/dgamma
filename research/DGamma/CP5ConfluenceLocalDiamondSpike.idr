@@ -1692,6 +1692,27 @@ providerInFromLocatedCandidate nameEq keyEq wanted
         later candidate of
         (provider ** found) => (provider ** found)
 
+0 providerOfSoundCandidateTrue :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (wanted : key) ->
+  (provider : name) -> (fibers : Registry name key value world error) ->
+  (sound : ProviderOfSound name key world error value nameEq keyEq wanted
+    provider fibers) ->
+  (isActive (fiberLifecycle (providerOfFiber sound)) &&
+    memberKey @{keyEq} wanted
+      (ownedValues (fiberTable (providerOfFiber sound)))) = True
+providerOfSoundCandidateTrue nameEq keyEq wanted provider fibers sound =
+  let 0 lookupSame :
+        (valueFromProvider @{nameEq} @{keyEq} {name = name} {key = key}
+          {value = value} {world = world} {error = error} provider wanted fibers =
+         lookupBinding @{keyEq} {key = key} {value = value} wanted
+          (ownedValues (fiberTable (providerOfFiber sound))))
+      lookupSame = rewrite providerOfLookup sound in Refl
+      0 member : (memberKey @{keyEq} wanted
+        (ownedValues (fiberTable (providerOfFiber sound))) = True)
+      member = trans (sym (cong isJust lookupSame)) (providerOfValue sound)
+  in boolAndBothPointwise _ _ (providerOfActive sound) member
+
 0 pointwiseControlAfterInsert :
   (nameEq : DecEq name) -> (actor : name) -> (parent : Parent name) ->
   (component : Component key value world error) ->
