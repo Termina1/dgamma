@@ -1599,6 +1599,71 @@ pointwiseLifecycleActiveSame (ReloadingControls remaining accumulator view) = Re
 pointwiseLifecycleActiveSame (ActiveControls accumulator view) = Refl
 pointwiseLifecycleActiveSame (UnloadingControls accumulator view outcome) = Refl
 
+0 pointwiseFiberRetiredSame : FiberControlRelated left right ->
+  retired left = retired right
+pointwiseFiberRetiredSame
+  (FibersControlRelated leftParent rightParent leftRetired rightRetired leftTable
+    rightTable leftLifecycle rightLifecycle parentSame retiredSame lifecycleSame) =
+      retiredSame
+
+0 pointwiseFiberInactiveSame : FiberControlRelated left right ->
+  isInactive (fiberLifecycle left) = isInactive (fiberLifecycle right)
+pointwiseFiberInactiveSame
+  (FibersControlRelated leftParent rightParent leftRetired rightRetired leftTable
+    rightTable leftLifecycle rightLifecycle parentSame retiredSame lifecycleSame) =
+      case lifecycleSame of
+        InactiveControls outcome => Refl
+        ReloadingControls remaining accumulator view => Refl
+        ActiveControls accumulator view => Refl
+        UnloadingControls accumulator view outcome => Refl
+
+||| The O-Remove guard transports without reopening its operational view:
+||| owner retirement/mode are pointwise control projections and childlessness
+||| is the exact producer-owned observation transported over the registry.
+0 pointwiseRemovalGuardRelated :
+  (nameEq : DecEq name) -> (actor : name) ->
+  (left, right : SystemState name key value world error) ->
+  (leftFiber, rightFiber : Fiber name key value world error) ->
+  FiberControlRelated leftFiber rightFiber ->
+  hasChild @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor (registry left) = False ->
+  hasChild @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor (registry right) = False ->
+  (retired leftFiber && isInactive (fiberLifecycle leftFiber) &&
+    not (hasChild @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} actor (registry left)) = True) ->
+  (retired rightFiber && isInactive (fiberLifecycle rightFiber) &&
+    not (hasChild @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} actor (registry right)) = True)
+pointwiseRemovalGuardRelated nameEq actor left right leftFiber rightFiber related
+  leftNoChild rightNoChild leftGuard =
+    let 0 sourceRetired : (retired leftFiber = True)
+        sourceRetired = boolAndLeftPointwise (retired leftFiber)
+          (isInactive (fiberLifecycle leftFiber) &&
+            not (hasChild @{nameEq} actor (registry left))) leftGuard
+        0 sourceInactive : (isInactive (fiberLifecycle leftFiber) = True)
+        sourceInactive = boolAndLeftPointwise
+          (isInactive (fiberLifecycle leftFiber))
+          (not (hasChild @{nameEq} actor (registry left)))
+          (boolAndRightPointwise (retired leftFiber)
+            (isInactive (fiberLifecycle leftFiber) &&
+              not (hasChild @{nameEq} actor (registry left))) leftGuard)
+        0 targetRetired : (retired rightFiber = True)
+        targetRetired = trans (sym (pointwiseFiberRetiredSame related))
+          sourceRetired
+        0 targetInactive : (isInactive (fiberLifecycle rightFiber) = True)
+        targetInactive = trans (sym (pointwiseFiberInactiveSame related))
+          sourceInactive
+        0 targetNotChild : (not (hasChild @{nameEq} {name = name} {key = key}
+          {value = value} {world = world} {error = error} actor
+          (registry right)) = True)
+        targetNotChild = rewrite rightNoChild in Refl
+        0 targetRest : (isInactive (fiberLifecycle rightFiber) &&
+          not (hasChild @{nameEq} {name = name} {key = key} {value = value}
+            {world = world} {error = error} actor (registry right)) = True)
+        targetRest = boolAndBothPointwise _ _ targetInactive targetNotChild
+    in boolAndBothPointwise _ _ targetRetired targetRest
+
 0 pointwiseMemberKeyFromBindings :
   (keyEq : DecEq key) -> (wanted : key) ->
   (left, right : CoeffectContext key value) ->
