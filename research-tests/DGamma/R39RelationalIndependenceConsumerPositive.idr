@@ -8,6 +8,7 @@ import DGamma.Unified
 import DGamma.CP4DeletionSelectedForeignLifecycleAdvanceOutcome
 import DGamma.CP4RecoveryEffectRespect
 import DGamma.R39RelationalMapAlgebraPositive
+import DGamma.R39TraceGeneratorRespectPositive
 import Decidable.Equality
 
 %default total
@@ -89,6 +90,44 @@ r39TransformationMapsRelated correspondence (TraceCompose after before) =
   r39PartialMapsRelatedCompose
     (r39TransformationMapsRelated correspondence after)
     (r39TransformationMapsRelated correspondence before)
+
+public export
+0 r39IdentityRelationalReplayCorrespondence :
+  (keyEq : DecEq key) ->
+  (trace : Transitions first last) ->
+  R39RelationalReplayCorrespondence name key world error value keyEq trace trace
+r39IdentityRelationalReplayCorrespondence keyEq trace =
+  MkR39RelationalReplayCorrespondence
+    (\actor, generator => generator)
+    (\actor, generator => r39TraceGeneratorMapRespects keyEq generator)
+    (\actor, stage => stage)
+    (\actor, stage, state => Refl)
+
+public export
+0 r39ComposeRelationalReplayCorrespondence :
+  {source : Transitions sourceFirst sourceFinal} ->
+  {middle : Transitions middleFirst middleFinal} ->
+  {target : Transitions targetFirst targetFinal} ->
+  R39RelationalReplayCorrespondence name key world error value keyEq source
+    middle ->
+  R39RelationalReplayCorrespondence name key world error value keyEq middle
+    target ->
+  R39RelationalReplayCorrespondence name key world error value keyEq source
+    target
+r39ComposeRelationalReplayCorrespondence left right =
+  MkR39RelationalReplayCorrespondence
+    (\actor, generator => r39GeneratorOrigin left actor
+      (r39GeneratorOrigin right actor generator))
+    (\actor, generator => r39PartialMapsRelatedTransitive
+      (r39GeneratorMapsRelated left actor
+        (r39GeneratorOrigin right actor generator))
+      (r39GeneratorMapsRelated right actor generator))
+    (\actor, stage => r39StageOrigin left actor
+      (r39StageOrigin right actor stage))
+    (\actor, stage, state => trans
+      (r39StageOutcomeExact right actor stage state)
+      (r39StageOutcomeExact left actor
+        (r39StageOrigin right actor stage) state))
 
 0 r39StageOutcomesRelatedFromExact :
   (keyEq : DecEq key) ->

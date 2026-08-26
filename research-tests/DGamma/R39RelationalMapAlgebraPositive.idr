@@ -100,6 +100,15 @@ r39PartialMapsRelatedCompose {sourceAfter} {targetAfter} {sourceBefore}
               (beforeRelated inputs) of PartialDefined related => related
         in afterRelated middleRelated
 
+public export
+0 r39PartialMapsRelatedTransitive :
+  PartialMapsRelated (EffectStateEquivalence keyEq) first middle ->
+  PartialMapsRelated (EffectStateEquivalence keyEq) middle last ->
+  PartialMapsRelated (EffectStateEquivalence keyEq) first last
+r39PartialMapsRelatedTransitive firstRelated secondRelated {x} {y} inputs =
+  r39EffectPartialTransitive (firstRelated inputs)
+    (secondRelated (effectStateReflexive keyEq y))
+
 ||| Consumer probe for `generatedMonoidsCommute`: a source commute square
 ||| transports through two relational map pairs without exact map equality.
 public export
