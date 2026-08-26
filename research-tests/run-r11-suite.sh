@@ -65,6 +65,12 @@ POSITIVE=(
   R20WholeBundleAlignmentGapPositive
   R9CoordinateBoundaryPositive
   R9WholeBlockShiftedAliasContradictionPositive
+  R39RelationalMapAlgebraPositive
+  R39RelationalIndependenceConsumerPositive
+  R39RelationalHeadProducerPositive
+  R39RelationalFixtureRetentionPositive
+  R39AdvanceYieldedMapProducerPositive
+  R39TraceGeneratorRespectPositive
 )
 
 # Each expected failure has its own mandatory diagnostic fragment and source
@@ -156,7 +162,7 @@ run_successful_unit() {
 }
 
 # Package population is hardened against the same status-zero Error: behavior,
-# but does not contribute to the 5+43 research-unit marker count.
+# but does not contribute to the 5+51 research-unit marker count.
 run_package_build() {
   local output
   output=$(mktemp)
@@ -183,7 +189,7 @@ export IDRIS2_PATH="$ROOT/$TTC_ROOT${IDRIS2_PATH:+:$IDRIS2_PATH}"
 
 if [ "$FRESH" -eq 1 ]; then
   # Idris writes these direct --check interfaces into the package TTC root, not
-  # source-relative research directories. Delete exactly the 5+88 suite units.
+  # source-relative research directories. Delete exactly the 5+94 suite units.
   all_modules=("${SPIKES[@]}" "${POSITIVE[@]}")
   for specification in "${NEGATIVE_SPECS[@]}"; do
     IFS='|' read -r module _ _ <<<"$specification"
@@ -230,8 +236,8 @@ for specification in "${NEGATIVE_SPECS[@]}"; do
 done
 
 if [ "$FRESH" -eq 1 ]; then
-  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 50 ]; then
-    echo "Expected 50 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
+  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 56 ]; then
+    echo "Expected 56 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
     exit 1
   fi
   echo "R11_FRESH_SUCCESSFUL_BUILD_MARKERS=$SUCCESSFUL_BUILD_MARKERS"

@@ -1,0 +1,121 @@
+{
+  "status": "PROPOSED-NOT-LANDED",
+  "baseHead": "9793ec9775ecbc10ace3499ad464c4e151448600",
+  "designAudit": "research-tests/O6-R39-RELATIONAL-MAP-SCOPING-AUDIT.md",
+  "frozenDeclarationChanges": [
+    {
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "record": "RelationalReplayCorrespondence",
+      "replaceField": "replayGeneratorMapPreserved",
+      "oldSignature": "  0 replayGeneratorMapPreserved : (actor : name) ->\n    (generator : TraceEffectGenerator name key world error value actor replayed) ->\n    (state : EffectState name key value world) ->\n    traceGeneratorMap (replayGeneratorOrigin actor generator) state =\n      traceGeneratorMap generator state",
+      "newField": "replayGeneratorMapsRelated",
+      "newSignature": "  0 replayGeneratorMapsRelated : (keyEq : DecEq key) -> (actor : name) ->\n    (generator : TraceEffectGenerator name key world error value actor replayed) ->\n    PartialMapsRelated (EffectStateEquivalence keyEq)\n      (traceGeneratorMap (replayGeneratorOrigin actor generator))\n      (traceGeneratorMap generator)"
+    },
+    {
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "record": "PointwiseRelationalHeadReplay",
+      "visibility": "private",
+      "replaceField": "headReplayMapPreserved",
+      "oldSignature": "  0 headReplayMapPreserved :\n    (state : EffectState name key value world) ->\n    partialEffectMap sourceStep state = partialEffectMap headReplayedStep state",
+      "newField": "headReplayMapsRelated",
+      "newSignature": "  0 headReplayMapsRelated : PartialMapsRelated\n    (EffectStateEquivalence keyEq)\n    (partialEffectMap sourceStep) (partialEffectMap headReplayedStep)"
+    },
+    {
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "type": "SealedSuffixReplaySpine",
+      "constructor": "SealedSuffixReplayStep",
+      "visibility": "private",
+      "replaceCapital": "headMapPreserved",
+      "oldSignature": "    (0 headMapPreserved :\n      (state : EffectState name key value world) ->\n      partialEffectMap sourceStep state = partialEffectMap replayedStep state) ->",
+      "newCapital": "headMapsRelated",
+      "newSignature": "    (0 headMapsRelated : PartialMapsRelated\n      (EffectStateEquivalence keyEq)\n      (partialEffectMap sourceStep) (partialEffectMap replayedStep)) ->"
+    }
+  ],
+  "derivedDeclarationChanges": [
+    {
+      "replace": "replayTransformationMapPreserved",
+      "with": "replayTransformationMapsRelated",
+      "newResult": "PartialMapsRelated (EffectStateEquivalence keyEq) sourceTransformationMap targetTransformationMap"
+    },
+    {
+      "keep": "replayPartialCommuteTransport",
+      "reason": "It has independent exact-map consumers in the local activation/orchestration diamond proofs.",
+      "add": "replayPartialCommuteFromRelatedMaps",
+      "probe": "r39PartialCommuteFromRelatedMaps"
+    },
+    {
+      "reviseBodyOnly": "replayIteratorStable",
+      "mapInput": "replayTransformationMapsRelated",
+      "stageInput": "existing replayIteratorOutcomePreserved plus iteratorStageOutcomeRelated",
+      "probe": "r39StageOutcomesRelatedFromExact"
+    },
+    {
+      "reviseBodyOnly": "traceIndependentAfterRelationalReplaySpike",
+      "publicTypeChange": false,
+      "probe": "r39TraceIndependentAfterRelationalReplay"
+    },
+    {
+      "reviseBodyOnly": "composeRelationalReplayCorrespondence",
+      "probe": "r39ComposeRelationalReplayCorrespondence"
+    },
+    {
+      "reviseBodyOnly": "finiteDerivationReplayCorrespondence/OperationalActorDone identity producers",
+      "probe": "r39IdentityRelationalReplayCorrespondence"
+    },
+    {
+      "replacePremiseIn": "singletonNonAdvanceRAR",
+      "old": "pointwise exact partialEffectMap equality",
+      "new": "PartialMapsRelated (EffectStateEquivalence keyEq) sourceMap targetMap"
+    },
+    {
+      "replacePremiseIn": "packagePointwiseRelationalHeadReplay",
+      "old": "pointwise exact partialEffectMap equality",
+      "new": "PartialMapsRelated (EffectStateEquivalence keyEq) sourceMap targetMap"
+    },
+    {
+      "reviseBodyOnly": "sealPointwiseRelationalHead",
+      "publicTypeChange": false
+    }
+  ],
+  "explicitNonChanges": [
+    "RelationalReplayCorrespondence record parameters",
+    "RelationalReplayCorrespondence.replayIteratorOutcomePreserved",
+    "ReplayInvariantBundle and ReplayInvariantBundle.replayIndependent",
+    "TraceIndependent",
+    "RelationalReplayEndpoint",
+    "LocalRelationalDiamond",
+    "AdjacentSwapResult",
+    "adjacentSwapSuffixSpike signature and body hole",
+    "R27MapRetainedFinishReplay.retainedTargetMapIdentity",
+    "src/ and dgamma.ipkg"
+  ],
+  "historicalPinsRequiredAtLanding": [
+    {
+      "pin": "RetiredExactRelationalReplayGeneratorMapPreservation",
+      "purpose": "Preserve the old same-input proof-bearing equality shape after replayGeneratorMapPreserved is removed."
+    },
+    {
+      "pin": "RetiredExactPointwiseHeadMapPreservation",
+      "purpose": "Preserve the old pointwise head exact-equality shape for R38."
+    },
+    {
+      "pin": "RetiredExactSealedSuffixHeadMapPreservation",
+      "purpose": "Preserve the revision-19 SealedSuffixReplayStep exact capital recorded by the manifest and R38 negative."
+    },
+    {
+      "existingPinsUnchanged": [
+        "R26FinishMapProjectionNegative",
+        "R27FinishMapEnvelopeForgeryNegative",
+        "R38UnloadExactMapFromRuntimeAccumulatorNegative"
+      ]
+    }
+  ],
+  "probeCoverage": [
+    "R39RelationalMapAlgebraPositive",
+    "R39RelationalIndependenceConsumerPositive",
+    "R39RelationalHeadProducerPositive",
+    "R39RelationalFixtureRetentionPositive",
+    "R39AdvanceYieldedMapProducerPositive",
+    "R39TraceGeneratorRespectPositive"
+  ]
+}

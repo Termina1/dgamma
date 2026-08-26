@@ -106,7 +106,10 @@ Review trail:
   O-Remove guard transport, and the full L-Divert/L-Leave heads, then bounds the
   full O-Remove producer at one erased Boolean proof annotation; and
 - revision 38 closes the full O-Remove head, then pins L-Unload's inability to
-  derive frozen exact map equality from runtime-related accumulator outputs.
+  derive frozen exact map equality from runtime-related accumulator outputs; and
+- revision 39 scopes, but does not land, one combined relational map repair for
+  L-Unload/L-Advance, with complete consumer, producer, identity, composition,
+  field-9, yielded-map, fixture-retention, and historical-pin probes.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -678,6 +681,36 @@ not opened.
 Two semantic heads remain, but the new map-capital decision blocks both likely
 heavy families. The required O6 band is therefore held at **18–34 shifts** rather
 than narrowed; holes remain **20**, split **6/4/8/1/1**.
+
+### Revision 39: relational map repair scoping only
+
+`research-tests/O6-R39-LADVANCE-MAP-DEMAND-ANALYSIS.md` analyzes all three
+L-Advance generator forms before selecting a field. The complete design audit is
+`research-tests/O6-R39-RELATIONAL-MAP-SCOPING-AUDIT.md`; the unlanded exact delta
+is `research-tests/cp5-r20-proposed-manifest-delta.json`.
+
+Six positive probe modules establish the anti-oscillation condition. The chosen
+shape is strong `PartialMapsRelated (EffectStateEquivalence keyEq)`, not
+same-input `PartialMapsEquivalent`: it composes transformations, transports
+`PartialCommute`, constructs both `TraceIndependent` fields, preserves the
+existing exact stage-outcome field, and derives R27-style existential target map
+totality. All three Definition-54 generator constructors respect the relation,
+so identity and recursive RAR producers close. Exact map proofs from the six
+closed semantic heads convert constructively; related accumulators supply
+L-Unload maps without proof equality; and L-Advance forward/yielded outcomes
+supply the same shape in every branch.
+
+The proposed delta changes only the RAR generator-map field and the duplicate
+private pointwise/sealed head map fields plus their derived helpers. It adds no
+RAR record parameter, does not change `ReplayInvariantBundle`, and retains
+`replayIteratorOutcomePreserved`. Three self-contained retired exact shapes are
+pre-declared for a future authorized landing. No frozen declaration is changed
+in revision 39.
+
+The suite now tracks **51 positives**, **43 exact negatives**, and **94 Idris test
+modules**, plus the five research spikes. Two semantic heads remain and the O6
+band stays **18–34 shifts** pending the required design gate; holes remain **20**,
+split **6/4/8/1/1**.
 
 ## Executive estimate
 
