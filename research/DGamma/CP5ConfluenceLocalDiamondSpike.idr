@@ -1753,6 +1753,40 @@ selectedProviderCandidate nameEq keyEq wanted provider
       (providerOfLookup sound) entry candidate
       (ownedSound (fiberTable (providerOfFiber sound)) wanted member)
 
+0 pointwiseTransportProviderCandidate :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (wanted : key) ->
+  (actor : name) ->
+  (left, right : SystemState name key value world error) ->
+  ControlEquivalent name key world error value nameEq left right ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} left)
+    (projectEffectState @{nameEq} right) ->
+  LocatedProviderCandidate name key world error value nameEq keyEq wanted actor
+    (registry left) ->
+  LocatedProviderCandidate name key world error value nameEq keyEq wanted actor
+    (registry right)
+pointwiseTransportProviderCandidate nameEq keyEq wanted actor left
+  right@(MkSystemState rightWorld (MkCoeffectContext rightEntries rightUnique))
+  controls effects candidate =
+    case pointwiseProviderCandidateAtName nameEq keyEq wanted actor left right
+      controls effects (providerCandidateFiber candidate)
+      (providerCandidateFound candidate) of
+      (rightFiber ** (rightFound, related, same)) =>
+        let 0 targetTrue :
+              ((isActive (fiberLifecycle rightFiber) &&
+                memberKey @{keyEq} wanted
+                  (ownedValues (fiberTable rightFiber))) = True)
+            targetTrue = trans (sym same) (providerCandidateTrue candidate)
+            0 targetEntry : Elem (Bind actor rightFiber) rightEntries
+            targetEntry = entryElemFromLookupPointwise nameEq actor rightFiber
+              rightEntries rightUnique rightFound
+            0 member : Elem wanted
+              (bindingKeys (bindings (ownedValues (fiberTable rightFiber))))
+            member = memberKeyTrueElemOpenAnchor keyEq wanted
+              (ownedValues (fiberTable rightFiber))
+              (boolAndRightPointwise _ _ targetTrue)
+        in MkLocatedProviderCandidate rightFiber rightFound targetEntry targetTrue
+          (ownedSound (fiberTable rightFiber) wanted member)
+
 0 pointwiseRegistryPairwise :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (state : SystemState name key value world error) ->
