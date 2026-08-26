@@ -1,5 +1,5 @@
 {
-  "status": "PROPOSED-NOT-LANDED",
+  "status": "LANDED",
   "baseHead": "9793ec9775ecbc10ace3499ad464c4e151448600",
   "designAudit": "research-tests/O6-R39-RELATIONAL-MAP-SCOPING-AUDIT.md",
   "frozenDeclarationChanges": [
@@ -117,5 +117,10 @@
     "R39RelationalFixtureRetentionPositive",
     "R39AdvanceYieldedMapProducerPositive",
     "R39TraceGeneratorRespectPositive"
-  ]
+  ],
+  "designGate": "APPROVED at scoped HEAD 78cdef834c34506a1ade16b50289d445f627b3d5",
+  "landingRepairCommit": "0cb625c",
+  "landingProbeCommit": "bc87ace",
+  "landedManifest": "research-tests/cp5-hole-interface-baseline.json",
+  "retiredExactShapesModule": "research-tests/DGamma/R40RetiredExactMapShapesPositive.idr"
 }

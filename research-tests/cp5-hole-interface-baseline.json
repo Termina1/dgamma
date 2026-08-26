@@ -207,6 +207,23 @@
       "record": "AdjacentSwapResult",
       "field": "sealedOccurrenceFold",
       "signature": "  0 sealedOccurrenceFold :\n    {initial, pairFirst, pairMiddle, pairFinal, originalFinal :\n      SystemState name key value world error} ->\n    {original : Transitions initial originalFinal} ->\n    {tracePrefix : Transitions initial pairFirst} ->\n    {left : Transition pairFirst pairMiddle} ->\n    {right : Transition pairMiddle pairFinal} ->\n    {suffix : Transitions pairFinal originalFinal} ->\n    {diamond : LocalRelationalDiamond name key world error value nameEq keyEq\n      left right} ->\n    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq\n      original tracePrefix left right suffix diamond) ->\n    AdjacentSwapOperationalOccurrenceFold name key world error value original\n      tracePrefix left right suffix (movedRight diamond) (movedLeft diamond)\n      (replayedSuffix result) (swappedTrace result)"
+    },
+    {
+      "revision": 20,
+      "audit": "research-tests/O6-R39-RELATIONAL-MAP-SCOPING-AUDIT.md",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "record": "RelationalReplayCorrespondence",
+      "field": "replayGeneratorMapsRelated",
+      "signature": "  0 replayGeneratorMapsRelated : (keyEq : DecEq key) -> (actor : name) ->\n    (generator : TraceEffectGenerator name key world error value actor replayed) ->\n    PartialMapsRelated (EffectStateEquivalence keyEq)\n      (traceGeneratorMap (replayGeneratorOrigin actor generator))\n      (traceGeneratorMap generator)"
+    },
+    {
+      "revision": 20,
+      "audit": "research-tests/O6-R39-RELATIONAL-MAP-SCOPING-AUDIT.md",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "record": "PointwiseRelationalHeadReplay",
+      "field": "headReplayMapsRelated",
+      "visibility": "private",
+      "signature": "  0 headReplayMapsRelated : PartialMapsRelated\n    (EffectStateEquivalence keyEq)\n    (partialEffectMap sourceStep) (partialEffectMap headReplayedStep)"
     }
   ],
   "approvedTypeAdditions": [
@@ -229,8 +246,7 @@
         "SealedSuffixReplayEnd",
         "SealedSuffixReplayStep"
       ],
-      "visibility": "private",
-      "requiredCapital": "    (0 headMapPreserved :\n      (state : EffectState name key value world) ->\n      partialEffectMap sourceStep state = partialEffectMap replayedStep state) ->"
+      "visibility": "private"
     },
     {
       "revision": 19,
@@ -251,6 +267,18 @@
       "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
       "projection": "swappedOccurrenceFold",
       "implementation": "swappedOccurrenceFold result = sealedOccurrenceFold result"
+    }
+  ],
+  "approvedConstructorCapitalRevisions": [
+    {
+      "revision": 20,
+      "audit": "research-tests/O6-R39-RELATIONAL-MAP-SCOPING-AUDIT.md",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "type": "SealedSuffixReplaySpine",
+      "constructor": "SealedSuffixReplayStep",
+      "visibility": "private",
+      "capital": "headMapsRelated",
+      "signature": "    (0 headMapsRelated : PartialMapsRelated\n      (EffectStateEquivalence keyEq)\n      (partialEffectMap sourceStep) (partialEffectMap replayedStep)) ->"
     }
   ]
 }

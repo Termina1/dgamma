@@ -43,7 +43,7 @@ cross_duplicates = sorted(name for name, count in Counter(all_names).items() if 
 if cross_duplicates:
     raise SystemExit(f'within/cross-category duplicates: {cross_duplicates}')
 
-expected_lengths = (5, 51, 43)
+expected_lengths = (5, 52, 43)
 actual_lengths = (len(spikes), len(positives), len(negatives))
 if actual_lengths != expected_lengths:
     raise SystemExit(f'category lengths {actual_lengths}, expected {expected_lengths}')
@@ -59,8 +59,8 @@ if sorted(tracked) != expected_tests:
         f'tracked test mismatch: missing={sorted(set(expected_tests)-set(tracked))} '
         f'extra={sorted(set(tracked)-set(expected_tests))}'
     )
-if len(tracked) != 94:
-    raise SystemExit(f'expected 94 tracked tests, found {len(tracked)}')
+if len(tracked) != 95:
+    raise SystemExit(f'expected 95 tracked tests, found {len(tracked)}')
 
 tracked_spikes = subprocess.check_output(
     ['git', 'ls-files', 'research/DGamma/CP5Confluence*Spike.idr'], text=True
@@ -84,6 +84,8 @@ git ls-files --error-unmatch research-tests/audit-r11-claims.sh >/dev/null
 git ls-files --error-unmatch research-tests/test-r12-harness.sh >/dev/null
 git ls-files --error-unmatch \
   research-tests/cp5-hole-interface-baseline.json >/dev/null
+git ls-files --error-unmatch \
+  research-tests/cp5-r20-proposed-manifest-delta.json >/dev/null
 
 echo 'R12_RUNNER_INVENTORY=passed'
 if [ "$MODE" = "--inventory-only" ]; then
@@ -164,7 +166,9 @@ for forbidden in [
 approved_fields = manifest.get('approvedRecordFieldRevisions', [])
 revision17_fields = [entry for entry in approved_fields if entry.get('revision') == 17]
 revision19_fields = [entry for entry in approved_fields if entry.get('revision') == 19]
-if len(approved_fields) != 5 or len(revision17_fields) != 2 or len(revision19_fields) != 3:
+revision20_fields = [entry for entry in approved_fields if entry.get('revision') == 20]
+if (len(approved_fields) != 7 or len(revision17_fields) != 2 or
+        len(revision19_fields) != 3 or len(revision20_fields) != 2):
     raise SystemExit('approved record-field manifest is missing or malformed')
 for entry in revision17_fields:
     if entry.get('audit') != 'research-tests/O6-ENDPOINT-CONTROLS-AUDIT.md':
@@ -172,6 +176,9 @@ for entry in revision17_fields:
 for entry in revision19_fields:
     if entry.get('audit') != 'research-tests/O6-R29-FINISH-MAP-END-TO-END-AUDIT.md':
         raise SystemExit('revision-19 record field lacks its authorized audit')
+for entry in revision20_fields:
+    if entry.get('audit') != 'research-tests/O6-R39-RELATIONAL-MAP-SCOPING-AUDIT.md':
+        raise SystemExit('revision-20 record field lacks its authorized audit')
 for entry in approved_fields:
     text = Path(entry['module']).read_text()
     if text.count(entry['signature']) != 1:
@@ -206,6 +213,26 @@ for entry in constructor_revisions:
         raise SystemExit('revision-19 producer-owned map capital changed')
     if 'declaration' in entry and text.count(entry['declaration']) != 1:
         raise SystemExit('revision-19 opaque adjacent record declaration changed')
+
+capital_revisions = manifest.get('approvedConstructorCapitalRevisions', [])
+if len(capital_revisions) != 1:
+    raise SystemExit('revision-20 constructor-capital revision is missing')
+for entry in capital_revisions:
+    if (entry.get('revision') != 20 or entry.get('visibility') != 'private' or
+            entry.get('audit') !=
+              'research-tests/O6-R39-RELATIONAL-MAP-SCOPING-AUDIT.md'):
+        raise SystemExit('revision-20 constructor capital lacks authorization')
+    if Path(entry['module']).read_text().count(entry['signature']) != 1:
+        raise SystemExit('revision-20 sealed head relational capital changed')
+
+retired_text = Path('research-tests/DGamma/R40RetiredExactMapShapesPositive.idr').read_text()
+for retired_name in [
+    'RetiredExactRelationalReplayGeneratorMapPreservation',
+    'RetiredExactPointwiseHeadMapPreservation',
+    'RetiredExactSealedSuffixHeadMapPreservation',
+]:
+    if retired_text.count(retired_name) < 2:
+        raise SystemExit(f'revision-20 retired exact shape missing: {retired_name}')
 
 projection_revisions = manifest.get('approvedProjectionRevisions', [])
 if len(projection_revisions) != 1:

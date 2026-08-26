@@ -58,8 +58,8 @@ probeAccumulatorsRuntimeRelated input = MkLocalStateRuntimeRelated Refl Refl
 
 ||| Expected failure pin for O6 revision 38. The two accumulators agree on every
 ||| runtime field, but their output tables contain distinct erased uniqueness
-||| functions. The frozen exact `headMapPreserved` field therefore cannot be
-||| derived from `AccumulatorRelated`.
+||| functions. The retired exact sealed-head shape therefore cannot be derived
+||| from `AccumulatorRelated`; the live revision-20 field is relational.
 0 unloadExactMapFromRuntimeAccumulatorNegative :
   (nameEq : DecEq Nat) -> (keyEq : DecEq ProbeKey) -> (actor : Nat) ->
   (state : EffectState Nat ProbeKey ProbeValue Unit) ->

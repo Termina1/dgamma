@@ -276,3 +276,22 @@ changed until the design gate approves:
 3. retaining exact iterator outcome preservation;
 4. the three retired exact historical shapes; and
 5. one combined landing campaign for L-Unload and L-Advance.
+
+## 10. Approved atomic landing
+
+The separate supervisor design gate approved this exact delta at scoped HEAD
+`78cdef834c34506a1ade16b50289d445f627b3d5`. The atomic repair is now landed:
+
+- `0cb625c` changes the three frozen map surfaces and all live research
+  producers/consumers while preserving `adjacentSwapSuffixSpike` byte-for-byte;
+- `bc87ace` re-points the R19/R23 carriers and all six R39 probes at landed
+  relational capital;
+- `R40RetiredExactMapShapesPositive` preserves the three exact historical
+  shapes without restoring them as live replay authority; and
+- `cp5-hole-interface-baseline.json` records the two record-field revisions and
+  the private sealed-constructor capital revision.
+
+The exact iterator-outcome field, bundle field 9, RAR parameters, R27 target
+identity, local exact commute helper, and every output-shaped boundary remain
+unchanged. The L-Unload/L-Advance exact-map obstruction is cleared. R26, R27,
+and R38 remain exact negative pins rather than live requirements.

@@ -107,9 +107,11 @@ Review trail:
   full O-Remove producer at one erased Boolean proof annotation; and
 - revision 38 closes the full O-Remove head, then pins L-Unload's inability to
   derive frozen exact map equality from runtime-related accumulator outputs; and
-- revision 39 scopes, but does not land, one combined relational map repair for
-  L-Unload/L-Advance, with complete consumer, producer, identity, composition,
-  field-9, yielded-map, fixture-retention, and historical-pin probes.
+- revision 39 scopes one combined relational map repair for L-Unload/L-Advance,
+  with complete consumer, producer, identity, composition, field-9, yielded-map,
+  fixture-retention, and historical-pin probes; and
+- revision 40 atomically lands that approved revision-20 interface repair,
+  re-points every producer and consumer, and preserves all exact negative pins.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -682,12 +684,12 @@ Two semantic heads remain, but the new map-capital decision blocks both likely
 heavy families. The required O6 band is therefore held at **18–34 shifts** rather
 than narrowed; holes remain **20**, split **6/4/8/1/1**.
 
-### Revision 39: relational map repair scoping only
+### Revision 39: relational map repair scoping
 
 `research-tests/O6-R39-LADVANCE-MAP-DEMAND-ANALYSIS.md` analyzes all three
 L-Advance generator forms before selecting a field. The complete design audit is
-`research-tests/O6-R39-RELATIONAL-MAP-SCOPING-AUDIT.md`; the unlanded exact delta
-is `research-tests/cp5-r20-proposed-manifest-delta.json`.
+`research-tests/O6-R39-RELATIONAL-MAP-SCOPING-AUDIT.md`; the exact delta is
+`research-tests/cp5-r20-proposed-manifest-delta.json`.
 
 Six positive probe modules establish the anti-oscillation condition. The chosen
 shape is strong `PartialMapsRelated (EffectStateEquivalence keyEq)`, not
@@ -700,17 +702,33 @@ closed semantic heads convert constructively; related accumulators supply
 L-Unload maps without proof equality; and L-Advance forward/yielded outcomes
 supply the same shape in every branch.
 
-The proposed delta changes only the RAR generator-map field and the duplicate
+The scoped delta changes only the RAR generator-map field and the duplicate
 private pointwise/sealed head map fields plus their derived helpers. It adds no
 RAR record parameter, does not change `ReplayInvariantBundle`, and retains
-`replayIteratorOutcomePreserved`. Three self-contained retired exact shapes are
-pre-declared for a future authorized landing. No frozen declaration is changed
-in revision 39.
+`replayIteratorOutcomePreserved`.
 
-The suite now tracks **51 positives**, **43 exact negatives**, and **94 Idris test
-modules**, plus the five research spikes. Two semantic heads remain and the O6
-band stays **18–34 shifts** pending the required design gate; holes remain **20**,
-split **6/4/8/1/1**.
+### Revision 40: atomic revision-20 relational map landing
+
+The approved delta is landed as `replayGeneratorMapsRelated`, private
+`headReplayMapsRelated`, and private sealed `headMapsRelated`. Transformation
+composition, commute transport, iterator stability, identity RARs, recursive
+RAR composition, singleton packaging, and all six closed semantic heads now
+consume relational map capital. The six R39 probes project the landed fields;
+R19 and R23 historical producers were rebuilt without exact proof-bearing map
+identity. `R40RetiredExactMapShapesPositive` preserves the three superseded exact
+shapes without restoring live authority.
+
+`ReplayInvariantBundle`, field 9, exact iterator outcomes, R27 target identity,
+local exact commute transport, and `adjacentSwapSuffixSpike` remain unchanged.
+R26, R27, and R38 continue to reject their intended forgeries. The frozen map
+obstruction is therefore cleared for both remaining semantic heads. L-Unload is
+not opened in the landing shift because gate-quality repair and validation use
+the remaining safe context budget.
+
+The suite now tracks **52 positives**, **43 exact negatives**, and **95 Idris test
+modules**, plus the five research spikes. Two semantic heads remain. With the
+interface uncertainty discharged, the O6 band narrows from **18–34** to
+**14–26 shifts**; holes remain **20**, split **6/4/8/1/1**.
 
 ## Executive estimate
 
@@ -1023,7 +1041,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; generic spine plus O-Retire/O-Insert/O-Remove/L-Begin/L-Divert/L-Leave are closed. L-Unload is STOP-AUDIT pinned: runtime-related accumulator outputs do not supply the frozen exact map equality required by both RAR and sealed heads. L-Advance and whole-result assembly remain unopened behind that decision.** | **XL, 18–34 remaining shifts held after revision-38 exact-map obstruction.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; generic spine plus O-Retire/O-Insert/O-Remove/L-Begin/L-Divert/L-Leave are closed. The revision-20 relational boundary clears the exact-map obstruction for L-Unload and L-Advance; both semantic heads and whole-result assembly remain open.** | **XL, 14–26 remaining shifts after the atomic relational-map landing.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1156,5 +1174,6 @@ Theorem 73 remains unproved with 20 research holes. Revision-17 endpoint and
 revision-18 external-order work are ratified; O5 remains only locally closed.
 Revisions 27–29 retain target-map identity at the finish producer, close
 independence, and assemble the complete target `ReplayInvariantBundle` through
-support/active matching. The atomic A/B/C/D/E boundary is landed; no O6 body
-work is authorized before the assembled revision-19 scoped adversarial review.
+support/active matching. The atomic A/B/C/D/E boundary and revision-20 relational-map repair are landed.
+Six of eight semantic action families are closed; L-Unload and L-Advance remain
+before whole-suffix and final adjacent-result assembly.

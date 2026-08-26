@@ -71,6 +71,7 @@ POSITIVE=(
   R39RelationalIndependenceConsumerPositive
   R39RelationalHeadProducerPositive
   R39RelationalFixtureRetentionPositive
+  R40RetiredExactMapShapesPositive
 )
 
 # Each expected failure has its own mandatory diagnostic fragment and source
