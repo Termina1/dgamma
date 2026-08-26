@@ -100,7 +100,11 @@ Review trail:
   target-query helper at its explicit retired-Boolean split; and
 - revision 36 constructs the approved indexed O-Remove source observation and
   closes the retired-aware pointwise target-query lemma, then bounds O-Remove at
-  delete-self dictionary normalization and L-Divert at target-owner reification.
+  delete-self dictionary normalization and L-Divert at target-owner reification;
+  and
+- revision 37 closes direct-entry pointwise delete controls, projection-based
+  O-Remove guard transport, and the full L-Divert/L-Leave heads, then bounds the
+  full O-Remove producer at one erased Boolean proof annotation.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -619,6 +623,32 @@ L-Leave and the heavier heads were not opened after the shared budget stop.
 No new semantic head closes; five remain. The required O6 band stays
 **18–34 shifts** and holes remain **20**, split **6/4/8/1/1**.
 
+### Revision 37: delete controls and lifecycle head replay
+
+`research-tests/O6-R37-REMOVE-CONTROL-DIVERT-LEAVE-AUDIT.md` records the
+checkpoint. `pointwiseControlAfterDelete` now exposes both registries as entry
+lists with uniqueness evidence and calls `localLookupDeleteEntriesSelfO5`
+directly in the same-owner branch. The revision-36 `DecEq` wall does not recur.
+Projection lemmas for owner retirement and lifecycle inactivity combine with
+exact transported childlessness in `pointwiseRemovalGuardRelated`; no R34-style
+child observation is reconstructed.
+
+`replayPointwiseDivertHead` preserves native target remaining/accumulator/view
+indices, relates exact target queries, transports mismatch before changing only
+the comparison view, and installs `divertLifecycleControlRelated lifecycleSame`.
+`replayPointwiseLeaveHead` closes the Active analogue using the same pattern.
+Both producers own their checked target, preservation, endpoint, map, singleton
+RAR, occurrence, ordinal, and alignment capital.
+
+The full O-Remove producer then exhausts its fresh three-attempt budget after
+reaching target childlessness: its last discarded version needs parentheses
+around the erased Boolean equality declaration for `targetNoChild`. The old
+`DecEq` mismatch and R34 orientation do not recur, so the conditional new
+negative is not triggered. L-Unload/L-Advance are not opened.
+
+Three semantic heads remain: O-Remove, L-Unload, and L-Advance. The required O6
+band stays **18–34 shifts** and holes remain **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -930,7 +960,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; generic spine plus O-Retire/O-Insert/L-Begin are closed. The approved O-Remove source observation and retired-aware target-query lemma are proved. O-Remove stops at delete-self dictionary normalization; L-Divert stops at native target-owner reification. Five heads and whole-result assembly remain.** | **XL, 18–34 remaining shifts after revision-36 representation checkpoint.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; generic spine plus O-Retire/O-Insert/L-Begin/L-Divert/L-Leave are closed. O-Remove source observation, guard transport, and direct-entry delete controls are proved; its full head stops at one erased Boolean annotation. L-Unload, L-Advance, and whole-result assembly remain.** | **XL, 18–34 remaining shifts after revision-37 lifecycle-head checkpoint.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
