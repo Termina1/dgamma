@@ -97,7 +97,10 @@ Review trail:
   unique-name capital up to the final four-branch selection equality; and
 - revision 35 closes pointwise provider selection, exact dependency resolution,
   and the full L-Begin semantic head, then stops the shared L-Divert/L-Leave
-  target-query helper at its explicit retired-Boolean split.
+  target-query helper at its explicit retired-Boolean split; and
+- revision 36 constructs the approved indexed O-Remove source observation and
+  closes the retired-aware pointwise target-query lemma, then bounds O-Remove at
+  delete-self dictionary normalization and L-Divert at target-owner reification.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -591,6 +594,31 @@ rebuilding `hasChild` through R34's nested `with` proof.
 Five semantic heads remain. The required O6 band stays **18–34 shifts**; holes
 remain **20**, split **6/4/8/1/1**.
 
+### Revision 36: remove observation and target-query closure
+
+`research-tests/O6-R36-REMOVE-OBSERVATION-TARGET-QUERY-AUDIT.md` records the
+checkpoint. The reviewed `PointwiseRemoveSourceObservation` packages one
+`removeSuccessView` owner's lookup, composite guard, exact childlessness, tag,
+and concrete delete endpoint in the later elaboration zone. It never constructs
+R34's independently oriented `childView`; the R34 diagnostic did not recur.
+
+The subsequent O-Remove body stops at the same-actor delete lookup's hidden
+`DecEq` normalization, not at childlessness. The retained next design destructs
+both registries to entries/uniqueness and applies
+`localLookupDeleteEntriesSelfO5` directly with the producer dictionary.
+
+`pointwiseConcreteTargetFiberSame` closes the shared lifecycle target query by
+four explicit retired-flag clauses: retired queries both yield `Nothing`, only
+the unretired branch resolves providers, and unequal flags contradict the
+producer equality. The full L-Divert attempt then reaches target owner
+reification but improperly forces target remaining/view indices to source
+indices. The next version keeps native target indices, transports mismatch with
+`viewsSame`, and applies `divertLifecycleControlRelated lifecycleSame` directly.
+L-Leave and the heavier heads were not opened after the shared budget stop.
+
+No new semantic head closes; five remain. The required O6 band stays
+**18–34 shifts** and holes remain **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -902,7 +930,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; generic spine plus O-Retire/O-Insert/L-Begin are closed. Pointwise provider selection and exact dependency resolution are proved. O-Remove remains exact-negative pinned; the shared L-Divert/L-Leave target query stops at the retired-Boolean split. Five heads and whole-result assembly remain.** | **XL, 18–34 remaining shifts after revision-35 L-Begin closure.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; generic spine plus O-Retire/O-Insert/L-Begin are closed. The approved O-Remove source observation and retired-aware target-query lemma are proved. O-Remove stops at delete-self dictionary normalization; L-Divert stops at native target-owner reification. Five heads and whole-result assembly remain.** | **XL, 18–34 remaining shifts after revision-36 representation checkpoint.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
