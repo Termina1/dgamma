@@ -9672,6 +9672,43 @@ removeBindingObservation nameEq keyEq actor ambient source tag afterState raw =
       MkRemoveBindingObservation oldFiber found
         (deleteBindingRuntimeBindings nameEq actor source)
 
+||| Indexed source capital for the pointwise O-Remove producer. All executable
+||| guards come from one operational view; in particular `sourceNoChild` is not
+||| rebuilt from an independently oriented `with` proof.
+record PointwiseRemoveSourceObservation
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (actor : name) (ambient : world)
+  (source : Registry name key value world error)
+  (tag : RuleTag) (afterState : SystemState name key value world error) where
+  constructor MkPointwiseRemoveSourceObservation
+  observedRemoveFiber : Fiber name key value world error
+  0 observedRemoveFound : lookupFiber @{nameEq} actor source =
+    Just observedRemoveFiber
+  0 observedRemoveGuard :
+    (retired observedRemoveFiber &&
+      isInactive (fiberLifecycle observedRemoveFiber) &&
+      not (hasChild @{nameEq} {name = name} {key = key} {value = value}
+        {world = world} {error = error} actor source) = True)
+  0 observedRemoveNoChild : hasChild @{nameEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} actor source = False
+  0 observedRemoveTag : tag = ORemoveTag
+  0 observedRemoveAfter : MkSystemState ambient
+    (deleteBinding @{nameEq} actor source) = afterState
+
+0 pointwiseRemoveSourceObservation :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  applyAction @{nameEq} @{keyEq} (ORemove actor)
+    (MkSystemState ambient source) = Just (tag, afterState) ->
+  PointwiseRemoveSourceObservation name key world error value nameEq actor
+    ambient source tag afterState
+pointwiseRemoveSourceObservation nameEq keyEq actor ambient source tag afterState
+  raw = case removeSuccessView nameEq keyEq actor ambient source tag afterState
+    raw of
+      MkRemoveSuccessView oldFiber found guard noChild =>
+        MkPointwiseRemoveSourceObservation oldFiber found guard noChild Refl Refl
+
 0 localReplaceEntriesOtherHead :
   (nameEq : DecEq name) -> (changed, current : name) ->
   Not (changed = current) ->
