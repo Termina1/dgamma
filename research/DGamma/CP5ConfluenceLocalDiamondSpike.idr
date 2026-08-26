@@ -1929,6 +1929,29 @@ locatedProviderCandidateSelectsSome nameEq keyEq wanted actor
       (providerCandidateFiber candidate) (providerCandidateEntry candidate)
       (providerCandidateTrue candidate)
 
+0 locatedProviderCandidatesSameName :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (wanted : key) ->
+  (leftName, rightName : name) ->
+  (fibers : Registry name key value world error) ->
+  pairwiseProvisionInvariant @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (bindings fibers) = True ->
+  LocatedProviderCandidate name key world error value nameEq keyEq wanted
+    leftName fibers ->
+  LocatedProviderCandidate name key world error value nameEq keyEq wanted
+    rightName fibers ->
+  leftName = rightName
+locatedProviderCandidatesSameName nameEq keyEq wanted leftName rightName fibers pairwise
+  leftCandidate rightCandidate = pairwiseSharedProvisionSameNamePointwise
+    {name = name} {key = key} {world = world} {error = error} {value = value}
+    keyEq (bindings fibers) pairwise leftName rightName
+    (providerCandidateFiber leftCandidate)
+    (providerCandidateFiber rightCandidate)
+    (providerCandidateEntry leftCandidate)
+    (providerCandidateEntry rightCandidate) wanted
+    (providerCandidateDeclares leftCandidate)
+    (providerCandidateDeclares rightCandidate)
+
 0 pointwiseRegistryPairwise :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (state : SystemState name key value world error) ->
