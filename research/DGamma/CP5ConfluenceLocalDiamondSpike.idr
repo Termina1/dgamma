@@ -5172,6 +5172,46 @@ localLookupDeleteSelfO5 nameEq removed
   (MkCoeffectContext entries unique) =
     localLookupDeleteEntriesSelfO5 nameEq removed entries unique
 
+||| Deleting the same owner from independently ordered pointwise registries
+||| preserves control. The self branch deliberately exposes both entry lists
+||| and uniqueness proofs so the producer's exact `nameEq` remains visible to
+||| `localLookupDeleteEntriesSelfO5`.
+0 pointwiseControlAfterDelete :
+  (nameEq : DecEq name) -> (actor : name) ->
+  (leftWorld, rightWorld : world) ->
+  (leftRegistry, rightRegistry : Registry name key value world error) ->
+  ControlEquivalent name key world error value nameEq
+    (MkSystemState leftWorld leftRegistry)
+    (MkSystemState rightWorld rightRegistry) ->
+  ControlEquivalent name key world error value nameEq
+    (MkSystemState leftWorld (deleteBinding @{nameEq} actor leftRegistry))
+    (MkSystemState rightWorld (deleteBinding @{nameEq} actor rightRegistry))
+pointwiseControlAfterDelete nameEq actor leftWorld rightWorld
+  (MkCoeffectContext leftEntries leftUnique)
+  (MkCoeffectContext rightEntries rightUnique) controls =
+    MkControlEquivalent pointwise
+  where
+  0 pointwise : (selected : name) -> FiberControlMaybeRelated
+    {name = name} {key = key} {value = value} {world = world} {error = error}
+    (lookupFiber @{nameEq} selected
+      (deleteBinding @{nameEq} actor
+        (MkCoeffectContext leftEntries leftUnique)))
+    (lookupFiber @{nameEq} selected
+      (deleteBinding @{nameEq} actor
+        (MkCoeffectContext rightEntries rightUnique)))
+  pointwise selected with (decEq @{nameEq} selected actor)
+    pointwise selected | Yes same = case same of
+      Refl =>
+        rewrite localLookupDeleteEntriesSelfO5 nameEq actor leftEntries leftUnique in
+        rewrite localLookupDeleteEntriesSelfO5 nameEq actor rightEntries rightUnique in
+          NoControlFibers
+    pointwise selected | No distinct =
+      rewrite lookupDeleteOther selected actor distinct
+        (MkCoeffectContext leftEntries leftUnique) in
+      rewrite lookupDeleteOther selected actor distinct
+        (MkCoeffectContext rightEntries rightUnique) in
+        controlPointwise controls selected
+
 0 localLookupReplaceSelfO5 :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (actor : name) ->
