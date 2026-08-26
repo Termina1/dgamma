@@ -1713,6 +1713,19 @@ providerOfSoundCandidateTrue nameEq keyEq wanted provider fibers sound =
       member = trans (sym (cong isJust lookupSame)) (providerOfValue sound)
   in boolAndBothPointwise _ _ (providerOfActive sound) member
 
+0 pointwiseRegistryPairwise :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) ->
+  registryWellFormed @{nameEq} @{keyEq} state = True ->
+  pairwiseProvisionInvariant @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error}
+    (bindings (registry state)) = True
+pointwiseRegistryPairwise nameEq keyEq
+  (MkSystemState ambient (MkCoeffectContext entries unique)) valid =
+    boolAndLeftPointwise _ _
+      (boolAndRightPointwise _ _
+        (boolAndRightPointwise _ _ valid))
+
 0 pointwiseControlAfterInsert :
   (nameEq : DecEq name) -> (actor : name) -> (parent : Parent name) ->
   (component : Component key value world error) ->
