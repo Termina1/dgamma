@@ -1787,6 +1787,21 @@ pointwiseTransportProviderCandidate nameEq keyEq wanted actor left
         in MkLocatedProviderCandidate rightFiber rightFound targetEntry targetTrue
           (ownedSound (fiberTable rightFiber) wanted member)
 
+0 locatedProviderCandidateSelectsSome :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (actor : name) ->
+  (fibers : Registry name key value world error) ->
+  LocatedProviderCandidate name key world error value nameEq keyEq wanted actor
+    fibers ->
+  (provider : name ** providerOf @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} wanted fibers = Just provider)
+locatedProviderCandidateSelectsSome nameEq keyEq wanted actor
+  (MkCoeffectContext entries unique) candidate =
+    providerInFromLocatedCandidate nameEq keyEq wanted entries actor
+      (providerCandidateFiber candidate) (providerCandidateEntry candidate)
+      (providerCandidateTrue candidate)
+
 0 pointwiseRegistryPairwise :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (state : SystemState name key value world error) ->
