@@ -2024,6 +2024,56 @@ pointwiseProviderOfSame nameEq keyEq wanted left right controls effects rightVal
               transportedLeft selectedRight
         in cong Just sameName
 
+||| Provider-name equality lifts structurally to exact dependency resolution.
+||| This remains executable against independently ordered registries because
+||| each selected provider is fixed by the provision invariant above.
+0 pointwiseResolveViewSame :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (requested : List key) ->
+  (left, right : SystemState name key value world error) ->
+  ControlEquivalent name key world error value nameEq left right ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} left)
+    (projectEffectState @{nameEq} right) ->
+  registryWellFormed @{nameEq} @{keyEq} right = True ->
+  resolveView @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} requested (registry left) =
+  resolveView @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} requested (registry right)
+pointwiseResolveViewSame nameEq keyEq [] left right controls effects rightValid =
+  Refl
+pointwiseResolveViewSame nameEq keyEq (wanted :: rest) left right controls effects
+  rightValid with (providerOf @{nameEq} @{keyEq} wanted (registry left))
+    proof leftSelected
+  pointwiseResolveViewSame nameEq keyEq (wanted :: rest) left right controls
+    effects rightValid | Nothing
+    with (providerOf @{nameEq} @{keyEq} wanted (registry right)) proof rightSelected
+    pointwiseResolveViewSame nameEq keyEq (wanted :: rest) left right controls
+      effects rightValid | Nothing | Nothing = Refl
+    pointwiseResolveViewSame nameEq keyEq (wanted :: rest) left right controls
+      effects rightValid | Nothing | Just rightName =
+        let sameHead = pointwiseProviderOfSame nameEq keyEq wanted left right
+              controls effects rightValid
+        in case trans (sym leftSelected) (trans sameHead rightSelected) of
+          Refl impossible
+  pointwiseResolveViewSame nameEq keyEq (wanted :: rest) left right controls
+    effects rightValid | Just leftName
+    with (providerOf @{nameEq} @{keyEq} wanted (registry right)) proof rightSelected
+    pointwiseResolveViewSame nameEq keyEq (wanted :: rest) left right controls
+      effects rightValid | Just leftName | Nothing =
+        let sameHead = pointwiseProviderOfSame nameEq keyEq wanted left right
+              controls effects rightValid
+        in case trans (sym leftSelected) (trans sameHead rightSelected) of
+          Refl impossible
+    pointwiseResolveViewSame nameEq keyEq (wanted :: rest) left right controls
+      effects rightValid | Just leftName | Just rightName =
+        let sameHead = pointwiseProviderOfSame nameEq keyEq wanted left right
+              controls effects rightValid
+            sameSelected = trans (sym leftSelected)
+              (trans sameHead rightSelected)
+        in case justInjective sameSelected of
+          Refl => cong (map (ProviderView leftName))
+            (pointwiseResolveViewSame nameEq keyEq rest left right controls
+              effects rightValid)
+
 0 pointwiseControlAfterInsert :
   (nameEq : DecEq name) -> (actor : name) -> (parent : Parent name) ->
   (component : Component key value world error) ->
