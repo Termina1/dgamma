@@ -1,5 +1,6 @@
 module DGamma.R19CrossStateRetireReplayProbePositive
 
+import DGamma.Core
 import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.CP3
@@ -373,19 +374,7 @@ singletonRetireRAR nameEq keyEq actor sourceBefore sourceAfter replayedBefore
     MkRelationalReplayCorrespondence
       (singletonRetireGeneratorOrigin nameEq keyEq actor sourceBefore sourceAfter
         replayedBefore replayedAfter sourceChecked replayedChecked)
-      (\selected, generator, state =>
-        trans
-          (singletonRetireGeneratorRunsIdentity
-            (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq
-              (ORetire actor) ORetireTag sourceChecked)
-            Refl Refl
-            (singletonRetireGeneratorOrigin nameEq keyEq actor sourceBefore
-              sourceAfter replayedBefore replayedAfter sourceChecked
-              replayedChecked selected generator) state)
-          (sym (singletonRetireGeneratorRunsIdentity
-            (Fired {before = replayedBefore} {afterState = replayedAfter}
-              nameEq keyEq (ORetire actor) ORetireTag replayedChecked)
-            Refl Refl generator state)))
+      mapsRelated
       (\selected, stage => void
         (noIteratorStageInSingletonRetire
           (Fired {before = replayedBefore} {afterState = replayedAfter} nameEq keyEq
@@ -396,6 +385,48 @@ singletonRetireRAR nameEq keyEq actor sourceBefore sourceAfter replayedBefore
           (Fired {before = replayedBefore} {afterState = replayedAfter} nameEq keyEq
               (ORetire actor) ORetireTag replayedChecked)
           Refl stage))
+  where
+  0 mapsRelated : (observedKeyEq : DecEq key) -> (selected : name) ->
+    (generator : TraceEffectGenerator name key world error value selected
+      (MoreTransitions
+        (Fired {before = replayedBefore} {afterState = replayedAfter}
+          nameEq keyEq (ORetire actor) ORetireTag replayedChecked)
+        NoTransitions)) ->
+    PartialMapsRelated (EffectStateEquivalence observedKeyEq)
+      (traceGeneratorMap
+        (singletonRetireGeneratorOrigin nameEq keyEq actor sourceBefore
+          sourceAfter replayedBefore replayedAfter sourceChecked replayedChecked
+          selected generator))
+      (traceGeneratorMap generator)
+  mapsRelated observedKeyEq selected generator {x} {y} inputs =
+    let 0 exactAtSource : (traceGeneratorMap
+          (singletonRetireGeneratorOrigin nameEq keyEq actor sourceBefore
+            sourceAfter replayedBefore replayedAfter sourceChecked
+            replayedChecked selected generator) x =
+          traceGeneratorMap generator x)
+        exactAtSource = trans
+          (singletonRetireGeneratorRunsIdentity
+            (Fired {before = sourceBefore} {afterState = sourceAfter}
+              nameEq keyEq (ORetire actor) ORetireTag sourceChecked)
+            Refl Refl
+            (singletonRetireGeneratorOrigin nameEq keyEq actor sourceBefore
+              sourceAfter replayedBefore replayedAfter sourceChecked
+              replayedChecked selected generator) x)
+          (sym (singletonRetireGeneratorRunsIdentity
+            (Fired {before = replayedBefore} {afterState = replayedAfter}
+              nameEq keyEq (ORetire actor) ORetireTag replayedChecked)
+            Refl Refl generator x))
+        0 targetRelated : PartialRelated
+          (EffectState name key value world) (EffectStateRelated observedKeyEq)
+          (traceGeneratorMap generator x) (traceGeneratorMap generator y)
+        targetRelated = replayTraceGeneratorMapRespects observedKeyEq generator
+          inputs
+    in replace
+      {p = \leftOutput => PartialRelated
+        (EffectState name key value world)
+        (EffectStateRelated observedKeyEq) leftOutput
+        (traceGeneratorMap generator y)}
+      (sym exactAtSource) targetRelated
 
 public export
 record CheckedCrossStateRetireReplay

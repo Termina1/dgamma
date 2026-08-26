@@ -1,6 +1,8 @@
 module DGamma.R19SuffixFreeFullAdjacentCertificatePositive
 
+import DGamma.Core
 import DGamma.Calculus
+import DGamma.Coeffects
 import DGamma.CP3
 import DGamma.Metatheory
 import DGamma.CP5ConfluenceDeletionChainSpike
@@ -338,6 +340,7 @@ scopedFullSuffixFreeAdjacentCertificateProducer nameEq keyEq protocol actor left
           NoTransitions trace Refl Refl
           (sameExternalOrchestrationReflexiveSpike nameEq trace)
           (MkRelationalReplayCorrespondence (\selected, generator => generator)
-            (\selected, generator, state => Refl)
+            (\observedKeyEq, selected, generator =>
+              replayTraceGeneratorMapRespects observedKeyEq generator)
             (\selected, stage => stage) (\selected, stage, state => Refl))
           endpoint source fold FullAdjacentSuffixEnd)

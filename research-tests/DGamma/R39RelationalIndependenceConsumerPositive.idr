@@ -7,6 +7,7 @@ import DGamma.Metatheory
 import DGamma.Unified
 import DGamma.CP4DeletionSelectedForeignLifecycleAdvanceOutcome
 import DGamma.CP4RecoveryEffectRespect
+import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.R39RelationalMapAlgebraPositive
 import DGamma.R39TraceGeneratorRespectPositive
 import Decidable.Equality
@@ -31,42 +32,16 @@ r39OutcomeAgreementSymmetric
     IteratorSuccessfulYieldsAgree (sym continuationSame)
       (r39EquivalentMapsSymmetric undoMaps)
 
-||| Probe-only shadow of the proposed RAR shape.  No frozen declaration is
-||| changed.  Both map and stage clauses quantify over related inputs.
-public export
-record R39RelationalReplayCorrespondence
-  (name, key, world, error : Type) (value : key -> Type)
-  (keyEq : DecEq key)
-  {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
-    SystemState name key value world error}
-  (source : Transitions sourceFirst sourceFinal)
-  (replayed : Transitions replayedFirst replayedFinal) where
-  constructor MkR39RelationalReplayCorrespondence
-  r39GeneratorOrigin : (actor : name) ->
-    TraceEffectGenerator name key world error value actor replayed ->
-    TraceEffectGenerator name key world error value actor source
-  0 r39GeneratorMapsRelated : (actor : name) ->
-    (generator : TraceEffectGenerator name key world error value actor replayed) ->
-    PartialMapsRelated (EffectStateEquivalence keyEq)
-      (traceGeneratorMap (r39GeneratorOrigin actor generator))
-      (traceGeneratorMap generator)
-  r39StageOrigin : (actor : name) ->
-    IteratorStage name key world error value actor replayed ->
-    IteratorStage name key world error value actor source
-  0 r39StageOutcomeExact : (actor : name) ->
-    (stage : IteratorStage name key world error value actor replayed) ->
-    (state : EffectState name key value world) ->
-    iteratorStageOutcome stage state =
-      iteratorStageOutcome (r39StageOrigin actor stage) state
-
+||| Landed revision-20 RAR capital is consumed directly below.  The probe no
+||| longer shadows the frozen record.
 0 r39TransformationOrigin :
-  R39RelationalReplayCorrespondence name key world error value keyEq source
+  RelationalReplayCorrespondence name key world error value source
     replayed ->
   TraceEffectTransformation name key world error value actor replayed ->
   TraceEffectTransformation name key world error value actor source
 r39TransformationOrigin correspondence TraceIdentity = TraceIdentity
 r39TransformationOrigin correspondence (TraceGenerator generator) =
-  TraceGenerator (r39GeneratorOrigin correspondence actor generator)
+  TraceGenerator (replayGeneratorOrigin correspondence actor generator)
 r39TransformationOrigin correspondence (TraceCompose after before) =
   TraceCompose (r39TransformationOrigin correspondence after)
     (r39TransformationOrigin correspondence before)
@@ -74,8 +49,8 @@ r39TransformationOrigin correspondence (TraceCompose after before) =
 ||| Consumer probe for arbitrary monoid transformations, not just one head.
 public export
 0 r39TransformationMapsRelated :
-  (correspondence : R39RelationalReplayCorrespondence name key world error value
-    keyEq source replayed) ->
+  (correspondence : RelationalReplayCorrespondence name key world error value
+    source replayed) ->
   (transformation : TraceEffectTransformation name key world error value actor
     replayed) ->
   PartialMapsRelated (EffectStateEquivalence keyEq)
@@ -85,7 +60,7 @@ public export
 r39TransformationMapsRelated correspondence TraceIdentity =
   \inputs => PartialDefined inputs
 r39TransformationMapsRelated correspondence (TraceGenerator generator) =
-  r39GeneratorMapsRelated correspondence actor generator
+  replayGeneratorMapsRelated correspondence keyEq actor generator
 r39TransformationMapsRelated correspondence (TraceCompose after before) =
   r39PartialMapsRelatedCompose
     (r39TransformationMapsRelated correspondence after)
@@ -95,11 +70,12 @@ public export
 0 r39IdentityRelationalReplayCorrespondence :
   (keyEq : DecEq key) ->
   (trace : Transitions first last) ->
-  R39RelationalReplayCorrespondence name key world error value keyEq trace trace
+  RelationalReplayCorrespondence name key world error value trace trace
 r39IdentityRelationalReplayCorrespondence keyEq trace =
-  MkR39RelationalReplayCorrespondence
+  MkRelationalReplayCorrespondence
     (\actor, generator => generator)
-    (\actor, generator => r39TraceGeneratorMapRespects keyEq generator)
+    (\observedKeyEq, actor, generator =>
+      replayTraceGeneratorMapRespects observedKeyEq generator)
     (\actor, stage => stage)
     (\actor, stage, state => Refl)
 
@@ -108,26 +84,10 @@ public export
   {source : Transitions sourceFirst sourceFinal} ->
   {middle : Transitions middleFirst middleFinal} ->
   {target : Transitions targetFirst targetFinal} ->
-  R39RelationalReplayCorrespondence name key world error value keyEq source
-    middle ->
-  R39RelationalReplayCorrespondence name key world error value keyEq middle
-    target ->
-  R39RelationalReplayCorrespondence name key world error value keyEq source
-    target
-r39ComposeRelationalReplayCorrespondence left right =
-  MkR39RelationalReplayCorrespondence
-    (\actor, generator => r39GeneratorOrigin left actor
-      (r39GeneratorOrigin right actor generator))
-    (\actor, generator => r39PartialMapsRelatedTransitive
-      (r39GeneratorMapsRelated left actor
-        (r39GeneratorOrigin right actor generator))
-      (r39GeneratorMapsRelated right actor generator))
-    (\actor, stage => r39StageOrigin left actor
-      (r39StageOrigin right actor stage))
-    (\actor, stage, state => trans
-      (r39StageOutcomeExact right actor stage state)
-      (r39StageOutcomeExact left actor
-        (r39StageOrigin right actor stage) state))
+  RelationalReplayCorrespondence name key world error value source middle ->
+  RelationalReplayCorrespondence name key world error value middle target ->
+  RelationalReplayCorrespondence name key world error value source target
+r39ComposeRelationalReplayCorrespondence = composeRelationalReplayCorrespondence
 
 0 r39StageOutcomesRelatedFromExact :
   (keyEq : DecEq key) ->
@@ -223,43 +183,15 @@ r39IteratorStableFromRelationalMaps keyEq sourceStage targetStage sourceForeign
           (iteratorOutcomeAgreementTransitive sourceMovedToSourceOrigin
             sourceOriginToTargetOrigin)
 
-||| Whole-bundle field 9 (`replayIndependent`) closes under the probe-only
-||| relational correspondence.  Both generated-monoid commutation and
-||| Equation-55 iterator stability are constructed.
+||| Whole-bundle field 9 (`replayIndependent`) closes through the landed
+||| revision-20 relational correspondence.
 public export
 0 r39TraceIndependentAfterRelationalReplay :
   (keyEq : DecEq key) ->
   {source : Transitions sourceFirst sourceFinal} ->
   {replayed : Transitions replayedFirst replayedFinal} ->
-  R39RelationalReplayCorrespondence name key world error value keyEq source
-    replayed ->
+  RelationalReplayCorrespondence name key world error value source replayed ->
   TraceIndependent name key world error value keyEq source ->
   TraceIndependent name key world error value keyEq replayed
-r39TraceIndependentAfterRelationalReplay keyEq correspondence independent =
-  MkTraceIndependent
-    (\left, right, distinct, leftTransformation, rightTransformation =>
-      r39PartialCommuteFromRelatedMaps
-        (runTraceEffectTransformation
-          (r39TransformationOrigin correspondence leftTransformation))
-        (runTraceEffectTransformation leftTransformation)
-        (runTraceEffectTransformation
-          (r39TransformationOrigin correspondence rightTransformation))
-        (runTraceEffectTransformation rightTransformation)
-        (r39TransformationMapsRelated correspondence leftTransformation)
-        (r39TransformationMapsRelated correspondence rightTransformation)
-        (generatedMonoidsCommute independent left right distinct
-          (r39TransformationOrigin correspondence leftTransformation)
-          (r39TransformationOrigin correspondence rightTransformation)))
-    (\left, right, distinct, stage, foreign, origin =>
-      r39IteratorStableFromRelationalMaps keyEq
-        (r39StageOrigin correspondence left stage) stage
-        (runTraceEffectTransformation
-          (r39TransformationOrigin correspondence foreign))
-        (runTraceEffectTransformation foreign)
-        (r39TransformationMapsRelated correspondence foreign)
-        (\point => iteratorYieldsStable independent left right distinct
-          (r39StageOrigin correspondence left stage)
-          (r39TransformationOrigin correspondence foreign) point)
-        (r39StageOutcomesRelatedFromExact keyEq
-          (r39StageOrigin correspondence left stage) stage
-          (r39StageOutcomeExact correspondence left stage)) origin)
+r39TraceIndependentAfterRelationalReplay =
+  traceIndependentAfterRelationalReplaySpike

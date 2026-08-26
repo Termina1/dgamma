@@ -1227,11 +1227,11 @@ r24SingletonFinishRAR actor sourceBefore sourceAfter replayedBefore replayedAfte
       (r24SingletonFinishGeneratorOrigin actor sourceBefore sourceAfter
         replayedBefore replayedAfter sourceChecked replayedChecked
         noTargetIterator)
-      mapPreserved
+      mapsRelated
       (\selected, stage => void (noTargetIterator selected stage))
       (\selected, stage, state => void (noTargetIterator selected stage))
   where
-  0 mapPreserved : (selected : Nat) ->
+  0 mapExact : (selected : Nat) ->
     (generator : TraceEffectGenerator Nat R23Key Unit Unit R23Value selected
       (MoreTransitions
         (r24FinishTransition actor replayedBefore replayedAfter replayedChecked)
@@ -1241,7 +1241,7 @@ r24SingletonFinishRAR actor sourceBefore sourceAfter replayedBefore replayedAfte
       (r24SingletonFinishGeneratorOrigin actor sourceBefore sourceAfter
         replayedBefore replayedAfter sourceChecked replayedChecked
         noTargetIterator selected generator) state = traceGeneratorMap generator state
-  mapPreserved selected
+  mapExact selected
     (ActualForwardGenerator before afterState storedNameEq storedKeyEq action tag
       equation occurs actorMatches) state =
         case r24SingletonOccursSelected occurs of
@@ -1259,10 +1259,41 @@ r24SingletonFinishRAR actor sourceBefore sourceAfter replayedBefore replayedAfte
                 replayedChecked) Refl Refl noTargetIterator targetIdentity
               (ActualForwardGenerator before afterState storedNameEq storedKeyEq
                 action tag equation occurs actorMatches) state))
-  mapPreserved selected (IteratorForwardGenerator stage) state =
+  mapExact selected (IteratorForwardGenerator stage) state =
     void (noTargetIterator selected stage)
-  mapPreserved selected (IteratorYieldedGenerator stage origin) state =
+  mapExact selected (IteratorYieldedGenerator stage origin) state =
     void (noTargetIterator selected stage)
+
+  0 mapsRelated : (observedKeyEq : DecEq R23Key) -> (selected : Nat) ->
+    (generator : TraceEffectGenerator Nat R23Key Unit Unit R23Value selected
+      (MoreTransitions
+        (r24FinishTransition actor replayedBefore replayedAfter replayedChecked)
+        NoTransitions)) ->
+    PartialMapsRelated (EffectStateEquivalence observedKeyEq)
+      (traceGeneratorMap
+        (r24SingletonFinishGeneratorOrigin actor sourceBefore sourceAfter
+          replayedBefore replayedAfter sourceChecked replayedChecked
+          noTargetIterator selected generator))
+      (traceGeneratorMap generator)
+  mapsRelated observedKeyEq selected generator {x} {y} inputs =
+    let 0 exactAtSource : (traceGeneratorMap
+          (r24SingletonFinishGeneratorOrigin actor sourceBefore sourceAfter
+            replayedBefore replayedAfter sourceChecked replayedChecked
+            noTargetIterator selected generator) x = traceGeneratorMap generator x)
+        exactAtSource = mapExact selected generator x
+        0 targetRelated : PartialRelated
+          (EffectState Nat R23Key R23Value Unit)
+          (EffectStateRelated observedKeyEq)
+          (traceGeneratorMap generator x) (traceGeneratorMap generator y)
+        targetRelated = replayTraceGeneratorMapRespects observedKeyEq generator
+          inputs
+    in replace
+      {p = \leftOutput => PartialRelated
+        (EffectState Nat R23Key R23Value Unit)
+        (EffectStateRelated observedKeyEq) leftOutput
+        (traceGeneratorMap generator y)}
+      (sym exactAtSource) targetRelated
+
 
 0 r24SingletonPrefixTooLong :
   {first, point, beforeLocated, afterLocated, finalState :

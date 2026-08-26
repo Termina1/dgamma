@@ -8,10 +8,24 @@ import DGamma.Unified
 import DGamma.CP3
 import DGamma.CP4DeletionRelatedLifecycleEffectMap
 import DGamma.CP4RecoveryEffectRespect
+import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.R39RelationalMapAlgebraPositive
 import Decidable.Equality
 
 %default total
+
+||| The closed-head producer probe now targets the landed RAR field.
+public export
+0 r39LandedHeadRARFieldProjects :
+  (correspondence : RelationalReplayCorrespondence name key world error value
+    source replayed) ->
+  (keyEq : DecEq key) -> (actor : name) ->
+  (generator : TraceEffectGenerator name key world error value actor replayed) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (traceGeneratorMap (replayGeneratorOrigin correspondence actor generator))
+    (traceGeneratorMap generator)
+r39LandedHeadRARFieldProjects correspondence keyEq actor generator =
+  replayGeneratorMapsRelated correspondence keyEq actor generator
 
 ||| Definition-only bridge used by all six already-closed head producers.  The
 ||| exact retained proof is consumed together with the target transition's

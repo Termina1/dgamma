@@ -1,6 +1,8 @@
 module DGamma.R19SealedReplayCertificateScopingPositive
 
+import DGamma.Core
 import DGamma.Calculus
+import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5ConfluenceLocalDiamondSpike
@@ -43,8 +45,9 @@ data ScopedReplaySpine :
   RelationalReplayCorrespondence name key world error value trace trace
 identityRelationalReplayCorrespondenceR19 trace =
   MkRelationalReplayCorrespondence (\actor, generator => generator)
-    (\actor, generator, state => Refl) (\actor, stage => stage)
-    (\actor, stage, state => Refl)
+    (\observedKeyEq, actor, generator =>
+      replayTraceGeneratorMapRespects observedKeyEq generator)
+    (\actor, stage => stage) (\actor, stage, state => Refl)
 
 0 identityActionOrdinalR19 :
   (trace : Transitions initial finalState) ->

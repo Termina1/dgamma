@@ -16,6 +16,24 @@ import Decidable.Equality
 %default total
 %unbound_implicits off
 
+||| Fixture consumers project the landed revision-20 RAR field directly.
+public export
+0 r39LandedFixtureRARFieldProjects :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
+    SystemState name key value world error} ->
+  {source : Transitions sourceFirst sourceFinal} ->
+  {replayed : Transitions replayedFirst replayedFinal} ->
+  (correspondence : RelationalReplayCorrespondence name key world error value
+    source replayed) ->
+  (keyEq : DecEq key) -> (actor : name) ->
+  (generator : TraceEffectGenerator name key world error value actor replayed) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (traceGeneratorMap (replayGeneratorOrigin correspondence actor generator))
+    (traceGeneratorMap generator)
+r39LandedFixtureRARFieldProjects correspondence keyEq actor generator =
+  replayGeneratorMapsRelated correspondence keyEq actor generator
+
 0 r39R27TargetMapRespects :
   {actor : Nat} ->
   {sourceBefore, sourceAfter, replayedBefore :

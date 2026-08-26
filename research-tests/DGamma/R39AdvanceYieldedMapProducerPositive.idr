@@ -7,10 +7,20 @@ import DGamma.Metatheory
 import DGamma.Unified
 import DGamma.CP4DeletionRelationalLifecycleCore
 import DGamma.CP4RecoveryEffectRespect
+import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.R39RelationalMapAlgebraPositive
 import Decidable.Equality
 
 %default total
+
+||| L-Advance producer scoping now discharges the landed all-generator theorem.
+public export
+0 r39LandedAdvanceGeneratorRespects :
+  (keyEq : DecEq key) ->
+  (generator : TraceEffectGenerator name key world error value actor trace) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (traceGeneratorMap generator) (traceGeneratorMap generator)
+r39LandedAdvanceGeneratorRespects = replayTraceGeneratorMapRespects
 
 0 r39EquivalentMapsSymmetric :
   PartialMapsEquivalent (EffectStateEquivalence keyEq) left right ->

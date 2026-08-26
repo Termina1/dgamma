@@ -6,9 +6,23 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.Unified
 import DGamma.CP4RecoveryEffectRespect
+import DGamma.CP5ConfluenceLocalDiamondSpike
 import Decidable.Equality
 
 %default total
+
+||| Directly project the landed revision-20 relational generator field.
+public export
+0 r39LandedGeneratorFieldProjects :
+  (correspondence : RelationalReplayCorrespondence name key world error value
+    source replayed) ->
+  (keyEq : DecEq key) -> (actor : name) ->
+  (generator : TraceEffectGenerator name key world error value actor replayed) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (traceGeneratorMap (replayGeneratorOrigin correspondence actor generator))
+    (traceGeneratorMap generator)
+r39LandedGeneratorFieldProjects correspondence keyEq actor generator =
+  replayGeneratorMapsRelated correspondence keyEq actor generator
 
 public export
 0 r39EffectRelatedSymmetric :

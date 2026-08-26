@@ -7,6 +7,7 @@ import DGamma.Metatheory
 import DGamma.Unified
 import DGamma.CP4DeletionRelationalLifecycleCore
 import DGamma.CP4RecoveryEffectRespect
+import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.R39RelationalMapAlgebraPositive
 import DGamma.R39AdvanceYieldedMapProducerPositive
 import Decidable.Equality
@@ -348,13 +349,4 @@ public export
   (generator : TraceEffectGenerator name key world error value actor trace) ->
   PartialMapsRelated (EffectStateEquivalence keyEq)
     (traceGeneratorMap generator) (traceGeneratorMap generator)
-r39TraceGeneratorMapRespects keyEq
-  (ActualForwardGenerator before afterState nameEq storedKeyEq action tag checked
-    occurs actorMatches) = \inputs =>
-      r39ReindexPartialRelated
-        (partialEffectMapForRespects nameEq storedKeyEq action tag before _ _
-          (r39ReindexEffectRelated inputs))
-r39TraceGeneratorMapRespects keyEq (IteratorForwardGenerator stage) =
-  r39IteratorForwardGeneratorMapRespects keyEq stage
-r39TraceGeneratorMapRespects keyEq (IteratorYieldedGenerator stage origin) =
-  r39IteratorYieldedGeneratorMapRespects keyEq stage origin
+r39TraceGeneratorMapRespects = replayTraceGeneratorMapRespects
