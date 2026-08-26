@@ -90,7 +90,11 @@ Review trail:
 - revision 33 reaches the smaller staged O-Remove child-proof orientation,
   records the bounded L-Begin source-index stop, and retains pointwise lifecycle
   replacement, identity effect frames, and order-independent provider-candidate
-  foundations for the lighter lifecycle heads.
+  foundations for the lighter lifecycle heads; and
+- revision 34 pins the recurring O-Remove child orientation as an exact negative,
+  closes L-Begin source decomposition through `lifecycleOwnerPresent`, and
+  constructs provider soundness, transport, scan existence, and pairwise
+  unique-name capital up to the final four-branch selection equality.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -536,6 +540,28 @@ remaining band therefore stays **18–34 shifts**: the reusable foundations redu
 later bodies while both bounded source normalizers remain charged. Holes remain
 **20**, split **6/4/8/1/1**.
 
+### Revision 34: begin source and provider-selection boundary
+
+`research-tests/O6-R34-PROVIDER-SELECTION-BOUNDARY-AUDIT.md` records the
+checkpoint. The O-Remove child orientation recurred on the corrected first
+attempt, firing the conditional exact-negative rule;
+`R34RemoveChildOrientationNegative.idr` now pins that diagnostic and no further
+O-Remove attempt was made. L-Begin source decomposition closes by calling
+`lifecycleOwnerPresent` before the public plan view.
+
+Provider-selection foundations now turn `ProviderOfSound` into located true
+candidates, transport them through pointwise controls/effects, reconstruct scan
+existence, extract pairwise provision well-formedness, and identify candidates
+by their unique declared provider name without registry-order alignment. The
+final four-branch `pointwiseProviderOfSame` assembly reached only the selected
+with-proof orientation on its third attempt and was reverted.
+
+No new semantic head closes. L-Divert/L-Leave remain gated behind the final
+provider equality, and L-Unload/L-Advance were not opened. The remaining band
+stays **18–34 shifts** because the provider proof is nearly assembled but the
+pinned O-Remove family and all six heads remain charged. Holes stay **20**, split
+**6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -788,9 +814,9 @@ It runs serially:
 
 - five research spikes;
 - 45 tracked positive modules; and
-- 41 tracked expected-failure modules.
+- 42 tracked expected-failure modules.
 
-All 86 tracked Idris test modules occur exactly once. Every negative specification
+All 87 tracked Idris test modules occur exactly once. Every negative specification
 contains its own mandatory diagnostic substring and source declaration name. A
 generic dependent error no longer suffices.
 
@@ -847,7 +873,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; generic spine plus O-Retire/O-Insert are closed. O-Remove and L-Begin have bounded source-normalization stops; lifecycle replacement, three identity frames, and pointwise provider-candidate/scan foundations are retained. Six heads and whole-result assembly remain.** | **XL, 18–34 remaining shifts after revision-33 lifecycle/provider foundations.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; generic spine plus O-Retire/O-Insert are closed. O-Remove is exact-negative pinned; L-Begin source is closed; pointwise provider soundness, transport, scan existence, and pairwise unique-name foundations reach the final selection equality. Six heads and whole-result assembly remain.** | **XL, 18–34 remaining shifts after revision-34 provider-selection boundary.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -964,7 +990,7 @@ local O5 body. Current gate evidence is:
   dependencies;
 - `R16ConfluenceTheoremAssemblyPositive` remains only an assembly-through-holes
   check and is not evidence that O6 is producer-suppliable;
-- exact 86-module runner coverage with module-specific negative diagnostics,
+- exact 87-module runner coverage with module-specific negative diagnostics,
   including theorem assembly, root-order and arbitrary-suffix impossibility
   proofs, revision-17 wrong-lookup rejection, genuine revision-18 O17/O19
   producers, and revision-19 sealed base/nonempty probes;
