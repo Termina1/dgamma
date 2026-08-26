@@ -6,6 +6,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.Unified
 import DGamma.CP4DeletionSelectedForeignLifecycleAdvanceOutcome
+import DGamma.CP4RecoveryEffectRespect
 import DGamma.R39RelationalMapAlgebraPositive
 import Decidable.Equality
 
@@ -51,13 +52,11 @@ record R39RelationalReplayCorrespondence
   r39StageOrigin : (actor : name) ->
     IteratorStage name key world error value actor replayed ->
     IteratorStage name key world error value actor source
-  0 r39StageOutcomesRelated : (actor : name) ->
+  0 r39StageOutcomeExact : (actor : name) ->
     (stage : IteratorStage name key world error value actor replayed) ->
-    {sourceInput, replayedInput : EffectState name key value world} ->
-    EffectStateRelated keyEq sourceInput replayedInput ->
-    IteratorOutcomeAgreement name key value world error keyEq
-      (iteratorStageOutcome (r39StageOrigin actor stage) sourceInput)
-      (iteratorStageOutcome stage replayedInput)
+    (state : EffectState name key value world) ->
+    iteratorStageOutcome stage state =
+      iteratorStageOutcome (r39StageOrigin actor stage) state
 
 0 r39TransformationOrigin :
   R39RelationalReplayCorrespondence name key world error value keyEq source
@@ -90,6 +89,25 @@ r39TransformationMapsRelated correspondence (TraceCompose after before) =
   r39PartialMapsRelatedCompose
     (r39TransformationMapsRelated correspondence after)
     (r39TransformationMapsRelated correspondence before)
+
+0 r39StageOutcomesRelatedFromExact :
+  (keyEq : DecEq key) ->
+  (sourceStage : IteratorStage name key world error value actor source) ->
+  (targetStage : IteratorStage name key world error value actor replayed) ->
+  ((state : EffectState name key value world) ->
+    iteratorStageOutcome targetStage state =
+      iteratorStageOutcome sourceStage state) ->
+  {sourceInput, targetInput : EffectState name key value world} ->
+  EffectStateRelated keyEq sourceInput targetInput ->
+  IteratorOutcomeAgreement name key value world error keyEq
+    (iteratorStageOutcome sourceStage sourceInput)
+    (iteratorStageOutcome targetStage targetInput)
+r39StageOutcomesRelatedFromExact keyEq sourceStage targetStage exact inputs =
+  replace
+    {p = \observed => IteratorOutcomeAgreement name key value world error keyEq
+      observed (iteratorStageOutcome targetStage targetInput)}
+    (exact sourceInput)
+    (iteratorStageOutcomeRelated keyEq targetStage sourceInput targetInput inputs)
 
 0 r39SourceStableAtExactRun :
   (keyEq : DecEq key) ->
@@ -203,4 +221,6 @@ r39TraceIndependentAfterRelationalReplay keyEq correspondence independent =
         (\point => iteratorYieldsStable independent left right distinct
           (r39StageOrigin correspondence left stage)
           (r39TransformationOrigin correspondence foreign) point)
-        (r39StageOutcomesRelated correspondence left stage) origin)
+        (r39StageOutcomesRelatedFromExact keyEq
+          (r39StageOrigin correspondence left stage) stage
+          (r39StageOutcomeExact correspondence left stage)) origin)
