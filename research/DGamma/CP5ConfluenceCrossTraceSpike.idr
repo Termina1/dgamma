@@ -1,5 +1,6 @@
 module DGamma.CP5ConfluenceCrossTraceSpike
 
+import DGamma.Core
 import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
@@ -762,7 +763,9 @@ public export
 operationalPermutationReplayCorrespondence
   (OperationalActorDone blocks premises) =
     MkRelationalReplayCorrespondence (\actor, generator => generator)
-      (\actor, generator, state => Refl) (\actor, stage => stage)
+      (\observedKeyEq, actor, generator =>
+        replayTraceGeneratorMapRespects observedKeyEq generator)
+      (\actor, stage => stage)
       (\actor, stage, state => Refl)
 operationalPermutationReplayCorrespondence
   (OperationalActorStep orderSwap restCertificate sourceBlocks sourcePremises

@@ -73,11 +73,523 @@ data PaperOrchestrationStep :
     transitionAction transition = ORemove actor ->
     PaperOrchestrationStep transition
 
+
+||| Relational map algebra used by the revision-20 replay boundary.
+0 replayEffectRelatedSymmetric :
+  EffectStateRelated keyEq left right -> EffectStateRelated keyEq right left
+replayEffectRelatedSymmetric (MkEffectStateRelated ambient tables) =
+  MkEffectStateRelated (sym ambient) (\actor => sym (tables actor))
+
+0 replayEffectRelatedTransitive :
+  EffectStateRelated keyEq left middle ->
+  EffectStateRelated keyEq middle right ->
+  EffectStateRelated keyEq left right
+replayEffectRelatedTransitive (MkEffectStateRelated firstAmbient firstTables)
+  (MkEffectStateRelated secondAmbient secondTables) =
+    MkEffectStateRelated (trans firstAmbient secondAmbient)
+      (\actor => trans (firstTables actor) (secondTables actor))
+
+0 replayPartialRewrite :
+  leftBefore = leftAfter -> rightBefore = rightAfter ->
+  PartialRelated state rel leftBefore rightBefore ->
+  PartialRelated state rel leftAfter rightAfter
+replayPartialRewrite Refl Refl related = related
+
+0 replayEffectPartialSymmetric :
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    left right ->
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    right left
+replayEffectPartialSymmetric PartialUndefined = PartialUndefined
+replayEffectPartialSymmetric (PartialDefined related) =
+  PartialDefined (replayEffectRelatedSymmetric related)
+
+0 replayEffectPartialTransitive :
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    first middle ->
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    middle last ->
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    first last
+replayEffectPartialTransitive PartialUndefined PartialUndefined = PartialUndefined
+replayEffectPartialTransitive (PartialDefined first) (PartialDefined second) =
+  PartialDefined (replayEffectRelatedTransitive first second)
+
+||| Every currently retained exact producer supplies the relational candidate
+||| because each transition map already respects `EffectStateRelated`.
+0 replayExactMapsGivePartialMapsRelated :
+  (source, target : PartialEffectMap name key value world) ->
+  EffectPartialMapRespects keyEq target ->
+  ((state : EffectState name key value world) -> source state = target state) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq) source target
+replayExactMapsGivePartialMapsRelated source target targetRespects exact
+  {x} {y} inputs =
+    replayPartialRewrite (sym (exact x)) Refl (targetRespects x y inputs)
+
+||| Strong relational map preservation is closed under the exact executable
+||| `partialCompose` used by Definition 60 transformations.
+0 replayPartialMapsRelatedCompose :
+  PartialMapsRelated (EffectStateEquivalence keyEq) sourceAfter targetAfter ->
+  PartialMapsRelated (EffectStateEquivalence keyEq) sourceBefore targetBefore ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (partialCompose sourceAfter sourceBefore)
+    (partialCompose targetAfter targetBefore)
+replayPartialMapsRelatedCompose {sourceAfter} {targetAfter} {sourceBefore}
+  {targetBefore} afterRelated beforeRelated {x} {y} inputs
+  with (sourceBefore x) proof sourceRun
+  replayPartialMapsRelatedCompose afterRelated beforeRelated inputs | Nothing
+    with (targetBefore y) proof targetRun
+    replayPartialMapsRelatedCompose afterRelated beforeRelated inputs |
+      Nothing | Nothing = PartialUndefined
+    replayPartialMapsRelatedCompose afterRelated beforeRelated inputs |
+      Nothing | Just targetMiddle =
+        case replayPartialRewrite sourceRun targetRun (beforeRelated inputs) of
+          _ impossible
+  replayPartialMapsRelatedCompose afterRelated beforeRelated inputs |
+    Just sourceMiddle with (targetBefore y) proof targetRun
+    replayPartialMapsRelatedCompose afterRelated beforeRelated inputs |
+      Just sourceMiddle | Nothing =
+        case replayPartialRewrite sourceRun targetRun (beforeRelated inputs) of
+          _ impossible
+    replayPartialMapsRelatedCompose afterRelated beforeRelated inputs |
+      Just sourceMiddle | Just targetMiddle =
+        let 0 middleRelated : EffectStateRelated keyEq sourceMiddle targetMiddle
+            middleRelated = case replayPartialRewrite sourceRun targetRun
+              (beforeRelated inputs) of PartialDefined related => related
+        in afterRelated middleRelated
+
+0 replayPartialMapsRelatedTransitive :
+  PartialMapsRelated (EffectStateEquivalence keyEq) first middle ->
+  PartialMapsRelated (EffectStateEquivalence keyEq) middle last ->
+  PartialMapsRelated (EffectStateEquivalence keyEq) first last
+replayPartialMapsRelatedTransitive firstRelated secondRelated {x} {y} inputs =
+  replayEffectPartialTransitive (firstRelated inputs)
+    (secondRelated (effectStateReflexive keyEq y))
+
+||| Consumer probe for `generatedMonoidsCommute`: a source commute square
+||| transports through two relational map pairs without exact map equality.
+0 replayPartialCommuteFromRelatedMaps :
+  (leftSource, leftTarget, rightSource, rightTarget :
+    PartialEffectMap name key value world) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq) leftSource leftTarget ->
+  PartialMapsRelated (EffectStateEquivalence keyEq) rightSource rightTarget ->
+  PartialCommute (EffectStateEquivalence keyEq) leftSource rightSource ->
+  PartialCommute (EffectStateEquivalence keyEq) leftTarget rightTarget
+replayPartialCommuteFromRelatedMaps leftSource leftTarget rightSource rightTarget
+  leftRelated rightRelated sourceCommute state =
+    let 0 inputRelated = effectStateReflexive keyEq state
+        0 sourceLeftRightToTarget =
+          replayPartialMapsRelatedCompose leftRelated rightRelated inputRelated
+        0 sourceRightLeftToTarget =
+          replayPartialMapsRelatedCompose rightRelated leftRelated inputRelated
+    in replayEffectPartialTransitive
+      (replayEffectPartialSymmetric sourceLeftRightToTarget)
+      (replayEffectPartialTransitive (sourceCommute state)
+        sourceRightLeftToTarget)
+
+||| Executable successful-forward projection used by an iterator generator.
+replayRuntimeForwardProjection :
+  Maybe (IteratorStageOutcome name key value world error) ->
+  Maybe (EffectState name key value world)
+replayRuntimeForwardProjection Nothing = Nothing
+replayRuntimeForwardProjection (Just (IteratorRaised failure)) = Nothing
+replayRuntimeForwardProjection (Just (IteratorYielded after undo continuation)) =
+  Just after
+
+||| Executable yielded-inverse projection. Undefined/failure outcomes generate
+||| no inverse and are represented by the everywhere-undefined partial map.
+replayRuntimeYieldedProjection :
+  Maybe (IteratorStageOutcome name key value world error) ->
+  PartialEffectMap name key value world
+replayRuntimeYieldedProjection Nothing = \state => Nothing
+replayRuntimeYieldedProjection (Just (IteratorRaised failure)) = \state => Nothing
+replayRuntimeYieldedProjection
+  (Just (IteratorYielded after undo continuation)) = undo
+
+0 replayRuntimeForwardAgreementProjection :
+  RuntimeIteratorOutcomeAgreement name key value world error keyEq
+    targetOutcome sourceOutcome ->
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    (replayRuntimeForwardProjection sourceOutcome)
+    (replayRuntimeForwardProjection targetOutcome)
+replayRuntimeForwardAgreementProjection RuntimeOutcomesUndefined = PartialUndefined
+replayRuntimeForwardAgreementProjection (RuntimeFailuresAgree errorsSame) =
+  PartialUndefined
+replayRuntimeForwardAgreementProjection
+  (RuntimeYieldsAgree afterRelated undoMaps) = PartialDefined afterRelated
+
+
+0 replayReindexEffectRelated :
+  EffectStateRelated leftKeyEq left right ->
+  EffectStateRelated rightKeyEq left right
+replayReindexEffectRelated (MkEffectStateRelated ambient tables) =
+  MkEffectStateRelated ambient tables
+
+0 replayReindexPartialRelated :
+  PartialRelated (EffectState name key value world)
+    (EffectStateRelated leftKeyEq) left right ->
+  PartialRelated (EffectState name key value world)
+    (EffectStateRelated rightKeyEq) left right
+replayReindexPartialRelated PartialUndefined = PartialUndefined
+replayReindexPartialRelated (PartialDefined related) =
+  PartialDefined (replayReindexEffectRelated related)
+
+0 replayLookupBindingFromEqualBindings :
+  (keyEq : DecEq key) -> (wanted : key) ->
+  (left, right : CoeffectContext key value) ->
+  bindings left = bindings right ->
+  lookupBinding @{keyEq} wanted left = lookupBinding @{keyEq} wanted right
+replayLookupBindingFromEqualBindings keyEq wanted
+  (MkCoeffectContext leftEntries leftUnique)
+  (MkCoeffectContext rightEntries rightUnique) same =
+    cong (lookupEntries @{keyEq} wanted) same
+
+0 replayResolveEffectValuesRelated :
+  (keyEq : DecEq key) -> (deps : List key) -> (view : View name deps) ->
+  {left, right : EffectState name key value world} ->
+  EffectStateRelated keyEq left right ->
+  resolveEffectValues @{keyEq} deps view left =
+    resolveEffectValues @{keyEq} deps view right
+replayResolveEffectValuesRelated keyEq [] EmptyView related = Refl
+replayResolveEffectValuesRelated keyEq (wanted :: rest)
+  (ProviderView provider later) related
+  with (lookupBinding @{keyEq} wanted (effectTables left provider)) proof leftLookup
+  replayResolveEffectValuesRelated keyEq (wanted :: rest)
+    (ProviderView provider later) related | Nothing =
+      let lookupSame = replayLookupBindingFromEqualBindings keyEq wanted
+            (effectTables left provider) (effectTables right provider)
+            (tablesExact related provider)
+          rightLookup = trans (sym lookupSame) leftLookup
+      in rewrite rightLookup in Refl
+  replayResolveEffectValuesRelated keyEq (wanted :: rest)
+    (ProviderView provider later) related | Just found =
+      let lookupSame = replayLookupBindingFromEqualBindings keyEq wanted
+            (effectTables left provider) (effectTables right provider)
+            (tablesExact related provider)
+          rightLookup = trans (sym lookupSame) leftLookup
+      in rewrite rightLookup in cong (map (OneDepValue found))
+        (replayResolveEffectValuesRelated keyEq rest later related)
+
+0 replaySetActorRuntimeRelated :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (worldValue : world) -> (table : CoeffectContext key value) ->
+  (left, right : EffectState name key value world) ->
+  EffectStateRelated keyEq left right ->
+  EffectStateRelated keyEq
+    (setEffectTable @{nameEq} actor table
+      (setEffectAmbient worldValue left))
+    (setEffectTable @{nameEq} actor table
+      (setEffectAmbient worldValue right))
+replaySetActorRuntimeRelated nameEq keyEq actor worldValue table left right related =
+  MkEffectStateRelated Refl tables
+  where
+  0 tables : (selected : name) ->
+    bindings (effectTables
+      (setEffectTable @{nameEq} actor table
+        (setEffectAmbient worldValue left)) selected) =
+    bindings (effectTables
+      (setEffectTable @{nameEq} actor table
+        (setEffectAmbient worldValue right)) selected)
+  tables selected with (decEq @{nameEq} selected actor)
+    tables selected | Yes same = case same of Refl => Refl
+    tables selected | No distinct = tablesExact related selected
+
+||| Strengthened probe version of `iteratorStageOutcomeRelated`.  The
+||| successful branch retains the yielded forward-state relation required by
+||| the iterator-forward generator; the yielded inverse remains related by the
+||| existing same-input Equation-55 clause.
+0 replayIteratorStageRuntimeOutcomeRelated :
+  (keyEq : DecEq key) ->
+  (stage : IteratorStage name key world error value actor trace) ->
+  (left, right : EffectState name key value world) ->
+  EffectStateRelated keyEq left right ->
+  RuntimeIteratorOutcomeAgreement name key value world error keyEq
+    (iteratorStageOutcome stage right) (iteratorStageOutcome stage left)
+replayIteratorStageRuntimeOutcomeRelated {name} {key} {world} {error} {value}
+  keyEq (StageFromAdvance nameEq stageKeyEq actor tag equation occurs fiber found
+    remaining accumulator view lifecycle step rest suffix) left right related
+  with (resolveEffectValues @{stageKeyEq}
+    (dependencies (componentDependencies (fiberComponent fiber))) view left)
+    proof leftResolved
+  replayIteratorStageRuntimeOutcomeRelated keyEq
+    (StageFromAdvance nameEq stageKeyEq actor tag equation occurs fiber found
+      remaining accumulator view lifecycle step rest suffix)
+    left right related | Nothing =
+      let 0 stageRelated : EffectStateRelated stageKeyEq left right
+          stageRelated = replayReindexEffectRelated related
+          0 resolvedSame :
+            resolveEffectValues @{stageKeyEq}
+              (dependencies (componentDependencies (fiberComponent fiber))) view
+              left =
+            resolveEffectValues @{stageKeyEq}
+              (dependencies (componentDependencies (fiberComponent fiber))) view
+              right
+          resolvedSame = replayResolveEffectValuesRelated stageKeyEq
+            (dependencies (componentDependencies (fiberComponent fiber))) view
+            stageRelated
+          0 rightResolved : resolveEffectValues @{stageKeyEq}
+            (dependencies (componentDependencies (fiberComponent fiber))) view
+            right = Nothing
+          rightResolved = trans (sym resolvedSame) leftResolved
+      in rewrite rightResolved in RuntimeOutcomesUndefined
+  replayIteratorStageRuntimeOutcomeRelated keyEq
+    (StageFromAdvance nameEq stageKeyEq actor tag equation occurs fiber found
+      remaining accumulator view lifecycle step rest suffix)
+    left right related | Just capability
+    with (runStepEffect step capability
+      (MkLocalState (effectAmbient left)
+        (restrictOwnedPreservingOrder @{stageKeyEq}
+          (componentProvisions (fiberComponent fiber))
+          (effectTables left actor)))) proof leftRan
+    replayIteratorStageRuntimeOutcomeRelated keyEq
+      (StageFromAdvance nameEq stageKeyEq actor tag equation occurs fiber found
+        remaining accumulator view lifecycle step rest suffix)
+      left right related | Just capability | Left failure =
+        let 0 stageRelated : EffectStateRelated stageKeyEq left right
+            stageRelated = replayReindexEffectRelated related
+            0 resolvedSame :
+              resolveEffectValues @{stageKeyEq}
+                (dependencies (componentDependencies (fiberComponent fiber)))
+                view left =
+              resolveEffectValues @{stageKeyEq}
+                (dependencies (componentDependencies (fiberComponent fiber)))
+                view right
+            resolvedSame = replayResolveEffectValuesRelated stageKeyEq
+              (dependencies (componentDependencies (fiberComponent fiber))) view
+              stageRelated
+            0 rightResolved : resolveEffectValues @{stageKeyEq}
+              (dependencies (componentDependencies (fiberComponent fiber))) view
+              right = Just capability
+            rightResolved = trans (sym resolvedSame) leftResolved
+            0 ownedSame :
+              restrictOwnedPreservingOrder @{stageKeyEq}
+                (componentProvisions (fiberComponent fiber))
+                (effectTables left actor) =
+              restrictOwnedPreservingOrder @{stageKeyEq}
+                (componentProvisions (fiberComponent fiber))
+                (effectTables right actor)
+            ownedSame = canonicalNormalizationFromEqualBindings @{stageKeyEq}
+              (componentProvisions (fiberComponent fiber))
+              (effectTables left actor) (effectTables right actor)
+              (tablesExact stageRelated actor)
+            0 localSame :
+              MkLocalState (effectAmbient left)
+                (restrictOwnedPreservingOrder @{stageKeyEq}
+                  (componentProvisions (fiberComponent fiber))
+                  (effectTables left actor)) =
+              MkLocalState (effectAmbient right)
+                (restrictOwnedPreservingOrder @{stageKeyEq}
+                  (componentProvisions (fiberComponent fiber))
+                  (effectTables right actor))
+            localSame = rewrite ambientExact stageRelated in
+              rewrite ownedSame in Refl
+            runSame = cong (runStepEffect step capability) localSame
+            rightRan = trans (sym runSame) leftRan
+        in rewrite rightResolved in rewrite rightRan in
+          RuntimeFailuresAgree Refl
+    replayIteratorStageRuntimeOutcomeRelated keyEq
+      (StageFromAdvance nameEq stageKeyEq actor tag equation occurs fiber found
+        remaining accumulator view lifecycle step rest suffix)
+      left right related | Just capability | Right (after, undo) =
+        let 0 stageRelated : EffectStateRelated stageKeyEq left right
+            stageRelated = replayReindexEffectRelated related
+            0 resolvedSame :
+              resolveEffectValues @{stageKeyEq}
+                (dependencies (componentDependencies (fiberComponent fiber)))
+                view left =
+              resolveEffectValues @{stageKeyEq}
+                (dependencies (componentDependencies (fiberComponent fiber)))
+                view right
+            resolvedSame = replayResolveEffectValuesRelated stageKeyEq
+              (dependencies (componentDependencies (fiberComponent fiber))) view
+              stageRelated
+            0 rightResolved : resolveEffectValues @{stageKeyEq}
+              (dependencies (componentDependencies (fiberComponent fiber))) view
+              right = Just capability
+            rightResolved = trans (sym resolvedSame) leftResolved
+            0 ownedSame :
+              restrictOwnedPreservingOrder @{stageKeyEq}
+                (componentProvisions (fiberComponent fiber))
+                (effectTables left actor) =
+              restrictOwnedPreservingOrder @{stageKeyEq}
+                (componentProvisions (fiberComponent fiber))
+                (effectTables right actor)
+            ownedSame = canonicalNormalizationFromEqualBindings @{stageKeyEq}
+              (componentProvisions (fiberComponent fiber))
+              (effectTables left actor) (effectTables right actor)
+              (tablesExact stageRelated actor)
+            0 localSame :
+              MkLocalState (effectAmbient left)
+                (restrictOwnedPreservingOrder @{stageKeyEq}
+                  (componentProvisions (fiberComponent fiber))
+                  (effectTables left actor)) =
+              MkLocalState (effectAmbient right)
+                (restrictOwnedPreservingOrder @{stageKeyEq}
+                  (componentProvisions (fiberComponent fiber))
+                  (effectTables right actor))
+            localSame = rewrite ambientExact stageRelated in
+              rewrite ownedSame in Refl
+            runSame = cong (runStepEffect step capability) localSame
+            rightRan = trans (sym runSame) leftRan
+            0 outputRelatedAtStage : EffectStateRelated stageKeyEq
+              (setEffectTable @{nameEq} actor
+                (ownedValues (localTable after))
+                (setEffectAmbient (localWorld after) left))
+              (setEffectTable @{nameEq} actor
+                (ownedValues (localTable after))
+                (setEffectAmbient (localWorld after) right))
+            outputRelatedAtStage = replaySetActorRuntimeRelated nameEq stageKeyEq
+              actor (localWorld after) (ownedValues (localTable after)) left right
+              stageRelated
+            0 outputRelated : EffectStateRelated keyEq
+              (setEffectTable @{nameEq} actor
+                (ownedValues (localTable after))
+                (setEffectAmbient (localWorld after) left))
+              (setEffectTable @{nameEq} actor
+                (ownedValues (localTable after))
+                (setEffectAmbient (localWorld after) right))
+            outputRelated = replayReindexEffectRelated outputRelatedAtStage
+            undoMap = yieldedInverseEffectMap nameEq stageKeyEq actor
+              (componentProvisions (fiberComponent fiber)) undo
+        in rewrite rightResolved in rewrite rightRan in
+          RuntimeYieldsAgree outputRelated
+            (effectPartialMapReflexive keyEq undoMap)
+
+0 replayIteratorForwardProjectionExact :
+  (stage : IteratorStage name key world error value actor trace) ->
+  (state : EffectState name key value world) ->
+  replayRuntimeForwardProjection (iteratorStageOutcome stage state) =
+    traceGeneratorMap (IteratorForwardGenerator stage) state
+replayIteratorForwardProjectionExact
+  (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+    accumulator view lifecycle step rest suffix) state
+  with (resolveEffectValues @{keyEq}
+    (dependencies (componentDependencies (fiberComponent fiber))) view state)
+  replayIteratorForwardProjectionExact
+    (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+      accumulator view lifecycle step rest suffix) state | Nothing = Refl
+  replayIteratorForwardProjectionExact
+    (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+      accumulator view lifecycle step rest suffix) state | Just capability
+    with (runStepEffect step capability
+      (MkLocalState (effectAmbient state)
+        (restrictOwnedPreservingOrder @{keyEq}
+          (componentProvisions (fiberComponent fiber))
+          (effectTables state actor))))
+    replayIteratorForwardProjectionExact
+      (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found
+        remaining accumulator view lifecycle step rest suffix) state |
+        Just capability | Left failure = Refl
+    replayIteratorForwardProjectionExact
+      (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found
+        remaining accumulator view lifecycle step rest suffix) state |
+        Just capability | Right (after, undo) = Refl
+
+||| The forward generator is exactly the successful-forward projection of the
+||| strengthened runtime outcome relation.
+0 replayIteratorForwardGeneratorMapRespects :
+  (keyEq : DecEq key) ->
+  (stage : IteratorStage name key world error value actor trace) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (traceGeneratorMap (IteratorForwardGenerator stage))
+    (traceGeneratorMap (IteratorForwardGenerator stage))
+replayIteratorForwardGeneratorMapRespects keyEq stage {x} {y} inputs =
+  replayPartialRewrite
+    (replayIteratorForwardProjectionExact stage x)
+    (replayIteratorForwardProjectionExact stage y)
+    (replayRuntimeForwardAgreementProjection
+      (replayIteratorStageRuntimeOutcomeRelated keyEq stage x y inputs))
+
+||| Every yielded generator's inverse is producer-known to be a lifted local
+||| undo.  Splitting the immutable stage invocation exposes that map and reuses
+||| the accumulator-map respect theorem.
+0 replayIteratorYieldedGeneratorMapRespects :
+  (keyEq : DecEq key) ->
+  (stage : IteratorStage name key world error value actor trace) ->
+  (origin : EffectState name key value world) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (traceGeneratorMap (IteratorYieldedGenerator stage origin))
+    (traceGeneratorMap (IteratorYieldedGenerator stage origin))
+replayIteratorYieldedGeneratorMapRespects {name} {key} {world} {error} {value}
+  keyEq (StageFromAdvance nameEq stageKeyEq actor tag equation occurs fiber found
+    remaining accumulator view lifecycle step rest suffix) origin {x} {y} inputs
+  with (resolveEffectValues @{stageKeyEq}
+    (dependencies (componentDependencies (fiberComponent fiber))) view origin)
+    proof resolved
+  replayIteratorYieldedGeneratorMapRespects keyEq
+    (StageFromAdvance nameEq stageKeyEq actor tag equation occurs fiber found
+      remaining accumulator view lifecycle step rest suffix) origin inputs |
+      Nothing = PartialUndefined
+  replayIteratorYieldedGeneratorMapRespects keyEq
+    (StageFromAdvance nameEq stageKeyEq actor tag equation occurs fiber found
+      remaining accumulator view lifecycle step rest suffix) origin inputs |
+      Just capability
+    with (runStepEffect step capability
+      (MkLocalState (effectAmbient origin)
+        (restrictOwnedPreservingOrder @{stageKeyEq}
+          (componentProvisions (fiberComponent fiber))
+          (effectTables origin actor)))) proof ran
+    replayIteratorYieldedGeneratorMapRespects keyEq
+      (StageFromAdvance nameEq stageKeyEq actor tag equation occurs fiber found
+        remaining accumulator view lifecycle step rest suffix) origin inputs |
+        Just capability | Left failure = PartialUndefined
+    replayIteratorYieldedGeneratorMapRespects keyEq
+      (StageFromAdvance nameEq stageKeyEq actor tag equation occurs fiber found
+        remaining accumulator view lifecycle step rest suffix) origin inputs |
+        Just capability | Right (after, undo) =
+          replayReindexPartialRelated
+            (accumulatorRuntimeEffectMapRespects nameEq stageKeyEq actor
+              (componentProvisions (fiberComponent fiber)) undo x y
+              (replayReindexEffectRelated inputs))
+
+||| Identity-correspondence producer probe over all three Definition-54
+||| generator constructors.  This is the anti-oscillation check needed by
+||| finite-derivation and operational-permutation terminators.
+public export
+0 replayTraceGeneratorMapRespects :
+  (keyEq : DecEq key) ->
+  (generator : TraceEffectGenerator name key world error value actor trace) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (traceGeneratorMap generator) (traceGeneratorMap generator)
+replayTraceGeneratorMapRespects keyEq
+  (ActualForwardGenerator before afterState nameEq storedKeyEq action tag checked
+    occurs actorMatches) = \inputs =>
+      replayReindexPartialRelated
+        (partialEffectMapForRespects nameEq storedKeyEq action tag before _ _
+          (replayReindexEffectRelated inputs))
+replayTraceGeneratorMapRespects keyEq (IteratorForwardGenerator stage) =
+  replayIteratorForwardGeneratorMapRespects keyEq stage
+replayTraceGeneratorMapRespects keyEq (IteratorYieldedGenerator stage origin) =
+  replayIteratorYieldedGeneratorMapRespects keyEq stage origin
+
+0 replayTransitionMapRespects :
+  (keyEq : DecEq key) ->
+  (transition : Transition before afterState) ->
+  EffectPartialMapRespects keyEq (partialEffectMap transition)
+replayTransitionMapRespects keyEq
+  (Fired nameEq storedKeyEq action tag checked) left right inputs =
+    replayReindexPartialRelated
+      (partialEffectMapForRespects nameEq storedKeyEq action tag before left right
+        (replayReindexEffectRelated inputs))
+
+0 replayExactTransitionMapsRelated :
+  (keyEq : DecEq key) ->
+  (source : Transition sourceBefore sourceAfter) ->
+  (target : Transition targetBefore targetAfter) ->
+  ((state : EffectState name key value world) ->
+    partialEffectMap source state = partialEffectMap target state) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (partialEffectMap source) (partialEffectMap target)
+replayExactTransitionMapsRelated keyEq source target exact =
+  replayExactMapsGivePartialMapsRelated (partialEffectMap source)
+    (partialEffectMap target) (replayTransitionMapRespects keyEq target) exact
+
 ||| A reusable RAR correspondence, not a deletion-only embedding.  Every actual
 ||| or yielded generator and every iterator stage of the replayed trace is tied
-||| to one generator/stage in the source trace with the same executable map or
-||| outcome.  This is the exact capital needed to transport both fields of
-||| `TraceIndependent` after deletion, suffix replay, and adjacent swaps.
+||| to one generator/stage in the source trace with relationally matching maps
+||| and the same stage outcome.  This is the capital needed to transport both
+||| fields of `TraceIndependent` after deletion, suffix replay, and adjacent
+||| swaps without identifying proof-bearing coeffect contexts.
 public export
 record RelationalReplayCorrespondence
   (name, key, world, error : Type) (value : key -> Type)
@@ -89,11 +601,11 @@ record RelationalReplayCorrespondence
   replayGeneratorOrigin : (actor : name) ->
     TraceEffectGenerator name key world error value actor replayed ->
     TraceEffectGenerator name key world error value actor source
-  0 replayGeneratorMapPreserved : (actor : name) ->
+  0 replayGeneratorMapsRelated : (keyEq : DecEq key) -> (actor : name) ->
     (generator : TraceEffectGenerator name key world error value actor replayed) ->
-    (state : EffectState name key value world) ->
-    traceGeneratorMap (replayGeneratorOrigin actor generator) state =
-      traceGeneratorMap generator state
+    PartialMapsRelated (EffectStateEquivalence keyEq)
+      (traceGeneratorMap (replayGeneratorOrigin actor generator))
+      (traceGeneratorMap generator)
   replayIteratorStageOrigin : (actor : name) ->
     IteratorStage name key world error value actor replayed ->
     IteratorStage name key world error value actor source
@@ -116,36 +628,28 @@ replayTransformationOrigin correspondence (TraceCompose after before) =
   TraceCompose (replayTransformationOrigin correspondence after)
     (replayTransformationOrigin correspondence before)
 
-0 replayTransformationMapPreserved :
+0 replayTransformationMapsRelated :
+  (keyEq : DecEq key) ->
   {source : Transitions sourceFirst sourceFinal} ->
   {replayed : Transitions replayedFirst replayedFinal} ->
   (correspondence : RelationalReplayCorrespondence name key world error value
     source replayed) ->
   (transformation : TraceEffectTransformation name key world error value actor
     replayed) ->
-  (state : EffectState name key value world) ->
-  runTraceEffectTransformation
-    (replayTransformationOrigin correspondence transformation) state =
-  runTraceEffectTransformation transformation state
-replayTransformationMapPreserved correspondence TraceIdentity state = Refl
-replayTransformationMapPreserved correspondence (TraceGenerator generator) state =
-  replayGeneratorMapPreserved correspondence actor generator state
-replayTransformationMapPreserved correspondence (TraceCompose after before) state
-  with (runTraceEffectTransformation
-    (replayTransformationOrigin correspondence before) state) proof sourceRun
-  replayTransformationMapPreserved correspondence (TraceCompose after before)
-    state | Nothing =
-      let targetRun = trans
-            (sym (replayTransformationMapPreserved correspondence before state))
-            sourceRun
-      in rewrite targetRun in Refl
-  replayTransformationMapPreserved correspondence (TraceCompose after before)
-    state | Just middle =
-      let targetRun = trans
-            (sym (replayTransformationMapPreserved correspondence before state))
-            sourceRun
-      in rewrite targetRun in
-        replayTransformationMapPreserved correspondence after middle
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (runTraceEffectTransformation
+      (replayTransformationOrigin correspondence transformation))
+    (runTraceEffectTransformation transformation)
+replayTransformationMapsRelated keyEq correspondence TraceIdentity =
+  \inputs => PartialDefined inputs
+replayTransformationMapsRelated keyEq correspondence
+  (TraceGenerator generator) =
+    replayGeneratorMapsRelated correspondence keyEq actor generator
+replayTransformationMapsRelated keyEq correspondence
+  (TraceCompose after before) =
+    replayPartialMapsRelatedCompose
+      (replayTransformationMapsRelated keyEq correspondence after)
+      (replayTransformationMapsRelated keyEq correspondence before)
 
 0 replayPartialComposeCong :
   (leftSource, leftTarget, rightSource, rightTarget :
@@ -193,6 +697,120 @@ replayPartialCommuteTransport leftSource leftTarget rightSource rightTarget
         (partialCompose rightTarget leftTarget state)}
       leftThenRight relatedRight
 
+0 replayRelationalEquivalentMapsSymmetric :
+  PartialMapsEquivalent (EffectStateEquivalence keyEq) left right ->
+  PartialMapsEquivalent (EffectStateEquivalence keyEq) right left
+replayRelationalEquivalentMapsSymmetric maps input =
+  replayEffectPartialSymmetric (maps input)
+
+0 replayRelationalOutcomeAgreementSymmetric :
+  IteratorOutcomeAgreement name key value world error keyEq left right ->
+  IteratorOutcomeAgreement name key value world error keyEq right left
+replayRelationalOutcomeAgreementSymmetric IteratorOutcomesUndefined =
+  IteratorOutcomesUndefined
+replayRelationalOutcomeAgreementSymmetric (IteratorFailuresAgree errorsSame) =
+  IteratorFailuresAgree (sym errorsSame)
+replayRelationalOutcomeAgreementSymmetric
+  (IteratorSuccessfulYieldsAgree continuationSame undoMaps) =
+    IteratorSuccessfulYieldsAgree (sym continuationSame)
+      (replayRelationalEquivalentMapsSymmetric undoMaps)
+
+
+0 replayRelationalStageOutcomesRelatedFromExact :
+  (keyEq : DecEq key) ->
+  (sourceStage : IteratorStage name key world error value actor source) ->
+  (targetStage : IteratorStage name key world error value actor replayed) ->
+  ((state : EffectState name key value world) ->
+    iteratorStageOutcome targetStage state =
+      iteratorStageOutcome sourceStage state) ->
+  {sourceInput, targetInput : EffectState name key value world} ->
+  EffectStateRelated keyEq sourceInput targetInput ->
+  IteratorOutcomeAgreement name key value world error keyEq
+    (iteratorStageOutcome sourceStage sourceInput)
+    (iteratorStageOutcome targetStage targetInput)
+replayRelationalStageOutcomesRelatedFromExact keyEq sourceStage targetStage exact inputs =
+  replace
+    {p = \observed => IteratorOutcomeAgreement name key value world error keyEq
+      observed (iteratorStageOutcome targetStage targetInput)}
+    (exact sourceInput)
+    (iteratorStageOutcomeRelated keyEq targetStage sourceInput targetInput inputs)
+
+0 replayRelationalSourceStableAtExactRun :
+  (keyEq : DecEq key) ->
+  (stage : IteratorStage name key world error value actor trace) ->
+  (foreign : PartialEffectMap name key value world) ->
+  (origin, moved : EffectState name key value world) ->
+  foreign origin = Just moved ->
+  IteratorOutcomeStableUnder keyEq stage foreign origin ->
+  IteratorOutcomeAgreement name key value world error keyEq
+    (iteratorStageOutcome stage moved) (iteratorStageOutcome stage origin)
+replayRelationalSourceStableAtExactRun keyEq stage foreign origin moved defined stable
+  with (foreign origin) proof observed
+  replayRelationalSourceStableAtExactRun keyEq stage foreign origin moved defined stable |
+    Nothing = void (nothingIsNotJust defined)
+  replayRelationalSourceStableAtExactRun keyEq stage foreign origin moved defined stable |
+    Just actual = replace
+      {p = \candidate => IteratorOutcomeAgreement name key value world error
+        keyEq (iteratorStageOutcome stage candidate)
+        (iteratorStageOutcome stage origin)}
+      (justInjective defined) stable
+
+0 replayRelationalIteratorStableFromRelationalMaps :
+  (keyEq : DecEq key) ->
+  (sourceStage : IteratorStage name key world error value left source) ->
+  (targetStage : IteratorStage name key world error value left replayed) ->
+  (sourceForeign, targetForeign : PartialEffectMap name key value world) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq) sourceForeign targetForeign ->
+  ((origin : EffectState name key value world) ->
+    IteratorOutcomeStableUnder keyEq sourceStage sourceForeign origin) ->
+  ({sourceInput, targetInput : EffectState name key value world} ->
+    EffectStateRelated keyEq sourceInput targetInput ->
+    IteratorOutcomeAgreement name key value world error keyEq
+      (iteratorStageOutcome sourceStage sourceInput)
+      (iteratorStageOutcome targetStage targetInput)) ->
+  (origin : EffectState name key value world) ->
+  IteratorOutcomeStableUnder keyEq targetStage targetForeign origin
+replayRelationalIteratorStableFromRelationalMaps keyEq sourceStage targetStage sourceForeign
+  targetForeign mapsRelated sourceStable stagesRelated origin
+  with (targetForeign origin) proof targetRun
+  replayRelationalIteratorStableFromRelationalMaps keyEq sourceStage targetStage sourceForeign
+    targetForeign mapsRelated sourceStable stagesRelated origin | Nothing = ()
+  replayRelationalIteratorStableFromRelationalMaps keyEq sourceStage targetStage sourceForeign
+    targetForeign mapsRelated sourceStable stagesRelated origin | Just targetMoved
+    with (sourceForeign origin) proof sourceRun
+    replayRelationalIteratorStableFromRelationalMaps keyEq sourceStage targetStage sourceForeign
+      targetForeign mapsRelated sourceStable stagesRelated origin |
+      Just targetMoved | Nothing =
+        case replayPartialRewrite sourceRun targetRun
+          (mapsRelated (effectStateReflexive keyEq origin)) of _ impossible
+    replayRelationalIteratorStableFromRelationalMaps keyEq sourceStage targetStage sourceForeign
+      targetForeign mapsRelated sourceStable stagesRelated origin |
+      Just targetMoved | Just sourceMoved =
+        let 0 movedInputs : EffectStateRelated keyEq sourceMoved targetMoved
+            movedInputs = case replayPartialRewrite sourceRun targetRun
+              (mapsRelated (effectStateReflexive keyEq origin)) of
+                PartialDefined related => related
+            0 targetMovedToSourceMoved : IteratorOutcomeAgreement name key value
+              world error keyEq (iteratorStageOutcome targetStage targetMoved)
+              (iteratorStageOutcome sourceStage sourceMoved)
+            targetMovedToSourceMoved = replayRelationalOutcomeAgreementSymmetric
+              (stagesRelated movedInputs)
+            0 sourceMovedToSourceOrigin : IteratorOutcomeAgreement name key value
+              world error keyEq (iteratorStageOutcome sourceStage sourceMoved)
+              (iteratorStageOutcome sourceStage origin)
+            sourceMovedToSourceOrigin = replayRelationalSourceStableAtExactRun keyEq
+              sourceStage sourceForeign origin sourceMoved sourceRun
+              (sourceStable origin)
+            0 sourceOriginToTargetOrigin : IteratorOutcomeAgreement name key value
+              world error keyEq (iteratorStageOutcome sourceStage origin)
+              (iteratorStageOutcome targetStage origin)
+            sourceOriginToTargetOrigin = stagesRelated
+              (effectStateReflexive keyEq origin)
+        in iteratorOutcomeAgreementTransitive targetMovedToSourceMoved
+          (iteratorOutcomeAgreementTransitive sourceMovedToSourceOrigin
+            sourceOriginToTargetOrigin)
+
+
 0 replayOutcomeStableAtExactRun :
   (stage : IteratorStage name key world error value actor trace) ->
   (foreign : PartialEffectMap name key value world) ->
@@ -226,43 +844,20 @@ replayOutcomeStableAtExactRun stage foreign origin moved defined stable
   (origin : EffectState name key value world) ->
   IteratorOutcomeStableUnder keyEq stage
     (runTraceEffectTransformation foreign) origin
-replayIteratorStable correspondence independent left right distinct stage foreign
-  origin with (runTraceEffectTransformation foreign origin) proof targetRun
-  replayIteratorStable correspondence independent left right distinct stage
-    foreign origin | Nothing = ()
-  replayIteratorStable correspondence independent left right distinct stage
-    foreign origin | Just moved =
-      let sourceRun : (runTraceEffectTransformation
-            (replayTransformationOrigin correspondence foreign) origin =
-              Just moved)
-          sourceRun = trans
-            (replayTransformationMapPreserved correspondence foreign origin)
-            targetRun
-          0 sourceStable : IteratorOutcomeStableUnder keyEq (replayIteratorStageOrigin correspondence left stage)
-            (runTraceEffectTransformation
-              (replayTransformationOrigin correspondence foreign)) origin
-          sourceStable = iteratorYieldsStable independent left right distinct
-            (replayIteratorStageOrigin correspondence left stage) (replayTransformationOrigin correspondence foreign) origin
-          0 sourceAgreement : IteratorOutcomeAgreement name key value world error
-            keyEq (iteratorStageOutcome (replayIteratorStageOrigin correspondence left stage) moved)
-              (iteratorStageOutcome (replayIteratorStageOrigin correspondence left stage) origin)
-          sourceAgreement = replayOutcomeStableAtExactRun (replayIteratorStageOrigin correspondence left stage)
-            (runTraceEffectTransformation
-              (replayTransformationOrigin correspondence foreign))
-            origin moved sourceRun sourceStable
-          0 originAdjusted : IteratorOutcomeAgreement name key value world error
-            keyEq (iteratorStageOutcome (replayIteratorStageOrigin correspondence left stage) moved)
-              (iteratorStageOutcome stage origin)
-          originAdjusted = replace
-            {p = \outcome => IteratorOutcomeAgreement name key value world error
-              keyEq (iteratorStageOutcome (replayIteratorStageOrigin correspondence left stage) moved) outcome}
-            (sym (replayIteratorOutcomePreserved correspondence left stage origin))
-            sourceAgreement
-      in replace
-        {p = \outcome => IteratorOutcomeAgreement name key value world error
-          keyEq outcome (iteratorStageOutcome stage origin)}
-        (sym (replayIteratorOutcomePreserved correspondence left stage moved))
-        originAdjusted
+replayIteratorStable {keyEq} correspondence independent left right distinct
+  stage foreign origin =
+    replayRelationalIteratorStableFromRelationalMaps keyEq
+      (replayIteratorStageOrigin correspondence left stage) stage
+      (runTraceEffectTransformation
+        (replayTransformationOrigin correspondence foreign))
+      (runTraceEffectTransformation foreign)
+      (replayTransformationMapsRelated keyEq correspondence foreign)
+      (\point => iteratorYieldsStable independent left right distinct
+        (replayIteratorStageOrigin correspondence left stage)
+        (replayTransformationOrigin correspondence foreign) point)
+      (replayRelationalStageOutcomesRelatedFromExact keyEq
+        (replayIteratorStageOrigin correspondence left stage) stage
+        (replayIteratorOutcomePreserved correspondence left stage)) origin
 
 ||| Generic independence transport.  Deletion and sorting must construct the
 ||| correspondence above as part of their internal replay result; this theorem
@@ -279,15 +874,15 @@ public export
 traceIndependentAfterRelationalReplaySpike keyEq correspondence independent =
   MkTraceIndependent
     (\left, right, distinct, leftTransformation, rightTransformation =>
-      replayPartialCommuteTransport
+      replayPartialCommuteFromRelatedMaps
         (runTraceEffectTransformation
           (replayTransformationOrigin correspondence leftTransformation))
         (runTraceEffectTransformation leftTransformation)
         (runTraceEffectTransformation
           (replayTransformationOrigin correspondence rightTransformation))
         (runTraceEffectTransformation rightTransformation)
-        (replayTransformationMapPreserved correspondence leftTransformation)
-        (replayTransformationMapPreserved correspondence rightTransformation)
+        (replayTransformationMapsRelated keyEq correspondence leftTransformation)
+        (replayTransformationMapsRelated keyEq correspondence rightTransformation)
         (generatedMonoidsCommute independent left right distinct
           (replayTransformationOrigin correspondence leftTransformation)
           (replayTransformationOrigin correspondence rightTransformation)))
@@ -308,10 +903,10 @@ composeRelationalReplayCorrespondence left right =
   MkRelationalReplayCorrespondence
     (\actor, generator => replayGeneratorOrigin left actor
       (replayGeneratorOrigin right actor generator))
-    (\actor, generator, state => trans
-      (replayGeneratorMapPreserved left actor
-        (replayGeneratorOrigin right actor generator) state)
-      (replayGeneratorMapPreserved right actor generator state))
+    (\keyEq, actor, generator => replayPartialMapsRelatedTransitive
+      (replayGeneratorMapsRelated left keyEq actor
+        (replayGeneratorOrigin right actor generator))
+      (replayGeneratorMapsRelated right keyEq actor generator))
     (\actor, stage => replayIteratorStageOrigin left actor
       (replayIteratorStageOrigin right actor stage))
     (\actor, stage, state => trans
@@ -866,9 +1461,9 @@ data SealedSuffixReplaySpine :
     (0 headRAR : RelationalReplayCorrespondence name key world error value
       (MoreTransitions sourceStep NoTransitions)
       (MoreTransitions replayedStep NoTransitions)) ->
-    (0 headMapPreserved :
-      (state : EffectState name key value world) ->
-      partialEffectMap sourceStep state = partialEffectMap replayedStep state) ->
+    (0 headMapsRelated : PartialMapsRelated
+      (EffectStateEquivalence keyEq)
+      (partialEffectMap sourceStep) (partialEffectMap replayedStep)) ->
     (0 headEndpoint : RelationalReplayEndpoint name key world error value nameEq
       keyEq sourceMiddle replayedMiddle) ->
     (0 headOccurrences : ActionRegistrationReplayCorrespondence name key world
@@ -908,9 +1503,9 @@ record PointwiseRelationalHeadReplay
   0 headReplayRAR : RelationalReplayCorrespondence name key world error value
     (MoreTransitions sourceStep NoTransitions)
     (MoreTransitions headReplayedStep NoTransitions)
-  0 headReplayMapPreserved :
-    (state : EffectState name key value world) ->
-    partialEffectMap sourceStep state = partialEffectMap headReplayedStep state
+  0 headReplayMapsRelated : PartialMapsRelated
+    (EffectStateEquivalence keyEq)
+    (partialEffectMap sourceStep) (partialEffectMap headReplayedStep)
   0 headReplayEndpoint : RelationalReplayEndpoint name key world error value
     nameEq keyEq sourceAfter headReplayedAfter
   0 headReplayOccurrences : ActionRegistrationReplayCorrespondence name key
@@ -941,7 +1536,7 @@ record PointwiseRelationalHeadReplay
 sealPointwiseRelationalHead head tail =
   SealedSuffixReplayStep _ _ _ _
     (headSameAction head) (headSameTag head) (headReplayRAR head)
-    (headReplayMapPreserved head) (headReplayEndpoint head)
+    (headReplayMapsRelated head) (headReplayEndpoint head)
     (headReplayOccurrences head) (headReplayRelativeOrdinal head) tail
 
 0 checkedTargetWellFormed :
@@ -1165,7 +1760,7 @@ singletonNonAdvanceGeneratorUsesTransitionMap transition action actionExact
     void (noIteratorStageInSingletonNonAdvance transition action actionExact
       notAdvance stage)
 
-0 singletonNonAdvanceGeneratorMapPreserved :
+0 singletonNonAdvanceGeneratorMapsRelated :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) -> (tag : RuleTag) ->
   (sourceBefore, sourceAfter, replayedBefore, replayedAfter :
@@ -1175,41 +1770,71 @@ singletonNonAdvanceGeneratorUsesTransitionMap transition action actionExact
   (replayedChecked : checkedApplyAction @{nameEq} @{keyEq} action replayedBefore =
     Just (tag, replayedAfter)) ->
   (notAdvance : (actor : name) -> Not (action = LAdvance actor)) ->
-  ((state : EffectState name key value world) ->
-    partialEffectMap
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (partialEffectMap
       (Fired {before = sourceBefore} {afterState = sourceAfter}
-        nameEq keyEq action tag sourceChecked) state =
-    partialEffectMap
+        nameEq keyEq action tag sourceChecked))
+    (partialEffectMap
       (Fired {before = replayedBefore} {afterState = replayedAfter}
-        nameEq keyEq action tag replayedChecked) state) ->
+        nameEq keyEq action tag replayedChecked)) ->
+  (observedKeyEq : DecEq key) ->
   (selected : name) ->
   (generator : TraceEffectGenerator name key world error value selected
     (MoreTransitions
       (Fired {before = replayedBefore} {afterState = replayedAfter}
         nameEq keyEq action tag replayedChecked) NoTransitions)) ->
-  (state : EffectState name key value world) ->
-  traceGeneratorMap
-    (singletonNonAdvanceGeneratorOrigin nameEq keyEq action tag sourceBefore
-      sourceAfter replayedBefore replayedAfter sourceChecked replayedChecked
-      notAdvance selected generator) state =
-  traceGeneratorMap generator state
-singletonNonAdvanceGeneratorMapPreserved nameEq keyEq action tag sourceBefore
+  PartialMapsRelated (EffectStateEquivalence observedKeyEq)
+    (traceGeneratorMap
+      (singletonNonAdvanceGeneratorOrigin nameEq keyEq action tag sourceBefore
+        sourceAfter replayedBefore replayedAfter sourceChecked replayedChecked
+        notAdvance selected generator))
+    (traceGeneratorMap generator)
+singletonNonAdvanceGeneratorMapsRelated nameEq keyEq action tag sourceBefore
   sourceAfter replayedBefore replayedAfter sourceChecked replayedChecked
-  notAdvance mapPreserved selected
-  generator state =
-    trans
-      (singletonNonAdvanceGeneratorUsesTransitionMap
-        (Fired {before = sourceBefore} {afterState = sourceAfter}
-          nameEq keyEq action tag sourceChecked)
-        action Refl notAdvance
-        (singletonNonAdvanceGeneratorOrigin nameEq keyEq action tag sourceBefore
-          sourceAfter replayedBefore replayedAfter sourceChecked replayedChecked
-          notAdvance selected generator) state)
-      (trans (mapPreserved state)
-        (sym (singletonNonAdvanceGeneratorUsesTransitionMap
+  notAdvance mapsRelated observedKeyEq selected generator {x} {y} inputs =
+    let 0 storedInputs : EffectStateRelated keyEq x y
+        storedInputs = replayReindexEffectRelated inputs
+        0 storedOutputs : PartialRelated
+          (EffectState name key value world) (EffectStateRelated keyEq)
+          (partialEffectMap
+            (Fired {before = sourceBefore} {afterState = sourceAfter}
+              nameEq keyEq action tag sourceChecked) x)
+          (partialEffectMap
+            (Fired {before = replayedBefore} {afterState = replayedAfter}
+              nameEq keyEq action tag replayedChecked) y)
+        storedOutputs = mapsRelated storedInputs
+        0 observedOutputs : PartialRelated
+          (EffectState name key value world) (EffectStateRelated observedKeyEq)
+          (partialEffectMap
+            (Fired {before = sourceBefore} {afterState = sourceAfter}
+              nameEq keyEq action tag sourceChecked) x)
+          (partialEffectMap
+            (Fired {before = replayedBefore} {afterState = replayedAfter}
+              nameEq keyEq action tag replayedChecked) y)
+        observedOutputs = replayReindexPartialRelated storedOutputs
+        0 sourceUses : traceGeneratorMap
+          (singletonNonAdvanceGeneratorOrigin nameEq keyEq action tag
+            sourceBefore sourceAfter replayedBefore replayedAfter sourceChecked
+            replayedChecked notAdvance selected generator) x =
+          partialEffectMap
+            (Fired {before = sourceBefore} {afterState = sourceAfter}
+              nameEq keyEq action tag sourceChecked) x
+        sourceUses = singletonNonAdvanceGeneratorUsesTransitionMap
+          (Fired {before = sourceBefore} {afterState = sourceAfter}
+            nameEq keyEq action tag sourceChecked)
+          action Refl notAdvance
+          (singletonNonAdvanceGeneratorOrigin nameEq keyEq action tag
+            sourceBefore sourceAfter replayedBefore replayedAfter sourceChecked
+            replayedChecked notAdvance selected generator) x
+        0 targetUses : traceGeneratorMap generator y =
+          partialEffectMap
+            (Fired {before = replayedBefore} {afterState = replayedAfter}
+              nameEq keyEq action tag replayedChecked) y
+        targetUses = singletonNonAdvanceGeneratorUsesTransitionMap
           (Fired {before = replayedBefore} {afterState = replayedAfter}
             nameEq keyEq action tag replayedChecked)
-          action Refl notAdvance generator state)))
+          action Refl notAdvance generator y
+    in replayPartialRewrite (sym sourceUses) (sym targetUses) observedOutputs
 
 0 singletonNonAdvanceRAR :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -1221,13 +1846,13 @@ singletonNonAdvanceGeneratorMapPreserved nameEq keyEq action tag sourceBefore
   (replayedChecked : checkedApplyAction @{nameEq} @{keyEq} action replayedBefore =
     Just (tag, replayedAfter)) ->
   (notAdvance : (actor : name) -> Not (action = LAdvance actor)) ->
-  ((state : EffectState name key value world) ->
-    partialEffectMap
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (partialEffectMap
       (Fired {before = sourceBefore} {afterState = sourceAfter}
-        nameEq keyEq action tag sourceChecked) state =
-    partialEffectMap
+        nameEq keyEq action tag sourceChecked))
+    (partialEffectMap
       (Fired {before = replayedBefore} {afterState = replayedAfter}
-        nameEq keyEq action tag replayedChecked) state) ->
+        nameEq keyEq action tag replayedChecked)) ->
   RelationalReplayCorrespondence name key world error value
     (MoreTransitions
       (Fired {before = sourceBefore} {afterState = sourceAfter}
@@ -1242,7 +1867,7 @@ singletonNonAdvanceRAR nameEq keyEq action tag sourceBefore sourceAfter
       (singletonNonAdvanceGeneratorOrigin nameEq keyEq action tag sourceBefore
         sourceAfter replayedBefore replayedAfter sourceChecked replayedChecked
         notAdvance)
-      (singletonNonAdvanceGeneratorMapPreserved nameEq keyEq action tag
+      (singletonNonAdvanceGeneratorMapsRelated nameEq keyEq action tag
         sourceBefore sourceAfter replayedBefore replayedAfter sourceChecked
         replayedChecked notAdvance mapPreserved)
       (\selected, stage => void (noIteratorStageInSingletonNonAdvance
@@ -2383,11 +3008,11 @@ retireEffectFrameRelated nameEq keyEq actor before afterState raw =
       (Fired {before = replayedBefore} {afterState = replayedAfter}
         nameEq keyEq action tag targetChecked)
       NoTransitions) ->
-  ((state : EffectState name key value world) ->
-    partialEffectMap sourceStep state =
-    partialEffectMap
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (partialEffectMap sourceStep)
+    (partialEffectMap
       (Fired {before = replayedBefore} {afterState = replayedAfter}
-        nameEq keyEq action tag targetChecked) state) ->
+        nameEq keyEq action tag targetChecked)) ->
   RelationalReplayEndpoint name key world error value nameEq keyEq sourceAfter
     replayedAfter ->
   PointwiseRelationalHeadReplay name key world error value nameEq keyEq sourceStep
@@ -2783,6 +3408,11 @@ replayPointwiseBeginHead nameEq keyEq actor
                                     partialEffectMap sourceStep state =
                                       partialEffectMap replayedStep state
                                   mapPreserved state = Refl
+                                  0 mapsRelated : PartialMapsRelated
+                                    (EffectStateEquivalence keyEq) (partialEffectMap sourceStep)
+                                    (partialEffectMap replayedStep)
+                                  mapsRelated = replayExactTransitionMapsRelated keyEq sourceStep
+                                    replayedStep mapPreserved
                                   0 notAdvance : (selected : name) -> Not
                                     (the (Action name key value world error)
                                       (LBegin actor) = LAdvance selected)
@@ -2795,7 +3425,7 @@ replayPointwiseBeginHead nameEq keyEq actor
                                     (LBegin actor) LBeginTag sourceState
                                     sourceAfter replayedState targetState
                                     sourceChecked targetChecked notAdvance
-                                    mapPreserved
+                                    mapsRelated
                                   0 nextEndpoint : RelationalReplayEndpoint name
                                     key world error value nameEq keyEq sourceAfter
                                     targetState
@@ -2809,7 +3439,7 @@ replayPointwiseBeginHead nameEq keyEq actor
                               in packagePointwiseRelationalHeadReplay nameEq keyEq
                                 sourceStep sourceAligned targetState
                                 (LBegin actor) LBeginTag targetChecked Refl Refl
-                                rar mapPreserved nextEndpoint
+                                rar mapsRelated nextEndpoint
 
 ||| Complete pointwise L-Divert head. The target owner keeps its native
 ||| remaining program, accumulator, and view indices; only the comparison view
@@ -3017,6 +3647,11 @@ replayPointwiseDivertHead nameEq keyEq actor
                                           partialEffectMap sourceStep state =
                                             partialEffectMap replayedStep state
                                         mapPreserved state = Refl
+                                        0 mapsRelated : PartialMapsRelated
+                                          (EffectStateEquivalence keyEq) (partialEffectMap sourceStep)
+                                          (partialEffectMap replayedStep)
+                                        mapsRelated = replayExactTransitionMapsRelated keyEq sourceStep
+                                          replayedStep mapPreserved
                                         0 notAdvance : (selected : name) -> Not
                                           (the (Action name key value world error)
                                             (LDivert actor) = LAdvance selected)
@@ -3029,7 +3664,7 @@ replayPointwiseDivertHead nameEq keyEq actor
                                           (LDivert actor) LDivertTag sourceState
                                           sourceAfter replayedState targetState
                                           sourceChecked targetChecked notAdvance
-                                          mapPreserved
+                                          mapsRelated
                                         0 nextEndpoint : RelationalReplayEndpoint name
                                           key world error value nameEq keyEq sourceAfter
                                           targetState
@@ -3044,7 +3679,7 @@ replayPointwiseDivertHead nameEq keyEq actor
                                     in packagePointwiseRelationalHeadReplay nameEq keyEq
                                       sourceStep sourceAligned targetState
                                       (LDivert actor) LDivertTag targetChecked Refl Refl
-                                      rar mapPreserved nextEndpoint
+                                      rar mapsRelated nextEndpoint
 
 ||| Complete pointwise L-Leave head. The related target keeps its native
 ||| accumulator and view indices; only the mismatch comparison view is
@@ -3247,6 +3882,11 @@ replayPointwiseLeaveHead nameEq keyEq actor
                                           partialEffectMap sourceStep state =
                                             partialEffectMap replayedStep state
                                         mapPreserved state = Refl
+                                        0 mapsRelated : PartialMapsRelated
+                                          (EffectStateEquivalence keyEq) (partialEffectMap sourceStep)
+                                          (partialEffectMap replayedStep)
+                                        mapsRelated = replayExactTransitionMapsRelated keyEq sourceStep
+                                          replayedStep mapPreserved
                                         0 notAdvance : (selected : name) -> Not
                                           (the (Action name key value world error)
                                             (LLeave actor) = LAdvance selected)
@@ -3259,7 +3899,7 @@ replayPointwiseLeaveHead nameEq keyEq actor
                                           (LLeave actor) LLeaveTag sourceState
                                           sourceAfter replayedState targetState
                                           sourceChecked targetChecked notAdvance
-                                          mapPreserved
+                                          mapsRelated
                                         0 nextEndpoint : RelationalReplayEndpoint name
                                           key world error value nameEq keyEq sourceAfter
                                           targetState
@@ -3274,7 +3914,7 @@ replayPointwiseLeaveHead nameEq keyEq actor
                                     in packagePointwiseRelationalHeadReplay nameEq keyEq
                                       sourceStep sourceAligned targetState
                                       (LLeave actor) LLeaveTag targetChecked Refl Refl
-                                      rar mapPreserved nextEndpoint
+                                      rar mapsRelated nextEndpoint
 
 ||| Complete pointwise O-Insert head. Applicability, checked target, endpoint,
 ||| map, RAR, occurrence, and ordinal evidence are all constructed together.
@@ -3450,6 +4090,11 @@ replayPointwiseInsertHead nameEq keyEq actor parent component
                   partialEffectMap sourceStep state =
                     partialEffectMap replayedStep state
                 mapPreserved state = Refl
+                0 mapsRelated : PartialMapsRelated
+                  (EffectStateEquivalence keyEq) (partialEffectMap sourceStep)
+                  (partialEffectMap replayedStep)
+                mapsRelated = replayExactTransitionMapsRelated keyEq sourceStep
+                  replayedStep mapPreserved
                 0 notAdvance : (selected : name) -> Not
                   (the (Action name key value world error)
                     (OInsert actor parent component) = LAdvance selected)
@@ -3460,7 +4105,7 @@ replayPointwiseInsertHead nameEq keyEq actor parent component
                 rar = singletonNonAdvanceRAR nameEq keyEq
                   (OInsert actor parent component) OInsertTag sourceState
                   sourceAfter replayedState targetState sourceChecked targetChecked
-                  notAdvance mapPreserved
+                  notAdvance mapsRelated
                 0 nextEndpoint : RelationalReplayEndpoint name key world error
                   value nameEq keyEq sourceAfter targetState
                 nextEndpoint = MkRelationalReplayEndpoint nextEffects nextControls
@@ -3471,7 +4116,7 @@ replayPointwiseInsertHead nameEq keyEq actor parent component
                   OInsertTag sourceChecked NoTransitions AlignedEnd
             in packagePointwiseRelationalHeadReplay nameEq keyEq sourceStep
               sourceAligned targetState (OInsert actor parent component)
-              OInsertTag targetChecked Refl Refl rar mapPreserved nextEndpoint
+              OInsertTag targetChecked Refl Refl rar mapsRelated nextEndpoint
 
 ||| First concrete branch of the private pointwise head replayer.  O-Retire is
 ||| control-only, so its map is definitionally identity; applicability and the
@@ -3568,6 +4213,11 @@ replayPointwiseRetireHead nameEq keyEq actor
                   partialEffectMap sourceStep state =
                     partialEffectMap replayedStep state
                 mapPreserved state = Refl
+                0 mapsRelated : PartialMapsRelated
+                  (EffectStateEquivalence keyEq) (partialEffectMap sourceStep)
+                  (partialEffectMap replayedStep)
+                mapsRelated = replayExactTransitionMapsRelated keyEq sourceStep
+                  replayedStep mapPreserved
                 0 notAdvance : (selected : name) -> Not
                   (the (Action name key value world error) (ORetire actor) =
                     LAdvance selected)
@@ -3577,7 +4227,7 @@ replayPointwiseRetireHead nameEq keyEq actor
                   (MoreTransitions replayedStep NoTransitions)
                 rar = singletonNonAdvanceRAR nameEq keyEq (ORetire actor)
                   ORetireTag sourceState sourceAfter replayedState targetState
-                  sourceChecked targetChecked notAdvance mapPreserved
+                  sourceChecked targetChecked notAdvance mapsRelated
                 0 nextEndpoint : RelationalReplayEndpoint name key world error
                   value nameEq keyEq sourceAfter targetState
                 nextEndpoint = MkRelationalReplayEndpoint nextEffects nextControls
@@ -3588,7 +4238,7 @@ replayPointwiseRetireHead nameEq keyEq actor
                   sourceChecked NoTransitions AlignedEnd
             in packagePointwiseRelationalHeadReplay nameEq keyEq sourceStep
               sourceAligned targetState (ORetire actor) ORetireTag targetChecked
-              Refl Refl rar mapPreserved nextEndpoint
+              Refl Refl rar mapsRelated nextEndpoint
 
 ||| Internal one-step evaluator used by the structural suffix recursion.  Its
 ||| endpoint input is exactly the result of the preceding checked replay (or the
@@ -4041,7 +4691,9 @@ public export
   RelationalReplayCorrespondence name key world error value source target
 finiteDerivationReplayCorrespondence FiniteAdjacentSwapDone =
   MkRelationalReplayCorrespondence (\actor, generator => generator)
-    (\actor, generator, state => Refl) (\actor, stage => stage)
+    (\observedKeyEq, actor, generator =>
+      replayTraceGeneratorMapRespects observedKeyEq generator)
+    (\actor, stage => stage)
     (\actor, stage, state => Refl)
 finiteDerivationReplayCorrespondence
   (FiniteAdjacentSwapStep _ _ _ _ _ _ _ result _ rest) =
@@ -10468,6 +11120,11 @@ replayPointwiseRemoveHead nameEq keyEq actor
               partialEffectMap sourceStep state =
                 partialEffectMap replayedStep state
             mapPreserved state = Refl
+            0 mapsRelated : PartialMapsRelated
+              (EffectStateEquivalence keyEq) (partialEffectMap sourceStep)
+              (partialEffectMap replayedStep)
+            mapsRelated = replayExactTransitionMapsRelated keyEq sourceStep
+              replayedStep mapPreserved
             0 notAdvance : (selected : name) -> Not
               (the (Action name key value world error) (ORemove actor) =
                 LAdvance selected)
@@ -10477,7 +11134,7 @@ replayPointwiseRemoveHead nameEq keyEq actor
               (MoreTransitions replayedStep NoTransitions)
             rar = singletonNonAdvanceRAR nameEq keyEq (ORemove actor)
               ORemoveTag sourceState sourceAfter replayedState targetState
-              sourceChecked targetChecked notAdvance mapPreserved
+              sourceChecked targetChecked notAdvance mapsRelated
             0 nextEndpoint : RelationalReplayEndpoint name key world error value
               nameEq keyEq sourceAfter targetState
             nextEndpoint = MkRelationalReplayEndpoint nextEffects nextControls
@@ -10488,7 +11145,7 @@ replayPointwiseRemoveHead nameEq keyEq actor
               NoTransitions AlignedEnd
         in packagePointwiseRelationalHeadReplay nameEq keyEq sourceStep
           sourceAligned targetState (ORemove actor) ORemoveTag targetChecked Refl
-          Refl rar mapPreserved nextEndpoint
+          Refl rar mapsRelated nextEndpoint
 
 0 localReplaceEntriesOtherHead :
   (nameEq : DecEq name) -> (changed, current : name) ->
