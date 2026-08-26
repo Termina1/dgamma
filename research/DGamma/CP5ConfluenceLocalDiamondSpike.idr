@@ -1713,6 +1713,46 @@ providerOfSoundCandidateTrue nameEq keyEq wanted provider fibers sound =
       member = trans (sym (cong isJust lookupSame)) (providerOfValue sound)
   in boolAndBothPointwise _ _ (providerOfActive sound) member
 
+record LocatedProviderCandidate
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (wanted : key) (actor : name)
+  (fibers : Registry name key value world error) where
+  constructor MkLocatedProviderCandidate
+  providerCandidateFiber : Fiber name key value world error
+  0 providerCandidateFound : lookupFiber @{nameEq} actor fibers =
+    Just providerCandidateFiber
+  0 providerCandidateEntry : Elem (Bind actor providerCandidateFiber)
+    (bindings fibers)
+  0 providerCandidateTrue :
+    (isActive (fiberLifecycle providerCandidateFiber) &&
+      memberKey @{keyEq} wanted
+        (ownedValues (fiberTable providerCandidateFiber))) = True
+  0 providerCandidateDeclares : Elem wanted (dependencies
+    (componentProvisions (fiberComponent providerCandidateFiber)))
+
+0 selectedProviderCandidate :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (wanted : key) ->
+  (provider : name) -> (fibers : Registry name key value world error) ->
+  providerOf @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} wanted fibers = Just provider ->
+  LocatedProviderCandidate name key world error value nameEq keyEq wanted
+    provider fibers
+selectedProviderCandidate nameEq keyEq wanted provider
+  fibers@(MkCoeffectContext entries unique) selected =
+    let sound = providerOfSound nameEq keyEq wanted provider fibers selected
+        candidate = providerOfSoundCandidateTrue nameEq keyEq wanted provider
+          fibers sound
+        member = memberKeyTrueElemOpenAnchor keyEq wanted
+          (ownedValues (fiberTable (providerOfFiber sound)))
+          (boolAndRightPointwise _ _ candidate)
+        entry = entryElemFromLookupPointwise nameEq provider
+          (providerOfFiber sound) entries unique (providerOfLookup sound)
+    in MkLocatedProviderCandidate (providerOfFiber sound)
+      (providerOfLookup sound) entry candidate
+      (ownedSound (fiberTable (providerOfFiber sound)) wanted member)
+
 0 pointwiseRegistryPairwise :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (state : SystemState name key value world error) ->
