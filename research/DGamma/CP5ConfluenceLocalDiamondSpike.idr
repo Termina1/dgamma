@@ -1787,6 +1787,133 @@ pointwiseTransportProviderCandidate nameEq keyEq wanted actor left
         in MkLocatedProviderCandidate rightFiber rightFound targetEntry targetTrue
           (ownedSound (fiberTable rightFiber) wanted member)
 
+0 boolNotAndTruePointwise :
+  (observed : Bool) -> not observed = True -> observed = True -> Void
+boolNotAndTruePointwise False notTrue observedTrue = case observedTrue of
+  Refl impossible
+boolNotAndTruePointwise True notTrue observedTrue = case notTrue of
+  Refl impossible
+
+0 elemDecFromElemPointwise : DecEq a =>
+  (wanted : a) -> (values : List a) -> Elem wanted values ->
+  elemDec wanted values = True
+elemDecFromElemPointwise wanted (wanted :: rest) Here
+  with (decEq wanted wanted)
+  elemDecFromElemPointwise wanted (wanted :: rest) Here | Yes Refl = Refl
+  elemDecFromElemPointwise wanted (wanted :: rest) Here | No contra =
+    void (contra Refl)
+elemDecFromElemPointwise wanted (current :: rest) (There later)
+  with (decEq wanted current)
+  elemDecFromElemPointwise current (current :: rest) (There later) |
+    Yes Refl = Refl
+  elemDecFromElemPointwise wanted (current :: rest) (There later) |
+    No distinct = elemDecFromElemPointwise wanted rest later
+
+0 foldlOrTruePointwise :
+  (predicate : a -> Bool) -> (values : List a) ->
+  foldl (\accepted, value => accepted || predicate value) True values = True
+foldlOrTruePointwise predicate [] = Refl
+foldlOrTruePointwise predicate (value :: rest) =
+  foldlOrTruePointwise predicate rest
+
+0 sharedAnyPointwise : DecEq key =>
+  (wanted : key) -> (left, right : List key) ->
+  Elem wanted left -> Elem wanted right ->
+  any (\candidate => elemDec candidate right) left = True
+sharedAnyPointwise wanted (wanted :: leftRest) right Here rightMember =
+  rewrite elemDecFromElemPointwise wanted right rightMember in
+    foldlOrTruePointwise (\candidate => elemDec candidate right) leftRest
+sharedAnyPointwise wanted (current :: leftRest) right (There later) rightMember
+  with (elemDec current right)
+  sharedAnyPointwise wanted (current :: leftRest) right (There later)
+    rightMember | True =
+      foldlOrTruePointwise (\candidate => elemDec candidate right) leftRest
+  sharedAnyPointwise wanted (current :: leftRest) right (There later)
+    rightMember | False = sharedAnyPointwise wanted leftRest right later
+      rightMember
+
+0 sharedProvisionOverlapsPointwise :
+  (keyEq : DecEq key) -> (wanted : key) ->
+  (left, right : CoeffectSpec key) ->
+  Elem wanted (dependencies left) -> Elem wanted (dependencies right) ->
+  provisionOverlap @{keyEq} left right = True
+sharedProvisionOverlapsPointwise keyEq wanted
+  (MkCoeffectSpec left leftUnique) (MkCoeffectSpec right rightUnique)
+  leftMember rightMember = sharedAnyPointwise wanted left right leftMember
+    rightMember
+
+0 sharedProvisionRejectsDisjointPointwise :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (keyEq : DecEq key) -> (wanted : key) ->
+  (provision : CoeffectSpec key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  provisionsDisjointFrom @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} provision entries = True ->
+  Elem wanted (dependencies provision) ->
+  (providerName : name) ->
+  (providerFiber : Fiber name key value world error) ->
+  Elem (Bind providerName providerFiber) entries ->
+  Elem wanted (dependencies
+    (componentProvisions (fiberComponent providerFiber))) -> Void
+sharedProvisionRejectsDisjointPointwise keyEq wanted provision
+  (Bind providerName providerFiber :: rest) disjoint provisionMember
+  providerName providerFiber Here providerMember =
+    let 0 headNotOverlap : (not (provisionOverlap @{keyEq} provision
+          (componentProvisions (fiberComponent providerFiber))) = True)
+        headNotOverlap = boolAndLeftPointwise _ _ disjoint
+        0 overlaps : (provisionOverlap @{keyEq} provision
+          (componentProvisions (fiberComponent providerFiber)) = True)
+        overlaps = sharedProvisionOverlapsPointwise keyEq wanted provision
+          (componentProvisions (fiberComponent providerFiber)) provisionMember
+          providerMember
+    in boolNotAndTruePointwise _ headNotOverlap overlaps
+sharedProvisionRejectsDisjointPointwise keyEq wanted provision
+  (Bind current currentFiber :: rest) disjoint provisionMember
+  providerName providerFiber (There later) providerMember =
+    sharedProvisionRejectsDisjointPointwise keyEq wanted provision rest
+      (boolAndRightPointwise _ _ disjoint) provisionMember providerName
+      providerFiber later providerMember
+
+0 pairwiseSharedProvisionSameNamePointwise :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (keyEq : DecEq key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  pairwiseProvisionInvariant @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} entries = True ->
+  (leftName, rightName : name) ->
+  (leftFiber, rightFiber : Fiber name key value world error) ->
+  Elem (Bind leftName leftFiber) entries ->
+  Elem (Bind rightName rightFiber) entries ->
+  (wanted : key) ->
+  Elem wanted (dependencies
+    (componentProvisions (fiberComponent leftFiber))) ->
+  Elem wanted (dependencies
+    (componentProvisions (fiberComponent rightFiber))) ->
+  leftName = rightName
+pairwiseSharedProvisionSameNamePointwise keyEq
+  (Bind leftName leftFiber :: rest) pairwise leftName leftName leftFiber leftFiber
+  Here Here wanted leftDeclares rightDeclares = Refl
+pairwiseSharedProvisionSameNamePointwise keyEq
+  (Bind leftName leftFiber :: rest) pairwise leftName rightName leftFiber rightFiber
+  Here (There rightLater) wanted leftDeclares rightDeclares =
+    void (sharedProvisionRejectsDisjointPointwise keyEq wanted
+      (componentProvisions (fiberComponent leftFiber)) rest
+      (boolAndLeftPointwise _ _ pairwise) leftDeclares rightName rightFiber
+      rightLater rightDeclares)
+pairwiseSharedProvisionSameNamePointwise keyEq
+  (Bind rightName rightFiber :: rest) pairwise leftName rightName leftFiber
+  rightFiber (There leftLater) Here wanted leftDeclares rightDeclares =
+    void (sharedProvisionRejectsDisjointPointwise keyEq wanted
+      (componentProvisions (fiberComponent rightFiber)) rest
+      (boolAndLeftPointwise _ _ pairwise) rightDeclares leftName leftFiber
+      leftLater leftDeclares)
+pairwiseSharedProvisionSameNamePointwise keyEq
+  (Bind current currentFiber :: rest) pairwise leftName rightName leftFiber
+  rightFiber (There leftLater) (There rightLater) wanted leftDeclares
+  rightDeclares = pairwiseSharedProvisionSameNamePointwise keyEq rest
+    (boolAndRightPointwise _ _ pairwise) leftName rightName leftFiber rightFiber
+    leftLater rightLater wanted leftDeclares rightDeclares
+
 0 locatedProviderCandidateSelectsSome :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
