@@ -94,7 +94,10 @@ Review trail:
 - revision 34 pins the recurring O-Remove child orientation as an exact negative,
   closes L-Begin source decomposition through `lifecycleOwnerPresent`, and
   constructs provider soundness, transport, scan existence, and pairwise
-  unique-name capital up to the final four-branch selection equality.
+  unique-name capital up to the final four-branch selection equality; and
+- revision 35 closes pointwise provider selection, exact dependency resolution,
+  and the full L-Begin semantic head, then stops the shared L-Divert/L-Leave
+  target-query helper at its explicit retired-Boolean split.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -562,6 +565,32 @@ stays **18–34 shifts** because the provider proof is nearly assembled but the
 pinned O-Remove family and all six heads remain charged. Holes stay **20**, split
 **6/4/8/1/1**.
 
+### Revision 35: provider equality and L-Begin closure
+
+`research-tests/O6-R35-BEGIN-CLOSED-POINTWISE-TARGET-STOP-AUDIT.md` records the
+checkpoint. `pointwiseProviderOfSame` now closes its four runtime-selection
+branches using direct selected proofs, transported existence for absence
+contradictions, and target-registry pairwise uniqueness. The equality lifts
+structurally through `pointwiseResolveViewSame`.
+
+`replayPointwiseBeginHead` uses the public source view, pointwise owner lookup,
+exact target dependency resolution, related lifecycle replacement, checked
+preservation and effect frames, map identity, singleton RAR, occurrence,
+ordinal, alignment, and endpoint packaging. L-Begin therefore joins O-Insert and
+O-Retire as a complete generic semantic head.
+
+The reusable L-Divert/L-Leave target-query helper exhausted three attempts at
+normalizing the retired owner branch and was reverted. Its next version must
+eliminate the related retired equality and split the common Boolean: both
+queries are `Nothing` when retired, while only the unretired branch invokes
+pointwise dependency resolution. L-Unload/L-Advance were not opened. A distinct
+O-Remove design is recorded for review: consume a producer-owned
+`removeSuccessView` observation in the later elaboration zone instead of
+rebuilding `hasChild` through R34's nested `with` proof.
+
+Five semantic heads remain. The required O6 band stays **18–34 shifts**; holes
+remain **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -873,7 +902,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; generic spine plus O-Retire/O-Insert are closed. O-Remove is exact-negative pinned; L-Begin source is closed; pointwise provider soundness, transport, scan existence, and pairwise unique-name foundations reach the final selection equality. Six heads and whole-result assembly remain.** | **XL, 18–34 remaining shifts after revision-34 provider-selection boundary.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; generic spine plus O-Retire/O-Insert/L-Begin are closed. Pointwise provider selection and exact dependency resolution are proved. O-Remove remains exact-negative pinned; the shared L-Divert/L-Leave target query stops at the retired-Boolean split. Five heads and whole-result assembly remain.** | **XL, 18–34 remaining shifts after revision-35 L-Begin closure.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
