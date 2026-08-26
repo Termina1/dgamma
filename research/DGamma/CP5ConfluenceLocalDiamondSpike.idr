@@ -2075,6 +2075,63 @@ pointwiseResolveViewSame nameEq keyEq (wanted :: rest) left right controls effec
             (pointwiseResolveViewSame nameEq keyEq rest left right controls
               effects rightValid)
 
+||| Related owners share one component. Their retired flags are eliminated
+||| before the target query is normalized: retired owners both yield `Nothing`,
+||| and only unretired owners consult pointwise dependency resolution.
+0 pointwiseConcreteTargetFiberSame :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (component : Component key value world error) ->
+  (leftParent, rightParent : Parent name) ->
+  (leftRetired, rightRetired : Bool) ->
+  (leftTable, rightTable : OwnedTable key value
+    (componentProvisions component)) ->
+  (leftLifecycle, rightLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  leftRetired = rightRetired ->
+  (left, right : SystemState name key value world error) ->
+  ControlEquivalent name key world error value nameEq left right ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} left)
+    (projectEffectState @{nameEq} right) ->
+  registryWellFormed @{nameEq} @{keyEq} right = True ->
+  targetFiber @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error}
+    (MkFiber component leftParent leftRetired leftTable leftLifecycle)
+    (registry left) =
+  targetFiber @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error}
+    (MkFiber component rightParent rightRetired rightTable rightLifecycle)
+    (registry right)
+pointwiseConcreteTargetFiberSame nameEq keyEq component leftParent rightParent
+  True True leftTable rightTable leftLifecycle rightLifecycle Refl left right
+  controls effects rightValid =
+    let 0 leftExplicit = targetFiberExplicit {name = name} {key = key}
+          {value = value} {world = world} {error = error} nameEq keyEq component
+          leftParent True leftTable leftLifecycle (registry left)
+        0 rightExplicit = targetFiberExplicit {name = name} {key = key}
+          {value = value} {world = world} {error = error} nameEq keyEq component
+          rightParent True rightTable rightLifecycle (registry right)
+    in trans leftExplicit (sym rightExplicit)
+pointwiseConcreteTargetFiberSame nameEq keyEq component leftParent rightParent
+  False False leftTable rightTable leftLifecycle rightLifecycle Refl left right
+  controls effects rightValid =
+    let 0 leftExplicit = targetFiberExplicit {name = name} {key = key}
+          {value = value} {world = world} {error = error} nameEq keyEq component
+          leftParent False leftTable leftLifecycle (registry left)
+        0 rightExplicit = targetFiberExplicit {name = name} {key = key}
+          {value = value} {world = world} {error = error} nameEq keyEq component
+          rightParent False rightTable rightLifecycle (registry right)
+        0 resolveSame = pointwiseResolveViewSame nameEq keyEq
+          (dependencies (componentDependencies component)) left right controls
+          effects rightValid
+    in trans leftExplicit (trans resolveSame (sym rightExplicit))
+pointwiseConcreteTargetFiberSame nameEq keyEq component leftParent rightParent
+  True False leftTable rightTable leftLifecycle rightLifecycle retiredSame left
+  right controls effects rightValid = case retiredSame of Refl impossible
+pointwiseConcreteTargetFiberSame nameEq keyEq component leftParent rightParent
+  False True leftTable rightTable leftLifecycle rightLifecycle retiredSame left
+  right controls effects rightValid = case retiredSame of Refl impossible
+
 0 pointwiseControlAfterInsert :
   (nameEq : DecEq name) -> (actor : name) -> (parent : Parent name) ->
   (component : Component key value world error) ->
