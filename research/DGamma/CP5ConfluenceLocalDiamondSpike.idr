@@ -1965,6 +1965,65 @@ pointwiseRegistryPairwise nameEq keyEq
       (boolAndRightPointwise _ _
         (boolAndRightPointwise _ _ valid))
 
+||| Runtime provider selection is invariant under pointwise control/effect
+||| equivalence.  Candidate transport supplies existence in the independently
+||| ordered registry; pairwise provision well-formedness fixes the selected name.
+0 pointwiseProviderOfSame :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (wanted : key) ->
+  (left, right : SystemState name key value world error) ->
+  ControlEquivalent name key world error value nameEq left right ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} left)
+    (projectEffectState @{nameEq} right) ->
+  registryWellFormed @{nameEq} @{keyEq} right = True ->
+  providerOf @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} wanted (registry left) =
+  providerOf @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} wanted (registry right)
+pointwiseProviderOfSame nameEq keyEq wanted left right controls effects rightValid
+  with (providerOf @{nameEq} @{keyEq} wanted (registry left)) proof leftSelected
+  pointwiseProviderOfSame nameEq keyEq wanted left right controls effects
+    rightValid | Nothing
+    with (providerOf @{nameEq} @{keyEq} wanted (registry right)) proof rightSelected
+    pointwiseProviderOfSame nameEq keyEq wanted left right controls effects
+      rightValid | Nothing | Nothing = Refl
+    pointwiseProviderOfSame nameEq keyEq wanted left right controls effects
+      rightValid | Nothing | Just rightName =
+        let rightCandidate = selectedProviderCandidate nameEq keyEq wanted
+              rightName (registry right) rightSelected
+            leftCandidate = pointwiseTransportProviderCandidate nameEq keyEq
+              wanted rightName right left (controlEquivalentSymmetric controls)
+              (effectStateRelatedSymmetric effects) rightCandidate
+        in case locatedProviderCandidateSelectsSome nameEq keyEq wanted
+          rightName (registry left) leftCandidate of
+          (leftName ** leftSome) =>
+            case trans (sym leftSelected) leftSome of Refl impossible
+  pointwiseProviderOfSame nameEq keyEq wanted left right controls effects
+    rightValid | Just leftName
+    with (providerOf @{nameEq} @{keyEq} wanted (registry right)) proof rightSelected
+    pointwiseProviderOfSame nameEq keyEq wanted left right controls effects
+      rightValid | Just leftName | Nothing =
+        let leftCandidate = selectedProviderCandidate nameEq keyEq wanted
+              leftName (registry left) leftSelected
+            rightCandidate = pointwiseTransportProviderCandidate nameEq keyEq
+              wanted leftName left right controls effects leftCandidate
+        in case locatedProviderCandidateSelectsSome nameEq keyEq wanted
+          leftName (registry right) rightCandidate of
+          (rightName ** rightSome) =>
+            case trans (sym rightSelected) rightSome of Refl impossible
+    pointwiseProviderOfSame nameEq keyEq wanted left right controls effects
+      rightValid | Just leftName | Just rightName =
+        let leftCandidate = selectedProviderCandidate nameEq keyEq wanted
+              leftName (registry left) leftSelected
+            transportedLeft = pointwiseTransportProviderCandidate nameEq keyEq
+              wanted leftName left right controls effects leftCandidate
+            selectedRight = selectedProviderCandidate nameEq keyEq wanted
+              rightName (registry right) rightSelected
+            sameName = locatedProviderCandidatesSameName nameEq keyEq wanted
+              leftName rightName (registry right)
+              (pointwiseRegistryPairwise nameEq keyEq right rightValid)
+              transportedLeft selectedRight
+        in cong Just sameName
+
 0 pointwiseControlAfterInsert :
   (nameEq : DecEq name) -> (actor : name) -> (parent : Parent name) ->
   (component : Component key value world error) ->
