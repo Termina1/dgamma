@@ -66,11 +66,11 @@ POSITIVE=(
   R9CoordinateBoundaryPositive
   R9WholeBlockShiftedAliasContradictionPositive
   R39RelationalMapAlgebraPositive
+  R39AdvanceYieldedMapProducerPositive
+  R39TraceGeneratorRespectPositive
   R39RelationalIndependenceConsumerPositive
   R39RelationalHeadProducerPositive
   R39RelationalFixtureRetentionPositive
-  R39AdvanceYieldedMapProducerPositive
-  R39TraceGeneratorRespectPositive
 )
 
 # Each expected failure has its own mandatory diagnostic fragment and source
