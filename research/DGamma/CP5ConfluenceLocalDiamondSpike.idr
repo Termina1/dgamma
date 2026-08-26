@@ -10338,6 +10338,158 @@ pointwiseRemoveSourceObservation nameEq keyEq actor ambient source tag afterStat
       MkRemoveSuccessView oldFiber found guard noChild =>
         MkPointwiseRemoveSourceObservation oldFiber found guard noChild Refl Refl
 
+||| Complete pointwise O-Remove head. Its source owner, composite guard,
+||| childlessness, and delete endpoint all originate in one indexed operational
+||| observation; the target delete owns its checked transition and replay capital.
+0 replayPointwiseRemoveHead :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {sourceBefore, sourceAfter, replayedBefore :
+    SystemState name key value world error} ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} (ORemove actor)
+    sourceBefore = Just (ORemoveTag, sourceAfter)) ->
+  registryWellFormed @{nameEq} @{keyEq} sourceBefore = True ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq sourceBefore
+    replayedBefore ->
+  PointwiseRelationalHeadReplay name key world error value nameEq keyEq
+    (Fired {before = sourceBefore} {afterState = sourceAfter}
+      nameEq keyEq (ORemove actor) ORemoveTag sourceChecked)
+    replayedBefore
+replayPointwiseRemoveHead nameEq keyEq actor
+  {sourceBefore = MkSystemState sourceWorld sourceRegistry}
+  {sourceAfter} {replayedBefore = MkSystemState replayedWorld replayedRegistry}
+  sourceChecked sourceWellFormed beforeEndpoint =
+    let sourceState : SystemState name key value world error
+        sourceState = MkSystemState sourceWorld sourceRegistry
+        replayedState : SystemState name key value world error
+        replayedState = MkSystemState replayedWorld replayedRegistry
+        0 sourceRaw : applyAction @{nameEq} @{keyEq} (ORemove actor)
+          sourceState = Just (ORemoveTag, sourceAfter)
+        sourceRaw = checkedActionProjects nameEq keyEq (ORemove actor) sourceState
+          sourceAfter ORemoveTag sourceChecked
+        0 sourceObservation : PointwiseRemoveSourceObservation name key world
+          error value nameEq actor sourceWorld sourceRegistry ORemoveTag
+          sourceAfter
+        sourceObservation = pointwiseRemoveSourceObservation nameEq keyEq actor
+          sourceWorld sourceRegistry ORemoveTag sourceAfter sourceRaw
+        0 sourceFiber : Fiber name key value world error
+        sourceFiber = observedRemoveFiber sourceObservation
+        0 sourceFound : lookupFiber @{nameEq} actor sourceRegistry =
+          Just sourceFiber
+        sourceFound = observedRemoveFound sourceObservation
+        0 sourceNoChild : (hasChild @{nameEq} {name = name} {key = key}
+          {value = value} {world = world} {error = error} actor sourceRegistry =
+          False)
+        sourceNoChild = observedRemoveNoChild sourceObservation
+        0 sourceGuard : (retired sourceFiber &&
+          isInactive (fiberLifecycle sourceFiber) &&
+          not (hasChild @{nameEq} {name = name} {key = key} {value = value}
+            {world = world} {error = error} actor sourceRegistry) = True)
+        sourceGuard = observedRemoveGuard sourceObservation
+        0 sourceAfterShape : MkSystemState sourceWorld
+          (deleteBinding @{nameEq} actor sourceRegistry) = sourceAfter
+        sourceAfterShape = observedRemoveAfter sourceObservation
+    in case pointwiseControlLookupFound nameEq actor sourceState replayedState
+      (replayedControls beforeEndpoint) sourceFiber sourceFound of
+      (replayedFiber ** (replayedFound, fibersRelated)) =>
+        let 0 targetNoChild :
+              (hasChild @{nameEq} {name = name} {key = key} {value = value}
+                {world = world} {error = error} actor replayedRegistry = False)
+            targetNoChild = pointwiseNoChildPreserved nameEq actor sourceState
+              replayedState (replayedControls beforeEndpoint) sourceNoChild
+            0 targetGuard : (retired replayedFiber &&
+              isInactive (fiberLifecycle replayedFiber) &&
+              not (hasChild @{nameEq} {name = name} {key = key} {value = value}
+                {world = world} {error = error} actor replayedRegistry) = True)
+            targetGuard = pointwiseRemovalGuardRelated nameEq actor sourceState
+              replayedState sourceFiber replayedFiber fibersRelated sourceNoChild
+              targetNoChild sourceGuard
+            targetState : SystemState name key value world error
+            targetState = MkSystemState replayedWorld
+              (deleteBinding @{nameEq} actor replayedRegistry)
+            0 targetRaw : applyAction @{nameEq} @{keyEq} (ORemove actor)
+              replayedState = Just (ORemoveTag, targetState)
+            targetRaw = rewrite replayedFound in rewrite targetGuard in Refl
+            0 targetWellFormed : registryWellFormed @{nameEq} @{keyEq}
+              targetState = True
+            targetWellFormed = preservationTheoremProof nameEq keyEq
+              (ORemove actor) replayedState targetState ORemoveTag
+              (replayedWellFormed beforeEndpoint) targetRaw
+            0 targetChecked : checkedApplyAction @{nameEq} @{keyEq}
+              (ORemove actor) replayedState = Just (ORemoveTag, targetState)
+            targetChecked = rewrite targetRaw in
+              rewrite targetWellFormed in Refl
+            empty : CoeffectContext key value
+            empty = emptyContext {key = key} {value = value}
+            0 setRelated : EffectStateRelated keyEq
+              (setEffectTable @{nameEq} actor empty
+                (projectEffectState @{nameEq} sourceState))
+              (setEffectTable @{nameEq} actor empty
+                (projectEffectState @{nameEq} replayedState))
+            setRelated = setRelatedEffectTables nameEq keyEq actor empty empty
+              Refl (replayedEffects beforeEndpoint)
+            0 sourceFrame : EffectStateRelated keyEq
+              (setEffectTable @{nameEq} actor empty
+                (projectEffectState @{nameEq} sourceState))
+              (projectEffectState @{nameEq} sourceAfter)
+            sourceFrame = removeEffectFrameRelated nameEq keyEq actor sourceState
+              sourceAfter sourceChecked
+            0 targetFrame : EffectStateRelated keyEq
+              (setEffectTable @{nameEq} actor empty
+                (projectEffectState @{nameEq} replayedState))
+              (projectEffectState @{nameEq} targetState)
+            targetFrame = removeEffectFrameRelated nameEq keyEq actor
+              replayedState targetState targetChecked
+            0 nextEffects : EffectStateRelated keyEq
+              (projectEffectState @{nameEq} sourceAfter)
+              (projectEffectState @{nameEq} targetState)
+            nextEffects = effectStateRelatedTransitive
+              (effectStateRelatedSymmetric sourceFrame)
+              (effectStateRelatedTransitive setRelated targetFrame)
+            0 nextControlsConcrete : ControlEquivalent name key world error
+              value nameEq
+              (MkSystemState sourceWorld
+                (deleteBinding @{nameEq} actor sourceRegistry)) targetState
+            nextControlsConcrete = pointwiseControlAfterDelete nameEq actor
+              sourceWorld replayedWorld sourceRegistry replayedRegistry
+              (replayedControls beforeEndpoint)
+            0 nextControls : ControlEquivalent name key world error value nameEq
+              sourceAfter targetState
+            nextControls = replace
+              {p = \observed => ControlEquivalent name key world error value
+                nameEq observed targetState}
+              sourceAfterShape nextControlsConcrete
+            sourceStep : Transition sourceState sourceAfter
+            sourceStep = Fired nameEq keyEq (ORemove actor) ORemoveTag
+              sourceChecked
+            replayedStep : Transition replayedState targetState
+            replayedStep = Fired nameEq keyEq (ORemove actor) ORemoveTag
+              targetChecked
+            0 mapPreserved : (state : EffectState name key value world) ->
+              partialEffectMap sourceStep state =
+                partialEffectMap replayedStep state
+            mapPreserved state = Refl
+            0 notAdvance : (selected : name) -> Not
+              (the (Action name key value world error) (ORemove actor) =
+                LAdvance selected)
+            notAdvance selected Refl impossible
+            0 rar : RelationalReplayCorrespondence name key world error value
+              (MoreTransitions sourceStep NoTransitions)
+              (MoreTransitions replayedStep NoTransitions)
+            rar = singletonNonAdvanceRAR nameEq keyEq (ORemove actor)
+              ORemoveTag sourceState sourceAfter replayedState targetState
+              sourceChecked targetChecked notAdvance mapPreserved
+            0 nextEndpoint : RelationalReplayEndpoint name key world error value
+              nameEq keyEq sourceAfter targetState
+            nextEndpoint = MkRelationalReplayEndpoint nextEffects nextControls
+              targetWellFormed
+            sourceAligned : AlignedTransitions name key world error value nameEq
+              keyEq (MoreTransitions sourceStep NoTransitions)
+            sourceAligned = AlignedStep (ORemove actor) ORemoveTag sourceChecked
+              NoTransitions AlignedEnd
+        in packagePointwiseRelationalHeadReplay nameEq keyEq sourceStep
+          sourceAligned targetState (ORemove actor) ORemoveTag targetChecked Refl
+          Refl rar mapPreserved nextEndpoint
+
 0 localReplaceEntriesOtherHead :
   (nameEq : DecEq name) -> (changed, current : name) ->
   Not (changed = current) ->
