@@ -2981,6 +2981,236 @@ replayPointwiseDivertHead nameEq keyEq actor
                                       (LDivert actor) LDivertTag targetChecked Refl Refl
                                       rar mapPreserved nextEndpoint
 
+||| Complete pointwise L-Leave head. The related target keeps its native
+||| accumulator and view indices; only the mismatch comparison view is
+||| transported after the target query itself has been related.
+0 replayPointwiseLeaveHead :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {sourceBefore, sourceAfter, replayedBefore :
+    SystemState name key value world error} ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} (LLeave actor)
+    sourceBefore = Just (LLeaveTag, sourceAfter)) ->
+  registryWellFormed @{nameEq} @{keyEq} sourceBefore = True ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq sourceBefore
+    replayedBefore ->
+  PointwiseRelationalHeadReplay name key world error value nameEq keyEq
+    (Fired {before = sourceBefore} {afterState = sourceAfter}
+      nameEq keyEq (LLeave actor) LLeaveTag sourceChecked)
+    replayedBefore
+replayPointwiseLeaveHead nameEq keyEq actor
+  {sourceBefore = MkSystemState sourceWorld sourceRegistry}
+  {sourceAfter} {replayedBefore = MkSystemState replayedWorld replayedRegistry}
+  sourceChecked sourceWellFormed beforeEndpoint =
+    let sourceState : SystemState name key value world error
+        sourceState = MkSystemState sourceWorld sourceRegistry
+        replayedState : SystemState name key value world error
+        replayedState = MkSystemState replayedWorld replayedRegistry
+        0 sourceRaw : applyAction @{nameEq} @{keyEq} (LLeave actor)
+          sourceState = Just (LLeaveTag, sourceAfter)
+        sourceRaw = checkedActionProjects nameEq keyEq (LLeave actor) sourceState
+          sourceAfter LLeaveTag sourceChecked
+    in case foreignLeavePlanView nameEq keyEq actor sourceWorld sourceRegistry
+      LLeaveTag sourceAfter sourceRaw of
+      MkLocatedForeignLeavePlanView observedOwner sourceFound planView =>
+        case foreignLeaveReplayData planView of
+          MkForeignLeaveReplayData component sourceParent sourceRetired
+            sourceTable sourceAccumulator sourceView ownerShape
+            sourceMismatch observedTag observedAfter => case ownerShape of
+              Refl =>
+                case pointwiseControlLookupFound nameEq actor sourceState replayedState
+                  (replayedControls beforeEndpoint) observedOwner sourceFound of
+                  (replayedOwner ** (replayedFound, fibersRelated)) =>
+                    let 0 outerRightShape =
+                          fiberControlRelatedRightIsRight fibersRelated
+                    in case fibersRelated of
+                      FibersControlRelated sourceParent replayedParent sourceRetired
+                        replayedRetired sourceTable replayedTable
+                        (Active sourceAccumulator sourceView)
+                        replayedLifecycle parentSame retiredSame lifecycleSame =>
+                          case activeRightControls lifecycleSame of
+                            MkActiveRightControls replayedAccumulator replayedView
+                              replayedLifecycleShape accumulatorsSame viewsSame =>
+                                case replayedLifecycleShape of
+                                  Refl =>
+                                    let sourceOwner : Fiber name key value world error
+                                        sourceOwner = MkFiber component sourceParent
+                                          sourceRetired sourceTable
+                                          (Active sourceAccumulator sourceView)
+                                        replayedOwner : Fiber name key value world error
+                                        replayedOwner = MkFiber component replayedParent
+                                          replayedRetired replayedTable
+                                          (Active replayedAccumulator replayedView)
+                                        0 exactReplayedFound : lookupFiber @{nameEq}
+                                          actor replayedRegistry = Just replayedOwner
+                                        exactReplayedFound = trans replayedFound
+                                          (cong Just (sym outerRightShape))
+                                        0 targetsSame : targetFiber @{nameEq} @{keyEq}
+                                          {name = name} {key = key} {value = value}
+                                          {world = world} {error = error}
+                                          sourceOwner sourceRegistry =
+                                          targetFiber @{nameEq} @{keyEq}
+                                            {name = name} {key = key} {value = value}
+                                            {world = world} {error = error}
+                                            replayedOwner replayedRegistry
+                                        targetsSame = pointwiseConcreteTargetFiberSame
+                                          nameEq keyEq component sourceParent
+                                          replayedParent sourceRetired replayedRetired
+                                          sourceTable replayedTable
+                                          (Active sourceAccumulator sourceView)
+                                          (Active replayedAccumulator replayedView)
+                                          retiredSame sourceState replayedState
+                                          (replayedControls beforeEndpoint)
+                                          (replayedEffects beforeEndpoint)
+                                          (replayedWellFormed beforeEndpoint)
+                                        0 replayedMismatchSourceView : targetMatches
+                                          @{nameEq} (targetFiber @{nameEq} @{keyEq}
+                                            replayedOwner replayedRegistry)
+                                          sourceView = False
+                                        replayedMismatchSourceView = trans
+                                          (cong (\target => targetMatches @{nameEq}
+                                            target sourceView) (sym targetsSame))
+                                          sourceMismatch
+                                        0 replayedMismatch : targetMatches @{nameEq}
+                                          (targetFiber @{nameEq} @{keyEq}
+                                            replayedOwner replayedRegistry)
+                                          replayedView = False
+                                        replayedMismatch = trans
+                                          (sym (cong (targetMatches @{nameEq}
+                                            (targetFiber @{nameEq} @{keyEq}
+                                              replayedOwner replayedRegistry))
+                                            viewsSame)) replayedMismatchSourceView
+                                        sourceNext : Fiber name key value world error
+                                        sourceNext = MkFiber component sourceParent
+                                          sourceRetired sourceTable
+                                          (Unloading sourceAccumulator sourceView
+                                            Nothing)
+                                        replayedNext : Fiber name key value world error
+                                        replayedNext = MkFiber component replayedParent
+                                          replayedRetired replayedTable
+                                          (Unloading replayedAccumulator replayedView
+                                            Nothing)
+                                        0 nextLifecycleRelated :
+                                          LifecycleControlRelated
+                                            (Unloading sourceAccumulator sourceView
+                                              Nothing)
+                                            (Unloading replayedAccumulator replayedView
+                                              Nothing)
+                                        nextLifecycleRelated =
+                                          leaveLifecycleControlRelated lifecycleSame
+                                        0 nextOwnerRelated : FiberControlRelated
+                                          sourceNext replayedNext
+                                        nextOwnerRelated = FibersControlRelated
+                                          sourceParent replayedParent sourceRetired
+                                          replayedRetired sourceTable replayedTable
+                                          (Unloading sourceAccumulator sourceView
+                                            Nothing)
+                                          (Unloading replayedAccumulator replayedView
+                                            Nothing)
+                                          parentSame retiredSame nextLifecycleRelated
+                                        targetState : SystemState name key value world
+                                          error
+                                        targetState = MkSystemState replayedWorld
+                                          (replaceBinding @{nameEq} actor replayedNext
+                                            replayedRegistry)
+                                        0 targetRaw : applyAction @{nameEq} @{keyEq}
+                                          (LLeave actor) replayedState =
+                                          Just (LLeaveTag, targetState)
+                                        targetRaw = rewrite exactReplayedFound in
+                                          rewrite replayedMismatch in Refl
+                                        0 targetWellFormed : registryWellFormed
+                                          @{nameEq} @{keyEq} targetState = True
+                                        targetWellFormed = preservationTheoremProof
+                                          nameEq keyEq (LLeave actor) replayedState
+                                          targetState LLeaveTag
+                                          (replayedWellFormed beforeEndpoint) targetRaw
+                                        0 targetChecked : checkedApplyAction @{nameEq}
+                                          @{keyEq} (LLeave actor) replayedState =
+                                          Just (LLeaveTag, targetState)
+                                        targetChecked = rewrite targetRaw in
+                                          rewrite targetWellFormed in Refl
+                                        0 sourceFrame : EffectStateRelated keyEq
+                                          (projectEffectState @{nameEq} sourceState)
+                                          (projectEffectState @{nameEq} sourceAfter)
+                                        sourceFrame = leaveEffectFrameRelated nameEq
+                                          keyEq actor sourceState sourceAfter
+                                          sourceChecked
+                                        0 targetFrame : EffectStateRelated keyEq
+                                          (projectEffectState @{nameEq} replayedState)
+                                          (projectEffectState @{nameEq} targetState)
+                                        targetFrame = leaveEffectFrameRelated nameEq
+                                          keyEq actor replayedState targetState
+                                          targetChecked
+                                        0 nextEffects : EffectStateRelated keyEq
+                                          (projectEffectState @{nameEq} sourceAfter)
+                                          (projectEffectState @{nameEq} targetState)
+                                        nextEffects = effectStateRelatedTransitive
+                                          (effectStateRelatedSymmetric sourceFrame)
+                                          (effectStateRelatedTransitive
+                                            (replayedEffects beforeEndpoint) targetFrame)
+                                        0 sourceAfterShape : MkSystemState sourceWorld
+                                          (replaceBinding @{nameEq} actor sourceNext
+                                            sourceRegistry) = sourceAfter
+                                        sourceAfterShape = observedAfter
+                                        0 nextControlsConcrete : ControlEquivalent name
+                                          key world error value nameEq
+                                          (MkSystemState sourceWorld
+                                            (replaceBinding @{nameEq} actor sourceNext
+                                              sourceRegistry)) targetState
+                                        nextControlsConcrete =
+                                          pointwiseControlAfterReplace nameEq actor
+                                            sourceWorld replayedWorld sourceRegistry
+                                            replayedRegistry sourceOwner replayedOwner
+                                            sourceNext replayedNext sourceFound
+                                            exactReplayedFound nextOwnerRelated
+                                            (replayedControls beforeEndpoint)
+                                        0 nextControls : ControlEquivalent name key
+                                          world error value nameEq sourceAfter
+                                          targetState
+                                        nextControls = replace
+                                          {p = \observed => ControlEquivalent name key
+                                            world error value nameEq observed targetState}
+                                          sourceAfterShape nextControlsConcrete
+                                        sourceStep : Transition sourceState sourceAfter
+                                        sourceStep = Fired nameEq keyEq (LLeave actor)
+                                          LLeaveTag sourceChecked
+                                        replayedStep : Transition replayedState
+                                          targetState
+                                        replayedStep = Fired nameEq keyEq (LLeave actor)
+                                          LLeaveTag targetChecked
+                                        0 mapPreserved :
+                                          (state : EffectState name key value world) ->
+                                          partialEffectMap sourceStep state =
+                                            partialEffectMap replayedStep state
+                                        mapPreserved state = Refl
+                                        0 notAdvance : (selected : name) -> Not
+                                          (the (Action name key value world error)
+                                            (LLeave actor) = LAdvance selected)
+                                        notAdvance selected Refl impossible
+                                        0 rar : RelationalReplayCorrespondence name key
+                                          world error value
+                                          (MoreTransitions sourceStep NoTransitions)
+                                          (MoreTransitions replayedStep NoTransitions)
+                                        rar = singletonNonAdvanceRAR nameEq keyEq
+                                          (LLeave actor) LLeaveTag sourceState
+                                          sourceAfter replayedState targetState
+                                          sourceChecked targetChecked notAdvance
+                                          mapPreserved
+                                        0 nextEndpoint : RelationalReplayEndpoint name
+                                          key world error value nameEq keyEq sourceAfter
+                                          targetState
+                                        nextEndpoint = MkRelationalReplayEndpoint
+                                          nextEffects nextControls targetWellFormed
+                                        sourceAligned : AlignedTransitions name key
+                                          world error value nameEq keyEq
+                                          (MoreTransitions sourceStep NoTransitions)
+                                        sourceAligned = AlignedStep (LLeave actor)
+                                          LLeaveTag sourceChecked NoTransitions
+                                          AlignedEnd
+                                    in packagePointwiseRelationalHeadReplay nameEq keyEq
+                                      sourceStep sourceAligned targetState
+                                      (LLeave actor) LLeaveTag targetChecked Refl Refl
+                                      rar mapPreserved nextEndpoint
+
 ||| Complete pointwise O-Insert head. Applicability, checked target, endpoint,
 ||| map, RAR, occurrence, and ordinal evidence are all constructed together.
 0 replayPointwiseInsertHead :
