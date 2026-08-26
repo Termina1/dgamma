@@ -104,7 +104,9 @@ Review trail:
   and
 - revision 37 closes direct-entry pointwise delete controls, projection-based
   O-Remove guard transport, and the full L-Divert/L-Leave heads, then bounds the
-  full O-Remove producer at one erased Boolean proof annotation.
+  full O-Remove producer at one erased Boolean proof annotation; and
+- revision 38 closes the full O-Remove head, then pins L-Unload's inability to
+  derive frozen exact map equality from runtime-related accumulator outputs.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -649,6 +651,34 @@ negative is not triggered. L-Unload/L-Advance are not opened.
 Three semantic heads remain: O-Remove, L-Unload, and L-Advance. The required O6
 band stays **18–34 shifts** and holes remain **20**, split **6/4/8/1/1**.
 
+### Revision 38: O-Remove closure and L-Unload exact-map stop
+
+`research-tests/O6-R38-REMOVE-CLOSED-UNLOAD-EXACT-MAP-STOP-AUDIT.md` records the
+checkpoint. The documented parenthesized erased childlessness annotations let
+`replayPointwiseRemoveHead` elaborate without a new semantic wall. O-Remove now
+owns its checked delete, effect/control endpoint, exact identity map, singleton
+RAR, occurrence, ordinal, and alignment capital. Six of eight generic action
+families are closed.
+
+L-Unload then reaches a new frozen-capital obstruction before its semantic head
+can open. `AccumulatorRelated` intentionally equates runtime ambient values and
+ordered output bindings, not proof-bearing `CoeffectContext` values. Both the
+RAR and sealed head require exact equality of `partialEffectMap` outputs. The
+concrete `R38UnloadExactMapFromRuntimeAccumulatorNegative` supplies two
+runtime-related accumulators whose exact maps would force
+`probeFreshRight = probeFreshLeft`. The runner now tracks **43** exact negatives
+and **88** Idris test modules.
+
+No output-shaped premise, proof irrelevance, stronger accumulator relation, or
+production semantic canonicalization is admitted. A repair requires separate
+frozen-interface scoping across `RelationalReplayCorrespondence`, singleton RAR,
+sealed heads, and independence consumers. L-Advance and suffix composition are
+not opened.
+
+Two semantic heads remain, but the new map-capital decision blocks both likely
+heavy families. The required O6 band is therefore held at **18–34 shifts** rather
+than narrowed; holes remain **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -960,7 +990,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; generic spine plus O-Retire/O-Insert/L-Begin/L-Divert/L-Leave are closed. O-Remove source observation, guard transport, and direct-entry delete controls are proved; its full head stops at one erased Boolean annotation. L-Unload, L-Advance, and whole-result assembly remain.** | **XL, 18–34 remaining shifts after revision-37 lifecycle-head checkpoint.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; generic spine plus O-Retire/O-Insert/O-Remove/L-Begin/L-Divert/L-Leave are closed. L-Unload is STOP-AUDIT pinned: runtime-related accumulator outputs do not supply the frozen exact map equality required by both RAR and sealed heads. L-Advance and whole-result assembly remain unopened behind that decision.** | **XL, 18–34 remaining shifts held after revision-38 exact-map obstruction.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
