@@ -48,6 +48,7 @@ r39RuntimeYieldedProjection (Just (IteratorRaised failure)) = \state => Nothing
 r39RuntimeYieldedProjection
   (Just (IteratorYielded after undo continuation)) = undo
 
+public export
 0 r39RuntimeForwardAgreementProjection :
   RuntimeIteratorOutcomeAgreement name key value world error keyEq
     targetOutcome sourceOutcome ->
