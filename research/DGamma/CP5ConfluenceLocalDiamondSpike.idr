@@ -15,6 +15,7 @@ import DGamma.CP4DeletionChildlessInvariant
 import DGamma.CP4DeletionPlanSuccess
 import DGamma.CP4DeletionBoundaryDeleted
 import DGamma.CP4DeletionBoundaryRetained
+import DGamma.CP4DeletionBoundaryLifecycleCore
 import DGamma.CP4DeletionSelectedForeignOrchestration
 import DGamma.CP4DeletionFrames
 import DGamma.CP4DeletionFrameRetire
@@ -2000,6 +2001,25 @@ removeEffectFrameRelated nameEq keyEq actor before afterState checked =
   case actualTransitionEffectFrame nameEq keyEq (ORemove actor) ORemoveTag
     before afterState checked of
       MkActualEffectFrame (PartialDefined related) => related
+
+||| Source-owned L-Begin decomposition.  Owner lookup is obtained before the
+||| public plan view, so no local `with` refines the caller's raw endpoint.
+0 beginSourceIngredientsPointwise :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) ->
+  applyAction @{nameEq} @{keyEq} (LBegin actor)
+    (MkSystemState ambient source) = Just (LBeginTag, afterState) ->
+  (oldFiber : Fiber name key value world error **
+    (lookupFiber @{nameEq} actor source = Just oldFiber,
+     ForeignBeginPlanView name key world error value nameEq keyEq actor ambient
+       source oldFiber LBeginTag afterState))
+beginSourceIngredientsPointwise nameEq keyEq actor ambient source afterState raw =
+  case lifecycleOwnerPresent nameEq keyEq (LBegin actor) Refl
+    (MkSystemState ambient source) afterState LBeginTag raw of
+    (oldFiber ** found) => (oldFiber ** (found,
+      foreignBeginPlanView nameEq keyEq actor ambient source oldFiber found
+        LBeginTag afterState raw))
 
 ||| L-Begin, L-Divert, and L-Leave are control-only replacements. Their checked
 ||| actual frames therefore relate the pre-state effect projection directly to
