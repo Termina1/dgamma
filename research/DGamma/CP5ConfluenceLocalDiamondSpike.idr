@@ -1960,6 +1960,80 @@ singletonAdvanceStageOrigin nameEq keyEq actor tag sourceBefore sourceAfter
                 (Reloading remaining sourceAccumulator view)) sourceFound
               remaining sourceAccumulator view Refl step rest suffix
 
+||| Stage origin and its exact same-input runtime equation are constructed in
+||| one dependent package, avoiding any attempt to identify the two stored
+||| accumulators or decision dictionaries.
+record LocatedSingletonAdvanceStageReplay
+  (name, key, world, error : Type) (value : key -> Type)
+  {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
+    SystemState name key value world error}
+  (source : Transitions sourceFirst sourceFinal)
+  (replayed : Transitions replayedFirst replayedFinal)
+  (selected : name)
+  (targetStage : IteratorStage name key world error value selected replayed) where
+  constructor MkLocatedSingletonAdvanceStageReplay
+  locatedSourceAdvanceStage : IteratorStage name key world error value selected
+    source
+  0 locatedAdvanceOutcomeSame : (state : EffectState name key value world) ->
+    iteratorStageOutcome targetStage state =
+      iteratorStageOutcome locatedSourceAdvanceStage state
+
+0 locateSingletonAdvanceStageReplay :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, replayedBefore, replayedAfter :
+    SystemState name key value world error) ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    sourceBefore = Just (tag, sourceAfter)) ->
+  (replayedChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    replayedBefore = Just (tag, replayedAfter)) ->
+  (component : Component key value world error) ->
+  (sourceParent, replayedParent : Parent name) -> (retiredFlag : Bool) ->
+  (sourceTable, replayedTable : OwnedTable key value
+    (componentProvisions component)) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (sourceAccumulator, replayedAccumulator : LocalState key value world
+    (componentProvisions component) -> LocalState key value world
+    (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (sourceFound : lookupFiber @{nameEq} actor (registry sourceBefore) = Just
+    (MkFiber component sourceParent retiredFlag sourceTable
+      (Reloading remaining sourceAccumulator view))) ->
+  (replayedFound : lookupFiber @{nameEq} actor (registry replayedBefore) = Just
+    (MkFiber component replayedParent retiredFlag replayedTable
+      (Reloading remaining replayedAccumulator view))) ->
+  (selected : name) ->
+  (targetStage : IteratorStage name key world error value selected
+    (MoreTransitions
+      (Fired {before = replayedBefore} {afterState = replayedAfter}
+        nameEq keyEq (LAdvance actor) tag replayedChecked) NoTransitions)) ->
+  LocatedSingletonAdvanceStageReplay name key world error value
+    (MoreTransitions
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+    (MoreTransitions
+      (Fired {before = replayedBefore} {afterState = replayedAfter}
+        nameEq keyEq (LAdvance actor) tag replayedChecked) NoTransitions)
+    selected targetStage
+locateSingletonAdvanceStageReplay nameEq keyEq actor tag sourceBefore sourceAfter
+  replayedBefore replayedAfter sourceChecked replayedChecked component
+  sourceParent replayedParent retiredFlag sourceTable replayedTable remaining
+  sourceAccumulator replayedAccumulator view sourceFound replayedFound selected
+  (StageFromAdvance stageNameEq stageKeyEq selected stageTag stageChecked occurs
+    stageFiber stageFound stageRemaining stageAccumulator stageView stageLifecycle
+    step rest suffix) =
+      case singletonOccursSelected occurs of
+        Refl => case justInjective (trans (sym replayedFound) stageFound) of
+          Refl => case stageLifecycle of
+            Refl => MkLocatedSingletonAdvanceStageReplay
+              (StageFromAdvance nameEq keyEq actor tag sourceChecked OccursHere
+                (MkFiber component sourceParent retiredFlag sourceTable
+                  (Reloading remaining sourceAccumulator view)) sourceFound
+                remaining sourceAccumulator view Refl step rest suffix)
+              (\state => Refl)
+
 0 pointwiseSomeNoControlImpossible :
   FiberControlMaybeRelated (Just fiber) Nothing -> Void
 pointwiseSomeNoControlImpossible relation impossible
