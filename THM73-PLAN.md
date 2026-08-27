@@ -119,7 +119,10 @@ Review trail:
 - revision 42 closes order-independent reliance transport, retains the indexed
   unload source observation and generic relational-map producer, then triggers
   the mandated STOP when table indices reappear while consuming that computed
-  observation.
+  observation; and
+- revision 43 closes L-Unload through the ratified generic-owner sealed
+  eliminator, then opens L-Advance with sealed source and common operational
+  endpoint capital.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -794,6 +797,33 @@ and **96 Idris test modules**. Six of eight families remain closed; L-Advance
 and whole-suffix composition remain unopened. The O6 estimate adjusts from
 **15–28** to **16–30 shifts**; holes remain **20**, split **6/4/8/1/1**.
 
+### Revision 43: L-Unload closed; L-Advance foundations
+
+`research-tests/O6-R43-LUNLOAD-CLOSED-ADVANCE-FOUNDATIONS-AUDIT.md` records the
+successful ratified redesign. `SealedPointwiseUnloadEvaluator` makes the exact
+source owner a constructor result and retains exact source lookup and endpoint
+evidence internally. `LocatedSealedPointwiseUnloadSource` exposes only the
+generic owner. The sole `eliminateSealedPointwiseUnloadHead` opens the GADT
+where its indices are already shared with `FiberControlRelated`; the table term
+does not recur. `replayPointwiseUnloadHead` now owns target applicability,
+checked transition, related actual maps, effect/control endpoint, singleton RAR,
+occurrence, ordinal, and alignment capital. L-Unload is closed without
+triggering the escalation boundary.
+
+L-Advance is opened with `SealedPointwiseAdvanceEvaluator`, its generic located
+source, and an exhaustive successful-source sealer. The common
+`PointwiseAdvanceOperationalReplay` and
+`packagePointwiseAdvanceOperationalReplay` uniformly package checked target,
+relational map, and endpoint capital after each runtime branch. Empty,
+failure, yielded-finish, yielded-iter, and landing-divert branch elimination,
+followed by iterator-stage/generator RAR assembly, remain open. No incomplete
+branch is retained.
+
+The suite inventory remains **52 positives**, **44 exact negatives**, and **96
+Idris test modules**. Seven of eight families are now closed. Whole-suffix
+composition remains gated. The O6 estimate narrows from **16–30** to **12–24
+shifts**; holes remain **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1105,7 +1135,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; six heads are closed. L-Unload now has proved order-independent reliance transport, an indexed source observation, and relational map capital, but is stopped at consuming that computed dependent observation; L-Advance and whole-result assembly remain open.** | **XL, 16–30 remaining shifts after revision-42 observation-consumer STOP-AUDIT.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; seven heads are closed, including L-Unload through its generic-owner sealed eliminator. L-Advance has sealed source and common operational endpoint packaging; its runtime branches, RAR, and whole-result assembly remain open.** | **XL, 12–24 remaining shifts after revision-43 L-Unload closure.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1239,8 +1269,8 @@ revision-18 external-order work are ratified; O5 remains only locally closed.
 Revisions 27–29 retain target-map identity at the finish producer, close
 independence, and assemble the complete target `ReplayInvariantBundle` through
 support/active matching. The atomic A/B/C/D/E boundary and revision-20 relational-map repair are landed.
-Six of eight semantic action families are closed. L-Unload's map boundary,
-order-independent reliance transport, and source observation are proved, but
-both direct and projection-only observation consumers are retired by R42.
-L-Advance remains unopened before whole-suffix and final adjacent-result
-assembly.
+Seven of eight semantic action families are closed. L-Unload is complete
+through the revision-43 sealed eliminator; its older direct and projection-only
+consumers remain retired. L-Advance has sealed source and common operational
+endpoint capital but still needs its runtime branches and singleton RAR before
+whole-suffix and final adjacent-result assembly.
