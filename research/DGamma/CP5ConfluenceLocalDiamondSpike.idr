@@ -4013,6 +4013,91 @@ replayPointwiseLeaveHead nameEq keyEq actor
                                       (LLeave actor) LLeaveTag targetChecked Refl Refl
                                       rar mapsRelated nextEndpoint
 
+||| Indexed source capital for the pointwise L-Unload producer. The owner,
+||| reliance guard, tag, and exact runtime endpoint all originate in the same
+||| successful operational observation; callers cannot supply any target-shaped
+||| guard or proof-bearing accumulator equality.
+record PointwiseUnloadSourceObservation
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (actor : name) (ambient : world)
+  (source : Registry name key value world error)
+  (tag : RuleTag) (afterState : SystemState name key value world error) where
+  constructor MkPointwiseUnloadSourceObservation
+  unloadObservedComponent : Component key value world error
+  unloadObservedParent : Parent name
+  unloadObservedRetired : Bool
+  unloadObservedTable : OwnedTable key value
+    (componentProvisions unloadObservedComponent)
+  unloadObservedAccumulator : LocalState key value world
+    (componentProvisions unloadObservedComponent) ->
+    LocalState key value world (componentProvisions unloadObservedComponent)
+  unloadObservedView : View name
+    (dependencies (componentDependencies unloadObservedComponent))
+  unloadObservedOutcome : Maybe error
+  0 unloadObservedFound : lookupFiber @{nameEq} actor source = Just
+    (MkFiber unloadObservedComponent unloadObservedParent unloadObservedRetired
+      unloadObservedTable (Unloading unloadObservedAccumulator
+        unloadObservedView unloadObservedOutcome))
+  0 unloadObservedUnrelied : relied @{nameEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} actor source = False
+  0 unloadObservedTag : tag = LUnloadTag
+  0 unloadObservedAfter :
+    let restored = unloadObservedAccumulator
+          (MkLocalState ambient
+            (restrictOwnedPreservingOrder @{keyEq}
+              (componentProvisions unloadObservedComponent)
+              (ownedValues unloadObservedTable)))
+        next = MkFiber unloadObservedComponent unloadObservedParent
+          unloadObservedRetired (localTable restored)
+          (Inactive unloadObservedOutcome)
+    in MkSystemState (localWorld restored)
+      (replaceBinding @{nameEq} actor next source) = afterState
+
+0 pointwiseUnloadSourceObservation :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  applyAction @{nameEq} @{keyEq} (LUnload actor)
+    (MkSystemState ambient source) = Just (tag, afterState) ->
+  PointwiseUnloadSourceObservation name key world error value nameEq keyEq actor
+    ambient source tag afterState
+pointwiseUnloadSourceObservation nameEq keyEq actor ambient source tag afterState
+  raw = case foreignUnloadPlanView nameEq keyEq actor ambient source tag
+    afterState raw of
+      MkLocatedForeignUnloadPlanView owner found
+        (MkForeignUnloadPlanView component parent retiredFlag table accumulator
+          view outcome ownerShape sourceUnrelied) =>
+            let 0 exactFound : (lookupFiber @{nameEq} actor source = Just
+                  (MkFiber component parent retiredFlag table
+                    (Unloading accumulator view outcome)))
+                exactFound = trans found (cong Just ownerShape)
+                restored : LocalState key value world
+                  (componentProvisions component)
+                restored = accumulator
+                  (MkLocalState ambient
+                    (restrictOwnedPreservingOrder
+                      (componentProvisions component) (ownedValues table)))
+                next : Fiber name key value world error
+                next = MkFiber component parent retiredFlag (localTable restored)
+                  (Inactive outcome)
+                concreteAfter : SystemState name key value world error
+                concreteAfter = MkSystemState (localWorld restored)
+                  (replaceBinding @{nameEq} actor next source)
+                0 concreteRaw : applyAction @{nameEq} @{keyEq} (LUnload actor)
+                  (MkSystemState ambient source) =
+                  Just (LUnloadTag, concreteAfter)
+                concreteRaw = rewrite exactFound in
+                  rewrite sourceUnrelied in Refl
+                0 resultSame : (LUnloadTag, concreteAfter) = (tag, afterState)
+                resultSame = justInjective (trans (sym concreteRaw) raw)
+                0 tagSame : tag = LUnloadTag
+                tagSame = sym (cong fst resultSame)
+                0 afterSame : concreteAfter = afterState
+                afterSame = cong snd resultSame
+            in MkPointwiseUnloadSourceObservation component parent retiredFlag
+              table accumulator view outcome exactFound sourceUnrelied tagSame
+              afterSame
+
 ||| Complete pointwise O-Insert head. Applicability, checked target, endpoint,
 ||| map, RAR, occurrence, and ordinal evidence are all constructed together.
 0 replayPointwiseInsertHead :
