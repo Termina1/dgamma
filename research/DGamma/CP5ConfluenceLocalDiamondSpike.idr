@@ -513,6 +513,36 @@ replayIteratorForwardProjectionExact
         remaining accumulator view lifecycle step rest suffix) state |
         Just capability | Right (after, undo) = Refl
 
+0 replayIteratorYieldedProjectionExact :
+  (stage : IteratorStage name key world error value actor trace) ->
+  (origin, state : EffectState name key value world) ->
+  replayRuntimeYieldedProjection (iteratorStageOutcome stage origin) state =
+    traceGeneratorMap (IteratorYieldedGenerator stage origin) state
+replayIteratorYieldedProjectionExact
+  (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+    accumulator view lifecycle step rest suffix) origin state
+  with (resolveEffectValues @{keyEq}
+    (dependencies (componentDependencies (fiberComponent fiber))) view origin)
+  replayIteratorYieldedProjectionExact
+    (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+      accumulator view lifecycle step rest suffix) origin state | Nothing = Refl
+  replayIteratorYieldedProjectionExact
+    (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+      accumulator view lifecycle step rest suffix) origin state | Just capability
+    with (runStepEffect step capability
+      (MkLocalState (effectAmbient origin)
+        (restrictOwnedPreservingOrder @{keyEq}
+          (componentProvisions (fiberComponent fiber))
+          (effectTables origin actor))))
+    replayIteratorYieldedProjectionExact
+      (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found
+        remaining accumulator view lifecycle step rest suffix) origin state |
+        Just capability | Left failure = Refl
+    replayIteratorYieldedProjectionExact
+      (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found
+        remaining accumulator view lifecycle step rest suffix) origin state |
+        Just capability | Right (after, undo) = Refl
+
 ||| The forward generator is exactly the successful-forward projection of the
 ||| strengthened runtime outcome relation.
 0 replayIteratorForwardGeneratorMapRespects :
