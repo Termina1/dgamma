@@ -22,6 +22,7 @@ import DGamma.CP4DeletionFrameRetire
 import DGamma.CP4DeletionRelationalBoundary
 import DGamma.CP4DeletionRelationalActionCore
 import DGamma.CP4DeletionRelationalLifecycleCore
+import DGamma.CP4DeletionRelatedLifecycleEffectMap
 import DGamma.CP4DeletionSelectedForeignLifecycleCore
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorOpen
 import DGamma.CP4DeletionSelectedForeignLifecycleBegin
@@ -116,6 +117,29 @@ replayEffectPartialSymmetric (PartialDefined related) =
 replayEffectPartialTransitive PartialUndefined PartialUndefined = PartialUndefined
 replayEffectPartialTransitive (PartialDefined first) (PartialDefined second) =
   PartialDefined (replayEffectRelatedTransitive first second)
+
+||| Related lifecycle owners supply strong cross-input partial-map capital. This
+||| is the landed revision-20 bridge used by both remaining pointwise heads.
+0 pointwiseRelatedLifecycleMaps :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  isLifecycleAction action = True -> (tag : RuleTag) ->
+  (source, target : SystemState name key value world error) ->
+  (sourceOwner, targetOwner : Fiber name key value world error) ->
+  lookupFiber @{nameEq} (actionOwner action) (registry source) =
+    Just sourceOwner ->
+  lookupFiber @{nameEq} (actionOwner action) (registry target) =
+    Just targetOwner ->
+  FiberControlRelated sourceOwner targetOwner ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (partialEffectMapFor nameEq keyEq action tag source)
+    (partialEffectMapFor nameEq keyEq action tag target)
+pointwiseRelatedLifecycleMaps nameEq keyEq action lifecycle tag source target
+  sourceOwner targetOwner sourceFound targetFound ownersRelated {x} {y} inputs =
+    replayEffectPartialTransitive
+      (partialEffectMapForRespects nameEq keyEq action tag source x y inputs)
+      (relatedLifecyclePartialMapOutputsAtStates nameEq keyEq action lifecycle tag
+        source target sourceOwner targetOwner sourceFound targetFound ownersRelated y)
 
 ||| Every currently retained exact producer supplies the relational candidate
 ||| because each transition map already respects `EffectStateRelated`.
