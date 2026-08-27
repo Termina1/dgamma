@@ -4122,6 +4122,79 @@ pointwiseUnloadSourceObservation nameEq keyEq actor ambient source tag afterStat
               table accumulator view outcome exactFound sourceUnrelied tagSame
               afterSame
 
+||| Sealed evaluator capital for one successful L-Unload source. The owner and
+||| endpoint indices are constructor results, not projections of a computed
+||| dependent record. Only the producer-local eliminator below may open this
+||| package.
+data SealedPointwiseUnloadEvaluator :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (owner : Fiber name key value world error) -> (tag : RuleTag) ->
+  (afterState : SystemState name key value world error) -> Type where
+  MkSealedPointwiseUnloadEvaluator :
+    (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+    (ambient : world) -> (source : Registry name key value world error) ->
+    (component : Component key value world error) ->
+    (parent : Parent name) -> (retiredFlag : Bool) ->
+    (table : OwnedTable key value (componentProvisions component)) ->
+    (accumulator : LocalState key value world
+      (componentProvisions component) ->
+      LocalState key value world (componentProvisions component)) ->
+    (view : View name (dependencies (componentDependencies component))) ->
+    (outcome : Maybe error) ->
+    (0 unrelied : relied @{nameEq} {name = name} {key = key}
+      {value = value} {world = world} {error = error} actor source = False) ->
+    SealedPointwiseUnloadEvaluator name key world error value nameEq keyEq actor
+      ambient source
+      (MkFiber component parent retiredFlag table
+        (Unloading accumulator view outcome))
+      LUnloadTag
+      (let restored = accumulator
+             (MkLocalState ambient
+               (restrictOwnedPreservingOrder @{keyEq}
+                 (componentProvisions component) (ownedValues table)))
+           next = MkFiber component parent retiredFlag (localTable restored)
+             (Inactive outcome)
+       in MkSystemState (localWorld restored)
+         (replaceBinding @{nameEq} actor next source))
+
+||| Existentially located sealed source. The outer replayer consumes only this
+||| generic owner and lookup before passing the sealed evaluator to its unique
+||| eliminator.
+record LocatedSealedPointwiseUnloadSource
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (actor : name) (ambient : world)
+  (source : Registry name key value world error) (tag : RuleTag)
+  (afterState : SystemState name key value world error) where
+  constructor MkLocatedSealedPointwiseUnloadSource
+  sealedUnloadOwner : Fiber name key value world error
+  0 sealedUnloadFound : lookupFiber @{nameEq} actor source =
+    Just sealedUnloadOwner
+  0 sealedUnloadEvaluator : SealedPointwiseUnloadEvaluator name key world error
+    value nameEq keyEq actor ambient source sealedUnloadOwner tag afterState
+
+||| Convert the already authenticated indexed source observation into the
+||| generic-owner sealed form. This is the only place the old record is opened;
+||| no control relation is in scope here.
+0 sealPointwiseUnloadSource :
+  PointwiseUnloadSourceObservation name key world error value nameEq keyEq actor
+    ambient source tag afterState ->
+  LocatedSealedPointwiseUnloadSource name key world error value nameEq keyEq
+    actor ambient source tag afterState
+sealPointwiseUnloadSource
+  (MkPointwiseUnloadSourceObservation component parent retiredFlag table
+    accumulator view outcome found unrelied tagSame afterSame) =
+      case tagSame of
+        Refl => case afterSame of
+          Refl => MkLocatedSealedPointwiseUnloadSource
+            (MkFiber component parent retiredFlag table
+              (Unloading accumulator view outcome))
+            found
+            (MkSealedPointwiseUnloadEvaluator nameEq keyEq actor ambient source
+              component parent retiredFlag table accumulator view outcome
+              unrelied)
+
 ||| Complete pointwise O-Insert head. Applicability, checked target, endpoint,
 ||| map, RAR, occurrence, and ordinal evidence are all constructed together.
 0 replayPointwiseInsertHead :
