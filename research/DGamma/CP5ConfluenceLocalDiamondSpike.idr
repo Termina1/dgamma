@@ -4792,6 +4792,130 @@ replayPointwiseAdvanceEmptyOperational nameEq keyEq actor sourceWorld
             LDivertTag sourceChecked (replayedWellFormed beforeEndpoint)
             targetRaw nextControls mapsRelated (replayedEffects beforeEndpoint)
 
+||| Defined failure L-Advance branch. Exact observable failure equality is the
+||| only branch-specific outcome capital; all registry framing stays pointwise.
+0 replayPointwiseAdvanceRaisedOperational :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (sourceWorld, replayedWorld : world) ->
+  (sourceRegistry, replayedRegistry : Registry name key value world error) ->
+  (component : Component key value world error) ->
+  (sourceParent, replayedParent : Parent name) -> (retiredFlag : Bool) ->
+  (sourceTable, replayedTable : OwnedTable key value
+    (componentProvisions component)) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (sourceAccumulator, replayedAccumulator : LocalState key value world
+    (componentProvisions component) -> LocalState key value world
+    (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  sourceParent = replayedParent ->
+  AccumulatorRelated sourceAccumulator replayedAccumulator ->
+  (sourceFound : lookupFiber @{nameEq} actor sourceRegistry = Just
+    (MkFiber component sourceParent retiredFlag sourceTable
+      (Reloading (step :: rest) sourceAccumulator view))) ->
+  (replayedFound : lookupFiber @{nameEq} actor replayedRegistry = Just
+    (MkFiber component replayedParent retiredFlag replayedTable
+      (Reloading (step :: rest) replayedAccumulator view))) ->
+  (sourceCapability, replayedCapability : DepValues key value
+    (dependencies (componentDependencies component))) ->
+  resolveCommittedValues @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error}
+    (dependencies (componentDependencies component)) view sourceRegistry =
+    Just sourceCapability ->
+  resolveCommittedValues @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error}
+    (dependencies (componentDependencies component)) view replayedRegistry =
+    Just replayedCapability ->
+  (sourceError, replayedError : error) -> sourceError = replayedError ->
+  runStepEffect step sourceCapability
+    (MkLocalState sourceWorld
+      (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component)
+        (ownedValues sourceTable))) = Left sourceError ->
+  runStepEffect step replayedCapability
+    (MkLocalState replayedWorld
+      (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component)
+        (ownedValues replayedTable))) = Left replayedError ->
+  (tag : RuleTag) -> (sourceAfter : SystemState name key value world error) ->
+  (sourceRaw : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState sourceWorld sourceRegistry) = Just (tag, sourceAfter)) ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState sourceWorld sourceRegistry) = Just (tag, sourceAfter)) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (partialEffectMapFor nameEq keyEq (LAdvance actor) tag
+      (the (SystemState name key value world error)
+        (MkSystemState sourceWorld sourceRegistry)))
+    (partialEffectMapFor nameEq keyEq (LAdvance actor) tag
+      (the (SystemState name key value world error)
+        (MkSystemState replayedWorld replayedRegistry))) ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq
+    (MkSystemState sourceWorld sourceRegistry)
+    (MkSystemState replayedWorld replayedRegistry) ->
+  PointwiseAdvanceOperationalReplay name key world error value nameEq keyEq actor
+    (MkSystemState sourceWorld sourceRegistry) sourceAfter tag sourceChecked
+    (MkSystemState replayedWorld replayedRegistry)
+replayPointwiseAdvanceRaisedOperational nameEq keyEq actor sourceWorld
+  replayedWorld sourceRegistry replayedRegistry component sourceParent
+  replayedParent retiredFlag sourceTable replayedTable step rest
+  sourceAccumulator replayedAccumulator view parentsSame accumulatorsSame
+  sourceFound replayedFound sourceCapability replayedCapability sourceResolved
+  replayedResolved sourceError replayedError errorsSame sourceRan replayedRan tag
+  sourceAfter sourceRaw sourceChecked mapsRelated beforeEndpoint =
+    let sourceState : SystemState name key value world error
+        sourceState = MkSystemState sourceWorld sourceRegistry
+        replayedState : SystemState name key value world error
+        replayedState = MkSystemState replayedWorld replayedRegistry
+        sourceOwner : Fiber name key value world error
+        sourceOwner = MkFiber component sourceParent retiredFlag sourceTable
+          (Reloading (step :: rest) sourceAccumulator view)
+        replayedOwner : Fiber name key value world error
+        replayedOwner = MkFiber component replayedParent retiredFlag replayedTable
+          (Reloading (step :: rest) replayedAccumulator view)
+        sourceNext : Fiber name key value world error
+        sourceNext = MkFiber component sourceParent retiredFlag sourceTable
+          (Unloading sourceAccumulator view (Just sourceError))
+        replayedNext : Fiber name key value world error
+        replayedNext = MkFiber component replayedParent retiredFlag replayedTable
+          (Unloading replayedAccumulator view (Just replayedError))
+        0 sourceConcrete : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+          sourceState = Just (LRaiseTag, MkSystemState sourceWorld
+            (replaceBinding @{nameEq} actor sourceNext sourceRegistry))
+        sourceConcrete = rewrite sourceFound in rewrite sourceResolved in
+          rewrite sourceRan in Refl
+        0 pairSame : (LRaiseTag, MkSystemState sourceWorld
+            (replaceBinding @{nameEq} actor sourceNext sourceRegistry)) =
+          (tag, sourceAfter)
+        pairSame = justInjective (trans (sym sourceConcrete) sourceRaw)
+        0 targetRaw : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+          replayedState = Just (LRaiseTag, MkSystemState replayedWorld
+            (replaceBinding @{nameEq} actor replayedNext replayedRegistry))
+        targetRaw = rewrite replayedFound in rewrite replayedResolved in
+          rewrite replayedRan in Refl
+        0 nextOwnerRelated : FiberControlRelated sourceNext replayedNext
+        nextOwnerRelated = FibersControlRelated sourceParent replayedParent
+          retiredFlag retiredFlag sourceTable replayedTable
+          (Unloading sourceAccumulator view (Just sourceError))
+          (Unloading replayedAccumulator view (Just replayedError)) parentsSame
+          Refl (UnloadingControls accumulatorsSame Refl (cong Just errorsSame))
+    in case pairSame of
+      Refl =>
+        let targetState : SystemState name key value world error
+            targetState = MkSystemState replayedWorld
+              (replaceBinding @{nameEq} actor replayedNext replayedRegistry)
+            0 nextControls : ControlEquivalent name key world error value nameEq
+              sourceAfter targetState
+            nextControls = pointwiseControlAfterReplace nameEq actor sourceWorld
+              replayedWorld sourceRegistry replayedRegistry sourceOwner
+              replayedOwner sourceNext replayedNext sourceFound replayedFound
+              nextOwnerRelated (replayedControls beforeEndpoint)
+        in packagePointwiseAdvanceOperationalReplay nameEq keyEq actor
+          sourceState sourceAfter replayedState targetState LRaiseTag sourceChecked
+          (replayedWellFormed beforeEndpoint) targetRaw nextControls mapsRelated
+          (replayedEffects beforeEndpoint)
+
 ||| Complete pointwise O-Insert head. Applicability, checked target, endpoint,
 ||| map, RAR, occurrence, and ordinal evidence are all constructed together.
 0 replayPointwiseInsertHead :
