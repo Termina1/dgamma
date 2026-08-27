@@ -4547,6 +4547,58 @@ record PointwiseAdvanceOperationalReplay
   0 advanceReplayEndpoint : RelationalReplayEndpoint name key world error value
     nameEq keyEq sourceAfter advanceReplayedAfter
 
+||| Package any checked L-Advance operational branch once its target evaluator,
+||| post-control relation, and relational actual-map capital have been produced.
+||| Actual effect frames close the post-effect endpoint uniformly for empty,
+||| failure, yielded-finish, yielded-iter, and landing-divert branches.
+0 packagePointwiseAdvanceOperationalReplay :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (sourceBefore, sourceAfter, replayedBefore, replayedAfter :
+    SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    sourceBefore = Just (tag, sourceAfter)) ->
+  registryWellFormed @{nameEq} @{keyEq} replayedBefore = True ->
+  (targetRaw : applyAction @{nameEq} @{keyEq} (LAdvance actor) replayedBefore =
+    Just (tag, replayedAfter)) ->
+  ControlEquivalent name key world error value nameEq sourceAfter replayedAfter ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (partialEffectMapFor nameEq keyEq (LAdvance actor) tag sourceBefore)
+    (partialEffectMapFor nameEq keyEq (LAdvance actor) tag replayedBefore) ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} sourceBefore)
+    (projectEffectState @{nameEq} replayedBefore) ->
+  PointwiseAdvanceOperationalReplay name key world error value nameEq keyEq actor
+    sourceBefore sourceAfter tag sourceChecked replayedBefore
+packagePointwiseAdvanceOperationalReplay nameEq keyEq actor sourceBefore
+  sourceAfter replayedBefore replayedAfter tag sourceChecked replayedWellFormed
+  targetRaw nextControls mapsRelated beforeEffects =
+    let 0 targetWellFormed : (registryWellFormed @{nameEq} @{keyEq}
+          replayedAfter = True)
+        targetWellFormed = preservationTheoremProof nameEq keyEq (LAdvance actor)
+          replayedBefore replayedAfter tag replayedWellFormed targetRaw
+        0 targetChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+          replayedBefore = Just (tag, replayedAfter)
+        targetChecked = rewrite targetRaw in rewrite targetWellFormed in Refl
+    in case actualTransitionEffectFrame nameEq keyEq (LAdvance actor) tag
+      sourceBefore sourceAfter sourceChecked of
+      MkActualEffectFrame sourceRuns =>
+        case actualTransitionEffectFrame nameEq keyEq (LAdvance actor) tag
+          replayedBefore replayedAfter targetChecked of
+          MkActualEffectFrame targetRuns =>
+            let 0 endpointsRelated : PartialRelated
+                  (EffectState name key value world) (EffectStateRelated keyEq)
+                  (Just (projectEffectState @{nameEq} sourceAfter))
+                  (Just (projectEffectState @{nameEq} replayedAfter))
+                endpointsRelated = replayEffectPartialTransitive
+                  (replayEffectPartialSymmetric sourceRuns)
+                  (replayEffectPartialTransitive (mapsRelated beforeEffects)
+                    targetRuns)
+            in case endpointsRelated of
+              PartialDefined nextEffects => MkPointwiseAdvanceOperationalReplay
+                replayedAfter targetChecked mapsRelated
+                (MkRelationalReplayEndpoint nextEffects nextControls
+                  targetWellFormed)
+
 ||| Complete pointwise O-Insert head. Applicability, checked target, endpoint,
 ||| map, RAR, occurrence, and ordinal evidence are all constructed together.
 0 replayPointwiseInsertHead :
