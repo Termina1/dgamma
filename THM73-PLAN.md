@@ -115,7 +115,11 @@ Review trail:
   and
 - revision 41 confirms the L-Unload relational map path is available, then
   STOP-AUDITs the first pointwise reliance-guard representation at its exact
-  dependent fiber-projection diagnostic.
+  dependent fiber-projection diagnostic; and
+- revision 42 closes order-independent reliance transport, retains the indexed
+  unload source observation and generic relational-map producer, then triggers
+  the mandated STOP when table indices reappear while consuming that computed
+  observation.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -756,6 +760,40 @@ modules**. Six of eight semantic families remain closed. The newly exposed
 observation bridge adjusts the O6 estimate from **14–26** to **15–28 shifts**;
 holes remain **20**, split **6/4/8/1/1**.
 
+### Revision 42: L-Unload observation-consumer STOP-AUDIT
+
+`research-tests/O6-R42-LUNLOAD-OBSERVATION-CONSUMER-STOP-AUDIT.md` records the
+accepted observation-route implementation attempt. `pointwiseReliedFalse` now
+constructively transports the global guard across independent registry orders
+by locating each consumer by name and using
+`lifecycleControlReliedHeadSame`. `PointwiseUnloadSourceObservation` retains the
+source owner decomposition, source guard, exact tag, and concrete replacement
+endpoint from one successful operational producer. The shared
+`pointwiseRelatedLifecycleMaps` supplies landed relational map capital for
+L-Unload and later L-Advance.
+
+Two complete head consumer representations were reverted. Direct destruction
+of the record, and then a projection-only variant, both fail when a separately
+indexed `FiberControlRelated` is refined against the computed observation. The
+stable boundary is the observation table projection:
+
+```text
+Pattern variable sourceTable unifies with: ... .unloadObservedTable
+```
+
+Earlier indices report the same elaborator-visible self-mismatch for
+`sourceOutcome` or `sourceRetired`. Per the revision-41 ruling, reappearance of
+the table term through the observation route forces STOP. The next design must
+retain a generic located owner plus a sealed owner-shape/evaluator package and
+open it only in one producer-local eliminator. Neither failed consumer form may
+be retried, and no ordered relation, exact table/accumulator equality, target
+guard, or output-shaped premise is permitted.
+
+The suite inventory is unchanged at **52 positives**, **44 exact negatives**,
+and **96 Idris test modules**. Six of eight families remain closed; L-Advance
+and whole-suffix composition remain unopened. The O6 estimate adjusts from
+**15–28** to **16–30 shifts**; holes remain **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1067,7 +1105,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; generic spine plus O-Retire/O-Insert/O-Remove/L-Begin/L-Divert/L-Leave are closed. The relational map obstruction is cleared; L-Unload is stopped at pointwise reliance-guard observation transport, while L-Advance and whole-result assembly remain open.** | **XL, 15–28 remaining shifts after revision-41 reliance STOP-AUDIT.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; six heads are closed. L-Unload now has proved order-independent reliance transport, an indexed source observation, and relational map capital, but is stopped at consuming that computed dependent observation; L-Advance and whole-result assembly remain open.** | **XL, 16–30 remaining shifts after revision-42 observation-consumer STOP-AUDIT.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1201,7 +1239,8 @@ revision-18 external-order work are ratified; O5 remains only locally closed.
 Revisions 27–29 retain target-map identity at the finish producer, close
 independence, and assemble the complete target `ReplayInvariantBundle` through
 support/active matching. The atomic A/B/C/D/E boundary and revision-20 relational-map repair are landed.
-Six of eight semantic action families are closed. L-Unload's map boundary is
-cleared but its first direct pointwise reliance representation is retired by
-R41; L-Advance remains unopened before whole-suffix and final adjacent-result
+Six of eight semantic action families are closed. L-Unload's map boundary,
+order-independent reliance transport, and source observation are proved, but
+both direct and projection-only observation consumers are retired by R42.
+L-Advance remains unopened before whole-suffix and final adjacent-result
 assembly.
