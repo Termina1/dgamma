@@ -4522,6 +4522,31 @@ sealPointwiseAdvanceSource nameEq keyEq actor ambient source tag afterState raw
       (Unloading accumulator view outcome)) =
         void (nothingNotJustAdvanceDispatch raw)
 
+||| Semantic portion of one pointwise L-Advance replay. RAR stage/generator
+||| provenance is deliberately kept separate until all four runtime branches
+||| produce the same checked endpoint shape.
+record PointwiseAdvanceOperationalReplay
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (actor : name)
+  (sourceBefore, sourceAfter : SystemState name key value world error)
+  (tag : RuleTag)
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    sourceBefore = Just (tag, sourceAfter))
+  (replayedBefore : SystemState name key value world error) where
+  constructor MkPointwiseAdvanceOperationalReplay
+  advanceReplayedAfter : SystemState name key value world error
+  0 advanceReplayedChecked : checkedApplyAction @{nameEq} @{keyEq}
+    (LAdvance actor) replayedBefore = Just (tag, advanceReplayedAfter)
+  0 advanceMapsRelated : PartialMapsRelated (EffectStateEquivalence keyEq)
+    (partialEffectMap
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq (LAdvance actor) tag sourceChecked))
+    (partialEffectMap
+      (Fired {before = replayedBefore} {afterState = advanceReplayedAfter}
+        nameEq keyEq (LAdvance actor) tag advanceReplayedChecked))
+  0 advanceReplayEndpoint : RelationalReplayEndpoint name key world error value
+    nameEq keyEq sourceAfter advanceReplayedAfter
+
 ||| Complete pointwise O-Insert head. Applicability, checked target, endpoint,
 ||| map, RAR, occurrence, and ordinal evidence are all constructed together.
 0 replayPointwiseInsertHead :
