@@ -81,6 +81,7 @@ NEGATIVE_SPECS=(
   "R30AdjacentSwapResultConstructorNegative|MkAdjacentSwapResult is private|forgeOpaqueAdjacentResult"
   "R34RemoveChildOrientationNegative|hasChildIn actor (source .bindings) and False|removeChildOrientationProbe"
   "R38UnloadExactMapFromRuntimeAccumulatorNegative|probeFreshRight and probeFreshLeft|unloadExactMapFromRuntimeAccumulatorNegative"
+  "R41PointwiseRelianceProjectionNegative|rightTable and leftTable|directPointwiseReliedHeadProjectionDoesNotReduce"
   "R20WholeBundleMovedAlignmentNegative|storedRightKeyEq and keyEq|localDiamondCannotSupplyMovedAlignment"
   "R21CandidateIndependentDictionaryNegative|storedRightKeyEq and keyEq|forgeCandidateFromIndependentDictionaries"
   "R21RepeatedIterProducerAlignmentNegative|storedRightKeyEq and storedLeftKeyEq|repeatedIterPremisesCannotSupplyMovedAlignment"

@@ -111,7 +111,11 @@ Review trail:
   with complete consumer, producer, identity, composition, field-9, yielded-map,
   fixture-retention, and historical-pin probes; and
 - revision 40 atomically lands that approved revision-20 interface repair,
-  re-points every producer and consumer, and preserves all exact negative pins.
+  re-points every producer and consumer, and preserves all exact negative pins;
+  and
+- revision 41 confirms the L-Unload relational map path is available, then
+  STOP-AUDITs the first pointwise reliance-guard representation at its exact
+  dependent fiber-projection diagnostic.
 
 This is still research-only interface scoping. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
@@ -725,10 +729,32 @@ obstruction is therefore cleared for both remaining semantic heads. L-Unload is
 not opened in the landing shift because gate-quality repair and validation use
 the remaining safe context budget.
 
-The suite now tracks **52 positives**, **43 exact negatives**, and **95 Idris test
-modules**, plus the five research spikes. Two semantic heads remain. With the
-interface uncertainty discharged, the O6 band narrows from **18–34** to
-**14–26 shifts**; holes remain **20**, split **6/4/8/1/1**.
+The suite at the landing gate tracks **52 positives**, **43 exact negatives**,
+and **95 Idris test modules**, plus the five research spikes. Two semantic heads
+remain. With the interface uncertainty discharged, the O6 band narrows from
+**18–34** to **14–26 shifts**; holes remain **20**, split **6/4/8/1/1**.
+
+### Revision 41: L-Unload pointwise-reliance STOP-AUDIT
+
+`research-tests/O6-R41-LUNLOAD-POINTWISE-RELIANCE-STOP-AUDIT.md` records the
+first post-landing head attempt. The R38 effect-map obstruction does not recur:
+`AccumulatorRelated` supplies the landed relational map capital. The first
+remaining guard is source `relied actor sourceRegistry = False` transported to
+an independently ordered replay registry under `ControlEquivalent`.
+
+An order-independent target reliance witness reaches the matching source
+consumer by name, but the direct Idris representation of `reliedHead` retains
+the unrelated proof-bearing `Fiber` table/accumulator witnesses through its
+dependent `fiberLifecycle` projections. All partial helpers were reverted.
+`R41PointwiseRelianceProjectionNegative` pins the rejected direct `Refl` route
+at `Mismatch between: rightTable and leftTable.` No ordered relation, exact
+fiber witness, target guard, or output-shaped premise is added.
+
+L-Advance and whole-suffix composition remain unopened after the bounded stop.
+The suite now tracks **52 positives**, **44 exact negatives**, and **96 Idris test
+modules**. Six of eight semantic families remain closed. The newly exposed
+observation bridge adjusts the O6 estimate from **14–26** to **15–28 shifts**;
+holes remain **20**, split **6/4/8/1/1**.
 
 ## Executive estimate
 
@@ -1041,7 +1067,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; generic spine plus O-Retire/O-Insert/O-Remove/L-Begin/L-Divert/L-Leave are closed. The revision-20 relational boundary clears the exact-map obstruction for L-Unload and L-Advance; both semantic heads and whole-result assembly remain open.** | **XL, 14–26 remaining shifts after the atomic relational-map landing.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; generic spine plus O-Retire/O-Insert/O-Remove/L-Begin/L-Divert/L-Leave are closed. The relational map obstruction is cleared; L-Unload is stopped at pointwise reliance-guard observation transport, while L-Advance and whole-result assembly remain open.** | **XL, 15–28 remaining shifts after revision-41 reliance STOP-AUDIT.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1175,5 +1201,7 @@ revision-18 external-order work are ratified; O5 remains only locally closed.
 Revisions 27–29 retain target-map identity at the finish producer, close
 independence, and assemble the complete target `ReplayInvariantBundle` through
 support/active matching. The atomic A/B/C/D/E boundary and revision-20 relational-map repair are landed.
-Six of eight semantic action families are closed; L-Unload and L-Advance remain
-before whole-suffix and final adjacent-result assembly.
+Six of eight semantic action families are closed. L-Unload's map boundary is
+cleared but its first direct pointwise reliance representation is retired by
+R41; L-Advance remains unopened before whole-suffix and final adjacent-result
+assembly.
