@@ -32,6 +32,8 @@ import DGamma.CP4DeletionSelectedForeignLifecycleUnload
 import DGamma.CP4DeletionSelectedForeignLifecycleFrame
 import DGamma.CP4RecoveryEffectRespect
 import DGamma.CP4DeletionSelectedForeignLifecycleAdvanceOutcome
+import DGamma.CP4DeletionSelectedForeignLifecycleAdvanceDispatchCore
+import DGamma.CP4DeletionRelationalLifecycleAdvance
 import DGamma.CP4Support
 import Data.Nat
 import Data.Maybe
@@ -4439,6 +4441,86 @@ replayPointwiseUnloadHead nameEq keyEq actor
               sourceRegistry replayedWorld replayedRegistry sourceChecked
               sourceWellFormed beforeEndpoint sourceFound evaluator replayedFound
               ownersRelated
+
+||| Sealed source owner for the final semantic family. The evaluator retains the
+||| exact reloading owner and checked source action while leaving the four
+||| runtime outcome branches to the unique L-Advance eliminator.
+data SealedPointwiseAdvanceEvaluator :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (owner : Fiber name key value world error) -> (tag : RuleTag) ->
+  (afterState : SystemState name key value world error) -> Type where
+  MkSealedPointwiseAdvanceEvaluator :
+    (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+    (ambient : world) -> (source : Registry name key value world error) ->
+    (component : Component key value world error) ->
+    (parent : Parent name) -> (retiredFlag : Bool) ->
+    (table : OwnedTable key value (componentProvisions component)) ->
+    (remaining : List (StepEffect key value world error
+      (dependencies (componentDependencies component))
+      (componentProvisions component))) ->
+    (accumulator : LocalState key value world
+      (componentProvisions component) ->
+      LocalState key value world (componentProvisions component)) ->
+    (view : View name (dependencies (componentDependencies component))) ->
+    (0 exactFound : lookupFiber @{nameEq} actor source = Just
+      (MkFiber component parent retiredFlag table
+        (Reloading remaining accumulator view))) ->
+    (tag : RuleTag) ->
+    (afterState : SystemState name key value world error) ->
+    (0 exactRaw : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+      (MkSystemState ambient source) = Just (tag, afterState)) ->
+    SealedPointwiseAdvanceEvaluator name key world error value nameEq keyEq actor
+      ambient source
+      (MkFiber component parent retiredFlag table
+        (Reloading remaining accumulator view)) tag afterState
+
+record LocatedSealedPointwiseAdvanceSource
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (actor : name) (ambient : world)
+  (source : Registry name key value world error) (tag : RuleTag)
+  (afterState : SystemState name key value world error) where
+  constructor MkLocatedSealedPointwiseAdvanceSource
+  sealedAdvanceOwner : Fiber name key value world error
+  0 sealedAdvanceFound : lookupFiber @{nameEq} actor source =
+    Just sealedAdvanceOwner
+  0 sealedAdvanceEvaluator : SealedPointwiseAdvanceEvaluator name key world
+    error value nameEq keyEq actor ambient source sealedAdvanceOwner tag
+    afterState
+
+0 sealPointwiseAdvanceSource :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState ambient source) = Just (tag, afterState) ->
+  LocatedSealedPointwiseAdvanceSource name key world error value nameEq keyEq
+    actor ambient source tag afterState
+sealPointwiseAdvanceSource nameEq keyEq actor ambient source tag afterState raw
+  with (lookupFiber @{nameEq} actor source) proof found
+  sealPointwiseAdvanceSource nameEq keyEq actor ambient source tag afterState raw |
+    Nothing = void (nothingNotJustAdvanceDispatch raw)
+  sealPointwiseAdvanceSource nameEq keyEq actor ambient source tag afterState raw |
+    Just (MkFiber component parent retiredFlag table (Inactive outcome)) =
+      void (nothingNotJustAdvanceDispatch raw)
+  sealPointwiseAdvanceSource nameEq keyEq actor ambient source tag afterState raw |
+    Just (MkFiber component parent retiredFlag table
+      (Reloading remaining accumulator view)) =
+        MkLocatedSealedPointwiseAdvanceSource
+          (MkFiber component parent retiredFlag table
+            (Reloading remaining accumulator view))
+          found
+          (MkSealedPointwiseAdvanceEvaluator nameEq keyEq actor ambient source
+            component parent retiredFlag table remaining accumulator view found
+            tag afterState (rewrite found in raw))
+  sealPointwiseAdvanceSource nameEq keyEq actor ambient source tag afterState raw |
+    Just (MkFiber component parent retiredFlag table (Active accumulator view)) =
+      void (nothingNotJustAdvanceDispatch raw)
+  sealPointwiseAdvanceSource nameEq keyEq actor ambient source tag afterState raw |
+    Just (MkFiber component parent retiredFlag table
+      (Unloading accumulator view outcome)) =
+        void (nothingNotJustAdvanceDispatch raw)
 
 ||| Complete pointwise O-Insert head. Applicability, checked target, endpoint,
 ||| map, RAR, occurrence, and ordinal evidence are all constructed together.
