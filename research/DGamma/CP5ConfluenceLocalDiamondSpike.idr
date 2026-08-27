@@ -27,6 +27,8 @@ import DGamma.CP4DeletionSelectedForeignLifecycleAnchorOpen
 import DGamma.CP4DeletionSelectedForeignLifecycleBegin
 import DGamma.CP4DeletionSelectedForeignLifecycleDivert
 import DGamma.CP4DeletionSelectedForeignLifecycleLeave
+import DGamma.CP4DeletionSelectedForeignLifecycleUnload
+import DGamma.CP4DeletionSelectedForeignLifecycleFrame
 import DGamma.CP4RecoveryEffectRespect
 import DGamma.CP4DeletionSelectedForeignLifecycleAdvanceOutcome
 import DGamma.CP4Support
@@ -2216,6 +2218,101 @@ pointwiseNoChildPreserved nameEq parent
         in case related of
           FibersControlRelated _ _ _ _ _ _ _ _ parentSame _ _ =>
             \targetSame => sourceDistinct (trans (sym parentSame) targetSame)
+
+0 boolOrFalseRightPointwise :
+  (left, right : Bool) -> left || right = False -> right = False
+boolOrFalseRightPointwise False right valid = valid
+boolOrFalseRightPointwise True right valid = case valid of Refl impossible
+
+0 reliedOnByFalseAtEntryPointwise :
+  (nameEq : DecEq name) -> (provider, self, current : name) ->
+  (fiber : Fiber name key value world error) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  Elem (Bind current fiber) entries ->
+  reliedOnBy @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} provider self entries = False ->
+  reliedHead @{nameEq} provider self (Bind current fiber) = False
+reliedOnByFalseAtEntryPointwise nameEq provider self current fiber
+  (Bind current fiber :: rest) Here allFalse with
+    (reliedHead @{nameEq} provider self (Bind current fiber))
+  reliedOnByFalseAtEntryPointwise nameEq provider self current fiber
+    (Bind current fiber :: rest) Here allFalse | False = Refl
+  reliedOnByFalseAtEntryPointwise nameEq provider self current fiber
+    (Bind current fiber :: rest) Here allFalse | True =
+      case allFalse of Refl impossible
+reliedOnByFalseAtEntryPointwise nameEq provider self current fiber
+  (other :: rest) (There later) allFalse =
+    reliedOnByFalseAtEntryPointwise nameEq provider self current fiber rest later
+      (boolOrFalseRightPointwise _ _ allFalse)
+
+0 reliedOnByFromAllHeadsFalsePointwise :
+  (nameEq : DecEq name) -> (provider, self : name) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  ((current : name) -> (fiber : Fiber name key value world error) ->
+    Elem (Bind current fiber) entries ->
+    reliedHead @{nameEq} provider self (Bind current fiber) = False) ->
+  reliedOnBy @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} provider self entries = False
+reliedOnByFromAllHeadsFalsePointwise nameEq provider self [] each = Refl
+reliedOnByFromAllHeadsFalsePointwise nameEq provider self
+  (Bind current fiber :: rest) each =
+    boolOrBothFalsePointwise _ _ (each current fiber Here)
+      (reliedOnByFromAllHeadsFalsePointwise nameEq provider self rest
+        (\later, observed, present => each later observed (There present)))
+
+||| Pointwise control equivalence transports the L-Unload reliance guard without
+||| requiring a common registry order. Each target consumer is located by name,
+||| related to the source consumer, and compared through the lifecycle
+||| observation theorem rather than direct dependent `fiberLifecycle` reduction.
+0 pointwiseReliedFalse :
+  (nameEq : DecEq name) -> (provider : name) ->
+  (left, right : SystemState name key value world error) ->
+  ControlEquivalent name key world error value nameEq left right ->
+  relied @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} provider (registry left) = False ->
+  relied @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} provider (registry right) = False
+pointwiseReliedFalse nameEq provider
+  (MkSystemState leftWorld (MkCoeffectContext leftEntries leftUnique))
+  (MkSystemState rightWorld (MkCoeffectContext rightEntries rightUnique))
+  controls sourceUnrelied =
+    reliedOnByFromAllHeadsFalsePointwise nameEq provider provider rightEntries
+      targetHead
+  where
+  0 targetHead : (current : name) ->
+    (targetFiber : Fiber name key value world error) ->
+    Elem (Bind current targetFiber) rightEntries ->
+    reliedHead @{nameEq} provider provider (Bind current targetFiber) = False
+  targetHead current targetFiber present =
+    let 0 targetFoundEntries : (lookupEntries @{nameEq} current rightEntries =
+          Just targetFiber)
+        targetFoundEntries = entryLookupFromElemPointwise nameEq rightEntries
+          rightUnique current targetFiber present
+        0 targetFound : lookupFiber @{nameEq} current
+          (MkCoeffectContext rightEntries rightUnique) = Just targetFiber
+        targetFound = targetFoundEntries
+    in case pointwiseControlLookupFound nameEq current
+      (MkSystemState rightWorld (MkCoeffectContext rightEntries rightUnique))
+      (MkSystemState leftWorld (MkCoeffectContext leftEntries leftUnique))
+      (controlEquivalentSymmetric controls) targetFiber targetFound of
+      (sourceFiber ** (sourceFound, related)) =>
+        let 0 sourceFoundEntries : (lookupEntries @{nameEq} current leftEntries =
+              Just sourceFiber)
+            sourceFoundEntries = lookupFiberEntries nameEq current sourceFiber
+              (MkCoeffectContext leftEntries leftUnique) sourceFound
+            0 sourcePresent : Elem (Bind current sourceFiber) leftEntries
+            sourcePresent = entryElemFromLookupPointwise nameEq current
+              sourceFiber leftEntries leftUnique sourceFoundEntries
+            0 sourceHead : reliedHead @{nameEq} provider provider
+              (Bind current sourceFiber) = False
+            sourceHead = reliedOnByFalseAtEntryPointwise nameEq provider provider
+              current sourceFiber leftEntries sourcePresent sourceUnrelied
+            0 headsSame : reliedHead @{nameEq} provider provider
+              (Bind current targetFiber) =
+              reliedHead @{nameEq} provider provider (Bind current sourceFiber)
+            headsSame = lifecycleControlReliedHeadSame nameEq provider provider
+              current related
+        in trans headsSame sourceHead
 
 0 pointwiseLifecycleActiveSame : LifecycleControlRelated left right ->
   isActive left = isActive right
