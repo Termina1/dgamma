@@ -4398,6 +4398,48 @@ eliminateSealedPointwiseUnloadHead nameEq keyEq actor sourceWorld sourceRegistry
                                 LUnloadTag targetChecked Refl Refl rar mapsRelated
                                 nextEndpoint
 
+||| Complete pointwise L-Unload head. The outer producer locates generic owners
+||| and delegates all shape opening to `eliminateSealedPointwiseUnloadHead`.
+0 replayPointwiseUnloadHead :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {sourceBefore, sourceAfter, replayedBefore :
+    SystemState name key value world error} ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} (LUnload actor)
+    sourceBefore = Just (LUnloadTag, sourceAfter)) ->
+  registryWellFormed @{nameEq} @{keyEq} sourceBefore = True ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq sourceBefore
+    replayedBefore ->
+  PointwiseRelationalHeadReplay name key world error value nameEq keyEq
+    (Fired {before = sourceBefore} {afterState = sourceAfter}
+      nameEq keyEq (LUnload actor) LUnloadTag sourceChecked)
+    replayedBefore
+replayPointwiseUnloadHead nameEq keyEq actor
+  {sourceBefore = MkSystemState sourceWorld sourceRegistry}
+  {sourceAfter} {replayedBefore = MkSystemState replayedWorld replayedRegistry}
+  sourceChecked sourceWellFormed beforeEndpoint =
+    let sourceState : SystemState name key value world error
+        sourceState = MkSystemState sourceWorld sourceRegistry
+        replayedState : SystemState name key value world error
+        replayedState = MkSystemState replayedWorld replayedRegistry
+        0 sourceRaw : applyAction @{nameEq} @{keyEq} (LUnload actor)
+          sourceState = Just (LUnloadTag, sourceAfter)
+        sourceRaw = checkedActionProjects nameEq keyEq (LUnload actor) sourceState
+          sourceAfter LUnloadTag sourceChecked
+        0 sourceObservation : PointwiseUnloadSourceObservation name key world
+          error value nameEq keyEq actor sourceWorld sourceRegistry LUnloadTag
+          sourceAfter
+        sourceObservation = pointwiseUnloadSourceObservation nameEq keyEq actor
+          sourceWorld sourceRegistry LUnloadTag sourceAfter sourceRaw
+    in case sealPointwiseUnloadSource sourceObservation of
+      MkLocatedSealedPointwiseUnloadSource sourceOwner sourceFound evaluator =>
+        case pointwiseControlLookupFound nameEq actor sourceState replayedState
+          (replayedControls beforeEndpoint) sourceOwner sourceFound of
+          (replayedOwner ** (replayedFound, ownersRelated)) =>
+            eliminateSealedPointwiseUnloadHead nameEq keyEq actor sourceWorld
+              sourceRegistry replayedWorld replayedRegistry sourceChecked
+              sourceWellFormed beforeEndpoint sourceFound evaluator replayedFound
+              ownersRelated
+
 ||| Complete pointwise O-Insert head. Applicability, checked target, endpoint,
 ||| map, RAR, occurrence, and ordinal evidence are all constructed together.
 0 replayPointwiseInsertHead :
