@@ -5246,6 +5246,175 @@ replayPointwiseAdvanceYieldedFinishOperational nameEq keyEq actor sourceWorld
           (replayedWellFormed beforeEndpoint) targetRaw nextControls mapsRelated
           (replayedEffects beforeEndpoint)
 
+||| Successful yielded iteration reconstructed at concrete nonempty-rest
+||| endpoints before entering the common operational package.
+0 replayPointwiseAdvanceYieldedIterOperational :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (sourceWorld, replayedWorld : world) ->
+  (sourceRegistry, replayedRegistry : Registry name key value world error) ->
+  (component : Component key value world error) ->
+  (sourceParent, replayedParent : Parent name) -> (retiredFlag : Bool) ->
+  (sourceTable, replayedTable : OwnedTable key value
+    (componentProvisions component)) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (next : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (later : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (sourceAccumulator, replayedAccumulator : LocalState key value world
+    (componentProvisions component) -> LocalState key value world
+    (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  sourceParent = replayedParent ->
+  AccumulatorRelated sourceAccumulator replayedAccumulator ->
+  (sourceFound : lookupFiber @{nameEq} actor sourceRegistry = Just
+    (MkFiber component sourceParent retiredFlag sourceTable
+      (Reloading (step :: next :: later) sourceAccumulator view))) ->
+  (replayedFound : lookupFiber @{nameEq} actor replayedRegistry = Just
+    (MkFiber component replayedParent retiredFlag replayedTable
+      (Reloading (step :: next :: later) replayedAccumulator view))) ->
+  (sourceCapability, replayedCapability : DepValues key value
+    (dependencies (componentDependencies component))) ->
+  resolveCommittedValues @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error}
+    (dependencies (componentDependencies component)) view sourceRegistry =
+    Just sourceCapability ->
+  resolveCommittedValues @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error}
+    (dependencies (componentDependencies component)) view replayedRegistry =
+    Just replayedCapability ->
+  (sourceLocal, replayedLocal : LocalState key value world
+    (componentProvisions component)) ->
+  (sourceUndo, replayedUndo : LocalState key value world
+    (componentProvisions component) -> LocalState key value world
+    (componentProvisions component)) ->
+  runStepEffect step sourceCapability
+    (MkLocalState sourceWorld
+      (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component)
+        (ownedValues sourceTable))) = Right (sourceLocal, sourceUndo) ->
+  runStepEffect step replayedCapability
+    (MkLocalState replayedWorld
+      (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component)
+        (ownedValues replayedTable))) = Right (replayedLocal, replayedUndo) ->
+  PartialMapsEquivalent (EffectStateEquivalence keyEq)
+    (yieldedInverseEffectMap nameEq keyEq actor
+      (componentProvisions component) sourceUndo)
+    (yieldedInverseEffectMap nameEq keyEq actor
+      (componentProvisions component) replayedUndo) ->
+  targetMatches @{nameEq}
+    (targetFiber @{nameEq} @{keyEq}
+      (MkFiber component sourceParent retiredFlag sourceTable
+        (Reloading (step :: next :: later) sourceAccumulator view)) sourceRegistry) view = True ->
+  targetMatches @{nameEq}
+    (targetFiber @{nameEq} @{keyEq}
+      (MkFiber component replayedParent retiredFlag replayedTable
+        (Reloading (step :: next :: later) replayedAccumulator view)) replayedRegistry) view =
+    True ->
+  (tag : RuleTag) -> (sourceAfter : SystemState name key value world error) ->
+  (sourceRaw : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState sourceWorld sourceRegistry) = Just (tag, sourceAfter)) ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState sourceWorld sourceRegistry) = Just (tag, sourceAfter)) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (partialEffectMapFor nameEq keyEq (LAdvance actor) tag
+      (the (SystemState name key value world error)
+        (MkSystemState sourceWorld sourceRegistry)))
+    (partialEffectMapFor nameEq keyEq (LAdvance actor) tag
+      (the (SystemState name key value world error)
+        (MkSystemState replayedWorld replayedRegistry))) ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq
+    (MkSystemState sourceWorld sourceRegistry)
+    (MkSystemState replayedWorld replayedRegistry) ->
+  PointwiseAdvanceOperationalReplay name key world error value nameEq keyEq actor
+    (MkSystemState sourceWorld sourceRegistry) sourceAfter tag sourceChecked
+    (MkSystemState replayedWorld replayedRegistry)
+replayPointwiseAdvanceYieldedIterOperational nameEq keyEq actor sourceWorld
+  replayedWorld sourceRegistry replayedRegistry component sourceParent
+  replayedParent retiredFlag sourceTable replayedTable step next later sourceAccumulator
+  replayedAccumulator view parentsSame accumulatorsSame sourceFound replayedFound
+  sourceCapability replayedCapability sourceResolved replayedResolved sourceLocal
+  replayedLocal sourceUndo replayedUndo sourceRan replayedRan undoMaps sourceMatches
+  replayedMatches tag sourceAfter sourceRaw sourceChecked mapsRelated beforeEndpoint =
+    let sourceState : SystemState name key value world error
+        sourceState = MkSystemState sourceWorld sourceRegistry
+        replayedState : SystemState name key value world error
+        replayedState = MkSystemState replayedWorld replayedRegistry
+        sourceOwner : Fiber name key value world error
+        sourceOwner = MkFiber component sourceParent retiredFlag sourceTable
+          (Reloading (step :: next :: later) sourceAccumulator view)
+        replayedOwner : Fiber name key value world error
+        replayedOwner = MkFiber component replayedParent retiredFlag replayedTable
+          (Reloading (step :: next :: later) replayedAccumulator view)
+        sourcePushed : LocalState key value world (componentProvisions component) ->
+          LocalState key value world (componentProvisions component)
+        sourcePushed = pushLocalUndo @{keyEq} (componentProvisions component)
+          sourceAccumulator sourceUndo
+        replayedPushed : LocalState key value world (componentProvisions component) ->
+          LocalState key value world (componentProvisions component)
+        replayedPushed = pushLocalUndo @{keyEq} (componentProvisions component)
+          replayedAccumulator replayedUndo
+        0 undosRelated : (input : LocalState key value world
+              (componentProvisions component)) -> LocalStateRuntimeRelated
+          (sourceUndo (normalizeLocal @{keyEq} (componentProvisions component)
+            input))
+          (replayedUndo (normalizeLocal @{keyEq} (componentProvisions component)
+            input))
+        undosRelated = yieldedMapsGiveLocalUndoRuntimeRelated nameEq keyEq actor
+          (componentProvisions component) sourceUndo replayedUndo undoMaps
+        0 pushedRelated : AccumulatorRelated sourcePushed replayedPushed
+        pushedRelated = pushLocalUndoRuntimeRelated keyEq
+          (componentProvisions component) sourceAccumulator replayedAccumulator
+          sourceUndo replayedUndo accumulatorsSame undosRelated
+        sourceNext : Fiber name key value world error
+        sourceNext = MkFiber component sourceParent retiredFlag
+          (localTable sourceLocal) (Reloading (next :: later) sourcePushed view)
+        replayedNext : Fiber name key value world error
+        replayedNext = MkFiber component replayedParent retiredFlag
+          (localTable replayedLocal) (Reloading (next :: later) replayedPushed view)
+        sourceEndpoint : SystemState name key value world error
+        sourceEndpoint = MkSystemState (localWorld sourceLocal)
+          (replaceBinding @{nameEq} actor sourceNext sourceRegistry)
+        replayedEndpoint : SystemState name key value world error
+        replayedEndpoint = MkSystemState (localWorld replayedLocal)
+          (replaceBinding @{nameEq} actor replayedNext replayedRegistry)
+        0 sourceConcrete : (applyAction @{nameEq} @{keyEq} (LAdvance actor)
+          sourceState = Just (LIterTag, sourceEndpoint))
+        sourceConcrete = rewrite sourceFound in rewrite sourceResolved in
+          rewrite sourceRan in rewrite sourceMatches in Refl
+        0 pairSame : (LIterTag, sourceEndpoint) = (tag, sourceAfter)
+        pairSame = justInjective (trans (sym sourceConcrete) sourceRaw)
+        0 targetRaw : (applyAction @{nameEq} @{keyEq} (LAdvance actor)
+          replayedState = Just (LIterTag, replayedEndpoint))
+        targetRaw = rewrite replayedFound in rewrite replayedResolved in
+          rewrite replayedRan in rewrite replayedMatches in Refl
+        0 nextOwnerRelated : FiberControlRelated sourceNext replayedNext
+        nextOwnerRelated = FibersControlRelated sourceParent replayedParent
+          retiredFlag retiredFlag (localTable sourceLocal)
+          (localTable replayedLocal) (Reloading (next :: later) sourcePushed view)
+          (Reloading (next :: later) replayedPushed view) parentsSame Refl
+          (ReloadingControls Refl pushedRelated Refl)
+    in case pairSame of
+      Refl =>
+        let 0 rebasedControls : ControlEquivalent name key world error value
+              nameEq (MkSystemState (localWorld sourceLocal) sourceRegistry)
+              (MkSystemState (localWorld replayedLocal) replayedRegistry)
+            rebasedControls = MkControlEquivalent
+              (controlPointwise (replayedControls beforeEndpoint))
+            0 nextControls : ControlEquivalent name key world error value nameEq
+              sourceAfter replayedEndpoint
+            nextControls = pointwiseControlAfterReplace nameEq actor
+              (localWorld sourceLocal) (localWorld replayedLocal) sourceRegistry
+              replayedRegistry sourceOwner replayedOwner sourceNext replayedNext
+              sourceFound replayedFound nextOwnerRelated rebasedControls
+        in packagePointwiseAdvanceOperationalReplay nameEq keyEq actor sourceState
+          sourceAfter replayedState replayedEndpoint LIterTag sourceChecked
+          (replayedWellFormed beforeEndpoint) targetRaw nextControls mapsRelated
+          (replayedEffects beforeEndpoint)
+
 ||| Complete pointwise O-Insert head. Applicability, checked target, endpoint,
 ||| map, RAR, occurrence, and ordinal evidence are all constructed together.
 0 replayPointwiseInsertHead :
