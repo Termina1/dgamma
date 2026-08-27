@@ -824,6 +824,39 @@ Idris test modules**. Seven of eight families are now closed. Whole-suffix
 composition remains gated. The O6 estimate narrows from **16–30** to **12–24
 shifts**; holes remain **20**, split **6/4/8/1/1**.
 
+### Revision 44: L-Advance empty/raised closure and yielded STOP-AUDIT
+
+`research-tests/O6-R44-LADVANCE-EMPTY-RAISED-YIELDED-STOP-AUDIT.md` records the
+bounded shift-52 work. `replayPointwiseAdvanceEmptyOperational` now exhausts
+the empty-program target match and produces complete operational replay capital
+for both `LFinishTag` and landing `LDivertTag`.
+`replayPointwiseAdvanceRaisedOperational` consumes the two exact failed runs and
+observable error equality to produce the complete `LRaiseTag` operational
+replay. Both use pointwise post-replacement controls, relational actual maps,
+and the common checked endpoint packager.
+
+The successful yielded helper exhausted its three-attempt budget. Its first
+representation used an invalid tag-indexed rest equation; the corrected three
+concrete raw-evaluator branches reached the landing-divert source endpoint but
+stopped at the locally abstract `sourceNext` value index:
+
+```text
+Can't solve constraint between: ?value [...] and value.
+```
+
+The complete yielded helper and the earlier generic replacement helper were
+reverted. No partial branch or metavariable remains. A later fresh-budget route
+must construct fully annotated concrete `SystemState` endpoints separately for
+yielded divert, finish, and iter before applying any common packager. Existing
+runtime outcome, yielded forward, inverse-map, and pushed-accumulator capital
+all checked before this endpoint inference stop; no stronger relation or caller
+premise is indicated.
+
+Seven of eight families remain closed. Singleton L-Advance RAR and whole-suffix
+composition remain gated. The inventory stays **52 positives**, **44 exact
+negatives**, and **96 Idris test modules**. The O6 estimate narrows from
+**12–24** to **11–23 shifts**; holes remain **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1135,7 +1168,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; seven heads are closed, including L-Unload through its generic-owner sealed eliminator. L-Advance has sealed source and common operational endpoint packaging; its runtime branches, RAR, and whole-result assembly remain open.** | **XL, 12–24 remaining shifts after revision-43 L-Unload closure.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; seven heads are closed. L-Advance empty finish/divert and defined failure are closed operationally; yielded divert/finish/iter stopped at local concrete endpoint value inference and were fully reverted. Singleton RAR and whole-result assembly remain open.** | **XL, 11–23 remaining shifts after revision-44 bounded yielded STOP-AUDIT.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1271,6 +1304,8 @@ independence, and assemble the complete target `ReplayInvariantBundle` through
 support/active matching. The atomic A/B/C/D/E boundary and revision-20 relational-map repair are landed.
 Seven of eight semantic action families are closed. L-Unload is complete
 through the revision-43 sealed eliminator; its older direct and projection-only
-consumers remain retired. L-Advance has sealed source and common operational
-endpoint capital but still needs its runtime branches and singleton RAR before
-whole-suffix and final adjacent-result assembly.
+consumers remain retired. L-Advance now also has complete empty-program and
+defined-failure operational branches. Yielded divert/finish/iter are stopped at
+revision-44's local endpoint value-inference diagnostic and need a fully
+annotated branch-local endpoint representation before singleton RAR,
+whole-suffix, and final adjacent-result assembly.
