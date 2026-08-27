@@ -1906,6 +1906,60 @@ singletonNonAdvanceRAR nameEq keyEq action tag sourceBefore sourceAfter
           (Fired nameEq keyEq action tag replayedChecked) action Refl notAdvance
           stage))
 
+||| Reindex one iterator stage of a singleton replayed L-Advance occurrence to
+||| the exact source occurrence. The concrete owner cells fix component,
+||| program, accumulator, and view before the stage is rebuilt; no dictionary
+||| equality is assumed independently.
+0 singletonAdvanceStageOrigin :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, replayedBefore, replayedAfter :
+    SystemState name key value world error) ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    sourceBefore = Just (tag, sourceAfter)) ->
+  (replayedChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    replayedBefore = Just (tag, replayedAfter)) ->
+  (component : Component key value world error) ->
+  (sourceParent, replayedParent : Parent name) -> (retiredFlag : Bool) ->
+  (sourceTable, replayedTable : OwnedTable key value
+    (componentProvisions component)) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (sourceAccumulator, replayedAccumulator : LocalState key value world
+    (componentProvisions component) -> LocalState key value world
+    (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (sourceFound : lookupFiber @{nameEq} actor (registry sourceBefore) = Just
+    (MkFiber component sourceParent retiredFlag sourceTable
+      (Reloading remaining sourceAccumulator view))) ->
+  (replayedFound : lookupFiber @{nameEq} actor (registry replayedBefore) = Just
+    (MkFiber component replayedParent retiredFlag replayedTable
+      (Reloading remaining replayedAccumulator view))) ->
+  (selected : name) ->
+  IteratorStage name key world error value selected
+    (MoreTransitions
+      (Fired {before = replayedBefore} {afterState = replayedAfter}
+        nameEq keyEq (LAdvance actor) tag replayedChecked) NoTransitions) ->
+  IteratorStage name key world error value selected
+    (MoreTransitions
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+singletonAdvanceStageOrigin nameEq keyEq actor tag sourceBefore sourceAfter
+  replayedBefore replayedAfter sourceChecked replayedChecked component
+  sourceParent replayedParent retiredFlag sourceTable replayedTable remaining
+  sourceAccumulator replayedAccumulator view sourceFound replayedFound selected
+  (StageFromAdvance stageNameEq stageKeyEq selected stageTag stageChecked occurs
+    stageFiber stageFound stageRemaining stageAccumulator stageView stageLifecycle
+    step rest suffix) =
+      case singletonOccursSelected occurs of
+        Refl => case justInjective (trans (sym replayedFound) stageFound) of
+          Refl => case stageLifecycle of
+            Refl => StageFromAdvance nameEq keyEq actor tag sourceChecked OccursHere
+              (MkFiber component sourceParent retiredFlag sourceTable
+                (Reloading remaining sourceAccumulator view)) sourceFound
+              remaining sourceAccumulator view Refl step rest suffix
+
 0 pointwiseSomeNoControlImpossible :
   FiberControlMaybeRelated (Just fiber) Nothing -> Void
 pointwiseSomeNoControlImpossible relation impossible
