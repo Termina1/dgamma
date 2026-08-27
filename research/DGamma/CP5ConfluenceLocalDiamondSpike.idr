@@ -4143,21 +4143,26 @@ data SealedPointwiseUnloadEvaluator :
       LocalState key value world (componentProvisions component)) ->
     (view : View name (dependencies (componentDependencies component))) ->
     (outcome : Maybe error) ->
+    (0 exactFound : lookupFiber @{nameEq} actor source = Just
+      (MkFiber component parent retiredFlag table
+        (Unloading accumulator view outcome))) ->
     (0 unrelied : relied @{nameEq} {name = name} {key = key}
       {value = value} {world = world} {error = error} actor source = False) ->
+    (afterState : SystemState name key value world error) ->
+    (0 exactAfter :
+      let restored = accumulator
+            (MkLocalState ambient
+              (restrictOwnedPreservingOrder @{keyEq}
+                (componentProvisions component) (ownedValues table)))
+          next = MkFiber component parent retiredFlag (localTable restored)
+            (Inactive outcome)
+      in MkSystemState (localWorld restored)
+        (replaceBinding @{nameEq} actor next source) = afterState) ->
     SealedPointwiseUnloadEvaluator name key world error value nameEq keyEq actor
       ambient source
       (MkFiber component parent retiredFlag table
         (Unloading accumulator view outcome))
-      LUnloadTag
-      (let restored = accumulator
-             (MkLocalState ambient
-               (restrictOwnedPreservingOrder @{keyEq}
-                 (componentProvisions component) (ownedValues table)))
-           next = MkFiber component parent retiredFlag (localTable restored)
-             (Inactive outcome)
-       in MkSystemState (localWorld restored)
-         (replaceBinding @{nameEq} actor next source))
+      LUnloadTag afterState
 
 ||| Existentially located sealed source. The outer replayer consumes only this
 ||| generic owner and lookup before passing the sealed evaluator to its unique
@@ -4192,8 +4197,206 @@ sealPointwiseUnloadSource
               (Unloading accumulator view outcome))
             found
             (MkSealedPointwiseUnloadEvaluator nameEq keyEq actor ambient source
-              component parent retiredFlag table accumulator view outcome
-              unrelied)
+              component parent retiredFlag table accumulator view outcome found
+              unrelied afterState afterSame)
+
+||| The unique producer-local eliminator for sealed L-Unload capital. Its GADT
+||| pattern shares the source owner/table/lifecycle indices with the control
+||| relation before either is refined; no computed record projection survives
+||| into the semantic construction.
+0 eliminateSealedPointwiseUnloadHead :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (sourceWorld : world) ->
+  (sourceRegistry : Registry name key value world error) ->
+  (replayedWorld : world) ->
+  (replayedRegistry : Registry name key value world error) ->
+  {sourceAfter : SystemState name key value world error} ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} (LUnload actor)
+    (MkSystemState sourceWorld sourceRegistry) =
+    Just (LUnloadTag, sourceAfter)) ->
+  registryWellFormed @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error}
+    (MkSystemState sourceWorld sourceRegistry) = True ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq
+    (MkSystemState sourceWorld sourceRegistry)
+    (MkSystemState replayedWorld replayedRegistry) ->
+  {sourceOwner : Fiber name key value world error} ->
+  (sourceFound : lookupFiber @{nameEq} actor sourceRegistry = Just sourceOwner) ->
+  SealedPointwiseUnloadEvaluator name key world error value nameEq keyEq actor
+    sourceWorld sourceRegistry sourceOwner LUnloadTag sourceAfter ->
+  {replayedOwner : Fiber name key value world error} ->
+  (replayedFound : lookupFiber @{nameEq} actor replayedRegistry =
+    Just replayedOwner) ->
+  FiberControlRelated sourceOwner replayedOwner ->
+  PointwiseRelationalHeadReplay name key world error value nameEq keyEq
+    (Fired {before = MkSystemState sourceWorld sourceRegistry}
+      {afterState = sourceAfter} nameEq keyEq (LUnload actor) LUnloadTag
+      sourceChecked)
+    (MkSystemState replayedWorld replayedRegistry)
+eliminateSealedPointwiseUnloadHead nameEq keyEq actor sourceWorld sourceRegistry
+  replayedWorld replayedRegistry sourceChecked sourceWellFormed beforeEndpoint
+  sourceFound (MkSealedPointwiseUnloadEvaluator _ _ _ _ _ component sourceParent
+    sourceRetired sourceTable sourceAccumulator sourceView sourceOutcome
+    sealedSourceFound sourceUnrelied _ sealedSourceAfter)
+  replayedFound ownersRelated =
+    let sourceState : SystemState name key value world error
+        sourceState = MkSystemState sourceWorld sourceRegistry
+        replayedState : SystemState name key value world error
+        replayedState = MkSystemState replayedWorld replayedRegistry
+        0 mapsRelated : PartialMapsRelated (EffectStateEquivalence keyEq)
+          (partialEffectMapFor nameEq keyEq (LUnload actor) LUnloadTag sourceState)
+          (partialEffectMapFor nameEq keyEq (LUnload actor) LUnloadTag
+            replayedState)
+        mapsRelated = pointwiseRelatedLifecycleMaps nameEq keyEq (LUnload actor)
+          Refl LUnloadTag sourceState replayedState sourceOwner replayedOwner
+          sourceFound replayedFound ownersRelated
+    in case ownersRelated of
+      FibersControlRelated sourceParent replayedParent sourceRetired
+        replayedRetired sourceTable replayedTable
+        (Unloading sourceAccumulator sourceView sourceOutcome)
+        replayedLifecycle parentSame retiredSame lifecycleSame =>
+          case unloadingRightControls lifecycleSame of
+            MkUnloadingRightControls replayedAccumulator replayedView
+              replayedOutcome replayedLifecycleShape accumulatorsSame viewsSame
+              outcomesSame => case replayedLifecycleShape of
+                Refl =>
+                  let sourceRestored : LocalState key value world
+                        (componentProvisions component)
+                      sourceRestored = sourceAccumulator
+                        (MkLocalState sourceWorld
+                          (restrictOwnedPreservingOrder @{keyEq}
+                            (componentProvisions component)
+                            (ownedValues sourceTable)))
+                      sourceNext : Fiber name key value world error
+                      sourceNext = MkFiber component sourceParent sourceRetired
+                        (localTable sourceRestored) (Inactive sourceOutcome)
+                      targetOwner : Fiber name key value world error
+                      targetOwner = MkFiber component replayedParent
+                        replayedRetired replayedTable
+                        (Unloading replayedAccumulator replayedView replayedOutcome)
+                      0 exactReplayedFound : lookupFiber @{nameEq} actor
+                        replayedRegistry = Just targetOwner
+                      exactReplayedFound = replayedFound
+                      0 replayedUnrelied : relied @{nameEq} {name = name}
+                        {key = key} {value = value} {world = world}
+                        {error = error} actor replayedRegistry = False
+                      replayedUnrelied = pointwiseReliedFalse nameEq actor
+                        sourceState replayedState (replayedControls beforeEndpoint)
+                        sourceUnrelied
+                      replayedRestored : LocalState key value world
+                        (componentProvisions component)
+                      replayedRestored = replayedAccumulator
+                        (MkLocalState replayedWorld
+                          (restrictOwnedPreservingOrder @{keyEq}
+                            (componentProvisions component)
+                            (ownedValues replayedTable)))
+                      replayedNext : Fiber name key value world error
+                      replayedNext = MkFiber component replayedParent
+                        replayedRetired (localTable replayedRestored)
+                        (Inactive replayedOutcome)
+                      targetState : SystemState name key value world error
+                      targetState = MkSystemState (localWorld replayedRestored)
+                        (replaceBinding @{nameEq} actor replayedNext
+                          replayedRegistry)
+                      0 targetRaw : applyAction @{nameEq} @{keyEq}
+                        (LUnload actor) replayedState =
+                        Just (LUnloadTag, targetState)
+                      targetRaw = rewrite exactReplayedFound in
+                        rewrite replayedUnrelied in Refl
+                      0 targetWellFormed : registryWellFormed @{nameEq} @{keyEq}
+                        targetState = True
+                      targetWellFormed = preservationTheoremProof nameEq keyEq
+                        (LUnload actor) replayedState targetState LUnloadTag
+                        (replayedWellFormed beforeEndpoint) targetRaw
+                      0 targetChecked : checkedApplyAction @{nameEq} @{keyEq}
+                        (LUnload actor) replayedState =
+                        Just (LUnloadTag, targetState)
+                      targetChecked = rewrite targetRaw in
+                        rewrite targetWellFormed in Refl
+                      0 nextOwnerRelated : FiberControlRelated sourceNext
+                        replayedNext
+                      nextOwnerRelated = FibersControlRelated sourceParent
+                        replayedParent sourceRetired replayedRetired
+                        (localTable sourceRestored) (localTable replayedRestored)
+                        (Inactive sourceOutcome) (Inactive replayedOutcome)
+                        parentSame retiredSame (InactiveControls outcomesSame)
+                      0 restoredBeforeControls : ControlEquivalent name key world
+                        error value nameEq
+                        (MkSystemState (localWorld sourceRestored) sourceRegistry)
+                        (MkSystemState (localWorld replayedRestored)
+                          replayedRegistry)
+                      restoredBeforeControls = MkControlEquivalent
+                        (controlPointwise (replayedControls beforeEndpoint))
+                      0 nextControlsConcrete : ControlEquivalent name key world
+                        error value nameEq
+                        (MkSystemState (localWorld sourceRestored)
+                          (replaceBinding @{nameEq} actor sourceNext sourceRegistry))
+                        targetState
+                      nextControlsConcrete = pointwiseControlAfterReplace nameEq
+                        actor (localWorld sourceRestored)
+                        (localWorld replayedRestored) sourceRegistry
+                        replayedRegistry
+                        (MkFiber component sourceParent sourceRetired sourceTable
+                          (Unloading sourceAccumulator sourceView sourceOutcome))
+                        targetOwner sourceNext replayedNext sealedSourceFound
+                        exactReplayedFound nextOwnerRelated restoredBeforeControls
+                      0 nextControls : ControlEquivalent name key world error value
+                        nameEq sourceAfter targetState
+                      nextControls = replace
+                        {p = \observed => ControlEquivalent name key world error
+                          value nameEq observed targetState}
+                        sealedSourceAfter nextControlsConcrete
+                      sourceStep : Transition sourceState sourceAfter
+                      sourceStep = Fired nameEq keyEq (LUnload actor) LUnloadTag
+                        sourceChecked
+                      replayedStep : Transition replayedState targetState
+                      replayedStep = Fired nameEq keyEq (LUnload actor) LUnloadTag
+                        targetChecked
+                  in case actualTransitionEffectFrame nameEq keyEq
+                    (LUnload actor) LUnloadTag sourceState sourceAfter sourceChecked of
+                    MkActualEffectFrame sourceRuns =>
+                      case actualTransitionEffectFrame nameEq keyEq
+                        (LUnload actor) LUnloadTag replayedState targetState
+                        targetChecked of
+                        MkActualEffectFrame targetRuns =>
+                          let 0 endpointsRelated : PartialRelated
+                                (EffectState name key value world)
+                                (EffectStateRelated keyEq)
+                                (Just (projectEffectState @{nameEq} sourceAfter))
+                                (Just (projectEffectState @{nameEq} targetState))
+                              endpointsRelated = replayEffectPartialTransitive
+                                (replayEffectPartialSymmetric sourceRuns)
+                                (replayEffectPartialTransitive
+                                  (mapsRelated (replayedEffects beforeEndpoint))
+                                  targetRuns)
+                          in case endpointsRelated of
+                            PartialDefined nextEffects =>
+                              let 0 notAdvance : (selected : name) -> Not
+                                    (the (Action name key value world error)
+                                      (LUnload actor) = LAdvance selected)
+                                  notAdvance selected Refl impossible
+                                  0 rar : RelationalReplayCorrespondence name key
+                                    world error value
+                                    (MoreTransitions sourceStep NoTransitions)
+                                    (MoreTransitions replayedStep NoTransitions)
+                                  rar = singletonNonAdvanceRAR nameEq keyEq
+                                    (LUnload actor) LUnloadTag sourceState
+                                    sourceAfter replayedState targetState sourceChecked
+                                    targetChecked notAdvance mapsRelated
+                                  0 nextEndpoint : RelationalReplayEndpoint name key
+                                    world error value nameEq keyEq sourceAfter
+                                    targetState
+                                  nextEndpoint = MkRelationalReplayEndpoint
+                                    nextEffects nextControls targetWellFormed
+                                  sourceAligned : AlignedTransitions name key world
+                                    error value nameEq keyEq
+                                    (MoreTransitions sourceStep NoTransitions)
+                                  sourceAligned = AlignedStep (LUnload actor)
+                                    LUnloadTag sourceChecked NoTransitions AlignedEnd
+                              in packagePointwiseRelationalHeadReplay nameEq keyEq
+                                sourceStep sourceAligned targetState (LUnload actor)
+                                LUnloadTag targetChecked Refl Refl rar mapsRelated
+                                nextEndpoint
 
 ||| Complete pointwise O-Insert head. Applicability, checked target, endpoint,
 ||| map, RAR, occurrence, and ordinal evidence are all constructed together.
