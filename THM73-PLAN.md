@@ -1134,6 +1134,36 @@ or caller-capital widening. Whole-suffix composition remains unopened. The
 **3–15 shift** estimate is held pending that gate. Holes remain **20**, split
 **6/4/8/1/1**.
 
+### Revision 57: indexed elimination and spine closed; RAR-cons gate
+
+`research-tests/O6-R57-INDEXED-JOINT-CLOSED-SUFFIX-RAR-CONS-STOP-AUDIT.md`
+records shift #65. `PointwiseAlignedHeadJoint` now has eight action-specialized
+constructors whose result indices fix the exact source `Fired` shape. The GADT
+and adapted builders closed at `42a7651`; the single-scrutinee dependent
+eliminator closed on attempt 1 at `f55e284`. This validates the revision-56
+index-refinement diagnosis without using the existential fallback.
+
+`buildPointwiseJointAction`, `replayPointwiseActionHead`, and
+`replayPointwiseSuffixSpine` then closed on attempt 1 at `52ffa3f`. The retained
+structural recursion is therefore instantiated for all eight semantic families
+and produces its exact target suffix, final endpoint, and sealed per-step
+capital.
+
+Whole-suffix RAR concatenation exhausted a fresh three-attempt budget. Exact
+occurrence splitting and singleton/tail generator and stage lifts elaborated far
+enough to expose the real wall: independently projecting a head RAR origin and
+its map or outcome proof loses their dependent identity after widening from a
+singleton trace to the whole cons trace. The final diagnostics were the
+correlated generator constraint
+`headRAR .replayGeneratorOrigin actor target` versus local `source`, and the
+iterator-stage endpoint mismatch `targetTail` versus `NoTransitions`. All
+concatenation code was reverted. The next gated representation is a private
+producer-owned pair of located append packages that carry each lifted origin
+with its map/outcome proof under one elimination, mirroring the closed
+L-Advance agreement/seal architecture. Occurrence/ordinal composition, target
+bundle, and assembly remain unopened. The original **3–15 shift** band is held
+pending this gate. Holes remain **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1445,7 +1475,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; all eight heads, fixed-tag helpers, the private joint package, and all eight joint builders are closed. Revision 56 shows the joint action split is total for a non-dependent probe but not for the exact source-indexed replay result.** | **XL, 3–15 remaining shifts held at the revision-56 dependent-elimination design gate.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; the eight-constructor indexed joint GADT, dependent eliminator, exhaustive action producer, and generic suffix-spine instantiation are closed. Revision 57 gates whole-suffix RAR cons because widening separately projected generator/stage origins loses correlation with their map/outcome proof.** | **XL, original 3–15 remaining-shift band held at the revision-57 RAR-cons dependent-package gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1592,7 +1622,9 @@ empty and defined-failure seals. Revision 51 closes the yielded seal. Revision
 52 gates dependent agreement/seal transport. Revision 53 closes that transport,
 the nonempty join, and the thin L-Advance owner chain. Revision 54 clears the
 fixed-tag annotation wall. Revision 55 closes all three erased per-action
-source-plan tag helpers. Revision 56 closes the joint package and all eight
-builders, then gates the exact dependent eliminator after the corresponding
-non-dependent probe succeeds. Whole-suffix and final adjacent-result assembly
-remain after that gate.
+source-plan tag helpers. Revision 56 closes the generic joint package and all
+eight builders, then gates the exact dependent eliminator. Revision 57 replaces
+that package with the eight-constructor indexed GADT, closes the dependent
+eliminator and the instantiated suffix spine, and gates whole-suffix RAR cons at
+a correlated origin/map and stage/outcome packaging wall. Occurrence/ordinal
+composition and final adjacent-result assembly remain after that gate.
