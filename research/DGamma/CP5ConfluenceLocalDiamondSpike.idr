@@ -14381,6 +14381,80 @@ buildPointwiseBeginJoint nameEq keyEq actor tag
       Refl => buildPointwiseAlignedHeadJoint nameEq keyEq (LBegin actor)
         LBeginTag checked
 
+0 buildPointwiseAdvanceJoint :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (tag : RuleTag) ->
+  {before, afterState : SystemState name key value world error} ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+    Just (tag, afterState)) ->
+  PointwiseAlignedHeadJoint name key world error value nameEq keyEq
+    (Fired {before} {afterState} nameEq keyEq (LAdvance actor) tag checked)
+buildPointwiseAdvanceJoint nameEq keyEq actor tag checked =
+  buildPointwiseAlignedHeadJoint nameEq keyEq (LAdvance actor) tag checked
+
+0 buildPointwiseDivertJoint :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (tag : RuleTag) ->
+  {before, afterState : SystemState name key value world error} ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LDivert actor) before =
+    Just (tag, afterState)) ->
+  PointwiseAlignedHeadJoint name key world error value nameEq keyEq
+    (Fired {before} {afterState} nameEq keyEq (LDivert actor) tag checked)
+buildPointwiseDivertJoint nameEq keyEq actor tag
+  {before = MkSystemState ambient source} {afterState} checked =
+    let 0 raw : (applyAction @{nameEq} @{keyEq} (LDivert actor)
+          (MkSystemState ambient source) = Just (tag, afterState))
+        raw = checkedActionProjects nameEq keyEq (LDivert actor) _ afterState tag
+          checked
+        0 tagSame : (tag = LDivertTag)
+        tagSame = pointwiseDivertTag nameEq keyEq actor ambient source tag
+          afterState raw
+    in case tagSame of
+      Refl => buildPointwiseAlignedHeadJoint nameEq keyEq (LDivert actor)
+        LDivertTag checked
+
+0 buildPointwiseLeaveJoint :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (tag : RuleTag) ->
+  {before, afterState : SystemState name key value world error} ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LLeave actor) before =
+    Just (tag, afterState)) ->
+  PointwiseAlignedHeadJoint name key world error value nameEq keyEq
+    (Fired {before} {afterState} nameEq keyEq (LLeave actor) tag checked)
+buildPointwiseLeaveJoint nameEq keyEq actor tag
+  {before = MkSystemState ambient source} {afterState} checked =
+    let 0 raw : (applyAction @{nameEq} @{keyEq} (LLeave actor)
+          (MkSystemState ambient source) = Just (tag, afterState))
+        raw = checkedActionProjects nameEq keyEq (LLeave actor) _ afterState tag
+          checked
+        0 tagSame : (tag = LLeaveTag)
+        tagSame = pointwiseLeaveTag nameEq keyEq actor ambient source tag
+          afterState raw
+    in case tagSame of
+      Refl => buildPointwiseAlignedHeadJoint nameEq keyEq (LLeave actor)
+        LLeaveTag checked
+
+0 buildPointwiseUnloadJoint :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (tag : RuleTag) ->
+  {before, afterState : SystemState name key value world error} ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LUnload actor) before =
+    Just (tag, afterState)) ->
+  PointwiseAlignedHeadJoint name key world error value nameEq keyEq
+    (Fired {before} {afterState} nameEq keyEq (LUnload actor) tag checked)
+buildPointwiseUnloadJoint nameEq keyEq actor tag
+  {before = MkSystemState ambient source} {afterState} checked =
+    let 0 raw : (applyAction @{nameEq} @{keyEq} (LUnload actor)
+          (MkSystemState ambient source) = Just (tag, afterState))
+        raw = checkedActionProjects nameEq keyEq (LUnload actor) _ afterState tag
+          checked
+        0 tagSame : (tag = LUnloadTag)
+        tagSame = pointwiseUnloadTag nameEq keyEq actor ambient source tag
+          afterState raw
+    in case tagSame of
+      Refl => buildPointwiseAlignedHeadJoint nameEq keyEq (LUnload actor)
+        LUnloadTag checked
+
 0 localReplaceEntriesOtherHead :
   (nameEq : DecEq name) -> (changed, current : name) ->
   Not (changed = current) ->
