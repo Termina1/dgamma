@@ -5828,6 +5828,64 @@ packagePointwiseAdvanceHead nameEq keyEq actor sourceWorld replayedWorld
         sourceAligned replayedAfter (LAdvance actor) tag replayedChecked Refl Refl
         rar mapsRelated nextEndpoint
 
+||| Producer-owned empty-program L-Advance branch. Target matching and the
+||| checked endpoint stay inside `replayPointwiseAdvanceEmptyOperational`; this
+||| eliminator exposes only the complete pointwise head package.
+0 eliminateSealedPointwiseAdvanceEmptyBranch :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (sourceWorld, replayedWorld : world) ->
+  (sourceRegistry, replayedRegistry : Registry name key value world error) ->
+  (component : Component key value world error) ->
+  (sourceParent, replayedParent : Parent name) -> (retiredFlag : Bool) ->
+  (sourceTable, replayedTable : OwnedTable key value
+    (componentProvisions component)) ->
+  (sourceAccumulator, replayedAccumulator : LocalState key value world
+    (componentProvisions component) -> LocalState key value world
+    (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  sourceParent = replayedParent ->
+  AccumulatorRelated sourceAccumulator replayedAccumulator ->
+  (sourceFound : lookupFiber @{nameEq} actor sourceRegistry = Just
+    (MkFiber component sourceParent retiredFlag sourceTable
+      (Reloading [] sourceAccumulator view))) ->
+  (replayedFound : lookupFiber @{nameEq} actor replayedRegistry = Just
+    (MkFiber component replayedParent retiredFlag replayedTable
+      (Reloading [] replayedAccumulator view))) ->
+  (tag : RuleTag) -> (sourceAfter : SystemState name key value world error) ->
+  (sourceRaw : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState sourceWorld sourceRegistry) = Just (tag, sourceAfter)) ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState sourceWorld sourceRegistry) = Just (tag, sourceAfter)) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (partialEffectMapFor nameEq keyEq (LAdvance actor) tag
+      (the (SystemState name key value world error)
+        (MkSystemState sourceWorld sourceRegistry)))
+    (partialEffectMapFor nameEq keyEq (LAdvance actor) tag
+      (the (SystemState name key value world error)
+        (MkSystemState replayedWorld replayedRegistry))) ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq
+    (MkSystemState sourceWorld sourceRegistry)
+    (MkSystemState replayedWorld replayedRegistry) ->
+  PointwiseRelationalHeadReplay name key world error value nameEq keyEq
+    (Fired {before = MkSystemState sourceWorld sourceRegistry}
+      {afterState = sourceAfter} nameEq keyEq (LAdvance actor) tag sourceChecked)
+    (MkSystemState replayedWorld replayedRegistry)
+eliminateSealedPointwiseAdvanceEmptyBranch nameEq keyEq actor sourceWorld
+  replayedWorld sourceRegistry replayedRegistry component sourceParent
+  replayedParent retiredFlag sourceTable replayedTable sourceAccumulator
+  replayedAccumulator view parentsSame accumulatorsSame sourceFound replayedFound
+  tag sourceAfter sourceRaw sourceChecked mapsRelated beforeEndpoint =
+    packagePointwiseAdvanceHead nameEq keyEq actor sourceWorld replayedWorld
+      sourceRegistry replayedRegistry sourceAfter tag sourceChecked component
+      sourceParent replayedParent retiredFlag sourceTable replayedTable []
+      sourceAccumulator replayedAccumulator view sourceFound replayedFound
+      (replayPointwiseAdvanceEmptyOperational nameEq keyEq actor sourceWorld
+        replayedWorld sourceRegistry replayedRegistry component sourceParent
+        replayedParent retiredFlag sourceTable replayedTable sourceAccumulator
+        replayedAccumulator view parentsSame accumulatorsSame sourceFound
+        replayedFound tag sourceAfter sourceRaw sourceChecked mapsRelated
+        beforeEndpoint)
+
 ||| Complete pointwise O-Insert head. Applicability, checked target, endpoint,
 ||| map, RAR, occurrence, and ordinal evidence are all constructed together.
 0 replayPointwiseInsertHead :
