@@ -943,6 +943,27 @@ head is retained; whole-suffix composition remains gated. The O6 estimate
 narrows from **9–21** to **7–19 shifts**. Holes remain **20**, split
 **6/4/8/1/1**.
 
+### Revision 48: advance dispatcher dependent-scope STOP-AUDIT
+
+`research-tests/O6-R48-ADVANCE-DISPATCHER-DEPENDENT-SCOPE-STOP-AUDIT.md`
+records shift #56. Naming `{component}` in both `dispatchRemaining` clauses
+passed the revision-47 wall. The nested `dispatchDefined` helper then exposed
+an independently abstracted accumulator-function binder; making all of its
+proof arguments explicit did not repair that identity, ruling out further
+nested-helper annotation variants.
+
+A top-level nonempty helper with every runtime index explicit removed the
+accumulator wall. It reached two later refinements: replay-side missing
+capability needs the already-computed runtime agreement carried as a dependent
+argument rather than recomputed after the resolution split, and the common
+retired flag must be chosen by eliminating `sym retiredSame` so source lookup
+capital retains its source index. The whole uncommitted dispatcher was reverted.
+The next fresh representation should keep the top-level helper, add one
+producer-owned indexed `RuntimeIteratorOutcomeAgreement` argument, and orient
+retirement equality sourceward. Seven of eight families remain closed;
+whole-suffix composition remains gated. The **7–19 shift** estimate is unchanged.
+Holes remain **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1254,7 +1275,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; seven heads are closed. All L-Advance operational branches, generator/stage provenance, singleton RAR, and the common complete-head packager are retained. The sealed runtime dispatcher is localized to explicit dependent-component clause patterns after revision 47; complete head and whole-result assembly remain open.** | **XL, 7–19 remaining shifts after revision-47 generator-RAR closure and dispatcher STOP-AUDIT.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; seven heads are closed. All operational and generator/RAR/head-packaging capital is retained. Revision 48 rules out the nested dispatcher: the top-level nonempty helper must carry one indexed runtime agreement and orient retired equality sourceward. Complete head and whole-result assembly remain open.** | **XL, 7–19 remaining shifts after revision-48 dispatcher dependent-scope STOP-AUDIT.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1395,6 +1416,7 @@ concrete operational producer, including yielded divert/finish/iter through the
 revision-45 branch-local endpoint representation. Singleton stage
 origin/outcome capital is also retained. Revision 47 closes the dependent
 generator package, singleton L-Advance RAR, and common head-capital packager.
-The exhaustive sealed runtime dispatcher is localized to explicit implicit
-component patterns in its dependent clauses; it and the thin outer complete
-head remain before whole-suffix and final adjacent-result assembly.
+Revision 48 rules out the nested dispatcher representation and localizes the
+top-level alternative to one indexed runtime-agreement argument plus sourceward
+retirement equality. The dispatcher and thin outer complete head remain before
+whole-suffix and final adjacent-result assembly.
