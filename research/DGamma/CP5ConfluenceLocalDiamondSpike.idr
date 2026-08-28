@@ -5757,6 +5757,77 @@ replayPointwiseAdvanceYieldedIterOperational nameEq keyEq actor sourceWorld
           (replayedWellFormed beforeEndpoint) targetRaw nextControls mapsRelated
           (replayedEffects beforeEndpoint)
 
+||| Attach exact singleton generator/stage provenance to one already checked
+||| operational L-Advance replay. The concrete owner cells are retained here so
+||| RAR capital is built before the pointwise head envelope is sealed.
+0 packagePointwiseAdvanceHead :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (sourceWorld, replayedWorld : world) ->
+  (sourceRegistry, replayedRegistry : Registry name key value world error) ->
+  (sourceAfter : SystemState name key value world error) -> (tag : RuleTag) ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState sourceWorld sourceRegistry) = Just (tag, sourceAfter)) ->
+  (component : Component key value world error) ->
+  (sourceParent, replayedParent : Parent name) -> (retiredFlag : Bool) ->
+  (sourceTable, replayedTable : OwnedTable key value
+    (componentProvisions component)) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (sourceAccumulator, replayedAccumulator : LocalState key value world
+    (componentProvisions component) -> LocalState key value world
+    (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (sourceFound : lookupFiber @{nameEq} actor sourceRegistry = Just
+    (MkFiber component sourceParent retiredFlag sourceTable
+      (Reloading remaining sourceAccumulator view))) ->
+  (replayedFound : lookupFiber @{nameEq} actor replayedRegistry = Just
+    (MkFiber component replayedParent retiredFlag replayedTable
+      (Reloading remaining replayedAccumulator view))) ->
+  PointwiseAdvanceOperationalReplay name key world error value nameEq keyEq actor
+    (MkSystemState sourceWorld sourceRegistry) sourceAfter tag sourceChecked
+    (MkSystemState replayedWorld replayedRegistry) ->
+  PointwiseRelationalHeadReplay name key world error value nameEq keyEq
+    (Fired {before = MkSystemState sourceWorld sourceRegistry}
+      {afterState = sourceAfter} nameEq keyEq (LAdvance actor) tag sourceChecked)
+    (MkSystemState replayedWorld replayedRegistry)
+packagePointwiseAdvanceHead nameEq keyEq actor sourceWorld replayedWorld
+  sourceRegistry replayedRegistry sourceAfter tag sourceChecked component
+  sourceParent replayedParent retiredFlag sourceTable replayedTable remaining
+  sourceAccumulator replayedAccumulator view sourceFound replayedFound
+  (MkPointwiseAdvanceOperationalReplay replayedAfter replayedChecked mapsRelated
+    nextEndpoint) =
+      let sourceState : SystemState name key value world error
+          sourceState = MkSystemState sourceWorld sourceRegistry
+          replayedState : SystemState name key value world error
+          replayedState = MkSystemState replayedWorld replayedRegistry
+          sourceStep : Transition sourceState sourceAfter
+          sourceStep = Fired nameEq keyEq (LAdvance actor) tag sourceChecked
+          replayedStep : Transition replayedState replayedAfter
+          replayedStep = Fired nameEq keyEq (LAdvance actor) tag replayedChecked
+          stageFamily : SingletonAdvanceStageReplayFamily name key world error
+            value (MoreTransitions sourceStep NoTransitions)
+            (MoreTransitions replayedStep NoTransitions)
+          stageFamily = MkSingletonAdvanceStageReplayFamily
+            (\selected, stage => locateSingletonAdvanceStageReplay nameEq keyEq
+              actor tag sourceState sourceAfter replayedState replayedAfter
+              sourceChecked replayedChecked component sourceParent replayedParent
+              retiredFlag sourceTable replayedTable remaining sourceAccumulator
+              replayedAccumulator view sourceFound replayedFound selected stage)
+          0 rar : RelationalReplayCorrespondence name key world error value
+            (MoreTransitions sourceStep NoTransitions)
+            (MoreTransitions replayedStep NoTransitions)
+          rar = singletonAdvanceRAR nameEq keyEq actor tag sourceState sourceAfter
+            replayedState replayedAfter sourceChecked replayedChecked stageFamily
+            mapsRelated
+          sourceAligned : AlignedTransitions name key world error value nameEq
+            keyEq (MoreTransitions sourceStep NoTransitions)
+          sourceAligned = AlignedStep (LAdvance actor) tag sourceChecked
+            NoTransitions AlignedEnd
+      in packagePointwiseRelationalHeadReplay nameEq keyEq sourceStep
+        sourceAligned replayedAfter (LAdvance actor) tag replayedChecked Refl Refl
+        rar mapsRelated nextEndpoint
+
 ||| Complete pointwise O-Insert head. Applicability, checked target, endpoint,
 ||| map, RAR, occurrence, and ordinal evidence are all constructed together.
 0 replayPointwiseInsertHead :
