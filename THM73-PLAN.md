@@ -1111,6 +1111,29 @@ identity or caller-capital widening. Whole-suffix composition remains unopened.
 The **3–15 shift** estimate is held pending that gate. Holes remain **20**, split
 **6/4/8/1/1**.
 
+### Revision 56: joint producers closed; dependent elimination design gate
+
+`research-tests/O6-R56-JOINT-HEAD-DEPENDENT-ELIMINATION-DESIGN-GATE-STOP-AUDIT.md`
+records shift #64. The tracked `R43JointAlignedHeadProbePositive` proves both
+required directions: all eight builders are constructible from a checked source
+head, and one joint-package action elimination is total under a non-dependent
+codomain. The private real `PointwiseAlignedHeadJoint` landed at `b77c1a7`;
+four orchestration/begin builders landed at `2f38b65`; and four lifecycle
+builders landed at `0095dde`. All real builder groups compiled on attempt 1 and
+use producer-owned fixed-tag extraction.
+
+The first real eliminator attempt gave the newly gated failure: with dependent
+codomain `PointwiseRelationalHeadReplay ... sourceStep replayedBefore`, Idris
+reported roughly 140 indistinguishable `replayPointwiseJointHead _ _ _ _ _`
+missing cases despite all eight branch bodies. The positive non-dependent probe
+therefore does not extend to the exact source-indexed result. Per the revision-55
+gate, the eliminator was reverted immediately and no alternate representation
+was attempted. A further gate must choose between a private existential result
+envelope and action-specialized joint constructors, without dictionary identity
+or caller-capital widening. Whole-suffix composition remains unopened. The
+**3–15 shift** estimate is held pending that gate. Holes remain **20**, split
+**6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1422,7 +1445,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; all eight head families, the full L-Advance owner chain, and all three erased lifecycle tag helpers are closed. Revision 55 gates a joint-record representation because Idris coverage cannot correlate the separate source-step and aligned-singleton arguments.** | **XL, 3–15 remaining shifts held at the revision-55 dispatcher coverage design gate.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; all eight heads, fixed-tag helpers, the private joint package, and all eight joint builders are closed. Revision 56 shows the joint action split is total for a non-dependent probe but not for the exact source-indexed replay result.** | **XL, 3–15 remaining shifts held at the revision-56 dependent-elimination design gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1569,6 +1592,7 @@ empty and defined-failure seals. Revision 51 closes the yielded seal. Revision
 52 gates dependent agreement/seal transport. Revision 53 closes that transport,
 the nonempty join, and the thin L-Advance owner chain. Revision 54 clears the
 fixed-tag annotation wall. Revision 55 closes all three erased per-action
-source-plan tag helpers and gates a possible joint-record consumer after the
-separate-argument dispatcher fails coverage. Whole-suffix and final
-adjacent-result assembly remain after that gate.
+source-plan tag helpers. Revision 56 closes the joint package and all eight
+builders, then gates the exact dependent eliminator after the corresponding
+non-dependent probe succeeds. Whole-suffix and final adjacent-result assembly
+remain after that gate.
