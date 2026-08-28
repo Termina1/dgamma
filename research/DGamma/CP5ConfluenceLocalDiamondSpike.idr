@@ -6063,6 +6063,18 @@ data SealedPointwiseAdvanceYieldedAgreement :
     SealedPointwiseAdvanceYieldedAgreement
       (RuntimeYieldsAgree afterRelated undoMaps)
 
+||| Agreement and yielded certificate transported as one dependent package.
+||| Keeping both fields under the same outcome indices prevents their proof
+||| terms from becoming detached while reindexing concrete runtime results.
+record LocatedSealedPointwiseAdvanceYieldedAgreement
+  (name, key, world, error : Type) (value : key -> Type) (keyEq : DecEq key)
+  (first, second : Maybe (IteratorStageOutcome name key value world error)) where
+  constructor MkLocatedSealedPointwiseAdvanceYieldedAgreement
+  0 locatedYieldedAgreement : RuntimeIteratorOutcomeAgreement name key value
+    world error keyEq first second
+  0 locatedYieldedSeal :
+    SealedPointwiseAdvanceYieldedAgreement locatedYieldedAgreement
+
 ||| Final yielded target-match eliminator. Making the Boolean and both exact
 ||| equations explicit lets each clause refine them without unfolding the
 ||| computed target query inside the producer.
@@ -6395,6 +6407,348 @@ eliminateSealedPointwiseAdvanceYieldedBranch nameEq keyEq actor sourceWorld
               replayedLocal sourceUndo replayedUndo sourceRan replayedRan
               undoMaps matches sourceMatches replayedMatches tag sourceAfter
               sourceRaw sourceChecked mapsRelated beforeEndpoint
+
+||| An authenticated nonempty source action cannot carry an undefined runtime
+||| stage. The source resolution and run are opened here solely to eliminate the
+||| impossible `RuntimeOutcomesUndefined` branch.
+0 pointwiseAdvanceUndefinedContradiction :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (sourceWorld : world) ->
+  (sourceRegistry : Registry name key value world error) ->
+  (component : Component key value world error) ->
+  (sourceParent : Parent name) -> (retiredFlag : Bool) ->
+  (sourceTable : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (sourceAccumulator : LocalState key value world
+    (componentProvisions component) -> LocalState key value world
+    (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (sourceFound : lookupFiber @{nameEq} actor sourceRegistry = Just
+    (MkFiber component sourceParent retiredFlag sourceTable
+      (Reloading (step :: rest) sourceAccumulator view))) ->
+  runtimeAdvanceOutcome nameEq keyEq actor component step rest view sourceWorld
+    sourceTable sourceRegistry = Nothing ->
+  {tag : RuleTag} ->
+  {sourceAfter : SystemState name key value world error} ->
+  (applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState sourceWorld sourceRegistry) = Just (tag, sourceAfter)) ->
+  Void
+pointwiseAdvanceUndefinedContradiction nameEq keyEq actor sourceWorld
+  sourceRegistry component sourceParent retiredFlag sourceTable step rest
+  sourceAccumulator view sourceFound sourceUndefined sourceRaw
+  with (resolveCommittedValues @{nameEq} @{keyEq}
+    (dependencies (componentDependencies component)) view sourceRegistry)
+  proof sourceResolved
+  pointwiseAdvanceUndefinedContradiction nameEq keyEq actor sourceWorld
+    sourceRegistry component sourceParent retiredFlag sourceTable step rest
+    sourceAccumulator view sourceFound sourceUndefined sourceRaw | Nothing =
+      nothingNotJustAdvanceDispatch
+        (trans (sym (advanceMissingCapabilityIsNothing nameEq keyEq actor
+          sourceWorld sourceRegistry component sourceParent retiredFlag
+          sourceTable step rest sourceAccumulator view sourceFound
+          sourceResolved)) sourceRaw)
+  pointwiseAdvanceUndefinedContradiction nameEq keyEq actor sourceWorld
+    sourceRegistry component sourceParent retiredFlag sourceTable step rest
+    sourceAccumulator view sourceFound sourceUndefined sourceRaw |
+    Just sourceCapability
+    with (runStepEffect step sourceCapability
+      (MkLocalState sourceWorld
+        (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component)
+          (ownedValues sourceTable)))) proof sourceRan
+    pointwiseAdvanceUndefinedContradiction nameEq keyEq actor sourceWorld
+      sourceRegistry component sourceParent retiredFlag sourceTable step rest
+      sourceAccumulator view sourceFound sourceUndefined sourceRaw |
+      Just sourceCapability | Left sourceError =
+        case sourceUndefined of Refl impossible
+    pointwiseAdvanceUndefinedContradiction nameEq keyEq actor sourceWorld
+      sourceRegistry component sourceParent retiredFlag sourceTable step rest
+      sourceAccumulator view sourceFound sourceUndefined sourceRaw |
+      Just sourceCapability | Right (sourceLocal, sourceUndo) =
+        case sourceUndefined of Refl impossible
+
+||| Join one once-computed indexed runtime agreement to the failure or yielded
+||| producer-owned seal. No resolution, run, match, map, or endpoint capital is
+||| accepted here beyond the sealed branch interfaces.
+0 replayPointwiseAdvanceNonemptyHead :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (sourceWorld, replayedWorld : world) ->
+  (sourceRegistry, replayedRegistry : Registry name key value world error) ->
+  (component : Component key value world error) ->
+  (sourceParent, replayedParent : Parent name) -> (retiredFlag : Bool) ->
+  (sourceTable, replayedTable : OwnedTable key value
+    (componentProvisions component)) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (sourceAccumulator, replayedAccumulator : LocalState key value world
+    (componentProvisions component) -> LocalState key value world
+    (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  sourceParent = replayedParent ->
+  AccumulatorRelated sourceAccumulator replayedAccumulator ->
+  (sourceFound : lookupFiber @{nameEq} actor sourceRegistry = Just
+    (MkFiber component sourceParent retiredFlag sourceTable
+      (Reloading (step :: rest) sourceAccumulator view))) ->
+  (replayedFound : lookupFiber @{nameEq} actor replayedRegistry = Just
+    (MkFiber component replayedParent retiredFlag replayedTable
+      (Reloading (step :: rest) replayedAccumulator view))) ->
+  (agreement : RuntimeIteratorOutcomeAgreement name key value world error keyEq
+    (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
+      replayedWorld replayedTable replayedRegistry)
+    (runtimeAdvanceOutcome nameEq keyEq actor component step rest view
+      sourceWorld sourceTable sourceRegistry)) ->
+  (tag : RuleTag) -> (sourceAfter : SystemState name key value world error) ->
+  (sourceRaw : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState sourceWorld sourceRegistry) = Just (tag, sourceAfter)) ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState sourceWorld sourceRegistry) = Just (tag, sourceAfter)) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (partialEffectMapFor nameEq keyEq (LAdvance actor) tag
+      (the (SystemState name key value world error)
+        (MkSystemState sourceWorld sourceRegistry)))
+    (partialEffectMapFor nameEq keyEq (LAdvance actor) tag
+      (the (SystemState name key value world error)
+        (MkSystemState replayedWorld replayedRegistry))) ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq
+    (MkSystemState sourceWorld sourceRegistry)
+    (MkSystemState replayedWorld replayedRegistry) ->
+  PointwiseRelationalHeadReplay name key world error value nameEq keyEq
+    (Fired {before = MkSystemState sourceWorld sourceRegistry}
+      {afterState = sourceAfter} nameEq keyEq (LAdvance actor) tag sourceChecked)
+    (MkSystemState replayedWorld replayedRegistry)
+replayPointwiseAdvanceNonemptyHead nameEq keyEq actor sourceWorld replayedWorld
+  sourceRegistry replayedRegistry component sourceParent replayedParent
+  retiredFlag sourceTable replayedTable step rest sourceAccumulator
+  replayedAccumulator view parentsSame accumulatorsSame sourceFound replayedFound
+  agreement tag sourceAfter sourceRaw sourceChecked mapsRelated beforeEndpoint
+  with (resolveCommittedValues @{nameEq} @{keyEq}
+    (dependencies (componentDependencies component)) view sourceRegistry)
+  proof sourceResolved
+  replayPointwiseAdvanceNonemptyHead nameEq keyEq actor sourceWorld replayedWorld
+    sourceRegistry replayedRegistry component sourceParent replayedParent
+    retiredFlag sourceTable replayedTable step rest sourceAccumulator
+    replayedAccumulator view parentsSame accumulatorsSame sourceFound
+    replayedFound agreement tag sourceAfter sourceRaw sourceChecked mapsRelated
+    beforeEndpoint | Nothing = void (nothingNotJustAdvanceDispatch
+      (trans (sym (advanceMissingCapabilityIsNothing nameEq keyEq actor
+        sourceWorld sourceRegistry component sourceParent retiredFlag sourceTable
+        step rest sourceAccumulator view sourceFound sourceResolved)) sourceRaw))
+  replayPointwiseAdvanceNonemptyHead nameEq keyEq actor sourceWorld replayedWorld
+    sourceRegistry replayedRegistry component sourceParent replayedParent
+    retiredFlag sourceTable replayedTable step rest sourceAccumulator
+    replayedAccumulator view parentsSame accumulatorsSame sourceFound
+    replayedFound agreement tag sourceAfter sourceRaw sourceChecked mapsRelated
+    beforeEndpoint | Just sourceCapability
+    with (resolveCommittedValues @{nameEq} @{keyEq}
+      (dependencies (componentDependencies component)) view replayedRegistry)
+    proof replayedResolved
+    replayPointwiseAdvanceNonemptyHead nameEq keyEq actor sourceWorld
+      replayedWorld sourceRegistry replayedRegistry component sourceParent
+      replayedParent retiredFlag sourceTable replayedTable step rest
+      sourceAccumulator replayedAccumulator view parentsSame accumulatorsSame
+      sourceFound replayedFound agreement tag sourceAfter sourceRaw sourceChecked
+      mapsRelated beforeEndpoint | Just sourceCapability | Nothing
+      with (runStepEffect step sourceCapability
+        (MkLocalState sourceWorld
+          (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component)
+            (ownedValues sourceTable)))) proof sourceRan
+      replayPointwiseAdvanceNonemptyHead nameEq keyEq actor sourceWorld
+        replayedWorld sourceRegistry replayedRegistry component sourceParent
+        replayedParent retiredFlag sourceTable replayedTable step rest
+        sourceAccumulator replayedAccumulator view parentsSame accumulatorsSame
+        sourceFound replayedFound agreement tag sourceAfter sourceRaw
+        sourceChecked mapsRelated beforeEndpoint | Just sourceCapability |
+        Nothing | Left sourceError = void (undefinedDefinedOutcomeImpossible
+          (runtimeAgreementForControls agreement))
+      replayPointwiseAdvanceNonemptyHead nameEq keyEq actor sourceWorld
+        replayedWorld sourceRegistry replayedRegistry component sourceParent
+        replayedParent retiredFlag sourceTable replayedTable step rest
+        sourceAccumulator replayedAccumulator view parentsSame accumulatorsSame
+        sourceFound replayedFound agreement tag sourceAfter sourceRaw
+        sourceChecked mapsRelated beforeEndpoint | Just sourceCapability |
+        Nothing | Right (sourceLocal, sourceUndo) = void
+          (undefinedDefinedOutcomeImpossible
+            (runtimeAgreementForControls agreement))
+    replayPointwiseAdvanceNonemptyHead nameEq keyEq actor sourceWorld
+      replayedWorld sourceRegistry replayedRegistry component sourceParent
+      replayedParent retiredFlag sourceTable replayedTable step rest
+      sourceAccumulator replayedAccumulator view parentsSame accumulatorsSame
+      sourceFound replayedFound agreement tag sourceAfter sourceRaw sourceChecked
+      mapsRelated beforeEndpoint | Just sourceCapability |
+      Just replayedCapability
+      with (runStepEffect step sourceCapability
+        (MkLocalState sourceWorld
+          (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component)
+            (ownedValues sourceTable)))) proof sourceRan
+      replayPointwiseAdvanceNonemptyHead nameEq keyEq actor sourceWorld
+        replayedWorld sourceRegistry replayedRegistry component sourceParent
+        replayedParent retiredFlag sourceTable replayedTable step rest
+        sourceAccumulator replayedAccumulator view parentsSame accumulatorsSame
+        sourceFound replayedFound agreement tag sourceAfter sourceRaw
+        sourceChecked mapsRelated beforeEndpoint | Just sourceCapability |
+        Just replayedCapability | Left sourceError
+        with (runStepEffect step replayedCapability
+          (MkLocalState replayedWorld
+            (restrictOwnedPreservingOrder @{keyEq}
+              (componentProvisions component) (ownedValues replayedTable))))
+        proof replayedRan
+        replayPointwiseAdvanceNonemptyHead nameEq keyEq actor sourceWorld
+          replayedWorld sourceRegistry replayedRegistry component sourceParent
+          replayedParent retiredFlag sourceTable replayedTable step rest
+          sourceAccumulator replayedAccumulator view parentsSame accumulatorsSame
+          sourceFound replayedFound agreement tag sourceAfter sourceRaw
+          sourceChecked mapsRelated beforeEndpoint | Just sourceCapability |
+          Just replayedCapability | Left sourceError | Left replayedError =
+            case agreement of
+              RuntimeFailuresAgree errorsSame =>
+                let 0 sourceOutcome :
+                      (runtimeAdvanceOutcome nameEq keyEq actor component step
+                        rest view sourceWorld sourceTable sourceRegistry =
+                        Just (IteratorRaised sourceError))
+                    sourceOutcome = rewrite sourceResolved in
+                      rewrite sourceRan in Refl
+                    0 replayedOutcome :
+                      (runtimeAdvanceOutcome nameEq keyEq actor component step
+                        rest view replayedWorld replayedTable replayedRegistry =
+                        Just (IteratorRaised replayedError))
+                    replayedOutcome = rewrite replayedResolved in
+                      rewrite replayedRan in Refl
+                in eliminateSealedPointwiseAdvanceFailureBranch nameEq keyEq
+                  actor sourceWorld replayedWorld sourceRegistry
+                  replayedRegistry component sourceParent replayedParent
+                  retiredFlag sourceTable replayedTable step rest
+                  sourceAccumulator replayedAccumulator view parentsSame
+                  accumulatorsSame sourceFound replayedFound sourceError
+                  replayedError sourceOutcome replayedOutcome (sym errorsSame)
+                  tag sourceAfter sourceRaw sourceChecked mapsRelated
+                  beforeEndpoint
+        replayPointwiseAdvanceNonemptyHead nameEq keyEq actor sourceWorld
+          replayedWorld sourceRegistry replayedRegistry component sourceParent
+          replayedParent retiredFlag sourceTable replayedTable step rest
+          sourceAccumulator replayedAccumulator view parentsSame accumulatorsSame
+          sourceFound replayedFound agreement tag sourceAfter sourceRaw
+          sourceChecked mapsRelated beforeEndpoint | Just sourceCapability |
+          Just replayedCapability | Left sourceError |
+          Right (replayedLocal, replayedUndo) = void
+            (successFailureOutcomeImpossible
+              (runtimeAgreementForControls agreement))
+      replayPointwiseAdvanceNonemptyHead nameEq keyEq actor sourceWorld
+        replayedWorld sourceRegistry replayedRegistry component sourceParent
+        replayedParent retiredFlag sourceTable replayedTable step rest
+        sourceAccumulator replayedAccumulator view parentsSame accumulatorsSame
+        sourceFound replayedFound agreement tag sourceAfter sourceRaw
+        sourceChecked mapsRelated beforeEndpoint | Just sourceCapability |
+        Just replayedCapability | Right (sourceLocal, sourceUndo)
+        with (runStepEffect step replayedCapability
+          (MkLocalState replayedWorld
+            (restrictOwnedPreservingOrder @{keyEq}
+              (componentProvisions component) (ownedValues replayedTable))))
+        proof replayedRan
+        replayPointwiseAdvanceNonemptyHead nameEq keyEq actor sourceWorld
+          replayedWorld sourceRegistry replayedRegistry component sourceParent
+          replayedParent retiredFlag sourceTable replayedTable step rest
+          sourceAccumulator replayedAccumulator view parentsSame accumulatorsSame
+          sourceFound replayedFound agreement tag sourceAfter sourceRaw
+          sourceChecked mapsRelated beforeEndpoint | Just sourceCapability |
+          Just replayedCapability | Right (sourceLocal, sourceUndo) |
+          Left replayedError = void (failureSuccessOutcomeImpossible
+            (runtimeAgreementForControls agreement))
+        replayPointwiseAdvanceNonemptyHead nameEq keyEq actor sourceWorld
+          replayedWorld sourceRegistry replayedRegistry component sourceParent
+          replayedParent retiredFlag sourceTable replayedTable step rest
+          sourceAccumulator replayedAccumulator view parentsSame accumulatorsSame
+          sourceFound replayedFound agreement tag sourceAfter sourceRaw
+          sourceChecked mapsRelated beforeEndpoint | Just sourceCapability |
+          Just replayedCapability | Right (sourceLocal, sourceUndo) |
+          Right (replayedLocal, replayedUndo) = case agreement of
+            RuntimeYieldsAgree primitiveEffects targetSourceUndoMaps =>
+              let sourceYielded : IteratorStageOutcome name key value world error
+                  sourceYielded = IteratorYielded
+                    (setEffectTable @{nameEq} actor
+                      (ownedValues (localTable sourceLocal))
+                      (setEffectAmbient (localWorld sourceLocal)
+                        (projectEffectState @{nameEq}
+                          (MkSystemState sourceWorld sourceRegistry))))
+                    (yieldedInverseEffectMap nameEq keyEq actor
+                      (componentProvisions component) sourceUndo)
+                    (MkIteratorContinuation rest)
+                  replayedYielded : IteratorStageOutcome name key value world
+                    error
+                  replayedYielded = IteratorYielded
+                    (setEffectTable @{nameEq} actor
+                      (ownedValues (localTable replayedLocal))
+                      (setEffectAmbient (localWorld replayedLocal)
+                        (projectEffectState @{nameEq}
+                          (MkSystemState replayedWorld replayedRegistry))))
+                    (yieldedInverseEffectMap nameEq keyEq actor
+                      (componentProvisions component) replayedUndo)
+                    (MkIteratorContinuation rest)
+                  0 sourceOutcome :
+                    (runtimeAdvanceOutcome nameEq keyEq actor component step rest
+                      view sourceWorld sourceTable sourceRegistry =
+                      Just sourceYielded)
+                  sourceOutcome = rewrite sourceResolved in
+                    rewrite sourceRan in Refl
+                  0 replayedOutcome :
+                    (runtimeAdvanceOutcome nameEq keyEq actor component step rest
+                      view replayedWorld replayedTable replayedRegistry =
+                      Just replayedYielded)
+                  replayedOutcome = rewrite replayedResolved in
+                    rewrite replayedRan in Refl
+                  0 concreteLocated :
+                    LocatedSealedPointwiseAdvanceYieldedAgreement name key world
+                      error value keyEq (Just replayedYielded)
+                      (Just sourceYielded)
+                  concreteLocated =
+                    MkLocatedSealedPointwiseAdvanceYieldedAgreement
+                      (RuntimeYieldsAgree primitiveEffects targetSourceUndoMaps)
+                      MkSealedPointwiseAdvanceYieldedAgreement
+                  0 replayedLocated :
+                    LocatedSealedPointwiseAdvanceYieldedAgreement name key world
+                      error value keyEq
+                      (runtimeAdvanceOutcome nameEq keyEq actor component step
+                        rest view replayedWorld replayedTable replayedRegistry)
+                      (Just sourceYielded)
+                  replayedLocated = replace
+                    {p = \targetOutcome =>
+                      LocatedSealedPointwiseAdvanceYieldedAgreement name key
+                        world error value keyEq targetOutcome
+                        (Just sourceYielded)}
+                    (sym replayedOutcome) concreteLocated
+                  0 runtimeLocated :
+                    LocatedSealedPointwiseAdvanceYieldedAgreement name key world
+                      error value keyEq
+                      (runtimeAdvanceOutcome nameEq keyEq actor component step
+                        rest view replayedWorld replayedTable replayedRegistry)
+                      (runtimeAdvanceOutcome nameEq keyEq actor component step
+                        rest view sourceWorld sourceTable sourceRegistry)
+                  runtimeLocated = replace
+                    {p = \sourceOutcome =>
+                      LocatedSealedPointwiseAdvanceYieldedAgreement name key
+                        world error value keyEq
+                        (runtimeAdvanceOutcome nameEq keyEq actor component step
+                          rest view replayedWorld replayedTable replayedRegistry)
+                        sourceOutcome}
+                    (sym sourceOutcome) replayedLocated
+              in case runtimeLocated of
+                MkLocatedSealedPointwiseAdvanceYieldedAgreement
+                  locatedAgreement locatedSeal =>
+                    eliminateSealedPointwiseAdvanceYieldedBranch nameEq keyEq
+                      actor sourceWorld replayedWorld sourceRegistry
+                      replayedRegistry component sourceParent replayedParent
+                      retiredFlag sourceTable replayedTable step rest
+                      sourceAccumulator replayedAccumulator view parentsSame
+                      accumulatorsSame sourceFound replayedFound locatedAgreement
+                      locatedSeal tag sourceAfter sourceRaw sourceChecked
+                      mapsRelated beforeEndpoint
 
 ||| Complete pointwise O-Insert head. Applicability, checked target, endpoint,
 ||| map, RAR, occurrence, and ordinal evidence are all constructed together.
