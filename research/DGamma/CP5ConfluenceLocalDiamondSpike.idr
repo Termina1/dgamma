@@ -7365,6 +7365,21 @@ replayPointwiseSuffixSpineWith nameEq keyEq replayHead
       (spineReplayEndpoint tail)
       (sealPointwiseRelationalHead head (spineReplaySeal tail))
 
+||| Erased fixed-tag extractor for the generic L-Divert dispatch clause. The
+||| dependent source plan witness is opened and consumed entirely inside this
+||| helper; only the unique tag equality crosses the boundary.
+0 pointwiseDivertTag :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  (applyAction @{nameEq} @{keyEq} (LDivert actor)
+    (MkSystemState ambient source) = Just (tag, afterState)) ->
+  tag = LDivertTag
+pointwiseDivertTag nameEq keyEq actor ambient source tag afterState raw =
+  case foreignDivertPlanView nameEq keyEq actor ambient source tag afterState raw of
+    MkLocatedForeignDivertPlanView owner found view =>
+      foreignDivertPlanViewTag view
+
 ||| A complete adjacent transposition: the local pair is swapped, the untouched
 ||| suffix is replayed, and the next recursion receives the same full premise
 ||| bundle.  It also exposes exact same-external-input and generator/stage
