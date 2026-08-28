@@ -2064,6 +2064,145 @@ locateSingletonAdvanceStageReplay nameEq keyEq actor tag sourceBefore sourceAfte
                 remaining sourceAccumulator view Refl step rest suffix)
               (\state => Refl)
 
+record SingletonAdvanceStageReplayFamily
+  (name, key, world, error : Type) (value : key -> Type)
+  {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
+    SystemState name key value world error}
+  (source : Transitions sourceFirst sourceFinal)
+  (replayed : Transitions replayedFirst replayedFinal) where
+  constructor MkSingletonAdvanceStageReplayFamily
+  locateAdvanceStageReplay : (selected : name) ->
+    (stage : IteratorStage name key world error value selected replayed) ->
+    LocatedSingletonAdvanceStageReplay name key world error value source replayed
+      selected stage
+
+record LocatedSingletonAdvanceGeneratorReplay
+  (name, key, world, error : Type) (value : key -> Type)
+  {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
+    SystemState name key value world error}
+  (source : Transitions sourceFirst sourceFinal)
+  (replayed : Transitions replayedFirst replayedFinal)
+  (selected : name)
+  (targetGenerator : TraceEffectGenerator name key world error value selected
+    replayed) where
+  constructor MkLocatedSingletonAdvanceGeneratorReplay
+  locatedSourceAdvanceGenerator : TraceEffectGenerator name key world error value
+    selected source
+  0 locatedAdvanceGeneratorMapsRelated : (observedKeyEq : DecEq key) ->
+    PartialMapsRelated (EffectStateEquivalence observedKeyEq)
+      (traceGeneratorMap locatedSourceAdvanceGenerator)
+      (traceGeneratorMap targetGenerator)
+
+0 locateSingletonAdvanceGeneratorReplay :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, replayedBefore, replayedAfter :
+    SystemState name key value world error) ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    sourceBefore = Just (tag, sourceAfter)) ->
+  (replayedChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    replayedBefore = Just (tag, replayedAfter)) ->
+  (family : SingletonAdvanceStageReplayFamily name key world error value
+    (MoreTransitions
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+    (MoreTransitions
+      (Fired {before = replayedBefore} {afterState = replayedAfter}
+        nameEq keyEq (LAdvance actor) tag replayedChecked) NoTransitions)) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (partialEffectMap
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq (LAdvance actor) tag sourceChecked))
+    (partialEffectMap
+      (Fired {before = replayedBefore} {afterState = replayedAfter}
+        nameEq keyEq (LAdvance actor) tag replayedChecked)) ->
+  (selected : name) ->
+  (targetGenerator : TraceEffectGenerator name key world error value selected
+    (MoreTransitions
+      (Fired {before = replayedBefore} {afterState = replayedAfter}
+        nameEq keyEq (LAdvance actor) tag replayedChecked) NoTransitions)) ->
+  LocatedSingletonAdvanceGeneratorReplay name key world error value
+    (MoreTransitions
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+    (MoreTransitions
+      (Fired {before = replayedBefore} {afterState = replayedAfter}
+        nameEq keyEq (LAdvance actor) tag replayedChecked) NoTransitions)
+    selected targetGenerator
+locateSingletonAdvanceGeneratorReplay nameEq keyEq actor tag sourceBefore
+  sourceAfter replayedBefore replayedAfter sourceChecked replayedChecked family
+  transitionMaps selected
+  targetGenerator@(ActualForwardGenerator _ _ _ _ _ _ _ occurs actorMatches) =
+    case singletonOccursSelected occurs of
+      Refl => MkLocatedSingletonAdvanceGeneratorReplay
+        (ActualForwardGenerator sourceBefore sourceAfter nameEq keyEq
+          (LAdvance actor) tag sourceChecked OccursHere actorMatches)
+        (\observedKeyEq, inputs => replayReindexPartialRelated
+          (transitionMaps (replayReindexEffectRelated inputs)))
+locateSingletonAdvanceGeneratorReplay nameEq keyEq actor tag sourceBefore
+  sourceAfter replayedBefore replayedAfter sourceChecked replayedChecked family
+  transitionMaps selected targetGenerator@(IteratorForwardGenerator stage) =
+    let located = locateAdvanceStageReplay family selected stage
+        sourceStage : IteratorStage name key world error value selected
+          (MoreTransitions
+            (Fired {before = sourceBefore} {afterState = sourceAfter}
+              nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+        sourceStage = locatedSourceAdvanceStage located
+        sourceGenerator : TraceEffectGenerator name key world error value selected
+          (MoreTransitions
+            (Fired {before = sourceBefore} {afterState = sourceAfter}
+              nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+        sourceGenerator = IteratorForwardGenerator sourceStage
+        0 exact : (state : EffectState name key value world) ->
+          traceGeneratorMap sourceGenerator state =
+          traceGeneratorMap targetGenerator state
+        exact state = trans
+          (sym (replayIteratorForwardProjectionExact sourceStage state))
+          (trans
+            (sym (cong replayRuntimeForwardProjection
+              (locatedAdvanceOutcomeSame located state)))
+            (replayIteratorForwardProjectionExact stage state))
+        0 mapsRelated : (observedKeyEq : DecEq key) ->
+          PartialMapsRelated (EffectStateEquivalence observedKeyEq)
+            (traceGeneratorMap sourceGenerator)
+            (traceGeneratorMap targetGenerator)
+        mapsRelated observedKeyEq {x} {y} inputs =
+          replayPartialRewrite (sym (exact x)) Refl
+            (replayTraceGeneratorMapRespects observedKeyEq targetGenerator inputs)
+    in MkLocatedSingletonAdvanceGeneratorReplay sourceGenerator mapsRelated
+locateSingletonAdvanceGeneratorReplay nameEq keyEq actor tag sourceBefore
+  sourceAfter replayedBefore replayedAfter sourceChecked replayedChecked family
+  transitionMaps selected
+  targetGenerator@(IteratorYieldedGenerator stage origin) =
+    let located = locateAdvanceStageReplay family selected stage
+        sourceStage : IteratorStage name key world error value selected
+          (MoreTransitions
+            (Fired {before = sourceBefore} {afterState = sourceAfter}
+              nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+        sourceStage = locatedSourceAdvanceStage located
+        sourceGenerator : TraceEffectGenerator name key world error value selected
+          (MoreTransitions
+            (Fired {before = sourceBefore} {afterState = sourceAfter}
+              nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+        sourceGenerator = IteratorYieldedGenerator sourceStage origin
+        0 exact : (state : EffectState name key value world) ->
+          traceGeneratorMap sourceGenerator state =
+          traceGeneratorMap targetGenerator state
+        exact state = trans
+          (sym (replayIteratorYieldedProjectionExact sourceStage origin state))
+          (trans
+            (cong (\outcome => replayRuntimeYieldedProjection outcome state)
+              (sym (locatedAdvanceOutcomeSame located origin)))
+            (replayIteratorYieldedProjectionExact stage origin state))
+        0 mapsRelated : (observedKeyEq : DecEq key) ->
+          PartialMapsRelated (EffectStateEquivalence observedKeyEq)
+            (traceGeneratorMap sourceGenerator)
+            (traceGeneratorMap targetGenerator)
+        mapsRelated observedKeyEq {x} {y} inputs =
+          replayPartialRewrite (sym (exact x)) Refl
+            (replayTraceGeneratorMapRespects observedKeyEq targetGenerator inputs)
+    in MkLocatedSingletonAdvanceGeneratorReplay sourceGenerator mapsRelated
+
 0 pointwiseSomeNoControlImpossible :
   FiberControlMaybeRelated (Just fiber) Nothing -> Void
 pointwiseSomeNoControlImpossible relation impossible
