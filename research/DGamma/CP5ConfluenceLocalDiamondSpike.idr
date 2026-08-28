@@ -7395,6 +7395,20 @@ pointwiseLeaveTag nameEq keyEq actor ambient source tag afterState raw =
     MkLocatedForeignLeavePlanView owner found view =>
       leaveReplayTagShape (foreignLeaveReplayData view)
 
+||| Erased fixed-tag extractor for the generic L-Unload dispatch clause. The
+||| complete source observation is consumed locally and cannot escape as caller
+||| capital.
+0 pointwiseUnloadTag :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  (applyAction @{nameEq} @{keyEq} (LUnload actor)
+    (MkSystemState ambient source) = Just (tag, afterState)) ->
+  tag = LUnloadTag
+pointwiseUnloadTag nameEq keyEq actor ambient source tag afterState raw =
+  unloadObservedTag (pointwiseUnloadSourceObservation nameEq keyEq actor ambient
+    source tag afterState raw)
+
 ||| A complete adjacent transposition: the local pair is swapped, the untouched
 ||| suffix is replayed, and the next recursion receives the same full premise
 ||| bundle.  It also exposes exact same-external-input and generator/stage
