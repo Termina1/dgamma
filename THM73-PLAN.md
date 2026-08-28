@@ -1047,6 +1047,28 @@ identity without proof equality, recomputation, or a boundary change. Families
 remain **7/8** and whole-suffix composition remains gated. The **5–17 shift**
 estimate is held unchanged. Holes remain **20**, split **6/4/8/1/1**.
 
+### Revision 53: eighth family closed; generic head dispatch STOP-AUDIT
+
+`research-tests/O6-R53-ADVANCE-CLOSED-HEAD-DISPATCH-STOP-AUDIT.md`
+records shift #61. The dependent agreement+seal package closed on its first
+attempt at `92cc114`. The thin owner-opening chain then closed on attempt 2 at
+`abdde3d` after explicitly transporting target lookup indices for remaining
+program, view, and retirement. All eight semantic head families are now
+**8/8**.
+
+The generic all-action dispatcher needed to instantiate the existing structural
+spine recursion exhausted its own budget. Dispatching on the transition directly
+was rejected by aligned dictionary nonlinearity; dispatching on the aligned
+singleton fixed that but required wildcarding the definitionally generated
+source step. The final attempt reached the O-Insert body and stopped on the known
+erased equality-annotation ambiguity for an unparenthesized raw action equality.
+All dispatcher code was reverted. A fresh attempt must preserve aligned-singleton
+dispatch, wildcard source steps, `rewrite found in raw` for L-Begin, and
+parenthesized raw/tag equalities in every fixed-tag branch. Whole-suffix
+composition remains unopened until the generic recursion is instantiated. The
+estimate narrows from **5–17** to **3–15 shifts**. Holes remain **20**, split
+**6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1358,7 +1380,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; seven heads and all three L-Advance seals are closed. Revision 52 closes failure equation materialization and gates yielded agreement/certificate transport as one dependent package.** | **XL, 5–17 remaining shifts held at the revision-52 yielded-equation design gate.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; all eight head families and the full L-Advance owner chain are closed. Revision 53 leaves only the private aligned all-action dispatcher before generic spine instantiation and whole-suffix composition.** | **XL, 3–15 remaining shifts after the revision-53 head-dispatch STOP-AUDIT.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1492,7 +1514,7 @@ revision-18 external-order work are ratified; O5 remains only locally closed.
 Revisions 27–29 retain target-map identity at the finish producer, close
 independence, and assemble the complete target `ReplayInvariantBundle` through
 support/active matching. The atomic A/B/C/D/E boundary and revision-20 relational-map repair are landed.
-Seven of eight semantic action families are closed. L-Unload is complete
+All eight semantic action families are closed. L-Unload is complete
 through the revision-43 sealed eliminator; its older direct and projection-only
 consumers remain retired. Every L-Advance runtime branch now has a complete
 concrete operational producer, including yielded divert/finish/iter through the
@@ -1502,7 +1524,7 @@ generator package, singleton L-Advance RAR, and common head-capital packager.
 Revision 48 rules out the nested dispatcher representation. Revision 49
 ratifies producer-owned sealed per-outcome eliminators. Revision 50 retains the
 empty and defined-failure seals. Revision 51 closes the yielded seal. Revision
-52 closes failure equation materialization and gates the remaining yielded join
-on transporting the agreement and its seal together as one dependent package.
-The thin complete head remains before whole-suffix and final adjacent-result
+52 gates dependent agreement/seal transport. Revision 53 closes that transport,
+the nonempty join, and the thin L-Advance owner chain. The generic aligned
+all-action dispatcher remains before whole-suffix and final adjacent-result
 assembly.
