@@ -7380,6 +7380,21 @@ pointwiseDivertTag nameEq keyEq actor ambient source tag afterState raw =
     MkLocatedForeignDivertPlanView owner found view =>
       foreignDivertPlanViewTag view
 
+||| Erased fixed-tag extractor for the generic L-Leave dispatch clause. The
+||| lifecycle replay witness stays producer-owned; consumers receive only its
+||| unique successful tag equality.
+0 pointwiseLeaveTag :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  (applyAction @{nameEq} @{keyEq} (LLeave actor)
+    (MkSystemState ambient source) = Just (tag, afterState)) ->
+  tag = LLeaveTag
+pointwiseLeaveTag nameEq keyEq actor ambient source tag afterState raw =
+  case foreignLeavePlanView nameEq keyEq actor ambient source tag afterState raw of
+    MkLocatedForeignLeavePlanView owner found view =>
+      leaveReplayTagShape (foreignLeaveReplayData view)
+
 ||| A complete adjacent transposition: the local pair is swapped, the untouched
 ||| suffix is replayed, and the next recursion receives the same full premise
 ||| bundle.  It also exposes exact same-external-input and generator/stage
