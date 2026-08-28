@@ -1187,6 +1187,27 @@ one elimination before building the cons-origin package. The accepted
 **3–15 shift** band is held pending that statement-shape gate. Holes remain
 **20**, split **6/4/8/1/1**.
 
+### Revision 59: target-localization producer coverage gate
+
+`research-tests/O6-R59-TARGET-LOCALIZATION-PRODUCER-COVERAGE-GATE-STOP-AUDIT.md`
+records shift #67. The authorized six-constructor
+`LocatedConsTargetGenerator` type shape reached elaboration after making the
+refined `Here` tail explicit and naming hidden iterator-stage endpoints. Its
+generic producer then exhausted the third attempt at coverage: the statement
+still exposed both `targetHead` and the whole target generator as explicit
+scrutinees, so Idris reported a large family of independent
+`Fired ...`/`IteratorForwardGenerator` and yielded cases.
+
+The GADT can jointly describe the whole target and local occurrence, but its
+producer cannot establish that package through two explicit scrutinees. The
+whole unit was reverted. The narrow next candidate is a private locator whose
+head/tail are implicit indices and whose whole generator is the only explicit
+scrutinee, mirroring revision 57's successful implicit `sourceStep` eliminator.
+The stronger whole-cons RAR re-quantification remains unopened and requires the
+explicit supervisor escalation described by revision 58. The accepted
+**3–15 shift** band is held pending this producer-statement gate. Holes remain
+**20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1498,7 +1519,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; indexed head elimination and the generic suffix spine are closed. Revision 58 shows that even a source-correlated located cons package cannot identify its reconstructed singleton/tail target with the original whole-target generator parameter.** | **XL, original 3–15 remaining-shift band held at the revision-58 cons-RAR statement-shape gate.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; indexed head elimination and the generic suffix spine are closed. Revision 59 shows the six-constructor target-localization result is expressible, but its producer is non-covering while target head and whole generator remain separate explicit scrutinees.** | **XL, original 3–15 remaining-shift band held at the revision-59 target-localization producer gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1652,5 +1673,7 @@ eliminator and the instantiated suffix spine, and gates whole-suffix RAR cons at
 a correlated origin/map and stage/outcome packaging wall. Revision 58 opens the
 RAR once and clears source-origin correlation inside the first located package,
 but gates its statement when the reconstructed local target does not identify
-with the original whole-target parameter. Occurrence/ordinal composition and
-final adjacent-result assembly remain after that gate.
+with the original whole-target parameter. Revision 59 expresses the approved
+six-way joint target GADT, then gates its producer because explicit target-head
+and generator scrutinees remain independently covered. Occurrence/ordinal
+composition and final adjacent-result assembly remain after that gate.
