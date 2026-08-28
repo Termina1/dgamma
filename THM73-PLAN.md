@@ -964,6 +964,27 @@ retirement equality sourceward. Seven of eight families remain closed;
 whole-suffix composition remains gated. The **7–19 shift** estimate is unchanged.
 Holes remain **20**, split **6/4/8/1/1**.
 
+### Revision 49: advance dispatcher mandatory design gate
+
+`research-tests/O6-R49-ADVANCE-DISPATCHER-DESIGN-GATE-STOP-AUDIT.md`
+records shift #57, the final authorized localized dispatcher budget. Carrying
+one indexed `RuntimeIteratorOutcomeAgreement` removed the missing-outcome
+reduction wall and reached yielded-success packaging. Fully typing undo-map
+symmetry and explicitly transporting the target lookup with `sym retiredSame`
+then removed both revision-48 refinements. Exact false/true match equations were
+introduced on the final attempt, but Idris consumed that attempt on layout under
+the true branch's `case rest`; the obvious indentation correction was not
+compiled.
+
+The whole helper/eliminator was reverted. Per the escalation boundary, no
+fourth monolithic dispatcher variation is permitted. A dedicated design gate
+must decide the dispatcher shape; the current candidate is producer-owned
+sealed empty, failure, and yielded branch eliminators (the yielded package
+splits divert/finish/iter) joined by a thin owner-opening head, analogous to the
+successful L-Unload architecture. Seven of eight families remain closed and
+whole-suffix composition remains gated. The **7–19 shift** estimate is held
+pending that decision. Holes remain **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1275,7 +1296,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; seven heads are closed. All operational and generator/RAR/head-packaging capital is retained. Revision 48 rules out the nested dispatcher: the top-level nonempty helper must carry one indexed runtime agreement and orient retired equality sourceward. Complete head and whole-result assembly remain open.** | **XL, 7–19 remaining shifts after revision-48 dispatcher dependent-scope STOP-AUDIT.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; seven heads are closed and all semantic capital is retained. Revision 49 exhausted the third monolithic dispatcher budget after reaching yielded packaging; a mandatory design gate must choose producer-owned per-outcome sealed eliminators before the complete head can continue.** | **XL, 7–19 remaining shifts held at the revision-49 dispatcher design gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1416,7 +1437,9 @@ concrete operational producer, including yielded divert/finish/iter through the
 revision-45 branch-local endpoint representation. Singleton stage
 origin/outcome capital is also retained. Revision 47 closes the dependent
 generator package, singleton L-Advance RAR, and common head-capital packager.
-Revision 48 rules out the nested dispatcher representation and localizes the
-top-level alternative to one indexed runtime-agreement argument plus sourceward
-retirement equality. The dispatcher and thin outer complete head remain before
+Revision 48 rules out the nested dispatcher representation. Revision 49 proves
+that the indexed top-level route reaches yielded packaging, but exhausts the
+third dispatcher budget on final branch layout. A mandatory design gate now
+precedes any further dispatcher work; the candidate is producer-owned sealed
+per-outcome eliminators joined by a thin head. The complete head remains before
 whole-suffix and final adjacent-result assembly.
