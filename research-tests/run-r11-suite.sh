@@ -72,6 +72,7 @@ POSITIVE=(
   R39RelationalHeadProducerPositive
   R39RelationalFixtureRetentionPositive
   R40RetiredExactMapShapesPositive
+  R43JointAlignedHeadProbePositive
 )
 
 # Each expected failure has its own mandatory diagnostic fragment and source
