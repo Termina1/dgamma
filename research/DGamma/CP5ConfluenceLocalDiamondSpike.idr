@@ -2203,6 +2203,51 @@ locateSingletonAdvanceGeneratorReplay nameEq keyEq actor tag sourceBefore
             (replayTraceGeneratorMapRespects observedKeyEq targetGenerator inputs)
     in MkLocatedSingletonAdvanceGeneratorReplay sourceGenerator mapsRelated
 
+0 singletonAdvanceRAR :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, replayedBefore, replayedAfter :
+    SystemState name key value world error) ->
+  (sourceChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    sourceBefore = Just (tag, sourceAfter)) ->
+  (replayedChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    replayedBefore = Just (tag, replayedAfter)) ->
+  (family : SingletonAdvanceStageReplayFamily name key world error value
+    (MoreTransitions
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+    (MoreTransitions
+      (Fired {before = replayedBefore} {afterState = replayedAfter}
+        nameEq keyEq (LAdvance actor) tag replayedChecked) NoTransitions)) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (partialEffectMap
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq (LAdvance actor) tag sourceChecked))
+    (partialEffectMap
+      (Fired {before = replayedBefore} {afterState = replayedAfter}
+        nameEq keyEq (LAdvance actor) tag replayedChecked)) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+    (MoreTransitions
+      (Fired {before = replayedBefore} {afterState = replayedAfter}
+        nameEq keyEq (LAdvance actor) tag replayedChecked) NoTransitions)
+singletonAdvanceRAR nameEq keyEq actor tag sourceBefore sourceAfter
+  replayedBefore replayedAfter sourceChecked replayedChecked family transitionMaps =
+    let generatorLocation = locateSingletonAdvanceGeneratorReplay nameEq keyEq
+          actor tag sourceBefore sourceAfter replayedBefore replayedAfter
+          sourceChecked replayedChecked family transitionMaps
+    in MkRelationalReplayCorrespondence
+      (\selected, generator => locatedSourceAdvanceGenerator
+        (generatorLocation selected generator))
+      (\observedKeyEq, selected, generator => locatedAdvanceGeneratorMapsRelated
+        (generatorLocation selected generator) observedKeyEq)
+      (\selected, stage => locatedSourceAdvanceStage
+        (locateAdvanceStageReplay family selected stage))
+      (\selected, stage, state => locatedAdvanceOutcomeSame
+        (locateAdvanceStageReplay family selected stage) state)
+
 0 pointwiseSomeNoControlImpossible :
   FiberControlMaybeRelated (Just fiber) Nothing -> Void
 pointwiseSomeNoControlImpossible relation impossible
