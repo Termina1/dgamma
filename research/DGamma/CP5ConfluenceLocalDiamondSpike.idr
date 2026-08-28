@@ -7392,14 +7392,15 @@ PointwiseRelationalHeadReplayer :
 PointwiseRelationalHeadReplayer name key world error value nameEq keyEq =
   {sourceBefore, sourceAfter, replayedBefore :
     SystemState name key value world error} ->
-  (sourceStep : Transition sourceBefore sourceAfter) ->
-  AlignedTransitions name key world error value nameEq keyEq
-    (MoreTransitions sourceStep NoTransitions) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} action sourceBefore =
+    Just (tag, sourceAfter)) ->
   registryWellFormed @{nameEq} @{keyEq} sourceBefore = True ->
   RelationalReplayEndpoint name key world error value nameEq keyEq
     sourceBefore replayedBefore ->
-  PointwiseRelationalHeadReplay name key world error value nameEq keyEq sourceStep
-    replayedBefore
+  PointwiseRelationalHeadReplay name key world error value nameEq keyEq
+    (Fired {before = sourceBefore} {afterState = sourceAfter}
+      nameEq keyEq action tag checked) replayedBefore
 
 ||| Exact existential returned by the first genuine generic spine recursion.
 ||| It exposes no caller-selected evidence: target trace, endpoint, and seal are
@@ -7443,11 +7444,7 @@ replayPointwiseSuffixSpineWith nameEq keyEq replayHead
       nameEq keyEq action tag checked) sourceTail)
   (AlignedStep action tag checked sourceTail alignedTail) sourceWellFormed
   endpoint =
-    let head = replayHead
-          (Fired {before = sourceFirst} {afterState = sourceMiddle}
-            nameEq keyEq action tag checked)
-          (AlignedStep action tag checked NoTransitions AlignedEnd)
-          sourceWellFormed endpoint
+    let head = replayHead action tag checked sourceWellFormed endpoint
         0 sourceMiddleWellFormed = checkedTargetWellFormed nameEq keyEq action
           _ _ tag checked
         tail = replayPointwiseSuffixSpineWith nameEq keyEq replayHead sourceTail
@@ -14514,6 +14511,36 @@ buildPointwiseUnloadJoint nameEq keyEq actor tag
       Refl => MkPointwiseUnloadJoint actor checked
         (AlignedStep (LUnload actor) LUnloadTag checked NoTransitions AlignedEnd)
 
+||| Exhaustive producer for a source action already carrying the spine's exact
+||| dictionaries and checked equation. Fixed-tag observations remain inside the
+||| eight specialized builders; no alignment or endpoint capital is supplied by
+||| the caller.
+0 buildPointwiseJointAction :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  {before, afterState : SystemState name key value world error} ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  PointwiseAlignedHeadJoint name key world error value nameEq keyEq
+    (Fired {before} {afterState} nameEq keyEq action tag checked)
+buildPointwiseJointAction nameEq keyEq (OInsert actor parent component) tag
+  checked = buildPointwiseInsertJoint nameEq keyEq actor parent component tag
+    checked
+buildPointwiseJointAction nameEq keyEq (ORetire actor) tag checked =
+  buildPointwiseRetireJoint nameEq keyEq actor tag checked
+buildPointwiseJointAction nameEq keyEq (ORemove actor) tag checked =
+  buildPointwiseRemoveJoint nameEq keyEq actor tag checked
+buildPointwiseJointAction nameEq keyEq (LBegin actor) tag checked =
+  buildPointwiseBeginJoint nameEq keyEq actor tag checked
+buildPointwiseJointAction nameEq keyEq (LAdvance actor) tag checked =
+  buildPointwiseAdvanceJoint nameEq keyEq actor tag checked
+buildPointwiseJointAction nameEq keyEq (LDivert actor) tag checked =
+  buildPointwiseDivertJoint nameEq keyEq actor tag checked
+buildPointwiseJointAction nameEq keyEq (LLeave actor) tag checked =
+  buildPointwiseLeaveJoint nameEq keyEq actor tag checked
+buildPointwiseJointAction nameEq keyEq (LUnload actor) tag checked =
+  buildPointwiseUnloadJoint nameEq keyEq actor tag checked
+
 ||| Single-scrutinee dependent eliminator for the indexed joint head. Each GADT
 ||| constructor fixes the exact `Fired` source index consumed by its already
 ||| closed semantic producer; no source transition or alignment is scrutinized
@@ -14562,6 +14589,33 @@ replayPointwiseJointHead nameEq keyEq
   (MkPointwiseUnloadJoint actor checked singleton)
   sourceWellFormed endpoint =
     replayPointwiseUnloadHead nameEq keyEq actor checked sourceWellFormed endpoint
+
+||| Concrete semantic head replayer obtained solely by composing the exhaustive
+||| action-owned joint builder with the single dependent joint eliminator.
+0 replayPointwiseActionHead :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  PointwiseRelationalHeadReplayer name key world error value nameEq keyEq
+replayPointwiseActionHead nameEq keyEq action tag checked sourceWellFormed
+  endpoint = replayPointwiseJointHead nameEq keyEq
+    (buildPointwiseJointAction nameEq keyEq action tag checked)
+    sourceWellFormed endpoint
+
+||| First closed instantiation of the retained structural suffix recursion.
+||| Its target trace, endpoint, and sealed per-step replay capital are all
+||| produced together from the authenticated aligned source suffix.
+0 replayPointwiseSuffixSpine :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {sourceFirst, sourceFinal, replayedFirst :
+    SystemState name key value world error} ->
+  (source : Transitions sourceFirst sourceFinal) ->
+  AlignedTransitions name key world error value nameEq keyEq source ->
+  registryWellFormed @{nameEq} @{keyEq} sourceFirst = True ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq sourceFirst
+    replayedFirst ->
+  PointwiseSuffixSpineReplay name key world error value nameEq keyEq source
+    replayedFirst
+replayPointwiseSuffixSpine nameEq keyEq = replayPointwiseSuffixSpineWith nameEq
+  keyEq (replayPointwiseActionHead nameEq keyEq)
 
 0 localReplaceEntriesOtherHead :
   (nameEq : DecEq name) -> (changed, current : name) ->
