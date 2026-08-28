@@ -1089,6 +1089,28 @@ adds neither runtime nor caller capital. Whole-suffix composition remains
 unopened. The **3–15 shift** estimate is held. Holes remain **20**, split
 **6/4/8/1/1**.
 
+### Revision 55: tag helpers closed; dispatcher coverage design gate
+
+`research-tests/O6-R55-GENERIC-HEAD-DISPATCH-COVERAGE-DESIGN-GATE-STOP-AUDIT.md`
+records shift #63. `pointwiseDivertTag` (`d5d2c5f`),
+`pointwiseLeaveTag` (`80d3094`), and `pointwiseUnloadTag` (`935a062`) each
+closed on attempt 1 and were committed independently. They eliminate their
+producer-owned source observations entirely at quantity 0 and expose only the
+fixed-tag equality.
+
+The eight-clause dispatcher then exhausted its fresh budget only at coverage.
+Aligned-singleton dispatch with a wildcard source step, explicit source-action
+patterns with wildcard constructor dictionaries, and source-owned dictionaries
+with hidden formal dictionaries all elaborated their bodies but produced the
+same large missing-case family. Idris did not use the correlated
+`AlignedTransitions` argument to discharge independently stored `DecEq` and
+checked-proof shapes. The dispatcher was fully reverted; the three helpers
+remain. Per the revision-54 ruling, the next step is a design gate for possible
+per-action joint-record consumption by the retained spine, without dictionary
+identity or caller-capital widening. Whole-suffix composition remains unopened.
+The **3–15 shift** estimate is held pending that gate. Holes remain **20**, split
+**6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1400,7 +1422,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; all eight head families and the full L-Advance owner chain are closed. Revision 54 localizes the remaining private dispatcher issue to erased Divert/Leave/Unload tag-helper scrutinees before spine instantiation.** | **XL, 3–15 remaining shifts held at the revision-54 erased-scrutinee STOP-AUDIT.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; all eight head families, the full L-Advance owner chain, and all three erased lifecycle tag helpers are closed. Revision 55 gates a joint-record representation because Idris coverage cannot correlate the separate source-step and aligned-singleton arguments.** | **XL, 3–15 remaining shifts held at the revision-55 dispatcher coverage design gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1546,6 +1568,7 @@ ratifies producer-owned sealed per-outcome eliminators. Revision 50 retains the
 empty and defined-failure seals. Revision 51 closes the yielded seal. Revision
 52 gates dependent agreement/seal transport. Revision 53 closes that transport,
 the nonempty join, and the thin L-Advance owner chain. Revision 54 clears the
-fixed-tag annotation wall and localizes the generic dispatcher to three erased
-per-action source-plan tag helpers. Whole-suffix and final adjacent-result
-assembly remain after that dispatcher.
+fixed-tag annotation wall. Revision 55 closes all three erased per-action
+source-plan tag helpers and gates a possible joint-record consumer after the
+separate-argument dispatcher fails coverage. Whole-suffix and final
+adjacent-result assembly remain after that gate.
