@@ -7290,25 +7290,97 @@ replayPointwiseRetireHead nameEq keyEq actor
               sourceAligned targetState (ORetire actor) ORetireTag targetChecked
               Refl Refl rar mapsRelated nextEndpoint
 
-||| Private joint input for one pointwise head replay. The source `Fired` node,
-||| its exact checked equation and dictionaries, and the aligned singleton are
-||| introduced by one constructor, so consumers perform one dependent
-||| elimination rather than correlating two independent scrutinees.
+||| Private joint input for one pointwise head replay. Each constructor fixes the
+||| exact source `Fired` action in the GADT index while introducing its checked
+||| equation, source dictionaries, and aligned singleton together. A consumer's
+||| single constructor match therefore refines the source-indexed replay
+||| codomain, rather than asking coverage to correlate a second action match.
 data PointwiseAlignedHeadJoint :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   {before, afterState : SystemState name key value world error} ->
   Transition before afterState -> Type where
-  MkPointwiseAlignedHeadJoint :
-    (action : Action name key value world error) -> (tag : RuleTag) ->
-    (0 checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+  MkPointwiseInsertJoint :
+    (actor : name) -> (parent : Parent name) ->
+    (component : Component key value world error) ->
+    (0 checked : checkedApplyAction @{nameEq} @{keyEq}
+      (OInsert actor parent component) before = Just (OInsertTag, afterState)) ->
+    (0 singleton : AlignedTransitions name key world error value nameEq keyEq
+      (MoreTransitions (Fired {before} {afterState} nameEq keyEq
+        (OInsert actor parent component) OInsertTag checked) NoTransitions)) ->
+    PointwiseAlignedHeadJoint name key world error value nameEq keyEq
+      (Fired {before} {afterState} nameEq keyEq
+        (OInsert actor parent component) OInsertTag checked)
+  MkPointwiseRetireJoint :
+    (actor : name) ->
+    (0 checked : checkedApplyAction @{nameEq} @{keyEq} (ORetire actor) before =
+      Just (ORetireTag, afterState)) ->
+    (0 singleton : AlignedTransitions name key world error value nameEq keyEq
+      (MoreTransitions (Fired {before} {afterState} nameEq keyEq
+        (ORetire actor) ORetireTag checked) NoTransitions)) ->
+    PointwiseAlignedHeadJoint name key world error value nameEq keyEq
+      (Fired {before} {afterState} nameEq keyEq
+        (ORetire actor) ORetireTag checked)
+  MkPointwiseRemoveJoint :
+    (actor : name) ->
+    (0 checked : checkedApplyAction @{nameEq} @{keyEq} (ORemove actor) before =
+      Just (ORemoveTag, afterState)) ->
+    (0 singleton : AlignedTransitions name key world error value nameEq keyEq
+      (MoreTransitions (Fired {before} {afterState} nameEq keyEq
+        (ORemove actor) ORemoveTag checked) NoTransitions)) ->
+    PointwiseAlignedHeadJoint name key world error value nameEq keyEq
+      (Fired {before} {afterState} nameEq keyEq
+        (ORemove actor) ORemoveTag checked)
+  MkPointwiseBeginJoint :
+    (actor : name) ->
+    (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LBegin actor) before =
+      Just (LBeginTag, afterState)) ->
+    (0 singleton : AlignedTransitions name key world error value nameEq keyEq
+      (MoreTransitions (Fired {before} {afterState} nameEq keyEq
+        (LBegin actor) LBeginTag checked) NoTransitions)) ->
+    PointwiseAlignedHeadJoint name key world error value nameEq keyEq
+      (Fired {before} {afterState} nameEq keyEq
+        (LBegin actor) LBeginTag checked)
+  MkPointwiseAdvanceJoint :
+    (actor : name) -> (tag : RuleTag) ->
+    (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
       Just (tag, afterState)) ->
     (0 singleton : AlignedTransitions name key world error value nameEq keyEq
-      (MoreTransitions
-        (Fired {before} {afterState} nameEq keyEq action tag checked)
-        NoTransitions)) ->
+      (MoreTransitions (Fired {before} {afterState} nameEq keyEq
+        (LAdvance actor) tag checked) NoTransitions)) ->
     PointwiseAlignedHeadJoint name key world error value nameEq keyEq
-      (Fired {before} {afterState} nameEq keyEq action tag checked)
+      (Fired {before} {afterState} nameEq keyEq
+        (LAdvance actor) tag checked)
+  MkPointwiseDivertJoint :
+    (actor : name) ->
+    (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LDivert actor) before =
+      Just (LDivertTag, afterState)) ->
+    (0 singleton : AlignedTransitions name key world error value nameEq keyEq
+      (MoreTransitions (Fired {before} {afterState} nameEq keyEq
+        (LDivert actor) LDivertTag checked) NoTransitions)) ->
+    PointwiseAlignedHeadJoint name key world error value nameEq keyEq
+      (Fired {before} {afterState} nameEq keyEq
+        (LDivert actor) LDivertTag checked)
+  MkPointwiseLeaveJoint :
+    (actor : name) ->
+    (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LLeave actor) before =
+      Just (LLeaveTag, afterState)) ->
+    (0 singleton : AlignedTransitions name key world error value nameEq keyEq
+      (MoreTransitions (Fired {before} {afterState} nameEq keyEq
+        (LLeave actor) LLeaveTag checked) NoTransitions)) ->
+    PointwiseAlignedHeadJoint name key world error value nameEq keyEq
+      (Fired {before} {afterState} nameEq keyEq
+        (LLeave actor) LLeaveTag checked)
+  MkPointwiseUnloadJoint :
+    (actor : name) ->
+    (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LUnload actor) before =
+      Just (LUnloadTag, afterState)) ->
+    (0 singleton : AlignedTransitions name key world error value nameEq keyEq
+      (MoreTransitions (Fired {before} {afterState} nameEq keyEq
+        (LUnload actor) LUnloadTag checked) NoTransitions)) ->
+    PointwiseAlignedHeadJoint name key world error value nameEq keyEq
+      (Fired {before} {afterState} nameEq keyEq
+        (LUnload actor) LUnloadTag checked)
 
 ||| Internal one-step evaluator used by the structural suffix recursion.  Its
 ||| endpoint input is exactly the result of the preceding checked replay (or the
@@ -14261,21 +14333,6 @@ replayPointwiseRemoveHead nameEq keyEq actor
           sourceAligned targetState (ORemove actor) ORemoveTag targetChecked Refl
           Refl rar mapsRelated nextEndpoint
 
-||| Constructor helper shared by the eight action-specific joint builders.
-||| It packages the exact source dictionaries and checked proof together with
-||| the aligned singleton they generate.
-buildPointwiseAlignedHeadJoint :
-  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) -> (tag : RuleTag) ->
-  {before, afterState : SystemState name key value world error} ->
-  (0 checked : checkedApplyAction @{nameEq} @{keyEq} action before =
-    Just (tag, afterState)) ->
-  PointwiseAlignedHeadJoint name key world error value nameEq keyEq
-    (Fired {before} {afterState} nameEq keyEq action tag checked)
-buildPointwiseAlignedHeadJoint nameEq keyEq action tag checked =
-  MkPointwiseAlignedHeadJoint action tag checked
-    (AlignedStep action tag checked NoTransitions AlignedEnd)
-
 ||| Successful L-Begin fixes its unique rule tag before joint packaging.
 0 pointwiseBeginTag :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
@@ -14315,8 +14372,9 @@ buildPointwiseInsertJoint nameEq keyEq actor parent component tag
           (foreignInsertPlanView nameEq keyEq actor parent component ambient
             source tag afterState raw)
     in case tagSame of
-      Refl => buildPointwiseAlignedHeadJoint nameEq keyEq
-        (OInsert actor parent component) OInsertTag checked
+      Refl => MkPointwiseInsertJoint actor parent component checked
+        (AlignedStep (OInsert actor parent component) OInsertTag checked
+          NoTransitions AlignedEnd)
 
 0 buildPointwiseRetireJoint :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
@@ -14336,8 +14394,8 @@ buildPointwiseRetireJoint nameEq keyEq actor tag
         tagSame = localRetireViewTag tag
           (retireSuccessView nameEq keyEq actor ambient source tag afterState raw)
     in case tagSame of
-      Refl => buildPointwiseAlignedHeadJoint nameEq keyEq (ORetire actor)
-        ORetireTag checked
+      Refl => MkPointwiseRetireJoint actor checked
+        (AlignedStep (ORetire actor) ORetireTag checked NoTransitions AlignedEnd)
 
 0 buildPointwiseRemoveJoint :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
@@ -14357,8 +14415,8 @@ buildPointwiseRemoveJoint nameEq keyEq actor tag
         tagSame = localRemoveViewTag tag
           (removeSuccessView nameEq keyEq actor ambient source tag afterState raw)
     in case tagSame of
-      Refl => buildPointwiseAlignedHeadJoint nameEq keyEq (ORemove actor)
-        ORemoveTag checked
+      Refl => MkPointwiseRemoveJoint actor checked
+        (AlignedStep (ORemove actor) ORemoveTag checked NoTransitions AlignedEnd)
 
 0 buildPointwiseBeginJoint :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
@@ -14378,8 +14436,8 @@ buildPointwiseBeginJoint nameEq keyEq actor tag
         tagSame = pointwiseBeginTag nameEq keyEq actor ambient source tag
           afterState raw
     in case tagSame of
-      Refl => buildPointwiseAlignedHeadJoint nameEq keyEq (LBegin actor)
-        LBeginTag checked
+      Refl => MkPointwiseBeginJoint actor checked
+        (AlignedStep (LBegin actor) LBeginTag checked NoTransitions AlignedEnd)
 
 0 buildPointwiseAdvanceJoint :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
@@ -14390,7 +14448,8 @@ buildPointwiseBeginJoint nameEq keyEq actor tag
   PointwiseAlignedHeadJoint name key world error value nameEq keyEq
     (Fired {before} {afterState} nameEq keyEq (LAdvance actor) tag checked)
 buildPointwiseAdvanceJoint nameEq keyEq actor tag checked =
-  buildPointwiseAlignedHeadJoint nameEq keyEq (LAdvance actor) tag checked
+  MkPointwiseAdvanceJoint actor tag checked
+    (AlignedStep (LAdvance actor) tag checked NoTransitions AlignedEnd)
 
 0 buildPointwiseDivertJoint :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
@@ -14410,8 +14469,8 @@ buildPointwiseDivertJoint nameEq keyEq actor tag
         tagSame = pointwiseDivertTag nameEq keyEq actor ambient source tag
           afterState raw
     in case tagSame of
-      Refl => buildPointwiseAlignedHeadJoint nameEq keyEq (LDivert actor)
-        LDivertTag checked
+      Refl => MkPointwiseDivertJoint actor checked
+        (AlignedStep (LDivert actor) LDivertTag checked NoTransitions AlignedEnd)
 
 0 buildPointwiseLeaveJoint :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
@@ -14431,8 +14490,8 @@ buildPointwiseLeaveJoint nameEq keyEq actor tag
         tagSame = pointwiseLeaveTag nameEq keyEq actor ambient source tag
           afterState raw
     in case tagSame of
-      Refl => buildPointwiseAlignedHeadJoint nameEq keyEq (LLeave actor)
-        LLeaveTag checked
+      Refl => MkPointwiseLeaveJoint actor checked
+        (AlignedStep (LLeave actor) LLeaveTag checked NoTransitions AlignedEnd)
 
 0 buildPointwiseUnloadJoint :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
@@ -14452,8 +14511,8 @@ buildPointwiseUnloadJoint nameEq keyEq actor tag
         tagSame = pointwiseUnloadTag nameEq keyEq actor ambient source tag
           afterState raw
     in case tagSame of
-      Refl => buildPointwiseAlignedHeadJoint nameEq keyEq (LUnload actor)
-        LUnloadTag checked
+      Refl => MkPointwiseUnloadJoint actor checked
+        (AlignedStep (LUnload actor) LUnloadTag checked NoTransitions AlignedEnd)
 
 0 localReplaceEntriesOtherHead :
   (nameEq : DecEq name) -> (changed, current : name) ->
