@@ -1028,6 +1028,25 @@ reverted; no agreement is recomputed and no seal interface changes. Families
 remain **7/8** and whole-suffix composition remains gated. The estimate narrows
 from **6–18** to **5–17 shifts**. Holes remain **20**, split **6/4/8/1/1**.
 
+### Revision 52: nonempty join yielded-equation STOP-AUDIT
+
+`research-tests/O6-R52-NONEMPTY-JOIN-YIELDED-EQUATION-STOP-AUDIT.md`
+records shift #60. The two named failure outcome equations closed the exact
+revision-51 wall and the join reached the yielded seal. Reconstructing the
+yielded constructor, reusing the carried agreement, and explicitly eliminating
+the four named `with` proofs each failed to reindex the proof-and-certificate
+pair from concrete yielded outcomes back to the two syntactic runtime
+applications. The whole join was reverted after attempt 3.
+
+The next representation requires a decision: package the yielded agreement and
+its `SealedPointwiseAdvanceYieldedAgreement` certificate in one dependent
+`LocatedSealedPointwiseAdvanceYieldedAgreement`, construct it at the concrete
+success/success outcomes, and transport the whole package sourceward across the
+named replayed/source outcome equations. This preserves agreement/certificate
+identity without proof equality, recomputation, or a boundary change. Families
+remain **7/8** and whole-suffix composition remains gated. The **5–17 shift**
+estimate is held unchanged. Holes remain **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1339,7 +1358,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; seven heads are closed and all three producer-owned L-Advance seals are retained. Revision 51 localizes the remaining thin nonempty join to explicit runtime equations in the failure/failure clause.** | **XL, 5–17 remaining shifts after the revision-51 nonempty-join STOP-AUDIT.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; seven heads and all three L-Advance seals are closed. Revision 52 closes failure equation materialization and gates yielded agreement/certificate transport as one dependent package.** | **XL, 5–17 remaining shifts held at the revision-52 yielded-equation design gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1482,7 +1501,8 @@ origin/outcome capital is also retained. Revision 47 closes the dependent
 generator package, singleton L-Advance RAR, and common head-capital packager.
 Revision 48 rules out the nested dispatcher representation. Revision 49
 ratifies producer-owned sealed per-outcome eliminators. Revision 50 retains the
-empty and defined-failure seals. Revision 51 closes the yielded seal and
-localizes the reverted nonempty join to explicit named runtime equations in the
-failure/failure clause. The thin complete head remains before whole-suffix and
-final adjacent-result assembly.
+empty and defined-failure seals. Revision 51 closes the yielded seal. Revision
+52 closes failure equation materialization and gates the remaining yielded join
+on transporting the agreement and its seal together as one dependent package.
+The thin complete head remains before whole-suffix and final adjacent-result
+assembly.
