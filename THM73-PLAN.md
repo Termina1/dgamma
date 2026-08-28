@@ -1069,6 +1069,26 @@ composition remains unopened until the generic recursion is instantiated. The
 estimate narrows from **5–17** to **3–15 shifts**. Holes remain **20**, split
 **6/4/8/1/1**.
 
+### Revision 54: aligned-head erased-scrutinee STOP-AUDIT
+
+`research-tests/O6-R54-GENERIC-HEAD-DISPATCH-ERASURE-STOP-AUDIT.md`
+records shift #62. Parenthesizing every erased raw/tag equality cleared the
+revision-53 ambiguity, and the exhaustive dispatcher reached L-Divert after
+O-Insert, O-Retire, O-Remove, L-Begin, and direct L-Advance delegation. Its
+unannotated `located` binding tried to consume the quantity-0 source plan view as
+runtime capital. A diagnostic erased tag theorem cleared Divert and localized
+Leave to an unavailable import; restoring source plan views with untyped
+`0 located = ...` syntax was parsed as `fromInteger` and exhausted the budget.
+The dispatcher was fully reverted.
+
+The accepted per-action-clause fallback should first seal Divert, Leave, and
+Unload plan-view eliminations into small quantity-0 tag helpers. Each dispatcher
+clause then eliminates only its fixed-tag equality and calls its already closed
+head; L-Advance remains direct. This preserves the source-plan-view design and
+adds neither runtime nor caller capital. Whole-suffix composition remains
+unopened. The **3–15 shift** estimate is held. Holes remain **20**, split
+**6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1380,7 +1400,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; all eight head families and the full L-Advance owner chain are closed. Revision 53 leaves only the private aligned all-action dispatcher before generic spine instantiation and whole-suffix composition.** | **XL, 3–15 remaining shifts after the revision-53 head-dispatch STOP-AUDIT.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; all eight head families and the full L-Advance owner chain are closed. Revision 54 localizes the remaining private dispatcher issue to erased Divert/Leave/Unload tag-helper scrutinees before spine instantiation.** | **XL, 3–15 remaining shifts held at the revision-54 erased-scrutinee STOP-AUDIT.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1525,6 +1545,7 @@ Revision 48 rules out the nested dispatcher representation. Revision 49
 ratifies producer-owned sealed per-outcome eliminators. Revision 50 retains the
 empty and defined-failure seals. Revision 51 closes the yielded seal. Revision
 52 gates dependent agreement/seal transport. Revision 53 closes that transport,
-the nonempty join, and the thin L-Advance owner chain. The generic aligned
-all-action dispatcher remains before whole-suffix and final adjacent-result
-assembly.
+the nonempty join, and the thin L-Advance owner chain. Revision 54 clears the
+fixed-tag annotation wall and localizes the generic dispatcher to three erased
+per-action source-plan tag helpers. Whole-suffix and final adjacent-result
+assembly remain after that dispatcher.
