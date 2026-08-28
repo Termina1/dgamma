@@ -7290,6 +7290,26 @@ replayPointwiseRetireHead nameEq keyEq actor
               sourceAligned targetState (ORetire actor) ORetireTag targetChecked
               Refl Refl rar mapsRelated nextEndpoint
 
+||| Private joint input for one pointwise head replay. The source `Fired` node,
+||| its exact checked equation and dictionaries, and the aligned singleton are
+||| introduced by one constructor, so consumers perform one dependent
+||| elimination rather than correlating two independent scrutinees.
+data PointwiseAlignedHeadJoint :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {before, afterState : SystemState name key value world error} ->
+  Transition before afterState -> Type where
+  MkPointwiseAlignedHeadJoint :
+    (action : Action name key value world error) -> (tag : RuleTag) ->
+    (0 checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+      Just (tag, afterState)) ->
+    (0 singleton : AlignedTransitions name key world error value nameEq keyEq
+      (MoreTransitions
+        (Fired {before} {afterState} nameEq keyEq action tag checked)
+        NoTransitions)) ->
+    PointwiseAlignedHeadJoint name key world error value nameEq keyEq
+      (Fired {before} {afterState} nameEq keyEq action tag checked)
+
 ||| Internal one-step evaluator used by the structural suffix recursion.  Its
 ||| endpoint input is exactly the result of the preceding checked replay (or the
 ||| local diamond for the first head); it is never exposed as a premise of the
