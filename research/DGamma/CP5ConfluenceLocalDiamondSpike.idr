@@ -14261,6 +14261,126 @@ replayPointwiseRemoveHead nameEq keyEq actor
           sourceAligned targetState (ORemove actor) ORemoveTag targetChecked Refl
           Refl rar mapsRelated nextEndpoint
 
+||| Constructor helper shared by the eight action-specific joint builders.
+||| It packages the exact source dictionaries and checked proof together with
+||| the aligned singleton they generate.
+buildPointwiseAlignedHeadJoint :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  {before, afterState : SystemState name key value world error} ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  PointwiseAlignedHeadJoint name key world error value nameEq keyEq
+    (Fired {before} {afterState} nameEq keyEq action tag checked)
+buildPointwiseAlignedHeadJoint nameEq keyEq action tag checked =
+  MkPointwiseAlignedHeadJoint action tag checked
+    (AlignedStep action tag checked NoTransitions AlignedEnd)
+
+||| Successful L-Begin fixes its unique rule tag before joint packaging.
+0 pointwiseBeginTag :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  (applyAction @{nameEq} @{keyEq} (LBegin actor)
+    (MkSystemState ambient source) = Just (tag, afterState)) ->
+  tag = LBeginTag
+pointwiseBeginTag nameEq keyEq actor ambient source tag afterState raw
+  with (lookupFiber @{nameEq} actor source) proof found
+  pointwiseBeginTag nameEq keyEq actor ambient source tag afterState raw |
+    Nothing = case raw of Refl impossible
+  pointwiseBeginTag nameEq keyEq actor ambient source tag afterState raw |
+    Just owner = foreignBeginPlanViewTag
+      (foreignBeginPlanView nameEq keyEq actor ambient source owner found tag
+        afterState (rewrite found in raw))
+
+0 buildPointwiseInsertJoint :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (parent : Parent name) ->
+  (component : Component key value world error) -> (tag : RuleTag) ->
+  {before, afterState : SystemState name key value world error} ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq}
+    (OInsert actor parent component) before = Just (tag, afterState)) ->
+  PointwiseAlignedHeadJoint name key world error value nameEq keyEq
+    (Fired {before} {afterState} nameEq keyEq
+      (OInsert actor parent component) tag checked)
+buildPointwiseInsertJoint nameEq keyEq actor parent component tag
+  {before = MkSystemState ambient source} {afterState} checked =
+    let 0 raw : (applyAction @{nameEq} @{keyEq}
+          (OInsert actor parent component) (MkSystemState ambient source) =
+          Just (tag, afterState))
+        raw = checkedActionProjects nameEq keyEq
+          (OInsert actor parent component) _ afterState tag checked
+        0 tagSame : (tag = OInsertTag)
+        tagSame = localForeignInsertViewTag tag
+          (foreignInsertPlanView nameEq keyEq actor parent component ambient
+            source tag afterState raw)
+    in case tagSame of
+      Refl => buildPointwiseAlignedHeadJoint nameEq keyEq
+        (OInsert actor parent component) OInsertTag checked
+
+0 buildPointwiseRetireJoint :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (tag : RuleTag) ->
+  {before, afterState : SystemState name key value world error} ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (ORetire actor) before =
+    Just (tag, afterState)) ->
+  PointwiseAlignedHeadJoint name key world error value nameEq keyEq
+    (Fired {before} {afterState} nameEq keyEq (ORetire actor) tag checked)
+buildPointwiseRetireJoint nameEq keyEq actor tag
+  {before = MkSystemState ambient source} {afterState} checked =
+    let 0 raw : (applyAction @{nameEq} @{keyEq} (ORetire actor)
+          (MkSystemState ambient source) = Just (tag, afterState))
+        raw = checkedActionProjects nameEq keyEq (ORetire actor) _ afterState tag
+          checked
+        0 tagSame : (tag = ORetireTag)
+        tagSame = localRetireViewTag tag
+          (retireSuccessView nameEq keyEq actor ambient source tag afterState raw)
+    in case tagSame of
+      Refl => buildPointwiseAlignedHeadJoint nameEq keyEq (ORetire actor)
+        ORetireTag checked
+
+0 buildPointwiseRemoveJoint :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (tag : RuleTag) ->
+  {before, afterState : SystemState name key value world error} ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (ORemove actor) before =
+    Just (tag, afterState)) ->
+  PointwiseAlignedHeadJoint name key world error value nameEq keyEq
+    (Fired {before} {afterState} nameEq keyEq (ORemove actor) tag checked)
+buildPointwiseRemoveJoint nameEq keyEq actor tag
+  {before = MkSystemState ambient source} {afterState} checked =
+    let 0 raw : (applyAction @{nameEq} @{keyEq} (ORemove actor)
+          (MkSystemState ambient source) = Just (tag, afterState))
+        raw = checkedActionProjects nameEq keyEq (ORemove actor) _ afterState tag
+          checked
+        0 tagSame : (tag = ORemoveTag)
+        tagSame = localRemoveViewTag tag
+          (removeSuccessView nameEq keyEq actor ambient source tag afterState raw)
+    in case tagSame of
+      Refl => buildPointwiseAlignedHeadJoint nameEq keyEq (ORemove actor)
+        ORemoveTag checked
+
+0 buildPointwiseBeginJoint :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (tag : RuleTag) ->
+  {before, afterState : SystemState name key value world error} ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LBegin actor) before =
+    Just (tag, afterState)) ->
+  PointwiseAlignedHeadJoint name key world error value nameEq keyEq
+    (Fired {before} {afterState} nameEq keyEq (LBegin actor) tag checked)
+buildPointwiseBeginJoint nameEq keyEq actor tag
+  {before = MkSystemState ambient source} {afterState} checked =
+    let 0 raw : (applyAction @{nameEq} @{keyEq} (LBegin actor)
+          (MkSystemState ambient source) = Just (tag, afterState))
+        raw = checkedActionProjects nameEq keyEq (LBegin actor) _ afterState tag
+          checked
+        0 tagSame : (tag = LBeginTag)
+        tagSame = pointwiseBeginTag nameEq keyEq actor ambient source tag
+          afterState raw
+    in case tagSame of
+      Refl => buildPointwiseAlignedHeadJoint nameEq keyEq (LBegin actor)
+        LBeginTag checked
+
 0 localReplaceEntriesOtherHead :
   (nameEq : DecEq name) -> (changed, current : name) ->
   Not (changed = current) ->
