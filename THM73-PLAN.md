@@ -892,6 +892,30 @@ still gated. The inventory remains **52 positives**, **44 exact negatives**,
 and **96 Idris test modules**. The O6 estimate narrows from **11–23** to
 **9–21 shifts**; holes remain **20**, split **6/4/8/1/1**.
 
+### Revision 46: dependent generator package STOP-AUDIT
+
+`research-tests/O6-R46-GENERATOR-PACKAGE-STOP-AUDIT.md` records shift #54's
+fresh-budget retry. The ratified dependent generator package accepted the R45
+binder correction in its actual-forward branch. The two iterator branches then
+used the budget to make their local source generator and source stage types
+fully explicit. On attempt three, both exact map equations elaborated, but
+`replayExactMapsGivePartialMapsRelated` inferred its target-respect argument at
+the wrong convenience alias before recognizing the strong relational proof
+returned by `replayTraceGeneratorMapRespects`.
+
+The complete uncommitted generator family and locator were reverted. A later
+fresh-budget retry should retain the same dependent origin/map package but give
+each iterator branch a named, fully typed `PartialMapsRelated` local proof and
+construct it directly with `replayPartialRewrite`, its exact map equation, and
+the target generator respect theorem. This fixes the map domains before proof
+elaboration and preserves the rule that origin and map proof come from the same
+located package.
+
+Seven of eight families remain closed. Singleton RAR, the runtime dispatcher,
+and the complete L-Advance head remain open; whole-suffix composition is still
+gated. The inventory and **9–21 shift** estimate remain unchanged. Holes remain
+**20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1203,7 +1227,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; seven heads are closed. Every L-Advance runtime branch now has a complete concrete operational producer, and singleton stage origin/outcome capital is retained. The per-generator package, runtime dispatcher, complete head, singleton RAR, and whole-result assembly remain open after the revision-45 bounded stop.** | **XL, 9–21 remaining shifts after revision-45 yielded endpoint closure and generator-RAR STOP-AUDIT.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; seven heads are closed. Every L-Advance runtime branch and singleton stage origin/outcome are retained. The dependent generator package is localized to an inference-sensitive map helper after revision 46; runtime dispatcher, complete head, singleton RAR, and whole-result assembly remain open.** | **XL, 9–21 remaining shifts after revision-46 dependent-generator STOP-AUDIT.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1342,6 +1366,8 @@ through the revision-43 sealed eliminator; its older direct and projection-only
 consumers remain retired. Every L-Advance runtime branch now has a complete
 concrete operational producer, including yielded divert/finish/iter through the
 revision-45 branch-local endpoint representation. Singleton stage
-origin/outcome capital is also retained. The dependent per-generator package,
-sealed runtime dispatcher, complete head, and singleton RAR remain before
-whole-suffix and final adjacent-result assembly.
+origin/outcome capital is also retained. Revision 46 closed the old parser stop
+and localized the dependent per-generator package to a typed relational-map
+proof, but retained no generator declaration. The generator package, sealed
+runtime dispatcher, complete head, and singleton RAR remain before whole-suffix
+and final adjacent-result assembly.
