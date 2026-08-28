@@ -1164,6 +1164,29 @@ L-Advance agreement/seal architecture. Occurrence/ordinal composition, target
 bundle, and assembly remain unopened. The original **3–15 shift** band is held
 pending this gate. Holes remain **20**, split **6/4/8/1/1**.
 
+### Revision 58: located generator package reaches statement-shape gate
+
+`research-tests/O6-R58-LOCATED-CONS-GENERATOR-STATEMENT-GATE-STOP-AUDIT.md`
+records shift #66. The first authorized `LocatedConsReplayGeneratorOrigin`
+package exhausted its fresh three-attempt budget and was fully reverted.
+Attempt 1 showed that wrapping only the final lifted generator still reprojects
+`headRAR.replayGeneratorOrigin` separately from its map field. Attempt 2 opened
+the head/tail RAR once through an inner located origin/map package and cleared
+that source constraint, exposing the independently reconstructed target lift.
+Attempt 3 used source-only map transport, but the record constructor still could
+not identify the local `targetSingleton` map with the executable map of the
+original whole-target generator fixed by the package parameter.
+
+The final failure therefore recurs through the authorized located package: its
+statement simultaneously binds an original whole target and reconstructs a
+singleton/tail target across a dependent constructor boundary. Per the
+revision-57 ruling, no second package, cons RAR, or transport iteration was
+opened. A further gate must decide whether to introduce a six-constructor target
+localization GADT that owns the original whole target and its local form under
+one elimination before building the cons-origin package. The accepted
+**3–15 shift** band is held pending that statement-shape gate. Holes remain
+**20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1475,7 +1498,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; the eight-constructor indexed joint GADT, dependent eliminator, exhaustive action producer, and generic suffix-spine instantiation are closed. Revision 57 gates whole-suffix RAR cons because widening separately projected generator/stage origins loses correlation with their map/outcome proof.** | **XL, original 3–15 remaining-shift band held at the revision-57 RAR-cons dependent-package gate.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; indexed head elimination and the generic suffix spine are closed. Revision 58 shows that even a source-correlated located cons package cannot identify its reconstructed singleton/tail target with the original whole-target generator parameter.** | **XL, original 3–15 remaining-shift band held at the revision-58 cons-RAR statement-shape gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1626,5 +1649,8 @@ source-plan tag helpers. Revision 56 closes the generic joint package and all
 eight builders, then gates the exact dependent eliminator. Revision 57 replaces
 that package with the eight-constructor indexed GADT, closes the dependent
 eliminator and the instantiated suffix spine, and gates whole-suffix RAR cons at
-a correlated origin/map and stage/outcome packaging wall. Occurrence/ordinal
-composition and final adjacent-result assembly remain after that gate.
+a correlated origin/map and stage/outcome packaging wall. Revision 58 opens the
+RAR once and clears source-origin correlation inside the first located package,
+but gates its statement when the reconstructed local target does not identify
+with the original whole-target parameter. Occurrence/ordinal composition and
+final adjacent-result assembly remain after that gate.
