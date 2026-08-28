@@ -985,6 +985,29 @@ successful L-Unload architecture. Seven of eight families remain closed and
 whole-suffix composition remains gated. The **7–19 shift** estimate is held
 pending that decision. Holes remain **20**, split **6/4/8/1/1**.
 
+### Revision 50: empty/failure seals retained; yielded STOP-AUDIT
+
+`research-tests/O6-R50-ADVANCE-SEALED-BRANCHES-YIELDED-STOP-AUDIT.md`
+records shift #58. `eliminateSealedPointwiseAdvanceEmptyBranch` closed on its
+first attempt. `eliminateSealedPointwiseAdvanceFailureBranch` closed on its
+second attempt after parenthesizing erased local equality annotations; it owns
+both exact runtime equations, capability resolutions, evaluator runs, and the
+observable error transport.
+
+The yielded seal exhausted its independent budget. Delaying
+`RuntimeYieldsAgree` elimination until the fully reduced success/success clause
+cleared the premature runtime-index wall. A top-level explicit Boolean match
+eliminator then removed the computed-scrutinee refinement wall, but its first
+signature omitted the resolver's explicit `{name} {key} {value} {world}
+{error}` parameters and consumed attempt 3 on an ambiguous world index. The
+obvious correction was not compiled. All yielded code was reverted. A fresh
+continuation budget must retain the generic carried agreement, reduced-only
+constructor opening, top-level match helper, fully explicit resolver implicits,
+typed inverse maps, and exact match equations. Families remain **7/8**;
+whole-suffix composition remains gated. The estimate narrows against the
+revision-49 **7–19** band to **6–18 shifts**. Holes remain **20**, split
+**6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1296,7 +1319,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; seven heads are closed and all semantic capital is retained. Revision 49 exhausted the third monolithic dispatcher budget after reaching yielded packaging; a mandatory design gate must choose producer-owned per-outcome sealed eliminators before the complete head can continue.** | **XL, 7–19 remaining shifts held at the revision-49 dispatcher design gate.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; seven heads are closed. Revision 50 retains the producer-owned empty and defined-failure seals. The yielded seal is reverted after its bounded signature-scope stop; a fresh yielded continuation precedes the thin complete head.** | **XL, 6–18 remaining shifts after the revision-50 yielded-seal STOP-AUDIT.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1437,9 +1460,9 @@ concrete operational producer, including yielded divert/finish/iter through the
 revision-45 branch-local endpoint representation. Singleton stage
 origin/outcome capital is also retained. Revision 47 closes the dependent
 generator package, singleton L-Advance RAR, and common head-capital packager.
-Revision 48 rules out the nested dispatcher representation. Revision 49 proves
-that the indexed top-level route reaches yielded packaging, but exhausts the
-third dispatcher budget on final branch layout. A mandatory design gate now
-precedes any further dispatcher work; the candidate is producer-owned sealed
-per-outcome eliminators joined by a thin head. The complete head remains before
-whole-suffix and final adjacent-result assembly.
+Revision 48 rules out the nested dispatcher representation. Revision 49
+ratifies producer-owned sealed per-outcome eliminators. Revision 50 retains the
+empty and defined-failure seals; its yielded seal is fully reverted after the
+bounded top-level match-helper signature stop. The yielded continuation and
+thin complete head remain before whole-suffix and final adjacent-result
+assembly.
