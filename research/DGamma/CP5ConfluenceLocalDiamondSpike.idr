@@ -14514,6 +14514,55 @@ buildPointwiseUnloadJoint nameEq keyEq actor tag
       Refl => MkPointwiseUnloadJoint actor checked
         (AlignedStep (LUnload actor) LUnloadTag checked NoTransitions AlignedEnd)
 
+||| Single-scrutinee dependent eliminator for the indexed joint head. Each GADT
+||| constructor fixes the exact `Fired` source index consumed by its already
+||| closed semantic producer; no source transition or alignment is scrutinized
+||| independently.
+0 replayPointwiseJointHead :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {sourceBefore, sourceAfter, replayedBefore :
+    SystemState name key value world error} ->
+  {sourceStep : Transition sourceBefore sourceAfter} ->
+  PointwiseAlignedHeadJoint name key world error value nameEq keyEq sourceStep ->
+  registryWellFormed @{nameEq} @{keyEq} sourceBefore = True ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq sourceBefore
+    replayedBefore ->
+  PointwiseRelationalHeadReplay name key world error value nameEq keyEq
+    sourceStep replayedBefore
+replayPointwiseJointHead nameEq keyEq
+  (MkPointwiseInsertJoint actor parent component checked singleton)
+  sourceWellFormed endpoint =
+    replayPointwiseInsertHead nameEq keyEq actor parent component checked
+      sourceWellFormed endpoint
+replayPointwiseJointHead nameEq keyEq
+  (MkPointwiseRetireJoint actor checked singleton)
+  sourceWellFormed endpoint =
+    replayPointwiseRetireHead nameEq keyEq actor checked sourceWellFormed endpoint
+replayPointwiseJointHead nameEq keyEq
+  (MkPointwiseRemoveJoint actor checked singleton)
+  sourceWellFormed endpoint =
+    replayPointwiseRemoveHead nameEq keyEq actor checked sourceWellFormed endpoint
+replayPointwiseJointHead nameEq keyEq
+  (MkPointwiseBeginJoint actor checked singleton)
+  sourceWellFormed endpoint =
+    replayPointwiseBeginHead nameEq keyEq actor checked sourceWellFormed endpoint
+replayPointwiseJointHead nameEq keyEq
+  (MkPointwiseAdvanceJoint actor tag checked singleton)
+  sourceWellFormed endpoint =
+    replayPointwiseAdvanceHead nameEq keyEq actor checked sourceWellFormed endpoint
+replayPointwiseJointHead nameEq keyEq
+  (MkPointwiseDivertJoint actor checked singleton)
+  sourceWellFormed endpoint =
+    replayPointwiseDivertHead nameEq keyEq actor checked sourceWellFormed endpoint
+replayPointwiseJointHead nameEq keyEq
+  (MkPointwiseLeaveJoint actor checked singleton)
+  sourceWellFormed endpoint =
+    replayPointwiseLeaveHead nameEq keyEq actor checked sourceWellFormed endpoint
+replayPointwiseJointHead nameEq keyEq
+  (MkPointwiseUnloadJoint actor checked singleton)
+  sourceWellFormed endpoint =
+    replayPointwiseUnloadHead nameEq keyEq actor checked sourceWellFormed endpoint
+
 0 localReplaceEntriesOtherHead :
   (nameEq : DecEq name) -> (changed, current : name) ->
   Not (changed = current) ->
