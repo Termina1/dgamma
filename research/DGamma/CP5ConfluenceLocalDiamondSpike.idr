@@ -3073,6 +3073,51 @@ locatedChildRegistrationFromAction occurrence =
     (locatedAction occurrence)
     (actionOccurrenceDecomposition occurrence)
 
+0 locatedChildRegistrationRoundTrip :
+  (occurrence : LocatedActionOccurrence
+    (OInsert child (ChildOf parent) component) trace) ->
+  generatedRegistrationActionOccurrence
+    (locatedChildRegistrationFromAction occurrence) = occurrence
+locatedChildRegistrationRoundTrip occurrence = case occurrence of
+  MkLocatedActionOccurrence _ _ _ _ _ _ _ => Refl
+
+0 noLocatedActionOccurrenceInEmpty :
+  LocatedActionOccurrence action NoTransitions -> Void
+noLocatedActionOccurrenceInEmpty
+  (MkLocatedActionOccurrence _ _ before located after actionSame decomposition) =
+    appendLocatedTransitionNotEmpty before located after decomposition
+
+||| Whole-suffix action origin built from the exact sealed source/target heads.
+||| The empty case is discharged structurally, without equating phantom trace
+||| endpoints or normalizing a count under an abstract prefix.
+0 sealedSuffixActionOrigin :
+  SealedSuffixReplaySpine name key world error value nameEq keyEq source replayed ->
+  LocatedActionOccurrence action replayed -> LocatedActionOccurrence action source
+sealedSuffixActionOrigin SealedSuffixReplayEnd occurrence =
+  void (noLocatedActionOccurrenceInEmpty occurrence)
+sealedSuffixActionOrigin
+  (SealedSuffixReplayStep sourceStep replayedStep sourceTail replayedTail
+    sameAction sameTag headRAR headMaps headEndpoint headOccurrences
+    headRelativeOrdinal tail) occurrence =
+      consPointwiseActionOrigin sourceStep replayedStep sourceTail replayedTail
+        sameAction (sealedSuffixActionOrigin tail) occurrence
+
+0 sealedSuffixActionTagPreserved :
+  (spine : SealedSuffixReplaySpine name key world error value nameEq keyEq
+    source replayed) ->
+  (occurrence : LocatedActionOccurrence action replayed) ->
+  transitionTag (locatedTransition (sealedSuffixActionOrigin spine occurrence)) =
+    transitionTag (locatedTransition occurrence)
+sealedSuffixActionTagPreserved SealedSuffixReplayEnd occurrence =
+  void (noLocatedActionOccurrenceInEmpty occurrence)
+sealedSuffixActionTagPreserved
+  (SealedSuffixReplayStep sourceStep replayedStep sourceTail replayedTail
+    sameAction sameTag headRAR headMaps headEndpoint headOccurrences
+    headRelativeOrdinal tail) occurrence =
+      consPointwiseActionTagPreserved sourceStep replayedStep sourceTail
+        replayedTail sameAction sameTag (sealedSuffixActionOrigin tail)
+        (sealedSuffixActionTagPreserved tail) occurrence
+
 0 checkedTargetWellFormed :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) ->
