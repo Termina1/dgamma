@@ -16204,6 +16204,89 @@ replayPointwiseActionHead nameEq keyEq action tag checked sourceWellFormed
 replayPointwiseSuffixSpine nameEq keyEq = replayPointwiseSuffixSpineWith nameEq
   keyEq (replayPointwiseActionHead nameEq keyEq)
 
+0 appendAlignedTransitions :
+  {left : Transitions first middle} -> {right : Transitions middle finalState} ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  AlignedTransitions name key world error value nameEq keyEq right ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (appendTransitions left right)
+appendAlignedTransitions AlignedEnd rightAligned = rightAligned
+appendAlignedTransitions
+  (AlignedStep action tag checked rest alignedRest) rightAligned =
+    AlignedStep action tag checked (appendTransitions rest right)
+      (appendAlignedTransitions alignedRest rightAligned)
+
+0 alignedAppendLeft :
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (appendTransitions left right) ->
+  AlignedTransitions name key world error value nameEq keyEq left
+alignedAppendLeft NoTransitions right aligned = AlignedEnd
+alignedAppendLeft
+  (MoreTransitions (Fired nameEq keyEq action tag checked) rest) right
+  (AlignedStep action tag checked _ alignedAppended) =
+    AlignedStep action tag checked rest
+      (alignedAppendLeft rest right alignedAppended)
+
+0 alignedAppendRight :
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (appendTransitions left right) ->
+  AlignedTransitions name key world error value nameEq keyEq right
+alignedAppendRight NoTransitions right aligned = aligned
+alignedAppendRight
+  (MoreTransitions (Fired nameEq keyEq action tag checked) rest) right
+  (AlignedStep action tag checked _ alignedAppended) =
+    alignedAppendRight rest right alignedAppended
+
+0 prependAlignedSingleton :
+  {step : Transition first middle} ->
+  {tail : Transitions middle finalState} ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions step NoTransitions) ->
+  AlignedTransitions name key world error value nameEq keyEq tail ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions step tail)
+prependAlignedSingleton
+  (AlignedStep action tag checked NoTransitions AlignedEnd) tailAligned =
+    AlignedStep action tag checked tail tailAligned
+
+||| Alignment of the replayed suffix is reconstructed from the same private
+||| producer call, not accepted as detached capital. Each recursive clause
+||| consumes the exact `headAligned` owned by its checked head result.
+0 replayPointwiseSuffixSpineAligned :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {sourceFirst, sourceFinal, replayedFirst :
+    SystemState name key value world error} ->
+  (source : Transitions sourceFirst sourceFinal) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq source) ->
+  (sourceWellFormed :
+    registryWellFormed @{nameEq} @{keyEq} sourceFirst = True) ->
+  (endpoint : RelationalReplayEndpoint name key world error value nameEq keyEq
+    sourceFirst replayedFirst) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (spineReplayedTrace
+      (replayPointwiseSuffixSpine nameEq keyEq source aligned sourceWellFormed
+        endpoint))
+replayPointwiseSuffixSpineAligned nameEq keyEq NoTransitions AlignedEnd
+  sourceWellFormed endpoint = AlignedEnd
+replayPointwiseSuffixSpineAligned nameEq keyEq
+  (MoreTransitions {middle = sourceMiddle}
+    (Fired {before = sourceFirst} {afterState = sourceMiddle}
+      nameEq keyEq action tag checked) sourceTail)
+  (AlignedStep action tag checked sourceTail alignedTail) sourceWellFormed
+  endpoint =
+    prependAlignedSingleton
+      (headAligned (replayPointwiseActionHead nameEq keyEq action tag checked
+        sourceWellFormed endpoint))
+      (replayPointwiseSuffixSpineAligned nameEq keyEq sourceTail alignedTail
+        (checkedTargetWellFormed nameEq keyEq action sourceFirst sourceMiddle tag
+          checked)
+        (headReplayEndpoint (replayPointwiseActionHead nameEq keyEq action tag
+          checked sourceWellFormed endpoint)))
+
 0 localReplaceEntriesOtherHead :
   (nameEq : DecEq name) -> (changed, current : name) ->
   Not (changed = current) ->
