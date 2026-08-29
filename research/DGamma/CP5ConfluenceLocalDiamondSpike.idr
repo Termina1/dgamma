@@ -1769,6 +1769,180 @@ locateReplayGeneratorOrigin
   target = MkLocatedReplayGeneratorOrigin (origin actor target)
     (\observedKeyEq => maps observedKeyEq actor target)
 
+||| Producer-correlated whole-cons generator origin. Source origin/map evidence
+||| and the target's exact regional runtime equations stay paired.
+record LocatedConsReplayGeneratorOrigin
+  (name, key, world, error : Type) (value : key -> Type)
+  {sourceFirst, sourceMiddle, sourceFinal, targetFirst, targetMiddle,
+    targetFinal : SystemState name key value world error}
+  (sourceHead : Transition sourceFirst sourceMiddle)
+  (targetHead : Transition targetFirst targetMiddle)
+  (sourceTail : Transitions sourceMiddle sourceFinal)
+  (targetTail : Transitions targetMiddle targetFinal)
+  (actor : name)
+  (target : TraceEffectGenerator name key world error value actor
+    (MoreTransitions targetHead targetTail)) where
+  constructor MkLocatedConsReplayGeneratorOrigin
+  consGeneratorOrigin : TraceEffectGenerator name key world error value actor
+    (MoreTransitions sourceHead sourceTail)
+  0 consGeneratorMapsRelated : (observedKeyEq : DecEq key) ->
+    PartialMapsRelated (EffectStateEquivalence observedKeyEq)
+      (traceGeneratorMap consGeneratorOrigin) (traceGeneratorMap target)
+
+0 widenLocatedReplayGeneratorOrigin :
+  (sourceHead : Transition sourceFirst sourceMiddle) ->
+  (targetHead : Transition targetFirst targetMiddle) ->
+  (sourceTail : Transitions sourceMiddle sourceFinal) ->
+  (targetTail : Transitions targetMiddle targetFinal) ->
+  (actor : name) ->
+  (targetWhole : TraceEffectGenerator name key world error value actor
+    (MoreTransitions targetHead targetTail)) ->
+  (targetSingleton : TraceEffectGenerator name key world error value actor
+    (MoreTransitions targetHead NoTransitions)) ->
+  ((state : EffectState name key value world) ->
+    traceGeneratorMap targetSingleton state = traceGeneratorMap targetWhole state) ->
+  LocatedReplayGeneratorOrigin name key world error value
+    (MoreTransitions sourceHead NoTransitions)
+    (MoreTransitions targetHead NoTransitions) actor targetSingleton ->
+  LocatedConsReplayGeneratorOrigin name key world error value sourceHead
+    targetHead sourceTail targetTail actor targetWhole
+widenLocatedReplayGeneratorOrigin sourceHead targetHead sourceTail targetTail actor
+  targetWhole targetSingleton targetExact
+  (MkLocatedReplayGeneratorOrigin sourceSingleton singletonMaps) =
+    let related : (observedKeyEq : DecEq key) -> PartialMapsRelated
+          (EffectStateEquivalence observedKeyEq)
+          (traceGeneratorMap
+            (widenSingletonGenerator sourceTail sourceSingleton))
+          (traceGeneratorMap targetWhole)
+        related observedKeyEq {x} {y} inputs = replayPartialRewrite
+          (sym (widenSingletonGeneratorMapExact sourceTail sourceSingleton x))
+          (targetExact y) (singletonMaps observedKeyEq inputs)
+    in MkLocatedConsReplayGeneratorOrigin
+      (widenSingletonGenerator sourceTail sourceSingleton) related
+
+0 prependLocatedReplayGeneratorOrigin :
+  (sourceHead : Transition sourceFirst sourceMiddle) ->
+  (targetHead : Transition targetFirst targetMiddle) ->
+  (sourceTail : Transitions sourceMiddle sourceFinal) ->
+  (targetTail : Transitions targetMiddle targetFinal) ->
+  (actor : name) ->
+  (targetWhole : TraceEffectGenerator name key world error value actor
+    (MoreTransitions targetHead targetTail)) ->
+  (targetLocal : TraceEffectGenerator name key world error value actor targetTail) ->
+  ((state : EffectState name key value world) ->
+    traceGeneratorMap targetLocal state = traceGeneratorMap targetWhole state) ->
+  LocatedReplayGeneratorOrigin name key world error value sourceTail targetTail
+    actor targetLocal ->
+  LocatedConsReplayGeneratorOrigin name key world error value sourceHead
+    targetHead sourceTail targetTail actor targetWhole
+prependLocatedReplayGeneratorOrigin sourceHead targetHead sourceTail targetTail
+  actor targetWhole targetLocal targetExact
+  (MkLocatedReplayGeneratorOrigin sourceLocal localMaps) =
+    let related : (observedKeyEq : DecEq key) -> PartialMapsRelated
+          (EffectStateEquivalence observedKeyEq)
+          (traceGeneratorMap (prependGenerator sourceHead sourceLocal))
+          (traceGeneratorMap targetWhole)
+        related observedKeyEq {x} {y} inputs = replayPartialRewrite
+          (sym (prependGeneratorMapExact sourceHead sourceLocal x))
+          (targetExact y) (localMaps observedKeyEq inputs)
+    in MkLocatedConsReplayGeneratorOrigin
+      (prependGenerator sourceHead sourceLocal) related
+
+0 consumeJointConsReplayGeneratorOrigin :
+  (sourceHead : Transition sourceFirst sourceMiddle) ->
+  (targetHead : Transition targetFirst targetMiddle) ->
+  (sourceTail : Transitions sourceMiddle sourceFinal) ->
+  (targetTail : Transitions targetMiddle targetFinal) ->
+  (headRAR : RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceHead NoTransitions)
+    (MoreTransitions targetHead NoTransitions)) ->
+  (tailRAR : RelationalReplayCorrespondence name key world error value
+    sourceTail targetTail) ->
+  {actor : name} ->
+  {target : TraceEffectGenerator name key world error value actor
+    (MoreTransitions targetHead targetTail)} ->
+  JointLocatedConsTargetGenerator name key world error value targetHead targetTail
+    actor target ->
+  LocatedConsReplayGeneratorOrigin name key world error value sourceHead
+    targetHead sourceTail targetTail actor target
+consumeJointConsReplayGeneratorOrigin sourceHead targetHead sourceTail targetTail
+  headRAR tailRAR (JointConsActualHere targetWhole targetSingleton targetExact) =
+    widenLocatedReplayGeneratorOrigin sourceHead targetHead sourceTail targetTail
+      actor targetWhole targetSingleton targetExact
+      (locateReplayGeneratorOrigin headRAR actor targetSingleton)
+consumeJointConsReplayGeneratorOrigin sourceHead targetHead sourceTail targetTail
+  headRAR tailRAR (JointConsActualLater targetWhole targetLocal targetExact) =
+    prependLocatedReplayGeneratorOrigin sourceHead targetHead sourceTail targetTail
+      actor targetWhole targetLocal targetExact
+      (locateReplayGeneratorOrigin tailRAR actor targetLocal)
+consumeJointConsReplayGeneratorOrigin sourceHead targetHead sourceTail targetTail
+  headRAR tailRAR
+  (JointConsForwardHere targetStage exactStage targetExact outcomeExact) =
+    let targetWhole : TraceEffectGenerator name key world error value actor
+          (MoreTransitions targetHead targetTail)
+        targetWhole = IteratorForwardGenerator targetStage
+        targetSingleton : TraceEffectGenerator name key world error value actor
+          (MoreTransitions targetHead NoTransitions)
+        targetSingleton = IteratorForwardGenerator exactStage
+    in widenLocatedReplayGeneratorOrigin sourceHead targetHead sourceTail targetTail
+      actor targetWhole targetSingleton targetExact
+      (locateReplayGeneratorOrigin headRAR actor targetSingleton)
+consumeJointConsReplayGeneratorOrigin sourceHead targetHead sourceTail targetTail
+  headRAR tailRAR
+  (JointConsForwardLater targetStage exactStage targetExact outcomeExact) =
+    let targetWhole : TraceEffectGenerator name key world error value actor
+          (MoreTransitions targetHead targetTail)
+        targetWhole = IteratorForwardGenerator targetStage
+        targetLocal : TraceEffectGenerator name key world error value actor
+          targetTail
+        targetLocal = IteratorForwardGenerator exactStage
+    in prependLocatedReplayGeneratorOrigin sourceHead targetHead sourceTail
+      targetTail actor targetWhole targetLocal targetExact
+      (locateReplayGeneratorOrigin tailRAR actor targetLocal)
+consumeJointConsReplayGeneratorOrigin sourceHead targetHead sourceTail targetTail
+  headRAR tailRAR
+  (JointConsYieldedHere targetStage origin exactStage targetExact outcomeExact) =
+    let targetWhole : TraceEffectGenerator name key world error value actor
+          (MoreTransitions targetHead targetTail)
+        targetWhole = IteratorYieldedGenerator targetStage origin
+        targetSingleton : TraceEffectGenerator name key world error value actor
+          (MoreTransitions targetHead NoTransitions)
+        targetSingleton = IteratorYieldedGenerator exactStage origin
+    in widenLocatedReplayGeneratorOrigin sourceHead targetHead sourceTail targetTail
+      actor targetWhole targetSingleton targetExact
+      (locateReplayGeneratorOrigin headRAR actor targetSingleton)
+consumeJointConsReplayGeneratorOrigin sourceHead targetHead sourceTail targetTail
+  headRAR tailRAR
+  (JointConsYieldedLater targetStage origin exactStage targetExact outcomeExact) =
+    let targetWhole : TraceEffectGenerator name key world error value actor
+          (MoreTransitions targetHead targetTail)
+        targetWhole = IteratorYieldedGenerator targetStage origin
+        targetLocal : TraceEffectGenerator name key world error value actor
+          targetTail
+        targetLocal = IteratorYieldedGenerator exactStage origin
+    in prependLocatedReplayGeneratorOrigin sourceHead targetHead sourceTail
+      targetTail actor targetWhole targetLocal targetExact
+      (locateReplayGeneratorOrigin tailRAR actor targetLocal)
+
+0 locateConsReplayGeneratorOrigin :
+  (sourceHead : Transition sourceFirst sourceMiddle) ->
+  (targetHead : Transition targetFirst targetMiddle) ->
+  (sourceTail : Transitions sourceMiddle sourceFinal) ->
+  (targetTail : Transitions targetMiddle targetFinal) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceHead NoTransitions)
+    (MoreTransitions targetHead NoTransitions) ->
+  RelationalReplayCorrespondence name key world error value sourceTail targetTail ->
+  (actor : name) ->
+  (target : TraceEffectGenerator name key world error value actor
+    (MoreTransitions targetHead targetTail)) ->
+  LocatedConsReplayGeneratorOrigin name key world error value sourceHead
+    targetHead sourceTail targetTail actor target
+locateConsReplayGeneratorOrigin sourceHead targetHead sourceTail targetTail
+  headRAR tailRAR actor target = consumeJointConsReplayGeneratorOrigin sourceHead
+    targetHead sourceTail targetTail headRAR tailRAR
+    (locateJointConsTargetGenerator target)
+
 ||| Registration generations need their own permutation when transitions are
 ||| swapped: the raw O-Insert action is preserved, but its global birth ordinal
 ||| may move.  This composition is deliberately local to operational replay so
