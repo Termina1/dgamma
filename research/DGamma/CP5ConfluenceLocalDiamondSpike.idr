@@ -17816,6 +17816,130 @@ framePairExternalOrderSpike nameEq tracePrefix left right suffix movedRight
     sameExternalAppendSpike nameEq prefixExternal
       (sameExternalAppendSpike nameEq pairExternal suffixExternal)
 
+0 alignedTraceFinalWellFormed :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trace : Transitions first finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  registryWellFormed @{nameEq} @{keyEq} first = True ->
+  registryWellFormed @{nameEq} @{keyEq} finalState = True
+alignedTraceFinalWellFormed nameEq keyEq NoTransitions AlignedEnd wellFormed =
+  wellFormed
+alignedTraceFinalWellFormed nameEq keyEq
+  (MoreTransitions
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq action tag checked) rest)
+  (AlignedStep action tag checked rest alignedRest) wellFormed =
+    alignedTraceFinalWellFormed nameEq keyEq rest alignedRest
+      (checkedTargetWellFormed nameEq keyEq action first middle tag checked)
+
+||| Private aligned outer envelope for the exact suffix replay. It owns the
+||| target alignment generated from the unchanged prefix, the diamond-owned
+||| moved pair, and the same pointwise suffix producer that owns the replay
+||| trace and seal. No alignment is accepted from the caller.
+record AdjacentAlignedPointwiseReplay
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+    SystemState name key value world error}
+  (original : Transitions initial originalFinal)
+  (tracePrefix : Transitions initial pairFirst)
+  (left : Transition pairFirst pairMiddle)
+  (right : Transition pairMiddle pairFinal)
+  (suffix : Transitions pairFinal originalFinal)
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) where
+  constructor MkAdjacentAlignedPointwiseReplay
+  alignedReplayFinal : SystemState name key value world error
+  alignedReplaySuffix : Transitions (swappedFinal diamond) alignedReplayFinal
+  alignedReplayTrace : Transitions initial alignedReplayFinal
+  0 alignedReplayDecomposition : alignedReplayTrace = appendTransitions
+    tracePrefix (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) alignedReplaySuffix))
+  0 alignedReplayTarget : AlignedTransitions name key world error value nameEq
+    keyEq alignedReplayTrace
+  0 alignedReplayEndpoint : RelationalReplayEndpoint name key world error value
+    nameEq keyEq originalFinal alignedReplayFinal
+  0 alignedReplaySeal : SealedSuffixReplaySpine name key world error value nameEq
+    keyEq suffix alignedReplaySuffix
+
+0 produceAdjacentAlignedPointwiseReplay :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+    SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (tracePrefix : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (decomposition : appendTransitions tracePrefix
+    (MoreTransitions left (MoreTransitions right suffix)) = original) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq
+    keyEq original) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  AdjacentAlignedPointwiseReplay name key world error value protocol nameEq keyEq
+    original tracePrefix left right suffix diamond
+produceAdjacentAlignedPointwiseReplay nameEq keyEq protocol original tracePrefix
+  left right suffix decomposition premises diamond =
+    let 0 decomposedAligned : AlignedTransitions name key world error value
+          nameEq keyEq (appendTransitions tracePrefix
+            (MoreTransitions left (MoreTransitions right suffix)))
+        decomposedAligned = replace {p = AlignedTransitions name key world error
+          value nameEq keyEq} (sym decomposition) (replayAligned premises)
+        sourcePair : Transitions pairFirst pairFinal
+        sourcePair = MoreTransitions left (MoreTransitions right NoTransitions)
+        0 prefixAligned : AlignedTransitions name key world error value nameEq
+          keyEq tracePrefix
+        prefixAligned = alignedAppendLeft tracePrefix
+          (MoreTransitions left (MoreTransitions right suffix)) decomposedAligned
+        0 afterPrefixAligned : AlignedTransitions name key world error value
+          nameEq keyEq (MoreTransitions left (MoreTransitions right suffix))
+        afterPrefixAligned = alignedAppendRight tracePrefix
+          (MoreTransitions left (MoreTransitions right suffix)) decomposedAligned
+        0 sourcePairAligned : AlignedTransitions name key world error value
+          nameEq keyEq sourcePair
+        sourcePairAligned = alignedAppendLeft sourcePair suffix
+          afterPrefixAligned
+        0 sourceSuffixAligned : AlignedTransitions name key world error value
+          nameEq keyEq suffix
+        sourceSuffixAligned = alignedAppendRight sourcePair suffix
+          afterPrefixAligned
+        0 sourcePairFinalWellFormed : registryWellFormed @{nameEq} @{keyEq}
+          pairFinal = True
+        sourcePairFinalWellFormed = alignedTraceFinalWellFormed nameEq keyEq
+          (appendTransitions tracePrefix sourcePair)
+          (appendAlignedTransitions prefixAligned sourcePairAligned)
+          (replayInitialWellFormed premises)
+        0 startEndpoint : RelationalReplayEndpoint name key world error value
+          nameEq keyEq pairFinal (swappedFinal diamond)
+        startEndpoint = MkRelationalReplayEndpoint (swappedEffects diamond)
+          (swappedControlEquivalent diamond) (swappedWellFormed diamond)
+        0 suffixReplay : PointwiseSuffixSpineReplay name key world error value
+          nameEq keyEq suffix (swappedFinal diamond)
+        suffixReplay = replayPointwiseSuffixSpine nameEq keyEq suffix
+          sourceSuffixAligned sourcePairFinalWellFormed startEndpoint
+        0 replayedSuffix : Transitions (swappedFinal diamond)
+          (spineReplayedFinal suffixReplay)
+        replayedSuffix = spineReplayedTrace suffixReplay
+        0 replayedSuffixAligned : AlignedTransitions name key world error value
+          nameEq keyEq replayedSuffix
+        replayedSuffixAligned = replayPointwiseSuffixSpineAligned nameEq keyEq
+          suffix sourceSuffixAligned sourcePairFinalWellFormed startEndpoint
+        0 targetTrace : Transitions initial (spineReplayedFinal suffixReplay)
+        targetTrace = appendTransitions tracePrefix
+          (MoreTransitions (movedRight diamond)
+            (MoreTransitions (movedLeft diamond) replayedSuffix))
+        0 targetAligned : AlignedTransitions name key world error value nameEq
+          keyEq targetTrace
+        targetAligned = appendAlignedTransitions prefixAligned
+          (appendAlignedTransitions (movedPairAligned diamond)
+            replayedSuffixAligned)
+    in MkAdjacentAlignedPointwiseReplay (spineReplayedFinal suffixReplay)
+      replayedSuffix targetTrace Refl targetAligned
+      (spineReplayEndpoint suffixReplay) (spineReplaySeal suffixReplay)
+
 ||| Checked suffix-splice interface consumed by sorting.  It is generic over the
 ||| local diamond case (A/A, A/O, O/A, or O/O) and returns all recursive capital.
 public export
