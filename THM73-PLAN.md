@@ -1288,6 +1288,30 @@ is now the designated fallback gate. Cure (c) and public surfaces remain
 unopened. The accepted **3–15 shift** band is held. Holes remain **20**, split
 **6/4/8/1/1**.
 
+### Revision 64: joint generator origin closes; stage origin gates
+
+`research-tests/O6-R64-JOINT-TARGET-GENERATOR-CLOSED-ITERATOR-ORIGIN-STOP-AUDIT.md`
+records shift #72. The candidate-(2) six-region target wrapper now introduces
+exact Here/Tail local generator or iterator-stage results and producer-owned map
+and outcome equations. Its producer delegates only through the closed
+`LocatedConsTargetGenerator` / `LocatedConsTargetStageRuntime` chain. The
+universally quantified region helper closes by eliminating `OccursIn` itself,
+not the redundant dependent view. `LocatedConsReplayGeneratorOrigin` then
+closes all six regions on its first attempt.
+
+`LocatedConsIteratorStageOrigin` exhausted three attempts. The generator-indexed
+joint wrapper deliberately gives its private actual-region constructors generic
+whole/local generators; totality therefore admits iterator-shaped values in
+those constructors even though the live producer never makes them. Privately
+strengthening the actual constructors reopened hidden dependent `Fired`
+coverage families in the already-closed generator consumer. All stage-origin
+work and wrapper strengthening were reverted. The next gate is a separate
+private two-constructor stage-only Here/Tail target view, produced from
+`LocatedConsTargetStageRuntime` without changing the generator wrapper. Cure
+(c) and public surfaces remain unopened. One shift of the accepted **3–15** band
+has been consumed; nominal **2–14** remain. Holes remain **20**, split
+**6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1599,7 +1623,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; indexed head elimination, suffix spine, occurrence view, total locator, and producer-owned stage runtime equations are closed. Revision 63 validates the runtime identity cure but gates generator origin on a dependent region eliminator that must quantify occurrence and exact stage jointly.** | **XL, original 3–15 remaining-shift band held at the revision-63 candidate-(2) fallback gate.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; candidate-(2) dependent regions, producer delegation, and whole-cons generator origin are now closed. Revision 64 gates iterator origin on a separate private stage-only Here/Tail target view; cons RAR and whole-bundle composition remain downstream.** | **XL, 1 shift consumed from the accepted 3–15 band; nominal 2–14 remain at the revision-64 stage-only-view gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1761,8 +1785,9 @@ nested stage-occurrence patterns remain non-covering. Revision 61 proves the
 semantic partition is nevertheless exactly Here/Tail and validates a total
 stage-indexed, two-phase dependent package through the original whole generator.
 Revision 62 implements that occurrence view, stage package, and total outer
-locator. Revision 63 adds producer-owned stage runtime equations, closes the
-runtime-map identity, and gates generator origin on dependent occurrence-region
-elimination: the next helper must quantify occurrence and exact stage jointly.
-Cure (c) remains unopened. Occurrence/ordinal composition and final adjacent-
-result assembly remain after that gate.
+locator. Revision 63 adds producer-owned stage runtime equations and closes the
+runtime-map identity. Revision 64 closes the universally quantified joint-region
+producer and whole-cons generator origin, then gates iterator origin: it needs a
+separate stage-indexed Here/Tail view rather than reusing or strengthening the
+generator wrapper. Cure (c) remains unopened. Whole-cons RAR, occurrence/ordinal
+composition, and final adjacent-result assembly remain after that gate.
