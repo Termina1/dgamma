@@ -1,0 +1,119 @@
+{
+  "status": "PROPOSED_DESIGN_ONLY",
+  "baseHead": "e94d63e1ee65bd67a15f500df1fa4545341f8f21",
+  "designAudit": "research-tests/O6-R69-REGISTRATION-SAFETY-RETENTION-DESIGN-AUDIT.md",
+  "selectedCandidate": "cure-a-registration-swap-safety-field",
+  "newDeclarations": [
+    {
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "type": "RegistrationSwapSafety",
+      "visibility": "public export",
+      "shape": "four-constructor indexed family: A/A classifiers; A/O parentSafe; O/A childSafe plus parentSafe; O/O insertedChildrenDistinct plus generatedLicensesDoNotCross",
+      "runtimeQuantity": 0
+    }
+  ],
+  "frozenDeclarationChanges": [
+    {
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "record": "LocalRelationalDiamond",
+      "change": "append erased field",
+      "field": "registrationSwapSafety",
+      "signature": "  0 registrationSwapSafety : RegistrationSwapSafety left right",
+      "parametersChanged": false,
+      "existingFieldsChanged": false,
+      "constructorArityChanged": true
+    }
+  ],
+  "constructionSiteBodyChanges": [
+    {
+      "producer": "activationActivationDiamondSpike",
+      "constructorSiteLineAtBase": 17009,
+      "retainedConstructor": "RegistrationSwapActivationActivation",
+      "evidenceAlreadyInScope": ["leftActivation", "rightActivation"],
+      "publicTypeChanged": false
+    },
+    {
+      "producer": "activationOrchestrationDiamondSpike",
+      "constructorSiteLineAtBase": 17238,
+      "retainedConstructor": "RegistrationSwapActivationOrchestration",
+      "evidenceAlreadyInScope": ["leftActivation", "rightOrchestration", "parentSafe"],
+      "publicTypeChanged": false
+    },
+    {
+      "producer": "orchestrationActivationDiamondSpike",
+      "constructorSiteLineAtBase": 17449,
+      "retainedConstructor": "RegistrationSwapOrchestrationActivation",
+      "evidenceAlreadyInScope": ["leftOrchestration", "rightActivation", "childSafe", "parentSafe"],
+      "publicTypeChanged": false
+    },
+    {
+      "producer": "orchestrationOrchestrationDiamondSpike",
+      "constructorSiteLineAtBase": 17731,
+      "retainedConstructor": "RegistrationSwapOrchestrationOrchestration",
+      "evidenceAlreadyInScope": ["leftOrchestration", "rightOrchestration", "insertedChildrenDistinct safety", "generatedLicensesDoNotCross safety"],
+      "publicTypeChanged": false
+    }
+  ],
+  "testConsumerChanges": [
+    {
+      "module": "research-tests/DGamma/R19SuffixFreeFullAdjacentCertificatePositive.idr",
+      "constructorSiteLineAtBase": 316,
+      "change": "supply A/A registration-safety constructor from existing PaperIterStep proofs",
+      "publicTypeChanged": false,
+      "publicBareConstructorRemainsUsable": true
+    },
+    {
+      "module": "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+      "change": "preserve the old unsafe shape as a test-local RetiredBareLocalRelationalDiamond; the live LocalRelationalDiamond constructor application must remain rejected",
+      "publicTypeChanged": false
+    },
+    {
+      "module": "research-tests/DGamma/R45BareDiamondSafetyProjectionNegative.idr",
+      "change": "reclassify as a positive projection probe after implementation",
+      "reason": "the expected failure deliberately flips when the reviewed field lands"
+    }
+  ],
+  "manifestChangesAtLanding": [
+    {
+      "manifest": "research-tests/cp5-hole-interface-baseline.json",
+      "section": "recordFieldRevisions",
+      "change": "append revision-21 LocalRelationalDiamond.registrationSwapSafety field entry"
+    },
+    {
+      "manifest": "research-tests/cp5-hole-interface-baseline.json",
+      "section": "holes[adjacentSwapSuffixSpike]",
+      "change": "none; signature remains byte-identical"
+    }
+  ],
+  "explicitNonChanges": [
+    "adjacentSwapSuffixSpike declaration and body-hole line (1183 bytes; SHA-256 e6d0c2d669355e5b7bef9efea1707f5853c708deb888bafe5770ba40dbd15a41)",
+    "LocalRelationalDiamond parameters and all existing fields",
+    "AdjacentSwapResult parameters, constructor visibility, and fields",
+    "ReplayInvariantBundle",
+    "RelationalReplayCorrespondence",
+    "OrchestrationSwapSafety",
+    "all revision-20 map surfaces",
+    "confluenceTheorem",
+    "src/ and dgamma.ipkg",
+    "CP3 blob 2c697e532e83989de8591fa6a4378747c6a501c0"
+  ],
+  "rejectedCandidates": [
+    {
+      "candidate": "cure-b-opaque-genuine-input",
+      "reason": "the frozen adjacent declaration accepts LocalRelationalDiamond; direct opaque input is rejected, while projecting the base hides safety from the body. Narrowing the input requires forbidden spike text change."
+    },
+    {
+      "candidate": "cure-c-protocol-quantified-discipline-transport",
+      "reason": "not probed because cure (a) passed both directions; disfavored transport machinery remains unopened per the campaign ruling."
+    }
+  ],
+  "probeCoverage": [
+    "R45BareDiamondDisciplineCounterexamplePositive",
+    "R45BareDiamondFalseDisciplineNegative",
+    "R45GenuineDiamondSafetyDesignPositive",
+    "R45BareDiamondSafetyProjectionNegative",
+    "R45OpaqueGenuineAdjacentInputNegative"
+  ],
+  "implementationAuthorized": false,
+  "designGate": "PENDING_SUPERVISOR_REVIEW"
+}

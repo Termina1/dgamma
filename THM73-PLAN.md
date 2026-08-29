@@ -1391,6 +1391,29 @@ admissible. Fields 3–15 and assembly remain unopened pending a frozen-surface
 ruling. One shift consumed the re-estimated **1–11** band; the prior upper
 remainder is **10**. Holes remain **20**, split **6/4/8/1/1**.
 
+### Revision 69: registration-safety retention design campaign
+
+`research-tests/O6-R69-REGISTRATION-SAFETY-RETENTION-DESIGN-AUDIT.md`
+records design-only shift #77. A concrete checked empty-origin trace now pins
+the accepted counterexample: the source `LBegin parent ; OInsert child` trace
+has constructive registration discipline, the swapped child insertion observes
+an inactive parent, and a public bare local diamond still owns every operational
+and endpoint field. The exact failed target yield is tracked as an expected
+failure.
+
+The exhaustive R16-chain inventory finds four centralized constructor sites.
+A/A already owns both classifiers; A/O owns `parentSafe`; O/A owns `childSafe`
+and `parentSafe`; O/O owns inserted-child distinctness and both cross-license
+exclusions through `OrchestrationSwapSafety`. Test-local positive retainers
+cover all four, and the proposed indexed safety package constructively rejects
+the counterexample. The preferred cure is therefore one erased
+`registrationSwapSafety` field on `LocalRelationalDiamond`. An opaque wrapper
+is rejected by the byte-frozen adjacent input; projecting its base hides the
+needed evidence. Protocol-quantified transport remains unopened because the
+preferred cure passed both directions. No implementation occurred. The honest
+post-design O6 remainder widens to **4–18 implementation shifts**. Holes remain
+**20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1702,7 +1725,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; whole-suffix correspondence, global ordinals, suffix replay, and exact whole-target alignment are closed. Revision 68 gates bundle field 2 because the frozen bare local diamond omits mixed parent/child safety needed by target registration discipline.** | **XL, semantic design gate; prior upper remainder 10 pending a frozen-surface ruling.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; field 1 is closed. Revision 69 constructively pins the field-2 counterexample and verifies that all four R16-chain producers already own the preferred indexed registration-swap safety package. Implementation awaits a separate revision-21 frozen-surface gate.** | **XL, 4–18 implementation shifts after the design gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1872,8 +1895,11 @@ and positional action occurrence/tag/ordinal cons helpers. Revision 66 closes
 the projection-based generated-registration conversion. Revision 67 closes
 structural nonemptiness, whole-suffix action/generated occurrence transport,
 global ordinals, and exact producer-owned suffix alignment. Revision 68 closes
-the fully erased private outer alignment envelope. Cure (c) remains unopened.
-Bundle field 2 is semantically gated because the bare frozen local diamond omits
-the consumer-significant parent/child exclusions required to transport child-
-registration discipline; later bundle fields and final adjacent-result assembly
-remain after that design gate.
+the fully erased private outer alignment envelope. Revision 69 constructively
+pins the bare-diamond discipline counterexample and passes both directions for a
+protocol-independent indexed registration-swap safety field: all four R16-chain
+constructor sites already own its branch evidence, while the candidate rejects
+the counterexample. The opaque-input fallback fails against the byte-frozen
+adjacent declaration, and protocol-quantified transport remains unopened. No
+implementation is authorized yet. Bundle field 2, later bundle fields, and final
+adjacent-result assembly remain after the revision-21 frozen-surface gate.
