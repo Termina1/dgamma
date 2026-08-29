@@ -2499,9 +2499,71 @@ relationalReplayEndpointTransitiveSpike nameEq keyEq left middle right
       MkEffectStateRelated (trans firstAmbient secondAmbient)
         (\actor => trans (firstTables actor) (secondTables actor))
 
+||| Producer-owned registration safety for the four Lemma-71 local-diamond
+||| orientations.  The evidence is protocol-independent and erased; it retains
+||| exactly the mixed parent/child and O/O cross-license exclusions that the
+||| operational producers already require.
+public export
+data CandidateRegistrationSwapSafety :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, originalFinal : SystemState name key value world error} ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) -> Type where
+  CandidateActivationActivation :
+    {left : Transition first middle} ->
+    {right : Transition middle originalFinal} ->
+    PaperActivationStep left ->
+    PaperActivationStep right ->
+    CandidateRegistrationSwapSafety left right
+  CandidateActivationOrchestration :
+    {left : Transition first middle} ->
+    {right : Transition middle originalFinal} ->
+    PaperActivationStep left ->
+    PaperOrchestrationStep right ->
+    ((child, parent : name) ->
+      (component : Component key value world error) ->
+      transitionAction right = OInsert child (ChildOf parent) component ->
+      Not (transitionActor left = parent)) ->
+    CandidateRegistrationSwapSafety left right
+  CandidateOrchestrationActivation :
+    {left : Transition first middle} ->
+    {right : Transition middle originalFinal} ->
+    PaperOrchestrationStep left ->
+    PaperActivationStep right ->
+    ((child : name) -> (parent : Parent name) ->
+      (component : Component key value world error) ->
+      transitionAction left = OInsert child parent component ->
+      Not (transitionActor right = child)) ->
+    ((child, parent : name) ->
+      (component : Component key value world error) ->
+      transitionAction left = OInsert child (ChildOf parent) component ->
+      Not (transitionActor right = parent)) ->
+    CandidateRegistrationSwapSafety left right
+  CandidateOrchestrationOrchestration :
+    {left : Transition first middle} ->
+    {right : Transition middle originalFinal} ->
+    PaperOrchestrationStep left ->
+    PaperOrchestrationStep right ->
+    ((leftChild, rightChild : name) ->
+      (leftParent, rightParent : Parent name) ->
+      (leftComponent, rightComponent : Component key value world error) ->
+      transitionAction left = OInsert leftChild leftParent leftComponent ->
+      transitionAction right = OInsert rightChild rightParent rightComponent ->
+      Not (leftChild = rightChild)) ->
+    ((leftChild, leftParent, rightChild, rightParent : name) ->
+      (leftComponent, rightComponent : Component key value world error) ->
+      transitionAction left =
+        OInsert leftChild (ChildOf leftParent) leftComponent ->
+      transitionAction right =
+        OInsert rightChild (ChildOf rightParent) rightComponent ->
+      (Not (leftChild = rightParent), Not (rightChild = leftParent))) ->
+    CandidateRegistrationSwapSafety left right
+
 ||| Relational local diamond suitable for splicing by replay.  Action and tag
 ||| equalities are both explicit: L-Iter and L-Finish share LAdvance, so action
-||| equality alone cannot recover a located paper activation step.
+||| equality alone cannot recover a located paper activation step.  The erased
+||| safety package prevents publicly constructed bare records from discarding
+||| producer-owned registration discipline evidence.
 public export
 record LocalRelationalDiamond
   (name, key, world, error : Type) (value : key -> Type)
@@ -2528,6 +2590,7 @@ record LocalRelationalDiamond
     PaperOrchestrationStep right -> PaperOrchestrationStep movedRight
   0 movedLeftOrchestrationBranch :
     PaperOrchestrationStep left -> PaperOrchestrationStep movedLeft
+  0 registrationSwapSafety : CandidateRegistrationSwapSafety left right
   0 swappedEffects : EffectStateRelated keyEq
     (projectEffectState @{nameEq} originalFinal)
     (projectEffectState @{nameEq} swappedFinal)
@@ -17022,6 +17085,7 @@ activationActivationDiamondSpike nameEq keyEq left right earlyRight
                 (\orchestration => void
                   (paperActivationOrchestrationImpossible
                     leftActivation orchestration))
+                (CandidateActivationActivation leftActivation rightActivation)
                 effectsRelated
                 (orderedControlsGiveControlEquivalent nameEq originalFinal
                   swappedFinal controls)
@@ -17256,6 +17320,8 @@ activationOrchestrationDiamondSpike nameEq keyEq left right sourceAligned
                   (\orchestration => void
                     (paperActivationOrchestrationImpossible leftActivation
                       orchestration))
+                  (CandidateActivationOrchestration leftActivation
+                    rightOrchestration parentSafe)
                   (checkedEndpointEffects endpoint)
                   (orderedControlsGiveControlEquivalent nameEq originalFinal
                     swappedFinal controls)
@@ -17460,6 +17526,8 @@ orchestrationActivationDiamondSpike nameEq keyEq left right earlyRight
                   (paperActivationOrchestrationImpossible rightActivation
                     orchestration))
                 (\_ => movedLeftOrchestration)
+                (CandidateOrchestrationActivation leftOrchestration
+                  rightActivation childSafe parentSafe)
                 (checkedEndpointEffects endpoint)
                 (orderedControlsGiveControlEquivalent nameEq originalFinal
                   swappedFinal controls)
@@ -17745,6 +17813,9 @@ orchestrationOrchestrationDiamondSpike nameEq keyEq protocol left right
                             leftOrchestration))
                         (\_ => movedRightOrchestration)
                         (\_ => movedLeftOrchestration)
+                        (CandidateOrchestrationOrchestration leftOrchestration
+                          rightOrchestration (insertedChildrenDistinct safety)
+                          (generatedLicensesDoNotCross safety))
                         (checkedEndpointEffects endpoint)
                         controlEquivalent
                         (checkedEndpointWellFormed endpoint)
