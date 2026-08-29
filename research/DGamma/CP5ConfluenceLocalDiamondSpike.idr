@@ -2906,6 +2906,46 @@ sealPointwiseRelationalHead head tail =
     (headReplayMapsRelated head) (headReplayEndpoint head)
     (headReplayOccurrences head) (headReplayRelativeOrdinal head) tail
 
+0 noTraceEffectGeneratorInEmpty :
+  TraceEffectGenerator name key world error value actor NoTransitions -> Void
+noTraceEffectGeneratorInEmpty
+  (ActualForwardGenerator _ _ _ _ _ _ _ occurs _) = noOccurrenceInEmpty occurs
+noTraceEffectGeneratorInEmpty
+  (IteratorForwardGenerator
+    (StageFromAdvance _ _ _ _ _ occurs _ _ _ _ _ _ _ _ _)) =
+      noOccurrenceInEmpty occurs
+noTraceEffectGeneratorInEmpty
+  (IteratorYieldedGenerator
+    (StageFromAdvance _ _ _ _ _ occurs _ _ _ _ _ _ _ _ _) origin) =
+      noOccurrenceInEmpty occurs
+
+0 noIteratorStageInEmpty :
+  IteratorStage name key world error value actor NoTransitions -> Void
+noIteratorStageInEmpty
+  (StageFromAdvance _ _ _ _ _ occurs _ _ _ _ _ _ _ _ _) =
+    noOccurrenceInEmpty occurs
+
+||| Fold the sealed per-head RAR capital into one whole-suffix correspondence.
+||| The empty case eliminates impossible generator/stage witnesses; every
+||| nonempty case uses the checked cons constructor proved above, so both origin
+||| families remain producer-correlated at every recursive boundary.
+0 sealedSuffixRelationalReplayCorrespondence :
+  SealedSuffixReplaySpine name key world error value nameEq keyEq source replayed ->
+  RelationalReplayCorrespondence name key world error value source replayed
+sealedSuffixRelationalReplayCorrespondence SealedSuffixReplayEnd =
+  MkRelationalReplayCorrespondence
+    (\actor, generator => void (noTraceEffectGeneratorInEmpty generator))
+    (\observedKeyEq, actor, generator =>
+      void (noTraceEffectGeneratorInEmpty generator))
+    (\actor, stage => void (noIteratorStageInEmpty stage))
+    (\actor, stage, state => void (noIteratorStageInEmpty stage))
+sealedSuffixRelationalReplayCorrespondence
+  (SealedSuffixReplayStep sourceStep replayedStep sourceTail replayedTail
+    sameAction sameTag headRAR headMaps headEndpoint headOccurrences
+    headRelativeOrdinal tail) =
+      consRelationalReplayCorrespondence sourceStep replayedStep sourceTail
+        replayedTail headRAR (sealedSuffixRelationalReplayCorrespondence tail)
+
 0 checkedTargetWellFormed :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) ->
