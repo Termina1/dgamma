@@ -73,6 +73,7 @@ POSITIVE=(
   R39RelationalFixtureRetentionPositive
   R40RetiredExactMapShapesPositive
   R43JointAlignedHeadProbePositive
+  R44IteratorStageOccurrencePartitionPositive
 )
 
 # Each expected failure has its own mandatory diagnostic fragment and source
@@ -83,6 +84,8 @@ NEGATIVE_SPECS=(
   "R34RemoveChildOrientationNegative|hasChildIn actor (source .bindings) and False|removeChildOrientationProbe"
   "R38UnloadExactMapFromRuntimeAccumulatorNegative|probeFreshRight and probeFreshLeft|unloadExactMapFromRuntimeAccumulatorNegative"
   "R41PointwiseRelianceProjectionNegative|rightTable and leftTable|directPointwiseReliedHeadProjectionDoesNotReduce"
+  "R44IteratorForwardNestedCoverageNegative|IteratorForwardGenerator _|directIteratorForwardNestedCoverage"
+  "R44IteratorYieldedNestedCoverageNegative|IteratorYieldedGenerator _ _|directIteratorYieldedNestedCoverage"
   "R20WholeBundleMovedAlignmentNegative|storedRightKeyEq and keyEq|localDiamondCannotSupplyMovedAlignment"
   "R21CandidateIndependentDictionaryNegative|storedRightKeyEq and keyEq|forgeCandidateFromIndependentDictionaries"
   "R21RepeatedIterProducerAlignmentNegative|storedRightKeyEq and storedLeftKeyEq|repeatedIterPremisesCannotSupplyMovedAlignment"
@@ -165,7 +168,7 @@ run_successful_unit() {
 }
 
 # Package population is hardened against the same status-zero Error: behavior,
-# but does not contribute to the 5+51 research-unit marker count.
+# but does not contribute to the 5+54 research-unit marker count.
 run_package_build() {
   local output
   output=$(mktemp)
@@ -192,7 +195,7 @@ export IDRIS2_PATH="$ROOT/$TTC_ROOT${IDRIS2_PATH:+:$IDRIS2_PATH}"
 
 if [ "$FRESH" -eq 1 ]; then
   # Idris writes these direct --check interfaces into the package TTC root, not
-  # source-relative research directories. Delete exactly the 5+94 suite units.
+  # source-relative research directories. Delete exactly the 5+100 suite units.
   all_modules=("${SPIKES[@]}" "${POSITIVE[@]}")
   for specification in "${NEGATIVE_SPECS[@]}"; do
     IFS='|' read -r module _ _ <<<"$specification"
@@ -239,8 +242,8 @@ for specification in "${NEGATIVE_SPECS[@]}"; do
 done
 
 if [ "$FRESH" -eq 1 ]; then
-  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 58 ]; then
-    echo "Expected 58 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
+  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 59 ]; then
+    echo "Expected 59 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
     exit 1
   fi
   echo "R11_FRESH_SUCCESSFUL_BUILD_MARKERS=$SUCCESSFUL_BUILD_MARKERS"
