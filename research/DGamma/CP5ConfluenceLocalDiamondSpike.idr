@@ -3042,6 +3042,22 @@ consPointwiseActionOrdinalPreserved sourceStep replayedStep sourceTail replayedT
         Refl => cong S (tailOrdinal (MkLocatedActionOccurrence _ _ prefixTail
           located suffix actionSame Refl))
 
+||| Exact conversion of one located child O-Insert action to the generated-
+||| registration view. Cure 1 deliberately uses an ordinary variable LHS and
+||| only record projections; no indexed record constructor appears in the LHS.
+0 locatedChildRegistrationFromAction :
+  LocatedActionOccurrence (OInsert child (ChildOf parent) component) trace ->
+  LocatedGeneratedRegistration child parent component trace
+locatedChildRegistrationFromAction occurrence =
+  MkLocatedGeneratedRegistration
+    (actionBeforeState occurrence)
+    (actionAfterState occurrence)
+    (beforeActionOccurrence occurrence)
+    (locatedTransition occurrence)
+    (afterActionOccurrence occurrence)
+    (locatedAction occurrence)
+    (actionOccurrenceDecomposition occurrence)
+
 0 checkedTargetWellFormed :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) ->
