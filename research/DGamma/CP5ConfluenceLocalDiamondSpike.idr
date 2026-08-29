@@ -1362,6 +1362,92 @@ locateConsTargetGenerator (IteratorForwardGenerator stage) =
 locateConsTargetGenerator (IteratorYieldedGenerator stage origin) =
   LocatedConsYieldedGenerator stage origin (locateConsTargetStageRuntime stage)
 
+||| Candidate-(2) dependent outer target view. Iterator constructors jointly
+||| introduce the original whole stage, the exact locally reconstructed
+||| StageFromAdvance result in its Here/Tail region, and the producer-owned
+||| runtime equations. The producer below must obtain these only by eliminating
+||| LocatedConsTargetStageRuntime; consumers never refine a captured occurrence.
+data JointLocatedConsTargetGenerator :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {targetFirst, targetMiddle, targetFinal :
+    SystemState name key value world error} ->
+  (targetHead : Transition targetFirst targetMiddle) ->
+  (targetTail : Transitions targetMiddle targetFinal) ->
+  (actor : name) ->
+  TraceEffectGenerator name key world error value actor
+    (MoreTransitions targetHead targetTail) -> Type where
+  JointConsActualHere :
+    (targetWhole : TraceEffectGenerator name key world error value actor
+      (MoreTransitions targetHead targetTail)) ->
+    (targetSingleton : TraceEffectGenerator name key world error value actor
+      (MoreTransitions targetHead NoTransitions)) ->
+    (0 targetExact : (state : EffectState name key value world) ->
+      traceGeneratorMap targetSingleton state =
+        traceGeneratorMap targetWhole state) ->
+    JointLocatedConsTargetGenerator name key world error value targetHead
+      targetTail actor targetWhole
+  JointConsActualLater :
+    (targetWhole : TraceEffectGenerator name key world error value actor
+      (MoreTransitions targetHead targetTail)) ->
+    (targetLocal : TraceEffectGenerator name key world error value actor
+      targetTail) ->
+    (0 targetExact : (state : EffectState name key value world) ->
+      traceGeneratorMap targetLocal state = traceGeneratorMap targetWhole state) ->
+    JointLocatedConsTargetGenerator name key world error value targetHead
+      targetTail actor targetWhole
+  JointConsForwardHere :
+    (targetStage : IteratorStage name key world error value actor
+      (MoreTransitions targetHead targetTail)) ->
+    (exactStage : IteratorStage name key world error value actor
+      (MoreTransitions targetHead NoTransitions)) ->
+    (0 targetExact : (state : EffectState name key value world) ->
+      traceGeneratorMap (IteratorForwardGenerator exactStage) state =
+        traceGeneratorMap (IteratorForwardGenerator targetStage) state) ->
+    (0 outcomeExact : (state : EffectState name key value world) ->
+      iteratorStageOutcome targetStage state =
+        iteratorStageOutcome exactStage state) ->
+    JointLocatedConsTargetGenerator name key world error value targetHead
+      targetTail actor (IteratorForwardGenerator targetStage)
+  JointConsForwardLater :
+    (targetStage : IteratorStage name key world error value actor
+      (MoreTransitions targetHead targetTail)) ->
+    (exactStage : IteratorStage name key world error value actor targetTail) ->
+    (0 targetExact : (state : EffectState name key value world) ->
+      traceGeneratorMap (IteratorForwardGenerator exactStage) state =
+        traceGeneratorMap (IteratorForwardGenerator targetStage) state) ->
+    (0 outcomeExact : (state : EffectState name key value world) ->
+      iteratorStageOutcome targetStage state =
+        iteratorStageOutcome exactStage state) ->
+    JointLocatedConsTargetGenerator name key world error value targetHead
+      targetTail actor (IteratorForwardGenerator targetStage)
+  JointConsYieldedHere :
+    (targetStage : IteratorStage name key world error value actor
+      (MoreTransitions targetHead targetTail)) ->
+    (origin : EffectState name key value world) ->
+    (exactStage : IteratorStage name key world error value actor
+      (MoreTransitions targetHead NoTransitions)) ->
+    (0 targetExact : (state : EffectState name key value world) ->
+      traceGeneratorMap (IteratorYieldedGenerator exactStage origin) state =
+        traceGeneratorMap (IteratorYieldedGenerator targetStage origin) state) ->
+    (0 outcomeExact : (state : EffectState name key value world) ->
+      iteratorStageOutcome targetStage state =
+        iteratorStageOutcome exactStage state) ->
+    JointLocatedConsTargetGenerator name key world error value targetHead
+      targetTail actor (IteratorYieldedGenerator targetStage origin)
+  JointConsYieldedLater :
+    (targetStage : IteratorStage name key world error value actor
+      (MoreTransitions targetHead targetTail)) ->
+    (origin : EffectState name key value world) ->
+    (exactStage : IteratorStage name key world error value actor targetTail) ->
+    (0 targetExact : (state : EffectState name key value world) ->
+      traceGeneratorMap (IteratorYieldedGenerator exactStage origin) state =
+        traceGeneratorMap (IteratorYieldedGenerator targetStage origin) state) ->
+    (0 outcomeExact : (state : EffectState name key value world) ->
+      iteratorStageOutcome targetStage state =
+        iteratorStageOutcome exactStage state) ->
+    JointLocatedConsTargetGenerator name key world error value targetHead
+      targetTail actor (IteratorYieldedGenerator targetStage origin)
+
 0 widenSingletonOccurrence :
   {sourceFirst, sourceAfter, sourceFinal, selectedBefore, selectedAfter :
     SystemState name key value world error} ->
