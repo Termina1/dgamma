@@ -972,6 +972,180 @@ composeRelationalReplayCorrespondence left right =
       (replayIteratorOutcomePreserved left actor
         (replayIteratorStageOrigin right actor stage) state))
 
+||| Joint introduction for a generator of a cons trace. Each constructor fixes
+||| both the original whole-target generator and the exact singleton/tail local
+||| form from the same occurrence elimination; consumers never reconstruct a
+||| second target behind the whole generator index.
+data LocatedConsTargetGenerator :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {targetFirst, targetMiddle, targetFinal :
+    SystemState name key value world error} ->
+  (targetHead : Transition targetFirst targetMiddle) ->
+  (targetTail : Transitions targetMiddle targetFinal) ->
+  (actor : name) ->
+  TraceEffectGenerator name key world error value actor
+    (MoreTransitions targetHead targetTail) -> Type where
+  ConsTargetActualHere :
+    (before, afterState : SystemState name key value world error) ->
+    (targetTail : Transitions afterState targetFinal) ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+    (action : Action name key value world error) -> (tag : RuleTag) ->
+    (equation : checkedApplyAction @{nameEq} @{keyEq} action before =
+      Just (tag, afterState)) ->
+    (0 owned : actionOwner action = actor) ->
+    LocatedConsTargetGenerator name key world error value
+      (Fired {before} {afterState} nameEq keyEq action tag equation) targetTail
+      actor (ActualForwardGenerator before afterState nameEq keyEq action tag
+        equation OccursHere owned)
+  ConsTargetActualLater :
+    (targetHead : Transition targetFirst targetMiddle) ->
+    (before, afterState : SystemState name key value world error) ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+    (action : Action name key value world error) -> (tag : RuleTag) ->
+    (equation : checkedApplyAction @{nameEq} @{keyEq} action before =
+      Just (tag, afterState)) ->
+    (0 later : OccursIn
+      (Fired {before} {afterState} nameEq keyEq action tag equation) targetTail) ->
+    (0 owned : actionOwner action = actor) ->
+    LocatedConsTargetGenerator name key world error value targetHead targetTail
+      actor (ActualForwardGenerator before afterState nameEq keyEq action tag
+        equation (DGamma.Metatheory.OccursLater later) owned)
+  ConsTargetIteratorForwardHere :
+    (before, afterState : SystemState name key value world error) ->
+    (targetTail : Transitions afterState targetFinal) ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+    (tag : RuleTag) ->
+    (equation : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+      Just (tag, afterState)) ->
+    (fiber : Fiber name key value world error) ->
+    (found : lookupFiber @{nameEq} actor (registry before) = Just fiber) ->
+    (remaining : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber)))) ->
+    (accumulator : LocalState key value world
+        (componentProvisions (fiberComponent fiber)) ->
+      LocalState key value world
+        (componentProvisions (fiberComponent fiber))) ->
+    (view : View name
+      (dependencies (componentDependencies (fiberComponent fiber)))) ->
+    (lifecycle : fiberLifecycle fiber = Reloading remaining accumulator view) ->
+    (step : StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber))) ->
+    (rest : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber)))) ->
+    (suffix : ReachableSuffix remaining (step :: rest)) ->
+    LocatedConsTargetGenerator name key world error value
+      (Fired {before} {afterState} nameEq keyEq (LAdvance actor) tag equation)
+      targetTail actor
+      (IteratorForwardGenerator (StageFromAdvance nameEq keyEq actor tag equation
+        OccursHere fiber found remaining accumulator view lifecycle step rest
+        suffix))
+  ConsTargetIteratorForwardLater :
+    (targetHead : Transition targetFirst targetMiddle) ->
+    (before, afterState : SystemState name key value world error) ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+    (tag : RuleTag) ->
+    (equation : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+      Just (tag, afterState)) ->
+    (0 later : OccursIn
+      (Fired {before} {afterState} nameEq keyEq (LAdvance actor) tag equation)
+      targetTail) ->
+    (fiber : Fiber name key value world error) ->
+    (found : lookupFiber @{nameEq} actor (registry before) = Just fiber) ->
+    (remaining : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber)))) ->
+    (accumulator : LocalState key value world
+        (componentProvisions (fiberComponent fiber)) ->
+      LocalState key value world
+        (componentProvisions (fiberComponent fiber))) ->
+    (view : View name
+      (dependencies (componentDependencies (fiberComponent fiber)))) ->
+    (lifecycle : fiberLifecycle fiber = Reloading remaining accumulator view) ->
+    (step : StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber))) ->
+    (rest : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber)))) ->
+    (suffix : ReachableSuffix remaining (step :: rest)) ->
+    LocatedConsTargetGenerator name key world error value targetHead targetTail
+      actor (IteratorForwardGenerator
+        (StageFromAdvance nameEq keyEq actor tag equation
+          (DGamma.Metatheory.OccursLater later) fiber found remaining accumulator
+          view lifecycle step rest suffix))
+  ConsTargetIteratorYieldedHere :
+    (before, afterState : SystemState name key value world error) ->
+    (targetTail : Transitions afterState targetFinal) ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+    (tag : RuleTag) ->
+    (equation : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+      Just (tag, afterState)) ->
+    (fiber : Fiber name key value world error) ->
+    (found : lookupFiber @{nameEq} actor (registry before) = Just fiber) ->
+    (remaining : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber)))) ->
+    (accumulator : LocalState key value world
+        (componentProvisions (fiberComponent fiber)) ->
+      LocalState key value world
+        (componentProvisions (fiberComponent fiber))) ->
+    (view : View name
+      (dependencies (componentDependencies (fiberComponent fiber)))) ->
+    (lifecycle : fiberLifecycle fiber = Reloading remaining accumulator view) ->
+    (step : StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber))) ->
+    (rest : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber)))) ->
+    (suffix : ReachableSuffix remaining (step :: rest)) ->
+    (origin : EffectState name key value world) ->
+    LocatedConsTargetGenerator name key world error value
+      (Fired {before} {afterState} nameEq keyEq (LAdvance actor) tag equation)
+      targetTail actor
+      (IteratorYieldedGenerator
+        (StageFromAdvance nameEq keyEq actor tag equation OccursHere fiber found
+          remaining accumulator view lifecycle step rest suffix) origin)
+  ConsTargetIteratorYieldedLater :
+    (targetHead : Transition targetFirst targetMiddle) ->
+    (before, afterState : SystemState name key value world error) ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+    (tag : RuleTag) ->
+    (equation : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+      Just (tag, afterState)) ->
+    (0 later : OccursIn
+      (Fired {before} {afterState} nameEq keyEq (LAdvance actor) tag equation)
+      targetTail) ->
+    (fiber : Fiber name key value world error) ->
+    (found : lookupFiber @{nameEq} actor (registry before) = Just fiber) ->
+    (remaining : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber)))) ->
+    (accumulator : LocalState key value world
+        (componentProvisions (fiberComponent fiber)) ->
+      LocalState key value world
+        (componentProvisions (fiberComponent fiber))) ->
+    (view : View name
+      (dependencies (componentDependencies (fiberComponent fiber)))) ->
+    (lifecycle : fiberLifecycle fiber = Reloading remaining accumulator view) ->
+    (step : StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber))) ->
+    (rest : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber)))) ->
+    (suffix : ReachableSuffix remaining (step :: rest)) ->
+    (origin : EffectState name key value world) ->
+    LocatedConsTargetGenerator name key world error value targetHead targetTail
+      actor (IteratorYieldedGenerator
+        (StageFromAdvance nameEq keyEq actor tag equation
+          (DGamma.Metatheory.OccursLater later) fiber found remaining accumulator
+          view lifecycle step rest suffix) origin)
+
+
 ||| Registration generations need their own permutation when transitions are
 ||| swapped: the raw O-Insert action is preserved, but its global birth ordinal
 ||| may move.  This composition is deliberately local to operational replay so
