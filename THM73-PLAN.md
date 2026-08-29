@@ -1227,6 +1227,26 @@ localization and all downstream cons composition remain unopened. The accepted
 **3–15 shift** band is held at this gate. Holes remain **20**, split
 **6/4/8/1/1**.
 
+### Revision 61: stage-occurrence localization design
+
+`research-tests/O6-R61-ITERATOR-STAGE-OCCURRENCE-LOCALIZATION-DESIGN-AUDIT.md`
+records design shift #69. Exact constructor enumeration shows there is no
+semantic occurrence beyond `OccursHere` and `OccursLater`; deeper occurrences
+are recursively owned by the tail proof. The large revision-60 families are
+coverage-checker residuals across hidden dependent stage payloads, not new
+`OccursIn` inhabitants.
+
+Two new expected failures pin forward and yielded nested-pattern coverage even
+with an erased `Bool` codomain. A positive `%default total` probe constructs an
+exact dependent cons-occurrence view, a package indexed by the original whole
+iterator stage, and a wrapper indexed by the original whole generator. It
+closes when the generator wrapper is eliminated first and the stored occurrence
+is eliminated in a nested case. Therefore adding target constructors alone is
+not a semantic cure; stage-occurrence-indexed two-phase localization is the
+recommended cure (b). Whole-cons re-quantification remains unjustified and no
+revision-21 manifest delta is proposed. The accepted **3–15 shift** band remains
+unchanged. Holes remain **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1538,7 +1558,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; indexed head elimination and the generic suffix spine are closed. Revision 60 retains the six target-localization constructors but shows their locator remains non-covering even when the whole generator is the only explicit scrutinee; hidden iterator-stage occurrence indices now force the whole-cons statement-shape gate.** | **XL, original 3–15 remaining-shift band held at the opened revision-60 whole-cons statement-shape gate.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; indexed head elimination and the generic suffix spine are closed. Revision 61 proves the semantic stage-occurrence space is exactly Here/Tail, pins nested-pattern failure for both iterator generator projections, and validates an exact two-phase stage-indexed localization probe.** | **XL, original 3–15 remaining-shift band held at the revision-61 cure-(b) design gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1696,6 +1716,8 @@ with the original whole-target parameter. Revision 59 expresses the approved
 six-way joint target GADT, then gates its producer because explicit target-head
 and generator scrutinees remain independently covered. Revision 60 retains
 those six constructors and retries with only the whole generator explicit, but
-coverage still cannot exhaust hidden iterator-stage occurrence indices. The
-whole-cons statement-shape gate is now open. Occurrence/ordinal composition and
-final adjacent-result assembly remain after that gate.
+nested stage-occurrence patterns remain non-covering. Revision 61 proves the
+semantic partition is nevertheless exactly Here/Tail and validates a total
+stage-indexed, two-phase dependent package through the original whole generator.
+Cure (b) is recommended; cure (c) remains unopened. Occurrence/ordinal
+composition and final adjacent-result assembly remain after that gate.
