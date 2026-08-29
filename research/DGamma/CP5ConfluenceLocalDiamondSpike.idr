@@ -2251,6 +2251,36 @@ locateConsIteratorStageOrigin sourceHead targetHead sourceTail targetTail headRA
     targetHead sourceTail targetTail headRAR tailRAR
     (locateJointConsTargetStage targetStage)
 
+||| Whole-cons relational replay correspondence. Both executable generator
+||| capital and exact iterator-outcome capital are projected from their located
+||| producer packages at the same head/tail RAR boundary.
+0 consRelationalReplayCorrespondence :
+  (sourceHead : Transition sourceFirst sourceMiddle) ->
+  (targetHead : Transition targetFirst targetMiddle) ->
+  (sourceTail : Transitions sourceMiddle sourceFinal) ->
+  (targetTail : Transitions targetMiddle targetFinal) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceHead NoTransitions)
+    (MoreTransitions targetHead NoTransitions) ->
+  RelationalReplayCorrespondence name key world error value sourceTail targetTail ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceHead sourceTail)
+    (MoreTransitions targetHead targetTail)
+consRelationalReplayCorrespondence sourceHead targetHead sourceTail targetTail
+  headRAR tailRAR = MkRelationalReplayCorrespondence
+    (\actor, target => consGeneratorOrigin
+      (locateConsReplayGeneratorOrigin sourceHead targetHead sourceTail targetTail
+        headRAR tailRAR actor target))
+    (\observedKeyEq, actor, target => consGeneratorMapsRelated
+      (locateConsReplayGeneratorOrigin sourceHead targetHead sourceTail targetTail
+        headRAR tailRAR actor target) observedKeyEq)
+    (\actor, targetStage => consIteratorStageOrigin
+      (locateConsIteratorStageOrigin sourceHead targetHead sourceTail targetTail
+        headRAR tailRAR actor targetStage))
+    (\actor, targetStage, state => consIteratorOutcomePreserved
+      (locateConsIteratorStageOrigin sourceHead targetHead sourceTail targetTail
+        headRAR tailRAR actor targetStage) state)
+
 ||| Registration generations need their own permutation when transitions are
 ||| swapped: the raw O-Insert action is preserved, but its global birth ordinal
 ||| may move.  This composition is deliberately local to operational replay so
