@@ -1128,6 +1128,51 @@ locateConsTargetStageRuntime
         accumulator view lifecycle step rest suffix (\state => Refl)
         (\origin, state => Refl) (\state => Refl)
 
+||| Stage-only candidate-(2) view. Unlike JointLocatedConsTargetGenerator, this
+||| family is indexed directly by IteratorStage and therefore has exactly the
+||| two semantically possible Here/Tail regions. Each constructor owns the exact
+||| local StageFromAdvance result and all executable runtime projections.
+data JointLocatedConsTargetStage :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {targetFirst, targetMiddle, targetFinal :
+    SystemState name key value world error} ->
+  (targetHead : Transition targetFirst targetMiddle) ->
+  (targetTail : Transitions targetMiddle targetFinal) ->
+  (actor : name) ->
+  IteratorStage name key world error value actor
+    (MoreTransitions targetHead targetTail) -> Type where
+  JointConsTargetStageHere :
+    (targetStage : IteratorStage name key world error value actor
+      (MoreTransitions targetHead targetTail)) ->
+    (exactStage : IteratorStage name key world error value actor
+      (MoreTransitions targetHead NoTransitions)) ->
+    (0 forwardExact : (state : EffectState name key value world) ->
+      traceGeneratorMap (IteratorForwardGenerator exactStage) state =
+        traceGeneratorMap (IteratorForwardGenerator targetStage) state) ->
+    (0 yieldedExact : (origin, state : EffectState name key value world) ->
+      traceGeneratorMap (IteratorYieldedGenerator exactStage origin) state =
+        traceGeneratorMap (IteratorYieldedGenerator targetStage origin) state) ->
+    (0 outcomeExact : (state : EffectState name key value world) ->
+      iteratorStageOutcome targetStage state =
+        iteratorStageOutcome exactStage state) ->
+    JointLocatedConsTargetStage name key world error value targetHead targetTail
+      actor targetStage
+  JointConsTargetStageLater :
+    (targetStage : IteratorStage name key world error value actor
+      (MoreTransitions targetHead targetTail)) ->
+    (exactStage : IteratorStage name key world error value actor targetTail) ->
+    (0 forwardExact : (state : EffectState name key value world) ->
+      traceGeneratorMap (IteratorForwardGenerator exactStage) state =
+        traceGeneratorMap (IteratorForwardGenerator targetStage) state) ->
+    (0 yieldedExact : (origin, state : EffectState name key value world) ->
+      traceGeneratorMap (IteratorYieldedGenerator exactStage origin) state =
+        traceGeneratorMap (IteratorYieldedGenerator targetStage origin) state) ->
+    (0 outcomeExact : (state : EffectState name key value world) ->
+      iteratorStageOutcome targetStage state =
+        iteratorStageOutcome exactStage state) ->
+    JointLocatedConsTargetStage name key world error value targetHead targetTail
+      actor targetStage
+
 ||| Joint introduction for a generator of a cons trace. Each constructor fixes
 ||| both the original whole-target generator and the exact singleton/tail local
 ||| form from the same occurrence elimination; consumers never reconstruct a
