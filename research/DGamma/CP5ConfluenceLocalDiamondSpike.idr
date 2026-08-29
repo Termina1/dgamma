@@ -3136,6 +3136,54 @@ sealedSuffixActionOrdinalPreserved
         replayedTail sameAction (sealedSuffixActionOrigin tail)
         (sealedSuffixActionOrdinalPreserved tail) occurrence
 
+0 sealedSuffixGeneratedOrigin :
+  (spine : SealedSuffixReplaySpine name key world error value nameEq keyEq
+    source replayed) ->
+  LocatedGeneratedRegistration child parent component replayed ->
+  LocatedGeneratedRegistration child parent component source
+sealedSuffixGeneratedOrigin spine occurrence =
+  locatedChildRegistrationFromAction (sealedSuffixActionOrigin spine
+    (generatedRegistrationActionOccurrence occurrence))
+
+0 sealedSuffixGeneratedOriginCoherent :
+  (spine : SealedSuffixReplaySpine name key world error value nameEq keyEq
+    source replayed) ->
+  (occurrence : LocatedGeneratedRegistration child parent component replayed) ->
+  generatedRegistrationActionOccurrence
+    (sealedSuffixGeneratedOrigin spine occurrence) =
+  sealedSuffixActionOrigin spine
+    (generatedRegistrationActionOccurrence occurrence)
+sealedSuffixGeneratedOriginCoherent spine occurrence =
+  locatedChildRegistrationRoundTrip (sealedSuffixActionOrigin spine
+    (generatedRegistrationActionOccurrence occurrence))
+
+0 sealedSuffixGeneratedOrdinalPreserved :
+  (spine : SealedSuffixReplaySpine name key world error value nameEq keyEq
+    source replayed) ->
+  (occurrence : LocatedGeneratedRegistration child parent component replayed) ->
+  registrationGeneration (sealedSuffixGeneratedOrigin spine occurrence) =
+    registrationGeneration occurrence
+sealedSuffixGeneratedOrdinalPreserved {child} spine occurrence =
+  cong (MkRegistrationGeneration child)
+    (sym (sealedSuffixActionOrdinalPreserved spine
+      (generatedRegistrationActionOccurrence occurrence)))
+
+||| Identity generation renaming is selected only after the global positional
+||| action-ordinal theorem above has proved every located birth keeps its exact
+||| ordinal throughout the sealed suffix replay.
+0 sealedSuffixActionRegistrationReplayCorrespondence :
+  (spine : SealedSuffixReplaySpine name key world error value nameEq keyEq
+    source replayed) ->
+  ActionRegistrationReplayCorrespondence name key world error value source replayed
+sealedSuffixActionRegistrationReplayCorrespondence spine =
+  MkActionRegistrationReplayCorrespondence
+    identityRegistrationGenerationBijection
+    (sealedSuffixActionOrigin spine)
+    (sealedSuffixActionTagPreserved spine)
+    (sealedSuffixGeneratedOrigin spine)
+    (sealedSuffixGeneratedOriginCoherent spine)
+    (sealedSuffixGeneratedOrdinalPreserved spine)
+
 0 checkedTargetWellFormed :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) ->
