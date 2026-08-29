@@ -1057,7 +1057,7 @@ locateConsTargetStage
 ||| both the original whole-target generator and the exact singleton/tail local
 ||| form from the same occurrence elimination; consumers never reconstruct a
 ||| second target behind the whole generator index.
-data LocatedConsTargetGenerator :
+data RetiredSixWayLocatedConsTargetGenerator :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   {targetFirst, targetMiddle, targetFinal :
     SystemState name key value world error} ->
@@ -1066,7 +1066,7 @@ data LocatedConsTargetGenerator :
   (actor : name) ->
   TraceEffectGenerator name key world error value actor
     (MoreTransitions targetHead targetTail) -> Type where
-  ConsTargetActualHere :
+  RetiredConsTargetActualHere :
     (before, afterState : SystemState name key value world error) ->
     (targetTail : Transitions afterState targetFinal) ->
     (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -1074,11 +1074,11 @@ data LocatedConsTargetGenerator :
     (equation : checkedApplyAction @{nameEq} @{keyEq} action before =
       Just (tag, afterState)) ->
     (0 owned : actionOwner action = actor) ->
-    LocatedConsTargetGenerator name key world error value
+    RetiredSixWayLocatedConsTargetGenerator name key world error value
       (Fired {before} {afterState} nameEq keyEq action tag equation) targetTail
       actor (ActualForwardGenerator before afterState nameEq keyEq action tag
         equation OccursHere owned)
-  ConsTargetActualLater :
+  RetiredConsTargetActualLater :
     (targetHead : Transition targetFirst targetMiddle) ->
     (before, afterState : SystemState name key value world error) ->
     (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -1088,10 +1088,10 @@ data LocatedConsTargetGenerator :
     (0 later : OccursIn
       (Fired {before} {afterState} nameEq keyEq action tag equation) targetTail) ->
     (0 owned : actionOwner action = actor) ->
-    LocatedConsTargetGenerator name key world error value targetHead targetTail
+    RetiredSixWayLocatedConsTargetGenerator name key world error value targetHead targetTail
       actor (ActualForwardGenerator before afterState nameEq keyEq action tag
         equation (DGamma.Metatheory.OccursLater later) owned)
-  ConsTargetIteratorForwardHere :
+  RetiredConsTargetIteratorForwardHere :
     (before, afterState : SystemState name key value world error) ->
     (targetTail : Transitions afterState targetFinal) ->
     (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
@@ -1117,13 +1117,13 @@ data LocatedConsTargetGenerator :
       (dependencies (componentDependencies (fiberComponent fiber)))
       (componentProvisions (fiberComponent fiber)))) ->
     (suffix : ReachableSuffix remaining (step :: rest)) ->
-    LocatedConsTargetGenerator name key world error value
+    RetiredSixWayLocatedConsTargetGenerator name key world error value
       (Fired {before} {afterState} nameEq keyEq (LAdvance actor) tag equation)
       targetTail actor
       (IteratorForwardGenerator (StageFromAdvance nameEq keyEq actor tag equation
         OccursHere fiber found remaining accumulator view lifecycle step rest
         suffix))
-  ConsTargetIteratorForwardLater :
+  RetiredConsTargetIteratorForwardLater :
     (targetHead : Transition targetFirst targetMiddle) ->
     (before, afterState : SystemState name key value world error) ->
     (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
@@ -1152,12 +1152,12 @@ data LocatedConsTargetGenerator :
       (dependencies (componentDependencies (fiberComponent fiber)))
       (componentProvisions (fiberComponent fiber)))) ->
     (suffix : ReachableSuffix remaining (step :: rest)) ->
-    LocatedConsTargetGenerator name key world error value targetHead targetTail
+    RetiredSixWayLocatedConsTargetGenerator name key world error value targetHead targetTail
       actor (IteratorForwardGenerator
         (StageFromAdvance nameEq keyEq actor tag equation
           (DGamma.Metatheory.OccursLater later) fiber found remaining accumulator
           view lifecycle step rest suffix))
-  ConsTargetIteratorYieldedHere :
+  RetiredConsTargetIteratorYieldedHere :
     (before, afterState : SystemState name key value world error) ->
     (targetTail : Transitions afterState targetFinal) ->
     (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
@@ -1184,13 +1184,13 @@ data LocatedConsTargetGenerator :
       (componentProvisions (fiberComponent fiber)))) ->
     (suffix : ReachableSuffix remaining (step :: rest)) ->
     (origin : EffectState name key value world) ->
-    LocatedConsTargetGenerator name key world error value
+    RetiredSixWayLocatedConsTargetGenerator name key world error value
       (Fired {before} {afterState} nameEq keyEq (LAdvance actor) tag equation)
       targetTail actor
       (IteratorYieldedGenerator
         (StageFromAdvance nameEq keyEq actor tag equation OccursHere fiber found
           remaining accumulator view lifecycle step rest suffix) origin)
-  ConsTargetIteratorYieldedLater :
+  RetiredConsTargetIteratorYieldedLater :
     (targetHead : Transition targetFirst targetMiddle) ->
     (before, afterState : SystemState name key value world error) ->
     (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
@@ -1220,12 +1220,72 @@ data LocatedConsTargetGenerator :
       (componentProvisions (fiberComponent fiber)))) ->
     (suffix : ReachableSuffix remaining (step :: rest)) ->
     (origin : EffectState name key value world) ->
-    LocatedConsTargetGenerator name key world error value targetHead targetTail
+    RetiredSixWayLocatedConsTargetGenerator name key world error value targetHead targetTail
       actor (IteratorYieldedGenerator
         (StageFromAdvance nameEq keyEq actor tag equation
           (DGamma.Metatheory.OccursLater later) fiber found remaining accumulator
           view lifecycle step rest suffix) origin)
 
+
+||| Cure-(b) whole-generator localization. The original generator wrapper is
+||| retained definitionally; actual occurrences carry their exact view, while
+||| iterator generators carry the whole-stage package produced once above.
+data LocatedConsTargetGenerator :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {targetFirst, targetMiddle, targetFinal :
+    SystemState name key value world error} ->
+  (targetHead : Transition targetFirst targetMiddle) ->
+  (targetTail : Transitions targetMiddle targetFinal) ->
+  (actor : name) ->
+  TraceEffectGenerator name key world error value actor
+    (MoreTransitions targetHead targetTail) -> Type where
+  LocatedConsActualGenerator :
+    (before, afterState : SystemState name key value world error) ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+    (action : Action name key value world error) -> (tag : RuleTag) ->
+    (equation : checkedApplyAction @{nameEq} @{keyEq} action before =
+      Just (tag, afterState)) ->
+    (0 occurs : OccursIn
+      (Fired {before} {afterState} nameEq keyEq action tag equation)
+      (MoreTransitions targetHead targetTail)) ->
+    (0 occurrenceView : ConsStageOccurrenceView occurs) ->
+    (0 owned : actionOwner action = actor) ->
+    LocatedConsTargetGenerator name key world error value targetHead targetTail
+      actor (ActualForwardGenerator before afterState nameEq keyEq action tag
+        equation occurs owned)
+  LocatedConsForwardGenerator :
+    (stage : IteratorStage name key world error value actor
+      (MoreTransitions targetHead targetTail)) ->
+    (0 located : LocatedConsTargetStage name key world error value targetHead
+      targetTail actor stage) ->
+    LocatedConsTargetGenerator name key world error value targetHead targetTail
+      actor (IteratorForwardGenerator stage)
+  LocatedConsYieldedGenerator :
+    (stage : IteratorStage name key world error value actor
+      (MoreTransitions targetHead targetTail)) ->
+    (origin : EffectState name key value world) ->
+    (0 located : LocatedConsTargetStage name key world error value targetHead
+      targetTail actor stage) ->
+    LocatedConsTargetGenerator name key world error value targetHead targetTail
+      actor (IteratorYieldedGenerator stage origin)
+
+0 locateConsTargetGenerator :
+  {targetHead : Transition targetFirst targetMiddle} ->
+  {targetTail : Transitions targetMiddle targetFinal} ->
+  {actor : name} ->
+  (target : TraceEffectGenerator name key world error value actor
+    (MoreTransitions targetHead targetTail)) ->
+  LocatedConsTargetGenerator name key world error value targetHead targetTail
+    actor target
+locateConsTargetGenerator
+  (ActualForwardGenerator before afterState nameEq keyEq action tag equation
+    occurs owned) =
+      LocatedConsActualGenerator before afterState nameEq keyEq action tag
+        equation occurs (viewConsStageOccurrence occurs) owned
+locateConsTargetGenerator (IteratorForwardGenerator stage) =
+  LocatedConsForwardGenerator stage (locateConsTargetStage stage)
+locateConsTargetGenerator (IteratorYieldedGenerator stage origin) =
+  LocatedConsYieldedGenerator stage origin (locateConsTargetStage stage)
 
 ||| Registration generations need their own permutation when transitions are
 ||| swapped: the raw O-Insert action is preserved, but its global birth ordinal
