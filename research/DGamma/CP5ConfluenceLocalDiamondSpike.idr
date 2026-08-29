@@ -3042,6 +3042,21 @@ consPointwiseActionOrdinalPreserved sourceStep replayedStep sourceTail replayedT
         Refl => cong S (tailOrdinal (MkLocatedActionOccurrence _ _ prefixTail
           located suffix actionSame Refl))
 
+||| Appending a trace ending at the source of one located transition to that
+||| transition and its suffix cannot produce the empty trace. Recursion on the
+||| abstract prefix exposes `MoreTransitions` directly; no arithmetic
+||| normalization of `transitionCount` is required.
+0 appendLocatedTransitionNotEmpty :
+  (prior : Transitions initial before) ->
+  (located : Transition before afterState) ->
+  (suffix : Transitions afterState finalState) ->
+  appendTransitions prior (MoreTransitions located suffix) =
+    NoTransitions {state = initial} -> Void
+appendLocatedTransitionNotEmpty NoTransitions located suffix decomposition =
+  case decomposition of Refl impossible
+appendLocatedTransitionNotEmpty (MoreTransitions prefixStep prefixRest)
+  located suffix decomposition = case decomposition of Refl impossible
+
 ||| Exact conversion of one located child O-Insert action to the generated-
 ||| registration view. Cure 1 deliberately uses an ordinary variable LHS and
 ||| only record projections; no indexed record constructor appears in the LHS.
