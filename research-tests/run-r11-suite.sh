@@ -89,7 +89,7 @@ NEGATIVE_SPECS=(
   "R44IteratorForwardNestedCoverageNegative|IteratorForwardGenerator _|directIteratorForwardNestedCoverage"
   "R44IteratorYieldedNestedCoverageNegative|IteratorYieldedGenerator _ _|directIteratorYieldedNestedCoverage"
   "R45BareDiamondFalseDisciplineNegative|Inactive Nothing|bareDiamondCannotForgeTargetYield"
-  "R45BareDiamondSafetyProjectionNegative|CandidateSafetyRetainedDiamond|bareDiamondCannotProjectRegistrationSafety"
+  "R45BareDiamondSafetyProjectionNegative|not a valid impossible case|bareDiamondCannotProjectRegistrationSafety"
   "R45OpaqueGenuineAdjacentInputNegative|CandidateOpaqueGenuineDiamond name key world error value nameEq keyEq left right and LocalRelationalDiamond|frozenAdjacentInputRejectsOpaqueGenuine"
   "R20WholeBundleMovedAlignmentNegative|storedRightKeyEq and keyEq|localDiamondCannotSupplyMovedAlignment"
   "R21CandidateIndependentDictionaryNegative|storedRightKeyEq and keyEq|forgeCandidateFromIndependentDictionaries"

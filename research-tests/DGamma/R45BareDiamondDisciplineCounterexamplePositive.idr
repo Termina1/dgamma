@@ -402,12 +402,50 @@ r45ActivationOrchestrationImpossible (PaperFinishStep activationAction tag)
   (PaperRemoveStep orchestrationAction) =
     case trans (sym activationAction) orchestrationAction of Refl impossible
 
-||| Public-constructor counterexample: every operational/endpoint field of the
-||| bare local diamond is inhabited even though its swapped whole trace cannot
-||| satisfy RegistrationDiscipline.
+||| Historical pin for the exact pre-revision-21 public bare record.  Keeping
+||| this test-local retired shape demonstrates that the old operational and
+||| endpoint fields are all inhabited while target RegistrationDiscipline is
+||| false.  It deliberately has no live authority.
 public export
-0 r45BareDiamond : LocalRelationalDiamond Nat R45Key Unit String R45Value
-  r45NameEq r45KeyEq r45Begin r45ChildInsert
+record RetiredBareLocalRelationalDiamond
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {first, middle, originalFinal : SystemState name key value world error}
+  (left : Transition first middle)
+  (right : Transition middle originalFinal) where
+  constructor MkRetiredBareLocalRelationalDiamond
+  retiredSwappedMiddle : SystemState name key value world error
+  retiredSwappedFinal : SystemState name key value world error
+  retiredMovedRight : Transition first retiredSwappedMiddle
+  retiredMovedLeft : Transition retiredSwappedMiddle retiredSwappedFinal
+  0 retiredMovedPairAligned : AlignedTransitions name key world error value
+    nameEq keyEq (MoreTransitions retiredMovedRight
+      (MoreTransitions retiredMovedLeft NoTransitions))
+  0 retiredMovedRightAction : transitionAction retiredMovedRight =
+    transitionAction right
+  0 retiredMovedRightTag : transitionTag retiredMovedRight = transitionTag right
+  0 retiredMovedLeftAction : transitionAction retiredMovedLeft =
+    transitionAction left
+  0 retiredMovedLeftTag : transitionTag retiredMovedLeft = transitionTag left
+  0 retiredMovedRightActivationBranch :
+    PaperActivationStep right -> PaperActivationStep retiredMovedRight
+  0 retiredMovedLeftActivationBranch :
+    PaperActivationStep left -> PaperActivationStep retiredMovedLeft
+  0 retiredMovedRightOrchestrationBranch :
+    PaperOrchestrationStep right -> PaperOrchestrationStep retiredMovedRight
+  0 retiredMovedLeftOrchestrationBranch :
+    PaperOrchestrationStep left -> PaperOrchestrationStep retiredMovedLeft
+  0 retiredSwappedEffects : EffectStateRelated keyEq
+    (projectEffectState @{nameEq} originalFinal)
+    (projectEffectState @{nameEq} retiredSwappedFinal)
+  0 retiredSwappedControls : ControlEquivalent name key world error value nameEq
+    originalFinal retiredSwappedFinal
+  0 retiredSwappedWellFormed : registryWellFormed @{nameEq} @{keyEq}
+    retiredSwappedFinal = True
+
+public export
+0 r45BareDiamond : RetiredBareLocalRelationalDiamond Nat R45Key Unit String
+  R45Value r45NameEq r45KeyEq r45Begin r45ChildInsert
 r45BareDiamond =
   let 0 earlyWellFormed : (registryWellFormed @{r45NameEq} @{r45KeyEq}
         r45AfterEarlyChild = True)
@@ -444,7 +482,7 @@ r45BareDiamond =
         control Z = fiberControlMaybeReflexive _
         control (S Z) = fiberControlMaybeReflexive _
         control (S (S later)) = fiberControlMaybeReflexive _
-  in MkLocalRelationalDiamond r45AfterEarlyChild r45TargetPairFinal
+  in MkRetiredBareLocalRelationalDiamond r45AfterEarlyChild r45TargetPairFinal
       r45EarlyChildInsert r45MovedBegin r45MovedPairAligned
       Refl Refl Refl Refl
       (\activation => void (r45ActivationOrchestrationImpossible activation

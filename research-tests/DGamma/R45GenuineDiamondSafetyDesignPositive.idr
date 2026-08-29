@@ -8,64 +8,9 @@ import Decidable.Equality
 
 %default total
 
-||| Test-local candidate for revision 21.  The four constructors retain exactly
-||| the branch-local evidence already present where each genuine local diamond
-||| is built.  No RegistrationProtocol is stored in this package.
-public export
-data CandidateRegistrationSwapSafety :
-  {name, key, world, error : Type} -> {value : key -> Type} ->
-  {first, middle, originalFinal : SystemState name key value world error} ->
-  (left : Transition first middle) ->
-  (right : Transition middle originalFinal) -> Type where
-  CandidateActivationActivation :
-    {left : Transition first middle} ->
-    {right : Transition middle originalFinal} ->
-    PaperActivationStep left ->
-    PaperActivationStep right ->
-    CandidateRegistrationSwapSafety left right
-  CandidateActivationOrchestration :
-    {left : Transition first middle} ->
-    {right : Transition middle originalFinal} ->
-    PaperActivationStep left ->
-    PaperOrchestrationStep right ->
-    ((child, parent : name) ->
-      (component : Component key value world error) ->
-      transitionAction right = OInsert child (ChildOf parent) component ->
-      Not (transitionActor left = parent)) ->
-    CandidateRegistrationSwapSafety left right
-  CandidateOrchestrationActivation :
-    {left : Transition first middle} ->
-    {right : Transition middle originalFinal} ->
-    PaperOrchestrationStep left ->
-    PaperActivationStep right ->
-    ((child : name) -> (parent : Parent name) ->
-      (component : Component key value world error) ->
-      transitionAction left = OInsert child parent component ->
-      Not (transitionActor right = child)) ->
-    ((child, parent : name) ->
-      (component : Component key value world error) ->
-      transitionAction left = OInsert child (ChildOf parent) component ->
-      Not (transitionActor right = parent)) ->
-    CandidateRegistrationSwapSafety left right
-  CandidateOrchestrationOrchestration :
-    {left : Transition first middle} ->
-    {right : Transition middle originalFinal} ->
-    PaperOrchestrationStep left ->
-    PaperOrchestrationStep right ->
-    ((leftChild, rightChild : name) ->
-      (leftParent, rightParent : Parent name) ->
-      (leftComponent, rightComponent : Component key value world error) ->
-      transitionAction left = OInsert leftChild leftParent leftComponent ->
-      transitionAction right = OInsert rightChild rightParent rightComponent ->
-      Not (leftChild = rightChild)) ->
-    ((leftChild, leftParent, rightChild, rightParent : name) ->
-      (leftComponent, rightComponent : Component key value world error) ->
-      transitionAction left =
-        OInsert leftChild (ChildOf leftParent) leftComponent ->
-      transitionAction right =
-        OInsert rightChild (ChildOf rightParent) rightComponent ->
-      (Not (leftChild = rightParent), Not (rightChild = leftParent))) ->
-    CandidateRegistrationSwapSafety left right
+||| Revision-21 live safety has the same test-local candidate shape checked in
+||| the design shift.  This module now probes the exported research family and
+||| its safety-gated LocalRelationalDiamond field directly.
 
 ||| Negative-direction semantic check for cure (a): the exact field-2
 ||| counterexample cannot be certified. In the A/O branch its retained
@@ -90,10 +35,8 @@ candidateSafetyRejectsBareCounterexample
     licensesDoNotCross) =
       r45ActivationOrchestrationImpossible (PaperBeginStep Refl Refl) leftPaper
 
-||| Candidate richer record for cure (a). In an implementation this package is
-||| a single erased field of LocalRelationalDiamond rather than a detached
-||| wrapper. The wrapper is used only to check producer coverage without touching
-||| the frozen research declaration during this design shift.
+||| Test wrapper used to keep the four construction-site coverage probes
+||| explicit after the live erased field lands.
 public export
 record CandidateSafetyRetainedDiamond
   (name, key, world, error : Type) (value : key -> Type)

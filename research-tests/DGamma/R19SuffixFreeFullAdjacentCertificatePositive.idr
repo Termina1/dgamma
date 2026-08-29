@@ -323,6 +323,9 @@ scopedFullSuffixFreeAdjacentCertificateProducer nameEq keyEq protocol actor left
               (\paper => PaperIterStep rightAdvance rightIter)
               (\paper => void (advanceIsNotOrchestration rightAdvance paper))
               (\paper => void (advanceIsNotOrchestration leftAdvance paper))
+              (CandidateActivationActivation
+                (PaperIterStep leftAdvance leftIter)
+                (PaperIterStep rightAdvance rightIter))
               effects controls wellFormed
             trace = MoreTransitions left (MoreTransitions right NoTransitions)
             0 occurrence : ActionRegistrationReplayCorrespondence name key world
