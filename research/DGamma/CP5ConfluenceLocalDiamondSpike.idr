@@ -972,6 +972,30 @@ composeRelationalReplayCorrespondence left right =
       (replayIteratorOutcomePreserved left actor
         (replayIteratorStageOrigin right actor stage) state))
 
+||| Exact two-way view of an iterator-stage occurrence inside a cons trace.
+||| Deeper occurrences stay sealed in the tail witness, so this family has no
+||| third semantic case and can be eliminated after matching StageFromAdvance.
+data ConsStageOccurrenceView :
+  {selectedBefore, selectedAfter, first, middle, last :
+    SystemState name key value world error} ->
+  {selected : Transition selectedBefore selectedAfter} ->
+  {head : Transition first middle} ->
+  {tail : Transitions middle last} ->
+  (occurs : OccursIn selected (MoreTransitions head tail)) -> Type where
+  ConsStageOccursHere : ConsStageOccurrenceView OccursHere
+  ConsStageOccursLater :
+    (head : Transition first middle) ->
+    (later : OccursIn selected tail) ->
+    ConsStageOccurrenceView {head} {tail}
+      (DGamma.Metatheory.OccursLater {transition = head} later)
+
+0 viewConsStageOccurrence :
+  (occurs : OccursIn selected (MoreTransitions head tail)) ->
+  ConsStageOccurrenceView occurs
+viewConsStageOccurrence OccursHere = ConsStageOccursHere
+viewConsStageOccurrence {head} (DGamma.Metatheory.OccursLater later) =
+  ConsStageOccursLater head later
+
 ||| Joint introduction for a generator of a cons trace. Each constructor fixes
 ||| both the original whole-target generator and the exact singleton/tail local
 ||| form from the same occurrence elimination; consumers never reconstruct a
