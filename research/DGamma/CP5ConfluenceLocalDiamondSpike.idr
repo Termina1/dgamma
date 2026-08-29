@@ -1287,6 +1287,141 @@ locateConsTargetGenerator (IteratorForwardGenerator stage) =
 locateConsTargetGenerator (IteratorYieldedGenerator stage origin) =
   LocatedConsYieldedGenerator stage origin (locateConsTargetStage stage)
 
+0 widenSingletonOccurrence :
+  {sourceFirst, sourceAfter, sourceFinal, selectedBefore, selectedAfter :
+    SystemState name key value world error} ->
+  {sourceHead : Transition sourceFirst sourceAfter} ->
+  {selected : Transition selectedBefore selectedAfter} ->
+  (tail : Transitions sourceAfter sourceFinal) ->
+  OccursIn selected (MoreTransitions sourceHead NoTransitions) ->
+  OccursIn selected (MoreTransitions sourceHead tail)
+widenSingletonOccurrence tail OccursHere = OccursHere
+widenSingletonOccurrence tail (DGamma.Metatheory.OccursLater later) impossible
+
+0 prependOccurrence :
+  {sourceFirst, sourceMiddle, sourceFinal, selectedBefore, selectedAfter :
+    SystemState name key value world error} ->
+  {selected : Transition selectedBefore selectedAfter} ->
+  {tail : Transitions sourceMiddle sourceFinal} ->
+  (head : Transition sourceFirst sourceMiddle) ->
+  OccursIn selected tail -> OccursIn selected (MoreTransitions head tail)
+prependOccurrence head occurs = DGamma.Metatheory.OccursLater occurs
+
+0 widenSingletonIteratorStage :
+  (tail : Transitions sourceAfter sourceFinal) ->
+  IteratorStage name key world error value actor
+    (MoreTransitions sourceHead NoTransitions) ->
+  IteratorStage name key world error value actor
+    (MoreTransitions sourceHead tail)
+widenSingletonIteratorStage tail
+  (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+    accumulator view lifecycle step rest suffix) =
+      StageFromAdvance nameEq keyEq actor tag equation
+        (widenSingletonOccurrence tail occurs) fiber found remaining accumulator
+        view lifecycle step rest suffix
+
+0 prependIteratorStage :
+  (head : Transition sourceFirst sourceMiddle) ->
+  IteratorStage name key world error value actor tail ->
+  IteratorStage name key world error value actor (MoreTransitions head tail)
+prependIteratorStage head
+  (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found remaining
+    accumulator view lifecycle step rest suffix) =
+      StageFromAdvance nameEq keyEq actor tag equation
+        (prependOccurrence head occurs) fiber found remaining accumulator view
+        lifecycle step rest suffix
+
+0 widenSingletonGenerator :
+  (tail : Transitions sourceAfter sourceFinal) ->
+  TraceEffectGenerator name key world error value actor
+    (MoreTransitions sourceHead NoTransitions) ->
+  TraceEffectGenerator name key world error value actor
+    (MoreTransitions sourceHead tail)
+widenSingletonGenerator tail
+  (ActualForwardGenerator before afterState nameEq keyEq action tag equation
+    occurs owned) =
+      ActualForwardGenerator before afterState nameEq keyEq action tag equation
+        (widenSingletonOccurrence tail occurs) owned
+widenSingletonGenerator tail (IteratorForwardGenerator stage) =
+  IteratorForwardGenerator (widenSingletonIteratorStage tail stage)
+widenSingletonGenerator tail (IteratorYieldedGenerator stage origin) =
+  IteratorYieldedGenerator (widenSingletonIteratorStage tail stage) origin
+
+0 prependGenerator :
+  (head : Transition sourceFirst sourceMiddle) ->
+  TraceEffectGenerator name key world error value actor tail ->
+  TraceEffectGenerator name key world error value actor
+    (MoreTransitions head tail)
+prependGenerator head
+  (ActualForwardGenerator before afterState nameEq keyEq action tag equation
+    occurs owned) =
+      ActualForwardGenerator before afterState nameEq keyEq action tag equation
+        (prependOccurrence head occurs) owned
+prependGenerator head (IteratorForwardGenerator stage) =
+  IteratorForwardGenerator (prependIteratorStage head stage)
+prependGenerator head (IteratorYieldedGenerator stage origin) =
+  IteratorYieldedGenerator (prependIteratorStage head stage) origin
+
+0 widenSingletonGeneratorMapExact :
+  (tail : Transitions sourceAfter sourceFinal) ->
+  (generator : TraceEffectGenerator name key world error value actor
+    (MoreTransitions sourceHead NoTransitions)) ->
+  (state : EffectState name key value world) ->
+  traceGeneratorMap (widenSingletonGenerator tail generator) state =
+    traceGeneratorMap generator state
+widenSingletonGeneratorMapExact tail
+  (ActualForwardGenerator _ _ _ _ _ _ _ _ _) state = Refl
+widenSingletonGeneratorMapExact tail
+  (IteratorForwardGenerator (StageFromAdvance _ _ _ _ _ _ _ _ _ _ _ _ _ _ _))
+  state = Refl
+widenSingletonGeneratorMapExact tail
+  (IteratorYieldedGenerator
+    (StageFromAdvance _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) origin) state = Refl
+
+0 prependGeneratorMapExact :
+  (head : Transition sourceFirst sourceMiddle) ->
+  (generator : TraceEffectGenerator name key world error value actor tail) ->
+  (state : EffectState name key value world) ->
+  traceGeneratorMap (prependGenerator head generator) state =
+    traceGeneratorMap generator state
+prependGeneratorMapExact head
+  (ActualForwardGenerator _ _ _ _ _ _ _ _ _) state = Refl
+prependGeneratorMapExact head
+  (IteratorForwardGenerator (StageFromAdvance _ _ _ _ _ _ _ _ _ _ _ _ _ _ _))
+  state = Refl
+prependGeneratorMapExact head
+  (IteratorYieldedGenerator
+    (StageFromAdvance _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) origin) state = Refl
+
+||| One RAR elimination correlates its generator origin with the corresponding
+||| relational map proof before either value crosses a cons-lift boundary.
+record LocatedReplayGeneratorOrigin
+  (name, key, world, error : Type) (value : key -> Type)
+  {sourceFirst, sourceFinal, targetFirst, targetFinal :
+    SystemState name key value world error}
+  (source : Transitions sourceFirst sourceFinal)
+  (targetTrace : Transitions targetFirst targetFinal)
+  (actor : name)
+  (target : TraceEffectGenerator name key world error value actor targetTrace) where
+  constructor MkLocatedReplayGeneratorOrigin
+  locatedGeneratorOrigin : TraceEffectGenerator name key world error value actor
+    source
+  0 locatedGeneratorMapsRelated : (observedKeyEq : DecEq key) ->
+    PartialMapsRelated (EffectStateEquivalence observedKeyEq)
+      (traceGeneratorMap locatedGeneratorOrigin) (traceGeneratorMap target)
+
+0 locateReplayGeneratorOrigin :
+  (correspondence : RelationalReplayCorrespondence name key world error value
+    source targetTrace) ->
+  (actor : name) ->
+  (target : TraceEffectGenerator name key world error value actor targetTrace) ->
+  LocatedReplayGeneratorOrigin name key world error value source targetTrace actor
+    target
+locateReplayGeneratorOrigin
+  (MkRelationalReplayCorrespondence origin maps stageOrigin outcomes) actor
+  target = MkLocatedReplayGeneratorOrigin (origin actor target)
+    (\observedKeyEq => maps observedKeyEq actor target)
+
 ||| Registration generations need their own permutation when transitions are
 ||| swapped: the raw O-Insert action is preserved, but its global birth ordinal
 ||| may move.  This composition is deliberately local to operational replay so
