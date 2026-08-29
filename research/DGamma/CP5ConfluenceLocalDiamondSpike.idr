@@ -3118,6 +3118,24 @@ sealedSuffixActionTagPreserved
         replayedTail sameAction sameTag (sealedSuffixActionOrigin tail)
         (sealedSuffixActionTagPreserved tail) occurrence
 
+||| Global positional ordinal theorem for the sealed suffix. This theorem is
+||| established before any registration-generation renaming is selected.
+0 sealedSuffixActionOrdinalPreserved :
+  (spine : SealedSuffixReplaySpine name key world error value nameEq keyEq
+    source replayed) ->
+  (occurrence : LocatedActionOccurrence action replayed) ->
+  locatedActionOrdinal occurrence =
+    locatedActionOrdinal (sealedSuffixActionOrigin spine occurrence)
+sealedSuffixActionOrdinalPreserved SealedSuffixReplayEnd occurrence =
+  void (noLocatedActionOccurrenceInEmpty occurrence)
+sealedSuffixActionOrdinalPreserved
+  (SealedSuffixReplayStep sourceStep replayedStep sourceTail replayedTail
+    sameAction sameTag headRAR headMaps headEndpoint headOccurrences
+    headRelativeOrdinal tail) occurrence =
+      consPointwiseActionOrdinalPreserved sourceStep replayedStep sourceTail
+        replayedTail sameAction (sealedSuffixActionOrigin tail)
+        (sealedSuffixActionOrdinalPreserved tail) occurrence
+
 0 checkedTargetWellFormed :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) ->
