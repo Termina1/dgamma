@@ -1332,6 +1332,25 @@ stage, RAR, public, and result interfaces remain unchanged. One shift of the
 nominal **2–14** remainder has been consumed; nominal **1–13** remain. Holes
 remain **20**, split **6/4/8/1/1**.
 
+### Revision 66: projection conversion closes; semantic empty gate
+
+`research-tests/O6-R66-CONVERSION-CLOSED-EMPTY-OCCURRENCE-SEMANTIC-STOP-AUDIT.md`
+records shift #74. Cure 1 closes on attempt 1:
+`locatedChildRegistrationFromAction` uses an ordinary variable left-hand side
+and constructs the generated-registration view solely from the exact action-
+occurrence projections. The revision-65 failures were therefore parser-shape
+failures, not a conversion type obstruction.
+
+The next occurrence-fold unit parsed but failed semantically when arithmetic
+normalization could not prove that an occurrence decomposition with an abstract
+prefix is nonempty. The explicit gate required an immediate stop before any
+repair or cure-2 activation. The next gate is a structural
+`appendLocatedTransitionNotEmpty` lemma recursing on the abstract prefix; it
+makes constructor disjointness visible without `transitionCount` normalization.
+Identity generation renaming, bundle composition, and assembly remain
+unopened. The nominal lower bound is exhausted; the prior upper remainder is
+**12**. Holes remain **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1643,7 +1662,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; both located origin packages, whole-cons RAR, recursive suffix RAR, and positional action occurrence/tag/ordinal cons composition are closed. Revision 65 gates whole-suffix generated-registration correspondence at an indexed conversion parser boundary.** | **XL, 2 shifts consumed from the accepted 3–15 band; nominal 1–13 remain at the revision-65 generated-occurrence gate.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; both located origin packages, whole-suffix RAR, positional action composition, and projection-based generated-registration conversion are closed. Revision 66 gates the occurrence fold at constructive nonemptiness of an abstract-prefix located decomposition.** | **XL, accepted lower estimate exhausted; upper remainder 12 at the revision-66 structural-nonemptiness gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1809,7 +1828,8 @@ locator. Revision 63 adds producer-owned stage runtime equations and closes the
 runtime-map identity. Revision 64 closes the universally quantified joint-region
 producer and whole-cons generator origin. Revision 65 closes the separate
 stage-only view, iterator origin, whole-cons RAR, recursive whole-suffix RAR,
-and positional action occurrence/tag/ordinal cons helpers. Generated-
-registration occurrence conversion is the active parser gate. Cure (c) remains
+and positional action occurrence/tag/ordinal cons helpers. Revision 66 closes
+the projection-based generated-registration conversion and gates the fold at a
+structural nonemptiness lemma for abstract occurrence prefixes. Cure (c) remains
 unopened. Whole-suffix occurrence/bundle composition and final adjacent-result
 assembly remain after that gate.
