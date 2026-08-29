@@ -2084,6 +2084,173 @@ locateConsReplayGeneratorOrigin sourceHead targetHead sourceTail targetTail
     targetHead sourceTail targetTail headRAR tailRAR
     (locateJointConsTargetGenerator target)
 
+0 widenSingletonIteratorOutcomeExact :
+  (tail : Transitions sourceAfter sourceFinal) ->
+  (stage : IteratorStage name key world error value actor
+    (MoreTransitions sourceHead NoTransitions)) ->
+  (state : EffectState name key value world) ->
+  iteratorStageOutcome (widenSingletonIteratorStage tail stage) state =
+    iteratorStageOutcome stage state
+widenSingletonIteratorOutcomeExact tail
+  (StageFromAdvance _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) state = Refl
+
+0 prependIteratorOutcomeExact :
+  (head : Transition sourceFirst sourceMiddle) ->
+  (stage : IteratorStage name key world error value actor tail) ->
+  (state : EffectState name key value world) ->
+  iteratorStageOutcome (prependIteratorStage head stage) state =
+    iteratorStageOutcome stage state
+prependIteratorOutcomeExact head
+  (StageFromAdvance _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) state = Refl
+
+record LocatedReplayIteratorStageOrigin
+  (name, key, world, error : Type) (value : key -> Type)
+  {sourceFirst, sourceFinal, targetFirst, targetFinal :
+    SystemState name key value world error}
+  (source : Transitions sourceFirst sourceFinal)
+  (targetTrace : Transitions targetFirst targetFinal)
+  (actor : name)
+  (targetStage : IteratorStage name key world error value actor targetTrace) where
+  constructor MkLocatedReplayIteratorStageOrigin
+  locatedIteratorStageOrigin : IteratorStage name key world error value actor source
+  0 locatedIteratorOutcomePreserved :
+    (state : EffectState name key value world) ->
+    iteratorStageOutcome targetStage state =
+      iteratorStageOutcome locatedIteratorStageOrigin state
+
+0 locateReplayIteratorStageOrigin :
+  (correspondence : RelationalReplayCorrespondence name key world error value
+    source targetTrace) ->
+  (actor : name) ->
+  (targetStage : IteratorStage name key world error value actor targetTrace) ->
+  LocatedReplayIteratorStageOrigin name key world error value source targetTrace
+    actor targetStage
+locateReplayIteratorStageOrigin
+  (MkRelationalReplayCorrespondence origin maps stageOrigin outcomes) actor
+  targetStage = MkLocatedReplayIteratorStageOrigin (stageOrigin actor targetStage)
+    (outcomes actor targetStage)
+
+record LocatedConsIteratorStageOrigin
+  (name, key, world, error : Type) (value : key -> Type)
+  {sourceFirst, sourceMiddle, sourceFinal, targetFirst, targetMiddle,
+    targetFinal : SystemState name key value world error}
+  (sourceHead : Transition sourceFirst sourceMiddle)
+  (targetHead : Transition targetFirst targetMiddle)
+  (sourceTail : Transitions sourceMiddle sourceFinal)
+  (targetTail : Transitions targetMiddle targetFinal)
+  (actor : name)
+  (targetStage : IteratorStage name key world error value actor
+    (MoreTransitions targetHead targetTail)) where
+  constructor MkLocatedConsIteratorStageOrigin
+  consIteratorStageOrigin : IteratorStage name key world error value actor
+    (MoreTransitions sourceHead sourceTail)
+  0 consIteratorOutcomePreserved :
+    (state : EffectState name key value world) ->
+    iteratorStageOutcome targetStage state =
+      iteratorStageOutcome consIteratorStageOrigin state
+
+0 widenLocatedReplayIteratorStageOrigin :
+  (sourceHead : Transition sourceFirst sourceMiddle) ->
+  (targetHead : Transition targetFirst targetMiddle) ->
+  (sourceTail : Transitions sourceMiddle sourceFinal) ->
+  (targetTail : Transitions targetMiddle targetFinal) ->
+  (actor : name) ->
+  (targetWhole : IteratorStage name key world error value actor
+    (MoreTransitions targetHead targetTail)) ->
+  (targetSingleton : IteratorStage name key world error value actor
+    (MoreTransitions targetHead NoTransitions)) ->
+  ((state : EffectState name key value world) ->
+    iteratorStageOutcome targetWhole state =
+      iteratorStageOutcome targetSingleton state) ->
+  LocatedReplayIteratorStageOrigin name key world error value
+    (MoreTransitions sourceHead NoTransitions)
+    (MoreTransitions targetHead NoTransitions) actor targetSingleton ->
+  LocatedConsIteratorStageOrigin name key world error value sourceHead targetHead
+    sourceTail targetTail actor targetWhole
+widenLocatedReplayIteratorStageOrigin sourceHead targetHead sourceTail targetTail
+  actor targetWhole targetSingleton targetExact
+  (MkLocatedReplayIteratorStageOrigin sourceSingleton singletonExact) =
+    MkLocatedConsIteratorStageOrigin
+      (widenSingletonIteratorStage sourceTail sourceSingleton)
+      (\state => trans (targetExact state) (trans (singletonExact state)
+        (sym (widenSingletonIteratorOutcomeExact sourceTail sourceSingleton
+          state))))
+
+0 prependLocatedReplayIteratorStageOrigin :
+  (sourceHead : Transition sourceFirst sourceMiddle) ->
+  (targetHead : Transition targetFirst targetMiddle) ->
+  (sourceTail : Transitions sourceMiddle sourceFinal) ->
+  (targetTail : Transitions targetMiddle targetFinal) ->
+  (actor : name) ->
+  (targetWhole : IteratorStage name key world error value actor
+    (MoreTransitions targetHead targetTail)) ->
+  (targetLocal : IteratorStage name key world error value actor targetTail) ->
+  ((state : EffectState name key value world) ->
+    iteratorStageOutcome targetWhole state =
+      iteratorStageOutcome targetLocal state) ->
+  LocatedReplayIteratorStageOrigin name key world error value sourceTail
+    targetTail actor targetLocal ->
+  LocatedConsIteratorStageOrigin name key world error value sourceHead targetHead
+    sourceTail targetTail actor targetWhole
+prependLocatedReplayIteratorStageOrigin sourceHead targetHead sourceTail targetTail
+  actor targetWhole targetLocal targetExact
+  (MkLocatedReplayIteratorStageOrigin sourceLocal localExact) =
+    MkLocatedConsIteratorStageOrigin
+      (prependIteratorStage sourceHead sourceLocal)
+      (\state => trans (targetExact state) (trans (localExact state)
+        (sym (prependIteratorOutcomeExact sourceHead sourceLocal state))))
+
+0 consumeJointConsIteratorStageOrigin :
+  (sourceHead : Transition sourceFirst sourceMiddle) ->
+  (targetHead : Transition targetFirst targetMiddle) ->
+  (sourceTail : Transitions sourceMiddle sourceFinal) ->
+  (targetTail : Transitions targetMiddle targetFinal) ->
+  (headRAR : RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceHead NoTransitions)
+    (MoreTransitions targetHead NoTransitions)) ->
+  (tailRAR : RelationalReplayCorrespondence name key world error value
+    sourceTail targetTail) ->
+  {actor : name} ->
+  {targetStage : IteratorStage name key world error value actor
+    (MoreTransitions targetHead targetTail)} ->
+  JointLocatedConsTargetStage name key world error value targetHead targetTail actor
+    targetStage ->
+  LocatedConsIteratorStageOrigin name key world error value sourceHead targetHead
+    sourceTail targetTail actor targetStage
+consumeJointConsIteratorStageOrigin sourceHead targetHead sourceTail targetTail
+  headRAR tailRAR
+  (JointConsTargetStageHere targetStage exactStage forwardExact yieldedExact
+    outcomeExact) =
+      widenLocatedReplayIteratorStageOrigin sourceHead targetHead sourceTail
+        targetTail actor targetStage exactStage outcomeExact
+        (locateReplayIteratorStageOrigin headRAR actor exactStage)
+consumeJointConsIteratorStageOrigin sourceHead targetHead sourceTail targetTail
+  headRAR tailRAR
+  (JointConsTargetStageLater targetStage exactStage forwardExact yieldedExact
+    outcomeExact) =
+      prependLocatedReplayIteratorStageOrigin sourceHead targetHead sourceTail
+        targetTail actor targetStage exactStage outcomeExact
+        (locateReplayIteratorStageOrigin tailRAR actor exactStage)
+
+0 locateConsIteratorStageOrigin :
+  (sourceHead : Transition sourceFirst sourceMiddle) ->
+  (targetHead : Transition targetFirst targetMiddle) ->
+  (sourceTail : Transitions sourceMiddle sourceFinal) ->
+  (targetTail : Transitions targetMiddle targetFinal) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceHead NoTransitions)
+    (MoreTransitions targetHead NoTransitions) ->
+  RelationalReplayCorrespondence name key world error value sourceTail targetTail ->
+  (actor : name) ->
+  (targetStage : IteratorStage name key world error value actor
+    (MoreTransitions targetHead targetTail)) ->
+  LocatedConsIteratorStageOrigin name key world error value sourceHead targetHead
+    sourceTail targetTail actor targetStage
+locateConsIteratorStageOrigin sourceHead targetHead sourceTail targetTail headRAR
+  tailRAR actor targetStage = consumeJointConsIteratorStageOrigin sourceHead
+    targetHead sourceTail targetTail headRAR tailRAR
+    (locateJointConsTargetStage targetStage)
+
 ||| Registration generations need their own permutation when transitions are
 ||| swapped: the raw O-Insert action is preserved, but its global birth ordinal
 ||| may move.  This composition is deliberately local to operational replay so
