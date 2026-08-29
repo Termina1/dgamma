@@ -1173,6 +1173,102 @@ data JointLocatedConsTargetStage :
     JointLocatedConsTargetStage name key world error value targetHead targetTail
       actor targetStage
 
+||| The stage-only region eliminator quantifies `occurs` directly and leaves its
+||| dependent occurrence view untouched. This is the total recipe established
+||| by the candidate-(2) generator producer.
+0 jointConsTargetStageRegion :
+  (targetStage : IteratorStage name key world error value actor
+    (MoreTransitions targetHead targetTail)) ->
+  (before, afterState : SystemState name key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (tag : RuleTag) ->
+  (equation : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+    Just (tag, afterState)) ->
+  (occurs : OccursIn
+    (Fired {before} {afterState} nameEq keyEq (LAdvance actor) tag equation)
+    (MoreTransitions targetHead targetTail)) ->
+  (occurrenceView : ConsStageOccurrenceView occurs) ->
+  (fiber : Fiber name key value world error) ->
+  (found : lookupFiber @{nameEq} actor (registry before) = Just fiber) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)))) ->
+  (accumulator : LocalState key value world
+      (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world
+      (componentProvisions (fiberComponent fiber))) ->
+  (view : View name
+    (dependencies (componentDependencies (fiberComponent fiber)))) ->
+  (lifecycle : fiberLifecycle fiber = Reloading remaining accumulator view) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber))) ->
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent fiber)))
+    (componentProvisions (fiberComponent fiber)))) ->
+  (suffix : ReachableSuffix remaining (step :: rest)) ->
+  (0 forwardRuntimeExact : (state : EffectState name key value world) ->
+    traceGeneratorMap (IteratorForwardGenerator targetStage) state =
+      traceGeneratorMap (IteratorForwardGenerator
+        (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found
+          remaining accumulator view lifecycle step rest suffix)) state) ->
+  (0 yieldedRuntimeExact : (origin, state :
+      EffectState name key value world) ->
+    traceGeneratorMap (IteratorYieldedGenerator targetStage origin) state =
+      traceGeneratorMap (IteratorYieldedGenerator
+        (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found
+          remaining accumulator view lifecycle step rest suffix) origin) state) ->
+  (0 outcomeRuntimeExact : (state : EffectState name key value world) ->
+    iteratorStageOutcome targetStage state =
+      iteratorStageOutcome
+        (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found
+          remaining accumulator view lifecycle step rest suffix) state) ->
+  JointLocatedConsTargetStage name key world error value targetHead targetTail
+    actor targetStage
+jointConsTargetStageRegion targetStage before afterState nameEq keyEq tag equation
+  OccursHere occurrenceView fiber found remaining accumulator view lifecycle step
+  rest suffix forwardRuntimeExact yieldedRuntimeExact outcomeRuntimeExact =
+    JointConsTargetStageHere targetStage
+      (StageFromAdvance nameEq keyEq actor tag equation OccursHere fiber found
+        remaining accumulator view lifecycle step rest suffix)
+      (\state => trans Refl (sym (forwardRuntimeExact state)))
+      (\origin, state => trans Refl
+        (sym (yieldedRuntimeExact origin state)))
+      (\state => trans (outcomeRuntimeExact state) Refl)
+jointConsTargetStageRegion targetStage before afterState nameEq keyEq tag equation
+  (DGamma.Metatheory.OccursLater later) occurrenceView fiber found remaining
+  accumulator view lifecycle step rest suffix forwardRuntimeExact
+  yieldedRuntimeExact outcomeRuntimeExact =
+    JointConsTargetStageLater targetStage
+      (StageFromAdvance nameEq keyEq actor tag equation later fiber found
+        remaining accumulator view lifecycle step rest suffix)
+      (\state => trans Refl (sym (forwardRuntimeExact state)))
+      (\origin, state => trans Refl
+        (sym (yieldedRuntimeExact origin state)))
+      (\state => trans (outcomeRuntimeExact state) Refl)
+
+0 consumeJointConsTargetStageRuntime :
+  LocatedConsTargetStageRuntime name key world error value targetHead targetTail
+    actor targetStage ->
+  JointLocatedConsTargetStage name key world error value targetHead targetTail
+    actor targetStage
+consumeJointConsTargetStageRuntime
+  (MkLocatedConsTargetStageRuntime actor targetStage before afterState nameEq keyEq
+    tag equation occurs occurrenceView fiber found remaining accumulator view
+    lifecycle step rest suffix forwardRuntimeExact yieldedRuntimeExact
+    outcomeRuntimeExact) =
+      jointConsTargetStageRegion targetStage before afterState nameEq keyEq tag
+        equation occurs occurrenceView fiber found remaining accumulator view
+        lifecycle step rest suffix forwardRuntimeExact yieldedRuntimeExact
+        outcomeRuntimeExact
+
+0 locateJointConsTargetStage :
+  (targetStage : IteratorStage name key world error value actor
+    (MoreTransitions targetHead targetTail)) ->
+  JointLocatedConsTargetStage name key world error value targetHead targetTail
+    actor targetStage
+locateJointConsTargetStage targetStage = consumeJointConsTargetStageRuntime
+  (locateConsTargetStageRuntime targetStage)
+
 ||| Joint introduction for a generator of a cons trace. Each constructor fixes
 ||| both the original whole-target generator and the exact singleton/tail local
 ||| form from the same occurrence elimination; consumers never reconstruct a
