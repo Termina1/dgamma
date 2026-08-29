@@ -1268,6 +1268,26 @@ outer generator constructor jointly introduces the exact stage expression.
 Cure (c) and revision-20 surfaces remain unopened. The accepted **3–15 shift**
 band is held. Holes remain **20**, split **6/4/8/1/1**.
 
+### Revision 63: runtime equations close identity; dependent region gates
+
+`research-tests/O6-R63-STAGE-RUNTIME-OWNED-GENERATOR-ORIGIN-STOP-AUDIT.md`
+records shift #71. `LocatedConsTargetStageRuntime` now owns exact forward,
+yielded, and iterator-outcome equations from its original whole stage to the
+stored `StageFromAdvance` payload. Its producer constructs all equations at the
+stage source, and the live three-clause target-generator locator consumes this
+runtime package. Both units are retained.
+
+The generator-origin retry used those equations successfully: exact target
+annotations closed the prior iterator runtime-map identity. Its remaining two
+occurrence-view case blocks were non-covering. A final named local eliminator
+then failed because it captured a fixed `occurs` index instead of universally
+quantifying the occurrence and corresponding whole stage together. The package
+was reverted after three attempts. Candidate (2), jointly introducing the exact
+stage result through a helper while preserving the outer producer delegation,
+is now the designated fallback gate. Cure (c) and public surfaces remain
+unopened. The accepted **3–15 shift** band is held. Holes remain **20**, split
+**6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1579,7 +1599,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; indexed head elimination, generic suffix spine, exact occurrence view, whole-stage package, and total outer target locator are closed. Revision 62 gates the generator-origin cons package at the executable map of a separately stored original iterator stage.** | **XL, original 3–15 remaining-shift band held at the revision-62 private stage-identity package gate.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; indexed head elimination, suffix spine, occurrence view, total locator, and producer-owned stage runtime equations are closed. Revision 63 validates the runtime identity cure but gates generator origin on a dependent region eliminator that must quantify occurrence and exact stage jointly.** | **XL, original 3–15 remaining-shift band held at the revision-63 candidate-(2) fallback gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1741,7 +1761,8 @@ nested stage-occurrence patterns remain non-covering. Revision 61 proves the
 semantic partition is nevertheless exactly Here/Tail and validates a total
 stage-indexed, two-phase dependent package through the original whole generator.
 Revision 62 implements that occurrence view, stage package, and total outer
-locator, then gates the whole generator-origin package when the executable map
-of its separately stored original stage does not reduce after package
-elimination. Cure (c) remains unopened. Occurrence/ordinal composition and final
-adjacent-result assembly remain after that gate.
+locator. Revision 63 adds producer-owned stage runtime equations, closes the
+runtime-map identity, and gates generator origin on dependent occurrence-region
+elimination: the next helper must quantify occurrence and exact stage jointly.
+Cure (c) remains unopened. Occurrence/ordinal composition and final adjacent-
+result assembly remain after that gate.
