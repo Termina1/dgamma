@@ -1053,6 +1053,68 @@ locateConsTargetStage
         occurs (viewConsStageOccurrence occurs) fiber found remaining accumulator
         view lifecycle step rest suffix
 
+||| Runtime-owning refinement of LocatedConsTargetStage. The original whole
+||| stage remains the index, while producer-owned equations relate each runtime
+||| projection to the exact StageFromAdvance payload retained by the package.
+data LocatedConsTargetStageRuntime :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {targetFirst, targetMiddle, targetFinal :
+    SystemState name key value world error} ->
+  (targetHead : Transition targetFirst targetMiddle) ->
+  (targetTail : Transitions targetMiddle targetFinal) ->
+  (actor : name) ->
+  IteratorStage name key world error value actor
+    (MoreTransitions targetHead targetTail) -> Type where
+  MkLocatedConsTargetStageRuntime :
+    (actor : name) ->
+    (targetStage : IteratorStage name key world error value actor
+      (MoreTransitions targetHead targetTail)) ->
+    (before, afterState : SystemState name key value world error) ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+    (tag : RuleTag) ->
+    (equation : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+      Just (tag, afterState)) ->
+    (0 occurs : OccursIn
+      (Fired {before} {afterState} nameEq keyEq (LAdvance actor) tag equation)
+      (MoreTransitions targetHead targetTail)) ->
+    (0 occurrenceView : ConsStageOccurrenceView occurs) ->
+    (fiber : Fiber name key value world error) ->
+    (found : lookupFiber @{nameEq} actor (registry before) = Just fiber) ->
+    (remaining : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber)))) ->
+    (accumulator : LocalState key value world
+        (componentProvisions (fiberComponent fiber)) ->
+      LocalState key value world
+        (componentProvisions (fiberComponent fiber))) ->
+    (view : View name
+      (dependencies (componentDependencies (fiberComponent fiber)))) ->
+    (lifecycle : fiberLifecycle fiber = Reloading remaining accumulator view) ->
+    (step : StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber))) ->
+    (rest : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber)))) ->
+    (suffix : ReachableSuffix remaining (step :: rest)) ->
+    (0 forwardRuntimeExact : (state : EffectState name key value world) ->
+      traceGeneratorMap (IteratorForwardGenerator targetStage) state =
+        traceGeneratorMap (IteratorForwardGenerator
+          (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found
+            remaining accumulator view lifecycle step rest suffix)) state) ->
+    (0 yieldedRuntimeExact : (origin, state : EffectState name key value world) ->
+      traceGeneratorMap (IteratorYieldedGenerator targetStage origin) state =
+        traceGeneratorMap (IteratorYieldedGenerator
+          (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found
+            remaining accumulator view lifecycle step rest suffix) origin) state) ->
+    (0 outcomeRuntimeExact : (state : EffectState name key value world) ->
+      iteratorStageOutcome targetStage state =
+        iteratorStageOutcome
+          (StageFromAdvance nameEq keyEq actor tag equation occurs fiber found
+            remaining accumulator view lifecycle step rest suffix) state) ->
+    LocatedConsTargetStageRuntime name key world error value targetHead targetTail
+      actor targetStage
+
 ||| Joint introduction for a generator of a cons trace. Each constructor fixes
 ||| both the original whole-target generator and the exact singleton/tail local
 ||| form from the same occurrence elimination; consumers never reconstruct a
