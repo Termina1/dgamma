@@ -1208,6 +1208,25 @@ explicit supervisor escalation described by revision 58. The accepted
 **3–15 shift** band is held pending this producer-statement gate. Holes remain
 **20**, split **6/4/8/1/1**.
 
+### Revision 60: single-scrutinee locator reaches statement-shape gate
+
+`research-tests/O6-R60-SINGLE-SCRUTINEE-TARGET-LOCATOR-COVERAGE-STOP-AUDIT.md`
+records shift #68. The six validated `LocatedConsTargetGenerator` constructors
+are now retained in a separately checked commit. Their `Here` cases own the
+exact refined target tail, and the iterator cases retain exact stage indices.
+The narrowly authorized locator then made target head, target tail, and actor
+implicit, leaving the whole target generator as its only explicit scrutinee.
+
+Coverage still rejected the iterator cases, now reporting only
+`locateConsTargetGenerator (IteratorForwardGenerator _)` and yielded analogues.
+The remaining ambiguity is therefore hidden inside the dependent iterator-stage
+occurrence rather than caused by two explicit scrutinees. Per the revision-59
+ruling, the locator was reverted immediately and no alternate clause strategy
+was attempted. The whole-cons statement-shape gate is now open; iterator
+localization and all downstream cons composition remain unopened. The accepted
+**3–15 shift** band is held at this gate. Holes remain **20**, split
+**6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1519,7 +1538,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; indexed head elimination and the generic suffix spine are closed. Revision 59 shows the six-constructor target-localization result is expressible, but its producer is non-covering while target head and whole generator remain separate explicit scrutinees.** | **XL, original 3–15 remaining-shift band held at the revision-59 target-localization producer gate.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; indexed head elimination and the generic suffix spine are closed. Revision 60 retains the six target-localization constructors but shows their locator remains non-covering even when the whole generator is the only explicit scrutinee; hidden iterator-stage occurrence indices now force the whole-cons statement-shape gate.** | **XL, original 3–15 remaining-shift band held at the opened revision-60 whole-cons statement-shape gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1675,5 +1694,8 @@ RAR once and clears source-origin correlation inside the first located package,
 but gates its statement when the reconstructed local target does not identify
 with the original whole-target parameter. Revision 59 expresses the approved
 six-way joint target GADT, then gates its producer because explicit target-head
-and generator scrutinees remain independently covered. Occurrence/ordinal
-composition and final adjacent-result assembly remain after that gate.
+and generator scrutinees remain independently covered. Revision 60 retains
+those six constructors and retries with only the whole generator explicit, but
+coverage still cannot exhaust hidden iterator-stage occurrence indices. The
+whole-cons statement-shape gate is now open. Occurrence/ordinal composition and
+final adjacent-result assembly remain after that gate.
