@@ -1371,6 +1371,26 @@ outer unit was reverted. Bundle field 1 remains the active gate; fields 2–15 a
 assembly are unopened. One shift consumed the re-estimated **1–12** band; the
 prior upper remainder is **11**. Holes remain **20**, split **6/4/8/1/1**.
 
+### Revision 68: outer alignment closes; target discipline semantic gate
+
+`research-tests/O6-R68-OUTER-ALIGNMENT-CLOSED-DISCIPLINE-SEMANTIC-STOP-AUDIT.md`
+records shift #76. The fully quantity-annotated private outer replay producer
+closes on attempt 1. It constructs the exact whole target trace, alignment,
+endpoint, and suffix seal without caller-selected output capital, so bundle
+field 1 is now closed.
+
+Strict field order then exposes a new semantic boundary at field 2.
+`RegistrationDiscipline` for a moved child insertion requires
+`ParentRegistrationYield` at its exact target before-state. Genuine A/O and O/A
+producers accept consumer-significant parent/child exclusions, but frozen
+`LocalRelationalDiamond` does not retain them; its public constructor permits a
+bare record to reach `adjacentSwapSuffixSpike`. Final endpoint equivalence,
+occurrence correspondence, and the post-pair suffix seal cannot reconstruct
+that missing intermediate parent state. No detached target discipline is
+admissible. Fields 3–15 and assembly remain unopened pending a frozen-surface
+ruling. One shift consumed the re-estimated **1–11** band; the prior upper
+remainder is **10**. Holes remain **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1682,7 +1702,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; whole-suffix RAR, action/generated occurrence correspondence, global ordinal preservation, and exact target suffix alignment are closed. Revision 67 gates bundle field 1 at a private outer-envelope erased-local annotation.** | **XL, lower estimate exhausted; prior upper remainder 11 at the revision-67 outer-alignment quantity gate.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; whole-suffix correspondence, global ordinals, suffix replay, and exact whole-target alignment are closed. Revision 68 gates bundle field 2 because the frozen bare local diamond omits mixed parent/child safety needed by target registration discipline.** | **XL, semantic design gate; prior upper remainder 10 pending a frozen-surface ruling.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1851,7 +1871,9 @@ stage-only view, iterator origin, whole-cons RAR, recursive whole-suffix RAR,
 and positional action occurrence/tag/ordinal cons helpers. Revision 66 closes
 the projection-based generated-registration conversion. Revision 67 closes
 structural nonemptiness, whole-suffix action/generated occurrence transport,
-global ordinals, and exact producer-owned suffix alignment. Cure (c) remains
-unopened. Bundle field 1 is gated only at the private outer envelope's erased
-`suffixReplay` local; later bundle fields and final adjacent-result assembly
-remain after that gate.
+global ordinals, and exact producer-owned suffix alignment. Revision 68 closes
+the fully erased private outer alignment envelope. Cure (c) remains unopened.
+Bundle field 2 is semantically gated because the bare frozen local diamond omits
+the consumer-significant parent/child exclusions required to transport child-
+registration discipline; later bundle fields and final adjacent-result assembly
+remain after that design gate.
