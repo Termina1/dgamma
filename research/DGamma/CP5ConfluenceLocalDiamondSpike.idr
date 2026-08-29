@@ -2946,6 +2946,102 @@ sealedSuffixRelationalReplayCorrespondence
       consRelationalReplayCorrespondence sourceStep replayedStep sourceTail
         replayedTail headRAR (sealedSuffixRelationalReplayCorrespondence tail)
 
+0 consPointwiseActionOrigin :
+  (sourceStep : Transition sourceFirst sourceMiddle) ->
+  (replayedStep : Transition replayedFirst replayedMiddle) ->
+  (sourceTail : Transitions sourceMiddle sourceFinal) ->
+  (replayedTail : Transitions replayedMiddle replayedFinal) ->
+  (sameAction : transitionAction replayedStep = transitionAction sourceStep) ->
+  ({observed : Action name key value world error} ->
+    LocatedActionOccurrence observed replayedTail ->
+    LocatedActionOccurrence observed sourceTail) ->
+  LocatedActionOccurrence action (MoreTransitions replayedStep replayedTail) ->
+  LocatedActionOccurrence action (MoreTransitions sourceStep sourceTail)
+consPointwiseActionOrigin sourceStep replayedStep sourceTail replayedTail
+  sameAction tailOrigin
+  (MkLocatedActionOccurrence _ _ NoTransitions located suffix actionSame
+    decomposition) =
+      case decomposition of
+        Refl => MkLocatedActionOccurrence _ _ NoTransitions sourceStep sourceTail
+          (trans (sym sameAction) actionSame) Refl
+consPointwiseActionOrigin sourceStep replayedStep sourceTail replayedTail
+  sameAction tailOrigin
+  (MkLocatedActionOccurrence _ _ (MoreTransitions prefixHead prefixTail) located
+    suffix actionSame decomposition) =
+      case decomposition of
+        Refl =>
+          let targetTailOccurrence = MkLocatedActionOccurrence _ _ prefixTail
+                located suffix actionSame Refl
+              sourceTailOccurrence = tailOrigin targetTailOccurrence
+          in MkLocatedActionOccurrence _ _
+            (MoreTransitions sourceStep
+              (beforeActionOccurrence sourceTailOccurrence))
+            (locatedTransition sourceTailOccurrence)
+            (afterActionOccurrence sourceTailOccurrence)
+            (locatedAction sourceTailOccurrence)
+            (cong (MoreTransitions sourceStep)
+              (actionOccurrenceDecomposition sourceTailOccurrence))
+
+0 consPointwiseActionTagPreserved :
+  (sourceStep : Transition sourceFirst sourceMiddle) ->
+  (replayedStep : Transition replayedFirst replayedMiddle) ->
+  (sourceTail : Transitions sourceMiddle sourceFinal) ->
+  (replayedTail : Transitions replayedMiddle replayedFinal) ->
+  (sameAction : transitionAction replayedStep = transitionAction sourceStep) ->
+  (sameTag : transitionTag replayedStep = transitionTag sourceStep) ->
+  (tailOrigin : {observed : Action name key value world error} ->
+    LocatedActionOccurrence observed replayedTail ->
+    LocatedActionOccurrence observed sourceTail) ->
+  ((occurrence : LocatedActionOccurrence action replayedTail) ->
+    transitionTag (locatedTransition (tailOrigin occurrence)) =
+      transitionTag (locatedTransition occurrence)) ->
+  (occurrence : LocatedActionOccurrence action
+    (MoreTransitions replayedStep replayedTail)) ->
+  transitionTag (locatedTransition
+    (consPointwiseActionOrigin sourceStep replayedStep sourceTail replayedTail
+      sameAction tailOrigin occurrence)) =
+    transitionTag (locatedTransition occurrence)
+consPointwiseActionTagPreserved sourceStep replayedStep sourceTail replayedTail
+  sameAction sameTag tailOrigin tailTag
+  (MkLocatedActionOccurrence _ _ NoTransitions located suffix actionSame
+    decomposition) = case decomposition of Refl => sym sameTag
+consPointwiseActionTagPreserved sourceStep replayedStep sourceTail replayedTail
+  sameAction sameTag tailOrigin tailTag
+  (MkLocatedActionOccurrence _ _ (MoreTransitions prefixHead prefixTail) located
+    suffix actionSame decomposition) =
+      case decomposition of
+        Refl => tailTag (MkLocatedActionOccurrence _ _ prefixTail located suffix
+          actionSame Refl)
+
+0 consPointwiseActionOrdinalPreserved :
+  (sourceStep : Transition sourceFirst sourceMiddle) ->
+  (replayedStep : Transition replayedFirst replayedMiddle) ->
+  (sourceTail : Transitions sourceMiddle sourceFinal) ->
+  (replayedTail : Transitions replayedMiddle replayedFinal) ->
+  (sameAction : transitionAction replayedStep = transitionAction sourceStep) ->
+  (tailOrigin : {observed : Action name key value world error} ->
+    LocatedActionOccurrence observed replayedTail ->
+    LocatedActionOccurrence observed sourceTail) ->
+  ((occurrence : LocatedActionOccurrence action replayedTail) ->
+    locatedActionOrdinal occurrence =
+      locatedActionOrdinal (tailOrigin occurrence)) ->
+  (occurrence : LocatedActionOccurrence action
+    (MoreTransitions replayedStep replayedTail)) ->
+  locatedActionOrdinal occurrence = locatedActionOrdinal
+    (consPointwiseActionOrigin sourceStep replayedStep sourceTail replayedTail
+      sameAction tailOrigin occurrence)
+consPointwiseActionOrdinalPreserved sourceStep replayedStep sourceTail replayedTail
+  sameAction tailOrigin tailOrdinal
+  (MkLocatedActionOccurrence _ _ NoTransitions located suffix actionSame
+    decomposition) = case decomposition of Refl => Refl
+consPointwiseActionOrdinalPreserved sourceStep replayedStep sourceTail replayedTail
+  sameAction tailOrigin tailOrdinal
+  (MkLocatedActionOccurrence _ _ (MoreTransitions prefixHead prefixTail) located
+    suffix actionSame decomposition) =
+      case decomposition of
+        Refl => cong S (tailOrdinal (MkLocatedActionOccurrence _ _ prefixTail
+          located suffix actionSame Refl))
+
 0 checkedTargetWellFormed :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) ->
