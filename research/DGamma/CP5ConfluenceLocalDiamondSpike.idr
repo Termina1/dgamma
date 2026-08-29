@@ -1115,6 +1115,19 @@ data LocatedConsTargetStageRuntime :
     LocatedConsTargetStageRuntime name key world error value targetHead targetTail
       actor targetStage
 
+0 locateConsTargetStageRuntime :
+  (stage : IteratorStage name key world error value actor
+    (MoreTransitions targetHead targetTail)) ->
+  LocatedConsTargetStageRuntime name key world error value targetHead targetTail
+    actor stage
+locateConsTargetStageRuntime
+  stage@(StageFromAdvance {before} {afterState} nameEq keyEq actor tag equation
+    occurs fiber found remaining accumulator view lifecycle step rest suffix) =
+      MkLocatedConsTargetStageRuntime actor stage before afterState nameEq keyEq
+        tag equation occurs (viewConsStageOccurrence occurs) fiber found remaining
+        accumulator view lifecycle step rest suffix (\state => Refl)
+        (\origin, state => Refl) (\state => Refl)
+
 ||| Joint introduction for a generator of a cons trace. Each constructor fixes
 ||| both the original whole-target generator and the exact singleton/tail local
 ||| form from the same occurrence elimination; consumers never reconstruct a
@@ -1318,16 +1331,16 @@ data LocatedConsTargetGenerator :
   LocatedConsForwardGenerator :
     (stage : IteratorStage name key world error value actor
       (MoreTransitions targetHead targetTail)) ->
-    (0 located : LocatedConsTargetStage name key world error value targetHead
-      targetTail actor stage) ->
+    (0 located : LocatedConsTargetStageRuntime name key world error value
+      targetHead targetTail actor stage) ->
     LocatedConsTargetGenerator name key world error value targetHead targetTail
       actor (IteratorForwardGenerator stage)
   LocatedConsYieldedGenerator :
     (stage : IteratorStage name key world error value actor
       (MoreTransitions targetHead targetTail)) ->
     (origin : EffectState name key value world) ->
-    (0 located : LocatedConsTargetStage name key world error value targetHead
-      targetTail actor stage) ->
+    (0 located : LocatedConsTargetStageRuntime name key world error value
+      targetHead targetTail actor stage) ->
     LocatedConsTargetGenerator name key world error value targetHead targetTail
       actor (IteratorYieldedGenerator stage origin)
 
@@ -1345,9 +1358,9 @@ locateConsTargetGenerator
       LocatedConsActualGenerator before afterState nameEq keyEq action tag
         equation occurs (viewConsStageOccurrence occurs) owned
 locateConsTargetGenerator (IteratorForwardGenerator stage) =
-  LocatedConsForwardGenerator stage (locateConsTargetStage stage)
+  LocatedConsForwardGenerator stage (locateConsTargetStageRuntime stage)
 locateConsTargetGenerator (IteratorYieldedGenerator stage origin) =
-  LocatedConsYieldedGenerator stage origin (locateConsTargetStage stage)
+  LocatedConsYieldedGenerator stage origin (locateConsTargetStageRuntime stage)
 
 0 widenSingletonOccurrence :
   {sourceFirst, sourceAfter, sourceFinal, selectedBefore, selectedAfter :
