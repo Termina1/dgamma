@@ -19287,6 +19287,106 @@ sealedSuffixRegistrationDiscipline protocol nameEq controls
     in RegistrationDisciplineStep replayedStep replayedTail replayedHead
       replayedDiscipline
 
+0 quietEntryFromElem :
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  Elem (Bind selected fiber) entries ->
+  allRecursive (quietEntryFor registry) entries = True ->
+  quietFiber fiber registry = True
+quietEntryFromElem (Bind selected fiber :: rest) selected fiber Here valid =
+  boolAndLeftPointwise _ _ valid
+quietEntryFromElem (entry :: rest) selected fiber (There later) valid =
+  quietEntryFromElem rest selected fiber later
+    (boolAndRightPointwise _ _ valid)
+
+0 pointwiseQuietFiberTrue :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (left, right : SystemState name key value world error) ->
+  ControlEquivalent name key world error value nameEq left right ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} left)
+    (projectEffectState @{nameEq} right) ->
+  registryWellFormed @{nameEq} @{keyEq} right = True ->
+  (leftFiber, rightFiber : Fiber name key value world error) ->
+  FiberControlRelated leftFiber rightFiber ->
+  quietFiber @{nameEq} @{keyEq} leftFiber (registry left) = True ->
+  quietFiber @{nameEq} @{keyEq} rightFiber (registry right) = True
+pointwiseQuietFiberTrue nameEq keyEq left right controls effects rightValid
+  (MkFiber component leftParent leftRetired leftTable leftLifecycle)
+  (MkFiber component rightParent rightRetired rightTable rightLifecycle)
+  (FibersControlRelated leftParent rightParent leftRetired rightRetired leftTable
+    rightTable leftLifecycle rightLifecycle parentSame retiredSame
+    lifecycleRelated) sourceQuiet =
+      let 0 targetsSame = pointwiseConcreteTargetFiberSame nameEq keyEq component
+            leftParent rightParent leftRetired rightRetired leftTable rightTable
+            leftLifecycle rightLifecycle retiredSame left right controls effects
+            rightValid
+      in case lifecycleRelated of
+        InactiveControls outcomeSame => case outcomeSame of
+          Refl => case leftLifecycle of
+            Inactive Nothing => rewrite targetsSame in sourceQuiet
+            Inactive (Just failure) => Refl
+        ReloadingControls remaining accumulator view =>
+          case sourceQuiet of Refl impossible
+        ActiveControls accumulator viewSame => case viewSame of
+          Refl => rewrite targetsSame in sourceQuiet
+        UnloadingControls accumulator view outcome =>
+          case sourceQuiet of Refl impossible
+
+0 pointwiseQuietTrue :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (left, right : SystemState name key value world error) ->
+  ControlEquivalent name key world error value nameEq left right ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} left)
+    (projectEffectState @{nameEq} right) ->
+  registryWellFormed @{nameEq} @{keyEq} right = True ->
+  quiet @{nameEq} @{keyEq} left = True ->
+  quiet @{nameEq} @{keyEq} right = True
+pointwiseQuietTrue nameEq keyEq
+  (MkSystemState leftWorld (MkCoeffectContext leftEntries leftUnique))
+  (MkSystemState rightWorld (MkCoeffectContext rightEntries rightUnique))
+  controls effects rightValid sourceQuiet = targetAll rightEntries
+  where
+  0 sourceEntryQuiet : (selected : name) ->
+    (sourceFiber : Fiber name key value world error) ->
+    lookupEntries @{nameEq} selected leftEntries = Just sourceFiber ->
+    quietFiber @{nameEq} @{keyEq} sourceFiber
+      (MkCoeffectContext leftEntries leftUnique) = True
+  sourceEntryQuiet selected sourceFiber sourceFound =
+    quietEntryFromElem leftEntries selected sourceFiber
+      (entryElemFromLookupPointwise nameEq selected sourceFiber leftEntries
+        leftUnique sourceFound)
+      sourceQuiet
+
+  0 targetAll : (entries : List (Binding name
+    (FiberAt name key value world error))) ->
+    allRecursive (quietEntryFor (MkCoeffectContext rightEntries rightUnique))
+      entries = True
+  targetAll [] = Refl
+  targetAll (Bind selected targetFiber :: rest) =
+    let 0 targetFound : lookupFiber @{nameEq} selected
+          (MkCoeffectContext rightEntries rightUnique) = Just targetFiber
+        targetFound = entryLookupFromElemPointwise nameEq rightEntries rightUnique
+          selected targetFiber (the (Elem (Bind selected targetFiber)
+            rightEntries) (elementAtHeadOrTail rest))
+    in case pointwiseControlLookupFound nameEq selected
+      (MkSystemState rightWorld (MkCoeffectContext rightEntries rightUnique))
+      (MkSystemState leftWorld (MkCoeffectContext leftEntries leftUnique))
+      (controlEquivalentSymmetric controls) targetFiber targetFound of
+      (sourceFiber ** (sourceFound, targetSourceRelated)) =>
+        boolAndBothPointwise _ _
+          (pointwiseQuietFiberTrue nameEq keyEq
+            (MkSystemState leftWorld (MkCoeffectContext leftEntries leftUnique))
+            (MkSystemState rightWorld (MkCoeffectContext rightEntries rightUnique))
+            controls effects rightValid sourceFiber targetFiber
+            (fiberControlSymmetric targetSourceRelated)
+            (sourceEntryQuiet selected sourceFiber sourceFound))
+          (targetAll rest)
+
+  0 elementAtHeadOrTail : (rest : List (Binding name
+    (FiberAt name key value world error))) ->
+    Elem (Bind selected targetFiber) (Bind selected targetFiber :: rest)
+  elementAtHeadOrTail rest = Here
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
@@ -19316,6 +19416,7 @@ record AdjacentAlignedPointwiseReplay
   0 alignedReplayInitialEmpty : bindings (registry initial) = []
   0 alignedReplayFinalWellFormed :
     registryWellFormed @{nameEq} @{keyEq} alignedReplayFinal = True
+  0 alignedReplayQuiet : quiet @{nameEq} @{keyEq} alignedReplayFinal = True
   0 alignedReplayEndpoint : RelationalReplayEndpoint name key world error value
     nameEq keyEq originalFinal alignedReplayFinal
   0 alignedReplaySeal : SealedSuffixReplaySpine name key world error value nameEq
@@ -19407,6 +19508,12 @@ produceAdjacentAlignedPointwiseReplay nameEq keyEq protocol original tracePrefix
       replayedSuffix targetTrace Refl targetAligned targetDiscipline
       (replayInitialWellFormed premises) (replayInitialEmpty premises)
       (replayedWellFormed (spineReplayEndpoint suffixReplay))
+      (pointwiseQuietTrue nameEq keyEq originalFinal
+        (spineReplayedFinal suffixReplay)
+        (replayedControls (spineReplayEndpoint suffixReplay))
+        (replayedEffects (spineReplayEndpoint suffixReplay))
+        (replayedWellFormed (spineReplayEndpoint suffixReplay))
+        (replayQuiet premises))
       (spineReplayEndpoint suffixReplay) (spineReplaySeal suffixReplay)
 
 ||| Checked suffix-splice interface consumed by sorting.  It is generic over the
