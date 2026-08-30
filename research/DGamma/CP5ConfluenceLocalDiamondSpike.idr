@@ -19594,6 +19594,51 @@ adjacentChildRetirementProvenance localNameDecision localKeyDecision prefixTrace
         prefixTrace left right suffix diamond replayedSuffix seal parent child
         retires)
 
+||| Producer-owned view of the first step of a nonempty prefix discipline.
+||| The constructor retains the exact head and rest chosen by dependent
+||| elimination, together with equations back to the caller's append spine.
+||| Consumers eliminate this package once and reindex before inspecting the
+||| action-dependent registration obligation.
+record PrefixRegistrationDisciplineView
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (localNameDecision : DecEq name)
+  {initial, prefixMiddle, pairFirst, originalFinal :
+    SystemState name key value world error}
+  (expectedHead : Transition initial prefixMiddle)
+  (prefixTail : Transitions prefixMiddle pairFirst)
+  (pairBody : Transitions pairFirst originalFinal) where
+  constructor MkPrefixRegistrationDisciplineView
+  0 prefixViewHead : Transition initial prefixMiddle
+  0 prefixViewRest : Transitions prefixMiddle originalFinal
+  0 prefixViewHeadEqualsExpected : prefixViewHead = expectedHead
+  0 prefixViewRestEqualsAppend : prefixViewRest =
+    appendTransitions prefixTail pairBody
+  0 prefixViewHeadDiscipline : RegistrationStepDiscipline protocol
+    localNameDecision (transitionAction prefixViewHead) initial prefixViewRest
+  0 prefixViewTailDiscipline : RegistrationDiscipline protocol
+    localNameDecision prefixViewRest
+
+0 producePrefixRegistrationDisciplineView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) ->
+  {initial, prefixMiddle, pairFirst, originalFinal :
+    SystemState name key value world error} ->
+  (expectedHead : Transition initial prefixMiddle) ->
+  (prefixTail : Transitions prefixMiddle pairFirst) ->
+  (pairBody : Transitions pairFirst originalFinal) ->
+  RegistrationDiscipline protocol localNameDecision
+    (appendTransitions (MoreTransitions expectedHead prefixTail) pairBody) ->
+  PrefixRegistrationDisciplineView name key world error value protocol
+    localNameDecision expectedHead prefixTail pairBody
+producePrefixRegistrationDisciplineView protocol localNameDecision expectedHead
+  prefixTail pairBody
+  (RegistrationDisciplineStep expectedHead _ headDiscipline tailDiscipline) =
+    MkPrefixRegistrationDisciplineView expectedHead
+      (appendTransitions prefixTail pairBody) Refl Refl headDiscipline
+      tailDiscipline
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
