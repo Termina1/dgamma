@@ -18467,6 +18467,180 @@ foreignCheckedParentYieldBackward protocol nameEq keyEq parent action before
         sourceBelongsToProgram parentRegistrationRank childRegistrationRank
         parentRanked childRanked yieldTag stepYieldsTag catalogYieldsComponent
 
+0 orchestrationCheckedParentYieldForward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (parent : name) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  PaperOrchestrationStep (Fired nameEq keyEq action tag checked) ->
+  ParentRegistrationYield protocol nameEq parent childComponent before ->
+  ParentRegistrationYield protocol nameEq parent childComponent afterState
+orchestrationCheckedParentYieldForward protocol nameEq keyEq parent action
+  before afterState tag checked (PaperInsertStep {actor} {parent = insertParent}
+    {component} actionSame) sourceYield = case actionSame of
+      Refl => case decEq @{nameEq} parent actor of
+        No distinct => foreignCheckedParentYieldForward protocol nameEq keyEq
+          parent (OInsert actor insertParent component) before afterState tag
+          distinct checked sourceYield
+        Yes Refl => case before of
+          MkSystemState ambient source =>
+            let 0 raw = checkedActionProjects nameEq keyEq
+                  (OInsert actor insertParent component) (MkSystemState ambient source)
+                  afterState tag checked
+            in case foreignInsertPlanView nameEq keyEq actor insertParent
+              component ambient source tag afterState raw of
+              MkForeignInsertPlanView absent guards => case sourceYield of
+                MkParentRegistrationYield sourceFiber sourceFound sourceStep
+                  sourceContinuation sourceAccumulator sourceView parentAtYield
+                  sourceBelongsToProgram parentRegistrationRank
+                  childRegistrationRank parentRanked childRanked yieldTag
+                  stepYieldsTag catalogYieldsComponent =>
+                    void (nothingIsNotJust (trans (sym absent) sourceFound))
+orchestrationCheckedParentYieldForward protocol nameEq keyEq parent action
+  before afterState tag checked (PaperRetireStep {actor} actionSame) sourceYield =
+    case actionSame of
+      Refl => case decEq @{nameEq} parent actor of
+        No distinct => foreignCheckedParentYieldForward protocol nameEq keyEq
+          parent (ORetire actor) before afterState tag distinct checked sourceYield
+        Yes Refl => case before of
+          MkSystemState ambient source =>
+            let 0 raw = checkedActionProjects nameEq keyEq (ORetire actor)
+                  (MkSystemState ambient source) afterState tag checked
+            in case retireSuccessView nameEq keyEq actor ambient source tag
+              afterState raw of
+              MkRetireSuccessView oldFiber oldFound => case sourceYield of
+                MkParentRegistrationYield sourceFiber sourceFound sourceStep
+                  sourceContinuation sourceAccumulator sourceView parentAtYield
+                  sourceBelongsToProgram parentRegistrationRank
+                  childRegistrationRank parentRanked childRanked yieldTag
+                  stepYieldsTag catalogYieldsComponent =>
+                    case justInjective (trans (sym oldFound) sourceFound) of
+                      Refl => MkParentRegistrationYield (retireFiber sourceFiber)
+                        (lookupReplacedFiber actor sourceFiber
+                          (retireFiber sourceFiber) source sourceFound)
+                        sourceStep sourceContinuation sourceAccumulator sourceView
+                        parentAtYield sourceBelongsToProgram
+                        parentRegistrationRank childRegistrationRank parentRanked
+                        childRanked yieldTag stepYieldsTag catalogYieldsComponent
+orchestrationCheckedParentYieldForward protocol nameEq keyEq parent action
+  before afterState tag checked (PaperRemoveStep {actor} actionSame) sourceYield =
+    case actionSame of
+      Refl => case decEq @{nameEq} parent actor of
+        No distinct => foreignCheckedParentYieldForward protocol nameEq keyEq
+          parent (ORemove actor) before afterState tag distinct checked sourceYield
+        Yes Refl => case before of
+          MkSystemState ambient source =>
+            let 0 raw = checkedActionProjects nameEq keyEq (ORemove actor)
+                  (MkSystemState ambient source) afterState tag checked
+            in case removeSuccessView nameEq keyEq actor ambient source tag
+              afterState raw of
+              MkRemoveSuccessView oldFiber oldFound removable noChild =>
+                case sourceYield of
+                  MkParentRegistrationYield sourceFiber sourceFound sourceStep
+                    sourceContinuation sourceAccumulator sourceView parentAtYield
+                    sourceBelongsToProgram parentRegistrationRank
+                    childRegistrationRank parentRanked childRanked yieldTag
+                    stepYieldsTag catalogYieldsComponent =>
+                      case justInjective (trans (sym oldFound) sourceFound) of
+                        Refl => case inactiveLifecycleFromRemovalGuard
+                          (retired sourceFiber) (fiberLifecycle sourceFiber)
+                          (hasChild @{nameEq} actor source) removable of
+                          (outcome ** inactive) =>
+                            case trans (sym inactive) parentAtYield of Refl impossible
+
+0 orchestrationCheckedParentYieldBackward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (parent : name) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  PaperOrchestrationStep (Fired nameEq keyEq action tag checked) ->
+  ParentRegistrationYield protocol nameEq parent childComponent afterState ->
+  ParentRegistrationYield protocol nameEq parent childComponent before
+orchestrationCheckedParentYieldBackward protocol nameEq keyEq parent action
+  before afterState tag checked (PaperInsertStep {actor} {parent = insertParent}
+    {component} actionSame) targetYield = case actionSame of
+      Refl => case decEq @{nameEq} parent actor of
+        No distinct => foreignCheckedParentYieldBackward protocol nameEq keyEq
+          parent (OInsert actor insertParent component) before afterState tag
+          distinct checked targetYield
+        Yes Refl => case before of
+          MkSystemState ambient source =>
+            let 0 raw = checkedActionProjects nameEq keyEq
+                  (OInsert actor insertParent component) (MkSystemState ambient source)
+                  afterState tag checked
+            in case foreignInsertPlanView nameEq keyEq actor insertParent
+              component ambient source tag afterState raw of
+              MkForeignInsertPlanView absent guards => case targetYield of
+                MkParentRegistrationYield targetFiber targetFound sourceStep
+                  sourceContinuation sourceAccumulator sourceView parentAtYield
+                  sourceBelongsToProgram parentRegistrationRank
+                  childRegistrationRank parentRanked childRanked yieldTag
+                  stepYieldsTag catalogYieldsComponent =>
+                    case justInjective (trans
+                      (sym (lookupInserted actor
+                        (freshFiber component insertParent) source absent))
+                      targetFound) of
+                      Refl => case parentAtYield of Refl impossible
+orchestrationCheckedParentYieldBackward protocol nameEq keyEq parent action
+  before afterState tag checked (PaperRetireStep {actor} actionSame) targetYield =
+    case actionSame of
+      Refl => case decEq @{nameEq} parent actor of
+        No distinct => foreignCheckedParentYieldBackward protocol nameEq keyEq
+          parent (ORetire actor) before afterState tag distinct checked targetYield
+        Yes Refl => case before of
+          MkSystemState ambient source =>
+            let 0 raw = checkedActionProjects nameEq keyEq (ORetire actor)
+                  (MkSystemState ambient source) afterState tag checked
+            in case retireSuccessView nameEq keyEq actor ambient source tag
+              afterState raw of
+              MkRetireSuccessView oldFiber oldFound => case targetYield of
+                MkParentRegistrationYield targetFiber targetFound sourceStep
+                  sourceContinuation sourceAccumulator sourceView parentAtYield
+                  sourceBelongsToProgram parentRegistrationRank
+                  childRegistrationRank parentRanked childRanked yieldTag
+                  stepYieldsTag catalogYieldsComponent =>
+                    case justInjective (trans
+                      (sym (lookupReplacedFiber actor oldFiber
+                        (retireFiber oldFiber) source oldFound)) targetFound) of
+                      Refl => MkParentRegistrationYield oldFiber oldFound
+                        sourceStep sourceContinuation sourceAccumulator sourceView
+                        parentAtYield sourceBelongsToProgram
+                        parentRegistrationRank childRegistrationRank parentRanked
+                        childRanked yieldTag stepYieldsTag catalogYieldsComponent
+orchestrationCheckedParentYieldBackward protocol nameEq keyEq parent action
+  before afterState tag checked (PaperRemoveStep {actor} actionSame) targetYield =
+    case actionSame of
+      Refl => case decEq @{nameEq} parent actor of
+        No distinct => foreignCheckedParentYieldBackward protocol nameEq keyEq
+          parent (ORemove actor) before afterState tag distinct checked targetYield
+        Yes Refl => case before of
+          MkSystemState ambient (MkCoeffectContext entries unique) =>
+            let 0 raw = checkedActionProjects nameEq keyEq (ORemove actor)
+                  (MkSystemState ambient (MkCoeffectContext entries unique))
+                  afterState tag checked
+            in case removeSuccessView nameEq keyEq actor ambient
+              (MkCoeffectContext entries unique) tag afterState raw of
+              MkRemoveSuccessView oldFiber oldFound removable noChild =>
+                case targetYield of
+                  MkParentRegistrationYield targetFiber targetFound sourceStep
+                    sourceContinuation sourceAccumulator sourceView parentAtYield
+                    sourceBelongsToProgram parentRegistrationRank
+                    childRegistrationRank parentRanked childRanked yieldTag
+                    stepYieldsTag catalogYieldsComponent =>
+                      void (deletedKeyNotElem actor entries unique
+                        (lookupJustElem actor (deleteEntries actor entries)
+                          targetFiber targetFound))
+
 0 alignedForeignParentYieldForward :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (protocol : RegistrationProtocol key value world error) ->
