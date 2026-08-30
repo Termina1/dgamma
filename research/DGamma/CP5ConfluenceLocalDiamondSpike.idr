@@ -18420,6 +18420,51 @@ retireCheckedParentYieldForward protocol localNameDecision localKeyDecision pare
                 childRegistrationRank parentRanked childRanked yieldTag
                 stepYieldsTag catalogYieldsComponent
 
+0 retireCheckedParentYieldBackward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {childComponent : Component key value world error} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  (parent : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  checkedApplyAction @{localNameDecision} @{localKeyDecision} (ORetire parent)
+    before = Just (tag, afterState) ->
+  ParentRegistrationYield protocol localNameDecision parent childComponent
+    afterState ->
+  ParentRegistrationYield protocol localNameDecision parent childComponent
+    before
+retireCheckedParentYieldBackward protocol localNameDecision localKeyDecision parent
+  (MkSystemState ambient source) afterState tag checked targetYield =
+    let 0 raw = checkedActionProjects localNameDecision localKeyDecision
+          (ORetire parent) (MkSystemState ambient source) afterState tag checked
+    in case retireSuccessView localNameDecision localKeyDecision parent ambient
+      source tag afterState raw of
+      MkRetireSuccessView
+        (MkFiber oldComponent oldRole oldRetired oldTable oldLifecycle)
+        oldFound => case targetYield of
+          MkParentRegistrationYield targetFiber targetFound yieldedStep
+            yieldedContinuation yieldedAccumulator yieldedView parentAtYield
+            sourceBelongsToProgram parentRegistrationRank childRegistrationRank
+            parentRanked childRanked yieldTag stepYieldsTag
+            catalogYieldsComponent =>
+              let 0 retiredFound = lookupReplacedFiber parent
+                    (MkFiber oldComponent oldRole oldRetired oldTable oldLifecycle)
+                    (MkFiber oldComponent oldRole True oldTable oldLifecycle)
+                    source oldFound
+                  0 targetSame :
+                    (MkFiber oldComponent oldRole True oldTable oldLifecycle =
+                      targetFiber)
+                  targetSame = justInjective
+                    (trans (sym retiredFound) targetFound)
+              in case targetSame of
+                Refl => MkParentRegistrationYield
+                  (MkFiber oldComponent oldRole oldRetired oldTable oldLifecycle)
+                  oldFound yieldedStep yieldedContinuation yieldedAccumulator
+                  yieldedView parentAtYield sourceBelongsToProgram
+                  parentRegistrationRank childRegistrationRank parentRanked
+                  childRanked yieldTag stepYieldsTag catalogYieldsComponent
+
 ||| Preserve no-recovery evidence across the unchanged prefix, moved pair, and
 ||| the producer-sealed suffix. Prefix recursion eliminates its proof once and
 ||| never names a dependent tail endpoint twice.
