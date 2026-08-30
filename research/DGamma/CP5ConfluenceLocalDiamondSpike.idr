@@ -18922,6 +18922,57 @@ prependChildRetirementProvenance transition rest noRecovery
     ChildRetiredBeforeParent
       (ChildRetiresLater transition rest noRecovery retires)
 
+||| Producer-owned correlated moved-right head. The action, tag, checked result,
+||| equality to the source-right action, and requested retirement action are
+||| introduced by one producer and must be eliminated together.
+record MovedRightRetirePackage
+  (name, key, world, error : Type) (value : key -> Type)
+  (localNameDecision : DecEq name) (localKeyDecision : DecEq key)
+  {pairFirst, pairMiddle, pairFinal : SystemState name key value world error}
+  (left : Transition pairFirst pairMiddle)
+  (right : Transition pairMiddle pairFinal)
+  (diamond : LocalRelationalDiamond name key world error value
+    localNameDecision localKeyDecision left right)
+  (child : name) where
+  constructor MkMovedRightRetirePackage
+  0 movedRetireAction : Action name key value world error
+  0 movedRetireTag : RuleTag
+  0 movedRetireChecked :
+    checkedApplyAction @{localNameDecision} @{localKeyDecision}
+      movedRetireAction pairFirst =
+        Just (movedRetireTag, swappedMiddle diamond)
+  0 movedRetireEqualsRight : movedRetireAction = transitionAction right
+  0 movedRetireEqualsRequested : movedRetireAction = ORetire child
+
+0 produceMovedRightRetirePackage :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  {pairFirst, pairMiddle, pairFinal : SystemState name key value world error} ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value
+    localNameDecision localKeyDecision left right) ->
+  (child : name) ->
+  transitionAction right = ORetire child ->
+  MovedRightRetirePackage name key world error value localNameDecision
+    localKeyDecision left right diamond child
+produceMovedRightRetirePackage localNameDecision localKeyDecision left right
+  diamond child rightRetires =
+    let 0 alignedHead : LocalAlignedHeadView name key world error value
+          localNameDecision localKeyDecision (movedRight diamond)
+          (MoreTransitions (movedLeft diamond) NoTransitions)
+        alignedHead = localAlignedHeadView (movedPairAligned diamond)
+        0 actionEqualsRight : alignedHeadAction alignedHead =
+          transitionAction right
+        actionEqualsRight = trans
+          (sym (alignedHeadActionProjection alignedHead))
+          (movedRightAction diamond)
+        0 actionEqualsRequested : alignedHeadAction alignedHead = ORetire child
+        actionEqualsRequested = trans actionEqualsRight rightRetires
+    in MkMovedRightRetirePackage (alignedHeadAction alignedHead)
+      (alignedHeadTag alignedHead) (alignedHeadChecked alignedHead)
+      actionEqualsRight actionEqualsRequested
+
 ||| Transport one exact registration-step obligation across pointwise controls
 ||| and a producer-sealed tail. The dependent insertion component is bound by
 ||| the action pattern itself; all proof locals are erased explicitly.
