@@ -18840,6 +18840,68 @@ movedRetireBeforeInsertedChildImpossible nameEq keyEq left right diamond
                       MkRetireSuccessView oldFiber found =>
                         void (nothingIsNotJust (trans (sym absent) found))
 
+0 movedRightTailRetirementProvenance :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {pairFirst, pairMiddle, pairFinal, originalFinal, replayedFinal :
+    SystemState name key value world error} ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq suffix
+    replayedSuffix ->
+  (parent, child : name) ->
+  ChildRetirementProvenance parent child suffix ->
+  ChildRetirementProvenance parent child
+    (MoreTransitions (movedLeft diamond) replayedSuffix)
+movedRightTailRetirementProvenance left right suffix diamond replayedSuffix seal
+  parent child sourceProvenance =
+    prependChildRetirementProvenance (movedLeft diamond) replayedSuffix
+      (movedLeftNotParentRecovery diamond parent)
+      (sealedSuffixChildRetirementProvenance parent child seal sourceProvenance)
+
+0 movedLeftTailRetirementProvenance :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {pairFirst, pairMiddle, pairFinal, originalFinal, replayedFinal :
+    SystemState name key value world error} ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq suffix
+    replayedSuffix ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  (parent, child : name) ->
+  (component : Component key value world error) ->
+  transitionAction left = OInsert child (ChildOf parent) component ->
+  ChildRetirementProvenance parent child
+    (MoreTransitions right suffix) ->
+  ChildRetirementProvenance parent child replayedSuffix
+movedLeftTailRetirementProvenance nameEq keyEq left right suffix diamond
+  replayedSuffix seal sourcePairAligned parent child component leftInsert
+  (ParentDoesNotRecover
+    (NoParentRecoveryStep right suffix noRight noSuffix)) =
+      ParentDoesNotRecover
+        (sealedSuffixNoParentRecovery parent seal noSuffix)
+movedLeftTailRetirementProvenance nameEq keyEq left right suffix diamond
+  replayedSuffix seal sourcePairAligned parent child component leftInsert
+  (ChildRetiredBeforeParent (ChildRetiresNow right suffix rightRetires)) =
+    void (movedRetireBeforeInsertedChildImpossible nameEq keyEq left right
+      diamond sourcePairAligned child (ChildOf parent) component leftInsert
+      rightRetires)
+movedLeftTailRetirementProvenance nameEq keyEq left right suffix diamond
+  replayedSuffix seal sourcePairAligned parent child component leftInsert
+  (ChildRetiredBeforeParent
+    (ChildRetiresLater right suffix noRight later)) =
+      ChildRetiredBeforeParent
+        (sealedSuffixChildRetiresBeforeRecovery parent child seal later)
+
 0 sameActionMovedRegistrationStepDiscipline :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (protocol : RegistrationProtocol key value world error) ->
