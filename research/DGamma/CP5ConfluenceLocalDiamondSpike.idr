@@ -18403,6 +18403,40 @@ adjacentChildRetiresBeforeRecovery localNameDecision localKeyDecision
       (adjacentChildRetiresBeforeRecovery localNameDecision localKeyDecision
         prefixTail left right suffix diamond replayedSuffix seal parent child later)
 
+0 adjacentChildRetirementProvenance :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal, replayedFinal :
+    SystemState name key value world error} ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value
+    localNameDecision localKeyDecision left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  SealedSuffixReplaySpine name key world error value localNameDecision
+    localKeyDecision suffix replayedSuffix ->
+  (parent, child : name) ->
+  ChildRetirementProvenance parent child (appendTransitions prefixTrace
+    (MoreTransitions left (MoreTransitions right suffix))) ->
+  ChildRetirementProvenance parent child (appendTransitions prefixTrace
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) replayedSuffix)))
+adjacentChildRetirementProvenance localNameDecision localKeyDecision prefixTrace
+  left right suffix diamond replayedSuffix seal parent child
+  (ParentDoesNotRecover noRecovery) =
+    ParentDoesNotRecover
+      (adjacentNoParentRecovery localNameDecision localKeyDecision prefixTrace
+        left right suffix diamond replayedSuffix seal parent noRecovery)
+adjacentChildRetirementProvenance localNameDecision localKeyDecision prefixTrace
+  left right suffix diamond replayedSuffix seal parent child
+  (ChildRetiredBeforeParent retires) =
+    ChildRetiredBeforeParent
+      (adjacentChildRetiresBeforeRecovery localNameDecision localKeyDecision
+        prefixTrace left right suffix diamond replayedSuffix seal parent child
+        retires)
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
