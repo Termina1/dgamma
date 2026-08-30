@@ -19003,6 +19003,32 @@ checkedInsertRequiresAbsentExplicit localNameDecision localKeyDecision child
       insertedParent insertedComponent ambient source tag afterState raw of
       MkForeignInsertPlanView absent guards => absent
 
+||| Tag-independent projection from one concretely typed checked retirement.
+0 checkedRetireRequiresFoundExplicit :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  (child : name) ->
+  (ambient : world) ->
+  (source : Registry name key value world error) ->
+  (tag : RuleTag) ->
+  (afterState : SystemState name key value world error) ->
+  (checked : checkedApplyAction @{localNameDecision} @{localKeyDecision}
+    (the (Action name key value world error) (ORetire child))
+    (MkSystemState ambient source) = Just (tag, afterState)) ->
+  (oldFiber : Fiber name key value world error **
+    lookupFiber @{localNameDecision}
+      {name = name} {key = key} {value = value} {world = world} {error = error}
+      child source =
+        Just (the (Fiber name key value world error) oldFiber))
+checkedRetireRequiresFoundExplicit localNameDecision localKeyDecision child
+  ambient source tag afterState checked =
+    let 0 raw = checkedActionProjects localNameDecision localKeyDecision
+          (the (Action name key value world error) (ORetire child))
+          (MkSystemState ambient source) afterState tag checked
+    in case retireSuccessView localNameDecision localKeyDecision child ambient
+      source tag afterState raw of
+      MkRetireSuccessView oldFiber found => (oldFiber ** found)
+
 ||| Transport one exact registration-step obligation across pointwise controls
 ||| and a producer-sealed tail. The dependent insertion component is bound by
 ||| the action pattern itself; all proof locals are erased explicitly.
