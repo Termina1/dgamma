@@ -18641,6 +18641,44 @@ orchestrationCheckedParentYieldBackward protocol nameEq keyEq parent action
                         (lookupJustElem actor (deleteEntries actor entries)
                           targetFiber targetFound))
 
+0 alignedOrchestrationParentYieldForward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (parent : name) ->
+  {before, afterState, finalState : SystemState name key value world error} ->
+  (transition : Transition before afterState) ->
+  (rest : Transitions afterState finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions transition rest) ->
+  PaperOrchestrationStep transition ->
+  ParentRegistrationYield protocol nameEq parent childComponent before ->
+  ParentRegistrationYield protocol nameEq parent childComponent afterState
+alignedOrchestrationParentYieldForward protocol nameEq keyEq parent
+  (Fired nameEq keyEq action tag checked) rest
+  (AlignedStep action tag checked rest alignedRest) orchestration =
+    orchestrationCheckedParentYieldForward protocol nameEq keyEq parent action _ _
+      tag checked orchestration
+
+0 alignedOrchestrationParentYieldBackward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (parent : name) ->
+  {before, afterState, finalState : SystemState name key value world error} ->
+  (transition : Transition before afterState) ->
+  (rest : Transitions afterState finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions transition rest) ->
+  PaperOrchestrationStep transition ->
+  ParentRegistrationYield protocol nameEq parent childComponent afterState ->
+  ParentRegistrationYield protocol nameEq parent childComponent before
+alignedOrchestrationParentYieldBackward protocol nameEq keyEq parent
+  (Fired nameEq keyEq action tag checked) rest
+  (AlignedStep action tag checked rest alignedRest) orchestration =
+    orchestrationCheckedParentYieldBackward protocol nameEq keyEq parent action _ _
+      tag checked orchestration
+
 0 alignedForeignParentYieldForward :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (protocol : RegistrationProtocol key value world error) ->
