@@ -1435,6 +1435,25 @@ or public-interface demand. The next unit is one producer-owned
 shift of the accepted **4–18** band is consumed; **3–17** remain. Holes remain
 **20**, split **6/4/8/1/1**.
 
+### Revision 71: transported yield package reaches target lifecycle reindex
+
+`research-tests/O6-R71-TRANSPORTED-PARENT-YIELD-PACKAGE-TARGET-FIBER-REINDEX-STOP-AUDIT.md`
+records shift #79. The authorized private package producer successfully opened
+`ParentRegistrationYield`, localized the related target fiber, and sealed every
+source yield field with exact source/target lookup and `FiberControlRelated`.
+The projection-based consumer moved the old source projection mismatch first to
+an ordinary nonlinear target-fiber pattern and then, after correlated
+constructor matching, to one target lifecycle equality at `targetFound`.
+
+The final diagnostic compares the original `rightLifecycle` with the target
+`Reloading` lifecycle exposed by `ReloadingControls`. This is not a new semantic
+wall: a private lifecycle-view producer must return that equality so the target
+lookup can be reindexed before sealing an already constructed target yield. The
+three-attempt budget, including the initial parser failure, exhausted; the
+entire unit was reverted and bundle field 2 was not opened. One shift of the
+accepted **3–17** band is consumed; **2–16** remain. Holes remain **20**, split
+**6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1746,7 +1765,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; field 1 and the revision-21 safety boundary are closed. All four producers and R19 are updated. Field 2 is gated only at a private projection-indexed parent-yield eliminator; no new semantic wall is open.** | **XL, 3–17 implementation shifts remain after revision 70.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; field 1 and revision-21 safety are closed. Field 2's private package now reaches only an explicit target-lifecycle equality needed to reindex `targetFound`; no new semantic wall is open.** | **XL, 2–16 implementation shifts remain after revision 71.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1924,6 +1943,8 @@ the counterexample. The opaque-input fallback fails against the byte-frozen
 adjacent declaration, and protocol-quantified transport remains unopened.
 Revision 70 lands the accepted safety family/field, updates all four producers
 and R19, and makes the live counterexample safety attempt permanently negative.
-Bundle field 2 is now stopped only at a private projection-indexed parent-yield
-eliminator; its uncommitted attempts were reverted. Later bundle fields and
-final adjacent-result assembly remain unopened.
+Revision 71's private whole-package producer elaborates through target-fiber
+localization; its consumer closes the old source projection wall and reaches
+only the explicit equality between the original target lifecycle and the
+`Reloading` lifecycle exposed by `ReloadingControls`. Its three attempts were
+reverted. Bundle field 2, later fields, and final assembly remain unopened.
