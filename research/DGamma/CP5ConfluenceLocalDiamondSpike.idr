@@ -18277,6 +18277,132 @@ locateTransportedParentYield nameEq parent source target equivalent sourceYield 
   ParentRegistrationYield protocol nameEq parent childComponent target
 transportedParentYield located = targetParentYield located
 
+0 adjacentNoParentRecovery :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal, replayedFinal :
+    SystemState name key value world error} ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq suffix
+    replayedSuffix ->
+  (parent : name) ->
+  NoParentRecovery parent (appendTransitions prefixTrace
+    (MoreTransitions left (MoreTransitions right suffix))) ->
+  NoParentRecovery parent (appendTransitions prefixTrace
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) replayedSuffix)))
+adjacentNoParentRecovery NoTransitions left right suffix diamond replayedSuffix
+  seal parent
+  (NoParentRecoveryStep left (MoreTransitions right suffix) noLeft
+    (NoParentRecoveryStep right suffix noRight noSuffix)) =
+      NoParentRecoveryStep (movedRight diamond)
+        (MoreTransitions (movedLeft diamond) replayedSuffix)
+        (\recovery => noRight (replayedParentRecoveryToSource
+          (movedRightAction diamond) (movedRightTag diamond) recovery))
+        (NoParentRecoveryStep (movedLeft diamond) replayedSuffix
+          (\recovery => noLeft (replayedParentRecoveryToSource
+            (movedLeftAction diamond) (movedLeftTag diamond) recovery))
+          (sealedSuffixNoParentRecovery parent seal noSuffix))
+adjacentNoParentRecovery
+  (MoreTransitions prefixStep prefixTail) left right suffix diamond replayedSuffix
+  seal parent (NoParentRecoveryStep prefixStep sourceRest noPrefix noRest) =
+    NoParentRecoveryStep prefixStep _ noPrefix
+      (adjacentNoParentRecovery prefixTail left right suffix diamond
+        replayedSuffix seal parent noRest)
+
+0 adjacentChildRetiresBeforeRecovery :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal, replayedFinal :
+    SystemState name key value world error} ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq suffix
+    replayedSuffix ->
+  (parent, child : name) ->
+  ChildRetiresBeforeRecovery parent child (appendTransitions prefixTrace
+    (MoreTransitions left (MoreTransitions right suffix))) ->
+  ChildRetiresBeforeRecovery parent child (appendTransitions prefixTrace
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) replayedSuffix)))
+adjacentChildRetiresBeforeRecovery NoTransitions left right suffix diamond
+  replayedSuffix seal parent child
+  (ChildRetiresNow left (MoreTransitions right suffix) leftRetires) =
+    ChildRetiresLater (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) replayedSuffix)
+      (\recovery => candidateSafetyExcludesParentRecovery
+        (registrationSwapSafety diamond) child parent leftRetires
+        (replayedParentRecoveryToSource (movedRightAction diamond)
+          (movedRightTag diamond) recovery))
+      (ChildRetiresNow (movedLeft diamond) replayedSuffix
+        (trans (movedLeftAction diamond) leftRetires))
+adjacentChildRetiresBeforeRecovery NoTransitions left right suffix diamond
+  replayedSuffix seal parent child
+  (ChildRetiresLater left (MoreTransitions right suffix) noLeft
+    (ChildRetiresNow right suffix rightRetires)) =
+      ChildRetiresNow (movedRight diamond)
+        (MoreTransitions (movedLeft diamond) replayedSuffix)
+        (trans (movedRightAction diamond) rightRetires)
+adjacentChildRetiresBeforeRecovery NoTransitions left right suffix diamond
+  replayedSuffix seal parent child
+  (ChildRetiresLater left (MoreTransitions right suffix) noLeft
+    (ChildRetiresLater right suffix noRight later)) =
+      ChildRetiresLater (movedRight diamond)
+        (MoreTransitions (movedLeft diamond) replayedSuffix)
+        (\recovery => noRight (replayedParentRecoveryToSource
+          (movedRightAction diamond) (movedRightTag diamond) recovery))
+        (ChildRetiresLater (movedLeft diamond) replayedSuffix
+          (\recovery => noLeft (replayedParentRecoveryToSource
+            (movedLeftAction diamond) (movedLeftTag diamond) recovery))
+          (sealedSuffixChildRetiresBeforeRecovery parent child seal later))
+adjacentChildRetiresBeforeRecovery
+  (MoreTransitions prefixStep prefixTail) left right suffix diamond replayedSuffix
+  seal parent child (ChildRetiresNow prefixStep sourceRest retires) =
+    ChildRetiresNow prefixStep _ retires
+adjacentChildRetiresBeforeRecovery
+  (MoreTransitions prefixStep prefixTail) left right suffix diamond replayedSuffix
+  seal parent child (ChildRetiresLater prefixStep sourceRest noPrefix later) =
+    ChildRetiresLater prefixStep _ noPrefix
+      (adjacentChildRetiresBeforeRecovery prefixTail left right suffix diamond
+        replayedSuffix seal parent child later)
+
+0 adjacentChildRetirementProvenance :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal, replayedFinal :
+    SystemState name key value world error} ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq suffix
+    replayedSuffix ->
+  (parent, child : name) ->
+  ChildRetirementProvenance parent child (appendTransitions prefixTrace
+    (MoreTransitions left (MoreTransitions right suffix))) ->
+  ChildRetirementProvenance parent child (appendTransitions prefixTrace
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) replayedSuffix)))
+adjacentChildRetirementProvenance prefixTrace left right suffix diamond
+  replayedSuffix seal parent child (ParentDoesNotRecover noRecovery) =
+    ParentDoesNotRecover (adjacentNoParentRecovery prefixTrace left right suffix
+      diamond replayedSuffix seal parent noRecovery)
+adjacentChildRetirementProvenance prefixTrace left right suffix diamond
+  replayedSuffix seal parent child (ChildRetiredBeforeParent retires) =
+    ChildRetiredBeforeParent (adjacentChildRetiresBeforeRecovery prefixTrace left
+      right suffix diamond replayedSuffix seal parent child retires)
+
 0 foreignCheckedParentYieldForward :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (protocol : RegistrationProtocol key value world error) ->
