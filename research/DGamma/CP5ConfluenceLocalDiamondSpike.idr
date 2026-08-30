@@ -19679,6 +19679,77 @@ reindexPrefixRegistrationTailExplicit protocol localNameDecision storedRest
     replace {p = RegistrationDiscipline protocol localNameDecision}
       restEquals discipline
 
+0 adjacentRegistrationDiscipline :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal, replayedFinal :
+    SystemState name key value world error} ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value
+    localNameDecision localKeyDecision left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  SealedSuffixReplaySpine name key world error value localNameDecision
+    localKeyDecision suffix replayedSuffix ->
+  AlignedTransitions name key world error value localNameDecision
+    localKeyDecision
+    (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  RegistrationDiscipline protocol localNameDecision
+    (appendTransitions prefixTrace
+      (MoreTransitions left (MoreTransitions right suffix))) ->
+  RegistrationDiscipline protocol localNameDecision
+    (appendTransitions prefixTrace
+      (MoreTransitions (movedRight diamond)
+        (MoreTransitions (movedLeft diamond) replayedSuffix)))
+adjacentRegistrationDiscipline protocol localNameDecision localKeyDecision
+  NoTransitions left right suffix diamond replayedSuffix seal sourcePairAligned
+  sourceDiscipline =
+    adjacentPairRegistrationDiscipline protocol localNameDecision
+      localKeyDecision left right suffix diamond replayedSuffix seal
+      sourcePairAligned sourceDiscipline
+adjacentRegistrationDiscipline protocol localNameDecision localKeyDecision
+  (MoreTransitions {middle = prefixMiddle} prefixStep prefixTail) left right suffix
+  diamond replayedSuffix seal sourcePairAligned sourceDiscipline =
+    case producePrefixRegistrationDisciplineView protocol localNameDecision
+      prefixStep prefixTail (MoreTransitions left (MoreTransitions right suffix))
+      sourceDiscipline of
+      MkPrefixRegistrationDisciplineView viewedHead viewedRest headEquals
+        restEquals viewedHeadDiscipline viewedTailDiscipline =>
+          RegistrationDisciplineStep prefixStep
+            (appendTransitions prefixTail
+              (MoreTransitions (movedRight diamond)
+                (MoreTransitions (movedLeft diamond) replayedSuffix)))
+            (movedRegistrationStepDiscipline protocol localNameDecision
+              prefixStep prefixStep
+              (appendTransitions prefixTail
+                (MoreTransitions left (MoreTransitions right suffix)))
+              (appendTransitions prefixTail
+                (MoreTransitions (movedRight diamond)
+                  (MoreTransitions (movedLeft diamond) replayedSuffix))) Refl
+              (\parent, child, insertedComponent, insertion, sourceYield =>
+                sourceYield)
+              (\parent, child, insertedComponent, insertion,
+                  sourceRetirement =>
+                adjacentChildRetirementProvenance localNameDecision
+                  localKeyDecision prefixTail left right suffix diamond
+                  replayedSuffix seal parent child sourceRetirement)
+              (reindexPrefixRegistrationStepExplicit protocol
+                localNameDecision viewedHead prefixStep viewedRest
+                (appendTransitions prefixTail
+                  (MoreTransitions left (MoreTransitions right suffix)))
+                headEquals restEquals viewedHeadDiscipline))
+            (adjacentRegistrationDiscipline protocol localNameDecision
+              localKeyDecision prefixTail left right suffix diamond
+              replayedSuffix seal sourcePairAligned
+              (reindexPrefixRegistrationTailExplicit protocol
+                localNameDecision viewedRest
+                (appendTransitions prefixTail
+                  (MoreTransitions left (MoreTransitions right suffix)))
+                restEquals viewedTailDiscipline))
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
