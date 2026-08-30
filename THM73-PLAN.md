@@ -1566,6 +1566,21 @@ was removed; all prior units remain. Field 2 is open only at prefix recursion.
 Fields 3–15 and assembly remain unopened. The remainder narrows to **1–13
 shifts**. Holes stay **20**, split **6/4/8/1/1**.
 
+### Revision 78: prefix view closes; layout-only consumer stop
+
+`research-tests/O6-R78-PREFIX-DISCIPLINE-CONSUMER-STOP-AUDIT.md` records grind
+shift #86. The authorized private erased `PrefixRegistrationDisciplineView`
+and producer close under a visible fresh CP5 rebuild. The package seals the
+constructor-owned prefix head/rest, exact expected-head and append-tail
+equalities, head step discipline, and tail discipline. The separate recursive
+consumer exhausted three attempts after monotonically closing its named middle
+index and first local-layout defect; the terminal issue is the same layout
+defect on `targetRest`, before semantic checking of the constructed target
+head. The entire consumer was removed and the checked view retained. Field 2
+is open only at this layout-normalized consumer; fields 3–15 and assembly remain
+unopened. The accepted **1–13 shift** remainder is held. Holes stay **20**, split
+**6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1877,7 +1892,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; field 1 is closed. Revision 77 closes explicit lookup projections, the moved-retire consumer, moved retirement tails, and full adjacent-pair discipline. Field 2 remains open only at dependent whole-prefix recursion.** | **XL, 1–13 implementation shifts remain.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; field 1 is closed. Revision 78 retains the producer-owned exact prefix-discipline view. Field 2 remains open only at its layout-normalized recursive consumer.** | **XL, 1–13 implementation shifts remain.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2075,6 +2090,8 @@ rebuilds suffix/adjacent retirement provenance, all required parent-yield
 transport, and suffix registration discipline under visible fresh checks.
 Revision 76 closes the producer-owned moved-retire checked-action package.
 Revision 77 closes its explicit lookup projections, the consumer, both moved
-retirement tails, and complete moved-pair registration discipline. Field 2 now
-stops only at a nonlinear dependent prefix-rest projection; later fields and
-final assembly remain open.
+retirement tails, and complete moved-pair registration discipline. Revision 78
+closes the exact producer-owned prefix-discipline view; its recursive consumer
+stops at a local-layout error after the dependent correlation is reindexed.
+Field 2 remains open only at that consumer; later fields and final assembly
+remain open.
