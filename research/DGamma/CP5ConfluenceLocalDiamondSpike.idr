@@ -18296,6 +18296,79 @@ locateTransportedParentYield nameEq parent source target equivalent sourceYield 
   ParentRegistrationYield protocol nameEq parent childComponent target
 transportedParentYield located = targetParentYield located
 
+||| A checked action by another actor preserves the exact parent-yield package
+||| in either direction. The component index is explicit to avoid accidental
+||| capture of a record projection with the same lowercase spelling.
+0 foreignCheckedParentYieldForward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {childComponent : Component key value world error} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  (parent : name) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  Not (parent = actionOwner action) ->
+  checkedApplyAction @{localNameDecision} @{localKeyDecision} action before =
+    Just (tag, afterState) ->
+  ParentRegistrationYield protocol localNameDecision parent childComponent
+    before ->
+  ParentRegistrationYield protocol localNameDecision parent childComponent
+    afterState
+foreignCheckedParentYieldForward protocol localNameDecision localKeyDecision
+  parent action before afterState tag distinct checked
+  (MkParentRegistrationYield parentFiber sourceFound sourceStep
+    sourceContinuation sourceAccumulator sourceView parentAtYield
+    sourceBelongsToProgram parentRegistrationRank childRegistrationRank
+    parentRanked childRanked yieldTag stepYieldsTag catalogYieldsComponent) =
+      let 0 raw = checkedActionProjects localNameDecision localKeyDecision action
+            before afterState tag checked
+          0 local = applyActionLocalUpdate localNameDecision localKeyDecision
+            action before afterState tag raw
+          0 targetFound = trans
+            (systemLocalUpdateForeign localNameDecision parent
+              (actionOwner action) distinct before afterState local)
+            sourceFound
+      in MkParentRegistrationYield parentFiber targetFound sourceStep
+        sourceContinuation sourceAccumulator sourceView parentAtYield
+        sourceBelongsToProgram parentRegistrationRank childRegistrationRank
+        parentRanked childRanked yieldTag stepYieldsTag catalogYieldsComponent
+
+0 foreignCheckedParentYieldBackward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {childComponent : Component key value world error} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  (parent : name) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  Not (parent = actionOwner action) ->
+  checkedApplyAction @{localNameDecision} @{localKeyDecision} action before =
+    Just (tag, afterState) ->
+  ParentRegistrationYield protocol localNameDecision parent childComponent
+    afterState ->
+  ParentRegistrationYield protocol localNameDecision parent childComponent
+    before
+foreignCheckedParentYieldBackward protocol localNameDecision localKeyDecision
+  parent action before afterState tag distinct checked
+  (MkParentRegistrationYield parentFiber targetFound sourceStep
+    sourceContinuation sourceAccumulator sourceView parentAtYield
+    sourceBelongsToProgram parentRegistrationRank childRegistrationRank
+    parentRanked childRanked yieldTag stepYieldsTag catalogYieldsComponent) =
+      let 0 raw = checkedActionProjects localNameDecision localKeyDecision action
+            before afterState tag checked
+          0 local = applyActionLocalUpdate localNameDecision localKeyDecision
+            action before afterState tag raw
+          0 sourceFound = trans
+            (sym (systemLocalUpdateForeign localNameDecision parent
+              (actionOwner action) distinct before afterState local))
+            targetFound
+      in MkParentRegistrationYield parentFiber sourceFound sourceStep
+        sourceContinuation sourceAccumulator sourceView parentAtYield
+        sourceBelongsToProgram parentRegistrationRank childRegistrationRank
+        parentRanked childRanked yieldTag stepYieldsTag catalogYieldsComponent
+
 ||| Preserve no-recovery evidence across the unchanged prefix, moved pair, and
 ||| the producer-sealed suffix. Prefix recursion eliminates its proof once and
 ||| never names a dependent tail endpoint twice.
