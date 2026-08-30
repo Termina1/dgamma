@@ -19664,6 +19664,21 @@ reindexPrefixRegistrationStepExplicit protocol localNameDecision storedHead
         localNameDecision (transitionAction candidateHead) initial storedRest}
         headEquals discipline)
 
+0 reindexPrefixRegistrationTailExplicit :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) ->
+  {prefixMiddle, finalState : SystemState name key value world error} ->
+  (storedRest : Transitions prefixMiddle finalState) ->
+  (expectedRest : Transitions prefixMiddle finalState) ->
+  storedRest = expectedRest ->
+  RegistrationDiscipline protocol localNameDecision storedRest ->
+  RegistrationDiscipline protocol localNameDecision expectedRest
+reindexPrefixRegistrationTailExplicit protocol localNameDecision storedRest
+  expectedRest restEquals discipline =
+    replace {p = RegistrationDiscipline protocol localNameDecision}
+      restEquals discipline
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
