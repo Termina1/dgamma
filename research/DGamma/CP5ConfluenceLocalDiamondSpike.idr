@@ -19750,6 +19750,21 @@ adjacentRegistrationDiscipline protocol localNameDecision localKeyDecision
                   (MoreTransitions left (MoreTransitions right suffix)))
                 restEquals viewedTailDiscipline))
 
+lifecycleQuietAt :
+  {key, world, error, name : Type} -> {value : key -> Type} ->
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  (localNameDecision : DecEq name) ->
+  Lifecycle key value world error name deps provision ->
+  Maybe (View name deps) -> Bool
+lifecycleQuietAt localNameDecision (Inactive (Just failure)) target = True
+lifecycleQuietAt localNameDecision (Inactive Nothing) target = isNothing target
+lifecycleQuietAt localNameDecision (Reloading remaining accumulator view) target =
+  False
+lifecycleQuietAt localNameDecision (Active accumulator view) target =
+  targetMatches @{localNameDecision} target view
+lifecycleQuietAt localNameDecision (Unloading accumulator view outcome) target =
+  False
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
