@@ -17907,6 +17907,180 @@ alignedTraceFinalWellFormed nameEq keyEq
 ||| target alignment generated from the unchanged prefix, the diamond-owned
 ||| moved pair, and the same pointwise suffix producer that owns the replay
 ||| trace and seal. No alignment is accepted from the caller.
+data LocatedReloadingControl :
+  (key : Type) -> (value : key -> Type) ->
+  (world, error, name : Type) ->
+  (deps : List key) -> (provision : CoeffectSpec key) ->
+  (sourceRemaining : List (StepEffect key value world error deps provision)) ->
+  (rightLifecycle : Lifecycle key value world error name deps provision) -> Type where
+  MkLocatedReloadingControl :
+    (0 rightAccumulator : LocalState key value world provision ->
+      LocalState key value world provision) ->
+    (0 rightView : View name deps) ->
+    (0 rightLifecycleIsReloading : rightLifecycle =
+      Reloading sourceRemaining rightAccumulator rightView) ->
+    LocatedReloadingControl key value world error name deps provision
+      sourceRemaining rightLifecycle
+
+0 locateReloadingControl :
+  (sourceRemaining : List (StepEffect key value world error deps provision)) ->
+  (sourceAccumulator : LocalState key value world provision ->
+    LocalState key value world provision) ->
+  (sourceView : View name deps) ->
+  (leftLifecycle, rightLifecycle :
+    Lifecycle key value world error name deps provision) ->
+  leftLifecycle = Reloading sourceRemaining sourceAccumulator sourceView ->
+  LifecycleControlRelated leftLifecycle rightLifecycle ->
+  LocatedReloadingControl key value world error name deps provision
+    sourceRemaining rightLifecycle
+locateReloadingControl sourceRemaining sourceAccumulator sourceView
+  (Reloading sourceRemaining sourceAccumulator sourceView)
+  (Reloading rightRemaining rightAccumulator rightView) Refl
+  (ReloadingControls remainingSame accumulatorsRelated viewsSame) =
+    case remainingSame of
+      Refl => MkLocatedReloadingControl rightAccumulator rightView Refl
+
+data LocatedParentYieldControl :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (parent : name) ->
+  (childComponent : Component key value world error) ->
+  (source, target : SystemState name key value world error) -> Type where
+  MkLocatedParentYieldControl :
+    (0 sourceFiber : Fiber name key value world error) ->
+    (0 targetFiber : Fiber name key value world error) ->
+    (0 sourceFound : lookupFiber @{nameEq} parent (registry source) =
+      Just sourceFiber) ->
+    (0 targetFound : lookupFiber @{nameEq} parent (registry target) =
+      Just targetFiber) ->
+    (0 sourceStep : StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent sourceFiber)))
+      (componentProvisions (fiberComponent sourceFiber))) ->
+    (0 sourceContinuation : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent sourceFiber)))
+      (componentProvisions (fiberComponent sourceFiber)))) ->
+    (0 sourceAccumulator : LocalState key value world
+      (componentProvisions (fiberComponent sourceFiber)) ->
+      LocalState key value world
+        (componentProvisions (fiberComponent sourceFiber))) ->
+    (0 sourceView : View name
+      (dependencies (componentDependencies (fiberComponent sourceFiber)))) ->
+    (0 parentAtYield : fiberLifecycle sourceFiber =
+      Reloading (sourceStep :: sourceContinuation) sourceAccumulator sourceView) ->
+    (0 sourceBelongsToProgram : Elem sourceStep
+      (componentProgram (fiberComponent sourceFiber))) ->
+    (0 parentRegistrationRank : Nat) ->
+    (0 childRegistrationRank : Nat) ->
+    (0 parentRanked : registrationRank protocol (fiberComponent sourceFiber) =
+      Just parentRegistrationRank) ->
+    (0 childRanked : registrationRank protocol childComponent =
+      Just childRegistrationRank) ->
+    (0 yieldTag : Nat) ->
+    (0 stepYieldsTag : registrationYieldTag sourceStep = Just yieldTag) ->
+    (0 catalogYieldsComponent : registrationCatalog protocol yieldTag =
+      Just childComponent) ->
+    (0 controls : FiberControlRelated sourceFiber targetFiber) ->
+    LocatedParentYieldControl name key world error value protocol nameEq parent
+      childComponent source target
+
+record LocatedTransportedParentYield
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (parent : name)
+  (childComponent : Component key value world error)
+  (target : SystemState name key value world error) where
+  constructor MkLocatedTransportedParentYield
+  0 targetParentYield :
+    ParentRegistrationYield protocol nameEq parent childComponent target
+
+0 locateParentYieldControl :
+  (nameEq : DecEq name) ->
+  (parent : name) ->
+  (source, target : SystemState name key value world error) ->
+  ControlEquivalent name key world error value nameEq source target ->
+  ParentRegistrationYield protocol nameEq parent childComponent source ->
+  LocatedParentYieldControl name key world error value protocol nameEq parent
+    childComponent source target
+locateParentYieldControl nameEq parent source target equivalent
+  (MkParentRegistrationYield sourceFiber sourceFound sourceStep sourceContinuation
+    sourceAccumulator sourceView parentAtYield sourceBelongsToProgram
+    parentRegistrationRank childRegistrationRank parentRanked childRanked yieldTag
+    stepYieldsTag catalogYieldsComponent) =
+      case pointwiseControlLookupFound nameEq parent source target equivalent
+        sourceFiber sourceFound of
+          (targetFiber ** (targetFound, controls)) =>
+            MkLocatedParentYieldControl sourceFiber targetFiber sourceFound
+              targetFound sourceStep sourceContinuation sourceAccumulator sourceView
+              parentAtYield sourceBelongsToProgram parentRegistrationRank
+              childRegistrationRank parentRanked childRanked yieldTag stepYieldsTag
+              catalogYieldsComponent controls
+
+0 sealTransportedParentYield :
+  LocatedParentYieldControl name key world error value protocol nameEq parent
+    childComponent source target ->
+  LocatedTransportedParentYield name key world error value protocol nameEq parent
+    childComponent target
+sealTransportedParentYield
+  (MkLocatedParentYieldControl
+    (MkFiber component leftParent leftRetired leftTable leftLifecycle)
+    (MkFiber component rightParent rightRetired rightTable rightLifecycle)
+    sourceFound targetFound sourceStep sourceContinuation sourceAccumulator
+    sourceView parentAtYield sourceBelongsToProgram parentRegistrationRank
+    childRegistrationRank parentRanked childRanked yieldTag stepYieldsTag
+    catalogYieldsComponent
+    (FibersControlRelated leftParent rightParent leftRetired rightRetired
+      leftTable rightTable leftLifecycle rightLifecycle parentSame retiredSame
+      lifecycleRelated)) =
+        case locateReloadingControl (sourceStep :: sourceContinuation)
+          sourceAccumulator sourceView leftLifecycle rightLifecycle parentAtYield
+          lifecycleRelated of
+            MkLocatedReloadingControl rightAccumulator rightView
+              rightLifecycleIsReloading =>
+                let 0 reindexedTargetFound : Equal
+                      (lookupFiber @{nameEq} {name = name} {key = key}
+                        {value = value} {world = world} {error = error} parent
+                        (registry target))
+                      (Just (MkFiber component rightParent rightRetired rightTable
+                        (Reloading (sourceStep :: sourceContinuation)
+                          rightAccumulator rightView)))
+                    reindexedTargetFound = replace
+                      {p = \observedLifecycle => Equal
+                        (lookupFiber @{nameEq} {name = name} {key = key}
+                          {value = value} {world = world} {error = error} parent
+                          (registry target))
+                        (Just (MkFiber component rightParent rightRetired rightTable
+                          observedLifecycle))}
+                      rightLifecycleIsReloading targetFound
+                    0 targetYield : ParentRegistrationYield protocol nameEq parent
+                      childComponent target
+                    targetYield = MkParentRegistrationYield
+                      (MkFiber component rightParent rightRetired rightTable
+                        (Reloading (sourceStep :: sourceContinuation)
+                          rightAccumulator rightView))
+                      reindexedTargetFound sourceStep sourceContinuation
+                      rightAccumulator rightView Refl sourceBelongsToProgram
+                      parentRegistrationRank childRegistrationRank parentRanked
+                      childRanked yieldTag stepYieldsTag catalogYieldsComponent
+                in MkLocatedTransportedParentYield targetYield
+
+0 locateTransportedParentYield :
+  (nameEq : DecEq name) ->
+  (parent : name) ->
+  (source, target : SystemState name key value world error) ->
+  ControlEquivalent name key world error value nameEq source target ->
+  ParentRegistrationYield protocol nameEq parent childComponent source ->
+  LocatedTransportedParentYield name key world error value protocol nameEq parent
+    childComponent target
+locateTransportedParentYield nameEq parent source target equivalent sourceYield =
+  sealTransportedParentYield
+    (locateParentYieldControl nameEq parent source target equivalent sourceYield)
+
+0 transportedParentYield :
+  LocatedTransportedParentYield name key world error value protocol nameEq parent
+    childComponent target ->
+  ParentRegistrationYield protocol nameEq parent childComponent target
+transportedParentYield located = targetParentYield located
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
