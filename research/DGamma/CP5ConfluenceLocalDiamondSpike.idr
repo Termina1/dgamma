@@ -18808,6 +18808,57 @@ movedRightParentYield protocol localNameDecision localKeyDecision left right
           localKeyDecision parent left (MoreTransitions right NoTransitions)
           sourcePairAligned leftOrchestration sourceYield
 
+||| Transport the source-left insertion's parent yield through the checked
+||| moved-right step to the exact swapped middle state.
+0 movedLeftParentYield :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  {pairFirst, pairMiddle, pairFinal : SystemState name key value world error} ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value
+    localNameDecision localKeyDecision left right) ->
+  (parent, child : name) ->
+  (insertedComponent : Component key value world error) ->
+  transitionAction left =
+    OInsert child (ChildOf parent) insertedComponent ->
+  ParentRegistrationYield protocol localNameDecision parent insertedComponent
+    pairFirst ->
+  ParentRegistrationYield protocol localNameDecision parent insertedComponent
+    (swappedMiddle diamond)
+movedLeftParentYield protocol localNameDecision localKeyDecision left right
+  diamond parent child insertedComponent leftInsert sourceYield =
+    case registrationSwapSafety diamond of
+      CandidateActivationActivation leftActivation rightActivation =>
+        void (paperActivationCannotInsert left leftActivation child
+          (ChildOf parent) insertedComponent leftInsert)
+      CandidateActivationOrchestration leftActivation rightOrchestration
+        parentSafe =>
+          void (paperActivationCannotInsert left leftActivation child
+            (ChildOf parent) insertedComponent leftInsert)
+      CandidateOrchestrationActivation leftOrchestration rightActivation
+        childSafe parentSafe =>
+          let 0 rightNotParent = parentSafe child parent insertedComponent
+                leftInsert
+              0 parentNotMovedRight :
+                Not (parent = transitionActor (movedRight diamond))
+              parentNotMovedRight = originalActorNotParentToMovedActor right
+                (movedRight diamond) parent (movedRightAction diamond)
+                rightNotParent
+          in alignedForeignParentYieldForward protocol localNameDecision
+            localKeyDecision parent (movedRight diamond)
+            (MoreTransitions (movedLeft diamond) NoTransitions)
+            (movedPairAligned diamond) parentNotMovedRight sourceYield
+      CandidateOrchestrationOrchestration leftOrchestration rightOrchestration
+        childrenDistinct licensesDoNotCross =>
+          alignedOrchestrationParentYieldForward protocol localNameDecision
+            localKeyDecision parent (movedRight diamond)
+            (MoreTransitions (movedLeft diamond) NoTransitions)
+            (movedPairAligned diamond)
+            (movedRightOrchestrationBranch diamond rightOrchestration)
+            sourceYield
+
 ||| Preserve no-recovery evidence across the unchanged prefix, moved pair, and
 ||| the producer-sealed suffix. Prefix recursion eliminates its proof once and
 ||| never names a dependent tail endpoint twice.
