@@ -18859,6 +18859,67 @@ movedLeftParentYield protocol localNameDecision localKeyDecision left right
             (movedRightOrchestrationBranch diamond rightOrchestration)
             sourceYield
 
+||| Transport one exact registration-step obligation across pointwise controls
+||| and a producer-sealed tail. The dependent insertion component is bound by
+||| the action pattern itself; all proof locals are erased explicitly.
+0 sameActionRegistrationStepDiscipline :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  (action : Action name key value world error) ->
+  (sourceBefore, replayedBefore : SystemState name key value world error) ->
+  {sourceAfter, sourceFinal, replayedAfter, replayedFinal :
+    SystemState name key value world error} ->
+  (sourceTail : Transitions sourceAfter sourceFinal) ->
+  (replayedTail : Transitions replayedAfter replayedFinal) ->
+  ControlEquivalent name key world error value localNameDecision sourceBefore
+    replayedBefore ->
+  SealedSuffixReplaySpine name key world error value localNameDecision
+    localKeyDecision sourceTail replayedTail ->
+  RegistrationStepDiscipline protocol localNameDecision action sourceBefore
+    sourceTail ->
+  RegistrationStepDiscipline protocol localNameDecision action replayedBefore
+    replayedTail
+sameActionRegistrationStepDiscipline protocol localNameDecision localKeyDecision
+  (OInsert child Root insertedComponent) sourceBefore replayedBefore sourceTail
+  replayedTail controls seal ranked = ranked
+sameActionRegistrationStepDiscipline protocol localNameDecision localKeyDecision
+  (OInsert child (ChildOf parent) insertedComponent) sourceBefore replayedBefore
+  sourceTail replayedTail controls seal (sourceYield, sourceRetirement) =
+    let 0 locatedYield : LocatedTransportedParentYield name key world error value
+          protocol localNameDecision parent insertedComponent replayedBefore
+        locatedYield = locateTransportedParentYield localNameDecision parent
+          sourceBefore replayedBefore controls sourceYield
+        0 replayedYield : ParentRegistrationYield protocol localNameDecision
+          parent insertedComponent replayedBefore
+        replayedYield = transportedParentYield locatedYield
+        0 replayedRetirement :
+          ChildRetirementProvenance parent child replayedTail
+        replayedRetirement = sealedSuffixChildRetirementProvenance
+          localNameDecision localKeyDecision parent child seal sourceRetirement
+    in (replayedYield, replayedRetirement)
+sameActionRegistrationStepDiscipline protocol localNameDecision localKeyDecision
+  (ORetire child) sourceBefore replayedBefore sourceTail replayedTail controls
+  seal discipline = ()
+sameActionRegistrationStepDiscipline protocol localNameDecision localKeyDecision
+  (ORemove child) sourceBefore replayedBefore sourceTail replayedTail controls
+  seal discipline = ()
+sameActionRegistrationStepDiscipline protocol localNameDecision localKeyDecision
+  (LBegin actor) sourceBefore replayedBefore sourceTail replayedTail controls seal
+  discipline = ()
+sameActionRegistrationStepDiscipline protocol localNameDecision localKeyDecision
+  (LAdvance actor) sourceBefore replayedBefore sourceTail replayedTail controls seal
+  discipline = ()
+sameActionRegistrationStepDiscipline protocol localNameDecision localKeyDecision
+  (LDivert actor) sourceBefore replayedBefore sourceTail replayedTail controls seal
+  discipline = ()
+sameActionRegistrationStepDiscipline protocol localNameDecision localKeyDecision
+  (LLeave actor) sourceBefore replayedBefore sourceTail replayedTail controls seal
+  discipline = ()
+sameActionRegistrationStepDiscipline protocol localNameDecision localKeyDecision
+  (LUnload actor) sourceBefore replayedBefore sourceTail replayedTail controls seal
+  discipline = ()
+
 ||| Preserve no-recovery evidence across the unchanged prefix, moved pair, and
 ||| the producer-sealed suffix. Prefix recursion eliminates its proof once and
 ||| never names a dependent tail endpoint twice.
