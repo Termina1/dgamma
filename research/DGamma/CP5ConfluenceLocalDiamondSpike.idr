@@ -18037,6 +18037,33 @@ replayedParentRecoveryToSource sameAction sameTag
   (ParentRaises action tag) =
     ParentRaises (trans (sym sameAction) action) (trans (sym sameTag) tag)
 
+||| Pointwise suffix replay preserves absence of a parent recovery. Dictionary
+||| arguments are explicit locals so no global record projection is captured.
+0 sealedSuffixNoParentRecovery :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
+    SystemState name key value world error} ->
+  {source : Transitions sourceFirst sourceFinal} ->
+  {replayed : Transitions replayedFirst replayedFinal} ->
+  (parent : name) ->
+  SealedSuffixReplaySpine name key world error value localNameDecision
+    localKeyDecision source replayed ->
+  NoParentRecovery parent source ->
+  NoParentRecovery parent replayed
+sealedSuffixNoParentRecovery localNameDecision localKeyDecision parent
+  SealedSuffixReplayEnd NoParentRecoveryEnd = NoParentRecoveryEnd
+sealedSuffixNoParentRecovery localNameDecision localKeyDecision parent
+  (SealedSuffixReplayStep sourceStep replayedStep sourceTail replayedTail
+    sameAction sameTag headRAR headMapsRelated headEndpoint headOccurrences
+    headRelativeOrdinal tailSeal)
+  (NoParentRecoveryStep _ _ sourceNoRecovery tailNoRecovery) =
+    NoParentRecoveryStep replayedStep replayedTail
+      (\replayedRecovery => sourceNoRecovery
+        (replayedParentRecoveryToSource sameAction sameTag replayedRecovery))
+      (sealedSuffixNoParentRecovery localNameDecision localKeyDecision parent
+        tailSeal tailNoRecovery)
+
 data LocatedReloadingControl :
   (key : Type) -> (value : key -> Type) ->
   (world, error, name : Type) ->
