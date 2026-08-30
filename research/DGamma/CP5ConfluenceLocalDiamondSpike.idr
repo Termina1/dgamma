@@ -19311,6 +19311,11 @@ record AdjacentAlignedPointwiseReplay
     keyEq alignedReplayTrace
   0 alignedReplayDiscipline : RegistrationDiscipline protocol nameEq
     alignedReplayTrace
+  0 alignedReplayInitialWellFormed :
+    registryWellFormed @{nameEq} @{keyEq} initial = True
+  0 alignedReplayInitialEmpty : bindings (registry initial) = []
+  0 alignedReplayFinalWellFormed :
+    registryWellFormed @{nameEq} @{keyEq} alignedReplayFinal = True
   0 alignedReplayEndpoint : RelationalReplayEndpoint name key world error value
     nameEq keyEq originalFinal alignedReplayFinal
   0 alignedReplaySeal : SealedSuffixReplaySpine name key world error value nameEq
@@ -19400,6 +19405,8 @@ produceAdjacentAlignedPointwiseReplay nameEq keyEq protocol original tracePrefix
           (spineReplaySeal suffixReplay) sourcePairAligned decomposedDiscipline
     in MkAdjacentAlignedPointwiseReplay (spineReplayedFinal suffixReplay)
       replayedSuffix targetTrace Refl targetAligned targetDiscipline
+      (replayInitialWellFormed premises) (replayInitialEmpty premises)
+      (replayedWellFormed (spineReplayEndpoint suffixReplay))
       (spineReplayEndpoint suffixReplay) (spineReplaySeal suffixReplay)
 
 ||| Checked suffix-splice interface consumed by sorting.  It is generic over the
