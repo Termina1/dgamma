@@ -1454,6 +1454,28 @@ entire unit was reverted and bundle field 2 was not opened. One shift of the
 accepted **3–17** band is consumed; **2–16** remain. Holes remain **20**, split
 **6/4/8/1/1**.
 
+### Revision 72: parent-yield transport closes; retirement ordering wall
+
+`research-tests/O6-R72-PARENT-YIELD-TRANSPORT-CLOSED-RETIREMENT-RECOVERY-ORDER-SEMANTIC-STOP-AUDIT.md`
+records shift #80. The private `LocatedReloadingControl` view closes on attempt
+3 with an explicit target lifecycle equality. The direct correlated
+source/target `MkFiber` package then rewrites `targetFound`, seals an exact target
+`ParentRegistrationYield`, and exposes it only through a quantity-0 projection.
+The whole module and R16 check; no public surface changes.
+
+Strict bundle field 2 analysis then exposes a second, independent semantic
+boundary. `ChildRetirementProvenance` is temporal: an earlier child must retire
+before its parent's first recovery. The landed safety permits the O/A shape
+`ORetire child ; LLeave parent`, because its O/A child/parent exclusions are
+conditional on left being an OInsert. Swapping produces
+`LLeave parent ; ORetire child`, for which neither provenance constructor can
+hold. `TraceIndependent` does not express this order. No field-2 implementation
+unit was opened after this new wall. A design campaign must determine whether
+existing selection capital excludes the shape or whether producer-owned
+retirement/recovery crossing safety must be retained. One shift of the accepted
+**2–16** band is consumed; **1–15** remain pending that ruling. Holes remain
+**20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1765,7 +1787,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; field 1 and revision-21 safety are closed. Field 2's private package now reaches only an explicit target-lifecycle equality needed to reindex `targetFound`; no new semantic wall is open.** | **XL, 2–16 implementation shifts remain after revision 71.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; field 1, revision-21 safety, and exact pointwise parent-yield transport are closed. Field 2 is stopped at the newly exposed retirement-before-parent-recovery ordering boundary across the moved pair.** | **XL, 1–15 shifts remain pending revision-22 design ruling.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1947,4 +1969,9 @@ Revision 71's private whole-package producer elaborates through target-fiber
 localization; its consumer closes the old source projection wall and reaches
 only the explicit equality between the original target lifecycle and the
 `Reloading` lifecycle exposed by `ReloadingControls`. Its three attempts were
-reverted. Bundle field 2, later fields, and final assembly remain unopened.
+reverted. Revision 72 returns that equality through a private lifecycle view,
+reindexes the exact target lookup, and closes the target
+`ParentRegistrationYield` package. Field 2 then stops at a new semantic class:
+the landed swap safety does not prevent `ORetire child` from moving after
+`LLeave parent`, invalidating an earlier insertion's
+`ChildRetirementProvenance`. Later fields and final assembly remain unopened.
