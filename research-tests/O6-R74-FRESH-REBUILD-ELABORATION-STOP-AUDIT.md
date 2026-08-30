@@ -87,6 +87,15 @@ The accepted **3–15** implementation band is not reduced: this shift retained
 only the already-designed classifier lemma and exposed build-harness debt. The
 remaining estimate stays **3–15 shifts**.
 
+## Permanent validation protocol
+
+R16 is now assembly evidence only. After every touched CP5 helper and before
+its commit, remove that module's TTC/TTM and run a direct source check which
+must visibly rebuild `DGamma.CP5ConfluenceLocalDiamondSpike`. A no-output/no-op
+check is not evidence. `test-r12-harness.sh` now contains a seeded stale-TTC
+regression and emits `R12_STALE_CP5_TTC_REUSE_REJECTED=passed` only when the
+fresh runner removes the cached interface before the spike boundary.
+
 ## Frozen-capital audit
 
 The retained tree preserves:

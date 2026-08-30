@@ -1514,6 +1514,9 @@ false field-closure audit were removed. The retained tree is the accepted R73
 boundary plus only the fresh-checked classifier lemma. Field 2 remains stopped
 at structural provenance implementation, not at a new semantic premise gap.
 The band remains **3–15 shifts**. Holes remain **20**, split **6/4/8/1/1**.
+Permanently, R16 is assembly evidence only: every touched CP5 helper must first
+pass a direct source check after its TTC/TTM is cleared, and the rebuild must be
+visible. `test-r12-harness.sh` pins stale-TTC cleanup as a regression.
 
 ## Executive estimate
 

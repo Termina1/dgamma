@@ -43,6 +43,56 @@ if grep -Fq 'SPIKE CP5ConfluenceDeletionChainSpike' "$TMP/error-zero.log"; then
 fi
 echo 'R12_ERROR_ZERO_FALSE_PASS_REJECTED=passed'
 
+# Regression for revision 74's stale-TTC failure mode. R16 assembly checks are
+# additional evidence only: every touched CP5 helper must first be checked by a
+# direct fresh source build that demonstrably rebuilds its module. A no-op check
+# which silently selects an existing TTC through IDRIS2_PATH is not evidence.
+# The fresh runner must delete the seeded spike TTC before invoking Idris.
+mkdir -p "$TMP/stale-ttc/research-tests"
+cp research-tests/run-r11-suite.sh "$TMP/stale-ttc/research-tests/"
+cat >"$TMP/stale-ttc/fake-idris2" <<'FAKE'
+#!/usr/bin/env bash
+set -e
+if [ "${1:-}" = "--build" ]; then
+  mkdir -p build/ttc/fake/DGamma
+  printf 'stale' > build/ttc/fake/DGamma/CP5ConfluenceLocalDiamondSpike.ttc
+  exit 0
+fi
+if printf '%s\n' "$*" | grep -Fq 'CP5ConfluenceLocalDiamondSpike.idr'; then
+  if [ -e build/ttc/fake/DGamma/CP5ConfluenceLocalDiamondSpike.ttc ]; then
+    echo 'Error: stale CP5 TTC survived --fresh cleanup'
+    exit 0
+  fi
+  printf 'observed' > fresh-cp5-rebuild-observed
+  echo 'Error: intentional stop after observing fresh CP5 rebuild boundary'
+  exit 0
+fi
+exit 0
+FAKE
+chmod +x "$TMP/stale-ttc/fake-idris2"
+set +e
+(
+  cd "$TMP/stale-ttc"
+  IDRIS2="$TMP/stale-ttc/fake-idris2" \
+    research-tests/run-r11-suite.sh --fresh
+) >"$TMP/stale-ttc.log" 2>&1
+status=$?
+set -e
+if [ "$status" -eq 0 ]; then
+  cat "$TMP/stale-ttc.log" >&2
+  echo 'Runner falsely accepted the intentional fresh-boundary stop' >&2
+  exit 1
+fi
+test -f "$TMP/stale-ttc/fresh-cp5-rebuild-observed"
+if grep -Fq 'stale CP5 TTC survived' "$TMP/stale-ttc.log"; then
+  cat "$TMP/stale-ttc.log" >&2
+  echo 'Runner allowed stale CP5 TTC reuse at a fresh source boundary' >&2
+  exit 1
+fi
+grep -Fq 'intentional stop after observing fresh CP5 rebuild boundary' \
+  "$TMP/stale-ttc.log"
+echo 'R12_STALE_CP5_TTC_REUSE_REJECTED=passed'
+
 # Reproduce the old auditor's set-laundering bug in a temporary tracked tree.
 # The repaired list audit must reject the duplicate before broad validation.
 mkdir -p "$TMP/duplicate"
