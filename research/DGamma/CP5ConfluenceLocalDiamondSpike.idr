@@ -18296,6 +18296,49 @@ locateTransportedParentYield nameEq parent source target equivalent sourceYield 
   ParentRegistrationYield protocol nameEq parent childComponent target
 transportedParentYield located = targetParentYield located
 
+||| Preserve no-recovery evidence across the unchanged prefix, moved pair, and
+||| the producer-sealed suffix. Prefix recursion eliminates its proof once and
+||| never names a dependent tail endpoint twice.
+0 adjacentNoParentRecovery :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal, replayedFinal :
+    SystemState name key value world error} ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value
+    localNameDecision localKeyDecision left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  SealedSuffixReplaySpine name key world error value localNameDecision
+    localKeyDecision suffix replayedSuffix ->
+  (parent : name) ->
+  NoParentRecovery parent (appendTransitions prefixTrace
+    (MoreTransitions left (MoreTransitions right suffix))) ->
+  NoParentRecovery parent (appendTransitions prefixTrace
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) replayedSuffix)))
+adjacentNoParentRecovery localNameDecision localKeyDecision NoTransitions
+  left right suffix diamond replayedSuffix seal parent
+  (NoParentRecoveryStep _ _ noLeft
+    (NoParentRecoveryStep _ _ noRight noSuffix)) =
+      NoParentRecoveryStep (movedRight diamond)
+        (MoreTransitions (movedLeft diamond) replayedSuffix)
+        (\recovery => noRight (replayedParentRecoveryToSource
+          (movedRightAction diamond) (movedRightTag diamond) recovery))
+        (NoParentRecoveryStep (movedLeft diamond) replayedSuffix
+          (\recovery => noLeft (replayedParentRecoveryToSource
+            (movedLeftAction diamond) (movedLeftTag diamond) recovery))
+          (sealedSuffixNoParentRecovery localNameDecision localKeyDecision
+            parent seal noSuffix))
+adjacentNoParentRecovery localNameDecision localKeyDecision
+  (MoreTransitions prefixStep prefixTail) left right suffix diamond replayedSuffix
+  seal parent (NoParentRecoveryStep _ _ noPrefix noRest) =
+    NoParentRecoveryStep prefixStep _ noPrefix
+      (adjacentNoParentRecovery localNameDecision localKeyDecision prefixTail left
+        right suffix diamond replayedSuffix seal parent noRest)
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
