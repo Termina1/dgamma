@@ -19208,6 +19208,53 @@ movedRightTailRetirementProvenance localNameDecision localKeyDecision left right
       (sealedSuffixChildRetirementProvenance localNameDecision localKeyDecision
         parent child seal sourceProvenance)
 
+0 movedLeftTailRetirementProvenance :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  {pairFirst, pairMiddle, pairFinal, originalFinal, replayedFinal :
+    SystemState name key value world error} ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value
+    localNameDecision localKeyDecision left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  SealedSuffixReplaySpine name key world error value localNameDecision
+    localKeyDecision suffix replayedSuffix ->
+  AlignedTransitions name key world error value localNameDecision
+    localKeyDecision
+    (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  (parent, child : name) ->
+  (insertedComponent : Component key value world error) ->
+  transitionAction left =
+    OInsert child (ChildOf parent) insertedComponent ->
+  ChildRetirementProvenance parent child
+    (MoreTransitions right suffix) ->
+  ChildRetirementProvenance parent child replayedSuffix
+movedLeftTailRetirementProvenance localNameDecision localKeyDecision left right
+  suffix diamond replayedSuffix seal sourcePairAligned parent child
+  insertedComponent leftInsert
+  (ParentDoesNotRecover
+    (NoParentRecoveryStep _ _ noRight noSuffix)) =
+      ParentDoesNotRecover
+        (sealedSuffixNoParentRecovery localNameDecision localKeyDecision parent
+          seal noSuffix)
+movedLeftTailRetirementProvenance localNameDecision localKeyDecision left right
+  suffix diamond replayedSuffix seal sourcePairAligned parent child
+  insertedComponent leftInsert
+  (ChildRetiredBeforeParent (ChildRetiresNow _ _ rightRetires)) =
+    void (movedRetireBeforeInsertedChildImpossible localNameDecision
+      localKeyDecision left right diamond sourcePairAligned child
+      (ChildOf parent) insertedComponent leftInsert rightRetires)
+movedLeftTailRetirementProvenance localNameDecision localKeyDecision left right
+  suffix diamond replayedSuffix seal sourcePairAligned parent child
+  insertedComponent leftInsert
+  (ChildRetiredBeforeParent
+    (ChildRetiresLater _ _ noRight later)) =
+      ChildRetiredBeforeParent
+        (sealedSuffixChildRetiresBeforeRecovery localNameDecision
+          localKeyDecision parent child seal later)
+
 ||| Transport one exact registration-step obligation across pointwise controls
 ||| and a producer-sealed tail. The dependent insertion component is bound by
 ||| the action pattern itself; all proof locals are erased explicitly.
