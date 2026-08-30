@@ -18369,6 +18369,57 @@ foreignCheckedParentYieldBackward protocol localNameDecision localKeyDecision
         sourceBelongsToProgram parentRegistrationRank childRegistrationRank
         parentRanked childRanked yieldTag stepYieldsTag catalogYieldsComponent
 
+||| Producer-owned correlated retirement package: expose the yielded source
+||| fiber under one constructor elimination before rebuilding it with the
+||| retirement bit set. All dependent component/lifecycle indices stay tied to
+||| the same `MkFiber` spine.
+0 retireCheckedParentYieldForward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {childComponent : Component key value world error} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  (parent : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  checkedApplyAction @{localNameDecision} @{localKeyDecision} (ORetire parent)
+    before = Just (tag, afterState) ->
+  ParentRegistrationYield protocol localNameDecision parent childComponent
+    before ->
+  ParentRegistrationYield protocol localNameDecision parent childComponent
+    afterState
+retireCheckedParentYieldForward protocol localNameDecision localKeyDecision parent
+  (MkSystemState ambient source) afterState tag checked sourceYield =
+    let 0 raw = checkedActionProjects localNameDecision localKeyDecision
+          (ORetire parent) (MkSystemState ambient source) afterState tag checked
+    in case retireSuccessView localNameDecision localKeyDecision parent ambient
+      source tag afterState raw of
+      MkRetireSuccessView oldFiber oldFound => case sourceYield of
+        MkParentRegistrationYield
+          (MkFiber parentComponent parentRole parentRetired parentTable
+            parentLifecycle)
+          sourceFound yieldedStep yieldedContinuation yieldedAccumulator
+          yieldedView parentAtYield sourceBelongsToProgram
+          parentRegistrationRank childRegistrationRank parentRanked childRanked
+          yieldTag stepYieldsTag catalogYieldsComponent =>
+            let 0 oldSame : (oldFiber =
+                  MkFiber parentComponent parentRole parentRetired parentTable
+                    parentLifecycle)
+                oldSame = justInjective (trans (sym oldFound) sourceFound)
+            in case oldSame of
+              Refl => MkParentRegistrationYield
+                (MkFiber parentComponent parentRole True parentTable
+                  parentLifecycle)
+                (lookupReplacedFiber parent
+                  (MkFiber parentComponent parentRole parentRetired parentTable
+                    parentLifecycle)
+                  (MkFiber parentComponent parentRole True parentTable
+                    parentLifecycle)
+                  source sourceFound)
+                yieldedStep yieldedContinuation yieldedAccumulator yieldedView
+                parentAtYield sourceBelongsToProgram parentRegistrationRank
+                childRegistrationRank parentRanked childRanked yieldTag
+                stepYieldsTag catalogYieldsComponent
+
 ||| Preserve no-recovery evidence across the unchanged prefix, moved pair, and
 ||| the producer-sealed suffix. Prefix recursion eliminates its proof once and
 ||| never names a dependent tail endpoint twice.
