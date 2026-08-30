@@ -19787,6 +19787,29 @@ lifecycleControlQuietRelated localNameDecision leftTarget rightTarget
 lifecycleControlQuietRelated localNameDecision leftTarget rightTarget
   (UnloadingControls accumulatorsSame viewsSame outcomesSame) targetsSame = Refl
 
+0 quietFiberAsLifecycleQuietAt :
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  (fiber : Fiber name key value world error) ->
+  (localRegistry : Registry name key value world error) ->
+  quietFiber @{localNameDecision} @{localKeyDecision} fiber localRegistry =
+    lifecycleQuietAt localNameDecision (fiberLifecycle fiber)
+      (targetFiber @{localNameDecision} @{localKeyDecision} fiber localRegistry)
+quietFiberAsLifecycleQuietAt localNameDecision localKeyDecision
+  (MkFiber component parent retiredFlag table (Inactive Nothing)) localRegistry =
+    Refl
+quietFiberAsLifecycleQuietAt localNameDecision localKeyDecision
+  (MkFiber component parent retiredFlag table (Inactive (Just failure)))
+  localRegistry = Refl
+quietFiberAsLifecycleQuietAt localNameDecision localKeyDecision
+  (MkFiber component parent retiredFlag table
+    (Reloading remaining accumulator view)) localRegistry = Refl
+quietFiberAsLifecycleQuietAt localNameDecision localKeyDecision
+  (MkFiber component parent retiredFlag table (Active accumulator view))
+  localRegistry = Refl
+quietFiberAsLifecycleQuietAt localNameDecision localKeyDecision
+  (MkFiber component parent retiredFlag table
+    (Unloading accumulator view outcome)) localRegistry = Refl
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
