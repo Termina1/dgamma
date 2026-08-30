@@ -18099,6 +18099,29 @@ sealedSuffixChildRetiresBeforeRecovery localNameDecision localKeyDecision
       (sealedSuffixChildRetiresBeforeRecovery localNameDecision localKeyDecision
         parent child tailSeal later)
 
+0 sealedSuffixChildRetirementProvenance :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
+    SystemState name key value world error} ->
+  {source : Transitions sourceFirst sourceFinal} ->
+  {replayed : Transitions replayedFirst replayedFinal} ->
+  (parent, child : name) ->
+  SealedSuffixReplaySpine name key world error value localNameDecision
+    localKeyDecision source replayed ->
+  ChildRetirementProvenance parent child source ->
+  ChildRetirementProvenance parent child replayed
+sealedSuffixChildRetirementProvenance localNameDecision localKeyDecision
+  parent child seal (ParentDoesNotRecover noRecovery) =
+    ParentDoesNotRecover
+      (sealedSuffixNoParentRecovery localNameDecision localKeyDecision parent seal
+        noRecovery)
+sealedSuffixChildRetirementProvenance localNameDecision localKeyDecision
+  parent child seal (ChildRetiredBeforeParent retires) =
+    ChildRetiredBeforeParent
+      (sealedSuffixChildRetiresBeforeRecovery localNameDecision localKeyDecision
+        parent child seal retires)
+
 data LocatedReloadingControl :
   (key : Type) -> (value : key -> Type) ->
   (world, error, name : Type) ->
