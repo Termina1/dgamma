@@ -224,6 +224,14 @@
       "field": "headReplayMapsRelated",
       "visibility": "private",
       "signature": "  0 headReplayMapsRelated : PartialMapsRelated\n    (EffectStateEquivalence keyEq)\n    (partialEffectMap sourceStep) (partialEffectMap headReplayedStep)"
+    },
+    {
+      "revision": 21,
+      "audit": "research-tests/O6-R69-REGISTRATION-SAFETY-RETENTION-DESIGN-AUDIT.md",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "record": "LocalRelationalDiamond",
+      "field": "registrationSwapSafety",
+      "signature": "  0 registrationSwapSafety : CandidateRegistrationSwapSafety left right"
     }
   ],
   "approvedTypeAdditions": [
@@ -234,6 +242,14 @@
       "type": "SealedSuffixReplaySpine",
       "visibility": "export",
       "signature": "data SealedSuffixReplaySpine :\n  (name, key, world, error : Type) -> (value : key -> Type) ->\n  (nameEq : DecEq name) -> (keyEq : DecEq key) ->"
+    },
+    {
+      "revision": 21,
+      "audit": "research-tests/O6-R69-REGISTRATION-SAFETY-RETENTION-DESIGN-AUDIT.md",
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "type": "CandidateRegistrationSwapSafety",
+      "visibility": "public export",
+      "signature": "data CandidateRegistrationSwapSafety :\n  {name, key, world, error : Type} -> {value : key -> Type} ->\n  {first, middle, originalFinal : SystemState name key value world error} ->\n  (left : Transition first middle) ->\n  (right : Transition middle originalFinal) -> Type"
     }
   ],
   "approvedConstructorRevisions": [

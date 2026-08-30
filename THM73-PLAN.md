@@ -1414,6 +1414,27 @@ preferred cure passed both directions. No implementation occurred. The honest
 post-design O6 remainder widens to **4–18 implementation shifts**. Holes remain
 **20**, split **6/4/8/1/1**.
 
+### Revision 70: safety field lands; parent-yield eliminator gate
+
+`research-tests/O6-R70-REGISTRATION-SAFETY-LANDED-PARENT-YIELD-ELIMINATION-STOP-AUDIT.md`
+records shift #78. The protocol-independent safety family and single erased
+`registrationSwapSafety` field are live. All four centralized producers supply
+branch evidence they already owned. R19 remains live through its two
+`PaperIterStep` witnesses. The total counterexample preserves the old unsafe
+shape only under a retired test-local record, while the live safety attempt is a
+permanent exact negative.
+
+Bundle field 2 then reached its first private shared primitive: transporting
+`ParentRegistrationYield` through `ControlEquivalent`. The semantics are
+present in `FiberControlRelated`, but three bounded dependent eliminators could
+not correlate the projection-indexed source parent fiber with the target fiber
+while opening `FibersControlRelated`. The uncommitted helper unit was reverted.
+This is a private dependent-elimination/quantity stop, not a new semantic wall
+or public-interface demand. The next unit is one producer-owned
+`LocatedTransportedParentYield` package with a projection-only consumer. One
+shift of the accepted **4–18** band is consumed; **3–17** remain. Holes remain
+**20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1725,7 +1746,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; field 1 is closed. Revision 69 constructively pins the field-2 counterexample and verifies that all four R16-chain producers already own the preferred indexed registration-swap safety package. Implementation awaits a separate revision-21 frozen-surface gate.** | **XL, 4–18 implementation shifts after the design gate.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; field 1 and the revision-21 safety boundary are closed. All four producers and R19 are updated. Field 2 is gated only at a private projection-indexed parent-yield eliminator; no new semantic wall is open.** | **XL, 3–17 implementation shifts remain after revision 70.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1900,6 +1921,9 @@ pins the bare-diamond discipline counterexample and passes both directions for a
 protocol-independent indexed registration-swap safety field: all four R16-chain
 constructor sites already own its branch evidence, while the candidate rejects
 the counterexample. The opaque-input fallback fails against the byte-frozen
-adjacent declaration, and protocol-quantified transport remains unopened. No
-implementation is authorized yet. Bundle field 2, later bundle fields, and final
-adjacent-result assembly remain after the revision-21 frozen-surface gate.
+adjacent declaration, and protocol-quantified transport remains unopened.
+Revision 70 lands the accepted safety family/field, updates all four producers
+and R19, and makes the live counterexample safety attempt permanently negative.
+Bundle field 2 is now stopped only at a private projection-indexed parent-yield
+eliminator; its uncommitted attempts were reverted. Later bundle fields and
+final adjacent-result assembly remain unopened.

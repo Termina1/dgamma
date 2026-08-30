@@ -1,5 +1,5 @@
 {
-  "status": "PROPOSED_DESIGN_ONLY",
+  "status": "PARTIALLY_LANDED",
   "baseHead": "e94d63e1ee65bd67a15f500df1fa4545341f8f21",
   "designAudit": "research-tests/O6-R69-REGISTRATION-SAFETY-RETENTION-DESIGN-AUDIT.md",
   "selectedCandidate": "cure-a-registration-swap-safety-field",
@@ -114,6 +114,13 @@
     "R45BareDiamondSafetyProjectionNegative",
     "R45OpaqueGenuineAdjacentInputNegative"
   ],
-  "implementationAuthorized": false,
-  "designGate": "PENDING_SUPERVISOR_REVIEW"
+  "implementationAuthorized": true,
+  "designGate": "ACCEPTED at 24e3fea31645c7cfc9bc45bb4a9456278689fd8e",
+  "fieldAndProducerLandingCommit": "e306708f9b98135aaceb089e60f2164668e5f26f",
+  "consumerAndPermanentNegativeCommit": "739922cf33219520fb78823a8b3016b2ca548089",
+  "remainingImplementation": [
+    "bundle field 2 registration-discipline transport",
+    "bundle fields 3-15",
+    "opaque AdjacentSwapResult assembly and adjacentSwapSuffixSpike_rhs"
+  ]
 }
