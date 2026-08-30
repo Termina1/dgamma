@@ -18914,6 +18914,7 @@ movedLeftTailRetirementProvenance nameEq keyEq left right suffix diamond
   (movedRest : Transitions movedAfter movedFinal) ->
   ((parent, child : name) ->
     (component : Component key value world error) ->
+    action = OInsert child (ChildOf parent) component ->
     ParentRegistrationYield protocol nameEq parent component sourceBefore ->
     ParentRegistrationYield protocol nameEq parent component movedBefore) ->
   ((parent, child : name) ->
@@ -18927,7 +18928,7 @@ sameActionMovedRegistrationStepDiscipline protocol nameEq
 sameActionMovedRegistrationStepDiscipline protocol nameEq
   (OInsert child (ChildOf parent) component) sourceBefore movedBefore sourceRest
   movedRest moveYield moveRetirement (sourceYield, sourceRetirement) =
-    (moveYield parent child component sourceYield,
+    (moveYield parent child component Refl sourceYield,
      moveRetirement parent child sourceRetirement)
 sameActionMovedRegistrationStepDiscipline protocol nameEq (ORetire child)
   sourceBefore movedBefore sourceRest movedRest moveYield moveRetirement evidence = ()
@@ -18957,6 +18958,7 @@ sameActionMovedRegistrationStepDiscipline protocol nameEq (LUnload actor)
   transitionAction movedStep = transitionAction sourceStep ->
   ((parent, child : name) ->
     (component : Component key value world error) ->
+    transitionAction sourceStep = OInsert child (ChildOf parent) component ->
     ParentRegistrationYield protocol nameEq parent component sourceBefore ->
     ParentRegistrationYield protocol nameEq parent component movedBefore) ->
   ((parent, child : name) ->
