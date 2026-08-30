@@ -18920,6 +18920,34 @@ sameActionRegistrationStepDiscipline protocol localNameDecision localKeyDecision
   (LUnload actor) sourceBefore replayedBefore sourceTail replayedTail controls seal
   discipline = ()
 
+0 pointwiseRegistrationStepDiscipline :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  {sourceBefore, sourceAfter, sourceFinal, replayedBefore, replayedAfter,
+    replayedFinal : SystemState name key value world error} ->
+  (sourceStep : Transition sourceBefore sourceAfter) ->
+  (replayedStep : Transition replayedBefore replayedAfter) ->
+  (sourceTail : Transitions sourceAfter sourceFinal) ->
+  (replayedTail : Transitions replayedAfter replayedFinal) ->
+  transitionAction replayedStep = transitionAction sourceStep ->
+  ControlEquivalent name key world error value localNameDecision sourceBefore
+    replayedBefore ->
+  SealedSuffixReplaySpine name key world error value localNameDecision
+    localKeyDecision sourceTail replayedTail ->
+  RegistrationStepDiscipline protocol localNameDecision
+    (transitionAction sourceStep) sourceBefore sourceTail ->
+  RegistrationStepDiscipline protocol localNameDecision
+    (transitionAction replayedStep) replayedBefore replayedTail
+pointwiseRegistrationStepDiscipline protocol localNameDecision localKeyDecision
+  sourceStep replayedStep sourceTail replayedTail sameAction controls seal
+  sourceDiscipline =
+    replace {p = \action => RegistrationStepDiscipline protocol
+      localNameDecision action replayedBefore replayedTail} (sym sameAction)
+      (sameActionRegistrationStepDiscipline protocol localNameDecision
+        localKeyDecision (transitionAction sourceStep) sourceBefore
+        replayedBefore sourceTail replayedTail controls seal sourceDiscipline)
+
 ||| Preserve no-recovery evidence across the unchanged prefix, moved pair, and
 ||| the producer-sealed suffix. Prefix recursion eliminates its proof once and
 ||| never names a dependent tail endpoint twice.
