@@ -19388,6 +19388,71 @@ sealedSuffixRegistrationDiscipline protocol localNameDecision localKeyDecision
     in RegistrationDisciplineStep replayedStep replayedTail replayedHead
       replayedDiscipline
 
+0 adjacentPairRegistrationDiscipline :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  {pairFirst, pairMiddle, pairFinal, originalFinal, replayedFinal :
+    SystemState name key value world error} ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value
+    localNameDecision localKeyDecision left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  SealedSuffixReplaySpine name key world error value localNameDecision
+    localKeyDecision suffix replayedSuffix ->
+  AlignedTransitions name key world error value localNameDecision
+    localKeyDecision
+    (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  RegistrationDiscipline protocol localNameDecision
+    (MoreTransitions left (MoreTransitions right suffix)) ->
+  RegistrationDiscipline protocol localNameDecision
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) replayedSuffix))
+adjacentPairRegistrationDiscipline protocol localNameDecision localKeyDecision
+  left right suffix diamond replayedSuffix seal sourcePairAligned
+  (RegistrationDisciplineStep _ _ sourceLeft
+    (RegistrationDisciplineStep _ _ sourceRight sourceSuffix)) =
+      let 0 replayedSuffixDiscipline : RegistrationDiscipline protocol
+            localNameDecision replayedSuffix
+          replayedSuffixDiscipline = sealedSuffixRegistrationDiscipline protocol
+            localNameDecision localKeyDecision
+            (swappedControlEquivalent diamond) seal sourceSuffix
+          0 movedRightHead : RegistrationStepDiscipline protocol
+            localNameDecision (transitionAction (movedRight diamond)) pairFirst
+            (MoreTransitions (movedLeft diamond) replayedSuffix)
+          movedRightHead = movedRegistrationStepDiscipline protocol
+            localNameDecision right (movedRight diamond) suffix
+            (MoreTransitions (movedLeft diamond) replayedSuffix)
+            (movedRightAction diamond)
+            (movedRightParentYield protocol localNameDecision localKeyDecision
+              left right diamond sourcePairAligned)
+            (\parent, child, insertedComponent, rightInsert, sourceRetirement =>
+              movedRightTailRetirementProvenance localNameDecision
+                localKeyDecision left right suffix diamond replayedSuffix seal
+                parent child sourceRetirement)
+            sourceRight
+          0 movedLeftHead : RegistrationStepDiscipline protocol
+            localNameDecision (transitionAction (movedLeft diamond))
+            (swappedMiddle diamond) replayedSuffix
+          movedLeftHead = movedRegistrationStepDiscipline protocol
+            localNameDecision left (movedLeft diamond)
+            (MoreTransitions right suffix) replayedSuffix
+            (movedLeftAction diamond)
+            (movedLeftParentYield protocol localNameDecision localKeyDecision
+              left right diamond)
+            (\parent, child, insertedComponent, leftInsert, sourceRetirement =>
+              movedLeftTailRetirementProvenance localNameDecision
+                localKeyDecision left right suffix diamond replayedSuffix seal
+                sourcePairAligned parent child insertedComponent leftInsert
+                sourceRetirement)
+            sourceLeft
+      in RegistrationDisciplineStep (movedRight diamond)
+        (MoreTransitions (movedLeft diamond) replayedSuffix) movedRightHead
+        (RegistrationDisciplineStep (movedLeft diamond) replayedSuffix
+          movedLeftHead replayedSuffixDiscipline)
+
 ||| Preserve no-recovery evidence across the unchanged prefix, moved pair, and
 ||| the producer-sealed suffix. Prefix recursion eliminates its proof once and
 ||| never names a dependent tail endpoint twice.
