@@ -18840,6 +18840,104 @@ movedRetireBeforeInsertedChildImpossible nameEq keyEq left right diamond
                       MkRetireSuccessView oldFiber found =>
                         void (nothingIsNotJust (trans (sym absent) found))
 
+0 paperActivationCannotInsert :
+  (transition : Transition before afterState) ->
+  PaperActivationStep transition ->
+  (child : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  transitionAction transition = OInsert child parent component -> Void
+paperActivationCannotInsert transition (PaperBeginStep action tag) child parent
+  component insertion = case trans (sym action) insertion of Refl impossible
+paperActivationCannotInsert transition (PaperIterStep action tag) child parent
+  component insertion = case trans (sym action) insertion of Refl impossible
+paperActivationCannotInsert transition (PaperFinishStep action tag) child parent
+  component insertion = case trans (sym action) insertion of Refl impossible
+
+0 movedRightParentYield :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {pairFirst, pairMiddle, pairFinal : SystemState name key value world error} ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  (parent, child : name) ->
+  (component : Component key value world error) ->
+  transitionAction right = OInsert child (ChildOf parent) component ->
+  ParentRegistrationYield protocol nameEq parent component pairMiddle ->
+  ParentRegistrationYield protocol nameEq parent component pairFirst
+movedRightParentYield protocol nameEq keyEq left right diamond sourcePairAligned
+  parent child component rightInsert sourceYield =
+    case registrationSwapSafety diamond of
+      CandidateActivationActivation leftActivation rightActivation =>
+        void (paperActivationCannotInsert right rightActivation child
+          (ChildOf parent) component rightInsert)
+      CandidateActivationOrchestration leftActivation rightOrchestration
+        parentSafe =>
+          let 0 leftNotParent = parentSafe child parent component rightInsert
+              0 parentNotLeft : Not (parent = transitionActor left)
+              parentNotLeft same = leftNotParent (sym same)
+          in alignedForeignParentYieldBackward protocol nameEq keyEq parent left
+            (MoreTransitions right NoTransitions) sourcePairAligned parentNotLeft
+            sourceYield
+      CandidateOrchestrationActivation leftOrchestration rightActivation
+        childSafe parentSafe =>
+          void (paperActivationCannotInsert right rightActivation child
+            (ChildOf parent) component rightInsert)
+      CandidateOrchestrationOrchestration leftOrchestration rightOrchestration
+        childrenDistinct licensesDoNotCross =>
+          alignedOrchestrationParentYieldBackward protocol nameEq keyEq parent
+            left (MoreTransitions right NoTransitions) sourcePairAligned
+            leftOrchestration sourceYield
+
+0 movedLeftParentYield :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {pairFirst, pairMiddle, pairFinal : SystemState name key value world error} ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (parent, child : name) ->
+  (component : Component key value world error) ->
+  transitionAction left = OInsert child (ChildOf parent) component ->
+  ParentRegistrationYield protocol nameEq parent component pairFirst ->
+  ParentRegistrationYield protocol nameEq parent component
+    (swappedMiddle diamond)
+movedLeftParentYield protocol nameEq keyEq left right diamond parent child
+  component leftInsert sourceYield =
+    case registrationSwapSafety diamond of
+      CandidateActivationActivation leftActivation rightActivation =>
+        void (paperActivationCannotInsert left leftActivation child
+          (ChildOf parent) component leftInsert)
+      CandidateActivationOrchestration leftActivation rightOrchestration
+        parentSafe =>
+          void (paperActivationCannotInsert left leftActivation child
+            (ChildOf parent) component leftInsert)
+      CandidateOrchestrationActivation leftOrchestration rightActivation
+        childSafe parentSafe =>
+          let 0 rightNotParent = parentSafe child parent component leftInsert
+              0 parentNotMovedRight :
+                Not (parent = transitionActor (movedRight diamond))
+              parentNotMovedRight = originalActorNotParentToMovedActor right
+                (movedRight diamond) parent (movedRightAction diamond)
+                rightNotParent
+          in alignedForeignParentYieldForward protocol nameEq keyEq parent
+            (movedRight diamond) (MoreTransitions (movedLeft diamond)
+              NoTransitions) (movedPairAligned diamond) parentNotMovedRight
+            sourceYield
+      CandidateOrchestrationOrchestration leftOrchestration rightOrchestration
+        childrenDistinct licensesDoNotCross =>
+          alignedOrchestrationParentYieldForward protocol nameEq keyEq parent
+            (movedRight diamond) (MoreTransitions (movedLeft diamond)
+              NoTransitions) (movedPairAligned diamond)
+            (movedRightOrchestrationBranch diamond rightOrchestration)
+            sourceYield
+
 0 movedRightTailRetirementProvenance :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {pairFirst, pairMiddle, pairFinal, originalFinal, replayedFinal :
