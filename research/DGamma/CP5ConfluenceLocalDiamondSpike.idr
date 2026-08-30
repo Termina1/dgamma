@@ -18011,6 +18011,98 @@ candidateSafetyExcludesParentRecovery
     childrenDistinct licensesDoNotCross) child parent leftRetire rightRecovery =
       paperOrchestrationCannotParentRecovery _ rightOrchestration rightRecovery
 
+0 replayedParentRecoveryToSource :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {sourceBefore, sourceAfter, replayedBefore, replayedAfter :
+    SystemState name key value world error} ->
+  {sourceStep : Transition sourceBefore sourceAfter} ->
+  {replayedStep : Transition replayedBefore replayedAfter} ->
+  {parent : name} ->
+  transitionAction replayedStep = transitionAction sourceStep ->
+  transitionTag replayedStep = transitionTag sourceStep ->
+  ParentRecoveryStep parent replayedStep ->
+  ParentRecoveryStep parent sourceStep
+replayedParentRecoveryToSource sameAction sameTag
+  (ParentLeaves action) = ParentLeaves (trans (sym sameAction) action)
+replayedParentRecoveryToSource sameAction sameTag
+  (ParentDivertsBefore action) =
+    ParentDivertsBefore (trans (sym sameAction) action)
+replayedParentRecoveryToSource sameAction sameTag
+  (ParentDivertsAfter action tag) =
+    ParentDivertsAfter (trans (sym sameAction) action)
+      (trans (sym sameTag) tag)
+replayedParentRecoveryToSource sameAction sameTag
+  (ParentRaises action tag) =
+    ParentRaises (trans (sym sameAction) action) (trans (sym sameTag) tag)
+
+0 sealedSuffixNoParentRecovery :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
+    SystemState name key value world error} ->
+  {source : Transitions sourceFirst sourceFinal} ->
+  {replayed : Transitions replayedFirst replayedFinal} ->
+  (parent : name) ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq source replayed ->
+  NoParentRecovery parent source ->
+  NoParentRecovery parent replayed
+sealedSuffixNoParentRecovery parent SealedSuffixReplayEnd
+  NoParentRecoveryEnd = NoParentRecoveryEnd
+sealedSuffixNoParentRecovery parent
+  (SealedSuffixReplayStep sourceStep replayedStep sourceTail replayedTail
+    sameAction sameTag headRAR headMapsRelated headEndpoint headOccurrences
+    headRelativeOrdinal tailSeal)
+  (NoParentRecoveryStep sourceStep sourceTail sourceNoRecovery tailNoRecovery) =
+    NoParentRecoveryStep replayedStep replayedTail
+      (\replayedRecovery => sourceNoRecovery
+        (replayedParentRecoveryToSource sameAction sameTag replayedRecovery))
+      (sealedSuffixNoParentRecovery parent tailSeal tailNoRecovery)
+
+0 sealedSuffixChildRetiresBeforeRecovery :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
+    SystemState name key value world error} ->
+  {source : Transitions sourceFirst sourceFinal} ->
+  {replayed : Transitions replayedFirst replayedFinal} ->
+  (parent, child : name) ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq source replayed ->
+  ChildRetiresBeforeRecovery parent child source ->
+  ChildRetiresBeforeRecovery parent child replayed
+sealedSuffixChildRetiresBeforeRecovery parent child SealedSuffixReplayEnd
+  provenance impossible
+sealedSuffixChildRetiresBeforeRecovery parent child
+  (SealedSuffixReplayStep sourceStep replayedStep sourceTail replayedTail
+    sameAction sameTag headRAR headMapsRelated headEndpoint headOccurrences
+    headRelativeOrdinal tailSeal)
+  (ChildRetiresNow sourceStep sourceTail sourceRetires) =
+    ChildRetiresNow replayedStep replayedTail (trans sameAction sourceRetires)
+sealedSuffixChildRetiresBeforeRecovery parent child
+  (SealedSuffixReplayStep sourceStep replayedStep sourceTail replayedTail
+    sameAction sameTag headRAR headMapsRelated headEndpoint headOccurrences
+    headRelativeOrdinal tailSeal)
+  (ChildRetiresLater sourceStep sourceTail sourceNoRecovery later) =
+    ChildRetiresLater replayedStep replayedTail
+      (\replayedRecovery => sourceNoRecovery
+        (replayedParentRecoveryToSource sameAction sameTag replayedRecovery))
+      (sealedSuffixChildRetiresBeforeRecovery parent child tailSeal later)
+
+0 sealedSuffixChildRetirementProvenance :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
+    SystemState name key value world error} ->
+  {source : Transitions sourceFirst sourceFinal} ->
+  {replayed : Transitions replayedFirst replayedFinal} ->
+  (parent, child : name) ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq source replayed ->
+  ChildRetirementProvenance parent child source ->
+  ChildRetirementProvenance parent child replayed
+sealedSuffixChildRetirementProvenance parent child seal
+  (ParentDoesNotRecover noRecovery) =
+    ParentDoesNotRecover (sealedSuffixNoParentRecovery parent seal noRecovery)
+sealedSuffixChildRetirementProvenance parent child seal
+  (ChildRetiredBeforeParent retires) =
+    ChildRetiredBeforeParent
+      (sealedSuffixChildRetiresBeforeRecovery parent child seal retires)
+
 data LocatedReloadingControl :
   (key : Type) -> (value : key -> Type) ->
   (world, error, name : Type) ->
