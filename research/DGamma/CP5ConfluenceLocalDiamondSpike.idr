@@ -18467,6 +18467,128 @@ foreignCheckedParentYieldBackward protocol nameEq keyEq parent action before
         sourceBelongsToProgram parentRegistrationRank childRegistrationRank
         parentRanked childRanked yieldTag stepYieldsTag catalogYieldsComponent
 
+0 alignedForeignParentYieldForward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (parent : name) ->
+  {before, afterState, finalState : SystemState name key value world error} ->
+  (transition : Transition before afterState) ->
+  (rest : Transitions afterState finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions transition rest) ->
+  Not (parent = transitionActor transition) ->
+  ParentRegistrationYield protocol nameEq parent childComponent before ->
+  ParentRegistrationYield protocol nameEq parent childComponent afterState
+alignedForeignParentYieldForward protocol nameEq keyEq parent
+  (Fired nameEq keyEq action tag checked) rest
+  (AlignedStep action tag checked rest alignedRest) distinct =
+    foreignCheckedParentYieldForward protocol nameEq keyEq parent action _ _ tag
+      (\same => distinct (trans same Refl)) checked
+
+0 alignedForeignParentYieldBackward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (parent : name) ->
+  {before, afterState, finalState : SystemState name key value world error} ->
+  (transition : Transition before afterState) ->
+  (rest : Transitions afterState finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions transition rest) ->
+  Not (parent = transitionActor transition) ->
+  ParentRegistrationYield protocol nameEq parent childComponent afterState ->
+  ParentRegistrationYield protocol nameEq parent childComponent before
+alignedForeignParentYieldBackward protocol nameEq keyEq parent
+  (Fired nameEq keyEq action tag checked) rest
+  (AlignedStep action tag checked rest alignedRest) distinct =
+    foreignCheckedParentYieldBackward protocol nameEq keyEq parent action _ _ tag
+      (\same => distinct (trans same Refl)) checked
+
+0 originalActorNotParentToMovedActor :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {originalBefore, originalAfter, movedBefore, movedAfter :
+    SystemState name key value world error} ->
+  (original : Transition originalBefore originalAfter) ->
+  (moved : Transition movedBefore movedAfter) ->
+  (parent : name) ->
+  transitionAction moved = transitionAction original ->
+  Not (transitionActor original = parent) ->
+  Not (parent = transitionActor moved)
+originalActorNotParentToMovedActor original moved parent sameAction distinct same =
+  distinct (trans (localTransitionActorActionOwner original)
+    (trans (sym (cong actionOwner sameAction))
+      (trans (sym (localTransitionActorActionOwner moved)) (sym same))))
+
+0 paperActivationNotRecovery :
+  (transition : Transition before afterState) ->
+  PaperActivationStep transition ->
+  (parent : name) ->
+  ParentRecoveryStep parent transition -> Void
+paperActivationNotRecovery transition activation parent recovery =
+  paperActivationCannotParentRecovery transition activation recovery
+
+0 paperOrchestrationNotRecovery :
+  (transition : Transition before afterState) ->
+  PaperOrchestrationStep transition ->
+  (parent : name) ->
+  ParentRecoveryStep parent transition -> Void
+paperOrchestrationNotRecovery transition orchestration parent recovery =
+  paperOrchestrationCannotParentRecovery transition orchestration recovery
+
+0 movedRightNotParentRecovery :
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (parent : name) -> ParentRecoveryStep parent (movedRight diamond) -> Void
+movedRightNotParentRecovery diamond parent recovery =
+  case registrationSwapSafety diamond of
+    CandidateActivationActivation leftActivation rightActivation =>
+      paperActivationNotRecovery _
+        (movedRightActivationBranch diamond rightActivation) parent recovery
+    CandidateActivationOrchestration leftActivation rightOrchestration
+      parentSafe => paperOrchestrationNotRecovery _
+        (movedRightOrchestrationBranch diamond rightOrchestration) parent recovery
+    CandidateOrchestrationActivation leftOrchestration rightActivation
+      childSafe parentSafe => paperActivationNotRecovery _
+        (movedRightActivationBranch diamond rightActivation) parent recovery
+    CandidateOrchestrationOrchestration leftOrchestration rightOrchestration
+      childrenDistinct licensesDoNotCross => paperOrchestrationNotRecovery _
+        (movedRightOrchestrationBranch diamond rightOrchestration) parent recovery
+
+0 movedLeftNotParentRecovery :
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (parent : name) -> ParentRecoveryStep parent (movedLeft diamond) -> Void
+movedLeftNotParentRecovery diamond parent recovery =
+  case registrationSwapSafety diamond of
+    CandidateActivationActivation leftActivation rightActivation =>
+      paperActivationNotRecovery _
+        (movedLeftActivationBranch diamond leftActivation) parent recovery
+    CandidateActivationOrchestration leftActivation rightOrchestration
+      parentSafe => paperActivationNotRecovery _
+        (movedLeftActivationBranch diamond leftActivation) parent recovery
+    CandidateOrchestrationActivation leftOrchestration rightActivation
+      childSafe parentSafe => paperOrchestrationNotRecovery _
+        (movedLeftOrchestrationBranch diamond leftOrchestration) parent recovery
+    CandidateOrchestrationOrchestration leftOrchestration rightOrchestration
+      childrenDistinct licensesDoNotCross => paperOrchestrationNotRecovery _
+        (movedLeftOrchestrationBranch diamond leftOrchestration) parent recovery
+
+0 prependChildRetirementProvenance :
+  (transition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (ParentRecoveryStep parent transition -> Void) ->
+  ChildRetirementProvenance parent child rest ->
+  ChildRetirementProvenance parent child (MoreTransitions transition rest)
+prependChildRetirementProvenance transition rest noRecovery
+  (ParentDoesNotRecover tailNoRecovery) =
+    ParentDoesNotRecover
+      (NoParentRecoveryStep transition rest noRecovery tailNoRecovery)
+prependChildRetirementProvenance transition rest noRecovery
+  (ChildRetiredBeforeParent retires) =
+    ChildRetiredBeforeParent
+      (ChildRetiresLater transition rest noRecovery retires)
+
 0 sameActionRegistrationStepDiscipline :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (protocol : RegistrationProtocol key value world error) ->
