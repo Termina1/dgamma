@@ -18801,6 +18801,45 @@ prependChildRetirementProvenance transition rest noRecovery
     ChildRetiredBeforeParent
       (ChildRetiresLater transition rest noRecovery retires)
 
+0 movedRetireBeforeInsertedChildImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {pairFirst, pairMiddle, pairFinal : SystemState name key value world error} ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  (child : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  transitionAction left = OInsert child parent component ->
+  transitionAction right = ORetire child -> Void
+movedRetireBeforeInsertedChildImpossible nameEq keyEq left right diamond
+  (AlignedStep sourceAction sourceTag sourceChecked
+    (MoreTransitions right NoTransitions) sourceTailAligned)
+  child parent component leftInsert rightRetire = case leftInsert of
+    Refl => case movedPairAligned diamond of
+      AlignedStep movedAction movedTag movedChecked
+        (MoreTransitions (movedLeft diamond) NoTransitions) movedTailAligned =>
+          case trans (movedRightAction diamond) rightRetire of
+            Refl => case pairFirst of
+              MkSystemState ambient source =>
+                let 0 sourceRaw = checkedActionProjects nameEq keyEq
+                      (OInsert child parent component)
+                      (MkSystemState ambient source) pairMiddle sourceTag
+                      sourceChecked
+                    0 movedRaw = checkedActionProjects nameEq keyEq
+                      (ORetire child) (MkSystemState ambient source)
+                      (swappedMiddle diamond) movedTag movedChecked
+                in case foreignInsertPlanView nameEq keyEq child parent component
+                  ambient source sourceTag pairMiddle sourceRaw of
+                  MkForeignInsertPlanView absent guards =>
+                    case retireSuccessView nameEq keyEq child ambient source
+                      movedTag (swappedMiddle diamond) movedRaw of
+                      MkRetireSuccessView oldFiber found =>
+                        void (nothingIsNotJust (trans (sym absent) found))
+
 0 sameActionMovedRegistrationStepDiscipline :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (protocol : RegistrationProtocol key value world error) ->
