@@ -18277,6 +18277,70 @@ locateTransportedParentYield nameEq parent source target equivalent sourceYield 
   ParentRegistrationYield protocol nameEq parent childComponent target
 transportedParentYield located = targetParentYield located
 
+0 foreignCheckedParentYieldForward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (parent : name) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  Not (parent = actionOwner action) ->
+  checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState) ->
+  ParentRegistrationYield protocol nameEq parent childComponent before ->
+  ParentRegistrationYield protocol nameEq parent childComponent afterState
+foreignCheckedParentYieldForward protocol nameEq keyEq parent action before
+  afterState tag distinct checked
+  (MkParentRegistrationYield parentFiber sourceFound sourceStep
+    sourceContinuation sourceAccumulator sourceView parentAtYield
+    sourceBelongsToProgram parentRegistrationRank childRegistrationRank
+    parentRanked childRanked yieldTag stepYieldsTag catalogYieldsComponent) =
+      let 0 raw = checkedActionProjects nameEq keyEq action before afterState tag
+            checked
+          0 local = applyActionLocalUpdate nameEq keyEq action before afterState tag
+            raw
+          0 targetFound = trans
+            (systemLocalUpdateForeign nameEq parent (actionOwner action) distinct
+              before afterState local)
+            sourceFound
+      in MkParentRegistrationYield parentFiber targetFound sourceStep
+        sourceContinuation sourceAccumulator sourceView parentAtYield
+        sourceBelongsToProgram parentRegistrationRank childRegistrationRank
+        parentRanked childRanked yieldTag stepYieldsTag catalogYieldsComponent
+
+0 foreignCheckedParentYieldBackward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (parent : name) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  Not (parent = actionOwner action) ->
+  checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState) ->
+  ParentRegistrationYield protocol nameEq parent childComponent afterState ->
+  ParentRegistrationYield protocol nameEq parent childComponent before
+foreignCheckedParentYieldBackward protocol nameEq keyEq parent action before
+  afterState tag distinct checked
+  (MkParentRegistrationYield parentFiber targetFound sourceStep
+    sourceContinuation sourceAccumulator sourceView parentAtYield
+    sourceBelongsToProgram parentRegistrationRank childRegistrationRank
+    parentRanked childRanked yieldTag stepYieldsTag catalogYieldsComponent) =
+      let 0 raw = checkedActionProjects nameEq keyEq action before afterState tag
+            checked
+          0 local = applyActionLocalUpdate nameEq keyEq action before afterState tag
+            raw
+          0 sourceFound = trans
+            (sym (systemLocalUpdateForeign nameEq parent (actionOwner action)
+              distinct before afterState local))
+            targetFound
+      in MkParentRegistrationYield parentFiber sourceFound sourceStep
+        sourceContinuation sourceAccumulator sourceView parentAtYield
+        sourceBelongsToProgram parentRegistrationRank childRegistrationRank
+        parentRanked childRanked yieldTag stepYieldsTag catalogYieldsComponent
+
 0 sameActionRegistrationStepDiscipline :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (protocol : RegistrationProtocol key value world error) ->
