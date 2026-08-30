@@ -19309,6 +19309,8 @@ record AdjacentAlignedPointwiseReplay
       (MoreTransitions (movedLeft diamond) alignedReplaySuffix))
   0 alignedReplayTarget : AlignedTransitions name key world error value nameEq
     keyEq alignedReplayTrace
+  0 alignedReplayDiscipline : RegistrationDiscipline protocol nameEq
+    alignedReplayTrace
   0 alignedReplayEndpoint : RelationalReplayEndpoint name key world error value
     nameEq keyEq originalFinal alignedReplayFinal
   0 alignedReplaySeal : SealedSuffixReplaySpine name key world error value nameEq
@@ -19339,6 +19341,11 @@ produceAdjacentAlignedPointwiseReplay nameEq keyEq protocol original tracePrefix
             (MoreTransitions left (MoreTransitions right suffix)))
         decomposedAligned = replace {p = AlignedTransitions name key world error
           value nameEq keyEq} (sym decomposition) (replayAligned premises)
+        0 decomposedDiscipline : RegistrationDiscipline protocol nameEq
+          (appendTransitions tracePrefix
+            (MoreTransitions left (MoreTransitions right suffix)))
+        decomposedDiscipline = replace {p = RegistrationDiscipline protocol
+          nameEq} (sym decomposition) (replayDiscipline premises)
         sourcePair : Transitions pairFirst pairFinal
         sourcePair = MoreTransitions left (MoreTransitions right NoTransitions)
         0 prefixAligned : AlignedTransitions name key world error value nameEq
@@ -19387,8 +19394,12 @@ produceAdjacentAlignedPointwiseReplay nameEq keyEq protocol original tracePrefix
         targetAligned = appendAlignedTransitions prefixAligned
           (appendAlignedTransitions (movedPairAligned diamond)
             replayedSuffixAligned)
+        0 targetDiscipline : RegistrationDiscipline protocol nameEq targetTrace
+        targetDiscipline = adjacentRegistrationDiscipline protocol nameEq keyEq
+          tracePrefix left right suffix diamond replayedSuffix
+          (spineReplaySeal suffixReplay) sourcePairAligned decomposedDiscipline
     in MkAdjacentAlignedPointwiseReplay (spineReplayedFinal suffixReplay)
-      replayedSuffix targetTrace Refl targetAligned
+      replayedSuffix targetTrace Refl targetAligned targetDiscipline
       (spineReplayEndpoint suffixReplay) (spineReplaySeal suffixReplay)
 
 ||| Checked suffix-splice interface consumed by sorting.  It is generic over the
