@@ -18948,6 +18948,42 @@ pointwiseRegistrationStepDiscipline protocol localNameDecision localKeyDecision
         localKeyDecision (transitionAction sourceStep) sourceBefore
         replayedBefore sourceTail replayedTail controls seal sourceDiscipline)
 
+0 sealedSuffixRegistrationDiscipline :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
+    SystemState name key value world error} ->
+  {source : Transitions sourceFirst sourceFinal} ->
+  {replayed : Transitions replayedFirst replayedFinal} ->
+  ControlEquivalent name key world error value localNameDecision sourceFirst
+    replayedFirst ->
+  SealedSuffixReplaySpine name key world error value localNameDecision
+    localKeyDecision source replayed ->
+  RegistrationDiscipline protocol localNameDecision source ->
+  RegistrationDiscipline protocol localNameDecision replayed
+sealedSuffixRegistrationDiscipline protocol localNameDecision localKeyDecision
+  controls SealedSuffixReplayEnd RegistrationDisciplineEnd =
+    RegistrationDisciplineEnd
+sealedSuffixRegistrationDiscipline protocol localNameDecision localKeyDecision
+  controls
+  (SealedSuffixReplayStep sourceStep replayedStep sourceTail replayedTail
+    sameAction sameTag headRAR headMapsRelated headEndpoint headOccurrences
+    headRelativeOrdinal tailSeal)
+  (RegistrationDisciplineStep _ _ sourceHead sourceDiscipline) =
+    let 0 replayedHead : RegistrationStepDiscipline protocol localNameDecision
+          (transitionAction replayedStep) replayedFirst replayedTail
+        replayedHead = pointwiseRegistrationStepDiscipline protocol
+          localNameDecision localKeyDecision sourceStep replayedStep sourceTail
+          replayedTail sameAction controls tailSeal sourceHead
+        0 replayedDiscipline :
+          RegistrationDiscipline protocol localNameDecision replayedTail
+        replayedDiscipline = sealedSuffixRegistrationDiscipline protocol
+          localNameDecision localKeyDecision (replayedControls headEndpoint)
+          tailSeal sourceDiscipline
+    in RegistrationDisciplineStep replayedStep replayedTail replayedHead
+      replayedDiscipline
+
 ||| Preserve no-recovery evidence across the unchanged prefix, moved pair, and
 ||| the producer-sealed suffix. Prefix recursion eliminates its proof once and
 ||| never names a dependent tail endpoint twice.
