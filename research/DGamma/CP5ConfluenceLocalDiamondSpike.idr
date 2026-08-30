@@ -18465,6 +18465,88 @@ retireCheckedParentYieldBackward protocol localNameDecision localKeyDecision par
                   parentRegistrationRank childRegistrationRank parentRanked
                   childRanked yieldTag stepYieldsTag catalogYieldsComponent
 
+0 orchestrationCheckedParentYieldForward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {childComponent : Component key value world error} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  (parent : name) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{localNameDecision} @{localKeyDecision} action
+    before = Just (tag, afterState)) ->
+  PaperOrchestrationStep
+    (Fired {before = before} {afterState = afterState}
+      localNameDecision localKeyDecision action tag checked) ->
+  ParentRegistrationYield protocol localNameDecision parent childComponent
+    before ->
+  ParentRegistrationYield protocol localNameDecision parent childComponent
+    afterState
+orchestrationCheckedParentYieldForward protocol localNameDecision
+  localKeyDecision parent action before afterState tag checked
+  (PaperInsertStep {actor} {parent = insertedParent}
+    {component = insertedComponent} actionSame) sourceYield =
+      case actionSame of
+        Refl => case decEq @{localNameDecision} parent actor of
+          No distinct => foreignCheckedParentYieldForward protocol
+            localNameDecision localKeyDecision parent
+            (OInsert actor insertedParent insertedComponent) before afterState tag
+            distinct checked sourceYield
+          Yes Refl => case before of
+            MkSystemState ambient source =>
+              let 0 raw = checkedActionProjects localNameDecision
+                    localKeyDecision (OInsert actor insertedParent
+                      insertedComponent) (MkSystemState ambient source)
+                    afterState tag checked
+              in case foreignInsertPlanView localNameDecision localKeyDecision
+                actor insertedParent insertedComponent ambient source tag
+                afterState raw of
+                MkForeignInsertPlanView absent guards => case sourceYield of
+                  MkParentRegistrationYield sourceFiber sourceFound sourceStep
+                    sourceContinuation sourceAccumulator sourceView parentAtYield
+                    sourceBelongsToProgram parentRegistrationRank
+                    childRegistrationRank parentRanked childRanked yieldTag
+                    stepYieldsTag catalogYieldsComponent =>
+                      void (nothingIsNotJust (trans (sym absent) sourceFound))
+orchestrationCheckedParentYieldForward protocol localNameDecision
+  localKeyDecision parent action before afterState tag checked
+  (PaperRetireStep {actor} actionSame) sourceYield = case actionSame of
+    Refl => case decEq @{localNameDecision} parent actor of
+      No distinct => foreignCheckedParentYieldForward protocol
+        localNameDecision localKeyDecision parent (ORetire actor) before
+        afterState tag distinct checked sourceYield
+      Yes Refl => retireCheckedParentYieldForward protocol localNameDecision
+        localKeyDecision actor before afterState tag checked sourceYield
+orchestrationCheckedParentYieldForward protocol localNameDecision
+  localKeyDecision parent action before afterState tag checked
+  (PaperRemoveStep {actor} actionSame) sourceYield = case actionSame of
+    Refl => case decEq @{localNameDecision} parent actor of
+      No distinct => foreignCheckedParentYieldForward protocol localNameDecision
+        localKeyDecision parent (ORemove actor) before afterState tag distinct
+        checked sourceYield
+      Yes Refl => case before of
+        MkSystemState ambient source =>
+          let 0 raw = checkedActionProjects localNameDecision localKeyDecision
+                (ORemove actor) (MkSystemState ambient source) afterState tag
+                checked
+          in case removeSuccessView localNameDecision localKeyDecision actor
+            ambient source tag afterState raw of
+            MkRemoveSuccessView oldFiber oldFound removable noChild =>
+              case sourceYield of
+                MkParentRegistrationYield sourceFiber sourceFound sourceStep
+                  sourceContinuation sourceAccumulator sourceView parentAtYield
+                  sourceBelongsToProgram parentRegistrationRank
+                  childRegistrationRank parentRanked childRanked yieldTag
+                  stepYieldsTag catalogYieldsComponent =>
+                    case justInjective (trans (sym oldFound) sourceFound) of
+                      Refl => case inactiveLifecycleFromRemovalGuard
+                        (retired sourceFiber) (fiberLifecycle sourceFiber)
+                        (hasChild @{localNameDecision} actor source) removable of
+                        (outcome ** inactive) =>
+                          case trans (sym inactive) parentAtYield of
+                            Refl impossible
+
 ||| Preserve no-recovery evidence across the unchanged prefix, moved pair, and
 ||| the producer-sealed suffix. Prefix recursion eliminates its proof once and
 ||| never names a dependent tail endpoint twice.
