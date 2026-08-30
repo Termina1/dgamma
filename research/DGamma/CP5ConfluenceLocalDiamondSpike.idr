@@ -18760,6 +18760,54 @@ paperActivationCannotInsert transition (PaperFinishStep action tag) child
   insertedParent insertedComponent insertion =
     case trans (sym action) insertion of Refl impossible
 
+||| Reconstruct the moved-right insertion's yield at the pair source. The
+||| safety classifier owns the exact foreign-parent fact for A/O; O/O uses the
+||| correlated orchestration transport above.
+0 movedRightParentYield :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  {pairFirst, pairMiddle, pairFinal : SystemState name key value world error} ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value
+    localNameDecision localKeyDecision left right) ->
+  AlignedTransitions name key world error value localNameDecision
+    localKeyDecision
+    (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  (parent, child : name) ->
+  (insertedComponent : Component key value world error) ->
+  transitionAction right =
+    OInsert child (ChildOf parent) insertedComponent ->
+  ParentRegistrationYield protocol localNameDecision parent insertedComponent
+    pairMiddle ->
+  ParentRegistrationYield protocol localNameDecision parent insertedComponent
+    pairFirst
+movedRightParentYield protocol localNameDecision localKeyDecision left right
+  diamond sourcePairAligned parent child insertedComponent rightInsert
+  sourceYield = case registrationSwapSafety diamond of
+    CandidateActivationActivation leftActivation rightActivation =>
+      void (paperActivationCannotInsert right rightActivation child
+        (ChildOf parent) insertedComponent rightInsert)
+    CandidateActivationOrchestration leftActivation rightOrchestration
+      parentSafe =>
+        let 0 leftNotParent = parentSafe child parent insertedComponent
+              rightInsert
+            0 parentNotLeft : Not (parent = transitionActor left)
+            parentNotLeft same = leftNotParent (sym same)
+        in alignedForeignParentYieldBackward protocol localNameDecision
+          localKeyDecision parent left (MoreTransitions right NoTransitions)
+          sourcePairAligned parentNotLeft sourceYield
+    CandidateOrchestrationActivation leftOrchestration rightActivation
+      childSafe parentSafe =>
+        void (paperActivationCannotInsert right rightActivation child
+          (ChildOf parent) insertedComponent rightInsert)
+    CandidateOrchestrationOrchestration leftOrchestration rightOrchestration
+      childrenDistinct licensesDoNotCross =>
+        alignedOrchestrationParentYieldBackward protocol localNameDecision
+          localKeyDecision parent left (MoreTransitions right NoTransitions)
+          sourcePairAligned leftOrchestration sourceYield
+
 ||| Preserve no-recovery evidence across the unchanged prefix, moved pair, and
 ||| the producer-sealed suffix. Prefix recursion eliminates its proof once and
 ||| never names a dependent tail endpoint twice.
