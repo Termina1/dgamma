@@ -1476,6 +1476,30 @@ retirement/recovery crossing safety must be retained. One shift of the accepted
 **2–16** band is consumed; **1–15** remain pending that ruling. Holes remain
 **20**, split **6/4/8/1/1**.
 
+### Revision 73: classification campaign discharges the apparent wall
+
+`research-tests/O6-R73-RETIREMENT-RECOVERY-SAFETY-CLASSIFICATION-DESIGN-AUDIT.md`
+records design-only shift #81 and corrects revision 72's safety classification.
+A total checked empty-effect fixture proves that
+`ORetire child ; LLeave parent` commutes operationally, satisfies
+`TraceIndependent`, has source `ChildRetirementProvenance`, and loses that
+provenance when swapped. However, it cannot inhabit the landed safety or a live
+local diamond.
+
+Every `CandidateRegistrationSwapSafety` constructor classifies the right step as
+either `PaperActivationStep` or `PaperOrchestrationStep`. Both classes are
+disjoint from all four `ParentRecoveryStep` constructors; in particular,
+`LLeave` is not a paper activation. The generic test-local theorem
+`candidateSafetyExcludesParentRecovery` derives the exact proposed exclusion.
+The genuine O/A producer is blocked only at its right-activation premise, while
+all other operational premises—including independence—are constructive. The
+apparent wall is therefore neither reachable nor representation loss; it is
+latent capital already retained in revision 21. Both an extended-safety wrapper
+and selector-restricted wrapper round-trip from the existing diamond, so frozen
+revision 22 is unnecessary. Resume field 2 with a private classifier lemma and
+structural provenance transport. Honest O6 remainder: **3–15 implementation
+shifts**. Holes remain **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1787,7 +1811,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; field 1, revision-21 safety, and exact pointwise parent-yield transport are closed. Field 2 is stopped at the newly exposed retirement-before-parent-recovery ordering boundary across the moved pair.** | **XL, 1–15 shifts remain pending revision-22 design ruling.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; field 1, revision-21 safety, and exact pointwise parent-yield transport are closed. Revision 73 proves the landed classifiers already exclude any right parent-recovery step; field 2 may resume with structural retirement-provenance transport and no frozen revision.** | **XL, 3–15 implementation shifts remain after the design correction.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -1974,4 +1998,9 @@ reindexes the exact target lookup, and closes the target
 `ParentRegistrationYield` package. Field 2 then stops at a new semantic class:
 the landed swap safety does not prevent `ORetire child` from moving after
 `LLeave parent`, invalidating an earlier insertion's
-`ChildRetirementProvenance`. Later fields and final assembly remain unopened.
+`ChildRetirementProvenance`. Revision 73 corrects that classification: the
+operational countershape is checked and independent, but every landed safety
+constructor classifies the right step as paper activation or orchestration, and
+both are constructively disjoint from `ParentRecoveryStep`. The exact proposed
+exclusion is therefore derivable; no revision-22 surface change is needed.
+Later fields and final assembly remain unopened.

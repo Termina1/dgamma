@@ -76,6 +76,7 @@ POSITIVE=(
   R44IteratorStageOccurrencePartitionPositive
   R45BareDiamondDisciplineCounterexamplePositive
   R45GenuineDiamondSafetyDesignPositive
+  R46RetirementRecoverySwapSafetyDesignPositive
 )
 
 # Each expected failure has its own mandatory diagnostic fragment and source
@@ -91,6 +92,7 @@ NEGATIVE_SPECS=(
   "R45BareDiamondFalseDisciplineNegative|Inactive Nothing|bareDiamondCannotForgeTargetYield"
   "R45BareDiamondSafetyProjectionNegative|not a valid impossible case|bareDiamondCannotProjectRegistrationSafety"
   "R45OpaqueGenuineAdjacentInputNegative|CandidateOpaqueGenuineDiamond name key world error value nameEq keyEq left right and LocalRelationalDiamond|frozenAdjacentInputRejectsOpaqueGenuine"
+  "R46RetirementRecoveryLiveSafetyNegative|Mismatch between: LAdvance|retirementRecoveryCannotEnterLiveSafety"
   "R20WholeBundleMovedAlignmentNegative|storedRightKeyEq and keyEq|localDiamondCannotSupplyMovedAlignment"
   "R21CandidateIndependentDictionaryNegative|storedRightKeyEq and keyEq|forgeCandidateFromIndependentDictionaries"
   "R21RepeatedIterProducerAlignmentNegative|storedRightKeyEq and storedLeftKeyEq|repeatedIterPremisesCannotSupplyMovedAlignment"
@@ -247,8 +249,8 @@ for specification in "${NEGATIVE_SPECS[@]}"; do
 done
 
 if [ "$FRESH" -eq 1 ]; then
-  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 61 ]; then
-    echo "Expected 61 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
+  if [ "$SUCCESSFUL_BUILD_MARKERS" -ne 62 ]; then
+    echo "Expected 62 fresh successful-unit markers, saw $SUCCESSFUL_BUILD_MARKERS" >&2
     exit 1
   fi
   echo "R11_FRESH_SUCCESSFUL_BUILD_MARKERS=$SUCCESSFUL_BUILD_MARKERS"

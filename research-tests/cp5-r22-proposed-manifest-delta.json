@@ -1,0 +1,42 @@
+{
+  "revision": 22,
+  "status": "NO_FROZEN_SURFACE_CHANGE_REQUIRED",
+  "designOnly": true,
+  "implementationAuthorized": false,
+  "base": "0a4221075a11720bac87d3c98da50dbb8905ef44",
+  "audit": "research-tests/O6-R73-RETIREMENT-RECOVERY-SAFETY-CLASSIFICATION-DESIGN-AUDIT.md",
+  "finding": "CandidateRegistrationSwapSafety already classifies every right transition as PaperActivationStep or PaperOrchestrationStep; both are constructively disjoint from ParentRecoveryStep. The proposed retirement/recovery exclusion is therefore derivable and redundant.",
+  "approvedTypeAdditions": [],
+  "approvedRecordFieldRevisions": [],
+  "approvedHoleSignatureRevisions": [],
+  "proposedPrivateProofAdditions": [
+    {
+      "module": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "name": "candidateSafetyExcludesParentRecovery",
+      "status": "PROBE_ONLY_NOT_AUTHORIZED",
+      "purpose": "derive the retirement/recovery crossing exclusion from the landed revision-21 classifiers during bundle field-2 proof"
+    }
+  ],
+  "disqualifiedChanges": [
+    {
+      "surface": "CandidateRegistrationSwapSafety",
+      "change": "append an explicit no-retirement-crosses-recovery premise",
+      "reason": "redundant with its existing exhaustive right-step classifiers"
+    },
+    {
+      "surface": "adjacentSwapSuffixSpike",
+      "change": "add a selector-supplied retirement/recovery premise",
+      "reason": "detached caller capital and unnecessary; the live diamond already entails the exclusion"
+    },
+    {
+      "surface": "LocalRelationalDiamond",
+      "change": "append another erased safety field",
+      "reason": "the existing registrationSwapSafety field proves the condition"
+    }
+  ],
+  "frozenAssertions": {
+    "adjacentSwapSuffixSpikeBytes": 1183,
+    "adjacentSwapSuffixSpikeSha256": "e6d0c2d669355e5b7bef9efea1707f5853c708deb888bafe5770ba40dbd15a41",
+    "cp3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0"
+  }
+}
