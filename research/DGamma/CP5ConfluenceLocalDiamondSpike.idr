@@ -18728,6 +18728,38 @@ alignedOrchestrationParentYieldBackward protocol localNameDecision
     orchestrationCheckedParentYieldBackward protocol localNameDecision
       localKeyDecision parent action _ _ tag checked orchestration
 
+0 originalActorNotParentToMovedActor :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {originalBefore, originalAfter, movedBefore, movedAfter :
+    SystemState name key value world error} ->
+  (original : Transition originalBefore originalAfter) ->
+  (moved : Transition movedBefore movedAfter) ->
+  (parent : name) ->
+  transitionAction moved = transitionAction original ->
+  Not (transitionActor original = parent) ->
+  Not (parent = transitionActor moved)
+originalActorNotParentToMovedActor original moved parent sameAction distinct same =
+  distinct (trans (localTransitionActorActionOwner original)
+    (trans (sym (cong actionOwner sameAction))
+      (trans (sym (localTransitionActorActionOwner moved)) (sym same))))
+
+0 paperActivationCannotInsert :
+  (transition : Transition before afterState) ->
+  PaperActivationStep transition ->
+  (child : name) -> (insertedParent : Parent name) ->
+  (insertedComponent : Component key value world error) ->
+  transitionAction transition =
+    OInsert child insertedParent insertedComponent -> Void
+paperActivationCannotInsert transition (PaperBeginStep action tag) child
+  insertedParent insertedComponent insertion =
+    case trans (sym action) insertion of Refl impossible
+paperActivationCannotInsert transition (PaperIterStep action tag) child
+  insertedParent insertedComponent insertion =
+    case trans (sym action) insertion of Refl impossible
+paperActivationCannotInsert transition (PaperFinishStep action tag) child
+  insertedParent insertedComponent insertion =
+    case trans (sym action) insertion of Refl impossible
+
 ||| Preserve no-recovery evidence across the unchanged prefix, moved pair, and
 ||| the producer-sealed suffix. Prefix recursion eliminates its proof once and
 ||| never names a dependent tail endpoint twice.
