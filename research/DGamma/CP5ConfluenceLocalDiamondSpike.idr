@@ -19810,6 +19810,82 @@ quietFiberAsLifecycleQuietAt localNameDecision localKeyDecision
   (MkFiber component parent retiredFlag table
     (Unloading accumulator view outcome)) localRegistry = Refl
 
+0 pointwiseQuietFiberTrue :
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  (leftState, rightState : SystemState name key value world error) ->
+  ControlEquivalent name key world error value localNameDecision leftState
+    rightState ->
+  EffectStateRelated localKeyDecision
+    (projectEffectState @{localNameDecision} leftState)
+    (projectEffectState @{localNameDecision} rightState) ->
+  registryWellFormed @{localNameDecision} @{localKeyDecision} rightState = True ->
+  (leftFiber, rightFiber : Fiber name key value world error) ->
+  FiberControlRelated leftFiber rightFiber ->
+  quietFiber @{localNameDecision} @{localKeyDecision} leftFiber
+    (registry leftState) = True ->
+  quietFiber @{localNameDecision} @{localKeyDecision} rightFiber
+    (registry rightState) = True
+pointwiseQuietFiberTrue localNameDecision localKeyDecision leftState rightState
+  controls effects rightValid
+  (MkFiber component leftParent leftRetired leftTable leftLifecycle)
+  (MkFiber component rightParent rightRetired rightTable rightLifecycle)
+  (FibersControlRelated leftParent rightParent leftRetired rightRetired leftTable
+    rightTable leftLifecycle rightLifecycle parentSame retiredSame
+    lifecycleRelated) sourceQuiet =
+      let 0 targetsSame : Equal
+            (targetFiber @{localNameDecision} @{localKeyDecision}
+              (MkFiber component leftParent leftRetired leftTable leftLifecycle)
+              (registry leftState))
+            (targetFiber @{localNameDecision} @{localKeyDecision}
+              (MkFiber component rightParent rightRetired rightTable
+                rightLifecycle) (registry rightState))
+          targetsSame = pointwiseConcreteTargetFiberSame localNameDecision
+            localKeyDecision component leftParent rightParent leftRetired
+            rightRetired leftTable rightTable leftLifecycle rightLifecycle
+            retiredSame leftState rightState controls effects rightValid
+          0 lifecycleSame : Equal
+            (lifecycleQuietAt localNameDecision leftLifecycle
+              (targetFiber @{localNameDecision} @{localKeyDecision}
+                (MkFiber component leftParent leftRetired leftTable leftLifecycle)
+                (registry leftState)))
+            (lifecycleQuietAt localNameDecision rightLifecycle
+              (targetFiber @{localNameDecision} @{localKeyDecision}
+                (MkFiber component rightParent rightRetired rightTable
+                  rightLifecycle) (registry rightState)))
+          lifecycleSame = lifecycleControlQuietRelated localNameDecision
+            (targetFiber @{localNameDecision} @{localKeyDecision}
+              (MkFiber component leftParent leftRetired leftTable leftLifecycle)
+              (registry leftState))
+            (targetFiber @{localNameDecision} @{localKeyDecision}
+              (MkFiber component rightParent rightRetired rightTable
+                rightLifecycle) (registry rightState)) lifecycleRelated targetsSame
+          0 sourceNormal : Equal
+            (quietFiber @{localNameDecision} @{localKeyDecision}
+              (MkFiber component leftParent leftRetired leftTable leftLifecycle)
+              (registry leftState))
+            (lifecycleQuietAt localNameDecision leftLifecycle
+              (targetFiber @{localNameDecision} @{localKeyDecision}
+                (MkFiber component leftParent leftRetired leftTable leftLifecycle)
+                (registry leftState)))
+          sourceNormal = quietFiberAsLifecycleQuietAt localNameDecision
+            localKeyDecision
+            (MkFiber component leftParent leftRetired leftTable leftLifecycle)
+            (registry leftState)
+          0 targetNormal : Equal
+            (quietFiber @{localNameDecision} @{localKeyDecision}
+              (MkFiber component rightParent rightRetired rightTable
+                rightLifecycle) (registry rightState))
+            (lifecycleQuietAt localNameDecision rightLifecycle
+              (targetFiber @{localNameDecision} @{localKeyDecision}
+                (MkFiber component rightParent rightRetired rightTable
+                  rightLifecycle) (registry rightState)))
+          targetNormal = quietFiberAsLifecycleQuietAt localNameDecision
+            localKeyDecision
+            (MkFiber component rightParent rightRetired rightTable rightLifecycle)
+            (registry rightState)
+      in trans targetNormal
+        (trans (sym lifecycleSame) (trans (sym sourceNormal) sourceQuiet))
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
