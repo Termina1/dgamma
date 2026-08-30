@@ -18277,6 +18277,109 @@ locateTransportedParentYield nameEq parent source target equivalent sourceYield 
   ParentRegistrationYield protocol nameEq parent childComponent target
 transportedParentYield located = targetParentYield located
 
+0 sameActionRegistrationStepDiscipline :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) ->
+  (action : Action name key value world error) ->
+  (sourceBefore, replayedBefore : SystemState name key value world error) ->
+  {sourceAfter, sourceFinal, replayedAfter, replayedFinal :
+    SystemState name key value world error} ->
+  (sourceTail : Transitions sourceAfter sourceFinal) ->
+  (replayedTail : Transitions replayedAfter replayedFinal) ->
+  ControlEquivalent name key world error value nameEq sourceBefore replayedBefore ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq sourceTail
+    replayedTail ->
+  RegistrationStepDiscipline protocol nameEq action sourceBefore sourceTail ->
+  RegistrationStepDiscipline protocol nameEq action replayedBefore replayedTail
+sameActionRegistrationStepDiscipline protocol nameEq
+  (OInsert child Root component) sourceBefore replayedBefore sourceTail
+  replayedTail controls seal ranked = ranked
+sameActionRegistrationStepDiscipline protocol nameEq
+  (OInsert child (ChildOf parent) component) sourceBefore replayedBefore
+  sourceTail replayedTail controls seal (sourceYield, sourceRetirement) =
+    let 0 locatedYield : LocatedTransportedParentYield name key world error value
+          protocol nameEq parent component replayedBefore
+        locatedYield = locateTransportedParentYield nameEq parent sourceBefore
+          replayedBefore controls sourceYield
+        0 replayedYield : ParentRegistrationYield protocol nameEq parent component
+          replayedBefore
+        replayedYield = transportedParentYield locatedYield
+        0 replayedRetirement : ChildRetirementProvenance parent child replayedTail
+        replayedRetirement = sealedSuffixChildRetirementProvenance parent child seal
+          sourceRetirement
+    in (replayedYield, replayedRetirement)
+sameActionRegistrationStepDiscipline protocol nameEq (ORetire child)
+  sourceBefore replayedBefore sourceTail replayedTail controls seal discipline = ()
+sameActionRegistrationStepDiscipline protocol nameEq (ORemove child)
+  sourceBefore replayedBefore sourceTail replayedTail controls seal discipline = ()
+sameActionRegistrationStepDiscipline protocol nameEq (LBegin actor)
+  sourceBefore replayedBefore sourceTail replayedTail controls seal discipline = ()
+sameActionRegistrationStepDiscipline protocol nameEq (LAdvance actor)
+  sourceBefore replayedBefore sourceTail replayedTail controls seal discipline = ()
+sameActionRegistrationStepDiscipline protocol nameEq (LDivert actor)
+  sourceBefore replayedBefore sourceTail replayedTail controls seal discipline = ()
+sameActionRegistrationStepDiscipline protocol nameEq (LLeave actor)
+  sourceBefore replayedBefore sourceTail replayedTail controls seal discipline = ()
+sameActionRegistrationStepDiscipline protocol nameEq (LUnload actor)
+  sourceBefore replayedBefore sourceTail replayedTail controls seal discipline = ()
+
+0 pointwiseRegistrationStepDiscipline :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) ->
+  {sourceBefore, sourceAfter, sourceFinal, replayedBefore, replayedAfter,
+    replayedFinal : SystemState name key value world error} ->
+  (sourceStep : Transition sourceBefore sourceAfter) ->
+  (replayedStep : Transition replayedBefore replayedAfter) ->
+  (sourceTail : Transitions sourceAfter sourceFinal) ->
+  (replayedTail : Transitions replayedAfter replayedFinal) ->
+  transitionAction replayedStep = transitionAction sourceStep ->
+  ControlEquivalent name key world error value nameEq sourceBefore replayedBefore ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq sourceTail
+    replayedTail ->
+  RegistrationStepDiscipline protocol nameEq (transitionAction sourceStep)
+    sourceBefore sourceTail ->
+  RegistrationStepDiscipline protocol nameEq (transitionAction replayedStep)
+    replayedBefore replayedTail
+pointwiseRegistrationStepDiscipline protocol nameEq sourceStep replayedStep
+  sourceTail replayedTail sameAction controls seal sourceDiscipline =
+    replace {p = \action => RegistrationStepDiscipline protocol nameEq action
+      replayedBefore replayedTail} (sym sameAction)
+      (sameActionRegistrationStepDiscipline protocol nameEq
+        (transitionAction sourceStep) sourceBefore replayedBefore sourceTail
+        replayedTail controls seal sourceDiscipline)
+
+0 sealedSuffixRegistrationDiscipline :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) ->
+  {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
+    SystemState name key value world error} ->
+  {source : Transitions sourceFirst sourceFinal} ->
+  {replayed : Transitions replayedFirst replayedFinal} ->
+  ControlEquivalent name key world error value nameEq sourceFirst replayedFirst ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq source replayed ->
+  RegistrationDiscipline protocol nameEq source ->
+  RegistrationDiscipline protocol nameEq replayed
+sealedSuffixRegistrationDiscipline protocol nameEq controls
+  SealedSuffixReplayEnd RegistrationDisciplineEnd = RegistrationDisciplineEnd
+sealedSuffixRegistrationDiscipline protocol nameEq controls
+  (SealedSuffixReplayStep sourceStep replayedStep sourceTail replayedTail
+    sameAction sameTag headRAR headMapsRelated headEndpoint headOccurrences
+    headRelativeOrdinal tailSeal)
+  (RegistrationDisciplineStep sourceStep sourceTail sourceHead sourceDiscipline) =
+    let 0 replayedHead : RegistrationStepDiscipline protocol nameEq
+          (transitionAction replayedStep) replayedFirst replayedTail
+        replayedHead = pointwiseRegistrationStepDiscipline protocol nameEq
+          sourceStep replayedStep sourceTail replayedTail sameAction controls
+          tailSeal sourceHead
+        0 replayedDiscipline : RegistrationDiscipline protocol nameEq replayedTail
+        replayedDiscipline = sealedSuffixRegistrationDiscipline protocol nameEq
+          (replayedControls headEndpoint) tailSeal sourceDiscipline
+    in RegistrationDisciplineStep replayedStep replayedTail replayedHead
+      replayedDiscipline
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
