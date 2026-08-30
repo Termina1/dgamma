@@ -19016,6 +19016,8 @@ movedLeftTailRetirementProvenance nameEq keyEq left right suffix diamond
     ParentRegistrationYield protocol nameEq parent component sourceBefore ->
     ParentRegistrationYield protocol nameEq parent component movedBefore) ->
   ((parent, child : name) ->
+    (component : Component key value world error) ->
+    action = OInsert child (ChildOf parent) component ->
     ChildRetirementProvenance parent child sourceRest ->
     ChildRetirementProvenance parent child movedRest) ->
   RegistrationStepDiscipline protocol nameEq action sourceBefore sourceRest ->
@@ -19027,7 +19029,7 @@ sameActionMovedRegistrationStepDiscipline protocol nameEq
   (OInsert child (ChildOf parent) component) sourceBefore movedBefore sourceRest
   movedRest moveYield moveRetirement (sourceYield, sourceRetirement) =
     (moveYield parent child component Refl sourceYield,
-     moveRetirement parent child sourceRetirement)
+     moveRetirement parent child component Refl sourceRetirement)
 sameActionMovedRegistrationStepDiscipline protocol nameEq (ORetire child)
   sourceBefore movedBefore sourceRest movedRest moveYield moveRetirement evidence = ()
 sameActionMovedRegistrationStepDiscipline protocol nameEq (ORemove child)
@@ -19060,6 +19062,8 @@ sameActionMovedRegistrationStepDiscipline protocol nameEq (LUnload actor)
     ParentRegistrationYield protocol nameEq parent component sourceBefore ->
     ParentRegistrationYield protocol nameEq parent component movedBefore) ->
   ((parent, child : name) ->
+    (component : Component key value world error) ->
+    transitionAction sourceStep = OInsert child (ChildOf parent) component ->
     ChildRetirementProvenance parent child sourceRest ->
     ChildRetirementProvenance parent child movedRest) ->
   RegistrationStepDiscipline protocol nameEq (transitionAction sourceStep)
@@ -19073,6 +19077,64 @@ movedRegistrationStepDiscipline protocol nameEq sourceStep movedStep sourceRest
       (sameActionMovedRegistrationStepDiscipline protocol nameEq
         (transitionAction sourceStep) sourceBefore movedBefore sourceRest movedRest
         moveYield moveRetirement sourceDiscipline)
+
+0 adjacentPairRegistrationDiscipline :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {pairFirst, pairMiddle, pairFinal, originalFinal, replayedFinal :
+    SystemState name key value world error} ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq suffix
+    replayedSuffix ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  RegistrationDiscipline protocol nameEq
+    (MoreTransitions left (MoreTransitions right suffix)) ->
+  RegistrationDiscipline protocol nameEq
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) replayedSuffix))
+adjacentPairRegistrationDiscipline protocol nameEq keyEq left right suffix diamond
+  replayedSuffix seal sourcePairAligned
+  (RegistrationDisciplineStep left (MoreTransitions right suffix) sourceLeft
+    (RegistrationDisciplineStep right suffix sourceRight sourceSuffix)) =
+      let 0 replayedSuffixDiscipline : RegistrationDiscipline protocol nameEq
+            replayedSuffix
+          replayedSuffixDiscipline = sealedSuffixRegistrationDiscipline protocol
+            nameEq (swappedControlEquivalent diamond) seal sourceSuffix
+          0 movedRightHead : RegistrationStepDiscipline protocol nameEq
+            (transitionAction (movedRight diamond)) pairFirst
+            (MoreTransitions (movedLeft diamond) replayedSuffix)
+          movedRightHead = movedRegistrationStepDiscipline protocol nameEq right
+            (movedRight diamond) suffix
+            (MoreTransitions (movedLeft diamond) replayedSuffix)
+            (movedRightAction diamond)
+            (movedRightParentYield protocol nameEq keyEq left right diamond
+              sourcePairAligned)
+            (movedRightTailRetirementProvenance left right suffix diamond
+              replayedSuffix seal)
+            sourceRight
+          0 movedLeftHead : RegistrationStepDiscipline protocol nameEq
+            (transitionAction (movedLeft diamond)) (swappedMiddle diamond)
+            replayedSuffix
+          movedLeftHead = movedRegistrationStepDiscipline protocol nameEq left
+            (movedLeft diamond) (MoreTransitions right suffix) replayedSuffix
+            (movedLeftAction diamond)
+            (movedLeftParentYield protocol nameEq keyEq left right diamond)
+            (\parent, child, component, leftInsert, sourceRetirement =>
+              movedLeftTailRetirementProvenance nameEq keyEq left right suffix
+                diamond replayedSuffix seal sourcePairAligned parent child
+                component leftInsert sourceRetirement)
+            sourceLeft
+      in RegistrationDisciplineStep (movedRight diamond)
+        (MoreTransitions (movedLeft diamond) replayedSuffix) movedRightHead
+        (RegistrationDisciplineStep (movedLeft diamond) replayedSuffix
+          movedLeftHead replayedSuffixDiscipline)
 
 0 sameActionRegistrationStepDiscipline :
   {name, key, world, error : Type} -> {value : key -> Type} ->
