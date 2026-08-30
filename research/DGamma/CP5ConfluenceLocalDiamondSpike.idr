@@ -19184,6 +19184,30 @@ movedRegistrationStepDiscipline protocol localNameDecision sourceStep movedStep
         (transitionAction sourceStep) sourceBefore movedBefore sourceRest movedRest
         moveYield moveRetirement sourceDiscipline)
 
+0 movedRightTailRetirementProvenance :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  {pairFirst, pairMiddle, pairFinal, originalFinal, replayedFinal :
+    SystemState name key value world error} ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value
+    localNameDecision localKeyDecision left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  SealedSuffixReplaySpine name key world error value localNameDecision
+    localKeyDecision suffix replayedSuffix ->
+  (parent, child : name) ->
+  ChildRetirementProvenance parent child suffix ->
+  ChildRetirementProvenance parent child
+    (MoreTransitions (movedLeft diamond) replayedSuffix)
+movedRightTailRetirementProvenance localNameDecision localKeyDecision left right
+  suffix diamond replayedSuffix seal parent child sourceProvenance =
+    prependChildRetirementProvenance (movedLeft diamond) replayedSuffix
+      (movedLeftNotParentRecovery localNameDecision localKeyDecision diamond parent)
+      (sealedSuffixChildRetirementProvenance localNameDecision localKeyDecision
+        parent child seal sourceProvenance)
+
 ||| Transport one exact registration-step obligation across pointwise controls
 ||| and a producer-sealed tail. The dependent insertion component is bound by
 ||| the action pattern itself; all proof locals are erased explicitly.
