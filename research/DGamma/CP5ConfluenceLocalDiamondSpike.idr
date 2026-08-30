@@ -19098,6 +19098,92 @@ movedRetireBeforeInsertedChildImpossible localNameDecision localKeyDecision left
                 (oldFiber ** found) =>
                   void (nothingIsNotJust (trans (sym absent) found))
 
+0 sameActionMovedRegistrationStepDiscipline :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) ->
+  (action : Action name key value world error) ->
+  (sourceBefore, movedBefore : SystemState name key value world error) ->
+  {sourceAfter, sourceFinal, movedAfter, movedFinal :
+    SystemState name key value world error} ->
+  (sourceRest : Transitions sourceAfter sourceFinal) ->
+  (movedRest : Transitions movedAfter movedFinal) ->
+  ((parent, child : name) ->
+    (insertedComponent : Component key value world error) ->
+    ParentRegistrationYield protocol localNameDecision parent insertedComponent
+      sourceBefore ->
+    ParentRegistrationYield protocol localNameDecision parent insertedComponent
+      movedBefore) ->
+  ((parent, child : name) ->
+    ChildRetirementProvenance parent child sourceRest ->
+    ChildRetirementProvenance parent child movedRest) ->
+  RegistrationStepDiscipline protocol localNameDecision action sourceBefore
+    sourceRest ->
+  RegistrationStepDiscipline protocol localNameDecision action movedBefore
+    movedRest
+sameActionMovedRegistrationStepDiscipline protocol localNameDecision
+  (OInsert child Root insertedComponent) sourceBefore movedBefore sourceRest
+  movedRest moveYield moveRetirement ranked = ranked
+sameActionMovedRegistrationStepDiscipline protocol localNameDecision
+  (OInsert child (ChildOf parent) insertedComponent) sourceBefore movedBefore
+  sourceRest movedRest moveYield moveRetirement
+  (sourceYield, sourceRetirement) =
+    (moveYield parent child insertedComponent sourceYield,
+     moveRetirement parent child sourceRetirement)
+sameActionMovedRegistrationStepDiscipline protocol localNameDecision
+  (ORetire child) sourceBefore movedBefore sourceRest movedRest moveYield
+  moveRetirement evidence = ()
+sameActionMovedRegistrationStepDiscipline protocol localNameDecision
+  (ORemove child) sourceBefore movedBefore sourceRest movedRest moveYield
+  moveRetirement evidence = ()
+sameActionMovedRegistrationStepDiscipline protocol localNameDecision
+  (LBegin actor) sourceBefore movedBefore sourceRest movedRest moveYield
+  moveRetirement evidence = ()
+sameActionMovedRegistrationStepDiscipline protocol localNameDecision
+  (LAdvance actor) sourceBefore movedBefore sourceRest movedRest moveYield
+  moveRetirement evidence = ()
+sameActionMovedRegistrationStepDiscipline protocol localNameDecision
+  (LDivert actor) sourceBefore movedBefore sourceRest movedRest moveYield
+  moveRetirement evidence = ()
+sameActionMovedRegistrationStepDiscipline protocol localNameDecision
+  (LLeave actor) sourceBefore movedBefore sourceRest movedRest moveYield
+  moveRetirement evidence = ()
+sameActionMovedRegistrationStepDiscipline protocol localNameDecision
+  (LUnload actor) sourceBefore movedBefore sourceRest movedRest moveYield
+  moveRetirement evidence = ()
+
+0 movedRegistrationStepDiscipline :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) ->
+  {sourceBefore, sourceAfter, sourceFinal, movedBefore, movedAfter, movedFinal :
+    SystemState name key value world error} ->
+  (sourceStep : Transition sourceBefore sourceAfter) ->
+  (movedStep : Transition movedBefore movedAfter) ->
+  (sourceRest : Transitions sourceAfter sourceFinal) ->
+  (movedRest : Transitions movedAfter movedFinal) ->
+  transitionAction movedStep = transitionAction sourceStep ->
+  ((parent, child : name) ->
+    (insertedComponent : Component key value world error) ->
+    ParentRegistrationYield protocol localNameDecision parent insertedComponent
+      sourceBefore ->
+    ParentRegistrationYield protocol localNameDecision parent insertedComponent
+      movedBefore) ->
+  ((parent, child : name) ->
+    ChildRetirementProvenance parent child sourceRest ->
+    ChildRetirementProvenance parent child movedRest) ->
+  RegistrationStepDiscipline protocol localNameDecision
+    (transitionAction sourceStep) sourceBefore sourceRest ->
+  RegistrationStepDiscipline protocol localNameDecision
+    (transitionAction movedStep) movedBefore movedRest
+movedRegistrationStepDiscipline protocol localNameDecision sourceStep movedStep
+  sourceRest movedRest sameAction moveYield moveRetirement sourceDiscipline =
+    replace {p = \candidate => RegistrationStepDiscipline protocol
+      localNameDecision candidate movedBefore movedRest} (sym sameAction)
+      (sameActionMovedRegistrationStepDiscipline protocol localNameDecision
+        (transitionAction sourceStep) sourceBefore movedBefore sourceRest movedRest
+        moveYield moveRetirement sourceDiscipline)
+
 ||| Transport one exact registration-step obligation across pointwise controls
 ||| and a producer-sealed tail. The dependent insertion component is bound by
 ||| the action pattern itself; all proof locals are erased explicitly.
