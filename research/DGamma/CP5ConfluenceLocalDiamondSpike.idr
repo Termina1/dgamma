@@ -19029,6 +19029,75 @@ checkedRetireRequiresFoundExplicit localNameDecision localKeyDecision child
       source tag afterState raw of
       MkRetireSuccessView oldFiber found => (oldFiber ** found)
 
+||| A child cannot be retired by the moved-right head from the same pair source
+||| in which source-left first inserts it.
+0 movedRetireBeforeInsertedChildImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  {pairFirst, pairMiddle, pairFinal : SystemState name key value world error} ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value
+    localNameDecision localKeyDecision left right) ->
+  AlignedTransitions name key world error value localNameDecision
+    localKeyDecision
+    (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  (child : name) -> (insertedParent : Parent name) ->
+  (insertedComponent : Component key value world error) ->
+  transitionAction left =
+    OInsert child insertedParent insertedComponent ->
+  transitionAction right = ORetire child -> Void
+movedRetireBeforeInsertedChildImpossible localNameDecision localKeyDecision left
+  right diamond sourcePairAligned child insertedParent insertedComponent
+  leftInsert rightRetires =
+    let 0 sourceHead : LocalAlignedHeadView name key world error value
+          localNameDecision localKeyDecision left
+          (MoreTransitions right NoTransitions)
+        sourceHead = localAlignedHeadView sourcePairAligned
+        0 sourceActionInsert : alignedHeadAction sourceHead =
+          OInsert child insertedParent insertedComponent
+        sourceActionInsert = trans
+          (sym (alignedHeadActionProjection sourceHead)) leftInsert
+        0 sourceCheckedInsert :
+          (checkedApplyAction @{localNameDecision} @{localKeyDecision}
+            (the (Action name key value world error)
+              (OInsert child insertedParent insertedComponent)) pairFirst =
+                Just (alignedHeadTag sourceHead, pairMiddle))
+        sourceCheckedInsert = replace
+          {p = \candidate =>
+            checkedApplyAction @{localNameDecision} @{localKeyDecision}
+              candidate pairFirst = Just (alignedHeadTag sourceHead, pairMiddle)}
+          sourceActionInsert (alignedHeadChecked sourceHead)
+    in case produceMovedRightRetirePackage localNameDecision localKeyDecision
+      left right diamond child rightRetires of
+      MkMovedRightRetirePackage movedAction movedTag movedChecked
+        movedEqualsRight movedEqualsRetire =>
+          let 0 movedCheckedRetire :
+                (checkedApplyAction @{localNameDecision} @{localKeyDecision}
+                  (the (Action name key value world error) (ORetire child))
+                  pairFirst = Just (movedTag, swappedMiddle diamond))
+              movedCheckedRetire = replace
+                {p = \candidate =>
+                  checkedApplyAction @{localNameDecision} @{localKeyDecision}
+                    candidate pairFirst =
+                      Just (movedTag, swappedMiddle diamond)}
+                movedEqualsRetire movedChecked
+          in case pairFirst of
+            MkSystemState ambient source =>
+              let 0 absent : (lookupFiber @{localNameDecision}
+                    {name = name} {key = key} {value = value}
+                    {world = world} {error = error} child source =
+                      (the (Maybe (Fiber name key value world error)) Nothing))
+                  absent = checkedInsertRequiresAbsentExplicit
+                    localNameDecision localKeyDecision child insertedParent
+                    insertedComponent ambient source
+                    (alignedHeadTag sourceHead) pairMiddle sourceCheckedInsert
+              in case checkedRetireRequiresFoundExplicit localNameDecision
+                localKeyDecision child ambient source movedTag
+                (swappedMiddle diamond) movedCheckedRetire of
+                (oldFiber ** found) =>
+                  void (nothingIsNotJust (trans (sym absent) found))
+
 ||| Transport one exact registration-step obligation across pointwise controls
 ||| and a producer-sealed tail. The dependent insertion component is bound by
 ||| the action pattern itself; all proof locals are erased explicitly.
