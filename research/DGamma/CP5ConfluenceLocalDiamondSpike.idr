@@ -19639,6 +19639,31 @@ producePrefixRegistrationDisciplineView protocol localNameDecision expectedHead
       (appendTransitions prefixTail pairBody) Refl Refl headDiscipline
       tailDiscipline
 
+0 reindexPrefixRegistrationStepExplicit :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) ->
+  {initial, prefixMiddle, finalState :
+    SystemState name key value world error} ->
+  (storedHead : Transition initial prefixMiddle) ->
+  (expectedHead : Transition initial prefixMiddle) ->
+  (storedRest : Transitions prefixMiddle finalState) ->
+  (expectedRest : Transitions prefixMiddle finalState) ->
+  storedHead = expectedHead ->
+  storedRest = expectedRest ->
+  RegistrationStepDiscipline protocol localNameDecision
+    (transitionAction storedHead) initial storedRest ->
+  RegistrationStepDiscipline protocol localNameDecision
+    (transitionAction expectedHead) initial expectedRest
+reindexPrefixRegistrationStepExplicit protocol localNameDecision storedHead
+  expectedHead storedRest expectedRest headEquals restEquals discipline =
+    replace {p = \candidateRest => RegistrationStepDiscipline protocol
+      localNameDecision (transitionAction expectedHead) initial candidateRest}
+      restEquals
+      (replace {p = \candidateHead => RegistrationStepDiscipline protocol
+        localNameDecision (transitionAction candidateHead) initial storedRest}
+        headEquals discipline)
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
