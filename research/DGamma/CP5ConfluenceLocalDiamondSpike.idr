@@ -17907,6 +17907,110 @@ alignedTraceFinalWellFormed nameEq keyEq
 ||| target alignment generated from the unchanged prefix, the diamond-owned
 ||| moved pair, and the same pointwise suffix producer that owns the replay
 ||| trace and seal. No alignment is accepted from the caller.
+0 paperActivationCannotParentRecovery :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {parent : name} ->
+  (transition : Transition before afterState) ->
+  PaperActivationStep transition ->
+  ParentRecoveryStep parent transition -> Void
+paperActivationCannotParentRecovery transition activation
+  (ParentLeaves action) = case activation of
+    PaperBeginStep begin beginTag =>
+      case trans (sym begin) action of Refl impossible
+    PaperIterStep iter iterTag =>
+      case trans (sym iter) action of Refl impossible
+    PaperFinishStep finish finishTag =>
+      case trans (sym finish) action of Refl impossible
+paperActivationCannotParentRecovery transition activation
+  (ParentDivertsBefore action) = case activation of
+    PaperBeginStep begin beginTag =>
+      case trans (sym begin) action of Refl impossible
+    PaperIterStep iter iterTag =>
+      case trans (sym iter) action of Refl impossible
+    PaperFinishStep finish finishTag =>
+      case trans (sym finish) action of Refl impossible
+paperActivationCannotParentRecovery transition activation
+  (ParentDivertsAfter action recoveryTag) = case activation of
+    PaperBeginStep begin beginTag =>
+      case trans (sym begin) action of Refl impossible
+    PaperIterStep iter iterTag =>
+      case trans (sym iterTag) recoveryTag of Refl impossible
+    PaperFinishStep finish finishTag =>
+      case trans (sym finishTag) recoveryTag of Refl impossible
+paperActivationCannotParentRecovery transition activation
+  (ParentRaises action recoveryTag) = case activation of
+    PaperBeginStep begin beginTag =>
+      case trans (sym begin) action of Refl impossible
+    PaperIterStep iter iterTag =>
+      case trans (sym iterTag) recoveryTag of Refl impossible
+    PaperFinishStep finish finishTag =>
+      case trans (sym finishTag) recoveryTag of Refl impossible
+
+0 paperOrchestrationCannotParentRecovery :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {parent : name} ->
+  (transition : Transition before afterState) ->
+  PaperOrchestrationStep transition ->
+  ParentRecoveryStep parent transition -> Void
+paperOrchestrationCannotParentRecovery transition orchestration recovery =
+  case orchestration of
+    PaperInsertStep insert => case recovery of
+      ParentLeaves action => case trans (sym insert) action of Refl impossible
+      ParentDivertsBefore action =>
+        case trans (sym insert) action of Refl impossible
+      ParentDivertsAfter action tag =>
+        case trans (sym insert) action of Refl impossible
+      ParentRaises action tag =>
+        case trans (sym insert) action of Refl impossible
+    PaperRetireStep retire => case recovery of
+      ParentLeaves action => case trans (sym retire) action of Refl impossible
+      ParentDivertsBefore action =>
+        case trans (sym retire) action of Refl impossible
+      ParentDivertsAfter action tag =>
+        case trans (sym retire) action of Refl impossible
+      ParentRaises action tag =>
+        case trans (sym retire) action of Refl impossible
+    PaperRemoveStep remove => case recovery of
+      ParentLeaves action => case trans (sym remove) action of Refl impossible
+      ParentDivertsBefore action =>
+        case trans (sym remove) action of Refl impossible
+      ParentDivertsAfter action tag =>
+        case trans (sym remove) action of Refl impossible
+      ParentRaises action tag =>
+        case trans (sym remove) action of Refl impossible
+
+||| Revision-21 safety already classifies the right transition into a paper
+||| activation or orchestration family. Neither family contains a parent
+||| recovery boundary, so a left child retirement cannot cross its parent's
+||| first recovery.
+0 candidateSafetyExcludesParentRecovery :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  {left : Transition first middle} ->
+  {right : Transition middle finalState} ->
+  CandidateRegistrationSwapSafety left right ->
+  (child, parent : name) ->
+  transitionAction left = ORetire child ->
+  ParentRecoveryStep parent right -> Void
+candidateSafetyExcludesParentRecovery
+  (CandidateActivationActivation leftActivation rightActivation)
+  child parent leftRetire rightRecovery =
+    paperActivationCannotParentRecovery _ rightActivation rightRecovery
+candidateSafetyExcludesParentRecovery
+  (CandidateActivationOrchestration leftActivation rightOrchestration parentSafe)
+  child parent leftRetire rightRecovery =
+    paperOrchestrationCannotParentRecovery _ rightOrchestration rightRecovery
+candidateSafetyExcludesParentRecovery
+  (CandidateOrchestrationActivation leftOrchestration rightActivation childSafe
+    parentSafe) child parent leftRetire rightRecovery =
+      paperActivationCannotParentRecovery _ rightActivation rightRecovery
+candidateSafetyExcludesParentRecovery
+  (CandidateOrchestrationOrchestration leftOrchestration rightOrchestration
+    childrenDistinct licensesDoNotCross) child parent leftRetire rightRecovery =
+      paperOrchestrationCannotParentRecovery _ rightOrchestration rightRecovery
+
 data LocatedReloadingControl :
   (key : Type) -> (value : key -> Type) ->
   (world, error, name : Type) ->
