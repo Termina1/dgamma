@@ -19136,6 +19136,54 @@ adjacentPairRegistrationDiscipline protocol nameEq keyEq left right suffix diamo
         (RegistrationDisciplineStep (movedLeft diamond) replayedSuffix
           movedLeftHead replayedSuffixDiscipline)
 
+0 adjacentRegistrationDiscipline :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal, replayedFinal :
+    SystemState name key value world error} ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq suffix
+    replayedSuffix ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  RegistrationDiscipline protocol nameEq (appendTransitions prefixTrace
+    (MoreTransitions left (MoreTransitions right suffix))) ->
+  RegistrationDiscipline protocol nameEq (appendTransitions prefixTrace
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) replayedSuffix)))
+adjacentRegistrationDiscipline protocol nameEq keyEq NoTransitions left right
+  suffix diamond replayedSuffix seal sourcePairAligned sourceDiscipline =
+    adjacentPairRegistrationDiscipline protocol nameEq keyEq left right suffix
+      diamond replayedSuffix seal sourcePairAligned sourceDiscipline
+adjacentRegistrationDiscipline protocol nameEq keyEq
+  (MoreTransitions prefixStep prefixTail) left right suffix diamond replayedSuffix
+  seal sourcePairAligned
+  (RegistrationDisciplineStep prefixStep sourceRest sourceHead sourceTail) =
+    let targetRest = appendTransitions prefixTail
+          (MoreTransitions (movedRight diamond)
+            (MoreTransitions (movedLeft diamond) replayedSuffix))
+        0 targetHead : RegistrationStepDiscipline protocol nameEq
+          (transitionAction prefixStep) _ targetRest
+        targetHead = movedRegistrationStepDiscipline protocol nameEq prefixStep
+          prefixStep sourceRest targetRest Refl
+          (\parent, child, component, insertion, sourceYield => sourceYield)
+          (\parent, child, component, insertion, sourceRetirement =>
+            adjacentChildRetirementProvenance prefixTail left right suffix
+              diamond replayedSuffix seal parent child sourceRetirement)
+          sourceHead
+        0 targetTail : RegistrationDiscipline protocol nameEq targetRest
+        targetTail = adjacentRegistrationDiscipline protocol nameEq keyEq
+          prefixTail left right suffix diamond replayedSuffix seal
+          sourcePairAligned sourceTail
+    in RegistrationDisciplineStep prefixStep targetRest targetHead targetTail
+
 0 sameActionRegistrationStepDiscipline :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (protocol : RegistrationProtocol key value world error) ->
