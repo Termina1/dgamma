@@ -18801,6 +18801,78 @@ prependChildRetirementProvenance transition rest noRecovery
     ChildRetiredBeforeParent
       (ChildRetiresLater transition rest noRecovery retires)
 
+0 sameActionMovedRegistrationStepDiscipline :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) ->
+  (action : Action name key value world error) ->
+  (sourceBefore, movedBefore : SystemState name key value world error) ->
+  {sourceAfter, sourceFinal, movedAfter, movedFinal :
+    SystemState name key value world error} ->
+  (sourceRest : Transitions sourceAfter sourceFinal) ->
+  (movedRest : Transitions movedAfter movedFinal) ->
+  ((parent, child : name) ->
+    (component : Component key value world error) ->
+    ParentRegistrationYield protocol nameEq parent component sourceBefore ->
+    ParentRegistrationYield protocol nameEq parent component movedBefore) ->
+  ((parent, child : name) ->
+    ChildRetirementProvenance parent child sourceRest ->
+    ChildRetirementProvenance parent child movedRest) ->
+  RegistrationStepDiscipline protocol nameEq action sourceBefore sourceRest ->
+  RegistrationStepDiscipline protocol nameEq action movedBefore movedRest
+sameActionMovedRegistrationStepDiscipline protocol nameEq
+  (OInsert child Root component) sourceBefore movedBefore sourceRest movedRest
+  moveYield moveRetirement ranked = ranked
+sameActionMovedRegistrationStepDiscipline protocol nameEq
+  (OInsert child (ChildOf parent) component) sourceBefore movedBefore sourceRest
+  movedRest moveYield moveRetirement (sourceYield, sourceRetirement) =
+    (moveYield parent child component sourceYield,
+     moveRetirement parent child sourceRetirement)
+sameActionMovedRegistrationStepDiscipline protocol nameEq (ORetire child)
+  sourceBefore movedBefore sourceRest movedRest moveYield moveRetirement evidence = ()
+sameActionMovedRegistrationStepDiscipline protocol nameEq (ORemove child)
+  sourceBefore movedBefore sourceRest movedRest moveYield moveRetirement evidence = ()
+sameActionMovedRegistrationStepDiscipline protocol nameEq (LBegin actor)
+  sourceBefore movedBefore sourceRest movedRest moveYield moveRetirement evidence = ()
+sameActionMovedRegistrationStepDiscipline protocol nameEq (LAdvance actor)
+  sourceBefore movedBefore sourceRest movedRest moveYield moveRetirement evidence = ()
+sameActionMovedRegistrationStepDiscipline protocol nameEq (LDivert actor)
+  sourceBefore movedBefore sourceRest movedRest moveYield moveRetirement evidence = ()
+sameActionMovedRegistrationStepDiscipline protocol nameEq (LLeave actor)
+  sourceBefore movedBefore sourceRest movedRest moveYield moveRetirement evidence = ()
+sameActionMovedRegistrationStepDiscipline protocol nameEq (LUnload actor)
+  sourceBefore movedBefore sourceRest movedRest moveYield moveRetirement evidence = ()
+
+0 movedRegistrationStepDiscipline :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) ->
+  {sourceBefore, sourceAfter, sourceFinal, movedBefore, movedAfter, movedFinal :
+    SystemState name key value world error} ->
+  (sourceStep : Transition sourceBefore sourceAfter) ->
+  (movedStep : Transition movedBefore movedAfter) ->
+  (sourceRest : Transitions sourceAfter sourceFinal) ->
+  (movedRest : Transitions movedAfter movedFinal) ->
+  transitionAction movedStep = transitionAction sourceStep ->
+  ((parent, child : name) ->
+    (component : Component key value world error) ->
+    ParentRegistrationYield protocol nameEq parent component sourceBefore ->
+    ParentRegistrationYield protocol nameEq parent component movedBefore) ->
+  ((parent, child : name) ->
+    ChildRetirementProvenance parent child sourceRest ->
+    ChildRetirementProvenance parent child movedRest) ->
+  RegistrationStepDiscipline protocol nameEq (transitionAction sourceStep)
+    sourceBefore sourceRest ->
+  RegistrationStepDiscipline protocol nameEq (transitionAction movedStep)
+    movedBefore movedRest
+movedRegistrationStepDiscipline protocol nameEq sourceStep movedStep sourceRest
+  movedRest sameAction moveYield moveRetirement sourceDiscipline =
+    replace {p = \action => RegistrationStepDiscipline protocol nameEq action
+      movedBefore movedRest} (sym sameAction)
+      (sameActionMovedRegistrationStepDiscipline protocol nameEq
+        (transitionAction sourceStep) sourceBefore movedBefore sourceRest movedRest
+        moveYield moveRetirement sourceDiscipline)
+
 0 sameActionRegistrationStepDiscipline :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (protocol : RegistrationProtocol key value world error) ->
