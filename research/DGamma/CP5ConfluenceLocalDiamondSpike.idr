@@ -19387,6 +19387,79 @@ pointwiseQuietTrue nameEq keyEq
     Elem (Bind selected targetFiber) (Bind selected targetFiber :: rest)
   elementAtHeadOrTail rest = Here
 
+0 notFailedEntryFromElem :
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  Elem (Bind selected fiber) entries ->
+  allList notFailedEntry entries = True ->
+  fiberNotFailed fiber = True
+notFailedEntryFromElem (Bind selected fiber :: rest) selected fiber Here valid =
+  boolAndLeftPointwise _ _ valid
+notFailedEntryFromElem (entry :: rest) selected fiber (There later) valid =
+  notFailedEntryFromElem rest selected fiber later
+    (boolAndRightPointwise _ _ valid)
+
+0 pointwiseFiberNotFailedTrue :
+  FiberControlRelated leftFiber rightFiber ->
+  fiberNotFailed leftFiber = True ->
+  fiberNotFailed rightFiber = True
+pointwiseFiberNotFailedTrue
+  (FibersControlRelated leftParent rightParent leftRetired rightRetired leftTable
+    rightTable leftLifecycle rightLifecycle parentSame retiredSame
+    lifecycleRelated) sourceNotFailed = case lifecycleRelated of
+      InactiveControls outcomeSame => case outcomeSame of
+        Refl => sourceNotFailed
+      ReloadingControls remaining accumulator view => Refl
+      ActiveControls accumulator view => Refl
+      UnloadingControls accumulator view outcome => Refl
+
+0 pointwiseNoFailedFibersTrue :
+  (nameEq : DecEq name) ->
+  (left, right : SystemState name key value world error) ->
+  ControlEquivalent name key world error value nameEq left right ->
+  noFailedFibers left = True ->
+  noFailedFibers right = True
+pointwiseNoFailedFibersTrue nameEq
+  (MkSystemState leftWorld (MkCoeffectContext leftEntries leftUnique))
+  (MkSystemState rightWorld (MkCoeffectContext rightEntries rightUnique))
+  controls sourceNoFailure = targetAll rightEntries
+  where
+  0 sourceEntryNotFailed : (selected : name) ->
+    (sourceFiber : Fiber name key value world error) ->
+    lookupEntries @{nameEq} selected leftEntries = Just sourceFiber ->
+    fiberNotFailed sourceFiber = True
+  sourceEntryNotFailed selected sourceFiber sourceFound =
+    notFailedEntryFromElem leftEntries selected sourceFiber
+      (entryElemFromLookupPointwise nameEq selected sourceFiber leftEntries
+        leftUnique sourceFound)
+      sourceNoFailure
+
+  0 targetAll : (entries : List (Binding name
+    (FiberAt name key value world error))) ->
+    allList notFailedEntry entries = True
+  targetAll [] = Refl
+  targetAll (Bind selected targetFiber :: rest) =
+    let 0 targetFound : lookupFiber @{nameEq} selected
+          (MkCoeffectContext rightEntries rightUnique) = Just targetFiber
+        targetFound = entryLookupFromElemPointwise nameEq rightEntries rightUnique
+          selected targetFiber (the (Elem (Bind selected targetFiber)
+            rightEntries) (elementAtHeadOrTail rest))
+    in case pointwiseControlLookupFound nameEq selected
+      (MkSystemState rightWorld (MkCoeffectContext rightEntries rightUnique))
+      (MkSystemState leftWorld (MkCoeffectContext leftEntries leftUnique))
+      (controlEquivalentSymmetric controls) targetFiber targetFound of
+      (sourceFiber ** (sourceFound, targetSourceRelated)) =>
+        boolAndBothPointwise _ _
+          (pointwiseFiberNotFailedTrue
+            (fiberControlSymmetric targetSourceRelated)
+            (sourceEntryNotFailed selected sourceFiber sourceFound))
+          (targetAll rest)
+
+  0 elementAtHeadOrTail : (rest : List (Binding name
+    (FiberAt name key value world error))) ->
+    Elem (Bind selected targetFiber) (Bind selected targetFiber :: rest)
+  elementAtHeadOrTail rest = Here
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
@@ -19417,6 +19490,7 @@ record AdjacentAlignedPointwiseReplay
   0 alignedReplayFinalWellFormed :
     registryWellFormed @{nameEq} @{keyEq} alignedReplayFinal = True
   0 alignedReplayQuiet : quiet @{nameEq} @{keyEq} alignedReplayFinal = True
+  0 alignedReplayNoFailure : noFailedFibers alignedReplayFinal = True
   0 alignedReplayEndpoint : RelationalReplayEndpoint name key world error value
     nameEq keyEq originalFinal alignedReplayFinal
   0 alignedReplaySeal : SealedSuffixReplaySpine name key world error value nameEq
@@ -19514,6 +19588,10 @@ produceAdjacentAlignedPointwiseReplay nameEq keyEq protocol original tracePrefix
         (replayedEffects (spineReplayEndpoint suffixReplay))
         (replayedWellFormed (spineReplayEndpoint suffixReplay))
         (replayQuiet premises))
+      (pointwiseNoFailedFibersTrue nameEq originalFinal
+        (spineReplayedFinal suffixReplay)
+        (replayedControls (spineReplayEndpoint suffixReplay))
+        (replayNoFailure premises))
       (spineReplayEndpoint suffixReplay) (spineReplaySeal suffixReplay)
 
 ||| Checked suffix-splice interface consumed by sorting.  It is generic over the
