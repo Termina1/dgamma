@@ -1596,6 +1596,21 @@ executable `lifecycleQuietAt` relation lemma before bridging back to fibers.
 Fields 7–15 and assembly remain unopened. The remainder narrows to **1–12
 shifts**. Holes stay **20**, split **6/4/8/1/1**.
 
+### Revision 80: quiet lifecycle/fiber chain closes; explicit fold stop
+
+`research-tests/O6-R80-QUIET-BRIDGE-CLOSED-MEMBERSHIP-FOLD-STOP-AUDIT.md`
+records shift #88. The executable `lifecycleQuietAt`, its one-elimination
+`lifecycleControlQuietRelated`, complete `quietFiber` normalization, and the
+pointwise concrete-fiber bridge all close under visible fresh checks. This
+constructively discharges revision 79's independently bound active-view wall.
+The target-entry fold then validates tracked target membership, exact lookup,
+source recovery, and per-fiber application, but exhausts three attempts at a
+`where`-abstracted state alias versus its literal `MkSystemState` constructor.
+The fold is removed; the four semantic helpers remain. Field 6 is open only at
+an explicit-concrete-state finite fold. Fields 7–15 and assembly remain
+unopened. The accepted **1–12 shift** remainder is held. Holes stay **20**, split
+**6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1907,7 +1922,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–5 are closed. Revision 79 closes whole-prefix registration discipline and bundle field 2; field 6 stops at correlated active lifecycle views.** | **XL, 1–12 implementation shifts remain.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–5 are closed. Revision 80 closes the complete semantic lifecycle/fiber quietness bridge; field 6 remains open only at a concrete-state target-membership fold.** | **XL, 1–12 implementation shifts remain.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2107,6 +2122,7 @@ Revision 76 closes the producer-owned moved-retire checked-action package.
 Revision 77 closes its explicit lookup projections, the consumer, both moved
 retirement tails, and complete moved-pair registration discipline. Revision 78
 closes the exact producer-owned prefix-discipline view. Revision 79 closes its
-recursive consumer, complete bundle field 2, and fields 3–5; field 6 now stops
-at correlated active lifecycle-view transport. Later fields and final assembly
-remain open.
+recursive consumer, complete bundle field 2, and fields 3–5. Revision 80 closes
+the correlated lifecycle/view and fiber quietness chain; field 6 now stops only
+at an explicit-concrete-state target-membership fold. Later fields and final
+assembly remain open.
