@@ -18859,6 +18859,69 @@ movedLeftParentYield protocol localNameDecision localKeyDecision left right
             (movedRightOrchestrationBranch diamond rightOrchestration)
             sourceYield
 
+0 movedRightNotParentRecovery :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  {left : Transition first middle} -> {right : Transition middle finalState} ->
+  (diamond : LocalRelationalDiamond name key world error value
+    localNameDecision localKeyDecision left right) ->
+  (parent : name) -> ParentRecoveryStep parent (movedRight diamond) -> Void
+movedRightNotParentRecovery localNameDecision localKeyDecision diamond parent
+  recovery = case registrationSwapSafety diamond of
+    CandidateActivationActivation leftActivation rightActivation =>
+      paperActivationCannotParentRecovery _
+        (movedRightActivationBranch diamond rightActivation) recovery
+    CandidateActivationOrchestration leftActivation rightOrchestration
+      parentSafe => paperOrchestrationCannotParentRecovery _
+        (movedRightOrchestrationBranch diamond rightOrchestration) recovery
+    CandidateOrchestrationActivation leftOrchestration rightActivation
+      childSafe parentSafe => paperActivationCannotParentRecovery _
+        (movedRightActivationBranch diamond rightActivation) recovery
+    CandidateOrchestrationOrchestration leftOrchestration rightOrchestration
+      childrenDistinct licensesDoNotCross =>
+        paperOrchestrationCannotParentRecovery _
+          (movedRightOrchestrationBranch diamond rightOrchestration) recovery
+
+0 movedLeftNotParentRecovery :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  {left : Transition first middle} -> {right : Transition middle finalState} ->
+  (diamond : LocalRelationalDiamond name key world error value
+    localNameDecision localKeyDecision left right) ->
+  (parent : name) -> ParentRecoveryStep parent (movedLeft diamond) -> Void
+movedLeftNotParentRecovery localNameDecision localKeyDecision diamond parent
+  recovery = case registrationSwapSafety diamond of
+    CandidateActivationActivation leftActivation rightActivation =>
+      paperActivationCannotParentRecovery _
+        (movedLeftActivationBranch diamond leftActivation) recovery
+    CandidateActivationOrchestration leftActivation rightOrchestration
+      parentSafe => paperActivationCannotParentRecovery _
+        (movedLeftActivationBranch diamond leftActivation) recovery
+    CandidateOrchestrationActivation leftOrchestration rightActivation
+      childSafe parentSafe => paperOrchestrationCannotParentRecovery _
+        (movedLeftOrchestrationBranch diamond leftOrchestration) recovery
+    CandidateOrchestrationOrchestration leftOrchestration rightOrchestration
+      childrenDistinct licensesDoNotCross =>
+        paperOrchestrationCannotParentRecovery _
+          (movedLeftOrchestrationBranch diamond leftOrchestration) recovery
+
+0 prependChildRetirementProvenance :
+  (transition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (ParentRecoveryStep parent transition -> Void) ->
+  ChildRetirementProvenance parent child rest ->
+  ChildRetirementProvenance parent child (MoreTransitions transition rest)
+prependChildRetirementProvenance transition rest noRecovery
+  (ParentDoesNotRecover tailNoRecovery) =
+    ParentDoesNotRecover
+      (NoParentRecoveryStep transition rest noRecovery tailNoRecovery)
+prependChildRetirementProvenance transition rest noRecovery
+  (ChildRetiredBeforeParent retires) =
+    ChildRetiredBeforeParent
+      (ChildRetiresLater transition rest noRecovery retires)
+
 ||| Transport one exact registration-step obligation across pointwise controls
 ||| and a producer-sealed tail. The dependent insertion component is bound by
 ||| the action pattern itself; all proof locals are erased explicitly.
