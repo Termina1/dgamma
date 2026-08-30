@@ -18630,6 +18630,104 @@ orchestrationCheckedParentYieldBackward protocol localNameDecision
                       (lookupJustElem actor (deleteEntries actor entries)
                         targetFiber targetFound))
 
+0 alignedForeignParentYieldForward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {childComponent : Component key value world error} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  (parent : name) ->
+  {before, afterState, finalState : SystemState name key value world error} ->
+  (transition : Transition before afterState) ->
+  (rest : Transitions afterState finalState) ->
+  AlignedTransitions name key world error value localNameDecision
+    localKeyDecision (MoreTransitions transition rest) ->
+  Not (parent = transitionActor transition) ->
+  ParentRegistrationYield protocol localNameDecision parent childComponent
+    before ->
+  ParentRegistrationYield protocol localNameDecision parent childComponent
+    afterState
+alignedForeignParentYieldForward protocol localNameDecision localKeyDecision
+  parent (Fired localNameDecision localKeyDecision action tag checked) rest
+  (AlignedStep action tag checked rest alignedRest) distinct =
+    foreignCheckedParentYieldForward protocol localNameDecision localKeyDecision
+      parent action _ _ tag
+      (\same => distinct (trans same
+        (sym (localTransitionActorActionOwner
+          (Fired localNameDecision localKeyDecision action tag checked)))))
+      checked
+
+0 alignedForeignParentYieldBackward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {childComponent : Component key value world error} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  (parent : name) ->
+  {before, afterState, finalState : SystemState name key value world error} ->
+  (transition : Transition before afterState) ->
+  (rest : Transitions afterState finalState) ->
+  AlignedTransitions name key world error value localNameDecision
+    localKeyDecision (MoreTransitions transition rest) ->
+  Not (parent = transitionActor transition) ->
+  ParentRegistrationYield protocol localNameDecision parent childComponent
+    afterState ->
+  ParentRegistrationYield protocol localNameDecision parent childComponent
+    before
+alignedForeignParentYieldBackward protocol localNameDecision localKeyDecision
+  parent (Fired localNameDecision localKeyDecision action tag checked) rest
+  (AlignedStep action tag checked rest alignedRest) distinct =
+    foreignCheckedParentYieldBackward protocol localNameDecision localKeyDecision
+      parent action _ _ tag
+      (\same => distinct (trans same
+        (sym (localTransitionActorActionOwner
+          (Fired localNameDecision localKeyDecision action tag checked)))))
+      checked
+
+0 alignedOrchestrationParentYieldForward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {childComponent : Component key value world error} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  (parent : name) ->
+  {before, afterState, finalState : SystemState name key value world error} ->
+  (transition : Transition before afterState) ->
+  (rest : Transitions afterState finalState) ->
+  AlignedTransitions name key world error value localNameDecision
+    localKeyDecision (MoreTransitions transition rest) ->
+  PaperOrchestrationStep transition ->
+  ParentRegistrationYield protocol localNameDecision parent childComponent
+    before ->
+  ParentRegistrationYield protocol localNameDecision parent childComponent
+    afterState
+alignedOrchestrationParentYieldForward protocol localNameDecision
+  localKeyDecision parent
+  (Fired localNameDecision localKeyDecision action tag checked) rest
+  (AlignedStep action tag checked rest alignedRest) orchestration =
+    orchestrationCheckedParentYieldForward protocol localNameDecision
+      localKeyDecision parent action _ _ tag checked orchestration
+
+0 alignedOrchestrationParentYieldBackward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {childComponent : Component key value world error} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  (parent : name) ->
+  {before, afterState, finalState : SystemState name key value world error} ->
+  (transition : Transition before afterState) ->
+  (rest : Transitions afterState finalState) ->
+  AlignedTransitions name key world error value localNameDecision
+    localKeyDecision (MoreTransitions transition rest) ->
+  PaperOrchestrationStep transition ->
+  ParentRegistrationYield protocol localNameDecision parent childComponent
+    afterState ->
+  ParentRegistrationYield protocol localNameDecision parent childComponent
+    before
+alignedOrchestrationParentYieldBackward protocol localNameDecision
+  localKeyDecision parent
+  (Fired localNameDecision localKeyDecision action tag checked) rest
+  (AlignedStep action tag checked rest alignedRest) orchestration =
+    orchestrationCheckedParentYieldBackward protocol localNameDecision
+      localKeyDecision parent action _ _ tag checked orchestration
+
 ||| Preserve no-recovery evidence across the unchanged prefix, moved pair, and
 ||| the producer-sealed suffix. Prefix recursion eliminates its proof once and
 ||| never names a dependent tail endpoint twice.
