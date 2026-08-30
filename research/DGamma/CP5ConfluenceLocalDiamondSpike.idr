@@ -19765,6 +19765,28 @@ lifecycleQuietAt localNameDecision (Active accumulator view) target =
 lifecycleQuietAt localNameDecision (Unloading accumulator view outcome) target =
   False
 
+0 lifecycleControlQuietRelated :
+  {key, world, error, name : Type} -> {value : key -> Type} ->
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  (localNameDecision : DecEq name) ->
+  (leftTarget, rightTarget : Maybe (View name deps)) ->
+  {leftLifecycle, rightLifecycle :
+    Lifecycle key value world error name deps provision} ->
+  LifecycleControlRelated leftLifecycle rightLifecycle ->
+  leftTarget = rightTarget ->
+  lifecycleQuietAt localNameDecision leftLifecycle leftTarget =
+    lifecycleQuietAt localNameDecision rightLifecycle rightTarget
+lifecycleControlQuietRelated localNameDecision leftTarget rightTarget
+  (InactiveControls outcomesSame) targetsSame =
+    case outcomesSame of Refl => case targetsSame of Refl => Refl
+lifecycleControlQuietRelated localNameDecision leftTarget rightTarget
+  (ReloadingControls remainingSame accumulatorsSame viewsSame) targetsSame = Refl
+lifecycleControlQuietRelated localNameDecision leftTarget rightTarget
+  (ActiveControls accumulatorsSame viewsSame) targetsSame =
+    case viewsSame of Refl => case targetsSame of Refl => Refl
+lifecycleControlQuietRelated localNameDecision leftTarget rightTarget
+  (UnloadingControls accumulatorsSame viewsSame outcomesSame) targetsSame = Refl
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
