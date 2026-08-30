@@ -19110,11 +19110,14 @@ movedRetireBeforeInsertedChildImpossible localNameDecision localKeyDecision left
   (movedRest : Transitions movedAfter movedFinal) ->
   ((parent, child : name) ->
     (insertedComponent : Component key value world error) ->
+    action = OInsert child (ChildOf parent) insertedComponent ->
     ParentRegistrationYield protocol localNameDecision parent insertedComponent
       sourceBefore ->
     ParentRegistrationYield protocol localNameDecision parent insertedComponent
       movedBefore) ->
   ((parent, child : name) ->
+    (insertedComponent : Component key value world error) ->
+    action = OInsert child (ChildOf parent) insertedComponent ->
     ChildRetirementProvenance parent child sourceRest ->
     ChildRetirementProvenance parent child movedRest) ->
   RegistrationStepDiscipline protocol localNameDecision action sourceBefore
@@ -19128,8 +19131,8 @@ sameActionMovedRegistrationStepDiscipline protocol localNameDecision
   (OInsert child (ChildOf parent) insertedComponent) sourceBefore movedBefore
   sourceRest movedRest moveYield moveRetirement
   (sourceYield, sourceRetirement) =
-    (moveYield parent child insertedComponent sourceYield,
-     moveRetirement parent child sourceRetirement)
+    (moveYield parent child insertedComponent Refl sourceYield,
+     moveRetirement parent child insertedComponent Refl sourceRetirement)
 sameActionMovedRegistrationStepDiscipline protocol localNameDecision
   (ORetire child) sourceBefore movedBefore sourceRest movedRest moveYield
   moveRetirement evidence = ()
@@ -19165,11 +19168,16 @@ sameActionMovedRegistrationStepDiscipline protocol localNameDecision
   transitionAction movedStep = transitionAction sourceStep ->
   ((parent, child : name) ->
     (insertedComponent : Component key value world error) ->
+    transitionAction sourceStep =
+      OInsert child (ChildOf parent) insertedComponent ->
     ParentRegistrationYield protocol localNameDecision parent insertedComponent
       sourceBefore ->
     ParentRegistrationYield protocol localNameDecision parent insertedComponent
       movedBefore) ->
   ((parent, child : name) ->
+    (insertedComponent : Component key value world error) ->
+    transitionAction sourceStep =
+      OInsert child (ChildOf parent) insertedComponent ->
     ChildRetirementProvenance parent child sourceRest ->
     ChildRetirementProvenance parent child movedRest) ->
   RegistrationStepDiscipline protocol localNameDecision
