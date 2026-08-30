@@ -1500,6 +1500,27 @@ revision 22 is unnecessary. Resume field 2 with a private classifier lemma and
 structural provenance transport. Honest O6 remainder: **3–15 implementation
 shifts**. Holes remain **20**, split **6/4/8/1/1**.
 
+### Revision 74: field 2 and endpoint fields 3–7 close
+
+`research-tests/O6-R74-DISCIPLINE-CLOSED-ENDPOINT-FIELDS3-7-CLOSED-AUDIT.md`
+records grind shift #82. The R73 classifier theorem is promoted privately and
+consumed by structural `NoParentRecovery`, `ChildRetiresBeforeRecovery`, and
+`ChildRetirementProvenance` transport. The proof covers the unchanged prefix,
+the reordered pair, and every sealed suffix node. Checked parent yields are
+transported backward/forward across foreign and same-owner orchestration steps;
+the insert/retire and insert/remove impossible orientations are eliminated from
+the checked runtime equations rather than assumed.
+
+`adjacentRegistrationDiscipline` now closes bundle field 2 inside the same
+private outer producer that owns the target trace and suffix seal. Fields 3–5
+follow from the unchanged initial state and replay endpoint. Field 6 transports
+quietness through pointwise controls, exact effect tables, target resolution,
+and well-formed provider uniqueness. Field 7 transports inactive failure
+outcomes pointwise. Field 8 is left unopened at the separate moved-pair
+intermediate-totality unit; this is a tractable implementation boundary, not a
+new premise gap. No frozen/public surface changed. Honest O6 remainder:
+**2–14 shifts**. Holes remain **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1811,7 +1832,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; field 1, revision-21 safety, and exact pointwise parent-yield transport are closed. Revision 73 proves the landed classifiers already exclude any right parent-recovery step; field 2 may resume with structural retirement-provenance transport and no frozen revision.** | **XL, 3–15 implementation shifts remain after the design correction.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–7 are closed in the private outer producer. Field 2 includes complete prefix/pair/suffix registration-discipline transport using revision-21 safety. Field 8 is next at the moved-pair intermediate-totality unit; fields 9–15 and assembly remain unopened.** | **XL, 2–14 implementation shifts remain.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2003,4 +2024,7 @@ operational countershape is checked and independent, but every landed safety
 constructor classifies the right step as paper activation or orchestration, and
 both are constructively disjoint from `ParentRecoveryStep`. The exact proposed
 exclusion is therefore derivable; no revision-22 surface change is needed.
-Later fields and final assembly remain unopened.
+Revision 74 promotes that theorem privately, closes the full structural
+discipline transport and bundle field 2, then closes fields 3–7. Field 8 is
+next at moved-pair intermediate totality; fields 9–15 and final assembly remain
+unopened.
