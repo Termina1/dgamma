@@ -1534,6 +1534,22 @@ not a new semantic gap. Whole field 2, fields 3–15, and assembly remain open.
 One shift of the accepted band was consumed; **2–14 shifts** remain. Holes stay
 **20**, split **6/4/8/1/1**.
 
+### Revision 76: moved-retire package closed; consumer projection stop
+
+`research-tests/O6-R76-MOVED-RETIRE-CONSUMER-REINDEX-STOP-AUDIT.md` records
+grind shift #84. The authorized private `MovedRightRetirePackage` and producer
+close under a visible fresh CP5 rebuild: one erased dependent result seals the
+moved action, tag, checked equation, equality to the right action, and concrete
+retirement equality. The consumer then exhausted its separate three-attempt
+budget after successfully reindexing the moved checked equation: parser
+precedence closed, then an opaque source tag projection resisted
+`MkForeignInsertPlanView`, then tag-independent lookup projection helpers failed
+at their statement shape before elaboration. All consumer/helper code was
+removed; the checked package remains. This is still the
+correlated-projection/reindex class, not a semantic gap. Field 2 remains open;
+fields 3–15 and assembly remain unopened. The **2–14 shift** remainder is held.
+Holes stay **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1845,7 +1861,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; field 1 is closed. Revision 75 freshly closes suffix/adjacent provenance primitives, moved-pair yield transport, and sealed-suffix registration discipline. Field 2 whole moved-pair discipline is stopped only at checked-action reindexing for the moved-retire/insert impossibility.** | **XL, 2–14 implementation shifts remain.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; field 1 is closed. Revision 75 closes suffix/adjacent provenance primitives, moved-pair yields, and sealed-suffix discipline. Revision 76 closes the producer-owned moved-retire package; its consumer remains stopped at tag-independent lookup projection statement shape.** | **XL, 2–14 implementation shifts remain.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2040,6 +2056,8 @@ exclusion is therefore derivable; no revision-22 surface change is needed.
 Revision 74 retains the private classifier but removes all subsequent
 stale-TTC false positives after three direct fresh repair attempts. Revision 75
 rebuilds suffix/adjacent retirement provenance, all required parent-yield
-transport, and suffix registration discipline under visible fresh checks. Field
-2 whole moved-pair discipline remains stopped at a producer-owned checked-action
-reindex; later fields and final assembly remain unopened.
+transport, and suffix registration discipline under visible fresh checks.
+Revision 76 closes the producer-owned moved-retire checked-action package and
+its concrete retirement reindex, but the consumer now stops at a
+source-insertion tag-independent lookup projection statement shape. Field 2,
+later fields, and final assembly remain open.
