@@ -18973,6 +18973,36 @@ produceMovedRightRetirePackage localNameDecision localKeyDecision left right
       (alignedHeadTag alignedHead) (alignedHeadChecked alignedHead)
       actionEqualsRight actionEqualsRequested
 
+||| Tag-independent projection from one concretely typed checked insertion.
+||| Every lookup and action parameter is explicit to prevent statement-level
+||| inference from capturing a global projection.
+0 checkedInsertRequiresAbsentExplicit :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  (child : name) -> (insertedParent : Parent name) ->
+  (insertedComponent : Component key value world error) ->
+  (ambient : world) ->
+  (source : Registry name key value world error) ->
+  (tag : RuleTag) ->
+  (afterState : SystemState name key value world error) ->
+  (checked : checkedApplyAction @{localNameDecision} @{localKeyDecision}
+    (the (Action name key value world error)
+      (OInsert child insertedParent insertedComponent))
+    (MkSystemState ambient source) = Just (tag, afterState)) ->
+  lookupFiber @{localNameDecision}
+    {name = name} {key = key} {value = value} {world = world} {error = error}
+    child source =
+      (the (Maybe (Fiber name key value world error)) Nothing)
+checkedInsertRequiresAbsentExplicit localNameDecision localKeyDecision child
+  insertedParent insertedComponent ambient source tag afterState checked =
+    let 0 raw = checkedActionProjects localNameDecision localKeyDecision
+          (the (Action name key value world error)
+            (OInsert child insertedParent insertedComponent))
+          (MkSystemState ambient source) afterState tag checked
+    in case foreignInsertPlanView localNameDecision localKeyDecision child
+      insertedParent insertedComponent ambient source tag afterState raw of
+      MkForeignInsertPlanView absent guards => absent
+
 ||| Transport one exact registration-step obligation across pointwise controls
 ||| and a producer-sealed tail. The dependent insertion component is bound by
 ||| the action pattern itself; all proof locals are erased explicitly.
