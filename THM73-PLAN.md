@@ -1550,6 +1550,22 @@ correlated-projection/reindex class, not a semantic gap. Field 2 remains open;
 fields 3–15 and assembly remain unopened. The **2–14 shift** remainder is held.
 Holes stay **20**, split **6/4/8/1/1**.
 
+### Revision 77: projections, consumer, and pair discipline close; prefix stop
+
+`research-tests/O6-R77-ADJACENT-PREFIX-DISCIPLINE-STOP-AUDIT.md` records grind
+shift #85. Under visible fresh checks it closes both fully explicit
+lookup projections, `movedRetireBeforeInsertedChildImpossible`, indexed moved
+registration callbacks, both moved retirement tails, and complete
+`adjacentPairRegistrationDiscipline`. Thus the revision-76 consumer wall and
+the entire moved pair are discharged constructively. Whole-prefix
+`adjacentRegistrationDiscipline` then exhausted three fresh attempts:
+declaration order for suffix discipline, declaration order for adjacent
+provenance plus an accidental implicit source state, and finally a nonlinear
+dependent `sourceRest` versus exact append-tail mismatch. The whole-prefix unit
+was removed; all prior units remain. Field 2 is open only at prefix recursion.
+Fields 3–15 and assembly remain unopened. The remainder narrows to **1–13
+shifts**. Holes stay **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1861,7 +1877,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; field 1 is closed. Revision 75 closes suffix/adjacent provenance primitives, moved-pair yields, and sealed-suffix discipline. Revision 76 closes the producer-owned moved-retire package; its consumer remains stopped at tag-independent lookup projection statement shape.** | **XL, 2–14 implementation shifts remain.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; field 1 is closed. Revision 77 closes explicit lookup projections, the moved-retire consumer, moved retirement tails, and full adjacent-pair discipline. Field 2 remains open only at dependent whole-prefix recursion.** | **XL, 1–13 implementation shifts remain.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2057,7 +2073,8 @@ Revision 74 retains the private classifier but removes all subsequent
 stale-TTC false positives after three direct fresh repair attempts. Revision 75
 rebuilds suffix/adjacent retirement provenance, all required parent-yield
 transport, and suffix registration discipline under visible fresh checks.
-Revision 76 closes the producer-owned moved-retire checked-action package and
-its concrete retirement reindex, but the consumer now stops at a
-source-insertion tag-independent lookup projection statement shape. Field 2,
-later fields, and final assembly remain open.
+Revision 76 closes the producer-owned moved-retire checked-action package.
+Revision 77 closes its explicit lookup projections, the consumer, both moved
+retirement tails, and complete moved-pair registration discipline. Field 2 now
+stops only at a nonlinear dependent prefix-rest projection; later fields and
+final assembly remain open.
