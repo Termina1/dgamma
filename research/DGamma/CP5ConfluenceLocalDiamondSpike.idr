@@ -18011,6 +18011,32 @@ candidateSafetyExcludesParentRecovery
     childrenDistinct licensesDoNotCross) child parent leftRetire rightRecovery =
       paperOrchestrationCannotParentRecovery _ rightOrchestration rightRecovery
 
+||| Reconstruct an exact source recovery classifier from the action and rule-tag
+||| equations sealed by one pointwise replay head.
+0 replayedParentRecoveryToSource :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {sourceBefore, sourceAfter, replayedBefore, replayedAfter :
+    SystemState name key value world error} ->
+  {sourceStep : Transition sourceBefore sourceAfter} ->
+  {replayedStep : Transition replayedBefore replayedAfter} ->
+  {parent : name} ->
+  transitionAction replayedStep = transitionAction sourceStep ->
+  transitionTag replayedStep = transitionTag sourceStep ->
+  ParentRecoveryStep parent replayedStep ->
+  ParentRecoveryStep parent sourceStep
+replayedParentRecoveryToSource sameAction sameTag
+  (ParentLeaves action) = ParentLeaves (trans (sym sameAction) action)
+replayedParentRecoveryToSource sameAction sameTag
+  (ParentDivertsBefore action) =
+    ParentDivertsBefore (trans (sym sameAction) action)
+replayedParentRecoveryToSource sameAction sameTag
+  (ParentDivertsAfter action tag) =
+    ParentDivertsAfter (trans (sym sameAction) action)
+      (trans (sym sameTag) tag)
+replayedParentRecoveryToSource sameAction sameTag
+  (ParentRaises action tag) =
+    ParentRaises (trans (sym sameAction) action) (trans (sym sameTag) tag)
+
 data LocatedReloadingControl :
   (key : Type) -> (value : key -> Type) ->
   (world, error, name : Type) ->
