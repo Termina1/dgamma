@@ -167,8 +167,10 @@ approved_fields = manifest.get('approvedRecordFieldRevisions', [])
 revision17_fields = [entry for entry in approved_fields if entry.get('revision') == 17]
 revision19_fields = [entry for entry in approved_fields if entry.get('revision') == 19]
 revision20_fields = [entry for entry in approved_fields if entry.get('revision') == 20]
-if (len(approved_fields) != 7 or len(revision17_fields) != 2 or
-        len(revision19_fields) != 3 or len(revision20_fields) != 2):
+revision21_fields = [entry for entry in approved_fields if entry.get('revision') == 21]
+if (len(approved_fields) != 8 or len(revision17_fields) != 2 or
+        len(revision19_fields) != 3 or len(revision20_fields) != 2 or
+        len(revision21_fields) != 1):
     raise SystemExit('approved record-field manifest is missing or malformed')
 for entry in revision17_fields:
     if entry.get('audit') != 'research-tests/O6-ENDPOINT-CONTROLS-AUDIT.md':
@@ -179,6 +181,9 @@ for entry in revision19_fields:
 for entry in revision20_fields:
     if entry.get('audit') != 'research-tests/O6-R39-RELATIONAL-MAP-SCOPING-AUDIT.md':
         raise SystemExit('revision-20 record field lacks its authorized audit')
+for entry in revision21_fields:
+    if entry.get('audit') != 'research-tests/O6-R69-REGISTRATION-SAFETY-RETENTION-DESIGN-AUDIT.md':
+        raise SystemExit('revision-21 record field lacks its authorized audit')
 for entry in approved_fields:
     text = Path(entry['module']).read_text()
     if text.count(entry['signature']) != 1:
@@ -187,15 +192,22 @@ for entry in approved_fields:
         )
 
 type_additions = manifest.get('approvedTypeAdditions', [])
-if len(type_additions) != 1:
-    raise SystemExit('revision-19 sealed-spine addition is missing or malformed')
-for entry in type_additions:
-    if (entry.get('revision') != 19 or entry.get('visibility') != 'export' or
-            entry.get('audit') !=
-              'research-tests/O6-R29-FINISH-MAP-END-TO-END-AUDIT.md'):
+revision19_types = [entry for entry in type_additions if entry.get('revision') == 19]
+revision21_types = [entry for entry in type_additions if entry.get('revision') == 21]
+if len(type_additions) != 2 or len(revision19_types) != 1 or len(revision21_types) != 1:
+    raise SystemExit('approved type additions are missing or malformed')
+for entry in revision19_types:
+    if (entry.get('visibility') != 'export' or entry.get('audit') !=
+          'research-tests/O6-R29-FINISH-MAP-END-TO-END-AUDIT.md'):
         raise SystemExit('revision-19 sealed-spine addition lacks authorization')
     if Path(entry['module']).read_text().count(entry['signature']) != 1:
         raise SystemExit('revision-19 sealed-spine declaration changed')
+for entry in revision21_types:
+    if (entry.get('visibility') != 'public export' or entry.get('audit') !=
+          'research-tests/O6-R69-REGISTRATION-SAFETY-RETENTION-DESIGN-AUDIT.md'):
+        raise SystemExit('revision-21 registration safety addition lacks authorization')
+    if Path(entry['module']).read_text().count(entry['signature']) != 1:
+        raise SystemExit('revision-21 registration safety declaration changed')
 
 constructor_revisions = manifest.get('approvedConstructorRevisions', [])
 if len(constructor_revisions) != 2:
