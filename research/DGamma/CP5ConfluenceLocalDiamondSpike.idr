@@ -18064,6 +18064,41 @@ sealedSuffixNoParentRecovery localNameDecision localKeyDecision parent
       (sealedSuffixNoParentRecovery localNameDecision localKeyDecision parent
         tailSeal tailNoRecovery)
 
+||| A concrete child retirement and its ordering before recovery are preserved
+||| by the same sealed action/tag replay.
+0 sealedSuffixChildRetiresBeforeRecovery :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
+    SystemState name key value world error} ->
+  {source : Transitions sourceFirst sourceFinal} ->
+  {replayed : Transitions replayedFirst replayedFinal} ->
+  (parent, child : name) ->
+  SealedSuffixReplaySpine name key world error value localNameDecision
+    localKeyDecision source replayed ->
+  ChildRetiresBeforeRecovery parent child source ->
+  ChildRetiresBeforeRecovery parent child replayed
+sealedSuffixChildRetiresBeforeRecovery localNameDecision localKeyDecision
+  parent child SealedSuffixReplayEnd provenance impossible
+sealedSuffixChildRetiresBeforeRecovery localNameDecision localKeyDecision
+  parent child
+  (SealedSuffixReplayStep sourceStep replayedStep sourceTail replayedTail
+    sameAction sameTag headRAR headMapsRelated headEndpoint headOccurrences
+    headRelativeOrdinal tailSeal)
+  (ChildRetiresNow _ _ sourceRetires) =
+    ChildRetiresNow replayedStep replayedTail (trans sameAction sourceRetires)
+sealedSuffixChildRetiresBeforeRecovery localNameDecision localKeyDecision
+  parent child
+  (SealedSuffixReplayStep sourceStep replayedStep sourceTail replayedTail
+    sameAction sameTag headRAR headMapsRelated headEndpoint headOccurrences
+    headRelativeOrdinal tailSeal)
+  (ChildRetiresLater _ _ sourceNoRecovery later) =
+    ChildRetiresLater replayedStep replayedTail
+      (\replayedRecovery => sourceNoRecovery
+        (replayedParentRecoveryToSource sameAction sameTag replayedRecovery))
+      (sealedSuffixChildRetiresBeforeRecovery localNameDecision localKeyDecision
+        parent child tailSeal later)
+
 data LocatedReloadingControl :
   (key : Type) -> (value : key -> Type) ->
   (world, error, name : Type) ->
