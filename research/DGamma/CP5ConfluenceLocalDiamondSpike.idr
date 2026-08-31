@@ -37,6 +37,7 @@ import DGamma.CP4DeletionSelectedForeignLifecycleAdvanceDispatchCore
 import DGamma.CP4DeletionRelationalLifecycleAdvance
 import DGamma.CP4Support
 import DGamma.CP4SupportQuiescence
+import DGamma.CP4SupportSolution
 import Data.Nat
 import Data.Maybe
 import Data.List.Elem
@@ -20817,6 +20818,15 @@ adjacentTargetTraceComponentsTotal nameEq keyEq tracePrefix left right suffix
       (MoreTransitions (movedRight diamond)
         (MoreTransitions (movedLeft diamond) replayedSuffix))
       prefixTotal movedTailTotal
+
+0 replayProvenanceFromDiscipline :
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) ->
+  (trace : Transitions initial finalState) ->
+  RegistrationDiscipline protocol nameEq trace ->
+  RegistrationProvenance protocol nameEq trace
+replayProvenanceFromDiscipline protocol nameEq trace discipline =
+  registrationDisciplineProvenance protocol nameEq trace discipline
 
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
