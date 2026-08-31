@@ -20095,6 +20095,42 @@ lifecycleControlNotFailedSame
   (Unloading rightAccumulator rightView rightOutcome)
   (UnloadingControls accumulatorsSame viewsSame outcomesSame) = Refl
 
+0 fiberNotFailedAsLifecycleNotFailedAt :
+  (fiber : Fiber name key value world error) ->
+  fiberNotFailed fiber = lifecycleNotFailedAt (fiberLifecycle fiber)
+fiberNotFailedAsLifecycleNotFailedAt
+  (MkFiber component parent retiredFlag table (Inactive Nothing)) = Refl
+fiberNotFailedAsLifecycleNotFailedAt
+  (MkFiber component parent retiredFlag table (Inactive (Just failure))) = Refl
+fiberNotFailedAsLifecycleNotFailedAt
+  (MkFiber component parent retiredFlag table
+    (Reloading remaining accumulator view)) = Refl
+fiberNotFailedAsLifecycleNotFailedAt
+  (MkFiber component parent retiredFlag table (Active accumulator view)) = Refl
+fiberNotFailedAsLifecycleNotFailedAt
+  (MkFiber component parent retiredFlag table
+    (Unloading accumulator view outcome)) = Refl
+
+0 fiberControlNotFailedSame :
+  (leftFiber, rightFiber : Fiber name key value world error) ->
+  FiberControlRelated leftFiber rightFiber ->
+  fiberNotFailed leftFiber = fiberNotFailed rightFiber
+fiberControlNotFailedSame
+  (MkFiber component leftParent leftRetired leftTable leftLifecycle)
+  (MkFiber component rightParent rightRetired rightTable rightLifecycle)
+  (FibersControlRelated leftParent rightParent leftRetired rightRetired
+    leftTable rightTable leftLifecycle rightLifecycle parentSame retiredSame
+    lifecycleRelated) =
+      trans
+        (fiberNotFailedAsLifecycleNotFailedAt
+          (MkFiber component leftParent leftRetired leftTable leftLifecycle))
+        (trans
+          (lifecycleControlNotFailedSame leftLifecycle rightLifecycle
+            lifecycleRelated)
+          (sym (fiberNotFailedAsLifecycleNotFailedAt
+            (MkFiber component rightParent rightRetired rightTable
+              rightLifecycle))))
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
