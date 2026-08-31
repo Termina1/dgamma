@@ -1683,6 +1683,22 @@ relation without reopening it. Field 8 remains partial; fields 9–15 and assemb
 remain unopened. The accepted **1–10 shift** remainder is held. Holes stay
 **20**, split **6/4/8/1/1**.
 
+### Revision 86: indexed totality transport closes through moved-left; backward dispatcher split
+
+`research-tests/O6-R86-FIELD8-MOVED-BOUNDARY-BACKWARD-STOP-AUDIT.md`
+records shift #94. The correlated fiber projection and one-transition theorem
+close on first fresh attempts. Exact source splitting, sealed-suffix totality
+recursion, append composition, endpoint-wide active-provision transport, and
+moved-left boundary totality also close constructively. Foreign and same-owner
+retirement backward provision transport are retained. A combined backward
+paper-step dispatcher is removed after three annotation-mechanical deaths; the
+next implementation must split activation, insertion, retirement, and removal
+into separate declarations with explicit erased local types. This dispatcher
+will recover active provisions at `swappedMiddle` from `swappedFinal`, closing
+moved-right without a detached intermediate endpoint. Field 8 remains partial;
+fields 9–15 and assembly are unopened. The accepted **1–10 shift** remainder is
+held. Holes stay **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1994,7 +2010,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–7 are closed. Revision 85 retains field-8 lookup/table foundations; one-transition totality awaits a correlated fiber-activity projection.** | **XL, 1–10 implementation shifts remain.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–7 are closed. Revision 86 closes field-8 transition/suffix/split/moved-left transport; moved-right awaits the split backward paper-step dispatcher.** | **XL, 1–10 implementation shifts remain.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2199,5 +2215,7 @@ the correlated lifecycle/view and fiber quietness chain. Revisions 81–82
 isolate the generated-implicit fold wall; revision 83 closes that fold.
 Revision 84 closes its fixed-registry aggregation, complete field 6, and field
 7 failure freedom. Revision 85 starts field 8 with exact lookup/table transport
-and isolates its first stop to correlated fiber activity. Fields 8–15 and final
-assembly remain open.
+and isolates its first stop to correlated fiber activity. Revision 86 closes
+that stop, suffix recursion, source splitting, append composition, endpoint
+active transport, and moved-left; moved-right is isolated to the split backward
+paper-step dispatcher. Fields 8–15 and final assembly remain open.
