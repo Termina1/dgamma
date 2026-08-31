@@ -20271,6 +20271,30 @@ pointwiseActiveFiberProvidesAll nameEq keyEq actor left right
             (ownedValues leftTable) (ownedValues rightTable) tablesSame))
           (sourceProvides wanted provided)
 
+0 pointwiseActiveFibersProvideAll :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (left, right : SystemState name key value world error) ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq left right ->
+  ActiveFibersProvideAll nameEq keyEq left ->
+  ActiveFibersProvideAll nameEq keyEq right
+pointwiseActiveFibersProvideAll nameEq keyEq left right
+  (MkRelationalReplayEndpoint effects controls rightWellFormed) sourceProvides
+  actor targetFiber targetFound targetActive =
+    case pointwiseControlLookupFound nameEq actor right left
+      (controlEquivalentSymmetric controls) targetFiber targetFound of
+      (sourceFiber ** (sourceFound, targetSourceRelated)) =>
+        let 0 sourceActive : (isActive (fiberLifecycle sourceFiber) = True)
+            sourceActive = trans
+              (sym (fiberControlActiveSame targetFiber sourceFiber
+                targetSourceRelated)) targetActive
+            0 sourceFiberProvides : ActiveFiberProvidesAll keyEq sourceFiber
+            sourceFiberProvides = sourceProvides actor sourceFiber sourceFound
+              sourceActive
+        in pointwiseActiveFiberProvidesAll nameEq keyEq actor left right
+          sourceFiber targetFiber sourceFound targetFound
+          (fiberControlSymmetric targetSourceRelated) effects
+          sourceFiberProvides targetActive
+
 0 transitionComponentTotalFromActiveFibers :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (transition : Transition before afterState) ->
