@@ -1744,6 +1744,21 @@ eliminate the stage for delegation. This deliberately avoids dictionary
 identity. No family wrapper or RAR beyond the prefix leg is retained. Holes stay
 **20**, split **6/4/8/1/1**; the accepted **1–10 shift** remainder is held.
 
+### Revision 90: actor injectivity closes; bare projection route ends
+
+`research-tests/O6-R90-ADVANCE-INJECTIVITY-CLOSED-ACTOR-PROJECTION-STOP-AUDIT.md`
+records shift #98. Explicit LAdvance actor injectivity closes by constructor
+elimination. The bare `singletonAdvanceStageActorSame` route is removed after
+three endpoint-index shape failures: projecting `singletonOccursSelected`
+encounters independently named hidden `StageFromAdvance` endpoints before
+`transitionAction` can discard dictionaries, and matching those hidden indices
+explicitly is rejected as nonlinear. The pre-authorized correlated-package
+fallback remains unused and is now the sole implementation route: introduce the
+stage jointly with `selected = actor` through `viewConsStageOccurrence`,
+eliminate the impossible empty-tail case, and consume the package once in the
+locator. No fourth bare projection or fifth cure is authorized. Holes stay
+**20**, split **6/4/8/1/1**; the accepted **1–10 shift** remainder is held.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -2055,7 +2070,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 89 closes singleton advance lookup transport; the one-stage locator awaits actor-index reification before the moved-pair RAR. Fields 10–15 foundations are checked.** | **XL, 1–10 implementation shifts remain.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 90 closes LAdvance actor injectivity and ends the bare equality route; the authorized correlated stage/actor package remains before the locator and moved-pair RAR. Fields 10–15 foundations are checked.** | **XL, 1–10 implementation shifts remain.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2267,4 +2282,7 @@ moved-right, and package field 8, then derives foundations for fields 10–15.
 Field 9 is isolated to the producer-owned whole RAR. Revision 88 closes its
 identity-prefix leg and splits the next L-Advance stage-family unit after an
 erased annotation-layout stop. Revision 89 closes the exact lookup transport
-and isolates the locator at `selected = actor`; final assembly remains open.
+and isolates the locator at `selected = actor`. Revision 90 closes action
+constructor injectivity, rejects the bare whole-transition projection, and
+leaves the correlated stage/actor package fallback; final assembly remains
+open.
