@@ -20755,6 +20755,27 @@ identityRelationalReplayCorrespondence trace =
     (\actor, stage => stage)
     (\actor, stage, state => Refl)
 
+0 singletonAdvanceSourceFoundFromOwnerLookup :
+  (name : Type) -> (key : Type) -> (value : key -> Type) ->
+  (world : Type) -> (error : Type) ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (sourceState, movedState : SystemState name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  (0 lookupSame :
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} actor (registry sourceState) =
+     lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} actor (registry movedState))) ->
+  (0 movedFound :
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} actor (registry movedState) =
+     Just fiber)) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor (registry sourceState) = Just fiber)
+singletonAdvanceSourceFoundFromOwnerLookup name key value world error nameEq
+  actor sourceState movedState fiber lookupSame movedFound =
+    trans lookupSame movedFound
+
 0 replayPointwiseSuffixTraceComponentsTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (source : Transitions sourceFirst sourceFinal) ->
