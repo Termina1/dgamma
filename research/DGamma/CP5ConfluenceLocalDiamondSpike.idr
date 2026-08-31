@@ -20696,6 +20696,52 @@ adjacentMovedLeftComponentTotal nameEq keyEq tracePrefix left right diamond
         right diamond prefixAligned pairAligned prefixTotal leftTotal rightTotal
         initialEmpty)
 
+0 adjacentMovedRightComponentTotal :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (tracePrefix : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  AlignedTransitions name key world error value nameEq keyEq tracePrefix ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  TraceComponentsTotal nameEq keyEq tracePrefix ->
+  TransitionComponentTotal nameEq keyEq left ->
+  TransitionComponentTotal nameEq keyEq right ->
+  bindings (registry initial) = [] ->
+  TransitionComponentTotal nameEq keyEq (movedRight diamond)
+adjacentMovedRightComponentTotal nameEq keyEq tracePrefix left right diamond
+  prefixAligned pairAligned prefixTotal leftTotal rightTotal initialEmpty =
+    let 0 targetAtSwappedFinal : ActiveFibersProvideAll nameEq keyEq
+          (swappedFinal diamond)
+        targetAtSwappedFinal = adjacentSwappedFinalActiveFibersProvideAll nameEq
+          keyEq tracePrefix left right diamond prefixAligned pairAligned
+          prefixTotal leftTotal rightTotal initialEmpty
+        0 movedLeftClassification : Either
+          (PaperActivationStep (movedLeft diamond))
+          (PaperOrchestrationStep (movedLeft diamond))
+        movedLeftClassification = case registrationSwapSafety diamond of
+          CandidateActivationActivation leftActivation rightActivation =>
+            Left (movedLeftActivationBranch diamond leftActivation)
+          CandidateActivationOrchestration leftActivation rightOrchestration
+            parentSafe => Left
+              (movedLeftActivationBranch diamond leftActivation)
+          CandidateOrchestrationActivation leftOrchestration rightActivation
+            childSafe parentSafe => Right
+              (movedLeftOrchestrationBranch diamond leftOrchestration)
+          CandidateOrchestrationOrchestration leftOrchestration
+            rightOrchestration insertedDistinct generatedDoNotCross => Right
+              (movedLeftOrchestrationBranch diamond leftOrchestration)
+        0 targetAtSwappedMiddle : ActiveFibersProvideAll nameEq keyEq
+          (swappedMiddle diamond)
+        targetAtSwappedMiddle = alignedPaperStepActiveFibersBackward nameEq keyEq
+          (movedLeft diamond) NoTransitions
+          (localAlignedTail (movedPairAligned diamond)) movedLeftClassification
+          targetAtSwappedFinal
+    in transitionComponentTotalFromActiveFibers nameEq keyEq
+      (movedRight diamond) targetAtSwappedMiddle
+
 0 replayPointwiseSuffixTraceComponentsTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (source : Transitions sourceFirst sourceFinal) ->
