@@ -20008,6 +20008,61 @@ pointwiseQuietEntriesTrueExplicit name key world error value localNameDecision
             sourceQuiet rest (\later, observed, present =>
               inTarget later observed (There present)))
 
+0 quietFoldPredicateToQuietEntries :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  (stateWorld : world) ->
+  (registryEntries : List (Binding name
+    (FiberAt name key value world error))) ->
+  (0 registryUnique : UniqueKeys (bindingKeys registryEntries)) ->
+  (currentEntries : List (Binding name
+    (FiberAt name key value world error))) ->
+  allRecursive
+    (quietFoldEntryPredicate name key world error value localNameDecision
+      localKeyDecision stateWorld registryEntries registryUnique)
+    currentEntries = True ->
+  allRecursive
+    (quietEntryFor @{localNameDecision} @{localKeyDecision}
+      {name = name} {key = key} {value = value} {world = world}
+      {error = error}
+      (registry (quietFoldStateExplicit name key world error value stateWorld
+        registryEntries registryUnique))) currentEntries = True
+quietFoldPredicateToQuietEntries name key world error value localNameDecision
+  localKeyDecision stateWorld registryEntries registryUnique [] folded = Refl
+quietFoldPredicateToQuietEntries name key world error value localNameDecision
+  localKeyDecision stateWorld registryEntries registryUnique
+  (Bind selected fiber :: rest) folded =
+    boolAndBothPointwise _ _ (boolAndLeftPointwise _ _ folded)
+      (quietFoldPredicateToQuietEntries name key world error value
+        localNameDecision localKeyDecision stateWorld registryEntries
+        registryUnique rest (boolAndRightPointwise _ _ folded))
+
+0 pointwiseQuietTrue :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  (leftState, rightState : SystemState name key value world error) ->
+  ControlEquivalent name key world error value localNameDecision leftState
+    rightState ->
+  EffectStateRelated localKeyDecision
+    (projectEffectState @{localNameDecision} leftState)
+    (projectEffectState @{localNameDecision} rightState) ->
+  registryWellFormed @{localNameDecision} @{localKeyDecision} rightState =
+    True ->
+  quiet @{localNameDecision} @{localKeyDecision} leftState = True ->
+  quiet @{localNameDecision} @{localKeyDecision} rightState = True
+pointwiseQuietTrue localNameDecision localKeyDecision
+  (MkSystemState leftWorld (MkCoeffectContext leftEntries leftUnique))
+  (MkSystemState rightWorld (MkCoeffectContext rightEntries rightUnique))
+  controls effects rightValid sourceQuiet =
+    quietFoldPredicateToQuietEntries name key world error value
+      localNameDecision localKeyDecision rightWorld rightEntries rightUnique
+      rightEntries
+      (pointwiseQuietEntriesTrueExplicit name key world error value
+        localNameDecision localKeyDecision leftWorld rightWorld leftEntries
+        rightEntries leftUnique rightUnique controls effects rightValid
+        sourceQuiet rightEntries
+        (\selected, targetFiber, present => present))
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
