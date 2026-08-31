@@ -20449,6 +20449,37 @@ foreignActiveFiberProvidesBackward nameEq keyEq action tag before afterState
         afterFound = trans framed beforeFound
     in afterProvides selected fiber afterFound active
 
+0 paperActivationActiveFiberProvidesBackward :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  PaperActivationStep (Fired {before} {afterState} nameEq keyEq action tag
+    checked) ->
+  ActiveFibersProvideAll nameEq keyEq afterState ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} selected (registry before) = Just fiber ->
+  isActive (fiberLifecycle fiber) = True ->
+  ActiveFiberProvidesAll keyEq fiber
+paperActivationActiveFiberProvidesBackward nameEq keyEq action tag before
+  afterState checked activation afterProvides selected fiber beforeFound active =
+    case decEq @{nameEq} selected (actionOwner action) of
+      No distinct => foreignActiveFiberProvidesBackward nameEq keyEq action tag
+        before afterState checked afterProvides selected distinct fiber
+        beforeFound active
+      Yes Refl =>
+        case activationSourceOwnerNotActive nameEq keyEq action tag checked
+          activation of
+          (ownerFiber ** (ownerFound, ownerInactive)) =>
+            let 0 sameFiber : (ownerFiber = fiber)
+                sameFiber = justInjective (trans (sym ownerFound) beforeFound)
+                0 fiberInactive : (isActive (fiberLifecycle fiber) = False)
+                fiberInactive = replace
+                  {p = \candidate => isActive (fiberLifecycle candidate) = False}
+                  sameFiber ownerInactive
+            in case trans (sym active) fiberInactive of Refl impossible
+
 0 adjacentMovedLeftComponentTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (tracePrefix : Transitions initial pairFirst) ->
