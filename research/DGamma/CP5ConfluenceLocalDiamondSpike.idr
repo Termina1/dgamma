@@ -20386,6 +20386,31 @@ adjacentSourceTraceComponentsTotalSplit tracePrefix left right suffix original
          (TraceComponentsTotalStep right suffix rightTotal suffixTotal)) =>
            (prefixTotal, leftTotal, rightTotal, suffixTotal)
 
+0 foreignActiveFiberProvidesBackward :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState) ->
+  ActiveFibersProvideAll nameEq keyEq afterState ->
+  (selected : name) -> Not (selected = actionOwner action) ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} selected (registry before) = Just fiber ->
+  isActive (fiberLifecycle fiber) = True ->
+  ActiveFiberProvidesAll keyEq fiber
+foreignActiveFiberProvidesBackward nameEq keyEq action tag before afterState
+  checked afterProvides selected distinct fiber beforeFound active =
+    let 0 raw = checkedActionProjects nameEq keyEq action before afterState tag
+          checked
+        0 update = applyActionLocalUpdate nameEq keyEq action before afterState
+          tag raw
+        0 framed = systemLocalUpdateForeign nameEq selected
+          (actionOwner action) distinct before afterState update
+        0 afterFound : (lookupFiber @{nameEq} selected (registry afterState) =
+          Just fiber)
+        afterFound = trans framed beforeFound
+    in afterProvides selected fiber afterFound active
+
 0 adjacentMovedLeftComponentTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (tracePrefix : Transitions initial pairFirst) ->
