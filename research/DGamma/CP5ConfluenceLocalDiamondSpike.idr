@@ -20880,6 +20880,16 @@ replayPrecedenceAcyclicFromRanks protocol nameEq state ranked parentOrdered
   selected path = supportCombinedWellFounded protocol nameEq state ranked
     parentOrdered selected (replayPrecedencePathIsSupportPath path)
 
+0 replaySupportWellFoundedFromRanks :
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) ->
+  (state : SystemState name key value world error) ->
+  RegistryProtocolRanked protocol nameEq state ->
+  RegistryParentRanksIncrease protocol nameEq state ->
+  SupportWellFounded nameEq state
+replaySupportWellFoundedFromRanks protocol nameEq state ranked parentOrdered =
+  supportCombinedWellFounded protocol nameEq state ranked parentOrdered
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
