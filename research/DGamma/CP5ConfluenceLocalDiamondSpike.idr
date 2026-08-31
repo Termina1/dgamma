@@ -38,6 +38,7 @@ import DGamma.CP4DeletionRelationalLifecycleAdvance
 import DGamma.CP4Support
 import DGamma.CP4SupportQuiescence
 import DGamma.CP4SupportSolution
+import DGamma.CP4Lemma70
 import Data.Nat
 import Data.Maybe
 import Data.List.Elem
@@ -20889,6 +20890,30 @@ replayPrecedenceAcyclicFromRanks protocol nameEq state ranked parentOrdered
   SupportWellFounded nameEq state
 replaySupportWellFoundedFromRanks protocol nameEq state ranked parentOrdered =
   supportCombinedWellFounded protocol nameEq state ranked parentOrdered
+
+0 supportMatchesActiveFromReplayFields :
+  (name : Type) -> (key : Type) -> (value : key -> Type) ->
+  (world, error : Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) ->
+  (trace : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  RegistrationDiscipline protocol nameEq trace ->
+  bindings (registry initial) = [] ->
+  registryWellFormed @{nameEq} @{keyEq} initial = True ->
+  PrecedenceAcyclic nameEq finalState ->
+  quiet @{nameEq} @{keyEq} finalState = True ->
+  noFailedFibers finalState = True ->
+  TraceComponentsTotal nameEq keyEq trace ->
+  SupportMatchesActive nameEq keyEq finalState
+supportMatchesActiveFromReplayFields name key value world error protocol nameEq
+  keyEq initial finalState trace aligned discipline initialEmpty
+  initialWellFormed acyclic quietFinal noFailures totality =
+    supportAtQuiescenceTheoremProof name key value world error nameEq keyEq
+      protocol finalState
+      (MkReachedFromEmpty initial trace aligned initialEmpty initialWellFormed)
+      discipline acyclic quietFinal noFailures totality
 
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
