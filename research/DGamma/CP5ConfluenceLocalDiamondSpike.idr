@@ -20869,6 +20869,59 @@ singletonAdvanceRuntimePackage name key value world error nameEq keyEq actor
                 suffix (\state => Refl)
         ConsStageOccursLater _ later => void (noOccurrenceInEmpty later)
 
+0 consumeSingletonAdvanceRuntimePackage :
+  (name : Type) -> (key : Type) -> (value : key -> Type) ->
+  (world : Type) -> (error : Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, movedBefore, movedAfter :
+    SystemState name key value world error) ->
+  (0 sourceChecked :
+    (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) sourceBefore =
+     Just (tag, sourceAfter))) ->
+  (0 movedChecked :
+    (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) movedBefore =
+     Just (tag, movedAfter))) ->
+  (0 lookupSame :
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} actor (registry sourceBefore) =
+     lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} actor (registry movedBefore))) ->
+  (selected : name) ->
+  (targetStage : IteratorStage name key world error value selected
+    (MoreTransitions
+      (Fired {before = movedBefore} {afterState = movedAfter}
+        nameEq keyEq (LAdvance actor) tag movedChecked) NoTransitions)) ->
+  (0 package : SingletonAdvanceRuntimePackage name key value world error
+    nameEq keyEq actor tag movedBefore movedAfter movedChecked selected
+    targetStage) ->
+  LocatedSingletonAdvanceStageReplay name key world error value
+    (MoreTransitions
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+    (MoreTransitions
+      (Fired {before = movedBefore} {afterState = movedAfter}
+        nameEq keyEq (LAdvance actor) tag movedChecked) NoTransitions)
+    selected targetStage
+consumeSingletonAdvanceRuntimePackage name key value world error nameEq keyEq
+  actor tag sourceBefore sourceAfter movedBefore movedAfter sourceChecked
+  movedChecked lookupSame selected targetStage
+  (MkSingletonAdvanceRuntimePackage actorSame component parent retiredFlag
+    table remaining accumulator view targetFound step rest suffix
+    targetOutcomeExact) =
+      case actorSame of
+        Refl =>
+          let 0 sourceFound = singletonAdvanceSourceFoundFromOwnerLookup name key
+                value world error nameEq actor sourceBefore movedBefore
+                (MkFiber component parent retiredFlag table
+                  (Reloading remaining accumulator view)) lookupSame targetFound
+          in MkLocatedSingletonAdvanceStageReplay
+            (StageFromAdvance nameEq keyEq actor tag sourceChecked OccursHere
+              (MkFiber component parent retiredFlag table
+                (Reloading remaining accumulator view)) sourceFound remaining
+              accumulator view Refl step rest suffix)
+            targetOutcomeExact
+
 0 replayPointwiseSuffixTraceComponentsTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (source : Transitions sourceFirst sourceFinal) ->
