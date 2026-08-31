@@ -8,6 +8,7 @@ import DGamma.Unified
 import DGamma.CP3
 import DGamma.CP3Support
 import DGamma.CP4DeletionFrameCore
+import DGamma.CP4DeletionPremiseSplit
 import DGamma.CP4DeletionCommuteCore
 import DGamma.CP4DeletionControlCore
 import DGamma.CP4DeletionControlOrchestration
@@ -20310,6 +20311,34 @@ pointwiseTransitionComponentTotal nameEq keyEq sourceStep replayedStep
           sourceFiber targetFiber sourceFound targetFound
           (fiberControlSymmetric targetSourceRelated) effects sourceProvides
           targetActive
+
+0 adjacentSourceTraceComponentsTotalSplit :
+  (tracePrefix : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (original : Transitions initial originalFinal) ->
+  appendTransitions tracePrefix
+    (MoreTransitions left (MoreTransitions right suffix)) = original ->
+  TraceComponentsTotal nameEq keyEq original ->
+  (TraceComponentsTotal nameEq keyEq tracePrefix,
+   TransitionComponentTotal nameEq keyEq left,
+   TransitionComponentTotal nameEq keyEq right,
+   TraceComponentsTotal nameEq keyEq suffix)
+adjacentSourceTraceComponentsTotalSplit tracePrefix left right suffix original
+  decomposition sourceTotal =
+    let 0 decomposedTotal : TraceComponentsTotal nameEq keyEq
+          (appendTransitions tracePrefix
+            (MoreTransitions left (MoreTransitions right suffix)))
+        decomposedTotal = replace
+          {p = \trace => TraceComponentsTotal nameEq keyEq trace}
+          (sym decomposition) sourceTotal
+    in case totalAppendSplit tracePrefix
+      (MoreTransitions left (MoreTransitions right suffix)) decomposedTotal of
+      (prefixTotal,
+       TraceComponentsTotalStep left (MoreTransitions right suffix) leftTotal
+         (TraceComponentsTotalStep right suffix rightTotal suffixTotal)) =>
+           (prefixTotal, leftTotal, rightTotal, suffixTotal)
 
 0 replayPointwiseSuffixTraceComponentsTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
