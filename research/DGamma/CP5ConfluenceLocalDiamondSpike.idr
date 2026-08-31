@@ -20849,6 +20849,7 @@ record AdjacentAlignedPointwiseReplay
     registryWellFormed @{nameEq} @{keyEq} alignedReplayFinal = True
   0 alignedReplayQuiet : quiet @{nameEq} @{keyEq} alignedReplayFinal = True
   0 alignedReplayNoFailure : noFailedFibers alignedReplayFinal = True
+  0 alignedReplayTotal : TraceComponentsTotal nameEq keyEq alignedReplayTrace
   0 alignedReplayEndpoint : RelationalReplayEndpoint name key world error value
     nameEq keyEq originalFinal alignedReplayFinal
   0 alignedReplaySeal : SealedSuffixReplaySpine name key world error value nameEq
@@ -20936,6 +20937,14 @@ produceAdjacentAlignedPointwiseReplay nameEq keyEq protocol original tracePrefix
         targetDiscipline = adjacentRegistrationDiscipline protocol nameEq keyEq
           tracePrefix left right suffix diamond replayedSuffix
           (spineReplaySeal suffixReplay) sourcePairAligned decomposedDiscipline
+        0 targetTotal : TraceComponentsTotal nameEq keyEq targetTrace
+        targetTotal = case adjacentSourceTraceComponentsTotalSplit tracePrefix
+          left right suffix original decomposition (replayTotal premises) of
+          (prefixTotal, leftTotal, rightTotal, suffixTotal) =>
+            adjacentTargetTraceComponentsTotal nameEq keyEq tracePrefix left
+              right suffix diamond replayedSuffix prefixAligned sourcePairAligned
+              prefixTotal leftTotal rightTotal suffixTotal
+              (replayInitialEmpty premises) (spineReplaySeal suffixReplay)
     in MkAdjacentAlignedPointwiseReplay (spineReplayedFinal suffixReplay)
       replayedSuffix targetTrace Refl targetAligned targetDiscipline
       (replayInitialWellFormed premises) (replayInitialEmpty premises)
@@ -20950,7 +20959,8 @@ produceAdjacentAlignedPointwiseReplay nameEq keyEq protocol original tracePrefix
         (spineReplayedFinal suffixReplay)
         (replayedControls (spineReplayEndpoint suffixReplay))
         (replayNoFailure premises))
-      (spineReplayEndpoint suffixReplay) (spineReplaySeal suffixReplay)
+      targetTotal (spineReplayEndpoint suffixReplay)
+      (spineReplaySeal suffixReplay)
 
 ||| Checked suffix-splice interface consumed by sorting.  It is generic over the
 ||| local diamond case (A/A, A/O, O/A, or O/O) and returns all recursive capital.
