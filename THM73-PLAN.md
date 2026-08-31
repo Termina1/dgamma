@@ -1699,6 +1699,22 @@ moved-right without a detached intermediate endpoint. Field 8 remains partial;
 fields 9–15 and assembly are unopened. The accepted **1–10 shift** remainder is
 held. Holes stay **20**, split **6/4/8/1/1**.
 
+### Revision 87: field 8 closed; endpoint invariants derived; whole-RAR stop
+
+`research-tests/O6-R87-FIELD8-CLOSED-DERIVED-INVARIANTS-RAR-STOP-AUDIT.md`
+records shift #95. The four per-action backward helpers, trivial dispatcher,
+aligned dispatcher, factored swapped-final active proof, and moved-right
+boundary all close. Prefix, moved pair, and sealed suffix totality are composed,
+and private package field 8 is populated from the exact source split. Standalone
+constructive foundations for fields 10–15 also close. Strict field order now
+stops at field 9: `traceIndependentAfterRelationalReplaySpike` requires a
+producer-owned whole original-to-target `RelationalReplayCorrespondence`, while
+the current envelope owns only sealed-suffix RAR plus exact moved-pair and
+endpoint capital. The next unit must assemble identity-prefix, moved-pair, and
+sealed-suffix RAR without accepting detached map/stage or target independence
+capital. Fields 1–8 are closed; field 9 and assembly remain open. Holes stay
+**20**, split **6/4/8/1/1**; the accepted **1–10 shift** remainder is held.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -2010,7 +2026,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–7 are closed. Revision 86 closes field-8 transition/suffix/split/moved-left transport; moved-right awaits the split backward paper-step dispatcher.** | **XL, 1–10 implementation shifts remain.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 87 closes moved-right and target totality; field 9 awaits producer-owned whole RAR. Fields 10–15 foundations are checked.** | **XL, 1–10 implementation shifts remain.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2217,5 +2233,7 @@ Revision 84 closes its fixed-registry aggregation, complete field 6, and field
 7 failure freedom. Revision 85 starts field 8 with exact lookup/table transport
 and isolates its first stop to correlated fiber activity. Revision 86 closes
 that stop, suffix recursion, source splitting, append composition, endpoint
-active transport, and moved-left; moved-right is isolated to the split backward
-paper-step dispatcher. Fields 8–15 and final assembly remain open.
+active transport, and moved-left. Revision 87 closes the split dispatcher,
+moved-right, and package field 8, then derives foundations for fields 10–15.
+Field 9 is isolated to the producer-owned whole RAR; final assembly remains
+open.
