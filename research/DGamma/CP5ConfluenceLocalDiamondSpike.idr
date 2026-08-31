@@ -20216,6 +20216,17 @@ pointwiseNoFailedTrue localNameDecision
       rightUnique controls sourceNoFailure rightEntries
       (\selected, targetFiber, present => present)
 
+0 pointwiseLookupBindingPresenceFromBindings :
+  (keyEq : DecEq key) -> (wanted : key) ->
+  (left, right : CoeffectContext key value) ->
+  bindings left = bindings right ->
+  isJust (lookupBinding @{keyEq} wanted left) =
+    isJust (lookupBinding @{keyEq} wanted right)
+pointwiseLookupBindingPresenceFromBindings keyEq wanted
+  (MkCoeffectContext leftEntries leftUnique)
+  (MkCoeffectContext rightEntries rightUnique) same =
+    case same of Refl => Refl
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
