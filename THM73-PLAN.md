@@ -1715,6 +1715,21 @@ sealed-suffix RAR without accepting detached map/stage or target independence
 capital. Fields 1–8 are closed; field 9 and assembly remain open. Holes stay
 **20**, split **6/4/8/1/1**; the accepted **1–10 shift** remainder is held.
 
+### Revision 88: identity prefix RAR closes; L-Advance stage family split
+
+`research-tests/O6-R88-PREFIX-RAR-CLOSED-ADVANCE-STAGE-FAMILY-STOP-AUDIT.md`
+records shift #96. The unchanged-prefix
+`identityRelationalReplayCorrespondence` closes on its first fresh attempt. A
+monolithic singleton L-Advance stage-family constructor then exhausts its own
+budget on dependent statement and erased-local annotation layout and is removed.
+The third attempt reaches the exact target stage/fiber elimination and stops
+only because a complete erased lookup-equality proposition lacks outer
+parentheses. The next implementation is split into an explicit lookup transport,
+one-stage locator, and one-clause family wrapper before using the existing
+`singletonAdvanceRAR`. No moved-pair or whole RAR is retained yet. Fields 1–8
+remain closed; field 9 remains open; holes stay **20**, split **6/4/8/1/1**. The
+accepted **1–10 shift** remainder is held.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -2026,7 +2041,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 87 closes moved-right and target totality; field 9 awaits producer-owned whole RAR. Fields 10–15 foundations are checked.** | **XL, 1–10 implementation shifts remain.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 88 closes identity-prefix RAR; moved-pair RAR awaits the split L-Advance stage-family foundation. Fields 10–15 foundations are checked.** | **XL, 1–10 implementation shifts remain.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2235,5 +2250,6 @@ and isolates its first stop to correlated fiber activity. Revision 86 closes
 that stop, suffix recursion, source splitting, append composition, endpoint
 active transport, and moved-left. Revision 87 closes the split dispatcher,
 moved-right, and package field 8, then derives foundations for fields 10–15.
-Field 9 is isolated to the producer-owned whole RAR; final assembly remains
-open.
+Field 9 is isolated to the producer-owned whole RAR. Revision 88 closes its
+identity-prefix leg and splits the next L-Advance stage-family unit after an
+erased annotation-layout stop; final assembly remains open.
