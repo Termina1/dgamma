@@ -1655,6 +1655,20 @@ recurse over a separate current list. Field 6 remains open only at this final
 aggregation bridge. The remaining band provisionally narrows to **1–11 shifts**.
 Holes stay **20**, split **6/4/8/1/1**.
 
+### Revision 84: endpoint quietness and failure freedom close
+
+`research-tests/O6-R84-FIELD6-AND-FAILURE-FREEDOM-CLOSED-AUDIT.md`
+records shift #92. The fixed-registry/varying-cursor converter and one-clause
+wrapper close on the first fresh attempt, and private package field 6 is
+populated from the exact sealed endpoint plus source `replayQuiet`. Failure
+freedom then closes through executable lifecycle classification, explicit fiber
+normalization, an explicit target-entry fold, and a one-clause endpoint wrapper;
+private package field 7 is populated from sealed controls plus source
+`replayNoFailure`. Fields 6–7 are complete. Field 8 is a distinct per-transition
+`TraceComponentsTotal` transport and is deliberately left unopened at this
+clean boundary. Fields 8–15 and final assembly remain open. The remaining band
+provisionally narrows to **1–10 shifts**. Holes stay **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1966,7 +1980,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–5 are closed. Revision 83 closes the explicit finite quietness fold; field 6 remains open only at its fixed-registry wrapper conversion.** | **XL, provisionally 1–11 implementation shifts remain.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–7 are closed. Revision 84 closes endpoint quietness and failure freedom; field 8 trace totality is next.** | **XL, provisionally 1–10 implementation shifts remain.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2168,6 +2182,6 @@ retirement tails, and complete moved-pair registration discipline. Revision 78
 closes the exact producer-owned prefix-discipline view. Revision 79 closes its
 recursive consumer, complete bundle field 2, and fields 3–5. Revision 80 closes
 the correlated lifecycle/view and fiber quietness chain. Revisions 81–82
-isolate the generated-implicit fold wall; revision 83 closes that fold and
-leaves only a fixed-registry aggregation conversion before field 6 completes.
-Later fields and final assembly remain open.
+isolate the generated-implicit fold wall; revision 83 closes that fold.
+Revision 84 closes its fixed-registry aggregation, complete field 6, and field
+7 failure freedom. Fields 8–15 and final assembly remain open.
