@@ -20227,6 +20227,18 @@ pointwiseLookupBindingPresenceFromBindings keyEq wanted
   (MkCoeffectContext rightEntries rightUnique) same =
     case same of Refl => Refl
 
+0 fiberControlActiveSame :
+  (leftFiber, rightFiber : Fiber name key value world error) ->
+  FiberControlRelated leftFiber rightFiber ->
+  isActive (fiberLifecycle leftFiber) =
+    isActive (fiberLifecycle rightFiber)
+fiberControlActiveSame
+  (MkFiber component leftParent leftRetired leftTable leftLifecycle)
+  (MkFiber component rightParent rightRetired rightTable rightLifecycle)
+  (FibersControlRelated leftParent rightParent leftRetired rightRetired
+    leftTable rightTable leftLifecycle rightLifecycle parentSame retiredSame
+    lifecycleRelated) = pointwiseLifecycleActiveSame lifecycleRelated
+
 0 pointwiseActiveFiberProvidesAll :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
   (left, right : SystemState name key value world error) ->
