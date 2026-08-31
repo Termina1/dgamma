@@ -20776,6 +20776,16 @@ singletonAdvanceSourceFoundFromOwnerLookup name key value world error nameEq
   actor sourceState movedState fiber lookupSame movedFound =
     trans lookupSame movedFound
 
+0 lAdvanceActorInjective :
+  (name : Type) -> (key : Type) -> (value : key -> Type) ->
+  (world : Type) -> (error : Type) ->
+  (leftActor, rightActor : name) ->
+  (0 sameAction :
+    (the (Action name key value world error) (LAdvance leftActor) =
+     the (Action name key value world error) (LAdvance rightActor))) ->
+  (leftActor = rightActor)
+lAdvanceActorInjective name key value world error actor actor Refl = Refl
+
 0 replayPointwiseSuffixTraceComponentsTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (source : Transitions sourceFirst sourceFinal) ->
