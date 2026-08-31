@@ -1669,6 +1669,20 @@ private package field 7 is populated from sealed controls plus source
 clean boundary. Fields 8–15 and final assembly remain open. The remaining band
 provisionally narrows to **1–10 shifts**. Holes stay **20**, split **6/4/8/1/1**.
 
+### Revision 85: field-8 table transport foundations; correlated fiber stop
+
+`research-tests/O6-R85-FIELD8-TOTALITY-TRANSPORT-FOUNDATIONS-STOP-AUDIT.md`
+records shift #93. Exact binding-list lookup-presence transport and actor-local
+`ActiveFiberProvidesAll` transport close constructively. The next
+one-transition `TransitionComponentTotal` unit advances through action-owner
+reindexing and symmetric source-fiber recovery, then exhausts its budget when an
+independently reopened fiber relation loses the correlated target/source fiber
+indices. The unit is removed. The next cure is a separate one-elimination
+`fiberControlActiveSame`, after which the transition theorem can use the exact
+relation without reopening it. Field 8 remains partial; fields 9–15 and assembly
+remain unopened. The accepted **1–10 shift** remainder is held. Holes stay
+**20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1980,7 +1994,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–7 are closed. Revision 84 closes endpoint quietness and failure freedom; field 8 trace totality is next.** | **XL, provisionally 1–10 implementation shifts remain.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–7 are closed. Revision 85 retains field-8 lookup/table foundations; one-transition totality awaits a correlated fiber-activity projection.** | **XL, 1–10 implementation shifts remain.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2184,4 +2198,6 @@ recursive consumer, complete bundle field 2, and fields 3–5. Revision 80 close
 the correlated lifecycle/view and fiber quietness chain. Revisions 81–82
 isolate the generated-implicit fold wall; revision 83 closes that fold.
 Revision 84 closes its fixed-registry aggregation, complete field 6, and field
-7 failure freedom. Fields 8–15 and final assembly remain open.
+7 failure freedom. Revision 85 starts field 8 with exact lookup/table transport
+and isolates its first stop to correlated fiber activity. Fields 8–15 and final
+assembly remain open.
