@@ -20828,6 +20828,22 @@ adjacentTargetTraceComponentsTotal nameEq keyEq tracePrefix left right suffix
 replayProvenanceFromDiscipline protocol nameEq trace discipline =
   registrationDisciplineProvenance protocol nameEq trace discipline
 
+0 replayProtocolRankedFromEmpty :
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) ->
+  (trace : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  bindings (registry initial) = [] ->
+  registryWellFormed @{nameEq} @{keyEq} initial = True ->
+  RegistrationProvenance protocol nameEq trace ->
+  RegistryProtocolRanked protocol nameEq finalState
+replayProtocolRankedFromEmpty protocol nameEq keyEq initial finalState trace
+  aligned initialEmpty initialWellFormed provenance =
+    reachedRegistryProtocolRanked protocol nameEq keyEq
+      (MkReachedFromEmpty initial trace aligned initialEmpty initialWellFormed)
+      provenance
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
