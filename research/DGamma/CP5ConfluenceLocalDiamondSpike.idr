@@ -35,6 +35,7 @@ import DGamma.CP4DeletionSelectedForeignLifecycleAdvanceOutcome
 import DGamma.CP4DeletionSelectedForeignLifecycleAdvanceDispatchCore
 import DGamma.CP4DeletionRelationalLifecycleAdvance
 import DGamma.CP4Support
+import DGamma.CP4SupportQuiescence
 import Data.Nat
 import Data.Maybe
 import Data.List.Elem
@@ -19885,6 +19886,127 @@ pointwiseQuietFiberTrue localNameDecision localKeyDecision leftState rightState
             (registry rightState)
       in trans targetNormal
         (trans (sym lifecycleSame) (trans (sym sourceNormal) sourceQuiet))
+
+quietFoldStateExplicit :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (stateWorld : world) ->
+  (stateEntries : List (Binding name
+    (FiberAt name key value world error))) ->
+  (0 stateUnique : UniqueKeys (bindingKeys stateEntries)) ->
+  SystemState name key value world error
+quietFoldStateExplicit name key world error value stateWorld stateEntries
+  stateUnique = MkSystemState stateWorld
+    (MkCoeffectContext stateEntries stateUnique)
+
+quietFoldEntryPredicate :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  (stateWorld : world) ->
+  (stateEntries : List (Binding name
+    (FiberAt name key value world error))) ->
+  (0 stateUnique : UniqueKeys (bindingKeys stateEntries)) ->
+  Binding name (FiberAt name key value world error) -> Bool
+quietFoldEntryPredicate name key world error value localNameDecision
+  localKeyDecision stateWorld stateEntries stateUnique entry =
+    quietEntryFor @{localNameDecision} @{localKeyDecision}
+      {name = name} {key = key} {value = value} {world = world}
+      {error = error}
+      (registry (quietFoldStateExplicit name key world error value stateWorld
+        stateEntries stateUnique)) entry
+
+quietFoldLookupEquation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (localNameDecision : DecEq name) ->
+  (stateWorld : world) ->
+  (stateEntries : List (Binding name
+    (FiberAt name key value world error))) ->
+  (0 stateUnique : UniqueKeys (bindingKeys stateEntries)) ->
+  (selected : name) -> (fiber : Fiber name key value world error) -> Type
+quietFoldLookupEquation name key world error value localNameDecision stateWorld
+  stateEntries stateUnique selected fiber =
+    lookupFiber @{localNameDecision} {name = name} {key = key}
+      {value = value} {world = world} {error = error} selected
+      (registry (quietFoldStateExplicit name key world error value stateWorld
+        stateEntries stateUnique)) = Just fiber
+
+0 pointwiseQuietEntriesTrueExplicit :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (localNameDecision : DecEq name) -> (localKeyDecision : DecEq key) ->
+  (leftWorld, rightWorld : world) ->
+  (leftEntries, rightEntries : List (Binding name
+    (FiberAt name key value world error))) ->
+  (0 leftUnique : UniqueKeys (bindingKeys leftEntries)) ->
+  (0 rightUnique : UniqueKeys (bindingKeys rightEntries)) ->
+  (0 controls : ControlEquivalent name key world error value
+    localNameDecision
+    (quietFoldStateExplicit name key world error value leftWorld leftEntries
+      leftUnique)
+    (quietFoldStateExplicit name key world error value rightWorld rightEntries
+      rightUnique)) ->
+  (0 effects : EffectStateRelated localKeyDecision
+    (projectEffectState @{localNameDecision}
+      (quietFoldStateExplicit name key world error value leftWorld leftEntries
+        leftUnique))
+    (projectEffectState @{localNameDecision}
+      (quietFoldStateExplicit name key world error value rightWorld rightEntries
+        rightUnique))) ->
+  (0 rightValid : registryWellFormed @{localNameDecision}
+    @{localKeyDecision}
+    (quietFoldStateExplicit name key world error value rightWorld rightEntries
+      rightUnique) = True) ->
+  (0 sourceQuiet : quiet @{localNameDecision} @{localKeyDecision}
+    (quietFoldStateExplicit name key world error value leftWorld leftEntries
+      leftUnique) = True) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (0 inTarget : (selected : name) ->
+    (targetFiber : Fiber name key value world error) ->
+    Elem (Bind selected targetFiber) entries ->
+    Elem (Bind selected targetFiber) rightEntries) ->
+  allRecursive
+    (quietFoldEntryPredicate name key world error value localNameDecision
+      localKeyDecision rightWorld rightEntries rightUnique) entries = True
+pointwiseQuietEntriesTrueExplicit name key world error value localNameDecision
+  localKeyDecision leftWorld rightWorld leftEntries rightEntries leftUnique
+  rightUnique controls effects rightValid sourceQuiet [] inTarget = Refl
+pointwiseQuietEntriesTrueExplicit name key world error value localNameDecision
+  localKeyDecision leftWorld rightWorld leftEntries rightEntries leftUnique
+  rightUnique controls effects rightValid sourceQuiet
+  (Bind selected targetFiber :: rest) inTarget =
+    let 0 targetFound : quietFoldLookupEquation name key world error value
+          localNameDecision rightWorld rightEntries rightUnique selected
+          targetFiber
+        targetFound = entryLookupFromElemPointwise
+          {key = key} {value = value} {world = world} {error = error}
+          localNameDecision rightEntries rightUnique selected targetFiber
+          (inTarget selected targetFiber Here)
+    in case pointwiseControlLookupFound
+      {name = name} {key = key} {value = value} {world = world}
+      {error = error} localNameDecision selected
+      (quietFoldStateExplicit name key world error value rightWorld rightEntries
+        rightUnique)
+      (quietFoldStateExplicit name key world error value leftWorld leftEntries
+        leftUnique)
+      (controlEquivalentSymmetric controls) targetFiber targetFound of
+      (sourceFiber ** (sourceFound, targetSourceRelated)) =>
+        boolAndBothPointwise _ _
+          (pointwiseQuietFiberTrue localNameDecision localKeyDecision
+            (quietFoldStateExplicit name key world error value leftWorld
+              leftEntries leftUnique)
+            (quietFoldStateExplicit name key world error value rightWorld
+              rightEntries rightUnique)
+            controls effects rightValid sourceFiber targetFiber
+            (fiberControlSymmetric targetSourceRelated)
+            (quietFiberFromState
+              {name = name} {key = key} {value = value} {world = world}
+              {error = error} localNameDecision localKeyDecision
+              (quietFoldStateExplicit name key world error value leftWorld
+                leftEntries leftUnique) sourceQuiet selected sourceFiber
+              sourceFound))
+          (pointwiseQuietEntriesTrueExplicit name key world error value
+            localNameDecision localKeyDecision leftWorld rightWorld leftEntries
+            rightEntries leftUnique rightUnique controls effects rightValid
+            sourceQuiet rest (\later, observed, present =>
+              inTarget later observed (There present)))
 
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
