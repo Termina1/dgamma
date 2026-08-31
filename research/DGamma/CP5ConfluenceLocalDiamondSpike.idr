@@ -20386,6 +20386,58 @@ adjacentSourceTraceComponentsTotalSplit tracePrefix left right suffix original
          (TraceComponentsTotalStep right suffix rightTotal suffixTotal)) =>
            (prefixTotal, leftTotal, rightTotal, suffixTotal)
 
+0 adjacentMovedLeftComponentTotal :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (tracePrefix : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  AlignedTransitions name key world error value nameEq keyEq tracePrefix ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  TraceComponentsTotal nameEq keyEq tracePrefix ->
+  TransitionComponentTotal nameEq keyEq left ->
+  TransitionComponentTotal nameEq keyEq right ->
+  bindings (registry initial) = [] ->
+  TransitionComponentTotal nameEq keyEq (movedLeft diamond)
+adjacentMovedLeftComponentTotal nameEq keyEq tracePrefix left right diamond
+  prefixAligned pairAligned prefixTotal leftTotal rightTotal initialEmpty =
+    let sourcePair : Transitions pairFirst pairFinal
+        sourcePair = MoreTransitions left (MoreTransitions right NoTransitions)
+        sourceThroughPair : Transitions initial pairFinal
+        sourceThroughPair = appendTransitions tracePrefix sourcePair
+        0 sourceThroughPairAligned : AlignedTransitions name key world error value
+          nameEq keyEq sourceThroughPair
+        sourceThroughPairAligned = appendAlignedTransitions prefixAligned
+          pairAligned
+        0 sourcePairTotal : TraceComponentsTotal nameEq keyEq sourcePair
+        sourcePairTotal = TraceComponentsTotalStep left
+          (MoreTransitions right NoTransitions) leftTotal
+          (TraceComponentsTotalStep right NoTransitions rightTotal
+            TraceComponentsTotalEnd)
+        0 sourceThroughPairTotal : TraceComponentsTotal nameEq keyEq
+          sourceThroughPair
+        sourceThroughPairTotal = appendTraceComponentsTotal tracePrefix
+          sourcePair prefixTotal sourcePairTotal
+        0 sourceAtPairFinal : ActiveFibersProvideAll nameEq keyEq pairFinal
+        sourceAtPairFinal = traceActiveFibersProvideAll nameEq keyEq
+          sourceThroughPair sourceThroughPairAligned sourceThroughPairTotal
+          (\actor, fiber, found, active =>
+            void (nothingIsNotJust (trans
+              (sym (lookupFiberEmptyRegistry nameEq actor initial initialEmpty))
+              found)))
+        0 pairEndpoint : RelationalReplayEndpoint name key world error value
+          nameEq keyEq pairFinal (swappedFinal diamond)
+        pairEndpoint = MkRelationalReplayEndpoint (swappedEffects diamond)
+          (swappedControlEquivalent diamond) (swappedWellFormed diamond)
+        0 targetAtSwappedFinal : ActiveFibersProvideAll nameEq keyEq
+          (swappedFinal diamond)
+        targetAtSwappedFinal = pointwiseActiveFibersProvideAll nameEq keyEq
+          pairFinal (swappedFinal diamond) pairEndpoint sourceAtPairFinal
+    in transitionComponentTotalFromActiveFibers nameEq keyEq
+      (movedLeft diamond) targetAtSwappedFinal
+
 0 replayPointwiseSuffixTraceComponentsTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (source : Transitions sourceFirst sourceFinal) ->
