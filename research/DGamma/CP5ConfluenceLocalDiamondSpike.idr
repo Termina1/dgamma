@@ -20134,8 +20134,8 @@ fiberControlNotFailedSame
 noFailedEntryPredicateExplicit :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   Binding name (FiberAt name key value world error) -> Bool
-noFailedEntryPredicateExplicit name key world error value
-  (Bind selected fiber) = fiberNotFailed fiber
+noFailedEntryPredicateExplicit name key world error value =
+  DGamma.CP3.notFailedEntry
 
 0 pointwiseNoFailedEntriesTrueExplicit :
   (name, key, world, error : Type) -> (value : key -> Type) ->
@@ -20198,6 +20198,23 @@ pointwiseNoFailedEntriesTrueExplicit name key world error value
             leftUnique rightUnique controls sourceNoFailure rest
             (\later, observed, present =>
               inTarget later observed (There present)))
+
+0 pointwiseNoFailedTrue :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (localNameDecision : DecEq name) ->
+  (leftState, rightState : SystemState name key value world error) ->
+  ControlEquivalent name key world error value localNameDecision leftState
+    rightState ->
+  noFailedFibers leftState = True ->
+  noFailedFibers rightState = True
+pointwiseNoFailedTrue localNameDecision
+  (MkSystemState leftWorld (MkCoeffectContext leftEntries leftUnique))
+  (MkSystemState rightWorld (MkCoeffectContext rightEntries rightUnique))
+  controls sourceNoFailure =
+    pointwiseNoFailedEntriesTrueExplicit name key world error value
+      localNameDecision leftWorld rightWorld leftEntries rightEntries leftUnique
+      rightUnique controls sourceNoFailure rightEntries
+      (\selected, targetFiber, present => present)
 
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
