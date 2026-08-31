@@ -20525,6 +20525,45 @@ paperRetireActiveFiberProvidesBackward nameEq keyEq actor before afterState tag
       Yes Refl => retireOwnerActiveProvidesBackward nameEq keyEq actor before
         afterState tag checked afterProvides fiber beforeFound active
 
+0 paperRemoveActiveFiberProvidesBackward :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (ORemove actor) before =
+    Just (tag, afterState)) ->
+  (raw : applyAction @{nameEq} @{keyEq} (ORemove actor) before =
+    Just (tag, afterState)) ->
+  ActiveFibersProvideAll nameEq keyEq afterState ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} selected (registry before) = Just fiber ->
+  isActive (fiberLifecycle fiber) = True ->
+  ActiveFiberProvidesAll keyEq fiber
+paperRemoveActiveFiberProvidesBackward nameEq keyEq actor
+  (MkSystemState ambient source) afterState tag checked raw afterProvides selected
+  fiber beforeFound active = case decEq @{nameEq} selected actor of
+    No distinct => foreignActiveFiberProvidesBackward nameEq keyEq
+      (ORemove actor) tag (MkSystemState ambient source) afterState checked
+      afterProvides selected distinct fiber beforeFound active
+    Yes Refl => case removeSuccessView nameEq keyEq actor ambient source tag
+      afterState raw of
+      MkRemoveSuccessView oldFiber oldFound removable noChild =>
+        case oldFiber of
+          MkFiber component parent retiredFlag table lifecycle =>
+            let 0 sameFiber :
+                  (MkFiber component parent retiredFlag table lifecycle = fiber)
+                sameFiber = justInjective (trans (sym oldFound) beforeFound)
+            in case inactiveLifecycleFromRemovalGuard retiredFlag lifecycle
+              (hasChild @{nameEq} actor source) removable of
+              (outcome ** inactive) =>
+                let 0 oldInactive : (isActive lifecycle = False)
+                    oldInactive = cong isActive inactive
+                    0 fiberInactive : (isActive (fiberLifecycle fiber) = False)
+                    fiberInactive = replace
+                      {p = \candidate =>
+                        isActive (fiberLifecycle candidate) = False}
+                      sameFiber oldInactive
+                in case trans (sym active) fiberInactive of Refl impossible
+
 0 adjacentMovedLeftComponentTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (tracePrefix : Transitions initial pairFirst) ->
