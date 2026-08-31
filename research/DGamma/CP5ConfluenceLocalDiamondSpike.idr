@@ -20227,6 +20227,37 @@ pointwiseLookupBindingPresenceFromBindings keyEq wanted
   (MkCoeffectContext rightEntries rightUnique) same =
     case same of Refl => Refl
 
+0 pointwiseActiveFiberProvidesAll :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (left, right : SystemState name key value world error) ->
+  (leftFiber, rightFiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} actor (registry left) = Just leftFiber ->
+  lookupFiber @{nameEq} actor (registry right) = Just rightFiber ->
+  FiberControlRelated leftFiber rightFiber ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} left)
+    (projectEffectState @{nameEq} right) ->
+  ActiveFiberProvidesAll keyEq leftFiber ->
+  isActive (fiberLifecycle rightFiber) = True ->
+  ActiveFiberProvidesAll keyEq rightFiber
+pointwiseActiveFiberProvidesAll nameEq keyEq actor left right
+  (MkFiber component leftParent leftRetired leftTable leftLifecycle)
+  (MkFiber component rightParent rightRetired rightTable rightLifecycle)
+  leftFound rightFound
+  (FibersControlRelated leftParent rightParent leftRetired rightRetired
+    leftTable rightTable leftLifecycle rightLifecycle parentSame retiredSame
+    lifecycleRelated) effects sourceProvides targetActive =
+      let 0 tablesSame : (bindings (ownedValues leftTable) =
+            bindings (ownedValues rightTable))
+          tablesSame = relatedLocatedFiberTablesSame nameEq actor left right
+            (MkFiber component leftParent leftRetired leftTable leftLifecycle)
+            (MkFiber component rightParent rightRetired rightTable
+              rightLifecycle) leftFound rightFound effects
+      in \wanted, provided =>
+        trans
+          (sym (pointwiseLookupBindingPresenceFromBindings keyEq wanted
+            (ownedValues leftTable) (ownedValues rightTable) tablesSame))
+          (sourceProvides wanted provided)
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
