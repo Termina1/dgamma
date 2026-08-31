@@ -1759,6 +1759,22 @@ eliminate the impossible empty-tail case, and consume the package once in the
 locator. No fourth bare projection or fifth cure is authorized. Holes stay
 **20**, split **6/4/8/1/1**; the accepted **1–10 shift** remainder is held.
 
+### Revision 91: correlated package exhausts; design-only escalation
+
+`research-tests/O6-R91-CORRELATED-STAGE-PACKAGE-ESCALATION-AUDIT.md`
+records shift #99. The pre-authorized correlated stage/actor package exhausts
+its three fresh attempts and is removed. Exact and generalized constructors
+both lose the opaque original target-stage index when the Here occurrence view
+reconstructs the exact stage. Separating the original target index behind an
+explicit stage equality then fails at constructor declaration because Idris
+cannot scope its dependent stage type. The producer's Here/Later logic itself
+is reached, but no constructor survives, so the consumer cannot be opened. The
+explicit escalation boundary now applies: the next shift is design-only on the
+singleton stage representation, comparing revision-66/71 joint-introduction
+precedents; no fourth package attempt and no fifth cure. Holes stay **20**, split
+**6/4/8/1/1**. The prior **1–10 implementation-shift** band is suspended pending
+that design gate rather than widened speculatively.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -2070,7 +2086,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 90 closes LAdvance actor injectivity and ends the bare equality route; the authorized correlated stage/actor package remains before the locator and moved-pair RAR. Fields 10–15 foundations are checked.** | **XL, 1–10 implementation shifts remain.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 91 exhausts the correlated raw-stage package fallback; field 9 is paused for a design-only singleton-stage representation gate. Fields 10–15 foundations are checked.** | **XL; prior 1–10 implementation-shift band suspended pending design gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2283,6 +2299,6 @@ Field 9 is isolated to the producer-owned whole RAR. Revision 88 closes its
 identity-prefix leg and splits the next L-Advance stage-family unit after an
 erased annotation-layout stop. Revision 89 closes the exact lookup transport
 and isolates the locator at `selected = actor`. Revision 90 closes action
-constructor injectivity, rejects the bare whole-transition projection, and
-leaves the correlated stage/actor package fallback; final assembly remains
-open.
+constructor injectivity and rejects the bare whole-transition projection.
+Revision 91 exhausts the correlated raw-stage package fallback and invokes the
+design-only singleton-stage representation gate; final assembly remains open.
