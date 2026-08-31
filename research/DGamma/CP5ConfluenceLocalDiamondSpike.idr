@@ -20860,6 +20860,26 @@ replayParentRanksIncreaseFromEmpty protocol nameEq keyEq initial finalState trac
       (MkReachedFromEmpty initial trace aligned initialEmpty initialWellFormed)
       provenance
 
+0 replayPrecedencePathIsSupportPath :
+  PrecedencePath nameEq state lower upper ->
+  SupportPath nameEq state lower upper
+replayPrecedencePathIsSupportPath (PrecedenceOne edge) =
+  SupportPathOne (SupportPrecedence edge)
+replayPrecedencePathIsSupportPath (PrecedenceMore edge rest) =
+  SupportPathMore (SupportPrecedence edge)
+    (replayPrecedencePathIsSupportPath rest)
+
+0 replayPrecedenceAcyclicFromRanks :
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) ->
+  (state : SystemState name key value world error) ->
+  RegistryProtocolRanked protocol nameEq state ->
+  RegistryParentRanksIncrease protocol nameEq state ->
+  PrecedenceAcyclic nameEq state
+replayPrecedenceAcyclicFromRanks protocol nameEq state ranked parentOrdered
+  selected path = supportCombinedWellFounded protocol nameEq state ranked
+    parentOrdered selected (replayPrecedencePathIsSupportPath path)
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
