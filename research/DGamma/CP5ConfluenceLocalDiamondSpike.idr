@@ -20311,6 +20311,31 @@ pointwiseTransitionComponentTotal nameEq keyEq sourceStep replayedStep
           (fiberControlSymmetric targetSourceRelated) effects sourceProvides
           targetActive
 
+0 replayPointwiseSuffixTraceComponentsTotal :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (source : Transitions sourceFirst sourceFinal) ->
+  (replayed : Transitions replayedFirst replayedFinal) ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq source
+    replayed ->
+  TraceComponentsTotal nameEq keyEq source ->
+  TraceComponentsTotal nameEq keyEq replayed
+replayPointwiseSuffixTraceComponentsTotal nameEq keyEq NoTransitions
+  NoTransitions SealedSuffixReplayEnd TraceComponentsTotalEnd =
+    TraceComponentsTotalEnd
+replayPointwiseSuffixTraceComponentsTotal nameEq keyEq
+  (MoreTransitions sourceStep sourceTail)
+  (MoreTransitions replayedStep replayedTail)
+  (SealedSuffixReplayStep sourceStep replayedStep sourceTail replayedTail
+    sameAction sameTag headRAR headMapsRelated headEndpoint headOccurrences
+    headRelativeOrdinal tailSeal)
+  (TraceComponentsTotalStep sourceStep sourceTail sourceHeadTotal
+    sourceTailTotal) =
+      TraceComponentsTotalStep replayedStep replayedTail
+        (pointwiseTransitionComponentTotal nameEq keyEq sourceStep replayedStep
+          sameAction headEndpoint sourceHeadTotal)
+        (replayPointwiseSuffixTraceComponentsTotal nameEq keyEq sourceTail
+          replayedTail tailSeal sourceTailTotal)
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
