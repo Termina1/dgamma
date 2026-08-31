@@ -20744,6 +20744,17 @@ adjacentMovedRightComponentTotal nameEq keyEq tracePrefix left right diamond
     in transitionComponentTotalFromActiveFibers nameEq keyEq
       (movedRight diamond) targetAtSwappedMiddle
 
+0 identityRelationalReplayCorrespondence :
+  (trace : Transitions initial finalState) ->
+  RelationalReplayCorrespondence name key world error value trace trace
+identityRelationalReplayCorrespondence trace =
+  MkRelationalReplayCorrespondence
+    (\actor, generator => generator)
+    (\observedKeyEq, actor, generator =>
+      replayTraceGeneratorMapRespects observedKeyEq generator)
+    (\actor, stage => stage)
+    (\actor, stage, state => Refl)
+
 0 replayPointwiseSuffixTraceComponentsTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (source : Transitions sourceFirst sourceFinal) ->
