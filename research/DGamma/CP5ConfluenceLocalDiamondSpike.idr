@@ -20480,6 +20480,31 @@ paperActivationActiveFiberProvidesBackward nameEq keyEq action tag before
                   sameFiber ownerInactive
             in case trans (sym active) fiberInactive of Refl impossible
 
+0 paperInsertActiveFiberProvidesBackward :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq}
+    (OInsert actor parent component) before = Just (tag, afterState)) ->
+  (sourceAbsent : lookupFiber @{nameEq}
+    {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor (registry before) =
+      (the (Maybe (Fiber name key value world error)) Nothing)) ->
+  ActiveFibersProvideAll nameEq keyEq afterState ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} selected (registry before) = Just fiber ->
+  isActive (fiberLifecycle fiber) = True ->
+  ActiveFiberProvidesAll keyEq fiber
+paperInsertActiveFiberProvidesBackward nameEq keyEq actor parent component
+  before afterState tag checked sourceAbsent afterProvides selected fiber
+  beforeFound active = case decEq @{nameEq} selected actor of
+    No distinct => foreignActiveFiberProvidesBackward nameEq keyEq
+      (OInsert actor parent component) tag before afterState checked afterProvides
+      selected distinct fiber beforeFound active
+    Yes Refl => case trans (sym sourceAbsent) beforeFound of Refl impossible
+
 0 adjacentMovedLeftComponentTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (tracePrefix : Transitions initial pairFirst) ->
