@@ -20271,6 +20271,15 @@ pointwiseActiveFiberProvidesAll nameEq keyEq actor left right
             (ownedValues leftTable) (ownedValues rightTable) tablesSame))
           (sourceProvides wanted provided)
 
+0 transitionComponentTotalFromActiveFibers :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (transition : Transition before afterState) ->
+  ActiveFibersProvideAll nameEq keyEq afterState ->
+  TransitionComponentTotal nameEq keyEq transition
+transitionComponentTotalFromActiveFibers nameEq keyEq transition available
+  fiber found active = available (actionOwner (transitionAction transition))
+    fiber found active
+
 0 pointwiseTransitionComponentTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   {sourceBefore, sourceAfter, replayedBefore, replayedAfter :
