@@ -20131,6 +20131,74 @@ fiberControlNotFailedSame
             (MkFiber component rightParent rightRetired rightTable
               rightLifecycle))))
 
+noFailedEntryPredicateExplicit :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  Binding name (FiberAt name key value world error) -> Bool
+noFailedEntryPredicateExplicit name key world error value
+  (Bind selected fiber) = fiberNotFailed fiber
+
+0 pointwiseNoFailedEntriesTrueExplicit :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (localNameDecision : DecEq name) ->
+  (leftWorld, rightWorld : world) ->
+  (leftEntries, rightEntries : List (Binding name
+    (FiberAt name key value world error))) ->
+  (0 leftUnique : UniqueKeys (bindingKeys leftEntries)) ->
+  (0 rightUnique : UniqueKeys (bindingKeys rightEntries)) ->
+  (0 controls : ControlEquivalent name key world error value
+    localNameDecision
+    (quietFoldStateExplicit name key world error value leftWorld leftEntries
+      leftUnique)
+    (quietFoldStateExplicit name key world error value rightWorld rightEntries
+      rightUnique)) ->
+  (0 sourceNoFailure : noFailedFibers
+    (quietFoldStateExplicit name key world error value leftWorld leftEntries
+      leftUnique) = True) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (0 inTarget : (selected : name) ->
+    (targetFiber : Fiber name key value world error) ->
+    Elem (Bind selected targetFiber) entries ->
+    Elem (Bind selected targetFiber) rightEntries) ->
+  allList (noFailedEntryPredicateExplicit name key world error value)
+    entries = True
+pointwiseNoFailedEntriesTrueExplicit name key world error value
+  localNameDecision leftWorld rightWorld leftEntries rightEntries leftUnique
+  rightUnique controls sourceNoFailure [] inTarget = Refl
+pointwiseNoFailedEntriesTrueExplicit name key world error value
+  localNameDecision leftWorld rightWorld leftEntries rightEntries leftUnique
+  rightUnique controls sourceNoFailure (Bind selected targetFiber :: rest)
+  inTarget =
+    let 0 targetFound : quietFoldLookupEquation name key world error value
+          localNameDecision rightWorld rightEntries rightUnique selected
+          targetFiber
+        targetFound = entryLookupFromElemPointwise
+          {key = key} {value = value} {world = world} {error = error}
+          localNameDecision rightEntries rightUnique selected targetFiber
+          (inTarget selected targetFiber Here)
+    in case pointwiseControlLookupFound
+      {name = name} {key = key} {value = value} {world = world}
+      {error = error} localNameDecision selected
+      (quietFoldStateExplicit name key world error value rightWorld rightEntries
+        rightUnique)
+      (quietFoldStateExplicit name key world error value leftWorld leftEntries
+        leftUnique)
+      (controlEquivalentSymmetric controls) targetFiber targetFound of
+      (sourceFiber ** (sourceFound, targetSourceRelated)) =>
+        boolAndBothPointwise _ _
+          (trans (fiberControlNotFailedSame targetFiber sourceFiber
+              targetSourceRelated)
+            (noFailureFromState
+              {name = name} {key = key} {value = value} {world = world}
+              {error = error} localNameDecision
+              (quietFoldStateExplicit name key world error value leftWorld
+                leftEntries leftUnique) sourceNoFailure selected sourceFiber
+              sourceFound))
+          (pointwiseNoFailedEntriesTrueExplicit name key world error value
+            localNameDecision leftWorld rightWorld leftEntries rightEntries
+            leftUnique rightUnique controls sourceNoFailure rest
+            (\later, observed, present =>
+              inTarget later observed (There present)))
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
