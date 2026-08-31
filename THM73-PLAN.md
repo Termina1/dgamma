@@ -1639,6 +1639,22 @@ the fold result boundary. Field 6 remains open only at this mechanical finite
 fold. The accepted **1–12 shift** remainder is held. Holes stay **20**, split
 **6/4/8/1/1**.
 
+### Revision 83: explicit-Type fold closes; fixed-registry wrapper remains
+
+`research-tests/O6-R83-EXPLICIT-TYPE-FOLD-CLOSED-WRAPPER-AGGREGATION-STOP-AUDIT.md`
+records shift #91. Ordinary explicit type arguments for the state, entry
+predicate, lookup family, and recursive fold eliminate the generated dependent-
+implicit wall. The fold now checks end-to-end: exact target membership and
+lookup, symmetric source recovery, the retained per-fiber quietness theorem,
+and recursive aggregation are constructive. The subsequent state-pattern
+wrapper stops when its structural predicate converter incorrectly shrinks the
+registry together with the current suffix; the resulting
+`tailUnique`/`UniqueCons` mismatch is semantic-stop territory, so that wrapper
+is removed. The next converter must hold registry entries/uniqueness fixed and
+recurse over a separate current list. Field 6 remains open only at this final
+aggregation bridge. The remaining band provisionally narrows to **1–11 shifts**.
+Holes stay **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1950,7 +1966,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–5 are closed. Revision 80 closes semantic quietness; revisions 81–82 isolate field 6 to generated dependent implicits at the finite-fold result boundary.** | **XL, 1–12 implementation shifts remain.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–5 are closed. Revision 83 closes the explicit finite quietness fold; field 6 remains open only at its fixed-registry wrapper conversion.** | **XL, provisionally 1–11 implementation shifts remain.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2152,6 +2168,6 @@ retirement tails, and complete moved-pair registration discipline. Revision 78
 closes the exact producer-owned prefix-discipline view. Revision 79 closes its
 recursive consumer, complete bundle field 2, and fields 3–5. Revision 80 closes
 the correlated lifecycle/view and fiber quietness chain. Revisions 81–82
-confirm field 6 now stops only at eliminating generated dependent implicits from
-the explicit target-membership fold boundary. Later fields and final assembly
-remain open.
+isolate the generated-implicit fold wall; revision 83 closes that fold and
+leaves only a fixed-registry aggregation conversion before field 6 completes.
+Later fields and final assembly remain open.
