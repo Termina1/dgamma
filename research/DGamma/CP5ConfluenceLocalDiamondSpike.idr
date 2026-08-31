@@ -20386,6 +20386,44 @@ adjacentSourceTraceComponentsTotalSplit tracePrefix left right suffix original
          (TraceComponentsTotalStep right suffix rightTotal suffixTotal)) =>
            (prefixTotal, leftTotal, rightTotal, suffixTotal)
 
+0 retireOwnerActiveProvidesBackward :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  checkedApplyAction @{nameEq} @{keyEq} (ORetire actor) before =
+    Just (tag, afterState) ->
+  ActiveFibersProvideAll nameEq keyEq afterState ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} actor (registry before) = Just fiber ->
+  isActive (fiberLifecycle fiber) = True ->
+  ActiveFiberProvidesAll keyEq fiber
+retireOwnerActiveProvidesBackward nameEq keyEq actor
+  (MkSystemState ambient source) afterState tag checked afterProvides fiber
+  beforeFound active =
+    let 0 raw = checkedActionProjects nameEq keyEq (ORetire actor)
+          (MkSystemState ambient source) afterState tag checked
+    in case retireSuccessView nameEq keyEq actor ambient source tag afterState
+      raw of
+      MkRetireSuccessView oldFiber oldFound =>
+        let 0 sameFiber = justInjective (trans (sym oldFound) beforeFound)
+            0 oldActive : (isActive (fiberLifecycle oldFiber) = True)
+            oldActive = replace
+              {p = \candidate => isActive (fiberLifecycle candidate) = True}
+              (sym sameFiber) active
+            0 oldProvides : ActiveFiberProvidesAll keyEq oldFiber
+            oldProvides = case oldFiber of
+              MkFiber component parent retiredFlag table lifecycle =>
+                afterProvides actor
+                  (retireFiber
+                    (MkFiber component parent retiredFlag table lifecycle))
+                  (lookupReplacedFiber actor
+                    (MkFiber component parent retiredFlag table lifecycle)
+                    (retireFiber
+                      (MkFiber component parent retiredFlag table lifecycle))
+                    source oldFound)
+                  oldActive
+        in replace {p = ActiveFiberProvidesAll keyEq} sameFiber oldProvides
+
 0 foreignActiveFiberProvidesBackward :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) -> (tag : RuleTag) ->
