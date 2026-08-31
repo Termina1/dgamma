@@ -20610,6 +20610,21 @@ paperStepActiveFibersBackward nameEq keyEq action tag
       in paperRemoveActiveFiberProvidesBackward nameEq keyEq actor
         (MkSystemState ambient source) afterState tag checked raw afterProvides
 
+0 alignedPaperStepActiveFibersBackward :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (transition : Transition before afterState) ->
+  (rest : Transitions afterState finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions transition rest) ->
+  Either (PaperActivationStep transition) (PaperOrchestrationStep transition) ->
+  ActiveFibersProvideAll nameEq keyEq afterState ->
+  ActiveFibersProvideAll nameEq keyEq before
+alignedPaperStepActiveFibersBackward nameEq keyEq
+  (Fired nameEq keyEq action tag checked) rest
+  (AlignedStep action tag checked rest alignedRest) classification afterProvides =
+    paperStepActiveFibersBackward nameEq keyEq action tag _ _ checked
+      classification afterProvides
+
 0 adjacentSwappedFinalActiveFibersProvideAll :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (tracePrefix : Transitions initial pairFirst) ->
