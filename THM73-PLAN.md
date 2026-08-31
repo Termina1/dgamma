@@ -1625,6 +1625,20 @@ project its registry, avoiding standalone dependent-context annotations. Field
 6 remains open only at this representational finite fold. The accepted **1–12
 shift** remainder is held. Holes stay **20**, split **6/4/8/1/1**.
 
+### Revision 82: generated dependent implicits remain at the fold boundary
+
+`research-tests/O6-R82-WHOLE-STATE-QUIET-FOLD-IMPLICIT-BINDING-STOP-AUDIT.md`
+records shift #90. The CP4 whole-state expression, then the authorized private
+state auxiliary, and finally an explicitly parameterized `quietEntryFor` result
+all fail at the fold declaration with the same generated dependent `key/value`
+implicit-binding diagnostic. The helper itself checks; the recursive body is
+never elaborated. The unit is removed and no later field is opened. The next
+representation cure must make the state and result-predicate auxiliaries take
+ordinary explicit type arguments and keep all hidden dependent arguments out of
+the fold result boundary. Field 6 remains open only at this mechanical finite
+fold. The accepted **1–12 shift** remainder is held. Holes stay **20**, split
+**6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -1936,7 +1950,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–5 are closed. Revision 80 closes the semantic quietness bridge; revision 81 isolates the remaining field-6 fold to whole-state dependent-constructor annotation syntax.** | **XL, 1–12 implementation shifts remain.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–5 are closed. Revision 80 closes semantic quietness; revisions 81–82 isolate field 6 to generated dependent implicits at the finite-fold result boundary.** | **XL, 1–12 implementation shifts remain.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2137,6 +2151,7 @@ Revision 77 closes its explicit lookup projections, the consumer, both moved
 retirement tails, and complete moved-pair registration discipline. Revision 78
 closes the exact producer-owned prefix-discipline view. Revision 79 closes its
 recursive consumer, complete bundle field 2, and fields 3–5. Revision 80 closes
-the correlated lifecycle/view and fiber quietness chain. Revision 81 confirms
-field 6 now stops only at whole-state annotation syntax for the explicit target-
-membership fold. Later fields and final assembly remain open.
+the correlated lifecycle/view and fiber quietness chain. Revisions 81–82
+confirm field 6 now stops only at eliminating generated dependent implicits from
+the explicit target-membership fold boundary. Later fields and final assembly
+remain open.
