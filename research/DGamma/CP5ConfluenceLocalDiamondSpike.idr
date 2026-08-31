@@ -20844,6 +20844,22 @@ replayProtocolRankedFromEmpty protocol nameEq keyEq initial finalState trace
       (MkReachedFromEmpty initial trace aligned initialEmpty initialWellFormed)
       provenance
 
+0 replayParentRanksIncreaseFromEmpty :
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) ->
+  (trace : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  bindings (registry initial) = [] ->
+  registryWellFormed @{nameEq} @{keyEq} initial = True ->
+  RegistrationProvenance protocol nameEq trace ->
+  RegistryParentRanksIncrease protocol nameEq finalState
+replayParentRanksIncreaseFromEmpty protocol nameEq keyEq initial finalState trace
+  aligned initialEmpty initialWellFormed provenance =
+    reachedRegistryParentRanksIncrease protocol nameEq keyEq
+      (MkReachedFromEmpty initial trace aligned initialEmpty initialWellFormed)
+      provenance
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
