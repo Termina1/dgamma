@@ -20345,6 +20345,19 @@ pointwiseTransitionComponentTotal nameEq keyEq sourceStep replayedStep
           (fiberControlSymmetric targetSourceRelated) effects sourceProvides
           targetActive
 
+0 appendTraceComponentsTotal :
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  TraceComponentsTotal nameEq keyEq left ->
+  TraceComponentsTotal nameEq keyEq right ->
+  TraceComponentsTotal nameEq keyEq (appendTransitions left right)
+appendTraceComponentsTotal NoTransitions right TraceComponentsTotalEnd
+  rightTotal = rightTotal
+appendTraceComponentsTotal (MoreTransitions transition rest) right
+  (TraceComponentsTotalStep transition rest headTotal tailTotal) rightTotal =
+    TraceComponentsTotalStep transition (appendTransitions rest right)
+      headTotal (appendTraceComponentsTotal rest right tailTotal rightTotal)
+
 0 adjacentSourceTraceComponentsTotalSplit :
   (tracePrefix : Transitions initial pairFirst) ->
   (left : Transition pairFirst pairMiddle) ->
