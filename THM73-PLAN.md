@@ -1775,6 +1775,22 @@ precedents; no fourth package attempt and no fifth cure. Holes stay **20**, spli
 **6/4/8/1/1**. The prior **1–10 implementation-shift** band is suspended pending
 that design gate rather than widened speculatively.
 
+### Revision 92: runtime package design closes in probes
+
+`research-tests/O6-R92-SINGLETON-STAGE-REPRESENTATION-DESIGN-AUDIT.md`
+records design-only shift #100. Both directions are pinned. Explicit original-to-
+rebuilt stage identity remains rejected; an opaque actor/tag header checks but
+cannot supply the frozen locator's exact payload. The selected revision-71-style
+producer-indexed runtime package keeps the original stage only as an index and
+owns erased exact fiber/lifecycle/continuation payload plus an exact runtime
+outcome equation. Its producer and exact one-elimination consumer both pass
+visible fresh checking, including the all-quantity-0 package-field variant. The
+consumer uses `04fda32` and constructs `LocatedSingletonAdvanceStageReplay`
+directly; it does not assert stage identity or revise the frozen locator. No
+probe is retained. Expected manifest delta is no frozen-surface change. The
+implementation band is proposed to re-open at **2–10 shifts**, pending this
+design review. Holes remain **20**, split **6/4/8/1/1**.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -2086,7 +2102,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 91 exhausts the correlated raw-stage package fallback; field 9 is paused for a design-only singleton-stage representation gate. Fields 10–15 foundations are checked.** | **XL; prior 1–10 implementation-shift band suspended pending design gate.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 92 selects a checked producer-indexed runtime package with an exact one-elimination consumer; implementation awaits design approval. Fields 10–15 foundations are checked.** | **XL; proposed 2–10 implementation shifts pending design approval.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2301,4 +2317,6 @@ erased annotation-layout stop. Revision 89 closes the exact lookup transport
 and isolates the locator at `selected = actor`. Revision 90 closes action
 constructor injectivity and rejects the bare whole-transition projection.
 Revision 91 exhausts the correlated raw-stage package fallback and invokes the
-design-only singleton-stage representation gate; final assembly remains open.
+design-only singleton-stage representation gate. Revision 92 selects a checked
+producer-indexed runtime package and exact one-elimination consumer with no
+frozen-surface delta; final assembly remains open.
