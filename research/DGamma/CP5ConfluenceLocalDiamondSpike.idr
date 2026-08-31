@@ -20786,6 +20786,89 @@ singletonAdvanceSourceFoundFromOwnerLookup name key value world error nameEq
   (leftActor = rightActor)
 lAdvanceActorInjective name key value world error actor actor Refl = Refl
 
+data SingletonAdvanceRuntimePackage :
+  (name : Type) -> (key : Type) -> (value : key -> Type) ->
+  (world : Type) -> (error : Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+    Just (tag, afterState)) ->
+  (selected : name) ->
+  (targetStage : IteratorStage name key world error value selected
+    (MoreTransitions
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq (LAdvance actor) tag checked) NoTransitions)) -> Type where
+  MkSingletonAdvanceRuntimePackage :
+    {selected : name} ->
+    {targetStage : IteratorStage name key world error value selected
+      (MoreTransitions
+        (Fired {before = before} {afterState = afterState}
+          nameEq keyEq (LAdvance actor) tag checked) NoTransitions)} ->
+    (0 actorSame : (selected = actor)) ->
+    (0 component : Component key value world error) ->
+    (0 parent : Parent name) -> (0 retiredFlag : Bool) ->
+    (0 table : OwnedTable key value (componentProvisions component)) ->
+    (0 remaining : List (StepEffect key value world error
+      (dependencies (componentDependencies component))
+      (componentProvisions component))) ->
+    (0 accumulator : LocalState key value world
+        (componentProvisions component) ->
+      LocalState key value world (componentProvisions component)) ->
+    (0 view : View name (dependencies (componentDependencies component))) ->
+    (0 targetFound :
+      (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+        {world = world} {error = error} actor (registry before) = Just
+       (MkFiber component parent retiredFlag table
+        (Reloading remaining accumulator view)))) ->
+    (0 step : StepEffect key value world error
+      (dependencies (componentDependencies component))
+      (componentProvisions component)) ->
+    (0 rest : List (StepEffect key value world error
+      (dependencies (componentDependencies component))
+      (componentProvisions component))) ->
+    (0 suffix : ReachableSuffix remaining (step :: rest)) ->
+    (0 targetOutcomeExact : (state : EffectState name key value world) ->
+      (iteratorStageOutcome targetStage state =
+       iteratorStageOutcome
+        (StageFromAdvance {before = before} {afterState = afterState}
+          nameEq keyEq actor tag checked (OccursHere {rest = NoTransitions})
+          (MkFiber component parent retiredFlag table
+            (Reloading remaining accumulator view)) targetFound remaining
+          accumulator view Refl step rest suffix) state)) ->
+    SingletonAdvanceRuntimePackage name key value world error nameEq keyEq
+      actor tag before afterState checked selected targetStage
+
+0 singletonAdvanceRuntimePackage :
+  (name : Type) -> (key : Type) -> (value : key -> Type) ->
+  (world : Type) -> (error : Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (0 checked :
+    (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+     Just (tag, afterState))) ->
+  (selected : name) ->
+  (targetStage : IteratorStage name key world error value selected
+    (MoreTransitions
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq (LAdvance actor) tag checked) NoTransitions)) ->
+  SingletonAdvanceRuntimePackage name key value world error nameEq keyEq actor
+    tag before afterState checked selected targetStage
+singletonAdvanceRuntimePackage name key value world error nameEq keyEq actor
+  tag before afterState checked selected
+  targetStage@(StageFromAdvance stageNameEq stageKeyEq selected stageTag
+    stageChecked occurs fiber stageFound remaining accumulator view lifecycle
+    step rest suffix) =
+      case viewConsStageOccurrence occurs of
+        ConsStageOccursHere => case fiber of
+          MkFiber component parent retiredFlag table observedLifecycle =>
+            case lifecycle of
+              Refl => MkSingletonAdvanceRuntimePackage Refl component parent
+                retiredFlag table remaining accumulator view stageFound step rest
+                suffix (\state => Refl)
+        ConsStageOccursLater _ later => void (noOccurrenceInEmpty later)
+
 0 replayPointwiseSuffixTraceComponentsTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (source : Transitions sourceFirst sourceFinal) ->
