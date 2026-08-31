@@ -20564,6 +20564,52 @@ paperRemoveActiveFiberProvidesBackward nameEq keyEq actor
                       sameFiber oldInactive
                 in case trans (sym active) fiberInactive of Refl impossible
 
+0 paperStepActiveFibersBackward :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  Either
+    (PaperActivationStep
+      (Fired {before} {afterState} nameEq keyEq action tag checked))
+    (PaperOrchestrationStep
+      (Fired {before} {afterState} nameEq keyEq action tag checked)) ->
+  ActiveFibersProvideAll nameEq keyEq afterState ->
+  ActiveFibersProvideAll nameEq keyEq before
+paperStepActiveFibersBackward nameEq keyEq action tag
+  (MkSystemState ambient source) afterState checked (Left activation)
+  afterProvides = paperActivationActiveFiberProvidesBackward nameEq keyEq action
+    tag (MkSystemState ambient source) afterState checked activation afterProvides
+paperStepActiveFibersBackward nameEq keyEq action tag
+  (MkSystemState ambient source) afterState checked
+  (Right (PaperInsertStep {actor} {parent} {component} actionSame))
+  afterProvides = case actionSame of
+    Refl =>
+      let 0 absent : (lookupFiber @{nameEq}
+            {name = name} {key = key} {value = value}
+            {world = world} {error = error} actor source =
+              (the (Maybe (Fiber name key value world error)) Nothing))
+          absent = checkedInsertRequiresAbsentExplicit nameEq keyEq actor parent
+            component ambient source tag afterState checked
+      in paperInsertActiveFiberProvidesBackward nameEq keyEq actor parent
+        component (MkSystemState ambient source) afterState tag checked absent
+        afterProvides
+paperStepActiveFibersBackward nameEq keyEq action tag before afterState checked
+  (Right (PaperRetireStep {actor} actionSame)) afterProvides = case actionSame of
+    Refl => paperRetireActiveFiberProvidesBackward nameEq keyEq actor before
+      afterState tag checked afterProvides
+paperStepActiveFibersBackward nameEq keyEq action tag
+  (MkSystemState ambient source) afterState checked
+  (Right (PaperRemoveStep {actor} actionSame)) afterProvides = case actionSame of
+    Refl =>
+      let 0 raw : (applyAction @{nameEq} @{keyEq} (ORemove actor)
+            (MkSystemState ambient source) = Just (tag, afterState))
+          raw = checkedActionProjects nameEq keyEq (ORemove actor)
+            (MkSystemState ambient source) afterState tag checked
+      in paperRemoveActiveFiberProvidesBackward nameEq keyEq actor
+        (MkSystemState ambient source) afterState tag checked raw afterProvides
+
 0 adjacentMovedLeftComponentTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (tracePrefix : Transitions initial pairFirst) ->
