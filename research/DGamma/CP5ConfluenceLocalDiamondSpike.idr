@@ -20767,6 +20767,57 @@ replayPointwiseSuffixTraceComponentsTotal nameEq keyEq
         (replayPointwiseSuffixTraceComponentsTotal nameEq keyEq sourceTail
           replayedTail tailSeal sourceTailTotal)
 
+0 adjacentTargetTraceComponentsTotal :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (tracePrefix : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  AlignedTransitions name key world error value nameEq keyEq tracePrefix ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  TraceComponentsTotal nameEq keyEq tracePrefix ->
+  TransitionComponentTotal nameEq keyEq left ->
+  TransitionComponentTotal nameEq keyEq right ->
+  TraceComponentsTotal nameEq keyEq suffix ->
+  bindings (registry initial) = [] ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq suffix
+    replayedSuffix ->
+  TraceComponentsTotal nameEq keyEq
+    (appendTransitions tracePrefix
+      (MoreTransitions (movedRight diamond)
+        (MoreTransitions (movedLeft diamond) replayedSuffix)))
+adjacentTargetTraceComponentsTotal nameEq keyEq tracePrefix left right suffix
+  diamond replayedSuffix prefixAligned pairAligned prefixTotal leftTotal
+  rightTotal suffixTotal initialEmpty seal =
+    let 0 movedRightTotal : TransitionComponentTotal nameEq keyEq
+          (movedRight diamond)
+        movedRightTotal = adjacentMovedRightComponentTotal nameEq keyEq
+          tracePrefix left right diamond prefixAligned pairAligned prefixTotal
+          leftTotal rightTotal initialEmpty
+        0 movedLeftTotal : TransitionComponentTotal nameEq keyEq
+          (movedLeft diamond)
+        movedLeftTotal = adjacentMovedLeftComponentTotal nameEq keyEq tracePrefix
+          left right diamond prefixAligned pairAligned prefixTotal leftTotal
+          rightTotal initialEmpty
+        0 replayedSuffixTotal : TraceComponentsTotal nameEq keyEq replayedSuffix
+        replayedSuffixTotal = replayPointwiseSuffixTraceComponentsTotal nameEq
+          keyEq suffix replayedSuffix seal suffixTotal
+        0 movedTailTotal : TraceComponentsTotal nameEq keyEq
+          (MoreTransitions (movedRight diamond)
+            (MoreTransitions (movedLeft diamond) replayedSuffix))
+        movedTailTotal = TraceComponentsTotalStep (movedRight diamond)
+          (MoreTransitions (movedLeft diamond) replayedSuffix) movedRightTotal
+          (TraceComponentsTotalStep (movedLeft diamond) replayedSuffix
+            movedLeftTotal replayedSuffixTotal)
+    in appendTraceComponentsTotal tracePrefix
+      (MoreTransitions (movedRight diamond)
+        (MoreTransitions (movedLeft diamond) replayedSuffix))
+      prefixTotal movedTailTotal
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
