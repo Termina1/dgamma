@@ -20063,6 +20063,38 @@ pointwiseQuietTrue localNameDecision localKeyDecision
         sourceQuiet rightEntries
         (\selected, targetFiber, present => present))
 
+lifecycleNotFailedAt :
+  {key, world, error, name : Type} -> {value : key -> Type} ->
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  Lifecycle key value world error name deps provision -> Bool
+lifecycleNotFailedAt (Inactive (Just failure)) = False
+lifecycleNotFailedAt (Inactive Nothing) = True
+lifecycleNotFailedAt (Reloading remaining accumulator view) = True
+lifecycleNotFailedAt (Active accumulator view) = True
+lifecycleNotFailedAt (Unloading accumulator view outcome) = True
+
+0 lifecycleControlNotFailedSame :
+  {key, world, error, name : Type} -> {value : key -> Type} ->
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  (leftLifecycle, rightLifecycle :
+    Lifecycle key value world error name deps provision) ->
+  LifecycleControlRelated leftLifecycle rightLifecycle ->
+  lifecycleNotFailedAt leftLifecycle = lifecycleNotFailedAt rightLifecycle
+lifecycleControlNotFailedSame (Inactive leftOutcome) (Inactive rightOutcome)
+  (InactiveControls outcomesSame) =
+    case outcomesSame of Refl => Refl
+lifecycleControlNotFailedSame
+  (Reloading leftRemaining leftAccumulator leftView)
+  (Reloading rightRemaining rightAccumulator rightView)
+  (ReloadingControls remainingSame accumulatorsSame viewsSame) = Refl
+lifecycleControlNotFailedSame (Active leftAccumulator leftView)
+  (Active rightAccumulator rightView)
+  (ActiveControls accumulatorsSame viewsSame) = Refl
+lifecycleControlNotFailedSame
+  (Unloading leftAccumulator leftView leftOutcome)
+  (Unloading rightAccumulator rightView rightOutcome)
+  (UnloadingControls accumulatorsSame viewsSame outcomesSame) = Refl
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
