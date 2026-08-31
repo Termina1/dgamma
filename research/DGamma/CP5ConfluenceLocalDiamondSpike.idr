@@ -20270,6 +20270,47 @@ pointwiseActiveFiberProvidesAll nameEq keyEq actor left right
             (ownedValues leftTable) (ownedValues rightTable) tablesSame))
           (sourceProvides wanted provided)
 
+0 pointwiseTransitionComponentTotal :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {sourceBefore, sourceAfter, replayedBefore, replayedAfter :
+    SystemState name key value world error} ->
+  (sourceStep : Transition sourceBefore sourceAfter) ->
+  (replayedStep : Transition replayedBefore replayedAfter) ->
+  transitionAction replayedStep = transitionAction sourceStep ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq sourceAfter
+    replayedAfter ->
+  TransitionComponentTotal nameEq keyEq sourceStep ->
+  TransitionComponentTotal nameEq keyEq replayedStep
+pointwiseTransitionComponentTotal nameEq keyEq sourceStep replayedStep
+  sameAction (MkRelationalReplayEndpoint effects controls targetWellFormed)
+  sourceTotal targetFiber targetFound targetActive =
+    let 0 sameOwner : (actionOwner (transitionAction replayedStep) =
+          actionOwner (transitionAction sourceStep))
+        sameOwner = cong actionOwner sameAction
+    in case pointwiseControlLookupFound nameEq
+      (actionOwner (transitionAction replayedStep)) replayedAfter sourceAfter
+      (controlEquivalentSymmetric controls) targetFiber targetFound of
+      (sourceFiber ** (sourceFound, targetSourceRelated)) =>
+        let 0 sourceFoundExact : (lookupFiber @{nameEq}
+              (actionOwner (transitionAction sourceStep))
+              (registry sourceAfter) = Just sourceFiber)
+            sourceFoundExact = replace
+              {p = \actor => lookupFiber @{nameEq} actor
+                (registry sourceAfter) = Just sourceFiber}
+              sameOwner sourceFound
+            0 sourceActive : (isActive (fiberLifecycle sourceFiber) = True)
+            sourceActive = trans
+              (sym (fiberControlActiveSame targetFiber sourceFiber
+                targetSourceRelated)) targetActive
+            0 sourceProvides : ActiveFiberProvidesAll keyEq sourceFiber
+            sourceProvides = sourceTotal sourceFiber sourceFoundExact
+              sourceActive
+        in pointwiseActiveFiberProvidesAll nameEq keyEq
+          (actionOwner (transitionAction replayedStep)) sourceAfter replayedAfter
+          sourceFiber targetFiber sourceFound targetFound
+          (fiberControlSymmetric targetSourceRelated) effects sourceProvides
+          targetActive
+
 record AdjacentAlignedPointwiseReplay
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
