@@ -1730,6 +1730,20 @@ one-stage locator, and one-clause family wrapper before using the existing
 remain closed; field 9 remains open; holes stay **20**, split **6/4/8/1/1**. The
 accepted **1–10 shift** remainder is held.
 
+### Revision 89: singleton advance lookup closes; actor index stop
+
+`research-tests/O6-R89-ADVANCE-LOOKUP-CLOSED-STAGE-ACTOR-STOP-AUDIT.md`
+records shift #97. The fully explicit and parenthesized owner lookup transport
+closes by `trans lookupSame movedFound`. The next one-stage locator is removed
+after three fresh attempts: it reaches exact occurrence, fiber, lifecycle, and
+source lookup transport, but the delegate still sees the target stage indexed
+by `selected` rather than the singleton action's `actor`. The next decomposition
+must project singleton transition equality through `transitionAction`, use
+LAdvance constructor injectivity to reify `selected = actor`, and only then
+eliminate the stage for delegation. This deliberately avoids dictionary
+identity. No family wrapper or RAR beyond the prefix leg is retained. Holes stay
+**20**, split **6/4/8/1/1**; the accepted **1–10 shift** remainder is held.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -2041,7 +2055,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 88 closes identity-prefix RAR; moved-pair RAR awaits the split L-Advance stage-family foundation. Fields 10–15 foundations are checked.** | **XL, 1–10 implementation shifts remain.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 89 closes singleton advance lookup transport; the one-stage locator awaits actor-index reification before the moved-pair RAR. Fields 10–15 foundations are checked.** | **XL, 1–10 implementation shifts remain.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2252,4 +2266,5 @@ active transport, and moved-left. Revision 87 closes the split dispatcher,
 moved-right, and package field 8, then derives foundations for fields 10–15.
 Field 9 is isolated to the producer-owned whole RAR. Revision 88 closes its
 identity-prefix leg and splits the next L-Advance stage-family unit after an
-erased annotation-layout stop; final assembly remains open.
+erased annotation-layout stop. Revision 89 closes the exact lookup transport
+and isolates the locator at `selected = actor`; final assembly remains open.
