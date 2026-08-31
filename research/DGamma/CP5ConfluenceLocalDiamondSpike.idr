@@ -20922,6 +20922,41 @@ consumeSingletonAdvanceRuntimePackage name key value world error nameEq keyEq
               accumulator view Refl step rest suffix)
             targetOutcomeExact
 
+0 singletonAdvanceStageFamilyFromOwnerLookup :
+  (name : Type) -> (key : Type) -> (value : key -> Type) ->
+  (world : Type) -> (error : Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, movedBefore, movedAfter :
+    SystemState name key value world error) ->
+  (0 sourceChecked :
+    (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) sourceBefore =
+     Just (tag, sourceAfter))) ->
+  (0 movedChecked :
+    (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) movedBefore =
+     Just (tag, movedAfter))) ->
+  (0 lookupSame :
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} actor (registry sourceBefore) =
+     lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} actor (registry movedBefore))) ->
+  SingletonAdvanceStageReplayFamily name key world error value
+    (MoreTransitions
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+    (MoreTransitions
+      (Fired {before = movedBefore} {afterState = movedAfter}
+        nameEq keyEq (LAdvance actor) tag movedChecked) NoTransitions)
+singletonAdvanceStageFamilyFromOwnerLookup name key value world error nameEq keyEq
+  actor tag sourceBefore sourceAfter movedBefore movedAfter sourceChecked
+  movedChecked lookupSame =
+    MkSingletonAdvanceStageReplayFamily (\selected, targetStage =>
+      consumeSingletonAdvanceRuntimePackage name key value world error nameEq
+        keyEq actor tag sourceBefore sourceAfter movedBefore movedAfter
+        sourceChecked movedChecked lookupSame selected targetStage
+        (singletonAdvanceRuntimePackage name key value world error nameEq keyEq
+          actor tag movedBefore movedAfter movedChecked selected targetStage))
+
 0 replayPointwiseSuffixTraceComponentsTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (source : Transitions sourceFirst sourceFinal) ->
