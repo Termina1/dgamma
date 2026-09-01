@@ -22644,3 +22644,187 @@ r99ConsumeRetiredNonEmptyAdvanceOutcome name key world error value nameEq keyEq
   (R99RetiredAdvanceDiverted divertedState normalized) =
     r99DivertVersusChecked name key world error value nameEq keyEq actor before
       divertedState afterState observedTag normalized checked
+
+
+0 r99SelectPaperAdvanceExclusion :
+  (observedTag : RuleTag) ->
+  (0 exclusions : (Not (observedTag = LIterTag),
+    Not (observedTag = LFinishTag))) ->
+  (0 paperTag : Either (observedTag = LIterTag)
+    (observedTag = LFinishTag)) ->
+  Void
+r99SelectPaperAdvanceExclusion observedTag (notIter, notFinish)
+  (Left isIter) = notIter isIter
+r99SelectPaperAdvanceExclusion observedTag (notIter, notFinish)
+  (Right isFinish) = notFinish isFinish
+
+0 r99RetiredInactiveAdvanceRaw :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) ->
+  (postRegistry : Registry name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (outcome : Maybe error) ->
+  (0 found : lookupFiber @{nameEq} actor postRegistry =
+    Just (MkFiber component parent True table (Inactive outcome))) ->
+  applyAction @{nameEq} @{keyEq}
+    (the (Action name key value world error) (LAdvance actor))
+    (MkSystemState ambient postRegistry) = Nothing
+r99RetiredInactiveAdvanceRaw name key world error value nameEq keyEq actor
+  ambient postRegistry component parent table outcome found =
+    rewrite found in Refl
+
+0 r99RetiredActiveAdvanceRaw :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) ->
+  (postRegistry : Registry name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world
+      (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (0 found : lookupFiber @{nameEq} actor postRegistry =
+    Just (MkFiber component parent True table (Active accumulator view))) ->
+  applyAction @{nameEq} @{keyEq}
+    (the (Action name key value world error) (LAdvance actor))
+    (MkSystemState ambient postRegistry) = Nothing
+r99RetiredActiveAdvanceRaw name key world error value nameEq keyEq actor ambient
+  postRegistry component parent table accumulator view found =
+    rewrite found in Refl
+
+0 r99RetiredUnloadingAdvanceRaw :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) ->
+  (postRegistry : Registry name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world
+      (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (outcome : Maybe error) ->
+  (0 found : lookupFiber @{nameEq} actor postRegistry =
+    Just (MkFiber component parent True table
+      (Unloading accumulator view outcome))) ->
+  applyAction @{nameEq} @{keyEq}
+    (the (Action name key value world error) (LAdvance actor))
+    (MkSystemState ambient postRegistry) = Nothing
+r99RetiredUnloadingAdvanceRaw name key world error value nameEq keyEq actor
+  ambient postRegistry component parent table accumulator view outcome found =
+    rewrite found in Refl
+
+||| After one checked retirement, no checked L-Advance at the same owner can
+||| carry either paper activation tag.
+0 r99RetireThenPaperAdvanceImpossible :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, retiredState, afterState : SystemState name key value world error) ->
+  (retireTag, observedTag : RuleTag) ->
+  (0 retireChecked : checkedApplyAction @{nameEq} @{keyEq} (ORetire actor)
+    before = Just (retireTag, retiredState)) ->
+  (0 projection : R97CheckedRetireProjection name key world error value nameEq
+    keyEq actor before retiredState retireTag retireChecked) ->
+  (0 advanceChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    retiredState = Just (observedTag, afterState)) ->
+  (0 paperTag : Either (observedTag = LIterTag)
+    (observedTag = LFinishTag)) ->
+  Void
+r99RetireThenPaperAdvanceImpossible name key world error value nameEq keyEq actor
+  before retiredState afterState retireTag observedTag retireChecked projection
+  advanceChecked paperTag = case projection of
+    MkR97CheckedRetireProjection ambient source
+      (MkFiber component parent retiredFlag table lifecycle) found checked =>
+        let retiredOwner : Fiber name key value world error
+            retiredOwner = MkFiber component parent True table lifecycle
+            postRegistry : Registry name key value world error
+            postRegistry = replaceBinding @{nameEq} actor retiredOwner source
+            0 retiredFound : lookupFiber @{nameEq} actor postRegistry =
+              Just retiredOwner
+            retiredFound = lookupReplacedFiber actor
+              (MkFiber component parent retiredFlag table lifecycle) retiredOwner
+              source found
+        in case lifecycle of
+          Inactive outcome =>
+            r99UnavailableVersusChecked name key world error value nameEq keyEq
+              actor (MkSystemState ambient postRegistry) afterState observedTag
+              (r99RetiredInactiveAdvanceRaw name key world error value nameEq
+                keyEq actor ambient postRegistry component parent table outcome
+                retiredFound) advanceChecked
+          Active accumulator view =>
+            r99UnavailableVersusChecked name key world error value nameEq keyEq
+              actor (MkSystemState ambient postRegistry) afterState observedTag
+              (r99RetiredActiveAdvanceRaw name key world error value nameEq keyEq
+                actor ambient postRegistry component parent table accumulator
+                view retiredFound) advanceChecked
+          Unloading accumulator view outcome =>
+            r99UnavailableVersusChecked name key world error value nameEq keyEq
+              actor (MkSystemState ambient postRegistry) afterState observedTag
+              (r99RetiredUnloadingAdvanceRaw name key world error value nameEq
+                keyEq actor ambient postRegistry component parent table
+                accumulator view outcome retiredFound) advanceChecked
+          Reloading [] accumulator view =>
+            r99SelectPaperAdvanceExclusion observedTag
+              (r98RetiredAdvanceEmptyExcluded name key world error value nameEq
+                keyEq actor ambient source component parent retiredFlag table
+                accumulator view found afterState observedTag advanceChecked)
+              paperTag
+          Reloading (step :: rest) accumulator view =>
+            r99SelectPaperAdvanceExclusion observedTag
+              (r99ConsumeRetiredNonEmptyAdvanceOutcome name key world error value
+                nameEq keyEq actor (MkSystemState ambient postRegistry) afterState
+                observedTag advanceChecked
+                (r99ProduceRetiredNonEmptyAdvanceOutcome name key world error
+                  value nameEq keyEq actor ambient source component parent
+                  retiredFlag table step rest accumulator view found)) paperTag
+
+||| Generic semantic exclusion needed by both mixed equal-owner orientations.
+0 r99RetireThenPaperActivationImpossible :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, retiredState, afterState : SystemState name key value world error) ->
+  (retireTag : RuleTag) ->
+  (0 retireChecked : checkedApplyAction @{nameEq} @{keyEq} (ORetire actor)
+    before = Just (retireTag, retiredState)) ->
+  (activationAction : Action name key value world error) ->
+  (activationTag : RuleTag) ->
+  (0 activationChecked : checkedApplyAction @{nameEq} @{keyEq}
+    activationAction retiredState = Just (activationTag, afterState)) ->
+  (0 activation : PaperActivationStep
+    (Fired {before = retiredState} {afterState = afterState}
+      nameEq keyEq activationAction activationTag activationChecked)) ->
+  (0 sameOwner : actionOwner activationAction = actor) ->
+  Void
+r99RetireThenPaperActivationImpossible name key world error value nameEq keyEq
+  actor before retiredState afterState retireTag retireChecked activationAction
+  activationTag activationChecked activation sameOwner =
+    let 0 projection = r97ProjectCheckedRetire name key world error value nameEq
+          keyEq actor before retiredState retireTag retireChecked
+    in case activation of
+      PaperBeginStep {actor = activationActor} actionSame tagSame =>
+        case actionSame of
+          Refl => case sameOwner of
+            Refl => case tagSame of
+              Refl => r98ConsumeRetiredBeginCorrelation name key world error
+                value nameEq keyEq activationActor before retiredState retireTag
+                retireChecked projection
+                (r98ProduceRetiredBeginCorrelation name key world error value
+                  nameEq keyEq activationActor before retiredState retireTag
+                  retireChecked projection) afterState LBeginTag activationChecked
+      PaperIterStep {actor = activationActor} actionSame tagSame =>
+        case actionSame of
+          Refl => case sameOwner of
+            Refl => r99RetireThenPaperAdvanceImpossible name key world error
+              value nameEq keyEq activationActor before retiredState afterState
+              retireTag activationTag retireChecked projection activationChecked
+              (Left tagSame)
+      PaperFinishStep {actor = activationActor} actionSame tagSame =>
+        case actionSame of
+          Refl => case sameOwner of
+            Refl => r99RetireThenPaperAdvanceImpossible name key world error
+              value nameEq keyEq activationActor before retiredState afterState
+              retireTag activationTag retireChecked projection activationChecked
+              (Right tagSame)
