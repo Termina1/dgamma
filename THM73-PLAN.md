@@ -1964,6 +1964,23 @@ indicated. With B4 declared, the implementation band is proposed to re-open at
 **2–7 shifts** through B6, pair RAR/fields, body closure, and the mandatory
 19-hole review stop.
 
+### Revision 103: B6 source-equality helper elaboration stop
+
+`research-tests/O6-R103-B6-EQUALITY-HELPER-ELABORATION-STOP-AUDIT.md`
+records shift #111. The first top-level B6 dependency—recovering exact source
+action/tag equality from the retained B4 Iter/Iter classification—exhausted its
+three-attempt budget and was removed. Attempt 1 exposed that `Transition` has no
+`transitionChecked` projection; attempt 2 exposed dependent opacity of aliased
+`Fired` patterns; attempt 3 removed aliases and reached only the explicit
+transition-actor/action-owner bridge. The next representation is mechanically
+isolated: compose `sameActor` through the already retained fully explicit
+`transitionActorFiredActionOwner` lemmas for the two unaliased constructors,
+then use the successfully elaborated exact `r101IterActionView` forms. This is
+an elaboration stop, not a semantic premise gap. B6 dispatcher and all later
+units remain unopened. Holes remain **20**, split **6/4/8/1/1**; no frozen
+surface change is indicated. One shift of the accepted **2–7** band was
+consumed; nominal **1–6 shifts** remain subject to review.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
