@@ -24619,3 +24619,75 @@ r101ExactOrchestrationActivationSameOwnerImpossible name key world error value
               r101AbsentVersusFound name key world error value nameEq leftActor
                 (actionOwner rightAction) middle activationFiber sameOwner
                 removedAbsent activationFound
+
+
+data R101IterActionView :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (action : Action name key value world error) -> Type where
+  MkR101IterActionView : (0 actor : name) ->
+    (0 actionSame : action = LAdvance actor) ->
+    R101IterActionView name key world error value action
+
+0 r101IterActionView :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (before, afterState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (0 checked : (checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState))) ->
+  (0 activation : PaperActivationStep
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked)) ->
+  (0 tagIter : tag = LIterTag) ->
+  R101IterActionView name key world error value action
+r101IterActionView name key world error value nameEq keyEq before afterState
+  action tag checked (PaperBeginStep {actor} actionSame tagSame) tagIter =
+    case trans (sym tagIter) tagSame of Refl impossible
+r101IterActionView name key world error value nameEq keyEq before afterState
+  action tag checked (PaperIterStep {actor} actionSame tagSame) tagIter =
+    MkR101IterActionView actor actionSame
+r101IterActionView name key world error value nameEq keyEq before afterState
+  action tag checked (PaperFinishStep {actor} actionSame tagSame) tagIter =
+    case trans (sym tagIter) tagSame of Refl impossible
+
+data R101RetireActionView :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (action : Action name key value world error) -> Type where
+  MkR101RetireActionView : (0 actor : name) ->
+    (0 actionSame : action = ORetire actor) ->
+    R101RetireActionView name key world error value action
+
+0 r101RetireActionView :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (before, afterState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (0 checked : (checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState))) ->
+  (0 orchestration : PaperOrchestrationStep
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked)) ->
+  (0 tagRetire : tag = ORetireTag) ->
+  R101RetireActionView name key world error value action
+r101RetireActionView name key world error value nameEq keyEq
+  (MkSystemState ambient source) afterState action tag checked orchestration
+  tagRetire = case orchestration of
+    PaperInsertStep {actor} {parent} {component} actionSame => case actionSame of
+      Refl =>
+        let 0 insertTag : (tag = OInsertTag)
+            insertTag = localForeignInsertViewTag tag
+              (foreignInsertPlanView nameEq keyEq actor parent component ambient
+                source tag afterState (checkedActionProjects nameEq keyEq
+                  (OInsert actor parent component) (MkSystemState ambient source)
+                  afterState tag checked))
+        in case trans (sym tagRetire) insertTag of Refl impossible
+    PaperRetireStep {actor} actionSame => case actionSame of
+      Refl => MkR101RetireActionView actor Refl
+    PaperRemoveStep {actor} actionSame => case actionSame of
+      Refl =>
+        let 0 removeTag : (tag = ORemoveTag)
+            removeTag = localRemoveViewTag tag
+              (removeSuccessView nameEq keyEq actor ambient source tag afterState
+                (checkedActionProjects nameEq keyEq (ORemove actor)
+                  (MkSystemState ambient source) afterState tag checked))
+        in case trans (sym tagRetire) removeTag of Refl impossible
