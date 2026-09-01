@@ -21667,3 +21667,74 @@ r97ConsumeAppendGenerator name key world error value first middle finalState lef
     rightCase local exact
 
 -- Revision-97 disposable, zero-hidden append iterator-stage package.
+data R97AppendStagePackage :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (actor : name) ->
+  (target : IteratorStage name key world error value actor
+    (appendTransitions left right)) -> Type where
+  R97AppendStageLeft :
+    (local : IteratorStage name key world error value actor left) ->
+    (0 exact : (state : EffectState name key value world) ->
+      (iteratorStageOutcome {trace = appendTransitions left right} target state =
+        iteratorStageOutcome {trace = left} local state)) ->
+    R97AppendStagePackage name key world error value first middle finalState left
+      right actor target
+  R97AppendStageRight :
+    (local : IteratorStage name key world error value actor right) ->
+    (0 exact : (state : EffectState name key value world) ->
+      (iteratorStageOutcome {trace = appendTransitions left right} target state =
+        iteratorStageOutcome {trace = right} local state)) ->
+    R97AppendStagePackage name key world error value first middle finalState left
+      right actor target
+
+0 r97LocateAppendStage :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (actor : name) ->
+  (target : IteratorStage name key world error value actor
+    (appendTransitions left right)) ->
+  R97AppendStagePackage name key world error value first middle finalState left
+    right actor target
+r97LocateAppendStage name key world error value first middle finalState left right
+  actor target@(StageFromAdvance nameEq keyEq actor tag checked occurs fiber found
+    remaining accumulator view lifecycle step rest suffix) =
+      case r97ViewAppendOccurrence name key world error value first middle
+        finalState _ _ left right _ occurs of
+        R97AppendOccursLeft local => R97AppendStageLeft
+          (StageFromAdvance nameEq keyEq actor tag checked local fiber found
+            remaining accumulator view lifecycle step rest suffix)
+          (\state => Refl)
+        R97AppendOccursRight local => R97AppendStageRight
+          (StageFromAdvance nameEq keyEq actor tag checked local fiber found
+            remaining accumulator view lifecycle step rest suffix)
+          (\state => Refl)
+
+0 r97ConsumeAppendStage :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (actor : name) ->
+  (target : IteratorStage name key world error value actor
+    (appendTransitions left right)) ->
+  (package : R97AppendStagePackage name key world error value first middle
+    finalState left right actor target) ->
+  (leftCase : (local : IteratorStage name key world error value actor left) ->
+    ((state : EffectState name key value world) ->
+      (iteratorStageOutcome {trace = appendTransitions left right} target state =
+        iteratorStageOutcome {trace = left} local state)) -> result) ->
+  (rightCase : (local : IteratorStage name key world error value actor right) ->
+    ((state : EffectState name key value world) ->
+      (iteratorStageOutcome {trace = appendTransitions left right} target state =
+        iteratorStageOutcome {trace = right} local state)) -> result) -> result
+r97ConsumeAppendStage name key world error value first middle finalState left right
+  actor target (R97AppendStageLeft local exact) leftCase rightCase =
+    leftCase local exact
+r97ConsumeAppendStage name key world error value first middle finalState left right
+  actor target (R97AppendStageRight local exact) leftCase rightCase =
+    rightCase local exact
