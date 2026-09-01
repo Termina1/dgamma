@@ -22828,3 +22828,145 @@ r99RetireThenPaperActivationImpossible name key world error value nameEq keyEq
               value nameEq keyEq activationActor before retiredState afterState
               retireTag activationTag retireChecked projection activationChecked
               (Right tagSame)
+
+
+0 r99ViewEqReflexive :
+  (nameEq : DecEq name) -> (view : View name deps) ->
+  viewEq @{nameEq} view view = True
+r99ViewEqReflexive nameEq EmptyView = Refl
+r99ViewEqReflexive nameEq (ProviderView provider rest)
+  with (decEq @{nameEq} provider provider)
+  r99ViewEqReflexive nameEq (ProviderView provider rest) | Yes Refl =
+    r99ViewEqReflexive nameEq rest
+  r99ViewEqReflexive nameEq (ProviderView provider rest) | No distinct =
+    void (distinct Refl)
+
+0 r99TargetMatchesSelf :
+  (nameEq : DecEq name) -> (view : View name deps) ->
+  targetMatches @{nameEq} (Just view) view = True
+r99TargetMatchesSelf nameEq view = r99ViewEqReflexive nameEq view
+
+||| The owner control produced by a paper activation is either still Reloading
+||| or Active; these are exactly the two states needed by the two-order
+||| classifier.
+data R99PaperActivationOutputControl :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (afterState : SystemState name key value world error) -> Type where
+  R99ActivationOutputReloading :
+    (0 component : Component key value world error) ->
+    (0 parent : Parent name) -> (0 retiredFlag : Bool) ->
+    (0 table : OwnedTable key value (componentProvisions component)) ->
+    (0 remaining : List (StepEffect key value world error
+      (dependencies (componentDependencies component))
+      (componentProvisions component))) ->
+    (0 accumulator : LocalState key value world
+        (componentProvisions component) ->
+      LocalState key value world (componentProvisions component)) ->
+    (0 view : View name (dependencies (componentDependencies component))) ->
+    (0 found : lookupFiber @{nameEq} actor (registry afterState) =
+      Just (MkFiber component parent retiredFlag table
+        (Reloading remaining accumulator view))) ->
+    R99PaperActivationOutputControl name key world error value nameEq actor
+      afterState
+  R99ActivationOutputActive :
+    (0 component : Component key value world error) ->
+    (0 parent : Parent name) -> (0 retiredFlag : Bool) ->
+    (0 table : OwnedTable key value (componentProvisions component)) ->
+    (0 accumulator : LocalState key value world
+        (componentProvisions component) ->
+      LocalState key value world (componentProvisions component)) ->
+    (0 view : View name (dependencies (componentDependencies component))) ->
+    (0 found : lookupFiber @{nameEq} actor (registry afterState) =
+      Just (MkFiber component parent retiredFlag table
+        (Active accumulator view))) ->
+    R99PaperActivationOutputControl name key world error value nameEq actor
+      afterState
+
+0 r99BeginOutputControl :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} (LBegin actor)
+    (MkSystemState ambient source) = Just (LBeginTag, afterState)) ->
+  R99PaperActivationOutputControl name key world error value nameEq actor
+    afterState
+r99BeginOutputControl name key world error value nameEq keyEq actor ambient
+  source afterState raw =
+    case beginSourceIngredientsPointwise nameEq keyEq actor ambient source
+      afterState raw of
+      (oldFiber ** (oldFound,
+        MkForeignBeginPlanView {component} {parent} {table} view oldShape
+          target tagShape afterShape)) => case oldShape of
+            Refl =>
+              let nextOwner : Fiber name key value world error
+                  nextOwner = MkFiber component parent False table
+                    (Reloading (componentProgram component) id view)
+                  expected : SystemState name key value world error
+                  expected = MkSystemState ambient
+                    (replaceBinding @{nameEq} actor nextOwner source)
+                  0 expectedFound : lookupFiber @{nameEq} actor
+                    (registry expected) = Just nextOwner
+                  expectedFound = lookupReplacedFiber actor
+                    (MkFiber component parent False table (Inactive Nothing))
+                    nextOwner source oldFound
+                  0 observedFound : lookupFiber @{nameEq} actor
+                    (registry afterState) = Just nextOwner
+                  observedFound = trans
+                    (sym (cong (lookupFiber @{nameEq} actor . registry)
+                      afterShape)) expectedFound
+              in R99ActivationOutputReloading component parent False table
+                (componentProgram component) id view observedFound
+
+0 r99FinishEmptyOutputControl :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world
+      (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (0 found : lookupFiber @{nameEq} actor source =
+    Just (MkFiber component parent retiredFlag table
+      (Reloading [] accumulator view))) ->
+  (0 target : targetFiber @{nameEq} @{keyEq}
+    (MkFiber component parent retiredFlag table
+      (Reloading [] accumulator view)) source = Just view) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState ambient source) = Just (LFinishTag, afterState)) ->
+  R99PaperActivationOutputControl name key world error value nameEq actor
+    afterState
+r99FinishEmptyOutputControl name key world error value nameEq keyEq actor ambient
+  source afterState component parent retiredFlag table accumulator view found
+  target raw =
+    let oldOwner : Fiber name key value world error
+        oldOwner = MkFiber component parent retiredFlag table
+          (Reloading [] accumulator view)
+        nextOwner : Fiber name key value world error
+        nextOwner = MkFiber component parent retiredFlag table
+          (Active accumulator view)
+        expected : SystemState name key value world error
+        expected = MkSystemState ambient
+          (replaceBinding @{nameEq} actor nextOwner source)
+        0 normalized : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+          (MkSystemState ambient source) = Just (LFinishTag, expected)
+        normalized = rewrite found in rewrite target in
+          rewrite r99TargetMatchesSelf nameEq view in Refl
+        0 expectedSame : expected = afterState
+        expectedSame = snd (applyActionDeterministic nameEq keyEq
+          (LAdvance actor) (MkSystemState ambient source) normalized raw)
+        0 expectedFound : lookupFiber @{nameEq} actor (registry expected) =
+          Just nextOwner
+        expectedFound = lookupReplacedFiber actor oldOwner nextOwner source found
+        0 observedFound : lookupFiber @{nameEq} actor (registry afterState) =
+          Just nextOwner
+        observedFound = trans
+          (sym (cong (lookupFiber @{nameEq} actor . registry) expectedSame))
+          expectedFound
+    in R99ActivationOutputActive component parent retiredFlag table accumulator
+      view observedFound
