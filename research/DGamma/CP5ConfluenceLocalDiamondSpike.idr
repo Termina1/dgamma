@@ -23436,3 +23436,163 @@ r100ProducePaperFinishOutputActive name key world error value nameEq keyEq
                     (trans
                       (cong (applyAction @{nameEq} @{keyEq} (LAdvance actor))
                         sourceShape) raw)
+
+0 r100FinishActiveAsActivationOutput :
+  R100PaperFinishOutputActive name key world error value nameEq actor state ->
+  R99PaperActivationOutputControl name key world error value nameEq actor state
+r100FinishActiveAsActivationOutput
+  (MkR100PaperFinishOutputActive component parent retiredFlag table accumulator
+    view found) = R99ActivationOutputActive component parent retiredFlag table
+      accumulator view found
+
+0 r100ActiveFoundVersusAdvanceSource :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (before : SystemState name key value world error) ->
+  (observedAmbient : world) ->
+  (observedSource : Registry name key value world error) ->
+  (0 sourceShape : MkSystemState observedAmbient observedSource = before) ->
+  (activeComponent : Component key value world error) ->
+  (activeParent : Parent name) -> (activeRetired : Bool) ->
+  (activeTable : OwnedTable key value
+    (componentProvisions activeComponent)) ->
+  (activeAccumulator : LocalState key value world
+      (componentProvisions activeComponent) ->
+    LocalState key value world (componentProvisions activeComponent)) ->
+  (activeView : View name
+    (dependencies (componentDependencies activeComponent))) ->
+  (reloadComponent : Component key value world error) ->
+  (reloadParent : Parent name) -> (reloadRetired : Bool) ->
+  (reloadTable : OwnedTable key value
+    (componentProvisions reloadComponent)) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies reloadComponent))
+    (componentProvisions reloadComponent))) ->
+  (reloadAccumulator : LocalState key value world
+      (componentProvisions reloadComponent) ->
+    LocalState key value world (componentProvisions reloadComponent)) ->
+  (reloadView : View name
+    (dependencies (componentDependencies reloadComponent))) ->
+  (0 activeFound : lookupFiber @{nameEq} actor (registry before) =
+    Just (MkFiber activeComponent activeParent activeRetired activeTable
+      (Active activeAccumulator activeView))) ->
+  (0 reloadFound : lookupFiber @{nameEq} actor observedSource =
+    Just (MkFiber reloadComponent reloadParent reloadRetired reloadTable
+      (Reloading remaining reloadAccumulator reloadView))) ->
+  Void
+r100ActiveFoundVersusAdvanceSource name key world error value nameEq actor before
+  observedAmbient observedSource sourceShape activeComponent activeParent
+  activeRetired activeTable activeAccumulator activeView reloadComponent
+  reloadParent reloadRetired reloadTable remaining reloadAccumulator reloadView
+  activeFound reloadFound =
+    case justInjective (trans (sym activeFound)
+      (trans (sym (cong (lookupFiber @{nameEq} actor . registry) sourceShape))
+        reloadFound)) of
+      Refl impossible
+
+0 r100ActiveOutputCannotPaperAdvance :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 output : R100PaperFinishOutputActive name key world error value nameEq
+    actor before) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+    Just (tag, afterState)) ->
+  (0 paperTag : Either (tag = LIterTag) (tag = LFinishTag)) ->
+  Void
+r100ActiveOutputCannotPaperAdvance name key world error value nameEq keyEq actor
+  before afterState tag output checked paperTag = case output of
+    MkR100PaperFinishOutputActive component parent retiredFlag table accumulator
+      view outputFound =>
+        let 0 raw = checkedActionProjects nameEq keyEq (LAdvance actor) before
+              afterState tag checked
+        in case paperTag of
+          Left tagIter => case paperAdvanceSource nameEq keyEq actor tag raw
+            (Left tagIter) of
+            AdvanceSourceIter {ambient = observedAmbient}
+              {fibers = observedSource} {component = reloadComponent}
+              {parent = reloadParent} {retiredFlag = reloadRetired}
+              {table = reloadTable} {step} {next} {more}
+              {accumulator = reloadAccumulator} {view = reloadView}
+              sourceShape sourceFound target =>
+                r100ActiveFoundVersusAdvanceSource name key world error value
+                  nameEq actor before observedAmbient observedSource sourceShape
+                  component parent retiredFlag table accumulator view
+                  reloadComponent reloadParent reloadRetired reloadTable
+                  (step :: next :: more) reloadAccumulator reloadView outputFound
+                  sourceFound
+          Right tagFinish => case paperAdvanceSource nameEq keyEq actor tag raw
+            (Right tagFinish) of
+            AdvanceSourceFinishEmpty {ambient = observedAmbient}
+              {fibers = observedSource} {component = reloadComponent}
+              {parent = reloadParent} {retiredFlag = reloadRetired}
+              {table = reloadTable} {accumulator = reloadAccumulator}
+              {view = reloadView} sourceShape sourceFound target =>
+                r100ActiveFoundVersusAdvanceSource name key world error value
+                  nameEq actor before observedAmbient observedSource sourceShape
+                  component parent retiredFlag table accumulator view
+                  reloadComponent reloadParent reloadRetired reloadTable []
+                  reloadAccumulator reloadView outputFound sourceFound
+            AdvanceSourceFinishOne {ambient = observedAmbient}
+              {fibers = observedSource} {component = reloadComponent}
+              {parent = reloadParent} {retiredFlag = reloadRetired}
+              {table = reloadTable} {step}
+              {accumulator = reloadAccumulator} {view = reloadView}
+              sourceShape sourceFound target =>
+                r100ActiveFoundVersusAdvanceSource name key world error value
+                  nameEq actor before observedAmbient observedSource sourceShape
+                  component parent retiredFlag table accumulator view
+                  reloadComponent reloadParent reloadRetired reloadTable [step]
+                  reloadAccumulator reloadView outputFound sourceFound
+
+0 r100RetargetFinishOutputActive :
+  (oldActor, newActor : name) -> (0 same : oldActor = newActor) ->
+  R100PaperFinishOutputActive name key world error value nameEq oldActor state ->
+  R100PaperFinishOutputActive name key world error value nameEq newActor state
+r100RetargetFinishOutputActive actor actor Refl output = output
+
+0 r100FinishThenPaperActivationImpossible :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (before, middle, afterState : SystemState name key value world error) ->
+  (finishAction : Action name key value world error) ->
+  (finishTag : RuleTag) ->
+  (0 finishChecked : checkedApplyAction @{nameEq} @{keyEq} finishAction before =
+    Just (finishTag, middle)) ->
+  (0 finish : PaperActivationStep
+    (Fired {before = before} {afterState = middle}
+      nameEq keyEq finishAction finishTag finishChecked)) ->
+  (0 tagFinish : finishTag = LFinishTag) ->
+  (nextAction : Action name key value world error) -> (nextTag : RuleTag) ->
+  (0 nextChecked : checkedApplyAction @{nameEq} @{keyEq} nextAction middle =
+    Just (nextTag, afterState)) ->
+  (0 nextActivation : PaperActivationStep
+    (Fired {before = middle} {afterState = afterState}
+      nameEq keyEq nextAction nextTag nextChecked)) ->
+  (0 sameOwner : actionOwner nextAction = actionOwner finishAction) ->
+  Void
+r100FinishThenPaperActivationImpossible name key world error value nameEq keyEq
+  before middle afterState finishAction finishTag finishChecked finish tagFinish
+  nextAction nextTag nextChecked nextActivation sameOwner =
+    let 0 output = r100ProducePaperFinishOutputActive name key world error value
+          nameEq keyEq before middle finishAction finishTag finishChecked finish
+          tagFinish
+    in case nextActivation of
+      PaperBeginStep {actor} actionSame tagSame => case actionSame of
+        Refl => case tagSame of
+          Refl => r99ActivationOutputCannotBegin name key world error value
+            nameEq keyEq actor middle afterState
+            (r100FinishActiveAsActivationOutput
+              (r100RetargetFinishOutputActive (actionOwner finishAction) actor
+                (sym sameOwner) output)) nextChecked
+      PaperIterStep {actor} actionSame tagSame => case actionSame of
+        Refl => r100ActiveOutputCannotPaperAdvance name key world error value
+          nameEq keyEq actor middle afterState nextTag
+          (r100RetargetFinishOutputActive (actionOwner finishAction) actor
+            (sym sameOwner) output) nextChecked (Left tagSame)
+      PaperFinishStep {actor} actionSame tagSame => case actionSame of
+        Refl => r100ActiveOutputCannotPaperAdvance name key world error value
+          nameEq keyEq actor middle afterState nextTag
+          (r100RetargetFinishOutputActive (actionOwner finishAction) actor
+            (sym sameOwner) output) nextChecked (Right tagSame)
