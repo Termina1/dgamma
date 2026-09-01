@@ -23810,3 +23810,155 @@ r101ProduceFourAlignedHeadViews name key world error value nameEq keyEq first
                               (trans (sym movedLeftTagProjection)
                                 (trans (movedLeftTag diamond)
                                   sourceLeftTagProjection))
+
+||| Exact B4 result: both same-owner paper activations are L-Iter in both orders.
+record R101EqualOwnerActivationIterPair
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (first, middle, originalFinal : SystemState name key value world error)
+  (left : Transition first middle) (right : Transition middle originalFinal)
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) where
+  constructor MkR101EqualOwnerActivationIterPair
+  0 r101LeftActivation : PaperActivationStep left
+  0 r101RightActivation : PaperActivationStep right
+  0 r101MovedRightActivation : PaperActivationStep (movedRight diamond)
+  0 r101MovedLeftActivation : PaperActivationStep (movedLeft diamond)
+  0 r101LeftTagIter : transitionTag left = LIterTag
+  0 r101RightTagIter : transitionTag right = LIterTag
+
+0 r101AlignedActionOwnersSame :
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  (leftAction : Action name key value world error) ->
+  (rightAction : Action name key value world error) ->
+  (0 leftProjection : transitionAction left = leftAction) ->
+  (0 rightProjection : transitionAction right = rightAction) ->
+  (0 sameActor : transitionActor left = transitionActor right) ->
+  actionOwner leftAction = actionOwner rightAction
+r101AlignedActionOwnersSame left right leftAction rightAction leftProjection
+  rightProjection sameActor = trans
+    (sym (cong actionOwner leftProjection))
+    (trans (sym (localTransitionActorActionOwner left))
+      (trans sameActor
+        (trans (localTransitionActorActionOwner right)
+          (cong actionOwner rightProjection))))
+
+0 r101ConsumeFourAlignedHeadViews :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, originalFinal : SystemState name key value world error) ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (0 leftActivation : PaperActivationStep left) ->
+  (0 rightActivation : PaperActivationStep right) ->
+  (0 sameActor : transitionActor left = transitionActor right) ->
+  (0 heads : R101FourAlignedHeadViews name key world error value nameEq keyEq
+    first middle originalFinal left right diamond) ->
+  R101EqualOwnerActivationIterPair name key world error value nameEq keyEq first
+    middle originalFinal left right diamond
+r101ConsumeFourAlignedHeadViews name key world error value nameEq keyEq first
+  middle originalFinal left right diamond leftActivation rightActivation
+  sameActor heads = case heads of
+    MkR101FourAlignedHeadViews sourceLeft sourceRight movedRightHead movedLeftHead
+      movedRightActionSame movedRightTagSame movedLeftActionSame
+      movedLeftTagSame =>
+        let 0 sourceLeftActivation : PaperActivationStep
+              (Fired {before = first} {afterState = middle} nameEq keyEq
+                (alignedHeadAction sourceLeft) (alignedHeadTag sourceLeft)
+                (alignedHeadChecked sourceLeft))
+            sourceLeftActivation = paperActivationStepTransport
+              (sym (alignedHeadActionProjection sourceLeft))
+              (sym (alignedHeadTagProjection sourceLeft)) leftActivation
+            0 sourceRightActivation : PaperActivationStep
+              (Fired {before = middle} {afterState = originalFinal} nameEq keyEq
+                (alignedHeadAction sourceRight) (alignedHeadTag sourceRight)
+                (alignedHeadChecked sourceRight))
+            sourceRightActivation = paperActivationStepTransport
+              (sym (alignedHeadActionProjection sourceRight))
+              (sym (alignedHeadTagProjection sourceRight)) rightActivation
+            0 movedRightCheckedExact : checkedApplyAction @{nameEq} @{keyEq}
+              (alignedHeadAction sourceRight) first =
+                Just (alignedHeadTag sourceRight, swappedMiddle diamond)
+            movedRightCheckedExact = checkedActivationEquationTransport
+              nameEq keyEq (alignedHeadAction movedRightHead)
+              (alignedHeadAction sourceRight) movedRightActionSame
+              (alignedHeadTag movedRightHead) (alignedHeadTag sourceRight)
+              movedRightTagSame (alignedHeadChecked movedRightHead)
+            0 movedLeftCheckedExact : checkedApplyAction @{nameEq} @{keyEq}
+              (alignedHeadAction sourceLeft) (swappedMiddle diamond) =
+                Just (alignedHeadTag sourceLeft, swappedFinal diamond)
+            movedLeftCheckedExact = checkedActivationEquationTransport
+              nameEq keyEq (alignedHeadAction movedLeftHead)
+              (alignedHeadAction sourceLeft) movedLeftActionSame
+              (alignedHeadTag movedLeftHead) (alignedHeadTag sourceLeft)
+              movedLeftTagSame (alignedHeadChecked movedLeftHead)
+            0 movedRightOriginal : PaperActivationStep (movedRight diamond)
+            movedRightOriginal = movedRightActivationBranch diamond
+              rightActivation
+            0 movedLeftOriginal : PaperActivationStep (movedLeft diamond)
+            movedLeftOriginal = movedLeftActivationBranch diamond leftActivation
+            0 movedRightActivationExact : PaperActivationStep
+              (Fired {before = first} {afterState = swappedMiddle diamond}
+                nameEq keyEq (alignedHeadAction sourceRight)
+                (alignedHeadTag sourceRight) movedRightCheckedExact)
+            movedRightActivationExact = paperActivationStepTransport
+              (trans (sym (alignedHeadActionProjection sourceRight))
+                (sym (movedRightAction diamond)))
+              (trans (sym (alignedHeadTagProjection sourceRight))
+                (sym (movedRightTag diamond))) movedRightOriginal
+            0 movedLeftActivationExact : PaperActivationStep
+              (Fired {before = swappedMiddle diamond}
+                {afterState = swappedFinal diamond} nameEq keyEq
+                (alignedHeadAction sourceLeft) (alignedHeadTag sourceLeft)
+                movedLeftCheckedExact)
+            movedLeftActivationExact = paperActivationStepTransport
+              (trans (sym (alignedHeadActionProjection sourceLeft))
+                (sym (movedLeftAction diamond)))
+              (trans (sym (alignedHeadTagProjection sourceLeft))
+                (sym (movedLeftTag diamond))) movedLeftOriginal
+            0 ownerSame : actionOwner (alignedHeadAction sourceLeft) =
+              actionOwner (alignedHeadAction sourceRight)
+            ownerSame = r101AlignedActionOwnersSame left right
+              (alignedHeadAction sourceLeft) (alignedHeadAction sourceRight)
+              (alignedHeadActionProjection sourceLeft)
+              (alignedHeadActionProjection sourceRight) sameActor
+            0 tags : ((alignedHeadTag sourceLeft = LIterTag),
+              (alignedHeadTag sourceRight = LIterTag))
+            tags = r100ExactTwoOrderActivationTags name key world error value
+              nameEq keyEq first middle originalFinal (swappedMiddle diamond)
+              (swappedFinal diamond) (alignedHeadAction sourceLeft)
+              (alignedHeadAction sourceRight) (alignedHeadTag sourceLeft)
+              (alignedHeadTag sourceRight) (alignedHeadChecked sourceLeft)
+              (alignedHeadChecked sourceRight) movedRightCheckedExact
+              movedLeftCheckedExact sourceLeftActivation sourceRightActivation
+              movedRightActivationExact movedLeftActivationExact ownerSame
+        in MkR101EqualOwnerActivationIterPair leftActivation rightActivation
+          movedRightOriginal movedLeftOriginal
+          (trans (alignedHeadTagProjection sourceLeft) (fst tags))
+          (trans (alignedHeadTagProjection sourceRight) (snd tags))
+
+0 r101ClassifyEqualOwnerActivationPair :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, originalFinal : SystemState name key value world error) ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (0 sourcePairAligned : AlignedTransitions name key world error value nameEq
+    keyEq (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  (0 leftActivation : PaperActivationStep left) ->
+  (0 rightActivation : PaperActivationStep right) ->
+  (0 sameActor : transitionActor left = transitionActor right) ->
+  R101EqualOwnerActivationIterPair name key world error value nameEq keyEq first
+    middle originalFinal left right diamond
+r101ClassifyEqualOwnerActivationPair name key world error value nameEq keyEq
+  first middle originalFinal left right diamond sourcePairAligned leftActivation
+  rightActivation sameActor = r101ConsumeFourAlignedHeadViews name key world
+    error value nameEq keyEq first middle originalFinal left right diamond
+    leftActivation rightActivation sameActor
+    (r101ProduceFourAlignedHeadViews name key world error value nameEq keyEq first
+      middle originalFinal left right diamond sourcePairAligned)
