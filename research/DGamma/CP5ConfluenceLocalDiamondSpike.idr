@@ -22215,3 +22215,118 @@ r97ProjectCheckedRetire name key world error value nameEq keyEq actor
     in case retireSuccessView nameEq keyEq actor ambient source tag afterState raw of
       MkRetireSuccessView oldFiber found =>
         MkR97CheckedRetireProjection ambient source oldFiber found checked
+
+||| Correlate the checked-retirement projection and normalized post-retirement
+||| L-Begin observation under one erased, producer-owned constructor.
+data R98RetiredBeginCorrelation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, retiredState : SystemState name key value world error) ->
+  (retireTag : RuleTag) ->
+  (0 retireChecked : checkedApplyAction @{nameEq} @{keyEq} (ORetire actor)
+    before = Just (retireTag, retiredState)) ->
+  (0 projection : R97CheckedRetireProjection name key world error value nameEq
+    keyEq actor before retiredState retireTag retireChecked) -> Type where
+  MkR98RetiredBeginCorrelation :
+    (0 ambient : world) ->
+    (0 source : Registry name key value world error) ->
+    (0 oldFiber : Fiber name key value world error) ->
+    (0 found : lookupFiber @{nameEq} actor source = Just oldFiber) ->
+    (0 retireChecked : checkedApplyAction @{nameEq} @{keyEq} (ORetire actor)
+      (MkSystemState ambient source) =
+      Just (ORetireTag, MkSystemState ambient
+        (replaceBinding @{nameEq} actor (retireFiber oldFiber) source))) ->
+    (0 retiredFound : lookupFiber @{nameEq} actor
+      (replaceBinding @{nameEq} actor (retireFiber oldFiber) source) =
+      Just (retireFiber oldFiber)) ->
+    (0 targetAbsent : targetFiber @{nameEq} @{keyEq}
+      {name = name} {key = key} {value = value} {world = world} {error = error}
+      (retireFiber oldFiber)
+      (replaceBinding @{nameEq} actor (retireFiber oldFiber) source) = Nothing) ->
+    (0 beginRaw : applyAction @{nameEq} @{keyEq}
+      (the (Action name key value world error) (LBegin actor))
+      (MkSystemState ambient
+        (replaceBinding @{nameEq} actor (retireFiber oldFiber) source)) =
+      Nothing) ->
+    R98RetiredBeginCorrelation name key world error value nameEq keyEq actor
+      (MkSystemState ambient source)
+      (MkSystemState ambient
+        (replaceBinding @{nameEq} actor (retireFiber oldFiber) source))
+      ORetireTag retireChecked
+      (MkR97CheckedRetireProjection ambient source oldFiber found retireChecked)
+
+0 r98ProduceRetiredBeginCorrelation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, retiredState : SystemState name key value world error) ->
+  (retireTag : RuleTag) ->
+  (0 retireChecked : checkedApplyAction @{nameEq} @{keyEq} (ORetire actor)
+    before = Just (retireTag, retiredState)) ->
+  (0 projection : R97CheckedRetireProjection name key world error value nameEq
+    keyEq actor before retiredState retireTag retireChecked) ->
+  R98RetiredBeginCorrelation name key world error value nameEq keyEq actor
+    before retiredState retireTag retireChecked projection
+r98ProduceRetiredBeginCorrelation name key world error value nameEq keyEq
+  actor _ _ _ _
+  (MkR97CheckedRetireProjection ambient source
+    (MkFiber component parent retiredFlag table lifecycle) found retireChecked) =
+    let retiredOwner : Fiber name key value world error
+        retiredOwner = MkFiber component parent True table lifecycle
+        postRegistry : Registry name key value world error
+        postRegistry = replaceBinding @{nameEq} actor retiredOwner source
+        0 retiredFound : lookupFiber @{nameEq} actor postRegistry =
+          Just retiredOwner
+        retiredFound = lookupReplacedFiber actor
+          (MkFiber component parent retiredFlag table lifecycle) retiredOwner
+          source found
+        0 targetAbsent : targetFiber @{nameEq} @{keyEq}
+          {name = name} {key = key} {value = value} {world = world}
+          {error = error} retiredOwner postRegistry = Nothing
+        targetAbsent = targetFiberExplicit nameEq keyEq component parent True
+          table lifecycle postRegistry
+        0 beginRaw : applyAction @{nameEq} @{keyEq}
+          (the (Action name key value world error) (LBegin actor))
+          (MkSystemState ambient postRegistry) = Nothing
+        beginRaw = rewrite retiredFound in case lifecycle of
+          Inactive Nothing => Refl
+          Inactive (Just snapshot) => Refl
+          Reloading remaining accumulator view => Refl
+          Active accumulator view => Refl
+          Unloading accumulator view outcome => Refl
+    in MkR98RetiredBeginCorrelation ambient source
+      (MkFiber component parent retiredFlag table lifecycle) found retireChecked
+      retiredFound targetAbsent beginRaw
+
+0 r98NothingNotJust :
+  (elementType : Type) -> (element : elementType) ->
+  Not (the (Maybe elementType) Nothing = Just element)
+r98NothingNotJust elementType element Refl impossible
+
+0 r98ConsumeRetiredBeginCorrelation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, retiredState : SystemState name key value world error) ->
+  (retireTag : RuleTag) ->
+  (0 retireChecked : checkedApplyAction @{nameEq} @{keyEq} (ORetire actor)
+    before = Just (retireTag, retiredState)) ->
+  (0 projection : R97CheckedRetireProjection name key world error value nameEq
+    keyEq actor before retiredState retireTag retireChecked) ->
+  (0 package : R98RetiredBeginCorrelation name key world error value nameEq
+    keyEq actor before retiredState retireTag retireChecked projection) ->
+  (beginAfter : SystemState name key value world error) ->
+  (beginTag : RuleTag) ->
+  (0 beginChecked : checkedApplyAction @{nameEq} @{keyEq} (LBegin actor)
+    retiredState = Just (beginTag, beginAfter)) ->
+  Void
+r98ConsumeRetiredBeginCorrelation name key world error value nameEq keyEq
+  actor _ _ _ _ _
+  (MkR98RetiredBeginCorrelation ambient source oldFiber found
+    retireChecked retiredFound targetAbsent beginRaw)
+  beginAfter beginTag beginChecked =
+    r98NothingNotJust
+      (RuleTag, SystemState name key value world error) (beginTag, beginAfter)
+      (trans (sym beginRaw)
+        (checkedActionProjects nameEq keyEq (LBegin actor)
+          (MkSystemState ambient
+            (replaceBinding @{nameEq} actor (retireFiber oldFiber) source))
+          beginAfter beginTag beginChecked))
