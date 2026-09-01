@@ -1829,6 +1829,26 @@ change is authorized. Fields 1–8 remain closed and field 9 remains open. Holes
 remain **20**, split **6/4/8/1/1**. The **2–10 shift** band is suspended pending
 that design gate.
 
+### Revision 95: equal-owner families and stage transport checked; map route stops
+
+`research-tests/O6-R95-EQUAL-OWNER-DESIGN-MAP-CONG-STOP-AUDIT.md` records
+design-only shift #103. A checked six-by-six enumeration finds exactly eight
+ordered equal-owner families viable in both orders: Iter/Iter, Retire/Retire,
+and both orientations of Begin/Retire, Iter/Retire, and Finish/Retire. Thus the
+blanket A/A exclusion is independently refuted: repeated L-Iter is viable, while
+the other eight A/A cells are excluded. Disposable same-module probes close an
+exact one-elimination L-Advance stage consumer across retirement and exact
+source-lookup payload producers for both retirement orientations. The first
+actual-map congruence route then exhausts three attempts because Idris retains
+`retireFiber`'s changed flag under imported fiber map observations. All probes
+are removed. The recommended next design avoids that equality: map a target
+actual L-Iter generator to the correlated source iterator-forward stage; handle
+Begin and Finish by identity maps, and homogeneous Iter/Iter and Retire/Retire
+positionally. Whole append composition remains unchecked. No frozen surface
+change is indicated. Holes remain **20**, split **6/4/8/1/1**; the band remains
+suspended, with **3–10 implementation shifts** proposed only after the next
+design gate succeeds.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -2140,7 +2160,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 94 refutes checked owner separation with same-owner idempotent O-Retire/O-Retire; pair RAR needs a reviewed equal/distinct-owner design. Fields 10–15 foundations are checked.** | **XL; 2–10 implementation-shift band suspended at design gate.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 95 enumerates eight viable equal-owner families and checks cross-retirement stage transport, but the actual-map route exhausts and whole composition remains unchecked. Fields 10–15 foundations are checked.** | **XL; band suspended; 3–10 proposed only after next design gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2360,5 +2380,7 @@ producer-indexed runtime package and exact one-elimination consumer with no
 frozen-surface delta. Revision 93 implements that boundary and all activation/
 orchestration singleton RARs, then isolates pair assembly at checked owner
 separation. Revision 94 refutes that separation using same-owner idempotent
-O-Retire/O-Retire and returns the pair RAR to a same-owner design gate; final
-assembly remains open.
+O-Retire/O-Retire and returns the pair RAR to a same-owner design gate.
+Revision 95 checks the eight-family equal-owner table and cross-retirement stage
+consumer, then stops at an exhausted actual-map congruence route; final assembly
+remains open.
