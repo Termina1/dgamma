@@ -23725,3 +23725,88 @@ r100ExactTwoOrderActivationTags name key world error value nameEq keyEq first
                 (LAdvance leftActor) leftTag leftChecked leftActivation
                 leftTagSame (LAdvance rightActor) rightTag rightChecked
                 rightActivation (sym sameOwner))
+
+||| Four correlated aligned heads used at the final B4 dependent boundary.
+record R101FourAlignedHeadViews
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (first, middle, originalFinal : SystemState name key value world error)
+  (left : Transition first middle) (right : Transition middle originalFinal)
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) where
+  constructor MkR101FourAlignedHeadViews
+  0 r101SourceLeftHead : LocalAlignedHeadView name key world error value nameEq
+    keyEq left (MoreTransitions right NoTransitions)
+  0 r101SourceRightHead : LocalAlignedHeadView name key world error value nameEq
+    keyEq right NoTransitions
+  0 r101MovedRightHead : LocalAlignedHeadView name key world error value nameEq
+    keyEq (movedRight diamond) (MoreTransitions (movedLeft diamond) NoTransitions)
+  0 r101MovedLeftHead : LocalAlignedHeadView name key world error value nameEq
+    keyEq (movedLeft diamond) NoTransitions
+  0 r101MovedRightActionSame :
+    alignedHeadAction r101MovedRightHead =
+      alignedHeadAction r101SourceRightHead
+  0 r101MovedRightTagSame :
+    alignedHeadTag r101MovedRightHead = alignedHeadTag r101SourceRightHead
+  0 r101MovedLeftActionSame :
+    alignedHeadAction r101MovedLeftHead = alignedHeadAction r101SourceLeftHead
+  0 r101MovedLeftTagSame :
+    alignedHeadTag r101MovedLeftHead = alignedHeadTag r101SourceLeftHead
+
+0 r101ProduceFourAlignedHeadViews :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, originalFinal : SystemState name key value world error) ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (0 sourcePairAligned : AlignedTransitions name key world error value nameEq
+    keyEq (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  R101FourAlignedHeadViews name key world error value nameEq keyEq first middle
+    originalFinal left right diamond
+r101ProduceFourAlignedHeadViews name key world error value nameEq keyEq first
+  middle originalFinal left right diamond sourcePairAligned =
+    case localAlignedHeadView sourcePairAligned of
+      sourceLeft@(MkLocalAlignedHeadView sourceLeftAction sourceLeftTag
+        sourceLeftChecked sourceLeftActionProjection sourceLeftTagProjection) =>
+          case localAlignedHeadView (localAlignedTail sourcePairAligned) of
+            sourceRight@(MkLocalAlignedHeadView sourceRightAction sourceRightTag
+              sourceRightChecked sourceRightActionProjection
+              sourceRightTagProjection) =>
+                case localAlignedHeadView (movedPairAligned diamond) of
+                  movedRight@(MkLocalAlignedHeadView movedRightActionValue
+                    movedRightTagValue movedRightChecked
+                    movedRightActionProjection movedRightTagProjection) =>
+                      case localAlignedHeadView
+                        (localAlignedTail (movedPairAligned diamond)) of
+                        movedLeft@(MkLocalAlignedHeadView movedLeftActionValue
+                          movedLeftTagValue movedLeftChecked
+                          movedLeftActionProjection movedLeftTagProjection) =>
+                            MkR101FourAlignedHeadViews
+                              (MkLocalAlignedHeadView sourceLeftAction
+                                sourceLeftTag sourceLeftChecked
+                                sourceLeftActionProjection sourceLeftTagProjection)
+                              (MkLocalAlignedHeadView sourceRightAction
+                                sourceRightTag sourceRightChecked
+                                sourceRightActionProjection
+                                sourceRightTagProjection)
+                              (MkLocalAlignedHeadView movedRightActionValue
+                                movedRightTagValue movedRightChecked
+                                movedRightActionProjection
+                                movedRightTagProjection)
+                              (MkLocalAlignedHeadView movedLeftActionValue
+                                movedLeftTagValue movedLeftChecked
+                                movedLeftActionProjection movedLeftTagProjection)
+                              (trans (sym movedRightActionProjection)
+                                (trans (movedRightAction diamond)
+                                  sourceRightActionProjection))
+                              (trans (sym movedRightTagProjection)
+                                (trans (movedRightTag diamond)
+                                  sourceRightTagProjection))
+                              (trans (sym movedLeftActionProjection)
+                                (trans (movedLeftAction diamond)
+                                  sourceLeftActionProjection))
+                              (trans (sym movedLeftTagProjection)
+                                (trans (movedLeftTag diamond)
+                                  sourceLeftTagProjection))
