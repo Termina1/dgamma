@@ -21639,3 +21639,31 @@ r97LocateAppendGenerator name key world error value first middle finalState left
               (StageFromAdvance nameEq keyEq actor tag checked local fiber found
                 remaining accumulator view lifecycle step rest suffix) origin)
             (\state => Refl)
+0 r97ConsumeAppendGenerator :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (actor : name) ->
+  (target : TraceEffectGenerator name key world error value actor
+    (appendTransitions left right)) ->
+  (package : R97AppendGeneratorPackage name key world error value first middle
+    finalState left right actor target) ->
+  (leftCase : (local : TraceEffectGenerator name key world error value actor left) ->
+    ((state : EffectState name key value world) ->
+      (traceGeneratorMap {trace = left} local state =
+        traceGeneratorMap {trace = appendTransitions left right} target state)) ->
+    result) ->
+  (rightCase : (local : TraceEffectGenerator name key world error value actor right) ->
+    ((state : EffectState name key value world) ->
+      (traceGeneratorMap {trace = right} local state =
+        traceGeneratorMap {trace = appendTransitions left right} target state)) ->
+    result) -> result
+r97ConsumeAppendGenerator name key world error value first middle finalState left
+  right actor target (R97AppendGeneratorLeft local exact) leftCase rightCase =
+    leftCase local exact
+r97ConsumeAppendGenerator name key world error value first middle finalState left
+  right actor target (R97AppendGeneratorRight local exact) leftCase rightCase =
+    rightCase local exact
+
+-- Revision-97 disposable, zero-hidden append iterator-stage package.
