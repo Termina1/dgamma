@@ -23596,3 +23596,132 @@ r100FinishThenPaperActivationImpossible name key world error value nameEq keyEq
           nameEq keyEq actor middle afterState nextTag
           (r100RetargetFinishOutputActive (actionOwner finishAction) actor
             (sym sameOwner) output) nextChecked (Right tagSame)
+
+0 r100RetargetActivationOutputControl :
+  (oldActor, newActor : name) -> (0 same : oldActor = newActor) ->
+  R99PaperActivationOutputControl name key world error value nameEq oldActor state ->
+  R99PaperActivationOutputControl name key world error value nameEq newActor state
+r100RetargetActivationOutputControl actor actor Refl output = output
+
+0 r100ExactTwoOrderActivationTags :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, originalFinal, swappedMiddle, swappedFinal :
+    SystemState name key value world error) ->
+  (leftAction, rightAction : Action name key value world error) ->
+  (leftTag, rightTag : RuleTag) ->
+  (0 leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first =
+    Just (leftTag, middle)) ->
+  (0 rightChecked : checkedApplyAction @{nameEq} @{keyEq} rightAction middle =
+    Just (rightTag, originalFinal)) ->
+  (0 movedRightChecked : checkedApplyAction @{nameEq} @{keyEq} rightAction first =
+    Just (rightTag, swappedMiddle)) ->
+  (0 movedLeftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction
+    swappedMiddle = Just (leftTag, swappedFinal)) ->
+  (0 leftActivation : PaperActivationStep
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked)) ->
+  (0 rightActivation : PaperActivationStep
+    (Fired {before = middle} {afterState = originalFinal}
+      nameEq keyEq rightAction rightTag rightChecked)) ->
+  (0 movedRightActivation : PaperActivationStep
+    (Fired {before = first} {afterState = swappedMiddle}
+      nameEq keyEq rightAction rightTag movedRightChecked)) ->
+  (0 movedLeftActivation : PaperActivationStep
+    (Fired {before = swappedMiddle} {afterState = swappedFinal}
+      nameEq keyEq leftAction leftTag movedLeftChecked)) ->
+  (0 sameOwner : actionOwner leftAction = actionOwner rightAction) ->
+  (leftTag = LIterTag, rightTag = LIterTag)
+r100ExactTwoOrderActivationTags name key world error value nameEq keyEq first
+  middle originalFinal swappedMiddle swappedFinal leftAction rightAction leftTag
+  rightTag leftChecked rightChecked movedRightChecked movedLeftChecked
+  leftActivation rightActivation movedRightActivation movedLeftActivation
+  sameOwner = case leftActivation of
+    PaperBeginStep {actor = leftActor} leftActionSame leftTagSame =>
+      case rightActivation of
+        PaperBeginStep {actor = rightActor} rightActionSame rightTagSame =>
+          case leftActionSame of
+            Refl => case rightActionSame of
+              Refl => case leftTagSame of
+                Refl => case rightTagSame of
+                  Refl => void (r99ActivationOutputCannotBegin name key world
+                    error value nameEq keyEq rightActor middle originalFinal
+                    (r100RetargetActivationOutputControl leftActor rightActor
+                      sameOwner
+                      (r99PaperActivationOutputControl name key world error value
+                        nameEq keyEq first middle (LBegin leftActor) LBeginTag
+                        leftChecked leftActivation)) rightChecked)
+        PaperIterStep {actor = rightActor} rightActionSame rightTagSame =>
+          case leftActionSame of
+            Refl => case rightActionSame of
+              Refl => case leftTagSame of
+                Refl => case rightTagSame of
+                  Refl => void (r99ActivationOutputCannotBegin name key world
+                    error value nameEq keyEq leftActor swappedMiddle swappedFinal
+                    (r100RetargetActivationOutputControl rightActor leftActor
+                      (sym sameOwner)
+                      (r99PaperActivationOutputControl name key world error value
+                        nameEq keyEq first swappedMiddle (LAdvance rightActor)
+                        LIterTag movedRightChecked movedRightActivation))
+                    movedLeftChecked)
+        PaperFinishStep {actor = rightActor} rightActionSame rightTagSame =>
+          case leftActionSame of
+            Refl => case rightActionSame of
+              Refl => case leftTagSame of
+                Refl => case rightTagSame of
+                  Refl => void (r99ActivationOutputCannotBegin name key world
+                    error value nameEq keyEq leftActor swappedMiddle swappedFinal
+                    (r100RetargetActivationOutputControl rightActor leftActor
+                      (sym sameOwner)
+                      (r99PaperActivationOutputControl name key world error value
+                        nameEq keyEq first swappedMiddle (LAdvance rightActor)
+                        LFinishTag movedRightChecked movedRightActivation))
+                    movedLeftChecked)
+    PaperIterStep {actor = leftActor} leftActionSame leftTagSame =>
+      case rightActivation of
+        PaperBeginStep {actor = rightActor} rightActionSame rightTagSame =>
+          case leftActionSame of
+            Refl => case rightActionSame of
+              Refl => case leftTagSame of
+                Refl => case rightTagSame of
+                  Refl => void (r99ActivationOutputCannotBegin name key world
+                    error value nameEq keyEq rightActor middle originalFinal
+                    (r100RetargetActivationOutputControl leftActor rightActor
+                      sameOwner
+                      (r99PaperActivationOutputControl name key world error value
+                        nameEq keyEq first middle (LAdvance leftActor) LIterTag
+                        leftChecked leftActivation)) rightChecked)
+        PaperIterStep {actor = rightActor} rightActionSame rightTagSame =>
+          (leftTagSame, rightTagSame)
+        PaperFinishStep {actor = rightActor} rightActionSame rightTagSame =>
+          case leftActionSame of
+            Refl => case rightActionSame of
+              Refl => void (r100FinishThenPaperActivationImpossible name key
+                world error value nameEq keyEq first swappedMiddle swappedFinal
+                (LAdvance rightActor) rightTag movedRightChecked
+                movedRightActivation rightTagSame (LAdvance leftActor) leftTag
+                movedLeftChecked movedLeftActivation sameOwner)
+    PaperFinishStep {actor = leftActor} leftActionSame leftTagSame =>
+      case leftActionSame of
+        Refl => case rightActivation of
+          PaperBeginStep {actor = rightActor} rightActionSame rightTagSame =>
+            case rightActionSame of
+              Refl => void (r100FinishThenPaperActivationImpossible name key
+                world error value nameEq keyEq first middle originalFinal
+                (LAdvance leftActor) leftTag leftChecked leftActivation
+                leftTagSame (LBegin rightActor) rightTag rightChecked
+                rightActivation (sym sameOwner))
+          PaperIterStep {actor = rightActor} rightActionSame rightTagSame =>
+            case rightActionSame of
+              Refl => void (r100FinishThenPaperActivationImpossible name key
+                world error value nameEq keyEq first middle originalFinal
+                (LAdvance leftActor) leftTag leftChecked leftActivation
+                leftTagSame (LAdvance rightActor) rightTag rightChecked
+                rightActivation (sym sameOwner))
+          PaperFinishStep {actor = rightActor} rightActionSame rightTagSame =>
+            case rightActionSame of
+              Refl => void (r100FinishThenPaperActivationImpossible name key
+                world error value nameEq keyEq first middle originalFinal
+                (LAdvance leftActor) leftTag leftChecked leftActivation
+                leftTagSame (LAdvance rightActor) rightTag rightChecked
+                rightActivation (sym sameOwner))
