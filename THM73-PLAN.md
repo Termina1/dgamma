@@ -1849,6 +1849,26 @@ change is indicated. Holes remain **20**, split **6/4/8/1/1**; the band remains
 suspended, with **3–10 implementation shifts** proposed only after the next
 design gate succeeds.
 
+### Revision 96: executable applicability corrects equal-owner table
+
+`research-tests/O6-R96-OPERATIONAL-EQUAL-OWNER-CORRECTION-COMPOSITION-STOP-AUDIT.md`
+records design-only shift #104 and corrects revision 95. A concrete checked
+`bothOrders` evaluator pin shows only Iter/Iter and Retire/Retire are viable;
+all six mixed activation/retirement orientations normalize to `False`. The
+missed condition is executable `targetFiber`: a retired fiber returns no target,
+so Begin fails and L-Advance diverts rather than producing Iter/Finish. The
+correct table is 2 viable / 34 excluded. Thus cross-retirement generator work is
+unnecessary; the equal-owner RAR becomes positional after deterministic endpoint
+reindexing, using frozen activation or orchestration singleton RARs. The earlier
+Iter/Retire generator probe and a generic append-RAR probe each exhaust three
+disposable attempts and are removed. The append design reaches dependent
+left/right localization but fails hidden trace inference; split fully explicit
+generator/stage packages are required next. Field-9 composition remains type-
+compatible but unchecked. No frozen surface change is indicated. Holes remain
+**20**, split **6/4/8/1/1**. The band remains suspended; **2–8 implementation
+shifts** is proposed only after the split append consumer and generic corrected
+classifier check.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -2160,7 +2180,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 95 enumerates eight viable equal-owner families and checks cross-retirement stage transport, but the actual-map route exhausts and whole composition remains unchecked. Fields 10–15 foundations are checked.** | **XL; band suspended; 3–10 proposed only after next design gate.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 96 corrects equal-owner viability to only Iter/Iter and Retire/Retire; positional pair design is clear, but the split append consumer and generic classifier remain unchecked. Fields 10–15 foundations are checked.** | **XL; band suspended; 2–8 proposed only after next design gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2381,6 +2401,8 @@ frozen-surface delta. Revision 93 implements that boundary and all activation/
 orchestration singleton RARs, then isolates pair assembly at checked owner
 separation. Revision 94 refutes that separation using same-owner idempotent
 O-Retire/O-Retire and returns the pair RAR to a same-owner design gate.
-Revision 95 checks the eight-family equal-owner table and cross-retirement stage
-consumer, then stops at an exhausted actual-map congruence route; final assembly
-remains open.
+Revision 95 checks a provisional eight-family table and cross-retirement stage
+consumer, then stops at an exhausted actual-map congruence route. Revision 96
+corrects that table operationally to only Iter/Iter and Retire/Retire because
+retirement invalidates the activation target, and isolates the remaining design
+gap to split append localization; final assembly remains open.
