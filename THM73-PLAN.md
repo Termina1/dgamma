@@ -1900,6 +1900,22 @@ lookup, target absence, and normalized L-Begin raw outcome under one producer
 elimination. No frozen surface change is indicated. Holes remain **20**, split
 **6/4/8/1/1**; the implementation band remains suspended.
 
+### Revision 99: retired Begin and empty Advance close; nonempty consumer stops
+
+`research-tests/O6-R99-BEGIN-CLOSED-EMPTY-ADVANCE-CLOSED-NONEMPTY-CONSUMER-STOP-AUDIT.md`
+records shift #107. The disposable B2 correlation probe passes on attempt 3 and
+is removed; the retained producer-owned package and one-elimination consumer
+then check on attempt 1. B3a closes empty-Reloading retired L-Advance as exact
+L-Divert, excluding both paper activation tags. B3b establishes the exact
+producer recipe with explicit normalized equality fields and `with (...) proof`
+for capability and step outcomes, but its dependent consumer exhausts three
+attempts at a local observed-tag equality elaboration boundary. The unit is
+removed. Next work should probe top-level raw-output/tag comparison helpers so
+the dependent consumer only eliminates once and dispatches; it must not declare
+a local tag equality. B4–B6, pair RAR, fields, and assembly remain unopened.
+Holes remain **20**, split **6/4/8/1/1**; no frozen surface change is indicated
+and the implementation band remains suspended.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -2211,7 +2227,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 and the full append/field-9 composition chain are retained. Revision 98 retains raw retirement projection but stops at correlated retired-Begin exclusion; B3–B6 and pair RAR remain open. Fields 10–15 foundations are checked.** | **XL; band suspended pending a correlated post-retire action package.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 and the full append/field-9 composition chain are retained. Revision 99 closes retired Begin and empty retired Advance; nonempty Advance producer design is closed but its dependent consumer remains open. B4–B6 and pair RAR remain open. Fields 10–15 foundations are checked.** | **XL; band suspended pending the nonempty consumer and classifier producer.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
