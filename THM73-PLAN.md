@@ -1947,6 +1947,23 @@ not opened under the semantic-stop rule. Holes remain **20**, split
 **6/4/8/1/1**; no frozen surface change is indicated and the implementation band
 remains suspended until the final B4 producer checks.
 
+### Revision 102: B4/B5 declare; B6 semantic foundations close
+
+`research-tests/O6-R102-B4-B5-DECLARED-B6-SEMANTIC-FOUNDATIONS-CLEAN-STOP-AUDIT.md`
+records shift #110. The producer-owned four-aligned-head package checks after
+explicit reconstruction of its dependent view fields. One elimination into the
+revision-101 3x3 core declares the exact B4 Iter/Iter classifier. B5 then closes
+from exact insertion absence, retirement presence, and removal source/output
+presence: all nine cells check and only Retire/Retire returns. Both mixed
+same-owner orientations are constructively impossible, exact Iter/Retire action
+shapes are recovered, and checked endpoint determinism proves
+`swappedMiddle = middle` and `swappedFinal = originalFinal`. The clean stop is
+before the final four-way B6 dispatcher. Pair RAR, fields, and assembly remain
+unopened. Holes remain **20**, split **6/4/8/1/1**; no frozen surface change is
+indicated. With B4 declared, the implementation band is proposed to re-open at
+**2–7 shifts** through B6, pair RAR/fields, body closure, and the mandatory
+19-hole review stop.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -2258,7 +2275,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 and the full append/field-9 composition chain are retained. Revision 101 closes checked Finish/Active output, Finish-to-activation exclusion, and the exact 3x3 B4 operational core. Its aligned-view producer wrapper, B5–B6, and pair RAR remain open. Fields 10–15 foundations are checked.** | **XL; band suspended pending the B4 classifier wrapper.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 and the full append/field-9 composition chain are retained. Revision 102 declares exact B4 and B5, closes both mixed same-owner exclusions, and proves deterministic equal-owner endpoints. The final B6 dispatcher and pair RAR remain open. Fields 10–15 foundations are checked.** | **XL; proposed re-opened 2–7 shift band pending this gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
