@@ -21738,3 +21738,297 @@ r97ConsumeAppendStage name key world error value first middle finalState left ri
 r97ConsumeAppendStage name key world error value first middle finalState left right
   actor target (R97AppendStageRight local exact) leftCase rightCase =
     rightCase local exact
+0 r97EmbedLeftGenerator :
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  TraceEffectGenerator name key world error value actor left ->
+  TraceEffectGenerator name key world error value actor
+    (appendTransitions left right)
+r97EmbedLeftGenerator left right generator = embedTraceGeneratorOccurrence
+  (r97AppendLeftOccurrence left right) generator
+
+0 r97EmbedRightGenerator :
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  TraceEffectGenerator name key world error value actor right ->
+  TraceEffectGenerator name key world error value actor
+    (appendTransitions left right)
+r97EmbedRightGenerator left right generator = embedTraceGeneratorOccurrence
+  (r97AppendRightOccurrence left right) generator
+
+0 r97EmbedLeftGeneratorExact :
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (generator : TraceEffectGenerator name key world error value actor left) ->
+  (state : EffectState name key value world) ->
+  (traceGeneratorMap {trace = appendTransitions left right}
+    (r97EmbedLeftGenerator left right generator) state =
+      traceGeneratorMap {trace = left} generator state)
+r97EmbedLeftGeneratorExact left right
+  (ActualForwardGenerator _ _ _ _ _ _ _ _ _) state = Refl
+r97EmbedLeftGeneratorExact left right (IteratorForwardGenerator
+  (StageFromAdvance _ _ _ _ _ _ _ _ _ _ _ _ _ _ _)) state = Refl
+r97EmbedLeftGeneratorExact left right (IteratorYieldedGenerator
+  (StageFromAdvance _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) origin) state = Refl
+
+0 r97EmbedRightGeneratorExact :
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (generator : TraceEffectGenerator name key world error value actor right) ->
+  (state : EffectState name key value world) ->
+  (traceGeneratorMap {trace = appendTransitions left right}
+    (r97EmbedRightGenerator left right generator) state =
+      traceGeneratorMap {trace = right} generator state)
+r97EmbedRightGeneratorExact left right
+  (ActualForwardGenerator _ _ _ _ _ _ _ _ _) state = Refl
+r97EmbedRightGeneratorExact left right (IteratorForwardGenerator
+  (StageFromAdvance _ _ _ _ _ _ _ _ _ _ _ _ _ _ _)) state = Refl
+r97EmbedRightGeneratorExact left right (IteratorYieldedGenerator
+  (StageFromAdvance _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) origin) state = Refl
+
+0 r97EmbedLeftStage :
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  IteratorStage name key world error value actor left ->
+  IteratorStage name key world error value actor (appendTransitions left right)
+r97EmbedLeftStage left right stage = embedIteratorStageOccurrence
+  (r97AppendLeftOccurrence left right) stage
+
+0 r97EmbedRightStage :
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  IteratorStage name key world error value actor right ->
+  IteratorStage name key world error value actor (appendTransitions left right)
+r97EmbedRightStage left right stage = embedIteratorStageOccurrence
+  (r97AppendRightOccurrence left right) stage
+
+0 r97EmbedLeftStageExact :
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (stage : IteratorStage name key world error value actor left) ->
+  (state : EffectState name key value world) ->
+  (iteratorStageOutcome {trace = appendTransitions left right}
+    (r97EmbedLeftStage left right stage) state =
+      iteratorStageOutcome {trace = left} stage state)
+r97EmbedLeftStageExact left right
+  (StageFromAdvance _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) state = Refl
+
+0 r97EmbedRightStageExact :
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (stage : IteratorStage name key world error value actor right) ->
+  (state : EffectState name key value world) ->
+  (iteratorStageOutcome {trace = appendTransitions left right}
+    (r97EmbedRightStage left right stage) state =
+      iteratorStageOutcome {trace = right} stage state)
+r97EmbedRightStageExact left right
+  (StageFromAdvance _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) state = Refl
+
+0 r97AppendGeneratorOrigin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (sourceFirst, sourceMiddle, sourceFinal,
+    targetFirst, targetMiddle, targetFinal :
+      SystemState name key value world error) ->
+  (sourceLeft : Transitions sourceFirst sourceMiddle) ->
+  (sourceRight : Transitions sourceMiddle sourceFinal) ->
+  (targetLeft : Transitions targetFirst targetMiddle) ->
+  (targetRight : Transitions targetMiddle targetFinal) ->
+  (leftRAR : RelationalReplayCorrespondence name key world error value sourceLeft
+    targetLeft) ->
+  (rightRAR : RelationalReplayCorrespondence name key world error value
+    sourceRight targetRight) ->
+  (actor : name) ->
+  TraceEffectGenerator name key world error value actor
+    (appendTransitions targetLeft targetRight) ->
+  TraceEffectGenerator name key world error value actor
+    (appendTransitions sourceLeft sourceRight)
+r97AppendGeneratorOrigin name key world error value sourceFirst sourceMiddle
+  sourceFinal targetFirst targetMiddle targetFinal sourceLeft sourceRight
+  targetLeft targetRight leftRAR rightRAR actor target =
+    r97ConsumeAppendGenerator name key world error value targetFirst targetMiddle
+      targetFinal targetLeft targetRight actor target
+      (r97LocateAppendGenerator name key world error value targetFirst targetMiddle
+        targetFinal targetLeft targetRight actor target)
+      (\local, exact => r97EmbedLeftGenerator sourceLeft sourceRight
+        (replayGeneratorOrigin leftRAR actor local))
+      (\local, exact => r97EmbedRightGenerator sourceLeft sourceRight
+        (replayGeneratorOrigin rightRAR actor local))
+
+0 r97AppendGeneratorMapsLeft :
+  (observedKeyEq : DecEq key) ->
+  (sourceLeft : Transitions sourceFirst sourceMiddle) ->
+  (sourceRight : Transitions sourceMiddle sourceFinal) ->
+  (targetLeft : Transitions targetFirst targetMiddle) ->
+  (targetRight : Transitions targetMiddle targetFinal) ->
+  (leftRAR : RelationalReplayCorrespondence name key world error value sourceLeft
+    targetLeft) ->
+  (actor : name) ->
+  (target : TraceEffectGenerator name key world error value actor
+    (appendTransitions targetLeft targetRight)) ->
+  (local : TraceEffectGenerator name key world error value actor targetLeft) ->
+  (exact : (state : EffectState name key value world) ->
+    (traceGeneratorMap {trace = targetLeft} local state =
+      traceGeneratorMap {trace = appendTransitions targetLeft targetRight}
+        target state)) ->
+  PartialMapsRelated (EffectStateEquivalence observedKeyEq)
+    (traceGeneratorMap {trace = appendTransitions sourceLeft sourceRight}
+      (r97EmbedLeftGenerator sourceLeft sourceRight
+        (replayGeneratorOrigin leftRAR actor local)))
+    (traceGeneratorMap {trace = appendTransitions targetLeft targetRight} target)
+r97AppendGeneratorMapsLeft observedKeyEq sourceLeft sourceRight targetLeft
+  targetRight leftRAR actor target local exact {x} {y} inputs =
+    replayPartialRewrite
+      (sym (r97EmbedLeftGeneratorExact sourceLeft sourceRight
+        (replayGeneratorOrigin leftRAR actor local) x))
+      (exact y)
+      (replayGeneratorMapsRelated leftRAR observedKeyEq actor local inputs)
+
+0 r97AppendGeneratorMapsRight :
+  (observedKeyEq : DecEq key) ->
+  (sourceLeft : Transitions sourceFirst sourceMiddle) ->
+  (sourceRight : Transitions sourceMiddle sourceFinal) ->
+  (targetLeft : Transitions targetFirst targetMiddle) ->
+  (targetRight : Transitions targetMiddle targetFinal) ->
+  (rightRAR : RelationalReplayCorrespondence name key world error value
+    sourceRight targetRight) ->
+  (actor : name) ->
+  (target : TraceEffectGenerator name key world error value actor
+    (appendTransitions targetLeft targetRight)) ->
+  (local : TraceEffectGenerator name key world error value actor targetRight) ->
+  (exact : (state : EffectState name key value world) ->
+    (traceGeneratorMap {trace = targetRight} local state =
+      traceGeneratorMap {trace = appendTransitions targetLeft targetRight}
+        target state)) ->
+  PartialMapsRelated (EffectStateEquivalence observedKeyEq)
+    (traceGeneratorMap {trace = appendTransitions sourceLeft sourceRight}
+      (r97EmbedRightGenerator sourceLeft sourceRight
+        (replayGeneratorOrigin rightRAR actor local)))
+    (traceGeneratorMap {trace = appendTransitions targetLeft targetRight} target)
+r97AppendGeneratorMapsRight observedKeyEq sourceLeft sourceRight targetLeft
+  targetRight rightRAR actor target local exact {x} {y} inputs =
+    replayPartialRewrite
+      (sym (r97EmbedRightGeneratorExact sourceLeft sourceRight
+        (replayGeneratorOrigin rightRAR actor local) x))
+      (exact y)
+      (replayGeneratorMapsRelated rightRAR observedKeyEq actor local inputs)
+
+
+record R97MappedAppendGenerator
+  (name, key, world, error : Type) (value : key -> Type)
+  (sourceFirst, sourceMiddle, sourceFinal,
+    targetFirst, targetMiddle, targetFinal :
+      SystemState name key value world error)
+  (sourceLeft : Transitions sourceFirst sourceMiddle)
+  (sourceRight : Transitions sourceMiddle sourceFinal)
+  (targetLeft : Transitions targetFirst targetMiddle)
+  (targetRight : Transitions targetMiddle targetFinal)
+  (actor : name)
+  (target : TraceEffectGenerator name key world error value actor
+    (appendTransitions targetLeft targetRight)) where
+  constructor MkR97MappedAppendGenerator
+  mappedAppendGenerator : TraceEffectGenerator name key world error value actor
+    (appendTransitions sourceLeft sourceRight)
+  0 mappedAppendGeneratorRelated : (observedKeyEq : DecEq key) ->
+    PartialMapsRelated (EffectStateEquivalence observedKeyEq)
+      (traceGeneratorMap {trace = appendTransitions sourceLeft sourceRight}
+        mappedAppendGenerator)
+      (traceGeneratorMap {trace = appendTransitions targetLeft targetRight} target)
+
+0 r97MapAppendGenerator :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (sourceFirst, sourceMiddle, sourceFinal,
+    targetFirst, targetMiddle, targetFinal :
+      SystemState name key value world error) ->
+  (sourceLeft : Transitions sourceFirst sourceMiddle) ->
+  (sourceRight : Transitions sourceMiddle sourceFinal) ->
+  (targetLeft : Transitions targetFirst targetMiddle) ->
+  (targetRight : Transitions targetMiddle targetFinal) ->
+  (leftRAR : RelationalReplayCorrespondence name key world error value sourceLeft
+    targetLeft) ->
+  (rightRAR : RelationalReplayCorrespondence name key world error value
+    sourceRight targetRight) ->
+  (actor : name) ->
+  (target : TraceEffectGenerator name key world error value actor
+    (appendTransitions targetLeft targetRight)) ->
+  R97MappedAppendGenerator name key world error value sourceFirst sourceMiddle
+    sourceFinal targetFirst targetMiddle targetFinal sourceLeft sourceRight
+    targetLeft targetRight actor target
+r97MapAppendGenerator name key world error value sourceFirst sourceMiddle
+  sourceFinal targetFirst targetMiddle targetFinal sourceLeft sourceRight
+  targetLeft targetRight leftRAR rightRAR actor target =
+    r97ConsumeAppendGenerator name key world error value targetFirst targetMiddle
+      targetFinal targetLeft targetRight actor target
+      (r97LocateAppendGenerator name key world error value targetFirst targetMiddle
+        targetFinal targetLeft targetRight actor target)
+      (\local, exact => MkR97MappedAppendGenerator
+        (r97EmbedLeftGenerator sourceLeft sourceRight
+          (replayGeneratorOrigin leftRAR actor local))
+        (\observedKeyEq => r97AppendGeneratorMapsLeft observedKeyEq sourceLeft
+          sourceRight targetLeft targetRight leftRAR actor target local exact))
+      (\local, exact => MkR97MappedAppendGenerator
+        (r97EmbedRightGenerator sourceLeft sourceRight
+          (replayGeneratorOrigin rightRAR actor local))
+        (\observedKeyEq => r97AppendGeneratorMapsRight observedKeyEq sourceLeft
+          sourceRight targetLeft targetRight rightRAR actor target local exact))
+
+record R97MappedAppendStage
+  (name, key, world, error : Type) (value : key -> Type)
+  (sourceFirst, sourceMiddle, sourceFinal,
+    targetFirst, targetMiddle, targetFinal :
+      SystemState name key value world error)
+  (sourceLeft : Transitions sourceFirst sourceMiddle)
+  (sourceRight : Transitions sourceMiddle sourceFinal)
+  (targetLeft : Transitions targetFirst targetMiddle)
+  (targetRight : Transitions targetMiddle targetFinal)
+  (actor : name)
+  (target : IteratorStage name key world error value actor
+    (appendTransitions targetLeft targetRight)) where
+  constructor MkR97MappedAppendStage
+  mappedAppendStage : IteratorStage name key world error value actor
+    (appendTransitions sourceLeft sourceRight)
+  0 mappedAppendStageOutcome : (state : EffectState name key value world) ->
+    (iteratorStageOutcome {trace = appendTransitions targetLeft targetRight}
+      target state =
+      iteratorStageOutcome {trace = appendTransitions sourceLeft sourceRight}
+        mappedAppendStage state)
+
+0 r97MapAppendStage :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (sourceFirst, sourceMiddle, sourceFinal,
+    targetFirst, targetMiddle, targetFinal :
+      SystemState name key value world error) ->
+  (sourceLeft : Transitions sourceFirst sourceMiddle) ->
+  (sourceRight : Transitions sourceMiddle sourceFinal) ->
+  (targetLeft : Transitions targetFirst targetMiddle) ->
+  (targetRight : Transitions targetMiddle targetFinal) ->
+  (leftRAR : RelationalReplayCorrespondence name key world error value sourceLeft
+    targetLeft) ->
+  (rightRAR : RelationalReplayCorrespondence name key world error value
+    sourceRight targetRight) ->
+  (actor : name) ->
+  (target : IteratorStage name key world error value actor
+    (appendTransitions targetLeft targetRight)) ->
+  R97MappedAppendStage name key world error value sourceFirst sourceMiddle
+    sourceFinal targetFirst targetMiddle targetFinal sourceLeft sourceRight
+    targetLeft targetRight actor target
+r97MapAppendStage name key world error value sourceFirst sourceMiddle sourceFinal
+  targetFirst targetMiddle targetFinal sourceLeft sourceRight targetLeft
+  targetRight leftRAR rightRAR actor target =
+    r97ConsumeAppendStage name key world error value targetFirst targetMiddle
+      targetFinal targetLeft targetRight actor target
+      (r97LocateAppendStage name key world error value targetFirst targetMiddle
+        targetFinal targetLeft targetRight actor target)
+      (\local, exact => MkR97MappedAppendStage
+        (r97EmbedLeftStage sourceLeft sourceRight
+          (replayIteratorStageOrigin leftRAR actor local))
+        (\state => trans (exact state)
+          (trans (replayIteratorOutcomePreserved leftRAR actor local state)
+            (sym (r97EmbedLeftStageExact sourceLeft sourceRight
+              (replayIteratorStageOrigin leftRAR actor local) state)))))
+      (\local, exact => MkR97MappedAppendStage
+        (r97EmbedRightStage sourceLeft sourceRight
+          (replayIteratorStageOrigin rightRAR actor local))
+        (\state => trans (exact state)
+          (trans (replayIteratorOutcomePreserved rightRAR actor local state)
+            (sym (r97EmbedRightStageExact sourceLeft sourceRight
+              (replayIteratorStageOrigin rightRAR actor local) state)))))
