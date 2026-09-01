@@ -24557,3 +24557,65 @@ r101ExactActivationOrchestrationSameOwnerImpossible name key world error value
               r101AbsentVersusFound name key world error value nameEq rightActor
                 (actionOwner leftAction) swappedMiddle activationFiber
                 (sym sameOwner) removedAbsent activationFound
+
+0 r101ExactOrchestrationActivationSameOwnerImpossible :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, originalFinal, swappedMiddle, swappedFinal :
+    SystemState name key value world error) ->
+  (leftAction, rightAction : Action name key value world error) ->
+  (leftTag, rightTag : RuleTag) ->
+  (0 leftChecked : (checkedApplyAction @{nameEq} @{keyEq} leftAction first =
+    Just (leftTag, middle))) ->
+  (0 rightChecked : (checkedApplyAction @{nameEq} @{keyEq} rightAction middle =
+    Just (rightTag, originalFinal))) ->
+  (0 movedRightChecked : (checkedApplyAction @{nameEq} @{keyEq} rightAction
+    first = Just (rightTag, swappedMiddle))) ->
+  (0 movedLeftChecked : (checkedApplyAction @{nameEq} @{keyEq} leftAction
+    swappedMiddle = Just (leftTag, swappedFinal))) ->
+  (0 leftOrchestration : PaperOrchestrationStep
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked)) ->
+  (0 rightActivation : PaperActivationStep
+    (Fired {before = middle} {afterState = originalFinal}
+      nameEq keyEq rightAction rightTag rightChecked)) ->
+  (0 movedRightActivation : PaperActivationStep
+    (Fired {before = first} {afterState = swappedMiddle}
+      nameEq keyEq rightAction rightTag movedRightChecked)) ->
+  (0 movedLeftOrchestration : PaperOrchestrationStep
+    (Fired {before = swappedMiddle} {afterState = swappedFinal}
+      nameEq keyEq leftAction leftTag movedLeftChecked)) ->
+  (0 sameOwner : actionOwner leftAction = actionOwner rightAction) ->
+  Void
+r101ExactOrchestrationActivationSameOwnerImpossible name key world error value
+  nameEq keyEq first middle originalFinal swappedMiddle swappedFinal leftAction
+  rightAction leftTag rightTag leftChecked rightChecked movedRightChecked
+  movedLeftChecked leftOrchestration rightActivation movedRightActivation
+  movedLeftOrchestration sameOwner = case leftOrchestration of
+    PaperInsertStep {actor = leftActor} {parent = leftParent}
+      {component = leftComponent} leftActionSame => case leftActionSame of
+        Refl => case r101ActivationOutputFound
+          (r99PaperActivationOutputControl name key world error value nameEq keyEq
+            first swappedMiddle rightAction rightTag movedRightChecked
+            movedRightActivation) of
+          (outputFiber ** outputFound) =>
+            r101AbsentVersusFound name key world error value nameEq leftActor
+              (actionOwner rightAction) swappedMiddle outputFiber sameOwner
+              (r101CheckedInsertSourceAbsent name key world error value nameEq
+                keyEq leftActor leftParent leftComponent swappedMiddle
+                swappedFinal leftTag movedLeftChecked) outputFound
+    PaperRetireStep {actor = leftActor} leftActionSame => case leftActionSame of
+      Refl => r99RetireThenPaperActivationImpossible name key world error value
+        nameEq keyEq leftActor first middle originalFinal leftTag leftChecked
+        rightAction rightTag rightChecked rightActivation (sym sameOwner)
+    PaperRemoveStep {actor = leftActor} leftActionSame => case leftActionSame of
+      Refl => case r101CheckedRemovePresence name key world error value nameEq
+        keyEq leftActor first middle leftTag leftChecked of
+        MkR101CheckedRemovePresence removedFiber removedFound removedAbsent =>
+          case r101PaperActivationSourcePresence name key world error value
+            nameEq keyEq middle originalFinal rightAction rightTag rightChecked
+            rightActivation of
+            MkR101ActivationSourcePresence activationFiber activationFound =>
+              r101AbsentVersusFound name key world error value nameEq leftActor
+                (actionOwner rightAction) middle activationFiber sameOwner
+                removedAbsent activationFound
