@@ -22173,3 +22173,45 @@ r97Field9ConcreteCapitalConsumer original tracePrefix left right suffix diamond
       diamond replayedSuffix decomposition
       (identityRelationalReplayCorrespondence tracePrefix) pairRAR
       (sealedSuffixRelationalReplayCorrespondence seal)
+
+||| Producer-owned raw projection of a checked retirement. Eliminating this
+||| package once fixes the source registry, rule tag, retired fiber, and exact
+||| replacement state before any lifecycle reasoning begins.
+data R97CheckedRetireProjection :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (ORetire actor) before =
+    Just (tag, afterState)) -> Type where
+  MkR97CheckedRetireProjection :
+    (ambient : world) ->
+    (source : Registry name key value world error) ->
+    (oldFiber : Fiber name key value world error) ->
+    (0 found : lookupFiber @{nameEq} actor source = Just oldFiber) ->
+    (0 checked : checkedApplyAction @{nameEq} @{keyEq} (ORetire actor)
+      (MkSystemState ambient source) =
+      Just (ORetireTag, MkSystemState ambient
+        (replaceBinding @{nameEq} actor (retireFiber oldFiber) source))) ->
+    R97CheckedRetireProjection name key world error value nameEq keyEq actor
+      (MkSystemState ambient source)
+      (MkSystemState ambient
+        (replaceBinding @{nameEq} actor (retireFiber oldFiber) source))
+      ORetireTag checked
+
+0 r97ProjectCheckedRetire :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (ORetire actor) before =
+    Just (tag, afterState)) ->
+  R97CheckedRetireProjection name key world error value nameEq keyEq actor
+    before afterState tag checked
+r97ProjectCheckedRetire name key world error value nameEq keyEq actor
+  (MkSystemState ambient source) afterState tag checked =
+    let 0 raw = checkedActionProjects nameEq keyEq (ORetire actor)
+          (MkSystemState ambient source) afterState tag checked
+    in case retireSuccessView nameEq keyEq actor ambient source tag afterState raw of
+      MkRetireSuccessView oldFiber found =>
+        MkR97CheckedRetireProjection ambient source oldFiber found checked
