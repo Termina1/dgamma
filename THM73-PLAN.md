@@ -1885,6 +1885,21 @@ classifier producer still blocks the pair RAR. No frozen surface change is
 indicated. Holes remain **20**, split **6/4/8/1/1**. The **2–8 implementation
 shift** band remains suspended until that producer checks.
 
+### Revision 98: append retained; classifier stops at correlated retired Begin
+
+`research-tests/O6-R98-APPEND-LANDED-RETIRED-BEGIN-SEMANTIC-STOP-AUDIT.md`
+records implementation shift #106. The complete revision-97 append chain is now
+retained across six fresh checked commits, including the exact concrete field-9
+composition consumer. Track B retains a producer-owned checked-retirement
+projection on attempt 1. The next unit, generic retired L-Begin exclusion,
+exhausts three attempts: after raw projection, neither rewriting nor direct
+equality elimination reindexes an independently let-bound raw equation with the
+exact replaced-owner lookup. The unit is removed and B3–B6, pair RAR, fields,
+and assembly remain unopened. The next design must correlate post-retirement
+lookup, target absence, and normalized L-Begin raw outcome under one producer
+elimination. No frozen surface change is indicated. Holes remain **20**, split
+**6/4/8/1/1**; the implementation band remains suspended.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -2196,7 +2211,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 97 closes the split append RAR and exact field-9 whole composition. The two-cell classifier interface/consumer checks, but its generic producer remains open; this alone blocks pair RAR implementation. Fields 10–15 foundations are checked.** | **XL; band suspended until the classifier producer checks; then 2–8 proposed.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 and the full append/field-9 composition chain are retained. Revision 98 retains raw retirement projection but stops at correlated retired-Begin exclusion; B3–B6 and pair RAR remain open. Fields 10–15 foundations are checked.** | **XL; band suspended pending a correlated post-retire action package.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
