@@ -22032,3 +22032,72 @@ r97MapAppendStage name key world error value sourceFirst sourceMiddle sourceFina
           (trans (replayIteratorOutcomePreserved rightRAR actor local state)
             (sym (r97EmbedRightStageExact sourceLeft sourceRight
               (replayIteratorStageOrigin rightRAR actor local) state)))))
+0 r97AppendRelationalReplayCorrespondence :
+  (sourceLeft : Transitions sourceFirst sourceMiddle) ->
+  (sourceRight : Transitions sourceMiddle sourceFinal) ->
+  (targetLeft : Transitions targetFirst targetMiddle) ->
+  (targetRight : Transitions targetMiddle targetFinal) ->
+  RelationalReplayCorrespondence name key world error value sourceLeft targetLeft ->
+  RelationalReplayCorrespondence name key world error value sourceRight targetRight ->
+  RelationalReplayCorrespondence name key world error value
+    (appendTransitions sourceLeft sourceRight)
+    (appendTransitions targetLeft targetRight)
+r97AppendRelationalReplayCorrespondence {name} {key} {world} {error} {value}
+  sourceLeft sourceRight targetLeft targetRight leftRAR rightRAR =
+    MkRelationalReplayCorrespondence generatorOrigin generatorMaps stageOrigin
+      stageOutcome
+  where
+  mappedGenerator : (actor : name) ->
+    (target : TraceEffectGenerator name key world error value actor
+      (appendTransitions targetLeft targetRight)) ->
+    R97MappedAppendGenerator name key world error value _ _ _ _ _ _ sourceLeft
+      sourceRight targetLeft targetRight actor target
+  mappedGenerator actor target = r97MapAppendGenerator name key world error value
+    _ _ _ _ _ _ sourceLeft sourceRight targetLeft targetRight leftRAR rightRAR
+    actor target
+
+  generatorOrigin : (actor : name) ->
+    TraceEffectGenerator name key world error value actor
+      (appendTransitions targetLeft targetRight) ->
+    TraceEffectGenerator name key world error value actor
+      (appendTransitions sourceLeft sourceRight)
+  generatorOrigin actor target = mappedAppendGenerator
+    (mappedGenerator actor target)
+
+  0 generatorMaps : (observedKeyEq : DecEq key) -> (actor : name) ->
+    (target : TraceEffectGenerator name key world error value actor
+      (appendTransitions targetLeft targetRight)) ->
+    PartialMapsRelated (EffectStateEquivalence observedKeyEq)
+      (traceGeneratorMap {trace = appendTransitions sourceLeft sourceRight}
+        (generatorOrigin actor target))
+      (traceGeneratorMap {trace = appendTransitions targetLeft targetRight} target)
+  generatorMaps observedKeyEq actor target = mappedAppendGeneratorRelated
+    (mappedGenerator actor target) observedKeyEq
+
+  mappedStage : (actor : name) ->
+    (target : IteratorStage name key world error value actor
+      (appendTransitions targetLeft targetRight)) ->
+    R97MappedAppendStage name key world error value _ _ _ _ _ _ sourceLeft
+      sourceRight targetLeft targetRight actor target
+  mappedStage actor target = r97MapAppendStage name key world error value _ _ _ _
+    _ _ sourceLeft sourceRight targetLeft targetRight leftRAR rightRAR actor target
+
+  stageOrigin : (actor : name) ->
+    IteratorStage name key world error value actor
+      (appendTransitions targetLeft targetRight) ->
+    IteratorStage name key world error value actor
+      (appendTransitions sourceLeft sourceRight)
+  stageOrigin actor target = mappedAppendStage (mappedStage actor target)
+
+  0 stageOutcome : (actor : name) ->
+    (target : IteratorStage name key world error value actor
+      (appendTransitions targetLeft targetRight)) ->
+    (state : EffectState name key value world) ->
+    (iteratorStageOutcome {trace = appendTransitions targetLeft targetRight}
+      target state =
+      iteratorStageOutcome {trace = appendTransitions sourceLeft sourceRight}
+        (stageOrigin actor target) state)
+  stageOutcome actor target state = mappedAppendStageOutcome
+    (mappedStage actor target) state
+
+-- Exact field-9 whole prefix/pair/suffix composition consumer.
