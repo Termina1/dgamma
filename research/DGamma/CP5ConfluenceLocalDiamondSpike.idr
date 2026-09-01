@@ -22330,3 +22330,68 @@ r98ConsumeRetiredBeginCorrelation name key world error value nameEq keyEq
           (MkSystemState ambient
             (replaceBinding @{nameEq} actor (retireFiber oldFiber) source))
           beginAfter beginTag beginChecked))
+
+0 r98DivertTagNotIter : Not (LDivertTag = LIterTag)
+r98DivertTagNotIter Refl impossible
+
+0 r98DivertTagNotFinish : Not (LDivertTag = LFinishTag)
+r98DivertTagNotFinish Refl impossible
+
+||| A retired owner at the empty Reloading boundary can only divert.  In
+||| particular its checked L-Advance cannot witness either paper activation tag.
+0 r98RetiredAdvanceEmptyExcluded :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) ->
+  (source : Registry name key value world error) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world
+      (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (0 found : lookupFiber @{nameEq} actor source =
+    Just (MkFiber component parent retiredFlag table
+      (Reloading [] accumulator view))) ->
+  (afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState ambient
+      (replaceBinding @{nameEq} actor
+        (retireFiber (MkFiber component parent retiredFlag table
+          (Reloading [] accumulator view))) source)) =
+    Just (tag, afterState)) ->
+  (Not (tag = LIterTag), Not (tag = LFinishTag))
+r98RetiredAdvanceEmptyExcluded name key world error value nameEq keyEq actor
+  ambient source component parent retiredFlag table accumulator view found
+  afterState tag checked =
+    let oldOwner : Fiber name key value world error
+        oldOwner = MkFiber component parent retiredFlag table
+          (Reloading [] accumulator view)
+        retiredOwner : Fiber name key value world error
+        retiredOwner = retireFiber oldOwner
+        postRegistry : Registry name key value world error
+        postRegistry = replaceBinding @{nameEq} actor retiredOwner source
+        0 retiredFound : lookupFiber @{nameEq} actor postRegistry =
+          Just retiredOwner
+        retiredFound = lookupReplacedFiber actor oldOwner retiredOwner source found
+        diverted : SystemState name key value world error
+        diverted = MkSystemState ambient
+          (replaceBinding @{nameEq} actor
+            (setFiberLifecycle retiredOwner
+              (Unloading accumulator view Nothing)) postRegistry)
+        0 normalized : applyAction @{nameEq} @{keyEq}
+          (the (Action name key value world error) (LAdvance actor))
+          (MkSystemState ambient postRegistry) = Just (LDivertTag, diverted)
+        normalized = rewrite retiredFound in Refl
+        0 projected : applyAction @{nameEq} @{keyEq}
+          (the (Action name key value world error) (LAdvance actor))
+          (MkSystemState ambient postRegistry) = Just (tag, afterState)
+        projected = checkedActionProjects nameEq keyEq (LAdvance actor)
+          (MkSystemState ambient postRegistry) afterState tag checked
+        0 divertIsObserved : LDivertTag = tag
+        divertIsObserved = cong fst
+          (justInjective (trans (sym normalized) projected))
+    in (\same => r98DivertTagNotIter (trans divertIsObserved same),
+        \same => r98DivertTagNotFinish (trans divertIsObserved same))
