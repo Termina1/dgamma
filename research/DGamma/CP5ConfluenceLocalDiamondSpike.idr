@@ -23149,3 +23149,66 @@ r99IterOutputControl name key world error value nameEq keyEq actor ambient sourc
           (localTable localAfter) (next :: more)
           (pushLocalUndo (componentProvisions component) accumulator undo) view
           observedFound
+
+0 r99PaperActivationOutputControl :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (before, afterState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (0 activation : PaperActivationStep
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked)) ->
+  R99PaperActivationOutputControl name key world error value nameEq
+    (actionOwner action) afterState
+r99PaperActivationOutputControl name key world error value nameEq keyEq
+  (MkSystemState ambient source) afterState action tag checked activation =
+    case activation of
+      PaperBeginStep {actor} actionSame tagSame => case actionSame of
+        Refl => case tagSame of
+          Refl => r99BeginOutputControl name key world error value nameEq keyEq
+            actor ambient source afterState
+            (checkedActionProjects nameEq keyEq (LBegin actor)
+              (MkSystemState ambient source) afterState LBeginTag checked)
+      PaperIterStep {actor} actionSame tagSame => case actionSame of
+        Refl => case tagSame of
+          Refl =>
+            let 0 raw = checkedActionProjects nameEq keyEq (LAdvance actor)
+                  (MkSystemState ambient source) afterState LIterTag checked
+            in case paperAdvanceSource nameEq keyEq actor LIterTag raw
+              (Left Refl) of
+              AdvanceSourceIter {ambient = observedAmbient}
+                {fibers = observedSource} {component} {parent} {retiredFlag}
+                {table} {step} {next} {more} {accumulator} {view} sourceShape found
+                target => r99IterOutputControl name key world error value nameEq
+                  keyEq actor observedAmbient observedSource afterState component
+                  parent retiredFlag table step next more accumulator view found
+                  target (trans
+                    (cong (applyAction @{nameEq} @{keyEq} (LAdvance actor))
+                      sourceShape) raw)
+      PaperFinishStep {actor} actionSame tagSame => case actionSame of
+        Refl => case tagSame of
+          Refl =>
+            let 0 raw = checkedActionProjects nameEq keyEq (LAdvance actor)
+                  (MkSystemState ambient source) afterState LFinishTag checked
+            in case paperAdvanceSource nameEq keyEq actor LFinishTag raw
+              (Right Refl) of
+              AdvanceSourceFinishEmpty {ambient = observedAmbient}
+                {fibers = observedSource} {component} {parent} {retiredFlag}
+                {table} {accumulator} {view} sourceShape found target =>
+                  r99FinishEmptyOutputControl name key world error value nameEq
+                    keyEq actor observedAmbient observedSource afterState component
+                    parent retiredFlag table accumulator view found target
+                    (trans
+                      (cong (applyAction @{nameEq} @{keyEq} (LAdvance actor))
+                        sourceShape) raw)
+              AdvanceSourceFinishOne {ambient = observedAmbient}
+                {fibers = observedSource} {component} {parent} {retiredFlag}
+                {table} {step} {accumulator} {view} sourceShape found target =>
+                  r99FinishOneOutputControl name key world error value nameEq
+                    keyEq actor observedAmbient observedSource afterState component
+                    parent retiredFlag table step accumulator view found target
+                    (trans
+                      (cong (applyAction @{nameEq} @{keyEq} (LAdvance actor))
+                        sourceShape) raw)
