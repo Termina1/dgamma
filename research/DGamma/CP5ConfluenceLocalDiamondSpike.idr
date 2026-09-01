@@ -24202,3 +24202,190 @@ r101ExactTwoOrderOrchestrationTags name key world error value nameEq keyEq first
                   void (r101AbsentVersusFound name key world error value nameEq
                     leftActor rightActor middle rightFiber sameOwner absent
                     rightFound)
+
+||| Exact B5 result: both same-owner orchestration steps are O-Retire.
+record R101EqualOwnerOrchestrationRetirePair
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (first, middle, originalFinal : SystemState name key value world error)
+  (left : Transition first middle) (right : Transition middle originalFinal)
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) where
+  constructor MkR101EqualOwnerOrchestrationRetirePair
+  0 r101LeftOrchestration : PaperOrchestrationStep left
+  0 r101RightOrchestration : PaperOrchestrationStep right
+  0 r101MovedRightOrchestration : PaperOrchestrationStep (movedRight diamond)
+  0 r101MovedLeftOrchestration : PaperOrchestrationStep (movedLeft diamond)
+  0 r101LeftTagRetire : transitionTag left = ORetireTag
+  0 r101RightTagRetire : transitionTag right = ORetireTag
+
+0 r101AlignedInsertDistinct :
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  (leftAction, rightAction : Action name key value world error) ->
+  (0 leftProjection : transitionAction left = leftAction) ->
+  (0 rightProjection : transitionAction right = rightAction) ->
+  (0 originalDistinct : (leftChild, rightChild : name) ->
+    (leftParent, rightParent : Parent name) ->
+    (leftComponent, rightComponent : Component key value world error) ->
+    transitionAction left = OInsert leftChild leftParent leftComponent ->
+    transitionAction right = OInsert rightChild rightParent rightComponent ->
+    Not (leftChild = rightChild)) ->
+  (leftChild, rightChild : name) ->
+  (leftParent, rightParent : Parent name) ->
+  (leftComponent, rightComponent : Component key value world error) ->
+  leftAction = OInsert leftChild leftParent leftComponent ->
+  rightAction = OInsert rightChild rightParent rightComponent ->
+  Not (leftChild = rightChild)
+r101AlignedInsertDistinct left right leftAction rightAction leftProjection
+  rightProjection originalDistinct leftChild rightChild leftParent rightParent
+  leftComponent rightComponent leftInsert rightInsert =
+    originalDistinct leftChild rightChild leftParent rightParent leftComponent
+      rightComponent (trans leftProjection leftInsert)
+      (trans rightProjection rightInsert)
+
+0 r101ConsumeOrchestrationHeadViews :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, originalFinal : SystemState name key value world error) ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (0 leftOrchestration : PaperOrchestrationStep left) ->
+  (0 rightOrchestration : PaperOrchestrationStep right) ->
+  (0 sameActor : transitionActor left = transitionActor right) ->
+  (0 originalInsertDistinct : (leftChild, rightChild : name) ->
+    (leftParent, rightParent : Parent name) ->
+    (leftComponent, rightComponent : Component key value world error) ->
+    transitionAction left = OInsert leftChild leftParent leftComponent ->
+    transitionAction right = OInsert rightChild rightParent rightComponent ->
+    Not (leftChild = rightChild)) ->
+  (0 heads : R101FourAlignedHeadViews name key world error value nameEq keyEq
+    first middle originalFinal left right diamond) ->
+  R101EqualOwnerOrchestrationRetirePair name key world error value nameEq keyEq
+    first middle originalFinal left right diamond
+r101ConsumeOrchestrationHeadViews name key world error value nameEq keyEq first
+  middle originalFinal left right diamond leftOrchestration rightOrchestration
+  sameActor originalInsertDistinct heads = case heads of
+    MkR101FourAlignedHeadViews sourceLeft sourceRight movedRightHead movedLeftHead
+      movedRightActionSame movedRightTagSame movedLeftActionSame
+      movedLeftTagSame =>
+        let 0 sourceLeftOrchestration : PaperOrchestrationStep
+              (Fired {before = first} {afterState = middle} nameEq keyEq
+                (alignedHeadAction sourceLeft) (alignedHeadTag sourceLeft)
+                (alignedHeadChecked sourceLeft))
+            sourceLeftOrchestration = paperOrchestrationStepTransport
+              (sym (alignedHeadActionProjection sourceLeft))
+              (sym (alignedHeadTagProjection sourceLeft)) leftOrchestration
+            0 sourceRightOrchestration : PaperOrchestrationStep
+              (Fired {before = middle} {afterState = originalFinal} nameEq keyEq
+                (alignedHeadAction sourceRight) (alignedHeadTag sourceRight)
+                (alignedHeadChecked sourceRight))
+            sourceRightOrchestration = paperOrchestrationStepTransport
+              (sym (alignedHeadActionProjection sourceRight))
+              (sym (alignedHeadTagProjection sourceRight)) rightOrchestration
+            0 movedRightCheckedExact : checkedApplyAction @{nameEq} @{keyEq}
+              (alignedHeadAction sourceRight) first =
+                Just (alignedHeadTag sourceRight, swappedMiddle diamond)
+            movedRightCheckedExact = checkedActivationEquationTransport
+              nameEq keyEq (alignedHeadAction movedRightHead)
+              (alignedHeadAction sourceRight) movedRightActionSame
+              (alignedHeadTag movedRightHead) (alignedHeadTag sourceRight)
+              movedRightTagSame (alignedHeadChecked movedRightHead)
+            0 movedLeftCheckedExact : checkedApplyAction @{nameEq} @{keyEq}
+              (alignedHeadAction sourceLeft) (swappedMiddle diamond) =
+                Just (alignedHeadTag sourceLeft, swappedFinal diamond)
+            movedLeftCheckedExact = checkedActivationEquationTransport
+              nameEq keyEq (alignedHeadAction movedLeftHead)
+              (alignedHeadAction sourceLeft) movedLeftActionSame
+              (alignedHeadTag movedLeftHead) (alignedHeadTag sourceLeft)
+              movedLeftTagSame (alignedHeadChecked movedLeftHead)
+            0 movedRightOriginal : PaperOrchestrationStep (movedRight diamond)
+            movedRightOriginal = movedRightOrchestrationBranch diamond
+              rightOrchestration
+            0 movedLeftOriginal : PaperOrchestrationStep (movedLeft diamond)
+            movedLeftOriginal = movedLeftOrchestrationBranch diamond
+              leftOrchestration
+            0 movedRightOrchestrationExact : PaperOrchestrationStep
+              (Fired {before = first} {afterState = swappedMiddle diamond}
+                nameEq keyEq (alignedHeadAction sourceRight)
+                (alignedHeadTag sourceRight) movedRightCheckedExact)
+            movedRightOrchestrationExact = paperOrchestrationStepTransport
+              (trans (sym (alignedHeadActionProjection sourceRight))
+                (sym (movedRightAction diamond)))
+              (trans (sym (alignedHeadTagProjection sourceRight))
+                (sym (movedRightTag diamond))) movedRightOriginal
+            0 movedLeftOrchestrationExact : PaperOrchestrationStep
+              (Fired {before = swappedMiddle diamond}
+                {afterState = swappedFinal diamond} nameEq keyEq
+                (alignedHeadAction sourceLeft) (alignedHeadTag sourceLeft)
+                movedLeftCheckedExact)
+            movedLeftOrchestrationExact = paperOrchestrationStepTransport
+              (trans (sym (alignedHeadActionProjection sourceLeft))
+                (sym (movedLeftAction diamond)))
+              (trans (sym (alignedHeadTagProjection sourceLeft))
+                (sym (movedLeftTag diamond))) movedLeftOriginal
+            0 ownerSame : actionOwner (alignedHeadAction sourceLeft) =
+              actionOwner (alignedHeadAction sourceRight)
+            ownerSame = r101AlignedActionOwnersSame left right
+              (alignedHeadAction sourceLeft) (alignedHeadAction sourceRight)
+              (alignedHeadActionProjection sourceLeft)
+              (alignedHeadActionProjection sourceRight) sameActor
+            0 insertDistinct : (leftChild, rightChild : name) ->
+              (leftParent, rightParent : Parent name) ->
+              (leftComponent, rightComponent : Component key value world error) ->
+              alignedHeadAction sourceLeft =
+                OInsert leftChild leftParent leftComponent ->
+              alignedHeadAction sourceRight =
+                OInsert rightChild rightParent rightComponent ->
+              Not (leftChild = rightChild)
+            insertDistinct = r101AlignedInsertDistinct left right
+              (alignedHeadAction sourceLeft) (alignedHeadAction sourceRight)
+              (alignedHeadActionProjection sourceLeft)
+              (alignedHeadActionProjection sourceRight) originalInsertDistinct
+            0 tags : ((alignedHeadTag sourceLeft = ORetireTag),
+              (alignedHeadTag sourceRight = ORetireTag))
+            tags = r101ExactTwoOrderOrchestrationTags name key world error value
+              nameEq keyEq first middle originalFinal (swappedMiddle diamond)
+              (swappedFinal diamond) (alignedHeadAction sourceLeft)
+              (alignedHeadAction sourceRight) (alignedHeadTag sourceLeft)
+              (alignedHeadTag sourceRight) (alignedHeadChecked sourceLeft)
+              (alignedHeadChecked sourceRight) movedRightCheckedExact
+              movedLeftCheckedExact sourceLeftOrchestration
+              sourceRightOrchestration movedRightOrchestrationExact
+              movedLeftOrchestrationExact ownerSame insertDistinct
+        in MkR101EqualOwnerOrchestrationRetirePair leftOrchestration
+          rightOrchestration movedRightOriginal movedLeftOriginal
+          (trans (alignedHeadTagProjection sourceLeft) (fst tags))
+          (trans (alignedHeadTagProjection sourceRight) (snd tags))
+
+0 r101ClassifyEqualOwnerOrchestrationPair :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, originalFinal : SystemState name key value world error) ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (0 sourcePairAligned : AlignedTransitions name key world error value nameEq
+    keyEq (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  (0 leftOrchestration : PaperOrchestrationStep left) ->
+  (0 rightOrchestration : PaperOrchestrationStep right) ->
+  (0 sameActor : transitionActor left = transitionActor right) ->
+  (0 originalInsertDistinct : (leftChild, rightChild : name) ->
+    (leftParent, rightParent : Parent name) ->
+    (leftComponent, rightComponent : Component key value world error) ->
+    transitionAction left = OInsert leftChild leftParent leftComponent ->
+    transitionAction right = OInsert rightChild rightParent rightComponent ->
+    Not (leftChild = rightChild)) ->
+  R101EqualOwnerOrchestrationRetirePair name key world error value nameEq keyEq
+    first middle originalFinal left right diamond
+r101ClassifyEqualOwnerOrchestrationPair name key world error value nameEq keyEq
+  first middle originalFinal left right diamond sourcePairAligned
+  leftOrchestration rightOrchestration sameActor originalInsertDistinct =
+    r101ConsumeOrchestrationHeadViews name key world error value nameEq keyEq
+      first middle originalFinal left right diamond leftOrchestration
+      rightOrchestration sameActor originalInsertDistinct
+      (r101ProduceFourAlignedHeadViews name key world error value nameEq keyEq
+        first middle originalFinal left right diamond sourcePairAligned)
