@@ -23962,3 +23962,74 @@ r101ClassifyEqualOwnerActivationPair name key world error value nameEq keyEq
     leftActivation rightActivation sameActor
     (r101ProduceFourAlignedHeadViews name key world error value nameEq keyEq first
       middle originalFinal left right diamond sourcePairAligned)
+
+record R101CheckedRemovePresence
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (actor : name)
+  (before, afterState : SystemState name key value world error) where
+  constructor MkR101CheckedRemovePresence
+  0 r101RemovedSourceFiber : Fiber name key value world error
+  0 r101RemovedSourceFound : (lookupFiber @{nameEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} actor (registry before) =
+      Just r101RemovedSourceFiber)
+  0 r101RemovedOutputAbsent : (lookupFiber @{nameEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} actor
+      (registry afterState) = Nothing)
+
+0 r101CheckedInsertSourceAbsent :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq}
+    (the (Action name key value world error)
+      (OInsert actor parent component)) before = Just (tag, afterState)) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor (registry before) = Nothing)
+r101CheckedInsertSourceAbsent name key world error value nameEq keyEq actor
+  parent component (MkSystemState ambient source) afterState tag checked =
+    checkedInsertRequiresAbsentExplicit nameEq keyEq actor parent component
+      ambient source tag afterState checked
+
+0 r101CheckedRetireSourceFound :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq}
+    (the (Action name key value world error) (ORetire actor)) before =
+      Just (tag, afterState)) ->
+  (fiber : Fiber name key value world error **
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} actor (registry before) = Just fiber))
+r101CheckedRetireSourceFound name key world error value nameEq keyEq actor
+  (MkSystemState ambient source) afterState tag checked =
+    checkedRetireRequiresFoundExplicit nameEq keyEq actor ambient source tag
+      afterState checked
+
+0 r101CheckedRemovePresence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq}
+    (the (Action name key value world error) (ORemove actor)) before =
+      Just (tag, afterState)) ->
+  R101CheckedRemovePresence name key world error value nameEq actor before
+    afterState
+r101CheckedRemovePresence name key world error value nameEq keyEq actor
+  before@(MkSystemState ambient source) afterState tag checked =
+    let 0 raw : (applyAction @{nameEq} @{keyEq}
+          (the (Action name key value world error) (ORemove actor))
+          (MkSystemState ambient source) = Just (tag, afterState))
+        raw = checkedActionProjects nameEq keyEq (ORemove actor)
+          (MkSystemState ambient source) afterState tag checked
+    in case removeSuccessView nameEq keyEq actor ambient source tag afterState
+      raw of
+      MkRemoveSuccessView oldFiber oldFound removable noChild =>
+        MkR101CheckedRemovePresence oldFiber oldFound
+          (localLookupDeleteSelfO5 nameEq actor source)
