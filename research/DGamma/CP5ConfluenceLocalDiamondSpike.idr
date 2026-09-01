@@ -21103,6 +21103,61 @@ orchestrationSingletonMapsRelated name key value world error nameEq keyEq action
         sourceChecked orchestration sourceBefore movedBefore x)) Refl
       (partialEffectMapForRespects nameEq keyEq action tag movedBefore x y inputs)
 
+0 orchestrationSingletonRAR :
+  (name : Type) -> (key : Type) -> (value : key -> Type) ->
+  (world : Type) -> (error : Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, movedBefore, movedAfter :
+    SystemState name key value world error) ->
+  (0 sourceChecked :
+    (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore =
+     Just (tag, sourceAfter))) ->
+  (0 movedChecked :
+    (checkedApplyAction @{nameEq} @{keyEq} action movedBefore =
+     Just (tag, movedAfter))) ->
+  (0 orchestration : PaperOrchestrationStep
+    (Fired {before = sourceBefore} {afterState = sourceAfter}
+      nameEq keyEq action tag sourceChecked)) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions
+      (Fired {before = movedBefore} {afterState = movedAfter}
+        nameEq keyEq action tag movedChecked) NoTransitions)
+orchestrationSingletonRAR name key value world error nameEq keyEq action tag
+  sourceBefore sourceAfter movedBefore movedAfter sourceChecked movedChecked
+  orchestration@(PaperInsertStep {actor = insertedActor} {parent = parent}
+    {component = component} actionSame) = case actionSame of
+      Refl => singletonNonAdvanceRAR nameEq keyEq
+        (OInsert insertedActor parent component) tag sourceBefore sourceAfter
+        movedBefore movedAfter sourceChecked movedChecked
+        (\selected, same => case same of Refl impossible)
+        (orchestrationSingletonMapsRelated name key value world error nameEq keyEq
+          (OInsert insertedActor parent component) tag sourceBefore sourceAfter
+          movedBefore movedAfter sourceChecked movedChecked orchestration)
+orchestrationSingletonRAR name key value world error nameEq keyEq action tag
+  sourceBefore sourceAfter movedBefore movedAfter sourceChecked movedChecked
+  orchestration@(PaperRetireStep {actor = retiredActor} actionSame) =
+    case actionSame of
+      Refl => singletonNonAdvanceRAR nameEq keyEq (ORetire retiredActor) tag
+        sourceBefore sourceAfter movedBefore movedAfter sourceChecked movedChecked
+        (\selected, same => case same of Refl impossible)
+        (orchestrationSingletonMapsRelated name key value world error nameEq keyEq
+          (ORetire retiredActor) tag sourceBefore sourceAfter movedBefore
+          movedAfter sourceChecked movedChecked orchestration)
+orchestrationSingletonRAR name key value world error nameEq keyEq action tag
+  sourceBefore sourceAfter movedBefore movedAfter sourceChecked movedChecked
+  orchestration@(PaperRemoveStep {actor = removedActor} actionSame) =
+    case actionSame of
+      Refl => singletonNonAdvanceRAR nameEq keyEq (ORemove removedActor) tag
+        sourceBefore sourceAfter movedBefore movedAfter sourceChecked movedChecked
+        (\selected, same => case same of Refl impossible)
+        (orchestrationSingletonMapsRelated name key value world error nameEq keyEq
+          (ORemove removedActor) tag sourceBefore sourceAfter movedBefore
+          movedAfter sourceChecked movedChecked orchestration)
+
 0 replayPointwiseSuffixTraceComponentsTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (source : Transitions sourceFirst sourceFinal) ->
