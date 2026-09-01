@@ -23240,3 +23240,199 @@ r99ActivationOutputCannotBegin name key world error value nameEq keyEq actor
                 outTable accumulator outView outputFound =>
                   case justInjective (trans (sym outputFound) beginFound) of
                     Refl impossible
+
+||| Producer-owned exact Active output of a checked paper L-Finish.
+data R100PaperFinishOutputActive :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (afterState : SystemState name key value world error) -> Type where
+  MkR100PaperFinishOutputActive :
+    (0 component : Component key value world error) ->
+    (0 parent : Parent name) -> (0 retiredFlag : Bool) ->
+    (0 table : OwnedTable key value (componentProvisions component)) ->
+    (0 accumulator : LocalState key value world
+        (componentProvisions component) ->
+      LocalState key value world (componentProvisions component)) ->
+    (0 view : View name (dependencies (componentDependencies component))) ->
+    (0 found : lookupFiber @{nameEq} actor (registry afterState) =
+      Just (MkFiber component parent retiredFlag table
+        (Active accumulator view))) ->
+    R100PaperFinishOutputActive name key world error value nameEq actor afterState
+
+0 r100FinishEmptyOutputActive :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world
+      (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (0 found : lookupFiber @{nameEq} actor source =
+    Just (MkFiber component parent retiredFlag table
+      (Reloading [] accumulator view))) ->
+  (0 target : targetFiber @{nameEq} @{keyEq}
+    (MkFiber component parent retiredFlag table
+      (Reloading [] accumulator view)) source = Just view) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState ambient source) = Just (LFinishTag, afterState)) ->
+  R100PaperFinishOutputActive name key world error value nameEq actor afterState
+r100FinishEmptyOutputActive name key world error value nameEq keyEq actor ambient
+  source afterState component parent retiredFlag table accumulator view found
+  target raw =
+    let oldOwner : Fiber name key value world error
+        oldOwner = MkFiber component parent retiredFlag table
+          (Reloading [] accumulator view)
+        nextOwner : Fiber name key value world error
+        nextOwner = MkFiber component parent retiredFlag table
+          (Active accumulator view)
+        expected : SystemState name key value world error
+        expected = MkSystemState ambient
+          (replaceBinding @{nameEq} actor nextOwner source)
+        0 normalized : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+          (MkSystemState ambient source) = Just (LFinishTag, expected)
+        normalized = rewrite found in rewrite target in
+          rewrite r99TargetMatchesSelf nameEq view in Refl
+        0 expectedSame : expected = afterState
+        expectedSame = snd (applyActionDeterministic nameEq keyEq
+          (LAdvance actor) (MkSystemState ambient source) normalized raw)
+        0 expectedFound : lookupFiber @{nameEq} actor (registry expected) =
+          Just nextOwner
+        expectedFound = lookupReplacedFiber actor oldOwner nextOwner source found
+        0 observedFound : lookupFiber @{nameEq} actor
+          (registry afterState) = Just nextOwner
+        observedFound = trans
+          (sym (cong (lookupFiber @{nameEq} actor . registry) expectedSame))
+          expectedFound
+    in MkR100PaperFinishOutputActive component parent retiredFlag table
+      accumulator view observedFound
+
+0 r100FinishOneOutputActive :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (accumulator : LocalState key value world
+      (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (0 found : lookupFiber @{nameEq} actor source =
+    Just (MkFiber component parent retiredFlag table
+      (Reloading [step] accumulator view))) ->
+  (0 target : targetFiber @{nameEq} @{keyEq}
+    (MkFiber component parent retiredFlag table
+      (Reloading [step] accumulator view)) source = Just view) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState ambient source) = Just (LFinishTag, afterState)) ->
+  R100PaperFinishOutputActive name key world error value nameEq actor afterState
+r100FinishOneOutputActive name key world error value nameEq keyEq actor ambient
+  source afterState component parent retiredFlag table step accumulator view found
+  target raw with (resolveCommittedValues @{nameEq} @{keyEq}
+    (dependencies (componentDependencies component)) view source) proof resolved
+  r100FinishOneOutputActive name key world error value nameEq keyEq actor ambient
+    source afterState component parent retiredFlag table step accumulator view found
+    target raw | Nothing =
+      void (r98NothingNotJust
+        (RuleTag, SystemState name key value world error)
+        (LFinishTag, afterState)
+        (trans (sym (rewrite found in rewrite resolved in Refl)) raw))
+  r100FinishOneOutputActive name key world error value nameEq keyEq actor ambient
+    source afterState component parent retiredFlag table step accumulator view found
+    target raw | Just capability with (runStepEffect step capability
+      (MkLocalState ambient
+        (restrictOwnedPreservingOrder (componentProvisions component)
+          (ownedValues table)))) proof ran
+    r100FinishOneOutputActive name key world error value nameEq keyEq actor ambient
+      source afterState component parent retiredFlag table step accumulator view
+      found target raw | Just capability | Left raised =
+        void (r99RaiseTagNotFinish
+          (fst (applyActionDeterministic nameEq keyEq (LAdvance actor)
+            (MkSystemState ambient source)
+            (rewrite found in rewrite resolved in rewrite ran in Refl) raw)))
+    r100FinishOneOutputActive name key world error value nameEq keyEq actor ambient
+      source afterState component parent retiredFlag table step accumulator view
+      found target raw | Just capability | Right (localAfter, undo) =
+        let nextOwner : Fiber name key value world error
+            nextOwner = MkFiber component parent retiredFlag
+              (localTable localAfter)
+              (Active
+                (pushLocalUndo (componentProvisions component) accumulator undo)
+                view)
+            expected : SystemState name key value world error
+            expected = MkSystemState (localWorld localAfter)
+              (replaceBinding @{nameEq} actor nextOwner source)
+            0 expectedSame : expected = afterState
+            expectedSame = snd (applyActionDeterministic nameEq keyEq
+              (LAdvance actor) (MkSystemState ambient source)
+              (rewrite found in rewrite resolved in rewrite ran in
+                rewrite target in
+                  rewrite r99TargetMatchesSelf nameEq view in Refl) raw)
+            0 expectedFound : lookupFiber @{nameEq} actor (registry expected) =
+              Just nextOwner
+            expectedFound = lookupReplacedFiber actor
+              (MkFiber component parent retiredFlag table
+                (Reloading [step] accumulator view)) nextOwner source found
+            0 observedFound : lookupFiber @{nameEq} actor
+              (registry afterState) = Just nextOwner
+            observedFound = trans
+              (sym (cong (lookupFiber @{nameEq} actor . registry) expectedSame))
+              expectedFound
+        in MkR100PaperFinishOutputActive component parent retiredFlag
+          (localTable localAfter)
+          (pushLocalUndo (componentProvisions component) accumulator undo) view
+          observedFound
+
+0 r100ProducePaperFinishOutputActive :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (before, afterState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (0 finish : PaperActivationStep
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked)) ->
+  (0 tagFinish : tag = LFinishTag) ->
+  R100PaperFinishOutputActive name key world error value nameEq
+    (actionOwner action) afterState
+r100ProducePaperFinishOutputActive name key world error value nameEq keyEq
+  (MkSystemState ambient source) afterState action tag checked finish tagFinish =
+    case finish of
+      PaperBeginStep actionSame tagSame => case trans (sym tagSame) tagFinish of
+        Refl impossible
+      PaperIterStep actionSame tagSame => case trans (sym tagSame) tagFinish of
+        Refl impossible
+      PaperFinishStep {actor} actionSame tagSame => case actionSame of
+        Refl => case tagSame of
+          Refl =>
+            let 0 raw = checkedActionProjects nameEq keyEq (LAdvance actor)
+                  (MkSystemState ambient source) afterState LFinishTag checked
+            in case paperAdvanceSource nameEq keyEq actor LFinishTag raw
+              (Right Refl) of
+              AdvanceSourceFinishEmpty {ambient = observedAmbient}
+                {fibers = observedSource} {component} {parent} {retiredFlag}
+                {table} {accumulator} {view} sourceShape found target =>
+                  r100FinishEmptyOutputActive name key world error value nameEq
+                    keyEq actor observedAmbient observedSource afterState component
+                    parent retiredFlag table accumulator view found target
+                    (trans
+                      (cong (applyAction @{nameEq} @{keyEq} (LAdvance actor))
+                        sourceShape) raw)
+              AdvanceSourceFinishOne {ambient = observedAmbient}
+                {fibers = observedSource} {component} {parent} {retiredFlag}
+                {table} {step} {accumulator} {view} sourceShape found target =>
+                  r100FinishOneOutputActive name key world error value nameEq
+                    keyEq actor observedAmbient observedSource afterState component
+                    parent retiredFlag table step accumulator view found target
+                    (trans
+                      (cong (applyAction @{nameEq} @{keyEq} (LAdvance actor))
+                        sourceShape) raw)
