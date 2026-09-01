@@ -24389,3 +24389,109 @@ r101ClassifyEqualOwnerOrchestrationPair name key world error value nameEq keyEq
       rightOrchestration sameActor originalInsertDistinct
       (r101ProduceFourAlignedHeadViews name key world error value nameEq keyEq
         first middle originalFinal left right diamond sourcePairAligned)
+
+record R101ActivationSourcePresence
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (actor : name)
+  (before : SystemState name key value world error) where
+  constructor MkR101ActivationSourcePresence
+  0 r101ActivationSourceFiber : Fiber name key value world error
+  0 r101ActivationSourceFound : (lookupFiber @{nameEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} actor (registry before) =
+      Just r101ActivationSourceFiber)
+
+0 r101ActivationOutputFound :
+  R99PaperActivationOutputControl name key world error value nameEq actor state ->
+  (fiber : Fiber name key value world error **
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} actor (registry state) = Just fiber))
+r101ActivationOutputFound (R99ActivationOutputReloading component parent
+  retiredFlag table remaining accumulator view found) =
+    (MkFiber component parent retiredFlag table
+      (Reloading remaining accumulator view) ** found)
+r101ActivationOutputFound (R99ActivationOutputActive component parent
+  retiredFlag table accumulator view found) =
+    (MkFiber component parent retiredFlag table (Active accumulator view) ** found)
+
+0 r101ActivationSourceFromAdvanceShape :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (before : SystemState name key value world error) ->
+  (observedAmbient : world) ->
+  (observedSource : Registry name key value world error) ->
+  (0 sourceShape : MkSystemState observedAmbient observedSource = before) ->
+  (fiber : Fiber name key value world error) ->
+  (0 found : (lookupFiber @{nameEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} actor observedSource =
+      Just fiber)) ->
+  R101ActivationSourcePresence name key world error value nameEq actor before
+r101ActivationSourceFromAdvanceShape name key world error value nameEq actor
+  before observedAmbient observedSource sourceShape fiber found =
+    MkR101ActivationSourcePresence fiber
+      (trans (sym (cong (lookupFiber @{nameEq} actor . registry) sourceShape))
+        found)
+
+0 r101PaperActivationSourcePresence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (before, afterState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (0 checked : (checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState))) ->
+  (0 activation : PaperActivationStep
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked)) ->
+  R101ActivationSourcePresence name key world error value nameEq
+    (actionOwner action) before
+r101PaperActivationSourcePresence name key world error value nameEq keyEq
+  (MkSystemState ambient source) afterState action tag checked activation =
+    case activation of
+      PaperBeginStep {actor} actionSame tagSame => case actionSame of
+        Refl => case tagSame of
+          Refl => case beginSourceIngredientsPointwise nameEq keyEq actor ambient
+            source afterState (checkedActionProjects nameEq keyEq (LBegin actor)
+              (MkSystemState ambient source) afterState LBeginTag checked) of
+            (oldFiber ** (oldFound, planView)) =>
+              MkR101ActivationSourcePresence oldFiber oldFound
+      PaperIterStep {actor} actionSame tagSame => case actionSame of
+        Refl =>
+          let 0 raw : (applyAction @{nameEq} @{keyEq} (LAdvance actor)
+                (MkSystemState ambient source) =
+                Just (tag, afterState))
+              raw = checkedActionProjects nameEq keyEq (LAdvance actor)
+                (MkSystemState ambient source) afterState tag checked
+          in case paperAdvanceSource nameEq keyEq actor tag raw (Left tagSame) of
+            AdvanceSourceIter {ambient = observedAmbient}
+              {fibers = observedSource} {component} {parent} {retiredFlag}
+              {table} {step} {next} {more} {accumulator} {view} sourceShape
+              found target => r101ActivationSourceFromAdvanceShape name key
+                world error value nameEq actor (MkSystemState ambient source)
+                  observedAmbient
+                observedSource sourceShape
+                (MkFiber component parent retiredFlag table
+                  (Reloading (step :: next :: more) accumulator view)) found
+      PaperFinishStep {actor} actionSame tagSame => case actionSame of
+        Refl =>
+          let 0 raw : (applyAction @{nameEq} @{keyEq} (LAdvance actor)
+                (MkSystemState ambient source) =
+                Just (tag, afterState))
+              raw = checkedActionProjects nameEq keyEq (LAdvance actor)
+                (MkSystemState ambient source) afterState tag checked
+          in case paperAdvanceSource nameEq keyEq actor tag raw
+            (Right tagSame) of
+            AdvanceSourceFinishEmpty {ambient = observedAmbient}
+              {fibers = observedSource} {component} {parent} {retiredFlag}
+              {table} {accumulator} {view} sourceShape found target =>
+                r101ActivationSourceFromAdvanceShape name key world error value
+                  nameEq actor (MkSystemState ambient source) observedAmbient
+                  observedSource sourceShape
+                  (MkFiber component parent retiredFlag table
+                    (Reloading [] accumulator view)) found
+            AdvanceSourceFinishOne {ambient = observedAmbient}
+              {fibers = observedSource} {component} {parent} {retiredFlag}
+              {table} {step} {accumulator} {view} sourceShape found target =>
+                r101ActivationSourceFromAdvanceShape name key world error value
+                  nameEq actor (MkSystemState ambient source) observedAmbient
+                  observedSource sourceShape
+                  (MkFiber component parent retiredFlag table
+                    (Reloading [step] accumulator view)) found
