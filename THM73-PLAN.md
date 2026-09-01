@@ -1931,6 +1931,22 @@ assembly remain unopened. Holes remain **20**, split **6/4/8/1/1**; no frozen
 surface change is indicated and the implementation band remains suspended until
 B4 itself checks.
 
+### Revision 101: Finish closes; B4 exact core closes; wrapper elaboration stops
+
+`research-tests/O6-R101-FINISH-CLOSED-B4-EXACT-CORE-CLOSED-WRAPPER-ELABORATION-STOP-AUDIT.md`
+records shift #109. A specialized producer-owned checked-Finish/Active package
+checks directly from the empty and one-step evaluator recipes, and Finish
+followed by any paper activation is constructively impossible. The exact 3x3
+two-order activation core checks all nine cells and returns only Iter/Iter.
+The final producer wrapper over four aligned transition views then exhausts
+three attempts because inferred local dependent views do not elaborate across
+annotated action equations. The failed wrapper is removed. Next work must first
+package all four fully typed quantity-0 aligned-head views and cross equations,
+then one-eliminate that package into the checked 3x3 core. B5 and later work were
+not opened under the semantic-stop rule. Holes remain **20**, split
+**6/4/8/1/1**; no frozen surface change is indicated and the implementation band
+remains suspended until the final B4 producer checks.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -2242,7 +2258,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 and the full append/field-9 composition chain are retained. Revision 100 closes B3b and generic retirement/activation exclusion. B4 operational output classification is complete; its tag-indexed two-order assembly, B5–B6, and pair RAR remain open. Fields 10–15 foundations are checked.** | **XL; band suspended pending the B4 classifier producer.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 and the full append/field-9 composition chain are retained. Revision 101 closes checked Finish/Active output, Finish-to-activation exclusion, and the exact 3x3 B4 operational core. Its aligned-view producer wrapper, B5–B6, and pair RAR remain open. Fields 10–15 foundations are checked.** | **XL; band suspended pending the B4 classifier wrapper.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
