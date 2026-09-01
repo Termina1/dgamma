@@ -1916,6 +1916,21 @@ a local tag equality. B4–B6, pair RAR, fields, and assembly remain unopened.
 Holes remain **20**, split **6/4/8/1/1**; no frozen surface change is indicated
 and the implementation band remains suspended.
 
+### Revision 100: B3b closes; B4 operational output foundations retained
+
+`research-tests/O6-R100-B3B-CLOSED-B4-ACTIVATION-OUTPUT-FOUNDATIONS-CLEAN-STOP-AUDIT.md`
+records shift #108. The top-level unavailable/Raise/Divert comparison helpers
+check, and the complete nonempty retired-Advance producer plus one-elimination
+consumer lands, closing B3b. The generic retire-then-paper-activation exclusion
+also closes across B2, B3a, and B3b. B4 now retains a producer-owned activation
+output-control family and complete operational producers for Begin, empty and
+one-step Finish, and Iter, plus a generic producer and the exclusion of Begin
+after any activation output. The clean stop precedes the remaining tag-indexed
+Finish/Active boundary and 3x3 two-order assembly. B5–B6, pair RAR, fields, and
+assembly remain unopened. Holes remain **20**, split **6/4/8/1/1**; no frozen
+surface change is indicated and the implementation band remains suspended until
+B4 itself checks.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -2227,7 +2242,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 and the full append/field-9 composition chain are retained. Revision 99 closes retired Begin and empty retired Advance; nonempty Advance producer design is closed but its dependent consumer remains open. B4–B6 and pair RAR remain open. Fields 10–15 foundations are checked.** | **XL; band suspended pending the nonempty consumer and classifier producer.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 and the full append/field-9 composition chain are retained. Revision 100 closes B3b and generic retirement/activation exclusion. B4 operational output classification is complete; its tag-indexed two-order assembly, B5–B6, and pair RAR remain open. Fields 10–15 foundations are checked.** | **XL; band suspended pending the B4 classifier producer.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
