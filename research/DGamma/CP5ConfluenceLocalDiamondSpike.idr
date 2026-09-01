@@ -22101,3 +22101,75 @@ r97AppendRelationalReplayCorrespondence {name} {key} {world} {error} {value}
     (mappedStage actor target) state
 
 -- Exact field-9 whole prefix/pair/suffix composition consumer.
+0 r97Field9WholeAppendCorrespondence :
+  (original : Transitions initial originalFinal) ->
+  (tracePrefix : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  (decomposition : appendTransitions tracePrefix
+    (MoreTransitions left (MoreTransitions right suffix)) = original) ->
+  (prefixRAR : RelationalReplayCorrespondence name key world error value
+    tracePrefix tracePrefix) ->
+  (pairRAR : RelationalReplayCorrespondence name key world error value
+    (MoreTransitions left (MoreTransitions right NoTransitions))
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) NoTransitions))) ->
+  (suffixRAR : RelationalReplayCorrespondence name key world error value suffix
+    replayedSuffix) ->
+  RelationalReplayCorrespondence name key world error value original
+    (appendTransitions tracePrefix
+      (MoreTransitions (movedRight diamond)
+        (MoreTransitions (movedLeft diamond) replayedSuffix)))
+r97Field9WholeAppendCorrespondence original tracePrefix left right suffix diamond
+  replayedSuffix decomposition prefixRAR pairRAR suffixRAR =
+    replace
+      {p = \sourceTrace => RelationalReplayCorrespondence name key world error
+        value sourceTrace
+        (appendTransitions tracePrefix
+          (MoreTransitions (movedRight diamond)
+            (MoreTransitions (movedLeft diamond) replayedSuffix)))}
+      decomposition
+      (r97AppendRelationalReplayCorrespondence tracePrefix
+        (MoreTransitions left (MoreTransitions right suffix)) tracePrefix
+        (MoreTransitions (movedRight diamond)
+          (MoreTransitions (movedLeft diamond) replayedSuffix))
+        prefixRAR
+        (r97AppendRelationalReplayCorrespondence
+          (MoreTransitions left (MoreTransitions right NoTransitions)) suffix
+          (MoreTransitions (movedRight diamond)
+            (MoreTransitions (movedLeft diamond) NoTransitions)) replayedSuffix
+          pairRAR suffixRAR))
+
+-- Make-or-break field-9 consumer using the actual frozen prefix and suffix
+-- capital, with only the pair RAR supplied by the equal-owner/foreign dispatcher.
+0 r97Field9ConcreteCapitalConsumer :
+  (original : Transitions initial originalFinal) ->
+  (tracePrefix : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  (decomposition : appendTransitions tracePrefix
+    (MoreTransitions left (MoreTransitions right suffix)) = original) ->
+  (pairRAR : RelationalReplayCorrespondence name key world error value
+    (MoreTransitions left (MoreTransitions right NoTransitions))
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) NoTransitions))) ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq suffix
+    replayedSuffix ->
+  RelationalReplayCorrespondence name key world error value original
+    (appendTransitions tracePrefix
+      (MoreTransitions (movedRight diamond)
+        (MoreTransitions (movedLeft diamond) replayedSuffix)))
+r97Field9ConcreteCapitalConsumer original tracePrefix left right suffix diamond
+  replayedSuffix decomposition pairRAR seal =
+    r97Field9WholeAppendCorrespondence original tracePrefix left right suffix
+      diamond replayedSuffix decomposition
+      (identityRelationalReplayCorrespondence tracePrefix) pairRAR
+      (sealedSuffixRelationalReplayCorrespondence seal)
