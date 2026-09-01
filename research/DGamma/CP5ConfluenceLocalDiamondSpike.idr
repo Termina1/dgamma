@@ -22395,3 +22395,87 @@ r98RetiredAdvanceEmptyExcluded name key world error value nameEq keyEq actor
           (justInjective (trans (sym normalized) projected))
     in (\same => r98DivertTagNotIter (trans divertIsObserved same),
         \same => r98DivertTagNotFinish (trans divertIsObserved same))
+
+0 r99RaiseTagNotIter :
+  Not ((the RuleTag LRaiseTag) = (the RuleTag LIterTag))
+r99RaiseTagNotIter Refl impossible
+
+0 r99RaiseTagNotFinish :
+  Not ((the RuleTag LRaiseTag) = (the RuleTag LFinishTag))
+r99RaiseTagNotFinish Refl impossible
+
+||| Compare a producer-owned unavailable raw L-Advance outcome with a checked
+||| success. All tag indices are explicit in this top-level boundary.
+0 r99UnavailableVersusChecked :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (observedTag : RuleTag) ->
+  (0 normalized : applyAction @{nameEq} @{keyEq}
+    (the (Action name key value world error) (LAdvance actor)) before = Nothing) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+    Just (observedTag, afterState)) ->
+  Void
+r99UnavailableVersusChecked name key world error value nameEq keyEq actor before
+  afterState observedTag normalized checked =
+    r98NothingNotJust
+      (RuleTag, SystemState name key value world error) (observedTag, afterState)
+      (trans (sym normalized)
+        (checkedActionProjects nameEq keyEq (LAdvance actor) before afterState
+          observedTag checked))
+
+||| Compare a producer-owned L-Raise raw result with a checked result and
+||| exclude both paper activation tags without any local tag equality.
+0 r99RaiseVersusChecked :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, raisedState, afterState : SystemState name key value world error) ->
+  (observedTag : RuleTag) ->
+  (0 normalized : applyAction @{nameEq} @{keyEq}
+    (the (Action name key value world error) (LAdvance actor)) before =
+    Just (LRaiseTag, raisedState)) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+    Just (observedTag, afterState)) ->
+  (Not (observedTag = LIterTag), Not (observedTag = LFinishTag))
+r99RaiseVersusChecked name key world error value nameEq keyEq actor before
+  raisedState afterState observedTag normalized checked =
+    (\same => r99RaiseTagNotIter
+      (trans
+        (cong fst (justInjective
+          (trans (sym normalized)
+            (checkedActionProjects nameEq keyEq (LAdvance actor) before
+              afterState observedTag checked)))) same),
+     \same => r99RaiseTagNotFinish
+      (trans
+        (cong fst (justInjective
+          (trans (sym normalized)
+            (checkedActionProjects nameEq keyEq (LAdvance actor) before
+              afterState observedTag checked)))) same))
+
+||| Compare a producer-owned L-Divert raw result with a checked result and
+||| exclude both paper activation tags without any local tag equality.
+0 r99DivertVersusChecked :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, divertedState, afterState : SystemState name key value world error) ->
+  (observedTag : RuleTag) ->
+  (0 normalized : applyAction @{nameEq} @{keyEq}
+    (the (Action name key value world error) (LAdvance actor)) before =
+    Just (LDivertTag, divertedState)) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+    Just (observedTag, afterState)) ->
+  (Not (observedTag = LIterTag), Not (observedTag = LFinishTag))
+r99DivertVersusChecked name key world error value nameEq keyEq actor before
+  divertedState afterState observedTag normalized checked =
+    (\same => r98DivertTagNotIter
+      (trans
+        (cong fst (justInjective
+          (trans (sym normalized)
+            (checkedActionProjects nameEq keyEq (LAdvance actor) before
+              afterState observedTag checked)))) same),
+     \same => r98DivertTagNotFinish
+      (trans
+        (cong fst (justInjective
+          (trans (sym normalized)
+            (checkedActionProjects nameEq keyEq (LAdvance actor) before
+              afterState observedTag checked)))) same))
