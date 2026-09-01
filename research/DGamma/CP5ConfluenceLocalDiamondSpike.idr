@@ -23212,3 +23212,31 @@ r99PaperActivationOutputControl name key world error value nameEq keyEq
                     (trans
                       (cong (applyAction @{nameEq} @{keyEq} (LAdvance actor))
                         sourceShape) raw)
+
+0 r99ActivationOutputCannotBegin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (0 output : R99PaperActivationOutputControl name key world error value nameEq
+    actor before) ->
+  (0 beginChecked : checkedApplyAction @{nameEq} @{keyEq} (LBegin actor) before =
+    Just (LBeginTag, afterState)) ->
+  Void
+r99ActivationOutputCannotBegin name key world error value nameEq keyEq actor
+  (MkSystemState ambient source) afterState output beginChecked =
+    let 0 raw = checkedActionProjects nameEq keyEq (LBegin actor)
+          (MkSystemState ambient source) afterState LBeginTag beginChecked
+    in case beginSourceIngredientsPointwise nameEq keyEq actor ambient source
+      afterState raw of
+      (oldFiber ** (beginFound,
+        MkForeignBeginPlanView {component} {parent} {table} view oldShape
+          target tagShape afterShape)) => case oldShape of
+            Refl => case output of
+              R99ActivationOutputReloading outComponent outParent outRetired
+                outTable remaining accumulator outView outputFound =>
+                  case justInjective (trans (sym outputFound) beginFound) of
+                    Refl impossible
+              R99ActivationOutputActive outComponent outParent outRetired
+                outTable accumulator outView outputFound =>
+                  case justInjective (trans (sym outputFound) beginFound) of
+                    Refl impossible
