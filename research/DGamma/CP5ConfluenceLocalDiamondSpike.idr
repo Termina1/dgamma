@@ -21072,6 +21072,37 @@ activationSingletonRAR name key value world error nameEq keyEq action tag
           (LAdvance activationActor) LFinishTag sourceBefore sourceAfter
           movedBefore movedAfter sourceChecked movedChecked activation lookupSame)
 
+0 orchestrationSingletonMapsRelated :
+  (name : Type) -> (key : Type) -> (value : key -> Type) ->
+  (world : Type) -> (error : Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, movedBefore, movedAfter :
+    SystemState name key value world error) ->
+  (0 sourceChecked :
+    (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore =
+     Just (tag, sourceAfter))) ->
+  (0 movedChecked :
+    (checkedApplyAction @{nameEq} @{keyEq} action movedBefore =
+     Just (tag, movedAfter))) ->
+  (0 orchestration : PaperOrchestrationStep
+    (Fired {before = sourceBefore} {afterState = sourceAfter}
+      nameEq keyEq action tag sourceChecked)) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (partialEffectMap
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq action tag sourceChecked))
+    (partialEffectMap
+      (Fired {before = movedBefore} {afterState = movedAfter}
+        nameEq keyEq action tag movedChecked))
+orchestrationSingletonMapsRelated name key value world error nameEq keyEq action
+  tag sourceBefore sourceAfter movedBefore movedAfter sourceChecked movedChecked
+  orchestration {x} {y} inputs =
+    replayPartialRewrite
+      (sym (orchestrationTransitionMapOriginCong nameEq keyEq action tag
+        sourceChecked orchestration sourceBefore movedBefore x)) Refl
+      (partialEffectMapForRespects nameEq keyEq action tag movedBefore x y inputs)
+
 0 replayPointwiseSuffixTraceComponentsTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (source : Transitions sourceFirst sourceFinal) ->
