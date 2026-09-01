@@ -1791,6 +1791,24 @@ probe is retained. Expected manifest delta is no frozen-surface change. The
 implementation band is proposed to re-open at **2–10 shifts**, pending this
 design review. Holes remain **20**, split **6/4/8/1/1**.
 
+### Revision 93: runtime implementation and singleton RARs close
+
+`research-tests/O6-R93-RUNTIME-PACKAGE-CLOSED-PAIR-RAR-DISTINCTNESS-STOP-AUDIT.md`
+records shift #101. The ratified quantity-0 runtime package, exact consumer, and
+one-clause stage family close at `8eecfc7`/`2d71e0f`/`5a21dd3`. Exact relational
+map helpers and complete singleton RAR producers then close for all activation
+and orchestration classes through `52cbbde`. The pair RAR is not opened: an
+activation singleton comparison needs exact lookup framing across the other
+step, while `transitionForeignLookup` needs distinct owners. Genuine local-
+diamond producers used distinctness but the frozen `LocalRelationalDiamond`,
+A/A registration safety, and conditional `TraceIndependent` do not directly
+retain it. The next scoped lemma campaign must reconstruct owner separation from
+the checked aligned source and moved pairs, classifying all revision-21 cases;
+no frozen field may be added. Cross-cons generator/stage lifting is otherwise
+mechanical from existing locators. Fields 1–8 remain closed; field 9 is open.
+Holes remain **20**, split **6/4/8/1/1**. The accepted **2–10 shift** band is
+held provisionally pending the separation lemma gate.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -2102,7 +2120,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 92 selects a checked producer-indexed runtime package with an exact one-elimination consumer; implementation awaits design approval. Fields 10–15 foundations are checked.** | **XL; proposed 2–10 implementation shifts pending design approval.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 93 implements the runtime package/family and both singleton RAR classes; pair RAR awaits a checked owner-separation lemma from source/moved alignment. Fields 10–15 foundations are checked.** | **XL; accepted 2–10 implementation shifts held provisionally.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2319,4 +2337,6 @@ constructor injectivity and rejects the bare whole-transition projection.
 Revision 91 exhausts the correlated raw-stage package fallback and invokes the
 design-only singleton-stage representation gate. Revision 92 selects a checked
 producer-indexed runtime package and exact one-elimination consumer with no
-frozen-surface delta; final assembly remains open.
+frozen-surface delta. Revision 93 implements that boundary and all activation/
+orchestration singleton RARs, then isolates pair assembly at checked owner
+separation; final assembly remains open.
