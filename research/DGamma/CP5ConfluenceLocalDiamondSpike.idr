@@ -20995,6 +20995,15 @@ activationSingletonMapsRelated name key value world error nameEq keyEq action ta
         sourceChecked activation lookupSame x)) Refl
       (partialEffectMapForRespects nameEq keyEq action tag movedBefore x y inputs)
 
+0 lBeginNotAdvance :
+  (name : Type) -> (key : Type) -> (value : key -> Type) ->
+  (world : Type) -> (error : Type) ->
+  (actor, selected : name) ->
+  Not
+    (the (Action name key value world error) (LBegin actor) =
+     the (Action name key value world error) (LAdvance selected))
+lBeginNotAdvance name key value world error actor selected Refl impossible
+
 0 replayPointwiseSuffixTraceComponentsTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (source : Transitions sourceFirst sourceFinal) ->
