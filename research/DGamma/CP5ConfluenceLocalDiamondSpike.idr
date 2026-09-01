@@ -20957,6 +20957,44 @@ singletonAdvanceStageFamilyFromOwnerLookup name key value world error nameEq key
         (singletonAdvanceRuntimePackage name key value world error nameEq keyEq
           actor tag movedBefore movedAfter movedChecked selected targetStage))
 
+0 activationSingletonMapsRelated :
+  (name : Type) -> (key : Type) -> (value : key -> Type) ->
+  (world : Type) -> (error : Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, movedBefore, movedAfter :
+    SystemState name key value world error) ->
+  (0 sourceChecked :
+    (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore =
+     Just (tag, sourceAfter))) ->
+  (0 movedChecked :
+    (checkedApplyAction @{nameEq} @{keyEq} action movedBefore =
+     Just (tag, movedAfter))) ->
+  (0 activation : PaperActivationStep
+    (Fired {before = sourceBefore} {afterState = sourceAfter}
+      nameEq keyEq action tag sourceChecked)) ->
+  (0 lookupSame :
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} (actionOwner action)
+      (registry sourceBefore) =
+     lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} (actionOwner action)
+      (registry movedBefore))) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (partialEffectMap
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq action tag sourceChecked))
+    (partialEffectMap
+      (Fired {before = movedBefore} {afterState = movedAfter}
+        nameEq keyEq action tag movedChecked))
+activationSingletonMapsRelated name key value world error nameEq keyEq action tag
+  sourceBefore sourceAfter movedBefore movedAfter sourceChecked movedChecked
+  activation lookupSame {x} {y} inputs =
+    replayPartialRewrite
+      (sym (activationTransitionMapOriginCong nameEq keyEq action tag
+        sourceChecked activation lookupSame x)) Refl
+      (partialEffectMapForRespects nameEq keyEq action tag movedBefore x y inputs)
+
 0 replayPointwiseSuffixTraceComponentsTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (source : Transitions sourceFirst sourceFinal) ->
