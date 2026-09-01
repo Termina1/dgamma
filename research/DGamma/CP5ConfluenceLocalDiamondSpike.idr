@@ -24033,3 +24033,172 @@ r101CheckedRemovePresence name key world error value nameEq keyEq actor
       MkRemoveSuccessView oldFiber oldFound removable noChild =>
         MkR101CheckedRemovePresence oldFiber oldFound
           (localLookupDeleteSelfO5 nameEq actor source)
+
+0 r101AbsentVersusFound :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (leftActor, rightActor : name) ->
+  (state : SystemState name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  (0 sameActor : leftActor = rightActor) ->
+  (0 absent : (lookupFiber @{nameEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} leftActor
+      (registry state) = Nothing)) ->
+  (0 found : (lookupFiber @{nameEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} rightActor
+      (registry state) = Just fiber)) ->
+  Void
+r101AbsentVersusFound name key world error value nameEq actor actor state fiber
+  Refl absent found = r98NothingNotJust (Fiber name key value world error) fiber
+    (trans (sym absent) found)
+
+0 r101CheckedRetireTag :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 checked : (checkedApplyAction @{nameEq} @{keyEq}
+    (the (Action name key value world error) (ORetire actor)) before =
+      Just (tag, afterState))) ->
+  tag = ORetireTag
+r101CheckedRetireTag name key world error value nameEq keyEq actor
+  (MkSystemState ambient source) afterState tag checked =
+    localRetireViewTag tag (retireSuccessView nameEq keyEq actor ambient source
+      tag afterState (checkedActionProjects nameEq keyEq (ORetire actor)
+        (MkSystemState ambient source) afterState tag checked))
+
+0 r101ExactTwoOrderOrchestrationTags :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, originalFinal, swappedMiddle, swappedFinal :
+    SystemState name key value world error) ->
+  (leftAction, rightAction : Action name key value world error) ->
+  (leftTag, rightTag : RuleTag) ->
+  (0 leftChecked : (checkedApplyAction @{nameEq} @{keyEq} leftAction first =
+    Just (leftTag, middle))) ->
+  (0 rightChecked : (checkedApplyAction @{nameEq} @{keyEq} rightAction middle =
+    Just (rightTag, originalFinal))) ->
+  (0 movedRightChecked : (checkedApplyAction @{nameEq} @{keyEq} rightAction
+    first = Just (rightTag, swappedMiddle))) ->
+  (0 movedLeftChecked : (checkedApplyAction @{nameEq} @{keyEq} leftAction
+    swappedMiddle = Just (leftTag, swappedFinal))) ->
+  (0 leftOrchestration : PaperOrchestrationStep
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked)) ->
+  (0 rightOrchestration : PaperOrchestrationStep
+    (Fired {before = middle} {afterState = originalFinal}
+      nameEq keyEq rightAction rightTag rightChecked)) ->
+  (0 movedRightOrchestration : PaperOrchestrationStep
+    (Fired {before = first} {afterState = swappedMiddle}
+      nameEq keyEq rightAction rightTag movedRightChecked)) ->
+  (0 movedLeftOrchestration : PaperOrchestrationStep
+    (Fired {before = swappedMiddle} {afterState = swappedFinal}
+      nameEq keyEq leftAction leftTag movedLeftChecked)) ->
+  (0 sameOwner : actionOwner leftAction = actionOwner rightAction) ->
+  (0 insertDistinct : (leftChild, rightChild : name) ->
+    (leftParent, rightParent : Parent name) ->
+    (leftComponent, rightComponent : Component key value world error) ->
+    leftAction = OInsert leftChild leftParent leftComponent ->
+    rightAction = OInsert rightChild rightParent rightComponent ->
+    Not (leftChild = rightChild)) ->
+  (leftTag = ORetireTag, rightTag = ORetireTag)
+r101ExactTwoOrderOrchestrationTags name key world error value nameEq keyEq first
+  middle originalFinal swappedMiddle swappedFinal leftAction rightAction leftTag
+  rightTag leftChecked rightChecked movedRightChecked movedLeftChecked
+  leftOrchestration rightOrchestration movedRightOrchestration
+  movedLeftOrchestration sameOwner insertDistinct = case leftOrchestration of
+    PaperInsertStep {actor = leftActor} {parent = leftParent}
+      {component = leftComponent} leftActionSame => case rightOrchestration of
+      PaperInsertStep {actor = rightActor} {parent = rightParent}
+        {component = rightComponent} rightActionSame => case leftActionSame of
+        Refl => case rightActionSame of
+          Refl => void (insertDistinct leftActor rightActor leftParent rightParent
+            leftComponent rightComponent Refl Refl sameOwner)
+      PaperRetireStep {actor = rightActor} rightActionSame =>
+        case leftActionSame of
+          Refl => case rightActionSame of
+            Refl => case r101CheckedRetireSourceFound name key world error value
+              nameEq keyEq rightActor first swappedMiddle rightTag
+              movedRightChecked of
+              (fiber ** found) => void (r101AbsentVersusFound name key world
+                error value nameEq leftActor rightActor first fiber sameOwner
+                (r101CheckedInsertSourceAbsent name key world error value nameEq
+                  keyEq leftActor leftParent leftComponent first middle leftTag
+                  leftChecked) found)
+      PaperRemoveStep {actor = rightActor} rightActionSame =>
+        case leftActionSame of
+          Refl => case rightActionSame of
+            Refl => case r101CheckedRemovePresence name key world error value
+              nameEq keyEq rightActor first swappedMiddle rightTag
+              movedRightChecked of
+              MkR101CheckedRemovePresence fiber found absent =>
+                void (r101AbsentVersusFound name key world error value nameEq
+                  leftActor rightActor first fiber sameOwner
+                  (r101CheckedInsertSourceAbsent name key world error value nameEq
+                    keyEq leftActor leftParent leftComponent first middle leftTag
+                    leftChecked) found)
+    PaperRetireStep {actor = leftActor} leftActionSame => case rightOrchestration of
+      PaperInsertStep {actor = rightActor} {parent = rightParent}
+        {component = rightComponent} rightActionSame => case leftActionSame of
+        Refl => case rightActionSame of
+          Refl => case r101CheckedRetireSourceFound name key world error value
+            nameEq keyEq leftActor first middle leftTag leftChecked of
+            (fiber ** found) => void (r101AbsentVersusFound name key world error
+              value nameEq rightActor leftActor first fiber (sym sameOwner)
+              (r101CheckedInsertSourceAbsent name key world error value nameEq
+                keyEq rightActor rightParent rightComponent first swappedMiddle
+                rightTag movedRightChecked) found)
+      PaperRetireStep {actor = rightActor} rightActionSame => case leftActionSame of
+        Refl => case rightActionSame of
+          Refl => (r101CheckedRetireTag name key world error value nameEq keyEq
+            leftActor first middle leftTag leftChecked,
+            r101CheckedRetireTag name key world error value nameEq keyEq
+              rightActor middle originalFinal rightTag rightChecked)
+      PaperRemoveStep {actor = rightActor} rightActionSame =>
+        case leftActionSame of
+          Refl => case rightActionSame of
+            Refl => case r101CheckedRemovePresence name key world error value
+              nameEq keyEq rightActor first swappedMiddle rightTag
+              movedRightChecked of
+              MkR101CheckedRemovePresence fiber found absent =>
+                case r101CheckedRetireSourceFound name key world error value
+                  nameEq keyEq leftActor swappedMiddle swappedFinal leftTag
+                  movedLeftChecked of
+                  (retireFiber ** retireFound) =>
+                    void (r101AbsentVersusFound name key world error value nameEq
+                      rightActor leftActor swappedMiddle retireFiber
+                      (sym sameOwner) absent retireFound)
+    PaperRemoveStep {actor = leftActor} leftActionSame => case rightOrchestration of
+      PaperInsertStep {actor = rightActor} {parent = rightParent}
+        {component = rightComponent} rightActionSame => case leftActionSame of
+        Refl => case rightActionSame of
+          Refl => case r101CheckedRemovePresence name key world error value
+            nameEq keyEq leftActor first middle leftTag leftChecked of
+            MkR101CheckedRemovePresence fiber found absent =>
+              void (r101AbsentVersusFound name key world error value nameEq
+                rightActor leftActor first fiber (sym sameOwner)
+                (r101CheckedInsertSourceAbsent name key world error value nameEq
+                  keyEq rightActor rightParent rightComponent first swappedMiddle
+                  rightTag movedRightChecked) found)
+      PaperRetireStep {actor = rightActor} rightActionSame => case leftActionSame of
+        Refl => case rightActionSame of
+          Refl => case r101CheckedRemovePresence name key world error value
+            nameEq keyEq leftActor first middle leftTag leftChecked of
+            MkR101CheckedRemovePresence fiber found absent =>
+              case r101CheckedRetireSourceFound name key world error value nameEq
+                keyEq rightActor middle originalFinal rightTag rightChecked of
+                (retireFiber ** retireFound) =>
+                  void (r101AbsentVersusFound name key world error value nameEq
+                    leftActor rightActor middle retireFiber sameOwner absent
+                    retireFound)
+      PaperRemoveStep {actor = rightActor} rightActionSame => case leftActionSame of
+        Refl => case rightActionSame of
+          Refl => case r101CheckedRemovePresence name key world error value
+            nameEq keyEq leftActor first middle leftTag leftChecked of
+            MkR101CheckedRemovePresence fiber found absent =>
+              case r101CheckedRemovePresence name key world error value nameEq
+                keyEq rightActor middle originalFinal rightTag rightChecked of
+                MkR101CheckedRemovePresence rightFiber rightFound rightAbsent =>
+                  void (r101AbsentVersusFound name key world error value nameEq
+                    leftActor rightActor middle rightFiber sameOwner absent
+                    rightFound)
