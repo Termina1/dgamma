@@ -22479,3 +22479,168 @@ r99DivertVersusChecked name key world error value nameEq keyEq actor before
           (trans (sym normalized)
             (checkedActionProjects nameEq keyEq (LAdvance actor) before
               afterState observedTag checked)))) same))
+
+||| Producer-owned normalized outcome for L-Advance on a retired owner whose
+||| Reloading program is nonempty.
+data R99RetiredNonEmptyAdvanceOutcome :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before : SystemState name key value world error) -> Type where
+  R99RetiredAdvanceUnavailable :
+    (0 normalized : applyAction @{nameEq} @{keyEq}
+      (the (Action name key value world error) (LAdvance actor)) before =
+      Nothing) ->
+    R99RetiredNonEmptyAdvanceOutcome name key world error value nameEq keyEq
+      actor before
+  R99RetiredAdvanceRaised :
+    (0 raisedState : SystemState name key value world error) ->
+    (0 normalized : applyAction @{nameEq} @{keyEq}
+      (the (Action name key value world error) (LAdvance actor)) before =
+      Just (LRaiseTag, raisedState)) ->
+    R99RetiredNonEmptyAdvanceOutcome name key world error value nameEq keyEq
+      actor before
+  R99RetiredAdvanceDiverted :
+    (0 divertedState : SystemState name key value world error) ->
+    (0 normalized : applyAction @{nameEq} @{keyEq}
+      (the (Action name key value world error) (LAdvance actor)) before =
+      Just (LDivertTag, divertedState)) ->
+    R99RetiredNonEmptyAdvanceOutcome name key world error value nameEq keyEq
+      actor before
+
+0 r99ClassifyRetiredNonEmptyAdvanceRaw :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world
+      (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (postRegistry : Registry name key value world error) ->
+  (0 retiredFound : lookupFiber @{nameEq} actor postRegistry =
+    Just (MkFiber component parent True table
+      (Reloading (step :: rest) accumulator view))) ->
+  R99RetiredNonEmptyAdvanceOutcome name key world error value nameEq keyEq actor
+    (MkSystemState ambient postRegistry)
+r99ClassifyRetiredNonEmptyAdvanceRaw name key world error value nameEq keyEq
+  actor ambient component parent table step rest accumulator view postRegistry
+  retiredFound with (resolveCommittedValues @{nameEq} @{keyEq}
+    (dependencies (componentDependencies component)) view postRegistry) proof resolved
+  r99ClassifyRetiredNonEmptyAdvanceRaw name key world error value nameEq keyEq
+    actor ambient component parent table step rest accumulator view postRegistry
+    retiredFound | Nothing =
+      R99RetiredAdvanceUnavailable
+        (rewrite retiredFound in rewrite resolved in Refl)
+  r99ClassifyRetiredNonEmptyAdvanceRaw name key world error value nameEq keyEq
+    actor ambient component parent table step rest accumulator view postRegistry
+    retiredFound | Just capability with (runStepEffect step capability
+      (MkLocalState ambient
+        (restrictOwnedPreservingOrder (componentProvisions component)
+          (ownedValues table)))) proof ran
+    r99ClassifyRetiredNonEmptyAdvanceRaw name key world error value nameEq keyEq
+      actor ambient component parent table step rest accumulator view postRegistry
+      retiredFound | Just capability | Left raised =
+        let raisedState : SystemState name key value world error
+            raisedState = MkSystemState ambient
+              (replaceBinding @{nameEq} actor
+                (setFiberLifecycle
+                  (MkFiber component parent True table
+                    (Reloading (step :: rest) accumulator view))
+                  (Unloading accumulator view (Just raised))) postRegistry)
+        in R99RetiredAdvanceRaised raisedState
+          (rewrite retiredFound in rewrite resolved in rewrite ran in Refl)
+    r99ClassifyRetiredNonEmptyAdvanceRaw name key world error value nameEq keyEq
+      actor ambient component parent table step rest accumulator view postRegistry
+      retiredFound | Just capability | Right (localAfter, undo) =
+        let divertedState : SystemState name key value world error
+            divertedState = MkSystemState (localWorld localAfter)
+              (replaceBinding @{nameEq} actor
+                (setFiberRuntime
+                  (MkFiber component parent True table
+                    (Reloading (step :: rest) accumulator view))
+                  (localTable localAfter)
+                  (Unloading
+                    (pushLocalUndo (componentProvisions component)
+                      accumulator undo) view Nothing)) postRegistry)
+        in R99RetiredAdvanceDiverted divertedState
+          (rewrite retiredFound in rewrite resolved in rewrite ran in Refl)
+
+0 r99ProduceRetiredNonEmptyAdvanceOutcome :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) ->
+  (source : Registry name key value world error) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world
+      (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (0 found : lookupFiber @{nameEq} actor source =
+    Just (MkFiber component parent retiredFlag table
+      (Reloading (step :: rest) accumulator view))) ->
+  R99RetiredNonEmptyAdvanceOutcome name key world error value nameEq keyEq actor
+    (MkSystemState ambient
+      (replaceBinding @{nameEq} actor
+        (retireFiber (MkFiber component parent retiredFlag table
+          (Reloading (step :: rest) accumulator view))) source))
+r99ProduceRetiredNonEmptyAdvanceOutcome name key world error value nameEq keyEq
+  actor ambient source component parent retiredFlag table step rest accumulator
+  view found =
+    let retiredOwner : Fiber name key value world error
+        retiredOwner = retireFiber
+          (MkFiber component parent retiredFlag table
+            (Reloading (step :: rest) accumulator view))
+        postRegistry : Registry name key value world error
+        postRegistry = replaceBinding @{nameEq} actor retiredOwner source
+        0 retiredFound : lookupFiber @{nameEq} actor postRegistry =
+          Just retiredOwner
+        retiredFound = lookupReplacedFiber actor
+          (MkFiber component parent retiredFlag table
+            (Reloading (step :: rest) accumulator view)) retiredOwner source found
+    in r99ClassifyRetiredNonEmptyAdvanceRaw name key world error value nameEq keyEq
+      actor ambient component parent table step rest accumulator view postRegistry
+      retiredFound
+
+||| One-elimination consumer: every constructor delegates its explicit raw
+||| equality to a top-level RuleTag comparison helper.
+0 r99ConsumeRetiredNonEmptyAdvanceOutcome :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (observedTag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before =
+    Just (observedTag, afterState)) ->
+  (0 outcome : R99RetiredNonEmptyAdvanceOutcome name key world error value
+    nameEq keyEq actor before) ->
+  (Not (observedTag = LIterTag), Not (observedTag = LFinishTag))
+r99ConsumeRetiredNonEmptyAdvanceOutcome name key world error value nameEq keyEq
+  actor before afterState observedTag checked
+  (R99RetiredAdvanceUnavailable normalized) =
+    void (r99UnavailableVersusChecked name key world error value nameEq keyEq
+      actor before afterState observedTag normalized checked)
+r99ConsumeRetiredNonEmptyAdvanceOutcome name key world error value nameEq keyEq
+  actor before afterState observedTag checked
+  (R99RetiredAdvanceRaised raisedState normalized) =
+    r99RaiseVersusChecked name key world error value nameEq keyEq actor before
+      raisedState afterState observedTag normalized checked
+r99ConsumeRetiredNonEmptyAdvanceOutcome name key world error value nameEq keyEq
+  actor before afterState observedTag checked
+  (R99RetiredAdvanceDiverted divertedState normalized) =
+    r99DivertVersusChecked name key world error value nameEq keyEq actor before
+      divertedState afterState observedTag normalized checked
