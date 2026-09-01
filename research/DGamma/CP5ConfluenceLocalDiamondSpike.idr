@@ -23057,3 +23057,95 @@ r99FinishOneOutputControl name key world error value nameEq keyEq actor ambient
           (localTable localAfter)
           (pushLocalUndo (componentProvisions component) accumulator undo) view
           observedFound
+
+0 r99IterOutputControl :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step, next : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (more : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world
+      (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (0 found : lookupFiber @{nameEq} actor source =
+    Just (MkFiber component parent retiredFlag table
+      (Reloading (step :: next :: more) accumulator view))) ->
+  (0 target : targetFiber @{nameEq} @{keyEq}
+    (MkFiber component parent retiredFlag table
+      (Reloading (step :: next :: more) accumulator view)) source = Just view) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState ambient source) = Just (LIterTag, afterState)) ->
+  R99PaperActivationOutputControl name key world error value nameEq actor
+    afterState
+r99IterOutputControl name key world error value nameEq keyEq actor ambient source
+  afterState component parent retiredFlag table step next more accumulator view
+  found target raw with (resolveCommittedValues @{nameEq} @{keyEq}
+    (dependencies (componentDependencies component)) view source) proof resolved
+  r99IterOutputControl name key world error value nameEq keyEq actor ambient
+    source afterState component parent retiredFlag table step next more
+    accumulator view found target raw | Nothing =
+      void (r98NothingNotJust
+        (RuleTag, SystemState name key value world error) (LIterTag, afterState)
+        (trans (sym (rewrite found in rewrite resolved in Refl)) raw))
+  r99IterOutputControl name key world error value nameEq keyEq actor ambient
+    source afterState component parent retiredFlag table step next more
+    accumulator view found target raw | Just capability
+    with (runStepEffect step capability
+      (MkLocalState ambient
+        (restrictOwnedPreservingOrder (componentProvisions component)
+          (ownedValues table)))) proof ran
+    r99IterOutputControl name key world error value nameEq keyEq actor ambient
+      source afterState component parent retiredFlag table step next more
+      accumulator view found target raw | Just capability | Left raised =
+        let raisedState : SystemState name key value world error
+            raisedState = MkSystemState ambient
+              (replaceBinding @{nameEq} actor
+                (MkFiber component parent retiredFlag table
+                  (Unloading accumulator view (Just raised))) source)
+        in void (r99RaiseTagNotIter
+          (fst (applyActionDeterministic nameEq keyEq (LAdvance actor)
+            (MkSystemState ambient source)
+            (rewrite found in rewrite resolved in rewrite ran in Refl) raw)))
+    r99IterOutputControl name key world error value nameEq keyEq actor ambient
+      source afterState component parent retiredFlag table step next more
+      accumulator view found target raw | Just capability |
+      Right (localAfter, undo) =
+        let nextOwner : Fiber name key value world error
+            nextOwner = MkFiber component parent retiredFlag
+              (localTable localAfter)
+              (Reloading (next :: more)
+                (pushLocalUndo (componentProvisions component) accumulator undo)
+                view)
+            expected : SystemState name key value world error
+            expected = MkSystemState (localWorld localAfter)
+              (replaceBinding @{nameEq} actor nextOwner source)
+            0 expectedSame : expected = afterState
+            expectedSame = snd (applyActionDeterministic nameEq keyEq
+              (LAdvance actor) (MkSystemState ambient source)
+              (rewrite found in rewrite resolved in rewrite ran in
+                rewrite target in
+                  rewrite r99TargetMatchesSelf nameEq view in Refl) raw)
+            0 expectedFound : lookupFiber @{nameEq} actor (registry expected) =
+              Just nextOwner
+            expectedFound = lookupReplacedFiber actor
+              (MkFiber component parent retiredFlag table
+                (Reloading (step :: next :: more) accumulator view)) nextOwner
+              source found
+            0 observedFound : lookupFiber @{nameEq} actor
+              (registry afterState) = Just nextOwner
+            observedFound = trans
+              (sym (cong (lookupFiber @{nameEq} actor . registry) expectedSame))
+              expectedFound
+        in R99ActivationOutputReloading component parent retiredFlag
+          (localTable localAfter) (next :: more)
+          (pushLocalUndo (componentProvisions component) accumulator undo) view
+          observedFound
