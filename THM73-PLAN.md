@@ -1869,6 +1869,22 @@ compatible but unchecked. No frozen surface change is indicated. Holes remain
 shifts** is proposed only after the split append consumer and generic corrected
 classifier check.
 
+### Revision 97: split append and exact field-9 composition close
+
+`research-tests/O6-R97-SPLIT-APPEND-CLOSED-EQUAL-OWNER-CLASSIFIER-STOP-AUDIT.md`
+records design-only shift #105. Fully explicit append occurrence, generator,
+and stage packages check, followed by producer-correlated mapped packages and a
+generic append RAR. The exact make-or-break consumer instantiates the actual
+identity-prefix and sealed-suffix capital around a supplied pair RAR and returns
+`RelationalReplayCorrespondence original targetTrace`; field-9 composition is
+closed. The exact two-case equal-owner representation and its one-elimination
+consumer also check. The generic producer does not: its first abstract
+retire-then-paper-activation exclusion exhausts three attempts after reaching
+raw retirement reindexing and complete lifecycle design. Therefore only the
+classifier producer still blocks the pair RAR. No frozen surface change is
+indicated. Holes remain **20**, split **6/4/8/1/1**. The **2–8 implementation
+shift** band remains suspended until that producer checks.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -2180,7 +2196,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 96 corrects equal-owner viability to only Iter/Iter and Retire/Retire; positional pair design is clear, but the split append consumer and generic classifier remain unchecked. Fields 10–15 foundations are checked.** | **XL; band suspended; 2–8 proposed only after next design gate.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 97 closes the split append RAR and exact field-9 whole composition. The two-cell classifier interface/consumer checks, but its generic producer remains open; this alone blocks pair RAR implementation. Fields 10–15 foundations are checked.** | **XL; band suspended until the classifier producer checks; then 2–8 proposed.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
