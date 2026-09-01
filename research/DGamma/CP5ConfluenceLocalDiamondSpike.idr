@@ -24691,3 +24691,86 @@ r101RetireActionView name key world error value nameEq keyEq
                 (checkedActionProjects nameEq keyEq (ORemove actor)
                   (MkSystemState ambient source) afterState tag checked))
         in case trans (sym tagRetire) removeTag of Refl impossible
+
+0 r101SameCheckedPairEndpoints :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, originalFinal : SystemState name key value world error) ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (0 sourceActionSame : transitionAction left = transitionAction right) ->
+  (0 sourceTagSame : transitionTag left = transitionTag right) ->
+  (0 heads : R101FourAlignedHeadViews name key world error value nameEq keyEq
+    first middle originalFinal left right diamond) ->
+  ((swappedMiddle diamond = middle),
+    (swappedFinal diamond = originalFinal))
+r101SameCheckedPairEndpoints name key world error value nameEq keyEq first middle
+  originalFinal left right diamond sourceActionSame sourceTagSame heads =
+    case heads of
+      MkR101FourAlignedHeadViews sourceLeft sourceRight movedRightHead
+        movedLeftHead movedRightActionSame movedRightTagSame movedLeftActionSame
+        movedLeftTagSame =>
+          let 0 alignedActionSame : (alignedHeadAction sourceLeft =
+                alignedHeadAction sourceRight)
+              alignedActionSame = trans
+                (sym (alignedHeadActionProjection sourceLeft))
+                (trans sourceActionSame
+                  (alignedHeadActionProjection sourceRight))
+              0 alignedTagSame : (alignedHeadTag sourceLeft =
+                alignedHeadTag sourceRight)
+              alignedTagSame = trans (sym (alignedHeadTagProjection sourceLeft))
+                (trans sourceTagSame (alignedHeadTagProjection sourceRight))
+              0 movedRightCheckedAsLeft : (checkedApplyAction @{nameEq} @{keyEq}
+                (alignedHeadAction sourceLeft) first =
+                  Just (alignedHeadTag sourceLeft, swappedMiddle diamond))
+              movedRightCheckedAsLeft = checkedActivationEquationTransport
+                nameEq keyEq (alignedHeadAction movedRightHead)
+                (alignedHeadAction sourceLeft)
+                (trans movedRightActionSame (sym alignedActionSame))
+                (alignedHeadTag movedRightHead) (alignedHeadTag sourceLeft)
+                (trans movedRightTagSame (sym alignedTagSame))
+                (alignedHeadChecked movedRightHead)
+              0 middleToSwapped : (middle = swappedMiddle diamond)
+              middleToSwapped = snd (applyActionDeterministic nameEq keyEq
+                (alignedHeadAction sourceLeft) first
+                (checkedActionProjects nameEq keyEq
+                  (alignedHeadAction sourceLeft) first middle
+                  (alignedHeadTag sourceLeft) (alignedHeadChecked sourceLeft))
+                (checkedActionProjects nameEq keyEq
+                  (alignedHeadAction sourceLeft) first (swappedMiddle diamond)
+                  (alignedHeadTag sourceLeft) movedRightCheckedAsLeft))
+              0 swappedToMiddle : (swappedMiddle diamond = middle)
+              swappedToMiddle = sym middleToSwapped
+              0 movedLeftCheckedAsRightAtSwapped :
+                (checkedApplyAction @{nameEq} @{keyEq}
+                  (alignedHeadAction sourceRight) (swappedMiddle diamond) =
+                    Just (alignedHeadTag sourceRight, swappedFinal diamond))
+              movedLeftCheckedAsRightAtSwapped =
+                checkedActivationEquationTransport nameEq keyEq
+                  (alignedHeadAction movedLeftHead)
+                  (alignedHeadAction sourceRight)
+                  (trans movedLeftActionSame alignedActionSame)
+                  (alignedHeadTag movedLeftHead) (alignedHeadTag sourceRight)
+                  (trans movedLeftTagSame alignedTagSame)
+                  (alignedHeadChecked movedLeftHead)
+              0 movedLeftCheckedAsRightAtMiddle :
+                (checkedApplyAction @{nameEq} @{keyEq}
+                  (alignedHeadAction sourceRight) middle =
+                    Just (alignedHeadTag sourceRight, swappedFinal diamond))
+              movedLeftCheckedAsRightAtMiddle = replace
+                {p = \state => checkedApplyAction @{nameEq} @{keyEq}
+                  (alignedHeadAction sourceRight) state =
+                    Just (alignedHeadTag sourceRight, swappedFinal diamond)}
+                swappedToMiddle movedLeftCheckedAsRightAtSwapped
+              0 originalToSwapped : (originalFinal = swappedFinal diamond)
+              originalToSwapped = snd (applyActionDeterministic nameEq keyEq
+                (alignedHeadAction sourceRight) middle
+                (checkedActionProjects nameEq keyEq
+                  (alignedHeadAction sourceRight) middle originalFinal
+                  (alignedHeadTag sourceRight) (alignedHeadChecked sourceRight))
+                (checkedActionProjects nameEq keyEq
+                  (alignedHeadAction sourceRight) middle (swappedFinal diamond)
+                  (alignedHeadTag sourceRight) movedLeftCheckedAsRightAtMiddle))
+          in (swappedToMiddle, sym originalToSwapped)
