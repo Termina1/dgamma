@@ -21004,6 +21004,74 @@ activationSingletonMapsRelated name key value world error nameEq keyEq action ta
      the (Action name key value world error) (LAdvance selected))
 lBeginNotAdvance name key value world error actor selected Refl impossible
 
+0 activationSingletonRAR :
+  (name : Type) -> (key : Type) -> (value : key -> Type) ->
+  (world : Type) -> (error : Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, movedBefore, movedAfter :
+    SystemState name key value world error) ->
+  (0 sourceChecked :
+    (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore =
+     Just (tag, sourceAfter))) ->
+  (0 movedChecked :
+    (checkedApplyAction @{nameEq} @{keyEq} action movedBefore =
+     Just (tag, movedAfter))) ->
+  (0 activation : PaperActivationStep
+    (Fired {before = sourceBefore} {afterState = sourceAfter}
+      nameEq keyEq action tag sourceChecked)) ->
+  (0 lookupSame :
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} (actionOwner action)
+      (registry sourceBefore) =
+     lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} (actionOwner action)
+      (registry movedBefore))) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions
+      (Fired {before = sourceBefore} {afterState = sourceAfter}
+        nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions
+      (Fired {before = movedBefore} {afterState = movedAfter}
+        nameEq keyEq action tag movedChecked) NoTransitions)
+activationSingletonRAR name key value world error nameEq keyEq action tag
+  sourceBefore sourceAfter movedBefore movedAfter sourceChecked movedChecked
+  activation@(PaperBeginStep {actor = activationActor} actionSame tagSame)
+  lookupSame = case actionSame of
+    Refl => case tagSame of
+      Refl => singletonNonAdvanceRAR nameEq keyEq (LBegin activationActor)
+        LBeginTag sourceBefore sourceAfter movedBefore movedAfter sourceChecked
+        movedChecked (lBeginNotAdvance name key value world error activationActor)
+        (activationSingletonMapsRelated name key value world error nameEq keyEq
+          (LBegin activationActor) LBeginTag sourceBefore sourceAfter movedBefore
+          movedAfter sourceChecked movedChecked activation lookupSame)
+activationSingletonRAR name key value world error nameEq keyEq action tag
+  sourceBefore sourceAfter movedBefore movedAfter sourceChecked movedChecked
+  activation@(PaperIterStep {actor = activationActor} actionSame tagSame)
+  lookupSame = case actionSame of
+    Refl => case tagSame of
+      Refl => singletonAdvanceRAR nameEq keyEq activationActor LIterTag
+        sourceBefore sourceAfter movedBefore movedAfter sourceChecked movedChecked
+        (singletonAdvanceStageFamilyFromOwnerLookup name key value world error
+          nameEq keyEq activationActor LIterTag sourceBefore sourceAfter
+          movedBefore movedAfter sourceChecked movedChecked lookupSame)
+        (activationSingletonMapsRelated name key value world error nameEq keyEq
+          (LAdvance activationActor) LIterTag sourceBefore sourceAfter movedBefore
+          movedAfter sourceChecked movedChecked activation lookupSame)
+activationSingletonRAR name key value world error nameEq keyEq action tag
+  sourceBefore sourceAfter movedBefore movedAfter sourceChecked movedChecked
+  activation@(PaperFinishStep {actor = activationActor} actionSame tagSame)
+  lookupSame = case actionSame of
+    Refl => case tagSame of
+      Refl => singletonAdvanceRAR nameEq keyEq activationActor LFinishTag
+        sourceBefore sourceAfter movedBefore movedAfter sourceChecked movedChecked
+        (singletonAdvanceStageFamilyFromOwnerLookup name key value world error
+          nameEq keyEq activationActor LFinishTag sourceBefore sourceAfter
+          movedBefore movedAfter sourceChecked movedChecked lookupSame)
+        (activationSingletonMapsRelated name key value world error nameEq keyEq
+          (LAdvance activationActor) LFinishTag sourceBefore sourceAfter
+          movedBefore movedAfter sourceChecked movedChecked activation lookupSame)
+
 0 replayPointwiseSuffixTraceComponentsTotal :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (source : Transitions sourceFirst sourceFinal) ->
