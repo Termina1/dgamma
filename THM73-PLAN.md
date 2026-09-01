@@ -1809,6 +1809,26 @@ mechanical from existing locators. Fields 1–8 remain closed; field 9 is open.
 Holes remain **20**, split **6/4/8/1/1**. The accepted **2–10 shift** band is
 held provisionally pending the separation lemma gate.
 
+### Revision 94: checked owner separation is false
+
+`research-tests/O6-R94-CHECKED-SEPARATION-COUNTERMODEL-STOP-AUDIT.md`
+records shift #102. The authorized negative pin confirms that revision-21
+classification plus conditional `TraceIndependent` cannot project owner
+inequality. More importantly, the proposed stronger lemma from both checked
+orders is refuted by executable O-Retire idempotence: for a present fiber,
+`ORetire a; ORetire a` is checked, the second step leaves the retired state
+unchanged, and the same pair is a valid aligned moved pair. Both paper
+classifiers are `PaperRetireStep`; O/O insertion safety is vacuous; all moved
+action/tag and reflexive endpoint fields hold; yet both actors reduce to `a`.
+The pair RAR is not opened. A temporary full countermodel package exhausted its
+three elaboration attempts on explicit-boundary/import issues and was removed;
+the defining second raw retirement equality checked before that boundary. The
+next design must handle equal owners, likely by a `decEq` split with an action-
+specific same-owner pair RAR, rather than attempt separation. No frozen surface
+change is authorized. Fields 1–8 remain closed and field 9 remains open. Holes
+remain **20**, split **6/4/8/1/1**. The **2–10 shift** band is suspended pending
+that design gate.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
@@ -2120,7 +2140,7 @@ There remain **20 obligations**.
 | **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
 | **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
 | **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 93 implements the runtime package/family and both singleton RAR classes; pair RAR awaits a checked owner-separation lemma from source/moved alignment. Fields 10–15 foundations are checked.** | **XL; accepted 2–10 implementation shifts held provisionally.** |
+| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 are closed. Revision 94 refutes checked owner separation with same-owner idempotent O-Retire/O-Retire; pair RAR needs a reviewed equal/distinct-owner design. Fields 10–15 foundations are checked.** | **XL; 2–10 implementation-shift band suspended at design gate.** |
 | **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
 | **O8** | Maximal candidate. | **1 hole.** | **XL.** |
 | **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
@@ -2339,4 +2359,6 @@ design-only singleton-stage representation gate. Revision 92 selects a checked
 producer-indexed runtime package and exact one-elimination consumer with no
 frozen-surface delta. Revision 93 implements that boundary and all activation/
 orchestration singleton RARs, then isolates pair assembly at checked owner
-separation; final assembly remains open.
+separation. Revision 94 refutes that separation using same-owner idempotent
+O-Retire/O-Retire and returns the pair RAR to a same-owner design gate; final
+assembly remains open.
