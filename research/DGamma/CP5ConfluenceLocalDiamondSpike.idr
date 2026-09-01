@@ -21498,3 +21498,144 @@ public export
   AdjacentSwapResult name key world error value protocol nameEq keyEq original
     tracePrefix left right suffix diamond
 adjacentSwapSuffixSpike = ?adjacentSwapSuffixSpike_rhs
+-- Exact append occurrence embeddings, local to the disposable probe.
+0 r97AppendLeftOccurrence :
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (selected : Transition selectedBefore selectedAfter) ->
+  OccursIn selected left -> OccursIn selected (appendTransitions left right)
+r97AppendLeftOccurrence NoTransitions right selected occurs impossible
+r97AppendLeftOccurrence (MoreTransitions selected tail) right selected OccursHere =
+  OccursHere
+r97AppendLeftOccurrence (MoreTransitions head tail) right selected
+  (OccursLater later) = OccursLater
+    (r97AppendLeftOccurrence tail right selected later)
+
+0 r97AppendRightOccurrence :
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (selected : Transition selectedBefore selectedAfter) ->
+  OccursIn selected right -> OccursIn selected (appendTransitions left right)
+r97AppendRightOccurrence NoTransitions right selected occurs = occurs
+r97AppendRightOccurrence (MoreTransitions head tail) right selected occurs =
+  OccursLater (r97AppendRightOccurrence tail right selected occurs)
+
+data R97AppendOccurrenceView :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState, selectedBefore, selectedAfter :
+    SystemState name key value world error) ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (selected : Transition selectedBefore selectedAfter) ->
+  (occurs : OccursIn selected (appendTransitions left right)) -> Type where
+  R97AppendOccursLeft :
+    (local : OccursIn selected left) ->
+    R97AppendOccurrenceView name key world error value first middle finalState
+      selectedBefore selectedAfter left right selected
+      (r97AppendLeftOccurrence left right selected local)
+  R97AppendOccursRight :
+    (local : OccursIn selected right) ->
+    R97AppendOccurrenceView name key world error value first middle finalState
+      selectedBefore selectedAfter left right selected
+      (r97AppendRightOccurrence left right selected local)
+
+0 r97ViewAppendOccurrence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState, selectedBefore, selectedAfter :
+    SystemState name key value world error) ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (selected : Transition selectedBefore selectedAfter) ->
+  (occurs : OccursIn selected (appendTransitions left right)) ->
+  R97AppendOccurrenceView name key world error value first middle finalState
+    selectedBefore selectedAfter left right selected occurs
+r97ViewAppendOccurrence name key world error value middle middle finalState
+  selectedBefore selectedAfter NoTransitions right selected occurs =
+    R97AppendOccursRight occurs
+r97ViewAppendOccurrence name key world error value selectedBefore middle finalState
+  selectedBefore selectedAfter (MoreTransitions selected tail) right selected
+  OccursHere = R97AppendOccursLeft OccursHere
+r97ViewAppendOccurrence name key world error value first middle finalState
+  selectedBefore selectedAfter (MoreTransitions head tail) right selected
+  (OccursLater later) =
+    case r97ViewAppendOccurrence name key world error value _ middle finalState
+      selectedBefore selectedAfter tail right selected later of
+      R97AppendOccursLeft local => R97AppendOccursLeft (OccursLater local)
+      R97AppendOccursRight local => R97AppendOccursRight local
+
+data R97AppendGeneratorPackage :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (actor : name) ->
+  (target : TraceEffectGenerator name key world error value actor
+    (appendTransitions left right)) -> Type where
+  R97AppendGeneratorLeft :
+    (local : TraceEffectGenerator name key world error value actor left) ->
+    (0 exact : (state : EffectState name key value world) ->
+      (traceGeneratorMap {trace = left} local state =
+        traceGeneratorMap {trace = appendTransitions left right} target state)) ->
+    R97AppendGeneratorPackage name key world error value first middle finalState
+      left right actor target
+  R97AppendGeneratorRight :
+    (local : TraceEffectGenerator name key world error value actor right) ->
+    (0 exact : (state : EffectState name key value world) ->
+      (traceGeneratorMap {trace = right} local state =
+        traceGeneratorMap {trace = appendTransitions left right} target state)) ->
+    R97AppendGeneratorPackage name key world error value first middle finalState
+      left right actor target
+
+0 r97LocateAppendGenerator :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (actor : name) ->
+  (target : TraceEffectGenerator name key world error value actor
+    (appendTransitions left right)) ->
+  R97AppendGeneratorPackage name key world error value first middle finalState
+    left right actor target
+r97LocateAppendGenerator name key world error value first middle finalState left
+  right actor target@(ActualForwardGenerator before afterState nameEq keyEq action
+    tag checked occurs ownerSame) =
+      case r97ViewAppendOccurrence name key world error value first middle
+        finalState before afterState left right _ occurs of
+        R97AppendOccursLeft local => R97AppendGeneratorLeft
+          (ActualForwardGenerator before afterState nameEq keyEq action tag checked
+            local ownerSame) (\state => Refl)
+        R97AppendOccursRight local => R97AppendGeneratorRight
+          (ActualForwardGenerator before afterState nameEq keyEq action tag checked
+            local ownerSame) (\state => Refl)
+r97LocateAppendGenerator name key world error value first middle finalState left
+  right actor target@(IteratorForwardGenerator
+    (StageFromAdvance nameEq keyEq actor tag checked occurs fiber found remaining
+      accumulator view lifecycle step rest suffix)) =
+        case r97ViewAppendOccurrence name key world error value first middle
+          finalState _ _ left right _ occurs of
+          R97AppendOccursLeft local => R97AppendGeneratorLeft
+            (IteratorForwardGenerator
+              (StageFromAdvance nameEq keyEq actor tag checked local fiber found
+                remaining accumulator view lifecycle step rest suffix))
+            (\state => Refl)
+          R97AppendOccursRight local => R97AppendGeneratorRight
+            (IteratorForwardGenerator
+              (StageFromAdvance nameEq keyEq actor tag checked local fiber found
+                remaining accumulator view lifecycle step rest suffix))
+            (\state => Refl)
+r97LocateAppendGenerator name key world error value first middle finalState left
+  right actor target@(IteratorYieldedGenerator
+    (StageFromAdvance nameEq keyEq actor tag checked occurs fiber found remaining
+      accumulator view lifecycle step rest suffix) origin) =
+        case r97ViewAppendOccurrence name key world error value first middle
+          finalState _ _ left right _ occurs of
+          R97AppendOccursLeft local => R97AppendGeneratorLeft
+            (IteratorYieldedGenerator
+              (StageFromAdvance nameEq keyEq actor tag checked local fiber found
+                remaining accumulator view lifecycle step rest suffix) origin)
+            (\state => Refl)
+          R97AppendOccursRight local => R97AppendGeneratorRight
+            (IteratorYieldedGenerator
+              (StageFromAdvance nameEq keyEq actor tag checked local fiber found
+                remaining accumulator view lifecycle step rest suffix) origin)
+            (\state => Refl)
