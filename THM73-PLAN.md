@@ -2042,6 +2042,27 @@ elaborates. Pair RAR and later units remain open. Holes remain **20**, split
 **6/4/8/1/1**; no frozen surface change is indicated. A nominal **1–3 shift**
 remainder is proposed.
 
+### Revision 107: pair RAR reaches proof-identity escalation boundary
+
+`research-tests/O6-R107-PAIR-RAR-PROOF-IDENTITY-ESCALATION-STOP-AUDIT.md`
+records shift #115. The final authorized pair-RAR implementation budget removed
+both source transition lets and passed direct exact `Fired` constructors to the
+four-head producer. Moving source alignment before the producer confirmed that
+explicit original action/tag fields remain opaque at the final cons source
+constructor. Using the direct aligned action/tag fields then closed all runtime
+field opacity, both singleton branches, and cons RAR; the final comparison
+isolated only `rightOriginalChecked` versus the independently stored alignment
+proof `rightChecked` (and symmetrically on the left). The unit was removed after
+three attempts. No fifth implementation budget is authorized. The next work
+must be a disposable design-only campaign: first probe the successful direct,
+no-let, outer-alignment shape with `leftChecked`/`rightChecked` consistently in
+both singleton legs and cons; then, only if needed, probe a no-source-alignment
+route preserving original proof indices; retain no proof edits during that
+campaign. Pair RAR, field 9, fields 10–15 population, and body remain open.
+Holes remain **20**, split **6/4/8/1/1**; manifest remains
+`NO_FROZEN_SURFACE_CHANGE_REQUIRED`. A nominal **1–2 shift** remainder is
+proposed, beginning with the mandatory design-only campaign.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
