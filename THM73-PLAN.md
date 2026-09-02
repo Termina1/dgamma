@@ -1981,6 +1981,27 @@ units remain unopened. Holes remain **20**, split **6/4/8/1/1**; no frozen
 surface change is indicated. One shift of the accepted **2–7** band was
 consumed; nominal **1–6 shifts** remain subject to review.
 
+### Revision 104: B6 closes; positional pair RAR alignment stop
+
+`research-tests/O6-R104-B6-CLOSED-PAIR-RAR-ALIGNMENT-STOP-AUDIT.md`
+records shift #112. The revision-103 owner bridge closes constructively with
+unaliasing, explicit `transitionActorFiredActionOwner`, and `cong actionOwner`;
+the symmetric Retire/Retire equality helper also checks. Both mixed aligned
+consumers retain their four correlated checked heads under one elimination. The
+new `R102EqualOwnerPairDispatch` exhausts `CandidateRegistrationSwapSafety`:
+A/A returns exact Iter/Iter, O/O returns exact Retire/Retire, both mixed cases
+are impossible, and both surviving cases own deterministic intermediate/final
+endpoint equalities. **B6 is complete.** The subsequent positional pair-RAR
+unit exhausted three attempts and was removed. Its final diagnostic shows that
+independently eliminating opaque diamond action/tag projections does not
+reindex the checked equation owned by moved alignment (`movedRightTagValue` vs
+`leftTag`). The next fresh representation must consume
+`R101FourAlignedHeadViews` once, use its exact cross equations to transport each
+moved check to the aligned source action/tag, then endpoint-reindex and invoke
+the two singleton RARs. Pair RAR, fields, and assembly remain open. Holes remain
+**20**, split **6/4/8/1/1**; no frozen surface change is indicated. A **1–5
+shift** remaining band is proposed.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
