@@ -2623,4 +2623,16 @@ exhausted by an explicit-index failure, nonlinear equality/actor projection
 failure, and parser-layout failure. Field 9 therefore remains incomplete;
 fields 10–15 and the O6 body are unopened, holes remain 20 with split
 6/4/8/1/1, and a reviewer must authorize a fresh distinct-owner budget before
-the nominal final implementation shift.
+the nominal final implementation shift. Revision 117 uses that authorization:
+the explicit-index, nested-equality, actor/owner-bridge distinct-owner producer
+lands on fresh attempt 2, with only the first attempt's branch layout corrected.
+Revision 118 combines exact actor equality with the equal/distinct pair RARs,
+feeds the result through `r97Field9ConcreteCapitalConsumer`, and closes field 9
+by relational independence transport on attempt 1. Revision 119 packages the
+complete replay bundle: its second attempt removes a nonlinear target-trace
+pattern and populates fields 10–15 from the frozen provenance/rank/support
+foundations. All 15 bundle fields are now complete. Body/result/occurrence-fold
+assembly remains unopened at a clean committed boundary; holes remain 20 with
+split 6/4/8/1/1. The next action, if authorized after review, is only O6 body
+assembly, followed immediately at 20 -> 19 by the mandatory scoped adversarial
+review.
