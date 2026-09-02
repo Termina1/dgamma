@@ -25828,3 +25828,96 @@ distinctOwnerPairRAR name key world error value nameEq keyEq first middle
             (localTransitionActorActionOwner left)
             (trans ownersSame (sym (localTransitionActorActionOwner right)))))
           (registrationSwapSafety diamond)
+
+private
+0 pairRelationalReplayCorrespondence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, originalFinal : SystemState name key value world error) ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (0 sourcePairAligned : AlignedTransitions name key world error value nameEq
+    keyEq (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions left (MoreTransitions right NoTransitions))
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) NoTransitions))
+pairRelationalReplayCorrespondence name key world error value nameEq keyEq first
+  middle originalFinal left right diamond sourcePairAligned =
+    case decEq @{nameEq} (transitionActor left) (transitionActor right) of
+      Yes sameActor => equalOwnerPairRAR name key world error value nameEq keyEq
+        first middle originalFinal left right diamond sourcePairAligned
+        (r102DispatchEqualOwnerPair name key world error value nameEq keyEq first
+          middle originalFinal left right diamond sourcePairAligned sameActor)
+      No actorsDistinct => distinctOwnerPairRAR name key world error value nameEq
+        keyEq first middle originalFinal left right diamond sourcePairAligned
+        actorsDistinct
+
+private
+0 adjacentField9ReplayCorrespondence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, pairFirst, pairMiddle, pairFinal, originalFinal, replayedFinal :
+    SystemState name key value world error) ->
+  (original : Transitions initial originalFinal) ->
+  (tracePrefix : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  (0 decomposition : (appendTransitions tracePrefix
+    (MoreTransitions left (MoreTransitions right suffix)) = original)) ->
+  (0 sourcePairAligned : AlignedTransitions name key world error value nameEq
+    keyEq (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  (0 seal : SealedSuffixReplaySpine name key world error value nameEq keyEq
+    suffix replayedSuffix) ->
+  RelationalReplayCorrespondence name key world error value original
+    (appendTransitions tracePrefix
+      (MoreTransitions (movedRight diamond)
+        (MoreTransitions (movedLeft diamond) replayedSuffix)))
+adjacentField9ReplayCorrespondence name key world error value nameEq keyEq
+  initial pairFirst pairMiddle pairFinal originalFinal replayedFinal original
+  tracePrefix left right suffix diamond replayedSuffix decomposition
+  sourcePairAligned seal = r97Field9ConcreteCapitalConsumer original tracePrefix
+    left right suffix diamond replayedSuffix decomposition
+    (pairRelationalReplayCorrespondence name key world error value nameEq keyEq
+      pairFirst pairMiddle pairFinal left right diamond sourcePairAligned) seal
+
+private
+0 adjacentField9Independent :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, pairFirst, pairMiddle, pairFinal, originalFinal, replayedFinal :
+    SystemState name key value world error) ->
+  (original : Transitions initial originalFinal) ->
+  (tracePrefix : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  (0 decomposition : (appendTransitions tracePrefix
+    (MoreTransitions left (MoreTransitions right suffix)) = original)) ->
+  (0 sourcePairAligned : AlignedTransitions name key world error value nameEq
+    keyEq (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  (0 seal : SealedSuffixReplaySpine name key world error value nameEq keyEq
+    suffix replayedSuffix) ->
+  (0 sourceIndependent : TraceIndependent name key world error value keyEq
+    original) ->
+  TraceIndependent name key world error value keyEq
+    (appendTransitions tracePrefix
+      (MoreTransitions (movedRight diamond)
+        (MoreTransitions (movedLeft diamond) replayedSuffix)))
+adjacentField9Independent name key world error value nameEq keyEq initial
+  pairFirst pairMiddle pairFinal originalFinal replayedFinal original tracePrefix
+  left right suffix diamond replayedSuffix decomposition sourcePairAligned seal
+  sourceIndependent = traceIndependentAfterRelationalReplaySpike keyEq
+    (adjacentField9ReplayCorrespondence name key world error value nameEq keyEq
+      initial pairFirst pairMiddle pairFinal originalFinal replayedFinal original
+      tracePrefix left right suffix diamond replayedSuffix decomposition
+      sourcePairAligned seal) sourceIndependent
