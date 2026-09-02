@@ -2641,6 +2641,14 @@ Source lookup reindexing succeeds, but direct elimination of
 `ControlEquivalent.controlPointwise` does not retain the exact target
 `lookupFiber = Just targetFiber` equation required to transport root
 O-Retire/O-Remove classification. The complete body unit is removed. A
-producer-owned source/target lookup-and-control package must be checked in a
-design-only campaign before body implementation can resume; all 15 fields
-remain complete and frozen, while holes remain 20 with split 6/4/8/1/1.
+producer-owned source/target lookup-and-control package must be checked before
+body implementation can resume; all 15 fields remain complete and frozen,
+while holes remain 20 with split 6/4/8/1/1. Revision 122 executes the authorized
+probe-first step, but the disposable external test module is rejected before
+the representation is tested: `DecEq` was not imported explicitly and the
+intended existing lookup producer, `pointwiseControlLookupFound`, is CP5-private.
+The probe and all proof edits are removed without a retry, as required by the
+probe-failure stop rule. A mandatory design-only campaign must now validate the
+package either inside a disposable CP5 module copy or with exact foundational
+imports plus a self-contained lookup producer. Retained package/body work
+remains unopened; holes remain 20 with split 6/4/8/1/1.
