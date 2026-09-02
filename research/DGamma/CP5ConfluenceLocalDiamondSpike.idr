@@ -25055,3 +25055,101 @@ r102OrchestrationActivationSameOwnerImpossible name key world error value nameEq
             (alignedHeadChecked sourceLeft) (alignedHeadChecked sourceRight)
             movedRightCheckedExact movedLeftCheckedExact sourceLeftOrchestration
             sourceRightActivation movedRightExact movedLeftExact ownerSame
+
+||| Exact B6 result for a same-owner candidate: operational safety leaves only
+||| homogeneous Iter/Iter or Retire/Retire, and both swaps have identical states.
+data R102EqualOwnerPairDispatch :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, originalFinal : SystemState name key value world error) ->
+  (left : Transition first middle) -> (right : Transition middle originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) -> Type where
+  R102DispatchedIterPair :
+    (0 iterPair : R101EqualOwnerActivationIterPair name key world error value
+      nameEq keyEq first middle originalFinal left right diamond) ->
+    (0 actionSame : transitionAction left = transitionAction right) ->
+    (0 tagSame : transitionTag left = transitionTag right) ->
+    (0 middleSame : swappedMiddle diamond = middle) ->
+    (0 finalSame : swappedFinal diamond = originalFinal) ->
+    R102EqualOwnerPairDispatch name key world error value nameEq keyEq first
+      middle originalFinal left right diamond
+  R102DispatchedRetirePair :
+    (0 retirePair : R101EqualOwnerOrchestrationRetirePair name key world error
+      value nameEq keyEq first middle originalFinal left right diamond) ->
+    (0 actionSame : transitionAction left = transitionAction right) ->
+    (0 tagSame : transitionTag left = transitionTag right) ->
+    (0 middleSame : swappedMiddle diamond = middle) ->
+    (0 finalSame : swappedFinal diamond = originalFinal) ->
+    R102EqualOwnerPairDispatch name key world error value nameEq keyEq first
+      middle originalFinal left right diamond
+
+0 r102DispatchEqualOwnerPair :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, originalFinal : SystemState name key value world error) ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (0 sourcePairAligned : AlignedTransitions name key world error value nameEq
+    keyEq (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  (0 sameActor : transitionActor left = transitionActor right) ->
+  R102EqualOwnerPairDispatch name key world error value nameEq keyEq first middle
+    originalFinal left right diamond
+r102DispatchEqualOwnerPair name key world error value nameEq keyEq first middle
+  originalFinal left right diamond sourcePairAligned sameActor =
+    case registrationSwapSafety diamond of
+      CandidateActivationActivation leftActivation rightActivation =>
+        let 0 iterPair : R101EqualOwnerActivationIterPair name key world error
+              value nameEq keyEq first middle originalFinal left right diamond
+            iterPair = r101ClassifyEqualOwnerActivationPair name key world error
+              value nameEq keyEq first middle originalFinal left right diamond
+              sourcePairAligned leftActivation rightActivation sameActor
+            0 equalities : ((transitionAction left = transitionAction right),
+              (transitionTag left = transitionTag right))
+            equalities = r102IterPairEqualities name key world error value nameEq
+              keyEq first middle originalFinal left right diamond sameActor iterPair
+            0 endpoints : ((swappedMiddle diamond = middle),
+              (swappedFinal diamond = originalFinal))
+            endpoints = r101SameCheckedPairEndpoints name key world error value
+              nameEq keyEq first middle originalFinal left right diamond
+              (fst equalities) (snd equalities)
+              (r101ProduceFourAlignedHeadViews name key world error value nameEq
+                keyEq first middle originalFinal left right diamond
+                sourcePairAligned)
+        in R102DispatchedIterPair iterPair (fst equalities) (snd equalities)
+          (fst endpoints) (snd endpoints)
+      CandidateActivationOrchestration leftActivation rightOrchestration
+        parentSafe => void (r102ActivationOrchestrationSameOwnerImpossible name
+          key world error value nameEq keyEq first middle originalFinal left right
+          diamond sourcePairAligned leftActivation rightOrchestration sameActor)
+      CandidateOrchestrationActivation leftOrchestration rightActivation
+        childSafe parentSafe => void
+          (r102OrchestrationActivationSameOwnerImpossible name key world error
+            value nameEq keyEq first middle originalFinal left right diamond
+            sourcePairAligned leftOrchestration rightActivation sameActor)
+      CandidateOrchestrationOrchestration leftOrchestration rightOrchestration
+        insertDistinct crossSafe =>
+          let 0 retirePair : R101EqualOwnerOrchestrationRetirePair name key world
+                error value nameEq keyEq first middle originalFinal left right
+                diamond
+              retirePair = r101ClassifyEqualOwnerOrchestrationPair name key world
+                error value nameEq keyEq first middle originalFinal left right
+                diamond sourcePairAligned leftOrchestration rightOrchestration
+                sameActor insertDistinct
+              0 equalities : ((transitionAction left = transitionAction right),
+                (transitionTag left = transitionTag right))
+              equalities = r102RetirePairEqualities name key world error value
+                nameEq keyEq first middle originalFinal left right diamond
+                sameActor retirePair
+              0 endpoints : ((swappedMiddle diamond = middle),
+                (swappedFinal diamond = originalFinal))
+              endpoints = r101SameCheckedPairEndpoints name key world error value
+                nameEq keyEq first middle originalFinal left right diamond
+                (fst equalities) (snd equalities)
+                (r101ProduceFourAlignedHeadViews name key world error value nameEq
+                  keyEq first middle originalFinal left right diamond
+                  sourcePairAligned)
+          in R102DispatchedRetirePair retirePair (fst equalities)
+            (snd equalities) (fst endpoints) (snd endpoints)
