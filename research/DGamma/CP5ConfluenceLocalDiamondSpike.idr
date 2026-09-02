@@ -25460,3 +25460,231 @@ equalOwnerPairRAR name key world error value nameEq keyEq first middle
                 (trans (movedLeftAction diamond) sourceActionSame)
                 (trans (movedLeftTag diamond) sourceTagSame)
                 middleSame finalSame retireDispatch
+
+private
+0 crossHeadReplayGeneratorOrigin :
+  (sourceLeft : Transition sourceFirst sourceMiddle) ->
+  (sourceRight : Transition sourceMiddle sourceFinal) ->
+  (targetRight : Transition targetFirst targetMiddle) ->
+  (targetLeft : Transition targetMiddle targetFinal) ->
+  (rightRAR : RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceRight NoTransitions)
+    (MoreTransitions targetRight NoTransitions)) ->
+  (actor : name) ->
+  (targetWhole : TraceEffectGenerator name key world error value actor
+    (MoreTransitions targetRight (MoreTransitions targetLeft NoTransitions))) ->
+  (targetSingleton : TraceEffectGenerator name key world error value actor
+    (MoreTransitions targetRight NoTransitions)) ->
+  ((state : EffectState name key value world) ->
+    traceGeneratorMap targetSingleton state = traceGeneratorMap targetWhole state) ->
+  LocatedConsReplayGeneratorOrigin name key world error value sourceLeft
+    targetRight (MoreTransitions sourceRight NoTransitions)
+    (MoreTransitions targetLeft NoTransitions) actor targetWhole
+crossHeadReplayGeneratorOrigin sourceLeft sourceRight targetRight targetLeft
+  rightRAR actor targetWhole targetSingleton targetExact =
+    case locateReplayGeneratorOrigin rightRAR actor targetSingleton of
+      MkLocatedReplayGeneratorOrigin sourceSingleton singletonMaps =>
+        let 0 related : (observedKeyEq : DecEq key) -> PartialMapsRelated
+              (EffectStateEquivalence observedKeyEq)
+              (traceGeneratorMap (prependGenerator sourceLeft sourceSingleton))
+              (traceGeneratorMap targetWhole)
+            related observedKeyEq {x} {y} inputs = replayPartialRewrite
+              (sym (prependGeneratorMapExact sourceLeft sourceSingleton x))
+              (targetExact y) (singletonMaps observedKeyEq inputs)
+        in MkLocatedConsReplayGeneratorOrigin
+          (prependGenerator sourceLeft sourceSingleton) related
+
+private
+0 crossTailReplayGeneratorOrigin :
+  (sourceLeft : Transition sourceFirst sourceMiddle) ->
+  (sourceRight : Transition sourceMiddle sourceFinal) ->
+  (targetRight : Transition targetFirst targetMiddle) ->
+  (targetLeft : Transition targetMiddle targetFinal) ->
+  (leftRAR : RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceLeft NoTransitions)
+    (MoreTransitions targetLeft NoTransitions)) ->
+  (actor : name) ->
+  (targetWhole : TraceEffectGenerator name key world error value actor
+    (MoreTransitions targetRight (MoreTransitions targetLeft NoTransitions))) ->
+  (targetLocal : TraceEffectGenerator name key world error value actor
+    (MoreTransitions targetLeft NoTransitions)) ->
+  ((state : EffectState name key value world) ->
+    traceGeneratorMap targetLocal state = traceGeneratorMap targetWhole state) ->
+  LocatedConsReplayGeneratorOrigin name key world error value sourceLeft
+    targetRight (MoreTransitions sourceRight NoTransitions)
+    (MoreTransitions targetLeft NoTransitions) actor targetWhole
+crossTailReplayGeneratorOrigin sourceLeft sourceRight targetRight targetLeft
+  leftRAR actor targetWhole targetLocal targetExact =
+    case locateReplayGeneratorOrigin leftRAR actor targetLocal of
+      MkLocatedReplayGeneratorOrigin sourceSingleton singletonMaps =>
+        let 0 related : (observedKeyEq : DecEq key) -> PartialMapsRelated
+              (EffectStateEquivalence observedKeyEq)
+              (traceGeneratorMap (widenSingletonGenerator
+                (MoreTransitions sourceRight NoTransitions) sourceSingleton))
+              (traceGeneratorMap targetWhole)
+            related observedKeyEq {x} {y} inputs = replayPartialRewrite
+              (sym (widenSingletonGeneratorMapExact
+                (MoreTransitions sourceRight NoTransitions) sourceSingleton x))
+              (targetExact y) (singletonMaps observedKeyEq inputs)
+        in MkLocatedConsReplayGeneratorOrigin
+          (widenSingletonGenerator (MoreTransitions sourceRight NoTransitions)
+            sourceSingleton) related
+
+private
+0 locateCrossPairGeneratorOrigin :
+  (sourceLeft : Transition sourceFirst sourceMiddle) ->
+  (sourceRight : Transition sourceMiddle sourceFinal) ->
+  (targetRight : Transition targetFirst targetMiddle) ->
+  (targetLeft : Transition targetMiddle targetFinal) ->
+  (rightRAR : RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceRight NoTransitions)
+    (MoreTransitions targetRight NoTransitions)) ->
+  (leftRAR : RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceLeft NoTransitions)
+    (MoreTransitions targetLeft NoTransitions)) ->
+  (actor : name) ->
+  (target : TraceEffectGenerator name key world error value actor
+    (MoreTransitions targetRight (MoreTransitions targetLeft NoTransitions))) ->
+  LocatedConsReplayGeneratorOrigin name key world error value sourceLeft
+    targetRight (MoreTransitions sourceRight NoTransitions)
+    (MoreTransitions targetLeft NoTransitions) actor target
+locateCrossPairGeneratorOrigin sourceLeft sourceRight targetRight targetLeft
+  rightRAR leftRAR actor target = case locateJointConsTargetGenerator target of
+    JointConsActualHere targetWhole targetSingleton targetExact =>
+      crossHeadReplayGeneratorOrigin sourceLeft sourceRight targetRight targetLeft
+        rightRAR actor targetWhole targetSingleton targetExact
+    JointConsActualLater targetWhole targetLocal targetExact =>
+      crossTailReplayGeneratorOrigin sourceLeft sourceRight targetRight targetLeft
+        leftRAR actor targetWhole targetLocal targetExact
+    JointConsForwardHere targetStage exactStage targetExact outcomeExact =>
+      crossHeadReplayGeneratorOrigin sourceLeft sourceRight targetRight targetLeft
+        rightRAR actor (IteratorForwardGenerator targetStage)
+        (IteratorForwardGenerator exactStage) targetExact
+    JointConsForwardLater targetStage exactStage targetExact outcomeExact =>
+      crossTailReplayGeneratorOrigin sourceLeft sourceRight targetRight targetLeft
+        leftRAR actor (IteratorForwardGenerator targetStage)
+        (IteratorForwardGenerator exactStage) targetExact
+    JointConsYieldedHere targetStage origin exactStage targetExact outcomeExact =>
+      crossHeadReplayGeneratorOrigin sourceLeft sourceRight targetRight targetLeft
+        rightRAR actor (IteratorYieldedGenerator targetStage origin)
+        (IteratorYieldedGenerator exactStage origin) targetExact
+    JointConsYieldedLater targetStage origin exactStage targetExact outcomeExact =>
+      crossTailReplayGeneratorOrigin sourceLeft sourceRight targetRight targetLeft
+        leftRAR actor (IteratorYieldedGenerator targetStage origin)
+        (IteratorYieldedGenerator exactStage origin) targetExact
+
+private
+0 crossHeadReplayIteratorStageOrigin :
+  (sourceLeft : Transition sourceFirst sourceMiddle) ->
+  (sourceRight : Transition sourceMiddle sourceFinal) ->
+  (targetRight : Transition targetFirst targetMiddle) ->
+  (targetLeft : Transition targetMiddle targetFinal) ->
+  (rightRAR : RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceRight NoTransitions)
+    (MoreTransitions targetRight NoTransitions)) ->
+  (actor : name) ->
+  (targetWhole : IteratorStage name key world error value actor
+    (MoreTransitions targetRight (MoreTransitions targetLeft NoTransitions))) ->
+  (targetSingleton : IteratorStage name key world error value actor
+    (MoreTransitions targetRight NoTransitions)) ->
+  ((state : EffectState name key value world) ->
+    iteratorStageOutcome targetWhole state =
+      iteratorStageOutcome targetSingleton state) ->
+  LocatedConsIteratorStageOrigin name key world error value sourceLeft targetRight
+    (MoreTransitions sourceRight NoTransitions)
+    (MoreTransitions targetLeft NoTransitions) actor targetWhole
+crossHeadReplayIteratorStageOrigin sourceLeft sourceRight targetRight targetLeft
+  rightRAR actor targetWhole targetSingleton targetExact =
+    case locateReplayIteratorStageOrigin rightRAR actor targetSingleton of
+      MkLocatedReplayIteratorStageOrigin sourceSingleton singletonExact =>
+        MkLocatedConsIteratorStageOrigin
+          (prependIteratorStage sourceLeft sourceSingleton)
+          (\state => trans (targetExact state) (trans (singletonExact state)
+            (sym (prependIteratorOutcomeExact sourceLeft sourceSingleton state))))
+
+private
+0 crossTailReplayIteratorStageOrigin :
+  (sourceLeft : Transition sourceFirst sourceMiddle) ->
+  (sourceRight : Transition sourceMiddle sourceFinal) ->
+  (targetRight : Transition targetFirst targetMiddle) ->
+  (targetLeft : Transition targetMiddle targetFinal) ->
+  (leftRAR : RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceLeft NoTransitions)
+    (MoreTransitions targetLeft NoTransitions)) ->
+  (actor : name) ->
+  (targetWhole : IteratorStage name key world error value actor
+    (MoreTransitions targetRight (MoreTransitions targetLeft NoTransitions))) ->
+  (targetLocal : IteratorStage name key world error value actor
+    (MoreTransitions targetLeft NoTransitions)) ->
+  ((state : EffectState name key value world) ->
+    iteratorStageOutcome targetWhole state = iteratorStageOutcome targetLocal state) ->
+  LocatedConsIteratorStageOrigin name key world error value sourceLeft targetRight
+    (MoreTransitions sourceRight NoTransitions)
+    (MoreTransitions targetLeft NoTransitions) actor targetWhole
+crossTailReplayIteratorStageOrigin sourceLeft sourceRight targetRight targetLeft
+  leftRAR actor targetWhole targetLocal targetExact =
+    case locateReplayIteratorStageOrigin leftRAR actor targetLocal of
+      MkLocatedReplayIteratorStageOrigin sourceSingleton singletonExact =>
+        MkLocatedConsIteratorStageOrigin
+          (widenSingletonIteratorStage
+            (MoreTransitions sourceRight NoTransitions) sourceSingleton)
+          (\state => trans (targetExact state) (trans (singletonExact state)
+            (sym (widenSingletonIteratorOutcomeExact
+              (MoreTransitions sourceRight NoTransitions) sourceSingleton state))))
+
+private
+0 locateCrossPairIteratorStageOrigin :
+  (sourceLeft : Transition sourceFirst sourceMiddle) ->
+  (sourceRight : Transition sourceMiddle sourceFinal) ->
+  (targetRight : Transition targetFirst targetMiddle) ->
+  (targetLeft : Transition targetMiddle targetFinal) ->
+  (rightRAR : RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceRight NoTransitions)
+    (MoreTransitions targetRight NoTransitions)) ->
+  (leftRAR : RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceLeft NoTransitions)
+    (MoreTransitions targetLeft NoTransitions)) ->
+  (actor : name) ->
+  (targetStage : IteratorStage name key world error value actor
+    (MoreTransitions targetRight (MoreTransitions targetLeft NoTransitions))) ->
+  LocatedConsIteratorStageOrigin name key world error value sourceLeft targetRight
+    (MoreTransitions sourceRight NoTransitions)
+    (MoreTransitions targetLeft NoTransitions) actor targetStage
+locateCrossPairIteratorStageOrigin sourceLeft sourceRight targetRight targetLeft
+  rightRAR leftRAR actor targetStage = case locateJointConsTargetStage targetStage of
+    JointConsTargetStageHere targetWhole exactStage forwardExact yieldedExact
+      outcomeExact => crossHeadReplayIteratorStageOrigin sourceLeft sourceRight
+        targetRight targetLeft rightRAR actor targetWhole exactStage outcomeExact
+    JointConsTargetStageLater targetWhole exactStage forwardExact yieldedExact
+      outcomeExact => crossTailReplayIteratorStageOrigin sourceLeft sourceRight
+        targetRight targetLeft leftRAR actor targetWhole exactStage outcomeExact
+
+private
+0 crossPairRelationalReplayCorrespondence :
+  (sourceLeft : Transition sourceFirst sourceMiddle) ->
+  (sourceRight : Transition sourceMiddle sourceFinal) ->
+  (targetRight : Transition targetFirst targetMiddle) ->
+  (targetLeft : Transition targetMiddle targetFinal) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceRight NoTransitions)
+    (MoreTransitions targetRight NoTransitions) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceLeft NoTransitions)
+    (MoreTransitions targetLeft NoTransitions) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions sourceLeft (MoreTransitions sourceRight NoTransitions))
+    (MoreTransitions targetRight (MoreTransitions targetLeft NoTransitions))
+crossPairRelationalReplayCorrespondence sourceLeft sourceRight targetRight
+  targetLeft rightRAR leftRAR = MkRelationalReplayCorrespondence
+    (\actor, target => consGeneratorOrigin
+      (locateCrossPairGeneratorOrigin sourceLeft sourceRight targetRight targetLeft
+        rightRAR leftRAR actor target))
+    (\observedKeyEq, actor, target => consGeneratorMapsRelated
+      (locateCrossPairGeneratorOrigin sourceLeft sourceRight targetRight targetLeft
+        rightRAR leftRAR actor target) observedKeyEq)
+    (\actor, targetStage => consIteratorStageOrigin
+      (locateCrossPairIteratorStageOrigin sourceLeft sourceRight targetRight
+        targetLeft rightRAR leftRAR actor targetStage))
+    (\actor, targetStage, state => consIteratorOutcomePreserved
+      (locateCrossPairIteratorStageOrigin sourceLeft sourceRight targetRight
+        targetLeft rightRAR leftRAR actor targetStage) state)

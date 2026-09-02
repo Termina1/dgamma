@@ -2615,4 +2615,12 @@ both Iter/Iter and Retire/Retire singleton pairs, joins them by cons RAR, and is
 consumed by `r97Field9ConcreteCapitalConsumer`. Pair RAR implementation is now
 authorized as one fresh private unit; holes remain 20 with split 6/4/8/1/1, and
 the nominal implementation band remains 1–2 shifts because the mandatory
-design campaign is excluded.
+design campaign is excluded. Revision 115 lands that ratified equal-owner pair
+RAR on its first fresh attempt. Revision 116 retains the cross-position
+RAR generator/stage locators on their first attempt, but removes the following
+distinct-owner singleton producer after its independent three-attempt budget is
+exhausted by an explicit-index failure, nonlinear equality/actor projection
+failure, and parser-layout failure. Field 9 therefore remains incomplete;
+fields 10–15 and the O6 body are unopened, holes remain 20 with split
+6/4/8/1/1, and a reviewer must authorize a fresh distinct-owner budget before
+the nominal final implementation shift.
