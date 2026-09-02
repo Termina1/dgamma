@@ -24963,3 +24963,95 @@ r102ActivationOrchestrationSameOwnerImpossible name key world error value nameEq
             (alignedHeadChecked sourceLeft) (alignedHeadChecked sourceRight)
             movedRightCheckedExact movedLeftCheckedExact sourceLeftActivation
             sourceRightOrchestration movedRightExact movedLeftExact ownerSame
+
+0 r102OrchestrationActivationSameOwnerImpossible :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, originalFinal : SystemState name key value world error) ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (0 sourcePairAligned : AlignedTransitions name key world error value nameEq
+    keyEq (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  (0 leftOrchestration : PaperOrchestrationStep left) ->
+  (0 rightActivation : PaperActivationStep right) ->
+  (0 sameActor : transitionActor left = transitionActor right) ->
+  Void
+r102OrchestrationActivationSameOwnerImpossible name key world error value nameEq
+  keyEq first middle originalFinal left right diamond sourcePairAligned
+  leftOrchestration rightActivation sameActor =
+    case r101ProduceFourAlignedHeadViews name key world error value nameEq keyEq
+      first middle originalFinal left right diamond sourcePairAligned of
+      MkR101FourAlignedHeadViews sourceLeft sourceRight movedRightHead
+        movedLeftHead movedRightActionSame movedRightTagSame movedLeftActionSame
+        movedLeftTagSame =>
+          let 0 sourceLeftOrchestration : PaperOrchestrationStep
+                (Fired {before = first} {afterState = middle} nameEq keyEq
+                  (alignedHeadAction sourceLeft) (alignedHeadTag sourceLeft)
+                  (alignedHeadChecked sourceLeft))
+              sourceLeftOrchestration = paperOrchestrationStepTransport
+                (sym (alignedHeadActionProjection sourceLeft))
+                (sym (alignedHeadTagProjection sourceLeft)) leftOrchestration
+              0 sourceRightActivation : PaperActivationStep
+                (Fired {before = middle} {afterState = originalFinal} nameEq keyEq
+                  (alignedHeadAction sourceRight) (alignedHeadTag sourceRight)
+                  (alignedHeadChecked sourceRight))
+              sourceRightActivation = paperActivationStepTransport
+                (sym (alignedHeadActionProjection sourceRight))
+                (sym (alignedHeadTagProjection sourceRight)) rightActivation
+              0 movedRightCheckedExact : (checkedApplyAction @{nameEq} @{keyEq}
+                (alignedHeadAction sourceRight) first =
+                  Just (alignedHeadTag sourceRight, swappedMiddle diamond))
+              movedRightCheckedExact = checkedActivationEquationTransport nameEq
+                keyEq (alignedHeadAction movedRightHead)
+                (alignedHeadAction sourceRight) movedRightActionSame
+                (alignedHeadTag movedRightHead) (alignedHeadTag sourceRight)
+                movedRightTagSame (alignedHeadChecked movedRightHead)
+              0 movedLeftCheckedExact : (checkedApplyAction @{nameEq} @{keyEq}
+                (alignedHeadAction sourceLeft) (swappedMiddle diamond) =
+                  Just (alignedHeadTag sourceLeft, swappedFinal diamond))
+              movedLeftCheckedExact = checkedActivationEquationTransport nameEq
+                keyEq (alignedHeadAction movedLeftHead)
+                (alignedHeadAction sourceLeft) movedLeftActionSame
+                (alignedHeadTag movedLeftHead) (alignedHeadTag sourceLeft)
+                movedLeftTagSame (alignedHeadChecked movedLeftHead)
+              0 movedRightOriginal : PaperActivationStep (movedRight diamond)
+              movedRightOriginal = movedRightActivationBranch diamond
+                rightActivation
+              0 movedLeftOriginal : PaperOrchestrationStep (movedLeft diamond)
+              movedLeftOriginal = movedLeftOrchestrationBranch diamond
+                leftOrchestration
+              0 movedRightExact : PaperActivationStep
+                (Fired {before = first} {afterState = swappedMiddle diamond}
+                  nameEq keyEq (alignedHeadAction sourceRight)
+                  (alignedHeadTag sourceRight) movedRightCheckedExact)
+              movedRightExact = paperActivationStepTransport
+                (trans (sym (alignedHeadActionProjection sourceRight))
+                  (sym (movedRightAction diamond)))
+                (trans (sym (alignedHeadTagProjection sourceRight))
+                  (sym (movedRightTag diamond))) movedRightOriginal
+              0 movedLeftExact : PaperOrchestrationStep
+                (Fired {before = swappedMiddle diamond}
+                  {afterState = swappedFinal diamond} nameEq keyEq
+                  (alignedHeadAction sourceLeft) (alignedHeadTag sourceLeft)
+                  movedLeftCheckedExact)
+              movedLeftExact = paperOrchestrationStepTransport
+                (trans (sym (alignedHeadActionProjection sourceLeft))
+                  (sym (movedLeftAction diamond)))
+                (trans (sym (alignedHeadTagProjection sourceLeft))
+                  (sym (movedLeftTag diamond))) movedLeftOriginal
+              0 ownerSame : (actionOwner (alignedHeadAction sourceLeft) =
+                actionOwner (alignedHeadAction sourceRight))
+              ownerSame = r101AlignedActionOwnersSame left right
+                (alignedHeadAction sourceLeft) (alignedHeadAction sourceRight)
+                (alignedHeadActionProjection sourceLeft)
+                (alignedHeadActionProjection sourceRight) sameActor
+          in r101ExactOrchestrationActivationSameOwnerImpossible name key world
+            error value nameEq keyEq first middle originalFinal
+            (swappedMiddle diamond) (swappedFinal diamond)
+            (alignedHeadAction sourceLeft) (alignedHeadAction sourceRight)
+            (alignedHeadTag sourceLeft) (alignedHeadTag sourceRight)
+            (alignedHeadChecked sourceLeft) (alignedHeadChecked sourceRight)
+            movedRightCheckedExact movedLeftCheckedExact sourceLeftOrchestration
+            sourceRightActivation movedRightExact movedLeftExact ownerSame
