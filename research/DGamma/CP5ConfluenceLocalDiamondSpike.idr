@@ -25688,3 +25688,143 @@ crossPairRelationalReplayCorrespondence sourceLeft sourceRight targetRight
     (\actor, targetStage, state => consIteratorOutcomePreserved
       (locateCrossPairIteratorStageOrigin sourceLeft sourceRight targetRight
         targetLeft rightRAR leftRAR actor targetStage) state)
+
+
+private
+0 distinctOwnerPairRARFromOwnedMovedIdentity :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, originalFinal : SystemState name key value world error) ->
+  (leftAction : Action name key value world error) -> (leftTag : RuleTag) ->
+  (0 leftChecked : (checkedApplyAction @{nameEq} @{keyEq} leftAction first =
+    Just (leftTag, middle))) ->
+  (rightAction : Action name key value world error) -> (rightTag : RuleTag) ->
+  (0 rightChecked : (checkedApplyAction @{nameEq} @{keyEq} rightAction middle =
+    Just (rightTag, originalFinal))) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked)
+    (Fired {before = middle} {afterState = originalFinal}
+      nameEq keyEq rightAction rightTag rightChecked)) ->
+  (movedMiddle, movedFinal : SystemState name key value world error) ->
+  (movedRightStep : Transition first movedMiddle) ->
+  (movedLeftStep : Transition movedMiddle movedFinal) ->
+  (0 movedAligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions movedRightStep (MoreTransitions movedLeftStep NoTransitions))) ->
+  (0 movedRightActionSame : (transitionAction movedRightStep = rightAction)) ->
+  (0 movedRightTagSame : (transitionTag movedRightStep = rightTag)) ->
+  (0 movedLeftActionSame : (transitionAction movedLeftStep = leftAction)) ->
+  (0 movedLeftTagSame : (transitionTag movedLeftStep = leftTag)) ->
+  (0 ownersDistinct : Not (actionOwner leftAction = actionOwner rightAction)) ->
+  (0 safety : CandidateRegistrationSwapSafety
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked)
+    (Fired {before = middle} {afterState = originalFinal}
+      nameEq keyEq rightAction rightTag rightChecked)) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked)
+      (MoreTransitions (Fired {before = middle} {afterState = originalFinal}
+      nameEq keyEq rightAction rightTag rightChecked)
+        NoTransitions))
+    (MoreTransitions movedRightStep (MoreTransitions movedLeftStep NoTransitions))
+distinctOwnerPairRARFromOwnedMovedIdentity name key world error value nameEq keyEq
+  first middle originalFinal leftAction leftTag leftChecked rightAction rightTag
+  rightChecked diamond movedMiddle movedFinal
+  (Fired nameEq keyEq movedRightActionValue movedRightTagValue movedRightChecked)
+  (Fired nameEq keyEq movedLeftActionValue movedLeftTagValue movedLeftChecked)
+  (AlignedStep movedRightActionValue movedRightTagValue movedRightChecked _
+    (AlignedStep movedLeftActionValue movedLeftTagValue movedLeftChecked
+      NoTransitions AlignedEnd))
+  movedRightActionSame movedRightTagSame movedLeftActionSame movedLeftTagSame
+  ownersDistinct safety = case movedRightActionSame of
+    Refl => case movedRightTagSame of
+      Refl => case movedLeftActionSame of
+        Refl => case movedLeftTagSame of
+          Refl => case safety of
+                  CandidateActivationActivation leftActivation rightActivation =>
+                    crossPairRelationalReplayCorrespondence
+                      (Fired nameEq keyEq leftAction leftTag leftChecked)
+                      (Fired nameEq keyEq rightAction rightTag rightChecked)
+                      (Fired nameEq keyEq rightAction rightTag movedRightChecked)
+                      (Fired nameEq keyEq leftAction leftTag movedLeftChecked)
+                      (activationSingletonRAR name key value world error nameEq keyEq
+                        rightAction rightTag middle originalFinal first movedMiddle
+                        rightChecked movedRightChecked rightActivation (transitionForeignLookup nameEq keyEq (actionOwner rightAction)
+                                      leftAction leftTag leftChecked
+                                      (\rightIsLeft => ownersDistinct (sym rightIsLeft))))
+                      (activationSingletonRAR name key value world error nameEq keyEq
+                        leftAction leftTag first middle movedMiddle movedFinal leftChecked
+                        movedLeftChecked leftActivation (sym (transitionForeignLookup nameEq keyEq (actionOwner leftAction)
+                                      rightAction rightTag movedRightChecked ownersDistinct)))
+                  CandidateActivationOrchestration leftActivation rightOrchestration
+                    parentSafe => crossPairRelationalReplayCorrespondence
+                      (Fired nameEq keyEq leftAction leftTag leftChecked)
+                      (Fired nameEq keyEq rightAction rightTag rightChecked)
+                      (Fired nameEq keyEq rightAction rightTag movedRightChecked)
+                      (Fired nameEq keyEq leftAction leftTag movedLeftChecked)
+                      (orchestrationSingletonRAR name key value world error nameEq keyEq
+                        rightAction rightTag middle originalFinal first movedMiddle
+                        rightChecked movedRightChecked rightOrchestration)
+                      (activationSingletonRAR name key value world error nameEq keyEq
+                        leftAction leftTag first middle movedMiddle movedFinal leftChecked
+                        movedLeftChecked leftActivation (sym (transitionForeignLookup nameEq keyEq (actionOwner leftAction)
+                                      rightAction rightTag movedRightChecked ownersDistinct)))
+                  CandidateOrchestrationActivation leftOrchestration rightActivation
+                    childSafe parentSafe => crossPairRelationalReplayCorrespondence
+                      (Fired nameEq keyEq leftAction leftTag leftChecked)
+                      (Fired nameEq keyEq rightAction rightTag rightChecked)
+                      (Fired nameEq keyEq rightAction rightTag movedRightChecked)
+                      (Fired nameEq keyEq leftAction leftTag movedLeftChecked)
+                      (activationSingletonRAR name key value world error nameEq keyEq
+                        rightAction rightTag middle originalFinal first movedMiddle
+                        rightChecked movedRightChecked rightActivation (transitionForeignLookup nameEq keyEq (actionOwner rightAction)
+                                      leftAction leftTag leftChecked
+                                      (\rightIsLeft => ownersDistinct (sym rightIsLeft))))
+                      (orchestrationSingletonRAR name key value world error nameEq keyEq
+                        leftAction leftTag first middle movedMiddle movedFinal leftChecked
+                        movedLeftChecked leftOrchestration)
+                  CandidateOrchestrationOrchestration leftOrchestration rightOrchestration
+                    insertDistinct crossSafe => crossPairRelationalReplayCorrespondence
+                      (Fired nameEq keyEq leftAction leftTag leftChecked)
+                      (Fired nameEq keyEq rightAction rightTag rightChecked)
+                      (Fired nameEq keyEq rightAction rightTag movedRightChecked)
+                      (Fired nameEq keyEq leftAction leftTag movedLeftChecked)
+                      (orchestrationSingletonRAR name key value world error nameEq keyEq
+                        rightAction rightTag middle originalFinal first movedMiddle
+                        rightChecked movedRightChecked rightOrchestration)
+                      (orchestrationSingletonRAR name key value world error nameEq keyEq
+                        leftAction leftTag first middle movedMiddle movedFinal leftChecked
+                        movedLeftChecked leftOrchestration)
+
+private
+0 distinctOwnerPairRAR :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, originalFinal : SystemState name key value world error) ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (0 sourcePairAligned : AlignedTransitions name key world error value nameEq
+    keyEq (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  (0 actorsDistinct : Not (transitionActor left = transitionActor right)) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions left (MoreTransitions right NoTransitions))
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) NoTransitions))
+distinctOwnerPairRAR name key world error value nameEq keyEq first middle
+  originalFinal left right diamond sourcePairAligned actorsDistinct =
+    case pairAlignedIdentity left right sourcePairAligned of
+      MkPairAlignedIdentity leftAction leftTag leftChecked rightAction rightTag
+        rightChecked => distinctOwnerPairRARFromOwnedMovedIdentity name key world
+          error value nameEq keyEq first middle originalFinal leftAction leftTag
+          leftChecked rightAction rightTag rightChecked diamond
+          (swappedMiddle diamond) (swappedFinal diamond) (movedRight diamond)
+          (movedLeft diamond) (movedPairAligned diamond)
+          (movedRightAction diamond) (movedRightTag diamond)
+          (movedLeftAction diamond) (movedLeftTag diamond)
+          (\ownersSame => actorsDistinct (trans
+            (localTransitionActorActionOwner left)
+            (trans ownersSame (sym (localTransitionActorActionOwner right)))))
+          (registrationSwapSafety diamond)
