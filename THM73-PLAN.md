@@ -2002,6 +2002,26 @@ the two singleton RARs. Pair RAR, fields, and assembly remain open. Holes remain
 **20**, split **6/4/8/1/1**; no frozen surface change is indicated. A **1–5
 shift** remaining band is proposed.
 
+### Revision 105: pair RAR reaches source stored-check boundary
+
+`research-tests/O6-R105-PAIR-RAR-SOURCE-CHECK-STOP-AUDIT.md` records shift
+#113. The authorized `R101FourAlignedHeadViews` cure was implemented in one
+elimination: package-owned cross equations transported both moved checked
+actions/tags, and the B6 deterministic equalities reindexed moved-right output
+and moved-left input/output. No opaque diamond action/tag projection was used.
+The three-attempt unit was nevertheless removed. Attempt 1 exposed a local
+moved-action annotation against the opaque transition projection; attempt 2
+used the actual projections and reached only an abstract source-transition
+alias; attempt 3 unaliased both source `Fired` constructors and reached the
+first singleton RAR with every index unified except the erased source proof:
+`leftChecked` from alignment versus `leftOriginalChecked` stored by the source
+transition. The next fresh unit keeps attempt 3 but passes
+`leftOriginalChecked`/`rightOriginalChecked` (and exact original action/tag
+fields if required) to the singleton source legs. This is an elaboration
+boundary, not a semantic gap or proof-irrelevance request. Pair RAR and later
+units remain open. Holes remain **20**, split **6/4/8/1/1**; no frozen surface
+change is indicated. A nominal **1–4 shift** remainder is proposed.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
