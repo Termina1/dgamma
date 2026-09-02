@@ -24774,3 +24774,51 @@ r101SameCheckedPairEndpoints name key world error value nameEq keyEq first middl
                   (alignedHeadAction sourceRight) middle (swappedFinal diamond)
                   (alignedHeadTag sourceRight) movedLeftCheckedAsRightAtMiddle))
           in (swappedToMiddle, sym originalToSwapped)
+
+0 r102IterPairEqualities :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, originalFinal : SystemState name key value world error) ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (0 sameActor : transitionActor left = transitionActor right) ->
+  (0 classification : R101EqualOwnerActivationIterPair name key world error value
+    nameEq keyEq first middle originalFinal left right diamond) ->
+  ((transitionAction left = transitionAction right),
+    (transitionTag left = transitionTag right))
+r102IterPairEqualities name key world error value nameEq keyEq first middle
+  originalFinal
+  (Fired leftNameEq leftKeyEq leftAction leftTag leftChecked)
+  (Fired rightNameEq rightKeyEq rightAction rightTag rightChecked)
+  diamond sameActor classification =
+    case classification of
+      MkR101EqualOwnerActivationIterPair leftActivation rightActivation
+        movedRightActivation movedLeftActivation leftTagIter rightTagIter =>
+          case r101IterActionView name key world error value leftNameEq leftKeyEq
+            first middle leftAction leftTag leftChecked leftActivation leftTagIter of
+            MkR101IterActionView leftActor leftActionSame =>
+              case r101IterActionView name key world error value rightNameEq
+                rightKeyEq middle originalFinal rightAction rightTag rightChecked
+                rightActivation rightTagIter of
+                MkR101IterActionView rightActor rightActionSame =>
+                  let 0 ownerSame : (actionOwner leftAction =
+                        actionOwner rightAction)
+                      ownerSame = trans
+                        (sym (transitionActorFiredActionOwner leftNameEq leftKeyEq
+                          leftAction leftTag leftChecked))
+                        (trans sameActor
+                          (transitionActorFiredActionOwner rightNameEq rightKeyEq
+                            rightAction rightTag rightChecked))
+                      0 leftOwner : (actionOwner leftAction = leftActor)
+                      leftOwner = cong actionOwner leftActionSame
+                      0 rightOwner : (actionOwner rightAction = rightActor)
+                      rightOwner = cong actionOwner rightActionSame
+                      0 actorSame : (leftActor = rightActor)
+                      actorSame = trans (sym leftOwner)
+                        (trans ownerSame rightOwner)
+                      0 actionSame : (leftAction = rightAction)
+                      actionSame = trans leftActionSame
+                        (trans (cong LAdvance actorSame) (sym rightActionSame))
+                  in (actionSame, trans leftTagIter (sym rightTagIter))
