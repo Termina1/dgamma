@@ -2599,4 +2599,20 @@ Revision 95 checks a provisional eight-family table and cross-retirement stage
 consumer, then stops at an exhausted actual-map congruence route. Revision 96
 corrects that table operationally to only Iter/Iter and Retire/Retire because
 retirement invalidates the activation target, and isolates the remaining design
-gap to split append localization; final assembly remains open.
+gap to split append localization; final assembly remains open. Revisions 97–102
+close append composition, the retired Begin/Advance/Finish chain, exact aligned
+head packaging, the complete equal-owner classifier, and its endpoint dispatch.
+Revisions 103–107 progressively reduce pair RAR elaboration to one independently
+stored erased source checked-proof token, exhaust the authorized implementation
+budgets, and arm the mandatory design-only campaign. Revision 108 completes that
+campaign without a retained proof edit: the aligned-check and no-source-alignment
+routes are rejected at moved projection identity and independent dictionary
+identity respectively, while a checked disposable full probe ratifies a
+producer-owned source aligned identity plus a direct moved-pair helper. The
+successful helper keeps original checked proofs on source singleton legs, moved
+checked proofs on target singleton legs, preserves moved endpoints, constructs
+both Iter/Iter and Retire/Retire singleton pairs, joins them by cons RAR, and is
+consumed by `r97Field9ConcreteCapitalConsumer`. Pair RAR implementation is now
+authorized as one fresh private unit; holes remain 20 with split 6/4/8/1/1, and
+the nominal implementation band remains 1–2 shifts because the mandatory
+design campaign is excluded.
