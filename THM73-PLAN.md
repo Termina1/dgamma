@@ -2022,6 +2022,26 @@ boundary, not a semantic gap or proof-irrelevance request. Pair RAR and later
 units remain open. Holes remain **20**, split **6/4/8/1/1**; no frozen surface
 change is indicated. A nominal **1–4 shift** remainder is proposed.
 
+### Revision 106: pair RAR isolates direct source constructor reduction
+
+`research-tests/O6-R106-PAIR-RAR-DIRECT-CONSTRUCTOR-STOP-AUDIT.md` records
+shift #114. The source-stored checked proofs were supplied as authorized while
+the package-owned moved transports and endpoint reindexing remained accepted.
+Attempt 1 reached only the activation witness indexed by the alignment-local
+erased proof; attempt 2 transported that witness explicitly and reached
+`leftTag` versus the let-bound `leftOriginalTag`; attempt 3 confirmed the same
+boundary for dispatch action equality (`leftAction` versus
+`leftOriginalAction`). The three-attempt pair-RAR unit was removed. The next
+fresh unit must remove the fully typed `sourceLeftStep`/`sourceRightStep` lets,
+pass the unaliased `Fired ... leftOriginalChecked/rightOriginalChecked`
+constructors directly to the four-head producer and cons RAR, let source
+alignment reindex those constructor fields directly, keep aligned action/tag
+names plus source-stored checks in singleton calls, and retain attempt 2's
+explicit witness transport. The target/package/endpoint half already
+elaborates. Pair RAR and later units remain open. Holes remain **20**, split
+**6/4/8/1/1**; no frozen surface change is indicated. A nominal **1–3 shift**
+remainder is proposed.
+
 ## Executive estimate
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
