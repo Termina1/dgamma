@@ -25153,3 +25153,310 @@ r102DispatchEqualOwnerPair name key world error value nameEq keyEq first middle
                   sourcePairAligned)
           in R102DispatchedRetirePair retirePair (fst equalities)
             (snd equalities) (fst endpoints) (snd endpoints)
+
+private
+data PairAlignedIdentity :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (left : Transition first middle) ->
+  (right : Transition middle finalState) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))) -> Type where
+  MkPairAlignedIdentity :
+    (leftAction : Action name key value world error) ->
+    (leftTag : RuleTag) ->
+    (0 leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first =
+      Just (leftTag, middle)) ->
+    (rightAction : Action name key value world error) ->
+    (rightTag : RuleTag) ->
+    (0 rightChecked : checkedApplyAction @{nameEq} @{keyEq} rightAction middle =
+      Just (rightTag, finalState)) ->
+    PairAlignedIdentity name key world error value nameEq keyEq first middle
+      finalState (Fired nameEq keyEq leftAction leftTag leftChecked)
+      (Fired nameEq keyEq rightAction rightTag rightChecked)
+      (AlignedStep leftAction leftTag leftChecked
+        (MoreTransitions
+          (Fired nameEq keyEq rightAction rightTag rightChecked) NoTransitions)
+        (AlignedStep rightAction rightTag rightChecked NoTransitions
+          AlignedEnd))
+
+0 pairAlignedIdentity :
+  (left : Transition first middle) ->
+  (right : Transition middle finalState) ->
+  (0 aligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  PairAlignedIdentity name key world error value nameEq keyEq first middle
+    finalState left right aligned
+pairAlignedIdentity
+  (Fired nameEq keyEq leftAction leftTag leftChecked)
+  (Fired nameEq keyEq rightAction rightTag rightChecked)
+  (AlignedStep leftAction leftTag leftChecked _
+    (AlignedStep rightAction rightTag rightChecked NoTransitions AlignedEnd)) =
+      MkPairAlignedIdentity leftAction leftTag leftChecked rightAction
+        rightTag rightChecked
+
+private
+0 lookupStateBackward :
+  (name, key : Type) -> (value : key -> Type) -> (world, error : Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (target, source : SystemState name key value world error) ->
+  (0 same : (target = source)) ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor (registry source) =
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor (registry target)
+lookupStateBackward name key value world error nameEq keyEq actor target
+  source same = cong
+    (\state => lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} actor (registry state)) (sym same)
+
+0 equalOwnerPairRARFromOwnedMovedIdentity :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, originalFinal : SystemState name key value world error) ->
+  (leftAction : Action name key value world error) -> (leftTag : RuleTag) ->
+  (0 leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first =
+    Just (leftTag, middle)) ->
+  (rightAction : Action name key value world error) -> (rightTag : RuleTag) ->
+  (0 rightChecked : checkedApplyAction @{nameEq} @{keyEq} rightAction middle =
+    Just (rightTag, originalFinal)) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked)
+    (Fired {before = middle} {afterState = originalFinal}
+      nameEq keyEq rightAction rightTag rightChecked)) ->
+  (movedMiddle, movedFinal : SystemState name key value world error) ->
+  (movedRightStep : Transition first movedMiddle) ->
+  (movedLeftStep : Transition movedMiddle movedFinal) ->
+  (0 movedAligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions movedRightStep
+      (MoreTransitions movedLeftStep NoTransitions))) ->
+  (0 firstActionSame : (transitionAction movedRightStep = leftAction)) ->
+  (0 firstTagSame : (transitionTag movedRightStep = leftTag)) ->
+  (0 secondActionSame : (transitionAction movedLeftStep = rightAction)) ->
+  (0 secondTagSame : (transitionTag movedLeftStep = rightTag)) ->
+  (0 movedMiddleSame : (movedMiddle = middle)) ->
+  (0 movedFinalSame : (movedFinal = originalFinal)) ->
+  (0 dispatch : R102EqualOwnerPairDispatch name key world error value nameEq keyEq
+    first middle originalFinal
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq leftAction leftTag leftChecked)
+    (Fired {before = middle} {afterState = originalFinal}
+      nameEq keyEq rightAction rightTag rightChecked) diamond) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions
+      (Fired {before = first} {afterState = middle}
+        nameEq keyEq leftAction leftTag leftChecked)
+      (MoreTransitions
+        (Fired {before = middle} {afterState = originalFinal}
+          nameEq keyEq rightAction rightTag rightChecked) NoTransitions))
+    (MoreTransitions movedRightStep
+      (MoreTransitions movedLeftStep NoTransitions))
+equalOwnerPairRARFromOwnedMovedIdentity name key world error value nameEq keyEq first
+  middle originalFinal leftAction leftTag leftChecked rightAction rightTag
+  rightChecked diamond movedMiddle movedFinal
+  (Fired nameEq keyEq movedRightActionValue movedRightTagValue movedRightChecked)
+  (Fired nameEq keyEq movedLeftActionValue movedLeftTagValue movedLeftChecked)
+  (AlignedStep movedRightActionValue movedRightTagValue movedRightChecked _
+    (AlignedStep movedLeftActionValue movedLeftTagValue movedLeftChecked
+      NoTransitions AlignedEnd))
+  firstActionSame firstTagSame secondActionSame secondTagSame movedMiddleSame
+  movedFinalSame dispatch = case firstActionSame of
+    Refl => case firstTagSame of
+      Refl => case secondActionSame of
+        Refl => case secondTagSame of
+          Refl => case dispatch of
+                    R102DispatchedIterPair iterPair sourceActionSame
+                      sourceTagSame dispatchMiddleSame dispatchFinalSame =>
+                        let 0 movedRightAtTarget :
+                              (checkedApplyAction @{nameEq} @{keyEq}
+                                leftAction first =
+                                  Just (leftTag, movedMiddle))
+                            movedRightAtTarget = movedRightChecked
+                            0 leftAtSource :
+                              (checkedApplyAction @{nameEq} @{keyEq}
+                                leftAction first =
+                                  Just (leftTag, middle))
+                            leftAtSource = leftChecked
+                            0 movedLeftAtTarget :
+                              (checkedApplyAction @{nameEq} @{keyEq}
+                                rightAction (movedMiddle) =
+                                  Just (rightTag, movedFinal))
+                            movedLeftAtTarget = movedLeftChecked
+                            0 rightAtSource :
+                              (checkedApplyAction @{nameEq} @{keyEq}
+                                rightAction middle =
+                                  Just (rightTag, originalFinal))
+                            rightAtSource = rightChecked
+                        in case iterPair of
+                                      MkR101EqualOwnerActivationIterPair
+                                        leftActivation rightActivation
+                                        movedRightActivation
+                                        movedLeftActivation leftTagIter
+                                        rightTagIter =>
+                                          consRelationalReplayCorrespondence
+                                            (Fired nameEq keyEq
+                                              leftAction
+                                              leftTag
+                                              leftAtSource)
+                                            (Fired nameEq keyEq
+                                              leftAction
+                                              leftTag
+                                              movedRightAtTarget)
+                                            (MoreTransitions
+                                              (Fired nameEq keyEq
+                                                rightAction
+                                                rightTag
+                                                rightAtSource)
+                                              NoTransitions)
+                                            (MoreTransitions
+                                              (Fired nameEq keyEq
+                                                rightAction
+                                                rightTag
+                                                movedLeftAtTarget)
+                                              NoTransitions)
+                                            (activationSingletonRAR name
+                                              key value world error
+                                              nameEq keyEq
+                                              leftAction
+                                              leftTag first
+                                              middle first (movedMiddle)
+                                              leftAtSource
+                                              movedRightAtTarget
+                                              (paperActivationStepTransport
+                                                Refl Refl leftActivation)
+                                              Refl)
+                                            (activationSingletonRAR name
+                                              key value world error
+                                              nameEq keyEq
+                                              rightAction
+                                              rightTag middle
+                                              originalFinal movedMiddle
+                                              movedFinal rightAtSource
+                                              movedLeftAtTarget
+                                              (paperActivationStepTransport
+                                                Refl Refl rightActivation)
+                                               (lookupStateBackward name key value world
+                                                 error nameEq keyEq (actionOwner rightAction)
+                                                 (movedMiddle) middle
+                                                 movedMiddleSame))
+                    R102DispatchedRetirePair retirePair sourceActionSame
+                      sourceTagSame dispatchMiddleSame dispatchFinalSame =>
+                        let 0 movedRightAtTarget :
+                              (checkedApplyAction @{nameEq} @{keyEq}
+                                leftAction first =
+                                  Just (leftTag, movedMiddle))
+                            movedRightAtTarget = movedRightChecked
+                            0 leftAtSource :
+                              (checkedApplyAction @{nameEq} @{keyEq}
+                                leftAction first =
+                                  Just (leftTag, middle))
+                            leftAtSource = leftChecked
+                            0 movedLeftAtTarget :
+                              (checkedApplyAction @{nameEq} @{keyEq}
+                                rightAction (movedMiddle) =
+                                  Just (rightTag, movedFinal))
+                            movedLeftAtTarget = movedLeftChecked
+                            0 rightAtSource :
+                              (checkedApplyAction @{nameEq} @{keyEq}
+                                rightAction middle =
+                                  Just (rightTag, originalFinal))
+                            rightAtSource = rightChecked
+                        in case retirePair of
+                                      MkR101EqualOwnerOrchestrationRetirePair
+                                        leftOrchestration
+                                        rightOrchestration
+                                        movedRightOrchestration
+                                        movedLeftOrchestration
+                                        leftTagRetire rightTagRetire =>
+                                          consRelationalReplayCorrespondence
+                                            (Fired nameEq keyEq
+                                              leftAction
+                                              leftTag
+                                              leftAtSource)
+                                            (Fired nameEq keyEq
+                                              leftAction
+                                              leftTag
+                                              movedRightAtTarget)
+                                            (MoreTransitions
+                                              (Fired nameEq keyEq
+                                                rightAction
+                                                rightTag
+                                                rightAtSource)
+                                              NoTransitions)
+                                            (MoreTransitions
+                                              (Fired nameEq keyEq
+                                                rightAction
+                                                rightTag
+                                                movedLeftAtTarget)
+                                              NoTransitions)
+                                            (orchestrationSingletonRAR
+                                              name key value world error
+                                              nameEq keyEq
+                                              leftAction
+                                              leftTag first
+                                              middle first (movedMiddle)
+                                              leftAtSource
+                                              movedRightAtTarget
+                                              (paperOrchestrationStepTransport
+                                                Refl Refl leftOrchestration))
+                                            (orchestrationSingletonRAR
+                                              name key value world error
+                                              nameEq keyEq
+                                              rightAction
+                                              rightTag middle
+                                              originalFinal movedMiddle
+                                              movedFinal rightAtSource
+                                              movedLeftAtTarget
+                                              (paperOrchestrationStepTransport
+                                                Refl Refl rightOrchestration))
+
+
+
+
+0 equalOwnerPairRAR :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, originalFinal : SystemState name key value world error) ->
+  (left : Transition first middle) ->
+  (right : Transition middle originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (0 sourcePairAligned : AlignedTransitions name key world error value nameEq
+    keyEq (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  (0 dispatch : R102EqualOwnerPairDispatch name key world error value nameEq keyEq
+    first middle originalFinal left right diamond) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions left (MoreTransitions right NoTransitions))
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) NoTransitions))
+equalOwnerPairRAR name key world error value nameEq keyEq first middle
+  originalFinal left right diamond sourcePairAligned dispatch =
+    case pairAlignedIdentity left right sourcePairAligned of
+      MkPairAlignedIdentity leftAction leftTag leftChecked rightAction
+        rightTag rightChecked => case dispatch of
+          iterDispatch@(R102DispatchedIterPair iterPair sourceActionSame
+            sourceTagSame middleSame finalSame) =>
+              equalOwnerPairRARFromOwnedMovedIdentity name key world error value nameEq
+                keyEq first middle originalFinal leftAction leftTag leftChecked
+                rightAction rightTag rightChecked diamond (swappedMiddle diamond)
+                (swappedFinal diamond) (movedRight diamond) (movedLeft diamond)
+                (movedPairAligned diamond)
+                (trans (movedRightAction diamond) (sym sourceActionSame))
+                (trans (movedRightTag diamond) (sym sourceTagSame))
+                (trans (movedLeftAction diamond) sourceActionSame)
+                (trans (movedLeftTag diamond) sourceTagSame)
+                middleSame finalSame iterDispatch
+          retireDispatch@(R102DispatchedRetirePair retirePair sourceActionSame
+            sourceTagSame middleSame finalSame) =>
+              equalOwnerPairRARFromOwnedMovedIdentity name key world error value nameEq
+                keyEq first middle originalFinal leftAction leftTag leftChecked
+                rightAction rightTag rightChecked diamond (swappedMiddle diamond)
+                (swappedFinal diamond) (movedRight diamond) (movedLeft diamond)
+                (movedPairAligned diamond)
+                (trans (movedRightAction diamond) (sym sourceActionSame))
+                (trans (movedRightTag diamond) (sym sourceTagSame))
+                (trans (movedLeftAction diamond) sourceActionSame)
+                (trans (movedLeftTag diamond) sourceTagSame)
+                middleSame finalSame retireDispatch
