@@ -25921,3 +25921,165 @@ adjacentField9Independent name key world error value nameEq keyEq initial
       initial pairFirst pairMiddle pairFinal originalFinal replayedFinal original
       tracePrefix left right suffix diamond replayedSuffix decomposition
       sourcePairAligned seal) sourceIndependent
+
+private
+0 adjacentSourcePairAligned :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+    SystemState name key value world error) ->
+  (original : Transitions initial originalFinal) ->
+  (tracePrefix : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (0 decomposition : (appendTransitions tracePrefix
+    (MoreTransitions left (MoreTransitions right suffix)) = original)) ->
+  (0 premises : ReplayInvariantBundle name key world error value protocol nameEq
+    keyEq original) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))
+adjacentSourcePairAligned name key world error value nameEq keyEq protocol initial
+  pairFirst pairMiddle pairFinal originalFinal original tracePrefix left right
+  suffix decomposition premises = alignedAppendLeft
+    (MoreTransitions left (MoreTransitions right NoTransitions)) suffix
+    (alignedAppendRight tracePrefix
+      (MoreTransitions left (MoreTransitions right suffix))
+      (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+        (sym decomposition) (replayAligned premises)))
+
+private
+record AdjacentInvariantReplay
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+    SystemState name key value world error)
+  (original : Transitions initial originalFinal)
+  (tracePrefix : Transitions initial pairFirst)
+  (left : Transition pairFirst pairMiddle)
+  (right : Transition pairMiddle pairFinal)
+  (suffix : Transitions pairFinal originalFinal)
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) where
+  constructor MkAdjacentInvariantReplay
+  invariantReplayFinal : SystemState name key value world error
+  invariantReplaySuffix :
+    Transitions (swappedFinal diamond) invariantReplayFinal
+  0 invariantReplayCorrespondence : RelationalReplayCorrespondence name key world
+    error value original
+      (appendTransitions tracePrefix
+        (MoreTransitions (movedRight diamond)
+          (MoreTransitions (movedLeft diamond) invariantReplaySuffix)))
+  0 invariantReplayEndpoint : RelationalReplayEndpoint name key world error value
+    nameEq keyEq originalFinal invariantReplayFinal
+  0 invariantReplaySeal : SealedSuffixReplaySpine name key world error value
+    nameEq keyEq suffix invariantReplaySuffix
+  0 invariantReplayBundle : ReplayInvariantBundle name key world error value
+    protocol nameEq keyEq
+      (appendTransitions tracePrefix
+        (MoreTransitions (movedRight diamond)
+          (MoreTransitions (movedLeft diamond) invariantReplaySuffix)))
+
+private
+0 produceAdjacentInvariantReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+    SystemState name key value world error) ->
+  (original : Transitions initial originalFinal) ->
+  (tracePrefix : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (0 decomposition : (appendTransitions tracePrefix
+    (MoreTransitions left (MoreTransitions right suffix)) = original)) ->
+  (0 premises : ReplayInvariantBundle name key world error value protocol nameEq
+    keyEq original) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  AdjacentInvariantReplay name key world error value protocol nameEq keyEq
+    initial pairFirst pairMiddle pairFinal originalFinal original tracePrefix left
+    right suffix diamond
+produceAdjacentInvariantReplay name key world error value nameEq keyEq protocol
+  initial pairFirst pairMiddle pairFinal originalFinal original tracePrefix left
+  right suffix decomposition premises diamond = case
+    produceAdjacentAlignedPointwiseReplay nameEq keyEq protocol original
+      tracePrefix left right suffix decomposition premises diamond of
+        MkAdjacentAlignedPointwiseReplay replayedFinal replayedSuffix targetTrace
+          targetDecomposition targetAligned targetDiscipline initialWellFormed
+          initialEmpty finalWellFormed quietFinal noFailure totality endpoint
+          seal => case targetDecomposition of
+            Refl => MkAdjacentInvariantReplay replayedFinal replayedSuffix
+              (adjacentField9ReplayCorrespondence name key world error value
+                nameEq keyEq initial pairFirst pairMiddle pairFinal originalFinal
+                replayedFinal original tracePrefix left right suffix diamond
+                replayedSuffix decomposition
+                (adjacentSourcePairAligned name key world error value nameEq keyEq
+                  protocol initial pairFirst pairMiddle pairFinal originalFinal
+                  original tracePrefix left right suffix decomposition premises)
+                seal)
+              endpoint seal
+              (MkReplayInvariantBundle targetAligned targetDiscipline
+                initialWellFormed initialEmpty finalWellFormed quietFinal
+                noFailure totality
+                (adjacentField9Independent name key world error value nameEq
+                  keyEq initial pairFirst pairMiddle pairFinal originalFinal
+                  replayedFinal original tracePrefix left right suffix diamond
+                  replayedSuffix decomposition
+                  (adjacentSourcePairAligned name key world error value nameEq
+                    keyEq protocol initial pairFirst pairMiddle pairFinal
+                    originalFinal original tracePrefix left right suffix
+                    decomposition premises)
+                  seal (replayIndependent premises))
+                (replayProvenanceFromDiscipline protocol nameEq targetTrace
+                  targetDiscipline)
+                (replayProtocolRankedFromEmpty protocol nameEq keyEq initial
+                  replayedFinal targetTrace targetAligned initialEmpty
+                  initialWellFormed
+                  (replayProvenanceFromDiscipline protocol nameEq targetTrace
+                    targetDiscipline))
+                (replayParentRanksIncreaseFromEmpty protocol nameEq keyEq initial
+                  replayedFinal targetTrace targetAligned initialEmpty
+                  initialWellFormed
+                  (replayProvenanceFromDiscipline protocol nameEq targetTrace
+                    targetDiscipline))
+                (replayPrecedenceAcyclicFromRanks protocol nameEq replayedFinal
+                  (replayProtocolRankedFromEmpty protocol nameEq keyEq initial
+                    replayedFinal targetTrace targetAligned initialEmpty
+                    initialWellFormed
+                    (replayProvenanceFromDiscipline protocol nameEq targetTrace
+                      targetDiscipline))
+                  (replayParentRanksIncreaseFromEmpty protocol nameEq keyEq
+                    initial replayedFinal targetTrace targetAligned initialEmpty
+                    initialWellFormed
+                    (replayProvenanceFromDiscipline protocol nameEq targetTrace
+                      targetDiscipline)))
+                (replaySupportWellFoundedFromRanks protocol nameEq replayedFinal
+                  (replayProtocolRankedFromEmpty protocol nameEq keyEq initial
+                    replayedFinal targetTrace targetAligned initialEmpty
+                    initialWellFormed
+                    (replayProvenanceFromDiscipline protocol nameEq targetTrace
+                      targetDiscipline))
+                  (replayParentRanksIncreaseFromEmpty protocol nameEq keyEq
+                    initial replayedFinal targetTrace targetAligned initialEmpty
+                    initialWellFormed
+                    (replayProvenanceFromDiscipline protocol nameEq targetTrace
+                      targetDiscipline)))
+                (supportMatchesActiveFromReplayFields name key value world error
+                  protocol nameEq keyEq initial replayedFinal targetTrace
+                  targetAligned targetDiscipline initialEmpty initialWellFormed
+                  (replayPrecedenceAcyclicFromRanks protocol nameEq replayedFinal
+                    (replayProtocolRankedFromEmpty protocol nameEq keyEq initial
+                      replayedFinal targetTrace targetAligned initialEmpty
+                      initialWellFormed
+                      (replayProvenanceFromDiscipline protocol nameEq targetTrace
+                        targetDiscipline))
+                    (replayParentRanksIncreaseFromEmpty protocol nameEq keyEq
+                      initial replayedFinal targetTrace targetAligned initialEmpty
+                      initialWellFormed
+                      (replayProvenanceFromDiscipline protocol nameEq targetTrace
+                        targetDiscipline)))
+                  quietFinal noFailure totality))
