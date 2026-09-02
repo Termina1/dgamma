@@ -2635,4 +2635,12 @@ foundations. All 15 bundle fields are now complete. Body/result/occurrence-fold
 assembly remains unopened at a clean committed boundary; holes remain 20 with
 split 6/4/8/1/1. The next action, if authorized after review, is only O6 body
 assembly, followed immediately at 20 -> 19 by the mandatory scoped adversarial
-review.
+review. Revision 121 opens only the authorized body external-order unit and
+exhausts its three attempts at a dependent target-lookup packaging boundary.
+Source lookup reindexing succeeds, but direct elimination of
+`ControlEquivalent.controlPointwise` does not retain the exact target
+`lookupFiber = Just targetFiber` equation required to transport root
+O-Retire/O-Remove classification. The complete body unit is removed. A
+producer-owned source/target lookup-and-control package must be checked in a
+design-only campaign before body implementation can resume; all 15 fields
+remain complete and frozen, while holes remain 20 with split 6/4/8/1/1.
