@@ -200,6 +200,28 @@ canonicalTransitionActorActionOwner
   (state : SystemState name key value world error) ->
   activeAt @{nameEq} selected state = True ->
   installedAt @{nameEq} selected state = True
+0 canonicalSupportedActiveImpliesInstalled :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  supportedActiveAt @{nameEq} selected state = True ->
+  installedAt @{nameEq} selected state = True
+canonicalSupportedActiveImpliesInstalled nameEq selected state evidence
+  with (lookupFiber @{nameEq} selected (registry state)) proof found
+  canonicalSupportedActiveImpliesInstalled nameEq selected state evidence |
+    Nothing = absurd evidence
+  canonicalSupportedActiveImpliesInstalled nameEq selected state evidence |
+    Just (MkFiber component parent retired table (Inactive outcome)) =
+      absurd evidence
+  canonicalSupportedActiveImpliesInstalled nameEq selected state evidence |
+    Just (MkFiber component parent retired table
+      (Reloading remaining accumulator view)) = absurd evidence
+  canonicalSupportedActiveImpliesInstalled nameEq selected state evidence |
+    Just (MkFiber component parent retired table (Active accumulator view)) = Refl
+  canonicalSupportedActiveImpliesInstalled nameEq selected state evidence |
+    Just (MkFiber component parent retired table
+      (Unloading accumulator view outcome)) = absurd evidence
+
 canonicalActiveImpliesInstalled nameEq selected state evidence
   with (lookupFiber @{nameEq} selected (registry state)) proof found
   canonicalActiveImpliesInstalled nameEq selected state evidence | Nothing =
@@ -647,6 +669,57 @@ erasedLifecycleOrdinalAtOpenEpisode nameEq keyEq selected global
       erasedLifecycleOrdinalAtDecomposition nameEq selected earlier
         (beginTransition opening) later global decomposition noEarlier Refl Refl
         (erasedFirstLifecycleView nameEq selected global)
+
+||| A supported quiet endpoint has a last opening; closing-freedom makes it the
+||| first selected lifecycle occurrence as well.
+0 canonicalSupportedOpenEpisode :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  NoClosingEpisodes name key world error value nameEq keyEq trace ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq
+    keyEq trace) ->
+  (selected : name) ->
+  isSupported @{nameEq} @{keyEq} selected finalState = True ->
+  LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected
+    trace
+canonicalSupportedOpenEpisode nameEq keyEq protocol trace noClosing premises
+  selected supported =
+    let activeFinal = trans
+          (sym (replaySupportMatchesActive premises selected)) supported
+        installedFinal = canonicalSupportedActiveImpliesInstalled nameEq selected
+          _ activeFinal
+        initialUninstalled = emptyRegistryUninstalled nameEq selected _
+          (replayInitialEmpty premises)
+    in case extractLastOpening nameEq keyEq selected trace
+      (replayAligned premises) initialUninstalled installedFinal of
+      MkLastOpeningResult before afterState earlier opening later decomposition
+        installed =>
+          let openingSourceUninstalled = fst (snd
+                (lBeginBoundary nameEq keyEq selected before afterState LBeginTag
+                  (beginEquation opening)))
+              decomposedAligned = replace
+                {p = \candidate => AlignedTransitions name key world error value
+                  nameEq keyEq candidate}
+                (sym decomposition) (replayAligned premises)
+              earlierAligned = fst (alignedAppendSplit earlier
+                (MoreTransitions (beginTransition opening) later)
+                decomposedAligned)
+              noEarlier = canonicalAlignedNoLifecycleFromAbsence nameEq keyEq
+                selected earlier earlierAligned
+                (\action, tag, checked, occurs, lifecycle, actorSame =>
+                  canonicalLifecycleAbsentBeforeUninstalled nameEq keyEq selected
+                    earlier (MoreTransitions (beginTransition opening) later)
+                    trace decomposition earlierAligned
+                    (replayInitialEmpty premises) openingSourceUninstalled
+                    noClosing action tag checked
+                    (trans (sym (canonicalTransitionActorActionOwner
+                      (Fired nameEq keyEq action tag checked))) actorSame)
+                    lifecycle occurs)
+          in MkLocatedInterleavedOpenEpisode before afterState earlier opening
+            later installed noEarlier activeFinal decomposition
 
 ||| Derive the unique closing-free shape from the exact recursive bundle.
 public export
