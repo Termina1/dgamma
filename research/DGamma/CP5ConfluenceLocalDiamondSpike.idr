@@ -26706,3 +26706,79 @@ adjacentGenerationBijection point = MkRegistrationGenerationBijection
   (adjacentGenerationSwap point) (adjacentGenerationSwap point)
   (adjacentGenerationSwapInvolutive point)
   (adjacentGenerationSwapInvolutive point)
+
+private
+0 adjacentRelationAtLocated :
+  (point, targetIndex, sourceIndex, targetOrdinal, sourceOrdinal : Nat) ->
+  (0 targetExact : (targetIndex = targetOrdinal)) ->
+  (0 sourceExact : (sourceOrdinal = sourceIndex)) ->
+  AdjacentSwapOrdinalRelation point targetIndex sourceIndex ->
+  AdjacentSwapOrdinalRelation point targetOrdinal sourceOrdinal
+adjacentRelationAtLocated point targetIndex sourceIndex targetOrdinal
+  sourceOrdinal targetExact sourceExact relation =
+    replace {p = \observedTarget => AdjacentSwapOrdinalRelation point
+      observedTarget sourceOrdinal} targetExact
+      (replace {p = \observedSource => AdjacentSwapOrdinalRelation point
+        targetIndex observedSource} (sym sourceExact) relation)
+
+private
+0 adjacentSuffixEmbeddedIndex :
+  (prefixTrace : Transitions initial pairFirst) ->
+  (sourceFirst : Transition pairFirst sourceMiddle) ->
+  (sourceSecond : Transition sourceMiddle sourceSuffixFirst) ->
+  (sourceSuffix : Transitions sourceSuffixFirst sourceFinal) ->
+  (targetFirst : Transition pairFirst targetMiddle) ->
+  (targetSecond : Transition targetMiddle targetSuffixFirst) ->
+  (targetSuffix : Transitions targetSuffixFirst targetFinal) ->
+  (sourceSelected : Transition sourceSelectedBefore sourceSelectedAfter) ->
+  (targetSelected : Transition targetSelectedBefore targetSelectedAfter) ->
+  (sourceOccurs : OccursIn sourceSelected sourceSuffix) ->
+  (targetOccurs : OccursIn targetSelected targetSuffix) ->
+  (0 localExact : (occursIndex targetSuffix targetSelected targetOccurs =
+    occursIndex sourceSuffix sourceSelected sourceOccurs)) ->
+  (occursIndex
+    (appendTransitions prefixTrace
+      (MoreTransitions targetFirst (MoreTransitions targetSecond targetSuffix)))
+    targetSelected
+    (r97AppendRightOccurrence prefixTrace
+      (MoreTransitions targetFirst (MoreTransitions targetSecond targetSuffix))
+      targetSelected (OccursLater (OccursLater targetOccurs))) =
+   occursIndex
+    (appendTransitions prefixTrace
+      (MoreTransitions sourceFirst (MoreTransitions sourceSecond sourceSuffix)))
+    sourceSelected
+    (r97AppendRightOccurrence prefixTrace
+      (MoreTransitions sourceFirst (MoreTransitions sourceSecond sourceSuffix))
+      sourceSelected (OccursLater (OccursLater sourceOccurs))))
+adjacentSuffixEmbeddedIndex NoTransitions sourceFirst sourceSecond sourceSuffix
+  targetFirst targetSecond targetSuffix sourceSelected targetSelected sourceOccurs
+  targetOccurs localExact = cong S (cong S localExact)
+adjacentSuffixEmbeddedIndex (MoreTransitions prefixHead prefixTail) sourceFirst
+  sourceSecond sourceSuffix targetFirst targetSecond targetSuffix sourceSelected
+  targetSelected sourceOccurs targetOccurs localExact = cong S
+    (adjacentSuffixEmbeddedIndex prefixTail sourceFirst sourceSecond sourceSuffix
+      targetFirst targetSecond targetSuffix sourceSelected targetSelected
+      sourceOccurs targetOccurs localExact)
+
+private
+0 adjacentSuffixEmbeddedBound :
+  (prefixTrace : Transitions initial pairFirst) ->
+  (targetFirst : Transition pairFirst targetMiddle) ->
+  (targetSecond : Transition targetMiddle targetSuffixFirst) ->
+  (targetSuffix : Transitions targetSuffixFirst targetFinal) ->
+  (targetSelected : Transition targetSelectedBefore targetSelectedAfter) ->
+  (targetOccurs : OccursIn targetSelected targetSuffix) ->
+  LTE (S (S (transitionCount prefixTrace)))
+    (occursIndex
+      (appendTransitions prefixTrace
+        (MoreTransitions targetFirst (MoreTransitions targetSecond targetSuffix)))
+      targetSelected
+      (r97AppendRightOccurrence prefixTrace
+        (MoreTransitions targetFirst (MoreTransitions targetSecond targetSuffix))
+        targetSelected (OccursLater (OccursLater targetOccurs))))
+adjacentSuffixEmbeddedBound NoTransitions targetFirst targetSecond targetSuffix
+  targetSelected targetOccurs = LTESucc (LTESucc LTEZero)
+adjacentSuffixEmbeddedBound (MoreTransitions prefixHead prefixTail) targetFirst
+  targetSecond targetSuffix targetSelected targetOccurs = LTESucc
+    (adjacentSuffixEmbeddedBound prefixTail targetFirst targetSecond targetSuffix
+      targetSelected targetOccurs)
