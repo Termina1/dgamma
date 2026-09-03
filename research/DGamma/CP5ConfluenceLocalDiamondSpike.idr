@@ -26575,6 +26575,10 @@ record LocatedActionAtOccurrence
   (occurs : OccursIn selected trace) where
   constructor MkLocatedActionAtOccurrence
   locatedAtOccurrence : LocatedActionOccurrence action trace
+  0 locatedAtAction : (transitionAction (locatedTransition locatedAtOccurrence) =
+    transitionAction selected)
+  0 locatedAtTag : (transitionTag (locatedTransition locatedAtOccurrence) =
+    transitionTag selected)
   0 locatedAtOrdinal : (locatedActionOrdinal locatedAtOccurrence =
     occursIndex trace selected occurs)
 
@@ -26594,13 +26598,13 @@ produceLocatedActionAtOccurrence name key world error value selectedBefore
   finalState selectedBefore selectedAfter action (MoreTransitions selected rest)
   selected OccursHere actionSame = MkLocatedActionAtOccurrence
     (MkLocatedActionOccurrence selectedBefore selectedAfter NoTransitions selected
-      rest actionSame Refl) Refl
+      rest actionSame Refl) Refl Refl Refl
 produceLocatedActionAtOccurrence name key world error value initial finalState
   selectedBefore selectedAfter action (MoreTransitions head rest) selected
   (OccursLater later) actionSame = case produceLocatedActionAtOccurrence name key
     world error value _ finalState selectedBefore selectedAfter action rest
     selected later actionSame of
-      MkLocatedActionAtOccurrence tailLocated tailOrdinal =>
+      MkLocatedActionAtOccurrence tailLocated tailAction tailTag tailOrdinal =>
         MkLocatedActionAtOccurrence
           (MkLocatedActionOccurrence
             (actionBeforeState tailLocated) (actionAfterState tailLocated)
@@ -26609,7 +26613,7 @@ produceLocatedActionAtOccurrence name key world error value initial finalState
             (locatedAction tailLocated)
             (cong (MoreTransitions head)
               (actionOccurrenceDecomposition tailLocated)))
-          (cong S tailOrdinal)
+          tailAction tailTag (cong S tailOrdinal)
 
 private
 adjacentOrdinalSwap : Nat -> Nat -> Nat
