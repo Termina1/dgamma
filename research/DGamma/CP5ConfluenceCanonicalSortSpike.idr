@@ -213,6 +213,22 @@ canonicalActiveImpliesInstalled nameEq selected state evidence
     canonicalActiveImpliesInstalled nameEq selected state evidence | Just fiber |
       Unloading accumulator view outcome = absurd evidence
 
+||| The endpoint of an installed trace remains installed.  This local fold is
+||| kept alongside the CanonicalSort consumers because the equivalent anchor
+||| classifier helper is private to its production module.
+0 canonicalInstalledTraceEnd :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  InstalledTrace name key world error value nameEq keyEq selected trace ->
+  installedAt @{nameEq} selected finalState = True
+canonicalInstalledTraceEnd NoTransitions (InstalledEnd installed) = installed
+canonicalInstalledTraceEnd
+  (MoreTransitions (Fired nameEq keyEq action tag checked) rest)
+  (InstalledStep action tag checked rest sourceInstalled tailInstalled) =
+    canonicalInstalledTraceEnd rest tailInstalled
+
 ||| Derive the unique closing-free shape from the exact recursive bundle.
 public export
 0 closingFreeTraceShapeSpike :
