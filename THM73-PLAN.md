@@ -2663,4 +2663,15 @@ repairs, its target-region consumer cannot identify a separately reconstructed
 `OccursIn` proof with the proof indexing `R97AppendOccurrenceView`. The unit is
 removed. A producer-owned four-region view indexed directly by the original
 `LocatedActionOccurrence` is now required before occurrence-fold/body work may
-resume. Holes remain 20 with split 6/4/8/1/1.
+resume. Holes remain 20 with split 6/4/8/1/1. Revision 124 verifies the actual
+start coordinate as `01968a8` (not the gate message's absent `019db665`) and
+opens only the exact-copy four-region probe. Two infrastructure attempts expose
+nonlinear endpoint patterns around `NoTransitions`; a producer-owned
+`PrefixShape` removes that boundary on attempt 3. The recursive prefix lift then
+fails semantically because the shape-owned `prefixHead` is not definitionally
+the anonymous first transition from the separately eliminated target occurrence
+decomposition. The probe is removed after three attempts. A design-only joint
+prefix/target-occurrence shape must own both head identities and the exact tail
+occurrence under one elimination before the four-region view may be retried;
+all retained body capital remains frozen and holes remain 20 with split
+6/4/8/1/1.
