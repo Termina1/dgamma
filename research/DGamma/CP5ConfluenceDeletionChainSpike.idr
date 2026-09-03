@@ -83,27 +83,30 @@ record DeletableClosingEpisode
   0 selectedChildrenHaveNoEpisode : NoRegisteredEpisode nameEq
     selectedRegistrations 0 [] trace
 
-||| O7 scan entry: the dependent pair retains the exact actor and located closed
-||| episode while the executable ordinal distinguishes repeated episodes.
+||| Canonized erased view for one O7 occurrence.  The actor and located episode
+||| remain exactly quantified as before, but neither can escape into runtime code
+||| after eliminating the view.
 public export
-ClosingEpisodeOccurrence :
+data ClosingEpisodeOccurrence :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   {initial, finalState : SystemState name key value world error} ->
-  Transitions initial finalState -> Type
-ClosingEpisodeOccurrence name key world error value nameEq keyEq trace =
-  (selected : name **
-    LocatedClosedEpisode name key world error value nameEq keyEq selected trace)
+  Transitions initial finalState -> Type where
+  ErasedClosingEpisodeOccurrence :
+    (0 selected : name) ->
+    (0 episode : LocatedClosedEpisode name key world error value nameEq keyEq
+      selected trace) ->
+    ClosingEpisodeOccurrence name key world error value nameEq keyEq trace
 
 public export
-scannedClosingOrdinal :
+0 scannedClosingOrdinal :
   ClosingEpisodeOccurrence name key world error value nameEq keyEq trace -> Nat
-scannedClosingOrdinal (selected ** episode) =
+scannedClosingOrdinal (ErasedClosingEpisodeOccurrence selected episode) =
   transitionCount (traceBeforeOpening episode)
 
-||| Independently testable O7 output.  The scanner enumerates every located
-||| closing occurrence exactly once by opening ordinal and turns an empty scan
-||| into the executable no-closing predicate consumed by recursion.
+||| Proof-level O7 output.  The scanner enumerates every located closing
+||| occurrence exactly once by opening ordinal and turns an empty erased scan
+||| into the no-closing predicate consumed by proof-level recursion.
 public export
 record ClosingEpisodeScan
   (name, key, world, error : Type) (value : key -> Type)
@@ -111,7 +114,7 @@ record ClosingEpisodeScan
   {initial, finalState : SystemState name key value world error}
   (trace : Transitions initial finalState) where
   constructor MkClosingEpisodeScan
-  scannedClosingOccurrences : List
+  0 scannedClosingOccurrences : List
     (ClosingEpisodeOccurrence name key world error value nameEq keyEq trace)
   0 scannedClosingOrdinalsUnique : UniqueKeys
     (map DGamma.CP5ConfluenceDeletionChainSpike.scannedClosingOrdinal scannedClosingOccurrences)
@@ -124,9 +127,10 @@ record ClosingEpisodeScan
   0 emptyScanIsClosingFree : scannedClosingOccurrences = [] ->
     NoClosingEpisodes name key world error value nameEq keyEq trace
 
-||| O7 is a separate executable producer rather than work hidden in O8/O9.
+||| O7 is a separate erased producer rather than work hidden in O8/O9.  Quantity
+||| 0 is essential because `MoreTransitions` erases its middle-state index.
 public export
-closingEpisodeOccurrenceScanSpike :
+0 closingEpisodeOccurrenceScanSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (initial, finalState : SystemState name key value world error) ->
   (trace : Transitions initial finalState) ->
@@ -409,14 +413,16 @@ data ClosingStepChoice :
   (trace : Transitions initial finalState) ->
   (premises : CanonicalizationPremises name key world error value protocol
     nameEq keyEq trace) -> Type where
-  ClosingFree : NoClosingEpisodes name key world error value nameEq keyEq trace ->
+  ClosingFree :
+    (0 closingFree : NoClosingEpisodes name key world error value nameEq keyEq
+      trace) ->
     ClosingStepChoice name key world error value protocol nameEq keyEq trace
       premises
   HasClosingStep :
-    (candidate : DeletableClosingEpisode name key world error value nameEq keyEq
+    (0 candidate : DeletableClosingEpisode name key world error value nameEq keyEq
       trace) ->
-    DeletionChainStep name key world error value protocol nameEq keyEq trace
-      premises candidate ->
+    (0 step : DeletionChainStep name key world error value protocol nameEq keyEq
+      trace premises candidate) ->
     ClosingStepChoice name key world error value protocol nameEq keyEq trace
       premises
 
@@ -432,31 +438,32 @@ data MaximalClosingSelection :
   (trace : Transitions initial finalState) ->
   (premises : CanonicalizationPremises name key world error value protocol
     nameEq keyEq trace) ->
-  (scan : ClosingEpisodeScan name key world error value nameEq keyEq trace) ->
+  (0 scan : ClosingEpisodeScan name key world error value nameEq keyEq trace) ->
   Type where
   NoMaximalClosingEpisode :
-    scannedClosingOccurrences scan = [] ->
+    (0 empty : scannedClosingOccurrences scan = []) ->
     MaximalClosingSelection name key world error value protocol nameEq keyEq
       trace premises scan
   SelectedMaximalClosingEpisode :
-    (candidate : DeletableClosingEpisode name key world error value nameEq keyEq
+    (0 candidate : DeletableClosingEpisode name key world error value nameEq keyEq
       trace) ->
-    Elem (transitionCount
+    (0 selected : Elem (transitionCount
       (traceBeforeOpening (selectedEpisode candidate)))
-      (map DGamma.CP5ConfluenceDeletionChainSpike.scannedClosingOrdinal (scannedClosingOccurrences scan)) ->
+      (map DGamma.CP5ConfluenceDeletionChainSpike.scannedClosingOrdinal
+        (scannedClosingOccurrences scan))) ->
     MaximalClosingSelection name key world error value protocol nameEq keyEq
       trace premises scan
 
 ||| O8 maximal candidate selection is no longer bundled with D72 enrichment.
 public export
-selectMaximalClosingEpisodeSpike :
+0 selectMaximalClosingEpisodeSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
   (initial, finalState : SystemState name key value world error) ->
   (trace : Transitions initial finalState) ->
   (premises : CanonicalizationPremises name key world error value protocol
     nameEq keyEq trace) ->
-  (scan : ClosingEpisodeScan name key world error value nameEq keyEq trace) ->
+  (0 scan : ClosingEpisodeScan name key world error value nameEq keyEq trace) ->
   MaximalClosingSelection name key world error value protocol nameEq keyEq trace
     premises scan
 selectMaximalClosingEpisodeSpike = ?selectMaximalClosingEpisodeSpike_rhs
