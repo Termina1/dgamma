@@ -26083,3 +26083,48 @@ produceAdjacentInvariantReplay name key world error value nameEq keyEq protocol
                       (replayProvenanceFromDiscipline protocol nameEq targetTrace
                         targetDiscipline)))
                   quietFinal noFailure totality))
+
+private
+record RootControlLookup
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (actor : name)
+  (sourceBefore, targetBefore : SystemState name key value world error)
+  (sourceFiber : Fiber name key value world error) where
+  constructor MkRootControlLookup
+  targetControlFiber : Fiber name key value world error
+  0 sourceControlLookup : (lookupFiber @{nameEq} actor
+    (registry sourceBefore) = Just sourceFiber)
+  0 targetControlLookup : (lookupFiber @{nameEq} actor
+    (registry targetBefore) = Just targetControlFiber)
+  0 relatedControlFibers : FiberControlRelated sourceFiber targetControlFiber
+  0 sourceControlParent : (fiberParent sourceFiber = Root)
+  0 targetControlParent : (fiberParent targetControlFiber = Root)
+
+private
+0 produceRootControlLookup :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (sourceBefore, targetBefore : SystemState name key value world error) ->
+  (sourceFiber : Fiber name key value world error) ->
+  (0 sourceLookup : (lookupFiber @{nameEq} actor
+    (registry sourceBefore) = Just sourceFiber)) ->
+  (0 sourceParent : (fiberParent sourceFiber = Root)) ->
+  (0 controls : ControlEquivalent name key world error value nameEq sourceBefore
+    targetBefore) ->
+  RootControlLookup name key world error value nameEq actor sourceBefore
+    targetBefore sourceFiber
+produceRootControlLookup name key world error value nameEq actor sourceBefore
+  targetBefore sourceFiber sourceLookup sourceParent controls =
+    case pointwiseControlLookupFound nameEq actor sourceBefore targetBefore controls
+      sourceFiber sourceLookup of
+        (MkFiber component rightParent rightRetired rightTable rightLifecycle **
+          (targetLookup, FibersControlRelated leftParent rightParent leftRetired
+            rightRetired leftTable rightTable leftLifecycle rightLifecycle
+            parentSame retiredSame lifecycleRelated)) => MkRootControlLookup
+              (MkFiber component rightParent rightRetired rightTable
+                rightLifecycle)
+              sourceLookup targetLookup
+              (FibersControlRelated leftParent rightParent leftRetired
+                rightRetired leftTable rightTable leftLifecycle rightLifecycle
+                parentSame retiredSame lifecycleRelated)
+              sourceParent (trans (sym parentSame) sourceParent)
