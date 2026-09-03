@@ -2688,4 +2688,17 @@ a future candidate to a cursor/spine GADT whose primitive shared state,
 transition, before/after trace, and decomposition fields definitionally build
 both whole and tail occurrences; that untested candidate requires a new ruling.
 All frozen capital remains unchanged and holes remain 20 with split
-6/4/8/1/1.
+6/4/8/1/1. Revision 126 probes the authorized cursor/spine constructor-
+introduction endpoint and exhausts its three-attempt campaign. A base-pair
+helper removes the nonlinear empty-prefix boundary, and the cursor constructors
+definitionally build whole and tail occurrences from shared state/transition/
+trace fields rather than accepting either occurrence independently. The third
+attempt nevertheless fails semantically in the recursive prefix lift:
+`prefixHead`, selected from the caller-supplied prefix, is not definitionally
+`beforeHead`, selected from the independently supplied original occurrence,
+even after eliminating the complete decomposition with `Refl`. Therefore no
+total cursor producer is validated, and its exact-ordinal and four-region
+consumers do not count as checked artifacts. The probe is removed and no
+retained signature is ratified. The separately suggested direct positional
+route is not opened without a new ruling. All frozen capital remains unchanged
+and holes remain 20 with split 6/4/8/1/1.
