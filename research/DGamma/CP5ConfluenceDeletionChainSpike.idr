@@ -446,6 +446,86 @@ installedTraceRejectsFirstClosing nameEq keyEq selected trace installed result =
   installedTraceRejectsClosing nameEq keyEq selected trace installed
     (firstClosingStep result) (firstClosingOccurrence result)
 
+0 prependClosingUnique :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (occurrences : List
+    (ClosingEpisodeOccurrence name key world error value nameEq keyEq rest)) ->
+  UniqueKeys (map (\occurrence => scannedClosingOrdinal occurrence) occurrences) ->
+  UniqueKeys (map (\occurrence => scannedClosingOrdinal occurrence)
+    (prependClosingOccurrences head rest occurrences))
+prependClosingUnique head rest occurrences unique =
+  rewrite prependClosingOrdinals head rest occurrences in
+    uniqueSuccessors unique
+
+0 prependClosingComplete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (occurrences : List
+    (ClosingEpisodeOccurrence name key world error value nameEq keyEq rest)) ->
+  (0 complete : (selected : name) ->
+    (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+      selected rest) ->
+    Elem (transitionCount (traceBeforeOpening episode))
+      (map (\occurrence => scannedClosingOrdinal occurrence) occurrences)) ->
+  (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected rest) ->
+  Elem (S (transitionCount (traceBeforeOpening episode)))
+    (map (\occurrence => scannedClosingOrdinal occurrence)
+      (prependClosingOccurrences head rest occurrences))
+prependClosingComplete head rest occurrences complete selected episode =
+  rewrite prependClosingOrdinals head rest occurrences in
+    successorElem (complete selected episode)
+
+0 prependClosingOccurrencesEmpty :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (occurrences : List
+    (ClosingEpisodeOccurrence name key world error value nameEq keyEq rest)) ->
+  prependClosingOccurrences head rest occurrences = [] -> occurrences = []
+prependClosingOccurrencesEmpty head rest [] empty = Refl
+prependClosingOccurrencesEmpty head rest (occurrence :: later) empty =
+  case empty of Refl impossible
+
+0 noLocatedClosingEmptyPrefix :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {initial, preStart, afterState : SystemState name key value world error} ->
+  (beforeOpening : Transitions initial preStart) ->
+  (episode : ClosedEpisode name key world error value nameEq keyEq selected
+    preStart afterState) ->
+  (afterClosing : Transitions afterState initial) ->
+  (0 decomposition :
+    appendTransitions beforeOpening
+      (MoreTransitions (beginTransition (closedOpening episode))
+        (appendTransitions (closedTransitions episode) afterClosing)) =
+    NoTransitions) -> Void
+noLocatedClosingEmptyPrefix NoTransitions episode afterClosing decomposition =
+  case decomposition of Refl impossible
+noLocatedClosingEmptyPrefix (MoreTransitions head rest) episode afterClosing
+  decomposition = case decomposition of Refl impossible
+
+0 noLocatedClosingInEmpty :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {state : SystemState name key value world error} ->
+  LocatedClosedEpisode name key world error value nameEq keyEq selected
+    (NoTransitions {state}) -> Void
+noLocatedClosingInEmpty
+  (MkLocatedClosedEpisode preStart afterState beforeOpening episode afterClosing
+    decomposition) =
+      noLocatedClosingEmptyPrefix beforeOpening episode afterClosing decomposition
+
 ||| Proof-level O7 output.  The scanner enumerates every located closing
 ||| occurrence exactly once by opening ordinal and turns an empty erased scan
 ||| into the no-closing predicate consumed by proof-level recursion.
