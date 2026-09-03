@@ -5,6 +5,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionRelationalBoundary
+import DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify
 import DGamma.CP4Support
 import DGamma.CP4SupportQuiescence
 import DGamma.CP4SupportSolution
@@ -285,6 +286,48 @@ canonicalExtendLocatedClosingRight left right global decomposition
           (MoreTransitions (beginTransition (closedOpening episode))
             (appendTransitions (closedTransitions episode) afterClosing)) right) in
          rewrite located in decomposition)
+
+0 canonicalFalseNotTrue : False = True -> Void
+canonicalFalseNotTrue Refl impossible
+
+||| A selected lifecycle occurrence in an initially empty segment whose endpoint
+||| is uninstalled must close inside that segment.  The closing-free global
+||| suffix extension then eliminates it.
+0 canonicalLifecycleAbsentBeforeUninstalled :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, middle, finalState, stepBefore, stepAfter :
+    SystemState name key value world error} ->
+  (left : Transitions initial middle) ->
+  (right : Transitions middle finalState) ->
+  (global : Transitions initial finalState) ->
+  appendTransitions left right = global ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  bindings (registry initial) = [] ->
+  installedAt @{nameEq} selected middle = False ->
+  NoClosingEpisodes name key world error value nameEq keyEq global ->
+  (action : Action name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action stepBefore =
+    Just (tag, stepAfter)) ->
+  actionOwner action = selected ->
+  isLifecycleAction action = True ->
+  OccursIn (Fired {before = stepBefore} {afterState = stepAfter}
+    nameEq keyEq action tag checked) left ->
+  Void
+canonicalLifecycleAbsentBeforeUninstalled nameEq keyEq selected left right global
+  decomposition aligned initialEmpty endpointUninstalled noClosing action tag
+  checked owner lifecycle occurs =
+    case classifyForeignLifecycleOccurrence nameEq keyEq selected action owner
+      lifecycle tag checked left aligned occurs of
+      (anchor ** ContinuationCloses closing) =>
+        noClosing selected (canonicalExtendLocatedClosingRight left right global
+          decomposition (closingOccurrenceGivesLocatedEpisode nameEq keyEq
+            selected (Fired nameEq keyEq action tag checked) left aligned
+            initialEmpty anchor closing))
+      (anchor ** ContinuationStaysInstalled installed) =>
+        canonicalFalseNotTrue (trans (sym endpointUninstalled)
+          (canonicalInstalledTraceEnd (lifecycleAfterInstalled anchor) installed))
 
 ||| Derive the unique closing-free shape from the exact recursive bundle.
 public export
