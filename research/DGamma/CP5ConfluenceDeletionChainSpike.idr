@@ -150,6 +150,65 @@ prependClosingOrdinal head rest
     (MkLocatedClosedEpisode preStart afterState beforeOpening episode afterClosing
       decomposition)) = Refl
 
+0 prependClosingOccurrences :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  List (ClosingEpisodeOccurrence name key world error value nameEq keyEq rest) ->
+  List (ClosingEpisodeOccurrence name key world error value nameEq keyEq
+    (MoreTransitions head rest))
+prependClosingOccurrences head rest [] = []
+prependClosingOccurrences head rest (occurrence :: later) =
+  prependClosingOccurrence head rest occurrence ::
+    prependClosingOccurrences head rest later
+
+0 prependClosingOrdinals :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (occurrences : List
+    (ClosingEpisodeOccurrence name key world error value nameEq keyEq rest)) ->
+  map (\occurrence => scannedClosingOrdinal occurrence)
+      (prependClosingOccurrences head rest occurrences) =
+    map S (map (\occurrence => scannedClosingOrdinal occurrence) occurrences)
+prependClosingOrdinals head rest [] = Refl
+prependClosingOrdinals head rest (occurrence :: later) =
+  rewrite prependClosingOrdinal head rest occurrence in
+  rewrite prependClosingOrdinals head rest later in Refl
+
+0 successorElem :
+  {value : Nat} -> {values : List Nat} ->
+  Elem value values -> Elem (S value) (map S values)
+successorElem Here = Here
+successorElem (There later) = There (successorElem later)
+
+0 reflectSuccessorElem :
+  (value : Nat) -> (values : List Nat) ->
+  Elem (S value) (map S values) -> Elem value values
+reflectSuccessorElem value [] present impossible
+reflectSuccessorElem value (_ :: later) Here = Here
+reflectSuccessorElem value (current :: later) (There present) =
+  There (reflectSuccessorElem value later present)
+
+0 zeroAbsentFromSuccessors :
+  (values : List Nat) -> Not (Elem Z (map S values))
+zeroAbsentFromSuccessors [] present impossible
+zeroAbsentFromSuccessors (current :: later) Here impossible
+zeroAbsentFromSuccessors (current :: later) (There present) =
+  zeroAbsentFromSuccessors later present
+
+0 uniqueSuccessors :
+  {values : List Nat} -> UniqueKeys values -> UniqueKeys (map S values)
+uniqueSuccessors UniqueNil = UniqueNil
+uniqueSuccessors {values = current :: later} (UniqueCons fresh uniqueLater) =
+  UniqueCons
+    (\present => fresh (reflectSuccessorElem current later present))
+    (uniqueSuccessors uniqueLater)
+
 ||| Proof-level O7 output.  The scanner enumerates every located closing
 ||| occurrence exactly once by opening ordinal and turns an empty erased scan
 ||| into the no-closing predicate consumed by proof-level recursion.
