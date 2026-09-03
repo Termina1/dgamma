@@ -27,8 +27,8 @@ closed replay-bundle field, or other research hole was changed.
 | complete `AdjacentSwapResult` producer | 1 | `54e0f22` | passed |
 | hole RHS | 2 | `c94813e` | passed; first body named implicit endpoint indices unavailable in point-free scope, second inferred them with `_` |
 
-The successor lemma and positional producer were committed together at
-`065c0d0`. This tightly coupled 158-line foundation commit was explicitly
+The successor lemma was committed separately at `27c1e52`; the positional
+producer followed at `065c0d0`. This tightly coupled 158-line foundation commit was explicitly
 accepted by the supervisor; history was not rewritten. Strict one-unit/one-
 commit cadence resumed at unit 3.
 
