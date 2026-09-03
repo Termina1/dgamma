@@ -27179,3 +27179,101 @@ private
     (locatedActionOrdinal (adjacentOriginOccurrence origin targetOccurrence))
 adjacentOriginOrdinalRelation origin targetOccurrence =
   adjacentPackageOrdinalRelation (origin targetOccurrence)
+
+private
+0 actionOccurrenceToGenerated :
+  LocatedActionOccurrence (OInsert child (ChildOf parent) component) trace ->
+  LocatedGeneratedRegistration child parent component trace
+actionOccurrenceToGenerated
+  (MkLocatedActionOccurrence actionBefore actionAfter before located after
+    actionSame decomposition) = MkLocatedGeneratedRegistration actionBefore
+      actionAfter before located after actionSame decomposition
+
+private
+0 actionOccurrenceConversionCoherent :
+  (occurrence : LocatedActionOccurrence
+    (OInsert child (ChildOf parent) component) trace) ->
+  (generatedRegistrationActionOccurrence
+    (actionOccurrenceToGenerated occurrence) = occurrence)
+actionOccurrenceConversionCoherent
+  (MkLocatedActionOccurrence actionBefore actionAfter before located after
+    actionSame decomposition) = Refl
+
+private
+0 actionOccurrenceConversionOrdinal :
+  (occurrence : LocatedActionOccurrence
+    (OInsert child (ChildOf parent) component) trace) ->
+  (registrationGeneration (actionOccurrenceToGenerated occurrence) =
+    MkRegistrationGeneration child (locatedActionOrdinal occurrence))
+actionOccurrenceConversionOrdinal
+  (MkLocatedActionOccurrence actionBefore actionAfter before located after
+    actionSame decomposition) = Refl
+
+private
+0 generatedActionOrdinal :
+  (occurrence : LocatedGeneratedRegistration child parent component trace) ->
+  (registrationGeneration occurrence = MkRegistrationGeneration child
+    (locatedActionOrdinal (generatedRegistrationActionOccurrence occurrence)))
+generatedActionOrdinal
+  (MkLocatedGeneratedRegistration actionBefore actionAfter before located after
+    actionSame decomposition) = Refl
+
+private
+0 adjacentOriginGenerated :
+  (origin : AdjacentActionOriginProducer name key world error value prefixTrace
+    sourceFirst sourceSecond sourceSuffix targetFirst targetSecond targetSuffix) ->
+  LocatedGeneratedRegistration child parent component
+    (appendTransitions prefixTrace
+      (MoreTransitions targetFirst (MoreTransitions targetSecond targetSuffix))) ->
+  LocatedGeneratedRegistration child parent component
+    (appendTransitions prefixTrace
+      (MoreTransitions sourceFirst (MoreTransitions sourceSecond sourceSuffix)))
+adjacentOriginGenerated origin targetGenerated = actionOccurrenceToGenerated
+  (adjacentOriginOccurrence origin
+    (generatedRegistrationActionOccurrence targetGenerated))
+
+private
+0 adjacentOriginGeneratedCoherent :
+  (origin : AdjacentActionOriginProducer name key world error value prefixTrace
+    sourceFirst sourceSecond sourceSuffix targetFirst targetSecond targetSuffix) ->
+  (targetGenerated : LocatedGeneratedRegistration child parent component
+    (appendTransitions prefixTrace
+      (MoreTransitions targetFirst (MoreTransitions targetSecond targetSuffix)))) ->
+  (generatedRegistrationActionOccurrence
+    (adjacentOriginGenerated origin targetGenerated) =
+   adjacentOriginOccurrence origin
+    (generatedRegistrationActionOccurrence targetGenerated))
+adjacentOriginGeneratedCoherent origin targetGenerated =
+  actionOccurrenceConversionCoherent
+    (adjacentOriginOccurrence origin
+      (generatedRegistrationActionOccurrence targetGenerated))
+
+private
+0 adjacentOriginGeneratedOrdinal :
+  (origin : AdjacentActionOriginProducer name key world error value prefixTrace
+    sourceFirst sourceSecond sourceSuffix targetFirst targetSecond targetSuffix) ->
+  (targetGenerated : LocatedGeneratedRegistration child parent component
+    (appendTransitions prefixTrace
+      (MoreTransitions targetFirst (MoreTransitions targetSecond targetSuffix)))) ->
+  generationForward
+    (adjacentGenerationBijection (transitionCount prefixTrace))
+    (registrationGeneration (adjacentOriginGenerated origin targetGenerated)) =
+  registrationGeneration targetGenerated
+adjacentOriginGeneratedOrdinal {child} origin targetGenerated =
+  trans
+    (cong (generationForward
+      (adjacentGenerationBijection (transitionCount prefixTrace)))
+      (actionOccurrenceConversionOrdinal
+        (adjacentOriginOccurrence origin
+          (generatedRegistrationActionOccurrence targetGenerated))))
+    (trans
+      (cong (MkRegistrationGeneration child)
+        (adjacentOrdinalRelationForward (transitionCount prefixTrace)
+          (locatedActionOrdinal
+            (generatedRegistrationActionOccurrence targetGenerated))
+          (locatedActionOrdinal
+            (adjacentOriginOccurrence origin
+              (generatedRegistrationActionOccurrence targetGenerated)))
+          (adjacentOriginOrdinalRelation origin
+            (generatedRegistrationActionOccurrence targetGenerated))))
+      (sym (generatedActionOrdinal targetGenerated)))
