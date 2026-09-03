@@ -261,6 +261,31 @@ canonicalQuietInstalledActive nameEq keyEq state quietState selected installed
           (MkFiber component parent retired table
             (Unloading accumulator view outcome)) found)
 
+||| Extend an exact located closing episode when its containing trace is given a
+||| checked right suffix.  The episode data are unchanged; only the trailing
+||| decomposition is reassociated.
+0 canonicalExtendLocatedClosingRight :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {initial, middle, finalState : SystemState name key value world error} ->
+  (left : Transitions initial middle) ->
+  (right : Transitions middle finalState) ->
+  (global : Transitions initial finalState) ->
+  appendTransitions left right = global ->
+  LocatedClosedEpisode name key world error value nameEq keyEq selected left ->
+  LocatedClosedEpisode name key world error value nameEq keyEq selected global
+canonicalExtendLocatedClosingRight left right global decomposition
+  (MkLocatedClosedEpisode preStart afterState beforeOpening episode afterClosing
+    located) =
+      MkLocatedClosedEpisode preStart afterState beforeOpening episode
+        (appendTransitions afterClosing right)
+        (rewrite sym (appendTransitionsAssociative
+          (closedTransitions episode) afterClosing right) in
+         rewrite sym (appendTransitionsAssociative beforeOpening
+          (MoreTransitions (beginTransition (closedOpening episode))
+            (appendTransitions (closedTransitions episode) afterClosing)) right) in
+         rewrite located in decomposition)
+
 ||| Derive the unique closing-free shape from the exact recursive bundle.
 public export
 0 closingFreeTraceShapeSpike :
