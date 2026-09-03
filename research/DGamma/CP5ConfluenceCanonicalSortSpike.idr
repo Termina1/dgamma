@@ -329,6 +329,29 @@ canonicalLifecycleAbsentBeforeUninstalled nameEq keyEq selected left right globa
         canonicalFalseNotTrue (trans (sym endpointUninstalled)
           (canonicalInstalledTraceEnd (lifecycleAfterInstalled anchor) installed))
 
+||| Fold an occurrence-level exclusion into the structural `NoLifecycleBy`
+||| witness required by the closing-free shape.
+0 canonicalNoLifecycleFromAbsence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (({stepBefore, stepAfter : SystemState name key value world error} ->
+    (transition : Transition stepBefore stepAfter) ->
+    OccursIn transition trace ->
+    isLifecycleAction (transitionAction transition) = True ->
+    transitionActor transition = selected -> Void)) ->
+  NoLifecycleBy selected trace
+canonicalNoLifecycleFromAbsence selected NoTransitions absent =
+  NoLifecycleByEnd
+canonicalNoLifecycleFromAbsence selected
+  (MoreTransitions transition rest) absent =
+    NoLifecycleByStep transition rest
+      (\lifecycle, same => absent transition OccursHere lifecycle same)
+      (canonicalNoLifecycleFromAbsence selected rest
+        (\laterTransition, occurs, lifecycle, same =>
+          absent laterTransition (OccursLater occurs) lifecycle same))
+
 ||| Derive the unique closing-free shape from the exact recursive bundle.
 public export
 0 closingFreeTraceShapeSpike :
