@@ -27315,6 +27315,62 @@ adjacentActionRegistrationCorrespondence name key world error value nameEq
         targetFirstAction targetFirstTag targetSecondAction targetSecondTag seal _
         targetOccurrence)
 
+
+private
+0 buildAdjacentOperationalOccurrenceFold :
+  (origin : AdjacentActionOriginProducer name key world error value prefixTrace
+    sourceFirst sourceSecond sourceSuffix targetFirst targetSecond targetSuffix) ->
+  AdjacentSwapOperationalOccurrenceFold name key world error value
+    (appendTransitions prefixTrace
+      (MoreTransitions sourceFirst (MoreTransitions sourceSecond sourceSuffix)))
+    prefixTrace sourceFirst sourceSecond sourceSuffix targetFirst targetSecond
+    targetSuffix
+    (appendTransitions prefixTrace
+      (MoreTransitions targetFirst (MoreTransitions targetSecond targetSuffix)))
+buildAdjacentOperationalOccurrenceFold origin =
+  MkAdjacentSwapOperationalOccurrenceFold Refl Refl
+    (buildAdjacentActionRegistrationCorrespondence origin)
+    (adjacentOriginOrdinalRelation origin)
+
+private
+0 produceAdjacentOperationalOccurrenceFold :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, pairFirst, pairMiddle, pairFinal, originalFinal, swappedMiddle,
+    swappedFinal, replayedFinal : SystemState name key value world error) ->
+  (original : Transitions initial originalFinal) ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (0 decomposition : (appendTransitions prefixTrace
+    (MoreTransitions left (MoreTransitions right suffix)) = original)) ->
+  (movedRight : Transition pairFirst swappedMiddle) ->
+  (movedLeft : Transition swappedMiddle swappedFinal) ->
+  (replayedSuffix : Transitions swappedFinal replayedFinal) ->
+  (0 movedRightAction : (transitionAction movedRight =
+    transitionAction right)) ->
+  (0 movedRightTag : (transitionTag movedRight = transitionTag right)) ->
+  (0 movedLeftAction : (transitionAction movedLeft = transitionAction left)) ->
+  (0 movedLeftTag : (transitionTag movedLeft = transitionTag left)) ->
+  (0 seal : SealedSuffixReplaySpine name key world error value nameEq keyEq
+    suffix replayedSuffix) ->
+  AdjacentSwapOperationalOccurrenceFold name key world error value original
+    prefixTrace left right suffix movedRight movedLeft replayedSuffix
+    (appendTransitions prefixTrace
+      (MoreTransitions movedRight (MoreTransitions movedLeft replayedSuffix)))
+produceAdjacentOperationalOccurrenceFold name key world error value nameEq keyEq
+  initial pairFirst pairMiddle pairFinal originalFinal swappedMiddle swappedFinal
+  replayedFinal original prefixTrace left right suffix decomposition movedRight
+  movedLeft replayedSuffix movedRightAction movedRightTag movedLeftAction
+  movedLeftTag seal = case decomposition of
+    Refl => buildAdjacentOperationalOccurrenceFold
+      (\targetOccurrence => produceAdjacentActionOrigin name key world error value
+        nameEq keyEq initial pairFirst pairMiddle pairFinal originalFinal
+        swappedMiddle swappedFinal replayedFinal prefixTrace left right suffix
+        movedRight movedLeft replayedSuffix movedRightAction movedRightTag
+        movedLeftAction movedLeftTag seal _ targetOccurrence)
+
 public export
 0 adjacentSwapSuffixSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
