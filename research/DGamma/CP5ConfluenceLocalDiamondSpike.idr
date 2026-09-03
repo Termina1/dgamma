@@ -26793,3 +26793,161 @@ adjacentRelationSucc AdjacentMovedRightOrdinal = AdjacentMovedRightOrdinal
 adjacentRelationSucc AdjacentMovedLeftOrdinal = AdjacentMovedLeftOrdinal
 adjacentRelationSucc (AdjacentSuffixOrdinal after) =
   AdjacentSuffixOrdinal (LTESucc after)
+
+private
+record AdjacentPositionalOrigin
+  (name, key, world, error : Type) (value : key -> Type)
+  {initial, pairFirst, sourceMiddle, sourceSuffixFirst, sourceFinal,
+    targetMiddle, targetSuffixFirst, targetFinal, targetSelectedBefore,
+    targetSelectedAfter : SystemState name key value world error}
+  (prefixTrace : Transitions initial pairFirst)
+  (sourceFirst : Transition pairFirst sourceMiddle)
+  (sourceSecond : Transition sourceMiddle sourceSuffixFirst)
+  (sourceSuffix : Transitions sourceSuffixFirst sourceFinal)
+  (targetFirst : Transition pairFirst targetMiddle)
+  (targetSecond : Transition targetMiddle targetSuffixFirst)
+  (targetSuffix : Transitions targetSuffixFirst targetFinal)
+  (targetSelected : Transition targetSelectedBefore targetSelectedAfter)
+  (targetOccurs : OccursIn targetSelected
+    (appendTransitions prefixTrace
+      (MoreTransitions targetFirst (MoreTransitions targetSecond targetSuffix))))
+  where
+  constructor MkAdjacentPositionalOrigin
+  sourceSelectedBefore : SystemState name key value world error
+  sourceSelectedAfter : SystemState name key value world error
+  sourceSelected : Transition sourceSelectedBefore sourceSelectedAfter
+  sourceOccurs : OccursIn sourceSelected
+    (appendTransitions prefixTrace
+      (MoreTransitions sourceFirst (MoreTransitions sourceSecond sourceSuffix)))
+  0 sourceActionExact : (transitionAction sourceSelected =
+    transitionAction targetSelected)
+  0 sourceTagExact : (transitionTag sourceSelected = transitionTag targetSelected)
+  0 sourceOrdinalRelation : AdjacentSwapOrdinalRelation
+    (transitionCount prefixTrace)
+    (occursIndex
+      (appendTransitions prefixTrace
+        (MoreTransitions targetFirst
+          (MoreTransitions targetSecond targetSuffix)))
+      targetSelected targetOccurs)
+    (occursIndex
+      (appendTransitions prefixTrace
+        (MoreTransitions sourceFirst
+          (MoreTransitions sourceSecond sourceSuffix)))
+      sourceSelected sourceOccurs)
+
+private
+0 produceAdjacentPositionalOrigin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, pairFirst, sourceMiddle, sourceSuffixFirst, sourceFinal,
+    targetMiddle, targetSuffixFirst, targetFinal, targetSelectedBefore,
+    targetSelectedAfter : SystemState name key value world error) ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (sourceFirst : Transition pairFirst sourceMiddle) ->
+  (sourceSecond : Transition sourceMiddle sourceSuffixFirst) ->
+  (sourceSuffix : Transitions sourceSuffixFirst sourceFinal) ->
+  (targetFirst : Transition pairFirst targetMiddle) ->
+  (targetSecond : Transition targetMiddle targetSuffixFirst) ->
+  (targetSuffix : Transitions targetSuffixFirst targetFinal) ->
+  (0 targetFirstAction : (transitionAction targetFirst =
+    transitionAction sourceSecond)) ->
+  (0 targetFirstTag : (transitionTag targetFirst =
+    transitionTag sourceSecond)) ->
+  (0 targetSecondAction : (transitionAction targetSecond =
+    transitionAction sourceFirst)) ->
+  (0 targetSecondTag : (transitionTag targetSecond =
+    transitionTag sourceFirst)) ->
+  (0 seal : SealedSuffixReplaySpine name key world error value nameEq keyEq
+    sourceSuffix targetSuffix) ->
+  (targetSelected : Transition targetSelectedBefore targetSelectedAfter) ->
+  (targetOccurs : OccursIn targetSelected
+    (appendTransitions prefixTrace
+      (MoreTransitions targetFirst (MoreTransitions targetSecond targetSuffix)))) ->
+  AdjacentPositionalOrigin name key world error value prefixTrace sourceFirst
+    sourceSecond sourceSuffix targetFirst targetSecond targetSuffix targetSelected
+    targetOccurs
+produceAdjacentPositionalOrigin name key world error value nameEq keyEq _ pairFirst
+  sourceMiddle sourceSuffixFirst sourceFinal targetMiddle targetSuffixFirst
+  targetFinal _ _ NoTransitions sourceFirst sourceSecond sourceSuffix targetFirst
+  targetSecond targetSuffix targetFirstAction targetFirstTag targetSecondAction
+  targetSecondTag seal targetFirst OccursHere = MkAdjacentPositionalOrigin
+    sourceMiddle sourceSuffixFirst sourceSecond (OccursLater OccursHere)
+    (sym targetFirstAction) (sym targetFirstTag) AdjacentMovedRightOrdinal
+produceAdjacentPositionalOrigin name key world error value nameEq keyEq _ pairFirst
+  sourceMiddle sourceSuffixFirst sourceFinal targetMiddle targetSuffixFirst
+  targetFinal _ _ NoTransitions sourceFirst sourceSecond sourceSuffix targetFirst
+  targetSecond targetSuffix targetFirstAction targetFirstTag targetSecondAction
+  targetSecondTag seal targetSecond (OccursLater OccursHere) =
+    MkAdjacentPositionalOrigin pairFirst sourceMiddle sourceFirst OccursHere
+      (sym targetSecondAction) (sym targetSecondTag) AdjacentMovedLeftOrdinal
+produceAdjacentPositionalOrigin name key world error value nameEq keyEq _ pairFirst
+  sourceMiddle sourceSuffixFirst sourceFinal targetMiddle targetSuffixFirst
+  targetFinal targetSelectedBefore targetSelectedAfter NoTransitions sourceFirst
+  sourceSecond sourceSuffix targetFirst targetSecond targetSuffix targetFirstAction
+  targetFirstTag targetSecondAction targetSecondTag seal targetSelected
+  (OccursLater (OccursLater targetSuffixOccurs)) = case
+    produceLocatedActionAtOccurrence name key world error value targetSuffixFirst
+      targetFinal targetSelectedBefore targetSelectedAfter
+      (transitionAction targetSelected) targetSuffix targetSelected
+      targetSuffixOccurs Refl of
+        MkLocatedActionAtOccurrence targetLocated targetAction targetTag
+          targetOrdinal => MkAdjacentPositionalOrigin
+            (actionBeforeState (sealedSuffixActionOrigin seal targetLocated))
+            (actionAfterState (sealedSuffixActionOrigin seal targetLocated))
+            (locatedTransition (sealedSuffixActionOrigin seal targetLocated))
+            (OccursLater (OccursLater
+              (actionOccurrenceOccurs name key world error value
+                sourceSuffixFirst sourceFinal (transitionAction targetSelected)
+                sourceSuffix (sealedSuffixActionOrigin seal targetLocated))))
+            (locatedAction (sealedSuffixActionOrigin seal targetLocated))
+            (trans (sealedSuffixActionTagPreserved seal targetLocated) targetTag)
+            (replace
+              {p = \sourceIndex => AdjacentSwapOrdinalRelation Z
+                (occursIndex
+                  (MoreTransitions targetFirst
+                    (MoreTransitions targetSecond targetSuffix))
+                  targetSelected
+                  (OccursLater (OccursLater targetSuffixOccurs))) sourceIndex}
+              (adjacentSuffixEmbeddedIndex NoTransitions sourceFirst sourceSecond
+                sourceSuffix targetFirst targetSecond targetSuffix
+                (locatedTransition
+                  (sealedSuffixActionOrigin seal targetLocated)) targetSelected
+                (actionOccurrenceOccurs name key world error value
+                  sourceSuffixFirst sourceFinal (transitionAction targetSelected)
+                  sourceSuffix (sealedSuffixActionOrigin seal targetLocated))
+                targetSuffixOccurs
+                (trans (sym targetOrdinal)
+                  (trans
+                    (sealedSuffixActionOrdinalPreserved seal targetLocated)
+                    (sym (actionOccurrenceOccursIndex name key world error value
+                      sourceSuffixFirst sourceFinal
+                      (transitionAction targetSelected) sourceSuffix
+                      (sealedSuffixActionOrigin seal targetLocated))))))
+              (AdjacentSuffixOrdinal
+                (adjacentSuffixEmbeddedBound NoTransitions targetFirst
+                  targetSecond targetSuffix targetSelected targetSuffixOccurs)))
+
+produceAdjacentPositionalOrigin name key world error value nameEq keyEq initial pairFirst
+  sourceMiddle sourceSuffixFirst sourceFinal targetMiddle targetSuffixFirst
+  targetFinal _ _ (MoreTransitions prefixHead prefixTail) sourceFirst sourceSecond
+  sourceSuffix targetFirst targetSecond targetSuffix targetFirstAction
+  targetFirstTag targetSecondAction targetSecondTag seal prefixHead OccursHere =
+    MkAdjacentPositionalOrigin initial _ prefixHead OccursHere Refl Refl
+      (AdjacentPrefixOrdinal (LTESucc LTEZero))
+produceAdjacentPositionalOrigin name key world error value nameEq keyEq initial pairFirst
+  sourceMiddle sourceSuffixFirst sourceFinal targetMiddle targetSuffixFirst
+  targetFinal targetSelectedBefore targetSelectedAfter
+  (MoreTransitions prefixHead prefixTail) sourceFirst sourceSecond sourceSuffix
+  targetFirst targetSecond targetSuffix targetFirstAction targetFirstTag
+  targetSecondAction targetSecondTag seal targetSelected (OccursLater tailOccurs) =
+    case produceAdjacentPositionalOrigin name key world error value nameEq keyEq _ pairFirst
+      sourceMiddle sourceSuffixFirst sourceFinal targetMiddle targetSuffixFirst
+      targetFinal targetSelectedBefore targetSelectedAfter prefixTail sourceFirst
+      sourceSecond sourceSuffix targetFirst targetSecond targetSuffix
+      targetFirstAction targetFirstTag targetSecondAction targetSecondTag seal
+      targetSelected tailOccurs of
+        MkAdjacentPositionalOrigin sourceSelectedBefore sourceSelectedAfter
+          sourceSelected sourceOccurs sourceAction sourceTag sourceRelation =>
+            MkAdjacentPositionalOrigin sourceSelectedBefore sourceSelectedAfter
+              sourceSelected (OccursLater sourceOccurs) sourceAction sourceTag
+              (adjacentRelationSucc sourceRelation)
