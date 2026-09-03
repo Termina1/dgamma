@@ -26498,3 +26498,115 @@ adjacentWholeSameExternal name key world error value nameEq keyEq initial
           (MkRelationalReplayEndpoint (swappedEffects diamond)
             (swappedControlEquivalent diamond) (swappedWellFormed diamond))
           seal))
+
+private
+occursIndex :
+  (trace : Transitions first finalState) ->
+  (selected : Transition selectedBefore selectedAfter) ->
+  OccursIn selected trace -> Nat
+occursIndex (MoreTransitions selected rest) selected OccursHere = Z
+occursIndex (MoreTransitions head rest) selected (OccursLater later) =
+  S (occursIndex rest selected later)
+
+private
+0 occursIndexBeforeCount :
+  (trace : Transitions first finalState) ->
+  (selected : Transition selectedBefore selectedAfter) ->
+  (occurs : OccursIn selected trace) ->
+  LT (occursIndex trace selected occurs) (transitionCount trace)
+occursIndexBeforeCount (MoreTransitions selected rest) selected OccursHere =
+  LTESucc LTEZero
+occursIndexBeforeCount (MoreTransitions head rest) selected
+  (OccursLater later) = LTESucc (occursIndexBeforeCount rest selected later)
+
+private
+0 actionOccurrenceOccurs :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (initial, finalState : SystemState name key value world error) ->
+  (action : Action name key value world error) ->
+  (trace : Transitions initial finalState) ->
+  (occurrence : LocatedActionOccurrence action trace) ->
+  OccursIn (locatedTransition occurrence) trace
+actionOccurrenceOccurs name key world error value initial finalState action trace
+  occurrence = replace {p = OccursIn (locatedTransition occurrence)}
+    (actionOccurrenceDecomposition occurrence)
+    (r97AppendRightOccurrence (beforeActionOccurrence occurrence)
+      (MoreTransitions (locatedTransition occurrence)
+        (afterActionOccurrence occurrence))
+      (locatedTransition occurrence) OccursHere)
+
+private
+0 actionOccurrenceRightIndex :
+  (prior : Transitions initial beforeState) ->
+  (selected : Transition beforeState afterState) ->
+  (suffix : Transitions afterState finalState) ->
+  (occursIndex (appendTransitions prior (MoreTransitions selected suffix))
+    selected
+    (r97AppendRightOccurrence prior (MoreTransitions selected suffix) selected
+      OccursHere) = transitionCount prior)
+actionOccurrenceRightIndex NoTransitions selected suffix = Refl
+actionOccurrenceRightIndex (MoreTransitions head tail) selected suffix =
+  cong S (actionOccurrenceRightIndex tail selected suffix)
+
+private
+0 actionOccurrenceOccursIndex :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (initial, finalState : SystemState name key value world error) ->
+  (action : Action name key value world error) ->
+  (trace : Transitions initial finalState) ->
+  (occurrence : LocatedActionOccurrence action trace) ->
+  (occursIndex trace (locatedTransition occurrence)
+    (actionOccurrenceOccurs name key world error value initial finalState action
+      trace occurrence) = locatedActionOrdinal occurrence)
+actionOccurrenceOccursIndex name key world error value initial finalState action
+  trace (MkLocatedActionOccurrence actionBefore actionAfter before located after
+    actionSame decomposition) = case decomposition of
+      Refl => actionOccurrenceRightIndex before located after
+
+
+private
+record LocatedActionAtOccurrence
+  (name, key, world, error : Type) (value : key -> Type)
+  (initial, finalState, selectedBefore, selectedAfter :
+    SystemState name key value world error)
+  (action : Action name key value world error)
+  (trace : Transitions initial finalState)
+  (selected : Transition selectedBefore selectedAfter)
+  (occurs : OccursIn selected trace) where
+  constructor MkLocatedActionAtOccurrence
+  locatedAtOccurrence : LocatedActionOccurrence action trace
+  0 locatedAtOrdinal : (locatedActionOrdinal locatedAtOccurrence =
+    occursIndex trace selected occurs)
+
+private
+0 produceLocatedActionAtOccurrence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (initial, finalState, selectedBefore, selectedAfter :
+    SystemState name key value world error) ->
+  (action : Action name key value world error) ->
+  (trace : Transitions initial finalState) ->
+  (selected : Transition selectedBefore selectedAfter) ->
+  (occurs : OccursIn selected trace) ->
+  (0 actionSame : (transitionAction selected = action)) ->
+  LocatedActionAtOccurrence name key world error value initial finalState
+    selectedBefore selectedAfter action trace selected occurs
+produceLocatedActionAtOccurrence name key world error value selectedBefore
+  finalState selectedBefore selectedAfter action (MoreTransitions selected rest)
+  selected OccursHere actionSame = MkLocatedActionAtOccurrence
+    (MkLocatedActionOccurrence selectedBefore selectedAfter NoTransitions selected
+      rest actionSame Refl) Refl
+produceLocatedActionAtOccurrence name key world error value initial finalState
+  selectedBefore selectedAfter action (MoreTransitions head rest) selected
+  (OccursLater later) actionSame = case produceLocatedActionAtOccurrence name key
+    world error value _ finalState selectedBefore selectedAfter action rest
+    selected later actionSame of
+      MkLocatedActionAtOccurrence tailLocated tailOrdinal =>
+        MkLocatedActionAtOccurrence
+          (MkLocatedActionOccurrence
+            (actionBeforeState tailLocated) (actionAfterState tailLocated)
+            (MoreTransitions head (beforeActionOccurrence tailLocated))
+            (locatedTransition tailLocated) (afterActionOccurrence tailLocated)
+            (locatedAction tailLocated)
+            (cong (MoreTransitions head)
+              (actionOccurrenceDecomposition tailLocated)))
+          (cong S tailOrdinal)
