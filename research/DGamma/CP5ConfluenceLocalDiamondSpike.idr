@@ -27277,3 +27277,21 @@ adjacentOriginGeneratedOrdinal {child} origin targetGenerated =
           (adjacentOriginOrdinalRelation origin
             (generatedRegistrationActionOccurrence targetGenerated))))
       (sym (generatedActionOrdinal targetGenerated)))
+
+private
+0 buildAdjacentActionRegistrationCorrespondence :
+  (origin : AdjacentActionOriginProducer name key world error value prefixTrace
+    sourceFirst sourceSecond sourceSuffix targetFirst targetSecond targetSuffix) ->
+  ActionRegistrationReplayCorrespondence name key world error value
+    (appendTransitions prefixTrace
+      (MoreTransitions sourceFirst (MoreTransitions sourceSecond sourceSuffix)))
+    (appendTransitions prefixTrace
+      (MoreTransitions targetFirst (MoreTransitions targetSecond targetSuffix)))
+buildAdjacentActionRegistrationCorrespondence origin =
+  MkActionRegistrationReplayCorrespondence
+    (adjacentGenerationBijection (transitionCount prefixTrace))
+    (adjacentOriginOccurrence origin)
+    (adjacentOriginTag origin)
+    (adjacentOriginGenerated origin)
+    (adjacentOriginGeneratedCoherent origin)
+    (adjacentOriginGeneratedOrdinal origin)
