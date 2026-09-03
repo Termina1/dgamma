@@ -352,6 +352,49 @@ canonicalNoLifecycleFromAbsence selected
         (\laterTransition, occurs, lifecycle, same =>
           absent laterTransition (OccursLater occurs) lifecycle same))
 
+||| Any lifecycle occurrence of an endpoint-unsupported actor either supplies a
+||| forbidden closed episode or survives installed to the quiet endpoint, where
+||| support/active agreement contradicts endpoint unsupportedness.
+0 canonicalUnsupportedLifecycleAbsent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState, stepBefore, stepAfter :
+    SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  bindings (registry initial) = [] ->
+  NoClosingEpisodes name key world error value nameEq keyEq trace ->
+  quiet @{nameEq} @{keyEq} finalState = True ->
+  SupportMatchesActive nameEq keyEq finalState ->
+  isSupported @{nameEq} @{keyEq} selected finalState = False ->
+  (action : Action name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action stepBefore =
+    Just (tag, stepAfter)) ->
+  OccursIn (Fired {before = stepBefore} {afterState = stepAfter}
+    nameEq keyEq action tag checked) trace ->
+  isLifecycleAction action = True ->
+  transitionActor (Fired {before = stepBefore} {afterState = stepAfter}
+    nameEq keyEq action tag checked) = selected ->
+  Void
+canonicalUnsupportedLifecycleAbsent nameEq keyEq selected trace aligned
+  initialEmpty noClosing quietState supportMatches unsupported action tag checked
+  occurs lifecycle actorSame =
+    case classifyForeignLifecycleOccurrence nameEq keyEq selected action
+      (trans (sym (canonicalTransitionActorActionOwner
+        (Fired nameEq keyEq action tag checked))) actorSame)
+      lifecycle tag checked trace aligned occurs of
+      (anchor ** ContinuationCloses closing) =>
+        noClosing selected (closingOccurrenceGivesLocatedEpisode nameEq keyEq
+          selected (Fired nameEq keyEq action tag checked) trace aligned
+          initialEmpty anchor closing)
+      (anchor ** ContinuationStaysInstalled installed) =>
+        canonicalFalseNotTrue (trans (sym unsupported)
+          (trans (supportMatches selected)
+            (canonicalQuietInstalledActive nameEq keyEq finalState quietState
+              selected (canonicalInstalledTraceEnd
+                (lifecycleAfterInstalled anchor) installed))))
+
 ||| Derive the unique closing-free shape from the exact recursive bundle.
 public export
 0 closingFreeTraceShapeSpike :
