@@ -395,6 +395,37 @@ canonicalUnsupportedLifecycleAbsent nameEq keyEq selected trace aligned
               selected (canonicalInstalledTraceEnd
                 (lifecycleAfterInstalled anchor) installed))))
 
+||| Aligned traces expose the exact proof dictionaries needed by the lifecycle
+||| classifiers while folding occurrence-level exclusion into `NoLifecycleBy`.
+0 canonicalAlignedNoLifecycleFromAbsence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  (({stepBefore, stepAfter : SystemState name key value world error} ->
+    (action : Action name key value world error) ->
+    (tag : RuleTag) ->
+    (checked : checkedApplyAction @{nameEq} @{keyEq} action stepBefore =
+      Just (tag, stepAfter)) ->
+    OccursIn (Fired {before = stepBefore} {afterState = stepAfter}
+      nameEq keyEq action tag checked) trace ->
+    isLifecycleAction action = True ->
+    transitionActor (Fired {before = stepBefore} {afterState = stepAfter}
+      nameEq keyEq action tag checked) = selected -> Void)) ->
+  NoLifecycleBy selected trace
+canonicalAlignedNoLifecycleFromAbsence nameEq keyEq selected NoTransitions
+  AlignedEnd absent = NoLifecycleByEnd
+canonicalAlignedNoLifecycleFromAbsence nameEq keyEq selected
+  (MoreTransitions _ _) (AlignedStep action tag checked rest alignedRest) absent =
+    NoLifecycleByStep (Fired nameEq keyEq action tag checked) rest
+      (\lifecycle, same => absent action tag checked OccursHere lifecycle same)
+      (canonicalAlignedNoLifecycleFromAbsence nameEq keyEq selected rest
+        alignedRest
+        (\laterAction, laterTag, laterChecked, occurs, lifecycle, same =>
+          absent laterAction laterTag laterChecked (OccursLater occurs) lifecycle
+            same))
+
 ||| Derive the unique closing-free shape from the exact recursive bundle.
 public export
 0 closingFreeTraceShapeSpike :
