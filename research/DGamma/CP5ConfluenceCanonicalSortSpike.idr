@@ -426,6 +426,110 @@ canonicalAlignedNoLifecycleFromAbsence nameEq keyEq selected
           absent laterAction laterTag laterChecked (OccursLater occurs) lifecycle
             same))
 
+||| Fully erased first-lifecycle view.  Every constructor binds the transition's
+||| erased middle state and stored dictionaries through its exact indexed head;
+||| no scan output is runtime-relevant.
+public export
+data ErasedFirstLifecycleView :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  Transitions initial finalState -> Type where
+  ErasedLifecycleEnd :
+    ErasedFirstLifecycleView name key world error value nameEq selected
+      NoTransitions
+  ErasedLifecycleHere :
+    {first, middle, finalState : SystemState name key value world error} ->
+    (0 transition : Transition first middle) ->
+    (0 rest : Transitions middle finalState) ->
+    (0 sameActor : transitionActor transition = selected) ->
+    (0 lifecycle : isLifecycleAction (transitionAction transition) = True) ->
+    ErasedFirstLifecycleView name key world error value nameEq selected
+      (MoreTransitions transition rest)
+  ErasedLifecycleSkipActor :
+    {first, middle, finalState : SystemState name key value world error} ->
+    (0 transition : Transition first middle) ->
+    (0 rest : Transitions middle finalState) ->
+    (0 distinctActor : Not (transitionActor transition = selected)) ->
+    (0 later : ErasedFirstLifecycleView name key world error value nameEq selected
+      rest) ->
+    ErasedFirstLifecycleView name key world error value nameEq selected
+      (MoreTransitions transition rest)
+  ErasedLifecycleSkipAction :
+    {first, middle, finalState : SystemState name key value world error} ->
+    (0 transition : Transition first middle) ->
+    (0 rest : Transitions middle finalState) ->
+    (0 notLifecycle : isLifecycleAction (transitionAction transition) = False) ->
+    (0 later : ErasedFirstLifecycleView name key world error value nameEq selected
+      rest) ->
+    ErasedFirstLifecycleView name key world error value nameEq selected
+      (MoreTransitions transition rest)
+
+0 erasedLifecycleViewOrdinal :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {selected : name} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {trace : Transitions initial finalState} ->
+  ErasedFirstLifecycleView name key world error value nameEq selected trace ->
+  Maybe Nat
+erasedLifecycleViewOrdinal ErasedLifecycleEnd = Nothing
+erasedLifecycleViewOrdinal
+  (ErasedLifecycleHere transition rest sameActor lifecycle) = Just Z
+erasedLifecycleViewOrdinal
+  (ErasedLifecycleSkipActor transition rest distinctActor later) =
+    map S (erasedLifecycleViewOrdinal later)
+erasedLifecycleViewOrdinal
+  (ErasedLifecycleSkipAction transition rest notLifecycle later) =
+    map S (erasedLifecycleViewOrdinal later)
+
+mutual
+  0 erasedLifecycleActionDecision :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) -> (selected : name) ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    transitionActor transition = selected ->
+    (observed : Bool) ->
+    isLifecycleAction (transitionAction transition) = observed ->
+    ErasedFirstLifecycleView name key world error value nameEq selected
+      (MoreTransitions transition rest)
+  erasedLifecycleActionDecision nameEq selected transition rest sameActor True
+    lifecycle = ErasedLifecycleHere transition rest sameActor lifecycle
+  erasedLifecycleActionDecision nameEq selected transition rest sameActor False
+    notLifecycle = ErasedLifecycleSkipAction transition rest notLifecycle
+      (erasedFirstLifecycleView nameEq selected rest)
+
+  0 erasedLifecycleActorDecision :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) -> (selected : name) ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    Dec (transitionActor transition = selected) ->
+    ErasedFirstLifecycleView name key world error value nameEq selected
+      (MoreTransitions transition rest)
+  erasedLifecycleActorDecision nameEq selected transition rest (Yes sameActor) =
+    erasedLifecycleActionDecision nameEq selected transition rest sameActor
+      (isLifecycleAction (transitionAction transition)) Refl
+  erasedLifecycleActorDecision nameEq selected transition rest (No distinctActor) =
+    ErasedLifecycleSkipActor transition rest distinctActor
+      (erasedFirstLifecycleView nameEq selected rest)
+
+  ||| Covering proof-level scan.  Quantity 0 is essential: the existential middle
+  ||| of `MoreTransitions` is unavailable to runtime-relevant code.
+  0 erasedFirstLifecycleView :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) -> (selected : name) ->
+    {initial, finalState : SystemState name key value world error} ->
+    (trace : Transitions initial finalState) ->
+    ErasedFirstLifecycleView name key world error value nameEq selected trace
+  erasedFirstLifecycleView nameEq selected NoTransitions = ErasedLifecycleEnd
+  erasedFirstLifecycleView nameEq selected
+    (MoreTransitions transition rest) =
+      erasedLifecycleActorDecision nameEq selected transition rest
+        (decEq @{nameEq} (transitionActor transition) selected)
+
 ||| Derive the unique closing-free shape from the exact recursive bundle.
 public export
 0 closingFreeTraceShapeSpike :
