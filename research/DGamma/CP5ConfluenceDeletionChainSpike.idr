@@ -986,6 +986,93 @@ installedBeginHeadImpossible nameEq keyEq owner checked rest installed actor
       Refl => installedTraceRejectsFirstClosing nameEq keyEq owner rest installed
         firstClosing
 
+0 scanBeginContinuation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (owner : name) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LBegin owner) first =
+    Just (LBeginTag, middle)) ->
+  (rest : Transitions middle finalState) ->
+  (0 tailScan : ClosingEpisodeScan name key world error value nameEq keyEq
+    {initial = middle} {finalState = finalState} rest) ->
+  InstalledContinuation name key world error value nameEq keyEq owner
+    {first = middle} {finalState = finalState} rest ->
+  ClosingEpisodeScan name key world error value nameEq keyEq
+    {initial = first} {finalState = finalState} (MoreTransitions (Fired nameEq keyEq (LBegin owner) LBeginTag checked) rest)
+scanBeginContinuation nameEq keyEq owner checked rest tailScan
+  (ContinuationCloses firstClosing) =
+    closingScanWithHead (MkBeginStep checked) rest firstClosing tailScan
+scanBeginContinuation nameEq keyEq owner checked rest tailScan
+  (ContinuationStaysInstalled installed) =
+    closingScanWithoutHead
+      (Fired nameEq keyEq (LBegin owner) LBeginTag checked) rest
+      (installedBeginHeadImpossible nameEq keyEq owner checked rest installed)
+      tailScan
+
+0 scanBeginTagShape :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (owner : name) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LBegin owner) first =
+    Just (tag, middle)) ->
+  (rest : Transitions middle finalState) ->
+  (0 alignedRest : AlignedTransitions name key world error value nameEq keyEq
+    rest) ->
+  (0 targetInstalled : installedAt @{nameEq} owner middle = True) ->
+  (0 tailScan : ClosingEpisodeScan name key world error value nameEq keyEq
+    {initial = middle} {finalState = finalState} rest) ->
+  tag = LBeginTag ->
+  ClosingEpisodeScan name key world error value nameEq keyEq
+    {initial = first} {finalState = finalState} (MoreTransitions (Fired nameEq keyEq (LBegin owner) tag checked) rest)
+scanBeginTagShape nameEq keyEq owner tag checked rest alignedRest targetInstalled
+  tailScan tagShape =
+    case tagShape of
+      Refl => scanBeginContinuation nameEq keyEq owner checked rest tailScan
+        (classifyInstalledContinuation nameEq keyEq owner rest alignedRest
+          targetInstalled)
+
+0 scanBeginBoundary :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (owner : name) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LBegin owner) first =
+    Just (tag, middle)) ->
+  (rest : Transitions middle finalState) ->
+  (0 alignedRest : AlignedTransitions name key world error value nameEq keyEq
+    rest) ->
+  (0 tailScan : ClosingEpisodeScan name key world error value nameEq keyEq
+    {initial = middle} {finalState = finalState} rest) ->
+  (tag = LBeginTag,
+   installedAt @{nameEq} owner first = False,
+   installedAt @{nameEq} owner middle = True) ->
+  ClosingEpisodeScan name key world error value nameEq keyEq
+    {initial = first} {finalState = finalState} (MoreTransitions (Fired nameEq keyEq (LBegin owner) tag checked) rest)
+scanBeginBoundary nameEq keyEq owner tag checked rest alignedRest tailScan
+  (tagShape, sourceUninstalled, targetInstalled) =
+    scanBeginTagShape nameEq keyEq owner tag checked rest alignedRest
+      targetInstalled tailScan tagShape
+
+0 scanBeginHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (owner : name) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LBegin owner) first =
+    Just (tag, middle)) ->
+  (rest : Transitions middle finalState) ->
+  (0 alignedRest : AlignedTransitions name key world error value nameEq keyEq
+    rest) ->
+  (0 tailScan : ClosingEpisodeScan name key world error value nameEq keyEq
+    {initial = middle} {finalState = finalState} rest) ->
+  ClosingEpisodeScan name key world error value nameEq keyEq
+    {initial = first} {finalState = finalState} (MoreTransitions (Fired nameEq keyEq (LBegin owner) tag checked) rest)
+scanBeginHead nameEq keyEq owner tag checked rest alignedRest tailScan =
+  scanBeginBoundary nameEq keyEq owner tag checked rest alignedRest tailScan
+    (lBeginBoundary nameEq keyEq owner _ _ tag checked)
+
 ||| O7 is a separate erased producer rather than work hidden in O8/O9.  Quantity
 ||| 0 is essential because `MoreTransitions` erases its middle-state index.  The
 ||| exact trace alignment is the minimum authentication needed to reclassify
