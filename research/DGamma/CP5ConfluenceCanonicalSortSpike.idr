@@ -166,6 +166,29 @@ public export
 sortingOccurrenceCorrespondence sorted =
   finiteDerivationOccurrenceCorrespondence (sortingAdjacentDerivation sorted)
 
+||| Research-side bridge from a fired transition to its action owner.  The
+||| production analogue is private to CP3, so CanonicalSort owns the exact
+||| projection it needs without widening the frozen production surface.
+0 canonicalTransitionActorActionOwner :
+  (transition : Transition before afterState) ->
+  transitionActor transition = actionOwner (transitionAction transition)
+canonicalTransitionActorActionOwner
+  (Fired nameEq keyEq (OInsert actor parent component) tag checked) = Refl
+canonicalTransitionActorActionOwner
+  (Fired nameEq keyEq (ORetire actor) tag checked) = Refl
+canonicalTransitionActorActionOwner
+  (Fired nameEq keyEq (ORemove actor) tag checked) = Refl
+canonicalTransitionActorActionOwner
+  (Fired nameEq keyEq (LBegin actor) tag checked) = Refl
+canonicalTransitionActorActionOwner
+  (Fired nameEq keyEq (LAdvance actor) tag checked) = Refl
+canonicalTransitionActorActionOwner
+  (Fired nameEq keyEq (LDivert actor) tag checked) = Refl
+canonicalTransitionActorActionOwner
+  (Fired nameEq keyEq (LLeave actor) tag checked) = Refl
+canonicalTransitionActorActionOwner
+  (Fired nameEq keyEq (LUnload actor) tag checked) = Refl
+
 ||| Derive the unique closing-free shape from the exact recursive bundle.
 public export
 0 closingFreeTraceShapeSpike :
