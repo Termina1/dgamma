@@ -530,6 +530,107 @@ mutual
       erasedLifecycleActorDecision nameEq selected transition rest
         (decEq @{nameEq} (transitionActor transition) selected)
 
+0 erasedLifecycleOrdinalAtHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (transition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  transitionActor transition = selected ->
+  isLifecycleAction (transitionAction transition) = True ->
+  (view : ErasedFirstLifecycleView name key world error value nameEq selected
+    (MoreTransitions transition rest)) ->
+  erasedLifecycleViewOrdinal view = Just Z
+erasedLifecycleOrdinalAtHead nameEq selected transition rest sameActor lifecycle
+  (ErasedLifecycleHere transition rest foundActor foundLifecycle) = Refl
+erasedLifecycleOrdinalAtHead nameEq selected transition rest sameActor lifecycle
+  (ErasedLifecycleSkipActor transition rest distinctActor later) =
+    void (distinctActor sameActor)
+erasedLifecycleOrdinalAtHead nameEq selected transition rest sameActor lifecycle
+  (ErasedLifecycleSkipAction transition rest notLifecycle later) =
+    void (canonicalFalseNotTrue (trans (sym notLifecycle) lifecycle))
+
+0 erasedLifecycleOrdinalThroughExcludedHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {first, middle, before, afterState, finalState :
+    SystemState name key value world error} ->
+  (transition : Transition first middle) ->
+  (earlierRest : Transitions middle before) ->
+  (opening : Transition before afterState) ->
+  (later : Transitions afterState finalState) ->
+  (isLifecycleAction (transitionAction transition) = True ->
+    Not (transitionActor transition = selected)) ->
+  ((tailView : ErasedFirstLifecycleView name key world error value nameEq selected
+      (appendTransitions earlierRest (MoreTransitions opening later))) ->
+    erasedLifecycleViewOrdinal tailView =
+      Just (transitionCount earlierRest)) ->
+  (view : ErasedFirstLifecycleView name key world error value nameEq selected
+    (MoreTransitions transition
+      (appendTransitions earlierRest (MoreTransitions opening later)))) ->
+  erasedLifecycleViewOrdinal view = Just (S (transitionCount earlierRest))
+erasedLifecycleOrdinalThroughExcludedHead nameEq selected transition earlierRest
+  opening later excluded induction
+  (ErasedLifecycleHere _ _ sameActor lifecycle) =
+    void (excluded lifecycle sameActor)
+erasedLifecycleOrdinalThroughExcludedHead nameEq selected transition earlierRest
+  opening later excluded induction
+  (ErasedLifecycleSkipActor _ _ distinctActor tailView) =
+    cong (map S) (induction tailView)
+erasedLifecycleOrdinalThroughExcludedHead nameEq selected transition earlierRest
+  opening later excluded induction
+  (ErasedLifecycleSkipAction _ _ notLifecycle tailView) =
+    cong (map S) (induction tailView)
+
+0 erasedLifecycleOrdinalAtOpening :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {initial, before, afterState, finalState :
+    SystemState name key value world error} ->
+  {earlier : Transitions initial before} ->
+  (noEarlier : NoLifecycleBy selected earlier) ->
+  (opening : Transition before afterState) ->
+  (later : Transitions afterState finalState) ->
+  transitionActor opening = selected ->
+  isLifecycleAction (transitionAction opening) = True ->
+  (view : ErasedFirstLifecycleView name key world error value nameEq selected
+    (appendTransitions earlier (MoreTransitions opening later))) ->
+  erasedLifecycleViewOrdinal view = Just (transitionCount earlier)
+erasedLifecycleOrdinalAtOpening nameEq selected NoLifecycleByEnd opening later
+  sameActor lifecycle view =
+    erasedLifecycleOrdinalAtHead nameEq selected opening later sameActor lifecycle
+      view
+erasedLifecycleOrdinalAtOpening nameEq selected
+  (NoLifecycleByStep transition earlierRest excluded noEarlier) opening later
+  sameActor lifecycle view =
+    erasedLifecycleOrdinalThroughExcludedHead nameEq selected transition earlierRest
+      opening later excluded
+      (\tailView => erasedLifecycleOrdinalAtOpening nameEq selected noEarlier
+        opening later sameActor lifecycle tailView)
+      view
+
+0 erasedLifecycleOrdinalAtDecomposition :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {initial, before, afterState, finalState :
+    SystemState name key value world error} ->
+  (earlier : Transitions initial before) ->
+  (opening : Transition before afterState) ->
+  (later : Transitions afterState finalState) ->
+  (global : Transitions initial finalState) ->
+  appendTransitions earlier (MoreTransitions opening later) = global ->
+  NoLifecycleBy selected earlier ->
+  transitionActor opening = selected ->
+  isLifecycleAction (transitionAction opening) = True ->
+  (view : ErasedFirstLifecycleView name key world error value nameEq selected
+    global) ->
+  erasedLifecycleViewOrdinal view = Just (transitionCount earlier)
+erasedLifecycleOrdinalAtDecomposition nameEq selected earlier opening later
+  (appendTransitions earlier (MoreTransitions opening later)) Refl noEarlier
+  sameActor lifecycle view =
+    erasedLifecycleOrdinalAtOpening nameEq selected noEarlier opening later
+      sameActor lifecycle view
+
 ||| Derive the unique closing-free shape from the exact recursive bundle.
 public export
 0 closingFreeTraceShapeSpike :
