@@ -2721,3 +2721,31 @@ hole RHS occurs earlier and cannot call a later definition. Landing the chain
 itself needs no frozen delta; its eventual use by the RHS requires a separate
 order/inlining ruling. All frozen capital remains unchanged and holes remain 20
 with split 6/4/8/1/1.
+
+### Revision 135: O14 helper stop and O7 erased-surface correlation gate
+
+Revision 133 closed O12 through the canonized erased lifecycle view and reduced
+the current census to **18 holes**, split **5/4/8/0/1**. Revision 135 first
+landed `canonicalRankLTETransitive` as the mandated standalone O14 correction.
+The following protocol-rank stable-sort helper unit exhausted its independent
+three-attempt budget at the supported-active dependent lookup bridge and was
+fully restored; O14 itself remains unopened at 0/3 body attempts.
+
+DeletionChain then received the authorized quantity-only O7 restatement.
+`ClosingEpisodeOccurrence` is now a public erased view whose actor and exact
+`LocatedClosedEpisode` payload are quantity 0; the occurrence list and the full
+O7/O8/`ClosingStepChoice` passage are erased without dropping uniqueness,
+completeness, empty-scan, candidate, or ordinal-membership obligations. The
+whole DeletionChain spike checks under that surface.
+
+The mandatory pre-fill dictionary probe then isolated a distinct semantic
+correlation wall: arbitrary explicit O7 dictionaries cannot reconstruct a
+`BeginStep nameEq keyEq` from the checked equation stored under a trace head's
+independently quantified dictionaries. Real consumers carry
+`AlignedTransitions` through `CanonicalizationPremises`, but adding that premise
+is outside the authorized content-preserving restatement. O7 therefore stops at
+0/3 body attempts, O8 is not opened, and the census remains **18**, split
+**5/4/8/0/1**. The exact audits are
+`O6-R135-CANONICAL-O14-RANK-SORT-HELPER-BUDGET-STOP-AUDIT.md`,
+`O6-R135-DELETION-O7-ERASED-INTERFACE-RESTATEMENT-AUDIT.md`, and
+`O6-R135-DELETION-O7-DICTIONARY-CORRELATION-STOP-AUDIT.md`.
