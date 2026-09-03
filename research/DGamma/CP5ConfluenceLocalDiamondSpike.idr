@@ -27065,3 +27065,117 @@ produceAdjacentActionOrigin name key world error value nameEq keyEq initial
                               (MoreTransitions targetSecond targetSuffix)))
                           targetOccurrence)
                         locatedOrdinalExact sourceRelation)
+
+private
+0 consumeAdjacentActionOrigin :
+  (origin : AdjacentActionOrigin name key world error value prefixTrace
+    sourceFirst sourceSecond sourceSuffix targetFirst targetSecond targetSuffix
+    action targetOccurrence) ->
+  (source : LocatedActionOccurrence action
+      (appendTransitions prefixTrace
+        (MoreTransitions sourceFirst (MoreTransitions sourceSecond sourceSuffix))) **
+   (transitionTag (locatedTransition source) =
+      transitionTag (locatedTransition targetOccurrence),
+    AdjacentSwapOrdinalRelation (transitionCount prefixTrace)
+      (locatedActionOrdinal targetOccurrence) (locatedActionOrdinal source)))
+consumeAdjacentActionOrigin
+  (MkAdjacentActionOrigin source tagExact ordinalRelation) =
+    (source ** (tagExact, ordinalRelation))
+
+private
+AdjacentActionOriginProducer :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {initial, pairFirst, sourceMiddle, sourceSuffixFirst, sourceFinal,
+    targetMiddle, targetSuffixFirst, targetFinal :
+    SystemState name key value world error} ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (sourceFirst : Transition pairFirst sourceMiddle) ->
+  (sourceSecond : Transition sourceMiddle sourceSuffixFirst) ->
+  (sourceSuffix : Transitions sourceSuffixFirst sourceFinal) ->
+  (targetFirst : Transition pairFirst targetMiddle) ->
+  (targetSecond : Transition targetMiddle targetSuffixFirst) ->
+  (targetSuffix : Transitions targetSuffixFirst targetFinal) -> Type
+AdjacentActionOriginProducer name key world error value prefixTrace sourceFirst
+  sourceSecond sourceSuffix targetFirst targetSecond targetSuffix =
+    {action : Action name key value world error} ->
+    (targetOccurrence : LocatedActionOccurrence action
+      (appendTransitions prefixTrace
+        (MoreTransitions targetFirst
+          (MoreTransitions targetSecond targetSuffix)))) ->
+    AdjacentActionOrigin name key world error value prefixTrace sourceFirst
+      sourceSecond sourceSuffix targetFirst targetSecond targetSuffix action
+      targetOccurrence
+
+private
+adjacentPackageSource :
+  AdjacentActionOrigin name key world error value prefixTrace sourceFirst
+    sourceSecond sourceSuffix targetFirst targetSecond targetSuffix action
+    targetOccurrence ->
+  LocatedActionOccurrence action
+    (appendTransitions prefixTrace
+      (MoreTransitions sourceFirst (MoreTransitions sourceSecond sourceSuffix)))
+adjacentPackageSource (MkAdjacentActionOrigin source tagExact
+  ordinalRelation) = source
+
+private
+0 adjacentPackageTag :
+  (package : AdjacentActionOrigin name key world error value prefixTrace
+    sourceFirst sourceSecond sourceSuffix targetFirst targetSecond targetSuffix
+    action targetOccurrence) ->
+  (transitionTag (locatedTransition (adjacentPackageSource package)) =
+    transitionTag (locatedTransition targetOccurrence))
+adjacentPackageTag (MkAdjacentActionOrigin source tagExact
+  ordinalRelation) = tagExact
+
+private
+0 adjacentPackageOrdinalRelation :
+  (package : AdjacentActionOrigin name key world error value prefixTrace
+    sourceFirst sourceSecond sourceSuffix targetFirst targetSecond targetSuffix
+    action targetOccurrence) ->
+  AdjacentSwapOrdinalRelation (transitionCount prefixTrace)
+    (locatedActionOrdinal targetOccurrence)
+    (locatedActionOrdinal (adjacentPackageSource package))
+adjacentPackageOrdinalRelation (MkAdjacentActionOrigin source tagExact
+  ordinalRelation) = ordinalRelation
+
+private
+0 adjacentOriginOccurrence :
+  (origin : AdjacentActionOriginProducer name key world error value prefixTrace
+    sourceFirst sourceSecond sourceSuffix targetFirst targetSecond targetSuffix) ->
+  {action : Action name key value world error} ->
+  (targetOccurrence : LocatedActionOccurrence action
+    (appendTransitions prefixTrace
+      (MoreTransitions targetFirst (MoreTransitions targetSecond targetSuffix)))) ->
+  LocatedActionOccurrence action
+    (appendTransitions prefixTrace
+      (MoreTransitions sourceFirst (MoreTransitions sourceSecond sourceSuffix)))
+adjacentOriginOccurrence origin targetOccurrence =
+  adjacentPackageSource (origin targetOccurrence)
+
+private
+0 adjacentOriginTag :
+  (origin : AdjacentActionOriginProducer name key world error value prefixTrace
+    sourceFirst sourceSecond sourceSuffix targetFirst targetSecond targetSuffix) ->
+  {action : Action name key value world error} ->
+  (targetOccurrence : LocatedActionOccurrence action
+    (appendTransitions prefixTrace
+      (MoreTransitions targetFirst (MoreTransitions targetSecond targetSuffix)))) ->
+  (transitionTag
+    (locatedTransition (adjacentOriginOccurrence origin targetOccurrence)) =
+    transitionTag (locatedTransition targetOccurrence))
+adjacentOriginTag origin targetOccurrence =
+  adjacentPackageTag (origin targetOccurrence)
+
+private
+0 adjacentOriginOrdinalRelation :
+  (origin : AdjacentActionOriginProducer name key world error value prefixTrace
+    sourceFirst sourceSecond sourceSuffix targetFirst targetSecond targetSuffix) ->
+  {action : Action name key value world error} ->
+  (targetOccurrence : LocatedActionOccurrence action
+    (appendTransitions prefixTrace
+      (MoreTransitions targetFirst (MoreTransitions targetSecond targetSuffix)))) ->
+  AdjacentSwapOrdinalRelation (transitionCount prefixTrace)
+    (locatedActionOrdinal targetOccurrence)
+    (locatedActionOrdinal (adjacentOriginOccurrence origin targetOccurrence))
+adjacentOriginOrdinalRelation origin targetOccurrence =
+  adjacentPackageOrdinalRelation (origin targetOccurrence)
