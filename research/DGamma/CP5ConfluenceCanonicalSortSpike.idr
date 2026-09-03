@@ -763,6 +763,18 @@ closingFreeTraceShapeSpike nameEq keyEq protocol trace noClosing premises =
           (replayQuiet premises) (replaySupportMatchesActive premises)
           unsupported action tag checked occurs lifecycle actorSame))
 
+||| Transitivity for the non-strict protocol-rank order used by the stable-sort
+||| invariant.  It is kept explicit so insertion preservation never depends on
+||| an inferred `Transitive` implementation.
+0 canonicalRankLTETransitive :
+  {left, middle, right : Nat} ->
+  LTE left middle ->
+  LTE middle right ->
+  LTE left right
+canonicalRankLTETransitive LTEZero later = LTEZero
+canonicalRankLTETransitive (LTESucc earlier) (LTESucc later) =
+  LTESucc (canonicalRankLTETransitive earlier later)
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
