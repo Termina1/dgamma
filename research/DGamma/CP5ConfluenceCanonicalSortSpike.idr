@@ -746,7 +746,22 @@ public export
   NoClosingEpisodes name key world error value nameEq keyEq trace ->
   ReplayInvariantBundle name key world error value protocol nameEq keyEq trace ->
   ClosingFreeTraceShape name key world error value nameEq keyEq trace
-closingFreeTraceShapeSpike = ?closingFreeTraceShapeSpike_rhs
+closingFreeTraceShapeSpike nameEq keyEq protocol trace noClosing premises =
+  MkClosingFreeTraceShape
+    (\selected, supported => canonicalSupportedOpenEpisode nameEq keyEq protocol
+      trace noClosing premises selected supported)
+    (\selected, supported, other => canonicalOpenEpisodeOrdinalUnique nameEq
+      keyEq selected trace
+      (canonicalSupportedOpenEpisode nameEq keyEq protocol trace noClosing
+        premises selected supported)
+      other)
+    (\selected, unsupported => canonicalAlignedNoLifecycleFromAbsence nameEq
+      keyEq selected trace (replayAligned premises)
+      (\action, tag, checked, occurs, lifecycle, actorSame =>
+        canonicalUnsupportedLifecycleAbsent nameEq keyEq selected trace
+          (replayAligned premises) (replayInitialEmpty premises) noClosing
+          (replayQuiet premises) (replaySupportMatchesActive premises)
+          unsupported action tag checked occurs lifecycle actorSame))
 
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
