@@ -21475,29 +21475,6 @@ produceAdjacentAlignedPointwiseReplay nameEq keyEq protocol original tracePrefix
 
 ||| Checked suffix-splice interface consumed by sorting.  It is generic over the
 ||| local diamond case (A/A, A/O, O/A, or O/O) and returns all recursive capital.
-public export
-0 adjacentSwapSuffixSpike :
-  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (protocol : RegistrationProtocol key value world error) ->
-  {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
-    SystemState name key value world error} ->
-  (original : Transitions initial originalFinal) ->
-  (tracePrefix : Transitions initial pairFirst) ->
-  (left : Transition pairFirst pairMiddle) ->
-  (right : Transition pairMiddle pairFinal) ->
-  (suffix : Transitions pairFinal originalFinal) ->
-  appendTransitions tracePrefix (MoreTransitions left (MoreTransitions right suffix)) =
-    original ->
-  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
-  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
-    left right) ->
-  (0 pairExternalOrder : SameExternalOrchestration nameEq
-    (MoreTransitions left (MoreTransitions right NoTransitions))
-    (MoreTransitions (movedRight diamond)
-      (MoreTransitions (movedLeft diamond) NoTransitions))) ->
-  AdjacentSwapResult name key world error value protocol nameEq keyEq original
-    tracePrefix left right suffix diamond
-adjacentSwapSuffixSpike = ?adjacentSwapSuffixSpike_rhs
 -- Exact append occurrence embeddings, local to the disposable probe.
 0 r97AppendLeftOccurrence :
   (left : Transitions first middle) ->
@@ -27337,3 +27314,27 @@ adjacentActionRegistrationCorrespondence name key world error value nameEq
         sourceSecond sourceSuffix targetFirst targetSecond targetSuffix
         targetFirstAction targetFirstTag targetSecondAction targetSecondTag seal _
         targetOccurrence)
+
+public export
+0 adjacentSwapSuffixSpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+    SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (tracePrefix : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  appendTransitions tracePrefix (MoreTransitions left (MoreTransitions right suffix)) =
+    original ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (0 pairExternalOrder : SameExternalOrchestration nameEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) NoTransitions))) ->
+  AdjacentSwapResult name key world error value protocol nameEq keyEq original
+    tracePrefix left right suffix diamond
+adjacentSwapSuffixSpike = ?adjacentSwapSuffixSpike_rhs
