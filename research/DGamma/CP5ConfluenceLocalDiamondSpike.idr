@@ -26128,3 +26128,373 @@ produceRootControlLookup name key world error value nameEq actor sourceBefore
                 rightRetired leftTable rightTable leftLifecycle rightLifecycle
                 parentSame retiredSame lifecycleRelated)
               sourceParent (trans (sym parentSame) sourceParent)
+
+
+private
+0 bodyLifecycleCannotBeRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  isLifecycleAction (transitionAction transition) = True ->
+  RootOrchestrationStep nameEq transition -> Void
+bodyLifecycleCannotBeRoot nameEq transition lifecycle (RootInsertStep action) =
+  case trans (sym (cong isLifecycleAction action)) lifecycle of Refl impossible
+bodyLifecycleCannotBeRoot nameEq transition lifecycle
+  (RootRetireStep fiber found parent action) =
+    case trans (sym (cong isLifecycleAction action)) lifecycle of Refl impossible
+bodyLifecycleCannotBeRoot nameEq transition lifecycle
+  (RootRemoveStep fiber found parent action) =
+    case trans (sym (cong isLifecycleAction action)) lifecycle of Refl impossible
+
+
+private
+0 bodyChildInsertCannotBeRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {child, parent : name} ->
+  {component : Component key value world error} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  transitionAction transition = OInsert child (ChildOf parent) component ->
+  RootOrchestrationStep nameEq transition -> Void
+bodyChildInsertCannotBeRoot nameEq transition childAction (RootInsertStep rootAction) =
+  case trans (sym childAction) rootAction of Refl impossible
+bodyChildInsertCannotBeRoot nameEq transition childAction
+  (RootRetireStep fiber found parent rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+bodyChildInsertCannotBeRoot nameEq transition childAction
+  (RootRemoveStep fiber found parent rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+
+
+private
+0 bodyMissingRetireCannotBeRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {child : name} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  transitionAction transition = ORetire child ->
+  lookupFiber @{nameEq} child (registry before) =
+    the (Maybe (Fiber name key value world error)) Nothing ->
+  RootOrchestrationStep nameEq transition -> Void
+bodyMissingRetireCannotBeRoot nameEq transition childAction missing
+  (RootInsertStep rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+bodyMissingRetireCannotBeRoot nameEq transition childAction missing
+  (RootRetireStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of
+      Refl => case trans (sym missing) rootFound of Refl impossible
+bodyMissingRetireCannotBeRoot nameEq transition childAction missing
+  (RootRemoveStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+
+
+private
+0 bodyChildRetireCannotBeRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {child, parent : name} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  transitionAction transition = ORetire child ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} child (registry before) = Just fiber ->
+  fiberParent fiber = ChildOf parent ->
+  RootOrchestrationStep nameEq transition -> Void
+bodyChildRetireCannotBeRoot nameEq transition childAction fiber childFound
+  childParent (RootInsertStep rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+bodyChildRetireCannotBeRoot nameEq transition childAction fiber childFound
+  childParent (RootRetireStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of
+      Refl =>
+        case justInjective (trans (sym childFound) rootFound) of
+          Refl => case trans (sym childParent) rootParent of Refl impossible
+bodyChildRetireCannotBeRoot nameEq transition childAction fiber childFound
+  childParent (RootRemoveStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+
+
+private
+0 bodyMissingRemoveCannotBeRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {child : name} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  transitionAction transition = ORemove child ->
+  lookupFiber @{nameEq} child (registry before) =
+    the (Maybe (Fiber name key value world error)) Nothing ->
+  RootOrchestrationStep nameEq transition -> Void
+bodyMissingRemoveCannotBeRoot nameEq transition childAction missing
+  (RootInsertStep rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+bodyMissingRemoveCannotBeRoot nameEq transition childAction missing
+  (RootRetireStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+bodyMissingRemoveCannotBeRoot nameEq transition childAction missing
+  (RootRemoveStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of
+      Refl => case trans (sym missing) rootFound of Refl impossible
+
+
+private
+0 bodyChildRemoveCannotBeRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {child, parent : name} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  transitionAction transition = ORemove child ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} child (registry before) = Just fiber ->
+  fiberParent fiber = ChildOf parent ->
+  RootOrchestrationStep nameEq transition -> Void
+bodyChildRemoveCannotBeRoot nameEq transition childAction fiber childFound
+  childParent (RootInsertStep rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+bodyChildRemoveCannotBeRoot nameEq transition childAction fiber childFound
+  childParent (RootRetireStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of Refl impossible
+bodyChildRemoveCannotBeRoot nameEq transition childAction fiber childFound
+  childParent (RootRemoveStep rootFiber rootFound rootParent rootAction) =
+    case trans (sym childAction) rootAction of
+      Refl =>
+        case justInjective (trans (sym childFound) rootFound) of
+          Refl => case trans (sym childParent) rootParent of Refl impossible
+
+
+private
+0 bodyDecideRetireRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {child : name} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  transitionAction transition = ORetire child ->
+  Dec (RootOrchestrationStep nameEq transition)
+bodyDecideRetireRoot {before = MkSystemState ambient fibers} nameEq transition action
+  with (lookupFiber @{nameEq} child fibers) proof found
+  bodyDecideRetireRoot nameEq transition action | Nothing =
+    No (bodyMissingRetireCannotBeRoot nameEq transition action found)
+  bodyDecideRetireRoot nameEq transition action | Just fiber
+    with (fiberParent fiber) proof parent
+    bodyDecideRetireRoot nameEq transition action | Just fiber | Root =
+      Yes (RootRetireStep fiber found parent action)
+    bodyDecideRetireRoot nameEq transition action | Just fiber | ChildOf owner =
+      No (bodyChildRetireCannotBeRoot nameEq transition action fiber found
+        parent)
+
+
+private
+0 bodyDecideRemoveRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {child : name} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  transitionAction transition = ORemove child ->
+  Dec (RootOrchestrationStep nameEq transition)
+bodyDecideRemoveRoot {before = MkSystemState ambient fibers} nameEq transition action
+  with (lookupFiber @{nameEq} child fibers) proof found
+  bodyDecideRemoveRoot nameEq transition action | Nothing =
+    No (bodyMissingRemoveCannotBeRoot nameEq transition action found)
+  bodyDecideRemoveRoot nameEq transition action | Just fiber
+    with (fiberParent fiber) proof parent
+    bodyDecideRemoveRoot nameEq transition action | Just fiber | Root =
+      Yes (RootRemoveStep fiber found parent action)
+    bodyDecideRemoveRoot nameEq transition action | Just fiber | ChildOf owner =
+      No (bodyChildRemoveCannotBeRoot nameEq transition action fiber found
+        parent)
+
+
+private
+0 bodyRootOrchestrationDecision :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  (nameEq : DecEq name) ->
+  (transition : Transition before afterState) ->
+  Dec (RootOrchestrationStep nameEq transition)
+bodyRootOrchestrationDecision nameEq transition@(Fired _ _
+  (OInsert child Root component) tag fires) =
+    Yes (RootInsertStep Refl)
+bodyRootOrchestrationDecision nameEq transition@(Fired _ _
+  (OInsert child (ChildOf parent) component) tag fires) =
+    No (bodyChildInsertCannotBeRoot nameEq transition Refl)
+bodyRootOrchestrationDecision nameEq
+  transition@(Fired _ _ (ORetire child) tag fires) =
+    bodyDecideRetireRoot nameEq transition Refl
+bodyRootOrchestrationDecision nameEq
+  transition@(Fired _ _ (ORemove child) tag fires) =
+    bodyDecideRemoveRoot nameEq transition Refl
+bodyRootOrchestrationDecision nameEq transition@(Fired _ _ (LBegin actor) tag fires) =
+  No (bodyLifecycleCannotBeRoot nameEq transition Refl)
+bodyRootOrchestrationDecision nameEq transition@(Fired _ _ (LAdvance actor) tag fires) =
+  No (bodyLifecycleCannotBeRoot nameEq transition Refl)
+bodyRootOrchestrationDecision nameEq transition@(Fired _ _ (LDivert actor) tag fires) =
+  No (bodyLifecycleCannotBeRoot nameEq transition Refl)
+bodyRootOrchestrationDecision nameEq transition@(Fired _ _ (LLeave actor) tag fires) =
+  No (bodyLifecycleCannotBeRoot nameEq transition Refl)
+bodyRootOrchestrationDecision nameEq transition@(Fired _ _ (LUnload actor) tag fires) =
+  No (bodyLifecycleCannotBeRoot nameEq transition Refl)
+
+private
+0 bodyRootOrchestrationForward :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) ->
+  (sourceBefore, sourceAfter, targetBefore, targetAfter :
+    SystemState name key value world error) ->
+  (sourceStep : Transition sourceBefore sourceAfter) ->
+  (targetStep : Transition targetBefore targetAfter) ->
+  (0 sameAction : (transitionAction targetStep = transitionAction sourceStep)) ->
+  (0 controls : ControlEquivalent name key world error value nameEq sourceBefore
+    targetBefore) ->
+  RootOrchestrationStep nameEq sourceStep ->
+  RootOrchestrationStep nameEq targetStep
+bodyRootOrchestrationForward name key world error value nameEq sourceBefore
+  sourceAfter targetBefore targetAfter sourceStep targetStep sameAction controls
+  (RootInsertStep sourceAction) = RootInsertStep (trans sameAction sourceAction)
+bodyRootOrchestrationForward name key world error value nameEq sourceBefore
+  sourceAfter targetBefore targetAfter sourceStep targetStep sameAction controls
+  (RootRetireStep {n = actor} sourceFiber sourceLookup sourceParent sourceAction) =
+    case produceRootControlLookup name key world error value nameEq actor
+      sourceBefore targetBefore sourceFiber sourceLookup sourceParent controls of
+        MkRootControlLookup targetFiber sourceFound targetFound related sourceRoot
+          targetRoot => RootRetireStep targetFiber targetFound targetRoot
+            (trans sameAction sourceAction)
+bodyRootOrchestrationForward name key world error value nameEq sourceBefore
+  sourceAfter targetBefore targetAfter sourceStep targetStep sameAction controls
+  (RootRemoveStep {n = actor} sourceFiber sourceLookup sourceParent sourceAction) =
+    case produceRootControlLookup name key world error value nameEq actor
+      sourceBefore targetBefore sourceFiber sourceLookup sourceParent controls of
+        MkRootControlLookup targetFiber sourceFound targetFound related sourceRoot
+          targetRoot => RootRemoveStep targetFiber targetFound targetRoot
+            (trans sameAction sourceAction)
+
+private
+0 bodyRootOrchestrationBackward :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) ->
+  (sourceBefore, sourceAfter, targetBefore, targetAfter :
+    SystemState name key value world error) ->
+  (sourceStep : Transition sourceBefore sourceAfter) ->
+  (targetStep : Transition targetBefore targetAfter) ->
+  (0 sameAction : (transitionAction targetStep = transitionAction sourceStep)) ->
+  (0 controls : ControlEquivalent name key world error value nameEq sourceBefore
+    targetBefore) ->
+  RootOrchestrationStep nameEq targetStep ->
+  RootOrchestrationStep nameEq sourceStep
+bodyRootOrchestrationBackward name key world error value nameEq sourceBefore
+  sourceAfter targetBefore targetAfter sourceStep targetStep sameAction controls
+  targetRoot = bodyRootOrchestrationForward name key world error value nameEq
+    targetBefore targetAfter sourceBefore sourceAfter targetStep sourceStep
+    (sym sameAction) (controlEquivalentSymmetric controls) targetRoot
+
+private
+0 bodySealedSuffixSameExternal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (sourceFirst, sourceFinal, replayedFirst, replayedFinal :
+    SystemState name key value world error) ->
+  (source : Transitions sourceFirst sourceFinal) ->
+  (replayed : Transitions replayedFirst replayedFinal) ->
+  (0 startEndpoint : RelationalReplayEndpoint name key world error value nameEq
+    keyEq sourceFirst replayedFirst) ->
+  (0 seal : SealedSuffixReplaySpine name key world error value nameEq keyEq source
+    replayed) ->
+  SameExternalOrchestration nameEq source replayed
+bodySealedSuffixSameExternal name key world error value nameEq keyEq sourceFirst
+  sourceFirst replayedFirst replayedFirst NoTransitions NoTransitions
+  startEndpoint SealedSuffixReplayEnd = SameExternalOrchestrationEnd
+bodySealedSuffixSameExternal name key world error value nameEq keyEq sourceFirst
+  sourceFinal replayedFirst replayedFinal
+  (MoreTransitions sourceStep sourceTail)
+  (MoreTransitions replayedStep replayedTail) startEndpoint
+  (SealedSuffixReplayStep sourceStep replayedStep sourceTail replayedTail
+    sameAction sameTag headRAR mapsRelated headEndpoint headOccurrences
+    relativeOrdinal rest) = case bodyRootOrchestrationDecision nameEq sourceStep of
+      Yes sourceRoot => MatchExternalInput (transitionAction sourceStep)
+        sourceStep sourceTail sourceRoot replayedStep replayedTail
+        (bodyRootOrchestrationForward name key world error value nameEq sourceFirst
+          _ replayedFirst _ sourceStep replayedStep sameAction
+          (replayedControls startEndpoint) sourceRoot)
+        Refl sameAction
+        (bodySealedSuffixSameExternal name key world error value nameEq keyEq _
+          sourceFinal _ replayedFinal sourceTail replayedTail headEndpoint rest)
+      No sourceInternal => SkipLeftInternal sourceStep sourceTail sourceInternal
+        (SkipRightInternal replayedStep replayedTail
+          (\targetRoot => sourceInternal (bodyRootOrchestrationBackward name key
+            world error value nameEq sourceFirst _ replayedFirst _ sourceStep
+            replayedStep sameAction (replayedControls startEndpoint) targetRoot))
+          (bodySealedSuffixSameExternal name key world error value nameEq keyEq _
+            sourceFinal _ replayedFinal sourceTail replayedTail headEndpoint rest))
+
+private
+0 bodySameExternalReflexive :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) ->
+  (initial, finalState : SystemState name key value world error) ->
+  (trace : Transitions initial finalState) ->
+  SameExternalOrchestration nameEq trace trace
+bodySameExternalReflexive name key world error value nameEq initial initial
+  NoTransitions = SameExternalOrchestrationEnd
+bodySameExternalReflexive name key world error value nameEq initial finalState
+  (MoreTransitions transition rest) =
+    case bodyRootOrchestrationDecision nameEq transition of
+      Yes external => MatchExternalInput (transitionAction transition) transition
+        rest external transition rest external Refl Refl
+        (bodySameExternalReflexive name key world error value nameEq _ finalState
+          rest)
+      No internal => SkipLeftInternal transition rest internal
+        (SkipRightInternal transition rest internal
+          (bodySameExternalReflexive name key world error value nameEq _
+            finalState rest))
+
+private
+0 adjacentWholeSameExternal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, pairFirst, pairMiddle, pairFinal, originalFinal, replayedFinal :
+    SystemState name key value world error) ->
+  (original : Transitions initial originalFinal) ->
+  (tracePrefix : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (0 decomposition : (appendTransitions tracePrefix
+    (MoreTransitions left (MoreTransitions right suffix)) = original)) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left
+    right) ->
+  (replayedSuffix : Transitions (swappedFinal diamond) replayedFinal) ->
+  (0 seal : SealedSuffixReplaySpine name key world error value nameEq keyEq suffix
+    replayedSuffix) ->
+  (0 pairExternal : SameExternalOrchestration nameEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) NoTransitions))) ->
+  SameExternalOrchestration nameEq original
+    (appendTransitions tracePrefix
+      (MoreTransitions (movedRight diamond)
+        (MoreTransitions (movedLeft diamond) replayedSuffix)))
+adjacentWholeSameExternal name key world error value nameEq keyEq initial
+  pairFirst pairMiddle pairFinal originalFinal replayedFinal original tracePrefix
+  left right suffix decomposition diamond replayedSuffix seal pairExternal =
+    replace
+      {p = \source => SameExternalOrchestration nameEq source
+        (appendTransitions tracePrefix
+          (MoreTransitions (movedRight diamond)
+            (MoreTransitions (movedLeft diamond) replayedSuffix)))}
+      decomposition
+      (framePairExternalOrderSpike nameEq tracePrefix left right suffix
+        (movedRight diamond) (movedLeft diamond) replayedSuffix
+        (bodySameExternalReflexive name key world error value nameEq initial
+          pairFirst tracePrefix)
+        pairExternal
+        (bodySealedSuffixSameExternal name key world error value nameEq keyEq
+          pairFinal originalFinal (swappedFinal diamond) replayedFinal suffix
+          replayedSuffix
+          (MkRelationalReplayEndpoint (swappedEffects diamond)
+            (swappedControlEquivalent diamond) (swappedWellFormed diamond))
+          seal))
