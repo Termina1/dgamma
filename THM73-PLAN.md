@@ -2701,4 +2701,23 @@ total cursor producer is validated, and its exact-ordinal and four-region
 consumers do not count as checked artifacts. The probe is removed and no
 retained signature is ratified. The separately suggested direct positional
 route is not opened without a new ruling. All frozen capital remains unchanged
-and holes remain 20 with split 6/4/8/1/1.
+and holes remain 20 with split 6/4/8/1/1. Revision 127 retires the view entirely
+and checks the primary restated action-origin route on its second infrastructure
+attempt. The producer converts the exact target occurrence to canonical
+positional membership, recurses over that membership and the shared target
+trace, maps the two adjacent positions directly, and uses the sealed suffix
+origin plus the retained embedding equalities only in the suffix case. No
+caller-owned prefix head is ever compared with an occurrence-owned head. A
+producer-owned action package retains the exact source occurrence, tag equality,
+and adjacent ordinal relation; package projection helpers avoid replaying its
+dependent elimination. Explicit action/generated-registration conversion eta
+and ordinal lemmas then construct the complete frozen
+`ActionRegistrationReplayCorrespondence`, including coherence and the
+involutive generation renaming. The single-input fallback is not opened because
+the primary design passes. The exact copy is removed and no proof source is
+retained. A physical declaration-order issue is now explicit: the successful
+chain naturally follows the post-hole positional foundations, while the frozen
+hole RHS occurs earlier and cannot call a later definition. Landing the chain
+itself needs no frozen delta; its eventual use by the RHS requires a separate
+order/inlining ruling. All frozen capital remains unchanged and holes remain 20
+with split 6/4/8/1/1.
