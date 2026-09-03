@@ -27295,3 +27295,45 @@ buildAdjacentActionRegistrationCorrespondence origin =
     (adjacentOriginGenerated origin)
     (adjacentOriginGeneratedCoherent origin)
     (adjacentOriginGeneratedOrdinal origin)
+
+private
+0 adjacentActionRegistrationCorrespondence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, pairFirst, sourceMiddle, sourceSuffixFirst, sourceFinal,
+    targetMiddle, targetSuffixFirst, targetFinal :
+    SystemState name key value world error) ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (sourceFirst : Transition pairFirst sourceMiddle) ->
+  (sourceSecond : Transition sourceMiddle sourceSuffixFirst) ->
+  (sourceSuffix : Transitions sourceSuffixFirst sourceFinal) ->
+  (targetFirst : Transition pairFirst targetMiddle) ->
+  (targetSecond : Transition targetMiddle targetSuffixFirst) ->
+  (targetSuffix : Transitions targetSuffixFirst targetFinal) ->
+  (0 targetFirstAction : (transitionAction targetFirst =
+    transitionAction sourceSecond)) ->
+  (0 targetFirstTag : (transitionTag targetFirst =
+    transitionTag sourceSecond)) ->
+  (0 targetSecondAction : (transitionAction targetSecond =
+    transitionAction sourceFirst)) ->
+  (0 targetSecondTag : (transitionTag targetSecond =
+    transitionTag sourceFirst)) ->
+  (0 seal : SealedSuffixReplaySpine name key world error value nameEq keyEq
+    sourceSuffix targetSuffix) ->
+  ActionRegistrationReplayCorrespondence name key world error value
+    (appendTransitions prefixTrace
+      (MoreTransitions sourceFirst (MoreTransitions sourceSecond sourceSuffix)))
+    (appendTransitions prefixTrace
+      (MoreTransitions targetFirst (MoreTransitions targetSecond targetSuffix)))
+adjacentActionRegistrationCorrespondence name key world error value nameEq
+  keyEq initial pairFirst sourceMiddle sourceSuffixFirst sourceFinal targetMiddle
+  targetSuffixFirst targetFinal prefixTrace sourceFirst sourceSecond sourceSuffix
+  targetFirst targetSecond targetSuffix targetFirstAction targetFirstTag
+  targetSecondAction targetSecondTag seal =
+    buildAdjacentActionRegistrationCorrespondence
+      (\targetOccurrence => produceAdjacentActionOrigin name key world error value
+        nameEq keyEq initial pairFirst sourceMiddle sourceSuffixFirst sourceFinal
+        targetMiddle targetSuffixFirst targetFinal prefixTrace sourceFirst
+        sourceSecond sourceSuffix targetFirst targetSecond targetSuffix
+        targetFirstAction targetFirstTag targetSecondAction targetSecondTag seal _
+        targetOccurrence)
