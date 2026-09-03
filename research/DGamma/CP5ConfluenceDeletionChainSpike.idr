@@ -549,6 +549,57 @@ record ClosingEpisodeScan
   0 emptyScanIsClosingFree : scannedClosingOccurrences = [] ->
     NoClosingEpisodes name key world error value nameEq keyEq trace
 
+0 locatedClosingAtHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (opening : BeginStep nameEq keyEq selected first middle) ->
+  (rest : Transitions middle finalState) ->
+  (result : FirstClosingResult name key world error value nameEq keyEq selected
+    rest) ->
+  LocatedClosedEpisode name key world error value nameEq keyEq selected
+    (MoreTransitions (beginTransition opening) rest)
+locatedClosingAtHead opening rest
+  (MkFirstClosingResult closeBefore closeAfter beforeClosing installedBefore
+    closing afterClosing closingSplit) =
+      MkLocatedClosedEpisode first closeAfter NoTransitions
+        (MkClosedEpisode middle closeBefore opening beforeClosing installedBefore
+          closing)
+        afterClosing
+        (cong (MoreTransitions (beginTransition opening))
+          (trans
+            (appendTransitionsAssociative beforeClosing
+              (MoreTransitions (unloadTransition closing) NoTransitions)
+              afterClosing)
+            closingSplit))
+
+0 headClosingOccurrence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (opening : BeginStep nameEq keyEq selected first middle) ->
+  (rest : Transitions middle finalState) ->
+  (result : FirstClosingResult name key world error value nameEq keyEq selected
+    rest) ->
+  ClosingEpisodeOccurrence name key world error value nameEq keyEq
+    (MoreTransitions (beginTransition opening) rest)
+headClosingOccurrence opening rest result =
+  ErasedClosingEpisodeOccurrence selected
+    (locatedClosingAtHead opening rest result)
+
+0 headClosingOrdinalZero :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (opening : BeginStep nameEq keyEq selected first middle) ->
+  (rest : Transitions middle finalState) ->
+  (result : FirstClosingResult name key world error value nameEq keyEq selected
+    rest) ->
+  scannedClosingOrdinal (headClosingOccurrence opening rest result) = Z
+headClosingOrdinalZero opening rest
+  (MkFirstClosingResult closeBefore closeAfter beforeClosing installedBefore
+    closing afterClosing closingSplit) = Refl
+
 ||| O7 is a separate erased producer rather than work hidden in O8/O9.  Quantity
 ||| 0 is essential because `MoreTransitions` erases its middle-state index.  The
 ||| exact trace alignment is the minimum authentication needed to reclassify
