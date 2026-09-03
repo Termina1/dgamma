@@ -6,6 +6,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionTheorem
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify
+import DGamma.CP4DeletionSelectedForeignLifecycleAnchorTrace
 import DGamma.CP4Support
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import Data.List
@@ -356,6 +357,94 @@ locatedClosingHeadView head rest
     decomposition) =
       locatedClosingPrefixHeadView head rest beforeOpening episode afterClosing
         decomposition
+
+0 falseNotTrueO7 : False = True -> Void
+falseNotTrueO7 Refl impossible
+
+0 unloadStepTargetUninstalledO7 :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {before, afterState : SystemState name key value world error} ->
+  UnloadStep nameEq keyEq selected before afterState ->
+  installedAt @{nameEq} selected afterState = False
+unloadStepTargetUninstalledO7 nameEq keyEq selected {before} {afterState}
+  (MkUnloadStep checked) =
+    snd (snd (lUnloadBoundary nameEq keyEq selected before afterState LUnloadTag
+      (checkedActionProjects nameEq keyEq (LUnload selected) before afterState
+        LUnloadTag checked)))
+
+0 closingOccursAfterPrefix :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {first, before, afterState, finalState :
+    SystemState name key value world error} ->
+  (earlier : Transitions first before) ->
+  (closing : UnloadStep nameEq keyEq selected before afterState) ->
+  (suffix : Transitions afterState finalState) ->
+  OccursIn (unloadTransition closing)
+    (appendTransitions earlier
+      (MoreTransitions (unloadTransition closing) suffix))
+closingOccursAfterPrefix NoTransitions closing suffix = OccursHere
+closingOccursAfterPrefix (MoreTransitions prefixHead prefixRest) closing suffix =
+  OccursLater (closingOccursAfterPrefix prefixRest closing suffix)
+
+0 transportClosingOccurrence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {first, before, afterState, finalState :
+    SystemState name key value world error} ->
+  {closing : UnloadStep nameEq keyEq selected before afterState} ->
+  {left, right : Transitions first finalState} ->
+  left = right ->
+  OccursIn (unloadTransition closing) left ->
+  OccursIn (unloadTransition closing) right
+transportClosingOccurrence Refl occurs = occurs
+
+0 firstClosingOccurrence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (result : FirstClosingResult name key world error value nameEq keyEq selected
+    trace) ->
+  OccursIn (unloadTransition (firstClosingStep result)) trace
+firstClosingOccurrence
+  (MkFirstClosingResult before afterState earlier installedPrefix closing suffix
+    decomposition) =
+      transportClosingOccurrence decomposition
+        (closingOccursAfterPrefix earlier closing suffix)
+
+0 installedTraceRejectsClosing :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, before, afterState, finalState :
+    SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  (0 installed : InstalledTrace name key world error value nameEq keyEq selected
+    trace) ->
+  (closing : UnloadStep nameEq keyEq selected before afterState) ->
+  (0 occurs : OccursIn (unloadTransition closing) trace) -> Void
+installedTraceRejectsClosing nameEq keyEq selected trace installed closing occurs =
+  case splitInstalledAtOccurrence (unloadTransition closing) trace installed
+    occurs of
+      MkInstalledOccurrenceSplit earlier suffix installedPrefix installedSuffix
+        sourceInstalled targetInstalled decomposition =>
+          falseNotTrueO7
+            (trans (sym (unloadStepTargetUninstalledO7 nameEq keyEq selected
+              closing)) targetInstalled)
+
+0 installedTraceRejectsFirstClosing :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  (0 installed : InstalledTrace name key world error value nameEq keyEq selected
+    trace) ->
+  (0 result : FirstClosingResult name key world error value nameEq keyEq selected
+    trace) -> Void
+installedTraceRejectsFirstClosing nameEq keyEq selected trace installed result =
+  installedTraceRejectsClosing nameEq keyEq selected trace installed
+    (firstClosingStep result) (firstClosingOccurrence result)
 
 ||| Proof-level O7 output.  The scanner enumerates every located closing
 ||| occurrence exactly once by opening ordinal and turns an empty erased scan
