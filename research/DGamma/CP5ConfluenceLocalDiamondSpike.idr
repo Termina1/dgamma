@@ -26610,3 +26610,95 @@ produceLocatedActionAtOccurrence name key world error value initial finalState
             (cong (MoreTransitions head)
               (actionOccurrenceDecomposition tailLocated)))
           (cong S tailOrdinal)
+
+private
+adjacentOrdinalSwap : Nat -> Nat -> Nat
+adjacentOrdinalSwap Z Z = S Z
+adjacentOrdinalSwap Z (S Z) = Z
+adjacentOrdinalSwap Z (S (S later)) = S (S later)
+adjacentOrdinalSwap (S point) Z = Z
+adjacentOrdinalSwap (S point) (S ordinal) =
+  S (adjacentOrdinalSwap point ordinal)
+
+private
+0 adjacentOrdinalSwapInvolutive :
+  (point, ordinal : Nat) ->
+  (adjacentOrdinalSwap point (adjacentOrdinalSwap point ordinal) = ordinal)
+adjacentOrdinalSwapInvolutive Z Z = Refl
+adjacentOrdinalSwapInvolutive Z (S Z) = Refl
+adjacentOrdinalSwapInvolutive Z (S (S later)) = Refl
+adjacentOrdinalSwapInvolutive (S point) Z = Refl
+adjacentOrdinalSwapInvolutive (S point) (S ordinal) =
+  cong S (adjacentOrdinalSwapInvolutive point ordinal)
+
+private
+0 adjacentOrdinalSwapBefore :
+  (point, ordinal : Nat) -> LT ordinal point ->
+  (adjacentOrdinalSwap point ordinal = ordinal)
+adjacentOrdinalSwapBefore Z ordinal before impossible
+adjacentOrdinalSwapBefore (S point) Z before = Refl
+adjacentOrdinalSwapBefore (S point) (S ordinal) (LTESucc before) =
+  cong S (adjacentOrdinalSwapBefore point ordinal before)
+
+private
+0 adjacentOrdinalSwapAfter :
+  (point, ordinal : Nat) -> LTE (S (S point)) ordinal ->
+  (adjacentOrdinalSwap point ordinal = ordinal)
+adjacentOrdinalSwapAfter Z Z after impossible
+adjacentOrdinalSwapAfter Z (S Z) (LTESucc after) impossible
+adjacentOrdinalSwapAfter Z (S (S later)) after = Refl
+adjacentOrdinalSwapAfter (S point) Z after impossible
+adjacentOrdinalSwapAfter (S point) (S ordinal) (LTESucc after) =
+  cong S (adjacentOrdinalSwapAfter point ordinal after)
+
+private
+0 adjacentOrdinalSwapPoint :
+  (point : Nat) -> (adjacentOrdinalSwap point point = S point)
+adjacentOrdinalSwapPoint Z = Refl
+adjacentOrdinalSwapPoint (S point) = cong S (adjacentOrdinalSwapPoint point)
+
+private
+0 adjacentOrdinalSwapAfterPoint :
+  (point : Nat) -> (adjacentOrdinalSwap point (S point) = point)
+adjacentOrdinalSwapAfterPoint Z = Refl
+adjacentOrdinalSwapAfterPoint (S point) =
+  cong S (adjacentOrdinalSwapAfterPoint point)
+
+private
+0 adjacentOrdinalRelationForward :
+  (point, targetOrdinal, sourceOrdinal : Nat) ->
+  AdjacentSwapOrdinalRelation point targetOrdinal sourceOrdinal ->
+  (adjacentOrdinalSwap point sourceOrdinal = targetOrdinal)
+adjacentOrdinalRelationForward point ordinal ordinal
+  (AdjacentPrefixOrdinal before) =
+    adjacentOrdinalSwapBefore point ordinal before
+adjacentOrdinalRelationForward point point (S point)
+  AdjacentMovedRightOrdinal = adjacentOrdinalSwapAfterPoint point
+adjacentOrdinalRelationForward point (S point) point
+  AdjacentMovedLeftOrdinal = adjacentOrdinalSwapPoint point
+adjacentOrdinalRelationForward point targetOrdinal targetOrdinal
+  (AdjacentSuffixOrdinal after) =
+    adjacentOrdinalSwapAfter point targetOrdinal after
+
+private
+adjacentGenerationSwap : Nat -> RegistrationGeneration name ->
+  RegistrationGeneration name
+adjacentGenerationSwap point (MkRegistrationGeneration registered ordinal) =
+  MkRegistrationGeneration registered (adjacentOrdinalSwap point ordinal)
+
+private
+0 adjacentGenerationSwapInvolutive :
+  (point : Nat) -> (generation : RegistrationGeneration name) ->
+  (adjacentGenerationSwap point (adjacentGenerationSwap point generation) =
+    generation)
+adjacentGenerationSwapInvolutive point
+  (MkRegistrationGeneration registered ordinal) =
+    cong (MkRegistrationGeneration registered)
+      (adjacentOrdinalSwapInvolutive point ordinal)
+
+private
+adjacentGenerationBijection : Nat -> RegistrationGenerationBijection name
+adjacentGenerationBijection point = MkRegistrationGenerationBijection
+  (adjacentGenerationSwap point) (adjacentGenerationSwap point)
+  (adjacentGenerationSwapInvolutive point)
+  (adjacentGenerationSwapInvolutive point)
