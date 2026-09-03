@@ -27371,6 +27371,56 @@ produceAdjacentOperationalOccurrenceFold name key world error value nameEq keyEq
         movedRight movedLeft replayedSuffix movedRightAction movedRightTag
         movedLeftAction movedLeftTag seal _ targetOccurrence)
 
+
+private
+0 produceAdjacentSwapResult :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+    SystemState name key value world error) ->
+  (original : Transitions initial originalFinal) ->
+  (tracePrefix : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) ->
+  (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (0 decomposition : (appendTransitions tracePrefix
+    (MoreTransitions left (MoreTransitions right suffix)) = original)) ->
+  (0 premises : ReplayInvariantBundle name key world error value protocol nameEq
+    keyEq original) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+    left right) ->
+  (0 pairExternalOrder : SameExternalOrchestration nameEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))
+    (MoreTransitions (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) NoTransitions))) ->
+  AdjacentSwapResult name key world error value protocol nameEq keyEq original
+    tracePrefix left right suffix diamond
+produceAdjacentSwapResult name key world error value nameEq keyEq protocol initial
+  pairFirst pairMiddle pairFinal originalFinal original tracePrefix left right
+  suffix decomposition premises diamond pairExternalOrder = case
+    produceAdjacentInvariantReplay name key world error value nameEq keyEq protocol
+      initial pairFirst pairMiddle pairFinal originalFinal original tracePrefix left
+      right suffix decomposition premises diamond of
+        MkAdjacentInvariantReplay replayedFinal replayedSuffix correspondence
+          endpoint seal bundle => MkAdjacentSwapResult replayedFinal replayedSuffix
+            (appendTransitions tracePrefix
+              (MoreTransitions (movedRight diamond)
+                (MoreTransitions (movedLeft diamond) replayedSuffix)))
+            decomposition Refl
+            (adjacentWholeSameExternal name key world error value nameEq keyEq
+              initial pairFirst pairMiddle pairFinal originalFinal replayedFinal
+              original tracePrefix left right suffix decomposition diamond
+              replayedSuffix seal pairExternalOrder)
+            correspondence endpoint bundle seal
+            (produceAdjacentOperationalOccurrenceFold name key world error value
+              nameEq keyEq initial pairFirst pairMiddle pairFinal originalFinal
+              (swappedMiddle diamond) (swappedFinal diamond) replayedFinal original
+              tracePrefix left right suffix decomposition (movedRight diamond)
+              (movedLeft diamond) replayedSuffix (movedRightAction diamond)
+              (movedRightTag diamond) (movedLeftAction diamond)
+              (movedLeftTag diamond) seal)
+
 public export
 0 adjacentSwapSuffixSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
