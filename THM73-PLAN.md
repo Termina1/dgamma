@@ -2764,6 +2764,19 @@ The genuine `chooseClosingStepSpike` consumer discharges the premise directly as
 `replayAligned (chainReplayCapital premises)`.  The tracked
 `R7DeletionBoundariesPositive` fixture checks both the direct revised boundary
 and the same canonicalization-capital discharge.  All downstream DeletionChain
-consumers remain type-correct.  The surface revision changes no body and uses
-0/3 O7 fill attempts, so the census remains **18**, split **5/4/8/0/1** pending
-the separately budgeted fill.
+consumers remain type-correct.
+
+The separately budgeted fill then closes O7 constructively on body attempt 2/3.
+The retained quantity-0 recursion scans the exact aligned trace, lifts tail
+occurrences and successor ordinals, classifies every L-Begin through the existing
+`classifyInstalledContinuation`, constructs a genuine located head episode when
+that continuation closes, and rejects a supplied close when the continuation is
+installed throughout.  The erased actor-indexed head view stores the exact head
+opening equality; no proof irrelevance, dictionary equality, or runtime middle
+state is assumed.  The complete attempt history, helper commits, fresh direct
+and real-consumer checks, and invariant scan are recorded in
+`research-tests/O6-R136-DELETION-O7-ALIGNED-SCAN-FILL-AUDIT.md`.
+
+O7 is now complete.  O14 remains parked and unopened.  The canonical census is
+**17**, split **5/4/7/0/1**; O8 is the next DeletionChain obligation in dependency
+order.
