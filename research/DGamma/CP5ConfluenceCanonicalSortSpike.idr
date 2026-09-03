@@ -189,6 +189,30 @@ canonicalTransitionActorActionOwner
 canonicalTransitionActorActionOwner
   (Fired nameEq keyEq (LUnload actor) tag checked) = Refl
 
+||| CanonicalSort-local active-to-installed bridge.  CP3 proves the same fact
+||| privately; repeating the total observation here avoids depending on that
+||| private implementation or changing the frozen production API.
+0 canonicalActiveImpliesInstalled :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  activeAt @{nameEq} selected state = True ->
+  installedAt @{nameEq} selected state = True
+canonicalActiveImpliesInstalled nameEq selected state evidence
+  with (lookupFiber @{nameEq} selected (registry state)) proof found
+  canonicalActiveImpliesInstalled nameEq selected state evidence | Nothing =
+    absurd evidence
+  canonicalActiveImpliesInstalled nameEq selected state evidence | Just fiber
+    with (fiberLifecycle fiber) proof lifecycle
+    canonicalActiveImpliesInstalled nameEq selected state evidence | Just fiber |
+      Inactive outcome = absurd evidence
+    canonicalActiveImpliesInstalled nameEq selected state evidence | Just fiber |
+      Reloading remaining accumulator view = absurd evidence
+    canonicalActiveImpliesInstalled nameEq selected state evidence | Just fiber |
+      Active accumulator view = Refl
+    canonicalActiveImpliesInstalled nameEq selected state evidence | Just fiber |
+      Unloading accumulator view outcome = absurd evidence
+
 ||| Derive the unique closing-free shape from the exact recursive bundle.
 public export
 0 closingFreeTraceShapeSpike :
