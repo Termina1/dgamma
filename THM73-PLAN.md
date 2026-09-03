@@ -2674,4 +2674,18 @@ decomposition. The probe is removed after three attempts. A design-only joint
 prefix/target-occurrence shape must own both head identities and the exact tail
 occurrence under one elimination before the four-region view may be retried;
 all retained body capital remains frozen and holes remain 20 with split
+6/4/8/1/1. Revision 125 executes the mandatory disposable-only joint-shape
+campaign. The first ladder design reaches a semantic typing boundary after two
+infrastructure repairs: homogeneous equality between the whole and tail
+occurrence prefixes is ill-typed because their independently stored
+`actionBeforeState` indices differ. The authorized occurrence+ordinal indexed
+fallback constructs the lifted whole occurrence in its constructor result, but
+its producer still cannot recover a tail occurrence at
+`appendTransitions prefixTail targetTail` from the whole prefixed decomposition;
+the intermediate state transport was lost under the head. Both designs are
+removed. No retained-unit signature is ratified. Countermodel analysis narrows
+a future candidate to a cursor/spine GADT whose primitive shared state,
+transition, before/after trace, and decomposition fields definitionally build
+both whole and tail occurrences; that untested candidate requires a new ruling.
+All frozen capital remains unchanged and holes remain 20 with split
 6/4/8/1/1.
