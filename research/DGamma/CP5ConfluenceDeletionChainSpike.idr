@@ -5,6 +5,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionTheorem
+import DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify
 import DGamma.CP4Support
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import Data.List
@@ -103,6 +104,51 @@ public export
   ClosingEpisodeOccurrence name key world error value nameEq keyEq trace -> Nat
 scannedClosingOrdinal (ErasedClosingEpisodeOccurrence selected episode) =
   transitionCount (traceBeforeOpening episode)
+
+0 prependLocatedClosingEpisode :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  LocatedClosedEpisode name key world error value nameEq keyEq selected rest ->
+  LocatedClosedEpisode name key world error value nameEq keyEq selected
+    (MoreTransitions head rest)
+prependLocatedClosingEpisode head rest
+  (MkLocatedClosedEpisode preStart afterState beforeOpening episode afterClosing
+    decomposition) =
+      MkLocatedClosedEpisode preStart afterState
+        (MoreTransitions head beforeOpening) episode afterClosing
+        (cong (MoreTransitions head) decomposition)
+
+0 prependClosingOccurrence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  ClosingEpisodeOccurrence name key world error value nameEq keyEq rest ->
+  ClosingEpisodeOccurrence name key world error value nameEq keyEq
+    (MoreTransitions head rest)
+prependClosingOccurrence head rest
+  (ErasedClosingEpisodeOccurrence selected episode) =
+    ErasedClosingEpisodeOccurrence selected
+      (prependLocatedClosingEpisode head rest episode)
+
+0 prependClosingOrdinal :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (occurrence : ClosingEpisodeOccurrence name key world error value nameEq keyEq
+    rest) ->
+  scannedClosingOrdinal (prependClosingOccurrence head rest occurrence) =
+    S (scannedClosingOrdinal occurrence)
+prependClosingOrdinal head rest
+  (ErasedClosingEpisodeOccurrence selected
+    (MkLocatedClosedEpisode preStart afterState beforeOpening episode afterClosing
+      decomposition)) = Refl
 
 ||| Proof-level O7 output.  The scanner enumerates every located closing
 ||| occurrence exactly once by opening ordinal and turns an empty erased scan
