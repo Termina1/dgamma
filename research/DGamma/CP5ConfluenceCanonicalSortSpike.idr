@@ -631,6 +631,23 @@ erasedLifecycleOrdinalAtDecomposition nameEq selected earlier opening later
     erasedLifecycleOrdinalAtOpening nameEq selected noEarlier opening later
       sameActor lifecycle view
 
+||| Every located open episode pins the erased scan to its opening ordinal.
+0 erasedLifecycleOrdinalAtOpenEpisode :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (episode : LocatedInterleavedOpenEpisode name key world error value nameEq
+    keyEq selected global) ->
+  erasedLifecycleViewOrdinal (erasedFirstLifecycleView nameEq selected global) =
+    Just (transitionCount (openPrefix episode))
+erasedLifecycleOrdinalAtOpenEpisode nameEq keyEq selected global
+  (MkLocatedInterleavedOpenEpisode before afterState earlier opening later
+    installed noEarlier active decomposition) =
+      erasedLifecycleOrdinalAtDecomposition nameEq selected earlier
+        (beginTransition opening) later global decomposition noEarlier Refl Refl
+        (erasedFirstLifecycleView nameEq selected global)
+
 ||| Derive the unique closing-free shape from the exact recursive bundle.
 public export
 0 closingFreeTraceShapeSpike :
