@@ -2651,4 +2651,16 @@ The probe and all proof edits are removed without a retry, as required by the
 probe-failure stop rule. A mandatory design-only campaign must now validate the
 package either inside a disposable CP5 module copy or with exact foundational
 imports plus a self-contained lookup producer. Retained package/body work
-remains unopened; holes remain 20 with split 6/4/8/1/1.
+remains unopened; holes remain 20 with split 6/4/8/1/1. Revision 123 uses the
+reviewer-selected exact-copy boundary: the disposable package and one-
+elimination consumer pass and are removed. The private retained lookup package
+lands at `75b620e`; whole prefix/pair/sealed-suffix same-external composition
+lands at `b102cca`. Positional occurrence utilities, the involutive adjacent
+ordinal/generation bijection, exact located action/tag ownership, and suffix
+embedding equalities land through `aba00c4`. The complete adjacent action-origin
+producer then exhausts its three attempts: after endpoint and append-index
+repairs, its target-region consumer cannot identify a separately reconstructed
+`OccursIn` proof with the proof indexing `R97AppendOccurrenceView`. The unit is
+removed. A producer-owned four-region view indexed directly by the original
+`LocatedActionOccurrence` is now required before occurrence-fold/body work may
+resume. Holes remain 20 with split 6/4/8/1/1.
