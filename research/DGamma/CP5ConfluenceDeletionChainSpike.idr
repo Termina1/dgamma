@@ -215,17 +215,19 @@ data LocatedClosingHeadView :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   {first, middle, finalState : SystemState name key value world error} ->
   (head : Transition first middle) ->
-  (rest : Transitions middle finalState) -> Nat -> Type where
+  (rest : Transitions middle finalState) -> name -> Nat -> Type where
   ClosingOpensHere :
     {name, key, world, error : Type} -> {value : key -> Type} ->
     {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
     {first, middle, finalState : SystemState name key value world error} ->
+    {head : Transition first middle} ->
     {rest : Transitions middle finalState} ->
     (0 opening : BeginStep nameEq keyEq selected first middle) ->
     (0 firstClosing : FirstClosingResult name key world error value nameEq keyEq
       selected rest) ->
-    LocatedClosingHeadView name key world error value nameEq keyEq
-      (beginTransition opening) rest Z
+    (0 headOpening : head = beginTransition opening) ->
+    LocatedClosingHeadView name key world error value nameEq keyEq head rest
+      selected Z
   ClosingOpensLater :
     {name, key, world, error : Type} -> {value : key -> Type} ->
     {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
@@ -235,7 +237,7 @@ data LocatedClosingHeadView :
     (0 tailEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
       selected rest) ->
     LocatedClosingHeadView name key world error value nameEq keyEq head rest
-      (S (transitionCount (traceBeforeOpening tailEpisode)))
+      selected (S (transitionCount (traceBeforeOpening tailEpisode)))
 
 0 closingAtHeadAfterDecomposition :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -257,7 +259,8 @@ data LocatedClosingHeadView :
         (appendTransitions inside
           (MoreTransitions (unloadTransition closing) NoTransitions))
         afterClosing) = MoreTransitions head rest) ->
-  LocatedClosingHeadView name key world error value nameEq keyEq head rest Z
+  LocatedClosingHeadView name key world error value nameEq keyEq head rest
+    selected Z
 closingAtHeadAfterDecomposition head rest opening inside installedInside closing
   afterClosing decomposition =
     case decomposition of
@@ -266,7 +269,7 @@ closingAtHeadAfterDecomposition head rest opening inside installedInside closing
           afterClosing
           (sym (appendTransitionsAssociative inside
             (MoreTransitions (unloadTransition closing) NoTransitions)
-            afterClosing)))
+            afterClosing))) Refl
 
 0 closingEpisodeAtHeadView :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -282,7 +285,8 @@ closingAtHeadAfterDecomposition head rest opening inside installedInside closing
     MoreTransitions (beginTransition (closedOpening episode))
       (appendTransitions (closedTransitions episode) afterClosing) =
     MoreTransitions head rest) ->
-  LocatedClosingHeadView name key world error value nameEq keyEq head rest Z
+  LocatedClosingHeadView name key world error value nameEq keyEq head rest
+    selected Z
 closingEpisodeAtHeadView head rest
   (MkClosedEpisode openingAfter closeBefore opening inside installedInside closing)
   afterClosing decomposition =
@@ -308,7 +312,7 @@ closingEpisodeAtHeadView head rest
           (appendTransitions (closedTransitions episode) afterClosing))) =
     MoreTransitions head rest) ->
   LocatedClosingHeadView name key world error value nameEq keyEq head rest
-    (S (transitionCount prefixRest))
+    selected (S (transitionCount prefixRest))
 closingInTailAfterDecomposition head rest prefixHead prefixRest episode
   afterClosing decomposition =
     case decomposition of
@@ -333,7 +337,7 @@ closingInTailAfterDecomposition head rest prefixHead prefixRest episode
         (appendTransitions (closedTransitions episode) afterClosing)) =
     MoreTransitions head rest) ->
   LocatedClosingHeadView name key world error value nameEq keyEq head rest
-    (transitionCount beforeOpening)
+    selected (transitionCount beforeOpening)
 locatedClosingPrefixHeadView head rest NoTransitions episode afterClosing
   decomposition =
     closingEpisodeAtHeadView head rest episode afterClosing decomposition
@@ -351,7 +355,7 @@ locatedClosingPrefixHeadView head rest
   (episode : LocatedClosedEpisode name key world error value nameEq keyEq
     selected (MoreTransitions head rest)) ->
   LocatedClosingHeadView name key world error value nameEq keyEq head rest
-    (transitionCount (traceBeforeOpening episode))
+    selected (transitionCount (traceBeforeOpening episode))
 locatedClosingHeadView head rest
   (MkLocatedClosedEpisode preStart afterState beforeOpening episode afterClosing
     decomposition) =
