@@ -27390,7 +27390,7 @@ private
     keyEq original) ->
   (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
     left right) ->
-  (0 pairExternalOrder : SameExternalOrchestration nameEq
+  (0 pairExternal : SameExternalOrchestration nameEq
     (MoreTransitions left (MoreTransitions right NoTransitions))
     (MoreTransitions (movedRight diamond)
       (MoreTransitions (movedLeft diamond) NoTransitions))) ->
@@ -27398,7 +27398,7 @@ private
     tracePrefix left right suffix diamond
 produceAdjacentSwapResult name key world error value nameEq keyEq protocol initial
   pairFirst pairMiddle pairFinal originalFinal original tracePrefix left right
-  suffix decomposition premises diamond pairExternalOrder = case
+  suffix decomposition premises diamond pairExternal = case
     produceAdjacentInvariantReplay name key world error value nameEq keyEq protocol
       initial pairFirst pairMiddle pairFinal originalFinal original tracePrefix left
       right suffix decomposition premises diamond of
@@ -27411,7 +27411,7 @@ produceAdjacentSwapResult name key world error value nameEq keyEq protocol initi
             (adjacentWholeSameExternal name key world error value nameEq keyEq
               initial pairFirst pairMiddle pairFinal originalFinal replayedFinal
               original tracePrefix left right suffix decomposition diamond
-              replayedSuffix seal pairExternalOrder)
+              replayedSuffix seal pairExternal)
             correspondence endpoint bundle seal
             (produceAdjacentOperationalOccurrenceFold name key world error value
               nameEq keyEq initial pairFirst pairMiddle pairFinal originalFinal
