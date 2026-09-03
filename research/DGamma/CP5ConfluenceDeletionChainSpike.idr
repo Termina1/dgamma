@@ -128,12 +128,15 @@ record ClosingEpisodeScan
     NoClosingEpisodes name key world error value nameEq keyEq trace
 
 ||| O7 is a separate erased producer rather than work hidden in O8/O9.  Quantity
-||| 0 is essential because `MoreTransitions` erases its middle-state index.
+||| 0 is essential because `MoreTransitions` erases its middle-state index.  The
+||| exact trace alignment is the minimum authentication needed to reclassify
+||| every stored checked transition under the scan's explicit dictionaries.
 public export
 0 closingEpisodeOccurrenceScanSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (initial, finalState : SystemState name key value world error) ->
   (trace : Transitions initial finalState) ->
+  (0 aligned : AlignedTransitions name key world error value nameEq keyEq trace) ->
   ClosingEpisodeScan name key world error value nameEq keyEq trace
 closingEpisodeOccurrenceScanSpike = ?closingEpisodeOccurrenceScanSpike_rhs
 
@@ -946,7 +949,7 @@ public export
 chooseClosingStepSpike {initial} {finalState} nameEq keyEq protocol trace
   premises =
   let scan = closingEpisodeOccurrenceScanSpike nameEq keyEq initial finalState
-        trace in
+        trace (replayAligned (chainReplayCapital premises)) in
     case selectMaximalClosingEpisodeSpike nameEq keyEq protocol initial finalState
       trace premises scan of
       NoMaximalClosingEpisode empty =>

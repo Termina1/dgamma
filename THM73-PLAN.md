@@ -2749,3 +2749,21 @@ is outside the authorized content-preserving restatement. O7 therefore stops at
 `O6-R135-CANONICAL-O14-RANK-SORT-HELPER-BUDGET-STOP-AUDIT.md`,
 `O6-R135-DELETION-O7-ERASED-INTERFACE-RESTATEMENT-AUDIT.md`, and
 `O6-R135-DELETION-O7-DICTIONARY-CORRELATION-STOP-AUDIT.md`.
+
+### Revision 136: O7 exact aligned-transition premise
+
+The authorized O7 surface revision adds exactly one quantity-0
+`AlignedTransitions nameEq keyEq trace` premise.  R135's isolated dictionary
+probe is the necessity witness: the trace head's `transitionNameEq` could not be
+used as O7's independently quantified `externalNameEq`, and the key dictionary
+has the same correlation requirement.  No raw dictionary equality, state/trace
+equality, canonicalization bundle, output occurrence, or other blanket premise
+is added.
+
+The genuine `chooseClosingStepSpike` consumer discharges the premise directly as
+`replayAligned (chainReplayCapital premises)`.  The tracked
+`R7DeletionBoundariesPositive` fixture checks both the direct revised boundary
+and the same canonicalization-capital discharge.  All downstream DeletionChain
+consumers remain type-correct.  The surface revision changes no body and uses
+0/3 O7 fill attempts, so the census remains **18**, split **5/4/8/0/1** pending
+the separately budgeted fill.
