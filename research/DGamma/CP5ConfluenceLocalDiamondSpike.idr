@@ -26782,3 +26782,14 @@ adjacentSuffixEmbeddedBound (MoreTransitions prefixHead prefixTail) targetFirst
   targetSecond targetSuffix targetSelected targetOccurs = LTESucc
     (adjacentSuffixEmbeddedBound prefixTail targetFirst targetSecond targetSuffix
       targetSelected targetOccurs)
+
+private
+0 adjacentRelationSucc :
+  AdjacentSwapOrdinalRelation point targetOrdinal sourceOrdinal ->
+  AdjacentSwapOrdinalRelation (S point) (S targetOrdinal) (S sourceOrdinal)
+adjacentRelationSucc (AdjacentPrefixOrdinal before) =
+  AdjacentPrefixOrdinal (LTESucc before)
+adjacentRelationSucc AdjacentMovedRightOrdinal = AdjacentMovedRightOrdinal
+adjacentRelationSucc AdjacentMovedLeftOrdinal = AdjacentMovedLeftOrdinal
+adjacentRelationSucc (AdjacentSuffixOrdinal after) =
+  AdjacentSuffixOrdinal (LTESucc after)
