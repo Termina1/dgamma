@@ -27443,4 +27443,8 @@ public export
       (MoreTransitions (movedLeft diamond) NoTransitions))) ->
   AdjacentSwapResult name key world error value protocol nameEq keyEq original
     tracePrefix left right suffix diamond
-adjacentSwapSuffixSpike = ?adjacentSwapSuffixSpike_rhs
+adjacentSwapSuffixSpike = \nameEq, keyEq, protocol, original, tracePrefix, left, right, suffix,
+  decomposition, premises, diamond, pairExternalOrder =>
+    produceAdjacentSwapResult name key world error value nameEq keyEq protocol
+      _ _ _ _ _ original tracePrefix
+      left right suffix decomposition premises diamond pairExternalOrder
