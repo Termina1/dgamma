@@ -604,6 +604,86 @@ headClosingOrdinalZero opening rest
   (MkFirstClosingResult closeBefore closeAfter beforeClosing installedBefore
     closing afterClosing closingSplit) = Refl
 
+0 headClosingFresh :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (opening : BeginStep nameEq keyEq selected first middle) ->
+  (rest : Transitions middle finalState) ->
+  (result : FirstClosingResult name key world error value nameEq keyEq selected
+    rest) ->
+  (occurrences : List
+    (ClosingEpisodeOccurrence name key world error value nameEq keyEq rest)) ->
+  Not (Elem (scannedClosingOrdinal
+      (headClosingOccurrence opening rest result))
+    (map (\occurrence => scannedClosingOrdinal occurrence)
+      (prependClosingOccurrences (beginTransition opening) rest occurrences)))
+headClosingFresh opening rest result occurrences present =
+  zeroAbsentFromSuccessors
+    (map (\occurrence => scannedClosingOrdinal occurrence) occurrences)
+    (replace {p = \entries => Elem Z entries}
+      (prependClosingOrdinals (beginTransition opening) rest occurrences)
+      (replace {p = \ordinal => Elem ordinal
+        (map (\occurrence => scannedClosingOrdinal occurrence)
+          (prependClosingOccurrences (beginTransition opening) rest occurrences))}
+        (headClosingOrdinalZero opening rest result) present))
+
+0 headClosingCompleteFromView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (opening : BeginStep nameEq keyEq selected first middle) ->
+  (rest : Transitions middle finalState) ->
+  (result : FirstClosingResult name key world error value nameEq keyEq selected
+    rest) ->
+  (occurrences : List
+    (ClosingEpisodeOccurrence name key world error value nameEq keyEq rest)) ->
+  (0 complete : (actor : name) ->
+    (episode : LocatedClosedEpisode name key world error value nameEq keyEq actor
+      rest) ->
+    Elem (transitionCount (traceBeforeOpening episode))
+      (map (\occurrence => scannedClosingOrdinal occurrence) occurrences)) ->
+  (actor : name) -> {ordinal : Nat} ->
+  LocatedClosingHeadView name key world error value nameEq keyEq
+    (beginTransition opening) rest actor ordinal ->
+  Elem ordinal
+    (map (\occurrence => scannedClosingOrdinal occurrence)
+      (headClosingOccurrence opening rest result ::
+        prependClosingOccurrences (beginTransition opening) rest occurrences))
+headClosingCompleteFromView opening rest result occurrences complete actor
+  (ClosingOpensHere suppliedOpening suppliedClosing headOpening) =
+    rewrite headClosingOrdinalZero opening rest result in Here
+headClosingCompleteFromView opening rest result occurrences complete actor
+  (ClosingOpensLater tailEpisode) =
+    There (prependClosingComplete (beginTransition opening) rest occurrences
+      complete actor tailEpisode)
+
+0 headClosingComplete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (opening : BeginStep nameEq keyEq selected first middle) ->
+  (rest : Transitions middle finalState) ->
+  (result : FirstClosingResult name key world error value nameEq keyEq selected
+    rest) ->
+  (occurrences : List
+    (ClosingEpisodeOccurrence name key world error value nameEq keyEq rest)) ->
+  (0 complete : (actor : name) ->
+    (episode : LocatedClosedEpisode name key world error value nameEq keyEq actor
+      rest) ->
+    Elem (transitionCount (traceBeforeOpening episode))
+      (map (\occurrence => scannedClosingOrdinal occurrence) occurrences)) ->
+  (actor : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq actor
+    (MoreTransitions (beginTransition opening) rest)) ->
+  Elem (transitionCount (traceBeforeOpening episode))
+    (map (\occurrence => scannedClosingOrdinal occurrence)
+      (headClosingOccurrence opening rest result ::
+        prependClosingOccurrences (beginTransition opening) rest occurrences))
+headClosingComplete opening rest result occurrences complete actor episode =
+  headClosingCompleteFromView opening rest result occurrences complete actor
+    (locatedClosingHeadView (beginTransition opening) rest episode)
+
 ||| O7 is a separate erased producer rather than work hidden in O8/O9.  Quantity
 ||| 0 is essential because `MoreTransitions` erases its middle-state index.  The
 ||| exact trace alignment is the minimum authentication needed to reclassify
