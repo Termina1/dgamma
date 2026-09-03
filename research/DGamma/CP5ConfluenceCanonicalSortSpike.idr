@@ -6,6 +6,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionRelationalBoundary
 import DGamma.CP4Support
+import DGamma.CP4SupportQuiescence
 import DGamma.CP4SupportSolution
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
@@ -228,6 +229,37 @@ canonicalInstalledTraceEnd
   (MoreTransitions (Fired nameEq keyEq action tag checked) rest)
   (InstalledStep action tag checked rest sourceInstalled tailInstalled) =
     canonicalInstalledTraceEnd rest tailInstalled
+
+||| At a quiet endpoint, an installed fiber can only be Active.  The lookup and
+||| lifecycle are eliminated once, at the observation that owns both facts.
+0 canonicalQuietInstalledActive :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) ->
+  quiet @{nameEq} @{keyEq} state = True ->
+  (selected : name) -> installedAt @{nameEq} selected state = True ->
+  supportedActiveAt @{nameEq} selected state = True
+canonicalQuietInstalledActive nameEq keyEq state quietState selected installed
+  with (lookupFiber @{nameEq} selected (registry state)) proof found
+  canonicalQuietInstalledActive nameEq keyEq state quietState selected installed |
+    Nothing = absurd installed
+  canonicalQuietInstalledActive nameEq keyEq state quietState selected installed |
+    Just (MkFiber component parent retired table (Inactive outcome)) =
+      absurd installed
+  canonicalQuietInstalledActive nameEq keyEq state quietState selected installed |
+    Just (MkFiber component parent retired table
+      (Reloading remaining accumulator view)) =
+        absurd (quietFiberFromState nameEq keyEq state quietState selected
+          (MkFiber component parent retired table
+            (Reloading remaining accumulator view)) found)
+  canonicalQuietInstalledActive nameEq keyEq state quietState selected installed |
+    Just (MkFiber component parent retired table (Active accumulator view)) = Refl
+  canonicalQuietInstalledActive nameEq keyEq state quietState selected installed |
+    Just (MkFiber component parent retired table
+      (Unloading accumulator view outcome)) =
+        absurd (quietFiberFromState nameEq keyEq state quietState selected
+          (MkFiber component parent retired table
+            (Unloading accumulator view outcome)) found)
 
 ||| Derive the unique closing-free shape from the exact recursive bundle.
 public export
