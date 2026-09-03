@@ -220,12 +220,12 @@ data LocatedClosingHeadView :
     {name, key, world, error : Type} -> {value : key -> Type} ->
     {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
     {first, middle, finalState : SystemState name key value world error} ->
-    {head : Transition first middle} ->
     {rest : Transitions middle finalState} ->
     (0 opening : BeginStep nameEq keyEq selected first middle) ->
     (0 firstClosing : FirstClosingResult name key world error value nameEq keyEq
       selected rest) ->
-    LocatedClosingHeadView name key world error value nameEq keyEq head rest Z
+    LocatedClosingHeadView name key world error value nameEq keyEq
+      (beginTransition opening) rest Z
   ClosingOpensLater :
     {name, key, world, error : Type} -> {value : key -> Type} ->
     {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
