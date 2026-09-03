@@ -1073,6 +1073,62 @@ scanBeginHead nameEq keyEq owner tag checked rest alignedRest tailScan =
   scanBeginBoundary nameEq keyEq owner tag checked rest alignedRest tailScan
     (lBeginBoundary nameEq keyEq owner _ _ tag checked)
 
+0 scanActionHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action first =
+    Just (tag, middle)) ->
+  (rest : Transitions middle finalState) ->
+  (0 alignedRest : AlignedTransitions name key world error value nameEq keyEq
+    rest) ->
+  (0 tailScan : ClosingEpisodeScan name key world error value nameEq keyEq
+    {initial = middle} {finalState = finalState} rest) ->
+  ClosingEpisodeScan name key world error value nameEq keyEq
+    {initial = first} {finalState = finalState}
+    (MoreTransitions (Fired nameEq keyEq action tag checked) rest)
+scanActionHead nameEq keyEq (OInsert actor parent component) tag checked rest
+  alignedRest tailScan =
+    closingScanWithoutHead
+      (Fired nameEq keyEq (OInsert actor parent component) tag checked) rest
+      (nonBeginHeadImpossible (OInsert actor parent component) tag checked rest
+        NonBeginOInsert)
+      tailScan
+scanActionHead nameEq keyEq (ORetire actor) tag checked rest alignedRest
+  tailScan =
+    closingScanWithoutHead (Fired nameEq keyEq (ORetire actor) tag checked) rest
+      (nonBeginHeadImpossible (ORetire actor) tag checked rest NonBeginORetire)
+      tailScan
+scanActionHead nameEq keyEq (ORemove actor) tag checked rest alignedRest
+  tailScan =
+    closingScanWithoutHead (Fired nameEq keyEq (ORemove actor) tag checked) rest
+      (nonBeginHeadImpossible (ORemove actor) tag checked rest NonBeginORemove)
+      tailScan
+scanActionHead nameEq keyEq (LBegin actor) tag checked rest alignedRest tailScan =
+  scanBeginHead nameEq keyEq actor tag checked rest alignedRest tailScan
+scanActionHead nameEq keyEq (LAdvance actor) tag checked rest alignedRest
+  tailScan =
+    closingScanWithoutHead (Fired nameEq keyEq (LAdvance actor) tag checked) rest
+      (nonBeginHeadImpossible (LAdvance actor) tag checked rest
+        NonBeginLAdvance)
+      tailScan
+scanActionHead nameEq keyEq (LDivert actor) tag checked rest alignedRest
+  tailScan =
+    closingScanWithoutHead (Fired nameEq keyEq (LDivert actor) tag checked) rest
+      (nonBeginHeadImpossible (LDivert actor) tag checked rest NonBeginLDivert)
+      tailScan
+scanActionHead nameEq keyEq (LLeave actor) tag checked rest alignedRest
+  tailScan =
+    closingScanWithoutHead (Fired nameEq keyEq (LLeave actor) tag checked) rest
+      (nonBeginHeadImpossible (LLeave actor) tag checked rest NonBeginLLeave)
+      tailScan
+scanActionHead nameEq keyEq (LUnload actor) tag checked rest alignedRest
+  tailScan =
+    closingScanWithoutHead (Fired nameEq keyEq (LUnload actor) tag checked) rest
+      (nonBeginHeadImpossible (LUnload actor) tag checked rest NonBeginLUnload)
+      tailScan
+
 ||| O7 is a separate erased producer rather than work hidden in O8/O9.  Quantity
 ||| 0 is essential because `MoreTransitions` erases its middle-state index.  The
 ||| exact trace alignment is the minimum authentication needed to reclassify
