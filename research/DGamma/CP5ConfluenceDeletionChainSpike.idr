@@ -790,6 +790,105 @@ withoutHeadClosingFree head rest headImpossible occurrences tailFree empty actor
     withoutHeadClosingFreeFromView head rest headImpossible occurrences tailFree
       empty actor (locatedClosingHeadView head rest episode)
 
+0 emptyScanCompleteness :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {state : SystemState name key value world error} ->
+  (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected (NoTransitions {state})) ->
+  Elem (transitionCount (traceBeforeOpening episode)) []
+emptyScanCompleteness selected episode =
+  void (noLocatedClosingInEmpty episode)
+
+0 emptyScanClosingFree :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {state : SystemState name key value world error} ->
+  [] = [] -> NoClosingEpisodes name key world error value nameEq keyEq
+    (NoTransitions {state})
+emptyScanClosingFree empty selected episode = noLocatedClosingInEmpty episode
+
+0 emptyClosingEpisodeScan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) ->
+  ClosingEpisodeScan name key world error value nameEq keyEq
+    (NoTransitions {state})
+emptyClosingEpisodeScan nameEq keyEq state =
+  MkClosingEpisodeScan [] UniqueNil emptyScanCompleteness emptyScanClosingFree
+
+0 closingScanWithoutHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (0 headImpossible : (actor : name) ->
+    (opening : BeginStep nameEq keyEq actor first middle) ->
+    FirstClosingResult name key world error value nameEq keyEq actor rest ->
+    head = beginTransition opening -> Void) ->
+  (0 tailScan : ClosingEpisodeScan name key world error value nameEq keyEq
+    rest) ->
+  ClosingEpisodeScan name key world error value nameEq keyEq
+    (MoreTransitions head rest)
+closingScanWithoutHead head rest headImpossible tailScan =
+  MkClosingEpisodeScan
+    (prependClosingOccurrences head rest (scannedClosingOccurrences tailScan))
+    (prependClosingUnique head rest (scannedClosingOccurrences tailScan)
+      (scannedClosingOrdinalsUnique tailScan))
+    (withoutHeadClosingComplete head rest headImpossible
+      (scannedClosingOccurrences tailScan)
+      (everyClosingOccurrenceScanned tailScan))
+    (withoutHeadClosingFree head rest headImpossible
+      (scannedClosingOccurrences tailScan) (emptyScanIsClosingFree tailScan))
+
+0 headClosingScanNonEmpty :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (opening : BeginStep nameEq keyEq selected first middle) ->
+  (rest : Transitions middle finalState) ->
+  (result : FirstClosingResult name key world error value nameEq keyEq selected
+    rest) ->
+  (occurrences : List
+    (ClosingEpisodeOccurrence name key world error value nameEq keyEq rest)) ->
+  headClosingOccurrence opening rest result ::
+    prependClosingOccurrences (beginTransition opening) rest occurrences = [] ->
+  NoClosingEpisodes name key world error value nameEq keyEq
+    (MoreTransitions (beginTransition opening) rest)
+headClosingScanNonEmpty opening rest result occurrences empty =
+  case empty of Refl impossible
+
+0 closingScanWithHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (opening : BeginStep nameEq keyEq selected first middle) ->
+  (rest : Transitions middle finalState) ->
+  (result : FirstClosingResult name key world error value nameEq keyEq selected
+    rest) ->
+  (0 tailScan : ClosingEpisodeScan name key world error value nameEq keyEq
+    rest) ->
+  ClosingEpisodeScan name key world error value nameEq keyEq
+    (MoreTransitions (beginTransition opening) rest)
+closingScanWithHead opening rest result tailScan =
+  MkClosingEpisodeScan
+    (headClosingOccurrence opening rest result ::
+      prependClosingOccurrences (beginTransition opening) rest
+        (scannedClosingOccurrences tailScan))
+    (UniqueCons
+      (headClosingFresh opening rest result
+        (scannedClosingOccurrences tailScan))
+      (prependClosingUnique (beginTransition opening) rest
+        (scannedClosingOccurrences tailScan)
+        (scannedClosingOrdinalsUnique tailScan)))
+    (headClosingComplete opening rest result
+      (scannedClosingOccurrences tailScan)
+      (everyClosingOccurrenceScanned tailScan))
+    (headClosingScanNonEmpty opening rest result
+      (scannedClosingOccurrences tailScan))
+
 ||| O7 is a separate erased producer rather than work hidden in O8/O9.  Quantity
 ||| 0 is essential because `MoreTransitions` erases its middle-state index.  The
 ||| exact trace alignment is the minimum authentication needed to reclassify
