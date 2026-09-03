@@ -209,6 +209,154 @@ uniqueSuccessors {values = current :: later} (UniqueCons fresh uniqueLater) =
     (\present => fresh (reflectSuccessorElem current later present))
     (uniqueSuccessors uniqueLater)
 
+data LocatedClosingHeadView :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) -> Nat -> Type where
+  ClosingOpensHere :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    {head : Transition first middle} ->
+    {rest : Transitions middle finalState} ->
+    (0 opening : BeginStep nameEq keyEq selected first middle) ->
+    (0 firstClosing : FirstClosingResult name key world error value nameEq keyEq
+      selected rest) ->
+    LocatedClosingHeadView name key world error value nameEq keyEq head rest Z
+  ClosingOpensLater :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    {head : Transition first middle} ->
+    {rest : Transitions middle finalState} ->
+    (0 tailEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+      selected rest) ->
+    LocatedClosingHeadView name key world error value nameEq keyEq head rest
+      (S (transitionCount (traceBeforeOpening tailEpisode)))
+
+0 closingAtHeadAfterDecomposition :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {first, middle, finalState,
+    openingBefore, openingAfter, closeBefore, closeAfter :
+      SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (opening : BeginStep nameEq keyEq selected openingBefore openingAfter) ->
+  (inside : Transitions openingAfter closeBefore) ->
+  (0 installedInside : InstalledTrace name key world error value nameEq keyEq
+    selected inside) ->
+  (closing : UnloadStep nameEq keyEq selected closeBefore closeAfter) ->
+  (afterClosing : Transitions closeAfter finalState) ->
+  (0 decomposition :
+    MoreTransitions (beginTransition opening)
+      (appendTransitions
+        (appendTransitions inside
+          (MoreTransitions (unloadTransition closing) NoTransitions))
+        afterClosing) = MoreTransitions head rest) ->
+  LocatedClosingHeadView name key world error value nameEq keyEq head rest Z
+closingAtHeadAfterDecomposition head rest opening inside installedInside closing
+  afterClosing decomposition =
+    case decomposition of
+      Refl => ClosingOpensHere opening
+        (MkFirstClosingResult closeBefore closeAfter inside installedInside closing
+          afterClosing
+          (sym (appendTransitionsAssociative inside
+            (MoreTransitions (unloadTransition closing) NoTransitions)
+            afterClosing)))
+
+0 closingEpisodeAtHeadView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {first, middle, finalState, preStart, afterState :
+    SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (episode : ClosedEpisode name key world error value nameEq keyEq selected
+    preStart afterState) ->
+  (afterClosing : Transitions afterState finalState) ->
+  (0 decomposition :
+    MoreTransitions (beginTransition (closedOpening episode))
+      (appendTransitions (closedTransitions episode) afterClosing) =
+    MoreTransitions head rest) ->
+  LocatedClosingHeadView name key world error value nameEq keyEq head rest Z
+closingEpisodeAtHeadView head rest
+  (MkClosedEpisode openingAfter closeBefore opening inside installedInside closing)
+  afterClosing decomposition =
+    closingAtHeadAfterDecomposition head rest opening inside installedInside closing
+      afterClosing decomposition
+
+0 closingInTailAfterDecomposition :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {first, middle, prefixMiddle, finalState, preStart, afterState :
+    SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (prefixHead : Transition first prefixMiddle) ->
+  (prefixRest : Transitions prefixMiddle preStart) ->
+  (episode : ClosedEpisode name key world error value nameEq keyEq selected
+    preStart afterState) ->
+  (afterClosing : Transitions afterState finalState) ->
+  (0 decomposition :
+    MoreTransitions prefixHead
+      (appendTransitions prefixRest
+        (MoreTransitions (beginTransition (closedOpening episode))
+          (appendTransitions (closedTransitions episode) afterClosing))) =
+    MoreTransitions head rest) ->
+  LocatedClosingHeadView name key world error value nameEq keyEq head rest
+    (S (transitionCount prefixRest))
+closingInTailAfterDecomposition head rest prefixHead prefixRest episode
+  afterClosing decomposition =
+    case decomposition of
+      Refl => ClosingOpensLater
+        (MkLocatedClosedEpisode preStart afterState prefixRest episode afterClosing
+          Refl)
+
+0 locatedClosingPrefixHeadView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {first, middle, finalState, preStart, afterState :
+    SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (beforeOpening : Transitions first preStart) ->
+  (episode : ClosedEpisode name key world error value nameEq keyEq selected
+    preStart afterState) ->
+  (afterClosing : Transitions afterState finalState) ->
+  (0 decomposition :
+    appendTransitions beforeOpening
+      (MoreTransitions (beginTransition (closedOpening episode))
+        (appendTransitions (closedTransitions episode) afterClosing)) =
+    MoreTransitions head rest) ->
+  LocatedClosingHeadView name key world error value nameEq keyEq head rest
+    (transitionCount beforeOpening)
+locatedClosingPrefixHeadView head rest NoTransitions episode afterClosing
+  decomposition =
+    closingEpisodeAtHeadView head rest episode afterClosing decomposition
+locatedClosingPrefixHeadView head rest
+  (MoreTransitions prefixHead prefixRest) episode afterClosing decomposition =
+    closingInTailAfterDecomposition head rest prefixHead prefixRest episode
+      afterClosing decomposition
+
+0 locatedClosingHeadView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected (MoreTransitions head rest)) ->
+  LocatedClosingHeadView name key world error value nameEq keyEq head rest
+    (transitionCount (traceBeforeOpening episode))
+locatedClosingHeadView head rest
+  (MkLocatedClosedEpisode preStart afterState beforeOpening episode afterClosing
+    decomposition) =
+      locatedClosingPrefixHeadView head rest beforeOpening episode afterClosing
+        decomposition
+
 ||| Proof-level O7 output.  The scanner enumerates every located closing
 ||| occurrence exactly once by opening ordinal and turns an empty erased scan
 ||| into the no-closing predicate consumed by proof-level recursion.
