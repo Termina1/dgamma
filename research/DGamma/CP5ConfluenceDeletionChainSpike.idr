@@ -889,6 +889,103 @@ closingScanWithHead opening rest result tailScan =
     (headClosingScanNonEmpty opening rest result
       (scannedClosingOccurrences tailScan))
 
+data NonBeginAction :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  Action name key value world error -> Type where
+  NonBeginOInsert : NonBeginAction (OInsert actor parent component)
+  NonBeginORetire : NonBeginAction (ORetire actor)
+  NonBeginORemove : NonBeginAction (ORemove actor)
+  NonBeginLAdvance : NonBeginAction (LAdvance actor)
+  NonBeginLDivert : NonBeginAction (LDivert actor)
+  NonBeginLLeave : NonBeginAction (LLeave actor)
+  NonBeginLUnload : NonBeginAction (LUnload actor)
+
+0 nonBeginActionDistinct :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {action : Action name key value world error} ->
+  NonBeginAction action -> (actor : name) -> action = LBegin actor -> Void
+nonBeginActionDistinct NonBeginOInsert actor same =
+  case same of Refl impossible
+nonBeginActionDistinct NonBeginORetire actor same =
+  case same of Refl impossible
+nonBeginActionDistinct NonBeginORemove actor same =
+  case same of Refl impossible
+nonBeginActionDistinct NonBeginLAdvance actor same =
+  case same of Refl impossible
+nonBeginActionDistinct NonBeginLDivert actor same =
+  case same of Refl impossible
+nonBeginActionDistinct NonBeginLLeave actor same =
+  case same of Refl impossible
+nonBeginActionDistinct NonBeginLUnload actor same =
+  case same of Refl impossible
+
+0 openingHeadAction :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, middle : SystemState name key value world error} ->
+  {action : Action name key value world error} -> {tag : RuleTag} ->
+  {checked : checkedApplyAction @{nameEq} @{keyEq} action first =
+    Just (tag, middle)} ->
+  (actor : name) ->
+  (opening : BeginStep nameEq keyEq actor first middle) ->
+  Fired nameEq keyEq action tag checked = beginTransition opening ->
+  action = LBegin actor
+openingHeadAction actor opening Refl = Refl
+
+0 nonBeginHeadImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (action : Action name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action first =
+    Just (tag, middle)) ->
+  (rest : Transitions middle finalState) ->
+  (0 nonBegin : NonBeginAction action) ->
+  (actor : name) ->
+  (opening : BeginStep nameEq keyEq actor first middle) ->
+  FirstClosingResult name key world error value nameEq keyEq actor rest ->
+  Fired nameEq keyEq action tag checked = beginTransition opening -> Void
+nonBeginHeadImpossible action tag checked rest nonBegin actor opening firstClosing
+  headOpening =
+    nonBeginActionDistinct nonBegin actor
+      (openingHeadAction actor opening headOpening)
+
+0 beginOpeningActorEquality :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, middle : SystemState name key value world error} ->
+  (owner : name) -> {tag : RuleTag} ->
+  {checked : checkedApplyAction @{nameEq} @{keyEq} (LBegin owner) first =
+    Just (tag, middle)} ->
+  (actor : name) ->
+  (opening : BeginStep nameEq keyEq actor first middle) ->
+  Fired nameEq keyEq (LBegin owner) tag checked = beginTransition opening ->
+  owner = actor
+beginOpeningActorEquality owner actor opening headOpening =
+  case headOpening of Refl => Refl
+
+0 installedBeginHeadImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (owner : name) -> {tag : RuleTag} ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LBegin owner) first =
+    Just (tag, middle)) ->
+  (rest : Transitions middle finalState) ->
+  (0 installed : InstalledTrace name key world error value nameEq keyEq owner
+    rest) ->
+  (actor : name) ->
+  (opening : BeginStep nameEq keyEq actor first middle) ->
+  (firstClosing : FirstClosingResult name key world error value nameEq keyEq
+    actor rest) ->
+  Fired nameEq keyEq (LBegin owner) tag checked = beginTransition opening -> Void
+installedBeginHeadImpossible nameEq keyEq owner checked rest installed actor
+  opening firstClosing headOpening =
+    case beginOpeningActorEquality owner actor opening headOpening of
+      Refl => installedTraceRejectsFirstClosing nameEq keyEq owner rest installed
+        firstClosing
+
 ||| O7 is a separate erased producer rather than work hidden in O8/O9.  Quantity
 ||| 0 is essential because `MoreTransitions` erases its middle-state index.  The
 ||| exact trace alignment is the minimum authentication needed to reclassify
