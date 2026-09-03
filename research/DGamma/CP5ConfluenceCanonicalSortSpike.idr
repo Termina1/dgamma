@@ -721,6 +721,21 @@ canonicalSupportedOpenEpisode nameEq keyEq protocol trace noClosing premises
           in MkLocatedInterleavedOpenEpisode before afterState earlier opening
             later installed noEarlier activeFinal decomposition
 
+||| Two open episodes for one actor share the proof-level first-lifecycle
+||| ordinal, hence have equal occurrence ordinals.
+0 canonicalOpenEpisodeOrdinalUnique :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (left, right : LocatedInterleavedOpenEpisode name key world error value
+    nameEq keyEq selected global) ->
+  transitionCount (openPrefix left) = transitionCount (openPrefix right)
+canonicalOpenEpisodeOrdinalUnique nameEq keyEq selected global left right =
+  justInjective (trans
+    (sym (erasedLifecycleOrdinalAtOpenEpisode nameEq keyEq selected global left))
+    (erasedLifecycleOrdinalAtOpenEpisode nameEq keyEq selected global right))
+
 ||| Derive the unique closing-free shape from the exact recursive bundle.
 public export
 0 closingFreeTraceShapeSpike :
