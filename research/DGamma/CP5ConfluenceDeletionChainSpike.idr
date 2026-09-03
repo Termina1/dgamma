@@ -1140,7 +1140,16 @@ public export
   (trace : Transitions initial finalState) ->
   (0 aligned : AlignedTransitions name key world error value nameEq keyEq trace) ->
   ClosingEpisodeScan name key world error value nameEq keyEq trace
-closingEpisodeOccurrenceScanSpike = ?closingEpisodeOccurrenceScanSpike_rhs
+closingEpisodeOccurrenceScanSpike nameEq keyEq _ state NoTransitions aligned =
+  case aligned of
+    AlignedEnd => emptyClosingEpisodeScan nameEq keyEq state
+closingEpisodeOccurrenceScanSpike nameEq keyEq initial finalState
+  (MoreTransitions head rest) aligned =
+    case aligned of
+      AlignedStep action tag checked _ alignedRest =>
+        scanActionHead nameEq keyEq action tag checked rest alignedRest
+          (closingEpisodeOccurrenceScanSpike nameEq keyEq _ finalState rest
+            alignedRest)
 
 ||| Semantic classification retained for each withdrawn generation.  It stores
 ||| the exact original O-Insert occurrence and the same-parent close on that
