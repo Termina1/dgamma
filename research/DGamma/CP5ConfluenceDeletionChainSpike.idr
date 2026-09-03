@@ -684,6 +684,112 @@ headClosingComplete opening rest result occurrences complete actor episode =
   headClosingCompleteFromView opening rest result occurrences complete actor
     (locatedClosingHeadView (beginTransition opening) rest episode)
 
+0 withoutHeadClosingCompleteFromView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (0 headImpossible : (actor : name) ->
+    (opening : BeginStep nameEq keyEq actor first middle) ->
+    FirstClosingResult name key world error value nameEq keyEq actor rest ->
+    head = beginTransition opening -> Void) ->
+  (occurrences : List
+    (ClosingEpisodeOccurrence name key world error value nameEq keyEq rest)) ->
+  (0 complete : (actor : name) ->
+    (episode : LocatedClosedEpisode name key world error value nameEq keyEq actor
+      rest) ->
+    Elem (transitionCount (traceBeforeOpening episode))
+      (map (\occurrence => scannedClosingOrdinal occurrence) occurrences)) ->
+  (actor : name) -> {ordinal : Nat} ->
+  LocatedClosingHeadView name key world error value nameEq keyEq head rest actor
+    ordinal ->
+  Elem ordinal
+    (map (\occurrence => scannedClosingOrdinal occurrence)
+      (prependClosingOccurrences head rest occurrences))
+withoutHeadClosingCompleteFromView head rest headImpossible occurrences complete
+  actor (ClosingOpensHere opening firstClosing headOpening) =
+    void (headImpossible actor opening firstClosing headOpening)
+withoutHeadClosingCompleteFromView head rest headImpossible occurrences complete
+  actor (ClosingOpensLater tailEpisode) =
+    prependClosingComplete head rest occurrences complete actor tailEpisode
+
+0 withoutHeadClosingComplete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (0 headImpossible : (actor : name) ->
+    (opening : BeginStep nameEq keyEq actor first middle) ->
+    FirstClosingResult name key world error value nameEq keyEq actor rest ->
+    head = beginTransition opening -> Void) ->
+  (occurrences : List
+    (ClosingEpisodeOccurrence name key world error value nameEq keyEq rest)) ->
+  (0 complete : (actor : name) ->
+    (episode : LocatedClosedEpisode name key world error value nameEq keyEq actor
+      rest) ->
+    Elem (transitionCount (traceBeforeOpening episode))
+      (map (\occurrence => scannedClosingOrdinal occurrence) occurrences)) ->
+  (actor : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq actor
+    (MoreTransitions head rest)) ->
+  Elem (transitionCount (traceBeforeOpening episode))
+    (map (\occurrence => scannedClosingOrdinal occurrence)
+      (prependClosingOccurrences head rest occurrences))
+withoutHeadClosingComplete head rest headImpossible occurrences complete actor
+  episode =
+    withoutHeadClosingCompleteFromView head rest headImpossible occurrences
+      complete actor (locatedClosingHeadView head rest episode)
+
+0 withoutHeadClosingFreeFromView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (0 headImpossible : (actor : name) ->
+    (opening : BeginStep nameEq keyEq actor first middle) ->
+    FirstClosingResult name key world error value nameEq keyEq actor rest ->
+    head = beginTransition opening -> Void) ->
+  (occurrences : List
+    (ClosingEpisodeOccurrence name key world error value nameEq keyEq rest)) ->
+  (0 tailFree : occurrences = [] ->
+    NoClosingEpisodes name key world error value nameEq keyEq rest) ->
+  (0 empty : prependClosingOccurrences head rest occurrences = []) ->
+  (actor : name) -> {ordinal : Nat} ->
+  LocatedClosingHeadView name key world error value nameEq keyEq head rest actor
+    ordinal -> Void
+withoutHeadClosingFreeFromView head rest headImpossible occurrences tailFree
+  empty actor (ClosingOpensHere opening firstClosing headOpening) =
+    headImpossible actor opening firstClosing headOpening
+withoutHeadClosingFreeFromView head rest headImpossible occurrences tailFree
+  empty actor (ClosingOpensLater tailEpisode) =
+    tailFree (prependClosingOccurrencesEmpty head rest occurrences empty)
+      actor tailEpisode
+
+0 withoutHeadClosingFree :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (0 headImpossible : (actor : name) ->
+    (opening : BeginStep nameEq keyEq actor first middle) ->
+    FirstClosingResult name key world error value nameEq keyEq actor rest ->
+    head = beginTransition opening -> Void) ->
+  (occurrences : List
+    (ClosingEpisodeOccurrence name key world error value nameEq keyEq rest)) ->
+  (0 tailFree : occurrences = [] ->
+    NoClosingEpisodes name key world error value nameEq keyEq rest) ->
+  prependClosingOccurrences head rest occurrences = [] ->
+  NoClosingEpisodes name key world error value nameEq keyEq
+    (MoreTransitions head rest)
+withoutHeadClosingFree head rest headImpossible occurrences tailFree empty actor
+  episode =
+    withoutHeadClosingFreeFromView head rest headImpossible occurrences tailFree
+      empty actor (locatedClosingHeadView head rest episode)
+
 ||| O7 is a separate erased producer rather than work hidden in O8/O9.  Quantity
 ||| 0 is essential because `MoreTransitions` erases its middle-state index.  The
 ||| exact trace alignment is the minimum authentication needed to reclassify
