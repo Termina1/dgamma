@@ -2104,6 +2104,30 @@ noParentRecoveryConsView parent _ _
   (NoParentRecoveryStep transition rest noRecovery tail) =
     MkNoParentRecoveryConsView noRecovery tail
 
+0 parentOpenNoRecoveryInstalledSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  InstalledTrace name key world error value nameEq keyEq selected trace ->
+  NoParentRecovery selected trace ->
+  ParentOpenAt nameEq selected first ->
+  ParentOpenAt nameEq selected finalState
+parentOpenNoRecoveryInstalledSpike nameEq keyEq selected _
+  (InstalledEnd installed) noRecovery opened = opened
+parentOpenNoRecoveryInstalledSpike nameEq keyEq selected _
+  (InstalledStep action tag checked rest sourceInstalled tailInstalled)
+  noRecovery opened =
+    parentOpenNoRecoveryInstalledSpike nameEq keyEq selected rest tailInstalled
+      (noParentRecoveryInTail
+        (noParentRecoveryConsView selected
+          (Fired nameEq keyEq action tag checked) rest noRecovery))
+      (parentOpenInstalledStepSpike nameEq keyEq selected action tag _ _ checked
+        sourceInstalled (installedTraceStart tailInstalled) opened
+        (noParentRecoveryAtHead
+          (noParentRecoveryConsView selected
+            (Fired nameEq keyEq action tag checked) rest noRecovery)))
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
