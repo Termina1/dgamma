@@ -625,6 +625,12 @@ r143LeftMiddleDependsKA found depends =
 r143LeftUpperDependsKB found depends =
   case found of Refl => r143ElemSingletonExact depends
 
+0 r143KANotKB : Not (KA = KB)
+r143KANotKB Refl impossible
+
+0 r143KBNotKA : Not (KB = KA)
+r143KBNotKA same = r143KANotKB (sym same)
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
