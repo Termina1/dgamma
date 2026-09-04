@@ -2823,6 +2823,32 @@ childRetirementHeadView parent child _ _
   (ChildRetiresLater transition rest noRecovery tail) =
     MkChildRetirementHeadView (Right (noRecovery, tail))
 
+record ActionOccurrenceHeadView
+  (name, key, world, error : Type) (value : key -> Type)
+  (action : Action name key value world error)
+  {first, middle, finalState : SystemState name key value world error}
+  (transition : Transition first middle)
+  (rest : Transitions middle finalState) where
+  constructor MkActionOccurrenceHeadView
+  0 actionOccursAtHead : Either
+    (transitionAction transition = action)
+    (ActionOccurs action rest)
+
+0 actionOccurrenceHeadView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (action : Action name key value world error) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (transition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  ActionOccurs action (MoreTransitions transition rest) ->
+  ActionOccurrenceHeadView name key world error value action transition rest
+actionOccurrenceHeadView action _ _
+  (ActionOccursHere transition rest actionShape) =
+    MkActionOccurrenceHeadView (Left actionShape)
+actionOccurrenceHeadView action _ _
+  (ActionOccursLater transition rest later) =
+    MkActionOccurrenceHeadView (Right later)
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
