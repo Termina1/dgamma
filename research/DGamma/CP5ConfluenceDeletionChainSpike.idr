@@ -1570,6 +1570,29 @@ startStrictlyBeforeLocalSuccessor Z local = LTESucc LTEZero
 startStrictlyBeforeLocalSuccessor (S start) local =
   LTESucc (startStrictlyBeforeLocalSuccessor start local)
 
+0 maximalClosingHasNoScopedDependent :
+  {trace : Transitions initial finalState} ->
+  (scan : ClosingEpisodeScan name key world error value nameEq keyEq trace) ->
+  (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected trace) ->
+  ((other : ClosingEpisodeOccurrence name key world error value nameEq keyEq
+      trace) ->
+    Elem other (scannedClosingOccurrences scan) ->
+    LTE (scannedClosingOrdinal other)
+      (transitionCount (traceBeforeOpening episode))) ->
+  (startOrdinal : Nat) -> (startLive : GenerationEnvironment name) ->
+  NoDependentClosingEpisodeForGeneration selected startOrdinal startLive episode
+maximalClosingHasNoScopedDependent scan selected episode upper startOrdinal
+  startLive consumer consumerEpisode scoped edge =
+    LTEImpliesNotGT
+      (maximalClosingOrdinalBound scan selected episode upper consumer
+        consumerEpisode)
+      (rewrite scopedSelectedOrdinal scoped in
+       rewrite scopedConsumerOrdinal scoped in
+         startStrictlyBeforeLocalSuccessor startOrdinal
+           (locatedActionOrdinal (scopedConsumerOpening scoped)))
+
 ||| Independently testable O8 result.  A selected maximal/deletable candidate is
 ||| tied back to an ordinal produced by the exact O7 scan; the empty branch is
 ||| definitionally separated from the O9 deletion adapter.
