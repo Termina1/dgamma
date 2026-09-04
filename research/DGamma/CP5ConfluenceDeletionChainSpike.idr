@@ -1671,6 +1671,33 @@ liftGeneratedDuring headTransition rest selected startOrdinal
           (cong (MoreTransitions headTransition) decomposition))
         (liftGenerationStamp stamp) retiresLater
 
+record ChildGenerationInventory
+  (name, key, world, error : Type) (value : key -> Type)
+  (selected : name) (startOrdinal : Nat)
+  {first, finalState : SystemState name key value world error}
+  (trace : Transitions first finalState) where
+  constructor MkChildGenerationInventory
+  selectedGenerations : List (RegistrationGeneration name)
+  0 selectedGenerationSound :
+    (generation : RegistrationGeneration name) ->
+    Elem generation selectedGenerations ->
+    GeneratedDuring name key world error value selected startOrdinal trace
+      generation
+  0 selectedGenerationComplete :
+    (child : name) -> (component : Component key value world error) ->
+    (birth : LocatedActionOccurrence
+      (OInsert child (ChildOf selected) component) trace) ->
+    Elem (MkRegistrationGeneration child
+      (startOrdinal + locatedActionOrdinal birth)) selectedGenerations
+
+0 registeredDuringFromInventory :
+  (inventory : ChildGenerationInventory name key world error value selected
+    startOrdinal trace) ->
+  RegisteredGenerationsDuring selected startOrdinal
+    (selectedGenerations inventory) trace
+registeredDuringFromInventory inventory =
+  (selectedGenerationSound inventory, selectedGenerationComplete inventory)
+
 ||| Independently testable O8 result.  A selected maximal/deletable candidate is
 ||| tied back to an ordinal produced by the exact O7 scan; the empty branch is
 ||| definitionally separated from the O9 deletion adapter.
