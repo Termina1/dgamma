@@ -866,6 +866,20 @@ canonicalWithdrawnReducedUnsupported nameEq keyEq selected originalFinal
     canonicalAbsentFiberUnsupported nameEq keyEq selected reducedFinal
       reducedAbsent
 
+||| Boolean equality from the two positive directions used by a pair of
+||| linearizations over the same order.
+0 canonicalBoolSameFromTrueMaps :
+  (left, right : Bool) ->
+  (left = True -> right = True) ->
+  (right = True -> left = True) ->
+  left = right
+canonicalBoolSameFromTrueMaps False False forward backward = Refl
+canonicalBoolSameFromTrueMaps False True forward backward =
+  case backward Refl of Refl impossible
+canonicalBoolSameFromTrueMaps True False forward backward =
+  case forward Refl of Refl impossible
+canonicalBoolSameFromTrueMaps True True forward backward = Refl
+
 ||| A support truth excludes membership in any list whose members are known
 ||| unsupported at that same endpoint.
 0 canonicalSupportedNotElem :
