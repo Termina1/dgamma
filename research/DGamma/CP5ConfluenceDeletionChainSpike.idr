@@ -2632,6 +2632,29 @@ parentOpenAtRegistrationYield protocol nameEq parent component state yielded =
   MkParentOpenAt (parentFiberAtYield yielded) (parentFoundAtYield yielded)
     (replace {p = LifecycleOpen} (sym (parentAtYield yielded)) OpenReloading)
 
+0 parentOpenAfterChildInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq}
+    (OInsert child (ChildOf parent) component) before = Just (tag, afterState)) ->
+  ParentRegistrationYield protocol nameEq parent component before ->
+  ParentOpenAt nameEq parent afterState
+parentOpenAfterChildInsert protocol nameEq keyEq child parent component tag before
+  afterState checked yielded =
+    parentOpenForeignSpike nameEq keyEq parent
+      (OInsert child (ChildOf parent) component)
+      (childInsertParentDistinct nameEq keyEq child parent component tag before
+        afterState checked
+        (parentOpenAtRegistrationYield protocol nameEq parent component before
+          yielded))
+      before afterState tag checked
+      (parentOpenAtRegistrationYield protocol nameEq parent component before
+        yielded)
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
