@@ -739,6 +739,23 @@ r143LeftPathShapeProof (SupportPathMore edge rest) =
   r143ExtendLeftPathShape (r143LeftEdgeShape edge)
     (r143LeftPathShapeProof rest)
 
+0 r143LowerFreshInSharedOrder : Not (Elem Lower [Alternate, Upper])
+r143LowerFreshInSharedOrder Here impossible
+r143LowerFreshInSharedOrder (There Here) impossible
+r143LowerFreshInSharedOrder (There (There later)) = absurd later
+
+0 r143AlternateFreshInSharedOrder : Not (Elem Alternate [Upper])
+r143AlternateFreshInSharedOrder Here impossible
+r143AlternateFreshInSharedOrder (There later) = absurd later
+
+0 r143UpperFreshInSharedOrder : Not (Elem Upper [])
+r143UpperFreshInSharedOrder member = absurd member
+
+0 r143SharedOrderUnique : UniqueKeys [Lower, Alternate, Upper]
+r143SharedOrderUnique = UniqueCons r143LowerFreshInSharedOrder
+  (UniqueCons r143AlternateFreshInSharedOrder
+    (UniqueCons r143UpperFreshInSharedOrder UniqueNil))
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
