@@ -2993,3 +2993,17 @@ strong authentication. The corrected O16 accepts exactly this capital and
 is dependency-blocked by parked O14 shared-order production and the open
 DeletionChain assembly, so this remains an explicit Theorem-73 producer
 obligation under the supervisor-authorized fallback.
+
+R143 then closed the corrected O15 transport, corrected O16 exact-fold
+accounting, and O18 sealed-capital assembly, each on attempt 1/3. (The O18
+closure commit subject accidentally says O17; the definition and census are
+unambiguous.) O17 `sortClosingFreeTraceSpike` remains at 0/3 as the genuine XL
+stable root-hoisting/block-sorting algorithm. The research census is 13:
+CanonicalSort 2, CrossTrace 4, DeletionChain 6, LocalDiamond 0, and
+RenamingComposition 1.
+
+Final direct checks of CanonicalSort, CrossTrace, R6, R8, and R4 passed, as did a
+seeded package build. A subsequent build after deleting `build/` was killed by
+the host with signal 9 / exit 137. Per the mandatory failed-build stop rule, no
+retry and no O17 body attempt followed. The next shift must first rerun the clean
+package build with sufficient memory at the safe R143 audit boundary.

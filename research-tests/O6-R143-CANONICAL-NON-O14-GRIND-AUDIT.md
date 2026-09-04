@@ -110,18 +110,82 @@ uncorrelated stored trees.
   version passed on its fresh budget.
 - `r143CanonicalSupportTransportRefuted`: 3/3; attempt 1 lacked the direct
   CanonicalSort import, attempt 2 exposed a zero-hidden qualification warning,
-  and the fully qualified attempt 3 passed.
-- O15 hole body: 0/3, semantically stopped before edit.
-- O16/O17/O18: 0/3, not opened after the dependency stop.
+  and the fully qualified attempt 3 passed. This was the pre-revision necessity
+  witness, not an O15 body attempt.
+- `canonicalChildPlacementFromForward`: 2/3; the first spelling left the
+  dependent `lookupFiber` value family implicit, and the fully explicit result
+  type passed.
+- `canonicalAccountedGenerationClassified`: 2/3; the first spelling left the
+  dependent-pair source of `canonicalElemMapPreimage` polymorphic, and explicit
+  `source`/`target`/`project` arguments passed.
+- O15 `canonicalSupportTransportSpike`: **1/3, passed and closed** after the
+  authorized chosen-order correction.
+- O16 `deletionSortingOrchestrationAccountingSpike`: **1/3, passed and closed**
+  after the authorized exact-fold-capital correction and fallback review gate.
+- O18 `independentCanonicalScheduleSpike`: **1/3, passed and closed** using the
+  deletion-history classification extractor. Commit `5b3db7f` says “O17” in its
+  subject; that subject is an administrative label slip—the checked definition
+  is O18.
+- O17 `sortClosingFreeTraceSpike`: **0/3**. It remains the genuine XL stable
+  root-hoisting/block-sorting algorithm. No speculative body was charged before
+  the mandatory validation stop described below.
 
 ## Validation and invariants
 
-Every retained helper commit was preceded by a visible fresh check of its
-owning spike or fixture. Final release gates are pending the supervisor ruling.
-Production remains untouched.
+Every retained helper and body commit was preceded by a visible fresh direct
+check of its owning module or fixture. Final direct evidence after all three
+closures established:
+
+```text
+Idris 2, version 0.8.0
+
+CP5ConfluenceCanonicalSortSpike.idr direct check: exit 0
+CP5ConfluenceCrossTraceSpike.idr direct check: exit 0
+R6FourFiberStatic.idr direct check: exit 0
+R8FullPipeline.idr direct check: exit 0
+R4VestigialSimultaneous.idr direct check: exit 0
+seeded/cached `idris2 --build dgamma.ipkg`: exit 0
+```
+
+A subsequent genuinely clean package build removed `build/` first and was
+terminated by the host with `Killed: 9`, exit **137**. Under the binding rule
+that any failed build/check ends implementation after audit, no retry and no O17
+attempt was started. This is an infrastructure/OOM release-gate failure rather
+than an Idris diagnostic, but it means R143 cannot claim a successful clean full
+package build.
+
+Non-Idris post-failure invariants:
+
+- exact start `13abcd01c243d774609450b98f06fc3fcc3667de` is an ancestor;
+- production/package/doc diff (`src`, `dgamma.ipkg`, `README.md`, `NOTES.md`)
+  from the exact start is empty;
+- `src/DGamma/CP3.idr` start/current blob is unchanged at
+  `2c697e532e83989de8591fa6a4378747c6a501c0`;
+- no added `believe_me`, `assert_total`, postulate, `unsafePerformIO`, `partial`,
+  or `covering` declaration occurs in changed Idris lines;
+- `git diff --check` passes;
+- no exact-name `idris2` process remains; and
+- only the three permitted pre-existing untracked files remain.
+
+The research-hole census is now **13**, split explicitly as:
+
+```text
+CanonicalSort 2  (parked O14 and open O17)
+CrossTrace    4
+DeletionChain 6
+LocalDiamond  0
+Renaming       1
+```
 
 ## Status
 
-**Semantic stop at O15.** The current hole census remains 16, split 5/4/6/0/1.
-O14 and all parked DeletionChain work remain untouched. No surface has been
-revised.
+**Three non-O14 CanonicalSort holes closed: O15, O16, and O18.** O15 and O16 use
+supervisor-authorized, audited, positively ratified/premise-tracked surface
+corrections. O17 remains the honest stable-sort algorithm at 0/3. O14 and all
+parked DeletionChain obligations remain untouched. Production and frozen CP3
+surfaces are unchanged.
+
+**Release acceptance is partial, not green:** all direct research checks and a
+seeded package build passed, but the final clean package build was killed by the
+host (exit 137). The next shift must begin at this safe committed boundary by
+rerunning that clean build under sufficient memory before opening O17.
