@@ -762,6 +762,16 @@ r143MiddleNotInSharedOrder (There Here) impossible
 r143MiddleNotInSharedOrder (There (There Here)) impossible
 r143MiddleNotInSharedOrder (There (There (There later))) = absurd later
 
+0 r143LeftSharedOrderSound :
+  (selected : N) -> Elem selected [Lower, Alternate, Upper] ->
+  isSupported @{the (DecEq N) %search} @{the (DecEq K) %search} selected
+    DGamma.R6FourFiberStatic.leftState = True
+r143LeftSharedOrderSound Lower member = lowerSupportedLeft
+r143LeftSharedOrderSound Middle member =
+  void (r143MiddleNotInSharedOrder member)
+r143LeftSharedOrderSound Alternate member = Refl
+r143LeftSharedOrderSound Upper member = upperSupportedLeft
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
