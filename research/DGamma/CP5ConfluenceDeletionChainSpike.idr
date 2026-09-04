@@ -3671,6 +3671,34 @@ record ChildGenerationInventory
 registeredDuringFromInventory inventory =
   (selectedGenerationSound inventory, selectedGenerationComplete inventory)
 
+0 selectedInventoryOutside :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (selected : name) ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  RegistrationDiscipline protocol nameEq global ->
+  (startOrdinal : Nat) ->
+  (inventory : ChildGenerationInventory name key world error value selected
+    startOrdinal
+    (MoreTransitions
+      (beginTransition (closedOpening (locatedEpisode located)))
+      (closedTransitions (locatedEpisode located)))) ->
+  (generation : RegistrationGeneration name) ->
+  Elem generation (selectedGenerations inventory) ->
+  Not (generationName generation = selected)
+selectedInventoryOutside protocol nameEq keyEq global selected located aligned
+  discipline startOrdinal inventory generation member same =
+    case selectedGenerationSound inventory generation member of
+      MkGeneratedDuring child component birth stamp retiresLater =>
+        selectedChildBirthDistinct protocol nameEq keyEq global selected child
+          component located aligned discipline birth
+          (sym (trans (sym (cong generationName stamp)) same))
+
 0 liftedInventorySound :
   (headTransition : Transition first middle) ->
   (rest : Transitions middle finalState) ->
