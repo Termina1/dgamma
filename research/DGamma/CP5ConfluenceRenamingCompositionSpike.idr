@@ -2424,6 +2424,49 @@ fiberRenamedMaybeThenControlSpike renaming (RenamedPresent renamed)
   (SomeControlFibers control) =
     RenamedPresent (fiberRenamedThenControlSpike renaming renamed control)
 
+||| Outside both canonical withdrawal name sets, the four pointwise control
+||| steps compose to an ordinary renamed fiber relation.
+0 replayedCanonicalOuterControlOutsideSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFinal, leftCanonicalFinal, replayedLeftFinal, rightCanonicalFinal,
+    rightFinal : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (currentRenaming : NameBijection name) ->
+  (leftWithdrawn, rightWithdrawn : List name) ->
+  (leftEndpointControls : ControlEquivalentOutside
+    {name = name} {key = key} {world = world} {error = error} {value = value}
+    nameEq leftWithdrawn leftFinal leftCanonicalFinal) ->
+  (replayedControls : ControlEquivalent name key world error value nameEq
+    leftCanonicalFinal replayedLeftFinal) ->
+  ((selected : name) -> MaybeFiberRelatedBy currentRenaming
+    (lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+      {error = error} selected (registry replayedLeftFinal))
+    (lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+      {error = error} (renameForward currentRenaming selected)
+      (registry rightCanonicalFinal))) ->
+  (rightEndpointControls : ControlEquivalentOutside
+    {name = name} {key = key} {world = world} {error = error} {value = value}
+    nameEq rightWithdrawn rightFinal rightCanonicalFinal) ->
+  (selected : name) -> Not (Elem selected leftWithdrawn) ->
+  Not (Elem (renameForward currentRenaming selected) rightWithdrawn) ->
+  MaybeFiberRelatedBy currentRenaming
+    (lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+      {error = error} selected (registry leftFinal))
+    (lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+      {error = error} (renameForward currentRenaming selected)
+      (registry rightFinal))
+replayedCanonicalOuterControlOutsideSpike nameEq currentRenaming leftWithdrawn
+  rightWithdrawn leftEndpointControls replayedControls bridgeControls
+  rightEndpointControls selected leftOutside rightOutside =
+    fiberRenamedMaybeThenControlSpike currentRenaming
+      (fiberControlMaybeThenRenamedSpike currentRenaming
+        (fiberControlMaybeTransitive
+          (leftEndpointControls selected leftOutside)
+          (controlPointwise replayedControls selected))
+        (bridgeControls selected))
+      (fiberControlMaybeSymmetric
+        (rightEndpointControls
+          (renameForward currentRenaming selected) rightOutside))
+
 ||| The four heterogeneous effect steps at the O21 boundary compose without
 ||| observing registry order.  Canonical endpoints and replay use exact table
 ||| equality, while the bridge already supplies pointwise renamed lookups.
