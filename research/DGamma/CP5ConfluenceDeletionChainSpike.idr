@@ -1430,6 +1430,106 @@ scannerNoParentUnloadRejectsOccurrence
   (ActionOccursLater transition rest laterOccurrence) =
     scannerNoParentUnloadRejectsOccurrence laterSafe laterOccurrence
 
+||| A generated registration head cannot be classified as a non-registration
+||| scanner action.
+0 generatedRegistrationHeadNotSkipped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  (transition : Transition before afterState) ->
+  (action : Action name key value world error) ->
+  (child, parent : name) ->
+  (component : Component key value world error) ->
+  transitionAction transition = action ->
+  transitionAction transition = OInsert child (ChildOf parent) component ->
+  isGeneratedRegistrationAction action = False -> Void
+generatedRegistrationHeadNotSkipped transition action child parent component
+  sameAction generatedAction nonRegistration =
+    case trans (sym nonRegistration)
+      (cong isGeneratedRegistrationAction
+        (trans (sym sameAction) generatedAction)) of
+      Refl impossible
+
+||| The scanner event producer stores the supplied raw parent independently of
+||| its activation lookup.
+0 registrationEventAtParentExact :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (ordinal : Nat) ->
+  (index : RegistrationIndexState name) -> (child, parent : name) ->
+  (component : Component key value world error) ->
+  eventParent
+    (registrationEventAt @{nameEq} ordinal index child parent component) = parent
+registrationEventAtParentExact nameEq ordinal
+  (MkRegistrationIndexState live activations counts deleted) child parent
+  component = Refl
+
+||| A scanner surviving classification for the exact registration head
+||| contradicts the producer-owned later parent-unload occurrence.
+0 generatedRegistrationHeadNotSurviving :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {ordinal : Nat} ->
+  {index : RegistrationIndexState name} ->
+  {before, afterState, finalState : SystemState name key value world error} ->
+  (transition : Transition before afterState) ->
+  (rest : Transitions afterState finalState) ->
+  (scannerChild, scannerParent, child, parent : name) ->
+  (scannerComponent, component : Component key value world error) ->
+  transitionAction transition =
+    OInsert scannerChild (ChildOf scannerParent) scannerComponent ->
+  transitionAction transition = OInsert child (ChildOf parent) component ->
+  SurvivingRegistration
+    (registrationEventAt @{nameEq} ordinal index scannerChild scannerParent
+      scannerComponent) rest ->
+  ActionOccurs (LUnload parent) rest -> Void
+generatedRegistrationHeadNotSurviving transition rest scannerChild scannerParent
+  child parent scannerComponent component scannerAction generatedAction
+  surviving closes =
+    case trans (sym generatedAction) scannerAction of
+      Refl => scannerNoParentUnloadRejectsOccurrence
+        (replace {p = \selected => NoParentUnload selected rest}
+          (registrationEventAtParentExact nameEq ordinal index child parent
+            component)
+          (survivingParentEpisodeOpen surviving)) closes
+
+||| The exact discard head enters the index and remains there for the accepted
+||| scanner continuation.
+0 leftDiscardedRegistrationHeadRetained :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {renaming : RegistrationGenerationBijection name} ->
+  (leftOrdinal : Nat) -> (leftIndex : RegistrationIndexState name) ->
+  {leftFirst, leftMiddle, leftFinal : SystemState name key value world error} ->
+  (transition : Transition leftFirst leftMiddle) ->
+  (leftRest : Transitions leftMiddle leftFinal) ->
+  (scannerChild, scannerParent, child, parent : name) ->
+  (scannerComponent, component : Component key value world error) ->
+  transitionAction transition =
+    OInsert scannerChild (ChildOf scannerParent) scannerComponent ->
+  transitionAction transition = OInsert child (ChildOf parent) component ->
+  {leftFinalIndex : RegistrationIndexState name} ->
+  {rightOrdinal : Nat} -> {rightIndex : RegistrationIndexState name} ->
+  {rightFirst, rightFinal : SystemState name key value world error} ->
+  {right : Transitions rightFirst rightFinal} ->
+  {rightFinalIndex : RegistrationIndexState name} ->
+  {pendingLeft, pendingRight :
+    List (RegistrationEvent name key world error value)} ->
+  RegistrationTraceCorrespondence nameEq renaming (S leftOrdinal)
+    (advanceDeletedRegistrationIndex @{nameEq} leftOrdinal scannerChild
+      scannerParent scannerComponent leftIndex)
+    leftRest leftFinalIndex rightOrdinal rightIndex right rightFinalIndex
+    pendingLeft pendingRight ->
+  Elem (MkRegistrationGeneration child leftOrdinal)
+    (indexedDeletedGenerations leftFinalIndex)
+leftDiscardedRegistrationHeadRetained nameEq leftOrdinal leftIndex transition
+  leftRest scannerChild scannerParent child parent scannerComponent component
+  scannerAction generatedAction rest =
+    case trans (sym generatedAction) scannerAction of
+      Refl => leftCorrespondencePreservesDeleted nameEq rest
+        (MkRegistrationGeneration child leftOrdinal)
+        (replace {p = \items => Elem
+          (MkRegistrationGeneration child leftOrdinal) items}
+          (sym (advanceDeletedRegistrationIndexHead nameEq leftOrdinal child
+            parent component leftIndex)) Here)
+
 ||| Exact left-scanner induction boundary.  At the located birth the accepted
 ||| correspondence cannot take a surviving/queued/matched branch: each such
 ||| branch contains `NoParentUnload`, contradicted by
