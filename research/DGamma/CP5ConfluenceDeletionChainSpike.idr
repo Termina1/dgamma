@@ -2191,6 +2191,63 @@ generationSubsequenceSourceOrdinal
   (DeleteGenerationAction originalTransition originalRest deleted rest) target =
     map S (generationSubsequenceSourceOrdinal rest target)
 
+||| Prefix one source transition to a located occurrence in its tail.  Keeping
+||| this structural operation separate avoids reconstructing occurrences from
+||| raw action equality during the subsequence fold.
+0 prependGenerationSubsequenceLocatedActionOccurrence :
+  {sourceFirst, tailFirst, finalState :
+    SystemState name key value world error} ->
+  (head : Transition sourceFirst tailFirst) ->
+  {tail : Transitions tailFirst finalState} ->
+  LocatedActionOccurrence action tail ->
+  LocatedActionOccurrence action (MoreTransitions head tail)
+prependGenerationSubsequenceLocatedActionOccurrence head
+  (MkLocatedActionOccurrence before afterState beforeTrace transition later
+    actionShape decomposition) =
+  MkLocatedActionOccurrence before afterState
+    (MoreTransitions head beforeTrace) transition later actionShape
+    (cong (MoreTransitions head) decomposition)
+
+||| Every survivor occurrence has a producer-owned source occurrence.  The
+||| proof follows the exact dependent prefix rather than searching by action
+||| value, so equal registrations at different births remain distinct.
+0 generationSubsequenceLocatedActionOrigin :
+  (subsequence : GenerationActionSubsequence nameEq deletable ordinal live
+    source survivor) ->
+  LocatedActionOccurrence action survivor ->
+  LocatedActionOccurrence action source
+generationSubsequenceLocatedActionOrigin GenerationActionSubsequenceEnd
+  (MkLocatedActionOccurrence before afterState beforeTrace transition later
+    actionShape decomposition) =
+  case beforeTrace of
+    NoTransitions => case decomposition of Refl impossible
+    MoreTransitions prefixHead prefixRest =>
+      case decomposition of Refl impossible
+generationSubsequenceLocatedActionOrigin
+  (KeepGenerationAction originalTransition originalRest survivingTransition
+    survivingRest kept sameAction tail)
+  (MkLocatedActionOccurrence before afterState NoTransitions transition later
+    actionShape decomposition) =
+  case decomposition of
+    Refl => MkLocatedActionOccurrence _ _ NoTransitions originalTransition
+      originalRest (trans sameAction actionShape) Refl
+generationSubsequenceLocatedActionOrigin
+  (KeepGenerationAction originalTransition originalRest survivingTransition
+    survivingRest kept sameAction tail)
+  (MkLocatedActionOccurrence before afterState
+    (MoreTransitions prefixHead prefixRest) transition later actionShape
+      decomposition) =
+  case decomposition of
+    Refl => prependGenerationSubsequenceLocatedActionOccurrence originalTransition
+      (generationSubsequenceLocatedActionOrigin tail
+        (MkLocatedActionOccurrence _ _ prefixRest transition later actionShape
+          Refl))
+generationSubsequenceLocatedActionOrigin
+  (DeleteGenerationAction originalTransition originalRest deleted tail)
+  occurrence =
+    prependGenerationSubsequenceLocatedActionOccurrence originalTransition
+      (generationSubsequenceLocatedActionOrigin tail occurrence)
+
 public export
 deletionSurvivingBeforeCount :
   (result : DeletionResult name key world error value nameEq keyEq original
