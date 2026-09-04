@@ -2222,6 +2222,22 @@ splitNoParentRecoveryAppend parent
             (noParentRecoveryConsView parent transition
               (appendTransitions rest right) noRecovery))))
 
+0 noParentRecoveryAtClosingSplit :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  (closing : FirstClosingResult name key world error value nameEq keyEq selected
+    trace) ->
+  NoParentRecovery selected trace ->
+  NoParentRecovery selected
+    (appendTransitions (traceBeforeFirstClosing closing)
+      (MoreTransitions (unloadTransition (firstClosingStep closing))
+        (traceAfterFirstClosing closing)))
+noParentRecoveryAtClosingSplit nameEq keyEq selected trace closing noRecovery =
+  replace {p = \candidate => NoParentRecovery selected candidate}
+    (sym (closingSplit closing)) noRecovery
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
