@@ -3234,24 +3234,25 @@ exactLocatedActionAtHead action head rest afterState transition later
 
 0 exactLocatedActionInTail :
   {name, key, world, error : Type} -> {value : key -> Type} ->
-  {first, middle, before, afterState, finalState :
+  {first, middle, prefixMiddle, before, afterState, finalState :
     SystemState name key value world error} ->
   (action : Action name key value world error) ->
   (head : Transition first middle) ->
   (rest : Transitions middle finalState) ->
-  (prefixRest : Transitions middle before) ->
+  (prefixHead : Transition first prefixMiddle) ->
+  (prefixRest : Transitions prefixMiddle before) ->
   (transition : Transition before afterState) ->
   (later : Transitions afterState finalState) ->
   (0 actionShape : transitionAction transition = action) ->
-  (0 decomposition : MoreTransitions head
+  (0 decomposition : MoreTransitions prefixHead
     (appendTransitions prefixRest (MoreTransitions transition later)) =
     MoreTransitions head rest) ->
   LocatedActionHeadExactView action head rest
     (MkLocatedActionOccurrence before afterState
-      (MoreTransitions head prefixRest) transition later actionShape
+      (MoreTransitions prefixHead prefixRest) transition later actionShape
       decomposition)
-exactLocatedActionInTail action head rest prefixRest transition later actionShape
-  decomposition =
+exactLocatedActionInTail action head rest prefixHead prefixRest transition later
+  actionShape decomposition =
     case decomposition of
       Refl => ExactLocatedActionInTail
         (MkLocatedActionOccurrence _ _ prefixRest transition later actionShape
