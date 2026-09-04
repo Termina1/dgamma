@@ -365,6 +365,9 @@ r143RightAlternateEdgeEndsUpper {upper = Upper} edge = Refl
 r143RightEdgeEndsUpperAfterStart edge Refl =
   r143RightAlternateEdgeEndsUpper edge
 
+0 r143UpperNotAlternate : Not (Upper = Alternate)
+r143UpperNotAlternate Refl impossible
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
