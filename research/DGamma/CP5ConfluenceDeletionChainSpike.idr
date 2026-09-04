@@ -2339,6 +2339,22 @@ unloadOpenTagTransportImpossible nameEq keyEq selected tag before afterState
       Refl => unloadOpenAtImpossible nameEq keyEq selected before afterState
         (MkUnloadStep checked) opened
 
+0 unloadCheckedOpenImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LUnload selected)
+    before = Just (tag, afterState)) ->
+  ParentOpenAt nameEq selected before -> Void
+unloadCheckedOpenImpossible nameEq keyEq selected tag before afterState checked
+  opened =
+    unloadOpenTagTransportImpossible nameEq keyEq selected tag before afterState
+      checked opened
+      (fst (lUnloadBoundary nameEq keyEq selected before afterState tag
+        (checkedActionProjects nameEq keyEq (LUnload selected) before afterState
+          tag checked)))
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
