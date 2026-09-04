@@ -4205,6 +4205,18 @@ retiredLifecycleBeginNothing nameEq keyEq actor component parent retiredFlag tab
 retiredLifecycleBeginNothing nameEq keyEq actor component parent retiredFlag table
   (Unloading accumulator view outcome) state retiredTrue = Refl
 
+0 retiredFiberBeginNothing :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) ->
+  (fiber : Fiber name key value world error) ->
+  (state : SystemState name key value world error) ->
+  retired fiber = True ->
+  beginFiberAction @{nameEq} @{keyEq} actor fiber state = Nothing
+retiredFiberBeginNothing nameEq keyEq actor
+  (MkFiber component parent retiredFlag table lifecycle) state retiredTrue =
+    retiredLifecycleBeginNothing nameEq keyEq actor component parent retiredFlag
+      table lifecycle state retiredTrue
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
