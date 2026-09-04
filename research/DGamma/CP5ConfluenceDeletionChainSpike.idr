@@ -4166,6 +4166,19 @@ buildChildGenerationInventory nameEq selected startOrdinal
 retiredAfterRetireSpike
   (MkFiber component parent retiredFlag table lifecycle) = Refl
 
+0 trueFlagInactiveBeginNothing :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (state : SystemState name key value world error) ->
+  retiredFlag = True ->
+  beginFiberAction @{nameEq} @{keyEq} actor
+    (MkFiber component parent retiredFlag table (Inactive Nothing)) state = Nothing
+trueFlagInactiveBeginNothing nameEq keyEq actor component parent _ table state
+  Refl = Refl
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
