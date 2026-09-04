@@ -334,6 +334,28 @@ r143LowerDependsOnNothing found wanted depends =
 r143AlternateDependsOnNothing found wanted depends =
   case found of Refl => absurd depends
 
+||| An edge from the alternate provider can end only at the upper consumer.
+0 r143RightAlternateEdgeEndsUpper :
+  {upper : N} ->
+  SupportEdge (the (DecEq N) %search) DGamma.R6FourFiberStatic.rightState
+    Alternate upper ->
+  upper = Upper
+r143RightAlternateEdgeEndsUpper {upper = Lower} (SupportPrecedence edge) =
+  void (r143LowerDependsOnNothing (consumerFound edge) (edgeKey edge)
+    (consumerDeclares edge))
+r143RightAlternateEdgeEndsUpper {upper = Lower} (SupportParent edge) =
+  void (r143NoRightParentEdge edge)
+r143RightAlternateEdgeEndsUpper {upper = Middle} (SupportPrecedence edge) =
+  void (r143MiddleLookupImpossible (consumerFound edge))
+r143RightAlternateEdgeEndsUpper {upper = Middle} (SupportParent edge) =
+  void (r143NoRightParentEdge edge)
+r143RightAlternateEdgeEndsUpper {upper = Alternate} (SupportPrecedence edge) =
+  void (r143AlternateDependsOnNothing (consumerFound edge) (edgeKey edge)
+    (consumerDeclares edge))
+r143RightAlternateEdgeEndsUpper {upper = Alternate} (SupportParent edge) =
+  void (r143NoRightParentEdge edge)
+r143RightAlternateEdgeEndsUpper {upper = Upper} edge = Refl
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
