@@ -2824,3 +2824,36 @@ With surface revision and both ratifications independently committed, O8 now
 receives a fresh **3-attempt body budget**.  O7 remains complete, O14 remains
 parked, and the canonical census remains **17**, split **5/4/7/0/1**, until an
 O8 body is accepted.
+
+### Revision 138: O8 maximality capital and parent-open endpoint stop
+
+The finite-selection and revised maximality half of O8 is now retained and
+checked in lemma-sized commits.  `chooseMaximumBy` selects a maximum from every
+nonempty erased O7 inventory; `maximalClosingOrdinalBound` transports O7
+completeness back from ordinal membership to a genuine scanned occurrence; and
+`maximalClosingHasNoScopedDependent` contradicts any generation-scoped consumer
+opening by the selected-maximum upper bound and the interval witness's strict
+lower bound.
+
+The generated-child accounting half now has an exact total
+`ChildGenerationInventory`.  Its scan records every selected-parent child birth
+with the global episode-start stamp, transports births across trace prefixes,
+and projects directly to `RegisteredGenerationsDuring`, assuming the exact
+retirement callback required by `GeneratedDuring`.  Closing-tail and located-
+action witnesses needed to derive that callback are also retained.
+
+The next parent-open endpoint helper unit exhausted **3/3** checks and was fully
+restored.  Production `DGamma.CP4ParentSafety` already proves the required
+`reloadingEndpointOpen`/`activeEndpointOpen` facts, but those functions are
+private and production is frozen.  A research-local no-`with` reconstruction
+hit an explicit conversion boundary: equations for `lookupFiber` could not
+transport a public endpoint premise through a separately named reification of
+the same Bool case tree.  No semantic counterexample was found.  The exact
+attempts and the producer-owned exact-equation-view fallback are recorded in
+`O6-R138-DELETION-O8-MAXIMALITY-HELPER-STOP-AUDIT.md`.
+
+O8's body remains unopened at **0/3**, O9 was not reached, O14 stays parked, and
+the canonical census remains **17**, split **5/4/7/0/1**.  The next authorized
+O8 helper unit should first construct the endpoint lookup/lifecycle
+exact-equation view (or explicitly authorize exporting the existing production
+lemmas); it must not extend the exhausted named-Bool-mirror approach.
