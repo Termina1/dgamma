@@ -2524,6 +2524,28 @@ retirementProvenanceUnloadOccurrence nameEq keyEq parent child trace aligned
   (ChildRetiredBeforeParent retirement) unload opened =
     childRetirementOccurrence parent child trace retirement
 
+0 alignedAfterGeneratedRegistration :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (child, parent : name) ->
+  (component : Component key value world error) ->
+  (occurrence : LocatedGeneratedRegistration child parent component global) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (afterRegistration occurrence)
+alignedAfterGeneratedRegistration nameEq keyEq global child parent component
+  occurrence aligned =
+    alignedTransitionTail nameEq keyEq (registrationTransition occurrence)
+      (afterRegistration occurrence)
+      (snd (alignedAppendSplit (beforeRegistration occurrence)
+        (MoreTransitions (registrationTransition occurrence)
+          (afterRegistration occurrence))
+        (replace
+          {p = AlignedTransitions name key world error value nameEq keyEq}
+          (sym (registrationDecomposition occurrence)) aligned)))
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
