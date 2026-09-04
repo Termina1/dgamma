@@ -4278,6 +4278,16 @@ retiredCannotBeginSpike nameEq keyEq actor before afterState tag raw
     retiredCannotBeginState nameEq keyEq actor before afterState tag raw fiber
       found retiredTrue
 
+record RetireTargetLookupView
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (actor : name)
+  (afterState : SystemState name key value world error) where
+  constructor MkRetireTargetLookupView
+  retiredTargetFiber : Fiber name key value world error
+  0 retiredTargetFound : lookupFiber @{nameEq} actor (registry afterState) =
+    Just retiredTargetFiber
+  0 retiredTargetTrue : retired retiredTargetFiber = True
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
