@@ -2945,3 +2945,12 @@ is changed, and no later DeletionChain obligation is attempted. The census
 remains **16**, split **5/4/6/0/1**. Exact diagnostics and the permissible next
 choices are recorded in
 `research-tests/O6-R142-DELETION-O9-CROSSING-CHECK-BUDGET-STOP-AUDIT.md`.
+
+### Revision 143: CanonicalSort non-O14 grind
+
+**Choice: CanonicalSort non-O14, because its four accessible producers construct
+the canonical schedules consumed by CrossTrace, so it is earlier in the
+dependency graph; O14 remains parked.**
+
+R143 starts from the checked 16-hole boundary and will process only the four
+non-O14 CanonicalSort obligations, serially in producer dependency order.
