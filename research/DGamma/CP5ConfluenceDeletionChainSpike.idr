@@ -2738,6 +2738,41 @@ childRetirementFromGeneratedCapital protocol nameEq keyEq child parent component
         (childInsertTag alignedStep) before afterState
         (childInsertChecked alignedStep) (fst discipline))
 
+0 childRetirementAtGeneratedParts :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (child, parent : name) ->
+  (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (beforeTrace : Transitions initial before) ->
+  (transition : Transition before afterState) ->
+  (rest : Transitions afterState finalState) ->
+  (0 actionShape : transitionAction transition =
+    OInsert child (ChildOf parent) component) ->
+  (0 decomposition : appendTransitions beforeTrace
+    (MoreTransitions transition rest) = global) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  RegistrationDiscipline protocol nameEq global ->
+  ActionOccurs (LUnload parent) rest ->
+  ActionOccurs (ORetire child) rest
+childRetirementAtGeneratedParts protocol nameEq keyEq global child parent
+  component before afterState beforeTrace transition rest actionShape
+  decomposition aligned discipline unload =
+    childRetirementFromGeneratedCapital protocol nameEq keyEq child parent
+      component before afterState rest
+      (alignedGeneratedRegistrationParts nameEq keyEq global child parent
+        component before afterState beforeTrace transition rest actionShape
+        decomposition aligned)
+      (registrationDisciplineAtGenerated protocol nameEq global child parent
+        component
+        (MkLocatedGeneratedRegistration before afterState beforeTrace transition
+          rest actionShape decomposition)
+        discipline)
+      unload
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
