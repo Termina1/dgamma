@@ -356,6 +356,15 @@ r143RightAlternateEdgeEndsUpper {upper = Alternate} (SupportParent edge) =
   void (r143NoRightParentEdge edge)
 r143RightAlternateEdgeEndsUpper {upper = Upper} edge = Refl
 
+||| Reindex the edge once after its producer-owned source classification.
+0 r143RightEdgeEndsUpperAfterStart :
+  {lower, upper : N} ->
+  (edge : SupportEdge (the (DecEq N) %search)
+    DGamma.R6FourFiberStatic.rightState lower upper) ->
+  lower = Alternate -> upper = Upper
+r143RightEdgeEndsUpperAfterStart edge Refl =
+  r143RightAlternateEdgeEndsUpper edge
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
