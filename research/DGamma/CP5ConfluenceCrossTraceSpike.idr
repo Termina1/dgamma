@@ -850,6 +850,33 @@ canonicalSupportOrderForwardFromTruth nameEq keyEq protocol renaming
       (supportForward selected
         (orderSound (supportLinearization leftSchedule) selected selectedIn))
 
+||| Symmetric membership lift for the inverse name map.
+0 canonicalSupportOrderBackwardFromTruth :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {leftInitial, rightInitial, leftFinal, rightFinal :
+    SystemState name key value world error} ->
+  {leftTrace : Transitions leftInitial leftFinal} ->
+  {rightTrace : Transitions rightInitial rightFinal} ->
+  (renaming : NameBijection name) ->
+  (leftSchedule : CanonicalSchedule name key world error value protocol nameEq
+    keyEq leftTrace) ->
+  (rightSchedule : CanonicalSchedule name key world error value protocol nameEq
+    keyEq rightTrace) ->
+  ((selected : name) ->
+    (isSupported @{nameEq} @{keyEq} selected rightFinal = True) ->
+    (isSupported @{nameEq} @{keyEq} (renameBackward renaming selected)
+      leftFinal = True)) ->
+  (selected : name) -> Elem selected (supportOrder rightSchedule) ->
+  Elem (renameBackward renaming selected) (supportOrder leftSchedule)
+canonicalSupportOrderBackwardFromTruth nameEq keyEq protocol renaming
+  leftSchedule rightSchedule supportBackward selected selectedIn =
+    orderComplete (supportLinearization leftSchedule)
+      (renameBackward renaming selected)
+      (supportBackward selected
+        (orderSound (supportLinearization rightSchedule) selected selectedIn))
+
 public export
 0 canonicalSupportOrdersMatchSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
