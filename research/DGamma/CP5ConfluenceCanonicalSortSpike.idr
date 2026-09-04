@@ -830,6 +830,24 @@ canonicalAbsentFiberUnsupported nameEq keyEq selected state absent =
   trans (supportSetIsSolution nameEq keyEq state selected)
     (rewrite absent in Refl)
 
+||| Every endpoint-withdrawn name was already outside original support.
+0 canonicalWithdrawnOriginalUnsupported :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (originalFinal, reducedFinal : SystemState name key value world error) ->
+  WithdrawnNameResult nameEq selected originalFinal reducedFinal ->
+  isSupported @{nameEq} @{keyEq} selected originalFinal = False
+canonicalWithdrawnOriginalUnsupported nameEq keyEq selected originalFinal
+  reducedFinal
+  (VestigialNameWithdrawn fiber found retiredProof notInstalled emptyTable
+    absent) =
+      canonicalRetiredFiberUnsupported nameEq keyEq selected originalFinal fiber
+        found retiredProof
+canonicalWithdrawnOriginalUnsupported nameEq keyEq selected originalFinal
+  reducedFinal (NameAlreadyAbsent originalAbsent reducedAbsent) =
+    canonicalAbsentFiberUnsupported nameEq keyEq selected originalFinal
+      originalAbsent
+
 ||| Prove all support/parent/input-placement transport from the cumulative
 ||| endpoint relation and exact generated-registration accounting.
 public export
