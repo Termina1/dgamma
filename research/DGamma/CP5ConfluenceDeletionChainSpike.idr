@@ -6293,6 +6293,60 @@ allGeneratedChildrenHaveNoEpisode nameEq keyEq globalTrace selected episode
         episode rest (\candidate, member => sound candidate (There member))
         finalOrdinal finalLive fullScan aligned finalQuiet upper)
 
+0 selectedChildrenHaveNoEpisodeFromComplete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (globalTrace : Transitions initial finalState) -> (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected globalTrace) ->
+  (inventory : ChildGenerationInventory name key world error value selected
+    (transitionCount (traceBeforeOpening episode))
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode)))
+      (closedTransitions (locatedEpisode episode)))) ->
+  (0 aligned : AlignedTransitions name key world error value nameEq keyEq
+    globalTrace) ->
+  (0 finalQuiet : quiet @{nameEq} @{keyEq} finalState = True) ->
+  (0 upper : (closingActor : name) ->
+    (closingEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+      closingActor globalTrace) ->
+    LTE (transitionCount (traceBeforeOpening closingEpisode))
+      (transitionCount (traceBeforeOpening episode))) ->
+  CompleteGenerationScan name nameEq 0 [] globalTrace ->
+  NoRegisteredEpisode nameEq (selectedGenerations inventory) 0 [] globalTrace
+selectedChildrenHaveNoEpisodeFromComplete nameEq keyEq globalTrace selected
+  episode inventory aligned finalQuiet upper
+  (MkCompleteGenerationScan finalOrdinal finalLive fullScan) =
+    allGeneratedChildrenHaveNoEpisode nameEq keyEq globalTrace selected episode
+      (selectedGenerations inventory) (selectedGenerationSound inventory)
+      finalOrdinal finalLive fullScan aligned finalQuiet upper
+
+0 selectedChildrenHaveNoEpisode :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (globalTrace : Transitions initial finalState) -> (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected globalTrace) ->
+  (inventory : ChildGenerationInventory name key world error value selected
+    (transitionCount (traceBeforeOpening episode))
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode)))
+      (closedTransitions (locatedEpisode episode)))) ->
+  (0 aligned : AlignedTransitions name key world error value nameEq keyEq
+    globalTrace) ->
+  (0 finalQuiet : quiet @{nameEq} @{keyEq} finalState = True) ->
+  (0 upper : (closingActor : name) ->
+    (closingEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+      closingActor globalTrace) ->
+    LTE (transitionCount (traceBeforeOpening closingEpisode))
+      (transitionCount (traceBeforeOpening episode))) ->
+  NoRegisteredEpisode nameEq (selectedGenerations inventory) 0 [] globalTrace
+selectedChildrenHaveNoEpisode nameEq keyEq globalTrace selected episode inventory
+  aligned finalQuiet upper =
+    selectedChildrenHaveNoEpisodeFromComplete nameEq keyEq globalTrace selected
+      episode inventory aligned finalQuiet upper
+      (completeGenerationScan nameEq 0 [] globalTrace)
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
