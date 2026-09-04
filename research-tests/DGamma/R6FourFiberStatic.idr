@@ -424,6 +424,12 @@ r143RightOrderUnique = UniqueCons r143AlternateFreshInRightOrder
   (UniqueCons r143UpperFreshInRightOrder
     (UniqueCons r143LowerFreshInRightOrder UniqueNil))
 
+0 r143MiddleNotInRightOrder : Not (Elem Middle [Alternate, Upper, Lower])
+r143MiddleNotInRightOrder Here impossible
+r143MiddleNotInRightOrder (There Here) impossible
+r143MiddleNotInRightOrder (There (There Here)) impossible
+r143MiddleNotInRightOrder (There (There (There later))) = absurd later
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
