@@ -5346,6 +5346,49 @@ extendLeadingDecomposition leading transition rest globalTrace globalSplit =
   (0 actionShape : action = ORetire actor) -> IsBeginAction action -> Void
 retireActionCannotBeBegin (ORetire actor) actor Refl begin impossible
 
+0 laterRetirementNoBegin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (generation : RegistrationGeneration name) ->
+  (0 generationActor : generationName generation = actor) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (0 stamped : GenerationEnvironmentStamped live) ->
+  (selectedOrdinal : Nat) ->
+  (0 selectedBeforeCurrent : LTE (S selectedOrdinal) ordinal) ->
+  (initial, first, middle, finalState :
+    SystemState name key value world error) ->
+  (globalTrace : Transitions initial finalState) ->
+  (leading : Transitions initial first) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} action first =
+    Just (tag, middle)) ->
+  (rest : Transitions middle finalState) ->
+  (0 globalSplit : appendTransitions leading
+    (MoreTransitions (Fired {before = first} {afterState = middle}
+      nameEq keyEq action tag checked) rest) = globalTrace) ->
+  (0 prefixOrdinal : transitionCount leading = ordinal) ->
+  (0 upper : (closingActor : name) ->
+    (closingEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+      closingActor globalTrace) ->
+    LTE (transitionCount (traceBeforeOpening closingEpisode))
+      selectedOrdinal) ->
+  (0 alignedRest : AlignedTransitions name key world error value nameEq keyEq
+    rest) ->
+  (0 finalQuiet : quiet @{nameEq} @{keyEq} finalState = True) ->
+  ActionOccurs (ORetire actor) rest -> IsBeginAction action ->
+  GenerationOwnedActor nameEq [generation] ordinal live action -> Void
+laterRetirementNoBegin nameEq keyEq actor generation generationActor ordinal live
+  stamped selectedOrdinal selectedBeforeCurrent initial first middle finalState
+  globalTrace leading (LBegin observedActor) tag checked rest globalSplit
+  prefixOrdinal upper alignedRest finalQuiet later ItIsLBegin owned =
+    futureRegisteredBeginContradictsMaximal nameEq keyEq actor generation
+      generationActor ordinal live stamped selectedOrdinal selectedBeforeCurrent
+      initial first finalState globalTrace leading
+      (MoreTransitions (Fired {before = first} {afterState = middle}
+        nameEq keyEq (LBegin observedActor) tag checked) rest)
+      globalSplit prefixOrdinal upper observedActor middle tag checked rest Refl
+      alignedRest finalQuiet later owned
+
 0 noRegisteredAfterRetiredInactive :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, finalState : SystemState name key value world error} ->
