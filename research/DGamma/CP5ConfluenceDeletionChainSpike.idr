@@ -2238,6 +2238,29 @@ noParentRecoveryAtClosingSplit nameEq keyEq selected trace closing noRecovery =
   replace {p = \candidate => NoParentRecovery selected candidate}
     (sym (closingSplit closing)) noRecovery
 
+0 noRecoveryClosingImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  (closing : FirstClosingResult name key world error value nameEq keyEq selected
+    trace) ->
+  ParentOpenAt nameEq selected first ->
+  NoParentRecovery selected trace -> Void
+noRecoveryClosingImpossible nameEq keyEq selected trace closing opened noRecovery =
+  unloadOpenAtImpossible nameEq keyEq selected (closingBefore closing)
+    (closingAfter closing) (firstClosingStep closing)
+    (parentOpenNoRecoveryInstalledSpike nameEq keyEq selected
+      (traceBeforeFirstClosing closing) (beforeClosingInstalled closing)
+      (noRecoveryAppendLeft
+        (splitNoParentRecoveryAppend selected
+          (traceBeforeFirstClosing closing)
+          (MoreTransitions (unloadTransition (firstClosingStep closing))
+            (traceAfterFirstClosing closing))
+          (noParentRecoveryAtClosingSplit nameEq keyEq selected trace closing
+            noRecovery)))
+      opened)
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
