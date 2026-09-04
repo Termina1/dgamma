@@ -2248,6 +2248,456 @@ generationSubsequenceLocatedActionOrigin
     prependGenerationSubsequenceLocatedActionOccurrence originalTransition
       (generationSubsequenceLocatedActionOrigin tail occurrence)
 
+||| Producer-owned classification of one exact occurrence across an append
+||| boundary.  Every index in the append telescope is constructor-owned.
+public export
+data DeletionLocatedAppendClassification :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (action : Action name key value world error) ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (wholeOccurrence : LocatedActionOccurrence action
+    (appendTransitions left right)) -> Type where
+  DeletionLocatedInLeft :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, middle, finalState :
+      SystemState name key value world error} ->
+    {action : Action name key value world error} ->
+    {left : Transitions first middle} ->
+    {right : Transitions middle finalState} ->
+    {wholeOccurrence : LocatedActionOccurrence action
+      (appendTransitions left right)} ->
+    (0 localOccurrence : LocatedActionOccurrence action left) ->
+    (0 exactOrdinal : locatedActionOrdinal wholeOccurrence =
+      locatedActionOrdinal localOccurrence) ->
+    DeletionLocatedAppendClassification name key world error value first middle
+      finalState action left right wholeOccurrence
+  DeletionLocatedInRight :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, middle, finalState :
+      SystemState name key value world error} ->
+    {action : Action name key value world error} ->
+    {left : Transitions first middle} ->
+    {right : Transitions middle finalState} ->
+    {wholeOccurrence : LocatedActionOccurrence action
+      (appendTransitions left right)} ->
+    (0 localOccurrence : LocatedActionOccurrence action right) ->
+    (0 exactOrdinal : locatedActionOrdinal wholeOccurrence =
+      transitionCount left + locatedActionOrdinal localOccurrence) ->
+    DeletionLocatedAppendClassification name key world error value first middle
+      finalState action left right wholeOccurrence
+
+||| A one-step producer view for an exact located occurrence.  The tail
+||| occurrence and ordinal equation are emitted by the producer, never inferred
+||| by a consumer.
+data DeletionLocatedHeadView :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (action : Action name key value world error) ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (wholeOccurrence : LocatedActionOccurrence action
+    (MoreTransitions head rest)) -> Type where
+  DeletionLocatedAtHead :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, middle, finalState :
+      SystemState name key value world error} ->
+    {action : Action name key value world error} ->
+    {head : Transition first middle} ->
+    {rest : Transitions middle finalState} ->
+    {wholeOccurrence : LocatedActionOccurrence action
+      (MoreTransitions head rest)} ->
+    (0 actionShape : transitionAction head = action) ->
+    (0 exactOrdinal : locatedActionOrdinal wholeOccurrence = Z) ->
+    DeletionLocatedHeadView name key world error value first middle finalState
+      action head rest wholeOccurrence
+  DeletionLocatedInTail :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, middle, finalState :
+      SystemState name key value world error} ->
+    {action : Action name key value world error} ->
+    {head : Transition first middle} ->
+    {rest : Transitions middle finalState} ->
+    {wholeOccurrence : LocatedActionOccurrence action
+      (MoreTransitions head rest)} ->
+    (0 tailOccurrence : LocatedActionOccurrence action rest) ->
+    (0 exactOrdinal : locatedActionOrdinal wholeOccurrence =
+      S (locatedActionOrdinal tailOccurrence)) ->
+    DeletionLocatedHeadView name key world error value first middle finalState
+      action head rest wholeOccurrence
+
+0 deletionLocatedAtHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, afterState, finalState :
+    SystemState name key value world error} ->
+  (action : Action name key value world error) ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (transition : Transition first afterState) ->
+  (later : Transitions afterState finalState) ->
+  (0 actionShape : transitionAction transition = action) ->
+  (0 decomposition : MoreTransitions transition later =
+    MoreTransitions head rest) ->
+  DeletionLocatedHeadView name key world error value first middle finalState action
+    head rest
+    (MkLocatedActionOccurrence first afterState NoTransitions transition later
+      actionShape decomposition)
+deletionLocatedAtHead action head rest transition later actionShape decomposition =
+  case decomposition of
+    Refl => DeletionLocatedAtHead actionShape Refl
+
+0 deletionLocatedInTail :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, prefixMiddle, before, afterState, finalState :
+    SystemState name key value world error} ->
+  (action : Action name key value world error) ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (prefixHead : Transition first prefixMiddle) ->
+  (prefixRest : Transitions prefixMiddle before) ->
+  (transition : Transition before afterState) ->
+  (later : Transitions afterState finalState) ->
+  (0 actionShape : transitionAction transition = action) ->
+  (0 decomposition : MoreTransitions prefixHead
+    (appendTransitions prefixRest (MoreTransitions transition later)) =
+    MoreTransitions head rest) ->
+  DeletionLocatedHeadView name key world error value first middle finalState action
+    head rest
+    (MkLocatedActionOccurrence before afterState
+      (MoreTransitions prefixHead prefixRest) transition later actionShape
+      decomposition)
+deletionLocatedInTail action head rest prefixHead prefixRest transition later
+  actionShape decomposition =
+    case decomposition of
+      Refl => DeletionLocatedInTail
+        (MkLocatedActionOccurrence _ _ prefixRest transition later actionShape
+          Refl)
+        Refl
+
+0 deletionLocatedHeadParts :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, before, afterState, finalState :
+    SystemState name key value world error} ->
+  (action : Action name key value world error) ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (beforeTrace : Transitions first before) ->
+  (transition : Transition before afterState) ->
+  (later : Transitions afterState finalState) ->
+  (0 actionShape : transitionAction transition = action) ->
+  (0 decomposition : appendTransitions beforeTrace
+    (MoreTransitions transition later) = MoreTransitions head rest) ->
+  DeletionLocatedHeadView name key world error value first middle finalState action
+    head rest
+    (MkLocatedActionOccurrence before afterState beforeTrace transition later
+      actionShape decomposition)
+deletionLocatedHeadParts action head rest NoTransitions transition later actionShape
+  decomposition =
+    deletionLocatedAtHead action head rest transition later actionShape decomposition
+deletionLocatedHeadParts action head rest
+  (MoreTransitions prefixHead prefixRest) transition later actionShape
+  decomposition =
+    deletionLocatedInTail action head rest prefixHead prefixRest transition later
+      actionShape decomposition
+
+0 deletionLocatedHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (action : Action name key value world error) ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (wholeOccurrence : LocatedActionOccurrence action
+    (MoreTransitions head rest)) ->
+  DeletionLocatedHeadView name key world error value first middle finalState action
+    head rest wholeOccurrence
+deletionLocatedHead action head rest wholeOccurrence =
+  case wholeOccurrence of
+    MkLocatedActionOccurrence before afterState beforeTrace transition later
+      actionShape decomposition =>
+        deletionLocatedHeadParts action head rest beforeTrace transition later
+          actionShape decomposition
+
+data DeletionPrependedOccurrence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (action : Action name key value world error) ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (localOccurrence : LocatedActionOccurrence action rest) -> Type where
+  MkDeletionPrependedOccurrence :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, middle, finalState :
+      SystemState name key value world error} ->
+    {action : Action name key value world error} ->
+    {head : Transition first middle} ->
+    {rest : Transitions middle finalState} ->
+    {localOccurrence : LocatedActionOccurrence action rest} ->
+    (0 prefixedOccurrence : LocatedActionOccurrence action
+      (MoreTransitions head rest)) ->
+    (0 exactOrdinal : locatedActionOrdinal prefixedOccurrence =
+      S (locatedActionOrdinal localOccurrence)) ->
+    DeletionPrependedOccurrence name key world error value first middle finalState
+      action head rest localOccurrence
+
+0 deletionPrependLocalOccurrence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  {action : Action name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (localOccurrence : LocatedActionOccurrence action rest) ->
+  DeletionPrependedOccurrence name key world error value first middle finalState
+    action head rest localOccurrence
+deletionPrependLocalOccurrence head rest
+  (MkLocatedActionOccurrence before afterState beforeTrace transition later
+    actionShape decomposition) =
+      MkDeletionPrependedOccurrence
+        (MkLocatedActionOccurrence before afterState
+          (MoreTransitions head beforeTrace) transition later actionShape
+          (cong (MoreTransitions head) decomposition))
+        Refl
+
+mutual
+  public export
+  0 deletionLocatedAppendClassification :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, middle, finalState :
+      SystemState name key value world error} ->
+    {action : Action name key value world error} ->
+    (before : Transitions first middle) ->
+    (episode : Transitions middle finalState) ->
+    (wholeOccurrence : LocatedActionOccurrence action
+      (appendTransitions before episode)) ->
+    DeletionLocatedAppendClassification name key world error value first middle
+      finalState action before episode wholeOccurrence
+  deletionLocatedAppendClassification NoTransitions episode wholeOccurrence =
+    DeletionLocatedInRight wholeOccurrence Refl
+  deletionLocatedAppendClassification (MoreTransitions head rest) episode
+    wholeOccurrence =
+      deletionLocatedAppendCons head rest episode wholeOccurrence
+        (deletionLocatedHead action head (appendTransitions rest episode)
+          wholeOccurrence)
+
+  0 deletionLocatedAppendCons :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, middle, nextState, finalState :
+      SystemState name key value world error} ->
+    {action : Action name key value world error} ->
+    (head : Transition first nextState) ->
+    (rest : Transitions nextState middle) ->
+    (episode : Transitions middle finalState) ->
+    (wholeOccurrence : LocatedActionOccurrence action
+      (MoreTransitions head (appendTransitions rest episode))) ->
+    DeletionLocatedHeadView name key world error value first nextState finalState
+      action head (appendTransitions rest episode) wholeOccurrence ->
+    DeletionLocatedAppendClassification name key world error value first middle
+      finalState action (MoreTransitions head rest) episode wholeOccurrence
+  deletionLocatedAppendCons head rest episode wholeOccurrence
+    (DeletionLocatedAtHead actionShape exactOrdinal) =
+      DeletionLocatedInLeft
+        (MkLocatedActionOccurrence _ _ NoTransitions head rest actionShape Refl)
+        exactOrdinal
+  deletionLocatedAppendCons head rest episode wholeOccurrence
+    (DeletionLocatedInTail tailOccurrence exactOrdinal) =
+      deletionLocatedAppendLift head rest episode wholeOccurrence tailOccurrence
+        exactOrdinal
+        (deletionLocatedAppendClassification rest episode tailOccurrence)
+
+  0 deletionLocatedAppendLift :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, middle, nextState, finalState :
+      SystemState name key value world error} ->
+    {action : Action name key value world error} ->
+    (head : Transition first nextState) ->
+    (rest : Transitions nextState middle) ->
+    (episode : Transitions middle finalState) ->
+    (wholeOccurrence : LocatedActionOccurrence action
+      (MoreTransitions head (appendTransitions rest episode))) ->
+    (tailOccurrence : LocatedActionOccurrence action
+      (appendTransitions rest episode)) ->
+    (0 wholeOrdinal : locatedActionOrdinal wholeOccurrence =
+      S (locatedActionOrdinal tailOccurrence)) ->
+    DeletionLocatedAppendClassification name key world error value nextState middle
+      finalState action rest episode tailOccurrence ->
+    DeletionLocatedAppendClassification name key world error value first middle
+      finalState action (MoreTransitions head rest) episode wholeOccurrence
+  deletionLocatedAppendLift head rest episode wholeOccurrence tailOccurrence
+    wholeOrdinal (DeletionLocatedInLeft localOccurrence exactOrdinal) =
+      deletionLocatedAppendLeftLift head rest episode wholeOccurrence tailOccurrence
+        localOccurrence wholeOrdinal exactOrdinal
+        (deletionPrependLocalOccurrence head rest localOccurrence)
+  deletionLocatedAppendLift head rest episode wholeOccurrence tailOccurrence
+    wholeOrdinal (DeletionLocatedInRight localOccurrence exactOrdinal) =
+      DeletionLocatedInRight localOccurrence
+        (trans wholeOrdinal (cong S exactOrdinal))
+
+  0 deletionLocatedAppendLeftLift :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, middle, nextState, finalState :
+      SystemState name key value world error} ->
+    {action : Action name key value world error} ->
+    (head : Transition first nextState) ->
+    (rest : Transitions nextState middle) ->
+    (episode : Transitions middle finalState) ->
+    (wholeOccurrence : LocatedActionOccurrence action
+      (MoreTransitions head (appendTransitions rest episode))) ->
+    (tailOccurrence : LocatedActionOccurrence action
+      (appendTransitions rest episode)) ->
+    (localOccurrence : LocatedActionOccurrence action rest) ->
+    (0 wholeOrdinal : locatedActionOrdinal wholeOccurrence =
+      S (locatedActionOrdinal tailOccurrence)) ->
+    (0 exactOrdinal : locatedActionOrdinal tailOccurrence =
+      locatedActionOrdinal localOccurrence) ->
+    DeletionPrependedOccurrence name key world error value first nextState middle
+      action head rest localOccurrence ->
+    DeletionLocatedAppendClassification name key world error value first middle
+      finalState action (MoreTransitions head rest) episode wholeOccurrence
+  deletionLocatedAppendLeftLift head rest episode wholeOccurrence tailOccurrence
+    localOccurrence wholeOrdinal exactOrdinal
+    (MkDeletionPrependedOccurrence prefixedOccurrence prefixedOrdinal) =
+      DeletionLocatedInLeft prefixedOccurrence
+        (trans wholeOrdinal
+          (trans (cong S exactOrdinal) (sym prefixedOrdinal)))
+
+||| Producer-owned three-segment occurrence view for the exact surviving-trace
+||| association used by `survivingTrace`.
+public export
+data DeletionWholeTraceOccurrenceClassification :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, beforeEnd, episodeEnd, finalState :
+    SystemState name key value world error) ->
+  (action : Action name key value world error) ->
+  (before : Transitions first beforeEnd) ->
+  (episode : Transitions beforeEnd episodeEnd) ->
+  (after : Transitions episodeEnd finalState) ->
+  (wholeOccurrence : LocatedActionOccurrence action
+    (appendTransitions before (appendTransitions episode after))) -> Type where
+  DeletionWholeBefore :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, beforeEnd, episodeEnd, finalState :
+      SystemState name key value world error} ->
+    {action : Action name key value world error} ->
+    {before : Transitions first beforeEnd} ->
+    {episode : Transitions beforeEnd episodeEnd} ->
+    {after : Transitions episodeEnd finalState} ->
+    {wholeOccurrence : LocatedActionOccurrence action
+      (appendTransitions before (appendTransitions episode after))} ->
+    (0 localOccurrence : LocatedActionOccurrence action before) ->
+    (0 exactOrdinal : locatedActionOrdinal wholeOccurrence =
+      locatedActionOrdinal localOccurrence) ->
+    DeletionWholeTraceOccurrenceClassification name key world error value first
+      beforeEnd episodeEnd finalState action before episode after
+      wholeOccurrence
+  DeletionWholeEpisode :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, beforeEnd, episodeEnd, finalState :
+      SystemState name key value world error} ->
+    {action : Action name key value world error} ->
+    {before : Transitions first beforeEnd} ->
+    {episode : Transitions beforeEnd episodeEnd} ->
+    {after : Transitions episodeEnd finalState} ->
+    {wholeOccurrence : LocatedActionOccurrence action
+      (appendTransitions before (appendTransitions episode after))} ->
+    (0 localOccurrence : LocatedActionOccurrence action episode) ->
+    (0 exactOrdinal : locatedActionOrdinal wholeOccurrence =
+      transitionCount before + locatedActionOrdinal localOccurrence) ->
+    DeletionWholeTraceOccurrenceClassification name key world error value first
+      beforeEnd episodeEnd finalState action before episode after
+      wholeOccurrence
+  DeletionWholeAfter :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, beforeEnd, episodeEnd, finalState :
+      SystemState name key value world error} ->
+    {action : Action name key value world error} ->
+    {before : Transitions first beforeEnd} ->
+    {episode : Transitions beforeEnd episodeEnd} ->
+    {after : Transitions episodeEnd finalState} ->
+    {wholeOccurrence : LocatedActionOccurrence action
+      (appendTransitions before (appendTransitions episode after))} ->
+    (0 localOccurrence : LocatedActionOccurrence action after) ->
+    (0 exactOrdinal : locatedActionOrdinal wholeOccurrence =
+      ((transitionCount before + transitionCount episode) +
+        locatedActionOrdinal localOccurrence)) ->
+    DeletionWholeTraceOccurrenceClassification name key world error value first
+      beforeEnd episodeEnd finalState action before episode after
+      wholeOccurrence
+
+0 deletionWholeTraceRight :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, beforeEnd, episodeEnd, finalState :
+    SystemState name key value world error} ->
+  {action : Action name key value world error} ->
+  (before : Transitions first beforeEnd) ->
+  (episode : Transitions beforeEnd episodeEnd) ->
+  (after : Transitions episodeEnd finalState) ->
+  (wholeOccurrence : LocatedActionOccurrence action
+    (appendTransitions before (appendTransitions episode after))) ->
+  (tailOccurrence : LocatedActionOccurrence action
+    (appendTransitions episode after)) ->
+  (0 wholeOrdinal : locatedActionOrdinal wholeOccurrence =
+    transitionCount before + locatedActionOrdinal tailOccurrence) ->
+  DeletionLocatedAppendClassification name key world error value beforeEnd episodeEnd
+    finalState action episode after tailOccurrence ->
+  DeletionWholeTraceOccurrenceClassification name key world error value first
+    beforeEnd episodeEnd finalState action before episode after wholeOccurrence
+deletionWholeTraceRight before episode after wholeOccurrence tailOccurrence
+  wholeOrdinal (DeletionLocatedInLeft localOccurrence exactOrdinal) =
+    DeletionWholeEpisode localOccurrence
+      (trans wholeOrdinal
+        (cong ((+) (transitionCount before)) exactOrdinal))
+deletionWholeTraceRight before episode after wholeOccurrence tailOccurrence
+  wholeOrdinal (DeletionLocatedInRight localOccurrence exactOrdinal) =
+    DeletionWholeAfter localOccurrence
+      (trans wholeOrdinal
+        (trans (cong ((+) (transitionCount before)) exactOrdinal)
+          (plusAssociative (transitionCount before)
+            (transitionCount episode)
+            (locatedActionOrdinal localOccurrence))))
+
+0 deletionWholeTraceFirst :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, beforeEnd, episodeEnd, finalState :
+    SystemState name key value world error} ->
+  {action : Action name key value world error} ->
+  (before : Transitions first beforeEnd) ->
+  (episode : Transitions beforeEnd episodeEnd) ->
+  (after : Transitions episodeEnd finalState) ->
+  (wholeOccurrence : LocatedActionOccurrence action
+    (appendTransitions before (appendTransitions episode after))) ->
+  DeletionLocatedAppendClassification name key world error value first beforeEnd
+    finalState action before (appendTransitions episode after) wholeOccurrence ->
+  DeletionWholeTraceOccurrenceClassification name key world error value first
+    beforeEnd episodeEnd finalState action before episode after wholeOccurrence
+deletionWholeTraceFirst before episode after wholeOccurrence
+  (DeletionLocatedInLeft localOccurrence exactOrdinal) =
+    DeletionWholeBefore localOccurrence exactOrdinal
+deletionWholeTraceFirst before episode after wholeOccurrence
+  (DeletionLocatedInRight tailOccurrence exactOrdinal) =
+    deletionWholeTraceRight before episode after wholeOccurrence tailOccurrence
+      exactOrdinal
+      (deletionLocatedAppendClassification episode after tailOccurrence)
+
+||| The complete surviving-trace recomposition.  It first eliminates the
+||| before seam, then the episode seam in a separate top-level helper.
+public export
+0 deletionWholeTraceOccurrenceClassification :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, beforeEnd, episodeEnd, finalState :
+    SystemState name key value world error} ->
+  {action : Action name key value world error} ->
+  (before : Transitions first beforeEnd) ->
+  (episode : Transitions beforeEnd episodeEnd) ->
+  (after : Transitions episodeEnd finalState) ->
+  (wholeOccurrence : LocatedActionOccurrence action
+    (appendTransitions before (appendTransitions episode after))) ->
+  DeletionWholeTraceOccurrenceClassification name key world error value first
+    beforeEnd episodeEnd finalState action before episode after wholeOccurrence
+deletionWholeTraceOccurrenceClassification before episode after wholeOccurrence =
+  deletionWholeTraceFirst before episode after wholeOccurrence
+    (deletionLocatedAppendClassification before (appendTransitions episode after)
+      wholeOccurrence)
+
 public export
 deletionSurvivingBeforeCount :
   (result : DeletionResult name key world error value nameEq keyEq original
