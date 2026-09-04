@@ -2857,3 +2857,40 @@ the canonical census remains **17**, split **5/4/7/0/1**.  The next authorized
 O8 helper unit should first construct the endpoint lookup/lifecycle
 exact-equation view (or explicitly authorize exporting the existing production
 lemmas); it must not extend the exhausted named-Bool-mirror approach.
+
+### Revision 139: O8 producer-owned endpoint recovery and no-episode stop
+
+R139 replaces the permanently closed parent-open mirror approach with a
+producer-owned exact inspection family. Exact lookup, lifecycle, and endpoint
+equations now travel together; parent-open evidence is transported through
+foreign/owner actions and no-recovery traces without rerunning an uncorrelated
+lookup. This capital proves that every child generated inside the selected
+closed episode retires in its exact post-birth prefix before the selected
+`LUnload`. Exact located-action suffix equations then localize the selected
+closing singleton, lift episode-local births to global generated registrations,
+and establish that the generated inventory lies outside the selected parent
+name.
+
+`maximalCandidateFromGenerationScan` now constructs all candidate fields from
+O7 maximum, generation scan, replay alignment/discipline, and exact child
+inventory capital except the separately required global
+`NoRegisteredEpisode`. This exposes an omission in the R138 forecast: revised
+maximal dependency negativity is not definitionally the same as proving that
+every exact generated generation has no `LBegin` anywhere in the global trace.
+The missing proof requires retired/inactive/current-generation persistence,
+future-retirement closing extraction, globalization/maximality contradiction,
+segment assembly, and singleton-to-list combination.
+
+The first persistence lemmas are retained through `f955a6b`. The next
+retire-success producer's missing-lookup branch exhausted its independent
+**3/3** spelling budget on a dependent implicit-binding failure and was fully
+reverted. The unchecked R137 delta remains reference-only and was not
+transplanted because it uses banned local lets/new `with` blocks and has no
+accepted check. Exact diagnostics, retained commits, freeze checks, and the
+structured acceptance report are in
+`research-tests/O6-R139-DELETION-O8-PRODUCER-VIEW-RETIREMENT-CAPITAL-STOP-AUDIT.md`.
+
+O8 remains unopened at **0/3**; O9 is unchanged and gated. The canonical census
+remains **17**, split **5/4/7/0/1**. The next unit must resume the exact
+retire-success producer without scope widening, then complete the four
+no-registered-episode stages before any O8 body edit.
