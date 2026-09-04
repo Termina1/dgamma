@@ -1002,6 +1002,21 @@ canonicalPrecedenceEdgeForward endpoint lowerOutside upperOutside edge =
     (canonicalOutsideFiberForward endpoint upperOutside (consumerFiber edge)
       (consumerFound edge))
 
+||| Rebuild one parent edge from the child actor's exact target lookup.
+0 canonicalParentEdgeForwardFromFiber :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {parent, child : name} ->
+  {originalFinal, reducedFinal : SystemState name key value world error} ->
+  (edge : ParentSupportEdge nameEq parent child originalFinal) ->
+  (childTarget : CanonicalOutsideFiberForward name key world error value nameEq
+    child originalFinal reducedFinal (childFiber edge)) ->
+  ParentSupportEdge nameEq parent child reducedFinal
+canonicalParentEdgeForwardFromFiber edge childTarget =
+  MkParentSupportEdge (forwardTargetFiber childTarget)
+    (forwardTargetFound childTarget)
+    (trans (sym (canonicalFiberParentSame
+      (forwardTargetControls childTarget))) (childParent edge))
+
 ||| Prove all support/parent/input-placement transport from the cumulative
 ||| endpoint relation and exact generated-registration accounting.
 public export
