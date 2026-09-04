@@ -15,6 +15,7 @@ import DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorTrace
 import DGamma.CP4DeletionSelectedOwn
 import DGamma.CP4DeletionWithdrawalCurrent
+import DGamma.CP4DeletionWithdrawalJoin
 import DGamma.CP4ParentSafety
 import DGamma.CP4Support
 import DGamma.CP4SupportQuiescence
@@ -5626,6 +5627,88 @@ noRegisteredUntilFutureRetirement nameEq keyEq actor generation generationActor
                 alignedRest finalQuiet later)
               nextCurrent inactive)
             later)
+
+0 splitGenerationScanAtAppend :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (ordinal : Nat) ->
+  (live : GenerationEnvironment name) ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq ordinal live (appendTransitions left right)
+    finalOrdinal finalLive ->
+  SplitGenerationScan name nameEq ordinal live left right finalOrdinal finalLive
+splitGenerationScanAtAppend nameEq ordinal live NoTransitions right finalOrdinal
+  finalLive scan =
+    MkSplitGenerationScan ordinal live GenerationTraceScanEnd scan
+splitGenerationScanAtAppend nameEq ordinal live
+  (MoreTransitions transition rest) right finalOrdinal finalLive
+  (GenerationTraceScanStep _ _ tailScan) =
+    case splitGenerationScanAtAppend nameEq (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction transition) live)
+      rest right finalOrdinal finalLive tailScan of
+      MkSplitGenerationScan middleOrdinal middleLive leftScan rightScan =>
+        MkSplitGenerationScan middleOrdinal middleLive
+          (GenerationTraceScanStep transition rest leftScan) rightScan
+
+0 noRegisteredAppendAtScan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (middleOrdinal : Nat) -> (middleLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq ordinal live left middleOrdinal middleLive ->
+  NoRegisteredEpisode nameEq registered ordinal live left ->
+  NoRegisteredEpisode nameEq registered middleOrdinal middleLive right ->
+  NoRegisteredEpisode nameEq registered ordinal live
+    (appendTransitions left right)
+noRegisteredAppendAtScan nameEq registered ordinal live NoTransitions right
+  ordinal live GenerationTraceScanEnd NoRegisteredEpisodeEnd rightProof =
+    rightProof
+noRegisteredAppendAtScan nameEq registered ordinal live
+  (MoreTransitions transition rest) right middleOrdinal middleLive
+  (GenerationTraceScanStep _ _ tailScan)
+  (NoRegisteredEpisodeStep _ _ noBegin tailProof) rightProof =
+    NoRegisteredEpisodeStep transition (appendTransitions rest right) noBegin
+      (noRegisteredAppendAtScan nameEq registered (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal
+          (transitionAction transition) live)
+        rest right middleOrdinal middleLive tailScan tailProof rightProof)
+
+0 combineNoRegistered :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) ->
+  (headGeneration : RegistrationGeneration name) ->
+  (tailGenerations : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (trace : Transitions first finalState) ->
+  NoRegisteredEpisode nameEq [headGeneration] ordinal live trace ->
+  NoRegisteredEpisode nameEq tailGenerations ordinal live trace ->
+  NoRegisteredEpisode nameEq (headGeneration :: tailGenerations) ordinal live
+    trace
+combineNoRegistered nameEq headGeneration tailGenerations ordinal live
+  NoTransitions NoRegisteredEpisodeEnd NoRegisteredEpisodeEnd =
+    NoRegisteredEpisodeEnd
+combineNoRegistered nameEq headGeneration tailGenerations ordinal live
+  (MoreTransitions transition rest)
+  (NoRegisteredEpisodeStep _ _ headNoBegin headTail)
+  (NoRegisteredEpisodeStep _ _ tailNoBegin tailTail) =
+    NoRegisteredEpisodeStep transition rest
+      (\begin, owned => case owned of
+        (observed ** (current, Here)) =>
+          headNoBegin begin (observed ** (current, Here))
+        (observed ** (current, There member)) =>
+          tailNoBegin begin (observed ** (current, member)))
+      (combineNoRegistered nameEq headGeneration tailGenerations (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal
+          (transitionAction transition) live)
+        rest headTail tailTail)
 
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
