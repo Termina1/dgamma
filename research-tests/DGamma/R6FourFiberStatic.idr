@@ -430,6 +430,15 @@ r143MiddleNotInRightOrder (There Here) impossible
 r143MiddleNotInRightOrder (There (There Here)) impossible
 r143MiddleNotInRightOrder (There (There (There later))) = absurd later
 
+0 r143RightOrderSound :
+  (selected : N) -> Elem selected [Alternate, Upper, Lower] ->
+  isSupported @{the (DecEq N) %search} @{the (DecEq K) %search} selected
+    DGamma.R6FourFiberStatic.rightState = True
+r143RightOrderSound Lower member = lowerSupportedRight
+r143RightOrderSound Middle member = void (r143MiddleNotInRightOrder member)
+r143RightOrderSound Alternate member = Refl
+r143RightOrderSound Upper member = upperSupportedRight
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
