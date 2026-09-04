@@ -1539,6 +1539,64 @@ parentEndpointLookupEquation nameEq selected state =
     MkErasedInspection (Just fiber) exact =>
       ParentEndpointLookupFound fiber exact
 
+||| Canonized producer-owned endpoint view.  Each constructor binds the exact
+||| fiber lookup, lifecycle equation, and public endpoint equation together.
+data ParentOpenEquationView :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) -> Type where
+  ParentReloadingEndpointEquation :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {state : SystemState name key value world error} ->
+    (0 fiber : Fiber name key value world error) ->
+    (0 remaining : List (StepEffect key value world error
+      (dependencies (componentDependencies (fiberComponent fiber)))
+      (componentProvisions (fiberComponent fiber)))) ->
+    (0 accumulator : LocalState key value world
+        (componentProvisions (fiberComponent fiber)) ->
+      LocalState key value world
+        (componentProvisions (fiberComponent fiber))) ->
+    (0 view : View name
+      (dependencies (componentDependencies (fiberComponent fiber)))) ->
+    (0 found : lookupFiber @{nameEq} {key = key} {value = value}
+      {world = world} {error = error} selected (registry state) = Just fiber) ->
+    (0 lifecycle : fiberLifecycle fiber =
+      Reloading remaining accumulator view) ->
+    (0 endpoint : reloadingEndpoint @{nameEq} selected state = True) ->
+    ParentOpenEquationView name key world error value nameEq selected state
+  ParentActiveEndpointEquation :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {state : SystemState name key value world error} ->
+    (0 fiber : Fiber name key value world error) ->
+    (0 accumulator : LocalState key value world
+        (componentProvisions (fiberComponent fiber)) ->
+      LocalState key value world
+        (componentProvisions (fiberComponent fiber))) ->
+    (0 view : View name
+      (dependencies (componentDependencies (fiberComponent fiber)))) ->
+    (0 found : lookupFiber @{nameEq} {key = key} {value = value}
+      {world = world} {error = error} selected (registry state) = Just fiber) ->
+    (0 lifecycle : fiberLifecycle fiber = Active accumulator view) ->
+    (0 endpoint : activeEndpoint @{nameEq} selected state = True) ->
+    ParentOpenEquationView name key world error value nameEq selected state
+
+0 parentOpenFromEquationView :
+  (view : ParentOpenEquationView name key world error value nameEq selected
+    state) ->
+  ParentOpenAt nameEq selected state
+parentOpenFromEquationView
+  (ParentReloadingEndpointEquation fiber remaining accumulator dependencyView
+    found lifecycle endpoint) =
+      MkParentOpenAt fiber found
+        (replace {p = LifecycleOpen} (sym lifecycle) OpenReloading)
+parentOpenFromEquationView
+  (ParentActiveEndpointEquation fiber accumulator dependencyView found lifecycle
+    endpoint) =
+      MkParentOpenAt fiber found
+        (replace {p = LifecycleOpen} (sym lifecycle) OpenActive)
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
