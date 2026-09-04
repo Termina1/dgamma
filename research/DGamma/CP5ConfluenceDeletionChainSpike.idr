@@ -1681,6 +1681,19 @@ activeLifecycleEquationView nameEq selected state
     (Unloading accumulator dependencyView outcome)) found lifecycleTrue endpoint =
       void (falseNotTrueO7 lifecycleTrue)
 
+0 activeEndpointEquationView :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  (0 endpoint : activeEndpoint @{nameEq} selected state = True) ->
+  ParentOpenEquationView name key world error value nameEq selected state
+activeEndpointEquationView nameEq selected state endpoint =
+  case parentEndpointLookupEquation nameEq selected state of
+    ParentEndpointLookupMissing missing missingReloading missingActive =>
+      void (falseNotTrueO7 (trans (sym missingActive) endpoint))
+    ParentEndpointLookupFound fiber found foundReloading foundActive =>
+      activeLifecycleEquationView nameEq selected state fiber found
+        (trans (sym foundActive) endpoint) endpoint
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
