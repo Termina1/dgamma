@@ -6600,6 +6600,23 @@ selectMaximalClosingEpisodeSpike nameEq keyEq protocol initial finalState trace
     maximalSelectionFromList nameEq keyEq protocol trace premises scan
       (scannedClosingOccurrences scan) Refl
 
+||| The selected scan fixes the exact global opening ordinal used by every
+||| generation-scoped Lemma-72 consumer.
+0 deletionCandidateStartOrdinalExact :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {trace : Transitions initial finalState} ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq
+    trace) ->
+  transitionCount (traceBeforeOpening (selectedEpisode candidate)) =
+    selectedStartOrdinal candidate
+deletionCandidateStartOrdinalExact {nameEq} candidate =
+  sym (generationScanOrdinalCount nameEq 0 []
+    (traceBeforeOpening (selectedEpisode candidate))
+    (selectedStartOrdinal candidate) (selectedStartLive candidate)
+    (selectedBeforeScan candidate))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
