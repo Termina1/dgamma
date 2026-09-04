@@ -2849,6 +2849,55 @@ actionOccurrenceHeadView action _ _
   (ActionOccursLater transition rest later) =
     MkActionOccurrenceHeadView (Right later)
 
+mutual
+  0 childRetirementBeforeUnload :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+    (parent, child : name) ->
+    {first, finalState : SystemState name key value world error} ->
+    (trace : Transitions first finalState) ->
+    AlignedTransitions name key world error value nameEq keyEq trace ->
+    ChildRetiresBeforeRecovery parent child trace ->
+    ActionOccurs (LUnload parent) trace ->
+    ParentOpenAt nameEq parent first ->
+    ActionBefore (ORetire child) (LUnload parent) trace
+  childRetirementBeforeUnload nameEq keyEq parent child _ aligned retirement
+    (ActionOccursHere transition rest unloadAction) opened =
+      void (alignedUnloadHeadOpenImpossible nameEq keyEq parent transition rest
+        aligned opened unloadAction)
+  childRetirementBeforeUnload nameEq keyEq parent child _ aligned retirement
+    (ActionOccursLater transition rest laterUnload) opened =
+      childRetirementBeforeLaterUnload nameEq keyEq parent child transition rest
+        aligned retirement laterUnload opened
+
+  0 childRetirementBeforeLaterUnload :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+    (parent, child : name) ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    AlignedTransitions name key world error value nameEq keyEq
+      (MoreTransitions transition rest) ->
+    ChildRetiresBeforeRecovery parent child
+      (MoreTransitions transition rest) ->
+    ActionOccurs (LUnload parent) rest ->
+    ParentOpenAt nameEq parent first ->
+    ActionBefore (ORetire child) (LUnload parent)
+      (MoreTransitions transition rest)
+  childRetirementBeforeLaterUnload nameEq keyEq parent child _ _ aligned
+    (ChildRetiresNow transition rest retires) laterUnload opened =
+      ActionBeforeHere transition rest retires laterUnload
+  childRetirementBeforeLaterUnload nameEq keyEq parent child _ _ aligned
+    (ChildRetiresLater transition rest noRecovery tailRetirement) laterUnload
+    opened =
+      ActionBeforeLater transition rest
+        (childRetirementBeforeUnload nameEq keyEq parent child rest
+          (alignedTransitionTail nameEq keyEq transition rest aligned)
+          tailRetirement laterUnload
+          (alignedNoRecoveryHeadOpen nameEq keyEq parent transition rest aligned
+            opened noRecovery))
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
