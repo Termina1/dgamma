@@ -2546,6 +2546,22 @@ alignedAfterGeneratedRegistration nameEq keyEq global child parent component
           {p = AlignedTransitions name key world error value nameEq keyEq}
           (sym (registrationDecomposition occurrence)) aligned)))
 
+0 registrationDisciplineAppendRight :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  RegistrationDiscipline protocol nameEq (appendTransitions left right) ->
+  RegistrationDiscipline protocol nameEq right
+registrationDisciplineAppendRight protocol nameEq NoTransitions right
+  discipline = discipline
+registrationDisciplineAppendRight protocol nameEq
+  (MoreTransitions transition rest) right
+  (RegistrationDisciplineStep _ _ step tail) =
+    registrationDisciplineAppendRight protocol nameEq rest right tail
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
