@@ -2780,3 +2780,47 @@ and real-consumer checks, and invariant scan are recorded in
 O7 is now complete.  O14 remains parked and unopened.  The canonical census is
 **17**, split **5/4/7/0/1**; O8 is the next DeletionChain obligation in dependency
 order.
+
+### Revision 137: O8 generation-interval scoping and ratification
+
+The raw-name O8 negative is semantically refuted by the checked two-generation
+countershape in `R137O8RawNameReuseCountershape*.idr`: first-generation
+`ActorA -> ActorB` and second-generation `ActorB -> ActorA` coexist while every
+pointwise precedence graph is acyclic.  The genuine located close evidence shows
+that neither raw actor satisfies the former global predicate.
+
+The authorized research-only repair replaces that field with
+`NoDependentClosingEpisodeForGeneration`.  `GenerationScopedClosingStart`
+authenticates the selected exact current generation, equates the selected local
+opening to its generation-scan ordinal, locates the consumer opening inside the
+selected installed interval, and equates its local position to the consumer's
+global closing occurrence.  The edge conclusion remains the original
+start-state `PrecedenceEdge`; only temporal/generation relevance changed.
+
+The surface and every downstream research declaration freshly check.  Replay is
+sound because ordinal correlation and exact located occurrences are derived
+from the immutable source trace and its `GenerationTraceScan`; no proof equality
+or raw-name conflation is introduced.
+
+The repair is ratified both ways in
+`R137O8GenerationIntervalRatification.idr`:
+
+- `r137RevisedO8CandidateExists` constructs a complete positive
+  `DeletableClosingEpisode` for the first `ActorB` activation, excluding the
+  irrelevant later raw-name reverse edge; and
+- `r137RevisedPredicateRejectsInIntervalDependency` proves `Void` from the
+  repaired negative for first-generation `ActorA`, using the genuine
+  first-generation `ActorB` opening located inside its installed interval and
+  the concrete `ActorA -> ActorB` edge.
+
+The frozen production adapter mismatch is an explicit next gate: CP3
+`deletionTheorem` still consumes the refuted raw `NoDependentClosingEpisode`, so
+O9 cannot legitimately coerce the repaired O8 evidence into that premise.
+Production CP3/CP4 and all of `src/` remain immutable at baseline `34b21c9`.
+Any O9 resolution must be separately authorized and audited; no such coercion
+is assumed here.
+
+With surface revision and both ratifications independently committed, O8 now
+receives a fresh **3-attempt body budget**.  O7 remains complete, O14 remains
+parked, and the canonical census remains **17**, split **5/4/7/0/1**, until an
+O8 body is accepted.
