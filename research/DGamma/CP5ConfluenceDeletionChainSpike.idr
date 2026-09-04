@@ -3259,6 +3259,32 @@ exactLocatedActionInTail action head rest prefixHead prefixRest transition later
           Refl)
         Refl Refl
 
+0 locatedActionHeadExactParts :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, before, afterState, finalState :
+    SystemState name key value world error} ->
+  (action : Action name key value world error) ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (beforeTrace : Transitions first before) ->
+  (transition : Transition before afterState) ->
+  (later : Transitions afterState finalState) ->
+  (0 actionShape : transitionAction transition = action) ->
+  (0 decomposition : appendTransitions beforeTrace
+    (MoreTransitions transition later) = MoreTransitions head rest) ->
+  LocatedActionHeadExactView action head rest
+    (MkLocatedActionOccurrence before afterState beforeTrace transition later
+      actionShape decomposition)
+locatedActionHeadExactParts action head rest NoTransitions transition later
+  actionShape decomposition =
+    exactLocatedActionAtHead action head rest _ transition later actionShape
+      decomposition
+locatedActionHeadExactParts action head rest
+  (MoreTransitions prefixHead prefixRest) transition later actionShape
+  decomposition =
+    exactLocatedActionInTail action head rest prefixHead prefixRest transition
+      later actionShape decomposition
+
 0 locatedActionHeadView :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
