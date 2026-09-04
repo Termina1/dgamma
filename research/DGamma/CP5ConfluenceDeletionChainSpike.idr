@@ -2438,6 +2438,18 @@ unloadActionEqualityOpenImpossible nameEq keyEq selected action tag before
       Refl => unloadCheckedOpenImpossible nameEq keyEq selected tag before
         afterState checked opened
 
+0 alignedTransitionTail :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (transition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions transition rest) ->
+  AlignedTransitions name key world error value nameEq keyEq rest
+alignedTransitionTail nameEq keyEq _ _
+  (AlignedStep action tag checked rest alignedTail) = alignedTail
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
