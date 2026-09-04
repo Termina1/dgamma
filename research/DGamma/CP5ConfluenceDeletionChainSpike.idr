@@ -4244,6 +4244,9 @@ beginEquationFromApplySpike nameEq keyEq actor ambient fibers fiber found tag
     trans (sym (applyBeginAtFoundSpike nameEq keyEq actor ambient fibers fiber
       found)) raw
 
+0 nothingCannotEqualJustSpike : Nothing = Just value -> Void
+nothingCannotEqualJustSpike Refl impossible
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
