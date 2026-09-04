@@ -4288,6 +4288,19 @@ record RetireTargetLookupView
     Just retiredTargetFiber
   0 retiredTargetTrue : retired retiredTargetFiber = True
 
+0 retireLookupMissingAction :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (0 missing : lookupFiber @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} actor source =
+    the (Maybe (Fiber name key value world error)) Nothing) ->
+  applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (ORetire actor)
+    (MkSystemState ambient source) = Nothing
+retireLookupMissingAction nameEq keyEq actor ambient source missing =
+  rewrite missing in Refl
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
