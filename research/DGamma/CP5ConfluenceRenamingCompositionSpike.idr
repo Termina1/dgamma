@@ -2424,6 +2424,49 @@ fiberRenamedMaybeThenControlSpike renaming (RenamedPresent renamed)
   (SomeControlFibers control) =
     RenamedPresent (fiberRenamedThenControlSpike renaming renamed control)
 
+||| Domain projections used by the withdrawn-name branches.  Control relations
+||| never relate an absent fiber to a present one.
+0 controlMaybeLeftAbsentSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {right : Maybe (Fiber name key value world error)} ->
+  FiberControlMaybeRelated
+    (the (Maybe (Fiber name key value world error)) Nothing) right ->
+  right = Nothing
+controlMaybeLeftAbsentSpike NoControlFibers = Refl
+
+0 controlMaybeRightAbsentSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {left : Maybe (Fiber name key value world error)} ->
+  FiberControlMaybeRelated left
+    (the (Maybe (Fiber name key value world error)) Nothing) ->
+  left = Nothing
+controlMaybeRightAbsentSpike NoControlFibers = Refl
+
+0 renamedMaybeLeftAbsentSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {right : Maybe (Fiber name key value world error)} ->
+  (renaming : NameBijection name) ->
+  MaybeFiberRelatedBy renaming
+    (the (Maybe (Fiber name key value world error)) Nothing) right ->
+  right = Nothing
+renamedMaybeLeftAbsentSpike renaming RenamedAbsent = Refl
+
+0 renamedMaybeRightAbsentSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {left : Maybe (Fiber name key value world error)} ->
+  (renaming : NameBijection name) ->
+  MaybeFiberRelatedBy renaming left
+    (the (Maybe (Fiber name key value world error)) Nothing) ->
+  left = Nothing
+renamedMaybeRightAbsentSpike renaming RenamedAbsent = Refl
+
+0 renamedAbsentFromEqualitiesSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {left, right : Maybe (Fiber name key value world error)} ->
+  (renaming : NameBijection name) -> left = Nothing -> right = Nothing ->
+  MaybeFiberRelatedBy renaming left right
+renamedAbsentFromEqualitiesSpike renaming Refl Refl = RenamedAbsent
+
 ||| Outside both canonical withdrawal name sets, the four pointwise control
 ||| steps compose to an ordinary renamed fiber relation.
 0 replayedCanonicalOuterControlOutsideSpike :
