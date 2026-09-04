@@ -1108,6 +1108,28 @@ canonicalChildPlacementToOriginal endpoint originalLinearization placement
           selectedIn) fiber found)
       childParent
 
+0 canonicalInputPlacementToOriginal :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {originalFinal, reducedFinal : SystemState name key value world error} ->
+  {order : List name} ->
+  {initial, canonicalFinal : SystemState name key value world error} ->
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
+    originalFinal reducedFinal) ->
+  (originalLinearization : LinearizesSupport name key world error value nameEq
+    keyEq originalFinal order) ->
+  (canonical : Transitions initial canonicalFinal) ->
+  CanonicalInputPlacement name key world error value nameEq keyEq reducedFinal
+    order canonical ->
+  CanonicalInputPlacement name key world error value nameEq keyEq originalFinal
+    order canonical
+canonicalInputPlacementToOriginal endpoint originalLinearization canonical
+  placement =
+    MkCanonicalInputPlacement (allRootInputsFirst placement)
+      (rootGenerationFresh placement)
+      (rootGenerationBeforeLifecycle placement)
+      (canonicalChildPlacementToOriginal endpoint originalLinearization placement)
+
 ||| Rebuild one precedence edge from two producer-owned exact target lookups.
 0 canonicalPrecedenceEdgeForwardFromFibers :
   {name, key, world, error : Type} -> {value : key -> Type} ->
