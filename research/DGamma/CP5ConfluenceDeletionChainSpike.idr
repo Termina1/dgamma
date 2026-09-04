@@ -1898,6 +1898,28 @@ parentOpenFromActionResultView nameEq selected expectedTag observedTag
     case sameResult of
       Refl => parentOpenFromEquationView view
 
+0 parentOpenRetireSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (ORetire selected)
+    before = Just (tag, afterState)) ->
+  ParentOpenAt nameEq selected before ->
+  ParentOpenAt nameEq selected afterState
+parentOpenRetireSpike nameEq keyEq selected
+  (MkSystemState ambient fibers) afterState tag checked opened =
+    parentOpenFromActionResultView nameEq selected ORetireTag tag
+      (MkSystemState ambient (replaceBinding @{nameEq} selected
+        (retireFiber (openParentFiber opened)) fibers))
+      afterState
+      (justInjective (trans
+        (sym (retireActionAtFoundSpike nameEq keyEq selected ambient fibers
+          (openParentFiber opened) (openParentFound opened)))
+        (checkedActionProjects nameEq keyEq (ORetire selected)
+          (MkSystemState ambient fibers) afterState tag checked)))
+      (parentOpenRetireSourceView nameEq selected ambient fibers opened)
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
