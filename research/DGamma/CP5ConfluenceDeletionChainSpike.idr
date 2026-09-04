@@ -2313,6 +2313,17 @@ lifecycleOpenInstalledSpike
 lifecycleOpenInstalledSpike
   (Unloading accumulator dependencyView outcome) OpenActive impossible
 
+0 parentOpenInstalledSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  ParentOpenAt nameEq selected state ->
+  installedAt @{nameEq} selected state = True
+parentOpenInstalledSpike nameEq selected state
+  (MkParentOpenAt fiber found opened) =
+    trans (installedAtFound nameEq selected state fiber found)
+      (lifecycleOpenInstalledSpike (fiberLifecycle fiber) opened)
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
