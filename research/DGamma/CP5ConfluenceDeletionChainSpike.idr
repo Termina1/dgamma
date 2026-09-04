@@ -6169,6 +6169,70 @@ registeredGenerationNoEpisodeAtCut nameEq keyEq globalTrace selected
                   (sym (registrationDecomposition registration)) aligned)))))
           retires)))
 
+0 registeredGenerationNoEpisodeFromCapital :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (globalTrace : Transitions initial finalState) -> (selected : name) ->
+  (selectedOrdinal : Nat) -> (generation : RegistrationGeneration name) ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  (0 fullScan : GenerationTraceScan nameEq 0 [] globalTrace finalOrdinal
+    finalLive) ->
+  (0 aligned : AlignedTransitions name key world error value nameEq keyEq
+    globalTrace) ->
+  (0 finalQuiet : quiet @{nameEq} @{keyEq} finalState = True) ->
+  (0 upper : (closingActor : name) ->
+    (closingEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+      closingActor globalTrace) ->
+    LTE (transitionCount (traceBeforeOpening closingEpisode))
+      selectedOrdinal) ->
+  GlobalGeneratedCapital name key world error value nameEq keyEq globalTrace
+    selected selectedOrdinal generation ->
+  NoRegisteredEpisode nameEq [generation] 0 [] globalTrace
+registeredGenerationNoEpisodeFromCapital nameEq keyEq globalTrace selected
+  selectedOrdinal generation finalOrdinal finalLive fullScan aligned finalQuiet
+  upper
+  (MkGlobalGeneratedCapital actor component registration generationActor
+    generationBirth selectedBeforeBirth retires) =
+      registeredGenerationNoEpisodeAtCut nameEq keyEq globalTrace selected
+        selectedOrdinal generation actor component registration generationActor
+        generationBirth selectedBeforeBirth retires finalOrdinal finalLive
+        (registrationScanCapital nameEq 0 [] globalTrace registration
+          finalOrdinal finalLive fullScan)
+        aligned finalQuiet upper
+
+0 registeredGenerationNoEpisode :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (globalTrace : Transitions initial finalState) -> (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected globalTrace) ->
+  (generation : RegistrationGeneration name) ->
+  GeneratedDuring name key world error value selected
+    (transitionCount (traceBeforeOpening episode))
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode)))
+      (closedTransitions (locatedEpisode episode))) generation ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  (0 fullScan : GenerationTraceScan nameEq 0 [] globalTrace finalOrdinal
+    finalLive) ->
+  (0 aligned : AlignedTransitions name key world error value nameEq keyEq
+    globalTrace) ->
+  (0 finalQuiet : quiet @{nameEq} @{keyEq} finalState = True) ->
+  (0 upper : (closingActor : name) ->
+    (closingEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+      closingActor globalTrace) ->
+    LTE (transitionCount (traceBeforeOpening closingEpisode))
+      (transitionCount (traceBeforeOpening episode))) ->
+  NoRegisteredEpisode nameEq [generation] 0 [] globalTrace
+registeredGenerationNoEpisode nameEq keyEq globalTrace selected episode generation
+  generated finalOrdinal finalLive fullScan aligned finalQuiet upper =
+    registeredGenerationNoEpisodeFromCapital nameEq keyEq globalTrace selected
+      (transitionCount (traceBeforeOpening episode)) generation finalOrdinal
+      finalLive fullScan aligned finalQuiet upper
+      (globalGeneratedCapital nameEq keyEq globalTrace selected episode generation
+        generated)
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
