@@ -818,6 +818,18 @@ canonicalRetiredFiberUnsupported nameEq keyEq selected state
     trans (supportSetIsSolution nameEq keyEq state selected)
       (rewrite found in Refl)
 
+||| A missing endpoint entry is likewise absent from the support closure.
+0 canonicalAbsentFiberUnsupported :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} selected (registry state) = Nothing ->
+  isSupported @{nameEq} @{keyEq} selected state = False
+canonicalAbsentFiberUnsupported nameEq keyEq selected state absent =
+  trans (supportSetIsSolution nameEq keyEq state selected)
+    (rewrite absent in Refl)
+
 ||| Prove all support/parent/input-placement transport from the cumulative
 ||| endpoint relation and exact generated-registration accounting.
 public export
