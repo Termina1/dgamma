@@ -249,6 +249,10 @@ acceptedCanonicalEndpointAllowsIntermediate = MkCanonicalEndpointRelation
   effectsPermitWithdrawal controlsOutsideMiddle rawMiddleWithdrawn
   middleNameHasGeneration
 
+||| Distinct parent constructors used by the R143 O15 countershape.
+0 r143RootNotChild : {parent : N} -> Root = ChildOf parent -> Void
+r143RootNotChild Refl impossible
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
