@@ -6042,6 +6042,133 @@ combineNoRegistered nameEq headGeneration tailGenerations ordinal live
           (transitionAction transition) live)
         rest headTail tailTail)
 
+0 registeredGenerationNoEpisodeAtCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (globalTrace : Transitions initial finalState) -> (selected : name) ->
+  (selectedOrdinal : Nat) ->
+  (generation : RegistrationGeneration name) -> (actor : name) ->
+  (component : Component key value world error) ->
+  (registration : LocatedGeneratedRegistration actor selected component
+    globalTrace) ->
+  (0 generationActor : generationName generation = actor) ->
+  (0 generationBirth : generationBirthOrdinal generation =
+    registrationOrdinal registration) ->
+  (0 selectedBeforeBirth : LTE selectedOrdinal
+    (registrationOrdinal registration)) ->
+  ActionOccurs (ORetire actor) (afterRegistration registration) ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  (cut : RegistrationScanCapital name nameEq 0 [] globalTrace registration
+    finalOrdinal finalLive) ->
+  (0 aligned : AlignedTransitions name key world error value nameEq keyEq
+    globalTrace) ->
+  (0 finalQuiet : quiet @{nameEq} @{keyEq} finalState = True) ->
+  (0 upper : (closingActor : name) ->
+    (closingEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+      closingActor globalTrace) ->
+    LTE (transitionCount (traceBeforeOpening closingEpisode))
+      selectedOrdinal) ->
+  NoRegisteredEpisode nameEq [generation] 0 [] globalTrace
+registeredGenerationNoEpisodeAtCut nameEq keyEq globalTrace selected
+  selectedOrdinal generation actor component registration generationActor
+  generationBirth selectedBeforeBirth retires finalOrdinal finalLive
+  (MkRegistrationScanCapital birthOrdinal birthLive beforeScan tailScan)
+  aligned finalQuiet upper =
+    replace
+      {p = \candidate => NoRegisteredEpisode nameEq [generation] 0 [] candidate}
+      (registrationDecomposition registration)
+      (noRegisteredAppendAtScan nameEq [generation] 0 []
+      (beforeRegistration registration)
+      (MoreTransitions (registrationTransition registration)
+        (afterRegistration registration))
+      birthOrdinal birthLive beforeScan
+      (noRegisteredBeforeGenerationBirth nameEq generation 0 [] ()
+        (beforeRegistration registration) birthOrdinal birthLive beforeScan
+        (trans generationBirth
+          (sym (generationScanOrdinalCount nameEq 0 []
+            (beforeRegistration registration) birthOrdinal birthLive
+            beforeScan))))
+      (NoRegisteredEpisodeStep (registrationTransition registration)
+        (afterRegistration registration)
+        (\begin, owned => generatedInsertCannotBeBegin
+          (transitionAction (registrationTransition registration)) actor
+          (ChildOf selected) component (registrationAction registration) begin)
+        (noRegisteredUntilFutureRetirement nameEq keyEq actor generation
+          generationActor (S birthOrdinal)
+          (advanceGenerationEnvironment @{nameEq} birthOrdinal
+            (transitionAction (registrationTransition registration)) birthLive)
+          (advanceGenerationEnvironmentPreservesUnique nameEq birthOrdinal
+            (transitionAction (registrationTransition registration)) birthLive
+            (generationTraceScanPreservesUnique nameEq beforeScan UniqueNil))
+          (advanceGenerationEnvironmentPreservesStamped nameEq birthOrdinal
+            (transitionAction (registrationTransition registration)) birthLive
+            (generationTraceScanPreservesStamped nameEq beforeScan
+              emptyGenerationEnvironmentStamped))
+          (replace {p = \candidate => LT candidate (S birthOrdinal)}
+            (sym (trans generationBirth
+              (sym (generationScanOrdinalCount nameEq 0 []
+                (beforeRegistration registration) birthOrdinal birthLive
+                beforeScan)))) reflexive)
+          selectedOrdinal
+          (LTESucc (replace {p = \candidate => LTE selectedOrdinal candidate}
+            (sym (generationScanOrdinalCount nameEq 0 []
+              (beforeRegistration registration) birthOrdinal birthLive
+              beforeScan)) selectedBeforeBirth))
+          initial (registrationAfter registration) finalState globalTrace
+          (appendTransitions (beforeRegistration registration)
+            (MoreTransitions (registrationTransition registration)
+              NoTransitions))
+          (afterRegistration registration)
+          (extendLeadingDecomposition (beforeRegistration registration)
+            (registrationTransition registration)
+            (afterRegistration registration) globalTrace
+            (registrationDecomposition registration))
+          (trans
+            (transitionCountSnoc (beforeRegistration registration)
+              (registrationTransition registration))
+            (cong S (sym (generationScanOrdinalCount nameEq 0 []
+              (beforeRegistration registration) birthOrdinal birthLive
+              beforeScan))))
+          upper finalOrdinal finalLive tailScan
+          (alignedTailAfterHead nameEq keyEq
+            (registrationTransition registration)
+            (afterRegistration registration)
+            (snd (alignedAppendSplit (beforeRegistration registration)
+              (MoreTransitions (registrationTransition registration)
+                (afterRegistration registration))
+              (replace
+                {p = \candidate => AlignedTransitions name key world error value
+                  nameEq keyEq candidate}
+                (sym (registrationDecomposition registration)) aligned))))
+          finalQuiet
+          (currentAfterGeneratedInsert nameEq actor birthOrdinal birthLive
+            (ChildOf selected) component
+            (transitionAction (registrationTransition registration))
+            (registrationAction registration) generation
+            (registrationGenerationFromFields generation actor birthOrdinal
+              generationActor
+              (trans generationBirth
+                (sym (generationScanOrdinalCount nameEq 0 []
+                  (beforeRegistration registration) birthOrdinal birthLive
+                  beforeScan)))))
+          (inactiveAfterGeneratedInsert nameEq keyEq actor (ChildOf selected)
+            component (transitionAction (registrationTransition registration))
+            (registrationAction registration)
+            (registrationBefore registration) (registrationAfter registration)
+            (transitionTag (registrationTransition registration))
+            (alignedHeadRaw nameEq keyEq
+              (registrationTransition registration)
+              (afterRegistration registration)
+              (snd (alignedAppendSplit (beforeRegistration registration)
+                (MoreTransitions (registrationTransition registration)
+                  (afterRegistration registration))
+                (replace
+                  {p = \candidate => AlignedTransitions name key world error
+                    value nameEq keyEq candidate}
+                  (sym (registrationDecomposition registration)) aligned)))))
+          retires)))
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
