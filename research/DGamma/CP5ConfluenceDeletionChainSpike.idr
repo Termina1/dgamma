@@ -2403,6 +2403,26 @@ parentOpenOwnerNoRecoveryStep nameEq keyEq (LUnload selected) tag before afterSt
     void (unloadCheckedOpenImpossible nameEq keyEq selected tag before afterState
       checked opened)
 
+0 parentOpenNoRecoveryStep :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  ParentOpenAt nameEq selected before ->
+  (0 noRecovery : ParentRecoveryStep selected
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked) -> Void) ->
+  ParentOpenAt nameEq selected afterState
+parentOpenNoRecoveryStep nameEq keyEq selected action tag before afterState
+  checked opened noRecovery =
+    case decEq @{nameEq} selected (actionOwner action) of
+      No distinct => parentOpenForeignSpike nameEq keyEq selected action distinct
+        before afterState tag checked opened
+      Yes Refl => parentOpenOwnerNoRecoveryStep nameEq keyEq action tag before
+        afterState checked opened noRecovery
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
