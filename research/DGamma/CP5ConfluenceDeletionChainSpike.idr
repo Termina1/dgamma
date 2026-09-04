@@ -2604,6 +2604,22 @@ registrationDisciplineAtGenerated protocol nameEq global child parent component
           (replace {p = RegistrationDiscipline protocol nameEq}
             (sym (registrationDecomposition occurrence)) discipline)))
 
+0 childInsertParentDistinct :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq}
+    (OInsert child (ChildOf parent) component) before = Just (tag, afterState)) ->
+  ParentOpenAt nameEq parent before -> Not (parent = child)
+childInsertParentDistinct nameEq keyEq child parent component tag before
+  afterState checked opened same =
+    case same of
+      Refl => installedInsertOwnerImpossible nameEq keyEq child
+        (ChildOf child) component tag before afterState checked
+        (parentOpenInstalledSpike nameEq child before opened)
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
