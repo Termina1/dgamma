@@ -5968,6 +5968,23 @@ inactiveAfterGeneratedInsert nameEq keyEq child parent component
 generatedInsertCannotBeBegin
   (OInsert child parent component) child parent component Refl begin impossible
 
+0 registrationGenerationEta :
+  (generation : RegistrationGeneration name) ->
+  MkRegistrationGeneration (generationName generation)
+    (generationBirthOrdinal generation) = generation
+registrationGenerationEta (MkRegistrationGeneration actor ordinal) = Refl
+
+0 registrationGenerationFromFields :
+  (generation : RegistrationGeneration name) -> (actor : name) ->
+  (ordinal : Nat) ->
+  (0 actorShape : generationName generation = actor) ->
+  (0 ordinalShape : generationBirthOrdinal generation = ordinal) ->
+  generation = MkRegistrationGeneration actor ordinal
+registrationGenerationFromFields generation actor ordinal actorShape
+  ordinalShape =
+    trans (sym (registrationGenerationEta generation))
+      (cong2 MkRegistrationGeneration actorShape ordinalShape)
+
 0 noRegisteredAppendAtScan :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
