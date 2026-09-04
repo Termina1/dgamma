@@ -43,8 +43,6 @@ public export
     leftTrace rightTrace sameInputs leftCapital replayed occurrences rightCapital
 replaceBridgeRightOccurrenceWithoutGenerationEquation {occurrences} bridge alternate =
   MkReplayedCanonicalEndpointBridge
-    (replayBridgeBijection bridge)
-    (replayBridgeBijectionFixed bridge)
     (replayBridgeAmbient bridge)
     (replayBridgeTables bridge)
     (replayBridgeControls bridge)

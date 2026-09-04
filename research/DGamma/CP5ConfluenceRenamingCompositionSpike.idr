@@ -1728,12 +1728,27 @@ classifyReverseCurrentGeneration leftRenaming rightRenaming leftRegistrations
     selected state
 retargetVestigialEndpointIndex Refl vestigial = vestigial
 
+||| The sole name bijection accepted by a replayed canonical endpoint bridge.
+||| Making this index explicit prevents a bridge producer from choosing an
+||| arbitrary bijection and supplying a later propositional repair.
+public export
+expectedBridgeBijection :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace ->
+  NameBijection name
+expectedBridgeBijection sameInputs =
+  currentNameBijection (endpointRenaming sameInputs)
+
 ||| Exact bridge from an operationally replayed left block trace to the right
 ||| canonical endpoint.  The left trace need not itself be a `CanonicalSchedule`:
 ||| round 4 exhibited accepted vestigial intermediates for which the inverse
-||| right order cannot linearize the left full `SupportPath` relation.  The
-||| fixed-bijection field and explicit trace/final indices still prevent bridge
-||| detachment.
+||| right order cannot linearize the left full `SupportPath` relation.  Its sole
+||| constructor stores all four semantic clauses directly at the expected
+||| endpoint bijection; no caller-selected bijection or reindexing proof exists.
 public export
 record ReplayedCanonicalEndpointBridge
   (name, key, world, error : Type) (value : key -> Type)
@@ -1752,9 +1767,6 @@ record ReplayedCanonicalEndpointBridge
   (rightCapital : IndependentCanonicalSchedule name key world error value protocol
     nameEq keyEq rightTrace) where
   constructor MkReplayedCanonicalEndpointBridge
-  replayBridgeBijection : NameBijection name
-  0 replayBridgeBijectionFixed : replayBridgeBijection =
-    currentNameBijection (endpointRenaming sameInputs)
   0 replayBridgeAmbient : worldState replayedLeftFinal =
     worldState (canonicalFinal (canonicalSchedule rightCapital))
   0 replayBridgeTables : (n : name) -> (k : key) ->
@@ -1763,13 +1775,13 @@ record ReplayedCanonicalEndpointBridge
     lookupBinding {key = key} {value = value} k
       (effectTables (projectEffectState @{nameEq}
         (canonicalFinal (canonicalSchedule rightCapital)))
-        (renameForward replayBridgeBijection n))
+        (renameForward (expectedBridgeBijection sameInputs) n))
   0 replayBridgeControls : (n : name) ->
-    MaybeFiberRelatedBy replayBridgeBijection
+    MaybeFiberRelatedBy (expectedBridgeBijection sameInputs)
       (lookupFiber @{nameEq} {key = key} {value = value} {world = world}
         {error = error} n (registry replayedLeftFinal))
       (lookupFiber @{nameEq} {key = key} {value = value} {world = world}
-        {error = error} (renameForward replayBridgeBijection n)
+        {error = error} (renameForward (expectedBridgeBijection sameInputs) n)
         (registry (canonicalFinal (canonicalSchedule rightCapital))))
   0 replayedGeneratedBirthMatched :
     {child, parent : name} ->
@@ -1781,8 +1793,8 @@ record ReplayedCanonicalEndpointBridge
       (sourceOccurrence = replayGeneratedRegistrationOrigin replayedOccurrences
         replayedOccurrence,
        (rightOccurrence : LocatedGeneratedRegistration
-         (renameForward replayBridgeBijection child)
-         (renameForward replayBridgeBijection parent) component
+         (renameForward (expectedBridgeBijection sameInputs) child)
+         (renameForward (expectedBridgeBijection sameInputs) parent) component
          (canonicalTrace (canonicalSchedule rightCapital)) **
          generationForward (generatedGenerationBijection sameInputs)
            (registrationGeneration
@@ -1793,6 +1805,60 @@ record ReplayedCanonicalEndpointBridge
            (replayGeneratedRegistrationOrigin
              (canonicalOccurrenceCorrespondence rightCapital)
              rightOccurrence))))
+
+||| Record-style compatibility eliminator for the constructor-owned bijection.
+public export
+replayBridgeBijection :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, leftFinal, rightFinal, replayedLeftFinal :
+    SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace
+    rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace} ->
+  {replayedLeftTrace : Transitions initial replayedLeftFinal} ->
+  {replayedOccurrences : ActionRegistrationReplayCorrespondence name key world
+    error value (canonicalTrace (canonicalSchedule leftCapital))
+      replayedLeftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace} ->
+  ReplayedCanonicalEndpointBridge name key world error value protocol nameEq keyEq
+    leftTrace rightTrace sameInputs leftCapital replayedLeftTrace
+      replayedOccurrences rightCapital ->
+  NameBijection name
+replayBridgeBijection {sameInputs} bridge = expectedBridgeBijection sameInputs
+
+||| The exported fixedness witness is constructor-owned and definitionally
+||| reflexive, rather than an obligation accepted from a producer.
+public export
+0 replayBridgeBijectionFixed :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, leftFinal, rightFinal, replayedLeftFinal :
+    SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace
+    rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace} ->
+  {replayedLeftTrace : Transitions initial replayedLeftFinal} ->
+  {replayedOccurrences : ActionRegistrationReplayCorrespondence name key world
+    error value (canonicalTrace (canonicalSchedule leftCapital))
+      replayedLeftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace} ->
+  (bridge : ReplayedCanonicalEndpointBridge name key world error value protocol
+    nameEq keyEq leftTrace rightTrace sameInputs leftCapital replayedLeftTrace
+      replayedOccurrences rightCapital) ->
+  replayBridgeBijection bridge =
+    currentNameBijection (endpointRenaming sameInputs)
+replayBridgeBijectionFixed bridge = Refl
 
 ||| Typed link from each one-trace withdrawal to the accepted two-trace
 ||| registration scanner.  The trace correspondence is exposed at its exact

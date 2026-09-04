@@ -51,8 +51,6 @@ public export
     leftTrace rightTrace sameInputs leftCapital replayed occurrences rightCapital
 rebuildAuthenticatedBridge {occurrences} bridge match =
   MkReplayedCanonicalEndpointBridge
-    (replayBridgeBijection bridge)
-    (replayBridgeBijectionFixed bridge)
     (replayBridgeAmbient bridge)
     (replayBridgeTables bridge)
     (replayBridgeControls bridge)
