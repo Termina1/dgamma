@@ -6,6 +6,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
 import DGamma.CP5ConfluenceRenamingCompositionSpike
 import Data.List
@@ -827,6 +828,32 @@ operationalPermutationEndpoint nameEq keyEq
       relationalReplayEndpointTransitiveSpike nameEq keyEq _ _ _
         (blockSwapEndpoint step)
         (operationalPermutationEndpoint nameEq keyEq rest)
+
+||| External-input filtering is likewise transitive over the same sealed fold.
+public export
+0 operationalPermutationSameExternalInputs :
+  (nameEq : DecEq name) ->
+  {sourceOrder, targetOrder : List name} ->
+  {certificate : CertifiedActorPermutation name sourceOrder targetOrder} ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  {sourceTrace : Transitions initial sourceFinal} ->
+  {sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq
+    sourceOrder sourceTrace} ->
+  {sourcePremises : ReplayInvariantBundle name key world error value protocol
+    nameEq keyEq sourceTrace} ->
+  {targetTrace : Transitions initial targetFinal} ->
+  OperationalActorPermutation name key world error value protocol nameEq keyEq
+    certificate sourceTrace sourceBlocks sourcePremises targetTrace ->
+  SameExternalOrchestration nameEq sourceTrace targetTrace
+operationalPermutationSameExternalInputs nameEq
+  (OperationalActorDone blocks premises) =
+    sameExternalOrchestrationReflexiveSpike nameEq _
+operationalPermutationSameExternalInputs nameEq
+  (OperationalActorStep orderSwap restCertificate sourceBlocks sourcePremises
+    safety step rest) =
+      sameExternalOrchestrationTransitiveSpike nameEq
+        (blockSwapSameExternalInputs step)
+        (operationalPermutationSameExternalInputs nameEq rest)
 
 ||| Cross-trace support matching now contains no certificate at all.  It is
 ||| publicly constructible without risk because O20 never consumes it as an
