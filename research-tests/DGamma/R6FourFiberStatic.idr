@@ -449,6 +449,16 @@ r143RightOrderComplete Middle supported = case supported of Refl impossible
 r143RightOrderComplete Alternate supported = Here
 r143RightOrderComplete Upper supported = There Here
 
+0 r143RightPathOrderedFromShape :
+  {lower, upper : N} -> R143RightPathShape lower upper ->
+  BeforeIn lower upper [Alternate, Upper, Lower]
+r143RightPathOrderedFromShape shape =
+  replace {p = \candidate => BeforeIn lower candidate [Alternate, Upper, Lower]}
+    (sym (r143PathEndsUpper shape))
+    (replace
+      {p = \candidate => BeforeIn candidate Upper [Alternate, Upper, Lower]}
+      (sym (r143PathStartsAlternate shape)) (BeforeHere Here))
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
