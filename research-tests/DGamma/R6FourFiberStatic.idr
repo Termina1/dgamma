@@ -416,6 +416,9 @@ r143AlternateFreshInRightOrder (There (There later)) = absurd later
 r143UpperFreshInRightOrder Here impossible
 r143UpperFreshInRightOrder (There later) = absurd later
 
+0 r143LowerFreshInRightOrder : Not (Elem Lower [])
+r143LowerFreshInRightOrder present = absurd present
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
