@@ -1266,6 +1266,38 @@ record CanonicalConvergenceResult
       (operationalTargetTrace operational)
       (permutationOccurrenceCorrespondence permutedLeftExecution) rightCapital
 
+||| Exact final O20 assembly once the operational replay-to-right endpoint bridge
+||| is available.  O19 already supplies the permuted execution wrapper.
+0 canonicalConvergenceFromBridge :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace
+    rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace} ->
+  {matching : MappedCanonicalSupportOrders name key world error value protocol
+    nameEq keyEq leftTrace rightTrace
+    (currentNameBijection (endpointRenaming sameInputs))
+    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
+  (operational : CertifiedOperationalCanonicalPermutation name key world error
+    value protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital
+      rightCapital matching) ->
+  (bridge : ReplayedCanonicalEndpointBridge name key world error value protocol
+    nameEq keyEq leftTrace rightTrace sameInputs leftCapital
+      (operationalTargetTrace operational)
+      (permutationOccurrenceCorrespondence
+        (permutedCanonicalExecutionFromOperational nameEq keyEq operational))
+      rightCapital) ->
+  CanonicalConvergenceResult name key world error value protocol nameEq keyEq
+    leftTrace rightTrace sameInputs leftCapital rightCapital operational
+canonicalConvergenceFromBridge nameEq keyEq operational bridge =
+  MkCanonicalConvergenceResult
+    (permutedCanonicalExecutionFromOperational nameEq keyEq operational) bridge
+
 ||| O20 no longer quantifies over a public pure certificate.  It accepts only
 ||| O19's package containing exact safety and finite local derivations.
 public export
