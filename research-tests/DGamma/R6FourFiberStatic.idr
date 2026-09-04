@@ -379,6 +379,14 @@ r143NoRightPathFromUpper (SupportPathOne edge) =
 r143NoRightPathFromUpper (SupportPathMore edge rest) =
   r143UpperNotAlternate (r143RightEdgeStartsAlternate edge)
 
+||| Consume the exact first-edge target before rejecting a longer path.
+0 r143NoRightPathAfterUpper :
+  {middle, target : N} ->
+  middle = Upper ->
+  SupportPath (the (DecEq N) %search) DGamma.R6FourFiberStatic.rightState
+    middle target -> Void
+r143NoRightPathAfterUpper Refl rest = r143NoRightPathFromUpper rest
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
