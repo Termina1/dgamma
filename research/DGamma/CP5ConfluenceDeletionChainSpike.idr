@@ -5,9 +5,14 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionTheorem
+import DGamma.CP4DeletionBoundaryPlan
+import DGamma.CP4DeletionGenerationBounds
+import DGamma.CP4DeletionGenerationStamped
+import DGamma.CP4DeletionGenerationUnique
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorTrace
 import DGamma.CP4DeletionSelectedOwn
+import DGamma.CP4DeletionWithdrawalCurrent
 import DGamma.CP4ParentSafety
 import DGamma.CP4Support
 import DGamma.CP4SupportQuiescence
@@ -4810,6 +4815,124 @@ futureRetirementClosesBegin nameEq keyEq child before opened finalState tag
       tag checked rest alignedRest
       (futureRetirementEventuallyUninstalled nameEq keyEq child rest alignedRest
         finalQuiet retires)
+
+0 singletonBeginOwnedCurrent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {ordinal : Nat} ->
+  (nameEq : DecEq name) -> (action : Action name key value world error) ->
+  (generation : RegistrationGeneration name) ->
+  (live : GenerationEnvironment name) ->
+  IsBeginAction action ->
+  GenerationOwnedActor nameEq [generation] ordinal live action ->
+  lookupCurrentGeneration @{nameEq} (actionOwner action) live = Just generation
+singletonBeginOwnedCurrent nameEq (LBegin observed) generation live ItIsLBegin
+  (_ ** (current, Here)) = current
+singletonBeginOwnedCurrent nameEq (LBegin observed) generation live ItIsLBegin
+  (_ ** (current, There later)) = absurd later
+
+0 singletonBeginOwnedActor :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {ordinal : Nat} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (generation : RegistrationGeneration name) ->
+  (live : GenerationEnvironment name) ->
+  (0 stamped : GenerationEnvironmentStamped live) ->
+  (0 generationActor : generationName generation = actor) ->
+  (action : Action name key value world error) ->
+  (begin : IsBeginAction action) ->
+  (owned : GenerationOwnedActor nameEq [generation] ordinal live action) ->
+  actionOwner action = actor
+singletonBeginOwnedActor nameEq actor generation live stamped generationActor
+  (LBegin observed) ItIsLBegin (_ ** (current, Here)) =
+    trans (sym (stamped observed generation
+      (currentGenerationEntryFromLookup nameEq observed generation live
+        current))) generationActor
+singletonBeginOwnedActor nameEq actor generation live stamped generationActor
+  (LBegin observed) ItIsLBegin (_ ** (current, There later)) =
+    absurd later
+
+0 notCurrentRejectsRegisteredBegin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {ordinal : Nat} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (generation : RegistrationGeneration name) ->
+  (live : GenerationEnvironment name) ->
+  (0 stamped : GenerationEnvironmentStamped live) ->
+  (0 generationActor : generationName generation = actor) ->
+  (action : Action name key value world error) ->
+  (0 noCurrent : Not (lookupCurrentGeneration @{nameEq} actor live =
+    Just generation)) ->
+  (begin : IsBeginAction action) ->
+  (owned : GenerationOwnedActor nameEq [generation] ordinal live action) -> Void
+notCurrentRejectsRegisteredBegin nameEq actor generation live stamped
+  generationActor action noCurrent begin owned =
+    noCurrent (replace
+      {p = \candidate => lookupCurrentGeneration @{nameEq} candidate live =
+        Just generation}
+      (singletonBeginOwnedActor nameEq actor generation live stamped
+        generationActor action begin owned)
+      (singletonBeginOwnedCurrent nameEq action generation live begin owned))
+
+0 noCurrentAfterOneStep :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (generation : RegistrationGeneration name) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (0 unique : GenerationEnvironmentNamesUnique live) ->
+  (0 less : LT (generationBirthOrdinal generation) ordinal) ->
+  {first, middle : SystemState name key value world error} ->
+  (transition : Transition first middle) ->
+  (0 noCurrent : Not (lookupCurrentGeneration @{nameEq} actor live =
+    Just generation)) ->
+  Not (lookupCurrentGeneration @{nameEq} actor
+    (advanceGenerationEnvironment @{nameEq} ordinal
+      (transitionAction transition) live) = Just generation)
+noCurrentAfterOneStep nameEq actor generation ordinal live unique less transition
+  noCurrent nextCurrent =
+    noCurrent (currentGenerationAtScanStart nameEq actor generation ordinal live
+      unique less (MoreTransitions transition NoTransitions) (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction transition) live)
+      (GenerationTraceScanStep transition NoTransitions GenerationTraceScanEnd)
+      nextCurrent)
+
+0 noRegisteredWhenNotCurrent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (generation : RegistrationGeneration name) ->
+  (0 generationActor : generationName generation = actor) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (0 unique : GenerationEnvironmentNamesUnique live) ->
+  (0 stamped : GenerationEnvironmentStamped live) ->
+  (0 less : LT (generationBirthOrdinal generation) ordinal) ->
+  (trace : Transitions first finalState) ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq ordinal live trace finalOrdinal finalLive ->
+  (0 noCurrent : Not (lookupCurrentGeneration @{nameEq} actor live =
+    Just generation)) ->
+  NoRegisteredEpisode nameEq [generation] ordinal live trace
+noRegisteredWhenNotCurrent nameEq actor generation generationActor ordinal live
+  unique stamped less NoTransitions ordinal live GenerationTraceScanEnd noCurrent =
+    NoRegisteredEpisodeEnd
+noRegisteredWhenNotCurrent nameEq actor generation generationActor ordinal live
+  unique stamped less
+  (MoreTransitions transition@(Fired stepNameEq stepKeyEq action tag checked)
+    rest) finalOrdinal finalLive
+  (GenerationTraceScanStep _ _ tailScan) noCurrent =
+    NoRegisteredEpisodeStep transition rest
+      (notCurrentRejectsRegisteredBegin nameEq actor generation live stamped
+        generationActor action noCurrent)
+      (noRegisteredWhenNotCurrent nameEq actor generation generationActor
+        (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal action live)
+        (advanceGenerationEnvironmentPreservesUnique nameEq ordinal action live
+          unique)
+        (advanceGenerationEnvironmentPreservesStamped nameEq ordinal action live
+          stamped)
+        (lteSuccRight less) rest finalOrdinal finalLive tailScan
+        (noCurrentAfterOneStep nameEq actor generation ordinal live unique less
+          transition noCurrent))
 
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
