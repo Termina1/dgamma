@@ -3330,6 +3330,27 @@ actionOccursTraceEquality action left right exactTrace occurrence =
   case exactTrace of
     Refl => occurrence
 
+0 actionOccursAfterExact :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, finalState, targetState :
+    SystemState name key value world error} ->
+  {locatedAction : Action name key value world error} ->
+  (action : Action name key value world error) ->
+  {global : Transitions initial finalState} ->
+  (occurrence : LocatedActionOccurrence locatedAction global) ->
+  (targetTrace : Transitions targetState finalState) ->
+  (0 exactAfterState : actionAfterState occurrence = targetState) ->
+  (0 exactAfter : replace
+    {p = \state => Transitions state finalState} exactAfterState
+    (afterActionOccurrence occurrence) = targetTrace) ->
+  ActionOccurs action targetTrace ->
+  ActionOccurs action (afterActionOccurrence occurrence)
+actionOccursAfterExact action occurrence targetTrace exactAfterState exactAfter
+  actionOccurrence =
+    case exactAfterState of
+      Refl => actionOccursTraceEquality action (afterActionOccurrence occurrence)
+        targetTrace exactAfter actionOccurrence
+
 0 locatedActionHeadView :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
