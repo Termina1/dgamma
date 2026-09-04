@@ -2894,3 +2894,28 @@ O8 remains unopened at **0/3**; O9 is unchanged and gated. The canonical census
 remains **17**, split **5/4/7/0/1**. The next unit must resume the exact
 retire-success producer without scope widening, then complete the four
 no-registered-episode stages before any O8 body edit.
+
+### Revisions 140–141: O8 closure and generation-scoped O9 route
+
+R140 completes the exact-generation no-episode chain and fills O8. The selected
+candidate remains sound under raw-name reuse because its dependency-negative is
+`NoDependentClosingEpisodeForGeneration`, tied to the exact generation at the
+selected opening and to consumer openings located inside that activation
+interval. The census falls to **16**, split **5/4/6/0/1**. Full attempt and
+validation evidence is recorded in
+`O6-R140-DELETION-O8-CLOSED-O9-ADAPTER-MISMATCH-STOP-AUDIT.md`.
+
+R141 revises only the research O9 boundary. `enrichDeletionChainStepSpike` now
+accepts the generation-scoped predicate explicitly; its genuine consumer passes
+`selectedNoDependentClose candidate`. The result type and every other premise
+remain unchanged, and the surface revision consumes 0/3 O9 body attempts. The
+clause mapping and necessity witnesses are recorded in
+`O6-R141-DELETION-O9-GENERATION-SCOPED-SURFACE-REVISION-AUDIT.md`.
+
+**Mandatory paper/interface flag:** frozen CP3 `deletionTheorem` has a
+raw-name-global `NoDependentClosingEpisode` premise that is invalid under the
+permitted R137 reuse countershape. `CP4DeletionTheorem.deletionTheoremProof`
+inherits that invalid public interface. No scoped-to-raw coercion is sound or
+authorized. A production interface repair is therefore an explicit obligation
+for a future unfreeze campaign. The current campaign instead requires a
+research-local Lemma-72 analogue with the scoped premise before O9 may close.

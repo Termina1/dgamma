@@ -52,6 +52,10 @@ public export
   (trace : Transitions initial finalState) ->
   (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
   (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (0 noDependent : NoDependentClosingEpisodeForGeneration
+    {nameEq = nameEq} {keyEq = keyEq} {global = trace}
+    (selectedActor candidate) (selectedStartOrdinal candidate)
+    (selectedStartLive candidate) (selectedEpisode candidate)) ->
   DeletionChainStep name key world error value protocol nameEq keyEq trace premises candidate
 enrichOnly = enrichDeletionChainStepSpike
 

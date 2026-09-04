@@ -6600,7 +6600,9 @@ selectMaximalClosingEpisodeSpike nameEq keyEq protocol initial finalState trace
     maximalSelectionFromList nameEq keyEq protocol trace premises scan
       (scannedClosingOccurrences scan) Refl
 
-||| O9 is the separately gateable enriched Lemma-72 adapter.
+||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
+||| dependency premise is scoped to the selected registration generation and
+||| activation interval; the refuted raw-name-global predicate is not accepted.
 public export
 0 enrichDeletionChainStepSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -6611,6 +6613,10 @@ public export
     nameEq keyEq trace) ->
   (candidate : DeletableClosingEpisode name key world error value nameEq keyEq
     trace) ->
+  (0 noDependent : NoDependentClosingEpisodeForGeneration
+    {nameEq = nameEq} {keyEq = keyEq} {global = trace}
+    (selectedActor candidate) (selectedStartOrdinal candidate)
+    (selectedStartLive candidate) (selectedEpisode candidate)) ->
   DeletionChainStep name key world error value protocol nameEq keyEq trace
     premises candidate
 enrichDeletionChainStepSpike = ?enrichDeletionChainStepSpike_rhs
@@ -7086,7 +7092,7 @@ chooseClosingStepSpike {initial} {finalState} nameEq keyEq protocol trace
       SelectedMaximalClosingEpisode candidate selected =>
         HasClosingStep candidate
           (enrichDeletionChainStepSpike nameEq keyEq protocol trace premises
-            candidate)
+            candidate (selectedNoDependentClose candidate))
 
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
