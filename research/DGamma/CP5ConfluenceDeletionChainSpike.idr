@@ -4734,6 +4734,83 @@ appendLocatedClosingEpisodeRight left
             (cong (\candidate => appendTransitions candidate right)
               decomposition)))
 
+0 closingFromEventuallyUninstalled :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  (before, opened, finalState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LBegin child) before =
+    Just (tag, opened)) ->
+  (rest : Transitions opened finalState) ->
+  (0 alignedRest : AlignedTransitions name key world error value nameEq keyEq
+    rest) ->
+  EventuallyUninstalled name key world error value nameEq child rest ->
+  LocatedClosedEpisode name key world error value nameEq keyEq child
+    (MoreTransitions
+      (Fired {before = before} {afterState = opened}
+        nameEq keyEq (LBegin child) tag checked) rest)
+closingFromEventuallyUninstalled nameEq keyEq child before opened finalState tag
+  checked rest alignedRest
+  (MkEventuallyUninstalled endpoint beforeEndpoint afterEndpoint
+    endpointUninstalled endpointDecomposition) =
+      replace
+        {p = \candidate => LocatedClosedEpisode name key world error value
+          nameEq keyEq child candidate}
+        (trans (appendTransitionsAssociative
+          (MoreTransitions
+            (Fired {before = before} {afterState = opened}
+              nameEq keyEq (LBegin child) tag checked) NoTransitions)
+          beforeEndpoint afterEndpoint)
+          (cong (MoreTransitions
+            (Fired {before = before} {afterState = opened}
+              nameEq keyEq (LBegin child) tag checked))
+            endpointDecomposition))
+        (appendLocatedClosingEpisodeRight
+          (appendTransitions
+            (MoreTransitions
+              (Fired {before = before} {afterState = opened}
+                nameEq keyEq (LBegin child) tag checked) NoTransitions)
+            beforeEndpoint)
+          (extractSpanningClosedEpisode nameEq keyEq child
+            (MoreTransitions
+              (Fired {before = before} {afterState = opened}
+                nameEq keyEq (LBegin child) tag checked) NoTransitions)
+            beforeEndpoint
+            (AlignedStep (LBegin child) tag checked NoTransitions AlignedEnd)
+            (fst (alignedAppendSplit beforeEndpoint afterEndpoint
+              (replace
+                {p = \candidate => AlignedTransitions name key world error value
+                  nameEq keyEq candidate}
+                (sym endpointDecomposition) alignedRest)))
+            (fst (snd (lBeginBoundary nameEq keyEq child before opened tag
+              checked)))
+            (snd (snd (lBeginBoundary nameEq keyEq child before opened tag
+              checked))) endpointUninstalled)
+          afterEndpoint)
+
+0 futureRetirementClosesBegin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  (before, opened, finalState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LBegin child) before =
+    Just (tag, opened)) ->
+  (rest : Transitions opened finalState) ->
+  (0 alignedRest : AlignedTransitions name key world error value nameEq keyEq
+    rest) ->
+  (0 finalQuiet : quiet @{nameEq} @{keyEq} finalState = True) ->
+  ActionOccurs (ORetire child) rest ->
+  LocatedClosedEpisode name key world error value nameEq keyEq child
+    (MoreTransitions
+      (Fired {before = before} {afterState = opened}
+        nameEq keyEq (LBegin child) tag checked) rest)
+futureRetirementClosesBegin nameEq keyEq child before opened finalState tag
+  checked rest alignedRest finalQuiet retires =
+    closingFromEventuallyUninstalled nameEq keyEq child before opened finalState
+      tag checked rest alignedRest
+      (futureRetirementEventuallyUninstalled nameEq keyEq child rest alignedRest
+        finalQuiet retires)
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
