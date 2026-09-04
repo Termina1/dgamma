@@ -1730,6 +1730,22 @@ parentOpenForeignSpike nameEq keyEq selected action distinct before afterState
             checked)))
       opened
 
+0 retireActionAtFoundSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  (0 found : lookupFiber @{nameEq} selected fibers = Just fiber) ->
+  applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (ORetire selected)
+    (MkSystemState ambient fibers) =
+  Just (ORetireTag, MkSystemState ambient
+    (replaceBinding @{nameEq} {key = name}
+      {value = FiberAt name key value world error}
+      selected (retireFiber fiber) fibers))
+retireActionAtFoundSpike nameEq keyEq selected ambient fibers fiber found =
+  rewrite found in Refl
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
