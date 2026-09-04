@@ -1785,6 +1785,42 @@ reloadingRetiredEndpointView nameEq selected ambient fibers component parent
         (retireFiber (MkFiber component parent retiredFlag table
           (Reloading remaining accumulator dependencyView))) fibers found in Refl)
 
+0 activeRetiredEndpointView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) -> (ambient : world) ->
+  (fibers : Registry name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (dependencyView : View name
+    (dependencies (componentDependencies component))) ->
+  (0 found : lookupFiber @{nameEq} selected fibers =
+    Just (MkFiber component parent retiredFlag table
+      (Active accumulator dependencyView))) ->
+  ParentOpenEquationView name key world error value nameEq selected
+    (MkSystemState ambient (replaceBinding @{nameEq} selected
+      (retireFiber (MkFiber component parent retiredFlag table
+        (Active accumulator dependencyView))) fibers))
+activeRetiredEndpointView nameEq selected ambient fibers component parent
+  retiredFlag table accumulator dependencyView found =
+    ParentActiveEndpointEquation
+      (retireFiber (MkFiber component parent retiredFlag table
+        (Active accumulator dependencyView)))
+      accumulator dependencyView
+      (lookupReplacedFiber selected
+        (MkFiber component parent retiredFlag table
+          (Active accumulator dependencyView))
+        (retireFiber (MkFiber component parent retiredFlag table
+          (Active accumulator dependencyView))) fibers found)
+      Refl
+      (rewrite lookupReplacedFiber selected
+        (MkFiber component parent retiredFlag table
+          (Active accumulator dependencyView))
+        (retireFiber (MkFiber component parent retiredFlag table
+          (Active accumulator dependencyView))) fibers found in Refl)
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
