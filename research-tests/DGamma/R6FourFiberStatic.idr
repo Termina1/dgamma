@@ -807,6 +807,16 @@ r143LeftPathShapeOrdered R143LeftPathAlternateUpper lowerIn upperIn =
 r143LeftSharedPathsOrdered lower upper path lowerIn upperIn =
   r143LeftPathShapeOrdered (r143LeftPathShapeProof path) lowerIn upperIn
 
+||| Positive ratification of the corrected O15 premise: one chosen order really
+||| linearizes original support even though another reduced order did not.
+0 r143OriginalSharedLinearization :
+  LinearizesSupport N K Unit String V (the (DecEq N) %search)
+    (the (DecEq K) %search) DGamma.R6FourFiberStatic.leftState
+    [Lower, Alternate, Upper]
+r143OriginalSharedLinearization = MkLinearizesSupport r143SharedOrderUnique
+  r143LeftSharedOrderSound r143LeftSharedOrderComplete
+  r143LeftSharedPathsOrdered
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
