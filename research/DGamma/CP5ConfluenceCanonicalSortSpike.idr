@@ -934,6 +934,17 @@ canonicalFiberComponentSame
     rightTable leftLifecycle rightLifecycle parentSame retiredSame
     lifecycleSame) = Refl
 
+||| Control-related fibers retain their exact registration parent.
+0 canonicalFiberParentSame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {left, right : Fiber name key value world error} ->
+  (controls : FiberControlRelated left right) ->
+  fiberParent left = fiberParent right
+canonicalFiberParentSame
+  (FibersControlRelated leftParent rightParent leftRetired rightRetired leftTable
+    rightTable leftLifecycle rightLifecycle parentSame retiredSame
+    lifecycleSame) = parentSame
+
 ||| Prove all support/parent/input-placement transport from the cumulative
 ||| endpoint relation and exact generated-registration accounting.
 public export
