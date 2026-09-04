@@ -3041,3 +3041,33 @@ removed; no surface revision is requested.  The operational O19 body remains at
 0/3 and may resume only after a producer-owned full checked countershape or an
 exclusion theorem.  Exact diagnostics are in
 `research-tests/O6-R144-CROSSTRACE-O19-DEPENDENCY-PROBE-STOP-AUDIT.md`.
+
+R144 then visited the remaining three CrossTrace holes serially.  Support-order
+matching retained checked forward/backward truth-to-membership eliminators and
+a complete two-direction assembler (`02c3baf`, `cd1ee19`, `7d0fac1`), reducing
+the hole exactly to pointwise endpoint-support preservation under the current
+name bijection.  Its body budget is exhausted at **3/3**: neither order
+membership nor inverse-name equations identify the two endpoint support fixed
+points.
+
+Operational permutation selection is also stopped at **3/3**.  The zero-swap
+constructor requires exact order equality; destructing mutual mapped membership
+does not supply it, and the nonidentity case needs a dependent finite
+transposition worklist that constructs `AdjacentActorSwapSafety` and threads the
+operational replay after every step.  The prior O19 dependency probe remains the
+first semantic gate for that recursion.
+
+O20 retained four checked projections/assemblers: the endpoint quotient and
+same-external relation fold over `OperationalActorPermutation` (`fbd6287`,
+`198ce4e`), assembly of `PermutedCanonicalExecution` (`6a67c5f`), and final
+convergence assembly from an authenticated endpoint bridge (`758daff`).  Its
+body budget is exhausted at **3/3**.  The remaining obligation is exactly
+`ReplayedCanonicalEndpointBridge`: ambient equality, renamed table equality,
+renamed controls, and exact generated-birth matching.  No replay bookkeeping
+remains hidden in that stop.
+
+All failed bodies were restored.  The final CrossTrace direct check passes from
+seeded TTCs and the census remains **13**, split **2/4/6/0/1**.  R144 ends at
+this safe gate without opening later DeletionChain work.  Full attempts,
+commands, and resume conditions are recorded in
+`research-tests/O6-R144-CROSSTRACE-SERIAL-BUDGET-STOP-AUDIT.md`.
