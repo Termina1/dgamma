@@ -1599,6 +1599,39 @@ canonicalAccountedGenerationInHistoryMap {reduction} accounting generation
       (replace {p = \generations => Elem generation generations}
         (accountedWithdrawnExact accounting) member)
 
+0 canonicalAccountedGenerationClassified :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  {original : Transitions initial originalFinal} ->
+  {reduction : ClosingFreeReduction name key world error value protocol nameEq
+    keyEq original} ->
+  {ordering : SupportOrderingCapital name key world error value nameEq keyEq
+    (reducedFinal reduction)} ->
+  {sorted : SortedClosingFreeTrace name key world error value protocol nameEq
+    keyEq (reducedTrace reduction) ordering} ->
+  (accounting : OneTraceOrchestrationAccounting name key world error value
+    protocol nameEq keyEq original reduction ordering sorted) ->
+  (generation : RegistrationGeneration name) ->
+  Elem generation (endpointWithdrawnGenerations
+    (accountedEndpoint accounting)) ->
+  DeletedGenerationClassification name key world error value nameEq original
+    generation
+canonicalAccountedGenerationClassified {reduction} accounting generation member =
+  case canonicalElemMapPreimage
+    {source = (candidate : RegistrationGeneration name **
+      DeletedGenerationClassification name key world error value nameEq original
+        candidate)}
+    {target = RegistrationGeneration name}
+    {project = DGamma.CP5ConfluenceDeletionChainSpike.classifiedGeneration}
+    (canonicalAccountedGenerationInHistoryMap accounting generation member) of
+    ((stored ** classification) ** (storedIn, exact)) =>
+      replace
+        {p = \candidate => DeletedGenerationClassification name key world error
+          value nameEq original candidate}
+        exact classification
+
 ||| Erased producer schedule used to seal the runtime schedule stored by the
 ||| bridge-facing capital.  All proof fields come from the exact indexed chain.
 public export
