@@ -924,6 +924,16 @@ canonicalOutsideFiberBackward {nameEq} {selected} {originalFinal} {reducedFinal}
       MkForeignRelatedFiberFound sourceFiber sourceFound controls =>
         (sourceFiber ** (sourceFound, fiberControlSymmetric controls))
 
+||| Control-related fibers retain the exact static component.
+0 canonicalFiberComponentSame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {left, right : Fiber name key value world error} ->
+  FiberControlRelated left right -> fiberComponent left = fiberComponent right
+canonicalFiberComponentSame
+  (FibersControlRelated leftParent rightParent leftRetired rightRetired leftTable
+    rightTable leftLifecycle rightLifecycle parentSame retiredSame
+    lifecycleSame) = Refl
+
 ||| Prove all support/parent/input-placement transport from the cumulative
 ||| endpoint relation and exact generated-registration accounting.
 public export
