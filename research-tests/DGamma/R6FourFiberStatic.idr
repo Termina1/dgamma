@@ -722,6 +722,12 @@ r143ExtendLeftPathShape R143LeftAlternateUpper R143LeftPathLowerUpper impossible
 r143ExtendLeftPathShape R143LeftAlternateUpper R143LeftPathMiddleUpper impossible
 r143ExtendLeftPathShape R143LeftAlternateUpper R143LeftPathAlternateUpper impossible
 
+0 r143OneLeftPathShape :
+  R143LeftEdgeShape lower upper -> R143LeftPathShape lower upper
+r143OneLeftPathShape R143LeftLowerMiddle = R143LeftPathLowerMiddle
+r143OneLeftPathShape R143LeftMiddleUpper = R143LeftPathMiddleUpper
+r143OneLeftPathShape R143LeftAlternateUpper = R143LeftPathAlternateUpper
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
