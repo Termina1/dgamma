@@ -4709,6 +4709,31 @@ futureRetirementEventuallyUninstalled nameEq keyEq child
       (futureRetirementEventuallyUninstalled nameEq keyEq child rest alignedRest
         finalQuiet later)
 
+0 appendLocatedClosingEpisodeRight :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {actor : name} ->
+  {first, leftFinal, finalState : SystemState name key value world error} ->
+  (left : Transitions first leftFinal) ->
+  LocatedClosedEpisode name key world error value nameEq keyEq actor left ->
+  (right : Transitions leftFinal finalState) ->
+  LocatedClosedEpisode name key world error value nameEq keyEq actor
+    (appendTransitions left right)
+appendLocatedClosingEpisodeRight left
+  (MkLocatedClosedEpisode preStart afterClose beforeOpening episode afterClosing
+    decomposition) right =
+      MkLocatedClosedEpisode preStart afterClose beforeOpening episode
+        (appendTransitions afterClosing right)
+        (trans (cong (appendTransitions beforeOpening)
+          (cong (MoreTransitions (beginTransition (closedOpening episode)))
+            (sym (appendTransitionsAssociative (closedTransitions episode)
+              afterClosing right))))
+          (trans (sym (appendTransitionsAssociative beforeOpening
+            (MoreTransitions (beginTransition (closedOpening episode))
+              (appendTransitions (closedTransitions episode) afterClosing))
+            right))
+            (cong (\candidate => appendTransitions candidate right)
+              decomposition)))
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
