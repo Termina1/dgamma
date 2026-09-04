@@ -2971,6 +2971,30 @@ mutual
           (alignedNoRecoveryHeadOpen nameEq keyEq parent transition
             (appendTransitions leftRest right) aligned opened noRecovery))
 
+0 retirementProvenanceBeforePrefixUnload :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (parent, child : name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (appendTransitions left right) ->
+  ChildRetirementProvenance parent child (appendTransitions left right) ->
+  ActionOccurs (LUnload parent) left ->
+  ParentOpenAt nameEq parent first ->
+  ActionOccurs (ORetire child) left
+retirementProvenanceBeforePrefixUnload nameEq keyEq parent child left right aligned
+  (ParentDoesNotRecover noRecovery) unload opened =
+    void (noRecoveryUnloadOccurrenceImpossible nameEq keyEq parent left
+      (fst (alignedAppendSplit left right aligned)) unload
+      (noRecoveryAppendLeft
+        (splitNoParentRecoveryAppend parent left right noRecovery)) opened)
+retirementProvenanceBeforePrefixUnload nameEq keyEq parent child left right aligned
+  (ChildRetiredBeforeParent retirement) unload opened =
+    childRetirementBeforePrefixUnload nameEq keyEq parent child left right aligned
+      retirement unload opened
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
