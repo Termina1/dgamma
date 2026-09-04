@@ -2294,6 +2294,25 @@ retirementProvenanceClosingOccurrence nameEq keyEq parent child trace
   (ChildRetiredBeforeParent retirement) closing opened =
     childRetirementOccurrence parent child trace retirement
 
+0 lifecycleOpenInstalledSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  (life : Lifecycle key value world error name deps provision) ->
+  LifecycleOpen life -> installed life = True
+lifecycleOpenInstalledSpike (Inactive outcome) OpenReloading impossible
+lifecycleOpenInstalledSpike (Inactive outcome) OpenActive impossible
+lifecycleOpenInstalledSpike
+  (Reloading remaining accumulator dependencyView) OpenReloading = Refl
+lifecycleOpenInstalledSpike
+  (Reloading remaining accumulator dependencyView) OpenActive impossible
+lifecycleOpenInstalledSpike (Active accumulator dependencyView) OpenReloading
+  impossible
+lifecycleOpenInstalledSpike (Active accumulator dependencyView) OpenActive = Refl
+lifecycleOpenInstalledSpike
+  (Unloading accumulator dependencyView outcome) OpenReloading impossible
+lifecycleOpenInstalledSpike
+  (Unloading accumulator dependencyView outcome) OpenActive impossible
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
