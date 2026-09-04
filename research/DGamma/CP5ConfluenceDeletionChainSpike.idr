@@ -5719,6 +5719,58 @@ globalGeneratedCapital nameEq keyEq globalTrace selected episode generation
     globalGeneratedCapitalAtBirth nameEq keyEq globalTrace selected episode
       generation child component birth stamp retiresLater
 
+record CompleteGenerationScan
+  (name : Type) (nameEq : DecEq name)
+  (ordinal : Nat) (live : GenerationEnvironment name)
+  {first, finalState : SystemState name key value world error}
+  (trace : Transitions first finalState) where
+  constructor MkCompleteGenerationScan
+  completeFinalOrdinal : Nat
+  completeFinalLive : GenerationEnvironment name
+  0 completeScan : GenerationTraceScan nameEq ordinal live trace
+    completeFinalOrdinal completeFinalLive
+
+0 completeGenerationScan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (ordinal : Nat) ->
+  (live : GenerationEnvironment name) ->
+  (trace : Transitions first finalState) ->
+  CompleteGenerationScan name nameEq ordinal live trace
+completeGenerationScan nameEq ordinal live NoTransitions =
+  MkCompleteGenerationScan ordinal live GenerationTraceScanEnd
+completeGenerationScan nameEq ordinal live
+  (MoreTransitions transition rest) =
+    case completeGenerationScan nameEq (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction transition) live)
+      rest of
+      MkCompleteGenerationScan finalOrdinal finalLive tailScan =>
+        MkCompleteGenerationScan finalOrdinal finalLive
+          (GenerationTraceScanStep transition rest tailScan)
+
+0 generationScanPreservesBounded :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (ordinal : Nat) ->
+  (live : GenerationEnvironment name) ->
+  (trace : Transitions first finalState) ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  (scan : GenerationTraceScan nameEq ordinal live trace finalOrdinal finalLive) ->
+  GenerationEnvironmentBounded ordinal live ->
+  GenerationEnvironmentBounded finalOrdinal finalLive
+generationScanPreservesBounded nameEq ordinal live NoTransitions ordinal live
+  GenerationTraceScanEnd bounded = bounded
+generationScanPreservesBounded nameEq ordinal live
+  (MoreTransitions transition rest) finalOrdinal finalLive
+  (GenerationTraceScanStep _ _ tailScan) bounded =
+    generationScanPreservesBounded nameEq (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction transition) live)
+      rest finalOrdinal finalLive tailScan
+      (advanceGenerationEnvironmentBounded nameEq ordinal
+        (transitionAction transition) live bounded)
+
 0 splitGenerationScanAtAppend :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
