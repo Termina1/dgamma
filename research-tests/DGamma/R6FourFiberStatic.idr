@@ -728,6 +728,17 @@ r143OneLeftPathShape R143LeftLowerMiddle = R143LeftPathLowerMiddle
 r143OneLeftPathShape R143LeftMiddleUpper = R143LeftPathMiddleUpper
 r143OneLeftPathShape R143LeftAlternateUpper = R143LeftPathAlternateUpper
 
+0 r143LeftPathShapeProof :
+  {lower, upper : N} ->
+  SupportPath (the (DecEq N) %search) DGamma.R6FourFiberStatic.leftState
+    lower upper ->
+  R143LeftPathShape lower upper
+r143LeftPathShapeProof (SupportPathOne edge) =
+  r143OneLeftPathShape (r143LeftEdgeShape edge)
+r143LeftPathShapeProof (SupportPathMore edge rest) =
+  r143ExtendLeftPathShape (r143LeftEdgeShape edge)
+    (r143LeftPathShapeProof rest)
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
