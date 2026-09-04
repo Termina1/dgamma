@@ -3285,6 +3285,22 @@ locatedActionHeadExactParts action head rest
     exactLocatedActionInTail action head rest prefixHead prefixRest transition
       later actionShape decomposition
 
+0 locatedActionHeadExactView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (action : Action name key value world error) ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (occurrence : LocatedActionOccurrence action
+    (MoreTransitions head rest)) ->
+  LocatedActionHeadExactView action head rest occurrence
+locatedActionHeadExactView action head rest occurrence =
+  case occurrence of
+    MkLocatedActionOccurrence before afterState beforeTrace transition later
+      actionShape decomposition =>
+        locatedActionHeadExactParts action head rest beforeTrace transition later
+          actionShape decomposition
+
 0 locatedActionHeadView :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
