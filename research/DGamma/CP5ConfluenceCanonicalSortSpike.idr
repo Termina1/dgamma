@@ -1017,6 +1017,21 @@ canonicalParentEdgeForwardFromFiber edge childTarget =
     (trans (sym (canonicalFiberParentSame
       (forwardTargetControls childTarget))) (childParent edge))
 
+||| Transport a parent edge when its child is outside the raw withdrawal list.
+0 canonicalParentEdgeForward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {parent, child : name} ->
+  {originalFinal, reducedFinal : SystemState name key value world error} ->
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
+    originalFinal reducedFinal) ->
+  Not (Elem child (endpointWithdrawnNames endpoint)) ->
+  ParentSupportEdge nameEq parent child originalFinal ->
+  ParentSupportEdge nameEq parent child reducedFinal
+canonicalParentEdgeForward endpoint childOutside edge =
+  canonicalParentEdgeForwardFromFiber edge
+    (canonicalOutsideFiberForward endpoint childOutside (childFiber edge)
+      (childFound edge))
+
 ||| Prove all support/parent/input-placement transport from the cumulative
 ||| endpoint relation and exact generated-registration accounting.
 public export
