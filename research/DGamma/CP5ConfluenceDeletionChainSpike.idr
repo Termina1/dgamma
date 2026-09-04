@@ -2716,6 +2716,28 @@ alignedGeneratedRegistrationParts nameEq keyEq global child parent component
         alignedChildInsertActionTransport nameEq keyEq child parent component
           action tag before afterState rest checked alignedTail actionShape
 
+0 childRetirementFromGeneratedCapital :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  {finalState : SystemState name key value world error} ->
+  (rest : Transitions afterState finalState) ->
+  (alignedStep : AlignedChildInsertStep name key world error value nameEq keyEq
+    child parent component before afterState rest) ->
+  RegistrationStepDiscipline protocol nameEq
+    (OInsert child (ChildOf parent) component) before rest ->
+  ActionOccurs (LUnload parent) rest ->
+  ActionOccurs (ORetire child) rest
+childRetirementFromGeneratedCapital protocol nameEq keyEq child parent component
+  before afterState rest alignedStep discipline unload =
+    retirementProvenanceUnloadOccurrence nameEq keyEq parent child rest
+      (childInsertTailAligned alignedStep) (snd discipline) unload
+      (parentOpenAfterChildInsert protocol nameEq keyEq child parent component
+        (childInsertTag alignedStep) before afterState
+        (childInsertChecked alignedStep) (fst discipline))
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
