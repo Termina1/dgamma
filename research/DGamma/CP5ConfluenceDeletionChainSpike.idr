@@ -5171,6 +5171,20 @@ futureRegisteredBeginContradictsMaximal nameEq keyEq actor generation
         globalTrace leading current globalSplit prefixOrdinal upper tag checked
         rest currentShape alignedRest finalQuiet retires
 
+0 retiredSourceRejectsBegin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} (LBegin actor) before =
+    Just (tag, afterState)) ->
+  (0 retiredAt : RetiredFiberAt name key world error value nameEq actor before) ->
+  Void
+retiredSourceRejectsBegin nameEq keyEq actor before afterState tag raw retiredAt =
+  retiredCannotBeginState nameEq keyEq actor before afterState tag raw
+    (retiredFiberAt retiredAt) (retiredFiberFound retiredAt)
+    (retiredFiberTrue retiredAt)
+
 0 singletonCurrentRegisteredInactive :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (actor : name) ->
