@@ -1344,8 +1344,8 @@ advanceSurvivingRegistrationIndexDeletedExact nameEq ordinal child parent
       (lookupParentActivation @{nameEq} parent activations) Refl
 
 ||| Once an exact generation is in the left scanner's deleted index, every
-||| accepted continuation preserves that membership through all seven scanner
-||| constructor classes.
+||| accepted continuation preserves that membership through every scanner
+||| constructor class.
 0 leftCorrespondencePreservesDeleted :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) ->
