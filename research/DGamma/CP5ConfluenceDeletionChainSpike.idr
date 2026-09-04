@@ -4514,6 +4514,68 @@ retiredAcrossActionStep nameEq keyEq actor action before afterState tag raw
       Yes same => retiredOwnerActionStep nameEq keyEq actor action same before
         afterState tag raw retiredFiber retiredFound retiredTrue
 
+0 retiredActiveQuietImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world
+      (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (fibers : Registry name key value world error) ->
+  (0 retiredTrue : retiredFlag = True) ->
+  (0 fiberQuiet : quietFiber @{nameEq} @{keyEq}
+    (MkFiber component parent retiredFlag table (Active accumulator view))
+    fibers = True) -> Void
+retiredActiveQuietImpossible nameEq keyEq component parent retiredFlag table
+  accumulator view fibers retiredTrue fiberQuiet =
+    falseNotTrueO7 (replace
+      {p = \flag => quietFiber @{nameEq} @{keyEq}
+        (MkFiber component parent flag table (Active accumulator view)) fibers =
+        True} retiredTrue fiberQuiet)
+
+0 retiredQuietFiberUninstalled :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (state : SystemState name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  (0 found : lookupFiber @{nameEq} actor (registry state) = Just fiber) ->
+  (0 retiredTrue : retired fiber = True) ->
+  (0 fiberQuiet : quietFiber @{nameEq} @{keyEq} fiber (registry state) = True) ->
+  installedAt @{nameEq} actor state = False
+retiredQuietFiberUninstalled nameEq keyEq actor state
+  (MkFiber component parent retiredFlag table (Inactive outcome)) found
+  retiredTrue fiberQuiet =
+    trans (installedAtFound nameEq actor state
+      (MkFiber component parent retiredFlag table (Inactive outcome)) found) Refl
+retiredQuietFiberUninstalled nameEq keyEq actor state
+  (MkFiber component parent retiredFlag table
+    (Reloading remaining accumulator view)) found retiredTrue fiberQuiet =
+      void (falseNotTrueO7 fiberQuiet)
+retiredQuietFiberUninstalled nameEq keyEq actor state
+  (MkFiber component parent retiredFlag table (Active accumulator view)) found
+  retiredTrue fiberQuiet =
+    void (retiredActiveQuietImpossible nameEq keyEq component parent retiredFlag
+      table accumulator view (registry state) retiredTrue fiberQuiet)
+retiredQuietFiberUninstalled nameEq keyEq actor state
+  (MkFiber component parent retiredFlag table
+    (Unloading accumulator view outcome)) found retiredTrue fiberQuiet =
+      void (falseNotTrueO7 fiberQuiet)
+
+0 retiredQuietUninstalled :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (state : SystemState name key value world error) ->
+  (0 quietState : quiet @{nameEq} @{keyEq} state = True) ->
+  RetireTargetLookupView name key world error value nameEq actor state ->
+  installedAt @{nameEq} actor state = False
+retiredQuietUninstalled nameEq keyEq actor state quietState
+  (MkRetireTargetLookupView fiber found retiredTrue) =
+    retiredQuietFiberUninstalled nameEq keyEq actor state fiber found retiredTrue
+      (quietFiberFromState nameEq keyEq state quietState actor fiber found)
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
