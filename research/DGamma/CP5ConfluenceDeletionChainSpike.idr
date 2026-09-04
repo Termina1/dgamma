@@ -1593,6 +1593,54 @@ maximalClosingHasNoScopedDependent scan selected episode upper startOrdinal
          startStrictlyBeforeLocalSuccessor startOrdinal
            (locatedActionOrdinal (scopedConsumerOpening scoped)))
 
+bumpGeneration : RegistrationGeneration name -> RegistrationGeneration name
+bumpGeneration (MkRegistrationGeneration actor ordinal) =
+  MkRegistrationGeneration actor (S ordinal)
+
+0 prependLocatedActionOccurrence :
+  (head : Transition first middle) -> (rest : Transitions middle finalState) ->
+  LocatedActionOccurrence action rest ->
+  LocatedActionOccurrence action (MoreTransitions head rest)
+prependLocatedActionOccurrence head rest
+  (MkLocatedActionOccurrence before after earlier transition later actionShape
+    decomposition) =
+      MkLocatedActionOccurrence before after (MoreTransitions head earlier)
+        transition later actionShape (cong (MoreTransitions head) decomposition)
+
+LocatedActionHeadView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (action : Action name key value world error) ->
+  (headTransition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  LocatedActionOccurrence action (MoreTransitions headTransition rest) -> Type
+LocatedActionHeadView action headTransition rest occurrence =
+  Either
+    (transitionAction headTransition = action,
+     locatedActionOrdinal occurrence = Z)
+    (tailOccurrence : LocatedActionOccurrence action rest **
+     locatedActionOrdinal occurrence = S (locatedActionOrdinal tailOccurrence))
+
+0 locatedActionHeadView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  {action : Action name key value world error} ->
+  (head : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (occurrence : LocatedActionOccurrence action (MoreTransitions head rest)) ->
+  LocatedActionHeadView action head rest occurrence
+locatedActionHeadView head rest
+  (MkLocatedActionOccurrence before after NoTransitions transition later
+    actionShape decomposition) =
+      case decomposition of Refl => Left (actionShape, Refl)
+locatedActionHeadView head rest
+  (MkLocatedActionOccurrence before after
+    (MoreTransitions prefixHead prefixRest) transition later actionShape
+      decomposition) =
+        case decomposition of
+          Refl => Right
+            (MkLocatedActionOccurrence before after prefixRest transition later
+              actionShape Refl ** Refl)
+
 ||| Independently testable O8 result.  A selected maximal/deletable candidate is
 ||| tied back to an ordinal produced by the exact O7 scan; the empty branch is
 ||| definitionally separated from the O9 deletion adapter.
