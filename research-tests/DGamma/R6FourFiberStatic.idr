@@ -253,6 +253,18 @@ acceptedCanonicalEndpointAllowsIntermediate = MkCanonicalEndpointRelation
 0 r143RootNotChild : {parent : N} -> Root = ChildOf parent -> Void
 r143RootNotChild Refl impossible
 
+||| Every successful right-endpoint lookup returns a root fiber. The lookup
+||| equation owns the exact fiber reindexing used below.
+0 r143RightFoundRoot :
+  (selected : N) -> (fiber : Fiber N K V Unit String) ->
+  lookupFiber @{the (DecEq N) %search} selected
+    (registry DGamma.R6FourFiberStatic.rightState) = Just fiber ->
+  fiberParent fiber = Root
+r143RightFoundRoot Lower fiber found = case found of Refl => Refl
+r143RightFoundRoot Middle fiber found = case found of Refl impossible
+r143RightFoundRoot Alternate fiber found = case found of Refl => Refl
+r143RightFoundRoot Upper fiber found = case found of Refl => Refl
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
