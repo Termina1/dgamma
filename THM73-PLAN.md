@@ -3007,3 +3007,24 @@ seeded package build. A subsequent build after deleting `build/` was killed by
 the host with signal 9 / exit 137. Per the mandatory failed-build stop rule, no
 retry and no O17 body attempt followed. The next shift must first rerun the clean
 package build with sufficient memory at the safe R143 audit boundary.
+
+### Revision 144: O17 base assembly and stable-sort budget stop
+
+The supervisor re-established the clean 207/207 build and warm production TTC
+cache before R144.  O17 retained three checked base units:
+`canonicalElemEmpty`, the exact no-withdrawal reflexive sorting endpoint, and
+`canonicalSortedIdentity`, which assembles the complete terminal
+`SortedClosingFreeTrace` from already-canonical block/input/registration
+capital and a genuine zero-step adjacent derivation.
+
+The O17 body then exhausted **3/3** attempts.  The identity assembler exposes
+the precise remaining algorithmic telescope, and supplying the
+`ClosingFreeTraceShape` episode does not collapse an interleaved installed
+interval into a `LocatedOpenEpisodeBlock`.  A producer-owned operational
+stable-sort recursion must first hoist root orchestration and actor-owned
+lifecycle/yielded-registration nodes while carrying the current replay bundle,
+finite swap derivation, external-input order, occurrence provenance, and exact
+block ranges.  No countershape or surface defect was found; all failed bodies
+were removed.  O17 remains open and is audit-stopped for R144.  The census stays
+**13**, split **2/4/6/0/1**.  Exact attempt and validation evidence is in
+`research-tests/O6-R144-O17-SORT-BASE-BUDGET-STOP-AUDIT.md`.
