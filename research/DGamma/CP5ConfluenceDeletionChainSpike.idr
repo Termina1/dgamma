@@ -1709,6 +1709,27 @@ parentOpenFromForeignLookupFrame nameEq selected before afterState frame
   (MkParentOpenAt fiber found opened) =
     MkParentOpenAt fiber (trans frame found) opened
 
+0 parentOpenForeignSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) -> (action : Action name key value world error) ->
+  (0 distinct : Not (selected = actionOwner action)) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  ParentOpenAt nameEq selected before ->
+  ParentOpenAt nameEq selected afterState
+parentOpenForeignSpike nameEq keyEq selected action distinct before afterState
+  tag checked opened =
+    parentOpenFromForeignLookupFrame nameEq selected before afterState
+      (systemLocalUpdateForeign nameEq selected (actionOwner action) distinct
+        before afterState
+        (applyActionLocalUpdate nameEq keyEq action before afterState tag
+          (checkedActionProjects nameEq keyEq action before afterState tag
+            checked)))
+      opened
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
