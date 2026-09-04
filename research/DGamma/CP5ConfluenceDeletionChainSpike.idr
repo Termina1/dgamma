@@ -3318,6 +3318,18 @@ actionOccursAtSingletonAppend action (MoreTransitions transition rest)
     ActionOccursLater transition _
       (actionOccursAtSingletonAppend action rest closingTransition actionShape)
 
+0 actionOccursTraceEquality :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (action : Action name key value world error) ->
+  (left, right : Transitions first finalState) ->
+  (0 exactTrace : left = right) ->
+  ActionOccurs action right ->
+  ActionOccurs action left
+actionOccursTraceEquality action left right exactTrace occurrence =
+  case exactTrace of
+    Refl => occurrence
+
 0 locatedActionHeadView :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
