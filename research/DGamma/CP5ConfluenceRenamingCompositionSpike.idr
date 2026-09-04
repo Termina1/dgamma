@@ -2467,6 +2467,46 @@ renamedMaybeRightAbsentSpike renaming RenamedAbsent = Refl
   MaybeFiberRelatedBy renaming left right
 renamedAbsentFromEqualitiesSpike renaming Refl Refl = RenamedAbsent
 
+||| A canonical-side absence traverses the exact domain-preserving replay and
+||| bridge controls.  These equations discharge the already-absent half of each
+||| unilateral withdrawal branch without inspecting registry order.
+0 outerRightAbsentFromLeftCanonicalAbsentSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftCanonical, replayed, rightCanonical, rightOriginal :
+    Maybe (Fiber name key value world error)} ->
+  (renaming : NameBijection name) -> leftCanonical = Nothing ->
+  FiberControlMaybeRelated leftCanonical replayed ->
+  MaybeFiberRelatedBy renaming replayed rightCanonical ->
+  FiberControlMaybeRelated rightOriginal rightCanonical ->
+  rightOriginal = Nothing
+outerRightAbsentFromLeftCanonicalAbsentSpike renaming Refl NoControlFibers
+  RenamedAbsent NoControlFibers = Refl
+
+0 outerLeftAbsentFromRightCanonicalAbsentSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftOriginal, leftCanonical, replayed, rightCanonical :
+    Maybe (Fiber name key value world error)} ->
+  (renaming : NameBijection name) -> rightCanonical = Nothing ->
+  MaybeFiberRelatedBy renaming replayed rightCanonical ->
+  FiberControlMaybeRelated leftCanonical replayed ->
+  FiberControlMaybeRelated leftOriginal leftCanonical ->
+  leftOriginal = Nothing
+outerLeftAbsentFromRightCanonicalAbsentSpike renaming rightAbsent bridge
+  replay leftEndpoint =
+    controlMaybeRightAbsentSpike
+      (replace
+        {p = \candidate => FiberControlMaybeRelated leftOriginal candidate}
+        (controlMaybeRightAbsentSpike
+          (replace
+            {p = \candidate => FiberControlMaybeRelated leftCanonical candidate}
+            (renamedMaybeRightAbsentSpike renaming
+              (replace
+                {p = \candidate => MaybeFiberRelatedBy renaming replayed
+                  candidate}
+                rightAbsent bridge))
+            replay))
+        leftEndpoint)
+
 ||| Outside both canonical withdrawal name sets, the four pointwise control
 ||| steps compose to an ordinary renamed fiber relation.
 0 replayedCanonicalOuterControlOutsideSpike :
