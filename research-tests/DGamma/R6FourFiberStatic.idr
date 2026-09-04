@@ -293,6 +293,25 @@ r143MiddleLookupImpossible found = case found of Refl impossible
 r143UpperProvidesNothing found wanted provides =
   case found of Refl => absurd provides
 
+||| Every concrete reduced support edge starts at the alternate provider.
+0 r143RightEdgeStartsAlternate :
+  {lower, upper : N} ->
+  SupportEdge (the (DecEq N) %search) DGamma.R6FourFiberStatic.rightState
+    lower upper ->
+  lower = Alternate
+r143RightEdgeStartsAlternate {lower = Lower} edge =
+  void (noRightEdgeFromLower edge)
+r143RightEdgeStartsAlternate {lower = Middle} (SupportPrecedence edge) =
+  void (r143MiddleLookupImpossible (providerFound edge))
+r143RightEdgeStartsAlternate {lower = Middle} (SupportParent edge) =
+  void (r143NoRightParentEdge edge)
+r143RightEdgeStartsAlternate {lower = Alternate} edge = Refl
+r143RightEdgeStartsAlternate {lower = Upper} (SupportPrecedence edge) =
+  void (r143UpperProvidesNothing (providerFound edge) (edgeKey edge)
+    (providerDeclares edge))
+r143RightEdgeStartsAlternate {lower = Upper} (SupportParent edge) =
+  void (r143NoRightParentEdge edge)
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
