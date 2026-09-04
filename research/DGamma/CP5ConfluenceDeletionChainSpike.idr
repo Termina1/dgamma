@@ -6233,6 +6233,66 @@ registeredGenerationNoEpisode nameEq keyEq globalTrace selected episode generati
       (globalGeneratedCapital nameEq keyEq globalTrace selected episode generation
         generated)
 
+0 noRegisteredEmptyGenerations :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (ordinal : Nat) ->
+  (live : GenerationEnvironment name) ->
+  (trace : Transitions first finalState) ->
+  NoRegisteredEpisode nameEq [] ordinal live trace
+noRegisteredEmptyGenerations nameEq ordinal live NoTransitions =
+  NoRegisteredEpisodeEnd
+noRegisteredEmptyGenerations nameEq ordinal live
+  (MoreTransitions transition rest) =
+    NoRegisteredEpisodeStep transition rest
+      (\begin, owned => case owned of
+        (generation ** (current, member)) => absurd member)
+      (noRegisteredEmptyGenerations nameEq (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal
+          (transitionAction transition) live)
+        rest)
+
+0 allGeneratedChildrenHaveNoEpisode :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (globalTrace : Transitions initial finalState) -> (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected globalTrace) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (0 sound : (generation : RegistrationGeneration name) ->
+    Elem generation registered ->
+    GeneratedDuring name key world error value selected
+      (transitionCount (traceBeforeOpening episode))
+      (MoreTransitions
+        (beginTransition (closedOpening (locatedEpisode episode)))
+        (closedTransitions (locatedEpisode episode))) generation) ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  (0 fullScan : GenerationTraceScan nameEq 0 [] globalTrace finalOrdinal
+    finalLive) ->
+  (0 aligned : AlignedTransitions name key world error value nameEq keyEq
+    globalTrace) ->
+  (0 finalQuiet : quiet @{nameEq} @{keyEq} finalState = True) ->
+  (0 upper : (closingActor : name) ->
+    (closingEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+      closingActor globalTrace) ->
+    LTE (transitionCount (traceBeforeOpening closingEpisode))
+      (transitionCount (traceBeforeOpening episode))) ->
+  NoRegisteredEpisode nameEq registered 0 [] globalTrace
+allGeneratedChildrenHaveNoEpisode nameEq keyEq globalTrace selected episode []
+  sound finalOrdinal finalLive fullScan aligned finalQuiet upper =
+    noRegisteredEmptyGenerations nameEq 0 [] globalTrace
+allGeneratedChildrenHaveNoEpisode nameEq keyEq globalTrace selected episode
+  (generation :: rest) sound finalOrdinal finalLive fullScan aligned finalQuiet
+  upper =
+    combineNoRegistered nameEq generation rest 0 [] globalTrace
+      (registeredGenerationNoEpisode nameEq keyEq globalTrace selected episode
+        generation (sound generation Here) finalOrdinal finalLive fullScan
+        aligned finalQuiet upper)
+      (allGeneratedChildrenHaveNoEpisode nameEq keyEq globalTrace selected
+        episode rest (\candidate, member => sound candidate (There member))
+        finalOrdinal finalLive fullScan aligned finalQuiet upper)
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
