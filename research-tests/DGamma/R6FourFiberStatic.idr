@@ -532,6 +532,15 @@ r143LeftFoundRoot Middle fiber found = case found of Refl => Refl
 r143LeftFoundRoot Alternate fiber found = case found of Refl => Refl
 r143LeftFoundRoot Upper fiber found = case found of Refl => Refl
 
+0 r143NoLeftParentEdge :
+  {parent, child : N} ->
+  ParentSupportEdge (the (DecEq N) %search) parent child
+    DGamma.R6FourFiberStatic.leftState -> Void
+r143NoLeftParentEdge {child}
+  (MkParentSupportEdge childFiber childFound childParent) =
+    r143RootNotChild
+      (trans (sym (r143LeftFoundRoot child childFiber childFound)) childParent)
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
