@@ -4160,6 +4160,76 @@ buildChildGenerationInventory nameEq selected startOrdinal
           (Fired stepNameEq stepKeyEq (LUnload actor) tag checked) rest
           allRetire))
 
+0 maximalCandidateFromGenerationScan :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol
+    nameEq keyEq trace) ->
+  (scan : ClosingEpisodeScan name key world error value nameEq keyEq trace) ->
+  (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected trace) ->
+  ((other : ClosingEpisodeOccurrence name key world error value nameEq keyEq
+      trace) ->
+    Elem other (scannedClosingOccurrences scan) ->
+    LTE (scannedClosingOrdinal other)
+      (transitionCount (traceBeforeOpening episode))) ->
+  (startOrdinal : Nat) -> (startLive : GenerationEnvironment name) ->
+  (beforeScan : GenerationTraceScan nameEq 0 []
+    (traceBeforeOpening episode) startOrdinal startLive) ->
+  ((inventory : ChildGenerationInventory name key world error value selected
+      startOrdinal
+      (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode)))
+        (closedTransitions (locatedEpisode episode)))) ->
+    NoRegisteredEpisode nameEq (selectedGenerations inventory) 0 [] trace) ->
+  DeletableClosingEpisode name key world error value nameEq keyEq trace
+maximalCandidateFromGenerationScan nameEq keyEq protocol trace premises scan
+  selected episode upper startOrdinal startLive beforeScan noRegistered =
+    MkDeletableClosingEpisode selected episode
+      (selectedGenerations
+        (buildChildGenerationInventory nameEq selected startOrdinal
+          (MoreTransitions
+            (beginTransition (closedOpening (locatedEpisode episode)))
+            (closedTransitions (locatedEpisode episode)))
+          (\child, component, birth =>
+            selectedChildRetirementAfterBirth protocol nameEq keyEq trace selected
+              child component episode (replayAligned (chainReplayCapital premises))
+              (replayDiscipline (chainReplayCapital premises)) birth)))
+      (selectedInventoryOutside protocol nameEq keyEq trace selected episode
+        (replayAligned (chainReplayCapital premises))
+        (replayDiscipline (chainReplayCapital premises)) startOrdinal
+        (buildChildGenerationInventory nameEq selected startOrdinal
+          (MoreTransitions
+            (beginTransition (closedOpening (locatedEpisode episode)))
+            (closedTransitions (locatedEpisode episode)))
+          (\child, component, birth =>
+            selectedChildRetirementAfterBirth protocol nameEq keyEq trace selected
+              child component episode (replayAligned (chainReplayCapital premises))
+              (replayDiscipline (chainReplayCapital premises)) birth)))
+      startOrdinal startLive beforeScan
+      (registeredDuringFromInventory
+        (buildChildGenerationInventory nameEq selected startOrdinal
+          (MoreTransitions
+            (beginTransition (closedOpening (locatedEpisode episode)))
+            (closedTransitions (locatedEpisode episode)))
+          (\child, component, birth =>
+            selectedChildRetirementAfterBirth protocol nameEq keyEq trace selected
+              child component episode (replayAligned (chainReplayCapital premises))
+              (replayDiscipline (chainReplayCapital premises)) birth)))
+      (maximalClosingHasNoScopedDependent scan selected episode upper
+        startOrdinal startLive)
+      (noRegistered
+        (buildChildGenerationInventory nameEq selected startOrdinal
+          (MoreTransitions
+            (beginTransition (closedOpening (locatedEpisode episode)))
+            (closedTransitions (locatedEpisode episode)))
+          (\child, component, birth =>
+            selectedChildRetirementAfterBirth protocol nameEq keyEq trace selected
+              child component episode (replayAligned (chainReplayCapital premises))
+              (replayDiscipline (chainReplayCapital premises)) birth)))
+
 ||| Independently testable O8 result.  A selected maximal/deletable candidate is
 ||| tied back to an ordinal produced by the exact O7 scan; the empty branch is
 ||| definitionally separated from the O9 deletion adapter.
