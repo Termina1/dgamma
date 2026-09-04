@@ -265,6 +265,16 @@ r143RightFoundRoot Middle fiber found = case found of Refl impossible
 r143RightFoundRoot Alternate fiber found = case found of Refl => Refl
 r143RightFoundRoot Upper fiber found = case found of Refl => Refl
 
+||| The concrete reduced endpoint has no parent half of Equation 62.
+0 r143NoRightParentEdge :
+  {parent, child : N} ->
+  ParentSupportEdge (the (DecEq N) %search) parent child
+    DGamma.R6FourFiberStatic.rightState -> Void
+r143NoRightParentEdge {child}
+  (MkParentSupportEdge childFiber childFound childParent) =
+    r143RootNotChild
+      (trans (sym (r143RightFoundRoot child childFiber childFound)) childParent)
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
