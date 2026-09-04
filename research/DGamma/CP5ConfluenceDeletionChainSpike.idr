@@ -4160,6 +4160,12 @@ buildChildGenerationInventory nameEq selected startOrdinal
           (Fired stepNameEq stepKeyEq (LUnload actor) tag checked) rest
           allRetire))
 
+0 retiredAfterRetireSpike :
+  (fiber : Fiber name key value world error) ->
+  retired (retireFiber fiber) = True
+retiredAfterRetireSpike
+  (MkFiber component parent retiredFlag table lifecycle) = Refl
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
