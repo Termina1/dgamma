@@ -943,6 +943,24 @@ canonicalSharedOrderSupportSame {nameEq} {keyEq} {originalFinal} {reducedFinal}
 canonicalSupportedNotElem unsupported supported member =
   canonicalFalseNotTrue (trans (sym (unsupported member)) supported)
 
+0 canonicalOrderedNameOutsideWithdrawals :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {originalFinal, reducedFinal : SystemState name key value world error} ->
+  {order : List name} ->
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
+    originalFinal reducedFinal) ->
+  (originalLinearization : LinearizesSupport name key world error value nameEq
+    keyEq originalFinal order) ->
+  Elem selected order ->
+  Not (Elem selected (endpointWithdrawnNames endpoint))
+canonicalOrderedNameOutsideWithdrawals {nameEq} {keyEq} {selected}
+  {originalFinal} {reducedFinal} endpoint originalLinearization selectedIn =
+    canonicalSupportedNotElem
+      (canonicalWithdrawnOriginalUnsupported nameEq keyEq selected originalFinal
+        reducedFinal . endpointNamesWithdrawn endpoint selected)
+      (orderSound originalLinearization selected selectedIn)
+
 ||| Producer-owned exact target lookup used to keep a transported edge's fiber,
 ||| lookup equation, and control proof correlated without repeated elimination.
 record CanonicalOutsideFiberForward
