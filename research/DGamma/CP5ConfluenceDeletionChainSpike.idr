@@ -2795,6 +2795,34 @@ childRetirementAtGeneratedOccurrence protocol nameEq keyEq global child parent
             parent component before afterState beforeTrace transition rest
             actionShape decomposition aligned discipline unload
 
+record ChildRetirementHeadView
+  (name, key, world, error : Type) (value : key -> Type)
+  (parent, child : name)
+  {first, middle, finalState : SystemState name key value world error}
+  (transition : Transition first middle)
+  (rest : Transitions middle finalState) where
+  constructor MkChildRetirementHeadView
+  0 childRetiresAtHead : Either
+    (transitionAction transition = ORetire child)
+    ((ParentRecoveryStep parent transition -> Void),
+     ChildRetiresBeforeRecovery parent child rest)
+
+0 childRetirementHeadView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (parent, child : name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (transition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  ChildRetiresBeforeRecovery parent child
+    (MoreTransitions transition rest) ->
+  ChildRetirementHeadView name key world error value parent child transition rest
+childRetirementHeadView parent child _ _
+  (ChildRetiresNow transition rest retires) =
+    MkChildRetirementHeadView (Left retires)
+childRetirementHeadView parent child _ _
+  (ChildRetiresLater transition rest noRecovery tail) =
+    MkChildRetirementHeadView (Right (noRecovery, tail))
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
