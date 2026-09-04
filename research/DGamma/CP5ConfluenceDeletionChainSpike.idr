@@ -4264,6 +4264,20 @@ retiredCannotBeginState nameEq keyEq actor (MkSystemState ambient fibers)
         (beginEquationFromApplySpike nameEq keyEq actor ambient fibers fiber found
           tag afterState raw))
 
+0 retiredCannotBeginSpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (LBegin actor) before =
+    Just (tag, afterState) ->
+  (fiber : Fiber name key value world error **
+    (lookupFiber @{nameEq} actor (registry before) = Just fiber,
+     retired fiber = True)) -> Void
+retiredCannotBeginSpike nameEq keyEq actor before afterState tag raw
+  (fiber ** (found, retiredTrue)) =
+    retiredCannotBeginState nameEq keyEq actor before afterState tag raw fiber
+      found retiredTrue
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
