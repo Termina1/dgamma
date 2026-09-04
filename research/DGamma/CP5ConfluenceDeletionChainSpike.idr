@@ -2995,6 +2995,30 @@ retirementProvenanceBeforePrefixUnload nameEq keyEq parent child left right alig
     childRetirementBeforePrefixUnload nameEq keyEq parent child left right aligned
       retirement unload opened
 
+0 childRetirementFromGeneratedPrefixCapital :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  {middle, finalState : SystemState name key value world error} ->
+  (left : Transitions afterState middle) ->
+  (right : Transitions middle finalState) ->
+  (alignedStep : AlignedChildInsertStep name key world error value nameEq keyEq
+    child parent component before afterState (appendTransitions left right)) ->
+  RegistrationStepDiscipline protocol nameEq
+    (OInsert child (ChildOf parent) component) before
+    (appendTransitions left right) ->
+  ActionOccurs (LUnload parent) left ->
+  ActionOccurs (ORetire child) left
+childRetirementFromGeneratedPrefixCapital protocol nameEq keyEq child parent
+  component before afterState left right alignedStep discipline unload =
+    retirementProvenanceBeforePrefixUnload nameEq keyEq parent child left right
+      (childInsertTailAligned alignedStep) (snd discipline) unload
+      (parentOpenAfterChildInsert protocol nameEq keyEq child parent component
+        (childInsertTag alignedStep) before afterState
+        (childInsertChecked alignedStep) (fst discipline))
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
