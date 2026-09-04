@@ -3301,6 +3301,23 @@ locatedActionHeadExactView action head rest occurrence =
         locatedActionHeadExactParts action head rest beforeTrace transition later
           actionShape decomposition
 
+0 actionOccursAtSingletonAppend :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, beforeClosing, finalState : SystemState name key value world error} ->
+  (action : Action name key value world error) ->
+  (leading : Transitions first beforeClosing) ->
+  (closingTransition : Transition beforeClosing finalState) ->
+  (0 actionShape : transitionAction closingTransition = action) ->
+  ActionOccurs action
+    (appendTransitions leading
+      (MoreTransitions closingTransition NoTransitions))
+actionOccursAtSingletonAppend action NoTransitions closingTransition
+  actionShape = ActionOccursHere closingTransition NoTransitions actionShape
+actionOccursAtSingletonAppend action (MoreTransitions transition rest)
+  closingTransition actionShape =
+    ActionOccursLater transition _
+      (actionOccursAtSingletonAppend action rest closingTransition actionShape)
+
 0 locatedActionHeadView :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
