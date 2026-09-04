@@ -3173,6 +3173,45 @@ LocatedActionHeadView action headTransition rest occurrence =
     (tailOccurrence : LocatedActionOccurrence action rest **
      locatedActionOrdinal occurrence = S (locatedActionOrdinal tailOccurrence))
 
+data LocatedActionHeadExactView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (action : Action name key value world error) ->
+  (headTransition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (occurrence : LocatedActionOccurrence action
+    (MoreTransitions headTransition rest)) -> Type where
+  ExactLocatedActionAtHead :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    {action : Action name key value world error} ->
+    {headTransition : Transition first middle} ->
+    {rest : Transitions middle finalState} ->
+    {occurrence : LocatedActionOccurrence action
+      (MoreTransitions headTransition rest)} ->
+    (0 actionShape : transitionAction headTransition = action) ->
+    (0 exactAfterState : actionAfterState occurrence = middle) ->
+    (0 exactAfter : replace
+      {p = \state => Transitions state finalState} exactAfterState
+      (afterActionOccurrence occurrence) = rest) ->
+    LocatedActionHeadExactView action headTransition rest occurrence
+  ExactLocatedActionInTail :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    {action : Action name key value world error} ->
+    {headTransition : Transition first middle} ->
+    {rest : Transitions middle finalState} ->
+    {occurrence : LocatedActionOccurrence action
+      (MoreTransitions headTransition rest)} ->
+    (0 tailOccurrence : LocatedActionOccurrence action rest) ->
+    (0 exactAfterState : actionAfterState occurrence =
+      actionAfterState tailOccurrence) ->
+    (0 exactAfter : replace
+      {p = \state => Transitions state finalState} exactAfterState
+      (afterActionOccurrence occurrence) =
+      afterActionOccurrence tailOccurrence) ->
+    LocatedActionHeadExactView action headTransition rest occurrence
+
 0 locatedActionHeadView :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
