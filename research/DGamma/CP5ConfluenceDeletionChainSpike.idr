@@ -2505,6 +2505,25 @@ noRecoveryUnloadOccurrenceImpossible nameEq keyEq selected _ aligned
         (noParentRecoveryAtHead
           (noParentRecoveryConsView selected transition rest noRecovery)))
 
+0 retirementProvenanceUnloadOccurrence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (parent, child : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  ChildRetirementProvenance parent child trace ->
+  ActionOccurs (LUnload parent) trace ->
+  ParentOpenAt nameEq parent first ->
+  ActionOccurs (ORetire child) trace
+retirementProvenanceUnloadOccurrence nameEq keyEq parent child trace aligned
+  (ParentDoesNotRecover noRecovery) unload opened =
+    void (noRecoveryUnloadOccurrenceImpossible nameEq keyEq parent trace aligned
+      unload noRecovery opened)
+retirementProvenanceUnloadOccurrence nameEq keyEq parent child trace aligned
+  (ChildRetiredBeforeParent retirement) unload opened =
+    childRetirementOccurrence parent child trace retirement
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
