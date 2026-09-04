@@ -2562,6 +2562,20 @@ registrationDisciplineAppendRight protocol nameEq
   (RegistrationDisciplineStep _ _ step tail) =
     registrationDisciplineAppendRight protocol nameEq rest right tail
 
+0 registrationDisciplineHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (transition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  RegistrationDiscipline protocol nameEq
+    (MoreTransitions transition rest) ->
+  RegistrationStepDiscipline protocol nameEq (transitionAction transition)
+    first rest
+registrationDisciplineHead protocol nameEq _ _
+  (RegistrationDisciplineStep transition rest step tail) = step
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
