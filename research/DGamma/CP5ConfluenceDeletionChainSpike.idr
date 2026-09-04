@@ -4217,6 +4217,18 @@ retiredFiberBeginNothing nameEq keyEq actor
     retiredLifecycleBeginNothing nameEq keyEq actor component parent retiredFlag
       table lifecycle state retiredTrue
 
+0 applyBeginAtFoundSpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} actor fibers = Just fiber ->
+  applyAction @{nameEq} @{keyEq} (LBegin actor)
+    (MkSystemState ambient fibers) =
+  beginFiberAction @{nameEq} @{keyEq} actor fiber
+    (MkSystemState ambient fibers)
+applyBeginAtFoundSpike nameEq keyEq actor ambient fibers fiber found =
+  rewrite found in Refl
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
