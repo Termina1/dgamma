@@ -2084,6 +2084,26 @@ parentOpenInstalledStepSpike nameEq keyEq selected action tag before afterState
       Yes Refl => parentOpenOwnerStepSpike nameEq keyEq action tag before
         afterState checked sourceInstalled targetInstalled opened noRecovery
 
+record NoParentRecoveryConsView
+  (name, key, world, error : Type) (value : key -> Type)
+  {first, middle, finalState : SystemState name key value world error}
+  (parent : name) (transition : Transition first middle)
+  (rest : Transitions middle finalState) where
+  constructor MkNoParentRecoveryConsView
+  0 noParentRecoveryAtHead : ParentRecoveryStep parent transition -> Void
+  0 noParentRecoveryInTail : NoParentRecovery parent rest
+
+0 noParentRecoveryConsView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (parent : name) -> (transition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  NoParentRecovery parent (MoreTransitions transition rest) ->
+  NoParentRecoveryConsView name key world error value parent transition rest
+noParentRecoveryConsView parent _ _
+  (NoParentRecoveryStep transition rest noRecovery tail) =
+    MkNoParentRecoveryConsView noRecovery tail
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
