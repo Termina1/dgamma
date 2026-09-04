@@ -4576,6 +4576,69 @@ retiredQuietUninstalled nameEq keyEq actor state quietState
     retiredQuietFiberUninstalled nameEq keyEq actor state fiber found retiredTrue
       (quietFiberFromState nameEq keyEq state quietState actor fiber found)
 
+record EventuallyUninstalled
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (actor : name)
+  {first, finalState : SystemState name key value world error}
+  (trace : Transitions first finalState) where
+  constructor MkEventuallyUninstalled
+  uninstalledState : SystemState name key value world error
+  beforeUninstalled : Transitions first uninstalledState
+  afterUninstalled : Transitions uninstalledState finalState
+  0 eventualUninstalled : installedAt @{nameEq} actor uninstalledState = False
+  0 eventualUninstalledDecomposition : appendTransitions beforeUninstalled
+    afterUninstalled = trace
+
+0 prependEventuallyUninstalled :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  EventuallyUninstalled name key world error value nameEq actor rest ->
+  EventuallyUninstalled name key world error value nameEq actor
+    (MoreTransitions head rest)
+prependEventuallyUninstalled nameEq actor head rest
+  (MkEventuallyUninstalled state before after uninstalled decomposition) =
+    MkEventuallyUninstalled state (MoreTransitions head before) after
+      uninstalled (cong (MoreTransitions head) decomposition)
+
+0 retiredEventuallyUninstalled :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (trace : Transitions first finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  (0 finalQuiet : quiet @{nameEq} @{keyEq} finalState = True) ->
+  RetireTargetLookupView name key world error value nameEq actor first ->
+  EventuallyUninstalled name key world error value nameEq actor trace
+retiredEventuallyUninstalled nameEq keyEq actor NoTransitions AlignedEnd
+  finalQuiet retiredAt =
+    MkEventuallyUninstalled first NoTransitions NoTransitions
+      (retiredQuietUninstalled nameEq keyEq actor first finalQuiet retiredAt) Refl
+retiredEventuallyUninstalled nameEq keyEq actor
+  (MoreTransitions (Fired {before = first} {afterState = middle}
+    nameEq keyEq action tag checked) rest)
+  (AlignedStep action tag checked rest alignedRest) finalQuiet
+  (MkRetireTargetLookupView fiber found retiredTrue) =
+    case retiredAcrossActionStep nameEq keyEq actor action first middle tag
+      (checkedActionProjects nameEq keyEq action first middle tag checked)
+      fiber found retiredTrue of
+        RetiredRegistryLookupMissing missing =>
+          MkEventuallyUninstalled middle
+            (MoreTransitions
+              (Fired {before = first} {afterState = middle}
+                nameEq keyEq action tag checked) NoTransitions)
+            rest (installedAtMissing nameEq actor middle
+              (lookupFiber @{nameEq} actor (registry middle)) Refl missing) Refl
+        RetiredRegistryLookupPresent nextFiber nextFound nextRetired =>
+          prependEventuallyUninstalled nameEq actor
+            (Fired {before = first} {afterState = middle}
+              nameEq keyEq action tag checked) rest
+            (retiredEventuallyUninstalled nameEq keyEq actor rest alignedRest
+              finalQuiet
+              (MkRetireTargetLookupView nextFiber nextFound nextRetired))
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
