@@ -182,3 +182,19 @@ r137Trace =
   (MoreTransitions r137T18 (MoreTransitions r137T19
   (MoreTransitions r137T20 (MoreTransitions r137T21
   (MoreTransitions r137T22 (MoreTransitions r137T23 NoTransitions)))))))))))))))))))))))
+
+public export
+0 r137Action5 : transitionAction r137T5 = LAdvance ActorA
+r137Action5 = Refl
+public export
+0 r137Action6 : transitionAction r137T6 = OInsert ActorB Root r137ConsumerComponent
+r137Action6 = Refl
+public export
+0 r137Action7 : transitionAction r137T7 = LBegin ActorB
+r137Action7 = Refl
+public export
+0 r137Action8 : transitionAction r137T8 = LAdvance ActorB
+r137Action8 = Refl
+public export
+0 r137Action9 : transitionAction r137T9 = LUnload ActorB
+r137Action9 = Refl

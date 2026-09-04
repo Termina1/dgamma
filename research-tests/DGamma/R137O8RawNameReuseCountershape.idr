@@ -842,3 +842,37 @@ public export
 0 r137SecondGenerationEdge : PrecedenceEdge r137NameEq ActorB ActorA r137S22
 r137SecondGenerationEdge = MkPrecedenceEdge LinkKey r137SecondBActive
   r137SecondABegun r137SecondBFoundAt22 r137SecondAFoundAt22 Here Here
+
+public export
+0 r137InstalledAAt5 : installedAt @{r137NameEq} ActorA r137S5 = True
+r137InstalledAAt5 = Refl
+public export
+0 r137InstalledAAt6 : installedAt @{r137NameEq} ActorA r137S6 = True
+r137InstalledAAt6 = Refl
+public export
+0 r137InstalledAAt7 : installedAt @{r137NameEq} ActorA r137S7 = True
+r137InstalledAAt7 = Refl
+public export
+0 r137InstalledAAt8 : installedAt @{r137NameEq} ActorA r137S8 = True
+r137InstalledAAt8 = Refl
+public export
+0 r137InstalledAAt9 : installedAt @{r137NameEq} ActorA r137S9 = True
+r137InstalledAAt9 = Refl
+public export
+0 r137InstalledAAt10 : installedAt @{r137NameEq} ActorA r137S10 = True
+r137InstalledAAt10 = Refl
+public export
+0 r137InstalledAAt11 : installedAt @{r137NameEq} ActorA r137S11 = True
+r137InstalledAAt11 = Refl
+public export
+0 r137InstalledAAt12 : installedAt @{r137NameEq} ActorA r137S12 = True
+r137InstalledAAt12 = Refl
+public export
+0 r137InstalledAAt13 : installedAt @{r137NameEq} ActorA r137S13 = True
+r137InstalledAAt13 = Refl
+public export
+0 r137InstalledAAt14 : installedAt @{r137NameEq} ActorA r137S14 = True
+r137InstalledAAt14 = Refl
+public export
+0 r137InstalledAAt15 : installedAt @{r137NameEq} ActorA r137S15 = True
+r137InstalledAAt15 = Refl
