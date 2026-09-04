@@ -1521,6 +1521,8 @@ data ParentEndpointLookupEquation :
       {world = world} {error = error} selected (registry state) = Nothing) ->
     (0 missingReloadingEndpoint :
       reloadingEndpoint @{nameEq} selected state = False) ->
+    (0 missingActiveEndpoint :
+      activeEndpoint @{nameEq} selected state = False) ->
     ParentEndpointLookupEquation name key world error value nameEq selected state
   ParentEndpointLookupFound :
     {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -1533,6 +1535,8 @@ data ParentEndpointLookupEquation :
       (case fiberLifecycle fiber of
         Reloading remaining accumulator dependencyView => True
         _ => False)) ->
+    (0 foundActiveEndpoint : activeEndpoint @{nameEq} selected state =
+      isActive (fiberLifecycle fiber)) ->
     ParentEndpointLookupEquation name key world error value nameEq selected state
 
 0 parentEndpointLookupEquation :
@@ -1543,8 +1547,10 @@ parentEndpointLookupEquation nameEq selected state =
   case inspectErased (lookupFiber @{nameEq} selected (registry state)) of
     MkErasedInspection Nothing exact =>
       ParentEndpointLookupMissing exact (rewrite exact in Refl)
+        (rewrite exact in Refl)
     MkErasedInspection (Just fiber) exact =>
       ParentEndpointLookupFound fiber exact (rewrite exact in Refl)
+        (rewrite exact in Refl)
 
 ||| Canonized producer-owned endpoint view.  Each constructor binds the exact
 ||| fiber lookup, lifecycle equation, and public endpoint equation together.
