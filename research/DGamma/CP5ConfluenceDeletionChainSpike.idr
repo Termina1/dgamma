@@ -2898,6 +2898,26 @@ mutual
           (alignedNoRecoveryHeadOpen nameEq keyEq parent transition rest aligned
             opened noRecovery))
 
+0 retirementProvenanceBeforeUnload :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (parent, child : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  ChildRetirementProvenance parent child trace ->
+  ActionOccurs (LUnload parent) trace ->
+  ParentOpenAt nameEq parent first ->
+  ActionBefore (ORetire child) (LUnload parent) trace
+retirementProvenanceBeforeUnload nameEq keyEq parent child trace aligned
+  (ParentDoesNotRecover noRecovery) unload opened =
+    void (noRecoveryUnloadOccurrenceImpossible nameEq keyEq parent trace aligned
+      unload noRecovery opened)
+retirementProvenanceBeforeUnload nameEq keyEq parent child trace aligned
+  (ChildRetiredBeforeParent retirement) unload opened =
+    childRetirementBeforeUnload nameEq keyEq parent child trace aligned retirement
+      unload opened
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
