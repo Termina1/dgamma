@@ -1530,6 +1530,16 @@ chooseMaximumBy measure head (next :: later) =
               There inTail => transitive (tailUpper other inTail)
                 (lteSuccLeft (notLTEImpliesGT headNotBelow)))
 
+0 elemMapPreimage :
+  {element : b} -> {items : List a} -> (project : a -> b) ->
+  Elem element (map project items) ->
+  (item : a ** (Elem item items, project item = element))
+elemMapPreimage project {items = head :: tail} Here =
+  (head ** (Here, Refl))
+elemMapPreimage project {items = head :: tail} (There later) =
+  case elemMapPreimage project later of
+    (item ** (member, shape)) => (item ** (There member, shape))
+
 ||| Independently testable O8 result.  A selected maximal/deletable candidate is
 ||| tied back to an ordinal produced by the exact O7 scan; the empty branch is
 ||| definitionally separated from the O9 deletion adapter.
