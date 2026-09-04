@@ -6553,6 +6553,32 @@ maximalSelectionFromMaximum nameEq keyEq protocol trace premises scan
     maximalSelectionFromOccurrence nameEq keyEq protocol trace premises scan
       maximum member upper
 
+0 maximalSelectionFromList :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol
+    nameEq keyEq trace) ->
+  (scan : ClosingEpisodeScan name key world error value nameEq keyEq trace) ->
+  (occurrences : List (ClosingEpisodeOccurrence name key world error value
+    nameEq keyEq trace)) ->
+  (0 occurrencesShape : scannedClosingOccurrences scan = occurrences) ->
+  MaximalClosingSelection name key world error value protocol nameEq keyEq trace
+    premises scan
+maximalSelectionFromList nameEq keyEq protocol trace premises scan []
+  occurrencesShape = NoMaximalClosingEpisode occurrencesShape
+maximalSelectionFromList nameEq keyEq protocol trace premises scan
+  (head :: tail) occurrencesShape =
+    maximalSelectionFromMaximum nameEq keyEq protocol trace premises scan
+      (replace
+        {p = \items => MaximumBy
+          DGamma.CP5ConfluenceDeletionChainSpike.scannedClosingOrdinal items}
+        (sym occurrencesShape)
+        (chooseMaximumBy
+          DGamma.CP5ConfluenceDeletionChainSpike.scannedClosingOrdinal head
+          tail))
+
 ||| O8 maximal candidate selection is no longer bundled with D72 enrichment.
 public export
 0 selectMaximalClosingEpisodeSpike :
