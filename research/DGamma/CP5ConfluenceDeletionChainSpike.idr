@@ -5211,6 +5211,31 @@ singletonCurrentRegisteredInactive nameEq actor generation generationActor live
   stamped state actorInactive selected _ (There later) current =
     absurd later
 
+0 retiredRegisteredNoBegin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {ordinal : Nat} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (generation : RegistrationGeneration name) ->
+  (live : GenerationEnvironment name) ->
+  (0 stamped : GenerationEnvironmentStamped live) ->
+  (0 generationActor : generationName generation = actor) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (0 retiredAt : RetiredFiberAt name key world error value nameEq actor before) ->
+  IsBeginAction action ->
+  GenerationOwnedActor nameEq [generation] ordinal live action -> Void
+retiredRegisteredNoBegin nameEq keyEq actor generation live stamped
+  generationActor (LBegin observedActor) before afterState tag raw retiredAt
+  ItIsLBegin owned =
+    case singletonBeginOwnedActor {name = name} {key = key} {value = value}
+      {world = world} {error = error} {ordinal = ordinal} nameEq actor generation
+      live stamped generationActor (LBegin observedActor) ItIsLBegin owned of
+      Refl => retiredSourceRejectsBegin nameEq keyEq actor before afterState tag
+        raw retiredAt
+
 0 oneStepRetiredPersistence :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
