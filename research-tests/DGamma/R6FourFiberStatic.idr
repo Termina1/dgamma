@@ -407,6 +407,11 @@ r143RightPathShape (SupportPathMore edge rest) =
     (r143RightEdgeEndsUpperAfterStart edge
       (r143RightEdgeStartsAlternate edge)) rest)
 
+0 r143AlternateFreshInRightOrder : Not (Elem Alternate [Upper, Lower])
+r143AlternateFreshInRightOrder Here impossible
+r143AlternateFreshInRightOrder (There Here) impossible
+r143AlternateFreshInRightOrder (There (There later)) = absurd later
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
