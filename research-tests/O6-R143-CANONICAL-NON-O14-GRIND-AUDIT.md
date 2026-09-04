@@ -57,7 +57,7 @@ witness `r143CanonicalSupportTransportRefuted`. The clause mapping is:
 | `CanonicalSupportTransport ... endpoint` | `CanonicalSupportTransport ... endpoint order`, indexed by the one chosen order |
 | `linearizationToOriginal : (order : List name) -> LinearizesSupport reducedFinal order -> LinearizesSupport originalFinal order` | `originalSupportLinearization : LinearizesSupport originalFinal order`, an explicit required/produced witness for the chosen order |
 | `inputPlacementToOriginal : (order : List name) -> ...` | `inputPlacementToOriginal : ...` at the record-indexed chosen order |
-| O15 producer independent of ordering evidence | O15 producer takes the chosen `order` and its original-endpoint `LinearizesSupport` witness |
+| O15 producer independent of ordering evidence | O15 producer takes the chosen `order` plus its reduced- and original-endpoint `LinearizesSupport` witnesses; the two exact witnesses derive support-set equality without any universal path claim |
 | downstream consumers apply a universal transfer to the reduced ordering | downstream capital is indexed by `orderedSupportNames ordering` and projects the stored original witness |
 
 `supportTruthPreserved` is unchanged. The refuted universal clause is frozen in

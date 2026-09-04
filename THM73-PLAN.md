@@ -2968,9 +2968,11 @@ this exact static endpoint shape; no such exclusion is present in the output
 record or prior capital. The supervisor authorized the scoped correction: `CanonicalSupportTransport`
 is now indexed by the one chosen order and retains an explicit
 `LinearizesSupport` witness for that order at the original endpoint; it no
-longer claims that every reduced linearization transfers. O15 receives that
-original witness as a premise and must prove the remaining endpoint/placement
-bridge. The frozen old clause and `r143CanonicalSupportTransportRefuted` remain
+longer claims that every reduced linearization transfers. O15 receives the
+chosen reduced witness and the matching original witness as premises and must
+prove the remaining endpoint/placement bridge; their shared order derives
+support-truth equality directly. The frozen old clause and
+`r143CanonicalSupportTransportRefuted` remain
 as the permanent necessity witness. O15 receives a fresh 3-attempt body budget
 after positive R6 ratification and downstream typechecking.
 

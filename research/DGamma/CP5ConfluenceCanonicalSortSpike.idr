@@ -1064,6 +1064,7 @@ public export
   CanonicalRegistrationCorrespondence original reduced
     (endpointWithdrawnGenerations endpoint) ->
   (order : List name) ->
+  LinearizesSupport name key world error value nameEq keyEq reducedFinal order ->
   LinearizesSupport name key world error value nameEq keyEq originalFinal order ->
   CanonicalSupportTransport name key world error value nameEq keyEq originalFinal
     reducedFinal endpoint order
