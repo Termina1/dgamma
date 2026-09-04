@@ -2268,6 +2268,162 @@ compositionLookupBindingFromEqualBindings keyEq wanted
   (MkCoeffectContext rightEntries rightUnique) same =
     cong (lookupEntries @{keyEq} wanted) same
 
+||| A same-name control step may be composed on either side of a renamed step.
+||| These helpers retain every runtime lifecycle field; only parent/view names
+||| cross the supplied bijection.
+0 parentControlThenRenamedSpike :
+  {name : Type} -> {first, middle, finalParent : Parent name} ->
+  (renaming : NameBijection name) -> first = middle ->
+  ParentRelatedBy renaming middle finalParent ->
+  ParentRelatedBy renaming first finalParent
+parentControlThenRenamedSpike renaming Refl related = related
+
+0 parentRenamedThenControlSpike :
+  {name : Type} -> {first, middle, finalParent : Parent name} ->
+  (renaming : NameBijection name) ->
+  ParentRelatedBy renaming first middle -> middle = finalParent ->
+  ParentRelatedBy renaming first finalParent
+parentRenamedThenControlSpike renaming related Refl = related
+
+0 lifecycleControlThenRenamedSpike :
+  {key : Type} -> {value : key -> Type} -> {world, error, name : Type} ->
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  {first, middle, finalLifecycle :
+    Lifecycle key value world error name deps provision} ->
+  (renaming : NameBijection name) ->
+  LifecycleControlRelated first middle ->
+  LifecycleRelatedBy renaming middle finalLifecycle ->
+  LifecycleRelatedBy renaming first finalLifecycle
+lifecycleControlThenRenamedSpike renaming (InactiveControls firstOutcome)
+  (RenamedInactive secondOutcome) =
+    RenamedInactive (trans firstOutcome secondOutcome)
+lifecycleControlThenRenamedSpike renaming
+  (ReloadingControls firstRemaining firstAccumulator firstView)
+  (RenamedReloading secondRemaining secondAccumulator secondView) =
+    RenamedReloading (trans firstRemaining secondRemaining)
+      (\input => localStateRuntimeTransitive
+        (firstAccumulator input) (secondAccumulator input))
+      (trans (cong (map (renameForward renaming) . viewProviders) firstView)
+        secondView)
+lifecycleControlThenRenamedSpike {error} renaming
+  (ActiveControls firstAccumulator firstView)
+  (RenamedActive secondAccumulator secondView) =
+    RenamedActive {error = error}
+      (\input => localStateRuntimeTransitive
+        (firstAccumulator input) (secondAccumulator input))
+      (trans (cong (map (renameForward renaming) . viewProviders) firstView)
+        secondView)
+lifecycleControlThenRenamedSpike renaming
+  (UnloadingControls firstAccumulator firstView firstOutcome)
+  (RenamedUnloading secondAccumulator secondView secondOutcome) =
+    RenamedUnloading
+      (\input => localStateRuntimeTransitive
+        (firstAccumulator input) (secondAccumulator input))
+      (trans (cong (map (renameForward renaming) . viewProviders) firstView)
+        secondView)
+      (trans firstOutcome secondOutcome)
+
+0 lifecycleRenamedThenControlSpike :
+  {key : Type} -> {value : key -> Type} -> {world, error, name : Type} ->
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  {first, middle, finalLifecycle :
+    Lifecycle key value world error name deps provision} ->
+  (renaming : NameBijection name) ->
+  LifecycleRelatedBy renaming first middle ->
+  LifecycleControlRelated middle finalLifecycle ->
+  LifecycleRelatedBy renaming first finalLifecycle
+lifecycleRenamedThenControlSpike renaming (RenamedInactive firstOutcome)
+  (InactiveControls secondOutcome) =
+    RenamedInactive (trans firstOutcome secondOutcome)
+lifecycleRenamedThenControlSpike renaming
+  (RenamedReloading firstRemaining firstAccumulator firstView)
+  (ReloadingControls secondRemaining secondAccumulator secondView) =
+    RenamedReloading (trans firstRemaining secondRemaining)
+      (\input => localStateRuntimeTransitive
+        (firstAccumulator input) (secondAccumulator input))
+      (trans firstView (cong viewProviders secondView))
+lifecycleRenamedThenControlSpike {error} renaming
+  (RenamedActive firstAccumulator firstView)
+  (ActiveControls secondAccumulator secondView) =
+    RenamedActive {error = error}
+      (\input => localStateRuntimeTransitive
+        (firstAccumulator input) (secondAccumulator input))
+      (trans firstView (cong viewProviders secondView))
+lifecycleRenamedThenControlSpike renaming
+  (RenamedUnloading firstAccumulator firstView firstOutcome)
+  (UnloadingControls secondAccumulator secondView secondOutcome) =
+    RenamedUnloading
+      (\input => localStateRuntimeTransitive
+        (firstAccumulator input) (secondAccumulator input))
+      (trans firstView (cong viewProviders secondView))
+      (trans firstOutcome secondOutcome)
+
+0 fiberControlThenRenamedSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalFiber : Fiber name key value world error} ->
+  (renaming : NameBijection name) ->
+  FiberControlRelated first middle -> FiberRelatedBy renaming middle finalFiber ->
+  FiberRelatedBy renaming first finalFiber
+fiberControlThenRenamedSpike renaming
+  (FibersControlRelated firstParent middleParent firstRetired middleRetired
+    firstTable middleTable firstLifecycle middleLifecycle parentControl
+    retiredControl lifecycleControl)
+  (RenamedFibers middleParent finalParent middleRetired finalRetired middleTable
+    finalTable middleLifecycle finalLifecycle parentRenamed retiredRenamed
+    lifecycleRenamed) =
+      RenamedFibers firstParent finalParent firstRetired finalRetired firstTable
+        finalTable firstLifecycle finalLifecycle
+        (parentControlThenRenamedSpike renaming parentControl parentRenamed)
+        (trans retiredControl retiredRenamed)
+        (lifecycleControlThenRenamedSpike renaming lifecycleControl
+          lifecycleRenamed)
+
+0 fiberRenamedThenControlSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalFiber : Fiber name key value world error} ->
+  (renaming : NameBijection name) ->
+  FiberRelatedBy renaming first middle -> FiberControlRelated middle finalFiber ->
+  FiberRelatedBy renaming first finalFiber
+fiberRenamedThenControlSpike renaming
+  (RenamedFibers firstParent middleParent firstRetired middleRetired firstTable
+    middleTable firstLifecycle middleLifecycle parentRenamed retiredRenamed
+    lifecycleRenamed)
+  (FibersControlRelated middleParent finalParent middleRetired finalRetired
+    middleTable finalTable middleLifecycle finalLifecycle parentControl
+    retiredControl lifecycleControl) =
+      RenamedFibers firstParent finalParent firstRetired finalRetired firstTable
+        finalTable firstLifecycle finalLifecycle
+        (parentRenamedThenControlSpike renaming parentRenamed parentControl)
+        (trans retiredRenamed retiredControl)
+        (lifecycleRenamedThenControlSpike renaming lifecycleRenamed
+          lifecycleControl)
+
+0 fiberControlMaybeThenRenamedSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalFiber : Maybe (Fiber name key value world error)} ->
+  (renaming : NameBijection name) ->
+  FiberControlMaybeRelated first middle ->
+  MaybeFiberRelatedBy renaming middle finalFiber ->
+  MaybeFiberRelatedBy renaming first finalFiber
+fiberControlMaybeThenRenamedSpike renaming NoControlFibers RenamedAbsent =
+  RenamedAbsent
+fiberControlMaybeThenRenamedSpike renaming (SomeControlFibers control)
+  (RenamedPresent renamed) =
+    RenamedPresent (fiberControlThenRenamedSpike renaming control renamed)
+
+0 fiberRenamedMaybeThenControlSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalFiber : Maybe (Fiber name key value world error)} ->
+  (renaming : NameBijection name) ->
+  MaybeFiberRelatedBy renaming first middle ->
+  FiberControlMaybeRelated middle finalFiber ->
+  MaybeFiberRelatedBy renaming first finalFiber
+fiberRenamedMaybeThenControlSpike renaming RenamedAbsent NoControlFibers =
+  RenamedAbsent
+fiberRenamedMaybeThenControlSpike renaming (RenamedPresent renamed)
+  (SomeControlFibers control) =
+    RenamedPresent (fiberRenamedThenControlSpike renaming renamed control)
+
 ||| The four heterogeneous effect steps at the O21 boundary compose without
 ||| observing registry order.  Canonical endpoints and replay use exact table
 ||| equality, while the bridge already supplies pointwise renamed lookups.
