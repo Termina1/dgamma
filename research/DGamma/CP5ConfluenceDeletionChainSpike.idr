@@ -2466,6 +2466,21 @@ alignedNoRecoveryHeadOpen nameEq keyEq selected _ _
     parentOpenNoRecoveryStep nameEq keyEq selected action tag _ _ checked opened
       noRecovery
 
+0 alignedUnloadHeadOpenImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (transition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions transition rest) ->
+  ParentOpenAt nameEq selected first ->
+  (0 unloadAction : transitionAction transition = LUnload selected) -> Void
+alignedUnloadHeadOpenImpossible nameEq keyEq selected _ _
+  (AlignedStep action tag checked rest alignedTail) opened unloadAction =
+    unloadActionEqualityOpenImpossible nameEq keyEq selected action tag _ _
+      checked opened unloadAction
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
