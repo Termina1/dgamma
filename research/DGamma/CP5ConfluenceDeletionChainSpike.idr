@@ -5467,6 +5467,166 @@ noRegisteredAfterRetiredInactive nameEq keyEq actor generation generationActor
                   checked) retiredAt)
               nextCurrent inactive))
 
+0 noRegisteredUntilFutureRetirement :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (generation : RegistrationGeneration name) ->
+  (0 generationActor : generationName generation = actor) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (0 unique : GenerationEnvironmentNamesUnique live) ->
+  (0 stamped : GenerationEnvironmentStamped live) ->
+  (0 less : LT (generationBirthOrdinal generation) ordinal) ->
+  (selectedOrdinal : Nat) ->
+  (0 selectedBeforeCurrent : LTE (S selectedOrdinal) ordinal) ->
+  (initial, first, finalState : SystemState name key value world error) ->
+  (globalTrace : Transitions initial finalState) ->
+  (leading : Transitions initial first) ->
+  (trace : Transitions first finalState) ->
+  (0 globalSplit : appendTransitions leading trace = globalTrace) ->
+  (0 prefixOrdinal : transitionCount leading = ordinal) ->
+  (0 upper : (closingActor : name) ->
+    (closingEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+      closingActor globalTrace) ->
+    LTE (transitionCount (traceBeforeOpening closingEpisode))
+      selectedOrdinal) ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq ordinal live trace finalOrdinal finalLive ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  (0 finalQuiet : quiet @{nameEq} @{keyEq} finalState = True) ->
+  (0 current : lookupCurrentGeneration @{nameEq} actor live =
+    Just generation) ->
+  (0 inactive : InactiveFiberAt name key world error value nameEq actor first) ->
+  ActionOccurs (ORetire actor) trace ->
+  NoRegisteredEpisode nameEq [generation] ordinal live trace
+noRegisteredUntilFutureRetirement nameEq keyEq actor generation generationActor
+  ordinal live unique stamped less selectedOrdinal selectedBeforeCurrent initial
+  finalState finalState globalTrace leading NoTransitions globalSplit
+  prefixOrdinal upper ordinal live GenerationTraceScanEnd AlignedEnd finalQuiet
+  current inactive (ActionOccursHere transition rest actionShape) impossible
+noRegisteredUntilFutureRetirement nameEq keyEq actor generation generationActor
+  ordinal live unique stamped less selectedOrdinal selectedBeforeCurrent initial
+  finalState finalState globalTrace leading NoTransitions globalSplit
+  prefixOrdinal upper ordinal live GenerationTraceScanEnd AlignedEnd finalQuiet
+  current inactive (ActionOccursLater transition rest later) impossible
+noRegisteredUntilFutureRetirement nameEq keyEq actor generation generationActor
+  ordinal live unique stamped less selectedOrdinal selectedBeforeCurrent initial
+  first finalState globalTrace leading
+  (MoreTransitions (Fired {before = first} {afterState = middle}
+    nameEq keyEq action tag checked) rest)
+  globalSplit prefixOrdinal upper finalOrdinal finalLive
+  (GenerationTraceScanStep _ _ tailScan)
+  (AlignedStep _ _ _ _ alignedRest) finalQuiet current inactive
+  (ActionOccursHere _ _ actionShape) =
+    case decEq
+      (lookupCurrentGeneration @{nameEq} actor
+        (advanceGenerationEnvironment @{nameEq} ordinal action live))
+      (Just generation) of
+      No noNext =>
+        NoRegisteredEpisodeStep (Fired nameEq keyEq action tag checked) rest
+          (\begin, owned =>
+            retireActionCannotBeBegin action actor actionShape begin)
+          (noRegisteredWhenNotCurrent nameEq actor generation generationActor
+            (S ordinal)
+            (advanceGenerationEnvironment @{nameEq} ordinal action live)
+            (advanceGenerationEnvironmentPreservesUnique nameEq ordinal action
+              live unique)
+            (advanceGenerationEnvironmentPreservesStamped nameEq ordinal action
+              live stamped)
+            (lteSuccRight less) rest finalOrdinal finalLive tailScan noNext)
+      Yes nextCurrent =>
+        NoRegisteredEpisodeStep (Fired nameEq keyEq action tag checked) rest
+          (\begin, owned =>
+            retireActionCannotBeBegin action actor actionShape begin)
+          (noRegisteredAfterRetiredInactive nameEq keyEq actor generation
+            generationActor (S ordinal)
+            (advanceGenerationEnvironment @{nameEq} ordinal action live)
+            (advanceGenerationEnvironmentPreservesUnique nameEq ordinal action
+              live unique)
+            (advanceGenerationEnvironmentPreservesStamped nameEq ordinal action
+              live stamped)
+            (lteSuccRight less) rest finalOrdinal finalLive tailScan alignedRest
+            nextCurrent
+            (retiredFiberAtFromTargetView nameEq actor middle
+              (retireTransitionTargetView nameEq keyEq actor first middle tag
+                (rawRetireFromActionShape nameEq keyEq actor action actionShape
+                  first middle tag
+                  (checkedActionProjects nameEq keyEq action first middle tag
+                    checked))))
+            (oneStepInactivePersistence nameEq keyEq actor generation
+              generationActor ordinal live unique stamped first middle action tag
+              checked
+              (\begin, owned =>
+                retireActionCannotBeBegin action actor actionShape begin)
+              nextCurrent inactive))
+noRegisteredUntilFutureRetirement nameEq keyEq actor generation generationActor
+  ordinal live unique stamped less selectedOrdinal selectedBeforeCurrent initial
+  first finalState globalTrace leading
+  (MoreTransitions (Fired {before = first} {afterState = middle}
+    nameEq keyEq action tag checked) rest)
+  globalSplit prefixOrdinal upper finalOrdinal finalLive
+  (GenerationTraceScanStep _ _ tailScan)
+  (AlignedStep _ _ _ _ alignedRest) finalQuiet current inactive
+  (ActionOccursLater _ _ later) =
+    case decEq
+      (lookupCurrentGeneration @{nameEq} actor
+        (advanceGenerationEnvironment @{nameEq} ordinal action live))
+      (Just generation) of
+      No noNext =>
+        NoRegisteredEpisodeStep (Fired nameEq keyEq action tag checked) rest
+          (laterRetirementNoBegin nameEq keyEq actor generation generationActor
+            ordinal live stamped selectedOrdinal selectedBeforeCurrent initial
+            first middle finalState globalTrace leading action tag checked rest
+            globalSplit prefixOrdinal upper alignedRest finalQuiet later)
+          (noRegisteredWhenNotCurrent nameEq actor generation generationActor
+            (S ordinal)
+            (advanceGenerationEnvironment @{nameEq} ordinal action live)
+            (advanceGenerationEnvironmentPreservesUnique nameEq ordinal action
+              live unique)
+            (advanceGenerationEnvironmentPreservesStamped nameEq ordinal action
+              live stamped)
+            (lteSuccRight less) rest finalOrdinal finalLive tailScan noNext)
+      Yes nextCurrent =>
+        NoRegisteredEpisodeStep (Fired nameEq keyEq action tag checked) rest
+          (laterRetirementNoBegin nameEq keyEq actor generation generationActor
+            ordinal live stamped selectedOrdinal selectedBeforeCurrent initial
+            first middle finalState globalTrace leading action tag checked rest
+            globalSplit prefixOrdinal upper alignedRest finalQuiet later)
+          (noRegisteredUntilFutureRetirement nameEq keyEq actor generation
+            generationActor (S ordinal)
+            (advanceGenerationEnvironment @{nameEq} ordinal action live)
+            (advanceGenerationEnvironmentPreservesUnique nameEq ordinal action
+              live unique)
+            (advanceGenerationEnvironmentPreservesStamped nameEq ordinal action
+              live stamped)
+            (lteSuccRight less) selectedOrdinal
+            (lteSuccRight selectedBeforeCurrent) initial middle finalState
+            globalTrace
+            (appendTransitions leading
+              (MoreTransitions
+                (Fired {before = first} {afterState = middle}
+                  nameEq keyEq action tag checked) NoTransitions))
+            rest
+            (extendLeadingDecomposition leading
+              (Fired {before = first} {afterState = middle}
+                nameEq keyEq action tag checked)
+              rest globalTrace globalSplit)
+            (trans (transitionCountSnoc leading
+              (Fired {before = first} {afterState = middle}
+                nameEq keyEq action tag checked))
+              (cong S prefixOrdinal))
+            upper finalOrdinal finalLive tailScan alignedRest finalQuiet
+            nextCurrent
+            (oneStepInactivePersistence nameEq keyEq actor generation
+              generationActor ordinal live unique stamped first middle action tag
+              checked
+              (laterRetirementNoBegin nameEq keyEq actor generation
+                generationActor ordinal live stamped selectedOrdinal
+                selectedBeforeCurrent initial first middle finalState globalTrace
+                leading action tag checked rest globalSplit prefixOrdinal upper
+                alignedRest finalQuiet later)
+              nextCurrent inactive)
+            later)
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
