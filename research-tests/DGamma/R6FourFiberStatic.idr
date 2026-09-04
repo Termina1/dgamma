@@ -469,6 +469,15 @@ r143RightPathOrderedFromShape shape =
 r143RightPathsOrdered lower upper path lowerIn upperIn =
   r143RightPathOrderedFromShape (r143RightPathShape path)
 
+||| A genuine reduced-endpoint linearization that orders `Upper` before
+||| `Lower`, since the withdrawn intermediate erased their only path.
+0 r143RightLinearization :
+  LinearizesSupport N K Unit String V (the (DecEq N) %search)
+    (the (DecEq K) %search) DGamma.R6FourFiberStatic.rightState
+    [Alternate, Upper, Lower]
+r143RightLinearization = MkLinearizesSupport r143RightOrderUnique
+  r143RightOrderSound r143RightOrderComplete r143RightPathsOrdered
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
