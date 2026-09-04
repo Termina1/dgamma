@@ -4669,6 +4669,46 @@ retiredEventuallyUninstalled nameEq keyEq actor
               finalQuiet
               (MkRetireTargetLookupView nextFiber nextFound nextRetired))
 
+0 futureRetirementEventuallyUninstalled :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  (trace : Transitions first finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  (0 finalQuiet : quiet @{nameEq} @{keyEq} finalState = True) ->
+  ActionOccurs (ORetire child) trace ->
+  EventuallyUninstalled name key world error value nameEq child trace
+futureRetirementEventuallyUninstalled nameEq keyEq child NoTransitions
+  AlignedEnd finalQuiet occurs =
+    case occurs of
+      ActionOccursHere transition rest actionShape impossible
+      ActionOccursLater transition rest later impossible
+futureRetirementEventuallyUninstalled nameEq keyEq child
+  (MoreTransitions (Fired {before = first} {afterState = middle}
+    nameEq keyEq action tag checked) rest)
+  (AlignedStep action tag checked rest alignedRest) finalQuiet
+  (ActionOccursHere _ _ actionShape) =
+    prependEventuallyUninstalled nameEq child
+      (Fired {before = first} {afterState = middle}
+        nameEq keyEq action tag checked) rest
+      (retiredEventuallyUninstalled nameEq keyEq child rest alignedRest
+        finalQuiet
+        (retireTransitionTargetView nameEq keyEq child first middle tag
+          (rawRetireFromActionShape nameEq keyEq child action actionShape first
+            middle tag
+            (checkedActionProjects nameEq keyEq action first middle tag
+              checked))))
+futureRetirementEventuallyUninstalled nameEq keyEq child
+  (MoreTransitions (Fired {before = first} {afterState = middle}
+    nameEq keyEq action tag checked) rest)
+  (AlignedStep action tag checked rest alignedRest) finalQuiet
+  (ActionOccursLater _ _ later) =
+    prependEventuallyUninstalled nameEq child
+      (Fired {before = first} {afterState = middle}
+        nameEq keyEq action tag checked) rest
+      (futureRetirementEventuallyUninstalled nameEq keyEq child rest alignedRest
+        finalQuiet later)
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
