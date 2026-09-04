@@ -1039,6 +1039,38 @@ canonicalFiberParentSame
     rightTable leftLifecycle rightLifecycle parentSame retiredSame
     lifecycleSame) = parentSame
 
+||| Apply reduced input placement to the exact forward fiber package.
+0 canonicalChildPlacementFromForward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {originalFinal, reducedFinal : SystemState name key value world error} ->
+  {order : List name} ->
+  {initial, canonicalFinal : SystemState name key value world error} ->
+  {canonical : Transitions initial canonicalFinal} ->
+  (placement : CanonicalInputPlacement name key world error value nameEq keyEq
+    reducedFinal order canonical) ->
+  (selected, parent : name) ->
+  (selectedIn : Elem selected order) ->
+  (fiber : Fiber name key value world error) ->
+  (forward : CanonicalOutsideFiberForward name key world error value nameEq
+    selected originalFinal reducedFinal fiber) ->
+  fiberParent fiber = ChildOf parent ->
+  (component : Component key value world error **
+   birth : LocatedGeneratedRegistration selected parent component canonical **
+   (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} selected
+      (registry (registrationBefore birth)) = Nothing,
+    (action : Action name key value world error) ->
+    (lifecycle : LocatedActionOccurrence action canonical) ->
+    isLifecycleAction action = True -> actionOwner action = selected ->
+    LT (registrationOrdinal birth) (locatedActionOrdinal lifecycle)))
+canonicalChildPlacementFromForward placement selected parent selectedIn fiber
+  forward childParent =
+    childGenerationBeforeOwnLifecycle placement selected parent selectedIn
+      (forwardTargetFiber forward) (forwardTargetFound forward)
+      (trans (sym (canonicalFiberParentSame
+        (forwardTargetControls forward))) childParent)
+
 ||| Rebuild one precedence edge from two producer-owned exact target lookups.
 0 canonicalPrecedenceEdgeForwardFromFibers :
   {name, key, world, error : Type} -> {value : key -> Type} ->
