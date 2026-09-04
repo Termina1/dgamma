@@ -772,6 +772,16 @@ r143LeftSharedOrderSound Middle member =
 r143LeftSharedOrderSound Alternate member = Refl
 r143LeftSharedOrderSound Upper member = upperSupportedLeft
 
+0 r143LeftSharedOrderComplete :
+  (selected : N) ->
+  isSupported @{the (DecEq N) %search} @{the (DecEq K) %search} selected
+    DGamma.R6FourFiberStatic.leftState = True ->
+  Elem selected [Lower, Alternate, Upper]
+r143LeftSharedOrderComplete Lower supported = Here
+r143LeftSharedOrderComplete Middle supported = case supported of Refl impossible
+r143LeftSharedOrderComplete Alternate supported = There Here
+r143LeftSharedOrderComplete Upper supported = There (There Here)
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
