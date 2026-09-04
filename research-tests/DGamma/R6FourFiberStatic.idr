@@ -680,6 +680,15 @@ r143LeftEdgeShape {lower = Alternate} {upper = Middle}
 r143LeftEdgeShape {lower = Alternate} {upper = Upper}
   (SupportPrecedence edge) = R143LeftAlternateUpper
 
+0 r143NoLeftEdgeFromUpper :
+  {target : N} ->
+  SupportEdge (the (DecEq N) %search) DGamma.R6FourFiberStatic.leftState
+    Upper target -> Void
+r143NoLeftEdgeFromUpper (SupportPrecedence edge) =
+  r143LeftUpperProvidesNothing (providerFound edge) (edgeKey edge)
+    (providerDeclares edge)
+r143NoLeftEdgeFromUpper (SupportParent edge) = r143NoLeftParentEdge edge
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
