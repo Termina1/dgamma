@@ -5628,6 +5628,97 @@ noRegisteredUntilFutureRetirement nameEq keyEq actor generation generationActor
               nextCurrent inactive)
             later)
 
+0 appendActionOccursRight :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (action : Action name key value world error) ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  ActionOccurs action left ->
+  ActionOccurs action (appendTransitions left right)
+appendActionOccursRight action (MoreTransitions transition rest) right
+  (ActionOccursHere _ _ actionShape) =
+    ActionOccursHere transition (appendTransitions rest right) actionShape
+appendActionOccursRight action (MoreTransitions transition rest) right
+  (ActionOccursLater _ _ later) =
+    ActionOccursLater transition (appendTransitions rest right)
+      (appendActionOccursRight action rest right later)
+
+record GlobalGeneratedCapital
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, finalState : SystemState name key value world error}
+  (globalTrace : Transitions initial finalState) (selected : name)
+  (selectedOrdinal : Nat) (generation : RegistrationGeneration name) where
+  constructor MkGlobalGeneratedCapital
+  generatedActor : name
+  generatedActorComponent : Component key value world error
+  generatedRegistration : LocatedGeneratedRegistration generatedActor selected
+    generatedActorComponent globalTrace
+  0 generatedActorShape : generationName generation = generatedActor
+  0 generatedBirthShape : generationBirthOrdinal generation =
+    registrationOrdinal generatedRegistration
+  0 selectedBeforeGeneratedBirth : LTE selectedOrdinal
+    (registrationOrdinal generatedRegistration)
+  generatedRetirement : ActionOccurs (ORetire generatedActor)
+    (afterRegistration generatedRegistration)
+
+0 globalGeneratedCapitalAtBirth :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (globalTrace : Transitions initial finalState) -> (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected globalTrace) ->
+  (generation : RegistrationGeneration name) ->
+  (child : name) -> (component : Component key value world error) ->
+  (birth : LocatedActionOccurrence (OInsert child (ChildOf selected) component)
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode)))
+      (closedTransitions (locatedEpisode episode)))) ->
+  (0 stamp : generation = MkRegistrationGeneration child
+    (transitionCount (traceBeforeOpening episode) +
+      locatedActionOrdinal birth)) ->
+  ActionOccurs (ORetire child) (afterActionOccurrence birth) ->
+  GlobalGeneratedCapital name key world error value nameEq keyEq globalTrace
+    selected (transitionCount (traceBeforeOpening episode)) generation
+globalGeneratedCapitalAtBirth nameEq keyEq globalTrace selected episode generation
+  child component
+  (MkLocatedActionOccurrence before afterState beforeTrace transition rest
+    actionShape decomposition) stamp retiresLater =
+      MkGlobalGeneratedCapital child component
+        (locatedEpisodeChildRegistration nameEq keyEq globalTrace selected child
+          component episode
+          (MkLocatedActionOccurrence before afterState beforeTrace transition
+            rest actionShape decomposition))
+        (trans (cong generationName stamp) Refl)
+        (trans (cong generationBirthOrdinal stamp)
+          (sym (transitionCountAppend (traceBeforeOpening episode)
+            beforeTrace)))
+        (rewrite transitionCountAppend (traceBeforeOpening episode) beforeTrace in
+          leftLTEPlus (transitionCount (traceBeforeOpening episode))
+            (transitionCount beforeTrace))
+        (appendActionOccursRight (ORetire child) rest
+          (traceAfterClosing episode) retiresLater)
+
+0 globalGeneratedCapital :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (globalTrace : Transitions initial finalState) -> (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected globalTrace) ->
+  (generation : RegistrationGeneration name) ->
+  GeneratedDuring name key world error value selected
+    (transitionCount (traceBeforeOpening episode))
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode)))
+      (closedTransitions (locatedEpisode episode))) generation ->
+  GlobalGeneratedCapital name key world error value nameEq keyEq globalTrace
+    selected (transitionCount (traceBeforeOpening episode)) generation
+globalGeneratedCapital nameEq keyEq globalTrace selected episode generation
+  (MkGeneratedDuring child component birth stamp retiresLater) =
+    globalGeneratedCapitalAtBirth nameEq keyEq globalTrace selected episode
+      generation child component birth stamp retiresLater
+
 0 splitGenerationScanAtAppend :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
