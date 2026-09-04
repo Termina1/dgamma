@@ -9,6 +9,8 @@ import DGamma.CP4DeletionBoundaryPlan
 import DGamma.CP4DeletionGenerationBounds
 import DGamma.CP4DeletionGenerationStamped
 import DGamma.CP4DeletionGenerationUnique
+import DGamma.CP4DeletionInactiveInvariant
+import DGamma.CP4DeletionRetirementPersistence
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorTrace
 import DGamma.CP4DeletionSelectedOwn
@@ -5168,6 +5170,97 @@ futureRegisteredBeginContradictsMaximal nameEq keyEq actor generation
         selectedOrdinal selectedBeforeCurrent initial before opened finalState
         globalTrace leading current globalSplit prefixOrdinal upper tag checked
         rest currentShape alignedRest finalQuiet retires
+
+0 singletonCurrentRegisteredInactive :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (generation : RegistrationGeneration name) ->
+  (0 generationActor : generationName generation = actor) ->
+  (live : GenerationEnvironment name) ->
+  (0 stamped : GenerationEnvironmentStamped live) ->
+  (state : SystemState name key value world error) ->
+  (0 actorInactive : InactiveFiberAt name key world error value nameEq actor
+    state) ->
+  CurrentRegisteredInactiveFibers name key world error value nameEq [generation]
+    live state
+singletonCurrentRegisteredInactive nameEq actor generation generationActor live
+  stamped state actorInactive selected _ Here current =
+    replace
+      {p = \candidate => InactiveFiberAt name key world error value nameEq
+        candidate state}
+      (trans (sym generationActor)
+        (stamped selected generation
+          (currentGenerationEntryFromLookup nameEq selected generation live
+            current)))
+      actorInactive
+singletonCurrentRegisteredInactive nameEq actor generation generationActor live
+  stamped state actorInactive selected _ (There later) current =
+    absurd later
+
+0 oneStepRetiredPersistence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (generation : RegistrationGeneration name) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (0 unique : GenerationEnvironmentNamesUnique live) ->
+  (0 less : LT (generationBirthOrdinal generation) ordinal) ->
+  (before, afterState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (0 noBegin : IsBeginAction action ->
+    GenerationOwnedActor nameEq [generation] ordinal live action -> Void) ->
+  (0 current : lookupCurrentGeneration @{nameEq} actor live =
+    Just generation) ->
+  (0 nextCurrent : lookupCurrentGeneration @{nameEq} actor
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) =
+    Just generation) ->
+  (0 retiredAt : RetiredFiberAt name key world error value nameEq actor before) ->
+  (0 inactive : InactiveFiberAt name key world error value nameEq actor before) ->
+  RetiredFiberAt name key world error value nameEq actor afterState
+oneStepRetiredPersistence nameEq keyEq actor generation ordinal live unique less
+  before afterState action tag checked noBegin current nextCurrent retiredAt
+  inactive =
+    retiredInactiveCurrentPersists nameEq keyEq actor generation ordinal live
+      unique less
+      (MoreTransitions (Fired nameEq keyEq action tag checked) NoTransitions)
+      (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal action live)
+      (GenerationTraceScanStep (Fired nameEq keyEq action tag checked)
+        NoTransitions GenerationTraceScanEnd)
+      (AlignedStep action tag checked NoTransitions AlignedEnd)
+      (NoRegisteredEpisodeStep (Fired nameEq keyEq action tag checked)
+        NoTransitions noBegin NoRegisteredEpisodeEnd)
+      current nextCurrent retiredAt inactive
+
+0 oneStepInactivePersistence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (generation : RegistrationGeneration name) ->
+  (0 generationActor : generationName generation = actor) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (0 unique : GenerationEnvironmentNamesUnique live) ->
+  (0 stamped : GenerationEnvironmentStamped live) ->
+  (before, afterState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (0 noBegin : IsBeginAction action ->
+    GenerationOwnedActor nameEq [generation] ordinal live action -> Void) ->
+  (0 nextCurrent : lookupCurrentGeneration @{nameEq} actor
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) =
+    Just generation) ->
+  (0 inactive : InactiveFiberAt name key world error value nameEq actor before) ->
+  InactiveFiberAt name key world error value nameEq actor afterState
+oneStepInactivePersistence nameEq keyEq actor generation generationActor ordinal
+  live unique stamped before afterState action tag checked noBegin nextCurrent
+  inactive =
+    currentRegisteredInactiveStep nameEq keyEq [generation] ordinal live unique
+      action before afterState tag
+      (checkedActionProjects nameEq keyEq action before afterState tag checked)
+      noBegin
+      (singletonCurrentRegisteredInactive nameEq actor generation
+        generationActor live stamped before inactive)
+      actor generation Here nextCurrent
 
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
