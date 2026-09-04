@@ -1641,6 +1641,36 @@ locatedActionHeadView head rest
             (MkLocatedActionOccurrence before after prefixRest transition later
               actionShape Refl ** Refl)
 
+0 liftGenerationStamp :
+  {child : name} -> {startOrdinal : Nat} -> {earlierCount : Nat} ->
+  {generation : RegistrationGeneration name} ->
+  generation = MkRegistrationGeneration child (startOrdinal + earlierCount) ->
+  bumpGeneration generation =
+    MkRegistrationGeneration child (startOrdinal + S earlierCount)
+liftGenerationStamp stamp =
+  trans (cong bumpGeneration stamp)
+    (cong (MkRegistrationGeneration child)
+      (plusSuccRightSucc startOrdinal earlierCount))
+
+0 liftGeneratedDuring :
+  (headTransition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (selected : name) -> (startOrdinal : Nat) ->
+  {generation : RegistrationGeneration name} ->
+  GeneratedDuring name key world error value selected startOrdinal rest generation ->
+  GeneratedDuring name key world error value selected startOrdinal
+    (MoreTransitions headTransition rest) (bumpGeneration generation)
+liftGeneratedDuring headTransition rest selected startOrdinal
+  (MkGeneratedDuring child component
+    (MkLocatedActionOccurrence before after earlier transition later actionShape
+      decomposition)
+    stamp retiresLater) =
+      MkGeneratedDuring child component
+        (MkLocatedActionOccurrence before after
+          (MoreTransitions headTransition earlier) transition later actionShape
+          (cong (MoreTransitions headTransition) decomposition))
+        (liftGenerationStamp stamp) retiresLater
+
 ||| Independently testable O8 result.  A selected maximal/deletable candidate is
 ||| tied back to an ordinal produced by the exact O7 scan; the empty branch is
 ||| definitionally separated from the O9 deletion adapter.
