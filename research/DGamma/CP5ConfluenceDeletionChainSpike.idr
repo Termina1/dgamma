@@ -4179,6 +4179,32 @@ retiredAfterRetireSpike
 trueFlagInactiveBeginNothing nameEq keyEq actor component parent _ table state
   Refl = Refl
 
+0 retiredLifecycleBeginNothing :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (lifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (state : SystemState name key value world error) ->
+  retiredFlag = True ->
+  beginFiberAction @{nameEq} @{keyEq} actor
+    (MkFiber component parent retiredFlag table lifecycle) state = Nothing
+retiredLifecycleBeginNothing nameEq keyEq actor component parent retiredFlag table
+  (Inactive Nothing) state retiredTrue =
+    trueFlagInactiveBeginNothing nameEq keyEq actor component parent retiredFlag
+      table state retiredTrue
+retiredLifecycleBeginNothing nameEq keyEq actor component parent retiredFlag table
+  (Inactive (Just failure)) state retiredTrue = Refl
+retiredLifecycleBeginNothing nameEq keyEq actor component parent retiredFlag table
+  (Reloading remaining accumulator view) state retiredTrue = Refl
+retiredLifecycleBeginNothing nameEq keyEq actor component parent retiredFlag table
+  (Active accumulator view) state retiredTrue = Refl
+retiredLifecycleBeginNothing nameEq keyEq actor component parent retiredFlag table
+  (Unloading accumulator view outcome) state retiredTrue = Refl
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
