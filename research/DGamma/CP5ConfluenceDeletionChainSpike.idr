@@ -2324,6 +2324,21 @@ parentOpenInstalledSpike nameEq selected state
     trans (installedAtFound nameEq selected state fiber found)
       (lifecycleOpenInstalledSpike (fiberLifecycle fiber) opened)
 
+0 unloadOpenTagTransportImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LUnload selected)
+    before = Just (tag, afterState)) ->
+  ParentOpenAt nameEq selected before ->
+  (0 tagShape : tag = LUnloadTag) -> Void
+unloadOpenTagTransportImpossible nameEq keyEq selected tag before afterState
+  checked opened tagShape =
+    case tagShape of
+      Refl => unloadOpenAtImpossible nameEq keyEq selected before afterState
+        (MkUnloadStep checked) opened
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
