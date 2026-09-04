@@ -6445,6 +6445,114 @@ data MaximalClosingSelection :
     MaximalClosingSelection name key world error value protocol nameEq keyEq
       trace premises scan
 
+record ExactZeroGenerationScan
+  (name : Type) (nameEq : DecEq name)
+  {first, finalState : SystemState name key value world error}
+  (trace : Transitions first finalState) where
+  constructor MkExactZeroGenerationScan
+  exactZeroFinalLive : GenerationEnvironment name
+  0 exactZeroScan : GenerationTraceScan nameEq 0 [] trace
+    (transitionCount trace) exactZeroFinalLive
+
+0 exactZeroGenerationScanFromComplete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (trace : Transitions first finalState) ->
+  CompleteGenerationScan name nameEq 0 [] trace ->
+  ExactZeroGenerationScan name nameEq trace
+exactZeroGenerationScanFromComplete nameEq trace
+  (MkCompleteGenerationScan finalOrdinal finalLive scan) =
+    MkExactZeroGenerationScan finalLive
+      (replace
+        {p = \candidate => GenerationTraceScan nameEq 0 [] trace candidate
+          finalLive}
+        (generationScanOrdinalCount nameEq 0 [] trace finalOrdinal finalLive scan)
+        scan)
+
+0 exactZeroGenerationScan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (trace : Transitions first finalState) ->
+  ExactZeroGenerationScan name nameEq trace
+exactZeroGenerationScan nameEq trace =
+  exactZeroGenerationScanFromComplete nameEq trace
+    (completeGenerationScan nameEq 0 [] trace)
+
+0 maximalSelectionFromPrefixScan :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol
+    nameEq keyEq trace) ->
+  (scan : ClosingEpisodeScan name key world error value nameEq keyEq trace) ->
+  (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected trace) ->
+  (0 selectedMember : Elem (transitionCount (traceBeforeOpening episode))
+    (map DGamma.CP5ConfluenceDeletionChainSpike.scannedClosingOrdinal
+      (scannedClosingOccurrences scan))) ->
+  (0 upper : (other : ClosingEpisodeOccurrence name key world error value
+      nameEq keyEq trace) ->
+    Elem other (scannedClosingOccurrences scan) ->
+    LTE (scannedClosingOrdinal other)
+      (transitionCount (traceBeforeOpening episode))) ->
+  ExactZeroGenerationScan name nameEq (traceBeforeOpening episode) ->
+  MaximalClosingSelection name key world error value protocol nameEq keyEq trace
+    premises scan
+maximalSelectionFromPrefixScan nameEq keyEq protocol trace premises scan selected
+  episode selectedMember upper
+  (MkExactZeroGenerationScan startLive beforeScan) =
+    SelectedMaximalClosingEpisode
+      (maximalCandidateFromGenerationScan nameEq keyEq protocol trace premises
+        scan selected episode upper
+        (transitionCount (traceBeforeOpening episode)) startLive beforeScan
+        (\inventory => selectedChildrenHaveNoEpisode nameEq keyEq trace selected
+          episode inventory (replayAligned (chainReplayCapital premises))
+          (replayQuiet (chainReplayCapital premises))
+          (maximalClosingOrdinalBound scan selected episode upper)))
+      selectedMember
+
+0 maximalSelectionFromOccurrence :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol
+    nameEq keyEq trace) ->
+  (scan : ClosingEpisodeScan name key world error value nameEq keyEq trace) ->
+  (occurrence : ClosingEpisodeOccurrence name key world error value nameEq keyEq
+    trace) ->
+  (0 member : Elem occurrence (scannedClosingOccurrences scan)) ->
+  (0 upper : (other : ClosingEpisodeOccurrence name key world error value
+      nameEq keyEq trace) ->
+    Elem other (scannedClosingOccurrences scan) ->
+    LTE (scannedClosingOrdinal other) (scannedClosingOrdinal occurrence)) ->
+  MaximalClosingSelection name key world error value protocol nameEq keyEq trace
+    premises scan
+maximalSelectionFromOccurrence nameEq keyEq protocol trace premises scan
+  (ErasedClosingEpisodeOccurrence selected episode) member upper =
+    maximalSelectionFromPrefixScan nameEq keyEq protocol trace premises scan
+      selected episode (elemMap scannedClosingOrdinal member) upper
+      (exactZeroGenerationScan nameEq (traceBeforeOpening episode))
+
+0 maximalSelectionFromMaximum :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol
+    nameEq keyEq trace) ->
+  (scan : ClosingEpisodeScan name key world error value nameEq keyEq trace) ->
+  MaximumBy DGamma.CP5ConfluenceDeletionChainSpike.scannedClosingOrdinal
+    (scannedClosingOccurrences scan) ->
+  MaximalClosingSelection name key world error value protocol nameEq keyEq trace
+    premises scan
+maximalSelectionFromMaximum nameEq keyEq protocol trace premises scan
+  (MkMaximumBy maximum member upper) =
+    maximalSelectionFromOccurrence nameEq keyEq protocol trace premises scan
+      maximum member upper
+
 ||| O8 maximal candidate selection is no longer bundled with D72 enrichment.
 public export
 0 selectMaximalClosingEpisodeSpike :
