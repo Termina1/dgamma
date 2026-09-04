@@ -575,6 +575,56 @@ r143LeftAlternateDependsOnNothing found wanted depends =
 r143ElemSingletonExact Here = Refl
 r143ElemSingletonExact (There later) = absurd later
 
+0 r143LeftLowerProvidesKA :
+  {fiber : Fiber N K V Unit String} ->
+  lookupFiber @{the (DecEq N) %search} Lower
+    (registry DGamma.R6FourFiberStatic.leftState) = Just fiber ->
+  {wanted : K} ->
+  Elem wanted (dependencies (componentProvisions (fiberComponent fiber))) ->
+  wanted = KA
+r143LeftLowerProvidesKA found provides =
+  case found of Refl => r143ElemSingletonExact provides
+
+0 r143LeftMiddleProvidesKB :
+  {fiber : Fiber N K V Unit String} ->
+  lookupFiber @{the (DecEq N) %search} Middle
+    (registry DGamma.R6FourFiberStatic.leftState) = Just fiber ->
+  {wanted : K} ->
+  Elem wanted (dependencies (componentProvisions (fiberComponent fiber))) ->
+  wanted = KB
+r143LeftMiddleProvidesKB found provides =
+  case found of Refl => r143ElemSingletonExact provides
+
+0 r143LeftAlternateProvidesKB :
+  {fiber : Fiber N K V Unit String} ->
+  lookupFiber @{the (DecEq N) %search} Alternate
+    (registry DGamma.R6FourFiberStatic.leftState) = Just fiber ->
+  {wanted : K} ->
+  Elem wanted (dependencies (componentProvisions (fiberComponent fiber))) ->
+  wanted = KB
+r143LeftAlternateProvidesKB found provides =
+  case found of Refl => r143ElemSingletonExact provides
+
+0 r143LeftMiddleDependsKA :
+  {fiber : Fiber N K V Unit String} ->
+  lookupFiber @{the (DecEq N) %search} Middle
+    (registry DGamma.R6FourFiberStatic.leftState) = Just fiber ->
+  {wanted : K} ->
+  Elem wanted (dependencies (componentDependencies (fiberComponent fiber))) ->
+  wanted = KA
+r143LeftMiddleDependsKA found depends =
+  case found of Refl => r143ElemSingletonExact depends
+
+0 r143LeftUpperDependsKB :
+  {fiber : Fiber N K V Unit String} ->
+  lookupFiber @{the (DecEq N) %search} Upper
+    (registry DGamma.R6FourFiberStatic.leftState) = Just fiber ->
+  {wanted : K} ->
+  Elem wanted (dependencies (componentDependencies (fiberComponent fiber))) ->
+  wanted = KB
+r143LeftUpperDependsKB found depends =
+  case found of Refl => r143ElemSingletonExact depends
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
