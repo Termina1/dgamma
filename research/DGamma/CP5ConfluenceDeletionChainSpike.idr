@@ -4349,6 +4349,36 @@ retireTransitionTargetRegistryView nameEq keyEq actor ambient source tag
           retireFoundTargetView nameEq keyEq actor ambient source fiber found tag
             afterState raw
 
+0 retireTransitionTargetView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (ORetire actor) before =
+    Just (tag, afterState)) ->
+  RetireTargetLookupView name key world error value nameEq actor afterState
+retireTransitionTargetView nameEq keyEq actor (MkSystemState ambient source)
+  afterState tag raw =
+    retireTransitionTargetRegistryView nameEq keyEq actor ambient source tag
+      afterState raw
+
+0 rawRetireFromActionShape :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  (action : Action name key value world error) ->
+  (0 actionShape : action = ORetire child) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  applyAction @{nameEq} @{keyEq} (ORetire child) before =
+    Just (tag, afterState)
+rawRetireFromActionShape nameEq keyEq child action actionShape before afterState
+  tag raw =
+    replace {p = \candidate => applyAction @{nameEq} @{keyEq} candidate before =
+      Just (tag, afterState)} actionShape raw
+
 data RetiredRegistryLookupView :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (nameEq : DecEq name) -> (actor : name) ->
