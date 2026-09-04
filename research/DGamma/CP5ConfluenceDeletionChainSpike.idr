@@ -5059,6 +5059,116 @@ globalizeLocatedClosing nameEq keyEq actor leading suffix globalTrace globalSpli
           leftLTEPlus (transitionCount leading)
             (transitionCount beforeOpening))
 
+0 globalizedClosingContradictsUpper :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (actor : name) -> (globalTrace : Transitions initial finalState) ->
+  (selectedOrdinal, leadingLength : Nat) ->
+  (0 selectedBeforeLeading : LTE (S selectedOrdinal) leadingLength) ->
+  (0 upper : (closingActor : name) ->
+    (closingEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+      closingActor globalTrace) ->
+    LTE (transitionCount (traceBeforeOpening closingEpisode))
+      selectedOrdinal) ->
+  GlobalizedClosing value nameEq keyEq actor globalTrace leadingLength -> Void
+globalizedClosingContradictsUpper nameEq keyEq actor globalTrace selectedOrdinal
+  leadingLength selectedBeforeLeading upper
+  (MkGlobalizedClosing episode leadingBeforeOpening) =
+    LTEImpliesNotGT (upper actor episode)
+      (transitive selectedBeforeLeading leadingBeforeOpening)
+
+0 sameActorFutureBeginContradictsMaximal :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (ordinal, selectedOrdinal : Nat) ->
+  (0 selectedBeforeCurrent : LTE (S selectedOrdinal) ordinal) ->
+  (initial, before, opened, finalState :
+    SystemState name key value world error) ->
+  (globalTrace : Transitions initial finalState) ->
+  (leading : Transitions initial before) ->
+  (current : Transitions before finalState) ->
+  (0 globalSplit : appendTransitions leading current = globalTrace) ->
+  (0 prefixOrdinal : transitionCount leading = ordinal) ->
+  (0 upper : (closingActor : name) ->
+    (closingEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+      closingActor globalTrace) ->
+    LTE (transitionCount (traceBeforeOpening closingEpisode))
+      selectedOrdinal) ->
+  (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LBegin actor) before =
+    Just (tag, opened)) ->
+  (rest : Transitions opened finalState) ->
+  (0 currentShape : current = MoreTransitions
+    (Fired nameEq keyEq (LBegin actor) tag checked) rest) ->
+  (0 alignedRest : AlignedTransitions name key world error value nameEq keyEq
+    rest) ->
+  (0 finalQuiet : quiet @{nameEq} @{keyEq} finalState = True) ->
+  ActionOccurs (ORetire actor) rest -> Void
+sameActorFutureBeginContradictsMaximal nameEq keyEq actor ordinal selectedOrdinal
+  selectedBeforeCurrent initial before opened finalState globalTrace leading
+  current globalSplit prefixOrdinal upper tag checked rest currentShape alignedRest
+  finalQuiet retires =
+    globalizedClosingContradictsUpper nameEq keyEq actor globalTrace
+      selectedOrdinal (transitionCount leading)
+      (replace {p = \candidate => LTE (S selectedOrdinal) candidate}
+        (sym prefixOrdinal) selectedBeforeCurrent)
+      upper
+      (globalizeLocatedClosing nameEq keyEq actor leading current globalTrace
+        globalSplit
+        (replace
+          {p = \candidate => LocatedClosedEpisode name key world error value
+            nameEq keyEq actor candidate}
+          (sym currentShape)
+          (futureRetirementClosesBegin nameEq keyEq actor before opened finalState
+            tag checked rest alignedRest finalQuiet retires)))
+
+0 futureRegisteredBeginContradictsMaximal :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (generation : RegistrationGeneration name) ->
+  (0 generationActor : generationName generation = actor) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (0 stamped : GenerationEnvironmentStamped live) ->
+  (selectedOrdinal : Nat) ->
+  (0 selectedBeforeCurrent : LTE (S selectedOrdinal) ordinal) ->
+  (initial, before, finalState : SystemState name key value world error) ->
+  (globalTrace : Transitions initial finalState) ->
+  (leading : Transitions initial before) ->
+  (current : Transitions before finalState) ->
+  (0 globalSplit : appendTransitions leading current = globalTrace) ->
+  (0 prefixOrdinal : transitionCount leading = ordinal) ->
+  (0 upper : (closingActor : name) ->
+    (closingEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+      closingActor globalTrace) ->
+    LTE (transitionCount (traceBeforeOpening closingEpisode))
+      selectedOrdinal) ->
+  (observedActor : name) ->
+  (opened : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LBegin observedActor)
+    before = Just (tag, opened)) ->
+  (rest : Transitions opened finalState) ->
+  (0 currentShape : current = MoreTransitions
+    (Fired nameEq keyEq (LBegin observedActor) tag checked) rest) ->
+  (0 alignedRest : AlignedTransitions name key world error value nameEq keyEq
+    rest) ->
+  (0 finalQuiet : quiet @{nameEq} @{keyEq} finalState = True) ->
+  ActionOccurs (ORetire actor) rest ->
+  (owned : GenerationOwnedActor nameEq [generation] ordinal live
+    (the (Action name key value world error) (LBegin observedActor))) -> Void
+futureRegisteredBeginContradictsMaximal nameEq keyEq actor generation
+  generationActor ordinal live stamped selectedOrdinal selectedBeforeCurrent
+  initial before finalState globalTrace leading current globalSplit prefixOrdinal
+  upper observedActor opened tag checked rest currentShape alignedRest finalQuiet
+  retires owned =
+    case singletonBeginOwnedActor {name = name} {key = key} {value = value}
+      {world = world} {error = error} {ordinal = ordinal} nameEq actor generation
+      live stamped generationActor (LBegin observedActor) ItIsLBegin owned of
+      Refl => sameActorFutureBeginContradictsMaximal nameEq keyEq actor ordinal
+        selectedOrdinal selectedBeforeCurrent initial before opened finalState
+        globalTrace leading current globalSplit prefixOrdinal upper tag checked
+        rest currentShape alignedRest finalQuiet retires
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
