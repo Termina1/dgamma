@@ -2620,6 +2620,18 @@ childInsertParentDistinct nameEq keyEq child parent component tag before
         (ChildOf child) component tag before afterState checked
         (parentOpenInstalledSpike nameEq child before opened)
 
+0 parentOpenAtRegistrationYield :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (parent : name) ->
+  (component : Component key value world error) ->
+  (state : SystemState name key value world error) ->
+  ParentRegistrationYield protocol nameEq parent component state ->
+  ParentOpenAt nameEq parent state
+parentOpenAtRegistrationYield protocol nameEq parent component state yielded =
+  MkParentOpenAt (parentFiberAtYield yielded) (parentFoundAtYield yielded)
+    (replace {p = LifecycleOpen} (sym (parentAtYield yielded)) OpenReloading)
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
