@@ -56,6 +56,61 @@ public export
 chainReachedFromEmpty premises = replayReachedFromEmpty (chainReplayCapital premises)
 
 ||| All occurrence-local inputs needed for one checked Lemma-72 call.
+||| A consumer closing episode is relevant to one selected registration
+||| generation only when its exact opening occurs inside the selected installed
+||| interval.  The start scan authenticates the selected generation; the two
+||| ordinal equations tie both openings to the same global trace without
+||| comparing erased transition proofs.
+public export
+record GenerationScopedClosingStart
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, finalState : SystemState name key value world error}
+  (global : Transitions initial finalState)
+  (selected : name) (selectedStartOrdinal : Nat)
+  (selectedStartLive : GenerationEnvironment name)
+  (selectedEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global)
+  (consumer : name)
+  (consumerEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    consumer global) where
+  constructor MkGenerationScopedClosingStart
+  scopedSelectedGeneration : RegistrationGeneration name
+  0 scopedSelectedCurrent : lookupCurrentGeneration @{nameEq} selected
+    selectedStartLive = Just scopedSelectedGeneration
+  0 scopedSelectedOrdinal : transitionCount
+    (traceBeforeOpening selectedEpisode) = selectedStartOrdinal
+  scopedConsumerOpening : LocatedActionOccurrence (LBegin consumer)
+    (closedInside (locatedEpisode selectedEpisode))
+  0 scopedConsumerOrdinal : transitionCount
+    (traceBeforeOpening consumerEpisode) =
+    selectedStartOrdinal + S (locatedActionOrdinal scopedConsumerOpening)
+
+||| Generation-start/activation-interval replacement for the false global raw
+||| name predicate.  A later birth or reactivation outside the selected installed
+||| interval cannot be used to reject this candidate.
+public export
+NoDependentClosingEpisodeForGeneration :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {global : Transitions initial finalState} ->
+  (selected : name) -> (selectedStartOrdinal : Nat) ->
+  (selectedStartLive : GenerationEnvironment name) ->
+  (selectedEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) -> Type
+NoDependentClosingEpisodeForGeneration {name} {key} {world} {error} {value}
+  {nameEq} {keyEq} {global} selected selectedStartOrdinal selectedStartLive
+  selectedEpisode =
+    (consumer : name) ->
+    (consumerEpisode : LocatedClosedEpisode name key world error value nameEq
+      keyEq consumer global) ->
+    GenerationScopedClosingStart name key world error value nameEq keyEq global
+      selected selectedStartOrdinal selectedStartLive selectedEpisode consumer
+      consumerEpisode ->
+    PrecedenceEdge nameEq selected consumer
+      (closedStartState (locatedEpisode consumerEpisode)) -> Void
+
 public export
 record DeletableClosingEpisode
   (name, key, world, error : Type) (value : key -> Type)
@@ -80,8 +135,9 @@ record DeletableClosingEpisode
     (MoreTransitions
       (beginTransition (closedOpening (locatedEpisode selectedEpisode)))
       (closedTransitions (locatedEpisode selectedEpisode)))
-  0 selectedNoDependentClose : NoDependentClosingEpisode
-    {nameEq = nameEq} {keyEq = keyEq} selectedActor trace
+  0 selectedNoDependentClose : NoDependentClosingEpisodeForGeneration
+    {nameEq = nameEq} {keyEq = keyEq} {global = trace} selectedActor
+    selectedStartOrdinal selectedStartLive selectedEpisode
   0 selectedChildrenHaveNoEpisode : NoRegisteredEpisode nameEq
     selectedRegistrations 0 [] trace
 
