@@ -2481,6 +2481,30 @@ alignedUnloadHeadOpenImpossible nameEq keyEq selected _ _
     unloadActionEqualityOpenImpossible nameEq keyEq selected action tag _ _
       checked opened unloadAction
 
+0 noRecoveryUnloadOccurrenceImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  ActionOccurs (LUnload selected) trace ->
+  NoParentRecovery selected trace ->
+  ParentOpenAt nameEq selected first -> Void
+noRecoveryUnloadOccurrenceImpossible nameEq keyEq selected _ aligned
+  (ActionOccursHere transition rest unloadAction) noRecovery opened =
+    alignedUnloadHeadOpenImpossible nameEq keyEq selected transition rest aligned
+      opened unloadAction
+noRecoveryUnloadOccurrenceImpossible nameEq keyEq selected _ aligned
+  (ActionOccursLater transition rest later) noRecovery opened =
+    noRecoveryUnloadOccurrenceImpossible nameEq keyEq selected rest
+      (alignedTransitionTail nameEq keyEq transition rest aligned) later
+      (noParentRecoveryInTail
+        (noParentRecoveryConsView selected transition rest noRecovery))
+      (alignedNoRecoveryHeadOpen nameEq keyEq selected transition rest aligned
+        opened
+        (noParentRecoveryAtHead
+          (noParentRecoveryConsView selected transition rest noRecovery)))
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
