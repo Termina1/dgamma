@@ -4421,6 +4421,99 @@ retiredAcrossRegistryUpdate nameEq actor source
     RetiredRegistryLookupMissing
       (DGamma.CP4DeletionSelectedOwn.lookupDeleteSelf actor source)
 
+0 retiredForeignActionStep :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (action : Action name key value world error) ->
+  (0 distinct : Not (actor = actionOwner action)) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (retiredFiber : Fiber name key value world error) ->
+  (0 retiredFound : lookupFiber @{nameEq} actor (registry before) =
+    Just retiredFiber) ->
+  (0 retiredTrue : retired retiredFiber = True) ->
+  RetiredRegistryLookupView name key world error value nameEq actor
+    (registry afterState)
+retiredForeignActionStep nameEq keyEq actor action distinct before afterState tag
+  raw retiredFiber retiredFound retiredTrue =
+    RetiredRegistryLookupPresent retiredFiber
+      (trans (systemLocalUpdateForeign nameEq actor (actionOwner action) distinct
+        before afterState (applyActionLocalUpdate nameEq keyEq action before
+          afterState tag raw)) retiredFound) retiredTrue
+
+0 retiredOwnerSourceFound :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor, owner : name) ->
+  (0 same : actor = owner) ->
+  (source : Registry name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  (0 found : lookupFiber @{nameEq} actor source = Just fiber) ->
+  lookupFiber @{nameEq} owner source = Just fiber
+retiredOwnerSourceFound nameEq actor owner same source fiber found =
+  replace {p = \candidate => lookupFiber @{nameEq} candidate source =
+    Just fiber} same found
+
+0 retiredOwnerTargetReindex :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor, owner : name) ->
+  (0 same : actor = owner) ->
+  (target : Registry name key value world error) ->
+  RetiredRegistryLookupView name key world error value nameEq owner target ->
+  RetiredRegistryLookupView name key world error value nameEq actor target
+retiredOwnerTargetReindex nameEq actor owner same target ownerView =
+  replace {p = \candidate => RetiredRegistryLookupView name key world error
+    value nameEq candidate target} (sym same) ownerView
+
+0 retiredOwnerActionStep :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (action : Action name key value world error) ->
+  (0 same : actor = actionOwner action) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (retiredFiber : Fiber name key value world error) ->
+  (0 retiredFound : lookupFiber @{nameEq} actor (registry before) =
+    Just retiredFiber) ->
+  (0 retiredTrue : retired retiredFiber = True) ->
+  RetiredRegistryLookupView name key world error value nameEq actor
+    (registry afterState)
+retiredOwnerActionStep nameEq keyEq actor action same before afterState tag raw
+  retiredFiber retiredFound retiredTrue =
+    retiredOwnerTargetReindex nameEq actor (actionOwner action) same
+      (registry afterState)
+      (retiredAcrossRegistryUpdate nameEq (actionOwner action) (registry before)
+        (registry afterState)
+        (systemRegistryUpdate (applyActionLocalUpdate nameEq keyEq action before
+          afterState tag raw)) retiredFiber
+        (retiredOwnerSourceFound nameEq actor (actionOwner action) same
+          (registry before) retiredFiber retiredFound) retiredTrue)
+
+0 retiredAcrossActionStep :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (retiredFiber : Fiber name key value world error) ->
+  (0 retiredFound : lookupFiber @{nameEq} actor (registry before) =
+    Just retiredFiber) ->
+  (0 retiredTrue : retired retiredFiber = True) ->
+  RetiredRegistryLookupView name key world error value nameEq actor
+    (registry afterState)
+retiredAcrossActionStep nameEq keyEq actor action before afterState tag raw
+  retiredFiber retiredFound retiredTrue =
+    case decEq @{nameEq} actor (actionOwner action) of
+      No distinct => retiredForeignActionStep nameEq keyEq actor action distinct
+        before afterState tag raw retiredFiber retiredFound retiredTrue
+      Yes same => retiredOwnerActionStep nameEq keyEq actor action same before
+        afterState tag raw retiredFiber retiredFound retiredTrue
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
