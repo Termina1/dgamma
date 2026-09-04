@@ -1778,6 +1778,177 @@ prependChildInventoryWithoutMatch headTransition rest selected startOrdinal
       (liftedInventoryComplete headTransition rest selected startOrdinal
         headImpossible tailGenerations tailComplete)
 
+0 headChildBirth :
+  (headTransition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (selected, child : name) ->
+  (component : Component key value world error) ->
+  transitionAction headTransition =
+    OInsert child (ChildOf selected) component ->
+  LocatedActionOccurrence (OInsert child (ChildOf selected) component)
+    (MoreTransitions headTransition rest)
+headChildBirth headTransition rest selected child component actionShape =
+  replace
+    {p = \observedAction => LocatedActionOccurrence observedAction
+      (MoreTransitions headTransition rest)}
+    actionShape
+    (occursInGivesLocatedAction headTransition
+      (MoreTransitions headTransition rest) OccursHere)
+
+0 headChildGenerated :
+  (headTransition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (selected, child : name) ->
+  (component : Component key value world error) ->
+  (startOrdinal : Nat) ->
+  (actionShape : transitionAction headTransition =
+    OInsert child (ChildOf selected) component) ->
+  ((registered : name) ->
+    (registeredComponent : Component key value world error) ->
+    (birth : LocatedActionOccurrence
+      (OInsert registered (ChildOf selected) registeredComponent)
+      (MoreTransitions headTransition rest)) ->
+    ActionOccurs (ORetire registered) (afterActionOccurrence birth)) ->
+  GeneratedDuring name key world error value selected startOrdinal
+    (MoreTransitions headTransition rest)
+    (MkRegistrationGeneration child startOrdinal)
+headChildGenerated headTransition rest selected child component startOrdinal
+  actionShape allRetire =
+    MkGeneratedDuring child component
+      (headChildBirth headTransition rest selected child component actionShape)
+      (cong (MkRegistrationGeneration child)
+        (sym (plusZeroRightNeutral startOrdinal)))
+      (allRetire child component
+        (headChildBirth headTransition rest selected child component actionShape))
+
+0 matchingInventorySound :
+  (headTransition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (selected, child : name) ->
+  (component : Component key value world error) ->
+  (startOrdinal : Nat) ->
+  (actionShape : transitionAction headTransition =
+    OInsert child (ChildOf selected) component) ->
+  ((registered : name) ->
+    (registeredComponent : Component key value world error) ->
+    (birth : LocatedActionOccurrence
+      (OInsert registered (ChildOf selected) registeredComponent)
+      (MoreTransitions headTransition rest)) ->
+    ActionOccurs (ORetire registered) (afterActionOccurrence birth)) ->
+  (tailGenerations : List (RegistrationGeneration name)) ->
+  ((generation : RegistrationGeneration name) ->
+    Elem generation tailGenerations ->
+    GeneratedDuring name key world error value selected startOrdinal rest
+      generation) ->
+  (generation : RegistrationGeneration name) ->
+  Elem generation
+    (MkRegistrationGeneration child startOrdinal ::
+      map DGamma.CP5ConfluenceDeletionChainSpike.bumpGeneration
+        tailGenerations) ->
+  GeneratedDuring name key world error value selected startOrdinal
+    (MoreTransitions headTransition rest) generation
+matchingInventorySound headTransition rest selected child component startOrdinal
+  actionShape allRetire tailGenerations tailSound _ Here =
+    headChildGenerated headTransition rest selected child component startOrdinal
+      actionShape allRetire
+matchingInventorySound headTransition rest selected child component startOrdinal
+  actionShape allRetire tailGenerations tailSound generation (There later) =
+    liftedInventorySound headTransition rest selected startOrdinal
+      tailGenerations tailSound generation later
+
+0 matchingHeadComplete :
+  {registered, child, selected : name} ->
+  {registeredComponent, component : Component key value world error} ->
+  {headOrdinal : Nat} -> {startOrdinal : Nat} ->
+  {tailGenerations : List (RegistrationGeneration name)} ->
+  OInsert child (ChildOf selected) component =
+    OInsert registered (ChildOf selected) registeredComponent ->
+  headOrdinal = Z ->
+  Elem (MkRegistrationGeneration registered (startOrdinal + headOrdinal))
+    (MkRegistrationGeneration child startOrdinal :: tailGenerations)
+matchingHeadComplete actionShape ordinalShape =
+  case actionShape of
+    Refl => rewrite ordinalShape in
+      rewrite plusZeroRightNeutral startOrdinal in Here
+
+0 matchingInventoryComplete :
+  (headTransition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (selected, child : name) ->
+  (component : Component key value world error) ->
+  (startOrdinal : Nat) ->
+  (actionShape : transitionAction headTransition =
+    OInsert child (ChildOf selected) component) ->
+  (tailGenerations : List (RegistrationGeneration name)) ->
+  ((registered : name) ->
+    (registeredComponent : Component key value world error) ->
+    (birth : LocatedActionOccurrence
+      (OInsert registered (ChildOf selected) registeredComponent) rest) ->
+    Elem (MkRegistrationGeneration registered
+      (startOrdinal + locatedActionOrdinal birth)) tailGenerations) ->
+  (registered : name) ->
+  (registeredComponent : Component key value world error) ->
+  (birth : LocatedActionOccurrence
+    (OInsert registered (ChildOf selected) registeredComponent)
+    (MoreTransitions headTransition rest)) ->
+  Elem (MkRegistrationGeneration registered
+    (startOrdinal + locatedActionOrdinal birth))
+    (MkRegistrationGeneration child startOrdinal ::
+      map DGamma.CP5ConfluenceDeletionChainSpike.bumpGeneration
+        tailGenerations)
+matchingInventoryComplete headTransition rest selected child component
+  startOrdinal actionShape tailGenerations tailComplete registered
+  registeredComponent birth =
+    case locatedActionHeadView headTransition rest birth of
+      Left (atHeadShape, ordinalShape) =>
+        matchingHeadComplete (trans (sym actionShape) atHeadShape) ordinalShape
+      Right (tailBirth ** ordinalShape) =>
+        replace
+          {p = \ordinal => Elem (MkRegistrationGeneration registered
+            (startOrdinal + ordinal))
+            (MkRegistrationGeneration child startOrdinal ::
+              map DGamma.CP5ConfluenceDeletionChainSpike.bumpGeneration
+                tailGenerations)}
+          (sym ordinalShape)
+          (There
+            (replace
+              {p = \ordinal => Elem (MkRegistrationGeneration registered ordinal)
+                (map DGamma.CP5ConfluenceDeletionChainSpike.bumpGeneration
+                  tailGenerations)}
+              (plusSuccRightSucc startOrdinal
+                (locatedActionOrdinal tailBirth))
+              (elemMap DGamma.CP5ConfluenceDeletionChainSpike.bumpGeneration
+                (tailComplete registered registeredComponent tailBirth))))
+
+0 prependMatchingChildInventory :
+  (headTransition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (selected, child : name) ->
+  (component : Component key value world error) ->
+  (startOrdinal : Nat) ->
+  (actionShape : transitionAction headTransition =
+    OInsert child (ChildOf selected) component) ->
+  ((registered : name) ->
+    (registeredComponent : Component key value world error) ->
+    (birth : LocatedActionOccurrence
+      (OInsert registered (ChildOf selected) registeredComponent)
+      (MoreTransitions headTransition rest)) ->
+    ActionOccurs (ORetire registered) (afterActionOccurrence birth)) ->
+  ChildGenerationInventory name key world error value selected startOrdinal rest ->
+  ChildGenerationInventory name key world error value selected startOrdinal
+    (MoreTransitions headTransition rest)
+prependMatchingChildInventory headTransition rest selected child component
+  startOrdinal actionShape allRetire
+  (MkChildGenerationInventory tailGenerations tailSound tailComplete) =
+    MkChildGenerationInventory
+      (MkRegistrationGeneration child startOrdinal ::
+        map DGamma.CP5ConfluenceDeletionChainSpike.bumpGeneration
+          tailGenerations)
+      (matchingInventorySound headTransition rest selected child component
+        startOrdinal actionShape allRetire tailGenerations tailSound)
+      (matchingInventoryComplete headTransition rest selected child component
+        startOrdinal actionShape tailGenerations tailComplete)
+
 ||| Independently testable O8 result.  A selected maximal/deletable candidate is
 ||| tied back to an ordinal produced by the exact O7 scan; the empty branch is
 ||| definitionally separated from the O9 deletion adapter.
