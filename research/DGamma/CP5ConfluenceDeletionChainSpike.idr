@@ -2028,6 +2028,160 @@ prependClosingTailWitnessSpike leading
           (MoreTransitions endingTransition NoTransitions))
           (cong (appendTransitions leading) decomposition))
 
+0 childParentsFromInsertEquality :
+  OInsert child (ChildOf parent) component =
+    OInsert registered (ChildOf selected) registeredComponent ->
+  parent = selected
+childParentsFromInsertEquality Refl = Refl
+
+0 nonMatchingChildHeadImpossible :
+  (headTransition : Transition first middle) ->
+  (child, parent : name) ->
+  (component : Component key value world error) ->
+  transitionAction headTransition =
+    OInsert child (ChildOf parent) component ->
+  (parent = selected -> Void) ->
+  (registered : name) ->
+  (registeredComponent : Component key value world error) ->
+  transitionAction headTransition =
+    OInsert registered (ChildOf selected) registeredComponent ->
+  Void
+nonMatchingChildHeadImpossible headTransition child parent component headAction
+  distinct registered registeredComponent actionShape =
+    distinct (childParentsFromInsertEquality
+      (trans (sym headAction) actionShape))
+
+0 buildChildGenerationInventory :
+  (nameEq : DecEq name) -> (selected : name) -> (startOrdinal : Nat) ->
+  (trace : Transitions first finalState) ->
+  ((child : name) -> (component : Component key value world error) ->
+    (birth : LocatedActionOccurrence
+      (OInsert child (ChildOf selected) component) trace) ->
+    ActionOccurs (ORetire child) (afterActionOccurrence birth)) ->
+  ChildGenerationInventory name key world error value selected startOrdinal trace
+buildChildGenerationInventory nameEq selected startOrdinal NoTransitions allRetire =
+  MkChildGenerationInventory []
+    (\generation, member => absurd member)
+    (\child, component, birth => void (locatedActionImpossibleInEmpty birth))
+buildChildGenerationInventory nameEq selected startOrdinal
+  (MoreTransitions (Fired stepNameEq stepKeyEq
+    (OInsert child Root component) tag checked) rest) allRetire =
+      prependChildInventoryWithoutMatch
+        (Fired stepNameEq stepKeyEq (OInsert child Root component) tag checked)
+        rest selected startOrdinal
+        (\registered, registeredComponent, actionShape =>
+          case actionShape of Refl impossible)
+        (buildChildGenerationInventory nameEq selected startOrdinal rest
+          (tailRetirementRequirement
+            (Fired stepNameEq stepKeyEq
+              (OInsert child Root component) tag checked)
+            rest allRetire))
+buildChildGenerationInventory nameEq selected startOrdinal
+  (MoreTransitions (Fired stepNameEq stepKeyEq
+    (OInsert child (ChildOf parent) component) tag checked) rest) allRetire =
+      case decEq @{nameEq} parent selected of
+        Yes parentShape => case parentShape of
+          Refl => prependMatchingChildInventory
+            (Fired stepNameEq stepKeyEq
+              (OInsert child (ChildOf selected) component) tag checked)
+            rest selected child component startOrdinal Refl allRetire
+            (buildChildGenerationInventory nameEq selected startOrdinal rest
+              (tailRetirementRequirement
+                (Fired stepNameEq stepKeyEq
+                  (OInsert child (ChildOf selected) component) tag checked)
+                rest allRetire))
+        No distinct =>
+          prependChildInventoryWithoutMatch
+            (Fired stepNameEq stepKeyEq
+              (OInsert child (ChildOf parent) component) tag checked)
+            rest selected startOrdinal
+            (nonMatchingChildHeadImpossible
+              (Fired stepNameEq stepKeyEq
+                (OInsert child (ChildOf parent) component) tag checked)
+              child parent component Refl distinct)
+            (buildChildGenerationInventory nameEq selected startOrdinal rest
+              (tailRetirementRequirement
+                (Fired stepNameEq stepKeyEq
+                  (OInsert child (ChildOf parent) component) tag checked)
+                rest allRetire))
+buildChildGenerationInventory nameEq selected startOrdinal
+  (MoreTransitions (Fired stepNameEq stepKeyEq
+    (ORetire actor) tag checked) rest) allRetire =
+    prependChildInventoryWithoutMatch
+      (Fired stepNameEq stepKeyEq (ORetire actor) tag checked) rest selected
+      startOrdinal
+      (\child, component, shape => case shape of Refl impossible)
+      (buildChildGenerationInventory nameEq selected startOrdinal rest
+        (tailRetirementRequirement
+          (Fired stepNameEq stepKeyEq (ORetire actor) tag checked) rest
+          allRetire))
+buildChildGenerationInventory nameEq selected startOrdinal
+  (MoreTransitions (Fired stepNameEq stepKeyEq
+    (ORemove actor) tag checked) rest) allRetire =
+    prependChildInventoryWithoutMatch
+      (Fired stepNameEq stepKeyEq (ORemove actor) tag checked) rest selected
+      startOrdinal
+      (\child, component, shape => case shape of Refl impossible)
+      (buildChildGenerationInventory nameEq selected startOrdinal rest
+        (tailRetirementRequirement
+          (Fired stepNameEq stepKeyEq (ORemove actor) tag checked) rest
+          allRetire))
+buildChildGenerationInventory nameEq selected startOrdinal
+  (MoreTransitions (Fired stepNameEq stepKeyEq
+    (LBegin actor) tag checked) rest) allRetire =
+    prependChildInventoryWithoutMatch
+      (Fired stepNameEq stepKeyEq (LBegin actor) tag checked) rest selected
+      startOrdinal
+      (\child, component, shape => case shape of Refl impossible)
+      (buildChildGenerationInventory nameEq selected startOrdinal rest
+        (tailRetirementRequirement
+          (Fired stepNameEq stepKeyEq (LBegin actor) tag checked) rest
+          allRetire))
+buildChildGenerationInventory nameEq selected startOrdinal
+  (MoreTransitions (Fired stepNameEq stepKeyEq
+    (LAdvance actor) tag checked) rest) allRetire =
+    prependChildInventoryWithoutMatch
+      (Fired stepNameEq stepKeyEq (LAdvance actor) tag checked) rest selected
+      startOrdinal
+      (\child, component, shape => case shape of Refl impossible)
+      (buildChildGenerationInventory nameEq selected startOrdinal rest
+        (tailRetirementRequirement
+          (Fired stepNameEq stepKeyEq (LAdvance actor) tag checked) rest
+          allRetire))
+buildChildGenerationInventory nameEq selected startOrdinal
+  (MoreTransitions (Fired stepNameEq stepKeyEq
+    (LDivert actor) tag checked) rest) allRetire =
+    prependChildInventoryWithoutMatch
+      (Fired stepNameEq stepKeyEq (LDivert actor) tag checked) rest selected
+      startOrdinal
+      (\child, component, shape => case shape of Refl impossible)
+      (buildChildGenerationInventory nameEq selected startOrdinal rest
+        (tailRetirementRequirement
+          (Fired stepNameEq stepKeyEq (LDivert actor) tag checked) rest
+          allRetire))
+buildChildGenerationInventory nameEq selected startOrdinal
+  (MoreTransitions (Fired stepNameEq stepKeyEq
+    (LLeave actor) tag checked) rest) allRetire =
+    prependChildInventoryWithoutMatch
+      (Fired stepNameEq stepKeyEq (LLeave actor) tag checked) rest selected
+      startOrdinal
+      (\child, component, shape => case shape of Refl impossible)
+      (buildChildGenerationInventory nameEq selected startOrdinal rest
+        (tailRetirementRequirement
+          (Fired stepNameEq stepKeyEq (LLeave actor) tag checked) rest
+          allRetire))
+buildChildGenerationInventory nameEq selected startOrdinal
+  (MoreTransitions (Fired stepNameEq stepKeyEq
+    (LUnload actor) tag checked) rest) allRetire =
+    prependChildInventoryWithoutMatch
+      (Fired stepNameEq stepKeyEq (LUnload actor) tag checked) rest selected
+      startOrdinal
+      (\child, component, shape => case shape of Refl impossible)
+      (buildChildGenerationInventory nameEq selected startOrdinal rest
+        (tailRetirementRequirement
+          (Fired stepNameEq stepKeyEq (LUnload actor) tag checked) rest
+          allRetire))
+
 ||| Independently testable O8 result.  A selected maximal/deletable candidate is
 ||| tied back to an ordinal produced by the exact O7 scan; the empty branch is
 ||| definitionally separated from the O9 deletion adapter.
