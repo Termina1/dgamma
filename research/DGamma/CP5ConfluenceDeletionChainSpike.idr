@@ -2995,6 +2995,35 @@ retirementProvenanceBeforePrefixUnload nameEq keyEq parent child left right alig
     childRetirementBeforePrefixUnload nameEq keyEq parent child left right aligned
       retirement unload opened
 
+0 locatedEpisodeChildRegistration :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (selected, child : name) ->
+  (component : Component key value world error) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  (birth : LocatedActionOccurrence
+    (OInsert child (ChildOf selected) component)
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode)))
+      (closedTransitions (locatedEpisode episode)))) ->
+  LocatedGeneratedRegistration child selected component global
+locatedEpisodeChildRegistration nameEq keyEq global selected child component
+  episode
+  (MkLocatedActionOccurrence before afterState beforeTrace transition rest
+    actionShape decomposition) =
+      MkLocatedGeneratedRegistration before afterState
+        (appendTransitions (traceBeforeOpening episode) beforeTrace) transition
+        (appendTransitions rest (traceAfterClosing episode)) actionShape
+        (rewrite appendTransitionsAssociative (traceBeforeOpening episode)
+          beforeTrace
+          (MoreTransitions transition
+            (appendTransitions rest (traceAfterClosing episode))) in
+         rewrite sym (appendTransitionsAssociative beforeTrace
+          (MoreTransitions transition rest) (traceAfterClosing episode)) in
+         rewrite decomposition in locatedDecomposition episode)
+
 0 childRetirementFromGeneratedPrefixCapital :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (protocol : RegistrationProtocol key value world error) ->
