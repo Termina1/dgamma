@@ -3071,3 +3071,47 @@ seeded TTCs and the census remains **13**, split **2/4/6/0/1**.  R144 ends at
 this safe gate without opening later DeletionChain work.  Full attempts,
 commands, and resume conditions are recorded in
 `research-tests/O6-R144-CROSSTRACE-SERIAL-BUDGET-STOP-AUDIT.md`.
+
+### Revision 146: paper decision selects O9 route B; O21 exact-bijection cure
+
+R145's O9 retry remained mechanically inconclusive at its 3/3 fixture stop, and
+its O21 attempt isolated the free-bijection equality as the final outside-both
+reindexing obstruction.  `research-tests/O6-R146-STRATEGY-MEMO.md` records the
+subsequent design-only decision.  The current research census remains **13**,
+split **2/4/6/0/1**.
+
+Paper analysis selects **O9 route B**.  `L-Begin` commits a provider-name view
+for an episode, Definition 50's `relied` observes installed fibers' committed
+views, and guarded `L-Unload` cannot make that provider inactive while such a
+consumer remains installed.  A later activation or same-raw-name reissue
+therefore forces a generation-aware pre-interval/crossing exclusion.  Route A's
+new overlapping-activation premise is not present in Lemma 72 and would
+over-strengthen maximal-episode selection.  The next O9 implementation shift
+must expose exact prefix/suffix and current `RegistrationGeneration` witnesses,
+reuse `crossingActivationExcludesSelectedProvider`,
+`closingOccurrenceGivesLocatedActivation`, `SelectedUnloadRelianceAnchor`, and
+`committedSelectedContradictsUnload`, then adapt the provider exclusion at the
+O9 boundary.  No new public deletion premise is authorized.
+
+Before another O21 body attempt, apply a bounded surface revision:
+`ReplayedCanonicalEndpointBridge` becomes a sealed, record-shaped
+one-constructor family whose payload fields are indexed directly by
+`currentNameBijection (endpointRenaming sameInputs)`.  Its exported
+`replayBridgeBijection` is derived from that index and
+`replayBridgeBijectionFixed` is constructor-owned `Refl`; callers no longer
+supply a free bijection plus an equality.  Ambient, table, control, and exact
+generated-birth clauses retain their strength.  The outside-both case should
+then align definitionally.  Left/right/both-withdrawn cases still require a
+producer-owned exact-current-generation induction from the accepted scanner and
+`CurrentEndpointRenaming`, but no caller-selected birth or vestigial premise.
+
+Stop-map classification is: O14 and O17 are missing-capital chains; O19's
+current adjacent-block statement is suspected false until strengthened with
+support incomparability/two-sided applicability; support-order matching,
+operational permutation selection, and O20 convergence are missing-capital
+chains, with selection blocked by the O19 revision.  The next shift is ordered:
+(1) bounded O21 constructor-surface migration plus direct fixtures, without a
+withdrawal proof attempt; (2) O9 route-B decomposition, scanner-discard and
+operational-occurrence prerequisites, then the enriched step.  O14/O17 remain
+parked and no unchanged O19 body attempt is authorized.  Production remained
+unchanged and no proof or compiler attempt was made in R146.
