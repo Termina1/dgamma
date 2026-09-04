@@ -2655,6 +2655,40 @@ parentOpenAfterChildInsert protocol nameEq keyEq child parent component tag befo
       (parentOpenAtRegistrationYield protocol nameEq parent component before
         yielded)
 
+record AlignedChildInsertStep
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (child, parent : name) (component : Component key value world error)
+  (before, afterState : SystemState name key value world error)
+  {finalState : SystemState name key value world error}
+  (rest : Transitions afterState finalState) where
+  constructor MkAlignedChildInsertStep
+  childInsertTag : RuleTag
+  0 childInsertChecked : checkedApplyAction @{nameEq} @{keyEq}
+    (OInsert child (ChildOf parent) component) before =
+    Just (childInsertTag, afterState)
+  0 childInsertTailAligned : AlignedTransitions name key world error value
+    nameEq keyEq rest
+
+0 alignedChildInsertActionTransport :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  {finalState : SystemState name key value world error} ->
+  (rest : Transitions afterState finalState) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  AlignedTransitions name key world error value nameEq keyEq rest ->
+  (0 actionShape : action = OInsert child (ChildOf parent) component) ->
+  AlignedChildInsertStep name key world error value nameEq keyEq child parent
+    component before afterState rest
+alignedChildInsertActionTransport nameEq keyEq child parent component action tag
+  before afterState rest checked aligned actionShape =
+    case actionShape of
+      Refl => MkAlignedChildInsertStep tag checked aligned
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
