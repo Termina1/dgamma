@@ -4229,6 +4229,21 @@ retiredFiberBeginNothing nameEq keyEq actor
 applyBeginAtFoundSpike nameEq keyEq actor ambient fibers fiber found =
   rewrite found in Refl
 
+0 beginEquationFromApplySpike :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} actor fibers = Just fiber ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  applyAction @{nameEq} @{keyEq} (LBegin actor)
+    (MkSystemState ambient fibers) = Just (tag, afterState) ->
+  beginFiberAction @{nameEq} @{keyEq} actor fiber
+    (MkSystemState ambient fibers) = Just (tag, afterState)
+beginEquationFromApplySpike nameEq keyEq actor ambient fibers fiber found tag
+  afterState raw =
+    trans (sym (applyBeginAtFoundSpike nameEq keyEq actor ambient fibers fiber
+      found)) raw
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
