@@ -6591,7 +6591,10 @@ public export
   (0 scan : ClosingEpisodeScan name key world error value nameEq keyEq trace) ->
   MaximalClosingSelection name key world error value protocol nameEq keyEq trace
     premises scan
-selectMaximalClosingEpisodeSpike = ?selectMaximalClosingEpisodeSpike_rhs
+selectMaximalClosingEpisodeSpike nameEq keyEq protocol initial finalState trace
+  premises scan =
+    maximalSelectionFromList nameEq keyEq protocol trace premises scan
+      (scannedClosingOccurrences scan) Refl
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.
 public export
