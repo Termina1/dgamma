@@ -4301,6 +4301,52 @@ record RetireTargetLookupView
 retireLookupMissingAction nameEq keyEq actor ambient source missing =
   rewrite missing in Refl
 
+0 retireFoundTargetView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (oldFiber : Fiber name key value world error) ->
+  (0 found : lookupFiber @{nameEq} actor source = Just oldFiber) ->
+  (tag : RuleTag) ->
+  (afterState : SystemState name key value world error) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (ORetire actor)
+    (MkSystemState ambient source) = Just (tag, afterState)) ->
+  RetireTargetLookupView name key world error value nameEq actor afterState
+retireFoundTargetView nameEq keyEq actor ambient source oldFiber found tag
+  afterState raw =
+    replace
+      {p = \candidate => RetireTargetLookupView name key world error value
+        nameEq actor candidate}
+      (cong snd (justInjective (trans
+        (sym (retireActionAtFoundSpike nameEq keyEq actor ambient source oldFiber
+          found)) raw)))
+      (MkRetireTargetLookupView (retireFiber oldFiber)
+        (lookupReplacedFiber actor oldFiber (retireFiber oldFiber) source found)
+        (retiredAfterRetireSpike oldFiber))
+
+0 retireTransitionTargetRegistryView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (tag : RuleTag) ->
+  (afterState : SystemState name key value world error) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (ORetire actor)
+    (MkSystemState ambient source) = Just (tag, afterState)) ->
+  RetireTargetLookupView name key world error value nameEq actor afterState
+retireTransitionTargetRegistryView nameEq keyEq actor ambient source tag
+  afterState raw =
+    case parentEndpointLookupEquation nameEq actor
+      (MkSystemState ambient source) of
+        ParentEndpointLookupMissing missing missingReloading missingActive =>
+          void (nothingCannotEqualJustSpike (trans
+            (sym (retireLookupMissingAction nameEq keyEq actor ambient source
+              missing)) raw))
+        ParentEndpointLookupFound fiber found foundReloading foundActive =>
+          retireFoundTargetView nameEq keyEq actor ambient source fiber found tag
+            afterState raw
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
