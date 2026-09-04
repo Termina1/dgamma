@@ -5720,8 +5720,9 @@ globalGeneratedCapital nameEq keyEq globalTrace selected episode generation
       generation child component birth stamp retiresLater
 
 record CompleteGenerationScan
-  (name : Type) (nameEq : DecEq name)
-  (ordinal : Nat) (live : GenerationEnvironment name)
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (ordinal : Nat)
+  (live : GenerationEnvironment name)
   {first, finalState : SystemState name key value world error}
   (trace : Transitions first finalState) where
   constructor MkCompleteGenerationScan
@@ -5736,7 +5737,7 @@ record CompleteGenerationScan
   (nameEq : DecEq name) -> (ordinal : Nat) ->
   (live : GenerationEnvironment name) ->
   (trace : Transitions first finalState) ->
-  CompleteGenerationScan name nameEq ordinal live trace
+  CompleteGenerationScan name key world error value nameEq ordinal live trace
 completeGenerationScan nameEq ordinal live NoTransitions =
   MkCompleteGenerationScan ordinal live GenerationTraceScanEnd
 completeGenerationScan nameEq ordinal live
@@ -5797,7 +5798,8 @@ splitGenerationScanAtAppend nameEq ordinal live
           (GenerationTraceScanStep transition rest leftScan) rightScan
 
 record RegistrationScanCapital
-  (name : Type) (nameEq : DecEq name) (startOrdinal : Nat)
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (startOrdinal : Nat)
   (startLive : GenerationEnvironment name)
   {initial, finalState : SystemState name key value world error}
   (globalTrace : Transitions initial finalState)
@@ -5833,8 +5835,8 @@ record RegistrationScanCapital
     (MoreTransitions (registrationTransition registration)
       (afterRegistration registration))
     finalOrdinal finalLive ->
-  RegistrationScanCapital name nameEq startOrdinal startLive globalTrace
-    registration finalOrdinal finalLive
+  RegistrationScanCapital name key world error value nameEq startOrdinal
+    startLive globalTrace registration finalOrdinal finalLive
 registrationScanCapitalFromSplit nameEq startOrdinal startLive globalTrace
   registration finalOrdinal finalLive
   (MkSplitGenerationScan birthOrdinal birthLive beforeScan
@@ -5853,8 +5855,8 @@ registrationScanCapitalFromSplit nameEq startOrdinal startLive globalTrace
   (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
   GenerationTraceScan nameEq startOrdinal startLive globalTrace finalOrdinal
     finalLive ->
-  RegistrationScanCapital name nameEq startOrdinal startLive globalTrace
-    registration finalOrdinal finalLive
+  RegistrationScanCapital name key world error value nameEq startOrdinal
+    startLive globalTrace registration finalOrdinal finalLive
 registrationScanCapital nameEq startOrdinal startLive globalTrace registration
   finalOrdinal finalLive scan =
     registrationScanCapitalFromSplit nameEq startOrdinal startLive globalTrace
@@ -6059,8 +6061,8 @@ combineNoRegistered nameEq headGeneration tailGenerations ordinal live
     (registrationOrdinal registration)) ->
   ActionOccurs (ORetire actor) (afterRegistration registration) ->
   (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
-  (cut : RegistrationScanCapital name nameEq 0 [] globalTrace registration
-    finalOrdinal finalLive) ->
+  (cut : RegistrationScanCapital name key world error value nameEq 0 []
+    globalTrace registration finalOrdinal finalLive) ->
   (0 aligned : AlignedTransitions name key world error value nameEq keyEq
     globalTrace) ->
   (0 finalQuiet : quiet @{nameEq} @{keyEq} finalState = True) ->
@@ -6312,7 +6314,7 @@ allGeneratedChildrenHaveNoEpisode nameEq keyEq globalTrace selected episode
       closingActor globalTrace) ->
     LTE (transitionCount (traceBeforeOpening closingEpisode))
       (transitionCount (traceBeforeOpening episode))) ->
-  CompleteGenerationScan name nameEq 0 [] globalTrace ->
+  CompleteGenerationScan name key world error value nameEq 0 [] globalTrace ->
   NoRegisteredEpisode nameEq (selectedGenerations inventory) 0 [] globalTrace
 selectedChildrenHaveNoEpisodeFromComplete nameEq keyEq globalTrace selected
   episode inventory aligned finalQuiet upper
@@ -6446,7 +6448,8 @@ data MaximalClosingSelection :
       trace premises scan
 
 record ExactZeroGenerationScan
-  (name : Type) (nameEq : DecEq name)
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name)
   {first, finalState : SystemState name key value world error}
   (trace : Transitions first finalState) where
   constructor MkExactZeroGenerationScan
@@ -6458,8 +6461,8 @@ record ExactZeroGenerationScan
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, finalState : SystemState name key value world error} ->
   (nameEq : DecEq name) -> (trace : Transitions first finalState) ->
-  CompleteGenerationScan name nameEq 0 [] trace ->
-  ExactZeroGenerationScan name nameEq trace
+  CompleteGenerationScan name key world error value nameEq 0 [] trace ->
+  ExactZeroGenerationScan name key world error value nameEq trace
 exactZeroGenerationScanFromComplete nameEq trace
   (MkCompleteGenerationScan finalOrdinal finalLive scan) =
     MkExactZeroGenerationScan finalLive
@@ -6473,7 +6476,7 @@ exactZeroGenerationScanFromComplete nameEq trace
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, finalState : SystemState name key value world error} ->
   (nameEq : DecEq name) -> (trace : Transitions first finalState) ->
-  ExactZeroGenerationScan name nameEq trace
+  ExactZeroGenerationScan name key world error value nameEq trace
 exactZeroGenerationScan nameEq trace =
   exactZeroGenerationScanFromComplete nameEq trace
     (completeGenerationScan nameEq 0 [] trace)
@@ -6497,7 +6500,8 @@ exactZeroGenerationScan nameEq trace =
     Elem other (scannedClosingOccurrences scan) ->
     LTE (scannedClosingOrdinal other)
       (transitionCount (traceBeforeOpening episode))) ->
-  ExactZeroGenerationScan name nameEq (traceBeforeOpening episode) ->
+  ExactZeroGenerationScan name key world error value nameEq
+    (traceBeforeOpening episode) ->
   MaximalClosingSelection name key world error value protocol nameEq keyEq trace
     premises scan
 maximalSelectionFromPrefixScan nameEq keyEq protocol trace premises scan selected
