@@ -2276,6 +2276,24 @@ childRetirementOccurrence parent child _
     ActionOccursLater transition rest
       (childRetirementOccurrence parent child rest tail)
 
+0 retirementProvenanceClosingOccurrence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (parent, child : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  ChildRetirementProvenance parent child trace ->
+  FirstClosingResult name key world error value nameEq keyEq parent trace ->
+  ParentOpenAt nameEq parent first ->
+  ActionOccurs (ORetire child) trace
+retirementProvenanceClosingOccurrence nameEq keyEq parent child trace
+  (ParentDoesNotRecover noRecovery) closing opened =
+    void (noRecoveryClosingImpossible nameEq keyEq parent trace closing opened
+      noRecovery)
+retirementProvenanceClosingOccurrence nameEq keyEq parent child trace
+  (ChildRetiredBeforeParent retirement) closing opened =
+    childRetirementOccurrence parent child trace retirement
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
