@@ -1949,6 +1949,85 @@ prependMatchingChildInventory headTransition rest selected child component
       (matchingInventoryComplete headTransition rest selected child component
         startOrdinal actionShape tailGenerations tailComplete)
 
+0 occurrenceAfterPrefixSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {startState, actionBefore, actionAfter, finalState :
+    SystemState name key value world error} ->
+  (earlier : Transitions startState actionBefore) ->
+  (transition : Transition actionBefore actionAfter) ->
+  (later : Transitions actionAfter finalState) ->
+  OccursIn transition
+    (appendTransitions earlier (MoreTransitions transition later))
+occurrenceAfterPrefixSpike NoTransitions transition later = OccursHere
+occurrenceAfterPrefixSpike (MoreTransitions prefixHead prefixRest) transition later =
+  OccursLater (occurrenceAfterPrefixSpike prefixRest transition later)
+
+0 locatedActionImpossibleInEmpty :
+  (occurrence : LocatedActionOccurrence action
+    (NoTransitions {state = state})) -> Void
+locatedActionImpossibleInEmpty
+  (MkLocatedActionOccurrence before after earlier transition later actionShape
+    decomposition) =
+      noOccurrenceInEmpty
+        (replace {p = \observed => OccursIn transition observed}
+          decomposition (occurrenceAfterPrefixSpike earlier transition later))
+
+0 tailRetirementRequirement :
+  (headTransition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  ((registered : name) ->
+    (registeredComponent : Component key value world error) ->
+    (birth : LocatedActionOccurrence
+      (OInsert registered (ChildOf selected) registeredComponent)
+      (MoreTransitions headTransition rest)) ->
+    ActionOccurs (ORetire registered) (afterActionOccurrence birth)) ->
+  (registered : name) ->
+  (registeredComponent : Component key value world error) ->
+  (tailBirth : LocatedActionOccurrence
+    (OInsert registered (ChildOf selected) registeredComponent) rest) ->
+  ActionOccurs (ORetire registered) (afterActionOccurrence tailBirth)
+tailRetirementRequirement headTransition rest allRetire registered
+  registeredComponent
+  (MkLocatedActionOccurrence before after earlier transition later actionShape
+    decomposition) =
+      allRetire registered registeredComponent
+        (MkLocatedActionOccurrence before after
+          (MoreTransitions headTransition earlier) transition later actionShape
+          (cong (MoreTransitions headTransition) decomposition))
+
+public export
+record ClosingTailWitnessSpike
+  (name, key, world, error : Type) (value : key -> Type)
+  (action : Action name key value world error)
+  {first, finalState : SystemState name key value world error}
+  (trace : Transitions first finalState) where
+  constructor MkClosingTailWitnessSpike
+  endingStartSpike : SystemState name key value world error
+  beforeEndingSpike : Transitions first endingStartSpike
+  endingTransitionSpike : Transition endingStartSpike finalState
+  0 endingActionSpike : transitionAction endingTransitionSpike = action
+  0 endingDecompositionSpike : appendTransitions beforeEndingSpike
+    (MoreTransitions endingTransitionSpike NoTransitions) = trace
+
+public export
+prependClosingTailWitnessSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {action : Action name key value world error} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (leading : Transitions first middle) ->
+  {suffix : Transitions middle finalState} ->
+  ClosingTailWitnessSpike name key world error value action suffix ->
+  ClosingTailWitnessSpike name key world error value action
+    (appendTransitions leading suffix)
+prependClosingTailWitnessSpike leading
+  (MkClosingTailWitnessSpike endingStart beforeEnding endingTransition actionShape
+    decomposition) =
+      MkClosingTailWitnessSpike endingStart
+        (appendTransitions leading beforeEnding) endingTransition actionShape
+        (trans (appendTransitionsAssociative leading beforeEnding
+          (MoreTransitions endingTransition NoTransitions))
+          (cong (appendTransitions leading) decomposition))
+
 ||| Independently testable O8 result.  A selected maximal/deletable candidate is
 ||| tied back to an ordinal produced by the exact O7 scan; the empty branch is
 ||| definitionally separated from the O9 deletion adapter.
