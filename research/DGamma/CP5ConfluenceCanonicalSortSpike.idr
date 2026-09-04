@@ -957,6 +957,32 @@ canonicalFiberParentSame
     rightTable leftLifecycle rightLifecycle parentSame retiredSame
     lifecycleSame) = parentSame
 
+||| Rebuild one precedence edge from two producer-owned exact target lookups.
+0 canonicalPrecedenceEdgeForwardFromFibers :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {lower, upper : name} ->
+  {originalFinal, reducedFinal : SystemState name key value world error} ->
+  (edge : PrecedenceEdge nameEq lower upper originalFinal) ->
+  (lowerTarget : CanonicalOutsideFiberForward name key world error value nameEq
+    lower originalFinal reducedFinal (providerFiber edge)) ->
+  (upperTarget : CanonicalOutsideFiberForward name key world error value nameEq
+    upper originalFinal reducedFinal (consumerFiber edge)) ->
+  PrecedenceEdge nameEq lower upper reducedFinal
+canonicalPrecedenceEdgeForwardFromFibers edge lowerTarget upperTarget =
+  MkPrecedenceEdge (edgeKey edge) (forwardTargetFiber lowerTarget)
+    (forwardTargetFiber upperTarget) (forwardTargetFound lowerTarget)
+    (forwardTargetFound upperTarget)
+    (replace
+      {p = \component => Elem (edgeKey edge)
+        (dependencies (componentProvisions component))}
+      (canonicalFiberComponentSame (forwardTargetControls lowerTarget))
+      (providerDeclares edge))
+    (replace
+      {p = \component => Elem (edgeKey edge)
+        (dependencies (componentDependencies component))}
+      (canonicalFiberComponentSame (forwardTargetControls upperTarget))
+      (consumerDeclares edge))
+
 ||| Prove all support/parent/input-placement transport from the cumulative
 ||| endpoint relation and exact generated-registration accounting.
 public export
