@@ -879,6 +879,19 @@ canonicalWithdrawnReducedUnsupported nameEq keyEq selected originalFinal
 canonicalSupportedNotElem unsupported supported member =
   canonicalFalseNotTrue (trans (sym (unsupported member)) supported)
 
+||| Producer-owned exact target lookup used to keep a transported edge's fiber,
+||| lookup equation, and control proof correlated without repeated elimination.
+record CanonicalOutsideFiberForward
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (selected : name)
+  (originalFinal, reducedFinal : SystemState name key value world error)
+  (fiber : Fiber name key value world error) where
+  constructor MkCanonicalOutsideFiberForward
+  forwardTargetFiber : Fiber name key value world error
+  0 forwardTargetFound : lookupFiber @{nameEq} selected
+    (registry reducedFinal) = Just forwardTargetFiber
+  0 forwardTargetControls : FiberControlRelated fiber forwardTargetFiber
+
 ||| Outside the withdrawal list, endpoint control equivalence produces the
 ||| exact matching target fiber and its static-control relation.
 0 canonicalOutsideFiberForward :
@@ -890,16 +903,15 @@ canonicalSupportedNotElem unsupported supported member =
   Not (Elem selected (endpointWithdrawnNames endpoint)) ->
   (fiber : Fiber name key value world error) ->
   lookupFiber @{nameEq} selected (registry originalFinal) = Just fiber ->
-  (targetFiber : Fiber name key value world error **
-   (lookupFiber @{nameEq} selected (registry reducedFinal) = Just targetFiber,
-    FiberControlRelated fiber targetFiber))
+  CanonicalOutsideFiberForward name key world error value nameEq selected
+    originalFinal reducedFinal fiber
 canonicalOutsideFiberForward {nameEq} {selected} {originalFinal} {reducedFinal}
   endpoint outside fiber found =
     case foreignControlLookupFound nameEq selected (registry originalFinal)
       (registry reducedFinal) fiber found
       (endpointControlsOutside endpoint selected outside) of
       MkForeignRelatedFiberFound targetFiber targetFound controls =>
-        (targetFiber ** (targetFound, controls))
+        MkCanonicalOutsideFiberForward targetFiber targetFound controls
 
 ||| The same exact lookup package is available from the reduced endpoint back
 ||| to the original endpoint by symmetry of the pointwise control relation.
