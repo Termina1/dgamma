@@ -5301,6 +5301,51 @@ oneStepInactivePersistence nameEq keyEq actor generation generationActor ordinal
         generationActor live stamped before inactive)
       actor generation Here nextCurrent
 
+0 retiredFiberAtFromTargetView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (state : SystemState name key value world error) ->
+  RetireTargetLookupView name key world error value nameEq actor state ->
+  RetiredFiberAt name key world error value nameEq actor state
+retiredFiberAtFromTargetView nameEq actor state
+  (MkRetireTargetLookupView fiber found retiredTrue) =
+    MkRetiredFiberAt fiber found retiredTrue
+
+0 transitionCountSnoc :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, middle, finalState : SystemState name key value world error} ->
+  (leading : Transitions initial middle) ->
+  (transition : Transition middle finalState) ->
+  transitionCount
+    (appendTransitions leading (MoreTransitions transition NoTransitions)) =
+  S (transitionCount leading)
+transitionCountSnoc NoTransitions transition = Refl
+transitionCountSnoc (MoreTransitions previous rest) transition =
+  cong S (transitionCountSnoc rest transition)
+
+0 extendLeadingDecomposition :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, first, middle, finalState :
+    SystemState name key value world error} ->
+  (leading : Transitions initial first) ->
+  (transition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (globalTrace : Transitions initial finalState) ->
+  (0 globalSplit : appendTransitions leading
+    (MoreTransitions transition rest) = globalTrace) ->
+  appendTransitions
+    (appendTransitions leading (MoreTransitions transition NoTransitions)) rest =
+  globalTrace
+extendLeadingDecomposition leading transition rest globalTrace globalSplit =
+  trans (appendTransitionsAssociative leading
+    (MoreTransitions transition NoTransitions) rest) globalSplit
+
+0 retireActionCannotBeBegin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (action : Action name key value world error) -> (actor : name) ->
+  (0 actionShape : action = ORetire actor) -> IsBeginAction action -> Void
+retireActionCannotBeBegin (ORetire actor) actor Refl begin impossible
+
 0 noRegisteredAfterRetiredInactive :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, finalState : SystemState name key value world error} ->
