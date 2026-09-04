@@ -1241,6 +1241,108 @@ record DeletedGenerationClassification
   deletedParentEpisodeCloses : ActionOccurs (LUnload deletedParent)
     (afterRegistration deletedOccurrence)
 
+||| Producer-owned exact lookup equation for the only dependent branch of an
+||| L-Begin registration-index advance.
+0 advanceBeginRegistrationIndexDeletedAt :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (ordinal : Nat) -> (actor : name) ->
+  (live : GenerationEnvironment name) ->
+  (activations : List (name, RegistrationActivation name)) ->
+  (counts : List (RegistrationActivation name, Nat)) ->
+  (deleted : List (RegistrationGeneration name)) ->
+  (found : Maybe (RegistrationGeneration name)) ->
+  lookupCurrentGeneration @{nameEq} actor live = found ->
+  indexedDeletedGenerations
+    (advanceRegistrationIndex @{nameEq} {key = key} {value = value}
+      {world = world} {error = error} ordinal (LBegin actor)
+      (MkRegistrationIndexState live activations counts deleted)) = deleted
+advanceBeginRegistrationIndexDeletedAt nameEq ordinal actor live activations
+  counts deleted Nothing found = rewrite found in Refl
+advanceBeginRegistrationIndexDeletedAt nameEq ordinal actor live activations
+  counts deleted (Just generation) found = rewrite found in Refl
+
+||| Producer-owned exact activation equation for the sole dependent branch of a
+||| surviving child-registration index advance.
+0 advanceSurvivingRegistrationIndexDeletedAt :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (ordinal : Nat) ->
+  (child, parent : name) ->
+  (component : Component key value world error) ->
+  (live : GenerationEnvironment name) ->
+  (activations : List (name, RegistrationActivation name)) ->
+  (counts : List (RegistrationActivation name, Nat)) ->
+  (deleted : List (RegistrationGeneration name)) ->
+  (found : Maybe (RegistrationActivation name)) ->
+  lookupParentActivation @{nameEq} parent activations = found ->
+  indexedDeletedGenerations
+    (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component
+      (MkRegistrationIndexState live activations counts deleted)) = deleted
+advanceSurvivingRegistrationIndexDeletedAt nameEq ordinal child parent component
+  live activations counts deleted Nothing found = rewrite found in Refl
+advanceSurvivingRegistrationIndexDeletedAt nameEq ordinal child parent component
+  live activations counts deleted (Just activation) found = rewrite found in Refl
+
+||| Ordinary scanner advancement never removes an already discarded exact
+||| generation.  This small projection isolates the only lookup split in the
+||| generic index update from the correspondence induction below.
+0 advanceRegistrationIndexDeletedExact :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (ordinal : Nat) ->
+  (action : Action name key value world error) ->
+  (index : RegistrationIndexState name) ->
+  indexedDeletedGenerations
+    (advanceRegistrationIndex @{nameEq} ordinal action index) =
+  indexedDeletedGenerations index
+advanceRegistrationIndexDeletedExact nameEq ordinal
+  (OInsert child (ChildOf parent) component)
+  (MkRegistrationIndexState live activations counts deleted) = Refl
+advanceRegistrationIndexDeletedExact nameEq ordinal
+  (OInsert root Root component)
+  (MkRegistrationIndexState live activations counts deleted) = Refl
+advanceRegistrationIndexDeletedExact nameEq ordinal (ORetire actor) index = Refl
+advanceRegistrationIndexDeletedExact nameEq ordinal (ORemove actor)
+  (MkRegistrationIndexState live activations counts deleted) = Refl
+advanceRegistrationIndexDeletedExact nameEq ordinal (LBegin actor)
+  (MkRegistrationIndexState live activations counts deleted) =
+    advanceBeginRegistrationIndexDeletedAt nameEq ordinal actor live activations
+      counts deleted (lookupCurrentGeneration @{nameEq} actor live) Refl
+advanceRegistrationIndexDeletedExact nameEq ordinal (LAdvance actor) index = Refl
+advanceRegistrationIndexDeletedExact nameEq ordinal (LDivert actor) index = Refl
+advanceRegistrationIndexDeletedExact nameEq ordinal (LLeave actor) index = Refl
+advanceRegistrationIndexDeletedExact nameEq ordinal (LUnload actor)
+  (MkRegistrationIndexState live activations counts deleted) = Refl
+
+||| A deleted-registration advance prepends exactly its stamped generation.
+0 advanceDeletedRegistrationIndexHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (ordinal : Nat) ->
+  (child, parent : name) ->
+  (component : Component key value world error) ->
+  (index : RegistrationIndexState name) ->
+  indexedDeletedGenerations
+    (advanceDeletedRegistrationIndex @{nameEq} ordinal child parent component
+      index) =
+  MkRegistrationGeneration child ordinal :: indexedDeletedGenerations index
+advanceDeletedRegistrationIndexHead nameEq ordinal child parent component
+  (MkRegistrationIndexState live activations counts deleted) = Refl
+
+||| A surviving-registration advance leaves the exact deleted list unchanged.
+0 advanceSurvivingRegistrationIndexDeletedExact :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (ordinal : Nat) ->
+  (child, parent : name) ->
+  (component : Component key value world error) ->
+  (index : RegistrationIndexState name) ->
+  indexedDeletedGenerations
+    (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component
+      index) =
+  indexedDeletedGenerations index
+advanceSurvivingRegistrationIndexDeletedExact nameEq ordinal child parent
+  component (MkRegistrationIndexState live activations counts deleted) =
+    advanceSurvivingRegistrationIndexDeletedAt nameEq ordinal child parent
+      component live activations counts deleted
+      (lookupParentActivation @{nameEq} parent activations) Refl
+
 ||| Exact left-scanner induction boundary.  At the located birth the accepted
 ||| correspondence cannot take a surviving/queued/matched branch: each such
 ||| branch contains `NoParentUnload`, contradicted by
