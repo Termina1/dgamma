@@ -689,6 +689,14 @@ r143NoLeftEdgeFromUpper (SupportPrecedence edge) =
     (providerDeclares edge)
 r143NoLeftEdgeFromUpper (SupportParent edge) = r143NoLeftParentEdge edge
 
+0 r143NoLeftPathFromUpper :
+  {target : N} ->
+  SupportPath (the (DecEq N) %search) DGamma.R6FourFiberStatic.leftState
+    Upper target -> Void
+r143NoLeftPathFromUpper (SupportPathOne edge) = r143NoLeftEdgeFromUpper edge
+r143NoLeftPathFromUpper (SupportPathMore edge rest) =
+  r143NoLeftEdgeFromUpper edge
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
