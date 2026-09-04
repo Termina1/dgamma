@@ -368,6 +368,17 @@ r143RightEdgeEndsUpperAfterStart edge Refl =
 0 r143UpperNotAlternate : Not (Upper = Alternate)
 r143UpperNotAlternate Refl impossible
 
+||| Since every right edge starts at `Alternate`, no nonempty support path can
+||| start at `Upper`.
+0 r143NoRightPathFromUpper :
+  {target : N} ->
+  SupportPath (the (DecEq N) %search) DGamma.R6FourFiberStatic.rightState
+    Upper target -> Void
+r143NoRightPathFromUpper (SupportPathOne edge) =
+  r143UpperNotAlternate (r143RightEdgeStartsAlternate edge)
+r143NoRightPathFromUpper (SupportPathMore edge rest) =
+  r143UpperNotAlternate (r143RightEdgeStartsAlternate edge)
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
