@@ -7,8 +7,10 @@ import DGamma.CP3
 import DGamma.CP4DeletionTheorem
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorTrace
+import DGamma.CP4DeletionSelectedOwn
 import DGamma.CP4ParentSafety
 import DGamma.CP4Support
+import DGamma.CP4SupportQuiescence
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import Data.List
 import Data.List.Elem
@@ -4346,6 +4348,78 @@ retireTransitionTargetRegistryView nameEq keyEq actor ambient source tag
         ParentEndpointLookupFound fiber found foundReloading foundActive =>
           retireFoundTargetView nameEq keyEq actor ambient source fiber found tag
             afterState raw
+
+data RetiredRegistryLookupView :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (target : Registry name key value world error) -> Type where
+  RetiredRegistryLookupPresent :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {actor : name} ->
+    {target : Registry name key value world error} ->
+    (0 fiber : Fiber name key value world error) ->
+    (0 found : lookupFiber @{nameEq} actor target = Just fiber) ->
+    (0 retiredTrue : retired fiber = True) ->
+    RetiredRegistryLookupView name key world error value nameEq actor target
+  RetiredRegistryLookupMissing :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {actor : name} ->
+    {target : Registry name key value world error} ->
+    (0 missing : lookupFiber @{nameEq} actor target =
+      the (Maybe (Fiber name key value world error)) Nothing) ->
+    RetiredRegistryLookupView name key world error value nameEq actor target
+
+0 retirementUpdateKeepsTrue :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (old, updated : Fiber name key value world error) ->
+  RetirementUpdate old updated -> retired old = True -> retired updated = True
+retirementUpdateKeepsTrue old updated (RetirementStable same) oldTrue =
+  trans same oldTrue
+retirementUpdateKeepsTrue old updated (RetirementApplied updatedTrue) oldTrue =
+  updatedTrue
+
+0 retiredReplaceRegistryView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (source : Registry name key value world error) ->
+  (updated, oldFiber, retiredFiber : Fiber name key value world error) ->
+  (0 oldFound : lookupFiber @{nameEq} actor source = Just oldFiber) ->
+  (0 update : RetirementUpdate oldFiber updated) ->
+  (0 retiredFound : lookupFiber @{nameEq} actor source = Just retiredFiber) ->
+  (0 retiredTrue : retired retiredFiber = True) ->
+  RetiredRegistryLookupView name key world error value nameEq actor
+    (replaceBinding @{nameEq} actor updated source)
+retiredReplaceRegistryView nameEq actor source updated oldFiber retiredFiber
+  oldFound update retiredFound retiredTrue =
+    case justInjective (trans (sym oldFound) retiredFound) of
+      Refl => RetiredRegistryLookupPresent updated
+        (lookupReplacedFiber actor retiredFiber updated source retiredFound)
+        (retirementUpdateKeepsTrue retiredFiber updated update retiredTrue)
+
+0 retiredAcrossRegistryUpdate :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (source, target : Registry name key value world error) ->
+  RegistryLocalUpdate name key world error value nameEq actor source target ->
+  (retiredFiber : Fiber name key value world error) ->
+  (0 retiredFound : lookupFiber @{nameEq} actor source = Just retiredFiber) ->
+  (0 retiredTrue : retired retiredFiber = True) ->
+  RetiredRegistryLookupView name key world error value nameEq actor target
+retiredAcrossRegistryUpdate nameEq actor source
+  (insertBinding @{nameEq} actor inserted source absent)
+  (LocalInsert inserted absent) retiredFiber retiredFound retiredTrue =
+    void (nothingCannotEqualJustSpike (trans (sym absent) retiredFound))
+retiredAcrossRegistryUpdate nameEq actor source
+  (replaceBinding @{nameEq} actor updated source)
+  (LocalReplace {oldFiber} @{oldFound} @{staticComponent} @{staticParent}
+    @{retirementUpdate} updated) retiredFiber retiredFound retiredTrue =
+    retiredReplaceRegistryView nameEq actor source updated oldFiber retiredFiber
+      oldFound retirementUpdate retiredFound retiredTrue
+retiredAcrossRegistryUpdate nameEq actor source
+  (deleteBinding @{nameEq} actor source) LocalDelete retiredFiber retiredFound
+  retiredTrue =
+    RetiredRegistryLookupMissing
+      (DGamma.CP4DeletionSelectedOwn.lookupDeleteSelf actor source)
 
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
