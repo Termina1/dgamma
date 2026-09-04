@@ -7,6 +7,7 @@ import DGamma.CP3
 import DGamma.CP4DeletionTheorem
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorTrace
+import DGamma.CP4ParentSafety
 import DGamma.CP4Support
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import Data.List
@@ -1495,6 +1496,48 @@ data ClosingStepChoice :
       trace premises candidate) ->
     ClosingStepChoice name key world error value protocol nameEq keyEq trace
       premises
+
+||| Fully erased inspection keeps the computed value and its exact equation in
+||| one constructor, avoiding an uncorrelated inferred local view.
+data ErasedInspection : (observed : item) -> Type where
+  MkErasedInspection : {item : Type} -> {observed : item} ->
+    (0 result : item) -> (0 exact : observed = result) ->
+    ErasedInspection observed
+
+0 inspectErased : (observed : item) -> ErasedInspection observed
+inspectErased observed = MkErasedInspection observed Refl
+
+||| Producer-owned exact lookup equation.  Endpoint consumers eliminate this
+||| canonized family instead of independently re-running `lookupFiber`.
+data ParentEndpointLookupEquation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) -> Type where
+  ParentEndpointLookupMissing :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {state : SystemState name key value world error} ->
+    (0 missing : lookupFiber @{nameEq} {key = key} {value = value}
+      {world = world} {error = error} selected (registry state) = Nothing) ->
+    ParentEndpointLookupEquation name key world error value nameEq selected state
+  ParentEndpointLookupFound :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {state : SystemState name key value world error} ->
+    (0 fiber : Fiber name key value world error) ->
+    (0 found : lookupFiber @{nameEq} {key = key} {value = value}
+      {world = world} {error = error} selected (registry state) = Just fiber) ->
+    ParentEndpointLookupEquation name key world error value nameEq selected state
+
+0 parentEndpointLookupEquation :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  ParentEndpointLookupEquation name key world error value nameEq selected state
+parentEndpointLookupEquation nameEq selected state =
+  case inspectErased (lookupFiber @{nameEq} selected (registry state)) of
+    MkErasedInspection Nothing exact => ParentEndpointLookupMissing exact
+    MkErasedInspection (Just fiber) exact =>
+      ParentEndpointLookupFound fiber exact
 
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
