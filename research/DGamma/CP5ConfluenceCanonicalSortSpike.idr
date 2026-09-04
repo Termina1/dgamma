@@ -5,6 +5,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionRelationalBoundary
+import DGamma.CP4DeletionSelectedForeignControlCore
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify
 import DGamma.CP4Support
 import DGamma.CP4SupportQuiescence
@@ -877,6 +878,28 @@ canonicalWithdrawnReducedUnsupported nameEq keyEq selected originalFinal
   Not (Elem selected withdrawn)
 canonicalSupportedNotElem unsupported supported member =
   canonicalFalseNotTrue (trans (sym (unsupported member)) supported)
+
+||| Outside the withdrawal list, endpoint control equivalence produces the
+||| exact matching target fiber and its static-control relation.
+0 canonicalOutsideFiberForward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {originalFinal, reducedFinal : SystemState name key value world error} ->
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
+    originalFinal reducedFinal) ->
+  Not (Elem selected (endpointWithdrawnNames endpoint)) ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} selected (registry originalFinal) = Just fiber ->
+  (targetFiber : Fiber name key value world error **
+   (lookupFiber @{nameEq} selected (registry reducedFinal) = Just targetFiber,
+    FiberControlRelated fiber targetFiber))
+canonicalOutsideFiberForward {nameEq} {selected} {originalFinal} {reducedFinal}
+  endpoint outside fiber found =
+    case foreignControlLookupFound nameEq selected (registry originalFinal)
+      (registry reducedFinal) fiber found
+      (endpointControlsOutside endpoint selected outside) of
+      MkForeignRelatedFiberFound targetFiber targetFound controls =>
+        (targetFiber ** (targetFound, controls))
 
 ||| Prove all support/parent/input-placement transport from the cumulative
 ||| endpoint relation and exact generated-registration accounting.
