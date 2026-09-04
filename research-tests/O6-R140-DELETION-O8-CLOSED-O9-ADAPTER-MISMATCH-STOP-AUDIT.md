@@ -81,6 +81,9 @@ not by claiming the raw actor name can never recur.
 - `c61651d` — split the finite O7 occurrence inventory without a local `with`
   or inferred view.
 - `d406675` — fill `selectMaximalClosingEpisodeSpike`.
+- `d9ef54d` — make every newly introduced generation-scan record parameter
+  explicit (`name/key/world/error/value`), completing the zero-hidden-signature
+  audit without changing a proposition.
 
 The O8 fill is only the four-line delegation from the frozen signature to the
 checked list splitter. The nonempty branch chooses `MaximumBy
@@ -261,7 +264,8 @@ O9 signature and RHS remain unchanged. The current hole split is:
 
 The R140 source delta contains no `believe_me`, `assert_total`, postulate,
 `unsafePerformIO`, `partial`/`covering` annotation, new `with` block, or local
-`let` alias. `%default total` remains in force. `git diff --check` passes. No
+`let` alias. All new generation-scan records carry explicit type-family
+parameters rather than compiler-inserted hidden binders. `%default total` remains in force. `git diff --check` passes. No
 probe source or probe TTC/TTM remains. At the audit commit gate there are no
 staged files, and the only untracked files are the three permitted baseline
 paths.
