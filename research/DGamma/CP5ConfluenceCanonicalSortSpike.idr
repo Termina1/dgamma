@@ -1855,4 +1855,8 @@ public export
     original reduction ordering sorted ->
   IndependentCanonicalSchedule name key world error value protocol nameEq keyEq
     original
-independentCanonicalScheduleSpike = ?independentCanonicalScheduleSpike_rhs
+independentCanonicalScheduleSpike nameEq keyEq protocol original premises
+  reduction ordering sorted supportTransport accounting =
+    assembleIndependentCanonicalSchedule nameEq keyEq protocol original premises
+      reduction ordering sorted supportTransport accounting
+      (canonicalAccountedGenerationClassified accounting)
