@@ -439,6 +439,16 @@ r143RightOrderSound Middle member = void (r143MiddleNotInRightOrder member)
 r143RightOrderSound Alternate member = Refl
 r143RightOrderSound Upper member = upperSupportedRight
 
+0 r143RightOrderComplete :
+  (selected : N) ->
+  isSupported @{the (DecEq N) %search} @{the (DecEq K) %search} selected
+    DGamma.R6FourFiberStatic.rightState = True ->
+  Elem selected [Alternate, Upper, Lower]
+r143RightOrderComplete Lower supported = There (There Here)
+r143RightOrderComplete Middle supported = case supported of Refl impossible
+r143RightOrderComplete Alternate supported = Here
+r143RightOrderComplete Upper supported = There Here
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
