@@ -1032,6 +1032,25 @@ canonicalParentEdgeForward endpoint childOutside edge =
     (canonicalOutsideFiberForward endpoint childOutside (childFiber edge)
       (childFound edge))
 
+||| Transport either half of Equation 62 between the endpoint registries.
+0 canonicalSupportEdgeForward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {lower, upper : name} ->
+  {originalFinal, reducedFinal : SystemState name key value world error} ->
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
+    originalFinal reducedFinal) ->
+  Not (Elem lower (endpointWithdrawnNames endpoint)) ->
+  Not (Elem upper (endpointWithdrawnNames endpoint)) ->
+  SupportEdge nameEq originalFinal lower upper ->
+  SupportEdge nameEq reducedFinal lower upper
+canonicalSupportEdgeForward endpoint lowerOutside upperOutside
+  (SupportPrecedence edge) =
+    SupportPrecedence (canonicalPrecedenceEdgeForward endpoint lowerOutside
+      upperOutside edge)
+canonicalSupportEdgeForward endpoint lowerOutside upperOutside
+  (SupportParent edge) =
+    SupportParent (canonicalParentEdgeForward endpoint upperOutside edge)
+
 ||| Prove all support/parent/input-placement transport from the cumulative
 ||| endpoint relation and exact generated-registration accounting.
 public export
