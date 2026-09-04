@@ -459,6 +459,16 @@ r143RightPathOrderedFromShape shape =
       {p = \candidate => BeforeIn candidate Upper [Alternate, Upper, Lower]}
       (sym (r143PathStartsAlternate shape)) (BeforeHere Here))
 
+0 r143RightPathsOrdered :
+  (lower, upper : N) ->
+  SupportPath (the (DecEq N) %search) DGamma.R6FourFiberStatic.rightState
+    lower upper ->
+  Elem lower [Alternate, Upper, Lower] ->
+  Elem upper [Alternate, Upper, Lower] ->
+  BeforeIn lower upper [Alternate, Upper, Lower]
+r143RightPathsOrdered lower upper path lowerIn upperIn =
+  r143RightPathOrderedFromShape (r143RightPathShape path)
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
