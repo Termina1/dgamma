@@ -3505,6 +3505,27 @@ selectedClosingAfterChildBirth nameEq keyEq selected child component episode
       (beginTransition (closedOpening (locatedEpisode located)))
       (closedTransitions (locatedEpisode located)))) ->
   ActionOccurs (ORetire child) (afterActionOccurrence birth)
+0 alignedChildInsertDistinct :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  {finalState : SystemState name key value world error} ->
+  (rest : Transitions afterState finalState) ->
+  (alignedStep : AlignedChildInsertStep name key world error value nameEq keyEq
+    child parent component before afterState rest) ->
+  RegistrationStepDiscipline protocol nameEq
+    (OInsert child (ChildOf parent) component) before rest ->
+  Not (parent = child)
+alignedChildInsertDistinct protocol nameEq keyEq child parent component before
+  afterState rest alignedStep discipline =
+    childInsertParentDistinct nameEq keyEq child parent component
+      (childInsertTag alignedStep) before afterState
+      (childInsertChecked alignedStep)
+      (parentOpenAtRegistrationYield protocol nameEq parent component before
+        (fst discipline))
+
 selectedChildRetirementAfterBirth protocol nameEq keyEq global selected child
   component located aligned discipline
   (MkLocatedActionOccurrence before afterState beforeTrace transition rest
