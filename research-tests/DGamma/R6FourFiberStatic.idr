@@ -323,6 +323,17 @@ r143RightEdgeStartsAlternate {lower = Upper} (SupportParent edge) =
 r143LowerDependsOnNothing found wanted depends =
   case found of Refl => absurd depends
 
+||| The alternate provider also has no declared dependencies.
+0 r143AlternateDependsOnNothing :
+  {fiber : Fiber N K V Unit String} ->
+  lookupFiber @{the (DecEq N) %search} Alternate
+    (registry DGamma.R6FourFiberStatic.rightState) = Just fiber ->
+  (wanted : K) ->
+  Elem wanted (dependencies (componentDependencies (fiberComponent fiber))) ->
+  Void
+r143AlternateDependsOnNothing found wanted depends =
+  case found of Refl => absurd depends
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
