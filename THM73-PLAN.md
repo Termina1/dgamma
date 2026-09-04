@@ -2919,3 +2919,29 @@ inherits that invalid public interface. No scoped-to-raw coercion is sound or
 authorized. A production interface repair is therefore an explicit obligation
 for a future unfreeze campaign. The current campaign instead requires a
 research-local Lemma-72 analogue with the scoped premise before O9 may close.
+
+### Revision 142: O9 crossing-check budget stop
+
+R142 isolated a second, center-local obligation before any research Lemma-72
+surgery. Frozen `crossingActivationExcludesSelectedProvider` receives a consumer
+activation reconstructed around a lifecycle occurrence inside the selected
+episode, but its public type does not prove that the consumer's `LBegin` is
+inside that episode. R137's `GenerationScopedClosingStart` requires exactly that
+inside opening, so the scoped negative cannot yet discharge this crossing
+branch.
+
+The supervisor required a concrete calculus countershape check before choosing
+between overlapping-activation scoping and a pre-interval prior-unload/reliance
+theorem. Its disposable 3-attempt budget was inconclusive: the R137 model's
+cross-module private/opaque constants and explicit dictionaries prevented the
+intended evaluator equations from normalizing, and the final spelling also
+missed the direct `Decidable.Equality` import. The fixture and all terminal
+artifacts were removed. A separately authorized direct-evidence administrative
+helper also exhausted 3/3 at explicit defining-module accessibility and was
+fully restored.
+
+Accordingly route C applies. O9 remains unopened at **0/3**, no R137/O8 surface
+is changed, and no later DeletionChain obligation is attempted. The census
+remains **16**, split **5/4/6/0/1**. Exact diagnostics and the permissible next
+choices are recorded in
+`research-tests/O6-R142-DELETION-O9-CROSSING-CHECK-BUDGET-STOP-AUDIT.md`.
