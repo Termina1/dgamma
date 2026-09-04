@@ -1698,6 +1698,86 @@ record ChildGenerationInventory
 registeredDuringFromInventory inventory =
   (selectedGenerationSound inventory, selectedGenerationComplete inventory)
 
+0 liftedInventorySound :
+  (headTransition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (selected : name) -> (startOrdinal : Nat) ->
+  (tailGenerations : List (RegistrationGeneration name)) ->
+  ((generation : RegistrationGeneration name) ->
+    Elem generation tailGenerations ->
+    GeneratedDuring name key world error value selected startOrdinal rest
+      generation) ->
+  (generation : RegistrationGeneration name) ->
+  Elem generation (map DGamma.CP5ConfluenceDeletionChainSpike.bumpGeneration tailGenerations) ->
+  GeneratedDuring name key world error value selected startOrdinal
+    (MoreTransitions headTransition rest) generation
+liftedInventorySound headTransition rest selected startOrdinal tailGenerations
+  tailSound generation member =
+    case elemMapPreimage DGamma.CP5ConfluenceDeletionChainSpike.bumpGeneration member of
+      (tailGeneration ** (tailMember, shape)) =>
+        replace {p = \candidate => GeneratedDuring name key world error value
+          selected startOrdinal (MoreTransitions headTransition rest) candidate}
+          shape (liftGeneratedDuring headTransition rest selected startOrdinal
+            (tailSound tailGeneration tailMember))
+
+0 liftedInventoryComplete :
+  (headTransition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (selected : name) -> (startOrdinal : Nat) ->
+  ((child : name) -> (component : Component key value world error) ->
+    transitionAction headTransition =
+      OInsert child (ChildOf selected) component -> Void) ->
+  (tailGenerations : List (RegistrationGeneration name)) ->
+  ((child : name) -> (component : Component key value world error) ->
+    (birth : LocatedActionOccurrence
+      (OInsert child (ChildOf selected) component) rest) ->
+    Elem (MkRegistrationGeneration child
+      (startOrdinal + locatedActionOrdinal birth)) tailGenerations) ->
+  (child : name) -> (component : Component key value world error) ->
+  (birth : LocatedActionOccurrence
+    (OInsert child (ChildOf selected) component)
+    (MoreTransitions headTransition rest)) ->
+  Elem (MkRegistrationGeneration child
+    (startOrdinal + locatedActionOrdinal birth))
+    (map DGamma.CP5ConfluenceDeletionChainSpike.bumpGeneration tailGenerations)
+liftedInventoryComplete headTransition rest selected startOrdinal headImpossible
+  tailGenerations tailComplete child component birth =
+    case locatedActionHeadView headTransition rest birth of
+      Left (actionShape, ordinalShape) =>
+        void (headImpossible child component actionShape)
+      Right (tailBirth ** ordinalShape) =>
+        replace
+          {p = \ordinal => Elem (MkRegistrationGeneration child
+            (startOrdinal + ordinal)) (map DGamma.CP5ConfluenceDeletionChainSpike.bumpGeneration tailGenerations)}
+          (sym ordinalShape)
+          (replace
+            {p = \ordinal => Elem (MkRegistrationGeneration child ordinal)
+              (map DGamma.CP5ConfluenceDeletionChainSpike.bumpGeneration tailGenerations)}
+            (plusSuccRightSucc startOrdinal
+              (locatedActionOrdinal tailBirth))
+            (elemMap DGamma.CP5ConfluenceDeletionChainSpike.bumpGeneration
+              (tailComplete child component tailBirth)))
+
+0 prependChildInventoryWithoutMatch :
+  (headTransition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (selected : name) -> (startOrdinal : Nat) ->
+  ((child : name) -> (component : Component key value world error) ->
+    transitionAction headTransition =
+      OInsert child (ChildOf selected) component -> Void) ->
+  ChildGenerationInventory name key world error value selected startOrdinal rest ->
+  ChildGenerationInventory name key world error value selected startOrdinal
+    (MoreTransitions headTransition rest)
+prependChildInventoryWithoutMatch headTransition rest selected startOrdinal
+  headImpossible
+  (MkChildGenerationInventory tailGenerations tailSound tailComplete) =
+    MkChildGenerationInventory
+      (map DGamma.CP5ConfluenceDeletionChainSpike.bumpGeneration tailGenerations)
+      (liftedInventorySound headTransition rest selected startOrdinal
+        tailGenerations tailSound)
+      (liftedInventoryComplete headTransition rest selected startOrdinal
+        headImpossible tailGenerations tailComplete)
+
 ||| Independently testable O8 result.  A selected maximal/deletable candidate is
 ||| tied back to an ordinal produced by the exact O7 scan; the empty branch is
 ||| definitionally separated from the O9 deletion adapter.
