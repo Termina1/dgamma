@@ -5003,6 +5003,62 @@ noRegisteredBeforeGenerationBirth nameEq generation ordinal live bounded
         (advanceGenerationEnvironmentBounded nameEq ordinal action live bounded)
         rest birthOrdinal birthLive tailScan birthShape)
 
+0 transitionCountAppend :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  transitionCount (appendTransitions left right) =
+    transitionCount left + transitionCount right
+transitionCountAppend NoTransitions right = Refl
+transitionCountAppend (MoreTransitions transition rest) right =
+  cong S (transitionCountAppend rest right)
+
+0 leftLTEPlus : (left, right : Nat) -> LTE left (left + right)
+leftLTEPlus 0 right = LTEZero
+leftLTEPlus (S left) right = LTESucc (leftLTEPlus left right)
+
+record GlobalizedClosing
+  {name, key, world, error : Type} (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {first, finalState : SystemState name key value world error}
+  (actor : name) (globalTrace : Transitions first finalState)
+  (leadingLength : Nat) where
+  constructor MkGlobalizedClosing
+  0 closingEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    actor globalTrace
+  0 openingAfterLeading : LTE leadingLength
+    (transitionCount (traceBeforeOpening closingEpisode))
+
+0 globalizeLocatedClosing :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, current, finalState : SystemState name key value world error} ->
+  (actor : name) -> (leading : Transitions first current) ->
+  (suffix : Transitions current finalState) ->
+  (globalTrace : Transitions first finalState) ->
+  (0 globalSplit : appendTransitions leading suffix = globalTrace) ->
+  LocatedClosedEpisode name key world error value nameEq keyEq actor suffix ->
+  GlobalizedClosing value nameEq keyEq actor globalTrace
+    (transitionCount leading)
+globalizeLocatedClosing nameEq keyEq actor leading suffix globalTrace globalSplit
+  (MkLocatedClosedEpisode preStart afterClose beforeOpening episode afterClosing
+    decomposition) =
+      MkGlobalizedClosing
+        (MkLocatedClosedEpisode preStart afterClose
+          (appendTransitions leading beforeOpening) episode afterClosing
+          (trans
+            (trans
+              (appendTransitionsAssociative leading beforeOpening
+                (MoreTransitions (beginTransition (closedOpening episode))
+                  (appendTransitions (closedTransitions episode)
+                    afterClosing)))
+              (cong (appendTransitions leading) decomposition))
+            globalSplit))
+        (rewrite transitionCountAppend leading beforeOpening in
+          leftLTEPlus (transitionCount leading)
+            (transitionCount beforeOpening))
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
