@@ -3351,6 +3351,13 @@ actionOccursAfterExact action occurrence targetTrace exactAfterState exactAfter
       Refl => actionOccursTraceEquality action (afterActionOccurrence occurrence)
         targetTrace exactAfter actionOccurrence
 
+0 insertUnloadActionImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {child, selected : name} -> {scope : Parent name} ->
+  {component : Component key value world error} ->
+  OInsert child scope component = LUnload selected -> Void
+insertUnloadActionImpossible Refl impossible
+
 0 locatedActionHeadView :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
