@@ -520,6 +520,18 @@ r143CanonicalSupportTransportRefuted transport =
     (r143UniversalLinearizationToOriginal transport [Alternate, Upper, Lower]
       r143RightLinearization)
 
+||| Positive-ratification capital: every successful original-endpoint lookup
+||| also returns a root fiber.
+0 r143LeftFoundRoot :
+  (selected : N) -> (fiber : Fiber N K V Unit String) ->
+  lookupFiber @{the (DecEq N) %search} selected
+    (registry DGamma.R6FourFiberStatic.leftState) = Just fiber ->
+  fiberParent fiber = Root
+r143LeftFoundRoot Lower fiber found = case found of Refl => Refl
+r143LeftFoundRoot Middle fiber found = case found of Refl => Refl
+r143LeftFoundRoot Alternate fiber found = case found of Refl => Refl
+r143LeftFoundRoot Upper fiber found = case found of Refl => Refl
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
