@@ -3466,6 +3466,27 @@ mutual
         (closingAfterLocatedInSnoc locatedAction closingAction leadingRest
           closingTransition closingShape distinct tailOccurrence)
 
+0 selectedClosingAfterChildBirth :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected, child : name) ->
+  (component : Component key value world error) ->
+  {preStart, afterClose : SystemState name key value world error} ->
+  (episode : ClosedEpisode name key world error value nameEq keyEq selected
+    preStart afterClose) ->
+  (birth : LocatedActionOccurrence
+    (OInsert child (ChildOf selected) component)
+    (MoreTransitions (beginTransition (closedOpening episode))
+      (closedTransitions episode))) ->
+  ActionOccurs (LUnload selected) (afterActionOccurrence birth)
+selectedClosingAfterChildBirth nameEq keyEq selected child component episode
+  birth =
+    closingAfterLocatedInSnoc
+      (OInsert child (ChildOf selected) component) (LUnload selected)
+      (MoreTransitions (beginTransition (closedOpening episode))
+        (closedInside episode))
+      (unloadTransition (closing episode)) Refl insertUnloadActionImpossible birth
+
 0 locatedActionHeadView :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
