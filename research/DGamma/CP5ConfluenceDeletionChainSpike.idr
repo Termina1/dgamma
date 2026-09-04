@@ -5796,6 +5796,79 @@ splitGenerationScanAtAppend nameEq ordinal live
         MkSplitGenerationScan middleOrdinal middleLive
           (GenerationTraceScanStep transition rest leftScan) rightScan
 
+record RegistrationScanCapital
+  (name : Type) (nameEq : DecEq name) (startOrdinal : Nat)
+  (startLive : GenerationEnvironment name)
+  {initial, finalState : SystemState name key value world error}
+  (globalTrace : Transitions initial finalState)
+  {child, parent : name} {component : Component key value world error}
+  (registration : LocatedGeneratedRegistration child parent component
+    globalTrace)
+  (finalOrdinal : Nat) (finalLive : GenerationEnvironment name) where
+  constructor MkRegistrationScanCapital
+  registrationBirthOrdinal : Nat
+  registrationBirthLive : GenerationEnvironment name
+  0 scanBeforeRegistration : GenerationTraceScan nameEq startOrdinal startLive
+    (beforeRegistration registration) registrationBirthOrdinal
+    registrationBirthLive
+  0 scanAfterRegistration : GenerationTraceScan nameEq
+    (S registrationBirthOrdinal)
+    (advanceGenerationEnvironment @{nameEq} registrationBirthOrdinal
+      (transitionAction (registrationTransition registration))
+      registrationBirthLive)
+    (afterRegistration registration) finalOrdinal finalLive
+
+0 registrationScanCapitalFromSplit :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (startOrdinal : Nat) ->
+  (startLive : GenerationEnvironment name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (globalTrace : Transitions initial finalState) ->
+  {child, parent : name} -> {component : Component key value world error} ->
+  (registration : LocatedGeneratedRegistration child parent component
+    globalTrace) ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  SplitGenerationScan name nameEq startOrdinal startLive
+    (beforeRegistration registration)
+    (MoreTransitions (registrationTransition registration)
+      (afterRegistration registration))
+    finalOrdinal finalLive ->
+  RegistrationScanCapital name nameEq startOrdinal startLive globalTrace
+    registration finalOrdinal finalLive
+registrationScanCapitalFromSplit nameEq startOrdinal startLive globalTrace
+  registration finalOrdinal finalLive
+  (MkSplitGenerationScan birthOrdinal birthLive beforeScan
+    (GenerationTraceScanStep _ _ tailScan)) =
+      MkRegistrationScanCapital birthOrdinal birthLive beforeScan tailScan
+
+0 registrationScanCapital :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (startOrdinal : Nat) ->
+  (startLive : GenerationEnvironment name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  {child, parent : name} -> {component : Component key value world error} ->
+  (globalTrace : Transitions initial finalState) ->
+  (registration : LocatedGeneratedRegistration child parent component
+    globalTrace) ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq startOrdinal startLive globalTrace finalOrdinal
+    finalLive ->
+  RegistrationScanCapital name nameEq startOrdinal startLive globalTrace
+    registration finalOrdinal finalLive
+registrationScanCapital nameEq startOrdinal startLive globalTrace registration
+  finalOrdinal finalLive scan =
+    registrationScanCapitalFromSplit nameEq startOrdinal startLive globalTrace
+      registration finalOrdinal finalLive
+      (splitGenerationScanAtAppend nameEq startOrdinal startLive
+        (beforeRegistration registration)
+        (MoreTransitions (registrationTransition registration)
+          (afterRegistration registration))
+        finalOrdinal finalLive
+        (replace
+          {p = \candidate => GenerationTraceScan nameEq startOrdinal startLive
+            candidate finalOrdinal finalLive}
+          (sym (registrationDecomposition registration)) scan))
+
 0 noRegisteredAppendAtScan :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
