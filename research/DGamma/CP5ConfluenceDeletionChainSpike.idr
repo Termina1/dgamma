@@ -3358,6 +3358,29 @@ actionOccursAfterExact action occurrence targetTrace exactAfterState exactAfter
   OInsert child scope component = LUnload selected -> Void
 insertUnloadActionImpossible Refl impossible
 
+0 occurrenceAfterPrefixSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {startState, actionBefore, actionAfter, finalState :
+    SystemState name key value world error} ->
+  (earlier : Transitions startState actionBefore) ->
+  (transition : Transition actionBefore actionAfter) ->
+  (later : Transitions actionAfter finalState) ->
+  OccursIn transition
+    (appendTransitions earlier (MoreTransitions transition later))
+occurrenceAfterPrefixSpike NoTransitions transition later = OccursHere
+occurrenceAfterPrefixSpike (MoreTransitions prefixHead prefixRest) transition later =
+  OccursLater (occurrenceAfterPrefixSpike prefixRest transition later)
+
+0 locatedActionImpossibleInEmpty :
+  (occurrence : LocatedActionOccurrence action
+    (NoTransitions {state = state})) -> Void
+locatedActionImpossibleInEmpty
+  (MkLocatedActionOccurrence before after earlier transition later actionShape
+    decomposition) =
+      noOccurrenceInEmpty
+        (replace {p = \observed => OccursIn transition observed}
+          decomposition (occurrenceAfterPrefixSpike earlier transition later))
+
 0 locatedActionHeadView :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
@@ -3685,29 +3708,6 @@ prependMatchingChildInventory headTransition rest selected child component
         startOrdinal actionShape allRetire tailGenerations tailSound)
       (matchingInventoryComplete headTransition rest selected child component
         startOrdinal actionShape tailGenerations tailComplete)
-
-0 occurrenceAfterPrefixSpike :
-  {name, key, world, error : Type} -> {value : key -> Type} ->
-  {startState, actionBefore, actionAfter, finalState :
-    SystemState name key value world error} ->
-  (earlier : Transitions startState actionBefore) ->
-  (transition : Transition actionBefore actionAfter) ->
-  (later : Transitions actionAfter finalState) ->
-  OccursIn transition
-    (appendTransitions earlier (MoreTransitions transition later))
-occurrenceAfterPrefixSpike NoTransitions transition later = OccursHere
-occurrenceAfterPrefixSpike (MoreTransitions prefixHead prefixRest) transition later =
-  OccursLater (occurrenceAfterPrefixSpike prefixRest transition later)
-
-0 locatedActionImpossibleInEmpty :
-  (occurrence : LocatedActionOccurrence action
-    (NoTransitions {state = state})) -> Void
-locatedActionImpossibleInEmpty
-  (MkLocatedActionOccurrence before after earlier transition later actionShape
-    decomposition) =
-      noOccurrenceInEmpty
-        (replace {p = \observed => OccursIn transition observed}
-          decomposition (occurrenceAfterPrefixSpike earlier transition later))
 
 0 tailRetirementRequirement :
   (headTransition : Transition first middle) ->
