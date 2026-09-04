@@ -793,6 +793,21 @@ supportOrderingSpike = ?supportOrderingSpike_rhs
 canonicalElemEmpty Here impossible
 canonicalElemEmpty (There later) impossible
 
+||| Sorting base case: an unchanged endpoint is a canonical endpoint relation
+||| with no current-name or historical-generation withdrawals.
+0 canonicalSortingIdentityEndpoint :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) ->
+  CanonicalEndpointRelation name key world error value nameEq keyEq state state
+canonicalSortingIdentityEndpoint nameEq keyEq state =
+  MkCanonicalEndpointRelation [] []
+    (MkEffectStateRelated Refl (\selected => Refl))
+    (\selected, outside => fiberControlMaybeReflexive
+      (lookupFiber @{nameEq} selected (registry state)))
+    (\selected, present => void (canonicalElemEmpty present))
+    (\selected, present => void (canonicalElemEmpty present))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
