@@ -1866,6 +1866,23 @@ parentOpenRetireFiberView nameEq selected ambient fibers
   (MkFiber component parent retiredFlag table
     (Unloading accumulator dependencyView outcome)) found OpenActive impossible
 
+0 parentOpenRetireSourceView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) -> (ambient : world) ->
+  (fibers : Registry name key value world error) ->
+  (opened : ParentOpenAt {name = name} {key = key} {value = value}
+    {world = world} {error = error} nameEq selected
+    (MkSystemState ambient fibers)) ->
+  ParentOpenEquationView name key world error value nameEq selected
+    (MkSystemState ambient (replaceBinding @{nameEq} {key = name}
+      {value = FiberAt name key value world error} selected
+      (retireFiber (openParentFiber opened)) fibers))
+parentOpenRetireSourceView nameEq selected ambient fibers opened =
+  case opened of
+    MkParentOpenAt fiber found lifecycle =>
+      parentOpenRetireFiberView nameEq selected ambient fibers fiber found
+        lifecycle
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
