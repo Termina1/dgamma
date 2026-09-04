@@ -1552,8 +1552,12 @@ public export
     (deletionSortingOccurrenceCorrespondence reduction sorted) ->
   OneTraceOrchestrationAccounting name key world error value protocol nameEq keyEq
     original reduction ordering sorted
-deletionSortingOrchestrationAccountingSpike =
-  ?deletionSortingOrchestrationAccountingSpike_rhs
+deletionSortingOrchestrationAccountingSpike nameEq keyEq protocol original
+  reduction ordering sorted endpoint exact laws =
+    assembleOneTraceAccountingFromReplay reduction ordering sorted endpoint exact
+      (sameExternalOrchestrationTransitiveSpike nameEq
+        (reductionSameExternalInputs reduction) (sortedSameInputs sorted))
+      laws
 
 ||| Erased producer schedule used to seal the runtime schedule stored by the
 ||| bridge-facing capital.  All proof fields come from the exact indexed chain.
