@@ -782,6 +782,21 @@ r143LeftSharedOrderComplete Middle supported = case supported of Refl impossible
 r143LeftSharedOrderComplete Alternate supported = There Here
 r143LeftSharedOrderComplete Upper supported = There (There Here)
 
+0 r143LeftPathShapeOrdered :
+  {lower, upper : N} ->
+  R143LeftPathShape lower upper ->
+  Elem lower [Lower, Alternate, Upper] ->
+  Elem upper [Lower, Alternate, Upper] ->
+  BeforeIn lower upper [Lower, Alternate, Upper]
+r143LeftPathShapeOrdered R143LeftPathLowerMiddle lowerIn upperIn =
+  void (r143MiddleNotInSharedOrder upperIn)
+r143LeftPathShapeOrdered R143LeftPathLowerUpper lowerIn upperIn =
+  BeforeHere (There Here)
+r143LeftPathShapeOrdered R143LeftPathMiddleUpper lowerIn upperIn =
+  void (r143MiddleNotInSharedOrder lowerIn)
+r143LeftPathShapeOrdered R143LeftPathAlternateUpper lowerIn upperIn =
+  BeforeThere (BeforeHere Here)
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
