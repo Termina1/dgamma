@@ -2689,6 +2689,33 @@ alignedChildInsertActionTransport nameEq keyEq child parent component action tag
     case actionShape of
       Refl => MkAlignedChildInsertStep tag checked aligned
 
+0 alignedGeneratedRegistrationParts :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (child, parent : name) ->
+  (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (beforeTrace : Transitions initial before) ->
+  (transition : Transition before afterState) ->
+  (rest : Transitions afterState finalState) ->
+  (0 actionShape : transitionAction transition =
+    OInsert child (ChildOf parent) component) ->
+  (0 decomposition : appendTransitions beforeTrace
+    (MoreTransitions transition rest) = global) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  AlignedChildInsertStep name key world error value nameEq keyEq child parent
+    component before afterState rest
+alignedGeneratedRegistrationParts nameEq keyEq global child parent component
+  before afterState beforeTrace transition rest actionShape decomposition aligned =
+    case snd (alignedAppendSplit beforeTrace (MoreTransitions transition rest)
+      (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+        (sym decomposition) aligned)) of
+      AlignedStep action tag checked _ alignedTail =>
+        alignedChildInsertActionTransport nameEq keyEq child parent component
+          action tag before afterState rest checked alignedTail actionShape
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
