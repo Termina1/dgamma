@@ -1564,6 +1564,12 @@ maximalClosingOrdinalBound scan selected episode upper consumer consumerEpisode 
         (transitionCount (traceBeforeOpening episode))}
         shape (upper other member)
 
+0 startStrictlyBeforeLocalSuccessor :
+  (start, local : Nat) -> LTE (S start) (start + S local)
+startStrictlyBeforeLocalSuccessor Z local = LTESucc LTEZero
+startStrictlyBeforeLocalSuccessor (S start) local =
+  LTESucc (startStrictlyBeforeLocalSuccessor start local)
+
 ||| Independently testable O8 result.  A selected maximal/deletable candidate is
 ||| tied back to an ordinal produced by the exact O7 scan; the empty branch is
 ||| definitionally separated from the O9 deletion adapter.
