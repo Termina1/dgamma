@@ -3553,6 +3553,47 @@ selectedChildRetirementAfterBirth protocol nameEq keyEq global selected child
           (MkLocatedActionOccurrence before afterState beforeTrace transition rest
             actionShape decomposition))
 
+0 selectedChildBirthDistinct :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (selected, child : name) ->
+  (component : Component key value world error) ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  RegistrationDiscipline protocol nameEq global ->
+  (birth : LocatedActionOccurrence
+    (OInsert child (ChildOf selected) component)
+    (MoreTransitions
+      (beginTransition (closedOpening (locatedEpisode located)))
+      (closedTransitions (locatedEpisode located)))) ->
+  Not (selected = child)
+selectedChildBirthDistinct protocol nameEq keyEq global selected child component
+  located aligned discipline
+  (MkLocatedActionOccurrence before afterState beforeTrace transition rest
+    actionShape decomposition) =
+      alignedChildInsertDistinct protocol nameEq keyEq child selected component
+        before afterState (appendTransitions rest (traceAfterClosing located))
+        (alignedGeneratedRegistrationParts nameEq keyEq global child selected
+          component before afterState
+          (appendTransitions (traceBeforeOpening located) beforeTrace)
+          transition (appendTransitions rest (traceAfterClosing located))
+          actionShape
+          (registrationDecomposition
+            (locatedEpisodeChildRegistration nameEq keyEq global selected child
+              component located
+              (MkLocatedActionOccurrence before afterState beforeTrace transition
+                rest actionShape decomposition))) aligned)
+        (registrationDisciplineAtGenerated protocol nameEq global child selected
+          component
+          (locatedEpisodeChildRegistration nameEq keyEq global selected child
+            component located
+            (MkLocatedActionOccurrence before afterState beforeTrace transition
+              rest actionShape decomposition)) discipline)
+
 0 locatedActionHeadView :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
