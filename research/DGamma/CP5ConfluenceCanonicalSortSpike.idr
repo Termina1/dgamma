@@ -983,6 +983,25 @@ canonicalPrecedenceEdgeForwardFromFibers edge lowerTarget upperTarget =
       (canonicalFiberComponentSame (forwardTargetControls upperTarget))
       (consumerDeclares edge))
 
+||| Transport a precedence edge whose two endpoint actors are known outside the
+||| raw withdrawal list.
+0 canonicalPrecedenceEdgeForward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {lower, upper : name} ->
+  {originalFinal, reducedFinal : SystemState name key value world error} ->
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
+    originalFinal reducedFinal) ->
+  Not (Elem lower (endpointWithdrawnNames endpoint)) ->
+  Not (Elem upper (endpointWithdrawnNames endpoint)) ->
+  PrecedenceEdge nameEq lower upper originalFinal ->
+  PrecedenceEdge nameEq lower upper reducedFinal
+canonicalPrecedenceEdgeForward endpoint lowerOutside upperOutside edge =
+  canonicalPrecedenceEdgeForwardFromFibers edge
+    (canonicalOutsideFiberForward endpoint lowerOutside (providerFiber edge)
+      (providerFound edge))
+    (canonicalOutsideFiberForward endpoint upperOutside (consumerFiber edge)
+      (consumerFound edge))
+
 ||| Prove all support/parent/input-placement transport from the cumulative
 ||| endpoint relation and exact generated-registration accounting.
 public export
