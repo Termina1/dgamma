@@ -1994,6 +1994,23 @@ installedBeginOwnerImpossible nameEq keyEq selected tag before afterState checke
         void (falseNotTrueO7
           (trans (sym sourceUninstalled) sourceInstalled))
 
+0 installedUnloadOwnerImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LUnload selected)
+    before = Just (tag, afterState)) ->
+  (0 targetInstalled : installedAt @{nameEq} selected afterState = True) -> Void
+installedUnloadOwnerImpossible nameEq keyEq selected tag before afterState checked
+  targetInstalled =
+    case lUnloadBoundary nameEq keyEq selected before afterState tag
+      (checkedActionProjects nameEq keyEq (LUnload selected) before afterState
+        tag checked) of
+      (tagShape, sourceInstalled, targetUninstalled) =>
+        void (falseNotTrueO7
+          (trans (sym targetUninstalled) targetInstalled))
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
