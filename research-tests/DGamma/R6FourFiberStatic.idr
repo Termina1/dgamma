@@ -275,6 +275,13 @@ r143NoRightParentEdge {child}
     r143RootNotChild
       (trans (sym (r143RightFoundRoot child childFiber childFound)) childParent)
 
+||| No exact provider lookup exists for the withdrawn middle actor.
+0 r143MiddleLookupImpossible :
+  {fiber : Fiber N K V Unit String} ->
+  lookupFiber @{the (DecEq N) %search} Middle
+    (registry DGamma.R6FourFiberStatic.rightState) = Just fiber -> Void
+r143MiddleLookupImpossible found = case found of Refl impossible
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
