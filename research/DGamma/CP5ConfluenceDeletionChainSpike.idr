@@ -2355,6 +2355,54 @@ unloadCheckedOpenImpossible nameEq keyEq selected tag before afterState checked
         (checkedActionProjects nameEq keyEq (LUnload selected) before afterState
           tag checked)))
 
+0 parentOpenOwnerNoRecoveryStep :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  ParentOpenAt nameEq (actionOwner action) before ->
+  (0 noRecovery : ParentRecoveryStep (actionOwner action)
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked) -> Void) ->
+  ParentOpenAt nameEq (actionOwner action) afterState
+parentOpenOwnerNoRecoveryStep nameEq keyEq
+  (OInsert selected parent component) tag before afterState checked opened
+  noRecovery =
+    void (installedInsertOwnerImpossible nameEq keyEq selected parent component
+      tag before afterState checked
+      (parentOpenInstalledSpike nameEq selected before opened))
+parentOpenOwnerNoRecoveryStep nameEq keyEq (ORetire selected) tag before
+  afterState checked opened noRecovery =
+    parentOpenRetireSpike nameEq keyEq selected before afterState tag checked
+      opened
+parentOpenOwnerNoRecoveryStep nameEq keyEq (ORemove selected) tag before
+  afterState checked opened noRecovery =
+    void (installedRemoveOwnerImpossible nameEq keyEq selected tag before
+      afterState checked (parentOpenInstalledSpike nameEq selected before opened))
+parentOpenOwnerNoRecoveryStep nameEq keyEq (LBegin selected) tag before afterState
+  checked opened noRecovery =
+    void (installedBeginOwnerImpossible nameEq keyEq selected tag before
+      afterState checked (parentOpenInstalledSpike nameEq selected before opened))
+parentOpenOwnerNoRecoveryStep nameEq keyEq (LAdvance selected) tag before
+  afterState checked opened noRecovery =
+    parentOpenAdvanceStructureSpike nameEq keyEq selected tag before afterState
+      checked noRecovery
+      (advanceStructureTheorem nameEq keyEq selected before afterState tag
+        (checkedActionProjects nameEq keyEq (LAdvance selected) before afterState
+          tag checked))
+parentOpenOwnerNoRecoveryStep nameEq keyEq (LDivert selected) tag before afterState
+  checked opened noRecovery =
+    void (noRecovery (ParentDivertsBefore Refl))
+parentOpenOwnerNoRecoveryStep nameEq keyEq (LLeave selected) tag before afterState
+  checked opened noRecovery =
+    void (noRecovery (ParentLeaves Refl))
+parentOpenOwnerNoRecoveryStep nameEq keyEq (LUnload selected) tag before afterState
+  checked opened noRecovery =
+    void (unloadCheckedOpenImpossible nameEq keyEq selected tag before afterState
+      checked opened)
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
