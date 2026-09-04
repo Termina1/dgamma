@@ -1821,6 +1821,51 @@ activeRetiredEndpointView nameEq selected ambient fibers component parent
         (retireFiber (MkFiber component parent retiredFlag table
           (Active accumulator dependencyView))) fibers found in Refl)
 
+0 parentOpenRetireFiberView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) -> (ambient : world) ->
+  (fibers : Registry name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  (0 found : lookupFiber @{nameEq} {key = key} {value = value}
+    {world = world} {error = error} selected fibers = Just fiber) ->
+  LifecycleOpen {key = key} {value = value} {world = world}
+    {error = error} {name = name}
+    {deps = dependencies (componentDependencies (fiberComponent fiber))}
+    {provision = componentProvisions (fiberComponent fiber)}
+    (fiberLifecycle fiber) ->
+  ParentOpenEquationView name key world error value nameEq selected
+    (MkSystemState ambient (replaceBinding @{nameEq} {key = name}
+      {value = FiberAt name key value world error} selected
+      (retireFiber fiber) fibers))
+parentOpenRetireFiberView nameEq selected ambient fibers
+  (MkFiber component parent retiredFlag table (Inactive outcome)) found
+  OpenReloading impossible
+parentOpenRetireFiberView nameEq selected ambient fibers
+  (MkFiber component parent retiredFlag table (Inactive outcome)) found
+  OpenActive impossible
+parentOpenRetireFiberView nameEq selected ambient fibers
+  (MkFiber component parent retiredFlag table
+    (Reloading remaining accumulator dependencyView)) found OpenReloading =
+      reloadingRetiredEndpointView nameEq selected ambient fibers component
+        parent retiredFlag table remaining accumulator dependencyView found
+parentOpenRetireFiberView nameEq selected ambient fibers
+  (MkFiber component parent retiredFlag table
+    (Reloading remaining accumulator dependencyView)) found OpenActive impossible
+parentOpenRetireFiberView nameEq selected ambient fibers
+  (MkFiber component parent retiredFlag table
+    (Active accumulator dependencyView)) found OpenReloading impossible
+parentOpenRetireFiberView nameEq selected ambient fibers
+  (MkFiber component parent retiredFlag table
+    (Active accumulator dependencyView)) found OpenActive =
+      activeRetiredEndpointView nameEq selected ambient fibers component parent
+        retiredFlag table accumulator dependencyView found
+parentOpenRetireFiberView nameEq selected ambient fibers
+  (MkFiber component parent retiredFlag table
+    (Unloading accumulator dependencyView outcome)) found OpenReloading impossible
+parentOpenRetireFiberView nameEq selected ambient fibers
+  (MkFiber component parent retiredFlag table
+    (Unloading accumulator dependencyView outcome)) found OpenActive impossible
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
