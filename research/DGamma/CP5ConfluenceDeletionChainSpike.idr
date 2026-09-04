@@ -2186,6 +2186,42 @@ unloadOpenAtImpossible nameEq keyEq selected (MkSystemState ambient fibers)
         (MkSystemState ambient fibers) afterState LUnloadTag
         (unloadEquation closing)))
 
+record NoParentRecoveryAppendView
+  (name, key, world, error : Type) (value : key -> Type)
+  {first, middle, finalState : SystemState name key value world error}
+  (parent : name) (left : Transitions first middle)
+  (right : Transitions middle finalState) where
+  constructor MkNoParentRecoveryAppendView
+  0 noRecoveryAppendLeft : NoParentRecovery parent left
+  0 noRecoveryAppendRight : NoParentRecovery parent right
+
+0 splitNoParentRecoveryAppend :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (parent : name) -> (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  NoParentRecovery parent (appendTransitions left right) ->
+  NoParentRecoveryAppendView name key world error value parent left right
+splitNoParentRecoveryAppend parent NoTransitions right noRecovery =
+  MkNoParentRecoveryAppendView NoParentRecoveryEnd noRecovery
+splitNoParentRecoveryAppend parent
+  (MoreTransitions transition rest) right noRecovery =
+    MkNoParentRecoveryAppendView
+      (NoParentRecoveryStep transition rest
+        (noParentRecoveryAtHead
+          (noParentRecoveryConsView parent transition
+            (appendTransitions rest right) noRecovery))
+        (noRecoveryAppendLeft
+          (splitNoParentRecoveryAppend parent rest right
+            (noParentRecoveryInTail
+              (noParentRecoveryConsView parent transition
+                (appendTransitions rest right) noRecovery)))))
+      (noRecoveryAppendRight
+        (splitNoParentRecoveryAppend parent rest right
+          (noParentRecoveryInTail
+            (noParentRecoveryConsView parent transition
+              (appendTransitions rest right) noRecovery))))
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
