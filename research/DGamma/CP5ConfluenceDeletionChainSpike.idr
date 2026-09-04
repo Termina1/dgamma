@@ -4934,6 +4934,75 @@ noRegisteredWhenNotCurrent nameEq actor generation generationActor ordinal live
         (noCurrentAfterOneStep nameEq actor generation ordinal live unique less
           transition noCurrent))
 
+0 currentGenerationEntryBound :
+  {name : Type} -> (ordinal : Nat) ->
+  (live : GenerationEnvironment name) ->
+  (0 bounded : GenerationEnvironmentBounded ordinal live) ->
+  (actor : name) -> (generation : RegistrationGeneration name) ->
+  Elem (actor, generation) live ->
+  LT (generationBirthOrdinal generation) ordinal
+currentGenerationEntryBound ordinal [] bounded actor generation present =
+  absurd present
+currentGenerationEntryBound ordinal ((actor, generation) :: rest)
+  (headBound, tailBound) actor generation Here = headBound
+currentGenerationEntryBound ordinal ((current, currentGeneration) :: rest)
+  (headBound, tailBound) actor generation (There later) =
+    currentGenerationEntryBound ordinal rest tailBound actor generation later
+
+0 beforeGenerationBirthRejectsBegin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) ->
+  (generation : RegistrationGeneration name) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (0 bounded : GenerationEnvironmentBounded ordinal live) ->
+  (trace : Transitions first finalState) ->
+  (birthOrdinal : Nat) -> (birthLive : GenerationEnvironment name) ->
+  (scan : GenerationTraceScan nameEq ordinal live trace birthOrdinal birthLive) ->
+  (0 birthShape : generationBirthOrdinal generation = birthOrdinal) ->
+  (action : Action name key value world error) ->
+  (begin : IsBeginAction action) ->
+  (owned : GenerationOwnedActor nameEq [generation] ordinal live action) -> Void
+beforeGenerationBirthRejectsBegin nameEq generation ordinal live bounded trace
+  birthOrdinal birthLive scan birthShape action begin owned =
+    LTEImpliesNotGT
+      (replace {p = \candidate => LTE ordinal candidate} (sym birthShape)
+        (generationScanStartLTE scan))
+      (currentGenerationEntryBound ordinal live bounded (actionOwner action)
+        generation
+        (currentGenerationEntryFromLookup nameEq (actionOwner action) generation
+          live
+          (singletonBeginOwnedCurrent nameEq action generation live begin
+            owned)))
+
+0 noRegisteredBeforeGenerationBirth :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) ->
+  (generation : RegistrationGeneration name) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (0 bounded : GenerationEnvironmentBounded ordinal live) ->
+  (trace : Transitions first finalState) ->
+  (birthOrdinal : Nat) -> (birthLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq ordinal live trace birthOrdinal birthLive ->
+  (0 birthShape : generationBirthOrdinal generation = birthOrdinal) ->
+  NoRegisteredEpisode nameEq [generation] ordinal live trace
+noRegisteredBeforeGenerationBirth nameEq generation ordinal live bounded
+  NoTransitions ordinal live GenerationTraceScanEnd birthShape =
+    NoRegisteredEpisodeEnd
+noRegisteredBeforeGenerationBirth nameEq generation ordinal live bounded
+  (MoreTransitions transition@(Fired stepNameEq stepKeyEq action tag checked)
+    rest) birthOrdinal birthLive
+  (GenerationTraceScanStep _ _ tailScan) birthShape =
+    NoRegisteredEpisodeStep transition rest
+      (beforeGenerationBirthRejectsBegin nameEq generation ordinal live bounded
+        (MoreTransitions transition rest) birthOrdinal birthLive
+        (GenerationTraceScanStep transition rest tailScan) birthShape action)
+      (noRegisteredBeforeGenerationBirth nameEq generation (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal action live)
+        (advanceGenerationEnvironmentBounded nameEq ordinal action live bounded)
+        rest birthOrdinal birthLive tailScan birthShape)
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
