@@ -1180,6 +1180,35 @@ record PermutedCanonicalExecution
     (canonicalTrace (canonicalSchedule leftCapital))
       (operationalTargetTrace operational)
 
+||| O19's sealed fold already contains both fields of the replayed-execution
+||| wrapper; no O20 endpoint comparison is needed for this assembly.
+0 permutedCanonicalExecutionFromOperational :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace
+    rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace} ->
+  {matching : MappedCanonicalSupportOrders name key world error value protocol
+    nameEq keyEq leftTrace rightTrace
+    (currentNameBijection (endpointRenaming sameInputs))
+    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
+  (operational : CertifiedOperationalCanonicalPermutation name key world error
+    value protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital
+      rightCapital matching) ->
+  PermutedCanonicalExecution name key world error value protocol nameEq keyEq
+    leftTrace rightTrace sameInputs leftCapital rightCapital operational
+permutedCanonicalExecutionFromOperational nameEq keyEq operational =
+  MkPermutedCanonicalExecution
+    (operationalPermutationEndpoint nameEq keyEq
+      (selectedPermutationRealized operational))
+    (operationalPermutationSameExternalInputs nameEq
+      (selectedPermutationRealized operational))
+
 public export
 0 permutationReplayCorrespondence :
   {operational : CertifiedOperationalCanonicalPermutation name key world error
