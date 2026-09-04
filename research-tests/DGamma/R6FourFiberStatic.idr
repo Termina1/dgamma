@@ -387,6 +387,26 @@ r143NoRightPathFromUpper (SupportPathMore edge rest) =
     middle target -> Void
 r143NoRightPathAfterUpper Refl rest = r143NoRightPathFromUpper rest
 
+||| Exact endpoint classifier for every nonempty reduced support path.
+record R143RightPathShape (lower, upper : N) where
+  constructor MkR143RightPathShape
+  0 r143PathStartsAlternate : lower = Alternate
+  0 r143PathEndsUpper : upper = Upper
+
+0 r143RightPathShape :
+  {lower, upper : N} ->
+  (path : SupportPath (the (DecEq N) %search)
+    DGamma.R6FourFiberStatic.rightState lower upper) ->
+  R143RightPathShape lower upper
+r143RightPathShape (SupportPathOne edge) =
+  MkR143RightPathShape (r143RightEdgeStartsAlternate edge)
+    (r143RightEdgeEndsUpperAfterStart edge
+      (r143RightEdgeStartsAlternate edge))
+r143RightPathShape (SupportPathMore edge rest) =
+  void (r143NoRightPathAfterUpper
+    (r143RightEdgeEndsUpperAfterStart edge
+      (r143RightEdgeStartsAlternate edge)) rest)
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
