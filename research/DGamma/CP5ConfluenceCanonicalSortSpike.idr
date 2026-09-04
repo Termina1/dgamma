@@ -787,6 +787,12 @@ public export
   SupportOrderingCapital name key world error value nameEq keyEq finalState
 supportOrderingSpike = ?supportOrderingSpike_rhs
 
+||| Empty withdrawal lists have no inhabitants.  Keeping this eliminator local
+||| avoids depending on the private analogue in the production support module.
+0 canonicalElemEmpty : Elem item [] -> Void
+canonicalElemEmpty Here impossible
+canonicalElemEmpty (There later) impossible
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
