@@ -837,6 +837,36 @@ r143RightSharedOrderComplete Middle supported = case supported of Refl impossibl
 r143RightSharedOrderComplete Alternate supported = There Here
 r143RightSharedOrderComplete Upper supported = There (There Here)
 
+0 r143RightSharedPathOrderedFromShape :
+  {lower, upper : N} -> R143RightPathShape lower upper ->
+  BeforeIn lower upper [Lower, Alternate, Upper]
+r143RightSharedPathOrderedFromShape shape =
+  replace {p = \candidate => BeforeIn lower candidate [Lower, Alternate, Upper]}
+    (sym (r143PathEndsUpper shape))
+    (replace
+      {p = \candidate => BeforeIn candidate Upper [Lower, Alternate, Upper]}
+      (sym (r143PathStartsAlternate shape))
+      (BeforeThere (BeforeHere Here)))
+
+0 r143RightSharedPathsOrdered :
+  (lower, upper : N) ->
+  SupportPath (the (DecEq N) %search) DGamma.R6FourFiberStatic.rightState
+    lower upper ->
+  Elem lower [Lower, Alternate, Upper] ->
+  Elem upper [Lower, Alternate, Upper] ->
+  BeforeIn lower upper [Lower, Alternate, Upper]
+r143RightSharedPathsOrdered lower upper path lowerIn upperIn =
+  r143RightSharedPathOrderedFromShape (r143RightPathShape path)
+
+||| The chosen corrected order is simultaneously valid after reduction.
+0 r143ReducedSharedLinearization :
+  LinearizesSupport N K Unit String V (the (DecEq N) %search)
+    (the (DecEq K) %search) DGamma.R6FourFiberStatic.rightState
+    [Lower, Alternate, Upper]
+r143ReducedSharedLinearization = MkLinearizesSupport r143SharedOrderUnique
+  r143RightSharedOrderSound r143RightSharedOrderComplete
+  r143RightSharedPathsOrdered
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
