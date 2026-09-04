@@ -152,6 +152,598 @@ record DeletableClosingEpisode
   0 selectedChildrenHaveNoEpisode : NoRegisteredEpisode nameEq
     selectedRegistrations 0 [] trace
 
+||| Fully instantiated first-action projection used only at erased equality
+||| boundaries.  Keeping every type and state argument explicit prevents an
+||| equal-position `Refl` elimination from leaving anonymous dependent indices.
+0 firstTraceActionPreInterval :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, finalState : SystemState name key value world error) ->
+  Transitions first finalState -> Maybe (Action name key value world error)
+firstTraceActionPreInterval name key world error value first finalState trace =
+  case trace of
+    NoTransitions => Nothing
+    MoreTransitions transition rest => Just (transitionAction transition)
+
+||| Producer-owned common-head view for two nonempty exact traces.  Its sole
+||| constructor binds the erased middle state and transition before exposing
+||| the tail equation.
+data SharedExactPreIntervalHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, finalState : SystemState name key value world error) ->
+  (selected, foreign : Transitions first finalState) -> Type where
+  SharedExactPreIntervalHeadWitness :
+    (name, key, world, error : Type) -> (value : key -> Type) ->
+    (first, middle, finalState : SystemState name key value world error) ->
+    (head : Transition first middle) ->
+    (selectedTail, foreignTail : Transitions middle finalState) ->
+    (0 tailAlignment : (selectedTail = foreignTail)) ->
+    SharedExactPreIntervalHead name key world error value first finalState
+      (MoreTransitions head selectedTail) (MoreTransitions head foreignTail)
+
+||| P2 cure: transport a reflexive head view instead of asking a nonlinear
+||| `Refl` clause to identify two independently elaborated dependent heads.
+0 sharedExactPreIntervalHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, selectedMiddle, foreignMiddle, finalState :
+    SystemState name key value world error) ->
+  (selectedHead : Transition first selectedMiddle) ->
+  (selectedTail : Transitions selectedMiddle finalState) ->
+  (foreignHead : Transition first foreignMiddle) ->
+  (foreignTail : Transitions foreignMiddle finalState) ->
+  (0 alignment :
+    (MoreTransitions selectedHead selectedTail =
+      MoreTransitions foreignHead foreignTail)) ->
+  SharedExactPreIntervalHead name key world error value first finalState
+    (MoreTransitions selectedHead selectedTail)
+    (MoreTransitions foreignHead foreignTail)
+sharedExactPreIntervalHead name key world error value first selectedMiddle
+  foreignMiddle finalState selectedHead selectedTail foreignHead foreignTail
+  alignment =
+    replace
+      {p = \candidate => SharedExactPreIntervalHead name key world error value
+        first finalState (MoreTransitions selectedHead selectedTail) candidate}
+      alignment
+      (SharedExactPreIntervalHeadWitness name key world error value first
+        selectedMiddle finalState selectedHead selectedTail selectedTail Refl)
+
+||| Checked P2 consumer: after one head-view elimination, `cong` mentions only
+||| the constructor-owned common head.
+0 liftSharedExactPreIntervalHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, finalState : SystemState name key value world error) ->
+  (selected, foreign : Transitions first finalState) ->
+  SharedExactPreIntervalHead name key world error value first finalState selected
+    foreign ->
+  (selected = foreign)
+liftSharedExactPreIntervalHead name key world error value first finalState
+  selected foreign headView =
+    case headView of
+      SharedExactPreIntervalHeadWitness viewName viewKey viewWorld viewError
+        viewValue viewFirst viewMiddle viewFinal viewHead viewSelectedTail
+        viewForeignTail tailAlignment =>
+          cong (MoreTransitions viewHead) tailAlignment
+
+||| Exact positional classification of two distinct distinguished transitions.
+||| The result retains a state-indexed trace between the openings and the exact
+||| suffix equation; no Nat-only ordinal comparison is used.
+data ExactPreIntervalPrefixClassification :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, selectedBefore, selectedAfter, foreignBefore, foreignAfter,
+    finalState : SystemState name key value world error) ->
+  (selectedPrefix : Transitions first selectedBefore) ->
+  (selectedOpening : Transition selectedBefore selectedAfter) ->
+  (selectedInside : Transitions selectedAfter finalState) ->
+  (foreignPrefix : Transitions first foreignBefore) ->
+  (foreignOpening : Transition foreignBefore foreignAfter) ->
+  (foreignSuffix : Transitions foreignAfter finalState) -> Type where
+  ExactForeignOpeningInsideSelectedInterval :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, selectedBefore, selectedAfter, foreignBefore, foreignAfter,
+      finalState : SystemState name key value world error} ->
+    {selectedPrefix : Transitions first selectedBefore} ->
+    {selectedOpening : Transition selectedBefore selectedAfter} ->
+    {selectedInside : Transitions selectedAfter finalState} ->
+    {foreignPrefix : Transitions first foreignBefore} ->
+    {foreignOpening : Transition foreignBefore foreignAfter} ->
+    {foreignSuffix : Transitions foreignAfter finalState} ->
+    (0 selectedToForeign : Transitions selectedAfter foreignBefore) ->
+    (0 selectedInsideExact :
+      (selectedInside = appendTransitions selectedToForeign
+        (MoreTransitions foreignOpening foreignSuffix))) ->
+    ExactPreIntervalPrefixClassification name key world error value first
+      selectedBefore selectedAfter foreignBefore foreignAfter finalState
+      selectedPrefix selectedOpening selectedInside foreignPrefix foreignOpening
+      foreignSuffix
+  ExactForeignOpeningBeforeSelectedInterval :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, selectedBefore, selectedAfter, foreignBefore, foreignAfter,
+      finalState : SystemState name key value world error} ->
+    {selectedPrefix : Transitions first selectedBefore} ->
+    {selectedOpening : Transition selectedBefore selectedAfter} ->
+    {selectedInside : Transitions selectedAfter finalState} ->
+    {foreignPrefix : Transitions first foreignBefore} ->
+    {foreignOpening : Transition foreignBefore foreignAfter} ->
+    {foreignSuffix : Transitions foreignAfter finalState} ->
+    (0 foreignToSelected : Transitions foreignAfter selectedBefore) ->
+    (0 foreignSuffixExact :
+      (foreignSuffix = appendTransitions foreignToSelected
+        (MoreTransitions selectedOpening selectedInside))) ->
+    ExactPreIntervalPrefixClassification name key world error value first
+      selectedBefore selectedAfter foreignBefore foreignAfter finalState
+      selectedPrefix selectedOpening selectedInside foreignPrefix foreignOpening
+      foreignSuffix
+
+||| A1 cure: the opening source and full projection telescope are explicit.
+||| `justInjective` exposes action equality, and `cong actionOwner` contradicts
+||| the caller's distinct-owner premise without dependent `Refl` inference.
+0 equalPositionDistinctOpeningsImpossible :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (openingSource, selectedAfter, foreignAfter, finalState :
+    SystemState name key value world error) ->
+  (selectedOpening : Transition openingSource selectedAfter) ->
+  (selectedInside : Transitions selectedAfter finalState) ->
+  (foreignOpening : Transition openingSource foreignAfter) ->
+  (foreignSuffix : Transitions foreignAfter finalState) ->
+  (0 ownerDistinct : Not
+    (actionOwner (transitionAction selectedOpening) =
+      actionOwner (transitionAction foreignOpening))) ->
+  (0 alignment :
+    (MoreTransitions selectedOpening selectedInside =
+      MoreTransitions foreignOpening foreignSuffix)) -> Void
+equalPositionDistinctOpeningsImpossible name key world error value openingSource
+  selectedAfter foreignAfter finalState selectedOpening selectedInside
+  foreignOpening foreignSuffix ownerDistinct alignment =
+    ownerDistinct
+      (cong actionOwner
+        (justInjective
+          (cong
+            (firstTraceActionPreInterval name key world error value openingSource
+              finalState)
+            alignment)))
+
+||| Selected opening is the common head; one P2-view elimination yields the
+||| exact selected-inside suffix demanded by the classification constructor.
+0 selectedOpeningHeadClassification :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, selectedAfter, foreignMiddle, foreignBefore, foreignAfter,
+    finalState : SystemState name key value world error) ->
+  (selectedOpening : Transition first selectedAfter) ->
+  (selectedInside : Transitions selectedAfter finalState) ->
+  (foreignHead : Transition first foreignMiddle) ->
+  (foreignRest : Transitions foreignMiddle foreignBefore) ->
+  (foreignOpening : Transition foreignBefore foreignAfter) ->
+  (foreignSuffix : Transitions foreignAfter finalState) ->
+  SharedExactPreIntervalHead name key world error value first finalState
+    (MoreTransitions selectedOpening selectedInside)
+    (MoreTransitions foreignHead
+      (appendTransitions foreignRest
+        (MoreTransitions foreignOpening foreignSuffix))) ->
+  ExactPreIntervalPrefixClassification name key world error value first first
+    selectedAfter foreignBefore foreignAfter finalState NoTransitions
+    selectedOpening selectedInside (MoreTransitions foreignHead foreignRest)
+    foreignOpening foreignSuffix
+selectedOpeningHeadClassification name key world error value first selectedAfter
+  foreignMiddle foreignBefore foreignAfter finalState selectedOpening
+  selectedInside foreignHead foreignRest foreignOpening foreignSuffix headView =
+    case headView of
+      SharedExactPreIntervalHeadWitness viewName viewKey viewWorld viewError
+        viewValue viewFirst viewMiddle viewFinal viewHead _ _ tailAlignment =>
+          ExactForeignOpeningInsideSelectedInterval foreignRest tailAlignment
+
+||| Foreign opening is the common head; the mirror P2-view elimination yields
+||| the exact foreign suffix through the selected opening.
+0 foreignOpeningHeadClassification :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, selectedMiddle, selectedBefore, selectedAfter, foreignAfter,
+    finalState : SystemState name key value world error) ->
+  (selectedHead : Transition first selectedMiddle) ->
+  (selectedRest : Transitions selectedMiddle selectedBefore) ->
+  (selectedOpening : Transition selectedBefore selectedAfter) ->
+  (selectedInside : Transitions selectedAfter finalState) ->
+  (foreignOpening : Transition first foreignAfter) ->
+  (foreignSuffix : Transitions foreignAfter finalState) ->
+  SharedExactPreIntervalHead name key world error value first finalState
+    (MoreTransitions selectedHead
+      (appendTransitions selectedRest
+        (MoreTransitions selectedOpening selectedInside)))
+    (MoreTransitions foreignOpening foreignSuffix) ->
+  ExactPreIntervalPrefixClassification name key world error value first
+    selectedBefore selectedAfter first foreignAfter finalState
+    (MoreTransitions selectedHead selectedRest) selectedOpening selectedInside
+    NoTransitions foreignOpening foreignSuffix
+foreignOpeningHeadClassification name key world error value first selectedMiddle
+  selectedBefore selectedAfter foreignAfter finalState selectedHead selectedRest
+  selectedOpening selectedInside foreignOpening foreignSuffix headView =
+    case headView of
+      SharedExactPreIntervalHeadWitness viewName viewKey viewWorld viewError
+        viewValue viewFirst viewMiddle viewFinal viewHead _ _ tailAlignment =>
+          ExactForeignOpeningBeforeSelectedInterval selectedRest
+            (sym tailAlignment)
+
+||| Re-index a recursive tail verdict under the two caller-owned prefix heads.
+||| The interval equation itself is unchanged, so this helper performs only the
+||| single classification elimination and never reconstructs a head equality.
+0 prependExactPreIntervalClassification :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, selectedBefore, selectedAfter, foreignBefore, foreignAfter,
+    finalState : SystemState name key value world error) ->
+  (selectedHead : Transition first middle) ->
+  (selectedRest : Transitions middle selectedBefore) ->
+  (selectedOpening : Transition selectedBefore selectedAfter) ->
+  (selectedInside : Transitions selectedAfter finalState) ->
+  (foreignHead : Transition first middle) ->
+  (foreignRest : Transitions middle foreignBefore) ->
+  (foreignOpening : Transition foreignBefore foreignAfter) ->
+  (foreignSuffix : Transitions foreignAfter finalState) ->
+  ExactPreIntervalPrefixClassification name key world error value middle
+    selectedBefore selectedAfter foreignBefore foreignAfter finalState
+    selectedRest selectedOpening selectedInside foreignRest foreignOpening
+    foreignSuffix ->
+  ExactPreIntervalPrefixClassification name key world error value first
+    selectedBefore selectedAfter foreignBefore foreignAfter finalState
+    (MoreTransitions selectedHead selectedRest) selectedOpening selectedInside
+    (MoreTransitions foreignHead foreignRest) foreignOpening foreignSuffix
+prependExactPreIntervalClassification name key world error value first middle
+  selectedBefore selectedAfter foreignBefore foreignAfter finalState selectedHead
+  selectedRest selectedOpening selectedInside foreignHead foreignRest
+  foreignOpening foreignSuffix verdict =
+    case verdict of
+      ExactForeignOpeningInsideSelectedInterval selectedToForeign
+        selectedInsideExact =>
+          ExactForeignOpeningInsideSelectedInterval selectedToForeign
+            selectedInsideExact
+      ExactForeignOpeningBeforeSelectedInterval foreignToSelected
+        foreignSuffixExact =>
+          ExactForeignOpeningBeforeSelectedInterval foreignToSelected
+            foreignSuffixExact
+
+mutual
+  ||| Covering exact-prefix classifier.  Its sole elimination exposes only the
+  ||| selected prefix; a top-level helper performs the foreign-prefix split.
+  0 exactPreIntervalPrefixClassifier :
+    (name, key, world, error : Type) -> (value : key -> Type) ->
+    (first, selectedBefore, selectedAfter, foreignBefore, foreignAfter,
+      finalState : SystemState name key value world error) ->
+    (selectedPrefix : Transitions first selectedBefore) ->
+    (selectedOpening : Transition selectedBefore selectedAfter) ->
+    (selectedInside : Transitions selectedAfter finalState) ->
+    (foreignPrefix : Transitions first foreignBefore) ->
+    (foreignOpening : Transition foreignBefore foreignAfter) ->
+    (foreignSuffix : Transitions foreignAfter finalState) ->
+    (0 ownerDistinct : Not
+      (actionOwner (transitionAction selectedOpening) =
+        actionOwner (transitionAction foreignOpening))) ->
+    (0 alignment :
+      (appendTransitions selectedPrefix
+        (MoreTransitions selectedOpening selectedInside) =
+       appendTransitions foreignPrefix
+        (MoreTransitions foreignOpening foreignSuffix))) ->
+    ExactPreIntervalPrefixClassification name key world error value first
+      selectedBefore selectedAfter foreignBefore foreignAfter finalState
+      selectedPrefix selectedOpening selectedInside foreignPrefix foreignOpening
+      foreignSuffix
+  exactPreIntervalPrefixClassifier name key world error value first
+    selectedBefore selectedAfter foreignBefore foreignAfter finalState
+    selectedPrefix selectedOpening selectedInside foreignPrefix foreignOpening
+    foreignSuffix ownerDistinct alignment =
+      case selectedPrefix of
+        NoTransitions =>
+          exactPreIntervalSelectedEmpty name key world error value first
+            selectedAfter foreignBefore foreignAfter finalState selectedOpening
+            selectedInside foreignPrefix foreignOpening foreignSuffix
+            ownerDistinct alignment
+        MoreTransitions {middle = selectedMiddle} selectedHead selectedRest =>
+          exactPreIntervalSelectedNonempty name key world error value first
+            selectedMiddle selectedBefore selectedAfter foreignBefore
+            foreignAfter finalState selectedHead selectedRest selectedOpening
+            selectedInside foreignPrefix foreignOpening foreignSuffix
+            ownerDistinct alignment
+
+  ||| Selected-prefix empty case.  This helper performs only the foreign-prefix
+  ||| elimination; the equal and strict cases are delegated to proven cures.
+  0 exactPreIntervalSelectedEmpty :
+    (name, key, world, error : Type) -> (value : key -> Type) ->
+    (first, selectedAfter, foreignBefore, foreignAfter, finalState :
+      SystemState name key value world error) ->
+    (selectedOpening : Transition first selectedAfter) ->
+    (selectedInside : Transitions selectedAfter finalState) ->
+    (foreignPrefix : Transitions first foreignBefore) ->
+    (foreignOpening : Transition foreignBefore foreignAfter) ->
+    (foreignSuffix : Transitions foreignAfter finalState) ->
+    (0 ownerDistinct : Not
+      (actionOwner (transitionAction selectedOpening) =
+        actionOwner (transitionAction foreignOpening))) ->
+    (0 alignment :
+      (MoreTransitions selectedOpening selectedInside =
+       appendTransitions foreignPrefix
+        (MoreTransitions foreignOpening foreignSuffix))) ->
+    ExactPreIntervalPrefixClassification name key world error value first first
+      selectedAfter foreignBefore foreignAfter finalState NoTransitions
+      selectedOpening selectedInside foreignPrefix foreignOpening foreignSuffix
+  exactPreIntervalSelectedEmpty name key world error value first selectedAfter
+    foreignBefore foreignAfter finalState selectedOpening selectedInside
+    foreignPrefix foreignOpening foreignSuffix ownerDistinct alignment =
+      case foreignPrefix of
+        NoTransitions =>
+          void (equalPositionDistinctOpeningsImpossible name key world error
+            value first selectedAfter foreignAfter finalState selectedOpening
+            selectedInside foreignOpening foreignSuffix ownerDistinct alignment)
+        MoreTransitions {middle = foreignMiddle} foreignHead foreignRest =>
+          selectedOpeningHeadClassification name key world error value first
+            selectedAfter foreignMiddle foreignBefore foreignAfter finalState
+            selectedOpening selectedInside foreignHead foreignRest foreignOpening
+            foreignSuffix
+            (sharedExactPreIntervalHead name key world error value first
+              selectedAfter foreignMiddle finalState selectedOpening
+              selectedInside foreignHead
+              (appendTransitions foreignRest
+                (MoreTransitions foreignOpening foreignSuffix)) alignment)
+
+  ||| Selected-prefix nonempty case.  Its sole elimination exposes the foreign
+  ||| prefix and delegates the recursive case to the common-head helper.
+  0 exactPreIntervalSelectedNonempty :
+    (name, key, world, error : Type) -> (value : key -> Type) ->
+    (first, selectedMiddle, selectedBefore, selectedAfter, foreignBefore,
+      foreignAfter, finalState : SystemState name key value world error) ->
+    (selectedHead : Transition first selectedMiddle) ->
+    (selectedRest : Transitions selectedMiddle selectedBefore) ->
+    (selectedOpening : Transition selectedBefore selectedAfter) ->
+    (selectedInside : Transitions selectedAfter finalState) ->
+    (foreignPrefix : Transitions first foreignBefore) ->
+    (foreignOpening : Transition foreignBefore foreignAfter) ->
+    (foreignSuffix : Transitions foreignAfter finalState) ->
+    (0 ownerDistinct : Not
+      (actionOwner (transitionAction selectedOpening) =
+        actionOwner (transitionAction foreignOpening))) ->
+    (0 alignment :
+      (MoreTransitions selectedHead
+        (appendTransitions selectedRest
+          (MoreTransitions selectedOpening selectedInside)) =
+       appendTransitions foreignPrefix
+        (MoreTransitions foreignOpening foreignSuffix))) ->
+    ExactPreIntervalPrefixClassification name key world error value first
+      selectedBefore selectedAfter foreignBefore foreignAfter finalState
+      (MoreTransitions selectedHead selectedRest) selectedOpening selectedInside
+      foreignPrefix foreignOpening foreignSuffix
+  exactPreIntervalSelectedNonempty name key world error value first
+    selectedMiddle selectedBefore selectedAfter foreignBefore foreignAfter
+    finalState selectedHead selectedRest selectedOpening selectedInside
+    foreignPrefix foreignOpening foreignSuffix ownerDistinct alignment =
+      case foreignPrefix of
+        NoTransitions =>
+          foreignOpeningHeadClassification name key world error value first
+            selectedMiddle selectedBefore selectedAfter foreignAfter finalState
+            selectedHead selectedRest selectedOpening selectedInside
+            foreignOpening foreignSuffix
+            (sharedExactPreIntervalHead name key world error value first
+              selectedMiddle foreignAfter finalState selectedHead
+              (appendTransitions selectedRest
+                (MoreTransitions selectedOpening selectedInside))
+              foreignOpening foreignSuffix alignment)
+        MoreTransitions {middle = foreignMiddle} foreignHead foreignRest =>
+          bothNonemptyPreIntervalClassification name key world error value first
+            selectedMiddle foreignMiddle selectedBefore selectedAfter
+            foreignBefore foreignAfter finalState selectedHead selectedRest
+            selectedOpening selectedInside foreignHead foreignRest foreignOpening
+            foreignSuffix ownerDistinct
+            (sharedExactPreIntervalHead name key world error value first
+              selectedMiddle foreignMiddle finalState selectedHead
+              (appendTransitions selectedRest
+                (MoreTransitions selectedOpening selectedInside)) foreignHead
+              (appendTransitions foreignRest
+                (MoreTransitions foreignOpening foreignSuffix)) alignment)
+
+  ||| Consume the P2 common-head view, thread P3's explicit final state through
+  ||| the structurally smaller recursive call, then re-index its verdict.
+  0 bothNonemptyPreIntervalClassification :
+    (name, key, world, error : Type) -> (value : key -> Type) ->
+    (first, selectedMiddle, foreignMiddle, selectedBefore, selectedAfter,
+      foreignBefore, foreignAfter, finalState :
+        SystemState name key value world error) ->
+    (selectedHead : Transition first selectedMiddle) ->
+    (selectedRest : Transitions selectedMiddle selectedBefore) ->
+    (selectedOpening : Transition selectedBefore selectedAfter) ->
+    (selectedInside : Transitions selectedAfter finalState) ->
+    (foreignHead : Transition first foreignMiddle) ->
+    (foreignRest : Transitions foreignMiddle foreignBefore) ->
+    (foreignOpening : Transition foreignBefore foreignAfter) ->
+    (foreignSuffix : Transitions foreignAfter finalState) ->
+    (0 ownerDistinct : Not
+      (actionOwner (transitionAction selectedOpening) =
+        actionOwner (transitionAction foreignOpening))) ->
+    SharedExactPreIntervalHead name key world error value first finalState
+      (MoreTransitions selectedHead
+        (appendTransitions selectedRest
+          (MoreTransitions selectedOpening selectedInside)))
+      (MoreTransitions foreignHead
+        (appendTransitions foreignRest
+          (MoreTransitions foreignOpening foreignSuffix))) ->
+    ExactPreIntervalPrefixClassification name key world error value first
+      selectedBefore selectedAfter foreignBefore foreignAfter finalState
+      (MoreTransitions selectedHead selectedRest) selectedOpening selectedInside
+      (MoreTransitions foreignHead foreignRest) foreignOpening foreignSuffix
+  bothNonemptyPreIntervalClassification name key world error value first
+    selectedMiddle foreignMiddle selectedBefore selectedAfter foreignBefore
+    foreignAfter finalState selectedHead selectedRest selectedOpening
+    selectedInside foreignHead foreignRest foreignOpening foreignSuffix
+    ownerDistinct headView =
+      case headView of
+        SharedExactPreIntervalHeadWitness viewName viewKey viewWorld viewError
+          viewValue viewFirst viewMiddle viewFinal viewHead _ _ tailAlignment =>
+            prependExactPreIntervalClassification name key world error value
+              first viewMiddle selectedBefore selectedAfter foreignBefore
+              foreignAfter finalState viewHead selectedRest
+              selectedOpening selectedInside viewHead foreignRest foreignOpening
+              foreignSuffix
+              (exactPreIntervalPrefixClassifier name key world error value
+                viewMiddle selectedBefore selectedAfter foreignBefore
+                foreignAfter finalState selectedRest selectedOpening
+                selectedInside foreignRest foreignOpening foreignSuffix
+                ownerDistinct tailAlignment)
+
+||| Lifecycle-specialized erased verdict used by route B.  Both constructors
+||| retain the foreign installation evidence and the exact intervening trace.
+public export
+data ErasedFirstLifecyclePreIntervalView :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected, actor : name) ->
+  (first, selectedBefore, selectedAfter, foreignBefore, foreignAfter,
+    finalState : SystemState name key value world error) ->
+  (selectedPrefix : Transitions first selectedBefore) ->
+  (selectedOpening : BeginStep nameEq keyEq selected selectedBefore
+    selectedAfter) ->
+  (selectedInside : Transitions selectedAfter finalState) ->
+  (foreignPrefix : Transitions first foreignBefore) ->
+  (foreignOpening : BeginStep nameEq keyEq actor foreignBefore foreignAfter) ->
+  (foreignSuffix : Transitions foreignAfter finalState) -> Type where
+  ForeignOpeningInsideSelectedInterval :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {selected, actor : name} ->
+    {first, selectedBefore, selectedAfter, foreignBefore, foreignAfter,
+      finalState : SystemState name key value world error} ->
+    {selectedPrefix : Transitions first selectedBefore} ->
+    {selectedOpening : BeginStep nameEq keyEq selected selectedBefore
+      selectedAfter} ->
+    {selectedInside : Transitions selectedAfter finalState} ->
+    {foreignPrefix : Transitions first foreignBefore} ->
+    {foreignOpening : BeginStep nameEq keyEq actor foreignBefore foreignAfter} ->
+    {foreignSuffix : Transitions foreignAfter finalState} ->
+    (0 selectedToForeign : Transitions selectedAfter foreignBefore) ->
+    (0 selectedInsideExact :
+      (selectedInside = appendTransitions selectedToForeign
+        (MoreTransitions (beginTransition foreignOpening) foreignSuffix))) ->
+    (0 foreignInstalled : InstalledTrace name key world error value nameEq keyEq
+      actor foreignSuffix) ->
+    ErasedFirstLifecyclePreIntervalView name key world error value nameEq keyEq
+      selected actor first selectedBefore selectedAfter foreignBefore
+      foreignAfter finalState selectedPrefix selectedOpening selectedInside
+      foreignPrefix foreignOpening foreignSuffix
+  ForeignOpeningBeforeSelectedInterval :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {selected, actor : name} ->
+    {first, selectedBefore, selectedAfter, foreignBefore, foreignAfter,
+      finalState : SystemState name key value world error} ->
+    {selectedPrefix : Transitions first selectedBefore} ->
+    {selectedOpening : BeginStep nameEq keyEq selected selectedBefore
+      selectedAfter} ->
+    {selectedInside : Transitions selectedAfter finalState} ->
+    {foreignPrefix : Transitions first foreignBefore} ->
+    {foreignOpening : BeginStep nameEq keyEq actor foreignBefore foreignAfter} ->
+    {foreignSuffix : Transitions foreignAfter finalState} ->
+    (0 foreignToSelected : Transitions foreignAfter selectedBefore) ->
+    (0 foreignSuffixExact :
+      (foreignSuffix = appendTransitions foreignToSelected
+        (MoreTransitions (beginTransition selectedOpening) selectedInside))) ->
+    (0 foreignInstalled : InstalledTrace name key world error value nameEq keyEq
+      actor foreignSuffix) ->
+    ErasedFirstLifecyclePreIntervalView name key world error value nameEq keyEq
+      selected actor first selectedBefore selectedAfter foreignBefore
+      foreignAfter finalState selectedPrefix selectedOpening selectedInside
+      foreignPrefix foreignOpening foreignSuffix
+
+||| One generic-verdict elimination packages the foreign installed evidence.
+0 exactPreIntervalToLifecycleView :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected, actor : name) ->
+  (first, selectedBefore, selectedAfter, foreignBefore, foreignAfter,
+    finalState : SystemState name key value world error) ->
+  (selectedPrefix : Transitions first selectedBefore) ->
+  (selectedOpening : BeginStep nameEq keyEq selected selectedBefore
+    selectedAfter) ->
+  (selectedInside : Transitions selectedAfter finalState) ->
+  (foreignPrefix : Transitions first foreignBefore) ->
+  (foreignOpening : BeginStep nameEq keyEq actor foreignBefore foreignAfter) ->
+  (foreignSuffix : Transitions foreignAfter finalState) ->
+  (0 foreignInstalled : InstalledTrace name key world error value nameEq keyEq
+    actor foreignSuffix) ->
+  ExactPreIntervalPrefixClassification name key world error value first
+    selectedBefore selectedAfter foreignBefore foreignAfter finalState
+    selectedPrefix (beginTransition selectedOpening) selectedInside
+    foreignPrefix (beginTransition foreignOpening) foreignSuffix ->
+  ErasedFirstLifecyclePreIntervalView name key world error value nameEq keyEq
+    selected actor first selectedBefore selectedAfter foreignBefore foreignAfter
+    finalState selectedPrefix selectedOpening selectedInside foreignPrefix
+    foreignOpening foreignSuffix
+exactPreIntervalToLifecycleView name key world error value nameEq keyEq selected
+  actor first selectedBefore selectedAfter foreignBefore foreignAfter finalState
+  selectedPrefix selectedOpening selectedInside foreignPrefix foreignOpening
+  foreignSuffix foreignInstalled classification =
+    case classification of
+      ExactForeignOpeningInsideSelectedInterval selectedToForeign
+        selectedInsideExact =>
+          ForeignOpeningInsideSelectedInterval selectedToForeign
+            selectedInsideExact foreignInstalled
+      ExactForeignOpeningBeforeSelectedInterval foreignToSelected
+        foreignSuffixExact =>
+          ForeignOpeningBeforeSelectedInterval foreignToSelected
+            foreignSuffixExact foreignInstalled
+
+0 distinctBeginOpeningOwners :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected, actor : name) ->
+  (selectedBefore, selectedAfter, foreignBefore, foreignAfter :
+    SystemState name key value world error) ->
+  (selectedOpening : BeginStep nameEq keyEq selected selectedBefore
+    selectedAfter) ->
+  (foreignOpening : BeginStep nameEq keyEq actor foreignBefore foreignAfter) ->
+  (0 actorDistinct : Not (actor = selected)) ->
+  Not
+    (actionOwner (transitionAction (beginTransition selectedOpening)) =
+      actionOwner (transitionAction (beginTransition foreignOpening)))
+distinctBeginOpeningOwners name key world error value nameEq keyEq selected actor
+  selectedBefore selectedAfter foreignBefore foreignAfter selectedOpening
+  foreignOpening actorDistinct sameOwner = actorDistinct (sym sameOwner)
+
+||| Route-B pre-interval classifier: exact prefixes, exact suffixes, and the
+||| foreign installed segment are preserved in either positional branch.
+public export
+0 erasedFirstLifecyclePreIntervalCovering :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected, actor : name) ->
+  (0 actorDistinct : Not (actor = selected)) ->
+  (first, selectedBefore, selectedAfter, foreignBefore, foreignAfter,
+    finalState : SystemState name key value world error) ->
+  (selectedPrefix : Transitions first selectedBefore) ->
+  (selectedOpening : BeginStep nameEq keyEq selected selectedBefore
+    selectedAfter) ->
+  (selectedInside : Transitions selectedAfter finalState) ->
+  (foreignPrefix : Transitions first foreignBefore) ->
+  (foreignOpening : BeginStep nameEq keyEq actor foreignBefore foreignAfter) ->
+  (foreignSuffix : Transitions foreignAfter finalState) ->
+  (0 foreignInstalled : InstalledTrace name key world error value nameEq keyEq
+    actor foreignSuffix) ->
+  (0 alignment :
+    (appendTransitions selectedPrefix
+      (MoreTransitions (beginTransition selectedOpening) selectedInside) =
+     appendTransitions foreignPrefix
+      (MoreTransitions (beginTransition foreignOpening) foreignSuffix))) ->
+  ErasedFirstLifecyclePreIntervalView name key world error value nameEq keyEq
+    selected actor first selectedBefore selectedAfter foreignBefore foreignAfter
+    finalState selectedPrefix selectedOpening selectedInside foreignPrefix
+    foreignOpening foreignSuffix
+erasedFirstLifecyclePreIntervalCovering name key world error value nameEq keyEq
+  selected actor actorDistinct first selectedBefore selectedAfter foreignBefore
+  foreignAfter finalState selectedPrefix selectedOpening selectedInside
+  foreignPrefix foreignOpening foreignSuffix foreignInstalled alignment =
+    exactPreIntervalToLifecycleView name key world error value nameEq keyEq
+      selected actor first selectedBefore selectedAfter foreignBefore
+      foreignAfter finalState selectedPrefix selectedOpening selectedInside
+      foreignPrefix foreignOpening foreignSuffix foreignInstalled
+      (exactPreIntervalPrefixClassifier name key world error value first
+        selectedBefore selectedAfter foreignBefore foreignAfter finalState
+        selectedPrefix (beginTransition selectedOpening) selectedInside
+        foreignPrefix (beginTransition foreignOpening) foreignSuffix
+        (distinctBeginOpeningOwners name key world error value nameEq keyEq
+          selected actor selectedBefore selectedAfter foreignBefore foreignAfter
+          selectedOpening foreignOpening actorDistinct)
+        alignment)
+
 ||| Canonized erased view for one O7 occurrence.  The actor and located episode
 ||| remain exactly quantified as before, but neither can escape into runtime code
 ||| after eliminating the view.
