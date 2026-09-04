@@ -2576,6 +2576,34 @@ registrationDisciplineAppendRight protocol nameEq
 registrationDisciplineHead protocol nameEq _ _
   (RegistrationDisciplineStep transition rest step tail) = step
 
+0 registrationDisciplineAtGenerated :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (child, parent : name) ->
+  (component : Component key value world error) ->
+  (occurrence : LocatedGeneratedRegistration child parent component global) ->
+  RegistrationDiscipline protocol nameEq global ->
+  RegistrationStepDiscipline protocol nameEq
+    (OInsert child (ChildOf parent) component)
+    (registrationBefore occurrence) (afterRegistration occurrence)
+registrationDisciplineAtGenerated protocol nameEq global child parent component
+  occurrence discipline =
+    replace
+      {p = \action => RegistrationStepDiscipline protocol nameEq action
+        (registrationBefore occurrence) (afterRegistration occurrence)}
+      (registrationAction occurrence)
+      (registrationDisciplineHead protocol nameEq
+        (registrationTransition occurrence) (afterRegistration occurrence)
+        (registrationDisciplineAppendRight protocol nameEq
+          (beforeRegistration occurrence)
+          (MoreTransitions (registrationTransition occurrence)
+            (afterRegistration occurrence))
+          (replace {p = RegistrationDiscipline protocol nameEq}
+            (sym (registrationDecomposition occurrence)) discipline)))
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
