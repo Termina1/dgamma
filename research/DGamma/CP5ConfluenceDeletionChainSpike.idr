@@ -1920,6 +1920,34 @@ parentOpenRetireSpike nameEq keyEq selected
           (MkSystemState ambient fibers) afterState tag checked)))
       (parentOpenRetireSourceView nameEq selected ambient fibers opened)
 
+0 parentOpenAdvanceStructureSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance selected)
+    before = Just (tag, afterState)) ->
+  (0 noRecovery : ParentRecoveryStep selected
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq (LAdvance selected) tag checked) -> Void) ->
+  AdvanceStructure name key world error value nameEq keyEq selected tag before
+    afterState ->
+  ParentOpenAt nameEq selected afterState
+parentOpenAdvanceStructureSpike nameEq keyEq selected _ before afterState
+  checked noRecovery (IterAdvance fiber found witness reloading) =
+    parentOpenFromEquationView
+      (reloadingEndpointEquationView nameEq selected afterState reloading)
+parentOpenAdvanceStructureSpike nameEq keyEq selected _ before afterState
+  checked noRecovery (FinishAdvance fiber found witness active) =
+    parentOpenFromEquationView
+      (activeEndpointEquationView nameEq selected afterState active)
+parentOpenAdvanceStructureSpike nameEq keyEq selected _ before afterState
+  checked noRecovery (DivertAdvance unloading) =
+    void (noRecovery (ParentDivertsAfter Refl Refl))
+parentOpenAdvanceStructureSpike nameEq keyEq selected _ before afterState
+  checked noRecovery (RaiseAdvance unloading) =
+    void (noRecovery (ParentRaises Refl Refl))
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
