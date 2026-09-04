@@ -28,7 +28,7 @@ import Decidable.Equality
     keyEq (reducedTrace reduction) ordering) ->
   (supportTransport : CanonicalSupportTransport name key world error value
     nameEq keyEq originalFinal (reducedFinal reduction)
-      (cumulativeEndpoint reduction)) ->
+      (cumulativeEndpoint reduction) (orderedSupportNames ordering)) ->
   (accounting : OneTraceOrchestrationAccounting name key world error value
     protocol nameEq keyEq original reduction ordering sorted) ->
   ((generation : RegistrationGeneration name) ->

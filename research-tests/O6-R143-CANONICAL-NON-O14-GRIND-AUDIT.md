@@ -47,6 +47,24 @@ would additionally construct its two operational traces and
 open, but neither the result record nor the current O15 capital contains an
 invariant that rejects the static shape.
 
+## Authorized O15 surface correction
+
+The supervisor authorized revision (A) after reviewing the checked necessity
+witness `r143CanonicalSupportTransportRefuted`. The clause mapping is:
+
+| Old O15 bridge surface | Corrected surface |
+|---|---|
+| `CanonicalSupportTransport ... endpoint` | `CanonicalSupportTransport ... endpoint order`, indexed by the one chosen order |
+| `linearizationToOriginal : (order : List name) -> LinearizesSupport reducedFinal order -> LinearizesSupport originalFinal order` | `originalSupportLinearization : LinearizesSupport originalFinal order`, an explicit required/produced witness for the chosen order |
+| `inputPlacementToOriginal : (order : List name) -> ...` | `inputPlacementToOriginal : ...` at the record-indexed chosen order |
+| O15 producer independent of ordering evidence | O15 producer takes the chosen `order` and its original-endpoint `LinearizesSupport` witness |
+| downstream consumers apply a universal transfer to the reduced ordering | downstream capital is indexed by `orderedSupportNames ordering` and projects the stored original witness |
+
+`supportTruthPreserved` is unchanged. The refuted universal clause is frozen in
+the R6 fixture as `R143UniversalCanonicalSupportTransport`, and
+`r143CanonicalSupportTransportRefuted` remains the permanent proof that it is
+uninhabitable for the accepted countershape.
+
 ## Attempt accounting
 
 - `canonicalRetiredFiberUnsupported`: 1/3, passed.

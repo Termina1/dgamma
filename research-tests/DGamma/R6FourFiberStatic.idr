@@ -493,17 +493,31 @@ inverseMappedRightOrderCannotLinearizeLeft linearization =
       supportedEndpointsPathThroughVestigial
       (There (There Here)) (There Here))
 
-||| Concrete R143 refutation of O15's current output surface: the accepted
-||| endpoint admits a valid reduced linearization which cannot linearize the
-||| original path through the retired, withdrawn `Middle` actor.
+||| Frozen copy of the universal linearization clause removed from the O15
+||| surface.  Keeping it in the fixture makes the necessity witness independent
+||| of the corrected production record.
+record R143UniversalCanonicalSupportTransport
+  (originalFinal, reducedFinal : SystemState N K V Unit String)
+  (endpoint : CanonicalEndpointRelation N K Unit String V
+    (the (DecEq N) %search) (the (DecEq K) %search)
+    originalFinal reducedFinal) where
+  constructor MkR143UniversalCanonicalSupportTransport
+  r143UniversalLinearizationToOriginal : (order : List N) ->
+    LinearizesSupport N K Unit String V (the (DecEq N) %search)
+      (the (DecEq K) %search) reducedFinal order ->
+    LinearizesSupport N K Unit String V (the (DecEq N) %search)
+      (the (DecEq K) %search) originalFinal order
+
+||| Concrete R143 refutation of O15's old output surface: the accepted endpoint
+||| admits a valid reduced linearization which cannot linearize the original path
+||| through the retired, withdrawn `Middle` actor.
 0 r143CanonicalSupportTransportRefuted :
-  CanonicalSupportTransport N K Unit String V (the (DecEq N) %search)
-    (the (DecEq K) %search) DGamma.R6FourFiberStatic.leftState
-    DGamma.R6FourFiberStatic.rightState
+  R143UniversalCanonicalSupportTransport
+    DGamma.R6FourFiberStatic.leftState DGamma.R6FourFiberStatic.rightState
     DGamma.R6FourFiberStatic.acceptedCanonicalEndpointAllowsIntermediate -> Void
 r143CanonicalSupportTransportRefuted transport =
   inverseMappedRightOrderCannotLinearizeLeft
-    (linearizationToOriginal transport [Alternate, Upper, Lower]
+    (r143UniversalLinearizationToOriginal transport [Alternate, Upper, Lower]
       r143RightLinearization)
 
 0 lowerNotAlternate : Not (Lower = Alternate)

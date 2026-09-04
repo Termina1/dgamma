@@ -74,27 +74,27 @@ record SupportOrderingCapital
   orderedSupportLinearization : LinearizesSupport name key world error value
     nameEq keyEq state orderedSupportNames
 
-||| Minimal original-endpoint/reduced-endpoint bridge.  It deliberately does
-||| not transport arbitrary `SupportPath`s: accepted endpoint withdrawal permits
-||| an unsupported retired child to be present originally and absent after
-||| reduction, and such a child can still terminate a raw parent path.  Consumers
-||| receive only support-set equality and the two complete schedule facts they
-||| actually need.
+||| Original-endpoint/reduced-endpoint bridge specialized to the one support
+||| order chosen by canonicalization.  Endpoint withdrawal can erase a path
+||| through an unsupported intermediate, so a reduced linearization does not in
+||| general linearize the original endpoint.  The corrected bridge therefore
+||| requires and retains the original-order witness instead of claiming a
+||| universal transfer theorem.
 public export
 record CanonicalSupportTransport
   (name, key, world, error : Type) (value : key -> Type)
   (nameEq : DecEq name) (keyEq : DecEq key)
   (originalFinal, reducedFinal : SystemState name key value world error)
   (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
-    originalFinal reducedFinal) where
+    originalFinal reducedFinal)
+  (order : List name) where
   constructor MkCanonicalSupportTransport
   0 supportTruthPreserved : (n : name) ->
     isSupported @{nameEq} @{keyEq} n originalFinal =
       isSupported @{nameEq} @{keyEq} n reducedFinal
-  linearizationToOriginal : (order : List name) ->
-    LinearizesSupport name key world error value nameEq keyEq reducedFinal order ->
+  originalSupportLinearization :
     LinearizesSupport name key world error value nameEq keyEq originalFinal order
-  inputPlacementToOriginal : (order : List name) ->
+  inputPlacementToOriginal :
     {initial, canonicalFinal : SystemState name key value world error} ->
     (canonical : Transitions initial canonicalFinal) ->
     CanonicalInputPlacement name key world error value nameEq keyEq reducedFinal
@@ -1063,8 +1063,10 @@ public export
     originalFinal reducedFinal) ->
   CanonicalRegistrationCorrespondence original reduced
     (endpointWithdrawnGenerations endpoint) ->
+  (order : List name) ->
+  LinearizesSupport name key world error value nameEq keyEq originalFinal order ->
   CanonicalSupportTransport name key world error value nameEq keyEq originalFinal
-    reducedFinal endpoint
+    reducedFinal endpoint order
 canonicalSupportTransportSpike = ?canonicalSupportTransportSpike_rhs
 
 ||| Research-only authenticity companion for the immutable CP3 registration
@@ -1380,7 +1382,7 @@ public export
     keyEq (reducedTrace reduction) ordering) ->
   (supportTransport : CanonicalSupportTransport name key world error value
     nameEq keyEq originalFinal (reducedFinal reduction)
-      (cumulativeEndpoint reduction)) ->
+      (cumulativeEndpoint reduction) (orderedSupportNames ordering)) ->
   (accounting : OneTraceOrchestrationAccounting name key world error value
     protocol nameEq keyEq original reduction ordering sorted) ->
   CanonicalSchedule name key world error value protocol nameEq keyEq original
@@ -1393,12 +1395,11 @@ producerCanonicalSchedule premises reduction ordering sorted supportTransport
       (replayDiscipline (chainReplayCapital premises))
       (replayDiscipline (sortedPremises sorted))
       (orderedSupportNames ordering)
-      (linearizationToOriginal supportTransport (orderedSupportNames ordering)
-        (orderedSupportLinearization ordering))
+      (originalSupportLinearization supportTransport)
       (sortedBlock sorted)
       (sortedBlocksFollowOrder sorted)
       (sortedLifecycleCoverage sorted)
-      (inputPlacementToOriginal supportTransport (orderedSupportNames ordering)
+      (inputPlacementToOriginal supportTransport
         (sortedTrace sorted) (sortedInputPlacement sorted))
       (accountedEndpoint accounting)
       (accountedGeneratedRegistrations accounting)
@@ -1426,6 +1427,7 @@ record IndependentCanonicalSchedule
   capitalSupportTransport : CanonicalSupportTransport name key world error value
     nameEq keyEq originalFinal (reducedFinal capitalReduction)
       (cumulativeEndpoint capitalReduction)
+      (orderedSupportNames capitalOrdering)
   capitalAccounting : OneTraceOrchestrationAccounting name key world error value
     protocol nameEq keyEq original capitalReduction capitalOrdering capitalSorted
   capitalCanonicalSchedule : CanonicalSchedule name key world error value protocol
@@ -1548,7 +1550,7 @@ public export
     keyEq (reducedTrace reduction) ordering) ->
   (supportTransport : CanonicalSupportTransport name key world error value
     nameEq keyEq originalFinal (reducedFinal reduction)
-      (cumulativeEndpoint reduction)) ->
+      (cumulativeEndpoint reduction) (orderedSupportNames ordering)) ->
   (accounting : OneTraceOrchestrationAccounting name key world error value
     protocol nameEq keyEq original reduction ordering sorted) ->
   ((generation : RegistrationGeneration name) ->
@@ -1583,7 +1585,8 @@ public export
   (sorted : SortedClosingFreeTrace name key world error value protocol nameEq
     keyEq (reducedTrace reduction) ordering) ->
   CanonicalSupportTransport name key world error value nameEq keyEq originalFinal
-    (reducedFinal reduction) (cumulativeEndpoint reduction) ->
+    (reducedFinal reduction) (cumulativeEndpoint reduction)
+      (orderedSupportNames ordering) ->
   OneTraceOrchestrationAccounting name key world error value protocol nameEq keyEq
     original reduction ordering sorted ->
   IndependentCanonicalSchedule name key world error value protocol nameEq keyEq

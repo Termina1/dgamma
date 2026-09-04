@@ -2965,5 +2965,17 @@ while the accepted original endpoint still has `Lower -> Middle -> Upper`.
 The fixture is fully checked and committed before any surface request. The
 remaining question is whether the O15 producer's trace/tree premises exclude
 this exact static endpoint shape; no such exclusion is present in the output
-record or prior capital. O15 remains at 0/3 body attempts and the hole census is
-unchanged pending a supervisor surface/dependency ruling.
+record or prior capital. The supervisor authorized the scoped correction: `CanonicalSupportTransport`
+is now indexed by the one chosen order and retains an explicit
+`LinearizesSupport` witness for that order at the original endpoint; it no
+longer claims that every reduced linearization transfers. O15 receives that
+original witness as a premise and must prove the remaining endpoint/placement
+bridge. The frozen old clause and `r143CanonicalSupportTransportRefuted` remain
+as the permanent necessity witness. O15 receives a fresh 3-attempt body budget
+after positive R6 ratification and downstream typechecking.
+
+**Paper-facing flag for Theorem 73:** the canonical-form argument must quantify
+one support order that is certified against both reduced and original support.
+It cannot state, or rely on, universal transfer of arbitrary reduced-endpoint
+linearizations across deletion; a withdrawn unsupported intermediate can erase
+a surviving-endpoint path.
