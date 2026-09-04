@@ -2954,3 +2954,16 @@ dependency graph; O14 remains parked.**
 
 R143 starts from the checked 16-hole boundary and will process only the four
 non-O14 CanonicalSort obligations, serially in producer dependency order.
+
+O15 then reached a concrete semantic stop before any hole-body attempt.
+`R6FourFiberStatic` now constructs a genuine reduced-endpoint
+`LinearizesSupport` with order `[Alternate, Upper, Lower]`: withdrawal of the
+retired unsupported `Middle` erases the only reduced `Lower -> Upper` path,
+while the accepted original endpoint still has `Lower -> Middle -> Upper`.
+`r143CanonicalSupportTransportRefuted` proves that the current
+`CanonicalSupportTransport` output for that accepted endpoint implies `Void`.
+The fixture is fully checked and committed before any surface request. The
+remaining question is whether the O15 producer's trace/tree premises exclude
+this exact static endpoint shape; no such exclusion is present in the output
+record or prior capital. O15 remains at 0/3 body attempts and the hole census is
+unchanged pending a supervisor surface/dependency ruling.
