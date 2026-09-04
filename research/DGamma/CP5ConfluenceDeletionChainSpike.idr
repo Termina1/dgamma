@@ -1343,6 +1343,76 @@ advanceSurvivingRegistrationIndexDeletedExact nameEq ordinal child parent
       component live activations counts deleted
       (lookupParentActivation @{nameEq} parent activations) Refl
 
+||| Once an exact generation is in the left scanner's deleted index, every
+||| accepted continuation preserves that membership through all seven scanner
+||| constructor classes.
+0 leftCorrespondencePreservesDeleted :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {renaming : RegistrationGenerationBijection name} ->
+  {leftOrdinal : Nat} -> {leftIndex : RegistrationIndexState name} ->
+  {leftFirst, leftFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} ->
+  {leftFinalIndex : RegistrationIndexState name} ->
+  {rightOrdinal : Nat} -> {rightIndex : RegistrationIndexState name} ->
+  {rightFirst, rightFinal : SystemState name key value world error} ->
+  {right : Transitions rightFirst rightFinal} ->
+  {rightFinalIndex : RegistrationIndexState name} ->
+  {pendingLeft, pendingRight :
+    List (RegistrationEvent name key world error value)} ->
+  (correspondence : RegistrationTraceCorrespondence nameEq renaming leftOrdinal
+    leftIndex left leftFinalIndex rightOrdinal rightIndex right rightFinalIndex
+    pendingLeft pendingRight) ->
+  (generation : RegistrationGeneration name) ->
+  Elem generation (indexedDeletedGenerations leftIndex) ->
+  Elem generation (indexedDeletedGenerations leftFinalIndex)
+leftCorrespondencePreservesDeleted nameEq RegistrationCorrespondenceEnd
+  generation member = member
+leftCorrespondencePreservesDeleted nameEq
+  (SkipLeftNonRegistration action transition leftRest sameAction generated
+    rest) generation member =
+      leftCorrespondencePreservesDeleted nameEq rest generation
+        (replace {p = \deleted => Elem generation deleted}
+          (sym (advanceRegistrationIndexDeletedExact nameEq _ action _)) member)
+leftCorrespondencePreservesDeleted nameEq
+  (SkipRightNonRegistration action transition rightRest sameAction generated
+    rest) generation member =
+      leftCorrespondencePreservesDeleted nameEq rest generation member
+leftCorrespondencePreservesDeleted nameEq
+  (DiscardLeftDeletedRegistration {child} {parent} {component} transition
+    leftRest sameAction deleted rest) generation member =
+      leftCorrespondencePreservesDeleted nameEq rest generation
+        (replace {p = \items => Elem generation items}
+          (sym (advanceDeletedRegistrationIndexHead nameEq _ child parent
+            component _)) (There member))
+leftCorrespondencePreservesDeleted nameEq
+  (DiscardRightDeletedRegistration transition rightRest sameAction deleted rest)
+  generation member =
+    leftCorrespondencePreservesDeleted nameEq rest generation member
+leftCorrespondencePreservesDeleted nameEq
+  (QueueLeftGeneratedRegistration {child} {parent} {component} transition
+    leftRest sameAction surviving rest) generation member =
+      leftCorrespondencePreservesDeleted nameEq rest generation
+        (replace {p = \deleted => Elem generation deleted}
+          (sym (advanceSurvivingRegistrationIndexDeletedExact nameEq _ child
+            parent component _)) member)
+leftCorrespondencePreservesDeleted nameEq
+  (QueueRightGeneratedRegistration transition rightRest sameAction surviving
+    rest) generation member =
+      leftCorrespondencePreservesDeleted nameEq rest generation member
+leftCorrespondencePreservesDeleted nameEq
+  (MatchLeftWithPendingRight {child} {parent} {component} transition leftRest
+    sameAction surviving rightPrefix rightEvent rightSuffix matched rest)
+  generation member =
+    leftCorrespondencePreservesDeleted nameEq rest generation
+      (replace {p = \deleted => Elem generation deleted}
+        (sym (advanceSurvivingRegistrationIndexDeletedExact nameEq _ child
+          parent component _)) member)
+leftCorrespondencePreservesDeleted nameEq
+  (MatchRightWithPendingLeft transition rightRest sameAction surviving leftPrefix
+    leftEvent leftSuffix matched rest) generation member =
+      leftCorrespondencePreservesDeleted nameEq rest generation member
+
 ||| Exact left-scanner induction boundary.  At the located birth the accepted
 ||| correspondence cannot take a surviving/queued/matched branch: each such
 ||| branch contains `NoParentUnload`, contradicted by
