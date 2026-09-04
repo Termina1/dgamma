@@ -2170,6 +2170,22 @@ unloadActionOpenNothingSpike nameEq keyEq selected ambient fibers
   (MkFiber component parent retiredFlag table
     (Unloading accumulator dependencyView outcome)) found OpenActive impossible
 
+0 unloadOpenAtImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  UnloadStep nameEq keyEq selected before afterState ->
+  ParentOpenAt nameEq selected before -> Void
+unloadOpenAtImpossible nameEq keyEq selected (MkSystemState ambient fibers)
+  afterState closing opened =
+    nothingIsNotJust (trans
+      (sym (unloadActionOpenNothingSpike nameEq keyEq selected ambient fibers
+        (openParentFiber opened) (openParentFound opened)
+        (openParentLifecycle opened)))
+      (checkedActionProjects nameEq keyEq (LUnload selected)
+        (MkSystemState ambient fibers) afterState LUnloadTag
+        (unloadEquation closing)))
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
