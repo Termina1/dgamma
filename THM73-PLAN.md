@@ -3028,3 +3028,16 @@ block ranges.  No countershape or surface defect was found; all failed bodies
 were removed.  O17 remains open and is audit-stopped for R144.  The census stays
 **13**, split **2/4/6/0/1**.  Exact attempt and validation evidence is in
 `research-tests/O6-R144-O17-SORT-BASE-BUDGET-STOP-AUDIT.md`.
+
+The first CrossTrace hole was then probe-stopped before any body attempt.
+`AdjacentActorSwapSafety` does not rule out a provider block immediately before
+a dependent consumer block, while the A/A diamond needed to transpose their
+openings requires an actual checked early consumer transition.  A disposable
+public `CalculusChecks` provider/consumer fixture reduced the early consumer
+`LBegin` to `Nothing` and the source provider finish raw step to success, but
+its 3/3 fixture budget stopped at exact well-formedness/target-resolution
+packaging before the full theorem telescope was refuted.  The fixture was fully
+removed; no surface revision is requested.  The operational O19 body remains at
+0/3 and may resume only after a producer-owned full checked countershape or an
+exclusion theorem.  Exact diagnostics are in
+`research-tests/O6-R144-CROSSTRACE-O19-DEPENDENCY-PROBE-STOP-AUDIT.md`.
