@@ -631,6 +631,55 @@ r143KANotKB Refl impossible
 0 r143KBNotKA : Not (KB = KA)
 r143KBNotKA same = r143KANotKB (sym same)
 
+||| The complete Equation-62 edge shape at the original endpoint.
+data R143LeftEdgeShape : N -> N -> Type where
+  R143LeftLowerMiddle : R143LeftEdgeShape Lower Middle
+  R143LeftMiddleUpper : R143LeftEdgeShape Middle Upper
+  R143LeftAlternateUpper : R143LeftEdgeShape Alternate Upper
+
+0 r143LeftEdgeShape :
+  {lower, upper : N} ->
+  SupportEdge (the (DecEq N) %search) DGamma.R6FourFiberStatic.leftState
+    lower upper ->
+  R143LeftEdgeShape lower upper
+r143LeftEdgeShape (SupportParent edge) = void (r143NoLeftParentEdge edge)
+r143LeftEdgeShape {lower = Upper} (SupportPrecedence edge) =
+  void (r143LeftUpperProvidesNothing (providerFound edge) (edgeKey edge)
+    (providerDeclares edge))
+r143LeftEdgeShape {upper = Lower} (SupportPrecedence edge) =
+  void (r143LeftLowerDependsOnNothing (consumerFound edge) (edgeKey edge)
+    (consumerDeclares edge))
+r143LeftEdgeShape {upper = Alternate} (SupportPrecedence edge) =
+  void (r143LeftAlternateDependsOnNothing (consumerFound edge) (edgeKey edge)
+    (consumerDeclares edge))
+r143LeftEdgeShape {lower = Lower} {upper = Middle}
+  (SupportPrecedence edge) = R143LeftLowerMiddle
+r143LeftEdgeShape {lower = Lower} {upper = Upper}
+  (SupportPrecedence edge) =
+    void (r143KANotKB
+      (trans (sym (r143LeftLowerProvidesKA (providerFound edge)
+        (providerDeclares edge)))
+        (r143LeftUpperDependsKB (consumerFound edge)
+          (consumerDeclares edge))))
+r143LeftEdgeShape {lower = Middle} {upper = Middle}
+  (SupportPrecedence edge) =
+    void (r143KBNotKA
+      (trans (sym (r143LeftMiddleProvidesKB (providerFound edge)
+        (providerDeclares edge)))
+        (r143LeftMiddleDependsKA (consumerFound edge)
+          (consumerDeclares edge))))
+r143LeftEdgeShape {lower = Middle} {upper = Upper}
+  (SupportPrecedence edge) = R143LeftMiddleUpper
+r143LeftEdgeShape {lower = Alternate} {upper = Middle}
+  (SupportPrecedence edge) =
+    void (r143KBNotKA
+      (trans (sym (r143LeftAlternateProvidesKB (providerFound edge)
+        (providerDeclares edge)))
+        (r143LeftMiddleDependsKA (consumerFound edge)
+          (consumerDeclares edge))))
+r143LeftEdgeShape {lower = Alternate} {upper = Upper}
+  (SupportPrecedence edge) = R143LeftAlternateUpper
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
