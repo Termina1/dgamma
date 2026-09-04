@@ -1618,9 +1618,7 @@ parentOpenFromEquationView
   (0 lifecycleTrue :
     (case fiberLifecycle fiber of
       Reloading remaining accumulator dependencyView => True
-      Inactive outcome => False
-      Active accumulator dependencyView => False
-      Unloading accumulator dependencyView outcome => False) = True) ->
+      _ => False) = True) ->
   (0 endpoint : reloadingEndpoint @{nameEq} selected state = True) ->
   ParentOpenEquationView name key world error value nameEq selected state
 reloadingLifecycleEquationView nameEq selected state
@@ -1642,6 +1640,19 @@ reloadingLifecycleEquationView nameEq selected state
   (MkFiber component parent retiredFlag table
     (Unloading accumulator dependencyView outcome)) found lifecycleTrue endpoint =
       void (falseNotTrueO7 lifecycleTrue)
+
+0 reloadingEndpointEquationView :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  (0 endpoint : reloadingEndpoint @{nameEq} selected state = True) ->
+  ParentOpenEquationView name key world error value nameEq selected state
+reloadingEndpointEquationView nameEq selected state endpoint =
+  case parentEndpointLookupEquation nameEq selected state of
+    ParentEndpointLookupMissing missing missingReloading missingActive =>
+      void (falseNotTrueO7 (trans (sym missingReloading) endpoint))
+    ParentEndpointLookupFound fiber found foundReloading foundActive =>
+      reloadingLifecycleEquationView nameEq selected state fiber found
+        (trans (sym foundReloading) endpoint) endpoint
 
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
