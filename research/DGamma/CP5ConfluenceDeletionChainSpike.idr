@@ -3381,6 +3381,91 @@ locatedActionImpossibleInEmpty
         (replace {p = \observed => OccursIn transition observed}
           decomposition (occurrenceAfterPrefixSpike earlier transition later))
 
+mutual
+  0 closingAfterLocatedInSnoc :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, beforeClosing, finalState :
+      SystemState name key value world error} ->
+    (locatedAction, closingAction : Action name key value world error) ->
+    (leading : Transitions first beforeClosing) ->
+    (closingTransition : Transition beforeClosing finalState) ->
+    (0 closingShape : transitionAction closingTransition = closingAction) ->
+    (0 distinct : locatedAction = closingAction -> Void) ->
+    (occurrence : LocatedActionOccurrence locatedAction
+      (appendTransitions leading
+        (MoreTransitions closingTransition NoTransitions))) ->
+    ActionOccurs closingAction (afterActionOccurrence occurrence)
+  closingAfterLocatedInSnoc locatedAction closingAction NoTransitions
+    closingTransition closingShape distinct occurrence =
+      closingAfterLocatedSingletonView locatedAction closingAction
+        closingTransition closingShape distinct occurrence
+        (locatedActionHeadExactView locatedAction closingTransition NoTransitions
+          occurrence)
+  closingAfterLocatedInSnoc locatedAction closingAction
+    (MoreTransitions leadingHead leadingRest) closingTransition closingShape
+    distinct occurrence =
+      closingAfterLocatedLeadingView locatedAction closingAction leadingHead
+        leadingRest closingTransition closingShape distinct occurrence
+        (locatedActionHeadExactView locatedAction leadingHead
+          (appendTransitions leadingRest
+            (MoreTransitions closingTransition NoTransitions)) occurrence)
+
+  0 closingAfterLocatedSingletonView :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, finalState : SystemState name key value world error} ->
+    (locatedAction, closingAction : Action name key value world error) ->
+    (closingTransition : Transition first finalState) ->
+    (0 closingShape : transitionAction closingTransition = closingAction) ->
+    (0 distinct : locatedAction = closingAction -> Void) ->
+    (occurrence : LocatedActionOccurrence locatedAction
+      (MoreTransitions closingTransition NoTransitions)) ->
+    LocatedActionHeadExactView locatedAction closingTransition NoTransitions
+      occurrence ->
+    ActionOccurs closingAction (afterActionOccurrence occurrence)
+  closingAfterLocatedSingletonView locatedAction closingAction closingTransition
+    closingShape distinct occurrence
+    (ExactLocatedActionAtHead actionShape exactAfterState exactAfter) =
+      void (distinct (trans (sym actionShape) closingShape))
+  closingAfterLocatedSingletonView locatedAction closingAction closingTransition
+    closingShape distinct occurrence
+    (ExactLocatedActionInTail tailOccurrence exactAfterState exactAfter) =
+      void (locatedActionImpossibleInEmpty tailOccurrence)
+
+  0 closingAfterLocatedLeadingView :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, middle, beforeClosing, finalState :
+      SystemState name key value world error} ->
+    (locatedAction, closingAction : Action name key value world error) ->
+    (leadingHead : Transition first middle) ->
+    (leadingRest : Transitions middle beforeClosing) ->
+    (closingTransition : Transition beforeClosing finalState) ->
+    (0 closingShape : transitionAction closingTransition = closingAction) ->
+    (0 distinct : locatedAction = closingAction -> Void) ->
+    (occurrence : LocatedActionOccurrence locatedAction
+      (MoreTransitions leadingHead
+        (appendTransitions leadingRest
+          (MoreTransitions closingTransition NoTransitions)))) ->
+    LocatedActionHeadExactView locatedAction leadingHead
+      (appendTransitions leadingRest
+        (MoreTransitions closingTransition NoTransitions)) occurrence ->
+    ActionOccurs closingAction (afterActionOccurrence occurrence)
+  closingAfterLocatedLeadingView locatedAction closingAction leadingHead
+    leadingRest closingTransition closingShape distinct occurrence
+    (ExactLocatedActionAtHead actionShape exactAfterState exactAfter) =
+      actionOccursAfterExact closingAction occurrence
+        (appendTransitions leadingRest
+          (MoreTransitions closingTransition NoTransitions))
+        exactAfterState exactAfter
+        (actionOccursAtSingletonAppend closingAction leadingRest
+          closingTransition closingShape)
+  closingAfterLocatedLeadingView locatedAction closingAction leadingHead
+    leadingRest closingTransition closingShape distinct occurrence
+    (ExactLocatedActionInTail tailOccurrence exactAfterState exactAfter) =
+      actionOccursAfterExact closingAction occurrence
+        (afterActionOccurrence tailOccurrence) exactAfterState exactAfter
+        (closingAfterLocatedInSnoc locatedAction closingAction leadingRest
+          closingTransition closingShape distinct tailOccurrence)
+
 0 locatedActionHeadView :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
