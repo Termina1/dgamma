@@ -1241,7 +1241,13 @@ public export
   LinearizesSupport name key world error value nameEq keyEq originalFinal order ->
   CanonicalSupportTransport name key world error value nameEq keyEq originalFinal
     reducedFinal endpoint order
-canonicalSupportTransportSpike = ?canonicalSupportTransportSpike_rhs
+canonicalSupportTransportSpike nameEq keyEq original reduced endpoint tree order
+  reducedLinearization originalLinearization =
+    MkCanonicalSupportTransport
+      (canonicalSharedOrderSupportSame originalLinearization
+        reducedLinearization)
+      originalLinearization
+      (canonicalInputPlacementToOriginal endpoint originalLinearization)
 
 ||| Research-only authenticity companion for the immutable CP3 registration
 ||| tree.  It states exact occurrence equality, not merely equal birth ordinals:
