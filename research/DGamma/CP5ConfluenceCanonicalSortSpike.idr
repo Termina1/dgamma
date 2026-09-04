@@ -865,6 +865,19 @@ canonicalWithdrawnReducedUnsupported nameEq keyEq selected originalFinal
     canonicalAbsentFiberUnsupported nameEq keyEq selected reducedFinal
       reducedAbsent
 
+||| A support truth excludes membership in any list whose members are known
+||| unsupported at that same endpoint.
+0 canonicalSupportedNotElem :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {state : SystemState name key value world error} -> {withdrawn : List name} ->
+  ((member : Elem selected withdrawn) ->
+    isSupported @{nameEq} @{keyEq} selected state = False) ->
+  isSupported @{nameEq} @{keyEq} selected state = True ->
+  Not (Elem selected withdrawn)
+canonicalSupportedNotElem unsupported supported member =
+  canonicalFalseNotTrue (trans (sym (unsupported member)) supported)
+
 ||| Prove all support/parent/input-placement transport from the cumulative
 ||| endpoint relation and exact generated-registration accounting.
 public export
