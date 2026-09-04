@@ -817,6 +817,26 @@ r143OriginalSharedLinearization = MkLinearizesSupport r143SharedOrderUnique
   r143LeftSharedOrderSound r143LeftSharedOrderComplete
   r143LeftSharedPathsOrdered
 
+0 r143RightSharedOrderSound :
+  (selected : N) -> Elem selected [Lower, Alternate, Upper] ->
+  isSupported @{the (DecEq N) %search} @{the (DecEq K) %search} selected
+    DGamma.R6FourFiberStatic.rightState = True
+r143RightSharedOrderSound Lower member = lowerSupportedRight
+r143RightSharedOrderSound Middle member =
+  void (r143MiddleNotInSharedOrder member)
+r143RightSharedOrderSound Alternate member = Refl
+r143RightSharedOrderSound Upper member = upperSupportedRight
+
+0 r143RightSharedOrderComplete :
+  (selected : N) ->
+  isSupported @{the (DecEq N) %search} @{the (DecEq K) %search} selected
+    DGamma.R6FourFiberStatic.rightState = True ->
+  Elem selected [Lower, Alternate, Upper]
+r143RightSharedOrderComplete Lower supported = Here
+r143RightSharedOrderComplete Middle supported = case supported of Refl impossible
+r143RightSharedOrderComplete Alternate supported = There Here
+r143RightSharedOrderComplete Upper supported = There (There Here)
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
