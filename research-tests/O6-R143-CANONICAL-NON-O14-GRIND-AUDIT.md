@@ -65,6 +65,34 @@ the R6 fixture as `R143UniversalCanonicalSupportTransport`, and
 `r143CanonicalSupportTransportRefuted` remains the permanent proof that it is
 uninhabitable for the accepted countershape.
 
+## Authorized O16 surface correction
+
+The supervisor authorized the standard premise-strengthening repair after the
+stored/fold correlation gap was isolated. `ClosingFreeReduction` stores a
+`cumulativeRegistrationAccounting` map and `SortedClosingFreeTrace` stores a
+`sortedRegistrationTree`, but neither stored map is equated to the exact
+`reductionOccurrenceCorrespondence` / `sortingOccurrenceCorrespondence` folds.
+Consequently they cannot construct the result's
+`AuthenticatedCanonicalRegistrationMap`, whose origin equality is exact.
+
+The checked `assembleOneTraceAccountingFromReplay` theorem is the minimal shape
+witness. The O16 mapping is:
+
+| Old O16 producer | Corrected producer |
+|---|---|
+| reduction + ordering + sorted only | the same three values plus a composed original-to-sorted endpoint |
+| no endpoint correlation | exact equality of that endpoint's withdrawn generations with the cumulative reduction endpoint |
+| arbitrary stored registration maps implicitly expected to authenticate | `CanonicalReplayAccountingLaws` indexed by the exact `deletionSortingOccurrenceCorrespondence` fold |
+| external-input equality absent | still absent as a premise; derived by transitivity from reduction and sorting |
+
+No broader accounting value or authentication result is accepted. A complete
+real full-pipeline dischargeability fixture currently depends on the parked O14
+shared-order producer and on the still-open DeletionChain assembly. Per the
+authorized fallback, the missing producer of these exact
+`CanonicalReplayAccountingLaws` is recorded explicitly in `THM73-PLAN.md` and
+must remain a visible theorem-73 obligation rather than being inferred from the
+uncorrelated stored trees.
+
 ## Attempt accounting
 
 - `canonicalRetiredFiberUnsupported`: 1/3, passed.

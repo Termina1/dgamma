@@ -2981,3 +2981,15 @@ one support order that is certified against both reduced and original support.
 It cannot state, or rely on, universal transfer of arbitrary reduced-endpoint
 linearizations across deletion; a withdrawn unsupported intermediate can erase
 a surviving-endpoint path.
+
+**Tracked O16 dischargeability obligation:** construct
+`CanonicalReplayAccountingLaws` for the exact
+`deletionSortingOccurrenceCorrespondence` fold, together with the composed
+original-to-sorted endpoint and exact cumulative withdrawal equality. The
+stored `cumulativeRegistrationAccounting` and `sortedRegistrationTree` are not
+correlated to those operational folds and therefore cannot silently discharge
+strong authentication. The corrected O16 accepts exactly this capital and
+`assembleOneTraceAccountingFromReplay` proves it sufficient. A full real fixture
+is dependency-blocked by parked O14 shared-order production and the open
+DeletionChain assembly, so this remains an explicit Theorem-73 producer
+obligation under the supervisor-authorized fallback.

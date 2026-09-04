@@ -1543,6 +1543,13 @@ public export
     (reducedFinal reduction)) ->
   (sorted : SortedClosingFreeTrace name key world error value protocol nameEq
     keyEq (reducedTrace reduction) ordering) ->
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
+    originalFinal (sortedFinal sorted)) ->
+  endpointWithdrawnGenerations endpoint =
+    endpointWithdrawnGenerations (cumulativeEndpoint reduction) ->
+  CanonicalReplayAccountingLaws name key world error value original
+    (sortedTrace sorted) (endpointWithdrawnGenerations endpoint)
+    (deletionSortingOccurrenceCorrespondence reduction sorted) ->
   OneTraceOrchestrationAccounting name key world error value protocol nameEq keyEq
     original reduction ordering sorted
 deletionSortingOrchestrationAccountingSpike =
