@@ -756,6 +756,12 @@ r143SharedOrderUnique = UniqueCons r143LowerFreshInSharedOrder
   (UniqueCons r143AlternateFreshInSharedOrder
     (UniqueCons r143UpperFreshInSharedOrder UniqueNil))
 
+0 r143MiddleNotInSharedOrder : Not (Elem Middle [Lower, Alternate, Upper])
+r143MiddleNotInSharedOrder Here impossible
+r143MiddleNotInSharedOrder (There Here) impossible
+r143MiddleNotInSharedOrder (There (There Here)) impossible
+r143MiddleNotInSharedOrder (There (There (There later))) = absurd later
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
