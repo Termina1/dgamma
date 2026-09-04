@@ -820,6 +820,36 @@ record MappedCanonicalSupportOrders
   0 rightSupportMapped : (n : name) -> Elem n (supportOrder rightSchedule) ->
     Elem (renameBackward renaming n) (supportOrder leftSchedule)
 
+||| Turn pointwise forward support preservation into membership in the right
+||| canonical enumeration.  Uniqueness/order concerns remain owned by each
+||| schedule's `LinearizesSupport`; this helper performs only one membership
+||| elimination.
+0 canonicalSupportOrderForwardFromTruth :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {leftInitial, rightInitial, leftFinal, rightFinal :
+    SystemState name key value world error} ->
+  {leftTrace : Transitions leftInitial leftFinal} ->
+  {rightTrace : Transitions rightInitial rightFinal} ->
+  (renaming : NameBijection name) ->
+  (leftSchedule : CanonicalSchedule name key world error value protocol nameEq
+    keyEq leftTrace) ->
+  (rightSchedule : CanonicalSchedule name key world error value protocol nameEq
+    keyEq rightTrace) ->
+  ((selected : name) ->
+    (isSupported @{nameEq} @{keyEq} selected leftFinal = True) ->
+    (isSupported @{nameEq} @{keyEq} (renameForward renaming selected)
+      rightFinal = True)) ->
+  (selected : name) -> Elem selected (supportOrder leftSchedule) ->
+  Elem (renameForward renaming selected) (supportOrder rightSchedule)
+canonicalSupportOrderForwardFromTruth nameEq keyEq protocol renaming
+  leftSchedule rightSchedule supportForward selected selectedIn =
+    orderComplete (supportLinearization rightSchedule)
+      (renameForward renaming selected)
+      (supportForward selected
+        (orderSound (supportLinearization leftSchedule) selected selectedIn))
+
 public export
 0 canonicalSupportOrdersMatchSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
