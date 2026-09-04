@@ -877,6 +877,38 @@ canonicalSupportOrderBackwardFromTruth nameEq keyEq protocol renaming
       (supportBackward selected
         (orderSound (supportLinearization rightSchedule) selected selectedIn))
 
+||| Exact O19 set-matching assembly once both semantic support directions have
+||| been obtained from the generation/current-endpoint correspondence.
+0 canonicalSupportOrdersFromTruth :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (leftTrace : Transitions initial leftFinal) ->
+  (rightTrace : Transitions initial rightFinal) ->
+  (renaming : NameBijection name) ->
+  (leftSchedule : CanonicalSchedule name key world error value protocol nameEq
+    keyEq leftTrace) ->
+  (rightSchedule : CanonicalSchedule name key world error value protocol nameEq
+    keyEq rightTrace) ->
+  ((selected : name) ->
+    (isSupported @{nameEq} @{keyEq} selected leftFinal = True) ->
+    (isSupported @{nameEq} @{keyEq} (renameForward renaming selected)
+      rightFinal = True)) ->
+  ((selected : name) ->
+    (isSupported @{nameEq} @{keyEq} selected rightFinal = True) ->
+    (isSupported @{nameEq} @{keyEq} (renameBackward renaming selected)
+      leftFinal = True)) ->
+  MappedCanonicalSupportOrders name key world error value protocol nameEq keyEq
+    leftTrace rightTrace renaming leftSchedule rightSchedule
+canonicalSupportOrdersFromTruth nameEq keyEq protocol leftTrace rightTrace
+  renaming leftSchedule rightSchedule supportForward supportBackward =
+    MkMappedCanonicalSupportOrders
+      (canonicalSupportOrderForwardFromTruth nameEq keyEq protocol renaming
+        leftSchedule rightSchedule supportForward)
+      (canonicalSupportOrderBackwardFromTruth nameEq keyEq protocol renaming
+        leftSchedule rightSchedule supportBackward)
+
 public export
 0 canonicalSupportOrdersMatchSpike :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
