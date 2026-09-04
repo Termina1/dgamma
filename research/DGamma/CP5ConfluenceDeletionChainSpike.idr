@@ -1694,6 +1694,21 @@ activeEndpointEquationView nameEq selected state endpoint =
       activeLifecycleEquationView nameEq selected state fiber found
         (trans (sym foundActive) endpoint) endpoint
 
+0 parentOpenFromForeignLookupFrame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (0 frame :
+    lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+      {error = error} selected (registry afterState) =
+    lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+      {error = error} selected (registry before)) ->
+  ParentOpenAt nameEq selected before ->
+  ParentOpenAt nameEq selected afterState
+parentOpenFromForeignLookupFrame nameEq selected before afterState frame
+  (MkParentOpenAt fiber found opened) =
+    MkParentOpenAt fiber (trans frame found) opened
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
