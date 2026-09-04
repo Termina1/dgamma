@@ -5896,6 +5896,78 @@ alignedTailAfterHead nameEq keyEq
   (Fired nameEq keyEq action tag checked) rest
   (AlignedStep action tag checked rest tail) = tail
 
+0 generationScanOrdinalCount :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (ordinal : Nat) ->
+  (live : GenerationEnvironment name) ->
+  (trace : Transitions first finalState) ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq ordinal live trace finalOrdinal finalLive ->
+  finalOrdinal = ordinal + transitionCount trace
+generationScanOrdinalCount nameEq ordinal live NoTransitions ordinal live
+  GenerationTraceScanEnd = sym (plusZeroRightNeutral ordinal)
+generationScanOrdinalCount nameEq ordinal live
+  (MoreTransitions transition rest) finalOrdinal finalLive
+  (GenerationTraceScanStep _ _ tailScan) =
+    trans
+      (generationScanOrdinalCount nameEq (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal
+          (transitionAction transition) live)
+        rest finalOrdinal finalLive tailScan)
+      (plusSuccRightSucc ordinal (transitionCount rest))
+
+0 currentAfterGeneratedInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (child : name) -> (ordinal : Nat) ->
+  (live : GenerationEnvironment name) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  (action : Action name key value world error) ->
+  (0 actionShape : action = OInsert child parent component) ->
+  (generation : RegistrationGeneration name) ->
+  (0 generationShape : generation =
+    MkRegistrationGeneration child ordinal) ->
+  lookupCurrentGeneration @{nameEq} child
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) =
+    Just generation
+currentAfterGeneratedInsert nameEq child ordinal live parent component
+  (OInsert child parent component) Refl generation generationShape =
+    replace
+      {p = \observed => lookupCurrentGeneration @{nameEq} child
+        (putCurrentGeneration @{nameEq} child
+          (MkRegistrationGeneration child ordinal) live) = Just observed}
+      (sym generationShape)
+      (lookupPutCurrentSelf nameEq child
+        (MkRegistrationGeneration child ordinal) live)
+
+0 inactiveAfterGeneratedInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (action : Action name key value world error) ->
+  (0 actionShape : action = OInsert child parent component) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  InactiveFiberAt name key world error value nameEq child afterState
+inactiveAfterGeneratedInsert nameEq keyEq child parent component
+  (OInsert child parent component) Refl before afterState tag raw =
+    MkInactiveFiberAt component parent False emptyOwned Nothing
+      (oInsertResultLookup nameEq keyEq child parent component before afterState
+        tag raw)
+
+0 generatedInsertCannotBeBegin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (action : Action name key value world error) ->
+  (child : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (0 actionShape : action = OInsert child parent component) ->
+  IsBeginAction action -> Void
+generatedInsertCannotBeBegin
+  (OInsert child parent component) child parent component Refl begin impossible
+
 0 noRegisteredAppendAtScan :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
