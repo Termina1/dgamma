@@ -541,6 +541,36 @@ r143NoLeftParentEdge {child}
     r143RootNotChild
       (trans (sym (r143LeftFoundRoot child childFiber childFound)) childParent)
 
+0 r143LeftUpperProvidesNothing :
+  {fiber : Fiber N K V Unit String} ->
+  lookupFiber @{the (DecEq N) %search} Upper
+    (registry DGamma.R6FourFiberStatic.leftState) = Just fiber ->
+  (wanted : K) ->
+  Elem wanted (dependencies (componentProvisions (fiberComponent fiber))) ->
+  Void
+r143LeftUpperProvidesNothing found wanted provides =
+  case found of Refl => absurd provides
+
+0 r143LeftLowerDependsOnNothing :
+  {fiber : Fiber N K V Unit String} ->
+  lookupFiber @{the (DecEq N) %search} Lower
+    (registry DGamma.R6FourFiberStatic.leftState) = Just fiber ->
+  (wanted : K) ->
+  Elem wanted (dependencies (componentDependencies (fiberComponent fiber))) ->
+  Void
+r143LeftLowerDependsOnNothing found wanted depends =
+  case found of Refl => absurd depends
+
+0 r143LeftAlternateDependsOnNothing :
+  {fiber : Fiber N K V Unit String} ->
+  lookupFiber @{the (DecEq N) %search} Alternate
+    (registry DGamma.R6FourFiberStatic.leftState) = Just fiber ->
+  (wanted : K) ->
+  Elem wanted (dependencies (componentDependencies (fiberComponent fiber))) ->
+  Void
+r143LeftAlternateDependsOnNothing found wanted depends =
+  case found of Refl => absurd depends
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
