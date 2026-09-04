@@ -2254,6 +2254,87 @@ public export
   )
 concreteThirdDeletedListsExact = (Refl, Refl)
 
+||| Lookup equality induced by the exact ordered table equality stored in an
+||| effect-state relation.  The uniqueness certificates are erased, so the
+||| proof reduces after exposing both dependent contexts.
+0 compositionLookupBindingFromEqualBindings :
+  {key : Type} -> {value : key -> Type} ->
+  (keyEq : DecEq key) -> (wanted : key) ->
+  (left, right : CoeffectContext key value) ->
+  (0 same : bindings left = bindings right) ->
+  lookupBinding @{keyEq} wanted left = lookupBinding @{keyEq} wanted right
+compositionLookupBindingFromEqualBindings keyEq wanted
+  (MkCoeffectContext leftEntries leftUnique)
+  (MkCoeffectContext rightEntries rightUnique) same =
+    cong (lookupEntries @{keyEq} wanted) same
+
+||| The four heterogeneous effect steps at the O21 boundary compose without
+||| observing registry order.  Canonical endpoints and replay use exact table
+||| equality, while the bridge already supplies pointwise renamed lookups.
+0 replayedCanonicalOuterAmbientSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFinal, leftCanonicalFinal, replayedLeftFinal, rightCanonicalFinal,
+    rightFinal : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} leftFinal)
+    (projectEffectState @{nameEq} leftCanonicalFinal) ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} leftCanonicalFinal)
+    (projectEffectState @{nameEq} replayedLeftFinal) ->
+  worldState replayedLeftFinal = worldState rightCanonicalFinal ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} rightFinal)
+    (projectEffectState @{nameEq} rightCanonicalFinal) ->
+  worldState leftFinal = worldState rightFinal
+replayedCanonicalOuterAmbientSpike nameEq keyEq leftEndpoint replayed bridge
+  rightEndpoint =
+    trans (ambientExact leftEndpoint)
+      (trans (ambientExact replayed)
+        (trans bridge (sym (ambientExact rightEndpoint))))
+
+0 replayedCanonicalOuterTableSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFinal, leftCanonicalFinal, replayedLeftFinal, rightCanonicalFinal,
+    rightFinal : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} leftFinal)
+    (projectEffectState @{nameEq} leftCanonicalFinal) ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} leftCanonicalFinal)
+    (projectEffectState @{nameEq} replayedLeftFinal) ->
+  (currentRenaming : NameBijection name) ->
+  ((selected : name) -> (wanted : key) ->
+    lookupBinding {key = key} {value = value} wanted
+      (effectTables (projectEffectState @{nameEq} replayedLeftFinal) selected) =
+    lookupBinding {key = key} {value = value} wanted
+      (effectTables (projectEffectState @{nameEq} rightCanonicalFinal)
+        (renameForward currentRenaming selected))) ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} rightFinal)
+    (projectEffectState @{nameEq} rightCanonicalFinal) ->
+  (selected : name) -> (wanted : key) ->
+  lookupBinding {key = key} {value = value} wanted
+    (effectTables (projectEffectState @{nameEq} leftFinal) selected) =
+  lookupBinding {key = key} {value = value} wanted
+    (effectTables (projectEffectState @{nameEq} rightFinal)
+      (renameForward currentRenaming selected))
+replayedCanonicalOuterTableSpike nameEq keyEq leftEndpoint replayed
+  currentRenaming bridge rightEndpoint selected wanted =
+    trans
+      (compositionLookupBindingFromEqualBindings keyEq wanted
+        (effectTables (projectEffectState @{nameEq} leftFinal) selected)
+        (effectTables (projectEffectState @{nameEq} leftCanonicalFinal) selected)
+        (tablesExact leftEndpoint selected))
+      (trans
+        (compositionLookupBindingFromEqualBindings keyEq wanted
+          (effectTables (projectEffectState @{nameEq} leftCanonicalFinal) selected)
+          (effectTables (projectEffectState @{nameEq} replayedLeftFinal) selected)
+          (tablesExact replayed selected))
+        (trans (bridge selected wanted)
+          (sym (compositionLookupBindingFromEqualBindings keyEq wanted
+            (effectTables (projectEffectState @{nameEq} rightFinal)
+              (renameForward currentRenaming selected))
+            (effectTables (projectEffectState @{nameEq} rightCanonicalFinal)
+              (renameForward currentRenaming selected))
+            (tablesExact rightEndpoint
+              (renameForward currentRenaming selected))))))
+
 ||| Corrected O21 boundary.  Scanner classifications remain indexed by the two
 ||| original canonical schedules, while operational convergence may pass through
 ||| a noncanonical target actor order.  The source→replay correspondence,
