@@ -5869,6 +5869,33 @@ registrationScanCapital nameEq startOrdinal startLive globalTrace registration
             candidate finalOrdinal finalLive}
           (sym (registrationDecomposition registration)) scan))
 
+0 alignedHeadRaw :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {before, afterState, finalState : SystemState name key value world error} ->
+  (transition : Transition before afterState) ->
+  (rest : Transitions afterState finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions transition rest) ->
+  applyAction @{nameEq} @{keyEq} (transitionAction transition) before =
+    Just (transitionTag transition, afterState)
+alignedHeadRaw nameEq keyEq (Fired nameEq keyEq action tag checked) rest
+  (AlignedStep action tag checked rest tail) =
+    checkedActionProjects nameEq keyEq action _ _ tag checked
+
+0 alignedTailAfterHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {before, afterState, finalState : SystemState name key value world error} ->
+  (transition : Transition before afterState) ->
+  (rest : Transitions afterState finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions transition rest) ->
+  AlignedTransitions name key world error value nameEq keyEq rest
+alignedTailAfterHead nameEq keyEq
+  (Fired nameEq keyEq action tag checked) rest
+  (AlignedStep action tag checked rest tail) = tail
+
 0 noRegisteredAppendAtScan :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
