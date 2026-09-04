@@ -146,3 +146,35 @@ No `believe_me`, `assert_total`, postulate, `unsafePerformIO`, `partial`, or
 `covering` annotation was added. Production diff from `34b21c9` remains empty;
 the R141 generation-scoped surface revision and exact start-ordinal helper
 remain the retained boundary.
+
+Post-commit final gates at `6721d49c1ad5e3e8fb04908e70d7d60866bf071b`
+also established:
+
+```text
+Idris 2, version 0.8.0
+
+fresh R137 generation-interval ratification:
+  4/4: Building DGamma.R137O8GenerationIntervalRatification
+  exit 0
+
+seeded production closure:
+  207/207: Building DGamma.CP4ProgressProof
+  exit 0
+
+src/DGamma/CP3.idr blob:
+  2c697e532e83989de8591fa6a4378747c6a501c0
+
+adjacentSwapSuffixSpike full definition:
+  1470 bytes
+  SHA-256 2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf
+
+adjacentSwapSuffixSpike statement prefix:
+  1154 bytes
+  SHA-256 3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf
+```
+
+The legacy R11 inventory-only guard was also run and remains stale for a
+pre-existing reason: it expects 107 tracked tests but does not list the four
+already tracked R137 ratification modules. No R142 fixture survives, so R142 did
+not add to that mismatch. This stale harness result is not represented as a
+passing gate.
