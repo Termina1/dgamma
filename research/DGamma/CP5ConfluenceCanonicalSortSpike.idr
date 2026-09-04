@@ -880,6 +880,21 @@ canonicalBoolSameFromTrueMaps True False forward backward =
   case forward Refl of Refl impossible
 canonicalBoolSameFromTrueMaps True True forward backward = Refl
 
+0 canonicalSharedOrderSupportForward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {originalFinal, reducedFinal : SystemState name key value world error} ->
+  {order : List name} ->
+  LinearizesSupport name key world error value nameEq keyEq originalFinal order ->
+  LinearizesSupport name key world error value nameEq keyEq reducedFinal order ->
+  (selected : name) ->
+  isSupported @{nameEq} @{keyEq} selected originalFinal = True ->
+  isSupported @{nameEq} @{keyEq} selected reducedFinal = True
+canonicalSharedOrderSupportForward originalLinearization reducedLinearization
+  selected supported =
+    orderSound reducedLinearization selected
+      (orderComplete originalLinearization selected supported)
+
 ||| A support truth excludes membership in any list whose members are known
 ||| unsupported at that same endpoint.
 0 canonicalSupportedNotElem :
