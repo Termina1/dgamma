@@ -5301,6 +5301,84 @@ oneStepInactivePersistence nameEq keyEq actor generation generationActor ordinal
         generationActor live stamped before inactive)
       actor generation Here nextCurrent
 
+0 noRegisteredAfterRetiredInactive :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (generation : RegistrationGeneration name) ->
+  (0 generationActor : generationName generation = actor) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (0 unique : GenerationEnvironmentNamesUnique live) ->
+  (0 stamped : GenerationEnvironmentStamped live) ->
+  (0 less : LT (generationBirthOrdinal generation) ordinal) ->
+  (trace : Transitions first finalState) ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq ordinal live trace finalOrdinal finalLive ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  (0 current : lookupCurrentGeneration @{nameEq} actor live =
+    Just generation) ->
+  (0 retiredAt : RetiredFiberAt name key world error value nameEq actor first) ->
+  (0 inactive : InactiveFiberAt name key world error value nameEq actor first) ->
+  NoRegisteredEpisode nameEq [generation] ordinal live trace
+noRegisteredAfterRetiredInactive nameEq keyEq actor generation generationActor
+  ordinal live unique stamped less NoTransitions ordinal live
+  GenerationTraceScanEnd AlignedEnd current retiredAt inactive =
+    NoRegisteredEpisodeEnd
+noRegisteredAfterRetiredInactive nameEq keyEq actor generation generationActor
+  ordinal live unique stamped less
+  (MoreTransitions transition@(Fired {before = first} {afterState = middle}
+    _ _ action tag checked) rest)
+  finalOrdinal finalLive (GenerationTraceScanStep _ _ tailScan)
+  (AlignedStep _ _ _ _ alignedTail) current retiredAt inactive =
+    case decEq
+      (lookupCurrentGeneration @{nameEq} actor
+        (advanceGenerationEnvironment @{nameEq} ordinal action live))
+      (Just generation) of
+      No noNext =>
+        NoRegisteredEpisodeStep (Fired nameEq keyEq action tag checked) rest
+          (retiredRegisteredNoBegin nameEq keyEq actor generation live stamped
+            generationActor action first middle tag
+            (checkedActionProjects nameEq keyEq action first middle tag checked)
+            retiredAt)
+          (noRegisteredWhenNotCurrent nameEq actor generation generationActor
+            (S ordinal)
+            (advanceGenerationEnvironment @{nameEq} ordinal action live)
+            (advanceGenerationEnvironmentPreservesUnique nameEq ordinal action
+              live unique)
+            (advanceGenerationEnvironmentPreservesStamped nameEq ordinal action
+              live stamped)
+            (lteSuccRight less) rest finalOrdinal finalLive tailScan noNext)
+      Yes nextCurrent =>
+        NoRegisteredEpisodeStep (Fired nameEq keyEq action tag checked) rest
+          (retiredRegisteredNoBegin nameEq keyEq actor generation live stamped
+            generationActor action first middle tag
+            (checkedActionProjects nameEq keyEq action first middle tag checked)
+            retiredAt)
+          (noRegisteredAfterRetiredInactive nameEq keyEq actor generation
+            generationActor (S ordinal)
+            (advanceGenerationEnvironment @{nameEq} ordinal action live)
+            (advanceGenerationEnvironmentPreservesUnique nameEq ordinal action
+              live unique)
+            (advanceGenerationEnvironmentPreservesStamped nameEq ordinal action
+              live stamped)
+            (lteSuccRight less) rest finalOrdinal finalLive tailScan alignedTail
+            nextCurrent
+            (oneStepRetiredPersistence nameEq keyEq actor generation ordinal live
+              unique less first middle action tag checked
+              (retiredRegisteredNoBegin nameEq keyEq actor generation live
+                stamped generationActor action first middle tag
+                (checkedActionProjects nameEq keyEq action first middle tag
+                  checked) retiredAt)
+              current nextCurrent retiredAt inactive)
+            (oneStepInactivePersistence nameEq keyEq actor generation
+              generationActor ordinal live unique stamped first middle action tag
+              checked
+              (retiredRegisteredNoBegin nameEq keyEq actor generation live
+                stamped generationActor action first middle tag
+                (checkedActionProjects nameEq keyEq action first middle tag
+                  checked) retiredAt)
+              nextCurrent inactive))
+
 0 maximalCandidateFromGenerationScan :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
