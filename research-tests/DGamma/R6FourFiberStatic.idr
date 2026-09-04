@@ -797,6 +797,16 @@ r143LeftPathShapeOrdered R143LeftPathMiddleUpper lowerIn upperIn =
 r143LeftPathShapeOrdered R143LeftPathAlternateUpper lowerIn upperIn =
   BeforeThere (BeforeHere Here)
 
+0 r143LeftSharedPathsOrdered :
+  (lower, upper : N) ->
+  SupportPath (the (DecEq N) %search) DGamma.R6FourFiberStatic.leftState
+    lower upper ->
+  Elem lower [Lower, Alternate, Upper] ->
+  Elem upper [Lower, Alternate, Upper] ->
+  BeforeIn lower upper [Lower, Alternate, Upper]
+r143LeftSharedPathsOrdered lower upper path lowerIn upperIn =
+  r143LeftPathShapeOrdered (r143LeftPathShapeProof path) lowerIn upperIn
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
