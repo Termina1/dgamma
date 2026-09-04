@@ -1964,6 +1964,21 @@ installedInsertOwnerImpossible nameEq keyEq selected parent component tag before
       RemainedUninstalled sourceUninstalled targetUninstalled =>
         void (falseNotTrueO7 (trans (sym sourceUninstalled) sourceInstalled))
 
+0 installedRemoveOwnerImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (ORemove selected)
+    before = Just (tag, afterState)) ->
+  (0 sourceInstalled : installedAt @{nameEq} selected before = True) -> Void
+installedRemoveOwnerImpossible nameEq keyEq selected tag before afterState checked
+  sourceInstalled =
+    case installationEvolutionStep nameEq keyEq selected (ORemove selected) tag
+      before afterState checked of
+      RemainedUninstalled sourceUninstalled targetUninstalled =>
+        void (falseNotTrueO7 (trans (sym sourceUninstalled) sourceInstalled))
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
