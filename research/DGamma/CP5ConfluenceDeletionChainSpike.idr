@@ -2698,6 +2698,278 @@ deletionWholeTraceOccurrenceClassification before episode after wholeOccurrence 
     (deletionLocatedAppendClassification before (appendTransitions episode after)
       wholeOccurrence)
 
+||| Exact source occurrence and source-ordinal equation for one generation-aware
+||| subsequence.  The equation is emitted beside the producer-owned occurrence,
+||| avoiding reduction through an opaque occurrence projection.
+public export
+record GenerationSubsequenceLocatedOrigin
+  (name, key, world, error : Type) (value : key -> Type)
+  {nameEq : DecEq name}
+  {deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type}
+  {ordinal : Nat} {live : GenerationEnvironment name}
+  {sourceFirst, sourceFinal, survivorFirst, survivorFinal :
+    SystemState name key value world error}
+  (source : Transitions sourceFirst sourceFinal)
+  (survivor : Transitions survivorFirst survivorFinal)
+  (subsequence : GenerationActionSubsequence nameEq deletable ordinal live
+    source survivor)
+  (action : Action name key value world error)
+  (survivorOccurrence : LocatedActionOccurrence action survivor) where
+  constructor MkGenerationSubsequenceLocatedOrigin
+  segmentSourceOccurrence : LocatedActionOccurrence action source
+  0 segmentSourceOrdinalExact :
+    generationSubsequenceSourceOrdinal subsequence
+      (locatedActionOrdinal survivorOccurrence) =
+    Just (locatedActionOrdinal segmentSourceOccurrence)
+
+0 deletionLocatedOccurrenceInEmptyImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {state : SystemState name key value world error} ->
+  {action : Action name key value world error} ->
+  LocatedActionOccurrence action (NoTransitions {state = state}) -> Void
+deletionLocatedOccurrenceInEmptyImpossible
+  (MkLocatedActionOccurrence before afterState beforeTrace transition later
+    actionShape decomposition) =
+      case beforeTrace of
+        NoTransitions => case decomposition of Refl impossible
+        MoreTransitions prefixHead prefixRest =>
+          case decomposition of Refl impossible
+
+mutual
+  0 generationSubsequenceLocatedOriginExact :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} ->
+    {deletable : Nat -> GenerationEnvironment name ->
+      Action name key value world error -> Type} ->
+    {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+    {sourceFirst, sourceFinal, survivorFirst, survivorFinal :
+      SystemState name key value world error} ->
+    {source : Transitions sourceFirst sourceFinal} ->
+    {survivor : Transitions survivorFirst survivorFinal} ->
+    (subsequence : GenerationActionSubsequence nameEq deletable ordinal live
+      source survivor) ->
+    {action : Action name key value world error} ->
+    (survivorOccurrence : LocatedActionOccurrence action survivor) ->
+    GenerationSubsequenceLocatedOrigin name key world error value source survivor
+      subsequence action survivorOccurrence
+  generationSubsequenceLocatedOriginExact GenerationActionSubsequenceEnd
+    survivorOccurrence =
+      void (deletionLocatedOccurrenceInEmptyImpossible survivorOccurrence)
+  generationSubsequenceLocatedOriginExact
+    (KeepGenerationAction sourceHead sourceRest survivorHead survivorRest kept
+      sameAction tail) survivorOccurrence =
+        generationSubsequenceLocatedKeepView sourceHead sourceRest survivorHead
+          survivorRest kept sameAction tail survivorOccurrence
+          (deletionLocatedHead action survivorHead survivorRest
+            survivorOccurrence)
+  generationSubsequenceLocatedOriginExact
+    (DeleteGenerationAction sourceHead sourceRest deleted tail)
+    survivorOccurrence =
+      generationSubsequenceLocatedDeleteTail sourceHead sourceRest deleted tail
+        survivorOccurrence
+        (generationSubsequenceLocatedOriginExact tail survivorOccurrence)
+
+  0 generationSubsequenceLocatedKeepView :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} ->
+    {deletable : Nat -> GenerationEnvironment name ->
+      Action name key value world error -> Type} ->
+    {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+    {sourceFirst, sourceMiddle, sourceFinal,
+      survivorFirst, survivorMiddle, survivorFinal :
+      SystemState name key value world error} ->
+    (sourceHead : Transition sourceFirst sourceMiddle) ->
+    (sourceRest : Transitions sourceMiddle sourceFinal) ->
+    (survivorHead : Transition survivorFirst survivorMiddle) ->
+    (survivorRest : Transitions survivorMiddle survivorFinal) ->
+    {action : Action name key value world error} ->
+    (0 kept : Not
+      (deletable ordinal live (transitionAction sourceHead))) ->
+    (0 sameAction : transitionAction sourceHead =
+      transitionAction survivorHead) ->
+    (tail : GenerationActionSubsequence nameEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction sourceHead) live) sourceRest survivorRest) ->
+    (survivorOccurrence : LocatedActionOccurrence action
+      (MoreTransitions survivorHead survivorRest)) ->
+    DeletionLocatedHeadView name key world error value survivorFirst
+      survivorMiddle survivorFinal action survivorHead survivorRest
+      survivorOccurrence ->
+    GenerationSubsequenceLocatedOrigin name key world error value
+      (MoreTransitions sourceHead sourceRest)
+      (MoreTransitions survivorHead survivorRest)
+      (KeepGenerationAction sourceHead sourceRest survivorHead survivorRest
+        kept sameAction tail)
+      action survivorOccurrence
+  generationSubsequenceLocatedKeepView sourceHead sourceRest survivorHead
+    survivorRest kept sameAction tail survivorOccurrence
+    (DeletionLocatedAtHead actionShape exactOrdinal) =
+      MkGenerationSubsequenceLocatedOrigin
+        (MkLocatedActionOccurrence _ _ NoTransitions sourceHead sourceRest
+          (trans sameAction actionShape) Refl)
+        (rewrite exactOrdinal in Refl)
+  generationSubsequenceLocatedKeepView sourceHead sourceRest survivorHead
+    survivorRest kept sameAction tail survivorOccurrence
+    (DeletionLocatedInTail tailOccurrence exactOrdinal) =
+      generationSubsequenceLocatedKeepTail sourceHead sourceRest survivorHead
+        survivorRest kept sameAction tail survivorOccurrence tailOccurrence
+        exactOrdinal
+        (generationSubsequenceLocatedOriginExact tail tailOccurrence)
+
+  0 generationSubsequenceLocatedKeepTail :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} ->
+    {deletable : Nat -> GenerationEnvironment name ->
+      Action name key value world error -> Type} ->
+    {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+    {sourceFirst, sourceMiddle, sourceFinal,
+      survivorFirst, survivorMiddle, survivorFinal :
+      SystemState name key value world error} ->
+    (sourceHead : Transition sourceFirst sourceMiddle) ->
+    (sourceRest : Transitions sourceMiddle sourceFinal) ->
+    (survivorHead : Transition survivorFirst survivorMiddle) ->
+    (survivorRest : Transitions survivorMiddle survivorFinal) ->
+    {action : Action name key value world error} ->
+    (0 kept : Not
+      (deletable ordinal live (transitionAction sourceHead))) ->
+    (0 sameAction : transitionAction sourceHead =
+      transitionAction survivorHead) ->
+    (tail : GenerationActionSubsequence nameEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction sourceHead) live) sourceRest survivorRest) ->
+    (survivorOccurrence : LocatedActionOccurrence action
+      (MoreTransitions survivorHead survivorRest)) ->
+    (tailOccurrence : LocatedActionOccurrence action survivorRest) ->
+    (0 wholeOrdinal : locatedActionOrdinal survivorOccurrence =
+      S (locatedActionOrdinal tailOccurrence)) ->
+    GenerationSubsequenceLocatedOrigin name key world error value sourceRest
+      survivorRest tail action tailOccurrence ->
+    GenerationSubsequenceLocatedOrigin name key world error value
+      (MoreTransitions sourceHead sourceRest)
+      (MoreTransitions survivorHead survivorRest)
+      (KeepGenerationAction sourceHead sourceRest survivorHead survivorRest
+        kept sameAction tail)
+      action survivorOccurrence
+  generationSubsequenceLocatedKeepTail sourceHead sourceRest survivorHead
+    survivorRest kept sameAction tail survivorOccurrence tailOccurrence wholeOrdinal
+    (MkGenerationSubsequenceLocatedOrigin sourceOccurrence sourceOrdinal) =
+      generationSubsequenceLocatedKeepPrefix sourceHead sourceRest survivorHead
+        survivorRest kept sameAction tail survivorOccurrence tailOccurrence
+        wholeOrdinal sourceOccurrence sourceOrdinal
+        (deletionPrependLocalOccurrence sourceHead sourceRest sourceOccurrence)
+
+  0 generationSubsequenceLocatedKeepPrefix :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} ->
+    {deletable : Nat -> GenerationEnvironment name ->
+      Action name key value world error -> Type} ->
+    {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+    {sourceFirst, sourceMiddle, sourceFinal,
+      survivorFirst, survivorMiddle, survivorFinal :
+      SystemState name key value world error} ->
+    (sourceHead : Transition sourceFirst sourceMiddle) ->
+    (sourceRest : Transitions sourceMiddle sourceFinal) ->
+    (survivorHead : Transition survivorFirst survivorMiddle) ->
+    (survivorRest : Transitions survivorMiddle survivorFinal) ->
+    {action : Action name key value world error} ->
+    (0 kept : Not
+      (deletable ordinal live (transitionAction sourceHead))) ->
+    (0 sameAction : transitionAction sourceHead =
+      transitionAction survivorHead) ->
+    (tail : GenerationActionSubsequence nameEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction sourceHead) live) sourceRest survivorRest) ->
+    (survivorOccurrence : LocatedActionOccurrence action
+      (MoreTransitions survivorHead survivorRest)) ->
+    (tailOccurrence : LocatedActionOccurrence action survivorRest) ->
+    (0 wholeOrdinal : locatedActionOrdinal survivorOccurrence =
+      S (locatedActionOrdinal tailOccurrence)) ->
+    (sourceOccurrence : LocatedActionOccurrence action sourceRest) ->
+    (0 sourceOrdinal : generationSubsequenceSourceOrdinal tail
+      (locatedActionOrdinal tailOccurrence) =
+      Just (locatedActionOrdinal sourceOccurrence)) ->
+    DeletionPrependedOccurrence name key world error value sourceFirst
+      sourceMiddle sourceFinal action sourceHead sourceRest sourceOccurrence ->
+    GenerationSubsequenceLocatedOrigin name key world error value
+      (MoreTransitions sourceHead sourceRest)
+      (MoreTransitions survivorHead survivorRest)
+      (KeepGenerationAction sourceHead sourceRest survivorHead survivorRest
+        kept sameAction tail)
+      action survivorOccurrence
+  generationSubsequenceLocatedKeepPrefix sourceHead sourceRest survivorHead
+    survivorRest kept sameAction tail survivorOccurrence tailOccurrence wholeOrdinal
+    sourceOccurrence sourceOrdinal
+    (MkDeletionPrependedOccurrence prefixedOccurrence prefixedOrdinal) =
+      MkGenerationSubsequenceLocatedOrigin prefixedOccurrence
+        (rewrite wholeOrdinal in
+          trans (cong (map S) sourceOrdinal)
+            (cong Just (sym prefixedOrdinal)))
+
+  0 generationSubsequenceLocatedDeleteTail :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} ->
+    {deletable : Nat -> GenerationEnvironment name ->
+      Action name key value world error -> Type} ->
+    {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+    {sourceFirst, sourceMiddle, sourceFinal, survivorFirst, survivorFinal :
+      SystemState name key value world error} ->
+    (sourceHead : Transition sourceFirst sourceMiddle) ->
+    (sourceRest : Transitions sourceMiddle sourceFinal) ->
+    {survivor : Transitions survivorFirst survivorFinal} ->
+    {action : Action name key value world error} ->
+    (0 deleted : deletable ordinal live (transitionAction sourceHead)) ->
+    (tail : GenerationActionSubsequence nameEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction sourceHead) live) sourceRest survivor) ->
+    (survivorOccurrence : LocatedActionOccurrence action survivor) ->
+    GenerationSubsequenceLocatedOrigin name key world error value sourceRest
+      survivor tail action survivorOccurrence ->
+    GenerationSubsequenceLocatedOrigin name key world error value
+      (MoreTransitions sourceHead sourceRest) survivor
+      (DeleteGenerationAction sourceHead sourceRest deleted tail)
+      action survivorOccurrence
+  generationSubsequenceLocatedDeleteTail sourceHead sourceRest deleted tail
+    survivorOccurrence
+    (MkGenerationSubsequenceLocatedOrigin sourceOccurrence sourceOrdinal) =
+      generationSubsequenceLocatedDeletePrefix sourceHead sourceRest deleted tail
+        survivorOccurrence sourceOccurrence sourceOrdinal
+        (deletionPrependLocalOccurrence sourceHead sourceRest sourceOccurrence)
+
+  0 generationSubsequenceLocatedDeletePrefix :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} ->
+    {deletable : Nat -> GenerationEnvironment name ->
+      Action name key value world error -> Type} ->
+    {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+    {sourceFirst, sourceMiddle, sourceFinal, survivorFirst, survivorFinal :
+      SystemState name key value world error} ->
+    (sourceHead : Transition sourceFirst sourceMiddle) ->
+    (sourceRest : Transitions sourceMiddle sourceFinal) ->
+    {survivor : Transitions survivorFirst survivorFinal} ->
+    {action : Action name key value world error} ->
+    (0 deleted : deletable ordinal live (transitionAction sourceHead)) ->
+    (tail : GenerationActionSubsequence nameEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction sourceHead) live) sourceRest survivor) ->
+    (survivorOccurrence : LocatedActionOccurrence action survivor) ->
+    (sourceOccurrence : LocatedActionOccurrence action sourceRest) ->
+    (0 sourceOrdinal : generationSubsequenceSourceOrdinal tail
+      (locatedActionOrdinal survivorOccurrence) =
+      Just (locatedActionOrdinal sourceOccurrence)) ->
+    DeletionPrependedOccurrence name key world error value sourceFirst
+      sourceMiddle sourceFinal action sourceHead sourceRest sourceOccurrence ->
+    GenerationSubsequenceLocatedOrigin name key world error value
+      (MoreTransitions sourceHead sourceRest) survivor
+      (DeleteGenerationAction sourceHead sourceRest deleted tail)
+      action survivorOccurrence
+  generationSubsequenceLocatedDeletePrefix sourceHead sourceRest deleted tail
+    survivorOccurrence sourceOccurrence sourceOrdinal
+    (MkDeletionPrependedOccurrence prefixedOccurrence prefixedOrdinal) =
+      MkGenerationSubsequenceLocatedOrigin prefixedOccurrence
+        (trans (cong (map S) sourceOrdinal)
+          (cong Just (sym prefixedOrdinal)))
+
 public export
 deletionSurvivingBeforeCount :
   (result : DeletionResult name key world error value nameEq keyEq original
