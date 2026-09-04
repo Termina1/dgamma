@@ -901,6 +901,29 @@ canonicalOutsideFiberForward {nameEq} {selected} {originalFinal} {reducedFinal}
       MkForeignRelatedFiberFound targetFiber targetFound controls =>
         (targetFiber ** (targetFound, controls))
 
+||| The same exact lookup package is available from the reduced endpoint back
+||| to the original endpoint by symmetry of the pointwise control relation.
+0 canonicalOutsideFiberBackward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {originalFinal, reducedFinal : SystemState name key value world error} ->
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
+    originalFinal reducedFinal) ->
+  Not (Elem selected (endpointWithdrawnNames endpoint)) ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} selected (registry reducedFinal) = Just fiber ->
+  (sourceFiber : Fiber name key value world error **
+   (lookupFiber @{nameEq} selected (registry originalFinal) = Just sourceFiber,
+    FiberControlRelated sourceFiber fiber))
+canonicalOutsideFiberBackward {nameEq} {selected} {originalFinal} {reducedFinal}
+  endpoint outside fiber found =
+    case foreignControlLookupFound nameEq selected (registry reducedFinal)
+      (registry originalFinal) fiber found
+      (fiberControlMaybeSymmetric
+        (endpointControlsOutside endpoint selected outside)) of
+      MkForeignRelatedFiberFound sourceFiber sourceFound controls =>
+        (sourceFiber ** (sourceFound, fiberControlSymmetric controls))
+
 ||| Prove all support/parent/input-placement transport from the cumulative
 ||| endpoint relation and exact generated-registration accounting.
 public export
