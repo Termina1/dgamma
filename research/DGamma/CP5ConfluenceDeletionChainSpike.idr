@@ -1540,6 +1540,30 @@ elemMapPreimage project {items = head :: tail} (There later) =
   case elemMapPreimage project later of
     (item ** (member, shape)) => (item ** (There member, shape))
 
+0 maximalClosingOrdinalBound :
+  {trace : Transitions initial finalState} ->
+  (scan : ClosingEpisodeScan name key world error value nameEq keyEq trace) ->
+  (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected trace) ->
+  ((other : ClosingEpisodeOccurrence name key world error value nameEq keyEq
+      trace) ->
+    Elem other (scannedClosingOccurrences scan) ->
+    LTE (scannedClosingOrdinal other)
+      (transitionCount (traceBeforeOpening episode))) ->
+  (consumer : name) ->
+  (consumerEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    consumer trace) ->
+  LTE (transitionCount (traceBeforeOpening consumerEpisode))
+    (transitionCount (traceBeforeOpening episode))
+maximalClosingOrdinalBound scan selected episode upper consumer consumerEpisode =
+  case elemMapPreimage scannedClosingOrdinal
+    (everyClosingOccurrenceScanned scan consumer consumerEpisode) of
+    (other ** (member, shape)) =>
+      replace {p = \ordinal => LTE ordinal
+        (transitionCount (traceBeforeOpening episode))}
+        shape (upper other member)
+
 ||| Independently testable O8 result.  A selected maximal/deletable candidate is
 ||| tied back to an ordinal produced by the exact O7 scan; the empty branch is
 ||| definitionally separated from the O9 deletion adapter.
