@@ -4,6 +4,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.CP3
 import DGamma.Metatheory
+import DGamma.CP5ConfluenceCanonicalSortSpike
 import DGamma.CP5ConfluenceCrossTraceSpike
 import DGamma.CP4DeletionChildlessInvariant
 import Data.List.Elem
@@ -492,6 +493,18 @@ inverseMappedRightOrderCannotLinearizeLeft linearization =
       supportedEndpointsPathThroughVestigial
       (There (There Here)) (There Here))
 
+||| Concrete R143 refutation of O15's current output surface: the accepted
+||| endpoint admits a valid reduced linearization which cannot linearize the
+||| original path through the retired, withdrawn `Middle` actor.
+0 r143CanonicalSupportTransportRefuted :
+  CanonicalSupportTransport N K Unit String V (the (DecEq N) %search)
+    (the (DecEq K) %search) DGamma.R6FourFiberStatic.leftState
+    DGamma.R6FourFiberStatic.rightState
+    DGamma.R6FourFiberStatic.acceptedCanonicalEndpointAllowsIntermediate -> Void
+r143CanonicalSupportTransportRefuted transport =
+  inverseMappedRightOrderCannotLinearizeLeft
+    (linearizationToOriginal transport [Alternate, Upper, Lower]
+      r143RightLinearization)
 
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
