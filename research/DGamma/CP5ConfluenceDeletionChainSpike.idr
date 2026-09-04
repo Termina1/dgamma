@@ -2773,6 +2773,28 @@ childRetirementAtGeneratedParts protocol nameEq keyEq global child parent
         discipline)
       unload
 
+0 childRetirementAtGeneratedOccurrence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (child, parent : name) ->
+  (component : Component key value world error) ->
+  (occurrence : LocatedGeneratedRegistration child parent component global) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  RegistrationDiscipline protocol nameEq global ->
+  ActionOccurs (LUnload parent) (afterRegistration occurrence) ->
+  ActionOccurs (ORetire child) (afterRegistration occurrence)
+childRetirementAtGeneratedOccurrence protocol nameEq keyEq global child parent
+  component occurrence aligned discipline unload =
+    case occurrence of
+      MkLocatedGeneratedRegistration before afterState beforeTrace transition rest
+        actionShape decomposition =>
+          childRetirementAtGeneratedParts protocol nameEq keyEq global child
+            parent component before afterState beforeTrace transition rest
+            actionShape decomposition aligned discipline unload
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
