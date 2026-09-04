@@ -1948,6 +1948,22 @@ parentOpenAdvanceStructureSpike nameEq keyEq selected _ before afterState
   checked noRecovery (RaiseAdvance unloading) =
     void (noRecovery (ParentRaises Refl Refl))
 
+0 installedInsertOwnerImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq}
+    (OInsert selected parent component) before = Just (tag, afterState)) ->
+  (0 sourceInstalled : installedAt @{nameEq} selected before = True) -> Void
+installedInsertOwnerImpossible nameEq keyEq selected parent component tag before
+  afterState checked sourceInstalled =
+    case installationEvolutionStep nameEq keyEq selected
+      (OInsert selected parent component) tag before afterState checked of
+      RemainedUninstalled sourceUninstalled targetUninstalled =>
+        void (falseNotTrueO7 (trans (sym sourceUninstalled) sourceInstalled))
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
