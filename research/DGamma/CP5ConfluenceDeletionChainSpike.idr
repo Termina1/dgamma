@@ -1883,6 +1883,21 @@ parentOpenRetireSourceView nameEq selected ambient fibers opened =
       parentOpenRetireFiberView nameEq selected ambient fibers fiber found
         lifecycle
 
+0 parentOpenFromActionResultView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (expectedTag, observedTag : RuleTag) ->
+  (expectedState, observedState : SystemState name key value world error) ->
+  (0 sameResult : (expectedTag, expectedState) =
+    (observedTag, observedState)) ->
+  ParentOpenEquationView name key world error value nameEq selected
+    expectedState ->
+  ParentOpenAt nameEq selected observedState
+parentOpenFromActionResultView nameEq selected expectedTag observedTag
+  expectedState observedState sameResult view =
+    case sameResult of
+      Refl => parentOpenFromEquationView view
+
 ||| Finite maximum witness used by O8. Both the chosen element and its proofs
 ||| are erased because O7's occurrence inventory is erased.
 record MaximumBy
