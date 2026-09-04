@@ -1559,6 +1559,19 @@ deletionSortingOrchestrationAccountingSpike nameEq keyEq protocol original
         (reductionSameExternalInputs reduction) (sortedSameInputs sorted))
       laws
 
+||| Recover the producer-owned history entry behind one membership in its
+||| projected generation list.
+0 canonicalElemMapPreimage :
+  {source, target : Type} -> {project : source -> target} ->
+  {selected : target} -> {entries : List source} ->
+  Elem selected (map project entries) ->
+  (entry : source ** (Elem entry entries, project entry = selected))
+canonicalElemMapPreimage {entries = entry :: rest} Here =
+  (entry ** (Here, Refl))
+canonicalElemMapPreimage {entries = entry :: rest} (There later) =
+  case canonicalElemMapPreimage later of
+    (found ** (foundIn, exact)) => (found ** (There foundIn, exact))
+
 ||| Erased producer schedule used to seal the runtime schedule stored by the
 ||| bridge-facing capital.  All proof fields come from the exact indexed chain.
 public export
