@@ -1413,6 +1413,23 @@ leftCorrespondencePreservesDeleted nameEq
     leftEvent leftSuffix matched rest) generation member =
       leftCorrespondencePreservesDeleted nameEq rest generation member
 
+||| A surviving scanner classification and a later unload occurrence are
+||| disjoint.  This is the local contradiction used exactly at the located
+||| generated-registration head.
+0 scannerNoParentUnloadRejectsOccurrence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {parent : name} -> {trace : Transitions first finalState} ->
+  NoParentUnload parent trace -> ActionOccurs (LUnload parent) trace -> Void
+scannerNoParentUnloadRejectsOccurrence NoParentUnloadEnd occurrence impossible
+scannerNoParentUnloadRejectsOccurrence
+  (NoParentUnloadStep transition rest different laterSafe)
+  (ActionOccursHere transition rest unload) = different unload
+scannerNoParentUnloadRejectsOccurrence
+  (NoParentUnloadStep transition rest different laterSafe)
+  (ActionOccursLater transition rest laterOccurrence) =
+    scannerNoParentUnloadRejectsOccurrence laterSafe laterOccurrence
+
 ||| Exact left-scanner induction boundary.  At the located birth the accepted
 ||| correspondence cannot take a surviving/queued/matched branch: each such
 ||| branch contains `NoParentUnload`, contradicted by
