@@ -808,6 +808,58 @@ canonicalSortingIdentityEndpoint nameEq keyEq state =
     (\selected, present => void (canonicalElemEmpty present))
     (\selected, present => void (canonicalElemEmpty present))
 
+||| Base assembly for a trace that already has the required actor blocks and
+||| input placement.  This is the terminal case of the stable sorting proof.
+0 canonicalSortedIdentity :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq
+    keyEq trace) ->
+  (ordering : SupportOrderingCapital name key world error value nameEq keyEq
+    finalState) ->
+  (blocks : (n : name) -> Elem n (orderedSupportNames ordering) ->
+    LocatedOpenEpisodeBlock name key world error value nameEq keyEq n trace) ->
+  (blocksFollowOrder : (earlier, later : name) ->
+    (earlierIn : Elem earlier (orderedSupportNames ordering)) ->
+    (laterIn : Elem later (orderedSupportNames ordering)) ->
+    BeforeIn earlier later (orderedSupportNames ordering) ->
+    BlockBefore name key world error value nameEq keyEq trace earlier later
+      (blocks earlier earlierIn) (blocks later laterIn)) ->
+  ((earlier, later : name) ->
+    (earlierIn : Elem earlier (orderedSupportNames ordering)) ->
+    (laterIn : Elem later (orderedSupportNames ordering)) ->
+    BeforeIn earlier later (orderedSupportNames ordering) ->
+    (earlierPosition, laterPosition : Nat) ->
+    LTE (S earlierPosition) (S (transitionCount
+      (blockBody (blocks earlier earlierIn)))) ->
+    LTE (S laterPosition) (S (transitionCount
+      (blockBody (blocks later laterIn)))) ->
+    Not (transitionCount (traceBeforeBlock (blocks earlier earlierIn)) +
+      earlierPosition = transitionCount
+        (traceBeforeBlock (blocks later laterIn)) + laterPosition)) ->
+  LifecycleActorsCovered (orderedSupportNames ordering) trace ->
+  CanonicalInputPlacement name key world error value nameEq keyEq finalState
+    (orderedSupportNames ordering) trace ->
+  CanonicalRegistrationCorrespondence trace trace [] ->
+  SortedClosingFreeTrace name key world error value protocol nameEq keyEq trace
+    ordering
+canonicalSortedIdentity nameEq keyEq protocol trace premises ordering blocks
+  blocksFollowOrder rangesDisjoint lifecycleCoverage inputPlacement
+  registrationTree =
+    MkSortedClosingFreeTrace finalState trace
+      (finiteDerivationReplayCorrespondence
+        (the (FiniteAdjacentSwapDerivation name key world error value protocol
+          nameEq keyEq trace trace) FiniteAdjacentSwapDone))
+      (the (FiniteAdjacentSwapDerivation name key world error value protocol
+        nameEq keyEq trace trace) FiniteAdjacentSwapDone) premises
+      (sameExternalOrchestrationReflexiveSpike nameEq trace)
+      blocks blocksFollowOrder rangesDisjoint lifecycleCoverage inputPlacement
+      (canonicalSortingIdentityEndpoint nameEq keyEq finalState) Refl Refl
+      registrationTree
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
