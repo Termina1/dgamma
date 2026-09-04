@@ -571,6 +571,10 @@ r143LeftLowerDependsOnNothing found wanted depends =
 r143LeftAlternateDependsOnNothing found wanted depends =
   case found of Refl => absurd depends
 
+0 r143ElemSingletonExact : {left, right : K} -> Elem left [right] -> left = right
+r143ElemSingletonExact Here = Refl
+r143ElemSingletonExact (There later) = absurd later
+
 0 lowerNotAlternate : Not (Lower = Alternate)
 lowerNotAlternate Refl impossible
 
