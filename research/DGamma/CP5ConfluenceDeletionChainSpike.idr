@@ -1496,6 +1496,40 @@ data ClosingStepChoice :
     ClosingStepChoice name key world error value protocol nameEq keyEq trace
       premises
 
+||| Finite maximum witness used by O8. Both the chosen element and its proofs
+||| are erased because O7's occurrence inventory is erased.
+record MaximumBy
+  (measure : item -> Nat) (items : List item) where
+  constructor MkMaximumBy
+  0 maximumItem : item
+  0 maximumMember : Elem maximumItem items
+  0 maximumUpperBound : (other : item) -> Elem other items ->
+    LTE (measure other) (measure maximumItem)
+
+0 chooseMaximumBy :
+  (measure : item -> Nat) -> (head : item) -> (tail : List item) ->
+  MaximumBy measure (head :: tail)
+chooseMaximumBy measure head [] =
+  MkMaximumBy head Here
+    (\other, member => case member of
+      Here => reflexive
+      There later => case later of {})
+chooseMaximumBy measure head (next :: later) =
+  case chooseMaximumBy measure next later of
+    MkMaximumBy tailMaximum tailMember tailUpper =>
+      case isLTE (measure head) (measure tailMaximum) of
+        Yes headBelow =>
+          MkMaximumBy tailMaximum (There tailMember)
+            (\other, member => case member of
+              Here => headBelow
+              There inTail => tailUpper other inTail)
+        No headNotBelow =>
+          MkMaximumBy head Here
+            (\other, member => case member of
+              Here => reflexive
+              There inTail => transitive (tailUpper other inTail)
+                (lteSuccLeft (notLTEImpliesGT headNotBelow)))
+
 ||| Independently testable O8 result.  A selected maximal/deletable candidate is
 ||| tied back to an ordinal produced by the exact O7 scan; the empty branch is
 ||| definitionally separated from the O9 deletion adapter.
