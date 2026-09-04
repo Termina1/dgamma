@@ -419,6 +419,11 @@ r143UpperFreshInRightOrder (There later) = absurd later
 0 r143LowerFreshInRightOrder : Not (Elem Lower [])
 r143LowerFreshInRightOrder present = absurd present
 
+0 r143RightOrderUnique : UniqueKeys [Alternate, Upper, Lower]
+r143RightOrderUnique = UniqueCons r143AlternateFreshInRightOrder
+  (UniqueCons r143UpperFreshInRightOrder
+    (UniqueCons r143LowerFreshInRightOrder UniqueNil))
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
