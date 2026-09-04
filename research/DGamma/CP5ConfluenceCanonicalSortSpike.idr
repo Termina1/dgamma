@@ -803,6 +803,21 @@ public export
     ordering
 sortClosingFreeTraceSpike = ?sortClosingFreeTraceSpike_rhs
 
+||| A retired endpoint entry cannot occur in the executable least support set.
+||| The fixed-point equation exposes retirement before any parent/provider test.
+0 canonicalRetiredFiberUnsupported :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (state : SystemState name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} selected (registry state) = Just fiber ->
+  retired fiber = True ->
+  isSupported @{nameEq} @{keyEq} selected state = False
+canonicalRetiredFiberUnsupported nameEq keyEq selected state
+  (MkFiber component parent True table lifecycle) found Refl =
+    trans (supportSetIsSolution nameEq keyEq state selected)
+      (rewrite found in Refl)
+
 ||| Prove all support/parent/input-placement transport from the cumulative
 ||| endpoint relation and exact generated-registration accounting.
 public export
