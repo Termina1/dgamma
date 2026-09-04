@@ -282,6 +282,17 @@ r143NoRightParentEdge {child}
     (registry DGamma.R6FourFiberStatic.rightState) = Just fiber -> Void
 r143MiddleLookupImpossible found = case found of Refl impossible
 
+||| The concrete upper actor has an empty provision specification.
+0 r143UpperProvidesNothing :
+  {fiber : Fiber N K V Unit String} ->
+  lookupFiber @{the (DecEq N) %search} Upper
+    (registry DGamma.R6FourFiberStatic.rightState) = Just fiber ->
+  (wanted : K) ->
+  Elem wanted (dependencies (componentProvisions (fiberComponent fiber))) ->
+  Void
+r143UpperProvidesNothing found wanted provides =
+  case found of Refl => absurd provides
+
 0 noLowerBeforeUpperInRightOrder :
   BeforeIn Lower Upper [Alternate, Upper, Lower] -> Void
 noLowerBeforeUpperInRightOrder
