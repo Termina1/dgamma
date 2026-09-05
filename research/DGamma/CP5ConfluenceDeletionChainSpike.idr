@@ -26218,6 +26218,10 @@ scopedComposeOrdinalPermutation outer inner =
     (\ordinal => trans (cong (ordinalBackward inner) (ordinalLeftInverse outer (ordinalForward inner ordinal))) (ordinalLeftInverse inner ordinal))
     (\ordinal => trans (cong (ordinalForward outer) (ordinalRightInverse inner (ordinalBackward outer ordinal))) (ordinalRightInverse outer ordinal))
 
+scopedLiftOrdinalMap : (Nat -> Nat) -> Nat -> Nat
+scopedLiftOrdinalMap function Z = Z
+scopedLiftOrdinalMap function (S ordinal) = S (function ordinal)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
