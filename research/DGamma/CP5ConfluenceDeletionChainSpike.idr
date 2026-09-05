@@ -18503,6 +18503,26 @@ scopedChildBeforeTail name key world error value parent child first middle
   finalState _ _ notRetire (ChildRetiresLater transition rest noRecovery tail) =
     (noRecovery, tail)
 
+||| The exact current generation, not raw-name membership, forbids deleting a
+||| retirement of a generation born at a kept insertion.
+0 scopedRetainedGenerationRetireAbsurd :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (child : name) -> (generation : RegistrationGeneration name) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (0 current : (lookupCurrentGeneration @{nameEq} child live = Just generation)) ->
+  (0 retained : Not (Elem generation registered)) ->
+  GenerationOwnedActor {name = name} {key = key} {value = value}
+    {world = world} {error = error} nameEq registered ordinal live (ORetire child) ->
+  Void
+scopedRetainedGenerationRetireAbsurd name key world error value nameEq registered
+  child generation ordinal live current retained
+  (deletedGeneration ** (deletedCurrent, member)) =
+    retained (replace {p = \observed => Elem observed registered}
+      (justInjective (trans (sym deletedCurrent) current)) member)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
