@@ -19710,6 +19710,16 @@ scopedPostCloseActorTotal name key world error value nameEq keyEq selected actor
 scopedTraceTotalHead name key world error value nameEq keyEq first middle finalState transition rest
   (TraceComponentsTotalStep _ _ headTotal tailTotal) = headTotal
 
+0 scopedTraceTotalTail :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (transition : Transition first middle) -> (rest : Transitions middle finalState) ->
+  TraceComponentsTotal nameEq keyEq (MoreTransitions transition rest) ->
+  TraceComponentsTotal nameEq keyEq rest
+scopedTraceTotalTail name key world error value nameEq keyEq first middle finalState transition rest
+  (TraceComponentsTotalStep _ _ headTotal tailTotal) = tailTotal
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
