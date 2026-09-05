@@ -19365,6 +19365,18 @@ scopedLookupMatchedMember name item nameEq _ current cell observed rest Refl exa
   rewrite exact in (\found => replace
     {p = \chosen => Elem (Bind current chosen) (Bind current cell :: rest)} (justInjective found) Here)
 
+0 scopedLookupMemberHeadAt :
+  (name, item : Type) -> (nameEq : DecEq name) -> (wanted, current : name) ->
+  (cell, observed : item) -> (rest : List (Binding name (\_ => item))) ->
+  ((lookupEntries @{nameEq} wanted rest = Just observed) -> Elem (Bind wanted observed) rest) ->
+  (comparison : Dec (wanted = current)) -> (decEq @{nameEq} wanted current = comparison) ->
+  (lookupEntries @{nameEq} wanted (Bind current cell :: rest) = Just observed) ->
+  Elem (Bind wanted observed) (Bind current cell :: rest)
+scopedLookupMemberHeadAt name item nameEq wanted current cell observed rest tail (Yes same) exact =
+  scopedLookupMatchedMember name item nameEq wanted current cell observed rest same exact
+scopedLookupMemberHeadAt name item nameEq wanted current cell observed rest tail (No distinct) exact =
+  rewrite exact in (\found => There (tail found))
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
