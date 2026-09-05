@@ -11975,6 +11975,28 @@ ScopedForeignLifecycleExclusion {name} {key} {world} {error} {value}
       (componentDependencies (fiberComponent leftOwner))) ->
     providerCandidate @{keyEq} wanted leftSelected = False
 
+0 scopedTagSelectedHeadFromRaw :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (action : Action name key value world error) -> (tag, rawTag : RuleTag) ->
+  (originalAfter, survivor, rawAfter : SystemState name key value world error) ->
+  (tag = rawTag) ->
+  (applyAction @{nameEq} @{keyEq} action survivor = Just (rawTag, rawAfter)) ->
+  (step : SelectedEpisodeRetainedHead name key world error value nameEq keyEq selected
+    registered ordinal live whole action originalAfter survivor) ->
+  ScopedTaggedSelectedHead name key world error value nameEq keyEq selected registered
+    ordinal live whole action tag originalAfter survivor
+scopedTagSelectedHeadFromRaw name key world error value nameEq keyEq selected registered
+  ordinal live whole action tag rawTag originalAfter survivor rawAfter sameTag raw step =
+    MkScopedTaggedSelectedHead step
+      (trans sameTag (cong Builtin.fst (justInjective (trans (sym raw)
+        (namedFireProjectsRaw nameEq keyEq action survivor (selectedHeadNamed step)
+          (selectedHeadFires step))))))
+
 0 retainedForeignLifecycleFromScopedOwner :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (registered : List (RegistrationGeneration name)) ->
