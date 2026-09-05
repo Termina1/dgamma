@@ -22450,6 +22450,24 @@ scopedReadyKeptParentControls name key world error value nameEq keyEq deletable 
   sourceMiddle sourceFinal survivorFirst survivorMiddle sourceStep sourceRest retained tag survivorStep
   sameAction fires tail (ScopedParentControlsKeep controls tailControls) = (controls, tailControls)
 
+0 scopedReadyDeletedParentControls :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (sourceFirst, sourceMiddle, sourceFinal, survivor : SystemState name key value world error) ->
+  (sourceStep : Transition sourceFirst sourceMiddle) -> (sourceRest : Transitions sourceMiddle sourceFinal) ->
+  (deleted : deletable ordinal live (transitionAction sourceStep)) ->
+  (tail : GenerationReplayReady nameEq keyEq deletable (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) sourceRest survivor) ->
+  ScopedReadyParentControls name key world error value nameEq keyEq deletable ordinal live sourceFirst sourceFinal
+    survivor (MoreTransitions sourceStep sourceRest) (ReplayReadyDelete deleted tail) ->
+  ScopedReadyParentControls name key world error value nameEq keyEq deletable (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live)
+    sourceMiddle sourceFinal survivor sourceRest tail
+scopedReadyDeletedParentControls name key world error value nameEq keyEq deletable ordinal live sourceFirst
+  sourceMiddle sourceFinal survivor sourceStep sourceRest deleted tail (ScopedParentControlsDelete controls) = controls
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
