@@ -10599,6 +10599,40 @@ committedSelectionAtOpeningScoped nameEq keyEq selected actor wanted openingStat
           (installedTraceEndScoped activationToCurrent ownerInstalled)
           ownerDeclares candidateTrue))
 
+0 openingResolvedFromCommittedScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected, actor : name) -> (wanted : key) ->
+  (openingState, current : SystemState name key value world error) ->
+  (activationToCurrent : Transitions openingState current) ->
+  (0 ownerInstalled : InstalledTrace name key world error value nameEq keyEq
+    actor activationToCurrent) ->
+  (openingOwner, currentSelected, currentOwner :
+    Fiber name key value world error) ->
+  (0 openingFound : lookupFiber @{nameEq} actor (registry openingState) =
+    Just openingOwner) ->
+  (0 selectedFound : lookupFiber @{nameEq} selected (registry current) =
+    Just currentSelected) ->
+  (0 ownerFound : lookupFiber @{nameEq} actor (registry current) =
+    Just currentOwner) ->
+  (0 currentWellFormed : registryWellFormed @{nameEq} @{keyEq} current = True) ->
+  (0 ownerDeclares : Elem wanted (dependencies
+    (componentDependencies (fiberComponent currentOwner)))) ->
+  (0 candidateTrue : providerCandidate @{keyEq} wanted currentSelected = True) ->
+  resolvedProviderAt @{nameEq} @{keyEq} actor wanted selected openingState = True
+openingResolvedFromCommittedScoped nameEq keyEq selected actor wanted
+  openingState current activationToCurrent ownerInstalled openingOwner
+  currentSelected currentOwner openingFound selectedFound ownerFound
+  currentWellFormed ownerDeclares candidateTrue =
+    snapshotResolvesRelianceAnchor nameEq keyEq actor wanted selected
+      (installedOwnerSnapshot
+        (installedOwnerCommittedSnapshot nameEq actor openingState openingOwner
+          openingFound (installedTraceStart ownerInstalled)))
+      (committedSelectionAtOpeningScoped nameEq keyEq selected actor wanted
+        openingState current activationToCurrent ownerInstalled openingOwner
+        currentSelected currentOwner openingFound selectedFound ownerFound
+        currentWellFormed ownerDeclares candidateTrue)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
