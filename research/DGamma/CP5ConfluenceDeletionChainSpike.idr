@@ -11532,6 +11532,21 @@ scopedForeignRetainedHead
   (MkForeignRetainedEpisodeStep named fired nextBoundary) =
     MkSelectedEpisodeRetainedHead named fired nextBoundary
 
+0 scopedSelectedSourceOutsidePlan :
+  (nameEq : DecEq name) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (live : GenerationEnvironment name) ->
+  GenerationEnvironmentStamped live ->
+  ((generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole original survivor) ->
+  ActorOutsideDeletionPlan selected
+    (inactiveLeafPlan (completePlanResult (selectedBoundaryPlan boundary)))
+scopedSelectedSourceOutsidePlan nameEq selected registered live stamped outside
+  boundary = selectedOutsideBoundaryPlan selected registered live stamped outside
+    (selectedBoundaryPlan boundary)
+
 0 ScopedForeignLifecycleExclusion :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
