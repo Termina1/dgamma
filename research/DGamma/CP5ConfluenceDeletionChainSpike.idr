@@ -14621,6 +14621,129 @@ scopedBeginClosingLocalization name key world error value nameEq keyEq global
       (scopedClosedPrefixDecomposition name key world error value nameEq keyEq
         selected located)
 
+0 scopedBeginClosingExclusionAtAfter :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState, before, afterState :
+    SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq global) ->
+  (initialWellFormed : registryWellFormed @{nameEq} @{keyEq} initial = True) ->
+  (initialEmpty : bindings (registry initial) = []) ->
+  (selected, actor : name) -> (actorDistinct : Not (actor = selected)) ->
+  (selectedStartOrdinal : Nat) ->
+  (selectedStartLive : GenerationEnvironment name) ->
+  (selectedEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  (selectedOrdinalExact : transitionCount
+    (traceBeforeOpening selectedEpisode) = selectedStartOrdinal) ->
+  (noDependent : NoDependentClosingEpisodeForGeneration
+    {nameEq = nameEq} {keyEq = keyEq} {global = global} selected
+    selectedStartOrdinal selectedStartLive selectedEpisode) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LBegin actor) before =
+    Just (tag, afterState)) ->
+  (insidePrefix : Transitions
+    (closedStartState (locatedEpisode selectedEpisode)) before) ->
+  (rest : Transitions afterState
+    (lastInstalledState (locatedEpisode selectedEpisode))) ->
+  (insideDecomposition : appendTransitions insidePrefix
+    (MoreTransitions
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq (LBegin actor) tag checked)
+      rest) = closedInside (locatedEpisode selectedEpisode)) ->
+  (closingResult : FirstClosingResult name key world error value nameEq keyEq
+    actor rest) ->
+  (leftSelected, afterOwner : Fiber name key value world error) ->
+  (selectedAfterFound : lookupFiber @{nameEq} selected (registry afterState) =
+    Just leftSelected) ->
+  (afterOwnerFound : lookupFiber @{nameEq} actor (registry afterState) =
+    Just afterOwner) ->
+  (afterWellFormed : registryWellFormed @{nameEq} @{keyEq} afterState = True) ->
+  (wanted : key) ->
+  (ownerDeclares : Elem wanted (dependencies
+    (componentDependencies (fiberComponent afterOwner)))) ->
+  providerCandidate @{keyEq} wanted leftSelected = False
+scopedBeginClosingExclusionAtAfter name key world error value nameEq keyEq global
+  aligned initialWellFormed initialEmpty selected actor actorDistinct
+  selectedStartOrdinal selectedStartLive selectedEpisode selectedOrdinalExact
+  noDependent tag checked insidePrefix rest insideDecomposition closingResult
+  leftSelected afterOwner selectedAfterFound afterOwnerFound afterWellFormed
+  wanted ownerDeclares =
+    generationScopedCrossingExcludesSelected nameEq keyEq selected actor
+      actorDistinct global aligned initialWellFormed initialEmpty
+      selectedStartOrdinal selectedStartLive selectedEpisode selectedOrdinalExact
+      noDependent
+      (appendTransitions (traceBeforeOpening selectedEpisode)
+        (MoreTransitions
+          (beginTransition (closedOpening (locatedEpisode selectedEpisode)))
+          (closedTransitions (locatedEpisode selectedEpisode))))
+      (scopedAlignedClosedPrefix name key world error value nameEq keyEq global
+        aligned selected selectedEpisode)
+      (scopedSelectedAfterCloseUninstalled name key world error value nameEq
+        keyEq selected (locatedEpisode selectedEpisode))
+      (scopedBeginClosingLocalization name key world error value nameEq keyEq
+        global aligned initialEmpty selected selectedEpisode actor tag checked
+        insidePrefix rest insideDecomposition closingResult)
+      (appendTransitions insidePrefix
+        (MoreTransitions
+          (Fired {before = before} {afterState = afterState}
+            nameEq keyEq (LBegin actor) tag checked)
+          NoTransitions))
+      rest
+      (trans
+        (appendTransitionsAssociative insidePrefix
+          (MoreTransitions
+            (Fired {before = before} {afterState = afterState}
+              nameEq keyEq (LBegin actor) tag checked)
+            NoTransitions)
+          rest)
+        insideDecomposition)
+      (sym
+        (appendTransitionsAssociative (traceBeforeOpening selectedEpisode)
+          (MoreTransitions
+            (beginTransition (closedOpening (locatedEpisode selectedEpisode)))
+            insidePrefix)
+          (MoreTransitions
+            (Fired {before = before} {afterState = afterState}
+              nameEq keyEq (LBegin actor) tag checked)
+            NoTransitions)))
+      afterState
+      (scopedGlobalActivationTrace
+        (scopedGlobalAnchorActivation name key world error value nameEq keyEq
+          actor
+          (Fired {before = before} {afterState = afterState}
+            nameEq keyEq (LBegin actor) tag checked)
+          (appendTransitions (traceBeforeOpening selectedEpisode)
+            (MoreTransitions
+              (beginTransition (closedOpening (locatedEpisode selectedEpisode)))
+              (closedTransitions (locatedEpisode selectedEpisode))))
+          global
+          (scopedBeginClosedPrefixAnchor name key world error value nameEq keyEq
+            selected selectedEpisode actor tag checked insidePrefix rest
+            insideDecomposition)
+          (scopedBeginClosingLocalization name key world error value nameEq keyEq
+            global aligned initialEmpty selected selectedEpisode actor tag checked
+            insidePrefix rest insideDecomposition closingResult)))
+      (scopedGlobalActivationInstalled
+        (scopedGlobalAnchorActivation name key world error value nameEq keyEq
+          actor
+          (Fired {before = before} {afterState = afterState}
+            nameEq keyEq (LBegin actor) tag checked)
+          (appendTransitions (traceBeforeOpening selectedEpisode)
+            (MoreTransitions
+              (beginTransition (closedOpening (locatedEpisode selectedEpisode)))
+              (closedTransitions (locatedEpisode selectedEpisode))))
+          global
+          (scopedBeginClosedPrefixAnchor name key world error value nameEq keyEq
+            selected selectedEpisode actor tag checked insidePrefix rest
+            insideDecomposition)
+          (scopedBeginClosingLocalization name key world error value nameEq keyEq
+            global aligned initialEmpty selected selectedEpisode actor tag checked
+            insidePrefix rest insideDecomposition closingResult)))
+      leftSelected afterOwner selectedAfterFound afterOwnerFound afterWellFormed
+      wanted ownerDeclares
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
