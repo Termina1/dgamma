@@ -12982,6 +12982,32 @@ scopedAppendRightEmbedding name key world error value
 scopedTransportEmbeddingTarget name key world error value Refl embedding =
   embedding
 
+0 scopedAppendGenerationScan :
+  (name : Type) -> (nameEq : DecEq name) ->
+  {key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (middleOrdinal : Nat) -> (middleLive : GenerationEnvironment name) ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq ordinal live left middleOrdinal middleLive ->
+  GenerationTraceScan nameEq middleOrdinal middleLive right finalOrdinal
+    finalLive ->
+  GenerationTraceScan nameEq ordinal live (appendTransitions left right)
+    finalOrdinal finalLive
+scopedAppendGenerationScan name nameEq ordinal live left right middleOrdinal
+  middleLive finalOrdinal finalLive leftScan rightScan =
+    case leftScan of
+      GenerationTraceScanEnd => rightScan
+      GenerationTraceScanStep transition rest leftTail =>
+        GenerationTraceScanStep transition (appendTransitions rest right)
+          (scopedAppendGenerationScan name nameEq (S ordinal)
+            (advanceGenerationEnvironment @{nameEq} ordinal
+              (transitionAction transition) live)
+            rest right middleOrdinal middleLive finalOrdinal finalLive leftTail
+            rightScan)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
