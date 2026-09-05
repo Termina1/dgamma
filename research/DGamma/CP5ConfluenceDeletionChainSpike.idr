@@ -13860,6 +13860,29 @@ scopedDirectLifecycleExclusion name key world error value nameEq keyEq selected
           actorInstalled leftOwner ownerFound))
       wanted ownerDeclares
 
+0 scopedLifecycleNonBeginAnchorState :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  Not (action = LBegin (actionOwner action)) ->
+  lifecycleOccurrenceAnchorState action before afterState = before
+scopedLifecycleNonBeginAnchorState name key world error value
+  (OInsert actor parent component) before afterState notBegin = Refl
+scopedLifecycleNonBeginAnchorState name key world error value
+  (ORetire actor) before afterState notBegin = Refl
+scopedLifecycleNonBeginAnchorState name key world error value
+  (ORemove actor) before afterState notBegin = Refl
+scopedLifecycleNonBeginAnchorState name key world error value
+  (LBegin actor) before afterState notBegin = void (notBegin Refl)
+scopedLifecycleNonBeginAnchorState name key world error value
+  (LAdvance actor) before afterState notBegin = Refl
+scopedLifecycleNonBeginAnchorState name key world error value
+  (LDivert actor) before afterState notBegin = Refl
+scopedLifecycleNonBeginAnchorState name key world error value
+  (LLeave actor) before afterState notBegin = Refl
+scopedLifecycleNonBeginAnchorState name key world error value
+  (LUnload actor) before afterState notBegin = Refl
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
