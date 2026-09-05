@@ -15113,6 +15113,69 @@ scopedSelectedWholeGlobalEmbedding name key world error value nameEq keyEq
               (traceAfterClosing located)))
           transition (OccursLater occurrence))
 
+0 scopedSelectedClosedFoldFromPremises :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq global) ->
+  (discipline : RegistrationDiscipline protocol nameEq global) ->
+  (initialWellFormed : registryWellFormed @{nameEq} @{keyEq} initial = True) ->
+  (initialEmpty : bindings (registry initial) = []) ->
+  (independent : TraceIndependent name key world error value keyEq global) ->
+  (selected : name) ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (selectedOutside :
+    (generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (episodeStartOrdinal : Nat) ->
+  (episodeStartLive : GenerationEnvironment name) ->
+  (beforeScan : GenerationTraceScan nameEq 0 []
+    (traceBeforeOpening located) episodeStartOrdinal episodeStartLive) ->
+  (registeredDuring : RegisteredGenerationsDuring selected episodeStartOrdinal
+    registered
+    (MoreTransitions
+      (beginTransition (closedOpening (locatedEpisode located)))
+      (closedTransitions (locatedEpisode located)))) ->
+  (noRegistered : NoRegisteredEpisode nameEq registered 0 [] global) ->
+  (noDependent : NoDependentClosingEpisodeForGeneration
+    {nameEq = nameEq} {keyEq = keyEq} {global = global} selected
+    episodeStartOrdinal episodeStartLive located) ->
+  SelectedClosedEpisodeFold name key world error value nameEq keyEq selected
+    registered episodeStartOrdinal episodeStartLive (locatedEpisode located)
+    (appendTransitions (closedTransitions (locatedEpisode located))
+      (traceAfterClosing located))
+scopedSelectedClosedFoldFromPremises name key world error value protocol nameEq
+  keyEq global aligned discipline initialWellFormed initialEmpty independent
+  selected located registered selectedOutside episodeStartOrdinal
+  episodeStartLive beforeScan registeredDuring noRegistered noDependent =
+    scopedSelectedClosedFoldFromInterior name key world error value nameEq keyEq
+      global aligned selected located registered selectedOutside
+      episodeStartOrdinal episodeStartLive beforeScan registeredDuring
+      noRegistered
+      (scopedSelectedInteriorFoldFromPremises name key world error value protocol
+        nameEq keyEq global aligned initialWellFormed selected located registered
+        selectedOutside episodeStartOrdinal episodeStartLive beforeScan
+        registeredDuring noRegistered
+        (scopedSelectedEpisodeLocalReplayer name key world error value protocol
+          nameEq keyEq selected registered global discipline independent
+          (appendTransitions (closedTransitions (locatedEpisode located))
+            (traceAfterClosing located))
+          (locatedEpisode located)
+          (scopedSelectedWholeGlobalEmbedding name key world error value nameEq
+            keyEq selected located)
+          (scopedSelectedLifecycleProvider name key world error value nameEq keyEq
+            global aligned initialWellFormed initialEmpty selected located
+            registered episodeStartOrdinal episodeStartLive
+            (sym
+              (generationScanOrdinalCount nameEq 0 []
+                (traceBeforeOpening located) episodeStartOrdinal
+                episodeStartLive beforeScan))
+            noDependent)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
