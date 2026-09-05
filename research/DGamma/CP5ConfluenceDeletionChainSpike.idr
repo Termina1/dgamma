@@ -87,9 +87,6 @@ record GenerationScopedClosingStart
   (consumerEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
     consumer global) where
   constructor MkGenerationScopedClosingStart
-  scopedSelectedGeneration : RegistrationGeneration name
-  0 scopedSelectedCurrent : lookupCurrentGeneration @{nameEq} selected
-    selectedStartLive = Just scopedSelectedGeneration
   0 scopedSelectedOrdinal : transitionCount
     (traceBeforeOpening selectedEpisode) = selectedStartOrdinal
   scopedConsumerOpening : LocatedActionOccurrence (LBegin consumer)
