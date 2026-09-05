@@ -22885,6 +22885,10 @@ scopedOrderedControlsNoFailure name key world error value _ _
     cong2 (\headFlag, tailFlag => headFlag && tailFlag) (scopedFiberControlNotFailed name key world error value _ _ related)
       (scopedOrderedControlsNoFailure name key world error value _ _ rest)
 
+0 scopedAndRightTrue : (left, right : Bool) -> ((left && right) = True) -> (right = True)
+scopedAndRightTrue False right equation = void (scopedFalseNotTrue equation)
+scopedAndRightTrue True right equation = equation
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
