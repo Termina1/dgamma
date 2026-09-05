@@ -12520,6 +12520,55 @@ scopedDeletedRegisteredAtLocatedStep name key world error value protocol nameEq
       MkDeletedRegisteredEpisodeBoundaryStep nextBoundary nextEmpty =>
         nextBoundary
 
+0 scopedDeletedRegisteredOrchestrationBoundary :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  {globalFirst, globalLast : SystemState name key value world error} ->
+  (global : Transitions globalFirst globalLast) ->
+  (globalDiscipline : RegistrationDiscipline protocol nameEq global) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (wholeInGlobal : OccurrenceEmbedding whole global) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (stamped : GenerationEnvironmentStamped live) ->
+  (selectedOutside :
+    (generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (action : Action name key value world error) ->
+  (orchestration : isLifecycleAction action = False) ->
+  (before, afterState, survivor : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (occurs : OccursIn
+    (Fired {before = before} {afterState = afterState} nameEq keyEq action tag
+      checked) whole) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  (oldEmpty : EmptyTableInactivePlan name key world error value nameEq
+    (inactiveLeafPlan
+      (completePlanResult (selectedBoundaryPlan boundary)))) ->
+  (owned : GenerationOwnedActor nameEq registered ordinal live action) ->
+  SelectedEpisodeReplayBoundary name key world error value nameEq keyEq selected
+    registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) whole afterState
+    survivor
+scopedDeletedRegisteredOrchestrationBoundary name key world error value protocol
+  nameEq keyEq selected registered global globalDiscipline whole wholeInGlobal
+  ordinal live unique stamped selectedOutside action orchestration before
+  afterState survivor tag checked occurs boundary oldEmpty owned =
+    case scopedRegistrationDisciplineAtOccurrence
+      (Fired nameEq keyEq action tag checked) global globalDiscipline
+      (wholeInGlobal (Fired nameEq keyEq action tag checked) occurs) of
+      MkScopedLocatedRegistrationStep future futureDiscipline =>
+        scopedDeletedRegisteredAtLocatedStep name key world error value protocol
+          nameEq keyEq selected registered ordinal live unique stamped
+          selectedOutside action orchestration before afterState tag checked
+          future futureDiscipline whole survivor boundary oldEmpty owned
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
