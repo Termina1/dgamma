@@ -15906,6 +15906,21 @@ scopedPostCloseSuffixFold name key world error value protocol nameEq keyEq selec
             (postCloseOriginalSelectedInactive nameEq selected registered live
               unique stamped selectedOutside _ survivor boundary))
 
+record ScopedPostCloseSuffixFoldOutput
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (registered : List (RegistrationGeneration name))
+  (ordinal : Nat) (live : GenerationEnvironment name)
+  {original, finalState : SystemState name key value world error}
+  (trace : Transitions original finalState)
+  (survivor : SystemState name key value world error) where
+  constructor MkScopedPostCloseSuffixFoldOutput
+  postCloseOutputFold : RelationalNoEpisodeSuffixReplayFold name key world error
+    value nameEq keyEq registered ordinal live trace survivor
+  0 postCloseOutputTags : ReplayReadyRuleTagsPreserved name key world error value
+    nameEq keyEq (GenerationOwnedActor nameEq registered) ordinal live original
+    finalState trace survivor (relationalSuffixReplayReady postCloseOutputFold)
+
 0 scopedDisciplineAppendRight :
   (left : Transitions first middle) ->
   (right : Transitions middle finalState) ->
