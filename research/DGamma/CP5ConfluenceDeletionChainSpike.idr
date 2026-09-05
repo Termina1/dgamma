@@ -24091,6 +24091,31 @@ scopedAppendTraceTotal name key world error value nameEq keyEq first middle fina
     TraceComponentsTotalStep transition (appendTransitions rest right) headTotal
       (scopedAppendTraceTotal name key world error value nameEq keyEq _ middle finalState rest right tailTotal rightTotal)
 
+0 scopedEnrichedTraceTotal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  TraceComponentsTotal nameEq keyEq global ->
+  TraceComponentsTotal nameEq keyEq
+    (scopedEnrichedTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+scopedEnrichedTraceTotal name key world error value protocol nameEq keyEq initial finalState global candidate folds sourceTotal =
+  scopedAppendTraceTotal name key world error value nameEq keyEq initial (locatedPreStart (selectedEpisode candidate))
+    (scopedEnrichedFinal name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+    (traceBeforeOpening (selectedEpisode candidate))
+    (appendTransitions
+      (scopedEnrichedCenterTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+      (scopedEnrichedSuffixTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds))
+    (fst (traceComponentsTotalLocatedSplit global (selectedEpisode candidate) sourceTotal))
+    (scopedAppendTraceTotal name key world error value nameEq keyEq (locatedPreStart (selectedEpisode candidate))
+      (scopedEnrichedMiddle name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+      (scopedEnrichedFinal name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+      (scopedEnrichedCenterTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+      (scopedEnrichedSuffixTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+      (selectedOutputTotal (enrichedSelected folds) (fst (snd (traceComponentsTotalLocatedSplit global (selectedEpisode candidate) sourceTotal))))
+      (postCloseOutputTotal (enrichedSuffix folds) (snd (snd (traceComponentsTotalLocatedSplit global (selectedEpisode candidate) sourceTotal)))))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
