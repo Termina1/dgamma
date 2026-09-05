@@ -23142,6 +23142,22 @@ scopedLifecycleFibersQuiet name key world error value nameEq keyEq component lef
 scopedLifecycleFibersQuiet name key world error value nameEq keyEq component leftParent rightParent
   leftRetired rightRetired leftTable rightTable _ _ left right (UnloadingControls accumulators views outcomes) targets = Refl
 
+0 scopedRuntimeFiberQuiet :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (left, right : Registry name key value world error) ->
+  OrderedRuntimeSourcesRelated name key world error value (bindings left) (bindings right) ->
+  (leftFiber, rightFiber : Fiber name key value world error) ->
+  FiberControlRelated leftFiber rightFiber ->
+  (quietFiber @{nameEq} @{keyEq} leftFiber left = quietFiber @{nameEq} @{keyEq} rightFiber right)
+scopedRuntimeFiberQuiet name key world error value nameEq keyEq left right sources _ _
+  (FibersControlRelated {component} leftParent rightParent leftRetired rightRetired leftTable rightTable
+    leftLife rightLife parents retiredFlags lifecycles) =
+    scopedLifecycleFibersQuiet name key world error value nameEq keyEq component leftParent rightParent
+      leftRetired rightRetired leftTable rightTable leftLife rightLife left right lifecycles
+      (orderedRuntimeTargetFiberSame nameEq keyEq component leftParent rightParent leftRetired rightRetired
+        leftTable rightTable leftLife rightLife left right retiredFlags sources)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
