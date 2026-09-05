@@ -248,6 +248,9 @@ data ExactPreIntervalPrefixClassification :
     (0 selectedInsideExact :
       (selectedInside = appendTransitions selectedToForeign
         (MoreTransitions foreignOpening foreignSuffix))) ->
+    (0 foreignPrefixCountExact :
+      transitionCount foreignPrefix =
+        transitionCount selectedPrefix + S (transitionCount selectedToForeign)) ->
     ExactPreIntervalPrefixClassification name key world error value first
       selectedBefore selectedAfter foreignBefore foreignAfter finalState
       selectedPrefix selectedOpening selectedInside foreignPrefix foreignOpening
@@ -326,7 +329,7 @@ selectedOpeningHeadClassification name key world error value first selectedAfter
     case headView of
       SharedExactPreIntervalHeadWitness viewName viewKey viewWorld viewError
         viewValue viewFirst viewMiddle viewFinal viewHead _ _ tailAlignment =>
-          ExactForeignOpeningInsideSelectedInterval foreignRest tailAlignment
+          ExactForeignOpeningInsideSelectedInterval foreignRest tailAlignment Refl
 
 ||| Foreign opening is the common head; the mirror P2-view elimination yields
 ||| the exact foreign suffix through the selected opening.
@@ -387,9 +390,9 @@ prependExactPreIntervalClassification name key world error value first middle
   foreignOpening foreignSuffix verdict =
     case verdict of
       ExactForeignOpeningInsideSelectedInterval selectedToForeign
-        selectedInsideExact =>
+        selectedInsideExact foreignPrefixCountExact =>
           ExactForeignOpeningInsideSelectedInterval selectedToForeign
-            selectedInsideExact
+            selectedInsideExact (cong S foreignPrefixCountExact)
       ExactForeignOpeningBeforeSelectedInterval foreignToSelected
         foreignSuffixExact =>
           ExactForeignOpeningBeforeSelectedInterval foreignToSelected
@@ -672,7 +675,7 @@ exactPreIntervalToLifecycleView name key world error value nameEq keyEq selected
   foreignSuffix foreignInstalled classification =
     case classification of
       ExactForeignOpeningInsideSelectedInterval selectedToForeign
-        selectedInsideExact =>
+        selectedInsideExact foreignPrefixCountExact =>
           ForeignOpeningInsideSelectedInterval selectedToForeign
             selectedInsideExact foreignInstalled
       ExactForeignOpeningBeforeSelectedInterval foreignToSelected
