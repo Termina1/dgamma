@@ -19812,6 +19812,19 @@ scopedRelationalRetainedTag name key world error value protocol nameEq keyEq
         tag checked rest discipline retained)
       (relationalEffects boundary) (relationalOrderedControls boundary) named fires
 
+0 scopedParentYieldReloading :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (parent : name) ->
+  (component : Component key value world error) ->
+  (before : SystemState name key value world error) ->
+  ParentRegistrationYield protocol nameEq parent component before ->
+  (reloadingAt @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} parent before = True)
+scopedParentYieldReloading name key world error value protocol nameEq parent
+  component before yielded =
+    rewrite parentFoundAtYield yielded in rewrite parentAtYield yielded in Refl
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
