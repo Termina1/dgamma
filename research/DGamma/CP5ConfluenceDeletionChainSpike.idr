@@ -10181,6 +10181,33 @@ buildScopedClosingFromOpening transition prefixTrace anchor beforeOpening openin
               suffixTrace global globalSplit)
             afterOpening installedAfterOpening openingSplit beforeClosing Refl
 
+0 buildScopedClosingFromOpeningResult :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {actor : name} ->
+  {prefixInitial, prefixFinal, globalFinal, stepBefore, stepAfter :
+    SystemState name key value world error} ->
+  (transition : Transition stepBefore stepAfter) ->
+  (prefixTrace : Transitions prefixInitial prefixFinal) ->
+  (anchor : ForeignLifecycleInstalledAnchor name key world error value nameEq
+    keyEq actor transition prefixTrace) ->
+  (openingResult : LastOpeningResult name key world error value nameEq keyEq
+    actor (lifecycleBeforeInstalled anchor)) ->
+  (closingResult : FirstClosingResult name key world error value nameEq keyEq
+    actor (lifecycleAfterInstalled anchor)) ->
+  (suffixTrace : Transitions prefixFinal globalFinal) ->
+  (global : Transitions prefixInitial globalFinal) ->
+  (0 globalSplit : appendTransitions prefixTrace suffixTrace = global) ->
+  ScopedClosingLocalization name key world error value nameEq keyEq actor
+    transition prefixTrace global anchor
+buildScopedClosingFromOpeningResult transition prefixTrace anchor openingResult
+  closingResult suffixTrace global globalSplit =
+    case openingResult of
+      MkLastOpeningResult preStart opened beforeOpening opening afterOpening
+        openingSplit installedAfterOpening =>
+          buildScopedClosingFromOpening transition prefixTrace anchor
+            beforeOpening opening afterOpening openingSplit
+            installedAfterOpening closingResult suffixTrace global globalSplit
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
