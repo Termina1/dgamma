@@ -25630,6 +25630,16 @@ record ScopedEnrichedHeadReplays
     (scopedEnrichedMiddle name key world error value protocol nameEq keyEq initial finalState global candidate folds)
     (traceAfterClosing (selectedEpisode candidate)) (relationalSuffixReplayReady (postCloseOutputFold (enrichedSuffix folds)))
 
+0 scopedEnrichedHeadReplays :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  ScopedEnrichedHeadReplays name key world error value protocol nameEq keyEq initial finalState global candidate folds
+scopedEnrichedHeadReplays name key world error value protocol nameEq keyEq initial finalState global candidate folds =
+  MkScopedEnrichedHeadReplays (selectedOutputSemantic (enrichedSelected folds)) (postCloseOutputSemantic (enrichedSuffix folds))
+
 0 scopedEnrichedReplayFromHeads :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
