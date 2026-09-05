@@ -25,6 +25,7 @@ import DGamma.CP4DeletionNoEpisodeReplay
 import DGamma.CP4DeletionCommittedProviderPersistence
 import DGamma.CP4DeletionControlPlan
 import DGamma.CP4DeletionEmptyTableInvariant
+import DGamma.CP4DeletionSelectedForeignLifecycleAnchorReliance
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceCurrent
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceResolved
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceSelected
@@ -13797,6 +13798,67 @@ scopedLifecycleNonBeginSourceInstalled name key world error value nameEq keyEq
         (lUnloadBoundary nameEq keyEq actor before afterState tag
           (checkedActionProjects nameEq keyEq (LUnload actor) before afterState
             tag checked)))
+
+0 scopedDirectLifecycleExclusion :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {selectedPre, selectedAfter, before, afterState :
+    SystemState name key value world error} ->
+  (selectedEpisode : ClosedEpisode name key world error value nameEq keyEq
+    selected selectedPre selectedAfter) ->
+  (action : Action name key value world error) ->
+  (actorDistinct : Not (actionOwner action = selected)) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (rest : Transitions afterState (lastInstalledState selectedEpisode)) ->
+  (actorInstalled : InstalledTrace name key world error value nameEq keyEq
+    (actionOwner action)
+    (MoreTransitions
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq action tag checked)
+      rest)) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  {whole : Transitions wholeFirst wholeLast} ->
+  {survivor : SystemState name key value world error} ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  (leftSelected, leftOwner : Fiber name key value world error) ->
+  (selectedFound : lookupFiber @{nameEq} selected (registry before) =
+    Just leftSelected) ->
+  (ownerFound : lookupFiber @{nameEq} (actionOwner action) (registry before) =
+    Just leftOwner) ->
+  (wanted : key) ->
+  (ownerDeclares : Elem wanted (dependencies
+    (componentDependencies (fiberComponent leftOwner)))) ->
+  providerCandidate @{keyEq} wanted leftSelected = False
+scopedDirectLifecycleExclusion name key world error value nameEq keyEq selected
+  registered ordinal live selectedEpisode action actorDistinct tag checked rest
+  actorInstalled boundary leftSelected leftOwner selectedFound ownerFound wanted
+  ownerDeclares =
+    relianceAnchorProviderExcluded nameEq keyEq selected (actionOwner action)
+      actorDistinct selectedEpisode before
+      (MoreTransitions
+        (Fired {before = before} {afterState = afterState}
+          nameEq keyEq action tag checked)
+        rest)
+      actorInstalled leftSelected leftOwner selectedFound ownerFound
+      (selectedOriginalWellFormed boundary)
+      (the
+        (SelectedUnloadRelianceAnchor name key world error value nameEq keyEq
+          selected (actionOwner action) {current = before} selectedEpisode
+          leftOwner)
+        (selectedUnloadRelianceAnchorFromInstalledTrace nameEq keyEq selected
+          (actionOwner action) selectedEpisode before
+          (MoreTransitions
+            (Fired {before = before} {afterState = afterState}
+              nameEq keyEq action tag checked)
+            rest)
+          actorInstalled leftOwner ownerFound))
+      wanted ownerDeclares
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
