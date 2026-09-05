@@ -11614,6 +11614,21 @@ scopedRetainedNoEpisodeBoundaryStep protocol nameEq keyEq selected registered
           (scopedSelectedPlanExactBoundary nameEq keyEq unique boundary) tag
           checked future futureDiscipline notOwned
 
+||| Selected-interior head retains the source rule tag at the live producer seam.
+record ScopedTaggedSelectedHead
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
+  (registered : List (RegistrationGeneration name))
+  (ordinal : Nat) (live : GenerationEnvironment name)
+  {wholeFirst, wholeLast : SystemState name key value world error}
+  (whole : Transitions wholeFirst wholeLast)
+  (action : Action name key value world error) (tag : RuleTag)
+  (originalAfter, survivor : SystemState name key value world error) where
+  constructor MkScopedTaggedSelectedHead
+  taggedSelectedHead : SelectedEpisodeRetainedHead name key world error value nameEq keyEq
+    selected registered ordinal live whole action originalAfter survivor
+  0 taggedSelectedTag : (tag = namedTag (selectedHeadNamed taggedSelectedHead))
+
 0 scopedForeignRetainedHead :
   ForeignRetainedEpisodeStep name key world error value nameEq keyEq selected
     registered ordinal live whole action afterState survivor ->
