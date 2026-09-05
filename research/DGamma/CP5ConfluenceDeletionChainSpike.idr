@@ -22839,6 +22839,29 @@ scopedSelectedClosedOutputFromPremises name key world error value protocol nameE
                 episodeStartLive beforeScan))
             noDependent)))
 
+0 scopedLifecycleFibersNotFailed :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (component : Component key value world error) -> (leftParent, rightParent : Parent name) ->
+  (leftRetired, rightRetired : Bool) ->
+  (leftTable, rightTable : OwnedTable key value (componentProvisions component)) ->
+  (leftLife, rightLife : Lifecycle key value world error name
+    (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  LifecycleControlRelated leftLife rightLife ->
+  (fiberNotFailed (MkFiber component leftParent leftRetired leftTable leftLife) =
+    fiberNotFailed (MkFiber component rightParent rightRetired rightTable rightLife))
+scopedLifecycleFibersNotFailed name key world error value component leftParent rightParent leftRetired
+  rightRetired leftTable rightTable _ _ (InactiveControls {leftOutcome = Nothing} same) =
+    rewrite sym same in Refl
+scopedLifecycleFibersNotFailed name key world error value component leftParent rightParent leftRetired
+  rightRetired leftTable rightTable _ _ (InactiveControls {leftOutcome = Just failure} same) =
+    rewrite sym same in Refl
+scopedLifecycleFibersNotFailed name key world error value component leftParent rightParent leftRetired
+  rightRetired leftTable rightTable _ _ (ReloadingControls remaining accumulators views) = Refl
+scopedLifecycleFibersNotFailed name key world error value component leftParent rightParent leftRetired
+  rightRetired leftTable rightTable _ _ (ActiveControls accumulators views) = Refl
+scopedLifecycleFibersNotFailed name key world error value component leftParent rightParent leftRetired
+  rightRetired leftTable rightTable _ _ (UnloadingControls accumulators views outcomes) = Refl
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
