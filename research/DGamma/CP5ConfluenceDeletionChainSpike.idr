@@ -17029,6 +17029,13 @@ scopedInsertPresentAbsurd name key world error value nameEq keyEq child
               (MkSystemState ambient fibers) afterState tag checked)))
         found)
 
+||| Local copy of the left projection of a true conjunction; the production
+||| variants are module-private.
+0 scopedAndLeftTrue : (left, right : Bool) -> (left && right) = True ->
+  left = True
+scopedAndLeftTrue False right equation = case equation of Refl impossible
+scopedAndLeftTrue True right equation = Refl
+
 ||| The kept insertion installs the exact fresh fiber: observed guard and
 ||| fresh-slot values drive the reduction, and the produced after-state lookup
 ||| is the freshly inserted, unretired fiber.
