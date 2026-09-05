@@ -13177,6 +13177,28 @@ scopedInsideNoRegistered name key world error value nameEq keyEq selected
           (MoreTransitions (unloadTransition (closing episode)) NoTransitions)
           afterOpeningNoRegistered
 
+0 scopedAlignedLocatedBefore :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  (consumer : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    consumer global) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (traceBeforeOpening episode)
+scopedAlignedLocatedBefore name key world error value nameEq keyEq global aligned
+  consumer episode =
+    fst
+      (alignedAppendSplit (traceBeforeOpening episode)
+        (appendTransitions
+          (MoreTransitions
+            (beginTransition (closedOpening (locatedEpisode episode)))
+            (closedTransitions (locatedEpisode episode)))
+          (traceAfterClosing episode))
+        (rewrite (locatedDecomposition episode) in aligned))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
