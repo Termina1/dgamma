@@ -5,6 +5,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionTheorem
+import DGamma.CP4DeletionBoundaryDeleted
 import DGamma.CP4DeletionBoundaryLifecycleCore
 import DGamma.CP4DeletionBoundaryRetained
 import DGamma.CP4DeletionBoundaryPlan
@@ -11682,6 +11683,19 @@ scopedSelectedInsertImpossible name key world error value nameEq keyEq selected
                 (OInsert selected parent component))
               before afterState tag checked)
             sourceInstalled
+
+0 scopedRetireViewTag :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (actor : name) -> (ambient : world) ->
+  (source : Registry name key value world error) -> (tag : RuleTag) ->
+  (afterState : SystemState name key value world error) ->
+  RetireSuccessView name key world error value nameEq actor ambient source tag
+    afterState ->
+  (tag = ORetireTag)
+scopedRetireViewTag name key world error value nameEq actor ambient source tag
+  afterState view =
+    case view of
+      MkRetireSuccessView fiber found => Refl
 
 0 ScopedForeignLifecycleExclusion :
   {name, key, world, error : Type} -> {value : key -> Type} ->
