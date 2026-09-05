@@ -19439,6 +19439,15 @@ scopedPlanMemberSource name key world error value nameEq source target
         (scopedPlanMemberSource name key world error value nameEq (deleteBinding @{nameEq} removed source)
           target rest entry member))
 
+0 scopedRegistryMember :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (actor : name) -> (fiber : Fiber name key value world error) -> (source : Registry name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor source = Just fiber) -> Elem (Bind actor fiber) (bindings source)
+scopedRegistryMember name key world error value nameEq actor fiber source found =
+  scopedLookupMember name (Fiber name key value world error) nameEq actor fiber (bindings source)
+    (trans (sym (lookupFiberAsEntries nameEq actor source)) found)
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
