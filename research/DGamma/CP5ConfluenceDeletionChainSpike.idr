@@ -17230,6 +17230,61 @@ scopedBeginPreservesUnretiredAt name key world error value nameEq keyEq child
               (registry before) found))
           notRetired)
 
+||| L-Begin fires only on an inactive fiber with no stored failure; every
+||| other lifecycle makes the source step impossible, so the invariant is
+||| either preserved by the worker above or the step is vacuous.
+0 scopedBeginPreservesUnretired :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child before ->
+  (0 raw : applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (LBegin child) before =
+    Just (tag, afterState)) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child afterState
+scopedBeginPreservesUnretired name key world error value nameEq keyEq child
+  before afterState tag
+  (MkScopedUnretiredFiberAt
+    (MkFiber component parent retiredFlag table (Inactive Nothing)) found
+    flag) =
+      \equation =>
+        scopedBeginPreservesUnretiredAt name key world error value nameEq keyEq
+          child before component parent retiredFlag table
+          (targetFiber @{nameEq} @{keyEq} {value = value} {world = world}
+            {error = error}
+            (MkFiber component parent retiredFlag table (Inactive Nothing))
+            (registry before))
+          Refl tag afterState flag found equation
+scopedBeginPreservesUnretired name key world error value nameEq keyEq child
+  before afterState tag
+  (MkScopedUnretiredFiberAt
+    (MkFiber component parent retiredFlag table (Inactive (Just failure)))
+    found flag) =
+      rewrite found in (\equation => void (nothingIsNotJust equation))
+scopedBeginPreservesUnretired name key world error value nameEq keyEq child
+  before afterState tag
+  (MkScopedUnretiredFiberAt
+    (MkFiber component parent retiredFlag table
+      (Reloading remaining accumulator view))
+    found flag) =
+      rewrite found in (\equation => void (nothingIsNotJust equation))
+scopedBeginPreservesUnretired name key world error value nameEq keyEq child
+  before afterState tag
+  (MkScopedUnretiredFiberAt
+    (MkFiber component parent retiredFlag table (Active accumulator view))
+    found flag) =
+      rewrite found in (\equation => void (nothingIsNotJust equation))
+scopedBeginPreservesUnretired name key world error value nameEq keyEq child
+  before afterState tag
+  (MkScopedUnretiredFiberAt
+    (MkFiber component parent retiredFlag table
+      (Unloading accumulator view outcome))
+    found flag) =
+      rewrite found in (\equation => void (nothingIsNotJust equation))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
