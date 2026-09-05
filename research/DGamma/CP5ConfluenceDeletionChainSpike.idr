@@ -25333,6 +25333,48 @@ scopedAdvanceReplay name key world error value nameEq keyEq actor tag (MkSystemS
       (pointwiseRelatedLifecycleMaps nameEq keyEq (LAdvance actor) Refl tag (MkSystemState sourceWorld sourceRegistry) targetBefore
         sourceOwner targetOwner sourceFound targetFound controls)
 
+0 scopedLifecycleReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (isLifecycleAction action = True) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} action targetBefore = Just (tag, targetAfter))) ->
+  (sourceOwner, targetOwner : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    (actionOwner action) (registry sourceBefore) = Just sourceOwner) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    (actionOwner action) (registry targetBefore) = Just targetOwner) ->
+  FiberControlRelated sourceOwner targetOwner ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq action tag targetChecked) NoTransitions)
+scopedLifecycleReplay name key world error value nameEq keyEq (OInsert actor parent component) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls = void (scopedFalseNotTrue lifecycle)
+scopedLifecycleReplay name key world error value nameEq keyEq (ORetire actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls = void (scopedFalseNotTrue lifecycle)
+scopedLifecycleReplay name key world error value nameEq keyEq (ORemove actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls = void (scopedFalseNotTrue lifecycle)
+scopedLifecycleReplay name key world error value nameEq keyEq (LBegin actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
+    scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq (LBegin actor) Refl (\other, equation => scopedFalseNotTrue (cong (scopedIsAdvanceAction name key world error value) equation))
+      tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
+scopedLifecycleReplay name key world error value nameEq keyEq (LAdvance actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
+    scopedAdvanceReplay name key world error value nameEq keyEq actor tag sourceBefore sourceAfter targetBefore targetAfter
+      sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
+scopedLifecycleReplay name key world error value nameEq keyEq (LDivert actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
+    scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq (LDivert actor) Refl (\other, equation => scopedFalseNotTrue (cong (scopedIsAdvanceAction name key world error value) equation))
+      tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
+scopedLifecycleReplay name key world error value nameEq keyEq (LLeave actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
+    scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq (LLeave actor) Refl (\other, equation => scopedFalseNotTrue (cong (scopedIsAdvanceAction name key world error value) equation))
+      tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
+scopedLifecycleReplay name key world error value nameEq keyEq (LUnload actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
+    scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq (LUnload actor) Refl (\other, equation => scopedFalseNotTrue (cong (scopedIsAdvanceAction name key world error value) equation))
+      tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
