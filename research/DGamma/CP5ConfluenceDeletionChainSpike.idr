@@ -25813,6 +25813,28 @@ scopedReadyCanonicalEnds name key world error value nameEq keyEq deletable ordin
     ReplayEndsKeep retained tag targetStep actionSame fires tail (scopedReadyCanonicalEnds name key world error value nameEq keyEq deletable (S ordinal)
       (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ finalState after originalRest tail)
 
+||| The twelve readiness/subsequence clauses of operational capital, bound to one exact result.
+record ScopedDeletionReadinessSeals
+  (name, key, world, error : Type) (value : key -> Type) (nameEq : DecEq name) (keyEq : DecEq key)
+  (initial, finalState : SystemState name key value world error) (global : Transitions initial finalState)
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global)
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) where
+  constructor MkScopedDeletionReadinessSeals
+  0 beforeSeal : ScopedReplaySeal name key world error value nameEq keyEq (GenerationOwnedActor nameEq (selectedRegistrations candidate)) 0 []
+    initial (locatedPreStart (selectedEpisode candidate)) initial (survivingBeforeEnd result) (traceBeforeOpening (selectedEpisode candidate))
+  0 centerSeal : ScopedReplaySeal name key world error value nameEq keyEq
+    (EpisodeGenerationDeletedActor nameEq (selectedActor candidate) (selectedRegistrations candidate))
+    (selectedStartOrdinal candidate) (selectedStartLive candidate) (locatedPreStart (selectedEpisode candidate))
+    (locatedAfter (selectedEpisode candidate)) (survivingBeforeEnd result) (survivingEpisodeEnd result)
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+  0 suffixSeal : ScopedReplaySeal name key world error value nameEq keyEq (GenerationOwnedActor nameEq (selectedRegistrations candidate))
+    (episodeEndOrdinal result) (episodeEndLive result) (locatedAfter (selectedEpisode candidate)) finalState
+    (survivingEpisodeEnd result) (survivingFinal result) (traceAfterClosing (selectedEpisode candidate))
+  0 beforeTagSeal : GenerationSubsequenceRuleTagsPreserved (beforeDeletion result)
+  0 centerTagSeal : GenerationSubsequenceRuleTagsPreserved (episodeDeletion result)
+  0 suffixTagSeal : GenerationSubsequenceRuleTagsPreserved (afterDeletion result)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
