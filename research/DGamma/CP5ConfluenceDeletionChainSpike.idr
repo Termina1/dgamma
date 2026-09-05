@@ -22468,6 +22468,52 @@ scopedReadyKeptParentControls name key world error value nameEq keyEq deletable 
 scopedReadyDeletedParentControls name key world error value nameEq keyEq deletable ordinal live sourceFirst
   sourceMiddle sourceFinal survivor sourceStep sourceRest deleted tail (ScopedParentControlsDelete controls) = controls
 
+0 scopedAppendSelectedCloseParentControls :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {originalFirst, closeBefore, closeAfter : SystemState name key value world error} ->
+  (original : Transitions originalFirst closeBefore) ->
+  (survivor : SystemState name key value world error) ->
+  (ready : GenerationReplayReady nameEq keyEq (EpisodeGenerationDeletedActor nameEq selected registered)
+    ordinal live original survivor) ->
+  (target : SystemState name key value world error) -> (ends : ReplayReadyEndsAt ready target) ->
+  (closing : UnloadStep nameEq keyEq selected closeBefore closeAfter) ->
+  ScopedReadyParentControls name key world error value nameEq keyEq
+    (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst closeBefore survivor
+    original ready ->
+  ScopedReadyParentControls name key world error value nameEq keyEq
+    (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst closeAfter survivor
+    (appendTransitions original (MoreTransitions (unloadTransition closing) NoTransitions))
+    (appendedSelectedCloseReady (scopedAppendSelectedCloseReplay name key world error value nameEq keyEq selected
+      registered ordinal live original survivor ready target ends closing))
+scopedAppendSelectedCloseParentControls name key world error value nameEq keyEq selected registered ordinal
+  live _ survivor _ target (ReplayEndsEnd same) closing controls =
+    ScopedParentControlsDelete ScopedParentControlsEnd
+scopedAppendSelectedCloseParentControls name key world error value nameEq keyEq selected registered ordinal
+  live _ survivor _ target (ReplayEndsDelete {transition} {rest} deleted tail tailEnds) closing controls =
+    ScopedParentControlsDelete (scopedAppendSelectedCloseParentControls name key world error value nameEq keyEq
+      selected registered (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction transition) live)
+      rest survivor tail target tailEnds closing
+      (scopedReadyDeletedParentControls name key world error value nameEq keyEq
+        (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst _ closeBefore survivor
+        transition rest deleted tail controls))
+scopedAppendSelectedCloseParentControls name key world error value nameEq keyEq selected registered ordinal
+  live _ survivor _ target
+  (ReplayEndsKeep {originalTransition} {rest} {survivingAfter} retained tag transition actionSame fires tail tailEnds)
+  closing controls =
+    ScopedParentControlsKeep
+      (fst (scopedReadyKeptParentControls name key world error value nameEq keyEq
+        (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst _ closeBefore survivor
+        survivingAfter originalTransition rest retained tag transition actionSame fires tail controls))
+      (scopedAppendSelectedCloseParentControls name key world error value nameEq keyEq selected registered
+        (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live)
+        rest survivingAfter tail target tailEnds closing
+        (snd (scopedReadyKeptParentControls name key world error value nameEq keyEq
+          (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst _ closeBefore survivor
+          survivingAfter originalTransition rest retained tag transition actionSame fires tail controls)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
