@@ -22918,6 +22918,18 @@ scopedAllDeleteEntries key value keyEq predicate wanted (Bind current cell :: re
       (scopedAndRightTrue (predicate (Bind current cell)) (allList predicate rest) source))
     (decEq @{keyEq} wanted current) Refl
 
+0 scopedNoFailureDelete :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (actor : name) -> (ambient : world) ->
+  (source : Registry name key value world error) ->
+  (noFailedFibers (the (SystemState name key value world error) (MkSystemState ambient source)) = True) ->
+  (noFailedFibers (the (SystemState name key value world error)
+    (MkSystemState ambient (deleteBinding @{nameEq} actor source))) = True)
+scopedNoFailureDelete name key world error value nameEq actor ambient (MkCoeffectContext entries unique) source =
+  scopedAllDeleteEntries name (FiberAt name key value world error) nameEq
+    (DGamma.CP3.notFailedEntry {name = name} {key = key} {value = value} {world = world} {error = error})
+    actor entries source
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
