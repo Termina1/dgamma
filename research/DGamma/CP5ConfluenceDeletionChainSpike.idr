@@ -17403,6 +17403,119 @@ scopedDivertPreservesUnretired name key world error value nameEq keyEq child
     found flag) =
       rewrite found in (\equation => void (nothingIsNotJust equation))
 
+||| L-Leave on the invariant name replaces the fiber's lifecycle with the
+||| unloading shape, keeping the retired flag; a matching target makes the
+||| step impossible.  The observed target-match result is an explicit
+||| argument so the reduction of `applyAction` reaches inside the guard.
+0 scopedLeavePreservesUnretiredAt :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child : name) ->
+  (before : SystemState name key value world error) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (observed : Bool) ->
+  (0 matchesEq : targetMatches @{nameEq}
+    (targetFiber @{nameEq} @{keyEq} {value = value} {world = world}
+      {error = error}
+      (MkFiber component parent retiredFlag table (Active accumulator view))
+      (registry before)) view = observed) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  (0 notRetired : retiredFlag = False) ->
+  (0 found : lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} child (registry before) =
+    Just (MkFiber component parent retiredFlag table
+      (Active accumulator view))) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (LLeave child) before =
+    Just (tag, afterState)) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child afterState
+scopedLeavePreservesUnretiredAt name key world error value nameEq keyEq child
+  before component parent retiredFlag table accumulator view True
+  matchesEq tag afterState notRetired found =
+    rewrite found in rewrite matchesEq in
+      (\equation => void (nothingIsNotJust equation))
+scopedLeavePreservesUnretiredAt name key world error value nameEq keyEq child
+  before component parent retiredFlag table accumulator view False
+  matchesEq tag afterState notRetired found =
+    rewrite found in rewrite matchesEq in
+      (\equation =>
+        MkScopedUnretiredFiberAt
+          (setFiberLifecycle
+            (MkFiber component parent retiredFlag table
+              (Active accumulator view))
+            (Unloading accumulator view Nothing))
+          (trans
+            (cong (lookupFiber @{nameEq} {name = name} {key = key}
+              {value = value} {world = world} {error = error} child)
+              (cong registry (sym (cong snd (justInjective equation)))))
+            (lookupReplacedFiber {name = name} {key = key} {value = value}
+              {world = world} {error = error} child
+              (MkFiber component parent retiredFlag table
+                (Active accumulator view))
+              (setFiberLifecycle
+                (MkFiber component parent retiredFlag table
+                  (Active accumulator view))
+                (Unloading accumulator view Nothing))
+              (registry before) found))
+          notRetired)
+
+||| L-Leave fires only on an active fiber; every other lifecycle makes the
+||| source step impossible, so the invariant is either preserved by the worker
+||| above or the step is vacuous.
+0 scopedLeavePreservesUnretired :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child before ->
+  (0 raw : applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (LLeave child) before =
+    Just (tag, afterState)) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child afterState
+scopedLeavePreservesUnretired name key world error value nameEq keyEq child
+  before afterState tag
+  (MkScopedUnretiredFiberAt
+    (MkFiber component parent retiredFlag table (Active accumulator view))
+    found flag) =
+      \equation =>
+        scopedLeavePreservesUnretiredAt name key world error value nameEq keyEq
+          child before component parent retiredFlag table accumulator view
+          (targetMatches @{nameEq}
+            (targetFiber @{nameEq} @{keyEq} {value = value} {world = world}
+              {error = error}
+              (MkFiber component parent retiredFlag table
+                (Active accumulator view))
+              (registry before)) view)
+          Refl tag afterState flag found equation
+scopedLeavePreservesUnretired name key world error value nameEq keyEq child
+  before afterState tag
+  (MkScopedUnretiredFiberAt
+    (MkFiber component parent retiredFlag table (Inactive outcome)) found
+    flag) =
+      rewrite found in (\equation => void (nothingIsNotJust equation))
+scopedLeavePreservesUnretired name key world error value nameEq keyEq child
+  before afterState tag
+  (MkScopedUnretiredFiberAt
+    (MkFiber component parent retiredFlag table
+      (Reloading remaining accumulator view))
+    found flag) =
+      rewrite found in (\equation => void (nothingIsNotJust equation))
+scopedLeavePreservesUnretired name key world error value nameEq keyEq child
+  before afterState tag
+  (MkScopedUnretiredFiberAt
+    (MkFiber component parent retiredFlag table
+      (Unloading accumulator view outcome))
+    found flag) =
+      rewrite found in (\equation => void (nothingIsNotJust equation))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
