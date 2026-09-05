@@ -19667,6 +19667,25 @@ scopedPostCloseForeignActorTotal name key world error value nameEq keyEq selecte
           (planTarget (completePlanResult (postClosePlan boundary))) (registry survivor)
           (postCloseControls boundary)))) active
 
+0 scopedPostCloseActorTotalAt :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected, actor : name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (original, survivor : SystemState name key value world error) ->
+  PostCloseSelectedBoundary name key world error value nameEq keyEq selected registered ordinal live original survivor ->
+  ScopedActorTotal name key world error value nameEq keyEq actor original -> Dec (actor = selected) ->
+  ScopedActorTotal name key world error value nameEq keyEq actor survivor
+scopedPostCloseActorTotalAt name key world error value nameEq keyEq selected actor registered ordinal live
+  original survivor boundary sourceTotal (Yes same) =
+    replace {p = \current => ScopedActorTotal name key world error value nameEq keyEq current survivor} (sym same)
+      (scopedCleanInactiveActorTotal name key world error value nameEq keyEq selected survivor
+        (postCloseCleanInactive boundary))
+scopedPostCloseActorTotalAt name key world error value nameEq keyEq selected actor registered ordinal live
+  original survivor boundary sourceTotal (No distinct) =
+    scopedPostCloseForeignActorTotal name key world error value nameEq keyEq selected actor distinct registered ordinal live
+      original survivor boundary sourceTotal
+
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
