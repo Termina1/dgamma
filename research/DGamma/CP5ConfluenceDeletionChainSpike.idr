@@ -4577,6 +4577,10 @@ record DeletionProducerOperationalCapital
   0 deletionBeforeReplayReady : GenerationReplayReady nameEq keyEq
     (GenerationOwnedActor nameEq registered) 0 []
     (traceBeforeOpening episode) initial
+  0 deletionBeforeReplayTags : ReplayReadyRuleTagsPreserved name key world error
+    value nameEq keyEq (GenerationOwnedActor nameEq registered) 0 [] initial
+    (locatedPreStart episode) (traceBeforeOpening episode) initial
+    deletionBeforeReplayReady
   0 deletionBeforeReplayEnds : ReplayReadyEndsAt deletionBeforeReplayReady
     (survivingBeforeEnd result)
   0 deletionEpisodeReplayReady : GenerationReplayReady nameEq keyEq
@@ -4586,12 +4590,25 @@ record DeletionProducerOperationalCapital
       (beginTransition (closedOpening (locatedEpisode episode)))
       (closedTransitions (locatedEpisode episode)))
     (survivingBeforeEnd result)
+  0 deletionEpisodeReplayTags : ReplayReadyRuleTagsPreserved name key world error
+    value nameEq keyEq (EpisodeGenerationDeletedActor nameEq selected registered)
+    episodeStartOrdinal episodeStartLive (locatedPreStart episode)
+    (locatedAfter episode)
+    (MoreTransitions
+      (beginTransition (closedOpening (locatedEpisode episode)))
+      (closedTransitions (locatedEpisode episode)))
+    (survivingBeforeEnd result) deletionEpisodeReplayReady
   0 deletionEpisodeReplayEnds : ReplayReadyEndsAt deletionEpisodeReplayReady
     (survivingEpisodeEnd result)
   0 deletionAfterReplayReady : GenerationReplayReady nameEq keyEq
     (GenerationOwnedActor nameEq registered)
     (episodeEndOrdinal result) (episodeEndLive result)
     (traceAfterClosing episode) (survivingEpisodeEnd result)
+  0 deletionAfterReplayTags : ReplayReadyRuleTagsPreserved name key world error
+    value nameEq keyEq (GenerationOwnedActor nameEq registered)
+    (episodeEndOrdinal result) (episodeEndLive result) (locatedAfter episode)
+    originalFinal (traceAfterClosing episode) (survivingEpisodeEnd result)
+    deletionAfterReplayReady
   0 deletionAfterReplayEnds : ReplayReadyEndsAt deletionAfterReplayReady
     (survivingFinal result)
   0 deletionBeforeTagsPreserved : GenerationSubsequenceRuleTagsPreserved
