@@ -19686,6 +19686,20 @@ scopedPostCloseActorTotalAt name key world error value nameEq keyEq selected act
       original survivor boundary sourceTotal
 
 
+0 scopedPostCloseActorTotal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected, actor : name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (original, survivor : SystemState name key value world error) ->
+  PostCloseSelectedBoundary name key world error value nameEq keyEq selected registered ordinal live original survivor ->
+  ScopedActorTotal name key world error value nameEq keyEq actor original ->
+  ScopedActorTotal name key world error value nameEq keyEq actor survivor
+scopedPostCloseActorTotal name key world error value nameEq keyEq selected actor registered ordinal live
+  original survivor boundary sourceTotal =
+    scopedPostCloseActorTotalAt name key world error value nameEq keyEq selected actor registered ordinal live
+      original survivor boundary sourceTotal (decEq @{nameEq} actor selected)
+
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
