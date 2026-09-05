@@ -19028,6 +19028,26 @@ scopedRegistrationDisciplineSubsequence name key world error value protocol
       (alignedTransitionTail nameEq keyEq sourceStep sourceRest aligned)
       tailDiscipline
 
+||| Filter output and its tag certificate are constructed together, avoiding a
+||| consumer-side comparison of independently indexed existential traces.
+record ScopedTaggedGenerationResult
+  (name : Type) (key : Type) (value : key -> Type)
+  (world : Type) (error : Type)
+  (nameEq : DecEq name)
+  (deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type)
+  (ordinal : Nat) (live : GenerationEnvironment name)
+  {originalFirst, originalFinal : SystemState name key value world error}
+  (original : Transitions originalFirst originalFinal)
+  (survivingFirst, target : SystemState name key value world error) where
+  constructor MkScopedTaggedGenerationResult
+  scopedTaggedResult : GenerationFilterResult name key world error value nameEq
+    deletable ordinal live original survivingFirst
+  0 scopedTaggedFinal : (GenerationFilterResult.survivingFinal scopedTaggedResult =
+    target)
+  0 scopedTaggedTags : GenerationSubsequenceRuleTagsPreserved
+    (filteredSubsequence scopedTaggedResult)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
