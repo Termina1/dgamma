@@ -19335,6 +19335,16 @@ scopedRelatedActiveProvides name key world error value keyEq _ _
       trans (sym (scopedLookupPresenceBindings key value keyEq wanted
         (ownedValues leftTable) (ownedValues rightTable) tablesSame)) (sourceProvides wanted provided)
 
+0 scopedLifecycleActiveSame :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (deps : List key) -> (provision : CoeffectSpec key) ->
+  (left, right : Lifecycle key value world error name deps provision) ->
+  LifecycleControlRelated left right -> (isActive left = isActive right)
+scopedLifecycleActiveSame name key world error value deps provision _ _ (InactiveControls outcome) = Refl
+scopedLifecycleActiveSame name key world error value deps provision _ _ (ReloadingControls remaining accumulator view) = Refl
+scopedLifecycleActiveSame name key world error value deps provision _ _ (ActiveControls accumulator view) = Refl
+scopedLifecycleActiveSame name key world error value deps provision _ _ (UnloadingControls accumulator view outcome) = Refl
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
