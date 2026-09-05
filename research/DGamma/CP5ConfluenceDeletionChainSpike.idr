@@ -13008,6 +13008,28 @@ scopedAppendGenerationScan name nameEq ordinal live left right middleOrdinal
             rest right middleOrdinal middleLive finalOrdinal finalLive leftTail
             rightScan)
 
+record ScopedSelectedCloseReplayAppend
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
+  (registered : List (RegistrationGeneration name))
+  (ordinal : Nat) (live : GenerationEnvironment name)
+  {originalFirst, closeBefore, closeAfter :
+    SystemState name key value world error}
+  (original : Transitions originalFirst closeBefore)
+  (survivorFirst : SystemState name key value world error)
+  (ready : GenerationReplayReady nameEq keyEq
+    (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live
+    original survivorFirst)
+  (target : SystemState name key value world error)
+  (closing : UnloadStep nameEq keyEq selected closeBefore closeAfter) where
+  constructor MkScopedSelectedCloseReplayAppend
+  appendedSelectedCloseReady : GenerationReplayReady nameEq keyEq
+    (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live
+    (appendTransitions original
+      (MoreTransitions (unloadTransition closing) NoTransitions)) survivorFirst
+  0 appendedSelectedCloseEnds : ReplayReadyEndsAt appendedSelectedCloseReady
+    target
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
