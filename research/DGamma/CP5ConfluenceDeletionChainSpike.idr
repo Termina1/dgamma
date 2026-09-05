@@ -10419,6 +10419,44 @@ cancelTransitionPrefixScoped (MoreTransitions commonHead prefixRest) leftTrace
         (appendTransitions prefixRest leftTrace)
         (appendTransitions prefixRest rightTrace) Refl sameAppend)
 
+0 providerClosedDecompositionScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {provider, consumer : name} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {global : Transitions initial finalState} ->
+  (providerEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    provider global) ->
+  (consumerEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    consumer global) ->
+  (containment : ProviderContainsConsumer providerEpisode consumerEpisode) ->
+  closedTransitions (locatedEpisode providerEpisode) =
+    appendTransitions (strictToTransitions (providerToConsumer containment))
+      (appendTransitions (closedTransitions (locatedEpisode consumerEpisode))
+        (strictToTransitions (consumerToProviderClose containment)))
+providerClosedDecompositionScoped providerEpisode consumerEpisode containment =
+  cancelTransitionPrefixScoped (prefixThroughOpening providerEpisode)
+    (closedTransitions (locatedEpisode providerEpisode))
+    (appendTransitions (strictToTransitions (providerToConsumer containment))
+      (appendTransitions (closedTransitions (locatedEpisode consumerEpisode))
+        (strictToTransitions (consumerToProviderClose containment))))
+    (trans (closingOrderInGlobal containment)
+      (rewrite openingOrderInGlobal containment in
+       rewrite appendTransitionsAssociative
+         (prefixThroughOpening providerEpisode)
+         (strictToTransitions (providerToConsumer containment))
+         (closedTransitions (locatedEpisode consumerEpisode)) in
+       rewrite appendTransitionsAssociative
+         (prefixThroughOpening providerEpisode)
+         (appendTransitions (strictToTransitions
+           (providerToConsumer containment))
+           (closedTransitions (locatedEpisode consumerEpisode)))
+         (strictToTransitions (consumerToProviderClose containment)) in
+       rewrite appendTransitionsAssociative
+         (strictToTransitions (providerToConsumer containment))
+         (closedTransitions (locatedEpisode consumerEpisode))
+         (strictToTransitions (consumerToProviderClose containment)) in Refl))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
