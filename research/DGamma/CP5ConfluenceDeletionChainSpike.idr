@@ -11460,6 +11460,27 @@ scopedRegistrationDisciplineAtOccurrence wanted
       MkScopedLocatedRegistrationStep future futureDiscipline =>
         MkScopedLocatedRegistrationStep future futureDiscipline
 
+0 scopedSelectedPlanExactBoundary :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  GenerationEnvironmentNamesUnique live ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole original survivor) ->
+  NoEpisodeReplayBoundary name key world error value nameEq keyEq registered live
+    original
+    (MkSystemState (worldState original)
+      (planTarget (completePlanResult (selectedBoundaryPlan boundary))))
+scopedSelectedPlanExactBoundary nameEq keyEq unique boundary =
+  case original of
+    MkSystemState ambient source =>
+      MkNoEpisodeReplayBoundary ambient source Refl
+        (selectedBoundaryPlan boundary) Refl Refl unique
+        (selectedOriginalWellFormed boundary)
+        (inactivePlanPreservesWellFormed nameEq keyEq ambient source
+          (planTarget (completePlanResult (selectedBoundaryPlan boundary)))
+          (inactiveLeafPlan (completePlanResult
+            (selectedBoundaryPlan boundary)))
+          (selectedOriginalWellFormed boundary))
+
 0 ScopedForeignLifecycleExclusion :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
