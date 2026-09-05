@@ -19740,6 +19740,40 @@ scopedRelatedActionTags name key world error value nameEq keyEq
     trans (fst (lUnloadBoundary nameEq keyEq actor leftBefore leftAfter leftTag leftRaw))
       (sym (fst (lUnloadBoundary nameEq keyEq actor rightBefore rightAfter rightTag rightRaw)))
 
+0 scopedRelationalRetainedTagAtExact :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (nextLive : GenerationEnvironment name) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (originalAfter, planBefore, survivor : SystemState name key value world error) ->
+  (exactStep : RetainedNoEpisodeBoundaryStep name key world error value nameEq
+    keyEq registered nextLive action tag originalAfter planBefore) ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} planBefore)
+    (projectEffectState @{nameEq} survivor) ->
+  OrderedRegistryControlsRelated name key world error value
+    (bindings (registry planBefore)) (bindings (registry survivor)) ->
+  (named : NamedTransition name key world error value action survivor) ->
+  (fireNamed nameEq keyEq action survivor = Just named) ->
+  (tag = transitionTag (namedTransition named))
+scopedRelationalRetainedTagAtExact name key world error value nameEq keyEq
+  registered nextLive action tag originalAfter planBefore survivor exactStep
+  effects controls named fires =
+    trans (sym (retainedBoundaryTagSame exactStep))
+      (trans (scopedRelatedActionTags name key world error value nameEq keyEq
+        action planBefore survivor (namedAfter (retainedBoundaryNamed exactStep))
+        (namedAfter named) (namedTag (retainedBoundaryNamed exactStep))
+        (namedTag named)
+        (namedFireProjectsRaw nameEq keyEq action planBefore
+          (retainedBoundaryNamed exactStep) (retainedBoundaryFires exactStep))
+        (namedFireProjectsRaw nameEq keyEq action survivor named fires)
+        effects controls)
+        (scopedNamedRawTag name key world error value nameEq keyEq action survivor
+          (namedAfter named) (namedTag named)
+          (namedFireProjectsRaw nameEq keyEq action survivor named fires)
+          named (scopedNamedAligned name key world error value nameEq keyEq action
+            survivor named fires)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
