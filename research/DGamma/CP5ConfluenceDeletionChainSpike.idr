@@ -11872,6 +11872,50 @@ scopedForeignLifecycleRetainedHead protocol nameEq keyEq selected registered
           (wholeInGlobal (Fired nameEq keyEq action tag checked) occurs)
           insidePrefix insideDecomposition boundary))
 
+0 scopedForeignOrchestrationRetainedHead :
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (global : Transitions globalFirst globalLast) ->
+  (globalDiscipline : RegistrationDiscipline protocol nameEq global) ->
+  (independent : TraceIndependent name key world error value keyEq global) ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (wholeInGlobal : OccurrenceEmbedding whole global) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (action : Action name key value world error) ->
+  (orchestration : isLifecycleAction action = False) ->
+  (distinct : Not (actionOwner action = selected)) ->
+  (before, afterState, survivor : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (occurs : OccursIn
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked) whole) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  (retained : Not (EpisodeGenerationDeletedActor nameEq selected registered
+    ordinal live action)) ->
+  SelectedEpisodeRetainedHead name key world error value nameEq keyEq selected
+    registered ordinal live whole action afterState survivor
+scopedForeignOrchestrationRetainedHead protocol nameEq keyEq selected registered
+  global globalDiscipline independent whole wholeInGlobal ordinal live unique
+  action orchestration distinct before afterState survivor tag checked occurs
+  boundary retained =
+    scopedForeignRetainedHead
+      (retainedForeignOrchestrationPreservesEpisodeBoundary nameEq keyEq selected
+        registered ordinal live action orchestration distinct whole before
+        afterState survivor tag checked occurs
+        (restrictTraceIndependent
+          (\transition, occurrence => wholeInGlobal transition occurrence)
+          independent)
+        boundary
+        (scopedRetainedNoEpisodeBoundaryStep protocol nameEq keyEq selected
+          registered global globalDiscipline whole wholeInGlobal ordinal live
+          unique action before afterState survivor tag checked occurs boundary
+          (\owned => retained (DeleteRegisteredGeneration owned))))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
