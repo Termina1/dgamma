@@ -615,6 +615,9 @@ data ErasedFirstLifecyclePreIntervalView :
     (0 selectedInsideExact :
       (selectedInside = appendTransitions selectedToForeign
         (MoreTransitions (beginTransition foreignOpening) foreignSuffix))) ->
+    (0 foreignPrefixCountExact :
+      transitionCount foreignPrefix =
+        transitionCount selectedPrefix + S (transitionCount selectedToForeign)) ->
     (0 foreignInstalled : InstalledTrace name key world error value nameEq keyEq
       actor foreignSuffix) ->
     ErasedFirstLifecyclePreIntervalView name key world error value nameEq keyEq
@@ -677,7 +680,7 @@ exactPreIntervalToLifecycleView name key world error value nameEq keyEq selected
       ExactForeignOpeningInsideSelectedInterval selectedToForeign
         selectedInsideExact foreignPrefixCountExact =>
           ForeignOpeningInsideSelectedInterval selectedToForeign
-            selectedInsideExact foreignInstalled
+            selectedInsideExact foreignPrefixCountExact foreignInstalled
       ExactForeignOpeningBeforeSelectedInterval foreignToSelected
         foreignSuffixExact =>
           ForeignOpeningBeforeSelectedInterval foreignToSelected
