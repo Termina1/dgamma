@@ -23064,6 +23064,35 @@ scopedAllListPointwise item left right same (head :: rest) =
   cong2 (\headFlag, tailFlag => headFlag && tailFlag) (same head)
     (scopedAllListPointwise item left right same rest)
 
+0 scopedQuietInactiveDelete :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (ambient : world) -> (removed : name) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) -> (outcome : Maybe error) ->
+  (source : Registry name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    removed source = Just (MkFiber component parent retiredFlag table (Inactive outcome))) ->
+  (quiet @{nameEq} @{keyEq} (the (SystemState name key value world error) (MkSystemState ambient source)) = True) ->
+  (quiet @{nameEq} @{keyEq} (the (SystemState name key value world error)
+    (MkSystemState ambient (deleteBinding @{nameEq} removed source))) = True)
+scopedQuietInactiveDelete name key world error value nameEq keyEq ambient removed component parent retiredFlag
+  table outcome source@(MkCoeffectContext entries unique) found sourceQuiet =
+    trans (scopedAllRecursiveAsList (Binding name (FiberAt name key value world error))
+      (quietEntryFor @{nameEq} @{keyEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+        (deleteBinding @{nameEq} removed source)) (deleteEntries @{nameEq} removed entries))
+      (trans (scopedAllListPointwise (Binding name (FiberAt name key value world error))
+        (quietEntryFor @{nameEq} @{keyEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+          (deleteBinding @{nameEq} removed source))
+        (quietEntryFor @{nameEq} @{keyEq} {name = name} {key = key} {value = value} {world = world} {error = error} source)
+        (scopedQuietEntryInactiveDelete name key world error value nameEq keyEq removed component parent
+          retiredFlag table outcome source found) (deleteEntries @{nameEq} removed entries))
+        (scopedAllDeleteEntries name (FiberAt name key value world error) nameEq
+          (quietEntryFor @{nameEq} @{keyEq} {name = name} {key = key} {value = value} {world = world} {error = error} source)
+          removed entries
+          (trans (sym (scopedAllRecursiveAsList (Binding name (FiberAt name key value world error))
+            (quietEntryFor @{nameEq} @{keyEq} {name = name} {key = key} {value = value} {world = world} {error = error} source)
+            entries)) sourceQuiet)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
