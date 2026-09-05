@@ -2690,6 +2690,213 @@ deletedClassificationForcesLeftScannerDiscardSpike nameEq renaming
           correspondence (generationName generation) parent component occurrence
           closes)
 
+||| Right-side mirror of deleted-index retention through every accepted scanner
+||| constructor.
+0 rightCorrespondencePreservesDeleted :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {renaming : RegistrationGenerationBijection name} ->
+  {leftOrdinal : Nat} -> {leftIndex : RegistrationIndexState name} ->
+  {leftFirst, leftFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} ->
+  {leftFinalIndex : RegistrationIndexState name} ->
+  {rightOrdinal : Nat} -> {rightIndex : RegistrationIndexState name} ->
+  {rightFirst, rightFinal : SystemState name key value world error} ->
+  {right : Transitions rightFirst rightFinal} ->
+  {rightFinalIndex : RegistrationIndexState name} ->
+  {pendingLeft, pendingRight :
+    List (RegistrationEvent name key world error value)} ->
+  (correspondence : RegistrationTraceCorrespondence nameEq renaming leftOrdinal
+    leftIndex left leftFinalIndex rightOrdinal rightIndex right rightFinalIndex
+    pendingLeft pendingRight) ->
+  (generation : RegistrationGeneration name) ->
+  Elem generation (indexedDeletedGenerations rightIndex) ->
+  Elem generation (indexedDeletedGenerations rightFinalIndex)
+rightCorrespondencePreservesDeleted nameEq RegistrationCorrespondenceEnd
+  generation member = member
+rightCorrespondencePreservesDeleted nameEq
+  (SkipLeftNonRegistration action transition leftRest sameAction generated rest)
+  generation member =
+    rightCorrespondencePreservesDeleted nameEq rest generation member
+rightCorrespondencePreservesDeleted nameEq
+  (SkipRightNonRegistration action transition rightRest sameAction generated
+    rest) generation member =
+      rightCorrespondencePreservesDeleted nameEq rest generation
+        (replace {p = \deleted => Elem generation deleted}
+          (sym (advanceRegistrationIndexDeletedExact nameEq _ action _)) member)
+rightCorrespondencePreservesDeleted nameEq
+  (DiscardLeftDeletedRegistration transition leftRest sameAction deleted rest)
+  generation member =
+    rightCorrespondencePreservesDeleted nameEq rest generation member
+rightCorrespondencePreservesDeleted nameEq
+  (DiscardRightDeletedRegistration {child} {parent} {component} transition
+    rightRest sameAction deleted rest) generation member =
+      rightCorrespondencePreservesDeleted nameEq rest generation
+        (replace {p = \items => Elem generation items}
+          (sym (advanceDeletedRegistrationIndexHead nameEq _ child parent
+            component _)) (There member))
+rightCorrespondencePreservesDeleted nameEq
+  (QueueLeftGeneratedRegistration transition leftRest sameAction surviving rest)
+  generation member =
+    rightCorrespondencePreservesDeleted nameEq rest generation member
+rightCorrespondencePreservesDeleted nameEq
+  (QueueRightGeneratedRegistration {child} {parent} {component} transition
+    rightRest sameAction surviving rest) generation member =
+      rightCorrespondencePreservesDeleted nameEq rest generation
+        (replace {p = \deleted => Elem generation deleted}
+          (sym (advanceSurvivingRegistrationIndexDeletedExact nameEq _ child
+            parent component _)) member)
+rightCorrespondencePreservesDeleted nameEq
+  (MatchLeftWithPendingRight transition leftRest sameAction surviving rightPrefix
+    rightEvent rightSuffix matched rest) generation member =
+      rightCorrespondencePreservesDeleted nameEq rest generation member
+rightCorrespondencePreservesDeleted nameEq
+  (MatchRightWithPendingLeft {child} {parent} {component} transition rightRest
+    sameAction surviving leftPrefix leftEvent leftSuffix matched rest)
+  generation member =
+    rightCorrespondencePreservesDeleted nameEq rest generation
+      (replace {p = \deleted => Elem generation deleted}
+        (sym (advanceSurvivingRegistrationIndexDeletedExact nameEq _ child parent
+          component _)) member)
+
+0 rightDiscardedRegistrationHeadRetained :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {renaming : RegistrationGenerationBijection name} ->
+  {leftOrdinal : Nat} -> {leftIndex : RegistrationIndexState name} ->
+  {leftFirst, leftFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} ->
+  {leftFinalIndex : RegistrationIndexState name} ->
+  (rightOrdinal : Nat) -> (rightIndex : RegistrationIndexState name) ->
+  {rightFirst, rightMiddle, rightFinal :
+    SystemState name key value world error} ->
+  (transition : Transition rightFirst rightMiddle) ->
+  (rightRest : Transitions rightMiddle rightFinal) ->
+  (scannerChild, scannerParent, child, parent : name) ->
+  (scannerComponent, component : Component key value world error) ->
+  transitionAction transition =
+    OInsert scannerChild (ChildOf scannerParent) scannerComponent ->
+  transitionAction transition = OInsert child (ChildOf parent) component ->
+  {rightFinalIndex : RegistrationIndexState name} ->
+  {pendingLeft, pendingRight :
+    List (RegistrationEvent name key world error value)} ->
+  RegistrationTraceCorrespondence nameEq renaming leftOrdinal leftIndex left
+    leftFinalIndex (S rightOrdinal)
+    (advanceDeletedRegistrationIndex @{nameEq} rightOrdinal scannerChild
+      scannerParent scannerComponent rightIndex)
+    rightRest rightFinalIndex pendingLeft pendingRight ->
+  Elem (MkRegistrationGeneration child rightOrdinal)
+    (indexedDeletedGenerations rightFinalIndex)
+rightDiscardedRegistrationHeadRetained nameEq rightOrdinal rightIndex transition
+  rightRest scannerChild scannerParent child parent scannerComponent component
+  scannerAction generatedAction rest =
+    case trans (sym generatedAction) scannerAction of
+      Refl => rightCorrespondencePreservesDeleted nameEq rest
+        (MkRegistrationGeneration child rightOrdinal)
+        (replace {p = \items => Elem
+          (MkRegistrationGeneration child rightOrdinal) items}
+          (sym (advanceDeletedRegistrationIndexHead nameEq rightOrdinal child
+            parent component rightIndex)) Here)
+
+0 inverseRegistrationGenerationBijection :
+  RegistrationGenerationBijection name -> RegistrationGenerationBijection name
+inverseRegistrationGenerationBijection renaming =
+  MkRegistrationGenerationBijection
+    (generationBackward renaming)
+    (generationForward renaming)
+    (generationRightInverse renaming)
+    (generationLeftInverse renaming)
+
+0 inverseRegistrationEventMatch :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (left, right : RegistrationEvent name key world error value) ->
+  RegistrationEventMatch renaming left right ->
+  RegistrationEventMatch (inverseRegistrationGenerationBijection renaming)
+    right left
+inverseRegistrationEventMatch renaming left right
+  (MkRegistrationEventMatch component leftActivation rightActivation leftPresent
+    rightPresent childGeneration parentGeneration position) =
+      MkRegistrationEventMatch (sym component) rightActivation leftActivation
+        rightPresent leftPresent
+        (trans
+          (sym (cong (generationBackward renaming) childGeneration))
+          (generationLeftInverse renaming (eventChildGeneration left)))
+        (trans
+          (sym (cong (generationBackward renaming) parentGeneration))
+          (generationLeftInverse renaming
+            (activationParentGeneration leftActivation)))
+        (sym position)
+
+0 symmetricRegistrationTraceCorrespondence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  {leftOrdinal : Nat} -> {leftIndex : RegistrationIndexState name} ->
+  {leftFirst, leftFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} ->
+  {leftFinalIndex : RegistrationIndexState name} ->
+  {rightOrdinal : Nat} -> {rightIndex : RegistrationIndexState name} ->
+  {rightFirst, rightFinal : SystemState name key value world error} ->
+  {right : Transitions rightFirst rightFinal} ->
+  {rightFinalIndex : RegistrationIndexState name} ->
+  {pendingLeft, pendingRight :
+    List (RegistrationEvent name key world error value)} ->
+  RegistrationTraceCorrespondence nameEq renaming leftOrdinal leftIndex left
+    leftFinalIndex rightOrdinal rightIndex right rightFinalIndex pendingLeft
+    pendingRight ->
+  RegistrationTraceCorrespondence nameEq
+    (inverseRegistrationGenerationBijection renaming)
+    rightOrdinal rightIndex right rightFinalIndex leftOrdinal leftIndex left
+    leftFinalIndex pendingRight pendingLeft
+symmetricRegistrationTraceCorrespondence nameEq renaming
+  RegistrationCorrespondenceEnd = RegistrationCorrespondenceEnd
+symmetricRegistrationTraceCorrespondence nameEq renaming
+  (SkipLeftNonRegistration action transition leftRest sameAction generated rest) =
+    SkipRightNonRegistration action transition leftRest sameAction generated
+      (symmetricRegistrationTraceCorrespondence nameEq renaming rest)
+symmetricRegistrationTraceCorrespondence nameEq renaming
+  (SkipRightNonRegistration action transition rightRest sameAction generated
+    rest) =
+      SkipLeftNonRegistration action transition rightRest sameAction generated
+        (symmetricRegistrationTraceCorrespondence nameEq renaming rest)
+symmetricRegistrationTraceCorrespondence nameEq renaming
+  (DiscardLeftDeletedRegistration transition leftRest sameAction deleted rest) =
+    DiscardRightDeletedRegistration transition leftRest sameAction deleted
+      (symmetricRegistrationTraceCorrespondence nameEq renaming rest)
+symmetricRegistrationTraceCorrespondence nameEq renaming
+  (DiscardRightDeletedRegistration transition rightRest sameAction deleted
+    rest) =
+      DiscardLeftDeletedRegistration transition rightRest sameAction deleted
+        (symmetricRegistrationTraceCorrespondence nameEq renaming rest)
+symmetricRegistrationTraceCorrespondence nameEq renaming
+  (QueueLeftGeneratedRegistration transition leftRest sameAction surviving rest) =
+    QueueRightGeneratedRegistration transition leftRest sameAction surviving
+      (symmetricRegistrationTraceCorrespondence nameEq renaming rest)
+symmetricRegistrationTraceCorrespondence nameEq renaming
+  (QueueRightGeneratedRegistration transition rightRest sameAction surviving
+    rest) =
+      QueueLeftGeneratedRegistration transition rightRest sameAction surviving
+        (symmetricRegistrationTraceCorrespondence nameEq renaming rest)
+symmetricRegistrationTraceCorrespondence nameEq renaming
+  (MatchLeftWithPendingRight {child} {parent} {component} transition leftRest
+    sameAction surviving rightPrefix rightEvent rightSuffix matched rest) =
+      MatchRightWithPendingLeft transition leftRest sameAction surviving
+        rightPrefix rightEvent rightSuffix
+        (inverseRegistrationEventMatch renaming
+          (registrationEventAt leftOrdinal leftIndex child parent component)
+          rightEvent matched)
+        (symmetricRegistrationTraceCorrespondence nameEq renaming rest)
+symmetricRegistrationTraceCorrespondence nameEq renaming
+  (MatchRightWithPendingLeft {child} {parent} {component} transition rightRest
+    sameAction surviving leftPrefix leftEvent leftSuffix matched rest) =
+      MatchLeftWithPendingRight transition rightRest sameAction surviving
+        leftPrefix leftEvent leftSuffix
+        (inverseRegistrationEventMatch renaming leftEvent
+          (registrationEventAt rightOrdinal rightIndex child parent component)
+          matched)
+        (symmetricRegistrationTraceCorrespondence nameEq renaming rest)
+
 ||| Symmetric right-scanner induction boundary.
 public export
 0 deletedClassificationForcesRightScannerDiscardSpike :
@@ -2709,8 +2916,13 @@ public export
   DeletedGenerationClassification name key world error value nameEq right
     generation ->
   Elem generation (indexedDeletedGenerations rightFinalIndex)
-deletedClassificationForcesRightScannerDiscardSpike =
-  ?deletedClassificationForcesRightScannerDiscardSpike_rhs
+deletedClassificationForcesRightScannerDiscardSpike nameEq renaming
+  leftFinalIndex rightFinalIndex correspondence generation classification =
+    deletedClassificationForcesLeftScannerDiscardSpike nameEq
+      (inverseRegistrationGenerationBijection renaming) rightFinalIndex
+      leftFinalIndex
+      (symmetricRegistrationTraceCorrespondence nameEq renaming correspondence)
+      generation classification
 
 ||| Executable retained-position embedding induced by one exact
 ||| generation-aware subsequence. Keep advances both ordinals; delete advances
