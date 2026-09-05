@@ -15208,6 +15208,15 @@ scopedPostCloseForeignTables name key world error value nameEq keyEq left right
           (projectedActorTable nameEq actor right rightFiber
             (registryLookupFromMember nameEq (registry right) rightMember))))
 
+0 scopedEffectStateSymmetric :
+  (name, key, world : Type) -> (value : key -> Type) ->
+  (keyEq : DecEq key) ->
+  (left, right : EffectState name key value world) ->
+  EffectStateRelated keyEq left right -> EffectStateRelated keyEq right left
+scopedEffectStateSymmetric name key world value keyEq left right
+  (MkEffectStateRelated ambient tables) =
+    MkEffectStateRelated (sym ambient) (\actor => sym (tables actor))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
