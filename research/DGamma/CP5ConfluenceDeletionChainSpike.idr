@@ -22,6 +22,7 @@ import DGamma.CP4DeletionIndependenceRestriction
 import DGamma.CP4DeletionNoEpisodeReplay
 import DGamma.CP4DeletionCommittedProviderPersistence
 import DGamma.CP4DeletionControlPlan
+import DGamma.CP4DeletionEmptyTableInvariant
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceCurrent
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceResolved
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceSelected
@@ -13126,6 +13127,26 @@ scopedAppendSelectedCloseReplay name key world error value nameEq keyEq selected
     live state
 scopedInitialCurrentInactive name key world error value nameEq registered ordinal
   live bounded lower state actor generation member current =
+    void
+      (noCurrentRegisteredAtEpisodeStart registered live bounded lower actor
+        generation
+        (currentGenerationEntryFromLookup nameEq actor generation live current)
+        member)
+
+0 scopedInitialCurrentEmpty :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (bounded : GenerationEnvironmentBounded ordinal live) ->
+  (lower : (generation : RegistrationGeneration name) ->
+    Elem generation registered ->
+    LTE ordinal (generationBirthOrdinal generation)) ->
+  (state : SystemState name key value world error) ->
+  CurrentRegisteredEmptyTables name key world error value nameEq registered live
+    state
+scopedInitialCurrentEmpty name key world error value nameEq registered ordinal
+  live bounded lower state actor generation member current fiber found =
     void
       (noCurrentRegisteredAtEpisodeStart registered live bounded lower actor
         generation
