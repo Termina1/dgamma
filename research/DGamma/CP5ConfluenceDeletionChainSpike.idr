@@ -19611,6 +19611,20 @@ scopedSelectedActorTotalAt name key world error value nameEq keyEq selected acto
     scopedSelectedForeignActorTotal name key world error value nameEq keyEq selected actor distinct registered ordinal live
       wholeFirst wholeLast original survivor whole boundary sourceTotal
 
+0 scopedSelectedActorTotal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected, actor : name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (wholeFirst, wholeLast, original, survivor : SystemState name key value world error) ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  SelectedEpisodeReplayBoundary name key world error value nameEq keyEq selected registered ordinal live whole original survivor ->
+  ScopedActorTotal name key world error value nameEq keyEq actor original ->
+  ScopedActorTotal name key world error value nameEq keyEq actor survivor
+scopedSelectedActorTotal name key world error value nameEq keyEq selected actor registered ordinal live
+  wholeFirst wholeLast original survivor whole boundary sourceTotal =
+    scopedSelectedActorTotalAt name key world error value nameEq keyEq selected actor registered ordinal live
+      wholeFirst wholeLast original survivor whole boundary sourceTotal (decEq @{nameEq} actor selected)
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
