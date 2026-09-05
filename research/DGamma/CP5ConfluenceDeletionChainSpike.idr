@@ -23048,6 +23048,13 @@ scopedQuietEntryInactiveDelete name key world error value nameEq keyEq removed c
     scopedQuietFiberTargetSame name key world error value nameEq keyEq fiber (deleteBinding @{nameEq} removed source)
       source (targetFiberInactiveDelete nameEq keyEq fiber removed component parent retiredFlag table outcome source found)
 
+0 scopedAllRecursiveAsList :
+  (item : Type) -> (predicate : item -> Bool) -> (items : List item) ->
+  (allRecursive predicate items = allList predicate items)
+scopedAllRecursiveAsList item predicate [] = Refl
+scopedAllRecursiveAsList item predicate (head :: rest) =
+  cong (\tailFlag => predicate head && tailFlag) (scopedAllRecursiveAsList item predicate rest)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
