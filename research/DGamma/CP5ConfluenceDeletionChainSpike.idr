@@ -21491,6 +21491,22 @@ scopedSelectedParentControls name key world error value protocol nameEq keyEq se
 scopedNoParentRecoveryHead name key world error value parent first middle finalState _ _
   (NoParentRecoveryStep transition rest noHead noTail) = (noHead, noTail)
 
+0 scopedNoParentRecoveryPrefix :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (parent : name) -> (first, middle, finalState : SystemState name key value world error) ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  NoParentRecovery parent (appendTransitions left right) -> NoParentRecovery parent left
+scopedNoParentRecoveryPrefix name key world error value parent _ _ finalState NoTransitions
+  right noRecovery = NoParentRecoveryEnd
+scopedNoParentRecoveryPrefix name key world error value parent first middle finalState
+  (MoreTransitions transition rest) right noRecovery =
+    NoParentRecoveryStep transition rest
+      (fst (scopedNoParentRecoveryHead name key world error value parent first _ finalState
+        transition (appendTransitions rest right) noRecovery))
+      (scopedNoParentRecoveryPrefix name key world error value parent _ middle finalState rest right
+        (snd (scopedNoParentRecoveryHead name key world error value parent first _ finalState
+          transition (appendTransitions rest right) noRecovery)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
