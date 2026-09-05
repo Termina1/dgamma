@@ -10080,6 +10080,37 @@ insideSelectedContradictsScopedMaximality selected consumer
           selectedOrdinalExact consumerPrefixCountExact))
       edge
 
+record ScopedClosingLocalization
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (actor : name)
+  {prefixInitial, prefixFinal, globalFinal, stepBefore, stepAfter :
+    SystemState name key value world error}
+  (transition : Transition stepBefore stepAfter)
+  (prefixTrace : Transitions prefixInitial prefixFinal)
+  (global : Transitions prefixInitial globalFinal)
+  (anchor : ForeignLifecycleInstalledAnchor name key world error value nameEq
+    keyEq actor transition prefixTrace) where
+  constructor MkScopedClosingLocalization
+  localizedPrefixEpisode : LocatedClosedEpisode name key world error value
+    nameEq keyEq actor prefixTrace
+  localizedGlobalEpisode : LocatedClosedEpisode name key world error value
+    nameEq keyEq actor global
+  localizedActivationToAnchor : Transitions
+    (closedStartState (locatedEpisode localizedPrefixEpisode))
+    (lifecycleInstalledState anchor)
+  0 localizedActivationInstalled : InstalledTrace name key world error value
+    nameEq keyEq actor localizedActivationToAnchor
+  0 localizedOpeningSplit :
+    appendTransitions (traceBeforeOpening localizedPrefixEpisode)
+      (MoreTransitions
+        (beginTransition (closedOpening (locatedEpisode localizedPrefixEpisode)))
+        localizedActivationToAnchor) = lifecycleBeforeInstalled anchor
+  localizedAnchorToClosing : Transitions (lifecycleInstalledState anchor)
+    (lastInstalledState (locatedEpisode localizedPrefixEpisode))
+  0 localizedInsideSplit :
+    appendTransitions localizedActivationToAnchor localizedAnchorToClosing =
+      closedInside (locatedEpisode localizedPrefixEpisode)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
