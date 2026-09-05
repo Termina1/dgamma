@@ -6,6 +6,8 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionTheorem
 import DGamma.CP4DeletionBoundaryPlan
+import DGamma.CP4DeletionPlanBuilder
+import DGamma.CP4DeletionPlanComplete
 import DGamma.CP4DeletionFilterSuccess
 import DGamma.CP4DeletionGenerationBounds
 import DGamma.CP4DeletionGenerationStamped
@@ -23,6 +25,12 @@ import DGamma.CP4DeletionSelectedForeignLifecycleAnchorTrace
 import DGamma.CP4DeletionSelectedForeignLifecycleProviderFrame
 import DGamma.CP4DeletionSelectedForeignLifecycleDispatch
 import DGamma.CP4DeletionSelectedOwn
+import DGamma.CP4DeletionSelectedBoundary
+import DGamma.CP4DeletionSelectedEpisodeFold
+import DGamma.CP4DeletionSelectedEpisodeReplay
+import DGamma.CP4DeletionPostCloseFold
+import DGamma.CP4DeletionPostCloseLifecycle
+import DGamma.CP4DeletionSelectedForeignLifecycleReplay
 import DGamma.Ordering
 import Control.WellFounded
 import DGamma.CP4DeletionWithdrawalCurrent
@@ -11205,6 +11213,63 @@ generationScopedCrossingExcludesSelected nameEq keyEq selected actor
           selectedWholeExact selectedAnchorExact current activationToCurrent
           ownerInstalled currentSelected currentOwner selectedFound ownerFound
           currentWellFormed ownerDeclares exact)
+
+||| Research-side generalized seam for the selected-episode fold.  Unlike the
+||| frozen production anchor provider, this callback exposes every
+||| occurrence-local lifecycle fact before asking for the selected-provider
+||| exclusion.  The returned Boolean observation is therefore generation
+||| scoped and never requires a raw-name-global dependency predicate.
+public export
+record ScopedSelectedEpisodeLifecycleProvider
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
+  (registered : List (RegistrationGeneration name))
+  {globalFirst, globalLast, selectedPre, selectedAfter :
+    SystemState name key value world error}
+  (global : Transitions globalFirst globalLast)
+  (selectedEpisode : ClosedEpisode name key world error value nameEq keyEq
+    selected selectedPre selectedAfter) where
+  constructor MkScopedSelectedEpisodeLifecycleProvider
+  0 scopedLifecycleExcludesSelectedAt :
+    (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+    (action : Action name key value world error) ->
+    (lifecycle : isLifecycleAction action = True) ->
+    (distinct : Not (actionOwner action = selected)) ->
+    (before, afterState : SystemState name key value world error) ->
+    (tag : RuleTag) ->
+    (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+      Just (tag, afterState)) ->
+    (rest : Transitions afterState (lastInstalledState selectedEpisode)) ->
+    InstalledTrace name key world error value nameEq keyEq selected rest ->
+    (occurs : OccursIn
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq action tag checked) global) ->
+    (insidePrefix : Transitions (closedStartState selectedEpisode) before) ->
+    appendTransitions insidePrefix
+      (MoreTransitions (Fired nameEq keyEq action tag checked) rest) =
+        closedInside selectedEpisode ->
+    {wholeFirst, wholeLast : SystemState name key value world error} ->
+    {whole : Transitions wholeFirst wholeLast} ->
+    {survivor : SystemState name key value world error} ->
+    (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+      keyEq selected registered ordinal live whole before survivor) ->
+    (leftSelected, leftOwner, rightOwner : Fiber name key value world error) ->
+    lookupFiber @{nameEq} selected
+      (planTarget (completePlanResult (selectedBoundaryPlan boundary))) =
+      Just leftSelected ->
+    lookupFiber @{nameEq} (actionOwner action)
+      (planTarget (completePlanResult (selectedBoundaryPlan boundary))) =
+      Just leftOwner ->
+    lookupFiber @{nameEq} selected (registry before) = Just leftSelected ->
+    lookupFiber @{nameEq} (actionOwner action) (registry before) =
+      Just leftOwner ->
+    lookupFiber @{nameEq} (actionOwner action) (registry survivor) =
+      Just rightOwner ->
+    FiberControlRelated leftOwner rightOwner ->
+    (wanted : key) ->
+    Elem wanted (dependencies
+      (componentDependencies (fiberComponent leftOwner))) ->
+    providerCandidate @{keyEq} wanted leftSelected = False
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
