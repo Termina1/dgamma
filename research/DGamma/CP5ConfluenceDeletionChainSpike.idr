@@ -17029,6 +17029,89 @@ scopedInsertPresentAbsurd name key world error value nameEq keyEq child
               (MkSystemState ambient fibers) afterState tag checked)))
         found)
 
+||| The kept insertion installs the exact fresh fiber: observed guard and
+||| fresh-slot values drive the reduction, and the produced after-state lookup
+||| is the freshly inserted, unretired fiber.
+0 scopedInsertAfterUnretiredAt :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child : name) -> (insertedParent : Parent name) ->
+  (insertedComponent : Component key value world error) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (guardValue : Bool) ->
+  (0 guardEq : (parentPresent @{nameEq} {name = name} {key = key}
+      {value = value} {world = world} {error = error} insertedParent fibers &&
+    provisionsDisjointFrom @{keyEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} (componentProvisions insertedComponent)
+      (registryFibers {name = name} {key = key} {value = value} {world = world}
+        {error = error} fibers)) = guardValue) ->
+  (freshValue : Maybe (CoeffectApplied {key = name}
+    {value = FiberAt name key value world error} fibers)) ->
+  (0 freshEq : setFresh @{nameEq} {key = name}
+    {value = FiberAt name key value world error} child
+    (freshFiber insertedComponent insertedParent) fibers = freshValue) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error}
+    (OInsert child insertedParent insertedComponent)
+    (MkSystemState ambient fibers) = Just (tag, afterState)) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child afterState
+scopedInsertAfterUnretiredAt name key world error value nameEq keyEq child
+  insertedParent insertedComponent ambient fibers False guardEq freshValue
+  freshEq tag afterState =
+    rewrite guardEq in (\equation => void (nothingIsNotJust equation))
+scopedInsertAfterUnretiredAt name key world error value nameEq keyEq child
+  insertedParent insertedComponent ambient fibers True guardEq Nothing
+  freshEq tag afterState =
+    rewrite guardEq in rewrite freshEq in
+      (\equation => void (nothingIsNotJust equation))
+scopedInsertAfterUnretiredAt name key world error value nameEq keyEq child
+  insertedParent insertedComponent ambient fibers True guardEq (Just applied)
+  freshEq tag afterState =
+    rewrite guardEq in rewrite freshEq in
+      (\equation =>
+        MkScopedUnretiredFiberAt
+        (freshFiber insertedComponent insertedParent)
+        (trans
+          (cong (lookupFiber @{nameEq} {name = name} {key = key}
+            {value = value} {world = world} {error = error} child)
+            (trans (cong registry (sym (cong snd (justInjective equation))))
+              (setFreshAfter {name = name} {key = key} {value = value}
+                {world = world} {error = error} nameEq child
+                (freshFiber insertedComponent insertedParent) fibers applied
+                freshEq)))
+          (lookupInserted {key = name}
+            {value = FiberAt name key value world error} child
+            (freshFiber insertedComponent insertedParent) fibers
+            (setFreshAbsent {name = name} {key = key} {value = value}
+              {world = world} {error = error} nameEq child
+              (freshFiber insertedComponent insertedParent) fibers applied
+              freshEq)))
+        Refl)
+
+0 scopedInsertAfterUnretired :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child : name) -> (insertedParent : Parent name) ->
+  (insertedComponent : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq}
+    (OInsert child insertedParent insertedComponent) before =
+    Just (tag, afterState)) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child afterState
+scopedInsertAfterUnretired name key world error value nameEq keyEq child
+  insertedParent insertedComponent (MkSystemState ambient fibers) afterState tag
+  checked =
+    scopedInsertAfterUnretiredAt name key world error value nameEq keyEq child
+      insertedParent insertedComponent ambient fibers _ Refl _ Refl tag
+      afterState
+      (checkedActionProjects nameEq keyEq
+        (OInsert child insertedParent insertedComponent)
+        (MkSystemState ambient fibers) afterState tag checked)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
