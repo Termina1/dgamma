@@ -10694,6 +10694,58 @@ precedenceFromOpeningResolutionScoped nameEq keyEq selected actor wanted global
           ownerInstalled openingOwner currentOwner openingFound ownerFound)
         ownerDeclares)
 
+0 buildScopedCommittedOpeningEvidence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected, actor : name) -> (wanted : key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (0 aligned : AlignedTransitions name key world error value nameEq keyEq
+    global) ->
+  (0 initialWellFormed : registryWellFormed @{nameEq} @{keyEq} initial = True) ->
+  (consumerEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    actor global) ->
+  (current : SystemState name key value world error) ->
+  (activationToCurrent : Transitions
+    (closedStartState (locatedEpisode consumerEpisode)) current) ->
+  (0 ownerInstalled : InstalledTrace name key world error value nameEq keyEq
+    actor activationToCurrent) ->
+  (openingOwner, currentSelected, currentOwner :
+    Fiber name key value world error) ->
+  (0 openingFound : lookupFiber @{nameEq} actor
+    (registry (closedStartState (locatedEpisode consumerEpisode))) =
+      Just openingOwner) ->
+  (0 selectedFound : lookupFiber @{nameEq} selected (registry current) =
+    Just currentSelected) ->
+  (0 ownerFound : lookupFiber @{nameEq} actor (registry current) =
+    Just currentOwner) ->
+  (0 currentWellFormed : registryWellFormed @{nameEq} @{keyEq} current = True) ->
+  (0 ownerDeclares : Elem wanted (dependencies
+    (componentDependencies (fiberComponent currentOwner)))) ->
+  (0 candidateTrue : providerCandidate @{keyEq} wanted currentSelected = True) ->
+  ScopedCommittedOpeningEvidence name key world error value nameEq keyEq selected
+    actor wanted global consumerEpisode
+buildScopedCommittedOpeningEvidence nameEq keyEq selected actor wanted global
+  aligned initialWellFormed consumerEpisode current activationToCurrent
+  ownerInstalled openingOwner currentSelected currentOwner openingFound
+  selectedFound ownerFound currentWellFormed ownerDeclares candidateTrue =
+    MkScopedCommittedOpeningEvidence
+      (openingResolvedFromCommittedScoped nameEq keyEq selected actor wanted
+        (closedStartState (locatedEpisode consumerEpisode)) current
+        activationToCurrent ownerInstalled openingOwner currentSelected
+        currentOwner openingFound selectedFound ownerFound currentWellFormed
+        ownerDeclares candidateTrue)
+      (precedenceFromOpeningResolutionScoped nameEq keyEq selected actor wanted
+        global aligned initialWellFormed consumerEpisode current
+        activationToCurrent ownerInstalled openingOwner currentOwner openingFound
+        ownerFound
+        (openingResolvedFromCommittedScoped nameEq keyEq selected actor wanted
+          (closedStartState (locatedEpisode consumerEpisode)) current
+          activationToCurrent ownerInstalled openingOwner currentSelected
+          currentOwner openingFound selectedFound ownerFound currentWellFormed
+          ownerDeclares candidateTrue)
+        ownerDeclares)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
