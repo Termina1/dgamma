@@ -21539,6 +21539,21 @@ scopedChildRetiresPrefixStep name key world error value parent child first nextS
     scopedPrependRetirementProvenance name key world error value parent child first nextState middle
       head rest noHead (continue retirement)
 
+0 scopedChildRetiresPrefix :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (parent, child : name) -> (first, middle, finalState : SystemState name key value world error) ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  ChildRetiresBeforeRecovery parent child (appendTransitions left right) ->
+  ChildRetirementProvenance parent child left
+scopedChildRetiresPrefix name key world error value parent child _ _ finalState NoTransitions
+  right retirement = ParentDoesNotRecover NoParentRecoveryEnd
+scopedChildRetiresPrefix name key world error value parent child first middle finalState
+  (MoreTransitions transition rest) right retirement =
+    scopedChildRetiresPrefixStep name key world error value parent child first _ middle finalState
+      transition rest right
+      (scopedChildRetiresPrefix name key world error value parent child _ middle finalState rest right)
+      retirement
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
