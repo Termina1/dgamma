@@ -18406,6 +18406,37 @@ scopedUnretiredOwnStep name key world error value nameEq keyEq ordinal live
         before afterState tag unretired
           (checkedActionProjects nameEq keyEq (LUnload child) before afterState tag checked)) Refl)
 
+||| Reindex same-owner classification without eliminating dependent state indices.
+0 scopedUnretiredSameOwnerStep :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child : name) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 checked : (checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} action before =
+    Just (tag, afterState))) ->
+  (0 sameOwner : (child = actionOwner action)) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child before ->
+  Either (action = ORetire child)
+    (ScopedUnretiredNext name key value world error nameEq child
+      ordinal live action afterState)
+scopedUnretiredSameOwnerStep name key world error value nameEq keyEq child
+  ordinal live action before afterState tag checked sameOwner unretired =
+    replace
+      {p = \observed => Either (action = ORetire observed)
+        (ScopedUnretiredNext name key value world error nameEq observed ordinal
+          live action afterState)}
+      (sym sameOwner)
+      (scopedUnretiredOwnStep name key world error value nameEq keyEq ordinal live
+        action before afterState tag checked
+        (replace
+          {p = \observed => ScopedUnretiredFiberAt name key value world error
+            nameEq observed before} sameOwner unretired))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
