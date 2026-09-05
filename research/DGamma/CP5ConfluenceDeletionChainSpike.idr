@@ -24,6 +24,7 @@ import DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorTrace
 import DGamma.CP4DeletionSelectedForeignLifecycleProviderFrame
 import DGamma.CP4DeletionSelectedForeignLifecycleDispatch
+import DGamma.CP4DeletionSelectedForeignLifecycleReplayCore
 import DGamma.CP4DeletionSelectedOwn
 import DGamma.CP4DeletionSelectedBoundary
 import DGamma.CP4DeletionSelectedEpisodeFold
@@ -11270,6 +11271,61 @@ record ScopedSelectedEpisodeLifecycleProvider
     Elem wanted (dependencies
       (componentDependencies (fiberComponent leftOwner))) ->
     providerCandidate @{keyEq} wanted leftSelected = False
+
+||| Scoped-exclusion consumption point.  This is the clause-for-clause analog
+||| of the production provider-evidence dispatcher after its raw dependency
+||| predicate has been eliminated: source saturation consumes only the direct
+||| occurrence-local Boolean exclusion.
+0 scopedForeignLifecycleControlsFromExclusion :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) ->
+  (action : Action name key value world error) ->
+  Not (actionOwner action = selected) ->
+  isLifecycleAction action = True ->
+  (planAmbient, survivorAmbient : world) ->
+  (plan, survivor : Registry name key value world error) ->
+  (leftOwner, rightOwner, leftSelected : Fiber name key value world error) ->
+  lookupFiber @{nameEq} selected plan = Just leftSelected ->
+  lookupFiber @{nameEq} (actionOwner action) plan = Just leftOwner ->
+  lookupFiber @{nameEq} (actionOwner action) survivor = Just rightOwner ->
+  ((wanted : key) -> Elem wanted (dependencies
+    (componentDependencies (fiberComponent leftOwner))) ->
+    providerCandidate @{keyEq} wanted leftSelected = False) ->
+  SelectedSurvivorCleanInactive name key world error value nameEq selected
+    (MkSystemState survivorAmbient survivor) ->
+  SelectedOrderedRegistryControlsRelated name key world error value selected
+    (bindings plan) (bindings survivor) ->
+  ((current : name) -> Not (current = selected) ->
+    {leftFiber, rightFiber : Fiber name key value world error} ->
+    Elem (Bind current leftFiber) (bindings plan) ->
+    Elem (Bind current rightFiber) (bindings survivor) ->
+    FiberControlRelated leftFiber rightFiber ->
+    bindings (ownedValues (fiberTable leftFiber)) =
+      bindings (ownedValues (fiberTable rightFiber))) ->
+  (tag : RuleTag) -> (planAfter : SystemState name key value world error) ->
+  applyAction @{nameEq} @{keyEq} action (MkSystemState planAmbient plan) =
+    Just (tag, planAfter) ->
+  registryWellFormed @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error}
+    (MkSystemState survivorAmbient survivor) = True ->
+  ForeignAdvanceOutcomeProvider name key world error value nameEq keyEq action
+    planAmbient survivorAmbient plan survivor ->
+  ForeignLifecycleControlReplay name key world error value nameEq keyEq selected
+    action tag planAfter (MkSystemState survivorAmbient survivor)
+scopedForeignLifecycleControlsFromExclusion nameEq keyEq selected action
+  actorDistinct lifecycle planAmbient survivorAmbient plan survivor leftOwner
+  rightOwner leftSelected selectedFound leftFound rightFound selectedExcluded
+  cleanInactive ordered foreignTables tag planAfter planRaw survivorWellFormed
+  outcomes =
+    replayForeignLifecycleControlsFromFrame nameEq keyEq selected action
+      actorDistinct lifecycle planAmbient survivorAmbient plan survivor leftOwner
+      rightOwner leftFound rightFound
+      (foreignLifecycleGuardFrameFromProviderExclusion nameEq keyEq selected
+        (actionOwner action) actorDistinct leftOwner rightOwner leftSelected plan
+        survivor selectedFound leftFound rightFound cleanInactive ordered
+        foreignTables selectedExcluded)
+      tag planAfter planRaw survivorWellFormed outcomes
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
