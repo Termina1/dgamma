@@ -21569,6 +21569,35 @@ scopedRetirementProvenancePrefix name key world error value parent child first m
     scopedChildRetiresPrefix name key world error value parent child first middle finalState
       left right retirement
 
+0 scopedRegistrationStepPrefix :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) ->
+  (action : Action name key value world error) ->
+  (before, first, middle, finalState : SystemState name key value world error) ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  RegistrationStepDiscipline protocol nameEq action before (appendTransitions left right) ->
+  RegistrationStepDiscipline protocol nameEq action before left
+scopedRegistrationStepPrefix name key world error value protocol nameEq
+  (OInsert child Root component) before first middle finalState left right evidence = evidence
+scopedRegistrationStepPrefix name key world error value protocol nameEq
+  (OInsert child (ChildOf parent) component) before first middle finalState left right evidence =
+    (fst evidence, scopedRetirementProvenancePrefix name key world error value parent child
+      first middle finalState left right (snd evidence))
+scopedRegistrationStepPrefix name key world error value protocol nameEq
+  (ORetire actor) before first middle finalState left right evidence = ()
+scopedRegistrationStepPrefix name key world error value protocol nameEq
+  (ORemove actor) before first middle finalState left right evidence = ()
+scopedRegistrationStepPrefix name key world error value protocol nameEq
+  (LBegin actor) before first middle finalState left right evidence = ()
+scopedRegistrationStepPrefix name key world error value protocol nameEq
+  (LAdvance actor) before first middle finalState left right evidence = ()
+scopedRegistrationStepPrefix name key world error value protocol nameEq
+  (LDivert actor) before first middle finalState left right evidence = ()
+scopedRegistrationStepPrefix name key world error value protocol nameEq
+  (LLeave actor) before first middle finalState left right evidence = ()
+scopedRegistrationStepPrefix name key world error value protocol nameEq
+  (LUnload actor) before first middle finalState left right evidence = ()
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
