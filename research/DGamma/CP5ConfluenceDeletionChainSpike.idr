@@ -11327,6 +11327,25 @@ scopedForeignLifecycleControlsFromExclusion nameEq keyEq selected action
         foreignTables selectedExcluded)
       tag planAfter planRaw survivorWellFormed outcomes
 
+0 scopedSystemStateEta :
+  (state : SystemState name key value world error) ->
+  MkSystemState (worldState state) (registry state) = state
+scopedSystemStateEta (MkSystemState ambient fibers) = Refl
+
+0 scopedLifecycleControlTransportBefore :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {selected : name} ->
+  {action : Action name key value world error} -> {tag : RuleTag} ->
+  {planAfter, leftBefore, rightBefore :
+    SystemState name key value world error} ->
+  leftBefore = rightBefore ->
+  ForeignLifecycleControlReplay name key world error value nameEq keyEq selected
+    action tag planAfter leftBefore ->
+  ForeignLifecycleControlReplay name key world error value nameEq keyEq selected
+    action tag planAfter rightBefore
+scopedLifecycleControlTransportBefore Refl replay = replay
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
