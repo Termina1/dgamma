@@ -41,6 +41,7 @@ import DGamma.CP4DeletionSelectedForeignTables
 import DGamma.CP4DeletionSelectedForeignAdvanceAgreement
 import DGamma.CP4DeletionSelectedForeignControlCore
 import DGamma.CP4DeletionSelectedOwn
+import DGamma.CP4DeletionSelectedRetire
 import DGamma.CP4DeletionSelectedBoundary
 import DGamma.CP4DeletionSelectedEpisodeFold
 import DGamma.CP4DeletionSelectedEpisodeFoldCore
@@ -11696,6 +11697,34 @@ scopedRetireViewTag name key world error value nameEq actor ambient source tag
   afterState view =
     case view of
       MkRetireSuccessView fiber found => Refl
+
+0 scopedSelectedRetireRetainedHeadAtTag :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (before, afterState, survivor : SystemState name key value world error) ->
+  checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error}
+    (ORetire selected) before = Just (ORetireTag, afterState) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
+    registered live (ORetire selected) ORetireTag afterState
+    (MkSystemState (worldState before)
+      (planTarget (completePlanResult (selectedBoundaryPlan boundary)))) ->
+  SelectedEpisodeRetainedHead name key world error value nameEq keyEq selected
+    registered ordinal live whole (ORetire selected) afterState survivor
+scopedSelectedRetireRetainedHeadAtTag name key world error value nameEq keyEq
+  selected registered ordinal live whole before afterState survivor checkedAt
+  boundary stepAt =
+    case retainedSelectedRetirePreservesEpisodeBoundary nameEq keyEq selected
+      registered ordinal live whole before afterState survivor checkedAt boundary
+      stepAt of
+      MkSelectedRetainedEpisodeStep named fired nextBoundary =>
+        MkSelectedEpisodeRetainedHead named fired nextBoundary
 
 0 ScopedForeignLifecycleExclusion :
   {name, key, world, error : Type} -> {value : key -> Type} ->
