@@ -25867,6 +25867,23 @@ scopedEnrichedReadinessSeals name key world error value protocol nameEq keyEq in
         (selectedFoldEndOrdinal (selectedOutputFold (enrichedSelected folds))) (selectedFoldEndLive (selectedOutputFold (enrichedSelected folds))) (locatedAfter (selectedEpisode candidate)) finalState (scopedEnrichedMiddle name key world error value protocol nameEq keyEq initial finalState global candidate folds)
         (traceAfterClosing (selectedEpisode candidate)) (relationalSuffixReplayReady (postCloseOutputFold (enrichedSuffix folds))) (postCloseOutputTags (enrichedSuffix folds)))
 
+||| Finite executable position witness, retaining the actual rule tag of the indexed transition.
+data ScopedRuleAt :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Nat -> RuleTag -> Type where
+  ScopedRuleHere :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {0 first, middle, finalState : SystemState name key value world error} ->
+    (transition : Transition first middle) -> (rest : Transitions middle finalState) ->
+    ScopedRuleAt name key world error value (MoreTransitions transition rest) 0 (transitionTag transition)
+  ScopedRuleLater :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {0 first, middle, finalState : SystemState name key value world error} -> {ordinal : Nat} -> {tag : RuleTag} ->
+    (transition : Transition first middle) -> (rest : Transitions middle finalState) ->
+    ScopedRuleAt name key world error value rest ordinal tag ->
+    ScopedRuleAt name key world error value (MoreTransitions transition rest) (S ordinal) tag
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
