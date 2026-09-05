@@ -25227,6 +25227,22 @@ scopedConcreteAdvanceStageFamily name key world error value nameEq keyEq actor t
         sourceChecked targetChecked component sourceParent targetParent retiredFlag sourceTable targetTable remaining
         sourceAccumulator targetAccumulator view sourceFound targetFound selected stage)
 
+0 scopedReloadingCellSame :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (sourceRetired, targetRetired : Bool) -> (table : OwnedTable key value (componentProvisions component)) ->
+  (sourceRemaining, targetRemaining : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (sourceView, targetView : View name (dependencies (componentDependencies component))) ->
+  (sourceRetired = targetRetired) -> (sourceRemaining = targetRemaining) -> (sourceView = targetView) ->
+  (the (Fiber name key value world error) (MkFiber component parent targetRetired table (Reloading targetRemaining accumulator targetView)) =
+   MkFiber component parent sourceRetired table (Reloading sourceRemaining accumulator sourceView))
+scopedReloadingCellSame name key world error value component parent sourceRetired targetRetired table sourceRemaining targetRemaining
+  accumulator sourceView targetView retiredSame remainingSame viewSame =
+    trans (cong (\retired => MkFiber component parent retired table (Reloading targetRemaining accumulator targetView)) (sym retiredSame))
+      (trans (cong (\remaining => MkFiber component parent sourceRetired table (Reloading remaining accumulator targetView)) (sym remainingSame))
+        (cong (\view => MkFiber component parent sourceRetired table (Reloading sourceRemaining accumulator view)) (sym viewSame)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
