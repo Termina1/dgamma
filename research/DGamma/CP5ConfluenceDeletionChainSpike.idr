@@ -11916,6 +11916,128 @@ scopedForeignOrchestrationRetainedHead protocol nameEq keyEq selected registered
           unique action before afterState survivor tag checked occurs boundary
           (\owned => retained (DeleteRegisteredGeneration owned))))
 
+0 scopedDispatchForeignRetainedHead :
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  ((generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (global : Transitions globalFirst globalLast) ->
+  (globalDiscipline : RegistrationDiscipline protocol nameEq global) ->
+  (independent : TraceIndependent name key world error value keyEq global) ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (selectedEpisode : ClosedEpisode name key world error value nameEq keyEq
+    selected selectedPre selectedAfter) ->
+  (wholeInGlobal : OccurrenceEmbedding whole global) ->
+  (anchors : ScopedSelectedEpisodeLifecycleProvider name key world error value
+    nameEq keyEq selected registered global selectedEpisode) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (stamped : GenerationEnvironmentStamped live) ->
+  (action : Action name key value world error) ->
+  (distinct : Not (actionOwner action = selected)) ->
+  (before, afterState, survivor : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (rest : Transitions afterState (lastInstalledState selectedEpisode)) ->
+  (selectedRest : InstalledTrace name key world error value nameEq keyEq
+    selected rest) ->
+  (occurs : OccursIn
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked) whole) ->
+  (insidePrefix : Transitions (closedStartState selectedEpisode) before) ->
+  (insideDecomposition : appendTransitions insidePrefix
+    (MoreTransitions (Fired nameEq keyEq action tag checked) rest) =
+      closedInside selectedEpisode) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  (emptyPlan : EmptyTableInactivePlan name key world error value nameEq
+    (inactiveLeafPlan (completePlanResult
+      (selectedBoundaryPlan boundary)))) ->
+  (retained : Not (EpisodeGenerationDeletedActor nameEq selected registered
+    ordinal live action)) ->
+  SelectedEpisodeRetainedHead name key world error value nameEq keyEq selected
+    registered ordinal live whole action afterState survivor
+scopedDispatchForeignRetainedHead protocol nameEq keyEq selected registered
+  selectedOutside global globalDiscipline independent whole selectedEpisode
+  wholeInGlobal anchors ordinal live unique stamped
+  (OInsert actor parent component) distinct before afterState survivor tag
+  checked rest selectedRest occurs insidePrefix insideDecomposition boundary
+  emptyPlan retained =
+    scopedForeignOrchestrationRetainedHead protocol nameEq keyEq selected
+      registered global globalDiscipline independent whole wholeInGlobal ordinal
+      live unique (OInsert actor parent component) Refl distinct before
+      afterState survivor tag checked occurs boundary retained
+scopedDispatchForeignRetainedHead protocol nameEq keyEq selected registered
+  selectedOutside global globalDiscipline independent whole selectedEpisode
+  wholeInGlobal anchors ordinal live unique stamped (ORetire actor) distinct
+  before afterState survivor tag checked rest selectedRest occurs insidePrefix
+  insideDecomposition boundary emptyPlan retained =
+    scopedForeignOrchestrationRetainedHead protocol nameEq keyEq selected
+      registered global globalDiscipline independent whole wholeInGlobal ordinal
+      live unique (ORetire actor) Refl distinct before afterState survivor tag
+      checked occurs boundary retained
+scopedDispatchForeignRetainedHead protocol nameEq keyEq selected registered
+  selectedOutside global globalDiscipline independent whole selectedEpisode
+  wholeInGlobal anchors ordinal live unique stamped (ORemove actor) distinct
+  before afterState survivor tag checked rest selectedRest occurs insidePrefix
+  insideDecomposition boundary emptyPlan retained =
+    scopedForeignOrchestrationRetainedHead protocol nameEq keyEq selected
+      registered global globalDiscipline independent whole wholeInGlobal ordinal
+      live unique (ORemove actor) Refl distinct before afterState survivor tag
+      checked occurs boundary retained
+scopedDispatchForeignRetainedHead protocol nameEq keyEq selected registered
+  selectedOutside global globalDiscipline independent whole selectedEpisode
+  wholeInGlobal anchors ordinal live unique stamped (LBegin actor) distinct before
+  afterState survivor tag checked rest selectedRest occurs insidePrefix
+  insideDecomposition boundary emptyPlan retained =
+    scopedForeignLifecycleRetainedHead protocol nameEq keyEq selected registered
+      selectedOutside global globalDiscipline independent whole selectedEpisode
+      wholeInGlobal anchors ordinal live unique stamped (LBegin actor) Refl
+      distinct before afterState survivor tag checked rest selectedRest occurs
+      insidePrefix insideDecomposition boundary emptyPlan retained
+scopedDispatchForeignRetainedHead protocol nameEq keyEq selected registered
+  selectedOutside global globalDiscipline independent whole selectedEpisode
+  wholeInGlobal anchors ordinal live unique stamped (LAdvance actor) distinct
+  before afterState survivor tag checked rest selectedRest occurs insidePrefix
+  insideDecomposition boundary emptyPlan retained =
+    scopedForeignLifecycleRetainedHead protocol nameEq keyEq selected registered
+      selectedOutside global globalDiscipline independent whole selectedEpisode
+      wholeInGlobal anchors ordinal live unique stamped (LAdvance actor) Refl
+      distinct before afterState survivor tag checked rest selectedRest occurs
+      insidePrefix insideDecomposition boundary emptyPlan retained
+scopedDispatchForeignRetainedHead protocol nameEq keyEq selected registered
+  selectedOutside global globalDiscipline independent whole selectedEpisode
+  wholeInGlobal anchors ordinal live unique stamped (LDivert actor) distinct
+  before afterState survivor tag checked rest selectedRest occurs insidePrefix
+  insideDecomposition boundary emptyPlan retained =
+    scopedForeignLifecycleRetainedHead protocol nameEq keyEq selected registered
+      selectedOutside global globalDiscipline independent whole selectedEpisode
+      wholeInGlobal anchors ordinal live unique stamped (LDivert actor) Refl
+      distinct before afterState survivor tag checked rest selectedRest occurs
+      insidePrefix insideDecomposition boundary emptyPlan retained
+scopedDispatchForeignRetainedHead protocol nameEq keyEq selected registered
+  selectedOutside global globalDiscipline independent whole selectedEpisode
+  wholeInGlobal anchors ordinal live unique stamped (LLeave actor) distinct before
+  afterState survivor tag checked rest selectedRest occurs insidePrefix
+  insideDecomposition boundary emptyPlan retained =
+    scopedForeignLifecycleRetainedHead protocol nameEq keyEq selected registered
+      selectedOutside global globalDiscipline independent whole selectedEpisode
+      wholeInGlobal anchors ordinal live unique stamped (LLeave actor) Refl
+      distinct before afterState survivor tag checked rest selectedRest occurs
+      insidePrefix insideDecomposition boundary emptyPlan retained
+scopedDispatchForeignRetainedHead protocol nameEq keyEq selected registered
+  selectedOutside global globalDiscipline independent whole selectedEpisode
+  wholeInGlobal anchors ordinal live unique stamped (LUnload actor) distinct before
+  afterState survivor tag checked rest selectedRest occurs insidePrefix
+  insideDecomposition boundary emptyPlan retained =
+    scopedForeignLifecycleRetainedHead protocol nameEq keyEq selected registered
+      selectedOutside global globalDiscipline independent whole selectedEpisode
+      wholeInGlobal anchors ordinal live unique stamped (LUnload actor) Refl
+      distinct before afterState survivor tag checked rest selectedRest occurs
+      insidePrefix insideDecomposition boundary emptyPlan retained
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
