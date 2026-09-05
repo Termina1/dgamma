@@ -24839,6 +24839,47 @@ scopedEnrichedSuffixSpine name key world error value protocol nameEq keyEq initi
     (traceAfterClosing (selectedEpisode candidate)) (relationalSuffixReplayReady (postCloseOutputFold (enrichedSuffix folds)))
     (postCloseOutputTags (enrichedSuffix folds)) (postCloseOutputParentControls (enrichedSuffix folds))
 
+0 scopedEnrichedWholeSpine :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  ScopedDisciplineReplaySpine name key world error value nameEq (selectedRegistrations candidate) 0 [] global
+    (scopedEnrichedTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+scopedEnrichedWholeSpine name key world error value protocol nameEq keyEq initial finalState global candidate folds =
+  replace {p = \source => ScopedDisciplineReplaySpine name key world error value nameEq (selectedRegistrations candidate) 0 [] source
+    (scopedEnrichedTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)}
+    (locatedDecomposition (selectedEpisode candidate))
+    (scopedAppendDisciplineSpine name key world error value nameEq (selectedRegistrations candidate) 0 (selectedStartOrdinal candidate)
+      [] (selectedStartLive candidate) initial (locatedPreStart (selectedEpisode candidate)) finalState initial (locatedPreStart (selectedEpisode candidate))
+      (scopedEnrichedFinal name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+      (traceBeforeOpening (selectedEpisode candidate))
+      (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+        (appendTransitions (closedTransitions (locatedEpisode (selectedEpisode candidate))) (traceAfterClosing (selectedEpisode candidate))))
+      (traceBeforeOpening (selectedEpisode candidate))
+      (appendTransitions
+        (scopedEnrichedCenterTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+        (scopedEnrichedSuffixTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds))
+      (selectedBeforeScan candidate)
+      (scopedBeforeDisciplineSpine name key world error value nameEq (selectedRegistrations candidate) 0 (selectedStartOrdinal candidate)
+        [] (selectedStartLive candidate) initial (locatedPreStart (selectedEpisode candidate)) (traceBeforeOpening (selectedEpisode candidate))
+        (selectedBeforeScan candidate) (registeredDuringBirthLowerBound (selectedRegisteredDuring candidate)))
+      (scopedAppendDisciplineSpine name key world error value nameEq (selectedRegistrations candidate)
+        (selectedStartOrdinal candidate) (selectedFoldEndOrdinal (selectedOutputFold (enrichedSelected folds)))
+        (selectedStartLive candidate) (selectedFoldEndLive (selectedOutputFold (enrichedSelected folds)))
+        (locatedPreStart (selectedEpisode candidate)) (locatedAfter (selectedEpisode candidate)) finalState (locatedPreStart (selectedEpisode candidate))
+        (scopedEnrichedMiddle name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+        (scopedEnrichedFinal name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+        (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+          (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+        (traceAfterClosing (selectedEpisode candidate))
+        (scopedEnrichedCenterTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+        (scopedEnrichedSuffixTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+        (selectedFoldScan (selectedOutputFold (enrichedSelected folds)))
+        (scopedEnrichedCenterSpine name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+        (scopedEnrichedSuffixSpine name key world error value protocol nameEq keyEq initial finalState global candidate folds)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
