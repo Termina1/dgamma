@@ -11,6 +11,12 @@ import DGamma.CP4DeletionGenerationBounds
 import DGamma.CP4DeletionGenerationStamped
 import DGamma.CP4DeletionGenerationUnique
 import DGamma.CP4DeletionInactiveInvariant
+import DGamma.CP4DeletionCommittedProviderPersistence
+import DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceCurrent
+import DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceResolved
+import DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceSelected
+import DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceSnapshot
+import DGamma.CP4DeletionSelectedForeignLifecycleCore
 import DGamma.CP4DeletionRetirementPersistence
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorTrace
@@ -10533,6 +10539,65 @@ record ScopedCommittedOpeningEvidence
     selected (closedStartState (locatedEpisode consumerEpisode)) = True
   0 openingPrecedenceScoped : PrecedenceEdge nameEq selected actor
     (closedStartState (locatedEpisode consumerEpisode))
+
+0 committedSelectionAtOpeningScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected, actor : name) -> (wanted : key) ->
+  (openingState, current : SystemState name key value world error) ->
+  (activationToCurrent : Transitions openingState current) ->
+  (0 ownerInstalled : InstalledTrace name key world error value nameEq keyEq
+    actor activationToCurrent) ->
+  (openingOwner, currentSelected, currentOwner :
+    Fiber name key value world error) ->
+  (0 openingFound : lookupFiber @{nameEq} actor (registry openingState) =
+    Just openingOwner) ->
+  (0 selectedFound : lookupFiber @{nameEq} selected (registry current) =
+    Just currentSelected) ->
+  (0 ownerFound : lookupFiber @{nameEq} actor (registry current) =
+    Just currentOwner) ->
+  (0 currentWellFormed : registryWellFormed @{nameEq} @{keyEq} current = True) ->
+  (0 ownerDeclares : Elem wanted (dependencies
+    (componentDependencies (fiberComponent currentOwner)))) ->
+  (0 candidateTrue : providerCandidate @{keyEq} wanted currentSelected = True) ->
+  viewLookup @{keyEq} wanted
+    (dependencies (componentDependencies
+      (fiberComponent (committedFiber (installedOwnerSnapshot
+        (installedOwnerCommittedSnapshot nameEq actor openingState openingOwner
+          openingFound (installedTraceStart ownerInstalled)))))))
+    (committedView (installedOwnerSnapshot
+      (installedOwnerCommittedSnapshot nameEq actor openingState openingOwner
+        openingFound (installedTraceStart ownerInstalled)))) = Just selected
+committedSelectionAtOpeningScoped nameEq keyEq selected actor wanted openingState
+  current activationToCurrent ownerInstalled openingOwner currentSelected
+  currentOwner openingFound selectedFound ownerFound currentWellFormed
+  ownerDeclares candidateTrue =
+    committedProviderProvisionPersists nameEq keyEq actor wanted selected
+      (committedSnapshotProviders
+        (installedOwnerCommittedSnapshot nameEq actor openingState openingOwner
+          openingFound (installedTraceStart ownerInstalled)))
+      (currentCommittedProviders
+        (selectedCandidateGivesCommittedSnapshot nameEq keyEq selected actor
+          wanted current currentSelected currentOwner selectedFound ownerFound
+          currentWellFormed
+          (installedTraceEndScoped activationToCurrent ownerInstalled)
+          ownerDeclares candidateTrue))
+      activationToCurrent ownerInstalled
+      (installedOwnerSnapshot
+        (installedOwnerCommittedSnapshot nameEq actor openingState openingOwner
+          openingFound (installedTraceStart ownerInstalled)))
+      (currentCommittedSnapshot
+        (selectedCandidateGivesCommittedSnapshot nameEq keyEq selected actor
+          wanted current currentSelected currentOwner selectedFound ownerFound
+          currentWellFormed
+          (installedTraceEndScoped activationToCurrent ownerInstalled)
+          ownerDeclares candidateTrue))
+      (currentSnapshotSelects
+        (selectedCandidateGivesCommittedSnapshot nameEq keyEq selected actor
+          wanted current currentSelected currentOwner selectedFound ownerFound
+          currentWellFormed
+          (installedTraceEndScoped activationToCurrent ownerInstalled)
+          ownerDeclares candidateTrue))
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
