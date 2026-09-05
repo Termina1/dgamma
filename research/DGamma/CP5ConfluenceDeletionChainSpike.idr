@@ -26181,6 +26181,27 @@ scopedLocatedTagPairSame name key world error value sourceFirst sourceFinal targ
       (ordinalSharedTag pair) (transitionTag (locatedTransition targetOccurrence)) (ordinalTargetTag pair)
       (scopedLocatedRule name key world error value targetFirst targetFinal target action targetOccurrence))
 
+||| Whole-origin tags are sealed at the FROZEN source-occurrence function, without reducing or replacing it.
+0 scopedDeletionWholeTags :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  ScopedDeletionReadinessSeals name key world error value nameEq keyEq initial finalState global candidate result ->
+  {action : Action name key value world error} -> (occurrence : LocatedActionOccurrence action (survivingTrace result)) ->
+  (transitionTag (locatedTransition (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+        (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result occurrence))) = transitionTag (locatedTransition occurrence))
+scopedDeletionWholeTags name key world error value nameEq keyEq initial finalState global candidate result seals {action} occurrence =
+  scopedLocatedTagPairSame name key world error value initial finalState initial (survivingFinal result) global (survivingTrace result) action (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+        (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result occurrence)) occurrence
+    (scopedDeletionEmbeddedTags name key world error value nameEq keyEq initial finalState global candidate result
+      (beforeTagSeal seals) (centerTagSeal seals) (suffixTagSeal seals)
+      (locatedActionOrdinal (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+        (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result occurrence))) (locatedActionOrdinal occurrence)
+      (deletionWholeOrdinalEmbedding (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+        (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result occurrence)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
