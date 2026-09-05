@@ -19774,6 +19774,44 @@ scopedRelationalRetainedTagAtExact name key world error value nameEq keyEq
           named (scopedNamedAligned name key world error value nameEq keyEq action
             survivor named fires)))
 
+||| Local relational suffix producers can now emit their exact kept tag field.
+0 scopedRelationalRetainedTag :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (original, originalAfter, originalFinal, survivor :
+    SystemState name key value world error) ->
+  (checked : (checkedApplyAction @{nameEq} @{keyEq} action original =
+    Just (tag, originalAfter))) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  RegistrationStepDiscipline protocol nameEq action original rest ->
+  (retained : Not (GenerationOwnedActor {name = name} {key = key} {value = value}
+    {world = world} {error = error} nameEq registered ordinal live action)) ->
+  (boundary : RelationalNoEpisodeReplayBoundary name key world error value nameEq
+    keyEq registered live original survivor) ->
+  (named : NamedTransition name key world error value action survivor) ->
+  (fireNamed nameEq keyEq action survivor = Just named) ->
+  (tag = transitionTag (namedTransition named))
+scopedRelationalRetainedTag name key world error value protocol nameEq keyEq
+  registered ordinal live unique action tag original originalAfter originalFinal
+  survivor checked rest discipline retained boundary named fires =
+    scopedRelationalRetainedTagAtExact name key world error value nameEq keyEq
+      registered (advanceGenerationEnvironment @{nameEq} ordinal action live)
+      action tag originalAfter
+      (plannedSystemState original
+        (completePlanResult (relationalCompletePlan boundary))) survivor
+      (retainedSuffixHeadPreservesNoEpisodeBoundary protocol nameEq keyEq
+        registered ordinal live action original
+        (plannedSystemState original
+          (completePlanResult (relationalCompletePlan boundary)))
+        (relationalBoundaryGivesPlanExactBoundary nameEq keyEq unique boundary)
+        tag checked rest discipline retained)
+      (relationalEffects boundary) (relationalOrderedControls boundary) named fires
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
