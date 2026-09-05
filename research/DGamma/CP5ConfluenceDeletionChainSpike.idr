@@ -70,6 +70,9 @@ import DGamma.CP4DeletionRelationalActionReplay
 import DGamma.CP4DeletionRelationalSuffixFold
 import DGamma.CP4DeletionPostCloseLifecycle
 import DGamma.CP4DeletionSelectedForeignLifecycleReplay
+import DGamma.CP4DeletionEndpoint
+import DGamma.CP4DeletionSkeleton
+import DGamma.CP4DeletionWithdrawalJoin
 import DGamma.Ordering
 import Control.WellFounded
 import DGamma.CP4DeletionWithdrawalCurrent
@@ -15841,6 +15844,380 @@ scopedPostCloseSuffixFold name key world error value protocol nameEq keyEq selec
             (checkedActionProjects nameEq keyEq (LUnload selected) _ _ tag checked)
             (postCloseOriginalSelectedInactive nameEq selected registered live
               unique stamped selectedOutside _ survivor boundary))
+
+0 scopedDisciplineAppendRight :
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  RegistrationDiscipline protocol nameEq (appendTransitions left right) ->
+  RegistrationDiscipline protocol nameEq right
+scopedDisciplineAppendRight NoTransitions right discipline = discipline
+scopedDisciplineAppendRight (MoreTransitions transition rest) right
+  (RegistrationDisciplineStep _ _ step tail) =
+    scopedDisciplineAppendRight rest right tail
+
+0 scopedGenerationScanEndpointsUnique :
+  GenerationTraceScan nameEq ordinal live trace firstOrdinal firstLive ->
+  GenerationTraceScan nameEq ordinal live trace secondOrdinal secondLive ->
+  (firstOrdinal = secondOrdinal, firstLive = secondLive)
+scopedGenerationScanEndpointsUnique GenerationTraceScanEnd GenerationTraceScanEnd =
+  (Refl, Refl)
+scopedGenerationScanEndpointsUnique
+  (GenerationTraceScanStep transition rest firstTail)
+  (GenerationTraceScanStep _ _ secondTail) =
+    scopedGenerationScanEndpointsUnique firstTail secondTail
+
+0 scopedTransportPostCloseBoundary :
+  firstOrdinal = secondOrdinal -> firstLive = secondLive ->
+  PostCloseSelectedBoundary name key world error value nameEq keyEq selected
+    registered firstOrdinal firstLive original survivor ->
+  PostCloseSelectedBoundary name key world error value nameEq keyEq selected
+    registered secondOrdinal secondLive original survivor
+scopedTransportPostCloseBoundary Refl Refl boundary = boundary
+
+0 scopedTransportGenerationFilterSource :
+  first = second ->
+  GenerationFilterResult name key world error value nameEq deletable ordinal live
+    original first ->
+  GenerationFilterResult name key world error value nameEq deletable ordinal live
+    original second
+scopedTransportGenerationFilterSource Refl result = result
+
+0 scopedTransportGenerationFilterFinal :
+  (same : first = second) ->
+  (result : GenerationFilterResult name key world error value nameEq deletable
+    ordinal live original first) ->
+  GenerationFilterResult.survivingFinal
+      (scopedTransportGenerationFilterSource same result) =
+    GenerationFilterResult.survivingFinal result
+scopedTransportGenerationFilterFinal Refl result = Refl
+
+record ScopedReadyGenerationResult
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name)
+  (deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type)
+  (ordinal : Nat) (live : GenerationEnvironment name)
+  {originalFirst, originalFinal : SystemState name key value world error}
+  (original : Transitions originalFirst originalFinal)
+  (survivingFirst, target : SystemState name key value world error) where
+  constructor MkScopedReadyGenerationResult
+  scopedReadyGenerationResult : GenerationFilterResult name key world error value
+    nameEq deletable ordinal live original survivingFirst
+  0 scopedReadyGenerationFinal : GenerationFilterResult.survivingFinal
+    scopedReadyGenerationResult = target
+
+0 scopedReplayReadyResultAt :
+  (nameEq : DecEq name) ->
+  (deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (original : Transitions originalFirst originalFinal) ->
+  (survivingFirst : SystemState name key value world error) ->
+  (ready : GenerationReplayReady nameEq keyEq deletable ordinal live original
+    survivingFirst) ->
+  (ends : ReplayReadyEndsAt ready target) ->
+  ScopedReadyGenerationResult name key world error value nameEq deletable ordinal live
+    original survivingFirst target
+scopedReplayReadyResultAt nameEq deletable ordinal live NoTransitions survivingFirst
+  ReplayReadyEnd (ReplayEndsEnd same) =
+    MkScopedReadyGenerationResult
+      (MkGenerationFilterResult survivingFirst NoTransitions
+        GenerationActionSubsequenceEnd) (sym same)
+scopedReplayReadyResultAt nameEq deletable ordinal live
+  (MoreTransitions transition@(Fired stepNameEq stepKeyEq action tag checked)
+    rest) survivingFirst (ReplayReadyDelete deleted tail)
+  (ReplayEndsDelete _ _ tailEnds) =
+    case scopedReplayReadyResultAt nameEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal action live) rest
+      survivingFirst tail tailEnds of
+      MkScopedReadyGenerationResult
+        (MkGenerationFilterResult finalState surviving witness) finalSame =>
+          MkScopedReadyGenerationResult
+            (MkGenerationFilterResult finalState surviving
+              (DeleteGenerationAction (Fired stepNameEq stepKeyEq action tag checked) rest deleted witness))
+            finalSame
+scopedReplayReadyResultAt nameEq deletable ordinal live
+  (MoreTransitions transition@(Fired stepNameEq stepKeyEq action ruleTag checked)
+    rest) survivingFirst
+  (ReplayReadyKeep retained after tag survivingTransition sameAction fires tail)
+  (ReplayEndsKeep _ _ _ _ _ _ tailEnds) =
+    case scopedReplayReadyResultAt nameEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal action live) rest after
+      tail tailEnds of
+      MkScopedReadyGenerationResult
+        (MkGenerationFilterResult finalState surviving witness) finalSame =>
+          MkScopedReadyGenerationResult
+            (MkGenerationFilterResult finalState
+              (MoreTransitions survivingTransition surviving)
+              (KeepGenerationAction (Fired stepNameEq stepKeyEq action ruleTag checked) rest survivingTransition
+                surviving retained (sym sameAction) witness))
+            finalSame
+
+0 scopedDeletionResultFromSelectedFold :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) ->
+  (global : Transitions initial finalState) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq global) ->
+  (discipline : RegistrationDiscipline protocol nameEq global) ->
+  (finalNoFailed : noFailedFibers finalState = True) ->
+  (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (selectedOutside :
+    (generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (episodeStartOrdinal : Nat) ->
+  (episodeStartLive : GenerationEnvironment name) ->
+  (beforeScan : GenerationTraceScan nameEq 0 []
+    (traceBeforeOpening episode) episodeStartOrdinal episodeStartLive) ->
+  (registeredDuring : RegisteredGenerationsDuring selected episodeStartOrdinal
+    registered
+    (MoreTransitions
+      (beginTransition (closedOpening (locatedEpisode episode)))
+      (closedTransitions (locatedEpisode episode)))) ->
+  (noRegistered : NoRegisteredEpisode nameEq registered 0 [] global) ->
+  (selectedFold : SelectedClosedEpisodeFold name key world error value nameEq
+    keyEq selected registered episodeStartOrdinal episodeStartLive
+    (locatedEpisode episode)
+    (appendTransitions (closedTransitions (locatedEpisode episode))
+      (traceAfterClosing episode))) ->
+  DeletionResult name key world error value nameEq keyEq global selected episode
+    registered episodeStartOrdinal episodeStartLive
+scopedDeletionResultFromSelectedFold name key world error value protocol nameEq
+  keyEq initial finalState global aligned discipline finalNoFailed selected episode
+  registered selectedOutside episodeStartOrdinal episodeStartLive beforeScan
+  registeredDuring noRegistered selectedFold =
+    let segments = splitLocatedNoRegisteredSegments nameEq keyEq global selected
+          episode registered episodeStartOrdinal episodeStartLive beforeScan
+          noRegistered
+        0 centerEndpointSame = scopedGenerationScanEndpointsUnique
+          (selectedFoldScan selectedFold) (episodeScan segments)
+        0 centerOrdinalSame = fst centerEndpointSame
+        0 centerLiveSame = snd centerEndpointSame
+        0 postBoundary : PostCloseSelectedBoundary name key world error value
+          nameEq keyEq selected registered (episodeEndOrdinal segments)
+          (episodeEndLive segments) (locatedAfter episode)
+          (selectedFoldSurvivor selectedFold)
+        postBoundary = scopedTransportPostCloseBoundary centerOrdinalSame centerLiveSame
+          (selectedFoldPostClose selectedFold)
+        0 decomposedDiscipline : RegistrationDiscipline protocol nameEq
+          (appendTransitions (traceBeforeOpening episode)
+            (MoreTransitions
+              (beginTransition (closedOpening (locatedEpisode episode)))
+              (appendTransitions
+                (closedTransitions (locatedEpisode episode)) (traceAfterClosing episode))))
+        decomposedDiscipline = replace
+          {p = RegistrationDiscipline protocol nameEq}
+          (sym (locatedDecomposition episode)) discipline
+        0 centerSuffixDiscipline : RegistrationDiscipline protocol nameEq
+          (MoreTransitions
+            (beginTransition (closedOpening (locatedEpisode episode)))
+            (appendTransitions (closedTransitions (locatedEpisode episode))
+              (traceAfterClosing episode)))
+        centerSuffixDiscipline = scopedDisciplineAppendRight
+          (traceBeforeOpening episode)
+          (MoreTransitions
+            (beginTransition (closedOpening (locatedEpisode episode)))
+            (appendTransitions (closedTransitions (locatedEpisode episode))
+              (traceAfterClosing episode))) decomposedDiscipline
+        0 suffixDiscipline : RegistrationDiscipline protocol nameEq (traceAfterClosing episode)
+        suffixDiscipline = scopedDisciplineAppendRight
+          (MoreTransitions
+            (beginTransition (closedOpening (locatedEpisode episode)))
+            (closedTransitions (locatedEpisode episode)))
+          (traceAfterClosing episode) centerSuffixDiscipline
+        0 suffixAligned : AlignedTransitions name key world error value nameEq
+          keyEq (traceAfterClosing episode)
+        suffixAligned = alignedLocatedAfter global aligned episode
+        0 uniqueStart : GenerationEnvironmentNamesUnique episodeStartLive
+        uniqueStart = generationTraceScanPreservesUnique nameEq beforeScan
+          UniqueNil
+        0 stampedStart : GenerationEnvironmentStamped episodeStartLive
+        stampedStart = generationTraceScanPreservesStamped nameEq beforeScan
+          emptyGenerationEnvironmentStamped
+        0 uniqueCenter : GenerationEnvironmentNamesUnique
+          (episodeEndLive segments)
+        uniqueCenter = generationTraceScanPreservesUnique nameEq
+          (episodeScan segments) uniqueStart
+        0 stampedCenter : GenerationEnvironmentStamped
+          (episodeEndLive segments)
+        stampedCenter = generationTraceScanPreservesStamped nameEq
+          (episodeScan segments) stampedStart
+        0 bornBefore : RegisteredGenerationsBornBefore registered
+          (episodeEndOrdinal segments)
+        bornBefore = registeredBornBeforeCenterEnd nameEq selected
+          episodeStartOrdinal registered
+          (MoreTransitions
+            (beginTransition (closedOpening (locatedEpisode episode)))
+            (closedTransitions (locatedEpisode episode)))
+          (episodeEndOrdinal segments)
+          (episodeEndLive segments) (episodeScan segments) registeredDuring
+        0 suffixFold : RelationalNoEpisodeSuffixReplayFold name key world error
+          value nameEq keyEq registered (episodeEndOrdinal segments)
+          (episodeEndLive segments) (traceAfterClosing episode)
+          (selectedFoldSurvivor selectedFold)
+        suffixFold = scopedPostCloseSuffixFold name key world error value protocol
+          nameEq keyEq selected registered selectedOutside
+          (episodeEndOrdinal segments) (episodeEndLive segments) bornBefore
+          uniqueCenter stampedCenter (traceAfterClosing episode)
+          (selectedFoldSurvivor selectedFold)
+          postBoundary suffixDiscipline suffixAligned
+          (suffixNoRegistered segments) finalNoFailed
+        0 finalOrdinal : Nat
+        finalOrdinal = relationalSuffixFinalOrdinal suffixFold
+        0 finalLive : GenerationEnvironment name
+        finalLive = relationalSuffixFinalLive suffixFold
+        0 finalSurvivor : SystemState name key value world error
+        finalSurvivor = relationalSuffixFinalSurvivor suffixFold
+        0 finalEndpointSame :
+          (finalOrdinal = originalFinalOrdinal segments,
+           finalLive = originalFinalLive segments)
+        finalEndpointSame = scopedGenerationScanEndpointsUnique
+          (relationalSuffixGenerationScan suffixFold) (suffixScan segments)
+        0 finalLiveSame : finalLive = originalFinalLive segments
+        finalLiveSame = snd finalEndpointSame
+        0 finalBoundary : RelationalNoEpisodeReplayBoundary name key world
+          error value nameEq keyEq registered finalLive finalState finalSurvivor
+        finalBoundary = relationalSuffixFinalBoundary suffixFold
+        0 finalUnique : GenerationEnvironmentNamesUnique finalLive
+        finalUnique = relationalSuffixFinalUnique suffixFold
+        0 finalStamped : GenerationEnvironmentStamped finalLive
+        finalStamped = generationTraceScanPreservesStamped nameEq
+          (relationalSuffixGenerationScan suffixFold) stampedCenter
+        0 finalInactive : CurrentRegisteredInactiveFibers name key world error
+          value nameEq registered finalLive finalState
+        finalInactive = currentRegisteredInactiveTrace nameEq keyEq registered
+          (episodeEndOrdinal segments) (episodeEndLive segments) uniqueCenter
+          (traceAfterClosing episode) finalOrdinal finalLive
+          (relationalSuffixGenerationScan suffixFold) suffixAligned
+          (suffixNoRegistered segments) (postCloseCurrentInactive postBoundary)
+        0 finalEmpty : CurrentRegisteredEmptyTables name key world error value
+          nameEq registered finalLive finalState
+        finalEmpty = currentRegisteredEmptyTableTrace nameEq keyEq registered
+          (episodeEndOrdinal segments) (episodeEndLive segments) uniqueCenter
+          (traceAfterClosing episode) finalOrdinal finalLive
+          (relationalSuffixGenerationScan suffixFold) suffixAligned
+          (suffixNoRegistered segments) (postCloseCurrentInactive postBoundary)
+          (postCloseCurrentEmpty postBoundary)
+        0 finalPlanEmpty : EmptyTableInactivePlan name key world error value
+          nameEq (inactiveLeafPlan (completePlanResult
+            (relationalCompletePlan finalBoundary)))
+        finalPlanEmpty = completeCurrentRegisteredPlanHasEmptyTables nameEq
+          registered finalLive finalUnique (worldState finalState)
+          (registry finalState) (relationalCompletePlan finalBoundary) finalEmpty
+        0 withdrawable : CurrentRegisteredWithdrawable name key world error
+          value nameEq registered finalLive finalState
+        withdrawable = currentRegisteredWithdrawableFromTrace nameEq keyEq
+          selected registered episodeStartOrdinal episodeStartLive (MoreTransitions
+            (beginTransition (closedOpening (locatedEpisode episode)))
+            (closedTransitions (locatedEpisode episode)))
+          (episodeEndOrdinal segments) (episodeEndLive segments)
+          (episodeScan segments) uniqueStart stampedStart
+          (alignedLocatedCenter global aligned episode)
+          (episodeNoRegistered segments) registeredDuring (traceAfterClosing episode) bornBefore
+          uniqueCenter (relationalSuffixGenerationScan suffixFold) finalStamped
+          suffixAligned (suffixNoRegistered segments)
+          (postCloseCurrentInactive postBoundary)
+          (postCloseCurrentEmpty postBoundary)
+        0 endpoint :
+          (EffectStateRelated keyEq (projectEffectState @{nameEq} finalState)
+              (projectEffectState @{nameEq} finalSurvivor),
+           ControlEquivalentOutsideGenerations nameEq registered finalLive
+             finalState finalSurvivor,
+           RegisteredNamesWithdrawn nameEq registered finalLive finalState
+             finalSurvivor)
+        endpoint = relationalBoundaryGivesEndpointEvidence nameEq keyEq
+          registered finalLive finalUnique finalState finalSurvivor finalBoundary
+          finalPlanEmpty withdrawable
+        0 beforeDeletion : GenerationActionSubsequence nameEq
+          (GenerationOwnedActor nameEq registered) 0 []
+          (traceBeforeOpening episode) (traceBeforeOpening episode)
+        beforeDeletion = deletionBeforeFromRegisteredDuring nameEq selected
+          registered (traceBeforeOpening episode) (MoreTransitions
+            (beginTransition (closedOpening (locatedEpisode episode)))
+            (closedTransitions (locatedEpisode episode))) episodeStartOrdinal
+          episodeStartLive beforeScan registeredDuring
+    in case scopedReplayReadyResultAt nameEq
+      (EpisodeGenerationDeletedActor nameEq selected registered)
+      episodeStartOrdinal episodeStartLive
+      (MoreTransitions
+        (beginTransition (closedOpening (locatedEpisode episode)))
+        (closedTransitions (locatedEpisode episode)))
+      (locatedPreStart episode) (selectedFoldReady selectedFold)
+      (selectedFoldReadyEnds selectedFold) of
+      MkScopedReadyGenerationResult episodeFiltered episodeFinalSame =>
+        case scopedReplayReadyResultAt nameEq
+          (GenerationOwnedActor nameEq registered)
+          (episodeEndOrdinal segments) (episodeEndLive segments)
+          (traceAfterClosing episode) (selectedFoldSurvivor selectedFold)
+          (relationalSuffixReplayReady suffixFold)
+          (relationalSuffixReadyEnds suffixFold) of
+          MkScopedReadyGenerationResult suffixFilteredRaw suffixFinalSame =>
+            let 0 suffixFiltered : GenerationFilterResult name key world
+                  error value nameEq (GenerationOwnedActor nameEq registered)
+                  (episodeEndOrdinal segments) (episodeEndLive segments)
+                  (traceAfterClosing episode)
+                  (GenerationFilterResult.survivingFinal episodeFiltered)
+                suffixFiltered = scopedTransportGenerationFilterSource (sym episodeFinalSame)
+                  suffixFilteredRaw
+                0 filteredFinalSame :
+                  (GenerationFilterResult.survivingFinal suffixFiltered =
+                    finalSurvivor)
+                filteredFinalSame = trans
+                  (scopedTransportGenerationFilterFinal (sym episodeFinalSame) suffixFilteredRaw)
+                  suffixFinalSame
+                0 skeleton : DeletionTraceSkeleton name key world error
+                  value nameEq keyEq global selected episode registered
+                  episodeStartOrdinal episodeStartLive
+                skeleton = MkDeletionTraceSkeleton segments beforeScan
+                  beforeDeletion episodeFiltered suffixFiltered
+                0 effectsAtSkeleton : EffectStateRelated keyEq
+                  (projectEffectState @{nameEq} finalState)
+                  (projectEffectState @{nameEq}
+                    (GenerationFilterResult.survivingFinal suffixFiltered))
+                effectsAtSkeleton = replace
+                  {p = \observed => EffectStateRelated keyEq
+                    (projectEffectState @{nameEq} finalState)
+                    (projectEffectState @{nameEq} observed)}
+                  (sym filteredFinalSame) (fst endpoint)
+                0 controlsAtFinalLive : ControlEquivalentOutsideGenerations
+                  nameEq registered finalLive finalState
+                  (GenerationFilterResult.survivingFinal suffixFiltered)
+                controlsAtFinalLive = replace
+                  {p = \observed => ControlEquivalentOutsideGenerations nameEq
+                    registered finalLive finalState observed}
+                  (sym filteredFinalSame) (fst (snd endpoint))
+                0 controlsAtSkeleton : ControlEquivalentOutsideGenerations nameEq
+                  registered (originalFinalLive segments) finalState
+                  (GenerationFilterResult.survivingFinal suffixFiltered)
+                controlsAtSkeleton = replace
+                  {p = \observedLive => ControlEquivalentOutsideGenerations
+                    nameEq registered observedLive finalState
+                    (GenerationFilterResult.survivingFinal suffixFiltered)}
+                  finalLiveSame controlsAtFinalLive
+                0 withdrawnAtFinalLive : RegisteredNamesWithdrawn nameEq
+                  registered finalLive finalState
+                  (GenerationFilterResult.survivingFinal suffixFiltered)
+                withdrawnAtFinalLive = replace
+                  {p = \observed => RegisteredNamesWithdrawn nameEq registered
+                    finalLive finalState observed}
+                  (sym filteredFinalSame) (snd (snd endpoint))
+                0 withdrawnAtSkeleton : RegisteredNamesWithdrawn nameEq registered
+                  (originalFinalLive segments) finalState
+                  (GenerationFilterResult.survivingFinal suffixFiltered)
+                withdrawnAtSkeleton = replace
+                  {p = \observedLive => RegisteredNamesWithdrawn nameEq registered
+                    observedLive finalState
+                    (GenerationFilterResult.survivingFinal suffixFiltered)}
+                  finalLiveSame withdrawnAtFinalLive
+                0 endpointEvidence : DeletionEndpointEvidence name key world
+                  error value nameEq keyEq skeleton selectedOutside
+                endpointEvidence = MkDeletionEndpointEvidence effectsAtSkeleton
+                  controlsAtSkeleton withdrawnAtSkeleton
+            in assembleDeletionResult skeleton selectedOutside endpointEvidence
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
