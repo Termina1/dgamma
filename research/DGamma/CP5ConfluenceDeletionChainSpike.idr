@@ -24880,6 +24880,21 @@ scopedEnrichedWholeSpine name key world error value protocol nameEq keyEq initia
         (scopedEnrichedCenterSpine name key world error value protocol nameEq keyEq initial finalState global candidate folds)
         (scopedEnrichedSuffixSpine name key world error value protocol nameEq keyEq initial finalState global candidate folds)))
 
+0 scopedEnrichedWholeDiscipline :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  AlignedTransitions name key world error value nameEq keyEq global -> RegistrationDiscipline protocol nameEq global ->
+  RegistrationDiscipline protocol nameEq
+    (scopedEnrichedTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+scopedEnrichedWholeDiscipline name key world error value protocol nameEq keyEq initial finalState global candidate folds aligned discipline =
+  scopedSpineRegistrationDiscipline name key world error value protocol nameEq keyEq (selectedRegistrations candidate) 0 []
+    initial finalState initial (scopedEnrichedFinal name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+    global (scopedEnrichedTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+    (scopedEnrichedWholeSpine name key world error value protocol nameEq keyEq initial finalState global candidate folds) aligned discipline
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
