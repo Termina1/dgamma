@@ -41,6 +41,7 @@ import DGamma.CP4DeletionSelectedForeignTables
 import DGamma.CP4DeletionSelectedForeignAdvanceAgreement
 import DGamma.CP4DeletionSelectedForeignControlCore
 import DGamma.CP4DeletionSelectedOwn
+import DGamma.CP4DeletionSelectedOwnDispatch
 import DGamma.CP4DeletionSelectedRetire
 import DGamma.CP4DeletionSelectedBoundary
 import DGamma.CP4DeletionSelectedDeletedDispatch
