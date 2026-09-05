@@ -15921,6 +15921,34 @@ record ScopedPostCloseSuffixFoldOutput
     nameEq keyEq (GenerationOwnedActor nameEq registered) ordinal live original
     finalState trace survivor (relationalSuffixReplayReady postCloseOutputFold)
 
+0 scopedPostCloseSuffixFoldOutputEnd :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (selectedOutside :
+    (generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (bornBefore : RegisteredGenerationsBornBefore registered ordinal) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (stamped : GenerationEnvironmentStamped live) ->
+  (state, survivor : SystemState name key value world error) ->
+  (boundary : PostCloseSelectedBoundary name key world error value nameEq keyEq
+    selected registered ordinal live state survivor) ->
+  (noFailed : noFailedFibers state = True) ->
+  ScopedPostCloseSuffixFoldOutput name key world error value nameEq keyEq
+    registered ordinal live (NoTransitions {state = state}) survivor
+scopedPostCloseSuffixFoldOutputEnd name key world error value protocol nameEq keyEq
+  selected registered selectedOutside ordinal live bornBefore unique stamped state
+  survivor boundary noFailed =
+    MkScopedPostCloseSuffixFoldOutput
+      (scopedPostCloseSuffixFold name key world error value protocol nameEq keyEq
+        selected registered selectedOutside ordinal live bornBefore unique stamped
+        NoTransitions survivor boundary RegistrationDisciplineEnd AlignedEnd
+        NoRegisteredEpisodeEnd noFailed)
+      ()
+
 0 scopedDisciplineAppendRight :
   (left : Transitions first middle) ->
   (right : Transitions middle finalState) ->
