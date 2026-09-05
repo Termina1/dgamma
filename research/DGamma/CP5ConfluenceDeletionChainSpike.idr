@@ -13241,6 +13241,30 @@ scopedInitialSelectedBoundary name key world error value nameEq keyEq global
           aligned selected located)
         initialWellFormed)
 
+0 scopedSelectedInsideEmbedding :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  {global : Transitions initial finalState} ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  OccurrenceEmbedding (closedInside (locatedEpisode located))
+    (appendTransitions (closedTransitions (locatedEpisode located))
+      (traceAfterClosing located))
+scopedSelectedInsideEmbedding name key world error value nameEq keyEq selected
+  located =
+    scopedTransportEmbeddingTarget name key world error value
+      (sym
+        (appendTransitionsAssociative
+          (closedInside (locatedEpisode located))
+          (MoreTransitions
+            (unloadTransition (closing (locatedEpisode located))) NoTransitions)
+          (traceAfterClosing located)))
+      (scopedAppendLeftEmbedding name key world error value
+        (closedInside (locatedEpisode located))
+        (MoreTransitions (unloadTransition (closing (locatedEpisode located)))
+          (traceAfterClosing located)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
