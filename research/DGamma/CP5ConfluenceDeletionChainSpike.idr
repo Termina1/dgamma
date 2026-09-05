@@ -24563,6 +24563,26 @@ scopedSpineChildRetiresBefore name key world error value nameEq keyEq registered
         (transitionTag sourceStep) (scopedAlignedHeadChecked name key world error value nameEq keyEq originalFirst _ originalFinal sourceStep sourceRest aligned)
         unretired) retirement
 
+0 scopedSpineChildRetirement :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) -> (parent, child : name) -> (generation : RegistrationGeneration name) ->
+  (0 retained : Not (Elem generation registered)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (originalFirst, originalFinal, targetFirst, targetFinal : SystemState name key value world error) ->
+  (source : Transitions originalFirst originalFinal) -> (target : Transitions targetFirst targetFinal) ->
+  ScopedDisciplineReplaySpine name key world error value nameEq registered ordinal live source target ->
+  AlignedTransitions name key world error value nameEq keyEq source ->
+  (lookupCurrentGeneration @{nameEq} child live = Just generation) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child originalFirst ->
+  ChildRetirementProvenance parent child source -> ChildRetirementProvenance parent child target
+scopedSpineChildRetirement name key world error value nameEq keyEq registered parent child generation retained ordinal live
+  originalFirst originalFinal targetFirst targetFinal source target spine aligned current unretired (ParentDoesNotRecover noRecovery) =
+    ParentDoesNotRecover (scopedSpineNoParentRecovery name key world error value nameEq registered ordinal live
+      originalFirst originalFinal targetFirst targetFinal parent source target spine noRecovery)
+scopedSpineChildRetirement name key world error value nameEq keyEq registered parent child generation retained ordinal live
+  originalFirst originalFinal targetFirst targetFinal source target spine aligned current unretired (ChildRetiredBeforeParent retirement) =
+    ChildRetiredBeforeParent (scopedSpineChildRetiresBefore name key world error value nameEq keyEq registered parent child generation retained
+      ordinal live originalFirst originalFinal targetFirst targetFinal source target spine aligned current unretired retirement)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
