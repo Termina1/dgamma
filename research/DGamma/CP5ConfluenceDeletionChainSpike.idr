@@ -19152,6 +19152,36 @@ scopedTaggedReplayReadyResultAt name key world error value nameEq keyEq deletabl
             (transitionAction originalTransition) live)
           middle originalFinal survivingAfter target rest tail (snd tags) tailEnds)
 
+||| Canonical endpoint chosen by the concrete readiness constructors.
+0 scopedReadyFinal :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (originalFirst, originalFinal, survivingFirst :
+    SystemState name key value world error) ->
+  (original : Transitions originalFirst originalFinal) ->
+  GenerationReplayReady nameEq keyEq deletable ordinal live original survivingFirst ->
+  SystemState name key value world error
+scopedReadyFinal name key world error value nameEq keyEq deletable ordinal live
+  _ _ survivingFirst _ ReplayReadyEnd = survivingFirst
+scopedReadyFinal name key world error value nameEq keyEq deletable ordinal live
+  originalFirst originalFinal survivingFirst _
+  (ReplayReadyDelete {originalTransition} {originalRest} deleted tail) =
+    scopedReadyFinal name key world error value nameEq keyEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction originalTransition) live)
+      _ originalFinal survivingFirst originalRest tail
+scopedReadyFinal name key world error value nameEq keyEq deletable ordinal live
+  originalFirst originalFinal survivingFirst _
+  (ReplayReadyKeep {originalTransition} {originalRest} retained survivingAfter
+    tag survivorStep sameAction fires tail) =
+      scopedReadyFinal name key world error value nameEq keyEq deletable (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal
+          (transitionAction originalTransition) live)
+        _ originalFinal survivingAfter originalRest tail
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
