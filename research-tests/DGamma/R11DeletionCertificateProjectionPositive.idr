@@ -15,7 +15,7 @@ public export
     trace premises candidate) ->
   deletionOccurrenceCorrespondence step = deletionOperationalCorrespondence
     (deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol trace
-      premises candidate (deletionResult step))
+      premises candidate (deletionResult step) (deletionProducerCapital step))
 deletionStepMapIsCertificateProjection step =
   deletionOccurrenceCorrespondenceExact step
 
@@ -33,8 +33,10 @@ public export
     (locatedActionOrdinal (replayActionOrigin
       (deletionOperationalCorrespondence
         (deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol trace
-          premises candidate (deletionResult step))) occurrence))
+          premises candidate (deletionResult step)
+          (deletionProducerCapital step))) occurrence))
 deletionStepEverySurvivorEmbedded step occurrence =
   everySurvivingOccurrenceEmbedded
     (deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol trace
-      premises candidate (deletionResult step)) occurrence
+      premises candidate (deletionResult step) (deletionProducerCapital step))
+      occurrence

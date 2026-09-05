@@ -19,7 +19,7 @@ public export
   DeletionChainStep name key world error value protocol nameEq keyEq
     trace premises candidate
 cloneDeletionStepWithAlternateMap
-  (MkDeletionChainStep result replay occurrences exact external endpoint withdrawn
-    classified accounting next shorter) alternate =
-      MkDeletionChainStep result replay alternate exact external endpoint withdrawn
-        classified accounting next shorter
+  (MkDeletionChainStep result producer replay occurrences exact external endpoint
+    withdrawn classified accounting next shorter) alternate =
+      MkDeletionChainStep result producer replay alternate exact external endpoint
+        withdrawn classified accounting next shorter

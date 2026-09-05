@@ -6,6 +6,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionTheorem
 import DGamma.CP4DeletionBoundaryPlan
+import DGamma.CP4DeletionFilterSuccess
 import DGamma.CP4DeletionGenerationBounds
 import DGamma.CP4DeletionGenerationStamped
 import DGamma.CP4DeletionGenerationUnique
@@ -2698,6 +2699,85 @@ deletionWholeTraceOccurrenceClassification before episode after wholeOccurrence 
     (deletionLocatedAppendClassification before (appendTransitions episode after)
       wholeOccurrence)
 
+||| Producer-owned RuleTag retention for one generation-aware deletion
+||| subsequence.  A kept constructor binds the exact source/survivor tag
+||| equation beside the same-action witness that `GenerationActionSubsequence`
+||| already carries; deleted constructors merely thread the tail certificate.
+public export
+data GenerationSubsequenceRuleTagsPreserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {originalFirst, originalFinal, survivingFirst, survivingFinal :
+    SystemState name key value world error} ->
+  {nameEq : DecEq name} ->
+  {deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type} ->
+  {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+  {original : Transitions originalFirst originalFinal} ->
+  {surviving : Transitions survivingFirst survivingFinal} ->
+  GenerationActionSubsequence nameEq deletable ordinal live original surviving ->
+  Type where
+  GenerationSubsequenceTagsEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {originalState, survivingState :
+      SystemState name key value world error} ->
+    {nameEq : DecEq name} ->
+    {deletable : Nat -> GenerationEnvironment name ->
+      Action name key value world error -> Type} ->
+    {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+    GenerationSubsequenceRuleTagsPreserved
+      {nameEq = nameEq} {deletable = deletable} {ordinal = ordinal}
+      {live = live} {original = NoTransitions {state = originalState}}
+      {surviving = NoTransitions {state = survivingState}}
+      GenerationActionSubsequenceEnd
+  GenerationSubsequenceTagsKeep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {originalFirst, originalMiddle, originalFinal,
+      survivingFirst, survivingMiddle, survivingFinal :
+      SystemState name key value world error} ->
+    {nameEq : DecEq name} ->
+    {deletable : Nat -> GenerationEnvironment name ->
+      Action name key value world error -> Type} ->
+    {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+    {originalTransition : Transition originalFirst originalMiddle} ->
+    {originalRest : Transitions originalMiddle originalFinal} ->
+    {survivingTransition : Transition survivingFirst survivingMiddle} ->
+    {survivingRest : Transitions survivingMiddle survivingFinal} ->
+    {kept : Not
+      (deletable ordinal live (transitionAction originalTransition))} ->
+    {sameAction : transitionAction originalTransition =
+      transitionAction survivingTransition} ->
+    {tail : GenerationActionSubsequence nameEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction originalTransition) live)
+      originalRest survivingRest} ->
+    (0 sameTag : transitionTag originalTransition =
+      transitionTag survivingTransition) ->
+    (0 tailTags : GenerationSubsequenceRuleTagsPreserved tail) ->
+    GenerationSubsequenceRuleTagsPreserved
+      (KeepGenerationAction originalTransition originalRest survivingTransition
+        survivingRest kept sameAction tail)
+  GenerationSubsequenceTagsDelete :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {originalFirst, originalMiddle, originalFinal,
+      survivingFirst, survivingFinal :
+      SystemState name key value world error} ->
+    {nameEq : DecEq name} ->
+    {deletable : Nat -> GenerationEnvironment name ->
+      Action name key value world error -> Type} ->
+    {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+    {originalTransition : Transition originalFirst originalMiddle} ->
+    {originalRest : Transitions originalMiddle originalFinal} ->
+    {surviving : Transitions survivingFirst survivingFinal} ->
+    {deleted : deletable ordinal live
+      (transitionAction originalTransition)} ->
+    {tail : GenerationActionSubsequence nameEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction originalTransition) live)
+      originalRest surviving} ->
+    (0 tailTags : GenerationSubsequenceRuleTagsPreserved tail) ->
+    GenerationSubsequenceRuleTagsPreserved
+      (DeleteGenerationAction originalTransition originalRest deleted tail)
+
 ||| Exact source occurrence and source-ordinal equation for one generation-aware
 ||| subsequence.  The equation is emitted beside the producer-owned occurrence,
 ||| avoiding reduction through an opaque occurrence projection.
@@ -3584,6 +3664,107 @@ deletionWholeOccurrenceOrigin nameEq keyEq original selected episode registered
       (deletionWholeTraceOccurrenceClassification (survivingBefore result)
         (survivingEpisode result) (survivingAfter result) survivingOccurrence)
 
+||| Convert the all-action occurrence selected by the deletion source producer
+||| into the specialized generated-registration occurrence used by the global
+||| registration-generation law.
+0 deletionActionOccurrenceToGenerated :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {trace : Transitions initial finalState} ->
+  {child, parent : name} ->
+  {component : Component key value world error} ->
+  LocatedActionOccurrence (OInsert child (ChildOf parent) component) trace ->
+  LocatedGeneratedRegistration child parent component trace
+deletionActionOccurrenceToGenerated
+  (MkLocatedActionOccurrence before afterState beforeTrace transition later
+    actionShape decomposition) =
+      MkLocatedGeneratedRegistration before afterState beforeTrace transition
+        later actionShape decomposition
+
+0 deletionActionOccurrenceToGeneratedCoherent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {trace : Transitions initial finalState} ->
+  {child, parent : name} ->
+  {component : Component key value world error} ->
+  (occurrence : LocatedActionOccurrence
+    (OInsert child (ChildOf parent) component) trace) ->
+  generatedRegistrationActionOccurrence
+      (deletionActionOccurrenceToGenerated occurrence) = occurrence
+deletionActionOccurrenceToGeneratedCoherent
+  (MkLocatedActionOccurrence before afterState beforeTrace transition later
+    actionShape decomposition) = Refl
+
+||| Research-side exact-equation capital emitted together with one concrete
+||| deletion result.  The public CP3 `DeletionResult` deliberately remains
+||| frozen; this package retains the three concrete CP4 readiness derivations,
+||| constructor-by-constructor kept-tag equations, and the one global finite
+||| generation permutation required by the operational occurrence consumer.
+public export
+record DeletionProducerOperationalCapital
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, originalFinal : SystemState name key value world error}
+  (original : Transitions initial originalFinal)
+  (selected : name)
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq selected
+    original)
+  (registered : List (RegistrationGeneration name))
+  (episodeStartOrdinal : Nat)
+  (episodeStartLive : GenerationEnvironment name)
+  (result : DeletionResult name key world error value nameEq keyEq original
+    selected episode registered episodeStartOrdinal episodeStartLive) where
+  constructor MkDeletionProducerOperationalCapital
+  0 deletionBeforeReplayReady : GenerationReplayReady nameEq keyEq
+    (GenerationOwnedActor nameEq registered) 0 []
+    (traceBeforeOpening episode) initial
+  0 deletionBeforeReplayEnds : ReplayReadyEndsAt deletionBeforeReplayReady
+    (survivingBeforeEnd result)
+  0 deletionEpisodeReplayReady : GenerationReplayReady nameEq keyEq
+    (EpisodeGenerationDeletedActor nameEq selected registered)
+    episodeStartOrdinal episodeStartLive
+    (MoreTransitions
+      (beginTransition (closedOpening (locatedEpisode episode)))
+      (closedTransitions (locatedEpisode episode)))
+    (survivingBeforeEnd result)
+  0 deletionEpisodeReplayEnds : ReplayReadyEndsAt deletionEpisodeReplayReady
+    (survivingEpisodeEnd result)
+  0 deletionAfterReplayReady : GenerationReplayReady nameEq keyEq
+    (GenerationOwnedActor nameEq registered)
+    (episodeEndOrdinal result) (episodeEndLive result)
+    (traceAfterClosing episode) (survivingEpisodeEnd result)
+  0 deletionAfterReplayEnds : ReplayReadyEndsAt deletionAfterReplayReady
+    (survivingFinal result)
+  0 deletionBeforeTagsPreserved : GenerationSubsequenceRuleTagsPreserved
+    (beforeDeletion result)
+  0 deletionEpisodeTagsPreserved : GenerationSubsequenceRuleTagsPreserved
+    (episodeDeletion result)
+  0 deletionAfterTagsPreserved : GenerationSubsequenceRuleTagsPreserved
+    (afterDeletion result)
+  deletionProducerGenerationRenaming : RegistrationGenerationBijection name
+  0 deletionProducerWholeTagPreserved :
+    {action : Action name key value world error} ->
+    (occurrence : LocatedActionOccurrence action (survivingTrace result)) ->
+    transitionTag
+      (locatedTransition
+        (deletionWholeSourceOccurrence
+          (deletionWholeOccurrenceOrigin nameEq keyEq original selected episode
+            registered episodeStartOrdinal episodeStartLive result occurrence))) =
+      transitionTag (locatedTransition occurrence)
+  0 deletionProducerGeneratedOrdinalPreserved :
+    {child, parent : name} ->
+    {component : Component key value world error} ->
+    (occurrence : LocatedGeneratedRegistration child parent component
+      (survivingTrace result)) ->
+    generationForward deletionProducerGenerationRenaming
+      (registrationGeneration
+        (deletionActionOccurrenceToGenerated
+          (deletionWholeSourceOccurrence
+            (deletionWholeOccurrenceOrigin nameEq keyEq original selected episode
+              registered episodeStartOrdinal episodeStartLive result
+              (generatedRegistrationActionOccurrence occurrence))))) =
+      registrationGeneration occurrence
+
 ||| Operational O9 certificate.  Every occurrence in the actual survivor trace
 ||| maps to a source occurrence whose ordinal is justified by one of the exact
 ||| before/episode/after generation-subsequence embeddings.  Generated/action
@@ -3630,6 +3811,10 @@ public export
     (selectedActor candidate) (selectedEpisode candidate)
     (selectedRegistrations candidate) (selectedStartOrdinal candidate)
     (selectedStartLive candidate)) ->
+  (capital : DeletionProducerOperationalCapital name key world error value nameEq
+    keyEq trace (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate)
+    (selectedStartLive candidate) result) ->
   DeletionOperationalOccurrenceCertificate name key world error value nameEq
     keyEq trace (selectedActor candidate) (selectedEpisode candidate)
     (selectedRegistrations candidate) (selectedStartOrdinal candidate)
@@ -3657,6 +3842,10 @@ record DeletionChainStep
     (selectedActor candidate) (selectedEpisode candidate)
     (selectedRegistrations candidate) (selectedStartOrdinal candidate)
     (selectedStartLive candidate)
+  deletionProducerCapital : DeletionProducerOperationalCapital name key world
+    error value nameEq keyEq trace (selectedActor candidate)
+    (selectedEpisode candidate) (selectedRegistrations candidate)
+    (selectedStartOrdinal candidate) (selectedStartLive candidate) deletionResult
   deletionReplayCorrespondence : RelationalReplayCorrespondence name key world
     error value trace (survivingTrace deletionResult)
   deletionOccurrenceCorrespondence : ActionRegistrationReplayCorrespondence name
@@ -3664,7 +3853,7 @@ record DeletionChainStep
   0 deletionOccurrenceCorrespondenceExact :
     deletionOccurrenceCorrespondence = deletionOperationalCorrespondence
       (deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol trace
-        premises candidate deletionResult)
+        premises candidate deletionResult deletionProducerCapital)
   deletionSameExternalInputs : SameExternalOrchestration nameEq trace
     (survivingTrace deletionResult)
   deletionEndpoint : CanonicalEndpointRelation name key world error value nameEq
