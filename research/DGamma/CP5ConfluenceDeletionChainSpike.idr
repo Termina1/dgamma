@@ -12814,6 +12814,80 @@ scopedReplayDeletedEpisodeHead name key world error value protocol nameEq keyEq
           afterState survivor tag checked noBegin occurs boundary oldEmpty
           inactive owned
 
+0 scopedReplayRetainedEpisodeHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  {globalFirst, globalLast : SystemState name key value world error} ->
+  (global : Transitions globalFirst globalLast) ->
+  (globalDiscipline : RegistrationDiscipline protocol nameEq global) ->
+  (independent : TraceIndependent name key world error value keyEq global) ->
+  {wholeFirst, wholeLast, selectedPre, selectedAfter :
+    SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (selectedEpisode : ClosedEpisode name key world error value nameEq keyEq
+    selected selectedPre selectedAfter) ->
+  (wholeInGlobal : OccurrenceEmbedding whole global) ->
+  (anchors : ScopedSelectedEpisodeLifecycleProvider name key world error value
+    nameEq keyEq selected registered global selectedEpisode) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (stamped : GenerationEnvironmentStamped live) ->
+  (selectedOutside :
+    (generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (action : Action name key value world error) ->
+  (before, afterState, survivor : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (sourceInstalled : installedAt @{nameEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} selected before = True) ->
+  (targetInstalled : installedAt @{nameEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} selected afterState = True) ->
+  (rest : Transitions afterState (lastInstalledState selectedEpisode)) ->
+  (selectedRest : InstalledTrace name key world error value nameEq keyEq
+    selected rest) ->
+  (noBegin : IsBeginAction action ->
+    GenerationOwnedActor nameEq registered ordinal live action -> Void) ->
+  (occurs : OccursIn
+    (Fired {before = before} {afterState = afterState} nameEq keyEq action tag
+      checked) whole) ->
+  (insidePrefix : Transitions (closedStartState selectedEpisode) before) ->
+  (insideDecomposition : appendTransitions insidePrefix
+    (MoreTransitions (Fired nameEq keyEq action tag checked) rest) =
+      closedInside selectedEpisode) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  (emptyPlan : EmptyTableInactivePlan name key world error value nameEq
+    (inactiveLeafPlan
+      (completePlanResult (selectedBoundaryPlan boundary)))) ->
+  (inactive : CurrentRegisteredInactiveFibers name key world error value nameEq
+    registered live before) ->
+  (retained : Not (EpisodeGenerationDeletedActor nameEq selected registered
+    ordinal live action)) ->
+  SelectedEpisodeRetainedHead name key world error value nameEq keyEq selected
+    registered ordinal live whole action afterState survivor
+scopedReplayRetainedEpisodeHead name key world error value protocol nameEq keyEq
+  selected registered global globalDiscipline independent whole selectedEpisode
+  wholeInGlobal anchors ordinal live unique stamped selectedOutside action before
+  afterState survivor tag checked sourceInstalled targetInstalled rest
+  selectedRest noBegin occurs insidePrefix insideDecomposition boundary emptyPlan
+  inactive retained =
+    case decEq @{nameEq} (actionOwner action) selected of
+      Yes ownerSelected =>
+        scopedDispatchSelectedRetainedHead name key world error value protocol
+          nameEq keyEq selected registered global globalDiscipline whole
+          wholeInGlobal ordinal live unique action ownerSelected before afterState
+          survivor tag checked sourceInstalled occurs boundary retained
+      No ownerDistinct =>
+        scopedDispatchForeignRetainedHead protocol nameEq keyEq selected
+          registered selectedOutside global globalDiscipline independent whole
+          selectedEpisode wholeInGlobal anchors ordinal live unique stamped action
+          ownerDistinct before afterState survivor tag checked rest selectedRest
+          occurs insidePrefix insideDecomposition boundary emptyPlan retained
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
