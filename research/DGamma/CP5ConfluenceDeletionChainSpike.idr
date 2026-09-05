@@ -11421,6 +11421,25 @@ scopedSelectedLifecycleOutcomes nameEq keyEq selected registered ordinal live
   (LUnload actor) actorDistinct whole independent tag checked occurs boundary
   emptyPlan ownerLookup = ()
 
+data ScopedLocatedRegistrationStep :
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) ->
+  {stepBefore, stepAfter, globalFirst, globalLast :
+    SystemState name key value world error} ->
+  (transition : Transition stepBefore stepAfter) ->
+  (global : Transitions globalFirst globalLast) -> Type where
+  MkScopedLocatedRegistrationStep :
+    {protocol : RegistrationProtocol key value world error} ->
+    {nameEq : DecEq name} ->
+    {stepBefore, stepAfter, globalFirst, globalLast :
+      SystemState name key value world error} ->
+    {transition : Transition stepBefore stepAfter} ->
+    {global : Transitions globalFirst globalLast} ->
+    (future : Transitions stepAfter globalLast) ->
+    RegistrationStepDiscipline protocol nameEq (transitionAction transition)
+      stepBefore future ->
+    ScopedLocatedRegistrationStep protocol nameEq transition global
+
 0 ScopedForeignLifecycleExclusion :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
