@@ -18754,6 +18754,116 @@ scopedChildRetirementSubsequence name key world error value nameEq keyEq
       survivingFinal source surviving subsequence tags aligned current unretired
       retirement)
 
+||| Combined per-kept-step discipline certificate.  Both parent-yield and child
+||| retirement are produced at the survivor state/suffix, never taken from the
+||| source discipline unchanged.
+0 scopedSameActionRegistrationStepDiscipline :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type) ->
+  (0 retireOwned : (atOrdinal : Nat) -> (atLive : GenerationEnvironment name) ->
+    (actor : name) -> deletable atOrdinal atLive (ORetire actor) ->
+    GenerationOwnedActor {name = name} {key = key} {value = value}
+      {world = world} {error = error} nameEq registered atOrdinal atLive
+      (ORetire actor)) ->
+  (0 insertFresh : (atOrdinal : Nat) -> (atLive : GenerationEnvironment name) ->
+    (child : name) -> (parent : Parent name) ->
+    (component : Component key value world error) ->
+    Not (deletable atOrdinal atLive (OInsert child parent component)) ->
+    Not (Elem (MkRegistrationGeneration child atOrdinal) registered)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  (sourceBefore, sourceAfter, sourceFinal, survivorBefore, survivorAfter,
+    survivorFinal : SystemState name key value world error) ->
+  (sourceRest : Transitions sourceAfter sourceFinal) ->
+  (survivorRest : Transitions survivorAfter survivorFinal) ->
+  (tail : GenerationActionSubsequence nameEq deletable (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal action live)
+    sourceRest survivorRest) ->
+  (0 tags : GenerationSubsequenceRuleTagsPreserved tail) ->
+  (0 aligned : AlignedTransitions name key world error value nameEq keyEq sourceRest) ->
+  (tag : RuleTag) ->
+  (0 checked : (checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} action sourceBefore =
+    Just (tag, sourceAfter))) ->
+  (0 retained : Not (deletable ordinal live action)) ->
+  (0 parentControls : (parent, child : name) ->
+    (component : Component key value world error) ->
+    (action = OInsert child (ChildOf parent) component) ->
+    FiberControlMaybeRelated
+      (lookupFiber {name = name} {key = key} {value = value} {world = world}
+        {error = error} @{nameEq} parent (registry sourceBefore))
+      (lookupFiber {name = name} {key = key} {value = value} {world = world}
+        {error = error} @{nameEq} parent (registry survivorBefore))) ->
+  RegistrationStepDiscipline protocol nameEq action sourceBefore sourceRest ->
+  RegistrationStepDiscipline protocol nameEq action survivorBefore survivorRest
+scopedSameActionRegistrationStepDiscipline name key world error value protocol
+  nameEq keyEq registered deletable retireOwned insertFresh ordinal live
+  (OInsert child Root component) sourceBefore sourceAfter sourceFinal survivorBefore
+  survivorAfter survivorFinal sourceRest survivorRest tail tags aligned tag checked
+  retained parentControls ranked = ranked
+scopedSameActionRegistrationStepDiscipline name key world error value protocol
+  nameEq keyEq registered deletable retireOwned insertFresh ordinal live
+  (OInsert child (ChildOf parent) component) sourceBefore sourceAfter sourceFinal
+  survivorBefore survivorAfter survivorFinal sourceRest survivorRest tail tags
+  aligned tag checked retained parentControls (sourceYield, sourceRetirement) =
+    (scopedTargetParentYield (scopedTransportParentYield name key world error value
+      protocol nameEq parent component sourceBefore survivorBefore
+      (parentControls parent child component Refl) sourceYield),
+     scopedChildRetirementSubsequence name key world error value nameEq keyEq
+      registered deletable retireOwned parent child
+      (MkRegistrationGeneration child ordinal)
+      (insertFresh ordinal live child (ChildOf parent) component retained)
+      (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (the (Action name key value world error)
+          (OInsert child (ChildOf parent) component)) live)
+      sourceAfter sourceFinal survivorAfter survivorFinal sourceRest survivorRest
+      tail tags aligned (lookupPutCurrentSelf nameEq child
+        (MkRegistrationGeneration child ordinal) live)
+      (scopedInsertAfterUnretired name key world error value nameEq keyEq child
+        (ChildOf parent) component sourceBefore sourceAfter tag checked)
+      sourceRetirement)
+scopedSameActionRegistrationStepDiscipline name key world error value protocol
+  nameEq keyEq registered deletable retireOwned insertFresh ordinal live
+  (ORetire actor) sourceBefore sourceAfter sourceFinal survivorBefore survivorAfter
+  survivorFinal sourceRest survivorRest tail tags aligned tag checked retained
+  parentControls evidence = ()
+scopedSameActionRegistrationStepDiscipline name key world error value protocol
+  nameEq keyEq registered deletable retireOwned insertFresh ordinal live
+  (ORemove actor) sourceBefore sourceAfter sourceFinal survivorBefore survivorAfter
+  survivorFinal sourceRest survivorRest tail tags aligned tag checked retained
+  parentControls evidence = ()
+scopedSameActionRegistrationStepDiscipline name key world error value protocol
+  nameEq keyEq registered deletable retireOwned insertFresh ordinal live
+  (LBegin actor) sourceBefore sourceAfter sourceFinal survivorBefore survivorAfter
+  survivorFinal sourceRest survivorRest tail tags aligned tag checked retained
+  parentControls evidence = ()
+scopedSameActionRegistrationStepDiscipline name key world error value protocol
+  nameEq keyEq registered deletable retireOwned insertFresh ordinal live
+  (LAdvance actor) sourceBefore sourceAfter sourceFinal survivorBefore survivorAfter
+  survivorFinal sourceRest survivorRest tail tags aligned tag checked retained
+  parentControls evidence = ()
+scopedSameActionRegistrationStepDiscipline name key world error value protocol
+  nameEq keyEq registered deletable retireOwned insertFresh ordinal live
+  (LDivert actor) sourceBefore sourceAfter sourceFinal survivorBefore survivorAfter
+  survivorFinal sourceRest survivorRest tail tags aligned tag checked retained
+  parentControls evidence = ()
+scopedSameActionRegistrationStepDiscipline name key world error value protocol
+  nameEq keyEq registered deletable retireOwned insertFresh ordinal live
+  (LLeave actor) sourceBefore sourceAfter sourceFinal survivorBefore survivorAfter
+  survivorFinal sourceRest survivorRest tail tags aligned tag checked retained
+  parentControls evidence = ()
+scopedSameActionRegistrationStepDiscipline name key world error value protocol
+  nameEq keyEq registered deletable retireOwned insertFresh ordinal live
+  (LUnload actor) sourceBefore sourceAfter sourceFinal survivorBefore survivorAfter
+  survivorFinal sourceRest survivorRest tail tags aligned tag checked retained
+  parentControls evidence = ()
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
