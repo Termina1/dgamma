@@ -22209,6 +22209,22 @@ scopedSelectedInsideDiscipline name key world error value protocol nameEq keyEq 
               (appendTransitions (closedTransitions (locatedEpisode located)) (traceAfterClosing located)))
               (locatedDecomposition located))) discipline)))
 
+0 scopedSelectedBirthsPrefix :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (selected : name) -> (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (first, middle, finalState : SystemState name key value world error) ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  ScopedSelectedBirthsComplete name key world error value selected registered ordinal first finalState
+    (appendTransitions left right) ->
+  ScopedSelectedBirthsComplete name key world error value selected registered ordinal first middle left
+scopedSelectedBirthsPrefix name key world error value selected registered ordinal first middle finalState
+  left right complete child component
+  (MkLocatedActionOccurrence before after earlier transition later actionSame decomposition) =
+    complete child component
+      (MkLocatedActionOccurrence before after earlier transition (appendTransitions later right) actionSame
+        (trans (sym (appendTransitionsAssociative earlier (MoreTransitions transition later) right))
+          (cong (\trace => appendTransitions trace right) decomposition)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
