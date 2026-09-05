@@ -14340,6 +14340,25 @@ scopedNonBeginClosingExclusion name key world error value nameEq keyEq global
             closingResult)))
       boundary leftSelected leftOwner selectedFound ownerFound wanted ownerDeclares
 
+0 scopedAlignedFromInstalledTrace :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  InstalledTrace name key world error value nameEq keyEq actor trace ->
+  AlignedTransitions name key world error value nameEq keyEq trace
+scopedAlignedFromInstalledTrace name key world error value nameEq keyEq actor
+  NoTransitions (InstalledEnd installed) = AlignedEnd
+scopedAlignedFromInstalledTrace name key world error value nameEq keyEq actor
+  (MoreTransitions
+    (Fired {before = first} {afterState = middle}
+      nameEq keyEq action tag checked)
+    rest)
+  (InstalledStep action tag checked rest source tail) =
+    AlignedStep action tag checked rest
+      (scopedAlignedFromInstalledTrace name key world error value nameEq keyEq
+        actor rest tail)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
