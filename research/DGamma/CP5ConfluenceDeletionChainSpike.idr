@@ -17175,6 +17175,61 @@ scopedInsertAfterUnretired name key world error value nameEq keyEq child
         (OInsert child insertedParent insertedComponent)
         (MkSystemState ambient fibers) afterState tag checked)
 
+||| L-Begin on the invariant name keeps the same fiber spine and only opens
+||| the reloading lifecycle, so presence and the unretired flag persist.  The
+||| observed provider target is an explicit argument so the reduction of
+||| `beginFiberAction` reaches inside the target case.
+0 scopedBeginPreservesUnretiredAt :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child : name) ->
+  (before : SystemState name key value world error) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (observed : Maybe (View name
+    (dependencies (componentDependencies component)))) ->
+  (0 targetEq : targetFiber @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error}
+    (MkFiber component parent retiredFlag table (Inactive Nothing))
+    (registry before) = observed) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  (0 notRetired : retiredFlag = False) ->
+  (0 found : lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} child (registry before) =
+    Just (MkFiber component parent retiredFlag table (Inactive Nothing))) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (LBegin child) before =
+    Just (tag, afterState)) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child afterState
+scopedBeginPreservesUnretiredAt name key world error value nameEq keyEq child
+  before component parent retiredFlag table Nothing targetEq tag afterState
+  notRetired found =
+    rewrite found in rewrite targetEq in
+      (\equation => void (nothingIsNotJust equation))
+scopedBeginPreservesUnretiredAt name key world error value nameEq keyEq child
+  before component parent retiredFlag table (Just view) targetEq tag afterState
+  notRetired found =
+    rewrite found in rewrite targetEq in
+      (\equation =>
+        MkScopedUnretiredFiberAt
+          (setFiberLifecycle
+            (MkFiber component parent retiredFlag table (Inactive Nothing))
+            (Reloading (componentProgram component) id view))
+          (trans
+            (cong (lookupFiber @{nameEq} {name = name} {key = key}
+              {value = value} {world = world} {error = error} child)
+              (cong registry (sym (cong snd (justInjective equation)))))
+            (lookupReplacedFiber {name = name} {key = key} {value = value}
+              {world = world} {error = error} child
+              (MkFiber component parent retiredFlag table (Inactive Nothing))
+              (setFiberLifecycle
+                (MkFiber component parent retiredFlag table (Inactive Nothing))
+                (Reloading (componentProgram component) id view))
+              (registry before) found))
+          notRetired)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
