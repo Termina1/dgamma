@@ -23064,6 +23064,17 @@ scopedAppendSelectedCloseTags name key world error value nameEq keyEq selected r
 scopedDisciplineAcrossTraceEnd name key world error value protocol nameEq first _ _ left right
   Refl sameTrace discipline = replace {p = RegistrationDiscipline protocol nameEq} (sym sameTrace) discipline
 
+0 scopedTotalAcrossTraceEnd :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, leftFinal, rightFinal : SystemState name key value world error) ->
+  (left : Transitions first leftFinal) -> (right : Transitions first rightFinal) ->
+  (sameFinal : (leftFinal = rightFinal)) ->
+  (replace {p = \endpoint => Transitions first endpoint} sameFinal left = right) ->
+  TraceComponentsTotal nameEq keyEq right -> TraceComponentsTotal nameEq keyEq left
+scopedTotalAcrossTraceEnd name key world error value nameEq keyEq first _ _ left right
+  Refl sameTrace totality = replace {p = TraceComponentsTotal nameEq keyEq} (sym sameTrace) totality
+
 0 scopedAppendSelectedCloseDiscipline :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) ->
