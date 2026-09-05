@@ -12888,6 +12888,35 @@ scopedReplayRetainedEpisodeHead name key world error value protocol nameEq keyEq
           ownerDistinct before afterState survivor tag checked rest selectedRest
           occurs insidePrefix insideDecomposition boundary emptyPlan retained
 
+0 scopedSelectedEpisodeLocalReplayer :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  {globalFirst, globalLast : SystemState name key value world error} ->
+  (global : Transitions globalFirst globalLast) ->
+  (globalDiscipline : RegistrationDiscipline protocol nameEq global) ->
+  (independent : TraceIndependent name key world error value keyEq global) ->
+  {wholeFirst, wholeLast, selectedPre, selectedAfter :
+    SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (selectedEpisode : ClosedEpisode name key world error value nameEq keyEq
+    selected selectedPre selectedAfter) ->
+  (wholeInGlobal : OccurrenceEmbedding whole global) ->
+  (anchors : ScopedSelectedEpisodeLifecycleProvider name key world error value
+    nameEq keyEq selected registered global selectedEpisode) ->
+  SelectedEpisodeLocalReplayer name key world error value nameEq keyEq selected
+    registered protocol whole (closedInside selectedEpisode)
+scopedSelectedEpisodeLocalReplayer name key world error value protocol nameEq
+  keyEq selected registered global globalDiscipline independent whole
+  selectedEpisode wholeInGlobal anchors =
+    MkSelectedEpisodeLocalReplayer
+      (scopedReplayDeletedEpisodeHead name key world error value protocol nameEq
+        keyEq selected registered global globalDiscipline whole wholeInGlobal)
+      (scopedReplayRetainedEpisodeHead name key world error value protocol nameEq
+        keyEq selected registered global globalDiscipline independent whole
+        selectedEpisode wholeInGlobal anchors)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
