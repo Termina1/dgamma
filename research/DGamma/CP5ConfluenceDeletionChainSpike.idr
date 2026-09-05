@@ -10339,6 +10339,28 @@ beginUnloadTransitionImpossibleScoped opening closing OccursHere impossible
 beginUnloadTransitionImpossibleScoped opening closing (OccursLater later)
   impossible
 
+0 closedEpisodeExcludesBeginScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {preStart, afterClose, beginBefore, beginAfter :
+    SystemState name key value world error} ->
+  (episode : ClosedEpisode name key world error value nameEq keyEq actor
+    preStart afterClose) ->
+  (opening : BeginStep nameEq keyEq actor beginBefore beginAfter) ->
+  OccursIn (beginTransition opening) (closedTransitions episode) ->
+  Void
+closedEpisodeExcludesBeginScoped nameEq keyEq actor episode opening occurs =
+  case classifyAppendOccurrenceScoped (closedInside episode)
+    (MoreTransitions (unloadTransition (closing episode)) NoTransitions)
+    occurs of
+    AppendOccurrenceOnLeft insideOccurs =>
+      installedTraceExcludesBeginScoped nameEq keyEq actor
+        (closedInside episode) (closedInsideInstalled episode) opening
+        insideOccurs
+    AppendOccurrenceOnRight closingOccurs =>
+      beginUnloadTransitionImpossibleScoped opening (closing episode)
+        closingOccurs
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
