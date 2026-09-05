@@ -11795,6 +11795,53 @@ scopedSelectedRetireRetainedHead name key world error value nameEq keyEq selecte
                 before afterState tag checked))))
         exactStep)
 
+0 scopedSelectedRetireOwnedHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected, actor : name) ->
+  (0 ownerSelected : (actor = selected)) ->
+  (registered : List (RegistrationGeneration name)) ->
+  {globalFirst, globalLast : SystemState name key value world error} ->
+  (global : Transitions globalFirst globalLast) ->
+  (globalDiscipline : RegistrationDiscipline protocol nameEq global) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (wholeInGlobal : OccurrenceEmbedding whole global) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (before, afterState, survivor : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error}
+    (ORetire actor) before = Just (tag, afterState)) ->
+  (occurs : OccursIn
+    (Fired {before = before} {afterState = afterState} nameEq keyEq
+      (the (Action name key value world error) (ORetire actor)) tag checked)
+    whole) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  (retained : Not (EpisodeGenerationDeletedActor nameEq selected registered
+    ordinal live
+    (the (Action name key value world error) (ORetire actor)))) ->
+  SelectedEpisodeRetainedHead name key world error value nameEq keyEq selected
+    registered ordinal live whole
+    (the (Action name key value world error) (ORetire actor)) afterState survivor
+scopedSelectedRetireOwnedHead name key world error value protocol nameEq keyEq
+  selected actor ownerSelected registered global globalDiscipline whole
+  wholeInGlobal ordinal live unique before afterState survivor tag checked occurs
+  boundary retained =
+    case ownerSelected of
+      Refl =>
+        scopedSelectedRetireRetainedHead name key world error value nameEq keyEq
+          selected registered ordinal live whole before afterState survivor tag
+          checked boundary
+          (scopedRetainedNoEpisodeBoundaryStep protocol nameEq keyEq selected
+            registered global globalDiscipline whole wholeInGlobal ordinal live
+            unique (ORetire selected) before afterState survivor tag checked
+            occurs boundary
+            (\owned => retained (DeleteRegisteredGeneration owned)))
+
 0 ScopedForeignLifecycleExclusion :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
