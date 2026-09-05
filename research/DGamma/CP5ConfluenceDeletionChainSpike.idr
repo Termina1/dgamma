@@ -16910,6 +16910,24 @@ scopedNoParentRecoverySubsequence name key world error value nameEq deletable
         (transitionAction originalTransition) live)
       _ _ _ _ parent originalRest survivingTrace tail tailTags tailNo
 
+||| Presence plus the unretired flag for one actor's fiber at one state.  The
+||| child-retirement transport threads this invariant from a kept insertion to
+||| the first source retirement of the same raw name: while it holds, no
+||| O-Insert of the same name (absence guard) and no O-Remove of the same name
+||| (retirement guard) can fire in the source, so the generation environment
+||| entry for the name stays the kept insertion's fresh generation.
+record ScopedUnretiredFiberAt
+  (name : Type) (key : Type) (value : key -> Type)
+  (world : Type) (error : Type)
+  (nameEq : DecEq name) (actor : name)
+  (state : SystemState name key value world error) where
+  constructor MkScopedUnretiredFiberAt
+  scopedUnretiredFiber : Fiber name key value world error
+  0 scopedUnretiredFound : lookupFiber {name = name} {key = key}
+    {value = value} {world = world} {error = error} @{nameEq} actor
+    (registry state) = Just scopedUnretiredFiber
+  0 scopedUnretiredFlag : retired scopedUnretiredFiber = False
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
