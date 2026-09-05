@@ -24686,6 +24686,49 @@ scopedSpineRegistrationDiscipline name key world error value protocol nameEq key
       (alignedTransitionTail nameEq keyEq sourceStep sourceRest aligned)
       (registrationDisciplineAppendRight protocol nameEq (MoreTransitions sourceStep NoTransitions) sourceRest discipline)
 
+0 scopedReadyDisciplineSpine :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
+  ((atOrdinal : Nat) -> (atLive : GenerationEnvironment name) -> (actor : name) -> deletable atOrdinal atLive (ORetire actor) ->
+    GenerationOwnedActor {name = name} {key = key} {value = value} {world = world} {error = error} nameEq registered atOrdinal atLive (ORetire actor)) ->
+  ((atOrdinal : Nat) -> (atLive : GenerationEnvironment name) -> (child : name) -> (parent : Parent name) ->
+    (component : Component key value world error) -> Not (deletable atOrdinal atLive (OInsert child parent component)) ->
+    Not (Elem (MkRegistrationGeneration child atOrdinal) registered)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (originalFirst, originalFinal, survivor : SystemState name key value world error) ->
+  (source : Transitions originalFirst originalFinal) -> (ready : GenerationReplayReady nameEq keyEq deletable ordinal live source survivor) ->
+  ReplayReadyRuleTagsPreserved name key world error value nameEq keyEq deletable ordinal live originalFirst originalFinal source survivor ready ->
+  ScopedReadyParentControls name key world error value nameEq keyEq deletable ordinal live originalFirst originalFinal survivor source ready ->
+  ScopedDisciplineReplaySpine name key world error value nameEq registered ordinal live source
+    (scopedReadyTrace name key world error value nameEq keyEq deletable ordinal live originalFirst originalFinal survivor source ready)
+scopedReadyDisciplineSpine name key world error value nameEq keyEq registered deletable retireOwned insertFresh ordinal live _ _ survivor _
+  ReplayReadyEnd tags controls = ScopedDisciplineEnd
+scopedReadyDisciplineSpine name key world error value nameEq keyEq registered deletable retireOwned insertFresh ordinal live originalFirst originalFinal survivor _
+  (ReplayReadyDelete {originalTransition} {originalRest} deleted tail) tags controls =
+    ScopedDisciplineDelete originalTransition originalRest
+      (scopedReadyTrace name key world error value nameEq keyEq deletable (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ originalFinal survivor originalRest tail)
+      (\child, same => retireOwned ordinal live child (replace {p = deletable ordinal live} same deleted))
+      (scopedReadyDisciplineSpine name key world error value nameEq keyEq registered deletable retireOwned insertFresh (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ originalFinal survivor originalRest tail tags
+        (scopedReadyDeletedParentControls name key world error value nameEq keyEq deletable ordinal live originalFirst _ originalFinal survivor
+          originalTransition originalRest deleted tail controls))
+scopedReadyDisciplineSpine name key world error value nameEq keyEq registered deletable retireOwned insertFresh ordinal live originalFirst originalFinal survivor _
+  (ReplayReadyKeep {originalTransition} {originalRest = rest} retained after tag transition sameAction fires tail) tags controls =
+    ScopedDisciplineKeep originalTransition rest transition
+      (scopedReadyTrace name key world error value nameEq keyEq deletable (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ originalFinal after rest tail)
+      (sym sameAction) (fst tags)
+      (\child, parent, component, same => insertFresh ordinal live child parent component
+        (replace {p = \action => Not (deletable ordinal live action)} same retained))
+      (fst (scopedReadyKeptParentControls name key world error value nameEq keyEq deletable ordinal live originalFirst _ originalFinal survivor after
+        originalTransition rest retained tag transition sameAction fires tail controls))
+      (scopedReadyDisciplineSpine name key world error value nameEq keyEq registered deletable retireOwned insertFresh (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ originalFinal after rest tail (snd tags)
+        (snd (scopedReadyKeptParentControls name key world error value nameEq keyEq deletable ordinal live originalFirst _ originalFinal survivor after
+          originalTransition rest retained tag transition sameAction fires tail controls)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
