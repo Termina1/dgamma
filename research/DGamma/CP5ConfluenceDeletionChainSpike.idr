@@ -58,6 +58,10 @@ import DGamma.CP4DeletionSelectedEpisodeFoldCore
 import DGamma.CP4DeletionSelectedEffectCore
 import DGamma.CP4DeletionSelectedEpisodeReplay
 import DGamma.CP4DeletionPostCloseFold
+import DGamma.CP4DeletionBoundaryRetained
+import DGamma.CP4DeletionPostCloseEffectReplay
+import DGamma.CP4DeletionPostCloseOrchestration
+import DGamma.CP4DeletionRelationalBoundary
 import DGamma.CP4DeletionPostCloseLifecycle
 import DGamma.CP4DeletionSelectedForeignLifecycleReplay
 import DGamma.Ordering
@@ -15288,6 +15292,175 @@ scopedPostCloseOutcomes name key world error value nameEq keyEq
 scopedPostCloseOutcomes name key world error value nameEq keyEq
   (LUnload actor) planAmbient survivorAmbient planRegistry survivorRegistry
   planAfter tag planChecked effects = ()
+
+0 scopedRetainedForeignPostCloseLifecycle :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  GenerationEnvironmentNamesUnique live ->
+  (action : Action name key value world error) ->
+  (lifecycle : isLifecycleAction action = True) ->
+  (actorDistinct : Not (actionOwner action = selected)) ->
+  (original, originalAfter, originalFinal, survivor :
+    SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action original =
+    Just (tag, originalAfter)) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  RegistrationStepDiscipline protocol nameEq action original rest ->
+  (retained : Not
+    (GenerationOwnedActor nameEq registered ordinal live action)) ->
+  (noBegin : IsBeginAction action ->
+    GenerationOwnedActor nameEq registered ordinal live action -> Void) ->
+  (boundary : PostCloseSelectedBoundary name key world error value nameEq keyEq
+    selected registered ordinal live original survivor) ->
+  PostCloseOrchestrationStep name key world error value nameEq keyEq selected
+    registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal action live)
+    action originalAfter survivor
+scopedRetainedForeignPostCloseLifecycle name key world error value
+  protocol nameEq keyEq selected registered ordinal live unique action lifecycle
+  actorDistinct original originalAfter originalFinal survivor
+  tag checked rest discipline retained noBegin boundary =
+    let exactBefore = postClosePlanExactBoundary nameEq keyEq unique boundary
+        exactStep = retainedSuffixHeadPreservesNoEpisodeBoundary protocol nameEq
+          keyEq registered ordinal live action original
+          (plannedSystemState original
+            (completePlanResult (postClosePlan boundary)))
+          exactBefore tag checked rest discipline retained
+        0 planRaw = namedFireProjectsRaw nameEq keyEq action (plannedSystemState original (completePlanResult (postClosePlan boundary))) (retainedBoundaryNamed exactStep)
+          (retainedBoundaryFires exactStep)
+        (leftOwner ** leftFound) = lifecycleOwnerPresent nameEq keyEq action
+          lifecycle (plannedSystemState original (completePlanResult (postClosePlan boundary))) (namedAfter (retainedBoundaryNamed exactStep)) (namedTag (retainedBoundaryNamed exactStep)) planRaw
+        maybeOwner = selectedOrderedForeignLookupControls nameEq selected
+          (actionOwner action) actorDistinct
+          (planTarget (completePlanResult (postClosePlan boundary)))
+          (registry survivor) (postCloseControls boundary)
+    in case foreignControlLookupFound nameEq (actionOwner action)
+      (planTarget (completePlanResult (postClosePlan boundary)))
+      (registry survivor) leftOwner leftFound maybeOwner of
+      MkForeignRelatedFiberFound rightOwner rightFound ownersRelated =>
+        case postClosePlanSelectedInactive boundary of
+          leftInactive@(MkInactiveFiberAt selectedComponent selectedParent
+            selectedRetired selectedTable selectedOutcome selectedFound) =>
+            let 0 selectedExcluded : ((wanted : key) -> Elem wanted
+                  (dependencies (componentDependencies
+                    (fiberComponent leftOwner))) ->
+                  providerCandidate @{keyEq} wanted (MkFiber selectedComponent selectedParent selectedRetired selectedTable
+                    (Inactive selectedOutcome)) = False)
+                selectedExcluded wanted ownerDeclares = Refl
+                0 foreignTables : ((current : name) ->
+                  Not (current = selected) ->
+                  {leftFiber, rightFiber : Fiber name key value world error} ->
+                  Elem (Bind current leftFiber)
+                    (bindings (planTarget (completePlanResult
+                      (postClosePlan boundary)))) ->
+                  Elem (Bind current rightFiber) (bindings (registry survivor)) ->
+                  FiberControlRelated leftFiber rightFiber ->
+                  bindings (ownedValues (fiberTable leftFiber)) =
+                    bindings (ownedValues (fiberTable rightFiber)))
+                foreignTables = \current, currentDistinct,
+                  leftMember, rightMember, controls =>
+                    scopedPostCloseForeignTables name key world error value nameEq keyEq (plannedSystemState original (completePlanResult (postClosePlan boundary))) survivor
+                      (postCloseEffects boundary) current leftMember rightMember
+                0 planChecked : (checkedApplyAction @{nameEq} @{keyEq} action
+                  (plannedSystemState original
+                    (completePlanResult (postClosePlan boundary))) =
+                  Just (namedTag (retainedBoundaryNamed exactStep),
+                    namedAfter (retainedBoundaryNamed exactStep)))
+                planChecked = rewrite planRaw in
+                  rewrite survivorBoundaryWellFormed
+                    (retainedNextBoundary exactStep) in Refl
+                0 effectsEta : (EffectStateRelated keyEq
+                  (projectEffectState @{nameEq}
+                    (plannedSystemState original
+                      (completePlanResult (postClosePlan boundary))))
+                  (projectEffectState @{nameEq}
+                    (the (SystemState name key value world error)
+                      (MkSystemState (worldState survivor)
+                        (registry survivor)))))
+                effectsEta = replace
+                  {p = \observed => EffectStateRelated keyEq
+                    (projectEffectState @{nameEq}
+                      (plannedSystemState original
+                        (completePlanResult (postClosePlan boundary))))
+                    (projectEffectState @{nameEq} observed)}
+                  (sym (scopedSystemEta name key world error value survivor)) (postCloseEffects boundary)
+                outcomes : ForeignAdvanceOutcomeProvider name key world error
+                  value nameEq keyEq action (worldState original)
+                  (worldState survivor)
+                  (planTarget (completePlanResult (postClosePlan boundary)))
+                  (registry survivor)
+                outcomes = scopedPostCloseOutcomes name key world error value
+                  nameEq keyEq action (worldState original) (worldState survivor)
+                  (planTarget (completePlanResult (postClosePlan boundary)))
+                  (registry survivor) (namedAfter (retainedBoundaryNamed exactStep))
+                  (namedTag (retainedBoundaryNamed exactStep)) planChecked effectsEta
+                0 controlEta : (ForeignLifecycleControlReplay name key world
+                  error value nameEq keyEq selected action
+                  (namedTag (retainedBoundaryNamed exactStep))
+                  (namedAfter (retainedBoundaryNamed exactStep))
+                  (MkSystemState (worldState survivor) (registry survivor)))
+                controlEta = scopedForeignLifecycleControlsFromExclusion
+                  nameEq keyEq selected action actorDistinct lifecycle (worldState original) (worldState survivor)
+                  (planTarget (completePlanResult (postClosePlan boundary)))
+                  (registry survivor) leftOwner rightOwner (MkFiber selectedComponent selectedParent selectedRetired selectedTable
+                    (Inactive selectedOutcome))
+                  selectedFound leftFound rightFound selectedExcluded
+                  (replace
+                    {p = \observed => SelectedSurvivorCleanInactive name key
+                      world error value nameEq selected observed}
+                    (sym (scopedSystemEta name key world error value survivor))
+                    (postCloseCleanInactive boundary))
+                  (postCloseControls boundary) foreignTables
+                  (namedTag (retainedBoundaryNamed exactStep)) (namedAfter (retainedBoundaryNamed exactStep)) planRaw
+                  (postCloseSurvivorWellFormed boundary) outcomes
+                0 control : ForeignLifecycleControlReplay name key world error
+                  value nameEq keyEq selected action (namedTag (retainedBoundaryNamed exactStep))
+                  (namedAfter (retainedBoundaryNamed exactStep)) survivor
+                control = replace
+                  {p = \observed => ForeignLifecycleControlReplay name key world
+                    error value nameEq keyEq selected action (namedTag (retainedBoundaryNamed exactStep))
+                    (namedAfter (retainedBoundaryNamed exactStep)) observed}
+                  (scopedSystemEta name key world error value survivor) controlEta
+                0 orchestrationControl : (ForeignOrchestrationControlReplay
+                  name key world error value nameEq keyEq selected action
+                  (namedTag (retainedBoundaryNamed exactStep))
+                  (namedAfter (retainedBoundaryNamed exactStep)) survivor)
+                orchestrationControl = MkForeignOrchestrationControlReplay
+                  (foreignLifecycleAfter control) (foreignLifecycleRaw control)
+                  (foreignLifecycleChecked control)
+                  (foreignLifecycleOrdered control)
+                0 planInactive : (InactiveFiberAt name key world error value
+                  nameEq selected
+                  (namedAfter (retainedBoundaryNamed exactStep)))
+                planInactive = inactiveForeignPost nameEq keyEq selected action
+                  (\same => actorDistinct (sym same)) (plannedSystemState original (completePlanResult (postClosePlan boundary)))
+                  (namedAfter (retainedBoundaryNamed exactStep)) (namedTag (retainedBoundaryNamed exactStep)) planRaw leftInactive
+                0 clean : (SelectedSurvivorCleanInactive name key world error
+                  value nameEq selected (foreignLifecycleAfter control))
+                clean = foreignActionPreservesCleanInactive nameEq keyEq
+                  selected action actorDistinct survivor
+                  (foreignLifecycleAfter control) (namedTag (retainedBoundaryNamed exactStep))
+                  (foreignLifecycleRaw control) (postCloseCleanInactive boundary)
+                0 headEffects : (EffectStateRelated keyEq
+                  (projectEffectState @{nameEq}
+                    (namedAfter (retainedBoundaryNamed exactStep)))
+                  (projectEffectState @{nameEq}
+                    (foreignLifecycleAfter control)))
+                headEffects = postCloseLifecycleEffects nameEq keyEq action
+                  lifecycle (namedTag (retainedBoundaryNamed exactStep)) (plannedSystemState original (completePlanResult (postClosePlan boundary))) (namedAfter (retainedBoundaryNamed exactStep))
+                  survivor (foreignLifecycleAfter control) planChecked
+                  (foreignLifecycleChecked control) (postCloseEffects boundary)
+                  leftOwner rightOwner leftFound rightFound ownersRelated
+            in packagePostCloseOrchestrationWithInvariants protocol nameEq keyEq
+              selected registered ordinal live unique action original
+              originalAfter originalFinal survivor tag checked rest discipline
+              retained noBegin (postCloseCurrentInactive boundary)
+              (postCloseCurrentEmpty boundary) boundary exactStep
+              orchestrationControl planInactive clean headEffects
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
