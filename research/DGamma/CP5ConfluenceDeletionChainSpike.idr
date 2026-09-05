@@ -23944,6 +23944,27 @@ scopedSuffixEnrichedFromSelected name key world error value protocol nameEq keyE
       (scopedSelectedOutputSuffixNoRegistered name key world error value protocol nameEq keyEq initial finalState global selected located
         registered ordinal live beforeScan noRegistered output) noFailure
 
+||| Both live enriched producers, joined at the canonical selected endpoint.
+record ScopedEnrichedDeletionFolds
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error) (nameEq : DecEq name) (keyEq : DecEq key)
+  (initial, finalState : SystemState name key value world error) (global : Transitions initial finalState)
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) where
+  constructor MkScopedEnrichedDeletionFolds
+  enrichedSelected : ScopedSelectedClosedEpisodeFoldOutput name key world error value protocol nameEq keyEq
+    (selectedActor candidate) (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)
+    (locatedEpisode (selectedEpisode candidate))
+    (appendTransitions (closedTransitions (locatedEpisode (selectedEpisode candidate))) (traceAfterClosing (selectedEpisode candidate)))
+  enrichedSuffix : ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq keyEq (selectedRegistrations candidate)
+    (selectedFoldEndOrdinal (selectedOutputFold enrichedSelected)) (selectedFoldEndLive (selectedOutputFold enrichedSelected))
+    (traceAfterClosing (selectedEpisode candidate))
+    (scopedSelectedCanonicalFinal name key world error value protocol nameEq keyEq (selectedActor candidate)
+      (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)
+      (locatedPreStart (selectedEpisode candidate)) (locatedAfter (selectedEpisode candidate)) finalState
+      (locatedEpisode (selectedEpisode candidate))
+      (appendTransitions (closedTransitions (locatedEpisode (selectedEpisode candidate))) (traceAfterClosing (selectedEpisode candidate)))
+      enrichedSelected)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
