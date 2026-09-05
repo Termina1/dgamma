@@ -24491,6 +24491,29 @@ data ScopedDisciplineReplaySpine :
       (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) sourceRest target ->
     ScopedDisciplineReplaySpine name key world error value nameEq registered ordinal live (MoreTransitions sourceStep sourceRest) target
 
+0 scopedSpineNoParentRecovery :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (originalFirst, originalFinal, targetFirst, targetFinal : SystemState name key value world error) -> (parent : name) ->
+  (source : Transitions originalFirst originalFinal) -> (target : Transitions targetFirst targetFinal) ->
+  ScopedDisciplineReplaySpine name key world error value nameEq registered ordinal live source target ->
+  NoParentRecovery parent source -> NoParentRecovery parent target
+scopedSpineNoParentRecovery name key world error value nameEq registered ordinal live _ _ _ _ parent _ _
+  ScopedDisciplineEnd noRecovery = NoParentRecoveryEnd
+scopedSpineNoParentRecovery name key world error value nameEq registered ordinal live originalFirst originalFinal targetFirst targetFinal parent _ _
+  (ScopedDisciplineKeep sourceStep sourceRest targetStep targetRest sameAction sameTag fresh controls tail) noRecovery =
+    NoParentRecoveryStep targetStep targetRest
+      (\recovery => fst (scopedNoParentRecoveryHead name key world error value parent originalFirst _ originalFinal sourceStep sourceRest noRecovery)
+        (scopedRecoveryStepReflects name key world error value parent originalFirst _ targetFirst _ sourceStep targetStep sameAction sameTag recovery))
+      (scopedSpineNoParentRecovery name key world error value nameEq registered (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) _ originalFinal _ targetFinal parent sourceRest targetRest tail
+        (snd (scopedNoParentRecoveryHead name key world error value parent originalFirst _ originalFinal sourceStep sourceRest noRecovery)))
+scopedSpineNoParentRecovery name key world error value nameEq registered ordinal live originalFirst originalFinal targetFirst targetFinal parent _ _
+  (ScopedDisciplineDelete sourceStep sourceRest target retireOwned tail) noRecovery =
+    scopedSpineNoParentRecovery name key world error value nameEq registered (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) _ originalFinal targetFirst targetFinal parent sourceRest target tail
+      (snd (scopedNoParentRecoveryHead name key world error value parent originalFirst _ originalFinal sourceStep sourceRest noRecovery))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
