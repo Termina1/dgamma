@@ -10520,6 +10520,20 @@ installedFiberScoped nameEq actor state installed =
         installed)
     MkErasedInspection (Just fiber) exact => (fiber ** exact)
 
+record ScopedCommittedOpeningEvidence
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (selected, actor : name) (wanted : key)
+  {initial, finalState : SystemState name key value world error}
+  (global : Transitions initial finalState)
+  (consumerEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    actor global) where
+  constructor MkScopedCommittedOpeningEvidence
+  0 openingResolutionScoped : resolvedProviderAt @{nameEq} @{keyEq} actor wanted
+    selected (closedStartState (locatedEpisode consumerEpisode)) = True
+  0 openingPrecedenceScoped : PrecedenceEdge nameEq selected actor
+    (closedStartState (locatedEpisode consumerEpisode))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
