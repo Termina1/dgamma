@@ -18483,6 +18483,26 @@ scopedUnretiredStep name key world error value nameEq keyEq child ordinal live
 scopedAlignedHeadChecked name key world error value nameEq keyEq first middle
   finalState _ _ (AlignedStep action tag checked rest alignedTail) = checked
 
+||| Unless the head retires the child, its retirement witness lies in the tail
+||| and the source head is not a parent-recovery step.
+0 scopedChildBeforeTail :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (parent, child : name) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (transition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (0 notRetire : Not (transitionAction transition = ORetire child)) ->
+  ChildRetiresBeforeRecovery parent child (MoreTransitions transition rest) ->
+  (Not (ParentRecoveryStep parent transition),
+    ChildRetiresBeforeRecovery parent child rest)
+scopedChildBeforeTail name key world error value parent child first middle
+  finalState _ _ notRetire (ChildRetiresNow transition rest retires) =
+    void (notRetire retires)
+scopedChildBeforeTail name key world error value parent child first middle
+  finalState _ _ notRetire (ChildRetiresLater transition rest noRecovery tail) =
+    (noRecovery, tail)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
