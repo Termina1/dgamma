@@ -61,7 +61,13 @@ import DGamma.CP4DeletionPostCloseFold
 import DGamma.CP4DeletionBoundaryRetained
 import DGamma.CP4DeletionPostCloseEffectReplay
 import DGamma.CP4DeletionPostCloseOrchestration
+import DGamma.CP4DeletionPostCloseDeleted
+import DGamma.CP4DeletionPostCloseFinal
+import DGamma.CP4DeletionPostCloseRemove
+import DGamma.CP4DeletionPostCloseSelectedRetire
 import DGamma.CP4DeletionRelationalBoundary
+import DGamma.CP4DeletionRelationalActionReplay
+import DGamma.CP4DeletionRelationalSuffixFold
 import DGamma.CP4DeletionPostCloseLifecycle
 import DGamma.CP4DeletionSelectedForeignLifecycleReplay
 import DGamma.Ordering
@@ -15461,6 +15467,380 @@ scopedRetainedForeignPostCloseLifecycle name key world error value
               retained noBegin (postCloseCurrentInactive boundary)
               (postCloseCurrentEmpty boundary) boundary exactStep
               orchestrationControl planInactive clean headEffects
+
+0 nothingNotJustScopedPostFold : Nothing = Just item -> Void
+nothingNotJustScopedPostFold Refl impossible
+
+0 insertPresentScopedPostFold :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (OInsert selected parent component) before =
+    Just (tag, afterState) ->
+  InactiveFiberAt name key world error value nameEq selected before -> Void
+insertPresentScopedPostFold nameEq keyEq selected parent component
+  before@(MkSystemState ambient fibers) afterState tag raw
+  (MkInactiveFiberAt oldComponent oldParent oldRetired oldTable oldOutcome found) =
+    case foreignInsertPlanView nameEq keyEq selected parent component ambient
+      fibers tag afterState raw of
+      MkForeignInsertPlanView absent guards =>
+        void (nothingNotJustScopedPostFold (trans (sym absent) found))
+
+0 beginFiberTagScopedPostFold :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (fiber : Fiber name key value world error) ->
+  (state, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  beginFiberAction @{nameEq} @{keyEq} selected fiber state =
+    Just (tag, afterState) -> tag = LBeginTag
+beginFiberTagScopedPostFold nameEq keyEq selected fiber state afterState tag equation
+  with (fiberLifecycle fiber)
+  beginFiberTagScopedPostFold nameEq keyEq selected fiber state afterState tag equation |
+    Inactive Nothing with (targetFiber fiber (registry state))
+    beginFiberTagScopedPostFold nameEq keyEq selected fiber state afterState tag equation |
+      Inactive Nothing | Nothing = void (nothingNotJustScopedPostFold equation)
+    beginFiberTagScopedPostFold nameEq keyEq selected fiber state afterState tag equation |
+      Inactive Nothing | Just view = case justInjective equation of Refl => Refl
+  beginFiberTagScopedPostFold nameEq keyEq selected fiber state afterState tag equation |
+    Inactive (Just failure) = void (nothingNotJustScopedPostFold equation)
+  beginFiberTagScopedPostFold nameEq keyEq selected fiber state afterState tag equation |
+    Reloading remaining accumulator view = void (nothingNotJustScopedPostFold equation)
+  beginFiberTagScopedPostFold nameEq keyEq selected fiber state afterState tag equation |
+    Active accumulator view = void (nothingNotJustScopedPostFold equation)
+  beginFiberTagScopedPostFold nameEq keyEq selected fiber state afterState tag equation |
+    Unloading accumulator view outcome = void (nothingNotJustScopedPostFold equation)
+
+0 beginSuccessTagScopedPostFold :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} (LBegin selected) before =
+    Just (tag, afterState) -> tag = LBeginTag
+beginSuccessTagScopedPostFold nameEq keyEq selected
+  (MkSystemState ambient fibers) afterState tag equation
+  with (lookupFiber @{nameEq} selected fibers)
+  beginSuccessTagScopedPostFold nameEq keyEq selected (MkSystemState ambient fibers)
+    afterState tag equation | Nothing =
+      void (nothingNotJustScopedPostFold equation)
+  beginSuccessTagScopedPostFold nameEq keyEq selected (MkSystemState ambient fibers)
+    afterState tag equation | Just fiber =
+      beginFiberTagScopedPostFold nameEq keyEq selected fiber
+        (MkSystemState ambient fibers) afterState tag equation
+
+0 scopedPrependPostCloseKept :
+  {original, originalAfter, originalFinal,
+    survivor : SystemState name key value world error} ->
+  {rest : Transitions originalAfter originalFinal} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (transition : Transition original originalAfter) ->
+  (retained : Not (GenerationOwnedActor nameEq registered ordinal live
+    (transitionAction transition))) ->
+  (named : NamedTransition name key world error value
+    (transitionAction transition) survivor) ->
+  fireNamed nameEq keyEq (transitionAction transition) survivor = Just named ->
+  (folded : RelationalNoEpisodeSuffixReplayFold name key world error value nameEq
+    keyEq registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal
+      (transitionAction transition) live)
+    rest (namedAfter named)) ->
+  RelationalNoEpisodeSuffixReplayFold name key world error value nameEq keyEq
+    registered ordinal live (MoreTransitions transition rest) survivor
+scopedPrependPostCloseKept nameEq keyEq registered ordinal live transition retained
+  named@(MkNamedTransition after namedTag namedTransition namedAction) fires
+  folded =
+    MkRelationalNoEpisodeSuffixReplayFold
+      (relationalSuffixFinalOrdinal folded)
+      (relationalSuffixFinalLive folded)
+      (relationalSuffixFinalSurvivor folded)
+      (GenerationTraceScanStep transition rest
+        (relationalSuffixGenerationScan folded))
+      (ReplayReadyKeep retained after namedTag namedTransition namedAction fires
+        (relationalSuffixReplayReady folded))
+      (ReplayEndsKeep retained namedTag namedTransition namedAction fires
+        (relationalSuffixReplayReady folded) (relationalSuffixReadyEnds folded))
+      (relationalSuffixFinalUnique folded)
+      (relationalSuffixFinalBoundary folded)
+
+0 scopedPrependPostCloseDeleted :
+  {original, originalAfter, originalFinal :
+    SystemState name key value world error} ->
+  {rest : Transitions originalAfter originalFinal} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (transition : Transition original originalAfter) ->
+  GenerationOwnedActor nameEq registered ordinal live
+    (transitionAction transition) ->
+  (survivor : SystemState name key value world error) ->
+  (folded : RelationalNoEpisodeSuffixReplayFold name key world error value nameEq
+    keyEq registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal
+      (transitionAction transition) live) rest survivor) ->
+  RelationalNoEpisodeSuffixReplayFold name key world error value nameEq keyEq
+    registered ordinal live (MoreTransitions transition rest) survivor
+scopedPrependPostCloseDeleted nameEq keyEq registered ordinal live transition
+  deleted survivor folded =
+    MkRelationalNoEpisodeSuffixReplayFold
+      (relationalSuffixFinalOrdinal folded)
+      (relationalSuffixFinalLive folded)
+      (relationalSuffixFinalSurvivor folded)
+      (GenerationTraceScanStep transition rest
+        (relationalSuffixGenerationScan folded))
+      (ReplayReadyDelete deleted (relationalSuffixReplayReady folded))
+      (ReplayEndsDelete deleted (relationalSuffixReplayReady folded)
+        (relationalSuffixReadyEnds folded))
+      (relationalSuffixFinalUnique folded)
+      (relationalSuffixFinalBoundary folded)
+
+0 scopedPostCloseSuffixFold :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {original, finalState : SystemState name key value world error} ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  ((generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  RegisteredGenerationsBornBefore registered ordinal ->
+  GenerationEnvironmentNamesUnique live ->
+  GenerationEnvironmentStamped live ->
+  (trace : Transitions original finalState) ->
+  (survivor : SystemState name key value world error) ->
+  PostCloseSelectedBoundary name key world error value nameEq keyEq selected
+    registered ordinal live original survivor ->
+  RegistrationDiscipline protocol nameEq trace ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  NoRegisteredEpisode nameEq registered ordinal live trace ->
+  noFailedFibers finalState = True ->
+  RelationalNoEpisodeSuffixReplayFold name key world error value nameEq keyEq
+    registered ordinal live trace survivor
+scopedPostCloseSuffixFold name key world error value protocol nameEq keyEq selected registered selectedOutside ordinal live bornBefore unique stamped NoTransitions survivor
+  boundary RegistrationDisciplineEnd AlignedEnd NoRegisteredEpisodeEnd noFailed =
+    MkRelationalNoEpisodeSuffixReplayFold ordinal live survivor
+      GenerationTraceScanEnd ReplayReadyEnd (ReplayEndsEnd Refl) unique
+      (finalPostCloseGivesRelational nameEq keyEq selected registered live unique
+        stamped selectedOutside _ survivor noFailed boundary)
+scopedPostCloseSuffixFold name key world error value protocol nameEq keyEq selected
+  registered selectedOutside ordinal live bornBefore unique
+  stamped
+  (MoreTransitions (Fired {afterState = afterState}
+      nameEq keyEq action tag checked) rest)
+  survivor boundary
+  (RegistrationDisciplineStep _ _ stepDiscipline restDiscipline)
+  (AlignedStep action tag checked rest alignedRest)
+  (NoRegisteredEpisodeStep _ _ noBegin noRegisteredRest) noFailed
+  with (decGenerationOwnedActor nameEq registered ordinal live action)
+  scopedPostCloseSuffixFold name key world error value protocol nameEq keyEq selected registered selectedOutside ordinal live bornBefore unique stamped
+    (MoreTransitions (Fired {afterState = afterState}
+      nameEq keyEq action tag checked) rest) survivor boundary
+    (RegistrationDisciplineStep _ _ stepDiscipline restDiscipline)
+    (AlignedStep action tag checked rest alignedRest)
+    (NoRegisteredEpisodeStep _ _ noBegin noRegisteredRest) noFailed |
+    Yes deleted =
+      let nextBoundary = deletedPostCloseStep nameEq keyEq selected registered
+            ordinal live bornBefore unique action _ survivor boundary tag checked
+            deleted noBegin
+          nextUnique = advanceGenerationEnvironmentPreservesUnique nameEq ordinal
+            action live unique
+          nextStamped = advanceGenerationEnvironmentPreservesStamped nameEq
+            ordinal action live stamped
+          0 folded = scopedPostCloseSuffixFold name key world error value protocol nameEq keyEq selected registered
+            selectedOutside (S ordinal)
+            (advanceGenerationEnvironment @{nameEq} ordinal action live)
+            (registeredGenerationsBornBeforeNext bornBefore) nextUnique
+            nextStamped rest survivor nextBoundary restDiscipline alignedRest
+            noRegisteredRest noFailed
+      in scopedPrependPostCloseDeleted nameEq keyEq registered ordinal live
+        (Fired nameEq keyEq action tag checked) deleted survivor folded
+  scopedPostCloseSuffixFold name key world error value protocol nameEq keyEq selected registered selectedOutside ordinal live bornBefore unique stamped
+    (MoreTransitions (Fired {afterState = afterState}
+      nameEq keyEq action tag checked) rest) survivor boundary
+    (RegistrationDisciplineStep _ _ stepDiscipline restDiscipline)
+    (AlignedStep action tag checked rest alignedRest)
+    (NoRegisteredEpisodeStep _ _ noBegin noRegisteredRest) noFailed |
+    No retained with (decEq @{nameEq} (actionOwner action) selected)
+    scopedPostCloseSuffixFold name key world error value protocol nameEq keyEq selected registered selectedOutside ordinal live bornBefore unique stamped
+      (MoreTransitions (Fired {afterState = afterState}
+      nameEq keyEq action tag checked) rest) survivor boundary
+      (RegistrationDisciplineStep _ _ stepDiscipline restDiscipline)
+      (AlignedStep action tag checked rest alignedRest)
+      (NoRegisteredEpisodeStep _ _ noBegin noRegisteredRest) noFailed |
+      No retained | No actorDistinct =
+        let nextUnique = advanceGenerationEnvironmentPreservesUnique nameEq
+              ordinal action live unique
+            nextStamped = advanceGenerationEnvironmentPreservesStamped nameEq
+              ordinal action live stamped
+            0 step : PostCloseOrchestrationStep name key world error value
+              nameEq keyEq selected registered (S ordinal)
+              (advanceGenerationEnvironment @{nameEq} ordinal action live)
+              action afterState survivor
+            step = case action of
+              OInsert actor parent component =>
+                retainedForeignPostCloseOrchestration protocol nameEq keyEq
+                  selected registered ordinal live unique action Refl actorDistinct
+                  _ _ _ survivor tag checked rest stepDiscipline retained noBegin
+                  boundary
+              ORetire actor => retainedForeignPostCloseOrchestration protocol
+                nameEq keyEq selected registered ordinal live unique action Refl
+                actorDistinct _ _ _ survivor tag checked rest stepDiscipline
+                retained noBegin boundary
+              ORemove actor => retainedForeignPostCloseOrchestration protocol
+                nameEq keyEq selected registered ordinal live unique action Refl
+                actorDistinct _ _ _ survivor tag checked rest stepDiscipline
+                retained noBegin boundary
+              LBegin actor => scopedRetainedForeignPostCloseLifecycle name key world error value protocol nameEq
+                keyEq selected registered ordinal live unique action Refl
+                actorDistinct _ _ _ survivor tag checked rest
+                stepDiscipline retained noBegin boundary
+              LAdvance actor => scopedRetainedForeignPostCloseLifecycle name key world error value protocol nameEq
+                keyEq selected registered ordinal live unique action Refl
+                actorDistinct _ _ _ survivor tag checked rest
+                stepDiscipline retained noBegin boundary
+              LDivert actor => scopedRetainedForeignPostCloseLifecycle name key world error value protocol nameEq
+                keyEq selected registered ordinal live unique action Refl
+                actorDistinct _ _ _ survivor tag checked rest
+                stepDiscipline retained noBegin boundary
+              LLeave actor => scopedRetainedForeignPostCloseLifecycle name key world error value protocol nameEq
+                keyEq selected registered ordinal live unique action Refl
+                actorDistinct _ _ _ survivor tag checked rest
+                stepDiscipline retained noBegin boundary
+              LUnload actor => scopedRetainedForeignPostCloseLifecycle name key world error value protocol nameEq
+                keyEq selected registered ordinal live unique action Refl
+                actorDistinct _ _ _ survivor tag checked rest
+                stepDiscipline retained noBegin boundary
+        in case step of
+          MkPostCloseOrchestrationStep named fires nextBoundary =>
+            let folded = scopedPostCloseSuffixFold name key world error value protocol nameEq keyEq selected
+                  registered selectedOutside (S ordinal)
+                  (advanceGenerationEnvironment @{nameEq} ordinal action live)
+                  (registeredGenerationsBornBeforeNext bornBefore) nextUnique
+                  nextStamped rest (namedAfter named) nextBoundary restDiscipline
+                  alignedRest noRegisteredRest noFailed
+            in scopedPrependPostCloseKept nameEq keyEq registered ordinal live
+              (Fired nameEq keyEq action tag checked) retained named fires folded
+    scopedPostCloseSuffixFold name key world error value protocol nameEq keyEq selected registered selectedOutside ordinal live bornBefore unique stamped
+      (MoreTransitions (Fired {afterState = afterState}
+      nameEq keyEq action tag checked) rest) survivor boundary
+      (RegistrationDisciplineStep _ _ stepDiscipline restDiscipline)
+      (AlignedStep action tag checked rest alignedRest)
+      (NoRegisteredEpisodeStep _ _ noBegin noRegisteredRest) noFailed |
+      No retained | Yes ownerSelected = case action of
+        OInsert actor parent component => case ownerSelected of
+          Refl => void (insertPresentScopedPostFold nameEq keyEq selected parent component
+            _ _ tag (checkedActionProjects nameEq keyEq
+              (OInsert selected parent component) _ _ tag checked)
+            (postCloseOriginalSelectedInactive nameEq selected registered live
+              unique stamped selectedOutside _ survivor boundary))
+        ORetire actor => case ownerSelected of
+          Refl =>
+            let raw = checkedActionProjects nameEq keyEq (ORetire selected)
+                  original afterState tag checked
+                tagIsRetire = retireSuccessTag nameEq keyEq selected original
+                  afterState tag raw
+            in case tagIsRetire of
+              Refl => case retainedSelectedPostCloseRetire protocol nameEq keyEq
+                selected registered ordinal live unique original afterState
+                finalState survivor checked rest stepDiscipline retained noBegin
+                boundary of
+                MkPostCloseOrchestrationStep named fires nextBoundary =>
+                  let retireAction : Action name key value world error
+                      retireAction = ORetire selected
+                      0 nextUnique : GenerationEnvironmentNamesUnique live
+                      nextUnique = advanceGenerationEnvironmentPreservesUnique
+                        nameEq ordinal retireAction live unique
+                      0 nextStamped : GenerationEnvironmentStamped live
+                      nextStamped = advanceGenerationEnvironmentPreservesStamped
+                        nameEq ordinal retireAction live stamped
+                      0 folded : RelationalNoEpisodeSuffixReplayFold name key
+                        world error value nameEq keyEq registered (S ordinal)
+                        live rest (namedAfter named)
+                      folded = scopedPostCloseSuffixFold name key world error value protocol nameEq keyEq selected
+                        registered selectedOutside (S ordinal)
+                        live (registeredGenerationsBornBeforeNext bornBefore)
+                        nextUnique nextStamped rest (namedAfter named) nextBoundary
+                        restDiscipline alignedRest noRegisteredRest noFailed
+                  in scopedPrependPostCloseKept nameEq keyEq registered ordinal live
+                    (Fired nameEq keyEq (ORetire selected) ORetireTag checked)
+                    retained named fires folded
+        ORemove actor => case ownerSelected of
+          Refl => case retainedSelectedPostCloseRemove protocol nameEq keyEq
+            selected registered ordinal live unique _ _ _ survivor tag checked
+            rest stepDiscipline retained boundary of
+            MkRelationalRetainedNoEpisodeBoundaryStep named fires nextBoundary =>
+              let 0 nextUnique : GenerationEnvironmentNamesUnique
+                    (advanceGenerationEnvironment @{nameEq} ordinal
+                      (the (Action name key value world error)
+                        (ORemove selected)) live)
+                  nextUnique = advanceGenerationEnvironmentPreservesUnique nameEq
+                    ordinal (the (Action name key value world error)
+                        (ORemove selected)) live unique
+                  0 folded : RelationalNoEpisodeSuffixReplayFold name key world
+                    error value nameEq keyEq registered (S ordinal)
+                    (advanceGenerationEnvironment @{nameEq} ordinal
+                      (the (Action name key value world error)
+                        (ORemove selected)) live) rest (namedAfter named)
+                  folded = relationalNoEpisodeSuffixReplayFold protocol nameEq
+                    keyEq (replayRelatedAction nameEq keyEq) registered (S ordinal)
+                    (advanceGenerationEnvironment @{nameEq} ordinal
+                      (the (Action name key value world error)
+                        (ORemove selected)) live)
+                    (registeredGenerationsBornBeforeNext bornBefore) nextUnique
+                    rest (namedAfter named) nextBoundary restDiscipline alignedRest
+                    noRegisteredRest
+              in scopedPrependPostCloseKept nameEq keyEq registered ordinal live
+                (Fired nameEq keyEq (ORemove selected) tag checked) retained named fires folded
+        LBegin actor => case ownerSelected of
+          Refl =>
+            let raw = checkedActionProjects nameEq keyEq (LBegin selected)
+                  original afterState tag checked
+                tagIsBegin = beginSuccessTagScopedPostFold nameEq keyEq selected
+                  original afterState tag raw
+            in case tagIsBegin of
+              Refl =>
+                let clean = selectedCleanInactiveBeforeBegin nameEq keyEq
+                      selected original afterState checked
+                    relational = cleanOriginalPostCloseGivesRelational nameEq
+                      selected registered live unique stamped selectedOutside
+                      original survivor boundary clean
+                in relationalNoEpisodeSuffixReplayFold protocol nameEq keyEq
+                  (replayRelatedAction nameEq keyEq) registered ordinal live
+                  bornBefore unique
+                  (MoreTransitions (Fired nameEq keyEq (LBegin selected)
+                    LBeginTag checked) rest) survivor relational
+                  (RegistrationDisciplineStep
+                    (Fired nameEq keyEq (LBegin selected) LBeginTag checked) rest
+                    stepDiscipline restDiscipline)
+                  (AlignedStep (LBegin selected) LBeginTag checked rest
+                    alignedRest)
+                  (NoRegisteredEpisodeStep
+                    (Fired nameEq keyEq (LBegin selected) LBeginTag checked) rest
+                    noBegin noRegisteredRest)
+        LAdvance actor => case ownerSelected of
+          Refl => void (inactiveCannotAdvance nameEq keyEq selected _ _ tag
+            (checkedActionProjects nameEq keyEq (LAdvance selected) _ _ tag
+              checked)
+            (postCloseOriginalSelectedInactive nameEq selected registered live
+              unique stamped selectedOutside _ survivor boundary))
+        LDivert actor => case ownerSelected of
+          Refl => void (inactiveCannotDivert nameEq keyEq selected _ _ tag
+            (checkedActionProjects nameEq keyEq (LDivert selected) _ _ tag
+              checked)
+            (postCloseOriginalSelectedInactive nameEq selected registered live
+              unique stamped selectedOutside _ survivor boundary))
+        LLeave actor => case ownerSelected of
+          Refl => void (inactiveCannotLeave nameEq keyEq selected _ _ tag
+            (checkedActionProjects nameEq keyEq (LLeave selected) _ _ tag checked)
+            (postCloseOriginalSelectedInactive nameEq selected registered live
+              unique stamped selectedOutside _ survivor boundary))
+        LUnload actor => case ownerSelected of
+          Refl => void (inactiveCannotUnload nameEq keyEq selected _ _ tag
+            (checkedActionProjects nameEq keyEq (LUnload selected) _ _ tag checked)
+            (postCloseOriginalSelectedInactive nameEq selected registered live
+              unique stamped selectedOutside _ survivor boundary))
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
