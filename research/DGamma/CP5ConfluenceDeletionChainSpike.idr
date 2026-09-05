@@ -19518,6 +19518,17 @@ scopedInsertRawTag name key world error value nameEq keyEq actor parent componen
       (foreignInsertPlanView nameEq keyEq actor parent component ambient source
         tag afterState raw)
 
+0 scopedRemoveViewTag :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  RemoveSuccessView name key world error value nameEq actor ambient source tag
+    afterState ->
+  (tag = ORemoveTag)
+scopedRemoveViewTag name key world error value nameEq actor ambient source _ _
+  (MkRemoveSuccessView oldFiber found guards noChild) = Refl
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
