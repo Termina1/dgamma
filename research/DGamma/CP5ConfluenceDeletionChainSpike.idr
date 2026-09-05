@@ -26052,6 +26052,20 @@ scopedSubsequenceOrdinalTags name key world error value nameEq deletable ordinal
           (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ sourceFinal targetFirst targetFinal
           originalRest target tail tailTags targetIndex predecessor tailExact))
 
+0 scopedTagPairAppendLeft :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (sourceFirst, sourceMiddle, sourceFinal, targetFirst, targetMiddle, targetFinal : SystemState name key value world error) ->
+  (sourceLeft : Transitions sourceFirst sourceMiddle) -> (sourceRight : Transitions sourceMiddle sourceFinal) ->
+  (targetLeft : Transitions targetFirst targetMiddle) -> (targetRight : Transitions targetMiddle targetFinal) ->
+  (sourceOrdinal, targetOrdinal : Nat) ->
+  ScopedOrdinalTagPair name key world error value sourceFirst sourceMiddle targetFirst targetMiddle sourceLeft targetLeft sourceOrdinal targetOrdinal ->
+  ScopedOrdinalTagPair name key world error value sourceFirst sourceFinal targetFirst targetFinal
+    (appendTransitions sourceLeft sourceRight) (appendTransitions targetLeft targetRight) sourceOrdinal targetOrdinal
+scopedTagPairAppendLeft name key world error value sourceFirst sourceMiddle sourceFinal targetFirst targetMiddle targetFinal sourceLeft sourceRight targetLeft targetRight sourceOrdinal targetOrdinal pair =
+  MkScopedOrdinalTagPair (ordinalSharedTag pair)
+    (scopedRuleAppendLeft name key world error value sourceFirst sourceMiddle sourceFinal sourceLeft sourceRight sourceOrdinal (ordinalSharedTag pair) (ordinalSourceTag pair))
+    (scopedRuleAppendLeft name key world error value targetFirst targetMiddle targetFinal targetLeft targetRight targetOrdinal (ordinalSharedTag pair) (ordinalTargetTag pair))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
