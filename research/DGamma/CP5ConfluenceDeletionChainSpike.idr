@@ -11584,6 +11584,40 @@ scopedSystemStateProjection name key world error value state =
     MkSystemState observedWorld observedRegistry =>
       MkScopedSystemStateProjection observedWorld observedRegistry Refl
 
+0 scopedInsertAbsentNotInstalledFromProjection :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (state : SystemState name key value world error) ->
+  (projectedWorld : world) ->
+  (projectedRegistry : Registry name key value world error) ->
+  (0 projectedStateExact :
+    (state = MkSystemState projectedWorld projectedRegistry)) ->
+  lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor projectedRegistry =
+    the (Maybe (Fiber name key value world error)) Nothing ->
+  installedAt @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor state = True ->
+  Void
+scopedInsertAbsentNotInstalledFromProjection name key world error value nameEq
+  actor state projectedWorld projectedRegistry projectedStateExact absent
+  installedTrue =
+    scopedFalseNotTrue
+      (the (False = True)
+        (trans
+          (sym
+            (installedAtMissing
+              {name = name} {key = key} {world = world} {error = error}
+              {value = value} nameEq actor state
+              (the (Maybe (Fiber name key value world error)) Nothing)
+              (trans
+                (cong
+                  (lookupFiber @{nameEq} {name = name} {key = key}
+                    {value = value} {world = world} {error = error} actor)
+                  (cong registry projectedStateExact))
+                absent)
+              Refl))
+          installedTrue))
+
 0 ScopedForeignLifecycleExclusion :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
