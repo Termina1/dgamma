@@ -19386,6 +19386,15 @@ scopedLookupMember name item nameEq wanted observed (Bind current cell :: rest) 
   scopedLookupMemberHeadAt name item nameEq wanted current cell observed rest
     (scopedLookupMember name item nameEq wanted observed rest) (decEq @{nameEq} wanted current) Refl found
 
+0 scopedDeleteMatchedMember :
+  (name, item : Type) -> (nameEq : DecEq name) -> (removed, current : name) ->
+  (cell : item) -> (rest : List (Binding name (\_ => item))) -> (entry : Binding name (\_ => item)) ->
+  (same : (removed = current)) -> (decEq @{nameEq} removed current = Yes same) ->
+  Elem entry (deleteEntries @{nameEq} removed (Bind current cell :: rest)) ->
+  Elem entry (Bind current cell :: rest)
+scopedDeleteMatchedMember name item nameEq _ current cell rest entry Refl exact =
+  rewrite exact in (\member => There member)
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
