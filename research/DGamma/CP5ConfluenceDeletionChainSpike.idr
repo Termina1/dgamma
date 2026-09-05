@@ -14905,6 +14905,161 @@ scopedBeginLifecycleExclusion name key world error value nameEq keyEq global
               (lBeginBoundary nameEq keyEq actor before afterState tag checked)))
           wanted ownerDeclares
 
+0 scopedSelectedLifecycleExclusionAt :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq global) ->
+  (initialWellFormed : registryWellFormed @{nameEq} @{keyEq} initial = True) ->
+  (initialEmpty : bindings (registry initial) = []) ->
+  (selected : name) ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (selectedStartOrdinal : Nat) ->
+  (selectedStartLive : GenerationEnvironment name) ->
+  (selectedOrdinalExact : transitionCount (traceBeforeOpening located) =
+    selectedStartOrdinal) ->
+  (noDependent : NoDependentClosingEpisodeForGeneration
+    {nameEq = nameEq} {keyEq = keyEq} {global = global} selected
+    selectedStartOrdinal selectedStartLive located) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  (lifecycle : isLifecycleAction action = True) ->
+  (distinct : Not (actionOwner action = selected)) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (rest : Transitions afterState (lastInstalledState (locatedEpisode located))) ->
+  (selectedRest : InstalledTrace name key world error value nameEq keyEq selected
+    rest) ->
+  (occurs : OccursIn
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked)
+    global) ->
+  (insidePrefix : Transitions
+    (closedStartState (locatedEpisode located)) before) ->
+  (insideDecomposition : appendTransitions insidePrefix
+    (MoreTransitions
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq action tag checked)
+      rest) = closedInside (locatedEpisode located)) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  {whole : Transitions wholeFirst wholeLast} ->
+  {survivor : SystemState name key value world error} ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  (leftSelected, leftOwner, rightOwner : Fiber name key value world error) ->
+  (planSelectedFound : lookupFiber @{nameEq} selected
+    (planTarget (completePlanResult (selectedBoundaryPlan boundary))) =
+    Just leftSelected) ->
+  (planOwnerFound : lookupFiber @{nameEq} (actionOwner action)
+    (planTarget (completePlanResult (selectedBoundaryPlan boundary))) =
+    Just leftOwner) ->
+  (originalSelectedFound : lookupFiber @{nameEq} selected (registry before) =
+    Just leftSelected) ->
+  (originalOwnerFound : lookupFiber @{nameEq} (actionOwner action)
+    (registry before) = Just leftOwner) ->
+  (rightFound : lookupFiber @{nameEq} (actionOwner action)
+    (registry survivor) = Just rightOwner) ->
+  (controls : FiberControlRelated leftOwner rightOwner) ->
+  (wanted : key) ->
+  (ownerDeclares : Elem wanted (dependencies
+    (componentDependencies (fiberComponent leftOwner)))) ->
+  providerCandidate @{keyEq} wanted leftSelected = False
+scopedSelectedLifecycleExclusionAt name key world error value nameEq keyEq global
+  aligned initialWellFormed initialEmpty selected located registered
+  selectedStartOrdinal selectedStartLive selectedOrdinalExact noDependent ordinal
+  live (OInsert actor parent component) Refl distinct before afterState tag checked
+  rest selectedRest occurs insidePrefix insideDecomposition boundary leftSelected
+  leftOwner rightOwner planSelectedFound planOwnerFound originalSelectedFound
+  originalOwnerFound rightFound controls wanted ownerDeclares impossible
+scopedSelectedLifecycleExclusionAt name key world error value nameEq keyEq global
+  aligned initialWellFormed initialEmpty selected located registered
+  selectedStartOrdinal selectedStartLive selectedOrdinalExact noDependent ordinal
+  live (ORetire actor) Refl distinct before afterState tag checked rest selectedRest
+  occurs insidePrefix insideDecomposition boundary leftSelected leftOwner
+  rightOwner planSelectedFound planOwnerFound originalSelectedFound
+  originalOwnerFound rightFound controls wanted ownerDeclares impossible
+scopedSelectedLifecycleExclusionAt name key world error value nameEq keyEq global
+  aligned initialWellFormed initialEmpty selected located registered
+  selectedStartOrdinal selectedStartLive selectedOrdinalExact noDependent ordinal
+  live (ORemove actor) Refl distinct before afterState tag checked rest selectedRest
+  occurs insidePrefix insideDecomposition boundary leftSelected leftOwner
+  rightOwner planSelectedFound planOwnerFound originalSelectedFound
+  originalOwnerFound rightFound controls wanted ownerDeclares impossible
+scopedSelectedLifecycleExclusionAt name key world error value nameEq keyEq global
+  aligned initialWellFormed initialEmpty selected located registered
+  selectedStartOrdinal selectedStartLive selectedOrdinalExact noDependent ordinal
+  live (LBegin actor) lifecycle distinct before afterState tag checked rest
+  selectedRest occurs insidePrefix insideDecomposition boundary leftSelected
+  leftOwner rightOwner planSelectedFound planOwnerFound originalSelectedFound
+  originalOwnerFound rightFound controls wanted ownerDeclares =
+    scopedBeginLifecycleExclusion name key world error value nameEq keyEq global
+      aligned initialWellFormed initialEmpty selected actor distinct
+      selectedStartOrdinal selectedStartLive located selectedOrdinalExact
+      noDependent registered ordinal live tag checked rest selectedRest
+      insidePrefix insideDecomposition boundary leftSelected leftOwner
+      originalSelectedFound originalOwnerFound wanted ownerDeclares
+scopedSelectedLifecycleExclusionAt name key world error value nameEq keyEq global
+  aligned initialWellFormed initialEmpty selected located registered
+  selectedStartOrdinal selectedStartLive selectedOrdinalExact noDependent ordinal
+  live action@(LAdvance actor) lifecycle distinct before afterState tag checked
+  rest selectedRest occurs insidePrefix insideDecomposition boundary leftSelected
+  leftOwner rightOwner planSelectedFound planOwnerFound originalSelectedFound
+  originalOwnerFound rightFound controls wanted ownerDeclares =
+    scopedNonBeginLifecycleExclusion name key world error value nameEq keyEq
+      global aligned initialWellFormed initialEmpty selected located registered
+      ordinal live selectedStartOrdinal selectedStartLive selectedOrdinalExact
+      noDependent action lifecycle (\same => case same of Refl impossible)
+      distinct tag checked rest selectedRest insidePrefix insideDecomposition
+      boundary leftSelected leftOwner originalSelectedFound originalOwnerFound
+      wanted ownerDeclares
+scopedSelectedLifecycleExclusionAt name key world error value nameEq keyEq global
+  aligned initialWellFormed initialEmpty selected located registered
+  selectedStartOrdinal selectedStartLive selectedOrdinalExact noDependent ordinal
+  live action@(LDivert actor) lifecycle distinct before afterState tag checked
+  rest selectedRest occurs insidePrefix insideDecomposition boundary leftSelected
+  leftOwner rightOwner planSelectedFound planOwnerFound originalSelectedFound
+  originalOwnerFound rightFound controls wanted ownerDeclares =
+    scopedNonBeginLifecycleExclusion name key world error value nameEq keyEq
+      global aligned initialWellFormed initialEmpty selected located registered
+      ordinal live selectedStartOrdinal selectedStartLive selectedOrdinalExact
+      noDependent action lifecycle (\same => case same of Refl impossible)
+      distinct tag checked rest selectedRest insidePrefix insideDecomposition
+      boundary leftSelected leftOwner originalSelectedFound originalOwnerFound
+      wanted ownerDeclares
+scopedSelectedLifecycleExclusionAt name key world error value nameEq keyEq global
+  aligned initialWellFormed initialEmpty selected located registered
+  selectedStartOrdinal selectedStartLive selectedOrdinalExact noDependent ordinal
+  live action@(LLeave actor) lifecycle distinct before afterState tag checked
+  rest selectedRest occurs insidePrefix insideDecomposition boundary leftSelected
+  leftOwner rightOwner planSelectedFound planOwnerFound originalSelectedFound
+  originalOwnerFound rightFound controls wanted ownerDeclares =
+    scopedNonBeginLifecycleExclusion name key world error value nameEq keyEq
+      global aligned initialWellFormed initialEmpty selected located registered
+      ordinal live selectedStartOrdinal selectedStartLive selectedOrdinalExact
+      noDependent action lifecycle (\same => case same of Refl impossible)
+      distinct tag checked rest selectedRest insidePrefix insideDecomposition
+      boundary leftSelected leftOwner originalSelectedFound originalOwnerFound
+      wanted ownerDeclares
+scopedSelectedLifecycleExclusionAt name key world error value nameEq keyEq global
+  aligned initialWellFormed initialEmpty selected located registered
+  selectedStartOrdinal selectedStartLive selectedOrdinalExact noDependent ordinal
+  live action@(LUnload actor) lifecycle distinct before afterState tag checked
+  rest selectedRest occurs insidePrefix insideDecomposition boundary leftSelected
+  leftOwner rightOwner planSelectedFound planOwnerFound originalSelectedFound
+  originalOwnerFound rightFound controls wanted ownerDeclares =
+    scopedNonBeginLifecycleExclusion name key world error value nameEq keyEq
+      global aligned initialWellFormed initialEmpty selected located registered
+      ordinal live selectedStartOrdinal selectedStartLive selectedOrdinalExact
+      noDependent action lifecycle (\same => case same of Refl impossible)
+      distinct tag checked rest selectedRest insidePrefix insideDecomposition
+      boundary leftSelected leftOwner originalSelectedFound originalOwnerFound
+      wanted ownerDeclares
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
