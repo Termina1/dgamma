@@ -10385,7 +10385,7 @@ commonTransitionPrefixInjectiveScoped commonHead leftTrace rightTrace
     case sameAppend of
       Refl => Refl
 
-0 cancelTransitionPrefixScoped :
+0 cancelTransitionHeadScoped :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
   (leftHead, rightHead : Transition first middle) ->
@@ -10395,11 +10395,29 @@ commonTransitionPrefixInjectiveScoped commonHead leftTrace rightTrace
     MoreTransitions leftHead leftTrace =
       MoreTransitions rightHead rightTrace) ->
   leftTrace = rightTrace
-cancelTransitionPrefixScoped leftHead rightHead leftTrace rightTrace headEq
+cancelTransitionHeadScoped leftHead rightHead leftTrace rightTrace headEq
   sameAppend =
     commonTransitionPrefixInjectiveScoped leftHead leftTrace rightTrace
       (trans sameAppend
         (orientTransitionHeadRightScoped leftHead rightHead rightTrace headEq))
+
+0 cancelTransitionPrefixScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (prefixTrace : Transitions first middle) ->
+  (leftTrace, rightTrace : Transitions middle finalState) ->
+  (0 sameAppend :
+    appendTransitions prefixTrace leftTrace =
+      appendTransitions prefixTrace rightTrace) ->
+  leftTrace = rightTrace
+cancelTransitionPrefixScoped NoTransitions leftTrace rightTrace sameAppend =
+  sameAppend
+cancelTransitionPrefixScoped (MoreTransitions commonHead prefixRest) leftTrace
+  rightTrace sameAppend =
+    cancelTransitionPrefixScoped prefixRest leftTrace rightTrace
+      (cancelTransitionHeadScoped commonHead commonHead
+        (appendTransitions prefixRest leftTrace)
+        (appendTransitions prefixRest rightTrace) Refl sameAppend)
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
