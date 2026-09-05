@@ -12569,6 +12569,107 @@ scopedDeletedRegisteredOrchestrationBoundary name key world error value protocol
           selectedOutside action orchestration before afterState tag checked
           future futureDiscipline whole survivor boundary oldEmpty owned
 
+0 scopedDispatchDeletedRegisteredHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  {globalFirst, globalLast : SystemState name key value world error} ->
+  (global : Transitions globalFirst globalLast) ->
+  (globalDiscipline : RegistrationDiscipline protocol nameEq global) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (wholeInGlobal : OccurrenceEmbedding whole global) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (stamped : GenerationEnvironmentStamped live) ->
+  (selectedOutside :
+    (generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (action : Action name key value world error) ->
+  (before, afterState, survivor : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (noBegin : IsBeginAction action ->
+    GenerationOwnedActor nameEq registered ordinal live action -> Void) ->
+  (occurs : OccursIn
+    (Fired {before = before} {afterState = afterState} nameEq keyEq action tag
+      checked) whole) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  (oldEmpty : EmptyTableInactivePlan name key world error value nameEq
+    (inactiveLeafPlan
+      (completePlanResult (selectedBoundaryPlan boundary)))) ->
+  (inactive : CurrentRegisteredInactiveFibers name key world error value nameEq
+    registered live before) ->
+  (owned : GenerationOwnedActor nameEq registered ordinal live action) ->
+  SelectedEpisodeReplayBoundary name key world error value nameEq keyEq selected
+    registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) whole afterState
+    survivor
+scopedDispatchDeletedRegisteredHead name key world error value protocol nameEq
+  keyEq selected registered global globalDiscipline whole wholeInGlobal ordinal
+  live unique stamped selectedOutside (OInsert actor parent component) before
+  afterState survivor tag checked noBegin occurs boundary oldEmpty inactive
+  owned =
+    scopedDeletedRegisteredOrchestrationBoundary name key world error value
+      protocol nameEq keyEq selected registered global globalDiscipline whole
+      wholeInGlobal ordinal live unique stamped selectedOutside
+      (OInsert actor parent component) Refl before afterState survivor tag checked
+      occurs boundary oldEmpty owned
+scopedDispatchDeletedRegisteredHead name key world error value protocol nameEq
+  keyEq selected registered global globalDiscipline whole wholeInGlobal ordinal
+  live unique stamped selectedOutside (ORetire actor) before afterState survivor
+  tag checked noBegin occurs boundary oldEmpty inactive owned =
+    scopedDeletedRegisteredOrchestrationBoundary name key world error value
+      protocol nameEq keyEq selected registered global globalDiscipline whole
+      wholeInGlobal ordinal live unique stamped selectedOutside (ORetire actor)
+      Refl before afterState survivor tag checked occurs boundary oldEmpty owned
+scopedDispatchDeletedRegisteredHead name key world error value protocol nameEq
+  keyEq selected registered global globalDiscipline whole wholeInGlobal ordinal
+  live unique stamped selectedOutside (ORemove actor) before afterState survivor
+  tag checked noBegin occurs boundary oldEmpty inactive owned =
+    scopedDeletedRegisteredOrchestrationBoundary name key world error value
+      protocol nameEq keyEq selected registered global globalDiscipline whole
+      wholeInGlobal ordinal live unique stamped selectedOutside (ORemove actor)
+      Refl before afterState survivor tag checked occurs boundary oldEmpty owned
+scopedDispatchDeletedRegisteredHead name key world error value protocol nameEq
+  keyEq selected registered global globalDiscipline whole wholeInGlobal ordinal
+  live unique stamped selectedOutside (LBegin actor) before afterState survivor
+  tag checked noBegin occurs boundary oldEmpty inactive owned =
+    void (scopedRegisteredLifecycleImpossible name key world error value nameEq
+      keyEq registered ordinal live (LBegin actor) Refl before afterState tag
+      checked noBegin inactive owned)
+scopedDispatchDeletedRegisteredHead name key world error value protocol nameEq
+  keyEq selected registered global globalDiscipline whole wholeInGlobal ordinal
+  live unique stamped selectedOutside (LAdvance actor) before afterState survivor
+  tag checked noBegin occurs boundary oldEmpty inactive owned =
+    void (scopedRegisteredLifecycleImpossible name key world error value nameEq
+      keyEq registered ordinal live (LAdvance actor) Refl before afterState tag
+      checked noBegin inactive owned)
+scopedDispatchDeletedRegisteredHead name key world error value protocol nameEq
+  keyEq selected registered global globalDiscipline whole wholeInGlobal ordinal
+  live unique stamped selectedOutside (LDivert actor) before afterState survivor
+  tag checked noBegin occurs boundary oldEmpty inactive owned =
+    void (scopedRegisteredLifecycleImpossible name key world error value nameEq
+      keyEq registered ordinal live (LDivert actor) Refl before afterState tag
+      checked noBegin inactive owned)
+scopedDispatchDeletedRegisteredHead name key world error value protocol nameEq
+  keyEq selected registered global globalDiscipline whole wholeInGlobal ordinal
+  live unique stamped selectedOutside (LLeave actor) before afterState survivor
+  tag checked noBegin occurs boundary oldEmpty inactive owned =
+    void (scopedRegisteredLifecycleImpossible name key world error value nameEq
+      keyEq registered ordinal live (LLeave actor) Refl before afterState tag
+      checked noBegin inactive owned)
+scopedDispatchDeletedRegisteredHead name key world error value protocol nameEq
+  keyEq selected registered global globalDiscipline whole wholeInGlobal ordinal
+  live unique stamped selectedOutside (LUnload actor) before afterState survivor
+  tag checked noBegin occurs boundary oldEmpty inactive owned =
+    void (scopedRegisteredLifecycleImpossible name key world error value nameEq
+      keyEq registered ordinal live (LUnload actor) Refl before afterState tag
+      checked noBegin inactive owned)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
