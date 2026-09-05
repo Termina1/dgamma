@@ -14135,6 +14135,86 @@ scopedGlobalAnchorActivation name key world error value nameEq keyEq actor
           (localizedActivationToAnchor localization)
           (localizedActivationInstalled localization)))
 
+0 scopedLocalizedCrossingExclusion :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState, prefixFinal, stepBefore, stepAfter :
+    SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq global) ->
+  (initialWellFormed : registryWellFormed @{nameEq} @{keyEq} initial = True) ->
+  (initialEmpty : bindings (registry initial) = []) ->
+  (selected, actor : name) ->
+  (actorDistinct : Not (actor = selected)) ->
+  (selectedStartOrdinal : Nat) ->
+  (selectedStartLive : GenerationEnvironment name) ->
+  (selectedEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  (selectedOrdinalExact : transitionCount
+    (traceBeforeOpening selectedEpisode) = selectedStartOrdinal) ->
+  (noDependent : NoDependentClosingEpisodeForGeneration
+    {nameEq = nameEq} {keyEq = keyEq} {global = global} selected
+    selectedStartOrdinal selectedStartLive selectedEpisode) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (transition : Transition stepBefore stepAfter) ->
+  (prefixTrace : Transitions initial prefixFinal) ->
+  (prefixAligned : AlignedTransitions name key world error value nameEq keyEq
+    prefixTrace) ->
+  (selectedFinalFalse : installedAt @{nameEq} selected prefixFinal = False) ->
+  (anchor : ForeignLifecycleInstalledAnchor name key world error value nameEq
+    keyEq actor transition prefixTrace) ->
+  (localization : ScopedClosingLocalization name key world error value nameEq
+    keyEq actor transition prefixTrace global anchor) ->
+  (selectedToAnchor : Transitions
+    (closedStartState (locatedEpisode selectedEpisode))
+    (lifecycleInstalledState anchor)) ->
+  (selectedAfterAnchor : Transitions (lifecycleInstalledState anchor)
+    (lastInstalledState (locatedEpisode selectedEpisode))) ->
+  (selectedWholeExact : appendTransitions selectedToAnchor selectedAfterAnchor =
+    closedInside (locatedEpisode selectedEpisode)) ->
+  (selectedAnchorExact : appendTransitions
+    (traceBeforeOpening selectedEpisode)
+    (MoreTransitions
+      (beginTransition (closedOpening (locatedEpisode selectedEpisode)))
+      selectedToAnchor) = lifecycleBeforeInstalled anchor) ->
+  (current : SystemState name key value world error) ->
+  (activationToCurrent : Transitions
+    (closedStartState (locatedEpisode (localizedGlobalEpisode localization)))
+    current) ->
+  (actorInstalled : InstalledTrace name key world error value nameEq keyEq actor
+    activationToCurrent) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  {whole : Transitions wholeFirst wholeLast} ->
+  {survivor : SystemState name key value world error} ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole current survivor) ->
+  (leftSelected, leftOwner : Fiber name key value world error) ->
+  (selectedFound : lookupFiber @{nameEq} selected (registry current) =
+    Just leftSelected) ->
+  (ownerFound : lookupFiber @{nameEq} actor (registry current) =
+    Just leftOwner) ->
+  (wanted : key) ->
+  (ownerDeclares : Elem wanted (dependencies
+    (componentDependencies (fiberComponent leftOwner)))) ->
+  providerCandidate @{keyEq} wanted leftSelected = False
+scopedLocalizedCrossingExclusion name key world error value nameEq keyEq global
+  aligned initialWellFormed initialEmpty selected actor actorDistinct
+  selectedStartOrdinal selectedStartLive selectedEpisode selectedOrdinalExact
+  noDependent registered ordinal live transition prefixTrace prefixAligned
+  selectedFinalFalse anchor
+  localization selectedToAnchor selectedAfterAnchor selectedWholeExact
+  selectedAnchorExact current activationToCurrent actorInstalled boundary
+  leftSelected leftOwner selectedFound ownerFound wanted ownerDeclares =
+    generationScopedCrossingExcludesSelected nameEq keyEq selected actor
+      actorDistinct global aligned initialWellFormed initialEmpty
+      selectedStartOrdinal selectedStartLive selectedEpisode selectedOrdinalExact
+      noDependent prefixTrace prefixAligned selectedFinalFalse localization
+      selectedToAnchor selectedAfterAnchor selectedWholeExact selectedAnchorExact
+      current activationToCurrent actorInstalled leftSelected leftOwner
+      selectedFound ownerFound
+      (selectedOriginalWellFormed boundary) wanted ownerDeclares
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
