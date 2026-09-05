@@ -24583,6 +24583,38 @@ scopedSpineChildRetirement name key world error value nameEq keyEq registered pa
     ChildRetiredBeforeParent (scopedSpineChildRetiresBefore name key world error value nameEq keyEq registered parent child generation retained
       ordinal live originalFirst originalFinal targetFirst targetFinal source target spine aligned current unretired retirement)
 
+0 scopedSpineInsertDiscipline :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  (sourceBefore, sourceAfter, sourceFinal, targetBefore, targetAfter, targetFinal : SystemState name key value world error) ->
+  (sourceRest : Transitions sourceAfter sourceFinal) -> (targetRest : Transitions targetAfter targetFinal) ->
+  ScopedDisciplineReplaySpine name key world error value nameEq registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal (the (Action name key value world error) (OInsert child parent component)) live)
+    sourceRest targetRest ->
+  AlignedTransitions name key world error value nameEq keyEq sourceRest -> (tag : RuleTag) ->
+  (checkedApplyAction @{nameEq} @{keyEq} (OInsert child parent component) sourceBefore = Just (tag, sourceAfter)) ->
+  Not (Elem (MkRegistrationGeneration child ordinal) registered) ->
+  ((parentActor : name) -> (parent = ChildOf parentActor) ->
+    FiberControlMaybeRelated
+      (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} parentActor (registry sourceBefore))
+      (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} parentActor (registry targetBefore))) ->
+  RegistrationStepDiscipline protocol nameEq (OInsert child parent component) sourceBefore sourceRest ->
+  RegistrationStepDiscipline protocol nameEq (OInsert child parent component) targetBefore targetRest
+scopedSpineInsertDiscipline name key world error value protocol nameEq keyEq registered ordinal live child Root component
+  sourceBefore sourceAfter sourceFinal targetBefore targetAfter targetFinal sourceRest targetRest tail aligned tag checked fresh controls evidence = evidence
+scopedSpineInsertDiscipline name key world error value protocol nameEq keyEq registered ordinal live child (ChildOf parent) component
+  sourceBefore sourceAfter sourceFinal targetBefore targetAfter targetFinal sourceRest targetRest tail aligned tag checked fresh controls evidence =
+    (scopedTargetParentYield (scopedTransportParentYield name key world error value protocol nameEq parent component sourceBefore targetBefore
+      (controls parent Refl) (fst evidence)),
+     scopedSpineChildRetirement name key world error value nameEq keyEq registered parent child (MkRegistrationGeneration child ordinal) fresh
+      (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal (the (Action name key value world error) (OInsert child (ChildOf parent) component)) live)
+      sourceAfter sourceFinal targetAfter targetFinal sourceRest targetRest tail aligned
+      (lookupPutCurrentSelf nameEq child (MkRegistrationGeneration child ordinal) live)
+      (scopedInsertAfterUnretired name key world error value nameEq keyEq child (ChildOf parent) component sourceBefore sourceAfter tag checked)
+      (snd evidence))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
