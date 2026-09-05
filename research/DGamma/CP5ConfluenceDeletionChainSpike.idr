@@ -15364,6 +15364,19 @@ scopedPostCloseOutcomes name key world error value nameEq keyEq
   (LUnload actor) planAmbient survivorAmbient planRegistry survivorRegistry
   planAfter tag planChecked effects = ()
 
+||| Producer-owned post-close head, retaining the source tag before folding.
+record ScopedTaggedPostCloseHead
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
+  (registered : List (RegistrationGeneration name))
+  (nextOrdinal : Nat) (nextLive : GenerationEnvironment name)
+  (action : Action name key value world error) (tag : RuleTag)
+  (originalAfter, survivor : SystemState name key value world error) where
+  constructor MkScopedTaggedPostCloseHead
+  taggedPostCloseStep : PostCloseOrchestrationStep name key world error value
+    nameEq keyEq selected registered nextOrdinal nextLive action originalAfter survivor
+  0 taggedPostCloseTag : (tag = namedTag (postCloseOrchestrationNamed taggedPostCloseStep))
+
 0 scopedRetainedForeignPostCloseLifecycle :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) ->
