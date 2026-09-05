@@ -22180,6 +22180,35 @@ scopedSelectedInteriorFoldEnriched name key world error value protocol nameEq ke
               nextState originalFinal (Fired nameEq keyEq action tag checked) rest noRegistered)) inactive empty)))
       (decEpisodeGenerationDeletedActor nameEq selected registered ordinal live action)
 
+0 scopedSelectedInsideDiscipline :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  RegistrationDiscipline protocol nameEq global ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq selected global) ->
+  RegistrationDiscipline protocol nameEq (closedInside (locatedEpisode located))
+scopedSelectedInsideDiscipline name key world error value protocol nameEq keyEq selected global
+  discipline located =
+    scopedRegistrationDisciplinePrefix name key world error value protocol nameEq
+      (closedStartState (locatedEpisode located)) (lastInstalledState (locatedEpisode located)) finalState
+      (closedInside (locatedEpisode located))
+      (MoreTransitions (unloadTransition (closing (locatedEpisode located))) (traceAfterClosing located))
+      (replace {p = RegistrationDiscipline protocol nameEq}
+        (appendTransitionsAssociative (closedInside (locatedEpisode located))
+          (MoreTransitions (unloadTransition (closing (locatedEpisode located))) NoTransitions)
+          (traceAfterClosing located))
+        (registrationDisciplineAppendRight protocol nameEq
+          (appendTransitions (traceBeforeOpening located)
+            (MoreTransitions (beginTransition (closedOpening (locatedEpisode located))) NoTransitions))
+          (appendTransitions (closedTransitions (locatedEpisode located)) (traceAfterClosing located))
+          (replace {p = RegistrationDiscipline protocol nameEq}
+            (sym (trans (appendTransitionsAssociative (traceBeforeOpening located)
+              (MoreTransitions (beginTransition (closedOpening (locatedEpisode located))) NoTransitions)
+              (appendTransitions (closedTransitions (locatedEpisode located)) (traceAfterClosing located)))
+              (locatedDecomposition located))) discipline)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
