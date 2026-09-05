@@ -24521,6 +24521,48 @@ scopedSpineNoParentRecovery name key world error value nameEq registered ordinal
 scopedChildRetirementEmpty name key world error value parent child state (ChildRetiresNow transition rest retires) impossible
 scopedChildRetirementEmpty name key world error value parent child state (ChildRetiresLater transition rest noRecovery tail) impossible
 
+0 scopedSpineChildRetiresBefore :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) -> (parent, child : name) -> (generation : RegistrationGeneration name) ->
+  (0 retained : Not (Elem generation registered)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (originalFirst, originalFinal, targetFirst, targetFinal : SystemState name key value world error) ->
+  (source : Transitions originalFirst originalFinal) -> (target : Transitions targetFirst targetFinal) ->
+  ScopedDisciplineReplaySpine name key world error value nameEq registered ordinal live source target ->
+  AlignedTransitions name key world error value nameEq keyEq source ->
+  (lookupCurrentGeneration @{nameEq} child live = Just generation) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child originalFirst ->
+  ChildRetiresBeforeRecovery parent child source -> ChildRetiresBeforeRecovery parent child target
+scopedSpineChildRetiresBefore name key world error value nameEq keyEq registered parent child generation retained ordinal live
+  originalFirst _ targetFirst _ _ _ ScopedDisciplineEnd aligned current unretired retirement =
+    void (scopedChildRetirementEmpty name key world error value parent child originalFirst retirement)
+scopedSpineChildRetiresBefore name key world error value nameEq keyEq registered parent child generation retained ordinal live
+  originalFirst originalFinal targetFirst targetFinal _ _
+  (ScopedDisciplineKeep sourceStep sourceRest targetStep targetRest sameAction sameTag fresh controls tail) aligned current unretired retirement =
+    scopedChildRetirementKeptAt name key world error value nameEq parent child generation ordinal live
+      originalFirst _ originalFinal targetFirst _ targetFinal sourceStep sourceRest targetStep targetRest sameAction sameTag current
+      (\nextUnretired, nextCurrent, nextRetirement =>
+        scopedSpineChildRetiresBefore name key world error value nameEq keyEq registered parent child generation retained (S ordinal)
+          (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) _ originalFinal _ targetFinal
+          sourceRest targetRest tail (alignedTransitionTail nameEq keyEq sourceStep sourceRest aligned)
+          nextCurrent nextUnretired nextRetirement)
+      (scopedUnretiredStep name key world error value nameEq keyEq child ordinal live (transitionAction sourceStep) originalFirst _
+        (transitionTag sourceStep) (scopedAlignedHeadChecked name key world error value nameEq keyEq originalFirst _ originalFinal sourceStep sourceRest aligned)
+        unretired) retirement
+scopedSpineChildRetiresBefore name key world error value nameEq keyEq registered parent child generation retained ordinal live
+  originalFirst originalFinal targetFirst targetFinal _ _
+  (ScopedDisciplineDelete sourceStep sourceRest target retireOwned tail) aligned current unretired retirement =
+    scopedChildRetirementDeletedAt name key world error value nameEq registered
+      (\atOrdinal, atLive, action => (transitionAction sourceStep = action)) parent child generation ordinal live
+      originalFirst _ originalFinal targetFirst targetFinal sourceStep sourceRest target current retained Refl (retireOwned child)
+      (\nextUnretired, nextCurrent, nextRetirement =>
+        scopedSpineChildRetiresBefore name key world error value nameEq keyEq registered parent child generation retained (S ordinal)
+          (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) _ originalFinal targetFirst targetFinal
+          sourceRest target tail (alignedTransitionTail nameEq keyEq sourceStep sourceRest aligned)
+          nextCurrent nextUnretired nextRetirement)
+      (scopedUnretiredStep name key world error value nameEq keyEq child ordinal live (transitionAction sourceStep) originalFirst _
+        (transitionTag sourceStep) (scopedAlignedHeadChecked name key world error value nameEq keyEq originalFirst _ originalFinal sourceStep sourceRest aligned)
+        unretired) retirement
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
