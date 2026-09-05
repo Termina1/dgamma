@@ -19470,6 +19470,24 @@ scopedReadyAligned name key world error value nameEq keyEq deletable ordinal liv
             (transitionAction originalTransition) live)
           _ originalFinal survivingAfter originalRest tail)
 
+||| A producer's raw tag authenticates the actual Transition, not just namedTag.
+0 scopedNamedRawTag :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (before, rawAfter : SystemState name key value world error) ->
+  (rawTag : RuleTag) ->
+  (0 raw : (applyAction @{nameEq} @{keyEq} action before =
+    Just (rawTag, rawAfter))) ->
+  (named : NamedTransition name key world error value action before) ->
+  ScopedNamedAligned name key world error value nameEq keyEq action before named ->
+  (rawTag = transitionTag (namedTransition named))
+scopedNamedRawTag name key world error value nameEq keyEq action before rawAfter
+  rawTag raw _ (MkScopedNamedAligned afterState tag checked) =
+    cong Builtin.fst (justInjective
+      (trans (sym raw)
+        (checkedActionProjects nameEq keyEq action before afterState tag checked)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
