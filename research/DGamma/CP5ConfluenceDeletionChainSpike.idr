@@ -22225,6 +22225,107 @@ scopedSelectedBirthsPrefix name key world error value selected registered ordina
         (trans (sym (appendTransitionsAssociative earlier (MoreTransitions transition later) right))
           (cong (\trace => appendTransitions trace right) decomposition)))
 
+0 scopedSelectedInteriorEnrichedFromPremises :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq global) ->
+  (discipline : RegistrationDiscipline protocol nameEq global) ->
+  (initialWellFormed : registryWellFormed @{nameEq} @{keyEq} initial = True) ->
+  (selected : name) ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (selectedOutside :
+    (generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (episodeStartOrdinal : Nat) ->
+  (episodeStartLive : GenerationEnvironment name) ->
+  (beforeScan : GenerationTraceScan nameEq 0 []
+    (traceBeforeOpening located) episodeStartOrdinal episodeStartLive) ->
+  (registeredDuring : RegisteredGenerationsDuring selected episodeStartOrdinal
+    registered
+    (MoreTransitions
+      (beginTransition (closedOpening (locatedEpisode located)))
+      (closedTransitions (locatedEpisode located)))) ->
+  (noRegistered : NoRegisteredEpisode nameEq registered 0 [] global) ->
+  (local : ScopedTaggedSelectedLocalReplayer name key world error value nameEq keyEq
+    selected registered protocol
+    (appendTransitions (closedTransitions (locatedEpisode located))
+      (traceAfterClosing located))
+    (closedInside (locatedEpisode located))) ->
+  ScopedSelectedInteriorFoldOutput name key world error value protocol nameEq keyEq selected
+    registered (S episodeStartOrdinal) episodeStartLive
+    (appendTransitions (closedTransitions (locatedEpisode located))
+      (traceAfterClosing located))
+    (closedInside (locatedEpisode located)) (locatedPreStart located)
+scopedSelectedInteriorEnrichedFromPremises name key world error value protocol nameEq
+  keyEq global aligned discipline initialWellFormed selected located registered
+  selectedOutside episodeStartOrdinal episodeStartLive beforeScan
+  registeredDuring noRegistered local =
+    scopedSelectedInteriorFoldEnriched name key world error value protocol nameEq keyEq selected registered
+      selectedOutside
+      (appendTransitions (closedTransitions (locatedEpisode located))
+        (traceAfterClosing located))
+      (closedInside (locatedEpisode located)) local (S episodeStartOrdinal)
+      episodeStartLive
+      (generationTraceScanPreservesUnique nameEq beforeScan UniqueNil)
+      (generationTraceScanPreservesStamped nameEq beforeScan
+        emptyGenerationEnvironmentStamped)
+      (closedInside (locatedEpisode located))
+      (scopedSelectedInsideDiscipline name key world error value protocol nameEq keyEq selected global
+        discipline located)
+      (scopedSelectedBirthsPrefix name key world error value selected registered (S episodeStartOrdinal)
+        (closedStartState (locatedEpisode located)) (lastInstalledState (locatedEpisode located))
+        (locatedAfter located) (closedInside (locatedEpisode located))
+        (MoreTransitions (unloadTransition (closing (locatedEpisode located))) NoTransitions)
+        (scopedSelectedBirthsTail name key world error value selected registered episodeStartOrdinal
+          (locatedPreStart located) (closedStartState (locatedEpisode located)) (locatedAfter located)
+          (beginTransition (closedOpening (locatedEpisode located))) (closedTransitions (locatedEpisode located))
+          (snd registeredDuring)))
+      (scopedAlignedLocatedInside name key world error value nameEq keyEq global
+        aligned selected located)
+      (closedInsideInstalled (locatedEpisode located))
+      (scopedInsideNoRegistered name key world error value nameEq keyEq selected
+        registered episodeStartOrdinal episodeStartLive (locatedEpisode located)
+        (episodeNoRegistered
+          (splitLocatedNoRegisteredSegments nameEq keyEq global selected located
+            registered episodeStartOrdinal episodeStartLive beforeScan
+            noRegistered)))
+      (scopedSelectedInsideEmbedding name key world error value nameEq keyEq
+        selected located)
+      NoTransitions Refl (locatedPreStart located)
+      (scopedInitialSelectedBoundary name key world error value nameEq keyEq
+        global aligned initialWellFormed selected located registered
+        episodeStartOrdinal episodeStartLive beforeScan registeredDuring)
+      (scopedInitialCurrentInactive name key world error value nameEq registered
+        episodeStartOrdinal episodeStartLive
+        (generationScanPreservesBounded nameEq () (traceBeforeOpening located)
+          beforeScan)
+        (registeredDuringBirthLowerBound registeredDuring)
+        (closedStartState (locatedEpisode located)))
+      (scopedInitialCurrentEmpty name key world error value nameEq registered
+        episodeStartOrdinal episodeStartLive
+        (generationScanPreservesBounded nameEq () (traceBeforeOpening located)
+          beforeScan)
+        (registeredDuringBirthLowerBound registeredDuring)
+        (closedStartState (locatedEpisode located)))
+      (scopedInitialSelectedPlanEmpty name key world error value nameEq keyEq
+        selected registered episodeStartOrdinal episodeStartLive
+        (generationTraceScanPreservesUnique nameEq beforeScan UniqueNil)
+        (generationScanPreservesBounded nameEq () (traceBeforeOpening located)
+          beforeScan)
+        (registeredDuringBirthLowerBound registeredDuring)
+        (closedStartState (locatedEpisode located))
+        (appendTransitions (closedTransitions (locatedEpisode located))
+          (traceAfterClosing located))
+        (locatedPreStart located)
+        (scopedInitialSelectedBoundary name key world error value nameEq keyEq
+          global aligned initialWellFormed selected located registered
+          episodeStartOrdinal episodeStartLive beforeScan registeredDuring))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
