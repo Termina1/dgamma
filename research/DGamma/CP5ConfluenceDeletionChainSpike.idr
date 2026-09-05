@@ -18331,6 +18331,23 @@ scopedAdvancePreservesUnretired name key world error value nameEq keyEq child
             ambient source component parent retiredFlag table accumulator view
             outcome found)) raw))
 
+||| A non-retirement source step keeps both the unretired cell and its exact
+||| current generation.  Insert/remove guards exclude any raw-name reissue.
+record ScopedUnretiredNext
+  (name : Type) (key : Type) (value : key -> Type)
+  (world : Type) (error : Type)
+  (nameEq : DecEq name) (child : name) (ordinal : Nat)
+  (live : GenerationEnvironment name)
+  (action : Action name key value world error)
+  (afterState : SystemState name key value world error) where
+  constructor MkScopedUnretiredNext
+  0 scopedStepNotRetire : Not (action = ORetire child)
+  0 scopedStepUnretired :
+    ScopedUnretiredFiberAt name key value world error nameEq child afterState
+  0 scopedStepCurrent : (lookupCurrentGeneration @{nameEq} child
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) =
+    lookupCurrentGeneration @{nameEq} child live)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
