@@ -2970,6 +2970,184 @@ mutual
         (trans (cong (map S) sourceOrdinal)
           (cong Just (sym prefixedOrdinal)))
 
+||| One source occurrence embedded directly in the original global trace at an
+||| explicit ordinal.  The package keeps the ordinal equation constructor-owned
+||| across the final trace-equality transport.
+record DeletionSourceOccurrenceAtOrdinal
+  (name, key, world, error : Type) (value : key -> Type)
+  {initial, finalState : SystemState name key value world error}
+  (trace : Transitions initial finalState)
+  (action : Action name key value world error)
+  (expectedOrdinal : Nat) where
+  constructor MkDeletionSourceOccurrenceAtOrdinal
+  deletionSourceOccurrence : LocatedActionOccurrence action trace
+  0 deletionSourceOccurrenceOrdinal :
+    locatedActionOrdinal deletionSourceOccurrence = expectedOrdinal
+
+0 deletionTransitionCountAppend :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  (transitionCount (appendTransitions left right) =
+    (transitionCount left + transitionCount right))
+deletionTransitionCountAppend NoTransitions right = Refl
+deletionTransitionCountAppend (MoreTransitions transition rest) right =
+  cong S (deletionTransitionCountAppend rest right)
+
+0 deletionEmbedBeforeSourceOccurrence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {trace : Transitions initial finalState} ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected trace) ->
+  {action : Action name key value world error} ->
+  (localOccurrence : LocatedActionOccurrence action
+    (traceBeforeOpening episode)) ->
+  DeletionSourceOccurrenceAtOrdinal name key world error value trace action
+    (locatedActionOrdinal localOccurrence)
+deletionEmbedBeforeSourceOccurrence episode
+  (MkLocatedActionOccurrence before afterState beforeTrace transition later
+    actionShape decomposition) =
+      MkDeletionSourceOccurrenceAtOrdinal
+        (MkLocatedActionOccurrence before afterState beforeTrace transition
+          (appendTransitions later
+            (appendTransitions
+              (MoreTransitions
+                (beginTransition (closedOpening (locatedEpisode episode)))
+                (closedTransitions (locatedEpisode episode)))
+              (traceAfterClosing episode)))
+          actionShape
+          (trans
+            (sym (appendTransitionsAssociative beforeTrace
+              (MoreTransitions transition later)
+              (appendTransitions
+                (MoreTransitions
+                  (beginTransition (closedOpening (locatedEpisode episode)))
+                  (closedTransitions (locatedEpisode episode)))
+                (traceAfterClosing episode))))
+            (trans
+              (cong
+                (\candidate => appendTransitions candidate
+                  (appendTransitions
+                    (MoreTransitions
+                      (beginTransition
+                        (closedOpening (locatedEpisode episode)))
+                      (closedTransitions (locatedEpisode episode)))
+                    (traceAfterClosing episode)))
+                decomposition)
+              (locatedDecomposition episode))))
+        Refl
+
+0 deletionEmbedEpisodeSourceOccurrence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {trace : Transitions initial finalState} ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected trace) ->
+  {action : Action name key value world error} ->
+  (localOccurrence : LocatedActionOccurrence action
+    (MoreTransitions
+      (beginTransition (closedOpening (locatedEpisode episode)))
+      (closedTransitions (locatedEpisode episode)))) ->
+  DeletionSourceOccurrenceAtOrdinal name key world error value trace action
+    ((transitionCount (traceBeforeOpening episode)) +
+      (locatedActionOrdinal localOccurrence))
+deletionEmbedEpisodeSourceOccurrence episode
+  (MkLocatedActionOccurrence before afterState beforeTrace transition later
+    actionShape decomposition) =
+      MkDeletionSourceOccurrenceAtOrdinal
+        (MkLocatedActionOccurrence before afterState
+          (appendTransitions (traceBeforeOpening episode) beforeTrace)
+          transition (appendTransitions later (traceAfterClosing episode))
+          actionShape
+          (trans
+            (appendTransitionsAssociative (traceBeforeOpening episode)
+              beforeTrace
+              (MoreTransitions transition
+                (appendTransitions later (traceAfterClosing episode))))
+            (trans
+              (cong (appendTransitions (traceBeforeOpening episode))
+                (trans
+                  (sym (appendTransitionsAssociative beforeTrace
+                    (MoreTransitions transition later)
+                    (traceAfterClosing episode)))
+                  (cong
+                    (\candidate => appendTransitions candidate
+                      (traceAfterClosing episode))
+                    decomposition)))
+              (locatedDecomposition episode))))
+        (deletionTransitionCountAppend (traceBeforeOpening episode)
+          beforeTrace)
+
+0 deletionEmbedAfterSourceOccurrence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {trace : Transitions initial finalState} ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected trace) ->
+  {action : Action name key value world error} ->
+  (localOccurrence : LocatedActionOccurrence action
+    (traceAfterClosing episode)) ->
+  DeletionSourceOccurrenceAtOrdinal name key world error value trace action
+    (((transitionCount (traceBeforeOpening episode)) +
+      (transitionCount
+        (MoreTransitions
+          (beginTransition (closedOpening (locatedEpisode episode)))
+          (closedTransitions (locatedEpisode episode))))) +
+      (locatedActionOrdinal localOccurrence))
+deletionEmbedAfterSourceOccurrence episode
+  (MkLocatedActionOccurrence before afterState beforeTrace transition later
+    actionShape decomposition) =
+      MkDeletionSourceOccurrenceAtOrdinal
+        (MkLocatedActionOccurrence before afterState
+          (appendTransitions
+            (appendTransitions (traceBeforeOpening episode)
+              (MoreTransitions
+                (beginTransition (closedOpening (locatedEpisode episode)))
+                (closedTransitions (locatedEpisode episode))))
+            beforeTrace)
+          transition later actionShape
+          (trans
+            (appendTransitionsAssociative
+              (appendTransitions (traceBeforeOpening episode)
+                (MoreTransitions
+                  (beginTransition (closedOpening (locatedEpisode episode)))
+                  (closedTransitions (locatedEpisode episode))))
+              beforeTrace (MoreTransitions transition later))
+            (trans
+              (cong
+                (appendTransitions
+                  (appendTransitions (traceBeforeOpening episode)
+                    (MoreTransitions
+                      (beginTransition
+                        (closedOpening (locatedEpisode episode)))
+                      (closedTransitions (locatedEpisode episode)))))
+                decomposition)
+              (trans
+                (appendTransitionsAssociative (traceBeforeOpening episode)
+                  (MoreTransitions
+                    (beginTransition (closedOpening (locatedEpisode episode)))
+                    (closedTransitions (locatedEpisode episode)))
+                  (traceAfterClosing episode))
+                (locatedDecomposition episode)))))
+        (trans
+          (deletionTransitionCountAppend
+            (appendTransitions (traceBeforeOpening episode)
+              (MoreTransitions
+                (beginTransition (closedOpening (locatedEpisode episode)))
+                (closedTransitions (locatedEpisode episode))))
+            beforeTrace)
+          (cong
+            (\count => count + transitionCount beforeTrace)
+            (deletionTransitionCountAppend (traceBeforeOpening episode)
+              (MoreTransitions
+                (beginTransition (closedOpening (locatedEpisode episode)))
+                (closedTransitions (locatedEpisode episode))))))
+
 public export
 deletionSurvivingBeforeCount :
   (result : DeletionResult name key world error value nameEq keyEq original
@@ -3042,6 +3220,369 @@ data DeletionSurvivingOrdinalEmbedding :
         deletionSurvivingEpisodeCount result) + survivingOrdinal)
       ((deletionOriginalBeforeCount result +
         deletionOriginalEpisodeCount result) + originalOrdinal)
+
+||| The final gluing package correlates the chosen global source occurrence with
+||| the exact before/episode/after ordinal constructor consumed by O9.
+public export
+record DeletionWholeOccurrenceOrigin
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, originalFinal : SystemState name key value world error}
+  (original : Transitions initial originalFinal)
+  (selected : name)
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected original)
+  (registered : List (RegistrationGeneration name))
+  (episodeStartOrdinal : Nat)
+  (episodeStartLive : GenerationEnvironment name)
+  (result : DeletionResult name key world error value nameEq keyEq original
+    selected episode registered episodeStartOrdinal episodeStartLive)
+  (action : Action name key value world error)
+  (survivingOccurrence : LocatedActionOccurrence action
+    (survivingTrace result)) where
+  constructor MkDeletionWholeOccurrenceOrigin
+  deletionWholeSourceOccurrence : LocatedActionOccurrence action original
+  0 deletionWholeOrdinalEmbedding : DeletionSurvivingOrdinalEmbedding result
+    (locatedActionOrdinal survivingOccurrence)
+    (locatedActionOrdinal deletionWholeSourceOccurrence)
+
+mutual
+  0 deletionWholeOccurrenceOriginFromClassification :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+    {initial, originalFinal : SystemState name key value world error} ->
+    (original : Transitions initial originalFinal) ->
+    (selected : name) ->
+    (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+      selected original) ->
+    (registered : List (RegistrationGeneration name)) ->
+    (episodeStartOrdinal : Nat) ->
+    (episodeStartLive : GenerationEnvironment name) ->
+    (result : DeletionResult name key world error value nameEq keyEq original
+      selected episode registered episodeStartOrdinal episodeStartLive) ->
+    {action : Action name key value world error} ->
+    (survivingOccurrence : LocatedActionOccurrence action
+      (survivingTrace result)) ->
+    DeletionWholeTraceOccurrenceClassification name key world error value initial
+      (survivingBeforeEnd result) (survivingEpisodeEnd result)
+      (survivingFinal result) action (survivingBefore result)
+      (survivingEpisode result) (survivingAfter result) survivingOccurrence ->
+    DeletionWholeOccurrenceOrigin name key world error value nameEq keyEq
+      original selected episode registered episodeStartOrdinal episodeStartLive
+      result action survivingOccurrence
+  deletionWholeOccurrenceOriginFromClassification nameEq keyEq original selected
+    episode registered episodeStartOrdinal episodeStartLive result
+    survivingOccurrence (DeletionWholeBefore localOccurrence exactOrdinal) =
+      deletionWholeBeforeOrigin nameEq keyEq original selected episode registered
+        episodeStartOrdinal episodeStartLive result survivingOccurrence
+        localOccurrence exactOrdinal
+        (generationSubsequenceLocatedOriginExact (beforeDeletion result)
+          localOccurrence)
+  deletionWholeOccurrenceOriginFromClassification nameEq keyEq original selected
+    episode registered episodeStartOrdinal episodeStartLive result
+    survivingOccurrence (DeletionWholeEpisode localOccurrence exactOrdinal) =
+      deletionWholeEpisodeOrigin nameEq keyEq original selected episode registered
+        episodeStartOrdinal episodeStartLive result survivingOccurrence
+        localOccurrence exactOrdinal
+        (generationSubsequenceLocatedOriginExact (episodeDeletion result)
+          localOccurrence)
+  deletionWholeOccurrenceOriginFromClassification nameEq keyEq original selected
+    episode registered episodeStartOrdinal episodeStartLive result
+    survivingOccurrence (DeletionWholeAfter localOccurrence exactOrdinal) =
+      deletionWholeAfterOrigin nameEq keyEq original selected episode registered
+        episodeStartOrdinal episodeStartLive result survivingOccurrence
+        localOccurrence exactOrdinal
+        (generationSubsequenceLocatedOriginExact (afterDeletion result)
+          localOccurrence)
+
+  0 deletionWholeBeforeOrigin :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+    {initial, originalFinal : SystemState name key value world error} ->
+    (original : Transitions initial originalFinal) ->
+    (selected : name) ->
+    (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+      selected original) ->
+    (registered : List (RegistrationGeneration name)) ->
+    (episodeStartOrdinal : Nat) ->
+    (episodeStartLive : GenerationEnvironment name) ->
+    (result : DeletionResult name key world error value nameEq keyEq original
+      selected episode registered episodeStartOrdinal episodeStartLive) ->
+    {action : Action name key value world error} ->
+    (survivingOccurrence : LocatedActionOccurrence action
+      (survivingTrace result)) ->
+    (localOccurrence : LocatedActionOccurrence action (survivingBefore result)) ->
+    (0 exactOrdinal : locatedActionOrdinal survivingOccurrence =
+      locatedActionOrdinal localOccurrence) ->
+    GenerationSubsequenceLocatedOrigin name key world error value
+      (traceBeforeOpening episode) (survivingBefore result)
+      (beforeDeletion result) action localOccurrence ->
+    DeletionWholeOccurrenceOrigin name key world error value nameEq keyEq
+      original selected episode registered episodeStartOrdinal episodeStartLive
+      result action survivingOccurrence
+  deletionWholeBeforeOrigin nameEq keyEq original selected episode registered
+    episodeStartOrdinal episodeStartLive result survivingOccurrence
+    localOccurrence exactOrdinal
+    (MkGenerationSubsequenceLocatedOrigin sourceOccurrence sourceOrdinal) =
+      deletionWholeBeforeEmbedded nameEq keyEq original selected episode
+        registered episodeStartOrdinal episodeStartLive result
+        survivingOccurrence localOccurrence exactOrdinal sourceOccurrence
+        sourceOrdinal
+        (deletionEmbedBeforeSourceOccurrence episode sourceOccurrence)
+
+  0 deletionWholeBeforeEmbedded :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+    {initial, originalFinal : SystemState name key value world error} ->
+    (original : Transitions initial originalFinal) ->
+    (selected : name) ->
+    (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+      selected original) ->
+    (registered : List (RegistrationGeneration name)) ->
+    (episodeStartOrdinal : Nat) ->
+    (episodeStartLive : GenerationEnvironment name) ->
+    (result : DeletionResult name key world error value nameEq keyEq original
+      selected episode registered episodeStartOrdinal episodeStartLive) ->
+    {action : Action name key value world error} ->
+    (survivingOccurrence : LocatedActionOccurrence action
+      (survivingTrace result)) ->
+    (localOccurrence : LocatedActionOccurrence action (survivingBefore result)) ->
+    (0 exactOrdinal : locatedActionOrdinal survivingOccurrence =
+      locatedActionOrdinal localOccurrence) ->
+    (sourceOccurrence : LocatedActionOccurrence action
+      (traceBeforeOpening episode)) ->
+    (0 sourceOrdinal : generationSubsequenceSourceOrdinal
+      (beforeDeletion result) (locatedActionOrdinal localOccurrence) =
+      Just (locatedActionOrdinal sourceOccurrence)) ->
+    DeletionSourceOccurrenceAtOrdinal name key world error value original action
+      (locatedActionOrdinal sourceOccurrence) ->
+    DeletionWholeOccurrenceOrigin name key world error value nameEq keyEq
+      original selected episode registered episodeStartOrdinal episodeStartLive
+      result action survivingOccurrence
+  deletionWholeBeforeEmbedded nameEq keyEq original selected episode registered
+    episodeStartOrdinal episodeStartLive result survivingOccurrence
+    localOccurrence exactOrdinal sourceOccurrence sourceOrdinal
+    (MkDeletionSourceOccurrenceAtOrdinal globalSource globalOrdinal) =
+      MkDeletionWholeOccurrenceOrigin globalSource
+        (replace
+          {p = \sourceIndex => DeletionSurvivingOrdinalEmbedding result
+            (locatedActionOrdinal survivingOccurrence) sourceIndex}
+          (sym globalOrdinal)
+          (replace
+            {p = \survivorIndex => DeletionSurvivingOrdinalEmbedding result
+              survivorIndex (locatedActionOrdinal sourceOccurrence)}
+            (sym exactOrdinal)
+            (DeletionBeforeEmbedding sourceOrdinal)))
+
+  0 deletionWholeEpisodeOrigin :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+    {initial, originalFinal : SystemState name key value world error} ->
+    (original : Transitions initial originalFinal) ->
+    (selected : name) ->
+    (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+      selected original) ->
+    (registered : List (RegistrationGeneration name)) ->
+    (episodeStartOrdinal : Nat) ->
+    (episodeStartLive : GenerationEnvironment name) ->
+    (result : DeletionResult name key world error value nameEq keyEq original
+      selected episode registered episodeStartOrdinal episodeStartLive) ->
+    {action : Action name key value world error} ->
+    (survivingOccurrence : LocatedActionOccurrence action
+      (survivingTrace result)) ->
+    (localOccurrence : LocatedActionOccurrence action (survivingEpisode result)) ->
+    (0 exactOrdinal : locatedActionOrdinal survivingOccurrence =
+      ((transitionCount (survivingBefore result)) +
+        (locatedActionOrdinal localOccurrence))) ->
+    GenerationSubsequenceLocatedOrigin name key world error value
+      (MoreTransitions
+        (beginTransition (closedOpening (locatedEpisode episode)))
+        (closedTransitions (locatedEpisode episode)))
+      (survivingEpisode result) (episodeDeletion result) action localOccurrence ->
+    DeletionWholeOccurrenceOrigin name key world error value nameEq keyEq
+      original selected episode registered episodeStartOrdinal episodeStartLive
+      result action survivingOccurrence
+  deletionWholeEpisodeOrigin nameEq keyEq original selected episode registered
+    episodeStartOrdinal episodeStartLive result survivingOccurrence
+    localOccurrence exactOrdinal
+    (MkGenerationSubsequenceLocatedOrigin sourceOccurrence sourceOrdinal) =
+      deletionWholeEpisodeEmbedded nameEq keyEq original selected episode
+        registered episodeStartOrdinal episodeStartLive result
+        survivingOccurrence localOccurrence exactOrdinal sourceOccurrence
+        sourceOrdinal
+        (deletionEmbedEpisodeSourceOccurrence episode sourceOccurrence)
+
+  0 deletionWholeEpisodeEmbedded :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+    {initial, originalFinal : SystemState name key value world error} ->
+    (original : Transitions initial originalFinal) ->
+    (selected : name) ->
+    (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+      selected original) ->
+    (registered : List (RegistrationGeneration name)) ->
+    (episodeStartOrdinal : Nat) ->
+    (episodeStartLive : GenerationEnvironment name) ->
+    (result : DeletionResult name key world error value nameEq keyEq original
+      selected episode registered episodeStartOrdinal episodeStartLive) ->
+    {action : Action name key value world error} ->
+    (survivingOccurrence : LocatedActionOccurrence action
+      (survivingTrace result)) ->
+    (localOccurrence : LocatedActionOccurrence action (survivingEpisode result)) ->
+    (0 exactOrdinal : locatedActionOrdinal survivingOccurrence =
+      ((transitionCount (survivingBefore result)) +
+        (locatedActionOrdinal localOccurrence))) ->
+    (sourceOccurrence : LocatedActionOccurrence action
+      (MoreTransitions
+        (beginTransition (closedOpening (locatedEpisode episode)))
+        (closedTransitions (locatedEpisode episode)))) ->
+    (0 sourceOrdinal : generationSubsequenceSourceOrdinal
+      (episodeDeletion result) (locatedActionOrdinal localOccurrence) =
+      Just (locatedActionOrdinal sourceOccurrence)) ->
+    DeletionSourceOccurrenceAtOrdinal name key world error value original action
+      ((transitionCount (traceBeforeOpening episode)) +
+        (locatedActionOrdinal sourceOccurrence)) ->
+    DeletionWholeOccurrenceOrigin name key world error value nameEq keyEq
+      original selected episode registered episodeStartOrdinal episodeStartLive
+      result action survivingOccurrence
+  deletionWholeEpisodeEmbedded nameEq keyEq original selected episode registered
+    episodeStartOrdinal episodeStartLive result survivingOccurrence
+    localOccurrence exactOrdinal sourceOccurrence sourceOrdinal
+    (MkDeletionSourceOccurrenceAtOrdinal globalSource globalOrdinal) =
+      MkDeletionWholeOccurrenceOrigin globalSource
+        (replace
+          {p = \sourceIndex => DeletionSurvivingOrdinalEmbedding result
+            (locatedActionOrdinal survivingOccurrence) sourceIndex}
+          (sym globalOrdinal)
+          (replace
+            {p = \survivorIndex => DeletionSurvivingOrdinalEmbedding result
+              survivorIndex
+              ((transitionCount (traceBeforeOpening episode)) +
+                (locatedActionOrdinal sourceOccurrence))}
+            (sym exactOrdinal)
+            (DeletionEpisodeEmbedding sourceOrdinal)))
+
+  0 deletionWholeAfterOrigin :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+    {initial, originalFinal : SystemState name key value world error} ->
+    (original : Transitions initial originalFinal) ->
+    (selected : name) ->
+    (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+      selected original) ->
+    (registered : List (RegistrationGeneration name)) ->
+    (episodeStartOrdinal : Nat) ->
+    (episodeStartLive : GenerationEnvironment name) ->
+    (result : DeletionResult name key world error value nameEq keyEq original
+      selected episode registered episodeStartOrdinal episodeStartLive) ->
+    {action : Action name key value world error} ->
+    (survivingOccurrence : LocatedActionOccurrence action
+      (survivingTrace result)) ->
+    (localOccurrence : LocatedActionOccurrence action (survivingAfter result)) ->
+    (0 exactOrdinal : locatedActionOrdinal survivingOccurrence =
+      (((transitionCount (survivingBefore result)) +
+        (transitionCount (survivingEpisode result))) +
+        (locatedActionOrdinal localOccurrence))) ->
+    GenerationSubsequenceLocatedOrigin name key world error value
+      (traceAfterClosing episode) (survivingAfter result)
+      (afterDeletion result) action localOccurrence ->
+    DeletionWholeOccurrenceOrigin name key world error value nameEq keyEq
+      original selected episode registered episodeStartOrdinal episodeStartLive
+      result action survivingOccurrence
+  deletionWholeAfterOrigin nameEq keyEq original selected episode registered
+    episodeStartOrdinal episodeStartLive result survivingOccurrence
+    localOccurrence exactOrdinal
+    (MkGenerationSubsequenceLocatedOrigin sourceOccurrence sourceOrdinal) =
+      deletionWholeAfterEmbedded nameEq keyEq original selected episode registered
+        episodeStartOrdinal episodeStartLive result survivingOccurrence
+        localOccurrence exactOrdinal sourceOccurrence sourceOrdinal
+        (deletionEmbedAfterSourceOccurrence episode sourceOccurrence)
+
+  0 deletionWholeAfterEmbedded :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+    {initial, originalFinal : SystemState name key value world error} ->
+    (original : Transitions initial originalFinal) ->
+    (selected : name) ->
+    (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+      selected original) ->
+    (registered : List (RegistrationGeneration name)) ->
+    (episodeStartOrdinal : Nat) ->
+    (episodeStartLive : GenerationEnvironment name) ->
+    (result : DeletionResult name key world error value nameEq keyEq original
+      selected episode registered episodeStartOrdinal episodeStartLive) ->
+    {action : Action name key value world error} ->
+    (survivingOccurrence : LocatedActionOccurrence action
+      (survivingTrace result)) ->
+    (localOccurrence : LocatedActionOccurrence action (survivingAfter result)) ->
+    (0 exactOrdinal : locatedActionOrdinal survivingOccurrence =
+      (((transitionCount (survivingBefore result)) +
+        (transitionCount (survivingEpisode result))) +
+        (locatedActionOrdinal localOccurrence))) ->
+    (sourceOccurrence : LocatedActionOccurrence action
+      (traceAfterClosing episode)) ->
+    (0 sourceOrdinal : generationSubsequenceSourceOrdinal
+      (afterDeletion result) (locatedActionOrdinal localOccurrence) =
+      Just (locatedActionOrdinal sourceOccurrence)) ->
+    DeletionSourceOccurrenceAtOrdinal name key world error value original action
+      (((transitionCount (traceBeforeOpening episode)) +
+        (transitionCount
+          (MoreTransitions
+            (beginTransition (closedOpening (locatedEpisode episode)))
+            (closedTransitions (locatedEpisode episode))))) +
+        (locatedActionOrdinal sourceOccurrence)) ->
+    DeletionWholeOccurrenceOrigin name key world error value nameEq keyEq
+      original selected episode registered episodeStartOrdinal episodeStartLive
+      result action survivingOccurrence
+  deletionWholeAfterEmbedded nameEq keyEq original selected episode registered
+    episodeStartOrdinal episodeStartLive result survivingOccurrence
+    localOccurrence exactOrdinal sourceOccurrence sourceOrdinal
+    (MkDeletionSourceOccurrenceAtOrdinal globalSource globalOrdinal) =
+      MkDeletionWholeOccurrenceOrigin globalSource
+        (replace
+          {p = \sourceIndex => DeletionSurvivingOrdinalEmbedding result
+            (locatedActionOrdinal survivingOccurrence) sourceIndex}
+          (sym globalOrdinal)
+          (replace
+            {p = \survivorIndex => DeletionSurvivingOrdinalEmbedding result
+              survivorIndex
+              (((transitionCount (traceBeforeOpening episode)) +
+                (transitionCount
+                  (MoreTransitions
+                    (beginTransition
+                      (closedOpening (locatedEpisode episode)))
+                    (closedTransitions (locatedEpisode episode))))) +
+                (locatedActionOrdinal sourceOccurrence))}
+            (sym exactOrdinal)
+            (DeletionAfterEmbedding sourceOrdinal)))
+
+||| Final three-way source-occurrence gluing lemma.
+public export
+0 deletionWholeOccurrenceOrigin :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected original) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (episodeStartOrdinal : Nat) ->
+  (episodeStartLive : GenerationEnvironment name) ->
+  (result : DeletionResult name key world error value nameEq keyEq original
+    selected episode registered episodeStartOrdinal episodeStartLive) ->
+  {action : Action name key value world error} ->
+  (survivingOccurrence : LocatedActionOccurrence action
+    (survivingTrace result)) ->
+  DeletionWholeOccurrenceOrigin name key world error value nameEq keyEq original
+    selected episode registered episodeStartOrdinal episodeStartLive result action
+    survivingOccurrence
+deletionWholeOccurrenceOrigin nameEq keyEq original selected episode registered
+  episodeStartOrdinal episodeStartLive result survivingOccurrence =
+    deletionWholeOccurrenceOriginFromClassification nameEq keyEq original
+      selected episode registered episodeStartOrdinal episodeStartLive result
+      survivingOccurrence
+      (deletionWholeTraceOccurrenceClassification (survivingBefore result)
+        (survivingEpisode result) (survivingAfter result) survivingOccurrence)
 
 ||| Operational O9 certificate.  Every occurrence in the actual survivor trace
 ||| maps to a source occurrence whose ordinal is justified by one of the exact
