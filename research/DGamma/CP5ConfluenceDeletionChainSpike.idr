@@ -10111,6 +10111,76 @@ record ScopedClosingLocalization
     appendTransitions localizedActivationToAnchor localizedAnchorToClosing =
       closedInside (locatedEpisode localizedPrefixEpisode)
 
+0 buildScopedClosingFromOpening :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {actor : name} ->
+  {prefixInitial, prefixFinal, globalFinal, stepBefore, stepAfter, preStart,
+    opened : SystemState name key value world error} ->
+  (transition : Transition stepBefore stepAfter) ->
+  (prefixTrace : Transitions prefixInitial prefixFinal) ->
+  (anchor : ForeignLifecycleInstalledAnchor name key world error value nameEq
+    keyEq actor transition prefixTrace) ->
+  (beforeOpening : Transitions prefixInitial preStart) ->
+  (opening : BeginStep nameEq keyEq actor preStart opened) ->
+  (afterOpening : Transitions opened (lifecycleInstalledState anchor)) ->
+  (0 openingSplit : appendTransitions beforeOpening
+    (MoreTransitions (beginTransition opening) afterOpening) =
+      lifecycleBeforeInstalled anchor) ->
+  (0 installedAfterOpening : InstalledTrace name key world error value nameEq
+    keyEq actor afterOpening) ->
+  (closingResult : FirstClosingResult name key world error value nameEq keyEq
+    actor (lifecycleAfterInstalled anchor)) ->
+  (suffixTrace : Transitions prefixFinal globalFinal) ->
+  (global : Transitions prefixInitial globalFinal) ->
+  (0 globalSplit : appendTransitions prefixTrace suffixTrace = global) ->
+  ScopedClosingLocalization name key world error value nameEq keyEq actor
+    transition prefixTrace global anchor
+buildScopedClosingFromOpening transition prefixTrace anchor beforeOpening opening
+  afterOpening openingSplit installedAfterOpening closingResult suffixTrace
+  global globalSplit =
+    case closingResult of
+      MkFirstClosingResult closeBefore closeAfter beforeClosing installedBefore
+        closing afterClosing closingSplit =>
+          MkScopedClosingLocalization
+            (MkLocatedClosedEpisode preStart closeAfter beforeOpening
+              (MkClosedEpisode opened closeBefore opening
+                (appendTransitions afterOpening beforeClosing)
+                (appendInstalledTrace afterOpening beforeClosing
+                  installedAfterOpening installedBefore)
+                closing)
+              afterClosing
+              (trans
+                (rewrite appendTransitionsAssociative
+                  (appendTransitions afterOpening beforeClosing)
+                  (MoreTransitions (unloadTransition closing) NoTransitions)
+                  afterClosing in
+                    scopedSpanningDecomposition beforeOpening opening
+                      afterOpening beforeClosing closing afterClosing
+                      (lifecycleBeforeInstalled anchor)
+                      (lifecycleAfterInstalled anchor) openingSplit closingSplit)
+                (lifecycleAnchorDecomposition anchor)))
+            (extendLocatedClosingRightScoped prefixTrace
+              (MkLocatedClosedEpisode preStart closeAfter beforeOpening
+                (MkClosedEpisode opened closeBefore opening
+                  (appendTransitions afterOpening beforeClosing)
+                  (appendInstalledTrace afterOpening beforeClosing
+                    installedAfterOpening installedBefore)
+                  closing)
+                afterClosing
+                (trans
+                  (rewrite appendTransitionsAssociative
+                    (appendTransitions afterOpening beforeClosing)
+                    (MoreTransitions (unloadTransition closing) NoTransitions)
+                    afterClosing in
+                      scopedSpanningDecomposition beforeOpening opening
+                        afterOpening beforeClosing closing afterClosing
+                        (lifecycleBeforeInstalled anchor)
+                        (lifecycleAfterInstalled anchor) openingSplit
+                        closingSplit)
+                  (lifecycleAnchorDecomposition anchor)))
+              suffixTrace global globalSplit)
+            afterOpening installedAfterOpening openingSplit beforeClosing Refl
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
