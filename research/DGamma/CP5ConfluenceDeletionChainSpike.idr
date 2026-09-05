@@ -17798,6 +17798,48 @@ scopedAdvanceEmptyUnretiredAt name key world error value nameEq keyEq child
         (Unloading accumulator view Nothing) (worldState before) found notRetired
         equation)
 
+||| Concrete raised outcome, retaining the evaluator equation rather than
+||| attempting conversion of two stuck let-containing case expressions.
+0 scopedAdvanceRaisedRaw :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (capability : DepValues key value (dependencies (componentDependencies component))) ->
+  (failure : error) ->
+  (0 found : (lookupFiber {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} child source =
+    Just (MkFiber component parent retiredFlag table
+      (Reloading (step :: rest) accumulator view)))) ->
+  (0 resolved : (resolveCommittedValues @{nameEq} @{keyEq} {name = name}
+    {key = key} {value = value} {world = world} {error = error}
+    (dependencies (componentDependencies component)) view source = Just capability)) ->
+  (0 ran : (runStepEffect step capability
+    (MkLocalState ambient (restrictOwnedPreservingOrder @{keyEq}
+      (componentProvisions component) (ownedValues table))) = Left failure)) ->
+  (applyAction @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} (LAdvance child) (MkSystemState ambient source) =
+    Just (LRaiseTag, MkSystemState ambient
+      (replaceBinding @{nameEq} child
+        (MkFiber component parent retiredFlag table
+          (Unloading accumulator view (Just failure))) source)))
+scopedAdvanceRaisedRaw name key world error value nameEq keyEq child ambient
+  source component parent retiredFlag table step rest accumulator view capability
+  failure found resolved ran =
+    rewrite found in rewrite resolved in rewrite ran in Refl
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
