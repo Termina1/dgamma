@@ -26210,6 +26210,14 @@ record ScopedOrdinalPermutation where
   0 ordinalLeftInverse : (ordinal : Nat) -> (ordinalBackward (ordinalForward ordinal) = ordinal)
   0 ordinalRightInverse : (ordinal : Nat) -> (ordinalForward (ordinalBackward ordinal) = ordinal)
 
+scopedComposeOrdinalPermutation : ScopedOrdinalPermutation -> ScopedOrdinalPermutation -> ScopedOrdinalPermutation
+scopedComposeOrdinalPermutation outer inner =
+  MkScopedOrdinalPermutation
+    (\ordinal => ordinalForward outer (ordinalForward inner ordinal))
+    (\ordinal => ordinalBackward inner (ordinalBackward outer ordinal))
+    (\ordinal => trans (cong (ordinalBackward inner) (ordinalLeftInverse outer (ordinalForward inner ordinal))) (ordinalLeftInverse inner ordinal))
+    (\ordinal => trans (cong (ordinalForward outer) (ordinalRightInverse inner (ordinalBackward outer ordinal))) (ordinalRightInverse outer ordinal))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
