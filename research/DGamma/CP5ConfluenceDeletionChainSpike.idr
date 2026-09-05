@@ -19581,6 +19581,17 @@ scopedSelectedForeignActorTotal name key world error value nameEq keyEq selected
           (planTarget (completePlanResult (selectedBoundaryPlan boundary))) (registry survivor)
           (selectedBoundaryOrderedControls boundary)))) active
 
+0 scopedCleanInactiveActorTotal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (state : SystemState name key value world error) ->
+  SelectedSurvivorCleanInactive name key world error value nameEq actor state ->
+  ScopedActorTotal name key world error value nameEq keyEq actor state
+scopedCleanInactiveActorTotal name key world error value nameEq keyEq actor state
+  (SelectedCleanInactiveWitness component parent retiredFlag table inactiveFound) fiber found active =
+    void (falseNotTrueO7 (trans
+      (cong (\entry => isActive (fiberLifecycle entry)) (justInjective (trans (sym inactiveFound) found))) active))
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
