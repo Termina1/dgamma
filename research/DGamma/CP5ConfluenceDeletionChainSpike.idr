@@ -11560,6 +11560,9 @@ scopedLifecycleNonInsert (LDivert actor) lifecycle = NonInsertDivert
 scopedLifecycleNonInsert (LLeave actor) lifecycle = NonInsertLeave
 scopedLifecycleNonInsert (LUnload actor) lifecycle = NonInsertUnload
 
+0 scopedFalseNotTrue : False = True -> Void
+scopedFalseNotTrue Refl impossible
+
 0 ScopedForeignLifecycleExclusion :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
