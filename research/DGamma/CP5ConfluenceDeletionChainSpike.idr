@@ -25445,6 +25445,31 @@ scopedPlannedNamedLifecycleReplay name key world error value nameEq keyEq action
       (scopedPlanLookupSource name key world error value nameEq (registry sourceBefore) planned plan (actionOwner action)
         (foreignRelatedFiber located) (foreignRelatedFound located)) targetFound (fiberControlSymmetric (foreignRelatedControl located))
 
+0 scopedLocatedNamedLifecycleReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (isLifecycleAction action = True) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (named : NamedTransition name key world error value action targetBefore) ->
+  (fireNamed nameEq keyEq action targetBefore = Just named) -> (tag = transitionTag (namedTransition named)) ->
+  (planned : Registry name key value world error) ->
+  InactiveLeafDeletionPlan {name = name} {key = key} {value = value} {world = world} {error = error} nameEq (registry sourceBefore) planned ->
+  FiberControlMaybeRelated
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner action) planned)
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner action) (registry targetBefore)) ->
+  (targetOwner : Fiber name key value world error **
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+      (actionOwner action) (registry targetBefore) = Just targetOwner)) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (namedTransition named) NoTransitions)
+scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq action lifecycle tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan controls (targetOwner ** targetFound) =
+    scopedPlannedNamedLifecycleReplay name key world error value nameEq keyEq action lifecycle tag sourceBefore sourceAfter targetBefore
+      sourceChecked named fires sameTag planned plan targetOwner targetFound
+      (foreignControlLookupFound nameEq (actionOwner action) (registry targetBefore) planned targetOwner targetFound
+        (fiberControlMaybeSymmetric controls))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
