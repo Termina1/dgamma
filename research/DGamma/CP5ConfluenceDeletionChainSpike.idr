@@ -11997,6 +11997,58 @@ scopedTagSelectedHeadFromRaw name key world error value nameEq keyEq selected re
         (namedFireProjectsRaw nameEq keyEq action survivor (selectedHeadNamed step)
           (selectedHeadFires step))))))
 
+0 scopedPackageTaggedForeignLifecycleEpisodeStep :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  (lifecycle : (isLifecycleAction action = True)) ->
+  (distinct : Not (actionOwner action = selected)) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (before, afterState, survivor : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : (checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState))) ->
+  (occurs : OccursIn
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked) whole) ->
+  TraceIndependent name key world error value keyEq whole ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  (exactStep : RetainedNoEpisodeBoundaryStep name key world error value nameEq
+    keyEq registered
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) action tag
+    afterState
+    (MkSystemState (worldState before)
+      (planTarget (completePlanResult (selectedBoundaryPlan boundary))))) ->
+  (originalOwner, survivorOwner : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} (actionOwner action) (registry before) =
+    Just originalOwner) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} (actionOwner action) (registry survivor) =
+    Just survivorOwner) ->
+  FiberControlRelated originalOwner survivorOwner ->
+  (0 control : ForeignLifecycleControlReplay name key world error value nameEq
+    keyEq selected action (namedTag (retainedBoundaryNamed exactStep))
+    (namedAfter (retainedBoundaryNamed exactStep)) survivor) ->
+  ScopedTaggedSelectedHead name key world error value nameEq keyEq selected
+    registered ordinal live whole action tag afterState survivor
+scopedPackageTaggedForeignLifecycleEpisodeStep name key world error value nameEq keyEq
+  selected registered ordinal live action lifecycle distinct whole before afterState survivor
+  tag checked occurs independent boundary exactStep originalOwner survivorOwner originalFound
+  survivorFound ownersRelated control =
+    scopedTagSelectedHeadFromRaw name key world error value nameEq keyEq selected registered
+      ordinal live whole action tag (namedTag (retainedBoundaryNamed exactStep)) afterState
+      survivor (foreignLifecycleAfter control) (sym (retainedBoundaryTagSame exactStep))
+      (foreignLifecycleRaw control)
+      (scopedForeignRetainedHead (packageForeignLifecycleEpisodeStep nameEq keyEq selected
+        registered ordinal live action lifecycle distinct whole before afterState survivor tag
+        checked occurs independent boundary exactStep originalOwner survivorOwner originalFound
+        survivorFound ownersRelated control))
+
 0 retainedForeignLifecycleFromScopedOwner :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (registered : List (RegistrationGeneration name)) ->
