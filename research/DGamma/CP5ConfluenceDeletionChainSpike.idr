@@ -22906,6 +22906,18 @@ scopedAllDeleteHeadAt key value keyEq predicate wanted current cell rest source 
     rewrite exact in
       rewrite scopedAndLeftTrue (predicate (Bind current cell)) (allList predicate rest) source in survivingTail
 
+0 scopedAllDeleteEntries :
+  (key : Type) -> (value : key -> Type) -> (keyEq : DecEq key) ->
+  (predicate : Binding key value -> Bool) -> (wanted : key) -> (entries : List (Binding key value)) ->
+  (allList predicate entries = True) ->
+  (allList predicate (deleteEntries @{keyEq} wanted entries) = True)
+scopedAllDeleteEntries key value keyEq predicate wanted [] source = Refl
+scopedAllDeleteEntries key value keyEq predicate wanted (Bind current cell :: rest) source =
+  scopedAllDeleteHeadAt key value keyEq predicate wanted current cell rest source
+    (scopedAllDeleteEntries key value keyEq predicate wanted rest
+      (scopedAndRightTrue (predicate (Bind current cell)) (allList predicate rest) source))
+    (decEq @{keyEq} wanted current) Refl
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
