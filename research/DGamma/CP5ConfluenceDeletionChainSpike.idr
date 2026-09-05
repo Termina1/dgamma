@@ -19345,6 +19345,16 @@ scopedLifecycleActiveSame name key world error value deps provision _ _ (Reloadi
 scopedLifecycleActiveSame name key world error value deps provision _ _ (ActiveControls accumulator view) = Refl
 scopedLifecycleActiveSame name key world error value deps provision _ _ (UnloadingControls accumulator view outcome) = Refl
 
+0 scopedFiberControlActiveSame :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (left, right : Fiber name key value world error) -> FiberControlRelated left right ->
+  (isActive (fiberLifecycle left) = isActive (fiberLifecycle right))
+scopedFiberControlActiveSame name key world error value _ _
+  (FibersControlRelated {component} leftParent rightParent leftRetired rightRetired leftTable rightTable
+    leftLife rightLife parentSame retiredSame lifeSame) =
+      scopedLifecycleActiveSame name key world error value
+        (dependencies (componentDependencies component)) (componentProvisions component) leftLife rightLife lifeSame
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
