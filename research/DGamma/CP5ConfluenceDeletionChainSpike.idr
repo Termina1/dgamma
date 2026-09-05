@@ -34,6 +34,7 @@ import DGamma.CP4DeletionSelectedForeignLifecycleProviderFrame
 import DGamma.CP4DeletionSelectedForeignLifecycleDispatch
 import DGamma.CP4DeletionSelectedForeignLifecycleReplayCore
 import DGamma.CP4DeletionSelectedForeignLifecycleStep
+import DGamma.CP4DeletionSelectedForeignOrchestration
 import DGamma.CP4DeletionSelectedForeignOrchestrationStep
 import DGamma.CP4DeletionSelectedForeignTables
 import DGamma.CP4DeletionSelectedForeignAdvanceAgreement
@@ -11617,6 +11618,43 @@ scopedInsertAbsentNotInstalledFromProjection name key world error value nameEq
                 absent)
               Refl))
           installedTrue))
+
+0 scopedSelectedInsertPlanImpossible :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (state : SystemState name key value world error) ->
+  (projectedWorld : world) ->
+  (projectedRegistry : Registry name key value world error) ->
+  (0 projectedStateExact :
+    (state = MkSystemState projectedWorld projectedRegistry)) ->
+  (afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error}
+    (OInsert selected parent component) state = Just (tag, afterState) ->
+  installedAt @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} selected state = True ->
+  Void
+scopedSelectedInsertPlanImpossible name key world error value nameEq keyEq
+  selected parent component state projectedWorld projectedRegistry
+  projectedStateExact afterState tag raw sourceInstalled =
+    case foreignInsertPlanView nameEq keyEq selected parent component
+      projectedWorld projectedRegistry tag afterState
+      (trans
+        (sym
+          (cong
+            (applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+              {value = value} {world = world} {error = error}
+              (the (Action name key value world error)
+                (OInsert selected parent component)))
+            projectedStateExact))
+        raw) of
+      MkForeignInsertPlanView absent guards =>
+        scopedInsertAbsentNotInstalledFromProjection name key world error value
+          nameEq selected state projectedWorld projectedRegistry
+          projectedStateExact absent sourceInstalled
 
 0 ScopedForeignLifecycleExclusion :
   {name, key, world, error : Type} -> {value : key -> Type} ->
