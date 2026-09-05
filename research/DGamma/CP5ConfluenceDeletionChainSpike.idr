@@ -23886,6 +23886,21 @@ scopedSelectedOutputSuffixNoRegistered name key world error value protocol nameE
           (appendTransitions (closedTransitions (locatedEpisode located)) (traceAfterClosing located))) beforeScan
         (replace {p = NoRegisteredEpisode nameEq registered 0 []} (sym (locatedDecomposition located)) noRegistered))
 
+0 scopedLocatedSuffixDiscipline :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (selected : name) -> (located : LocatedClosedEpisode name key world error value nameEq keyEq selected global) ->
+  RegistrationDiscipline protocol nameEq global -> RegistrationDiscipline protocol nameEq (traceAfterClosing located)
+scopedLocatedSuffixDiscipline name key world error value protocol nameEq keyEq initial finalState global selected located discipline =
+  scopedDisciplineAppendRight
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode located))) (closedTransitions (locatedEpisode located)))
+    (traceAfterClosing located)
+    (scopedDisciplineAppendRight (traceBeforeOpening located)
+      (MoreTransitions (beginTransition (closedOpening (locatedEpisode located)))
+        (appendTransitions (closedTransitions (locatedEpisode located)) (traceAfterClosing located)))
+      (replace {p = RegistrationDiscipline protocol nameEq} (sym (locatedDecomposition located)) discipline))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
