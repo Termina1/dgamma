@@ -10104,6 +10104,9 @@ record ScopedClosingLocalization
   0 localizedOpeningCountExact : transitionCount
     (traceBeforeOpening localizedGlobalEpisode) = transitionCount
     (traceBeforeOpening localizedPrefixEpisode)
+  0 localizedOpeningStateExact :
+    closedStartState (locatedEpisode localizedGlobalEpisode) =
+      closedStartState (locatedEpisode localizedPrefixEpisode)
   localizedActivationToAnchor : Transitions
     (closedStartState (locatedEpisode localizedPrefixEpisode))
     (lifecycleInstalledState anchor)
@@ -10188,7 +10191,8 @@ buildScopedClosingFromOpening transition prefixTrace anchor beforeOpening openin
                         closingSplit)
                   (lifecycleAnchorDecomposition anchor)))
               suffixTrace global globalSplit)
-            Refl afterOpening installedAfterOpening openingSplit beforeClosing Refl
+            Refl Refl afterOpening installedAfterOpening openingSplit beforeClosing
+            Refl
 
 0 buildScopedClosingFromOpeningResult :
   {name, key, world, error : Type} -> {value : key -> Type} ->
