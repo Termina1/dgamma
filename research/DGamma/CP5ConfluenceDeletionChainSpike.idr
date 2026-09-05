@@ -24224,6 +24224,27 @@ scopedEnrichedSuffixBoundary name key world error value protocol nameEq keyEq in
     (appendTransitions (closedTransitions (locatedEpisode (selectedEpisode candidate))) (traceAfterClosing (selectedEpisode candidate)))
     (enrichedSelected folds)
 
+0 scopedEnrichedFinalEmpty :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  CurrentRegisteredEmptyTables name key world error value nameEq (selectedRegistrations candidate)
+    (relationalSuffixFinalLive (postCloseOutputFold (enrichedSuffix folds))) finalState
+scopedEnrichedFinalEmpty name key world error value protocol nameEq keyEq initial finalState global candidate folds aligned =
+  currentRegisteredEmptyTableTrace nameEq keyEq (selectedRegistrations candidate)
+    (selectedFoldEndOrdinal (selectedOutputFold (enrichedSelected folds))) (selectedFoldEndLive (selectedOutputFold (enrichedSelected folds)))
+    (selectedFoldUnique (selectedOutputFold (enrichedSelected folds))) (traceAfterClosing (selectedEpisode candidate))
+    (relationalSuffixFinalOrdinal (postCloseOutputFold (enrichedSuffix folds))) (relationalSuffixFinalLive (postCloseOutputFold (enrichedSuffix folds)))
+    (relationalSuffixGenerationScan (postCloseOutputFold (enrichedSuffix folds))) (alignedLocatedAfter global aligned (selectedEpisode candidate))
+    (scopedSelectedOutputSuffixNoRegistered name key world error value protocol nameEq keyEq initial finalState global
+      (selectedActor candidate) (selectedEpisode candidate) (selectedRegistrations candidate) (selectedStartOrdinal candidate)
+      (selectedStartLive candidate) (selectedBeforeScan candidate) (selectedChildrenHaveNoEpisode candidate) (enrichedSelected folds))
+    (postCloseCurrentInactive (scopedEnrichedSuffixBoundary name key world error value protocol nameEq keyEq initial finalState global candidate folds))
+    (postCloseCurrentEmpty (scopedEnrichedSuffixBoundary name key world error value protocol nameEq keyEq initial finalState global candidate folds))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
