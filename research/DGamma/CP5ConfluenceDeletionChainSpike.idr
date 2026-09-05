@@ -21952,6 +21952,19 @@ scopedTaggedSelectedEpisodeLocalReplayer name key world error value protocol nam
         keyEq selected registered global globalDiscipline independent whole
         selectedEpisode wholeInGlobal anchors)
 
+0 scopedInstalledHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (transition : Transition first middle) -> (rest : Transitions middle finalState) ->
+  InstalledTrace name key world error value nameEq keyEq selected (MoreTransitions transition rest) ->
+  ((installedAt @{nameEq} {name = name} {key = key} {value = value} {world = world}
+      {error = error} selected first = True),
+    InstalledTrace name key world error value nameEq keyEq selected rest)
+scopedInstalledHead name key world error value nameEq keyEq selected first middle finalState _ _
+  (InstalledStep action tag checked rest sourceInstalled installedRest) =
+    (sourceInstalled, installedRest)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
