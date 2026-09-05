@@ -12411,6 +12411,68 @@ scopedDispatchSelectedRetainedHead name key world error value protocol nameEq
   sourceInstalled occurs boundary retained =
     void (retained (DeleteEpisodeGenerationLifecycle ownerSelected Refl))
 
+0 scopedRegisteredLifecycleImpossible :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  (lifecycle : isLifecycleAction action = True) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (noBegin : IsBeginAction action ->
+    GenerationOwnedActor nameEq registered ordinal live action -> Void) ->
+  CurrentRegisteredInactiveFibers name key world error value nameEq registered
+    live before ->
+  GenerationOwnedActor nameEq registered ordinal live action ->
+  Void
+scopedRegisteredLifecycleImpossible name key world error value nameEq keyEq
+  registered ordinal live (OInsert actor parent component) Refl before
+  afterState tag checked noBegin inactive owned impossible
+scopedRegisteredLifecycleImpossible name key world error value nameEq keyEq
+  registered ordinal live (ORetire actor) Refl before afterState tag checked
+  noBegin inactive owned impossible
+scopedRegisteredLifecycleImpossible name key world error value nameEq keyEq
+  registered ordinal live (ORemove actor) Refl before afterState tag checked
+  noBegin inactive owned impossible
+scopedRegisteredLifecycleImpossible name key world error value nameEq keyEq
+  registered ordinal live (LBegin actor) lifecycle before afterState tag checked
+  noBegin inactive owned = noBegin ItIsLBegin owned
+scopedRegisteredLifecycleImpossible name key world error value nameEq keyEq
+  registered ordinal live (LAdvance actor) lifecycle before afterState tag
+  checked noBegin inactive (generation ** (current, member)) =
+    inactiveCannotAdvance nameEq keyEq actor before afterState tag
+      (checkedActionProjects nameEq keyEq
+        (the (Action name key value world error) (LAdvance actor)) before
+        afterState tag checked)
+      (inactive actor generation member current)
+scopedRegisteredLifecycleImpossible name key world error value nameEq keyEq
+  registered ordinal live (LDivert actor) lifecycle before afterState tag
+  checked noBegin inactive (generation ** (current, member)) =
+    inactiveCannotDivert nameEq keyEq actor before afterState tag
+      (checkedActionProjects nameEq keyEq
+        (the (Action name key value world error) (LDivert actor)) before
+        afterState tag checked)
+      (inactive actor generation member current)
+scopedRegisteredLifecycleImpossible name key world error value nameEq keyEq
+  registered ordinal live (LLeave actor) lifecycle before afterState tag checked
+  noBegin inactive (generation ** (current, member)) =
+    inactiveCannotLeave nameEq keyEq actor before afterState tag
+      (checkedActionProjects nameEq keyEq
+        (the (Action name key value world error) (LLeave actor)) before
+        afterState tag checked)
+      (inactive actor generation member current)
+scopedRegisteredLifecycleImpossible name key world error value nameEq keyEq
+  registered ordinal live (LUnload actor) lifecycle before afterState tag
+  checked noBegin inactive (generation ** (current, member)) =
+    inactiveCannotUnload nameEq keyEq actor before afterState tag
+      (checkedActionProjects nameEq keyEq
+        (the (Action name key value world error) (LUnload actor)) before
+        afterState tag checked)
+      (inactive actor generation member current)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
