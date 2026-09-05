@@ -17634,6 +17634,83 @@ scopedUnloadPreservesUnretired name key world error value nameEq keyEq child
     (MkFiber component parent retiredFlag table (Active accumulator view))
     found flag) =
       rewrite found in (\equation => void (nothingIsNotJust equation))
+||| Deletion of an O-Retire in the plain generation-owned segments is
+||| definitionally generation-owned; the adapter boundary is made explicit so
+||| the retirement transport never inspects the deletion predicate.
+0 scopedPlainDeletedRetireOwned :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (actor : name) ->
+  GenerationOwnedActor {name = name} {key = key} {value = value}
+    {world = world} {error = error} nameEq registered ordinal live
+    (ORetire actor) ->
+  GenerationOwnedActor {name = name} {key = key} {value = value}
+    {world = world} {error = error} nameEq registered ordinal live
+    (ORetire actor)
+scopedPlainDeletedRetireOwned name key world error value nameEq registered
+  ordinal live actor owned = owned
+
+||| In the episode segment a deleted O-Retire cannot be a selected lifecycle
+||| deletion (retirement is an orchestration action), so it must be
+||| generation-owned.
+0 scopedEpisodeDeletedRetireOwned :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (actor : name) ->
+  EpisodeGenerationDeletedActor {name = name} {key = key} {value = value}
+    {world = world} {error = error} nameEq selected registered ordinal live
+    (ORetire actor) ->
+  GenerationOwnedActor {name = name} {key = key} {value = value}
+    {world = world} {error = error} nameEq registered ordinal live
+    (ORetire actor)
+scopedEpisodeDeletedRetireOwned name key world error value nameEq selected
+  registered ordinal live actor
+  (DeleteEpisodeGenerationLifecycle ownerEq lifecycleEq) =
+    case lifecycleEq of Refl impossible
+scopedEpisodeDeletedRetireOwned name key world error value nameEq selected
+  registered ordinal live actor (DeleteRegisteredGeneration owned) = owned
+
+||| A retained O-Insert certifies that the fresh generation it creates is not
+||| among the deleted registrations, in either deletion discipline.
+0 scopedRetainedInsertFreshPlain :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (child : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  Not (GenerationOwnedActor {name = name} {key = key} {value = value}
+    {world = world} {error = error} nameEq registered ordinal live
+    (OInsert child parent component)) ->
+  Not (Elem (MkRegistrationGeneration child ordinal) registered)
+scopedRetainedInsertFreshPlain name key world error value nameEq registered
+  ordinal live child parent component retained member =
+    retained (MkRegistrationGeneration child ordinal ** (Refl, member))
+
+0 scopedRetainedInsertFreshEpisode :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (child : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  Not (EpisodeGenerationDeletedActor {name = name} {key = key} {value = value}
+    {world = world} {error = error} nameEq selected registered ordinal live
+    (OInsert child parent component)) ->
+  Not (Elem (MkRegistrationGeneration child ordinal) registered)
+scopedRetainedInsertFreshEpisode name key world error value nameEq selected
+  registered ordinal live child parent component retained member =
+    retained
+      (DeleteRegisteredGeneration
+        (MkRegistrationGeneration child ordinal ** (Refl, member)))
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
