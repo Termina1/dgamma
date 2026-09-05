@@ -24739,6 +24739,43 @@ scopedReadyDisciplineSpine name key world error value nameEq keyEq registered de
 scopedGenerationScanTail name key world error value nameEq ordinal endOrdinal live endLive first middle finalState transition rest
   (GenerationTraceScanStep _ _ tail) = tail
 
+0 scopedAppendDisciplineSpine :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal, endOrdinal : Nat) -> (live, endLive : GenerationEnvironment name) ->
+  (sourceFirst, sourceMiddle, sourceFinal, targetFirst, targetMiddle, targetFinal : SystemState name key value world error) ->
+  (sourceLeft : Transitions sourceFirst sourceMiddle) -> (sourceRight : Transitions sourceMiddle sourceFinal) ->
+  (targetLeft : Transitions targetFirst targetMiddle) -> (targetRight : Transitions targetMiddle targetFinal) ->
+  GenerationTraceScan nameEq ordinal live sourceLeft endOrdinal endLive ->
+  ScopedDisciplineReplaySpine name key world error value nameEq registered ordinal live sourceLeft targetLeft ->
+  ScopedDisciplineReplaySpine name key world error value nameEq registered endOrdinal endLive sourceRight targetRight ->
+  ScopedDisciplineReplaySpine name key world error value nameEq registered ordinal live
+    (appendTransitions sourceLeft sourceRight) (appendTransitions targetLeft targetRight)
+scopedAppendDisciplineSpine name key world error value nameEq registered ordinal endOrdinal live endLive
+  _ sourceMiddle sourceFinal _ targetMiddle targetFinal _ sourceRight _ targetRight scan ScopedDisciplineEnd rightSpine =
+    replace {p = \at => ScopedDisciplineReplaySpine name key world error value nameEq registered at live sourceRight targetRight}
+      (fst (scopedGenerationScanEndpointsUnique scan GenerationTraceScanEnd))
+      (replace {p = \environment => ScopedDisciplineReplaySpine name key world error value nameEq registered endOrdinal environment sourceRight targetRight}
+        (snd (scopedGenerationScanEndpointsUnique scan GenerationTraceScanEnd)) rightSpine)
+scopedAppendDisciplineSpine name key world error value nameEq registered ordinal endOrdinal live endLive
+  sourceFirst sourceMiddle sourceFinal targetFirst targetMiddle targetFinal _ sourceRight _ targetRight scan
+  (ScopedDisciplineKeep sourceStep sourceRest targetStep targetRest sameAction sameTag fresh controls tail) rightSpine =
+    ScopedDisciplineKeep sourceStep (appendTransitions sourceRest sourceRight) targetStep (appendTransitions targetRest targetRight)
+      sameAction sameTag fresh controls
+      (scopedAppendDisciplineSpine name key world error value nameEq registered (S ordinal) endOrdinal
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) endLive
+        _ sourceMiddle sourceFinal _ targetMiddle targetFinal sourceRest sourceRight targetRest targetRight
+        (scopedGenerationScanTail name key world error value nameEq ordinal endOrdinal live endLive sourceFirst _ sourceMiddle sourceStep sourceRest scan)
+        tail rightSpine)
+scopedAppendDisciplineSpine name key world error value nameEq registered ordinal endOrdinal live endLive
+  sourceFirst sourceMiddle sourceFinal targetFirst targetMiddle targetFinal _ sourceRight _ targetRight scan
+  (ScopedDisciplineDelete sourceStep sourceRest target retireOwned tail) rightSpine =
+    ScopedDisciplineDelete sourceStep (appendTransitions sourceRest sourceRight) (appendTransitions target targetRight) retireOwned
+      (scopedAppendDisciplineSpine name key world error value nameEq registered (S ordinal) endOrdinal
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) endLive
+        _ sourceMiddle sourceFinal targetFirst targetMiddle targetFinal sourceRest sourceRight target targetRight
+        (scopedGenerationScanTail name key world error value nameEq ordinal endOrdinal live endLive sourceFirst _ sourceMiddle sourceStep sourceRest scan)
+        tail rightSpine)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
