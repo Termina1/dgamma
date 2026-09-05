@@ -14563,6 +14563,64 @@ scopedBeginClosedPrefixAnchor name key world error value nameEq keyEq selected
                   NoTransitions))
             in rewrite insideDecomposition in Refl))
 
+0 scopedBeginClosingLocalization :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState, before, afterState :
+    SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq global) ->
+  (initialEmpty : bindings (registry initial) = []) ->
+  (selected : name) ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  (actor : name) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LBegin actor) before =
+    Just (tag, afterState)) ->
+  (insidePrefix : Transitions
+    (closedStartState (locatedEpisode located)) before) ->
+  (rest : Transitions afterState
+    (lastInstalledState (locatedEpisode located))) ->
+  (insideDecomposition : appendTransitions insidePrefix
+    (MoreTransitions
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq (LBegin actor) tag checked)
+      rest) = closedInside (locatedEpisode located)) ->
+  (closingResult : FirstClosingResult name key world error value nameEq keyEq
+    actor rest) ->
+  ScopedClosingLocalization name key world error value nameEq keyEq actor
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq (LBegin actor) tag checked)
+    (appendTransitions (traceBeforeOpening located)
+      (MoreTransitions
+        (beginTransition (closedOpening (locatedEpisode located)))
+        (closedTransitions (locatedEpisode located))))
+    global
+    (scopedBeginClosedPrefixAnchor name key world error value nameEq keyEq
+      selected located actor tag checked insidePrefix rest insideDecomposition)
+scopedBeginClosingLocalization name key world error value nameEq keyEq global
+  aligned initialEmpty selected located actor tag checked insidePrefix rest
+  insideDecomposition closingResult =
+    localizeScopedClosing nameEq keyEq actor
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq (LBegin actor) tag checked)
+      (appendTransitions (traceBeforeOpening located)
+        (MoreTransitions
+          (beginTransition (closedOpening (locatedEpisode located)))
+          (closedTransitions (locatedEpisode located))))
+      (scopedAlignedClosedPrefix name key world error value nameEq keyEq global
+        aligned selected located)
+      initialEmpty
+      (scopedBeginClosedPrefixAnchor name key world error value nameEq keyEq
+        selected located actor tag checked insidePrefix rest insideDecomposition)
+      (scopedExtendFirstClosing name key world error value nameEq keyEq actor rest
+        (MoreTransitions
+          (unloadTransition (closing (locatedEpisode located))) NoTransitions)
+        closingResult)
+      (traceAfterClosing located) global
+      (scopedClosedPrefixDecomposition name key world error value nameEq keyEq
+        selected located)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
