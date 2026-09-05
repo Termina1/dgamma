@@ -25772,6 +25772,30 @@ scopedPrefixHeadNotOwned name key world error value nameEq registered ordinal en
     succNotLTEpred (transitive (actionGenerationBeforeNext nameEq ordinal live bounded action (fst evidence))
       (transitive stepBound (lower generation (snd evidence))))
 
+0 scopedPrefixReplaySeal :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal, endOrdinal : Nat) -> (live, endLive : GenerationEnvironment name) ->
+  (first, finalState : SystemState name key value world error) -> (trace : Transitions first finalState) ->
+  GenerationEnvironmentBounded ordinal live -> GenerationTraceScan nameEq ordinal live trace endOrdinal endLive ->
+  ((generation : RegistrationGeneration name) -> Elem generation registered -> LTE endOrdinal (generationBirthOrdinal generation)) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  ScopedReplaySeal name key world error value nameEq keyEq (GenerationOwnedActor nameEq registered) ordinal live first finalState first finalState trace
+scopedPrefixReplaySeal name key world error value nameEq keyEq registered ordinal endOrdinal live endLive _ _ _ bounded scan lower AlignedEnd =
+  MkScopedReplaySeal ReplayReadyEnd () (ReplayEndsEnd Refl)
+scopedPrefixReplaySeal name key world error value nameEq keyEq registered ordinal endOrdinal live endLive first finalState _ bounded scan lower
+  (AlignedStep {middle} action tag checked rest alignedRest) =
+    scopedVerbatimHeadSealAt name key world error value nameEq keyEq (GenerationOwnedActor nameEq registered) ordinal live first middle finalState
+      action tag checked rest
+      (scopedPrefixHeadNotOwned name key world error value nameEq registered ordinal endOrdinal live bounded
+        (generationScanStartLTE (scopedGenerationScanTail name key world error value nameEq ordinal endOrdinal live endLive first middle finalState
+          (Fired nameEq keyEq action tag checked) rest scan)) lower action)
+      (scopedPrefixReplaySeal name key world error value nameEq keyEq registered (S ordinal) endOrdinal
+        (advanceGenerationEnvironment @{nameEq} ordinal action live) endLive middle finalState rest
+        (advanceGenerationEnvironmentBounded nameEq ordinal action live bounded)
+        (scopedGenerationScanTail name key world error value nameEq ordinal endOrdinal live endLive first middle finalState
+          (Fired nameEq keyEq action tag checked) rest scan) lower alignedRest)
+      (fireNamed nameEq keyEq action first) Refl
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
