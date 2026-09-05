@@ -16465,6 +16465,17 @@ scopedDeletionResultFromSelectedFold name key world error value protocol nameEq
                   controlsAtSkeleton withdrawnAtSkeleton
             in assembleDeletionResult skeleton selectedOutside endpointEvidence
 
+record ScopedTransportedParentYield
+  (name : Type) (key : Type) (value : key -> Type)
+  (world : Type) (error : Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (parent : name)
+  (childComponent : Component key value world error)
+  (target : SystemState name key value world error) where
+  constructor MkScopedTransportedParentYield
+  0 scopedTargetParentYield :
+    ParentRegistrationYield protocol nameEq parent childComponent target
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
