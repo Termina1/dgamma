@@ -25682,6 +25682,25 @@ scopedEnrichedTargetFromHeads name key world error value protocol nameEq keyEq i
     (scopedEnrichedReplayFromHeads name key world error value protocol nameEq keyEq initial finalState global candidate folds
       (scopedEnrichedHeadReplays name key world error value protocol nameEq keyEq initial finalState global candidate folds))
 
+0 scopedPrefixIdentityTags :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (first, finalState : SystemState name key value world error) -> (trace : Transitions first finalState) ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  (bounded : GenerationEnvironmentBounded ordinal live) ->
+  (scan : GenerationTraceScan nameEq ordinal live trace finalOrdinal finalLive) ->
+  (lower : (generation : RegistrationGeneration name) -> Elem generation registered -> LTE finalOrdinal (generationBirthOrdinal generation)) ->
+  GenerationSubsequenceRuleTagsPreserved
+    (generationPrefixIdentitySubsequence nameEq registered ordinal live trace finalOrdinal finalLive bounded scan lower)
+scopedPrefixIdentityTags name key world error value nameEq registered ordinal live _ _ _ _ _ bounded GenerationTraceScanEnd lower =
+  GenerationSubsequenceTagsEnd
+scopedPrefixIdentityTags name key world error value nameEq registered ordinal live first finalState _ finalOrdinal finalLive bounded
+  (GenerationTraceScanStep transition rest tail) lower =
+    GenerationSubsequenceTagsKeep Refl
+      (scopedPrefixIdentityTags name key world error value nameEq registered (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction transition) live) _ finalState rest finalOrdinal finalLive
+        (advanceGenerationEnvironmentBounded nameEq ordinal (transitionAction transition) live bounded) tail lower)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
