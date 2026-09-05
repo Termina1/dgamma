@@ -14441,6 +14441,42 @@ scopedNonBeginLifecycleExclusion name key world error value nameEq keyEq global
           tag checked insidePrefix rest insideDecomposition closingResult boundary
           leftSelected leftOwner selectedFound ownerFound wanted ownerDeclares
 
+0 scopedDirectAtCurrentExclusion :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected, actor : name) -> (actorDistinct : Not (actor = selected)) ->
+  {selectedPre, selectedAfter, current :
+    SystemState name key value world error} ->
+  (selectedEpisode : ClosedEpisode name key world error value nameEq keyEq
+    selected selectedPre selectedAfter) ->
+  (toSelectedClose : Transitions current (lastInstalledState selectedEpisode)) ->
+  (actorInstalled : InstalledTrace name key world error value nameEq keyEq actor
+    toSelectedClose) ->
+  (currentSelected, currentOwner : Fiber name key value world error) ->
+  (selectedFound : lookupFiber @{nameEq} selected (registry current) =
+    Just currentSelected) ->
+  (ownerFound : lookupFiber @{nameEq} actor (registry current) =
+    Just currentOwner) ->
+  (currentWellFormed : registryWellFormed @{nameEq} @{keyEq} current = True) ->
+  (wanted : key) ->
+  (ownerDeclares : Elem wanted (dependencies
+    (componentDependencies (fiberComponent currentOwner)))) ->
+  providerCandidate @{keyEq} wanted currentSelected = False
+scopedDirectAtCurrentExclusion name key world error value nameEq keyEq selected
+  actor actorDistinct selectedEpisode toSelectedClose actorInstalled
+  currentSelected currentOwner selectedFound ownerFound currentWellFormed wanted
+  ownerDeclares =
+    relianceAnchorProviderExcluded nameEq keyEq selected actor actorDistinct
+      selectedEpisode current toSelectedClose actorInstalled currentSelected
+      currentOwner selectedFound ownerFound currentWellFormed
+      (the
+        (SelectedUnloadRelianceAnchor name key world error value nameEq keyEq
+          selected actor {current = current} selectedEpisode currentOwner)
+        (selectedUnloadRelianceAnchorFromInstalledTrace nameEq keyEq selected actor
+          selectedEpisode current toSelectedClose actorInstalled currentOwner
+          ownerFound))
+      wanted ownerDeclares
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
