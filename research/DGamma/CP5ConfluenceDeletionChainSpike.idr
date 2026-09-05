@@ -19198,6 +19198,11 @@ record ScopedSelectedClosedEpisodeFoldOutput
     (MoreTransitions (beginTransition (closedOpening episode))
       (closedTransitions episode)) preStart
     (selectedFoldReady selectedOutputFold)
+  0 selectedOutputParentControls : ScopedReadyParentControls name key world error
+    value nameEq keyEq (EpisodeGenerationDeletedActor nameEq selected registered)
+    episodeStartOrdinal episodeStartLive preStart afterClose preStart
+    (MoreTransitions (beginTransition (closedOpening episode))
+      (closedTransitions episode)) (selectedFoldReady selectedOutputFold)
   0 selectedOutputDiscipline : RegistrationDiscipline protocol nameEq
     (scopedReadyTrace name key world error value nameEq keyEq
       (EpisodeGenerationDeletedActor nameEq selected registered)
@@ -19222,6 +19227,9 @@ record ScopedPostCloseSuffixFoldOutput
     nameEq keyEq (GenerationOwnedActor nameEq registered) ordinal live original
     finalState trace survivor (relationalSuffixReplayReady postCloseOutputFold)
 
+  0 postCloseOutputParentControls : ScopedReadyParentControls name key world error
+    value nameEq keyEq (GenerationOwnedActor nameEq registered) ordinal live
+    original finalState survivor trace (relationalSuffixReplayReady postCloseOutputFold)
   0 postCloseOutputDiscipline : RegistrationDiscipline protocol nameEq
     (scopedReadyTrace name key world error value nameEq keyEq
       (GenerationOwnedActor nameEq registered) ordinal live original finalState
@@ -19253,7 +19261,7 @@ scopedPostCloseSuffixFoldOutputEnd name key world error value protocol nameEq ke
         selected registered selectedOutside ordinal live bornBefore unique stamped
         NoTransitions survivor boundary RegistrationDisciplineEnd AlignedEnd
         NoRegisteredEpisodeEnd noFailed)
-      () RegistrationDisciplineEnd
+      () ScopedParentControlsEnd RegistrationDisciplineEnd
 
 0 scopedPrependPostCloseKeptOutput :
   (name, key, world, error : Type) -> (value : key -> Type) ->
@@ -19277,6 +19285,14 @@ scopedPostCloseSuffixFoldOutputEnd name key world error value protocol nameEq ke
     (advanceGenerationEnvironment @{nameEq} ordinal
       (transitionAction transition) live)
     rest (namedAfter named)) ->
+  (0 parentControls : (parent, child : name) ->
+    (component : Component key value world error) ->
+    (transitionAction transition = OInsert child (ChildOf parent) component) ->
+    FiberControlMaybeRelated
+      (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+        {world = world} {error = error} parent (registry original))
+      (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+        {world = world} {error = error} parent (registry survivor))) ->
   (0 survivorStepDiscipline : RegistrationStepDiscipline protocol nameEq
     (transitionAction transition) survivor
     (scopedReadyTrace name key world error value nameEq keyEq
@@ -19291,7 +19307,7 @@ scopedPrependPostCloseKeptOutput name key world error value protocol nameEq keyE
   registered ordinal live original originalAfter originalFinal survivor rest
   transition retained
   named@(MkNamedTransition after namedTag namedTransition namedAction) fires
-  sameTag folded survivorStepDiscipline =
+  sameTag folded parentControls survivorStepDiscipline =
     MkScopedPostCloseSuffixFoldOutput
       (MkRelationalNoEpisodeSuffixReplayFold
         (relationalSuffixFinalOrdinal (postCloseOutputFold folded))
@@ -19307,6 +19323,7 @@ scopedPrependPostCloseKeptOutput name key world error value protocol nameEq keyE
         (relationalSuffixFinalUnique (postCloseOutputFold folded))
         (relationalSuffixFinalBoundary (postCloseOutputFold folded)))
       (sameTag, postCloseOutputTags folded)
+      (ScopedParentControlsKeep parentControls (postCloseOutputParentControls folded))
       (RegistrationDisciplineStep namedTransition
         (scopedReadyTrace name key world error value nameEq keyEq
           (GenerationOwnedActor nameEq registered) (S ordinal)
@@ -19361,6 +19378,7 @@ scopedPrependPostCloseDeletedOutput name key world error value protocol nameEq k
         (relationalSuffixFinalUnique (postCloseOutputFold folded))
         (relationalSuffixFinalBoundary (postCloseOutputFold folded)))
       (postCloseOutputTags folded)
+      (ScopedParentControlsDelete (postCloseOutputParentControls folded))
       (postCloseOutputDiscipline folded)
 
 ||| R166 B26 cure (R165 B26 transcripts): the Transition owns its stored proof;
