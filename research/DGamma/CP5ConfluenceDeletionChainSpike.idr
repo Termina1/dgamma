@@ -24130,6 +24130,46 @@ scopedAppendAligned name key world error value nameEq keyEq first middle finalSt
     AlignedStep action tag checked (appendTransitions rest right)
       (scopedAppendAligned name key world error value nameEq keyEq _ middle finalState rest right tail rightAligned)
 
+0 scopedEnrichedTraceAligned :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (scopedEnrichedTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+scopedEnrichedTraceAligned name key world error value protocol nameEq keyEq initial finalState global candidate folds sourceAligned =
+  scopedAppendAligned name key world error value nameEq keyEq initial (locatedPreStart (selectedEpisode candidate))
+    (scopedEnrichedFinal name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+    (traceBeforeOpening (selectedEpisode candidate))
+    (appendTransitions
+      (scopedEnrichedCenterTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+      (scopedEnrichedSuffixTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds))
+    (fst (alignedAppendSplit (traceBeforeOpening (selectedEpisode candidate))
+      (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+        (appendTransitions (closedTransitions (locatedEpisode (selectedEpisode candidate))) (traceAfterClosing (selectedEpisode candidate))))
+      (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+        (sym (locatedDecomposition (selectedEpisode candidate))) sourceAligned)))
+    (scopedAppendAligned name key world error value nameEq keyEq (locatedPreStart (selectedEpisode candidate))
+      (scopedEnrichedMiddle name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+      (scopedEnrichedFinal name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+      (scopedEnrichedCenterTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+      (scopedEnrichedSuffixTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+      (scopedReadyAligned name key world error value nameEq keyEq
+        (EpisodeGenerationDeletedActor nameEq (selectedActor candidate) (selectedRegistrations candidate))
+        (selectedStartOrdinal candidate) (selectedStartLive candidate) (locatedPreStart (selectedEpisode candidate))
+        (locatedAfter (selectedEpisode candidate)) (locatedPreStart (selectedEpisode candidate))
+        (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+          (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+        (selectedFoldReady (selectedOutputFold (enrichedSelected folds))))
+      (scopedReadyAligned name key world error value nameEq keyEq
+        (GenerationOwnedActor nameEq (selectedRegistrations candidate))
+        (selectedFoldEndOrdinal (selectedOutputFold (enrichedSelected folds))) (selectedFoldEndLive (selectedOutputFold (enrichedSelected folds)))
+        (locatedAfter (selectedEpisode candidate)) finalState
+        (scopedEnrichedMiddle name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+        (traceAfterClosing (selectedEpisode candidate)) (relationalSuffixReplayReady (postCloseOutputFold (enrichedSuffix folds)))))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
