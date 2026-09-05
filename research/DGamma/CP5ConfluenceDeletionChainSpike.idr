@@ -12671,6 +12671,86 @@ scopedDispatchDeletedRegisteredHead name key world error value protocol nameEq
       keyEq registered ordinal live (LUnload actor) Refl before afterState tag
       checked noBegin inactive owned)
 
+0 scopedDispatchDeletedSelectedLifecycleHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (stamped : GenerationEnvironmentStamped live) ->
+  (selectedOutside :
+    (generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (action : Action name key value world error) ->
+  (owner : actionOwner action = selected) ->
+  (lifecycle : isLifecycleAction action = True) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (before, afterState, survivor : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (occurs : OccursIn
+    (Fired {before = before} {afterState = afterState} nameEq keyEq action tag
+      checked) whole) ->
+  (targetInstalled : installedAt @{nameEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} selected afterState = True) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  SelectedEpisodeReplayBoundary name key world error value nameEq keyEq selected
+    registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) whole afterState
+    survivor
+scopedDispatchDeletedSelectedLifecycleHead name key world error value nameEq
+  keyEq selected registered ordinal live stamped selectedOutside
+  (OInsert actor parent component) owner lifecycle whole before afterState
+  survivor tag checked occurs targetInstalled boundary =
+    void (scopedFalseNotTrue (the (False = True) lifecycle))
+scopedDispatchDeletedSelectedLifecycleHead name key world error value nameEq
+  keyEq selected registered ordinal live stamped selectedOutside (ORetire actor)
+  owner lifecycle whole before afterState survivor tag checked occurs
+  targetInstalled boundary =
+    void (scopedFalseNotTrue (the (False = True) lifecycle))
+scopedDispatchDeletedSelectedLifecycleHead name key world error value nameEq
+  keyEq selected registered ordinal live stamped selectedOutside (ORemove actor)
+  owner lifecycle whole before afterState survivor tag checked occurs
+  targetInstalled boundary =
+    void (scopedFalseNotTrue (the (False = True) lifecycle))
+scopedDispatchDeletedSelectedLifecycleHead name key world error value nameEq
+  keyEq selected registered ordinal live stamped selectedOutside (LBegin actor)
+  owner lifecycle whole before afterState survivor tag checked occurs
+  targetInstalled boundary =
+    deletedSelectedInstalledHeadPreservesEpisodeBoundary nameEq keyEq selected
+      registered ordinal live stamped selectedOutside (LBegin actor) tag before
+      afterState checked owner Refl whole occurs targetInstalled survivor boundary
+scopedDispatchDeletedSelectedLifecycleHead name key world error value nameEq
+  keyEq selected registered ordinal live stamped selectedOutside
+  (LAdvance actor) owner lifecycle whole before afterState survivor tag checked
+  occurs targetInstalled boundary =
+    deletedSelectedInstalledHeadPreservesEpisodeBoundary nameEq keyEq selected
+      registered ordinal live stamped selectedOutside (LAdvance actor) tag before
+      afterState checked owner Refl whole occurs targetInstalled survivor boundary
+scopedDispatchDeletedSelectedLifecycleHead name key world error value nameEq
+  keyEq selected registered ordinal live stamped selectedOutside
+  (LDivert actor) owner lifecycle whole before afterState survivor tag checked
+  occurs targetInstalled boundary =
+    deletedSelectedInstalledHeadPreservesEpisodeBoundary nameEq keyEq selected
+      registered ordinal live stamped selectedOutside (LDivert actor) tag before
+      afterState checked owner Refl whole occurs targetInstalled survivor boundary
+scopedDispatchDeletedSelectedLifecycleHead name key world error value nameEq
+  keyEq selected registered ordinal live stamped selectedOutside (LLeave actor)
+  owner lifecycle whole before afterState survivor tag checked occurs
+  targetInstalled boundary =
+    deletedSelectedInstalledHeadPreservesEpisodeBoundary nameEq keyEq selected
+      registered ordinal live stamped selectedOutside (LLeave actor) tag before
+      afterState checked owner Refl whole occurs targetInstalled survivor boundary
+scopedDispatchDeletedSelectedLifecycleHead name key world error value nameEq
+  keyEq selected registered ordinal live stamped selectedOutside (LUnload actor)
+  owner lifecycle whole before afterState survivor tag checked occurs
+  targetInstalled boundary =
+    deletedSelectedInstalledHeadPreservesEpisodeBoundary nameEq keyEq selected
+      registered ordinal live stamped selectedOutside (LUnload actor) tag before
+      afterState checked owner Refl whole occurs targetInstalled survivor boundary
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
