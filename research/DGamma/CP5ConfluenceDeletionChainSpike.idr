@@ -10269,6 +10269,27 @@ installedSourceContradictsBeginScoped nameEq keyEq actor {before} {afterState}
           LBeginTag (beginEquation opening)))))
         sourceInstalled)
 
+0 installedTraceExcludesBeginScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {first, finalState, beginBefore, beginAfter :
+    SystemState name key value world error} ->
+  (insideTrace : Transitions first finalState) ->
+  (0 installedTrace : InstalledTrace name key world error value nameEq keyEq
+    actor insideTrace) ->
+  (opening : BeginStep nameEq keyEq actor beginBefore beginAfter) ->
+  OccursIn (beginTransition opening) insideTrace ->
+  Void
+installedTraceExcludesBeginScoped nameEq keyEq actor insideTrace installedTrace
+  opening occurs =
+    case splitInstalledAtOccurrence (beginTransition opening) insideTrace
+      installedTrace occurs of
+      MkInstalledOccurrenceSplit beforeOccurrence afterOccurrence
+        installedBefore installedAfter sourceInstalled targetInstalled
+        decomposition =>
+          installedSourceContradictsBeginScoped nameEq keyEq actor opening
+            sourceInstalled
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
