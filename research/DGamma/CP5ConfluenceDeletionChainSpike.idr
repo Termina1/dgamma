@@ -19318,15 +19318,22 @@ ScopedReadyParentControls name key world error value nameEq keyEq deletable ordi
       (scopedReadySubsequence name key world error value nameEq keyEq deletable ordinal
         live originalFirst originalFinal survivingFirst original ready)
 
+0 scopedBindingLookupExact :
+  (key : Type) -> (value : key -> Type) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (table : CoeffectContext key value) ->
+  (lookupBinding @{keyEq} wanted table = lookupEntries @{keyEq} wanted (bindings table))
+scopedBindingLookupExact key value keyEq wanted (MkCoeffectContext entries unique) = Refl
+
 ||| Exact binding lists suffice for provision presence; erased uniqueness is not compared.
 0 scopedLookupPresenceBindings :
   (key : Type) -> (value : key -> Type) -> (keyEq : DecEq key) ->
   (wanted : key) -> (left, right : CoeffectContext key value) ->
   (bindings left = bindings right) ->
   (isJust (lookupBinding @{keyEq} wanted left) = isJust (lookupBinding @{keyEq} wanted right))
-scopedLookupPresenceBindings key value keyEq wanted
-  (MkCoeffectContext leftEntries leftUnique) (MkCoeffectContext rightEntries rightUnique) same =
-    cong (\entries => isJust (lookupEntries @{keyEq} wanted entries)) same
+scopedLookupPresenceBindings key value keyEq wanted left right same =
+  trans (cong isJust (scopedBindingLookupExact key value keyEq wanted left))
+    (trans (cong (\entries => isJust (lookupEntries @{keyEq} wanted entries)) same)
+      (sym (cong isJust (scopedBindingLookupExact key value keyEq wanted right))))
 
 0 scopedRelatedActiveProvides :
   (name, key, world, error : Type) -> (value : key -> Type) -> (keyEq : DecEq key) ->
