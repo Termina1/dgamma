@@ -9938,6 +9938,37 @@ appendRightOccursScoped (MoreTransitions head rest) right occurs =
   OccursIn transition left -> OccursIn transition right
 transportOccursScoped Refl occurs = occurs
 
+0 scopedSpanningDecomposition :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {actor : name} ->
+  {initial, preStart, opened, anchorState, closeBefore, closeAfter, finalState :
+    SystemState name key value world error} ->
+  (beforeOpening : Transitions initial preStart) ->
+  (opening : BeginStep nameEq keyEq actor preStart opened) ->
+  (afterOpening : Transitions opened anchorState) ->
+  (beforeClosing : Transitions anchorState closeBefore) ->
+  (closing : UnloadStep nameEq keyEq actor closeBefore closeAfter) ->
+  (afterClosing : Transitions closeAfter finalState) ->
+  (leftTrace : Transitions initial anchorState) ->
+  (rightTrace : Transitions anchorState finalState) ->
+  (0 openingSplit : appendTransitions beforeOpening
+    (MoreTransitions (beginTransition opening) afterOpening) = leftTrace) ->
+  (0 closingSplit : appendTransitions beforeClosing
+    (MoreTransitions (unloadTransition closing) afterClosing) = rightTrace) ->
+  appendTransitions beforeOpening
+    (MoreTransitions (beginTransition opening)
+      (appendTransitions (appendTransitions afterOpening beforeClosing)
+        (MoreTransitions (unloadTransition closing) afterClosing))) =
+  appendTransitions leftTrace rightTrace
+scopedSpanningDecomposition beforeOpening opening afterOpening beforeClosing
+  closing afterClosing leftTrace rightTrace openingSplit closingSplit =
+    rewrite appendTransitionsAssociative afterOpening beforeClosing
+      (MoreTransitions (unloadTransition closing) afterClosing) in
+    rewrite closingSplit in
+    rewrite sym (appendTransitionsAssociative beforeOpening
+      (MoreTransitions (beginTransition opening) afterOpening) rightTrace) in
+    rewrite openingSplit in Refl
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
