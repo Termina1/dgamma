@@ -10325,6 +10325,20 @@ classifyAppendOccurrenceScoped (MoreTransitions head rest) rightTrace
         AppendOccurrenceOnLeft (OccursLater onLeft)
       AppendOccurrenceOnRight onRight => AppendOccurrenceOnRight onRight
 
+0 beginUnloadTransitionImpossibleScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {actor : name} ->
+  {beginBefore, beginAfter, closeBefore, closeAfter :
+    SystemState name key value world error} ->
+  (opening : BeginStep nameEq keyEq actor beginBefore beginAfter) ->
+  (closing : UnloadStep nameEq keyEq actor closeBefore closeAfter) ->
+  OccursIn (beginTransition opening)
+    (MoreTransitions (unloadTransition closing) NoTransitions) ->
+  Void
+beginUnloadTransitionImpossibleScoped opening closing OccursHere impossible
+beginUnloadTransitionImpossibleScoped opening closing (OccursLater later)
+  impossible
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
