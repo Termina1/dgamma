@@ -15568,6 +15568,61 @@ insertPresentScopedPostFold nameEq keyEq selected parent component
       MkForeignInsertPlanView absent guards =>
         void (nothingNotJustScopedPostFold (trans (sym absent) found))
 
+data ScopedFiberLifecycleView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (fiber : Fiber name key value world error) -> Type where
+  MkScopedFiberLifecycleView :
+    (component : Component key value world error) ->
+    (parent : Parent name) -> (retiredFlag : Bool) ->
+    (table : OwnedTable key value (componentProvisions component)) ->
+    (observed : Lifecycle key value world error name
+      (dependencies (componentDependencies component))
+      (componentProvisions component)) ->
+    (0 exact : fiber = MkFiber component parent retiredFlag table observed) ->
+    ScopedFiberLifecycleView fiber
+
+0 scopedFiberLifecycleView :
+  (fiber : Fiber name key value world error) -> ScopedFiberLifecycleView fiber
+scopedFiberLifecycleView
+  (MkFiber component parent retiredFlag table lifecycle) =
+    MkScopedFiberLifecycleView component parent retiredFlag table lifecycle Refl
+
+0 beginFiberTagScopedPostFoldAtLifecycle :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (observed : Lifecycle key value world error name
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (state, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  beginFiberAction @{nameEq} @{keyEq} selected
+    (MkFiber component parent retiredFlag table observed) state =
+    Just (tag, afterState) -> tag = LBeginTag
+beginFiberTagScopedPostFoldAtLifecycle nameEq keyEq selected component parent
+  retiredFlag table (Inactive Nothing) state afterState tag equation
+  with (targetFiber (MkFiber component parent retiredFlag table
+    (Inactive Nothing)) (registry state))
+  beginFiberTagScopedPostFoldAtLifecycle nameEq keyEq selected component parent
+    retiredFlag table (Inactive Nothing) state afterState tag equation |
+    Nothing = void (nothingNotJustScopedPostFold equation)
+  beginFiberTagScopedPostFoldAtLifecycle nameEq keyEq selected component parent
+    retiredFlag table (Inactive Nothing) state afterState tag equation |
+    Just view = case justInjective equation of Refl => Refl
+beginFiberTagScopedPostFoldAtLifecycle nameEq keyEq selected component parent
+  retiredFlag table (Inactive (Just failure)) state afterState tag equation =
+    void (nothingNotJustScopedPostFold equation)
+beginFiberTagScopedPostFoldAtLifecycle nameEq keyEq selected component parent
+  retiredFlag table (Reloading remaining accumulator view) state afterState tag
+  equation = void (nothingNotJustScopedPostFold equation)
+beginFiberTagScopedPostFoldAtLifecycle nameEq keyEq selected component parent
+  retiredFlag table (Active accumulator view) state afterState tag equation =
+    void (nothingNotJustScopedPostFold equation)
+beginFiberTagScopedPostFoldAtLifecycle nameEq keyEq selected component parent
+  retiredFlag table (Unloading accumulator view outcome) state afterState tag
+  equation = void (nothingNotJustScopedPostFold equation)
+
 0 beginFiberTagScopedPostFold :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (fiber : Fiber name key value world error) ->
@@ -15575,22 +15630,12 @@ insertPresentScopedPostFold nameEq keyEq selected parent component
   (tag : RuleTag) ->
   beginFiberAction @{nameEq} @{keyEq} selected fiber state =
     Just (tag, afterState) -> tag = LBeginTag
-beginFiberTagScopedPostFold nameEq keyEq selected fiber state afterState tag equation
-  with (fiberLifecycle fiber)
-  beginFiberTagScopedPostFold nameEq keyEq selected fiber state afterState tag equation |
-    Inactive Nothing with (targetFiber fiber (registry state))
-    beginFiberTagScopedPostFold nameEq keyEq selected fiber state afterState tag equation |
-      Inactive Nothing | Nothing = void (nothingNotJustScopedPostFold equation)
-    beginFiberTagScopedPostFold nameEq keyEq selected fiber state afterState tag equation |
-      Inactive Nothing | Just view = case justInjective equation of Refl => Refl
-  beginFiberTagScopedPostFold nameEq keyEq selected fiber state afterState tag equation |
-    Inactive (Just failure) = void (nothingNotJustScopedPostFold equation)
-  beginFiberTagScopedPostFold nameEq keyEq selected fiber state afterState tag equation |
-    Reloading remaining accumulator view = void (nothingNotJustScopedPostFold equation)
-  beginFiberTagScopedPostFold nameEq keyEq selected fiber state afterState tag equation |
-    Active accumulator view = void (nothingNotJustScopedPostFold equation)
-  beginFiberTagScopedPostFold nameEq keyEq selected fiber state afterState tag equation |
-    Unloading accumulator view outcome = void (nothingNotJustScopedPostFold equation)
+beginFiberTagScopedPostFold nameEq keyEq selected fiber state afterState tag
+  equation = case scopedFiberLifecycleView fiber of
+    MkScopedFiberLifecycleView component parent retiredFlag table observed exact =>
+      case exact of
+        Refl => beginFiberTagScopedPostFoldAtLifecycle nameEq keyEq selected
+          component parent retiredFlag table observed state afterState tag equation
 
 0 beginSuccessTagScopedPostFold :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
