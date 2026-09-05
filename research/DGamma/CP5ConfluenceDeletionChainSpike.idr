@@ -15587,6 +15587,52 @@ scopedFiberLifecycleView
   (MkFiber component parent retiredFlag table lifecycle) =
     MkScopedFiberLifecycleView component parent retiredFlag table lifecycle Refl
 
+0 beginJustTagScoped :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (tag : RuleTag) ->
+  (afterState : SystemState name key value world error) ->
+  (built : SystemState name key value world error) ->
+  (0 equation : the (Maybe (RuleTag, SystemState name key value world error))
+    (Just (LBeginTag, built)) = Just (tag, afterState)) ->
+  tag = LBeginTag
+beginJustTagScoped name key world error value tag afterState built equation =
+  sym (cong Builtin.fst (justInjective equation))
+
+0 beginFiberTagScopedAtTarget :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (state : SystemState name key value world error) ->
+  (afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (observed : Maybe (View name (dependencies (componentDependencies component)))) ->
+  (0 exact : targetFiber @{nameEq} @{keyEq} {value = value} {world = world}
+    {error = error} (MkFiber component parent retiredFlag table (Inactive Nothing))
+    (registry state) = observed) ->
+  beginFiberAction @{nameEq} @{keyEq} selected
+    (MkFiber component parent retiredFlag table (Inactive Nothing)) state =
+    Just (tag, afterState) ->
+  tag = LBeginTag
+beginFiberTagScopedAtTarget name key world error value nameEq keyEq selected
+  component parent retiredFlag table state afterState tag Nothing exact =
+    rewrite exact in
+      (\equation => void (nothingNotJustScopedPostFold equation))
+beginFiberTagScopedAtTarget name key world error value nameEq keyEq selected
+  component parent retiredFlag table state afterState tag (Just view) exact =
+    rewrite exact in
+      (\equation => beginJustTagScoped name key world error value tag afterState
+        (MkSystemState (worldState state)
+          (replaceBinding selected
+            (setFiberLifecycle
+              (MkFiber component parent retiredFlag table (Inactive Nothing))
+              (Reloading (componentProgram component) id view))
+            (registry state)))
+        equation)
+
 0 beginFiberTagScopedPostFoldAtLifecycle :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (component : Component key value world error) ->
@@ -15601,15 +15647,14 @@ scopedFiberLifecycleView
     (MkFiber component parent retiredFlag table observed) state =
     Just (tag, afterState) -> tag = LBeginTag
 beginFiberTagScopedPostFoldAtLifecycle nameEq keyEq selected component parent
-  retiredFlag table (Inactive Nothing) state afterState tag equation
-  with (targetFiber (MkFiber component parent retiredFlag table
-    (Inactive Nothing)) (registry state))
-  beginFiberTagScopedPostFoldAtLifecycle nameEq keyEq selected component parent
-    retiredFlag table (Inactive Nothing) state afterState tag equation |
-    Nothing = void (nothingNotJustScopedPostFold equation)
-  beginFiberTagScopedPostFoldAtLifecycle nameEq keyEq selected component parent
-    retiredFlag table (Inactive Nothing) state afterState tag equation |
-    Just view = case justInjective equation of Refl => Refl
+  retiredFlag table (Inactive Nothing) state afterState tag equation =
+    beginFiberTagScopedAtTarget name key world error value nameEq keyEq selected
+      component parent retiredFlag table state afterState tag
+      (targetFiber @{nameEq} @{keyEq} {value = value} {world = world}
+        {error = error}
+        (MkFiber component parent retiredFlag table (Inactive Nothing))
+        (registry state))
+      Refl equation
 beginFiberTagScopedPostFoldAtLifecycle nameEq keyEq selected component parent
   retiredFlag table (Inactive (Just failure)) state afterState tag equation =
     void (nothingNotJustScopedPostFold equation)
