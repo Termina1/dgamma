@@ -24116,6 +24116,20 @@ scopedEnrichedTraceTotal name key world error value protocol nameEq keyEq initia
       (selectedOutputTotal (enrichedSelected folds) (fst (snd (traceComponentsTotalLocatedSplit global (selectedEpisode candidate) sourceTotal))))
       (postCloseOutputTotal (enrichedSuffix folds) (snd (snd (traceComponentsTotalLocatedSplit global (selectedEpisode candidate) sourceTotal)))))
 
+0 scopedAppendAligned :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  AlignedTransitions name key world error value nameEq keyEq right ->
+  AlignedTransitions name key world error value nameEq keyEq (appendTransitions left right)
+scopedAppendAligned name key world error value nameEq keyEq _ middle finalState _ right AlignedEnd rightAligned = rightAligned
+scopedAppendAligned name key world error value nameEq keyEq first middle finalState _ right
+  (AlignedStep action tag checked rest tail) rightAligned =
+    AlignedStep action tag checked (appendTransitions rest right)
+      (scopedAppendAligned name key world error value nameEq keyEq _ middle finalState rest right tail rightAligned)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
