@@ -10829,6 +10829,56 @@ insideScopedOpeningContradiction selected actor wanted selectedStartOrdinal
             selectedStartOrdinal selectedOrdinalExact foreignPrefixCountExact)))
       (openingPrecedenceScoped evidence)
 
+0 beforeScopedSelectedBeginOccurs :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {selected, actor : name} ->
+  {initial, finalState, prefixFinal, stepBefore, stepAfter :
+    SystemState name key value world error} ->
+  {global : Transitions initial finalState} ->
+  (selectedEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  {transition : Transition stepBefore stepAfter} ->
+  {prefixTrace : Transitions initial prefixFinal} ->
+  {anchor : ForeignLifecycleInstalledAnchor name key world error value nameEq
+    keyEq actor transition prefixTrace} ->
+  (localization : ScopedClosingLocalization name key world error value nameEq
+    keyEq actor transition prefixTrace global anchor) ->
+  (selectedToAnchor : Transitions
+    (closedStartState (locatedEpisode selectedEpisode))
+    (lifecycleInstalledState anchor)) ->
+  (foreignToSelected : Transitions
+    (closedStartState
+      (locatedEpisode (localizedPrefixEpisode localization)))
+    (locatedPreStart selectedEpisode)) ->
+  (0 foreignSuffixExact : localizedActivationToAnchor localization =
+    appendTransitions foreignToSelected
+      (MoreTransitions
+        (beginTransition (closedOpening (locatedEpisode selectedEpisode)))
+        selectedToAnchor)) ->
+  OccursIn
+    (beginTransition (closedOpening (locatedEpisode selectedEpisode)))
+    (closedTransitions
+      (locatedEpisode (localizedPrefixEpisode localization)))
+beforeScopedSelectedBeginOccurs selectedEpisode localization selectedToAnchor
+  foreignToSelected foreignSuffixExact =
+    appendLeftOccursScoped
+      (closedInside (locatedEpisode (localizedPrefixEpisode localization)))
+      (MoreTransitions
+        (unloadTransition
+          (closing (locatedEpisode (localizedPrefixEpisode localization))))
+        NoTransitions)
+      (transportOccursScoped (localizedInsideSplit localization)
+        (appendLeftOccursScoped (localizedActivationToAnchor localization)
+          (localizedAnchorToClosing localization)
+          (transportOccursScoped (sym foreignSuffixExact)
+            (appendRightOccursScoped foreignToSelected
+              (MoreTransitions
+                (beginTransition
+                  (closedOpening (locatedEpisode selectedEpisode)))
+                selectedToAnchor)
+              OccursHere))))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
