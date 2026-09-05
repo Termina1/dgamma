@@ -26164,6 +26164,23 @@ scopedDeletionEmbeddedTags name key world error value nameEq keyEq initial final
         (locatedAfter (selectedEpisode candidate)) finalState (survivingEpisodeEnd result) (survivingFinal result) (traceAfterClosing (selectedEpisode candidate)) (survivingAfter result)
         (afterDeletion result) afterTags survivingOrdinal originalOrdinal exact)
 
+0 scopedLocatedTagPairSame :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (sourceFirst, sourceFinal, targetFirst, targetFinal : SystemState name key value world error) ->
+  (source : Transitions sourceFirst sourceFinal) -> (target : Transitions targetFirst targetFinal) ->
+  (action : Action name key value world error) ->
+  (sourceOccurrence : LocatedActionOccurrence action source) -> (targetOccurrence : LocatedActionOccurrence action target) ->
+  ScopedOrdinalTagPair name key world error value sourceFirst sourceFinal targetFirst targetFinal source target
+    (locatedActionOrdinal sourceOccurrence) (locatedActionOrdinal targetOccurrence) ->
+  (transitionTag (locatedTransition sourceOccurrence) = transitionTag (locatedTransition targetOccurrence))
+scopedLocatedTagPairSame name key world error value sourceFirst sourceFinal targetFirst targetFinal source target action sourceOccurrence targetOccurrence pair =
+  trans (scopedRuleAtUnique name key world error value sourceFirst sourceFinal source (locatedActionOrdinal sourceOccurrence)
+      (transitionTag (locatedTransition sourceOccurrence)) (ordinalSharedTag pair)
+      (scopedLocatedRule name key world error value sourceFirst sourceFinal source action sourceOccurrence) (ordinalSourceTag pair))
+    (scopedRuleAtUnique name key world error value targetFirst targetFinal target (locatedActionOrdinal targetOccurrence)
+      (ordinalSharedTag pair) (transitionTag (locatedTransition targetOccurrence)) (ordinalTargetTag pair)
+      (scopedLocatedRule name key world error value targetFirst targetFinal target action targetOccurrence))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
