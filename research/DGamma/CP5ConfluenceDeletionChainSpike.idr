@@ -15060,6 +15060,35 @@ scopedSelectedLifecycleExclusionAt name key world error value nameEq keyEq globa
       boundary leftSelected leftOwner originalSelectedFound originalOwnerFound
       wanted ownerDeclares
 
+0 scopedSelectedLifecycleProvider :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq global) ->
+  (initialWellFormed : registryWellFormed @{nameEq} @{keyEq} initial = True) ->
+  (initialEmpty : bindings (registry initial) = []) ->
+  (selected : name) ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (selectedStartOrdinal : Nat) ->
+  (selectedStartLive : GenerationEnvironment name) ->
+  (selectedOrdinalExact : transitionCount (traceBeforeOpening located) =
+    selectedStartOrdinal) ->
+  (noDependent : NoDependentClosingEpisodeForGeneration
+    {nameEq = nameEq} {keyEq = keyEq} {global = global} selected
+    selectedStartOrdinal selectedStartLive located) ->
+  ScopedSelectedEpisodeLifecycleProvider name key world error value nameEq keyEq
+    selected registered global (locatedEpisode located)
+scopedSelectedLifecycleProvider name key world error value nameEq keyEq global
+  aligned initialWellFormed initialEmpty selected located registered
+  selectedStartOrdinal selectedStartLive selectedOrdinalExact noDependent =
+    MkScopedSelectedEpisodeLifecycleProvider
+      (scopedSelectedLifecycleExclusionAt name key world error value nameEq keyEq
+        global aligned initialWellFormed initialEmpty selected located registered
+        selectedStartOrdinal selectedStartLive selectedOrdinalExact noDependent)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
