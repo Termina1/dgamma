@@ -12,6 +12,7 @@ import DGamma.CP4DeletionPlanBuilder
 import DGamma.CP4DeletionPlanComplete
 import DGamma.CP4DeletionPlanEffects
 import DGamma.CP4DeletionFilterSuccess
+import DGamma.CP4DeletionGenerationFilter
 import DGamma.CP4DeletionGenerationBounds
 import DGamma.CP4DeletionGenerationStamped
 import DGamma.CP4DeletionGenerationUnique
