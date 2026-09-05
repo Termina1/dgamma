@@ -2123,6 +2123,537 @@ leftDiscardedRegistrationHeadRetained nameEq leftOrdinal leftIndex transition
           (sym (advanceDeletedRegistrationIndexHead nameEq leftOrdinal child
             parent component leftIndex)) Here)
 
+||| Producer-owned head/tail view for one exact generated registration in the
+||| left scanner trace.  Both the local ordinal and the dependent suffix are
+||| retained, so recursive scanner consumers never reconstruct either from an
+||| action equality.
+data LeftScannerGeneratedHeadView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (child, parent : name) ->
+  (component : Component key value world error) ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (occurrence : LocatedGeneratedRegistration child parent component
+    (MoreTransitions head rest)) -> Type where
+  LeftScannerGeneratedAtHead :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    {child, parent : name} ->
+    {component : Component key value world error} ->
+    {head : Transition first middle} ->
+    {rest : Transitions middle finalState} ->
+    {occurrence : LocatedGeneratedRegistration child parent component
+      (MoreTransitions head rest)} ->
+    (0 actionShape : transitionAction head =
+      OInsert child (ChildOf parent) component) ->
+    (0 exactAfterState : registrationAfter occurrence = middle) ->
+    (0 exactAfter : replace
+      {p = \state => Transitions state finalState} exactAfterState
+      (afterRegistration occurrence) = rest) ->
+    (0 exactOrdinal : registrationOrdinal occurrence = Z) ->
+    LeftScannerGeneratedHeadView child parent component head rest occurrence
+  LeftScannerGeneratedInTail :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    {child, parent : name} ->
+    {component : Component key value world error} ->
+    {head : Transition first middle} ->
+    {rest : Transitions middle finalState} ->
+    {occurrence : LocatedGeneratedRegistration child parent component
+      (MoreTransitions head rest)} ->
+    (0 tailOccurrence : LocatedGeneratedRegistration child parent component
+      rest) ->
+    (0 exactAfterState : registrationAfter occurrence =
+      registrationAfter tailOccurrence) ->
+    (0 exactAfter : replace
+      {p = \state => Transitions state finalState} exactAfterState
+      (afterRegistration occurrence) = afterRegistration tailOccurrence) ->
+    (0 exactOrdinal : registrationOrdinal occurrence =
+      S (registrationOrdinal tailOccurrence)) ->
+    LeftScannerGeneratedHeadView child parent component head rest occurrence
+
+0 leftScannerGeneratedAtHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState, afterState :
+    SystemState name key value world error} ->
+  (child, parent : name) ->
+  (component : Component key value world error) ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (transition : Transition first afterState) ->
+  (later : Transitions afterState finalState) ->
+  (0 actionShape : transitionAction transition =
+    OInsert child (ChildOf parent) component) ->
+  (0 decomposition : MoreTransitions transition later =
+    MoreTransitions head rest) ->
+  LeftScannerGeneratedHeadView child parent component head rest
+    (MkLocatedGeneratedRegistration first afterState NoTransitions transition
+      later actionShape decomposition)
+leftScannerGeneratedAtHead child parent component head rest transition later
+  actionShape decomposition =
+    case decomposition of
+      Refl => LeftScannerGeneratedAtHead actionShape Refl Refl Refl
+
+0 leftScannerGeneratedInTail :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, prefixMiddle, before, afterState, finalState :
+    SystemState name key value world error} ->
+  (child, parent : name) ->
+  (component : Component key value world error) ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (prefixHead : Transition first prefixMiddle) ->
+  (prefixRest : Transitions prefixMiddle before) ->
+  (transition : Transition before afterState) ->
+  (later : Transitions afterState finalState) ->
+  (0 actionShape : transitionAction transition =
+    OInsert child (ChildOf parent) component) ->
+  (0 decomposition : MoreTransitions prefixHead
+    (appendTransitions prefixRest (MoreTransitions transition later)) =
+    MoreTransitions head rest) ->
+  LeftScannerGeneratedHeadView child parent component head rest
+    (MkLocatedGeneratedRegistration before afterState
+      (MoreTransitions prefixHead prefixRest) transition later actionShape
+      decomposition)
+leftScannerGeneratedInTail child parent component head rest prefixHead prefixRest
+  transition later actionShape decomposition =
+    case decomposition of
+      Refl => LeftScannerGeneratedInTail
+        (MkLocatedGeneratedRegistration _ _ prefixRest transition later
+          actionShape Refl)
+        Refl Refl Refl
+
+0 leftScannerGeneratedHeadParts :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, before, afterState, finalState :
+    SystemState name key value world error} ->
+  (child, parent : name) ->
+  (component : Component key value world error) ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (beforeTrace : Transitions first before) ->
+  (transition : Transition before afterState) ->
+  (later : Transitions afterState finalState) ->
+  (0 actionShape : transitionAction transition =
+    OInsert child (ChildOf parent) component) ->
+  (0 decomposition : appendTransitions beforeTrace
+    (MoreTransitions transition later) = MoreTransitions head rest) ->
+  LeftScannerGeneratedHeadView child parent component head rest
+    (MkLocatedGeneratedRegistration before afterState beforeTrace transition
+      later actionShape decomposition)
+leftScannerGeneratedHeadParts child parent component head rest NoTransitions
+  transition later actionShape decomposition =
+    leftScannerGeneratedAtHead child parent component head rest transition later
+      actionShape decomposition
+leftScannerGeneratedHeadParts child parent component head rest
+  (MoreTransitions prefixHead prefixRest) transition later actionShape
+  decomposition =
+    leftScannerGeneratedInTail child parent component head rest prefixHead
+      prefixRest transition later actionShape decomposition
+
+0 leftScannerGeneratedHeadView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (child, parent : name) ->
+  (component : Component key value world error) ->
+  (head : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  (occurrence : LocatedGeneratedRegistration child parent component
+    (MoreTransitions head rest)) ->
+  LeftScannerGeneratedHeadView child parent component head rest occurrence
+leftScannerGeneratedHeadView child parent component head rest occurrence =
+  case occurrence of
+    MkLocatedGeneratedRegistration before afterState beforeTrace transition later
+      actionShape decomposition =>
+        leftScannerGeneratedHeadParts child parent component head rest beforeTrace
+          transition later actionShape decomposition
+
+0 leftScannerActionOccursTraceEquality :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (action : Action name key value world error) ->
+  (left, right : Transitions first finalState) ->
+  (0 exact : left = right) -> ActionOccurs action left -> ActionOccurs action right
+leftScannerActionOccursTraceEquality action left right exact occurrence =
+  case exact of
+    Refl => occurrence
+
+0 leftScannerActionOccursAfterExact :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFirst, rightFirst, finalState :
+    SystemState name key value world error} ->
+  (action : Action name key value world error) ->
+  (left : Transitions leftFirst finalState) ->
+  (right : Transitions rightFirst finalState) ->
+  (0 exactFirst : leftFirst = rightFirst) ->
+  (0 exactTrace : replace
+    {p = \state => Transitions state finalState} exactFirst left = right) ->
+  ActionOccurs action left -> ActionOccurs action right
+leftScannerActionOccursAfterExact action left right exactFirst exactTrace
+  occurrence =
+    case exactFirst of
+      Refl => leftScannerActionOccursTraceEquality action left right exactTrace
+        occurrence
+
+0 leftScannerLocatedInEmptyImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {state : SystemState name key value world error} ->
+  {child, parent : name} ->
+  {component : Component key value world error} ->
+  LocatedGeneratedRegistration child parent component
+    (NoTransitions {state = state}) -> Void
+leftScannerLocatedInEmptyImpossible
+  (MkLocatedGeneratedRegistration before afterState beforeTrace transition later
+    actionShape decomposition) =
+      case beforeTrace of
+        NoTransitions => case decomposition of Refl impossible
+        MoreTransitions prefixHead prefixRest =>
+          case decomposition of Refl impossible
+
+mutual
+  0 leftScannerLocatedDiscardFold :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) ->
+    {renaming : RegistrationGenerationBijection name} ->
+    (leftOrdinal : Nat) -> (leftIndex : RegistrationIndexState name) ->
+    {leftFirst, leftFinal : SystemState name key value world error} ->
+    {left : Transitions leftFirst leftFinal} ->
+    {leftFinalIndex : RegistrationIndexState name} ->
+    {rightOrdinal : Nat} -> {rightIndex : RegistrationIndexState name} ->
+    {rightFirst, rightFinal : SystemState name key value world error} ->
+    {right : Transitions rightFirst rightFinal} ->
+    {rightFinalIndex : RegistrationIndexState name} ->
+    {pendingLeft, pendingRight :
+      List (RegistrationEvent name key world error value)} ->
+    (correspondence : RegistrationTraceCorrespondence nameEq renaming leftOrdinal
+      leftIndex left leftFinalIndex rightOrdinal rightIndex right rightFinalIndex
+      pendingLeft pendingRight) ->
+    (child, parent : name) ->
+    (component : Component key value world error) ->
+    (occurrence : LocatedGeneratedRegistration child parent component left) ->
+    ActionOccurs (LUnload parent) (afterRegistration occurrence) ->
+    Elem (MkRegistrationGeneration child
+      (leftOrdinal + registrationOrdinal occurrence))
+      (indexedDeletedGenerations leftFinalIndex)
+  leftScannerLocatedDiscardFold nameEq leftOrdinal leftIndex
+    RegistrationCorrespondenceEnd child parent component occurrence closes =
+      void (leftScannerLocatedInEmptyImpossible occurrence)
+  leftScannerLocatedDiscardFold nameEq leftOrdinal leftIndex
+    (SkipLeftNonRegistration action transition leftRest sameAction generated
+      rest) child parent component occurrence closes =
+        leftScannerSkipView nameEq leftOrdinal leftIndex action transition leftRest
+          sameAction generated rest child parent component occurrence closes
+          (leftScannerGeneratedHeadView child parent component transition leftRest
+            occurrence)
+  leftScannerLocatedDiscardFold nameEq leftOrdinal leftIndex
+    (SkipRightNonRegistration action transition rightRest sameAction generated
+      rest) child parent component occurrence closes =
+        leftScannerLocatedDiscardFold nameEq leftOrdinal leftIndex rest child
+          parent component occurrence closes
+  leftScannerLocatedDiscardFold nameEq leftOrdinal leftIndex
+    (DiscardLeftDeletedRegistration transition leftRest sameAction deleted rest)
+    child parent component occurrence closes =
+      leftScannerDiscardView nameEq leftOrdinal leftIndex transition leftRest
+        sameAction deleted rest child parent component occurrence closes
+        (leftScannerGeneratedHeadView child parent component transition leftRest
+          occurrence)
+  leftScannerLocatedDiscardFold nameEq leftOrdinal leftIndex
+    (DiscardRightDeletedRegistration transition rightRest sameAction deleted rest)
+    child parent component occurrence closes =
+      leftScannerLocatedDiscardFold nameEq leftOrdinal leftIndex rest child
+        parent component occurrence closes
+  leftScannerLocatedDiscardFold nameEq leftOrdinal leftIndex
+    (QueueLeftGeneratedRegistration transition leftRest sameAction surviving rest)
+    child parent component occurrence closes =
+      leftScannerQueueView nameEq leftOrdinal leftIndex transition leftRest
+        sameAction surviving rest child parent component occurrence closes
+        (leftScannerGeneratedHeadView child parent component transition leftRest
+          occurrence)
+  leftScannerLocatedDiscardFold nameEq leftOrdinal leftIndex
+    (QueueRightGeneratedRegistration transition rightRest sameAction surviving
+      rest) child parent component occurrence closes =
+        leftScannerLocatedDiscardFold nameEq leftOrdinal leftIndex rest child
+          parent component occurrence closes
+  leftScannerLocatedDiscardFold nameEq leftOrdinal leftIndex
+    (MatchLeftWithPendingRight transition leftRest sameAction surviving rightPrefix
+      rightEvent rightSuffix matched rest) child parent component occurrence
+      closes =
+        leftScannerMatchView nameEq leftOrdinal leftIndex transition leftRest
+          sameAction surviving rightPrefix rightEvent rightSuffix matched rest
+          child parent component occurrence closes
+          (leftScannerGeneratedHeadView child parent component transition leftRest
+            occurrence)
+  leftScannerLocatedDiscardFold nameEq leftOrdinal leftIndex
+    (MatchRightWithPendingLeft transition rightRest sameAction surviving leftPrefix
+      leftEvent leftSuffix matched rest) child parent component occurrence closes =
+        leftScannerLocatedDiscardFold nameEq leftOrdinal leftIndex rest child
+          parent component occurrence closes
+
+  0 leftScannerSkipView :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) ->
+    {renaming : RegistrationGenerationBijection name} ->
+    (leftOrdinal : Nat) -> (leftIndex : RegistrationIndexState name) ->
+    {leftFirst, leftMiddle, leftFinal :
+      SystemState name key value world error} ->
+    (action : Action name key value world error) ->
+    (transition : Transition leftFirst leftMiddle) ->
+    (leftRest : Transitions leftMiddle leftFinal) ->
+    (0 sameAction : transitionAction transition = action) ->
+    (0 generated : isGeneratedRegistrationAction action = False) ->
+    {leftFinalIndex : RegistrationIndexState name} ->
+    {rightOrdinal : Nat} -> {rightIndex : RegistrationIndexState name} ->
+    {rightFirst, rightFinal : SystemState name key value world error} ->
+    {right : Transitions rightFirst rightFinal} ->
+    {rightFinalIndex : RegistrationIndexState name} ->
+    {pendingLeft, pendingRight :
+      List (RegistrationEvent name key world error value)} ->
+    (rest : RegistrationTraceCorrespondence nameEq renaming (S leftOrdinal)
+      (advanceRegistrationIndex @{nameEq} leftOrdinal action leftIndex)
+      leftRest leftFinalIndex rightOrdinal rightIndex right rightFinalIndex
+      pendingLeft pendingRight) ->
+    (child, parent : name) ->
+    (component : Component key value world error) ->
+    (occurrence : LocatedGeneratedRegistration child parent component
+      (MoreTransitions transition leftRest)) ->
+    ActionOccurs (LUnload parent) (afterRegistration occurrence) ->
+    LeftScannerGeneratedHeadView child parent component transition leftRest
+      occurrence ->
+    Elem (MkRegistrationGeneration child
+      (leftOrdinal + registrationOrdinal occurrence))
+      (indexedDeletedGenerations leftFinalIndex)
+  leftScannerSkipView nameEq leftOrdinal leftIndex action transition leftRest
+    sameAction generated rest child parent component occurrence closes
+    (LeftScannerGeneratedAtHead actionShape exactAfterState exactAfter
+      exactOrdinal) =
+        void (generatedRegistrationHeadNotSkipped transition action child parent
+          component sameAction actionShape generated)
+  leftScannerSkipView nameEq leftOrdinal leftIndex action transition leftRest
+    sameAction generated rest child parent component occurrence closes
+    (LeftScannerGeneratedInTail tailOccurrence exactAfterState exactAfter
+      exactOrdinal) =
+        replace {p = \generation => Elem generation
+          (indexedDeletedGenerations leftFinalIndex)}
+          (sym (cong (MkRegistrationGeneration child)
+            (trans (cong (leftOrdinal +) exactOrdinal)
+              (sym (plusSuccRightSucc leftOrdinal
+                (registrationOrdinal tailOccurrence))))))
+          (leftScannerLocatedDiscardFold nameEq (S leftOrdinal)
+            (advanceRegistrationIndex @{nameEq} leftOrdinal action leftIndex)
+            rest child parent component tailOccurrence
+            (leftScannerActionOccursAfterExact (LUnload parent)
+              (afterRegistration occurrence) (afterRegistration tailOccurrence)
+              exactAfterState exactAfter closes))
+
+  0 leftScannerDiscardView :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) ->
+    {renaming : RegistrationGenerationBijection name} ->
+    (leftOrdinal : Nat) -> (leftIndex : RegistrationIndexState name) ->
+    {leftFirst, leftMiddle, leftFinal :
+      SystemState name key value world error} ->
+    (transition : Transition leftFirst leftMiddle) ->
+    (leftRest : Transitions leftMiddle leftFinal) ->
+    {scannerChild, scannerParent : name} ->
+    {scannerComponent : Component key value world error} ->
+    (0 sameAction : transitionAction transition =
+      OInsert scannerChild (ChildOf scannerParent) scannerComponent) ->
+    (0 deleted : DeletedClosingRegistration
+      (registrationEventAt @{nameEq} leftOrdinal leftIndex scannerChild
+        scannerParent scannerComponent) leftRest) ->
+    {leftFinalIndex : RegistrationIndexState name} ->
+    {rightOrdinal : Nat} -> {rightIndex : RegistrationIndexState name} ->
+    {rightFirst, rightFinal : SystemState name key value world error} ->
+    {right : Transitions rightFirst rightFinal} ->
+    {rightFinalIndex : RegistrationIndexState name} ->
+    {pendingLeft, pendingRight :
+      List (RegistrationEvent name key world error value)} ->
+    (rest : RegistrationTraceCorrespondence nameEq renaming (S leftOrdinal)
+      (advanceDeletedRegistrationIndex @{nameEq} leftOrdinal scannerChild
+        scannerParent scannerComponent leftIndex)
+      leftRest leftFinalIndex rightOrdinal rightIndex right rightFinalIndex
+      pendingLeft pendingRight) ->
+    (child, parent : name) ->
+    (component : Component key value world error) ->
+    (occurrence : LocatedGeneratedRegistration child parent component
+      (MoreTransitions transition leftRest)) ->
+    ActionOccurs (LUnload parent) (afterRegistration occurrence) ->
+    LeftScannerGeneratedHeadView child parent component transition leftRest
+      occurrence ->
+    Elem (MkRegistrationGeneration child
+      (leftOrdinal + registrationOrdinal occurrence))
+      (indexedDeletedGenerations leftFinalIndex)
+  leftScannerDiscardView nameEq leftOrdinal leftIndex transition leftRest
+    sameAction deleted rest child parent component occurrence closes
+    (LeftScannerGeneratedAtHead actionShape exactAfterState exactAfter
+      exactOrdinal) =
+        replace {p = \generation => Elem generation
+          (indexedDeletedGenerations leftFinalIndex)}
+          (sym (cong (MkRegistrationGeneration child)
+            (trans (cong (leftOrdinal +) exactOrdinal)
+              (plusZeroRightNeutral leftOrdinal))))
+          (leftDiscardedRegistrationHeadRetained nameEq leftOrdinal leftIndex
+            transition leftRest scannerChild scannerParent child parent
+            scannerComponent component sameAction actionShape rest)
+  leftScannerDiscardView nameEq leftOrdinal leftIndex transition leftRest
+    sameAction deleted rest child parent component occurrence closes
+    (LeftScannerGeneratedInTail tailOccurrence exactAfterState exactAfter
+      exactOrdinal) =
+        replace {p = \generation => Elem generation
+          (indexedDeletedGenerations leftFinalIndex)}
+          (sym (cong (MkRegistrationGeneration child)
+            (trans (cong (leftOrdinal +) exactOrdinal)
+              (sym (plusSuccRightSucc leftOrdinal
+                (registrationOrdinal tailOccurrence))))))
+          (leftScannerLocatedDiscardFold nameEq (S leftOrdinal)
+            (advanceDeletedRegistrationIndex @{nameEq} leftOrdinal scannerChild
+              scannerParent scannerComponent leftIndex)
+            rest child parent component tailOccurrence
+            (leftScannerActionOccursAfterExact (LUnload parent)
+              (afterRegistration occurrence) (afterRegistration tailOccurrence)
+              exactAfterState exactAfter closes))
+
+  0 leftScannerQueueView :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) ->
+    {renaming : RegistrationGenerationBijection name} ->
+    (leftOrdinal : Nat) -> (leftIndex : RegistrationIndexState name) ->
+    {leftFirst, leftMiddle, leftFinal :
+      SystemState name key value world error} ->
+    (transition : Transition leftFirst leftMiddle) ->
+    (leftRest : Transitions leftMiddle leftFinal) ->
+    {scannerChild, scannerParent : name} ->
+    {scannerComponent : Component key value world error} ->
+    (0 sameAction : transitionAction transition =
+      OInsert scannerChild (ChildOf scannerParent) scannerComponent) ->
+    (0 surviving : SurvivingRegistration
+      (registrationEventAt @{nameEq} leftOrdinal leftIndex scannerChild
+        scannerParent scannerComponent) leftRest) ->
+    {leftFinalIndex : RegistrationIndexState name} ->
+    {rightOrdinal : Nat} -> {rightIndex : RegistrationIndexState name} ->
+    {rightFirst, rightFinal : SystemState name key value world error} ->
+    {right : Transitions rightFirst rightFinal} ->
+    {rightFinalIndex : RegistrationIndexState name} ->
+    {pendingLeft, pendingRight :
+      List (RegistrationEvent name key world error value)} ->
+    (rest : RegistrationTraceCorrespondence nameEq renaming (S leftOrdinal)
+      (advanceSurvivingRegistrationIndex @{nameEq} leftOrdinal scannerChild
+        scannerParent scannerComponent leftIndex)
+      leftRest leftFinalIndex rightOrdinal rightIndex right rightFinalIndex
+      (registrationEventAt @{nameEq} leftOrdinal leftIndex scannerChild
+        scannerParent scannerComponent :: pendingLeft) pendingRight) ->
+    (child, parent : name) ->
+    (component : Component key value world error) ->
+    (occurrence : LocatedGeneratedRegistration child parent component
+      (MoreTransitions transition leftRest)) ->
+    ActionOccurs (LUnload parent) (afterRegistration occurrence) ->
+    LeftScannerGeneratedHeadView child parent component transition leftRest
+      occurrence ->
+    Elem (MkRegistrationGeneration child
+      (leftOrdinal + registrationOrdinal occurrence))
+      (indexedDeletedGenerations leftFinalIndex)
+  leftScannerQueueView nameEq leftOrdinal leftIndex transition leftRest sameAction
+    surviving rest child parent component occurrence closes
+    (LeftScannerGeneratedAtHead actionShape exactAfterState exactAfter
+      exactOrdinal) =
+        void (generatedRegistrationHeadNotSurviving transition leftRest
+          scannerChild scannerParent child parent scannerComponent component
+          sameAction actionShape surviving
+          (leftScannerActionOccursAfterExact (LUnload parent)
+            (afterRegistration occurrence) leftRest exactAfterState exactAfter
+            closes))
+  leftScannerQueueView nameEq leftOrdinal leftIndex transition leftRest sameAction
+    surviving rest child parent component occurrence closes
+    (LeftScannerGeneratedInTail tailOccurrence exactAfterState exactAfter
+      exactOrdinal) =
+        replace {p = \generation => Elem generation
+          (indexedDeletedGenerations leftFinalIndex)}
+          (sym (cong (MkRegistrationGeneration child)
+            (trans (cong (leftOrdinal +) exactOrdinal)
+              (sym (plusSuccRightSucc leftOrdinal
+                (registrationOrdinal tailOccurrence))))))
+          (leftScannerLocatedDiscardFold nameEq (S leftOrdinal)
+            (advanceSurvivingRegistrationIndex @{nameEq} leftOrdinal scannerChild
+              scannerParent scannerComponent leftIndex)
+            rest child parent component tailOccurrence
+            (leftScannerActionOccursAfterExact (LUnload parent)
+              (afterRegistration occurrence) (afterRegistration tailOccurrence)
+              exactAfterState exactAfter closes))
+
+  0 leftScannerMatchView :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) ->
+    {renaming : RegistrationGenerationBijection name} ->
+    (leftOrdinal : Nat) -> (leftIndex : RegistrationIndexState name) ->
+    {leftFirst, leftMiddle, leftFinal :
+      SystemState name key value world error} ->
+    (transition : Transition leftFirst leftMiddle) ->
+    (leftRest : Transitions leftMiddle leftFinal) ->
+    {scannerChild, scannerParent : name} ->
+    {scannerComponent : Component key value world error} ->
+    (0 sameAction : transitionAction transition =
+      OInsert scannerChild (ChildOf scannerParent) scannerComponent) ->
+    (0 surviving : SurvivingRegistration
+      (registrationEventAt @{nameEq} leftOrdinal leftIndex scannerChild
+        scannerParent scannerComponent) leftRest) ->
+    (rightPrefix : List (RegistrationEvent name key world error value)) ->
+    (rightEvent : RegistrationEvent name key world error value) ->
+    (rightSuffix : List (RegistrationEvent name key world error value)) ->
+    (0 matched : RegistrationEventMatch renaming
+      (registrationEventAt @{nameEq} leftOrdinal leftIndex scannerChild
+        scannerParent scannerComponent) rightEvent) ->
+    {leftFinalIndex : RegistrationIndexState name} ->
+    {rightOrdinal : Nat} -> {rightIndex : RegistrationIndexState name} ->
+    {rightFirst, rightFinal : SystemState name key value world error} ->
+    {right : Transitions rightFirst rightFinal} ->
+    {rightFinalIndex : RegistrationIndexState name} ->
+    {pendingLeft : List (RegistrationEvent name key world error value)} ->
+    (rest : RegistrationTraceCorrespondence nameEq renaming (S leftOrdinal)
+      (advanceSurvivingRegistrationIndex @{nameEq} leftOrdinal scannerChild
+        scannerParent scannerComponent leftIndex)
+      leftRest leftFinalIndex rightOrdinal rightIndex right rightFinalIndex
+      pendingLeft (rightPrefix ++ rightSuffix)) ->
+    (child, parent : name) ->
+    (component : Component key value world error) ->
+    (occurrence : LocatedGeneratedRegistration child parent component
+      (MoreTransitions transition leftRest)) ->
+    ActionOccurs (LUnload parent) (afterRegistration occurrence) ->
+    LeftScannerGeneratedHeadView child parent component transition leftRest
+      occurrence ->
+    Elem (MkRegistrationGeneration child
+      (leftOrdinal + registrationOrdinal occurrence))
+      (indexedDeletedGenerations leftFinalIndex)
+  leftScannerMatchView nameEq leftOrdinal leftIndex transition leftRest sameAction
+    surviving rightPrefix rightEvent rightSuffix matched rest child parent
+    component occurrence closes
+    (LeftScannerGeneratedAtHead actionShape exactAfterState exactAfter
+      exactOrdinal) =
+        void (generatedRegistrationHeadNotSurviving transition leftRest
+          scannerChild scannerParent child parent scannerComponent component
+          sameAction actionShape surviving
+          (leftScannerActionOccursAfterExact (LUnload parent)
+            (afterRegistration occurrence) leftRest exactAfterState exactAfter
+            closes))
+  leftScannerMatchView nameEq leftOrdinal leftIndex transition leftRest sameAction
+    surviving rightPrefix rightEvent rightSuffix matched rest child parent
+    component occurrence closes
+    (LeftScannerGeneratedInTail tailOccurrence exactAfterState exactAfter
+      exactOrdinal) =
+        replace {p = \generation => Elem generation
+          (indexedDeletedGenerations leftFinalIndex)}
+          (sym (cong (MkRegistrationGeneration child)
+            (trans (cong (leftOrdinal +) exactOrdinal)
+              (sym (plusSuccRightSucc leftOrdinal
+                (registrationOrdinal tailOccurrence))))))
+          (leftScannerLocatedDiscardFold nameEq (S leftOrdinal)
+            (advanceSurvivingRegistrationIndex @{nameEq} leftOrdinal scannerChild
+              scannerParent scannerComponent leftIndex)
+            rest child parent component tailOccurrence
+            (leftScannerActionOccursAfterExact (LUnload parent)
+              (afterRegistration occurrence) (afterRegistration tailOccurrence)
+              exactAfterState exactAfter closes))
+
 ||| Exact left-scanner induction boundary.  At the located birth the accepted
 ||| correspondence cannot take a surviving/queued/matched branch: each such
 ||| branch contains `NoParentUnload`, contradicted by
@@ -2147,8 +2678,17 @@ public export
   DeletedGenerationClassification name key world error value nameEq left
     generation ->
   Elem generation (indexedDeletedGenerations leftFinalIndex)
-deletedClassificationForcesLeftScannerDiscardSpike =
-  ?deletedClassificationForcesLeftScannerDiscardSpike_rhs
+deletedClassificationForcesLeftScannerDiscardSpike nameEq renaming
+  leftFinalIndex rightFinalIndex correspondence generation
+  (MkDeletedGenerationClassification parent component occurrence
+    occurrenceGeneration closes) =
+      replace {p = \observed => Elem observed
+        (indexedDeletedGenerations leftFinalIndex)}
+        occurrenceGeneration
+        (leftScannerLocatedDiscardFold nameEq 0
+          (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex)
+          correspondence (generationName generation) parent component occurrence
+          closes)
 
 ||| Symmetric right-scanner induction boundary.
 public export
