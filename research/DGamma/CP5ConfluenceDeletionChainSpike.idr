@@ -11440,6 +11440,25 @@ data ScopedLocatedRegistrationStep :
       stepBefore future ->
     ScopedLocatedRegistrationStep protocol nameEq transition global
 
+0 scopedRegistrationDisciplineAtOccurrence :
+  (transition : Transition stepBefore stepAfter) ->
+  (global : Transitions globalFirst globalLast) ->
+  RegistrationDiscipline protocol nameEq global ->
+  OccursIn transition global ->
+  ScopedLocatedRegistrationStep protocol nameEq transition global
+scopedRegistrationDisciplineAtOccurrence transition
+  (MoreTransitions transition rest)
+  (RegistrationDisciplineStep transition rest stepDiscipline tailDiscipline)
+  OccursHere = MkScopedLocatedRegistrationStep rest stepDiscipline
+scopedRegistrationDisciplineAtOccurrence wanted
+  (MoreTransitions head rest)
+  (RegistrationDisciplineStep head rest stepDiscipline tailDiscipline)
+  (OccursLater later) =
+    case scopedRegistrationDisciplineAtOccurrence wanted rest tailDiscipline
+      later of
+      MkScopedLocatedRegistrationStep future futureDiscipline =>
+        MkScopedLocatedRegistrationStep future futureDiscipline
+
 0 ScopedForeignLifecycleExclusion :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
