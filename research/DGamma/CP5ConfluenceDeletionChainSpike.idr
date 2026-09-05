@@ -17036,6 +17036,62 @@ scopedInsertPresentAbsurd name key world error value nameEq keyEq child
 scopedAndLeftTrue False right equation = case equation of Refl impossible
 scopedAndLeftTrue True right equation = Refl
 
+||| A successful O-Remove forces the retirement guard on the fiber found by
+||| the source lookup.  The observed lookup and guard values are explicit
+||| arguments so the reduction of `applyAction` reaches inside the removal
+||| branch.
+0 scopedRemoveRequiresRetired :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child : name) ->
+  (before : SystemState name key value world error) ->
+  (foundFiber : Fiber name key value world error) ->
+  (0 found : lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} child (registry before) = Just foundFiber) ->
+  (guardValue : Bool) ->
+  (0 guardEq : (retired foundFiber && isInactive (fiberLifecycle foundFiber) &&
+    not (hasChild @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} child (registry before))) = guardValue) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (ORemove child) before =
+    Just (tag, afterState)) ->
+  retired foundFiber = True
+scopedRemoveRequiresRetired name key world error value nameEq keyEq child before
+  foundFiber found False guardEq tag afterState =
+    rewrite found in rewrite guardEq in
+      (\equation => void (nothingIsNotJust equation))
+scopedRemoveRequiresRetired name key world error value nameEq keyEq child before
+  foundFiber found True guardEq tag afterState =
+    \equation =>
+      scopedAndLeftTrue (retired foundFiber)
+        (isInactive (fiberLifecycle foundFiber) &&
+          not (hasChild @{nameEq} {name = name} {key = key} {value = value}
+            {world = world} {error = error} child (registry before)))
+        guardEq
+
+||| An O-Remove of the invariant name cannot fire while the invariant holds:
+||| the removal guard requires the fiber to be retired already.
+0 scopedRemoveUnretiredAbsurd :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (ORemove child) before =
+    Just (tag, afterState)) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child before -> Void
+scopedRemoveUnretiredAbsurd name key world error value nameEq keyEq child before
+  afterState tag checked (MkScopedUnretiredFiberAt fiber found flag) =
+    case trans (sym
+      (scopedRemoveRequiresRetired name key world error value nameEq keyEq child
+        before fiber found _ Refl tag afterState
+        (checkedActionProjects nameEq keyEq (ORemove child) before afterState tag
+          checked))) flag of
+      Refl impossible
+
 ||| The kept insertion installs the exact fresh fiber: observed guard and
 ||| fresh-slot values drive the reduction, and the produced after-state lookup
 ||| is the freshly inserted, unretired fiber.
