@@ -20023,6 +20023,49 @@ scopedNoRegisteredHead name key world error value nameEq registered ordinal live
   first middle finalState _ _
   (NoRegisteredEpisodeStep transition rest noBegin tail) = (noBegin, tail)
 
+0 scopedRelationalRetainedFoldStep :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (original, originalAfter, originalFinal, survivor :
+    SystemState name key value world error) ->
+  (checked : (checkedApplyAction @{nameEq} @{keyEq} action original =
+    Just (tag, originalAfter))) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  (stepDiscipline : RegistrationStepDiscipline protocol nameEq action original rest) ->
+  (alignedRest : AlignedTransitions name key world error value nameEq keyEq rest) ->
+  (retained : Not (GenerationOwnedActor {name = name} {key = key} {value = value}
+    {world = world} {error = error} nameEq registered ordinal live action)) ->
+  (boundary : RelationalNoEpisodeReplayBoundary name key world error value nameEq
+    keyEq registered live original survivor) ->
+  (continue : (nextSurvivor : SystemState name key value world error) ->
+    RelationalNoEpisodeReplayBoundary name key world error value nameEq keyEq
+      registered (advanceGenerationEnvironment @{nameEq} ordinal action live)
+      originalAfter nextSurvivor ->
+    ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq keyEq
+      registered (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal action live)
+      rest nextSurvivor) ->
+  (step : RelationalRetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
+    registered (advanceGenerationEnvironment @{nameEq} ordinal action live)
+    action originalAfter survivor) ->
+  ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq keyEq
+    registered ordinal live (MoreTransitions
+      (Fired {before = original} {afterState = originalAfter}
+        nameEq keyEq action tag checked) rest) survivor
+scopedRelationalRetainedFoldStep name key world error value protocol nameEq keyEq
+  registered ordinal live unique action tag original originalAfter originalFinal
+  survivor checked rest stepDiscipline alignedRest retained boundary continue step =
+    scopedRelationalPrependKept name key world error value protocol nameEq keyEq
+      registered ordinal live unique action tag original originalAfter originalFinal
+      survivor checked rest stepDiscipline alignedRest retained boundary
+      (relationalRetainedNamed step) (relationalRetainedFires step)
+      (continue (namedAfter (relationalRetainedNamed step))
+        (relationalRetainedNextBoundary step))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
