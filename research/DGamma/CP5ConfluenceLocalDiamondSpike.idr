@@ -1812,6 +1812,7 @@ widenSingletonIteratorStage tail
         (widenSingletonOccurrence tail occurs) fiber found remaining accumulator
         view lifecycle step rest suffix
 
+export
 0 prependIteratorStage :
   (head : Transition sourceFirst sourceMiddle) ->
   IteratorStage name key world error value actor tail ->
@@ -1839,6 +1840,7 @@ widenSingletonGenerator tail (IteratorForwardGenerator stage) =
 widenSingletonGenerator tail (IteratorYieldedGenerator stage origin) =
   IteratorYieldedGenerator (widenSingletonIteratorStage tail stage) origin
 
+export
 0 prependGenerator :
   (head : Transition sourceFirst sourceMiddle) ->
   TraceEffectGenerator name key world error value actor tail ->
@@ -1870,6 +1872,7 @@ widenSingletonGeneratorMapExact tail
   (IteratorYieldedGenerator
     (StageFromAdvance _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) origin) state = Refl
 
+export
 0 prependGeneratorMapExact :
   (head : Transition sourceFirst sourceMiddle) ->
   (generator : TraceEffectGenerator name key world error value actor tail) ->
@@ -2098,6 +2101,7 @@ locateConsReplayGeneratorOrigin sourceHead targetHead sourceTail targetTail
 widenSingletonIteratorOutcomeExact tail
   (StageFromAdvance _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) state = Refl
 
+export
 0 prependIteratorOutcomeExact :
   (head : Transition sourceFirst sourceMiddle) ->
   (stage : IteratorStage name key world error value actor tail) ->
@@ -2258,6 +2262,7 @@ locateConsIteratorStageOrigin sourceHead targetHead sourceTail targetTail headRA
 ||| Whole-cons relational replay correspondence. Both executable generator
 ||| capital and exact iterator-outcome capital are projected from their located
 ||| producer packages at the same head/tail RAR boundary.
+export
 0 consRelationalReplayCorrespondence :
   (sourceHead : Transition sourceFirst sourceMiddle) ->
   (targetHead : Transition targetFirst targetMiddle) ->
@@ -2973,6 +2978,7 @@ sealPointwiseRelationalHead head tail =
     (headReplayMapsRelated head) (headReplayEndpoint head)
     (headReplayOccurrences head) (headReplayRelativeOrdinal head) tail
 
+export
 0 noTraceEffectGeneratorInEmpty :
   TraceEffectGenerator name key world error value actor NoTransitions -> Void
 noTraceEffectGeneratorInEmpty
@@ -2986,6 +2992,7 @@ noTraceEffectGeneratorInEmpty
     (StageFromAdvance _ _ _ _ _ occurs _ _ _ _ _ _ _ _ _) origin) =
       noOccurrenceInEmpty occurs
 
+export
 0 noIteratorStageInEmpty :
   IteratorStage name key world error value actor NoTransitions -> Void
 noIteratorStageInEmpty
@@ -20744,6 +20751,7 @@ adjacentMovedRightComponentTotal nameEq keyEq tracePrefix left right diamond
     in transitionComponentTotalFromActiveFibers nameEq keyEq
       (movedRight diamond) targetAtSwappedMiddle
 
+export
 0 identityRelationalReplayCorrespondence :
   (trace : Transitions initial finalState) ->
   RelationalReplayCorrespondence name key world error value trace trace
@@ -22009,6 +22017,7 @@ r97MapAppendStage name key world error value sourceFirst sourceMiddle sourceFina
           (trans (replayIteratorOutcomePreserved rightRAR actor local state)
             (sym (r97EmbedRightStageExact sourceLeft sourceRight
               (replayIteratorStageOrigin rightRAR actor local) state)))))
+export
 0 r97AppendRelationalReplayCorrespondence :
   (sourceLeft : Transitions sourceFirst sourceMiddle) ->
   (sourceRight : Transitions sourceMiddle sourceFinal) ->
