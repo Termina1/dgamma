@@ -11656,6 +11656,33 @@ scopedSelectedInsertPlanImpossible name key world error value nameEq keyEq
           nameEq selected state projectedWorld projectedRegistry
           projectedStateExact absent sourceInstalled
 
+0 scopedSelectedInsertImpossible :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error}
+    (OInsert selected parent component) before = Just (tag, afterState) ->
+  installedAt @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} selected before = True ->
+  Void
+scopedSelectedInsertImpossible name key world error value nameEq keyEq selected
+  parent component before afterState tag checked sourceInstalled =
+    case scopedSystemStateProjection name key world error value before of
+      MkScopedSystemStateProjection projectedWorld projectedRegistry
+        projectedStateExact =>
+          scopedSelectedInsertPlanImpossible name key world error value nameEq
+            keyEq selected parent component before projectedWorld
+            projectedRegistry projectedStateExact afterState tag
+            (checkedActionProjects nameEq keyEq
+              (the (Action name key value world error)
+                (OInsert selected parent component))
+              before afterState tag checked)
+            sourceInstalled
+
 0 ScopedForeignLifecycleExclusion :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
