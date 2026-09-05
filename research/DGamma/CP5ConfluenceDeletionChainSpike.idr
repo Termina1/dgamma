@@ -19462,6 +19462,17 @@ scopedPlanLookupSource name key world error value nameEq source target plan acto
     (scopedPlanMemberSource name key world error value nameEq source target plan (Bind actor fiber)
       (scopedRegistryMember name key world error value nameEq actor fiber target found))
 
+||| Actor-local Definition 69 boundary, not a claim about all installed fibers.
+ScopedActorTotal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (state : SystemState name key value world error) -> Type
+ScopedActorTotal name key world error value nameEq keyEq actor state =
+  (fiber : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor (registry state) = Just fiber) ->
+  (isActive (fiberLifecycle fiber) = True) -> ActiveFiberProvidesAll keyEq fiber
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
