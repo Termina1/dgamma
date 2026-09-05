@@ -10208,6 +10208,39 @@ buildScopedClosingFromOpeningResult transition prefixTrace anchor openingResult
             beforeOpening opening afterOpening openingSplit
             installedAfterOpening closingResult suffixTrace global globalSplit
 
+0 localizeScopedClosing :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {prefixInitial, prefixFinal, globalFinal, stepBefore, stepAfter :
+    SystemState name key value world error} ->
+  (transition : Transition stepBefore stepAfter) ->
+  (prefixTrace : Transitions prefixInitial prefixFinal) ->
+  (0 aligned : AlignedTransitions name key world error value nameEq keyEq
+    prefixTrace) ->
+  (0 initialEmpty : bindings (registry prefixInitial) = []) ->
+  (anchor : ForeignLifecycleInstalledAnchor name key world error value nameEq
+    keyEq actor transition prefixTrace) ->
+  (closingResult : FirstClosingResult name key world error value nameEq keyEq
+    actor (lifecycleAfterInstalled anchor)) ->
+  (suffixTrace : Transitions prefixFinal globalFinal) ->
+  (global : Transitions prefixInitial globalFinal) ->
+  (0 globalSplit : appendTransitions prefixTrace suffixTrace = global) ->
+  ScopedClosingLocalization name key world error value nameEq keyEq actor
+    transition prefixTrace global anchor
+localizeScopedClosing nameEq keyEq actor transition prefixTrace aligned
+  initialEmpty anchor closingResult suffixTrace global globalSplit =
+    buildScopedClosingFromOpeningResult transition prefixTrace anchor
+      (extractLastOpening nameEq keyEq actor (lifecycleBeforeInstalled anchor)
+        (fst (alignedAppendSplit (lifecycleBeforeInstalled anchor)
+          (lifecycleAfterInstalled anchor)
+          (replace
+            {p = \candidate => AlignedTransitions name key world error value
+              nameEq keyEq candidate}
+            (sym (lifecycleAnchorDecomposition anchor)) aligned)))
+        (emptyRegistryUninstalled nameEq actor prefixInitial initialEmpty)
+        (lifecycleAnchorInstalled anchor))
+      closingResult suffixTrace global globalSplit
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
