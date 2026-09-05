@@ -24954,6 +24954,36 @@ ScopedReadySemanticReplay name key world error value nameEq keyEq deletable ordi
      ScopedReadySemanticReplay name key world error value nameEq keyEq deletable (S ordinal)
       (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ originalFinal after originalRest tail)
 
+0 scopedReadySemanticCorrespondence :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (originalFirst, originalFinal, survivor : SystemState name key value world error) ->
+  (source : Transitions originalFirst originalFinal) -> (ready : GenerationReplayReady nameEq keyEq deletable ordinal live source survivor) ->
+  ScopedReadySemanticReplay name key world error value nameEq keyEq deletable ordinal live originalFirst originalFinal survivor source ready ->
+  RelationalReplayCorrespondence name key world error value source
+    (scopedReadyTrace name key world error value nameEq keyEq deletable ordinal live originalFirst originalFinal survivor source ready)
+scopedReadySemanticCorrespondence name key world error value nameEq keyEq deletable ordinal live originalFirst _ survivor _ ReplayReadyEnd semantic =
+  scopedEmptyTargetReplay name key world error value originalFirst originalFirst survivor NoTransitions
+scopedReadySemanticCorrespondence name key world error value nameEq keyEq deletable ordinal live originalFirst originalFinal survivor _
+  (ReplayReadyDelete {originalTransition} {originalRest} deleted tail) semantic =
+    scopedPrependDeletedReplay name key world error value originalFirst _ originalFinal survivor
+      (scopedReadyFinal name key world error value nameEq keyEq deletable (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ originalFinal survivor originalRest tail)
+      originalTransition originalRest
+      (scopedReadyTrace name key world error value nameEq keyEq deletable (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ originalFinal survivor originalRest tail)
+      (scopedReadySemanticCorrespondence name key world error value nameEq keyEq deletable (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ originalFinal survivor originalRest tail semantic)
+scopedReadySemanticCorrespondence name key world error value nameEq keyEq deletable ordinal live originalFirst originalFinal survivor _
+  (ReplayReadyKeep {originalTransition} {originalRest} retained after tag transition sameAction fires tail) semantic =
+    consRelationalReplayCorrespondence originalTransition transition originalRest
+      (scopedReadyTrace name key world error value nameEq keyEq deletable (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ originalFinal after originalRest tail)
+      (fst semantic)
+      (scopedReadySemanticCorrespondence name key world error value nameEq keyEq deletable (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ originalFinal after originalRest tail (snd semantic))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
