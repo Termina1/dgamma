@@ -19107,6 +19107,51 @@ scopedTaggedPrependKept name key world error value nameEq deletable ordinal
             sameAction subsequence))
         finalSame (GenerationSubsequenceTagsKeep sameTag tags)
 
+||| Single-elimination readiness converter.  ReplayReadyEndsAt owns the exact
+||| tail readiness binder; no independently bound ready/ends patterns are paired.
+0 scopedTaggedReplayReadyResultAt :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (originalFirst, originalFinal, survivingFirst,
+    target : SystemState name key value world error) ->
+  (original : Transitions originalFirst originalFinal) ->
+  (ready : GenerationReplayReady nameEq keyEq deletable ordinal live original
+    survivingFirst) ->
+  (0 tags : ReplayReadyRuleTagsPreserved name key world error value nameEq keyEq
+    deletable ordinal live originalFirst originalFinal original survivingFirst ready) ->
+  (ends : ReplayReadyEndsAt ready target) ->
+  ScopedTaggedGenerationResult name key value world error nameEq deletable
+    ordinal live original survivingFirst target
+scopedTaggedReplayReadyResultAt name key world error value nameEq keyEq deletable
+  ordinal live _ _ survivingFirst target _ _ tags (ReplayEndsEnd same) =
+    MkScopedTaggedGenerationResult
+      (MkGenerationFilterResult survivingFirst NoTransitions
+        GenerationActionSubsequenceEnd) (sym same) GenerationSubsequenceTagsEnd
+scopedTaggedReplayReadyResultAt name key world error value nameEq keyEq deletable
+  ordinal live originalFirst originalFinal survivingFirst target _ _ tags
+  (ReplayEndsDelete {middle} {transition} {rest} deleted tail tailEnds) =
+    scopedTaggedPrependDeleted name key world error value nameEq deletable ordinal
+      live originalFirst middle originalFinal survivingFirst target transition rest
+      deleted
+      (scopedTaggedReplayReadyResultAt name key world error value nameEq keyEq
+        deletable (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal
+          (transitionAction transition) live)
+        middle originalFinal survivingFirst target rest tail tags tailEnds)
+scopedTaggedReplayReadyResultAt name key world error value nameEq keyEq deletable
+  ordinal live originalFirst originalFinal survivingFirst target _ _ tags
+  (ReplayEndsKeep {middle} {survivingAfter} {originalTransition} {rest} retained
+    tag survivorStep sameAction fires tail tailEnds) =
+      scopedTaggedPrependKept name key world error value nameEq deletable ordinal
+        live originalFirst middle originalFinal survivingFirst survivingAfter target
+        originalTransition rest survivorStep retained (sym sameAction) (fst tags)
+        (scopedTaggedReplayReadyResultAt name key world error value nameEq keyEq
+          deletable (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal
+            (transitionAction originalTransition) live)
+          middle originalFinal survivingAfter target rest tail (snd tags) tailEnds)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
