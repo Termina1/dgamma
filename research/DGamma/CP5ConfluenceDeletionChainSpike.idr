@@ -25760,6 +25760,18 @@ scopedVerbatimHeadSealAt name key world error value nameEq keyEq deletable ordin
       (sym (cong Builtin.snd (justInjective (trans (sym (namedFireProjectsRaw nameEq keyEq action first named fires))
         (checkedActionProjects nameEq keyEq action first middle tag checked))))) seal)
 
+0 scopedPrefixHeadNotOwned :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal, endOrdinal : Nat) -> (live : GenerationEnvironment name) ->
+  GenerationEnvironmentBounded ordinal live -> LTE (S ordinal) endOrdinal ->
+  ((generation : RegistrationGeneration name) -> Elem generation registered -> LTE endOrdinal (generationBirthOrdinal generation)) ->
+  (action : Action name key value world error) ->
+  Not (GenerationOwnedActor {name = name} {key = key} {value = value} {world = world} {error = error} nameEq registered ordinal live action)
+scopedPrefixHeadNotOwned name key world error value nameEq registered ordinal endOrdinal live bounded stepBound lower action
+  (generation ** (owned, member)) =
+    succNotLTEpred (transitive (actionGenerationBeforeNext nameEq ordinal live bounded action owned)
+      (transitive stepBound (lower generation member)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
