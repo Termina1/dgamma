@@ -23055,6 +23055,15 @@ scopedAllRecursiveAsList item predicate [] = Refl
 scopedAllRecursiveAsList item predicate (head :: rest) =
   cong (\tailFlag => predicate head && tailFlag) (scopedAllRecursiveAsList item predicate rest)
 
+0 scopedAllListPointwise :
+  (item : Type) -> (left, right : item -> Bool) ->
+  ((entry : item) -> (left entry = right entry)) -> (items : List item) ->
+  (allList left items = allList right items)
+scopedAllListPointwise item left right same [] = Refl
+scopedAllListPointwise item left right same (head :: rest) =
+  cong2 (\headFlag, tailFlag => headFlag && tailFlag) (same head)
+    (scopedAllListPointwise item left right same rest)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
