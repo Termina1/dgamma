@@ -25136,6 +25136,30 @@ scopedNonAdvanceLifecycleReplayTags name key world error value nameEq keyEq acti
     scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq action lifecycle notAdvance sourceTag
       sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
 
+0 scopedNonAdvanceNamedLifecycleReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (isLifecycleAction action = True) ->
+  ((actor : name) -> Not (action = LAdvance actor)) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (named : NamedTransition name key world error value action targetBefore) ->
+  ScopedNamedAligned name key world error value nameEq keyEq action targetBefore named ->
+  (tag = transitionTag (namedTransition named)) ->
+  (sourceOwner, targetOwner : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    (actionOwner action) (registry sourceBefore) = Just sourceOwner) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    (actionOwner action) (registry targetBefore) = Just targetOwner) ->
+  FiberControlRelated sourceOwner targetOwner ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (namedTransition named) NoTransitions)
+scopedNonAdvanceNamedLifecycleReplay name key world error value nameEq keyEq action lifecycle notAdvance tag
+  sourceBefore sourceAfter targetBefore sourceChecked _ (MkScopedNamedAligned after targetTag {stored} checked)
+  sameTag sourceOwner targetOwner sourceFound targetFound controls =
+    scopedNonAdvanceLifecycleReplayTags name key world error value nameEq keyEq action lifecycle notAdvance tag targetTag
+      sourceBefore sourceAfter targetBefore after sourceChecked stored sameTag sourceOwner targetOwner sourceFound targetFound controls
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
