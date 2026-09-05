@@ -23861,6 +23861,31 @@ scopedSelectedCanonicalPostBoundary name key world error value protocol nameEq k
         (selectedFoldReady (selectedOutputFold output)) (selectedFoldSurvivor (selectedOutputFold output))
         (selectedFoldReadyEnds (selectedOutputFold output)))) (selectedFoldPostClose (selectedOutputFold output))
 
+0 scopedSelectedOutputSuffixNoRegistered :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (selected : name) -> (located : LocatedClosedEpisode name key world error value nameEq keyEq selected global) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq 0 [] (traceBeforeOpening located) ordinal live ->
+  NoRegisteredEpisode nameEq registered 0 [] global ->
+  (output : ScopedSelectedClosedEpisodeFoldOutput name key world error value protocol nameEq keyEq selected registered ordinal live
+    (locatedEpisode located) (appendTransitions (closedTransitions (locatedEpisode located)) (traceAfterClosing located))) ->
+  NoRegisteredEpisode nameEq registered (selectedFoldEndOrdinal (selectedOutputFold output))
+    (selectedFoldEndLive (selectedOutputFold output)) (traceAfterClosing located)
+scopedSelectedOutputSuffixNoRegistered name key world error value protocol nameEq keyEq initial finalState global
+  selected located registered ordinal live beforeScan noRegistered output =
+    scopedNoRegisteredAfterPrefix name key world error value nameEq registered ordinal
+      (selectedFoldEndOrdinal (selectedOutputFold output)) live (selectedFoldEndLive (selectedOutputFold output))
+      (locatedPreStart located) (locatedAfter located) finalState
+      (MoreTransitions (beginTransition (closedOpening (locatedEpisode located))) (closedTransitions (locatedEpisode located)))
+      (traceAfterClosing located) (selectedFoldScan (selectedOutputFold output))
+      (scopedNoRegisteredAfterPrefix name key world error value nameEq registered 0 ordinal [] live initial
+        (locatedPreStart located) finalState (traceBeforeOpening located)
+        (MoreTransitions (beginTransition (closedOpening (locatedEpisode located)))
+          (appendTransitions (closedTransitions (locatedEpisode located)) (traceAfterClosing located))) beforeScan
+        (replace {p = NoRegisteredEpisode nameEq registered 0 []} (sym (locatedDecomposition located)) noRegistered))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
