@@ -19625,6 +19625,30 @@ scopedSelectedActorTotal name key world error value nameEq keyEq selected actor 
     scopedSelectedActorTotalAt name key world error value nameEq keyEq selected actor registered ordinal live
       wholeFirst wholeLast original survivor whole boundary sourceTotal (decEq @{nameEq} actor selected)
 
+0 scopedPostCloseForeignActorTotalAt :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected, actor : name) -> Not (actor = selected) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (original, survivor : SystemState name key value world error) ->
+  (boundary : PostCloseSelectedBoundary name key world error value nameEq keyEq selected registered ordinal live original survivor) ->
+  ScopedActorTotal name key world error value nameEq keyEq actor original ->
+  (right : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor (registry survivor) = Just right) ->
+  ForeignRelatedFiberFound name key world error value nameEq actor (registry survivor)
+    (planTarget (completePlanResult (postClosePlan boundary))) right ->
+  (isActive (fiberLifecycle right) = True) -> ActiveFiberProvidesAll keyEq right
+scopedPostCloseForeignActorTotalAt name key world error value nameEq keyEq selected actor distinct registered ordinal live
+  original survivor boundary sourceTotal right found located active =
+    scopedPlannedActorProvides name key world error value nameEq keyEq actor original
+      (planTarget (completePlanResult (postClosePlan boundary)))
+      (inactiveLeafPlan (completePlanResult (postClosePlan boundary)))
+      (foreignRelatedFiber located) right (foreignRelatedFound located)
+      (fiberControlSymmetric (foreignRelatedControl located))
+      (relatedLocatedFiberTablesSame nameEq actor
+        (plannedSystemState original (completePlanResult (postClosePlan boundary))) survivor
+        (foreignRelatedFiber located) right (foreignRelatedFound located) found (postCloseEffects boundary)) sourceTotal active
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
