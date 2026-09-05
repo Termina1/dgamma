@@ -21482,6 +21482,15 @@ scopedSelectedParentControls name key world error value protocol nameEq keyEq se
       (fst (replace {p = \action => RegistrationStepDiscipline protocol nameEq action original rest}
         actionSame discipline)) boundary
 
+0 scopedNoParentRecoveryHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (parent : name) -> (first, middle, finalState : SystemState name key value world error) ->
+  (transition : Transition first middle) -> (rest : Transitions middle finalState) ->
+  NoParentRecovery parent (MoreTransitions transition rest) ->
+  ((ParentRecoveryStep parent transition -> Void), NoParentRecovery parent rest)
+scopedNoParentRecoveryHead name key world error value parent first middle finalState _ _
+  (NoParentRecoveryStep transition rest noHead noTail) = (noHead, noTail)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
