@@ -25243,6 +25243,48 @@ scopedReloadingCellSame name key world error value component parent sourceRetire
       (trans (cong (\remaining => MkFiber component parent sourceRetired table (Reloading remaining accumulator targetView)) (sym remainingSame))
         (cong (\view => MkFiber component parent sourceRetired table (Reloading sourceRemaining accumulator view)) (sym viewSame)))
 
+0 scopedLifecycleAdvanceStageFamily :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) -> (tag : RuleTag) ->
+  (sourceWorld : world) -> (sourceRegistry : Registry name key value world error) ->
+  (sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) (MkSystemState sourceWorld sourceRegistry) = Just (tag, sourceAfter))) ->
+  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) targetBefore = Just (tag, targetAfter))) ->
+  (component : Component key value world error) -> (sourceParent, targetParent : Parent name) -> (sourceRetired, targetRetired : Bool) ->
+  (sourceTable, targetTable : OwnedTable key value (componentProvisions component)) ->
+  (sourceLifecycle, targetLifecycle : Lifecycle key value world error name (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (sourceRetired = targetRetired) -> LifecycleControlRelated sourceLifecycle targetLifecycle ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor sourceRegistry = Just (MkFiber component sourceParent sourceRetired sourceTable sourceLifecycle)) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor (registry targetBefore) = Just (MkFiber component targetParent targetRetired targetTable targetLifecycle)) ->
+  SingletonAdvanceStageReplayFamily name key world error value
+    (MoreTransitions (Fired {before = MkSystemState sourceWorld sourceRegistry} {afterState = sourceAfter} nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq (LAdvance actor) tag targetChecked) NoTransitions)
+scopedLifecycleAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked component sourceParent targetParent sourceRetired targetRetired sourceTable targetTable _ _ retiredSame
+  (InactiveControls {leftOutcome} outcomesSame) sourceFound targetFound =
+    void (nothingIsNotJust (trans (sym (advanceInactiveIsNothing nameEq keyEq actor sourceWorld sourceRegistry component sourceParent sourceRetired sourceTable leftOutcome sourceFound))
+      (checkedActionProjects nameEq keyEq (LAdvance actor) (MkSystemState sourceWorld sourceRegistry) sourceAfter tag sourceChecked)))
+scopedLifecycleAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked component sourceParent targetParent sourceRetired targetRetired sourceTable targetTable _ _ retiredSame
+  (ReloadingControls {leftRemaining} {rightRemaining} {leftAccumulator} {rightAccumulator} {leftView} {rightView}
+    remainingSame accumulatorsRelated viewSame) sourceFound targetFound =
+      scopedConcreteAdvanceStageFamily name key world error value nameEq keyEq actor tag (MkSystemState sourceWorld sourceRegistry) sourceAfter targetBefore targetAfter
+        sourceChecked targetChecked component sourceParent targetParent sourceRetired sourceTable targetTable leftRemaining leftAccumulator rightAccumulator leftView
+        sourceFound (trans targetFound (cong Just (scopedReloadingCellSame name key world error value component targetParent sourceRetired targetRetired targetTable
+          leftRemaining rightRemaining rightAccumulator leftView rightView retiredSame remainingSame viewSame)))
+scopedLifecycleAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked component sourceParent targetParent sourceRetired targetRetired sourceTable targetTable _ _ retiredSame
+  (ActiveControls {leftAccumulator} {leftView} accumulatorsRelated viewsSame) sourceFound targetFound =
+    void (nothingIsNotJust (trans (sym (advanceActiveIsNothing nameEq keyEq actor sourceWorld sourceRegistry component sourceParent sourceRetired sourceTable leftAccumulator leftView sourceFound))
+      (checkedActionProjects nameEq keyEq (LAdvance actor) (MkSystemState sourceWorld sourceRegistry) sourceAfter tag sourceChecked)))
+scopedLifecycleAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked component sourceParent targetParent sourceRetired targetRetired sourceTable targetTable _ _ retiredSame
+  (UnloadingControls {leftAccumulator} {leftView} {leftOutcome} accumulatorsRelated viewsSame outcomesSame) sourceFound targetFound =
+    void (nothingIsNotJust (trans (sym (advanceUnloadingIsNothing nameEq keyEq actor sourceWorld sourceRegistry component sourceParent sourceRetired sourceTable leftAccumulator leftView leftOutcome sourceFound))
+      (checkedActionProjects nameEq keyEq (LAdvance actor) (MkSystemState sourceWorld sourceRegistry) sourceAfter tag sourceChecked)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
