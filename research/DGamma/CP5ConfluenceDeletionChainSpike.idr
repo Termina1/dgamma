@@ -11547,6 +11547,18 @@ scopedSelectedSourceOutsidePlan nameEq selected registered live stamped outside
   boundary = selectedOutsideBoundaryPlan selected registered live stamped outside
     (selectedBoundaryPlan boundary)
 
+0 scopedLifecycleNonInsert :
+  (action : Action name key value world error) ->
+  isLifecycleAction action = True -> NonInsertAction action
+scopedLifecycleNonInsert (OInsert actor parent component) Refl impossible
+scopedLifecycleNonInsert (ORetire actor) Refl impossible
+scopedLifecycleNonInsert (ORemove actor) Refl impossible
+scopedLifecycleNonInsert (LBegin actor) lifecycle = NonInsertBegin
+scopedLifecycleNonInsert (LAdvance actor) lifecycle = NonInsertAdvance
+scopedLifecycleNonInsert (LDivert actor) lifecycle = NonInsertDivert
+scopedLifecycleNonInsert (LLeave actor) lifecycle = NonInsertLeave
+scopedLifecycleNonInsert (LUnload actor) lifecycle = NonInsertUnload
+
 0 ScopedForeignLifecycleExclusion :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
