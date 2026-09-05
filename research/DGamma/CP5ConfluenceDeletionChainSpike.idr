@@ -23108,6 +23108,40 @@ scopedPlanQuiet name key world error value nameEq keyEq ambient source target
       (scopedQuietInactiveDelete name key world error value nameEq keyEq ambient removed component parent retiredFlag
         table outcome source found sourceQuiet)
 
+0 scopedLifecycleFibersQuiet :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (component : Component key value world error) -> (leftParent, rightParent : Parent name) ->
+  (leftRetired, rightRetired : Bool) ->
+  (leftTable, rightTable : OwnedTable key value (componentProvisions component)) ->
+  (leftLife, rightLife : Lifecycle key value world error name
+    (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (left, right : Registry name key value world error) ->
+  LifecycleControlRelated leftLife rightLife ->
+  (targetFiber @{nameEq} @{keyEq} (MkFiber component leftParent leftRetired leftTable leftLife) left =
+    targetFiber @{nameEq} @{keyEq} (MkFiber component rightParent rightRetired rightTable rightLife) right) ->
+  (quietFiber @{nameEq} @{keyEq} (MkFiber component leftParent leftRetired leftTable leftLife) left =
+    quietFiber @{nameEq} @{keyEq} (MkFiber component rightParent rightRetired rightTable rightLife) right)
+scopedLifecycleFibersQuiet name key world error value nameEq keyEq component leftParent rightParent
+  leftRetired rightRetired leftTable rightTable _ _ left right
+  (InactiveControls {leftOutcome = Nothing} {rightOutcome = Nothing} same) targets = cong isNothing targets
+scopedLifecycleFibersQuiet name key world error value nameEq keyEq component leftParent rightParent
+  leftRetired rightRetired leftTable rightTable _ _ left right
+  (InactiveControls {leftOutcome = Just leftFailure} {rightOutcome = Just rightFailure} same) targets = Refl
+scopedLifecycleFibersQuiet name key world error value nameEq keyEq component leftParent rightParent
+  leftRetired rightRetired leftTable rightTable _ _ left right
+  (InactiveControls {leftOutcome = Nothing} {rightOutcome = Just failure} same) targets = void (nothingIsNotJust same)
+scopedLifecycleFibersQuiet name key world error value nameEq keyEq component leftParent rightParent
+  leftRetired rightRetired leftTable rightTable _ _ left right
+  (InactiveControls {leftOutcome = Just failure} {rightOutcome = Nothing} same) targets = void (nothingIsNotJust (sym same))
+scopedLifecycleFibersQuiet name key world error value nameEq keyEq component leftParent rightParent
+  leftRetired rightRetired leftTable rightTable _ _ left right (ReloadingControls remaining accumulators views) targets = Refl
+scopedLifecycleFibersQuiet name key world error value nameEq keyEq component leftParent rightParent
+  leftRetired rightRetired leftTable rightTable _ _ left right (ActiveControls accumulators views) targets =
+    cong2 (targetMatches @{nameEq}) targets views
+scopedLifecycleFibersQuiet name key world error value nameEq keyEq component leftParent rightParent
+  leftRetired rightRetired leftTable rightTable _ _ left right (UnloadingControls accumulators views outcomes) targets = Refl
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
