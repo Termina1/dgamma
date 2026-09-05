@@ -22599,6 +22599,56 @@ scopedAppendSelectedCloseDiscipline name key world error value protocol nameEq k
       (scopedAppendSelectedCloseTraceSame name key world error value nameEq keyEq selected registered
         ordinal live original survivor ready target ends closing) discipline
 
+0 scopedAssembleSelectedClosedOutput :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (selectedOutside :
+    (generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (episodeStartOrdinal : Nat) ->
+  (episodeStartLive : GenerationEnvironment name) ->
+  {preStart, afterClose, wholeLast :
+    SystemState name key value world error} ->
+  (episode : ClosedEpisode name key world error value nameEq keyEq selected
+    preStart afterClose) ->
+  (whole : Transitions (closedStartState episode) wholeLast) ->
+  (interior : ScopedSelectedInteriorFoldOutput name key world error value protocol nameEq keyEq
+    selected registered (S episodeStartOrdinal) episodeStartLive whole
+    (closedInside episode) preStart) ->
+  (finalUnique : GenerationEnvironmentNamesUnique (interiorFinalLive (interiorOutputFold interior))) ->
+  (finalStamped : GenerationEnvironmentStamped (interiorFinalLive (interiorOutputFold interior))) ->
+  (finalInactive : CurrentRegisteredInactiveFibers name key world error value
+    nameEq registered (interiorFinalLive (interiorOutputFold interior)) (lastInstalledState episode)) ->
+  (finalEmpty : CurrentRegisteredEmptyTables name key world error value nameEq
+    registered (interiorFinalLive (interiorOutputFold interior)) (lastInstalledState episode)) ->
+  (finalPlanEmpty : EmptyTableInactivePlan name key world error value nameEq
+    (inactiveLeafPlan
+      (completePlanResult (selectedBoundaryPlan (interiorBoundary (interiorOutputFold interior)))))) ->
+  ScopedSelectedClosedEpisodeFoldOutput name key world error value protocol nameEq keyEq selected
+    registered episodeStartOrdinal episodeStartLive episode whole
+scopedAssembleSelectedClosedOutput name key world error value protocol nameEq keyEq selected registered
+  selectedOutside episodeStartOrdinal episodeStartLive episode whole interior finalUnique finalStamped
+  finalInactive finalEmpty finalPlanEmpty =
+    MkScopedSelectedClosedEpisodeFoldOutput
+      (scopedAssembleSelectedClosedFold name key world error value nameEq keyEq selected registered selectedOutside
+        episodeStartOrdinal episodeStartLive episode whole (interiorOutputFold interior) finalUnique finalStamped
+        finalInactive finalEmpty finalPlanEmpty)
+      (scopedAppendSelectedCloseTags name key world error value nameEq keyEq selected registered
+        (S episodeStartOrdinal) episodeStartLive (closedInside episode) preStart (interiorReady (interiorOutputFold interior))
+        (interiorFinalSurvivor (interiorOutputFold interior)) (interiorReadyEnds (interiorOutputFold interior))
+        (closing episode) (interiorOutputTags interior))
+      (ScopedParentControlsDelete
+        (scopedAppendSelectedCloseParentControls name key world error value nameEq keyEq selected registered
+          (S episodeStartOrdinal) episodeStartLive (closedInside episode) preStart (interiorReady (interiorOutputFold interior))
+          (interiorFinalSurvivor (interiorOutputFold interior)) (interiorReadyEnds (interiorOutputFold interior))
+          (closing episode) (interiorOutputParentControls interior)))
+      (scopedAppendSelectedCloseDiscipline name key world error value protocol nameEq keyEq selected registered
+        (S episodeStartOrdinal) episodeStartLive (closedInside episode) preStart (interiorReady (interiorOutputFold interior))
+        (interiorFinalSurvivor (interiorOutputFold interior)) (interiorReadyEnds (interiorOutputFold interior))
+        (closing episode) (interiorOutputDiscipline interior))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
