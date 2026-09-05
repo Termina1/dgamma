@@ -15949,6 +15949,50 @@ scopedPostCloseSuffixFoldOutputEnd name key world error value protocol nameEq ke
         NoRegisteredEpisodeEnd noFailed)
       ()
 
+0 scopedPrependPostCloseKeptOutput :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (original, originalAfter, originalFinal, survivor :
+    SystemState name key value world error) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  (transition : Transition original originalAfter) ->
+  (retained : Not (GenerationOwnedActor nameEq registered ordinal live
+    (transitionAction transition))) ->
+  (named : NamedTransition name key world error value
+    (transitionAction transition) survivor) ->
+  (fires : fireNamed nameEq keyEq (transitionAction transition) survivor =
+    Just named) ->
+  (sameTag : transitionTag transition = transitionTag (namedTransition named)) ->
+  (folded : ScopedPostCloseSuffixFoldOutput name key world error value nameEq
+    keyEq registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal
+      (transitionAction transition) live)
+    rest (namedAfter named)) ->
+  ScopedPostCloseSuffixFoldOutput name key world error value nameEq keyEq
+    registered ordinal live (MoreTransitions transition rest) survivor
+scopedPrependPostCloseKeptOutput name key world error value nameEq keyEq
+  registered ordinal live original originalAfter originalFinal survivor rest
+  transition retained
+  named@(MkNamedTransition after namedTag namedTransition namedAction) fires
+  sameTag folded =
+    MkScopedPostCloseSuffixFoldOutput
+      (MkRelationalNoEpisodeSuffixReplayFold
+        (relationalSuffixFinalOrdinal (postCloseOutputFold folded))
+        (relationalSuffixFinalLive (postCloseOutputFold folded))
+        (relationalSuffixFinalSurvivor (postCloseOutputFold folded))
+        (GenerationTraceScanStep transition rest
+          (relationalSuffixGenerationScan (postCloseOutputFold folded)))
+        (ReplayReadyKeep retained after namedTag namedTransition namedAction fires
+          (relationalSuffixReplayReady (postCloseOutputFold folded)))
+        (ReplayEndsKeep retained namedTag namedTransition namedAction fires
+          (relationalSuffixReplayReady (postCloseOutputFold folded))
+          (relationalSuffixReadyEnds (postCloseOutputFold folded)))
+        (relationalSuffixFinalUnique (postCloseOutputFold folded))
+        (relationalSuffixFinalBoundary (postCloseOutputFold folded)))
+      (sameTag, postCloseOutputTags folded)
+
 0 scopedDisciplineAppendRight :
   (left : Transitions first middle) ->
   (right : Transitions middle finalState) ->
