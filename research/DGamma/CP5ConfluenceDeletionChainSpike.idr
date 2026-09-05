@@ -25891,6 +25891,14 @@ data ScopedRuleAt :
   ScopedRuleAt name key world error value (MoreTransitions transition rest) 0 tag -> (transitionTag transition = tag)
 scopedRuleHeadTag name key world error value first middle finalState transition rest _ (ScopedRuleHere _ _) = Refl
 
+0 scopedRuleTail :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (transition : Transition first middle) -> (rest : Transitions middle finalState) -> (ordinal : Nat) -> (tag : RuleTag) ->
+  ScopedRuleAt name key world error value (MoreTransitions transition rest) (S ordinal) tag ->
+  ScopedRuleAt name key world error value rest ordinal tag
+scopedRuleTail name key world error value first middle finalState transition rest ordinal tag (ScopedRuleLater _ _ later) = later
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
