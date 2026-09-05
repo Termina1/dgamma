@@ -23985,6 +23985,26 @@ scopedEnrichedFoldsFromSelected name key world error value protocol nameEq keyEq
       (selectedStartLive candidate) (selectedBeforeScan candidate) (selectedRegisteredDuring candidate)
       (selectedChildrenHaveNoEpisode candidate) output)
 
+0 scopedEnrichedDeletionFoldsFromPremises :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  CanonicalizationPremises name key world error value protocol nameEq keyEq global ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  NoDependentClosingEpisodeForGeneration {nameEq = nameEq} {keyEq = keyEq} {global = global}
+    (selectedActor candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) (selectedEpisode candidate) ->
+  ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate
+scopedEnrichedDeletionFoldsFromPremises name key world error value protocol nameEq keyEq initial finalState global
+  premises candidate noDependent =
+    scopedEnrichedFoldsFromSelected name key world error value protocol nameEq keyEq initial finalState global premises candidate
+      (scopedSelectedClosedOutputFromPremises name key world error value protocol nameEq keyEq global
+        (replayAligned (chainReplayCapital premises)) (replayDiscipline (chainReplayCapital premises))
+        (replayInitialWellFormed (chainReplayCapital premises)) (replayInitialEmpty (chainReplayCapital premises))
+        (replayIndependent (chainReplayCapital premises)) (selectedActor candidate) (selectedEpisode candidate)
+        (selectedRegistrations candidate) (selectedOutsideRegistrations candidate) (selectedStartOrdinal candidate)
+        (selectedStartLive candidate) (selectedBeforeScan candidate) (selectedRegisteredDuring candidate)
+        (selectedChildrenHaveNoEpisode candidate) noDependent)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
