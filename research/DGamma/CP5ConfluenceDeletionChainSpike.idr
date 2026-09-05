@@ -19401,6 +19401,19 @@ scopedDeleteMatchedMember name item nameEq _ current cell rest entry Refl exact 
 scopedElemConsLift item head _ left right lift Here = Here
 scopedElemConsLift item head entry left right lift (There later) = There (lift later)
 
+0 scopedDeleteMemberHeadAt :
+  (name, item : Type) -> (nameEq : DecEq name) -> (removed, current : name) ->
+  (cell : item) -> (rest : List (Binding name (\_ => item))) -> (entry : Binding name (\_ => item)) ->
+  (Elem entry (deleteEntries @{nameEq} removed rest) -> Elem entry rest) ->
+  (comparison : Dec (removed = current)) -> (decEq @{nameEq} removed current = comparison) ->
+  Elem entry (deleteEntries @{nameEq} removed (Bind current cell :: rest)) ->
+  Elem entry (Bind current cell :: rest)
+scopedDeleteMemberHeadAt name item nameEq removed current cell rest entry tail (Yes same) exact =
+  scopedDeleteMatchedMember name item nameEq removed current cell rest entry same exact
+scopedDeleteMemberHeadAt name item nameEq removed current cell rest entry tail (No distinct) exact =
+  rewrite exact in scopedElemConsLift (Binding name (\_ => item)) (Bind current cell) entry
+    (deleteEntries @{nameEq} removed rest) rest tail
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
