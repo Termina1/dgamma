@@ -23901,6 +23901,49 @@ scopedLocatedSuffixDiscipline name key world error value protocol nameEq keyEq i
         (appendTransitions (closedTransitions (locatedEpisode located)) (traceAfterClosing located)))
       (replace {p = RegistrationDiscipline protocol nameEq} (sym (locatedDecomposition located)) discipline))
 
+0 scopedSuffixEnrichedFromSelected :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq global -> RegistrationDiscipline protocol nameEq global ->
+  (noFailedFibers finalState = True) ->
+  (selected : name) -> (located : LocatedClosedEpisode name key world error value nameEq keyEq selected global) ->
+  (registered : List (RegistrationGeneration name)) ->
+  ((generation : RegistrationGeneration name) -> Elem generation registered -> Not (generationName generation = selected)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq 0 [] (traceBeforeOpening located) ordinal live ->
+  RegisteredGenerationsDuring selected ordinal registered
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode located))) (closedTransitions (locatedEpisode located))) ->
+  NoRegisteredEpisode nameEq registered 0 [] global ->
+  (output : ScopedSelectedClosedEpisodeFoldOutput name key world error value protocol nameEq keyEq selected registered ordinal live
+    (locatedEpisode located) (appendTransitions (closedTransitions (locatedEpisode located)) (traceAfterClosing located))) ->
+  ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq keyEq registered
+    (selectedFoldEndOrdinal (selectedOutputFold output)) (selectedFoldEndLive (selectedOutputFold output)) (traceAfterClosing located)
+    (scopedSelectedCanonicalFinal name key world error value protocol nameEq keyEq selected registered ordinal live
+      (locatedPreStart located) (locatedAfter located) finalState (locatedEpisode located)
+      (appendTransitions (closedTransitions (locatedEpisode located)) (traceAfterClosing located)) output)
+scopedSuffixEnrichedFromSelected name key world error value protocol nameEq keyEq initial finalState global aligned discipline
+  noFailure selected located registered selectedOutside ordinal live beforeScan registeredDuring noRegistered output =
+    scopedPostCloseSuffixFoldEnriched name key world error value protocol nameEq keyEq selected registered selectedOutside
+      (selectedFoldEndOrdinal (selectedOutputFold output)) (selectedFoldEndLive (selectedOutputFold output))
+      (registeredBornBeforeCenterEnd nameEq selected ordinal registered
+        (MoreTransitions (beginTransition (closedOpening (locatedEpisode located))) (closedTransitions (locatedEpisode located)))
+        (selectedFoldEndOrdinal (selectedOutputFold output)) (selectedFoldEndLive (selectedOutputFold output))
+        (selectedFoldScan (selectedOutputFold output)) registeredDuring)
+      (selectedFoldUnique (selectedOutputFold output)) (selectedFoldStamped (selectedOutputFold output))
+      (locatedAfter located) finalState
+      (scopedSelectedCanonicalFinal name key world error value protocol nameEq keyEq selected registered ordinal live
+        (locatedPreStart located) (locatedAfter located) finalState (locatedEpisode located)
+        (appendTransitions (closedTransitions (locatedEpisode located)) (traceAfterClosing located)) output)
+      (traceAfterClosing located)
+      (scopedSelectedCanonicalPostBoundary name key world error value protocol nameEq keyEq selected registered ordinal live
+        (locatedPreStart located) (locatedAfter located) finalState (locatedEpisode located)
+        (appendTransitions (closedTransitions (locatedEpisode located)) (traceAfterClosing located)) output)
+      (scopedLocatedSuffixDiscipline name key world error value protocol nameEq keyEq initial finalState global selected located discipline)
+      (alignedLocatedAfter global aligned located)
+      (scopedSelectedOutputSuffixNoRegistered name key world error value protocol nameEq keyEq initial finalState global selected located
+        registered ordinal live beforeScan noRegistered output) noFailure
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
