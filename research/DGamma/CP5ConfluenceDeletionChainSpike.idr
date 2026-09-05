@@ -18467,6 +18467,22 @@ scopedUnretiredStep name key world error value nameEq keyEq child ordinal live
         (lookupAdvanceGenerationOther {name = name} {key = key} {value = value}
           {world = world} {error = error} nameEq ordinal action child distinct live))
 
+||| Extract checked firing under the trace's authenticated dictionaries.
+0 scopedAlignedHeadChecked :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (transition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions transition rest) ->
+  (checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (transitionAction transition)
+    first = Just (transitionTag transition, middle))
+scopedAlignedHeadChecked name key world error value nameEq keyEq first middle
+  finalState _ _ (AlignedStep action tag checked rest alignedTail) = checked
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
