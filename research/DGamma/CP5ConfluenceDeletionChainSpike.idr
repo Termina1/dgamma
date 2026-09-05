@@ -24065,6 +24065,19 @@ scopedEnrichedSuffixTrace name key world error value protocol nameEq keyEq initi
     (scopedEnrichedMiddle name key world error value protocol nameEq keyEq initial finalState global candidate folds)
     (traceAfterClosing (selectedEpisode candidate)) (relationalSuffixReplayReady (postCloseOutputFold (enrichedSuffix folds)))
 
+0 scopedEnrichedTrace :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  Transitions initial (scopedEnrichedFinal name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+scopedEnrichedTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds =
+  appendTransitions (traceBeforeOpening (selectedEpisode candidate))
+    (appendTransitions
+      (scopedEnrichedCenterTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+      (scopedEnrichedSuffixTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
