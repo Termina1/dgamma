@@ -25528,6 +25528,26 @@ scopedNamedActionReplay name key world error value nameEq keyEq (LUnload actor) 
       (lifecycleOwnerPresent nameEq keyEq (LUnload actor) Refl targetBefore (namedAfter named) (namedTag named)
         (namedFireProjectsRaw nameEq keyEq (LUnload actor) targetBefore named fires))
 
+0 scopedRelationalNamedReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (named : NamedTransition name key world error value action targetBefore) ->
+  (fireNamed nameEq keyEq action targetBefore = Just named) -> (tag = transitionTag (namedTransition named)) ->
+  (registered : List (RegistrationGeneration name)) -> (live : GenerationEnvironment name) ->
+  RelationalNoEpisodeReplayBoundary name key world error value nameEq keyEq registered live sourceBefore targetBefore ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (namedTransition named) NoTransitions)
+scopedRelationalNamedReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag registered live boundary =
+    scopedNamedActionReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore sourceChecked named fires sameTag
+      (planTarget (completePlanResult (relationalCompletePlan boundary)))
+      (inactiveLeafPlan (completePlanResult (relationalCompletePlan boundary)))
+      (\lifecycle => orderedControlsLookup nameEq (actionOwner action)
+        (planTarget (completePlanResult (relationalCompletePlan boundary))) (registry targetBefore) (relationalOrderedControls boundary))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
