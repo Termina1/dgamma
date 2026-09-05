@@ -12917,6 +12917,29 @@ scopedSelectedEpisodeLocalReplayer name key world error value protocol nameEq
         keyEq selected registered global globalDiscipline independent whole
         selectedEpisode wholeInGlobal anchors)
 
+0 scopedNoRegisteredAppendLeft :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  NoRegisteredEpisode nameEq registered ordinal live
+    (appendTransitions left right) ->
+  NoRegisteredEpisode nameEq registered ordinal live left
+scopedNoRegisteredAppendLeft name key world error value nameEq registered ordinal
+  live NoTransitions right noRegistered = NoRegisteredEpisodeEnd
+scopedNoRegisteredAppendLeft name key world error value nameEq registered ordinal
+  live (MoreTransitions transition@(Fired _ _ action tag checked) rest) right
+  (NoRegisteredEpisodeStep
+    (Fired _ _ action tag checked) (appendTransitions rest right) noBegin tail) =
+      NoRegisteredEpisodeStep transition rest noBegin
+        (scopedNoRegisteredAppendLeft name key world error value nameEq registered
+          (S ordinal)
+          (advanceGenerationEnvironment @{nameEq} ordinal action live) rest
+          right tail)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
