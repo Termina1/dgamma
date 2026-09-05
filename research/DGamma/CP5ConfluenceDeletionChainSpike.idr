@@ -10254,6 +10254,21 @@ installedTraceEndScoped
   (InstalledStep action tag checked rest sourceInstalled tailInstalled) =
     installedTraceEndScoped rest tailInstalled
 
+0 installedSourceContradictsBeginScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {before, afterState : SystemState name key value world error} ->
+  (opening : BeginStep nameEq keyEq actor before afterState) ->
+  installedAt @{nameEq} actor before = True ->
+  Void
+installedSourceContradictsBeginScoped nameEq keyEq actor {before} {afterState}
+  opening sourceInstalled =
+    falseNotTrueO7
+      (trans
+        (sym (fst (snd (lBeginBoundary nameEq keyEq actor before afterState
+          LBeginTag (beginEquation opening)))))
+        sourceInstalled)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
