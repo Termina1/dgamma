@@ -56,6 +56,7 @@ import DGamma.CP4DeletionWithdrawalCurrent
 import DGamma.CP4DeletionWithdrawalJoin
 import DGamma.CP4RecoveryTrace
 import DGamma.CP4RecoveryModelTrace
+import DGamma.CP4RecoverySelectedStep
 import DGamma.CP4ParentSafety
 import DGamma.CP4Support
 import DGamma.CP4SupportQuiescence
@@ -12319,6 +12320,96 @@ scopedDispatchForeignRetainedHead protocol nameEq keyEq selected registered
       wholeInGlobal anchors ordinal live unique stamped (LUnload actor) Refl
       distinct before afterState survivor tag checked rest selectedRest occurs
       insidePrefix insideDecomposition boundary emptyPlan retained
+
+0 scopedDispatchSelectedRetainedHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  {globalFirst, globalLast : SystemState name key value world error} ->
+  (global : Transitions globalFirst globalLast) ->
+  (globalDiscipline : RegistrationDiscipline protocol nameEq global) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (wholeInGlobal : OccurrenceEmbedding whole global) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (action : Action name key value world error) ->
+  (0 ownerSelected : (actionOwner action = selected)) ->
+  (before, afterState, survivor : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (sourceInstalled : installedAt @{nameEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} selected before = True) ->
+  (occurs : OccursIn
+    (Fired {before = before} {afterState = afterState} nameEq keyEq action tag
+      checked) whole) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  (retained : Not (EpisodeGenerationDeletedActor nameEq selected registered
+    ordinal live action)) ->
+  SelectedEpisodeRetainedHead name key world error value nameEq keyEq selected
+    registered ordinal live whole action afterState survivor
+scopedDispatchSelectedRetainedHead name key world error value protocol nameEq
+  keyEq selected registered global globalDiscipline whole wholeInGlobal ordinal
+  live unique (OInsert actor parent component) ownerSelected before afterState
+  survivor tag checked sourceInstalled occurs boundary retained =
+    void
+      (scopedSelectedInsertImpossible name key world error value nameEq keyEq
+        actor parent component before afterState tag checked
+        (replace
+          {p = \observed =>
+            installedAt @{nameEq} {name = name} {key = key} {value = value}
+              {world = world} {error = error} observed before = True}
+          (sym ownerSelected) sourceInstalled))
+scopedDispatchSelectedRetainedHead name key world error value protocol nameEq
+  keyEq selected registered global globalDiscipline whole wholeInGlobal ordinal
+  live unique (ORetire actor) ownerSelected before afterState survivor tag
+  checked sourceInstalled occurs boundary retained =
+    scopedSelectedRetireOwnedHead name key world error value protocol nameEq
+      keyEq selected actor ownerSelected registered global globalDiscipline whole
+      wholeInGlobal ordinal live unique before afterState survivor tag checked
+      occurs boundary retained
+scopedDispatchSelectedRetainedHead name key world error value protocol nameEq
+  keyEq selected registered global globalDiscipline whole wholeInGlobal ordinal
+  live unique (ORemove actor) ownerSelected before afterState survivor tag
+  checked sourceInstalled occurs boundary retained =
+    void
+      (removeCannotInstalled nameEq keyEq actor before afterState tag
+        (checkedActionProjects nameEq keyEq
+          (the (Action name key value world error) (ORemove actor)) before
+          afterState tag checked)
+        (replace
+          {p = \observed =>
+            installedAt @{nameEq} {name = name} {key = key} {value = value}
+              {world = world} {error = error} observed before = True}
+          (sym ownerSelected) sourceInstalled))
+scopedDispatchSelectedRetainedHead name key world error value protocol nameEq
+  keyEq selected registered global globalDiscipline whole wholeInGlobal ordinal
+  live unique (LBegin actor) ownerSelected before afterState survivor tag checked
+  sourceInstalled occurs boundary retained =
+    void (retained (DeleteEpisodeGenerationLifecycle ownerSelected Refl))
+scopedDispatchSelectedRetainedHead name key world error value protocol nameEq
+  keyEq selected registered global globalDiscipline whole wholeInGlobal ordinal
+  live unique (LAdvance actor) ownerSelected before afterState survivor tag
+  checked sourceInstalled occurs boundary retained =
+    void (retained (DeleteEpisodeGenerationLifecycle ownerSelected Refl))
+scopedDispatchSelectedRetainedHead name key world error value protocol nameEq
+  keyEq selected registered global globalDiscipline whole wholeInGlobal ordinal
+  live unique (LDivert actor) ownerSelected before afterState survivor tag checked
+  sourceInstalled occurs boundary retained =
+    void (retained (DeleteEpisodeGenerationLifecycle ownerSelected Refl))
+scopedDispatchSelectedRetainedHead name key world error value protocol nameEq
+  keyEq selected registered global globalDiscipline whole wholeInGlobal ordinal
+  live unique (LLeave actor) ownerSelected before afterState survivor tag checked
+  sourceInstalled occurs boundary retained =
+    void (retained (DeleteEpisodeGenerationLifecycle ownerSelected Refl))
+scopedDispatchSelectedRetainedHead name key world error value protocol nameEq
+  keyEq selected registered global globalDiscipline whole wholeInGlobal ordinal
+  live unique (LUnload actor) ownerSelected before afterState survivor tag checked
+  sourceInstalled occurs boundary retained =
+    void (retained (DeleteEpisodeGenerationLifecycle ownerSelected Refl))
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
