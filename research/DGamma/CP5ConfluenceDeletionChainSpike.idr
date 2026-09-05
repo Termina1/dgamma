@@ -23031,6 +23031,23 @@ scopedQuietFiberTargetSame name key world error value nameEq keyEq
 scopedQuietFiberTargetSame name key world error value nameEq keyEq
   (MkFiber component parent retiredFlag table (Unloading accumulator view outcome)) left right same = Refl
 
+0 scopedQuietEntryInactiveDelete :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (removed : name) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) -> (outcome : Maybe error) ->
+  (source : Registry name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    removed source = Just (MkFiber component parent retiredFlag table (Inactive outcome))) ->
+  (entry : Binding name (FiberAt name key value world error)) ->
+  (quietEntryFor @{nameEq} @{keyEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    (deleteBinding @{nameEq} removed source) entry =
+   quietEntryFor @{nameEq} @{keyEq} {name = name} {key = key} {value = value} {world = world} {error = error} source entry)
+scopedQuietEntryInactiveDelete name key world error value nameEq keyEq removed component parent retiredFlag
+  table outcome source found (Bind actor fiber) =
+    scopedQuietFiberTargetSame name key world error value nameEq keyEq fiber (deleteBinding @{nameEq} removed source)
+      source (targetFiberInactiveDelete nameEq keyEq fiber removed component parent retiredFlag table outcome source found)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
