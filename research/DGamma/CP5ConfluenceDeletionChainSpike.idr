@@ -18867,7 +18867,7 @@ scopedSameActionRegistrationStepDiscipline name key world error value protocol
 ||| Parallel constructor-owned control bridges at kept child-insertion sites.
 ||| The fold producer, which knows both pre-states, supplies these lookups;
 ||| the discipline consumer only projects the bridges.
-0 GenerationSubsequenceParentControlsPreserved :
+data GenerationSubsequenceParentControlsPreserved :
   (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
   (value : key -> Type) -> (nameEq : DecEq name) ->
   (deletable : Nat -> GenerationEnvironment name ->
@@ -18878,32 +18878,155 @@ scopedSameActionRegistrationStepDiscipline name key world error value protocol
   (source : Transitions originalFirst originalFinal) ->
   (surviving : Transitions survivingFirst survivingFinal) ->
   (subsequence : GenerationActionSubsequence nameEq deletable ordinal live source
-    surviving) -> Type
-GenerationSubsequenceParentControlsPreserved name key world error value nameEq
-  deletable ordinal live _ _ _ _ _ _ GenerationActionSubsequenceEnd = ()
-GenerationSubsequenceParentControlsPreserved name key world error value nameEq
-  deletable ordinal live originalFirst originalFinal survivingFirst survivingFinal
-  _ _ (KeepGenerationAction sourceStep sourceRest survivorStep survivorRest
-    kept sameAction tail) =
-      ((parent, child : name) ->
-        (component : Component key value world error) ->
-        (transitionAction sourceStep = OInsert child (ChildOf parent) component) ->
-        FiberControlMaybeRelated
-          (lookupFiber {name = name} {key = key} {value = value} {world = world}
-            {error = error} @{nameEq} parent (registry originalFirst))
-          (lookupFiber {name = name} {key = key} {value = value} {world = world}
-            {error = error} @{nameEq} parent (registry survivingFirst)),
-       GenerationSubsequenceParentControlsPreserved name key world error value nameEq
-        deletable (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal
-          (transitionAction sourceStep) live)
-        _ originalFinal _ survivingFinal sourceRest survivorRest tail)
-GenerationSubsequenceParentControlsPreserved name key world error value nameEq
-  deletable ordinal live originalFirst originalFinal survivingFirst survivingFinal
-  _ survivorTrace (DeleteGenerationAction sourceStep sourceRest deleted tail) =
+    surviving) -> Type where
+  ScopedParentControlsEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} ->
+    {deletable : Nat -> GenerationEnvironment name ->
+      Action name key value world error -> Type} ->
+    {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+    {sourceState, survivorState : SystemState name key value world error} ->
     GenerationSubsequenceParentControlsPreserved name key world error value nameEq
-      deletable (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal
-        (transitionAction sourceStep) live)
-      _ originalFinal survivingFirst survivingFinal sourceRest survivorTrace tail
+      deletable ordinal live sourceState sourceState survivorState survivorState
+      NoTransitions NoTransitions GenerationActionSubsequenceEnd
+  ScopedParentControlsKeep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} ->
+    {deletable : Nat -> GenerationEnvironment name ->
+      Action name key value world error -> Type} ->
+    {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+    {originalFirst, originalMiddle, originalFinal, survivingFirst, survivingMiddle,
+      survivingFinal : SystemState name key value world error} ->
+    {sourceStep : Transition originalFirst originalMiddle} ->
+    {sourceRest : Transitions originalMiddle originalFinal} ->
+    {survivorStep : Transition survivingFirst survivingMiddle} ->
+    {survivorRest : Transitions survivingMiddle survivingFinal} ->
+    {kept : Not (deletable ordinal live (transitionAction sourceStep))} ->
+    {sameAction : (transitionAction sourceStep = transitionAction survivorStep)} ->
+    {tail : GenerationActionSubsequence nameEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep)
+        live) sourceRest survivorRest} ->
+    (0 controls : (parent, child : name) ->
+      (component : Component key value world error) ->
+      (transitionAction sourceStep = OInsert child (ChildOf parent) component) ->
+      FiberControlMaybeRelated
+        (lookupFiber {name = name} {key = key} {value = value} {world = world}
+          {error = error} @{nameEq} parent (registry originalFirst))
+        (lookupFiber {name = name} {key = key} {value = value} {world = world}
+          {error = error} @{nameEq} parent (registry survivingFirst))) ->
+    (0 tailControls : GenerationSubsequenceParentControlsPreserved name key world
+      error value nameEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep)
+        live) originalMiddle originalFinal survivingMiddle survivingFinal
+      sourceRest survivorRest tail) ->
+    GenerationSubsequenceParentControlsPreserved name key world error value nameEq
+      deletable ordinal live originalFirst originalFinal survivingFirst survivingFinal
+      (MoreTransitions sourceStep sourceRest) (MoreTransitions survivorStep survivorRest)
+      (KeepGenerationAction sourceStep sourceRest survivorStep survivorRest kept
+        sameAction tail)
+  ScopedParentControlsDelete :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} ->
+    {deletable : Nat -> GenerationEnvironment name ->
+      Action name key value world error -> Type} ->
+    {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+    {originalFirst, originalMiddle, originalFinal, survivingFirst,
+      survivingFinal : SystemState name key value world error} ->
+    {sourceStep : Transition originalFirst originalMiddle} ->
+    {sourceRest : Transitions originalMiddle originalFinal} ->
+    {survivorTrace : Transitions survivingFirst survivingFinal} ->
+    {deleted : deletable ordinal live (transitionAction sourceStep)} ->
+    {tail : GenerationActionSubsequence nameEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep)
+        live) sourceRest survivorTrace} ->
+    (0 tailControls : GenerationSubsequenceParentControlsPreserved name key world
+      error value nameEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep)
+        live) originalMiddle originalFinal survivingFirst survivingFinal
+      sourceRest survivorTrace tail) ->
+    GenerationSubsequenceParentControlsPreserved name key world error value nameEq
+      deletable ordinal live originalFirst originalFinal survivingFirst survivingFinal
+      (MoreTransitions sourceStep sourceRest) survivorTrace
+      (DeleteGenerationAction sourceStep sourceRest deleted tail)
+
+||| Producer-certified subsequence transport returns SURVIVING-trace discipline.
+0 scopedRegistrationDisciplineSubsequence :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type) ->
+  (0 retireOwned : (atOrdinal : Nat) -> (atLive : GenerationEnvironment name) ->
+    (actor : name) -> deletable atOrdinal atLive (ORetire actor) ->
+    GenerationOwnedActor {name = name} {key = key} {value = value}
+      {world = world} {error = error} nameEq registered atOrdinal atLive
+      (ORetire actor)) ->
+  (0 insertFresh : (atOrdinal : Nat) -> (atLive : GenerationEnvironment name) ->
+    (child : name) -> (parent : Parent name) ->
+    (component : Component key value world error) ->
+    Not (deletable atOrdinal atLive (OInsert child parent component)) ->
+    Not (Elem (MkRegistrationGeneration child atOrdinal) registered)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (originalFirst, originalFinal, survivingFirst,
+    survivingFinal : SystemState name key value world error) ->
+  (source : Transitions originalFirst originalFinal) ->
+  (surviving : Transitions survivingFirst survivingFinal) ->
+  (subsequence : GenerationActionSubsequence nameEq deletable ordinal live source
+    surviving) ->
+  (0 tags : GenerationSubsequenceRuleTagsPreserved subsequence) ->
+  (0 bridges : GenerationSubsequenceParentControlsPreserved name key world error
+    value nameEq deletable ordinal live originalFirst originalFinal survivingFirst
+    survivingFinal source surviving subsequence) ->
+  (0 aligned : AlignedTransitions name key world error value nameEq keyEq source) ->
+  RegistrationDiscipline protocol nameEq source ->
+  RegistrationDiscipline protocol nameEq surviving
+scopedRegistrationDisciplineSubsequence name key world error value protocol
+  nameEq keyEq registered deletable retireOwned insertFresh ordinal live
+  _ _ _ _ _ _ GenerationActionSubsequenceEnd tags bridges aligned discipline =
+    RegistrationDisciplineEnd
+scopedRegistrationDisciplineSubsequence name key world error value protocol
+  nameEq keyEq registered deletable retireOwned insertFresh ordinal live
+  originalFirst originalFinal survivingFirst survivingFinal _ _
+  (KeepGenerationAction sourceStep sourceRest survivorStep survivorRest
+    kept sameAction tail)
+  (GenerationSubsequenceTagsKeep sameTag tailTags)
+  (ScopedParentControlsKeep controls tailControls) aligned
+  (RegistrationDisciplineStep _ _ headDiscipline tailDiscipline) =
+    RegistrationDisciplineStep survivorStep survivorRest
+      (replace
+        {p = \action => RegistrationStepDiscipline protocol nameEq action
+          survivingFirst survivorRest}
+        sameAction
+        (scopedSameActionRegistrationStepDiscipline name key world error value
+          protocol nameEq keyEq registered deletable retireOwned insertFresh
+          ordinal live (transitionAction sourceStep) originalFirst _ originalFinal
+          survivingFirst _ survivingFinal sourceRest survivorRest tail tailTags
+          (alignedTransitionTail nameEq keyEq sourceStep sourceRest aligned)
+          (transitionTag sourceStep)
+          (scopedAlignedHeadChecked name key world error value nameEq keyEq
+            originalFirst _ originalFinal sourceStep sourceRest aligned)
+          kept controls headDiscipline))
+      (scopedRegistrationDisciplineSubsequence name key world error value protocol
+        nameEq keyEq registered deletable retireOwned insertFresh (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep)
+          live) _ _ _ _ sourceRest survivorRest tail tailTags tailControls
+        (alignedTransitionTail nameEq keyEq sourceStep sourceRest aligned)
+        tailDiscipline)
+scopedRegistrationDisciplineSubsequence name key world error value protocol
+  nameEq keyEq registered deletable retireOwned insertFresh ordinal live
+  originalFirst originalFinal survivingFirst survivingFinal _ survivorTrace
+  (DeleteGenerationAction sourceStep sourceRest deleted tail)
+  (GenerationSubsequenceTagsDelete tailTags)
+  (ScopedParentControlsDelete tailControls) aligned
+  (RegistrationDisciplineStep _ _ headDiscipline tailDiscipline) =
+    scopedRegistrationDisciplineSubsequence name key world error value protocol
+      nameEq keyEq registered deletable retireOwned insertFresh (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep)
+        live) _ _ _ _ sourceRest survivorTrace tail tailTags tailControls
+      (alignedTransitionTail nameEq keyEq sourceStep sourceRest aligned)
+      tailDiscipline
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
