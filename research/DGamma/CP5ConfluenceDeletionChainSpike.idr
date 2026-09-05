@@ -22872,6 +22872,19 @@ scopedFiberControlNotFailed name key world error value _ _
     scopedLifecycleFibersNotFailed name key world error value component leftParent rightParent leftRetired
       rightRetired leftTable rightTable leftLife rightLife lifecycles
 
+0 scopedOrderedControlsNoFailure :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (left, right : List (Binding name (FiberAt name key value world error))) ->
+  OrderedRegistryControlsRelated name key world error value left right ->
+  (allList (DGamma.CP3.notFailedEntry {name = name} {key = key} {value = value}
+    {world = world} {error = error}) left = allList (DGamma.CP3.notFailedEntry {name = name} {key = key} {value = value}
+    {world = world} {error = error}) right)
+scopedOrderedControlsNoFailure name key world error value _ _ OrderedControlsNil = Refl
+scopedOrderedControlsNoFailure name key world error value _ _
+  (OrderedControlsCons actor related rest) =
+    cong2 (\headFlag, tailFlag => headFlag && tailFlag) (scopedFiberControlNotFailed name key world error value _ _ related)
+      (scopedOrderedControlsNoFailure name key world error value _ _ rest)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
