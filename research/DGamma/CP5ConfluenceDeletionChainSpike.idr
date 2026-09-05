@@ -3765,6 +3765,120 @@ record DeletionProducerOperationalCapital
               (generatedRegistrationActionOccurrence occurrence))))) =
       registrationGeneration occurrence
 
+0 deletionProducerActionOrigin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq selected
+    original) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (episodeStartOrdinal : Nat) ->
+  (episodeStartLive : GenerationEnvironment name) ->
+  (result : DeletionResult name key world error value nameEq keyEq original
+    selected episode registered episodeStartOrdinal episodeStartLive) ->
+  (capital : DeletionProducerOperationalCapital name key world error value nameEq
+    keyEq original selected episode registered episodeStartOrdinal
+    episodeStartLive result) ->
+  {action : Action name key value world error} ->
+  LocatedActionOccurrence action (survivingTrace result) ->
+  LocatedActionOccurrence action original
+deletionProducerActionOrigin nameEq keyEq original selected episode registered
+  episodeStartOrdinal episodeStartLive result capital occurrence =
+    deletionWholeSourceOccurrence
+      (deletionWholeOccurrenceOrigin nameEq keyEq original selected episode
+        registered episodeStartOrdinal episodeStartLive result occurrence)
+
+0 deletionProducerGeneratedOrigin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq selected
+    original) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (episodeStartOrdinal : Nat) ->
+  (episodeStartLive : GenerationEnvironment name) ->
+  (result : DeletionResult name key world error value nameEq keyEq original
+    selected episode registered episodeStartOrdinal episodeStartLive) ->
+  (capital : DeletionProducerOperationalCapital name key world error value nameEq
+    keyEq original selected episode registered episodeStartOrdinal
+    episodeStartLive result) ->
+  {child, parent : name} ->
+  {component : Component key value world error} ->
+  LocatedGeneratedRegistration child parent component (survivingTrace result) ->
+  LocatedGeneratedRegistration child parent component original
+deletionProducerGeneratedOrigin nameEq keyEq original selected episode registered
+  episodeStartOrdinal episodeStartLive result capital occurrence =
+    deletionActionOccurrenceToGenerated
+      (deletionProducerActionOrigin nameEq keyEq original selected episode
+        registered episodeStartOrdinal episodeStartLive result capital
+        (generatedRegistrationActionOccurrence occurrence))
+
+0 deletionProducerGeneratedOriginCoherent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq selected
+    original) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (episodeStartOrdinal : Nat) ->
+  (episodeStartLive : GenerationEnvironment name) ->
+  (result : DeletionResult name key world error value nameEq keyEq original
+    selected episode registered episodeStartOrdinal episodeStartLive) ->
+  (capital : DeletionProducerOperationalCapital name key world error value nameEq
+    keyEq original selected episode registered episodeStartOrdinal
+    episodeStartLive result) ->
+  {child, parent : name} ->
+  {component : Component key value world error} ->
+  (occurrence : LocatedGeneratedRegistration child parent component
+    (survivingTrace result)) ->
+  generatedRegistrationActionOccurrence
+      (deletionProducerGeneratedOrigin nameEq keyEq original selected episode
+        registered episodeStartOrdinal episodeStartLive result capital
+        occurrence) =
+    deletionProducerActionOrigin nameEq keyEq original selected episode
+      registered episodeStartOrdinal episodeStartLive result capital
+      (generatedRegistrationActionOccurrence occurrence)
+deletionProducerGeneratedOriginCoherent nameEq keyEq original selected episode
+  registered episodeStartOrdinal episodeStartLive result capital occurrence =
+    deletionActionOccurrenceToGeneratedCoherent
+      (deletionProducerActionOrigin nameEq keyEq original selected episode
+        registered episodeStartOrdinal episodeStartLive result capital
+        (generatedRegistrationActionOccurrence occurrence))
+
+0 deletionProducerOccurrenceEmbedding :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq selected
+    original) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (episodeStartOrdinal : Nat) ->
+  (episodeStartLive : GenerationEnvironment name) ->
+  (result : DeletionResult name key world error value nameEq keyEq original
+    selected episode registered episodeStartOrdinal episodeStartLive) ->
+  (capital : DeletionProducerOperationalCapital name key world error value nameEq
+    keyEq original selected episode registered episodeStartOrdinal
+    episodeStartLive result) ->
+  {action : Action name key value world error} ->
+  (occurrence : LocatedActionOccurrence action (survivingTrace result)) ->
+  DeletionSurvivingOrdinalEmbedding result (locatedActionOrdinal occurrence)
+    (locatedActionOrdinal
+      (deletionProducerActionOrigin nameEq keyEq original selected episode
+        registered episodeStartOrdinal episodeStartLive result capital occurrence))
+deletionProducerOccurrenceEmbedding nameEq keyEq original selected episode
+  registered episodeStartOrdinal episodeStartLive result capital occurrence =
+    deletionWholeOrdinalEmbedding
+      (deletionWholeOccurrenceOrigin nameEq keyEq original selected episode
+        registered episodeStartOrdinal episodeStartLive result occurrence)
+
 ||| Operational O9 certificate.  Every occurrence in the actual survivor trace
 ||| maps to a source occurrence whose ordinal is justified by one of the exact
 ||| before/episode/after generation-subsequence embeddings.  Generated/action
@@ -3819,8 +3933,29 @@ public export
     keyEq trace (selectedActor candidate) (selectedEpisode candidate)
     (selectedRegistrations candidate) (selectedStartOrdinal candidate)
     (selectedStartLive candidate) result
-deletionStepOperationalOccurrenceFoldSpike =
-  ?deletionStepOperationalOccurrenceFoldSpike_rhs
+deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol trace premises
+  candidate result capital =
+    MkDeletionOperationalOccurrenceCertificate
+      (MkActionRegistrationReplayCorrespondence
+        (deletionProducerGenerationRenaming capital)
+        (deletionProducerActionOrigin nameEq keyEq trace
+          (selectedActor candidate) (selectedEpisode candidate)
+          (selectedRegistrations candidate) (selectedStartOrdinal candidate)
+          (selectedStartLive candidate) result capital)
+        (deletionProducerWholeTagPreserved capital)
+        (deletionProducerGeneratedOrigin nameEq keyEq trace
+          (selectedActor candidate) (selectedEpisode candidate)
+          (selectedRegistrations candidate) (selectedStartOrdinal candidate)
+          (selectedStartLive candidate) result capital)
+        (deletionProducerGeneratedOriginCoherent nameEq keyEq trace
+          (selectedActor candidate) (selectedEpisode candidate)
+          (selectedRegistrations candidate) (selectedStartOrdinal candidate)
+          (selectedStartLive candidate) result capital)
+        (deletionProducerGeneratedOrdinalPreserved capital))
+      (deletionProducerOccurrenceEmbedding nameEq keyEq trace
+        (selectedActor candidate) (selectedEpisode candidate)
+        (selectedRegistrations candidate) (selectedStartOrdinal candidate)
+        (selectedStartLive candidate) result capital)
 
 ||| Internal enriched result of one D72 call.  The public `DeletionResult` stays
 ||| immutable, but the checked fold/adapter used by Path A must construct the
