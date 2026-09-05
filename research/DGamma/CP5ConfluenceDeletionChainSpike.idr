@@ -25285,6 +25285,30 @@ scopedLifecycleAdvanceStageFamily name key world error value nameEq keyEq actor 
     void (nothingIsNotJust (trans (sym (advanceUnloadingIsNothing nameEq keyEq actor sourceWorld sourceRegistry component sourceParent sourceRetired sourceTable leftAccumulator leftView leftOutcome sourceFound))
       (checkedActionProjects nameEq keyEq (LAdvance actor) (MkSystemState sourceWorld sourceRegistry) sourceAfter tag sourceChecked)))
 
+0 scopedOwnersAdvanceStageFamily :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) -> (tag : RuleTag) ->
+  (sourceWorld : world) -> (sourceRegistry : Registry name key value world error) ->
+  (sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) (MkSystemState sourceWorld sourceRegistry) = Just (tag, sourceAfter))) ->
+  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) targetBefore = Just (tag, targetAfter))) ->
+  (sourceOwner, targetOwner : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor sourceRegistry = Just sourceOwner) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor (registry targetBefore) = Just targetOwner) ->
+  FiberControlRelated sourceOwner targetOwner ->
+  SingletonAdvanceStageReplayFamily name key world error value
+    (MoreTransitions (Fired {before = MkSystemState sourceWorld sourceRegistry} {afterState = sourceAfter} nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq (LAdvance actor) tag targetChecked) NoTransitions)
+scopedOwnersAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked _ _ sourceFound targetFound
+  (FibersControlRelated {component} sourceParent targetParent sourceRetired targetRetired sourceTable targetTable sourceLifecycle targetLifecycle
+    parentsSame retiredSame lifecycleRelated) =
+      scopedLifecycleAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
+        sourceChecked targetChecked component sourceParent targetParent sourceRetired targetRetired sourceTable targetTable sourceLifecycle targetLifecycle
+        retiredSame lifecycleRelated sourceFound targetFound
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
