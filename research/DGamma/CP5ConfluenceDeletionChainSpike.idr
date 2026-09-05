@@ -10749,6 +10749,86 @@ buildScopedCommittedOpeningEvidence nameEq keyEq selected actor wanted global
           ownerDeclares candidateTrue)
         ownerDeclares)
 
+0 insideScopedOpeningContradiction :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  (selected, actor : name) -> (wanted : key) ->
+  (selectedStartOrdinal : Nat) ->
+  (selectedStartLive : GenerationEnvironment name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  {global : Transitions initial finalState} ->
+  (selectedEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  (0 selectedOrdinalExact : transitionCount
+    (traceBeforeOpening selectedEpisode) = selectedStartOrdinal) ->
+  (0 noDependent : NoDependentClosingEpisodeForGeneration
+    {nameEq = nameEq} {keyEq = keyEq} {global = global} selected
+    selectedStartOrdinal selectedStartLive selectedEpisode) ->
+  {prefixFinal, stepBefore, stepAfter :
+    SystemState name key value world error} ->
+  {transition : Transition stepBefore stepAfter} ->
+  {prefixTrace : Transitions initial prefixFinal} ->
+  {anchor : ForeignLifecycleInstalledAnchor name key world error value nameEq
+    keyEq actor transition prefixTrace} ->
+  (localization : ScopedClosingLocalization name key world error value nameEq
+    keyEq actor transition prefixTrace global anchor) ->
+  (selectedToAnchor : Transitions
+    (closedStartState (locatedEpisode selectedEpisode))
+    (lifecycleInstalledState anchor)) ->
+  (selectedAfterAnchor : Transitions (lifecycleInstalledState anchor)
+    (lastInstalledState (locatedEpisode selectedEpisode))) ->
+  (0 selectedWholeExact : appendTransitions selectedToAnchor
+    selectedAfterAnchor = closedInside (locatedEpisode selectedEpisode)) ->
+  (selectedToForeign : Transitions
+    (closedStartState (locatedEpisode selectedEpisode))
+    (locatedPreStart (localizedPrefixEpisode localization))) ->
+  (0 selectedInsideExact : selectedToAnchor =
+    appendTransitions selectedToForeign
+      (MoreTransitions
+        (beginTransition (closedOpening
+          (locatedEpisode (localizedPrefixEpisode localization))))
+        (localizedActivationToAnchor localization))) ->
+  (0 foreignPrefixCountExact : transitionCount
+    (traceBeforeOpening (localizedPrefixEpisode localization)) =
+      transitionCount (traceBeforeOpening selectedEpisode) +
+        S (transitionCount selectedToForeign)) ->
+  (evidence : ScopedCommittedOpeningEvidence name key world error value nameEq
+    keyEq selected actor wanted global (localizedGlobalEpisode localization)) ->
+  Void
+insideScopedOpeningContradiction selected actor wanted selectedStartOrdinal
+  selectedStartLive selectedEpisode selectedOrdinalExact noDependent localization
+  selectedToAnchor selectedAfterAnchor selectedWholeExact selectedToForeign
+  selectedInsideExact foreignPrefixCountExact evidence =
+    noDependent actor (localizedGlobalEpisode localization)
+      (MkGenerationScopedClosingStart selectedOrdinalExact
+        (MkLocatedActionOccurrence
+          (locatedPreStart (localizedPrefixEpisode localization))
+          (closedStartState
+            (locatedEpisode (localizedPrefixEpisode localization)))
+          selectedToForeign
+          (beginTransition (closedOpening
+            (locatedEpisode (localizedPrefixEpisode localization))))
+          (appendTransitions (localizedActivationToAnchor localization)
+            selectedAfterAnchor)
+          Refl
+          (trans
+            (sym (appendTransitionsAssociative selectedToForeign
+              (MoreTransitions
+                (beginTransition (closedOpening
+                  (locatedEpisode (localizedPrefixEpisode localization))))
+                (localizedActivationToAnchor localization))
+              selectedAfterAnchor))
+            (trans
+              (cong (\candidate => appendTransitions candidate
+                selectedAfterAnchor) (sym selectedInsideExact))
+              selectedWholeExact)))
+        (trans (localizedOpeningCountExact localization)
+          (selectedGenerationConsumerOrdinalScoped
+            (traceBeforeOpening selectedEpisode) selectedToForeign
+            (traceBeforeOpening (localizedPrefixEpisode localization))
+            selectedStartOrdinal selectedOrdinalExact foreignPrefixCountExact)))
+      (openingPrecedenceScoped evidence)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
