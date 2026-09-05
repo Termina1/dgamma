@@ -21641,6 +21641,87 @@ record ScopedSelectedInteriorFoldOutput
       (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst originalFinal
       survivor original (interiorReady interiorOutputFold))
 
+0 scopedPrependSelectedInteriorKeptOutput :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (original, originalAfter, originalFinal, survivor :
+    SystemState name key value world error) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  (transition : Transition original originalAfter) ->
+  (retained : Not (EpisodeGenerationDeletedActor nameEq selected registered ordinal live
+    (transitionAction transition))) ->
+  (named : NamedTransition name key world error value
+    (transitionAction transition) survivor) ->
+  (fires : fireNamed nameEq keyEq (transitionAction transition) survivor =
+    Just named) ->
+  (sameTag : transitionTag transition = transitionTag (namedTransition named)) ->
+  (folded : ScopedSelectedInteriorFoldOutput name key world error value protocol nameEq
+    keyEq selected registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal
+      (transitionAction transition) live)
+    whole rest (namedAfter named)) ->
+  (0 parentControls : (parent, child : name) ->
+    (component : Component key value world error) ->
+    (transitionAction transition = OInsert child (ChildOf parent) component) ->
+    FiberControlMaybeRelated
+      (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+        {world = world} {error = error} parent (registry original))
+      (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+        {world = world} {error = error} parent (registry survivor))) ->
+  (0 survivorStepDiscipline : RegistrationStepDiscipline protocol nameEq
+    (transitionAction transition) survivor
+    (scopedReadyTrace name key world error value nameEq keyEq
+      (EpisodeGenerationDeletedActor nameEq selected registered) (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction transition) live)
+      originalAfter originalFinal (namedAfter named) rest
+      (interiorReady (interiorOutputFold folded)))) ->
+  ScopedSelectedInteriorFoldOutput name key world error value protocol nameEq keyEq
+    selected registered ordinal live whole (MoreTransitions transition rest) survivor
+scopedPrependSelectedInteriorKeptOutput name key world error value protocol nameEq keyEq
+  selected registered whole ordinal live original originalAfter originalFinal survivor rest
+  transition retained
+  named@(MkNamedTransition after namedTag namedTransition namedAction) fires
+  sameTag folded parentControls survivorStepDiscipline =
+    MkScopedSelectedInteriorFoldOutput
+      (MkSelectedEpisodeInteriorFold
+        (interiorFinalOrdinal (interiorOutputFold folded))
+        (interiorFinalLive (interiorOutputFold folded))
+        (interiorFinalSurvivor (interiorOutputFold folded))
+        (GenerationTraceScanStep transition rest
+          (interiorScan (interiorOutputFold folded)))
+        (ReplayReadyKeep retained after namedTag namedTransition namedAction fires
+          (interiorReady (interiorOutputFold folded)))
+        (ReplayEndsKeep retained namedTag namedTransition namedAction fires
+          (interiorReady (interiorOutputFold folded))
+          (interiorReadyEnds (interiorOutputFold folded)))
+        (interiorBoundary (interiorOutputFold folded)))
+      (sameTag, interiorOutputTags folded)
+      (ScopedParentControlsKeep parentControls (interiorOutputParentControls folded))
+      (RegistrationDisciplineStep namedTransition
+        (scopedReadyTrace name key world error value nameEq keyEq
+          (EpisodeGenerationDeletedActor nameEq selected registered) (S ordinal)
+          (advanceGenerationEnvironment @{nameEq} ordinal
+            (transitionAction transition) live)
+          originalAfter originalFinal after rest
+          (interiorReady (interiorOutputFold folded)))
+        (replace
+          {p = \action => RegistrationStepDiscipline protocol nameEq action survivor
+            (scopedReadyTrace name key world error value nameEq keyEq
+          (EpisodeGenerationDeletedActor nameEq selected registered) (S ordinal)
+          (advanceGenerationEnvironment @{nameEq} ordinal
+            (transitionAction transition) live)
+          originalAfter originalFinal after rest
+          (interiorReady (interiorOutputFold folded)))}
+          (sym namedAction) survivorStepDiscipline)
+        (interiorOutputDiscipline folded))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
