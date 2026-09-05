@@ -11563,6 +11563,18 @@ scopedLifecycleNonInsert (LUnload actor) lifecycle = NonInsertUnload
 0 scopedFalseNotTrue : False = True -> Void
 scopedFalseNotTrue Refl impossible
 
+data ScopedSystemStateProjection :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (state : SystemState name key value world error) -> Type where
+  MkScopedSystemStateProjection :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {state : SystemState name key value world error} ->
+    (projectedWorld : world) ->
+    (projectedRegistry : Registry name key value world error) ->
+    (0 projectedStateExact :
+      (state = MkSystemState projectedWorld projectedRegistry)) ->
+    ScopedSystemStateProjection name key world error value state
+
 0 ScopedForeignLifecycleExclusion :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
