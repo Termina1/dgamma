@@ -19448,6 +19448,20 @@ scopedRegistryMember name key world error value nameEq actor fiber source found 
   scopedLookupMember name (Fiber name key value world error) nameEq actor fiber (bindings source)
     (trans (sym (lookupFiberAsEntries nameEq actor source)) found)
 
+0 scopedPlanLookupSource :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (source, target : Registry name key value world error) ->
+  (plan : InactiveLeafDeletionPlan {name = name} {key = key} {value = value} {world = world} {error = error}
+    nameEq source target) -> (actor : name) -> (fiber : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor target = Just fiber) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor source = Just fiber)
+scopedPlanLookupSource name key world error value nameEq source target plan actor fiber found =
+  registryLookupFromMember nameEq source
+    (scopedPlanMemberSource name key world error value nameEq source target plan (Bind actor fiber)
+      (scopedRegistryMember name key world error value nameEq actor fiber target found))
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
