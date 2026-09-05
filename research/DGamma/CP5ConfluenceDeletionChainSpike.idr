@@ -21335,6 +21335,19 @@ scopedTaggedReplayRetainedEpisodeHead name key world error value protocol nameEq
         sourceInstalled targetInstalled rest selectedRest noBegin occurs insidePrefix insideDecomposition
         boundary emptyPlan inactive retained)
 
+||| The forward census clause of RegisteredGenerationsDuring, scoped to one suffix.
+||| Keeping the ordinal is essential when a raw child name is reissued.
+0 ScopedSelectedBirthsComplete :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (selected : name) -> (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (first, finalState : SystemState name key value world error) ->
+  Transitions first finalState -> Type
+ScopedSelectedBirthsComplete name key world error value selected registered ordinal
+  first finalState trace =
+    (child : name) -> (component : Component key value world error) ->
+    (birth : LocatedActionOccurrence (OInsert child (ChildOf selected) component) trace) ->
+    Elem (MkRegistrationGeneration child (ordinal + locatedActionOrdinal birth)) registered
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
