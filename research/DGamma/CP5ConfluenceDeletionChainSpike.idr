@@ -20384,6 +20384,107 @@ scopedTagPostCloseNonAdvance name key world error value nameEq keyEq selected
         (namedFireProjectsRaw nameEq keyEq action survivor
           (postCloseOrchestrationNamed step) (postCloseOrchestrationFires step)))
 
+0 scopedTaggedForeignPostCloseHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  GenerationEnvironmentNamesUnique live ->
+  (action : Action name key value world error) ->
+  (actorDistinct : Not (actionOwner action = selected)) ->
+  (original, originalAfter, originalFinal, survivor :
+    SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action original =
+    Just (tag, originalAfter)) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  RegistrationStepDiscipline protocol nameEq action original rest ->
+  (retained : Not
+    (GenerationOwnedActor nameEq registered ordinal live action)) ->
+  (noBegin : IsBeginAction action ->
+    GenerationOwnedActor nameEq registered ordinal live action -> Void) ->
+  (boundary : PostCloseSelectedBoundary name key world error value nameEq keyEq
+    selected registered ordinal live original survivor) ->
+  ScopedTaggedPostCloseHead name key world error value nameEq keyEq selected
+    registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal action live)
+    action tag originalAfter survivor
+scopedTaggedForeignPostCloseHead name key world error value protocol nameEq keyEq
+  selected registered ordinal live unique (OInsert actor parent component) actorDistinct original
+  originalAfter originalFinal survivor tag checked rest discipline retained noBegin boundary =
+    scopedTagPostCloseNonAdvance name key world error value nameEq keyEq selected
+      registered (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (the (Action name key value world error) (OInsert actor parent component)) live)
+      (OInsert actor parent component)
+      (\other, same => scopedFalseNotTrue (cong isLifecycleAction same))
+      tag original originalAfter survivor checked
+      (retainedForeignPostCloseOrchestration protocol nameEq keyEq selected registered
+        ordinal live unique (OInsert actor parent component) Refl actorDistinct original originalAfter
+        originalFinal survivor tag checked rest discipline retained noBegin boundary)
+scopedTaggedForeignPostCloseHead name key world error value protocol nameEq keyEq
+  selected registered ordinal live unique (ORetire actor) actorDistinct original
+  originalAfter originalFinal survivor tag checked rest discipline retained noBegin boundary =
+    scopedTagPostCloseNonAdvance name key world error value nameEq keyEq selected
+      registered (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (the (Action name key value world error) (ORetire actor)) live)
+      (ORetire actor)
+      (\other, same => scopedFalseNotTrue (cong isLifecycleAction same))
+      tag original originalAfter survivor checked
+      (retainedForeignPostCloseOrchestration protocol nameEq keyEq selected registered
+        ordinal live unique (ORetire actor) Refl actorDistinct original originalAfter
+        originalFinal survivor tag checked rest discipline retained noBegin boundary)
+scopedTaggedForeignPostCloseHead name key world error value protocol nameEq keyEq
+  selected registered ordinal live unique (ORemove actor) actorDistinct original
+  originalAfter originalFinal survivor tag checked rest discipline retained noBegin boundary =
+    scopedTagPostCloseNonAdvance name key world error value nameEq keyEq selected
+      registered (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (the (Action name key value world error) (ORemove actor)) live)
+      (ORemove actor)
+      (\other, same => scopedFalseNotTrue (cong isLifecycleAction same))
+      tag original originalAfter survivor checked
+      (retainedForeignPostCloseOrchestration protocol nameEq keyEq selected registered
+        ordinal live unique (ORemove actor) Refl actorDistinct original originalAfter
+        originalFinal survivor tag checked rest discipline retained noBegin boundary)
+scopedTaggedForeignPostCloseHead name key world error value protocol nameEq keyEq
+  selected registered ordinal live unique (LBegin actor) actorDistinct original
+  originalAfter originalFinal survivor tag checked rest discipline retained noBegin boundary =
+    scopedRetainedForeignPostCloseLifecycle name key world error value protocol
+      nameEq keyEq selected registered ordinal live unique (LBegin actor) Refl
+      actorDistinct original originalAfter originalFinal survivor tag checked rest
+      discipline retained noBegin boundary
+scopedTaggedForeignPostCloseHead name key world error value protocol nameEq keyEq
+  selected registered ordinal live unique (LAdvance actor) actorDistinct original
+  originalAfter originalFinal survivor tag checked rest discipline retained noBegin boundary =
+    scopedRetainedForeignPostCloseLifecycle name key world error value protocol
+      nameEq keyEq selected registered ordinal live unique (LAdvance actor) Refl
+      actorDistinct original originalAfter originalFinal survivor tag checked rest
+      discipline retained noBegin boundary
+scopedTaggedForeignPostCloseHead name key world error value protocol nameEq keyEq
+  selected registered ordinal live unique (LDivert actor) actorDistinct original
+  originalAfter originalFinal survivor tag checked rest discipline retained noBegin boundary =
+    scopedRetainedForeignPostCloseLifecycle name key world error value protocol
+      nameEq keyEq selected registered ordinal live unique (LDivert actor) Refl
+      actorDistinct original originalAfter originalFinal survivor tag checked rest
+      discipline retained noBegin boundary
+scopedTaggedForeignPostCloseHead name key world error value protocol nameEq keyEq
+  selected registered ordinal live unique (LLeave actor) actorDistinct original
+  originalAfter originalFinal survivor tag checked rest discipline retained noBegin boundary =
+    scopedRetainedForeignPostCloseLifecycle name key world error value protocol
+      nameEq keyEq selected registered ordinal live unique (LLeave actor) Refl
+      actorDistinct original originalAfter originalFinal survivor tag checked rest
+      discipline retained noBegin boundary
+scopedTaggedForeignPostCloseHead name key world error value protocol nameEq keyEq
+  selected registered ordinal live unique (LUnload actor) actorDistinct original
+  originalAfter originalFinal survivor tag checked rest discipline retained noBegin boundary =
+    scopedRetainedForeignPostCloseLifecycle name key world error value protocol
+      nameEq keyEq selected registered ordinal live unique (LUnload actor) Refl
+      actorDistinct original originalAfter originalFinal survivor tag checked rest
+      discipline retained noBegin boundary
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
