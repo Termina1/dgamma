@@ -13726,6 +13726,26 @@ scopedSelectedAfterCloseUninstalled name key world error value nameEq keyEq
         (unloadEquation (closing episode))) of
       (tagShape, sourceTrue, targetFalse) => targetFalse
 
+0 scopedExtendFirstClosing :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  FirstClosingResult name key world error value nameEq keyEq actor left ->
+  FirstClosingResult name key world error value nameEq keyEq actor
+    (appendTransitions left right)
+scopedExtendFirstClosing name key world error value nameEq keyEq actor left right
+  (MkFirstClosingResult closeBefore closeAfter beforeClosing installedBefore
+    closing afterClosing decomposition) =
+      MkFirstClosingResult closeBefore closeAfter beforeClosing installedBefore
+        closing (appendTransitions afterClosing right)
+        (trans
+          (sym
+            (appendTransitionsAssociative beforeClosing
+              (MoreTransitions (unloadTransition closing) afterClosing) right))
+          (cong (\trace => appendTransitions trace right) decomposition))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
