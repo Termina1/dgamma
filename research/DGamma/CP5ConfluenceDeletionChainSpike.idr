@@ -19395,6 +19395,12 @@ scopedLookupMember name item nameEq wanted observed (Bind current cell :: rest) 
 scopedDeleteMatchedMember name item nameEq _ current cell rest entry Refl exact =
   rewrite exact in (\member => There member)
 
+0 scopedElemConsLift :
+  (item : Type) -> (head, entry : item) -> (left, right : List item) ->
+  (Elem entry left -> Elem entry right) -> Elem entry (head :: left) -> Elem entry (head :: right)
+scopedElemConsLift item head _ left right lift Here = Here
+scopedElemConsLift item head entry left right lift (There later) = There (lift later)
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
