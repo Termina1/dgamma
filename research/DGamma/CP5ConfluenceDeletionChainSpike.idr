@@ -25966,6 +25966,16 @@ scopedMapSuccEliminate predicate Nothing ordinal exact continue = void (nothingI
 scopedMapSuccEliminate predicate (Just predecessor) ordinal exact continue =
   replace {p = predicate} (justInjective exact) (continue predecessor Refl)
 
+0 scopedTagPairPrependSource :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (sourceFirst, sourceMiddle, sourceFinal, targetFirst, targetFinal : SystemState name key value world error) ->
+  (sourceStep : Transition sourceFirst sourceMiddle) -> (source : Transitions sourceMiddle sourceFinal) -> (target : Transitions targetFirst targetFinal) ->
+  (sourceOrdinal, targetOrdinal : Nat) ->
+  ScopedOrdinalTagPair name key world error value sourceMiddle sourceFinal targetFirst targetFinal source target sourceOrdinal targetOrdinal ->
+  ScopedOrdinalTagPair name key world error value sourceFirst sourceFinal targetFirst targetFinal (MoreTransitions sourceStep source) target (S sourceOrdinal) targetOrdinal
+scopedTagPairPrependSource name key world error value sourceFirst sourceMiddle sourceFinal targetFirst targetFinal sourceStep source target sourceOrdinal targetOrdinal pair =
+  MkScopedOrdinalTagPair (ordinalSharedTag pair) (ScopedRuleLater sourceStep source (ordinalSourceTag pair)) (ordinalTargetTag pair)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
