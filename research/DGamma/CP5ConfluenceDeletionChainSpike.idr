@@ -22986,6 +22986,30 @@ scopedReadyFinalExact name key world error value nameEq keyEq deletable ordinal 
       (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live)
       _ originalFinal survivingAfter rest tail target tailEnds
 
+0 scopedPostCloseOutputNoFailure :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (original, originalFinal, survivor : SystemState name key value world error) ->
+  (trace : Transitions original originalFinal) ->
+  (output : ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq keyEq registered
+    ordinal live trace survivor) ->
+  (noFailedFibers originalFinal = True) ->
+  (noFailedFibers (scopedReadyFinal name key world error value nameEq keyEq
+    (GenerationOwnedActor nameEq registered) ordinal live original originalFinal survivor trace
+    (relationalSuffixReplayReady (postCloseOutputFold output))) = True)
+scopedPostCloseOutputNoFailure name key world error value protocol nameEq keyEq registered ordinal live
+  original originalFinal survivor trace output noFailure =
+    trans (cong noFailedFibers (scopedReadyFinalExact name key world error value nameEq keyEq
+      (GenerationOwnedActor nameEq registered) ordinal live original originalFinal survivor trace
+      (relationalSuffixReplayReady (postCloseOutputFold output))
+      (relationalSuffixFinalSurvivor (postCloseOutputFold output)) (relationalSuffixReadyEnds (postCloseOutputFold output))))
+      (scopedRelationalBoundaryNoFailure name key world error value nameEq keyEq registered
+        (relationalSuffixFinalLive (postCloseOutputFold output)) originalFinal
+        (relationalSuffixFinalSurvivor (postCloseOutputFold output))
+        (relationalSuffixFinalBoundary (postCloseOutputFold output)) noFailure)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
