@@ -11420,6 +11420,37 @@ scopedSelectedLifecycleOutcomes nameEq keyEq selected registered ordinal live
   (LUnload actor) actorDistinct whole independent tag checked occurs boundary
   emptyPlan ownerLookup = ()
 
+0 ScopedForeignLifecycleExclusion :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {selected : name} -> {registered : List (RegistrationGeneration name)} ->
+  {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+  {wholeFirst, wholeLast, before, survivor :
+    SystemState name key value world error} ->
+  {whole : Transitions wholeFirst wholeLast} ->
+  {action : Action name key value world error} ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) -> Type
+ScopedForeignLifecycleExclusion {name} {key} {world} {error} {value}
+  {nameEq} {keyEq} {selected} {before} {survivor} {action} boundary =
+    (leftSelected, leftOwner, rightOwner : Fiber name key value world error) ->
+    lookupFiber @{nameEq} selected
+      (planTarget (completePlanResult (selectedBoundaryPlan boundary))) =
+      Just leftSelected ->
+    lookupFiber @{nameEq} (actionOwner action)
+      (planTarget (completePlanResult (selectedBoundaryPlan boundary))) =
+      Just leftOwner ->
+    lookupFiber @{nameEq} selected (registry before) = Just leftSelected ->
+    lookupFiber @{nameEq} (actionOwner action) (registry before) =
+      Just leftOwner ->
+    lookupFiber @{nameEq} (actionOwner action) (registry survivor) =
+      Just rightOwner ->
+    FiberControlRelated leftOwner rightOwner ->
+    (wanted : key) ->
+    Elem wanted (dependencies
+      (componentDependencies (fiberComponent leftOwner))) ->
+    providerCandidate @{keyEq} wanted leftSelected = False
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
