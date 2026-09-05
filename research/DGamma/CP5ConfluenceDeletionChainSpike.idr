@@ -14,7 +14,11 @@ import DGamma.CP4DeletionInactiveInvariant
 import DGamma.CP4DeletionRetirementPersistence
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorTrace
+import DGamma.CP4DeletionSelectedForeignLifecycleProviderFrame
+import DGamma.CP4DeletionSelectedForeignLifecycleDispatch
 import DGamma.CP4DeletionSelectedOwn
+import DGamma.Ordering
+import Control.WellFounded
 import DGamma.CP4DeletionWithdrawalCurrent
 import DGamma.CP4DeletionWithdrawalJoin
 import DGamma.CP4ParentSafety
