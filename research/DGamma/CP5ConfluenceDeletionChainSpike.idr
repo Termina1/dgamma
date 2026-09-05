@@ -25733,6 +25733,33 @@ scopedPrependReplaySeal name key world error value nameEq keyEq deletable ordina
       (tagSame, sealedReadyTags seal)
       (ReplayEndsKeep retained tag targetStep actionSame fires (sealedReady seal) (sealedReadyEnds seal))
 
+0 scopedVerbatimHeadSealAt :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (0 checked : (checkedApplyAction @{nameEq} @{keyEq} action first = Just (tag, middle))) ->
+  (rest : Transitions middle finalState) -> Not (deletable ordinal live action) ->
+  ScopedReplaySeal name key world error value nameEq keyEq deletable (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) middle finalState middle finalState rest ->
+  (observed : Maybe (NamedTransition name key world error value action first)) ->
+  (fireNamed nameEq keyEq action first = observed) ->
+  ScopedReplaySeal name key world error value nameEq keyEq deletable ordinal live first finalState first finalState
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq action tag checked) rest)
+scopedVerbatimHeadSealAt name key world error value nameEq keyEq deletable ordinal live first middle finalState action tag checked rest retained seal Nothing fires =
+  void (nothingIsNotJust (trans (sym (fireNamedNothingImpliesCheckedNothing nameEq keyEq action first fires)) checked))
+scopedVerbatimHeadSealAt name key world error value nameEq keyEq deletable ordinal live first middle finalState action tag checked rest retained seal (Just named) fires =
+  scopedPrependReplaySeal name key world error value nameEq keyEq deletable ordinal live first middle finalState first finalState
+    (Fired nameEq keyEq action tag checked) rest retained named fires
+    (scopedNamedRawTag name key world error value nameEq keyEq action first middle tag
+      (checkedActionProjects nameEq keyEq action first middle tag checked) named
+      (scopedNamedAligned name key world error value nameEq keyEq action first named fires))
+    (replace {p = \target => ScopedReplaySeal name key world error value nameEq keyEq deletable (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal action live) middle finalState target finalState rest}
+      (sym (cong Builtin.snd (justInjective (trans (sym (namedFireProjectsRaw nameEq keyEq action first named fires))
+        (checkedActionProjects nameEq keyEq action first middle tag checked))))) seal)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
