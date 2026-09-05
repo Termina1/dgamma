@@ -21841,6 +21841,88 @@ scopedSelectedCertifiedPrependKept name key world error value protocol nameEq ke
         parentControls
         stepDiscipline)
 
+record ScopedTaggedSelectedLocalReplayer
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
+  (registered : List (RegistrationGeneration name))
+  (protocol : RegistrationProtocol key value world error)
+  {wholeFirst, wholeLast, interiorFirst, episodeCloseSource :
+    SystemState name key value world error}
+  (whole : Transitions wholeFirst wholeLast)
+  (interior : Transitions interiorFirst episodeCloseSource) where
+  constructor MkScopedTaggedSelectedLocalReplayer
+  0 scopedReplayDeletedLocal :
+    (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+    GenerationEnvironmentNamesUnique live ->
+    GenerationEnvironmentStamped live ->
+    ((generation : RegistrationGeneration name) -> Elem generation registered ->
+      Not (generationName generation = selected)) ->
+    (action : Action name key value world error) ->
+    (before, afterState, survivor : SystemState name key value world error) ->
+    (tag : RuleTag) ->
+    (checked : (checkedApplyAction @{nameEq} @{keyEq} action before =
+      Just (tag, afterState))) ->
+    (installedAt @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} selected before = True) ->
+    (installedAt @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} selected afterState = True) ->
+    {restFinal : SystemState name key value world error} ->
+    (rest : Transitions afterState restFinal) ->
+    (noBegin : IsBeginAction action ->
+      GenerationOwnedActor nameEq registered ordinal live action -> Void) ->
+    (occurs : OccursIn
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq action tag checked) whole) ->
+    (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+      keyEq selected registered ordinal live whole before survivor) ->
+    EmptyTableInactivePlan name key world error value nameEq
+      (inactiveLeafPlan (completePlanResult
+        (selectedBoundaryPlan boundary))) ->
+    CurrentRegisteredInactiveFibers name key world error value nameEq registered
+      live before ->
+    EpisodeGenerationDeletedActor nameEq selected registered ordinal live
+      action ->
+    SelectedEpisodeReplayBoundary name key world error value nameEq keyEq
+      selected registered (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal action live) whole
+      afterState survivor
+  0 scopedReplayRetainedLocal :
+    (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+    GenerationEnvironmentNamesUnique live ->
+    GenerationEnvironmentStamped live ->
+    ((generation : RegistrationGeneration name) -> Elem generation registered ->
+      Not (generationName generation = selected)) ->
+    (action : Action name key value world error) ->
+    (before, afterState, survivor : SystemState name key value world error) ->
+    (tag : RuleTag) ->
+    (checked : (checkedApplyAction @{nameEq} @{keyEq} action before =
+      Just (tag, afterState))) ->
+    (installedAt @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} selected before = True) ->
+    (installedAt @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} selected afterState = True) ->
+    (rest : Transitions afterState episodeCloseSource) ->
+    InstalledTrace name key world error value nameEq keyEq selected rest ->
+    (noBegin : IsBeginAction action ->
+      GenerationOwnedActor nameEq registered ordinal live action -> Void) ->
+    (occurs : OccursIn
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq action tag checked) whole) ->
+    (insidePrefix : Transitions interiorFirst before) ->
+    (appendTransitions insidePrefix
+      (MoreTransitions (Fired nameEq keyEq action tag checked) rest) = interior) ->
+    (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+      keyEq selected registered ordinal live whole before survivor) ->
+    EmptyTableInactivePlan name key world error value nameEq
+      (inactiveLeafPlan (completePlanResult
+        (selectedBoundaryPlan boundary))) ->
+    CurrentRegisteredInactiveFibers name key world error value nameEq registered
+      live before ->
+    Not (EpisodeGenerationDeletedActor nameEq selected registered ordinal live
+      action) ->
+    ScopedTaggedSelectedHead name key world error value nameEq keyEq selected
+      registered ordinal live whole action tag afterState survivor
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
