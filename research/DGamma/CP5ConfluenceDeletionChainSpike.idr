@@ -19414,6 +19414,15 @@ scopedDeleteMemberHeadAt name item nameEq removed current cell rest entry tail (
   rewrite exact in scopedElemConsLift (Binding name (\_ => item)) (Bind current cell) entry
     (deleteEntries @{nameEq} removed rest) rest tail
 
+0 scopedDeleteMemberSource :
+  (name, item : Type) -> (nameEq : DecEq name) -> (removed : name) ->
+  (entries : List (Binding name (\_ => item))) -> (entry : Binding name (\_ => item)) ->
+  Elem entry (deleteEntries @{nameEq} removed entries) -> Elem entry entries
+scopedDeleteMemberSource name item nameEq removed [] entry member = member
+scopedDeleteMemberSource name item nameEq removed (Bind current cell :: rest) entry member =
+  scopedDeleteMemberHeadAt name item nameEq removed current cell rest entry
+    (scopedDeleteMemberSource name item nameEq removed rest entry) (decEq @{nameEq} removed current) Refl member
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
