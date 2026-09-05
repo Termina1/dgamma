@@ -25959,6 +25959,13 @@ record ScopedOrdinalTagPair
   0 ordinalSourceTag : ScopedRuleAt name key world error value source sourceOrdinal ordinalSharedTag
   0 ordinalTargetTag : ScopedRuleAt name key world error value target targetOrdinal ordinalSharedTag
 
+0 scopedMapSuccEliminate :
+  (predicate : Nat -> Type) -> (observed : Maybe Nat) -> (ordinal : Nat) -> (map S observed = Just ordinal) ->
+  ((predecessor : Nat) -> (observed = Just predecessor) -> predicate (S predecessor)) -> predicate ordinal
+scopedMapSuccEliminate predicate Nothing ordinal exact continue = void (nothingIsNotJust exact)
+scopedMapSuccEliminate predicate (Just predecessor) ordinal exact continue =
+  replace {p = predicate} (justInjective exact) (continue predecessor Refl)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
