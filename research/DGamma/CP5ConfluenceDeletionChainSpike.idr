@@ -20004,6 +20004,25 @@ scopedRelationalPrependKept name key world error value protocol nameEq keyEq
           stepDiscipline boundary)
         stepDiscipline)
 
+0 scopedNoRegisteredHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (transition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  NoRegisteredEpisode nameEq registered ordinal live (MoreTransitions transition rest) ->
+  ((IsBeginAction (transitionAction transition) ->
+      GenerationOwnedActor {name = name} {key = key} {value = value}
+        {world = world} {error = error} nameEq registered ordinal live
+        (transitionAction transition) -> Void),
+    NoRegisteredEpisode nameEq registered (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction transition) live)
+      rest)
+scopedNoRegisteredHead name key world error value nameEq registered ordinal live
+  first middle finalState _ _
+  (NoRegisteredEpisodeStep transition rest noBegin tail) = (noBegin, tail)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
