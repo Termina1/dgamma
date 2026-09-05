@@ -15421,10 +15421,10 @@ scopedTagPostCloseHeadFromRaw name key world error value nameEq keyEq selected
     GenerationOwnedActor nameEq registered ordinal live action -> Void) ->
   (boundary : PostCloseSelectedBoundary name key world error value nameEq keyEq
     selected registered ordinal live original survivor) ->
-  PostCloseOrchestrationStep name key world error value nameEq keyEq selected
+  ScopedTaggedPostCloseHead name key world error value nameEq keyEq selected
     registered (S ordinal)
     (advanceGenerationEnvironment @{nameEq} ordinal action live)
-    action originalAfter survivor
+    action tag originalAfter survivor
 scopedRetainedForeignPostCloseLifecycle name key world error value
   protocol nameEq keyEq selected registered ordinal live unique action lifecycle
   actorDistinct original originalAfter originalFinal survivor
@@ -15560,12 +15560,18 @@ scopedRetainedForeignPostCloseLifecycle name key world error value
                   survivor (foreignLifecycleAfter control) planChecked
                   (foreignLifecycleChecked control) (postCloseEffects boundary)
                   leftOwner rightOwner leftFound rightFound ownersRelated
-            in packagePostCloseOrchestrationWithInvariants protocol nameEq keyEq
+            in scopedTagPostCloseHeadFromRaw name key world error value nameEq keyEq
+              selected registered (S ordinal)
+              (advanceGenerationEnvironment @{nameEq} ordinal action live)
+              action tag (namedTag (retainedBoundaryNamed exactStep)) originalAfter
+              survivor (foreignLifecycleAfter control)
+              (sym (retainedBoundaryTagSame exactStep)) (foreignLifecycleRaw control)
+              (packagePostCloseOrchestrationWithInvariants protocol nameEq keyEq
               selected registered ordinal live unique action original
               originalAfter originalFinal survivor tag checked rest discipline
               retained noBegin (postCloseCurrentInactive boundary)
               (postCloseCurrentEmpty boundary) boundary exactStep
-              orchestrationControl planInactive clean headEffects
+              orchestrationControl planInactive clean headEffects)
 
 0 nothingNotJustScopedPostFold : Nothing = Just item -> Void
 nothingNotJustScopedPostFold Refl impossible
@@ -15881,26 +15887,26 @@ scopedPostCloseSuffixFold name key world error value protocol nameEq keyEq selec
                 nameEq keyEq selected registered ordinal live unique action Refl
                 actorDistinct _ _ _ survivor tag checked rest stepDiscipline
                 retained noBegin boundary
-              LBegin actor => scopedRetainedForeignPostCloseLifecycle name key world error value protocol nameEq
+              LBegin actor => taggedPostCloseStep (scopedRetainedForeignPostCloseLifecycle name key world error value protocol nameEq
                 keyEq selected registered ordinal live unique action Refl
                 actorDistinct _ _ _ survivor tag checked rest
-                stepDiscipline retained noBegin boundary
-              LAdvance actor => scopedRetainedForeignPostCloseLifecycle name key world error value protocol nameEq
+                stepDiscipline retained noBegin boundary)
+              LAdvance actor => taggedPostCloseStep (scopedRetainedForeignPostCloseLifecycle name key world error value protocol nameEq
                 keyEq selected registered ordinal live unique action Refl
                 actorDistinct _ _ _ survivor tag checked rest
-                stepDiscipline retained noBegin boundary
-              LDivert actor => scopedRetainedForeignPostCloseLifecycle name key world error value protocol nameEq
+                stepDiscipline retained noBegin boundary)
+              LDivert actor => taggedPostCloseStep (scopedRetainedForeignPostCloseLifecycle name key world error value protocol nameEq
                 keyEq selected registered ordinal live unique action Refl
                 actorDistinct _ _ _ survivor tag checked rest
-                stepDiscipline retained noBegin boundary
-              LLeave actor => scopedRetainedForeignPostCloseLifecycle name key world error value protocol nameEq
+                stepDiscipline retained noBegin boundary)
+              LLeave actor => taggedPostCloseStep (scopedRetainedForeignPostCloseLifecycle name key world error value protocol nameEq
                 keyEq selected registered ordinal live unique action Refl
                 actorDistinct _ _ _ survivor tag checked rest
-                stepDiscipline retained noBegin boundary
-              LUnload actor => scopedRetainedForeignPostCloseLifecycle name key world error value protocol nameEq
+                stepDiscipline retained noBegin boundary)
+              LUnload actor => taggedPostCloseStep (scopedRetainedForeignPostCloseLifecycle name key world error value protocol nameEq
                 keyEq selected registered ordinal live unique action Refl
                 actorDistinct _ _ _ survivor tag checked rest
-                stepDiscipline retained noBegin boundary
+                stepDiscipline retained noBegin boundary)
         in case step of
           MkPostCloseOrchestrationStep named fires nextBoundary =>
             let folded = scopedPostCloseSuffixFold name key world error value protocol nameEq keyEq selected
