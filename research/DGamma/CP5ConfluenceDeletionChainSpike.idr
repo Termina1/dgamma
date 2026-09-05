@@ -15176,6 +15176,13 @@ scopedSelectedClosedFoldFromPremises name key world error value protocol nameEq
                 episodeStartLive beforeScan))
             noDependent)))
 
+0 scopedSystemEta :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (state : SystemState name key value world error) ->
+  MkSystemState (worldState state) (registry state) = state
+scopedSystemEta name key world error value
+  (MkSystemState observedWorld observedRegistry) = Refl
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
