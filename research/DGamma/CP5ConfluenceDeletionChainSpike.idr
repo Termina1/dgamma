@@ -25768,9 +25768,9 @@ scopedVerbatimHeadSealAt name key world error value nameEq keyEq deletable ordin
   (action : Action name key value world error) ->
   Not (GenerationOwnedActor {name = name} {key = key} {value = value} {world = world} {error = error} nameEq registered ordinal live action)
 scopedPrefixHeadNotOwned name key world error value nameEq registered ordinal endOrdinal live bounded stepBound lower action
-  (generation ** (owned, member)) =
-    succNotLTEpred (transitive (actionGenerationBeforeNext nameEq ordinal live bounded action owned)
-      (transitive stepBound (lower generation member)))
+  (generation ** evidence) =
+    succNotLTEpred (transitive (actionGenerationBeforeNext nameEq ordinal live bounded action (fst evidence))
+      (transitive stepBound (lower generation (snd evidence))))
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
