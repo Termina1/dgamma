@@ -15377,6 +15377,27 @@ record ScopedTaggedPostCloseHead
     nameEq keyEq selected registered nextOrdinal nextLive action originalAfter survivor
   0 taggedPostCloseTag : (tag = namedTag (postCloseOrchestrationNamed taggedPostCloseStep))
 
+0 scopedTagPostCloseHeadFromRaw :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (nextOrdinal : Nat) -> (nextLive : GenerationEnvironment name) ->
+  (action : Action name key value world error) -> (tag, rawTag : RuleTag) ->
+  (originalAfter, survivor, rawAfter : SystemState name key value world error) ->
+  (tag = rawTag) ->
+  (applyAction @{nameEq} @{keyEq} action survivor = Just (rawTag, rawAfter)) ->
+  (step : PostCloseOrchestrationStep name key world error value nameEq keyEq
+    selected registered nextOrdinal nextLive action originalAfter survivor) ->
+  ScopedTaggedPostCloseHead name key world error value nameEq keyEq selected
+    registered nextOrdinal nextLive action tag originalAfter survivor
+scopedTagPostCloseHeadFromRaw name key world error value nameEq keyEq selected
+  registered nextOrdinal nextLive action tag rawTag originalAfter survivor rawAfter
+  sameTag raw step =
+    MkScopedTaggedPostCloseHead step
+      (trans sameTag (cong Builtin.fst (justInjective (trans (sym raw)
+        (namedFireProjectsRaw nameEq keyEq action survivor
+          (postCloseOrchestrationNamed step) (postCloseOrchestrationFires step))))))
+
 0 scopedRetainedForeignPostCloseLifecycle :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) ->
