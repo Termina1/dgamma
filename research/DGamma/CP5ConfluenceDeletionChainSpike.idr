@@ -25470,6 +25470,64 @@ scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq action
       (foreignControlLookupFound nameEq (actionOwner action) (registry targetBefore) planned targetOwner targetFound
         (fiberControlMaybeSymmetric controls))
 
+0 scopedNamedActionReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (named : NamedTransition name key world error value action targetBefore) ->
+  (fireNamed nameEq keyEq action targetBefore = Just named) -> (tag = transitionTag (namedTransition named)) ->
+  (planned : Registry name key value world error) ->
+  InactiveLeafDeletionPlan {name = name} {key = key} {value = value} {world = world} {error = error} nameEq (registry sourceBefore) planned ->
+  ((isLifecycleAction action = True) -> FiberControlMaybeRelated
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner action) planned)
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner action) (registry targetBefore))) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (namedTransition named) NoTransitions)
+scopedNamedActionReplay name key world error value nameEq keyEq (OInsert actor parent component) tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan controls =
+    scopedNamedOrchestrationReplay name key world error value nameEq keyEq (OInsert actor parent component) tag sourceBefore sourceAfter targetBefore sourceChecked named
+      (scopedNamedAligned name key world error value nameEq keyEq (OInsert actor parent component) targetBefore named fires) sameTag (PaperInsertStep Refl)
+scopedNamedActionReplay name key world error value nameEq keyEq (ORetire actor) tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan controls =
+    scopedNamedOrchestrationReplay name key world error value nameEq keyEq (ORetire actor) tag sourceBefore sourceAfter targetBefore sourceChecked named
+      (scopedNamedAligned name key world error value nameEq keyEq (ORetire actor) targetBefore named fires) sameTag (PaperRetireStep Refl)
+scopedNamedActionReplay name key world error value nameEq keyEq (ORemove actor) tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan controls =
+    scopedNamedOrchestrationReplay name key world error value nameEq keyEq (ORemove actor) tag sourceBefore sourceAfter targetBefore sourceChecked named
+      (scopedNamedAligned name key world error value nameEq keyEq (ORemove actor) targetBefore named fires) sameTag (PaperRemoveStep Refl)
+scopedNamedActionReplay name key world error value nameEq keyEq (LBegin actor) tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan controls =
+    scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq (LBegin actor) Refl tag sourceBefore sourceAfter targetBefore
+      sourceChecked named fires sameTag planned plan (controls Refl)
+      (lifecycleOwnerPresent nameEq keyEq (LBegin actor) Refl targetBefore (namedAfter named) (namedTag named)
+        (namedFireProjectsRaw nameEq keyEq (LBegin actor) targetBefore named fires))
+scopedNamedActionReplay name key world error value nameEq keyEq (LAdvance actor) tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan controls =
+    scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq (LAdvance actor) Refl tag sourceBefore sourceAfter targetBefore
+      sourceChecked named fires sameTag planned plan (controls Refl)
+      (lifecycleOwnerPresent nameEq keyEq (LAdvance actor) Refl targetBefore (namedAfter named) (namedTag named)
+        (namedFireProjectsRaw nameEq keyEq (LAdvance actor) targetBefore named fires))
+scopedNamedActionReplay name key world error value nameEq keyEq (LDivert actor) tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan controls =
+    scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq (LDivert actor) Refl tag sourceBefore sourceAfter targetBefore
+      sourceChecked named fires sameTag planned plan (controls Refl)
+      (lifecycleOwnerPresent nameEq keyEq (LDivert actor) Refl targetBefore (namedAfter named) (namedTag named)
+        (namedFireProjectsRaw nameEq keyEq (LDivert actor) targetBefore named fires))
+scopedNamedActionReplay name key world error value nameEq keyEq (LLeave actor) tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan controls =
+    scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq (LLeave actor) Refl tag sourceBefore sourceAfter targetBefore
+      sourceChecked named fires sameTag planned plan (controls Refl)
+      (lifecycleOwnerPresent nameEq keyEq (LLeave actor) Refl targetBefore (namedAfter named) (namedTag named)
+        (namedFireProjectsRaw nameEq keyEq (LLeave actor) targetBefore named fires))
+scopedNamedActionReplay name key world error value nameEq keyEq (LUnload actor) tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan controls =
+    scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq (LUnload actor) Refl tag sourceBefore sourceAfter targetBefore
+      sourceChecked named fires sameTag planned plan (controls Refl)
+      (lifecycleOwnerPresent nameEq keyEq (LUnload actor) Refl targetBefore (namedAfter named) (namedTag named)
+        (namedFireProjectsRaw nameEq keyEq (LUnload actor) targetBefore named fires))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
