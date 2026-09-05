@@ -126,6 +126,7 @@ replayEffectPartialTransitive (PartialDefined first) (PartialDefined second) =
 
 ||| Related lifecycle owners supply strong cross-input partial-map capital. This
 ||| is the landed revision-20 bridge used by both remaining pointwise heads.
+export
 0 pointwiseRelatedLifecycleMaps :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) ->
@@ -3555,6 +3556,7 @@ singletonNonAdvanceGeneratorMapsRelated nameEq keyEq action tag sourceBefore
           action Refl notAdvance generator y
     in replayPartialRewrite (sym sourceUses) (sym targetUses) observedOutputs
 
+export
 0 singletonNonAdvanceRAR :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (action : Action name key value world error) -> (tag : RuleTag) ->
@@ -21111,6 +21113,7 @@ orchestrationSingletonMapsRelated name key value world error nameEq keyEq action
         sourceChecked orchestration sourceBefore movedBefore x)) Refl
       (partialEffectMapForRespects nameEq keyEq action tag movedBefore x y inputs)
 
+export
 0 orchestrationSingletonRAR :
   (name : Type) -> (key : Type) -> (value : key -> Type) ->
   (world : Type) -> (error : Type) ->
