@@ -19676,6 +19676,70 @@ scopedRelatedAdvanceTags name key world error value nameEq keyEq actor
       (relatedLifecycleOwnersAt nameEq keyEq (LAdvance actor) Refl leftBefore
         rightBefore leftTag leftAfter leftRaw effects ordered)
 
+||| Both runtime halves of a relational boundary preserve every accepted tag.
+0 scopedRelatedActionTags :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (leftBefore, rightBefore, leftAfter, rightAfter :
+    SystemState name key value world error) ->
+  (leftTag, rightTag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} action leftBefore =
+    Just (leftTag, leftAfter)) ->
+  (applyAction @{nameEq} @{keyEq} action rightBefore =
+    Just (rightTag, rightAfter)) ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} leftBefore)
+    (projectEffectState @{nameEq} rightBefore) ->
+  OrderedRegistryControlsRelated name key world error value
+    (bindings (registry leftBefore)) (bindings (registry rightBefore)) ->
+  (leftTag = rightTag)
+scopedRelatedActionTags name key world error value nameEq keyEq
+  (OInsert actor parent component) leftBefore rightBefore leftAfter
+  rightAfter leftTag rightTag leftRaw rightRaw effects ordered =
+    trans (scopedInsertRawTag name key world error value nameEq keyEq actor parent
+      component leftBefore leftAfter leftTag leftRaw)
+      (sym (scopedInsertRawTag name key world error value nameEq keyEq actor parent
+        component rightBefore rightAfter rightTag rightRaw))
+scopedRelatedActionTags name key world error value nameEq keyEq
+  (ORetire actor) leftBefore rightBefore leftAfter rightAfter leftTag
+  rightTag leftRaw rightRaw effects ordered =
+    trans (successfulRetireTag nameEq keyEq actor leftBefore leftAfter leftTag leftRaw)
+      (sym (successfulRetireTag nameEq keyEq actor rightBefore rightAfter rightTag rightRaw))
+scopedRelatedActionTags name key world error value nameEq keyEq
+  (ORemove actor) leftBefore rightBefore leftAfter rightAfter leftTag
+  rightTag leftRaw rightRaw effects ordered =
+    trans (scopedRemoveRawTag name key world error value nameEq keyEq actor
+      leftBefore leftAfter leftTag leftRaw)
+      (sym (scopedRemoveRawTag name key world error value nameEq keyEq actor
+        rightBefore rightAfter rightTag rightRaw))
+scopedRelatedActionTags name key world error value nameEq keyEq
+  (LBegin actor) leftBefore rightBefore leftAfter rightAfter leftTag
+  rightTag leftRaw rightRaw effects ordered =
+    trans (beginSuccessTagScopedPostFold nameEq keyEq actor leftBefore leftAfter
+      leftTag leftRaw)
+      (sym (beginSuccessTagScopedPostFold nameEq keyEq actor rightBefore rightAfter
+        rightTag rightRaw))
+scopedRelatedActionTags name key world error value nameEq keyEq
+  (LAdvance actor) leftBefore rightBefore leftAfter rightAfter leftTag
+  rightTag leftRaw rightRaw effects ordered = scopedRelatedAdvanceTags name key world error value nameEq keyEq actor
+      leftBefore rightBefore leftAfter rightAfter leftTag rightTag leftRaw rightRaw
+      effects ordered
+scopedRelatedActionTags name key world error value nameEq keyEq
+  (LDivert actor) leftBefore rightBefore leftAfter rightAfter leftTag
+  rightTag leftRaw rightRaw effects ordered =
+    trans (successfulLDivertTag nameEq keyEq actor leftBefore leftAfter leftTag leftRaw)
+      (sym (successfulLDivertTag nameEq keyEq actor rightBefore rightAfter rightTag rightRaw))
+scopedRelatedActionTags name key world error value nameEq keyEq
+  (LLeave actor) leftBefore rightBefore leftAfter rightAfter leftTag
+  rightTag leftRaw rightRaw effects ordered =
+    trans (successfulLeaveTag nameEq keyEq actor leftBefore leftAfter leftTag leftRaw)
+      (sym (successfulLeaveTag nameEq keyEq actor rightBefore rightAfter rightTag rightRaw))
+scopedRelatedActionTags name key world error value nameEq keyEq
+  (LUnload actor) leftBefore rightBefore leftAfter rightAfter leftTag
+  rightTag leftRaw rightRaw effects ordered =
+    trans (fst (lUnloadBoundary nameEq keyEq actor leftBefore leftAfter leftTag leftRaw))
+      (sym (fst (lUnloadBoundary nameEq keyEq actor rightBefore rightAfter rightTag rightRaw)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
