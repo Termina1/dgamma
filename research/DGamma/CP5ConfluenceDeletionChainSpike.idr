@@ -13883,6 +13883,82 @@ scopedLifecycleNonBeginAnchorState name key world error value
 scopedLifecycleNonBeginAnchorState name key world error value
   (LUnload actor) before afterState notBegin = Refl
 
+0 scopedNonBeginClosedPrefixAnchor :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState, before, afterState :
+    SystemState name key value world error} ->
+  {global : Transitions initial finalState} ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  (action : Action name key value world error) ->
+  (lifecycle : isLifecycleAction action = True) ->
+  (notBegin : Not (action = LBegin (actionOwner action))) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (insidePrefix : Transitions
+    (closedStartState (locatedEpisode located)) before) ->
+  (rest : Transitions afterState
+    (lastInstalledState (locatedEpisode located))) ->
+  (insideDecomposition : appendTransitions insidePrefix
+    (MoreTransitions
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq action tag checked)
+      rest) = closedInside (locatedEpisode located)) ->
+  ForeignLifecycleInstalledAnchor name key world error value nameEq keyEq
+    (actionOwner action)
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked)
+    (appendTransitions (traceBeforeOpening located)
+      (MoreTransitions
+        (beginTransition (closedOpening (locatedEpisode located)))
+        (closedTransitions (locatedEpisode located))))
+scopedNonBeginClosedPrefixAnchor name key world error value nameEq keyEq selected
+  located action lifecycle notBegin tag checked insidePrefix rest
+  insideDecomposition =
+    MkForeignLifecycleInstalledAnchor before
+      (appendTransitions (traceBeforeOpening located)
+        (MoreTransitions
+          (beginTransition (closedOpening (locatedEpisode located)))
+          insidePrefix))
+      (appendTransitions
+        (MoreTransitions
+          (Fired {before = before} {afterState = afterState}
+            nameEq keyEq action tag checked)
+          rest)
+        (MoreTransitions
+          (unloadTransition (closing (locatedEpisode located))) NoTransitions))
+      (scopedLifecycleNonBeginSourceInstalled name key world error value nameEq
+        keyEq action lifecycle before afterState tag checked notBegin)
+      (sym
+        (scopedLifecycleNonBeginAnchorState name key world error value action
+          before afterState notBegin))
+      (rewrite
+        appendTransitionsAssociative (traceBeforeOpening located)
+          (MoreTransitions
+            (beginTransition (closedOpening (locatedEpisode located)))
+            insidePrefix)
+          (appendTransitions
+            (MoreTransitions
+              (Fired {before = before} {afterState = afterState}
+                nameEq keyEq action tag checked)
+              rest)
+            (MoreTransitions
+              (unloadTransition (closing (locatedEpisode located)))
+              NoTransitions))
+        in rewrite
+          sym
+            (appendTransitionsAssociative insidePrefix
+              (MoreTransitions
+                (Fired {before = before} {afterState = afterState}
+                  nameEq keyEq action tag checked)
+                rest)
+              (MoreTransitions
+                (unloadTransition (closing (locatedEpisode located)))
+                NoTransitions))
+          in rewrite insideDecomposition in Refl)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
