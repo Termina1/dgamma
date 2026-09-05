@@ -10504,6 +10504,22 @@ missingLookupRejectsInstalledScoped nameEq actor state missing installed =
       (sym (installedAtMissing nameEq actor state Nothing missing Refl))
       installed)
 
+0 installedFiberScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (state : SystemState name key value world error) ->
+  installedAt @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor state = True ->
+  (fiber : Fiber name key value world error **
+    lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} actor (registry state) = Just fiber)
+installedFiberScoped nameEq actor state installed =
+  case inspectErased (lookupFiber @{nameEq} actor (registry state)) of
+    MkErasedInspection Nothing exact =>
+      void (missingLookupRejectsInstalledScoped nameEq actor state exact
+        installed)
+    MkErasedInspection (Just fiber) exact => (fiber ** exact)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
