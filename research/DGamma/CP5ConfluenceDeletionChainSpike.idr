@@ -10633,6 +10633,67 @@ openingResolvedFromCommittedScoped nameEq keyEq selected actor wanted
         currentSelected currentOwner openingFound selectedFound ownerFound
         currentWellFormed ownerDeclares candidateTrue)
 
+0 precedenceFromOpeningResolutionScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected, actor : name) -> (wanted : key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (0 aligned : AlignedTransitions name key world error value nameEq keyEq
+    global) ->
+  (0 initialWellFormed : registryWellFormed @{nameEq} @{keyEq} initial = True) ->
+  (consumerEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    actor global) ->
+  (current : SystemState name key value world error) ->
+  (activationToCurrent : Transitions
+    (closedStartState (locatedEpisode consumerEpisode)) current) ->
+  (0 ownerInstalled : InstalledTrace name key world error value nameEq keyEq
+    actor activationToCurrent) ->
+  (openingOwner, currentOwner : Fiber name key value world error) ->
+  (0 openingFound : lookupFiber @{nameEq} actor
+    (registry (closedStartState (locatedEpisode consumerEpisode))) =
+      Just openingOwner) ->
+  (0 ownerFound : lookupFiber @{nameEq} actor (registry current) =
+    Just currentOwner) ->
+  (0 openingResolved : resolvedProviderAt @{nameEq} @{keyEq} actor wanted
+    selected (closedStartState (locatedEpisode consumerEpisode)) = True) ->
+  (0 ownerDeclares : Elem wanted (dependencies
+    (componentDependencies (fiberComponent currentOwner)))) ->
+  PrecedenceEdge nameEq selected actor
+    (closedStartState (locatedEpisode consumerEpisode))
+precedenceFromOpeningResolutionScoped nameEq keyEq selected actor wanted global
+  aligned initialWellFormed consumerEpisode current activationToCurrent
+  ownerInstalled openingOwner currentOwner openingFound ownerFound openingResolved
+  ownerDeclares =
+    MkPrecedenceEdge wanted
+      (resolvedProviderFiber
+        (resolvedProviderData nameEq keyEq actor wanted selected
+          (closedStartState (locatedEpisode consumerEpisode))
+          (episodeStartWellFormed nameEq keyEq actor global aligned
+            initialWellFormed consumerEpisode)
+          openingResolved))
+      openingOwner
+      (resolvedProviderLookup
+        (resolvedProviderData nameEq keyEq actor wanted selected
+          (closedStartState (locatedEpisode consumerEpisode))
+          (episodeStartWellFormed nameEq keyEq actor global aligned
+            initialWellFormed consumerEpisode)
+          openingResolved))
+      openingFound
+      (resolvedProviderDeclaresRelianceAnchor nameEq keyEq selected wanted
+        (closedStartState (locatedEpisode consumerEpisode))
+        (resolvedProviderData nameEq keyEq actor wanted selected
+          (closedStartState (locatedEpisode consumerEpisode))
+          (episodeStartWellFormed nameEq keyEq actor global aligned
+            initialWellFormed consumerEpisode)
+          openingResolved))
+      (replace
+        {p = \component => Elem wanted
+          (dependencies (componentDependencies component))}
+        (installedTracePreservesComponent nameEq keyEq actor activationToCurrent
+          ownerInstalled openingOwner currentOwner openingFound ownerFound)
+        ownerDeclares)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
