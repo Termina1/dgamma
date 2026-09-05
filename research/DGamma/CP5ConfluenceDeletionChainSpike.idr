@@ -16928,6 +16928,34 @@ record ScopedUnretiredFiberAt
     (registry state) = Just scopedUnretiredFiber
   0 scopedUnretiredFlag : retired scopedUnretiredFiber = False
 
+||| A step owned by a different actor does not touch the invariant fiber's
+||| binding, so presence and the unretired flag carry across it unchanged.
+0 scopedUnretiredForeignStep :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child : name) ->
+  (action : Action name key value world error) ->
+  (0 ownerDistinct : Not (child = actionOwner action)) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child before ->
+  ScopedUnretiredFiberAt name key value world error nameEq child afterState
+scopedUnretiredForeignStep name key world error value nameEq keyEq child action
+  ownerDistinct before afterState tag checked
+  (MkScopedUnretiredFiberAt fiber found flag) =
+    MkScopedUnretiredFiberAt fiber
+      (trans
+        (systemLocalUpdateForeign nameEq child (actionOwner action)
+          ownerDistinct before afterState
+          (applyActionLocalUpdate nameEq keyEq action before afterState tag
+            (checkedActionProjects nameEq keyEq action before afterState tag
+              checked)))
+        found)
+      flag
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
