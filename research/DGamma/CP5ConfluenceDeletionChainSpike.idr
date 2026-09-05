@@ -18523,6 +18523,55 @@ scopedRetainedGenerationRetireAbsurd name key world error value nameEq registere
     retained (replace {p = \observed => Elem observed registered}
       (justInjective (trans (sym deletedCurrent) current)) member)
 
+||| A kept first retirement is itself a witness; otherwise prepend the kept
+||| non-recovery step to the recursively transported witness.
+0 scopedChildRetirementKeptAt :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) -> (nameEq : DecEq name) ->
+  (parent, child : name) -> (generation : RegistrationGeneration name) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (sourceFirst, sourceMiddle, sourceFinal, survivorFirst, survivorMiddle,
+    survivorFinal : SystemState name key value world error) ->
+  (sourceStep : Transition sourceFirst sourceMiddle) ->
+  (sourceRest : Transitions sourceMiddle sourceFinal) ->
+  (survivorStep : Transition survivorFirst survivorMiddle) ->
+  (survivorRest : Transitions survivorMiddle survivorFinal) ->
+  (0 sameAction : (transitionAction sourceStep = transitionAction survivorStep)) ->
+  (0 sameTag : (transitionTag sourceStep = transitionTag survivorStep)) ->
+  (0 current : (lookupCurrentGeneration @{nameEq} child live = Just generation)) ->
+  (0 recurse : ScopedUnretiredFiberAt name key value world error nameEq child
+    sourceMiddle ->
+    (lookupCurrentGeneration @{nameEq} child
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep)
+        live) = Just generation) ->
+    ChildRetiresBeforeRecovery parent child sourceRest ->
+    ChildRetiresBeforeRecovery parent child survivorRest) ->
+  Either (transitionAction sourceStep = ORetire child)
+    (ScopedUnretiredNext name key value world error nameEq child ordinal live
+      (transitionAction sourceStep) sourceMiddle) ->
+  ChildRetiresBeforeRecovery parent child (MoreTransitions sourceStep sourceRest) ->
+  ChildRetiresBeforeRecovery parent child (MoreTransitions survivorStep survivorRest)
+scopedChildRetirementKeptAt name key world error value nameEq parent child
+  generation ordinal live sourceFirst sourceMiddle sourceFinal survivorFirst
+  survivorMiddle survivorFinal sourceStep sourceRest survivorStep survivorRest
+  sameAction sameTag current recurse (Left retires) retirement =
+    ChildRetiresNow survivorStep survivorRest (trans (sym sameAction) retires)
+scopedChildRetirementKeptAt name key world error value nameEq parent child
+  generation ordinal live sourceFirst sourceMiddle sourceFinal survivorFirst
+  survivorMiddle survivorFinal sourceStep sourceRest survivorStep survivorRest
+  sameAction sameTag current recurse (Right next) retirement =
+    ChildRetiresLater survivorStep survivorRest
+      (\recovery => fst (scopedChildBeforeTail name key world error value parent
+        child sourceFirst sourceMiddle sourceFinal sourceStep sourceRest
+        (scopedStepNotRetire next) retirement)
+        (scopedRecoveryStepReflects name key world error value parent sourceFirst
+          sourceMiddle survivorFirst survivorMiddle sourceStep survivorStep
+          sameAction sameTag recovery))
+      (recurse (scopedStepUnretired next) (trans (scopedStepCurrent next) current)
+        (snd (scopedChildBeforeTail name key world error value parent child
+          sourceFirst sourceMiddle sourceFinal sourceStep sourceRest
+          (scopedStepNotRetire next) retirement)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
