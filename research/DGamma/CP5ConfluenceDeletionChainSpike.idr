@@ -23093,6 +23093,21 @@ scopedQuietInactiveDelete name key world error value nameEq keyEq ambient remove
             (quietEntryFor @{nameEq} @{keyEq} {name = name} {key = key} {value = value} {world = world} {error = error} source)
             entries)) sourceQuiet)))
 
+0 scopedPlanQuiet :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (ambient : world) ->
+  (source, target : Registry name key value world error) ->
+  InactiveLeafDeletionPlan {name = name} {key = key} {value = value} {world = world} {error = error}
+    nameEq source target ->
+  (quiet @{nameEq} @{keyEq} (the (SystemState name key value world error) (MkSystemState ambient source)) = True) ->
+  (quiet @{nameEq} @{keyEq} (the (SystemState name key value world error) (MkSystemState ambient target)) = True)
+scopedPlanQuiet name key world error value nameEq keyEq ambient _ _ NoInactiveLeafDeletion sourceQuiet = sourceQuiet
+scopedPlanQuiet name key world error value nameEq keyEq ambient source target
+  (DeleteInactiveLeaf removed component parent retiredFlag table outcome found noChild rest) sourceQuiet =
+    scopedPlanQuiet name key world error value nameEq keyEq ambient (deleteBinding @{nameEq} removed source) target rest
+      (scopedQuietInactiveDelete name key world error value nameEq keyEq ambient removed component parent retiredFlag
+        table outcome source found sourceQuiet)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
