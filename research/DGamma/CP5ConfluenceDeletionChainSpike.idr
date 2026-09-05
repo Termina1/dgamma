@@ -15993,6 +15993,42 @@ scopedPrependPostCloseKeptOutput name key world error value nameEq keyEq
         (relationalSuffixFinalBoundary (postCloseOutputFold folded)))
       (sameTag, postCloseOutputTags folded)
 
+0 scopedPrependPostCloseDeletedOutput :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (original, originalAfter, originalFinal, survivor :
+    SystemState name key value world error) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  (transition : Transition original originalAfter) ->
+  (deleted : GenerationOwnedActor nameEq registered ordinal live
+    (transitionAction transition)) ->
+  (folded : ScopedPostCloseSuffixFoldOutput name key world error value nameEq
+    keyEq registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal
+      (transitionAction transition) live) rest survivor) ->
+  ScopedPostCloseSuffixFoldOutput name key world error value nameEq keyEq
+    registered ordinal live (MoreTransitions transition rest) survivor
+scopedPrependPostCloseDeletedOutput name key world error value nameEq keyEq
+  registered ordinal live original originalAfter originalFinal survivor rest
+  transition deleted folded =
+    MkScopedPostCloseSuffixFoldOutput
+      (MkRelationalNoEpisodeSuffixReplayFold
+        (relationalSuffixFinalOrdinal (postCloseOutputFold folded))
+        (relationalSuffixFinalLive (postCloseOutputFold folded))
+        (relationalSuffixFinalSurvivor (postCloseOutputFold folded))
+        (GenerationTraceScanStep transition rest
+          (relationalSuffixGenerationScan (postCloseOutputFold folded)))
+        (ReplayReadyDelete deleted
+          (relationalSuffixReplayReady (postCloseOutputFold folded)))
+        (ReplayEndsDelete deleted
+          (relationalSuffixReplayReady (postCloseOutputFold folded))
+          (relationalSuffixReadyEnds (postCloseOutputFold folded)))
+        (relationalSuffixFinalUnique (postCloseOutputFold folded))
+        (relationalSuffixFinalBoundary (postCloseOutputFold folded)))
+      (postCloseOutputTags folded)
+
 0 scopedDisciplineAppendRight :
   (left : Transitions first middle) ->
   (right : Transitions middle finalState) ->
