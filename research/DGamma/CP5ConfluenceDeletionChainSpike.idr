@@ -15249,27 +15249,6 @@ scopedSelectedClosedFoldFromPremises name key world error value protocol nameEq
                 episodeStartLive beforeScan))
             noDependent)))
 
-record ScopedSelectedClosedEpisodeFoldOutput
-  (name, key, world, error : Type) (value : key -> Type)
-  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
-  (registered : List (RegistrationGeneration name))
-  (episodeStartOrdinal : Nat)
-  (episodeStartLive : GenerationEnvironment name)
-  {preStart, afterClose, wholeLast : SystemState name key value world error}
-  (episode : ClosedEpisode name key world error value nameEq keyEq selected
-    preStart afterClose)
-  (whole : Transitions (closedStartState episode) wholeLast) where
-  constructor MkScopedSelectedClosedEpisodeFoldOutput
-  selectedOutputFold : SelectedClosedEpisodeFold name key world error value
-    nameEq keyEq selected registered episodeStartOrdinal episodeStartLive
-    episode whole
-  0 selectedOutputTags : ReplayReadyRuleTagsPreserved name key world error value
-    nameEq keyEq (EpisodeGenerationDeletedActor nameEq selected registered)
-    episodeStartOrdinal episodeStartLive preStart afterClose
-    (MoreTransitions (beginTransition (closedOpening episode))
-      (closedTransitions episode)) preStart
-    (selectedFoldReady selectedOutputFold)
-
 0 scopedSystemEta :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (state : SystemState name key value world error) ->
@@ -19292,6 +19271,35 @@ scopedReadySubsequenceTags name key world error value nameEq keyEq deletable ord
           (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal
             (transitionAction originalTransition) live)
           _ originalFinal survivingAfter originalRest tail (snd tags))
+
+record ScopedSelectedClosedEpisodeFoldOutput
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
+  (registered : List (RegistrationGeneration name))
+  (episodeStartOrdinal : Nat)
+  (episodeStartLive : GenerationEnvironment name)
+  {preStart, afterClose, wholeLast : SystemState name key value world error}
+  (episode : ClosedEpisode name key world error value nameEq keyEq selected
+    preStart afterClose)
+  (whole : Transitions (closedStartState episode) wholeLast) where
+  constructor MkScopedSelectedClosedEpisodeFoldOutput
+  selectedOutputFold : SelectedClosedEpisodeFold name key world error value
+    nameEq keyEq selected registered episodeStartOrdinal episodeStartLive
+    episode whole
+  0 selectedOutputTags : ReplayReadyRuleTagsPreserved name key world error value
+    nameEq keyEq (EpisodeGenerationDeletedActor nameEq selected registered)
+    episodeStartOrdinal episodeStartLive preStart afterClose
+    (MoreTransitions (beginTransition (closedOpening episode))
+      (closedTransitions episode)) preStart
+    (selectedFoldReady selectedOutputFold)
+  0 selectedOutputDiscipline : RegistrationDiscipline protocol nameEq
+    (scopedReadyTrace name key world error value nameEq keyEq
+      (EpisodeGenerationDeletedActor nameEq selected registered)
+      episodeStartOrdinal episodeStartLive preStart afterClose preStart
+      (MoreTransitions (beginTransition (closedOpening episode))
+        (closedTransitions episode))
+      (selectedFoldReady selectedOutputFold))
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
