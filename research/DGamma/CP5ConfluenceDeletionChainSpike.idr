@@ -15218,6 +15218,77 @@ scopedEffectStateSymmetric name key world value keyEq left right
   (MkEffectStateRelated ambient tables) =
     MkEffectStateRelated (sym ambient) (\actor => sym (tables actor))
 
+0 scopedPostCloseOutcomes :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (planAmbient, survivorAmbient : world) ->
+  (planRegistry, survivorRegistry : Registry name key value world error) ->
+  (planAfter : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (planChecked : checkedApplyAction @{nameEq} @{keyEq} action
+    (the (SystemState name key value world error)
+      (MkSystemState planAmbient planRegistry)) = Just (tag, planAfter)) ->
+  (effects : EffectStateRelated keyEq
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState planAmbient planRegistry)))
+    (projectEffectState @{nameEq}
+      (the (SystemState name key value world error)
+        (MkSystemState survivorAmbient survivorRegistry)))) ->
+  ForeignAdvanceOutcomeProvider name key world error value nameEq keyEq action
+    planAmbient survivorAmbient planRegistry survivorRegistry
+scopedPostCloseOutcomes name key world error value nameEq keyEq
+  (LAdvance actor) planAmbient survivorAmbient planRegistry survivorRegistry
+  planAfter tag planChecked effects =
+    \component, leftTable, rightTable, step, remaining, view, leftParent,
+      rightParent, retiredFlag, leftAccumulator, rightAccumulator,
+      concreteLeftFound, concreteRightFound =>
+        iteratorStageOutcomeRelated keyEq
+          (StageFromAdvance
+            {trace = MoreTransitions
+              (Fired nameEq keyEq (LAdvance actor) tag planChecked)
+              NoTransitions}
+            nameEq keyEq actor tag planChecked OccursHere
+            (MkFiber component leftParent retiredFlag leftTable
+              (Reloading (step :: remaining) leftAccumulator view))
+            concreteLeftFound (step :: remaining) leftAccumulator view Refl step
+            remaining SuffixHere)
+          (projectEffectState @{nameEq}
+            (the (SystemState name key value world error)
+              (MkSystemState survivorAmbient survivorRegistry)))
+          (projectEffectState @{nameEq}
+            (the (SystemState name key value world error)
+              (MkSystemState planAmbient planRegistry)))
+          (scopedEffectStateSymmetric name key world value keyEq
+            (projectEffectState @{nameEq}
+              (the (SystemState name key value world error)
+                (MkSystemState planAmbient planRegistry)))
+            (projectEffectState @{nameEq}
+              (the (SystemState name key value world error)
+                (MkSystemState survivorAmbient survivorRegistry))) effects)
+scopedPostCloseOutcomes name key world error value nameEq keyEq
+  (OInsert actor parent component) planAmbient survivorAmbient planRegistry
+  survivorRegistry planAfter tag planChecked effects = ()
+scopedPostCloseOutcomes name key world error value nameEq keyEq
+  (ORetire actor) planAmbient survivorAmbient planRegistry survivorRegistry
+  planAfter tag planChecked effects = ()
+scopedPostCloseOutcomes name key world error value nameEq keyEq
+  (ORemove actor) planAmbient survivorAmbient planRegistry survivorRegistry
+  planAfter tag planChecked effects = ()
+scopedPostCloseOutcomes name key world error value nameEq keyEq
+  (LBegin actor) planAmbient survivorAmbient planRegistry survivorRegistry
+  planAfter tag planChecked effects = ()
+scopedPostCloseOutcomes name key world error value nameEq keyEq
+  (LDivert actor) planAmbient survivorAmbient planRegistry survivorRegistry
+  planAfter tag planChecked effects = ()
+scopedPostCloseOutcomes name key world error value nameEq keyEq
+  (LLeave actor) planAmbient survivorAmbient planRegistry survivorRegistry
+  planAfter tag planChecked effects = ()
+scopedPostCloseOutcomes name key world error value nameEq keyEq
+  (LUnload actor) planAmbient survivorAmbient planRegistry survivorRegistry
+  planAfter tag planChecked effects = ()
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
