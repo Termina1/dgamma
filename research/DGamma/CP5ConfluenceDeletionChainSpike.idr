@@ -14820,6 +14820,91 @@ scopedBeginWithAfterOwnerExclusion name key world error value nameEq keyEq globa
               (dependencies (componentDependencies component))}
             (sym ownerComponent) ownerDeclares)
 
+0 scopedBeginLifecycleExclusion :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState, before, afterState :
+    SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq global) ->
+  (initialWellFormed : registryWellFormed @{nameEq} @{keyEq} initial = True) ->
+  (initialEmpty : bindings (registry initial) = []) ->
+  (selected, actor : name) -> (actorDistinct : Not (actor = selected)) ->
+  (selectedStartOrdinal : Nat) ->
+  (selectedStartLive : GenerationEnvironment name) ->
+  (selectedEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  (selectedOrdinalExact : transitionCount
+    (traceBeforeOpening selectedEpisode) = selectedStartOrdinal) ->
+  (noDependent : NoDependentClosingEpisodeForGeneration
+    {nameEq = nameEq} {keyEq = keyEq} {global = global} selected
+    selectedStartOrdinal selectedStartLive selectedEpisode) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LBegin actor) before =
+    Just (tag, afterState)) ->
+  (rest : Transitions afterState
+    (lastInstalledState (locatedEpisode selectedEpisode))) ->
+  (selectedRest : InstalledTrace name key world error value nameEq keyEq
+    selected rest) ->
+  (insidePrefix : Transitions
+    (closedStartState (locatedEpisode selectedEpisode)) before) ->
+  (insideDecomposition : appendTransitions insidePrefix
+    (MoreTransitions
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq (LBegin actor) tag checked)
+      rest) = closedInside (locatedEpisode selectedEpisode)) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  {whole : Transitions wholeFirst wholeLast} ->
+  {survivor : SystemState name key value world error} ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  (leftSelected, leftOwner : Fiber name key value world error) ->
+  (selectedFound : lookupFiber @{nameEq} selected (registry before) =
+    Just leftSelected) ->
+  (ownerFound : lookupFiber @{nameEq} actor (registry before) = Just leftOwner) ->
+  (wanted : key) ->
+  (ownerDeclares : Elem wanted (dependencies
+    (componentDependencies (fiberComponent leftOwner)))) ->
+  providerCandidate @{keyEq} wanted leftSelected = False
+scopedBeginLifecycleExclusion name key world error value nameEq keyEq global
+  aligned initialWellFormed initialEmpty selected actor actorDistinct
+  selectedStartOrdinal selectedStartLive selectedEpisode selectedOrdinalExact
+  noDependent registered ordinal live tag checked rest selectedRest insidePrefix
+  insideDecomposition boundary leftSelected leftOwner selectedFound ownerFound
+  wanted ownerDeclares =
+    case installedFiberScoped nameEq actor afterState
+      (snd
+        (snd
+          (lBeginBoundary nameEq keyEq actor before afterState tag checked))) of
+      (afterOwner ** afterOwnerFound) =>
+        scopedBeginWithAfterOwnerExclusion name key world error value nameEq keyEq
+          global aligned initialWellFormed initialEmpty selected actor
+          actorDistinct selectedStartOrdinal selectedStartLive selectedEpisode
+          selectedOrdinalExact noDependent tag checked rest selectedRest
+          insidePrefix insideDecomposition leftSelected leftOwner afterOwner
+          (trans
+            (systemLocalUpdateForeign nameEq selected actor
+              (\same => actorDistinct (sym same)) before afterState
+              (applyActionLocalUpdate nameEq keyEq (LBegin actor) before
+                afterState tag
+                (checkedActionProjects nameEq keyEq (LBegin actor) before
+                  afterState tag checked)))
+            selectedFound)
+          afterOwnerFound
+          (checkedStepPreservesPresentComponent nameEq keyEq actor
+            (LBegin actor) tag before afterState checked leftOwner afterOwner
+            ownerFound afterOwnerFound)
+          (preservationTheoremProof nameEq keyEq (LBegin actor) before afterState
+            tag (selectedOriginalWellFormed boundary)
+            (checkedActionProjects nameEq keyEq (LBegin actor) before afterState
+              tag checked))
+          (snd
+            (snd
+              (lBeginBoundary nameEq keyEq actor before afterState tag checked)))
+          wanted ownerDeclares
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
