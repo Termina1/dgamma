@@ -24412,39 +24412,6 @@ scopedTargetReplayBundle name key world error value protocol nameEq keyEq initia
       (deletionPremisesGiveSupportMatchesActive protocol nameEq keyEq initial finalState trace aligned discipline
         initialWellFormed initialEmpty quietFinal noFailure totality)
 
-||| Conditional whole-result assembler. The two target-indexed inputs below still need live producers:
-||| segment discipline does not compose retirement provenance across cuts, and tags do not imply map/yield replay.
-||| This is not a completed O9 producer until both are derived from the source premises.
-0 scopedEnrichedTargetBundle :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
-  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
-  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
-  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq global) ->
-  RegistrationDiscipline protocol nameEq
-    (scopedEnrichedTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds) ->
-  RelationalReplayCorrespondence name key world error value global
-    (scopedEnrichedTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds) ->
-  ReplayInvariantBundle name key world error value protocol nameEq keyEq
-    (survivingTrace (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds
-      (replayAligned (chainReplayCapital premises))))
-scopedEnrichedTargetBundle name key world error value protocol nameEq keyEq initial finalState global candidate folds
-  premises targetDiscipline replay =
-    scopedTargetReplayBundle name key world error value protocol nameEq keyEq initial
-      (scopedEnrichedFinal name key world error value protocol nameEq keyEq initial finalState global candidate folds)
-      (scopedEnrichedTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
-      (scopedEnrichedTraceAligned name key world error value protocol nameEq keyEq initial finalState global candidate folds
-        (replayAligned (chainReplayCapital premises))) targetDiscipline
-      (replayInitialWellFormed (chainReplayCapital premises)) (replayInitialEmpty (chainReplayCapital premises))
-      (fst (scopedEnrichedEndpointReady name key world error value protocol nameEq keyEq initial finalState global candidate folds
-        (replayQuiet (chainReplayCapital premises)) (replayNoFailure (chainReplayCapital premises))))
-      (snd (scopedEnrichedEndpointReady name key world error value protocol nameEq keyEq initial finalState global candidate folds
-        (replayQuiet (chainReplayCapital premises)) (replayNoFailure (chainReplayCapital premises))))
-      (scopedEnrichedTraceTotal name key world error value protocol nameEq keyEq initial finalState global candidate folds
-        (replayTotal (chainReplayCapital premises)))
-      (traceIndependentAfterRelationalReplaySpike keyEq replay (replayIndependent (chainReplayCapital premises)))
-
 ||| Predicate-independent discipline spine for concatenating the before/episode/after filters.
 ||| Each deletion owns its exact retirement classifier; each keep owns its fresh-birth and parent-control facts.
 data ScopedDisciplineReplaySpine :
@@ -24894,6 +24861,39 @@ scopedEnrichedWholeDiscipline name key world error value protocol nameEq keyEq i
     initial finalState initial (scopedEnrichedFinal name key world error value protocol nameEq keyEq initial finalState global candidate folds)
     global (scopedEnrichedTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
     (scopedEnrichedWholeSpine name key world error value protocol nameEq keyEq initial finalState global candidate folds) aligned discipline
+
+||| Conditional whole-result assembler: only semantic map/yield replay still needs a live producer.
+||| Whole-target discipline, including cross-cut retirement provenance, is now derived from enriched folds.
+||| This is not a completed O9 producer until the exact replay correspondence is also derived.
+0 scopedEnrichedTargetBundle :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq global) ->
+  RelationalReplayCorrespondence name key world error value global
+    (scopedEnrichedTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq
+    (survivingTrace (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds
+      (replayAligned (chainReplayCapital premises))))
+scopedEnrichedTargetBundle name key world error value protocol nameEq keyEq initial finalState global candidate folds
+  premises replay =
+    scopedTargetReplayBundle name key world error value protocol nameEq keyEq initial
+      (scopedEnrichedFinal name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+      (scopedEnrichedTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+      (scopedEnrichedTraceAligned name key world error value protocol nameEq keyEq initial finalState global candidate folds
+        (replayAligned (chainReplayCapital premises)))
+      (scopedEnrichedWholeDiscipline name key world error value protocol nameEq keyEq initial finalState global candidate folds
+        (replayAligned (chainReplayCapital premises)) (replayDiscipline (chainReplayCapital premises)))
+      (replayInitialWellFormed (chainReplayCapital premises)) (replayInitialEmpty (chainReplayCapital premises))
+      (fst (scopedEnrichedEndpointReady name key world error value protocol nameEq keyEq initial finalState global candidate folds
+        (replayQuiet (chainReplayCapital premises)) (replayNoFailure (chainReplayCapital premises))))
+      (snd (scopedEnrichedEndpointReady name key world error value protocol nameEq keyEq initial finalState global candidate folds
+        (replayQuiet (chainReplayCapital premises)) (replayNoFailure (chainReplayCapital premises))))
+      (scopedEnrichedTraceTotal name key world error value protocol nameEq keyEq initial finalState global candidate folds
+        (replayTotal (chainReplayCapital premises)))
+      (traceIndependentAfterRelationalReplaySpike keyEq replay (replayIndependent (chainReplayCapital premises)))
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
