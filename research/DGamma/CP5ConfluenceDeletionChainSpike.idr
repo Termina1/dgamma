@@ -24818,6 +24818,27 @@ scopedEnrichedCenterSpine name key world error value protocol nameEq keyEq initi
     (selectedFoldReady (selectedOutputFold (enrichedSelected folds))) (selectedOutputTags (enrichedSelected folds))
     (selectedOutputParentControls (enrichedSelected folds))
 
+0 scopedEnrichedSuffixSpine :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  ScopedDisciplineReplaySpine name key world error value nameEq (selectedRegistrations candidate)
+    (selectedFoldEndOrdinal (selectedOutputFold (enrichedSelected folds))) (selectedFoldEndLive (selectedOutputFold (enrichedSelected folds)))
+    (traceAfterClosing (selectedEpisode candidate))
+    (scopedEnrichedSuffixTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+scopedEnrichedSuffixSpine name key world error value protocol nameEq keyEq initial finalState global candidate folds =
+  scopedReadyDisciplineSpine name key world error value nameEq keyEq (selectedRegistrations candidate)
+    (GenerationOwnedActor nameEq (selectedRegistrations candidate))
+    (scopedPlainDeletedRetireOwned name key world error value nameEq (selectedRegistrations candidate))
+    (scopedRetainedInsertFreshPlain name key world error value nameEq (selectedRegistrations candidate))
+    (selectedFoldEndOrdinal (selectedOutputFold (enrichedSelected folds))) (selectedFoldEndLive (selectedOutputFold (enrichedSelected folds)))
+    (locatedAfter (selectedEpisode candidate)) finalState
+    (scopedEnrichedMiddle name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+    (traceAfterClosing (selectedEpisode candidate)) (relationalSuffixReplayReady (postCloseOutputFold (enrichedSuffix folds)))
+    (postCloseOutputTags (enrichedSuffix folds)) (postCloseOutputParentControls (enrichedSuffix folds))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
