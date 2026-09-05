@@ -21722,6 +21722,47 @@ scopedPrependSelectedInteriorKeptOutput name key world error value protocol name
           (sym namedAction) survivorStepDiscipline)
         (interiorOutputDiscipline folded))
 
+0 scopedPrependSelectedInteriorDeletedOutput :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (original, originalAfter, originalFinal, survivor :
+    SystemState name key value world error) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  (transition : Transition original originalAfter) ->
+  (deleted : EpisodeGenerationDeletedActor nameEq selected registered ordinal live
+    (transitionAction transition)) ->
+  (folded : ScopedSelectedInteriorFoldOutput name key world error value protocol nameEq
+    keyEq selected registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal
+      (transitionAction transition) live) whole rest survivor) ->
+  ScopedSelectedInteriorFoldOutput name key world error value protocol nameEq keyEq
+    selected registered ordinal live whole (MoreTransitions transition rest) survivor
+scopedPrependSelectedInteriorDeletedOutput name key world error value protocol nameEq keyEq
+  selected registered whole ordinal live original originalAfter originalFinal survivor rest
+  transition deleted folded =
+    MkScopedSelectedInteriorFoldOutput
+      (MkSelectedEpisodeInteriorFold
+        (interiorFinalOrdinal (interiorOutputFold folded))
+        (interiorFinalLive (interiorOutputFold folded))
+        (interiorFinalSurvivor (interiorOutputFold folded))
+        (GenerationTraceScanStep transition rest
+          (interiorScan (interiorOutputFold folded)))
+        (ReplayReadyDelete deleted
+          (interiorReady (interiorOutputFold folded)))
+        (ReplayEndsDelete deleted
+          (interiorReady (interiorOutputFold folded))
+          (interiorReadyEnds (interiorOutputFold folded)))
+        (interiorBoundary (interiorOutputFold folded)))
+      (interiorOutputTags folded)
+      (ScopedParentControlsDelete (interiorOutputParentControls folded))
+      (interiorOutputDiscipline folded)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
