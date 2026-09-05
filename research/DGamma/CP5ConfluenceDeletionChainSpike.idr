@@ -22360,6 +22360,15 @@ scopedAppendSelectedCloseFinalSame name key world error value nameEq keyEq selec
       (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live)
       rest survivingAfter tail target tailEnds closing
 
+0 scopedPrependTraceTransport :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, leftFinal, rightFinal : SystemState name key value world error) ->
+  (head : Transition first middle) -> (rest : Transitions middle leftFinal) ->
+  (sameFinal : (leftFinal = rightFinal)) ->
+  (replace {p = \endpoint => Transitions first endpoint} sameFinal (MoreTransitions head rest) =
+    MoreTransitions head (replace {p = \endpoint => Transitions middle endpoint} sameFinal rest))
+scopedPrependTraceTransport name key world error value first middle _ _ head rest Refl = Refl
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
