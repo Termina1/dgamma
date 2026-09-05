@@ -13410,6 +13410,84 @@ scopedSelectedInteriorFoldFromPremises name key world error value protocol nameE
           global aligned initialWellFormed selected located registered
           episodeStartOrdinal episodeStartLive beforeScan registeredDuring))
 
+0 scopedAssembleSelectedClosedFold :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (selectedOutside :
+    (generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (episodeStartOrdinal : Nat) ->
+  (episodeStartLive : GenerationEnvironment name) ->
+  {preStart, afterClose, wholeLast :
+    SystemState name key value world error} ->
+  (episode : ClosedEpisode name key world error value nameEq keyEq selected
+    preStart afterClose) ->
+  (whole : Transitions (closedStartState episode) wholeLast) ->
+  (interior : SelectedEpisodeInteriorFold name key world error value nameEq keyEq
+    selected registered (S episodeStartOrdinal) episodeStartLive whole
+    (closedInside episode) preStart) ->
+  (finalUnique : GenerationEnvironmentNamesUnique (interiorFinalLive interior)) ->
+  (finalStamped : GenerationEnvironmentStamped (interiorFinalLive interior)) ->
+  (finalInactive : CurrentRegisteredInactiveFibers name key world error value
+    nameEq registered (interiorFinalLive interior) (lastInstalledState episode)) ->
+  (finalEmpty : CurrentRegisteredEmptyTables name key world error value nameEq
+    registered (interiorFinalLive interior) (lastInstalledState episode)) ->
+  (finalPlanEmpty : EmptyTableInactivePlan name key world error value nameEq
+    (inactiveLeafPlan
+      (completePlanResult (selectedBoundaryPlan (interiorBoundary interior))))) ->
+  SelectedClosedEpisodeFold name key world error value nameEq keyEq selected
+    registered episodeStartOrdinal episodeStartLive episode whole
+scopedAssembleSelectedClosedFold name key world error value nameEq keyEq selected
+  registered selectedOutside episodeStartOrdinal episodeStartLive episode whole
+  interior finalUnique finalStamped finalInactive finalEmpty finalPlanEmpty =
+    MkSelectedClosedEpisodeFold (S (interiorFinalOrdinal interior))
+      (interiorFinalLive interior) (interiorFinalSurvivor interior)
+      (GenerationTraceScanStep (beginTransition (closedOpening episode))
+        (closedTransitions episode)
+        (scopedAppendGenerationScan name nameEq (S episodeStartOrdinal)
+          episodeStartLive (closedInside episode)
+          (MoreTransitions (unloadTransition (closing episode)) NoTransitions)
+          (interiorFinalOrdinal interior) (interiorFinalLive interior)
+          (S (interiorFinalOrdinal interior)) (interiorFinalLive interior)
+          (interiorScan interior)
+          (GenerationTraceScanStep (unloadTransition (closing episode))
+            NoTransitions GenerationTraceScanEnd)))
+      (ReplayReadyDelete
+        (the (EpisodeGenerationDeletedActor nameEq selected registered
+          episodeStartOrdinal episodeStartLive
+          (the (Action name key value world error) (LBegin selected)))
+          (DeleteEpisodeGenerationLifecycle Refl Refl))
+        (appendedSelectedCloseReady
+          (scopedAppendSelectedCloseReplay name key world error value nameEq
+            keyEq selected registered (S episodeStartOrdinal) episodeStartLive
+            (closedInside episode) preStart (interiorReady interior)
+            (interiorFinalSurvivor interior) (interiorReadyEnds interior)
+            (closing episode))))
+      (ReplayEndsDelete
+        (the (EpisodeGenerationDeletedActor nameEq selected registered
+          episodeStartOrdinal episodeStartLive
+          (the (Action name key value world error) (LBegin selected)))
+          (DeleteEpisodeGenerationLifecycle Refl Refl))
+        (appendedSelectedCloseReady
+          (scopedAppendSelectedCloseReplay name key world error value nameEq
+            keyEq selected registered (S episodeStartOrdinal) episodeStartLive
+            (closedInside episode) preStart (interiorReady interior)
+            (interiorFinalSurvivor interior) (interiorReadyEnds interior)
+            (closing episode)))
+        (appendedSelectedCloseEnds
+          (scopedAppendSelectedCloseReplay name key world error value nameEq
+            keyEq selected registered (S episodeStartOrdinal) episodeStartLive
+            (closedInside episode) preStart (interiorReady interior)
+            (interiorFinalSurvivor interior) (interiorReadyEnds interior)
+            (closing episode))))
+      finalUnique finalStamped
+      (selectedUnloadClosesPostBoundary nameEq keyEq selected registered
+        (interiorFinalOrdinal interior) (interiorFinalLive interior) finalUnique
+        finalStamped selectedOutside whole (lastInstalledState episode)
+        afterClose (interiorFinalSurvivor interior) (closing episode)
+        (interiorBoundary interior) finalPlanEmpty finalInactive finalEmpty)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
