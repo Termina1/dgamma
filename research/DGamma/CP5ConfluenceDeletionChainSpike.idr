@@ -25309,6 +25309,30 @@ scopedOwnersAdvanceStageFamily name key world error value nameEq keyEq actor tag
         sourceChecked targetChecked component sourceParent targetParent sourceRetired targetRetired sourceTable targetTable sourceLifecycle targetLifecycle
         retiredSame lifecycleRelated sourceFound targetFound
 
+||| Every advance generator and every reachable stage is replayed, not only the observed runtime result.
+0 scopedAdvanceReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) sourceBefore = Just (tag, sourceAfter))) ->
+  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) targetBefore = Just (tag, targetAfter))) ->
+  (sourceOwner, targetOwner : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor (registry sourceBefore) = Just sourceOwner) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor (registry targetBefore) = Just targetOwner) ->
+  FiberControlRelated sourceOwner targetOwner ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq (LAdvance actor) tag targetChecked) NoTransitions)
+scopedAdvanceReplay name key world error value nameEq keyEq actor tag (MkSystemState sourceWorld sourceRegistry) sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
+    singletonAdvanceRAR nameEq keyEq actor tag (MkSystemState sourceWorld sourceRegistry) sourceAfter targetBefore targetAfter sourceChecked targetChecked
+      (scopedOwnersAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
+        sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls)
+      (pointwiseRelatedLifecycleMaps nameEq keyEq (LAdvance actor) Refl tag (MkSystemState sourceWorld sourceRegistry) targetBefore
+        sourceOwner targetOwner sourceFound targetFound controls)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
