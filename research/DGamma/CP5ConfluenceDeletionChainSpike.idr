@@ -19492,6 +19492,30 @@ scopedPlannedActorProvides name key world error value nameEq keyEq actor origina
         planned plan actor left found)
         (trans (scopedFiberControlActiveSame name key world error value left right controls) active))
 
+0 scopedRelationalActorTotalAt :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (registered : List (RegistrationGeneration name)) -> (live : GenerationEnvironment name) ->
+  (original, survivor : SystemState name key value world error) ->
+  (boundary : RelationalNoEpisodeReplayBoundary name key world error value nameEq keyEq registered live original survivor) ->
+  ScopedActorTotal name key world error value nameEq keyEq actor original ->
+  (right : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor (registry survivor) = Just right) ->
+  ForeignRelatedFiberFound name key world error value nameEq actor (registry survivor)
+    (planTarget (completePlanResult (relationalCompletePlan boundary))) right ->
+  (isActive (fiberLifecycle right) = True) -> ActiveFiberProvidesAll keyEq right
+scopedRelationalActorTotalAt name key world error value nameEq keyEq actor registered live original survivor
+  boundary sourceTotal right found located active =
+    scopedPlannedActorProvides name key world error value nameEq keyEq actor original
+      (planTarget (completePlanResult (relationalCompletePlan boundary)))
+      (inactiveLeafPlan (completePlanResult (relationalCompletePlan boundary)))
+      (foreignRelatedFiber located) right (foreignRelatedFound located)
+      (fiberControlSymmetric (foreignRelatedControl located))
+      (relatedLocatedFiberTablesSame nameEq actor
+        (plannedSystemState original (completePlanResult (relationalCompletePlan boundary))) survivor
+        (foreignRelatedFiber located) right (foreignRelatedFound located) found (relationalEffects boundary)) sourceTotal active
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
