@@ -95,6 +95,7 @@ import Data.List.Elem
 import Data.Nat
 import Data.Maybe
 import DGamma.CP4DeletionControlCore
+import DGamma.CP4DeletionCommuteCore
 import DGamma.CP4DeletionRelationalLifecycleSources
 import Decidable.Equality
 
@@ -19422,6 +19423,21 @@ scopedDeleteMemberSource name item nameEq removed [] entry member = member
 scopedDeleteMemberSource name item nameEq removed (Bind current cell :: rest) entry member =
   scopedDeleteMemberHeadAt name item nameEq removed current cell rest entry
     (scopedDeleteMemberSource name item nameEq removed rest entry) (decEq @{nameEq} removed current) Refl member
+
+0 scopedPlanMemberSource :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (source, target : Registry name key value world error) ->
+  InactiveLeafDeletionPlan {name = name} {key = key} {value = value} {world = world} {error = error}
+    nameEq source target ->
+  (entry : Binding name (FiberAt name key value world error)) ->
+  Elem entry (bindings target) -> Elem entry (bindings source)
+scopedPlanMemberSource name key world error value nameEq _ _ NoInactiveLeafDeletion entry member = member
+scopedPlanMemberSource name key world error value nameEq source target
+  (DeleteInactiveLeaf removed component parent retiredFlag table outcome found noChild rest) entry member =
+    scopedDeleteMemberSource name (Fiber name key value world error) nameEq removed (bindings source) entry
+      (replace {p = Elem entry} (deleteBindingRuntimeBindings nameEq removed source)
+        (scopedPlanMemberSource name key world error value nameEq (deleteBinding @{nameEq} removed source)
+          target rest entry member))
 
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
