@@ -25934,6 +25934,21 @@ scopedRuleAppendRight name key world error value first middle finalState (MoreTr
   ScopedRuleLater transition (appendTransitions rest right)
     (scopedRuleAppendRight name key world error value _ middle finalState rest right ordinal tag present)
 
+0 scopedLocatedRule :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, finalState : SystemState name key value world error) -> (trace : Transitions first finalState) ->
+  (action : Action name key value world error) -> (occurrence : LocatedActionOccurrence action trace) ->
+  ScopedRuleAt name key world error value trace (locatedActionOrdinal occurrence) (transitionTag (locatedTransition occurrence))
+scopedLocatedRule name key world error value first finalState trace action occurrence =
+  replace {p = \ordinal => ScopedRuleAt name key world error value trace ordinal (transitionTag (locatedTransition occurrence))}
+    (plusZeroRightNeutral (transitionCount (beforeActionOccurrence occurrence)))
+    (replace {p = \whole => ScopedRuleAt name key world error value whole
+        (transitionCount (beforeActionOccurrence occurrence) + 0) (transitionTag (locatedTransition occurrence))}
+      (actionOccurrenceDecomposition occurrence)
+      (scopedRuleAppendRight name key world error value first (actionBeforeState occurrence) finalState
+        (beforeActionOccurrence occurrence) (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence))
+        0 (transitionTag (locatedTransition occurrence)) (ScopedRuleHere (locatedTransition occurrence) (afterActionOccurrence occurrence))))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
