@@ -21125,6 +21125,18 @@ scopedPostCloseSuffixFoldEnriched name key world error value protocol nameEq key
         noFailed)
       (decGenerationOwnedActor nameEq registered ordinal live action)
 
+0 scopedIsAdvanceAction :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  Action name key value world error -> Bool
+scopedIsAdvanceAction name key world error value (OInsert actor parent component) = False
+scopedIsAdvanceAction name key world error value (ORetire actor) = False
+scopedIsAdvanceAction name key world error value (ORemove actor) = False
+scopedIsAdvanceAction name key world error value (LBegin actor) = False
+scopedIsAdvanceAction name key world error value (LAdvance actor) = True
+scopedIsAdvanceAction name key world error value (LDivert actor) = False
+scopedIsAdvanceAction name key world error value (LLeave actor) = False
+scopedIsAdvanceAction name key world error value (LUnload actor) = False
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
