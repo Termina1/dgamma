@@ -5,6 +5,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionTheorem
+import DGamma.CP4DeletionBoundaryLifecycleCore
 import DGamma.CP4DeletionBoundaryPlan
 import DGamma.CP4DeletionPlanBuilder
 import DGamma.CP4DeletionPlanComplete
