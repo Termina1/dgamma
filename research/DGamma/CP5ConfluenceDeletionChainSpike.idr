@@ -18233,6 +18233,53 @@ scopedAdvanceCapabilityUnretiredAt name key world error value nameEq keyEq child
       child ambient source component parent retiredFlag table step rest accumulator
       view capability found resolved afterState tag notRetired raw
 
+||| Remaining-program dispatcher: empty control advance or one resolved stage.
+0 scopedAdvanceReloadingUnretired :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (0 found : (lookupFiber {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} child source =
+    Just (MkFiber component parent retiredFlag table
+      (Reloading remaining accumulator view)))) ->
+  (afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 notRetired : (retiredFlag = False)) ->
+  (0 raw : (applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (LAdvance child)
+    (MkSystemState ambient source) = Just (tag, afterState))) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child afterState
+scopedAdvanceReloadingUnretired name key world error value nameEq keyEq child
+  ambient source component parent retiredFlag table [] accumulator view found
+  afterState tag notRetired raw =
+    scopedAdvanceEmptyUnretiredAt name key world error value nameEq keyEq child
+      (MkSystemState ambient source) afterState tag component parent retiredFlag
+      table accumulator view
+      (targetMatches @{nameEq}
+        (targetFiber @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+          {world = world} {error = error}
+          (MkFiber component parent retiredFlag table
+            (Reloading [] accumulator view)) source) view)
+      Refl found notRetired raw
+scopedAdvanceReloadingUnretired name key world error value nameEq keyEq child
+  ambient source component parent retiredFlag table (step :: rest) accumulator
+  view found afterState tag notRetired raw =
+    scopedAdvanceCapabilityUnretiredAt name key world error value nameEq keyEq
+      child ambient source component parent retiredFlag table step rest accumulator
+      view (resolveCommittedValues @{nameEq} @{keyEq} {name = name} {key = key}
+        {value = value} {world = world} {error = error}
+        (dependencies (componentDependencies component)) view source)
+      found Refl afterState tag notRetired raw
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
