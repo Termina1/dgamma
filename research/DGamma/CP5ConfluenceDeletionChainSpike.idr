@@ -14054,6 +14054,87 @@ scopedLocalizationActivationToAnchorGlobal name key world error value nameEq
       (sym (localizedOpeningStateExact localization))
       (localizedActivationToAnchor localization)
 
+record ScopedGlobalAnchorActivation
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (actor : name)
+  {prefixInitial, prefixFinal, globalFinal, stepBefore, stepAfter :
+    SystemState name key value world error}
+  (transition : Transition stepBefore stepAfter)
+  (prefixTrace : Transitions prefixInitial prefixFinal)
+  (global : Transitions prefixInitial globalFinal)
+  (anchor : ForeignLifecycleInstalledAnchor name key world error value nameEq
+    keyEq actor transition prefixTrace)
+  (localization : ScopedClosingLocalization name key world error value nameEq
+    keyEq actor transition prefixTrace global anchor) where
+  constructor MkScopedGlobalAnchorActivation
+  scopedGlobalActivationTrace : Transitions
+    (closedStartState (locatedEpisode (localizedGlobalEpisode localization)))
+    (lifecycleInstalledState anchor)
+  0 scopedGlobalActivationInstalled : InstalledTrace name key world error value
+    nameEq keyEq actor scopedGlobalActivationTrace
+
+record ScopedTransportedInstalledSource
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (actor : name)
+  (left, target : SystemState name key value world error) where
+  constructor MkScopedTransportedInstalledSource
+  scopedTransportedTrace : Transitions left target
+  0 scopedTransportedInstalled : InstalledTrace name key world error value
+    nameEq keyEq actor scopedTransportedTrace
+
+0 scopedTransportInstalledSource :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (left, right, target : SystemState name key value world error) ->
+  (exact : left = right) ->
+  (trace : Transitions right target) ->
+  InstalledTrace name key world error value nameEq keyEq actor trace ->
+  ScopedTransportedInstalledSource name key world error value nameEq keyEq
+    actor left target
+scopedTransportInstalledSource name key world error value nameEq keyEq actor
+  right right target Refl trace installed =
+    MkScopedTransportedInstalledSource trace installed
+
+0 scopedGlobalAnchorActivation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {prefixInitial, prefixFinal, globalFinal, stepBefore, stepAfter :
+    SystemState name key value world error} ->
+  (transition : Transition stepBefore stepAfter) ->
+  (prefixTrace : Transitions prefixInitial prefixFinal) ->
+  (global : Transitions prefixInitial globalFinal) ->
+  (anchor : ForeignLifecycleInstalledAnchor name key world error value nameEq
+    keyEq actor transition prefixTrace) ->
+  (localization : ScopedClosingLocalization name key world error value nameEq
+    keyEq actor transition prefixTrace global anchor) ->
+  ScopedGlobalAnchorActivation name key world error value nameEq keyEq actor
+    transition prefixTrace global anchor localization
+scopedGlobalAnchorActivation name key world error value nameEq keyEq actor
+  transition prefixTrace global anchor localization =
+    MkScopedGlobalAnchorActivation
+      (scopedTransportedTrace
+        (scopedTransportInstalledSource name key world error value nameEq keyEq
+          actor
+          (closedStartState
+            (locatedEpisode (localizedGlobalEpisode localization)))
+          (closedStartState
+            (locatedEpisode (localizedPrefixEpisode localization)))
+          (lifecycleInstalledState anchor)
+          (localizedOpeningStateExact localization)
+          (localizedActivationToAnchor localization)
+          (localizedActivationInstalled localization)))
+      (scopedTransportedInstalled
+        (scopedTransportInstalledSource name key world error value nameEq keyEq
+          actor
+          (closedStartState
+            (locatedEpisode (localizedGlobalEpisode localization)))
+          (closedStartState
+            (locatedEpisode (localizedPrefixEpisode localization)))
+          (lifecycleInstalledState anchor)
+          (localizedOpeningStateExact localization)
+          (localizedActivationToAnchor localization)
+          (localizedActivationInstalled localization)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
