@@ -24729,6 +24729,16 @@ scopedReadyDisciplineSpine name key world error value nameEq keyEq registered de
         (snd (scopedReadyKeptParentControls name key world error value nameEq keyEq deletable ordinal live originalFirst _ originalFinal survivor after
           originalTransition rest retained tag transition sameAction fires tail controls)))
 
+0 scopedGenerationScanTail :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (ordinal, endOrdinal : Nat) -> (live, endLive : GenerationEnvironment name) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (transition : Transition first middle) -> (rest : Transitions middle finalState) ->
+  GenerationTraceScan nameEq ordinal live (MoreTransitions transition rest) endOrdinal endLive ->
+  GenerationTraceScan nameEq (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction transition) live) rest endOrdinal endLive
+scopedGenerationScanTail name key world error value nameEq ordinal endOrdinal live endLive first middle finalState transition rest
+  (GenerationTraceScanStep _ _ tail) = tail
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
