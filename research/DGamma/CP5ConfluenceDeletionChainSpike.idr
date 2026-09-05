@@ -21447,6 +21447,41 @@ scopedSelectedYieldControls name key world error value protocol nameEq keyEq
         (planTarget (completePlanResult (selectedBoundaryPlan boundary)))
         (registry survivor) (selectedBoundaryOrderedControls boundary))
 
+0 scopedSelectedParentControls :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (original, originalAfter, originalFinal, survivor : SystemState name key value world error) ->
+  (transition : Transition original originalAfter) -> (rest : Transitions originalAfter originalFinal) ->
+  (complete : ScopedSelectedBirthsComplete name key world error value selected registered ordinal
+    original originalFinal (MoreTransitions transition rest)) ->
+  (retained : Not (EpisodeGenerationDeletedActor {name = name} {key = key} {value = value}
+    {world = world} {error = error} nameEq selected registered ordinal live
+    (transitionAction transition))) ->
+  (discipline : RegistrationStepDiscipline protocol nameEq (transitionAction transition) original rest) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq keyEq selected
+    registered ordinal live whole original survivor) ->
+  (parent, child : name) -> (component : Component key value world error) ->
+  (transitionAction transition = OInsert child (ChildOf parent) component) ->
+  FiberControlMaybeRelated
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} parent (registry original))
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} parent (registry survivor))
+scopedSelectedParentControls name key world error value protocol nameEq keyEq selected registered
+  ordinal live whole original originalAfter originalFinal survivor transition rest complete retained
+  discipline boundary parent child component actionSame =
+    scopedSelectedYieldControls name key world error value protocol nameEq keyEq parent selected
+      (scopedSelectedKeptParentDistinct name key world error value nameEq selected registered ordinal
+        live original originalAfter originalFinal transition rest complete retained parent child component actionSame)
+      component registered ordinal live whole original survivor
+      (fst (replace {p = \action => RegistrationStepDiscipline protocol nameEq action original rest}
+        actionSame discipline)) boundary
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
