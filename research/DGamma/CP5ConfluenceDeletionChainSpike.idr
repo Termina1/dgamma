@@ -24655,6 +24655,37 @@ scopedSpineStepDiscipline name key world error value protocol nameEq keyEq regis
 scopedSpineStepDiscipline name key world error value protocol nameEq keyEq registered ordinal live (LUnload actor)
   sourceBefore sourceAfter sourceFinal targetBefore targetAfter targetFinal sourceRest targetRest tail aligned tag checked fresh controls evidence = ()
 
+0 scopedSpineRegistrationDiscipline :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (originalFirst, originalFinal, targetFirst, targetFinal : SystemState name key value world error) ->
+  (source : Transitions originalFirst originalFinal) -> (target : Transitions targetFirst targetFinal) ->
+  ScopedDisciplineReplaySpine name key world error value nameEq registered ordinal live source target ->
+  AlignedTransitions name key world error value nameEq keyEq source ->
+  RegistrationDiscipline protocol nameEq source -> RegistrationDiscipline protocol nameEq target
+scopedSpineRegistrationDiscipline name key world error value protocol nameEq keyEq registered ordinal live _ _ _ _ _ _
+  ScopedDisciplineEnd aligned discipline = RegistrationDisciplineEnd
+scopedSpineRegistrationDiscipline name key world error value protocol nameEq keyEq registered ordinal live originalFirst originalFinal targetFirst targetFinal _ _
+  (ScopedDisciplineKeep sourceStep sourceRest targetStep targetRest sameAction sameTag fresh controls tail) aligned discipline =
+    RegistrationDisciplineStep targetStep targetRest
+      (replace {p = \action => RegistrationStepDiscipline protocol nameEq action targetFirst targetRest} sameAction
+        (scopedSpineStepDiscipline name key world error value protocol nameEq keyEq registered ordinal live (transitionAction sourceStep)
+          originalFirst _ originalFinal targetFirst _ targetFinal sourceRest targetRest tail
+          (alignedTransitionTail nameEq keyEq sourceStep sourceRest aligned) (transitionTag sourceStep)
+          (scopedAlignedHeadChecked name key world error value nameEq keyEq originalFirst _ originalFinal sourceStep sourceRest aligned)
+          fresh controls (registrationDisciplineHead protocol nameEq sourceStep sourceRest discipline)))
+      (scopedSpineRegistrationDiscipline name key world error value protocol nameEq keyEq registered (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) _ originalFinal _ targetFinal sourceRest targetRest tail
+        (alignedTransitionTail nameEq keyEq sourceStep sourceRest aligned)
+        (registrationDisciplineAppendRight protocol nameEq (MoreTransitions sourceStep NoTransitions) sourceRest discipline))
+scopedSpineRegistrationDiscipline name key world error value protocol nameEq keyEq registered ordinal live originalFirst originalFinal targetFirst targetFinal _ _
+  (ScopedDisciplineDelete sourceStep sourceRest target retireOwned tail) aligned discipline =
+    scopedSpineRegistrationDiscipline name key world error value protocol nameEq keyEq registered (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) _ originalFinal targetFirst targetFinal sourceRest target tail
+      (alignedTransitionTail nameEq keyEq sourceStep sourceRest aligned)
+      (registrationDisciplineAppendRight protocol nameEq (MoreTransitions sourceStep NoTransitions) sourceRest discipline)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
