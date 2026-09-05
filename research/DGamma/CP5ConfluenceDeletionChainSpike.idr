@@ -11726,6 +11726,75 @@ scopedSelectedRetireRetainedHeadAtTag name key world error value nameEq keyEq
       MkSelectedRetainedEpisodeStep named fired nextBoundary =>
         MkSelectedEpisodeRetainedHead named fired nextBoundary
 
+0 scopedSelectedRetireRetainedHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (before, afterState, survivor : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error}
+    (ORetire selected) before = Just (tag, afterState)) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  (exactStep : RetainedNoEpisodeBoundaryStep name key world error value nameEq
+    keyEq registered live (ORetire selected) tag afterState
+    (MkSystemState (worldState before)
+      (planTarget (completePlanResult (selectedBoundaryPlan boundary))))) ->
+  SelectedEpisodeRetainedHead name key world error value nameEq keyEq selected
+    registered ordinal live whole (ORetire selected) afterState survivor
+scopedSelectedRetireRetainedHead name key world error value nameEq keyEq selected
+  registered ordinal live whole before afterState survivor tag checked boundary
+  exactStep =
+    scopedSelectedRetireRetainedHeadAtTag name key world error value nameEq keyEq
+      selected registered ordinal live whole before afterState survivor
+      (replace
+        {p = \observed =>
+          checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key}
+            {value = value} {world = world} {error = error}
+            (ORetire selected) before = Just (observed, afterState)}
+        (scopedRetireViewTag name key world error value nameEq selected
+          (worldState before) (registry before) tag afterState
+          (retireSuccessView nameEq keyEq selected (worldState before)
+            (registry before) tag afterState
+            (trans
+              (cong
+                (applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+                  {value = value} {world = world} {error = error}
+                  (the (Action name key value world error)
+                    (ORetire selected)))
+                (scopedSystemStateEta before))
+              (checkedActionProjects nameEq keyEq
+                (the (Action name key value world error) (ORetire selected))
+                before afterState tag checked))))
+        checked)
+      boundary
+      (replace
+        {p = \observed =>
+          RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
+            registered live (ORetire selected) observed afterState
+            (MkSystemState (worldState before)
+              (planTarget
+                (completePlanResult (selectedBoundaryPlan boundary))))}
+        (scopedRetireViewTag name key world error value nameEq selected
+          (worldState before) (registry before) tag afterState
+          (retireSuccessView nameEq keyEq selected (worldState before)
+            (registry before) tag afterState
+            (trans
+              (cong
+                (applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+                  {value = value} {world = world} {error = error}
+                  (the (Action name key value world error)
+                    (ORetire selected)))
+                (scopedSystemStateEta before))
+              (checkedActionProjects nameEq keyEq
+                (the (Action name key value world error) (ORetire selected))
+                before afterState tag checked))))
+        exactStep)
+
 0 ScopedForeignLifecycleExclusion :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
