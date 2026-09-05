@@ -19651,6 +19651,31 @@ scopedRelatedAdvanceTagsAtOwners name key world error value nameEq keyEq actor
                   (Reloading (step :: rest) rightAccumulator view)
                   concreteLeftFound concreteRightFound effects)))) rightRaw))
 
+0 scopedRelatedAdvanceTags :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (leftBefore, rightBefore, leftAfter, rightAfter :
+    SystemState name key value world error) ->
+  (leftTag, rightTag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} (LAdvance actor) leftBefore =
+    Just (leftTag, leftAfter)) ->
+  (applyAction @{nameEq} @{keyEq} (LAdvance actor) rightBefore =
+    Just (rightTag, rightAfter)) ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} leftBefore)
+    (projectEffectState @{nameEq} rightBefore) ->
+  OrderedRegistryControlsRelated name key world error value
+    (bindings (registry leftBefore)) (bindings (registry rightBefore)) ->
+  (leftTag = rightTag)
+scopedRelatedAdvanceTags name key world error value nameEq keyEq actor
+  leftBefore@(MkSystemState leftWorld leftRegistry)
+  rightBefore@(MkSystemState rightWorld rightRegistry) leftAfter rightAfter
+  leftTag rightTag leftRaw rightRaw effects ordered =
+    scopedRelatedAdvanceTagsAtOwners name key world error value nameEq keyEq actor
+      leftWorld rightWorld leftRegistry rightRegistry leftAfter rightAfter
+      leftTag rightTag leftRaw rightRaw effects ordered
+      (relatedLifecycleOwnersAt nameEq keyEq (LAdvance actor) Refl leftBefore
+        rightBefore leftTag leftAfter leftRaw effects ordered)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
