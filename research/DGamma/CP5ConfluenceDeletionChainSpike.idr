@@ -18348,6 +18348,64 @@ record ScopedUnretiredNext
     (advanceGenerationEnvironment @{nameEq} ordinal action live) =
     lookupCurrentGeneration @{nameEq} child live)
 
+||| Same-owner step classification stops at the first retirement; every other
+||| permitted step preserves presence and the generation-environment entry.
+0 scopedUnretiredOwnStep :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 checked : (checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} action before =
+    Just (tag, afterState))) ->
+  ScopedUnretiredFiberAt name key value world error nameEq (actionOwner action)
+    before ->
+  Either (action = ORetire (actionOwner action))
+    (ScopedUnretiredNext name key value world error nameEq (actionOwner action)
+      ordinal live action afterState)
+scopedUnretiredOwnStep name key world error value nameEq keyEq ordinal live
+  (OInsert child parent component) before afterState tag checked unretired =
+    void (scopedInsertPresentAbsurd name key world error value nameEq keyEq child
+      parent component before afterState tag checked unretired)
+scopedUnretiredOwnStep name key world error value nameEq keyEq ordinal live
+  (ORetire child) before afterState tag checked unretired = Left Refl
+scopedUnretiredOwnStep name key world error value nameEq keyEq ordinal live
+  (ORemove child) before afterState tag checked unretired =
+    void (scopedRemoveUnretiredAbsurd name key world error value nameEq keyEq child
+      before afterState tag checked unretired)
+scopedUnretiredOwnStep name key world error value nameEq keyEq ordinal live
+  (LBegin child) before afterState tag checked unretired =
+    Right (MkScopedUnretiredNext (\same => case same of Refl impossible)
+      (scopedBeginPreservesUnretired name key world error value nameEq keyEq child
+        before afterState tag unretired
+          (checkedActionProjects nameEq keyEq (LBegin child) before afterState tag checked)) Refl)
+scopedUnretiredOwnStep name key world error value nameEq keyEq ordinal live
+  (LAdvance child) before afterState tag checked unretired =
+    Right (MkScopedUnretiredNext (\same => case same of Refl impossible)
+      (scopedAdvancePreservesUnretired name key world error value nameEq keyEq child
+        before afterState tag (checkedActionProjects nameEq keyEq (LAdvance child) before afterState tag checked) unretired) Refl)
+scopedUnretiredOwnStep name key world error value nameEq keyEq ordinal live
+  (LDivert child) before afterState tag checked unretired =
+    Right (MkScopedUnretiredNext (\same => case same of Refl impossible)
+      (scopedDivertPreservesUnretired name key world error value nameEq keyEq child
+        before afterState tag unretired
+          (checkedActionProjects nameEq keyEq (LDivert child) before afterState tag checked)) Refl)
+scopedUnretiredOwnStep name key world error value nameEq keyEq ordinal live
+  (LLeave child) before afterState tag checked unretired =
+    Right (MkScopedUnretiredNext (\same => case same of Refl impossible)
+      (scopedLeavePreservesUnretired name key world error value nameEq keyEq child
+        before afterState tag unretired
+          (checkedActionProjects nameEq keyEq (LLeave child) before afterState tag checked)) Refl)
+scopedUnretiredOwnStep name key world error value nameEq keyEq ordinal live
+  (LUnload child) before afterState tag checked unretired =
+    Right (MkScopedUnretiredNext (\same => case same of Refl impossible)
+      (scopedUnloadPreservesUnretired name key world error value nameEq keyEq child
+        before afterState tag unretired
+          (checkedActionProjects nameEq keyEq (LUnload child) before afterState tag checked)) Refl)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
