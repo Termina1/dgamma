@@ -24514,6 +24514,13 @@ scopedSpineNoParentRecovery name key world error value nameEq registered ordinal
       (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) _ originalFinal targetFirst targetFinal parent sourceRest target tail
       (snd (scopedNoParentRecoveryHead name key world error value parent originalFirst _ originalFinal sourceStep sourceRest noRecovery))
 
+0 scopedChildRetirementEmpty :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (parent, child : name) ->
+  (state : SystemState name key value world error) ->
+  ChildRetiresBeforeRecovery parent child (NoTransitions {state = state}) -> Void
+scopedChildRetirementEmpty name key world error value parent child state (ChildRetiresNow transition rest retires) impossible
+scopedChildRetirementEmpty name key world error value parent child state (ChildRetiresLater transition rest noRecovery tail) impossible
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
