@@ -25976,6 +25976,18 @@ scopedMapSuccEliminate predicate (Just predecessor) ordinal exact continue =
 scopedTagPairPrependSource name key world error value sourceFirst sourceMiddle sourceFinal targetFirst targetFinal sourceStep source target sourceOrdinal targetOrdinal pair =
   MkScopedOrdinalTagPair (ordinalSharedTag pair) (ScopedRuleLater sourceStep source (ordinalSourceTag pair)) (ordinalTargetTag pair)
 
+0 scopedTagPairPrependBoth :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (sourceFirst, sourceMiddle, sourceFinal, targetFirst, targetMiddle, targetFinal : SystemState name key value world error) ->
+  (sourceStep : Transition sourceFirst sourceMiddle) -> (source : Transitions sourceMiddle sourceFinal) ->
+  (targetStep : Transition targetFirst targetMiddle) -> (target : Transitions targetMiddle targetFinal) ->
+  (sourceOrdinal, targetOrdinal : Nat) ->
+  ScopedOrdinalTagPair name key world error value sourceMiddle sourceFinal targetMiddle targetFinal source target sourceOrdinal targetOrdinal ->
+  ScopedOrdinalTagPair name key world error value sourceFirst sourceFinal targetFirst targetFinal
+    (MoreTransitions sourceStep source) (MoreTransitions targetStep target) (S sourceOrdinal) (S targetOrdinal)
+scopedTagPairPrependBoth name key world error value sourceFirst sourceMiddle sourceFinal targetFirst targetMiddle targetFinal sourceStep source targetStep target sourceOrdinal targetOrdinal pair =
+  MkScopedOrdinalTagPair (ordinalSharedTag pair) (ScopedRuleLater sourceStep source (ordinalSourceTag pair)) (ScopedRuleLater targetStep target (ordinalTargetTag pair))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
