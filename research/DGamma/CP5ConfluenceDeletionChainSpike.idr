@@ -20973,6 +20973,64 @@ scopedPostCloseFoldHead name key world error value protocol nameEq keyEq
       noBegin noRegisteredRest retained boundary continue
       (decEq @{nameEq} (actionOwner action) selected)
 
+||| Live post-close producer; selected remove/begin enter the enriched relational
+||| fallback, and every retained branch emits tags, controls, and survivor discipline.
+0 scopedPostCloseSuffixFoldEnriched :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (selectedOutside : (generation : RegistrationGeneration name) ->
+    Elem generation registered -> Not (generationName generation = selected)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (bornBefore : RegisteredGenerationsBornBefore registered ordinal) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (stamped : GenerationEnvironmentStamped live) ->
+  (original, originalFinal, survivor : SystemState name key value world error) ->
+  (trace : Transitions original originalFinal) ->
+  (boundary : PostCloseSelectedBoundary name key world error value nameEq keyEq selected
+    registered ordinal live original survivor) ->
+  RegistrationDiscipline protocol nameEq trace ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  NoRegisteredEpisode nameEq registered ordinal live trace ->
+  (noFailedFibers originalFinal = True) ->
+  ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq keyEq
+    registered ordinal live trace survivor
+scopedPostCloseSuffixFoldEnriched name key world error value protocol nameEq keyEq selected
+  registered selectedOutside ordinal live bornBefore unique stamped _ _ survivor _ boundary
+  discipline AlignedEnd noRegistered noFailed =
+    scopedPostCloseSuffixFoldOutputEnd name key world error value protocol nameEq keyEq selected
+      registered selectedOutside ordinal live bornBefore unique stamped _ survivor boundary noFailed
+scopedPostCloseSuffixFoldEnriched name key world error value protocol nameEq keyEq selected
+  registered selectedOutside ordinal live bornBefore unique stamped original originalFinal
+  survivor _ boundary discipline (AlignedStep action tag checked rest alignedRest) noRegistered noFailed =
+    scopedPostCloseFoldHead name key world error value protocol nameEq keyEq selected action tag
+      registered ordinal live unique stamped bornBefore selectedOutside original _ originalFinal
+      survivor checked rest
+      (registrationDisciplineHead protocol nameEq (Fired nameEq keyEq action tag checked) rest discipline)
+      (registrationDisciplineAppendRight protocol nameEq
+        (MoreTransitions (Fired nameEq keyEq action tag checked) NoTransitions) rest discipline)
+      alignedRest
+      (fst (scopedNoRegisteredHead name key world error value nameEq registered ordinal live
+        original _ originalFinal (Fired nameEq keyEq action tag checked) rest noRegistered))
+      (snd (scopedNoRegisteredHead name key world error value nameEq registered ordinal live
+        original _ originalFinal (Fired nameEq keyEq action tag checked) rest noRegistered))
+      boundary
+      (\nextSurvivor, nextBoundary => scopedPostCloseSuffixFoldEnriched name key world error value
+        protocol nameEq keyEq selected registered selectedOutside (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal action live)
+        (registeredGenerationsBornBeforeNext bornBefore)
+        (advanceGenerationEnvironmentPreservesUnique nameEq ordinal action live unique)
+        (advanceGenerationEnvironmentPreservesStamped nameEq ordinal action live stamped)
+        _ originalFinal nextSurvivor rest nextBoundary
+        (registrationDisciplineAppendRight protocol nameEq
+          (MoreTransitions (Fired nameEq keyEq action tag checked) NoTransitions) rest discipline)
+        alignedRest
+        (snd (scopedNoRegisteredHead name key world error value nameEq registered ordinal live
+          original _ originalFinal (Fired nameEq keyEq action tag checked) rest noRegistered))
+        noFailed)
+      (decGenerationOwnedActor nameEq registered ordinal live action)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
