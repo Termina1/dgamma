@@ -21598,6 +21598,25 @@ scopedRegistrationStepPrefix name key world error value protocol nameEq
 scopedRegistrationStepPrefix name key world error value protocol nameEq
   (LUnload actor) before first middle finalState left right evidence = ()
 
+0 scopedRegistrationDisciplinePrefix :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  RegistrationDiscipline protocol nameEq (appendTransitions left right) ->
+  RegistrationDiscipline protocol nameEq left
+scopedRegistrationDisciplinePrefix name key world error value protocol nameEq _ _ finalState
+  NoTransitions right discipline = RegistrationDisciplineEnd
+scopedRegistrationDisciplinePrefix name key world error value protocol nameEq first middle finalState
+  (MoreTransitions transition rest) right discipline =
+    RegistrationDisciplineStep transition rest
+      (scopedRegistrationStepPrefix name key world error value protocol nameEq (transitionAction transition)
+        first _ middle finalState rest right
+        (registrationDisciplineHead protocol nameEq transition (appendTransitions rest right) discipline))
+      (scopedRegistrationDisciplinePrefix name key world error value protocol nameEq _ middle finalState
+        rest right (registrationDisciplineAppendRight protocol nameEq (MoreTransitions transition NoTransitions)
+          (appendTransitions rest right) discipline))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
