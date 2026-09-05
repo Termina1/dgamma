@@ -23158,6 +23158,24 @@ scopedRuntimeFiberQuiet name key world error value nameEq keyEq left right sourc
       (orderedRuntimeTargetFiberSame nameEq keyEq component leftParent rightParent leftRetired rightRetired
         leftTable rightTable leftLife rightLife left right retiredFlags sources)
 
+0 scopedOrderedControlsQuiet :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (left, right : Registry name key value world error) ->
+  OrderedRuntimeSourcesRelated name key world error value (bindings left) (bindings right) ->
+  (leftEntries, rightEntries : List (Binding name (FiberAt name key value world error))) ->
+  OrderedRegistryControlsRelated name key world error value leftEntries rightEntries ->
+  (allRecursive (quietEntryFor @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} left) leftEntries =
+    allRecursive (quietEntryFor @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} right) rightEntries)
+scopedOrderedControlsQuiet name key world error value nameEq keyEq left right sources _ _ OrderedControlsNil = Refl
+scopedOrderedControlsQuiet name key world error value nameEq keyEq left right sources _ _
+  (OrderedControlsCons actor related rest) =
+    cong2 (\headFlag, tailFlag => headFlag && tailFlag)
+      (scopedRuntimeFiberQuiet name key world error value nameEq keyEq left right sources _ _ related)
+      (scopedOrderedControlsQuiet name key world error value nameEq keyEq left right sources _ _ rest)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
