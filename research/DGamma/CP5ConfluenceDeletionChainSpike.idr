@@ -11594,6 +11594,71 @@ retainedForeignLifecycleFromScopedOwner
                   (inactiveLeafPlan (completePlanResult
                     (selectedBoundaryPlan boundary))) ownerOutsidePlan))))
 
+||| Raw-free retained foreign lifecycle replay.  The selected local replayer
+||| specializes its occurrence-scoped provider before entering this helper, so
+||| the control dispatcher consumes only the direct Boolean exclusion leaf.
+0 retainedForeignLifecycleFromScopedExclusion :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  (lifecycle : isLifecycleAction action = True) ->
+  (distinct : Not (actionOwner action = selected)) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (before, afterState, survivor : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (occurs : OccursIn
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked) whole) ->
+  (independent : TraceIndependent name key world error value keyEq whole) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  (emptyPlan : EmptyTableInactivePlan name key world error value nameEq
+    (inactiveLeafPlan (completePlanResult
+      (selectedBoundaryPlan boundary)))) ->
+  (selectedOutsidePlan : ActorOutsideDeletionPlan selected
+    (inactiveLeafPlan (completePlanResult
+      (selectedBoundaryPlan boundary)))) ->
+  (ownerOutsidePlan : ActorOutsideDeletionPlan (actionOwner action)
+    (inactiveLeafPlan (completePlanResult
+      (selectedBoundaryPlan boundary)))) ->
+  (exactStep : RetainedNoEpisodeBoundaryStep name key world error value nameEq
+    keyEq registered
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) action tag
+    afterState
+    (MkSystemState (worldState before)
+      (planTarget (completePlanResult (selectedBoundaryPlan boundary))))) ->
+  (scopedExclusion : ScopedForeignLifecycleExclusion
+    {name = name} {key = key} {world = world} {error = error} {value = value}
+    {nameEq = nameEq} {keyEq = keyEq} {selected = selected}
+    {registered = registered} {ordinal = ordinal} {live = live}
+    {wholeFirst = wholeFirst} {wholeLast = wholeLast} {before = before}
+    {survivor = survivor} {whole = whole} {action = action} boundary) ->
+  ForeignRetainedEpisodeStep name key world error value nameEq keyEq selected
+    registered ordinal live whole action afterState survivor
+retainedForeignLifecycleFromScopedExclusion nameEq keyEq selected registered
+  ordinal live action lifecycle distinct whole before afterState survivor tag
+  checked occurs independent boundary emptyPlan selectedOutsidePlan
+  ownerOutsidePlan exactStep scopedExclusion =
+    case lifecycleOwnerPresent nameEq keyEq action lifecycle
+      (MkSystemState (worldState before)
+        (planTarget (completePlanResult (selectedBoundaryPlan boundary))))
+      (namedAfter (retainedBoundaryNamed exactStep))
+      (namedTag (retainedBoundaryNamed exactStep))
+      (namedFireProjectsRaw nameEq keyEq action
+        (MkSystemState (worldState before)
+          (planTarget (completePlanResult (selectedBoundaryPlan boundary))))
+        (retainedBoundaryNamed exactStep) (retainedBoundaryFires exactStep)) of
+      (leftOwner ** leftFound) =>
+        retainedForeignLifecycleFromScopedOwner nameEq keyEq selected registered
+          ordinal live action lifecycle distinct whole before afterState
+          survivor tag checked occurs independent boundary emptyPlan
+          selectedOutsidePlan ownerOutsidePlan exactStep scopedExclusion
+          leftOwner leftFound
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
