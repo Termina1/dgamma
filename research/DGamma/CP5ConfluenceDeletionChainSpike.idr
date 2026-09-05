@@ -25200,6 +25200,33 @@ scopedNamedOrchestrationReplay name key world error value nameEq keyEq action ta
     scopedOrchestrationReplayTags name key world error value nameEq keyEq action tag targetTag sourceBefore sourceAfter targetBefore after
       sourceChecked stored sameTag orchestration
 
+||| The source and target stages retain one exact program and committed view.
+0 scopedConcreteAdvanceStageFamily :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) sourceBefore = Just (tag, sourceAfter))) ->
+  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) targetBefore = Just (tag, targetAfter))) ->
+  (component : Component key value world error) -> (sourceParent, targetParent : Parent name) -> (retiredFlag : Bool) ->
+  (sourceTable, targetTable : OwnedTable key value (componentProvisions component)) ->
+  (remaining : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (sourceAccumulator, targetAccumulator : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor (registry sourceBefore) = Just (MkFiber component sourceParent retiredFlag sourceTable (Reloading remaining sourceAccumulator view))) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor (registry targetBefore) = Just (MkFiber component targetParent retiredFlag targetTable (Reloading remaining targetAccumulator view))) ->
+  SingletonAdvanceStageReplayFamily name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq (LAdvance actor) tag targetChecked) NoTransitions)
+scopedConcreteAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked component sourceParent targetParent retiredFlag sourceTable targetTable remaining
+  sourceAccumulator targetAccumulator view sourceFound targetFound =
+    MkSingletonAdvanceStageReplayFamily
+      (\selected, stage => locateSingletonAdvanceStageReplay nameEq keyEq actor tag sourceBefore sourceAfter targetBefore targetAfter
+        sourceChecked targetChecked component sourceParent targetParent retiredFlag sourceTable targetTable remaining
+        sourceAccumulator targetAccumulator view sourceFound targetFound selected stage)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
