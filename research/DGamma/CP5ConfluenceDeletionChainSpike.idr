@@ -20810,6 +20810,54 @@ scopedPostCloseOwnedFoldHead name key world error value protocol nameEq keyEq
       (postCloseOriginalSelectedInactive nameEq actor registered live unique stamped
         selectedOutside original survivor boundary))
 
+0 scopedPostCloseSameOwnerFoldHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (stamped : GenerationEnvironmentStamped live) ->
+  (bornBefore : RegisteredGenerationsBornBefore registered ordinal) ->
+  (selectedOutside : (generation : RegistrationGeneration name) ->
+    Elem generation registered -> Not (generationName generation = selected)) ->
+  (original, originalAfter, originalFinal, survivor : SystemState name key value world error) ->
+  (checked : (checkedApplyAction @{nameEq} @{keyEq} action original = Just (tag, originalAfter))) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  (stepDiscipline : RegistrationStepDiscipline protocol nameEq action original rest) ->
+  RegistrationDiscipline protocol nameEq rest ->
+  AlignedTransitions name key world error value nameEq keyEq rest ->
+  (noBegin : IsBeginAction action ->
+    GenerationOwnedActor {name = name} {key = key} {value = value}
+      {world = world} {error = error} nameEq registered ordinal live action -> Void) ->
+  NoRegisteredEpisode nameEq registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) rest ->
+  (retained : Not (GenerationOwnedActor {name = name} {key = key} {value = value}
+    {world = world} {error = error} nameEq registered ordinal live action)) ->
+  (boundary : PostCloseSelectedBoundary name key world error value nameEq keyEq
+    (selected) registered ordinal live original survivor) ->
+  (continue : (nextSurvivor : SystemState name key value world error) ->
+    PostCloseSelectedBoundary name key world error value nameEq keyEq (selected)
+      registered (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal action live)
+      originalAfter nextSurvivor ->
+    ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq keyEq
+      registered (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal action live)
+      rest nextSurvivor) ->
+  (actionOwner action = selected) ->
+  ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq keyEq
+    registered ordinal live (MoreTransitions (Fired {before = original}
+      {afterState = originalAfter} nameEq keyEq action tag checked) rest) survivor
+scopedPostCloseSameOwnerFoldHead name key world error value protocol nameEq keyEq
+  _ action tag registered ordinal live unique stamped bornBefore selectedOutside original
+  originalAfter originalFinal survivor checked rest stepDiscipline restDiscipline alignedRest
+  noBegin noRegisteredRest retained boundary continue Refl =
+    scopedPostCloseOwnedFoldHead name key world error value protocol nameEq keyEq action tag
+      registered ordinal live unique stamped bornBefore selectedOutside original originalAfter
+      originalFinal survivor checked rest stepDiscipline restDiscipline alignedRest noBegin
+      noRegisteredRest retained boundary continue
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
