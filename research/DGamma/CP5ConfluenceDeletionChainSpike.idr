@@ -26020,6 +26020,38 @@ scopedSubsequenceTagsKeepAt name key world error value nameEq deletable ordinal 
       (\predecessor, tailExact => scopedTagPairPrependBoth name key world error value sourceFirst sourceMiddle sourceFinal targetFirst targetMiddle targetFinal
         sourceStep source targetStep target predecessor targetIndex (continue targetIndex predecessor tailExact))
 
+0 scopedSubsequenceOrdinalTags :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (sourceFirst, sourceFinal, targetFirst, targetFinal : SystemState name key value world error) ->
+  (source : Transitions sourceFirst sourceFinal) -> (target : Transitions targetFirst targetFinal) ->
+  (subsequence : GenerationActionSubsequence nameEq deletable ordinal live source target) ->
+  GenerationSubsequenceRuleTagsPreserved subsequence ->
+  (targetIndex, sourceIndex : Nat) -> (generationSubsequenceSourceOrdinal subsequence targetIndex = Just sourceIndex) ->
+  ScopedOrdinalTagPair name key world error value sourceFirst sourceFinal targetFirst targetFinal source target sourceIndex targetIndex
+scopedSubsequenceOrdinalTags name key world error value nameEq deletable ordinal live _ _ _ _ _ _ _ GenerationSubsequenceTagsEnd
+  targetIndex sourceIndex exact = void (nothingIsNotJust exact)
+scopedSubsequenceOrdinalTags name key world error value nameEq deletable ordinal live sourceFirst sourceFinal targetFirst targetFinal _ _ _
+  (GenerationSubsequenceTagsKeep {originalTransition} {originalRest} {survivingTransition} {survivingRest} {kept} {sameAction} {tail} sameTag tailTags)
+  targetIndex sourceIndex exact =
+    scopedSubsequenceTagsKeepAt name key world error value nameEq deletable ordinal live sourceFirst _ sourceFinal targetFirst _ targetFinal
+      originalTransition originalRest survivingTransition survivingRest kept sameAction tail sameTag
+      (scopedSubsequenceOrdinalTags name key world error value nameEq deletable (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ sourceFinal _ targetFinal
+        originalRest survivingRest tail tailTags) targetIndex sourceIndex exact
+scopedSubsequenceOrdinalTags name key world error value nameEq deletable ordinal live sourceFirst sourceFinal targetFirst targetFinal _ target _
+  (GenerationSubsequenceTagsDelete {originalTransition} {originalRest} {tail} tailTags) targetIndex sourceIndex exact =
+    scopedMapSuccEliminate
+      (\sourceOrdinal => ScopedOrdinalTagPair name key world error value sourceFirst sourceFinal targetFirst targetFinal
+        (MoreTransitions originalTransition originalRest) target sourceOrdinal targetIndex)
+      (generationSubsequenceSourceOrdinal tail targetIndex) sourceIndex exact
+      (\predecessor, tailExact => scopedTagPairPrependSource name key world error value sourceFirst _ sourceFinal targetFirst targetFinal
+        originalTransition originalRest target predecessor targetIndex
+        (scopedSubsequenceOrdinalTags name key world error value nameEq deletable (S ordinal)
+          (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ sourceFinal targetFirst targetFinal
+          originalRest target tail tailTags targetIndex predecessor tailExact))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
