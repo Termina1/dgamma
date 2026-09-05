@@ -22514,6 +22514,41 @@ scopedAppendSelectedCloseParentControls name key world error value nameEq keyEq 
           (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst _ closeBefore survivor
           survivingAfter originalTransition rest retained tag transition actionSame fires tail controls)))
 
+0 scopedAppendSelectedCloseTags :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {originalFirst, closeBefore, closeAfter : SystemState name key value world error} ->
+  (original : Transitions originalFirst closeBefore) ->
+  (survivor : SystemState name key value world error) ->
+  (ready : GenerationReplayReady nameEq keyEq (EpisodeGenerationDeletedActor nameEq selected registered)
+    ordinal live original survivor) ->
+  (target : SystemState name key value world error) -> (ends : ReplayReadyEndsAt ready target) ->
+  (closing : UnloadStep nameEq keyEq selected closeBefore closeAfter) ->
+  ReplayReadyRuleTagsPreserved name key world error value nameEq keyEq
+    (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst closeBefore
+    original survivor ready ->
+  ReplayReadyRuleTagsPreserved name key world error value nameEq keyEq
+    (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst closeAfter
+    (appendTransitions original (MoreTransitions (unloadTransition closing) NoTransitions)) survivor
+    (appendedSelectedCloseReady (scopedAppendSelectedCloseReplay name key world error value nameEq keyEq selected
+      registered ordinal live original survivor ready target ends closing))
+scopedAppendSelectedCloseTags name key world error value nameEq keyEq selected registered ordinal live
+  _ survivor _ target (ReplayEndsEnd same) closing tags = ()
+scopedAppendSelectedCloseTags name key world error value nameEq keyEq selected registered ordinal live
+  _ survivor _ target (ReplayEndsDelete {transition} {rest} deleted tail tailEnds) closing tags =
+    scopedAppendSelectedCloseTags name key world error value nameEq keyEq selected registered (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction transition) live)
+      rest survivor tail target tailEnds closing tags
+scopedAppendSelectedCloseTags name key world error value nameEq keyEq selected registered ordinal live
+  _ survivor _ target
+  (ReplayEndsKeep {originalTransition} {rest} {survivingAfter} retained tag transition actionSame fires tail tailEnds)
+  closing tags =
+    (fst tags, scopedAppendSelectedCloseTags name key world error value nameEq keyEq selected registered
+      (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live)
+      rest survivingAfter tail target tailEnds closing (snd tags))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
