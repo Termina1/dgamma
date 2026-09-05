@@ -25548,6 +25548,30 @@ scopedRelationalNamedReplay name key world error value nameEq keyEq action tag s
       (\lifecycle => orderedControlsLookup nameEq (actionOwner action)
         (planTarget (completePlanResult (relationalCompletePlan boundary))) (registry targetBefore) (relationalOrderedControls boundary))
 
+0 scopedSelectedNamedReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (named : NamedTransition name key world error value action targetBefore) ->
+  (fireNamed nameEq keyEq action targetBefore = Just named) -> (tag = transitionTag (namedTransition named)) ->
+  (selected : name) -> (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (wholeFirst, wholeLast : SystemState name key value world error) -> (whole : Transitions wholeFirst wholeLast) ->
+  Not (EpisodeGenerationDeletedActor {name = name} {key = key} {value = value} {world = world} {error = error}
+    nameEq selected registered ordinal live action) ->
+  SelectedEpisodeReplayBoundary name key world error value nameEq keyEq selected registered ordinal live whole sourceBefore targetBefore ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (namedTransition named) NoTransitions)
+scopedSelectedNamedReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag selected registered ordinal live wholeFirst wholeLast whole retained boundary =
+    scopedNamedActionReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore sourceChecked named fires sameTag
+      (planTarget (completePlanResult (selectedBoundaryPlan boundary)))
+      (inactiveLeafPlan (completePlanResult (selectedBoundaryPlan boundary)))
+      (\lifecycle => selectedOrderedForeignLookupControls nameEq selected (actionOwner action)
+        (\sameOwner => retained (DeleteEpisodeGenerationLifecycle sameOwner lifecycle))
+        (planTarget (completePlanResult (selectedBoundaryPlan boundary))) (registry targetBefore) (selectedBoundaryOrderedControls boundary))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
