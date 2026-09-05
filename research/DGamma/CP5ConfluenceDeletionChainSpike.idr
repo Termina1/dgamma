@@ -1,6 +1,7 @@
 module DGamma.CP5ConfluenceDeletionChainSpike
 
 import DGamma.Calculus
+import DGamma.Core
 import DGamma.CP4DeletionSelectedForeignLifecycleAdvanceDispatchCore
 import DGamma.Coeffects
 import DGamma.Metatheory
@@ -24905,6 +24906,20 @@ scopedEmptyTargetReplay name key world error value first finalState target sourc
     (\keyEq, actor, generator => void (noTraceEffectGeneratorInEmpty generator))
     (\actor, stage => void (noIteratorStageInEmpty stage))
     (\actor, stage, state => void (noIteratorStageInEmpty stage))
+
+0 scopedPrependReplayGeneratorMaps :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (keyEq : DecEq key) ->
+  (first, middle, finalState, targetFirst, targetFinal : SystemState name key value world error) ->
+  (transition : Transition first middle) -> (source : Transitions middle finalState) -> (target : Transitions targetFirst targetFinal) ->
+  (replay : RelationalReplayCorrespondence name key world error value source target) ->
+  (actor : name) -> (generator : TraceEffectGenerator name key world error value actor target) ->
+  PartialMapsRelated (EffectStateEquivalence keyEq)
+    (traceGeneratorMap (prependGenerator transition (replayGeneratorOrigin replay actor generator))) (traceGeneratorMap generator)
+scopedPrependReplayGeneratorMaps name key world error value keyEq first middle finalState targetFirst targetFinal transition source target
+  replay actor generator {x} {y} inputs =
+    replace {p = \left => PartialRelated (EffectState name key value world) (EffectStateRelated keyEq) left (traceGeneratorMap generator y)}
+      (sym (prependGeneratorMapExact transition (replayGeneratorOrigin replay actor generator) x))
+      (replayGeneratorMapsRelated replay keyEq actor generator inputs)
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
