@@ -10883,6 +10883,62 @@ beforeScopedSelectedBeginOccurs selectedEpisode localization selectedToAnchor
                 selectedToAnchor)
               OccursHere))))
 
+0 beforeScopedOpeningContradiction :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected, actor : name) -> (0 actorDistinct : Not (actor = selected)) ->
+  (wanted : key) ->
+  {initial, finalState, prefixFinal, stepBefore, stepAfter :
+    SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (0 initialWellFormed : registryWellFormed @{nameEq} @{keyEq} initial = True) ->
+  (0 initialEmpty : bindings (registry initial) = []) ->
+  (selectedEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  {transition : Transition stepBefore stepAfter} ->
+  (prefixTrace : Transitions initial prefixFinal) ->
+  (0 prefixAligned : AlignedTransitions name key world error value nameEq keyEq
+    prefixTrace) ->
+  (0 selectedFinalFalse : installedAt @{nameEq} selected prefixFinal = False) ->
+  {anchor : ForeignLifecycleInstalledAnchor name key world error value nameEq
+    keyEq actor transition prefixTrace} ->
+  (localization : ScopedClosingLocalization name key world error value nameEq
+    keyEq actor transition prefixTrace global anchor) ->
+  (selectedToAnchor : Transitions
+    (closedStartState (locatedEpisode selectedEpisode))
+    (lifecycleInstalledState anchor)) ->
+  (foreignToSelected : Transitions
+    (closedStartState
+      (locatedEpisode (localizedPrefixEpisode localization)))
+    (locatedPreStart selectedEpisode)) ->
+  (0 foreignSuffixExact : localizedActivationToAnchor localization =
+    appendTransitions foreignToSelected
+      (MoreTransitions
+        (beginTransition (closedOpening (locatedEpisode selectedEpisode)))
+        selectedToAnchor)) ->
+  (evidence : ScopedCommittedOpeningEvidence name key world error value nameEq
+    keyEq selected actor wanted global (localizedGlobalEpisode localization)) ->
+  Void
+beforeScopedOpeningContradiction nameEq keyEq selected actor actorDistinct wanted
+  global initialWellFormed initialEmpty selectedEpisode prefixTrace prefixAligned
+  selectedFinalFalse localization selectedToAnchor foreignToSelected
+  foreignSuffixExact evidence =
+    case orderingTheoremProof nameEq keyEq initial prefixFinal prefixTrace
+      prefixAligned initialWellFormed initialEmpty actor selected actorDistinct
+      wanted selectedFinalFalse (localizedPrefixEpisode localization)
+      (replace
+        {p = \state => resolvedProviderAt @{nameEq} @{keyEq} actor wanted
+          selected state = True}
+        (localizedOpeningStateExact localization)
+        (openingResolutionScoped evidence)) of
+      (providerEpisode ** ordering) =>
+        containingProviderExcludesConsumerBeginScoped providerEpisode
+          (localizedPrefixEpisode localization)
+          (containment ordering)
+          (closedOpening (locatedEpisode selectedEpisode))
+          (beforeScopedSelectedBeginOccurs selectedEpisode localization
+            selectedToAnchor foreignToSelected foreignSuffixExact)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
