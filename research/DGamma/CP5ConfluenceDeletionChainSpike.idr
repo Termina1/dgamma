@@ -20694,6 +20694,122 @@ scopedPostCloseSelectedBeginFoldAt name key world error value protocol nameEq ke
         (selectedCleanInactiveBeforeBegin nameEq keyEq selected original originalAfter checked))
       discipline (AlignedStep (LBegin selected) LBeginTag checked rest alignedRest) noRegistered
 
+0 scopedPostCloseOwnedFoldHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (stamped : GenerationEnvironmentStamped live) ->
+  (bornBefore : RegisteredGenerationsBornBefore registered ordinal) ->
+  (selectedOutside : (generation : RegistrationGeneration name) ->
+    Elem generation registered -> Not (generationName generation = actionOwner action)) ->
+  (original, originalAfter, originalFinal, survivor : SystemState name key value world error) ->
+  (checked : (checkedApplyAction @{nameEq} @{keyEq} action original = Just (tag, originalAfter))) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  (stepDiscipline : RegistrationStepDiscipline protocol nameEq action original rest) ->
+  RegistrationDiscipline protocol nameEq rest ->
+  AlignedTransitions name key world error value nameEq keyEq rest ->
+  (noBegin : IsBeginAction action ->
+    GenerationOwnedActor {name = name} {key = key} {value = value}
+      {world = world} {error = error} nameEq registered ordinal live action -> Void) ->
+  NoRegisteredEpisode nameEq registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) rest ->
+  (retained : Not (GenerationOwnedActor {name = name} {key = key} {value = value}
+    {world = world} {error = error} nameEq registered ordinal live action)) ->
+  (boundary : PostCloseSelectedBoundary name key world error value nameEq keyEq
+    (actionOwner action) registered ordinal live original survivor) ->
+  (continue : (nextSurvivor : SystemState name key value world error) ->
+    PostCloseSelectedBoundary name key world error value nameEq keyEq (actionOwner action)
+      registered (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal action live)
+      originalAfter nextSurvivor ->
+    ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq keyEq
+      registered (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal action live)
+      rest nextSurvivor) ->
+  ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq keyEq
+    registered ordinal live (MoreTransitions (Fired {before = original}
+      {afterState = originalAfter} nameEq keyEq action tag checked) rest) survivor
+scopedPostCloseOwnedFoldHead name key world error value protocol nameEq keyEq
+  (OInsert actor parent component) tag registered ordinal live unique stamped bornBefore selectedOutside
+  original originalAfter originalFinal survivor checked rest stepDiscipline restDiscipline
+  alignedRest noBegin noRegisteredRest retained boundary continue =
+    void (insertPresentScopedPostFold nameEq keyEq actor parent component original
+      originalAfter tag (checkedActionProjects nameEq keyEq
+        (OInsert actor parent component) original originalAfter tag checked)
+      (postCloseOriginalSelectedInactive nameEq actor registered live unique stamped
+        selectedOutside original survivor boundary))
+scopedPostCloseOwnedFoldHead name key world error value protocol nameEq keyEq
+  (ORetire actor) tag registered ordinal live unique stamped bornBefore selectedOutside
+  original originalAfter originalFinal survivor checked rest stepDiscipline restDiscipline
+  alignedRest noBegin noRegisteredRest retained boundary continue =
+    scopedPostCloseRetainedFoldStep name key world error value protocol nameEq keyEq actor
+      registered ordinal live unique stamped selectedOutside (ORetire actor) tag original
+      originalAfter originalFinal survivor checked rest stepDiscipline alignedRest retained
+      boundary continue
+      (scopedTaggedSelectedPostCloseRetireAt name key world error value protocol nameEq keyEq
+        actor registered ordinal live unique original originalAfter originalFinal survivor
+        tag checked rest stepDiscipline retained noBegin boundary
+        (successfulRetireTag nameEq keyEq actor original originalAfter tag
+          (checkedActionProjects nameEq keyEq (ORetire actor) original originalAfter tag checked)))
+scopedPostCloseOwnedFoldHead name key world error value protocol nameEq keyEq
+  (ORemove actor) tag registered ordinal live unique stamped bornBefore selectedOutside
+  original originalAfter originalFinal survivor checked rest stepDiscipline restDiscipline
+  alignedRest noBegin noRegisteredRest retained boundary continue =
+    scopedPostCloseSelectedRemoveFoldAt name key world error value protocol nameEq keyEq
+      actor registered ordinal live unique stamped bornBefore selectedOutside original
+      originalAfter originalFinal survivor tag checked rest stepDiscipline restDiscipline
+      alignedRest noRegisteredRest retained boundary
+      (retainedSelectedPostCloseRemove protocol nameEq keyEq actor registered ordinal live
+        unique original originalAfter originalFinal survivor tag checked rest stepDiscipline
+        retained boundary)
+scopedPostCloseOwnedFoldHead name key world error value protocol nameEq keyEq
+  (LBegin actor) tag registered ordinal live unique stamped bornBefore selectedOutside
+  original originalAfter originalFinal survivor checked rest stepDiscipline restDiscipline
+  alignedRest noBegin noRegisteredRest retained boundary continue =
+    scopedPostCloseSelectedBeginFoldAt name key world error value protocol nameEq keyEq
+      actor registered ordinal live unique stamped bornBefore selectedOutside original
+      originalAfter originalFinal survivor tag checked rest
+      (RegistrationDisciplineStep (Fired nameEq keyEq (LBegin actor) tag checked) rest
+        stepDiscipline restDiscipline) alignedRest
+      (NoRegisteredEpisodeStep (Fired nameEq keyEq (LBegin actor) tag checked) rest
+        noBegin noRegisteredRest) boundary
+      (beginSuccessTagScopedPostFold nameEq keyEq actor original originalAfter tag
+        (checkedActionProjects nameEq keyEq (LBegin actor) original originalAfter tag checked))
+scopedPostCloseOwnedFoldHead name key world error value protocol nameEq keyEq
+  (LAdvance actor) tag registered ordinal live unique stamped bornBefore selectedOutside
+  original originalAfter originalFinal survivor checked rest stepDiscipline restDiscipline
+  alignedRest noBegin noRegisteredRest retained boundary continue =
+    void (inactiveCannotAdvance nameEq keyEq actor original originalAfter tag
+      (checkedActionProjects nameEq keyEq (LAdvance actor) original originalAfter tag checked)
+      (postCloseOriginalSelectedInactive nameEq actor registered live unique stamped
+        selectedOutside original survivor boundary))
+scopedPostCloseOwnedFoldHead name key world error value protocol nameEq keyEq
+  (LDivert actor) tag registered ordinal live unique stamped bornBefore selectedOutside
+  original originalAfter originalFinal survivor checked rest stepDiscipline restDiscipline
+  alignedRest noBegin noRegisteredRest retained boundary continue =
+    void (inactiveCannotDivert nameEq keyEq actor original originalAfter tag
+      (checkedActionProjects nameEq keyEq (LDivert actor) original originalAfter tag checked)
+      (postCloseOriginalSelectedInactive nameEq actor registered live unique stamped
+        selectedOutside original survivor boundary))
+scopedPostCloseOwnedFoldHead name key world error value protocol nameEq keyEq
+  (LLeave actor) tag registered ordinal live unique stamped bornBefore selectedOutside
+  original originalAfter originalFinal survivor checked rest stepDiscipline restDiscipline
+  alignedRest noBegin noRegisteredRest retained boundary continue =
+    void (inactiveCannotLeave nameEq keyEq actor original originalAfter tag
+      (checkedActionProjects nameEq keyEq (LLeave actor) original originalAfter tag checked)
+      (postCloseOriginalSelectedInactive nameEq actor registered live unique stamped
+        selectedOutside original survivor boundary))
+scopedPostCloseOwnedFoldHead name key world error value protocol nameEq keyEq
+  (LUnload actor) tag registered ordinal live unique stamped bornBefore selectedOutside
+  original originalAfter originalFinal survivor checked rest stepDiscipline restDiscipline
+  alignedRest noBegin noRegisteredRest retained boundary continue =
+    void (inactiveCannotUnload nameEq keyEq actor original originalAfter tag
+      (checkedActionProjects nameEq keyEq (LUnload actor) original originalAfter tag checked)
+      (postCloseOriginalSelectedInactive nameEq actor registered live unique stamped
+        selectedOutside original survivor boundary))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
