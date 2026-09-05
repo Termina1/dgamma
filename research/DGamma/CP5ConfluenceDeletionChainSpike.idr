@@ -24245,6 +24245,23 @@ scopedEnrichedFinalEmpty name key world error value protocol nameEq keyEq initia
     (postCloseCurrentInactive (scopedEnrichedSuffixBoundary name key world error value protocol nameEq keyEq initial finalState global candidate folds))
     (postCloseCurrentEmpty (scopedEnrichedSuffixBoundary name key world error value protocol nameEq keyEq initial finalState global candidate folds))
 
+0 scopedEnrichedFinalPlanEmpty :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  EmptyTableInactivePlan name key world error value nameEq
+    (inactiveLeafPlan (completePlanResult (relationalCompletePlan
+      (relationalSuffixFinalBoundary (postCloseOutputFold (enrichedSuffix folds))))))
+scopedEnrichedFinalPlanEmpty name key world error value protocol nameEq keyEq initial finalState global candidate folds aligned =
+  completeCurrentRegisteredPlanHasEmptyTables nameEq (selectedRegistrations candidate)
+    (relationalSuffixFinalLive (postCloseOutputFold (enrichedSuffix folds)))
+    (relationalSuffixFinalUnique (postCloseOutputFold (enrichedSuffix folds))) (worldState finalState) (registry finalState)
+    (relationalCompletePlan (relationalSuffixFinalBoundary (postCloseOutputFold (enrichedSuffix folds))))
+    (scopedEnrichedFinalEmpty name key world error value protocol nameEq keyEq initial finalState global candidate folds aligned)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
