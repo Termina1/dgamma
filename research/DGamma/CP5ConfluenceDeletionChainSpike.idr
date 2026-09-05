@@ -19314,6 +19314,16 @@ ScopedReadyParentControls name key world error value nameEq keyEq deletable ordi
       (scopedReadySubsequence name key world error value nameEq keyEq deletable ordinal
         live originalFirst originalFinal survivingFirst original ready)
 
+||| Exact binding lists suffice for provision presence; erased uniqueness is not compared.
+0 scopedLookupPresenceBindings :
+  (key : Type) -> (value : key -> Type) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (left, right : CoeffectContext key value) ->
+  (bindings left = bindings right) ->
+  (isJust (lookupBinding @{keyEq} wanted left) = isJust (lookupBinding @{keyEq} wanted right))
+scopedLookupPresenceBindings key value keyEq wanted
+  (MkCoeffectContext leftEntries leftUnique) (MkCoeffectContext rightEntries rightUnique) same =
+    cong (\entries => isJust (lookupEntries @{keyEq} wanted entries)) same
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
