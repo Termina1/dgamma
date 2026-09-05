@@ -26112,6 +26112,28 @@ scopedDeletionCenterTagPair name key world error value nameEq keyEq initial fina
       (scopedTagPairAppendLeft name key world error value (locatedPreStart (selectedEpisode candidate)) (locatedAfter (selectedEpisode candidate)) finalState (survivingBeforeEnd result) (survivingEpisodeEnd result) (survivingFinal result)
         (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate)) (survivingEpisode result) (survivingAfter result) sourceIndex targetIndex pair))
 
+0 scopedDeletionAfterTagPair :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (sourceIndex, targetIndex : Nat) ->
+  ScopedOrdinalTagPair name key world error value (locatedAfter (selectedEpisode candidate)) finalState (survivingEpisodeEnd result) (survivingFinal result) (traceAfterClosing (selectedEpisode candidate)) (survivingAfter result) sourceIndex targetIndex ->
+  ScopedOrdinalTagPair name key world error value initial finalState initial (survivingFinal result) global (survivingTrace result) ((deletionOriginalBeforeCount result + deletionOriginalEpisodeCount result) + sourceIndex) ((deletionSurvivingBeforeCount result + deletionSurvivingEpisodeCount result) + targetIndex)
+scopedDeletionAfterTagPair name key world error value nameEq keyEq initial finalState global candidate result sourceIndex targetIndex pair =
+  replace {p = \targetOrdinal => ScopedOrdinalTagPair name key world error value initial finalState initial (survivingFinal result) global (survivingTrace result) ((deletionOriginalBeforeCount result + deletionOriginalEpisodeCount result) + sourceIndex) targetOrdinal}
+    (plusAssociative (deletionSurvivingBeforeCount result) (deletionSurvivingEpisodeCount result) targetIndex)
+    (replace {p = \sourceOrdinal => ScopedOrdinalTagPair name key world error value initial finalState initial (survivingFinal result) global (survivingTrace result) sourceOrdinal (deletionSurvivingBeforeCount result + (deletionSurvivingEpisodeCount result + targetIndex))}
+      (plusAssociative (deletionOriginalBeforeCount result) (deletionOriginalEpisodeCount result) sourceIndex)
+      (replace {p = \trace => ScopedOrdinalTagPair name key world error value initial finalState initial (survivingFinal result) trace (survivingTrace result) (deletionOriginalBeforeCount result + (deletionOriginalEpisodeCount result + sourceIndex)) (deletionSurvivingBeforeCount result + (deletionSurvivingEpisodeCount result + targetIndex))}
+    (locatedDecomposition (selectedEpisode candidate))
+    (scopedTagPairAppendRight name key world error value initial (locatedPreStart (selectedEpisode candidate)) finalState initial (survivingBeforeEnd result) (survivingFinal result)
+      (traceBeforeOpening (selectedEpisode candidate)) (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate))) (survivingBefore result) (appendTransitions (survivingEpisode result) (survivingAfter result))
+      (transitionCount (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) + sourceIndex) (transitionCount (survivingEpisode result) + targetIndex)
+      (scopedTagPairAppendRight name key world error value (locatedPreStart (selectedEpisode candidate)) (locatedAfter (selectedEpisode candidate)) finalState (survivingBeforeEnd result) (survivingEpisodeEnd result) (survivingFinal result)
+        (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate)) (survivingEpisode result) (survivingAfter result) sourceIndex targetIndex pair))))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
