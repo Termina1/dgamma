@@ -24445,6 +24445,52 @@ scopedEnrichedTargetBundle name key world error value protocol nameEq keyEq init
         (replayTotal (chainReplayCapital premises)))
       (traceIndependentAfterRelationalReplaySpike keyEq replay (replayIndependent (chainReplayCapital premises)))
 
+||| Predicate-independent discipline spine for concatenating the before/episode/after filters.
+||| Each deletion owns its exact retirement classifier; each keep owns its fresh-birth and parent-control facts.
+data ScopedDisciplineReplaySpine :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {originalFirst, originalFinal, targetFirst, targetFinal : SystemState name key value world error} ->
+  Transitions originalFirst originalFinal -> Transitions targetFirst targetFinal -> Type where
+  ScopedDisciplineEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} -> {nameEq : DecEq name} ->
+    {registered : List (RegistrationGeneration name)} -> {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+    {0 original, target : SystemState name key value world error} ->
+    ScopedDisciplineReplaySpine name key world error value nameEq registered ordinal live
+      (NoTransitions {state = original}) (NoTransitions {state = target})
+  ScopedDisciplineKeep :
+    {name, key, world, error : Type} -> {value : key -> Type} -> {nameEq : DecEq name} ->
+    {registered : List (RegistrationGeneration name)} -> {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+    {0 originalFirst, originalMiddle, originalFinal, targetFirst, targetMiddle, targetFinal : SystemState name key value world error} ->
+    (sourceStep : Transition originalFirst originalMiddle) -> (sourceRest : Transitions originalMiddle originalFinal) ->
+    (targetStep : Transition targetFirst targetMiddle) -> (targetRest : Transitions targetMiddle targetFinal) ->
+    (0 sameAction : (transitionAction sourceStep = transitionAction targetStep)) ->
+    (0 sameTag : (transitionTag sourceStep = transitionTag targetStep)) ->
+    (0 fresh : (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+      (transitionAction sourceStep = OInsert child parent component) ->
+      Not (Elem (MkRegistrationGeneration child ordinal) registered)) ->
+    (0 controls : (parent, child : name) -> (component : Component key value world error) ->
+      (transitionAction sourceStep = OInsert child (ChildOf parent) component) ->
+      FiberControlMaybeRelated
+        (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} parent (registry originalFirst))
+        (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} parent (registry targetFirst))) ->
+    ScopedDisciplineReplaySpine name key world error value nameEq registered (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) sourceRest targetRest ->
+    ScopedDisciplineReplaySpine name key world error value nameEq registered ordinal live
+      (MoreTransitions sourceStep sourceRest) (MoreTransitions targetStep targetRest)
+  ScopedDisciplineDelete :
+    {name, key, world, error : Type} -> {value : key -> Type} -> {nameEq : DecEq name} ->
+    {registered : List (RegistrationGeneration name)} -> {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+    {0 originalFirst, originalMiddle, originalFinal, targetFirst, targetFinal : SystemState name key value world error} ->
+    (sourceStep : Transition originalFirst originalMiddle) -> (sourceRest : Transitions originalMiddle originalFinal) ->
+    (target : Transitions targetFirst targetFinal) ->
+    (0 retireOwned : (child : name) -> (transitionAction sourceStep = ORetire child) ->
+      GenerationOwnedActor {name = name} {key = key} {value = value} {world = world} {error = error}
+        nameEq registered ordinal live (ORetire child)) ->
+    ScopedDisciplineReplaySpine name key world error value nameEq registered (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) sourceRest target ->
+    ScopedDisciplineReplaySpine name key world error value nameEq registered ordinal live (MoreTransitions sourceStep sourceRest) target
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
