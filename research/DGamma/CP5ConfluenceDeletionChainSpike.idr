@@ -19473,6 +19473,25 @@ ScopedActorTotal name key world error value nameEq keyEq actor state =
     actor (registry state) = Just fiber) ->
   (isActive (fiberLifecycle fiber) = True) -> ActiveFiberProvidesAll keyEq fiber
 
+0 scopedPlannedActorProvides :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (original : SystemState name key value world error) -> (planned : Registry name key value world error) ->
+  InactiveLeafDeletionPlan {name = name} {key = key} {value = value} {world = world} {error = error}
+    nameEq (registry original) planned ->
+  (left, right : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor planned = Just left) -> FiberControlRelated left right ->
+  (bindings (ownedValues (fiberTable left)) = bindings (ownedValues (fiberTable right))) ->
+  ScopedActorTotal name key world error value nameEq keyEq actor original ->
+  (isActive (fiberLifecycle right) = True) -> ActiveFiberProvidesAll keyEq right
+scopedPlannedActorProvides name key world error value nameEq keyEq actor original planned plan left right
+  found controls tables sourceTotal active =
+    scopedRelatedActiveProvides name key world error value keyEq left right controls tables
+      (sourceTotal left (scopedPlanLookupSource name key world error value nameEq (registry original)
+        planned plan actor left found)
+        (trans (scopedFiberControlActiveSame name key world error value left right controls) active))
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
