@@ -10457,6 +10457,38 @@ providerClosedDecompositionScoped providerEpisode consumerEpisode containment =
          (closedTransitions (locatedEpisode consumerEpisode))
          (strictToTransitions (consumerToProviderClose containment)) in Refl))
 
+0 containingProviderExcludesConsumerBeginScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {selected, actor : name} ->
+  {prefixInitial, prefixFinal, beginBefore, beginAfter :
+    SystemState name key value world error} ->
+  {prefixTrace : Transitions prefixInitial prefixFinal} ->
+  (providerEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected prefixTrace) ->
+  (consumerEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    actor prefixTrace) ->
+  (containment : ProviderContainsConsumer providerEpisode consumerEpisode) ->
+  (opening : BeginStep nameEq keyEq selected beginBefore beginAfter) ->
+  OccursIn (beginTransition opening)
+    (closedTransitions (locatedEpisode consumerEpisode)) ->
+  Void
+containingProviderExcludesConsumerBeginScoped providerEpisode consumerEpisode
+  containment opening occurs =
+    closedEpisodeExcludesBeginScoped nameEq keyEq selected
+      (locatedEpisode providerEpisode) opening
+      (transportOccursScoped (sym (providerClosedDecompositionScoped
+        providerEpisode consumerEpisode containment))
+        (appendRightOccursScoped
+          (strictToTransitions (providerToConsumer containment))
+          (appendTransitions
+            (closedTransitions (locatedEpisode consumerEpisode))
+            (strictToTransitions (consumerToProviderClose containment)))
+          (appendLeftOccursScoped
+            (closedTransitions (locatedEpisode consumerEpisode))
+            (strictToTransitions (consumerToProviderClose containment))
+            occurs)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
