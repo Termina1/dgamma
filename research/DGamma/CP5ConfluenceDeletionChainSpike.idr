@@ -68,6 +68,10 @@ import DGamma.CP4DeletionPostCloseRemove
 import DGamma.CP4DeletionPostCloseSelectedRetire
 import DGamma.CP4DeletionRelationalBoundary
 import DGamma.CP4DeletionRelationalActionReplay
+import DGamma.CP4DeletionRelationalActionCore
+import DGamma.CP4DeletionRelationalLifecycleCore
+import DGamma.CP4DeletionRelationalLifecycleAdvance
+import DGamma.CP4DeletionRelationalLifecycleAdvanceDispatch
 import DGamma.CP4DeletionRelationalSuffixFold
 import DGamma.CP4DeletionPostCloseLifecycle
 import DGamma.CP4DeletionSelectedForeignLifecycleReplay
@@ -19601,6 +19605,51 @@ scopedNonAdvanceTagsSame name key world error value nameEq keyEq
   rightTag leftRaw rightRaw =
     trans (fst (lUnloadBoundary nameEq keyEq actor leftBefore leftAfter leftTag leftRaw))
       (sym (fst (lUnloadBoundary nameEq keyEq actor rightBefore rightAfter rightTag rightRaw)))
+
+||| The operational advance producer supplies a raw equation at the source tag.
+||| A second successful run at that same survivor boundary must have that tag.
+0 scopedRelatedAdvanceTagsAtOwners :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (leftWorld, rightWorld : world) ->
+  (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (leftAfter, rightAfter : SystemState name key value world error) ->
+  (leftTag, rightTag : RuleTag) ->
+  (leftRaw : (applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState leftWorld leftRegistry) = Just (leftTag, leftAfter))) ->
+  (rightRaw : (applyAction @{nameEq} @{keyEq} (LAdvance actor)
+    (MkSystemState rightWorld rightRegistry) = Just (rightTag, rightAfter))) ->
+  (effects : EffectStateRelated keyEq
+    (projectEffectState @{nameEq} (the (SystemState name key value world error)
+      (MkSystemState leftWorld leftRegistry)))
+    (projectEffectState @{nameEq} (the (SystemState name key value world error)
+      (MkSystemState rightWorld rightRegistry)))) ->
+  (ordered : OrderedRegistryControlsRelated name key world error value
+    (bindings leftRegistry) (bindings rightRegistry)) ->
+  RelatedLifecycleOwners name key world error value nameEq keyEq actor
+    (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry) ->
+  (leftTag = rightTag)
+scopedRelatedAdvanceTagsAtOwners name key world error value nameEq keyEq actor
+  leftWorld rightWorld leftRegistry rightRegistry leftAfter rightAfter leftTag
+  rightTag leftRaw rightRaw effects ordered
+  (MkRelatedLifecycleOwners leftOwner rightOwner leftFound rightFound
+    ownersRelated sources) =
+      cong Builtin.fst (justInjective
+        (trans (sym (fullLifecycleRaw
+          (replayRelatedAdvanceControlsFromOutcome nameEq keyEq actor
+            leftWorld rightWorld leftRegistry rightRegistry leftOwner rightOwner
+            leftFound rightFound sources ownersRelated ordered effects
+            leftTag leftAfter leftRaw
+            (\component, leftTable, rightTable, step, rest, view,
+              leftParent, rightParent, retiredFlag, leftAccumulator,
+              rightAccumulator, concreteLeftFound, concreteRightFound =>
+                runtimeAdvanceOutcomeRelated nameEq keyEq actor component step
+                  rest view leftWorld rightWorld leftTable rightTable
+                  leftRegistry rightRegistry leftParent rightParent retiredFlag
+                  retiredFlag
+                  (Reloading (step :: rest) leftAccumulator view)
+                  (Reloading (step :: rest) rightAccumulator view)
+                  concreteLeftFound concreteRightFound effects)))) rightRaw))
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
