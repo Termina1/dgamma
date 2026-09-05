@@ -17285,6 +17285,124 @@ scopedBeginPreservesUnretired name key world error value nameEq keyEq child
     found flag) =
       rewrite found in (\equation => void (nothingIsNotJust equation))
 
+||| L-Divert on the invariant name replaces the fiber's lifecycle with the
+||| unloading shape, keeping the retired flag; a matching target makes the
+||| step impossible.  The observed target-match result is an explicit
+||| argument so the reduction of `applyAction` reaches inside the guard.
+0 scopedDivertPreservesUnretiredAt :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child : name) ->
+  (before : SystemState name key value world error) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (remaining : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (observed : Bool) ->
+  (0 matchesEq : targetMatches @{nameEq}
+    (targetFiber @{nameEq} @{keyEq} {value = value} {world = world}
+      {error = error}
+      (MkFiber component parent retiredFlag table
+        (Reloading remaining accumulator view))
+      (registry before)) view = observed) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  (0 notRetired : retiredFlag = False) ->
+  (0 found : lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} child (registry before) =
+    Just (MkFiber component parent retiredFlag table
+      (Reloading remaining accumulator view))) ->
+  (0 raw : applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (LDivert child) before =
+    Just (tag, afterState)) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child afterState
+scopedDivertPreservesUnretiredAt name key world error value nameEq keyEq child
+  before component parent retiredFlag table remaining accumulator view True
+  matchesEq tag afterState notRetired found =
+    rewrite found in rewrite matchesEq in
+      (\equation => void (nothingIsNotJust equation))
+scopedDivertPreservesUnretiredAt name key world error value nameEq keyEq child
+  before component parent retiredFlag table remaining accumulator view False
+  matchesEq tag afterState notRetired found =
+    rewrite found in rewrite matchesEq in
+      (\equation =>
+        MkScopedUnretiredFiberAt
+          (setFiberLifecycle
+            (MkFiber component parent retiredFlag table
+              (Reloading remaining accumulator view))
+            (Unloading accumulator view Nothing))
+          (trans
+            (cong (lookupFiber @{nameEq} {name = name} {key = key}
+              {value = value} {world = world} {error = error} child)
+              (cong registry (sym (cong snd (justInjective equation)))))
+            (lookupReplacedFiber {name = name} {key = key} {value = value}
+              {world = world} {error = error} child
+              (MkFiber component parent retiredFlag table
+                (Reloading remaining accumulator view))
+              (setFiberLifecycle
+                (MkFiber component parent retiredFlag table
+                  (Reloading remaining accumulator view))
+                (Unloading accumulator view Nothing))
+              (registry before) found))
+          notRetired)
+
+||| L-Divert fires only on a reloading fiber; every other lifecycle makes the
+||| source step impossible, so the invariant is either preserved by the worker
+||| above or the step is vacuous.
+0 scopedDivertPreservesUnretired :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child before ->
+  (0 raw : applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (LDivert child) before =
+    Just (tag, afterState)) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child afterState
+scopedDivertPreservesUnretired name key world error value nameEq keyEq child
+  before afterState tag
+  (MkScopedUnretiredFiberAt
+    (MkFiber component parent retiredFlag table
+      (Reloading remaining accumulator view))
+    found flag) =
+      \equation =>
+        scopedDivertPreservesUnretiredAt name key world error value nameEq keyEq
+          child before component parent retiredFlag table remaining accumulator
+          view
+          (targetMatches @{nameEq}
+            (targetFiber @{nameEq} @{keyEq} {value = value} {world = world}
+              {error = error}
+              (MkFiber component parent retiredFlag table
+                (Reloading remaining accumulator view))
+              (registry before)) view)
+          Refl tag afterState flag found equation
+scopedDivertPreservesUnretired name key world error value nameEq keyEq child
+  before afterState tag
+  (MkScopedUnretiredFiberAt
+    (MkFiber component parent retiredFlag table (Inactive outcome)) found
+    flag) =
+      rewrite found in (\equation => void (nothingIsNotJust equation))
+scopedDivertPreservesUnretired name key world error value nameEq keyEq child
+  before afterState tag
+  (MkScopedUnretiredFiberAt
+    (MkFiber component parent retiredFlag table (Active accumulator view))
+    found flag) =
+      rewrite found in (\equation => void (nothingIsNotJust equation))
+scopedDivertPreservesUnretired name key world error value nameEq keyEq child
+  before afterState tag
+  (MkScopedUnretiredFiberAt
+    (MkFiber component parent retiredFlag table
+      (Unloading accumulator view outcome))
+    found flag) =
+      rewrite found in (\equation => void (nothingIsNotJust equation))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
