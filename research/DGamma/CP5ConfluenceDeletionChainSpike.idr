@@ -22560,6 +22560,45 @@ scopedAppendSelectedCloseTags name key world error value nameEq keyEq selected r
 scopedDisciplineAcrossTraceEnd name key world error value protocol nameEq first _ _ left right
   Refl sameTrace discipline = replace {p = RegistrationDiscipline protocol nameEq} (sym sameTrace) discipline
 
+0 scopedAppendSelectedCloseDiscipline :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {originalFirst, closeBefore, closeAfter : SystemState name key value world error} ->
+  (original : Transitions originalFirst closeBefore) ->
+  (survivor : SystemState name key value world error) ->
+  (ready : GenerationReplayReady nameEq keyEq (EpisodeGenerationDeletedActor nameEq selected registered)
+    ordinal live original survivor) ->
+  (target : SystemState name key value world error) -> (ends : ReplayReadyEndsAt ready target) ->
+  (closing : UnloadStep nameEq keyEq selected closeBefore closeAfter) ->
+  RegistrationDiscipline protocol nameEq
+    (scopedReadyTrace name key world error value nameEq keyEq
+      (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst closeBefore survivor
+      original ready) ->
+  RegistrationDiscipline protocol nameEq
+    (scopedReadyTrace name key world error value nameEq keyEq
+      (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst closeAfter survivor
+      (appendTransitions original (MoreTransitions (unloadTransition closing) NoTransitions))
+      (appendedSelectedCloseReady (scopedAppendSelectedCloseReplay name key world error value nameEq keyEq selected
+        registered ordinal live original survivor ready target ends closing)))
+scopedAppendSelectedCloseDiscipline name key world error value protocol nameEq keyEq selected registered
+  ordinal live original survivor ready target ends closing discipline =
+    scopedDisciplineAcrossTraceEnd name key world error value protocol nameEq survivor _ _
+      (scopedReadyTrace name key world error value nameEq keyEq
+        (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst closeAfter survivor
+        (appendTransitions original (MoreTransitions (unloadTransition closing) NoTransitions))
+        (appendedSelectedCloseReady (scopedAppendSelectedCloseReplay name key world error value nameEq keyEq selected
+          registered ordinal live original survivor ready target ends closing)))
+      (scopedReadyTrace name key world error value nameEq keyEq
+        (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst closeBefore survivor
+        original ready)
+      (scopedAppendSelectedCloseFinalSame name key world error value nameEq keyEq selected registered
+        ordinal live original survivor ready target ends closing)
+      (scopedAppendSelectedCloseTraceSame name key world error value nameEq keyEq selected registered
+        ordinal live original survivor ready target ends closing) discipline
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
