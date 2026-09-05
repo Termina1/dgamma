@@ -13959,6 +13959,79 @@ scopedNonBeginClosedPrefixAnchor name key world error value nameEq keyEq selecte
                 NoTransitions))
           in rewrite insideDecomposition in Refl)
 
+0 scopedNonBeginClosingLocalization :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState, before, afterState :
+    SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq global) ->
+  (initialEmpty : bindings (registry initial) = []) ->
+  (selected : name) ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  (action : Action name key value world error) ->
+  (lifecycle : isLifecycleAction action = True) ->
+  (notBegin : Not (action = LBegin (actionOwner action))) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (insidePrefix : Transitions
+    (closedStartState (locatedEpisode located)) before) ->
+  (rest : Transitions afterState
+    (lastInstalledState (locatedEpisode located))) ->
+  (insideDecomposition : appendTransitions insidePrefix
+    (MoreTransitions
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq action tag checked)
+      rest) = closedInside (locatedEpisode located)) ->
+  (closingResult : FirstClosingResult name key world error value nameEq keyEq
+    (actionOwner action)
+    (MoreTransitions
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq action tag checked)
+      rest)) ->
+  ScopedClosingLocalization name key world error value nameEq keyEq
+    (actionOwner action)
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked)
+    (appendTransitions (traceBeforeOpening located)
+      (MoreTransitions
+        (beginTransition (closedOpening (locatedEpisode located)))
+        (closedTransitions (locatedEpisode located))))
+    global
+    (scopedNonBeginClosedPrefixAnchor name key world error value nameEq keyEq
+      selected located action lifecycle notBegin tag checked insidePrefix rest
+      insideDecomposition)
+scopedNonBeginClosingLocalization name key world error value nameEq keyEq global
+  aligned initialEmpty selected located action lifecycle notBegin tag checked
+  insidePrefix rest insideDecomposition closingResult =
+    localizeScopedClosing nameEq keyEq (actionOwner action)
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq action tag checked)
+      (appendTransitions (traceBeforeOpening located)
+        (MoreTransitions
+          (beginTransition (closedOpening (locatedEpisode located)))
+          (closedTransitions (locatedEpisode located))))
+      (scopedAlignedClosedPrefix name key world error value nameEq keyEq global
+        aligned selected located)
+      initialEmpty
+      (scopedNonBeginClosedPrefixAnchor name key world error value nameEq keyEq
+        selected located action lifecycle notBegin tag checked insidePrefix rest
+        insideDecomposition)
+      (scopedExtendFirstClosing name key world error value nameEq keyEq
+        (actionOwner action)
+        (MoreTransitions
+          (Fired {before = before} {afterState = afterState}
+            nameEq keyEq action tag checked)
+          rest)
+        (MoreTransitions
+          (unloadTransition (closing (locatedEpisode located))) NoTransitions)
+        closingResult)
+      (traceAfterClosing located) global
+      (scopedClosedPrefixDecomposition name key world error value nameEq keyEq
+        selected located)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
