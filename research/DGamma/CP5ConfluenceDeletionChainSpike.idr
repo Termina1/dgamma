@@ -19074,6 +19074,39 @@ scopedTaggedPrependDeleted name key world error value nameEq deletable ordinal
           (DeleteGenerationAction transition rest deleted subsequence))
         finalSame (GenerationSubsequenceTagsDelete tags)
 
+||| Kept prepend stores the very same source/survivor action and tag equations
+||| as its concrete subsequence constructor.
+0 scopedTaggedPrependKept :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) -> (nameEq : DecEq name) ->
+  (deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (first, middle, originalFinal, survivingFirst, survivingMiddle,
+    target : SystemState name key value world error) ->
+  (transition : Transition first middle) ->
+  (rest : Transitions middle originalFinal) ->
+  (survivorStep : Transition survivingFirst survivingMiddle) ->
+  (0 kept : Not (deletable ordinal live (transitionAction transition))) ->
+  (0 sameAction : (transitionAction transition = transitionAction survivorStep)) ->
+  (0 sameTag : (transitionTag transition = transitionTag survivorStep)) ->
+  ScopedTaggedGenerationResult name key value world error nameEq deletable
+    (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal
+      (transitionAction transition) live) rest survivingMiddle target ->
+  ScopedTaggedGenerationResult name key value world error nameEq deletable
+    ordinal live (MoreTransitions transition rest) survivingFirst target
+scopedTaggedPrependKept name key world error value nameEq deletable ordinal
+  live first middle originalFinal survivingFirst survivingMiddle target transition
+  rest survivorStep kept sameAction sameTag
+  (MkScopedTaggedGenerationResult
+    (MkGenerationFilterResult finalState survivingTrace subsequence) finalSame tags) =
+      MkScopedTaggedGenerationResult
+        (MkGenerationFilterResult finalState
+          (MoreTransitions survivorStep survivingTrace)
+          (KeepGenerationAction transition rest survivorStep survivingTrace kept
+            sameAction subsequence))
+        finalSame (GenerationSubsequenceTagsKeep sameTag tags)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
