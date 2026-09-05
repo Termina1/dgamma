@@ -11522,6 +11522,15 @@ scopedRetainedNoEpisodeBoundaryStep protocol nameEq keyEq selected registered
           (scopedSelectedPlanExactBoundary nameEq keyEq unique boundary) tag
           checked future futureDiscipline notOwned
 
+0 scopedForeignRetainedHead :
+  ForeignRetainedEpisodeStep name key world error value nameEq keyEq selected
+    registered ordinal live whole action afterState survivor ->
+  SelectedEpisodeRetainedHead name key world error value nameEq keyEq selected
+    registered ordinal live whole action afterState survivor
+scopedForeignRetainedHead
+  (MkForeignRetainedEpisodeStep named fired nextBoundary) =
+    MkSelectedEpisodeRetainedHead named fired nextBoundary
+
 0 ScopedForeignLifecycleExclusion :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
