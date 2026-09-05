@@ -22961,6 +22961,31 @@ scopedRelationalBoundaryNoFailure name key world error value nameEq keyEq regist
         (planTarget (completePlanResult (relationalCompletePlan boundary)))
         (inactiveLeafPlan (completePlanResult (relationalCompletePlan boundary))) noFailure)
 
+0 scopedReadyFinalExact :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (originalFirst, originalFinal, survivor : SystemState name key value world error) ->
+  (original : Transitions originalFirst originalFinal) ->
+  (ready : GenerationReplayReady nameEq keyEq deletable ordinal live original survivor) ->
+  (target : SystemState name key value world error) -> ReplayReadyEndsAt ready target ->
+  (scopedReadyFinal name key world error value nameEq keyEq deletable ordinal live originalFirst
+    originalFinal survivor original ready = target)
+scopedReadyFinalExact name key world error value nameEq keyEq deletable ordinal live _ _ survivor _ _ target
+  (ReplayEndsEnd same) = sym same
+scopedReadyFinalExact name key world error value nameEq keyEq deletable ordinal live originalFirst originalFinal
+  survivor _ _ target (ReplayEndsDelete {transition} {rest} deleted tail tailEnds) =
+    scopedReadyFinalExact name key world error value nameEq keyEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction transition) live)
+      _ originalFinal survivor rest tail target tailEnds
+scopedReadyFinalExact name key world error value nameEq keyEq deletable ordinal live originalFirst originalFinal
+  survivor _ _ target
+  (ReplayEndsKeep {originalTransition} {rest} {survivingAfter} retained tag transition sameAction fires tail tailEnds) =
+    scopedReadyFinalExact name key world error value nameEq keyEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live)
+      _ originalFinal survivingAfter rest tail target tailEnds
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
