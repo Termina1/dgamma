@@ -17,6 +17,7 @@ import DGamma.CP4DeletionGenerationBounds
 import DGamma.CP4DeletionGenerationStamped
 import DGamma.CP4DeletionGenerationUnique
 import DGamma.CP4DeletionInactiveInvariant
+import DGamma.CP4DeletionIndependenceRestriction
 import DGamma.CP4DeletionNoEpisodeReplay
 import DGamma.CP4DeletionCommittedProviderPersistence
 import DGamma.CP4DeletionControlPlan
