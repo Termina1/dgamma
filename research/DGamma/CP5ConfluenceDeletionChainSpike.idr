@@ -11481,6 +11481,47 @@ scopedSelectedPlanExactBoundary nameEq keyEq unique boundary =
             (selectedBoundaryPlan boundary)))
           (selectedOriginalWellFormed boundary))
 
+0 scopedRetainedNoEpisodeBoundaryStep :
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (global : Transitions globalFirst globalLast) ->
+  (globalDiscipline : RegistrationDiscipline protocol nameEq global) ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (wholeInGlobal : OccurrenceEmbedding whole global) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (action : Action name key value world error) ->
+  (before, afterState, survivor : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (occurs : OccursIn
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked) whole) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  Not (GenerationOwnedActor nameEq registered ordinal live action) ->
+  RetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
+    registered (advanceGenerationEnvironment @{nameEq} ordinal action live)
+    action tag afterState
+    (MkSystemState (worldState before)
+      (planTarget (completePlanResult (selectedBoundaryPlan boundary))))
+scopedRetainedNoEpisodeBoundaryStep protocol nameEq keyEq selected registered
+  global globalDiscipline whole wholeInGlobal ordinal live unique action before
+  afterState survivor tag checked occurs boundary notOwned =
+    case scopedRegistrationDisciplineAtOccurrence
+      (Fired nameEq keyEq action tag checked) global globalDiscipline
+      (wholeInGlobal (Fired nameEq keyEq action tag checked) occurs) of
+      MkScopedLocatedRegistrationStep future futureDiscipline =>
+        retainedSuffixHeadPreservesNoEpisodeBoundary protocol nameEq keyEq
+          registered ordinal live action before
+          (MkSystemState (worldState before)
+            (planTarget (completePlanResult
+              (selectedBoundaryPlan boundary))))
+          (scopedSelectedPlanExactBoundary nameEq keyEq unique boundary) tag
+          checked future futureDiscipline notOwned
+
 0 ScopedForeignLifecycleExclusion :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
