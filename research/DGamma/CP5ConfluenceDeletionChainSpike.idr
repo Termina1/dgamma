@@ -9989,6 +9989,28 @@ extendLocatedClosingRightScoped prefixTrace located suffixTrace global
       exactTrace
       (appendLocatedClosingEpisodeRight prefixTrace located suffixTrace)
 
+0 selectedGenerationConsumerOrdinalScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, selectedBefore, selectedAfter, foreignBefore :
+    SystemState name key value world error} ->
+  (selectedPrefixTrace : Transitions first selectedBefore) ->
+  (selectedToForeign : Transitions selectedAfter foreignBefore) ->
+  (foreignPrefixTrace : Transitions first foreignBefore) ->
+  (selectedStartOrdinal : Nat) ->
+  (0 selectedOrdinalExact :
+    transitionCount selectedPrefixTrace = selectedStartOrdinal) ->
+  (0 foreignOrdinalExact :
+    transitionCount foreignPrefixTrace =
+      transitionCount selectedPrefixTrace + S (transitionCount selectedToForeign)) ->
+  transitionCount foreignPrefixTrace =
+    selectedStartOrdinal + S (transitionCount selectedToForeign)
+selectedGenerationConsumerOrdinalScoped selectedPrefixTrace selectedToForeign
+  foreignPrefixTrace selectedStartOrdinal selectedOrdinalExact
+  foreignOrdinalExact =
+    trans foreignOrdinalExact
+      (cong (\ordinal => ordinal + S (transitionCount selectedToForeign))
+        selectedOrdinalExact)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
