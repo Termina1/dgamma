@@ -15993,129 +15993,6 @@ scopedPostCloseSuffixFold name key world error value protocol nameEq keyEq selec
             (postCloseOriginalSelectedInactive nameEq selected registered live
               unique stamped selectedOutside _ survivor boundary))
 
-record ScopedPostCloseSuffixFoldOutput
-  (name, key, world, error : Type) (value : key -> Type)
-  (nameEq : DecEq name) (keyEq : DecEq key)
-  (registered : List (RegistrationGeneration name))
-  (ordinal : Nat) (live : GenerationEnvironment name)
-  {original, finalState : SystemState name key value world error}
-  (trace : Transitions original finalState)
-  (survivor : SystemState name key value world error) where
-  constructor MkScopedPostCloseSuffixFoldOutput
-  postCloseOutputFold : RelationalNoEpisodeSuffixReplayFold name key world error
-    value nameEq keyEq registered ordinal live trace survivor
-  0 postCloseOutputTags : ReplayReadyRuleTagsPreserved name key world error value
-    nameEq keyEq (GenerationOwnedActor nameEq registered) ordinal live original
-    finalState trace survivor (relationalSuffixReplayReady postCloseOutputFold)
-
-0 scopedPostCloseSuffixFoldOutputEnd :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  (protocol : RegistrationProtocol key value world error) ->
-  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
-  (registered : List (RegistrationGeneration name)) ->
-  (selectedOutside :
-    (generation : RegistrationGeneration name) -> Elem generation registered ->
-    Not (generationName generation = selected)) ->
-  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
-  (bornBefore : RegisteredGenerationsBornBefore registered ordinal) ->
-  (unique : GenerationEnvironmentNamesUnique live) ->
-  (stamped : GenerationEnvironmentStamped live) ->
-  (state, survivor : SystemState name key value world error) ->
-  (boundary : PostCloseSelectedBoundary name key world error value nameEq keyEq
-    selected registered ordinal live state survivor) ->
-  (noFailed : noFailedFibers state = True) ->
-  ScopedPostCloseSuffixFoldOutput name key world error value nameEq keyEq
-    registered ordinal live (NoTransitions {state = state}) survivor
-scopedPostCloseSuffixFoldOutputEnd name key world error value protocol nameEq keyEq
-  selected registered selectedOutside ordinal live bornBefore unique stamped state
-  survivor boundary noFailed =
-    MkScopedPostCloseSuffixFoldOutput
-      (scopedPostCloseSuffixFold name key world error value protocol nameEq keyEq
-        selected registered selectedOutside ordinal live bornBefore unique stamped
-        NoTransitions survivor boundary RegistrationDisciplineEnd AlignedEnd
-        NoRegisteredEpisodeEnd noFailed)
-      ()
-
-0 scopedPrependPostCloseKeptOutput :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (registered : List (RegistrationGeneration name)) ->
-  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
-  (original, originalAfter, originalFinal, survivor :
-    SystemState name key value world error) ->
-  (rest : Transitions originalAfter originalFinal) ->
-  (transition : Transition original originalAfter) ->
-  (retained : Not (GenerationOwnedActor nameEq registered ordinal live
-    (transitionAction transition))) ->
-  (named : NamedTransition name key world error value
-    (transitionAction transition) survivor) ->
-  (fires : fireNamed nameEq keyEq (transitionAction transition) survivor =
-    Just named) ->
-  (sameTag : transitionTag transition = transitionTag (namedTransition named)) ->
-  (folded : ScopedPostCloseSuffixFoldOutput name key world error value nameEq
-    keyEq registered (S ordinal)
-    (advanceGenerationEnvironment @{nameEq} ordinal
-      (transitionAction transition) live)
-    rest (namedAfter named)) ->
-  ScopedPostCloseSuffixFoldOutput name key world error value nameEq keyEq
-    registered ordinal live (MoreTransitions transition rest) survivor
-scopedPrependPostCloseKeptOutput name key world error value nameEq keyEq
-  registered ordinal live original originalAfter originalFinal survivor rest
-  transition retained
-  named@(MkNamedTransition after namedTag namedTransition namedAction) fires
-  sameTag folded =
-    MkScopedPostCloseSuffixFoldOutput
-      (MkRelationalNoEpisodeSuffixReplayFold
-        (relationalSuffixFinalOrdinal (postCloseOutputFold folded))
-        (relationalSuffixFinalLive (postCloseOutputFold folded))
-        (relationalSuffixFinalSurvivor (postCloseOutputFold folded))
-        (GenerationTraceScanStep transition rest
-          (relationalSuffixGenerationScan (postCloseOutputFold folded)))
-        (ReplayReadyKeep retained after namedTag namedTransition namedAction fires
-          (relationalSuffixReplayReady (postCloseOutputFold folded)))
-        (ReplayEndsKeep retained namedTag namedTransition namedAction fires
-          (relationalSuffixReplayReady (postCloseOutputFold folded))
-          (relationalSuffixReadyEnds (postCloseOutputFold folded)))
-        (relationalSuffixFinalUnique (postCloseOutputFold folded))
-        (relationalSuffixFinalBoundary (postCloseOutputFold folded)))
-      (sameTag, postCloseOutputTags folded)
-
-0 scopedPrependPostCloseDeletedOutput :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (registered : List (RegistrationGeneration name)) ->
-  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
-  (original, originalAfter, originalFinal, survivor :
-    SystemState name key value world error) ->
-  (rest : Transitions originalAfter originalFinal) ->
-  (transition : Transition original originalAfter) ->
-  (deleted : GenerationOwnedActor nameEq registered ordinal live
-    (transitionAction transition)) ->
-  (folded : ScopedPostCloseSuffixFoldOutput name key world error value nameEq
-    keyEq registered (S ordinal)
-    (advanceGenerationEnvironment @{nameEq} ordinal
-      (transitionAction transition) live) rest survivor) ->
-  ScopedPostCloseSuffixFoldOutput name key world error value nameEq keyEq
-    registered ordinal live (MoreTransitions transition rest) survivor
-scopedPrependPostCloseDeletedOutput name key world error value nameEq keyEq
-  registered ordinal live original originalAfter originalFinal survivor rest
-  transition deleted folded =
-    MkScopedPostCloseSuffixFoldOutput
-      (MkRelationalNoEpisodeSuffixReplayFold
-        (relationalSuffixFinalOrdinal (postCloseOutputFold folded))
-        (relationalSuffixFinalLive (postCloseOutputFold folded))
-        (relationalSuffixFinalSurvivor (postCloseOutputFold folded))
-        (GenerationTraceScanStep transition rest
-          (relationalSuffixGenerationScan (postCloseOutputFold folded)))
-        (ReplayReadyDelete deleted
-          (relationalSuffixReplayReady (postCloseOutputFold folded)))
-        (ReplayEndsDelete deleted
-          (relationalSuffixReplayReady (postCloseOutputFold folded))
-          (relationalSuffixReadyEnds (postCloseOutputFold folded)))
-        (relationalSuffixFinalUnique (postCloseOutputFold folded))
-        (relationalSuffixFinalBoundary (postCloseOutputFold folded)))
-      (postCloseOutputTags folded)
-
 0 scopedDisciplineAppendRight :
   (left : Transitions first middle) ->
   (right : Transitions middle finalState) ->
@@ -19300,6 +19177,163 @@ record ScopedSelectedClosedEpisodeFoldOutput
       (MoreTransitions (beginTransition (closedOpening episode))
         (closedTransitions episode))
       (selectedFoldReady selectedOutputFold))
+
+record ScopedPostCloseSuffixFoldOutput
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (registered : List (RegistrationGeneration name))
+  (ordinal : Nat) (live : GenerationEnvironment name)
+  {original, finalState : SystemState name key value world error}
+  (trace : Transitions original finalState)
+  (survivor : SystemState name key value world error) where
+  constructor MkScopedPostCloseSuffixFoldOutput
+  postCloseOutputFold : RelationalNoEpisodeSuffixReplayFold name key world error
+    value nameEq keyEq registered ordinal live trace survivor
+  0 postCloseOutputTags : ReplayReadyRuleTagsPreserved name key world error value
+    nameEq keyEq (GenerationOwnedActor nameEq registered) ordinal live original
+    finalState trace survivor (relationalSuffixReplayReady postCloseOutputFold)
+
+  0 postCloseOutputDiscipline : RegistrationDiscipline protocol nameEq
+    (scopedReadyTrace name key world error value nameEq keyEq
+      (GenerationOwnedActor nameEq registered) ordinal live original finalState
+      survivor trace (relationalSuffixReplayReady postCloseOutputFold))
+
+0 scopedPostCloseSuffixFoldOutputEnd :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (selectedOutside :
+    (generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (bornBefore : RegisteredGenerationsBornBefore registered ordinal) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (stamped : GenerationEnvironmentStamped live) ->
+  (state, survivor : SystemState name key value world error) ->
+  (boundary : PostCloseSelectedBoundary name key world error value nameEq keyEq
+    selected registered ordinal live state survivor) ->
+  (noFailed : noFailedFibers state = True) ->
+  ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq keyEq
+    registered ordinal live (NoTransitions {state = state}) survivor
+scopedPostCloseSuffixFoldOutputEnd name key world error value protocol nameEq keyEq
+  selected registered selectedOutside ordinal live bornBefore unique stamped state
+  survivor boundary noFailed =
+    MkScopedPostCloseSuffixFoldOutput
+      (scopedPostCloseSuffixFold name key world error value protocol nameEq keyEq
+        selected registered selectedOutside ordinal live bornBefore unique stamped
+        NoTransitions survivor boundary RegistrationDisciplineEnd AlignedEnd
+        NoRegisteredEpisodeEnd noFailed)
+      () RegistrationDisciplineEnd
+
+0 scopedPrependPostCloseKeptOutput :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (original, originalAfter, originalFinal, survivor :
+    SystemState name key value world error) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  (transition : Transition original originalAfter) ->
+  (retained : Not (GenerationOwnedActor nameEq registered ordinal live
+    (transitionAction transition))) ->
+  (named : NamedTransition name key world error value
+    (transitionAction transition) survivor) ->
+  (fires : fireNamed nameEq keyEq (transitionAction transition) survivor =
+    Just named) ->
+  (sameTag : transitionTag transition = transitionTag (namedTransition named)) ->
+  (folded : ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq
+    keyEq registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal
+      (transitionAction transition) live)
+    rest (namedAfter named)) ->
+  (0 survivorStepDiscipline : RegistrationStepDiscipline protocol nameEq
+    (transitionAction transition) survivor
+    (scopedReadyTrace name key world error value nameEq keyEq
+      (GenerationOwnedActor nameEq registered) (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction transition) live)
+      originalAfter originalFinal (namedAfter named) rest
+      (relationalSuffixReplayReady (postCloseOutputFold folded)))) ->
+  ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq keyEq
+    registered ordinal live (MoreTransitions transition rest) survivor
+scopedPrependPostCloseKeptOutput name key world error value protocol nameEq keyEq
+  registered ordinal live original originalAfter originalFinal survivor rest
+  transition retained
+  named@(MkNamedTransition after namedTag namedTransition namedAction) fires
+  sameTag folded survivorStepDiscipline =
+    MkScopedPostCloseSuffixFoldOutput
+      (MkRelationalNoEpisodeSuffixReplayFold
+        (relationalSuffixFinalOrdinal (postCloseOutputFold folded))
+        (relationalSuffixFinalLive (postCloseOutputFold folded))
+        (relationalSuffixFinalSurvivor (postCloseOutputFold folded))
+        (GenerationTraceScanStep transition rest
+          (relationalSuffixGenerationScan (postCloseOutputFold folded)))
+        (ReplayReadyKeep retained after namedTag namedTransition namedAction fires
+          (relationalSuffixReplayReady (postCloseOutputFold folded)))
+        (ReplayEndsKeep retained namedTag namedTransition namedAction fires
+          (relationalSuffixReplayReady (postCloseOutputFold folded))
+          (relationalSuffixReadyEnds (postCloseOutputFold folded)))
+        (relationalSuffixFinalUnique (postCloseOutputFold folded))
+        (relationalSuffixFinalBoundary (postCloseOutputFold folded)))
+      (sameTag, postCloseOutputTags folded)
+      (RegistrationDisciplineStep namedTransition
+        (scopedReadyTrace name key world error value nameEq keyEq
+          (GenerationOwnedActor nameEq registered) (S ordinal)
+          (advanceGenerationEnvironment @{nameEq} ordinal
+            (transitionAction transition) live)
+          originalAfter originalFinal after rest
+          (relationalSuffixReplayReady (postCloseOutputFold folded)))
+        (replace
+          {p = \action => RegistrationStepDiscipline protocol nameEq action survivor
+            (scopedReadyTrace name key world error value nameEq keyEq
+          (GenerationOwnedActor nameEq registered) (S ordinal)
+          (advanceGenerationEnvironment @{nameEq} ordinal
+            (transitionAction transition) live)
+          originalAfter originalFinal after rest
+          (relationalSuffixReplayReady (postCloseOutputFold folded)))}
+          (sym namedAction) survivorStepDiscipline)
+        (postCloseOutputDiscipline folded))
+
+0 scopedPrependPostCloseDeletedOutput :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (original, originalAfter, originalFinal, survivor :
+    SystemState name key value world error) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  (transition : Transition original originalAfter) ->
+  (deleted : GenerationOwnedActor nameEq registered ordinal live
+    (transitionAction transition)) ->
+  (folded : ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq
+    keyEq registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal
+      (transitionAction transition) live) rest survivor) ->
+  ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq keyEq
+    registered ordinal live (MoreTransitions transition rest) survivor
+scopedPrependPostCloseDeletedOutput name key world error value protocol nameEq keyEq
+  registered ordinal live original originalAfter originalFinal survivor rest
+  transition deleted folded =
+    MkScopedPostCloseSuffixFoldOutput
+      (MkRelationalNoEpisodeSuffixReplayFold
+        (relationalSuffixFinalOrdinal (postCloseOutputFold folded))
+        (relationalSuffixFinalLive (postCloseOutputFold folded))
+        (relationalSuffixFinalSurvivor (postCloseOutputFold folded))
+        (GenerationTraceScanStep transition rest
+          (relationalSuffixGenerationScan (postCloseOutputFold folded)))
+        (ReplayReadyDelete deleted
+          (relationalSuffixReplayReady (postCloseOutputFold folded)))
+        (ReplayEndsDelete deleted
+          (relationalSuffixReplayReady (postCloseOutputFold folded))
+          (relationalSuffixReadyEnds (postCloseOutputFold folded)))
+        (relationalSuffixFinalUnique (postCloseOutputFold folded))
+        (relationalSuffixFinalBoundary (postCloseOutputFold folded)))
+      (postCloseOutputTags folded)
+      (postCloseOutputDiscipline folded)
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
