@@ -3656,6 +3656,7 @@ singletonAdvanceStageOrigin nameEq keyEq actor tag sourceBefore sourceAfter
 ||| Stage origin and its exact same-input runtime equation are constructed in
 ||| one dependent package, avoiding any attempt to identify the two stored
 ||| accumulators or decision dictionaries.
+public export
 record LocatedSingletonAdvanceStageReplay
   (name, key, world, error : Type) (value : key -> Type)
   {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
@@ -3671,6 +3672,7 @@ record LocatedSingletonAdvanceStageReplay
     iteratorStageOutcome targetStage state =
       iteratorStageOutcome locatedSourceAdvanceStage state
 
+export
 0 locateSingletonAdvanceStageReplay :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
   (tag : RuleTag) ->
@@ -3727,6 +3729,7 @@ locateSingletonAdvanceStageReplay nameEq keyEq actor tag sourceBefore sourceAfte
                 remaining sourceAccumulator view Refl step rest suffix)
               (\state => Refl)
 
+public export
 record SingletonAdvanceStageReplayFamily
   (name, key, world, error : Type) (value : key -> Type)
   {sourceFirst, sourceFinal, replayedFirst, replayedFinal :
@@ -3866,6 +3869,7 @@ locateSingletonAdvanceGeneratorReplay nameEq keyEq actor tag sourceBefore
             (replayTraceGeneratorMapRespects observedKeyEq targetGenerator inputs)
     in MkLocatedSingletonAdvanceGeneratorReplay sourceGenerator mapsRelated
 
+export
 0 singletonAdvanceRAR :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
   (tag : RuleTag) ->
