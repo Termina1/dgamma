@@ -25949,6 +25949,16 @@ scopedLocatedRule name key world error value first finalState trace action occur
         (beforeActionOccurrence occurrence) (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence))
         0 (transitionTag (locatedTransition occurrence)) (ScopedRuleHere (locatedTransition occurrence) (afterActionOccurrence occurrence))))
 
+record ScopedOrdinalTagPair
+  (name, key, world, error : Type) (value : key -> Type)
+  (sourceFirst, sourceFinal, targetFirst, targetFinal : SystemState name key value world error)
+  (source : Transitions sourceFirst sourceFinal) (target : Transitions targetFirst targetFinal)
+  (sourceOrdinal, targetOrdinal : Nat) where
+  constructor MkScopedOrdinalTagPair
+  ordinalSharedTag : RuleTag
+  0 ordinalSourceTag : ScopedRuleAt name key world error value source sourceOrdinal ordinalSharedTag
+  0 ordinalTargetTag : ScopedRuleAt name key world error value target targetOrdinal ordinalSharedTag
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
