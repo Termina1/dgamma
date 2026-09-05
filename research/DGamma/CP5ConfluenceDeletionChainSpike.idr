@@ -26228,6 +26228,12 @@ scopedLiftOrdinalMap function (S ordinal) = S (function ordinal)
 scopedLiftOrdinalInverse forward backward inverse Z = Refl
 scopedLiftOrdinalInverse forward backward inverse (S ordinal) = cong S (inverse ordinal)
 
+scopedLiftOrdinalPermutation : ScopedOrdinalPermutation -> ScopedOrdinalPermutation
+scopedLiftOrdinalPermutation permutation =
+  MkScopedOrdinalPermutation (scopedLiftOrdinalMap (ordinalForward permutation)) (scopedLiftOrdinalMap (ordinalBackward permutation))
+    (scopedLiftOrdinalInverse (ordinalForward permutation) (ordinalBackward permutation) (ordinalLeftInverse permutation))
+    (scopedLiftOrdinalInverse (ordinalBackward permutation) (ordinalForward permutation) (ordinalRightInverse permutation))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
