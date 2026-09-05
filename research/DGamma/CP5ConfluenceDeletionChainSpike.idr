@@ -19377,6 +19377,15 @@ scopedLookupMemberHeadAt name item nameEq wanted current cell observed rest tail
 scopedLookupMemberHeadAt name item nameEq wanted current cell observed rest tail (No distinct) exact =
   rewrite exact in (\found => There (tail found))
 
+0 scopedLookupMember :
+  (name, item : Type) -> (nameEq : DecEq name) -> (wanted : name) ->
+  (observed : item) -> (entries : List (Binding name (\_ => item))) ->
+  (lookupEntries @{nameEq} wanted entries = Just observed) -> Elem (Bind wanted observed) entries
+scopedLookupMember name item nameEq wanted observed [] found = void (nothingIsNotJust found)
+scopedLookupMember name item nameEq wanted observed (Bind current cell :: rest) found =
+  scopedLookupMemberHeadAt name item nameEq wanted current cell observed rest
+    (scopedLookupMember name item nameEq wanted observed rest) (decEq @{nameEq} wanted current) Refl found
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
