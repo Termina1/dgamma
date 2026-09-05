@@ -20655,6 +20655,45 @@ scopedPostCloseSelectedRemoveFoldAt name key world error value protocol nameEq k
         originalAfter originalFinal (namedAfter (relationalRetainedNamed step)) rest
         (relationalRetainedNextBoundary step) restDiscipline alignedRest noRegisteredRest)
 
+0 scopedPostCloseSelectedBeginFoldAt :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (stamped : GenerationEnvironmentStamped live) ->
+  (bornBefore : RegisteredGenerationsBornBefore registered ordinal) ->
+  (selectedOutside : (generation : RegistrationGeneration name) ->
+    Elem generation registered -> Not (generationName generation = selected)) ->
+  (original, originalAfter, originalFinal, survivor : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : (checkedApplyAction @{nameEq} @{keyEq} (LBegin selected) original =
+    Just (tag, originalAfter))) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  RegistrationDiscipline protocol nameEq (MoreTransitions
+    (Fired {before = original} {afterState = originalAfter} nameEq keyEq (LBegin selected) tag checked) rest) ->
+  AlignedTransitions name key world error value nameEq keyEq rest ->
+  NoRegisteredEpisode nameEq registered ordinal live (MoreTransitions
+    (Fired {before = original} {afterState = originalAfter} nameEq keyEq (LBegin selected) tag checked) rest) ->
+  (boundary : PostCloseSelectedBoundary name key world error value nameEq keyEq selected
+    registered ordinal live original survivor) ->
+  (tag = LBeginTag) ->
+  ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq keyEq
+    registered ordinal live (MoreTransitions (Fired {before = original}
+      {afterState = originalAfter} nameEq keyEq (LBegin selected) tag checked) rest) survivor
+scopedPostCloseSelectedBeginFoldAt name key world error value protocol nameEq keyEq
+  selected registered ordinal live unique stamped bornBefore selectedOutside original
+  originalAfter originalFinal survivor _ checked rest discipline alignedRest noRegistered
+  boundary Refl =
+    scopedRelationalSuffixFoldOutput name key world error value protocol nameEq keyEq
+      registered ordinal live bornBefore unique original originalFinal survivor
+      (MoreTransitions (Fired nameEq keyEq (LBegin selected) LBeginTag checked) rest)
+      (cleanOriginalPostCloseGivesRelational nameEq selected registered live unique stamped
+        selectedOutside original survivor boundary
+        (selectedCleanInactiveBeforeBegin nameEq keyEq selected original originalAfter checked))
+      discipline (AlignedStep (LBegin selected) LBeginTag checked rest alignedRest) noRegistered
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
