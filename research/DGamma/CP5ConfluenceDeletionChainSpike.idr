@@ -13,6 +13,7 @@ import DGamma.CP4DeletionPlanBuilder
 import DGamma.CP4DeletionPlanComplete
 import DGamma.CP4DeletionPlanEmpty
 import DGamma.CP4DeletionPlanEffects
+import DGamma.CP4DeletionFrameCore
 import DGamma.CP4DeletionPremiseSplit
 import DGamma.CP4DeletionFilterSuccess
 import DGamma.CP4DeletionGenerationFilter
@@ -15182,6 +15183,30 @@ scopedSelectedClosedFoldFromPremises name key world error value protocol nameEq
   MkSystemState (worldState state) (registry state) = state
 scopedSystemEta name key world error value
   (MkSystemState observedWorld observedRegistry) = Refl
+
+0 scopedPostCloseForeignTables :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (left, right : SystemState name key value world error) ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} left)
+    (projectEffectState @{nameEq} right) ->
+  (actor : name) ->
+  {leftFiber, rightFiber : Fiber name key value world error} ->
+  Elem (Bind actor leftFiber) (bindings (registry left)) ->
+  Elem (Bind actor rightFiber) (bindings (registry right)) ->
+  bindings (ownedValues (fiberTable leftFiber)) =
+    bindings (ownedValues (fiberTable rightFiber))
+scopedPostCloseForeignTables name key world error value nameEq keyEq left right
+  effects actor leftMember rightMember =
+    trans
+      (cong bindings
+        (sym
+          (projectedActorTable nameEq actor left leftFiber
+            (registryLookupFromMember nameEq (registry left) leftMember))))
+      (trans (tablesExact effects actor)
+        (cong bindings
+          (projectedActorTable nameEq actor right rightFiber
+            (registryLookupFromMember nameEq (registry right) rightMember))))
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
