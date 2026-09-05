@@ -19802,6 +19802,11 @@ record ScopedPostCloseSuffixFoldOutput
     (scopedReadyTrace name key world error value nameEq keyEq
       (GenerationOwnedActor nameEq registered) ordinal live original finalState
       survivor trace (relationalSuffixReplayReady postCloseOutputFold))
+  0 postCloseOutputTotal : TraceComponentsTotal nameEq keyEq trace ->
+    TraceComponentsTotal nameEq keyEq
+      (scopedReadyTrace name key world error value nameEq keyEq
+        (GenerationOwnedActor nameEq registered) ordinal live original finalState survivor trace
+        (relationalSuffixReplayReady postCloseOutputFold))
 
 0 scopedPostCloseSuffixFoldOutputEnd :
   (name, key, world, error : Type) -> (value : key -> Type) ->
@@ -19829,7 +19834,7 @@ scopedPostCloseSuffixFoldOutputEnd name key world error value protocol nameEq ke
         selected registered selectedOutside ordinal live bornBefore unique stamped
         NoTransitions survivor boundary RegistrationDisciplineEnd AlignedEnd
         NoRegisteredEpisodeEnd noFailed)
-      () ScopedParentControlsEnd RegistrationDisciplineEnd
+      () ScopedParentControlsEnd RegistrationDisciplineEnd (\sourceTotal => TraceComponentsTotalEnd)
 
 0 scopedPrependPostCloseKeptOutput :
   (name, key, world, error : Type) -> (value : key -> Type) ->
@@ -19848,6 +19853,8 @@ scopedPostCloseSuffixFoldOutputEnd name key world error value protocol nameEq ke
   (fires : fireNamed nameEq keyEq (transitionAction transition) survivor =
     Just named) ->
   (sameTag : transitionTag transition = transitionTag (namedTransition named)) ->
+  (0 headTotal : TransitionComponentTotal nameEq keyEq transition ->
+    TransitionComponentTotal nameEq keyEq (namedTransition named)) ->
   (folded : ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq
     keyEq registered (S ordinal)
     (advanceGenerationEnvironment @{nameEq} ordinal
@@ -19875,7 +19882,7 @@ scopedPrependPostCloseKeptOutput name key world error value protocol nameEq keyE
   registered ordinal live original originalAfter originalFinal survivor rest
   transition retained
   named@(MkNamedTransition after namedTag namedTransition namedAction) fires
-  sameTag folded parentControls survivorStepDiscipline =
+  sameTag headTotal folded parentControls survivorStepDiscipline =
     MkScopedPostCloseSuffixFoldOutput
       (MkRelationalNoEpisodeSuffixReplayFold
         (relationalSuffixFinalOrdinal (postCloseOutputFold folded))
@@ -19909,6 +19916,15 @@ scopedPrependPostCloseKeptOutput name key world error value protocol nameEq keyE
           (relationalSuffixReplayReady (postCloseOutputFold folded)))}
           (sym namedAction) survivorStepDiscipline)
         (postCloseOutputDiscipline folded))
+      (scopedTraceTotalPrepend name key world error value nameEq keyEq original originalAfter originalFinal survivor after
+        (scopedReadyFinal name key world error value nameEq keyEq (GenerationOwnedActor nameEq registered)
+          (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction transition) live)
+          originalAfter originalFinal after rest (relationalSuffixReplayReady (postCloseOutputFold folded)))
+        transition rest namedTransition
+        (scopedReadyTrace name key world error value nameEq keyEq (GenerationOwnedActor nameEq registered)
+          (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction transition) live)
+          originalAfter originalFinal after rest (relationalSuffixReplayReady (postCloseOutputFold folded)))
+        headTotal (postCloseOutputTotal folded))
 
 0 scopedPrependPostCloseDeletedOutput :
   (name, key, world, error : Type) -> (value : key -> Type) ->
@@ -19948,6 +19964,9 @@ scopedPrependPostCloseDeletedOutput name key world error value protocol nameEq k
       (postCloseOutputTags folded)
       (ScopedParentControlsDelete (postCloseOutputParentControls folded))
       (postCloseOutputDiscipline folded)
+      (\sourceTotal => postCloseOutputTotal folded
+        (scopedTraceTotalTail name key world error value nameEq keyEq original originalAfter originalFinal
+          transition rest sourceTotal))
 
 ||| R166 B26 cure (R165 B26 transcripts): the Transition owns its stored proof;
 ||| the checked evaluator equation is a separate explicit constructor field.
@@ -20516,6 +20535,9 @@ scopedRelationalParentControls name key world error value protocol nameEq keyEq
   (named : NamedTransition name key world error value action survivor) ->
   (fires : (fireNamed nameEq keyEq action survivor = Just named)) ->
   (sameTag : (tag = transitionTag (namedTransition named))) ->
+  (0 headTotal : TransitionComponentTotal nameEq keyEq
+    (Fired {before = original} {afterState = originalAfter} nameEq keyEq action tag checked) ->
+    TransitionComponentTotal nameEq keyEq (namedTransition named)) ->
   (parentControls : (parent, child : name) ->
     (component : Component key value world error) ->
     (action = OInsert child (ChildOf parent) component) ->
@@ -20533,11 +20555,12 @@ scopedRelationalParentControls name key world error value protocol nameEq keyEq
       nameEq keyEq action tag checked) rest) survivor
 scopedCertifiedPrependKept name key world error value protocol nameEq keyEq
   registered ordinal live action tag original originalAfter originalFinal
-  survivor checked rest stepDiscipline alignedRest retained named fires sameTag parentControls folded =
+  survivor checked rest stepDiscipline alignedRest retained named fires sameTag headTotal parentControls folded =
     scopedPrependPostCloseKeptOutput name key world error value protocol nameEq keyEq
       registered ordinal live original originalAfter originalFinal survivor rest
       (Fired nameEq keyEq action tag checked) retained named fires
       sameTag
+      headTotal
       folded
       parentControls
       (scopedSameActionRegistrationStepDiscipline name key world error value protocol
@@ -20593,6 +20616,8 @@ scopedCertifiedPrependKept name key world error value protocol nameEq keyEq
     keyEq registered live original survivor) ->
   (named : NamedTransition name key world error value action survivor) ->
   (fires : (fireNamed nameEq keyEq action survivor = Just named)) ->
+  (nextBoundary : RelationalNoEpisodeReplayBoundary name key world error value nameEq keyEq registered
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) originalAfter (namedAfter named)) ->
   (folded : ScopedPostCloseSuffixFoldOutput name key world error value protocol
     nameEq keyEq registered (S ordinal)
     (advanceGenerationEnvironment @{nameEq} ordinal action live)
@@ -20602,13 +20627,17 @@ scopedCertifiedPrependKept name key world error value protocol nameEq keyEq
       nameEq keyEq action tag checked) rest) survivor
 scopedRelationalPrependKept name key world error value protocol nameEq keyEq
   registered ordinal live unique action tag original originalAfter originalFinal
-  survivor checked rest stepDiscipline alignedRest retained boundary named fires folded =
+  survivor checked rest stepDiscipline alignedRest retained boundary named fires nextBoundary folded =
     scopedCertifiedPrependKept name key world error value protocol nameEq keyEq
       registered ordinal live action tag original originalAfter originalFinal survivor
       checked rest stepDiscipline alignedRest retained named fires
       (scopedRelationalRetainedTag name key world error value protocol nameEq keyEq
         registered ordinal live unique action tag original originalAfter originalFinal
         survivor checked rest stepDiscipline retained boundary named fires)
+      (\sourceTotal => scopedNamedActorTotal name key world error value nameEq keyEq action survivor named
+        (scopedRelationalActorTotal name key world error value nameEq keyEq (actionOwner action) registered
+          (advanceGenerationEnvironment @{nameEq} ordinal action live) originalAfter (namedAfter named)
+          nextBoundary sourceTotal))
       (scopedRelationalParentControls name key world error value protocol nameEq keyEq
         registered live action original originalAfter originalFinal survivor rest
         stepDiscipline boundary)
@@ -20673,6 +20702,7 @@ scopedRelationalRetainedFoldStep name key world error value protocol nameEq keyE
       registered ordinal live unique action tag original originalAfter originalFinal
       survivor checked rest stepDiscipline alignedRest retained boundary
       (relationalRetainedNamed step) (relationalRetainedFires step)
+      (relationalRetainedNextBoundary step)
       (continue (namedAfter (relationalRetainedNamed step))
         (relationalRetainedNextBoundary step))
 
@@ -20755,7 +20785,7 @@ scopedRelationalSuffixFoldOutput name key world error value protocol nameEq keyE
     MkScopedPostCloseSuffixFoldOutput
       (MkRelationalNoEpisodeSuffixReplayFold ordinal live survivor
         GenerationTraceScanEnd ReplayReadyEnd (ReplayEndsEnd Refl) unique boundary)
-      () ScopedParentControlsEnd RegistrationDisciplineEnd
+      () ScopedParentControlsEnd RegistrationDisciplineEnd (\sourceTotal => TraceComponentsTotalEnd)
 scopedRelationalSuffixFoldOutput name key world error value protocol nameEq keyEq
   registered ordinal live bornBefore unique original originalFinal survivor _
   boundary discipline (AlignedStep action tag checked rest alignedRest) noRegistered =
@@ -21067,6 +21097,12 @@ scopedPostCloseRetainedFoldStep name key world error value protocol nameEq keyEq
           (scopedNamedAligned name key world error value nameEq keyEq action survivor
             (postCloseOrchestrationNamed (taggedPostCloseStep tagged))
             (postCloseOrchestrationFires (taggedPostCloseStep tagged)))))
+      (\sourceTotal => scopedNamedActorTotal name key world error value nameEq keyEq action survivor
+        (postCloseOrchestrationNamed (taggedPostCloseStep tagged))
+        (scopedPostCloseActorTotal name key world error value nameEq keyEq selected (actionOwner action)
+          registered (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal action live) originalAfter
+          (namedAfter (postCloseOrchestrationNamed (taggedPostCloseStep tagged)))
+          (postCloseOrchestrationBoundary (taggedPostCloseStep tagged)) sourceTotal))
       (scopedPostCloseParentControls name key world error value protocol nameEq keyEq
         selected registered ordinal live unique stamped selectedOutside action original
         originalAfter originalFinal survivor rest stepDiscipline boundary)
@@ -21171,6 +21207,11 @@ scopedPostCloseSelectedRemoveFoldAt name key world error value protocol nameEq k
           (relationalRetainedNamed step) (relationalRetainedFires step)))
         (scopedNamedActualTag name key world error value nameEq keyEq (ORemove selected)
           survivor (relationalRetainedNamed step) (relationalRetainedFires step)))
+      (\sourceTotal => scopedNamedActorTotal name key world error value nameEq keyEq (ORemove selected) survivor
+        (relationalRetainedNamed step)
+        (scopedRelationalActorTotal name key world error value nameEq keyEq selected registered
+          (advanceGenerationEnvironment @{nameEq} ordinal (the (Action name key value world error) (ORemove selected)) live)
+          originalAfter (namedAfter (relationalRetainedNamed step)) (relationalRetainedNextBoundary step) sourceTotal))
       (scopedPostCloseParentControls name key world error value protocol nameEq keyEq selected
         registered ordinal live unique stamped selectedOutside (ORemove selected) original
         originalAfter originalFinal survivor rest stepDiscipline boundary)
