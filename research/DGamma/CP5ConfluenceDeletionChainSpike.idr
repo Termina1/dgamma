@@ -13746,6 +13746,58 @@ scopedExtendFirstClosing name key world error value nameEq keyEq actor left righ
               (MoreTransitions (unloadTransition closing) afterClosing) right))
           (cong (\trace => appendTransitions trace right) decomposition))
 
+0 scopedLifecycleNonBeginSourceInstalled :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (lifecycle : isLifecycleAction action = True) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (notBegin : Not (action = LBegin (actionOwner action))) ->
+  installedAt @{nameEq} (actionOwner action) before = True
+scopedLifecycleNonBeginSourceInstalled name key world error value nameEq keyEq
+  (OInsert actor parent component) Refl before afterState tag checked notBegin
+    impossible
+scopedLifecycleNonBeginSourceInstalled name key world error value nameEq keyEq
+  (ORetire actor) Refl before afterState tag checked notBegin impossible
+scopedLifecycleNonBeginSourceInstalled name key world error value nameEq keyEq
+  (ORemove actor) Refl before afterState tag checked notBegin impossible
+scopedLifecycleNonBeginSourceInstalled name key world error value nameEq keyEq
+  (LBegin actor) lifecycle before afterState tag checked notBegin =
+    void (notBegin Refl)
+scopedLifecycleNonBeginSourceInstalled name key world error value nameEq keyEq
+  (LAdvance actor) lifecycle before afterState tag checked notBegin =
+    lAdvanceStartsInstalled nameEq keyEq actor before afterState tag
+      (checkedActionProjects nameEq keyEq (LAdvance actor) before afterState tag
+        checked)
+scopedLifecycleNonBeginSourceInstalled name key world error value nameEq keyEq
+  (LDivert actor) lifecycle before afterState tag checked notBegin =
+    fst
+      (lDivertInstalled nameEq keyEq actor before afterState
+        (replace
+          {p = \observed => applyAction @{nameEq} @{keyEq} (LDivert actor)
+            before = Just (observed, afterState)}
+          (successfulLDivertTag nameEq keyEq actor before afterState tag
+            (checkedActionProjects nameEq keyEq (LDivert actor) before
+              afterState tag checked))
+          (checkedActionProjects nameEq keyEq (LDivert actor) before afterState
+            tag checked)))
+scopedLifecycleNonBeginSourceInstalled name key world error value nameEq keyEq
+  (LLeave actor) lifecycle before afterState tag checked notBegin =
+    fst
+      (lLeaveInstalled nameEq keyEq actor before afterState tag
+        (checkedActionProjects nameEq keyEq (LLeave actor) before afterState tag
+          checked))
+scopedLifecycleNonBeginSourceInstalled name key world error value nameEq keyEq
+  (LUnload actor) lifecycle before afterState tag checked notBegin =
+    fst
+      (snd
+        (lUnloadBoundary nameEq keyEq actor before afterState tag
+          (checkedActionProjects nameEq keyEq (LUnload actor) before afterState
+            tag checked)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
