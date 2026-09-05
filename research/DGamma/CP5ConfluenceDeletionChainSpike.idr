@@ -50,6 +50,7 @@ import Control.WellFounded
 import DGamma.CP4DeletionWithdrawalCurrent
 import DGamma.CP4DeletionWithdrawalJoin
 import DGamma.CP4RecoveryTrace
+import DGamma.CP4RecoveryModelTrace
 import DGamma.CP4ParentSafety
 import DGamma.CP4Support
 import DGamma.CP4SupportQuiescence
