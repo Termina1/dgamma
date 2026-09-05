@@ -1,6 +1,7 @@
 module DGamma.CP5ConfluenceDeletionChainSpike
 
 import DGamma.Calculus
+import DGamma.CP4DeletionSelectedForeignLifecycleAdvanceDispatchCore
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
@@ -18279,6 +18280,56 @@ scopedAdvanceReloadingUnretired name key world error value nameEq keyEq child
         {value = value} {world = world} {error = error}
         (dependencies (componentDependencies component)) view source)
       found Refl afterState tag notRetired raw
+
+||| L-Advance preserves the unretired-presence invariant.  The only with-block
+||| in this proof series is the EXEMPT-LADVANCE resolved-stage worker above.
+0 scopedAdvancePreservesUnretired :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 raw : (applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (LAdvance child) before =
+    Just (tag, afterState))) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child before ->
+  ScopedUnretiredFiberAt name key value world error nameEq child afterState
+scopedAdvancePreservesUnretired name key world error value nameEq keyEq child
+  (MkSystemState ambient source) afterState tag raw
+  (MkScopedUnretiredFiberAt
+    (MkFiber component parent retiredFlag table (Inactive outcome)) found flag) =
+      void (nothingIsNotJust
+        (trans (sym (advanceInactiveIsNothing {name = name} {key = key}
+          {value = value} {world = world} {error = error} nameEq keyEq child
+          ambient source component parent retiredFlag table outcome found)) raw))
+scopedAdvancePreservesUnretired name key world error value nameEq keyEq child
+  (MkSystemState ambient source) afterState tag raw
+  (MkScopedUnretiredFiberAt
+    (MkFiber component parent retiredFlag table
+      (Reloading remaining accumulator view)) found flag) =
+        scopedAdvanceReloadingUnretired name key world error value nameEq keyEq
+          child ambient source component parent retiredFlag table remaining
+          accumulator view found afterState tag flag raw
+scopedAdvancePreservesUnretired name key world error value nameEq keyEq child
+  (MkSystemState ambient source) afterState tag raw
+  (MkScopedUnretiredFiberAt
+    (MkFiber component parent retiredFlag table (Active accumulator view))
+    found flag) =
+      void (nothingIsNotJust
+        (trans (sym (advanceActiveIsNothing {name = name} {key = key}
+          {value = value} {world = world} {error = error} nameEq keyEq child
+          ambient source component parent retiredFlag table accumulator view found))
+          raw))
+scopedAdvancePreservesUnretired name key world error value nameEq keyEq child
+  (MkSystemState ambient source) afterState tag raw
+  (MkScopedUnretiredFiberAt
+    (MkFiber component parent retiredFlag table
+      (Unloading accumulator view outcome)) found flag) =
+        void (nothingIsNotJust
+          (trans (sym (advanceUnloadingIsNothing {name = name} {key = key}
+            {value = value} {world = world} {error = error} nameEq keyEq child
+            ambient source component parent retiredFlag table accumulator view
+            outcome found)) raw))
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
