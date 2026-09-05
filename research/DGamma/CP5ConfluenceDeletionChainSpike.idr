@@ -21409,6 +21409,44 @@ scopedSelectedKeptParentDistinct name key world error value nameEq selected regi
            (trans actionSame
              (cong (\namedParent => OInsert child (ChildOf namedParent) component) parentSame)))))
 
+0 scopedSelectedYieldControls :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (parent, selected : name) ->
+  (distinct : Not (parent = selected)) ->
+  (component : Component key value world error) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (original, survivor : SystemState name key value world error) ->
+  ParentRegistrationYield protocol nameEq parent component original ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole original survivor) ->
+  FiberControlMaybeRelated
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} parent (registry original))
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} parent (registry survivor))
+scopedSelectedYieldControls name key world error value protocol nameEq keyEq
+  parent selected distinct component registered ordinal live whole original@(MkSystemState ambient source)
+  survivor yielded boundary =
+    replace
+      {p = \observed => FiberControlMaybeRelated observed
+        (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+          {world = world} {error = error} parent (registry survivor))}
+      (lookupOutsideInactivePlan nameEq parent source
+        (planTarget (completePlanResult (selectedBoundaryPlan boundary)))
+        (inactiveLeafPlan (completePlanResult (selectedBoundaryPlan boundary)))
+        (reloadingActorOutsideDeletionPlan nameEq parent ambient source
+          (planTarget (completePlanResult (selectedBoundaryPlan boundary)))
+          (inactiveLeafPlan (completePlanResult (selectedBoundaryPlan boundary)))
+          (scopedParentYieldReloading name key world error value protocol nameEq
+            parent component original yielded)))
+      (selectedOrderedForeignLookupControls nameEq selected parent distinct
+        (planTarget (completePlanResult (selectedBoundaryPlan boundary)))
+        (registry survivor) (selectedBoundaryOrderedControls boundary))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
