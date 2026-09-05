@@ -88,6 +88,7 @@ import DGamma.CP4RecoveryModelTrace
 import DGamma.CP4RecoverySelectedStep
 import DGamma.CP4ParentSafety
 import DGamma.CP4Support
+import DGamma.CP4SupportSolution
 import DGamma.CP4SupportQuiescence
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import Data.List
@@ -96,6 +97,7 @@ import Data.Nat
 import Data.Maybe
 import DGamma.CP4DeletionControlCore
 import DGamma.CP4DeletionCommuteCore
+import DGamma.CP4DeletionSelectedForeignLifecycleAnchorEndpoint
 import DGamma.CP4DeletionRelationalLifecycleSources
 import Decidable.Equality
 
@@ -24376,6 +24378,39 @@ scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq in
     (fst (scopedEnrichedEndpointEvidence name key world error value protocol nameEq keyEq initial finalState global candidate folds aligned))
     (fst (snd (scopedEnrichedEndpointEvidence name key world error value protocol nameEq keyEq initial finalState global candidate folds aligned)))
     (snd (snd (scopedEnrichedEndpointEvidence name key world error value protocol nameEq keyEq initial finalState global candidate folds aligned)))
+
+||| Rebuild the FULL target bundle from actual target trace clauses; never reuse source ranks or discipline.
+0 scopedTargetReplayBundle :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace -> RegistrationDiscipline protocol nameEq trace ->
+  (registryWellFormed @{nameEq} @{keyEq} initial = True) -> (bindings (registry initial) = []) ->
+  (quiet @{nameEq} @{keyEq} finalState = True) -> (noFailedFibers finalState = True) ->
+  TraceComponentsTotal nameEq keyEq trace -> TraceIndependent name key world error value keyEq trace ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq trace
+scopedTargetReplayBundle name key world error value protocol nameEq keyEq initial finalState trace aligned discipline
+  initialWellFormed initialEmpty quietFinal noFailure totality independent =
+    MkReplayInvariantBundle aligned discipline initialWellFormed initialEmpty
+      (alignedTraceWellFormedEnd nameEq keyEq trace aligned initialWellFormed) quietFinal noFailure totality independent
+      (registrationDisciplineProvenance protocol nameEq trace discipline)
+      (reachedRegistryProtocolRanked protocol nameEq keyEq
+        (MkReachedFromEmpty initial trace aligned initialEmpty initialWellFormed)
+        (registrationDisciplineProvenance protocol nameEq trace discipline))
+      (reachedRegistryParentRanksIncrease protocol nameEq keyEq
+        (MkReachedFromEmpty initial trace aligned initialEmpty initialWellFormed)
+        (registrationDisciplineProvenance protocol nameEq trace discipline))
+      (disciplinedEndpointPrecedenceAcyclic protocol nameEq keyEq finalState
+        (MkReachedFromEmpty initial trace aligned initialEmpty initialWellFormed) discipline)
+      (supportCombinedWellFounded protocol nameEq finalState
+        (reachedRegistryProtocolRanked protocol nameEq keyEq
+          (MkReachedFromEmpty initial trace aligned initialEmpty initialWellFormed)
+          (registrationDisciplineProvenance protocol nameEq trace discipline))
+        (reachedRegistryParentRanksIncrease protocol nameEq keyEq
+          (MkReachedFromEmpty initial trace aligned initialEmpty initialWellFormed)
+          (registrationDisciplineProvenance protocol nameEq trace discipline)))
+      (deletionPremisesGiveSupportMatchesActive protocol nameEq keyEq initial finalState trace aligned discipline
+        initialWellFormed initialEmpty quietFinal noFailure totality)
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
