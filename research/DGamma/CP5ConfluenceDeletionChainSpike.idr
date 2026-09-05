@@ -9915,6 +9915,19 @@ appendLeftOccursScoped (MoreTransitions head rest) right OccursHere = OccursHere
 appendLeftOccursScoped (MoreTransitions head rest) right (OccursLater later) =
   OccursLater (appendLeftOccursScoped rest right later)
 
+0 appendRightOccursScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState, stepBefore, stepAfter :
+    SystemState name key value world error} ->
+  {transition : Transition stepBefore stepAfter} ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  OccursIn transition right ->
+  OccursIn transition (appendTransitions left right)
+appendRightOccursScoped NoTransitions right occurs = occurs
+appendRightOccursScoped (MoreTransitions head rest) right occurs =
+  OccursLater (appendRightOccursScoped rest right occurs)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
