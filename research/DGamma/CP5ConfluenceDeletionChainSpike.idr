@@ -19592,6 +19592,25 @@ scopedCleanInactiveActorTotal name key world error value nameEq keyEq actor stat
     void (falseNotTrueO7 (trans
       (cong (\entry => isActive (fiberLifecycle entry)) (justInjective (trans (sym inactiveFound) found))) active))
 
+0 scopedSelectedActorTotalAt :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected, actor : name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (wholeFirst, wholeLast, original, survivor : SystemState name key value world error) ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  SelectedEpisodeReplayBoundary name key world error value nameEq keyEq selected registered ordinal live whole original survivor ->
+  ScopedActorTotal name key world error value nameEq keyEq actor original -> Dec (actor = selected) ->
+  ScopedActorTotal name key world error value nameEq keyEq actor survivor
+scopedSelectedActorTotalAt name key world error value nameEq keyEq selected actor registered ordinal live
+  wholeFirst wholeLast original survivor whole boundary sourceTotal (Yes same) =
+    replace {p = \current => ScopedActorTotal name key world error value nameEq keyEq current survivor} (sym same)
+      (scopedCleanInactiveActorTotal name key world error value nameEq keyEq selected survivor
+        (selectedBoundarySurvivorCleanInactive boundary))
+scopedSelectedActorTotalAt name key world error value nameEq keyEq selected actor registered ordinal live
+  wholeFirst wholeLast original survivor whole boundary sourceTotal (No distinct) =
+    scopedSelectedForeignActorTotal name key world error value nameEq keyEq selected actor distinct registered ordinal live
+      wholeFirst wholeLast original survivor whole boundary sourceTotal
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
