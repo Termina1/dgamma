@@ -20545,6 +20545,40 @@ scopedPostCloseRetainedFoldStep name key world error value protocol nameEq keyEq
       (continue (namedAfter (postCloseOrchestrationNamed (taggedPostCloseStep tagged)))
         (postCloseOrchestrationBoundary (taggedPostCloseStep tagged)))
 
+0 scopedTaggedSelectedPostCloseRetireAt :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (original, originalAfter, originalFinal, survivor : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : (checkedApplyAction @{nameEq} @{keyEq} (ORetire selected) original =
+    Just (tag, originalAfter))) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  RegistrationStepDiscipline protocol nameEq (ORetire selected) original rest ->
+  (retained : Not (GenerationOwnedActor {name = name} {key = key} {value = value}
+    {world = world} {error = error} nameEq registered ordinal live (ORetire selected))) ->
+  (noBegin : IsBeginAction (the (Action name key value world error) (ORetire selected)) ->
+    GenerationOwnedActor {name = name} {key = key} {value = value}
+      {world = world} {error = error} nameEq registered ordinal live (ORetire selected) -> Void) ->
+  (boundary : PostCloseSelectedBoundary name key world error value nameEq keyEq selected
+    registered ordinal live original survivor) ->
+  (tag = ORetireTag) ->
+  ScopedTaggedPostCloseHead name key world error value nameEq keyEq selected registered
+    (S ordinal) live (ORetire selected) tag originalAfter survivor
+scopedTaggedSelectedPostCloseRetireAt name key world error value protocol nameEq keyEq
+  selected registered ordinal live unique original originalAfter originalFinal survivor
+  _ checked rest discipline retained noBegin boundary Refl =
+    scopedTagPostCloseNonAdvance name key world error value nameEq keyEq selected
+      registered (S ordinal) live (ORetire selected)
+      (\other, same => scopedFalseNotTrue (cong isLifecycleAction same))
+      ORetireTag original originalAfter survivor checked
+      (retainedSelectedPostCloseRetire protocol nameEq keyEq selected registered ordinal
+        live unique original originalAfter originalFinal survivor checked rest discipline
+        retained noBegin boundary)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
