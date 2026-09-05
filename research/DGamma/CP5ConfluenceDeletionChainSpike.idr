@@ -19562,6 +19562,25 @@ scopedSelectedForeignActorTotalAt name key world error value nameEq keyEq select
         (scopedRegistryMember name key world error value nameEq actor right (registry survivor) found)
         (fiberControlSymmetric (foreignRelatedControl located))) sourceTotal active
 
+0 scopedSelectedForeignActorTotal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected, actor : name) -> Not (actor = selected) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (wholeFirst, wholeLast, original, survivor : SystemState name key value world error) ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  SelectedEpisodeReplayBoundary name key world error value nameEq keyEq selected registered ordinal live whole original survivor ->
+  ScopedActorTotal name key world error value nameEq keyEq actor original ->
+  ScopedActorTotal name key world error value nameEq keyEq actor survivor
+scopedSelectedForeignActorTotal name key world error value nameEq keyEq selected actor distinct registered ordinal live
+  wholeFirst wholeLast original survivor whole boundary sourceTotal right found active =
+    scopedSelectedForeignActorTotalAt name key world error value nameEq keyEq selected actor distinct registered ordinal live
+      wholeFirst wholeLast original survivor whole boundary sourceTotal right found
+      (foreignControlLookupFound nameEq actor (registry survivor)
+        (planTarget (completePlanResult (selectedBoundaryPlan boundary))) right found
+        (fiberControlMaybeSymmetric (selectedOrderedForeignLookupControls nameEq selected actor distinct
+          (planTarget (completePlanResult (selectedBoundaryPlan boundary))) (registry survivor)
+          (selectedBoundaryOrderedControls boundary)))) active
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
