@@ -23196,6 +23196,30 @@ scopedRelationalBoundaryQuiet name key world error value nameEq keyEq registered
       (planTarget (completePlanResult (relationalCompletePlan boundary)))
       (inactiveLeafPlan (completePlanResult (relationalCompletePlan boundary))) sourceQuiet)
 
+0 scopedPostCloseOutputQuiet :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (original, originalFinal, survivor : SystemState name key value world error) ->
+  (trace : Transitions original originalFinal) ->
+  (output : ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq keyEq registered
+    ordinal live trace survivor) ->
+  ((quiet @{nameEq} @{keyEq}) originalFinal = True) ->
+  ((quiet @{nameEq} @{keyEq}) (scopedReadyFinal name key world error value nameEq keyEq
+    (GenerationOwnedActor nameEq registered) ordinal live original originalFinal survivor trace
+    (relationalSuffixReplayReady (postCloseOutputFold output))) = True)
+scopedPostCloseOutputQuiet name key world error value protocol nameEq keyEq registered ordinal live
+  original originalFinal survivor trace output sourceQuiet =
+    trans (cong (quiet @{nameEq} @{keyEq}) (scopedReadyFinalExact name key world error value nameEq keyEq
+      (GenerationOwnedActor nameEq registered) ordinal live original originalFinal survivor trace
+      (relationalSuffixReplayReady (postCloseOutputFold output))
+      (relationalSuffixFinalSurvivor (postCloseOutputFold output)) (relationalSuffixReadyEnds (postCloseOutputFold output))))
+      (scopedRelationalBoundaryQuiet name key world error value nameEq keyEq registered
+        (relationalSuffixFinalLive (postCloseOutputFold output)) originalFinal
+        (relationalSuffixFinalSurvivor (postCloseOutputFold output))
+        (relationalSuffixFinalBoundary (postCloseOutputFold output)) sourceQuiet)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
