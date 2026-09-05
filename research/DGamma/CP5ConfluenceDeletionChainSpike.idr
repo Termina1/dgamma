@@ -19324,6 +19324,17 @@ scopedLookupPresenceBindings key value keyEq wanted
   (MkCoeffectContext leftEntries leftUnique) (MkCoeffectContext rightEntries rightUnique) same =
     cong (\entries => isJust (lookupEntries @{keyEq} wanted entries)) same
 
+0 scopedRelatedActiveProvides :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (keyEq : DecEq key) ->
+  (left, right : Fiber name key value world error) -> FiberControlRelated left right ->
+  (bindings (ownedValues (fiberTable left)) = bindings (ownedValues (fiberTable right))) ->
+  ActiveFiberProvidesAll keyEq left -> ActiveFiberProvidesAll keyEq right
+scopedRelatedActiveProvides name key world error value keyEq _ _
+  (FibersControlRelated leftParent rightParent leftRetired rightRetired leftTable rightTable
+    leftLife rightLife parentSame retiredSame lifeSame) tablesSame sourceProvides wanted provided =
+      trans (sym (scopedLookupPresenceBindings key value keyEq wanted
+        (ownedValues leftTable) (ownedValues rightTable) tablesSame)) (sourceProvides wanted provided)
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
