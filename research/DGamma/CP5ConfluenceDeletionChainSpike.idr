@@ -13682,6 +13682,34 @@ scopedClosedPrefixDecomposition name key world error value nameEq keyEq selected
         (traceAfterClosing located))
       (locatedDecomposition located)
 
+0 scopedAlignedClosedPrefix :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq global) ->
+  (selected : name) ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (appendTransitions (traceBeforeOpening located)
+      (MoreTransitions
+        (beginTransition (closedOpening (locatedEpisode located)))
+        (closedTransitions (locatedEpisode located))))
+scopedAlignedClosedPrefix name key world error value nameEq keyEq global aligned
+  selected located =
+    fst
+      (alignedAppendSplit
+        (appendTransitions (traceBeforeOpening located)
+          (MoreTransitions
+            (beginTransition (closedOpening (locatedEpisode located)))
+            (closedTransitions (locatedEpisode located))))
+        (traceAfterClosing located)
+        (rewrite
+          (scopedClosedPrefixDecomposition name key world error value nameEq
+            keyEq selected located)
+          in aligned))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
