@@ -18710,6 +18710,50 @@ scopedChildRetiresBeforeSubsequence name key world error value nameEq keyEq
         unretired)
       retirement
 
+||| Both alternatives of child-retirement provenance survive scoped deletion.
+0 scopedChildRetirementSubsequence :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type) ->
+  (0 retireOwned : (atOrdinal : Nat) -> (atLive : GenerationEnvironment name) ->
+    (actor : name) -> deletable atOrdinal atLive (ORetire actor) ->
+    GenerationOwnedActor {name = name} {key = key} {value = value}
+      {world = world} {error = error} nameEq registered atOrdinal atLive
+      (ORetire actor)) ->
+  (parent, child : name) -> (generation : RegistrationGeneration name) ->
+  (0 retained : Not (Elem generation registered)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (originalFirst, originalFinal, survivingFirst,
+    survivingFinal : SystemState name key value world error) ->
+  (source : Transitions originalFirst originalFinal) ->
+  (surviving : Transitions survivingFirst survivingFinal) ->
+  (subsequence : GenerationActionSubsequence nameEq deletable ordinal live source
+    surviving) ->
+  (0 tags : GenerationSubsequenceRuleTagsPreserved subsequence) ->
+  (0 aligned : AlignedTransitions name key world error value nameEq keyEq source) ->
+  (0 current : (lookupCurrentGeneration @{nameEq} child live = Just generation)) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child originalFirst ->
+  ChildRetirementProvenance parent child source ->
+  ChildRetirementProvenance parent child surviving
+scopedChildRetirementSubsequence name key world error value nameEq keyEq
+  registered deletable retireOwned parent child generation retained ordinal live
+  originalFirst originalFinal survivingFirst survivingFinal source surviving
+  subsequence tags aligned current unretired (ParentDoesNotRecover noRecovery) =
+    ParentDoesNotRecover (scopedNoParentRecoverySubsequence name key world error
+      value nameEq deletable ordinal live originalFirst originalFinal survivingFirst
+      survivingFinal parent source surviving subsequence tags noRecovery)
+scopedChildRetirementSubsequence name key world error value nameEq keyEq
+  registered deletable retireOwned parent child generation retained ordinal live
+  originalFirst originalFinal survivingFirst survivingFinal source surviving
+  subsequence tags aligned current unretired (ChildRetiredBeforeParent retirement) =
+    ChildRetiredBeforeParent (scopedChildRetiresBeforeSubsequence name key world
+      error value nameEq keyEq registered deletable retireOwned parent child
+      generation retained ordinal live originalFirst originalFinal survivingFirst
+      survivingFinal source surviving subsequence tags aligned current unretired
+      retirement)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
