@@ -22862,6 +22862,16 @@ scopedLifecycleFibersNotFailed name key world error value component leftParent r
 scopedLifecycleFibersNotFailed name key world error value component leftParent rightParent leftRetired
   rightRetired leftTable rightTable _ _ (UnloadingControls accumulators views outcomes) = Refl
 
+0 scopedFiberControlNotFailed :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (left, right : Fiber name key value world error) ->
+  FiberControlRelated left right -> (fiberNotFailed left = fiberNotFailed right)
+scopedFiberControlNotFailed name key world error value _ _
+  (FibersControlRelated {component} leftParent rightParent leftRetired rightRetired leftTable rightTable
+    leftLife rightLife parents retiredFlags lifecycles) =
+    scopedLifecycleFibersNotFailed name key world error value component leftParent rightParent leftRetired
+      rightRetired leftTable rightTable leftLife rightLife lifecycles
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
