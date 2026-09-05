@@ -22419,6 +22419,37 @@ scopedAppendSelectedCloseTraceSame name key world error value nameEq keyEq selec
           (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live)
           rest survivingAfter tail target tailEnds closing))
 
+0 scopedReadyKeptParentControls :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (sourceFirst, sourceMiddle, sourceFinal, survivorFirst, survivorMiddle : SystemState name key value world error) ->
+  (sourceStep : Transition sourceFirst sourceMiddle) -> (sourceRest : Transitions sourceMiddle sourceFinal) ->
+  (retained : Not (deletable ordinal live (transitionAction sourceStep))) ->
+  (tag : RuleTag) -> (survivorStep : Transition survivorFirst survivorMiddle) ->
+  (sameAction : (transitionAction survivorStep = transitionAction sourceStep)) ->
+  (fires : (fireNamed nameEq keyEq (transitionAction sourceStep) survivorFirst =
+    Just (MkNamedTransition survivorMiddle tag survivorStep sameAction))) ->
+  (tail : GenerationReplayReady nameEq keyEq deletable (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) sourceRest survivorMiddle) ->
+  ScopedReadyParentControls name key world error value nameEq keyEq deletable ordinal live sourceFirst sourceFinal
+    survivorFirst (MoreTransitions sourceStep sourceRest)
+    (ReplayReadyKeep retained survivorMiddle tag survivorStep sameAction fires tail) ->
+  (((parent, child : name) -> (component : Component key value world error) ->
+      (transitionAction sourceStep = OInsert child (ChildOf parent) component) ->
+      FiberControlMaybeRelated
+        (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+          parent (registry sourceFirst))
+        (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+          parent (registry survivorFirst))),
+    ScopedReadyParentControls name key world error value nameEq keyEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live)
+      sourceMiddle sourceFinal survivorMiddle sourceRest tail)
+scopedReadyKeptParentControls name key world error value nameEq keyEq deletable ordinal live sourceFirst
+  sourceMiddle sourceFinal survivorFirst survivorMiddle sourceStep sourceRest retained tag survivorStep
+  sameAction fires tail (ScopedParentControlsKeep controls tailControls) = (controls, tailControls)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
