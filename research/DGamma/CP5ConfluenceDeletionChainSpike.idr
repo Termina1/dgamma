@@ -10027,6 +10027,59 @@ locatedActionFromOccursScoped transition action actionShape trace occurs =
       MkLocatedActionOccurrence stepBefore stepAfter beforeTrace transition
         afterTrace actionShape decomposition
 
+0 insideSelectedContradictsScopedMaximality :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {global : Transitions initial finalState} ->
+  (selected, consumer : name) ->
+  (selectedStartOrdinal : Nat) ->
+  (selectedStartLive : GenerationEnvironment name) ->
+  (selectedEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  (consumerEpisode : LocatedClosedEpisode name key world error value nameEq keyEq
+    consumer global) ->
+  (selectedToConsumer : Transitions
+    (closedStartState (locatedEpisode selectedEpisode))
+    (locatedPreStart consumerEpisode)) ->
+  (consumerToAnchor : Transitions
+    (closedStartState (locatedEpisode consumerEpisode))
+    (lastInstalledState (locatedEpisode selectedEpisode))) ->
+  (0 selectedInsideExact :
+    closedInside (locatedEpisode selectedEpisode) =
+      appendTransitions selectedToConsumer
+        (MoreTransitions
+          (beginTransition (closedOpening (locatedEpisode consumerEpisode)))
+          consumerToAnchor)) ->
+  (0 consumerPrefixCountExact :
+    transitionCount (traceBeforeOpening consumerEpisode) =
+      transitionCount (traceBeforeOpening selectedEpisode) +
+        S (transitionCount selectedToConsumer)) ->
+  (0 selectedOrdinalExact :
+    transitionCount (traceBeforeOpening selectedEpisode) =
+      selectedStartOrdinal) ->
+  (0 noDependent : NoDependentClosingEpisodeForGeneration
+    {nameEq = nameEq} {keyEq = keyEq} {global = global} selected
+    selectedStartOrdinal selectedStartLive selectedEpisode) ->
+  PrecedenceEdge nameEq selected consumer
+    (closedStartState (locatedEpisode consumerEpisode)) ->
+  Void
+insideSelectedContradictsScopedMaximality selected consumer
+  selectedStartOrdinal selectedStartLive selectedEpisode consumerEpisode
+  selectedToConsumer consumerToAnchor selectedInsideExact
+  consumerPrefixCountExact selectedOrdinalExact noDependent edge =
+    noDependent consumer consumerEpisode
+      (MkGenerationScopedClosingStart selectedOrdinalExact
+        (MkLocatedActionOccurrence (locatedPreStart consumerEpisode)
+          (closedStartState (locatedEpisode consumerEpisode)) selectedToConsumer
+          (beginTransition (closedOpening (locatedEpisode consumerEpisode)))
+          consumerToAnchor Refl (sym selectedInsideExact))
+        (selectedGenerationConsumerOrdinalScoped
+          (traceBeforeOpening selectedEpisode) selectedToConsumer
+          (traceBeforeOpening consumerEpisode) selectedStartOrdinal
+          selectedOrdinalExact consumerPrefixCountExact))
+      edge
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
