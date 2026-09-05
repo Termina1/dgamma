@@ -16824,6 +16824,38 @@ scopedTransportParentYield name key world error value protocol nameEq parent
               (registry target))}
           (parentFoundAtYield sourceYield) related))
 
+||| A kept subsequence step shares action and rule tag, so a survivor-side
+||| parent recovery step reflects back onto the source step.  This is the
+||| per-step core of parent-recovery transport across a deletion subsequence.
+0 scopedRecoveryStepReflects :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (parent : name) ->
+  (sourceBefore, sourceAfter, survivorBefore, survivorAfter :
+    SystemState name key value world error) ->
+  (sourceStep : Transition sourceBefore sourceAfter) ->
+  (survivorStep : Transition survivorBefore survivorAfter) ->
+  (0 sameAction : transitionAction sourceStep = transitionAction survivorStep) ->
+  (0 sameTag : transitionTag sourceStep = transitionTag survivorStep) ->
+  ParentRecoveryStep parent survivorStep ->
+  ParentRecoveryStep parent sourceStep
+scopedRecoveryStepReflects name key world error value parent sourceBefore
+  sourceAfter survivorBefore survivorAfter sourceStep survivorStep sameAction
+  sameTag (ParentLeaves leaves) =
+    ParentLeaves (trans sameAction leaves)
+scopedRecoveryStepReflects name key world error value parent sourceBefore
+  sourceAfter survivorBefore survivorAfter sourceStep survivorStep sameAction
+  sameTag (ParentDivertsBefore diverts) =
+    ParentDivertsBefore (trans sameAction diverts)
+scopedRecoveryStepReflects name key world error value parent sourceBefore
+  sourceAfter survivorBefore survivorAfter sourceStep survivorStep sameAction
+  sameTag (ParentDivertsAfter advances tagShape) =
+    ParentDivertsAfter (trans sameAction advances) (trans sameTag tagShape)
+scopedRecoveryStepReflects name key world error value parent sourceBefore
+  sourceAfter survivorBefore survivorAfter sourceStep survivorStep sameAction
+  sameTag (ParentRaises raises tagShape) =
+    ParentRaises (trans sameAction raises) (trans sameTag tagShape)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
