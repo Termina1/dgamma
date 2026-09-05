@@ -20593,6 +20593,68 @@ scopedNamedActualTag name key world error value nameEq keyEq action before named
     (namedFireProjectsRaw nameEq keyEq action before named fires)
     named (scopedNamedAligned name key world error value nameEq keyEq action before named fires)
 
+0 scopedPostCloseSelectedRemoveFoldAt :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (stamped : GenerationEnvironmentStamped live) ->
+  (bornBefore : RegisteredGenerationsBornBefore registered ordinal) ->
+  (selectedOutside : (generation : RegistrationGeneration name) ->
+    Elem generation registered -> Not (generationName generation = selected)) ->
+  (original, originalAfter, originalFinal, survivor : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : (checkedApplyAction @{nameEq} @{keyEq} (ORemove selected) original =
+    Just (tag, originalAfter))) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  (stepDiscipline : RegistrationStepDiscipline protocol nameEq (ORemove selected) original rest) ->
+  RegistrationDiscipline protocol nameEq rest ->
+  AlignedTransitions name key world error value nameEq keyEq rest ->
+  NoRegisteredEpisode nameEq registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal
+      (the (Action name key value world error) (ORemove selected)) live) rest ->
+  (retained : Not (GenerationOwnedActor {name = name} {key = key} {value = value}
+    {world = world} {error = error} nameEq registered ordinal live (ORemove selected))) ->
+  (boundary : PostCloseSelectedBoundary name key world error value nameEq keyEq selected
+    registered ordinal live original survivor) ->
+  (step : RelationalRetainedNoEpisodeBoundaryStep name key world error value nameEq keyEq
+    registered (advanceGenerationEnvironment @{nameEq} ordinal
+      (the (Action name key value world error) (ORemove selected)) live)
+    (ORemove selected) originalAfter survivor) ->
+  ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq keyEq
+    registered ordinal live (MoreTransitions (Fired {before = original}
+      {afterState = originalAfter} nameEq keyEq (ORemove selected) tag checked) rest) survivor
+scopedPostCloseSelectedRemoveFoldAt name key world error value protocol nameEq keyEq
+  selected registered ordinal live unique stamped bornBefore selectedOutside original
+  originalAfter originalFinal survivor tag checked rest stepDiscipline restDiscipline
+  alignedRest noRegisteredRest retained boundary step =
+    scopedCertifiedPrependKept name key world error value protocol nameEq keyEq registered
+      ordinal live (ORemove selected) tag original originalAfter originalFinal survivor
+      checked rest stepDiscipline alignedRest retained
+      (relationalRetainedNamed step) (relationalRetainedFires step)
+      (trans (scopedNonAdvanceTagsSame name key world error value nameEq keyEq (ORemove selected)
+        (\other, same => scopedFalseNotTrue (cong isLifecycleAction same))
+        original survivor originalAfter (namedAfter (relationalRetainedNamed step))
+        tag (namedTag (relationalRetainedNamed step))
+        (checkedActionProjects nameEq keyEq (ORemove selected) original originalAfter tag checked)
+        (namedFireProjectsRaw nameEq keyEq (ORemove selected) survivor
+          (relationalRetainedNamed step) (relationalRetainedFires step)))
+        (scopedNamedActualTag name key world error value nameEq keyEq (ORemove selected)
+          survivor (relationalRetainedNamed step) (relationalRetainedFires step)))
+      (scopedPostCloseParentControls name key world error value protocol nameEq keyEq selected
+        registered ordinal live unique stamped selectedOutside (ORemove selected) original
+        originalAfter originalFinal survivor rest stepDiscipline boundary)
+      (scopedRelationalSuffixFoldOutput name key world error value protocol nameEq keyEq
+        registered (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal
+          (the (Action name key value world error) (ORemove selected)) live)
+        (registeredGenerationsBornBeforeNext bornBefore)
+        (advanceGenerationEnvironmentPreservesUnique nameEq ordinal
+          (the (Action name key value world error) (ORemove selected)) live unique)
+        originalAfter originalFinal (namedAfter (relationalRetainedNamed step)) rest
+        (relationalRetainedNextBoundary step) restDiscipline alignedRest noRegisteredRest)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
