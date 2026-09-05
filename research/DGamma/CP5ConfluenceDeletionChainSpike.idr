@@ -16856,6 +16856,60 @@ scopedRecoveryStepReflects name key world error value parent sourceBefore
   sameTag (ParentRaises raises tagShape) =
     ParentRaises (trans sameAction raises) (trans sameTag tagShape)
 
+||| Parent-recovery absence transports along a generation-aware deletion
+||| subsequence.  Deleted source steps vanish; a kept step reflects any
+||| survivor-side recovery back to the source via the producer-owned parallel
+||| tag certificate, contradicting the source chain.
+0 scopedNoParentRecoverySubsequence :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) ->
+  (deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (originalFirst, originalFinal, survivingFirst, survivingFinal :
+    SystemState name key value world error) ->
+  (parent : name) ->
+  (source : Transitions originalFirst originalFinal) ->
+  (surviving : Transitions survivingFirst survivingFinal) ->
+  (subsequence : GenerationActionSubsequence nameEq deletable ordinal live source
+    surviving) ->
+  (0 tags : GenerationSubsequenceRuleTagsPreserved subsequence) ->
+  (0 noRecovery : NoParentRecovery parent source) ->
+  NoParentRecovery parent surviving
+scopedNoParentRecoverySubsequence name key world error value nameEq deletable
+  ordinal live _ _ _ _ parent
+  _ _ GenerationActionSubsequenceEnd tags noRecovery =
+    NoParentRecoveryEnd
+scopedNoParentRecoverySubsequence name key world error value nameEq deletable
+  ordinal live originalFirst originalFinal survivingFirst survivingFinal parent
+  _ _
+  (KeepGenerationAction originalTransition originalRest survivingTransition
+    survivingRest kept sameAction tail)
+  (GenerationSubsequenceTagsKeep sameTag tailTags)
+  (NoParentRecoveryStep _ _ headNo tailNo) =
+    NoParentRecoveryStep survivingTransition survivingRest
+      (\survivorRecovery => headNo
+        (scopedRecoveryStepReflects name key world error value parent
+          originalFirst _ survivingFirst _ originalTransition
+          survivingTransition sameAction sameTag survivorRecovery))
+      (scopedNoParentRecoverySubsequence name key world error value nameEq
+        deletable (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal
+          (transitionAction originalTransition) live)
+        _ _ _ _ parent originalRest survivingRest tail tailTags tailNo)
+scopedNoParentRecoverySubsequence name key world error value nameEq deletable
+  ordinal live originalFirst originalFinal survivingFirst survivingFinal parent
+  _ survivingTrace
+  (DeleteGenerationAction originalTransition originalRest deleted tail)
+  (GenerationSubsequenceTagsDelete tailTags)
+  (NoParentRecoveryStep _ _ _ tailNo) =
+    scopedNoParentRecoverySubsequence name key world error value nameEq deletable
+      (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction originalTransition) live)
+      _ _ _ _ parent originalRest survivingTrace tail tailTags tailNo
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
