@@ -24921,6 +24921,21 @@ scopedPrependReplayGeneratorMaps name key world error value keyEq first middle f
       (sym (prependGeneratorMapExact transition (replayGeneratorOrigin replay actor generator) x))
       (replayGeneratorMapsRelated replay keyEq actor generator inputs)
 
+0 scopedPrependDeletedReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState, targetFirst, targetFinal : SystemState name key value world error) ->
+  (transition : Transition first middle) -> (source : Transitions middle finalState) -> (target : Transitions targetFirst targetFinal) ->
+  RelationalReplayCorrespondence name key world error value source target ->
+  RelationalReplayCorrespondence name key world error value (MoreTransitions transition source) target
+scopedPrependDeletedReplay name key world error value first middle finalState targetFirst targetFinal transition source target replay =
+  MkRelationalReplayCorrespondence
+    (\actor, generator => prependGenerator transition (replayGeneratorOrigin replay actor generator))
+    (\keyEq, actor, generator => scopedPrependReplayGeneratorMaps name key world error value keyEq first middle finalState targetFirst targetFinal
+      transition source target replay actor generator)
+    (\actor, stage => prependIteratorStage transition (replayIteratorStageOrigin replay actor stage))
+    (\actor, stage, state => trans (replayIteratorOutcomePreserved replay actor stage state)
+      (sym (prependIteratorOutcomeExact transition (replayIteratorStageOrigin replay actor stage) state)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
