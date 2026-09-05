@@ -23114,6 +23114,45 @@ scopedAppendSelectedCloseDiscipline name key world error value protocol nameEq k
       (scopedAppendSelectedCloseTraceSame name key world error value nameEq keyEq selected registered
         ordinal live original survivor ready target ends closing) discipline
 
+0 scopedAppendSelectedCloseTotal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {originalFirst, closeBefore, closeAfter : SystemState name key value world error} ->
+  (original : Transitions originalFirst closeBefore) ->
+  (survivor : SystemState name key value world error) ->
+  (ready : GenerationReplayReady nameEq keyEq (EpisodeGenerationDeletedActor nameEq selected registered)
+    ordinal live original survivor) ->
+  (target : SystemState name key value world error) -> (ends : ReplayReadyEndsAt ready target) ->
+  (closing : UnloadStep nameEq keyEq selected closeBefore closeAfter) ->
+  TraceComponentsTotal nameEq keyEq
+    (scopedReadyTrace name key world error value nameEq keyEq
+      (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst closeBefore survivor
+      original ready) ->
+  TraceComponentsTotal nameEq keyEq
+    (scopedReadyTrace name key world error value nameEq keyEq
+      (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst closeAfter survivor
+      (appendTransitions original (MoreTransitions (unloadTransition closing) NoTransitions))
+      (appendedSelectedCloseReady (scopedAppendSelectedCloseReplay name key world error value nameEq keyEq selected
+        registered ordinal live original survivor ready target ends closing)))
+scopedAppendSelectedCloseTotal name key world error value nameEq keyEq selected registered
+  ordinal live original survivor ready target ends closing totality =
+    scopedTotalAcrossTraceEnd name key world error value nameEq keyEq survivor _ _
+      (scopedReadyTrace name key world error value nameEq keyEq
+        (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst closeAfter survivor
+        (appendTransitions original (MoreTransitions (unloadTransition closing) NoTransitions))
+        (appendedSelectedCloseReady (scopedAppendSelectedCloseReplay name key world error value nameEq keyEq selected
+          registered ordinal live original survivor ready target ends closing)))
+      (scopedReadyTrace name key world error value nameEq keyEq
+        (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst closeBefore survivor
+        original ready)
+      (scopedAppendSelectedCloseFinalSame name key world error value nameEq keyEq selected registered
+        ordinal live original survivor ready target ends closing)
+      (scopedAppendSelectedCloseTraceSame name key world error value nameEq keyEq selected registered
+        ordinal live original survivor ready target ends closing) totality
+
+
 0 scopedAssembleSelectedClosedOutput :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) ->
