@@ -22014,6 +22014,75 @@ scopedSelectedRetainedFoldStep name key world error value protocol nameEq keyEq 
       (continue (namedAfter (selectedHeadNamed (taggedSelectedHead tagged)))
         (selectedHeadBoundary (taggedSelectedHead tagged)))
 
+0 scopedSelectedInteriorFoldHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (stamped : GenerationEnvironmentStamped live) ->
+  (selectedOutside : (generation : RegistrationGeneration name) ->
+    Elem generation registered -> Not (generationName generation = selected)) ->
+  (original, originalAfter, originalFinal, survivor : SystemState name key value world error) ->
+  {wholeFirst, wholeLast, interiorFirst : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) -> (interior : Transitions interiorFirst originalFinal) ->
+  (local : ScopedTaggedSelectedLocalReplayer name key world error value nameEq keyEq selected
+    registered protocol whole interior) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : (checkedApplyAction @{nameEq} @{keyEq} action original = Just (tag, originalAfter))) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  (sourceInstalled : (installedAt @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} selected original = True)) ->
+  (installedRest : InstalledTrace name key world error value nameEq keyEq selected rest) ->
+  (noBegin : IsBeginAction action -> GenerationOwnedActor {name = name} {key = key}
+    {value = value} {world = world} {error = error} nameEq registered ordinal live action -> Void) ->
+  (occurs : OccursIn (Fired {before = original} {afterState = originalAfter}
+    nameEq keyEq action tag checked) whole) ->
+  (insidePrefix : Transitions interiorFirst original) ->
+  (decomposition : (appendTransitions insidePrefix (MoreTransitions
+    (Fired {before = original} {afterState = originalAfter} nameEq keyEq action tag checked) rest) = interior)) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq keyEq selected
+    registered ordinal live whole original survivor) ->
+  (emptyPlan : EmptyTableInactivePlan name key world error value nameEq
+    (inactiveLeafPlan (completePlanResult (selectedBoundaryPlan boundary)))) ->
+  (inactive : CurrentRegisteredInactiveFibers name key world error value nameEq registered live original) ->
+  (complete : ScopedSelectedBirthsComplete name key world error value selected registered ordinal original
+    originalFinal (MoreTransitions (Fired {before = original} {afterState = originalAfter}
+      nameEq keyEq action tag checked) rest)) ->
+  (stepDiscipline : RegistrationStepDiscipline protocol nameEq action original rest) ->
+  (alignedRest : AlignedTransitions name key world error value nameEq keyEq rest) ->
+  (continue : (nextSurvivor : SystemState name key value world error) ->
+    SelectedEpisodeReplayBoundary name key world error value nameEq keyEq selected registered
+      (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal action live) whole originalAfter nextSurvivor ->
+    ScopedSelectedInteriorFoldOutput name key world error value protocol nameEq keyEq selected registered
+      (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal action live) whole rest nextSurvivor) ->
+  Dec (EpisodeGenerationDeletedActor {name = name} {key = key} {value = value} {world = world}
+    {error = error} nameEq selected registered ordinal live action) ->
+  ScopedSelectedInteriorFoldOutput name key world error value protocol nameEq keyEq selected registered
+    ordinal live whole (MoreTransitions (Fired {before = original} {afterState = originalAfter}
+      nameEq keyEq action tag checked) rest) survivor
+scopedSelectedInteriorFoldHead name key world error value protocol nameEq keyEq selected registered
+  ordinal live unique stamped selectedOutside original originalAfter originalFinal survivor whole interior local
+  action tag checked rest sourceInstalled installedRest noBegin occurs insidePrefix decomposition boundary
+  emptyPlan inactive complete stepDiscipline alignedRest continue (Yes deleted) =
+    scopedPrependSelectedInteriorDeletedOutput name key world error value protocol nameEq keyEq selected
+      registered whole ordinal live original originalAfter originalFinal survivor rest
+      (Fired nameEq keyEq action tag checked) deleted
+      (continue survivor (scopedReplayDeletedLocal local ordinal live unique stamped selectedOutside action
+        original originalAfter survivor tag checked sourceInstalled (installedTraceStart installedRest) rest
+        noBegin occurs boundary emptyPlan inactive deleted))
+scopedSelectedInteriorFoldHead name key world error value protocol nameEq keyEq selected registered
+  ordinal live unique stamped selectedOutside original originalAfter originalFinal survivor whole interior local
+  action tag checked rest sourceInstalled installedRest noBegin occurs insidePrefix decomposition boundary
+  emptyPlan inactive complete stepDiscipline alignedRest continue (No retained) =
+    scopedSelectedRetainedFoldStep name key world error value protocol nameEq keyEq selected registered
+      ordinal live whole action tag original originalAfter originalFinal survivor checked rest complete
+      stepDiscipline alignedRest retained boundary continue
+      (scopedReplayRetainedLocal local ordinal live unique stamped selectedOutside action original originalAfter
+        survivor tag checked sourceInstalled (installedTraceStart installedRest) rest installedRest noBegin occurs
+        insidePrefix decomposition boundary emptyPlan inactive retained)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
