@@ -16476,6 +16476,27 @@ record ScopedTransportedParentYield
   0 scopedTargetParentYield :
     ParentRegistrationYield protocol nameEq parent childComponent target
 
+record ScopedRelatedTargetFiber
+  (name : Type) (key : Type) (value : key -> Type)
+  (world : Type) (error : Type)
+  (sourceFiber : Fiber name key value world error)
+  (observedTarget : Maybe (Fiber name key value world error)) where
+  constructor MkScopedRelatedTargetFiber
+  scopedRelatedTarget : Fiber name key value world error
+  0 scopedRelatedObserved : observedTarget = Just scopedRelatedTarget
+  0 scopedRelatedControls : FiberControlRelated sourceFiber scopedRelatedTarget
+
+0 scopedRelatedTargetFiber :
+  (name : Type) -> (key : Type) -> (value : key -> Type) ->
+  (world : Type) -> (error : Type) ->
+  (sourceFiber : Fiber name key value world error) ->
+  (observedTarget : Maybe (Fiber name key value world error)) ->
+  FiberControlMaybeRelated (Just sourceFiber) observedTarget ->
+  ScopedRelatedTargetFiber name key value world error sourceFiber observedTarget
+scopedRelatedTargetFiber name key value world error sourceFiber
+  (Just targetFiber) (SomeControlFibers related) =
+    MkScopedRelatedTargetFiber targetFiber Refl related
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
