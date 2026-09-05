@@ -10241,6 +10241,19 @@ localizeScopedClosing nameEq keyEq actor transition prefixTrace aligned
         (lifecycleAnchorInstalled anchor))
       closingResult suffixTrace global globalSplit
 
+0 installedTraceEndScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {actor : name} ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  InstalledTrace name key world error value nameEq keyEq actor trace ->
+  installedAt @{nameEq} actor finalState = True
+installedTraceEndScoped NoTransitions (InstalledEnd installed) = installed
+installedTraceEndScoped
+  (MoreTransitions (Fired nameEq keyEq action tag checked) rest)
+  (InstalledStep action tag checked rest sourceInstalled tailInstalled) =
+    installedTraceEndScoped rest tailInstalled
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
