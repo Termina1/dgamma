@@ -19516,6 +19516,24 @@ scopedRelationalActorTotalAt name key world error value nameEq keyEq actor regis
         (plannedSystemState original (completePlanResult (relationalCompletePlan boundary))) survivor
         (foreignRelatedFiber located) right (foreignRelatedFound located) found (relationalEffects boundary)) sourceTotal active
 
+0 scopedRelationalActorTotal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (registered : List (RegistrationGeneration name)) -> (live : GenerationEnvironment name) ->
+  (original, survivor : SystemState name key value world error) ->
+  RelationalNoEpisodeReplayBoundary name key world error value nameEq keyEq registered live original survivor ->
+  ScopedActorTotal name key world error value nameEq keyEq actor original ->
+  ScopedActorTotal name key world error value nameEq keyEq actor survivor
+scopedRelationalActorTotal name key world error value nameEq keyEq actor registered live original survivor
+  boundary sourceTotal right found active =
+    scopedRelationalActorTotalAt name key world error value nameEq keyEq actor registered live original survivor
+      boundary sourceTotal right found
+      (foreignControlLookupFound nameEq actor (registry survivor)
+        (planTarget (completePlanResult (relationalCompletePlan boundary))) right found
+        (fiberControlMaybeSymmetric (orderedControlsLookup nameEq actor
+          (planTarget (completePlanResult (relationalCompletePlan boundary))) (registry survivor)
+          (relationalOrderedControls boundary)))) active
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
