@@ -43,6 +43,7 @@ import DGamma.CP4DeletionSelectedForeignControlCore
 import DGamma.CP4DeletionSelectedOwn
 import DGamma.CP4DeletionSelectedRetire
 import DGamma.CP4DeletionSelectedBoundary
+import DGamma.CP4DeletionSelectedDeletedDispatch
 import DGamma.CP4DeletionSelectedEpisodeFold
 import DGamma.CP4DeletionSelectedEpisodeFoldCore
 import DGamma.CP4DeletionSelectedEffectCore
