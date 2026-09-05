@@ -25051,6 +25051,27 @@ scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq action l
 scopedOrchestrationReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked orchestration =
   orchestrationSingletonRAR name key value world error nameEq keyEq action tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked orchestration
 
+||| Remaining local semantic frontier: certificates for actual retained heads, not a caller-chosen whole replay.
+record ScopedEnrichedHeadReplays
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error) (nameEq : DecEq name) (keyEq : DecEq key)
+  (initial, finalState : SystemState name key value world error) (global : Transitions initial finalState)
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global)
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) where
+  constructor MkScopedEnrichedHeadReplays
+  0 enrichedCenterHeadReplays : ScopedReadySemanticReplay name key world error value nameEq keyEq
+    (EpisodeGenerationDeletedActor nameEq (selectedActor candidate) (selectedRegistrations candidate))
+    (selectedStartOrdinal candidate) (selectedStartLive candidate) (locatedPreStart (selectedEpisode candidate))
+    (locatedAfter (selectedEpisode candidate)) (locatedPreStart (selectedEpisode candidate))
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+      (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (selectedFoldReady (selectedOutputFold (enrichedSelected folds)))
+  0 enrichedSuffixHeadReplays : ScopedReadySemanticReplay name key world error value nameEq keyEq
+    (GenerationOwnedActor nameEq (selectedRegistrations candidate))
+    (selectedFoldEndOrdinal (selectedOutputFold (enrichedSelected folds))) (selectedFoldEndLive (selectedOutputFold (enrichedSelected folds)))
+    (locatedAfter (selectedEpisode candidate)) finalState
+    (scopedEnrichedMiddle name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+    (traceAfterClosing (selectedEpisode candidate)) (relationalSuffixReplayReady (postCloseOutputFold (enrichedSuffix folds)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
