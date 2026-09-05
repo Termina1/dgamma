@@ -13199,6 +13199,48 @@ scopedAlignedLocatedBefore name key world error value nameEq keyEq global aligne
           (traceAfterClosing episode))
         (rewrite (locatedDecomposition episode) in aligned))
 
+0 scopedInitialSelectedBoundary :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq global) ->
+  (initialWellFormed : registryWellFormed @{nameEq} @{keyEq} initial = True) ->
+  (selected : name) ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (episodeStartOrdinal : Nat) ->
+  (episodeStartLive : GenerationEnvironment name) ->
+  (beforeScan : GenerationTraceScan nameEq 0 []
+    (traceBeforeOpening located) episodeStartOrdinal episodeStartLive) ->
+  (registeredDuring : RegisteredGenerationsDuring selected episodeStartOrdinal
+    registered
+    (MoreTransitions
+      (beginTransition (closedOpening (locatedEpisode located)))
+      (closedTransitions (locatedEpisode located)))) ->
+  SelectedEpisodeReplayBoundary name key world error value nameEq keyEq selected
+    registered (S episodeStartOrdinal) episodeStartLive
+    (appendTransitions (closedTransitions (locatedEpisode located))
+      (traceAfterClosing located))
+    (closedStartState (locatedEpisode located)) (locatedPreStart located)
+scopedInitialSelectedBoundary name key world error value nameEq keyEq global
+  aligned initialWellFormed selected located registered episodeStartOrdinal
+  episodeStartLive beforeScan registeredDuring =
+    initialSelectedEpisodeBoundary nameEq keyEq selected registered
+      episodeStartOrdinal episodeStartLive (traceBeforeOpening located) beforeScan
+      (MoreTransitions
+        (beginTransition (closedOpening (locatedEpisode located)))
+        (closedTransitions (locatedEpisode located)))
+      registeredDuring
+      (appendTransitions (closedTransitions (locatedEpisode located))
+        (traceAfterClosing located))
+      (closedOpening (locatedEpisode located))
+      (alignedTraceWellFormedEnd nameEq keyEq (traceBeforeOpening located)
+        (scopedAlignedLocatedBefore name key world error value nameEq keyEq global
+          aligned selected located)
+        initialWellFormed)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
