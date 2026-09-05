@@ -44,6 +44,7 @@ import DGamma.CP4DeletionSelectedOwn
 import DGamma.CP4DeletionSelectedRetire
 import DGamma.CP4DeletionSelectedBoundary
 import DGamma.CP4DeletionSelectedDeletedDispatch
+import DGamma.CP4DeletionSelectedDeletedOrchestration
 import DGamma.CP4DeletionSelectedEpisodeFold
 import DGamma.CP4DeletionSelectedEpisodeFoldCore
 import DGamma.CP4DeletionSelectedEffectCore
@@ -12473,6 +12474,51 @@ scopedRegisteredLifecycleImpossible name key world error value nameEq keyEq
         (the (Action name key value world error) (LUnload actor)) before
         afterState tag checked)
       (inactive actor generation member current)
+
+0 scopedDeletedRegisteredAtLocatedStep :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (stamped : GenerationEnvironmentStamped live) ->
+  (selectedOutside :
+    (generation : RegistrationGeneration name) -> Elem generation registered ->
+    Not (generationName generation = selected)) ->
+  (action : Action name key value world error) ->
+  (orchestration : isLifecycleAction action = False) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  {restFinal : SystemState name key value world error} ->
+  (rest : Transitions afterState restFinal) ->
+  (stepDiscipline : RegistrationStepDiscipline protocol nameEq action before
+    rest) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (survivor : SystemState name key value world error) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  (oldEmpty : EmptyTableInactivePlan name key world error value nameEq
+    (inactiveLeafPlan
+      (completePlanResult (selectedBoundaryPlan boundary)))) ->
+  (owned : GenerationOwnedActor nameEq registered ordinal live action) ->
+  SelectedEpisodeReplayBoundary name key world error value nameEq keyEq selected
+    registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) whole afterState
+    survivor
+scopedDeletedRegisteredAtLocatedStep name key world error value protocol nameEq
+  keyEq selected registered ordinal live unique stamped selectedOutside action
+  orchestration before afterState tag checked rest stepDiscipline whole survivor
+  boundary oldEmpty owned =
+    case deletedRegisteredOrchestrationHeadPreservesEpisodeBoundary protocol
+      nameEq keyEq selected registered ordinal live unique stamped
+      selectedOutside action orchestration before afterState tag checked rest
+      stepDiscipline whole survivor boundary oldEmpty owned of
+      MkDeletedRegisteredEpisodeBoundaryStep nextBoundary nextEmpty =>
+        nextBoundary
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
