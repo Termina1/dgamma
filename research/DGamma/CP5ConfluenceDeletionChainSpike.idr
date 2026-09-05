@@ -26080,6 +26080,21 @@ scopedTagPairAppendRight name key world error value sourceFirst sourceMiddle sou
     (scopedRuleAppendRight name key world error value sourceFirst sourceMiddle sourceFinal sourceLeft sourceRight sourceOrdinal (ordinalSharedTag pair) (ordinalSourceTag pair))
     (scopedRuleAppendRight name key world error value targetFirst targetMiddle targetFinal targetLeft targetRight targetOrdinal (ordinalSharedTag pair) (ordinalTargetTag pair))
 
+0 scopedDeletionBeforeTagPair :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (sourceIndex, targetIndex : Nat) ->
+  ScopedOrdinalTagPair name key world error value initial (locatedPreStart (selectedEpisode candidate)) initial (survivingBeforeEnd result) (traceBeforeOpening (selectedEpisode candidate)) (survivingBefore result) sourceIndex targetIndex ->
+  ScopedOrdinalTagPair name key world error value initial finalState initial (survivingFinal result) global (survivingTrace result) sourceIndex targetIndex
+scopedDeletionBeforeTagPair name key world error value nameEq keyEq initial finalState global candidate result sourceIndex targetIndex pair =
+  replace {p = \trace => ScopedOrdinalTagPair name key world error value initial finalState initial (survivingFinal result) trace (survivingTrace result) sourceIndex targetIndex}
+    (locatedDecomposition (selectedEpisode candidate))
+    (scopedTagPairAppendLeft name key world error value initial (locatedPreStart (selectedEpisode candidate)) finalState initial (survivingBeforeEnd result) (survivingFinal result)
+      (traceBeforeOpening (selectedEpisode candidate)) (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate))) (survivingBefore result) (appendTransitions (survivingEpisode result) (survivingAfter result)) sourceIndex targetIndex pair)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
