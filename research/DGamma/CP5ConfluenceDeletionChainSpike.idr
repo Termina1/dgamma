@@ -25473,9 +25473,9 @@ scopedEnrichedWholeDiscipline name key world error value protocol nameEq keyEq i
     global (scopedEnrichedTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
     (scopedEnrichedWholeSpine name key world error value protocol nameEq keyEq initial finalState global candidate folds) aligned discipline
 
-||| Conditional whole-result assembler: only semantic map/yield replay still needs a live producer.
-||| Whole-target discipline, including cross-cut retirement provenance, is now derived from enriched folds.
-||| This is not a completed O9 producer until the exact replay correspondence is also derived.
+||| Internal whole-result assembly consumes exact semantic correspondence; the source-only
+||| scopedEnrichedTargetFromHeads below discharges it from producer-emitted head fields.
+||| Whole-target discipline includes cross-cut retirement provenance.
 0 scopedEnrichedTargetBundle :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -25609,7 +25609,7 @@ scopedEnrichedSemanticJoin name key world error value protocol nameEq keyEq init
         (scopedEnrichedCenterTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
         (scopedEnrichedSuffixTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds) center suffix))
 
-||| Remaining local semantic frontier: certificates for actual retained heads, not a caller-chosen whole replay.
+||| Producer-emitted semantic certificates for actual retained heads, not a caller-chosen whole replay.
 record ScopedEnrichedHeadReplays
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error) (nameEq : DecEq name) (keyEq : DecEq key)
@@ -25666,7 +25666,7 @@ scopedEnrichedReplayFromHeads name key world error value protocol nameEq keyEq i
       (traceAfterClosing (selectedEpisode candidate)) (relationalSuffixReplayReady (postCloseOutputFold (enrichedSuffix folds)))
       (enrichedSuffixHeadReplays heads))
 
-||| Full TARGET bundle at the exact enriched DeletionResult. Local semantic heads remain a named producer obligation.
+||| Full TARGET bundle at the exact enriched DeletionResult, unconditionally derived from the live folds.
 0 scopedEnrichedTargetFromHeads :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -25674,13 +25674,13 @@ scopedEnrichedReplayFromHeads name key world error value protocol nameEq keyEq i
   (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
   (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
   (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq global) ->
-  ScopedEnrichedHeadReplays name key world error value protocol nameEq keyEq initial finalState global candidate folds ->
   ReplayInvariantBundle name key world error value protocol nameEq keyEq
     (survivingTrace (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds
       (replayAligned (chainReplayCapital premises))))
-scopedEnrichedTargetFromHeads name key world error value protocol nameEq keyEq initial finalState global candidate folds premises heads =
+scopedEnrichedTargetFromHeads name key world error value protocol nameEq keyEq initial finalState global candidate folds premises =
   scopedEnrichedTargetBundle name key world error value protocol nameEq keyEq initial finalState global candidate folds premises
-    (scopedEnrichedReplayFromHeads name key world error value protocol nameEq keyEq initial finalState global candidate folds heads)
+    (scopedEnrichedReplayFromHeads name key world error value protocol nameEq keyEq initial finalState global candidate folds
+      (scopedEnrichedHeadReplays name key world error value protocol nameEq keyEq initial finalState global candidate folds))
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
