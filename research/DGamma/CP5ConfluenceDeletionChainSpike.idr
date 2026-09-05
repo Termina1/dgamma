@@ -19543,6 +19543,65 @@ scopedRemoveRawTag name key world error value nameEq keyEq actor
       tag afterState
       (removeSuccessView nameEq keyEq actor ambient source tag afterState raw)
 
+||| All non-advance actions have a unique rule tag at every successful state.
+0 scopedNonAdvanceTagsSame :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  ((actor : name) -> Not (action = LAdvance actor)) ->
+  (leftBefore, rightBefore, leftAfter, rightAfter :
+    SystemState name key value world error) ->
+  (leftTag, rightTag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} action leftBefore =
+    Just (leftTag, leftAfter)) ->
+  (applyAction @{nameEq} @{keyEq} action rightBefore =
+    Just (rightTag, rightAfter)) ->
+  (leftTag = rightTag)
+scopedNonAdvanceTagsSame name key world error value nameEq keyEq
+  (OInsert actor parent component) notAdvance leftBefore rightBefore leftAfter
+  rightAfter leftTag rightTag leftRaw rightRaw =
+    trans (scopedInsertRawTag name key world error value nameEq keyEq actor parent
+      component leftBefore leftAfter leftTag leftRaw)
+      (sym (scopedInsertRawTag name key world error value nameEq keyEq actor parent
+        component rightBefore rightAfter rightTag rightRaw))
+scopedNonAdvanceTagsSame name key world error value nameEq keyEq
+  (ORetire actor) notAdvance leftBefore rightBefore leftAfter rightAfter leftTag
+  rightTag leftRaw rightRaw =
+    trans (successfulRetireTag nameEq keyEq actor leftBefore leftAfter leftTag leftRaw)
+      (sym (successfulRetireTag nameEq keyEq actor rightBefore rightAfter rightTag rightRaw))
+scopedNonAdvanceTagsSame name key world error value nameEq keyEq
+  (ORemove actor) notAdvance leftBefore rightBefore leftAfter rightAfter leftTag
+  rightTag leftRaw rightRaw =
+    trans (scopedRemoveRawTag name key world error value nameEq keyEq actor
+      leftBefore leftAfter leftTag leftRaw)
+      (sym (scopedRemoveRawTag name key world error value nameEq keyEq actor
+        rightBefore rightAfter rightTag rightRaw))
+scopedNonAdvanceTagsSame name key world error value nameEq keyEq
+  (LBegin actor) notAdvance leftBefore rightBefore leftAfter rightAfter leftTag
+  rightTag leftRaw rightRaw =
+    trans (beginSuccessTagScopedPostFold nameEq keyEq actor leftBefore leftAfter
+      leftTag leftRaw)
+      (sym (beginSuccessTagScopedPostFold nameEq keyEq actor rightBefore rightAfter
+        rightTag rightRaw))
+scopedNonAdvanceTagsSame name key world error value nameEq keyEq
+  (LAdvance actor) notAdvance leftBefore rightBefore leftAfter rightAfter leftTag
+  rightTag leftRaw rightRaw = void (notAdvance actor Refl)
+scopedNonAdvanceTagsSame name key world error value nameEq keyEq
+  (LDivert actor) notAdvance leftBefore rightBefore leftAfter rightAfter leftTag
+  rightTag leftRaw rightRaw =
+    trans (successfulLDivertTag nameEq keyEq actor leftBefore leftAfter leftTag leftRaw)
+      (sym (successfulLDivertTag nameEq keyEq actor rightBefore rightAfter rightTag rightRaw))
+scopedNonAdvanceTagsSame name key world error value nameEq keyEq
+  (LLeave actor) notAdvance leftBefore rightBefore leftAfter rightAfter leftTag
+  rightTag leftRaw rightRaw =
+    trans (successfulLeaveTag nameEq keyEq actor leftBefore leftAfter leftTag leftRaw)
+      (sym (successfulLeaveTag nameEq keyEq actor rightBefore rightAfter rightTag rightRaw))
+scopedNonAdvanceTagsSame name key world error value nameEq keyEq
+  (LUnload actor) notAdvance leftBefore rightBefore leftAfter rightAfter leftTag
+  rightTag leftRaw rightRaw =
+    trans (fst (lUnloadBoundary nameEq keyEq actor leftBefore leftAfter leftTag leftRaw))
+      (sym (fst (lUnloadBoundary nameEq keyEq actor rightBefore rightAfter rightTag rightRaw)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
