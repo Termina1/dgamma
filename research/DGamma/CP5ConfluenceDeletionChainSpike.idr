@@ -14477,6 +14477,92 @@ scopedDirectAtCurrentExclusion name key world error value nameEq keyEq selected
           ownerFound))
       wanted ownerDeclares
 
+0 scopedBeginClosedPrefixAnchor :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState, before, afterState :
+    SystemState name key value world error} ->
+  {global : Transitions initial finalState} ->
+  (selected : name) ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  (actor : name) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LBegin actor) before =
+    Just (tag, afterState)) ->
+  (insidePrefix : Transitions
+    (closedStartState (locatedEpisode located)) before) ->
+  (rest : Transitions afterState
+    (lastInstalledState (locatedEpisode located))) ->
+  (insideDecomposition : appendTransitions insidePrefix
+    (MoreTransitions
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq (LBegin actor) tag checked)
+      rest) = closedInside (locatedEpisode located)) ->
+  ForeignLifecycleInstalledAnchor name key world error value nameEq keyEq actor
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq (LBegin actor) tag checked)
+    (appendTransitions (traceBeforeOpening located)
+      (MoreTransitions
+        (beginTransition (closedOpening (locatedEpisode located)))
+        (closedTransitions (locatedEpisode located))))
+scopedBeginClosedPrefixAnchor name key world error value nameEq keyEq selected
+  located actor tag checked insidePrefix rest insideDecomposition =
+    MkForeignLifecycleInstalledAnchor afterState
+      (appendTransitions
+        (appendTransitions (traceBeforeOpening located)
+          (MoreTransitions
+            (beginTransition (closedOpening (locatedEpisode located)))
+            insidePrefix))
+        (MoreTransitions
+          (Fired {before = before} {afterState = afterState}
+            nameEq keyEq (LBegin actor) tag checked)
+          NoTransitions))
+      (appendTransitions rest
+        (MoreTransitions
+          (unloadTransition (closing (locatedEpisode located))) NoTransitions))
+      (snd
+        (snd
+          (lBeginBoundary nameEq keyEq actor before afterState tag checked)))
+      Refl
+      (trans
+        (appendTransitionsAssociative
+          (appendTransitions (traceBeforeOpening located)
+            (MoreTransitions
+              (beginTransition (closedOpening (locatedEpisode located)))
+              insidePrefix))
+          (MoreTransitions
+            (Fired {before = before} {afterState = afterState}
+              nameEq keyEq (LBegin actor) tag checked)
+            NoTransitions)
+          (appendTransitions rest
+            (MoreTransitions
+              (unloadTransition (closing (locatedEpisode located)))
+              NoTransitions)))
+        (rewrite
+          appendTransitionsAssociative (traceBeforeOpening located)
+            (MoreTransitions
+              (beginTransition (closedOpening (locatedEpisode located)))
+              insidePrefix)
+            (appendTransitions
+              (MoreTransitions
+                (Fired {before = before} {afterState = afterState}
+                  nameEq keyEq (LBegin actor) tag checked)
+                rest)
+              (MoreTransitions
+                (unloadTransition (closing (locatedEpisode located)))
+                NoTransitions))
+          in rewrite
+            sym
+              (appendTransitionsAssociative insidePrefix
+                (MoreTransitions
+                  (Fired {before = before} {afterState = afterState}
+                    nameEq keyEq (LBegin actor) tag checked)
+                  rest)
+                (MoreTransitions
+                  (unloadTransition (closing (locatedEpisode located)))
+                  NoTransitions))
+            in rewrite insideDecomposition in Refl))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
