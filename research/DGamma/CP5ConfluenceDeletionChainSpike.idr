@@ -17712,6 +17712,47 @@ scopedRetainedInsertFreshEpisode name key world error value nameEq selected
       (DeleteRegisteredGeneration
         (MkRegistrationGeneration child ordinal ** (Refl, member)))
 
+||| Constructor-level replacement retains the unretired flag.  The complete
+||| successful result equation transports the lookup to the observed endpoint.
+0 scopedUnretiredAfterRuntimeReplace :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (child : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag, producedTag : RuleTag) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (oldTable, nextTable : OwnedTable key value (componentProvisions component)) ->
+  (oldLifecycle, nextLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (nextWorld : world) ->
+  (0 found : (lookupFiber {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} child (registry before) =
+    Just (MkFiber component parent retiredFlag oldTable oldLifecycle))) ->
+  (0 notRetired : (retiredFlag = False)) ->
+  (0 equation : (Just (producedTag,
+    MkSystemState nextWorld
+      (replaceBinding @{nameEq} child
+        (MkFiber component parent retiredFlag nextTable nextLifecycle)
+        (registry before))) = Just (tag, afterState))) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child afterState
+scopedUnretiredAfterRuntimeReplace name key world error value nameEq child before
+  afterState tag producedTag component parent retiredFlag oldTable nextTable
+  oldLifecycle nextLifecycle nextWorld found notRetired equation =
+    MkScopedUnretiredFiberAt
+      (MkFiber component parent retiredFlag nextTable nextLifecycle)
+      (trans
+        (cong (lookupFiber {name = name} {key = key} {value = value}
+          {world = world} {error = error} @{nameEq} child)
+          (cong registry (sym (cong snd (justInjective equation)))))
+        (lookupReplacedFiber {name = name} {key = key} {value = value}
+          {world = world} {error = error} @{nameEq} child
+          (MkFiber component parent retiredFlag oldTable oldLifecycle)
+          (MkFiber component parent retiredFlag nextTable nextLifecycle)
+          (registry before) found))
+      notRetired
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
