@@ -24615,6 +24615,46 @@ scopedSpineInsertDiscipline name key world error value protocol nameEq keyEq reg
       (scopedInsertAfterUnretired name key world error value nameEq keyEq child (ChildOf parent) component sourceBefore sourceAfter tag checked)
       (snd evidence))
 
+0 scopedSpineStepDiscipline :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  (sourceBefore, sourceAfter, sourceFinal, targetBefore, targetAfter, targetFinal : SystemState name key value world error) ->
+  (sourceRest : Transitions sourceAfter sourceFinal) -> (targetRest : Transitions targetAfter targetFinal) ->
+  ScopedDisciplineReplaySpine name key world error value nameEq registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) sourceRest targetRest ->
+  AlignedTransitions name key world error value nameEq keyEq sourceRest -> (tag : RuleTag) ->
+  (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter)) ->
+  ((child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+    (action = OInsert child parent component) -> Not (Elem (MkRegistrationGeneration child ordinal) registered)) ->
+  ((parent, child : name) -> (component : Component key value world error) ->
+    (action = OInsert child (ChildOf parent) component) -> FiberControlMaybeRelated
+      (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} parent (registry sourceBefore))
+      (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} parent (registry targetBefore))) ->
+  RegistrationStepDiscipline protocol nameEq action sourceBefore sourceRest ->
+  RegistrationStepDiscipline protocol nameEq action targetBefore targetRest
+scopedSpineStepDiscipline name key world error value protocol nameEq keyEq registered ordinal live (OInsert child parent component)
+  sourceBefore sourceAfter sourceFinal targetBefore targetAfter targetFinal sourceRest targetRest tail aligned tag checked fresh controls evidence =
+    scopedSpineInsertDiscipline name key world error value protocol nameEq keyEq registered ordinal live child parent component
+      sourceBefore sourceAfter sourceFinal targetBefore targetAfter targetFinal sourceRest targetRest tail aligned tag checked
+      (fresh child parent component Refl)
+      (\parentActor, same => controls parentActor child component (cong (\chosen => OInsert child chosen component) same)) evidence
+scopedSpineStepDiscipline name key world error value protocol nameEq keyEq registered ordinal live (ORetire actor)
+  sourceBefore sourceAfter sourceFinal targetBefore targetAfter targetFinal sourceRest targetRest tail aligned tag checked fresh controls evidence = ()
+scopedSpineStepDiscipline name key world error value protocol nameEq keyEq registered ordinal live (ORemove actor)
+  sourceBefore sourceAfter sourceFinal targetBefore targetAfter targetFinal sourceRest targetRest tail aligned tag checked fresh controls evidence = ()
+scopedSpineStepDiscipline name key world error value protocol nameEq keyEq registered ordinal live (LBegin actor)
+  sourceBefore sourceAfter sourceFinal targetBefore targetAfter targetFinal sourceRest targetRest tail aligned tag checked fresh controls evidence = ()
+scopedSpineStepDiscipline name key world error value protocol nameEq keyEq registered ordinal live (LAdvance actor)
+  sourceBefore sourceAfter sourceFinal targetBefore targetAfter targetFinal sourceRest targetRest tail aligned tag checked fresh controls evidence = ()
+scopedSpineStepDiscipline name key world error value protocol nameEq keyEq registered ordinal live (LDivert actor)
+  sourceBefore sourceAfter sourceFinal targetBefore targetAfter targetFinal sourceRest targetRest tail aligned tag checked fresh controls evidence = ()
+scopedSpineStepDiscipline name key world error value protocol nameEq keyEq registered ordinal live (LLeave actor)
+  sourceBefore sourceAfter sourceFinal targetBefore targetAfter targetFinal sourceRest targetRest tail aligned tag checked fresh controls evidence = ()
+scopedSpineStepDiscipline name key world error value protocol nameEq keyEq registered ordinal live (LUnload actor)
+  sourceBefore sourceAfter sourceFinal targetBefore targetAfter targetFinal sourceRest targetRest tail aligned tag checked fresh controls evidence = ()
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
