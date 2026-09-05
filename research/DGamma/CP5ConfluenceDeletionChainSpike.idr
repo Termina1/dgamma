@@ -13710,6 +13710,22 @@ scopedAlignedClosedPrefix name key world error value nameEq keyEq global aligned
             keyEq selected located)
           in aligned))
 
+0 scopedSelectedAfterCloseUninstalled :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {preStart, afterClose : SystemState name key value world error} ->
+  (episode : ClosedEpisode name key world error value nameEq keyEq selected
+    preStart afterClose) ->
+  installedAt @{nameEq} selected afterClose = False
+scopedSelectedAfterCloseUninstalled name key world error value nameEq keyEq
+  selected episode =
+    case lUnloadBoundary nameEq keyEq selected (lastInstalledState episode)
+      afterClose LUnloadTag
+      (checkedActionProjects nameEq keyEq (LUnload selected)
+        (lastInstalledState episode) afterClose LUnloadTag
+        (unloadEquation (closing episode))) of
+      (tagShape, sourceTrue, targetFalse) => targetFalse
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
