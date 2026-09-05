@@ -25098,6 +25098,22 @@ scopedEnrichedReplayFromHeads name key world error value protocol nameEq keyEq i
       (traceAfterClosing (selectedEpisode candidate)) (relationalSuffixReplayReady (postCloseOutputFold (enrichedSuffix folds)))
       (enrichedSuffixHeadReplays heads))
 
+||| Full TARGET bundle at the exact enriched DeletionResult. Local semantic heads remain a named producer obligation.
+0 scopedEnrichedTargetFromHeads :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq global) ->
+  ScopedEnrichedHeadReplays name key world error value protocol nameEq keyEq initial finalState global candidate folds ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq
+    (survivingTrace (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds
+      (replayAligned (chainReplayCapital premises))))
+scopedEnrichedTargetFromHeads name key world error value protocol nameEq keyEq initial finalState global candidate folds premises heads =
+  scopedEnrichedTargetBundle name key world error value protocol nameEq keyEq initial finalState global candidate folds premises
+    (scopedEnrichedReplayFromHeads name key world error value protocol nameEq keyEq initial finalState global candidate folds heads)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
