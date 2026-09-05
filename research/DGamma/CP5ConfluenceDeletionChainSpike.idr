@@ -24984,6 +24984,39 @@ scopedReadySemanticCorrespondence name key world error value nameEq keyEq deleta
       (scopedReadySemanticCorrespondence name key world error value nameEq keyEq deletable (S ordinal)
         (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ originalFinal after originalRest tail (snd semantic))
 
+0 scopedEnrichedSemanticJoin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+      (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+    (scopedEnrichedCenterTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds) ->
+  RelationalReplayCorrespondence name key world error value (traceAfterClosing (selectedEpisode candidate))
+    (scopedEnrichedSuffixTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds) ->
+  RelationalReplayCorrespondence name key world error value global
+    (scopedEnrichedTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+scopedEnrichedSemanticJoin name key world error value protocol nameEq keyEq initial finalState global candidate folds center suffix =
+  replace {p = \source => RelationalReplayCorrespondence name key world error value source
+    (scopedEnrichedTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)}
+    (locatedDecomposition (selectedEpisode candidate))
+    (r97AppendRelationalReplayCorrespondence (traceBeforeOpening (selectedEpisode candidate))
+      (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+        (appendTransitions (closedTransitions (locatedEpisode (selectedEpisode candidate))) (traceAfterClosing (selectedEpisode candidate))))
+      (traceBeforeOpening (selectedEpisode candidate))
+      (appendTransitions
+        (scopedEnrichedCenterTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+        (scopedEnrichedSuffixTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds))
+      (identityRelationalReplayCorrespondence (traceBeforeOpening (selectedEpisode candidate)))
+      (r97AppendRelationalReplayCorrespondence
+        (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+          (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+        (traceAfterClosing (selectedEpisode candidate))
+        (scopedEnrichedCenterTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+        (scopedEnrichedSuffixTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds) center suffix))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
