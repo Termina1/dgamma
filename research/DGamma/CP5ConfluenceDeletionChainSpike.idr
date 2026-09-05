@@ -10371,6 +10371,20 @@ closedEpisodeExcludesBeginScoped nameEq keyEq actor episode opening occurs =
 orientTransitionHeadRightScoped leftHead rightHead rightTrace headEq =
   cong (\candidate => MoreTransitions candidate rightTrace) (sym headEq)
 
+0 commonTransitionPrefixInjectiveScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (commonHead : Transition first middle) ->
+  (leftTrace, rightTrace : Transitions middle finalState) ->
+  (0 sameAppend :
+    MoreTransitions commonHead leftTrace =
+      MoreTransitions commonHead rightTrace) ->
+  leftTrace = rightTrace
+commonTransitionPrefixInjectiveScoped commonHead leftTrace rightTrace
+  sameAppend =
+    case sameAppend of
+      Refl => Refl
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
