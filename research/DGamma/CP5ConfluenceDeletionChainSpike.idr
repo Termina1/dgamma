@@ -18622,6 +18622,94 @@ scopedChildRetirementDeletedAt name key world error value nameEq registered
         sourceFirst sourceMiddle sourceFinal sourceStep sourceRest
         (scopedStepNotRetire next) retirement))
 
+||| Transport child retirement along a generation-aware subsequence.  The walk
+||| stops at the first source retirement (even if the supplied witness names a
+||| later one); that step cannot be deleted while the retained birth is current.
+0 scopedChildRetiresBeforeSubsequence :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type) ->
+  (0 retireOwned : (atOrdinal : Nat) -> (atLive : GenerationEnvironment name) ->
+    (actor : name) -> deletable atOrdinal atLive (ORetire actor) ->
+    GenerationOwnedActor {name = name} {key = key} {value = value}
+      {world = world} {error = error} nameEq registered atOrdinal atLive
+      (ORetire actor)) ->
+  (parent, child : name) -> (generation : RegistrationGeneration name) ->
+  (0 retained : Not (Elem generation registered)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (originalFirst, originalFinal, survivingFirst,
+    survivingFinal : SystemState name key value world error) ->
+  (source : Transitions originalFirst originalFinal) ->
+  (surviving : Transitions survivingFirst survivingFinal) ->
+  (subsequence : GenerationActionSubsequence nameEq deletable ordinal live source
+    surviving) ->
+  (0 tags : GenerationSubsequenceRuleTagsPreserved subsequence) ->
+  (0 aligned : AlignedTransitions name key world error value nameEq keyEq source) ->
+  (0 current : (lookupCurrentGeneration @{nameEq} child live = Just generation)) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child originalFirst ->
+  ChildRetiresBeforeRecovery parent child source ->
+  ChildRetiresBeforeRecovery parent child surviving
+scopedChildRetiresBeforeSubsequence name key world error value nameEq keyEq
+  registered deletable retireOwned parent child generation retained ordinal live
+  _ _ _ _ _ _ GenerationActionSubsequenceEnd tags aligned current unretired
+  (ChildRetiresNow transition rest retires) impossible
+scopedChildRetiresBeforeSubsequence name key world error value nameEq keyEq
+  registered deletable retireOwned parent child generation retained ordinal live
+  _ _ _ _ _ _ GenerationActionSubsequenceEnd tags aligned current unretired
+  (ChildRetiresLater transition rest noRecovery tail) impossible
+scopedChildRetiresBeforeSubsequence name key world error value nameEq keyEq
+  registered deletable retireOwned parent child generation retained ordinal live
+  originalFirst originalFinal survivingFirst survivingFinal _ _
+  (KeepGenerationAction originalTransition originalRest survivingTransition
+    survivingRest kept sameAction tail)
+  (GenerationSubsequenceTagsKeep sameTag tailTags) aligned current unretired
+  retirement =
+    scopedChildRetirementKeptAt name key world error value nameEq parent child
+      generation ordinal live originalFirst _ originalFinal survivingFirst _
+      survivingFinal originalTransition originalRest survivingTransition
+      survivingRest sameAction sameTag current
+      (\nextUnretired, nextCurrent, nextRetirement =>
+        scopedChildRetiresBeforeSubsequence name key world error value nameEq keyEq
+          registered deletable retireOwned parent child generation retained
+          (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal
+            (transitionAction originalTransition) live)
+          _ _ _ _ originalRest survivingRest tail tailTags
+          (alignedTransitionTail nameEq keyEq originalTransition originalRest aligned)
+          nextCurrent nextUnretired nextRetirement)
+      (scopedUnretiredStep name key world error value nameEq keyEq child ordinal
+        live (transitionAction originalTransition) originalFirst _
+        (transitionTag originalTransition)
+        (scopedAlignedHeadChecked name key world error value nameEq keyEq
+          originalFirst _ originalFinal originalTransition originalRest aligned)
+        unretired)
+      retirement
+scopedChildRetiresBeforeSubsequence name key world error value nameEq keyEq
+  registered deletable retireOwned parent child generation retained ordinal live
+  originalFirst originalFinal survivingFirst survivingFinal _ survivingTrace
+  (DeleteGenerationAction originalTransition originalRest deleted tail)
+  (GenerationSubsequenceTagsDelete tailTags) aligned current unretired retirement =
+    scopedChildRetirementDeletedAt name key world error value nameEq registered
+      deletable parent child generation ordinal live originalFirst _ originalFinal
+      survivingFirst survivingFinal originalTransition originalRest survivingTrace
+      current retained deleted (retireOwned ordinal live child)
+      (\nextUnretired, nextCurrent, nextRetirement =>
+        scopedChildRetiresBeforeSubsequence name key world error value nameEq keyEq
+          registered deletable retireOwned parent child generation retained
+          (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal
+            (transitionAction originalTransition) live)
+          _ _ _ _ originalRest survivingTrace tail tailTags
+          (alignedTransitionTail nameEq keyEq originalTransition originalRest aligned)
+          nextCurrent nextUnretired nextRetirement)
+      (scopedUnretiredStep name key world error value nameEq keyEq child ordinal
+        live (transitionAction originalTransition) originalFirst _
+        (transitionTag originalTransition)
+        (scopedAlignedHeadChecked name key world error value nameEq keyEq
+          originalFirst _ originalFinal originalTransition originalRest aligned)
+        unretired)
+      retirement
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
