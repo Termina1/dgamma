@@ -25714,6 +25714,25 @@ record ScopedReplaySeal
     first finalState trace survivor sealedReady
   0 sealedReadyEnds : ReplayReadyEndsAt sealedReady target
 
+0 scopedPrependReplaySeal :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (first, middle, finalState, survivor, target : SystemState name key value world error) ->
+  (transition : Transition first middle) -> (rest : Transitions middle finalState) ->
+  Not (deletable ordinal live (transitionAction transition)) ->
+  (named : NamedTransition name key world error value (transitionAction transition) survivor) ->
+  (fireNamed nameEq keyEq (transitionAction transition) survivor = Just named) ->
+  (transitionTag transition = transitionTag (namedTransition named)) ->
+  ScopedReplaySeal name key world error value nameEq keyEq deletable (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction transition) live) middle finalState (namedAfter named) target rest ->
+  ScopedReplaySeal name key world error value nameEq keyEq deletable ordinal live first finalState survivor target (MoreTransitions transition rest)
+scopedPrependReplaySeal name key world error value nameEq keyEq deletable ordinal live first middle finalState survivor target transition rest retained
+  (MkNamedTransition after tag targetStep actionSame) fires tagSame seal =
+    MkScopedReplaySeal (ReplayReadyKeep retained after tag targetStep actionSame fires (sealedReady seal))
+      (tagSame, sealedReadyTags seal)
+      (ReplayEndsKeep retained tag targetStep actionSame fires (sealedReady seal) (sealedReadyEnds seal))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
