@@ -10290,6 +10290,21 @@ installedTraceExcludesBeginScoped nameEq keyEq actor insideTrace installedTrace
           installedSourceContradictsBeginScoped nameEq keyEq actor opening
             sourceInstalled
 
+data AppendOccurrenceScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState, stepBefore, stepAfter :
+    SystemState name key value world error} ->
+  (transition : Transition stepBefore stepAfter) ->
+  (leftTrace : Transitions first middle) ->
+  (rightTrace : Transitions middle finalState) ->
+  Type where
+  AppendOccurrenceOnLeft :
+    OccursIn transition leftTrace ->
+    AppendOccurrenceScoped transition leftTrace rightTrace
+  AppendOccurrenceOnRight :
+    OccursIn transition rightTrace ->
+    AppendOccurrenceScoped transition leftTrace rightTrace
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
