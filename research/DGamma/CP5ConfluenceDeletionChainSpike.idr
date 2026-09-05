@@ -12956,6 +12956,20 @@ scopedAppendLeftEmbedding name key world error value
       (scopedAppendLeftEmbedding name key world error value rest right transition
         later)
 
+0 scopedAppendRightEmbedding :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (left : Transitions first middle) ->
+  (right : Transitions middle finalState) ->
+  OccurrenceEmbedding right (appendTransitions left right)
+scopedAppendRightEmbedding name key world error value NoTransitions right
+  transition occurs = occurs
+scopedAppendRightEmbedding name key world error value
+  (MoreTransitions head rest) right transition occurs =
+    OccursLater
+      (scopedAppendRightEmbedding name key world error value rest right
+        transition occurs)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
