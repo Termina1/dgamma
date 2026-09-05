@@ -24034,6 +24034,22 @@ scopedEnrichedFinal name key world error value protocol nameEq keyEq initial fin
     (scopedEnrichedMiddle name key world error value protocol nameEq keyEq initial finalState global candidate folds)
     (traceAfterClosing (selectedEpisode candidate)) (relationalSuffixReplayReady (postCloseOutputFold (enrichedSuffix folds)))
 
+0 scopedEnrichedCenterTrace :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  Transitions (locatedPreStart (selectedEpisode candidate))
+    (scopedEnrichedMiddle name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+scopedEnrichedCenterTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds =
+  scopedSelectedCanonicalTrace name key world error value protocol nameEq keyEq (selectedActor candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)
+    (locatedPreStart (selectedEpisode candidate)) (locatedAfter (selectedEpisode candidate)) finalState
+    (locatedEpisode (selectedEpisode candidate))
+    (appendTransitions (closedTransitions (locatedEpisode (selectedEpisode candidate))) (traceAfterClosing (selectedEpisode candidate)))
+    (enrichedSelected folds)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
