@@ -14032,6 +14032,28 @@ scopedNonBeginClosingLocalization name key world error value nameEq keyEq global
       (scopedClosedPrefixDecomposition name key world error value nameEq keyEq
         selected located)
 
+0 scopedLocalizationActivationToAnchorGlobal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {prefixInitial, prefixFinal, globalFinal, stepBefore, stepAfter :
+    SystemState name key value world error} ->
+  (transition : Transition stepBefore stepAfter) ->
+  (prefixTrace : Transitions prefixInitial prefixFinal) ->
+  (global : Transitions prefixInitial globalFinal) ->
+  (anchor : ForeignLifecycleInstalledAnchor name key world error value nameEq
+    keyEq actor transition prefixTrace) ->
+  (localization : ScopedClosingLocalization name key world error value nameEq
+    keyEq actor transition prefixTrace global anchor) ->
+  Transitions
+    (closedStartState (locatedEpisode (localizedGlobalEpisode localization)))
+    (lifecycleInstalledState anchor)
+scopedLocalizationActivationToAnchorGlobal name key world error value nameEq
+  keyEq actor transition prefixTrace global anchor localization =
+    replace
+      {p = \start => Transitions start (lifecycleInstalledState anchor)}
+      (sym (localizedOpeningStateExact localization))
+      (localizedActivationToAnchor localization)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
