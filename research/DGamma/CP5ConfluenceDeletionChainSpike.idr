@@ -18124,6 +18124,70 @@ scopedAdvanceYieldUnretiredAt name key world error value nameEq keyEq child
         accumulator view capability localAfter undo found resolved ran matches))
         raw)
 
+-- EXEMPT-LADVANCE: O6-R164-GRIND-SHIFT-AUDIT.md conversion wall;
+-- R165 supervisor placement ruling permits this single top-level run split.
+-- No nesting and no erased existential index is forced into a dotted pattern.
+0 scopedAdvanceResolvedUnretired :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (capability : DepValues key value (dependencies (componentDependencies component))) ->
+  (0 found : (lookupFiber {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} child source =
+    Just (MkFiber component parent retiredFlag table
+      (Reloading (step :: rest) accumulator view)))) ->
+  (0 resolved : (resolveCommittedValues @{nameEq} @{keyEq} {name = name}
+    {key = key} {value = value} {world = world} {error = error}
+    (dependencies (componentDependencies component)) view source = Just capability)) ->
+  (afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 notRetired : (retiredFlag = False)) ->
+  (0 raw : (applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (LAdvance child)
+    (MkSystemState ambient source) = Just (tag, afterState))) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child afterState
+scopedAdvanceResolvedUnretired name key world error value nameEq keyEq child
+  ambient source component parent retiredFlag table step rest accumulator view
+  capability found resolved afterState tag notRetired raw
+  with (runStepEffect step capability
+    (MkLocalState ambient (restrictOwnedPreservingOrder @{keyEq}
+      (componentProvisions component) (ownedValues table)))) proof ran
+  scopedAdvanceResolvedUnretired name key world error value nameEq keyEq child
+    ambient source component parent retiredFlag table step rest accumulator view
+    capability found resolved afterState tag notRetired raw | Left failure =
+      scopedUnretiredAfterRuntimeReplace name key world error value nameEq child
+        (MkSystemState ambient source) afterState tag LRaiseTag component parent
+        retiredFlag table table (Reloading (step :: rest) accumulator view)
+        (Unloading accumulator view (Just failure)) ambient found notRetired
+        (trans (sym (scopedAdvanceRaisedRaw name key world error value nameEq keyEq
+          child ambient source component parent retiredFlag table step rest
+          accumulator view capability failure found resolved ran)) raw)
+  scopedAdvanceResolvedUnretired name key world error value nameEq keyEq child
+    ambient source component parent retiredFlag table step rest accumulator view
+    capability found resolved afterState tag notRetired raw |
+    Right (localAfter, undo) =
+      scopedAdvanceYieldUnretiredAt name key world error value nameEq keyEq child
+        ambient source component parent retiredFlag table step rest accumulator
+        view capability localAfter undo found resolved ran
+        (targetMatches @{nameEq}
+          (targetFiber @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+            {world = world} {error = error}
+            (MkFiber component parent retiredFlag table
+              (Reloading (step :: rest) accumulator view)) source) view)
+        Refl afterState tag notRetired raw
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
