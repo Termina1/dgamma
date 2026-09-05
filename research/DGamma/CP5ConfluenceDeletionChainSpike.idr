@@ -19153,6 +19153,30 @@ scopedReadySubsequenceTags name key world error value nameEq keyEq deletable ord
             (transitionAction originalTransition) live)
           _ originalFinal survivingAfter originalRest tail (snd tags))
 
+||| The control certificate is indexed by the producer's canonical ready trace.
+0 ScopedReadyParentControls :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (originalFirst, originalFinal, survivingFirst :
+    SystemState name key value world error) ->
+  (original : Transitions originalFirst originalFinal) ->
+  (ready : GenerationReplayReady nameEq keyEq deletable ordinal live original
+    survivingFirst) -> Type
+ScopedReadyParentControls name key world error value nameEq keyEq deletable ordinal
+  live originalFirst originalFinal survivingFirst original ready =
+    GenerationSubsequenceParentControlsPreserved name key world error value nameEq
+      deletable ordinal live originalFirst originalFinal survivingFirst
+      (scopedReadyFinal name key world error value nameEq keyEq deletable ordinal
+        live originalFirst originalFinal survivingFirst original ready)
+      original
+      (scopedReadyTrace name key world error value nameEq keyEq deletable ordinal
+        live originalFirst originalFinal survivingFirst original ready)
+      (scopedReadySubsequence name key world error value nameEq keyEq deletable ordinal
+        live originalFirst originalFinal survivingFirst original ready)
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
