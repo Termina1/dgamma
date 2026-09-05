@@ -19700,6 +19700,16 @@ scopedPostCloseActorTotal name key world error value nameEq keyEq selected actor
       original survivor boundary sourceTotal (decEq @{nameEq} actor selected)
 
 
+0 scopedTraceTotalHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (transition : Transition first middle) -> (rest : Transitions middle finalState) ->
+  TraceComponentsTotal nameEq keyEq (MoreTransitions transition rest) ->
+  TransitionComponentTotal nameEq keyEq transition
+scopedTraceTotalHead name key world error value nameEq keyEq first middle finalState transition rest
+  (TraceComponentsTotalStep _ _ headTotal tailTotal) = headTotal
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
