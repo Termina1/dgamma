@@ -26202,6 +26202,14 @@ scopedDeletionWholeTags name key world error value nameEq keyEq initial finalSta
       (deletionWholeOrdinalEmbedding (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
         (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result occurrence)))
 
+||| A total permutation of ordinal space; finite deletion spines will construct its finite support.
+record ScopedOrdinalPermutation where
+  constructor MkScopedOrdinalPermutation
+  ordinalForward : Nat -> Nat
+  ordinalBackward : Nat -> Nat
+  0 ordinalLeftInverse : (ordinal : Nat) -> (ordinalBackward (ordinalForward ordinal) = ordinal)
+  0 ordinalRightInverse : (ordinal : Nat) -> (ordinalForward (ordinalBackward ordinal) = ordinal)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
