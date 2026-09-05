@@ -19335,8 +19335,9 @@ scopedPrependPostCloseDeletedOutput name key world error value protocol nameEq k
       (postCloseOutputTags folded)
       (postCloseOutputDiscipline folded)
 
-||| The fired named transition owns the aligned dictionaries and checked proof.
-||| Raw result equality alone would not authenticate its Transition constructor.
+||| R166 B26 cure (R165 B26 transcripts): the Transition owns its stored proof;
+||| the checked evaluator equation is a separate explicit constructor field.
+||| Consumers project either field; their proofs need not converge definitionally.
 data ScopedNamedAligned :
   (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
   (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -19349,11 +19350,14 @@ data ScopedNamedAligned :
     {action : Action name key value world error} ->
     {before : SystemState name key value world error} ->
     (afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+    {0 stored : (checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key}
+      {value = value} {world = world} {error = error} action before =
+      Just (tag, afterState))} ->
     (0 checked : (checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key}
       {value = value} {world = world} {error = error} action before =
       Just (tag, afterState))) ->
     ScopedNamedAligned name key world error value nameEq keyEq action before
-      (MkNamedTransition afterState tag (Fired nameEq keyEq action tag checked) Refl)
+      (MkNamedTransition afterState tag (Fired nameEq keyEq action tag stored) Refl)
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
