@@ -22549,6 +22549,17 @@ scopedAppendSelectedCloseTags name key world error value nameEq keyEq selected r
       (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live)
       rest survivingAfter tail target tailEnds closing (snd tags))
 
+0 scopedDisciplineAcrossTraceEnd :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) ->
+  (first, leftFinal, rightFinal : SystemState name key value world error) ->
+  (left : Transitions first leftFinal) -> (right : Transitions first rightFinal) ->
+  (sameFinal : (leftFinal = rightFinal)) ->
+  (replace {p = \endpoint => Transitions first endpoint} sameFinal left = right) ->
+  RegistrationDiscipline protocol nameEq right -> RegistrationDiscipline protocol nameEq left
+scopedDisciplineAcrossTraceEnd name key world error value protocol nameEq first _ _ left right
+  Refl sameTrace discipline = replace {p = RegistrationDiscipline protocol nameEq} (sym sameTrace) discipline
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
