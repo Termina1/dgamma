@@ -20421,6 +20421,9 @@ record ScopedSelectedClosedEpisodeFoldOutput
         preStart afterClose preStart
         (MoreTransitions (beginTransition (closedOpening episode)) (closedTransitions episode))
         (selectedFoldReady selectedOutputFold))
+  0 selectedOutputSemantic : ScopedReadySemanticReplay name key world error value nameEq keyEq
+    (EpisodeGenerationDeletedActor nameEq selected registered) episodeStartOrdinal episodeStartLive preStart afterClose preStart
+    (MoreTransitions (beginTransition (closedOpening episode)) (closedTransitions episode)) (selectedFoldReady selectedOutputFold)
 
 record ScopedPostCloseSuffixFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
@@ -23825,6 +23828,10 @@ scopedAssembleSelectedClosedOutput name key world error value protocol nameEq ke
           (fst (totalAppendSplit (closedInside episode) (MoreTransitions (unloadTransition (closing episode)) NoTransitions)
             (scopedTraceTotalTail name key world error value nameEq keyEq preStart (closedStartState episode) afterClose
               (beginTransition (closedOpening episode)) (closedTransitions episode) sourceTotal)))))
+      (scopedAppendSelectedCloseSemantic name key world error value nameEq keyEq selected registered
+        (S episodeStartOrdinal) episodeStartLive (closedInside episode) preStart (interiorReady (interiorOutputFold interior))
+        (interiorFinalSurvivor (interiorOutputFold interior)) (interiorReadyEnds (interiorOutputFold interior))
+        (closing episode) (interiorOutputSemantic interior))
 
 0 scopedSelectedClosedOutputFromInterior :
   (name, key, world, error : Type) -> (value : key -> Type) ->
