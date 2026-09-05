@@ -19534,6 +19534,34 @@ scopedRelationalActorTotal name key world error value nameEq keyEq actor registe
           (planTarget (completePlanResult (relationalCompletePlan boundary))) (registry survivor)
           (relationalOrderedControls boundary)))) active
 
+0 scopedSelectedForeignActorTotalAt :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected, actor : name) -> Not (actor = selected) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (wholeFirst, wholeLast, original, survivor : SystemState name key value world error) ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq keyEq selected registered ordinal live
+    whole original survivor) ->
+  ScopedActorTotal name key world error value nameEq keyEq actor original ->
+  (right : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor (registry survivor) = Just right) ->
+  ForeignRelatedFiberFound name key world error value nameEq actor (registry survivor)
+    (planTarget (completePlanResult (selectedBoundaryPlan boundary))) right ->
+  (isActive (fiberLifecycle right) = True) -> ActiveFiberProvidesAll keyEq right
+scopedSelectedForeignActorTotalAt name key world error value nameEq keyEq selected actor distinct registered ordinal live
+  wholeFirst wholeLast original survivor whole boundary sourceTotal right found located active =
+    scopedPlannedActorProvides name key world error value nameEq keyEq actor original
+      (planTarget (completePlanResult (selectedBoundaryPlan boundary)))
+      (inactiveLeafPlan (completePlanResult (selectedBoundaryPlan boundary)))
+      (foreignRelatedFiber located) right (foreignRelatedFound located)
+      (fiberControlSymmetric (foreignRelatedControl located))
+      (selectedBoundaryForeignLocatedTablesSame nameEq keyEq selected boundary actor distinct
+        (scopedRegistryMember name key world error value nameEq actor (foreignRelatedFiber located)
+          (planTarget (completePlanResult (selectedBoundaryPlan boundary))) (foreignRelatedFound located))
+        (scopedRegistryMember name key world error value nameEq actor right (registry survivor) found)
+        (fiberControlSymmetric (foreignRelatedControl located))) sourceTotal active
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
