@@ -19755,6 +19755,630 @@ scopedTraceTotalPrepend name key world error value nameEq keyEq first middle fin
   transition rest targetStep targetRest headTransport tailTransport (TraceComponentsTotalStep _ _ headTotal tailTotal) =
     TraceComponentsTotalStep targetStep targetRest (headTransport headTotal) (tailTransport tailTotal)
 
+||| R166 B26 cure (R165 B26 transcripts): the Transition owns its stored proof;
+||| the checked evaluator equation is a separate explicit constructor field.
+||| Consumers project either field; their proofs need not converge definitionally.
+data ScopedNamedAligned :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (before : SystemState name key value world error) ->
+  NamedTransition name key world error value action before -> Type where
+  MkScopedNamedAligned :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {action : Action name key value world error} ->
+    {before : SystemState name key value world error} ->
+    (afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+    {0 stored : (checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key}
+      {value = value} {world = world} {error = error} action before =
+      Just (tag, afterState))} ->
+    (0 checked : (checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key}
+      {value = value} {world = world} {error = error} action before =
+      Just (tag, afterState))) ->
+    ScopedNamedAligned name key world error value nameEq keyEq action before
+      (MkNamedTransition afterState tag (Fired nameEq keyEq action tag stored) Refl)
+
+0 scopedNamedAlignedAt :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (before : SystemState name key value world error) ->
+  (observed : Maybe (RuleTag, SystemState name key value world error)) ->
+  (0 checkedEq : (checkedApplyAction @{nameEq} @{keyEq} {name = name}
+    {key = key} {value = value} {world = world} {error = error} action before =
+    observed)) ->
+  (named : NamedTransition name key world error value action before) ->
+  (fireNamed nameEq keyEq action before = Just named) ->
+  ScopedNamedAligned name key world error value nameEq keyEq action before named
+scopedNamedAlignedAt name key world error value nameEq keyEq action before
+  Nothing checkedEq named =
+    rewrite checkedEq in (\fires => void (nothingIsNotJust fires))
+scopedNamedAlignedAt name key world error value nameEq keyEq action before
+  (Just (tag, afterState)) checkedEq named =
+    rewrite checkedEq in
+      (\fires => replace
+        {p = \observedNamed => ScopedNamedAligned name key world error value
+          nameEq keyEq action before observedNamed}
+        (justInjective fires) (MkScopedNamedAligned afterState tag checkedEq))
+
+0 scopedNamedAligned :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (before : SystemState name key value world error) ->
+  (named : NamedTransition name key world error value action before) ->
+  (fireNamed nameEq keyEq action before = Just named) ->
+  ScopedNamedAligned name key world error value nameEq keyEq action before named
+scopedNamedAligned name key world error value nameEq keyEq action before named fires =
+  scopedNamedAlignedAt name key world error value nameEq keyEq action before
+    (checkedApplyAction @{nameEq} @{keyEq} action before) Refl named fires
+
+0 scopedNamedChecked :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (before : SystemState name key value world error) ->
+  (named : NamedTransition name key world error value action before) ->
+  ScopedNamedAligned name key world error value nameEq keyEq action before named ->
+  (checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} action before =
+    Just (namedTag named, namedAfter named))
+scopedNamedChecked name key world error value nameEq keyEq action before _
+  (MkScopedNamedAligned afterState tag checked) = checked
+
+0 scopedNamedPrependAligned :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (before : SystemState name key value world error) ->
+  (named : NamedTransition name key world error value action before) ->
+  ScopedNamedAligned name key world error value nameEq keyEq action before named ->
+  (finalState : SystemState name key value world error) ->
+  (rest : Transitions (namedAfter named) finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq rest ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions (namedTransition named) rest)
+scopedNamedPrependAligned name key world error value nameEq keyEq action before _
+  (MkScopedNamedAligned afterState tag {stored} checked) finalState rest aligned =
+    AlignedStep action tag stored rest aligned
+
+0 scopedIsAdvanceAction :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  Action name key value world error -> Bool
+scopedIsAdvanceAction name key world error value (OInsert actor parent component) = False
+scopedIsAdvanceAction name key world error value (ORetire actor) = False
+scopedIsAdvanceAction name key world error value (ORemove actor) = False
+scopedIsAdvanceAction name key world error value (LBegin actor) = False
+scopedIsAdvanceAction name key world error value (LAdvance actor) = True
+scopedIsAdvanceAction name key world error value (LDivert actor) = False
+scopedIsAdvanceAction name key world error value (LLeave actor) = False
+scopedIsAdvanceAction name key world error value (LUnload actor) = False
+
+||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
+0 ScopedReadySemanticReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (originalFirst, originalFinal, survivor : SystemState name key value world error) ->
+  (source : Transitions originalFirst originalFinal) -> GenerationReplayReady nameEq keyEq deletable ordinal live source survivor -> Type
+ScopedReadySemanticReplay name key world error value nameEq keyEq deletable ordinal live _ _ survivor _ ReplayReadyEnd = Unit
+ScopedReadySemanticReplay name key world error value nameEq keyEq deletable ordinal live originalFirst originalFinal survivor _
+  (ReplayReadyDelete {originalTransition} {originalRest} deleted tail) =
+    ScopedReadySemanticReplay name key world error value nameEq keyEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ originalFinal survivor originalRest tail
+ScopedReadySemanticReplay name key world error value nameEq keyEq deletable ordinal live originalFirst originalFinal survivor _
+  (ReplayReadyKeep {originalTransition} {originalRest} retained after tag transition sameAction fires tail) =
+    (RelationalReplayCorrespondence name key world error value (MoreTransitions originalTransition NoTransitions) (MoreTransitions transition NoTransitions),
+     ScopedReadySemanticReplay name key world error value nameEq keyEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ originalFinal after originalRest tail)
+
+0 scopedNonAdvanceLifecycleReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (isLifecycleAction action = True) ->
+  ((actor : name) -> Not (action = LAdvance actor)) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} action targetBefore = Just (tag, targetAfter))) ->
+  (sourceOwner, targetOwner : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    (actionOwner action) (registry sourceBefore) = Just sourceOwner) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    (actionOwner action) (registry targetBefore) = Just targetOwner) ->
+  FiberControlRelated sourceOwner targetOwner ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq action tag targetChecked) NoTransitions)
+scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq action lifecycle notAdvance tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
+    singletonNonAdvanceRAR nameEq keyEq action tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked notAdvance
+      (pointwiseRelatedLifecycleMaps nameEq keyEq action lifecycle tag sourceBefore targetBefore sourceOwner targetOwner sourceFound targetFound controls)
+
+0 scopedOrchestrationReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} action targetBefore = Just (tag, targetAfter))) ->
+  PaperOrchestrationStep (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq action tag targetChecked) NoTransitions)
+scopedOrchestrationReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked orchestration =
+  orchestrationSingletonRAR name key value world error nameEq keyEq action tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked orchestration
+
+0 scopedNonAdvanceLifecycleReplayTags :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (isLifecycleAction action = True) ->
+  ((actor : name) -> Not (action = LAdvance actor)) -> (sourceTag, targetTag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (sourceTag, sourceAfter))) ->
+  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} action targetBefore = Just (targetTag, targetAfter))) ->
+  (sourceTag = targetTag) ->
+  (sourceOwner, targetOwner : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    (actionOwner action) (registry sourceBefore) = Just sourceOwner) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    (actionOwner action) (registry targetBefore) = Just targetOwner) ->
+  FiberControlRelated sourceOwner targetOwner ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action sourceTag sourceChecked) NoTransitions)
+    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq action targetTag targetChecked) NoTransitions)
+scopedNonAdvanceLifecycleReplayTags name key world error value nameEq keyEq action lifecycle notAdvance sourceTag _
+  sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked Refl sourceOwner targetOwner sourceFound targetFound controls =
+    scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq action lifecycle notAdvance sourceTag
+      sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
+
+0 scopedNonAdvanceNamedLifecycleReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (isLifecycleAction action = True) ->
+  ((actor : name) -> Not (action = LAdvance actor)) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (named : NamedTransition name key world error value action targetBefore) ->
+  ScopedNamedAligned name key world error value nameEq keyEq action targetBefore named ->
+  (tag = transitionTag (namedTransition named)) ->
+  (sourceOwner, targetOwner : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    (actionOwner action) (registry sourceBefore) = Just sourceOwner) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    (actionOwner action) (registry targetBefore) = Just targetOwner) ->
+  FiberControlRelated sourceOwner targetOwner ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (namedTransition named) NoTransitions)
+scopedNonAdvanceNamedLifecycleReplay name key world error value nameEq keyEq action lifecycle notAdvance tag
+  sourceBefore sourceAfter targetBefore sourceChecked _ (MkScopedNamedAligned after targetTag {stored} checked)
+  sameTag sourceOwner targetOwner sourceFound targetFound controls =
+    scopedNonAdvanceLifecycleReplayTags name key world error value nameEq keyEq action lifecycle notAdvance tag targetTag
+      sourceBefore sourceAfter targetBefore after sourceChecked stored sameTag sourceOwner targetOwner sourceFound targetFound controls
+
+0 scopedOrchestrationReplayTags :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (sourceTag, targetTag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (sourceTag, sourceAfter))) ->
+  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} action targetBefore = Just (targetTag, targetAfter))) ->
+  (sourceTag = targetTag) ->
+  PaperOrchestrationStep (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action sourceTag sourceChecked) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action sourceTag sourceChecked) NoTransitions)
+    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq action targetTag targetChecked) NoTransitions)
+scopedOrchestrationReplayTags name key world error value nameEq keyEq action sourceTag _ sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked Refl orchestration =
+    scopedOrchestrationReplay name key world error value nameEq keyEq action sourceTag sourceBefore sourceAfter targetBefore targetAfter
+      sourceChecked targetChecked orchestration
+
+0 scopedNamedOrchestrationReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (named : NamedTransition name key world error value action targetBefore) ->
+  ScopedNamedAligned name key world error value nameEq keyEq action targetBefore named ->
+  (tag = transitionTag (namedTransition named)) ->
+  PaperOrchestrationStep (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (namedTransition named) NoTransitions)
+scopedNamedOrchestrationReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore
+  sourceChecked _ (MkScopedNamedAligned after targetTag {stored} checked) sameTag orchestration =
+    scopedOrchestrationReplayTags name key world error value nameEq keyEq action tag targetTag sourceBefore sourceAfter targetBefore after
+      sourceChecked stored sameTag orchestration
+
+||| The source and target stages retain one exact program and committed view.
+0 scopedConcreteAdvanceStageFamily :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) sourceBefore = Just (tag, sourceAfter))) ->
+  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) targetBefore = Just (tag, targetAfter))) ->
+  (component : Component key value world error) -> (sourceParent, targetParent : Parent name) -> (retiredFlag : Bool) ->
+  (sourceTable, targetTable : OwnedTable key value (componentProvisions component)) ->
+  (remaining : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (sourceAccumulator, targetAccumulator : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor (registry sourceBefore) = Just (MkFiber component sourceParent retiredFlag sourceTable (Reloading remaining sourceAccumulator view))) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor (registry targetBefore) = Just (MkFiber component targetParent retiredFlag targetTable (Reloading remaining targetAccumulator view))) ->
+  SingletonAdvanceStageReplayFamily name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq (LAdvance actor) tag targetChecked) NoTransitions)
+scopedConcreteAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked component sourceParent targetParent retiredFlag sourceTable targetTable remaining
+  sourceAccumulator targetAccumulator view sourceFound targetFound =
+    MkSingletonAdvanceStageReplayFamily
+      (\selected, stage => locateSingletonAdvanceStageReplay nameEq keyEq actor tag sourceBefore sourceAfter targetBefore targetAfter
+        sourceChecked targetChecked component sourceParent targetParent retiredFlag sourceTable targetTable remaining
+        sourceAccumulator targetAccumulator view sourceFound targetFound selected stage)
+
+0 scopedReloadingCellSame :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (sourceRetired, targetRetired : Bool) -> (table : OwnedTable key value (componentProvisions component)) ->
+  (sourceRemaining, targetRemaining : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (sourceView, targetView : View name (dependencies (componentDependencies component))) ->
+  (sourceRetired = targetRetired) -> (sourceRemaining = targetRemaining) -> (sourceView = targetView) ->
+  (the (Fiber name key value world error) (MkFiber component parent targetRetired table (Reloading targetRemaining accumulator targetView)) =
+   MkFiber component parent sourceRetired table (Reloading sourceRemaining accumulator sourceView))
+scopedReloadingCellSame name key world error value component parent sourceRetired targetRetired table sourceRemaining targetRemaining
+  accumulator sourceView targetView retiredSame remainingSame viewSame =
+    trans (cong (\retired => MkFiber component parent retired table (Reloading targetRemaining accumulator targetView)) (sym retiredSame))
+      (trans (cong (\remaining => MkFiber component parent sourceRetired table (Reloading remaining accumulator targetView)) (sym remainingSame))
+        (cong (\view => MkFiber component parent sourceRetired table (Reloading sourceRemaining accumulator view)) (sym viewSame)))
+
+0 scopedLifecycleAdvanceStageFamily :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) -> (tag : RuleTag) ->
+  (sourceWorld : world) -> (sourceRegistry : Registry name key value world error) ->
+  (sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) (MkSystemState sourceWorld sourceRegistry) = Just (tag, sourceAfter))) ->
+  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) targetBefore = Just (tag, targetAfter))) ->
+  (component : Component key value world error) -> (sourceParent, targetParent : Parent name) -> (sourceRetired, targetRetired : Bool) ->
+  (sourceTable, targetTable : OwnedTable key value (componentProvisions component)) ->
+  (sourceLifecycle, targetLifecycle : Lifecycle key value world error name (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (sourceRetired = targetRetired) -> LifecycleControlRelated sourceLifecycle targetLifecycle ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor sourceRegistry = Just (MkFiber component sourceParent sourceRetired sourceTable sourceLifecycle)) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor (registry targetBefore) = Just (MkFiber component targetParent targetRetired targetTable targetLifecycle)) ->
+  SingletonAdvanceStageReplayFamily name key world error value
+    (MoreTransitions (Fired {before = MkSystemState sourceWorld sourceRegistry} {afterState = sourceAfter} nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq (LAdvance actor) tag targetChecked) NoTransitions)
+scopedLifecycleAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked component sourceParent targetParent sourceRetired targetRetired sourceTable targetTable _ _ retiredSame
+  (InactiveControls {leftOutcome} outcomesSame) sourceFound targetFound =
+    void (nothingIsNotJust (trans (sym (advanceInactiveIsNothing nameEq keyEq actor sourceWorld sourceRegistry component sourceParent sourceRetired sourceTable leftOutcome sourceFound))
+      (checkedActionProjects nameEq keyEq (LAdvance actor) (MkSystemState sourceWorld sourceRegistry) sourceAfter tag sourceChecked)))
+scopedLifecycleAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked component sourceParent targetParent sourceRetired targetRetired sourceTable targetTable _ _ retiredSame
+  (ReloadingControls {leftRemaining} {rightRemaining} {leftAccumulator} {rightAccumulator} {leftView} {rightView}
+    remainingSame accumulatorsRelated viewSame) sourceFound targetFound =
+      scopedConcreteAdvanceStageFamily name key world error value nameEq keyEq actor tag (MkSystemState sourceWorld sourceRegistry) sourceAfter targetBefore targetAfter
+        sourceChecked targetChecked component sourceParent targetParent sourceRetired sourceTable targetTable leftRemaining leftAccumulator rightAccumulator leftView
+        sourceFound (trans targetFound (cong Just (scopedReloadingCellSame name key world error value component targetParent sourceRetired targetRetired targetTable
+          leftRemaining rightRemaining rightAccumulator leftView rightView retiredSame remainingSame viewSame)))
+scopedLifecycleAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked component sourceParent targetParent sourceRetired targetRetired sourceTable targetTable _ _ retiredSame
+  (ActiveControls {leftAccumulator} {leftView} accumulatorsRelated viewsSame) sourceFound targetFound =
+    void (nothingIsNotJust (trans (sym (advanceActiveIsNothing nameEq keyEq actor sourceWorld sourceRegistry component sourceParent sourceRetired sourceTable leftAccumulator leftView sourceFound))
+      (checkedActionProjects nameEq keyEq (LAdvance actor) (MkSystemState sourceWorld sourceRegistry) sourceAfter tag sourceChecked)))
+scopedLifecycleAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked component sourceParent targetParent sourceRetired targetRetired sourceTable targetTable _ _ retiredSame
+  (UnloadingControls {leftAccumulator} {leftView} {leftOutcome} accumulatorsRelated viewsSame outcomesSame) sourceFound targetFound =
+    void (nothingIsNotJust (trans (sym (advanceUnloadingIsNothing nameEq keyEq actor sourceWorld sourceRegistry component sourceParent sourceRetired sourceTable leftAccumulator leftView leftOutcome sourceFound))
+      (checkedActionProjects nameEq keyEq (LAdvance actor) (MkSystemState sourceWorld sourceRegistry) sourceAfter tag sourceChecked)))
+
+0 scopedOwnersAdvanceStageFamily :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) -> (tag : RuleTag) ->
+  (sourceWorld : world) -> (sourceRegistry : Registry name key value world error) ->
+  (sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) (MkSystemState sourceWorld sourceRegistry) = Just (tag, sourceAfter))) ->
+  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) targetBefore = Just (tag, targetAfter))) ->
+  (sourceOwner, targetOwner : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor sourceRegistry = Just sourceOwner) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor (registry targetBefore) = Just targetOwner) ->
+  FiberControlRelated sourceOwner targetOwner ->
+  SingletonAdvanceStageReplayFamily name key world error value
+    (MoreTransitions (Fired {before = MkSystemState sourceWorld sourceRegistry} {afterState = sourceAfter} nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq (LAdvance actor) tag targetChecked) NoTransitions)
+scopedOwnersAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked _ _ sourceFound targetFound
+  (FibersControlRelated {component} sourceParent targetParent sourceRetired targetRetired sourceTable targetTable sourceLifecycle targetLifecycle
+    parentsSame retiredSame lifecycleRelated) =
+      scopedLifecycleAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
+        sourceChecked targetChecked component sourceParent targetParent sourceRetired targetRetired sourceTable targetTable sourceLifecycle targetLifecycle
+        retiredSame lifecycleRelated sourceFound targetFound
+
+||| Every advance generator and every reachable stage is replayed, not only the observed runtime result.
+0 scopedAdvanceReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) sourceBefore = Just (tag, sourceAfter))) ->
+  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) targetBefore = Just (tag, targetAfter))) ->
+  (sourceOwner, targetOwner : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor (registry sourceBefore) = Just sourceOwner) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    actor (registry targetBefore) = Just targetOwner) ->
+  FiberControlRelated sourceOwner targetOwner ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
+    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq (LAdvance actor) tag targetChecked) NoTransitions)
+scopedAdvanceReplay name key world error value nameEq keyEq actor tag (MkSystemState sourceWorld sourceRegistry) sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
+    singletonAdvanceRAR nameEq keyEq actor tag (MkSystemState sourceWorld sourceRegistry) sourceAfter targetBefore targetAfter sourceChecked targetChecked
+      (scopedOwnersAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
+        sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls)
+      (pointwiseRelatedLifecycleMaps nameEq keyEq (LAdvance actor) Refl tag (MkSystemState sourceWorld sourceRegistry) targetBefore
+        sourceOwner targetOwner sourceFound targetFound controls)
+
+0 scopedLifecycleReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (isLifecycleAction action = True) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} action targetBefore = Just (tag, targetAfter))) ->
+  (sourceOwner, targetOwner : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    (actionOwner action) (registry sourceBefore) = Just sourceOwner) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    (actionOwner action) (registry targetBefore) = Just targetOwner) ->
+  FiberControlRelated sourceOwner targetOwner ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq action tag targetChecked) NoTransitions)
+scopedLifecycleReplay name key world error value nameEq keyEq (OInsert actor parent component) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls = void (scopedFalseNotTrue lifecycle)
+scopedLifecycleReplay name key world error value nameEq keyEq (ORetire actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls = void (scopedFalseNotTrue lifecycle)
+scopedLifecycleReplay name key world error value nameEq keyEq (ORemove actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls = void (scopedFalseNotTrue lifecycle)
+scopedLifecycleReplay name key world error value nameEq keyEq (LBegin actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
+    scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq (LBegin actor) Refl (\other, equation => scopedFalseNotTrue (cong (scopedIsAdvanceAction name key world error value) equation))
+      tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
+scopedLifecycleReplay name key world error value nameEq keyEq (LAdvance actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
+    scopedAdvanceReplay name key world error value nameEq keyEq actor tag sourceBefore sourceAfter targetBefore targetAfter
+      sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
+scopedLifecycleReplay name key world error value nameEq keyEq (LDivert actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
+    scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq (LDivert actor) Refl (\other, equation => scopedFalseNotTrue (cong (scopedIsAdvanceAction name key world error value) equation))
+      tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
+scopedLifecycleReplay name key world error value nameEq keyEq (LLeave actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
+    scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq (LLeave actor) Refl (\other, equation => scopedFalseNotTrue (cong (scopedIsAdvanceAction name key world error value) equation))
+      tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
+scopedLifecycleReplay name key world error value nameEq keyEq (LUnload actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
+    scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq (LUnload actor) Refl (\other, equation => scopedFalseNotTrue (cong (scopedIsAdvanceAction name key world error value) equation))
+      tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
+
+0 scopedLifecycleReplayTags :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (isLifecycleAction action = True) ->
+  (sourceTag, targetTag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (sourceTag, sourceAfter))) ->
+  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} action targetBefore = Just (targetTag, targetAfter))) ->
+  (sourceTag = targetTag) ->
+  (sourceOwner, targetOwner : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    (actionOwner action) (registry sourceBefore) = Just sourceOwner) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    (actionOwner action) (registry targetBefore) = Just targetOwner) ->
+  FiberControlRelated sourceOwner targetOwner ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action sourceTag sourceChecked) NoTransitions)
+    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq action targetTag targetChecked) NoTransitions)
+scopedLifecycleReplayTags name key world error value nameEq keyEq action lifecycle sourceTag _
+  sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked Refl sourceOwner targetOwner sourceFound targetFound controls =
+    scopedLifecycleReplay name key world error value nameEq keyEq action lifecycle sourceTag
+      sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
+
+0 scopedNamedLifecycleReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (isLifecycleAction action = True) ->
+  (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (named : NamedTransition name key world error value action targetBefore) ->
+  ScopedNamedAligned name key world error value nameEq keyEq action targetBefore named ->
+  (tag = transitionTag (namedTransition named)) ->
+  (sourceOwner, targetOwner : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    (actionOwner action) (registry sourceBefore) = Just sourceOwner) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    (actionOwner action) (registry targetBefore) = Just targetOwner) ->
+  FiberControlRelated sourceOwner targetOwner ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (namedTransition named) NoTransitions)
+scopedNamedLifecycleReplay name key world error value nameEq keyEq action lifecycle tag
+  sourceBefore sourceAfter targetBefore sourceChecked _ (MkScopedNamedAligned after targetTag {stored} checked)
+  sameTag sourceOwner targetOwner sourceFound targetFound controls =
+    scopedLifecycleReplayTags name key world error value nameEq keyEq action lifecycle tag targetTag
+      sourceBefore sourceAfter targetBefore after sourceChecked stored sameTag sourceOwner targetOwner sourceFound targetFound controls
+
+0 scopedPlannedNamedLifecycleReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (isLifecycleAction action = True) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (named : NamedTransition name key world error value action targetBefore) ->
+  (fireNamed nameEq keyEq action targetBefore = Just named) -> (tag = transitionTag (namedTransition named)) ->
+  (planned : Registry name key value world error) ->
+  InactiveLeafDeletionPlan {name = name} {key = key} {value = value} {world = world} {error = error} nameEq (registry sourceBefore) planned ->
+  (targetOwner : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+    (actionOwner action) (registry targetBefore) = Just targetOwner) ->
+  ForeignRelatedFiberFound name key world error value nameEq (actionOwner action) (registry targetBefore) planned targetOwner ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (namedTransition named) NoTransitions)
+scopedPlannedNamedLifecycleReplay name key world error value nameEq keyEq action lifecycle tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan targetOwner targetFound located =
+    scopedNamedLifecycleReplay name key world error value nameEq keyEq action lifecycle tag sourceBefore sourceAfter targetBefore sourceChecked named
+      (scopedNamedAligned name key world error value nameEq keyEq action targetBefore named fires) sameTag
+      (foreignRelatedFiber located) targetOwner
+      (scopedPlanLookupSource name key world error value nameEq (registry sourceBefore) planned plan (actionOwner action)
+        (foreignRelatedFiber located) (foreignRelatedFound located)) targetFound (fiberControlSymmetric (foreignRelatedControl located))
+
+0 scopedLocatedNamedLifecycleReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (isLifecycleAction action = True) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (named : NamedTransition name key world error value action targetBefore) ->
+  (fireNamed nameEq keyEq action targetBefore = Just named) -> (tag = transitionTag (namedTransition named)) ->
+  (planned : Registry name key value world error) ->
+  InactiveLeafDeletionPlan {name = name} {key = key} {value = value} {world = world} {error = error} nameEq (registry sourceBefore) planned ->
+  FiberControlMaybeRelated
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner action) planned)
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner action) (registry targetBefore)) ->
+  (targetOwner : Fiber name key value world error **
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
+      (actionOwner action) (registry targetBefore) = Just targetOwner)) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (namedTransition named) NoTransitions)
+scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq action lifecycle tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan controls (targetOwner ** targetFound) =
+    scopedPlannedNamedLifecycleReplay name key world error value nameEq keyEq action lifecycle tag sourceBefore sourceAfter targetBefore
+      sourceChecked named fires sameTag planned plan targetOwner targetFound
+      (foreignControlLookupFound nameEq (actionOwner action) (registry targetBefore) planned targetOwner targetFound
+        (fiberControlMaybeSymmetric controls))
+
+0 scopedNamedActionReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (named : NamedTransition name key world error value action targetBefore) ->
+  (fireNamed nameEq keyEq action targetBefore = Just named) -> (tag = transitionTag (namedTransition named)) ->
+  (planned : Registry name key value world error) ->
+  InactiveLeafDeletionPlan {name = name} {key = key} {value = value} {world = world} {error = error} nameEq (registry sourceBefore) planned ->
+  ((isLifecycleAction action = True) -> FiberControlMaybeRelated
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner action) planned)
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner action) (registry targetBefore))) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (namedTransition named) NoTransitions)
+scopedNamedActionReplay name key world error value nameEq keyEq (OInsert actor parent component) tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan controls =
+    scopedNamedOrchestrationReplay name key world error value nameEq keyEq (OInsert actor parent component) tag sourceBefore sourceAfter targetBefore sourceChecked named
+      (scopedNamedAligned name key world error value nameEq keyEq (OInsert actor parent component) targetBefore named fires) sameTag (PaperInsertStep Refl)
+scopedNamedActionReplay name key world error value nameEq keyEq (ORetire actor) tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan controls =
+    scopedNamedOrchestrationReplay name key world error value nameEq keyEq (ORetire actor) tag sourceBefore sourceAfter targetBefore sourceChecked named
+      (scopedNamedAligned name key world error value nameEq keyEq (ORetire actor) targetBefore named fires) sameTag (PaperRetireStep Refl)
+scopedNamedActionReplay name key world error value nameEq keyEq (ORemove actor) tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan controls =
+    scopedNamedOrchestrationReplay name key world error value nameEq keyEq (ORemove actor) tag sourceBefore sourceAfter targetBefore sourceChecked named
+      (scopedNamedAligned name key world error value nameEq keyEq (ORemove actor) targetBefore named fires) sameTag (PaperRemoveStep Refl)
+scopedNamedActionReplay name key world error value nameEq keyEq (LBegin actor) tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan controls =
+    scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq (LBegin actor) Refl tag sourceBefore sourceAfter targetBefore
+      sourceChecked named fires sameTag planned plan (controls Refl)
+      (lifecycleOwnerPresent nameEq keyEq (LBegin actor) Refl targetBefore (namedAfter named) (namedTag named)
+        (namedFireProjectsRaw nameEq keyEq (LBegin actor) targetBefore named fires))
+scopedNamedActionReplay name key world error value nameEq keyEq (LAdvance actor) tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan controls =
+    scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq (LAdvance actor) Refl tag sourceBefore sourceAfter targetBefore
+      sourceChecked named fires sameTag planned plan (controls Refl)
+      (lifecycleOwnerPresent nameEq keyEq (LAdvance actor) Refl targetBefore (namedAfter named) (namedTag named)
+        (namedFireProjectsRaw nameEq keyEq (LAdvance actor) targetBefore named fires))
+scopedNamedActionReplay name key world error value nameEq keyEq (LDivert actor) tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan controls =
+    scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq (LDivert actor) Refl tag sourceBefore sourceAfter targetBefore
+      sourceChecked named fires sameTag planned plan (controls Refl)
+      (lifecycleOwnerPresent nameEq keyEq (LDivert actor) Refl targetBefore (namedAfter named) (namedTag named)
+        (namedFireProjectsRaw nameEq keyEq (LDivert actor) targetBefore named fires))
+scopedNamedActionReplay name key world error value nameEq keyEq (LLeave actor) tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan controls =
+    scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq (LLeave actor) Refl tag sourceBefore sourceAfter targetBefore
+      sourceChecked named fires sameTag planned plan (controls Refl)
+      (lifecycleOwnerPresent nameEq keyEq (LLeave actor) Refl targetBefore (namedAfter named) (namedTag named)
+        (namedFireProjectsRaw nameEq keyEq (LLeave actor) targetBefore named fires))
+scopedNamedActionReplay name key world error value nameEq keyEq (LUnload actor) tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag planned plan controls =
+    scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq (LUnload actor) Refl tag sourceBefore sourceAfter targetBefore
+      sourceChecked named fires sameTag planned plan (controls Refl)
+      (lifecycleOwnerPresent nameEq keyEq (LUnload actor) Refl targetBefore (namedAfter named) (namedTag named)
+        (namedFireProjectsRaw nameEq keyEq (LUnload actor) targetBefore named fires))
+
+0 scopedRelationalNamedReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (named : NamedTransition name key world error value action targetBefore) ->
+  (fireNamed nameEq keyEq action targetBefore = Just named) -> (tag = transitionTag (namedTransition named)) ->
+  (registered : List (RegistrationGeneration name)) -> (live : GenerationEnvironment name) ->
+  RelationalNoEpisodeReplayBoundary name key world error value nameEq keyEq registered live sourceBefore targetBefore ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (namedTransition named) NoTransitions)
+scopedRelationalNamedReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag registered live boundary =
+    scopedNamedActionReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore sourceChecked named fires sameTag
+      (planTarget (completePlanResult (relationalCompletePlan boundary)))
+      (inactiveLeafPlan (completePlanResult (relationalCompletePlan boundary)))
+      (\lifecycle => orderedControlsLookup nameEq (actionOwner action)
+        (planTarget (completePlanResult (relationalCompletePlan boundary))) (registry targetBefore) (relationalOrderedControls boundary))
+
+0 scopedSelectedNamedReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (named : NamedTransition name key world error value action targetBefore) ->
+  (fireNamed nameEq keyEq action targetBefore = Just named) -> (tag = transitionTag (namedTransition named)) ->
+  (selected : name) -> (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (wholeFirst, wholeLast : SystemState name key value world error) -> (whole : Transitions wholeFirst wholeLast) ->
+  Not (EpisodeGenerationDeletedActor {name = name} {key = key} {value = value} {world = world} {error = error}
+    nameEq selected registered ordinal live action) ->
+  SelectedEpisodeReplayBoundary name key world error value nameEq keyEq selected registered ordinal live whole sourceBefore targetBefore ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (namedTransition named) NoTransitions)
+scopedSelectedNamedReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag selected registered ordinal live wholeFirst wholeLast whole retained boundary =
+    scopedNamedActionReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore sourceChecked named fires sameTag
+      (planTarget (completePlanResult (selectedBoundaryPlan boundary)))
+      (inactiveLeafPlan (completePlanResult (selectedBoundaryPlan boundary)))
+      (\lifecycle => selectedOrderedForeignLookupControls nameEq selected (actionOwner action)
+        (\sameOwner => retained (DeleteEpisodeGenerationLifecycle sameOwner lifecycle))
+        (planTarget (completePlanResult (selectedBoundaryPlan boundary))) (registry targetBefore) (selectedBoundaryOrderedControls boundary))
+
+0 scopedPostCloseNamedReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (named : NamedTransition name key world error value action targetBefore) ->
+  (fireNamed nameEq keyEq action targetBefore = Just named) -> (tag = transitionTag (namedTransition named)) ->
+  (selected : name) -> (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  ((isLifecycleAction action = True) -> Not (actionOwner action = selected)) ->
+  PostCloseSelectedBoundary name key world error value nameEq keyEq selected registered ordinal live sourceBefore targetBefore ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (namedTransition named) NoTransitions)
+scopedPostCloseNamedReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore
+  sourceChecked named fires sameTag selected registered ordinal live foreignLifecycle boundary =
+    scopedNamedActionReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore sourceChecked named fires sameTag
+      (planTarget (completePlanResult (postClosePlan boundary)))
+      (inactiveLeafPlan (completePlanResult (postClosePlan boundary)))
+      (\lifecycle => selectedOrderedForeignLookupControls nameEq selected (actionOwner action) (foreignLifecycle lifecycle)
+        (planTarget (completePlanResult (postClosePlan boundary))) (registry targetBefore) (postCloseControls boundary))
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
@@ -19986,94 +20610,6 @@ scopedPrependPostCloseDeletedOutput name key world error value protocol nameEq k
       (\sourceTotal => postCloseOutputTotal folded
         (scopedTraceTotalTail name key world error value nameEq keyEq original originalAfter originalFinal
           transition rest sourceTotal))
-
-||| R166 B26 cure (R165 B26 transcripts): the Transition owns its stored proof;
-||| the checked evaluator equation is a separate explicit constructor field.
-||| Consumers project either field; their proofs need not converge definitionally.
-data ScopedNamedAligned :
-  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
-  (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) ->
-  (before : SystemState name key value world error) ->
-  NamedTransition name key world error value action before -> Type where
-  MkScopedNamedAligned :
-    {name, key, world, error : Type} -> {value : key -> Type} ->
-    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
-    {action : Action name key value world error} ->
-    {before : SystemState name key value world error} ->
-    (afterState : SystemState name key value world error) -> (tag : RuleTag) ->
-    {0 stored : (checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key}
-      {value = value} {world = world} {error = error} action before =
-      Just (tag, afterState))} ->
-    (0 checked : (checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key}
-      {value = value} {world = world} {error = error} action before =
-      Just (tag, afterState))) ->
-    ScopedNamedAligned name key world error value nameEq keyEq action before
-      (MkNamedTransition afterState tag (Fired nameEq keyEq action tag stored) Refl)
-
-0 scopedNamedAlignedAt :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) ->
-  (before : SystemState name key value world error) ->
-  (observed : Maybe (RuleTag, SystemState name key value world error)) ->
-  (0 checkedEq : (checkedApplyAction @{nameEq} @{keyEq} {name = name}
-    {key = key} {value = value} {world = world} {error = error} action before =
-    observed)) ->
-  (named : NamedTransition name key world error value action before) ->
-  (fireNamed nameEq keyEq action before = Just named) ->
-  ScopedNamedAligned name key world error value nameEq keyEq action before named
-scopedNamedAlignedAt name key world error value nameEq keyEq action before
-  Nothing checkedEq named =
-    rewrite checkedEq in (\fires => void (nothingIsNotJust fires))
-scopedNamedAlignedAt name key world error value nameEq keyEq action before
-  (Just (tag, afterState)) checkedEq named =
-    rewrite checkedEq in
-      (\fires => replace
-        {p = \observedNamed => ScopedNamedAligned name key world error value
-          nameEq keyEq action before observedNamed}
-        (justInjective fires) (MkScopedNamedAligned afterState tag checkedEq))
-
-0 scopedNamedAligned :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) ->
-  (before : SystemState name key value world error) ->
-  (named : NamedTransition name key world error value action before) ->
-  (fireNamed nameEq keyEq action before = Just named) ->
-  ScopedNamedAligned name key world error value nameEq keyEq action before named
-scopedNamedAligned name key world error value nameEq keyEq action before named fires =
-  scopedNamedAlignedAt name key world error value nameEq keyEq action before
-    (checkedApplyAction @{nameEq} @{keyEq} action before) Refl named fires
-
-0 scopedNamedChecked :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) ->
-  (before : SystemState name key value world error) ->
-  (named : NamedTransition name key world error value action before) ->
-  ScopedNamedAligned name key world error value nameEq keyEq action before named ->
-  (checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
-    {world = world} {error = error} action before =
-    Just (namedTag named, namedAfter named))
-scopedNamedChecked name key world error value nameEq keyEq action before _
-  (MkScopedNamedAligned afterState tag checked) = checked
-
-0 scopedNamedPrependAligned :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) ->
-  (before : SystemState name key value world error) ->
-  (named : NamedTransition name key world error value action before) ->
-  ScopedNamedAligned name key world error value nameEq keyEq action before named ->
-  (finalState : SystemState name key value world error) ->
-  (rest : Transitions (namedAfter named) finalState) ->
-  AlignedTransitions name key world error value nameEq keyEq rest ->
-  AlignedTransitions name key world error value nameEq keyEq
-    (MoreTransitions (namedTransition named) rest)
-scopedNamedPrependAligned name key world error value nameEq keyEq action before _
-  (MkScopedNamedAligned afterState tag {stored} checked) finalState rest aligned =
-    AlignedStep action tag stored rest aligned
 
 ||| Every canonical surviving trace is aligned with the replay dictionaries.
 0 scopedReadyAligned :
@@ -21618,18 +22154,6 @@ scopedPostCloseSuffixFoldEnriched name key world error value protocol nameEq key
           original _ originalFinal (Fired nameEq keyEq action tag checked) rest noRegistered))
         noFailed)
       (decGenerationOwnedActor nameEq registered ordinal live action)
-
-0 scopedIsAdvanceAction :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  Action name key value world error -> Bool
-scopedIsAdvanceAction name key world error value (OInsert actor parent component) = False
-scopedIsAdvanceAction name key world error value (ORetire actor) = False
-scopedIsAdvanceAction name key world error value (ORemove actor) = False
-scopedIsAdvanceAction name key world error value (LBegin actor) = False
-scopedIsAdvanceAction name key world error value (LAdvance actor) = True
-scopedIsAdvanceAction name key world error value (LDivert actor) = False
-scopedIsAdvanceAction name key world error value (LLeave actor) = False
-scopedIsAdvanceAction name key world error value (LUnload actor) = False
 
 0 scopedTagSelectedNonAdvance :
   (name, key, world, error : Type) -> (value : key -> Type) ->
@@ -24943,24 +25467,6 @@ scopedPrependDeletedReplay name key world error value first middle finalState ta
     (\actor, stage, state => trans (replayIteratorOutcomePreserved replay actor stage state)
       (sym (prependIteratorOutcomeExact transition (replayIteratorStageOrigin replay actor stage) state)))
 
-||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
-0 ScopedReadySemanticReplay :
-  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
-  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
-  (originalFirst, originalFinal, survivor : SystemState name key value world error) ->
-  (source : Transitions originalFirst originalFinal) -> GenerationReplayReady nameEq keyEq deletable ordinal live source survivor -> Type
-ScopedReadySemanticReplay name key world error value nameEq keyEq deletable ordinal live _ _ survivor _ ReplayReadyEnd = Unit
-ScopedReadySemanticReplay name key world error value nameEq keyEq deletable ordinal live originalFirst originalFinal survivor _
-  (ReplayReadyDelete {originalTransition} {originalRest} deleted tail) =
-    ScopedReadySemanticReplay name key world error value nameEq keyEq deletable (S ordinal)
-      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ originalFinal survivor originalRest tail
-ScopedReadySemanticReplay name key world error value nameEq keyEq deletable ordinal live originalFirst originalFinal survivor _
-  (ReplayReadyKeep {originalTransition} {originalRest} retained after tag transition sameAction fires tail) =
-    (RelationalReplayCorrespondence name key world error value (MoreTransitions originalTransition NoTransitions) (MoreTransitions transition NoTransitions),
-     ScopedReadySemanticReplay name key world error value nameEq keyEq deletable (S ordinal)
-      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ originalFinal after originalRest tail)
-
 0 scopedReadySemanticCorrespondence :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
@@ -25024,40 +25530,6 @@ scopedEnrichedSemanticJoin name key world error value protocol nameEq keyEq init
         (scopedEnrichedCenterTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
         (scopedEnrichedSuffixTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds) center suffix))
 
-0 scopedNonAdvanceLifecycleReplay :
-  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) -> (isLifecycleAction action = True) ->
-  ((actor : name) -> Not (action = LAdvance actor)) -> (tag : RuleTag) ->
-  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
-  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} action targetBefore = Just (tag, targetAfter))) ->
-  (sourceOwner, targetOwner : Fiber name key value world error) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    (actionOwner action) (registry sourceBefore) = Just sourceOwner) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    (actionOwner action) (registry targetBefore) = Just targetOwner) ->
-  FiberControlRelated sourceOwner targetOwner ->
-  RelationalReplayCorrespondence name key world error value
-    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
-    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq action tag targetChecked) NoTransitions)
-scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq action lifecycle notAdvance tag sourceBefore sourceAfter targetBefore targetAfter
-  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
-    singletonNonAdvanceRAR nameEq keyEq action tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked notAdvance
-      (pointwiseRelatedLifecycleMaps nameEq keyEq action lifecycle tag sourceBefore targetBefore sourceOwner targetOwner sourceFound targetFound controls)
-
-0 scopedOrchestrationReplay :
-  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) -> (tag : RuleTag) ->
-  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
-  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} action targetBefore = Just (tag, targetAfter))) ->
-  PaperOrchestrationStep (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) ->
-  RelationalReplayCorrespondence name key world error value
-    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
-    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq action tag targetChecked) NoTransitions)
-scopedOrchestrationReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked orchestration =
-  orchestrationSingletonRAR name key value world error nameEq keyEq action tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked orchestration
-
 ||| Remaining local semantic frontier: certificates for actual retained heads, not a caller-chosen whole replay.
 record ScopedEnrichedHeadReplays
   (name, key, world, error : Type) (value : key -> Type)
@@ -25120,478 +25592,6 @@ scopedEnrichedReplayFromHeads name key world error value protocol nameEq keyEq i
 scopedEnrichedTargetFromHeads name key world error value protocol nameEq keyEq initial finalState global candidate folds premises heads =
   scopedEnrichedTargetBundle name key world error value protocol nameEq keyEq initial finalState global candidate folds premises
     (scopedEnrichedReplayFromHeads name key world error value protocol nameEq keyEq initial finalState global candidate folds heads)
-
-0 scopedNonAdvanceLifecycleReplayTags :
-  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) -> (isLifecycleAction action = True) ->
-  ((actor : name) -> Not (action = LAdvance actor)) -> (sourceTag, targetTag : RuleTag) ->
-  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (sourceTag, sourceAfter))) ->
-  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} action targetBefore = Just (targetTag, targetAfter))) ->
-  (sourceTag = targetTag) ->
-  (sourceOwner, targetOwner : Fiber name key value world error) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    (actionOwner action) (registry sourceBefore) = Just sourceOwner) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    (actionOwner action) (registry targetBefore) = Just targetOwner) ->
-  FiberControlRelated sourceOwner targetOwner ->
-  RelationalReplayCorrespondence name key world error value
-    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action sourceTag sourceChecked) NoTransitions)
-    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq action targetTag targetChecked) NoTransitions)
-scopedNonAdvanceLifecycleReplayTags name key world error value nameEq keyEq action lifecycle notAdvance sourceTag _
-  sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked Refl sourceOwner targetOwner sourceFound targetFound controls =
-    scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq action lifecycle notAdvance sourceTag
-      sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
-
-0 scopedNonAdvanceNamedLifecycleReplay :
-  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) -> (isLifecycleAction action = True) ->
-  ((actor : name) -> Not (action = LAdvance actor)) -> (tag : RuleTag) ->
-  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
-  (named : NamedTransition name key world error value action targetBefore) ->
-  ScopedNamedAligned name key world error value nameEq keyEq action targetBefore named ->
-  (tag = transitionTag (namedTransition named)) ->
-  (sourceOwner, targetOwner : Fiber name key value world error) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    (actionOwner action) (registry sourceBefore) = Just sourceOwner) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    (actionOwner action) (registry targetBefore) = Just targetOwner) ->
-  FiberControlRelated sourceOwner targetOwner ->
-  RelationalReplayCorrespondence name key world error value
-    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
-    (MoreTransitions (namedTransition named) NoTransitions)
-scopedNonAdvanceNamedLifecycleReplay name key world error value nameEq keyEq action lifecycle notAdvance tag
-  sourceBefore sourceAfter targetBefore sourceChecked _ (MkScopedNamedAligned after targetTag {stored} checked)
-  sameTag sourceOwner targetOwner sourceFound targetFound controls =
-    scopedNonAdvanceLifecycleReplayTags name key world error value nameEq keyEq action lifecycle notAdvance tag targetTag
-      sourceBefore sourceAfter targetBefore after sourceChecked stored sameTag sourceOwner targetOwner sourceFound targetFound controls
-
-0 scopedOrchestrationReplayTags :
-  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) -> (sourceTag, targetTag : RuleTag) ->
-  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (sourceTag, sourceAfter))) ->
-  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} action targetBefore = Just (targetTag, targetAfter))) ->
-  (sourceTag = targetTag) ->
-  PaperOrchestrationStep (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action sourceTag sourceChecked) ->
-  RelationalReplayCorrespondence name key world error value
-    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action sourceTag sourceChecked) NoTransitions)
-    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq action targetTag targetChecked) NoTransitions)
-scopedOrchestrationReplayTags name key world error value nameEq keyEq action sourceTag _ sourceBefore sourceAfter targetBefore targetAfter
-  sourceChecked targetChecked Refl orchestration =
-    scopedOrchestrationReplay name key world error value nameEq keyEq action sourceTag sourceBefore sourceAfter targetBefore targetAfter
-      sourceChecked targetChecked orchestration
-
-0 scopedNamedOrchestrationReplay :
-  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) -> (tag : RuleTag) ->
-  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
-  (named : NamedTransition name key world error value action targetBefore) ->
-  ScopedNamedAligned name key world error value nameEq keyEq action targetBefore named ->
-  (tag = transitionTag (namedTransition named)) ->
-  PaperOrchestrationStep (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) ->
-  RelationalReplayCorrespondence name key world error value
-    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
-    (MoreTransitions (namedTransition named) NoTransitions)
-scopedNamedOrchestrationReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore
-  sourceChecked _ (MkScopedNamedAligned after targetTag {stored} checked) sameTag orchestration =
-    scopedOrchestrationReplayTags name key world error value nameEq keyEq action tag targetTag sourceBefore sourceAfter targetBefore after
-      sourceChecked stored sameTag orchestration
-
-||| The source and target stages retain one exact program and committed view.
-0 scopedConcreteAdvanceStageFamily :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) -> (tag : RuleTag) ->
-  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) sourceBefore = Just (tag, sourceAfter))) ->
-  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) targetBefore = Just (tag, targetAfter))) ->
-  (component : Component key value world error) -> (sourceParent, targetParent : Parent name) -> (retiredFlag : Bool) ->
-  (sourceTable, targetTable : OwnedTable key value (componentProvisions component)) ->
-  (remaining : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
-  (sourceAccumulator, targetAccumulator : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
-  (view : View name (dependencies (componentDependencies component))) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    actor (registry sourceBefore) = Just (MkFiber component sourceParent retiredFlag sourceTable (Reloading remaining sourceAccumulator view))) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    actor (registry targetBefore) = Just (MkFiber component targetParent retiredFlag targetTable (Reloading remaining targetAccumulator view))) ->
-  SingletonAdvanceStageReplayFamily name key world error value
-    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
-    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq (LAdvance actor) tag targetChecked) NoTransitions)
-scopedConcreteAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceBefore sourceAfter targetBefore targetAfter
-  sourceChecked targetChecked component sourceParent targetParent retiredFlag sourceTable targetTable remaining
-  sourceAccumulator targetAccumulator view sourceFound targetFound =
-    MkSingletonAdvanceStageReplayFamily
-      (\selected, stage => locateSingletonAdvanceStageReplay nameEq keyEq actor tag sourceBefore sourceAfter targetBefore targetAfter
-        sourceChecked targetChecked component sourceParent targetParent retiredFlag sourceTable targetTable remaining
-        sourceAccumulator targetAccumulator view sourceFound targetFound selected stage)
-
-0 scopedReloadingCellSame :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  (component : Component key value world error) -> (parent : Parent name) ->
-  (sourceRetired, targetRetired : Bool) -> (table : OwnedTable key value (componentProvisions component)) ->
-  (sourceRemaining, targetRemaining : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
-  (accumulator : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
-  (sourceView, targetView : View name (dependencies (componentDependencies component))) ->
-  (sourceRetired = targetRetired) -> (sourceRemaining = targetRemaining) -> (sourceView = targetView) ->
-  (the (Fiber name key value world error) (MkFiber component parent targetRetired table (Reloading targetRemaining accumulator targetView)) =
-   MkFiber component parent sourceRetired table (Reloading sourceRemaining accumulator sourceView))
-scopedReloadingCellSame name key world error value component parent sourceRetired targetRetired table sourceRemaining targetRemaining
-  accumulator sourceView targetView retiredSame remainingSame viewSame =
-    trans (cong (\retired => MkFiber component parent retired table (Reloading targetRemaining accumulator targetView)) (sym retiredSame))
-      (trans (cong (\remaining => MkFiber component parent sourceRetired table (Reloading remaining accumulator targetView)) (sym remainingSame))
-        (cong (\view => MkFiber component parent sourceRetired table (Reloading sourceRemaining accumulator view)) (sym viewSame)))
-
-0 scopedLifecycleAdvanceStageFamily :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) -> (tag : RuleTag) ->
-  (sourceWorld : world) -> (sourceRegistry : Registry name key value world error) ->
-  (sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) (MkSystemState sourceWorld sourceRegistry) = Just (tag, sourceAfter))) ->
-  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) targetBefore = Just (tag, targetAfter))) ->
-  (component : Component key value world error) -> (sourceParent, targetParent : Parent name) -> (sourceRetired, targetRetired : Bool) ->
-  (sourceTable, targetTable : OwnedTable key value (componentProvisions component)) ->
-  (sourceLifecycle, targetLifecycle : Lifecycle key value world error name (dependencies (componentDependencies component)) (componentProvisions component)) ->
-  (sourceRetired = targetRetired) -> LifecycleControlRelated sourceLifecycle targetLifecycle ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    actor sourceRegistry = Just (MkFiber component sourceParent sourceRetired sourceTable sourceLifecycle)) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    actor (registry targetBefore) = Just (MkFiber component targetParent targetRetired targetTable targetLifecycle)) ->
-  SingletonAdvanceStageReplayFamily name key world error value
-    (MoreTransitions (Fired {before = MkSystemState sourceWorld sourceRegistry} {afterState = sourceAfter} nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
-    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq (LAdvance actor) tag targetChecked) NoTransitions)
-scopedLifecycleAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
-  sourceChecked targetChecked component sourceParent targetParent sourceRetired targetRetired sourceTable targetTable _ _ retiredSame
-  (InactiveControls {leftOutcome} outcomesSame) sourceFound targetFound =
-    void (nothingIsNotJust (trans (sym (advanceInactiveIsNothing nameEq keyEq actor sourceWorld sourceRegistry component sourceParent sourceRetired sourceTable leftOutcome sourceFound))
-      (checkedActionProjects nameEq keyEq (LAdvance actor) (MkSystemState sourceWorld sourceRegistry) sourceAfter tag sourceChecked)))
-scopedLifecycleAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
-  sourceChecked targetChecked component sourceParent targetParent sourceRetired targetRetired sourceTable targetTable _ _ retiredSame
-  (ReloadingControls {leftRemaining} {rightRemaining} {leftAccumulator} {rightAccumulator} {leftView} {rightView}
-    remainingSame accumulatorsRelated viewSame) sourceFound targetFound =
-      scopedConcreteAdvanceStageFamily name key world error value nameEq keyEq actor tag (MkSystemState sourceWorld sourceRegistry) sourceAfter targetBefore targetAfter
-        sourceChecked targetChecked component sourceParent targetParent sourceRetired sourceTable targetTable leftRemaining leftAccumulator rightAccumulator leftView
-        sourceFound (trans targetFound (cong Just (scopedReloadingCellSame name key world error value component targetParent sourceRetired targetRetired targetTable
-          leftRemaining rightRemaining rightAccumulator leftView rightView retiredSame remainingSame viewSame)))
-scopedLifecycleAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
-  sourceChecked targetChecked component sourceParent targetParent sourceRetired targetRetired sourceTable targetTable _ _ retiredSame
-  (ActiveControls {leftAccumulator} {leftView} accumulatorsRelated viewsSame) sourceFound targetFound =
-    void (nothingIsNotJust (trans (sym (advanceActiveIsNothing nameEq keyEq actor sourceWorld sourceRegistry component sourceParent sourceRetired sourceTable leftAccumulator leftView sourceFound))
-      (checkedActionProjects nameEq keyEq (LAdvance actor) (MkSystemState sourceWorld sourceRegistry) sourceAfter tag sourceChecked)))
-scopedLifecycleAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
-  sourceChecked targetChecked component sourceParent targetParent sourceRetired targetRetired sourceTable targetTable _ _ retiredSame
-  (UnloadingControls {leftAccumulator} {leftView} {leftOutcome} accumulatorsRelated viewsSame outcomesSame) sourceFound targetFound =
-    void (nothingIsNotJust (trans (sym (advanceUnloadingIsNothing nameEq keyEq actor sourceWorld sourceRegistry component sourceParent sourceRetired sourceTable leftAccumulator leftView leftOutcome sourceFound))
-      (checkedActionProjects nameEq keyEq (LAdvance actor) (MkSystemState sourceWorld sourceRegistry) sourceAfter tag sourceChecked)))
-
-0 scopedOwnersAdvanceStageFamily :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) -> (tag : RuleTag) ->
-  (sourceWorld : world) -> (sourceRegistry : Registry name key value world error) ->
-  (sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) (MkSystemState sourceWorld sourceRegistry) = Just (tag, sourceAfter))) ->
-  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) targetBefore = Just (tag, targetAfter))) ->
-  (sourceOwner, targetOwner : Fiber name key value world error) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    actor sourceRegistry = Just sourceOwner) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    actor (registry targetBefore) = Just targetOwner) ->
-  FiberControlRelated sourceOwner targetOwner ->
-  SingletonAdvanceStageReplayFamily name key world error value
-    (MoreTransitions (Fired {before = MkSystemState sourceWorld sourceRegistry} {afterState = sourceAfter} nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
-    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq (LAdvance actor) tag targetChecked) NoTransitions)
-scopedOwnersAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
-  sourceChecked targetChecked _ _ sourceFound targetFound
-  (FibersControlRelated {component} sourceParent targetParent sourceRetired targetRetired sourceTable targetTable sourceLifecycle targetLifecycle
-    parentsSame retiredSame lifecycleRelated) =
-      scopedLifecycleAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
-        sourceChecked targetChecked component sourceParent targetParent sourceRetired targetRetired sourceTable targetTable sourceLifecycle targetLifecycle
-        retiredSame lifecycleRelated sourceFound targetFound
-
-||| Every advance generator and every reachable stage is replayed, not only the observed runtime result.
-0 scopedAdvanceReplay :
-  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (actor : name) -> (tag : RuleTag) ->
-  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) sourceBefore = Just (tag, sourceAfter))) ->
-  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) targetBefore = Just (tag, targetAfter))) ->
-  (sourceOwner, targetOwner : Fiber name key value world error) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    actor (registry sourceBefore) = Just sourceOwner) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    actor (registry targetBefore) = Just targetOwner) ->
-  FiberControlRelated sourceOwner targetOwner ->
-  RelationalReplayCorrespondence name key world error value
-    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq (LAdvance actor) tag sourceChecked) NoTransitions)
-    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq (LAdvance actor) tag targetChecked) NoTransitions)
-scopedAdvanceReplay name key world error value nameEq keyEq actor tag (MkSystemState sourceWorld sourceRegistry) sourceAfter targetBefore targetAfter
-  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
-    singletonAdvanceRAR nameEq keyEq actor tag (MkSystemState sourceWorld sourceRegistry) sourceAfter targetBefore targetAfter sourceChecked targetChecked
-      (scopedOwnersAdvanceStageFamily name key world error value nameEq keyEq actor tag sourceWorld sourceRegistry sourceAfter targetBefore targetAfter
-        sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls)
-      (pointwiseRelatedLifecycleMaps nameEq keyEq (LAdvance actor) Refl tag (MkSystemState sourceWorld sourceRegistry) targetBefore
-        sourceOwner targetOwner sourceFound targetFound controls)
-
-0 scopedLifecycleReplay :
-  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) -> (isLifecycleAction action = True) -> (tag : RuleTag) ->
-  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
-  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} action targetBefore = Just (tag, targetAfter))) ->
-  (sourceOwner, targetOwner : Fiber name key value world error) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    (actionOwner action) (registry sourceBefore) = Just sourceOwner) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    (actionOwner action) (registry targetBefore) = Just targetOwner) ->
-  FiberControlRelated sourceOwner targetOwner ->
-  RelationalReplayCorrespondence name key world error value
-    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
-    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq action tag targetChecked) NoTransitions)
-scopedLifecycleReplay name key world error value nameEq keyEq (OInsert actor parent component) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
-  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls = void (scopedFalseNotTrue lifecycle)
-scopedLifecycleReplay name key world error value nameEq keyEq (ORetire actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
-  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls = void (scopedFalseNotTrue lifecycle)
-scopedLifecycleReplay name key world error value nameEq keyEq (ORemove actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
-  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls = void (scopedFalseNotTrue lifecycle)
-scopedLifecycleReplay name key world error value nameEq keyEq (LBegin actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
-  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
-    scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq (LBegin actor) Refl (\other, equation => scopedFalseNotTrue (cong (scopedIsAdvanceAction name key world error value) equation))
-      tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
-scopedLifecycleReplay name key world error value nameEq keyEq (LAdvance actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
-  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
-    scopedAdvanceReplay name key world error value nameEq keyEq actor tag sourceBefore sourceAfter targetBefore targetAfter
-      sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
-scopedLifecycleReplay name key world error value nameEq keyEq (LDivert actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
-  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
-    scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq (LDivert actor) Refl (\other, equation => scopedFalseNotTrue (cong (scopedIsAdvanceAction name key world error value) equation))
-      tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
-scopedLifecycleReplay name key world error value nameEq keyEq (LLeave actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
-  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
-    scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq (LLeave actor) Refl (\other, equation => scopedFalseNotTrue (cong (scopedIsAdvanceAction name key world error value) equation))
-      tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
-scopedLifecycleReplay name key world error value nameEq keyEq (LUnload actor) lifecycle tag sourceBefore sourceAfter targetBefore targetAfter
-  sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls =
-    scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq (LUnload actor) Refl (\other, equation => scopedFalseNotTrue (cong (scopedIsAdvanceAction name key world error value) equation))
-      tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
-
-0 scopedLifecycleReplayTags :
-  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) -> (isLifecycleAction action = True) ->
-  (sourceTag, targetTag : RuleTag) ->
-  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (sourceTag, sourceAfter))) ->
-  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} action targetBefore = Just (targetTag, targetAfter))) ->
-  (sourceTag = targetTag) ->
-  (sourceOwner, targetOwner : Fiber name key value world error) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    (actionOwner action) (registry sourceBefore) = Just sourceOwner) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    (actionOwner action) (registry targetBefore) = Just targetOwner) ->
-  FiberControlRelated sourceOwner targetOwner ->
-  RelationalReplayCorrespondence name key world error value
-    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action sourceTag sourceChecked) NoTransitions)
-    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq action targetTag targetChecked) NoTransitions)
-scopedLifecycleReplayTags name key world error value nameEq keyEq action lifecycle sourceTag _
-  sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked Refl sourceOwner targetOwner sourceFound targetFound controls =
-    scopedLifecycleReplay name key world error value nameEq keyEq action lifecycle sourceTag
-      sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked sourceOwner targetOwner sourceFound targetFound controls
-
-0 scopedNamedLifecycleReplay :
-  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) -> (isLifecycleAction action = True) ->
-  (tag : RuleTag) ->
-  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
-  (named : NamedTransition name key world error value action targetBefore) ->
-  ScopedNamedAligned name key world error value nameEq keyEq action targetBefore named ->
-  (tag = transitionTag (namedTransition named)) ->
-  (sourceOwner, targetOwner : Fiber name key value world error) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    (actionOwner action) (registry sourceBefore) = Just sourceOwner) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    (actionOwner action) (registry targetBefore) = Just targetOwner) ->
-  FiberControlRelated sourceOwner targetOwner ->
-  RelationalReplayCorrespondence name key world error value
-    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
-    (MoreTransitions (namedTransition named) NoTransitions)
-scopedNamedLifecycleReplay name key world error value nameEq keyEq action lifecycle tag
-  sourceBefore sourceAfter targetBefore sourceChecked _ (MkScopedNamedAligned after targetTag {stored} checked)
-  sameTag sourceOwner targetOwner sourceFound targetFound controls =
-    scopedLifecycleReplayTags name key world error value nameEq keyEq action lifecycle tag targetTag
-      sourceBefore sourceAfter targetBefore after sourceChecked stored sameTag sourceOwner targetOwner sourceFound targetFound controls
-
-0 scopedPlannedNamedLifecycleReplay :
-  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) -> (isLifecycleAction action = True) -> (tag : RuleTag) ->
-  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
-  (named : NamedTransition name key world error value action targetBefore) ->
-  (fireNamed nameEq keyEq action targetBefore = Just named) -> (tag = transitionTag (namedTransition named)) ->
-  (planned : Registry name key value world error) ->
-  InactiveLeafDeletionPlan {name = name} {key = key} {value = value} {world = world} {error = error} nameEq (registry sourceBefore) planned ->
-  (targetOwner : Fiber name key value world error) ->
-  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-    (actionOwner action) (registry targetBefore) = Just targetOwner) ->
-  ForeignRelatedFiberFound name key world error value nameEq (actionOwner action) (registry targetBefore) planned targetOwner ->
-  RelationalReplayCorrespondence name key world error value
-    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
-    (MoreTransitions (namedTransition named) NoTransitions)
-scopedPlannedNamedLifecycleReplay name key world error value nameEq keyEq action lifecycle tag sourceBefore sourceAfter targetBefore
-  sourceChecked named fires sameTag planned plan targetOwner targetFound located =
-    scopedNamedLifecycleReplay name key world error value nameEq keyEq action lifecycle tag sourceBefore sourceAfter targetBefore sourceChecked named
-      (scopedNamedAligned name key world error value nameEq keyEq action targetBefore named fires) sameTag
-      (foreignRelatedFiber located) targetOwner
-      (scopedPlanLookupSource name key world error value nameEq (registry sourceBefore) planned plan (actionOwner action)
-        (foreignRelatedFiber located) (foreignRelatedFound located)) targetFound (fiberControlSymmetric (foreignRelatedControl located))
-
-0 scopedLocatedNamedLifecycleReplay :
-  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) -> (isLifecycleAction action = True) -> (tag : RuleTag) ->
-  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
-  (named : NamedTransition name key world error value action targetBefore) ->
-  (fireNamed nameEq keyEq action targetBefore = Just named) -> (tag = transitionTag (namedTransition named)) ->
-  (planned : Registry name key value world error) ->
-  InactiveLeafDeletionPlan {name = name} {key = key} {value = value} {world = world} {error = error} nameEq (registry sourceBefore) planned ->
-  FiberControlMaybeRelated
-    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner action) planned)
-    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner action) (registry targetBefore)) ->
-  (targetOwner : Fiber name key value world error **
-    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error}
-      (actionOwner action) (registry targetBefore) = Just targetOwner)) ->
-  RelationalReplayCorrespondence name key world error value
-    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
-    (MoreTransitions (namedTransition named) NoTransitions)
-scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq action lifecycle tag sourceBefore sourceAfter targetBefore
-  sourceChecked named fires sameTag planned plan controls (targetOwner ** targetFound) =
-    scopedPlannedNamedLifecycleReplay name key world error value nameEq keyEq action lifecycle tag sourceBefore sourceAfter targetBefore
-      sourceChecked named fires sameTag planned plan targetOwner targetFound
-      (foreignControlLookupFound nameEq (actionOwner action) (registry targetBefore) planned targetOwner targetFound
-        (fiberControlMaybeSymmetric controls))
-
-0 scopedNamedActionReplay :
-  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) -> (tag : RuleTag) ->
-  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
-  (named : NamedTransition name key world error value action targetBefore) ->
-  (fireNamed nameEq keyEq action targetBefore = Just named) -> (tag = transitionTag (namedTransition named)) ->
-  (planned : Registry name key value world error) ->
-  InactiveLeafDeletionPlan {name = name} {key = key} {value = value} {world = world} {error = error} nameEq (registry sourceBefore) planned ->
-  ((isLifecycleAction action = True) -> FiberControlMaybeRelated
-    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner action) planned)
-    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner action) (registry targetBefore))) ->
-  RelationalReplayCorrespondence name key world error value
-    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
-    (MoreTransitions (namedTransition named) NoTransitions)
-scopedNamedActionReplay name key world error value nameEq keyEq (OInsert actor parent component) tag sourceBefore sourceAfter targetBefore
-  sourceChecked named fires sameTag planned plan controls =
-    scopedNamedOrchestrationReplay name key world error value nameEq keyEq (OInsert actor parent component) tag sourceBefore sourceAfter targetBefore sourceChecked named
-      (scopedNamedAligned name key world error value nameEq keyEq (OInsert actor parent component) targetBefore named fires) sameTag (PaperInsertStep Refl)
-scopedNamedActionReplay name key world error value nameEq keyEq (ORetire actor) tag sourceBefore sourceAfter targetBefore
-  sourceChecked named fires sameTag planned plan controls =
-    scopedNamedOrchestrationReplay name key world error value nameEq keyEq (ORetire actor) tag sourceBefore sourceAfter targetBefore sourceChecked named
-      (scopedNamedAligned name key world error value nameEq keyEq (ORetire actor) targetBefore named fires) sameTag (PaperRetireStep Refl)
-scopedNamedActionReplay name key world error value nameEq keyEq (ORemove actor) tag sourceBefore sourceAfter targetBefore
-  sourceChecked named fires sameTag planned plan controls =
-    scopedNamedOrchestrationReplay name key world error value nameEq keyEq (ORemove actor) tag sourceBefore sourceAfter targetBefore sourceChecked named
-      (scopedNamedAligned name key world error value nameEq keyEq (ORemove actor) targetBefore named fires) sameTag (PaperRemoveStep Refl)
-scopedNamedActionReplay name key world error value nameEq keyEq (LBegin actor) tag sourceBefore sourceAfter targetBefore
-  sourceChecked named fires sameTag planned plan controls =
-    scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq (LBegin actor) Refl tag sourceBefore sourceAfter targetBefore
-      sourceChecked named fires sameTag planned plan (controls Refl)
-      (lifecycleOwnerPresent nameEq keyEq (LBegin actor) Refl targetBefore (namedAfter named) (namedTag named)
-        (namedFireProjectsRaw nameEq keyEq (LBegin actor) targetBefore named fires))
-scopedNamedActionReplay name key world error value nameEq keyEq (LAdvance actor) tag sourceBefore sourceAfter targetBefore
-  sourceChecked named fires sameTag planned plan controls =
-    scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq (LAdvance actor) Refl tag sourceBefore sourceAfter targetBefore
-      sourceChecked named fires sameTag planned plan (controls Refl)
-      (lifecycleOwnerPresent nameEq keyEq (LAdvance actor) Refl targetBefore (namedAfter named) (namedTag named)
-        (namedFireProjectsRaw nameEq keyEq (LAdvance actor) targetBefore named fires))
-scopedNamedActionReplay name key world error value nameEq keyEq (LDivert actor) tag sourceBefore sourceAfter targetBefore
-  sourceChecked named fires sameTag planned plan controls =
-    scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq (LDivert actor) Refl tag sourceBefore sourceAfter targetBefore
-      sourceChecked named fires sameTag planned plan (controls Refl)
-      (lifecycleOwnerPresent nameEq keyEq (LDivert actor) Refl targetBefore (namedAfter named) (namedTag named)
-        (namedFireProjectsRaw nameEq keyEq (LDivert actor) targetBefore named fires))
-scopedNamedActionReplay name key world error value nameEq keyEq (LLeave actor) tag sourceBefore sourceAfter targetBefore
-  sourceChecked named fires sameTag planned plan controls =
-    scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq (LLeave actor) Refl tag sourceBefore sourceAfter targetBefore
-      sourceChecked named fires sameTag planned plan (controls Refl)
-      (lifecycleOwnerPresent nameEq keyEq (LLeave actor) Refl targetBefore (namedAfter named) (namedTag named)
-        (namedFireProjectsRaw nameEq keyEq (LLeave actor) targetBefore named fires))
-scopedNamedActionReplay name key world error value nameEq keyEq (LUnload actor) tag sourceBefore sourceAfter targetBefore
-  sourceChecked named fires sameTag planned plan controls =
-    scopedLocatedNamedLifecycleReplay name key world error value nameEq keyEq (LUnload actor) Refl tag sourceBefore sourceAfter targetBefore
-      sourceChecked named fires sameTag planned plan (controls Refl)
-      (lifecycleOwnerPresent nameEq keyEq (LUnload actor) Refl targetBefore (namedAfter named) (namedTag named)
-        (namedFireProjectsRaw nameEq keyEq (LUnload actor) targetBefore named fires))
-
-0 scopedRelationalNamedReplay :
-  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) -> (tag : RuleTag) ->
-  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
-  (named : NamedTransition name key world error value action targetBefore) ->
-  (fireNamed nameEq keyEq action targetBefore = Just named) -> (tag = transitionTag (namedTransition named)) ->
-  (registered : List (RegistrationGeneration name)) -> (live : GenerationEnvironment name) ->
-  RelationalNoEpisodeReplayBoundary name key world error value nameEq keyEq registered live sourceBefore targetBefore ->
-  RelationalReplayCorrespondence name key world error value
-    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
-    (MoreTransitions (namedTransition named) NoTransitions)
-scopedRelationalNamedReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore
-  sourceChecked named fires sameTag registered live boundary =
-    scopedNamedActionReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore sourceChecked named fires sameTag
-      (planTarget (completePlanResult (relationalCompletePlan boundary)))
-      (inactiveLeafPlan (completePlanResult (relationalCompletePlan boundary)))
-      (\lifecycle => orderedControlsLookup nameEq (actionOwner action)
-        (planTarget (completePlanResult (relationalCompletePlan boundary))) (registry targetBefore) (relationalOrderedControls boundary))
-
-0 scopedSelectedNamedReplay :
-  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) -> (tag : RuleTag) ->
-  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
-  (named : NamedTransition name key world error value action targetBefore) ->
-  (fireNamed nameEq keyEq action targetBefore = Just named) -> (tag = transitionTag (namedTransition named)) ->
-  (selected : name) -> (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
-  (wholeFirst, wholeLast : SystemState name key value world error) -> (whole : Transitions wholeFirst wholeLast) ->
-  Not (EpisodeGenerationDeletedActor {name = name} {key = key} {value = value} {world = world} {error = error}
-    nameEq selected registered ordinal live action) ->
-  SelectedEpisodeReplayBoundary name key world error value nameEq keyEq selected registered ordinal live whole sourceBefore targetBefore ->
-  RelationalReplayCorrespondence name key world error value
-    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
-    (MoreTransitions (namedTransition named) NoTransitions)
-scopedSelectedNamedReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore
-  sourceChecked named fires sameTag selected registered ordinal live wholeFirst wholeLast whole retained boundary =
-    scopedNamedActionReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore sourceChecked named fires sameTag
-      (planTarget (completePlanResult (selectedBoundaryPlan boundary)))
-      (inactiveLeafPlan (completePlanResult (selectedBoundaryPlan boundary)))
-      (\lifecycle => selectedOrderedForeignLookupControls nameEq selected (actionOwner action)
-        (\sameOwner => retained (DeleteEpisodeGenerationLifecycle sameOwner lifecycle))
-        (planTarget (completePlanResult (selectedBoundaryPlan boundary))) (registry targetBefore) (selectedBoundaryOrderedControls boundary))
-
-0 scopedPostCloseNamedReplay :
-  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (action : Action name key value world error) -> (tag : RuleTag) ->
-  (sourceBefore, sourceAfter, targetBefore : SystemState name key value world error) ->
-  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
-  (named : NamedTransition name key world error value action targetBefore) ->
-  (fireNamed nameEq keyEq action targetBefore = Just named) -> (tag = transitionTag (namedTransition named)) ->
-  (selected : name) -> (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
-  ((isLifecycleAction action = True) -> Not (actionOwner action = selected)) ->
-  PostCloseSelectedBoundary name key world error value nameEq keyEq selected registered ordinal live sourceBefore targetBefore ->
-  RelationalReplayCorrespondence name key world error value
-    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
-    (MoreTransitions (namedTransition named) NoTransitions)
-scopedPostCloseNamedReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore
-  sourceChecked named fires sameTag selected registered ordinal live foreignLifecycle boundary =
-    scopedNamedActionReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore sourceChecked named fires sameTag
-      (planTarget (completePlanResult (postClosePlan boundary)))
-      (inactiveLeafPlan (completePlanResult (postClosePlan boundary)))
-      (\lifecycle => selectedOrderedForeignLookupControls nameEq selected (actionOwner action) (foreignLifecycle lifecycle)
-        (planTarget (completePlanResult (postClosePlan boundary))) (registry targetBefore) (postCloseControls boundary))
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
