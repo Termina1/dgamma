@@ -19860,6 +19860,32 @@ scopedRelationalYieldControls name key world error value protocol nameEq keyEq
         (planTarget (completePlanResult (relationalCompletePlan boundary)))
         (registry survivor) (relationalOrderedControls boundary))
 
+0 scopedRelationalParentControls :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  (original, originalAfter, originalFinal, survivor :
+    SystemState name key value world error) ->
+  (rest : Transitions originalAfter originalFinal) ->
+  RegistrationStepDiscipline protocol nameEq action original rest ->
+  (boundary : RelationalNoEpisodeReplayBoundary name key world error value nameEq
+    keyEq registered live original survivor) ->
+  (parent, child : name) -> (component : Component key value world error) ->
+  (action = OInsert child (ChildOf parent) component) ->
+  FiberControlMaybeRelated
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} parent (registry original))
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} parent (registry survivor))
+scopedRelationalParentControls name key world error value protocol nameEq keyEq
+  registered live _ original originalAfter originalFinal survivor rest discipline
+  boundary parent child component Refl =
+    scopedRelationalYieldControls name key world error value protocol nameEq keyEq
+      parent component registered live original survivor (fst discipline) boundary
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
