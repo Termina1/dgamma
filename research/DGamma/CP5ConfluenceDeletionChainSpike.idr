@@ -21617,6 +21617,30 @@ scopedRegistrationDisciplinePrefix name key world error value protocol nameEq fi
         rest right (registrationDisciplineAppendRight protocol nameEq (MoreTransitions transition NoTransitions)
           (appendTransitions rest right) discipline))
 
+record ScopedSelectedInteriorFoldOutput
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
+  (registered : List (RegistrationGeneration name))
+  (ordinal : Nat) (live : GenerationEnvironment name)
+  {wholeFirst, wholeLast, originalFirst, originalFinal : SystemState name key value world error}
+  (whole : Transitions wholeFirst wholeLast)
+  (original : Transitions originalFirst originalFinal)
+  (survivor : SystemState name key value world error) where
+  constructor MkScopedSelectedInteriorFoldOutput
+  interiorOutputFold : SelectedEpisodeInteriorFold name key world error value nameEq keyEq
+    selected registered ordinal live whole original survivor
+  0 interiorOutputTags : ReplayReadyRuleTagsPreserved name key world error value nameEq keyEq
+    (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst originalFinal
+    original survivor (interiorReady interiorOutputFold)
+  0 interiorOutputParentControls : ScopedReadyParentControls name key world error value nameEq keyEq
+    (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst originalFinal
+    survivor original (interiorReady interiorOutputFold)
+  0 interiorOutputDiscipline : RegistrationDiscipline protocol nameEq
+    (scopedReadyTrace name key world error value nameEq keyEq
+      (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live originalFirst originalFinal
+      survivor original (interiorReady interiorOutputFold))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
