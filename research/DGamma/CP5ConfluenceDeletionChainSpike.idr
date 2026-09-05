@@ -18572,6 +18572,56 @@ scopedChildRetirementKeptAt name key world error value nameEq parent child
           sourceFirst sourceMiddle sourceFinal sourceStep sourceRest
           (scopedStepNotRetire next) retirement)))
 
+||| A deleted first retirement contradicts the retained current generation;
+||| other deleted steps simply continue the source-side invariant walk.
+0 scopedChildRetirementDeletedAt :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) -> (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type) ->
+  (parent, child : name) -> (generation : RegistrationGeneration name) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (sourceFirst, sourceMiddle, sourceFinal, survivorFirst,
+    survivorFinal : SystemState name key value world error) ->
+  (sourceStep : Transition sourceFirst sourceMiddle) ->
+  (sourceRest : Transitions sourceMiddle sourceFinal) ->
+  (survivor : Transitions survivorFirst survivorFinal) ->
+  (0 current : (lookupCurrentGeneration @{nameEq} child live = Just generation)) ->
+  (0 retained : Not (Elem generation registered)) ->
+  (0 deleted : deletable ordinal live (transitionAction sourceStep)) ->
+  (0 retireOwned : deletable ordinal live (ORetire child) ->
+    GenerationOwnedActor {name = name} {key = key} {value = value}
+      {world = world} {error = error} nameEq registered ordinal live (ORetire child)) ->
+  (0 recurse : ScopedUnretiredFiberAt name key value world error nameEq child
+    sourceMiddle ->
+    (lookupCurrentGeneration @{nameEq} child
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep)
+        live) = Just generation) ->
+    ChildRetiresBeforeRecovery parent child sourceRest ->
+    ChildRetiresBeforeRecovery parent child survivor) ->
+  Either (transitionAction sourceStep = ORetire child)
+    (ScopedUnretiredNext name key value world error nameEq child ordinal live
+      (transitionAction sourceStep) sourceMiddle) ->
+  ChildRetiresBeforeRecovery parent child (MoreTransitions sourceStep sourceRest) ->
+  ChildRetiresBeforeRecovery parent child survivor
+scopedChildRetirementDeletedAt name key world error value nameEq registered
+  deletable parent child generation ordinal live sourceFirst sourceMiddle
+  sourceFinal survivorFirst survivorFinal sourceStep sourceRest survivor current
+  retained deleted retireOwned recurse (Left retires) retirement =
+    void (scopedRetainedGenerationRetireAbsurd name key world error value nameEq
+      registered child generation ordinal live current retained
+      (retireOwned (replace {p = \action => deletable ordinal live action}
+        retires deleted)))
+scopedChildRetirementDeletedAt name key world error value nameEq registered
+  deletable parent child generation ordinal live sourceFirst sourceMiddle
+  sourceFinal survivorFirst survivorFinal sourceStep sourceRest survivor current
+  retained deleted retireOwned recurse (Right next) retirement =
+    recurse (scopedStepUnretired next) (trans (scopedStepCurrent next) current)
+      (snd (scopedChildBeforeTail name key world error value parent child
+        sourceFirst sourceMiddle sourceFinal sourceStep sourceRest
+        (scopedStepNotRetire next) retirement))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
