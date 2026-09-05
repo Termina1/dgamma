@@ -25038,6 +25038,19 @@ scopedNonAdvanceLifecycleReplay name key world error value nameEq keyEq action l
     singletonNonAdvanceRAR nameEq keyEq action tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked notAdvance
       (pointwiseRelatedLifecycleMaps nameEq keyEq action lifecycle tag sourceBefore targetBefore sourceOwner targetOwner sourceFound targetFound controls)
 
+0 scopedOrchestrationReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (tag, sourceAfter))) ->
+  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} action targetBefore = Just (tag, targetAfter))) ->
+  PaperOrchestrationStep (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action tag sourceChecked) NoTransitions)
+    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq action tag targetChecked) NoTransitions)
+scopedOrchestrationReplay name key world error value nameEq keyEq action tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked orchestration =
+  orchestrationSingletonRAR name key value world error nameEq keyEq action tag sourceBefore sourceAfter targetBefore targetAfter sourceChecked targetChecked orchestration
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
