@@ -22083,6 +22083,103 @@ scopedSelectedInteriorFoldHead name key world error value protocol nameEq keyEq 
         survivor tag checked sourceInstalled (installedTraceStart installedRest) rest installedRest noBegin occurs
         insidePrefix decomposition boundary emptyPlan inactive retained)
 
+||| Live selected interior fold with a source-derived birth census.  All erasing
+||| branches retain surviving discipline and the concrete tag/control certificates.
+0 scopedSelectedInteriorFoldEnriched :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (selectedOutside : (generation : RegistrationGeneration name) ->
+    Elem generation registered -> Not (generationName generation = selected)) ->
+  {wholeFirst, wholeLast, interiorFirst, originalFirst, originalFinal :
+    SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) -> (interior : Transitions interiorFirst originalFinal) ->
+  (local : ScopedTaggedSelectedLocalReplayer name key world error value nameEq keyEq selected
+    registered protocol whole interior) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (stamped : GenerationEnvironmentStamped live) ->
+  (original : Transitions originalFirst originalFinal) ->
+  (discipline : RegistrationDiscipline protocol nameEq original) ->
+  (complete : ScopedSelectedBirthsComplete name key world error value selected registered ordinal
+    originalFirst originalFinal original) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq original) ->
+  (installed : InstalledTrace name key world error value nameEq keyEq selected original) ->
+  (noRegistered : NoRegisteredEpisode nameEq registered ordinal live original) ->
+  (embed : OccurrenceEmbedding original whole) ->
+  (insidePrefix : Transitions interiorFirst originalFirst) ->
+  (decomposition : (appendTransitions insidePrefix original = interior)) ->
+  (survivor : SystemState name key value world error) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq keyEq selected
+    registered ordinal live whole originalFirst survivor) ->
+  (inactive : CurrentRegisteredInactiveFibers name key world error value nameEq registered live originalFirst) ->
+  (empty : CurrentRegisteredEmptyTables name key world error value nameEq registered live originalFirst) ->
+  (emptyPlan : EmptyTableInactivePlan name key world error value nameEq
+    (inactiveLeafPlan (completePlanResult (selectedBoundaryPlan boundary)))) ->
+  ScopedSelectedInteriorFoldOutput name key world error value protocol nameEq keyEq selected registered
+    ordinal live whole original survivor
+scopedSelectedInteriorFoldEnriched name key world error value protocol nameEq keyEq selected registered
+  selectedOutside whole interior local ordinal live unique stamped _ discipline complete AlignedEnd
+  installed noRegistered embed insidePrefix decomposition survivor boundary inactive empty emptyPlan =
+    MkScopedSelectedInteriorFoldOutput
+      (MkSelectedEpisodeInteriorFold ordinal live survivor GenerationTraceScanEnd ReplayReadyEnd
+        (ReplayEndsEnd Refl) boundary)
+      () ScopedParentControlsEnd RegistrationDisciplineEnd
+scopedSelectedInteriorFoldEnriched name key world error value protocol nameEq keyEq selected registered
+  selectedOutside whole interior local ordinal live unique stamped _ discipline complete
+  (AlignedStep {middle = nextState} action tag checked rest alignedRest) installed noRegistered
+  embed insidePrefix decomposition survivor boundary inactive empty emptyPlan =
+    scopedSelectedInteriorFoldHead name key world error value protocol nameEq keyEq selected registered
+      ordinal live unique stamped selectedOutside originalFirst nextState originalFinal survivor whole interior local
+      action tag checked rest
+      (fst (scopedInstalledHead name key world error value nameEq keyEq selected originalFirst nextState
+        originalFinal (Fired nameEq keyEq action tag checked) rest installed))
+      (snd (scopedInstalledHead name key world error value nameEq keyEq selected originalFirst nextState
+        originalFinal (Fired nameEq keyEq action tag checked) rest installed))
+      (fst (scopedNoRegisteredHead name key world error value nameEq registered ordinal live originalFirst
+        nextState originalFinal (Fired nameEq keyEq action tag checked) rest noRegistered))
+      (embed (Fired nameEq keyEq action tag checked) OccursHere) insidePrefix decomposition boundary
+      emptyPlan inactive complete
+      (registrationDisciplineHead protocol nameEq (Fired nameEq keyEq action tag checked) rest discipline)
+      alignedRest
+      (\nextSurvivor, nextBoundary => scopedSelectedInteriorFoldEnriched name key world error value protocol
+        nameEq keyEq selected registered selectedOutside whole interior local (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal action live)
+        (advanceGenerationEnvironmentPreservesUnique nameEq ordinal action live unique)
+        (advanceGenerationEnvironmentPreservesStamped nameEq ordinal action live stamped) rest
+        (registrationDisciplineAppendRight protocol nameEq
+          (MoreTransitions (Fired nameEq keyEq action tag checked) NoTransitions) rest discipline)
+        (scopedSelectedBirthsTail name key world error value selected registered ordinal originalFirst nextState
+          originalFinal (Fired nameEq keyEq action tag checked) rest complete)
+        alignedRest
+        (snd (scopedInstalledHead name key world error value nameEq keyEq selected originalFirst nextState
+          originalFinal (Fired nameEq keyEq action tag checked) rest installed))
+        (snd (scopedNoRegisteredHead name key world error value nameEq registered ordinal live originalFirst
+          nextState originalFinal (Fired nameEq keyEq action tag checked) rest noRegistered))
+        (\later, occurrence => embed later (OccursLater occurrence))
+        (appendTransitions insidePrefix (MoreTransitions (Fired nameEq keyEq action tag checked) NoTransitions))
+        (trans (appendTransitionsAssociative insidePrefix
+          (MoreTransitions (Fired nameEq keyEq action tag checked) NoTransitions) rest) decomposition)
+        nextSurvivor nextBoundary
+        (currentRegisteredInactiveStep nameEq keyEq registered ordinal live unique action originalFirst nextState tag
+          (checkedActionProjects nameEq keyEq action originalFirst nextState tag checked)
+          (fst (scopedNoRegisteredHead name key world error value nameEq registered ordinal live originalFirst
+            nextState originalFinal (Fired nameEq keyEq action tag checked) rest noRegistered)) inactive)
+        (currentRegisteredEmptyTableStep nameEq keyEq registered ordinal live unique action originalFirst nextState tag
+          (checkedActionProjects nameEq keyEq action originalFirst nextState tag checked)
+          (fst (scopedNoRegisteredHead name key world error value nameEq registered ordinal live originalFirst
+            nextState originalFinal (Fired nameEq keyEq action tag checked) rest noRegistered)) inactive empty)
+        (completeCurrentRegisteredPlanHasEmptyTables nameEq registered
+          (advanceGenerationEnvironment @{nameEq} ordinal action live)
+          (advanceGenerationEnvironmentPreservesUnique nameEq ordinal action live unique)
+          (worldState nextState) (registry nextState) (selectedBoundaryPlan nextBoundary)
+          (currentRegisteredEmptyTableStep nameEq keyEq registered ordinal live unique action originalFirst nextState tag
+            (checkedActionProjects nameEq keyEq action originalFirst nextState tag checked)
+            (fst (scopedNoRegisteredHead name key world error value nameEq registered ordinal live originalFirst
+              nextState originalFinal (Fired nameEq keyEq action tag checked) rest noRegistered)) inactive empty)))
+      (decEpisodeGenerationDeletedActor nameEq selected registered ordinal live action)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
