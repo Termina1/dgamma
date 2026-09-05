@@ -10011,6 +10011,22 @@ selectedGenerationConsumerOrdinalScoped selectedPrefixTrace selectedToForeign
       (cong (\ordinal => ordinal + S (transitionCount selectedToForeign))
         selectedOrdinalExact)
 
+0 locatedActionFromOccursScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {stepBefore, stepAfter, first, finalState :
+    SystemState name key value world error} ->
+  (transition : Transition stepBefore stepAfter) ->
+  (action : Action name key value world error) ->
+  (0 actionShape : transitionAction transition = action) ->
+  (trace : Transitions first finalState) ->
+  OccursIn transition trace ->
+  LocatedActionOccurrence action trace
+locatedActionFromOccursScoped transition action actionShape trace occurs =
+  case locateTransitionOccurrence transition trace occurs of
+    MkLocatedTransitionOccurrence beforeTrace afterTrace decomposition =>
+      MkLocatedActionOccurrence stepBefore stepAfter beforeTrace transition
+        afterTrace actionShape decomposition
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
