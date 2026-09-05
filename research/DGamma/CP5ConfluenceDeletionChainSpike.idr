@@ -24301,6 +24301,41 @@ scopedEnrichedWithdrawable name key world error value protocol nameEq keyEq init
     (postCloseCurrentInactive (scopedEnrichedSuffixBoundary name key world error value protocol nameEq keyEq initial finalState global candidate folds))
     (postCloseCurrentEmpty (scopedEnrichedSuffixBoundary name key world error value protocol nameEq keyEq initial finalState global candidate folds))
 
+0 scopedEnrichedEndpointEvidence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  (EffectStateRelated keyEq (projectEffectState @{nameEq} finalState)
+      (projectEffectState @{nameEq} (scopedEnrichedFinal name key world error value protocol nameEq keyEq initial finalState global candidate folds)),
+   ControlEquivalentOutsideGenerations nameEq (selectedRegistrations candidate)
+      (relationalSuffixFinalLive (postCloseOutputFold (enrichedSuffix folds))) finalState
+      (scopedEnrichedFinal name key world error value protocol nameEq keyEq initial finalState global candidate folds),
+   RegisteredNamesWithdrawn nameEq (selectedRegistrations candidate)
+      (relationalSuffixFinalLive (postCloseOutputFold (enrichedSuffix folds))) finalState
+      (scopedEnrichedFinal name key world error value protocol nameEq keyEq initial finalState global candidate folds))
+scopedEnrichedEndpointEvidence name key world error value protocol nameEq keyEq initial finalState global candidate folds aligned =
+  replace {p = \target =>
+    (EffectStateRelated keyEq (projectEffectState @{nameEq} finalState) (projectEffectState @{nameEq} target),
+     ControlEquivalentOutsideGenerations nameEq (selectedRegistrations candidate)
+       (relationalSuffixFinalLive (postCloseOutputFold (enrichedSuffix folds))) finalState target,
+     RegisteredNamesWithdrawn nameEq (selectedRegistrations candidate)
+       (relationalSuffixFinalLive (postCloseOutputFold (enrichedSuffix folds))) finalState target)}
+    (sym (scopedReadyFinalExact name key world error value nameEq keyEq (GenerationOwnedActor nameEq (selectedRegistrations candidate))
+      (selectedFoldEndOrdinal (selectedOutputFold (enrichedSelected folds))) (selectedFoldEndLive (selectedOutputFold (enrichedSelected folds)))
+      (locatedAfter (selectedEpisode candidate)) finalState
+      (scopedEnrichedMiddle name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+      (traceAfterClosing (selectedEpisode candidate)) (relationalSuffixReplayReady (postCloseOutputFold (enrichedSuffix folds)))
+      (relationalSuffixFinalSurvivor (postCloseOutputFold (enrichedSuffix folds))) (relationalSuffixReadyEnds (postCloseOutputFold (enrichedSuffix folds)))))
+    (relationalBoundaryGivesEndpointEvidence nameEq keyEq (selectedRegistrations candidate)
+      (relationalSuffixFinalLive (postCloseOutputFold (enrichedSuffix folds))) (relationalSuffixFinalUnique (postCloseOutputFold (enrichedSuffix folds)))
+      finalState (relationalSuffixFinalSurvivor (postCloseOutputFold (enrichedSuffix folds)))
+      (relationalSuffixFinalBoundary (postCloseOutputFold (enrichedSuffix folds)))
+      (scopedEnrichedFinalPlanEmpty name key world error value protocol nameEq keyEq initial finalState global candidate folds aligned)
+      (scopedEnrichedWithdrawable name key world error value protocol nameEq keyEq initial finalState global candidate folds aligned))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
