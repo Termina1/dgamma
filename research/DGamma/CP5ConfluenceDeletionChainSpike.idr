@@ -19394,6 +19394,19 @@ scopedNamedAligned name key world error value nameEq keyEq action before named f
   scopedNamedAlignedAt name key world error value nameEq keyEq action before
     (checkedApplyAction @{nameEq} @{keyEq} action before) Refl named fires
 
+0 scopedNamedChecked :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (before : SystemState name key value world error) ->
+  (named : NamedTransition name key world error value action before) ->
+  ScopedNamedAligned name key world error value nameEq keyEq action before named ->
+  (checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} action before =
+    Just (namedTag named, namedAfter named))
+scopedNamedChecked name key world error value nameEq keyEq action before _
+  (MkScopedNamedAligned afterState tag checked) = checked
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
