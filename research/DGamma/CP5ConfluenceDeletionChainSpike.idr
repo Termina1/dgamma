@@ -21137,6 +21137,32 @@ scopedIsAdvanceAction name key world error value (LDivert actor) = False
 scopedIsAdvanceAction name key world error value (LLeave actor) = False
 scopedIsAdvanceAction name key world error value (LUnload actor) = False
 
+0 scopedTagSelectedNonAdvance :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (action : Action name key value world error) ->
+  ((actor : name) -> Not (action = LAdvance actor)) ->
+  (tag : RuleTag) ->
+  (original, originalAfter, survivor : SystemState name key value world error) ->
+  (checked : (checkedApplyAction @{nameEq} @{keyEq} action original = Just (tag, originalAfter))) ->
+  (step : SelectedEpisodeRetainedHead name key world error value nameEq keyEq selected
+    registered ordinal live whole action originalAfter survivor) ->
+  ScopedTaggedSelectedHead name key world error value nameEq keyEq selected registered
+    ordinal live whole action tag originalAfter survivor
+scopedTagSelectedNonAdvance name key world error value nameEq keyEq selected registered
+  ordinal live whole action notAdvance tag original originalAfter survivor checked step =
+    MkScopedTaggedSelectedHead step
+      (scopedNonAdvanceTagsSame name key world error value nameEq keyEq action notAdvance
+        original survivor originalAfter (namedAfter (selectedHeadNamed step)) tag
+        (namedTag (selectedHeadNamed step))
+        (checkedActionProjects nameEq keyEq action original originalAfter tag checked)
+        (namedFireProjectsRaw nameEq keyEq action survivor (selectedHeadNamed step)
+          (selectedHeadFires step)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
