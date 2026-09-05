@@ -20120,6 +20120,60 @@ scopedRelationalFoldHead name key world error value protocol nameEq keyEq
         (replayRelatedAction nameEq keyEq) registered ordinal live unique action
         original survivor boundary tag checked rest stepDiscipline retained)
 
+||| Live relational fallback producer.  Its constructor-owned output retains tags,
+||| parent controls, and RegistrationDiscipline of the SURVIVING trace.
+0 scopedRelationalSuffixFoldOutput :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (bornBefore : RegisteredGenerationsBornBefore registered ordinal) ->
+  (unique : GenerationEnvironmentNamesUnique live) ->
+  (original, originalFinal, survivor : SystemState name key value world error) ->
+  (trace : Transitions original originalFinal) ->
+  (boundary : RelationalNoEpisodeReplayBoundary name key world error value nameEq
+    keyEq registered live original survivor) ->
+  RegistrationDiscipline protocol nameEq trace ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  NoRegisteredEpisode nameEq registered ordinal live trace ->
+  ScopedPostCloseSuffixFoldOutput name key world error value protocol nameEq keyEq
+    registered ordinal live trace survivor
+scopedRelationalSuffixFoldOutput name key world error value protocol nameEq keyEq
+  registered ordinal live bornBefore unique _ _ survivor _
+  boundary discipline AlignedEnd noRegistered =
+    MkScopedPostCloseSuffixFoldOutput
+      (MkRelationalNoEpisodeSuffixReplayFold ordinal live survivor
+        GenerationTraceScanEnd ReplayReadyEnd (ReplayEndsEnd Refl) unique boundary)
+      () ScopedParentControlsEnd RegistrationDisciplineEnd
+scopedRelationalSuffixFoldOutput name key world error value protocol nameEq keyEq
+  registered ordinal live bornBefore unique original originalFinal survivor _
+  boundary discipline (AlignedStep action tag checked rest alignedRest) noRegistered =
+    scopedRelationalFoldHead name key world error value protocol nameEq keyEq
+      registered ordinal live unique bornBefore action tag original _ originalFinal
+      survivor checked rest
+      (registrationDisciplineHead protocol nameEq
+        (Fired nameEq keyEq action tag checked) rest discipline)
+      alignedRest
+      (fst (scopedNoRegisteredHead name key world error value nameEq registered ordinal
+        live original _ originalFinal (Fired nameEq keyEq action tag checked) rest
+        noRegistered))
+      boundary
+      (\nextSurvivor, nextBoundary => scopedRelationalSuffixFoldOutput name key world
+        error value protocol nameEq keyEq registered (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal action live)
+        (registeredGenerationsBornBeforeNext bornBefore)
+        (advanceGenerationEnvironmentPreservesUnique nameEq ordinal action live unique)
+        _ originalFinal nextSurvivor rest nextBoundary
+        (registrationDisciplineAppendRight protocol nameEq
+          (MoreTransitions (Fired nameEq keyEq action tag checked) NoTransitions)
+          rest discipline)
+        alignedRest
+        (snd (scopedNoRegisteredHead name key world error value nameEq registered ordinal
+          live original _ originalFinal (Fired nameEq keyEq action tag checked) rest
+          noRegistered)))
+      (decGenerationOwnedActor nameEq registered ordinal live action)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
