@@ -93,6 +93,9 @@ import DGamma.CP5ConfluenceLocalDiamondSpike
 import Data.List
 import Data.List.Elem
 import Data.Nat
+import Data.Maybe
+import DGamma.CP4DeletionControlCore
+import DGamma.CP4DeletionRelationalLifecycleSources
 import Decidable.Equality
 
 %default total
@@ -23009,6 +23012,24 @@ scopedPostCloseOutputNoFailure name key world error value protocol nameEq keyEq 
         (relationalSuffixFinalLive (postCloseOutputFold output)) originalFinal
         (relationalSuffixFinalSurvivor (postCloseOutputFold output))
         (relationalSuffixFinalBoundary (postCloseOutputFold output)) noFailure)
+
+0 scopedQuietFiberTargetSame :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (fiber : Fiber name key value world error) -> (left, right : Registry name key value world error) ->
+  (targetFiber @{nameEq} @{keyEq} fiber left = targetFiber @{nameEq} @{keyEq} fiber right) ->
+  (quietFiber @{nameEq} @{keyEq} fiber left = quietFiber @{nameEq} @{keyEq} fiber right)
+scopedQuietFiberTargetSame name key world error value nameEq keyEq
+  (MkFiber component parent retiredFlag table (Inactive Nothing)) left right same = cong isNothing same
+scopedQuietFiberTargetSame name key world error value nameEq keyEq
+  (MkFiber component parent retiredFlag table (Inactive (Just failure))) left right same = Refl
+scopedQuietFiberTargetSame name key world error value nameEq keyEq
+  (MkFiber component parent retiredFlag table (Reloading remaining accumulator view)) left right same = Refl
+scopedQuietFiberTargetSame name key world error value nameEq keyEq
+  (MkFiber component parent retiredFlag table (Active accumulator view)) left right same =
+    cong (\target => targetMatches @{nameEq} target view) same
+scopedQuietFiberTargetSame name key world error value nameEq keyEq
+  (MkFiber component parent retiredFlag table (Unloading accumulator view outcome)) left right same = Refl
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
