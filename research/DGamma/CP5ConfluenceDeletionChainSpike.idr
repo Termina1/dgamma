@@ -13614,6 +13614,51 @@ scopedSelectedClosedFoldFromInterior name key world error value nameEq keyEq
             (registeredDuringBirthLowerBound registeredDuring)
             (closedStartState (locatedEpisode located)))))
 
+0 scopedLifecycleOccursInClosedPrefix :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState, before, afterState :
+    SystemState name key value world error} ->
+  {global : Transitions initial finalState} ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq
+    selected global) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (insidePrefix : Transitions
+    (closedStartState (locatedEpisode located)) before) ->
+  (rest : Transitions afterState
+    (lastInstalledState (locatedEpisode located))) ->
+  (insideDecomposition : appendTransitions insidePrefix
+    (MoreTransitions
+      (Fired {before = before} {afterState = afterState}
+        nameEq keyEq action tag checked) rest) =
+      closedInside (locatedEpisode located)) ->
+  OccursIn
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked)
+    (appendTransitions (traceBeforeOpening located)
+      (MoreTransitions
+        (beginTransition (closedOpening (locatedEpisode located)))
+        (closedTransitions (locatedEpisode located))))
+scopedLifecycleOccursInClosedPrefix name key world error value nameEq keyEq
+  selected located action tag checked insidePrefix rest insideDecomposition =
+    appendRightOccursScoped (traceBeforeOpening located)
+      (MoreTransitions
+        (beginTransition (closedOpening (locatedEpisode located)))
+        (closedTransitions (locatedEpisode located)))
+      (OccursLater
+        (appendLeftOccursScoped (closedInside (locatedEpisode located))
+          (MoreTransitions
+            (unloadTransition (closing (locatedEpisode located))) NoTransitions)
+          (transportOccursScoped insideDecomposition
+            (appendRightOccursScoped insidePrefix
+              (MoreTransitions
+                (Fired {before = before} {afterState = afterState}
+                  nameEq keyEq action tag checked)
+                rest)
+              OccursHere))))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
