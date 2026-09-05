@@ -22889,6 +22889,23 @@ scopedOrderedControlsNoFailure name key world error value _ _
 scopedAndRightTrue False right equation = void (scopedFalseNotTrue equation)
 scopedAndRightTrue True right equation = equation
 
+0 scopedAllDeleteHeadAt :
+  (key : Type) -> (value : key -> Type) -> (keyEq : DecEq key) ->
+  (predicate : Binding key value -> Bool) -> (wanted, current : key) ->
+  (cell : value current) -> (rest : List (Binding key value)) ->
+  (source : (allList predicate (Bind current cell :: rest) = True)) ->
+  (survivingTail : (allList predicate (deleteEntries @{keyEq} wanted rest) = True)) ->
+  (observed : Dec (wanted = current)) ->
+  (decEq @{keyEq} wanted current = observed) ->
+  (allList predicate (deleteEntries @{keyEq} wanted (Bind current cell :: rest)) = True)
+scopedAllDeleteHeadAt key value keyEq predicate _ current cell rest source survivingTail
+  (Yes Refl) exact =
+    rewrite exact in scopedAndRightTrue (predicate (Bind current cell)) (allList predicate rest) source
+scopedAllDeleteHeadAt key value keyEq predicate wanted current cell rest source survivingTail
+  (No distinct) exact =
+    rewrite exact in
+      rewrite scopedAndLeftTrue (predicate (Bind current cell)) (allList predicate rest) source in survivingTail
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
