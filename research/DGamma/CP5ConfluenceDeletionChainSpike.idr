@@ -43,6 +43,7 @@ import DGamma.CP4DeletionSelectedForeignControlCore
 import DGamma.CP4DeletionSelectedOwn
 import DGamma.CP4DeletionSelectedOwnDispatch
 import DGamma.CP4DeletionSelectedRetire
+import DGamma.CP4DeletionSelectedStart
 import DGamma.CP4DeletionSelectedBoundary
 import DGamma.CP4DeletionSelectedDeletedDispatch
 import DGamma.CP4DeletionSelectedDeletedOrchestration
@@ -13110,6 +13111,26 @@ scopedAppendSelectedCloseReplay name key world error value nameEq keyEq selected
                   (advanceGenerationEnvironment @{nameEq} ordinal
                     (transitionAction originalTransition) live)
                   rest survivingAfter tail target tailEnds closing)))
+
+0 scopedInitialCurrentInactive :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (bounded : GenerationEnvironmentBounded ordinal live) ->
+  (lower : (generation : RegistrationGeneration name) ->
+    Elem generation registered ->
+    LTE ordinal (generationBirthOrdinal generation)) ->
+  (state : SystemState name key value world error) ->
+  CurrentRegisteredInactiveFibers name key world error value nameEq registered
+    live state
+scopedInitialCurrentInactive name key world error value nameEq registered ordinal
+  live bounded lower state actor generation member current =
+    void
+      (noCurrentRegisteredAtEpisodeStart registered live bounded lower actor
+        generation
+        (currentGenerationEntryFromLookup nameEq actor generation live current)
+        member)
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
