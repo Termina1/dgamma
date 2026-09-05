@@ -22930,6 +22930,20 @@ scopedNoFailureDelete name key world error value nameEq actor ambient (MkCoeffec
     (DGamma.CP3.notFailedEntry {name = name} {key = key} {value = value} {world = world} {error = error})
     actor entries source
 
+0 scopedPlanNoFailure :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (ambient : world) ->
+  (source, target : Registry name key value world error) ->
+  InactiveLeafDeletionPlan {name = name} {key = key} {value = value} {world = world} {error = error}
+    nameEq source target ->
+  (noFailedFibers (the (SystemState name key value world error) (MkSystemState ambient source)) = True) ->
+  (noFailedFibers (the (SystemState name key value world error) (MkSystemState ambient target)) = True)
+scopedPlanNoFailure name key world error value nameEq ambient _ _ NoInactiveLeafDeletion noFailure = noFailure
+scopedPlanNoFailure name key world error value nameEq ambient source target
+  (DeleteInactiveLeaf removed component parent retiredFlag table outcome found noChild rest) noFailure =
+    scopedPlanNoFailure name key world error value nameEq ambient (deleteBinding @{nameEq} removed source) target rest
+      (scopedNoFailureDelete name key world error value nameEq removed ambient source noFailure)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
