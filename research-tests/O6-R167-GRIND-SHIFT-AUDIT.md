@@ -432,12 +432,15 @@ are LocalDiamond checks; every other row is the direct DeletionChain check.
 
 All failed spellings were corrected in the same micro-unit; no 3/3 stop or
 budget reset occurred. The repeated inherited warning is omitted. H1 was a
-passing hygiene correction, not an additional failed check.
+passing hygiene correction, not an additional failed check. Trailing whitespace
+in the quoted diagnostics is normalized. A post-audit-commit whitespace check
+caught three copied trailing spaces; this documentation-only correction
+removed them and did not change source, proof budgets, or compiler evidence.
 
 ### A12 attempt 1/3
 
 ```text
-Error: While processing right hand side of scopedPlanMemberSource. Undefined name deleteBindingRuntimeBindings. 
+Error: While processing right hand side of scopedPlanMemberSource. Undefined name deleteBindingRuntimeBindings.
 
 DGamma.CP5ConfluenceDeletionChainSpike:19437:34--19437:62
  19433 | scopedPlanMemberSource name key world error value nameEq _ _ NoInactiveLeafDeletion entry member = member
@@ -467,7 +470,7 @@ Suggestion: add an explicit export or public export modifier. By default, all na
 ### B28 attempt 1/3
 
 ```text
-Error: While processing right hand side of scopedTargetReplayBundle. Undefined name registrationDisciplineProvenance. 
+Error: While processing right hand side of scopedTargetReplayBundle. Undefined name registrationDisciplineProvenance.
 
 DGamma.CP5ConfluenceDeletionChainSpike:24395:8--24395:40
  24391 | scopedTargetReplayBundle name key world error value protocol nameEq keyEq initial finalState trace aligned discipline
@@ -517,7 +520,7 @@ Error: While processing right hand side of scopedPrependReplayGeneratorMaps. Whe
     relation (EffectState name key value world) (EffectStateEquivalence keyEq) x y
 and:
     relation (EffectState name key value world) (EffectStateEquivalence keyEq) ?x ?y
-Undefined name DGamma.Core.Equivalence.relation. 
+Undefined name DGamma.Core.Equivalence.relation.
 
 DGamma.CP5ConfluenceDeletionChainSpike:24921:64--24921:70
  24917 | scopedPrependReplayGeneratorMaps name key world error value keyEq first middle finalState targetFirst targetFinal transition source target
