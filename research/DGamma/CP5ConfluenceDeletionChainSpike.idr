@@ -11575,6 +11575,15 @@ data ScopedSystemStateProjection :
       (state = MkSystemState projectedWorld projectedRegistry)) ->
     ScopedSystemStateProjection name key world error value state
 
+0 scopedSystemStateProjection :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (state : SystemState name key value world error) ->
+  ScopedSystemStateProjection name key world error value state
+scopedSystemStateProjection name key world error value state =
+  case state of
+    MkSystemState observedWorld observedRegistry =>
+      MkScopedSystemStateProjection observedWorld observedRegistry Refl
+
 0 ScopedForeignLifecycleExclusion :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
