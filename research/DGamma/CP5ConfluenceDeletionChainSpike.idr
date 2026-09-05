@@ -9969,6 +9969,26 @@ scopedSpanningDecomposition beforeOpening opening afterOpening beforeClosing
       (MoreTransitions (beginTransition opening) afterOpening) rightTrace) in
     rewrite openingSplit in Refl
 
+0 extendLocatedClosingRightScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {actor : name} ->
+  {prefixInitial, prefixFinal, globalFinal :
+    SystemState name key value world error} ->
+  (prefixTrace : Transitions prefixInitial prefixFinal) ->
+  (located : LocatedClosedEpisode name key world error value nameEq keyEq actor
+    prefixTrace) ->
+  (suffixTrace : Transitions prefixFinal globalFinal) ->
+  (global : Transitions prefixInitial globalFinal) ->
+  (0 exactTrace : appendTransitions prefixTrace suffixTrace = global) ->
+  LocatedClosedEpisode name key world error value nameEq keyEq actor global
+extendLocatedClosingRightScoped prefixTrace located suffixTrace global
+  exactTrace =
+    replace
+      {p = \candidate => LocatedClosedEpisode name key world error value nameEq
+        keyEq actor candidate}
+      exactTrace
+      (appendLocatedClosingEpisodeRight prefixTrace located suffixTrace)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
