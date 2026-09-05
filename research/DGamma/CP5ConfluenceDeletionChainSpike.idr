@@ -8,6 +8,7 @@ import DGamma.CP4DeletionTheorem
 import DGamma.CP4DeletionBoundaryPlan
 import DGamma.CP4DeletionPlanBuilder
 import DGamma.CP4DeletionPlanComplete
+import DGamma.CP4DeletionPlanEffects
 import DGamma.CP4DeletionFilterSuccess
 import DGamma.CP4DeletionGenerationBounds
 import DGamma.CP4DeletionGenerationStamped
@@ -25,6 +26,7 @@ import DGamma.CP4DeletionSelectedForeignLifecycleAnchorTrace
 import DGamma.CP4DeletionSelectedForeignLifecycleProviderFrame
 import DGamma.CP4DeletionSelectedForeignLifecycleDispatch
 import DGamma.CP4DeletionSelectedForeignLifecycleReplayCore
+import DGamma.CP4DeletionSelectedForeignAdvanceAgreement
 import DGamma.CP4DeletionSelectedOwn
 import DGamma.CP4DeletionSelectedBoundary
 import DGamma.CP4DeletionSelectedEpisodeFold
@@ -11345,6 +11347,67 @@ scopedSystemStateEta (MkSystemState ambient fibers) = Refl
   ForeignLifecycleControlReplay name key world error value nameEq keyEq selected
     action tag planAfter rightBefore
 scopedLifecycleControlTransportBefore Refl replay = replay
+
+0 scopedSelectedLifecycleOutcomes :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  (actorDistinct : Not (actionOwner action = selected)) ->
+  {wholeFirst, wholeLast, before, afterState, survivor :
+    SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (independent : TraceIndependent name key world error value keyEq whole) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (occurs : OccursIn
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked) whole) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  (emptyPlan : EmptyTableInactivePlan name key world error value nameEq
+    (inactiveLeafPlan (completePlanResult
+      (selectedBoundaryPlan boundary)))) ->
+  (ownerLookup : lookupFiber @{nameEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (actionOwner action)
+    (planTarget (completePlanResult (selectedBoundaryPlan boundary))) =
+    lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error} (actionOwner action) (registry before)) ->
+  ForeignAdvanceOutcomeProvider name key world error value nameEq keyEq action
+    (worldState before) (worldState survivor)
+    (planTarget (completePlanResult (selectedBoundaryPlan boundary)))
+    (registry survivor)
+scopedSelectedLifecycleOutcomes nameEq keyEq selected registered ordinal live
+  (OInsert actor parent component) actorDistinct whole independent tag checked
+  occurs boundary emptyPlan ownerLookup = ()
+scopedSelectedLifecycleOutcomes nameEq keyEq selected registered ordinal live
+  (ORetire actor) actorDistinct whole independent tag checked occurs boundary
+  emptyPlan ownerLookup = ()
+scopedSelectedLifecycleOutcomes nameEq keyEq selected registered ordinal live
+  (ORemove actor) actorDistinct whole independent tag checked occurs boundary
+  emptyPlan ownerLookup = ()
+scopedSelectedLifecycleOutcomes nameEq keyEq selected registered ordinal live
+  (LBegin actor) actorDistinct whole independent tag checked occurs boundary
+  emptyPlan ownerLookup = ()
+scopedSelectedLifecycleOutcomes nameEq keyEq selected registered ordinal live
+  (LAdvance actor) actorDistinct whole independent tag checked occurs boundary
+  emptyPlan ownerLookup =
+    selectedForeignAdvanceOutcomeProvider nameEq keyEq selected actor
+      actorDistinct whole independent before afterState survivor tag checked
+      occurs boundary emptyPlan
+      (\fiber, planFound => trans (sym ownerLookup) planFound)
+scopedSelectedLifecycleOutcomes nameEq keyEq selected registered ordinal live
+  (LDivert actor) actorDistinct whole independent tag checked occurs boundary
+  emptyPlan ownerLookup = ()
+scopedSelectedLifecycleOutcomes nameEq keyEq selected registered ordinal live
+  (LLeave actor) actorDistinct whole independent tag checked occurs boundary
+  emptyPlan ownerLookup = ()
+scopedSelectedLifecycleOutcomes nameEq keyEq selected registered ordinal live
+  (LUnload actor) actorDistinct whole independent tag checked occurs boundary
+  emptyPlan ownerLookup = ()
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
