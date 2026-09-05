@@ -22944,6 +22944,23 @@ scopedPlanNoFailure name key world error value nameEq ambient source target
     scopedPlanNoFailure name key world error value nameEq ambient (deleteBinding @{nameEq} removed source) target rest
       (scopedNoFailureDelete name key world error value nameEq removed ambient source noFailure)
 
+0 scopedRelationalBoundaryNoFailure :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) -> (live : GenerationEnvironment name) ->
+  (original, survivor : SystemState name key value world error) ->
+  (boundary : RelationalNoEpisodeReplayBoundary name key world error value nameEq keyEq registered
+    live original survivor) ->
+  (noFailedFibers original = True) -> (noFailedFibers survivor = True)
+scopedRelationalBoundaryNoFailure name key world error value nameEq keyEq registered live original
+  survivor boundary noFailure =
+    trans (sym (scopedOrderedControlsNoFailure name key world error value
+      (bindings (planTarget (completePlanResult (relationalCompletePlan boundary))))
+      (bindings (registry survivor)) (relationalOrderedControls boundary)))
+      (scopedPlanNoFailure name key world error value nameEq (worldState original) (registry original)
+        (planTarget (completePlanResult (relationalCompletePlan boundary)))
+        (inactiveLeafPlan (completePlanResult (relationalCompletePlan boundary))) noFailure)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
