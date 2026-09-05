@@ -19359,6 +19359,29 @@ data ScopedNamedAligned :
     ScopedNamedAligned name key world error value nameEq keyEq action before
       (MkNamedTransition afterState tag (Fired nameEq keyEq action tag stored) Refl)
 
+0 scopedNamedAlignedAt :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (before : SystemState name key value world error) ->
+  (observed : Maybe (RuleTag, SystemState name key value world error)) ->
+  (0 checkedEq : (checkedApplyAction @{nameEq} @{keyEq} {name = name}
+    {key = key} {value = value} {world = world} {error = error} action before =
+    observed)) ->
+  (named : NamedTransition name key world error value action before) ->
+  (fireNamed nameEq keyEq action before = Just named) ->
+  ScopedNamedAligned name key world error value nameEq keyEq action before named
+scopedNamedAlignedAt name key world error value nameEq keyEq action before
+  Nothing checkedEq named =
+    rewrite checkedEq in (\fires => void (nothingIsNotJust fires))
+scopedNamedAlignedAt name key world error value nameEq keyEq action before
+  (Just (tag, afterState)) checkedEq named =
+    rewrite checkedEq in
+      (\fires => replace
+        {p = \observedNamed => ScopedNamedAligned name key world error value
+          nameEq keyEq action before observedNamed}
+        (justInjective fires) (MkScopedNamedAligned afterState tag checkedEq))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
