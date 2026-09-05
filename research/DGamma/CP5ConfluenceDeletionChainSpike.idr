@@ -10489,6 +10489,21 @@ containingProviderExcludesConsumerBeginScoped providerEpisode consumerEpisode
             (strictToTransitions (consumerToProviderClose containment))
             occurs)))
 
+0 missingLookupRejectsInstalledScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (state : SystemState name key value world error) ->
+  (0 missing : lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor (registry state) = Nothing) ->
+  installedAt @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} actor state = True ->
+  Void
+missingLookupRejectsInstalledScoped nameEq actor state missing installed =
+  falseNotTrueO7
+    (trans
+      (sym (installedAtMissing nameEq actor state Nothing missing Refl))
+      installed)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
