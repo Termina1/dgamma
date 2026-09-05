@@ -24936,6 +24936,24 @@ scopedPrependDeletedReplay name key world error value first middle finalState ta
     (\actor, stage, state => trans (replayIteratorOutcomePreserved replay actor stage state)
       (sym (prependIteratorOutcomeExact transition (replayIteratorStageOrigin replay actor stage) state)))
 
+||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
+0 ScopedReadySemanticReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (originalFirst, originalFinal, survivor : SystemState name key value world error) ->
+  (source : Transitions originalFirst originalFinal) -> GenerationReplayReady nameEq keyEq deletable ordinal live source survivor -> Type
+ScopedReadySemanticReplay name key world error value nameEq keyEq deletable ordinal live _ _ survivor _ ReplayReadyEnd = Unit
+ScopedReadySemanticReplay name key world error value nameEq keyEq deletable ordinal live originalFirst originalFinal survivor _
+  (ReplayReadyDelete {originalTransition} {originalRest} deleted tail) =
+    ScopedReadySemanticReplay name key world error value nameEq keyEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ originalFinal survivor originalRest tail
+ScopedReadySemanticReplay name key world error value nameEq keyEq deletable ordinal live originalFirst originalFinal survivor _
+  (ReplayReadyKeep {originalTransition} {originalRest} retained after tag transition sameAction fires tail) =
+    (RelationalReplayCorrespondence name key world error value (MoreTransitions originalTransition NoTransitions) (MoreTransitions transition NoTransitions),
+     ScopedReadySemanticReplay name key world error value nameEq keyEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ originalFinal after originalRest tail)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
