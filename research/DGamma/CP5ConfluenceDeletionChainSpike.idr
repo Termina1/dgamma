@@ -25796,6 +25796,23 @@ scopedPrefixReplaySeal name key world error value nameEq keyEq registered ordina
           (Fired nameEq keyEq action tag checked) rest scan) lower alignedRest)
       (fireNamed nameEq keyEq action first) Refl
 
+0 scopedReadyCanonicalEnds :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (first, finalState, survivor : SystemState name key value world error) -> (trace : Transitions first finalState) ->
+  (ready : GenerationReplayReady nameEq keyEq deletable ordinal live trace survivor) ->
+  ReplayReadyEndsAt ready (scopedReadyFinal name key world error value nameEq keyEq deletable ordinal live first finalState survivor trace ready)
+scopedReadyCanonicalEnds name key world error value nameEq keyEq deletable ordinal live _ _ survivor _ ReplayReadyEnd = ReplayEndsEnd Refl
+scopedReadyCanonicalEnds name key world error value nameEq keyEq deletable ordinal live first finalState survivor _
+  (ReplayReadyDelete {originalTransition} {originalRest} deleted tail) =
+    ReplayEndsDelete deleted tail (scopedReadyCanonicalEnds name key world error value nameEq keyEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ finalState survivor originalRest tail)
+scopedReadyCanonicalEnds name key world error value nameEq keyEq deletable ordinal live first finalState survivor _
+  (ReplayReadyKeep {originalTransition} {originalRest} retained after tag targetStep actionSame fires tail) =
+    ReplayEndsKeep retained tag targetStep actionSame fires tail (scopedReadyCanonicalEnds name key world error value nameEq keyEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live) _ finalState after originalRest tail)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
