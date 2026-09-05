@@ -12050,6 +12050,7 @@ scopedPackageTaggedForeignLifecycleEpisodeStep name key world error value nameEq
         survivorFound ownersRelated control))
 
 0 retainedForeignLifecycleFromScopedOwner :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (registered : List (RegistrationGeneration name)) ->
   (ordinal : Nat) -> (live : GenerationEnvironment name) ->
@@ -12090,11 +12091,12 @@ scopedPackageTaggedForeignLifecycleEpisodeStep name key world error value nameEq
     {wholeFirst = wholeFirst} {wholeLast = wholeLast} {before = before}
     {survivor = survivor} {whole = whole} {action = action} boundary) ->
   (leftOwner : Fiber name key value world error) ->
-  lookupFiber @{nameEq} (actionOwner action)
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} (actionOwner action)
     (planTarget (completePlanResult (selectedBoundaryPlan boundary))) =
-    Just leftOwner ->
-  ForeignRetainedEpisodeStep name key world error value nameEq keyEq selected
-    registered ordinal live whole action afterState survivor
+    Just leftOwner) ->
+  ScopedTaggedSelectedHead name key world error value nameEq keyEq selected
+    registered ordinal live whole action tag afterState survivor
 retainedForeignLifecycleFromScopedOwner
   {name} {key} {world} {error} {value}
   nameEq keyEq selected registered ordinal live action lifecycle distinct whole
@@ -12109,7 +12111,7 @@ retainedForeignLifecycleFromScopedOwner
         (planTarget (completePlanResult (selectedBoundaryPlan boundary)))
         (registry survivor) (selectedBoundaryOrderedControls boundary)) of
       MkForeignRelatedFiberFound rightOwner rightFound ownersRelated =>
-        packageForeignLifecycleEpisodeStep nameEq keyEq selected registered
+        scopedPackageTaggedForeignLifecycleEpisodeStep name key world error value nameEq keyEq selected registered
           ordinal live action lifecycle distinct whole before afterState
           survivor tag checked occurs independent boundary exactStep leftOwner
           rightOwner
@@ -12196,6 +12198,7 @@ retainedForeignLifecycleFromScopedOwner
 ||| specializes its occurrence-scoped provider before entering this helper, so
 ||| the control dispatcher consumes only the direct Boolean exclusion leaf.
 0 retainedForeignLifecycleFromScopedExclusion :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (registered : List (RegistrationGeneration name)) ->
   (ordinal : Nat) -> (live : GenerationEnvironment name) ->
@@ -12235,8 +12238,8 @@ retainedForeignLifecycleFromScopedOwner
     {registered = registered} {ordinal = ordinal} {live = live}
     {wholeFirst = wholeFirst} {wholeLast = wholeLast} {before = before}
     {survivor = survivor} {whole = whole} {action = action} boundary) ->
-  ForeignRetainedEpisodeStep name key world error value nameEq keyEq selected
-    registered ordinal live whole action afterState survivor
+  ScopedTaggedSelectedHead name key world error value nameEq keyEq selected
+    registered ordinal live whole action tag afterState survivor
 retainedForeignLifecycleFromScopedExclusion nameEq keyEq selected registered
   ordinal live action lifecycle distinct whole before afterState survivor tag
   checked occurs independent boundary emptyPlan selectedOutsidePlan
@@ -12258,6 +12261,9 @@ retainedForeignLifecycleFromScopedExclusion nameEq keyEq selected registered
           leftOwner leftFound
 
 0 scopedForeignLifecycleRetainedHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {globalFirst, globalLast, wholeFirst, wholeLast, selectedPre, selectedAfter :
+    SystemState name key value world error} ->
   (protocol : RegistrationProtocol key value world error) ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
   (registered : List (RegistrationGeneration name)) ->
@@ -12299,15 +12305,14 @@ retainedForeignLifecycleFromScopedExclusion nameEq keyEq selected registered
       (selectedBoundaryPlan boundary)))) ->
   (retained : Not (EpisodeGenerationDeletedActor nameEq selected registered
     ordinal live action)) ->
-  SelectedEpisodeRetainedHead name key world error value nameEq keyEq selected
-    registered ordinal live whole action afterState survivor
+  ScopedTaggedSelectedHead name key world error value nameEq keyEq selected
+    registered ordinal live whole action tag afterState survivor
 scopedForeignLifecycleRetainedHead protocol nameEq keyEq selected registered
   selectedOutside global globalDiscipline independent whole selectedEpisode
   wholeInGlobal anchors ordinal live unique stamped action lifecycle distinct
   before afterState survivor tag checked rest selectedRest occurs insidePrefix
   insideDecomposition boundary emptyPlan retained =
-    scopedForeignRetainedHead
-      (retainedForeignLifecycleFromScopedExclusion nameEq keyEq selected
+    retainedForeignLifecycleFromScopedExclusion nameEq keyEq selected
         registered ordinal live action lifecycle distinct whole before afterState
         survivor tag checked occurs
         (restrictTraceIndependent
@@ -12328,7 +12333,7 @@ scopedForeignLifecycleRetainedHead protocol nameEq keyEq selected registered
         (scopedLifecycleExcludesSelectedAt anchors ordinal live action lifecycle
           distinct before afterState tag checked rest selectedRest
           (wholeInGlobal (Fired nameEq keyEq action tag checked) occurs)
-          insidePrefix insideDecomposition boundary))
+          insidePrefix insideDecomposition boundary)
 
 0 scopedForeignOrchestrationRetainedHead :
   (protocol : RegistrationProtocol key value world error) ->
@@ -12450,51 +12455,51 @@ scopedDispatchForeignRetainedHead protocol nameEq keyEq selected registered
   wholeInGlobal anchors ordinal live unique stamped (LBegin actor) distinct before
   afterState survivor tag checked rest selectedRest occurs insidePrefix
   insideDecomposition boundary emptyPlan retained =
-    scopedForeignLifecycleRetainedHead protocol nameEq keyEq selected registered
+    taggedSelectedHead (scopedForeignLifecycleRetainedHead protocol nameEq keyEq selected registered
       selectedOutside global globalDiscipline independent whole selectedEpisode
       wholeInGlobal anchors ordinal live unique stamped (LBegin actor) Refl
       distinct before afterState survivor tag checked rest selectedRest occurs
-      insidePrefix insideDecomposition boundary emptyPlan retained
+      insidePrefix insideDecomposition boundary emptyPlan retained)
 scopedDispatchForeignRetainedHead protocol nameEq keyEq selected registered
   selectedOutside global globalDiscipline independent whole selectedEpisode
   wholeInGlobal anchors ordinal live unique stamped (LAdvance actor) distinct
   before afterState survivor tag checked rest selectedRest occurs insidePrefix
   insideDecomposition boundary emptyPlan retained =
-    scopedForeignLifecycleRetainedHead protocol nameEq keyEq selected registered
+    taggedSelectedHead (scopedForeignLifecycleRetainedHead protocol nameEq keyEq selected registered
       selectedOutside global globalDiscipline independent whole selectedEpisode
       wholeInGlobal anchors ordinal live unique stamped (LAdvance actor) Refl
       distinct before afterState survivor tag checked rest selectedRest occurs
-      insidePrefix insideDecomposition boundary emptyPlan retained
+      insidePrefix insideDecomposition boundary emptyPlan retained)
 scopedDispatchForeignRetainedHead protocol nameEq keyEq selected registered
   selectedOutside global globalDiscipline independent whole selectedEpisode
   wholeInGlobal anchors ordinal live unique stamped (LDivert actor) distinct
   before afterState survivor tag checked rest selectedRest occurs insidePrefix
   insideDecomposition boundary emptyPlan retained =
-    scopedForeignLifecycleRetainedHead protocol nameEq keyEq selected registered
+    taggedSelectedHead (scopedForeignLifecycleRetainedHead protocol nameEq keyEq selected registered
       selectedOutside global globalDiscipline independent whole selectedEpisode
       wholeInGlobal anchors ordinal live unique stamped (LDivert actor) Refl
       distinct before afterState survivor tag checked rest selectedRest occurs
-      insidePrefix insideDecomposition boundary emptyPlan retained
+      insidePrefix insideDecomposition boundary emptyPlan retained)
 scopedDispatchForeignRetainedHead protocol nameEq keyEq selected registered
   selectedOutside global globalDiscipline independent whole selectedEpisode
   wholeInGlobal anchors ordinal live unique stamped (LLeave actor) distinct before
   afterState survivor tag checked rest selectedRest occurs insidePrefix
   insideDecomposition boundary emptyPlan retained =
-    scopedForeignLifecycleRetainedHead protocol nameEq keyEq selected registered
+    taggedSelectedHead (scopedForeignLifecycleRetainedHead protocol nameEq keyEq selected registered
       selectedOutside global globalDiscipline independent whole selectedEpisode
       wholeInGlobal anchors ordinal live unique stamped (LLeave actor) Refl
       distinct before afterState survivor tag checked rest selectedRest occurs
-      insidePrefix insideDecomposition boundary emptyPlan retained
+      insidePrefix insideDecomposition boundary emptyPlan retained)
 scopedDispatchForeignRetainedHead protocol nameEq keyEq selected registered
   selectedOutside global globalDiscipline independent whole selectedEpisode
   wholeInGlobal anchors ordinal live unique stamped (LUnload actor) distinct before
   afterState survivor tag checked rest selectedRest occurs insidePrefix
   insideDecomposition boundary emptyPlan retained =
-    scopedForeignLifecycleRetainedHead protocol nameEq keyEq selected registered
+    taggedSelectedHead (scopedForeignLifecycleRetainedHead protocol nameEq keyEq selected registered
       selectedOutside global globalDiscipline independent whole selectedEpisode
       wholeInGlobal anchors ordinal live unique stamped (LUnload actor) Refl
       distinct before afterState survivor tag checked rest selectedRest occurs
-      insidePrefix insideDecomposition boundary emptyPlan retained
+      insidePrefix insideDecomposition boundary emptyPlan retained)
 
 0 scopedDispatchSelectedRetainedHead :
   (name, key, world, error : Type) -> (value : key -> Type) ->
