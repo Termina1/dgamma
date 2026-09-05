@@ -13030,6 +13030,87 @@ record ScopedSelectedCloseReplayAppend
   0 appendedSelectedCloseEnds : ReplayReadyEndsAt appendedSelectedCloseReady
     target
 
+0 scopedAppendSelectedCloseReplay :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {originalFirst, closeBefore, closeAfter :
+    SystemState name key value world error} ->
+  (original : Transitions originalFirst closeBefore) ->
+  (survivorFirst : SystemState name key value world error) ->
+  (ready : GenerationReplayReady nameEq keyEq
+    (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live
+    original survivorFirst) ->
+  (target : SystemState name key value world error) ->
+  (ends : ReplayReadyEndsAt ready target) ->
+  (closing : UnloadStep nameEq keyEq selected closeBefore closeAfter) ->
+  ScopedSelectedCloseReplayAppend name key world error value nameEq keyEq
+    selected registered ordinal live original survivorFirst ready target closing
+scopedAppendSelectedCloseReplay name key world error value nameEq keyEq selected
+  registered ordinal live original survivorFirst ready target ends closing =
+    case ends of
+      ReplayEndsEnd same =>
+        MkScopedSelectedCloseReplayAppend
+          (ReplayReadyDelete
+            (the (EpisodeGenerationDeletedActor nameEq selected registered
+              ordinal live
+              (the (Action name key value world error) (LUnload selected)))
+              (DeleteEpisodeGenerationLifecycle Refl Refl))
+            ReplayReadyEnd)
+          (ReplayEndsDelete
+            (the (EpisodeGenerationDeletedActor nameEq selected registered
+              ordinal live
+              (the (Action name key value world error) (LUnload selected)))
+              (DeleteEpisodeGenerationLifecycle Refl Refl))
+            ReplayReadyEnd (ReplayEndsEnd same))
+      ReplayEndsDelete {transition} {rest} deleted tail tailEnds =>
+        MkScopedSelectedCloseReplayAppend
+          (ReplayReadyDelete deleted
+            (appendedSelectedCloseReady
+              (scopedAppendSelectedCloseReplay name key world error value nameEq
+                keyEq selected registered (S ordinal)
+                (advanceGenerationEnvironment @{nameEq} ordinal
+                  (transitionAction transition) live)
+                rest survivorFirst tail target tailEnds closing)))
+          (ReplayEndsDelete deleted
+            (appendedSelectedCloseReady
+              (scopedAppendSelectedCloseReplay name key world error value nameEq
+                keyEq selected registered (S ordinal)
+                (advanceGenerationEnvironment @{nameEq} ordinal
+                  (transitionAction transition) live)
+                rest survivorFirst tail target tailEnds closing))
+            (appendedSelectedCloseEnds
+              (scopedAppendSelectedCloseReplay name key world error value nameEq
+                keyEq selected registered (S ordinal)
+                (advanceGenerationEnvironment @{nameEq} ordinal
+                  (transitionAction transition) live)
+                rest survivorFirst tail target tailEnds closing)))
+      ReplayEndsKeep {originalTransition} {rest} {survivingAfter} retained tag
+        survivingTransition sameAction fires tail tailEnds =>
+          MkScopedSelectedCloseReplayAppend
+            (ReplayReadyKeep retained survivingAfter tag survivingTransition
+              sameAction fires
+              (appendedSelectedCloseReady
+                (scopedAppendSelectedCloseReplay name key world error value
+                  nameEq keyEq selected registered (S ordinal)
+                  (advanceGenerationEnvironment @{nameEq} ordinal
+                    (transitionAction originalTransition) live)
+                  rest survivingAfter tail target tailEnds closing)))
+            (ReplayEndsKeep retained tag survivingTransition sameAction fires
+              (appendedSelectedCloseReady
+                (scopedAppendSelectedCloseReplay name key world error value
+                  nameEq keyEq selected registered (S ordinal)
+                  (advanceGenerationEnvironment @{nameEq} ordinal
+                    (transitionAction originalTransition) live)
+                  rest survivingAfter tail target tailEnds closing))
+              (appendedSelectedCloseEnds
+                (scopedAppendSelectedCloseReplay name key world error value
+                  nameEq keyEq selected registered (S ordinal)
+                  (advanceGenerationEnvironment @{nameEq} ordinal
+                    (transitionAction originalTransition) live)
+                  rest survivingAfter tail target tailEnds closing)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
