@@ -19048,6 +19048,32 @@ record ScopedTaggedGenerationResult
   0 scopedTaggedTags : GenerationSubsequenceRuleTagsPreserved
     (filteredSubsequence scopedTaggedResult)
 
+||| Deleted prepend preserves the exact output trace and its tag certificate.
+0 scopedTaggedPrependDeleted :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) -> (nameEq : DecEq name) ->
+  (deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (first, middle, originalFinal, survivingFirst,
+    target : SystemState name key value world error) ->
+  (transition : Transition first middle) ->
+  (rest : Transitions middle originalFinal) ->
+  (0 deleted : deletable ordinal live (transitionAction transition)) ->
+  ScopedTaggedGenerationResult name key value world error nameEq deletable
+    (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal
+      (transitionAction transition) live) rest survivingFirst target ->
+  ScopedTaggedGenerationResult name key value world error nameEq deletable
+    ordinal live (MoreTransitions transition rest) survivingFirst target
+scopedTaggedPrependDeleted name key world error value nameEq deletable ordinal
+  live first middle originalFinal survivingFirst target transition rest deleted
+  (MkScopedTaggedGenerationResult
+    (MkGenerationFilterResult finalState survivingTrace subsequence) finalSame tags) =
+      MkScopedTaggedGenerationResult
+        (MkGenerationFilterResult finalState survivingTrace
+          (DeleteGenerationAction transition rest deleted subsequence))
+        finalSame (GenerationSubsequenceTagsDelete tags)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
