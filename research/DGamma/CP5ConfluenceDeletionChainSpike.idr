@@ -16534,6 +16534,168 @@ scopedTransportReloading key value world error name deps provision step
         (cong (\observedView => Reloading (step :: continuation) rightAccumulator
           observedView) (sym viewSame)))
 
+0 scopedParentYieldAtReloadingTarget :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (parent : name) ->
+  (childComponent : Component key value world error) ->
+  (target : SystemState name key value world error) ->
+  (component : Component key value world error) ->
+  (targetParent : Parent name) -> (targetRetired : Bool) ->
+  (targetTable : OwnedTable key value (componentProvisions component)) ->
+  (targetLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (0 targetFound : lookupFiber {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} parent (registry target) =
+    Just (MkFiber component targetParent targetRetired targetTable
+      targetLifecycle)) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (continuation : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (targetAccumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (0 targetReloading : targetLifecycle =
+    Reloading (step :: continuation) targetAccumulator view) ->
+  (0 stepBelongs : Elem step (componentProgram component)) ->
+  (parentRank : Nat) -> (childRank : Nat) ->
+  (0 parentRanked : registrationRank protocol component = Just parentRank) ->
+  (0 childRanked : registrationRank protocol childComponent = Just childRank) ->
+  (yieldTag : Nat) ->
+  (0 stepYields : registrationYieldTag step = Just yieldTag) ->
+  (0 catalogYields : registrationCatalog protocol yieldTag = Just childComponent) ->
+  ParentRegistrationYield protocol nameEq parent childComponent target
+scopedParentYieldAtReloadingTarget name key world error value protocol nameEq
+  parent childComponent target component targetParent targetRetired targetTable
+  targetLifecycle targetFound step continuation targetAccumulator view
+  targetReloading stepBelongs parentRank childRank parentRanked childRanked
+  yieldTag stepYields catalogYields =
+    MkParentRegistrationYield
+      (MkFiber component targetParent targetRetired targetTable targetLifecycle)
+      targetFound step continuation targetAccumulator view targetReloading
+      stepBelongs parentRank childRank parentRanked childRanked yieldTag
+      stepYields catalogYields
+
+0 scopedParentYieldAtRelatedSpines :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (parent : name) ->
+  (childComponent : Component key value world error) ->
+  (target : SystemState name key value world error) ->
+  (component : Component key value world error) ->
+  (sourceParent : Parent name) -> (targetParent : Parent name) ->
+  (sourceRetired : Bool) -> (targetRetired : Bool) ->
+  (sourceTable : OwnedTable key value (componentProvisions component)) ->
+  (targetTable : OwnedTable key value (componentProvisions component)) ->
+  (sourceLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (targetLifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (0 targetFound : lookupFiber {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} parent (registry target) =
+    Just (MkFiber component targetParent targetRetired targetTable
+      targetLifecycle)) ->
+  (0 lifecycleRelated : LifecycleControlRelated sourceLifecycle targetLifecycle) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (continuation : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (0 sourceReloading : sourceLifecycle =
+    Reloading (step :: continuation) accumulator view) ->
+  (0 stepBelongs : Elem step (componentProgram component)) ->
+  (parentRank : Nat) -> (childRank : Nat) ->
+  (0 parentRanked : registrationRank protocol component = Just parentRank) ->
+  (0 childRanked : registrationRank protocol childComponent = Just childRank) ->
+  (yieldTag : Nat) ->
+  (0 stepYields : registrationYieldTag step = Just yieldTag) ->
+  (0 catalogYields : registrationCatalog protocol yieldTag = Just childComponent) ->
+  ParentRegistrationYield protocol nameEq parent childComponent target
+scopedParentYieldAtRelatedSpines name key world error value protocol nameEq
+  parent childComponent target component sourceParent targetParent sourceRetired
+  targetRetired sourceTable targetTable _ targetLifecycle
+  targetFound lifecycleRelated step continuation accumulator view Refl
+  stepBelongs parentRank childRank parentRanked childRanked yieldTag stepYields
+  catalogYields =
+    scopedParentYieldAtReloadingTarget name key world error value protocol
+      nameEq parent childComponent target component targetParent targetRetired
+      targetTable targetLifecycle targetFound step continuation
+      (scopedTransportedAccumulator
+        (scopedTransportReloading key value world error name
+          (dependencies (componentDependencies component))
+          (componentProvisions component) step continuation accumulator view
+          targetLifecycle lifecycleRelated))
+      view
+      (scopedTransportedLifecycle
+        (scopedTransportReloading key value world error name
+          (dependencies (componentDependencies component))
+          (componentProvisions component) step continuation accumulator view
+          targetLifecycle lifecycleRelated))
+      stepBelongs parentRank childRank parentRanked childRanked yieldTag
+      stepYields catalogYields
+
+0 scopedParentYieldAtRelated :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (parent : name) ->
+  (childComponent : Component key value world error) ->
+  (target : SystemState name key value world error) ->
+  (sourceFiber : Fiber name key value world error) ->
+  (targetFiber : Fiber name key value world error) ->
+  (0 related : FiberControlRelated sourceFiber targetFiber) ->
+  (0 targetFound : lookupFiber {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} parent (registry target) =
+    Just targetFiber) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent sourceFiber)))
+    (componentProvisions (fiberComponent sourceFiber))) ->
+  (continuation : List (StepEffect key value world error
+    (dependencies (componentDependencies (fiberComponent sourceFiber)))
+    (componentProvisions (fiberComponent sourceFiber)))) ->
+  (accumulator : LocalState key value world
+    (componentProvisions (fiberComponent sourceFiber)) ->
+    LocalState key value world (componentProvisions (fiberComponent sourceFiber))) ->
+  (view : View name
+    (dependencies (componentDependencies (fiberComponent sourceFiber)))) ->
+  (0 sourceReloading : fiberLifecycle sourceFiber =
+    Reloading (step :: continuation) accumulator view) ->
+  (0 stepBelongs : Elem step (componentProgram (fiberComponent sourceFiber))) ->
+  (parentRank : Nat) -> (childRank : Nat) ->
+  (0 parentRanked : registrationRank protocol (fiberComponent sourceFiber) =
+    Just parentRank) ->
+  (0 childRanked : registrationRank protocol childComponent = Just childRank) ->
+  (yieldTag : Nat) ->
+  (0 stepYields : registrationYieldTag step = Just yieldTag) ->
+  (0 catalogYields : registrationCatalog protocol yieldTag = Just childComponent) ->
+  ParentRegistrationYield protocol nameEq parent childComponent target
+scopedParentYieldAtRelated name key world error value protocol nameEq parent
+  childComponent target _ _
+  (FibersControlRelated {component} sourceParent targetParent sourceRetired
+    targetRetired sourceTable targetTable sourceLifecycle targetLifecycle
+    parentSame retiredSame lifecycleRelated)
+  targetFound step continuation accumulator view sourceReloading stepBelongs
+  parentRank childRank parentRanked childRanked yieldTag stepYields
+  catalogYields =
+    scopedParentYieldAtRelatedSpines name key world error value protocol nameEq
+      parent childComponent target component sourceParent targetParent
+      sourceRetired targetRetired sourceTable targetTable sourceLifecycle
+      targetLifecycle targetFound lifecycleRelated step continuation accumulator
+      view sourceReloading stepBelongs parentRank childRank parentRanked
+      childRanked yieldTag stepYields catalogYields
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
