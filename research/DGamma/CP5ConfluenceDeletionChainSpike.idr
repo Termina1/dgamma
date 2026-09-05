@@ -24170,6 +24170,27 @@ scopedEnrichedTraceAligned name key world error value protocol nameEq keyEq init
         (scopedEnrichedMiddle name key world error value protocol nameEq keyEq initial finalState global candidate folds)
         (traceAfterClosing (selectedEpisode candidate)) (relationalSuffixReplayReady (postCloseOutputFold (enrichedSuffix folds)))))
 
+0 scopedEnrichedEndpointReady :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  (quiet @{nameEq} @{keyEq} finalState = True) -> (noFailedFibers finalState = True) ->
+  ((quiet @{nameEq} @{keyEq} (scopedEnrichedFinal name key world error value protocol nameEq keyEq initial finalState global candidate folds) = True),
+   (noFailedFibers (scopedEnrichedFinal name key world error value protocol nameEq keyEq initial finalState global candidate folds) = True))
+scopedEnrichedEndpointReady name key world error value protocol nameEq keyEq initial finalState global candidate folds quietFinal noFailure =
+  (scopedPostCloseOutputQuiet name key world error value protocol nameEq keyEq (selectedRegistrations candidate)
+    (selectedFoldEndOrdinal (selectedOutputFold (enrichedSelected folds))) (selectedFoldEndLive (selectedOutputFold (enrichedSelected folds)))
+    (locatedAfter (selectedEpisode candidate)) finalState
+    (scopedEnrichedMiddle name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+    (traceAfterClosing (selectedEpisode candidate)) (enrichedSuffix folds) quietFinal,
+   scopedPostCloseOutputNoFailure name key world error value protocol nameEq keyEq (selectedRegistrations candidate)
+    (selectedFoldEndOrdinal (selectedOutputFold (enrichedSelected folds))) (selectedFoldEndLive (selectedOutputFold (enrichedSelected folds)))
+    (locatedAfter (selectedEpisode candidate)) finalState
+    (scopedEnrichedMiddle name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+    (traceAfterClosing (selectedEpisode candidate)) (enrichedSuffix folds) noFailure)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
