@@ -23806,6 +23806,22 @@ scopedNoRegisteredAfterPrefix name key world error value nameEq registered ordin
       (snd (scopedNoRegisteredHead name key world error value nameEq registered ordinal live first _ finalState transition
         (appendTransitions rest right) source))
 
+0 scopedSelectedCanonicalFinal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (selected : name) -> (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (preStart, afterClose, wholeLast : SystemState name key value world error) ->
+  (episode : ClosedEpisode name key world error value nameEq keyEq selected preStart afterClose) ->
+  (whole : Transitions (closedStartState episode) wholeLast) ->
+  ScopedSelectedClosedEpisodeFoldOutput name key world error value protocol nameEq keyEq selected registered ordinal live episode whole ->
+  SystemState name key value world error
+scopedSelectedCanonicalFinal name key world error value protocol nameEq keyEq selected registered ordinal live
+  preStart afterClose wholeLast episode whole output =
+    scopedReadyFinal name key world error value nameEq keyEq (EpisodeGenerationDeletedActor nameEq selected registered)
+      ordinal live preStart afterClose preStart (MoreTransitions (beginTransition (closedOpening episode)) (closedTransitions episode))
+      (selectedFoldReady (selectedOutputFold output))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
