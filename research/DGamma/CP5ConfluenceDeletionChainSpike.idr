@@ -20315,6 +20315,33 @@ scopedPostCloseParentControls name key world error value protocol nameEq keyEq
       parent selected component registered ordinal live unique stamped selectedOutside
       original survivor (fst discipline) boundary
 
+0 scopedTagPostCloseNonAdvance :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (nextOrdinal : Nat) -> (nextLive : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  ((actor : name) -> Not (action = LAdvance actor)) ->
+  (tag : RuleTag) ->
+  (original, originalAfter, survivor : SystemState name key value world error) ->
+  (checked : (checkedApplyAction @{nameEq} @{keyEq} action original =
+    Just (tag, originalAfter))) ->
+  (step : PostCloseOrchestrationStep name key world error value nameEq keyEq
+    selected registered nextOrdinal nextLive action originalAfter survivor) ->
+  ScopedTaggedPostCloseHead name key world error value nameEq keyEq selected
+    registered nextOrdinal nextLive action tag originalAfter survivor
+scopedTagPostCloseNonAdvance name key world error value nameEq keyEq selected
+  registered nextOrdinal nextLive action notAdvance tag original originalAfter
+  survivor checked step =
+    MkScopedTaggedPostCloseHead step
+      (scopedNonAdvanceTagsSame name key world error value nameEq keyEq action
+        notAdvance original survivor originalAfter
+        (namedAfter (postCloseOrchestrationNamed step)) tag
+        (namedTag (postCloseOrchestrationNamed step))
+        (checkedActionProjects nameEq keyEq action original originalAfter tag checked)
+        (namedFireProjectsRaw nameEq keyEq action survivor
+          (postCloseOrchestrationNamed step) (postCloseOrchestrationFires step)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
