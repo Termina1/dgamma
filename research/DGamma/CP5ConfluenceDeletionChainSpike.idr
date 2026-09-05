@@ -11451,6 +11451,149 @@ ScopedForeignLifecycleExclusion {name} {key} {world} {error} {value}
       (componentDependencies (fiberComponent leftOwner))) ->
     providerCandidate @{keyEq} wanted leftSelected = False
 
+0 retainedForeignLifecycleFromScopedOwner :
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  (lifecycle : isLifecycleAction action = True) ->
+  (distinct : Not (actionOwner action = selected)) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (before, afterState, survivor : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before =
+    Just (tag, afterState)) ->
+  (occurs : OccursIn
+    (Fired {before = before} {afterState = afterState}
+      nameEq keyEq action tag checked) whole) ->
+  (independent : TraceIndependent name key world error value keyEq whole) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered ordinal live whole before survivor) ->
+  (emptyPlan : EmptyTableInactivePlan name key world error value nameEq
+    (inactiveLeafPlan (completePlanResult
+      (selectedBoundaryPlan boundary)))) ->
+  (selectedOutsidePlan : ActorOutsideDeletionPlan selected
+    (inactiveLeafPlan (completePlanResult
+      (selectedBoundaryPlan boundary)))) ->
+  (ownerOutsidePlan : ActorOutsideDeletionPlan (actionOwner action)
+    (inactiveLeafPlan (completePlanResult
+      (selectedBoundaryPlan boundary)))) ->
+  (exactStep : RetainedNoEpisodeBoundaryStep name key world error value nameEq
+    keyEq registered
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) action tag
+    afterState
+    (MkSystemState (worldState before)
+      (planTarget (completePlanResult (selectedBoundaryPlan boundary))))) ->
+  (scopedExclusion : ScopedForeignLifecycleExclusion
+    {name = name} {key = key} {world = world} {error = error} {value = value}
+    {nameEq = nameEq} {keyEq = keyEq} {selected = selected}
+    {registered = registered} {ordinal = ordinal} {live = live}
+    {wholeFirst = wholeFirst} {wholeLast = wholeLast} {before = before}
+    {survivor = survivor} {whole = whole} {action = action} boundary) ->
+  (leftOwner : Fiber name key value world error) ->
+  lookupFiber @{nameEq} (actionOwner action)
+    (planTarget (completePlanResult (selectedBoundaryPlan boundary))) =
+    Just leftOwner ->
+  ForeignRetainedEpisodeStep name key world error value nameEq keyEq selected
+    registered ordinal live whole action afterState survivor
+retainedForeignLifecycleFromScopedOwner
+  {name} {key} {world} {error} {value}
+  nameEq keyEq selected registered ordinal live action lifecycle distinct whole
+  before afterState survivor tag checked occurs independent boundary emptyPlan
+  selectedOutsidePlan ownerOutsidePlan exactStep scopedExclusion leftOwner
+  leftFound =
+    case foreignControlLookupFound nameEq (actionOwner action)
+      (planTarget (completePlanResult (selectedBoundaryPlan boundary)))
+      (registry survivor) leftOwner leftFound
+      (selectedOrderedForeignLookupControls nameEq selected
+        (actionOwner action) distinct
+        (planTarget (completePlanResult (selectedBoundaryPlan boundary)))
+        (registry survivor) (selectedBoundaryOrderedControls boundary)) of
+      MkForeignRelatedFiberFound rightOwner rightFound ownersRelated =>
+        packageForeignLifecycleEpisodeStep nameEq keyEq selected registered
+          ordinal live action lifecycle distinct whole before afterState
+          survivor tag checked occurs independent boundary exactStep leftOwner
+          rightOwner
+          (trans
+            (sym (lookupOutsideInactivePlan nameEq (actionOwner action)
+              (registry before)
+              (planTarget (completePlanResult
+                (selectedBoundaryPlan boundary)))
+              (inactiveLeafPlan (completePlanResult
+                (selectedBoundaryPlan boundary))) ownerOutsidePlan))
+            leftFound)
+          rightFound ownersRelated
+          (scopedLifecycleControlTransportBefore
+            (scopedSystemStateEta survivor)
+            (scopedForeignLifecycleControlsFromExclusion nameEq keyEq selected
+              action distinct lifecycle (worldState before)
+              (worldState survivor)
+              (planTarget (completePlanResult
+                (selectedBoundaryPlan boundary)))
+              (registry survivor) leftOwner rightOwner
+              (modelFiber (selectedBoundaryModel
+                (selectedBoundaryEffects boundary)))
+              (trans
+                (lookupOutsideInactivePlan nameEq selected (registry before)
+                  (planTarget (completePlanResult
+                    (selectedBoundaryPlan boundary)))
+                  (inactiveLeafPlan (completePlanResult
+                    (selectedBoundaryPlan boundary))) selectedOutsidePlan)
+                (modelFound (selectedBoundaryModel
+                  (selectedBoundaryEffects boundary))))
+              leftFound rightFound
+              (scopedExclusion
+                (modelFiber (selectedBoundaryModel
+                  (selectedBoundaryEffects boundary)))
+                leftOwner rightOwner
+                (trans
+                  (lookupOutsideInactivePlan nameEq selected (registry before)
+                    (planTarget (completePlanResult
+                      (selectedBoundaryPlan boundary)))
+                    (inactiveLeafPlan (completePlanResult
+                      (selectedBoundaryPlan boundary))) selectedOutsidePlan)
+                  (modelFound (selectedBoundaryModel
+                    (selectedBoundaryEffects boundary))))
+                leftFound
+                (modelFound (selectedBoundaryModel
+                  (selectedBoundaryEffects boundary)))
+                (trans
+                  (sym (lookupOutsideInactivePlan nameEq (actionOwner action)
+                    (registry before)
+                    (planTarget (completePlanResult
+                      (selectedBoundaryPlan boundary)))
+                    (inactiveLeafPlan (completePlanResult
+                      (selectedBoundaryPlan boundary))) ownerOutsidePlan))
+                  leftFound)
+                rightFound ownersRelated)
+              (replace
+                {p = \observed => SelectedSurvivorCleanInactive name key world
+                  error value nameEq selected observed}
+                (sym (scopedSystemStateEta survivor))
+                (selectedBoundarySurvivorCleanInactive boundary))
+              (selectedBoundaryOrderedControls boundary)
+              (selectedBoundaryForeignLocatedTablesSame nameEq keyEq selected
+                boundary)
+              (namedTag (retainedBoundaryNamed exactStep))
+              (namedAfter (retainedBoundaryNamed exactStep))
+              (namedFireProjectsRaw nameEq keyEq action
+                (MkSystemState (worldState before)
+                  (planTarget (completePlanResult
+                    (selectedBoundaryPlan boundary))))
+                (retainedBoundaryNamed exactStep)
+                (retainedBoundaryFires exactStep))
+              (selectedSurvivorWellFormed boundary)
+              (scopedSelectedLifecycleOutcomes nameEq keyEq selected registered
+                ordinal live action distinct whole independent tag checked
+                occurs boundary emptyPlan
+                (lookupOutsideInactivePlan nameEq (actionOwner action)
+                  (registry before)
+                  (planTarget (completePlanResult
+                    (selectedBoundaryPlan boundary)))
+                  (inactiveLeafPlan (completePlanResult
+                    (selectedBoundaryPlan boundary))) ownerOutsidePlan))))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
