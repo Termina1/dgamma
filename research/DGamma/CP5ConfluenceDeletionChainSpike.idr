@@ -17753,6 +17753,51 @@ scopedUnretiredAfterRuntimeReplace name key world error value nameEq child befor
           (registry before) found))
       notRetired
 
+||| Empty L-Advance changes only lifecycle, for either target-match outcome.
+0 scopedAdvanceEmptyUnretiredAt :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) -> (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (observed : Bool) ->
+  (0 matches : (targetMatches @{nameEq}
+    (targetFiber @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error}
+      (MkFiber component parent retiredFlag table (Reloading [] accumulator view))
+      (registry before)) view = observed)) ->
+  (0 found : (lookupFiber {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} child (registry before) =
+    Just (MkFiber component parent retiredFlag table
+      (Reloading [] accumulator view)))) ->
+  (0 notRetired : (retiredFlag = False)) ->
+  (0 raw : (applyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} (LAdvance child) before =
+    Just (tag, afterState))) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child afterState
+scopedAdvanceEmptyUnretiredAt name key world error value nameEq keyEq child
+  before afterState tag component parent retiredFlag table accumulator view
+  True matches found notRetired =
+    rewrite found in rewrite matches in
+      (\equation => scopedUnretiredAfterRuntimeReplace name key world error value
+        nameEq child before afterState tag LFinishTag component parent retiredFlag
+        table table (Reloading [] accumulator view) (Active accumulator view)
+        (worldState before) found notRetired equation)
+scopedAdvanceEmptyUnretiredAt name key world error value nameEq keyEq child
+  before afterState tag component parent retiredFlag table accumulator view
+  False matches found notRetired =
+    rewrite found in rewrite matches in
+      (\equation => scopedUnretiredAfterRuntimeReplace name key world error value
+        nameEq child before afterState tag LDivertTag component parent retiredFlag
+        table table (Reloading [] accumulator view)
+        (Unloading accumulator view Nothing) (worldState before) found notRetired
+        equation)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
