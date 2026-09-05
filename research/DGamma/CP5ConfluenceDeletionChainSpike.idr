@@ -19731,6 +19731,20 @@ scopedNamedActorTotal name key world error value nameEq keyEq action before name
   replace {p = \actual => ScopedActorTotal name key world error value nameEq keyEq (actionOwner actual) (namedAfter named)}
     (sym (namedAction named)) actorTotal
 
+0 scopedTraceTotalPrepend :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, middle, finalState, targetFirst, targetMiddle, targetFinal : SystemState name key value world error) ->
+  (transition : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (targetStep : Transition targetFirst targetMiddle) -> (targetRest : Transitions targetMiddle targetFinal) ->
+  (TransitionComponentTotal nameEq keyEq transition -> TransitionComponentTotal nameEq keyEq targetStep) ->
+  (TraceComponentsTotal nameEq keyEq rest -> TraceComponentsTotal nameEq keyEq targetRest) ->
+  TraceComponentsTotal nameEq keyEq (MoreTransitions transition rest) ->
+  TraceComponentsTotal nameEq keyEq (MoreTransitions targetStep targetRest)
+scopedTraceTotalPrepend name key world error value nameEq keyEq first middle finalState targetFirst targetMiddle targetFinal
+  transition rest targetStep targetRest headTransport tailTransport (TraceComponentsTotalStep _ _ headTotal tailTotal) =
+    TraceComponentsTotalStep targetStep targetRest (headTransport headTotal) (tailTransport tailTotal)
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
