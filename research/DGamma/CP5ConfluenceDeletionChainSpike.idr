@@ -25160,6 +25160,22 @@ scopedNonAdvanceNamedLifecycleReplay name key world error value nameEq keyEq act
     scopedNonAdvanceLifecycleReplayTags name key world error value nameEq keyEq action lifecycle notAdvance tag targetTag
       sourceBefore sourceAfter targetBefore after sourceChecked stored sameTag sourceOwner targetOwner sourceFound targetFound controls
 
+0 scopedOrchestrationReplayTags :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (sourceTag, targetTag : RuleTag) ->
+  (sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error) ->
+  (0 sourceChecked : (checkedApplyAction @{nameEq} @{keyEq} action sourceBefore = Just (sourceTag, sourceAfter))) ->
+  (0 targetChecked : (checkedApplyAction @{nameEq} @{keyEq} action targetBefore = Just (targetTag, targetAfter))) ->
+  (sourceTag = targetTag) ->
+  PaperOrchestrationStep (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action sourceTag sourceChecked) ->
+  RelationalReplayCorrespondence name key world error value
+    (MoreTransitions (Fired {before = sourceBefore} {afterState = sourceAfter} nameEq keyEq action sourceTag sourceChecked) NoTransitions)
+    (MoreTransitions (Fired {before = targetBefore} {afterState = targetAfter} nameEq keyEq action targetTag targetChecked) NoTransitions)
+scopedOrchestrationReplayTags name key world error value nameEq keyEq action sourceTag _ sourceBefore sourceAfter targetBefore targetAfter
+  sourceChecked targetChecked Refl orchestration =
+    scopedOrchestrationReplay name key world error value nameEq keyEq action sourceTag sourceBefore sourceAfter targetBefore targetAfter
+      sourceChecked targetChecked orchestration
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
