@@ -11,6 +11,7 @@ import DGamma.CP4DeletionBoundaryRetained
 import DGamma.CP4DeletionBoundaryPlan
 import DGamma.CP4DeletionPlanBuilder
 import DGamma.CP4DeletionPlanComplete
+import DGamma.CP4DeletionPlanEmpty
 import DGamma.CP4DeletionPlanEffects
 import DGamma.CP4DeletionFilterSuccess
 import DGamma.CP4DeletionGenerationFilter
@@ -13264,6 +13265,37 @@ scopedSelectedInsideEmbedding name key world error value nameEq keyEq selected
         (closedInside (locatedEpisode located))
         (MoreTransitions (unloadTransition (closing (locatedEpisode located)))
           (traceAfterClosing located)))
+
+0 scopedInitialSelectedPlanEmpty :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (episodeStartOrdinal : Nat) ->
+  (episodeStartLive : GenerationEnvironment name) ->
+  (unique : GenerationEnvironmentNamesUnique episodeStartLive) ->
+  (bounded : GenerationEnvironmentBounded episodeStartOrdinal
+    episodeStartLive) ->
+  (lower : (generation : RegistrationGeneration name) ->
+    Elem generation registered ->
+    LTE episodeStartOrdinal (generationBirthOrdinal generation)) ->
+  (state : SystemState name key value world error) ->
+  {wholeFirst, wholeLast : SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (survivor : SystemState name key value world error) ->
+  (boundary : SelectedEpisodeReplayBoundary name key world error value nameEq
+    keyEq selected registered (S episodeStartOrdinal) episodeStartLive whole
+    state survivor) ->
+  EmptyTableInactivePlan name key world error value nameEq
+    (inactiveLeafPlan
+      (completePlanResult (selectedBoundaryPlan boundary)))
+scopedInitialSelectedPlanEmpty name key world error value nameEq keyEq selected
+  registered episodeStartOrdinal episodeStartLive unique bounded lower state
+  whole survivor boundary =
+    completeCurrentRegisteredPlanHasEmptyTables nameEq registered
+      episodeStartLive unique (worldState state) (registry state)
+      (selectedBoundaryPlan boundary)
+      (scopedInitialCurrentEmpty name key world error value nameEq registered
+        episodeStartOrdinal episodeStartLive bounded lower state)
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
