@@ -21365,6 +21365,24 @@ scopedSelectedBirthAtHead name key world error value selected registered ordinal
       (complete child component
         (MkLocatedActionOccurrence first middle NoTransitions transition rest actionSame Refl))
 
+0 scopedSelectedBirthsTail :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (selected : name) -> (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (first, middle, finalState : SystemState name key value world error) ->
+  (head : Transition first middle) -> (rest : Transitions middle finalState) ->
+  ScopedSelectedBirthsComplete name key world error value selected registered ordinal first
+    finalState (MoreTransitions head rest) ->
+  ScopedSelectedBirthsComplete name key world error value selected registered (S ordinal)
+    middle finalState rest
+scopedSelectedBirthsTail name key world error value selected registered ordinal first middle
+  finalState head rest complete child component
+  (MkLocatedActionOccurrence before after earlier transition later actionSame decomposition) =
+    replace {p = \atOrdinal => Elem (MkRegistrationGeneration child atOrdinal) registered}
+      (sym (plusSuccRightSucc ordinal (transitionCount earlier)))
+      (complete child component
+        (MkLocatedActionOccurrence before after (MoreTransitions head earlier) transition later
+          actionSame (cong (MoreTransitions head) decomposition)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
