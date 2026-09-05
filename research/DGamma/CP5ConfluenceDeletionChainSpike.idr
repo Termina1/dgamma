@@ -10385,6 +10385,22 @@ commonTransitionPrefixInjectiveScoped commonHead leftTrace rightTrace
     case sameAppend of
       Refl => Refl
 
+0 cancelTransitionPrefixScoped :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (leftHead, rightHead : Transition first middle) ->
+  (leftTrace, rightTrace : Transitions middle finalState) ->
+  (0 headEq : leftHead = rightHead) ->
+  (0 sameAppend :
+    MoreTransitions leftHead leftTrace =
+      MoreTransitions rightHead rightTrace) ->
+  leftTrace = rightTrace
+cancelTransitionPrefixScoped leftHead rightHead leftTrace rightTrace headEq
+  sameAppend =
+    commonTransitionPrefixInjectiveScoped leftHead leftTrace rightTrace
+      (trans sameAppend
+        (orientTransitionHeadRightScoped leftHead rightHead rightTrace headEq))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
