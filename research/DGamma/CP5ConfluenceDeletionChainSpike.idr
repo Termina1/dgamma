@@ -20225,6 +20225,20 @@ scopedInactiveNotReloading name key world error value nameEq actor state
   (MkInactiveFiberAt component parent retiredFlag table outcome found) =
     rewrite found in Refl
 
+0 scopedReloadingInactiveDistinct :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (parent, selected : name) ->
+  (state : SystemState name key value world error) ->
+  (reloadingAt @{nameEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} parent state = True) ->
+  InactiveFiberAt name key world error value nameEq selected state ->
+  Not (parent = selected)
+scopedReloadingInactiveDistinct name key world error value nameEq _ selected
+  state reloading inactive Refl =
+    scopedFalseNotTrue (trans
+      (sym (scopedInactiveNotReloading name key world error value nameEq selected state inactive))
+      reloading)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
