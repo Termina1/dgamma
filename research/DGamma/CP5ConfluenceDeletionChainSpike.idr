@@ -26222,6 +26222,12 @@ scopedLiftOrdinalMap : (Nat -> Nat) -> Nat -> Nat
 scopedLiftOrdinalMap function Z = Z
 scopedLiftOrdinalMap function (S ordinal) = S (function ordinal)
 
+0 scopedLiftOrdinalInverse :
+  (forward, backward : Nat -> Nat) -> ((ordinal : Nat) -> (backward (forward ordinal) = ordinal)) ->
+  (ordinal : Nat) -> (scopedLiftOrdinalMap backward (scopedLiftOrdinalMap forward ordinal) = ordinal)
+scopedLiftOrdinalInverse forward backward inverse Z = Refl
+scopedLiftOrdinalInverse forward backward inverse (S ordinal) = cong S (inverse ordinal)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
