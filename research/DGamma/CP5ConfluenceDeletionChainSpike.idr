@@ -21923,6 +21923,35 @@ record ScopedTaggedSelectedLocalReplayer
     ScopedTaggedSelectedHead name key world error value nameEq keyEq selected
       registered ordinal live whole action tag afterState survivor
 
+0 scopedTaggedSelectedEpisodeLocalReplayer :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  {globalFirst, globalLast : SystemState name key value world error} ->
+  (global : Transitions globalFirst globalLast) ->
+  (globalDiscipline : RegistrationDiscipline protocol nameEq global) ->
+  (independent : TraceIndependent name key world error value keyEq global) ->
+  {wholeFirst, wholeLast, selectedPre, selectedAfter :
+    SystemState name key value world error} ->
+  (whole : Transitions wholeFirst wholeLast) ->
+  (selectedEpisode : ClosedEpisode name key world error value nameEq keyEq
+    selected selectedPre selectedAfter) ->
+  (wholeInGlobal : OccurrenceEmbedding whole global) ->
+  (anchors : ScopedSelectedEpisodeLifecycleProvider name key world error value
+    nameEq keyEq selected registered global selectedEpisode) ->
+  ScopedTaggedSelectedLocalReplayer name key world error value nameEq keyEq selected
+    registered protocol whole (closedInside selectedEpisode)
+scopedTaggedSelectedEpisodeLocalReplayer name key world error value protocol nameEq
+  keyEq selected registered global globalDiscipline independent whole
+  selectedEpisode wholeInGlobal anchors =
+    MkScopedTaggedSelectedLocalReplayer
+      (scopedReplayDeletedEpisodeHead name key world error value protocol nameEq
+        keyEq selected registered global globalDiscipline whole wholeInGlobal)
+      (scopedTaggedReplayRetainedEpisodeHead name key world error value protocol nameEq
+        keyEq selected registered global globalDiscipline independent whole
+        selectedEpisode wholeInGlobal anchors)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
