@@ -18437,6 +18437,36 @@ scopedUnretiredSameOwnerStep name key world error value nameEq keyEq child
           {p = \observed => ScopedUnretiredFiberAt name key value world error
             nameEq observed before} sameOwner unretired))
 
+||| Either this source step retires the child, or exact generation stability holds.
+0 scopedUnretiredStep :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child : name) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 checked : (checkedApplyAction @{nameEq} @{keyEq} {name = name} {key = key}
+    {value = value} {world = world} {error = error} action before =
+    Just (tag, afterState))) ->
+  ScopedUnretiredFiberAt name key value world error nameEq child before ->
+  Either (action = ORetire child)
+    (ScopedUnretiredNext name key value world error nameEq child
+      ordinal live action afterState)
+scopedUnretiredStep name key world error value nameEq keyEq child ordinal live
+  action before afterState tag checked unretired =
+    case decEq @{nameEq} child (actionOwner action) of
+      Yes sameOwner => scopedUnretiredSameOwnerStep name key world error value
+        nameEq keyEq child ordinal live action before afterState tag checked
+        sameOwner unretired
+      No distinct => Right (MkScopedUnretiredNext
+        (\same => distinct (sym (cong actionOwner same)))
+        (scopedUnretiredForeignStep name key world error value nameEq keyEq child
+          action distinct before afterState tag checked unretired)
+        (lookupAdvanceGenerationOther {name = name} {key = key} {value = value}
+          {world = world} {error = error} nameEq ordinal action child distinct live))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
