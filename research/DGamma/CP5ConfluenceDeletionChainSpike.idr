@@ -24776,6 +24776,25 @@ scopedAppendDisciplineSpine name key world error value nameEq registered ordinal
         (scopedGenerationScanTail name key world error value nameEq ordinal endOrdinal live endLive sourceFirst _ sourceMiddle sourceStep sourceRest scan)
         tail rightSpine)
 
+0 scopedBeforeDisciplineSpine :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal, endOrdinal : Nat) -> (live, endLive : GenerationEnvironment name) ->
+  (first, finalState : SystemState name key value world error) -> (trace : Transitions first finalState) ->
+  GenerationTraceScan nameEq ordinal live trace endOrdinal endLive ->
+  ((generation : RegistrationGeneration name) -> Elem generation registered -> LTE endOrdinal (generationBirthOrdinal generation)) ->
+  ScopedDisciplineReplaySpine name key world error value nameEq registered ordinal live trace trace
+scopedBeforeDisciplineSpine name key world error value nameEq registered ordinal _ live _ _ finalState _
+  GenerationTraceScanEnd lower = ScopedDisciplineEnd
+scopedBeforeDisciplineSpine name key world error value nameEq registered ordinal endOrdinal live endLive first finalState _
+  (GenerationTraceScanStep transition rest tail) lower =
+    ScopedDisciplineKeep transition rest transition rest Refl Refl
+      (\child, parent, component, same, member => succNotLTEpred
+        (transitive (generationScanStartLTE tail) (lower (MkRegistrationGeneration child ordinal) member)))
+      (\parent, child, component, same => fiberControlMaybeReflexive
+        (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} parent (registry first)))
+      (scopedBeforeDisciplineSpine name key world error value nameEq registered (S ordinal) endOrdinal
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction transition) live) endLive _ finalState rest tail lower)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
