@@ -48,6 +48,7 @@ import DGamma.CP4DeletionSelectedOwnDispatch
 import DGamma.CP4DeletionSelectedRetire
 import DGamma.CP4DeletionSelectedStart
 import DGamma.CP4DeletionSelectedBoundary
+import DGamma.CP4DeletionSelectedCloseBoundary
 import DGamma.CP4DeletionSelectedDeletedDispatch
 import DGamma.CP4DeletionSelectedDeletedOrchestration
 import DGamma.CP4DeletionSelectedEpisodeFold
