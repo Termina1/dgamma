@@ -3597,6 +3597,46 @@ data GenerationSubsequenceRuleTagsPreserved :
     GenerationSubsequenceRuleTagsPreserved
       (DeleteGenerationAction originalTransition originalRest deleted tail)
 
+||| Producer-owned RuleTag retention attached directly to the replay-ready
+||| value that chose each retained transition.  `GenerationReplayReady` alone
+||| deliberately permits a same-action replay with a different rule tag; this
+||| parallel family records the constructor-local equality before that fact is
+||| erased by the public deletion result.
+0 ReplayReadyRuleTagsPreserved :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (deletable : Nat -> GenerationEnvironment name ->
+    Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (originalFirst, originalFinal : SystemState name key value world error) ->
+  (original : Transitions originalFirst originalFinal) ->
+  (survivingFirst : SystemState name key value world error) ->
+  (ready : GenerationReplayReady nameEq keyEq deletable ordinal live original
+    survivingFirst) -> Type
+ReplayReadyRuleTagsPreserved name key world error value nameEq keyEq deletable
+  ordinal live originalFirst originalFirst NoTransitions survivingFirst
+  ReplayReadyEnd = ()
+ReplayReadyRuleTagsPreserved name key world error value nameEq keyEq deletable
+  ordinal live originalFirst originalFinal
+  (MoreTransitions transition rest) survivingFirst
+  (ReplayReadyDelete deleted tail) =
+    ReplayReadyRuleTagsPreserved name key world error value nameEq keyEq
+      deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal
+        (transitionAction transition) live)
+      _ originalFinal rest survivingFirst tail
+ReplayReadyRuleTagsPreserved name key world error value nameEq keyEq deletable
+  ordinal live originalFirst originalFinal
+  (MoreTransitions transition rest) survivingFirst
+  (ReplayReadyKeep retained survivingAfter survivingTag survivingTransition
+    sameAction fires tail) =
+      (transitionTag transition = transitionTag survivingTransition,
+       ReplayReadyRuleTagsPreserved name key world error value nameEq keyEq
+         deletable (S ordinal)
+         (advanceGenerationEnvironment @{nameEq} ordinal
+           (transitionAction transition) live)
+         _ originalFinal rest survivingAfter tail)
+
 ||| Exact source occurrence and source-ordinal equation for one generation-aware
 ||| subsequence.  The equation is emitted beside the producer-owned occurrence,
 ||| avoiding reduction through an opaque occurrence projection.
