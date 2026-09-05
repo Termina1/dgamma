@@ -19355,6 +19355,16 @@ scopedFiberControlActiveSame name key world error value _ _
       scopedLifecycleActiveSame name key world error value
         (dependencies (componentDependencies component)) (componentProvisions component) leftLife rightLife lifeSame
 
+0 scopedLookupMatchedMember :
+  (name, item : Type) -> (nameEq : DecEq name) -> (wanted, current : name) ->
+  (cell, observed : item) -> (rest : List (Binding name (\_ => item))) ->
+  (same : (wanted = current)) -> (decEq @{nameEq} wanted current = Yes same) ->
+  (lookupEntries @{nameEq} wanted (Bind current cell :: rest) = Just observed) ->
+  Elem (Bind wanted observed) (Bind current cell :: rest)
+scopedLookupMatchedMember name item nameEq _ current cell observed rest Refl exact =
+  rewrite exact in (\found => replace
+    {p = \chosen => Elem (Bind current chosen) (Bind current cell :: rest)} (justInjective found) Here)
+
 record ScopedSelectedClosedEpisodeFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
