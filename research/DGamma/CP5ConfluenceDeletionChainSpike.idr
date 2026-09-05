@@ -19501,6 +19501,23 @@ scopedNamedRawTag name key world error value nameEq keyEq action before rawAfter
 scopedInsertViewTag name key world error value nameEq keyEq actor parent component
   ambient source _ _ (MkForeignInsertPlanView absent guards) = Refl
 
+0 scopedInsertRawTag :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} (OInsert actor parent component) before =
+    Just (tag, afterState)) ->
+  (tag = OInsertTag)
+scopedInsertRawTag name key world error value nameEq keyEq actor parent component
+  (MkSystemState ambient source) afterState tag raw =
+    scopedInsertViewTag name key world error value nameEq keyEq actor parent
+      component ambient source tag afterState
+      (foreignInsertPlanView nameEq keyEq actor parent component ambient source
+        tag afterState raw)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
