@@ -16497,6 +16497,43 @@ scopedRelatedTargetFiber name key value world error sourceFiber
   (Just targetFiber) (SomeControlFibers related) =
     MkScopedRelatedTargetFiber targetFiber Refl related
 
+record ScopedTransportedReloading
+  (key : Type) (value : key -> Type) (world : Type) (error : Type)
+  (name : Type) (deps : List key) (provision : CoeffectSpec key)
+  (step : StepEffect key value world error deps provision)
+  (continuation : List (StepEffect key value world error deps provision))
+  (view : View name deps)
+  (targetLifecycle : Lifecycle key value world error name deps provision) where
+  constructor MkScopedTransportedReloading
+  scopedTransportedAccumulator :
+    LocalState key value world provision -> LocalState key value world provision
+  0 scopedTransportedLifecycle :
+    targetLifecycle = Reloading (step :: continuation) scopedTransportedAccumulator view
+
+0 scopedTransportReloading :
+  (key : Type) -> (value : key -> Type) -> (world : Type) -> (error : Type) ->
+  (name : Type) -> (deps : List key) -> (provision : CoeffectSpec key) ->
+  (step : StepEffect key value world error deps provision) ->
+  (continuation : List (StepEffect key value world error deps provision)) ->
+  (accumulator : LocalState key value world provision ->
+    LocalState key value world provision) ->
+  (view : View name deps) ->
+  (targetLifecycle : Lifecycle key value world error name deps provision) ->
+  LifecycleControlRelated (Reloading (step :: continuation) accumulator view)
+    targetLifecycle ->
+  ScopedTransportedReloading key value world error name deps provision step
+    continuation view targetLifecycle
+scopedTransportReloading key value world error name deps provision step
+  continuation accumulator view
+  (Reloading rightRemaining rightAccumulator rightView)
+  (ReloadingControls remainingSame accumulatorRelated viewSame) =
+    MkScopedTransportedReloading rightAccumulator
+      (trans
+        (cong (\remaining => Reloading remaining rightAccumulator rightView)
+          (sym remainingSame))
+        (cong (\observedView => Reloading (step :: continuation) rightAccumulator
+          observedView) (sym viewSame)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
