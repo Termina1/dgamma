@@ -16696,6 +16696,89 @@ scopedParentYieldAtRelated name key world error value protocol nameEq parent
       view sourceReloading stepBelongs parentRank childRank parentRanked
       childRanked yieldTag stepYields catalogYields
 
+0 scopedParentYieldFromSource :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (parent : name) ->
+  (childComponent : Component key value world error) ->
+  (source : SystemState name key value world error) ->
+  (target : SystemState name key value world error) ->
+  (sourceYield : ParentRegistrationYield protocol nameEq parent childComponent
+    source) ->
+  (targetFiber : Fiber name key value world error) ->
+  (0 related : FiberControlRelated (parentFiberAtYield sourceYield) targetFiber) ->
+  (0 targetFound : lookupFiber {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} parent (registry target) =
+    Just targetFiber) ->
+  ParentRegistrationYield protocol nameEq parent childComponent target
+scopedParentYieldFromSource name key world error value protocol nameEq parent
+  childComponent source target
+  (MkParentRegistrationYield sourceFiber sourceFound step continuation
+    accumulator view sourceReloading stepBelongs parentRank childRank
+    parentRanked childRanked yieldTag stepYields catalogYields)
+  targetFiber related targetFound =
+    scopedParentYieldAtRelated name key world error value protocol nameEq parent
+      childComponent target sourceFiber targetFiber related targetFound step
+      continuation accumulator view sourceReloading stepBelongs parentRank
+      childRank parentRanked childRanked yieldTag stepYields catalogYields
+
+0 scopedTransportParentYieldAtTarget :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (parent : name) ->
+  (childComponent : Component key value world error) ->
+  (source : SystemState name key value world error) ->
+  (target : SystemState name key value world error) ->
+  (sourceYield : ParentRegistrationYield protocol nameEq parent childComponent
+    source) ->
+  (located : ScopedRelatedTargetFiber name key value world error
+    (parentFiberAtYield sourceYield)
+    (lookupFiber {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} parent (registry target))) ->
+  ScopedTransportedParentYield name key value world error protocol nameEq parent
+    childComponent target
+scopedTransportParentYieldAtTarget name key world error value protocol nameEq
+  parent childComponent source target sourceYield located =
+    MkScopedTransportedParentYield
+      (scopedParentYieldFromSource name key world error value protocol nameEq
+        parent childComponent source target sourceYield
+        (scopedRelatedTarget located) (scopedRelatedControls located)
+        (scopedRelatedObserved located))
+
+0 scopedTransportParentYield :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (parent : name) ->
+  (childComponent : Component key value world error) ->
+  (source : SystemState name key value world error) ->
+  (target : SystemState name key value world error) ->
+  (0 related : FiberControlMaybeRelated
+    (lookupFiber {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} parent (registry source))
+    (lookupFiber {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} parent (registry target))) ->
+  (sourceYield : ParentRegistrationYield protocol nameEq parent childComponent
+    source) ->
+  ScopedTransportedParentYield name key value world error protocol nameEq parent
+    childComponent target
+scopedTransportParentYield name key world error value protocol nameEq parent
+  childComponent source target related sourceYield =
+    scopedTransportParentYieldAtTarget name key world error value protocol
+      nameEq parent childComponent source target sourceYield
+      (scopedRelatedTargetFiber name key value world error
+        (parentFiberAtYield sourceYield)
+        (lookupFiber {name = name} {key = key} {value = value} {world = world}
+          {error = error} @{nameEq} parent (registry target))
+        (replace
+          {p = \observedSource => FiberControlMaybeRelated observedSource
+            (lookupFiber {name = name} {key = key} {value = value}
+              {world = world} {error = error} @{nameEq} parent
+              (registry target))}
+          (parentFoundAtYield sourceYield) related))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
