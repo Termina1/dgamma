@@ -23176,6 +23176,26 @@ scopedOrderedControlsQuiet name key world error value nameEq keyEq left right so
       (scopedRuntimeFiberQuiet name key world error value nameEq keyEq left right sources _ _ related)
       (scopedOrderedControlsQuiet name key world error value nameEq keyEq left right sources _ _ rest)
 
+0 scopedRelationalBoundaryQuiet :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) -> (live : GenerationEnvironment name) ->
+  (original, survivor : SystemState name key value world error) ->
+  (boundary : RelationalNoEpisodeReplayBoundary name key world error value nameEq keyEq registered
+    live original survivor) ->
+  (quiet @{nameEq} @{keyEq} original = True) -> (quiet @{nameEq} @{keyEq} survivor = True)
+scopedRelationalBoundaryQuiet name key world error value nameEq keyEq registered live original survivor boundary sourceQuiet =
+  trans (sym (scopedOrderedControlsQuiet name key world error value nameEq keyEq
+    (planTarget (completePlanResult (relationalCompletePlan boundary))) (registry survivor)
+    (buildOrderedRuntimeSources nameEq keyEq (plannedSystemState original
+      (completePlanResult (relationalCompletePlan boundary))) survivor
+      (relationalEffects boundary) (relationalOrderedControls boundary))
+    (bindings (planTarget (completePlanResult (relationalCompletePlan boundary))))
+    (bindings (registry survivor)) (relationalOrderedControls boundary)))
+    (scopedPlanQuiet name key world error value nameEq keyEq (worldState original) (registry original)
+      (planTarget (completePlanResult (relationalCompletePlan boundary)))
+      (inactiveLeafPlan (completePlanResult (relationalCompletePlan boundary))) sourceQuiet)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
