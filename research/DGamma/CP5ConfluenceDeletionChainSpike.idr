@@ -17933,6 +17933,57 @@ scopedAdvanceFinishedRaw name key world error value nameEq keyEq child ambient
   localAfter undo found resolved ran matches =
     rewrite found in rewrite resolved in rewrite ran in rewrite matches in Refl
 
+||| Concrete iterated advance outcome, with all evaluator observations explicit.
+0 scopedAdvanceIteratedRaw :
+  (name : Type) -> (key : Type) -> (world : Type) -> (error : Type) ->
+  (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (next : StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component)) ->
+  (more : List (StepEffect key value world error
+    (dependencies (componentDependencies component))
+    (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (capability : DepValues key value (dependencies (componentDependencies component))) ->
+  (localAfter : LocalState key value world (componentProvisions component)) ->
+  (undo : LocalState key value world (componentProvisions component) ->
+    LocalState key value world (componentProvisions component)) ->
+  (0 found : (lookupFiber {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} child source =
+    Just (MkFiber component parent retiredFlag table
+      (Reloading (step :: next :: more) accumulator view)))) ->
+  (0 resolved : (resolveCommittedValues @{nameEq} @{keyEq} {name = name}
+    {key = key} {value = value} {world = world} {error = error}
+    (dependencies (componentDependencies component)) view source = Just capability)) ->
+  (0 ran : (runStepEffect step capability
+    (MkLocalState ambient (restrictOwnedPreservingOrder @{keyEq}
+      (componentProvisions component) (ownedValues table))) = Right (localAfter, undo))) ->
+  (0 matches : (targetMatches @{nameEq}
+    (targetFiber @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+      {world = world} {error = error}
+      (MkFiber component parent retiredFlag table
+        (Reloading (step :: next :: more) accumulator view)) source) view = True)) ->
+  (applyAction @{nameEq} @{keyEq} {name = name} {key = key} {value = value}
+    {world = world} {error = error} (LAdvance child) (MkSystemState ambient source) =
+    Just (LIterTag, MkSystemState (localWorld localAfter)
+      (replaceBinding @{nameEq} child
+        (MkFiber component parent retiredFlag (localTable localAfter)
+          (Reloading (next :: more) (pushLocalUndo (componentProvisions component) accumulator undo) view)) source)))
+scopedAdvanceIteratedRaw name key world error value nameEq keyEq child ambient
+  source component parent retiredFlag table step next more accumulator view capability
+  localAfter undo found resolved ran matches =
+    rewrite found in rewrite resolved in rewrite ran in rewrite matches in Refl
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
