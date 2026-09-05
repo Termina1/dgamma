@@ -21383,6 +21383,32 @@ scopedSelectedBirthsTail name key world error value selected registered ordinal 
         (MkLocatedActionOccurrence before after (MoreTransitions head earlier) transition later
           actionSame (cong (MoreTransitions head) decomposition)))
 
+0 scopedSelectedKeptParentDistinct :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (transition : Transition first middle) -> (rest : Transitions middle finalState) ->
+  ScopedSelectedBirthsComplete name key world error value selected registered ordinal first
+    finalState (MoreTransitions transition rest) ->
+  (retained : Not (EpisodeGenerationDeletedActor {name = name} {key = key} {value = value}
+    {world = world} {error = error} nameEq selected registered ordinal live
+    (transitionAction transition))) ->
+  (parent, child : name) -> (component : Component key value world error) ->
+  (transitionAction transition = OInsert child (ChildOf parent) component) ->
+  Not (parent = selected)
+scopedSelectedKeptParentDistinct name key world error value nameEq selected registered ordinal
+  live first middle finalState transition rest complete retained parent child component actionSame
+  parentSame =
+    retained (DeleteRegisteredGeneration
+      (MkRegistrationGeneration child ordinal **
+        (cong (actionGenerationAt @{nameEq} ordinal live) actionSame,
+         scopedSelectedBirthAtHead name key world error value selected registered ordinal first
+           middle finalState transition rest complete child component
+           (trans actionSame
+             (cong (\namedParent => OInsert child (ChildOf namedParent) component) parentSame)))))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
