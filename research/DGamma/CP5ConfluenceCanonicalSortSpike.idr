@@ -976,6 +976,15 @@ canonicalRankInsertedHeadAbsent item inserted head rest headFresh insertedFresh 
     Here => insertedFresh Here
     There later => headFresh later
 
+0 canonicalRankHeadBelowInserted : (item : Type) -> (rank : item -> Nat) ->
+  (inserted, head : item) -> (rest : List item) -> LTE (rank head) (rank inserted) ->
+  ((selected : item) -> Elem selected rest -> LTE (rank head) (rank selected)) ->
+  (selected : item) -> Elem selected (inserted :: rest) -> LTE (rank head) (rank selected)
+canonicalRankHeadBelowInserted item rank inserted head rest before below selected present =
+  case present of
+    Here => before
+    There later => below selected later
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
