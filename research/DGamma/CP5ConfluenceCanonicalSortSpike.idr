@@ -1081,6 +1081,14 @@ canonicalStableRankSort item itemEq rank [] =
 canonicalStableRankSort item itemEq rank (head :: rest) =
   canonicalRankSortStep item itemEq rank head rest (canonicalStableRankSort item itemEq rank rest)
 
+0 canonicalRankBeforeFromHead : (item : Type) -> (rank : item -> Nat) ->
+  (head : item) -> (rest : List item) -> (upper : item) ->
+  LT (rank head) (rank upper) -> Elem upper (head :: rest) -> BeforeIn head upper (head :: rest)
+canonicalRankBeforeFromHead item rank head rest upper strict upperIn =
+  case upperIn of
+    Here => void (succNotLTEpred strict)
+    There later => BeforeHere later
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
