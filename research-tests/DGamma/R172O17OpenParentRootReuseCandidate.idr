@@ -584,3 +584,11 @@ r172ReuseConclusionParentBegin sorted birth = r172ReuseExtendLocatedRight
   (beforeRegistration birth) (MoreTransitions (registrationTransition birth) (afterRegistration birth))
   (sortedTrace sorted) (registrationDecomposition birth)
   (r172ReuseLastOpeningLocated (r172ReuseConclusionParentOpening sorted birth))
+
+public export
+0 r172ReuseCountAppend :
+  {first, middle, finalState : SystemState Nat R45Key R45Value Unit String} ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  transitionCount (appendTransitions left right) = transitionCount left + transitionCount right
+r172ReuseCountAppend NoTransitions right = Refl
+r172ReuseCountAppend (MoreTransitions head rest) right = cong S (r172ReuseCountAppend rest right)
