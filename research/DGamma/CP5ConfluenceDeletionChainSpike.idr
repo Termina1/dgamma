@@ -19891,6 +19891,11 @@ scopedRootObserved name key world error value nameEq before afterState transitio
   replace {p = \observed => (scopedRootObservation name key world error value nameEq observed before = True)}
     (sym action) (trans (cong (maybe False (scopedParentRoot . fiberParent)) found) (cong scopedParentRoot parent))
 
+0 scopedRootParentExact : (name : Type) -> (parent : Parent name) ->
+  (scopedParentRoot parent = True) -> (parent = Root)
+scopedRootParentExact name Root truth = Refl
+scopedRootParentExact name (ChildOf actor) truth = absurd truth
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
