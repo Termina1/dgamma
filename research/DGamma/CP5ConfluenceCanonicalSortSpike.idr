@@ -3438,6 +3438,28 @@ canonicalWorkMovedRightLocation name key world error value nameEq keyEq protocol
       (MoreTransitions (movedLeft diamond) (replayedSuffix result)) (movedRightAction diamond)
       (sym (swappedDecomposition result))
 
+||| Genuine LOCAL progress: the selected right node's actual ordinal strictly
+||| decreases under this sealed swap. This is NOT a global sorting measure;
+||| changes to other positions and the worklist choice remain to be accounted.
+0 canonicalWorkRightOrdinalDecreases :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) -> (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq original prefixTrace left right suffix diamond) ->
+  LT (locatedActionOrdinal (canonicalWorkMovedRightLocation name key world error value nameEq keyEq protocol
+        original prefixTrace left right suffix diamond result))
+     (locatedActionOrdinal (canonicalWorkOriginalRightLocation name key world error value nameEq keyEq protocol
+        original prefixTrace left right suffix diamond result))
+canonicalWorkRightOrdinalDecreases name key world error value nameEq keyEq protocol
+  original prefixTrace left right suffix diamond result =
+    replace {p = \ordinal => LT (transitionCount prefixTrace) ordinal}
+      (sym (canonicalWorkSnocTransitionCount name key world error value prefixTrace left)) reflexive
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
