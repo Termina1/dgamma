@@ -2280,6 +2280,24 @@ canonicalWorkContinueInspection name key world error value nameEq keyEq trace se
   (CanonicalWorkOpenInterleaved scanned laterRemains) later =
     CanonicalWorklistNeedsGrouping episode scanned laterRemains
 
+||| The pending-name argument decreases structurally at every accepted block;
+||| each episode's body scan decreases structurally too. No arbitrary fuel or
+||| identity-as-complete-sort branch hides a failed grouping/order test.
+0 canonicalWorkInspectNames :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) -> (pending : List name) ->
+  ((selected : name) -> Elem selected pending -> LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+  (minimumStart : Nat) -> CanonicalWorklistInspection name key world error value nameEq keyEq trace pending minimumStart
+canonicalWorkInspectNames name key world error value nameEq keyEq trace [] episodes minimumStart = CanonicalWorklistEnd
+canonicalWorkInspectNames name key world error value nameEq keyEq trace (selected :: remaining) episodes minimumStart =
+  canonicalWorkContinueInspection name key world error value nameEq keyEq trace selected remaining minimumStart
+    (episodes selected Here)
+    (canonicalWorkInspectOpenEpisode name key world error value nameEq keyEq selected trace (episodes selected Here))
+    (\nextMinimum => canonicalWorkInspectNames name key world error value nameEq keyEq trace remaining
+      (\actor, present => episodes actor (There present)) nextMinimum)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
