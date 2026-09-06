@@ -412,3 +412,10 @@ r172ReuseOrderingIsParentOnly = singletonEnumeration (orderedSupportNames r172Re
   singletonEnumeration (first :: second :: rest) (UniqueCons missing unique) sound present =
     void (missing (replace {p = \selected => Elem selected (second :: rest)}
       (trans (sound second (There Here)) (sym (sound first Here))) Here))
+
+||| Precisely stated target only. No inhabitant or universal refutation is claimed here.
+public export
+0 R172ReuseGlobalSortingRefutation : Type
+R172ReuseGlobalSortingRefutation =
+  ((sorted : (SortedClosingFreeTrace Nat R45Key Unit String R45Value
+    r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering)) -> Void)
