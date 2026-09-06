@@ -29561,6 +29561,15 @@ scopedLocateActionOccurs name key world error value first finalState _ action (A
 scopedLocateActionOccurs name key world error value first finalState _ action (ActionOccursLater transition rest later) =
   prependLocatedActionOccurrence transition rest (scopedLocateActionOccurs name key world error value _ finalState rest action later)
 
+record ScopedAfterBirthOccurrence
+  (name, key, world, error : Type) (value : key -> Type)
+  (initial, finalState : SystemState name key value world error) (global : Transitions initial finalState)
+  (child, parent : name) (component : Component key value world error)
+  (birth : LocatedGeneratedRegistration child parent component global) (action : Action name key value world error) where
+  constructor MkScopedAfterBirthOccurrence
+  afterBirthOccurrence : LocatedActionOccurrence action global
+  0 afterBirthStrict : LT (registrationOrdinal birth) (locatedActionOrdinal afterBirthOccurrence)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
