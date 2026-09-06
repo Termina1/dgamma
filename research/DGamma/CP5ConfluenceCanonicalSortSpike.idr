@@ -1351,6 +1351,18 @@ canonicalSortingReplayCorrespondence name key world error value protocol nameEq 
 canonicalSortingOccurrenceCorrespondence name key world error value protocol nameEq keyEq current =
   finiteDerivationOccurrenceCorrespondence (sortingReplayDerivation current)
 
+0 canonicalSortingReplayStart :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, originalFinal : SystemState name key value world error) ->
+  (original : Transitions initial originalFinal) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  CanonicalSortingReplayState name key world error value protocol nameEq keyEq original
+canonicalSortingReplayStart name key world error value protocol nameEq keyEq initial originalFinal original premises =
+  MkCanonicalSortingReplayState originalFinal original FiniteAdjacentSwapDone premises
+    (sameExternalOrchestrationReflexiveSpike nameEq original)
+    (relationalReplayEndpointReflexiveSpike nameEq keyEq originalFinal (replayFinalWellFormed premises))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
