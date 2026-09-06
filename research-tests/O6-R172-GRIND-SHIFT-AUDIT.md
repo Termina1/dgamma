@@ -931,3 +931,76 @@ O17 audit sections above stay verbatim. Final gate before the time guard;
 production/surface revision, O19 body and O21 withdrawal work remain forbidden.
 Ranked #3 `canonicalSupportOrdersMatchSpike` probe-first is **pre-authorized for
 R173 only**, not for this remaining R172 window.
+
+
+## Global refutation continuation — G31 3/3 STOP, reverted
+
+**Mandatory stop at 14:58:31 UTC.** Retained prefix: candidate G1–G27 through
+`2f6a494`, lifetime G28–G30 through `a938488`; no G31 declaration or helper
+remains. No G32 attempt, no fourth G31 attempt or renamed continuation.
+Earlier ratified O14/O17 sections and the supervisor ruling remain verbatim.
+
+G24 `r172ReuseConclusionRootBeforeChild` (`74d0290`) proves the requested
+**global forced ordering**, for every hypothetical unchanged O17 conclusion:
+its actually preserved external root-1 birth strictly precedes each accounted
+child-1 birth. The proof derives an actual parent L-Begin in the child's aligned
+initially empty prefix from the child's real RegistrationDiscipline yield, then
+uses the actual root-before-every-lifecycle field. G25–G27 authenticate the
+child's checked transition, freshness, and contradiction with any actual
+occupying fiber at that source.
+
+G29 `r172ReuseRootActionBackward` transports an occurrence retaining its actual
+pre-state root classification backward through SameExternalOrchestration.
+G30 `r172ReuseOriginalRemovalInternal` proves the concrete original removal is
+not a root orchestration step. These do not themselves prove a global lifetime
+or whole-source absence theorem.
+
+### Exact stopped G31 type (NOT retained as an Idris declaration)
+
+```idris
+0 r172ReuseOriginalNoRootRemoval :
+  R172RootActionOccurs (ORemove 1) r172ReuseTrace -> Void
+```
+
+* **G31-1:** the deeply concrete root-occurrence match exceeded the remaining
+  approximately 164 seconds of its outer 180-second batch. No compiler survived
+  the 14:52:15 inspection; empty buffered log, lost RSS sample. Charged exit 124.
+* **G31-2:** an actual-`OccursIn` eliminator plus generic root-occurrence fold
+  elaborated but failed coverage at the concrete ordinal-4 removal branch.
+* **G31-3:** making that transition an explicit `Fired` pattern expanded the
+  coverage failure instead of fixing it. The attempt ran 161.3 seconds and
+  ended with Error diagnostics; the entire new declaration and both local
+  helpers were immediately restored away. No failed proof is retained.
+
+The complete third diagnostic is retained in
+`O6-R172-G31-3-DIAGNOSTIC.txt` (only trailing whitespace normalized for git).
+Raw log: 170,224 bytes / 1,442 lines, SHA-256 `cdb2a9d67c8d8d5a98e646a37053e6f256973f8dc35b5169209e3b70dde8895d`.
+
+The diagnostic is a coverage failure, **not a semantic counterexample to G31**.
+No unsafe coverage escape, postulate, new hole or weakened theorem was used.
+
+### Exact semantic remainder
+
+The precise still-missing target is occupancy at the accounted child's source:
+
+```idris
+(sorted : SortedClosingFreeTrace Nat R45Key Unit String R45Value
+  r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
+(birth : LocatedGeneratedRegistration 1 0 r45Child (sortedTrace sorted)) ->
+(fiber : Fiber Nat R45Key R45Value Unit String **
+ lookupFiber {name = Nat} {key = R45Key} {value = R45Value}
+   {world = Unit} {error = String} @{r45NameEq} 1
+   (registry (registrationBefore birth)) = Just fiber)
+```
+
+It needs an actual no-intervening-root-removal exclusion and a checked
+root-presence/lifetime transport from the earlier root birth to the child
+source, respecting the located ordinal/decomposition indices. Merely placing a
+root birth earlier is insufficient because O-Remove can make a name fresh.
+Then G27 plus G4 assembles the negation. The exact fully parenthesized target
+`R172ReuseGlobalSortingRefutation` was stated at quantity 0 in the candidate,
+but **has no inhabitant**. Global sorting impossibility and Theorem 73 are still
+not proved; O17 body remains 0/3 and its original hole remains.
+
+Final restored-source and frozen-boundary checks, the complete retained-prefix
+ledger and superseding cumulative status follow in the next audit section.
