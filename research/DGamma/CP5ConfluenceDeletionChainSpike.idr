@@ -20009,6 +20009,13 @@ scopedExternalDelete name key world error value nameEq sourceFirst sourceMiddle 
       (\root => absurd (trans (sym (deletedRootExact seal))
         (scopedRootObserved name key world error value nameEq sourceFirst sourceMiddle sourceStep root))) tail
 
+0 scopedControlParentExact :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (left, right : Fiber name key value world error) -> FiberControlRelated left right ->
+  (fiberParent left = fiberParent right)
+scopedControlParentExact name key world error value _ _
+  (FibersControlRelated leftParent rightParent leftRetired rightRetired leftTable rightTable leftLife rightLife parentSame retiredSame lifeSame) = parentSame
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
