@@ -1459,6 +1459,29 @@ canonicalLifecycleInternal name key world error value nameEq transition lifecycl
 canonicalLifecycleInternal name key world error value nameEq transition lifecycle (RootRemoveStep fiber found parent action) =
   canonicalFalseNotTrue (trans (sym (cong isLifecycleAction action)) lifecycle)
 
+||| The sole root insertion stays the sole external input when hoisted across an activation.
+0 canonicalRootInsertPairExternal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (left : Transition first middle) -> (right : Transition middle finalState) ->
+  (root : name) -> (component : Component key value world error) ->
+  PaperActivationStep left -> (transitionAction right = OInsert root Root component) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  SameExternalOrchestration nameEq (MoreTransitions left (MoreTransitions right NoTransitions))
+    (MoreTransitions (movedRight diamond) (MoreTransitions (movedLeft diamond) NoTransitions))
+canonicalRootInsertPairExternal name key world error value nameEq keyEq left right root component leftActivation rootAction diamond =
+  SkipLeftInternal left (MoreTransitions right NoTransitions)
+    (canonicalLifecycleInternal name key world error value nameEq left
+      (canonicalPaperActivationLifecycle name key world error value left leftActivation))
+    (MatchExternalInput (transitionAction right) right NoTransitions (RootInsertStep rootAction)
+      (movedRight diamond) (MoreTransitions (movedLeft diamond) NoTransitions)
+      (RootInsertStep (trans (movedRightAction diamond) rootAction)) Refl (movedRightAction diamond)
+      (SkipRightInternal (movedLeft diamond) NoTransitions
+        (canonicalLifecycleInternal name key world error value nameEq (movedLeft diamond)
+          (canonicalPaperActivationLifecycle name key world error value (movedLeft diamond)
+            (movedLeftActivationBranch diamond leftActivation))) SameExternalOrchestrationEnd))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
