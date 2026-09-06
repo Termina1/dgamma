@@ -15,6 +15,7 @@ import DGamma.CP4SupportQuiescence
 import DGamma.CP4SupportSolution
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
+import DGamma.CP5UniqueRawNameInsertions
 import Data.List.Elem
 import Data.Nat
 import Decidable.Equality
@@ -1922,6 +1923,7 @@ canonicalSortingFixedLinearization name key world error value protocol nameEq ke
 ||| schedule-shaped data.
 public export
 0 sortClosingFreeTraceSpike :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
   {initial, finalState : SystemState name key value world error} ->
@@ -1930,6 +1932,8 @@ public export
   ClosingFreeTraceShape name key world error value nameEq keyEq trace ->
   (ordering : SupportOrderingCapital name key world error value nameEq keyEq
     finalState) ->
+  (0 uniqueInsertions : UniqueRawNameInsertions name key world error value
+    nameEq keyEq trace) ->
   SortedClosingFreeTrace name key world error value protocol nameEq keyEq trace
     ordering
 sortClosingFreeTraceSpike = ?sortClosingFreeTraceSpike_rhs
