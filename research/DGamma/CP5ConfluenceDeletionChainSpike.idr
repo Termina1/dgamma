@@ -26763,6 +26763,13 @@ record ScopedWithdrawalCensus
     (lookupCurrentGeneration @{nameEq} (generationName generation) live = Just generation) ->
     Elem (generationName generation) withdrawalNames
 
+0 scopedElemConsEliminate :
+  (item : Type) -> (predicate : item -> Type) -> (head : item) -> (tail : List item) ->
+  predicate head -> ((wanted : item) -> Elem wanted tail -> predicate wanted) ->
+  (wanted : item) -> Elem wanted (head :: tail) -> predicate wanted
+scopedElemConsEliminate item predicate head tail atHead atTail _ Here = atHead
+scopedElemConsEliminate item predicate head tail atHead atTail wanted (There later) = atTail wanted later
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
