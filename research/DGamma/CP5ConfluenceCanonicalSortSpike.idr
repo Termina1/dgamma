@@ -985,6 +985,37 @@ canonicalRankHeadBelowInserted item rank inserted head rest before below selecte
     Here => before
     There later => below selected later
 
+||| The comparison chooses a constructor that already owns the exact inserted list.
+canonicalFreshRankInsertAt : (item : Type) -> (rank : item -> Nat) ->
+  (inserted, head : item) -> (rest : List item) ->
+  (0 ordered : CanonicalRanksOrdered item rank (head :: rest)) ->
+  (0 unique : UniqueKeys (head :: rest)) ->
+  (0 fresh : Not (Elem inserted (head :: rest))) ->
+  Dec (LTE (rank inserted) (rank head)) -> CanonicalRankSortResult item rank (inserted :: rest) ->
+  CanonicalRankSortResult item rank (inserted :: head :: rest)
+canonicalFreshRankInsertAt item rank inserted head rest ordered unique fresh (Yes before) tailResult =
+  MkCanonicalRankSortResult (inserted :: head :: rest)
+    (CanonicalRanksCons inserted (head :: rest)
+      (canonicalRanksLowerThroughHead item rank inserted head rest before ordered) ordered)
+    (UniqueCons fresh unique) (\selected, present => present) (\selected, present => present)
+canonicalFreshRankInsertAt item rank inserted head rest ordered unique fresh (No notBefore) tailResult =
+  MkCanonicalRankSortResult (head :: rankSortedItems tailResult)
+    (CanonicalRanksCons head (rankSortedItems tailResult)
+      (\selected, present => canonicalRankHeadBelowInserted item rank inserted head rest
+        (lteSuccLeft (notLTEImpliesGT notBefore))
+        (canonicalRanksHeadBelow item rank head rest ordered) selected
+        (rankSortedBackward tailResult selected present)) (rankSortedOrdered tailResult))
+    (UniqueCons
+      (\present => canonicalRankInsertedHeadAbsent item inserted head rest
+        (canonicalUniqueHeadAbsent item head rest unique) fresh
+        (rankSortedBackward tailResult head present)) (rankSortedUnique tailResult))
+    (\selected, present => canonicalRankConsMembership item head (inserted :: rest)
+      (rankSortedItems tailResult) (rankSortedForward tailResult) selected
+      (canonicalRankSwapFront item inserted head rest selected present))
+    (\selected, present => canonicalRankSwapFront item head inserted rest selected
+      (canonicalRankConsMembership item head (rankSortedItems tailResult) (inserted :: rest)
+        (rankSortedBackward tailResult) selected present))
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
