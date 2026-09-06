@@ -20083,6 +20083,15 @@ scopedSelectedRegistryRoot name key world error value nameEq selected wanted lef
     (trans (scopedSelectedOrderedRoot name key world error value nameEq selected wanted (bindings left) (bindings right) controls)
       (sym (cong (maybe False (scopedParentRoot . fiberParent)) (lookupFiberAsEntries nameEq wanted right))))
 
+0 scopedControlLookupRoot :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (left, right : Maybe (Fiber name key value world error)) -> FiberControlMaybeRelated left right ->
+  (maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) left =
+   maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) right)
+scopedControlLookupRoot name key world error value _ _ NoControlFibers = Refl
+scopedControlLookupRoot name key world error value _ _ (SomeControlFibers {left} {right} controls) =
+  cong scopedParentRoot (scopedControlParentExact name key world error value left right controls)
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
