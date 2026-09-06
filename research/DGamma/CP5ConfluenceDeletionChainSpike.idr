@@ -20456,6 +20456,21 @@ scopedRootSealsAppendRight name key world error value nameEq registered ordinal 
 scopedExternalAcrossTraceEnd name key world error value nameEq sourceFirst sourceFinal first _ _ source left right Refl sameTrace external =
   replace {p = SameExternalOrchestration nameEq source} (sym sameTrace) external
 
+0 scopedExternalAppendDeleted :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (sourceFirst, sourceMiddle, sourceFinal, targetFirst, targetFinal : SystemState name key value world error) ->
+  (source : Transitions sourceFirst sourceMiddle) -> (transition : Transition sourceMiddle sourceFinal) ->
+  (target : Transitions targetFirst targetFinal) -> ScopedDeletedRootSeal name key world error value nameEq sourceMiddle sourceFinal transition ->
+  SameExternalOrchestration nameEq source target ->
+  SameExternalOrchestration nameEq (appendTransitions source (MoreTransitions transition NoTransitions)) target
+scopedExternalAppendDeleted name key world error value nameEq sourceFirst sourceMiddle sourceFinal targetFirst targetFinal source transition target seal external =
+  replace {p = SameExternalOrchestration nameEq (appendTransitions source (MoreTransitions transition NoTransitions))}
+    (scopedAppendTraceEmpty name key world error value targetFirst targetFinal target)
+    (scopedExternalAppend name key world error value nameEq sourceFirst sourceMiddle sourceFinal targetFirst targetFinal targetFinal
+      source (MoreTransitions transition NoTransitions) target NoTransitions external
+      (scopedExternalDelete name key world error value nameEq sourceMiddle sourceFinal sourceFinal targetFinal targetFinal
+        transition NoTransitions NoTransitions seal SameExternalOrchestrationEnd))
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
