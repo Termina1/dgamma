@@ -2202,6 +2202,52 @@ canonicalWorkCompleteBlock name key world error value nameEq keyEq selected trac
     (canonicalWorkBlockFromPrefix name key world error value nameEq keyEq selected trace episode scanned noLater)
     (transitionCount (openPrefix episode)) (S (transitionCount (workActorPrefix scanned))) Refl Refl
 
+||| Decreasing inspection worklist. Ready nodes own actual produced blocks AND
+||| ordered, nonoverlapping numeric ranges; a blocked node explicitly retains
+||| the next unresolved grouping/order obligation. This is NOT a sorter.
+data CanonicalWorklistInspection :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) -> (pending : List name) -> (minimumStart : Nat) -> Type where
+  CanonicalWorklistEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {initial, finalState : SystemState name key value world error} ->
+    {trace : Transitions initial finalState} ->
+    {minimumStart : Nat} ->
+    CanonicalWorklistInspection name key world error value nameEq keyEq trace [] minimumStart
+  CanonicalWorklistReady :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {initial, finalState : SystemState name key value world error} ->
+    {trace : Transitions initial finalState} ->
+    {selected : name} -> {remaining : List name} -> {minimumStart : Nat} ->
+    (completed : CanonicalWorkCompletedBlock name key world error value nameEq keyEq selected trace) ->
+    (0 startsAfter : LTE minimumStart (workRangeStart completed)) ->
+    CanonicalWorklistInspection name key world error value nameEq keyEq trace remaining
+      (workRangeStart completed + workRangeSize completed) ->
+    CanonicalWorklistInspection name key world error value nameEq keyEq trace (selected :: remaining) minimumStart
+  CanonicalWorklistNeedsGrouping :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {initial, finalState : SystemState name key value world error} ->
+    {trace : Transitions initial finalState} ->
+    {selected : name} -> {remaining : List name} -> {minimumStart : Nat} ->
+    (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+    (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
+    (0 laterRemains : Not (NoLifecycleBy selected (workActorRest scanned))) ->
+    CanonicalWorklistInspection name key world error value nameEq keyEq trace (selected :: remaining) minimumStart
+  CanonicalWorklistNeedsOrdering :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {initial, finalState : SystemState name key value world error} ->
+    {trace : Transitions initial finalState} ->
+    {selected : name} -> {remaining : List name} -> {minimumStart : Nat} ->
+    (completed : CanonicalWorkCompletedBlock name key world error value nameEq keyEq selected trace) ->
+    (0 startsTooEarly : Not (LTE minimumStart (workRangeStart completed))) ->
+    CanonicalWorklistInspection name key world error value nameEq keyEq trace (selected :: remaining) minimumStart
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
