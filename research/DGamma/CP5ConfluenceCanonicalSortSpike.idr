@@ -940,6 +940,13 @@ canonicalRanksLowerThroughHead item rank inserted head rest before ordered selec
     There later => canonicalRankLTETransitive before
       (canonicalRanksHeadBelow item rank head rest ordered selected later)
 
+0 canonicalRankExistingForward : (item : Type) -> (inserted : item) -> (rest : List item) ->
+  Elem inserted rest -> (selected : item) -> Elem selected (inserted :: rest) -> Elem selected rest
+canonicalRankExistingForward item inserted rest existing selected present =
+  case present of
+    Here => existing
+    There later => later
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
