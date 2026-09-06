@@ -20173,6 +20173,20 @@ scopedSelectedActionRoot name key world error value nameEq keyEq selected regist
     (\actor => scopedSelectedRegistryRoot name key world error value nameEq selected actor
       (planTarget (completePlanResult (selectedBoundaryPlan boundary))) (registry target) (selectedBoundaryOrderedControls boundary))
 
+0 scopedPostCloseActionRoot :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  GenerationEnvironmentNamesUnique live -> (action : Action name key value world error) ->
+  Not (GenerationOwnedActor nameEq registered ordinal live action) ->
+  (source, target : SystemState name key value world error) ->
+  PostCloseSelectedBoundary name key world error value nameEq keyEq selected registered ordinal live source target ->
+  (scopedRootObservation name key world error value nameEq action source = scopedRootObservation name key world error value nameEq action target)
+scopedPostCloseActionRoot name key world error value nameEq keyEq selected registered ordinal live unique action retained source target boundary =
+  scopedPlannedActionRoot name key world error value nameEq registered ordinal live unique action retained source target
+    (completePlanResult (postClosePlan boundary))
+    (\actor => scopedSelectedRegistryRoot name key world error value nameEq selected actor
+      (planTarget (completePlanResult (postClosePlan boundary))) (registry target) (postCloseControls boundary))
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
