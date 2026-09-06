@@ -1112,6 +1112,16 @@ canonicalRankBeforeLowerSplit item rank head rest lower upper ordered strict upp
     There later => canonicalRankBeforeUpperSplit item rank head rest lower upper ordered later strict
       (tailBefore later) upperIn
 
+||| A strict protocol path rank becomes actual occurrence order in the sorted list.
+0 canonicalRankOrderBefore : (item : Type) -> (rank : item -> Nat) -> (order : List item) ->
+  CanonicalRanksOrdered item rank order -> (lower, upper : item) ->
+  LT (rank lower) (rank upper) -> Elem lower order -> Elem upper order -> BeforeIn lower upper order
+canonicalRankOrderBefore item rank [] ordered lower upper strict lowerIn upperIn = absurd lowerIn
+canonicalRankOrderBefore item rank (head :: rest) ordered lower upper strict lowerIn upperIn =
+  canonicalRankBeforeLowerSplit item rank head rest lower upper ordered strict upperIn
+    (\lowerTail, upperTail => canonicalRankOrderBefore item rank rest
+      (canonicalRanksTail item rank head rest ordered) lower upper strict lowerTail upperTail) lowerIn
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
