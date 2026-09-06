@@ -3503,6 +3503,26 @@ canonicalWorkGroupingRightOccurs name key world error value selected global pair
       (ActionOccursLater (workPairLeft pair) (MoreTransitions (workPairRight pair) (workPairSuffix pair))
         (ActionOccursHere (workPairRight pair) (workPairSuffix pair) Refl)))
 
+||| Installed intervals cannot contain a new Begin by that actor: its checked
+||| rule requires the SAME before-state to be uninstalled.
+0 canonicalWorkInstalledRejectsBegin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  InstalledTrace name key world error value nameEq keyEq selected trace ->
+  ActionOccurs (LBegin selected) trace -> Void
+canonicalWorkInstalledRejectsBegin name key world error value nameEq keyEq selected _ (InstalledEnd installed) occurs =
+  case occurs of ActionOccursHere step rest same impossible; ActionOccursLater step rest later impossible
+canonicalWorkInstalledRejectsBegin name key world error value nameEq keyEq selected _
+  (InstalledStep {first = before} {middle = afterState} action tag checked rest installed tail)
+  (ActionOccursHere _ _ same) = case same of
+    Refl => canonicalFalseNotTrue
+      (trans (sym (fst (snd (lBeginBoundary nameEq keyEq selected before afterState tag checked)))) installed)
+canonicalWorkInstalledRejectsBegin name key world error value nameEq keyEq selected _
+  (InstalledStep action tag checked rest installed tail) (ActionOccursLater _ _ later) =
+    canonicalWorkInstalledRejectsBegin name key world error value nameEq keyEq selected rest tail later
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
