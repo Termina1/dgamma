@@ -210,3 +210,18 @@ uniqueInsertionsAfterDeletionDerivation name key world error value nameEq keyEq 
   (ClosingFreeDeletionStep trace premises candidate step target rest) unique =
     uniqueInsertionsAfterDeletionDerivation name key world error value nameEq keyEq protocol rest
       (uniqueInsertionsAfterDeletionStep name key world error value nameEq keyEq protocol trace premises candidate step unique)
+
+||| The O17 caller obtains its reduced-trace premise from original uniqueness;
+||| no extra reduced-output hypothesis or registration-tree coherence is assumed.
+public export
+0 uniqueInsertionsAfterReduction :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  {original : Transitions initial originalFinal} ->
+  (reduction : ClosingFreeReduction name key world error value protocol nameEq keyEq original) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq (reducedTrace reduction)
+uniqueInsertionsAfterReduction name key world error value nameEq keyEq protocol reduction =
+  uniqueInsertionsAfterDeletionDerivation name key world error value nameEq keyEq protocol (reductionDeletionDerivation reduction)
