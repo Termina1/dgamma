@@ -1160,6 +1160,17 @@ canonicalListMemberSoundNo item itemEq selected head rest different observed sou
     Here => void (different Refl)
     There later => trans observed (sound later)
 
+0 canonicalListMemberSoundStep : (item : Type) -> (itemEq : DecEq item) ->
+  (selected, head : item) -> (rest : List item) ->
+  (Elem selected rest -> listMember @{itemEq} selected rest = True) ->
+  (decision : Dec (selected = head)) -> (decEq @{itemEq} selected head = decision) ->
+  Elem selected (head :: rest) -> listMember @{itemEq} selected (head :: rest) = True
+canonicalListMemberSoundStep item itemEq selected head rest sound (Yes same) observed present =
+  canonicalListMemberKnownYes item itemEq selected head rest same observed
+canonicalListMemberSoundStep item itemEq selected head rest sound (No different) observed present =
+  canonicalListMemberSoundNo item itemEq selected head rest different
+    (canonicalListMemberKnownNo item itemEq selected head rest different observed) sound present
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
