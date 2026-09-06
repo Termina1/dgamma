@@ -2482,3 +2482,47 @@ remaining producers, C58 sources, validation/frozen hashes, compiler incident,
 retained EOF-whitespace warning are catalogued in
 `research-tests/O6-R173-GRIND-SHIFT-AUDIT.md`. Continue only at the approved R174
 boundary; no fourth C58 attempt or unconditional Theorem-73 claim is inferred.
+
+
+## Status — R174 (2026-09-06, supersedes R173 continuation)
+
+**Fully proved in research:** the C58 observed-value cure and actual local
+A/Insert sealed result; reached closing-free shape from unchanged O17 source
+shape/bundle via actual finite adjacent replay; simultaneous reached worklist
+reinspection with uniqueness/ranges/order; positive orientation classification,
+actual A/A distinctness, local moved-right ordinal decrease, and the actual
+worklist selector's non-Begin provenance. The executable eight-step distinct-
+birth provision example, strong uniqueness, sorted-prefix guard rejection,
+and genuine nonempty-key registration protocol also typecheck. These do not
+supply the example's RegistrationDiscipline or full O17 telescope.
+
+**Partial:** O17. Root placement is owner-paused (literal paper clause versus
+current declared-provision guard), not refuted on full premises. Early
+applicability, every selected sealed swap, completed-prefix/BlockBefore
+preservation, global decreasing measure and registration-accounting remain
+open. The local ordinal decrease is NOT that global measure; reinspection is
+NOT readiness preservation. O17 body remains 0/3. The actual selected activation
+is a continuation rather than Begin; this does not by itself prove it can move
+earlier. Unit D classifies downstream walls without implementing them.
+
+**Merely stated/open:** the six inherited holes, 1/4/0/0/1. No new escape hatch,
+hole, partial function, postulate, unsafe cast, with-block or local alias is
+introduced. Production is unchanged; O19/O21 proof bodies and the frozen CP3
+surface are untouched. Global uniqueness is not silently threaded through
+unchanged downstream telescopes. CP3 raw-premise satisfiability is unverified.
+
+**Validation and checking debt:** last fresh CanonicalSort proof check S39-1,
+23:37:55–23:38:50 UTC; seeded production package, R8 and conditional R16 pass.
+All 39 S units are committed; S3 used 2/3, S26 used 3/3, others 1/3. Q9 exhausted
+3/3 at normalization cost, was reverted and baseline-checked, with no fourth
+attempt. Five engineering interrupts are honestly NO COMPILER VERDICT. The
+~938-MB ordinal TTC debt is not cured by P6's separate opacity success. Only the
+two expressly authorized stale R173 probe TTC/TTM files were removed.
+
+**Next:** owner decides root canonical-form versus faithful store-ownership
+semantics; meanwhile build early applicability from the actual selected-pair
+provenance and prove global measure/accounting before the O17 body. Full
+per-unit sources, diagnostics, decisions and remaining obligations are in
+`research-tests/O6-R174-GRIND-SHIFT-AUDIT.md`, the permanent compiler ledger and
+`research-tests/O6-R174-A8-CAUSE-SHARING-RECON.md`. No unconditional Theorem 73 or
+independent reviewer approval is claimed by this milestone.

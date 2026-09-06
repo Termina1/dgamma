@@ -617,3 +617,196 @@ DGamma.CP5ConfluenceCanonicalSortSpike:3046:13--3046:26
                     ^^^^^^^^^^^^^
 
 ```
+
+## Final surface-independent producer increment (S18–S39)
+
+Proof work stops at `f157f8f`; last new-declaration attempt S39-1 started
+23:37:55 and passed 23:38:50 UTC, before the 23:51:31 no-new-attempt guard.
+The final review/validation window starts with all 39 S units retained.
+
+- S18/S19 are total POSITIVE action/tag and four-orientation dispatchers.
+  Nothing is not a proof of inapplicability, and no diamond follows merely from
+  an orientation. Coverage of all actual selected cases and early applicability
+  remain independent obligations.
+- S20/S21 derive A/A actor distinctness from the SAME actual pair's
+  foreign/owned evidence; no supplied actor inequality is smuggled in.
+- S22–S25 authenticate both original and moved right occurrences in one sealed
+  adjacent result and prove a strict decrease of that right node's ordinal.
+  This is genuine LOCAL progress only: other nodes move, and a different
+  worklist choice may increase it. It is NOT the global sorting measure.
+- S26–S35 derive installation of the ACTUAL open-episode scan residual, exclude
+  new Begin there, retain its right action through the EXISTING whole-episode
+  selection producer, and show its activation alternative is Iter/Finish.
+  No selector or public pair record is strengthened/replaced. Scalar action
+  transport follows genuine trace equality; no proof-bearing Transition
+  equality, generation/raw cast, or source endpoint guess is used.
+- S36–S39 extend that provenance fact through the EXISTING whole worklist
+  selector (including arbitrarily many ready nodes), and package its actual
+  optional selected pair with the correlated no-Begin proof. Nothing still
+  means no grouping choice, not success or an applicable ordering swap.
+
+This distinction matters for the next applicability proof: a GENERIC foreign/
+owned pair can place a consumer's first Begin just after its enabling provider,
+so generic pair evidence alone does not justify early activation. The actual
+O17 grouping producer now proves it cannot select such a Begin. This does not
+prove early Iter/Finish applicability either; it identifies and closes one
+real provenance sub-obligation without editing or refuting O19.
+
+| Unit | Commit | Fresh result | Start–end UTC |
+|---|---|---|---|
+| S18 | `e711363` | PASS 1/3 | 22:47:31–22:48:26 |
+| S19 | `d74e8ad` | PASS 1/3 | 22:49:12–22:50:07 |
+| S20 | `08204b8` | PASS 1/3 | 22:50:53–22:51:48 |
+| S21 | `ee33c08` | PASS 1/3 | 22:52:34–22:53:29 |
+| S22 | `8aaf8ed` | PASS 1/3 | 22:56:56–22:57:51 |
+| S23 | `56382ff` | PASS 1/3 | 22:59:07–23:00:02 |
+| S24 | `f310683` | PASS 1/3 | 23:00:47–23:01:41 |
+| S25 | `07b1595` | PASS 1/3 | 23:02:33–23:03:28 |
+| S26 | `63a224f` | PASS 3/3 | 23:16:38–23:17:33 |
+| S27 | `d28e20d` | PASS 1/3 | 23:18:06–23:19:01 |
+| S28 | `66a3974` | PASS 1/3 | 23:19:33–23:20:28 |
+| S29 | `a66bc76` | PASS 1/3 | 23:21:01–23:21:56 |
+| S30 | `f5200aa` | PASS 1/3 | 23:22:33–23:23:28 |
+| S31 | `3a62e18` | PASS 1/3 | 23:24:06–23:25:01 |
+| S32 | `e34efd8` | PASS 1/3 | 23:25:54–23:26:49 |
+| S33 | `a1846df` | PASS 1/3 | 23:27:31–23:28:26 |
+| S34 | `855b4eb` | PASS 1/3 | 23:29:04–23:29:59 |
+| S35 | `583557a` | PASS 1/3 | 23:30:46–23:31:41 |
+| S36 | `a2fed63` | PASS 1/3 | 23:32:55–23:33:50 |
+| S37 | `0a079eb` | PASS 1/3 | 23:34:34–23:35:29 |
+| S38 | `9cda09a` | PASS 1/3 | 23:36:15–23:37:10 |
+| S39 | `f157f8f` | PASS 1/3 | 23:37:55–23:38:50 |
+
+S26 passes 3/3. Its first two diagnostics identify FORCED pattern positions:
+`rest = appendTransitions tail later`, then `head = Fired ...`. The final
+proof uses `_` in those forced positions and structurally recurses on `tail`;
+it introduces no nonlinear pattern, with-block, local helper or alias. The
+full rejected declarations/diagnostics follow. All other S18–S39 pass 1/3.
+Across S1–S39: 37 pass 1/3, S3 passes 2/3, S26 passes 3/3; no S unit exhausts.
+
+### S26-1 archived rejection
+
+```idris
+||| Preserve installed-at-every-boundary evidence on an actual suffix.
+0 canonicalWorkInstalledAppendRight :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (earlier : Transitions first middle) -> (later : Transitions middle finalState) ->
+  InstalledTrace name key world error value nameEq keyEq selected (appendTransitions earlier later) ->
+  InstalledTrace name key world error value nameEq keyEq selected later
+canonicalWorkInstalledAppendRight name key world error value nameEq keyEq selected NoTransitions later installed = installed
+canonicalWorkInstalledAppendRight name key world error value nameEq keyEq selected (MoreTransitions head tail) later
+  (InstalledStep action tag checked rest installed tailInstalled) =
+    canonicalWorkInstalledAppendRight name key world error value nameEq keyEq selected tail later tailInstalled
+```
+
+```text
+5/5: Building DGamma.CP5ConfluenceCanonicalSortSpike (research/DGamma/CP5ConfluenceCanonicalSortSpike.idr)
+Error: While processing left hand side of canonicalWorkInstalledAppendRight. When unifying:
+    MoreTransitions (Fired ?nameEq ?keyEq ?action ?tag ?checked) ?rest
+and:
+    MoreTransitions ?head (appendTransitions ?tail ?later)
+Pattern variable rest unifies with: appendTransitions ?tail ?later.
+
+DGamma.CP5ConfluenceCanonicalSortSpike:3473:37--3473:41
+ 3469 |   InstalledTrace name key world error value nameEq keyEq selected (appendTransitions earlier later) ->
+ 3470 |   InstalledTrace name key world error value nameEq keyEq selected later
+ 3471 | canonicalWorkInstalledAppendRight name key world error value nameEq keyEq selected NoTransitions later installed = installed
+ 3472 | canonicalWorkInstalledAppendRight name key world error value nameEq keyEq selected (MoreTransitions head tail) later
+ 3473 |   (InstalledStep action tag checked rest installed tailInstalled) =
+                                            ^^^^
+
+Suggestion: Use the same name for both pattern variables, since they unify.
+```
+
+### S26-2 archived rejection
+
+```idris
+||| Preserve installed-at-every-boundary evidence on an actual suffix.
+0 canonicalWorkInstalledAppendRight :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (earlier : Transitions first middle) -> (later : Transitions middle finalState) ->
+  InstalledTrace name key world error value nameEq keyEq selected (appendTransitions earlier later) ->
+  InstalledTrace name key world error value nameEq keyEq selected later
+canonicalWorkInstalledAppendRight name key world error value nameEq keyEq selected NoTransitions later installed = installed
+canonicalWorkInstalledAppendRight name key world error value nameEq keyEq selected (MoreTransitions head tail) later
+  (InstalledStep action tag checked _ installed tailInstalled) =
+    canonicalWorkInstalledAppendRight name key world error value nameEq keyEq selected tail later tailInstalled
+```
+
+```text
+5/5: Building DGamma.CP5ConfluenceCanonicalSortSpike (research/DGamma/CP5ConfluenceCanonicalSortSpike.idr)
+Error: While processing left hand side of canonicalWorkInstalledAppendRight. When unifying:
+    MoreTransitions (Fired ?nameEq ?keyEq ?action ?tag ?checked) (appendTransitions ?tail ?later)
+and:
+    MoreTransitions ?head (appendTransitions ?tail ?later)
+Pattern variable head unifies with: Fired ?nameEq ?keyEq ?action ?tag ?checked.
+
+DGamma.CP5ConfluenceCanonicalSortSpike:3472:101--3472:105
+ 3468 |   (earlier : Transitions first middle) -> (later : Transitions middle finalState) ->
+ 3469 |   InstalledTrace name key world error value nameEq keyEq selected (appendTransitions earlier later) ->
+ 3470 |   InstalledTrace name key world error value nameEq keyEq selected later
+ 3471 | canonicalWorkInstalledAppendRight name key world error value nameEq keyEq selected NoTransitions later installed = installed
+ 3472 | canonicalWorkInstalledAppendRight name key world error value nameEq keyEq selected (MoreTransitions head tail) later
+                                                                                                            ^^^^
+
+Suggestion: Use the same name for both pattern variables, since they unify.
+```
+
+## Final validation and exact retained frontier
+
+- Idris 2 **0.8.0** reconfirmed. Every proof module remains `%default total`.
+- Fresh seeded package invocation PASS **23:39:51–23:40:08 UTC** (16.3s,
+  sampled RSS 219,952 KiB), preserving all **207/207** production TTC seeds.
+  This is not a from-scratch production rebuild.
+- The final retained CanonicalSort source freshly rebuilt on S39-1
+  **23:37:55–23:38:50**; no Idris source edit follows it.
+- Final R8 `R8FullPipeline.idr` freshly rebuilt PASS **23:40:25–23:42:04**,
+  99.7s, sampled RSS 36,443,568 KiB; transcript says `Building DGamma.R8FullPipeline`.
+- Final conditional R16 `R16ConfluenceTheoremAssemblyPositive.idr` freshly
+  rebuilt PASS **23:42:42–23:42:44**; transcript says `Building ...R16...`.
+  Its zero RSS counter means no nonzero sample before completion, not zero
+  memory usage. R16 is still CONDITIONAL through the six open obligations.
+- Final micro/check ledger is committed as
+  `research-tests/O6-R174-COMPILER-LEDGER.json`: **77** serialized checks,
+  **67** clean passes, **5** diagnostic rejections, **5** charged engineering
+  interrupts with NO compiler verdict (P6-1/2, Q9-1/2/3). The latter are not
+  rejection or uninhabitability proofs. All exact commands and timestamps are
+  retained; zero/new-source distinctions are in this audit and each transcript.
+- No aggregate R11 run or independent reviewer pass is claimed. The supervisor
+  owns any independent review fanout; this is a self-audited producer milestone.
+
+**Fully proved here:** C58's observed-value cure and actual local A/Insert
+sealed integration; executable distinct-birth/nonempty-provision schedule,
+its uniqueness, actual sorted-prefix guard rejection and genuine registration
+protocol (NOT discipline); reached closing-free shape from unchanged O17
+inputs and real adjacent derivations; simultaneous reached reinspection;
+positive orientation dispatch and derived A/A inequality; genuine local
+right-ordinal decrease; actual worklist-selected non-Begin provenance.
+
+**Partial/open:** O17 sorting. Root placement remains OWNER-PAUSED. Early
+applicability and actual sealed results for every selected grouping/ordering
+case remain open. Reinspection is proved, not preservation of the already-ready
+prefix; `BlockBefore`, a global strictly decreasing measure and exact
+registration-accounting fold alignment remain open. Shared original/reduced
+support order and `CanonicalReplayAccountingLaws` producers remain supplied by
+conditional late records, not discharged. O17 body stays **0/3**.
+
+**Merely stated/open:** six inherited holes, **1/4/0/0/1**. O19/O21 bodies and
+frozen CP3 proof surfaces are untouched; no new hypotheses/escapes/holes. The
+provision candidate is still NOT a full revised-O17 countermodel: Q9 exhausted
+3/3 at normalization cost, was entirely reverted and restoration-checked; the
+full replay bundle, discipline, shape and O14 inputs are not constructed.
+Global freshness is not silently added downstream to CrossTrace/O21, and the
+frozen raw CP3 maximal-closing premise remains unverified under uniqueness.
+
+**Next:** owner resolves canonical-form versus actual store-ownership guard
+semantics using the Unit-D memo, then separately authorizes any surface work.
+For the unchanged surface-independent path, combine the now-correlated actual
+selection/non-Begin evidence with early Iter/Finish or registration
+applicability, consume sealed results through S17, and prove a global measure
+and completed-prefix/accounting preservation before any O17 body attempt.
+The large ordinal TTC/import-cost debt remains measured but uncured.

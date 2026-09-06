@@ -1,0 +1,712 @@
+{
+  "schema": "dgamma-r174-compiler-ledger-v1",
+  "branch": "cp5-thm73-scoping",
+  "startHead": "8b68e37",
+  "lastProofCommit": "f157f8f",
+  "note": "All seeded and serialized. maxSampleRSSKiB is a sampled lower bound, 0 means no nonzero sample; null means unmeasured interruption. No compiler verdict for five exit143 engineering stops.",
+  "checks": [
+    {
+      "unit": "H1-1",
+      "start": "2026-09-06T20:34:37.985515+00:00",
+      "end": "2026-09-06T20:39:50.560940+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 39832656,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5UniqueRawNameOrdinalCapital.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "B1-1",
+      "start": "2026-09-06T20:40:11.739429+00:00",
+      "end": "2026-09-06T20:41:06.819711+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19927024,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "B2-1",
+      "start": "2026-09-06T20:41:27.235930+00:00",
+      "end": "2026-09-06T20:42:22.329274+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19964672,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "B3-1",
+      "start": "2026-09-06T20:42:45.366569+00:00",
+      "end": "2026-09-06T20:43:40.477507+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19952704,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "B4-1",
+      "start": "2026-09-06T20:44:03.862265+00:00",
+      "end": "2026-09-06T20:45:00.996707+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19952048,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "B5-1",
+      "start": "2026-09-06T20:45:20.277118+00:00",
+      "end": "2026-09-06T20:46:19.420994+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19938608,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "B6-1",
+      "start": "2026-09-06T20:46:45.387222+00:00",
+      "end": "2026-09-06T20:47:42.552280+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19965760,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "C1-1",
+      "start": "2026-09-06T20:48:49.846602+00:00",
+      "end": "2026-09-06T20:49:44.938011+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 21799888,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "C2-1",
+      "start": "2026-09-06T20:50:11.504970+00:00",
+      "end": "2026-09-06T20:51:06.608714+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 21780496,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "P1-1",
+      "start": "2026-09-06T21:00:05.134640+00:00",
+      "end": "2026-09-06T21:00:07.173096+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 0,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "P2-1",
+      "start": "2026-09-06T21:00:24.351791+00:00",
+      "end": "2026-09-06T21:00:26.401533+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 0,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "P3-1",
+      "start": "2026-09-06T21:00:49.001433+00:00",
+      "end": "2026-09-06T21:00:51.059038+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 0,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "P4-1",
+      "start": "2026-09-06T21:01:17.969101+00:00",
+      "end": "2026-09-06T21:01:20.007889+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 0,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "P5-1",
+      "start": "2026-09-06T21:01:52.370287+00:00",
+      "end": "2026-09-06T21:01:54.425557+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 0,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "P6-1",
+      "start": "2026-09-06T21:02:18.964005+00:00",
+      "end": "2026-09-06T21:12:30+00:00",
+      "exit": 143,
+      "maxSampleRSSKiB": null,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+      "diagnosticErrors": false,
+      "verdict": "ABORTED_ENGINEERING_TIMEOUT_NO_COMPILER_VERDICT",
+      "reason": "10-minute bound on unexpected normalization cost; wrapper killed child process group; later process inspection confirms quiescence. Initial assertion accidentally matched its own shell text, not an orphan."
+    },
+    {
+      "unit": "P6-2",
+      "start": "2026-09-06T21:12:55.052669+00:00",
+      "end": "2026-09-06T21:18:58.973369+00:00",
+      "exit": 143,
+      "maxSampleRSSKiB": null,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+      "diagnosticErrors": false,
+      "verdict": "ABORTED_ENGINEERING_TIMEOUT_NO_COMPILER_VERDICT",
+      "reason": "6-minute engineering bound: explicit constructor instantiation did not remove pathological normalization; supervised process group killed, quiescence checked"
+    },
+    {
+      "unit": "P6-3",
+      "start": "2026-09-06T21:19:20.557681+00:00",
+      "end": "2026-09-06T21:19:22.609031+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 0,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionCollisionUnique.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "Q1-1",
+      "start": "2026-09-06T21:25:54.781142+00:00",
+      "end": "2026-09-06T21:25:56.827782+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 0,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17SortedProvisionGuard.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "Q2-1",
+      "start": "2026-09-06T21:26:14.849582+00:00",
+      "end": "2026-09-06T21:26:16.896080+00:00",
+      "exit": 1,
+      "maxSampleRSSKiB": 0,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17SortedProvisionGuard.idr",
+      "diagnosticErrors": true
+    },
+    {
+      "unit": "Q2-2",
+      "start": "2026-09-06T21:26:41.355139+00:00",
+      "end": "2026-09-06T21:26:43.390831+00:00",
+      "exit": 1,
+      "maxSampleRSSKiB": 0,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17SortedProvisionGuard.idr",
+      "diagnosticErrors": true
+    },
+    {
+      "unit": "Q2-3",
+      "start": "2026-09-06T21:27:09.210684+00:00",
+      "end": "2026-09-06T21:27:11.267501+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 0,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17SortedProvisionGuard.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "Q3-1",
+      "start": "2026-09-06T21:30:09.247811+00:00",
+      "end": "2026-09-06T21:30:11.309402+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 0,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionProtocol.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "Q4-1",
+      "start": "2026-09-06T21:30:29.310711+00:00",
+      "end": "2026-09-06T21:30:31.355420+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 0,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionProtocol.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "Q5-1",
+      "start": "2026-09-06T21:30:47.883530+00:00",
+      "end": "2026-09-06T21:30:49.921938+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 0,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionProtocol.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "Q6-1",
+      "start": "2026-09-06T21:31:24.511112+00:00",
+      "end": "2026-09-06T21:31:26.555108+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 0,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionProtocol.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "Q7-1",
+      "start": "2026-09-06T21:31:45.943407+00:00",
+      "end": "2026-09-06T21:31:47.988708+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 0,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionProtocol.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "Q8-1",
+      "start": "2026-09-06T21:31:58.840504+00:00",
+      "end": "2026-09-06T21:32:00.878424+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 2272,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionProtocol.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "Q9-1",
+      "start": "2026-09-06T21:33:04.142637+00:00",
+      "end": "2026-09-06T21:41:07.644145+00:00",
+      "exit": 143,
+      "maxSampleRSSKiB": null,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+      "diagnosticErrors": false,
+      "verdict": "ABORTED_ENGINEERING_TIMEOUT_NO_COMPILER_VERDICT",
+      "reason": "8-minute bound on forcing fresh Refl equations against builder-owned Fired equations; no diagnostic verdict; compiler group terminated and quiescent. RSS samples reached >=31717536 KiB, not asserted peak."
+    },
+    {
+      "unit": "Q9-2",
+      "start": "2026-09-06T21:41:26.987430+00:00",
+      "end": "2026-09-06T21:47:31.898459+00:00",
+      "exit": 143,
+      "maxSampleRSSKiB": null,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+      "diagnosticErrors": false,
+      "verdict": "ABORTED_ENGINEERING_TIMEOUT_NO_COMPILER_VERDICT",
+      "reason": "6-minute bound: equation slots inferred from exact trace did not remove normalization; next possible suspect explicit dependent component payload comparisons. No compiler verdict; process group terminated and quiescent."
+    },
+    {
+      "unit": "Q9-3",
+      "start": "2026-09-06T21:47:58.527409+00:00",
+      "end": "2026-09-06T21:54:03.035928+00:00",
+      "exit": 143,
+      "maxSampleRSSKiB": null,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+      "diagnosticErrors": false,
+      "verdict": "ABORTED_ENGINEERING_TIMEOUT_NO_COMPILER_VERDICT",
+      "reason": "6-minute final bound: all constructor slots inferred from exact trace with explicit universe/dictionaries still normalizes pathologically. RSS observed >=47790208 KiB, not peak. Third attempt charged; full revert/audit/gate, no fourth attempt."
+    },
+    {
+      "unit": "gate-Q9-reverted",
+      "start": "2026-09-06T21:54:03.166996+00:00",
+      "end": "2026-09-06T21:54:05.217982+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 1984,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "gate-Q9-unique",
+      "start": "2026-09-06T21:54:20.980962+00:00",
+      "end": "2026-09-06T21:54:23.037180+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 0,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R174O17ProvisionCollisionUnique.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S1-1",
+      "start": "2026-09-06T22:10:19.746882+00:00",
+      "end": "2026-09-06T22:11:14.725883+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19921312,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S2-1",
+      "start": "2026-09-06T22:12:18.180261+00:00",
+      "end": "2026-09-06T22:13:13.160334+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19945264,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S3-1",
+      "start": "2026-09-06T22:14:20.083190+00:00",
+      "end": "2026-09-06T22:15:12.980577+00:00",
+      "exit": 1,
+      "maxSampleRSSKiB": 17948464,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": true
+    },
+    {
+      "unit": "S3-2",
+      "start": "2026-09-06T22:15:40.465405+00:00",
+      "end": "2026-09-06T22:16:35.437284+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 21804144,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S4-1",
+      "start": "2026-09-06T22:17:36.615360+00:00",
+      "end": "2026-09-06T22:18:31.584460+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 20910528,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S5-1",
+      "start": "2026-09-06T22:19:22.007160+00:00",
+      "end": "2026-09-06T22:20:16.997541+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19964096,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S6-1",
+      "start": "2026-09-06T22:21:02.684985+00:00",
+      "end": "2026-09-06T22:21:57.612072+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19968464,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S7-1",
+      "start": "2026-09-06T22:24:13.231153+00:00",
+      "end": "2026-09-06T22:25:08.220668+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19949680,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S8-1",
+      "start": "2026-09-06T22:25:58.547188+00:00",
+      "end": "2026-09-06T22:26:53.524558+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 21797712,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S9-1",
+      "start": "2026-09-06T22:27:40.076670+00:00",
+      "end": "2026-09-06T22:28:35.023975+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19954288,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S10-1",
+      "start": "2026-09-06T22:29:17.134354+00:00",
+      "end": "2026-09-06T22:30:12.089677+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19988192,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S11-1",
+      "start": "2026-09-06T22:31:27.501021+00:00",
+      "end": "2026-09-06T22:32:22.462326+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 21555648,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S12-1",
+      "start": "2026-09-06T22:33:21.643555+00:00",
+      "end": "2026-09-06T22:34:16.626702+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 20513392,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S13-1",
+      "start": "2026-09-06T22:35:05.644743+00:00",
+      "end": "2026-09-06T22:36:00.583939+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 21818160,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S14-1",
+      "start": "2026-09-06T22:37:00.004246+00:00",
+      "end": "2026-09-06T22:37:54.960955+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19963664,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S15-1",
+      "start": "2026-09-06T22:39:16.633773+00:00",
+      "end": "2026-09-06T22:40:11.630832+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 21027296,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S16-1",
+      "start": "2026-09-06T22:40:52.975644+00:00",
+      "end": "2026-09-06T22:41:47.984116+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 20825216,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S17-1",
+      "start": "2026-09-06T22:42:41.960346+00:00",
+      "end": "2026-09-06T22:43:36.931555+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 21836464,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S18-1",
+      "start": "2026-09-06T22:47:31.631717+00:00",
+      "end": "2026-09-06T22:48:26.591235+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 21807744,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S19-1",
+      "start": "2026-09-06T22:49:12.854938+00:00",
+      "end": "2026-09-06T22:50:07.822310+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 21842704,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S20-1",
+      "start": "2026-09-06T22:50:53.418014+00:00",
+      "end": "2026-09-06T22:51:48.383735+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19989456,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S21-1",
+      "start": "2026-09-06T22:52:34.442317+00:00",
+      "end": "2026-09-06T22:53:29.395728+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 20574832,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S22-1",
+      "start": "2026-09-06T22:56:56.943837+00:00",
+      "end": "2026-09-06T22:57:51.881034+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19966304,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S23-1",
+      "start": "2026-09-06T22:59:07.679970+00:00",
+      "end": "2026-09-06T23:00:02.666211+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 20894768,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S24-1",
+      "start": "2026-09-06T23:00:47.032534+00:00",
+      "end": "2026-09-06T23:01:41.994086+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 20971200,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S25-1",
+      "start": "2026-09-06T23:02:33.343385+00:00",
+      "end": "2026-09-06T23:03:28.307013+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 21433584,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S26-1",
+      "start": "2026-09-06T23:14:09.287829+00:00",
+      "end": "2026-09-06T23:15:02.239989+00:00",
+      "exit": 1,
+      "maxSampleRSSKiB": 17951344,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": true
+    },
+    {
+      "unit": "S26-2",
+      "start": "2026-09-06T23:15:21.238691+00:00",
+      "end": "2026-09-06T23:16:14.192284+00:00",
+      "exit": 1,
+      "maxSampleRSSKiB": 17947264,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": true
+    },
+    {
+      "unit": "S26-3",
+      "start": "2026-09-06T23:16:38.768410+00:00",
+      "end": "2026-09-06T23:17:33.728799+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19944240,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S27-1",
+      "start": "2026-09-06T23:18:06.660285+00:00",
+      "end": "2026-09-06T23:19:01.605055+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 21817040,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S28-1",
+      "start": "2026-09-06T23:19:33.858995+00:00",
+      "end": "2026-09-06T23:20:28.827256+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 18224416,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S29-1",
+      "start": "2026-09-06T23:21:01.475598+00:00",
+      "end": "2026-09-06T23:21:56.449681+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19269728,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S30-1",
+      "start": "2026-09-06T23:22:33.176519+00:00",
+      "end": "2026-09-06T23:23:28.167934+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19837536,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S31-1",
+      "start": "2026-09-06T23:24:06.179117+00:00",
+      "end": "2026-09-06T23:25:01.134689+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19091552,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S32-1",
+      "start": "2026-09-06T23:25:54.654667+00:00",
+      "end": "2026-09-06T23:26:49.603329+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 18163104,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S33-1",
+      "start": "2026-09-06T23:27:31.501683+00:00",
+      "end": "2026-09-06T23:28:26.447685+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19205488,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S34-1",
+      "start": "2026-09-06T23:29:04.975845+00:00",
+      "end": "2026-09-06T23:29:59.926685+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 20011296,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S35-1",
+      "start": "2026-09-06T23:30:46.178607+00:00",
+      "end": "2026-09-06T23:31:41.097022+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 18166928,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S36-1",
+      "start": "2026-09-06T23:32:55.601777+00:00",
+      "end": "2026-09-06T23:33:50.595185+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19452128,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S37-1",
+      "start": "2026-09-06T23:34:34.138678+00:00",
+      "end": "2026-09-06T23:35:29.069569+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 19842016,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S38-1",
+      "start": "2026-09-06T23:36:15.459001+00:00",
+      "end": "2026-09-06T23:37:10.410415+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 18151856,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "S39-1",
+      "start": "2026-09-06T23:37:55.605996+00:00",
+      "end": "2026-09-06T23:38:50.554891+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 18138480,
+      "cmd": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "gate-package",
+      "start": "2026-09-06T23:39:51.773642+00:00",
+      "end": "2026-09-06T23:40:08.059981+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 219952,
+      "cmd": "idris2 --build dgamma.ipkg",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "gate-R8",
+      "start": "2026-09-06T23:40:25.061460+00:00",
+      "end": "2026-09-06T23:42:04.768468+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 36443568,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R8FullPipeline.idr",
+      "diagnosticErrors": false
+    },
+    {
+      "unit": "gate-R16",
+      "start": "2026-09-06T23:42:42.251387+00:00",
+      "end": "2026-09-06T23:42:44.289954+00:00",
+      "exit": 0,
+      "maxSampleRSSKiB": 0,
+      "cmd": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R16ConfluenceTheoremAssemblyPositive.idr",
+      "diagnosticErrors": false
+    }
+  ]
+}
