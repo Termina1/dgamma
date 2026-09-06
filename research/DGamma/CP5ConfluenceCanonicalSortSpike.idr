@@ -2499,6 +2499,20 @@ record CanonicalWorkNextActor
   0 workBeforeNextForeign : CanonicalWorkForeignSpan selected workBeforeNext
   0 workNextDecomposition : appendTransitions workBeforeNext (MoreTransitions workNextStep workAfterNext) = trace
 
+0 canonicalWorkNextActorPrepend :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  Not (CanonicalWorkActorStep selected step) ->
+  CanonicalWorkNextActor name key world error value selected rest ->
+  CanonicalWorkNextActor name key world error value selected (MoreTransitions step rest)
+canonicalWorkNextActorPrepend name key world error value selected step rest excluded next =
+  MkCanonicalWorkNextActor (workNextBefore next) (workNextAfter next)
+    (MoreTransitions step (workBeforeNext next)) (workNextStep next) (workAfterNext next)
+    (workNextOwned next)
+    (CanonicalWorkForeignStep step (workBeforeNext next) excluded (workBeforeNextForeign next))
+    (cong (MoreTransitions step) (workNextDecomposition next))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
