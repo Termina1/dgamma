@@ -3489,6 +3489,20 @@ canonicalWorkScannedResidualInstalled name key world error value nameEq keyEq se
     (replace {p = InstalledTrace name key world error value nameEq keyEq selected}
       (sym (workPrefixDecomposition scanned)) (openInstalled episode))
 
+||| Authenticate the actual selected grouping right action in its own trace.
+0 canonicalWorkGroupingRightOccurs :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (pair : CanonicalWorkGroupingPair name key world error value selected global) ->
+  ActionOccurs (transitionAction (workPairRight pair)) global
+canonicalWorkGroupingRightOccurs name key world error value selected global pair =
+  replace {p = ActionOccurs (transitionAction (workPairRight pair))} (workPairDecomposition pair)
+    (canonicalWorkActionOccursUnderPrefix name key world error value (transitionAction (workPairRight pair))
+      (workPairPrefix pair) (MoreTransitions (workPairLeft pair) (MoreTransitions (workPairRight pair) (workPairSuffix pair)))
+      (ActionOccursLater (workPairLeft pair) (MoreTransitions (workPairRight pair) (workPairSuffix pair))
+        (ActionOccursHere (workPairRight pair) (workPairSuffix pair) Refl)))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
