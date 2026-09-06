@@ -46,3 +46,7 @@ public export
 r172ReuseFinal : SystemState Nat R45Key R45Value Unit String
 r172ReuseFinal = maybe r45AfterBegin snd (checkedApplyAction @{r45NameEq} @{r45KeyEq} (LAdvance 0) r172ReuseAfterRetire)
 
+public export
+0 r172ReuseRemoveChecked : checkedApplyAction @{r45NameEq} @{r45KeyEq} (ORemove 1) r45SourceFinal = Just (ORemoveTag, r45AfterBegin)
+r172ReuseRemoveChecked = Refl
+
