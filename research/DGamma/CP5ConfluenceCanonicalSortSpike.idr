@@ -2248,6 +2248,20 @@ data CanonicalWorklistInspection :
     (0 startsTooEarly : Not (LTE minimumStart (workRangeStart completed))) ->
     CanonicalWorklistInspection name key world error value nameEq keyEq trace (selected :: remaining) minimumStart
 
+0 canonicalWorkContinueCompleted :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) -> (selected : name) ->
+  (remaining : List name) -> (minimumStart : Nat) ->
+  (completed : CanonicalWorkCompletedBlock name key world error value nameEq keyEq selected trace) ->
+  ((nextMinimum : Nat) -> CanonicalWorklistInspection name key world error value nameEq keyEq trace remaining nextMinimum) ->
+  CanonicalWorklistInspection name key world error value nameEq keyEq trace (selected :: remaining) minimumStart
+canonicalWorkContinueCompleted name key world error value nameEq keyEq trace selected remaining minimumStart completed later =
+  case isLTE minimumStart (workRangeStart completed) of
+    Yes startsAfter => CanonicalWorklistReady completed startsAfter (later (workRangeStart completed + workRangeSize completed))
+    No startsTooEarly => CanonicalWorklistNeedsOrdering completed startsTooEarly
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
