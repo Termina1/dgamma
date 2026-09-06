@@ -30242,6 +30242,25 @@ scopedRemovalLeft name key world error value initial sourceFinal middleFinal tar
   (parent ** component ** occurrence ** (fst evidence,
     \canonicalParent, canonicalComponent, birth, same => snd evidence canonicalParent canonicalComponent (canonicalToOriginal right birth) same))
 
+0 scopedRemovalRight :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (initial, sourceFinal, middleFinal, targetFinal : SystemState name key value world error) ->
+  (source : Transitions initial sourceFinal) -> (middle : Transitions initial middleFinal) -> (target : Transitions initial targetFinal) ->
+  (leftWithdrawn, rightWithdrawn : List (RegistrationGeneration name)) -> (renaming : RegistrationGenerationBijection name) ->
+  (left : ScopedCanonicalAccounting name key world error value initial sourceFinal middleFinal source middle leftWithdrawn renaming) ->
+  (right : CanonicalRegistrationCorrespondence middle target rightWithdrawn) ->
+  (generation : RegistrationGeneration name) ->
+  ScopedRegistrationRemoval name key world error value initial middleFinal targetFinal middle target (canonicalToOriginal right) generation ->
+  ScopedRegistrationRemoval name key world error value initial sourceFinal targetFinal source target (\birth => canonicalToOriginal (sealedAccounting left) (canonicalToOriginal right birth)) (generationBackward renaming generation)
+scopedRemovalRight name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right generation (parent ** component ** occurrence ** evidence) =
+  replace {p = ScopedRegistrationRemoval name key world error value initial sourceFinal targetFinal source target (\birth => canonicalToOriginal (sealedAccounting left) (canonicalToOriginal right birth))}
+    (trans (sealedAccountingBackward left occurrence) (cong (generationBackward renaming) (fst evidence)))
+    (parent ** component ** canonicalToOriginal (sealedAccounting left) occurrence **
+      (Refl, \canonicalParent, canonicalComponent, birth, same =>
+        snd evidence canonicalParent canonicalComponent birth
+          (trans (scopedBackwardInjective name renaming (registrationGeneration (canonicalToOriginal right birth)) (registrationGeneration occurrence)
+            (trans (sym (sealedAccountingBackward left (canonicalToOriginal right birth))) (trans same (sealedAccountingBackward left occurrence)))) (fst evidence))))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
