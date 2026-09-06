@@ -27701,6 +27701,17 @@ scopedCanonicalOccurrenceInjective name key world error value nameEq keyEq initi
   trans (sym (deletionProducerGeneratedOrdinalPreserved capital left))
     (trans (cong (generationForward (deletionProducerGenerationRenaming capital)) same) (deletionProducerGeneratedOrdinalPreserved capital right))
 
+0 scopedWithdrawnRegistrationWitness :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (generation : RegistrationGeneration name) ->
+  (classification : DeletedGenerationClassification name key world error value nameEq global generation) ->
+  (exclusion : Type) -> exclusion ->
+  (parent : name ** component : Component key value world error ** occurrence : LocatedGeneratedRegistration (generationName generation) parent component global **
+    ((registrationGeneration occurrence = generation), exclusion))
+scopedWithdrawnRegistrationWitness name key world error value nameEq initial finalState global generation classification exclusion absent =
+  (deletedParent classification ** deletedComponent classification ** deletedOccurrence classification ** (deletedOccurrenceGeneration classification, absent))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
