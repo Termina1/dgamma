@@ -27472,6 +27472,25 @@ scopedDeletionScanCountOffsets name key world error value nameEq keyEq initial f
        (generationScanOrdinalCount nameEq 0 [] (traceBeforeOpening (selectedEpisode candidate))
          (selectedStartOrdinal candidate) (selectedStartLive candidate) (beforeGenerationScan result))))
 
+||| Abstract source cuts keep the classifier elimination independent of stuck episode projections.
+0 scopedWholeBirthCoverageView :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (predicate : Nat -> Type) ->
+  (first, beforeEnd, episodeEnd, finalState : SystemState name key value world error) ->
+  (before : Transitions first beforeEnd) -> (center : Transitions beforeEnd episodeEnd) -> (after : Transitions episodeEnd finalState) ->
+  (action : Action name key value world error) ->
+  ((localOccurrence : LocatedActionOccurrence action before) -> predicate (locatedActionOrdinal localOccurrence)) ->
+  ((localOccurrence : LocatedActionOccurrence action center) -> predicate (transitionCount before + locatedActionOrdinal localOccurrence)) ->
+  ((localOccurrence : LocatedActionOccurrence action after) -> predicate ((transitionCount before + transitionCount center) + locatedActionOrdinal localOccurrence)) ->
+  (occurrence : LocatedActionOccurrence action (appendTransitions before (appendTransitions center after))) ->
+  DeletionWholeTraceOccurrenceClassification name key world error value first beforeEnd episodeEnd finalState action before center after occurrence ->
+  predicate (locatedActionOrdinal occurrence)
+scopedWholeBirthCoverageView name key world error value predicate first beforeEnd episodeEnd finalState before center after action beforeCase centerCase afterCase occurrence
+  (DeletionWholeBefore localOccurrence exactOrdinal) = replace {p = predicate} (sym exactOrdinal) (beforeCase localOccurrence)
+scopedWholeBirthCoverageView name key world error value predicate first beforeEnd episodeEnd finalState before center after action beforeCase centerCase afterCase occurrence
+  (DeletionWholeEpisode localOccurrence exactOrdinal) = replace {p = predicate} (sym exactOrdinal) (centerCase localOccurrence)
+scopedWholeBirthCoverageView name key world error value predicate first beforeEnd episodeEnd finalState before center after action beforeCase centerCase afterCase occurrence
+  (DeletionWholeAfter localOccurrence exactOrdinal) = replace {p = predicate} (sym exactOrdinal) (afterCase localOccurrence)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
