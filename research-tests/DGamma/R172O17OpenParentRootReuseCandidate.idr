@@ -87,3 +87,14 @@ public export
 r172ReuseTrace : Transitions r45Initial r172ReuseFinal
 r172ReuseTrace = appendTransitions r45SourceTrace r172ReuseTail
 
+public export
+0 r172ReuseAligned : AlignedTransitions Nat R45Key Unit String R45Value r45NameEq r45KeyEq r172ReuseTrace
+r172ReuseAligned = AlignedStep (OInsert 0 Root r45Parent) OInsertTag r45ParentInsertChecked _
+  (AlignedStep (LBegin 0) LBeginTag r45BeginChecked _
+    (AlignedStep (OInsert 1 (ChildOf 0) r45Child) OInsertTag r45ChildInsertChecked _
+      (AlignedStep (ORetire 1) ORetireTag r45SourceRetireChecked _
+        (AlignedStep (ORemove 1) ORemoveTag r172ReuseRemoveChecked _
+          (AlignedStep (OInsert 1 Root r45Child) OInsertTag r172ReuseRootChecked _
+            (AlignedStep (ORetire 1) ORetireTag r172ReuseRetireChecked _
+              (AlignedStep (LAdvance 0) LFinishTag r172ReuseFinishChecked _ AlignedEnd)))))))
+
