@@ -71,3 +71,18 @@ rawInsertionNameAtSplit name key world error value selected parent component NoT
   rawInsertionNameAtHead name key world error value selected parent component step rest same
 rawInsertionNameAtSplit name key world error value selected parent component (MoreTransitions head tail) step rest same =
   rawInsertionNameAtSplit name key world error value selected parent component tail step rest same
+
+public export
+0 rawInsertionNameAtLocated :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (selected : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (birth : LocatedActionOccurrence (OInsert selected parent component) trace) ->
+  (rawInsertionNameAt name key world error value (locatedActionOrdinal birth) trace = Just selected)
+rawInsertionNameAtLocated name key world error value trace selected parent component birth =
+  replace {p = \actual => (rawInsertionNameAt name key world error value (locatedActionOrdinal birth) actual = Just selected)}
+    (actionOccurrenceDecomposition birth)
+    (rawInsertionNameAtSplit name key world error value selected parent component
+      (beforeActionOccurrence birth) (locatedTransition birth) (afterActionOccurrence birth) (locatedAction birth))
