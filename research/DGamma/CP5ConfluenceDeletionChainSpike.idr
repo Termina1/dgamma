@@ -19905,6 +19905,16 @@ scopedObservedRootCell name key world error value Nothing truth = absurd truth
 scopedObservedRootCell name key world error value (Just fiber) truth =
   (fiber ** (Refl, scopedRootParentExact name (fiberParent fiber) truth))
 
+0 scopedRootCellUse :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (observed : Maybe (Fiber name key value world error)) -> (conclusion : Type) ->
+  ((fiber : Fiber name key value world error) -> (observed = Just fiber) -> (fiberParent fiber = Root) -> conclusion) ->
+  (maybe False (\cell => scopedParentRoot {name = name} (fiberParent {name = name} {key = key} {value = value} {world = world} {error = error} cell)) observed = True) ->
+  conclusion
+scopedRootCellUse name key world error value observed conclusion consume truth =
+  case scopedObservedRootCell name key world error value observed truth of
+    (fiber ** evidence) => consume fiber (fst evidence) (snd evidence)
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
