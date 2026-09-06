@@ -1432,6 +1432,15 @@ canonicalSortingReplaySwap name key world error value protocol nameEq keyEq orig
       (adjacentSwapSuffixSpike nameEq keyEq protocol (sortingCurrentTrace current) prefixTrace left right suffix
         decomposition (sortingCurrentPremises current) diamond pairExternal)
 
+0 canonicalPaperActivationLifecycle :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {before, afterState : SystemState name key value world error} ->
+  (transition : Transition before afterState) -> PaperActivationStep transition ->
+  isLifecycleAction (transitionAction transition) = True
+canonicalPaperActivationLifecycle name key world error value transition (PaperBeginStep action tag) = rewrite action in Refl
+canonicalPaperActivationLifecycle name key world error value transition (PaperIterStep action tag) = rewrite action in Refl
+canonicalPaperActivationLifecycle name key world error value transition (PaperFinishStep action tag) = rewrite action in Refl
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
