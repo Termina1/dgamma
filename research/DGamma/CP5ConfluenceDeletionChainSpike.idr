@@ -26376,6 +26376,10 @@ record ScopedOrdinalOriginWitness (sourceCount, targetCount : Nat) (origin : Nat
   0 originPath : (sourceIndex, targetIndex : Nat) -> (origin targetIndex = Just sourceIndex) ->
     ScopedOrdinalPath originSpine sourceIndex targetIndex
 
+scopedKeptOrdinalOrigin : (Nat -> Maybe Nat) -> Nat -> Maybe Nat
+scopedKeptOrdinalOrigin origin Z = Just Z
+scopedKeptOrdinalOrigin origin (S targetIndex) = map S (origin targetIndex)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
