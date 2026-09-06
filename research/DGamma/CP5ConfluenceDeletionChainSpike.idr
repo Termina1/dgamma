@@ -30370,6 +30370,34 @@ scopedDerivationAccountingDone name key world error value protocol nameEq keyEq 
   MkScopedDerivationAccounting (scopedCumulativeEndpointIdentity name key world error value nameEq keyEq finalState) Refl
     (scopedCumulativeRegistrationIdentity name key world error value initial finalState trace) (\birth => Refl)
 
+0 scopedDerivationAccountingStepAt :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState, targetFinal : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (step : DeletionChainStep name key world error value protocol nameEq keyEq trace premises candidate) ->
+  (target : Transitions initial targetFinal) ->
+  (rest : ClosingFreeDeletionDerivation name key world error value protocol nameEq keyEq (survivingTrace (deletionResult step)) target) ->
+  (tail : ScopedDerivationAccounting name key world error value protocol nameEq keyEq initial (survivingFinal (deletionResult step)) targetFinal
+    (survivingTrace (deletionResult step)) target rest) ->
+  (endpoint : ScopedCanonicalDeletionEndpoint name key world error value nameEq keyEq ((endpointWithdrawnGenerations (deletionEndpoint step)) ++ map (generationBackward (deletionProducerGenerationRenaming (deletionProducerCapital step))) (endpointWithdrawnGenerations (foldedEndpoint tail))) finalState targetFinal) ->
+  ScopedDerivationAccounting name key world error value protocol nameEq keyEq initial finalState targetFinal trace target
+    (ClosingFreeDeletionStep trace premises candidate step target rest)
+scopedDerivationAccountingStepAt name key world error value protocol nameEq keyEq initial finalState targetFinal trace premises candidate step target rest tail endpoint =
+  MkScopedDerivationAccounting (scopedCanonicalEndpoint endpoint)
+    (trans (scopedCanonicalWithdrawnExact endpoint)
+      (cong2 (++) (deletionWithdrawnGenerationsExact step)
+        (cong (map (generationBackward (deletionProducerGenerationRenaming (deletionProducerCapital step)))) (foldedHistoryExact tail))))
+    (replace {p = CanonicalRegistrationCorrespondence trace target} (sym (scopedCanonicalWithdrawnExact endpoint))
+      (scopedComposeRegistrationAccounting name key world error value initial finalState (survivingFinal (deletionResult step)) targetFinal trace (survivingTrace (deletionResult step)) target (endpointWithdrawnGenerations (deletionEndpoint step)) (endpointWithdrawnGenerations (foldedEndpoint tail)) (deletionProducerGenerationRenaming (deletionProducerCapital step)) (scopedStepSealedAccounting name key world error value protocol nameEq keyEq initial finalState trace premises candidate step) (foldedRegistrationAccounting tail)))
+    (\birth => trans (scopedAccountingTransportOrigin name key world error value initial finalState targetFinal trace target
+      ((endpointWithdrawnGenerations (deletionEndpoint step)) ++ map (generationBackward (deletionProducerGenerationRenaming (deletionProducerCapital step))) (endpointWithdrawnGenerations (foldedEndpoint tail))) (endpointWithdrawnGenerations (scopedCanonicalEndpoint endpoint)) (sym (scopedCanonicalWithdrawnExact endpoint))
+      (scopedComposeRegistrationAccounting name key world error value initial finalState (survivingFinal (deletionResult step)) targetFinal trace (survivingTrace (deletionResult step)) target (endpointWithdrawnGenerations (deletionEndpoint step)) (endpointWithdrawnGenerations (foldedEndpoint tail)) (deletionProducerGenerationRenaming (deletionProducerCapital step)) (scopedStepSealedAccounting name key world error value protocol nameEq keyEq initial finalState trace premises candidate step) (foldedRegistrationAccounting tail)) _ _ _ birth)
+      (scopedComposedAccountingOrigin name key world error value initial finalState (survivingFinal (deletionResult step)) targetFinal trace (survivingTrace (deletionResult step)) target (endpointWithdrawnGenerations (deletionEndpoint step)) (endpointWithdrawnGenerations (foldedEndpoint tail)) (deletionProducerGenerationRenaming (deletionProducerCapital step)) (scopedStepSealedAccounting name key world error value protocol nameEq keyEq initial finalState trace premises candidate step) (foldedRegistrationAccounting tail)
+        (deletionOccurrenceCorrespondence step) (closingFreeDeletionOccurrenceFold rest)
+        (deletionRegistrationOriginExact step) (foldedOriginExact tail) birth))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
