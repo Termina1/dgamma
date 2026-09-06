@@ -33,3 +33,7 @@ public export
 r172ReuseAfterRoot : SystemState Nat R45Key R45Value Unit String
 r172ReuseAfterRoot = MkSystemState () (insertBinding @{r45NameEq} 1 r172ReuseRootFresh (registry r45AfterBegin) Refl)
 
+public export
+r172ReuseRootRetired : Fiber Nat R45Key R45Value Unit String
+r172ReuseRootRetired = retireFiber r172ReuseRootFresh
+
