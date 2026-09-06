@@ -29735,6 +29735,16 @@ scopedGeneratedOriginBackward name key world error value first sourceFinal targe
   trans (sym (generationLeftInverse (replayGenerationRenaming origin) (registrationGeneration (replayGeneratedRegistrationOrigin origin birth))))
     (cong (generationBackward (replayGenerationRenaming origin)) (replayGeneratedOrdinalPreserved origin birth))
 
+||| Constructor-owned source classification, its generation, and raw-name preservation.
+record ScopedClassifiedPullback
+  (name, key, world, error : Type) (value : key -> Type) (nameEq : DecEq name)
+  (first, finalState : SystemState name key value world error) (source : Transitions first finalState)
+  (renaming : RegistrationGenerationBijection name) (targetGeneration : RegistrationGeneration name) where
+  constructor MkScopedClassifiedPullback
+  pulledClassification : (generation : RegistrationGeneration name ** DeletedGenerationClassification name key world error value nameEq source generation)
+  0 pulledGenerationExact : (classifiedGeneration pulledClassification = generationBackward renaming targetGeneration)
+  0 pulledNameExact : (generationName (classifiedGeneration pulledClassification) = generationName targetGeneration)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
