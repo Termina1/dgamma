@@ -28821,6 +28821,15 @@ scopedCandidateOwnedRootSeals name key world error value nameEq keyEq initial fi
     (\actor, generation, member, current => void (nothingIsNotJust current))
     (\actor, generation, member, current => void (nothingIsNotJust current))
 
+0 scopedExternalReflexive :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (first, finalState : SystemState name key value world error) -> (trace : Transitions first finalState) ->
+  SameExternalOrchestration nameEq trace trace
+scopedExternalReflexive name key world error value nameEq _ finalState NoTransitions = SameExternalOrchestrationEnd
+scopedExternalReflexive name key world error value nameEq first finalState (MoreTransitions transition rest) =
+  scopedExternalKeep name key world error value nameEq first _ finalState first _ finalState transition rest transition rest Refl
+    (MkScopedRootRoleSeal Refl) (scopedExternalReflexive name key world error value nameEq _ finalState rest)
+
 0 scopedEnrichedStepFromExternal :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
