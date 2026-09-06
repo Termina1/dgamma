@@ -29688,6 +29688,21 @@ scopedClosingCoreChoice name key world error value protocol nameEq keyEq initial
   scopedClosingFreeCoreStep name key world error value protocol nameEq keyEq initial finalState trace premises candidate step
     (continue (survivingFinal (deletionResult step)) (survivingTrace (deletionResult step)) (nextPremises step) (deletionStrictlyShorter step))
 
+0 scopedClosingCoreAccessible :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (bound : Nat) -> Accessible LT bound ->
+  (initial, finalState : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
+  (traceLength trace = bound) -> CanonicalizationPremises name key world error value protocol nameEq keyEq trace ->
+  ClosingFreeTraceCore name key world error value protocol nameEq keyEq trace
+scopedClosingCoreAccessible name key world error value protocol nameEq keyEq bound (Access recurse) initial finalState trace measured premises =
+  scopedClosingCoreChoice name key world error value protocol nameEq keyEq initial finalState trace premises
+    (\nextFinal, nextTrace, nextCapital, shorter =>
+      scopedClosingCoreAccessible name key world error value protocol nameEq keyEq (traceLength nextTrace)
+        (recurse (traceLength nextTrace) (replace {p = LT (traceLength nextTrace)} measured shorter))
+        initial nextFinal nextTrace Refl nextCapital)
+    (chooseClosingStepSpike nameEq keyEq protocol trace premises)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
