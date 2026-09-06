@@ -1884,6 +1884,16 @@ canonicalSortingSupportEdgeForward name key world error value nameEq source targ
 canonicalSortingSupportEdgeForward name key world error value nameEq source target controls lower upper (SupportParent edge) =
   SupportParent (canonicalSortingParentForward name key world error value nameEq source target controls lower upper edge)
 
+0 canonicalSortingSupportPathForward :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (source, target : SystemState name key value world error) -> ControlEquivalent name key world error value nameEq source target ->
+  (lower, upper : name) -> SupportPath nameEq source lower upper -> SupportPath nameEq target lower upper
+canonicalSortingSupportPathForward name key world error value nameEq source target controls lower upper (SupportPathOne edge) =
+  SupportPathOne (canonicalSortingSupportEdgeForward name key world error value nameEq source target controls lower upper edge)
+canonicalSortingSupportPathForward name key world error value nameEq source target controls lower upper (SupportPathMore edge rest) =
+  SupportPathMore (canonicalSortingSupportEdgeForward name key world error value nameEq source target controls lower _ edge)
+    (canonicalSortingSupportPathForward name key world error value nameEq source target controls _ upper rest)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
