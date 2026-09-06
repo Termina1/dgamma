@@ -29703,6 +29703,16 @@ scopedClosingCoreAccessible name key world error value protocol nameEq keyEq bou
         initial nextFinal nextTrace Refl nextCapital)
     (chooseClosingStepSpike nameEq keyEq protocol trace premises)
 
+||| Empty omissions and empty historical withdrawals at the identity endpoint.
+0 scopedCumulativeEndpointIdentity :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) ->
+  CanonicalEndpointRelation name key world error value nameEq keyEq state state
+scopedCumulativeEndpointIdentity name key world error value nameEq keyEq state =
+  MkCanonicalEndpointRelation [] [] (MkEffectStateRelated Refl (\selected => Refl))
+    (\actor, outside => fiberControlMaybeReflexive (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry state)))
+    (\actor, member => absurd member) (\actor, member => absurd member)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
