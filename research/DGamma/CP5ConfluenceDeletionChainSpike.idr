@@ -27147,6 +27147,19 @@ record ScopedLocatedOrdinalOrigin
   retainedOrdinalOccurrence : LocatedActionOccurrence action trace
   0 retainedOrdinalExact : (origin (locatedActionOrdinal retainedOrdinalOccurrence) = Just sourceIndex)
 
+0 scopedPrependLocatedOrdinalOrigin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (head : Transition first middle) -> (tail : Transitions middle finalState) ->
+  (action : Action name key value world error) -> (origin : Nat -> Maybe Nat) -> (sourceIndex : Nat) ->
+  (occurrence : LocatedActionOccurrence action tail) -> (origin (locatedActionOrdinal occurrence) = Just sourceIndex) ->
+  ScopedLocatedOrdinalOrigin name key world error value first finalState (MoreTransitions head tail) action (scopedKeptOrdinalOrigin origin) (S sourceIndex)
+scopedPrependLocatedOrdinalOrigin name key world error value first middle finalState head tail action origin sourceIndex
+  (MkLocatedActionOccurrence before afterState beforeTrace transition later actionShape decomposition) exact =
+    MkScopedLocatedOrdinalOrigin
+      (MkLocatedActionOccurrence before afterState (MoreTransitions head beforeTrace) transition later actionShape (cong (MoreTransitions head) decomposition))
+      (cong (map S) exact)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
