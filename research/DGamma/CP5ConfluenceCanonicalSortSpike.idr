@@ -1063,6 +1063,14 @@ canonicalRankSortCompose item rank head rest tailResult inserted =
     (\selected, present => canonicalRankConsMembership item head (rankSortedItems tailResult) rest
       (rankSortedBackward tailResult) selected (rankSortedBackward inserted selected present))
 
+canonicalRankSortStep : (item : Type) -> (itemEq : DecEq item) -> (rank : item -> Nat) ->
+  (head : item) -> (rest : List item) -> CanonicalRankSortResult item rank rest ->
+  CanonicalRankSortResult item rank (head :: rest)
+canonicalRankSortStep item itemEq rank head rest tailResult =
+  canonicalRankSortCompose item rank head rest tailResult
+    (canonicalRankInsert item itemEq rank head (rankSortedItems tailResult)
+      (rankSortedOrdered tailResult) (rankSortedUnique tailResult))
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
