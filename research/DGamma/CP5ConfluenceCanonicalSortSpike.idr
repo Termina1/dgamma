@@ -1572,6 +1572,20 @@ canonicalRootInsertHoistDiamond name key world error value protocol nameEq keyEq
       (canonicalSortingPairSourceWellFormed name key world error value protocol nameEq keyEq original prefixTrace left right suffix decomposition premises)
       (canonicalSortingPairIndependent name key world error value protocol nameEq keyEq original prefixTrace left right suffix decomposition premises)
 
+||| One root-hoist result owns the diamond, replay and exact moved root action together.
+record CanonicalRootInsertionHoist
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error) (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal : SystemState name key value world error}
+  (original : Transitions initial originalFinal) (prefixTrace : Transitions initial pairFirst)
+  (left : Transition pairFirst pairMiddle) (right : Transition pairMiddle pairFinal)
+  (suffix : Transitions pairFinal originalFinal) (root : name) (component : Component key value world error) where
+  constructor MkCanonicalRootInsertionHoist
+  rootHoistDiamond : LocalRelationalDiamond name key world error value nameEq keyEq left right
+  rootHoistResult : AdjacentSwapResult name key world error value protocol nameEq keyEq
+    original prefixTrace left right suffix rootHoistDiamond
+  0 rootHoistedAction : (transitionAction (movedRight rootHoistDiamond) = OInsert root Root component)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
