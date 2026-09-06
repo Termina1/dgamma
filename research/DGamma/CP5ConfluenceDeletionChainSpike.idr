@@ -28504,6 +28504,17 @@ scopedActionAtUnique name key world error value first finalState _ _ leftAction 
   scopedActionAtUnique name key world error value _ finalState rest ordinal leftAction rightAction later
     (scopedActionTail name key world error value first _ finalState transition rest ordinal rightAction right)
 
+0 scopedActionAppendRight :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) -> (ordinal : Nat) -> (action : Action name key value world error) ->
+  ScopedActionAt name key world error value right ordinal action ->
+  ScopedActionAt name key world error value (appendTransitions left right) (transitionCount left + ordinal) action
+scopedActionAppendRight name key world error value _ middle finalState NoTransitions right ordinal action present = present
+scopedActionAppendRight name key world error value first middle finalState (MoreTransitions transition rest) right ordinal action present =
+  ScopedActionLater transition (appendTransitions rest right)
+    (scopedActionAppendRight name key world error value _ middle finalState rest right ordinal action present)
+
 0 scopedEnrichedStepFromExternal :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
