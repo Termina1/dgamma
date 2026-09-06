@@ -862,6 +862,16 @@ canonicalSupportedRank name key world error value protocol nameEq keyEq state se
     (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
       @{nameEq} selected (registry state)) Refl supported matches ranked
 
+||| Executable total rank observation; absent/unranked names use zero only off the certified domain.
+canonicalProtocolRank :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) ->
+  (state : SystemState name key value world error) -> name -> Nat
+canonicalProtocolRank name key world error value protocol nameEq state selected =
+  maybe 0 (\fiber => maybe 0 id (registrationRank protocol (fiberComponent fiber)))
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry state))
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
