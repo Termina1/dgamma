@@ -4,6 +4,8 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP4TerminalRecovery
+import DGamma.CP4RecoveryModelTrace
 import DGamma.CP4DeletionRelationalBoundary
 import DGamma.CP4DeletionSelectedForeignControlCore
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify
@@ -1523,6 +1525,24 @@ canonicalSortingPairSourceWellFormed name key world error value protocol nameEq 
 canonicalSortingAppendRightOccurrence name key world error value NoTransitions right selected occurs = occurs
 canonicalSortingAppendRightOccurrence name key world error value (MoreTransitions head rest) right selected occurs =
   OccursLater (canonicalSortingAppendRightOccurrence name key world error value rest right selected occurs)
+
+0 canonicalSortingPairIndependent :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) -> (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (appendTransitions prefixTrace (MoreTransitions left (MoreTransitions right suffix)) = original) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  TraceIndependent name key world error value keyEq (MoreTransitions left (MoreTransitions right NoTransitions))
+canonicalSortingPairIndependent name key world error value protocol nameEq keyEq original prefixTrace left right suffix decomposition premises =
+  traceIndependentUnderEmbedding
+    (\transition, occurs => replace {p = OccursIn transition} decomposition
+      (canonicalSortingAppendRightOccurrence name key world error value prefixTrace
+        (MoreTransitions left (MoreTransitions right suffix)) transition
+        (appendLeftOccurrenceEmbedding (MoreTransitions left (MoreTransitions right NoTransitions)) suffix transition occurs)))
+    (replayIndependent premises)
 
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
