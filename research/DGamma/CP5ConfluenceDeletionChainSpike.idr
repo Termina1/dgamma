@@ -27112,6 +27112,32 @@ scopedDeletionStepFromAccounting name key world error value protocol nameEq keyE
     (MkCanonicalizationPremises targetBundle)
     (scopedDeletionStrictlyShorter name key world error value nameEq keyEq initial finalState global candidate result)
 
+||| The live O9 assembler discharges all other fields; external/accounting remain explicit obligations.
+0 scopedEnrichedStepFromAccounting :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq global) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  SameExternalOrchestration nameEq global
+    (survivingTrace (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds
+      (replayAligned (chainReplayCapital premises)))) ->
+  CanonicalRegistrationCorrespondence global
+    (survivingTrace (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds
+      (replayAligned (chainReplayCapital premises)))) (selectedRegistrations candidate) ->
+  DeletionChainStep name key world error value protocol nameEq keyEq global premises candidate
+scopedEnrichedStepFromAccounting name key world error value protocol nameEq keyEq initial finalState global premises candidate folds external accounting =
+  scopedDeletionStepFromAccounting name key world error value protocol nameEq keyEq initial finalState global premises candidate
+    (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises)))
+    (scopedEnrichedOperationalCapital name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises)))
+    (scopedEnrichedReplayFromHeads name key world error value protocol nameEq keyEq initial finalState global candidate folds
+      (scopedEnrichedHeadReplays name key world error value protocol nameEq keyEq initial finalState global candidate folds))
+    (scopedEnrichedTargetFromHeads name key world error value protocol nameEq keyEq initial finalState global candidate folds premises)
+    (scopedDeletionCanonicalEndpoint name key world error value nameEq keyEq initial finalState global candidate
+      (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises))))
+    external accounting
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
