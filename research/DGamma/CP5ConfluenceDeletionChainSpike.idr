@@ -28433,6 +28433,34 @@ scopedDeletionRegistrationAccounting name key world error value nameEq keyEq ini
     (scopedWithdrawnGeneratedOriginExcluded name key world error value nameEq keyEq initial finalState global candidate result capital)
 
 ||| Every live O9 field is now supplied except exact root/external orchestration preservation.
+0 scopedSourceOwnedRootSeals :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  GenerationEnvironmentNamesUnique live ->
+  (first, finalState : SystemState name key value world error) -> (trace : Transitions first finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  ScopedRootBirthInputs name key world error value registered ordinal first finalState trace ->
+  NoRegisteredEpisode nameEq registered ordinal live trace ->
+  CurrentRegisteredInactiveFibers name key world error value nameEq registered live first ->
+  ScopedCurrentRootExclusion name key world error value nameEq registered live first ->
+  ScopedOwnedRootSeals name key world error value nameEq registered ordinal live first finalState trace
+scopedSourceOwnedRootSeals name key world error value nameEq keyEq registered ordinal live unique _ _ _ AlignedEnd births noEpisode inactive roots = ()
+scopedSourceOwnedRootSeals name key world error value nameEq keyEq registered ordinal live unique first finalState _
+  (AlignedStep {middle} action tag checked rest alignedTail) births noEpisode inactive roots =
+    (scopedOwnedRootSeal name key world error value nameEq registered ordinal live first middle
+      (Fired nameEq keyEq action tag checked) (fst births) roots,
+     scopedSourceOwnedRootSeals name key world error value nameEq keyEq registered (S ordinal)
+       (advanceGenerationEnvironment @{nameEq} ordinal action live)
+       (advanceGenerationEnvironmentPreservesUnique nameEq ordinal action live unique) middle finalState rest alignedTail (snd births)
+       (snd (scopedNoRegisteredHead name key world error value nameEq registered ordinal live first middle finalState
+         (Fired nameEq keyEq action tag checked) rest noEpisode))
+       (currentRegisteredInactiveStep nameEq keyEq registered ordinal live unique action first middle tag
+         (checkedActionProjects nameEq keyEq action first middle tag checked)
+         (fst (scopedNoRegisteredHead name key world error value nameEq registered ordinal live first middle finalState
+           (Fired nameEq keyEq action tag checked) rest noEpisode)) inactive)
+       (scopedRootExclusionStep name key world error value nameEq keyEq registered ordinal live unique action first middle tag
+         (checkedActionProjects nameEq keyEq action first middle tag checked) (fst births) inactive roots))
+
 0 scopedEnrichedStepFromExternal :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
