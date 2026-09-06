@@ -26699,6 +26699,27 @@ scopedDeletionGeneratedOrdinal name key world error value nameEq keyEq initial f
         (generatedRegistrationActionOccurrence occurrence))
         (scopedGeneratedActionOrdinal name key world error value initial (survivingFinal result) (survivingTrace result) child parent component occurrence)))
 
+0 scopedOperationalFromOrdinalSegments :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  ScopedDeletionReadinessSeals name key world error value nameEq keyEq initial finalState global candidate result ->
+  ScopedDeletionOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result ->
+  DeletionProducerOperationalCapital name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result
+scopedOperationalFromOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result seals segments =
+  MkDeletionProducerOperationalCapital
+    (sealedReady (beforeSeal seals)) (sealedReadyTags (beforeSeal seals)) (sealedReadyEnds (beforeSeal seals))
+    (sealedReady (centerSeal seals)) (sealedReadyTags (centerSeal seals)) (sealedReadyEnds (centerSeal seals))
+    (sealedReady (suffixSeal seals)) (sealedReadyTags (suffixSeal seals)) (sealedReadyEnds (suffixSeal seals))
+    (beforeTagSeal seals) (centerTagSeal seals) (suffixTagSeal seals)
+    (scopedOrdinalGenerationBijection name (spinePermutation (scopedOrdinalSpineWitness (joinedOrdinalSpine (wholeOrdinalJoin segments)))))
+    (scopedDeletionWholeTags name key world error value nameEq keyEq initial finalState global candidate result seals)
+    (scopedDeletionGeneratedOrdinal name key world error value nameEq keyEq initial finalState global candidate result segments
+      (scopedOrdinalSpineWitness (joinedOrdinalSpine (wholeOrdinalJoin segments))))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
