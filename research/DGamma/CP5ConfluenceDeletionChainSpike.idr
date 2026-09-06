@@ -26778,6 +26778,26 @@ scopedElemConsEliminate item predicate head tail atHead atTail wanted (There lat
 scopedWithdrawalJustificationPrepend name head tail actor (generation ** evidence) =
   (generation ** (There (fst evidence), snd evidence))
 
+0 scopedWithdrawalCensusCurrent :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (head : RegistrationGeneration name) -> (tail : List (RegistrationGeneration name)) -> (live : GenerationEnvironment name) ->
+  (original, survivor : SystemState name key value world error) ->
+  WithdrawnNameResult nameEq (generationName head) original survivor ->
+  ScopedWithdrawalCensus name key world error value nameEq tail live original survivor ->
+  ScopedWithdrawalCensus name key world error value nameEq (head :: tail) live original survivor
+scopedWithdrawalCensusCurrent name key world error value nameEq head tail live original survivor withdrawn census =
+  MkScopedWithdrawalCensus (generationName head :: withdrawalNames census)
+    (scopedElemConsEliminate name (\actor => WithdrawnNameResult nameEq actor original survivor)
+      (generationName head) (withdrawalNames census) withdrawn (withdrawalNamesSound census))
+    (scopedElemConsEliminate name (\actor => (generation : RegistrationGeneration name ** (Elem generation (head :: tail), (generationName generation = actor))))
+      (generationName head) (withdrawalNames census) (head ** (Here, Refl))
+      (\actor, present => scopedWithdrawalJustificationPrepend name head tail actor (withdrawalNamesJustified census actor present)))
+    (scopedElemConsEliminate (RegistrationGeneration name)
+      (\generation => (lookupCurrentGeneration @{nameEq} (generationName generation) live = Just generation) ->
+        Elem (generationName generation) (generationName head :: withdrawalNames census))
+      head tail (\current => Here)
+      (\generation, member, current => There (withdrawalCurrentCovered census generation member current)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
