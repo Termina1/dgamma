@@ -1730,6 +1730,28 @@ canonicalSortingAcceptRootHoist name key world error value protocol nameEq keyEq
         (PaperInsertStep (trans (sym (movedRightAction (rootHoistDiamond hoist))) (rootHoistedAction hoist))))
       (rootHoistDiamond hoist) (rootHoistResult hoist)
 
+0 canonicalSortingHoistRoot :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (current : CanonicalSortingReplayState name key world error value protocol nameEq keyEq original) ->
+  {pairFirst, pairMiddle, pairFinal : SystemState name key value world error} ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal (sortingCurrentFinal current)) ->
+  (appendTransitions prefixTrace (MoreTransitions left (MoreTransitions right suffix)) = sortingCurrentTrace current) ->
+  (root : name) -> (component : Component key value world error) -> PaperActivationStep left ->
+  (transitionAction right = OInsert root Root component) -> Not (transitionActor left = root) ->
+  CanonicalSortingReplayState name key world error value protocol nameEq keyEq original
+canonicalSortingHoistRoot name key world error value protocol nameEq keyEq original current
+  prefixTrace left right suffix decomposition root component leftActivation rootAction different =
+    canonicalSortingAcceptRootHoist name key world error value protocol nameEq keyEq original current
+      prefixTrace left right suffix root component leftActivation
+      (canonicalRootInsertionHoist name key world error value protocol nameEq keyEq
+        (sortingCurrentTrace current) prefixTrace left right suffix decomposition (sortingCurrentPremises current)
+        root component leftActivation rootAction different)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
