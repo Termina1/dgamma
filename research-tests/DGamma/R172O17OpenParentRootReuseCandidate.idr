@@ -637,3 +637,15 @@ public export
 0 r172ReuseLTETransitive : {first, middle, last : Nat} -> LTE first middle -> LTE middle last -> LTE first last
 r172ReuseLTETransitive LTEZero later = LTEZero
 r172ReuseLTETransitive (LTESucc earlier) (LTESucc later) = LTESucc (r172ReuseLTETransitive earlier later)
+
+||| Every conclusion forces the later raw-name root before each accounted generated birth.
+public export
+0 r172ReuseConclusionRootBeforeChild :
+  (sorted : SortedClosingFreeTrace Nat R45Key Unit String R45Value
+    r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
+  (birth : LocatedGeneratedRegistration 1 0 r45Child (sortedTrace sorted)) ->
+  LT (locatedActionOrdinal (r172ReuseConclusionRootBirth sorted)) (registrationOrdinal birth)
+r172ReuseConclusionRootBeforeChild sorted birth = r172ReuseLTETransitive
+  (lteSuccRight (rootGenerationBeforeLifecycle (sortedInputPlacement sorted)
+    (r172ReuseConclusionRootBirth sorted) (r172ReuseConclusionParentBegin sorted birth) Refl))
+  (r172ReuseConclusionBeginBeforeChild sorted birth)
