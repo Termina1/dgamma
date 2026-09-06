@@ -20187,6 +20187,15 @@ scopedPostCloseActionRoot name key world error value nameEq keyEq selected regis
     (\actor => scopedSelectedRegistryRoot name key world error value nameEq selected actor
       (planTarget (completePlanResult (postClosePlan boundary))) (registry target) (postCloseControls boundary))
 
+0 ScopedCurrentRootExclusion :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  List (RegistrationGeneration name) -> GenerationEnvironment name -> SystemState name key value world error -> Type
+ScopedCurrentRootExclusion name key world error value nameEq registered live state =
+  (actor : name) -> (generation : RegistrationGeneration name) -> Elem generation registered ->
+  (lookupCurrentGeneration @{nameEq} actor live = Just generation) ->
+  (maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell))
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor (registry state)) = False)
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
