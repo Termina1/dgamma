@@ -172,3 +172,63 @@ The reached-state initializer/finite-derivation uniqueness fold follow next.
 
 Pending final refresh: full invocation ledger, precise census, seeded 207/207,
 all frozen SHA checks, production diff, final status/acceptance JSON.
+
+## Diagnostic early-stop ruling (not the Unit C operational stop)
+
+C23 opacity change `b382772` passes without a proof-shape dependency. Actual
+before/after TTC size is IDENTICAL: **938,438,365 bytes**. The fresh small
+CanonicalSort check is 52.98s / 18,009,072 KiB before (C22-2), versus 55.04s /
+19,865,424 KiB after (`gate-opacity-small`). These are single samples: **NO
+performance improvement is claimed**. Keep opaque proof export; serialization/
+import cost remains debt. No TTC deletion.
+
+C24 `a1ed2de`: global uniqueness follows the whole actual finite adjacent
+replay. C25 `f146541`, C26 `aba4023`, C27 `d1efa58`, C28 `97ea4ba`: same reached
+trace/derivation, derived uniqueness, derived SAME fixed order, and the actual
+block/range worklist initializer from exactly revised O17 inputs. C29 `9a2a940`
+proves half-open range separation; C30 `0997722` supplies its diagnostic view.
+All these micro-units pass 1/3. This is an inspection/initializer, not the missing
+operational grouping/order progress producer or complete sorting theorem.
+
+C31 `64cf41e`, C32 `8bfb717`, C33 `c7ec311`: a genuine checked four-action
+root/begin/child-registration/finish trace and installed/active open episode.
+C31/C33 pass 1/3. C32 passes 3/3: the first two attempts lacked computational
+imports needed to unfold the Nat dictionary/evaluator; adding `Data.Nat` and
+`Decidable.Equality` makes the actual checked transition reduce. The trace/
+episode are retained as real capital, not a full O17-input fixture.
+
+C34 external range test failed 1/3 and is REMOVED, SHA256
+`7ff547200984d9af95daa3b8d0e327b35c2c8eaab5bd19c34438b1d978beadac`:
+```idris
+
+||| The actual producer finds begin/child-registration/finish at [1,4).
+export
+0 r173ContiguousRangeProduced : canonicalWorkOpenBlockRange Nat R45Key Unit String R45Value r45NameEq r45KeyEq 0
+  r173ContiguousTrace r173ContiguousEpisode = Just (1, 3)
+r173ContiguousRangeProduced = Refl
+```
+Its unchanged diagnostic failed on the outer
+`canonicalWorkInspectOpenEpisode` application, not on ordinal proof opacity.
+Supervisor allowed a maximum SIX one-declaration computation-visibility units,
+with ≤3 checks each; unchanged C34 reruns are explicitly charged to that unit,
+not a reset/retry of C34's body. V1 `10ced9b` makes ONLY that VALUE inspector
+publicly transparent; its source check passes, but its diagnostic still prints
+the same outer term. One TTC path was verified. The supervisor ratifies EARLY
+STOP of the diagnostic method: the normalizer reports the outer application,
+so this does not identify the next literal private blocker. **V2–V6 unspent**;
+C34 body remains 1/3, no body edit/retry, no falsely passing external fixture.
+
+Whole value-stack exposure would include `canonicalWorkInspectScanned`,
+`canonicalWorkScanActorPrefix`, `canonicalWorkClassifyActor`,
+`canonicalWorkActorPrefixCons`, `canonicalWorkDecNoLifecycle`,
+`canonicalWorkNoLifecycleCons`, `canonicalWorkCompleteBlock`,
+`canonicalWorkBlockFromPrefix` and the necessary prefix/completed-block
+constructors/projections. Proof-only installation/equality/range helpers do not
+thereby become transparent. External normalization of that whole stack is a
+DELIBERATE NON-GOAL now; the wrapper comment is corrected. No fake duplicate
+algorithm or blind export crawl was introduced.
+
+The supervisor explicitly does NOT authorize moving to D yet: continue C on
+producer-owned grouping/order progress within the attempt guard, not on this
+external-normalization nicety. O17 body still 0/3. Any internal structural scan
+reduction is non-public evidence, not a replacement claim that C34 passed.

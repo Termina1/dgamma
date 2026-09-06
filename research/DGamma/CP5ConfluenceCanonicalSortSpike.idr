@@ -2431,8 +2431,9 @@ canonicalWorkRangePositionsApart start size nextStart earlierPosition laterPosit
         (plusLteMonotoneLeft start (S earlierPosition) size bounded)) separated)
     (replace {p = LTE nextStart} (sym same) (lteAddRight {m = laterPosition} nextStart))
 
-||| Computable regression view of the actual single-block producer. Public
-||| transparency is intentional here: fixtures reduce this diagnostic to data.
+||| Regression view of the actual single-block producer. R173 external
+||| normalization is deliberately GATED on the remaining private value stack;
+||| public wrapper visibility alone does not promise external reduction.
 ||| Nothing means grouping remains; Just is an authenticated (start,size), NOT
 ||| a complete canonical schedule or an input-placement certificate.
 public export
@@ -2449,6 +2450,19 @@ canonicalWorkOpenBlockRange name key world error value nameEq keyEq selected tra
       Just (workRangeStart (canonicalWorkCompleteBlock name key world error value nameEq keyEq selected trace episode scanned noLater),
         workRangeSize (canonicalWorkCompleteBlock name key world error value nameEq keyEq selected trace episode scanned noLater))
     CanonicalWorkOpenInterleaved scanned laterRemains => Nothing
+
+||| Internal-only structural reduction evidence. This is not the removed C34
+||| external whole-block normalization assertion: it inspects one actual
+||| checked Begin step and distinguishes its actor from a foreign actor.
+0 canonicalWorkInternalSingleStepReduction :
+  (key, world, error : Type) -> (value : key -> Type) -> (keyEq : DecEq key) ->
+  (before, afterState : SystemState Nat key value world error) ->
+  (checked : checkedApplyAction @{the (DecEq Nat) %search} @{keyEq} (LBegin 0) before = Just (LBeginTag, afterState)) ->
+  (transitionCount (workActorPrefix (canonicalWorkScanActorPrefix Nat key world error value %search 0 {first = before} {finalState = afterState}
+    (MoreTransitions (Fired {before} {afterState} %search keyEq (LBegin 0) LBeginTag checked) NoTransitions))) = 1,
+   transitionCount (workActorPrefix (canonicalWorkScanActorPrefix Nat key world error value %search 1 {first = before} {finalState = afterState}
+    (MoreTransitions (Fired {before} {afterState} %search keyEq (LBegin 0) LBeginTag checked) NoTransitions))) = 0)
+canonicalWorkInternalSingleStepReduction key world error value keyEq before afterState checked = (Refl, Refl)
 
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
