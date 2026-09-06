@@ -29721,6 +29721,20 @@ scopedCumulativeRegistrationIdentity name key world error value initial finalSta
   MkCanonicalRegistrationCorrespondence id (\occurrence => Right (occurrence ** Refl))
     (\left, right, same => same) (\generation, member => absurd member)
 
+||| Pullback is computed at the authentic operational origin; the inverse law is used forwards.
+0 scopedGeneratedOriginBackward :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, sourceFinal, targetFinal : SystemState name key value world error) ->
+  (source : Transitions first sourceFinal) -> (target : Transitions first targetFinal) ->
+  (origin : ActionRegistrationReplayCorrespondence name key world error value source target) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedGeneratedRegistration child parent component target) ->
+  (registrationGeneration (replayGeneratedRegistrationOrigin origin birth) =
+    generationBackward (replayGenerationRenaming origin) (registrationGeneration birth))
+scopedGeneratedOriginBackward name key world error value first sourceFinal targetFinal source target origin child parent component birth =
+  trans (sym (generationLeftInverse (replayGenerationRenaming origin) (registrationGeneration (replayGeneratedRegistrationOrigin origin birth))))
+    (cong (generationBackward (replayGenerationRenaming origin)) (replayGeneratedOrdinalPreserved origin birth))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
