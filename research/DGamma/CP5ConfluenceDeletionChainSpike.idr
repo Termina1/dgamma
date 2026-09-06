@@ -28938,6 +28938,22 @@ scopedEnrichedExternalOrchestration name key world error value protocol nameEq k
         (traceAfterClosing (selectedEpisode candidate)) (selectedFoldScan (selectedOutputFold (enrichedSelected folds)))
         (scopedCandidateRootSealsAfterBefore name key world error value nameEq keyEq initial finalState global aligned candidate)))
 
+||| Emit the exact accounting origin before applying the producer to a live computed result.
+0 scopedDeletionAccountingOriginExact :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (capital : DeletionProducerOperationalCapital name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result) ->
+  {child, parent : name} -> {component : Component key value world error} ->
+  (birth : LocatedGeneratedRegistration child parent component (survivingTrace result)) ->
+  (canonicalToOriginal (scopedDeletionRegistrationAccounting name key world error value nameEq keyEq initial finalState global candidate result capital) birth =
+    deletionProducerGeneratedOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+      (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result capital birth)
+scopedDeletionAccountingOriginExact name key world error value nameEq keyEq initial finalState global candidate result capital birth = Refl
+
 0 scopedEnrichedStepFromExternal :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -28952,7 +28968,9 @@ scopedEnrichedStepFromExternal name key world error value protocol nameEq keyEq 
     (scopedDeletionRegistrationAccounting name key world error value nameEq keyEq initial finalState global candidate
       (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises)))
       (scopedEnrichedOperationalCapital name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises))))
-    (\birth => Refl)
+    (scopedDeletionAccountingOriginExact name key world error value nameEq keyEq initial finalState global candidate
+      (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises)))
+      (scopedEnrichedOperationalCapital name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises))))
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
