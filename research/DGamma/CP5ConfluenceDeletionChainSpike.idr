@@ -28484,6 +28484,14 @@ data ScopedActionAt :
   ScopedActionAt name key world error value (MoreTransitions transition rest) 0 action -> (transitionAction transition = action)
 scopedActionHeadExact name key world error value first middle finalState transition rest _ (ScopedActionHere _ _) = Refl
 
+0 scopedActionTail :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (transition : Transition first middle) -> (rest : Transitions middle finalState) -> (ordinal : Nat) -> (action : Action name key value world error) ->
+  ScopedActionAt name key world error value (MoreTransitions transition rest) (S ordinal) action ->
+  ScopedActionAt name key world error value rest ordinal action
+scopedActionTail name key world error value first middle finalState transition rest ordinal action (ScopedActionLater _ _ later) = later
+
 0 scopedEnrichedStepFromExternal :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
