@@ -30103,6 +30103,19 @@ scopedCumulativeEndpoint name key world error value nameEq keyEq source middle t
         (\actor, member => scopedCumulativeBirthLeft name (endpointWithdrawnGenerations left) (map pull (endpointWithdrawnGenerations right)) actor (endpointNameHasWithdrawnGeneration left actor member))
         (\actor, member => scopedCumulativeBirthRight name (endpointWithdrawnGenerations left) (endpointWithdrawnGenerations right) pull names actor (endpointNameHasWithdrawnGeneration right actor member)))) Refl
 
+||| Accounting sealed at one global inverse-generation map, including different occurrence shapes.
+record ScopedCanonicalAccounting
+  (name, key, world, error : Type) (value : key -> Type)
+  (initial, sourceFinal, targetFinal : SystemState name key value world error)
+  (source : Transitions initial sourceFinal) (target : Transitions initial targetFinal)
+  (withdrawn : List (RegistrationGeneration name)) (renaming : RegistrationGenerationBijection name) where
+  constructor MkScopedCanonicalAccounting
+  sealedAccounting : CanonicalRegistrationCorrespondence source target withdrawn
+  0 sealedAccountingBackward :
+    {child, parent : name} -> {component : Component key value world error} ->
+    (birth : LocatedGeneratedRegistration child parent component target) ->
+    (registrationGeneration (canonicalToOriginal sealedAccounting birth) = generationBackward renaming (registrationGeneration birth))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
