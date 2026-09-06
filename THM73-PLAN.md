@@ -2,7 +2,41 @@
 
 Branch: `cp5-thm73-scoping`
 
-## Current checkpoint — R172 O14 CLOSED; O17 semantic frontier (supersedes historical counts)
+## Current checkpoint — R173 globally fresh-name premise; O17 still OPEN
+
+R173 applies the owner's premise revision to RESEARCH ONLY. The strong
+`UniqueRawNameInsertions` predicate quantifies every root/generated `OInsert`
+occurrence over the WHOLE trace, across all lifetimes: equal raw names imply
+identical transition ordinals. It is not generation uniqueness, current-registry
+freshness, or a no-overlap condition. The designated R172 child/root reuse trace
+is constructively rejected (`849d3f5`); the real distinct-name root/child trace
+is certified (`38b1bda`). A general checker/producer remains OPEN.
+
+### Revised mechanized theorem hypotheses (not the frozen CP3 statement)
+
+The conditional research assembly requires every original CP3 hypothesis
+(alignment, registration discipline, empty/well-formed start, quiet failure-free
+endpoints, component totality, independence, common orchestration modulo
+accepted generated renaming), PLUS strong global raw insertion uniqueness for
+EACH original trace and the existing R143 late-capital premises for EACH side.
+`R16ConfluenceTheoremAssemblyPositive.r16ConfluenceTheoremAssembly` now states
+that whole conditional telescope explicitly (`ed0ddc6`), under supervisor ruling.
+It is assembly-through-holes, not Theorem 73 and not the immutable CP3 type.
+
+O17 `sortClosingFreeTraceSpike` takes erased `uniqueInsertions` immediately
+AFTER its existing `ordering` argument (`511b2e6`); its conclusion is unchanged.
+Both R8 call sites receive ORIGINAL uniqueness from their caller and derive
+REDUCED uniqueness via `uniqueInsertionsAfterReduction` (`ecc3f6b`). That theorem
+proves injectivity of the actual three-segment deletion occurrence embedding
+and folds the actual finite `ClosingFreeDeletionDerivation`; it does not assume
+an output uniqueness certificate, call frozen `deletionTheoremProof`, or infer
+raw claims from generation predicates. Fresh R8 and conditional R16 checks pass.
+
+The R172 history below remains evidence for the old surface; the reuse trace
+no longer supplies every REVISED O17 hypothesis. Six holes remain; O17 body
+R173 0/3. The bounded disposable probe/worklist phase follows this boundary.
+
+## R172 historical checkpoint — O14 CLOSED; old-surface semantic frontier
 
 At required start **0e58c54**, **DeletionChain is CLOSED**: O9
 `enrichDeletionChainStepSpike` at `89435dc`, O10
@@ -83,7 +117,7 @@ unproved; no frozen placement revision or paper counterexample is claimed.
 |---|---|
 | Exact `CanonicalReplayAccountingLaws` producer (R143/O16) | **OPEN.** R171 `ScopedDerivationAccounting.foldedOriginExact` authenticates the actual deletion producer, but `ClosingFreeReduction` does not retain that field for arbitrary values; the sorting tree likewise lacks operational-fold alignment. A producer-indexed adapter plus simultaneous sorting accounting must feed the exact `deletionSortingOccurrenceCorrespondence`, composed endpoint and cumulative withdrawal equality. No automatic coherence claim or new surface authorization. |
 | Shared original/reduced order (R143/O15) | **OPEN.** Chosen-order correction remains; `R6FourFiberStatic.r143CanonicalSupportTransportRefuted` permanently rejects universal reduced-to-original linearization transfer. `FullPipelineLateCanonicalPremises.sideOriginalLinearization` is supplied, universally quantified capital, not a discharge. O14 now rank-sorts the actual chosen order; proving that exact reduced output also respects original paths remains a separate producer theorem. |
-| `R16ConfluenceTheoremAssemblyPositive` fixture drift | **OPEN, confirmed by source inspection.** R152 recorded the missing two `FullPipelineLateCanonicalPremises` arguments at its `fullPipelineFromBundles` call (line 85). Current source still omits them. Keep its immutable-theorem signature honest: producing the premises, not merely adding parameters, is required. Seeded package success does not validate the aggregate R11/assembly path. |
+| `R16ConfluenceTheoremAssemblyPositive` fixture drift | **CLOSED as CONDITIONAL assembly in R173 (`ed0ddc6`), not as an unconditional theorem.** Supervisor approved in-place repair: both already-required R143 late records and both original-uniqueness premises are explicit. Fresh direct check passes. The shared-order and exact `CanonicalReplayAccountingLaws` producers above remain OPEN; this fixture merely assumes them. No aggregate R11/from-scratch claim. |
 | CP3 raw-premise defect | **FROZEN / future unfreeze campaign.** R137 generation reuse invalidates the raw global premise needed by the original selection route. No `NoDependentClosingEpisodeForGeneration`→raw cast, no call to frozen `deletionTheoremProof`. The inherited unused `checkedDeletionSubroutine` alias remains historical capital, not a sanctioned route. |
 | Deferred R129 end-to-end test | **PARKED.** Opaque actual adjacent result cannot be identified by `Refl` with independent R27/R29 final/trace indices. The 12+4 RAR exports do not fix that. Requires an owner-selected producer-owned exact comparison theorem or an explicitly relational-only integration scope. |
 | Copied `with` cleanup | **OPEN.** DeletionChain current count 9: three copied R161 occurrences (`beginSuccessTagScopedPostFold` at 15823; `scopedPostCloseSuffixFold` at 15937/15966), the spent R165 LAdvance exception at 18171, and five older scanner occurrences at 29282/29286/29302/29306/29355. R162 lifecycle and later target cleanup landed (`8f2725f`, `f78cf2a`), so R162's four-copied count is historical. No new exemption or cleanup in Unit A. |
@@ -2475,7 +2509,7 @@ research capital; no CP3 production declaration changed.
 | O20 | Four-clause canonical endpoint bridge | 1 hole; R144 body 3/3, replay bookkeeping closed, semantic bridge not produced. |
 | O21 | Original endpoint modulo exact vestigial generations | 1 hole; R145 body 3/3; R147 sealed-bijection cure complete, withdrawal branches parked. |
 | O22 | Immutable result assembly | Closed conditional assembler, not a proof that all inputs are constructible. |
-| O23 | Adversarial validation/release isolation | Ongoing; R16 drift, concrete integrations and independent reviewer gate remain. |
+| O23 | Adversarial validation/release isolation | Ongoing; R16 drift is closed ONLY as R173 conditional assembly; concrete integrations and independent reviewer gate remain. |
 
 ## 11. Exact hole reconciliation — current R172 inventory
 
@@ -2540,7 +2574,7 @@ inside a proof-phase band.
 
 ## 15. Historical release boundary (current debts/checkpoint above)
 
-The claims and suite counts in this section record their original revision gate; they do not assert an R172 R11/assembly pass. In particular, R16 drift is OPEN.
+The claims and suite counts in this section record their original revision gate; they do not assert an R172 R11/assembly pass. R16 drift has since been closed ONLY as R173 conditional assembly, not producer discharge.
 
 Revision-14/O4 is accepted at `117f179`. The combined revision-15/revision-16
 review at `ad21f1d` returned **REJECT** with B1 while accepting revision 15 and the
