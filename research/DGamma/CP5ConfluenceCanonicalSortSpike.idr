@@ -2398,6 +2398,24 @@ canonicalWorkInspectReached name key world error value protocol nameEq keyEq ori
       (\selected, present => supportedOpenEpisode shape selected
         (orderSound (canonicalWorkFixedCurrentOrder name key world error value protocol nameEq keyEq original premises ordering current) selected present)) Z)
 
+||| Build the actual initial block/range/derivation worklist from precisely the
+||| REVISED O17 inputs. Identity is only its initial reached trace, never an
+||| assertion that a blocked input has already become canonically sorted.
+0 canonicalWorkStart :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq trace ->
+  ClosingFreeTraceShape name key world error value nameEq keyEq trace ->
+  (ordering : SupportOrderingCapital name key world error value nameEq keyEq finalState) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq trace ->
+  CanonicalSortingWorklist name key world error value protocol nameEq keyEq trace ordering
+canonicalWorkStart name key world error value nameEq keyEq protocol {initial} {finalState} trace premises shape ordering unique =
+  canonicalWorkInspectReached name key world error value protocol nameEq keyEq trace premises ordering unique
+    (canonicalSortingReplayStart name key world error value protocol nameEq keyEq initial finalState trace premises) shape
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
