@@ -232,3 +232,114 @@ The supervisor explicitly does NOT authorize moving to D yet: continue C on
 producer-owned grouping/order progress within the attempt guard, not on this
 external-normalization nicety. O17 body still 0/3. Any internal structural scan
 reduction is non-public evidence, not a replacement claim that C34 passed.
+
+## Unit C operational continuation and EXHAUSTED stop (18:12 UTC)
+
+C36–C53 close real structural candidate-selection debt: stronger foreign spans exclude BOTH owned lifecycle and selected-parent registrations; structural first-owned-action selection, positive distance, simultaneous snoc/count pieces, exact whole-source adjacent pair construction, and membership in the actual fixed pending order. C50 derives adjacency from the blocked episode and scan; C53 traverses the actual worklist. `Nothing` at an ordering stop is NOT sorting success. C54–C57 derive actual A/O parent exclusion and checked activation output installation from public evolution capital. No supplied diamond, target trace, guessed existential-state equality, or proof escape was introduced.
+
+C58 `canonicalWorkActivationInsertDistinct` is EXHAUSTED **3/3** and REMOVED. Intended local proof: checked activation ends installed, whereas the following actual insertion requires absence; hence actors differ. All three checks failed on the final installed-at actor projection, successively the raw transition-actor case, `actionOwner (transitionAction (Fired ...))`, then `actionOwner (OInsert child parent component)`. No verdict or theorem is claimed from this plausible mathematical argument. No fourth attempt, replacement helper budget, or O17 body attempt is authorized by this shift. The added import of `CP4DeletionRetainedAction` is also removed.
+
+### C58 attempt 1 removed source
+
+SHA256 `f1f48f709e73b06643f508078f82d4e2cf0c7327c93cd96628ed83f783cec5ae`; complete declaration:
+```idris
+||| Distinctness in A/Insert adjacency is OPERATIONAL: activation ends installed
+||| while the following checked insertion requires absence. No raw-name or
+||| actor-distinctness hypothesis is supplied for this local case.
+0 canonicalWorkActivationInsertDistinct :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (left : Transition first middle) -> (right : Transition middle finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  PaperActivationStep left -> (child : name) -> (parent : Parent name) ->
+  (component : Component key value world error) -> transitionAction right = OInsert child parent component ->
+  Not (transitionActor left = transitionActor right)
+canonicalWorkActivationInsertDistinct name key world error value nameEq keyEq {first} {middle} {finalState} _ _
+  (AlignedStep leftAction leftTag leftChecked _ (AlignedStep rightAction rightTag rightChecked _ AlignedEnd))
+  activation child parent component inserted same =
+    case inserted of
+      Refl => canonicalFalseNotTrue
+        (trans (sym (cong (\observed => case observed of
+            Nothing => False
+            Just fiber => installed (fiberLifecycle fiber))
+          (successfulInsertAbsent nameEq keyEq child parent component middle finalState rightTag
+            (checkedActionProjects nameEq keyEq (OInsert child parent component) middle finalState rightTag rightChecked))))
+          (replace {p = \actor => installedAt @{nameEq} actor middle = True} same
+            (canonicalWorkActivationEndsInstalled name key world error value nameEq keyEq
+              (Fired {before = first} {afterState = middle} nameEq keyEq leftAction leftTag leftChecked)
+              (AlignedStep leftAction leftTag leftChecked NoTransitions AlignedEnd) activation)))
+```
+
+### C58 attempt 2 removed source
+
+SHA256 `e66772adde85ec8b5fd613e88cd9120d47aa0849b0548960f1ab0bf1854b595f`; complete declaration:
+```idris
+||| Distinctness in A/Insert adjacency is OPERATIONAL: activation ends installed
+||| while the following checked insertion requires absence. No raw-name or
+||| actor-distinctness hypothesis is supplied for this local case.
+0 canonicalWorkActivationInsertDistinct :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (left : Transition first middle) -> (right : Transition middle finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  PaperActivationStep left -> (child : name) -> (parent : Parent name) ->
+  (component : Component key value world error) -> transitionAction right = OInsert child parent component ->
+  Not (transitionActor left = transitionActor right)
+canonicalWorkActivationInsertDistinct name key world error value nameEq keyEq {first} {middle} {finalState} _ _
+  (AlignedStep leftAction leftTag leftChecked _ (AlignedStep rightAction rightTag rightChecked _ AlignedEnd))
+  activation child parent component inserted same =
+    case inserted of
+      Refl => canonicalFalseNotTrue
+        (trans (sym (cong (\observed => case observed of
+            Nothing => False
+            Just fiber => installed (fiberLifecycle fiber))
+          (successfulInsertAbsent nameEq keyEq child parent component middle finalState rightTag
+            (checkedActionProjects nameEq keyEq (OInsert child parent component) middle finalState rightTag rightChecked))))
+          (replace {p = \actor => installedAt @{nameEq} actor middle = True}
+            (trans same (canonicalTransitionActorActionOwner
+              (Fired {before = middle} {afterState = finalState} nameEq keyEq (OInsert child parent component) rightTag rightChecked)))
+            (canonicalWorkActivationEndsInstalled name key world error value nameEq keyEq
+              (Fired {before = first} {afterState = middle} nameEq keyEq leftAction leftTag leftChecked)
+              (AlignedStep leftAction leftTag leftChecked NoTransitions AlignedEnd) activation)))
+```
+
+### C58 attempt 3 removed source
+
+SHA256 `f7ab8303ace331e8c8919b94569d7d45964e85ea03e3cdcfba1566bf6c1e5e0b`; complete declaration:
+```idris
+||| Distinctness in A/Insert adjacency is OPERATIONAL: activation ends installed
+||| while the following checked insertion requires absence. No raw-name or
+||| actor-distinctness hypothesis is supplied for this local case.
+0 canonicalWorkActivationInsertDistinct :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (left : Transition first middle) -> (right : Transition middle finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  PaperActivationStep left -> (child : name) -> (parent : Parent name) ->
+  (component : Component key value world error) -> transitionAction right = OInsert child parent component ->
+  Not (transitionActor left = transitionActor right)
+canonicalWorkActivationInsertDistinct name key world error value nameEq keyEq {first} {middle} {finalState} _ _
+  (AlignedStep leftAction leftTag leftChecked _ (AlignedStep rightAction rightTag rightChecked _ AlignedEnd))
+  activation child parent component inserted same =
+    case inserted of
+      Refl => canonicalFalseNotTrue
+        (trans (sym (cong (\observed => case observed of
+            Nothing => False
+            Just fiber => installed (fiberLifecycle fiber))
+          (successfulInsertAbsent nameEq keyEq child parent component middle finalState rightTag
+            (checkedActionProjects nameEq keyEq (OInsert child parent component) middle finalState rightTag rightChecked))))
+          (replace {p = \actor => installedAt @{nameEq} actor middle = True}
+            (trans same (trans (canonicalTransitionActorActionOwner
+              (Fired {before = middle} {afterState = finalState} nameEq keyEq (OInsert child parent component) rightTag rightChecked))
+              (cong actionOwner inserted)))
+            (canonicalWorkActivationEndsInstalled name key world error value nameEq keyEq
+              (Fired {before = first} {afterState = middle} nameEq keyEq leftAction leftTag leftChecked)
+              (AlignedStep leftAction leftTag leftChecked NoTransitions AlignedEnd) activation)))
+```
+
+Unit C stops at the checked C57 boundary (`7e26b79`), pending the serialized restoration gate. O17 remains **0/3**, no holes closed. Remaining operational producers: (1) root-input placement/hoisting phase; (2) exact A/O distinctness bridge above and genuine A/A, O/A, O/O applicability/orientation dispatch; (3) actual adjacent result from the produced pair with transported discipline/external evidence; (4) reached closing-free shape preservation; (5) simultaneous updated blocks, ordered ranges and finite derivation; (6) structural `BlockBefore` across actual pieces; (7) global strictly decreasing sorting measure; (8) exact registration-accounting fold alignment. The constructor worklist is not itself a sorter.
+
+Restoration gate `gate-restored-C58` freshly PASSED 2026-09-06 18:14:01–18:14:56 UTC, exit 0, 20,322,480 KiB sampled peak. Retained source is exactly the C57 committed boundary; no C58 declaration/import remains.
