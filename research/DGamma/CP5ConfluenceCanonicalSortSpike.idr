@@ -2069,6 +2069,23 @@ canonicalWorkNoLifecycleCons name key world error value selected step rest exclu
 canonicalWorkNoLifecycleCons name key world error value selected step rest excluded (No notTail) =
   No (\whole => case whole of NoLifecycleByStep head tail headExcluded tailExcluded => notTail tailExcluded)
 
+0 canonicalWorkDecNoLifecycle :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> Dec (NoLifecycleBy selected trace)
+canonicalWorkDecNoLifecycle name key world error value nameEq selected NoTransitions = Yes NoLifecycleByEnd
+canonicalWorkDecNoLifecycle name key world error value nameEq selected (MoreTransitions step rest) =
+  case decEq (isLifecycleAction (transitionAction step)) True of
+    No notLifecycle => canonicalWorkNoLifecycleCons name key world error value selected step rest
+      (\lifecycle, same => notLifecycle lifecycle)
+      (canonicalWorkDecNoLifecycle name key world error value nameEq selected rest)
+    Yes lifecycle => case decEq @{nameEq} (transitionActor step) selected of
+      No different => canonicalWorkNoLifecycleCons name key world error value selected step rest
+        (\isLife => different) (canonicalWorkDecNoLifecycle name key world error value nameEq selected rest)
+      Yes same => No (\whole => case whole of
+        NoLifecycleByStep head tail excluded tailExcluded => excluded lifecycle same)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
