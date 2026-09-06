@@ -416,7 +416,7 @@ DGamma.CP5ConfluenceDeletionChainSpike:28569:134--28569:140
 }
 ```
 
-## Status
+## Status at O9 checkpoint
 
 **Fully proved:** exact source-derived kept/deleted root-role certificates; live selected/post-close/relational retention; full SameExternalOrchestration at the exact enriched result; unconditional full enriched step assembler; **O9** at `89435dc`.
 
@@ -425,3 +425,151 @@ DGamma.CP5ConfluenceDeletionChainSpike:28569:134--28569:140
 **Merely stated:** nine research holes, split **2/4/2/0/1**. No new hole or escape hatch. Theorem 73 is not claimed.
 
 **Next:** await the mandatory supervisor/reviewer O9 milestone ruling, then O10 and O11 in order under fresh 3-attempt budgets. Reviewer acceptance is required; these are reproducible self-checks, not independent review.
+
+## O9 milestone ruling and Unit C — O10 CLOSED
+
+The supervisor ratified O9 at `c0619b6`, independently checking HEAD, production
+and LocalDiamond byte equality, clean permitted tree, no compiler process, the
+three-line O9 body and the fresh **9 = 2/4/2/0/1** census. The ruling explicitly
+authorized O10 and then O11 under the unchanged budgets/time guard. No O10
+attempt occurred before that reply.
+
+**O10 `deleteClosingEpisodesCoreSpike` closed 1/3 at `dd3ed2d`.** Fresh check
+**06:44:46–06:46:06 UTC**. Its original signature is unchanged; the body is a
+three-line application of `scopedClosingCoreAccessible` using Nat's checked
+`WellFounded LT` instance and the actual `traceLength`.
+
+O10 required real history capital, not merely a recursive call. In particular,
+an arbitrary action correspondence does not imply that the mapped parent close
+still follows the mapped child birth. `scopedOrdinalPathOrder` (`ee14a6b`)
+proves strict temporal monotonicity of actual subsequence paths, and
+`scopedDeletionOriginsOrdered` (`bb03809`) applies it to the **frozen whole
+occurrence origin's stored embeddings** at the actual three segment shapes.
+No ordinal map is substituted and no order law is silently added to the public
+correspondence record.
+
+`scopedLocatedActionAfter` (`22b6032`) extracts a genuine occurrence in the
+actual after-birth suffix from strict positional order. `scopedAfterBirthOccurrence`
+(`86bf895`) constructs the target parent-close location and its exact strict
+birth-offset equation together. `scopedDeletionClassifiedOriginAt` (`26cddd3`)
+and `scopedPullDeletedClassification` (`c8234de`) then pull each later deleted
+classification to its authentic source birth, **including its later parent
+close**. Raw names are not used to identify generations.
+
+`scopedClassifiedGenerations` enumerates every current selected birth with its
+actual classification. `scopedClosingFreeCoreStep` (`e548640`) prepends that list
+to the pullback of **every** entry in the recursively produced history. It
+retains the exact target trace, the full target premises, closing-freeness,
+SameExternal, semantic replay, and the actual recursive deletion derivation.
+No empty-history shortcut or omission of later history was used (the identity
+base alone has empty history). As in the existing surface, Core itself has no
+separate completeness equation for the list; O11 must assemble its exact
+cumulative accounting rather than infer such an equation from an arbitrary
+Core constructor.
+
+`scopedClosingCoreChoice` eliminates the actual O7/O8/O9 choice once.
+`scopedClosingCoreAccessible` (`a6d7b1a`) performs total accessibility recursion,
+retaining an explicit measure equation in its goal and using O9's strictly
+shorter actual survivor for the recursive call. No fuel exhaustion case,
+partiality escape or new assumption is introduced.
+
+All **C1–C21 passed 1/3**, as did the O10 body. The C21 draft's lambda binder was
+renamed from `nextPremises` to `nextCapital` before its sole invocation to avoid
+shadowing; no extra probe/check was involved. O11 remains unchanged **0/3** at
+this mandatory milestone checkpoint.
+
+Fresh post-O10 census: **8 = CanonicalSort 2 / CrossTrace 4 / DeletionChain 1 /
+LocalDiamond 0 / RenamingComposition 1**, delta **-2** from the shift baseline.
+The complete six-check gate batch was rerun sequentially at `dd3ed2d`,
+**06:46:21–06:48:22 UTC**: fresh DeletionChain and R11 positive passed, all three
+negative fixtures rejected at the same intended diagnostics, and seeded
+`idris2 --build dgamma.ipkg` passed with **207/207** TTCs. No fixture changed.
+
+### Unit C fresh-check ledger
+
+| Unit | Declaration/surface | Attempts | Commit | Fresh check ended UTC |
+|---|---|---:|---|---|
+| C1 | `scopedClosingFreeCoreDone` | 1/3 | `0beafb5` | 06:04:13 |
+| C2 | `scopedOrdinalKeptPositive` | 1/3 | `bf8cb21` | 06:06:09 |
+| C3 | `scopedOrdinalKeptLaterOrder` | 1/3 | `1cb736b` | 06:08:24 |
+| C4 | `scopedOrdinalDeletedLaterOrder` | 1/3 | `1491341` | 06:10:10 |
+| C5 | `scopedOrdinalPathOrder` | 1/3 | `ee14a6b` | 06:12:10 |
+| C6 | `scopedDeletionOriginsOrdered` | 1/3 | `bb03809` | 06:14:06 |
+| C7 | `scopedActionPositionOccurs` | 1/3 | `2f5704c` | 06:16:57 |
+| C8 | `scopedActionBeyondHead` | 1/3 | `83bebe9` | 06:18:38 |
+| C9 | `scopedActionDropHeadAfter` | 1/3 | `bb8d122` | 06:20:21 |
+| C10 | `scopedActionAfterCut` | 1/3 | `40b9adb` | 06:22:06 |
+| C11 | `scopedLocatedActionAfter` | 1/3 | `22b6032` | 06:23:49 |
+| C12 | `scopedLocateActionOccurs` | 1/3 | `e53fc87` | 06:26:47 |
+| C13 | `ScopedAfterBirthOccurrence` | 1/3 | `1aff607` | 06:28:25 |
+| C14 | `scopedAfterBirthOccurrence` | 1/3 | `86bf895` | 06:30:25 |
+| C15 | `scopedGeneratedAfterActionOccurrence` | 1/3 | `7b55b3b` | 06:32:26 |
+| C16 | `scopedDeletionClassifiedOriginAt` | 1/3 | `26cddd3` | 06:34:20 |
+| C17 | `scopedPullDeletedClassification` | 1/3 | `c8234de` | 06:36:29 |
+| C18 | `scopedClassifiedGenerations` | 1/3 | `1d69127` | 06:38:15 |
+| C19 | `scopedClosingFreeCoreStep` | 1/3 | `e548640` | 06:40:10 |
+| C20 | `scopedClosingCoreChoice` | 1/3 | `0cd4dfb` | 06:42:06 |
+| C21 | `scopedClosingCoreAccessible` | 1/3 | `a6d7b1a` | 06:44:08 |
+| C-O10 | `surface` | 1/3 | `dd3ed2d` | 06:46:06 |
+
+### O10 frozen/seeded self-validation
+
+```json
+{
+  "head": "dd3ed2d",
+  "fullSurfaceBytes": 1470,
+  "fullSurfaceSHA": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+  "statementBytes": 1154,
+  "statementSHA": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+  "seeded": "207/207",
+  "missing": [],
+  "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+  "ipkgBlob": "da0c007ee08c4648e459296eb6f0e72a40e2ac89",
+  "productionDiffEmpty": true,
+  "reviewSHA": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8",
+  "holes": {
+    "CanonicalSort": 2,
+    "CrossTrace": 4,
+    "DeletionChain": 1,
+    "LocalDiamond": 0,
+    "RenamingComposition": 1
+  },
+  "holeDelta": -2,
+  "withCounts": [
+    9,
+    9
+  ],
+  "proofCommits": 87,
+  "newDeclarations": 81,
+  "implementationInvocations": 91,
+  "implementationFailures": [
+    "A5-1",
+    "A22-1",
+    "A30-1",
+    "A45-1"
+  ],
+  "noStagedFiles": true,
+  "LocalDiamond": "UNCHANGED byte-for-byte versus 66f17c1; no visibility exports",
+  "prohibitedAdditions": {
+    "\\bbelieve_me\\b": [],
+    "\\bassert_total\\b": [],
+    "^\\s*partial\\b": [],
+    "\\?\\w+": [],
+    "^\\s*let\\b": [],
+    "\\bwith\\s*\\(": [],
+    "\\bdeletionTheoremProof\\b": [],
+    "\\bpostulate\\b": []
+  },
+  "status": "?? paper/\n?? review-o6-body-adversarial.md"
+}
+```
+
+## Status at O10 checkpoint
+
+**Fully proved:** Unit A, **O9** (`89435dc`), and the complete total **O10 core** (`dd3ed2d`) including full original-trace classification history.
+
+**Partial:** cumulative endpoint and bidirectional registration accounting, the O11 obligation.
+
+**Merely stated:** eight remaining research holes, **2/4/1/0/1**. O11 is untouched **0/3** at this gate.
+
+**Next:** await mandatory O10 milestone ruling before O11. No new attempt after 07:11:08 UTC. Independent reviewer acceptance remains required.
