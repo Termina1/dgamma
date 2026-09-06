@@ -1447,6 +1447,18 @@ canonicalPaperActivationLifecycle name key world error value transition (PaperFi
   (OInsert {name = name} root Root rootComponent = OInsert child (ChildOf parent) childComponent) -> Void
 canonicalRootChildInsertImpossible _ _ _ _ _ _ _ _ _ _ Refl impossible
 
+0 canonicalLifecycleInternal :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {before, afterState : SystemState name key value world error} ->
+  (transition : Transition before afterState) -> isLifecycleAction (transitionAction transition) = True ->
+  RootOrchestrationStep nameEq transition -> Void
+canonicalLifecycleInternal name key world error value nameEq transition lifecycle (RootInsertStep action) =
+  canonicalFalseNotTrue (trans (sym (cong isLifecycleAction action)) lifecycle)
+canonicalLifecycleInternal name key world error value nameEq transition lifecycle (RootRetireStep fiber found parent action) =
+  canonicalFalseNotTrue (trans (sym (cong isLifecycleAction action)) lifecycle)
+canonicalLifecycleInternal name key world error value nameEq transition lifecycle (RootRemoveStep fiber found parent action) =
+  canonicalFalseNotTrue (trans (sym (cong isLifecycleAction action)) lifecycle)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
