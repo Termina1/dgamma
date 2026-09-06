@@ -26798,6 +26798,21 @@ scopedWithdrawalCensusCurrent name key world error value nameEq head tail live o
       head tail (\current => Here)
       (\generation, member, current => There (withdrawalCurrentCovered census generation member current)))
 
+0 scopedWithdrawalCensusHistorical :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (head : RegistrationGeneration name) -> (tail : List (RegistrationGeneration name)) -> (live : GenerationEnvironment name) ->
+  (original, survivor : SystemState name key value world error) ->
+  ((lookupCurrentGeneration @{nameEq} (generationName head) live = Just head) -> Void) ->
+  ScopedWithdrawalCensus name key world error value nameEq tail live original survivor ->
+  ScopedWithdrawalCensus name key world error value nameEq (head :: tail) live original survivor
+scopedWithdrawalCensusHistorical name key world error value nameEq head tail live original survivor closed census =
+  MkScopedWithdrawalCensus (withdrawalNames census) (withdrawalNamesSound census)
+    (\actor, present => scopedWithdrawalJustificationPrepend name head tail actor (withdrawalNamesJustified census actor present))
+    (scopedElemConsEliminate (RegistrationGeneration name)
+      (\generation => (lookupCurrentGeneration @{nameEq} (generationName generation) live = Just generation) ->
+        Elem (generationName generation) (withdrawalNames census))
+      head tail (\current => void (closed current)) (withdrawalCurrentCovered census))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
