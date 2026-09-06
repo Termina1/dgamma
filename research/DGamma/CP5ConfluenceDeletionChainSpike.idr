@@ -27138,6 +27138,15 @@ scopedEnrichedStepFromAccounting name key world error value protocol nameEq keyE
       (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises))))
     external accounting
 
+||| A retained located action is sealed at the exact source-position map, not found by action equality alone.
+record ScopedLocatedOrdinalOrigin
+  (name, key, world, error : Type) (value : key -> Type)
+  (first, finalState : SystemState name key value world error) (trace : Transitions first finalState)
+  (action : Action name key value world error) (origin : Nat -> Maybe Nat) (sourceIndex : Nat) where
+  constructor MkScopedLocatedOrdinalOrigin
+  retainedOrdinalOccurrence : LocatedActionOccurrence action trace
+  0 retainedOrdinalExact : (origin (locatedActionOrdinal retainedOrdinalOccurrence) = Just sourceIndex)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
