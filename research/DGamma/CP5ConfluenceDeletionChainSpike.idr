@@ -24452,6 +24452,38 @@ scopedAppendSelectedCloseSemantic name key world error value nameEq keyEq select
       (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction originalTransition) live)
       rest survivingAfter tail target tailEnds closing (snd semantic))
 
+0 scopedAppendSelectedCloseExternal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {originalFirst, closeBefore, closeAfter : SystemState name key value world error} ->
+  (original : Transitions originalFirst closeBefore) -> (survivor : SystemState name key value world error) ->
+  (ready : GenerationReplayReady nameEq keyEq (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live original survivor) ->
+  (target : SystemState name key value world error) -> (ends : ReplayReadyEndsAt ready target) ->
+  (closing : UnloadStep nameEq keyEq selected closeBefore closeAfter) ->
+  SameExternalOrchestration nameEq original
+    (scopedReadyTrace name key world error value nameEq keyEq (EpisodeGenerationDeletedActor nameEq selected registered)
+      ordinal live originalFirst closeBefore survivor original ready) ->
+  SameExternalOrchestration nameEq (appendTransitions original (MoreTransitions (unloadTransition closing) NoTransitions))
+    (scopedReadyTrace name key world error value nameEq keyEq (EpisodeGenerationDeletedActor nameEq selected registered)
+      ordinal live originalFirst closeAfter survivor (appendTransitions original (MoreTransitions (unloadTransition closing) NoTransitions))
+      (appendedSelectedCloseReady (scopedAppendSelectedCloseReplay name key world error value nameEq keyEq selected
+        registered ordinal live original survivor ready target ends closing)))
+scopedAppendSelectedCloseExternal name key world error value nameEq keyEq selected registered ordinal live original survivor ready target ends closing external =
+  scopedExternalAcrossTraceEnd name key world error value nameEq originalFirst closeAfter survivor _ _
+    (appendTransitions original (MoreTransitions (unloadTransition closing) NoTransitions))
+    (scopedReadyTrace name key world error value nameEq keyEq (EpisodeGenerationDeletedActor nameEq selected registered)
+      ordinal live originalFirst closeAfter survivor (appendTransitions original (MoreTransitions (unloadTransition closing) NoTransitions))
+      (appendedSelectedCloseReady (scopedAppendSelectedCloseReplay name key world error value nameEq keyEq selected
+        registered ordinal live original survivor ready target ends closing)))
+    (scopedReadyTrace name key world error value nameEq keyEq (EpisodeGenerationDeletedActor nameEq selected registered)
+      ordinal live originalFirst closeBefore survivor original ready)
+    (scopedAppendSelectedCloseFinalSame name key world error value nameEq keyEq selected registered ordinal live original survivor ready target ends closing)
+    (scopedAppendSelectedCloseTraceSame name key world error value nameEq keyEq selected registered ordinal live original survivor ready target ends closing)
+    (scopedExternalAppendDeleted name key world error value nameEq originalFirst closeBefore closeAfter survivor _ original (unloadTransition closing)
+      (scopedReadyTrace name key world error value nameEq keyEq (EpisodeGenerationDeletedActor nameEq selected registered)
+        ordinal live originalFirst closeBefore survivor original ready) (MkScopedDeletedRootSeal Refl) external)
+
 0 scopedAssembleSelectedClosedOutput :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) ->
