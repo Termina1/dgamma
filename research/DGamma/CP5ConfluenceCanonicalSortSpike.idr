@@ -828,6 +828,26 @@ canonicalActiveRankAtFound name key world error value protocol nameEq state sele
   case ranked selected fiber found of
     (rank ** hasRank) => MkCanonicalActiveRank fiber found active rank hasRank
 
+||| One exact lookup split owns both absence exclusion and the rank payload.
+0 canonicalSupportedRankObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> (selected : name) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry state) = observed) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} selected state = True) ->
+  SupportMatchesActive nameEq keyEq state -> RegistryProtocolRanked protocol nameEq state ->
+  CanonicalActiveRank name key world error value protocol nameEq state selected
+canonicalSupportedRankObserved name key world error value protocol nameEq keyEq state selected Nothing found supported matches ranked =
+  absurd (trans (sym (canonicalSupportedActiveAtMissing name key world error value nameEq state selected found))
+    (trans (sym (matches selected)) supported))
+canonicalSupportedRankObserved name key world error value protocol nameEq keyEq state selected (Just fiber) found supported matches ranked =
+  canonicalActiveRankAtFound name key world error value protocol nameEq state selected fiber found
+    (trans (sym (canonicalSupportedActiveAtFound name key world error value nameEq state selected fiber found))
+      (trans (sym (matches selected)) supported)) ranked
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
