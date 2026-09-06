@@ -2299,6 +2299,33 @@ canonicalWorkInspectNames name key world error value nameEq keyEq trace (selecte
     (\nextMinimum => canonicalWorkInspectNames name key world error value nameEq keyEq trace remaining
       (\actor, present => episodes actor (There present)) nextMinimum)
 
+||| Transport the new premise through the ACTUAL sealed all-action origin of
+||| one adjacent result, using authenticated count injectivity, not raw casts.
+0 uniqueInsertionsAfterAdjacentResult :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) -> (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq original prefixTrace left right suffix diamond) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq (swappedTrace result)
+uniqueInsertionsAfterAdjacentResult name key world error value protocol nameEq keyEq original prefixTrace left right suffix diamond result unique =
+  MkUniqueRawNameInsertions
+    (\actor, leftParent, rightParent, leftComponent, rightComponent, leftBirth, rightBirth =>
+      uniqueAdjacentOrdinalInjective (transitionCount prefixTrace)
+        (locatedActionOrdinal leftBirth) (locatedActionOrdinal rightBirth)
+        (locatedActionOrdinal (replayActionOrigin (operationalOccurrenceCorrespondence (swappedOccurrenceFold result)) leftBirth))
+        (locatedActionOrdinal (replayActionOrigin (operationalOccurrenceCorrespondence (swappedOccurrenceFold result)) rightBirth))
+        (operationalOrdinalRelation (swappedOccurrenceFold result) leftBirth)
+        (operationalOrdinalRelation (swappedOccurrenceFold result) rightBirth)
+        (uniqueInsertionPosition unique actor leftParent rightParent leftComponent rightComponent
+          (replayActionOrigin (operationalOccurrenceCorrespondence (swappedOccurrenceFold result)) leftBirth)
+          (replayActionOrigin (operationalOccurrenceCorrespondence (swappedOccurrenceFold result)) rightBirth)))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
