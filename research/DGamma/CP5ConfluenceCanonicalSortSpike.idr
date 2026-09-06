@@ -3277,6 +3277,36 @@ canonicalWorkInspectReachedDerived name key world error value nameEq keyEq proto
     canonicalWorkInspectReached name key world error value protocol nameEq keyEq original premises ordering unique current
       (canonicalWorkReachedShapeFromInput name key world error value nameEq keyEq protocol original premises shape current)
 
+||| Accept one genuinely sealed adjacent result and rebuild the reached
+||| bundle/derivation/uniqueness/shape/order/range inspection together. This
+||| neither chooses a swap nor asserts that the reinspection is already ready.
+0 canonicalWorkAcceptAdjacentResult :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  ClosingFreeTraceShape name key world error value nameEq keyEq original ->
+  (ordering : SupportOrderingCapital name key world error value nameEq keyEq originalFinal) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (current : CanonicalSortingWorklist name key world error value protocol nameEq keyEq original ordering) ->
+  {pairFirst, pairMiddle, pairFinal : SystemState name key value world error} ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal (sortingCurrentFinal (workReachedReplay current))) ->
+  AdjacentSwapOrientationEvidence left right ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  AdjacentSwapResult name key world error value protocol nameEq keyEq
+    (sortingCurrentTrace (workReachedReplay current)) prefixTrace left right suffix diamond ->
+  CanonicalSortingWorklist name key world error value protocol nameEq keyEq original ordering
+canonicalWorkAcceptAdjacentResult name key world error value nameEq keyEq protocol
+  original premises shape ordering unique current prefixTrace left right suffix orientation diamond result =
+    canonicalWorkInspectReachedDerived name key world error value nameEq keyEq protocol
+      original premises shape ordering unique
+      (canonicalSortingReplayExtend name key world error value protocol nameEq keyEq original
+        (workReachedReplay current) prefixTrace left right suffix orientation diamond result)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
