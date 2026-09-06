@@ -26250,6 +26250,13 @@ scopedFlipOrdinalTailInverse (S ordinal) = Refl
 scopedFlipOrdinalInverse Z = Refl
 scopedFlipOrdinalInverse (S ordinal) = scopedFlipOrdinalTailInverse ordinal
 
+||| Rotate the finite initial interval [0..bound] left; everything above it stays fixed.
+scopedRotateOrdinals : Nat -> ScopedOrdinalPermutation
+scopedRotateOrdinals Z = MkScopedOrdinalPermutation id id (\ordinal => Refl) (\ordinal => Refl)
+scopedRotateOrdinals (S bound) =
+  scopedComposeOrdinalPermutation (scopedLiftOrdinalPermutation (scopedRotateOrdinals bound))
+    (MkScopedOrdinalPermutation scopedFlipOrdinal scopedFlipOrdinal scopedFlipOrdinalInverse scopedFlipOrdinalInverse)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
