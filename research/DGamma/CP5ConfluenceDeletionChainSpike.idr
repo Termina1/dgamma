@@ -27836,6 +27836,43 @@ record ScopedWholeFreshOrdinal
   0 freshSourceEmbedding : DeletionSurvivingOrdinalEmbedding result targetIndex freshSourceIndex
   0 freshSourceExcluded : Not (Elem (MkRegistrationGeneration child freshSourceIndex) (selectedRegistrations candidate))
 
+0 scopedWholeKeptBirthFresh :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  (occurrence : LocatedActionOccurrence (OInsert child parent component) (survivingTrace result)) ->
+  ScopedWholeFreshOrdinal name key world error value nameEq keyEq initial finalState global candidate result child (locatedActionOrdinal occurrence)
+scopedWholeKeptBirthFresh name key world error value nameEq keyEq initial finalState global candidate result child parent component occurrence =
+  scopedWholeBirthCoverageView name key world error value (ScopedWholeFreshOrdinal name key world error value nameEq keyEq initial finalState global candidate result child)
+    initial (survivingBeforeEnd result) (survivingEpisodeEnd result) (survivingFinal result)
+    (survivingBefore result) (survivingEpisode result) (survivingAfter result) (OInsert child parent component)
+    (\localOccurrence => MkScopedWholeFreshOrdinal (locatedActionOrdinal (segmentSourceOccurrence (generationSubsequenceLocatedOriginExact (beforeDeletion result) localOccurrence)))
+      (DeletionBeforeEmbedding (segmentSourceOrdinalExact (generationSubsequenceLocatedOriginExact (beforeDeletion result) localOccurrence)))
+      (scopedSubsequenceKeptBirthFresh name key world error value nameEq (selectedRegistrations candidate) (GenerationOwnedActor nameEq (selectedRegistrations candidate))
+          (\atOrdinal, atLive, actor, scope, program, member => (MkRegistrationGeneration actor atOrdinal ** (Refl, member))) 0 []
+          initial (locatedPreStart (selectedEpisode candidate)) initial (survivingBeforeEnd result) (traceBeforeOpening (selectedEpisode candidate)) (survivingBefore result) (beforeDeletion result) child parent component
+          localOccurrence (locatedActionOrdinal (segmentSourceOccurrence (generationSubsequenceLocatedOriginExact (beforeDeletion result) localOccurrence))) (segmentSourceOrdinalExact (generationSubsequenceLocatedOriginExact (beforeDeletion result) localOccurrence))))
+    (\localOccurrence => MkScopedWholeFreshOrdinal (deletionOriginalBeforeCount result + (locatedActionOrdinal (segmentSourceOccurrence (generationSubsequenceLocatedOriginExact (episodeDeletion result) localOccurrence))))
+      (DeletionEpisodeEmbedding (segmentSourceOrdinalExact (generationSubsequenceLocatedOriginExact (episodeDeletion result) localOccurrence)))
+      (replace {p = \ordinal => Not (Elem (MkRegistrationGeneration child (ordinal + (locatedActionOrdinal (segmentSourceOccurrence (generationSubsequenceLocatedOriginExact (episodeDeletion result) localOccurrence))))) (selectedRegistrations candidate))}
+        (fst (scopedDeletionScanCountOffsets name key world error value nameEq keyEq initial finalState global candidate result))
+        (scopedSubsequenceKeptBirthFresh name key world error value nameEq (selectedRegistrations candidate) (EpisodeGenerationDeletedActor nameEq (selectedActor candidate) (selectedRegistrations candidate))
+          (\atOrdinal, atLive, actor, scope, program, member => (DeleteRegisteredGeneration (MkRegistrationGeneration actor atOrdinal ** (Refl, member)))) (selectedStartOrdinal candidate) (selectedStartLive candidate)
+          (locatedPreStart (selectedEpisode candidate)) (locatedAfter (selectedEpisode candidate)) (survivingBeforeEnd result) (survivingEpisodeEnd result) (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (survivingEpisode result) (episodeDeletion result) child parent component
+          localOccurrence (locatedActionOrdinal (segmentSourceOccurrence (generationSubsequenceLocatedOriginExact (episodeDeletion result) localOccurrence))) (segmentSourceOrdinalExact (generationSubsequenceLocatedOriginExact (episodeDeletion result) localOccurrence)))))
+    (\localOccurrence => MkScopedWholeFreshOrdinal ((deletionOriginalBeforeCount result + deletionOriginalEpisodeCount result) + (locatedActionOrdinal (segmentSourceOccurrence (generationSubsequenceLocatedOriginExact (afterDeletion result) localOccurrence))))
+      (DeletionAfterEmbedding (segmentSourceOrdinalExact (generationSubsequenceLocatedOriginExact (afterDeletion result) localOccurrence)))
+      (replace {p = \ordinal => Not (Elem (MkRegistrationGeneration child (ordinal + (locatedActionOrdinal (segmentSourceOccurrence (generationSubsequenceLocatedOriginExact (afterDeletion result) localOccurrence))))) (selectedRegistrations candidate))}
+        (snd (scopedDeletionScanCountOffsets name key world error value nameEq keyEq initial finalState global candidate result))
+        (scopedSubsequenceKeptBirthFresh name key world error value nameEq (selectedRegistrations candidate) (GenerationOwnedActor nameEq (selectedRegistrations candidate))
+          (\atOrdinal, atLive, actor, scope, program, member => (MkRegistrationGeneration actor atOrdinal ** (Refl, member))) (episodeEndOrdinal result) (episodeEndLive result)
+          (locatedAfter (selectedEpisode candidate)) finalState (survivingEpisodeEnd result) (survivingFinal result) (traceAfterClosing (selectedEpisode candidate)) (survivingAfter result) (afterDeletion result) child parent component
+          localOccurrence (locatedActionOrdinal (segmentSourceOccurrence (generationSubsequenceLocatedOriginExact (afterDeletion result) localOccurrence))) (segmentSourceOrdinalExact (generationSubsequenceLocatedOriginExact (afterDeletion result) localOccurrence)))))
+    occurrence (deletionWholeTraceOccurrenceClassification (survivingBefore result) (survivingEpisode result) (survivingAfter result) occurrence)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
