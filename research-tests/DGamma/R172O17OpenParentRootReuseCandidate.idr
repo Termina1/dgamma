@@ -217,3 +217,32 @@ public export
 r172ReuseBothDefinedRelated (PartialDefined firstRelated) (PartialDefined secondRelated) =
   PartialDefined (r172ReuseAllEffectStatesRelated _ _)
 
+public export
+0 r172ReuseCommuteAt :
+  (left, right : PartialMap (EffectState Nat R45Key R45Value Unit)) ->
+  PartialMapsRelated (EffectStateEquivalence r45KeyEq) left left ->
+  PartialMapsRelated (EffectStateEquivalence r45KeyEq) right right ->
+  (origin : EffectState Nat R45Key R45Value Unit) ->
+  (leftResult, rightResult : Maybe (EffectState Nat R45Key R45Value Unit)) ->
+  left origin = leftResult -> right origin = rightResult ->
+  PartialRelated (EffectState Nat R45Key R45Value Unit) (EffectStateRelated r45KeyEq)
+    (partialCompose left right origin) (partialCompose right left origin)
+r172ReuseCommuteAt left right leftRespects rightRespects origin Nothing Nothing leftRuns rightRuns =
+  rewrite rightRuns in rewrite leftRuns in PartialUndefined
+r172ReuseCommuteAt left right leftRespects rightRespects origin Nothing (Just afterRight) leftRuns rightRuns =
+  rewrite rightRuns in rewrite leftRuns in
+  rewrite r172ReuseUndefinedRight (replace
+    {p = \output => PartialRelated (EffectState Nat R45Key R45Value Unit) (EffectStateRelated r45KeyEq) output (left afterRight)}
+    leftRuns (leftRespects (r172ReuseAllEffectStatesRelated origin afterRight))) in PartialUndefined
+r172ReuseCommuteAt left right leftRespects rightRespects origin (Just afterLeft) Nothing leftRuns rightRuns =
+  rewrite rightRuns in rewrite leftRuns in
+  rewrite r172ReuseUndefinedRight (replace
+    {p = \output => PartialRelated (EffectState Nat R45Key R45Value Unit) (EffectStateRelated r45KeyEq) output (right afterLeft)}
+    rightRuns (rightRespects (r172ReuseAllEffectStatesRelated origin afterLeft))) in PartialUndefined
+r172ReuseCommuteAt left right leftRespects rightRespects origin (Just afterLeft) (Just afterRight) leftRuns rightRuns =
+  rewrite rightRuns in rewrite leftRuns in r172ReuseBothDefinedRelated
+    (replace {p = \output => PartialRelated (EffectState Nat R45Key R45Value Unit) (EffectStateRelated r45KeyEq) output (left afterRight)}
+      leftRuns (leftRespects (r172ReuseAllEffectStatesRelated origin afterRight)))
+    (replace {p = \output => PartialRelated (EffectState Nat R45Key R45Value Unit) (EffectStateRelated r45KeyEq) output (right afterLeft)}
+      rightRuns (rightRespects (r172ReuseAllEffectStatesRelated origin afterLeft)))
+
