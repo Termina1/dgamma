@@ -529,3 +529,14 @@ public export
   ParentRegistrationYield r45Protocol r45NameEq 0 r45Child before -> installedAt @{r45NameEq} 0 before = True
 r172ReuseYieldParentInstalled yielded =
   rewrite parentFoundAtYield yielded in rewrite parentAtYield yielded in Refl
+
+public export
+0 r172ReuseConclusionChildPrefixAligned :
+  (sorted : SortedClosingFreeTrace Nat R45Key Unit String R45Value
+    r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
+  (birth : LocatedGeneratedRegistration 1 0 r45Child (sortedTrace sorted)) ->
+  AlignedTransitions Nat R45Key Unit String R45Value r45NameEq r45KeyEq (beforeRegistration birth)
+r172ReuseConclusionChildPrefixAligned sorted birth = fst (alignedAppendSplit
+  (beforeRegistration birth) (MoreTransitions (registrationTransition birth) (afterRegistration birth))
+  (replace {p = \trace => AlignedTransitions Nat R45Key Unit String R45Value r45NameEq r45KeyEq trace}
+    (sym (registrationDecomposition birth)) (replayAligned (sortedPremises sorted))))
