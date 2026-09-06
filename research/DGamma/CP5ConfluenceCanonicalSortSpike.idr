@@ -917,6 +917,11 @@ record CanonicalRankSortResult (item : Type) (rank : item -> Nat) (source : List
   CanonicalRanksOrdered item rank (head :: rest) -> CanonicalRanksOrdered item rank rest
 canonicalRanksTail item rank head rest (CanonicalRanksCons head rest below ordered) = ordered
 
+0 canonicalRanksHeadBelow : (item : Type) -> (rank : item -> Nat) ->
+  (head : item) -> (rest : List item) -> CanonicalRanksOrdered item rank (head :: rest) ->
+  (selected : item) -> Elem selected rest -> LTE (rank head) (rank selected)
+canonicalRanksHeadBelow item rank head rest (CanonicalRanksCons head rest below ordered) = below
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
