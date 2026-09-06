@@ -1133,6 +1133,16 @@ canonicalListMemberKnownYes item itemEq selected selected rest Refl observed = r
   listMember @{itemEq} selected (head :: rest) = listMember @{itemEq} selected rest
 canonicalListMemberKnownNo item itemEq selected head rest different observed = rewrite observed in Refl
 
+0 canonicalListMemberCompleteStep : (item : Type) -> (itemEq : DecEq item) ->
+  (selected, head : item) -> (rest : List item) ->
+  (listMember @{itemEq} selected rest = True -> Elem selected rest) ->
+  (decision : Dec (selected = head)) -> (decEq @{itemEq} selected head = decision) ->
+  listMember @{itemEq} selected (head :: rest) = True -> Elem selected (head :: rest)
+canonicalListMemberCompleteStep item itemEq selected head rest complete (Yes same) observed present =
+  rewrite same in Here
+canonicalListMemberCompleteStep item itemEq selected head rest complete (No different) observed present =
+  There (complete (trans (sym (canonicalListMemberKnownNo item itemEq selected head rest different observed)) present))
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
