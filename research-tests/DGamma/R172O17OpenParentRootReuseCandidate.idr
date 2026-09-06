@@ -338,3 +338,8 @@ r172ReuseClosingOccurs (MkLocatedClosedEpisode pre after earlier episode suffix 
         (r172ReuseAppendRightOccurrence (closedInside episode)
           (MoreTransitions (unloadTransition (closing episode)) NoTransitions) _ OccursHere))))
 
+public export
+0 r172ReuseNoClosing : NoClosingEpisodes Nat R45Key Unit String R45Value r45NameEq r45KeyEq r172ReuseTrace
+r172ReuseNoClosing selected located = r172ReuseNoUnload
+  (unloadTransition (closing (locatedEpisode located))) Refl (r172ReuseClosingOccurs located)
+
