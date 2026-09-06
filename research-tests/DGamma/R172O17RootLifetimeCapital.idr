@@ -36,3 +36,24 @@ data R172RootActionOccurs :
     {first, middle, finalState : SystemState Nat R45Key R45Value Unit String} ->
     {action : Action Nat R45Key R45Value Unit String} -> (transition : Transition first middle) -> (rest : Transitions middle finalState) ->
     R172RootActionOccurs action rest -> R172RootActionOccurs action (MoreTransitions transition rest)
+
+public export
+0 r172ReuseRootActionBackward :
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState Nat R45Key R45Value Unit String} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  {action : Action Nat R45Key R45Value Unit String} ->
+  SameExternalOrchestration r45NameEq left right -> R172RootActionOccurs action right -> R172RootActionOccurs action left
+r172ReuseRootActionBackward SameExternalOrchestrationEnd occurrence =
+  case occurrence of R172RootActionHere _ _ _ _ impossible; R172RootActionLater _ _ _ impossible
+r172ReuseRootActionBackward (SkipLeftInternal head rest excluded same) occurrence =
+  R172RootActionLater head rest (r172ReuseRootActionBackward same occurrence)
+r172ReuseRootActionBackward (SkipRightInternal head rest excluded same) (R172RootActionHere _ _ root actionSame) = void (excluded root)
+r172ReuseRootActionBackward (SkipRightInternal head rest excluded same) (R172RootActionLater _ _ later) =
+  r172ReuseRootActionBackward same later
+r172ReuseRootActionBackward
+  (MatchExternalInput shared left leftRest leftRoot right rightRest rightRoot leftAction rightAction same)
+  (R172RootActionHere _ _ root actionSame) =
+    R172RootActionHere left leftRest leftRoot (trans leftAction (trans (sym rightAction) actionSame))
+r172ReuseRootActionBackward
+  (MatchExternalInput shared left leftRest leftRoot right rightRest rightRoot leftAction rightAction same)
+  (R172RootActionLater _ _ later) = R172RootActionLater left leftRest (r172ReuseRootActionBackward same later)
