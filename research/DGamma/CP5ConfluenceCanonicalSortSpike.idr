@@ -3595,6 +3595,29 @@ canonicalWorkEpisodePairRightAction name key world error value nameEq keyEq sele
       (canonicalWorkGroupingFromBoundary name key world error value nameEq selected
         (workActorRest scanned) (workPrefixBoundary scanned) remains))
 
+||| The SAME existing whole-episode grouping producer cannot select a Begin
+||| on the right: its selected node really lies inside the installed body.
+||| This closes a needed provenance fact, not early activation applicability.
+0 canonicalWorkEpisodePairRejectsBegin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+  (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
+  (remains : Not (NoLifecycleBy selected (workActorRest scanned))) ->
+  (observedActor : name) ->
+  Not (transitionAction (workPairRight (canonicalWorkGroupingPairForEpisode name key world error value
+    nameEq keyEq selected trace episode scanned remains)) = LBegin observedActor)
+canonicalWorkEpisodePairRejectsBegin name key world error value nameEq keyEq selected trace episode scanned remains observedActor begins =
+  canonicalWorkInstalledPairRejectsBegin name key world error value nameEq keyEq selected (workActorRest scanned)
+    (canonicalWorkGroupingFromBoundary name key world error value nameEq selected
+      (workActorRest scanned) (workPrefixBoundary scanned) remains)
+    (canonicalWorkScannedResidualInstalled name key world error value nameEq keyEq selected trace episode scanned)
+    observedActor
+    (trans (sym (canonicalWorkEpisodePairRightAction name key world error value nameEq keyEq selected
+      trace episode scanned remains)) begins)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
