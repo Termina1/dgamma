@@ -848,6 +848,20 @@ canonicalSupportedRankObserved name key world error value protocol nameEq keyEq 
     (trans (sym (canonicalSupportedActiveAtFound name key world error value nameEq state selected fiber found))
       (trans (sym (matches selected)) supported)) ranked
 
+||| The caller supplies support, never a chosen fiber or a chosen protocol rank.
+0 canonicalSupportedRank :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> (selected : name) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} selected state = True) ->
+  SupportMatchesActive nameEq keyEq state -> RegistryProtocolRanked protocol nameEq state ->
+  CanonicalActiveRank name key world error value protocol nameEq state selected
+canonicalSupportedRank name key world error value protocol nameEq keyEq state selected supported matches ranked =
+  canonicalSupportedRankObserved name key world error value protocol nameEq keyEq state selected
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry state)) Refl supported matches ranked
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
