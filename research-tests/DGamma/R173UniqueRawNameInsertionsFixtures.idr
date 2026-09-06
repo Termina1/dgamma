@@ -34,3 +34,14 @@ r173DistinctBirthPosition selected (S Z) observed = case observed of Refl imposs
 r173DistinctBirthPosition selected (S (S Z)) observed = case observed of Refl => Refl
 r173DistinctBirthPosition selected (S (S (S Z))) observed = case observed of Refl impossible
 r173DistinctBirthPosition selected (S (S (S (S later)))) observed = case observed of Refl impossible
+
+||| Concrete positive: insert root 0; begin 0; insert child 1; retire 1.
+public export
+0 r173DistinctNamesSatisfyUniqueInsertions :
+  UniqueRawNameInsertions Nat R45Key Unit String R45Value r45NameEq r45KeyEq r45SourceTrace
+r173DistinctNamesSatisfyUniqueInsertions = MkUniqueRawNameInsertions
+  (\selected, leftParent, rightParent, leftComponent, rightComponent, left, right =>
+    trans (r173DistinctBirthPosition selected (locatedActionOrdinal left)
+      (rawInsertionNameAtLocated Nat R45Key Unit String R45Value r45SourceTrace selected leftParent leftComponent left))
+      (sym (r173DistinctBirthPosition selected (locatedActionOrdinal right)
+        (rawInsertionNameAtLocated Nat R45Key Unit String R45Value r45SourceTrace selected rightParent rightComponent right))))
