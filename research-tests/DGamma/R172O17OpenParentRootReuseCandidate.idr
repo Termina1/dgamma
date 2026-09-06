@@ -275,3 +275,7 @@ r172ReuseIndependent = MkTraceIndependent
   (\left, right, distinct, stage, foreign, origin => r172ReuseIteratorStableAt left stage
     (runTraceEffectTransformation foreign) origin (runTraceEffectTransformation foreign origin) Refl)
 
+public export
+0 r172ReuseReached : ReachedFromEmpty Nat R45Key Unit String R45Value r45NameEq r45KeyEq r172ReuseFinal
+r172ReuseReached = MkReachedFromEmpty r45Initial r172ReuseTrace r172ReuseAligned r172ReuseInitialEmpty r172ReuseInitialWellFormed
+
