@@ -152,3 +152,8 @@ r172ReuseTotal = TraceComponentsTotalStep r45ParentInsert _ (r172ReuseAnyTransit
             (TraceComponentsTotalStep r172ReuseRetire _ (r172ReuseAnyTransitionTotal r172ReuseRetire)
               (TraceComponentsTotalStep r172ReuseFinish _ (r172ReuseAnyTransitionTotal r172ReuseFinish) TraceComponentsTotalEnd)))))))
 
+public export
+0 r172ReuseEmptyKeyBindings : (context : CoeffectContext R45Key R45Value) -> bindings context = []
+r172ReuseEmptyKeyBindings (MkCoeffectContext [] unique) = Refl
+r172ReuseEmptyKeyBindings (MkCoeffectContext (Bind key value :: rest) unique) = case key of _ impossible
+
