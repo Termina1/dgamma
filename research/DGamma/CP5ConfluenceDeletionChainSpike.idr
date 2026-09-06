@@ -20419,6 +20419,18 @@ scopedAppendTraceEmpty name key world error value _ finalState NoTransitions = R
 scopedAppendTraceEmpty name key world error value first finalState (MoreTransitions transition rest) =
   cong (MoreTransitions transition) (scopedAppendTraceEmpty name key world error value _ finalState rest)
 
+0 scopedRootSealsAppendLeft :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  ScopedOwnedRootSeals name key world error value nameEq registered ordinal live first finalState (appendTransitions left right) ->
+  ScopedOwnedRootSeals name key world error value nameEq registered ordinal live first middle left
+scopedRootSealsAppendLeft name key world error value nameEq registered ordinal live _ middle finalState NoTransitions right roots = ()
+scopedRootSealsAppendLeft name key world error value nameEq registered ordinal live first middle finalState (MoreTransitions transition rest) right roots =
+  (fst roots, scopedRootSealsAppendLeft name key world error value nameEq registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction transition) live) _ middle finalState rest right (snd roots))
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
