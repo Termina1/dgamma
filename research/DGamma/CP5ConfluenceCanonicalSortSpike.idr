@@ -2687,6 +2687,29 @@ canonicalWorkGroupingPairPrepend name key world error value selected earlier res
       (MoreTransitions (workPairLeft pair) (MoreTransitions (workPairRight pair) (workPairSuffix pair))))
       (cong (appendTransitions earlier) (workPairDecomposition pair)))
 
+||| The blocked open-episode work item itself now PRODUCES a whole-source
+||| adjacent foreign/owned pair. Its full prefix is assembled from the exact
+||| episode and scan pieces; no existential state equality is guessed.
+0 canonicalWorkGroupingPairForEpisode :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+  (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
+  Not (NoLifecycleBy selected (workActorRest scanned)) ->
+  CanonicalWorkGroupingPair name key world error value selected trace
+canonicalWorkGroupingPairForEpisode name key world error value nameEq keyEq selected trace episode scanned remains =
+  replace {p = CanonicalWorkGroupingPair name key world error value selected}
+    (trans (appendTransitionsAssociative (openPrefix episode)
+      (MoreTransitions (beginTransition (openBegin episode)) (workActorPrefix scanned)) (workActorRest scanned))
+      (trans (cong (\inside => appendTransitions (openPrefix episode) (MoreTransitions (beginTransition (openBegin episode)) inside))
+        (workPrefixDecomposition scanned)) (openDecomposition episode)))
+    (canonicalWorkGroupingPairPrepend name key world error value selected
+      (appendTransitions (openPrefix episode) (MoreTransitions (beginTransition (openBegin episode)) (workActorPrefix scanned)))
+      (workActorRest scanned)
+      (canonicalWorkGroupingFromBoundary name key world error value nameEq selected (workActorRest scanned) (workPrefixBoundary scanned) remains))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
