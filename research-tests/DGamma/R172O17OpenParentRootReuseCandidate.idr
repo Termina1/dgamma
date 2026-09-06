@@ -426,3 +426,9 @@ public export
     r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
   RootInputsBeforeLifecycle r45NameEq (sortedTrace sorted)
 r172ReuseConclusionRootFirst sorted = allRootInputsFirst (sortedInputPlacement sorted)
+
+public export
+0 r172ReuseOriginalChildBirth : LocatedGeneratedRegistration 1 0 r45Child r172ReuseTrace
+r172ReuseOriginalChildBirth = MkLocatedGeneratedRegistration r45AfterBegin r45SourcePairFinal
+  (MoreTransitions r45ParentInsert (MoreTransitions r45Begin NoTransitions)) r45ChildInsert
+  (MoreTransitions r45SourceRetire r172ReuseTail) Refl Refl
