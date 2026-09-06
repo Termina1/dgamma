@@ -20058,6 +20058,20 @@ scopedLookupRootHeadAt name key world error value nameEq wanted current left rig
 scopedLookupRootHeadAt name key world error value nameEq wanted current left right leftTail rightTail parents tail (No distinct) exact =
   rewrite exact in tail
 
+0 scopedSelectedOrderedRoot :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (selected, wanted : name) ->
+  (left, right : List (Binding name (FiberAt name key value world error))) ->
+  SelectedOrderedRegistryControlsRelated name key world error value selected left right ->
+  (maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupEntries @{nameEq} wanted left) =
+   maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupEntries @{nameEq} wanted right))
+scopedSelectedOrderedRoot name key world error value nameEq selected wanted _ _ SelectedOrderedControlsNil = Refl
+scopedSelectedOrderedRoot name key world error value nameEq selected wanted _ _
+  (SelectedOrderedControlsCons {leftFiber} {rightFiber} {leftRest} {rightRest} current controls tail) =
+    scopedLookupRootHeadAt name key world error value nameEq wanted current leftFiber rightFiber leftRest rightRest
+      (scopedSelectedParentExact name key world error value selected current leftFiber rightFiber controls)
+      (scopedSelectedOrderedRoot name key world error value nameEq selected wanted leftRest rightRest tail)
+      (decEq @{nameEq} wanted current) Refl
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
