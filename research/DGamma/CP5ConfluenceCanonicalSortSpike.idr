@@ -2483,6 +2483,22 @@ data CanonicalWorkForeignSpan :
     CanonicalWorkForeignSpan selected rest ->
     CanonicalWorkForeignSpan selected (MoreTransitions step rest)
 
+||| Exact first owned action beyond a foreign span, with all reached state
+||| indices and decomposition retained together by the search producer.
+record CanonicalWorkNextActor
+  (name, key, world, error : Type) (value : key -> Type) (selected : name)
+  {first, finalState : SystemState name key value world error}
+  (trace : Transitions first finalState) where
+  constructor MkCanonicalWorkNextActor
+  workNextBefore : SystemState name key value world error
+  workNextAfter : SystemState name key value world error
+  workBeforeNext : Transitions first workNextBefore
+  workNextStep : Transition workNextBefore workNextAfter
+  workAfterNext : Transitions workNextAfter finalState
+  0 workNextOwned : CanonicalWorkActorStep selected workNextStep
+  0 workBeforeNextForeign : CanonicalWorkForeignSpan selected workBeforeNext
+  0 workNextDecomposition : appendTransitions workBeforeNext (MoreTransitions workNextStep workAfterNext) = trace
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
