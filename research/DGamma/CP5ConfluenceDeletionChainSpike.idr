@@ -27389,6 +27389,24 @@ ScopedWholeBirthCoverage name key world error value nameEq keyEq initial finalSt
   Either (Elem (MkRegistrationGeneration child sourceIndex) (selectedRegistrations candidate))
     (ScopedWholeRetainedOrigin name key world error value nameEq keyEq initial finalState global candidate result (OInsert child parent component) sourceIndex)
 
+0 scopedWholeBirthBefore :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) -> (sourceIndex : Nat) ->
+  ScopedBirthCoverage name key world error value (selectedRegistrations candidate) 0 initial (survivingBeforeEnd result) (survivingBefore result)
+    (generationSubsequenceSourceOrdinal (beforeDeletion result)) child parent component sourceIndex ->
+  ScopedWholeBirthCoverage name key world error value nameEq keyEq initial finalState global candidate result child parent component sourceIndex
+scopedWholeBirthBefore name key world error value nameEq keyEq initial finalState global candidate result child parent component sourceIndex (Left deleted) = Left deleted
+scopedWholeBirthBefore name key world error value nameEq keyEq initial finalState global candidate result child parent component sourceIndex (Right kept) =
+  Right (scopedWholeRetainedAt name key world error value nameEq keyEq initial finalState global candidate result (OInsert child parent component)
+    sourceIndex (locatedActionOrdinal (retainedOrdinalOccurrence kept))
+    (scopedLocatedAppendLeftOrigin name key world error value initial (survivingBeforeEnd result) (survivingFinal result)
+      (survivingBefore result) (appendTransitions (survivingEpisode result) (survivingAfter result)) (OInsert child parent component) (retainedOrdinalOccurrence kept))
+    (DeletionBeforeEmbedding (retainedOrdinalExact kept)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
