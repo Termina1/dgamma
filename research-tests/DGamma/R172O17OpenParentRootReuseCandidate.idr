@@ -499,3 +499,14 @@ public export
     r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
   LocatedActionOccurrence (OInsert 1 Root r45Child) (sortedTrace sorted)
 r172ReuseConclusionRootBirth sorted = r172ReuseLocateAction (r172ReuseConclusionRootOccurs sorted)
+
+public export
+0 r172ReuseRegistrationStepAt :
+  {first, before, afterState, finalState : SystemState Nat R45Key R45Value Unit String} ->
+  (earlier : Transitions first before) -> (transition : Transition before afterState) ->
+  (later : Transitions afterState finalState) ->
+  RegistrationDiscipline r45Protocol r45NameEq (appendTransitions earlier (MoreTransitions transition later)) ->
+  RegistrationStepDiscipline r45Protocol r45NameEq (transitionAction transition) before later
+r172ReuseRegistrationStepAt NoTransitions transition later (RegistrationDisciplineStep _ _ atStep rest) = atStep
+r172ReuseRegistrationStepAt (MoreTransitions head tail) transition later (RegistrationDisciplineStep _ _ atStep rest) =
+  r172ReuseRegistrationStepAt tail transition later rest
