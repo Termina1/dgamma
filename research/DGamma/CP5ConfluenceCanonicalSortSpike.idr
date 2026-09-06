@@ -882,6 +882,18 @@ canonicalProtocolRank name key world error value protocol nameEq state selected 
 canonicalProtocolRankExact name key world error value protocol nameEq state selected rank
   (MkNameProtocolRank fiber found ranked) = rewrite found in rewrite ranked in Refl
 
+0 canonicalRankedSupportPathStrict :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) ->
+  (state : SystemState name key value world error) -> (lower, upper : name) ->
+  RankedSupportPath protocol nameEq state lower upper ->
+  LT (canonicalProtocolRank name key world error value protocol nameEq state lower)
+    (canonicalProtocolRank name key world error value protocol nameEq state upper)
+canonicalRankedSupportPathStrict name key world error value protocol nameEq state lower upper
+  (MkRankedSupportPath lowerRank upperRank lowerWitness upperWitness increases) =
+    rewrite canonicalProtocolRankExact name key world error value protocol nameEq state lower lowerRank lowerWitness in
+    rewrite canonicalProtocolRankExact name key world error value protocol nameEq state upper upperRank upperWitness in increases
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
