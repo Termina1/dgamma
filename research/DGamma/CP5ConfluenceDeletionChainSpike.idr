@@ -28992,6 +28992,20 @@ closingFreeDeletionOccurrenceFold
       (deletionOccurrenceCorrespondence step)
       (closingFreeDeletionOccurrenceFold rest)
 
+||| Complete history in original-source coordinates, owned by the recursive derivation.
+public export
+0 closingFreeDeletionGenerations :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> {target : Transitions initial targetFinal} ->
+  (derivation : ClosingFreeDeletionDerivation name key world error value protocol nameEq keyEq source target) ->
+  List (RegistrationGeneration name)
+closingFreeDeletionGenerations (ClosingFreeDeletionDone trace) = []
+closingFreeDeletionGenerations (ClosingFreeDeletionStep trace premises candidate step target rest) =
+  selectedRegistrations candidate ++ map (generationBackward (deletionProducerGenerationRenaming (deletionProducerCapital step)))
+    (closingFreeDeletionGenerations rest)
+
 ||| O10 recursive result before cumulative endpoint/accounting assembly.  This
 ||| gate exposes termination, the closing-free trace, replay, and typed deletion
 ||| history without hiding O11's quotient construction in the recursion hole.
