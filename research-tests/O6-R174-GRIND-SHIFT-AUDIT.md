@@ -194,3 +194,112 @@ at EVERY actual insertion. No such fixture/premise proof has been compiled yet.
 The trace has EIGHT actions including initial parent insertion (seven after it).
 
 Step (1) is submitted at the required mid-shift gate BEFORE any step-(3) spend.
+
+## Provision-recon cap outcome — SIX units spent, full inputs NOT inhabited
+
+`r174ProvisionExecution` uses actual `CalculusChecks.providerComponent` for both
+child 1 and distinct root 2. This is the existing installing program
+`[providerInstall, providerFinish]`, not an empty non-providing impostor. The
+parent has an empty provision. The successful eight-action execution exercises
+the live single-source check at all three insertions. The returned
+CertifiedActionTrace owns actual TraceComponentsTotal. The checked tuple gives
+length 8 (excluding the empty fallback), quiet = True, noFailedFibers = True,
+allFibersTotalOnProvision = True, supportSet = [0]. These are computed facts,
+not a supplied-capital fixture. Neither provider program is executed here;
+there is no new universal component-totality proof about it.
+
+The actual insertion ordinals are 0, 2, 5 for raw names 0, 1, 2; the strong
+UniqueRawNameInsertions premise is proved. This does NOT inhabit all revised
+O17 inputs. Exact RegistrationProtocol/Discipline, TraceIndependent,
+ReplayInvariantBundle, NoClosingEpisodes, ClosingFreeTraceShape, and actual
+O14 ordering have NOT been built for this candidate. No step-(3) local
+obstruction was attempted. There is no checked revised-O17 countermodel or
+canonical-form revision proposal in code.
+
+| Unit | Declaration | Commit | Attempts / fresh check UTC |
+|---|---|---|---|
+| P1 | `r174ProvisionParentStep` | `87bdad1` | PASS 1/3, 21:00:05–21:00:07 |
+| P2 | `r174ProvisionParent` | `aa027c2` | PASS 1/3, 21:00:24–21:00:26 |
+| P3 | `r174ProvisionExecution` | `788478f` | PASS 1/3, 21:00:49–21:00:51 |
+| P4 | `r174ProvisionExecutionChecks` | `db836ce` | PASS 1/3, 21:01:17–21:01:20 |
+| P5 | `r174ProvisionBirthPosition` | `2200588` | PASS 1/3, 21:01:52–21:01:54 |
+| P6 | `r174ProvisionUniqueInsertions` | d44993a | PASS 3/3, 21:19:20–21:19:22 |
+
+P6 attempts 1 and 2 were consciously interrupted after 10 and 6 minutes of
+unexpected normalization (not tool-window failures). Both are CHARGED without
+compiler verdict: empty buffered logs, exit 143, actual sampler peak unavailable.
+The supervising wrapper terminated the compiler's process group; process
+inspection confirmed no orphan before the next invocation. The first
+post-kill assertion accidentally matched its own shell's textual search string,
+then exact PID inspection confirmed all three PIDs absent at 21:12:30. This was
+a monitoring assertion error, not a compiler error, orphan, or pass.
+
+P6-1: 21:02:18–21:12:30 UTC (end is quiescence-observation upper bound).
+P6-2: 21:12:55–21:18:58 UTC. Attempt 2 supplied every constructor index explicitly;
+it still normalized pathologically. Attempt 3 moves the SAME proof into a
+consumer module. The execution VALUE is exported opaquely (consumers need its
+trace, not the builder's proof-term reduction); its producer-owned observation
+proof is exported as an opaque proof. P4/P5 still compute inside their owner.
+BOTH modules freshly pass in 2.1 seconds. No new theorem premise, weaker proof,
+or escape is involved. The visibility change is confined to this shift's new
+fixture: `r174ProvisionExecution` public export → export;
+`r174ProvisionBirthPosition` private → export. LocalDiamond is untouched.
+This is a measured success of the opaque producer-boundary cure, NOT a claimed
+fix of the separate 938-MB ordinal TTC debt.
+
+### Archived interrupted P6 declarations (no retained unfinished proof)
+
+P6-1 source declaration SHA256 `4a43d76999abf51a559bd7c27edcaba668986891942184cd80b03b5cd8191dc2`; complete compiler diagnostic transcript: EMPTY (interrupted, no verdict).
+
+```idris
+||| Strong whole-trace uniqueness really holds for the provision candidate.
+||| Full RegistrationDiscipline/independence/closing-free O17 inputs remain open.
+export
+0 r174ProvisionUniqueInsertions :
+  (UniqueRawNameInsertions Nat ToyKey ToyRuntime String ToyValue %search %search
+    (certifiedTrace r174ProvisionExecution))
+r174ProvisionUniqueInsertions = MkUniqueRawNameInsertions
+  (\selected, leftParent, rightParent, leftComponent, rightComponent, left, right =>
+    trans (r174ProvisionBirthPosition selected (locatedActionOrdinal left)
+      (rawInsertionNameAtLocated Nat ToyKey ToyRuntime String ToyValue
+        (certifiedTrace r174ProvisionExecution) selected leftParent leftComponent left))
+      (sym (r174ProvisionBirthPosition selected (locatedActionOrdinal right)
+        (rawInsertionNameAtLocated Nat ToyKey ToyRuntime String ToyValue
+          (certifiedTrace r174ProvisionExecution) selected rightParent rightComponent right))))
+```
+
+P6-2 source declaration SHA256 `f64cad96736e609990de93421aa15ef3932323f332652d58f943319c81741416`; complete compiler diagnostic transcript: EMPTY (interrupted, no verdict).
+
+```idris
+||| Strong whole-trace uniqueness really holds for the provision candidate.
+||| Full RegistrationDiscipline/independence/closing-free O17 inputs remain open.
+export
+0 r174ProvisionUniqueInsertions :
+  (UniqueRawNameInsertions Nat ToyKey ToyRuntime String ToyValue %search %search
+    (certifiedTrace r174ProvisionExecution))
+r174ProvisionUniqueInsertions = MkUniqueRawNameInsertions
+  {name = Nat} {key = ToyKey} {world = ToyRuntime} {error = String} {value = ToyValue}
+  {nameEq = %search} {keyEq = %search}
+  {initial = MkSystemState (MkToyRuntime False False) emptyContext}
+  {finalState = certifiedFinal r174ProvisionExecution}
+  {trace = certifiedTrace r174ProvisionExecution}
+  (\selected, leftParent, rightParent, leftComponent, rightComponent, left, right =>
+    trans (r174ProvisionBirthPosition selected (locatedActionOrdinal left)
+      (rawInsertionNameAtLocated Nat ToyKey ToyRuntime String ToyValue
+        (certifiedTrace r174ProvisionExecution) selected leftParent leftComponent left))
+      (sym (r174ProvisionBirthPosition selected (locatedActionOrdinal right)
+        (rawInsertionNameAtLocated Nat ToyKey ToyRuntime String ToyValue
+          (certifiedTrace r174ProvisionExecution) selected rightParent rightComponent right))))
+```
+
+### Owner-only possible future resolution (NOT acted on)
+
+Supervisor notes that IF full input inhabitation and the obstruction are later
+proved, “keys never re-provided” would be unfaithful to Cordis: it rejects only
+duplicate LIVE providers (`reflect.ts:187–188`), while disposal/HMR may legitimately
+re-provide a service. A possible canonical-form revision would place root
+insertions at the earliest position where their declared provisions are free.
+That is a paper-facing owner decision, NOT an adopted hypothesis or surface
+change in this shift. The six-unit cap is reached; no seventh fixture unit is
+authorized. O17 producer work on the current surface resumes only subject to
+the required cap-outcome gate; Unit D remains deferred until C gate/stop.
