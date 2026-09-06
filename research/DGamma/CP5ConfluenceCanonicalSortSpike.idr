@@ -1301,6 +1301,23 @@ canonicalSortedIdentity nameEq keyEq protocol trace premises ordering blocks
       (canonicalSortingIdentityEndpoint nameEq keyEq finalState) Refl Refl
       registrationTree
 
+||| O17 reached-state core: each transport fact is indexed by the same current trace.
+||| Block ranges and a fixed desired order are later refinements, not assumed here.
+record CanonicalSortingReplayState
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error) (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, originalFinal : SystemState name key value world error}
+  (original : Transitions initial originalFinal) where
+  constructor MkCanonicalSortingReplayState
+  sortingCurrentFinal : SystemState name key value world error
+  sortingCurrentTrace : Transitions initial sortingCurrentFinal
+  0 sortingReplayDerivation : FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq
+    original sortingCurrentTrace
+  0 sortingCurrentPremises : ReplayInvariantBundle name key world error value protocol nameEq keyEq sortingCurrentTrace
+  0 sortingCurrentExternal : SameExternalOrchestration nameEq original sortingCurrentTrace
+  0 sortingCurrentEndpoint : RelationalReplayEndpoint name key world error value nameEq keyEq
+    originalFinal sortingCurrentFinal
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
