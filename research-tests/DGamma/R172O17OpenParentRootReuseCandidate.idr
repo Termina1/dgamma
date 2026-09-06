@@ -41,3 +41,8 @@ public export
 r172ReuseAfterRetire : SystemState Nat R45Key R45Value Unit String
 r172ReuseAfterRetire = MkSystemState () (replaceBinding @{r45NameEq} 1 r172ReuseRootRetired (registry r172ReuseAfterRoot))
 
+||| Use the actual checked evaluator output; the later checked equation excludes the default branch.
+public export
+r172ReuseFinal : SystemState Nat R45Key R45Value Unit String
+r172ReuseFinal = maybe r45AfterBegin snd (checkedApplyAction @{r45NameEq} @{r45KeyEq} (LAdvance 0) r172ReuseAfterRetire)
+
