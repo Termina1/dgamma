@@ -20320,6 +20320,26 @@ scopedRootExclusionStep name key world error value nameEq keyEq registered ordin
   scopedRootExclusionStepAt name key world error value nameEq keyEq registered ordinal live unique action source target tag raw births inactive roots actor generation member current
     (decEq @{nameEq} actor (actionOwner action))
 
+0 scopedOwnedRootObservation :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) -> (source : SystemState name key value world error) ->
+  ((child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+    (action = OInsert child parent component) -> Elem (MkRegistrationGeneration child ordinal) registered -> (scopedParentRoot parent = False)) ->
+  ScopedCurrentRootExclusion name key world error value nameEq registered live source ->
+  (generation : RegistrationGeneration name) -> Elem generation registered ->
+  (actionGenerationAt @{nameEq} ordinal live action = Just generation) ->
+  (scopedRootObservation name key world error value nameEq action source = False)
+scopedOwnedRootObservation name key world error value nameEq registered ordinal live (OInsert actor parent component) source births roots generation member current =
+  births actor parent component Refl (replace {p = \observed => Elem observed registered} (sym (justInjective current)) member)
+scopedOwnedRootObservation name key world error value nameEq registered ordinal live (ORetire actor) source births roots generation member current = roots actor generation member current
+scopedOwnedRootObservation name key world error value nameEq registered ordinal live (ORemove actor) source births roots generation member current = roots actor generation member current
+scopedOwnedRootObservation name key world error value nameEq registered ordinal live (LBegin actor) source births roots generation member current = Refl
+scopedOwnedRootObservation name key world error value nameEq registered ordinal live (LAdvance actor) source births roots generation member current = Refl
+scopedOwnedRootObservation name key world error value nameEq registered ordinal live (LDivert actor) source births roots generation member current = Refl
+scopedOwnedRootObservation name key world error value nameEq registered ordinal live (LLeave actor) source births roots generation member current = Refl
+scopedOwnedRootObservation name key world error value nameEq registered ordinal live (LUnload actor) source births roots generation member current = Refl
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
