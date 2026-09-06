@@ -2042,6 +2042,22 @@ canonicalWorkActorPrefixCons name key world error value selected step rest (Cano
     (cong (MoreTransitions step) (workPrefixDecomposition tail))
     (cong S (workPrefixCountSplit tail)) (workPrefixBoundary tail)
 
+||| Strictly structural/decreasing scan of the real trace, not supplied pieces.
+0 canonicalWorkScanActorPrefix :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  CanonicalWorkActorPrefix name key world error value selected trace
+canonicalWorkScanActorPrefix name key world error value nameEq selected NoTransitions =
+  MkCanonicalWorkActorPrefix _ NoTransitions NoTransitions ActorLifecycleEnd Refl Refl CanonicalWorkBoundaryEnd
+canonicalWorkScanActorPrefix name key world error value nameEq selected (MoreTransitions step rest) =
+  case canonicalWorkClassifyActor name key world error value nameEq selected step of
+    Yes owned => canonicalWorkActorPrefixCons name key world error value selected step rest owned
+      (canonicalWorkScanActorPrefix name key world error value nameEq selected rest)
+    No foreign => MkCanonicalWorkActorPrefix _ NoTransitions (MoreTransitions step rest)
+      ActorLifecycleEnd Refl Refl (CanonicalWorkBoundaryBlocked step rest foreign)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
