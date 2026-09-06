@@ -27491,6 +27491,49 @@ scopedWholeBirthCoverageView name key world error value predicate first beforeEn
 scopedWholeBirthCoverageView name key world error value predicate first beforeEnd episodeEnd finalState before center after action beforeCase centerCase afterCase occurrence
   (DeletionWholeAfter localOccurrence exactOrdinal) = replace {p = predicate} (sym exactOrdinal) (afterCase localOccurrence)
 
+0 scopedWholeBirthCoverageSegments :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  (occurrence : LocatedActionOccurrence (OInsert child parent component)
+    (appendTransitions (traceBeforeOpening (selectedEpisode candidate)) (appendTransitions
+      (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+      (traceAfterClosing (selectedEpisode candidate))))) ->
+  ScopedWholeBirthCoverage name key world error value nameEq keyEq initial finalState global candidate result child parent component (locatedActionOrdinal occurrence)
+scopedWholeBirthCoverageSegments name key world error value nameEq keyEq initial finalState global candidate result child parent component occurrence =
+  scopedWholeBirthCoverageView name key world error value
+    (ScopedWholeBirthCoverage name key world error value nameEq keyEq initial finalState global candidate result child parent component)
+    initial (locatedPreStart (selectedEpisode candidate)) (locatedAfter (selectedEpisode candidate)) finalState
+    (traceBeforeOpening (selectedEpisode candidate)) (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate)) (OInsert child parent component)
+    (\localOccurrence => (scopedWholeBirthBefore name key world error value nameEq keyEq initial finalState global candidate result child parent component (locatedActionOrdinal localOccurrence)
+        (scopedSubsequenceBirthCoverage name key world error value nameEq (selectedRegistrations candidate) (GenerationOwnedActor nameEq (selectedRegistrations candidate))
+        (scopedOwnedInsertionRegistered name key world error value nameEq (selectedRegistrations candidate)) 0 []
+        initial (locatedPreStart (selectedEpisode candidate)) initial (survivingBeforeEnd result) (traceBeforeOpening (selectedEpisode candidate))
+        (survivingBefore result) (beforeDeletion result) child parent component localOccurrence)))
+    (\localOccurrence => (scopedWholeBirthCenter name key world error value nameEq keyEq initial finalState global candidate result child parent component (locatedActionOrdinal localOccurrence)
+        (replace {p = \ordinal => ScopedBirthCoverage name key world error value (selectedRegistrations candidate) ordinal
+        (survivingBeforeEnd result) (survivingEpisodeEnd result) (survivingEpisode result) (generationSubsequenceSourceOrdinal (episodeDeletion result)) child parent component (locatedActionOrdinal localOccurrence)}
+        (fst (scopedDeletionScanCountOffsets name key world error value nameEq keyEq initial finalState global candidate result))
+        (scopedSubsequenceBirthCoverage name key world error value nameEq (selectedRegistrations candidate)
+        (EpisodeGenerationDeletedActor nameEq (selectedActor candidate) (selectedRegistrations candidate))
+        (scopedEpisodeInsertionRegistered name key world error value nameEq (selectedActor candidate) (selectedRegistrations candidate))
+        (selectedStartOrdinal candidate) (selectedStartLive candidate)
+        (locatedPreStart (selectedEpisode candidate)) (locatedAfter (selectedEpisode candidate)) (survivingBeforeEnd result) (survivingEpisodeEnd result)
+        (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+        (survivingEpisode result) (episodeDeletion result) child parent component localOccurrence))))
+    (\localOccurrence => (scopedWholeBirthAfter name key world error value nameEq keyEq initial finalState global candidate result child parent component (locatedActionOrdinal localOccurrence)
+        (replace {p = \ordinal => ScopedBirthCoverage name key world error value (selectedRegistrations candidate) ordinal
+        (survivingEpisodeEnd result) (survivingFinal result) (survivingAfter result) (generationSubsequenceSourceOrdinal (afterDeletion result)) child parent component (locatedActionOrdinal localOccurrence)}
+        (snd (scopedDeletionScanCountOffsets name key world error value nameEq keyEq initial finalState global candidate result))
+        (scopedSubsequenceBirthCoverage name key world error value nameEq (selectedRegistrations candidate) (GenerationOwnedActor nameEq (selectedRegistrations candidate))
+        (scopedOwnedInsertionRegistered name key world error value nameEq (selectedRegistrations candidate)) (episodeEndOrdinal result) (episodeEndLive result)
+        (locatedAfter (selectedEpisode candidate)) finalState (survivingEpisodeEnd result) (survivingFinal result) (traceAfterClosing (selectedEpisode candidate))
+        (survivingAfter result) (afterDeletion result) child parent component localOccurrence))))
+    occurrence (deletionWholeTraceOccurrenceClassification (traceBeforeOpening (selectedEpisode candidate)) (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate)) occurrence)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
