@@ -1815,6 +1815,21 @@ canonicalSortingSupportFromActiveRank name key world error value protocol nameEq
       nameEq selected (registry source) (registry target) (activeRankFiber rankView) (activeRankFound rankView)
       (controlPointwise controls selected)) targetMatches
 
+||| Full no-withdrawal control equivalence transports support truth; not the refuted deletion transfer.
+0 canonicalSortingSupportTrueForward :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (source, target : SystemState name key value world error) ->
+  RegistryProtocolRanked protocol nameEq source -> SupportMatchesActive nameEq keyEq source ->
+  SupportMatchesActive nameEq keyEq target -> ControlEquivalent name key world error value nameEq source target ->
+  (selected : name) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected source = True) ->
+  isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected target = True
+canonicalSortingSupportTrueForward name key world error value protocol nameEq keyEq source target ranked sourceMatches targetMatches controls selected supported =
+  canonicalSortingSupportFromActiveRank name key world error value protocol nameEq keyEq source target selected
+    (canonicalSupportedRank name key world error value protocol nameEq keyEq source selected supported sourceMatches ranked)
+    controls targetMatches
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
