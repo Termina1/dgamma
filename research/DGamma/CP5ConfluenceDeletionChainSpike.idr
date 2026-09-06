@@ -26412,6 +26412,23 @@ scopedDeletedOriginWitness sourceCount targetCount origin witness =
         (origin targetIndex) sourceIndex exact
         (\predecessor, tailExact => ScopedOrdinalDeletedLater (originPath witness predecessor targetIndex tailExact)))
 
+0 scopedKeptSubsequenceOriginExact :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (sourceFirst, sourceMiddle, sourceFinal, targetFirst, targetMiddle, targetFinal : SystemState name key value world error) ->
+  (sourceStep : Transition sourceFirst sourceMiddle) -> (source : Transitions sourceMiddle sourceFinal) ->
+  (targetStep : Transition targetFirst targetMiddle) -> (target : Transitions targetMiddle targetFinal) ->
+  (kept : Not (deletable ordinal live (transitionAction sourceStep))) -> (sameAction : (transitionAction sourceStep = transitionAction targetStep)) ->
+  (tail : GenerationActionSubsequence nameEq deletable (S ordinal) (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) source target) ->
+  (targetIndex : Nat) ->
+  (scopedKeptOrdinalOrigin (generationSubsequenceSourceOrdinal tail) targetIndex =
+    generationSubsequenceSourceOrdinal (KeepGenerationAction sourceStep source targetStep target kept sameAction tail) targetIndex)
+scopedKeptSubsequenceOriginExact name key world error value nameEq deletable ordinal live sourceFirst sourceMiddle sourceFinal targetFirst targetMiddle targetFinal
+  sourceStep source targetStep target kept sameAction tail Z = Refl
+scopedKeptSubsequenceOriginExact name key world error value nameEq deletable ordinal live sourceFirst sourceMiddle sourceFinal targetFirst targetMiddle targetFinal
+  sourceStep source targetStep target kept sameAction tail (S targetIndex) = Refl
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
