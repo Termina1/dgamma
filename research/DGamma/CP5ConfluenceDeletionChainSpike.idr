@@ -20236,6 +20236,19 @@ scopedPresentRootFalseAfterUpdate name key world error value nameEq actor source
 scopedPresentRootFalseAfterUpdate name key world error value nameEq actor source _ LocalDelete present found nonRoot =
   cong (maybe False (scopedParentRoot . fiberParent)) (DGamma.CP4DeletionSelectedOwn.lookupDeleteSelf @{nameEq} actor source)
 
+0 scopedInactiveRootFalseAfterAction :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (source, target : SystemState name key value world error) -> (tag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} action source = Just (tag, target)) ->
+  InactiveFiberAt name key world error value nameEq (actionOwner action) source ->
+  (maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner action) (registry source)) = False) ->
+  (maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner action) (registry target)) = False)
+scopedInactiveRootFalseAfterAction name key world error value nameEq keyEq action source target tag raw inactive nonRoot =
+  scopedPresentRootFalseAfterUpdate name key world error value nameEq (actionOwner action) (registry source) (registry target)
+    (systemRegistryUpdate (applyActionLocalUpdate nameEq keyEq action source target tag raw))
+    (MkFiber (inactiveComponent inactive) (inactiveParent inactive) (inactiveRetired inactive) (inactiveTable inactive) (Inactive (inactiveOutcome inactive)))
+    (inactiveFound inactive) nonRoot
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
