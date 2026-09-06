@@ -298,3 +298,18 @@ r172ReuseBundle = MkReplayInvariantBundle r172ReuseAligned r172ReuseDiscipline
     r172ReuseTrace r172ReuseAligned r172ReuseDiscipline r172ReuseInitialWellFormed r172ReuseInitialEmpty
     r172ReuseQuiet r172ReuseNoFailure r172ReuseTotal)
 
+public export
+0 r172ReuseNoUnload :
+  {before, afterState : SystemState Nat R45Key R45Value Unit String} ->
+  (transition : Transition before afterState) -> transitionTag transition = LUnloadTag ->
+  OccursIn transition r172ReuseTrace -> Void
+r172ReuseNoUnload _ Refl OccursHere impossible
+r172ReuseNoUnload _ Refl (OccursLater OccursHere) impossible
+r172ReuseNoUnload _ Refl (OccursLater (OccursLater OccursHere)) impossible
+r172ReuseNoUnload _ Refl (OccursLater (OccursLater (OccursLater OccursHere))) impossible
+r172ReuseNoUnload _ Refl (OccursLater (OccursLater (OccursLater (OccursLater OccursHere)))) impossible
+r172ReuseNoUnload _ Refl (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater OccursHere))))) impossible
+r172ReuseNoUnload _ Refl (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater OccursHere)))))) impossible
+r172ReuseNoUnload _ Refl (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater OccursHere))))))) impossible
+r172ReuseNoUnload transition tag (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater later)))))))) = case later of OccursHere impossible; OccursLater rest impossible
+
