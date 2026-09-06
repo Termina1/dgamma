@@ -84,3 +84,10 @@ uniqueSubsequenceSourceBound name key world error value (DeleteGenerationAction 
 uniqueBelowOffsetDistinct small bound later below same =
   LTImpliesNotGTE below (replace {p = \actual => LTE bound actual}
     (sym same) (lteAddRight {m = later} bound))
+
+0 uniqueShiftedBelowOffsetDistinct : (offset, small, bound, later : Nat) ->
+  (LT small bound) -> (Not (offset + small = (offset + bound) + later))
+uniqueShiftedBelowOffsetDistinct offset small bound later below same =
+  uniqueBelowOffsetDistinct small bound later below
+    (plusLeftCancel offset small (bound + later)
+      (trans same (sym (plusAssociative offset bound later))))
