@@ -27822,6 +27822,18 @@ scopedDeletionGenerationClassified name key world error value nameEq keyEq initi
     (fst (selectedRegisteredDuring candidate) generation member)
 
 ||| The remaining O9 inputs are honest external-input and bidirectional registration accounting certificates.
+||| Reindexing withdrawal metadata does not select a different occurrence.
+0 scopedAccountingTransportOrigin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (initial, sourceFinal, targetFinal : SystemState name key value world error) ->
+  (source : Transitions initial sourceFinal) -> (target : Transitions initial targetFinal) ->
+  (left, right : List (RegistrationGeneration name)) -> (same : (left = right)) ->
+  (accounting : CanonicalRegistrationCorrespondence source target left) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedGeneratedRegistration child parent component target) ->
+  (canonicalToOriginal (replace {p = CanonicalRegistrationCorrespondence source target} same accounting) birth = canonicalToOriginal accounting birth)
+scopedAccountingTransportOrigin name key world error value initial sourceFinal targetFinal source target left _ Refl accounting child parent component birth = Refl
+
 0 scopedDeletionStepFromAccounting :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
