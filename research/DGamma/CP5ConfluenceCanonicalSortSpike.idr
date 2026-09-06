@@ -2058,6 +2058,17 @@ canonicalWorkScanActorPrefix name key world error value nameEq selected (MoreTra
     No foreign => MkCanonicalWorkActorPrefix _ NoTransitions (MoreTransitions step rest)
       ActorLifecycleEnd Refl Refl (CanonicalWorkBoundaryBlocked step rest foreign)
 
+0 canonicalWorkNoLifecycleCons :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (isLifecycleAction (transitionAction step) = True -> Not (transitionActor step = selected)) ->
+  Dec (NoLifecycleBy selected rest) -> Dec (NoLifecycleBy selected (MoreTransitions step rest))
+canonicalWorkNoLifecycleCons name key world error value selected step rest excluded (Yes tail) =
+  Yes (NoLifecycleByStep step rest excluded tail)
+canonicalWorkNoLifecycleCons name key world error value selected step rest excluded (No notTail) =
+  No (\whole => case whole of NoLifecycleByStep head tail headExcluded tailExcluded => notTail tailExcluded)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
