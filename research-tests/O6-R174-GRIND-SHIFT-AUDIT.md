@@ -480,3 +480,39 @@ r174ProvisionAligned = AlignedStep {name = Nat} {key = ToyKey} {world = ToyRunti
     {value = ToyValue} {nameEq = %search} {keyEq = %search} _ _ _ _
     (AlignedEnd))))))))
 ```
+
+
+## Unit D complete — analysis only after ratified C stop
+
+Supervisor closes the second window at Q9 and ratifies the cost-bound stop.
+Root placement becomes an OWNER decision and remains paused, not refuted.
+Unit D ran after that explicit C stop with more than two hours remaining;
+no Idris declaration/compiler attempt was made during D. Its analysis is in
+`O6-R174-A8-CAUSE-SHARING-RECON.md` (completed about 22:06 UTC, well within
+its ≤60-minute target).
+
+It classifies the local O19 stop, other three CrossTrace holes, and each O21
+withdrawal/outside-both branch by reuse / A8 / neither. It states an exact
+UNCOMPILED existential raw-closing-maximum lemma sufficient to show the frozen
+CP3 raw premise satisfiable under uniqueness, without assuming or proving it,
+calling the frozen theorem, or casting generation-scoped evidence.
+
+Key new findings: uniqueness is retained in the actual O17 worklist and
+transported through actual deletion/adjacent derivations, but NOT stored in
+IndependentCanonicalSchedule and NOT an argument of the unchanged CrossTrace/
+O21 telescopes. O19's dependent-consumer early activation stop is a DIFFERENT
+guard from A8's two-provider declaration collision. O21 endpoint vestigiality
+does not imply prospective insertion-guard inertness.
+
+The owner-decision section compares canonical-form revision against model
+service-ownership/guard revision and rejects global never-reprovided keys as
+implementation-unfaithful. Independently inspected upstream Cordis is pinned to
+`c594d1aa4e901992f8836f9d747d5a640c9b9d58`: `reflect.ts:189–190` rejects occupied
+service-store entries, and the disposer deletes them at 198. “Live” is STORE
+occupancy, not simply Active; fiber uid retirement precedes asynchronous
+cleanup. A one-line retired-flag exception is therefore not justified by this
+inspection. This is an owner memo, not an adopted semantic change.
+
+Per supervisor ruling, remaining work until the 40-minute guard is restricted
+to surface-INDEPENDENT O17 producers. No root placement/hoisting, O19 body,
+O21 withdrawal, CP3 proof, or fourth Q9 attempt is authorized.
