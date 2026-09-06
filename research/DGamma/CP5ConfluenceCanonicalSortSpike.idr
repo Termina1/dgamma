@@ -2562,6 +2562,21 @@ canonicalWorkNextAfterAlien name key world error value nameEq selected alien res
         (\lifecycle, same => foreign (CanonicalWorkLifecycle lifecycle same)) noTail))) **
     LTESucc LTEZero)
 
+||| The last foreign action of a nonempty span, with source split and count
+||| correlation created simultaneously rather than recovered across states.
+record CanonicalWorkForeignSnoc
+  (name, key, world, error : Type) (value : key -> Type) (selected : name)
+  {first, finalState : SystemState name key value world error}
+  (trace : Transitions first finalState) where
+  constructor MkCanonicalWorkForeignSnoc
+  workSnocBefore : SystemState name key value world error
+  workSnocPrefix : Transitions first workSnocBefore
+  workSnocLast : Transition workSnocBefore finalState
+  0 workSnocPrefixForeign : CanonicalWorkForeignSpan selected workSnocPrefix
+  0 workSnocLastForeign : Not (CanonicalWorkActorStep selected workSnocLast)
+  0 workSnocDecomposition : appendTransitions workSnocPrefix (MoreTransitions workSnocLast NoTransitions) = trace
+  0 workSnocCount : transitionCount trace = S (transitionCount workSnocPrefix)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
