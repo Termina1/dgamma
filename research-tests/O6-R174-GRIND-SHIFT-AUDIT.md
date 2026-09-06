@@ -138,3 +138,59 @@ research/DGamma/<Spike>.idr`. Detached supervisor and logs/serialized ledger
 are `/tmp/dgamma-r174-{launch,check}.py` and `/tmp/dgamma-r174/ledger.jsonl`.
 Final seeded package, census, frozen hashes, ledger, source diff and no-staging
 checks will be appended before the final acceptance gate.
+
+## Supervisor-ratified bounded provision reconnaissance
+
+Supervisor ratifies `6065bb4` and authorizes at most SIX micro-units or 90 minutes,
+whichever first, inside Unit C: paper-clause reading, then actual input
+inhabitation, then (ONLY if both succeeded) the local obstruction. No O17 body,
+surface/hypothesis change or O19/O21/G31 work. Cap hit or dissolved concern
+returns to the producer chain; no independent extension of this fixture budget.
+
+### Step (1), exact paper/Idris clause map — move IS required literally
+
+Paper Theorem 73(1), extracted lines 2300–2305 (printed p.52):
+
+> "a sequence that takes the same orchestration steps in their original order,
+> those at a fiber the orchestrator inserted preceding every lifecycle step
+> and each of the rest following the step that registered the fiber it acts on"
+
+The paragraph using Lemma 71, lines 2322–2331:
+
+> "With a lifecycle step of the same fiber there is nothing to exchange, an
+> O-Insert of n already preceding every step of n and an O-Retire or O-Remove
+> of n applying only outside A, which takes no lifecycle step. Moving each to
+> the front in turn preserves their relative order. An orchestration step at a
+> fiber some activation registered cannot go to the front, its premises
+> requiring that fiber to be present, so it stays where the registration put it"
+
+For the candidate, root 2 is a fiber the orchestrator inserted. The first
+explicit clause therefore places its insertion before parent 0's L-Begin,
+and Definition 47 places the generated child 1 after that begin. The relative
+order phrase does NOT exempt root 2 from the explicit root-before-every-lifecycle
+requirement. Read as preserving all generated orchestration order too, it adds
+another constraint; it does not license leaving root 2 after the child removal.
+Root 2 is retired/outside A, so the quoted same-fiber exception does not remove
+the crossing past parent 0. Lemma 72 removes closing episodes and their births;
+parent 0 stays open, so that deletion does not remove its generated child here.
+
+`SortedClosingFreeTrace.sortedInputPlacement` uses
+`CanonicalInputPlacement.allRootInputsFirst`, whose `RootInputsBeforeLifecycle`
+(CP3:2037–2049) excludes every later `RootOrchestrationStep` after ANY lifecycle
+step. `RootInsertStep` is unconditional on support. Thus the explicit root-first
+clause is directly represented; this concern does not dissolve as merely an
+Idris requirement stricter than that literal paper clause. This is not a
+conclusion that the full paper theorem is refuted: input inhabitation is next.
+
+Input-totality check of the DEFINITIONS only: CP3:826–858 samples the actual
+actor's post-state Active table (`TransitionComponentTotal`), not hypothetical
+completion of an unused empty program. A child retired and removed without
+activation therefore has a vacuous Active obligation on this trace. To avoid
+confusing that research specialization with paper Definition 69's component
+condition, a concrete fixture may instead use the existing genuinely installing
+`CalculusChecks.providerComponent` for BOTH distinct names 1 and 2; neither is
+executed on the proposed trace. Single-source legality still has to be checked
+at EVERY actual insertion. No such fixture/premise proof has been compiled yet.
+The trace has EIGHT actions including initial parent insertion (seven after it).
+
+Step (1) is submitted at the required mid-shift gate BEFORE any step-(3) spend.
