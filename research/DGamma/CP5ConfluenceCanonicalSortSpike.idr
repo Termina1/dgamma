@@ -1668,6 +1668,15 @@ canonicalOriginalHoistedRootOccurrence name key world error value protocol nameE
     (trans (appendTransitionsAssociative prefixTrace (MoreTransitions left NoTransitions) (MoreTransitions right suffix))
       (originalDecomposition (rootHoistResult hoist)))
 
+0 canonicalSortingPrefixSnocCount :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {initial, before, afterState : SystemState name key value world error} ->
+  (prefixTrace : Transitions initial before) -> (transition : Transition before afterState) ->
+  transitionCount (appendTransitions prefixTrace (MoreTransitions transition NoTransitions)) = S (transitionCount prefixTrace)
+canonicalSortingPrefixSnocCount name key world error value NoTransitions transition = Refl
+canonicalSortingPrefixSnocCount name key world error value (MoreTransitions head rest) transition =
+  cong S (canonicalSortingPrefixSnocCount name key world error value rest transition)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
