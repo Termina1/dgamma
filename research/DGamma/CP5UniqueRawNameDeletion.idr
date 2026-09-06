@@ -152,3 +152,27 @@ uniqueDeletionEmbeddingInjective name key world error value result _ _ _ _
   (DeletionAfterEmbedding {survivingOrdinal = ri} {originalOrdinal = rs} rightExact) same =
   cong ((deletionSurvivingBeforeCount result + deletionSurvivingEpisodeCount result) +) (uniqueSubsequenceSourceInjective name key world error value (afterDeletion result) li ri ls leftExact
       (trans rightExact (cong Just (sym (plusLeftCancel (deletionOriginalBeforeCount result + deletionOriginalEpisodeCount result) ls rs same)))))
+
+0 uniqueInsertionsFromDeletionCertificate :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) -> (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq selected original) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (episodeStartOrdinal : Nat) -> (episodeStartLive : GenerationEnvironment name) ->
+  (result : DeletionResult name key world error value nameEq keyEq original selected episode registered episodeStartOrdinal episodeStartLive) ->
+  DeletionOperationalOccurrenceCertificate name key world error value nameEq keyEq original selected episode registered episodeStartOrdinal episodeStartLive result ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq (survivingTrace result)
+uniqueInsertionsFromDeletionCertificate name key world error value nameEq keyEq original selected episode registered episodeStartOrdinal episodeStartLive result certificate unique =
+  MkUniqueRawNameInsertions
+    (\actor, leftParent, rightParent, leftComponent, rightComponent, left, right =>
+      uniqueDeletionEmbeddingInjective name key world error value result
+        (locatedActionOrdinal left) (locatedActionOrdinal right)
+        (locatedActionOrdinal (replayActionOrigin (deletionOperationalCorrespondence certificate) left))
+        (locatedActionOrdinal (replayActionOrigin (deletionOperationalCorrespondence certificate) right))
+        (everySurvivingOccurrenceEmbedded certificate left) (everySurvivingOccurrenceEmbedded certificate right)
+        (uniqueInsertionPosition unique actor leftParent rightParent leftComponent rightComponent
+          (replayActionOrigin (deletionOperationalCorrespondence certificate) left)
+          (replayActionOrigin (deletionOperationalCorrespondence certificate) right)))
