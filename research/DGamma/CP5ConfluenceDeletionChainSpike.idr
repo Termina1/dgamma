@@ -30131,6 +30131,21 @@ scopedMappedMembership source target function predicate (head :: rest) produce w
   scopedElemConsEliminate target predicate (function head) (map function rest) (produce head Here)
     (scopedMappedMembership source target function predicate rest (\item, present => produce item (There present))) wanted member
 
+ScopedRegistrationRemoval :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (initial, sourceFinal, targetFinal : SystemState name key value world error) ->
+  (source : Transitions initial sourceFinal) -> (target : Transitions initial targetFinal) ->
+  (origin : ({child, parent : name} -> {component : Component key value world error} ->
+    LocatedGeneratedRegistration child parent component target -> LocatedGeneratedRegistration child parent component source)) ->
+  RegistrationGeneration name -> Type
+ScopedRegistrationRemoval name key world error value initial sourceFinal targetFinal source target origin generation =
+  (parent : name ** component : Component key value world error **
+    occurrence : LocatedGeneratedRegistration (generationName generation) parent component source **
+    ((registrationGeneration occurrence = generation),
+      (canonicalParent : name) -> (canonicalComponent : Component key value world error) ->
+      (canonicalOccurrence : LocatedGeneratedRegistration (generationName generation) canonicalParent canonicalComponent target) ->
+      (registrationGeneration (origin canonicalOccurrence) = generation) -> Void))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
