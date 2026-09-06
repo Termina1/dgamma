@@ -31,3 +31,20 @@ r174SortedProvisionPrefix = fromMaybe
     [OInsert 0 Root r174ProvisionParent, OInsert 2 Root providerComponent,
      ORetire 2, LBegin 0]
     (MkSystemState (MkToyRuntime False False) emptyContext))
+
+||| Step-(2b) executable guard observation, NOT the full-input obstruction.
+||| Retirement leaves the declared provision in the registry guard's domain.
+export
+0 r174SortedProvisionGuardChecks :
+  ((transitionCount (certifiedTrace r174SortedProvisionPrefix),
+    map (retired {name = Nat} {key = ToyKey} {value = ToyValue} {world = ToyRuntime} {error = String})
+      (lookupFiber {name = Nat} {key = ToyKey} {value = ToyValue} {world = ToyRuntime} {error = String}
+        2 (registry (certifiedFinal r174SortedProvisionPrefix))),
+    provisionsDisjointFrom {name = Nat} {key = ToyKey} {value = ToyValue} {world = ToyRuntime} {error = String}
+      (componentProvisions providerComponent)
+      (registryFibers {name = Nat} {key = ToyKey} {value = ToyValue} {world = ToyRuntime} {error = String}
+        (registry (certifiedFinal r174SortedProvisionPrefix))),
+    isJust (checkedApplyAction {name = Nat} {key = ToyKey} {value = ToyValue} {world = ToyRuntime} {error = String}
+      (OInsert 1 (ChildOf 0) providerComponent)
+      (certifiedFinal r174SortedProvisionPrefix))) = (4, Just True, False, False))
+r174SortedProvisionGuardChecks = Refl
