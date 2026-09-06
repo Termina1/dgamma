@@ -26465,6 +26465,17 @@ scopedGenerationOrdinalWitness name key world error value nameEq deletable ordin
       (scopedGenerationOrdinalWitness name key world error value nameEq deletable (S ordinal)
         (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) _ sourceFinal targetFirst targetFinal source target tail)
 
+||| Append constructs its shape and both offset-sensitive path inclusions simultaneously.
+record ScopedOrdinalAppendWitness
+  {leftSource, leftTarget, rightSource, rightTarget : Nat}
+  (left : ScopedOrdinalSpine leftSource leftTarget) (right : ScopedOrdinalSpine rightSource rightTarget) where
+  constructor MkScopedOrdinalAppendWitness
+  joinedOrdinalSpine : ScopedOrdinalSpine (leftSource + rightSource) (leftTarget + rightTarget)
+  0 appendLeftPath : (sourceIndex, targetIndex : Nat) -> ScopedOrdinalPath left sourceIndex targetIndex ->
+    ScopedOrdinalPath joinedOrdinalSpine sourceIndex targetIndex
+  0 appendRightPath : (sourceIndex, targetIndex : Nat) -> ScopedOrdinalPath right sourceIndex targetIndex ->
+    ScopedOrdinalPath joinedOrdinalSpine (leftSource + sourceIndex) (leftTarget + targetIndex)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
