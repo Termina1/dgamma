@@ -27042,6 +27042,19 @@ scopedSelectedBirthClosing name key world error value nameEq keyEq initial final
       (selectedClosingAfterChildBirth nameEq keyEq selected child component (locatedEpisode episode)
         (MkLocatedActionOccurrence before afterState beforeTrace transition later actionShape decomposition))
 
+0 scopedSelectedBirthGeneration :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (selected, child : name) -> (component : Component key value world error) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq selected global) ->
+  (birth : LocatedActionOccurrence (OInsert child (ChildOf selected) component)
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode))) (closedTransitions (locatedEpisode episode)))) ->
+  (registrationGeneration (locatedEpisodeChildRegistration nameEq keyEq global selected child component episode birth) =
+    MkRegistrationGeneration child (transitionCount (traceBeforeOpening episode) + locatedActionOrdinal birth))
+scopedSelectedBirthGeneration name key world error value nameEq keyEq initial finalState global selected child component episode
+  (MkLocatedActionOccurrence before afterState beforeTrace transition later actionShape decomposition) =
+    cong (MkRegistrationGeneration child) (transitionCountAppend (traceBeforeOpening episode) beforeTrace)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
