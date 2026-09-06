@@ -30344,6 +30344,23 @@ scopedComposedAccountingOrigin name key world error value initial sourceFinal mi
   trans (cong (canonicalToOriginal (sealedAccounting left)) (rightExact birth))
     (leftExact (replayGeneratedRegistrationOrigin rightOrigin birth))
 
+||| Endpoint and accounting are constructed together at the exact recursive operational origin.
+record ScopedDerivationAccounting
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error) (nameEq : DecEq name) (keyEq : DecEq key)
+  (initial, sourceFinal, targetFinal : SystemState name key value world error)
+  (source : Transitions initial sourceFinal) (target : Transitions initial targetFinal)
+  (derivation : ClosingFreeDeletionDerivation name key world error value protocol nameEq keyEq source target) where
+  constructor MkScopedDerivationAccounting
+  foldedEndpoint : CanonicalEndpointRelation name key world error value nameEq keyEq sourceFinal targetFinal
+  0 foldedHistoryExact : (endpointWithdrawnGenerations foldedEndpoint = closingFreeDeletionGenerations derivation)
+  foldedRegistrationAccounting : CanonicalRegistrationCorrespondence source target (endpointWithdrawnGenerations foldedEndpoint)
+  0 foldedOriginExact :
+    {child, parent : name} -> {component : Component key value world error} ->
+    (birth : LocatedGeneratedRegistration child parent component target) ->
+    (canonicalToOriginal foldedRegistrationAccounting birth =
+      replayGeneratedRegistrationOrigin (closingFreeDeletionOccurrenceFold derivation) birth)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
