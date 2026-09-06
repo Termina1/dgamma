@@ -19915,6 +19915,27 @@ scopedRootCellUse name key world error value observed conclusion consume truth =
   case scopedObservedRootCell name key world error value observed truth of
     (fiber ** evidence) => consume fiber (fst evidence) (snd evidence)
 
+0 scopedObservedRoot :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (action : Action name key value world error) -> (before, afterState : SystemState name key value world error) ->
+  (transition : Transition before afterState) -> (transitionAction transition = action) ->
+  (scopedRootObservation name key world error value nameEq action before = True) -> RootOrchestrationStep nameEq transition
+scopedObservedRoot name key world error value nameEq (OInsert actor parent component) before afterState transition same truth =
+  RootInsertStep (trans same (cong (\role => OInsert actor role component) (scopedRootParentExact name parent truth)))
+scopedObservedRoot name key world error value nameEq (ORetire actor) before afterState transition same truth =
+  scopedRootCellUse name key world error value
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor (registry before))
+    (RootOrchestrationStep nameEq transition) (\fiber, found, parent => RootRetireStep fiber found parent same) truth
+scopedObservedRoot name key world error value nameEq (ORemove actor) before afterState transition same truth =
+  scopedRootCellUse name key world error value
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor (registry before))
+    (RootOrchestrationStep nameEq transition) (\fiber, found, parent => RootRemoveStep fiber found parent same) truth
+scopedObservedRoot name key world error value nameEq (LBegin actor) before afterState transition same truth = absurd truth
+scopedObservedRoot name key world error value nameEq (LAdvance actor) before afterState transition same truth = absurd truth
+scopedObservedRoot name key world error value nameEq (LDivert actor) before afterState transition same truth = absurd truth
+scopedObservedRoot name key world error value nameEq (LLeave actor) before afterState transition same truth = absurd truth
+scopedObservedRoot name key world error value nameEq (LUnload actor) before afterState transition same truth = absurd truth
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
