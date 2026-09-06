@@ -141,3 +141,14 @@ public export
   TransitionComponentTotal r45NameEq r45KeyEq transition
 r172ReuseAnyTransitionTotal transition fiber found active key occurrence = case key of _ impossible
 
+public export
+0 r172ReuseTotal : TraceComponentsTotal r45NameEq r45KeyEq r172ReuseTrace
+r172ReuseTotal = TraceComponentsTotalStep r45ParentInsert _ (r172ReuseAnyTransitionTotal r45ParentInsert)
+  (TraceComponentsTotalStep r45Begin _ (r172ReuseAnyTransitionTotal r45Begin)
+    (TraceComponentsTotalStep r45ChildInsert _ (r172ReuseAnyTransitionTotal r45ChildInsert)
+      (TraceComponentsTotalStep r45SourceRetire _ (r172ReuseAnyTransitionTotal r45SourceRetire)
+        (TraceComponentsTotalStep r172ReuseRemove _ (r172ReuseAnyTransitionTotal r172ReuseRemove)
+          (TraceComponentsTotalStep r172ReuseRoot _ (r172ReuseAnyTransitionTotal r172ReuseRoot)
+            (TraceComponentsTotalStep r172ReuseRetire _ (r172ReuseAnyTransitionTotal r172ReuseRetire)
+              (TraceComponentsTotalStep r172ReuseFinish _ (r172ReuseAnyTransitionTotal r172ReuseFinish) TraceComponentsTotalEnd)))))))
+
