@@ -30030,6 +30030,19 @@ scopedWithdrawalThroughControls name key world error value nameEq keyEq actor so
 scopedWithdrawalThroughControls name key world error value nameEq keyEq actor source middle target effects controls (NameAlreadyAbsent absent finalAbsent) =
   NameAlreadyAbsent (scopedControlAbsentRight name key world error value _ _ (fiberControlMaybeSymmetric controls) absent) finalAbsent
 
+0 scopedWithdrawalRightAt :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (source, middle, target : SystemState name key value world error) ->
+  (left : CanonicalEndpointRelation name key world error value nameEq keyEq source middle) ->
+  Dec (Elem actor (endpointWithdrawnNames left)) ->
+  WithdrawnNameResult nameEq actor middle target -> WithdrawnNameResult nameEq actor source target
+scopedWithdrawalRightAt name key world error value nameEq keyEq actor source middle target left (Yes member) withdrawn =
+  scopedWithdrawalExtend name key world error value nameEq actor source middle target (endpointNamesWithdrawn left actor member)
+    (scopedWithdrawnAbsent name key world error value nameEq actor middle target withdrawn)
+scopedWithdrawalRightAt name key world error value nameEq keyEq actor source middle target left (No outside) withdrawn =
+  scopedWithdrawalThroughControls name key world error value nameEq keyEq actor source middle target
+    (endpointEffectsEquivalent left) (endpointControlsOutside left actor outside) withdrawn
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
