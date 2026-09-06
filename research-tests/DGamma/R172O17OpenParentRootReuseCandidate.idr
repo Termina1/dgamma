@@ -386,3 +386,11 @@ public export
 r172ReuseMovedRootImpossible _ rest (AlignedStep action tag checked _ later) same =
   case same of Refl => case trans (sym r172ReuseRootBeforeRemoveRejected) checked of Refl impossible
 
+||| Exact local wall only: no conclusion about every finite sorting derivation is asserted.
+public export
+0 r172ReuseRemoveRootDiamondImpossible :
+  LocalRelationalDiamond Nat R45Key Unit String R45Value r45NameEq r45KeyEq r172ReuseRemove r172ReuseRoot -> Void
+r172ReuseRemoveRootDiamondImpossible diamond = r172ReuseMovedRootImpossible
+  (movedRight diamond) (MoreTransitions (movedLeft diamond) NoTransitions)
+  (movedPairAligned diamond) (movedRightAction diamond)
+
