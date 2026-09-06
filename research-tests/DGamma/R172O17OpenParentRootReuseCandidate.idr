@@ -110,3 +110,7 @@ r172ReuseDiscipline = RegistrationDisciplineStep r45ParentInsert _ (0 ** Refl)
             (RegistrationDisciplineStep r172ReuseRetire _ ()
               (RegistrationDisciplineStep r172ReuseFinish _ () RegistrationDisciplineEnd)))))))
 
+public export
+0 r172ReuseInitialWellFormed : registryWellFormed @{r45NameEq} @{r45KeyEq} r45Initial = True
+r172ReuseInitialWellFormed = Refl
+
