@@ -1771,6 +1771,14 @@ canonicalSortingFiberActiveSame name key world error value
     leftLifecycle rightLifecycle parentSame retiredSame lifecycleSame) =
       canonicalSortingLifecycleActiveSame name key world error value lifecycleSame
 
+0 canonicalSortingFiberComponentSame :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {left, right : Fiber name key value world error} -> FiberControlRelated left right ->
+  fiberComponent left = fiberComponent right
+canonicalSortingFiberComponentSame name key world error value
+  (FibersControlRelated leftParent rightParent leftRetired rightRetired leftTable rightTable
+    leftLifecycle rightLifecycle parentSame retiredSame lifecycleSame) = Refl
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
