@@ -625,9 +625,10 @@ public export
     r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
   (birth : LocatedGeneratedRegistration 1 0 r45Child (sortedTrace sorted)) ->
   LT (locatedActionOrdinal (r172ReuseConclusionParentBegin sorted birth)) (registrationOrdinal birth)
-r172ReuseConclusionBeginBeforeChild sorted birth =
-  rewrite r172ReuseExtendLocatedOrdinal (beforeRegistration birth)
+r172ReuseConclusionBeginBeforeChild sorted birth = replace
+  {p = \ordinal => LT ordinal (registrationOrdinal birth)}
+  (sym (r172ReuseExtendLocatedOrdinal (beforeRegistration birth)
     (MoreTransitions (registrationTransition birth) (afterRegistration birth))
     (sortedTrace sorted) (registrationDecomposition birth)
-    (r172ReuseLastOpeningLocated (r172ReuseConclusionParentOpening sorted birth)) in
-      r172ReuseLastOpeningBeforeEnd (r172ReuseConclusionParentOpening sorted birth)
+    (r172ReuseLastOpeningLocated (r172ReuseConclusionParentOpening sorted birth))))
+  (r172ReuseLastOpeningBeforeEnd (r172ReuseConclusionParentOpening sorted birth))
