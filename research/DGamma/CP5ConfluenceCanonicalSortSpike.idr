@@ -1050,6 +1050,19 @@ canonicalRankInsert : (item : Type) -> (itemEq : DecEq item) -> (rank : item -> 
 canonicalRankInsert item itemEq rank inserted rest ordered unique =
   canonicalRankInsertSeen item rank inserted rest ordered unique (isElem @{itemEq} inserted rest)
 
+||| Relate the newly inserted output to the original unsorted source, at construction.
+canonicalRankSortCompose : (item : Type) -> (rank : item -> Nat) ->
+  (head : item) -> (rest : List item) -> (tailResult : CanonicalRankSortResult item rank rest) ->
+  CanonicalRankSortResult item rank (head :: rankSortedItems tailResult) ->
+  CanonicalRankSortResult item rank (head :: rest)
+canonicalRankSortCompose item rank head rest tailResult inserted =
+  MkCanonicalRankSortResult (rankSortedItems inserted) (rankSortedOrdered inserted) (rankSortedUnique inserted)
+    (\selected, present => rankSortedForward inserted selected
+      (canonicalRankConsMembership item head rest (rankSortedItems tailResult)
+        (rankSortedForward tailResult) selected present))
+    (\selected, present => canonicalRankConsMembership item head (rankSortedItems tailResult) rest
+      (rankSortedBackward tailResult) selected (rankSortedBackward inserted selected present))
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
