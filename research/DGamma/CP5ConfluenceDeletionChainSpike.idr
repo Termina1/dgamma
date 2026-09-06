@@ -29494,6 +29494,15 @@ scopedDeletionOriginsOrdered name key world error value nameEq keyEq initial fin
       (deletionWholeOrdinalEmbedding (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
         (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result right))) later
 
+0 scopedActionPositionOccurs :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, finalState : SystemState name key value world error) -> (trace : Transitions first finalState) ->
+  (ordinal : Nat) -> (action : Action name key value world error) ->
+  ScopedActionAt name key world error value trace ordinal action -> ActionOccurs action trace
+scopedActionPositionOccurs name key world error value first finalState _ _ _ (ScopedActionHere transition rest) = ActionOccursHere transition rest Refl
+scopedActionPositionOccurs name key world error value first finalState _ _ action (ScopedActionLater {ordinal} transition rest later) =
+  ActionOccursLater transition rest (scopedActionPositionOccurs name key world error value _ finalState rest ordinal action later)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
