@@ -29599,6 +29599,34 @@ scopedAfterBirthOccurrence name key world error value initial finalState global 
 scopedGeneratedAfterActionOccurrence name key world error value initial finalState global child parent component
   (MkLocatedActionOccurrence before afterState leading transition rest same decomposition) action occurs = occurs
 
+0 scopedDeletionClassifiedOriginAt :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (segments : ScopedDeletionOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedGeneratedRegistration child parent component (survivingTrace result)) ->
+  ScopedAfterBirthOccurrence name key world error value initial (survivingFinal result) (survivingTrace result) child parent component birth (LUnload parent) ->
+  (generation : RegistrationGeneration name ** DeletedGenerationClassification name key world error value nameEq global generation)
+scopedDeletionClassifiedOriginAt name key world error value nameEq keyEq initial finalState global candidate result segments child parent component birth closing =
+  (registrationGeneration (deletionActionOccurrenceToGenerated (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+          (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result (generatedRegistrationActionOccurrence birth)))) **
+    MkDeletedGenerationClassification parent component (deletionActionOccurrenceToGenerated (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+          (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result (generatedRegistrationActionOccurrence birth)))) Refl
+      (scopedGeneratedAfterActionOccurrence name key world error value initial finalState global child parent component (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+          (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result (generatedRegistrationActionOccurrence birth))) (LUnload parent)
+        (scopedLocatedActionAfter name key world error value initial finalState global (OInsert child (ChildOf parent) component) (LUnload parent)
+          (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+          (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result (generatedRegistrationActionOccurrence birth))) (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+          (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result (afterBirthOccurrence closing)))
+          (scopedDeletionOriginsOrdered name key world error value nameEq keyEq initial finalState global candidate result segments
+            (OInsert child (ChildOf parent) component) (LUnload parent) (generatedRegistrationActionOccurrence birth) (afterBirthOccurrence closing)
+            (replace {p = \ordinal => LT ordinal (locatedActionOrdinal (afterBirthOccurrence closing))}
+              (sym (scopedGeneratedActionOrdinal name key world error value initial (survivingFinal result) (survivingTrace result) child parent component birth))
+              (afterBirthStrict closing))))))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
