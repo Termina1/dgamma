@@ -27534,6 +27534,14 @@ scopedWholeBirthCoverageSegments name key world error value nameEq keyEq initial
         (survivingAfter result) (afterDeletion result) child parent component localOccurrence))))
     occurrence (deletionWholeTraceOccurrenceClassification (traceBeforeOpening (selectedEpisode candidate)) (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate)) occurrence)
 
+0 scopedLocatedPredicateTransport :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, finalState : SystemState name key value world error) -> (source, target : Transitions first finalState) ->
+  (source = target) -> (action : Action name key value world error) -> (predicate : Nat -> Type) ->
+  ((occurrence : LocatedActionOccurrence action source) -> predicate (locatedActionOrdinal occurrence)) ->
+  (occurrence : LocatedActionOccurrence action target) -> predicate (locatedActionOrdinal occurrence)
+scopedLocatedPredicateTransport name key world error value first finalState source _ Refl action predicate continue occurrence = continue occurrence
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
