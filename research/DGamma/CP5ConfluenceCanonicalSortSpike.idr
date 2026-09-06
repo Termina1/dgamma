@@ -3460,6 +3460,19 @@ canonicalWorkRightOrdinalDecreases name key world error value nameEq keyEq proto
     replace {p = \ordinal => LT (transitionCount prefixTrace) ordinal}
       (sym (canonicalWorkSnocTransitionCount name key world error value prefixTrace left)) reflexive
 
+||| Preserve installed-at-every-boundary evidence on an actual suffix.
+0 canonicalWorkInstalledAppendRight :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (earlier : Transitions first middle) -> (later : Transitions middle finalState) ->
+  InstalledTrace name key world error value nameEq keyEq selected (appendTransitions earlier later) ->
+  InstalledTrace name key world error value nameEq keyEq selected later
+canonicalWorkInstalledAppendRight name key world error value nameEq keyEq selected NoTransitions later installed = installed
+canonicalWorkInstalledAppendRight name key world error value nameEq keyEq selected (MoreTransitions _ tail) later
+  (InstalledStep action tag checked _ installed tailInstalled) =
+    canonicalWorkInstalledAppendRight name key world error value nameEq keyEq selected tail later tailInstalled
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
