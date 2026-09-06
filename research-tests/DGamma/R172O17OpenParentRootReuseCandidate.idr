@@ -8,6 +8,7 @@ import DGamma.Unified
 import DGamma.CP3
 import DGamma.CP3Support
 import DGamma.CP4Support
+import DGamma.CP4DeletionRetainedAction
 import DGamma.CP4TerminalRecovery
 import DGamma.CP4RecoveryModelTrace
 import DGamma.CP4RecoveryEffectRespect
@@ -617,3 +618,16 @@ public export
   (occurrence : LocatedActionOccurrence action left) ->
   locatedActionOrdinal (r172ReuseExtendLocatedRight left right global split occurrence) = locatedActionOrdinal occurrence
 r172ReuseExtendLocatedOrdinal left right global split (MkLocatedActionOccurrence before after earlier transition later same located) = Refl
+
+public export
+0 r172ReuseConclusionBeginBeforeChild :
+  (sorted : SortedClosingFreeTrace Nat R45Key Unit String R45Value
+    r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
+  (birth : LocatedGeneratedRegistration 1 0 r45Child (sortedTrace sorted)) ->
+  LT (locatedActionOrdinal (r172ReuseConclusionParentBegin sorted birth)) (registrationOrdinal birth)
+r172ReuseConclusionBeginBeforeChild sorted birth =
+  rewrite r172ReuseExtendLocatedOrdinal (beforeRegistration birth)
+    (MoreTransitions (registrationTransition birth) (afterRegistration birth))
+    (sortedTrace sorted) (registrationDecomposition birth)
+    (r172ReuseLastOpeningLocated (r172ReuseConclusionParentOpening sorted birth)) in
+      r172ReuseLastOpeningBeforeEnd (r172ReuseConclusionParentOpening sorted birth)
