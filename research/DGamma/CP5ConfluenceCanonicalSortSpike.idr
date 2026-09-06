@@ -6,6 +6,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP3Support
 import DGamma.CP4TerminalRecovery
+import DGamma.CP4DeletionRetainedAction
 import DGamma.CP4RecoveryModelTrace
 import DGamma.CP4DeletionRelationalBoundary
 import DGamma.CP4DeletionSelectedForeignControlCore
@@ -2873,6 +2874,24 @@ canonicalWorkObservedActivationInstalled name key world error value nameEq keyEq
   replace {p = \actor => installedAt {name = name} {key = key} {value = value}
     {world = world} {error = error} @{nameEq} actor afterState = True} exact
     (canonicalWorkActivationEndsInstalled name key world error value nameEq keyEq step aligned activation)
+
+||| Actual checked insertion is absent, hence uninstalled, at its source.
+||| The producer uses the public lookup observation theorem, not a second case tree.
+0 canonicalWorkCheckedInsertUninstalled :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, afterState : SystemState name key value world error) ->
+  (child : name) -> (parent : Parent name) ->
+  (component : Component key value world error) -> (tag : RuleTag) ->
+  (checkedApplyAction @{nameEq} @{keyEq} (OInsert child parent component) first = Just (tag, afterState)) ->
+  (installedAt {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} child first = False)
+canonicalWorkCheckedInsertUninstalled name key world error value nameEq keyEq first afterState child parent component tag checked =
+  installedAtMissing {name = name} {key = key} {value = value} {world = world} {error = error}
+    nameEq child first Nothing
+    (successfulInsertAbsent {name = name} {key = key} {value = value} {world = world} {error = error}
+      nameEq keyEq child parent component first afterState tag
+      (checkedActionProjects nameEq keyEq (OInsert child parent component) first afterState tag checked)) Refl
 
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
