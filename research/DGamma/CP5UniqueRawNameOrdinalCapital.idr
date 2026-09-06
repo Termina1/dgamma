@@ -45,4 +45,3 @@ uniqueAdjacentOrdinalInjective point _ _ _ _ (AdjacentSuffixOrdinal leftAfter) A
   void (adjacentMovedRightNotSuffix (replace {p = LTE (S (S point))} same leftAfter))
 uniqueAdjacentOrdinalInjective point _ _ _ _ (AdjacentSuffixOrdinal leftAfter) (AdjacentSuffixOrdinal rightAfter) same =
   same
-
