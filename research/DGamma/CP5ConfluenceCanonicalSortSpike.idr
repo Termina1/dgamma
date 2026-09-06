@@ -3158,6 +3158,23 @@ canonicalWorkInstalledRejectsUnload name key world error value nameEq keyEq sele
   (InstalledStep action tag checked rest installed tail) (ActionOccursLater _ _ later) =
     canonicalWorkInstalledRejectsUnload name key world error value nameEq keyEq selected rest tail later
 
+||| Structurally localize an action occurrence to one actual appended segment.
+0 canonicalWorkActionOccursAppendSplit :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (action : Action name key value world error) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  ActionOccurs action (appendTransitions left right) ->
+  Either (ActionOccurs action left) (ActionOccurs action right)
+canonicalWorkActionOccursAppendSplit name key world error value action NoTransitions right occurs = Right occurs
+canonicalWorkActionOccursAppendSplit name key world error value action (MoreTransitions head tail) right
+  (ActionOccursHere _ _ same) = Left (ActionOccursHere head tail same)
+canonicalWorkActionOccursAppendSplit name key world error value action (MoreTransitions head tail) right
+  (ActionOccursLater _ _ later) =
+    case canonicalWorkActionOccursAppendSplit name key world error value action tail right later of
+      Left before => Left (ActionOccursLater head tail before)
+      Right after => Right after
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
