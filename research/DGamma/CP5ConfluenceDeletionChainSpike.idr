@@ -29552,6 +29552,15 @@ scopedLocatedActionAfter name key world error value initial finalState global fi
     (replace {p = \source => ScopedActionAt name key world error value source (locatedActionOrdinal later) laterAction}
       (sym (actionOccurrenceDecomposition first)) (scopedLocatedActionAt name key world error value initial finalState global laterAction later)) ordered
 
+0 scopedLocateActionOccurs :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, finalState : SystemState name key value world error) -> (trace : Transitions first finalState) ->
+  (action : Action name key value world error) -> ActionOccurs action trace -> LocatedActionOccurrence action trace
+scopedLocateActionOccurs name key world error value first finalState _ action (ActionOccursHere transition rest same) =
+  MkLocatedActionOccurrence first _ NoTransitions transition rest same Refl
+scopedLocateActionOccurs name key world error value first finalState _ action (ActionOccursLater transition rest later) =
+  prependLocatedActionOccurrence transition rest (scopedLocateActionOccurs name key world error value _ finalState rest action later)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
