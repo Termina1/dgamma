@@ -26749,6 +26749,20 @@ scopedEnrichedOperationalCapital name key world error value protocol nameEq keyE
     (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds aligned)
     (scopedEnrichedReadinessSeals name key world error value protocol nameEq keyEq initial finalState global candidate folds aligned)
 
+||| Endpoint omissions are a finite census of current deleted births, not every reused raw name.
+record ScopedWithdrawalCensus
+  (name, key, world, error : Type) (value : key -> Type) (nameEq : DecEq name)
+  (registered : List (RegistrationGeneration name)) (live : GenerationEnvironment name)
+  (original, survivor : SystemState name key value world error) where
+  constructor MkScopedWithdrawalCensus
+  withdrawalNames : List name
+  0 withdrawalNamesSound : RawNamesWithdrawn nameEq withdrawalNames original survivor
+  0 withdrawalNamesJustified : (actor : name) -> Elem actor withdrawalNames ->
+    (generation : RegistrationGeneration name ** (Elem generation registered, (generationName generation = actor)))
+  0 withdrawalCurrentCovered : (generation : RegistrationGeneration name) -> Elem generation registered ->
+    (lookupCurrentGeneration @{nameEq} (generationName generation) live = Just generation) ->
+    Elem (generationName generation) withdrawalNames
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
