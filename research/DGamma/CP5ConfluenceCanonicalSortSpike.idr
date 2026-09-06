@@ -3419,6 +3419,25 @@ canonicalWorkOriginalRightLocation name key world error value nameEq keyEq proto
       (trans (appendTransitionsAssociative prefixTrace (MoreTransitions left NoTransitions)
         (MoreTransitions right suffix)) (originalDecomposition result))
 
+||| Locate that right action at the actual moved node in the returned trace.
+||| The label and decomposition come from the same diamond and sealed result.
+0 canonicalWorkMovedRightLocation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) -> (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq original prefixTrace left right suffix diamond) ->
+  LocatedActionOccurrence (transitionAction right) (swappedTrace result)
+canonicalWorkMovedRightLocation name key world error value nameEq keyEq protocol {pairFirst}
+  original prefixTrace left right suffix diamond result =
+    MkLocatedActionOccurrence pairFirst (swappedMiddle diamond) prefixTrace (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) (replayedSuffix result)) (movedRightAction diamond)
+      (sym (swappedDecomposition result))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
