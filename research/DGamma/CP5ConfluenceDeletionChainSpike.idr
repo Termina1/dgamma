@@ -19986,6 +19986,15 @@ scopedExternalKeep name key world error value nameEq sourceFirst sourceMiddle so
       sourceStep sourceTail targetStep targetTail same seal tail
       (scopedRootObservation name key world error value nameEq (transitionAction sourceStep) sourceFirst) Refl
 
+||| Deleted local producers retain their actual non-root observation.
+record ScopedDeletedRootSeal
+  (name, key, world, error : Type) (value : key -> Type) (nameEq : DecEq name)
+  (sourceFirst, sourceAfter : SystemState name key value world error)
+  (sourceStep : Transition sourceFirst sourceAfter) where
+  constructor MkScopedDeletedRootSeal
+  0 deletedRootExact :
+    (scopedRootObservation name key world error value nameEq (transitionAction sourceStep) sourceFirst = False)
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
