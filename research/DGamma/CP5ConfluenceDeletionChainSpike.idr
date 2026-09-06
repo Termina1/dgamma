@@ -26438,6 +26438,33 @@ scopedOrdinalOriginTransport sourceCount targetCount sourceOrigin targetOrigin s
   MkScopedOrdinalOriginWitness (originSpine witness)
     (\sourceIndex, targetIndex, exact => originPath witness sourceIndex targetIndex (trans (sameOrigin targetIndex) exact))
 
+||| Actual generation subsequences produce exact numeric spines and origin paths in one recursion.
+0 scopedGenerationOrdinalWitness :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (sourceFirst, sourceFinal, targetFirst, targetFinal : SystemState name key value world error) ->
+  (source : Transitions sourceFirst sourceFinal) -> (target : Transitions targetFirst targetFinal) ->
+  (subsequence : GenerationActionSubsequence nameEq deletable ordinal live source target) ->
+  ScopedOrdinalOriginWitness (transitionCount source) (transitionCount target) (generationSubsequenceSourceOrdinal subsequence)
+scopedGenerationOrdinalWitness name key world error value nameEq deletable ordinal live _ _ _ _ _ _ GenerationActionSubsequenceEnd =
+  MkScopedOrdinalOriginWitness ScopedOrdinalEnd (\sourceIndex, targetIndex, exact => void (nothingIsNotJust exact))
+scopedGenerationOrdinalWitness name key world error value nameEq deletable ordinal live sourceFirst sourceFinal targetFirst targetFinal _ _
+  (KeepGenerationAction sourceStep source targetStep target kept sameAction tail) =
+    scopedOrdinalOriginTransport (S (transitionCount source)) (S (transitionCount target))
+      (scopedKeptOrdinalOrigin (generationSubsequenceSourceOrdinal tail))
+      (generationSubsequenceSourceOrdinal (KeepGenerationAction sourceStep source targetStep target kept sameAction tail))
+      (scopedKeptSubsequenceOriginExact name key world error value nameEq deletable ordinal live sourceFirst _ sourceFinal targetFirst _ targetFinal
+        sourceStep source targetStep target kept sameAction tail)
+      (scopedKeptOriginWitness (transitionCount source) (transitionCount target) (generationSubsequenceSourceOrdinal tail)
+        (scopedGenerationOrdinalWitness name key world error value nameEq deletable (S ordinal)
+          (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) _ sourceFinal _ targetFinal source target tail))
+scopedGenerationOrdinalWitness name key world error value nameEq deletable ordinal live sourceFirst sourceFinal targetFirst targetFinal _ target
+  (DeleteGenerationAction sourceStep source deleted tail) =
+    scopedDeletedOriginWitness (transitionCount source) (transitionCount target) (generationSubsequenceSourceOrdinal tail)
+      (scopedGenerationOrdinalWitness name key world error value nameEq deletable (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) _ sourceFinal targetFirst targetFinal source target tail)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
