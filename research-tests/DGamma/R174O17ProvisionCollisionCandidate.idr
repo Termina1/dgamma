@@ -51,3 +51,16 @@ r174ProvisionExecution = fromMaybe
      OInsert 1 (ChildOf 0) providerComponent, ORetire 1, ORemove 1,
      OInsert 2 Root providerComponent, ORetire 2, LAdvance 0]
     (MkSystemState (MkToyRuntime False False) emptyContext))
+
+||| Genuine checked execution, NOT the empty fallback. Every insertion passed
+||| the live single-source guard; final support is the open parent alone.
+export
+0 r174ProvisionExecutionChecks :
+  ((transitionCount (certifiedTrace r174ProvisionExecution),
+    quiet {name = Nat} {key = ToyKey} {value = ToyValue} {world = ToyRuntime} {error = String}
+      (certifiedFinal r174ProvisionExecution),
+    noFailedFibers (certifiedFinal r174ProvisionExecution),
+    allFibersTotalOnProvision (certifiedFinal r174ProvisionExecution),
+    supportSet {name = Nat} {key = ToyKey} {value = ToyValue} {world = ToyRuntime} {error = String}
+      (certifiedFinal r174ProvisionExecution)) = (8, True, True, True, [0]))
+r174ProvisionExecutionChecks = Refl
