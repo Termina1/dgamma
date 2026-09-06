@@ -1171,6 +1171,13 @@ canonicalListMemberSoundStep item itemEq selected head rest sound (No different)
   canonicalListMemberSoundNo item itemEq selected head rest different
     (canonicalListMemberKnownNo item itemEq selected head rest different observed) sound present
 
+0 canonicalListMemberSound : (item : Type) -> (itemEq : DecEq item) ->
+  (selected : item) -> (values : List item) -> Elem selected values -> listMember @{itemEq} selected values = True
+canonicalListMemberSound item itemEq selected [] present = absurd present
+canonicalListMemberSound item itemEq selected (head :: rest) present =
+  canonicalListMemberSoundStep item itemEq selected head rest
+    (canonicalListMemberSound item itemEq selected rest) (decEq @{itemEq} selected head) Refl present
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
