@@ -2464,6 +2464,25 @@ canonicalWorkOpenBlockRange name key world error value nameEq keyEq selected tra
     (MoreTransitions (Fired {before} {afterState} %search keyEq (LBegin 0) LBeginTag checked) NoTransitions))) = 0)
 canonicalWorkInternalSingleStepReduction key world error value keyEq before afterState checked = (Refl, Refl)
 
+||| The grouping cursor must skip neither an owned lifecycle action nor a
+||| registration yielded by this actor. NoLifecycleBy alone would be too weak.
+data CanonicalWorkForeignSpan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (selected : name) -> Transitions first finalState -> Type where
+  CanonicalWorkForeignEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {state : SystemState name key value world error} -> {selected : name} ->
+    CanonicalWorkForeignSpan selected (NoTransitions {state})
+  CanonicalWorkForeignStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    {selected : name} -> (step : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    (0 excluded : Not (CanonicalWorkActorStep selected step)) ->
+    CanonicalWorkForeignSpan selected rest ->
+    CanonicalWorkForeignSpan selected (MoreTransitions step rest)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
