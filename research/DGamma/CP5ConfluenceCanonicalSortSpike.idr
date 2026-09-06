@@ -922,6 +922,10 @@ canonicalRanksTail item rank head rest (CanonicalRanksCons head rest below order
   (selected : item) -> Elem selected rest -> LTE (rank head) (rank selected)
 canonicalRanksHeadBelow item rank head rest (CanonicalRanksCons head rest below ordered) = below
 
+0 canonicalUniqueTail : (item : Type) -> (head : item) -> (rest : List item) ->
+  UniqueKeys (head :: rest) -> UniqueKeys rest
+canonicalUniqueTail item head rest (UniqueCons fresh unique) = unique
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
