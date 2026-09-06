@@ -20282,6 +20282,29 @@ scopedOwnedRootAfterAction name key world error value nameEq keyEq registered or
 scopedOwnedRootAfterAction name key world error value nameEq keyEq registered ordinal live unique (LUnload actor) source target tag raw births inactive roots generation member current =
   scopedInactiveRootFalseAfterAction name key world error value nameEq keyEq (LUnload actor) source target tag raw (inactive actor generation member current) (roots actor generation member current)
 
+0 scopedRootExclusionStepAt :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  GenerationEnvironmentNamesUnique live -> (action : Action name key value world error) ->
+  (source, target : SystemState name key value world error) -> (tag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} action source = Just (tag, target)) ->
+  ((child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+    (action = OInsert child parent component) -> Elem (MkRegistrationGeneration child ordinal) registered -> (scopedParentRoot parent = False)) ->
+  CurrentRegisteredInactiveFibers name key world error value nameEq registered live source ->
+  ScopedCurrentRootExclusion name key world error value nameEq registered live source ->
+  (actor : name) -> (generation : RegistrationGeneration name) -> Elem generation registered ->
+  (lookupCurrentGeneration @{nameEq} actor (advanceGenerationEnvironment @{nameEq} ordinal action live) = Just generation) ->
+  Dec (actor = actionOwner action) ->
+  (maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor (registry target)) = False)
+scopedRootExclusionStepAt name key world error value nameEq keyEq registered ordinal live unique action source target tag raw births inactive roots actor generation member current (Yes same) =
+  replace {p = \observed => ((lookupCurrentGeneration @{nameEq} observed (advanceGenerationEnvironment @{nameEq} ordinal action live) = Just generation) ->
+    (maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} observed (registry target)) = False))}
+    (sym same) (scopedOwnedRootAfterAction name key world error value nameEq keyEq registered ordinal live unique action source target tag raw births inactive roots generation member) current
+scopedRootExclusionStepAt name key world error value nameEq keyEq registered ordinal live unique action source target tag raw births inactive roots actor generation member current (No distinct) =
+  trans (cong (maybe False (scopedParentRoot . fiberParent))
+    (systemLocalUpdateForeign nameEq actor (actionOwner action) distinct source target (applyActionLocalUpdate nameEq keyEq action source target tag raw)))
+    (roots actor generation member (trans (sym (lookupAdvanceGenerationOther nameEq ordinal action actor distinct live)) current))
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
