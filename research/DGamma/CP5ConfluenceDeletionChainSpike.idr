@@ -29788,6 +29788,16 @@ scopedHistoryMapExact sourceItem targetItem sourceIndex targetIndex pull sourceK
 scopedHistoryMapExact sourceItem targetItem sourceIndex targetIndex pull sourceKey targetKey backward exact (item :: rest) =
   cong2 (::) (exact item) (scopedHistoryMapExact sourceItem targetItem sourceIndex targetIndex pull sourceKey targetKey backward exact rest)
 
+0 scopedClassifiedGenerationsExact :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (generations : List (RegistrationGeneration name)) ->
+  (classified : ((generation : RegistrationGeneration name) -> Elem generation generations -> DeletedGenerationClassification name key world error value nameEq global generation)) ->
+  (map DGamma.CP5ConfluenceDeletionChainSpike.classifiedGeneration (scopedClassifiedGenerations name key world error value nameEq initial finalState global generations classified) = generations)
+scopedClassifiedGenerationsExact name key world error value nameEq initial finalState global [] classified = Refl
+scopedClassifiedGenerationsExact name key world error value nameEq initial finalState global (generation :: rest) classified =
+  cong (generation ::) (scopedClassifiedGenerationsExact name key world error value nameEq initial finalState global rest (\later, member => classified later (There member)))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
