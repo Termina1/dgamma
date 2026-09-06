@@ -27340,6 +27340,19 @@ scopedLocatedAppendRightOrigin name key world error value first middle finalStat
         (trans (appendTransitionsAssociative left beforeTrace (MoreTransitions transition later)) (cong (appendTransitions left) decomposition)))
       (transitionCountAppend left beforeTrace)
 
+0 scopedLocatedAppendRightWitness :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  (action : Action name key value world error) -> (expectedOrdinal : Nat) ->
+  DeletionSourceOccurrenceAtOrdinal name key world error value right action expectedOrdinal ->
+  DeletionSourceOccurrenceAtOrdinal name key world error value (appendTransitions left right) action (transitionCount left + expectedOrdinal)
+scopedLocatedAppendRightWitness name key world error value first middle finalState left right action expectedOrdinal witness =
+  MkDeletionSourceOccurrenceAtOrdinal
+    (deletionSourceOccurrence (scopedLocatedAppendRightOrigin name key world error value first middle finalState left right action (deletionSourceOccurrence witness)))
+    (trans (deletionSourceOccurrenceOrdinal (scopedLocatedAppendRightOrigin name key world error value first middle finalState left right action (deletionSourceOccurrence witness)))
+      (cong (\ordinal => transitionCount left + ordinal) (deletionSourceOccurrenceOrdinal witness)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
