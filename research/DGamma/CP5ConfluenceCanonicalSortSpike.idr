@@ -2162,6 +2162,18 @@ canonicalWorkInspectScanned name key world error value nameEq keyEq selected tra
     Yes noLater => CanonicalWorkOpenReady scanned noLater
     No laterRemains => CanonicalWorkOpenInterleaved scanned laterRemains
 
+||| Actual finite episode inspection: no caller-provided prefix or block.
+0 canonicalWorkInspectOpenEpisode :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+  CanonicalWorkOpenInspection name key world error value nameEq keyEq selected trace episode
+canonicalWorkInspectOpenEpisode name key world error value nameEq keyEq selected trace episode =
+  canonicalWorkInspectScanned name key world error value nameEq keyEq selected trace episode
+    (canonicalWorkScanActorPrefix name key world error value nameEq selected (openInside episode))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
