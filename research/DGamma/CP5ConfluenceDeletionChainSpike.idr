@@ -26936,6 +26936,22 @@ scopedAppendTraceLength name key world error value _ middle finalState NoTransit
 scopedAppendTraceLength name key world error value first middle finalState (MoreTransitions transition rest) right =
   cong S (scopedAppendTraceLength name key world error value _ middle finalState rest right)
 
+0 scopedDeletedHeadStrictLength :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (sourceFirst, sourceMiddle, sourceFinal, targetFirst, targetFinal : SystemState name key value world error) ->
+  (sourceStep : Transition sourceFirst sourceMiddle) -> (source : Transitions sourceMiddle sourceFinal) ->
+  (target : Transitions targetFirst targetFinal) ->
+  GenerationActionSubsequence nameEq deletable ordinal live (MoreTransitions sourceStep source) target ->
+  deletable ordinal live (transitionAction sourceStep) -> (LTE (S (traceLength target)) (S (traceLength source)))
+scopedDeletedHeadStrictLength name key world error value nameEq deletable ordinal live sourceFirst sourceMiddle sourceFinal targetFirst targetFinal _ _ _
+  (KeepGenerationAction sourceStep source targetStep target kept sameAction tail) deleted = void (kept deleted)
+scopedDeletedHeadStrictLength name key world error value nameEq deletable ordinal live sourceFirst sourceMiddle sourceFinal targetFirst targetFinal _ _ target
+  (DeleteGenerationAction sourceStep source deleted tail) forced =
+    LTESucc (scopedGenerationSubsequenceLength name key world error value nameEq deletable (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) sourceMiddle sourceFinal targetFirst targetFinal source target tail)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
