@@ -1677,6 +1677,20 @@ canonicalSortingPrefixSnocCount name key world error value NoTransitions transit
 canonicalSortingPrefixSnocCount name key world error value (MoreTransitions head rest) transition =
   cong S (canonicalSortingPrefixSnocCount name key world error value rest transition)
 
+||| An actual hoisted root moves left by exactly one ordinal, not merely to an equal endpoint.
+0 canonicalRootHoistMovesOneOrdinal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) -> (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) -> (root : name) -> (component : Component key value world error) ->
+  (hoist : CanonicalRootInsertionHoist name key world error value protocol nameEq keyEq original prefixTrace left right suffix root component) ->
+  (S (locatedActionOrdinal (canonicalHoistedRootOccurrence name key world error value protocol nameEq keyEq original prefixTrace left right suffix root component hoist)) =
+    locatedActionOrdinal (canonicalOriginalHoistedRootOccurrence name key world error value protocol nameEq keyEq original prefixTrace left right suffix root component hoist))
+canonicalRootHoistMovesOneOrdinal name key world error value protocol nameEq keyEq original prefixTrace left right suffix root component hoist =
+  sym (canonicalSortingPrefixSnocCount name key world error value prefixTrace left)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
