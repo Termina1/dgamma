@@ -1032,6 +1032,17 @@ canonicalFreshRankInsert item rank inserted (head :: rest) ordered unique fresh 
       (canonicalRanksTail item rank head rest ordered) (canonicalUniqueTail item head rest unique)
       (\present => fresh (There present)))
 
+||| Duplicate elimination is part of the same package, not a later uniqueness claim.
+canonicalRankInsertSeen : (item : Type) -> (rank : item -> Nat) ->
+  (inserted : item) -> (rest : List item) ->
+  (0 ordered : CanonicalRanksOrdered item rank rest) -> (0 unique : UniqueKeys rest) ->
+  Dec (Elem inserted rest) -> CanonicalRankSortResult item rank (inserted :: rest)
+canonicalRankInsertSeen item rank inserted rest ordered unique (Yes existing) =
+  MkCanonicalRankSortResult rest ordered unique
+    (canonicalRankExistingForward item inserted rest existing) (\selected, present => There present)
+canonicalRankInsertSeen item rank inserted rest ordered unique (No fresh) =
+  canonicalFreshRankInsert item rank inserted rest ordered unique fresh
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
