@@ -27920,6 +27920,20 @@ scopedWithdrawnGeneratedOriginExcluded name key world error value nameEq keyEq i
             (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result (generatedRegistrationActionOccurrence birth)))))
       (replace {p = \sourceGeneration => Elem sourceGeneration (selectedRegistrations candidate)} (sym same) member))
 
+||| All four unchanged canonical registration-accounting clauses are derived at the exact operational origin.
+0 scopedDeletionRegistrationAccounting :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (capital : DeletionProducerOperationalCapital name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result) ->
+  CanonicalRegistrationCorrespondence global (survivingTrace result) (selectedRegistrations candidate)
+scopedDeletionRegistrationAccounting name key world error value nameEq keyEq initial finalState global candidate result capital =
+  scopedRegistrationAccountingFromExclusion name key world error value nameEq keyEq initial finalState global candidate result capital
+    (scopedWithdrawnGeneratedOriginExcluded name key world error value nameEq keyEq initial finalState global candidate result capital)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
