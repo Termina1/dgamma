@@ -27542,6 +27542,24 @@ scopedWholeBirthCoverageSegments name key world error value nameEq keyEq initial
   (occurrence : LocatedActionOccurrence action target) -> predicate (locatedActionOrdinal occurrence)
 scopedLocatedPredicateTransport name key world error value first finalState source _ Refl action predicate continue occurrence = continue occurrence
 
+||| Every original insertion is selected for deletion or has an exact whole target occurrence.
+0 scopedWholeBirthCoverage :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  (occurrence : LocatedActionOccurrence (OInsert child parent component) global) ->
+  ScopedWholeBirthCoverage name key world error value nameEq keyEq initial finalState global candidate result child parent component (locatedActionOrdinal occurrence)
+scopedWholeBirthCoverage name key world error value nameEq keyEq initial finalState global candidate result child parent component occurrence =
+  scopedLocatedPredicateTransport name key world error value initial finalState
+    (appendTransitions (traceBeforeOpening (selectedEpisode candidate)) (appendTransitions
+      (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+      (traceAfterClosing (selectedEpisode candidate)))) global (locatedDecomposition (selectedEpisode candidate)) (OInsert child parent component)
+    (ScopedWholeBirthCoverage name key world error value nameEq keyEq initial finalState global candidate result child parent component)
+    (scopedWholeBirthCoverageSegments name key world error value nameEq keyEq initial finalState global candidate result child parent component) occurrence
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
