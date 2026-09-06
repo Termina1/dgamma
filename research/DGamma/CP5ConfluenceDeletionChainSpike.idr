@@ -26564,6 +26564,28 @@ scopedAssembleDeletionOrdinalSegments name key world error value nameEq keyEq in
     (scopedOrdinalAppendWitness
       (joinedOrdinalSpine (scopedOrdinalAppendWitness (originSpine before) (originSpine center))) (originSpine suffix))
 
+0 scopedDeletionOrdinalSegments :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  ScopedDeletionOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result
+scopedDeletionOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result =
+  scopedAssembleDeletionOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result
+    (scopedGenerationOrdinalWitness name key world error value nameEq (GenerationOwnedActor nameEq (selectedRegistrations candidate)) 0 []
+      initial (locatedPreStart (selectedEpisode candidate)) initial (survivingBeforeEnd result)
+      (traceBeforeOpening (selectedEpisode candidate)) (survivingBefore result) (beforeDeletion result))
+    (scopedGenerationOrdinalWitness name key world error value nameEq (EpisodeGenerationDeletedActor nameEq (selectedActor candidate) (selectedRegistrations candidate))
+      (selectedStartOrdinal candidate) (selectedStartLive candidate)
+      (locatedPreStart (selectedEpisode candidate)) (locatedAfter (selectedEpisode candidate)) (survivingBeforeEnd result) (survivingEpisodeEnd result)
+      (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+      (survivingEpisode result) (episodeDeletion result))
+    (scopedGenerationOrdinalWitness name key world error value nameEq (GenerationOwnedActor nameEq (selectedRegistrations candidate))
+      (episodeEndOrdinal result) (episodeEndLive result)
+      (locatedAfter (selectedEpisode candidate)) finalState (survivingEpisodeEnd result) (survivingFinal result)
+      (traceAfterClosing (selectedEpisode candidate)) (survivingAfter result) (afterDeletion result))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
