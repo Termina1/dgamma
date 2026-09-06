@@ -162,3 +162,15 @@ public export
 r172ReuseAllEffectStatesRelated (MkEffectState () leftTables) (MkEffectState () rightTables) =
   MkEffectStateRelated Refl (\selected => trans (r172ReuseEmptyKeyBindings (leftTables selected)) (sym (r172ReuseEmptyKeyBindings (rightTables selected))))
 
+public export
+0 r172ReuseRelatedBind :
+  (leftBefore, rightBefore : Maybe (EffectState Nat R45Key R45Value Unit)) ->
+  (after : PartialMap (EffectState Nat R45Key R45Value Unit)) ->
+  PartialMapsRelated (EffectStateEquivalence r45KeyEq) after after ->
+  PartialRelated (EffectState Nat R45Key R45Value Unit) (EffectStateRelated r45KeyEq) leftBefore rightBefore ->
+  PartialRelated (EffectState Nat R45Key R45Value Unit) (EffectStateRelated r45KeyEq)
+    (case leftBefore of Nothing => Nothing; Just middle => after middle)
+    (case rightBefore of Nothing => Nothing; Just middle => after middle)
+r172ReuseRelatedBind Nothing Nothing after respects PartialUndefined = PartialUndefined
+r172ReuseRelatedBind (Just left) (Just right) after respects (PartialDefined related) = respects related
+
