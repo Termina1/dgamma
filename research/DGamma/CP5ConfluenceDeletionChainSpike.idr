@@ -29907,6 +29907,13 @@ scopedStepAccountingBackward name key world error value protocol nameEq keyEq in
       (deletionOccurrenceCorrespondence step) child parent component birth)
       (cong (\correspondence => generationBackward (replayGenerationRenaming correspondence) (registrationGeneration birth)) (deletionOccurrenceCorrespondenceExact step)))
 
+0 scopedWithdrawnAbsent :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (actor : name) ->
+  (source, target : SystemState name key value world error) -> WithdrawnNameResult nameEq actor source target ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry target) = Nothing)
+scopedWithdrawnAbsent name key world error value nameEq actor source target (VestigialNameWithdrawn fiber found retired inactive empty absent) = absent
+scopedWithdrawnAbsent name key world error value nameEq actor source target (NameAlreadyAbsent sourceAbsent targetAbsent) = targetAbsent
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
