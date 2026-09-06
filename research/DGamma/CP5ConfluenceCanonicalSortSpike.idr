@@ -3618,6 +3618,36 @@ canonicalWorkEpisodePairRejectsBegin name key world error value nameEq keyEq sel
     (trans (sym (canonicalWorkEpisodePairRightAction name key world error value nameEq keyEq selected
       trace episode scanned remains)) begins)
 
+||| For an ACTUAL selected episode pair, its paper activation alternative is
+||| an Iter/Finish continuation, not an initial Begin that merely became enabled
+||| by the foreign left action. Early applicability still needs its own proof.
+0 canonicalWorkEpisodePairActivationContinuation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+  (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
+  (remains : Not (NoLifecycleBy selected (workActorRest scanned))) ->
+  PaperActivationStep (workPairRight (canonicalWorkGroupingPairForEpisode name key world error value
+    nameEq keyEq selected trace episode scanned remains)) ->
+  (actor : name **
+    (transitionAction (workPairRight (canonicalWorkGroupingPairForEpisode name key world error value
+      nameEq keyEq selected trace episode scanned remains)) = LAdvance actor,
+     Either
+      (transitionTag (workPairRight (canonicalWorkGroupingPairForEpisode name key world error value
+        nameEq keyEq selected trace episode scanned remains)) = LIterTag)
+      (transitionTag (workPairRight (canonicalWorkGroupingPairForEpisode name key world error value
+        nameEq keyEq selected trace episode scanned remains)) = LFinishTag)))
+canonicalWorkEpisodePairActivationContinuation name key world error value nameEq keyEq selected
+  trace episode scanned remains (PaperBeginStep {actor} action tag) =
+    void (canonicalWorkEpisodePairRejectsBegin name key world error value nameEq keyEq selected
+      trace episode scanned remains actor action)
+canonicalWorkEpisodePairActivationContinuation name key world error value nameEq keyEq selected
+  trace episode scanned remains (PaperIterStep {actor} action tag) = (actor ** (action, Left tag))
+canonicalWorkEpisodePairActivationContinuation name key world error value nameEq keyEq selected
+  trace episode scanned remains (PaperFinishStep {actor} action tag) = (actor ** (action, Right tag))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
