@@ -8,6 +8,8 @@ import DGamma.Unified
 import DGamma.CP3
 import DGamma.CP3Support
 import DGamma.CP4Support
+import DGamma.CP4RecoveryEffectRespect
+import DGamma.CP4DeletionSelectedForeignLifecycleAnchorEndpoint
 import DGamma.CP4SupportSolution
 import DGamma.CP4SupportQuiescence
 import DGamma.CP5ConfluenceLocalDiamondSpike
@@ -197,4 +199,11 @@ r172ReuseTransformationRespects actor (TraceCompose after before) {x} {y} relate
     rewrite leftRuns in rewrite rightRuns in PartialUndefined
   composed (Just left) (Just right) leftRuns rightRuns (PartialDefined middleRelated) =
     rewrite leftRuns in rewrite rightRuns in r172ReuseTransformationRespects actor after middleRelated
+
+public export
+0 r172ReuseUndefinedRight :
+  {result : Maybe (EffectState Nat R45Key R45Value Unit)} ->
+  PartialRelated (EffectState Nat R45Key R45Value Unit) (EffectStateRelated r45KeyEq) Nothing result ->
+  result = Nothing
+r172ReuseUndefinedRight PartialUndefined = Refl
 
