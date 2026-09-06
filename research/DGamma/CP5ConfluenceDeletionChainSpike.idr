@@ -20196,6 +20196,17 @@ ScopedCurrentRootExclusion name key world error value nameEq registered live sta
   (maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell))
     (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor (registry state)) = False)
 
+0 ScopedRootBirthInputs :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  List (RegistrationGeneration name) -> Nat ->
+  (first, finalState : SystemState name key value world error) -> Transitions first finalState -> Type
+ScopedRootBirthInputs name key world error value registered ordinal _ _ NoTransitions = Unit
+ScopedRootBirthInputs name key world error value registered ordinal first finalState (MoreTransitions transition rest) =
+  (((child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+    (transitionAction transition = OInsert child parent component) ->
+    Elem (MkRegistrationGeneration child ordinal) registered -> (scopedParentRoot parent = False)),
+   ScopedRootBirthInputs name key world error value registered (S ordinal) _ finalState rest)
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
