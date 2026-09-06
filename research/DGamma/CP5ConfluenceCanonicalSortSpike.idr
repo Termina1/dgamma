@@ -1830,6 +1830,21 @@ canonicalSortingSupportTrueForward name key world error value protocol nameEq ke
     (canonicalSupportedRank name key world error value protocol nameEq keyEq source selected supported sourceMatches ranked)
     controls targetMatches
 
+0 canonicalSortingPrecedenceFromFibers :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (source, target : SystemState name key value world error) -> (lower, upper : name) ->
+  (edge : PrecedenceEdge nameEq lower upper source) ->
+  ForeignRelatedFiberFound name key world error value nameEq lower (registry source) (registry target) (providerFiber edge) ->
+  ForeignRelatedFiberFound name key world error value nameEq upper (registry source) (registry target) (consumerFiber edge) ->
+  PrecedenceEdge nameEq lower upper target
+canonicalSortingPrecedenceFromFibers name key world error value nameEq source target lower upper edge lowerTarget upperTarget =
+  MkPrecedenceEdge (edgeKey edge) (foreignRelatedFiber lowerTarget) (foreignRelatedFiber upperTarget)
+    (foreignRelatedFound lowerTarget) (foreignRelatedFound upperTarget)
+    (replace {p = \component => Elem (edgeKey edge) (dependencies (componentProvisions component))}
+      (canonicalSortingFiberComponentSame name key world error value (foreignRelatedControl lowerTarget)) (providerDeclares edge))
+    (replace {p = \component => Elem (edgeKey edge) (dependencies (componentDependencies component))}
+      (canonicalSortingFiberComponentSame name key world error value (foreignRelatedControl upperTarget)) (consumerDeclares edge))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
