@@ -7,7 +7,7 @@ import Data.Nat
 %unbound_implicits off
 
 ||| The sealed all-action adjacent ordinal relation cannot collapse positions.
-public export
+export
 0 uniqueAdjacentOrdinalInjective :
   (point, leftTarget, rightTarget, leftSource, rightSource : Nat) ->
   AdjacentSwapOrdinalRelation point leftTarget leftSource ->
