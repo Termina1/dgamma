@@ -412,4 +412,3 @@ r172ReuseOrderingIsParentOnly = singletonEnumeration (orderedSupportNames r172Re
   singletonEnumeration (first :: second :: rest) (UniqueCons missing unique) sound present =
     void (missing (replace {p = \selected => Elem selected (second :: rest)}
       (trans (sound second (There Here)) (sym (sound first Here))) Here))
-
