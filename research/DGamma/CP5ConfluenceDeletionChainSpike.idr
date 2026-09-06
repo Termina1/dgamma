@@ -20142,6 +20142,22 @@ scopedRootSealAtAction name key world error value nameEq action sourceFirst sour
   MkScopedRootRoleSeal (trans (cong (\observed => scopedRootObservation name key world error value nameEq observed sourceFirst) sourceAction)
     (trans roots (sym (cong (\observed => scopedRootObservation name key world error value nameEq observed targetFirst) targetAction))))
 
+0 scopedRelationalActionRoot :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  GenerationEnvironmentNamesUnique live -> (action : Action name key value world error) ->
+  Not (GenerationOwnedActor nameEq registered ordinal live action) ->
+  (source, target : SystemState name key value world error) ->
+  RelationalNoEpisodeReplayBoundary name key world error value nameEq keyEq registered live source target ->
+  (scopedRootObservation name key world error value nameEq action source = scopedRootObservation name key world error value nameEq action target)
+scopedRelationalActionRoot name key world error value nameEq keyEq registered ordinal live unique action retained source target boundary =
+  scopedPlannedActionRoot name key world error value nameEq registered ordinal live unique action retained source target
+    (completePlanResult (relationalCompletePlan boundary))
+    (\actor => scopedControlLookupRoot name key world error value
+      (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor (planTarget (completePlanResult (relationalCompletePlan boundary))))
+      (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor (registry target))
+      (orderedControlsLookup nameEq actor (planTarget (completePlanResult (relationalCompletePlan boundary))) (registry target) (relationalOrderedControls boundary)))
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
