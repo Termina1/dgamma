@@ -2174,6 +2174,20 @@ canonicalWorkInspectOpenEpisode name key world error value nameEq keyEq selected
   canonicalWorkInspectScanned name key world error value nameEq keyEq selected trace episode
     (canonicalWorkScanActorPrefix name key world error value nameEq selected (openInside episode))
 
+||| Exact half-open range of a PRODUCED block; both counts are authenticated
+||| against that same block's existential trace pieces.
+record CanonicalWorkCompletedBlock
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
+  {initial, finalState : SystemState name key value world error}
+  (trace : Transitions initial finalState) where
+  constructor MkCanonicalWorkCompletedBlock
+  workCompletedBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected trace
+  workRangeStart : Nat
+  workRangeSize : Nat
+  0 workRangeStartExact : transitionCount (traceBeforeBlock workCompletedBlock) = workRangeStart
+  0 workRangeSizeExact : S (transitionCount (blockBody workCompletedBlock)) = workRangeSize
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
