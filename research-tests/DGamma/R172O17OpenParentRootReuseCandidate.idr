@@ -649,3 +649,16 @@ r172ReuseConclusionRootBeforeChild sorted birth = r172ReuseLTETransitive
   (lteSuccRight (rootGenerationBeforeLifecycle (sortedInputPlacement sorted)
     (r172ReuseConclusionRootBirth sorted) (r172ReuseConclusionParentBegin sorted birth) Refl))
   (r172ReuseConclusionBeginBeforeChild sorted birth)
+
+public export
+0 r172ReuseConclusionChildChecked :
+  (sorted : SortedClosingFreeTrace Nat R45Key Unit String R45Value
+    r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
+  (birth : LocatedGeneratedRegistration 1 0 r45Child (sortedTrace sorted)) ->
+  (tag : RuleTag ** checkedApplyAction @{r45NameEq} @{r45KeyEq}
+    (OInsert 1 (ChildOf 0) r45Child) (registrationBefore birth) = Just (tag, registrationAfter birth))
+r172ReuseConclusionChildChecked sorted (MkLocatedGeneratedRegistration before after earlier transition later same decomposition) =
+  case snd (alignedAppendSplit earlier (MoreTransitions transition later)
+    (replace {p = \trace => AlignedTransitions Nat R45Key Unit String R45Value r45NameEq r45KeyEq trace}
+      (sym decomposition) (replayAligned (sortedPremises sorted)))) of
+    AlignedStep action tag checked rest tail => case same of Refl => (tag ** checked)
