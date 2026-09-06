@@ -40,7 +40,7 @@ r174ProvisionParent = MkComponent DGamma.CalculusChecks.toyEmptySpec
 ||| simultaneously. Names 1 and 2 use the genuine installing provider program.
 ||| The next count equation must exclude this empty fallback before any claim
 ||| of input inhabitation. The production builder is proof-erased.
-public export
+export
 0 r174ProvisionExecution : CertifiedActionTrace Nat ToyKey ToyRuntime String ToyValue %search %search
   (MkSystemState (MkToyRuntime False False) emptyContext)
 r174ProvisionExecution = fromMaybe
@@ -67,6 +67,7 @@ r174ProvisionExecutionChecks = Refl
 
 ||| The actual built trace has raw births 0 at 0, 1 at 2, and 2 at 5 only.
 ||| The formula merely names those three positions for the uniqueness proof.
+export
 0 r174ProvisionBirthPosition :
   (selected, ordinal : Nat) ->
   (rawInsertionNameAt Nat ToyKey ToyRuntime String ToyValue ordinal
