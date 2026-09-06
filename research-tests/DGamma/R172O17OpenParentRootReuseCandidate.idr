@@ -432,3 +432,15 @@ public export
 r172ReuseOriginalChildBirth = MkLocatedGeneratedRegistration r45AfterBegin r45SourcePairFinal
   (MoreTransitions r45ParentInsert (MoreTransitions r45Begin NoTransitions)) r45ChildInsert
   (MoreTransitions r45SourceRetire r172ReuseTail) Refl Refl
+
+public export
+0 r172ReuseConclusionChildBirth :
+  (sorted : SortedClosingFreeTrace Nat R45Key Unit String R45Value
+    r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
+  LocatedGeneratedRegistration 1 0 r45Child (sortedTrace sorted)
+r172ReuseConclusionChildBirth sorted =
+  case originalRegistrationAccounted (sortedRegistrationTree sorted) r172ReuseOriginalChildBirth of
+    Left withdrawn => case replace
+      {p = \omitted => Elem (registrationGeneration r172ReuseOriginalChildBirth) omitted}
+      (sortedWithdrawsNoGenerations sorted) withdrawn of Here impossible; There later impossible
+    Right (actual ** originalMatches) => actual
