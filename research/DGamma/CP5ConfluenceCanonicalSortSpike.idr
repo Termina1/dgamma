@@ -3371,6 +3371,23 @@ canonicalWorkOwnedActivationActor name key world error value selected step
     void (canonicalFalseNotTrue (trans (sym (cong isLifecycleAction action))
       (canonicalPaperActivationLifecycle name key world error value step activation)))
 
+||| A/A grouping actor distinctness comes from the SAME selected pair's
+||| foreign/owned evidence; it is not an additional caller-supplied inequality.
+0 canonicalWorkGroupingActivationsDistinct :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (pair : CanonicalWorkGroupingPair name key world error value selected global) ->
+  PaperActivationStep (workPairLeft pair) -> PaperActivationStep (workPairRight pair) ->
+  Not (transitionActor (workPairLeft pair) = transitionActor (workPairRight pair))
+canonicalWorkGroupingActivationsDistinct name key world error value selected global pair leftActivation rightActivation same =
+  workPairLeftForeign pair
+    (CanonicalWorkLifecycle {name} {key} {world} {error} {value} {selected}
+      {step = workPairLeft pair}
+      (canonicalPaperActivationLifecycle name key world error value (workPairLeft pair) leftActivation)
+      (trans same (canonicalWorkOwnedActivationActor name key world error value selected
+        (workPairRight pair) (workPairRightOwned pair) rightActivation)))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
