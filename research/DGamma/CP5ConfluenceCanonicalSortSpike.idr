@@ -3712,6 +3712,28 @@ canonicalWorkSelectGroupingWithProvenance name key world error value nameEq keyE
   (canonicalWorkSelectGroupingPair name key world error value nameEq keyEq trace pending minimumStart inspection **
     canonicalWorkSelectionAvoidsBegin name key world error value nameEq keyEq trace pending minimumStart inspection)
 
+||| Ownership plus orchestration class forces a generated insertion under the
+||| selected actor. This is a source fact, independent of any root phase.
+0 canonicalWorkOwnedOrchestrationInsertion :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
+  {before, afterState : SystemState name key value world error} ->
+  (step : Transition before afterState) ->
+  (CanonicalWorkActorStep selected step) -> (PaperOrchestrationStep step) ->
+  (child : name ** (component : Component key value world error **
+    (transitionAction step = OInsert child (ChildOf selected) component)))
+canonicalWorkOwnedOrchestrationInsertion name key world error value selected step
+  (CanonicalWorkRegistration {child} {component} inserted) orchestration =
+    (child ** (component ** inserted))
+canonicalWorkOwnedOrchestrationInsertion name key world error value selected step
+  (CanonicalWorkLifecycle lifecycle actor) (PaperInsertStep inserted) =
+    void (canonicalFalseNotTrue (trans (sym (cong isLifecycleAction inserted)) lifecycle))
+canonicalWorkOwnedOrchestrationInsertion name key world error value selected step
+  (CanonicalWorkLifecycle lifecycle actor) (PaperRetireStep retired) =
+    void (canonicalFalseNotTrue (trans (sym (cong isLifecycleAction retired)) lifecycle))
+canonicalWorkOwnedOrchestrationInsertion name key world error value selected step
+  (CanonicalWorkLifecycle lifecycle actor) (PaperRemoveStep removed) =
+    void (canonicalFalseNotTrue (trans (sym (cong isLifecycleAction removed)) lifecycle))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
