@@ -3045,6 +3045,29 @@ canonicalWorkNoClosingRejectsLocatedUnload name key world error value nameEq key
             (MoreTransitions (Fired {before} {afterState} nameEq keyEq (LUnload selected) tag checked) NoTransitions) rest)
             decomposition) aligned initialEmpty noClosing
 
+||| Every genuine closed episode supplies an exact located unload action.
+||| Only associativity moves its stored prefix; no proof-irrelevance is used.
+0 canonicalWorkClosedUnloadLocation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  LocatedClosedEpisode name key world error value nameEq keyEq selected global ->
+  LocatedActionOccurrence (LUnload selected) global
+canonicalWorkClosedUnloadLocation name key world error value nameEq keyEq selected global
+  (MkLocatedClosedEpisode pre afterState earlier
+    (MkClosedEpisode start last opening inside installed closing) later decomposition) =
+      MkLocatedActionOccurrence last afterState
+        (appendTransitions earlier (MoreTransitions (beginTransition opening) inside))
+        (unloadTransition closing) later Refl
+        (trans (appendTransitionsAssociative earlier
+          (MoreTransitions (beginTransition opening) inside)
+          (MoreTransitions (unloadTransition closing) later))
+          (trans (cong (\tail => appendTransitions earlier
+            (MoreTransitions (beginTransition opening) tail))
+            (sym (appendTransitionsAssociative inside
+              (MoreTransitions (unloadTransition closing) NoTransitions) later))) decomposition))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
