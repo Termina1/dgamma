@@ -4,6 +4,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP3Support
 import DGamma.CP4TerminalRecovery
 import DGamma.CP4RecoveryModelTrace
 import DGamma.CP4DeletionRelationalBoundary
@@ -1893,6 +1894,28 @@ canonicalSortingSupportPathForward name key world error value nameEq source targ
 canonicalSortingSupportPathForward name key world error value nameEq source target controls lower upper (SupportPathMore edge rest) =
   SupportPathMore (canonicalSortingSupportEdgeForward name key world error value nameEq source target controls lower _ edge)
     (canonicalSortingSupportPathForward name key world error value nameEq source target controls _ upper rest)
+
+||| Transport the SAME fixed list through a no-withdrawal replay, not an arbitrary deletion.
+0 canonicalSortingFixedLinearization :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (source, target : SystemState name key value world error) ->
+  RegistryProtocolRanked protocol nameEq source -> RegistryProtocolRanked protocol nameEq target ->
+  SupportMatchesActive nameEq keyEq source -> SupportMatchesActive nameEq keyEq target ->
+  ControlEquivalent name key world error value nameEq source target -> (order : List name) ->
+  LinearizesSupport name key world error value nameEq keyEq source order ->
+  LinearizesSupport name key world error value nameEq keyEq target order
+canonicalSortingFixedLinearization name key world error value protocol nameEq keyEq source target
+  sourceRanked targetRanked sourceMatches targetMatches controls order linearization =
+    MkLinearizesSupport (orderUnique linearization)
+      (\selected, present => canonicalSortingSupportTrueForward name key world error value protocol nameEq keyEq
+        source target sourceRanked sourceMatches targetMatches controls selected (orderSound linearization selected present))
+      (\selected, supported => orderComplete linearization selected
+        (canonicalSortingSupportTrueForward name key world error value protocol nameEq keyEq target source
+          targetRanked targetMatches sourceMatches (controlEquivalentSymmetric controls) selected supported))
+      (\lower, upper, path, lowerIn, upperIn => supportPathsOrdered linearization lower upper
+        (canonicalSortingSupportPathForward name key world error value nameEq target source
+          (controlEquivalentSymmetric controls) lower upper path) lowerIn upperIn)
 
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
