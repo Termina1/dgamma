@@ -20218,6 +20218,24 @@ ScopedOwnedRootSeals name key world error value nameEq registered ordinal live f
    ScopedOwnedRootSeals name key world error value nameEq registered (S ordinal)
      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction transition) live) _ finalState rest)
 
+0 scopedPresentRootFalseAfterUpdate :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (actor : name) ->
+  (source, target : Registry name key value world error) ->
+  RegistryLocalUpdate name key world error value nameEq actor source target ->
+  (present : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor source = Just present) ->
+  (maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor source) = False) ->
+  (maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor target) = False)
+scopedPresentRootFalseAfterUpdate name key world error value nameEq actor source _ (LocalInsert inserted absent) present found nonRoot =
+  void (nothingIsNotJust (trans (sym absent) found))
+scopedPresentRootFalseAfterUpdate name key world error value nameEq actor source _
+  (LocalReplace {oldFiber} @{oldFound} @{staticComponent} @{staticParent} next) present found nonRoot =
+    trans (cong (maybe False (scopedParentRoot . fiberParent)) (lookupReplacedFiber @{nameEq} actor oldFiber next source oldFound))
+      (trans (cong scopedParentRoot staticParent)
+        (trans (sym (cong (maybe False (scopedParentRoot . fiberParent)) oldFound)) nonRoot))
+scopedPresentRootFalseAfterUpdate name key world error value nameEq actor source _ LocalDelete present found nonRoot =
+  cong (maybe False (scopedParentRoot . fiberParent)) (DGamma.CP4DeletionSelectedOwn.lookupDeleteSelf @{nameEq} actor source)
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
