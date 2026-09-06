@@ -62,6 +62,22 @@ respects the relation and recovers its application state up to that relation.
 `relDiamond` and `relPushStack` prove the relational composition/soundness core
 of Lemma 38.
 
+## R174 freshness reclassification (owner ruling, 2026-09-06)
+
+All historical raw-name reuse discussions below are scoped to the local-rule
+calculus, not to the implementation's UID discipline. Def 47 O-Insert checks
+LOCAL absence; Lemma 71's sorting argument uses GLOBAL freshness, and §5.1
+states "a uid is drawn fresh and never reused". Global freshness is a **missing
+hypothesis of Theorem 73**, satisfied by the implementation by construction.
+R137/R172 and Finding-8 reuse countermodels are necessity evidence, **not paper
+or implementation bugs**. DGamma implements `UniqueRawNameInsertions` in R173,
+including rejection of the reuse fixture and actual reduction transport.
+The CP3 raw premise is a **missing hypothesis at the frozen surface;
+satisfiability under uniqueness remains to be re-verified**. This does not
+validate or authorize calling the frozen deletion theorem or a scoped-to-raw
+cast. Unrelated provenance, yield, and applicability findings are not dismissed
+by this name-freshness reclassification.
+
 ## Paper ambiguities / possible errata
 
 1. **Definition 32 is non-strictly-positive.** The recursive variable occurs to
@@ -111,10 +127,11 @@ of Lemma 38.
    inverse O-Retire-before-recovery obligation needed by Lemma 70 and Confluence;
    Lemma 68 itself requires only `RegistrationProvenance`.
 
-   The former global no-rebirth condition has been removed. The paper explicitly
-   says a name freed by O-Remove may be reissued (lines 1855–1858); current
-   freshness plus located occurrence evidence distinguishes each birth instead
-   of banning that legal behavior. The finite catalog tag/rank is an explicit
+   For this local-rule support theorem the former no-rebirth condition was
+   removed: the preservation discussion (lines 1855–1858) allows reissue under
+   LOCAL freshness. This does not waive Theorem 73's missing GLOBAL-freshness
+   hypothesis, implemented for the research confluence telescope in R173.
+   Located occurrence evidence distinguishes births in the broader local model. The finite catalog tag/rank is an explicit
    host representation delta necessitated by the absence of a recursive
    component yield channel in `runStepEffect`; it is not claimed to be a paper
    rule. It is also an **over-approximation** of one Definition-47 application:
@@ -133,7 +150,7 @@ of Lemma 38.
    selected O-Retire/O-Remove survive, while every R-owned action remains
    deletable.
 
-7. **Lemma 56's global raw-name action is ambiguous under legal name reuse.**
+7. **Lemma 56 under local-rule reuse: necessity of the global-freshness hypothesis.**
    Lemma 56 states equivariance for one bijection on raw names, while the
    Preservation discussion explicitly permits O-Remove followed by reuse of
    the freed raw name. Those clauses do not compose across two complete traces
@@ -143,7 +160,9 @@ of Lemma 38.
    therefore uses `RegistrationGenerationBijection` on `(raw name, birth
    ordinal)` for historical/generated registration trees, and a separate
    `CurrentEndpointRenaming` for the current registries with live roots fixed.
-   This is a generation-wise interpretation of Lemma 56, not a ban on reuse.
+   This is a generation-wise interpretation for the broader local-rule model,
+   not a paper or implementation bug; confluence additionally assumes R173's
+   global uniqueness, matching the implementation's never-reused UIDs.
 8. **Likely clarification needed for Theorem 73's final equivalence.** Lemma 57
    makes a vestigial entry observationally equal (`approximately equal`) to its absence, and
    Lemma 72 promises control equivalence only outside the registered-name set
@@ -301,15 +320,17 @@ of Lemma 38.
     The timed-out `CP3StatementChecks`, `CP3VestigialChecks`, and
     `CalculusChecks` runs are part of the registered clean-validation debt and
     must pass before that review.
-13. **CP4 Finding #8 — Lemma 72's raw R filter deleted later generations.**
+13. **CP4 Finding #8 — raw-filter reuse necessity countermodel (not a bug).**
     The accepted CP3 statement used `RegisteredActor (List name)` before and
     after the selected episode. After the selected child generation was
     O-Removed, a legal later O-Insert could reuse its raw name; the raw filter
     then deleted that unrelated root birth too. At a quiet endpoint where the
     reissued root is non-retired with unavailable dependencies,
     `RegisteredNamesWithdrawn` was impossible. This is the same raw-name-reuse
-    genus as CP3 rounds 6–7 and paper erratum #3 (Lemma 56), now surfacing in
-    Lemma 72; the future authors letter should consolidate the genealogy.
+    genus as CP3 rounds 6–7, now surfacing in Lemma 72: necessity evidence
+    for Theorem 73's missing global-freshness hypothesis, not a paper or
+    implementation bug. The frozen raw premise must be re-verified under
+    uniqueness before claiming its satisfiability.
 
     With supervisor approval, the repair reuses `RegistrationGeneration`.
     `actionGenerationAt` assigns O-Insert its `(raw name, birth ordinal)` and
@@ -1244,7 +1265,8 @@ candidate round-5 statements, not accepted proofs:
   registry, but round 2 proved that reachability alone is insufficient.
   `RegistrationProvenance` now exposes the exact tagged parent step/catalog and
   rank needed by Lemma 68. `RegistrationDiscipline` adds only the retirement
-  provenance needed by Lemma 70. Legal post-remove name reissue is retained.
+  provenance needed by Lemma 70. Post-remove reissue is retained in the local-rule model only; R173 confluence
+  additionally assumes global uniqueness, matching never-reused runtime UIDs.
 - Round 3 retained `fiberTotalOnProvision` only as an executable current-Active
   diagnostic and replaced it with `ProgramFinishes` /
   `ComponentTotalOnProvision`. CP4 Finding #4 above supersedes that conclusion:
@@ -2309,7 +2331,7 @@ production change, frozen deletion-theorem call or scoped-to-raw cast.
 **Partial overall / merely stated:** Theorem 73 remains unproved, with six
 research holes (CanonicalSort 1 / CrossTrace 4 / DeletionChain 0 / LocalDiamond 0 /
 RenamingComposition 1). Scoped DeletionChain was already closed at R171; this
-does not fix the frozen CP3 raw-premise defect. Exact canonical accounting,
+does not fix the CP3 missing hypothesis at the frozen surface (satisfiability under uniqueness unverified). Exact canonical accounting,
 shared original/reduced order, R16 fixture drift, R129 integration and copied
 legacy `with` cleanup remain explicit debts, not hidden by the hole count.
 
@@ -2331,7 +2353,7 @@ through full no-withdrawal control equivalence. They do not implement the full
 block selector or its decreasing measure.
 
 **Checked semantic frontier:** `R172O17OpenParentRootReuseCandidate` (`a069cbc`,
-whitespace correction `775bd22`) has all unchanged O17 inputs: full replay
+whitespace correction `775bd22`) has all OLD-surface O17 inputs (not the R173 uniqueness premise): full replay
 bundle (including generated-monoid independence and iterator-yield stability),
 closing-free shape and actual O14 order, proved to be [0]. The eight-step trace
 yields/removes child 1 and reissues it as a root while parent 0 remains open.
@@ -2340,7 +2362,9 @@ admits no local diamond (`r172ReuseRemoveRootDiamondImpossible`).
 **This is not a proved global sorting impossibility or a paper counterexample.**
 A same-name birth-order invariant through every finite adjacent derivation and
 the resulting global placement contradiction, or an alternative actual sorter,
-remain unproved. No new premise or frozen surface was changed to hide this.
+remain unproved. R172 changed no premise; R173 subsequently implemented the owner-selected
+global uniqueness hypothesis and its rejection fixture. This is necessity
+evidence for that hypothesis, not a paper or implementation bug.
 
 **Partial / merely stated:** O17 body remains 0/3 and its hole remains. Theorem
 73 still has six research holes; all accounting, original/reduced-order,
@@ -2383,10 +2407,10 @@ erased **Type only**, without an inhabitant. The O17 selector body remained
 **Owner-selected next path:** premise revision with the strong global condition
 “each raw name is inserted at most once in the whole trace,” not conclusion
 revision. The owner relates this to globally fresh Cordis instance names; the
-reuse candidate is designated as the negative fixture for that future premise.
-No new hypothesis or runtime/production surface was implemented here. The full
-refutation is demoted to secondary bounded erratum evidence, no longer gating.
-R173 recon must test whether insertion uniqueness resolves the frozen CP3 raw
+reuse candidate was designated in R172 and certified as its negative fixture
+in R173. No runtime/production surface changed. Full refutation remains
+secondary bounded necessity evidence, not an erratum claim or a gate.
+R174 recon must test whether insertion uniqueness resolves the frozen CP3 raw
 premise and whether O19/O21 share the reuse cause; these are not yet proved
 repairs. Matching probe-first is pre-authorized for R173 only. Existing debts
 remain OPEN/parked; no fourth/renamed G31 attempt followed the stop.

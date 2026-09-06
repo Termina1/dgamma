@@ -2,6 +2,21 @@
 
 Branch: `cp5-thm73-scoping`
 
+## R174 owner reclassification — 2026-09-06
+
+**Global name freshness is a missing hypothesis of Theorem 73, not a paper or
+implementation bug.** Definition 47 / Table 1 O-Insert checks LOCAL absence
+from the current registry; the sorting argument in Lemma 71 uses GLOBAL
+freshness ("registrations draw fresh names"). Section 5.1 states that "a uid is
+drawn fresh and never reused", satisfying the hypothesis by construction.
+R137 and R172 reuse countermodels are necessity evidence for that hypothesis,
+not defects in the implementation. DGamma adopted `UniqueRawNameInsertions` in
+R173; it is implemented, not future work. The CP3 raw premise is a **missing
+hypothesis at the frozen surface; satisfiability under uniqueness is to be
+re-verified**. No production change, frozen theorem call or generation-to-raw
+cast follows from this reclassification. Historical audits and the R146 memo
+are preserved; read their reuse/defect terminology subject to this dated note.
+
 ## Current checkpoint — R173 globally fresh-name premise; O17 still OPEN
 
 R173 applies the owner's premise revision to RESEARCH ONLY. The strong
@@ -100,7 +115,7 @@ approved. Unit B closed O14, then the supervisor ratified/pushed `b590789` and
 authorized O17 continuation after P2 (`259eb71`). N1–N42 now prove an actual
 distinct-root insertion hoist and fixed-order transport through full no-withdrawal
 control equivalence. O17 remains **OPEN, body 0/3**, paused at a semantic gate:
-`R172O17OpenParentRootReuseCandidate` constructs every unchanged O17 premise
+`R172O17OpenParentRootReuseCandidate` constructs every OLD-surface O17 premise (not revised global uniqueness)
 for an eight-step child-removal/root-reuse trace, proves its source is not
 root-first and its immediate remove/root diamond impossible. This is **not** a
 proved negation of every sorting derivation. Candidate proof `a069cbc`; exact
@@ -126,18 +141,19 @@ root occupancy transport and final global negation remain unproved.
 **Next path: PREMISE REVISION, not conclusion revision.** The owner selects the
 new strong hypothesis “each raw name is inserted at most once in the whole
 trace,” identifying it with implementation-level globally fresh instance
-names. The reuse candidate is the designated future negative fixture; no such
-premise/surface change was made in R172. Full global refutation is now bounded
-secondary erratum evidence, not a gate. R173 recon must verify the proposed
-repair to the frozen CP3 raw premise and whether O19/O21 defects share the same
-reuse cause; none is presumed cured. Matching probe-first is pre-authorized
+names. The reuse candidate became the checked negative fixture in R173
+(`849d3f5`); R172 itself made no premise change. Full global refutation remains
+bounded secondary necessity evidence, not a paper-bug claim or a gate. R174
+recon must re-verify satisfiability of the frozen CP3 raw premise under uniqueness
+and whether O19/O21 stops share the reuse cause; none is presumed cured. Matching probe-first is pre-authorized
 for R173, not this shift. Final audit: 212 checks / 196 clean / 16 charged
 failures; 207/207 seeds; six holes and all frozen boundaries unchanged.
 
 ### Current debt register — not hidden by the hole count
 
-O17-specific semantic frontier: the retained full-input root-reuse candidate
-exposes a checked local obstruction to universal root-first hoisting. A global
+O17-specific necessity evidence: the retained OLD-surface full-input root-reuse
+candidate exposes a checked local obstruction without global uniqueness; it
+fails the revised O17 hypothesis. This is not a paper or implementation bug. A global
 occurrence/generation birth-order invariant or an alternative sorter remains
 unproved; no frozen placement revision or paper counterexample is claimed.
 
@@ -147,12 +163,12 @@ unproved; no frozen placement revision or paper counterexample is claimed.
 | Exact `CanonicalReplayAccountingLaws` producer (R143/O16) | **OPEN.** R171 `ScopedDerivationAccounting.foldedOriginExact` authenticates the actual deletion producer, but `ClosingFreeReduction` does not retain that field for arbitrary values; the sorting tree likewise lacks operational-fold alignment. A producer-indexed adapter plus simultaneous sorting accounting must feed the exact `deletionSortingOccurrenceCorrespondence`, composed endpoint and cumulative withdrawal equality. No automatic coherence claim or new surface authorization. |
 | Shared original/reduced order (R143/O15) | **OPEN.** Chosen-order correction remains; `R6FourFiberStatic.r143CanonicalSupportTransportRefuted` permanently rejects universal reduced-to-original linearization transfer. `FullPipelineLateCanonicalPremises.sideOriginalLinearization` is supplied, universally quantified capital, not a discharge. O14 now rank-sorts the actual chosen order; proving that exact reduced output also respects original paths remains a separate producer theorem. |
 | `R16ConfluenceTheoremAssemblyPositive` fixture drift | **CLOSED as CONDITIONAL assembly in R173 (`ed0ddc6`), not as an unconditional theorem.** Supervisor approved in-place repair: both already-required R143 late records and both original-uniqueness premises are explicit. Fresh direct check passes. The shared-order and exact `CanonicalReplayAccountingLaws` producers above remain OPEN; this fixture merely assumes them. No aggregate R11/from-scratch claim. |
-| CP3 raw-premise defect | **FROZEN / future unfreeze campaign.** R137 generation reuse invalidates the raw global premise needed by the original selection route. No `NoDependentClosingEpisodeForGeneration`→raw cast, no call to frozen `deletionTheoremProof`. The inherited unused `checkedDeletionSubroutine` alias remains historical capital, not a sanctioned route. |
+| CP3 missing hypothesis at frozen surface | **FROZEN; satisfiability under uniqueness to be re-verified.** R137 reuse is necessity evidence for global freshness, not a production defect. No `NoDependentClosingEpisodeForGeneration`→raw cast, no call to frozen `deletionTheoremProof`. The inherited unused `checkedDeletionSubroutine` alias remains historical capital, not a sanctioned route. |
 | Deferred R129 end-to-end test | **PARKED.** Opaque actual adjacent result cannot be identified by `Refl` with independent R27/R29 final/trace indices. The 12+4 RAR exports do not fix that. Requires an owner-selected producer-owned exact comparison theorem or an explicitly relational-only integration scope. |
 | Copied `with` cleanup | **OPEN.** DeletionChain current count 9: three copied R161 occurrences (`beginSuccessTagScopedPostFold` at 15823; `scopedPostCloseSuffixFold` at 15937/15966), the spent R165 LAdvance exception at 18171, and five older scanner occurrences at 29282/29286/29302/29306/29355. R162 lifecycle and later target cleanup landed (`8f2725f`, `f78cf2a`), so R162's four-copied count is historical. No new exemption or cleanup in Unit A. |
 | R161–R171 retained semantic debts | **CLOSED in research:** tag/readiness, surviving discipline, target totality/independence, global generation inverse, frozen origin, exact external roles, Core history recurrence, endpoint omission and bidirectional registration composition. The final public reduction/sorting correlation debt is separately retained above. Do not resurrect R171's removed eager intermediate (`465ce36`). |
 | Concrete regression gates | **OPEN:** real two-birth/one-withdrawal O16 and reachable repeated-Iter 2×2; abstract supplied-capital assemblers are not fixtures. Core/Step clone negatives do not replace full-pipeline integration. No wider suite/from-scratch build claim. |
-| Paper/claim scope | Guarded calculus only; base-calculus confluence claim, reissue, finite linear extensions, stable registration yields, and distinct effect/control quotients still require explicit accounting. Historical estimates below are suspended, not extrapolated. |
+| Paper/claim scope | Guarded calculus only; base-calculus confluence claim, the missing global-freshness hypothesis, finite linear extensions, stable registration yields, and distinct effect/control quotients still require explicit accounting. Historical estimates below are suspended, not extrapolated. |
 
 
 Review trail:
@@ -2532,7 +2548,7 @@ research capital; no CP3 production declaration changed.
 | O14 | `supportOrderingSpike` | **CLOSED `c99145c`**, R172 body 1/3 after committed P1 and simultaneous invariant; unchanged surface, concrete reductions `9a70ffd`. |
 | O15 | Chosen original/reduced support-order bridge | Closed under R143 corrected chosen-order premises; real shared-order producer debt remains. |
 | O16 | Exact-fold one-trace accounting | Closed under R143 corrected exact accounting premises; real producer/fixture debt remains. |
-| O17 | `sortClosingFreeTraceSpike` | **OPEN**, R144 body 3/3 historical; R172 body **0/3**. P2 passed before N1–N42 actual hoist/fixed-order capital; full-premise root-reuse candidate and exact local diamond obstruction `a069cbc`, not a global sorting refutation. Semantic-frontier gate. |
+| O17 | `sortClosingFreeTraceSpike` | **OPEN**, R144 body 3/3 historical; R172 body **0/3**. P2 passed before N1–N42 actual hoist/fixed-order capital; old-surface root-reuse necessity candidate and exact local diamond obstruction `a069cbc`, not a global sorting refutation or bug. R173 implements the uniqueness premise and its negative fixture; C58 stopped 3/3, remaining producers listed above. |
 | O18 | Sealed independent canonical capital | Closed R143. |
 | O19 | Support matching, adjacent-block transposition, operational permutation selection | 3 holes; matching lacks endpoint support preservation; block-swap BODY BANNED until revision + negative; selector depends on corrected block swap. |
 | O20 | Four-clause canonical endpoint bridge | 1 hole; R144 body 3/3, replay bookkeeping closed, semantic bridge not produced. |
@@ -2920,11 +2936,13 @@ order.
 
 ### Revision 137: O8 generation-interval scoping and ratification
 
-The raw-name O8 negative is semantically refuted by the checked two-generation
-countershape in `R137O8RawNameReuseCountershape*.idr`: first-generation
+Without global freshness, the raw-name O8 selection claim is refuted by the
+checked two-generation necessity countershape in `R137O8RawNameReuseCountershape*.idr`: first-generation
 `ActorA -> ActorB` and second-generation `ActorB -> ActorA` coexist while every
 pointwise precedence graph is acyclic.  The genuine located close evidence shows
-that neither raw actor satisfies the former global predicate.
+that neither raw actor satisfies the former global predicate. Under the R174
+owner classification this establishes the necessity of global freshness, not
+a paper or implementation bug; CP3 satisfiability under uniqueness is unproved.
 
 The authorized research-only repair replaces that field with
 `NoDependentClosingEpisodeForGeneration`.  `GenerationScopedClosingStart`
@@ -3049,13 +3067,14 @@ remain unchanged, and the surface revision consumes 0/3 O9 body attempts. The
 clause mapping and necessity witnesses are recorded in
 `O6-R141-DELETION-O9-GENERATION-SCOPED-SURFACE-REVISION-AUDIT.md`.
 
-**Mandatory paper/interface flag:** frozen CP3 `deletionTheorem` has a
-raw-name-global `NoDependentClosingEpisode` premise that is invalid under the
-permitted R137 reuse countershape. `CP4DeletionTheorem.deletionTheoremProof`
-inherits that invalid public interface. No scoped-to-raw coercion is sound or
-authorized. A production interface repair is therefore an explicit obligation
-for a future unfreeze campaign. The current campaign instead requires a
-research-local Lemma-72 analogue with the scoped premise before O9 may close.
+**Mandatory hypothesis/interface flag (R174 reclassification):** frozen CP3
+`deletionTheorem` has a raw-name-global `NoDependentClosingEpisode` premise;
+R137 reuses names allowed by the LOCAL operational rule, outside the missing
+GLOBAL-freshness hypothesis. This is a missing hypothesis at the frozen
+surface, not a production defect. Satisfiability of its raw premise under
+`UniqueRawNameInsertions` must be re-verified. `CP4DeletionTheorem.deletionTheoremProof`
+remains frozen and must not be called; no scoped-to-raw coercion is authorized.
+The research chain instead uses the generation-scoped Lemma-72 analogue.
 
 ### Revision 142: O9 crossing-check budget stop
 
