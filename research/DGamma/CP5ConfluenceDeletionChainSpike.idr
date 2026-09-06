@@ -30472,7 +30472,10 @@ public export
   (core : ClosingFreeTraceCore name key world error value protocol nameEq keyEq
     trace) ->
   ClosingFreeReduction name key world error value protocol nameEq keyEq trace
-assembleClosingFreeAccountingSpike = ?assembleClosingFreeAccountingSpike_rhs
+assembleClosingFreeAccountingSpike {name} {key} {world} {error} {value} nameEq keyEq protocol {initial} {finalState} trace core =
+  scopedClosingReductionFromAccounting name key world error value protocol nameEq keyEq initial finalState trace core
+    (scopedDerivationAccounting name key world error value protocol nameEq keyEq initial finalState (coreReducedFinal core)
+      trace (coreReducedTrace core) (coreDeletionDerivation core))
 
 ||| Complete O10→O11 wrapper retained for existing consumers.
 public export
