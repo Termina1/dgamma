@@ -2430,6 +2430,25 @@ canonicalWorkRangePositionsApart start size nextStart earlierPosition laterPosit
         (plusLteMonotoneLeft start (S earlierPosition) size bounded)) separated)
     (replace {p = LTE nextStart} (sym same) (lteAddRight {m = laterPosition} nextStart))
 
+||| Computable regression view of the actual single-block producer. Public
+||| transparency is intentional here: fixtures reduce this diagnostic to data.
+||| Nothing means grouping remains; Just is an authenticated (start,size), NOT
+||| a complete canonical schedule or an input-placement certificate.
+public export
+0 canonicalWorkOpenBlockRange :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+  Maybe (Nat, Nat)
+canonicalWorkOpenBlockRange name key world error value nameEq keyEq selected trace episode =
+  case canonicalWorkInspectOpenEpisode name key world error value nameEq keyEq selected trace episode of
+    CanonicalWorkOpenReady scanned noLater =>
+      Just (workRangeStart (canonicalWorkCompleteBlock name key world error value nameEq keyEq selected trace episode scanned noLater),
+        workRangeSize (canonicalWorkCompleteBlock name key world error value nameEq keyEq selected trace episode scanned noLater))
+    CanonicalWorkOpenInterleaved scanned laterRemains => Nothing
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
