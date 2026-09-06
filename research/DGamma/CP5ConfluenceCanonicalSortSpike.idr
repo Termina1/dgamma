@@ -947,6 +947,13 @@ canonicalRankExistingForward item inserted rest existing selected present =
     Here => existing
     There later => later
 
+0 canonicalRankPushOldTail : (item : Type) -> (inserted, head : item) -> (rest : List item) ->
+  (selected : item) -> Elem selected (head :: rest) -> Elem selected (head :: inserted :: rest)
+canonicalRankPushOldTail item inserted head rest selected present =
+  case present of
+    Here => Here
+    There later => There (There later)
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
