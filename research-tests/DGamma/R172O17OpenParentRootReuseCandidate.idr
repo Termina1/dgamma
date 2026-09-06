@@ -8,6 +8,8 @@ import DGamma.Unified
 import DGamma.CP3
 import DGamma.CP3Support
 import DGamma.CP4Support
+import DGamma.CP4TerminalRecovery
+import DGamma.CP4RecoveryModelTrace
 import DGamma.CP4RecoveryEffectRespect
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorEndpoint
 import DGamma.CP4SupportSolution
@@ -312,4 +314,14 @@ r172ReuseNoUnload _ Refl (OccursLater (OccursLater (OccursLater (OccursLater (Oc
 r172ReuseNoUnload _ Refl (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater OccursHere)))))) impossible
 r172ReuseNoUnload _ Refl (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater OccursHere))))))) impossible
 r172ReuseNoUnload transition tag (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater (OccursLater later)))))))) = case later of OccursHere impossible; OccursLater rest impossible
+
+public export
+0 r172ReuseAppendRightOccurrence :
+  {first, middle, finalState, before, afterState : SystemState Nat R45Key R45Value Unit String} ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  (transition : Transition before afterState) -> OccursIn transition right ->
+  OccursIn transition (appendTransitions left right)
+r172ReuseAppendRightOccurrence NoTransitions right transition occurs = occurs
+r172ReuseAppendRightOccurrence (MoreTransitions head rest) right transition occurs =
+  OccursLater (r172ReuseAppendRightOccurrence rest right transition occurs)
 
