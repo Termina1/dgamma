@@ -30433,6 +30433,20 @@ scopedDerivationAccounting name key world error value protocol nameEq keyEq init
       (scopedDerivationAccounting name key world error value protocol nameEq keyEq initial (survivingFinal (deletionResult step)) targetFinal
         (survivingTrace (deletionResult step)) target rest)
 
+0 scopedClosingReductionFromAccounting :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
+  (core : ClosingFreeTraceCore name key world error value protocol nameEq keyEq trace) ->
+  ScopedDerivationAccounting name key world error value protocol nameEq keyEq initial finalState (coreReducedFinal core)
+    trace (coreReducedTrace core) (coreDeletionDerivation core) ->
+  ClosingFreeReduction name key world error value protocol nameEq keyEq trace
+scopedClosingReductionFromAccounting name key world error value protocol nameEq keyEq initial finalState trace core accounting =
+  MkClosingFreeReduction (coreReducedFinal core) (coreReducedTrace core) (coreReducedPremises core) (coreClosingFree core)
+    (coreSameExternalInputs core) (coreReplayCorrespondence core) (coreDeletionDerivation core) (coreDeletionGenerationHistory core)
+    (foldedEndpoint accounting) (trans (coreDeletionHistoryExact core) (sym (foldedHistoryExact accounting)))
+    (foldedRegistrationAccounting accounting)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
