@@ -27428,6 +27428,32 @@ scopedWholeBirthCenter name key world error value nameEq keyEq initial finalStat
         (survivingEpisode result) (survivingAfter result) (OInsert child parent component) (retainedOrdinalOccurrence kept)))
     (DeletionEpisodeEmbedding (retainedOrdinalExact kept)))
 
+0 scopedWholeBirthAfter :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) -> (sourceIndex : Nat) ->
+  ScopedBirthCoverage name key world error value (selectedRegistrations candidate) (deletionOriginalBeforeCount result + deletionOriginalEpisodeCount result)
+    (survivingEpisodeEnd result) (survivingFinal result) (survivingAfter result)
+    (generationSubsequenceSourceOrdinal (afterDeletion result)) child parent component sourceIndex ->
+  ScopedWholeBirthCoverage name key world error value nameEq keyEq initial finalState global candidate result child parent component
+    ((deletionOriginalBeforeCount result + deletionOriginalEpisodeCount result) + sourceIndex)
+scopedWholeBirthAfter name key world error value nameEq keyEq initial finalState global candidate result child parent component sourceIndex (Left deleted) = Left deleted
+scopedWholeBirthAfter name key world error value nameEq keyEq initial finalState global candidate result child parent component sourceIndex (Right kept) =
+  Right (scopedWholeRetainedAt name key world error value nameEq keyEq initial finalState global candidate result (OInsert child parent component)
+    ((deletionOriginalBeforeCount result + deletionOriginalEpisodeCount result) + sourceIndex)
+    ((deletionSurvivingBeforeCount result + deletionSurvivingEpisodeCount result) + locatedActionOrdinal (retainedOrdinalOccurrence kept))
+    (replace {p = DeletionSourceOccurrenceAtOrdinal name key world error value (survivingTrace result) (OInsert child parent component)}
+      (plusAssociative (deletionSurvivingBeforeCount result) (deletionSurvivingEpisodeCount result) (locatedActionOrdinal (retainedOrdinalOccurrence kept)))
+      (scopedLocatedAppendRightWitness name key world error value initial (survivingBeforeEnd result) (survivingFinal result)
+        (survivingBefore result) (appendTransitions (survivingEpisode result) (survivingAfter result)) (OInsert child parent component)
+        (deletionSurvivingEpisodeCount result + locatedActionOrdinal (retainedOrdinalOccurrence kept))
+        (scopedLocatedAppendRightOrigin name key world error value (survivingBeforeEnd result) (survivingEpisodeEnd result) (survivingFinal result)
+          (survivingEpisode result) (survivingAfter result) (OInsert child parent component) (retainedOrdinalOccurrence kept))))
+    (DeletionAfterEmbedding (retainedOrdinalExact kept)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
