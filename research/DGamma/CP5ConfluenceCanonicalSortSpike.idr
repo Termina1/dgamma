@@ -1205,6 +1205,12 @@ canonicalSupportOrderingFromSort name key world error value protocol nameEq keyE
           (supportPathRankIncreases {name = name} {key = key} {value = value} {world = world} {error = error}
             protocol nameEq state ranked parentRanked path)) lowerIn upperIn))
 
+||| Concrete reduction checks: nonmonotone ranks with a duplicate, and stable equal-rank names.
+0 canonicalRankSortConcreteChecks :
+  (rankSortedItems (canonicalStableRankSort Nat %search (\selected => selected) [3, 1, 2, 1, 0]) = [0, 1, 2, 3],
+   rankSortedItems (canonicalStableRankSort Nat %search (\selected => 0) [3, 1, 2]) = [3, 1, 2])
+canonicalRankSortConcreteChecks = (Refl, Refl)
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
