@@ -29525,6 +29525,21 @@ scopedActionDropHeadAfter name key world error value first middle finalState tra
 scopedActionDropHeadAfter name key world error value first middle finalState transition rest cut _ action conclusion continue
   (ScopedActionLater {ordinal} _ _ path) later = continue ordinal path (fromLteSucc later)
 
+0 scopedActionAfterCut :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, before, afterState, finalState : SystemState name key value world error) ->
+  (leading : Transitions first before) -> (transition : Transition before afterState) -> (rest : Transitions afterState finalState) ->
+  (ordinal : Nat) -> (action : Action name key value world error) ->
+  ScopedActionAt name key world error value (appendTransitions leading (MoreTransitions transition rest)) ordinal action ->
+  LT (transitionCount leading) ordinal -> ActionOccurs action rest
+scopedActionAfterCut name key world error value _ before afterState finalState NoTransitions transition rest ordinal action atAction later =
+  scopedActionBeyondHead name key world error value before afterState finalState transition rest ordinal action atAction later
+scopedActionAfterCut name key world error value first before afterState finalState (MoreTransitions head tail) transition rest ordinal action atAction later =
+  scopedActionDropHeadAfter name key world error value first _ finalState head (appendTransitions tail (MoreTransitions transition rest))
+    (transitionCount tail) ordinal action (ActionOccurs action rest)
+    (\index, path, afterCut => scopedActionAfterCut name key world error value _ before afterState finalState tail transition rest index action path afterCut)
+    atAction later
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
