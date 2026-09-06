@@ -20023,6 +20023,16 @@ scopedControlParentExact name key world error value _ _
 scopedStaticParentExact name key world error value _ _
   (FibersStaticRelated leftParent rightParent leftRetired rightRetired leftTable rightTable leftLife rightLife parentSame retiredSame) = parentSame
 
+0 scopedSelectedParentExact :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected, actor : name) ->
+  (left, right : Fiber name key value world error) ->
+  SelectedFiberControlsRelated name key world error value selected actor left right ->
+  (fiberParent left = fiberParent right)
+scopedSelectedParentExact name key world error value selected actor left right (SelectedFiberControls same static) =
+  scopedStaticParentExact name key world error value left right static
+scopedSelectedParentExact name key world error value selected actor left right (ForeignFiberControls distinct controls) =
+  scopedControlParentExact name key world error value left right controls
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
