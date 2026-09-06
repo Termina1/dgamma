@@ -29819,6 +29819,34 @@ scopedHistoryAppendExact item index keyOf [] right = Refl
 scopedHistoryAppendExact item index keyOf (head :: rest) right =
   cong (keyOf head ::) (scopedHistoryAppendExact item index keyOf rest right)
 
+0 scopedStepHistoryExact :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (step : DeletionChainStep name key world error value protocol nameEq keyEq trace premises candidate) ->
+  (history : List (generation : RegistrationGeneration name ** DeletedGenerationClassification name key world error value nameEq (survivingTrace (deletionResult step)) generation)) ->
+  (map DGamma.CP5ConfluenceDeletionChainSpike.classifiedGeneration
+    (scopedClassifiedGenerations name key world error value nameEq initial finalState trace (selectedRegistrations candidate) (deletionGenerationClassified step) ++
+      map (scopedPullDeletedClassification name key world error value nameEq keyEq initial finalState trace candidate (deletionResult step)) history) =
+    selectedRegistrations candidate ++ map (generationBackward (deletionProducerGenerationRenaming (deletionProducerCapital step)))
+      (map DGamma.CP5ConfluenceDeletionChainSpike.classifiedGeneration history))
+scopedStepHistoryExact name key world error value protocol nameEq keyEq initial finalState trace premises candidate step history =
+  trans (scopedHistoryAppendExact
+    (generation : RegistrationGeneration name ** DeletedGenerationClassification name key world error value nameEq trace generation)
+    (RegistrationGeneration name) classifiedGeneration
+    (scopedClassifiedGenerations name key world error value nameEq initial finalState trace (selectedRegistrations candidate) (deletionGenerationClassified step))
+    (map (scopedPullDeletedClassification name key world error value nameEq keyEq initial finalState trace candidate (deletionResult step)) history))
+    (cong2 (++) (scopedClassifiedGenerationsExact name key world error value nameEq initial finalState trace (selectedRegistrations candidate) (deletionGenerationClassified step))
+      (scopedHistoryMapExact
+        (generation : RegistrationGeneration name ** DeletedGenerationClassification name key world error value nameEq trace generation)
+        (generation : RegistrationGeneration name ** DeletedGenerationClassification name key world error value nameEq (survivingTrace (deletionResult step)) generation)
+        (RegistrationGeneration name) (RegistrationGeneration name)
+        (scopedPullDeletedClassification name key world error value nameEq keyEq initial finalState trace candidate (deletionResult step))
+        classifiedGeneration classifiedGeneration (generationBackward (deletionProducerGenerationRenaming (deletionProducerCapital step)))
+        (scopedPullClassificationGeneration name key world error value nameEq keyEq initial finalState trace candidate (deletionResult step) (deletionProducerCapital step)) history))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
