@@ -3565,6 +3565,36 @@ canonicalWorkInstalledPairRejectsBegin name key world error value nameEq keyEq s
     transitionAction (workPairRight pair)
 canonicalWorkReindexPairRightAction name key world error value selected _ _ Refl pair = Refl
 
+||| The EXISTING whole-episode selection producer returns the same observed
+||| right action as its exact installed residual selection. No replacement
+||| selector or stronger pair record is introduced.
+0 canonicalWorkEpisodePairRightAction :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+  (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
+  (remains : Not (NoLifecycleBy selected (workActorRest scanned))) ->
+  transitionAction (workPairRight (canonicalWorkGroupingPairForEpisode name key world error value
+    nameEq keyEq selected trace episode scanned remains)) =
+  transitionAction (workPairRight (canonicalWorkGroupingFromBoundary name key world error value
+    nameEq selected (workActorRest scanned) (workPrefixBoundary scanned) remains))
+canonicalWorkEpisodePairRightAction name key world error value nameEq keyEq selected trace episode scanned remains =
+  canonicalWorkReindexPairRightAction name key world error value selected
+    (appendTransitions
+      (appendTransitions (openPrefix episode) (MoreTransitions (beginTransition (openBegin episode)) (workActorPrefix scanned)))
+      (workActorRest scanned)) trace
+    (trans (appendTransitionsAssociative (openPrefix episode)
+      (MoreTransitions (beginTransition (openBegin episode)) (workActorPrefix scanned)) (workActorRest scanned))
+      (trans (cong (\inside => appendTransitions (openPrefix episode) (MoreTransitions (beginTransition (openBegin episode)) inside))
+        (workPrefixDecomposition scanned)) (openDecomposition episode)))
+    (canonicalWorkGroupingPairPrepend name key world error value selected
+      (appendTransitions (openPrefix episode) (MoreTransitions (beginTransition (openBegin episode)) (workActorPrefix scanned)))
+      (workActorRest scanned)
+      (canonicalWorkGroupingFromBoundary name key world error value nameEq selected
+        (workActorRest scanned) (workPrefixBoundary scanned) remains))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
