@@ -1606,6 +1606,27 @@ canonicalRootInsertionHoistFromDiamond name key world error value protocol nameE
         (canonicalRootInsertPairExternal name key world error value nameEq keyEq left right root component leftActivation rootAction diamond))
       (trans (movedRightAction diamond) rootAction)
 
+||| A genuine nontrivial root insertion hoist, with no supplied target, diamond or external-order proof.
+0 canonicalRootInsertionHoist :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) -> (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (appendTransitions prefixTrace (MoreTransitions left (MoreTransitions right suffix)) = original) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  (root : name) -> (component : Component key value world error) ->
+  PaperActivationStep left -> (transitionAction right = OInsert root Root component) ->
+  Not (transitionActor left = root) ->
+  CanonicalRootInsertionHoist name key world error value protocol nameEq keyEq original prefixTrace left right suffix root component
+canonicalRootInsertionHoist name key world error value protocol nameEq keyEq original prefixTrace left right suffix
+  decomposition premises root component leftActivation rootAction different =
+    canonicalRootInsertionHoistFromDiamond name key world error value protocol nameEq keyEq original prefixTrace left right suffix
+      decomposition premises root component leftActivation rootAction
+      (canonicalRootInsertHoistDiamond name key world error value protocol nameEq keyEq original prefixTrace left right suffix
+        decomposition premises root component leftActivation rootAction different)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
