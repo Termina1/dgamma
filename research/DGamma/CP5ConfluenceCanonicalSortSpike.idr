@@ -2164,6 +2164,7 @@ canonicalWorkInspectScanned name key world error value nameEq keyEq selected tra
     No laterRemains => CanonicalWorkOpenInterleaved scanned laterRemains
 
 ||| Actual finite episode inspection: no caller-provided prefix or block.
+public export
 0 canonicalWorkInspectOpenEpisode :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
