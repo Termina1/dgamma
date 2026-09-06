@@ -174,3 +174,27 @@ public export
 r172ReuseRelatedBind Nothing Nothing after respects PartialUndefined = PartialUndefined
 r172ReuseRelatedBind (Just left) (Just right) after respects (PartialDefined related) = respects related
 
+public export
+0 r172ReuseTransformationRespects : (actor : Nat) ->
+  (transformation : TraceEffectTransformation Nat R45Key Unit String R45Value actor r172ReuseTrace) ->
+  PartialMapsRelated (EffectStateEquivalence r45KeyEq)
+    (runTraceEffectTransformation transformation) (runTraceEffectTransformation transformation)
+r172ReuseTransformationRespects actor TraceIdentity related = PartialDefined related
+r172ReuseTransformationRespects actor (TraceGenerator generator) related = replayTraceGeneratorMapRespects r45KeyEq generator related
+r172ReuseTransformationRespects actor (TraceCompose after before) {x} {y} related =
+  composed (runTraceEffectTransformation before x) (runTraceEffectTransformation before y)
+    Refl Refl (r172ReuseTransformationRespects actor before related)
+  where
+  0 composed :
+    (leftMiddle, rightMiddle : Maybe (EffectState Nat R45Key R45Value Unit)) ->
+    runTraceEffectTransformation before x = leftMiddle ->
+    runTraceEffectTransformation before y = rightMiddle ->
+    PartialRelated (EffectState Nat R45Key R45Value Unit) (EffectStateRelated r45KeyEq) leftMiddle rightMiddle ->
+    PartialRelated (EffectState Nat R45Key R45Value Unit) (EffectStateRelated r45KeyEq)
+      (partialCompose (runTraceEffectTransformation after) (runTraceEffectTransformation before) x)
+      (partialCompose (runTraceEffectTransformation after) (runTraceEffectTransformation before) y)
+  composed Nothing Nothing leftRuns rightRuns PartialUndefined =
+    rewrite leftRuns in rewrite rightRuns in PartialUndefined
+  composed (Just left) (Just right) leftRuns rightRuns (PartialDefined middleRelated) =
+    rewrite leftRuns in rewrite rightRuns in r172ReuseTransformationRespects actor after middleRelated
+
