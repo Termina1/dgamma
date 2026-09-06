@@ -3258,6 +3258,25 @@ canonicalWorkReachedShapeFromInput name key world error value nameEq keyEq proto
   canonicalWorkReachedShape name key world error value nameEq keyEq protocol original premises
     (canonicalWorkShapeNoClosing name key world error value nameEq keyEq original shape) current
 
+||| Reinspect all block ranges/order at the same ACTUAL reached trace after
+||| deriving its shape. A blocked worklist remains blocked, not falsely sorted.
+0 canonicalWorkInspectReachedDerived :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  ClosingFreeTraceShape name key world error value nameEq keyEq original ->
+  (ordering : SupportOrderingCapital name key world error value nameEq keyEq originalFinal) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (current : CanonicalSortingReplayState name key world error value protocol nameEq keyEq original) ->
+  CanonicalSortingWorklist name key world error value protocol nameEq keyEq original ordering
+canonicalWorkInspectReachedDerived name key world error value nameEq keyEq protocol
+  original premises shape ordering unique current =
+    canonicalWorkInspectReached name key world error value protocol nameEq keyEq original premises ordering unique current
+      (canonicalWorkReachedShapeFromInput name key world error value nameEq keyEq protocol original premises shape current)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
