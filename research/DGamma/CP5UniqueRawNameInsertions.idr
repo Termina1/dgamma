@@ -55,3 +55,19 @@ public export
   (rawInsertionNameAt name key world error value Z (MoreTransitions step rest) = Just selected)
 rawInsertionNameAtHead name key world error value selected parent component
   (Fired nameEq keyEq action tag checked) rest same = rewrite same in Refl
+
+public export
+0 rawInsertionNameAtSplit :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {initial, before, afterState, finalState : SystemState name key value world error} ->
+  (selected : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (earlier : Transitions initial before) ->
+  (step : Transition before afterState) -> (rest : Transitions afterState finalState) ->
+  (transitionAction step = OInsert selected parent component) ->
+  (rawInsertionNameAt name key world error value (transitionCount earlier)
+    (appendTransitions earlier (MoreTransitions step rest)) = Just selected)
+rawInsertionNameAtSplit name key world error value selected parent component NoTransitions step rest same =
+  rawInsertionNameAtHead name key world error value selected parent component step rest same
+rawInsertionNameAtSplit name key world error value selected parent component (MoreTransitions head tail) step rest same =
+  rawInsertionNameAtSplit name key world error value selected parent component tail step rest same
