@@ -30261,6 +30261,25 @@ scopedRemovalRight name key world error value initial sourceFinal middleFinal ta
           (trans (scopedBackwardInjective name renaming (registrationGeneration (canonicalToOriginal right birth)) (registrationGeneration occurrence)
             (trans (sym (sealedAccountingBackward left (canonicalToOriginal right birth))) (trans same (sealedAccountingBackward left occurrence)))) (fst evidence))))
 
+0 scopedCumulativeRegistrationRemoved :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (initial, sourceFinal, middleFinal, targetFinal : SystemState name key value world error) ->
+  (source : Transitions initial sourceFinal) -> (middle : Transitions initial middleFinal) -> (target : Transitions initial targetFinal) ->
+  (leftWithdrawn, rightWithdrawn : List (RegistrationGeneration name)) -> (renaming : RegistrationGenerationBijection name) ->
+  (left : ScopedCanonicalAccounting name key world error value initial sourceFinal middleFinal source middle leftWithdrawn renaming) ->
+  (right : CanonicalRegistrationCorrespondence middle target rightWithdrawn) ->
+  (generation : RegistrationGeneration name) ->
+  Elem generation (leftWithdrawn ++ map (generationBackward renaming) rightWithdrawn) ->
+  ScopedRegistrationRemoval name key world error value initial sourceFinal targetFinal source target (\birth => canonicalToOriginal (sealedAccounting left) (canonicalToOriginal right birth)) generation
+scopedCumulativeRegistrationRemoved name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right =
+  scopedAppendMembership (RegistrationGeneration name)
+    (ScopedRegistrationRemoval name key world error value initial sourceFinal targetFinal source target (\birth => canonicalToOriginal (sealedAccounting left) (canonicalToOriginal right birth)))
+    leftWithdrawn (map (generationBackward renaming) rightWithdrawn)
+    (\generation, member => scopedRemovalLeft name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right generation (withdrawnRegistrationRemoved (sealedAccounting left) generation member))
+    (scopedMappedMembership (RegistrationGeneration name) (RegistrationGeneration name) (generationBackward renaming)
+      (ScopedRegistrationRemoval name key world error value initial sourceFinal targetFinal source target (\birth => canonicalToOriginal (sealedAccounting left) (canonicalToOriginal right birth))) rightWithdrawn
+      (\generation, member => scopedRemovalRight name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right generation (withdrawnRegistrationRemoved right generation member)))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
