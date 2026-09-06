@@ -27824,6 +27824,18 @@ scopedSubsequenceKeptBirthFresh name key world error value nameEq registered del
           (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) _ sourceFinal targetFirst targetFinal source target tail child parent component
           occurrence predecessor tailExact))
 
+||| A kept birth carries one exact global source embedding and proof that its birth was not withdrawn.
+record ScopedWholeFreshOrdinal
+  (name, key, world, error : Type) (value : key -> Type) (nameEq : DecEq name) (keyEq : DecEq key)
+  (initial, finalState : SystemState name key value world error) (global : Transitions initial finalState)
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global)
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) (child : name) (targetIndex : Nat) where
+  constructor MkScopedWholeFreshOrdinal
+  freshSourceIndex : Nat
+  0 freshSourceEmbedding : DeletionSurvivingOrdinalEmbedding result targetIndex freshSourceIndex
+  0 freshSourceExcluded : Not (Elem (MkRegistrationGeneration child freshSourceIndex) (selectedRegistrations candidate))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
