@@ -2086,6 +2086,20 @@ canonicalWorkDecNoLifecycle name key world error value nameEq selected (MoreTran
       Yes same => No (\whole => case whole of
         NoLifecycleByStep head tail excluded tailExcluded => excluded lifecycle same)
 
+0 canonicalWorkInstalledPrefix :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (prefixTrace : Transitions first middle) -> (suffix : Transitions middle finalState) ->
+  InstalledTrace name key world error value nameEq keyEq selected (appendTransitions prefixTrace suffix) ->
+  InstalledTrace name key world error value nameEq keyEq selected prefixTrace
+canonicalWorkInstalledPrefix name key world error value nameEq keyEq selected NoTransitions suffix installed =
+  InstalledEnd (installedTraceStart installed)
+canonicalWorkInstalledPrefix name key world error value nameEq keyEq selected (MoreTransitions _ rest) suffix
+  (InstalledStep action tag checked _ sourceInstalled tailInstalled) =
+    InstalledStep action tag checked rest sourceInstalled
+      (canonicalWorkInstalledPrefix name key world error value nameEq keyEq selected rest suffix tailInstalled)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
