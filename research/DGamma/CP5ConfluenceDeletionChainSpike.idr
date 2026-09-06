@@ -28940,7 +28940,9 @@ public export
     (selectedStartLive candidate) (selectedEpisode candidate)) ->
   DeletionChainStep name key world error value protocol nameEq keyEq trace
     premises candidate
-enrichDeletionChainStepSpike = ?enrichDeletionChainStepSpike_rhs
+enrichDeletionChainStepSpike {name} {key} {world} {error} {value} nameEq keyEq protocol {initial} {finalState} trace premises candidate noDependent =
+  scopedEnrichedStepFromExternal name key world error value protocol nameEq keyEq initial finalState trace premises candidate
+    (scopedEnrichedDeletionFoldsFromPremises name key world error value protocol nameEq keyEq initial finalState trace premises candidate noDependent)
 
 public export
 classifiedGeneration :
