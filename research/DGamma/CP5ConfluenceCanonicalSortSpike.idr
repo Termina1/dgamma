@@ -2978,6 +2978,17 @@ canonicalRootInsertionHoistActual name key world error value protocol nameEq key
         (canonicalSortingPairAligned name key world error value protocol nameEq keyEq original earlier left right suffix decomposition premises)
         activation (transitionActor left) Refl root Root component inserted)
 
+||| Surface-independent occurrence capital: the actual last transition in a
+||| snoc prefix, without comparing dependent transition proof terms.
+0 canonicalWorkSnocOccurrence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {initial, before, afterState : SystemState name key value world error} ->
+  (earlier : Transitions initial before) -> (step : Transition before afterState) ->
+  OccursIn step (appendTransitions earlier (MoreTransitions step NoTransitions))
+canonicalWorkSnocOccurrence name key world error value NoTransitions step = OccursHere
+canonicalWorkSnocOccurrence name key world error value (MoreTransitions head tail) step =
+  OccursLater (canonicalWorkSnocOccurrence name key world error value tail step)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
