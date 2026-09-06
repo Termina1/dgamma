@@ -26610,6 +26610,29 @@ scopedDeletionEmbeddedOrdinalPath name key world error value nameEq keyEq initia
     appendRightPath (wholeOrdinalJoin segments) originalOrdinal survivingOrdinal
       (originPath (suffixOrdinalSegment segments) originalOrdinal survivingOrdinal exact)
 
+||| Project the permutation equation at the frozen whole source occurrence's stored embedding.
+0 scopedDeletionWholeOrdinal :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (segments : ScopedDeletionOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result) ->
+  (witness : ScopedOrdinalSpinePermutationWitness (joinedOrdinalSpine (wholeOrdinalJoin segments))) ->
+  {action : Action name key value world error} -> (occurrence : LocatedActionOccurrence action (survivingTrace result)) ->
+  (ordinalForward (spinePermutation witness)
+    (locatedActionOrdinal (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+      (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result occurrence))) = locatedActionOrdinal occurrence)
+scopedDeletionWholeOrdinal name key world error value nameEq keyEq initial finalState global candidate result segments witness occurrence =
+  forwardOnPath witness
+    (locatedActionOrdinal (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+      (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result occurrence))) (locatedActionOrdinal occurrence)
+    (scopedDeletionEmbeddedOrdinalPath name key world error value nameEq keyEq initial finalState global candidate result segments
+      (locatedActionOrdinal (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+        (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result occurrence))) (locatedActionOrdinal occurrence)
+      (deletionWholeOrdinalEmbedding (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+        (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result occurrence)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
