@@ -573,3 +573,174 @@ negative fixtures rejected at the same intended diagnostics, and seeded
 **Merely stated:** eight remaining research holes, **2/4/1/0/1**. O11 is untouched **0/3** at this gate.
 
 **Next:** await mandatory O10 milestone ruling before O11. No new attempt after 07:11:08 UTC. Independent reviewer acceptance remains required.
+
+## O10 milestone ruling and Unit D — O11 time-guard park
+
+The supervisor independently ratified O10 at `a5d497a`, checking the exact
+three-line `dd3ed2d` body, Nat accessibility over the actual strict decrease,
+clean tree, production equality, no live compiler, the **8 = 2/4/1/0/1** census,
+and the non-shortcut original-trace history chain. O11 was then authorized
+under this additional binding time ruling:
+
+> If O11 is a direct application of existing capital (like O9/O10), attempt it
+> now. If it needs NEW capital micro-units beyond what fits before 07:11:08,
+> do NOT start the chain — record the exact remaining producer list in the
+> audit and gate at the safe committed boundary; O11 passes to R171 with full
+> authorization. Do not compress the protocol to beat the clock.
+
+**O11 is not a direct application of existing capital.** Read-only inspection
+found the following unproduced obligations. No O11 body or capital chain was
+opened after that ruling. O11 remains **0/3**, its original signature and hole
+byte-unchanged. This is the authorized **time-budget park**, not a 3/3 failure,
+a checked counterexample, structural impossibility, or a semantic route change.
+Last proof source commit is **`dd3ed2d`**; subsequent commits are audit-only.
+
+### Exact remaining producer list for O11 / R171
+
+1. **Identity cumulative accounting at `ClosingFreeDeletionDone`.** Construct
+   `CanonicalEndpointRelation state state` with empty actual omissions and
+   empty historical withdrawals, plus identity
+   `CanonicalRegistrationCorrespondence trace trace []`. The existing core
+   identity contains replay and the empty typed history, not these two records.
+
+2. **Constructor-owned generation seal for history pullback.** R170's
+   `scopedPullDeletedClassification` proves the authentic source child birth
+   and its later original parent close. Cumulative accounting additionally
+   needs its exact numeric generation equation at the same O9 operational
+   bijection and frozen origin, and the raw-name-preservation projection.
+   Construct the pulled classification and these equations together, rather
+   than proving an opaque separately computed history map correct afterward.
+   Use `deletionOccurrenceCorrespondenceExact`, the generated ordinal seal,
+   and both inverse laws; do not infer a birth from raw-name membership.
+
+3. **Exact cumulative withdrawal/history recurrence.** At a derivation step,
+   current selected generations belong to the current source, whereas tail
+   historical generations belong to its survivor. Pull every tail generation
+   back before forming the original-source cumulative list. Prove the precise
+   map/append equation for the classified list that the accounting producer
+   returns. Do not append untransported survivor ordinals to source ordinals.
+   The existing O10 producer builds the entire typed list by this authentic
+   pullback, but its public Core record stores no completeness/alignment
+   equation; a bare arbitrary `coreDeletionGenerationHistory` cannot be
+   treated as if it carried one.
+
+4. **Cumulative endpoint composition across the actual intermediate state.**
+   Compose exact effects and outside controls, retain actual final raw-name
+   omissions, and produce `WithdrawnNameResult` for each composed omission.
+   Its source-present branch must retain retirement, inactivity and literal
+   empty owned-table bindings, not merely final absence. Compose the omitted
+   raw name's justification by a historical source generation using (2)/(3).
+   Keep current raw omissions separate from historical withdrawn births;
+   a later live root reusing a removed child's name must remain outside the
+   actual omission set.
+
+5. **Full bidirectional canonical registration composition at one exact
+   occurrence map.** Produce all four unchanged record clauses:
+   `canonicalToOriginal`, `originalRegistrationAccounted`,
+   `canonicalOccurrenceInjective`, and `withdrawnRegistrationRemoved`.
+   Coverage needs the exact forward-on-birth / inverse-generation seal when
+   equal survivor generations arise from distinct existential occurrence
+   witnesses. Injectivity and exclusion must remain at the chosen **actual
+   composed** original occurrence map, not at a filler occurrence or an
+   arbitrary replacement. Strict temporal transport of later parent closes is
+   already supplied by R170 C2–C17; that part must be reused, not re-assumed.
+
+6. **A sealed derivation accounting fold, then the O11 constructor.** The fold
+   over `coreDeletionDerivation` should produce the cumulative endpoint,
+   classified history, its exact alignment equation, and full registration
+   accounting together at `coreReducedTrace`. Then construct the unchanged
+   `ClosingFreeReduction`, retaining all core trace/premise/closing-free,
+   SameExternal, semantic replay and recursive derivation fields.
+
+These are several independent producer/equality micro-units, not a safe
+single-declaration assembler within the remaining roughly twenty-minute attempt
+window. Starting only a subset would violate the supervisor's explicit ruling.
+
+### Research-surface coherence caution, not a claimed refutation
+
+`ClosingFreeTraceCore.coreDeletionGenerationHistory` is a typed list without a
+field equating it to the recursive derivation's complete history. Similarly,
+`DeletionChainStep` seals its operational occurrence correspondence but has no
+explicit field equating `canonicalToOriginal deletionRegistrationAccounting`
+to that operational origin. The actual R170 O9/O10 producers use the authentic
+choices; arbitrary public record constructors are not entitled to the same
+unstored equations. An O11 proof must not silently assume those equalities,
+assume proof irrelevance of occurrence records, or use generation injectivity
+backwards as if it were forward-on-birth extensionality.
+
+A simultaneous derivation/history/accounting witness at the live producer is
+the established cure family to try first. Whether the existing generic Core
+consumer can derive all needed coherence or requires a narrowly authorized
+research-only constructor-owned field is a review/design question for R171;
+no such field or public premise was added here. Production remains frozen.
+This inspection has not established that O11's type is false or that an
+owner-level unfreeze is necessary.
+
+## Final validation and scope evidence
+
+Final-source validation is at proof HEAD **`dd3ed2d`** (audit HEAD `a5d497a`
+before this final documentation commit). The full O10 gate batch above follows
+all source changes; no later proof attempt occurred. A further asserting
+read-only validation at **06:53:54 UTC** confirmed:
+
+- Exact O9, O10 and O11 signatures equal their `66f17c1` signatures; only O9/O10
+  bodies changed. O11 retains `?assembleClosingFreeAccountingSpike_rhs`.
+- Changed paths are exactly this audit and
+  `research/DGamma/CP5ConfluenceDeletionChainSpike.idr`.
+- **87** checked implementation commits; **81** new declarations;
+  **91** implementation invocations (**87** successes, **4** corrected failures).
+  Two six-check milestone batches give **103** total compiler invocations:
+  **93** exit 0, **6** expected negative-fixture rejections, **4** budgeted
+  implementation failures. No new compiler warning beyond the inherited
+  `surviving` shadowing warning. Every implementation success and every fixture
+  run has its own fresh target `Building` marker.
+- All compiler windows sequential. Maximum sampled RSS **5,056,096 KiB**
+  (about **4.82 GiB**); this is a sampled maximum, not an OS exact peak.
+  No orphan, OOM, LocalDiamond rebuild, TTC deletion or from-scratch package run.
+- **8 = CanonicalSort 2 / CrossTrace 4 / DeletionChain 1 / LocalDiamond 0 /
+  RenamingComposition 1**, hole delta **-2**. All other hole names unchanged.
+- `adjacentSwapSuffixSpike` full definition **1470 bytes**, SHA-256
+  `2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf`;
+  statement prefix **1154 bytes**, SHA-256
+  `3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf`.
+  Extraction starts at `0 adjacentSwapSuffixSpike :`, excludes its preceding
+  visibility keyword and following newline, and verifies that newline.
+- LocalDiamond diff versus `66f17c1`: **EMPTY**, complete byte equality, zero
+  holes, **no exported names/consumers to list** because no visibility edit.
+- Production `src/` + `dgamma.ipkg` diff versus `34b21c9`: **EMPTY**.
+  CP3 blob **`2c697e532e83989de8591fa6a4378747c6a501c0`**;
+  ipkg blob **`da0c007ee08c4648e459296eb6f0e72a40e2ac89`**.
+  Retained production TTC seed **207/207**, missing list empty; seeded package
+  build passed after the final proof edit.
+- Adversarial review SHA-256 unchanged:
+  `61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8`.
+  The file was never modified, staged, committed or deleted.
+- No new escape hatch, hole, with-block, let alias, frozen deletion theorem
+  invocation, production edit or forbidden proof-lane edit. Whitespace check
+  passed across the whole shift diff. **No staged files**; only permitted
+  untracked `paper/` and `review-o6-body-adversarial.md`, no stray research file.
+
+No runtime example or new test is claimed. The targeted R11/R10 fixtures were
+rerun twice; the wider fixture suite was not run. Independent reviewer/owner
+acceptance is required; reproducible self-validation is not independent review.
+
+## Status
+
+**Fully proved:** the exact source-only SameExternalOrchestration producer,
+all live kept/deleted root-role retention, unconditional full enriched step
+assembler, **O9** (`89435dc`), and full total **O10** (`dd3ed2d`) with authentic
+original-trace classified history, complete target premises and exact recursive
+deletion derivation. O9 and O10 milestone closures are supervisor-ratified.
+
+**Partial:** cumulative endpoint/withdrawal/bidirectional registration accounting.
+The exact remaining O11 producer chain is listed above. No completeness equation
+for arbitrary Core histories or accounting-map coherence is silently assumed.
+
+**Merely stated:** **O11, 0/3**, and the other seven research holes, overall
+**8 = 2/4/1/0/1**. Theorem 73 and a complete canonical reduction are not claimed.
+
+**Next:** R171 resumes the authorized O11 producer/accounting chain under fresh
+micro-unit budgets and the same frozen production/occurrence surfaces. Resolve
+any research-surface coherence requirement explicitly; never weaken the target
+bundle, skip history entries, cast scoped exclusion to the raw predicate, call
+frozen `deletionTheoremProof`, or expand to O14/O17/O19/O21 withdrawal work.
