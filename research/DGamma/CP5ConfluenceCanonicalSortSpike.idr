@@ -2024,6 +2024,24 @@ record CanonicalWorkActorPrefix
   0 workPrefixCountSplit : transitionCount workActorPrefix + transitionCount workActorRest = transitionCount trace
   0 workPrefixBoundary : CanonicalWorkActorBoundary selected workActorRest
 
+0 canonicalWorkActorPrefixCons :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  CanonicalWorkActorStep selected step ->
+  CanonicalWorkActorPrefix name key world error value selected rest ->
+  CanonicalWorkActorPrefix name key world error value selected (MoreTransitions step rest)
+canonicalWorkActorPrefixCons name key world error value selected step rest (CanonicalWorkLifecycle lifecycle actor) tail =
+  MkCanonicalWorkActorPrefix (workPrefixEnd tail) (MoreTransitions step (workActorPrefix tail)) (workActorRest tail)
+    (ActorLifecycleStep step (workActorPrefix tail) lifecycle actor (workPrefixActorOnly tail))
+    (cong (MoreTransitions step) (workPrefixDecomposition tail))
+    (cong S (workPrefixCountSplit tail)) (workPrefixBoundary tail)
+canonicalWorkActorPrefixCons name key world error value selected step rest (CanonicalWorkRegistration action) tail =
+  MkCanonicalWorkActorPrefix (workPrefixEnd tail) (MoreTransitions step (workActorPrefix tail)) (workActorRest tail)
+    (ActorYieldedRegistrationStep step (workActorPrefix tail) action (workPrefixActorOnly tail))
+    (cong (MoreTransitions step) (workPrefixDecomposition tail))
+    (cong S (workPrefixCountSplit tail)) (workPrefixBoundary tail)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
