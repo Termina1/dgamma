@@ -30057,6 +30057,13 @@ scopedCumulativeNamesWithdrawn name key world error value nameEq keyEq source mi
     (\actor, member => scopedWithdrawalRightAt name key world error value nameEq keyEq actor source middle target left
       (isElem @{nameEq} actor (endpointWithdrawnNames left)) (endpointNamesWithdrawn right actor member))
 
+0 scopedCumulativeBirthLeft :
+  (name : Type) -> (left, right : List (RegistrationGeneration name)) -> (actor : name) ->
+  (birth : Nat ** Elem (MkRegistrationGeneration actor birth) left) ->
+  (birth : Nat ** Elem (MkRegistrationGeneration actor birth) (left ++ right))
+scopedCumulativeBirthLeft name left right actor (birth ** member) =
+  (birth ** scopedAppendMemberLeft (RegistrationGeneration name) left right (MkRegistrationGeneration actor birth) member)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
