@@ -802,6 +802,17 @@ record CanonicalActiveRank
   activeProtocolRank : Nat
   0 activeProtocolRankExact : (registrationRank protocol (fiberComponent activeRankFiber) = Just activeProtocolRank)
 
+||| Missing lookup is observed at the actual exported predicate.
+0 canonicalSupportedActiveAtMissing :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (state : SystemState name key value world error) -> (selected : name) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry state) = Nothing) ->
+  (supportedActiveAt {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected state = False)
+canonicalSupportedActiveAtMissing name key world error value nameEq state selected found =
+  rewrite found in Refl
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
