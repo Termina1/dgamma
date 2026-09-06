@@ -3175,6 +3175,18 @@ canonicalWorkActionOccursAppendSplit name key world error value action (MoreTran
       Left before => Left (ActionOccursLater head tail before)
       Right after => Right after
 
+||| Embed a real suffix action occurrence under its actual earlier prefix.
+0 canonicalWorkActionOccursUnderPrefix :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (action : Action name key value world error) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (earlier : Transitions first middle) -> (later : Transitions middle finalState) ->
+  ActionOccurs action later -> ActionOccurs action (appendTransitions earlier later)
+canonicalWorkActionOccursUnderPrefix name key world error value action NoTransitions later occurs = occurs
+canonicalWorkActionOccursUnderPrefix name key world error value action (MoreTransitions head tail) later occurs =
+  ActionOccursLater head (appendTransitions tail later)
+    (canonicalWorkActionOccursUnderPrefix name key world error value action tail later occurs)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
