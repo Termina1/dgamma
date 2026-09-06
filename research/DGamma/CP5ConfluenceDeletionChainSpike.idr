@@ -27073,6 +27073,19 @@ scopedSelectedGeneratedClassification name key world error value nameEq keyEq in
         (scopedSelectedBirthGeneration name key world error value nameEq keyEq initial finalState global selected child component episode birth)
         (scopedSelectedBirthClosing name key world error value nameEq keyEq initial finalState global selected child component episode birth))
 
+0 scopedDeletionGenerationClassified :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (generation : RegistrationGeneration name) -> Elem generation (selectedRegistrations candidate) ->
+  DeletedGenerationClassification name key world error value nameEq global generation
+scopedDeletionGenerationClassified name key world error value nameEq keyEq initial finalState global candidate generation member =
+  scopedSelectedGeneratedClassification name key world error value nameEq keyEq initial finalState global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedStartOrdinal candidate)
+    (generationScanOrdinalCount nameEq 0 [] (traceBeforeOpening (selectedEpisode candidate))
+      (selectedStartOrdinal candidate) (selectedStartLive candidate) (selectedBeforeScan candidate)) generation
+    (fst (selectedRegisteredDuring candidate) generation member)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
