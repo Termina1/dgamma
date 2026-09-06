@@ -20043,6 +20043,21 @@ scopedSelectedParentExact name key world error value selected actor left right (
 scopedLookupRootMatched name key world error value nameEq _ current left right leftTail rightTail parents Refl exact =
   rewrite exact in cong scopedParentRoot parents
 
+0 scopedLookupRootHeadAt :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (wanted, current : name) -> (left, right : Fiber name key value world error) ->
+  (leftTail, rightTail : List (Binding name (FiberAt name key value world error))) ->
+  (fiberParent left = fiberParent right) ->
+  (maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupEntries @{nameEq} wanted leftTail) =
+   maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupEntries @{nameEq} wanted rightTail)) ->
+  (comparison : Dec (wanted = current)) -> (decEq @{nameEq} wanted current = comparison) ->
+  (maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupEntries @{nameEq} wanted (Bind current left :: leftTail)) =
+   maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupEntries @{nameEq} wanted (Bind current right :: rightTail)))
+scopedLookupRootHeadAt name key world error value nameEq wanted current left right leftTail rightTail parents tail (Yes same) exact =
+  scopedLookupRootMatched name key world error value nameEq wanted current left right leftTail rightTail parents same exact
+scopedLookupRootHeadAt name key world error value nameEq wanted current left right leftTail rightTail parents tail (No distinct) exact =
+  rewrite exact in tail
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
