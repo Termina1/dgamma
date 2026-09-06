@@ -26927,6 +26927,15 @@ scopedGenerationSubsequenceLength name key world error value nameEq deletable or
     lteSuccRight (scopedGenerationSubsequenceLength name key world error value nameEq deletable (S ordinal)
       (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) _ sourceFinal targetFirst targetFinal source target tail)
 
+0 scopedAppendTraceLength :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  (traceLength (appendTransitions left right) = (traceLength left + traceLength right))
+scopedAppendTraceLength name key world error value _ middle finalState NoTransitions right = Refl
+scopedAppendTraceLength name key world error value first middle finalState (MoreTransitions transition rest) right =
+  cong S (scopedAppendTraceLength name key world error value _ middle finalState rest right)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
