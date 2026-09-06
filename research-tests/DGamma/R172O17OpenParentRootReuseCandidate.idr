@@ -551,3 +551,16 @@ r172ReuseConclusionParentOpening sorted birth = extractLastOpening r45NameEq r45
   (beforeRegistration birth) (r172ReuseConclusionChildPrefixAligned sorted birth)
   (emptyRegistryUninstalled r45NameEq 0 r45Initial r172ReuseInitialEmpty)
   (r172ReuseYieldParentInstalled (r172ReuseConclusionChildYield sorted birth))
+
+public export
+0 r172ReuseExtendLocatedRight :
+  {first, middle, finalState : SystemState Nat R45Key R45Value Unit String} ->
+  {action : Action Nat R45Key R45Value Unit String} ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  (global : Transitions first finalState) -> appendTransitions left right = global ->
+  LocatedActionOccurrence action left -> LocatedActionOccurrence action global
+r172ReuseExtendLocatedRight left right global decomposition
+  (MkLocatedActionOccurrence before after earlier transition later same located) =
+    MkLocatedActionOccurrence before after earlier transition (appendTransitions later right) same
+      (rewrite sym (appendTransitionsAssociative earlier (MoreTransitions transition later) right) in
+       rewrite located in decomposition)
