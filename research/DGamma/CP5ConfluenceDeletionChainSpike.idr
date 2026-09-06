@@ -29627,6 +29627,23 @@ scopedDeletionClassifiedOriginAt name key world error value nameEq keyEq initial
               (sym (scopedGeneratedActionOrdinal name key world error value initial (survivingFinal result) (survivingTrace result) child parent component birth))
               (afterBirthStrict closing))))))
 
+0 scopedPullDeletedClassification :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (generation : RegistrationGeneration name ** DeletedGenerationClassification name key world error value nameEq (survivingTrace result) generation) ->
+  (generation : RegistrationGeneration name ** DeletedGenerationClassification name key world error value nameEq global generation)
+scopedPullDeletedClassification name key world error value nameEq keyEq initial finalState global candidate result (generation ** classified) =
+  scopedDeletionClassifiedOriginAt name key world error value nameEq keyEq initial finalState global candidate result
+    (scopedDeletionOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result)
+    (generationName generation) (deletedParent classified) (deletedComponent classified) (deletedOccurrence classified)
+    (scopedAfterBirthOccurrence name key world error value initial (survivingFinal result) (survivingTrace result)
+      (generationName generation) (deletedParent classified) (deletedComponent classified) (deletedOccurrence classified) (LUnload (deletedParent classified))
+      (scopedLocateActionOccurs name key world error value (registrationAfter (deletedOccurrence classified)) (survivingFinal result)
+        (afterRegistration (deletedOccurrence classified)) (LUnload (deletedParent classified)) (deletedParentEpisodeCloses classified)))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
