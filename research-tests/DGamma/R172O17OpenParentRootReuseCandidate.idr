@@ -114,3 +114,7 @@ public export
 0 r172ReuseInitialWellFormed : registryWellFormed @{r45NameEq} @{r45KeyEq} r45Initial = True
 r172ReuseInitialWellFormed = Refl
 
+public export
+0 r172ReuseInitialEmpty : bindings (registry r45Initial) = []
+r172ReuseInitialEmpty = Refl
+
