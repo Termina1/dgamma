@@ -1752,6 +1752,16 @@ canonicalSortingHoistRoot name key world error value protocol nameEq keyEq origi
         (sortingCurrentTrace current) prefixTrace left right suffix decomposition (sortingCurrentPremises current)
         root component leftActivation rootAction different)
 
+0 canonicalSortingLifecycleActiveSame :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  {left, right : Lifecycle key value world error name deps provision} ->
+  LifecycleControlRelated left right -> isActive left = isActive right
+canonicalSortingLifecycleActiveSame name key world error value (InactiveControls outcome) = Refl
+canonicalSortingLifecycleActiveSame name key world error value (ReloadingControls remaining accumulator view) = Refl
+canonicalSortingLifecycleActiveSame name key world error value (ActiveControls accumulator view) = Refl
+canonicalSortingLifecycleActiveSame name key world error value (UnloadingControls accumulator view outcome) = Refl
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
