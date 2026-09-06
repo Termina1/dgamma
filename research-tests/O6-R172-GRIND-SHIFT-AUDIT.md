@@ -1004,3 +1004,240 @@ not proved; O17 body remains 0/3 and its original hole remains.
 
 Final restored-source and frozen-boundary checks, the complete retained-prefix
 ledger and superseding cumulative status follow in the next audit section.
+
+
+## Final R172 continuation status and validation
+
+This is the final superseding checkpoint. **No proof work was restarted after
+G31 exhausted 3/3.** Only restored-source/frozen-boundary validation and audit
+completion followed. O17's selector body stayed **0/3** throughout; the global
+refutation's G31 continuation is fully reverted. O14 remains ratified closed.
+
+### Retained global-refutation micro-unit ledger
+
+G1 states an erased Type, not an inhabitant. G2–G27 are checked candidate facts;
+G28–G30 are the small importing lifetime module. H1 changes only G22's existing
+proof body (zero new declarations): explicit equality transport replaces a
+broad goal rewrite, reducing whole-candidate fresh elaboration from 161.4 to
+20.2 seconds at that point. Each successful row was immediately committed.
+
+| Unit | Declaration | Outcome | Commit |
+|---|---|---|---|
+| G1 | `R172ReuseGlobalSortingRefutation` | PASS 2/3 | `6ed85a7` |
+| G2 | `r172ReuseConclusionRootFirst` | PASS 1/3 | `7b37a58` |
+| G3 | `r172ReuseOriginalChildBirth` | PASS 1/3 | `9906c31` |
+| G4 | `r172ReuseConclusionChildBirth` | PASS 1/3 | `d64d1cb` |
+| G5 | `r172ReuseExternalRootForward` | PASS 1/3 | `4bc32c8` |
+| G6 | `r172ReuseOriginalRootOccurs` | PASS 1/3 | `23f4bf6` |
+| G7 | `r172ReuseConclusionRootOccurs` | PASS 1/3 | `fe60425` |
+| G8 | `r172ReuseLocateAction` | PASS 1/3 | `7d07978` |
+| G9 | `r172ReuseConclusionRootBirth` | PASS 1/3 | `10f71b7` |
+| G10 | `r172ReuseRegistrationStepAt` | PASS 1/3 | `88cdeda` |
+| G11 | `r172ReuseConclusionChildYield` | PASS 1/3 | `c33da8f` |
+| G12 | `r172ReuseYieldParentInstalled` | PASS 1/3 | `6907a65` |
+| G13 | `r172ReuseConclusionChildPrefixAligned` | PASS 1/3 | `b3398e2` |
+| G14 | `r172ReuseConclusionParentOpening` | PASS 1/3 | `8f0e576` |
+| G15 | `r172ReuseExtendLocatedRight` | PASS 1/3 | `6684f12` |
+| G16 | `r172ReuseLastOpeningLocated` | PASS 1/3 | `7bebe81` |
+| G17 | `r172ReuseConclusionParentBegin` | PASS 1/3 | `fcecfae` |
+| G18 | `r172ReuseCountAppend` | PASS 1/3 | `983049d` |
+| G19 | `r172ReuseBeforeAppendSuccessor` | PASS 1/3 | `3156555` |
+| G20 | `r172ReuseLastOpeningBeforeEnd` | PASS 1/3 | `561ba95` |
+| G21 | `r172ReuseExtendLocatedOrdinal` | PASS 1/3 | `d9e327d` |
+| G22 | `r172ReuseConclusionBeginBeforeChild` | PASS 1/3 | `e027e8a` |
+| H1 | `existing G22 body only` | PASS 1/3 | `9cee6dd` |
+| G23 | `r172ReuseLTETransitive` | PASS 2/3 | `0bbba16` |
+| G24 | `r172ReuseConclusionRootBeforeChild` | PASS 1/3 | `74d0290` |
+| G25 | `r172ReuseConclusionChildChecked` | PASS 1/3 | `15f5341` |
+| G26 | `r172ReuseConclusionChildFresh` | PASS 2/3 | `f740890` |
+| G27 | `r172ReuseConclusionOccupiedChildImpossible` | PASS 1/3 | `2f6a494` |
+| G28 | `R172RootActionOccurs` | PASS 2/3 | `d8f6e90` |
+| G29 | `r172ReuseRootActionBackward` | PASS 1/3 | `f1c735f` |
+| G30 | `r172ReuseOriginalRemovalInternal` | PASS 1/3 | `a938488` |
+
+G31 is deliberately absent from the retained ledger. Its three charged failed
+attempts, full revert and exact remaining statement are recorded immediately
+above. G32 was prepared only in `/tmp`, never inserted or checked; it is not
+retained capital.
+
+### Additional global-prefix corrections
+
+* **G1 2/3:** the exact target Type initially tried to consume erased
+  `r172ReuseOrdering` at runtime. Marking the **Type definition itself quantity
+  0** fixes the quantity error, without adding an inhabitant or widening
+  visibility. This is deliberate proof erasure, not a postulate.
+* **G23 2/3:** G22 passed after 161.4 seconds, leaving only approximately 18
+  seconds of the outer 180-second multi-command window for G23. That external
+  interruption is charged. No compiler survived the 14:37:29 inspection;
+  G23 was restored away, H1 independently checked/committed, then the identical
+  G23 declaration passed its second attempt. The ledger termination time for
+  external interruptions is a quiescence-observation upper bound, not a claim
+  of exact compiler runtime. Lost RSS samples are unavailable, not measured 0.
+* **G26 2/3:** fully explicit name/key/value/world/error arguments to
+  `lookupFiber` fix the dependent context-family binding error.
+* **G28 2/3:** the unbound-implicits-off indexed data constructors need their
+  own explicit state/action binders; family binders are not constructor scope.
+* G31's two coverage failures remain failures, not evidence that its intended
+  proposition is false. No coverage/totality escape was introduced.
+
+Complete short diagnostics (trailing whitespace normalized):
+
+#### G1-1
+
+```text
+2/2: Building DGamma.R172O17OpenParentRootReuseCandidate (research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr)
+Error: While processing right hand side of R172ReuseGlobalSortingRefutation. DGamma.R172O17OpenParentRootReuseCandidate.r172ReuseOrdering is not accessible in this context.
+
+DGamma.R172O17OpenParentRootReuseCandidate:421:51--421:68
+ 417 | public export
+ 418 | R172ReuseGlobalSortingRefutation : Type
+ 419 | R172ReuseGlobalSortingRefutation =
+ 420 |   ((sorted : (SortedClosingFreeTrace Nat R45Key Unit String R45Value
+ 421 |     r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering)) -> Void)
+                                                         ^^^^^^^^^^^^^^^^^
+```
+
+#### G26-1
+
+```text
+2/2: Building DGamma.R172O17OpenParentRootReuseCandidate (research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr)
+Error: While processing type of r172ReuseConclusionChildFresh. Can't bind implicit DGamma.R172O17OpenParentRootReuseCandidate.{value:9347} of type ({arg:11068} : ?DGamma.R172O17OpenParentRootReuseCandidate.{key:9346}_[sorted[1], birth[0]]) -> Type
+
+DGamma.R172O17OpenParentRootReuseCandidate:666:1--671:77
+ 666 | public export
+ 667 | 0 r172ReuseConclusionChildFresh :
+ 668 |   (sorted : SortedClosingFreeTrace Nat R45Key Unit String R45Value
+ 669 |     r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
+ 670 |   (birth : LocatedGeneratedRegistration 1 0 r45Child (sortedTrace sorted)) ->
+ 671 |   lookupFiber @{r45NameEq} 1 (registry (registrationBefore birth)) = Nothing
+
+Error: No type declaration for DGamma.R172O17OpenParentRootReuseCandidate.r172ReuseConclusionChildFresh.
+
+DGamma.R172O17OpenParentRootReuseCandidate:672:1--676:72
+ 672 | r172ReuseConclusionChildFresh sorted birth = case r172ReuseConclusionChildChecked sorted birth of
+ 673 |   (tag ** checked) => successfulInsertAbsent r45NameEq r45KeyEq 1 (ChildOf 0) r45Child
+ 674 |     (registrationBefore birth) (registrationAfter birth) tag
+ 675 |     (checkedActionProjects r45NameEq r45KeyEq (OInsert 1 (ChildOf 0) r45Child)
+ 676 |       (registrationBefore birth) (registrationAfter birth) tag checked)
+Did you mean any of: r172ReuseConclusionChildBirth, r172ReuseConclusionChildYield, r172ReuseConclusionChildChecked, r172ReuseConclusionRootBirth, or r172ReuseConclusionRootFirst?
+```
+
+#### G28-1
+
+```text
+3/3: Building DGamma.R172O17RootLifetimeCapital (research-tests/DGamma/R172O17RootLifetimeCapital.idr)
+Error: While processing constructor R172RootActionHere. Undefined name first.
+
+DGamma.R172O17RootLifetimeCapital:30:49--30:54
+ 26 | public export
+ 27 | data R172RootActionOccurs :
+ 28 |   {first, finalState : SystemState Nat R45Key R45Value Unit String} ->
+ 29 |   Action Nat R45Key R45Value Unit String -> Transitions first finalState -> Type where
+ 30 |   R172RootActionHere : (transition : Transition first middle) -> (rest : Transitions middle finalState) ->
+                                                      ^^^^^
+```
+
+#### G31-2
+
+```text
+3/3: Building DGamma.R172O17RootLifetimeCapital (research-tests/DGamma/R172O17RootLifetimeCapital.idr)
+Error: r172ReuseOriginalNoRootRemoval is not covering.
+
+DGamma.R172O17RootLifetimeCapital:68:1--69:91
+ 68 | public export
+ 69 | 0 r172ReuseOriginalNoRootRemoval : R172RootActionOccurs (ORemove 1) r172ReuseTrace -> Void
+
+Calls non covering function DGamma.R172O17RootLifetimeCapital.26888:3714:excludeActual
+Error: r172ReuseOriginalNoRootRemoval,excludeActual is not covering.
+
+DGamma.R172O17RootLifetimeCapital:72:3--75:98
+ 72 |   0 excludeActual :
+ 73 |     {before, afterState : SystemState Nat R45Key R45Value Unit String} ->
+ 74 |     (transition : Transition before afterState) -> OccursIn transition r172ReuseTrace ->
+ 75 |     RootOrchestrationStep r45NameEq transition -> transitionAction transition = ORemove 1 -> Void
+
+Missing cases:
+    excludeActual arg arg (OccursLater (OccursLater (OccursLater (OccursLater OccursHere)))) arg arg
+```
+
+### Owner decision — O17 next steps (NO implementation this shift)
+
+The parent **ratifies the G31 3/3 stop in advance** and selects **PREMISE
+REVISION, not conclusion revision** for O17's path forward: a new strong global
+hypothesis, **“each raw name is inserted at most once in the whole trace.”**
+The owner identifies this with the Cordis implementation's globally fresh
+unique module-instance names. The eight-step raw-name-reuse candidate is the
+**designated negative fixture for that future premise**; the new hypothesis
+itself and its formal rejection test were not implemented in R172.
+
+The unfinished G31/full-global-negation campaign is now a **bounded secondary
+erratum-evidence item**, no longer a prerequisite for O17's next implementation
+phase. Keep its exact proved prefix and failed-unit boundary; do not restart it
+under another name this shift.
+
+The owner also notes that global insertion uniqueness **may** make the frozen
+CP3 deletion theorem's raw premise satisfiable, turning the reissue defect into
+a missing-hypothesis note. This is a hypothesis to verify/prove under a revised
+future telescope, **not** retroactive validation of the frozen current theorem,
+a scoped-to-raw cast, or authorization to edit/call that frozen theorem now.
+R173 reconnaissance must check whether **O19's suspected-false surface** and
+**O21's withdrawal branches** share that name-reuse cause; do not assume the new
+premise cures independent registration/activation defects. No O19 body or O21
+withdrawal branch was attempted.
+
+Canonical support matching probe-first remains pre-authorized **for R173**, not
+this shift, subject to that reconnaissance/owner-directed premise-revision plan.
+All earlier accounting, shared original/reduced order, R16/R129, concrete
+regression, copied-with, and paper/guarded-scope debts remain explicit. A newly
+selected future hypothesis does not silently discharge any of them.
+
+### Restored final checks
+
+Eight final serialized invocations passed. The two changed fixtures were freshly
+elaborated after source-mtime refresh; the lifetime source is byte-restored to
+`a938488` with no G31. The five unchanged research spikes are explicitly cached
+boundary checks in this last pass; their earlier genuine fresh evidence remains
+valid (CanonicalSort/RenamingComposition/CrossTrace at 14:01–14:02, and frozen
+DeletionChain/LocalDiamond in Unit A). No clean rebuild or wider runtime/assembly
+suite is claimed. Final package build passed, **207/207** seeds retained.
+
+| Check | UTC start–end | Outcome | Sample peak KiB |
+|---|---|---|---|
+| `gate-final-candidate` | 15:01:50–15:02:41 | PASS; fresh | 2,199,984 |
+| `gate-final-lifetime` | 15:02:41–15:02:46 | PASS; fresh | 0 |
+| `gate-final-CanonicalSort` | 15:02:46–15:02:51 | PASS; seeded/cached | 0 |
+| `gate-final-RenamingComposition` | 15:02:51–15:02:56 | PASS; seeded/cached | 0 |
+| `gate-final-CrossTrace` | 15:02:56–15:03:01 | PASS; seeded/cached | 0 |
+| `gate-final-DeletionChain` | 15:03:01–15:03:06 | PASS; seeded/cached | 0 |
+| `gate-final-LocalDiamond` | 15:03:06–15:03:11 | PASS; seeded/cached | 0 |
+| `gate-final-package` | 15:03:11–15:03:32 | PASS; seeded/cached | 219,952 |
+
+Zero RSS entries mean the short process was not captured by the five-second
+sampler. No allocation claim is inferred from that zero.
+
+**Final cumulative ledger: 212 compiler invocations = 196 diagnostic-clean
+passes + 16 charged failures.** Thirteen failures were corrected within their
+unit budgets; the three G31 failures caused the mandatory full-revert stop.
+Three interruptions were external windows (C45-1, G23-1, G31-1). The original
+P1-1 exit-0 Error diagnostic is still counted as a failure. There are **163
+retained new top-level declarations/definitions/stated Types** in **166 source
+commits**: CanonicalSort 85 commits, candidate 78, lifetime 3. The counts include
+O14's body and two zero-declaration corrections, not 163 proved theorems.
+
+The final validator again verifies all source commits against their unique
+fresh successful check, ≤1 new top-level declaration per commit/check, ≤3
+attempts per micro-unit, all non-gate attempts started before 15:09:38 UTC, and
+three unsuccessful G31 attempts with no retained declaration. Both ratified
+O14 and O17 audit sections (through `ca6dce7` and the `ebdc297` ruling) remain exact
+prefixes. Only the paper directory and byte-frozen adversarial review are
+untracked; no compiler remains running.
+
+Frozen hashes, the empty production/package diff, original O14/O17 signatures,
+other four research sources, removed disposable probes and **9 → 9** legacy
+DeletionChain with-count are unchanged from the preceding validated section.
+No new hole, unsafe totality escape, postulate, new `let`/`with`, residual
+as-pattern, forbidden deletion call or scoped-to-raw cast. Source holes remain
+**six, 1/4/0/0/1**, at the exact coordinates recorded above; overall shift delta
+**-1**. Theorem 73, the O17 selector and the global sorting-negation inhabitant
+are **not proved**. This checkpoint is submitted for the final supervisor gate;
+no further implementation is authorized by this audit.

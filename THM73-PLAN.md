@@ -51,6 +51,26 @@ No O14/O17 body before a committed probe result; no new `with` anywhere.
 The R146 stop-map has a historical label slip: O14 is `supportOrderingSpike`,
 O17 is `sortClosingFreeTraceSpike`, as the source and R134–R145 audits confirm.
 
+### Final R172 owner decision and checked prefix
+
+The O17 semantic stop at `ca6dce7` and the later **G31 3/3 full-revert stop**
+are ratified. The global refutation prefix now proves forced root-before-child
+ordering for every hypothetical O17 conclusion (`74d0290`), actual child
+freshness and the occupied-source contradiction (`2f6a494`). Lifetime G28–G30
+are retained at `a938488`; whole-source external-removal exclusion, subsequent
+root occupancy transport and final global negation remain unproved.
+
+**Next path: PREMISE REVISION, not conclusion revision.** The owner selects the
+new strong hypothesis “each raw name is inserted at most once in the whole
+trace,” identifying it with implementation-level globally fresh instance
+names. The reuse candidate is the designated future negative fixture; no such
+premise/surface change was made in R172. Full global refutation is now bounded
+secondary erratum evidence, not a gate. R173 recon must verify the proposed
+repair to the frozen CP3 raw premise and whether O19/O21 defects share the same
+reuse cause; none is presumed cured. Matching probe-first is pre-authorized
+for R173, not this shift. Final audit: 212 checks / 196 clean / 16 charged
+failures; 207/207 seeds; six holes and all frozen boundaries unchanged.
+
 ### Current debt register — not hidden by the hole count
 
 O17-specific semantic frontier: the retained full-input root-reuse candidate

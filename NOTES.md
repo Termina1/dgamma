@@ -2364,6 +2364,42 @@ the absolute deadline, request separate target-#3 canonical support matching
 probe-first authorization; do not self-start it. A global O17 refutation is
 not silently substituted for the original sorting obligation.
 
+### Final R172 status — global prefix stopped; future premise revision selected
+
+**Fully proved additional capital:** every hypothetical unchanged O17 output
+places its actually preserved root-1 birth before each accounted child-1 birth
+(`r172ReuseConclusionRootBeforeChild`, `74d0290`). The child's actual checked
+transition is fresh; an occupying fiber at that source gives Void (G25–G27,
+`2f6a494`). Root-classified occurrences transport backward through the actual
+external-input relation, and the original concrete removal is internal
+(G28–G30, `a938488`).
+
+**Partial / stated:** G31 whole-source external-root-removal exclusion exhausted
+3/3 and was fully reverted. Root occupancy persistence to the child source and
+final negation remain unproved. `R172ReuseGlobalSortingRefutation` is an exact
+erased **Type only**, without an inhabitant. The O17 selector body remained
+0/3. Six research holes remain; O14 alone closed this shift.
+
+**Owner-selected next path:** premise revision with the strong global condition
+“each raw name is inserted at most once in the whole trace,” not conclusion
+revision. The owner relates this to globally fresh Cordis instance names; the
+reuse candidate is designated as the negative fixture for that future premise.
+No new hypothesis or runtime/production surface was implemented here. The full
+refutation is demoted to secondary bounded erratum evidence, no longer gating.
+R173 recon must test whether insertion uniqueness resolves the frozen CP3 raw
+premise and whether O19/O21 share the reuse cause; these are not yet proved
+repairs. Matching probe-first is pre-authorized for R173 only. Existing debts
+remain OPEN/parked; no fourth/renamed G31 attempt followed the stop.
+
+**Final validation / escape catalogue:** 212 serialized checks, 196 clean passes
+and 16 charged failures (13 corrected, three G31 stop failures). Restored
+candidate/lifetime modules freshly pass; all five spikes and seeded package
+pass, 207/207 retained. Original ratified audit sections are byte-preserved.
+No new hole, postulate, unsafe totality escape, `let`/`with`, residual as-pattern,
+frozen deletion call or scoped-to-raw cast. The G31 coverage failures are fully
+catalogued, including the complete 170,224-byte raw diagnostic's hash and a
+whitespace-normalized checked-in transcript. No unproved theorem is claimed.
+
 ### Historical Shift-37 status (preserved as that revision's record)
 
 **Fully proved:** all previously listed approved Section 3 results; Preservation
