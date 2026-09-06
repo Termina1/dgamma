@@ -479,3 +479,16 @@ public export
     r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
   ActionOccurs (OInsert 1 Root r45Child) (sortedTrace sorted)
 r172ReuseConclusionRootOccurs sorted = r172ReuseExternalRootForward (sortedSameInputs sorted) r172ReuseOriginalRootOccurs
+
+public export
+0 r172ReuseLocateAction :
+  {first, finalState : SystemState Nat R45Key R45Value Unit String} ->
+  {trace : Transitions first finalState} -> {action : Action Nat R45Key R45Value Unit String} ->
+  ActionOccurs action trace -> LocatedActionOccurrence action trace
+r172ReuseLocateAction (ActionOccursHere transition rest same) =
+  MkLocatedActionOccurrence _ _ NoTransitions transition rest same Refl
+r172ReuseLocateAction (ActionOccursLater head rest later) =
+  case r172ReuseLocateAction later of
+    MkLocatedActionOccurrence before after earlier transition suffix same decomposition =>
+      MkLocatedActionOccurrence before after (MoreTransitions head earlier) transition suffix same
+        (cong (MoreTransitions head) decomposition)
