@@ -2710,6 +2710,17 @@ canonicalWorkGroupingPairForEpisode name key world error value nameEq keyEq sele
       (workActorRest scanned)
       (canonicalWorkGroupingFromBoundary name key world error value nameEq selected (workActorRest scanned) (workPrefixBoundary scanned) remains))
 
+||| The selected grouping cursor retains its membership in the FIXED pending
+||| order, so later support/precedence arguments need not reconstruct a name.
+record CanonicalWorkSelectedPair
+  (name, key, world, error : Type) (value : key -> Type)
+  {initial, finalState : SystemState name key value world error}
+  (trace : Transitions initial finalState) (pending : List name) where
+  constructor MkCanonicalWorkSelectedPair
+  workSelectedActor : name
+  0 workSelectedPresent : Elem workSelectedActor pending
+  workSelectedPair : CanonicalWorkGroupingPair name key world error value workSelectedActor trace
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
