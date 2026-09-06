@@ -29996,6 +29996,25 @@ scopedFiberWithdrawalFlags name key world error value _ _
   (FibersControlRelated {component} leftParent rightParent leftRetired rightRetired leftTable rightTable leftLife rightLife parentSame retiredSame lifeSame) =
     (retiredSame, scopedLifecycleInstalledSame name key world error value (dependencies (componentDependencies component)) (componentProvisions component) leftLife rightLife lifeSame)
 
+0 scopedWithdrawalFromControlCell :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (source, middle, target : SystemState name key value world error) ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} source) (projectEffectState @{nameEq} middle) ->
+  (middleFiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry middle) = Just middleFiber) ->
+  (retired middleFiber = True) -> (installed (fiberLifecycle middleFiber) = False) ->
+  (bindings (ownedValues (fiberTable middleFiber)) = []) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry target) = Nothing) ->
+  (fiber : Fiber name key value world error **
+    ((lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry source) = Just fiber), FiberControlRelated fiber middleFiber)) ->
+  WithdrawnNameResult nameEq actor source target
+scopedWithdrawalFromControlCell name key world error value nameEq keyEq actor source middle target effects middleFiber found retired inactive empty absent (fiber ** evidence) =
+  VestigialNameWithdrawn fiber (fst evidence)
+    (trans (fst (scopedFiberWithdrawalFlags name key world error value fiber middleFiber (snd evidence))) retired)
+    (trans (snd (scopedFiberWithdrawalFlags name key world error value fiber middleFiber (snd evidence))) inactive)
+    (trans (cong bindings (sym (projectedActorTable {name} {key} {value} {world} {error} nameEq actor source fiber (fst evidence))))
+      (trans (tablesExact effects actor) (trans (cong bindings (projectedActorTable {name} {key} {value} {world} {error} nameEq actor middle middleFiber found)) empty))) absent
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
