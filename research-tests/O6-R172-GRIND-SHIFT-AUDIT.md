@@ -912,3 +912,22 @@ self-starting it. O19's body, O21 withdrawals, production/surface revision and
 debt-register implementation remain forbidden. The accounting/original-order,
 R16/R129, concrete two-birth/one-withdrawal and repeated-Iter, copied-with and
 paper/guarded-scope debts remain OPEN/parked exactly as catalogued in the plan.
+
+## Supervisor ruling at ca6dce7 — bounded global refutation continuation
+
+The supervisor **RATIFIED the O17 frontier/semantic stop at ca6dce7** and explicitly
+redirected the remaining window to a **global O17 birth-order refutation**, as
+bounded countershape micro-units. No O17 selector body is authorized. State the
+exact fully parenthesized negation type in the candidate file, then build:
+conclusion-shaped trace is root-first; root-1 before child-1; root presence and
+freshness/discipline contradiction; final negation assembly. Necessary
+no-intervening-removal facts must be derived from the actual conclusion, not
+silently assumed. If the cutoff arrives first, retain the checked prefix and
+state the precise remaining lemma. No universal refutation is claimed merely
+by stating its Type.
+
+One top-level declaration/check/commit, fresh ≤3 attempts each. Earlier O14 and
+O17 audit sections above stay verbatim. Final gate before the time guard;
+production/surface revision, O19 body and O21 withdrawal work remain forbidden.
+Ranked #3 `canonicalSupportOrdersMatchSpike` probe-first is **pre-authorized for
+R173 only**, not for this remaining R172 window.
