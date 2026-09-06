@@ -266,3 +266,12 @@ r172ReuseIteratorStableAt actor stage foreign origin Nothing runs = rewrite runs
 r172ReuseIteratorStableAt actor stage foreign origin (Just moved) runs =
   rewrite runs in iteratorStageOutcomeRelated r45KeyEq stage moved origin (r172ReuseAllEffectStatesRelated moved origin)
 
+public export
+0 r172ReuseIndependent : TraceIndependent Nat R45Key Unit String R45Value r45KeyEq r172ReuseTrace
+r172ReuseIndependent = MkTraceIndependent
+  (\left, right, distinct, leftT, rightT => r172ReuseMapsCommute
+    (runTraceEffectTransformation leftT) (runTraceEffectTransformation rightT)
+    (r172ReuseTransformationRespects left leftT) (r172ReuseTransformationRespects right rightT))
+  (\left, right, distinct, stage, foreign, origin => r172ReuseIteratorStableAt left stage
+    (runTraceEffectTransformation foreign) origin (runTraceEffectTransformation foreign origin) Refl)
+
