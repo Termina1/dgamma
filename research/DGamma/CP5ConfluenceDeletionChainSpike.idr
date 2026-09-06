@@ -20106,6 +20106,30 @@ scopedOutsidePlanRootLookup name key world error value nameEq actor registered l
   trans (sym (cong (maybe False (scopedParentRoot . fiberParent))
     (lookupOutsideInactivePlan nameEq actor source (planTarget plan) (inactiveLeafPlan plan) (actorOutsidePlan plan actor outside)))) roots
 
+0 scopedPlannedActionRoot :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  GenerationEnvironmentNamesUnique live -> (action : Action name key value world error) ->
+  Not (GenerationOwnedActor nameEq registered ordinal live action) ->
+  (source, target : SystemState name key value world error) ->
+  (plan : CurrentRegisteredPlanResult name key world error value nameEq registered live (registry source)) ->
+  ((actor : name) ->
+    (maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor (planTarget plan)) =
+     maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor (registry target)))) ->
+  (scopedRootObservation name key world error value nameEq action source = scopedRootObservation name key world error value nameEq action target)
+scopedPlannedActionRoot name key world error value nameEq registered ordinal live unique (OInsert actor parent component) retained source target plan roots = Refl
+scopedPlannedActionRoot name key world error value nameEq registered ordinal live unique (ORetire actor) retained source target plan roots =
+  scopedOutsidePlanRootLookup name key world error value nameEq actor registered live (registry source) (registry target) plan
+    (retainedNonInsertOutsideCurrentRegistered {name = name} {key = key} {world = world} {error = error} {value = value} nameEq registered ordinal live unique (ORetire actor) NonInsertRetire retained) (roots actor)
+scopedPlannedActionRoot name key world error value nameEq registered ordinal live unique (ORemove actor) retained source target plan roots =
+  scopedOutsidePlanRootLookup name key world error value nameEq actor registered live (registry source) (registry target) plan
+    (retainedNonInsertOutsideCurrentRegistered {name = name} {key = key} {world = world} {error = error} {value = value} nameEq registered ordinal live unique (ORemove actor) NonInsertRemove retained) (roots actor)
+scopedPlannedActionRoot name key world error value nameEq registered ordinal live unique (LBegin actor) retained source target plan roots = Refl
+scopedPlannedActionRoot name key world error value nameEq registered ordinal live unique (LAdvance actor) retained source target plan roots = Refl
+scopedPlannedActionRoot name key world error value nameEq registered ordinal live unique (LDivert actor) retained source target plan roots = Refl
+scopedPlannedActionRoot name key world error value nameEq registered ordinal live unique (LLeave actor) retained source target plan roots = Refl
+scopedPlannedActionRoot name key world error value nameEq registered ordinal live unique (LUnload actor) retained source target plan roots = Refl
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
