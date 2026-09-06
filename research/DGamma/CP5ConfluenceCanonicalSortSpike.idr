@@ -3473,6 +3473,22 @@ canonicalWorkInstalledAppendRight name key world error value nameEq keyEq select
   (InstalledStep action tag checked _ installed tailInstalled) =
     canonicalWorkInstalledAppendRight name key world error value nameEq keyEq selected tail later tailInstalled
 
+||| The ACTUAL scan residual remains inside the selected installed episode.
+||| This is derived from its producer-owned decomposition, not a new premise.
+0 canonicalWorkScannedResidualInstalled :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected global) ->
+  (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
+  InstalledTrace name key world error value nameEq keyEq selected (workActorRest scanned)
+canonicalWorkScannedResidualInstalled name key world error value nameEq keyEq selected global episode scanned =
+  canonicalWorkInstalledAppendRight name key world error value nameEq keyEq selected
+    (workActorPrefix scanned) (workActorRest scanned)
+    (replace {p = InstalledTrace name key world error value nameEq keyEq selected}
+      (sym (workPrefixDecomposition scanned)) (openInstalled episode))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
