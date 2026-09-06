@@ -343,3 +343,7 @@ public export
 r172ReuseNoClosing selected located = r172ReuseNoUnload
   (unloadTransition (closing (locatedEpisode located))) Refl (r172ReuseClosingOccurs located)
 
+public export
+0 r172ReuseShape : ClosingFreeTraceShape Nat R45Key Unit String R45Value r45NameEq r45KeyEq r172ReuseTrace
+r172ReuseShape = closingFreeTraceShapeSpike r45NameEq r45KeyEq r45Protocol r172ReuseTrace r172ReuseNoClosing r172ReuseBundle
+
