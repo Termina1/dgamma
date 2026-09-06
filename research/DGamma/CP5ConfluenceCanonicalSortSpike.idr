@@ -1514,6 +1514,16 @@ canonicalSortingPairSourceWellFormed name key world error value protocol nameEq 
       (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym decomposition) (replayAligned premises))))
     (replayInitialWellFormed premises)
 
+0 canonicalSortingAppendRightOccurrence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, middle, finalState, selectedBefore, selectedAfter : SystemState name key value world error} ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  (selected : Transition selectedBefore selectedAfter) ->
+  OccursIn selected right -> OccursIn selected (appendTransitions left right)
+canonicalSortingAppendRightOccurrence name key world error value NoTransitions right selected occurs = occurs
+canonicalSortingAppendRightOccurrence name key world error value (MoreTransitions head rest) right selected occurs =
+  OccursLater (canonicalSortingAppendRightOccurrence name key world error value rest right selected occurs)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
