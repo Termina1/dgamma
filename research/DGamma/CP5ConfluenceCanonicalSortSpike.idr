@@ -3108,6 +3108,18 @@ canonicalWorkReachedShape name key world error value nameEq keyEq protocol origi
       original (sortingCurrentTrace current) (replayAligned premises) (replayInitialEmpty premises)
       noClosing (sortingReplayDerivation current)) (sortingCurrentPremises current)
 
+||| Scalar initial observation of a producer-owned installed interval.
+0 canonicalWorkInstalledTraceStart :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  InstalledTrace name key world error value nameEq keyEq selected trace ->
+  installedAt @{nameEq} selected first = True
+canonicalWorkInstalledTraceStart name key world error value nameEq keyEq selected _ (InstalledEnd installed) = installed
+canonicalWorkInstalledTraceStart name key world error value nameEq keyEq selected _
+  (InstalledStep action tag checked rest installed tail) = installed
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
