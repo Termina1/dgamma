@@ -2,7 +2,7 @@
 
 Branch: `cp5-thm73-scoping`
 
-## Current checkpoint — R172 reconnaissance (supersedes historical counts)
+## Current checkpoint — R172 O14 CLOSED (supersedes historical counts)
 
 At required start **0e58c54**, **DeletionChain is CLOSED**: O9
 `enrichDeletionChainStepSpike` at `89435dc`, O10
@@ -15,18 +15,27 @@ omissions and all four registration-accounting clauses. Core history and Step
 accounting/origin coherence are constructor-owned and negative-tested (R171).
 The frozen raw-premise deletion theorem is not used by this chain.
 
-**Seven named holes remain:** CanonicalSort 2 / CrossTrace 4 / DeletionChain 0 /
+**R172 closes O14 `supportOrderingSpike` at `c99145c`**, under its unchanged
+statement: P1 passed and was removed/audited before retained work; exact rank
+observation and simultaneous sorting/membership/uniqueness/rank invariants were
+committed before the first successful body attempt. Concrete deduplication and
+equal-rank order reductions check at `9a70ffd`. This does not claim O17
+operational sorting, shared original/reduced order or registration accounting.
+
+**Six named holes remain:** CanonicalSort 1 / CrossTrace 4 / DeletionChain 0 /
 LocalDiamond 0 / RenamingComposition 1. Sections 10–11 below are the current
 inventory; prior revision-by-revision counts and phase arithmetic are historical,
 not a new forecast. Theorem 73 is **not proved**, including the non-hole producer
 and fixture debts below. Production `src/` and `dgamma.ipkg` remain byte-identical
 to `34b21c9`; CP3 blob `2c697e532e83989de8591fa6a4378747c6a501c0`.
 
-The full seven-hole type/last-stop/capital/route/risk census is
+The full **start-coordinate** seven-hole type/last-stop/capital/route/risk census is
 [`O6-R172-NEXT-PHASE-RECON.md`](research-tests/O6-R172-NEXT-PHASE-RECON.md).
-Unit A changes documentation only. Its proposed priority is **O14 probe-first →
-O17 probe-first → canonical support matching**, with continuation on an earlier
-unfinished producer before later bodies. R146's surviving ranking is preserved:
+Unit A changed documentation only and was ratified at `b5d6904`. Its ranked
+priority **O14 probe-first → O17 probe-first → canonical support matching** was
+approved; Unit B completed the first target only. The next target is **O17
+PROBE-FIRST**, not an immediate body attempt. The final evidence is in
+[`O6-R172-GRIND-SHIFT-AUDIT.md`](research-tests/O6-R172-GRIND-SHIFT-AUDIT.md). R146's surviving ranking is preserved:
 the earlier deletion slots are closed; O21's bounded sealed-bijection cure landed
 at `e6314b1` in R147 and its remaining withdrawal branches are parked. **O19 body
 is banned** until a justified revised surface and committed negative fixture.
@@ -39,7 +48,7 @@ O17 is `sortClosingFreeTraceSpike`, as the source and R134–R145 audits confirm
 | Debt | Status / next discharge |
 |---|---|
 | Exact `CanonicalReplayAccountingLaws` producer (R143/O16) | **OPEN.** R171 `ScopedDerivationAccounting.foldedOriginExact` authenticates the actual deletion producer, but `ClosingFreeReduction` does not retain that field for arbitrary values; the sorting tree likewise lacks operational-fold alignment. A producer-indexed adapter plus simultaneous sorting accounting must feed the exact `deletionSortingOccurrenceCorrespondence`, composed endpoint and cumulative withdrawal equality. No automatic coherence claim or new surface authorization. |
-| Shared original/reduced order (R143/O15) | **OPEN.** Chosen-order correction remains; `R6FourFiberStatic.r143CanonicalSupportTransportRefuted` permanently rejects universal reduced-to-original linearization transfer. `FullPipelineLateCanonicalPremises.sideOriginalLinearization` is supplied, universally quantified capital, not a discharge. Rank sorting the actual chosen order is a promising route, not yet a theorem. |
+| Shared original/reduced order (R143/O15) | **OPEN.** Chosen-order correction remains; `R6FourFiberStatic.r143CanonicalSupportTransportRefuted` permanently rejects universal reduced-to-original linearization transfer. `FullPipelineLateCanonicalPremises.sideOriginalLinearization` is supplied, universally quantified capital, not a discharge. O14 now rank-sorts the actual chosen order; proving that exact reduced output also respects original paths remains a separate producer theorem. |
 | `R16ConfluenceTheoremAssemblyPositive` fixture drift | **OPEN, confirmed by source inspection.** R152 recorded the missing two `FullPipelineLateCanonicalPremises` arguments at its `fullPipelineFromBundles` call (line 85). Current source still omits them. Keep its immutable-theorem signature honest: producing the premises, not merely adding parameters, is required. Seeded package success does not validate the aggregate R11/assembly path. |
 | CP3 raw-premise defect | **FROZEN / future unfreeze campaign.** R137 generation reuse invalidates the raw global premise needed by the original selection route. No `NoDependentClosingEpisodeForGeneration`→raw cast, no call to frozen `deletionTheoremProof`. The inherited unused `checkedDeletionSubroutine` alias remains historical capital, not a sanctioned route. |
 | Deferred R129 end-to-end test | **PARKED.** Opaque actual adjacent result cannot be identified by `Refl` with independent R27/R29 final/trace indices. The 12+4 RAR exports do not fix that. Requires an owner-selected producer-owned exact comparison theorem or an explicitly relational-only integration scope. |
@@ -2423,7 +2432,7 @@ research capital; no CP3 production declaration changed.
 | O10 | Total well-founded deletion core | CLOSED `dd3ed2d`; exact recursive trace and complete typed history, later R171 history seal. |
 | O11 | Cumulative endpoint/history/registration accounting | CLOSED `8356a64`; all four bidirectional registration clauses and exact endpoint omission fold. |
 | O12–O13 | Closing-free open shape / reached-state projections | Closed. |
-| O14 | `supportOrderingSpike` | 1 hole; R135 helper 3/3 parked, body 0/3; PROBE-FIRST. |
+| O14 | `supportOrderingSpike` | **CLOSED `c99145c`**, R172 body 1/3 after committed P1 and simultaneous invariant; unchanged surface, concrete reductions `9a70ffd`. |
 | O15 | Chosen original/reduced support-order bridge | Closed under R143 corrected chosen-order premises; real shared-order producer debt remains. |
 | O16 | Exact-fold one-trace accounting | Closed under R143 corrected exact accounting premises; real producer/fixture debt remains. |
 | O17 | `sortClosingFreeTraceSpike` | 1 hole; R144 body 3/3 parked; PROBE-FIRST operational stable-sort invariant. |
@@ -2436,9 +2445,9 @@ research capital; no CP3 production declaration changed.
 
 ## 11. Exact hole reconciliation — current R172 inventory
 
-The source census at `0e58c54` is **7**, split **2/4/0/0/1**:
+The source census at proof coordinate `9a70ffd` is **6**, split **1/4/0/0/1** (R172 start `0e58c54`: 7):
 
-- CanonicalSort: `supportOrderingSpike_rhs`, `sortClosingFreeTraceSpike_rhs`;
+- CanonicalSort: `sortClosingFreeTraceSpike_rhs` (now line 1319);
 - CrossTrace: `operationalAdjacentBlockSwapSpike_rhs`,
   `canonicalSupportOrdersMatchSpike_rhs`,
   `selectOperationalCanonicalPermutationSpike_rhs`,
@@ -2448,10 +2457,10 @@ The source census at `0e58c54` is **7**, split **2/4/0/0/1**:
 - RenamingComposition: `replayedCanonicalToOriginalEndpointSpike_rhs`.
 
 No hole moved or renamed. R170–R171 removed the last three DeletionChain holes
-in place. This census counts named RHS holes, **not** supplied-capital producer
-debts, fixture drift or the frozen production-interface defect. The current
-seven complete type statements and exact last-stop quotes are in the R172
-reconnaissance memo. The old 20/13-hole snapshots elsewhere in this historical
+in place; R172 removed `supportOrderingSpike_rhs` in place (delta **-1**). This census counts named RHS holes, **not** supplied-capital producer
+debts, fixture drift or the frozen production-interface defect. The seven **start-coordinate** complete type statements and exact last-stop
+quotes are in the R172 reconnaissance memo; its O14 row is now closed by the
+final R172 audit. The old 20/13-hole snapshots elsewhere in this historical
 log are not current claims.
 
 ## 12. Historical post-retirement phase arithmetic (not current at R172): 148–249 total, 139–240 remaining

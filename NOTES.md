@@ -2295,6 +2295,34 @@ name reissue.
 
 ## Status
 
+### R172 research checkpoint (supersedes the historical Shift-37 frontier below)
+
+**Fully proved this shift:** `CP5ConfluenceCanonicalSortSpike.supportOrderingSpike`
+at `c99145c`, unchanged signature. Its erased lookup/rank observation capital
+passed the designated probe; total executable insertion sort simultaneously
+constructs its output, nondecreasing rank certificate, uniqueness and both
+membership directions. Authentic protocol path ranks yield `BeforeIn`, then all
+four `LinearizesSupport` fields. Concrete nonmonotone/deduplicating and equal-rank
+reductions check at `9a70ffd`. No new hole, postulate, totality escape, `with`,
+production change, frozen deletion-theorem call or scoped-to-raw cast.
+
+**Partial overall / merely stated:** Theorem 73 remains unproved, with six
+research holes (CanonicalSort 1 / CrossTrace 4 / DeletionChain 0 / LocalDiamond 0 /
+RenamingComposition 1). Scoped DeletionChain was already closed at R171; this
+does not fix the frozen CP3 raw-premise defect. Exact canonical accounting,
+shared original/reduced order, R16 fixture drift, R129 integration and copied
+legacy `with` cleanup remain explicit debts, not hidden by the hole count.
+
+**Validation / next:** one fresh check for every retained declaration/body;
+final dependent spikes pass and seeded package retains 207/207 modules. No wider
+suite or clean rebuild claimed. O17 is next **probe-first**; O19 body and O21
+withdrawal lanes remain barred/parked. Full attempts, boundaries and types are in
+`research-tests/O6-R172-NEXT-PHASE-RECON.md` and
+`research-tests/O6-R172-GRIND-SHIFT-AUDIT.md`; current debt register is in
+`THM73-PLAN.md`. Independent reviewer acceptance remains a separate gate.
+
+### Historical Shift-37 status (preserved as that revision's record)
+
 **Fully proved:** all previously listed approved Section 3 results; Preservation
 (Theorem 59); Theorems 61, 63, and 64; Corollary 62; finite-specialized Lemmas
 68 and 70; repaired finite Progress/Theorem 66; and **Lemma 72**.
