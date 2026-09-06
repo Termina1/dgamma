@@ -1127,6 +1127,12 @@ canonicalRankOrderBefore item rank (head :: rest) ordered lower upper strict low
   (decEq @{itemEq} selected head = Yes same) -> listMember @{itemEq} selected (head :: rest) = True
 canonicalListMemberKnownYes item itemEq selected selected rest Refl observed = rewrite observed in Refl
 
+0 canonicalListMemberKnownNo : (item : Type) -> (itemEq : DecEq item) ->
+  (selected, head : item) -> (rest : List item) -> (different : Not (selected = head)) ->
+  (decEq @{itemEq} selected head = No different) ->
+  listMember @{itemEq} selected (head :: rest) = listMember @{itemEq} selected rest
+canonicalListMemberKnownNo item itemEq selected head rest different observed = rewrite observed in Refl
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
