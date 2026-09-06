@@ -510,3 +510,16 @@ public export
 r172ReuseRegistrationStepAt NoTransitions transition later (RegistrationDisciplineStep _ _ atStep rest) = atStep
 r172ReuseRegistrationStepAt (MoreTransitions head tail) transition later (RegistrationDisciplineStep _ _ atStep rest) =
   r172ReuseRegistrationStepAt tail transition later rest
+
+public export
+0 r172ReuseConclusionChildYield :
+  (sorted : SortedClosingFreeTrace Nat R45Key Unit String R45Value
+    r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
+  (birth : LocatedGeneratedRegistration 1 0 r45Child (sortedTrace sorted)) ->
+  ParentRegistrationYield r45Protocol r45NameEq 0 r45Child (registrationBefore birth)
+r172ReuseConclusionChildYield sorted birth = fst (replace
+  {p = \action => RegistrationStepDiscipline r45Protocol r45NameEq action (registrationBefore birth) (afterRegistration birth)}
+  (registrationAction birth)
+  (r172ReuseRegistrationStepAt (beforeRegistration birth) (registrationTransition birth) (afterRegistration birth)
+    (replace {p = \trace => RegistrationDiscipline r45Protocol r45NameEq trace}
+      (sym (registrationDecomposition birth)) (replayDiscipline (sortedPremises sorted)))))
