@@ -3120,6 +3120,22 @@ canonicalWorkInstalledTraceStart name key world error value nameEq keyEq selecte
 canonicalWorkInstalledTraceStart name key world error value nameEq keyEq selected _
   (InstalledStep action tag checked rest installed tail) = installed
 
+||| A structural no-lifecycle interval cannot contain this actor's unload.
+0 canonicalWorkNoLifecycleRejectsUnload :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> NoLifecycleBy selected trace ->
+  ActionOccurs (LUnload selected) trace -> Void
+canonicalWorkNoLifecycleRejectsUnload name key world error value selected _ NoLifecycleByEnd occurs =
+  case occurs of ActionOccursHere step rest same impossible; ActionOccursLater step rest later impossible
+canonicalWorkNoLifecycleRejectsUnload name key world error value selected _
+  (NoLifecycleByStep step rest excluded tail) (ActionOccursHere _ _ action) =
+    excluded (rewrite action in Refl)
+      (trans (canonicalTransitionActorActionOwner step) (cong actionOwner action))
+canonicalWorkNoLifecycleRejectsUnload name key world error value selected _
+  (NoLifecycleByStep step rest excluded tail) (ActionOccursLater _ _ later) =
+    canonicalWorkNoLifecycleRejectsUnload name key world error value selected rest tail later
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
