@@ -2857,6 +2857,23 @@ canonicalWorkFiredInsertActorExact name key world error value nameEq keyEq first
     (Fired {before = first} {afterState = afterState} nameEq keyEq (OInsert child parent component) tag checked))
     (canonicalWorkInsertOwnerExact name key world error value child parent component)
 
+||| Observed-value cure: the installation goal is indexed by an explicit scalar,
+||| with its authenticated transition projection kept as an erased equation.
+0 canonicalWorkObservedActivationInstalled :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, afterState : SystemState name key value world error} ->
+  (step : Transition first afterState) ->
+  (AlignedTransitions name key world error value nameEq keyEq (MoreTransitions step NoTransitions)) ->
+  (PaperActivationStep step) -> (observed : name) ->
+  (0 exact : (transitionActor step = observed)) ->
+  (installedAt {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} observed afterState = True)
+canonicalWorkObservedActivationInstalled name key world error value nameEq keyEq {afterState} step aligned activation observed exact =
+  replace {p = \actor => installedAt {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} actor afterState = True} exact
+    (canonicalWorkActivationEndsInstalled name key world error value nameEq keyEq step aligned activation)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
