@@ -70,3 +70,7 @@ public export
 r172ReuseRoot : Transition r45AfterBegin r172ReuseAfterRoot
 r172ReuseRoot = Fired r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag r172ReuseRootChecked
 
+public export
+r172ReuseRetire : Transition r172ReuseAfterRoot r172ReuseAfterRetire
+r172ReuseRetire = Fired r45NameEq r45KeyEq (ORetire 1) ORetireTag r172ReuseRetireChecked
+
