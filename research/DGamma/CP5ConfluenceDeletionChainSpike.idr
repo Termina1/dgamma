@@ -29942,6 +29942,16 @@ scopedEndpointAbsentAt name key world error value nameEq keyEq source target end
 scopedEndpointAbsent name key world error value nameEq keyEq source target endpoint actor absent =
   scopedEndpointAbsentAt name key world error value nameEq keyEq source target endpoint actor (isElem @{nameEq} actor (endpointWithdrawnNames endpoint)) absent
 
+0 scopedWithdrawalExtend :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (actor : name) ->
+  (source, middle, target : SystemState name key value world error) -> WithdrawnNameResult nameEq actor source middle ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry target) = Nothing) ->
+  WithdrawnNameResult nameEq actor source target
+scopedWithdrawalExtend name key world error value nameEq actor source middle target (VestigialNameWithdrawn fiber found retired inactive empty absent) finalAbsent =
+  VestigialNameWithdrawn fiber found retired inactive empty finalAbsent
+scopedWithdrawalExtend name key world error value nameEq actor source middle target (NameAlreadyAbsent absent middleAbsent) finalAbsent =
+  NameAlreadyAbsent absent finalAbsent
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
