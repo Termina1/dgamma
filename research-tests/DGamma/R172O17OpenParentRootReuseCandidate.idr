@@ -492,3 +492,10 @@ r172ReuseLocateAction (ActionOccursLater head rest later) =
     MkLocatedActionOccurrence before after earlier transition suffix same decomposition =>
       MkLocatedActionOccurrence before after (MoreTransitions head earlier) transition suffix same
         (cong (MoreTransitions head) decomposition)
+
+public export
+0 r172ReuseConclusionRootBirth :
+  (sorted : SortedClosingFreeTrace Nat R45Key Unit String R45Value
+    r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
+  LocatedActionOccurrence (OInsert 1 Root r45Child) (sortedTrace sorted)
+r172ReuseConclusionRootBirth sorted = r172ReuseLocateAction (r172ReuseConclusionRootOccurs sorted)
