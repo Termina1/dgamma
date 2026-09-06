@@ -78,3 +78,8 @@ public export
 r172ReuseFinish : Transition r172ReuseAfterRetire r172ReuseFinal
 r172ReuseFinish = Fired r45NameEq r45KeyEq (LAdvance 0) LFinishTag r172ReuseFinishChecked
 
+public export
+r172ReuseTail : Transitions r45SourceFinal r172ReuseFinal
+r172ReuseTail = MoreTransitions r172ReuseRemove (MoreTransitions r172ReuseRoot
+  (MoreTransitions r172ReuseRetire (MoreTransitions r172ReuseFinish NoTransitions)))
+
