@@ -26633,6 +26633,11 @@ scopedDeletionWholeOrdinal name key world error value nameEq keyEq initial final
       (deletionWholeOrdinalEmbedding (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
         (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result occurrence)))
 
+scopedGenerationOrdinalMap :
+  (name : Type) -> (Nat -> Nat) -> RegistrationGeneration name -> RegistrationGeneration name
+scopedGenerationOrdinalMap name function (MkRegistrationGeneration actor ordinal) =
+  MkRegistrationGeneration actor (function ordinal)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
