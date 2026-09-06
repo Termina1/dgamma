@@ -29435,6 +29435,17 @@ scopedClosingFreeCoreDone name key world error value protocol nameEq keyEq initi
 scopedOrdinalKeptPositive sourceCount targetCount tail _ _ ScopedOrdinalHere later = absurd later
 scopedOrdinalKeptPositive sourceCount targetCount tail _ _ (ScopedOrdinalKeptLater path) later = LTESucc LTEZero
 
+0 scopedOrdinalKeptLaterOrder :
+  (sourceCount, targetCount : Nat) -> (tail : ScopedOrdinalSpine sourceCount targetCount) ->
+  (leftSource, leftTarget, rightSource, rightTarget : Nat) ->
+  ((sourceIndex, targetIndex : Nat) -> ScopedOrdinalPath tail sourceIndex targetIndex -> LT leftTarget targetIndex -> LT leftSource sourceIndex) ->
+  ScopedOrdinalPath (ScopedOrdinalKeep tail) rightSource rightTarget ->
+  LT (S leftTarget) rightTarget -> LT (S leftSource) rightSource
+scopedOrdinalKeptLaterOrder sourceCount targetCount tail leftSource leftTarget _ _ continue ScopedOrdinalHere later = absurd later
+scopedOrdinalKeptLaterOrder sourceCount targetCount tail leftSource leftTarget _ _ continue
+  (ScopedOrdinalKeptLater {sourceIndex} {targetIndex} path) later =
+    LTESucc (continue sourceIndex targetIndex path (fromLteSucc later))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
