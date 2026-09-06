@@ -930,6 +930,16 @@ canonicalUniqueTail item head rest (UniqueCons fresh unique) = unique
   UniqueKeys (head :: rest) -> Not (Elem head rest)
 canonicalUniqueHeadAbsent item head rest (UniqueCons fresh unique) = fresh
 
+0 canonicalRanksLowerThroughHead : (item : Type) -> (rank : item -> Nat) ->
+  (inserted, head : item) -> (rest : List item) -> LTE (rank inserted) (rank head) ->
+  CanonicalRanksOrdered item rank (head :: rest) ->
+  (selected : item) -> Elem selected (head :: rest) -> LTE (rank inserted) (rank selected)
+canonicalRanksLowerThroughHead item rank inserted head rest before ordered selected present =
+  case present of
+    Here => before
+    There later => canonicalRankLTETransitive before
+      (canonicalRanksHeadBelow item rank head rest ordered selected later)
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
