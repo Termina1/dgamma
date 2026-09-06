@@ -26369,6 +26369,13 @@ scopedOrdinalSpineWitness (ScopedOrdinalKeep {sourceCount} {targetCount} tail) =
 scopedOrdinalSpineWitness (ScopedOrdinalDelete {sourceCount} {targetCount} tail) =
   scopedOrdinalDeleteWitness sourceCount targetCount tail (scopedOrdinalSpineWitness tail)
 
+||| Numeric shape and exact origin paths are emitted as one certificate at the actual origin map.
+record ScopedOrdinalOriginWitness (sourceCount, targetCount : Nat) (origin : Nat -> Maybe Nat) where
+  constructor MkScopedOrdinalOriginWitness
+  originSpine : ScopedOrdinalSpine sourceCount targetCount
+  0 originPath : (sourceIndex, targetIndex : Nat) -> (origin targetIndex = Just sourceIndex) ->
+    ScopedOrdinalPath originSpine sourceIndex targetIndex
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
