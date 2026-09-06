@@ -20092,6 +20092,20 @@ scopedControlLookupRoot name key world error value _ _ NoControlFibers = Refl
 scopedControlLookupRoot name key world error value _ _ (SomeControlFibers {left} {right} controls) =
   cong scopedParentRoot (scopedControlParentExact name key world error value left right controls)
 
+0 scopedOutsidePlanRootLookup :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (actor : name) ->
+  (registered : List (RegistrationGeneration name)) -> (live : GenerationEnvironment name) ->
+  (source, target : Registry name key value world error) ->
+  (plan : CurrentRegisteredPlanResult name key world error value nameEq registered live source) ->
+  ActorOutsideCurrentRegistered actor registered live ->
+  (maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor (planTarget plan)) =
+   maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor target)) ->
+  (maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor source) =
+   maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor target))
+scopedOutsidePlanRootLookup name key world error value nameEq actor registered live source target plan outside roots =
+  trans (sym (cong (maybe False (scopedParentRoot . fiberParent))
+    (lookupOutsideInactivePlan nameEq actor source (planTarget plan) (inactiveLeafPlan plan) (actorOutsidePlan plan actor outside)))) roots
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
