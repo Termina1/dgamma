@@ -26545,6 +26545,25 @@ record ScopedDeletionOrdinalSegments
   prefixOrdinalJoin : ScopedOrdinalAppendWitness (originSpine beforeOrdinalSegment) (originSpine centerOrdinalSegment)
   wholeOrdinalJoin : ScopedOrdinalAppendWitness (joinedOrdinalSpine prefixOrdinalJoin) (originSpine suffixOrdinalSegment)
 
+0 scopedAssembleDeletionOrdinalSegments :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (before : ScopedOrdinalOriginWitness (deletionOriginalBeforeCount result) (deletionSurvivingBeforeCount result)
+    (generationSubsequenceSourceOrdinal (beforeDeletion result))) ->
+  (center : ScopedOrdinalOriginWitness (deletionOriginalEpisodeCount result) (deletionSurvivingEpisodeCount result)
+    (generationSubsequenceSourceOrdinal (episodeDeletion result))) ->
+  (suffix : ScopedOrdinalOriginWitness (transitionCount (traceAfterClosing (selectedEpisode candidate))) (transitionCount (survivingAfter result))
+    (generationSubsequenceSourceOrdinal (afterDeletion result))) ->
+  ScopedDeletionOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result
+scopedAssembleDeletionOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result before center suffix =
+  MkScopedDeletionOrdinalSegments before center suffix
+    (scopedOrdinalAppendWitness (originSpine before) (originSpine center))
+    (scopedOrdinalAppendWitness
+      (joinedOrdinalSpine (scopedOrdinalAppendWitness (originSpine before) (originSpine center))) (originSpine suffix))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
