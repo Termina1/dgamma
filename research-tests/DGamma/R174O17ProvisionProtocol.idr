@@ -31,3 +31,14 @@ r174ProvisionRank (MkComponent (MkCoeffectSpec [] unique) provision program) =
   if allRecursive (\step => isNothing (registrationYieldTag step)) program
     then Just 1 else Just 0
 r174ProvisionRank (MkComponent (MkCoeffectSpec (key :: rest) unique) provision program) = Nothing
+
+0 r174AllRecursiveContainsFalse :
+  (item : Type) -> (predicate : item -> Bool) ->
+  (selected : item) -> (items : List item) ->
+  Elem selected items -> predicate selected = False ->
+  allRecursive predicate items = False
+r174AllRecursiveContainsFalse item predicate selected [] present false = case present of Here impossible; There later impossible
+r174AllRecursiveContainsFalse item predicate _ (head :: rest) Here false = rewrite false in Refl
+r174AllRecursiveContainsFalse item predicate selected (head :: rest) (There later) false =
+  rewrite r174AllRecursiveContainsFalse item predicate selected rest later false in
+    andFalseFalse (predicate head)
