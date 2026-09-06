@@ -472,3 +472,10 @@ public export
 r172ReuseOriginalRootOccurs = ActionOccursLater r45ParentInsert _ (ActionOccursLater r45Begin _
   (ActionOccursLater r45ChildInsert _ (ActionOccursLater r45SourceRetire _
     (ActionOccursLater r172ReuseRemove _ (ActionOccursHere r172ReuseRoot _ Refl)))))
+
+public export
+0 r172ReuseConclusionRootOccurs :
+  (sorted : SortedClosingFreeTrace Nat R45Key Unit String R45Value
+    r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
+  ActionOccurs (OInsert 1 Root r45Child) (sortedTrace sorted)
+r172ReuseConclusionRootOccurs sorted = r172ReuseExternalRootForward (sortedSameInputs sorted) r172ReuseOriginalRootOccurs
