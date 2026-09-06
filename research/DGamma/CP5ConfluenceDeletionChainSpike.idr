@@ -27614,6 +27614,31 @@ scopedWholeRetainedSourceOrdinal name key world error value nameEq keyEq initial
       (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result (wholeRetainedOccurrence retained)))
     (wholeRetainedEmbedding retained)
 
+0 scopedRetainedGeneratedOriginExact :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (capital : DeletionProducerOperationalCapital name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result) ->
+  (child, parent : name) -> (component : Component key value world error) -> (sourceIndex : Nat) ->
+  (retained : ScopedWholeRetainedOrigin name key world error value nameEq keyEq initial finalState global candidate result (OInsert child (ChildOf parent) component) sourceIndex) ->
+  (targetBirth : LocatedGeneratedRegistration child parent component (survivingTrace result)) ->
+  (generatedRegistrationActionOccurrence targetBirth = wholeRetainedOccurrence retained) ->
+  (registrationGeneration (deletionProducerGeneratedOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result capital targetBirth) = MkRegistrationGeneration child sourceIndex)
+scopedRetainedGeneratedOriginExact name key world error value nameEq keyEq initial finalState global candidate result capital child parent component sourceIndex retained targetBirth sameActionOccurrence =
+  cong (MkRegistrationGeneration child)
+    (trans (scopedActionGeneratedOrdinal name key world error value initial finalState global child parent component
+      (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+        (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result (generatedRegistrationActionOccurrence targetBirth))))
+      (trans (cong (\occurrence => locatedActionOrdinal (deletionWholeSourceOccurrence
+        (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+          (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result occurrence))) sameActionOccurrence)
+        (scopedWholeRetainedSourceOrdinal name key world error value nameEq keyEq initial finalState global candidate result
+          (OInsert child (ChildOf parent) component) sourceIndex retained)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
