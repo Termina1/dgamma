@@ -1340,6 +1340,17 @@ canonicalSortingCurrentOrdering name key world error value protocol nameEq keyEq
 canonicalSortingReplayCorrespondence name key world error value protocol nameEq keyEq current =
   finiteDerivationReplayCorrespondence (sortingReplayDerivation current)
 
+||| Action/generation origin is the exact finite derivation fold.
+0 canonicalSortingOccurrenceCorrespondence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  {original : Transitions initial originalFinal} ->
+  (current : CanonicalSortingReplayState name key world error value protocol nameEq keyEq original) ->
+  ActionRegistrationReplayCorrespondence name key world error value original (sortingCurrentTrace current)
+canonicalSortingOccurrenceCorrespondence name key world error value protocol nameEq keyEq current =
+  finiteDerivationOccurrenceCorrespondence (sortingReplayDerivation current)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
