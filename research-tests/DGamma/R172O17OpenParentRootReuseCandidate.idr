@@ -674,3 +674,14 @@ r172ReuseConclusionChildFresh sorted birth = case r172ReuseConclusionChildChecke
     (registrationBefore birth) (registrationAfter birth) tag
     (checkedActionProjects r45NameEq r45KeyEq (OInsert 1 (ChildOf 0) r45Child)
       (registrationBefore birth) (registrationAfter birth) tag checked)
+
+||| Exact remaining contradiction interface: actual occupancy, not an assumed birth-order violation.
+public export
+0 r172ReuseConclusionOccupiedChildImpossible :
+  (sorted : SortedClosingFreeTrace Nat R45Key Unit String R45Value
+    r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
+  (birth : LocatedGeneratedRegistration 1 0 r45Child (sortedTrace sorted)) ->
+  (fiber : Fiber Nat R45Key R45Value Unit String) ->
+  lookupFiber {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String} @{r45NameEq} 1 (registry (registrationBefore birth)) = Just fiber -> Void
+r172ReuseConclusionOccupiedChildImpossible sorted birth fiber found =
+  case trans (sym (r172ReuseConclusionChildFresh sorted birth)) found of Refl impossible
