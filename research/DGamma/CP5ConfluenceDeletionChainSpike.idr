@@ -27566,6 +27566,21 @@ scopedWholeBirthCoverage name key world error value nameEq keyEq initial finalSt
 scopedOrdinalForwardInjective permutation left right same =
   trans (sym (ordinalLeftInverse permutation left)) (trans (cong (ordinalBackward permutation) same) (ordinalLeftInverse permutation right))
 
+0 scopedEmbeddedOrdinalsUniqueAt :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (segments : ScopedDeletionOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result) ->
+  (witness : ScopedOrdinalSpinePermutationWitness (joinedOrdinalSpine (wholeOrdinalJoin segments))) ->
+  (left, right, targetIndex : Nat) -> DeletionSurvivingOrdinalEmbedding result targetIndex left ->
+  DeletionSurvivingOrdinalEmbedding result targetIndex right -> (left = right)
+scopedEmbeddedOrdinalsUniqueAt name key world error value nameEq keyEq initial finalState global candidate result segments witness left right targetIndex leftEmbedding rightEmbedding =
+  scopedOrdinalForwardInjective (spinePermutation witness) left right
+    (trans (forwardOnPath witness left targetIndex (scopedDeletionEmbeddedOrdinalPath name key world error value nameEq keyEq initial finalState global candidate result segments left targetIndex leftEmbedding))
+      (sym (forwardOnPath witness right targetIndex (scopedDeletionEmbeddedOrdinalPath name key world error value nameEq keyEq initial finalState global candidate result segments right targetIndex rightEmbedding))))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
