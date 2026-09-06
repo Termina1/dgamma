@@ -27055,6 +27055,24 @@ scopedSelectedBirthGeneration name key world error value nameEq keyEq initial fi
   (MkLocatedActionOccurrence before afterState beforeTrace transition later actionShape decomposition) =
     cong (MkRegistrationGeneration child) (transitionCountAppend (traceBeforeOpening episode) beforeTrace)
 
+0 scopedSelectedGeneratedClassification :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (selected : name) -> (episode : LocatedClosedEpisode name key world error value nameEq keyEq selected global) ->
+  (startOrdinal : Nat) -> (startOrdinal = transitionCount (traceBeforeOpening episode)) ->
+  (generation : RegistrationGeneration name) ->
+  GeneratedDuring name key world error value selected startOrdinal
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode))) (closedTransitions (locatedEpisode episode))) generation ->
+  DeletedGenerationClassification name key world error value nameEq global generation
+scopedSelectedGeneratedClassification name key world error value nameEq keyEq initial finalState global selected episode startOrdinal startExact generation
+  (MkGeneratedDuring child component birth stamp retiresLater) =
+    replace {p = \birthGeneration => DeletedGenerationClassification name key world error value nameEq global birthGeneration}
+      (sym (trans stamp (cong (MkRegistrationGeneration child) (cong (\ordinal => ordinal + locatedActionOrdinal birth) startExact))))
+      (MkDeletedGenerationClassification selected component
+        (locatedEpisodeChildRegistration nameEq keyEq global selected child component episode birth)
+        (scopedSelectedBirthGeneration name key world error value nameEq keyEq initial finalState global selected child component episode birth)
+        (scopedSelectedBirthClosing name key world error value nameEq keyEq initial finalState global selected child component episode birth))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
