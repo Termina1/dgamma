@@ -29713,6 +29713,14 @@ scopedCumulativeEndpointIdentity name key world error value nameEq keyEq state =
     (\actor, outside => fiberControlMaybeReflexive (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry state)))
     (\actor, member => absurd member) (\actor, member => absurd member)
 
+0 scopedCumulativeRegistrationIdentity :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (initial, finalState : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
+  CanonicalRegistrationCorrespondence trace trace []
+scopedCumulativeRegistrationIdentity name key world error value initial finalState trace =
+  MkCanonicalRegistrationCorrespondence id (\occurrence => Right (occurrence ** Refl))
+    (\left, right, same => same) (\generation, member => absurd member)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
