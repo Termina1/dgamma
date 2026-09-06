@@ -27181,6 +27181,19 @@ scopedBirthCoverageOriginTransport name key world error value registered ordinal
   Right (MkScopedLocatedOrdinalOrigin (retainedOrdinalOccurrence kept)
     (trans (sym (same (locatedActionOrdinal (retainedOrdinalOccurrence kept)))) (retainedOrdinalExact kept)))
 
+0 scopedBirthCoverageKeepLater :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (first, middle, finalState : SystemState name key value world error) ->
+  (head : Transition first middle) -> (tail : Transitions middle finalState) -> (origin : Nat -> Maybe Nat) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) -> (sourceIndex : Nat) ->
+  ScopedBirthCoverage name key world error value registered (S ordinal) middle finalState tail origin child parent component sourceIndex ->
+  ScopedBirthCoverage name key world error value registered ordinal first finalState (MoreTransitions head tail) (scopedKeptOrdinalOrigin origin) child parent component (S sourceIndex)
+scopedBirthCoverageKeepLater name key world error value registered ordinal first middle finalState head tail origin child parent component sourceIndex (Left deleted) =
+  Left (replace {p = \birthOrdinal => Elem (MkRegistrationGeneration child birthOrdinal) registered} (plusSuccRightSucc ordinal sourceIndex) deleted)
+scopedBirthCoverageKeepLater name key world error value registered ordinal first middle finalState head tail origin child parent component sourceIndex (Right kept) =
+  Right (scopedPrependLocatedOrdinalOrigin name key world error value first middle finalState head tail (OInsert child parent component) origin sourceIndex
+    (retainedOrdinalOccurrence kept) (retainedOrdinalExact kept))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
