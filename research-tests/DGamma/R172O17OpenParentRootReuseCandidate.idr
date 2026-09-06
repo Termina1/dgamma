@@ -523,3 +523,9 @@ r172ReuseConclusionChildYield sorted birth = fst (replace
   (r172ReuseRegistrationStepAt (beforeRegistration birth) (registrationTransition birth) (afterRegistration birth)
     (replace {p = \trace => RegistrationDiscipline r45Protocol r45NameEq trace}
       (sym (registrationDecomposition birth)) (replayDiscipline (sortedPremises sorted)))))
+
+public export
+0 r172ReuseYieldParentInstalled : {before : SystemState Nat R45Key R45Value Unit String} ->
+  ParentRegistrationYield r45Protocol r45NameEq 0 r45Child before -> installedAt @{r45NameEq} 0 before = True
+r172ReuseYieldParentInstalled yielded =
+  rewrite parentFoundAtYield yielded in rewrite parentAtYield yielded in Refl
