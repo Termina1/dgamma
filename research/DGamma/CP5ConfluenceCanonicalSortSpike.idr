@@ -3187,6 +3187,25 @@ canonicalWorkActionOccursUnderPrefix name key world error value action (MoreTran
   ActionOccursLater head (appendTransitions tail later)
     (canonicalWorkActionOccursUnderPrefix name key world error value action tail later occurs)
 
+||| A genuine open episode excludes unloads over the WHOLE trace: none before
+||| its first lifecycle action, its opening is Begin, and its suffix is installed.
+0 canonicalWorkOpenEpisodeRejectsUnload :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected global ->
+  ActionOccurs (LUnload selected) global -> Void
+canonicalWorkOpenEpisodeRejectsUnload name key world error value nameEq keyEq selected global
+  (MkLocatedInterleavedOpenEpisode pre start earlier opening inside installed noEarlier active decomposition) occurs =
+    case canonicalWorkActionOccursAppendSplit name key world error value (LUnload selected)
+      earlier (MoreTransitions (beginTransition opening) inside)
+      (replace {p = ActionOccurs (LUnload selected)} (sym decomposition) occurs) of
+        Left before => canonicalWorkNoLifecycleRejectsUnload name key world error value selected earlier noEarlier before
+        Right (ActionOccursHere _ _ same) => case same of Refl impossible
+        Right (ActionOccursLater _ _ later) =>
+          canonicalWorkInstalledRejectsUnload name key world error value nameEq keyEq selected inside installed later
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
