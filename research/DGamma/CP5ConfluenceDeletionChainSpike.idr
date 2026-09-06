@@ -26733,6 +26733,22 @@ scopedDeletionOperationalCapital name key world error value nameEq keyEq initial
   scopedOperationalFromOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result seals
     (scopedDeletionOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result)
 
+||| Full unchanged operational capital at the exact live enriched deletion result, without extra seal premises.
+0 scopedEnrichedOperationalCapital :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq global) ->
+  DeletionProducerOperationalCapital name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)
+    (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds aligned)
+scopedEnrichedOperationalCapital name key world error value protocol nameEq keyEq initial finalState global candidate folds aligned =
+  scopedDeletionOperationalCapital name key world error value nameEq keyEq initial finalState global candidate
+    (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds aligned)
+    (scopedEnrichedReadinessSeals name key world error value protocol nameEq keyEq initial finalState global candidate folds aligned)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
