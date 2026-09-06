@@ -1642,6 +1642,17 @@ canonicalHoistedRootOccurrence name key world error value protocol nameEq keyEq 
     (MoreTransitions (movedLeft (rootHoistDiamond hoist)) (replayedSuffix (rootHoistResult hoist)))
     (rootHoistedAction hoist) (sym (swappedDecomposition (rootHoistResult hoist)))
 
+0 canonicalHoistedRootOrdinal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) -> (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) -> (root : name) -> (component : Component key value world error) ->
+  (hoist : CanonicalRootInsertionHoist name key world error value protocol nameEq keyEq original prefixTrace left right suffix root component) ->
+  (locatedActionOrdinal (canonicalHoistedRootOccurrence name key world error value protocol nameEq keyEq original prefixTrace left right suffix root component hoist) = transitionCount prefixTrace)
+canonicalHoistedRootOrdinal name key world error value protocol nameEq keyEq original prefixTrace left right suffix root component hoist = Refl
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
