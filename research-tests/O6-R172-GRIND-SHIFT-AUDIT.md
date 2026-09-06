@@ -355,3 +355,132 @@ first target. O17 is next **probe-first** in the ratified ranking; it was not
 started in Unit B. O19 body remains banned, O21 withdrawal branches parked, no
 surface revision. The shift stops after its approved first target rather than
 silently expanding into a new operational proof campaign.
+
+## Continuation ruling after the ratified O14 milestone
+
+The supervisor independently verified and **RATIFIED O14 closure at `b590789`**
+(clean tree, production diff empty, independent six-hole census, removed probe;
+comment-only `with` text was not mistaken for new syntax), and pushed that HEAD.
+The initial final-gate request above is therefore a **ratified O14 milestone**,
+not the end of the shift. The ruling redirects R172 to **O17 PROBE-FIRST now**,
+with ≤3 checks per micro-unit, no retained capital before a committed disposable
+probe transcript, no O17 body before committed invariant, no surface/O19/O21
+work, and a new gate on O17 closure/stop. If ≥90 minutes remain then, target #3
+requires another authorization; it must not be self-started. The time guard is
+unchanged. The entire ratified O14 audit above is preserved verbatim.
+
+The exact R144 `O6-R144-O17-SORT-BASE-BUDGET-STOP-AUDIT.md` was reread. Its wall
+is the missing operational hoist and simultaneous current trace/bundle,
+nonzero derivation, external relation, ranges and occurrence provenance—not a
+failed proof that an already supplied contiguous block is contiguous. The
+identity-as-complete-sort route stays closed.
+
+## P2 — actual one-splice recursive-state probe: PASS 1/3
+
+This deliberately isolates the **operational package boundary** before an O17
+recursion: execute the frozen `adjacentSwapSuffixSpike` at the actual source
+bundle and local pair, then construct a **nonempty** one-node derivation, exact
+returned TARGET bundle, external relation, operational occurrence map, endpoint
+relation, and a freshly produced O14 support order at **that same returned
+endpoint**. No caller supplies a moved trace, independent order, contiguous
+block or equality between independently computed endpoints. The only lambda is
+fully typed by its exact `AdjacentSwapResult` telescope, not an inferred local
+dependent view; no `let`/`with`, new helper or export.
+
+The probe still takes the local diamond/orientation/pair-external witness as
+input. **It does not prove crossing selection or early applicability**, fixed
+original-order transport, moved block ranges, closing-freedom transport or an
+O17 body. Those must be produced in the retained phase; this is not an honest
+basis for claiming that a generic O19 crossing is available. The upstream
+DeletionChain result feeds its `reducedPremises` into precisely this source
+bundle type; the new O14 body now supplies the reached-state order rather than
+assuming a second sorting result.
+
+Exactly one disposable declaration:
+
+```idris
+module DGamma.R172O17SingleSwapStateProbe
+
+import DGamma.Core
+import DGamma.Calculus
+import DGamma.Coeffects
+import DGamma.Metatheory
+import DGamma.Unified
+import DGamma.CP3
+import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5ConfluenceDeletionChainSpike
+import DGamma.CP5ConfluenceCanonicalSortSpike
+import Decidable.Equality
+
+%default total
+%unbound_implicits off
+
+||| A real one-node operational splice, never identity-as-a-complete-block.
+||| Local crossing applicability remains explicit input to this narrowly scoped probe.
+0 r172O17SingleSwapStateProbe :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (initial, pairFirst, pairMiddle, pairFinal, originalFinal :
+    SystemState name key value world error) ->
+  (original : Transitions initial originalFinal) ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (appendTransitions prefixTrace (MoreTransitions left (MoreTransitions right suffix)) = original) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  AdjacentSwapOrientationEvidence left right ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  SameExternalOrchestration nameEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))
+    (MoreTransitions (movedRight diamond) (MoreTransitions (movedLeft diamond) NoTransitions)) ->
+  (targetFinal : SystemState name key value world error **
+    target : Transitions initial targetFinal **
+    (NonEmptyFiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq original target,
+     ReplayInvariantBundle name key world error value protocol nameEq keyEq target,
+     SameExternalOrchestration nameEq original target,
+     ActionRegistrationReplayCorrespondence name key world error value original target,
+     RelationalReplayEndpoint name key world error value nameEq keyEq originalFinal targetFinal,
+     SupportOrderingCapital name key world error value nameEq keyEq targetFinal))
+r172O17SingleSwapStateProbe name key world error value nameEq keyEq protocol
+  initial pairFirst pairMiddle pairFinal originalFinal original prefixTrace left right suffix
+  decomposition premises orientation diamond pairExternal =
+    (the ((result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+      original prefixTrace left right suffix diamond) ->
+      (targetFinal : SystemState name key value world error **
+    target : Transitions initial targetFinal **
+    (NonEmptyFiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq original target,
+     ReplayInvariantBundle name key world error value protocol nameEq keyEq target,
+     SameExternalOrchestration nameEq original target,
+     ActionRegistrationReplayCorrespondence name key world error value original target,
+     RelationalReplayEndpoint name key world error value nameEq keyEq originalFinal targetFinal,
+     SupportOrderingCapital name key world error value nameEq keyEq targetFinal)))
+      (\result => (replayedFinal result ** swappedTrace result **
+        (NonEmptyAdjacentSwap original prefixTrace left right suffix orientation diamond result
+          (swappedTrace result) FiniteAdjacentSwapDone,
+         swappedPremises result,
+         swappedSameExternalInputs result,
+         swappedOccurrenceCorrespondence result,
+         swappedEndpoint result,
+         supportOrderingSpike nameEq keyEq protocol (swappedTrace result) (swappedPremises result)))))
+      (adjacentSwapSuffixSpike nameEq keyEq protocol original prefixTrace left right suffix
+        decomposition premises diamond pairExternal)
+```
+
+Command and complete result:
+
+```sh
+idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R172O17SingleSwapStateProbe.idr
+```
+
+**12:47:45–12:47:50 UTC**, exit 0, no Error diagnostic:
+
+```text
+1/1: Building DGamma.R172O17SingleSwapStateProbe (research-tests/DGamma/R172O17SingleSwapStateProbe.idr)
+```
+
+The exact `.idr/.ttc/.ttm` files were removed, without deleting any seeded
+artifact. This transcript is committed **before any retained O17 declaration**.
+O17 body budget in this continuation is still **0/3**; the six-hole census and
+all frozen bytes remain unchanged. This successful state-index probe permits
+only the scoped producer-owned capital campaign; it is not a block-hoist proof.
