@@ -597,3 +597,13 @@ public export
 0 r172ReuseBeforeAppendSuccessor : (left, right : Nat) -> LT left (left + S right)
 r172ReuseBeforeAppendSuccessor Z right = LTESucc LTEZero
 r172ReuseBeforeAppendSuccessor (S left) right = LTESucc (r172ReuseBeforeAppendSuccessor left right)
+
+public export
+0 r172ReuseLastOpeningBeforeEnd :
+  {first, finalState : SystemState Nat R45Key R45Value Unit String} ->
+  {trace : Transitions first finalState} ->
+  (opening : LastOpeningResult Nat R45Key Unit String R45Value r45NameEq r45KeyEq 0 trace) ->
+  LT (locatedActionOrdinal (r172ReuseLastOpeningLocated opening)) (transitionCount trace)
+r172ReuseLastOpeningBeforeEnd (MkLastOpeningResult before after earlier opening later split installed) =
+  rewrite sym split in rewrite r172ReuseCountAppend earlier (MoreTransitions (beginTransition opening) later) in
+    r172ReuseBeforeAppendSuccessor (transitionCount earlier) (transitionCount later)
