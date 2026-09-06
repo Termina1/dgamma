@@ -15,3 +15,8 @@ import Decidable.Equality
 0 uniqueMapSuccessorNotZero : (observed : Maybe Nat) -> (map S observed = Just Z) -> Void
 uniqueMapSuccessorNotZero Nothing same = case same of Refl impossible
 uniqueMapSuccessorNotZero (Just earlier) same = case same of Refl impossible
+
+0 uniqueMapSuccessorJust : (observed : Maybe Nat) -> (earlier : Nat) ->
+  (map S observed = Just (S earlier)) -> (observed = Just earlier)
+uniqueMapSuccessorJust Nothing earlier same = case same of Refl impossible
+uniqueMapSuccessorJust (Just actual) earlier same = case same of Refl => Refl
