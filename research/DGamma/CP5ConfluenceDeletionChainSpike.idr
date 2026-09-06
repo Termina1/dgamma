@@ -28880,6 +28880,32 @@ scopedCandidateRootSealsAfterBefore name key world error value nameEq keyEq init
     (replace {p = \source => ScopedOwnedRootSeals name key world error value nameEq (selectedRegistrations candidate) 0 [] initial finalState source}
       (sym (locatedDecomposition (selectedEpisode candidate))) (scopedCandidateOwnedRootSeals name key world error value nameEq keyEq initial finalState global aligned candidate))
 
+||| Exact SameExternalOrchestration at the actual enriched deletion result, with no extra root-role premise.
+0 scopedEnrichedExternalOrchestration :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq global) ->
+  SameExternalOrchestration nameEq global
+    (survivingTrace (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds aligned))
+scopedEnrichedExternalOrchestration name key world error value protocol nameEq keyEq initial finalState global candidate folds aligned =
+  scopedEnrichedExternalJoin name key world error value protocol nameEq keyEq initial finalState global candidate folds
+    (selectedOutputExternal (enrichedSelected folds)
+      (scopedRootSealsAppendLeft name key world error value nameEq (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)
+        (locatedPreStart (selectedEpisode candidate)) (locatedAfter (selectedEpisode candidate)) finalState
+        (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+        (traceAfterClosing (selectedEpisode candidate)) (scopedCandidateRootSealsAfterBefore name key world error value nameEq keyEq initial finalState global aligned candidate)))
+    (postCloseOutputExternal (enrichedSuffix folds)
+      (scopedRootSealsAppendRight name key world error value nameEq (selectedRegistrations candidate)
+        (selectedStartOrdinal candidate) (selectedFoldEndOrdinal (selectedOutputFold (enrichedSelected folds)))
+        (selectedStartLive candidate) (selectedFoldEndLive (selectedOutputFold (enrichedSelected folds)))
+        (locatedPreStart (selectedEpisode candidate)) (locatedAfter (selectedEpisode candidate)) finalState
+        (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+        (traceAfterClosing (selectedEpisode candidate)) (selectedFoldScan (selectedOutputFold (enrichedSelected folds)))
+        (scopedCandidateRootSealsAfterBefore name key world error value nameEq keyEq initial finalState global aligned candidate)))
+
 0 scopedEnrichedStepFromExternal :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
