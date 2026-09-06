@@ -1016,6 +1016,22 @@ canonicalFreshRankInsertAt item rank inserted head rest ordered unique fresh (No
       (canonicalRankConsMembership item head (rankSortedItems tailResult) (inserted :: rest)
         (rankSortedBackward tailResult) selected present))
 
+||| Structural fresh insertion constructs membership, uniqueness and order in the same recursion.
+canonicalFreshRankInsert : (item : Type) -> (rank : item -> Nat) ->
+  (inserted : item) -> (rest : List item) ->
+  (0 ordered : CanonicalRanksOrdered item rank rest) -> (0 unique : UniqueKeys rest) ->
+  (0 fresh : Not (Elem inserted rest)) -> CanonicalRankSortResult item rank (inserted :: rest)
+canonicalFreshRankInsert item rank inserted [] ordered unique fresh =
+  MkCanonicalRankSortResult [inserted]
+    (CanonicalRanksCons inserted [] (\selected, present => absurd present) CanonicalRanksNil)
+    (UniqueCons fresh UniqueNil) (\selected, present => present) (\selected, present => present)
+canonicalFreshRankInsert item rank inserted (head :: rest) ordered unique fresh =
+  canonicalFreshRankInsertAt item rank inserted head rest ordered unique fresh
+    (isLTE (rank inserted) (rank head))
+    (canonicalFreshRankInsert item rank inserted rest
+      (canonicalRanksTail item rank head rest ordered) (canonicalUniqueTail item head rest unique)
+      (\present => fresh (There present)))
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
