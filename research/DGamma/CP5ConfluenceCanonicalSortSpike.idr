@@ -3537,6 +3537,23 @@ canonicalWorkOwnedBeginActor name key world error value selected step
   (CanonicalWorkRegistration inserted) observedActor begins =
     void (canonicalFalseNotTrue (trans (sym (cong isLifecycleAction inserted)) (cong isLifecycleAction begins)))
 
+||| In an installed residual, the owned right node cannot be ANY Begin.
+||| Its actor is derived from the same pair before applying the rule boundary.
+0 canonicalWorkInstalledPairRejectsBegin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  (pair : CanonicalWorkGroupingPair name key world error value selected trace) ->
+  InstalledTrace name key world error value nameEq keyEq selected trace ->
+  (observedActor : name) -> Not (transitionAction (workPairRight pair) = LBegin observedActor)
+canonicalWorkInstalledPairRejectsBegin name key world error value nameEq keyEq selected trace pair installed observedActor begins =
+  canonicalWorkInstalledRejectsBegin name key world error value nameEq keyEq selected trace installed
+    (replace {p = \action => ActionOccurs action trace}
+      (trans begins (cong LBegin (canonicalWorkOwnedBeginActor name key world error value selected
+        (workPairRight pair) (workPairRightOwned pair) observedActor begins)))
+      (canonicalWorkGroupingRightOccurs name key world error value selected trace pair))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
