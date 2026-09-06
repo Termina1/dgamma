@@ -26528,6 +26528,23 @@ scopedOrdinalAppendWitness {rightSource} {rightTarget} (ScopedOrdinalKeep {sourc
 scopedOrdinalAppendWitness {rightSource} {rightTarget} (ScopedOrdinalDelete {sourceCount} {targetCount} left) right =
   scopedOrdinalAppendDeleteWitness sourceCount targetCount rightSource rightTarget left right (scopedOrdinalAppendWitness left right)
 
+||| The three actual subsequences and the two append constructors retain every ordinal equation.
+record ScopedDeletionOrdinalSegments
+  (name, key, world, error : Type) (value : key -> Type) (nameEq : DecEq name) (keyEq : DecEq key)
+  (initial, finalState : SystemState name key value world error) (global : Transitions initial finalState)
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global)
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) where
+  constructor MkScopedDeletionOrdinalSegments
+  beforeOrdinalSegment : ScopedOrdinalOriginWitness (deletionOriginalBeforeCount result) (deletionSurvivingBeforeCount result)
+    (generationSubsequenceSourceOrdinal (beforeDeletion result))
+  centerOrdinalSegment : ScopedOrdinalOriginWitness (deletionOriginalEpisodeCount result) (deletionSurvivingEpisodeCount result)
+    (generationSubsequenceSourceOrdinal (episodeDeletion result))
+  suffixOrdinalSegment : ScopedOrdinalOriginWitness (transitionCount (traceAfterClosing (selectedEpisode candidate))) (transitionCount (survivingAfter result))
+    (generationSubsequenceSourceOrdinal (afterDeletion result))
+  prefixOrdinalJoin : ScopedOrdinalAppendWitness (originSpine beforeOrdinalSegment) (originSpine centerOrdinalSegment)
+  wholeOrdinalJoin : ScopedOrdinalAppendWitness (joinedOrdinalSpine prefixOrdinalJoin) (originSpine suffixOrdinalSegment)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
