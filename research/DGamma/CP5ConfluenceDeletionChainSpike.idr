@@ -29672,6 +29672,22 @@ scopedClosingFreeCoreStep name key world error value protocol nameEq keyEq initi
     (scopedClassifiedGenerations name key world error value nameEq initial finalState trace (selectedRegistrations candidate) (deletionGenerationClassified step) ++
       map (scopedPullDeletedClassification name key world error value nameEq keyEq initial finalState trace candidate (deletionResult step)) (coreDeletionGenerationHistory tail))
 
+0 scopedClosingCoreChoice :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  ((nextFinal : SystemState name key value world error) -> (nextTrace : Transitions initial nextFinal) ->
+    CanonicalizationPremises name key world error value protocol nameEq keyEq nextTrace ->
+    LT (traceLength nextTrace) (traceLength trace) -> ClosingFreeTraceCore name key world error value protocol nameEq keyEq nextTrace) ->
+  ClosingStepChoice name key world error value protocol nameEq keyEq trace premises ->
+  ClosingFreeTraceCore name key world error value protocol nameEq keyEq trace
+scopedClosingCoreChoice name key world error value protocol nameEq keyEq initial finalState trace premises continue (ClosingFree free) =
+  scopedClosingFreeCoreDone name key world error value protocol nameEq keyEq initial finalState trace premises free
+scopedClosingCoreChoice name key world error value protocol nameEq keyEq initial finalState trace premises continue (HasClosingStep candidate step) =
+  scopedClosingFreeCoreStep name key world error value protocol nameEq keyEq initial finalState trace premises candidate step
+    (continue (survivingFinal (deletionResult step)) (survivingTrace (deletionResult step)) (nextPremises step) (deletionStrictlyShorter step))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
