@@ -3224,6 +3224,24 @@ canonicalWorkShapeRejectsUnloadObserved name key world error value nameEq keyEq 
   canonicalWorkNoLifecycleRejectsUnload name key world error value selected global
     (unsupportedTakesNoLifecycle shape selected exact) occurs
 
+||| The EXISTING O17 shape input already implies genuine no-closing; no new
+||| source hypothesis or specialized choice of the O13 producer is required.
+0 canonicalWorkShapeNoClosing :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  ClosingFreeTraceShape name key world error value nameEq keyEq global ->
+  NoClosingEpisodes name key world error value nameEq keyEq global
+canonicalWorkShapeNoClosing name key world error value nameEq keyEq {finalState} global shape selected episode =
+  case canonicalWorkClosedUnloadLocation name key world error value nameEq keyEq selected global episode of
+    MkLocatedActionOccurrence before afterState earlier step later action decomposition =>
+      canonicalWorkShapeRejectsUnloadObserved name key world error value nameEq keyEq global shape selected
+        (isSupported @{nameEq} @{keyEq} selected finalState) Refl
+        (replace {p = ActionOccurs (LUnload selected)} decomposition
+          (canonicalWorkActionOccursUnderPrefix name key world error value (LUnload selected)
+            earlier (MoreTransitions step later) (ActionOccursHere step later action)))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
