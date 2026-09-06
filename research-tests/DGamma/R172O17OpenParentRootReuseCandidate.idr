@@ -134,3 +134,10 @@ public export
 0 r172ReuseSupportSet : supportSet @{r45NameEq} @{r45KeyEq} r172ReuseFinal = [0]
 r172ReuseSupportSet = Refl
 
+public export
+0 r172ReuseAnyTransitionTotal :
+  {before, afterState : SystemState Nat R45Key R45Value Unit String} ->
+  (transition : Transition before afterState) ->
+  TransitionComponentTotal r45NameEq r45KeyEq transition
+r172ReuseAnyTransitionTotal transition fiber found active key occurrence = case key of _ impossible
+
