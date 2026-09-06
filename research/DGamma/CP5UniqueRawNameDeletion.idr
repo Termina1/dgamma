@@ -78,3 +78,9 @@ uniqueSubsequenceSourceBound name key world error value (DeleteGenerationAction 
 uniqueSubsequenceSourceBound name key world error value (DeleteGenerationAction sh st deleted tail) targetIndex (S sourceIndex) exact =
   LTESucc (uniqueSubsequenceSourceBound name key world error value tail targetIndex sourceIndex
     (uniqueMapSuccessorJust (generationSubsequenceSourceOrdinal tail targetIndex) sourceIndex exact))
+
+0 uniqueBelowOffsetDistinct : (small, bound, later : Nat) ->
+  (LT small bound) -> (Not (small = bound + later))
+uniqueBelowOffsetDistinct small bound later below same =
+  LTImpliesNotGTE below (replace {p = \actual => LTE bound actual}
+    (sym same) (lteAddRight {m = later} bound))
