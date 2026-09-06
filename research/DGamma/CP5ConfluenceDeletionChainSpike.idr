@@ -27364,6 +27364,20 @@ record ScopedWholeRetainedOrigin
   wholeRetainedOccurrence : LocatedActionOccurrence action (survivingTrace result)
   0 wholeRetainedEmbedding : DeletionSurvivingOrdinalEmbedding result (locatedActionOrdinal wholeRetainedOccurrence) sourceIndex
 
+0 scopedWholeRetainedAt :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (action : Action name key value world error) -> (sourceIndex, targetIndex : Nat) ->
+  (located : DeletionSourceOccurrenceAtOrdinal name key world error value (survivingTrace result) action targetIndex) ->
+  DeletionSurvivingOrdinalEmbedding result targetIndex sourceIndex ->
+  ScopedWholeRetainedOrigin name key world error value nameEq keyEq initial finalState global candidate result action sourceIndex
+scopedWholeRetainedAt name key world error value nameEq keyEq initial finalState global candidate result action sourceIndex targetIndex located embedding =
+  MkScopedWholeRetainedOrigin (deletionSourceOccurrence located)
+    (replace {p = \ordinal => DeletionSurvivingOrdinalEmbedding result ordinal sourceIndex} (sym (deletionSourceOccurrenceOrdinal located)) embedding)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
