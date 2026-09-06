@@ -466,3 +466,9 @@ r172ReuseExternalRootForward
 r172ReuseExternalRootForward
   (MatchExternalInput action left leftRest leftRoot right rightRest rightRoot leftAction rightAction same)
   (ActionOccursLater _ _ later) = ActionOccursLater right rightRest (r172ReuseExternalRootForward same later)
+
+public export
+0 r172ReuseOriginalRootOccurs : ActionOccurs (OInsert 1 Root r45Child) r172ReuseTrace
+r172ReuseOriginalRootOccurs = ActionOccursLater r45ParentInsert _ (ActionOccursLater r45Begin _
+  (ActionOccursLater r45ChildInsert _ (ActionOccursLater r45SourceRetire _
+    (ActionOccursLater r172ReuseRemove _ (ActionOccursHere r172ReuseRoot _ Refl)))))
