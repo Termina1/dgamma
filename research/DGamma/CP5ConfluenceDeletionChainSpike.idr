@@ -29514,6 +29514,17 @@ scopedActionBeyondHead name key world error value first middle finalState transi
 scopedActionBeyondHead name key world error value first middle finalState transition rest _ action (ScopedActionLater {ordinal} _ _ path) later =
   scopedActionPositionOccurs name key world error value middle finalState rest ordinal action path
 
+0 scopedActionDropHeadAfter :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (transition : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (cut, ordinal : Nat) -> (action : Action name key value world error) -> (conclusion : Type) ->
+  ((index : Nat) -> ScopedActionAt name key world error value rest index action -> LT cut index -> conclusion) ->
+  ScopedActionAt name key world error value (MoreTransitions transition rest) ordinal action -> LT (S cut) ordinal -> conclusion
+scopedActionDropHeadAfter name key world error value first middle finalState transition rest cut _ _ conclusion continue (ScopedActionHere _ _) later = absurd later
+scopedActionDropHeadAfter name key world error value first middle finalState transition rest cut _ action conclusion continue
+  (ScopedActionLater {ordinal} _ _ path) later = continue ordinal path (fromLteSucc later)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
