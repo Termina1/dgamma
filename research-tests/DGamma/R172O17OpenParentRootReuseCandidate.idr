@@ -607,3 +607,13 @@ public export
 r172ReuseLastOpeningBeforeEnd (MkLastOpeningResult before after earlier opening later split installed) =
   rewrite sym split in rewrite r172ReuseCountAppend earlier (MoreTransitions (beginTransition opening) later) in
     r172ReuseBeforeAppendSuccessor (transitionCount earlier) (transitionCount later)
+
+public export
+0 r172ReuseExtendLocatedOrdinal :
+  {first, middle, finalState : SystemState Nat R45Key R45Value Unit String} ->
+  {action : Action Nat R45Key R45Value Unit String} ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  (global : Transitions first finalState) -> (split : appendTransitions left right = global) ->
+  (occurrence : LocatedActionOccurrence action left) ->
+  locatedActionOrdinal (r172ReuseExtendLocatedRight left right global split occurrence) = locatedActionOrdinal occurrence
+r172ReuseExtendLocatedOrdinal left right global split (MkLocatedActionOccurrence before after earlier transition later same located) = Refl
