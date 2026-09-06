@@ -29471,6 +29471,29 @@ scopedOrdinalPathOrder _ _ _ _ leftTarget rightSource rightTarget
     scopedOrdinalDeletedLaterOrder sourceCount targetCount tail sourceIndex leftTarget rightSource rightTarget
       (\si, ti, path, smaller => scopedOrdinalPathOrder sourceCount targetCount tail sourceIndex leftTarget si ti left path smaller) right later
 
+0 scopedDeletionOriginsOrdered :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (segments : ScopedDeletionOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result) ->
+  (leftAction, rightAction : Action name key value world error) ->
+  (left : LocatedActionOccurrence leftAction (survivingTrace result)) -> (right : LocatedActionOccurrence rightAction (survivingTrace result)) ->
+  LT (locatedActionOrdinal left) (locatedActionOrdinal right) ->
+  LT (locatedActionOrdinal (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+       (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result left)))
+     (locatedActionOrdinal (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+       (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result right)))
+scopedDeletionOriginsOrdered name key world error value nameEq keyEq initial finalState global candidate result segments leftAction rightAction left right later =
+  scopedOrdinalPathOrder _ _ (joinedOrdinalSpine (wholeOrdinalJoin segments)) _ (locatedActionOrdinal left) _ (locatedActionOrdinal right)
+    (scopedDeletionEmbeddedOrdinalPath name key world error value nameEq keyEq initial finalState global candidate result segments _ (locatedActionOrdinal left)
+      (deletionWholeOrdinalEmbedding (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+        (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result left)))
+    (scopedDeletionEmbeddedOrdinalPath name key world error value nameEq keyEq initial finalState global candidate result segments _ (locatedActionOrdinal right)
+      (deletionWholeOrdinalEmbedding (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+        (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result right))) later
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
