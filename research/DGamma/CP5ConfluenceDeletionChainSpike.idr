@@ -29446,6 +29446,15 @@ scopedOrdinalKeptLaterOrder sourceCount targetCount tail leftSource leftTarget _
   (ScopedOrdinalKeptLater {sourceIndex} {targetIndex} path) later =
     LTESucc (continue sourceIndex targetIndex path (fromLteSucc later))
 
+0 scopedOrdinalDeletedLaterOrder :
+  (sourceCount, targetCount : Nat) -> (tail : ScopedOrdinalSpine sourceCount targetCount) ->
+  (leftSource, leftTarget, rightSource, rightTarget : Nat) ->
+  ((sourceIndex, targetIndex : Nat) -> ScopedOrdinalPath tail sourceIndex targetIndex -> LT leftTarget targetIndex -> LT leftSource sourceIndex) ->
+  ScopedOrdinalPath (ScopedOrdinalDelete tail) rightSource rightTarget ->
+  LT leftTarget rightTarget -> LT (S leftSource) rightSource
+scopedOrdinalDeletedLaterOrder sourceCount targetCount tail leftSource leftTarget _ rightTarget continue
+  (ScopedOrdinalDeletedLater {sourceIndex} path) later = LTESucc (continue sourceIndex rightTarget path later)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
