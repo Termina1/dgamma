@@ -632,3 +632,8 @@ r172ReuseConclusionBeginBeforeChild sorted birth = replace
     (sortedTrace sorted) (registrationDecomposition birth)
     (r172ReuseLastOpeningLocated (r172ReuseConclusionParentOpening sorted birth))))
   (r172ReuseLastOpeningBeforeEnd (r172ReuseConclusionParentOpening sorted birth))
+
+public export
+0 r172ReuseLTETransitive : {first, middle, last : Nat} -> LTE first middle -> LTE middle last -> LTE first last
+r172ReuseLTETransitive LTEZero later = LTEZero
+r172ReuseLTETransitive (LTESucc earlier) (LTESucc later) = LTESucc (r172ReuseLTETransitive earlier later)
