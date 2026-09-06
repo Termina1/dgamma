@@ -3089,6 +3089,25 @@ canonicalWorkNoClosingAfterDerivation name key world error value nameEq keyEq pr
       (replayActionOrigin (finiteDerivationOccurrenceCorrespondence derivation)
         (canonicalWorkClosedUnloadLocation name key world error value nameEq keyEq selected target episode))
 
+||| Reconstruct reached closing-free shape from its actual replay bundle and
+||| source no-closing evidence. The caller supplies no reached shape or target
+||| no-closing assertion; both are derived through the sealed operational fold.
+0 canonicalWorkReachedShape :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  NoClosingEpisodes name key world error value nameEq keyEq original ->
+  (current : CanonicalSortingReplayState name key world error value protocol nameEq keyEq original) ->
+  ClosingFreeTraceShape name key world error value nameEq keyEq (sortingCurrentTrace current)
+canonicalWorkReachedShape name key world error value nameEq keyEq protocol original premises noClosing current =
+  closingFreeTraceShapeSpike nameEq keyEq protocol (sortingCurrentTrace current)
+    (canonicalWorkNoClosingAfterDerivation name key world error value nameEq keyEq protocol
+      original (sortingCurrentTrace current) (replayAligned premises) (replayInitialEmpty premises)
+      noClosing (sortingReplayDerivation current)) (sortingCurrentPremises current)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
