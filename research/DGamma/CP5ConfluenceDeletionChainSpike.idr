@@ -27749,6 +27749,23 @@ scopedBirthFreshShift name registered child ordinal sourceIndex absent present =
   absent (replace {p = \birthOrdinal => Elem (MkRegistrationGeneration child birthOrdinal) registered}
     (sym (plusSuccRightSucc ordinal sourceIndex)) present)
 
+0 scopedKeptBirthHeadFresh :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (sourceFirst, sourceMiddle, targetFirst, targetMiddle : SystemState name key value world error) ->
+  (sourceStep : Transition sourceFirst sourceMiddle) -> (targetStep : Transition targetFirst targetMiddle) ->
+  Not (deletable ordinal live (transitionAction sourceStep)) -> (transitionAction sourceStep = transitionAction targetStep) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  (Elem (MkRegistrationGeneration child ordinal) registered -> deletable ordinal live (OInsert child parent component)) ->
+  (transitionAction targetStep = OInsert child parent component) ->
+  Not (Elem (MkRegistrationGeneration child (ordinal + 0)) registered)
+scopedKeptBirthHeadFresh name key world error value registered deletable ordinal live sourceFirst sourceMiddle targetFirst targetMiddle sourceStep targetStep kept sameAction
+  child parent component registeredDeleted targetAction member =
+    kept (replace {p = deletable ordinal live} (sym (trans sameAction targetAction))
+      (registeredDeleted (replace {p = \birthOrdinal => Elem (MkRegistrationGeneration child birthOrdinal) registered} (plusZeroRightNeutral ordinal) member)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
