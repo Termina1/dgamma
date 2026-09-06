@@ -29033,6 +29033,9 @@ record ClosingFreeTraceCore
     (generation : RegistrationGeneration name **
       DeletedGenerationClassification name key world error value nameEq original
         generation)
+  0 coreDeletionHistoryExact :
+    (map DGamma.CP5ConfluenceDeletionChainSpike.classifiedGeneration coreDeletionGenerationHistory =
+      closingFreeDeletionGenerations coreDeletionDerivation)
 
 public export
 0 coreOccurrenceCorrespondence :
@@ -29440,7 +29443,7 @@ chooseClosingStepSpike {initial} {finalState} nameEq keyEq protocol trace
   ClosingFreeTraceCore name key world error value protocol nameEq keyEq trace
 scopedClosingFreeCoreDone name key world error value protocol nameEq keyEq initial finalState trace premises closingFree =
   MkClosingFreeTraceCore finalState trace premises closingFree (scopedExternalReflexive name key world error value nameEq initial finalState trace)
-    (identityRelationalReplayCorrespondence trace) (ClosingFreeDeletionDone trace) []
+    (identityRelationalReplayCorrespondence trace) (ClosingFreeDeletionDone trace) [] Refl
 
 0 scopedOrdinalKeptPositive :
   (sourceCount, targetCount : Nat) -> (tail : ScopedOrdinalSpine sourceCount targetCount) ->
@@ -29669,54 +29672,6 @@ scopedClassifiedGenerations name key world error value nameEq initial finalState
   (generation ** classified generation Here) :: scopedClassifiedGenerations name key world error value nameEq initial finalState global rest
     (\later, member => classified later (There member))
 
-0 scopedClosingFreeCoreStep :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (initial, finalState : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
-  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
-  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
-  (step : DeletionChainStep name key world error value protocol nameEq keyEq trace premises candidate) ->
-  (tail : ClosingFreeTraceCore name key world error value protocol nameEq keyEq (survivingTrace (deletionResult step))) ->
-  ClosingFreeTraceCore name key world error value protocol nameEq keyEq trace
-scopedClosingFreeCoreStep name key world error value protocol nameEq keyEq initial finalState trace premises candidate step tail =
-  MkClosingFreeTraceCore (coreReducedFinal tail) (coreReducedTrace tail) (coreReducedPremises tail) (coreClosingFree tail)
-    (sameExternalOrchestrationTransitiveSpike nameEq (deletionSameExternalInputs step) (coreSameExternalInputs tail))
-    (composeRelationalReplayCorrespondence (deletionReplayCorrespondence step) (coreReplayCorrespondence tail))
-    (ClosingFreeDeletionStep trace premises candidate step (coreReducedTrace tail) (coreDeletionDerivation tail))
-    (scopedClassifiedGenerations name key world error value nameEq initial finalState trace (selectedRegistrations candidate) (deletionGenerationClassified step) ++
-      map (scopedPullDeletedClassification name key world error value nameEq keyEq initial finalState trace candidate (deletionResult step)) (coreDeletionGenerationHistory tail))
-
-0 scopedClosingCoreChoice :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (initial, finalState : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
-  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
-  ((nextFinal : SystemState name key value world error) -> (nextTrace : Transitions initial nextFinal) ->
-    CanonicalizationPremises name key world error value protocol nameEq keyEq nextTrace ->
-    LT (traceLength nextTrace) (traceLength trace) -> ClosingFreeTraceCore name key world error value protocol nameEq keyEq nextTrace) ->
-  ClosingStepChoice name key world error value protocol nameEq keyEq trace premises ->
-  ClosingFreeTraceCore name key world error value protocol nameEq keyEq trace
-scopedClosingCoreChoice name key world error value protocol nameEq keyEq initial finalState trace premises continue (ClosingFree free) =
-  scopedClosingFreeCoreDone name key world error value protocol nameEq keyEq initial finalState trace premises free
-scopedClosingCoreChoice name key world error value protocol nameEq keyEq initial finalState trace premises continue (HasClosingStep candidate step) =
-  scopedClosingFreeCoreStep name key world error value protocol nameEq keyEq initial finalState trace premises candidate step
-    (continue (survivingFinal (deletionResult step)) (survivingTrace (deletionResult step)) (nextPremises step) (deletionStrictlyShorter step))
-
-0 scopedClosingCoreAccessible :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (bound : Nat) -> Accessible LT bound ->
-  (initial, finalState : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
-  (traceLength trace = bound) -> CanonicalizationPremises name key world error value protocol nameEq keyEq trace ->
-  ClosingFreeTraceCore name key world error value protocol nameEq keyEq trace
-scopedClosingCoreAccessible name key world error value protocol nameEq keyEq bound (Access recurse) initial finalState trace measured premises =
-  scopedClosingCoreChoice name key world error value protocol nameEq keyEq initial finalState trace premises
-    (\nextFinal, nextTrace, nextCapital, shorter =>
-      scopedClosingCoreAccessible name key world error value protocol nameEq keyEq (traceLength nextTrace)
-        (recurse (traceLength nextTrace) (replace {p = LT (traceLength nextTrace)} measured shorter))
-        initial nextFinal nextTrace Refl nextCapital)
-    (chooseClosingStepSpike nameEq keyEq protocol trace premises)
-
 ||| Empty omissions and empty historical withdrawals at the identity endpoint.
 0 scopedCumulativeEndpointIdentity :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -29846,6 +29801,57 @@ scopedStepHistoryExact name key world error value protocol nameEq keyEq initial 
         (scopedPullDeletedClassification name key world error value nameEq keyEq initial finalState trace candidate (deletionResult step))
         classifiedGeneration classifiedGeneration (generationBackward (deletionProducerGenerationRenaming (deletionProducerCapital step)))
         (scopedPullClassificationGeneration name key world error value nameEq keyEq initial finalState trace candidate (deletionResult step) (deletionProducerCapital step)) history))
+
+0 scopedClosingFreeCoreStep :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (step : DeletionChainStep name key world error value protocol nameEq keyEq trace premises candidate) ->
+  (tail : ClosingFreeTraceCore name key world error value protocol nameEq keyEq (survivingTrace (deletionResult step))) ->
+  ClosingFreeTraceCore name key world error value protocol nameEq keyEq trace
+scopedClosingFreeCoreStep name key world error value protocol nameEq keyEq initial finalState trace premises candidate step tail =
+  MkClosingFreeTraceCore (coreReducedFinal tail) (coreReducedTrace tail) (coreReducedPremises tail) (coreClosingFree tail)
+    (sameExternalOrchestrationTransitiveSpike nameEq (deletionSameExternalInputs step) (coreSameExternalInputs tail))
+    (composeRelationalReplayCorrespondence (deletionReplayCorrespondence step) (coreReplayCorrespondence tail))
+    (ClosingFreeDeletionStep trace premises candidate step (coreReducedTrace tail) (coreDeletionDerivation tail))
+    (scopedClassifiedGenerations name key world error value nameEq initial finalState trace (selectedRegistrations candidate) (deletionGenerationClassified step) ++
+      map (scopedPullDeletedClassification name key world error value nameEq keyEq initial finalState trace candidate (deletionResult step)) (coreDeletionGenerationHistory tail))
+    (trans (scopedStepHistoryExact name key world error value protocol nameEq keyEq initial finalState trace premises candidate step (coreDeletionGenerationHistory tail))
+      (cong (\entries => selectedRegistrations candidate ++ map (generationBackward (deletionProducerGenerationRenaming (deletionProducerCapital step))) entries)
+        (coreDeletionHistoryExact tail)))
+
+0 scopedClosingCoreChoice :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  ((nextFinal : SystemState name key value world error) -> (nextTrace : Transitions initial nextFinal) ->
+    CanonicalizationPremises name key world error value protocol nameEq keyEq nextTrace ->
+    LT (traceLength nextTrace) (traceLength trace) -> ClosingFreeTraceCore name key world error value protocol nameEq keyEq nextTrace) ->
+  ClosingStepChoice name key world error value protocol nameEq keyEq trace premises ->
+  ClosingFreeTraceCore name key world error value protocol nameEq keyEq trace
+scopedClosingCoreChoice name key world error value protocol nameEq keyEq initial finalState trace premises continue (ClosingFree free) =
+  scopedClosingFreeCoreDone name key world error value protocol nameEq keyEq initial finalState trace premises free
+scopedClosingCoreChoice name key world error value protocol nameEq keyEq initial finalState trace premises continue (HasClosingStep candidate step) =
+  scopedClosingFreeCoreStep name key world error value protocol nameEq keyEq initial finalState trace premises candidate step
+    (continue (survivingFinal (deletionResult step)) (survivingTrace (deletionResult step)) (nextPremises step) (deletionStrictlyShorter step))
+
+0 scopedClosingCoreAccessible :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (bound : Nat) -> Accessible LT bound ->
+  (initial, finalState : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
+  (traceLength trace = bound) -> CanonicalizationPremises name key world error value protocol nameEq keyEq trace ->
+  ClosingFreeTraceCore name key world error value protocol nameEq keyEq trace
+scopedClosingCoreAccessible name key world error value protocol nameEq keyEq bound (Access recurse) initial finalState trace measured premises =
+  scopedClosingCoreChoice name key world error value protocol nameEq keyEq initial finalState trace premises
+    (\nextFinal, nextTrace, nextCapital, shorter =>
+      scopedClosingCoreAccessible name key world error value protocol nameEq keyEq (traceLength nextTrace)
+        (recurse (traceLength nextTrace) (replace {p = LT (traceLength nextTrace)} measured shorter))
+        initial nextFinal nextTrace Refl nextCapital)
+    (chooseClosingStepSpike nameEq keyEq protocol trace premises)
 
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
