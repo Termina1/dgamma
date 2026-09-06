@@ -64,3 +64,20 @@ export
     supportSet {name = Nat} {key = ToyKey} {value = ToyValue} {world = ToyRuntime} {error = String}
       (certifiedFinal r174ProvisionExecution)) = (8, True, True, True, [0]))
 r174ProvisionExecutionChecks = Refl
+
+||| The actual built trace has raw births 0 at 0, 1 at 2, and 2 at 5 only.
+||| The formula merely names those three positions for the uniqueness proof.
+0 r174ProvisionBirthPosition :
+  (selected, ordinal : Nat) ->
+  (rawInsertionNameAt Nat ToyKey ToyRuntime String ToyValue ordinal
+    (certifiedTrace r174ProvisionExecution) = Just selected) ->
+  (ordinal = selected + selected + (minus selected 1))
+r174ProvisionBirthPosition selected Z observed = case observed of Refl => Refl
+r174ProvisionBirthPosition selected (S Z) observed = case observed of Refl impossible
+r174ProvisionBirthPosition selected (S (S Z)) observed = case observed of Refl => Refl
+r174ProvisionBirthPosition selected (S (S (S Z))) observed = case observed of Refl impossible
+r174ProvisionBirthPosition selected (S (S (S (S Z)))) observed = case observed of Refl impossible
+r174ProvisionBirthPosition selected (S (S (S (S (S Z))))) observed = case observed of Refl => Refl
+r174ProvisionBirthPosition selected (S (S (S (S (S (S Z)))))) observed = case observed of Refl impossible
+r174ProvisionBirthPosition selected (S (S (S (S (S (S (S Z))))))) observed = case observed of Refl impossible
+r174ProvisionBirthPosition selected (S (S (S (S (S (S (S (S later)))))))) observed = case observed of Refl impossible
