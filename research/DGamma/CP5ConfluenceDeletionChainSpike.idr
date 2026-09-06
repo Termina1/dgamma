@@ -28531,6 +28531,25 @@ scopedLocatedActionAt name key world error value first finalState trace action o
           (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence)) 0 observed}
           (locatedAction occurrence) (ScopedActionHere (locatedTransition occurrence) (afterActionOccurrence occurrence)))))
 
+0 scopedClassifiedBirthNonRoot :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (ordinal : Nat) -> (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  ScopedActionAt name key world error value global ordinal (OInsert child parent component) ->
+  DeletedGenerationClassification name key world error value nameEq global (MkRegistrationGeneration child ordinal) ->
+  (scopedParentRoot parent = False)
+scopedClassifiedBirthNonRoot name key world error value nameEq initial finalState global ordinal child parent component atBirth classified =
+  cong (\action => scopedRootObservation name key world error value nameEq action initial)
+    (scopedActionAtUnique name key world error value initial finalState global ordinal
+      (OInsert child parent component) (OInsert child (ChildOf (deletedParent classified)) (deletedComponent classified)) atBirth
+      (replace {p = \position => ScopedActionAt name key world error value global position
+        (OInsert child (ChildOf (deletedParent classified)) (deletedComponent classified))}
+        (trans (scopedGeneratedActionOrdinal name key world error value initial finalState global child (deletedParent classified) (deletedComponent classified) (deletedOccurrence classified))
+          (cong generationBirthOrdinal (deletedOccurrenceGeneration classified)))
+        (scopedLocatedActionAt name key world error value initial finalState global
+          (OInsert child (ChildOf (deletedParent classified)) (deletedComponent classified))
+          (generatedRegistrationActionOccurrence (deletedOccurrence classified)))))
+
 0 scopedEnrichedStepFromExternal :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
