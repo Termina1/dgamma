@@ -2657,6 +2657,22 @@ canonicalWorkGroupingPairFromNext name key world error value selected trace next
   canonicalWorkGroupingPairFromSnoc name key world error value selected trace next
     (canonicalWorkSnocBeforeNext name key world error value selected next positive)
 
+||| Close the structural selection obligation of an actual grouping stop.
+||| No adjacency, selected action, target trace or diamond is supplied.
+0 canonicalWorkGroupingFromBoundary :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> CanonicalWorkActorBoundary selected trace ->
+  Not (NoLifecycleBy selected trace) -> CanonicalWorkGroupingPair name key world error value selected trace
+canonicalWorkGroupingFromBoundary name key world error value nameEq selected _ CanonicalWorkBoundaryEnd remains =
+  void (remains NoLifecycleByEnd)
+canonicalWorkGroupingFromBoundary name key world error value nameEq selected _
+  (CanonicalWorkBoundaryBlocked alien rest foreign) remains =
+    case canonicalWorkNextAfterAlien name key world error value nameEq selected alien rest foreign remains of
+      (next ** positive) => canonicalWorkGroupingPairFromNext name key world error value selected
+        (MoreTransitions alien rest) next positive
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
