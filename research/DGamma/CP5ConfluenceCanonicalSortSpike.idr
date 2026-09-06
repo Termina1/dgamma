@@ -1627,6 +1627,21 @@ canonicalRootInsertionHoist name key world error value protocol nameEq keyEq ori
       (canonicalRootInsertHoistDiamond name key world error value protocol nameEq keyEq original prefixTrace left right suffix
         decomposition premises root component leftActivation rootAction different)
 
+||| Locate the moved root at the exact producer-owned prefix in the returned trace.
+0 canonicalHoistedRootOccurrence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) -> (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) -> (root : name) -> (component : Component key value world error) ->
+  (hoist : CanonicalRootInsertionHoist name key world error value protocol nameEq keyEq original prefixTrace left right suffix root component) ->
+  LocatedActionOccurrence (OInsert root Root component) (swappedTrace (rootHoistResult hoist))
+canonicalHoistedRootOccurrence name key world error value protocol nameEq keyEq original prefixTrace left right suffix root component hoist =
+  MkLocatedActionOccurrence _ _ prefixTrace (movedRight (rootHoistDiamond hoist))
+    (MoreTransitions (movedLeft (rootHoistDiamond hoist)) (replayedSuffix (rootHoistResult hoist)))
+    (rootHoistedAction hoist) (sym (swappedDecomposition (rootHoistResult hoist)))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
