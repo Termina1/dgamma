@@ -30146,6 +30146,26 @@ ScopedRegistrationRemoval name key world error value initial sourceFinal targetF
       (canonicalOccurrence : LocatedGeneratedRegistration (generationName generation) canonicalParent canonicalComponent target) ->
       (registrationGeneration (origin canonicalOccurrence) = generation) -> Void))
 
+0 scopedCoverageTarget :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (initial, sourceFinal, middleFinal, targetFinal : SystemState name key value world error) ->
+  (source : Transitions initial sourceFinal) -> (middle : Transitions initial middleFinal) -> (target : Transitions initial targetFinal) ->
+  (leftWithdrawn, rightWithdrawn : List (RegistrationGeneration name)) -> (renaming : RegistrationGenerationBijection name) ->
+  (left : ScopedCanonicalAccounting name key world error value initial sourceFinal middleFinal source middle leftWithdrawn renaming) ->
+  (right : CanonicalRegistrationCorrespondence middle target rightWithdrawn) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (original : LocatedGeneratedRegistration child parent component source) ->
+  (atMiddle : LocatedGeneratedRegistration child parent component middle) ->
+  (sourceExact : (registrationGeneration (canonicalToOriginal (sealedAccounting left) atMiddle) = registrationGeneration original)) ->
+  (atTarget : LocatedGeneratedRegistration child parent component target **
+    (registrationGeneration (canonicalToOriginal right atTarget) = registrationGeneration atMiddle)) ->
+  Either (Elem (registrationGeneration original) (leftWithdrawn ++ map (generationBackward renaming) rightWithdrawn))
+    (atTarget : LocatedGeneratedRegistration child parent component target **
+      (registrationGeneration (canonicalToOriginal (sealedAccounting left) (canonicalToOriginal right atTarget)) = registrationGeneration original))
+scopedCoverageTarget name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right child parent component original atMiddle sourceExact (atTarget ** targetExact) =
+  Right (atTarget ** trans (sealedAccountingBackward left (canonicalToOriginal right atTarget))
+    (trans (cong (generationBackward renaming) targetExact) (trans (sym (sealedAccountingBackward left atMiddle)) sourceExact)))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
