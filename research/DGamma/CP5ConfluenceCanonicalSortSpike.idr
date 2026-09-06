@@ -2842,6 +2842,21 @@ canonicalWorkActivationEndsInstalled name key world error value nameEq keyEq {fi
     {world = world} {error = error} (OInsert child parent component) = child)
 canonicalWorkInsertOwnerExact name key world error value child parent component = Refl
 
+||| Fired owns the actor equation independently of any installation predicate.
+0 canonicalWorkFiredInsertActorExact :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, afterState : SystemState name key value world error) ->
+  (child : name) -> (parent : Parent name) ->
+  (component : Component key value world error) -> (tag : RuleTag) ->
+  (checked : (checkedApplyAction @{nameEq} @{keyEq} (OInsert child parent component) first = Just (tag, afterState))) ->
+  (transitionActor (Fired {before = first} {afterState = afterState}
+    nameEq keyEq (OInsert child parent component) tag checked) = child)
+canonicalWorkFiredInsertActorExact name key world error value nameEq keyEq first afterState child parent component tag checked =
+  trans (canonicalTransitionActorActionOwner
+    (Fired {before = first} {afterState = afterState} nameEq keyEq (OInsert child parent component) tag checked))
+    (canonicalWorkInsertOwnerExact name key world error value child parent component)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
