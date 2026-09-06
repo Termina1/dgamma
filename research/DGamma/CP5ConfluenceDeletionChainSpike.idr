@@ -26357,6 +26357,18 @@ scopedOrdinalDeleteWitness sourceCount targetCount tail witness =
     (scopedComposeOrdinalPermutation (scopedRotateOrdinals targetCount) (scopedLiftOrdinalPermutation (spinePermutation witness)))
     (scopedOrdinalDeleteForward sourceCount targetCount tail witness)
 
+||| One recursion constructs executable permutation data and all kept-path equations together.
+scopedOrdinalSpineWitness :
+  {sourceCount, targetCount : Nat} -> (spine : ScopedOrdinalSpine sourceCount targetCount) ->
+  ScopedOrdinalSpinePermutationWitness spine
+scopedOrdinalSpineWitness ScopedOrdinalEnd =
+  MkScopedOrdinalSpinePermutationWitness (MkScopedOrdinalPermutation id id (\ordinal => Refl) (\ordinal => Refl))
+    scopedOrdinalEndPath
+scopedOrdinalSpineWitness (ScopedOrdinalKeep {sourceCount} {targetCount} tail) =
+  scopedOrdinalKeepWitness sourceCount targetCount tail (scopedOrdinalSpineWitness tail)
+scopedOrdinalSpineWitness (ScopedOrdinalDelete {sourceCount} {targetCount} tail) =
+  scopedOrdinalDeleteWitness sourceCount targetCount tail (scopedOrdinalSpineWitness tail)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
