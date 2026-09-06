@@ -62,3 +62,7 @@ public export
 0 r172ReuseFinishChecked : checkedApplyAction @{r45NameEq} @{r45KeyEq} (LAdvance 0) r172ReuseAfterRetire = Just (LFinishTag, r172ReuseFinal)
 r172ReuseFinishChecked = Refl
 
+public export
+r172ReuseRemove : Transition r45SourceFinal r45AfterBegin
+r172ReuseRemove = Fired r45NameEq r45KeyEq (ORemove 1) ORemoveTag r172ReuseRemoveChecked
+
