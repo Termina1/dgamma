@@ -20379,6 +20379,17 @@ scopedLifecycleRootFalse name key world error value nameEq (LDivert actor) lifec
 scopedLifecycleRootFalse name key world error value nameEq (LLeave actor) lifecycle state = Refl
 scopedLifecycleRootFalse name key world error value nameEq (LUnload actor) lifecycle state = Refl
 
+0 scopedEpisodeDeletedRootSeal :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (source, target : SystemState name key value world error) -> (transition : Transition source target) ->
+  (GenerationOwnedActor nameEq registered ordinal live (transitionAction transition) -> ScopedDeletedRootSeal name key world error value nameEq source target transition) ->
+  EpisodeGenerationDeletedActor nameEq selected registered ordinal live (transitionAction transition) ->
+  ScopedDeletedRootSeal name key world error value nameEq source target transition
+scopedEpisodeDeletedRootSeal name key world error value nameEq selected registered ordinal live source target transition owned (DeleteEpisodeGenerationLifecycle actor lifecycle) =
+  MkScopedDeletedRootSeal (scopedLifecycleRootFalse name key world error value nameEq (transitionAction transition) lifecycle source)
+scopedEpisodeDeletedRootSeal name key world error value nameEq selected registered ordinal live source target transition owned (DeleteRegisteredGeneration deleted) = owned deleted
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
