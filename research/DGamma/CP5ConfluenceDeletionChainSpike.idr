@@ -29952,6 +29952,11 @@ scopedWithdrawalExtend name key world error value nameEq actor source middle tar
 scopedWithdrawalExtend name key world error value nameEq actor source middle target (NameAlreadyAbsent absent middleAbsent) finalAbsent =
   NameAlreadyAbsent absent finalAbsent
 
+0 scopedAppendMemberLeft :
+  (item : Type) -> (left, right : List item) -> (wanted : item) -> Elem wanted left -> Elem wanted (left ++ right)
+scopedAppendMemberLeft item _ right _ Here = Here
+scopedAppendMemberLeft item _ right wanted (There later) = There (scopedAppendMemberLeft item _ right wanted later)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
