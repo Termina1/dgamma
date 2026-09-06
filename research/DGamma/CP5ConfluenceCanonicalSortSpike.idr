@@ -2893,6 +2893,21 @@ canonicalWorkCheckedInsertUninstalled name key world error value nameEq keyEq fi
       nameEq keyEq child parent component first afterState tag
       (checkedActionProjects nameEq keyEq (OInsert child parent component) first afterState tag checked)) Refl
 
+||| Scalar contradiction only: no Fired/actionOwner expression appears under lookup.
+0 canonicalWorkInstalledScalarsDistinct :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (state : SystemState name key value world error) ->
+  (active, absent : name) ->
+  (installedAt {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} active state = True) ->
+  (installedAt {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} absent state = False) ->
+  (Not (active = absent))
+canonicalWorkInstalledScalarsDistinct name key world error value nameEq state active absent installed missing same =
+  canonicalFalseNotTrue (trans (sym missing)
+    (replace {p = \actor => installedAt {name = name} {key = key} {value = value}
+      {world = world} {error = error} @{nameEq} actor state = True} same installed))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
