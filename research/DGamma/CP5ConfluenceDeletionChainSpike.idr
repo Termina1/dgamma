@@ -27766,6 +27766,28 @@ scopedKeptBirthHeadFresh name key world error value registered deletable ordinal
     kept (replace {p = deletable ordinal live} (sym (trans sameAction targetAction))
       (registeredDeleted (replace {p = \birthOrdinal => Elem (MkRegistrationGeneration child birthOrdinal) registered} (plusZeroRightNeutral ordinal) member)))
 
+0 scopedKeptBirthFreshView :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) ->
+  (first, middle, finalState : SystemState name key value world error) -> (head : Transition first middle) -> (tail : Transitions middle finalState) ->
+  (origin : Nat -> Maybe Nat) -> (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  ((transitionAction head = OInsert child parent component) -> Not (Elem (MkRegistrationGeneration child (ordinal + 0)) registered)) ->
+  ((birth : LocatedActionOccurrence (OInsert child parent component) tail) -> (sourceIndex : Nat) ->
+    (origin (locatedActionOrdinal birth) = Just sourceIndex) -> Not (Elem (MkRegistrationGeneration child (S ordinal + sourceIndex)) registered)) ->
+  (occurrence : LocatedActionOccurrence (OInsert child parent component) (MoreTransitions head tail)) -> (sourceIndex : Nat) ->
+  (scopedKeptOrdinalOrigin origin (locatedActionOrdinal occurrence) = Just sourceIndex) ->
+  DeletionLocatedHeadView name key world error value first middle finalState (OInsert child parent component) head tail occurrence ->
+  Not (Elem (MkRegistrationGeneration child (ordinal + sourceIndex)) registered)
+scopedKeptBirthFreshView name key world error value registered ordinal first middle finalState head tail origin child parent component headFresh continue occurrence sourceIndex exact
+  (DeletionLocatedAtHead targetAction targetOrdinal) =
+    replace {p = \position => Not (Elem (MkRegistrationGeneration child (ordinal + position)) registered)}
+      (justInjective (trans (sym (cong (scopedKeptOrdinalOrigin origin) targetOrdinal)) exact)) (headFresh targetAction)
+scopedKeptBirthFreshView name key world error value registered ordinal first middle finalState head tail origin child parent component headFresh continue occurrence sourceIndex exact
+  (DeletionLocatedInTail tailOccurrence targetOrdinal) =
+    scopedMapSuccEliminate (\position => Not (Elem (MkRegistrationGeneration child (ordinal + position)) registered))
+      (origin (locatedActionOrdinal tailOccurrence)) sourceIndex
+      (trans (sym (cong (scopedKeptOrdinalOrigin origin) targetOrdinal)) exact)
+      (\predecessor, tailExact => scopedBirthFreshShift name registered child ordinal predecessor (continue tailOccurrence predecessor tailExact))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
