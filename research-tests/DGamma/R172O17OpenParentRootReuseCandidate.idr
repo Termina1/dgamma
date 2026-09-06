@@ -246,3 +246,12 @@ r172ReuseCommuteAt left right leftRespects rightRespects origin (Just afterLeft)
     (replace {p = \output => PartialRelated (EffectState Nat R45Key R45Value Unit) (EffectStateRelated r45KeyEq) output (right afterLeft)}
       rightRuns (rightRespects (r172ReuseAllEffectStatesRelated origin afterLeft)))
 
+public export
+0 r172ReuseMapsCommute :
+  (left, right : PartialMap (EffectState Nat R45Key R45Value Unit)) ->
+  PartialMapsRelated (EffectStateEquivalence r45KeyEq) left left ->
+  PartialMapsRelated (EffectStateEquivalence r45KeyEq) right right ->
+  PartialCommute (EffectStateEquivalence r45KeyEq) left right
+r172ReuseMapsCommute left right leftRespects rightRespects origin =
+  r172ReuseCommuteAt left right leftRespects rightRespects origin (left origin) (right origin) Refl Refl
+
