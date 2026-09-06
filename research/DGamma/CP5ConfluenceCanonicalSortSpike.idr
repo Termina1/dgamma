@@ -3337,6 +3337,26 @@ canonicalWorkInspectPaperStep name key world error value
 canonicalWorkInspectPaperStep name key world error value
   (Fired stepNameEq stepKeyEq (LUnload actor) tag checked) = Nothing
 
+||| Inspect both ACTUAL adjacent transitions and construct the matching one of
+||| four orientation witnesses. No diamond or early applicability is asserted.
+0 canonicalWorkInspectOrientation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (left : Transition first middle) -> (right : Transition middle finalState) ->
+  Maybe (AdjacentSwapOrientationEvidence left right)
+canonicalWorkInspectOrientation name key world error value left right =
+  case (canonicalWorkInspectPaperStep name key world error value left,
+        canonicalWorkInspectPaperStep name key world error value right) of
+    (Just (Left leftActivation), Just (Left rightActivation)) =>
+      Just (AdjacentActivationActivation left right leftActivation rightActivation)
+    (Just (Left leftActivation), Just (Right rightOrchestration)) =>
+      Just (AdjacentActivationOrchestration left right leftActivation rightOrchestration)
+    (Just (Right leftOrchestration), Just (Left rightActivation)) =>
+      Just (AdjacentOrchestrationActivation left right leftOrchestration rightActivation)
+    (Just (Right leftOrchestration), Just (Right rightOrchestration)) =>
+      Just (AdjacentOrchestrationOrchestration left right leftOrchestration rightOrchestration)
+    _ => Nothing
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
