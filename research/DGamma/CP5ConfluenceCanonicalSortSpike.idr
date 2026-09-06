@@ -1918,6 +1918,26 @@ canonicalSortingFixedLinearization name key world error value protocol nameEq ke
         (canonicalSortingSupportPathForward name key world error value nameEq target source
           (controlEquivalentSymmetric controls) lower upper path) lowerIn upperIn)
 
+||| A single action admitted inside one actor's contiguous activation block.
+||| This is only structural membership, never an applicability assumption.
+data CanonicalWorkActorStep :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  (selected : name) -> (step : Transition before afterState) -> Type where
+  CanonicalWorkLifecycle :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {before, afterState : SystemState name key value world error} ->
+    {selected : name} -> {step : Transition before afterState} ->
+    (0 lifecycle : isLifecycleAction (transitionAction step) = True) ->
+    (0 actor : transitionActor step = selected) -> CanonicalWorkActorStep selected step
+  CanonicalWorkRegistration :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {before, afterState : SystemState name key value world error} ->
+    {selected, child : name} -> {component : Component key value world error} ->
+    {step : Transition before afterState} ->
+    (0 action : transitionAction step = OInsert child (ChildOf selected) component) ->
+    CanonicalWorkActorStep selected step
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
