@@ -37,3 +37,7 @@ public export
 r172ReuseRootRetired : Fiber Nat R45Key R45Value Unit String
 r172ReuseRootRetired = retireFiber r172ReuseRootFresh
 
+public export
+r172ReuseAfterRetire : SystemState Nat R45Key R45Value Unit String
+r172ReuseAfterRetire = MkSystemState () (replaceBinding @{r45NameEq} 1 r172ReuseRootRetired (registry r172ReuseAfterRoot))
+
