@@ -2376,6 +2376,28 @@ canonicalWorkFixedCurrentOrder name key world error value protocol nameEq keyEq 
     (replaySupportMatchesActive premises) (replaySupportMatchesActive (sortingCurrentPremises current))
     (replayedControls (sortingCurrentEndpoint current)) (orderedSupportNames ordering) (orderedSupportLinearization ordering)
 
+||| The next inspection derives reached uniqueness and the SAME desired order
+||| from source capital and the actual finite replay. Only reached closing-free
+||| shape remains a separate input for a future operational progress producer.
+0 canonicalWorkInspectReached :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  (ordering : SupportOrderingCapital name key world error value nameEq keyEq originalFinal) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (current : CanonicalSortingReplayState name key world error value protocol nameEq keyEq original) ->
+  ClosingFreeTraceShape name key world error value nameEq keyEq (sortingCurrentTrace current) ->
+  CanonicalSortingWorklist name key world error value protocol nameEq keyEq original ordering
+canonicalWorkInspectReached name key world error value protocol nameEq keyEq original premises ordering unique current shape =
+  MkCanonicalSortingWorklist current
+    (uniqueInsertionsAfterFiniteDerivation name key world error value protocol nameEq keyEq (sortingReplayDerivation current) unique)
+    shape (canonicalWorkFixedCurrentOrder name key world error value protocol nameEq keyEq original premises ordering current)
+    (canonicalWorkInspectNames name key world error value nameEq keyEq (sortingCurrentTrace current) (orderedSupportNames ordering)
+      (\selected, present => supportedOpenEpisode shape selected
+        (orderSound (canonicalWorkFixedCurrentOrder name key world error value protocol nameEq keyEq original premises ordering current) selected present)) Z)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
