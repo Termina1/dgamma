@@ -1379,6 +1379,35 @@ canonicalSortingDerivationAppend name key world error value protocol nameEq keyE
       (canonicalSortingDerivationAppend name key world error value protocol nameEq keyEq
         (swappedTrace result) middleTrace target rest later)
 
+||| Compose one authentic local result into the same current-state origin chain.
+0 canonicalSortingReplayExtend :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (current : CanonicalSortingReplayState name key world error value protocol nameEq keyEq original) ->
+  {pairFirst, pairMiddle, pairFinal : SystemState name key value world error} ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal (sortingCurrentFinal current)) ->
+  AdjacentSwapOrientationEvidence left right ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  AdjacentSwapResult name key world error value protocol nameEq keyEq
+    (sortingCurrentTrace current) prefixTrace left right suffix diamond ->
+  CanonicalSortingReplayState name key world error value protocol nameEq keyEq original
+canonicalSortingReplayExtend name key world error value protocol nameEq keyEq original current
+  prefixTrace left right suffix orientation diamond result =
+    MkCanonicalSortingReplayState (replayedFinal result) (swappedTrace result)
+      (canonicalSortingDerivationAppend name key world error value protocol nameEq keyEq
+        original (sortingCurrentTrace current) (swappedTrace result) (sortingReplayDerivation current)
+        (FiniteAdjacentSwapStep (sortingCurrentTrace current) prefixTrace left right suffix orientation
+          diamond result (swappedTrace result) FiniteAdjacentSwapDone))
+      (swappedPremises result)
+      (sameExternalOrchestrationTransitiveSpike nameEq (sortingCurrentExternal current)
+        (swappedSameExternalInputs result))
+      (relationalReplayEndpointTransitiveSpike nameEq keyEq _ (sortingCurrentFinal current)
+        (replayedFinal result) (sortingCurrentEndpoint current) (swappedEndpoint result))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
