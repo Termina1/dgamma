@@ -2344,6 +2344,23 @@ uniqueInsertionsAfterFiniteDerivation name key world error value protocol nameEq
     uniqueInsertionsAfterFiniteDerivation name key world error value protocol nameEq keyEq rest
       (uniqueInsertionsAfterAdjacentResult name key world error value protocol nameEq keyEq trace prefixTrace left right suffix diamond result unique)
 
+||| One reached worklist ties the pending-order inspection, actual block ranges,
+||| current bundle and finite derivation to the SAME current trace. Inspection
+||| may still be blocked; this record is deliberately not SortedClosingFreeTrace.
+record CanonicalSortingWorklist
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error) (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, originalFinal : SystemState name key value world error}
+  (original : Transitions initial originalFinal)
+  (ordering : SupportOrderingCapital name key world error value nameEq keyEq originalFinal) where
+  constructor MkCanonicalSortingWorklist
+  workReachedReplay : CanonicalSortingReplayState name key world error value protocol nameEq keyEq original
+  0 workReachedUnique : UniqueRawNameInsertions name key world error value nameEq keyEq (sortingCurrentTrace workReachedReplay)
+  0 workReachedShape : ClosingFreeTraceShape name key world error value nameEq keyEq (sortingCurrentTrace workReachedReplay)
+  0 workReachedFixedOrder : LinearizesSupport name key world error value nameEq keyEq (sortingCurrentFinal workReachedReplay) (orderedSupportNames ordering)
+  0 workReachedInspection : CanonicalWorklistInspection name key world error value nameEq keyEq
+    (sortingCurrentTrace workReachedReplay) (orderedSupportNames ordering) Z
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
