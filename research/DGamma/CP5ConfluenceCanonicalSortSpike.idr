@@ -1441,6 +1441,12 @@ canonicalPaperActivationLifecycle name key world error value transition (PaperBe
 canonicalPaperActivationLifecycle name key world error value transition (PaperIterStep action tag) = rewrite action in Refl
 canonicalPaperActivationLifecycle name key world error value transition (PaperFinishStep action tag) = rewrite action in Refl
 
+0 canonicalRootChildInsertImpossible :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (root, child, parent : name) -> (rootComponent, childComponent : Component key value world error) ->
+  (OInsert {name = name} root Root rootComponent = OInsert child (ChildOf parent) childComponent) -> Void
+canonicalRootChildInsertImpossible _ _ _ _ _ _ _ _ _ _ Refl impossible
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
