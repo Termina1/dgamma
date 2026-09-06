@@ -1043,6 +1043,13 @@ canonicalRankInsertSeen item rank inserted rest ordered unique (Yes existing) =
 canonicalRankInsertSeen item rank inserted rest ordered unique (No fresh) =
   canonicalFreshRankInsert item rank inserted rest ordered unique fresh
 
+canonicalRankInsert : (item : Type) -> (itemEq : DecEq item) -> (rank : item -> Nat) ->
+  (inserted : item) -> (rest : List item) ->
+  (0 ordered : CanonicalRanksOrdered item rank rest) -> (0 unique : UniqueKeys rest) ->
+  CanonicalRankSortResult item rank (inserted :: rest)
+canonicalRankInsert item itemEq rank inserted rest ordered unique =
+  canonicalRankInsertSeen item rank inserted rest ordered unique (isElem @{itemEq} inserted rest)
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
