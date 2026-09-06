@@ -2,6 +2,53 @@
 
 Branch: `cp5-thm73-scoping`
 
+## Current checkpoint — R172 reconnaissance (supersedes historical counts)
+
+At required start **0e58c54**, **DeletionChain is CLOSED**: O9
+`enrichDeletionChainStepSpike` at `89435dc`, O10
+`deleteClosingEpisodesCoreSpike` at `dd3ed2d`, O11
+`assembleClosingFreeAccountingSpike` at `8356a64`. The scoped research chain
+retains the full surviving RegistrationDiscipline, full TARGET
+ReplayInvariantBundle, exact operational-origin/generation bijection, complete
+selected-plus-pulled-tail history, SameExternalOrchestration, cumulative endpoint
+omissions and all four registration-accounting clauses. Core history and Step
+accounting/origin coherence are constructor-owned and negative-tested (R171).
+The frozen raw-premise deletion theorem is not used by this chain.
+
+**Seven named holes remain:** CanonicalSort 2 / CrossTrace 4 / DeletionChain 0 /
+LocalDiamond 0 / RenamingComposition 1. Sections 10–11 below are the current
+inventory; prior revision-by-revision counts and phase arithmetic are historical,
+not a new forecast. Theorem 73 is **not proved**, including the non-hole producer
+and fixture debts below. Production `src/` and `dgamma.ipkg` remain byte-identical
+to `34b21c9`; CP3 blob `2c697e532e83989de8591fa6a4378747c6a501c0`.
+
+The full seven-hole type/last-stop/capital/route/risk census is
+[`O6-R172-NEXT-PHASE-RECON.md`](research-tests/O6-R172-NEXT-PHASE-RECON.md).
+Unit A changes documentation only. Its proposed priority is **O14 probe-first →
+O17 probe-first → canonical support matching**, with continuation on an earlier
+unfinished producer before later bodies. R146's surviving ranking is preserved:
+the earlier deletion slots are closed; O21's bounded sealed-bijection cure landed
+at `e6314b1` in R147 and its remaining withdrawal branches are parked. **O19 body
+is banned** until a justified revised surface and committed negative fixture.
+No O14/O17 body before a committed probe result; no new `with` anywhere.
+The R146 stop-map has a historical label slip: O14 is `supportOrderingSpike`,
+O17 is `sortClosingFreeTraceSpike`, as the source and R134–R145 audits confirm.
+
+### Current debt register — not hidden by the hole count
+
+| Debt | Status / next discharge |
+|---|---|
+| Exact `CanonicalReplayAccountingLaws` producer (R143/O16) | **OPEN.** R171 `ScopedDerivationAccounting.foldedOriginExact` authenticates the actual deletion producer, but `ClosingFreeReduction` does not retain that field for arbitrary values; the sorting tree likewise lacks operational-fold alignment. A producer-indexed adapter plus simultaneous sorting accounting must feed the exact `deletionSortingOccurrenceCorrespondence`, composed endpoint and cumulative withdrawal equality. No automatic coherence claim or new surface authorization. |
+| Shared original/reduced order (R143/O15) | **OPEN.** Chosen-order correction remains; `R6FourFiberStatic.r143CanonicalSupportTransportRefuted` permanently rejects universal reduced-to-original linearization transfer. `FullPipelineLateCanonicalPremises.sideOriginalLinearization` is supplied, universally quantified capital, not a discharge. Rank sorting the actual chosen order is a promising route, not yet a theorem. |
+| `R16ConfluenceTheoremAssemblyPositive` fixture drift | **OPEN, confirmed by source inspection.** R152 recorded the missing two `FullPipelineLateCanonicalPremises` arguments at its `fullPipelineFromBundles` call (line 85). Current source still omits them. Keep its immutable-theorem signature honest: producing the premises, not merely adding parameters, is required. Seeded package success does not validate the aggregate R11/assembly path. |
+| CP3 raw-premise defect | **FROZEN / future unfreeze campaign.** R137 generation reuse invalidates the raw global premise needed by the original selection route. No `NoDependentClosingEpisodeForGeneration`→raw cast, no call to frozen `deletionTheoremProof`. The inherited unused `checkedDeletionSubroutine` alias remains historical capital, not a sanctioned route. |
+| Deferred R129 end-to-end test | **PARKED.** Opaque actual adjacent result cannot be identified by `Refl` with independent R27/R29 final/trace indices. The 12+4 RAR exports do not fix that. Requires an owner-selected producer-owned exact comparison theorem or an explicitly relational-only integration scope. |
+| Copied `with` cleanup | **OPEN.** DeletionChain current count 9: three copied R161 occurrences (`beginSuccessTagScopedPostFold` at 15823; `scopedPostCloseSuffixFold` at 15937/15966), the spent R165 LAdvance exception at 18171, and five older scanner occurrences at 29282/29286/29302/29306/29355. R162 lifecycle and later target cleanup landed (`8f2725f`, `f78cf2a`), so R162's four-copied count is historical. No new exemption or cleanup in Unit A. |
+| R161–R171 retained semantic debts | **CLOSED in research:** tag/readiness, surviving discipline, target totality/independence, global generation inverse, frozen origin, exact external roles, Core history recurrence, endpoint omission and bidirectional registration composition. The final public reduction/sorting correlation debt is separately retained above. Do not resurrect R171's removed eager intermediate (`465ce36`). |
+| Concrete regression gates | **OPEN:** real two-birth/one-withdrawal O16 and reachable repeated-Iter 2×2; abstract supplied-capital assemblers are not fixtures. Core/Step clone negatives do not replace full-pipeline integration. No wider suite/from-scratch build claim. |
+| Paper/claim scope | Guarded calculus only; base-calculus confluence claim, reissue, finite linear extensions, stable registration yields, and distinct effect/control quotients still require explicit accounting. Historical estimates below are suspended, not extrapolated. |
+
+
 Review trail:
 
 - rounds 1–10: REJECT;
@@ -124,7 +171,7 @@ Review trail:
   eliminator, then opens L-Advance with sealed source and common operational
   endpoint capital.
 
-This is still research-only interface scoping. Every file under `src/`,
+This remains a research-only proof campaign. Every file under `src/`,
 `dgamma.ipkg`, the immutable CP3 `confluenceTheorem`, and the accepted production
 module graph remain unchanged. Hole-bearing modules under `research/DGamma/`
 remain excluded from the package.
@@ -2063,7 +2110,9 @@ Holes remain **20**, split **6/4/8/1/1**; manifest remains
 `NO_FROZEN_SURFACE_CHANGE_REQUIRED`. A nominal **1–2 shift** remainder is
 proposed, beginning with the mandatory design-only campaign.
 
-## Executive estimate
+## Executive estimate — historical, suspended at R172
+
+The following band is retained as a historical estimate, not a current remaining-work claim. The R172 priority windows do not promise hole closure in three shifts.
 
 The post-retirement provisional budget is **148–249 engineering shifts**:
 Phase A closed in 9 grind shifts, and phases B–H retain a **139–240** remaining
@@ -2363,69 +2412,49 @@ capital. Therefore the false, orphan generic pairwise-transitivity declaration
 was retired. Proven generation/name/scanner composition helpers remain checked
 research capital; no CP3 production declaration changed.
 
-## 10. Obligations and status
+## 10. Obligations and status — current R172 inventory
 
-There remain **20 obligations**.
+| ID | Obligation | Current status |
+|---|---|---|
+| O1–O5 | Occurrence/replay algebra, independence, local diamonds | Closed after the audited O1 orphan retirement and ratified local interface repairs. |
+| O6 | Sealed adjacent suffix replay / occurrence authority | LocalDiamond closed; exact R129 independent-fixture integration remains separately parked. |
+| O7–O8 | Closing scan and generation-scoped maximal candidate | Closed R136/R140; no raw-name-global exclusion inferred. |
+| O9 | Scoped enriched deletion step / operational occurrence certificate | CLOSED `89435dc`; complete surviving discipline, full TARGET bundle, frozen operational origins. |
+| O10 | Total well-founded deletion core | CLOSED `dd3ed2d`; exact recursive trace and complete typed history, later R171 history seal. |
+| O11 | Cumulative endpoint/history/registration accounting | CLOSED `8356a64`; all four bidirectional registration clauses and exact endpoint omission fold. |
+| O12–O13 | Closing-free open shape / reached-state projections | Closed. |
+| O14 | `supportOrderingSpike` | 1 hole; R135 helper 3/3 parked, body 0/3; PROBE-FIRST. |
+| O15 | Chosen original/reduced support-order bridge | Closed under R143 corrected chosen-order premises; real shared-order producer debt remains. |
+| O16 | Exact-fold one-trace accounting | Closed under R143 corrected exact accounting premises; real producer/fixture debt remains. |
+| O17 | `sortClosingFreeTraceSpike` | 1 hole; R144 body 3/3 parked; PROBE-FIRST operational stable-sort invariant. |
+| O18 | Sealed independent canonical capital | Closed R143. |
+| O19 | Support matching, adjacent-block transposition, operational permutation selection | 3 holes; matching lacks endpoint support preservation; block-swap BODY BANNED until revision + negative; selector depends on corrected block swap. |
+| O20 | Four-clause canonical endpoint bridge | 1 hole; R144 body 3/3, replay bookkeeping closed, semantic bridge not produced. |
+| O21 | Original endpoint modulo exact vestigial generations | 1 hole; R145 body 3/3; R147 sealed-bijection cure complete, withdrawal branches parked. |
+| O22 | Immutable result assembly | Closed conditional assembler, not a proof that all inputs are constructible. |
+| O23 | Adversarial validation/release isolation | Ongoing; R16 drift, concrete integrations and independent reviewer gate remain. |
 
-| ID | Obligation | Status | Grade |
-|---|---|---|---|
-| **O1** | External/replay/endpoint/generation and coherent occurrence algebra. | **Complete after authorized retirement of the false/orphan generic endpoint-transitivity claim; pure composition helpers retained.** | **9 grind shifts actual for Phase A with O2.** |
-| **O2** | Transport both independence fields. | **Complete.** | **M–L.** |
-| **O3** | A/A diamonds. | **Complete: the aligned producer drives checked crossed transitions, framed iterator outcomes, exact replacement controls, and `LocalRelationalDiamond`; scoped revision-13 review accepted with both minors closed.** | **Closed in shifts 15–17.** |
-| **O4** | A/O and O/A licensing/applicability. | **Complete and accepted: both mixed diamonds are constructive; revision-14 scoped review returned clean ACCEPT at `117f179`.** | **Closed in shifts 18–20.** |
-| **O5** | O/O freshness/generation discipline. | **Locally proved for all nine checked pairs; revision-17 endpoint and revision-18 external-order applicability are ratified. Full-result splicing is now blocked at O6 occurrence authenticity.** | **Local body closed in shifts 21–23; no O5 change proposed.** |
-| **O6** | Exhaustive adjacent occurrence fold, suffix replay, whole block. | **2 holes; fields 1–8 and the full append/field-9 composition chain are retained. Revision 102 declares exact B4 and B5, closes both mixed same-owner exclusions, and proves deterministic equal-owner endpoints. The final B6 dispatcher and pair RAR remain open. Fields 10–15 foundations are checked.** | **XL; proposed re-opened 2–7 shift band pending this gate.** |
-| **O7** | Complete closing scan. | **1 hole.** | **L–XL.** |
-| **O8** | Maximal candidate. | **1 hole.** | **XL.** |
-| **O9** | Operational deletion certificate and enriched D72. | **2 holes**; certificate/interface complete. | **XL gate.** |
-| **O10** | Recursive deletion derivation. | **1 hole.** | **L–XL.** |
-| **O11** | Cumulative endpoint/history/accounting. | **1 hole.** | **XL.** |
-| **O12** | Closing-free open-block shape. | **1 hole.** | **L–XL.** |
-| **O13** | Reached-state/Lemma-68/70 projections. | **Complete.** | **S–M.** |
-| **O14** | Duplicate-free ordering. | **1 hole.** | **M–L.** |
-| **O15** | Minimal support bridge. | **1 hole.** | **L–XL.** |
-| **O16** | Concrete fold accounting/authentication. | **1 hole; concrete fixture absent.** | **XL gate.** |
-| **O17** | Derivation-carrying sorting. | **1 hole.** | **XL.** |
-| **O18** | Assemble sealed capital. | **1 hole.** | **M–L.** |
-| **O19** | Renamed matching and safe selector. | **2 holes.** | **XL gate.** |
-| **O20** | Aggregate certified folds and bridge. | **1 hole.** | **XL.** |
-| **O21** | Scanner inductions and vestigial composition. | **3 holes.** | **XL gate.** |
-| **O22** | Build immutable result. | **Complete.** | **S.** |
-| **O23** | Tracked adversarial validation/release isolation. | **Tracked runner.** | **M–L.** |
+## 11. Exact hole reconciliation — current R172 inventory
 
-## 11. Exact hole reconciliation
+The source census at `0e58c54` is **7**, split **2/4/0/0/1**:
 
-After authorized retirement of the orphan O1 declaration, constructive O3/O4
-closure, local O5 proof, and revision-19 retirement of the false unrestricted
-adjacent occurrence fold, **20 deliberate named research holes remain**. The
-current source scan and manifest reconciliation give the canonical module-family
-split:
+- CanonicalSort: `supportOrderingSpike_rhs`, `sortClosingFreeTraceSpike_rhs`;
+- CrossTrace: `operationalAdjacentBlockSwapSpike_rhs`,
+  `canonicalSupportOrdersMatchSpike_rhs`,
+  `selectOperationalCanonicalPermutationSpike_rhs`,
+  `canonicalSchedulesConvergeSpike_rhs`;
+- DeletionChain: none;
+- LocalDiamond: none;
+- RenamingComposition: `replayedCanonicalToOriginalEndpointSpike_rhs`.
 
-- canonical sort: 6;
-- cross-trace: 4;
-- deletion chain: 8;
-- local diamonds: 1 (`adjacentSwapSuffixSpike` only);
-- renaming/O21: 1.
+No hole moved or renamed. R170–R171 removed the last three DeletionChain holes
+in place. This census counts named RHS holes, **not** supplied-capital producer
+debts, fixture drift or the frozen production-interface defect. The current
+seven complete type statements and exact last-stop quotes are in the R172
+reconnaissance memo. The old 20/13-hole snapshots elsewhere in this historical
+log are not current claims.
 
-No surviving hole was moved or renamed. Four O1 relation-law bodies and both O2
-replay-independence transport bodies were filled in place; the remaining O1 hole
-was retired only after the producer/consumer audit and decomposition gate proved
-that its generic result was orphaned and its premise was not producer-suppliable.
-Revision 19 then removed only the uninhabitable unrestricted occurrence-fold
-hole from the manifest, reducing O6 from three holes to two.
-
-The recomputed per-obligation-family map is:
-
-- O1=0, O2=0, O3=0, O4=0, O5=0, O6=2;
-- O7=1, O8=1, O9=2, O10=1, O11=1, O12=1;
-- O13=0, O14=1, O15=1, O16=1, O17=1, O18=1;
-- O19=2, O20=1, O21=3, O22=0, O23=0.
-
-The values sum to 20 and agree with the `6/4/8/1/1` source split. O6's two
-remaining obligations are the adjacent-swap suffix producer and its downstream
-finite adjacent-block composition; only the former is a LocalDiamond hole.
-
-## 12. Post-retirement phase arithmetic: 148–249 total, 139–240 remaining
+## 12. Historical post-retirement phase arithmetic (not current at R172): 148–249 total, 139–240 remaining
 
 | Phase | Obligations | Raw band |
 |---|---|---:|
@@ -2466,7 +2495,9 @@ inside a proof-phase band.
 | 7 | Reconcile/estimate/path coherence | 21 holes remain after audited O1 retirement, constructive O3/O4, and local O5 closure; Phase B remains inside its accepted 32–55 band because O6 external-order narrowing and proof remain XL; per-derivation authority rationale explicit. |
 | 8 | Release closure | Serial suite, scans, immutable production, seeded 207/207, best-effort unseeded, clean index required. |
 
-## 15. Release boundary
+## 15. Historical release boundary (current debts/checkpoint above)
+
+The claims and suite counts in this section record their original revision gate; they do not assert an R172 R11/assembly pass. In particular, R16 drift is OPEN.
 
 Revision-14/O4 is accepted at `117f179`. The combined revision-15/revision-16
 review at `ad21f1d` returned **REJECT** with B1 while accepting revision 15 and the
