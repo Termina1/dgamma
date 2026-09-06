@@ -35,3 +35,19 @@ public export
 r174ProvisionParent : Component ToyKey ToyValue ToyRuntime String
 r174ProvisionParent = MkComponent DGamma.CalculusChecks.toyEmptySpec
   DGamma.CalculusChecks.toyEmptySpec [r174ProvisionParentStep]
+
+||| Execute all eight ACTUAL checked actions, certifying transition totality
+||| simultaneously. Names 1 and 2 use the genuine installing provider program.
+||| The next count equation must exclude this empty fallback before any claim
+||| of input inhabitation. The production builder is proof-erased.
+public export
+0 r174ProvisionExecution : CertifiedActionTrace Nat ToyKey ToyRuntime String ToyValue %search %search
+  (MkSystemState (MkToyRuntime False False) emptyContext)
+r174ProvisionExecution = fromMaybe
+  (MkCertifiedActionTrace (MkSystemState (MkToyRuntime False False) emptyContext)
+    NoTransitions TraceComponentsTotalEnd)
+  (buildCertifiedActionTrace %search %search
+    [OInsert 0 Root r174ProvisionParent, LBegin 0,
+     OInsert 1 (ChildOf 0) providerComponent, ORetire 1, ORemove 1,
+     OInsert 2 Root providerComponent, ORetire 2, LAdvance 0]
+    (MkSystemState (MkToyRuntime False False) emptyContext))
