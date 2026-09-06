@@ -903,6 +903,15 @@ data CanonicalRanksOrdered : (item : Type) -> (rank : item -> Nat) -> List item 
     (0 tailOrdered : CanonicalRanksOrdered item rank rest) ->
     CanonicalRanksOrdered item rank (head :: rest)
 
+||| Output and its full invariant are constructed together, never independently sorted.
+record CanonicalRankSortResult (item : Type) (rank : item -> Nat) (source : List item) where
+  constructor MkCanonicalRankSortResult
+  rankSortedItems : List item
+  0 rankSortedOrdered : CanonicalRanksOrdered item rank rankSortedItems
+  0 rankSortedUnique : UniqueKeys rankSortedItems
+  0 rankSortedForward : (selected : item) -> Elem selected source -> Elem selected rankSortedItems
+  0 rankSortedBackward : (selected : item) -> Elem selected rankSortedItems -> Elem selected source
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
