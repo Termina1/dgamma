@@ -122,3 +122,7 @@ public export
 0 r172ReuseFinalWellFormed : registryWellFormed @{r45NameEq} @{r45KeyEq} r172ReuseFinal = True
 r172ReuseFinalWellFormed = Refl
 
+public export
+0 r172ReuseQuiet : quiet @{r45NameEq} @{r45KeyEq} r172ReuseFinal = True
+r172ReuseQuiet = Refl
+
