@@ -283,3 +283,18 @@ public export
 0 r172ReuseProvenance : RegistrationProvenance r45Protocol r45NameEq r172ReuseTrace
 r172ReuseProvenance = registrationDisciplineProvenance r45Protocol r45NameEq r172ReuseTrace r172ReuseDiscipline
 
+public export
+0 r172ReuseBundle : ReplayInvariantBundle Nat R45Key Unit String R45Value r45Protocol r45NameEq r45KeyEq r172ReuseTrace
+r172ReuseBundle = MkReplayInvariantBundle r172ReuseAligned r172ReuseDiscipline
+  r172ReuseInitialWellFormed r172ReuseInitialEmpty r172ReuseFinalWellFormed r172ReuseQuiet
+  r172ReuseNoFailure r172ReuseTotal r172ReuseIndependent r172ReuseProvenance
+  (reachedRegistryProtocolRanked r45Protocol r45NameEq r45KeyEq r172ReuseReached r172ReuseProvenance)
+  (reachedRegistryParentRanksIncrease r45Protocol r45NameEq r45KeyEq r172ReuseReached r172ReuseProvenance)
+  (disciplinedEndpointPrecedenceAcyclic r45Protocol r45NameEq r45KeyEq r172ReuseFinal r172ReuseReached r172ReuseDiscipline)
+  (supportCombinedWellFounded r45Protocol r45NameEq r172ReuseFinal
+    (reachedRegistryProtocolRanked r45Protocol r45NameEq r45KeyEq r172ReuseReached r172ReuseProvenance)
+    (reachedRegistryParentRanksIncrease r45Protocol r45NameEq r45KeyEq r172ReuseReached r172ReuseProvenance))
+  (deletionPremisesGiveSupportMatchesActive r45Protocol r45NameEq r45KeyEq r45Initial r172ReuseFinal
+    r172ReuseTrace r172ReuseAligned r172ReuseDiscipline r172ReuseInitialWellFormed r172ReuseInitialEmpty
+    r172ReuseQuiet r172ReuseNoFailure r172ReuseTotal)
+
