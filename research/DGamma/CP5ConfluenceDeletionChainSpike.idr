@@ -20158,6 +20158,21 @@ scopedRelationalActionRoot name key world error value nameEq keyEq registered or
       (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor (registry target))
       (orderedControlsLookup nameEq actor (planTarget (completePlanResult (relationalCompletePlan boundary))) (registry target) (relationalOrderedControls boundary)))
 
+0 scopedSelectedActionRoot :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  GenerationEnvironmentNamesUnique live -> (action : Action name key value world error) ->
+  Not (EpisodeGenerationDeletedActor nameEq selected registered ordinal live action) ->
+  (wholeFirst, wholeLast : SystemState name key value world error) -> (whole : Transitions wholeFirst wholeLast) ->
+  (source, target : SystemState name key value world error) ->
+  SelectedEpisodeReplayBoundary name key world error value nameEq keyEq selected registered ordinal live whole source target ->
+  (scopedRootObservation name key world error value nameEq action source = scopedRootObservation name key world error value nameEq action target)
+scopedSelectedActionRoot name key world error value nameEq keyEq selected registered ordinal live unique action retained wholeFirst wholeLast whole source target boundary =
+  scopedPlannedActionRoot name key world error value nameEq registered ordinal live unique action
+    (\owned => retained (DeleteRegisteredGeneration owned)) source target (completePlanResult (selectedBoundaryPlan boundary))
+    (\actor => scopedSelectedRegistryRoot name key world error value nameEq selected actor
+      (planTarget (completePlanResult (selectedBoundaryPlan boundary))) (registry target) (selectedBoundaryOrderedControls boundary))
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
