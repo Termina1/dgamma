@@ -27454,6 +27454,24 @@ scopedWholeBirthAfter name key world error value nameEq keyEq initial finalState
           (survivingEpisode result) (survivingAfter result) (OInsert child parent component) (retainedOrdinalOccurrence kept))))
     (DeletionAfterEmbedding (retainedOrdinalExact kept)))
 
+0 scopedDeletionScanCountOffsets :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  ((selectedStartOrdinal candidate = deletionOriginalBeforeCount result),
+    (episodeEndOrdinal result = (deletionOriginalBeforeCount result + deletionOriginalEpisodeCount result)))
+scopedDeletionScanCountOffsets name key world error value nameEq keyEq initial finalState global candidate result =
+  (generationScanOrdinalCount nameEq 0 [] (traceBeforeOpening (selectedEpisode candidate))
+    (selectedStartOrdinal candidate) (selectedStartLive candidate) (beforeGenerationScan result),
+   trans (generationScanOrdinalCount nameEq (selectedStartOrdinal candidate) (selectedStartLive candidate)
+     (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+     (episodeEndOrdinal result) (episodeEndLive result) (episodeGenerationScan result))
+     (cong (\ordinal => ordinal + deletionOriginalEpisodeCount result)
+       (generationScanOrdinalCount nameEq 0 [] (traceBeforeOpening (selectedEpisode candidate))
+         (selectedStartOrdinal candidate) (selectedStartLive candidate) (beforeGenerationScan result))))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
