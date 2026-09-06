@@ -662,3 +662,15 @@ r172ReuseConclusionChildChecked sorted (MkLocatedGeneratedRegistration before af
     (replace {p = \trace => AlignedTransitions Nat R45Key Unit String R45Value r45NameEq r45KeyEq trace}
       (sym decomposition) (replayAligned (sortedPremises sorted)))) of
     AlignedStep action tag checked rest tail => case same of Refl => (tag ** checked)
+
+public export
+0 r172ReuseConclusionChildFresh :
+  (sorted : SortedClosingFreeTrace Nat R45Key Unit String R45Value
+    r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
+  (birth : LocatedGeneratedRegistration 1 0 r45Child (sortedTrace sorted)) ->
+  lookupFiber {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String} @{r45NameEq} 1 (registry (registrationBefore birth)) = Nothing
+r172ReuseConclusionChildFresh sorted birth = case r172ReuseConclusionChildChecked sorted birth of
+  (tag ** checked) => successfulInsertAbsent r45NameEq r45KeyEq 1 (ChildOf 0) r45Child
+    (registrationBefore birth) (registrationAfter birth) tag
+    (checkedActionProjects r45NameEq r45KeyEq (OInsert 1 (ChildOf 0) r45Child)
+      (registrationBefore birth) (registrationAfter birth) tag checked)
