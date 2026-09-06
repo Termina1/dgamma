@@ -2121,6 +2121,34 @@ canonicalWorkBlockFromPrefix name key world error value nameEq keyEq selected tr
     (trans (cong (\body => appendTransitions (openPrefix episode)
       (MoreTransitions (beginTransition (openBegin episode)) body)) (workPrefixDecomposition scanned)) (openDecomposition episode))
 
+||| A ready branch owns scanned pieces plus checked no-later-lifecycle evidence;
+||| its block is DERIVED by canonicalWorkBlockFromPrefix, never supplied here.
+||| The other branch retains a genuine remaining grouping obligation.
+data CanonicalWorkOpenInspection :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace -> Type where
+  CanonicalWorkOpenReady :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+    {initial, finalState : SystemState name key value world error} ->
+    {trace : Transitions initial finalState} ->
+    {episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace} ->
+    (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
+    (0 noLater : NoLifecycleBy selected (workActorRest scanned)) ->
+    CanonicalWorkOpenInspection name key world error value nameEq keyEq selected trace episode
+  CanonicalWorkOpenInterleaved :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+    {initial, finalState : SystemState name key value world error} ->
+    {trace : Transitions initial finalState} ->
+    {episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace} ->
+    (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
+    (0 laterRemains : Not (NoLifecycleBy selected (workActorRest scanned))) ->
+    CanonicalWorkOpenInspection name key world error value nameEq keyEq selected trace episode
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
