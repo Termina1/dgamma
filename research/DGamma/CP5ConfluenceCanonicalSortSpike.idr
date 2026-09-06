@@ -961,6 +961,14 @@ canonicalRankSwapFront item inserted head rest selected present =
     Here => There Here
     There later => canonicalRankPushOldTail item inserted head rest selected later
 
+0 canonicalRankConsMembership : (item : Type) -> (head : item) -> (left, right : List item) ->
+  ((selected : item) -> Elem selected left -> Elem selected right) ->
+  (selected : item) -> Elem selected (head :: left) -> Elem selected (head :: right)
+canonicalRankConsMembership item head left right maps selected present =
+  case present of
+    Here => Here
+    There later => There (maps selected later)
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
