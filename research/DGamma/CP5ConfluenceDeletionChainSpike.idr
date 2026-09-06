@@ -26283,6 +26283,14 @@ scopedAppendOrdinalSpine ScopedOrdinalEnd right = right
 scopedAppendOrdinalSpine (ScopedOrdinalKeep left) right = ScopedOrdinalKeep (scopedAppendOrdinalSpine left right)
 scopedAppendOrdinalSpine (ScopedOrdinalDelete left) right = ScopedOrdinalDelete (scopedAppendOrdinalSpine left right)
 
+data ScopedOrdinalPath : {sourceCount, targetCount : Nat} -> ScopedOrdinalSpine sourceCount targetCount -> Nat -> Nat -> Type where
+  ScopedOrdinalHere : {sourceCount, targetCount : Nat} -> {tail : ScopedOrdinalSpine sourceCount targetCount} ->
+    ScopedOrdinalPath (ScopedOrdinalKeep tail) 0 0
+  ScopedOrdinalKeptLater : {sourceCount, targetCount, sourceIndex, targetIndex : Nat} -> {tail : ScopedOrdinalSpine sourceCount targetCount} ->
+    ScopedOrdinalPath tail sourceIndex targetIndex -> ScopedOrdinalPath (ScopedOrdinalKeep tail) (S sourceIndex) (S targetIndex)
+  ScopedOrdinalDeletedLater : {sourceCount, targetCount, sourceIndex, targetIndex : Nat} -> {tail : ScopedOrdinalSpine sourceCount targetCount} ->
+    ScopedOrdinalPath tail sourceIndex targetIndex -> ScopedOrdinalPath (ScopedOrdinalDelete tail) (S sourceIndex) targetIndex
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
