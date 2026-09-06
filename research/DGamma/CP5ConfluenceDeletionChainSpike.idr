@@ -28913,12 +28913,10 @@ scopedEnrichedExternalOrchestration name key world error value protocol nameEq k
   (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq global) ->
   (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
   (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
-  SameExternalOrchestration nameEq global
-    (survivingTrace (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds
-      (replayAligned (chainReplayCapital premises)))) ->
   DeletionChainStep name key world error value protocol nameEq keyEq global premises candidate
-scopedEnrichedStepFromExternal name key world error value protocol nameEq keyEq initial finalState global premises candidate folds external =
-  scopedEnrichedStepFromAccounting name key world error value protocol nameEq keyEq initial finalState global premises candidate folds external
+scopedEnrichedStepFromExternal name key world error value protocol nameEq keyEq initial finalState global premises candidate folds =
+  scopedEnrichedStepFromAccounting name key world error value protocol nameEq keyEq initial finalState global premises candidate folds
+    (scopedEnrichedExternalOrchestration name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises)))
     (scopedDeletionRegistrationAccounting name key world error value nameEq keyEq initial finalState global candidate
       (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises)))
       (scopedEnrichedOperationalCapital name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises))))
