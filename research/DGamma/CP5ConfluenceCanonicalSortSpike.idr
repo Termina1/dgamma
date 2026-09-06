@@ -2721,6 +2721,16 @@ record CanonicalWorkSelectedPair
   0 workSelectedPresent : Elem workSelectedActor pending
   workSelectedPair : CanonicalWorkGroupingPair name key world error value workSelectedActor trace
 
+0 canonicalWorkSelectedPairThere :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) -> (head : name) -> (remaining : List name) ->
+  Maybe (CanonicalWorkSelectedPair name key world error value trace remaining) ->
+  Maybe (CanonicalWorkSelectedPair name key world error value trace (head :: remaining))
+canonicalWorkSelectedPairThere name key world error value trace head remaining Nothing = Nothing
+canonicalWorkSelectedPairThere name key world error value trace head remaining (Just (MkCanonicalWorkSelectedPair actor present pair)) =
+  Just (MkCanonicalWorkSelectedPair actor (There present) pair)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
