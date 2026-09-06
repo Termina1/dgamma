@@ -1866,6 +1866,15 @@ canonicalSortingParentFromFiber name key world error value nameEq source target 
   MkParentSupportEdge (foreignRelatedFiber targetChild) (foreignRelatedFound targetChild)
     (trans (sym (canonicalSortingFiberParentSame name key world error value (foreignRelatedControl targetChild))) (childParent edge))
 
+0 canonicalSortingParentForward :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (source, target : SystemState name key value world error) -> ControlEquivalent name key world error value nameEq source target ->
+  (parent, child : name) -> ParentSupportEdge nameEq parent child source -> ParentSupportEdge nameEq parent child target
+canonicalSortingParentForward name key world error value nameEq source target controls parent child edge =
+  canonicalSortingParentFromFiber name key world error value nameEq source target parent child edge
+    (foreignControlLookupFound {name = name} {key = key} {value = value} {world = world} {error = error}
+      nameEq child (registry source) (registry target) (childFiber edge) (childFound edge) (controlPointwise controls child))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
