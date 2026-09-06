@@ -29655,6 +29655,23 @@ scopedClassifiedGenerations name key world error value nameEq initial finalState
   (generation ** classified generation Here) :: scopedClassifiedGenerations name key world error value nameEq initial finalState global rest
     (\later, member => classified later (There member))
 
+0 scopedClosingFreeCoreStep :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (step : DeletionChainStep name key world error value protocol nameEq keyEq trace premises candidate) ->
+  (tail : ClosingFreeTraceCore name key world error value protocol nameEq keyEq (survivingTrace (deletionResult step))) ->
+  ClosingFreeTraceCore name key world error value protocol nameEq keyEq trace
+scopedClosingFreeCoreStep name key world error value protocol nameEq keyEq initial finalState trace premises candidate step tail =
+  MkClosingFreeTraceCore (coreReducedFinal tail) (coreReducedTrace tail) (coreReducedPremises tail) (coreClosingFree tail)
+    (sameExternalOrchestrationTransitiveSpike nameEq (deletionSameExternalInputs step) (coreSameExternalInputs tail))
+    (composeRelationalReplayCorrespondence (deletionReplayCorrespondence step) (coreReplayCorrespondence tail))
+    (ClosingFreeDeletionStep trace premises candidate step (coreReducedTrace tail) (coreDeletionDerivation tail))
+    (scopedClassifiedGenerations name key world error value nameEq initial finalState trace (selectedRegistrations candidate) (deletionGenerationClassified step) ++
+      map (scopedPullDeletedClassification name key world error value nameEq keyEq initial finalState trace candidate (deletionResult step)) (coreDeletionGenerationHistory tail))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
