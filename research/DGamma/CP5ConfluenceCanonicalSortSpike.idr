@@ -2100,6 +2100,27 @@ canonicalWorkInstalledPrefix name key world error value nameEq keyEq selected (M
     InstalledStep action tag checked rest sourceInstalled
       (canonicalWorkInstalledPrefix name key world error value nameEq keyEq selected rest suffix tailInstalled)
 
+||| Construct the contiguous block from actual scanned pieces. It does not
+||| receive a block, target state, target trace, or final schedule from a caller.
+0 canonicalWorkBlockFromPrefix :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+  (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
+  NoLifecycleBy selected (workActorRest scanned) ->
+  LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected trace
+canonicalWorkBlockFromPrefix name key world error value nameEq keyEq selected trace episode scanned noLater =
+  MkLocatedOpenEpisodeBlock (openPreStart episode) (openStart episode) (workPrefixEnd scanned)
+    (openPrefix episode) (openBegin episode) (workActorPrefix scanned)
+    (canonicalWorkInstalledPrefix name key world error value nameEq keyEq selected (workActorPrefix scanned) (workActorRest scanned)
+      (replace {p = InstalledTrace name key world error value nameEq keyEq selected}
+        (sym (workPrefixDecomposition scanned)) (openInstalled episode)))
+    (workPrefixActorOnly scanned) (workActorRest scanned) (openNoEarlierLifecycle episode) noLater (openActiveAtFinal episode)
+    (trans (cong (\body => appendTransitions (openPrefix episode)
+      (MoreTransitions (beginTransition (openBegin episode)) body)) (workPrefixDecomposition scanned)) (openDecomposition episode))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
