@@ -28862,6 +28862,24 @@ scopedEnrichedExternalJoin name key world error value protocol nameEq keyEq init
         (scopedEnrichedCenterTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
         (scopedEnrichedSuffixTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds) center suffix))
 
+0 scopedCandidateRootSealsAfterBefore :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  ScopedOwnedRootSeals name key world error value nameEq (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)
+    (locatedPreStart (selectedEpisode candidate)) finalState
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+      (appendTransitions (closedTransitions (locatedEpisode (selectedEpisode candidate))) (traceAfterClosing (selectedEpisode candidate))))
+scopedCandidateRootSealsAfterBefore name key world error value nameEq keyEq initial finalState global aligned candidate =
+  scopedRootSealsAppendRight name key world error value nameEq (selectedRegistrations candidate) 0 (selectedStartOrdinal candidate) [] (selectedStartLive candidate)
+    initial (locatedPreStart (selectedEpisode candidate)) finalState (traceBeforeOpening (selectedEpisode candidate))
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+      (appendTransitions (closedTransitions (locatedEpisode (selectedEpisode candidate))) (traceAfterClosing (selectedEpisode candidate))))
+    (selectedBeforeScan candidate)
+    (replace {p = \source => ScopedOwnedRootSeals name key world error value nameEq (selectedRegistrations candidate) 0 [] initial finalState source}
+      (sym (locatedDecomposition (selectedEpisode candidate))) (scopedCandidateOwnedRootSeals name key world error value nameEq keyEq initial finalState global aligned candidate))
+
 0 scopedEnrichedStepFromExternal :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
