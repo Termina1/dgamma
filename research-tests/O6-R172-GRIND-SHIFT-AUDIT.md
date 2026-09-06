@@ -74,7 +74,7 @@ r172SupportedActiveLookupEquationProbe name key world error value nameEq state s
 
 ```text
 1/1: Building DGamma.R172SupportedActiveLookupEquationProbe (research-tests/DGamma/R172SupportedActiveLookupEquationProbe.idr)
-Error: While processing type of r172SupportedActiveLookupEquationProbe. Undefined name DGamma.Coeffects.CoeffectSpec.dependencies. 
+Error: While processing type of r172SupportedActiveLookupEquationProbe. Undefined name DGamma.Coeffects.CoeffectSpec.dependencies.
 
 Error: While processing right hand side of r172SupportedActiveLookupEquationProbe. DGamma.CP4SupportQuiescence.activePredicateAtFoundQ is not accessible in this context.
 
