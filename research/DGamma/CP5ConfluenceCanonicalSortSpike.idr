@@ -926,6 +926,10 @@ canonicalRanksHeadBelow item rank head rest (CanonicalRanksCons head rest below 
   UniqueKeys (head :: rest) -> UniqueKeys rest
 canonicalUniqueTail item head rest (UniqueCons fresh unique) = unique
 
+0 canonicalUniqueHeadAbsent : (item : Type) -> (head : item) -> (rest : List item) ->
+  UniqueKeys (head :: rest) -> Not (Elem head rest)
+canonicalUniqueHeadAbsent item head rest (UniqueCons fresh unique) = fresh
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
