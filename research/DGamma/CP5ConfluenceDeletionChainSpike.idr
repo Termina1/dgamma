@@ -27303,6 +27303,17 @@ scopedSubsequenceBirthCoverage name key world error value nameEq registered dele
 scopedOwnedInsertionRegistered name key world error value nameEq registered ordinal live child parent component (generation ** evidence) =
   replace {p = \birth => Elem birth registered} (sym (justInjective (fst evidence))) (snd evidence)
 
+0 scopedEpisodeInsertionRegistered :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (selected : name) -> (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  EpisodeGenerationDeletedActor nameEq selected registered ordinal live (OInsert child parent component) ->
+  Elem (MkRegistrationGeneration child ordinal) registered
+scopedEpisodeInsertionRegistered name key world error value nameEq selected registered ordinal live child parent component
+  (DeleteEpisodeGenerationLifecycle owner lifecycle) = void (falseNotTrueO7 lifecycle)
+scopedEpisodeInsertionRegistered name key world error value nameEq selected registered ordinal live child parent component
+  (DeleteRegisteredGeneration owned) = scopedOwnedInsertionRegistered name key world error value nameEq registered ordinal live child parent component owned
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
