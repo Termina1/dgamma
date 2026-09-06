@@ -27169,6 +27169,18 @@ ScopedBirthCoverage name key world error value registered ordinal first finalSta
   Either (Elem (MkRegistrationGeneration child (ordinal + sourceIndex)) registered)
     (ScopedLocatedOrdinalOrigin name key world error value first finalState trace (OInsert child parent component) origin sourceIndex)
 
+0 scopedBirthCoverageOriginTransport :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (first, finalState : SystemState name key value world error) -> (trace : Transitions first finalState) ->
+  (sourceOrigin, targetOrigin : Nat -> Maybe Nat) -> ((index : Nat) -> (sourceOrigin index = targetOrigin index)) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) -> (sourceIndex : Nat) ->
+  ScopedBirthCoverage name key world error value registered ordinal first finalState trace sourceOrigin child parent component sourceIndex ->
+  ScopedBirthCoverage name key world error value registered ordinal first finalState trace targetOrigin child parent component sourceIndex
+scopedBirthCoverageOriginTransport name key world error value registered ordinal first finalState trace sourceOrigin targetOrigin same child parent component sourceIndex (Left deleted) = Left deleted
+scopedBirthCoverageOriginTransport name key world error value registered ordinal first finalState trace sourceOrigin targetOrigin same child parent component sourceIndex (Right kept) =
+  Right (MkScopedLocatedOrdinalOrigin (retainedOrdinalOccurrence kept)
+    (trans (sym (same (locatedActionOrdinal (retainedOrdinalOccurrence kept)))) (retainedOrdinalExact kept)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
