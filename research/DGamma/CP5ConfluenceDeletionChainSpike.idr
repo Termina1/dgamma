@@ -29777,6 +29777,17 @@ scopedClassifiedPullback name key world error value nameEq keyEq initial finalSt
 scopedPullClassificationGeneration name key world error value nameEq keyEq initial finalState global candidate result capital (generation ** classified) =
   pulledGenerationExact (scopedClassifiedPullback name key world error value nameEq keyEq initial finalState global candidate result capital (generation ** classified))
 
+||| Map recurrence keeps every source birth, not just the current deletion set.
+0 scopedHistoryMapExact :
+  (sourceItem, targetItem, sourceIndex, targetIndex : Type) ->
+  (pull : targetItem -> sourceItem) -> (sourceKey : sourceItem -> sourceIndex) ->
+  (targetKey : targetItem -> targetIndex) -> (backward : targetIndex -> sourceIndex) ->
+  ((item : targetItem) -> (sourceKey (pull item) = backward (targetKey item))) ->
+  (items : List targetItem) -> (map sourceKey (map pull items) = map backward (map targetKey items))
+scopedHistoryMapExact sourceItem targetItem sourceIndex targetIndex pull sourceKey targetKey backward exact [] = Refl
+scopedHistoryMapExact sourceItem targetItem sourceIndex targetIndex pull sourceKey targetKey backward exact (item :: rest) =
+  cong2 (::) (exact item) (scopedHistoryMapExact sourceItem targetItem sourceIndex targetIndex pull sourceKey targetKey backward exact rest)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
