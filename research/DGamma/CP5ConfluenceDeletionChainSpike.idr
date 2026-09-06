@@ -30361,6 +30361,15 @@ record ScopedDerivationAccounting
     (canonicalToOriginal foldedRegistrationAccounting birth =
       replayGeneratedRegistrationOrigin (closingFreeDeletionOccurrenceFold derivation) birth)
 
+0 scopedDerivationAccountingDone :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
+  ScopedDerivationAccounting name key world error value protocol nameEq keyEq initial finalState finalState trace trace (ClosingFreeDeletionDone trace)
+scopedDerivationAccountingDone name key world error value protocol nameEq keyEq initial finalState trace =
+  MkScopedDerivationAccounting (scopedCumulativeEndpointIdentity name key world error value nameEq keyEq finalState) Refl
+    (scopedCumulativeRegistrationIdentity name key world error value initial finalState trace) (\birth => Refl)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
