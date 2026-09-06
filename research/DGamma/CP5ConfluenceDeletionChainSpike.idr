@@ -29713,7 +29713,9 @@ public export
   (trace : Transitions initial finalState) ->
   CanonicalizationPremises name key world error value protocol nameEq keyEq trace ->
   ClosingFreeTraceCore name key world error value protocol nameEq keyEq trace
-deleteClosingEpisodesCoreSpike = ?deleteClosingEpisodesCoreSpike_rhs
+deleteClosingEpisodesCoreSpike {name} {key} {world} {error} {value} nameEq keyEq protocol {initial} {finalState} trace premises =
+  scopedClosingCoreAccessible name key world error value protocol nameEq keyEq (traceLength trace) (wellFounded {rel = LT} (traceLength trace))
+    initial finalState trace Refl premises
 
 ||| O11: assemble cumulative endpoint and generated-registration accounting from
 ||| the exact O10 trace/history value.
