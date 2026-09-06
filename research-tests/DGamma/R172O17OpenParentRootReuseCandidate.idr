@@ -207,3 +207,13 @@ public export
   result = Nothing
 r172ReuseUndefinedRight PartialUndefined = Refl
 
+public export
+0 r172ReuseBothDefinedRelated :
+  {first, second : EffectState Nat R45Key R45Value Unit} ->
+  {leftResult, rightResult : Maybe (EffectState Nat R45Key R45Value Unit)} ->
+  PartialRelated (EffectState Nat R45Key R45Value Unit) (EffectStateRelated r45KeyEq) (Just first) leftResult ->
+  PartialRelated (EffectState Nat R45Key R45Value Unit) (EffectStateRelated r45KeyEq) (Just second) rightResult ->
+  PartialRelated (EffectState Nat R45Key R45Value Unit) (EffectStateRelated r45KeyEq) leftResult rightResult
+r172ReuseBothDefinedRelated (PartialDefined firstRelated) (PartialDefined secondRelated) =
+  PartialDefined (r172ReuseAllEffectStatesRelated _ _)
+
