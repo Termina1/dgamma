@@ -1214,7 +1214,13 @@ public export
   (trace : Transitions initial finalState) ->
   ReplayInvariantBundle name key world error value protocol nameEq keyEq trace ->
   SupportOrderingCapital name key world error value nameEq keyEq finalState
-supportOrderingSpike = ?supportOrderingSpike_rhs
+supportOrderingSpike {name} {key} {world} {error} {value} {finalState} nameEq keyEq protocol trace bundle =
+  canonicalSupportOrderingFromSort name key world error value protocol nameEq keyEq finalState
+    (replayProtocolRanked bundle) (replayParentRanksIncrease bundle)
+    (canonicalStableRankSort name nameEq
+      (canonicalProtocolRank name key world error value protocol nameEq finalState)
+      (supportSet {name = name} {key = key} {value = value} {world = world} {error = error}
+        @{nameEq} @{keyEq} finalState))
 
 ||| Empty withdrawal lists have no inhabitants.  Keeping this eliminator local
 ||| avoids depending on the private analogue in the production support module.
