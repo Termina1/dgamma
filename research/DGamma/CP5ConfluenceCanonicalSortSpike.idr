@@ -3399,6 +3399,26 @@ canonicalWorkSnocTransitionCount name key world error value NoTransitions step =
 canonicalWorkSnocTransitionCount name key world error value (MoreTransitions head tail) step =
   cong S (canonicalWorkSnocTransitionCount name key world error value tail step)
 
+||| Locate the ACTUAL right source node from the sealed adjacent result.
+||| This is generic occurrence capital, not a root-placement operation.
+0 canonicalWorkOriginalRightLocation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) -> (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  AdjacentSwapResult name key world error value protocol nameEq keyEq original prefixTrace left right suffix diamond ->
+  LocatedActionOccurrence (transitionAction right) original
+canonicalWorkOriginalRightLocation name key world error value nameEq keyEq protocol {pairMiddle} {pairFinal}
+  original prefixTrace left right suffix diamond result =
+    MkLocatedActionOccurrence pairMiddle pairFinal
+      (appendTransitions prefixTrace (MoreTransitions left NoTransitions)) right suffix Refl
+      (trans (appendTransitionsAssociative prefixTrace (MoreTransitions left NoTransitions)
+        (MoreTransitions right suffix)) (originalDecomposition result))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
