@@ -25,3 +25,12 @@ r173ContiguousTrace : Transitions r45Initial r173ContiguousFinal
 r173ContiguousTrace = MoreTransitions r45ParentInsert (MoreTransitions r45Begin
   (MoreTransitions r45ChildInsert
     (MoreTransitions (Fired r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl) NoTransitions)))
+
+0 r173ContiguousEpisode : LocatedInterleavedOpenEpisode Nat R45Key Unit String R45Value r45NameEq r45KeyEq 0 r173ContiguousTrace
+r173ContiguousEpisode = MkLocatedInterleavedOpenEpisode r45AfterParent r45AfterBegin
+  (MoreTransitions r45ParentInsert NoTransitions) (MkBeginStep r45BeginChecked)
+  (MoreTransitions r45ChildInsert (MoreTransitions (Fired r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl) NoTransitions))
+  (InstalledStep (OInsert 1 (ChildOf 0) r45Child) OInsertTag r45ChildInsertChecked _ Refl
+    (InstalledStep (LAdvance 0) LFinishTag Refl NoTransitions Refl (InstalledEnd Refl)))
+  (NoLifecycleByStep r45ParentInsert NoTransitions
+    (\lifecycle, same => case lifecycle of Refl impossible) NoLifecycleByEnd) Refl Refl
