@@ -104,7 +104,69 @@ r173UniqueGeneratedBirthBeforeRoot name key world error value nameEq keyEq trace
             (generatedRegistrationActionOccurrence birth) rootBirth) reflexive)
 ```
 
-Retained simultaneous worklist has not yet been attempted. O17 body 0/3.
+### Retained C capital (ongoing; NOT O17 closure)
+
+- C1 `2680f9a`, C2 `e9847a4`, C3 `1d139ee`, C4 `54171c8`, C5
+  `d8f6e7f`, C6 `f40f111`, each 1/3: exact structural actor-step family,
+  decidable fired-action membership, actual alien/end boundary, simultaneous
+  prefix pieces/actor proof/decomposition/count split, and a strictly decreasing
+  maximal actor-prefix producer.
+- C7 `8e04b33`, C8 `537d924`, each 1/3: decide actual no-later-lifecycle.
+- C9 `9d8570e` 3/3: installation of the exact scanned prefix. Attempts 1/2
+  named forced indices (`combined`, then `step`); replaced by wildcards, never
+  nonlinear patterns or state casts.
+- C10 `4588994` 2/3: ACTUAL contiguous block from scanned pieces + checked
+  no-later lifecycle. Attempt1 used reserved `prefix` binder, then `scanned`.
+- C11 `fca8cf6`, C12 `1c40504`, C13 `81a509c`, each 1/3: ready versus genuine
+  interleaving inspection; no caller-provided final block/target.
+- C14 `7c12a90`, C15 `d76ae04`, each 1/3: block and authenticated half-open
+  range are produced together; exact counts refer to the SAME existential pieces.
+- C16 `b0f5907`, C17 `ad3b1aa`, C18 `0df77aa`, C19 `c1c6161`, each 1/3:
+  constructor-owned finite pending-name inspection. Accepted nodes contain
+  produced blocks and increasing disjoint numeric ranges; grouping/order
+  failures are explicit retained obligations, NOT successful sorting. Both
+  pending-name recursion and each body scan decrease structurally. C19 passed
+  before a shell `cd` typo delayed its commit command; no extra compiler call.
+- C20 `0c22727` 2/3: injectivity of the sealed adjacent all-action ordinal
+  relation, all 16 region pairs. Attempt1's 150-second foreground tool window
+  killed its harness; orphan shell/Chez PIDs 95081/95084 were detected and their
+  entire process group terminated before any subsequent compiler. No verdict
+  was inferred, and the attempt is CHARGED (`ABORTED_TOOL_TIMEOUT`). Attempt2
+  used the same declaration in CanonicalSort under a detached monitored
+  process; PASS in 311.7s, sampled peak 40,109,104 KiB. No overlap/OOM.
+- C21 `fe6e5a2` 1/3: relocate that unchanged expensive numeric proof to
+  `CP5UniqueRawNameOrdinalCapital`; one declaration moved, not a new theorem.
+  Both the new helper module and CanonicalSort freshly compiled together.
+- C22 `4b237dd` 2/3: derive insertion uniqueness through the ACTUAL adjacent
+  result and exact `swappedOccurrenceFold`. Attempt1 attempted its private raw
+  projection; attempt2 uses the existing public wrapper. No LocalDiamond change.
+
+### Performance incident and new doctrine
+
+The transparently exported 16-case proof produces a ~895 MiB TTC and costs
+about 53 seconds / 18,009,072 KiB even on the small C22 consumer check. No build
+or TTC was deleted. Supervisor authorizes ONLY narrowing the NEW helper from
+`public export` to `export`, leaving statement/body identical, as a separate
+zero-new-declaration performance micro-unit. The before/after size and fresh
+small-check measurements will be recorded below; the cost reduction is not
+presumed before measuring. A consumer needing proof-body reduction would be a
+new gate, NOT a reason to restore transparency.
+
+**Doctrine:** research proof helpers default to `export`; use `public export`
+only for definitions consumers must compute with. Proofs of equality or
+injectivity should not expose proof-term shape as an interface dependency.
+Existing frozen declarations are not implicitly changed by this rule.
+
+All checks after the timeout use a detached harness with a bounded polling
+window, so the tool window cannot kill the supervising sampler. Its initial
+process guard was also corrected to recognize Chez's `idris2.so` suffix;
+serialized ledger intervals and explicit process checks confirm no overlap
+occurred even before that detection correction.
+
+O17 body remains 0/3. Actual operational progress on blocked worklist nodes,
+structural `BlockBefore`, global input placement, exact registration-accounting
+fold alignment and complete termination are NOT discharged by inspection.
+The reached-state initializer/finite-derivation uniqueness fold follow next.
 
 ## Evidence / final gate
 

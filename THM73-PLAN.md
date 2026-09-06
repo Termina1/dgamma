@@ -36,6 +36,16 @@ The R172 history below remains evidence for the old surface; the reuse trace
 no longer supplies every REVISED O17 hypothesis. Six holes remain; O17 body
 R173 0/3. The bounded disposable probe/worklist phase follows this boundary.
 
+### Research proof visibility doctrine (R173 owner ruling)
+
+Research proof helpers default to `export`. Use `public export` only when
+consumers must compute with a definition; equality/injectivity proof terms
+should remain opaque. A consumer requiring the shape of an opaque proof is a
+new gate, not authorization to restore transparent proof export. R173's new
+16-case ordinal injectivity helper exposed a ~895 MiB TTC / ~18 GiB import-cost
+case in Idris 2 0.8.0; the audit measures the authorized opacity experiment.
+No old/frozen declaration is implicitly revised by this rule.
+
 ## R172 historical checkpoint — O14 CLOSED; old-surface semantic frontier
 
 At required start **0e58c54**, **DeletionChain is CLOSED**: O9
