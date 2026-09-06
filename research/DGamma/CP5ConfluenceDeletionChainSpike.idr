@@ -19936,6 +19936,16 @@ scopedObservedRoot name key world error value nameEq (LDivert actor) before afte
 scopedObservedRoot name key world error value nameEq (LLeave actor) before afterState transition same truth = absurd truth
 scopedObservedRoot name key world error value nameEq (LUnload actor) before afterState transition same truth = absurd truth
 
+||| Kept local producers own the exact equation at both actual pre-state lookups.
+record ScopedRootRoleSeal
+  (name, key, world, error : Type) (value : key -> Type) (nameEq : DecEq name)
+  (sourceFirst, sourceAfter, targetFirst, targetAfter : SystemState name key value world error)
+  (sourceStep : Transition sourceFirst sourceAfter) (targetStep : Transition targetFirst targetAfter) where
+  constructor MkScopedRootRoleSeal
+  0 rootRoleExact :
+    (scopedRootObservation name key world error value nameEq (transitionAction sourceStep) sourceFirst =
+     scopedRootObservation name key world error value nameEq (transitionAction targetStep) targetFirst)
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
