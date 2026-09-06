@@ -19876,6 +19876,21 @@ scopedRootObservation name key world error value nameEq (LDivert actor) state = 
 scopedRootObservation name key world error value nameEq (LLeave actor) state = False
 scopedRootObservation name key world error value nameEq (LUnload actor) state = False
 
+0 scopedRootObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (transition : Transition before afterState) -> RootOrchestrationStep nameEq transition ->
+  (scopedRootObservation name key world error value nameEq (transitionAction transition) before = True)
+scopedRootObserved name key world error value nameEq before afterState transition (RootInsertStep action) =
+  replace {p = \observed => (scopedRootObservation name key world error value nameEq observed before = True)}
+    (sym action) Refl
+scopedRootObserved name key world error value nameEq before afterState transition (RootRetireStep fiber found parent action) =
+  replace {p = \observed => (scopedRootObservation name key world error value nameEq observed before = True)}
+    (sym action) (trans (cong (maybe False (scopedParentRoot . fiberParent)) found) (cong scopedParentRoot parent))
+scopedRootObserved name key world error value nameEq before afterState transition (RootRemoveStep fiber found parent action) =
+  replace {p = \observed => (scopedRootObservation name key world error value nameEq observed before = True)}
+    (sym action) (trans (cong (maybe False (scopedParentRoot . fiberParent)) found) (cong scopedParentRoot parent))
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
