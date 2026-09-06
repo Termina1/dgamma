@@ -325,3 +325,16 @@ r172ReuseAppendRightOccurrence NoTransitions right transition occurs = occurs
 r172ReuseAppendRightOccurrence (MoreTransitions head rest) right transition occurs =
   OccursLater (r172ReuseAppendRightOccurrence rest right transition occurs)
 
+public export
+0 r172ReuseClosingOccurs :
+  {selected : Nat} -> {initial, finalState : SystemState Nat R45Key R45Value Unit String} ->
+  {trace : Transitions initial finalState} ->
+  (located : LocatedClosedEpisode Nat R45Key Unit String R45Value r45NameEq r45KeyEq selected trace) ->
+  OccursIn (unloadTransition (closing (locatedEpisode located))) trace
+r172ReuseClosingOccurs (MkLocatedClosedEpisode pre after earlier episode suffix decomposition) =
+  replace {p = \global => OccursIn (unloadTransition (closing episode)) global} decomposition
+    (r172ReuseAppendRightOccurrence earlier _ _
+      (OccursLater (appendLeftOccurrenceEmbedding (closedTransitions episode) suffix _
+        (r172ReuseAppendRightOccurrence (closedInside episode)
+          (MoreTransitions (unloadTransition (closing episode)) NoTransitions) _ OccursHere))))
+
