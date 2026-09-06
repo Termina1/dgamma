@@ -255,3 +255,14 @@ public export
 r172ReuseMapsCommute left right leftRespects rightRespects origin =
   r172ReuseCommuteAt left right leftRespects rightRespects origin (left origin) (right origin) Refl Refl
 
+public export
+0 r172ReuseIteratorStableAt : (actor : Nat) ->
+  (stage : IteratorStage Nat R45Key Unit String R45Value actor r172ReuseTrace) ->
+  (foreign : PartialMap (EffectState Nat R45Key R45Value Unit)) ->
+  (origin : EffectState Nat R45Key R45Value Unit) ->
+  (moved : Maybe (EffectState Nat R45Key R45Value Unit)) ->
+  foreign origin = moved -> IteratorOutcomeStableUnder r45KeyEq stage foreign origin
+r172ReuseIteratorStableAt actor stage foreign origin Nothing runs = rewrite runs in ()
+r172ReuseIteratorStableAt actor stage foreign origin (Just moved) runs =
+  rewrite runs in iteratorStageOutcomeRelated r45KeyEq stage moved origin (r172ReuseAllEffectStatesRelated moved origin)
+
