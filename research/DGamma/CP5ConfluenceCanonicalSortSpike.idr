@@ -3136,6 +3136,28 @@ canonicalWorkNoLifecycleRejectsUnload name key world error value selected _
   (NoLifecycleByStep step rest excluded tail) (ActionOccursLater _ _ later) =
     canonicalWorkNoLifecycleRejectsUnload name key world error value selected rest tail later
 
+||| An unload cannot occur in an interval installed at every boundary.
+||| The checked rule and tail's initial observation refer to the SAME state.
+0 canonicalWorkInstalledRejectsUnload :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  InstalledTrace name key world error value nameEq keyEq selected trace ->
+  ActionOccurs (LUnload selected) trace -> Void
+canonicalWorkInstalledRejectsUnload name key world error value nameEq keyEq selected _ (InstalledEnd installed) occurs =
+  case occurs of ActionOccursHere step rest same impossible; ActionOccursLater step rest later impossible
+canonicalWorkInstalledRejectsUnload name key world error value nameEq keyEq selected _
+  (InstalledStep {first = before} {middle = afterState} action tag checked rest installed tail)
+  (ActionOccursHere _ _ same) = case same of
+    Refl => canonicalFalseNotTrue
+      (trans (sym (snd (snd (lUnloadBoundary nameEq keyEq selected before afterState tag
+        (checkedActionProjects nameEq keyEq (LUnload selected) before afterState tag checked)))))
+        (canonicalWorkInstalledTraceStart name key world error value nameEq keyEq selected rest tail))
+canonicalWorkInstalledRejectsUnload name key world error value nameEq keyEq selected _
+  (InstalledStep action tag checked rest installed tail) (ActionOccursLater _ _ later) =
+    canonicalWorkInstalledRejectsUnload name key world error value nameEq keyEq selected rest tail later
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
