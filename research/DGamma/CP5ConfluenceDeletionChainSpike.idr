@@ -27086,6 +27086,32 @@ scopedDeletionGenerationClassified name key world error value nameEq keyEq initi
       (selectedStartOrdinal candidate) (selectedStartLive candidate) (selectedBeforeScan candidate)) generation
     (fst (selectedRegisteredDuring candidate) generation member)
 
+||| The remaining O9 inputs are honest external-input and bidirectional registration accounting certificates.
+0 scopedDeletionStepFromAccounting :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq global) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (capital : DeletionProducerOperationalCapital name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result) ->
+  RelationalReplayCorrespondence name key world error value global (survivingTrace result) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq (survivingTrace result) ->
+  (endpoint : ScopedCanonicalDeletionEndpoint name key world error value nameEq keyEq (selectedRegistrations candidate) finalState (survivingFinal result)) ->
+  SameExternalOrchestration nameEq global (survivingTrace result) ->
+  CanonicalRegistrationCorrespondence global (survivingTrace result) (selectedRegistrations candidate) ->
+  DeletionChainStep name key world error value protocol nameEq keyEq global premises candidate
+scopedDeletionStepFromAccounting name key world error value protocol nameEq keyEq initial finalState global premises candidate result capital replay targetBundle endpoint external accounting =
+  MkDeletionChainStep result capital replay
+    (deletionOperationalCorrespondence (deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol global premises candidate result capital)) Refl
+    external (scopedCanonicalEndpoint endpoint) (scopedCanonicalWithdrawnExact endpoint)
+    (scopedDeletionGenerationClassified name key world error value nameEq keyEq initial finalState global candidate)
+    (replace {p = CanonicalRegistrationCorrespondence global (survivingTrace result)} (sym (scopedCanonicalWithdrawnExact endpoint)) accounting)
+    (MkCanonicalizationPremises targetBundle)
+    (scopedDeletionStrictlyShorter name key world error value nameEq keyEq initial finalState global candidate result)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
