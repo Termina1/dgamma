@@ -969,6 +969,13 @@ canonicalRankConsMembership item head left right maps selected present =
     Here => Here
     There later => There (maps selected later)
 
+0 canonicalRankInsertedHeadAbsent : (item : Type) -> (inserted, head : item) -> (rest : List item) ->
+  Not (Elem head rest) -> Not (Elem inserted (head :: rest)) -> Not (Elem head (inserted :: rest))
+canonicalRankInsertedHeadAbsent item inserted head rest headFresh insertedFresh present =
+  case present of
+    Here => insertedFresh Here
+    There later => headFresh later
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
