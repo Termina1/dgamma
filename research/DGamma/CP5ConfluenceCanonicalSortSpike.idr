@@ -3068,6 +3068,27 @@ canonicalWorkClosedUnloadLocation name key world error value nameEq keyEq select
             (sym (appendTransitionsAssociative inside
               (MoreTransitions (unloadTransition closing) NoTransitions) later))) decomposition))
 
+||| No closing episode can appear after an ACTUAL finite adjacent derivation:
+||| its unload would have an authenticated source occurrence. This theorem is
+||| independent of root placement and does not assume target no-closing.
+0 canonicalWorkNoClosingAfterDerivation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (target : Transitions initial targetFinal) ->
+  AlignedTransitions name key world error value nameEq keyEq source ->
+  bindings (registry initial) = [] ->
+  NoClosingEpisodes name key world error value nameEq keyEq source ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq source target ->
+  NoClosingEpisodes name key world error value nameEq keyEq target
+canonicalWorkNoClosingAfterDerivation name key world error value nameEq keyEq protocol
+  source target aligned initialEmpty noClosing derivation selected episode =
+    canonicalWorkNoClosingRejectsLocatedUnload name key world error value nameEq keyEq selected
+      source aligned initialEmpty noClosing
+      (replayActionOrigin (finiteDerivationOccurrenceCorrespondence derivation)
+        (canonicalWorkClosedUnloadLocation name key world error value nameEq keyEq selected target episode))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
