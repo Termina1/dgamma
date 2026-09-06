@@ -74,3 +74,7 @@ public export
 r172ReuseRetire : Transition r172ReuseAfterRoot r172ReuseAfterRetire
 r172ReuseRetire = Fired r45NameEq r45KeyEq (ORetire 1) ORetireTag r172ReuseRetireChecked
 
+public export
+r172ReuseFinish : Transition r172ReuseAfterRetire r172ReuseFinal
+r172ReuseFinish = Fired r45NameEq r45KeyEq (LAdvance 0) LFinishTag r172ReuseFinishChecked
+
