@@ -26263,6 +26263,10 @@ scopedRotateOrdinals (S bound) =
 scopedRotateSuccessorAt bound continue Z smaller = Refl
 scopedRotateSuccessorAt bound continue (S ordinal) smaller = cong S (continue ordinal (fromLteSucc smaller))
 
+0 scopedRotateSuccessor : (bound, ordinal : Nat) -> LT ordinal bound -> (ordinalForward (scopedRotateOrdinals bound) (S ordinal) = ordinal)
+scopedRotateSuccessor Z ordinal smaller = void (succNotLTEzero smaller)
+scopedRotateSuccessor (S bound) ordinal smaller = scopedRotateSuccessorAt bound (scopedRotateSuccessor bound) ordinal smaller
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
