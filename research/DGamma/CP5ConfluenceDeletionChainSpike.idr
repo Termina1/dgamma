@@ -28461,6 +28461,22 @@ scopedSourceOwnedRootSeals name key world error value nameEq keyEq registered or
        (scopedRootExclusionStep name key world error value nameEq keyEq registered ordinal live unique action first middle tag
          (checkedActionProjects nameEq keyEq action first middle tag checked) (fst births) inactive roots))
 
+data ScopedActionAt :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Nat -> Action name key value world error -> Type where
+  ScopedActionHere :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {0 first, middle, finalState : SystemState name key value world error} ->
+    (transition : Transition first middle) -> (rest : Transitions middle finalState) ->
+    ScopedActionAt name key world error value (MoreTransitions transition rest) 0 (transitionAction transition)
+  ScopedActionLater :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {0 first, middle, finalState : SystemState name key value world error} -> {ordinal : Nat} -> {action : Action name key value world error} ->
+    (transition : Transition first middle) -> (rest : Transitions middle finalState) ->
+    ScopedActionAt name key world error value rest ordinal action ->
+    ScopedActionAt name key world error value (MoreTransitions transition rest) (S ordinal) action
+
 0 scopedEnrichedStepFromExternal :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
