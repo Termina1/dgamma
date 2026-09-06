@@ -2577,6 +2577,25 @@ record CanonicalWorkForeignSnoc
   0 workSnocDecomposition : appendTransitions workSnocPrefix (MoreTransitions workSnocLast NoTransitions) = trace
   0 workSnocCount : transitionCount trace = S (transitionCount workSnocPrefix)
 
+||| Decreasing structural producer of the foreign action immediately before a
+||| selected next action. It returns the exact last action, not a raw-name guess.
+0 canonicalWorkSplitForeignLast :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (head : Transition first middle) -> (rest : Transitions middle finalState) ->
+  CanonicalWorkForeignSpan selected (MoreTransitions head rest) ->
+  CanonicalWorkForeignSnoc name key world error value selected (MoreTransitions head rest)
+canonicalWorkSplitForeignLast name key world error value selected head NoTransitions
+  (CanonicalWorkForeignStep _ _ excluded tail) =
+    MkCanonicalWorkForeignSnoc _ NoTransitions head CanonicalWorkForeignEnd excluded Refl Refl
+canonicalWorkSplitForeignLast name key world error value selected head (MoreTransitions next rest)
+  (CanonicalWorkForeignStep _ _ excluded tail) =
+    case canonicalWorkSplitForeignLast name key world error value selected next rest tail of
+      MkCanonicalWorkForeignSnoc lastBefore earlier last earlierForeign lastForeign decomposition count =>
+        MkCanonicalWorkForeignSnoc lastBefore (MoreTransitions head earlier) last
+          (CanonicalWorkForeignStep head earlier excluded earlierForeign) lastForeign
+          (cong (MoreTransitions head) decomposition) (cong S count)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
