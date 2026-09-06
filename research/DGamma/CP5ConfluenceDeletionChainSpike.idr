@@ -29988,6 +29988,14 @@ scopedLifecycleInstalledSame name key world error value deps provision _ _ (Relo
 scopedLifecycleInstalledSame name key world error value deps provision _ _ (ActiveControls accumulator view) = Refl
 scopedLifecycleInstalledSame name key world error value deps provision _ _ (UnloadingControls accumulator view outcome) = Refl
 
+0 scopedFiberWithdrawalFlags :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (left, right : Fiber name key value world error) -> FiberControlRelated left right ->
+  ((retired left = retired right), (installed (fiberLifecycle left) = installed (fiberLifecycle right)))
+scopedFiberWithdrawalFlags name key world error value _ _
+  (FibersControlRelated {component} leftParent rightParent leftRetired rightRetired leftTable rightTable leftLife rightLife parentSame retiredSame lifeSame) =
+    (retiredSame, scopedLifecycleInstalledSame name key world error value (dependencies (componentDependencies component)) (componentProvisions component) leftLife rightLife lifeSame)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
