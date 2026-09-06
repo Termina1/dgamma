@@ -26246,6 +26246,10 @@ scopedFlipOrdinal (S ordinal) = scopedFlipOrdinalTail ordinal
 scopedFlipOrdinalTailInverse Z = Refl
 scopedFlipOrdinalTailInverse (S ordinal) = Refl
 
+0 scopedFlipOrdinalInverse : (ordinal : Nat) -> (scopedFlipOrdinal (scopedFlipOrdinal ordinal) = ordinal)
+scopedFlipOrdinalInverse Z = Refl
+scopedFlipOrdinalInverse (S ordinal) = scopedFlipOrdinalTailInverse ordinal
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
