@@ -540,3 +540,14 @@ r172ReuseConclusionChildPrefixAligned sorted birth = fst (alignedAppendSplit
   (beforeRegistration birth) (MoreTransitions (registrationTransition birth) (afterRegistration birth))
   (replace {p = \trace => AlignedTransitions Nat R45Key Unit String R45Value r45NameEq r45KeyEq trace}
     (sym (registrationDecomposition birth)) (replayAligned (sortedPremises sorted))))
+
+public export
+0 r172ReuseConclusionParentOpening :
+  (sorted : SortedClosingFreeTrace Nat R45Key Unit String R45Value
+    r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
+  (birth : LocatedGeneratedRegistration 1 0 r45Child (sortedTrace sorted)) ->
+  LastOpeningResult Nat R45Key Unit String R45Value r45NameEq r45KeyEq 0 (beforeRegistration birth)
+r172ReuseConclusionParentOpening sorted birth = extractLastOpening r45NameEq r45KeyEq 0
+  (beforeRegistration birth) (r172ReuseConclusionChildPrefixAligned sorted birth)
+  (emptyRegistryUninstalled r45NameEq 0 r45Initial r172ReuseInitialEmpty)
+  (r172ReuseYieldParentInstalled (r172ReuseConclusionChildYield sorted birth))
