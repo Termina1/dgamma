@@ -194,3 +194,19 @@ uniqueInsertionsAfterDeletionStep name key world error value nameEq keyEq protoc
     (selectedStartOrdinal candidate) (selectedStartLive candidate) (deletionResult step)
     (deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol original premises candidate
       (deletionResult step) (deletionProducerCapital step)) unique
+
+public export
+0 uniqueInsertionsAfterDeletionDerivation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> {target : Transitions initial targetFinal} ->
+  ClosingFreeDeletionDerivation name key world error value protocol nameEq keyEq source target ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq target
+uniqueInsertionsAfterDeletionDerivation name key world error value nameEq keyEq protocol (ClosingFreeDeletionDone trace) unique = unique
+uniqueInsertionsAfterDeletionDerivation name key world error value nameEq keyEq protocol
+  (ClosingFreeDeletionStep trace premises candidate step target rest) unique =
+    uniqueInsertionsAfterDeletionDerivation name key world error value nameEq keyEq protocol rest
+      (uniqueInsertionsAfterDeletionStep name key world error value nameEq keyEq protocol trace premises candidate step unique)
