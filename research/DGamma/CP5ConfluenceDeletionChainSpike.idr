@@ -20207,6 +20207,17 @@ ScopedRootBirthInputs name key world error value registered ordinal first finalS
     Elem (MkRegistrationGeneration child ordinal) registered -> (scopedParentRoot parent = False)),
    ScopedRootBirthInputs name key world error value registered (S ordinal) _ finalState rest)
 
+0 ScopedOwnedRootSeals :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  List (RegistrationGeneration name) -> Nat -> GenerationEnvironment name ->
+  (first, finalState : SystemState name key value world error) -> Transitions first finalState -> Type
+ScopedOwnedRootSeals name key world error value nameEq registered ordinal live _ _ NoTransitions = Unit
+ScopedOwnedRootSeals name key world error value nameEq registered ordinal live first finalState (MoreTransitions transition rest) =
+  ((GenerationOwnedActor nameEq registered ordinal live (transitionAction transition) ->
+    ScopedDeletedRootSeal name key world error value nameEq first _ transition),
+   ScopedOwnedRootSeals name key world error value nameEq registered (S ordinal)
+     (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction transition) live) _ finalState rest)
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
