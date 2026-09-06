@@ -52,3 +52,29 @@ uniqueSubsequenceSourceInjective name key world error value (DeleteGenerationAct
   uniqueSubsequenceSourceInjective name key world error value tail left right sourceIndex
     (uniqueMapSuccessorJust (generationSubsequenceSourceOrdinal tail left) sourceIndex leftExact)
     (uniqueMapSuccessorJust (generationSubsequenceSourceOrdinal tail right) sourceIndex rightExact)
+
+0 uniqueSubsequenceSourceBound :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {nameEq : DecEq name} ->
+  {deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type} ->
+  {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+  {sourceFirst, sourceFinal, targetFirst, targetFinal : SystemState name key value world error} ->
+  {source : Transitions sourceFirst sourceFinal} -> {target : Transitions targetFirst targetFinal} ->
+  (subsequence : GenerationActionSubsequence nameEq deletable ordinal live source target) ->
+  (targetIndex, sourceIndex : Nat) ->
+  (generationSubsequenceSourceOrdinal subsequence targetIndex = Just sourceIndex) ->
+  (LT sourceIndex (transitionCount source))
+uniqueSubsequenceSourceBound name key world error value GenerationActionSubsequenceEnd targetIndex sourceIndex exact =
+  case exact of Refl impossible
+uniqueSubsequenceSourceBound name key world error value (KeepGenerationAction sh st th tt kept action tail) Z sourceIndex exact =
+  case exact of Refl => LTESucc LTEZero
+uniqueSubsequenceSourceBound name key world error value (KeepGenerationAction sh st th tt kept action tail) (S targetIndex) Z exact =
+  void (uniqueMapSuccessorNotZero (generationSubsequenceSourceOrdinal tail targetIndex) exact)
+uniqueSubsequenceSourceBound name key world error value (KeepGenerationAction sh st th tt kept action tail) (S targetIndex) (S sourceIndex) exact =
+  LTESucc (uniqueSubsequenceSourceBound name key world error value tail targetIndex sourceIndex
+    (uniqueMapSuccessorJust (generationSubsequenceSourceOrdinal tail targetIndex) sourceIndex exact))
+uniqueSubsequenceSourceBound name key world error value (DeleteGenerationAction sh st deleted tail) targetIndex Z exact =
+  void (uniqueMapSuccessorNotZero (generationSubsequenceSourceOrdinal tail targetIndex) exact)
+uniqueSubsequenceSourceBound name key world error value (DeleteGenerationAction sh st deleted tail) targetIndex (S sourceIndex) exact =
+  LTESucc (uniqueSubsequenceSourceBound name key world error value tail targetIndex sourceIndex
+    (uniqueMapSuccessorJust (generationSubsequenceSourceOrdinal tail targetIndex) sourceIndex exact))
