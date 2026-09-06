@@ -2326,6 +2326,24 @@ uniqueInsertionsAfterAdjacentResult name key world error value protocol nameEq k
           (replayActionOrigin (operationalOccurrenceCorrespondence (swappedOccurrenceFold result)) leftBirth)
           (replayActionOrigin (operationalOccurrenceCorrespondence (swappedOccurrenceFold result)) rightBirth)))
 
+||| The whole global premise survives the actual finite operational derivation;
+||| a reached worklist never needs a second caller-supplied uniqueness witness.
+export
+0 uniqueInsertionsAfterFiniteDerivation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> {target : Transitions initial targetFinal} ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq source target ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq target
+uniqueInsertionsAfterFiniteDerivation name key world error value protocol nameEq keyEq FiniteAdjacentSwapDone unique = unique
+uniqueInsertionsAfterFiniteDerivation name key world error value protocol nameEq keyEq
+  (FiniteAdjacentSwapStep trace prefixTrace left right suffix orientation diamond result target rest) unique =
+    uniqueInsertionsAfterFiniteDerivation name key world error value protocol nameEq keyEq rest
+      (uniqueInsertionsAfterAdjacentResult name key world error value protocol nameEq keyEq trace prefixTrace left right suffix diamond result unique)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
