@@ -394,3 +394,22 @@ r172ReuseRemoveRootDiamondImpossible diamond = r172ReuseMovedRootImpossible
   (movedRight diamond) (MoreTransitions (movedLeft diamond) NoTransitions)
   (movedPairAligned diamond) (movedRightAction diamond)
 
+public export
+0 r172ReuseOrderingIsParentOnly : orderedSupportNames r172ReuseOrdering = [0]
+r172ReuseOrderingIsParentOnly = singletonEnumeration (orderedSupportNames r172ReuseOrdering)
+  (orderUnique (orderedSupportLinearization r172ReuseOrdering))
+  (\selected, present => onlyParent selected (orderSound (orderedSupportLinearization r172ReuseOrdering) selected present))
+  (orderComplete (orderedSupportLinearization r172ReuseOrdering) 0 Refl)
+  where
+  0 onlyParent : (selected : Nat) -> isSupported @{r45NameEq} @{r45KeyEq} selected r172ReuseFinal = True -> selected = 0
+  onlyParent Z supported = Refl
+  onlyParent (S selected) supported = case supported of Refl impossible
+
+  0 singletonEnumeration : (names : List Nat) -> UniqueKeys names ->
+    ((selected : Nat) -> Elem selected names -> selected = 0) -> Elem 0 names -> names = [0]
+  singletonEnumeration [] unique sound present = case present of Here impossible; There later impossible
+  singletonEnumeration [selected] unique sound present = case sound selected Here of Refl => Refl
+  singletonEnumeration (first :: second :: rest) (UniqueCons missing unique) sound present =
+    void (missing (replace {p = \selected => Elem selected (second :: rest)}
+      (trans (sound second (There Here)) (sym (sound first Here))) Here))
+
