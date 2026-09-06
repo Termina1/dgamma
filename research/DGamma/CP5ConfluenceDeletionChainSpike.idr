@@ -29933,6 +29933,15 @@ scopedEndpointAbsentAt name key world error value nameEq keyEq source target end
 scopedEndpointAbsentAt name key world error value nameEq keyEq source target endpoint actor (No outside) absent =
   scopedControlAbsentRight name key world error value _ _ (endpointControlsOutside endpoint actor outside) absent
 
+0 scopedEndpointAbsent :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (source, target : SystemState name key value world error) ->
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq source target) -> (actor : name) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry source) = Nothing) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry target) = Nothing)
+scopedEndpointAbsent name key world error value nameEq keyEq source target endpoint actor absent =
+  scopedEndpointAbsentAt name key world error value nameEq keyEq source target endpoint actor (isElem @{nameEq} actor (endpointWithdrawnNames endpoint)) absent
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
