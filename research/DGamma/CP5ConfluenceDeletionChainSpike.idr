@@ -26393,6 +26393,14 @@ scopedKeptOriginPath sourceCount targetCount origin witness sourceIndex (S targe
     (origin targetIndex) sourceIndex exact
     (\predecessor, tailExact => ScopedOrdinalKeptLater (originPath witness predecessor targetIndex tailExact))
 
+scopedKeptOriginWitness :
+  (sourceCount, targetCount : Nat) -> (origin : Nat -> Maybe Nat) ->
+  ScopedOrdinalOriginWitness sourceCount targetCount origin ->
+  ScopedOrdinalOriginWitness (S sourceCount) (S targetCount) (scopedKeptOrdinalOrigin origin)
+scopedKeptOriginWitness sourceCount targetCount origin witness =
+  MkScopedOrdinalOriginWitness (ScopedOrdinalKeep (originSpine witness))
+    (scopedKeptOriginPath sourceCount targetCount origin witness)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
