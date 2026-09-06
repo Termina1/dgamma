@@ -516,3 +516,104 @@ inspection. This is an owner memo, not an adopted semantic change.
 Per supervisor ruling, remaining work until the 40-minute guard is restricted
 to surface-INDEPENDENT O17 producers. No root placement/hoisting, O19 body,
 O21 withdrawal, CP3 proof, or fourth Q9 attempt is authorized.
+
+## Surface-independent reached-shape/worklist milestone
+
+S1–S17 are committed, each separately checked. S3 passes 2/3 after using the
+aligned constructor's OWN `rest` instead of the outer `later` alias; all other
+S1–S17 pass 1/3. Every fresh CanonicalSort compilation takes about 53–55 seconds
+with sampled RSS about 18–22 million KiB. No root-phase/placement helper is
+changed or called by this chain.
+
+The complete semantic chain now proves:
+
+1. A closed episode has an exact unload occurrence. An aligned empty-initial
+   source with no closing episode cannot have such an occurrence (S1–S4).
+2. NoClosingEpisodes survives an ACTUAL finite adjacent derivation via the
+   sealed all-action origin map (S5); reached shape follows from its actual
+   replay bundle (S6).
+3. The EXISTING O17 ClosingFreeTraceShape input itself implies NoClosingEpisodes
+   (S7–S14), by excluding unloads before an open episode, in its opening, and in
+   its installed suffix, or by the unsupported actor's NoLifecycleBy witness.
+   There is NO new source no-closing hypothesis or special O13-producer premise.
+4. `canonicalWorkReachedShapeFromInput` discharges reached shape from exactly
+   that unchanged source shape/bundle and the actual current replay (S15).
+5. `canonicalWorkInspectReachedDerived` recomputes current block/range/order
+   inspection with derived shape and transported global uniqueness (S16).
+6. `canonicalWorkAcceptAdjacentResult` extends the actual finite derivation and
+   rebuilds the bundle, shape, uniqueness, fixed order and inspection together
+   from ONE sealed adjacent result at that current trace (S17). It does not
+   choose a swap, claim the next inspection is ready, preserve an old completed
+   prefix for free, or provide a global decreasing sorting measure.
+
+This closes the reached-shape producer and a simultaneous REINSPECTION update
+path; it does not close the selected applicability dispatcher, all selected
+sealed-result producers, BlockBefore completion, global measure/accounting, or
+O17 body. O17 body remains 0/3 and root placement is still owner-paused.
+
+| Unit | Commit | Result |
+|---|---|---|
+| S1 | `cf15d43` | PASS 1/3 |
+| S2 | `9539fe2` | PASS 1/3 |
+| S3 | `1097f1f` | PASS 2/3 |
+| S4 | `6925f58` | PASS 1/3 |
+| S5 | `eaee137` | PASS 1/3 |
+| S6 | `378b716` | PASS 1/3 |
+| S7 | `70494d2` | PASS 1/3 |
+| S8 | `9039825` | PASS 1/3 |
+| S9 | `dfedb2d` | PASS 1/3 |
+| S10 | `84dc522` | PASS 1/3 |
+| S11 | `445c3ab` | PASS 1/3 |
+| S12 | `11cd1f4` | PASS 1/3 |
+| S13 | `5307ef3` | PASS 1/3 |
+| S14 | `3d026a4` | PASS 1/3 |
+| S15 | `2f0c6e6` | PASS 1/3 |
+| S16 | `8feee6b` | PASS 1/3 |
+| S17 | `b55902d` | PASS 1/3 |
+
+S3-1 complete rejected declaration and diagnostic (fully replaced on success):
+
+```idris
+||| Consume the exact aligned occurrence returned by an operational origin map.
+||| The dictionary and checked equation come from that same source occurrence.
+0 canonicalWorkNoClosingRejectsLocatedUnload :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  bindings (registry initial) = [] ->
+  NoClosingEpisodes name key world error value nameEq keyEq global ->
+  LocatedActionOccurrence (LUnload selected) global -> Void
+canonicalWorkNoClosingRejectsLocatedUnload name key world error value nameEq keyEq selected
+  global aligned initialEmpty noClosing
+  (MkLocatedActionOccurrence before afterState earlier step later actionExact decomposition) =
+    case snd (alignedAppendSplit earlier (MoreTransitions step later)
+      (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+        (sym decomposition) aligned)) of
+      AlignedStep action tag checked rest tailAligned => case actionExact of
+        Refl => canonicalWorkNoClosingRejectsUnloadPrefix name key world error value nameEq keyEq selected
+          global earlier tag checked later
+          (trans (appendTransitionsAssociative earlier
+            (MoreTransitions (Fired {before} {afterState} nameEq keyEq (LUnload selected) tag checked) NoTransitions) later)
+            decomposition) aligned initialEmpty noClosing
+
+```
+
+```text
+5/5: Building DGamma.CP5ConfluenceCanonicalSortSpike (research/DGamma/CP5ConfluenceCanonicalSortSpike.idr)
+Error: While processing right hand side of canonicalWorkNoClosingRejectsLocatedUnload. When unifying:
+    appendTransitions earlier (MoreTransitions (Fired nameEq keyEq (LUnload selected) tag checked) rest)
+and:
+    appendTransitions earlier (appendTransitions (MoreTransitions (Fired nameEq keyEq (LUnload selected) tag checked) NoTransitions) later)
+Mismatch between: rest and later.
+
+DGamma.CP5ConfluenceCanonicalSortSpike:3046:13--3046:26
+ 3042 |         Refl => canonicalWorkNoClosingRejectsUnloadPrefix name key world error value nameEq keyEq selected
+ 3043 |           global earlier tag checked later
+ 3044 |           (trans (appendTransitionsAssociative earlier
+ 3045 |             (MoreTransitions (Fired {before} {afterState} nameEq keyEq (LUnload selected) tag checked) NoTransitions) later)
+ 3046 |             decomposition) aligned initialEmpty noClosing
+                    ^^^^^^^^^^^^^
+
+```
