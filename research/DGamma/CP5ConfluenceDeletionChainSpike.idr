@@ -29914,6 +29914,13 @@ scopedStepAccountingBackward name key world error value protocol nameEq keyEq in
 scopedWithdrawnAbsent name key world error value nameEq actor source target (VestigialNameWithdrawn fiber found retired inactive empty absent) = absent
 scopedWithdrawnAbsent name key world error value nameEq actor source target (NameAlreadyAbsent sourceAbsent targetAbsent) = targetAbsent
 
+0 scopedControlAbsentRight :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (left, right : Maybe (Fiber name key value world error)) ->
+  FiberControlMaybeRelated left right -> (left = Nothing) -> (right = Nothing)
+scopedControlAbsentRight name key world error value _ _ NoControlFibers absent = Refl
+scopedControlAbsentRight name key world error value _ _ (SomeControlFibers related) absent = absurd absent
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
