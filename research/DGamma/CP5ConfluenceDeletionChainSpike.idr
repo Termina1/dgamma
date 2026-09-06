@@ -28830,6 +28830,38 @@ scopedExternalReflexive name key world error value nameEq first finalState (More
   scopedExternalKeep name key world error value nameEq first _ finalState first _ finalState transition rest transition rest Refl
     (MkScopedRootRoleSeal Refl) (scopedExternalReflexive name key world error value nameEq _ finalState rest)
 
+0 scopedEnrichedExternalJoin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
+  SameExternalOrchestration nameEq
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+    (scopedEnrichedCenterTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds) ->
+  SameExternalOrchestration nameEq (traceAfterClosing (selectedEpisode candidate))
+    (scopedEnrichedSuffixTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds) ->
+  SameExternalOrchestration nameEq global (scopedEnrichedTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+scopedEnrichedExternalJoin name key world error value protocol nameEq keyEq initial finalState global candidate folds center suffix =
+  replace {p = \source => SameExternalOrchestration nameEq source (scopedEnrichedTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)}
+    (locatedDecomposition (selectedEpisode candidate))
+    (scopedExternalAppend name key world error value nameEq initial (locatedPreStart (selectedEpisode candidate)) finalState initial (locatedPreStart (selectedEpisode candidate))
+      (scopedEnrichedFinal name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+      (traceBeforeOpening (selectedEpisode candidate))
+      (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+        (appendTransitions (closedTransitions (locatedEpisode (selectedEpisode candidate))) (traceAfterClosing (selectedEpisode candidate))))
+      (traceBeforeOpening (selectedEpisode candidate))
+      (appendTransitions (scopedEnrichedCenterTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+        (scopedEnrichedSuffixTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds))
+      (scopedExternalReflexive name key world error value nameEq initial (locatedPreStart (selectedEpisode candidate)) (traceBeforeOpening (selectedEpisode candidate)))
+      (scopedExternalAppend name key world error value nameEq (locatedPreStart (selectedEpisode candidate)) (locatedAfter (selectedEpisode candidate)) finalState
+        (locatedPreStart (selectedEpisode candidate)) (scopedEnrichedMiddle name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+        (scopedEnrichedFinal name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+        (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+        (traceAfterClosing (selectedEpisode candidate))
+        (scopedEnrichedCenterTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds)
+        (scopedEnrichedSuffixTrace name key world error value protocol nameEq keyEq initial finalState global candidate folds) center suffix))
+
 0 scopedEnrichedStepFromExternal :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
