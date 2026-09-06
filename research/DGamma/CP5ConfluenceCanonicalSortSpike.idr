@@ -1845,6 +1845,17 @@ canonicalSortingPrecedenceFromFibers name key world error value nameEq source ta
     (replace {p = \component => Elem (edgeKey edge) (dependencies (componentDependencies component))}
       (canonicalSortingFiberComponentSame name key world error value (foreignRelatedControl upperTarget)) (consumerDeclares edge))
 
+0 canonicalSortingPrecedenceForward :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (source, target : SystemState name key value world error) -> ControlEquivalent name key world error value nameEq source target ->
+  (lower, upper : name) -> PrecedenceEdge nameEq lower upper source -> PrecedenceEdge nameEq lower upper target
+canonicalSortingPrecedenceForward name key world error value nameEq source target controls lower upper edge =
+  canonicalSortingPrecedenceFromFibers name key world error value nameEq source target lower upper edge
+    (foreignControlLookupFound {name = name} {key = key} {value = value} {world = world} {error = error}
+      nameEq lower (registry source) (registry target) (providerFiber edge) (providerFound edge) (controlPointwise controls lower))
+    (foreignControlLookupFound {name = name} {key = key} {value = value} {world = world} {error = error}
+      nameEq upper (registry source) (registry target) (consumerFiber edge) (consumerFound edge) (controlPointwise controls upper))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
