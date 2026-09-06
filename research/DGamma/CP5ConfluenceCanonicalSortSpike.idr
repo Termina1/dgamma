@@ -3206,6 +3206,24 @@ canonicalWorkOpenEpisodeRejectsUnload name key world error value nameEq keyEq se
         Right (ActionOccursLater _ _ later) =>
           canonicalWorkInstalledRejectsUnload name key world error value nameEq keyEq selected inside installed later
 
+||| Consume an explicit observed support Bool and its producer-owned equation.
+||| Both shape branches rule out the same actual unload occurrence.
+0 canonicalWorkShapeRejectsUnloadObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  ClosingFreeTraceShape name key world error value nameEq keyEq global ->
+  (selected : name) -> (observed : Bool) ->
+  (isSupported @{nameEq} @{keyEq} selected finalState = observed) ->
+  ActionOccurs (LUnload selected) global -> Void
+canonicalWorkShapeRejectsUnloadObserved name key world error value nameEq keyEq global shape selected True exact occurs =
+  canonicalWorkOpenEpisodeRejectsUnload name key world error value nameEq keyEq selected global
+    (supportedOpenEpisode shape selected exact) occurs
+canonicalWorkShapeRejectsUnloadObserved name key world error value nameEq keyEq global shape selected False exact occurs =
+  canonicalWorkNoLifecycleRejectsUnload name key world error value selected global
+    (unsupportedTakesNoLifecycle shape selected exact) occurs
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
