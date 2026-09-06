@@ -29417,6 +29417,17 @@ chooseClosingStepSpike {initial} {finalState} nameEq keyEq protocol trace
           (enrichDeletionChainStepSpike nameEq keyEq protocol trace premises
             candidate (selectedNoDependentClose candidate))
 
+0 scopedClosingFreeCoreDone :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  NoClosingEpisodes name key world error value nameEq keyEq trace ->
+  ClosingFreeTraceCore name key world error value protocol nameEq keyEq trace
+scopedClosingFreeCoreDone name key world error value protocol nameEq keyEq initial finalState trace premises closingFree =
+  MkClosingFreeTraceCore finalState trace premises closingFree (scopedExternalReflexive name key world error value nameEq initial finalState trace)
+    (identityRelationalReplayCorrespondence trace) (ClosingFreeDeletionDone trace) []
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
