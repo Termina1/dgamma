@@ -419,3 +419,10 @@ public export
 R172ReuseGlobalSortingRefutation =
   ((sorted : (SortedClosingFreeTrace Nat R45Key Unit String R45Value
     r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering)) -> Void)
+
+public export
+0 r172ReuseConclusionRootFirst :
+  (sorted : SortedClosingFreeTrace Nat R45Key Unit String R45Value
+    r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
+  RootInputsBeforeLifecycle r45NameEq (sortedTrace sorted)
+r172ReuseConclusionRootFirst sorted = allRootInputsFirst (sortedInputPlacement sorted)
