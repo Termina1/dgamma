@@ -130,3 +130,7 @@ public export
 0 r172ReuseNoFailure : noFailedFibers r172ReuseFinal = True
 r172ReuseNoFailure = Refl
 
+public export
+0 r172ReuseSupportSet : supportSet @{r45NameEq} @{r45KeyEq} r172ReuseFinal = [0]
+r172ReuseSupportSet = Refl
+
