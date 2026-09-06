@@ -1,6 +1,7 @@
 module DGamma.CP5UniqueRawNameDeletion
 
 import DGamma.Calculus
+import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
@@ -91,3 +92,63 @@ uniqueShiftedBelowOffsetDistinct offset small bound later below same =
   uniqueBelowOffsetDistinct small bound later below
     (plusLeftCancel offset small (bound + later)
       (trans same (sym (plusAssociative offset bound later))))
+
+||| All three deletion regions jointly have an injective source-position map.
+0 uniqueDeletionEmbeddingInjective :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  {original : Transitions initial originalFinal} -> {selected : name} ->
+  {episode : LocatedClosedEpisode name key world error value nameEq keyEq selected original} ->
+  {registered : List (RegistrationGeneration name)} ->
+  {episodeStartOrdinal : Nat} -> {episodeStartLive : GenerationEnvironment name} ->
+  (result : DeletionResult name key world error value nameEq keyEq original selected episode registered episodeStartOrdinal episodeStartLive) ->
+  (leftTarget, rightTarget, leftSource, rightSource : Nat) ->
+  DeletionSurvivingOrdinalEmbedding result leftTarget leftSource ->
+  DeletionSurvivingOrdinalEmbedding result rightTarget rightSource ->
+  (leftSource = rightSource) -> (leftTarget = rightTarget)
+uniqueDeletionEmbeddingInjective name key world error value result _ _ _ _
+  (DeletionBeforeEmbedding {survivingOrdinal = li} {originalOrdinal = ls} leftExact)
+  (DeletionBeforeEmbedding {survivingOrdinal = ri} {originalOrdinal = rs} rightExact) same =
+  uniqueSubsequenceSourceInjective name key world error value (beforeDeletion result) li ri ls leftExact
+      (trans rightExact (cong Just (sym same)))
+uniqueDeletionEmbeddingInjective name key world error value result _ _ _ _
+  (DeletionBeforeEmbedding {survivingOrdinal = li} {originalOrdinal = ls} leftExact)
+  (DeletionEpisodeEmbedding {survivingOrdinal = ri} {originalOrdinal = rs} rightExact) same =
+  void (uniqueBelowOffsetDistinct ls (deletionOriginalBeforeCount result) rs
+      (uniqueSubsequenceSourceBound name key world error value (beforeDeletion result) li ls leftExact) same)
+uniqueDeletionEmbeddingInjective name key world error value result _ _ _ _
+  (DeletionBeforeEmbedding {survivingOrdinal = li} {originalOrdinal = ls} leftExact)
+  (DeletionAfterEmbedding {survivingOrdinal = ri} {originalOrdinal = rs} rightExact) same =
+  void (uniqueBelowOffsetDistinct ls (deletionOriginalBeforeCount result) (deletionOriginalEpisodeCount result + rs)
+      (uniqueSubsequenceSourceBound name key world error value (beforeDeletion result) li ls leftExact) (trans same (sym (plusAssociative (deletionOriginalBeforeCount result) (deletionOriginalEpisodeCount result) rs))))
+uniqueDeletionEmbeddingInjective name key world error value result _ _ _ _
+  (DeletionEpisodeEmbedding {survivingOrdinal = li} {originalOrdinal = ls} leftExact)
+  (DeletionBeforeEmbedding {survivingOrdinal = ri} {originalOrdinal = rs} rightExact) same =
+  void (uniqueBelowOffsetDistinct rs (deletionOriginalBeforeCount result) ls
+      (uniqueSubsequenceSourceBound name key world error value (beforeDeletion result) ri rs rightExact) (sym same))
+uniqueDeletionEmbeddingInjective name key world error value result _ _ _ _
+  (DeletionEpisodeEmbedding {survivingOrdinal = li} {originalOrdinal = ls} leftExact)
+  (DeletionEpisodeEmbedding {survivingOrdinal = ri} {originalOrdinal = rs} rightExact) same =
+  cong (deletionSurvivingBeforeCount result +) (uniqueSubsequenceSourceInjective name key world error value (episodeDeletion result) li ri ls leftExact
+      (trans rightExact (cong Just (sym (plusLeftCancel (deletionOriginalBeforeCount result) ls rs same)))))
+uniqueDeletionEmbeddingInjective name key world error value result _ _ _ _
+  (DeletionEpisodeEmbedding {survivingOrdinal = li} {originalOrdinal = ls} leftExact)
+  (DeletionAfterEmbedding {survivingOrdinal = ri} {originalOrdinal = rs} rightExact) same =
+  void (uniqueShiftedBelowOffsetDistinct (deletionOriginalBeforeCount result) ls
+      (deletionOriginalEpisodeCount result) rs (uniqueSubsequenceSourceBound name key world error value (episodeDeletion result) li ls leftExact) same)
+uniqueDeletionEmbeddingInjective name key world error value result _ _ _ _
+  (DeletionAfterEmbedding {survivingOrdinal = li} {originalOrdinal = ls} leftExact)
+  (DeletionBeforeEmbedding {survivingOrdinal = ri} {originalOrdinal = rs} rightExact) same =
+  void (uniqueBelowOffsetDistinct rs (deletionOriginalBeforeCount result) (deletionOriginalEpisodeCount result + ls)
+      (uniqueSubsequenceSourceBound name key world error value (beforeDeletion result) ri rs rightExact) (trans (sym same) (sym (plusAssociative (deletionOriginalBeforeCount result) (deletionOriginalEpisodeCount result) ls))))
+uniqueDeletionEmbeddingInjective name key world error value result _ _ _ _
+  (DeletionAfterEmbedding {survivingOrdinal = li} {originalOrdinal = ls} leftExact)
+  (DeletionEpisodeEmbedding {survivingOrdinal = ri} {originalOrdinal = rs} rightExact) same =
+  void (uniqueShiftedBelowOffsetDistinct (deletionOriginalBeforeCount result) rs
+      (deletionOriginalEpisodeCount result) ls (uniqueSubsequenceSourceBound name key world error value (episodeDeletion result) ri rs rightExact) (sym same))
+uniqueDeletionEmbeddingInjective name key world error value result _ _ _ _
+  (DeletionAfterEmbedding {survivingOrdinal = li} {originalOrdinal = ls} leftExact)
+  (DeletionAfterEmbedding {survivingOrdinal = ri} {originalOrdinal = rs} rightExact) same =
+  cong ((deletionSurvivingBeforeCount result + deletionSurvivingEpisodeCount result) +) (uniqueSubsequenceSourceInjective name key world error value (afterDeletion result) li ri ls leftExact
+      (trans rightExact (cong Just (sym (plusLeftCancel (deletionOriginalBeforeCount result + deletionOriginalEpisodeCount result) ls rs same)))))
