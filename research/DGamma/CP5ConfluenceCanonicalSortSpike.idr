@@ -1178,6 +1178,33 @@ canonicalListMemberSound item itemEq selected (head :: rest) present =
   canonicalListMemberSoundStep item itemEq selected head rest
     (canonicalListMemberSound item itemEq selected rest) (decEq @{itemEq} selected head) Refl present
 
+||| Assemble exactly LinearizesSupport from the producer-owned sorted support set.
+0 canonicalSupportOrderingFromSort :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) ->
+  RegistryProtocolRanked protocol nameEq state -> RegistryParentRanksIncrease protocol nameEq state ->
+  CanonicalRankSortResult name (canonicalProtocolRank name key world error value protocol nameEq state)
+    (supportSet {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} @{keyEq} state) ->
+  SupportOrderingCapital name key world error value nameEq keyEq state
+canonicalSupportOrderingFromSort name key world error value protocol nameEq keyEq state ranked parentRanked sorted =
+  MkSupportOrderingCapital (rankSortedItems sorted)
+    (MkLinearizesSupport (rankSortedUnique sorted)
+      (\selected, present => canonicalListMemberSound name nameEq selected
+        (supportSet {name = name} {key = key} {value = value} {world = world} {error = error}
+          @{nameEq} @{keyEq} state) (rankSortedBackward sorted selected present))
+      (\selected, supported => rankSortedForward sorted selected
+        (canonicalListMemberComplete name nameEq selected
+          (supportSet {name = name} {key = key} {value = value} {world = world} {error = error}
+            @{nameEq} @{keyEq} state) supported))
+      (\lower, upper, path, lowerIn, upperIn => canonicalRankOrderBefore name
+        (canonicalProtocolRank name key world error value protocol nameEq state)
+        (rankSortedItems sorted) (rankSortedOrdered sorted) lower upper
+        (canonicalRankedSupportPathStrict name key world error value protocol nameEq state lower upper
+          (supportPathRankIncreases {name = name} {key = key} {value = value} {world = world} {error = error}
+            protocol nameEq state ranked parentRanked path)) lowerIn upperIn))
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
