@@ -3357,6 +3357,20 @@ canonicalWorkInspectOrientation name key world error value left right =
       Just (AdjacentOrchestrationOrchestration left right leftOrchestration rightOrchestration)
     _ => Nothing
 
+||| A paper activation owned by the selected block has that exact actor.
+||| The registration alternative is excluded using only scalar action class.
+0 canonicalWorkOwnedActivationActor :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
+  {before, afterState : SystemState name key value world error} ->
+  (step : Transition before afterState) -> CanonicalWorkActorStep selected step ->
+  PaperActivationStep step -> transitionActor step = selected
+canonicalWorkOwnedActivationActor name key world error value selected step
+  (CanonicalWorkLifecycle lifecycle actor) activation = actor
+canonicalWorkOwnedActivationActor name key world error value selected step
+  (CanonicalWorkRegistration action) activation =
+    void (canonicalFalseNotTrue (trans (sym (cong isLifecycleAction action))
+      (canonicalPaperActivationLifecycle name key world error value step activation)))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
