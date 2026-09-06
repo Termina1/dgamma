@@ -29962,6 +29962,16 @@ scopedAppendMemberLeft item _ right wanted (There later) = There (scopedAppendMe
 scopedAppendMemberRight item [] right wanted present = present
 scopedAppendMemberRight item (head :: rest) right wanted present = There (scopedAppendMemberRight item rest right wanted present)
 
+0 scopedAppendMembership :
+  (item : Type) -> (predicate : item -> Type) -> (left, right : List item) ->
+  ((wanted : item) -> Elem wanted left -> predicate wanted) ->
+  ((wanted : item) -> Elem wanted right -> predicate wanted) ->
+  (wanted : item) -> Elem wanted (left ++ right) -> predicate wanted
+scopedAppendMembership item predicate [] right fromLeft fromRight wanted member = fromRight wanted member
+scopedAppendMembership item predicate (head :: rest) right fromLeft fromRight wanted member =
+  scopedElemConsEliminate item predicate head (rest ++ right) (fromLeft head Here)
+    (scopedAppendMembership item predicate rest right (\later, present => fromLeft later (There present)) fromRight) wanted member
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
