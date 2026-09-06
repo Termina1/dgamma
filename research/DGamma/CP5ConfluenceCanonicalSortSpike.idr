@@ -2762,6 +2762,26 @@ canonicalWorkSelectGroupingPair name key world error value nameEq keyEq trace _ 
   firstParent = secondParent
 canonicalWorkChildInsertParentInjective _ _ _ _ _ _ _ _ _ _ _ Refl = Refl
 
+||| In the actual A/O grouping orientation, the previously missing parent
+||| exclusion is DERIVED from the foreign/owned split, not a new swap premise.
+0 canonicalWorkGroupingParentSafe :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  {trace : Transitions initial finalState} ->
+  (pair : CanonicalWorkGroupingPair name key world error value selected trace) ->
+  PaperActivationStep (workPairLeft pair) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  transitionAction (workPairRight pair) = OInsert child (ChildOf parent) component ->
+  Not (transitionActor (workPairLeft pair) = parent)
+canonicalWorkGroupingParentSafe name key world error value selected pair activation child parent component inserted same =
+  case workPairRightOwned pair of
+    CanonicalWorkLifecycle lifecycle ownedActor => canonicalFalseNotTrue
+      (trans (sym (cong isLifecycleAction inserted)) lifecycle)
+    CanonicalWorkRegistration {child = ownChild} {component = ownComponent} actual => workPairLeftForeign pair
+      (CanonicalWorkLifecycle (canonicalPaperActivationLifecycle name key world error value (workPairLeft pair) activation)
+        (trans same (sym (canonicalWorkChildInsertParentInjective name key world error value
+          ownChild child selected parent ownComponent component (trans (sym actual) inserted)))))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
