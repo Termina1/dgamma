@@ -19855,6 +19855,11 @@ scopedIsAdvanceAction name key world error value (LDivert actor) = False
 scopedIsAdvanceAction name key world error value (LLeave actor) = False
 scopedIsAdvanceAction name key world error value (LUnload actor) = False
 
+||| The root-role observation reads the actual parent, not the raw actor name.
+scopedParentRoot : {name : Type} -> Parent name -> Bool
+scopedParentRoot Root = True
+scopedParentRoot (ChildOf actor) = False
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
