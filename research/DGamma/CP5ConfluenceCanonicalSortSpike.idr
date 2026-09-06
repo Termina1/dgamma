@@ -2832,6 +2832,16 @@ canonicalWorkActivationEndsInstalled name key world error value nameEq keyEq {fi
       (canonicalWorkActivationEvolutionInstalled name key world error value nameEq keyEq first afterState action tag checked
         (installationEvolutionStep nameEq keyEq (actionOwner action) action tag first afterState checked) activation)
 
+||| The insertion constructor owns its raw scalar; no installedAt goal has to
+||| reduce an actionOwner projection to discover it.
+0 canonicalWorkInsertOwnerExact :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (child : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (actionOwner {name = name} {key = key} {value = value}
+    {world = world} {error = error} (OInsert child parent component) = child)
+canonicalWorkInsertOwnerExact name key world error value child parent component = Refl
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
