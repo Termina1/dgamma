@@ -564,3 +564,12 @@ r172ReuseExtendLocatedRight left right global decomposition
     MkLocatedActionOccurrence before after earlier transition (appendTransitions later right) same
       (rewrite sym (appendTransitionsAssociative earlier (MoreTransitions transition later) right) in
        rewrite located in decomposition)
+
+public export
+0 r172ReuseLastOpeningLocated :
+  {first, finalState : SystemState Nat R45Key R45Value Unit String} ->
+  {trace : Transitions first finalState} ->
+  LastOpeningResult Nat R45Key Unit String R45Value r45NameEq r45KeyEq 0 trace ->
+  LocatedActionOccurrence (LBegin 0) trace
+r172ReuseLastOpeningLocated (MkLastOpeningResult before after earlier opening later split installed) =
+  MkLocatedActionOccurrence before after earlier (beginTransition opening) later Refl split
