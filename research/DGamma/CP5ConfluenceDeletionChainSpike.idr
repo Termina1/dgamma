@@ -26646,6 +26646,14 @@ scopedGenerationOrdinalMap name function (MkRegistrationGeneration actor ordinal
 scopedGenerationOrdinalInverse name forward backward inverse (MkRegistrationGeneration actor ordinal) =
   cong (MkRegistrationGeneration actor) (inverse ordinal)
 
+scopedOrdinalGenerationBijection : (name : Type) -> ScopedOrdinalPermutation -> RegistrationGenerationBijection name
+scopedOrdinalGenerationBijection name permutation =
+  MkRegistrationGenerationBijection
+    (scopedGenerationOrdinalMap name (ordinalForward permutation))
+    (scopedGenerationOrdinalMap name (ordinalBackward permutation))
+    (scopedGenerationOrdinalInverse name (ordinalForward permutation) (ordinalBackward permutation) (ordinalLeftInverse permutation))
+    (scopedGenerationOrdinalInverse name (ordinalBackward permutation) (ordinalForward permutation) (ordinalRightInverse permutation))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
