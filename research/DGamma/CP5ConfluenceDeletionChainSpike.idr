@@ -20366,6 +20366,19 @@ scopedNamedRootSeal name key world error value nameEq keyEq action tag source so
   scopedRootSealAtAction name key world error value nameEq action source sourceAfter target (namedAfter named)
     (Fired nameEq keyEq action tag checked) (namedTransition named) Refl (namedAction named) roots
 
+0 scopedLifecycleRootFalse :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (action : Action name key value world error) -> (isLifecycleAction action = True) ->
+  (state : SystemState name key value world error) -> (scopedRootObservation name key world error value nameEq action state = False)
+scopedLifecycleRootFalse name key world error value nameEq (OInsert actor parent component) lifecycle state = absurd lifecycle
+scopedLifecycleRootFalse name key world error value nameEq (ORetire actor) lifecycle state = absurd lifecycle
+scopedLifecycleRootFalse name key world error value nameEq (ORemove actor) lifecycle state = absurd lifecycle
+scopedLifecycleRootFalse name key world error value nameEq (LBegin actor) lifecycle state = Refl
+scopedLifecycleRootFalse name key world error value nameEq (LAdvance actor) lifecycle state = Refl
+scopedLifecycleRootFalse name key world error value nameEq (LDivert actor) lifecycle state = Refl
+scopedLifecycleRootFalse name key world error value nameEq (LLeave actor) lifecycle state = Refl
+scopedLifecycleRootFalse name key world error value nameEq (LUnload actor) lifecycle state = Refl
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
