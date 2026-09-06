@@ -789,6 +789,19 @@ canonicalSupportedActiveAtFound name key world error value nameEq state selected
   activePredicateAtFoundQ {name = name} {key = key} {value = value} {world = world} {error = error}
     nameEq state selected fiber found
 
+||| Exact fiber, active observation and protocol rank owned by one erased lookup.
+record CanonicalActiveRank
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error) (nameEq : DecEq name)
+  (state : SystemState name key value world error) (selected : name) where
+  constructor MkCanonicalActiveRank
+  0 activeRankFiber : Fiber name key value world error
+  0 activeRankFound : (lookupFiber {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} selected (registry state) = Just activeRankFiber)
+  0 activeRankActive : (isActive (fiberLifecycle activeRankFiber) = True)
+  activeProtocolRank : Nat
+  0 activeProtocolRankExact : (registrationRank protocol (fiberComponent activeRankFiber) = Just activeProtocolRank)
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
