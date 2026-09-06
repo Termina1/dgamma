@@ -2262,6 +2262,24 @@ canonicalWorkContinueCompleted name key world error value nameEq keyEq trace sel
     Yes startsAfter => CanonicalWorklistReady completed startsAfter (later (workRangeStart completed + workRangeSize completed))
     No startsTooEarly => CanonicalWorklistNeedsOrdering completed startsTooEarly
 
+0 canonicalWorkContinueInspection :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) -> (selected : name) ->
+  (remaining : List name) -> (minimumStart : Nat) ->
+  (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+  CanonicalWorkOpenInspection name key world error value nameEq keyEq selected trace episode ->
+  ((nextMinimum : Nat) -> CanonicalWorklistInspection name key world error value nameEq keyEq trace remaining nextMinimum) ->
+  CanonicalWorklistInspection name key world error value nameEq keyEq trace (selected :: remaining) minimumStart
+canonicalWorkContinueInspection name key world error value nameEq keyEq trace selected remaining minimumStart episode
+  (CanonicalWorkOpenReady scanned noLater) later =
+    canonicalWorkContinueCompleted name key world error value nameEq keyEq trace selected remaining minimumStart
+      (canonicalWorkCompleteBlock name key world error value nameEq keyEq selected trace episode scanned noLater) later
+canonicalWorkContinueInspection name key world error value nameEq keyEq trace selected remaining minimumStart episode
+  (CanonicalWorkOpenInterleaved scanned laterRemains) later =
+    CanonicalWorklistNeedsGrouping episode scanned laterRemains
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
