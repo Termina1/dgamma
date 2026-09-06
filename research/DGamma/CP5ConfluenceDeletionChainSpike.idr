@@ -20249,6 +20249,39 @@ scopedInactiveRootFalseAfterAction name key world error value nameEq keyEq actio
     (MkFiber (inactiveComponent inactive) (inactiveParent inactive) (inactiveRetired inactive) (inactiveTable inactive) (Inactive (inactiveOutcome inactive)))
     (inactiveFound inactive) nonRoot
 
+0 scopedOwnedRootAfterAction :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  GenerationEnvironmentNamesUnique live -> (action : Action name key value world error) ->
+  (source, target : SystemState name key value world error) -> (tag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} action source = Just (tag, target)) ->
+  ((child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+    (action = OInsert child parent component) -> Elem (MkRegistrationGeneration child ordinal) registered -> (scopedParentRoot parent = False)) ->
+  CurrentRegisteredInactiveFibers name key world error value nameEq registered live source ->
+  ScopedCurrentRootExclusion name key world error value nameEq registered live source ->
+  (generation : RegistrationGeneration name) -> Elem generation registered ->
+  (lookupCurrentGeneration @{nameEq} (actionOwner action) (advanceGenerationEnvironment @{nameEq} ordinal action live) = Just generation) ->
+  (maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner action) (registry target)) = False)
+scopedOwnedRootAfterAction name key world error value nameEq keyEq registered ordinal live unique (OInsert actor parent component) source target tag raw births inactive roots generation member current =
+  trans (cong (maybe False (scopedParentRoot . fiberParent)) (oInsertResultLookup nameEq keyEq actor parent component source target tag raw))
+    (births actor parent component Refl
+      (replace {p = \observed => Elem observed registered}
+        (sym (justInjective (trans (sym (lookupPutCurrentSelf nameEq actor (MkRegistrationGeneration actor ordinal) live)) current))) member))
+scopedOwnedRootAfterAction name key world error value nameEq keyEq registered ordinal live unique (ORemove actor) source target tag raw births inactive roots generation member current =
+  void (nothingIsNotJust (trans (sym (lookupDeleteCurrentSelf nameEq actor live unique)) current))
+scopedOwnedRootAfterAction name key world error value nameEq keyEq registered ordinal live unique (ORetire actor) source target tag raw births inactive roots generation member current =
+  scopedInactiveRootFalseAfterAction name key world error value nameEq keyEq (ORetire actor) source target tag raw (inactive actor generation member current) (roots actor generation member current)
+scopedOwnedRootAfterAction name key world error value nameEq keyEq registered ordinal live unique (LBegin actor) source target tag raw births inactive roots generation member current =
+  scopedInactiveRootFalseAfterAction name key world error value nameEq keyEq (LBegin actor) source target tag raw (inactive actor generation member current) (roots actor generation member current)
+scopedOwnedRootAfterAction name key world error value nameEq keyEq registered ordinal live unique (LAdvance actor) source target tag raw births inactive roots generation member current =
+  scopedInactiveRootFalseAfterAction name key world error value nameEq keyEq (LAdvance actor) source target tag raw (inactive actor generation member current) (roots actor generation member current)
+scopedOwnedRootAfterAction name key world error value nameEq keyEq registered ordinal live unique (LDivert actor) source target tag raw births inactive roots generation member current =
+  scopedInactiveRootFalseAfterAction name key world error value nameEq keyEq (LDivert actor) source target tag raw (inactive actor generation member current) (roots actor generation member current)
+scopedOwnedRootAfterAction name key world error value nameEq keyEq registered ordinal live unique (LLeave actor) source target tag raw births inactive roots generation member current =
+  scopedInactiveRootFalseAfterAction name key world error value nameEq keyEq (LLeave actor) source target tag raw (inactive actor generation member current) (roots actor generation member current)
+scopedOwnedRootAfterAction name key world error value nameEq keyEq registered ordinal live unique (LUnload actor) source target tag raw births inactive roots generation member current =
+  scopedInactiveRootFalseAfterAction name key world error value nameEq keyEq (LUnload actor) source target tag raw (inactive actor generation member current) (roots actor generation member current)
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
