@@ -872,6 +872,16 @@ canonicalProtocolRank name key world error value protocol nameEq state selected 
     (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
       @{nameEq} selected (registry state))
 
+||| The defaulted executable observation agrees with each exact path rank witness.
+0 canonicalProtocolRankExact :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) ->
+  (state : SystemState name key value world error) -> (selected : name) -> (rank : Nat) ->
+  NameProtocolRank protocol nameEq state selected rank ->
+  (canonicalProtocolRank name key world error value protocol nameEq state selected = rank)
+canonicalProtocolRankExact name key world error value protocol nameEq state selected rank
+  (MkNameProtocolRank fiber found ranked) = rewrite found in rewrite ranked in Refl
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
