@@ -26952,6 +26952,19 @@ scopedDeletedHeadStrictLength name key world error value nameEq deletable ordina
     LTESucc (scopedGenerationSubsequenceLength name key world error value nameEq deletable (S ordinal)
       (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) sourceMiddle sourceFinal targetFirst targetFinal source target tail)
 
+0 scopedAppendLengthBound :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (sourceFirst, sourceMiddle, sourceFinal, targetFirst, targetMiddle, targetFinal : SystemState name key value world error) ->
+  (sourceLeft : Transitions sourceFirst sourceMiddle) -> (sourceRight : Transitions sourceMiddle sourceFinal) ->
+  (targetLeft : Transitions targetFirst targetMiddle) -> (targetRight : Transitions targetMiddle targetFinal) -> (margin : Nat) ->
+  (LTE (margin + (traceLength targetLeft + traceLength targetRight)) (traceLength sourceLeft + traceLength sourceRight)) ->
+  (LTE (margin + traceLength (appendTransitions targetLeft targetRight)) (traceLength (appendTransitions sourceLeft sourceRight)))
+scopedAppendLengthBound name key world error value sourceFirst sourceMiddle sourceFinal targetFirst targetMiddle targetFinal sourceLeft sourceRight targetLeft targetRight margin bounded =
+  replace {p = \sourceSize => LTE (margin + traceLength (appendTransitions targetLeft targetRight)) sourceSize}
+    (sym (scopedAppendTraceLength name key world error value sourceFirst sourceMiddle sourceFinal sourceLeft sourceRight))
+    (replace {p = \targetSize => LTE (margin + targetSize) (traceLength sourceLeft + traceLength sourceRight)}
+      (sym (scopedAppendTraceLength name key world error value targetFirst targetMiddle targetFinal targetLeft targetRight)) bounded)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
