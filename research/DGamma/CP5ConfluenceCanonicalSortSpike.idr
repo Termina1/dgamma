@@ -2544,6 +2544,24 @@ canonicalWorkForeignNoLifecycle name key world error value selected (CanonicalWo
   NoLifecycleByStep step rest (\lifecycle, same => excluded (CanonicalWorkLifecycle lifecycle same))
     (canonicalWorkForeignNoLifecycle name key world error value selected tail)
 
+||| The actual grouping boundary forces a NONEMPTY foreign prefix before the
+||| selected next owned action. This gives a genuine positive distance to move.
+0 canonicalWorkNextAfterAlien :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (alien : Transition first middle) -> (rest : Transitions middle finalState) ->
+  Not (CanonicalWorkActorStep selected alien) ->
+  Not (NoLifecycleBy selected (MoreTransitions alien rest)) ->
+  (next : CanonicalWorkNextActor name key world error value selected (MoreTransitions alien rest) **
+    LT Z (transitionCount (workBeforeNext next)))
+canonicalWorkNextAfterAlien name key world error value nameEq selected alien rest foreign remains =
+  (canonicalWorkNextActorPrepend name key world error value selected alien rest foreign
+    (canonicalWorkFindNextActor name key world error value nameEq selected rest
+      (\noTail => remains (NoLifecycleByStep alien rest
+        (\lifecycle, same => foreign (CanonicalWorkLifecycle lifecycle same)) noTail))) **
+    LTESucc LTEZero)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
