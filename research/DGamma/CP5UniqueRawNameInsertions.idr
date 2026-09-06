@@ -43,3 +43,15 @@ rawInsertionNameAt name key world error value Z (MoreTransitions (Fired nameEq k
     LUnload selected => Nothing
 rawInsertionNameAt name key world error value (S ordinal) (MoreTransitions step rest) =
   rawInsertionNameAt name key world error value ordinal rest
+
+public export
+0 rawInsertionNameAtHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {before, afterState, finalState : SystemState name key value world error} ->
+  (selected : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (step : Transition before afterState) -> (rest : Transitions afterState finalState) ->
+  (transitionAction step = OInsert selected parent component) ->
+  (rawInsertionNameAt name key world error value Z (MoreTransitions step rest) = Just selected)
+rawInsertionNameAtHead name key world error value selected parent component
+  (Fired nameEq keyEq action tag checked) rest same = rewrite same in Refl
