@@ -2673,6 +2673,20 @@ canonicalWorkGroupingFromBoundary name key world error value nameEq selected _
       (next ** positive) => canonicalWorkGroupingPairFromNext name key world error value selected
         (MoreTransitions alien rest) next positive
 
+0 canonicalWorkGroupingPairPrepend :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (earlier : Transitions first middle) -> (rest : Transitions middle finalState) ->
+  CanonicalWorkGroupingPair name key world error value selected rest ->
+  CanonicalWorkGroupingPair name key world error value selected (appendTransitions earlier rest)
+canonicalWorkGroupingPairPrepend name key world error value selected earlier rest pair =
+  MkCanonicalWorkGroupingPair (workPairFirst pair) (workPairMiddle pair) (workPairFinal pair)
+    (appendTransitions earlier (workPairPrefix pair)) (workPairLeft pair) (workPairRight pair) (workPairSuffix pair)
+    (workPairLeftForeign pair) (workPairRightOwned pair)
+    (trans (appendTransitionsAssociative earlier (workPairPrefix pair)
+      (MoreTransitions (workPairLeft pair) (MoreTransitions (workPairRight pair) (workPairSuffix pair))))
+      (cong (appendTransitions earlier) (workPairDecomposition pair)))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
