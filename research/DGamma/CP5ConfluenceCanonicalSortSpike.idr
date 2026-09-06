@@ -2955,6 +2955,29 @@ canonicalWorkObservedPairInsertDistinct name key world error value nameEq keyEq 
       (replace {p = \action => checkedApplyAction @{nameEq} @{keyEq} action middle = Just (rightTag, finalState)}
         inserted rightChecked)
 
+||| A root insertion really hoists across a checked activation, with actor
+||| distinctness DERIVED from that pair rather than supplied by the sorter.
+0 canonicalRootInsertionHoistActual :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) -> (earlier : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (appendTransitions earlier (MoreTransitions left (MoreTransitions right suffix)) = original) ->
+  (ReplayInvariantBundle name key world error value protocol nameEq keyEq original) ->
+  (root : name) -> (component : Component key value world error) ->
+  (PaperActivationStep left) -> (transitionAction right = OInsert root Root component) ->
+  (CanonicalRootInsertionHoist name key world error value protocol nameEq keyEq original earlier left right suffix root component)
+canonicalRootInsertionHoistActual name key world error value protocol nameEq keyEq original earlier left right suffix
+  decomposition premises root component activation inserted =
+    canonicalRootInsertionHoist name key world error value protocol nameEq keyEq original earlier left right suffix
+      decomposition premises root component activation inserted
+      (canonicalWorkObservedPairInsertDistinct name key world error value nameEq keyEq left right
+        (canonicalSortingPairAligned name key world error value protocol nameEq keyEq original earlier left right suffix decomposition premises)
+        activation (transitionActor left) Refl root Root component inserted)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
