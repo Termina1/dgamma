@@ -363,3 +363,120 @@ DGamma.R174O17SortedProvisionGuard:40:33--40:84
 ```
 
 The remaining full-input work proceeds under the same bounded window; no conclusion about revised O17 yet.
+
+## Second-window operational stop: Q9 charged 3/3, NO compiler verdict
+
+Q3–Q8 prove and assemble an actual `RegistrationProtocol ToyKey ToyValue
+ToyRuntime String` with catalog tag 0 → genuinely installing providerComponent.
+The executable rank admits only dependency-free components: tagged programs
+rank 0, tag-free programs rank 1. An actual tagged member structurally proves
+rank 0; the real provider has rank 1. Precedence is excluded by admitted
+consumer dependencies, NOT by an empty key type. This removes the previous
+protocol-definition gap but does NOT construct the trace's RegistrationDiscipline.
+
+| Unit | Declaration | Commit | Result |
+|---|---|---|---|
+| Q3 | `r174ProvisionCatalog` | `e73c4e2` | PASS 1/3 |
+| Q4 | `r174ProvisionRank` | `36eb276` | PASS 1/3 |
+| Q5 | `r174AllRecursiveContainsFalse` | `ce69a73` | PASS 1/3 |
+| Q6 | `r174ProvisionYieldRanks` | `2b73b19` | PASS 1/3 |
+| Q7 | `r174ProvisionPrecedenceRanks` | `c667f9a` | PASS 1/3 |
+| Q8 | `r174ProvisionProtocol` | `23058fc` | PASS 1/3 |
+| Q9 | `r174ProvisionAligned` | FULLY REVERTED | 3 charged interrupted runs, NO verdict |
+
+Q9 tries to align the SAME eight-action builder trace. Nested AlignedStep
+construction causes pathological normalization. Attempt 1 supplies concrete
+actions/tags and Refl equations; attempt 2 lets the exact target trace determine
+its already-owned equation fields; attempt 3 additionally leaves action/tag
+slots to the exact target, while explicitly instantiating all universes and
+dictionaries at each constructor. None returns a compiler verdict within its
+engineering bound (8, 6, 6 minutes). Each is charged. Inference did NOT cure this
+wall and is NOT retained as an implementation style. Peak RSS unavailable on
+interruption; samples include 31,717,536 KiB (Q9-1) and 47,790,208 KiB (Q9-3),
+which are lower bounds, not claimed peaks. This is a checking-cost frontier,
+NOT a proof of uninhabitability or a compiler rejection.
+
+All compiler groups were terminated and quiescence checked before each next
+invocation. Q9 is fully reverted, including its newly added unused protocol
+import. Reverted candidate freshly REBUILT/PASS at 21:54:03–21:54:05; its opaque
+uniqueness consumer passes a seeded unchanged-source invocation at
+21:54:20–21:54:23 (no re-elaboration claimed). No partial trace-alignment proof
+or new hole remains, no new TTC debt file was deleted. Existing fixture TTCs
+remain small; Q9 never emitted a successful expanded TTC.
+
+Second window used NINE units and about 28 minutes before the mandatory 3/3
+gate; Q10–Q12 were NOT attempted. Exact trace alignment, discipline,
+TraceIndependent, full bundle, NoClosingEpisodes, shape, O14 order remain open.
+The successful executable guard rejection and global uniqueness do not fill
+those premises. NO step-(3) local obstruction theorem, O17 body, surface change,
+or root-phase continuation occurred. Root placement stays PAUSED, not disproved.
+This gate asks the owner to ratify the operational stop before surface-independent
+producer work or Unit D. A future producer-owned aligned/certified trace builder
+is a possible REPRESENTATION redesign, not an authorized fourth Q9 restatement.
+
+### Complete archived Q9 declarations and transcripts
+
+Q9-1, SHA256 `34479dcd6a242b3b00ec20d2db9b33b0753ea9d6363a037ac236d1f905aeaa92`. Compiler transcript EMPTY (interrupted before verdict).
+
+```idris
+||| Exact dictionary alignment of the SAME built trace, computed at its owner.
+export
+0 r174ProvisionAligned : AlignedTransitions Nat ToyKey ToyRuntime String ToyValue %search %search
+  (certifiedTrace r174ProvisionExecution)
+r174ProvisionAligned = AlignedStep (OInsert 0 Root r174ProvisionParent) OInsertTag Refl _
+  (AlignedStep (LBegin 0) LBeginTag Refl _
+    (AlignedStep (OInsert 1 (ChildOf 0) providerComponent) OInsertTag Refl _
+      (AlignedStep (ORetire 1) ORetireTag Refl _
+        (AlignedStep (ORemove 1) ORemoveTag Refl _
+          (AlignedStep (OInsert 2 Root providerComponent) OInsertTag Refl _
+            (AlignedStep (ORetire 2) ORetireTag Refl _
+              (AlignedStep (LAdvance 0) LFinishTag Refl _ AlignedEnd)))))))
+```
+
+Q9-2, SHA256 `1e8d7f237ba167c591c2e2c55fad091a6487515a57e4d628ee49581f5d59578b`. Compiler transcript EMPTY (interrupted before verdict).
+
+```idris
+||| Exact dictionary alignment of the SAME built trace, computed at its owner.
+||| Equation/rest constructor slots are fixed by the exact expected trace index;
+||| do not force a new Refl to normalize against the builder-owned equation.
+export
+0 r174ProvisionAligned : AlignedTransitions Nat ToyKey ToyRuntime String ToyValue %search %search
+  (certifiedTrace r174ProvisionExecution)
+r174ProvisionAligned = AlignedStep (OInsert 0 Root r174ProvisionParent) OInsertTag _ _
+  (AlignedStep (LBegin 0) LBeginTag _ _
+    (AlignedStep (OInsert 1 (ChildOf 0) providerComponent) OInsertTag _ _
+      (AlignedStep (ORetire 1) ORetireTag _ _
+        (AlignedStep (ORemove 1) ORemoveTag _ _
+          (AlignedStep (OInsert 2 Root providerComponent) OInsertTag _ _
+            (AlignedStep (ORetire 2) ORetireTag _ _
+              (AlignedStep (LAdvance 0) LFinishTag _ _ AlignedEnd)))))))
+```
+
+Q9-3, SHA256 `dea85370333c6ae1068d75ebeac6ff16f7cfb51dd0cecb759a66714ed655a4a7`. Compiler transcript EMPTY (interrupted before verdict).
+
+```idris
+||| Exact dictionary alignment of the SAME built trace, computed at its owner.
+||| All action/tag/equation/rest slots are fixed by the exact expected trace
+||| index; the universe and dictionaries are explicit at each constructor.
+||| No caller premise is added and no named hole may survive elaboration.
+export
+0 r174ProvisionAligned : AlignedTransitions Nat ToyKey ToyRuntime String ToyValue %search %search
+  (certifiedTrace r174ProvisionExecution)
+r174ProvisionAligned = AlignedStep {name = Nat} {key = ToyKey} {world = ToyRuntime} {error = String}
+    {value = ToyValue} {nameEq = %search} {keyEq = %search} _ _ _ _
+    (AlignedStep {name = Nat} {key = ToyKey} {world = ToyRuntime} {error = String}
+    {value = ToyValue} {nameEq = %search} {keyEq = %search} _ _ _ _
+    (AlignedStep {name = Nat} {key = ToyKey} {world = ToyRuntime} {error = String}
+    {value = ToyValue} {nameEq = %search} {keyEq = %search} _ _ _ _
+    (AlignedStep {name = Nat} {key = ToyKey} {world = ToyRuntime} {error = String}
+    {value = ToyValue} {nameEq = %search} {keyEq = %search} _ _ _ _
+    (AlignedStep {name = Nat} {key = ToyKey} {world = ToyRuntime} {error = String}
+    {value = ToyValue} {nameEq = %search} {keyEq = %search} _ _ _ _
+    (AlignedStep {name = Nat} {key = ToyKey} {world = ToyRuntime} {error = String}
+    {value = ToyValue} {nameEq = %search} {keyEq = %search} _ _ _ _
+    (AlignedStep {name = Nat} {key = ToyKey} {world = ToyRuntime} {error = String}
+    {value = ToyValue} {nameEq = %search} {keyEq = %search} _ _ _ _
+    (AlignedStep {name = Nat} {key = ToyKey} {world = ToyRuntime} {error = String}
+    {value = ToyValue} {nameEq = %search} {keyEq = %search} _ _ _ _
+    (AlignedEnd))))))))
+```
