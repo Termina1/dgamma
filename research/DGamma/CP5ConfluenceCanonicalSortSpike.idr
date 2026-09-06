@@ -3659,6 +3659,19 @@ canonicalWorkSelectedAvoidsBegin name key world error value trace pending Nothin
 canonicalWorkSelectedAvoidsBegin name key world error value trace pending (Just found) =
   (actor : name) -> Not (transitionAction (workPairRight (workSelectedPair found)) = LBegin actor)
 
+||| Pending-order membership lifting preserves the same selected right action.
+0 canonicalWorkSelectedThereAvoidsBegin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) -> (head : name) -> (remaining : List name) ->
+  (found : Maybe (CanonicalWorkSelectedPair name key world error value trace remaining)) ->
+  canonicalWorkSelectedAvoidsBegin name key world error value trace remaining found ->
+  canonicalWorkSelectedAvoidsBegin name key world error value trace (head :: remaining)
+    (canonicalWorkSelectedPairThere name key world error value trace head remaining found)
+canonicalWorkSelectedThereAvoidsBegin name key world error value trace head remaining Nothing valid = ()
+canonicalWorkSelectedThereAvoidsBegin name key world error value trace head remaining
+  (Just (MkCanonicalWorkSelectedPair actor present pair)) valid = valid
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
