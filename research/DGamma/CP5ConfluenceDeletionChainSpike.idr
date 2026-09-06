@@ -27353,6 +27353,17 @@ scopedLocatedAppendRightWitness name key world error value first middle finalSta
     (trans (deletionSourceOccurrenceOrdinal (scopedLocatedAppendRightOrigin name key world error value first middle finalState left right action (deletionSourceOccurrence witness)))
       (cong (\ordinal => transitionCount left + ordinal) (deletionSourceOccurrenceOrdinal witness)))
 
+record ScopedWholeRetainedOrigin
+  (name, key, world, error : Type) (value : key -> Type) (nameEq : DecEq name) (keyEq : DecEq key)
+  (initial, finalState : SystemState name key value world error) (global : Transitions initial finalState)
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global)
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate))
+  (action : Action name key value world error) (sourceIndex : Nat) where
+  constructor MkScopedWholeRetainedOrigin
+  wholeRetainedOccurrence : LocatedActionOccurrence action (survivingTrace result)
+  0 wholeRetainedEmbedding : DeletionSurvivingOrdinalEmbedding result (locatedActionOrdinal wholeRetainedOccurrence) sourceIndex
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
