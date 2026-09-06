@@ -29455,6 +29455,22 @@ scopedOrdinalKeptLaterOrder sourceCount targetCount tail leftSource leftTarget _
 scopedOrdinalDeletedLaterOrder sourceCount targetCount tail leftSource leftTarget _ rightTarget continue
   (ScopedOrdinalDeletedLater {sourceIndex} path) later = LTESucc (continue sourceIndex rightTarget path later)
 
+0 scopedOrdinalPathOrder :
+  (sourceCount, targetCount : Nat) -> (spine : ScopedOrdinalSpine sourceCount targetCount) ->
+  (leftSource, leftTarget, rightSource, rightTarget : Nat) ->
+  ScopedOrdinalPath spine leftSource leftTarget -> ScopedOrdinalPath spine rightSource rightTarget ->
+  LT leftTarget rightTarget -> LT leftSource rightSource
+scopedOrdinalPathOrder _ _ _ _ _ rightSource rightTarget (ScopedOrdinalHere {sourceCount} {targetCount} {tail}) right later =
+  scopedOrdinalKeptPositive sourceCount targetCount tail rightSource rightTarget right later
+scopedOrdinalPathOrder _ _ _ _ _ rightSource rightTarget
+  (ScopedOrdinalKeptLater {sourceCount} {targetCount} {sourceIndex} {targetIndex} {tail} left) right later =
+    scopedOrdinalKeptLaterOrder sourceCount targetCount tail sourceIndex targetIndex rightSource rightTarget
+      (\si, ti, path, smaller => scopedOrdinalPathOrder sourceCount targetCount tail sourceIndex targetIndex si ti left path smaller) right later
+scopedOrdinalPathOrder _ _ _ _ leftTarget rightSource rightTarget
+  (ScopedOrdinalDeletedLater {sourceCount} {targetCount} {sourceIndex} {tail} left) right later =
+    scopedOrdinalDeletedLaterOrder sourceCount targetCount tail sourceIndex leftTarget rightSource rightTarget
+      (\si, ti, path, smaller => scopedOrdinalPathOrder sourceCount targetCount tail sourceIndex leftTarget si ti left path smaller) right later
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
