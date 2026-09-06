@@ -2361,6 +2361,21 @@ record CanonicalSortingWorklist
   0 workReachedInspection : CanonicalWorklistInspection name key world error value nameEq keyEq
     (sortingCurrentTrace workReachedReplay) (orderedSupportNames ordering) Z
 
+0 canonicalWorkFixedCurrentOrder :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  (ordering : SupportOrderingCapital name key world error value nameEq keyEq originalFinal) ->
+  (current : CanonicalSortingReplayState name key world error value protocol nameEq keyEq original) ->
+  LinearizesSupport name key world error value nameEq keyEq (sortingCurrentFinal current) (orderedSupportNames ordering)
+canonicalWorkFixedCurrentOrder name key world error value protocol nameEq keyEq {originalFinal} original premises ordering current =
+  canonicalSortingFixedLinearization name key world error value protocol nameEq keyEq originalFinal (sortingCurrentFinal current)
+    (replayProtocolRanked premises) (replayProtocolRanked (sortingCurrentPremises current))
+    (replaySupportMatchesActive premises) (replaySupportMatchesActive (sortingCurrentPremises current))
+    (replayedControls (sortingCurrentEndpoint current)) (orderedSupportNames ordering) (orderedSupportLinearization ordering)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
