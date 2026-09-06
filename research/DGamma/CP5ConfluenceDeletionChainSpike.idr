@@ -19995,6 +19995,20 @@ record ScopedDeletedRootSeal
   0 deletedRootExact :
     (scopedRootObservation name key world error value nameEq (transitionAction sourceStep) sourceFirst = False)
 
+0 scopedExternalDelete :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (sourceFirst, sourceMiddle, sourceFinal, targetFirst, targetFinal : SystemState name key value world error) ->
+  (sourceStep : Transition sourceFirst sourceMiddle) -> (sourceTail : Transitions sourceMiddle sourceFinal) ->
+  (target : Transitions targetFirst targetFinal) ->
+  ScopedDeletedRootSeal name key world error value nameEq sourceFirst sourceMiddle sourceStep ->
+  SameExternalOrchestration nameEq sourceTail target ->
+  SameExternalOrchestration nameEq (MoreTransitions sourceStep sourceTail) target
+scopedExternalDelete name key world error value nameEq sourceFirst sourceMiddle sourceFinal targetFirst targetFinal
+  sourceStep sourceTail target seal tail =
+    SkipLeftInternal sourceStep sourceTail
+      (\root => absurd (trans (sym (deletedRootExact seal))
+        (scopedRootObserved name key world error value nameEq sourceFirst sourceMiddle sourceStep root))) tail
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
