@@ -20016,6 +20016,13 @@ scopedExternalDelete name key world error value nameEq sourceFirst sourceMiddle 
 scopedControlParentExact name key world error value _ _
   (FibersControlRelated leftParent rightParent leftRetired rightRetired leftTable rightTable leftLife rightLife parentSame retiredSame lifeSame) = parentSame
 
+0 scopedStaticParentExact :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (left, right : Fiber name key value world error) -> FiberStaticRelated name key world error value left right ->
+  (fiberParent left = fiberParent right)
+scopedStaticParentExact name key world error value _ _
+  (FibersStaticRelated leftParent rightParent leftRetired rightRetired leftTable rightTable leftLife rightLife parentSame retiredSame) = parentSame
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
