@@ -1708,6 +1708,28 @@ canonicalRootHoistNonempty name key world error value protocol nameEq keyEq orig
       (PaperInsertStep (trans (sym (movedRightAction (rootHoistDiamond hoist))) (rootHoistedAction hoist))))
     (rootHoistDiamond hoist) (rootHoistResult hoist) (swappedTrace (rootHoistResult hoist)) FiniteAdjacentSwapDone
 
+0 canonicalSortingAcceptRootHoist :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (current : CanonicalSortingReplayState name key world error value protocol nameEq keyEq original) ->
+  {pairFirst, pairMiddle, pairFinal : SystemState name key value world error} ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal (sortingCurrentFinal current)) ->
+  (root : name) -> (component : Component key value world error) -> PaperActivationStep left ->
+  CanonicalRootInsertionHoist name key world error value protocol nameEq keyEq
+    (sortingCurrentTrace current) prefixTrace left right suffix root component ->
+  CanonicalSortingReplayState name key world error value protocol nameEq keyEq original
+canonicalSortingAcceptRootHoist name key world error value protocol nameEq keyEq original current
+  prefixTrace left right suffix root component leftActivation hoist =
+    canonicalSortingReplayExtend name key world error value protocol nameEq keyEq original current
+      prefixTrace left right suffix
+      (AdjacentActivationOrchestration left right leftActivation
+        (PaperInsertStep (trans (sym (movedRightAction (rootHoistDiamond hoist))) (rootHoistedAction hoist))))
+      (rootHoistDiamond hoist) (rootHoistResult hoist)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
