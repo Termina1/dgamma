@@ -573,3 +573,14 @@ public export
   LocatedActionOccurrence (LBegin 0) trace
 r172ReuseLastOpeningLocated (MkLastOpeningResult before after earlier opening later split installed) =
   MkLocatedActionOccurrence before after earlier (beginTransition opening) later Refl split
+
+public export
+0 r172ReuseConclusionParentBegin :
+  (sorted : SortedClosingFreeTrace Nat R45Key Unit String R45Value
+    r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->
+  (birth : LocatedGeneratedRegistration 1 0 r45Child (sortedTrace sorted)) ->
+  LocatedActionOccurrence (LBegin 0) (sortedTrace sorted)
+r172ReuseConclusionParentBegin sorted birth = r172ReuseExtendLocatedRight
+  (beforeRegistration birth) (MoreTransitions (registrationTransition birth) (afterRegistration birth))
+  (sortedTrace sorted) (registrationDecomposition birth)
+  (r172ReuseLastOpeningLocated (r172ReuseConclusionParentOpening sorted birth))
