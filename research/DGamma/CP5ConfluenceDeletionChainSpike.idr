@@ -26401,6 +26401,17 @@ scopedKeptOriginWitness sourceCount targetCount origin witness =
   MkScopedOrdinalOriginWitness (ScopedOrdinalKeep (originSpine witness))
     (scopedKeptOriginPath sourceCount targetCount origin witness)
 
+scopedDeletedOriginWitness :
+  (sourceCount, targetCount : Nat) -> (origin : Nat -> Maybe Nat) ->
+  ScopedOrdinalOriginWitness sourceCount targetCount origin ->
+  ScopedOrdinalOriginWitness (S sourceCount) targetCount (\targetIndex => map S (origin targetIndex))
+scopedDeletedOriginWitness sourceCount targetCount origin witness =
+  MkScopedOrdinalOriginWitness (ScopedOrdinalDelete (originSpine witness))
+    (\sourceIndex, targetIndex, exact =>
+      scopedMapSuccEliminate (\position => ScopedOrdinalPath (ScopedOrdinalDelete (originSpine witness)) position targetIndex)
+        (origin targetIndex) sourceIndex exact
+        (\predecessor, tailExact => ScopedOrdinalDeletedLater (originPath witness predecessor targetIndex tailExact)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
