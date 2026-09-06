@@ -303,3 +303,63 @@ That is a paper-facing owner decision, NOT an adopted hypothesis or surface
 change in this shift. The six-unit cap is reached; no seventh fixture unit is
 authorized. O17 producer work on the current surface resumes only subject to
 the required cap-outcome gate; Unit D remains deferred until C gate/stop.
+
+## Second supervisor-bounded window (12 units / 75 minutes)
+
+At the cap gate supervisor ratifies P1–P6 and CHANGES continuation: first execute
+the concrete root-first prefix with root 2 RETIRED BUT PRESENT, then test child 1
+insertion. If admitted, dissolve concern and resume root producers. If rejected,
+use the remaining window to inhabit all original O17 inputs before the local
+obstruction theorem. After the window only surface-independent producers are
+authorized unless the concern dissolves. The clock starts Q1 at 21:25:54 UTC;
+75-minute cutoff is 22:40:54 UTC. No surface/hypothesis change authorized.
+
+### Step (2b): REJECTED, branch (ii), not dissolved
+
+Q1 `r174SortedProvisionPrefix` (`3fcd566`, PASS 1/3) builds actual actions
+insert0; insert2; retire2; begin0. Q2 `r174SortedProvisionGuardChecks` (PASS 3/3)
+computes a tuple `(4, Just True, False, False)`: actual prefix length four,
+root 2 lookup is retired, the child provision is not disjoint, and
+`isJust (checkedApplyAction (OInsert 1 (ChildOf 0) providerComponent) ...)`
+is False. This is the explicitly requested guard experiment, not the deferred
+step-(3) full-input local obstruction theorem. Both providers use the genuinely
+installing existing program. Retirement DOES NOT remove a declared provision
+from `provisionsDisjointFrom` (Calculus:1349–1355 checks every registry fiber).
+
+Q2 attempts 1/2 failed only on missing explicit observation instantiations:
+first registryFibers, then lookupFiber/map retired. Attempt 3 instantiates ALL
+of name/key/value/world/error on those projections and passes. Full diagnostics:
+
+Q2-1:
+
+```text
+2/2: Building DGamma.R174O17SortedProvisionGuard (research-tests/DGamma/R174O17SortedProvisionGuard.idr)
+Error: While processing type of r174SortedProvisionGuardChecks. Can't solve constraint between: ToyKey and ?key [no locals in scope].
+
+DGamma.R174O17SortedProvisionGuard:43:24--43:75
+ 39 |   ((transitionCount (certifiedTrace r174SortedProvisionPrefix),
+ 40 |     map retired (lookupFiber 2 (registry (certifiedFinal r174SortedProvisionPrefix))),
+ 41 |     provisionsDisjointFrom {name = Nat} {key = ToyKey} {value = ToyValue} {world = ToyRuntime} {error = String}
+ 42 |       (componentProvisions providerComponent)
+ 43 |       (registryFibers (registry (certifiedFinal r174SortedProvisionPrefix))),
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+```
+
+Q2-2:
+
+```text
+2/2: Building DGamma.R174O17SortedProvisionGuard (research-tests/DGamma/R174O17SortedProvisionGuard.idr)
+Error: While processing type of r174SortedProvisionGuardChecks. Can't solve constraint between: ToyKey and ?key [no locals in scope].
+
+DGamma.R174O17SortedProvisionGuard:40:33--40:84
+ 36 | ||| Retirement leaves the declared provision in the registry guard's domain.
+ 37 | export
+ 38 | 0 r174SortedProvisionGuardChecks :
+ 39 |   ((transitionCount (certifiedTrace r174SortedProvisionPrefix),
+ 40 |     map retired (lookupFiber 2 (registry (certifiedFinal r174SortedProvisionPrefix))),
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+```
+
+The remaining full-input work proceeds under the same bounded window; no conclusion about revised O17 yet.
