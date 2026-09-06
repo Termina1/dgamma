@@ -26893,6 +26893,23 @@ scopedCanonicalEndpointFromCensus name key world error value nameEq keyEq regist
       (withdrawalNamesSound census)
       (\actor, present => scopedWithdrawalBirthJustification name registered actor (withdrawalNamesJustified census actor present))) Refl
 
+0 scopedDeletionCanonicalEndpoint :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  ScopedCanonicalDeletionEndpoint name key world error value nameEq keyEq (selectedRegistrations candidate) finalState (survivingFinal result)
+scopedDeletionCanonicalEndpoint name key world error value nameEq keyEq initial finalState global candidate result =
+  scopedCanonicalEndpointFromCensus name key world error value nameEq keyEq (selectedRegistrations candidate) (originalFinalLive result)
+    finalState (survivingFinal result)
+    (generationTraceScanPreservesStamped nameEq (afterGenerationScan result)
+      (generationTraceScanPreservesStamped nameEq (episodeGenerationScan result)
+        (generationTraceScanPreservesStamped nameEq (beforeGenerationScan result) emptyGenerationEnvironmentStamped)))
+    (effectsPreserved result) (controlsPreservedOutside result)
+    (scopedWithdrawalCensus name key world error value nameEq (selectedRegistrations candidate) (originalFinalLive result)
+      finalState (survivingFinal result) (registeredWithdrawn result))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
