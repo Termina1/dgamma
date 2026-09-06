@@ -279,3 +279,7 @@ public export
 0 r172ReuseReached : ReachedFromEmpty Nat R45Key Unit String R45Value r45NameEq r45KeyEq r172ReuseFinal
 r172ReuseReached = MkReachedFromEmpty r45Initial r172ReuseTrace r172ReuseAligned r172ReuseInitialEmpty r172ReuseInitialWellFormed
 
+public export
+0 r172ReuseProvenance : RegistrationProvenance r45Protocol r45NameEq r172ReuseTrace
+r172ReuseProvenance = registrationDisciplineProvenance r45Protocol r45NameEq r172ReuseTrace r172ReuseDiscipline
+
