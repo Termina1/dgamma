@@ -1992,6 +1992,23 @@ canonicalWorkClassifyActor name key world error value nameEq selected (Fired ste
       CanonicalWorkLifecycle lifecycle same => different same
       CanonicalWorkRegistration action => case action of Refl impossible)
 
+||| Maximal-prefix stopping evidence is tied to the actual remaining trace.
+data CanonicalWorkActorBoundary :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (selected : name) -> Transitions first finalState -> Type where
+  CanonicalWorkBoundaryEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {state : SystemState name key value world error} -> {selected : name} ->
+    CanonicalWorkActorBoundary selected (NoTransitions {state})
+  CanonicalWorkBoundaryBlocked :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    {selected : name} -> (step : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    (0 foreign : Not (CanonicalWorkActorStep selected step)) ->
+    CanonicalWorkActorBoundary selected (MoreTransitions step rest)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
