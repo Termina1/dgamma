@@ -26313,6 +26313,13 @@ record ScopedOrdinalSpinePermutationWitness
   0 forwardOnPath : (sourceIndex, targetIndex : Nat) -> ScopedOrdinalPath spine sourceIndex targetIndex ->
     (ordinalForward spinePermutation sourceIndex = targetIndex)
 
+0 scopedOrdinalEndPath :
+  (sourceIndex, targetIndex : Nat) -> ScopedOrdinalPath ScopedOrdinalEnd sourceIndex targetIndex ->
+  (sourceIndex = targetIndex)
+scopedOrdinalEndPath _ _ ScopedOrdinalHere impossible
+scopedOrdinalEndPath _ _ (ScopedOrdinalKeptLater later) impossible
+scopedOrdinalEndPath _ _ (ScopedOrdinalDeletedLater later) impossible
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
