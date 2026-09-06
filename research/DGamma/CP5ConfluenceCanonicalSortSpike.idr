@@ -2610,6 +2610,26 @@ canonicalWorkSnocBeforeNext name key world error value selected
   (MkCanonicalWorkNextActor _ _ (MoreTransitions head rest) step suffix owned foreign decomposition) positive =
     canonicalWorkSplitForeignLast name key world error value selected head rest foreign
 
+||| A produced ADJACENT source pair at the grouping frontier. The left action
+||| is foreign, the right action belongs to the selected block, and every state
+||| and segment is actual. This is not yet a diamond/applicability certificate.
+record CanonicalWorkGroupingPair
+  (name, key, world, error : Type) (value : key -> Type) (selected : name)
+  {first, finalState : SystemState name key value world error}
+  (trace : Transitions first finalState) where
+  constructor MkCanonicalWorkGroupingPair
+  workPairFirst : SystemState name key value world error
+  workPairMiddle : SystemState name key value world error
+  workPairFinal : SystemState name key value world error
+  workPairPrefix : Transitions first workPairFirst
+  workPairLeft : Transition workPairFirst workPairMiddle
+  workPairRight : Transition workPairMiddle workPairFinal
+  workPairSuffix : Transitions workPairFinal finalState
+  0 workPairLeftForeign : Not (CanonicalWorkActorStep selected workPairLeft)
+  0 workPairRightOwned : CanonicalWorkActorStep selected workPairRight
+  0 workPairDecomposition : appendTransitions workPairPrefix
+    (MoreTransitions workPairLeft (MoreTransitions workPairRight workPairSuffix)) = trace
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
