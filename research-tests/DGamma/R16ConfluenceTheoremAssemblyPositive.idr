@@ -10,6 +10,7 @@ import DGamma.CP4DeletionSelectedForeignLifecycleAnchorEndpoint
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.R8FullPipeline
+import DGamma.CP5UniqueRawNameInsertions
 import Decidable.Equality
 
 %default total
@@ -65,17 +66,49 @@ canonicalPremisesFromTheoremInputs {name} {key} {world} {error} {value}
           provenance ranked parentRanks acyclic supportWellFounded supportMatches
     in MkCanonicalizationPremises bundle
 
-||| Mandatory revision-16 full-coverage probe: the body has the immutable CP3
-||| `confluenceTheorem` type exactly and assembles the complete research pipeline
-||| without adding premises or using a hole/escape hatch.
+||| CONDITIONAL research assembly, not the immutable CP3 theorem type.
+||| Assumes aligned left/right executions and registration disciplines; empty,
+||| well-formed initial registry; quiet, failure-free endpoints; component
+||| totality and trace independence on both sides; accepted common inputs;
+||| both R143 late-capital records (shared original/reduced order, composed
+||| endpoint, exact withdrawals, exact replay accounting); and strong global
+||| raw insertion uniqueness for EACH original trace. Late-capital producers
+||| and the remaining research holes are not discharged by this fixture.
 public export
 0 r16ConfluenceTheoremAssembly :
-  confluenceTheorem name key value world error
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (initial, leftFinal, rightFinal : SystemState name key value world error) ->
+  (leftTrace : Transitions initial leftFinal) ->
+  (rightTrace : Transitions initial rightFinal) ->
+  AlignedTransitions name key world error value nameEq keyEq leftTrace ->
+  AlignedTransitions name key world error value nameEq keyEq rightTrace ->
+  RegistrationDiscipline protocol nameEq leftTrace ->
+  RegistrationDiscipline protocol nameEq rightTrace ->
+  (registryWellFormed @{nameEq} @{keyEq} initial = True) ->
+  (bindings (registry initial) = []) ->
+  (quiet @{nameEq} @{keyEq} leftFinal = True) ->
+  (quiet @{nameEq} @{keyEq} rightFinal = True) ->
+  (noFailedFibers leftFinal = True) ->
+  (noFailedFibers rightFinal = True) ->
+  TraceComponentsTotal nameEq keyEq leftTrace ->
+  TraceComponentsTotal nameEq keyEq rightTrace ->
+  TraceIndependent name key world error value keyEq leftTrace ->
+  TraceIndependent name key world error value keyEq rightTrace ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace) ->
+  (leftLate : FullPipelineLateCanonicalPremises name key world error value protocol nameEq keyEq leftTrace) ->
+  (rightLate : FullPipelineLateCanonicalPremises name key world error value protocol nameEq keyEq rightTrace) ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  ConfluenceResult name key world error value protocol nameEq keyEq leftTrace
+    rightTrace (generatedGenerationBijection sameInputs)
+    (currentNameBijection (endpointRenaming sameInputs))
 r16ConfluenceTheoremAssembly nameEq keyEq protocol initial leftFinal rightFinal
   leftTrace rightTrace leftAligned rightAligned leftDiscipline rightDiscipline
   initialWellFormed initialEmpty leftQuiet rightQuiet leftNoFailures
   rightNoFailures leftTotal rightTotal leftIndependent rightIndependent
-  sameInputs =
+  sameInputs leftLate rightLate leftUnique rightUnique =
     let leftPremises = canonicalPremisesFromTheoremInputs nameEq keyEq protocol
           leftTrace leftAligned leftDiscipline initialWellFormed initialEmpty
           leftQuiet leftNoFailures leftTotal leftIndependent
@@ -83,4 +116,4 @@ r16ConfluenceTheoremAssembly nameEq keyEq protocol initial leftFinal rightFinal
           rightTrace rightAligned rightDiscipline initialWellFormed initialEmpty
           rightQuiet rightNoFailures rightTotal rightIndependent
     in fullPipelineFromBundles nameEq keyEq protocol leftTrace rightTrace
-      leftPremises rightPremises sameInputs
+      leftPremises rightPremises sameInputs leftLate rightLate leftUnique rightUnique
