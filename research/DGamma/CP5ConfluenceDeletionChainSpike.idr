@@ -20431,6 +20431,20 @@ scopedRootSealsAppendLeft name key world error value nameEq registered ordinal l
   (fst roots, scopedRootSealsAppendLeft name key world error value nameEq registered (S ordinal)
     (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction transition) live) _ middle finalState rest right (snd roots))
 
+0 scopedRootSealsAppendRight :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal, endOrdinal : Nat) -> (live, endLive : GenerationEnvironment name) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  GenerationTraceScan nameEq ordinal live left endOrdinal endLive ->
+  ScopedOwnedRootSeals name key world error value nameEq registered ordinal live first finalState (appendTransitions left right) ->
+  ScopedOwnedRootSeals name key world error value nameEq registered endOrdinal endLive middle finalState right
+scopedRootSealsAppendRight name key world error value nameEq registered _ endOrdinal _ endLive _ middle finalState _ right GenerationTraceScanEnd roots = roots
+scopedRootSealsAppendRight name key world error value nameEq registered ordinal endOrdinal live endLive first middle finalState _ right
+  (GenerationTraceScanStep transition rest tail) roots =
+    scopedRootSealsAppendRight name key world error value nameEq registered (S ordinal) endOrdinal
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction transition) live) endLive _ middle finalState rest right tail (snd roots)
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
