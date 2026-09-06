@@ -1100,6 +1100,18 @@ canonicalRankBeforeUpperSplit item rank head rest lower upper ordered lowerIn st
     Here => void (LTImpliesNotGTE strict (canonicalRanksHeadBelow item rank head rest ordered lower lowerIn))
     There later => BeforeThere (tailBefore later)
 
+0 canonicalRankBeforeLowerSplit : (item : Type) -> (rank : item -> Nat) ->
+  (head : item) -> (rest : List item) -> (lower, upper : item) ->
+  CanonicalRanksOrdered item rank (head :: rest) -> LT (rank lower) (rank upper) ->
+  Elem upper (head :: rest) ->
+  (Elem lower rest -> Elem upper rest -> BeforeIn lower upper rest) ->
+  Elem lower (head :: rest) -> BeforeIn lower upper (head :: rest)
+canonicalRankBeforeLowerSplit item rank head rest lower upper ordered strict upperIn tailBefore lowerIn =
+  case lowerIn of
+    Here => canonicalRankBeforeFromHead item rank head rest upper strict upperIn
+    There later => canonicalRankBeforeUpperSplit item rank head rest lower upper ordered later strict
+      (tailBefore later) upperIn
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
