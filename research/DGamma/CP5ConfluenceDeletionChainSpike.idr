@@ -26870,6 +26870,13 @@ scopedGenerationBirthMember name registered actor (MkRegistrationGeneration birt
 scopedWithdrawalBirthJustification name registered actor (generation ** evidence) =
   scopedGenerationBirthMember name registered actor generation (fst evidence) (snd evidence)
 
+record ScopedCanonicalDeletionEndpoint
+  (name, key, world, error : Type) (value : key -> Type) (nameEq : DecEq name) (keyEq : DecEq key)
+  (registered : List (RegistrationGeneration name)) (original, survivor : SystemState name key value world error) where
+  constructor MkScopedCanonicalDeletionEndpoint
+  scopedCanonicalEndpoint : CanonicalEndpointRelation name key world error value nameEq keyEq original survivor
+  0 scopedCanonicalWithdrawnExact : (endpointWithdrawnGenerations scopedCanonicalEndpoint = registered)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
