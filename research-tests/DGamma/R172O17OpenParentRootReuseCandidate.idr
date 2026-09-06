@@ -98,3 +98,15 @@ r172ReuseAligned = AlignedStep (OInsert 0 Root r45Parent) OInsertTag r45ParentIn
             (AlignedStep (ORetire 1) ORetireTag r172ReuseRetireChecked _
               (AlignedStep (LAdvance 0) LFinishTag r172ReuseFinishChecked _ AlignedEnd)))))))
 
+public export
+0 r172ReuseDiscipline : RegistrationDiscipline r45Protocol r45NameEq r172ReuseTrace
+r172ReuseDiscipline = RegistrationDisciplineStep r45ParentInsert _ (0 ** Refl)
+  (RegistrationDisciplineStep r45Begin _ ()
+    (RegistrationDisciplineStep r45ChildInsert _
+      (r45SourceYield, ChildRetiredBeforeParent (ChildRetiresNow r45SourceRetire r172ReuseTail Refl))
+      (RegistrationDisciplineStep r45SourceRetire _ ()
+        (RegistrationDisciplineStep r172ReuseRemove _ ()
+          (RegistrationDisciplineStep r172ReuseRoot _ (1 ** Refl)
+            (RegistrationDisciplineStep r172ReuseRetire _ ()
+              (RegistrationDisciplineStep r172ReuseFinish _ () RegistrationDisciplineEnd)))))))
+
