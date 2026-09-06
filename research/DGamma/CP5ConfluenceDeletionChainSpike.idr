@@ -27257,6 +27257,43 @@ scopedBirthCoverageDeleteView name key world error value registered ordinal sour
       (scopedBirthCoverageDeleteLater name key world error value registered ordinal targetFirst targetFinal target origin child parent component
         (locatedActionOrdinal tailOccurrence) (continue tailOccurrence))
 
+0 scopedSubsequenceBirthCoverage :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
+  ((atOrdinal : Nat) -> (atLive : GenerationEnvironment name) -> (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+    deletable atOrdinal atLive (OInsert child parent component) -> Elem (MkRegistrationGeneration child atOrdinal) registered) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (sourceFirst, sourceFinal, targetFirst, targetFinal : SystemState name key value world error) ->
+  (source : Transitions sourceFirst sourceFinal) -> (target : Transitions targetFirst targetFinal) ->
+  (subsequence : GenerationActionSubsequence nameEq deletable ordinal live source target) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  (occurrence : LocatedActionOccurrence (OInsert child parent component) source) ->
+  ScopedBirthCoverage name key world error value registered ordinal targetFirst targetFinal target (generationSubsequenceSourceOrdinal subsequence)
+    child parent component (locatedActionOrdinal occurrence)
+scopedSubsequenceBirthCoverage name key world error value nameEq registered deletable deletedBirth ordinal live _ _ _ _ _ _ GenerationActionSubsequenceEnd
+  child parent component occurrence = void (locatedActionImpossibleInEmpty occurrence)
+scopedSubsequenceBirthCoverage name key world error value nameEq registered deletable deletedBirth ordinal live sourceFirst sourceFinal targetFirst targetFinal _ _
+  (KeepGenerationAction sourceStep source targetStep target kept sameAction tail) child parent component occurrence =
+    scopedBirthCoverageOriginTransport name key world error value registered ordinal targetFirst targetFinal (MoreTransitions targetStep target)
+      (scopedKeptOrdinalOrigin (generationSubsequenceSourceOrdinal tail))
+      (generationSubsequenceSourceOrdinal (KeepGenerationAction sourceStep source targetStep target kept sameAction tail))
+      (scopedKeptSubsequenceOriginExact name key world error value nameEq deletable ordinal live sourceFirst _ sourceFinal targetFirst _ targetFinal
+        sourceStep source targetStep target kept sameAction tail) child parent component (locatedActionOrdinal occurrence)
+      (scopedBirthCoverageKeepView name key world error value registered ordinal sourceFirst _ sourceFinal targetFirst _ targetFinal
+        sourceStep source targetStep target sameAction (generationSubsequenceSourceOrdinal tail) child parent component
+        (scopedSubsequenceBirthCoverage name key world error value nameEq registered deletable deletedBirth (S ordinal)
+          (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) _ sourceFinal _ targetFinal source target tail child parent component)
+        occurrence (deletionLocatedHead (OInsert child parent component) sourceStep source occurrence))
+scopedSubsequenceBirthCoverage name key world error value nameEq registered deletable deletedBirth ordinal live sourceFirst sourceFinal targetFirst targetFinal _ target
+  (DeleteGenerationAction sourceStep source deleted tail) child parent component occurrence =
+    scopedBirthCoverageDeleteView name key world error value registered ordinal sourceFirst _ sourceFinal targetFirst targetFinal sourceStep source target
+      (generationSubsequenceSourceOrdinal tail) child parent component
+      (\actionShape => deletedBirth ordinal live child parent component (replace {p = deletable ordinal live} actionShape deleted))
+      (scopedSubsequenceBirthCoverage name key world error value nameEq registered deletable deletedBirth (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) _ sourceFinal targetFirst targetFinal source target tail child parent component)
+      occurrence (deletionLocatedHead (OInsert child parent component) sourceStep source occurrence)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
