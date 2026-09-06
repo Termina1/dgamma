@@ -69,3 +69,22 @@ r174ProvisionYieldRanks (MkComponent (MkCoeffectSpec [] unique) provision progra
 r174ProvisionYieldRanks (MkComponent (MkCoeffectSpec (key :: rest) unique) provision program)
   child step tag parentRank childRank present parentRanked childRanked tagged cataloged =
     case parentRanked of Refl impossible
+
+||| Unlike the historical empty-key fixture, keys exist and providers declare
+||| K. It is the admitted CONSUMER dependency list, not the key type, that is empty.
+0 r174ProvisionPrecedenceRanks :
+  (provider, consumer : Component ToyKey ToyValue ToyRuntime String) ->
+  (providerRank, consumerRank : Nat) ->
+  r174ProvisionRank provider = Just providerRank ->
+  r174ProvisionRank consumer = Just consumerRank ->
+  (key : ToyKey) -> Elem key (dependencies (componentProvisions provider)) ->
+  Elem key (dependencies (componentDependencies consumer)) ->
+  LT providerRank consumerRank
+r174ProvisionPrecedenceRanks provider
+  (MkComponent (MkCoeffectSpec [] unique) provision program)
+  providerRank consumerRank providerRanked consumerRanked key provides depends =
+    case depends of Here impossible; There later impossible
+r174ProvisionPrecedenceRanks provider
+  (MkComponent (MkCoeffectSpec (head :: rest) unique) provision program)
+  providerRank consumerRank providerRanked consumerRanked key provides depends =
+    case consumerRanked of Refl impossible
