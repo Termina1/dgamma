@@ -59,7 +59,52 @@ by the late records. Production theorem signature remains frozen/defective.
 
 ## Unit C
 
-Not started at this checkpoint. O17 body 0/3. Probe-before-capital is binding.
+Disposable probe **C-probe 1/3 PASSED** (15:41:45–15:41:47 UTC, exit 0,
+no diagnostics), removed BEFORE retained worklist work. SHA256:
+`38fb4943cf5e2106598d58657eb809e48eb87e6353009bcfbc1b9e38e9682396`.
+It derives raw actor distinctness for a generated birth earlier than a root
+birth, from the new whole-trace premise plus actual located ordinal ordering.
+The ordering is structural position evidence, not assumed actor distinctness.
+No applicability/hoist/complete sorter is claimed: the worklist must produce
+that position evidence and the remaining swap applicability itself.
+
+```idris
+module DGamma.R173O17FreshNameProbe
+
+import DGamma.Calculus
+import DGamma.CP3
+import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5UniqueRawNameInsertions
+import Data.Nat
+import Decidable.Equality
+
+%default total
+%unbound_implicits off
+
+||| Disposable generalized same-name branch probe, not an O17 sorter.
+||| Birth ordering is concrete ordinal evidence, NOT an actor-distinctness input.
+0 r173UniqueGeneratedBirthBeforeRoot :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq trace ->
+  (child, parent, root : name) ->
+  (childComponent, rootComponent : Component key value world error) ->
+  (birth : LocatedGeneratedRegistration child parent childComponent trace) ->
+  (rootBirth : LocatedActionOccurrence (OInsert root Root rootComponent) trace) ->
+  (LT (registrationOrdinal birth) (locatedActionOrdinal rootBirth)) ->
+  Not (child = root)
+r173UniqueGeneratedBirthBeforeRoot name key world error value nameEq keyEq trace unique
+  child parent root childComponent rootComponent birth rootBirth earlier same =
+    case same of
+      Refl => LTImpliesNotGTE earlier
+        (replace {p = \position => LTE position (registrationOrdinal birth)}
+          (uniqueInsertionPosition unique child (ChildOf parent) Root childComponent rootComponent
+            (generatedRegistrationActionOccurrence birth) rootBirth) reflexive)
+```
+
+Retained simultaneous worklist has not yet been attempted. O17 body 0/3.
 
 ## Evidence / final gate
 
