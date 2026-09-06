@@ -28550,6 +28550,24 @@ scopedClassifiedBirthNonRoot name key world error value nameEq initial finalStat
           (OInsert child (ChildOf (deletedParent classified)) (deletedComponent classified))
           (generatedRegistrationActionOccurrence (deletedOccurrence classified)))))
 
+0 scopedRootBirthInputs :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) ->
+  (first, finalState : SystemState name key value world error) -> (trace : Transitions first finalState) ->
+  ((index : Nat) -> (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+    ScopedActionAt name key world error value trace index (OInsert child parent component) ->
+    Elem (MkRegistrationGeneration child (ordinal + index)) registered -> (scopedParentRoot parent = False)) ->
+  ScopedRootBirthInputs name key world error value registered ordinal first finalState trace
+scopedRootBirthInputs name key world error value registered ordinal _ _ NoTransitions births = ()
+scopedRootBirthInputs name key world error value registered ordinal first finalState (MoreTransitions transition rest) births =
+  ((\child, parent, component, actionSame, member => births 0 child parent component
+      (replace {p = \observed => ScopedActionAt name key world error value (MoreTransitions transition rest) 0 observed}
+        actionSame (ScopedActionHere transition rest))
+      (replace {p = \position => Elem (MkRegistrationGeneration child position) registered} (sym (plusZeroRightNeutral ordinal)) member)),
+   scopedRootBirthInputs name key world error value registered (S ordinal) _ finalState rest
+     (\index, child, parent, component, atBirth, member => births (S index) child parent component (ScopedActionLater transition rest atBirth)
+       (replace {p = \position => Elem (MkRegistrationGeneration child position) registered} (plusSuccRightSucc ordinal index) member)))
+
 0 scopedEnrichedStepFromExternal :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
