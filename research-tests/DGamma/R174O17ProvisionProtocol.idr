@@ -88,3 +88,10 @@ r174ProvisionPrecedenceRanks provider
   (MkComponent (MkCoeffectSpec (head :: rest) unique) provision program)
   providerRank consumerRank providerRanked consumerRanked key provides depends =
     case consumerRanked of Refl impossible
+
+||| The admitted universe includes the actual yielding parent and actual
+||| genuinely installing provider, with both global rank obligations proved.
+public export
+r174ProvisionProtocol : RegistrationProtocol ToyKey ToyValue ToyRuntime String
+r174ProvisionProtocol = MkRegistrationProtocol r174ProvisionCatalog r174ProvisionRank
+  r174ProvisionYieldRanks r174ProvisionPrecedenceRanks
