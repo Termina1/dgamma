@@ -27873,6 +27873,28 @@ scopedWholeKeptBirthFresh name key world error value nameEq keyEq initial finalS
           localOccurrence (locatedActionOrdinal (segmentSourceOccurrence (generationSubsequenceLocatedOriginExact (afterDeletion result) localOccurrence))) (segmentSourceOrdinalExact (generationSubsequenceLocatedOriginExact (afterDeletion result) localOccurrence)))))
     occurrence (deletionWholeTraceOccurrenceClassification (survivingBefore result) (survivingEpisode result) (survivingAfter result) occurrence)
 
+0 scopedFrozenBirthFreshAt :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  (occurrence : LocatedActionOccurrence (OInsert child parent component) (survivingTrace result)) ->
+  ScopedWholeFreshOrdinal name key world error value nameEq keyEq initial finalState global candidate result child (locatedActionOrdinal occurrence) ->
+  Not (Elem (MkRegistrationGeneration child
+    (locatedActionOrdinal (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+      (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result occurrence)))) (selectedRegistrations candidate))
+scopedFrozenBirthFreshAt name key world error value nameEq keyEq initial finalState global candidate result child parent component occurrence fresh member =
+  freshSourceExcluded fresh
+    (replace {p = \ordinal => Elem (MkRegistrationGeneration child ordinal) (selectedRegistrations candidate)}
+      (scopedDeletionEmbeddedOrdinalsUnique name key world error value nameEq keyEq initial finalState global candidate result
+        (locatedActionOrdinal (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+          (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result occurrence)))
+        (freshSourceIndex fresh) (locatedActionOrdinal occurrence)
+        (deletionWholeOrdinalEmbedding (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+          (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result occurrence)) (freshSourceEmbedding fresh)) member)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
