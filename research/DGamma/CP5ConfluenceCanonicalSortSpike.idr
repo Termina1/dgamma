@@ -2188,6 +2188,20 @@ record CanonicalWorkCompletedBlock
   0 workRangeStartExact : transitionCount (traceBeforeBlock workCompletedBlock) = workRangeStart
   0 workRangeSizeExact : S (transitionCount (blockBody workCompletedBlock)) = workRangeSize
 
+0 canonicalWorkCompleteBlock :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+  (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
+  NoLifecycleBy selected (workActorRest scanned) ->
+  CanonicalWorkCompletedBlock name key world error value nameEq keyEq selected trace
+canonicalWorkCompleteBlock name key world error value nameEq keyEq selected trace episode scanned noLater =
+  MkCanonicalWorkCompletedBlock
+    (canonicalWorkBlockFromPrefix name key world error value nameEq keyEq selected trace episode scanned noLater)
+    (transitionCount (openPrefix episode)) (S (transitionCount (workActorPrefix scanned))) Refl Refl
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
