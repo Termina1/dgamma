@@ -26267,6 +26267,14 @@ scopedRotateSuccessorAt bound continue (S ordinal) smaller = cong S (continue or
 scopedRotateSuccessor Z ordinal smaller = void (succNotLTEzero smaller)
 scopedRotateSuccessor (S bound) ordinal smaller = scopedRotateSuccessorAt bound (scopedRotateSuccessor bound) ordinal smaller
 
+||| Predicate-independent finite deletion shape, indexed by both exact segment lengths.
+data ScopedOrdinalSpine : Nat -> Nat -> Type where
+  ScopedOrdinalEnd : ScopedOrdinalSpine 0 0
+  ScopedOrdinalKeep : {sourceCount, targetCount : Nat} -> ScopedOrdinalSpine sourceCount targetCount ->
+    ScopedOrdinalSpine (S sourceCount) (S targetCount)
+  ScopedOrdinalDelete : {sourceCount, targetCount : Nat} -> ScopedOrdinalSpine sourceCount targetCount ->
+    ScopedOrdinalSpine (S sourceCount) targetCount
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
