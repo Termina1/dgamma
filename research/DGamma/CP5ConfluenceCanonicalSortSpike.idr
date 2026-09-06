@@ -3523,6 +3523,20 @@ canonicalWorkInstalledRejectsBegin name key world error value nameEq keyEq selec
   (InstalledStep action tag checked rest installed tail) (ActionOccursLater _ _ later) =
     canonicalWorkInstalledRejectsBegin name key world error value nameEq keyEq selected rest tail later
 
+||| An observed Begin in the selected ownership class names that SAME actor.
+||| Registration ownership cannot masquerade as a lifecycle action.
+0 canonicalWorkOwnedBeginActor :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
+  {before, afterState : SystemState name key value world error} ->
+  (step : Transition before afterState) -> CanonicalWorkActorStep selected step ->
+  (observedActor : name) -> transitionAction step = LBegin observedActor -> observedActor = selected
+canonicalWorkOwnedBeginActor name key world error value selected step
+  (CanonicalWorkLifecycle lifecycle actor) observedActor begins =
+    trans (sym (trans (canonicalTransitionActorActionOwner step) (cong actionOwner begins))) actor
+canonicalWorkOwnedBeginActor name key world error value selected step
+  (CanonicalWorkRegistration inserted) observedActor begins =
+    void (canonicalFalseNotTrue (trans (sym (cong isLifecycleAction inserted)) (cong isLifecycleAction begins)))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
