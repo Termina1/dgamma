@@ -2646,6 +2646,17 @@ canonicalWorkGroupingPairFromSnoc name key world error value selected trace next
       (trans (cong (\earlier => appendTransitions earlier (MoreTransitions (workNextStep next) (workAfterNext next)))
         (workSnocDecomposition split)) (workNextDecomposition next)))
 
+0 canonicalWorkGroupingPairFromNext :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  (next : CanonicalWorkNextActor name key world error value selected trace) ->
+  LT Z (transitionCount (workBeforeNext next)) ->
+  CanonicalWorkGroupingPair name key world error value selected trace
+canonicalWorkGroupingPairFromNext name key world error value selected trace next positive =
+  canonicalWorkGroupingPairFromSnoc name key world error value selected trace next
+    (canonicalWorkSnocBeforeNext name key world error value selected next positive)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
