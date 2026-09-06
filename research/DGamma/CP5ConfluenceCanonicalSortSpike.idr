@@ -1802,6 +1802,19 @@ canonicalSortingSupportFromRelatedActive name key world error value protocol nam
       (trans (sym (canonicalSortingFiberActiveSame name key world error value (foreignRelatedControl related)))
         (activeRankActive rankView)))
 
+0 canonicalSortingSupportFromActiveRank :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (source, target : SystemState name key value world error) -> (selected : name) ->
+  CanonicalActiveRank name key world error value protocol nameEq source selected ->
+  ControlEquivalent name key world error value nameEq source target -> SupportMatchesActive nameEq keyEq target ->
+  isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected target = True
+canonicalSortingSupportFromActiveRank name key world error value protocol nameEq keyEq source target selected rankView controls targetMatches =
+  canonicalSortingSupportFromRelatedActive name key world error value protocol nameEq keyEq source target selected rankView
+    (foreignControlLookupFound {name = name} {key = key} {value = value} {world = world} {error = error}
+      nameEq selected (registry source) (registry target) (activeRankFiber rankView) (activeRankFound rankView)
+      (controlPointwise controls selected)) targetMatches
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
