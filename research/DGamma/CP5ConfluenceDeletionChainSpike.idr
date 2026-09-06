@@ -20130,6 +20130,18 @@ scopedPlannedActionRoot name key world error value nameEq registered ordinal liv
 scopedPlannedActionRoot name key world error value nameEq registered ordinal live unique (LLeave actor) retained source target plan roots = Refl
 scopedPlannedActionRoot name key world error value nameEq registered ordinal live unique (LUnload actor) retained source target plan roots = Refl
 
+0 scopedRootSealAtAction :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (action : Action name key value world error) ->
+  (sourceFirst, sourceAfter, targetFirst, targetAfter : SystemState name key value world error) ->
+  (sourceStep : Transition sourceFirst sourceAfter) -> (targetStep : Transition targetFirst targetAfter) ->
+  (transitionAction sourceStep = action) -> (transitionAction targetStep = action) ->
+  (scopedRootObservation name key world error value nameEq action sourceFirst = scopedRootObservation name key world error value nameEq action targetFirst) ->
+  ScopedRootRoleSeal name key world error value nameEq sourceFirst sourceAfter targetFirst targetAfter sourceStep targetStep
+scopedRootSealAtAction name key world error value nameEq action sourceFirst sourceAfter targetFirst targetAfter sourceStep targetStep sourceAction targetAction roots =
+  MkScopedRootRoleSeal (trans (cong (\observed => scopedRootObservation name key world error value nameEq observed sourceFirst) sourceAction)
+    (trans roots (sym (cong (\observed => scopedRootObservation name key world error value nameEq observed targetFirst) targetAction))))
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
