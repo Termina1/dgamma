@@ -3697,6 +3697,21 @@ canonicalWorkSelectionAvoidsBegin name key world error value nameEq keyEq trace 
 canonicalWorkSelectionAvoidsBegin name key world error value nameEq keyEq trace _ _
   (CanonicalWorklistNeedsOrdering completed startsTooEarly) = ()
 
+||| Package the actual optional selection with its proven inside-episode
+||| consequence, keeping the observed packet and proof correlated for dispatch.
+||| Neither Nothing nor non-Begin alone authorizes a swap.
+0 canonicalWorkSelectGroupingWithProvenance :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) -> (pending : List name) -> (minimumStart : Nat) ->
+  CanonicalWorklistInspection name key world error value nameEq keyEq trace pending minimumStart ->
+  (chosen : Maybe (CanonicalWorkSelectedPair name key world error value trace pending) **
+    canonicalWorkSelectedAvoidsBegin name key world error value trace pending chosen)
+canonicalWorkSelectGroupingWithProvenance name key world error value nameEq keyEq trace pending minimumStart inspection =
+  (canonicalWorkSelectGroupingPair name key world error value nameEq keyEq trace pending minimumStart inspection **
+    canonicalWorkSelectionAvoidsBegin name key world error value nameEq keyEq trace pending minimumStart inspection)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
