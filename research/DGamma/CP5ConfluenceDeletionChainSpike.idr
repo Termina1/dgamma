@@ -26877,6 +26877,22 @@ record ScopedCanonicalDeletionEndpoint
   scopedCanonicalEndpoint : CanonicalEndpointRelation name key world error value nameEq keyEq original survivor
   0 scopedCanonicalWithdrawnExact : (endpointWithdrawnGenerations scopedCanonicalEndpoint = registered)
 
+0 scopedCanonicalEndpointFromCensus :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) -> (live : GenerationEnvironment name) ->
+  (original, survivor : SystemState name key value world error) ->
+  GenerationEnvironmentStamped live ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} original) (projectEffectState @{nameEq} survivor) ->
+  ControlEquivalentOutsideGenerations nameEq registered live original survivor ->
+  ScopedWithdrawalCensus name key world error value nameEq registered live original survivor ->
+  ScopedCanonicalDeletionEndpoint name key world error value nameEq keyEq registered original survivor
+scopedCanonicalEndpointFromCensus name key world error value nameEq keyEq registered live original survivor stamped effects controls census =
+  MkScopedCanonicalDeletionEndpoint
+    (MkCanonicalEndpointRelation (withdrawalNames census) registered effects
+      (\actor, absent => controls actor (scopedWithdrawalCensusOutside name key world error value nameEq registered live original survivor stamped census actor absent))
+      (withdrawalNamesSound census)
+      (\actor, present => scopedWithdrawalBirthJustification name registered actor (withdrawalNamesJustified census actor present))) Refl
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
