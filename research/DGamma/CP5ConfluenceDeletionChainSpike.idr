@@ -26506,6 +26506,15 @@ scopedOrdinalAppendKeepWitness leftSource leftTarget rightSource rightTarget lef
     (scopedOrdinalAppendKeepLeft leftSource leftTarget rightSource rightTarget left right witness)
     (\sourceIndex, targetIndex, path => ScopedOrdinalKeptLater (appendRightPath witness sourceIndex targetIndex path))
 
+scopedOrdinalAppendDeleteWitness :
+  (leftSource, leftTarget, rightSource, rightTarget : Nat) ->
+  (left : ScopedOrdinalSpine leftSource leftTarget) -> (right : ScopedOrdinalSpine rightSource rightTarget) ->
+  ScopedOrdinalAppendWitness left right -> ScopedOrdinalAppendWitness (ScopedOrdinalDelete left) right
+scopedOrdinalAppendDeleteWitness leftSource leftTarget rightSource rightTarget left right witness =
+  MkScopedOrdinalAppendWitness (ScopedOrdinalDelete (joinedOrdinalSpine witness))
+    (scopedOrdinalAppendDeleteLeft leftSource leftTarget rightSource rightTarget left right witness)
+    (\sourceIndex, targetIndex, path => ScopedOrdinalDeletedLater (appendRightPath witness sourceIndex targetIndex path))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
