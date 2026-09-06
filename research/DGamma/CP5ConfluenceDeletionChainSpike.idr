@@ -26663,6 +26663,15 @@ scopedOrdinalGenerationBijection name permutation =
 scopedGeneratedActionOrdinal name key world error value initial finalState trace child parent component
   (MkLocatedGeneratedRegistration before afterState beforeTrace transition later actionShape decomposition) = Refl
 
+0 scopedActionGeneratedOrdinal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (initial, finalState : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (occurrence : LocatedActionOccurrence (OInsert child (ChildOf parent) component) trace) ->
+  (registrationOrdinal (deletionActionOccurrenceToGenerated occurrence) = locatedActionOrdinal occurrence)
+scopedActionGeneratedOrdinal name key world error value initial finalState trace child parent component
+  (MkLocatedActionOccurrence before afterState beforeTrace transition later actionShape decomposition) = Refl
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
