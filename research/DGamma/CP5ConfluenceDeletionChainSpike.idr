@@ -27682,6 +27682,25 @@ scopedOriginalRegistrationAccounted name key world error value nameEq keyEq init
       (scopedWholeBirthCoverage name key world error value nameEq keyEq initial finalState global candidate result child (ChildOf parent) component
         (generatedRegistrationActionOccurrence sourceBirth)))
 
+0 scopedCanonicalOccurrenceInjective :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (capital : DeletionProducerOperationalCapital name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result) ->
+  {child, parent : name} -> {component : Component key value world error} ->
+  (left, right : LocatedGeneratedRegistration child parent component (survivingTrace result)) ->
+  (registrationGeneration (deletionProducerGeneratedOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result capital left) =
+   registrationGeneration (deletionProducerGeneratedOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result capital right)) ->
+  (registrationGeneration left = registrationGeneration right)
+scopedCanonicalOccurrenceInjective name key world error value nameEq keyEq initial finalState global candidate result capital left right same =
+  trans (sym (deletionProducerGeneratedOrdinalPreserved capital left))
+    (trans (cong (generationForward (deletionProducerGenerationRenaming capital)) same) (deletionProducerGeneratedOrdinalPreserved capital right))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
