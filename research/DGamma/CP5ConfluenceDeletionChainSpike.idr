@@ -29904,6 +29904,23 @@ scopedClosingCoreAccessible name key world error value protocol nameEq keyEq bou
         initial nextFinal nextTrace Refl nextCapital)
     (chooseClosingStepSpike nameEq keyEq protocol trace premises)
 
+0 scopedStepAccountingBackward :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (step : DeletionChainStep name key world error value protocol nameEq keyEq trace premises candidate) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedGeneratedRegistration child parent component (survivingTrace (deletionResult step))) ->
+  (registrationGeneration (canonicalToOriginal (deletionRegistrationAccounting step) birth) =
+    generationBackward (deletionProducerGenerationRenaming (deletionProducerCapital step)) (registrationGeneration birth))
+scopedStepAccountingBackward name key world error value protocol nameEq keyEq initial finalState trace premises candidate step child parent component birth =
+  trans (cong registrationGeneration (deletionRegistrationOriginExact step birth))
+    (trans (scopedGeneratedOriginBackward name key world error value initial finalState (survivingFinal (deletionResult step)) trace (survivingTrace (deletionResult step))
+      (deletionOccurrenceCorrespondence step) child parent component birth)
+      (cong (\correspondence => generationBackward (replayGenerationRenaming correspondence) (registrationGeneration birth)) (deletionOccurrenceCorrespondenceExact step)))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
