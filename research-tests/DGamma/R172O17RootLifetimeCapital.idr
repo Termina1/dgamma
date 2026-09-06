@@ -57,3 +57,10 @@ r172ReuseRootActionBackward
 r172ReuseRootActionBackward
   (MatchExternalInput shared left leftRest leftRoot right rightRest rightRoot leftAction rightAction same)
   (R172RootActionLater _ _ later) = R172RootActionLater left leftRest (r172ReuseRootActionBackward same later)
+
+public export
+0 r172ReuseOriginalRemovalInternal : RootOrchestrationStep r45NameEq r172ReuseRemove -> Void
+r172ReuseOriginalRemovalInternal (RootInsertStep action) = case action of Refl impossible
+r172ReuseOriginalRemovalInternal (RootRetireStep fiber found parent action) = case action of Refl impossible
+r172ReuseOriginalRemovalInternal (RootRemoveStep fiber found parent action) =
+  case action of Refl => case found of Refl => case parent of Refl impossible
