@@ -26720,6 +26720,19 @@ scopedOperationalFromOrdinalSegments name key world error value nameEq keyEq ini
     (scopedDeletionGeneratedOrdinal name key world error value nameEq keyEq initial finalState global candidate result segments
       (scopedOrdinalSpineWitness (joinedOrdinalSpine (wholeOrdinalJoin segments))))
 
+0 scopedDeletionOperationalCapital :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  ScopedDeletionReadinessSeals name key world error value nameEq keyEq initial finalState global candidate result ->
+  DeletionProducerOperationalCapital name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result
+scopedDeletionOperationalCapital name key world error value nameEq keyEq initial finalState global candidate result seals =
+  scopedOperationalFromOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result seals
+    (scopedDeletionOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
