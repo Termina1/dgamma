@@ -26863,6 +26863,13 @@ scopedWithdrawalCensusOutside name key world error value nameEq registered live 
 scopedGenerationBirthMember name registered actor (MkRegistrationGeneration birthActor birthOrdinal) member same =
   (birthOrdinal ** replace {p = \selected => Elem (MkRegistrationGeneration selected birthOrdinal) registered} same member)
 
+0 scopedWithdrawalBirthJustification :
+  (name : Type) -> (registered : List (RegistrationGeneration name)) -> (actor : name) ->
+  (generation : RegistrationGeneration name ** (Elem generation registered, (generationName generation = actor))) ->
+  (birth : Nat ** Elem (MkRegistrationGeneration actor birth) registered)
+scopedWithdrawalBirthJustification name registered actor (generation ** evidence) =
+  scopedGenerationBirthMember name registered actor generation (fst evidence) (snd evidence)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
