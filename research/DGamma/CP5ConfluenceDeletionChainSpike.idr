@@ -30418,6 +30418,21 @@ scopedDerivationAccountingStep name key world error value protocol nameEq keyEq 
       (\generation, member => scopedAccountingPullName name key world error value initial finalState (survivingFinal (deletionResult step)) targetFinal trace (survivingTrace (deletionResult step)) target (endpointWithdrawnGenerations (deletionEndpoint step)) (endpointWithdrawnGenerations (foldedEndpoint tail)) (deletionProducerGenerationRenaming (deletionProducerCapital step)) (scopedStepSealedAccounting name key world error value protocol nameEq keyEq initial finalState trace premises candidate step) (foldedRegistrationAccounting tail) generation
         (withdrawnRegistrationRemoved (foldedRegistrationAccounting tail) generation member)))
 
+0 scopedDerivationAccounting :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, sourceFinal, targetFinal : SystemState name key value world error) ->
+  (source : Transitions initial sourceFinal) -> (target : Transitions initial targetFinal) ->
+  (derivation : ClosingFreeDeletionDerivation name key world error value protocol nameEq keyEq source target) ->
+  ScopedDerivationAccounting name key world error value protocol nameEq keyEq initial sourceFinal targetFinal source target derivation
+scopedDerivationAccounting name key world error value protocol nameEq keyEq initial sourceFinal _ _ _ (ClosingFreeDeletionDone trace) =
+  scopedDerivationAccountingDone name key world error value protocol nameEq keyEq initial sourceFinal trace
+scopedDerivationAccounting name key world error value protocol nameEq keyEq initial sourceFinal targetFinal _ _
+  (ClosingFreeDeletionStep trace premises candidate step target rest) =
+    scopedDerivationAccountingStep name key world error value protocol nameEq keyEq initial sourceFinal targetFinal trace premises candidate step target rest
+      (scopedDerivationAccounting name key world error value protocol nameEq keyEq initial (survivingFinal (deletionResult step)) targetFinal
+        (survivingTrace (deletionResult step)) target rest)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
