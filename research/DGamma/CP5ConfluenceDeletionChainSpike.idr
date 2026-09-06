@@ -30321,6 +30321,29 @@ scopedStepSealedAccounting name key world error value protocol nameEq keyEq init
   MkScopedCanonicalAccounting (deletionRegistrationAccounting step)
     (scopedStepAccountingBackward name key world error value protocol nameEq keyEq initial finalState trace premises candidate step _ _ _)
 
+0 scopedComposedAccountingOrigin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (initial, sourceFinal, middleFinal, targetFinal : SystemState name key value world error) ->
+  (source : Transitions initial sourceFinal) -> (middle : Transitions initial middleFinal) -> (target : Transitions initial targetFinal) ->
+  (leftWithdrawn, rightWithdrawn : List (RegistrationGeneration name)) -> (renaming : RegistrationGenerationBijection name) ->
+  (left : ScopedCanonicalAccounting name key world error value initial sourceFinal middleFinal source middle leftWithdrawn renaming) ->
+  (right : CanonicalRegistrationCorrespondence middle target rightWithdrawn) ->
+  (leftOrigin : ActionRegistrationReplayCorrespondence name key world error value source middle) ->
+  (rightOrigin : ActionRegistrationReplayCorrespondence name key world error value middle target) ->
+  ({child, parent : name} -> {component : Component key value world error} ->
+    (birth : LocatedGeneratedRegistration child parent component middle) ->
+    (canonicalToOriginal (sealedAccounting left) birth = replayGeneratedRegistrationOrigin leftOrigin birth)) ->
+  ({child, parent : name} -> {component : Component key value world error} ->
+    (birth : LocatedGeneratedRegistration child parent component target) ->
+    (canonicalToOriginal right birth = replayGeneratedRegistrationOrigin rightOrigin birth)) ->
+  {child, parent : name} -> {component : Component key value world error} ->
+  (birth : LocatedGeneratedRegistration child parent component target) ->
+  (canonicalToOriginal (scopedComposeRegistrationAccounting name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right) birth =
+    replayGeneratedRegistrationOrigin (composeActionRegistrationReplayCorrespondence leftOrigin rightOrigin) birth)
+scopedComposedAccountingOrigin name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right leftOrigin rightOrigin leftExact rightExact birth =
+  trans (cong (canonicalToOriginal (sealedAccounting left)) (rightExact birth))
+    (leftExact (replayGeneratedRegistrationOrigin rightOrigin birth))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
