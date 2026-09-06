@@ -1143,6 +1143,13 @@ canonicalListMemberCompleteStep item itemEq selected head rest complete (Yes sam
 canonicalListMemberCompleteStep item itemEq selected head rest complete (No different) observed present =
   There (complete (trans (sym (canonicalListMemberKnownNo item itemEq selected head rest different observed)) present))
 
+0 canonicalListMemberComplete : (item : Type) -> (itemEq : DecEq item) ->
+  (selected : item) -> (values : List item) -> listMember @{itemEq} selected values = True -> Elem selected values
+canonicalListMemberComplete item itemEq selected [] present = absurd present
+canonicalListMemberComplete item itemEq selected (head :: rest) present =
+  canonicalListMemberCompleteStep item itemEq selected head rest
+    (canonicalListMemberComplete item itemEq selected rest) (decEq @{itemEq} selected head) Refl present
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
