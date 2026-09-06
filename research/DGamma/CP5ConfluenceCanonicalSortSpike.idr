@@ -2908,6 +2908,28 @@ canonicalWorkInstalledScalarsDistinct name key world error value nameEq state ac
     (replace {p = \actor => installedAt {name = name} {key = key} {value = value}
       {world = world} {error = error} @{nameEq} actor state = True} same installed))
 
+||| C58 cure assembled at an OBSERVED actor, with a producer-owned equation.
+||| This is not the archived projection-indexed C58 statement: the right side
+||| is the actual checked OInsert constructor and the goal compares raw values.
+0 canonicalWorkObservedActivationInsertDistinct :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle : SystemState name key value world error} ->
+  (left : Transition first middle) ->
+  (AlignedTransitions name key world error value nameEq keyEq (MoreTransitions left NoTransitions)) ->
+  (PaperActivationStep left) -> (observed : name) ->
+  (0 exact : (transitionActor left = observed)) ->
+  (finalState : SystemState name key value world error) ->
+  (child : name) -> (parent : Parent name) ->
+  (component : Component key value world error) -> (tag : RuleTag) ->
+  (checkedApplyAction @{nameEq} @{keyEq} (OInsert child parent component) middle = Just (tag, finalState)) ->
+  (Not (observed = child))
+canonicalWorkObservedActivationInsertDistinct name key world error value nameEq keyEq {middle}
+  left aligned activation observed exact finalState child parent component tag checked =
+    canonicalWorkInstalledScalarsDistinct name key world error value nameEq middle observed child
+      (canonicalWorkObservedActivationInstalled name key world error value nameEq keyEq left aligned activation observed exact)
+      (canonicalWorkCheckedInsertUninstalled name key world error value nameEq keyEq middle finalState child parent component tag checked)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
