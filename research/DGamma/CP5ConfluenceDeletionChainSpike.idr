@@ -20033,6 +20033,16 @@ scopedSelectedParentExact name key world error value selected actor left right (
 scopedSelectedParentExact name key world error value selected actor left right (ForeignFiberControls distinct controls) =
   scopedControlParentExact name key world error value left right controls
 
+0 scopedLookupRootMatched :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (wanted, current : name) -> (left, right : Fiber name key value world error) ->
+  (leftTail, rightTail : List (Binding name (FiberAt name key value world error))) ->
+  (fiberParent left = fiberParent right) -> (same : (wanted = current)) -> (decEq @{nameEq} wanted current = Yes same) ->
+  (maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupEntries @{nameEq} wanted (Bind current left :: leftTail)) =
+   maybe False (\cell => scopedParentRoot {name = name} (fiberParent cell)) (lookupEntries @{nameEq} wanted (Bind current right :: rightTail)))
+scopedLookupRootMatched name key world error value nameEq _ current left right leftTail rightTail parents Refl exact =
+  rewrite exact in cong scopedParentRoot parents
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
