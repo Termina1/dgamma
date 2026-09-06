@@ -29972,6 +29972,13 @@ scopedAppendMembership item predicate (head :: rest) right fromLeft fromRight wa
   scopedElemConsEliminate item predicate head (rest ++ right) (fromLeft head Here)
     (scopedAppendMembership item predicate rest right (\later, present => fromLeft later (There present)) fromRight) wanted member
 
+0 scopedControlFoundLeft :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (left : Maybe (Fiber name key value world error)) -> (right : Fiber name key value world error) ->
+  FiberControlMaybeRelated left (Just right) ->
+  (fiber : Fiber name key value world error ** ((left = Just fiber), FiberControlRelated fiber right))
+scopedControlFoundLeft name key world error value _ right (SomeControlFibers {left} related) = (left ** (Refl, related))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
