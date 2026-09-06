@@ -26981,6 +26981,26 @@ scopedDeletionCenterShorter name key world error value nameEq keyEq initial fina
     (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))
     (survivingEpisode result) (episodeDeletion result) (DeleteEpisodeGenerationLifecycle Refl Refl)
 
+0 scopedDeletionSuffixShorter :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (LTE (S (traceLength (appendTransitions (survivingEpisode result) (survivingAfter result))))
+    (traceLength (appendTransitions
+      (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+      (traceAfterClosing (selectedEpisode candidate)))))
+scopedDeletionSuffixShorter name key world error value nameEq keyEq initial finalState global candidate result =
+  scopedAppendLengthBound name key world error value (locatedPreStart (selectedEpisode candidate)) (locatedAfter (selectedEpisode candidate)) finalState
+    (survivingBeforeEnd result) (survivingEpisodeEnd result) (survivingFinal result)
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+    (traceAfterClosing (selectedEpisode candidate)) (survivingEpisode result) (survivingAfter result) 1
+    (plusLteMonotone (scopedDeletionCenterShorter name key world error value nameEq keyEq initial finalState global candidate result)
+      (scopedGenerationSubsequenceLength name key world error value nameEq (GenerationOwnedActor nameEq (selectedRegistrations candidate))
+        (episodeEndOrdinal result) (episodeEndLive result) (locatedAfter (selectedEpisode candidate)) finalState (survivingEpisodeEnd result) (survivingFinal result)
+        (traceAfterClosing (selectedEpisode candidate)) (survivingAfter result) (afterDeletion result)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
