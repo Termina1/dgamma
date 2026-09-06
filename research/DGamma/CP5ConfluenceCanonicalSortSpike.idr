@@ -1071,6 +1071,16 @@ canonicalRankSortStep item itemEq rank head rest tailResult =
     (canonicalRankInsert item itemEq rank head (rankSortedItems tailResult)
       (rankSortedOrdered tailResult) (rankSortedUnique tailResult))
 
+||| Total stable-rank insertion sort with simultaneous deduplication and full invariant.
+||| Equal-ranked distinct names are inserted before the suffix; there is no compute-then-prove pass.
+canonicalStableRankSort : (item : Type) -> (itemEq : DecEq item) -> (rank : item -> Nat) ->
+  (source : List item) -> CanonicalRankSortResult item rank source
+canonicalStableRankSort item itemEq rank [] =
+  MkCanonicalRankSortResult [] CanonicalRanksNil UniqueNil
+    (\selected, present => absurd present) (\selected, present => absurd present)
+canonicalStableRankSort item itemEq rank (head :: rest) =
+  canonicalRankSortStep item itemEq rank head rest (canonicalStableRankSort item itemEq rank rest)
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
