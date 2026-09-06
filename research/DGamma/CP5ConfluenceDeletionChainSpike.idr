@@ -26429,6 +26429,15 @@ scopedKeptSubsequenceOriginExact name key world error value nameEq deletable ord
 scopedKeptSubsequenceOriginExact name key world error value nameEq deletable ordinal live sourceFirst sourceMiddle sourceFinal targetFirst targetMiddle targetFinal
   sourceStep source targetStep target kept sameAction tail (S targetIndex) = Refl
 
+scopedOrdinalOriginTransport :
+  (sourceCount, targetCount : Nat) -> (sourceOrigin, targetOrigin : Nat -> Maybe Nat) ->
+  (0 sameOrigin : ((targetIndex : Nat) -> (sourceOrigin targetIndex = targetOrigin targetIndex))) ->
+  ScopedOrdinalOriginWitness sourceCount targetCount sourceOrigin ->
+  ScopedOrdinalOriginWitness sourceCount targetCount targetOrigin
+scopedOrdinalOriginTransport sourceCount targetCount sourceOrigin targetOrigin sameOrigin witness =
+  MkScopedOrdinalOriginWitness (originSpine witness)
+    (\sourceIndex, targetIndex, exact => originPath witness sourceIndex targetIndex (trans (sameOrigin targetIndex) exact))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
