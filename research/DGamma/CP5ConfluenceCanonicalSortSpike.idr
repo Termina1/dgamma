@@ -3734,6 +3734,39 @@ canonicalWorkOwnedOrchestrationInsertion name key world error value selected ste
   (CanonicalWorkLifecycle lifecycle actor) (PaperRemoveStep removed) =
     void (canonicalFalseNotTrue (trans (sym (cong isLifecycleAction removed)) lifecycle))
 
+||| Actual selected A/O grouping diamond. Both actor inequality and the
+||| registration parent exclusion are discharged from THIS aligned pair.
+0 canonicalWorkGroupingActivationOrchestrationDiamond :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (pair : CanonicalWorkGroupingPair name key world error value selected trace) ->
+  (PaperActivationStep (workPairLeft pair)) -> (PaperOrchestrationStep (workPairRight pair)) ->
+  (LocalRelationalDiamond name key world error value nameEq keyEq (workPairLeft pair) (workPairRight pair))
+canonicalWorkGroupingActivationOrchestrationDiamond name key world error value nameEq keyEq protocol selected
+  trace premises pair activation orchestration =
+    case canonicalWorkOwnedOrchestrationInsertion name key world error value selected
+      (workPairRight pair) (workPairRightOwned pair) orchestration of
+      (child ** (component ** inserted)) =>
+        activationOrchestrationDiamondSpike nameEq keyEq (workPairLeft pair) (workPairRight pair)
+          (canonicalSortingPairAligned name key world error value protocol nameEq keyEq trace
+            (workPairPrefix pair) (workPairLeft pair) (workPairRight pair) (workPairSuffix pair) (workPairDecomposition pair) premises)
+          activation orchestration
+          (\same => canonicalWorkObservedPairInsertDistinct name key world error value nameEq keyEq
+            (workPairLeft pair) (workPairRight pair)
+            (canonicalSortingPairAligned name key world error value protocol nameEq keyEq trace
+              (workPairPrefix pair) (workPairLeft pair) (workPairRight pair) (workPairSuffix pair) (workPairDecomposition pair) premises)
+            activation (transitionActor (workPairLeft pair)) Refl child (ChildOf selected) component inserted
+            (trans same (trans (canonicalTransitionActorActionOwner (workPairRight pair)) (cong actionOwner inserted))))
+          (canonicalWorkGroupingParentSafe name key world error value selected pair activation)
+          (canonicalSortingPairSourceWellFormed name key world error value protocol nameEq keyEq trace
+            (workPairPrefix pair) (workPairLeft pair) (workPairRight pair) (workPairSuffix pair) (workPairDecomposition pair) premises)
+          (canonicalSortingPairIndependent name key world error value protocol nameEq keyEq trace
+            (workPairPrefix pair) (workPairLeft pair) (workPairRight pair) (workPairSuffix pair) (workPairDecomposition pair) premises)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
