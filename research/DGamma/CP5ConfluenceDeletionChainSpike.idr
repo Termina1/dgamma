@@ -20445,6 +20445,17 @@ scopedRootSealsAppendRight name key world error value nameEq registered ordinal 
     scopedRootSealsAppendRight name key world error value nameEq registered (S ordinal) endOrdinal
       (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction transition) live) endLive _ middle finalState rest right tail (snd roots)
 
+0 scopedExternalAcrossTraceEnd :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (sourceFirst, sourceFinal, first, leftFinal, rightFinal : SystemState name key value world error) ->
+  (source : Transitions sourceFirst sourceFinal) ->
+  (left : Transitions first leftFinal) -> (right : Transitions first rightFinal) ->
+  (sameFinal : (leftFinal = rightFinal)) ->
+  (replace {p = \endpoint => Transitions first endpoint} sameFinal left = right) ->
+  SameExternalOrchestration nameEq source right -> SameExternalOrchestration nameEq source left
+scopedExternalAcrossTraceEnd name key world error value nameEq sourceFirst sourceFinal first _ _ source left right Refl sameTrace external =
+  replace {p = SameExternalOrchestration nameEq source} (sym sameTrace) external
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
