@@ -3388,6 +3388,17 @@ canonicalWorkGroupingActivationsDistinct name key world error value selected glo
       (trans same (canonicalWorkOwnedActivationActor name key world error value selected
         (workPairRight pair) (workPairRightOwned pair) rightActivation)))
 
+||| Scalar length of the exact source prefix through the left adjacent node.
+0 canonicalWorkSnocTransitionCount :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {initial, before, afterState : SystemState name key value world error} ->
+  (earlier : Transitions initial before) -> (step : Transition before afterState) ->
+  transitionCount (appendTransitions earlier (MoreTransitions step NoTransitions)) =
+    S (transitionCount earlier)
+canonicalWorkSnocTransitionCount name key world error value NoTransitions step = Refl
+canonicalWorkSnocTransitionCount name key world error value (MoreTransitions head tail) step =
+  cong S (canonicalWorkSnocTransitionCount name key world error value tail step)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
