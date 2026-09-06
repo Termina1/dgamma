@@ -28492,6 +28492,18 @@ scopedActionHeadExact name key world error value first middle finalState transit
   ScopedActionAt name key world error value rest ordinal action
 scopedActionTail name key world error value first middle finalState transition rest ordinal action (ScopedActionLater _ _ later) = later
 
+0 scopedActionAtUnique :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, finalState : SystemState name key value world error) -> (trace : Transitions first finalState) ->
+  (ordinal : Nat) -> (leftAction, rightAction : Action name key value world error) ->
+  ScopedActionAt name key world error value trace ordinal leftAction ->
+  ScopedActionAt name key world error value trace ordinal rightAction -> (leftAction = rightAction)
+scopedActionAtUnique name key world error value first finalState _ _ _ rightAction (ScopedActionHere transition rest) right =
+  scopedActionHeadExact name key world error value first _ finalState transition rest rightAction right
+scopedActionAtUnique name key world error value first finalState _ _ leftAction rightAction (ScopedActionLater {ordinal} transition rest later) right =
+  scopedActionAtUnique name key world error value _ finalState rest ordinal leftAction rightAction later
+    (scopedActionTail name key world error value first _ finalState transition rest ordinal rightAction right)
+
 0 scopedEnrichedStepFromExternal :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
