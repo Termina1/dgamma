@@ -2989,6 +2989,38 @@ canonicalWorkSnocOccurrence name key world error value NoTransitions step = Occu
 canonicalWorkSnocOccurrence name key world error value (MoreTransitions head tail) step =
   OccursLater (canonicalWorkSnocOccurrence name key world error value tail step)
 
+||| An actual checked unload in a prefix ending uninstalled would supply a
+||| genuine close. This uses the source's no-closing evidence, never root order.
+0 canonicalWorkNoClosingRejectsUnloadPrefix :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, before, afterState, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (earlier : Transitions initial before) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LUnload selected) before = Just (tag, afterState)) ->
+  (later : Transitions afterState finalState) ->
+  (appendTransitions (appendTransitions earlier
+    (MoreTransitions (Fired {before} {afterState} nameEq keyEq (LUnload selected) tag checked) NoTransitions)) later = global) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  bindings (registry initial) = [] ->
+  NoClosingEpisodes name key world error value nameEq keyEq global -> Void
+canonicalWorkNoClosingRejectsUnloadPrefix name key world error value nameEq keyEq selected
+  {before} {afterState} global earlier tag checked later decomposition aligned initialEmpty noClosing =
+    canonicalLifecycleAbsentBeforeUninstalled nameEq keyEq selected
+      (appendTransitions earlier
+        (MoreTransitions (Fired {before} {afterState} nameEq keyEq (LUnload selected) tag checked) NoTransitions))
+      later global decomposition
+      (fst (alignedAppendSplit
+        (appendTransitions earlier
+          (MoreTransitions (Fired {before} {afterState} nameEq keyEq (LUnload selected) tag checked) NoTransitions)) later
+        (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+          (sym decomposition) aligned))) initialEmpty
+      (snd (snd (lUnloadBoundary nameEq keyEq selected before afterState tag
+        (checkedActionProjects nameEq keyEq (LUnload selected) before afterState tag checked))))
+      noClosing (LUnload selected) tag checked Refl Refl
+      (canonicalWorkSnocOccurrence name key world error value earlier
+        (Fired {before} {afterState} nameEq keyEq (LUnload selected) tag checked))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
