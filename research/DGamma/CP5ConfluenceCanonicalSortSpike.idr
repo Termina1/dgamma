@@ -1938,6 +1938,60 @@ data CanonicalWorkActorStep :
     (0 action : transitionAction step = OInsert child (ChildOf selected) component) ->
     CanonicalWorkActorStep selected step
 
+0 canonicalWorkClassifyActor :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {before, afterState : SystemState name key value world error} ->
+  (step : Transition before afterState) -> Dec (CanonicalWorkActorStep selected step)
+canonicalWorkClassifyActor name key world error value nameEq selected (Fired stepNameEq stepKeyEq (OInsert child Root component) tag checked) =
+  No (\member => case member of
+    CanonicalWorkLifecycle lifecycle actor => case lifecycle of Refl impossible
+    CanonicalWorkRegistration action => case action of Refl impossible)
+canonicalWorkClassifyActor name key world error value nameEq selected (Fired stepNameEq stepKeyEq (OInsert child (ChildOf parent) component) tag checked) =
+  case decEq @{nameEq} parent selected of
+    Yes same => Yes (CanonicalWorkRegistration (cong (\actual => OInsert child (ChildOf actual) component) same))
+    No different => No (\member => case member of
+      CanonicalWorkLifecycle lifecycle actor => case lifecycle of Refl impossible
+      CanonicalWorkRegistration action => case action of Refl => different Refl)
+canonicalWorkClassifyActor name key world error value nameEq selected (Fired stepNameEq stepKeyEq (ORetire actor) tag checked) =
+  No (\member => case member of
+    CanonicalWorkLifecycle lifecycle same => case lifecycle of Refl impossible
+    CanonicalWorkRegistration action => case action of Refl impossible)
+canonicalWorkClassifyActor name key world error value nameEq selected (Fired stepNameEq stepKeyEq (ORemove actor) tag checked) =
+  No (\member => case member of
+    CanonicalWorkLifecycle lifecycle same => case lifecycle of Refl impossible
+    CanonicalWorkRegistration action => case action of Refl impossible)
+canonicalWorkClassifyActor name key world error value nameEq selected (Fired stepNameEq stepKeyEq (LBegin actor) tag checked) =
+  case decEq @{nameEq} actor selected of
+    Yes same => Yes (CanonicalWorkLifecycle Refl same)
+    No different => No (\member => case member of
+      CanonicalWorkLifecycle lifecycle same => different same
+      CanonicalWorkRegistration action => case action of Refl impossible)
+canonicalWorkClassifyActor name key world error value nameEq selected (Fired stepNameEq stepKeyEq (LAdvance actor) tag checked) =
+  case decEq @{nameEq} actor selected of
+    Yes same => Yes (CanonicalWorkLifecycle Refl same)
+    No different => No (\member => case member of
+      CanonicalWorkLifecycle lifecycle same => different same
+      CanonicalWorkRegistration action => case action of Refl impossible)
+canonicalWorkClassifyActor name key world error value nameEq selected (Fired stepNameEq stepKeyEq (LDivert actor) tag checked) =
+  case decEq @{nameEq} actor selected of
+    Yes same => Yes (CanonicalWorkLifecycle Refl same)
+    No different => No (\member => case member of
+      CanonicalWorkLifecycle lifecycle same => different same
+      CanonicalWorkRegistration action => case action of Refl impossible)
+canonicalWorkClassifyActor name key world error value nameEq selected (Fired stepNameEq stepKeyEq (LLeave actor) tag checked) =
+  case decEq @{nameEq} actor selected of
+    Yes same => Yes (CanonicalWorkLifecycle Refl same)
+    No different => No (\member => case member of
+      CanonicalWorkLifecycle lifecycle same => different same
+      CanonicalWorkRegistration action => case action of Refl impossible)
+canonicalWorkClassifyActor name key world error value nameEq selected (Fired stepNameEq stepKeyEq (LUnload actor) tag checked) =
+  case decEq @{nameEq} actor selected of
+    Yes same => Yes (CanonicalWorkLifecycle Refl same)
+    No different => No (\member => case member of
+      CanonicalWorkLifecycle lifecycle same => different same
+      CanonicalWorkRegistration action => case action of Refl impossible)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
