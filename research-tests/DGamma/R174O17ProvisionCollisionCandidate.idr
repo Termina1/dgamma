@@ -30,3 +30,8 @@ r174ProvisionParentStep = MkStepEffect (Just 0)
       Left _ => Unit
       Right (next, inverse) => inverse (normalizeLocal DGamma.CalculusChecks.toyEmptySpec next) = before}
       returned canonical)
+
+public export
+r174ProvisionParent : Component ToyKey ToyValue ToyRuntime String
+r174ProvisionParent = MkComponent DGamma.CalculusChecks.toyEmptySpec
+  DGamma.CalculusChecks.toyEmptySpec [r174ProvisionParentStep]
