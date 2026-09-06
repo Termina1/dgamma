@@ -28568,6 +28568,22 @@ scopedRootBirthInputs name key world error value registered ordinal first finalS
      (\index, child, parent, component, atBirth, member => births (S index) child parent component (ScopedActionLater transition rest atBirth)
        (replace {p = \position => Elem (MkRegistrationGeneration child position) registered} (plusSuccRightSucc ordinal index) member)))
 
+||| Source-only authentication: every deleted generation was actually born as a child, and its parent role is retained while current.
+0 scopedCandidateOwnedRootSeals :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  ScopedOwnedRootSeals name key world error value nameEq (selectedRegistrations candidate) 0 [] initial finalState global
+scopedCandidateOwnedRootSeals name key world error value nameEq keyEq initial finalState global aligned candidate =
+  scopedSourceOwnedRootSeals name key world error value nameEq keyEq (selectedRegistrations candidate) 0 [] UniqueNil initial finalState global aligned
+    (scopedRootBirthInputs name key world error value (selectedRegistrations candidate) 0 initial finalState global
+      (\index, child, parent, component, atBirth, member => scopedClassifiedBirthNonRoot name key world error value nameEq initial finalState global index child parent component atBirth
+        (scopedDeletionGenerationClassified name key world error value nameEq keyEq initial finalState global candidate (MkRegistrationGeneration child index) member)))
+    (selectedChildrenHaveNoEpisode candidate)
+    (\actor, generation, member, current => void (nothingIsNotJust current))
+    (\actor, generation, member, current => void (nothingIsNotJust current))
+
 0 scopedEnrichedStepFromExternal :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
