@@ -29540,6 +29540,18 @@ scopedActionAfterCut name key world error value first before afterState finalSta
     (\index, path, afterCut => scopedActionAfterCut name key world error value _ before afterState finalState tail transition rest index action path afterCut)
     atAction later
 
+0 scopedLocatedActionAfter :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (firstAction, laterAction : Action name key value world error) ->
+  (first : LocatedActionOccurrence firstAction global) -> (later : LocatedActionOccurrence laterAction global) ->
+  LT (locatedActionOrdinal first) (locatedActionOrdinal later) -> ActionOccurs laterAction (afterActionOccurrence first)
+scopedLocatedActionAfter name key world error value initial finalState global firstAction laterAction first later ordered =
+  scopedActionAfterCut name key world error value initial (actionBeforeState first) (actionAfterState first) finalState
+    (beforeActionOccurrence first) (locatedTransition first) (afterActionOccurrence first) (locatedActionOrdinal later) laterAction
+    (replace {p = \source => ScopedActionAt name key world error value source (locatedActionOrdinal later) laterAction}
+      (sym (actionOccurrenceDecomposition first)) (scopedLocatedActionAt name key world error value initial finalState global laterAction later)) ordered
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
