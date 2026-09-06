@@ -2754,6 +2754,14 @@ canonicalWorkSelectGroupingPair name key world error value nameEq keyEq trace _ 
 canonicalWorkSelectGroupingPair name key world error value nameEq keyEq trace _ _
   (CanonicalWorklistNeedsOrdering completed startsTooEarly) = Nothing
 
+0 canonicalWorkChildInsertParentInjective :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (firstChild, secondChild, firstParent, secondParent : name) ->
+  (firstComponent, secondComponent : Component key value world error) ->
+  (OInsert firstChild (ChildOf firstParent) firstComponent = OInsert secondChild (ChildOf secondParent) secondComponent) ->
+  firstParent = secondParent
+canonicalWorkChildInsertParentInjective _ _ _ _ _ _ _ _ _ _ _ Refl = Refl
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
