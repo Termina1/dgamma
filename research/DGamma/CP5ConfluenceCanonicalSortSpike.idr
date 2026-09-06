@@ -3242,6 +3242,22 @@ canonicalWorkShapeNoClosing name key world error value nameEq keyEq {finalState}
           (canonicalWorkActionOccursUnderPrefix name key world error value (LUnload selected)
             earlier (MoreTransitions step later) (ActionOccursHere step later action)))
 
+||| Full reached-shape preservation from exactly the existing O17 source
+||| shape/bundle, with no new no-closing premise and no root-placement claim.
+0 canonicalWorkReachedShapeFromInput :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  ClosingFreeTraceShape name key world error value nameEq keyEq original ->
+  (current : CanonicalSortingReplayState name key world error value protocol nameEq keyEq original) ->
+  ClosingFreeTraceShape name key world error value nameEq keyEq (sortingCurrentTrace current)
+canonicalWorkReachedShapeFromInput name key world error value nameEq keyEq protocol original premises shape current =
+  canonicalWorkReachedShape name key world error value nameEq keyEq protocol original premises
+    (canonicalWorkShapeNoClosing name key world error value nameEq keyEq original shape) current
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
