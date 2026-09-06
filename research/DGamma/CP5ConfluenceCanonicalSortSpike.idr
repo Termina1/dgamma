@@ -2149,6 +2149,19 @@ data CanonicalWorkOpenInspection :
     (0 laterRemains : Not (NoLifecycleBy selected (workActorRest scanned))) ->
     CanonicalWorkOpenInspection name key world error value nameEq keyEq selected trace episode
 
+0 canonicalWorkInspectScanned :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+  CanonicalWorkActorPrefix name key world error value selected (openInside episode) ->
+  CanonicalWorkOpenInspection name key world error value nameEq keyEq selected trace episode
+canonicalWorkInspectScanned name key world error value nameEq keyEq selected trace episode scanned =
+  case canonicalWorkDecNoLifecycle name key world error value nameEq selected (workActorRest scanned) of
+    Yes noLater => CanonicalWorkOpenReady scanned noLater
+    No laterRemains => CanonicalWorkOpenInterleaved scanned laterRemains
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
