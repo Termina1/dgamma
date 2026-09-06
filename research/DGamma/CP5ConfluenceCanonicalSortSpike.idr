@@ -2009,6 +2009,21 @@ data CanonicalWorkActorBoundary :
     (0 foreign : Not (CanonicalWorkActorStep selected step)) ->
     CanonicalWorkActorBoundary selected (MoreTransitions step rest)
 
+||| The structural scan simultaneously owns its actual pieces, actor proof,
+||| boundary and exact count equation; no existential state equality is guessed.
+record CanonicalWorkActorPrefix
+  (name, key, world, error : Type) (value : key -> Type) (selected : name)
+  {first, finalState : SystemState name key value world error}
+  (trace : Transitions first finalState) where
+  constructor MkCanonicalWorkActorPrefix
+  workPrefixEnd : SystemState name key value world error
+  workActorPrefix : Transitions first workPrefixEnd
+  workActorRest : Transitions workPrefixEnd finalState
+  0 workPrefixActorOnly : ActorLifecycleOnly selected workActorPrefix
+  0 workPrefixDecomposition : appendTransitions workActorPrefix workActorRest = trace
+  0 workPrefixCountSplit : transitionCount workActorPrefix + transitionCount workActorRest = transitionCount trace
+  0 workPrefixBoundary : CanonicalWorkActorBoundary selected workActorRest
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
