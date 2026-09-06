@@ -27160,6 +27160,15 @@ scopedPrependLocatedOrdinalOrigin name key world error value first middle finalS
       (MkLocatedActionOccurrence before afterState (MoreTransitions head beforeTrace) transition later actionShape (cong (MoreTransitions head) decomposition))
       (cong (map S) exact)
 
+ScopedBirthCoverage :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (first, finalState : SystemState name key value world error) -> (trace : Transitions first finalState) ->
+  (origin : Nat -> Maybe Nat) -> (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  (sourceIndex : Nat) -> Type
+ScopedBirthCoverage name key world error value registered ordinal first finalState trace origin child parent component sourceIndex =
+  Either (Elem (MkRegistrationGeneration child (ordinal + sourceIndex)) registered)
+    (ScopedLocatedOrdinalOrigin name key world error value first finalState trace (OInsert child parent component) origin sourceIndex)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
