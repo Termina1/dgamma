@@ -377,3 +377,12 @@ public export
   (OInsert 1 Root r45Child) r45SourceFinal = Nothing
 r172ReuseRootBeforeRemoveRejected = Refl
 
+public export
+0 r172ReuseMovedRootImpossible :
+  {middle, finalState : SystemState Nat R45Key R45Value Unit String} ->
+  (moved : Transition r45SourceFinal middle) -> (rest : Transitions middle finalState) ->
+  AlignedTransitions Nat R45Key Unit String R45Value r45NameEq r45KeyEq (MoreTransitions moved rest) ->
+  transitionAction moved = OInsert 1 Root r45Child -> Void
+r172ReuseMovedRootImpossible _ rest (AlignedStep action tag checked _ later) same =
+  case same of Refl => case trans (sym r172ReuseRootBeforeRemoveRejected) checked of Refl impossible
+
