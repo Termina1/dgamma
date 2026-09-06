@@ -19896,6 +19896,15 @@ scopedRootObserved name key world error value nameEq before afterState transitio
 scopedRootParentExact name Root truth = Refl
 scopedRootParentExact name (ChildOf actor) truth = absurd truth
 
+0 scopedObservedRootCell :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  (maybe False (\cell => scopedParentRoot {name = name} (fiberParent {name = name} {key = key} {value = value} {world = world} {error = error} cell)) observed = True) ->
+  (fiber : Fiber name key value world error ** ((observed = Just fiber), (fiberParent fiber = Root)))
+scopedObservedRootCell name key world error value Nothing truth = absurd truth
+scopedObservedRootCell name key world error value (Just fiber) truth =
+  (fiber ** (Refl, scopedRootParentExact name (fiberParent fiber) truth))
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
