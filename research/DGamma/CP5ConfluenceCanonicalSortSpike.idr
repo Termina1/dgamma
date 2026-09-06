@@ -776,6 +776,19 @@ canonicalRankLTETransitive LTEZero later = LTEZero
 canonicalRankLTETransitive (LTESucc earlier) (LTESucc later) =
   LTESucc (canonicalRankLTETransitive earlier later)
 
+||| The actual active lookup equation, without a separately mirrored evaluator.
+0 canonicalSupportedActiveAtFound :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (state : SystemState name key value world error) ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry state) = Just fiber) ->
+  (supportedActiveAt {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected state = isActive (fiberLifecycle fiber))
+canonicalSupportedActiveAtFound name key world error value nameEq state selected fiber found =
+  activePredicateAtFoundQ {name = name} {key = key} {value = value} {world = world} {error = error}
+    nameEq state selected fiber found
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
