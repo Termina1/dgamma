@@ -29763,6 +29763,20 @@ scopedClassifiedPullback name key world error value nameEq keyEq initial finalSt
       (cong (generationBackward (deletionProducerGenerationRenaming capital))
         (trans (deletionProducerGeneratedOrdinalPreserved capital (deletedOccurrence classified)) (deletedOccurrenceGeneration classified)))) Refl
 
+0 scopedPullClassificationGeneration :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (capital : DeletionProducerOperationalCapital name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result) ->
+  (item : (generation : RegistrationGeneration name ** DeletedGenerationClassification name key world error value nameEq (survivingTrace result) generation)) ->
+  (classifiedGeneration (scopedPullDeletedClassification name key world error value nameEq keyEq initial finalState global candidate result item) =
+    generationBackward (deletionProducerGenerationRenaming capital) (classifiedGeneration item))
+scopedPullClassificationGeneration name key world error value nameEq keyEq initial finalState global candidate result capital (generation ** classified) =
+  pulledGenerationExact (scopedClassifiedPullback name key world error value nameEq keyEq initial finalState global candidate result capital (generation ** classified))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
