@@ -813,6 +813,21 @@ record CanonicalActiveRank
 canonicalSupportedActiveAtMissing name key world error value nameEq state selected found =
   rewrite found in Refl
 
+||| Rank extraction eliminates only the producer's returned rank witness.
+0 canonicalActiveRankAtFound :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) ->
+  (state : SystemState name key value world error) -> (selected : name) ->
+  (fiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry state) = Just fiber) ->
+  (isActive (fiberLifecycle fiber) = True) ->
+  RegistryProtocolRanked protocol nameEq state ->
+  CanonicalActiveRank name key world error value protocol nameEq state selected
+canonicalActiveRankAtFound name key world error value protocol nameEq state selected fiber found active ranked =
+  case ranked selected fiber found of
+    (rank ** hasRank) => MkCanonicalActiveRank fiber found active rank hasRank
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
