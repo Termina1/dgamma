@@ -20353,6 +20353,19 @@ scopedOwnedRootSeal name key world error value nameEq registered ordinal live so
   MkScopedDeletedRootSeal (scopedOwnedRootObservation name key world error value nameEq registered ordinal live
     (transitionAction transition) source births roots generation (snd evidence) (fst evidence))
 
+0 scopedNamedRootSeal :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (source, sourceAfter, target : SystemState name key value world error) ->
+  (checked : (checkedApplyAction @{nameEq} @{keyEq} action source = Just (tag, sourceAfter))) ->
+  (named : NamedTransition name key world error value action target) ->
+  (scopedRootObservation name key world error value nameEq action source = scopedRootObservation name key world error value nameEq action target) ->
+  ScopedRootRoleSeal name key world error value nameEq source sourceAfter target (namedAfter named)
+    (Fired {before = source} {afterState = sourceAfter} nameEq keyEq action tag checked) (namedTransition named)
+scopedNamedRootSeal name key world error value nameEq keyEq action tag source sourceAfter target checked named roots =
+  scopedRootSealAtAction name key world error value nameEq action source sourceAfter target (namedAfter named)
+    (Fired nameEq keyEq action tag checked) (namedTransition named) Refl (namedAction named) roots
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
