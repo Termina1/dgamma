@@ -2596,6 +2596,20 @@ canonicalWorkSplitForeignLast name key world error value selected head (MoreTran
           (CanonicalWorkForeignStep head earlier excluded earlierForeign) lastForeign
           (cong (MoreTransitions head) decomposition) (cong S count)
 
+0 canonicalWorkSnocBeforeNext :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (next : CanonicalWorkNextActor name key world error value selected trace) ->
+  LT Z (transitionCount (workBeforeNext next)) ->
+  CanonicalWorkForeignSnoc name key world error value selected (workBeforeNext next)
+canonicalWorkSnocBeforeNext name key world error value selected
+  (MkCanonicalWorkNextActor _ _ NoTransitions step suffix owned foreign decomposition) positive =
+    void (succNotLTEzero positive)
+canonicalWorkSnocBeforeNext name key world error value selected
+  (MkCanonicalWorkNextActor _ _ (MoreTransitions head rest) step suffix owned foreign decomposition) positive =
+    canonicalWorkSplitForeignLast name key world error value selected head rest foreign
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
