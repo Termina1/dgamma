@@ -1329,6 +1329,17 @@ record CanonicalSortingReplayState
 canonicalSortingCurrentOrdering name key world error value protocol nameEq keyEq current =
   supportOrderingSpike nameEq keyEq protocol (sortingCurrentTrace current) (sortingCurrentPremises current)
 
+||| Generator/stage provenance is computed from the operational nodes, never copied independently.
+0 canonicalSortingReplayCorrespondence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  {original : Transitions initial originalFinal} ->
+  (current : CanonicalSortingReplayState name key world error value protocol nameEq keyEq original) ->
+  RelationalReplayCorrespondence name key world error value original (sortingCurrentTrace current)
+canonicalSortingReplayCorrespondence name key world error value protocol nameEq keyEq current =
+  finiteDerivationReplayCorrespondence (sortingReplayDerivation current)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
