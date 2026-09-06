@@ -1408,6 +1408,30 @@ canonicalSortingReplayExtend name key world error value protocol nameEq keyEq or
       (relationalReplayEndpointTransitiveSpike nameEq keyEq _ (sortingCurrentFinal current)
         (replayedFinal result) (sortingCurrentEndpoint current) (swappedEndpoint result))
 
+||| Execute the frozen splice at the state's own full bundle; no moved trace is accepted.
+0 canonicalSortingReplaySwap :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (current : CanonicalSortingReplayState name key world error value protocol nameEq keyEq original) ->
+  {pairFirst, pairMiddle, pairFinal : SystemState name key value world error} ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal (sortingCurrentFinal current)) ->
+  (appendTransitions prefixTrace (MoreTransitions left (MoreTransitions right suffix)) = sortingCurrentTrace current) ->
+  AdjacentSwapOrientationEvidence left right ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  SameExternalOrchestration nameEq (MoreTransitions left (MoreTransitions right NoTransitions))
+    (MoreTransitions (movedRight diamond) (MoreTransitions (movedLeft diamond) NoTransitions)) ->
+  CanonicalSortingReplayState name key world error value protocol nameEq keyEq original
+canonicalSortingReplaySwap name key world error value protocol nameEq keyEq original current
+  prefixTrace left right suffix decomposition orientation diamond pairExternal =
+    canonicalSortingReplayExtend name key world error value protocol nameEq keyEq original current
+      prefixTrace left right suffix orientation diamond
+      (adjacentSwapSuffixSpike nameEq keyEq protocol (sortingCurrentTrace current) prefixTrace left right suffix
+        decomposition (sortingCurrentPremises current) diamond pairExternal)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
