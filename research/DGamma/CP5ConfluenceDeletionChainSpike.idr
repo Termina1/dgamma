@@ -30308,6 +30308,19 @@ scopedComposeRegistrationAccounting name key world error value initial sourceFin
 scopedAccountingPullName name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right generation (parent ** component ** occurrence ** evidence) =
   sym (cong generationName (trans (sealedAccountingBackward left occurrence) (cong (generationBackward renaming) (fst evidence))))
 
+0 scopedStepSealedAccounting :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (step : DeletionChainStep name key world error value protocol nameEq keyEq trace premises candidate) ->
+  ScopedCanonicalAccounting name key world error value initial finalState (survivingFinal (deletionResult step)) trace (survivingTrace (deletionResult step))
+    (endpointWithdrawnGenerations (deletionEndpoint step)) (deletionProducerGenerationRenaming (deletionProducerCapital step))
+scopedStepSealedAccounting name key world error value protocol nameEq keyEq initial finalState trace premises candidate step =
+  MkScopedCanonicalAccounting (deletionRegistrationAccounting step)
+    (scopedStepAccountingBackward name key world error value protocol nameEq keyEq initial finalState trace premises candidate step _ _ _)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
