@@ -34,11 +34,30 @@ raw claims from generation predicates. Fresh R8 and conditional R16 checks pass.
 
 The R172 history below remains evidence for the old surface; the reuse trace
 no longer supplies every REVISED O17 hypothesis. Six holes remain; O17 body
-R173 0/3. The bounded disposable probe/worklist phase follows this boundary.
+R173 0/3. The disposable probe was checked and its source removed before the
+retained worklist. C50/C53 now PRODUCE actual whole-source adjacent grouping
+pairs and fixed-order membership; C55–C57 derive A/O parent exclusion and
+activation output installation. This is not a sorting result. C58's operational
+A/Insert distinctness proof exhausted 3/3 on the final actor-owner scalar
+projection and was removed/audited; restored C57 source passed. The supervisor
+ratified the stop at `f2f4003`, with no re-budget.
+
+Remaining O17 producers: root-input placement/hoisting; exact A/Insert
+actor-distinctness and A/A–O/A–O/O applicability/orientation; actual sealed swaps
+with registration/external evidence; reached closing-free shape preservation;
+simultaneous updated blocks/ranges/derivation; structural `BlockBefore`; a global
+strictly decreasing measure; exact accounting-fold alignment. Shared
+original/reduced order and `CanonicalReplayAccountingLaws` remain open.
+Unit D is SKIPPED by supervisor ruling and moves to R174. Final seeded package
+invocation passed 207/207 at 18:49 UTC; fresh census remains six. Full evidence
+and the one retained EOF-whitespace warning are in
+`research-tests/O6-R173-GRIND-SHIFT-AUDIT.md`.
 
 ### Research proof visibility doctrine (R173 owner ruling)
 
-Research proof helpers default to `export`. Use `public export` only when
+Research proof helpers consumed by other modules default to `export`; internal
+grouping/cursor implementation types and helpers remain private, as ratified by
+the supervisor. Use `public export` only when
 consumers must compute with a definition; equality/injectivity proof terms
 should remain opaque. A consumer requiring the shape of an opaque proof is a
 new gate, not authorization to restore transparent proof export. R173's new

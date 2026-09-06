@@ -1,4 +1,4 @@
-# R173 grind-shift audit — work in progress
+# R173 grind-shift audit — final partial-proof boundary
 
 Start: 2026-09-06 15:13:47 UTC, branch `cp5-thm73-scoping`, HEAD `15fb0e6`.
 Deadline 19:13:47; no new attempts after 18:33:47; safe final gate by 18:58:47.
@@ -343,3 +343,64 @@ canonicalWorkActivationInsertDistinct name key world error value nameEq keyEq {f
 Unit C stops at the checked C57 boundary (`7e26b79`), pending the serialized restoration gate. O17 remains **0/3**, no holes closed. Remaining operational producers: (1) root-input placement/hoisting phase; (2) exact A/O distinctness bridge above and genuine A/A, O/A, O/O applicability/orientation dispatch; (3) actual adjacent result from the produced pair with transported discipline/external evidence; (4) reached closing-free shape preservation; (5) simultaneous updated blocks, ordered ranges and finite derivation; (6) structural `BlockBefore` across actual pieces; (7) global strictly decreasing sorting measure; (8) exact registration-accounting fold alignment. The constructor worklist is not itself a sorter.
 
 Restoration gate `gate-restored-C58` freshly PASSED 2026-09-06 18:14:01–18:14:56 UTC, exit 0, 20,322,480 KiB sampled peak. Retained source is exactly the C57 committed boundary; no C58 declaration/import remains.
+
+## C36–C58 compiler/commit ledger
+
+All C36–C53 passed 1/3. C54–C57 passed 2/3; C58 exhausted 3/3.
+
+| Unit | Retained commit | Charged checks | Last verdict/time UTC |
+|---|---|---:|---|
+| C36 | `869b2ab` | 1/3 | PASS 17:12:46 |
+| C37 | `5624b3e` | 1/3 | PASS 17:14:28 |
+| C38 | `d5ebfc9` | 1/3 | PASS 17:16:43 |
+| C39 | `a1300d1` | 1/3 | PASS 17:18:21 |
+| C40 | `d1e1bc5` | 1/3 | PASS 17:19:36 |
+| C41 | `be1f786` | 1/3 | PASS 17:21:26 |
+| C42 | `fc56ef9` | 1/3 | PASS 17:22:44 |
+| C43 | `81cc5f4` | 1/3 | PASS 17:24:04 |
+| C44 | `0cbba28` | 1/3 | PASS 17:26:59 |
+| C45 | `fd80a80` | 1/3 | PASS 17:28:23 |
+| C46 | `342763d` | 1/3 | PASS 17:29:56 |
+| C47 | `0b6a987` | 1/3 | PASS 17:33:36 |
+| C48 | `1430677` | 1/3 | PASS 17:34:51 |
+| C49 | `e23a001` | 1/3 | PASS 17:36:10 |
+| C50 | `d35b8f1` | 1/3 | PASS 17:37:31 |
+| C51 | `99a4cbb` | 1/3 | PASS 17:39:19 |
+| C52 | `37ed8af` | 1/3 | PASS 17:40:41 |
+| C53 | `9b08c20` | 1/3 | PASS 17:42:13 |
+| C54 | `c2561f4` | 2/3 | PASS 17:58:09 |
+| C55 | `0d1f024` | 2/3 | PASS 18:00:41 |
+| C56 | `4228882` | 2/3 | PASS 18:03:52 |
+| C57 | `7e26b79` | 2/3 | PASS 18:07:09 |
+| C58 | `REMOVED` | 3/3 | EXHAUSTED 18:12:15 |
+
+C54's first check rejected forced duplicate component binders; the accepted proof uses wildcards, never nonlinear patterns. C55's first check used explicit child/component fields where the constructor owns implicit indices; fixed by naming those implicit indices. C56's first check failed coverage across the simultaneous action/evolution/paper-activation patterns; the accepted exhaustive nested activation/equality cases close coverage without a new `with`. C57's first check exposed the transition-actor/action-owner projection; its accepted body uses the existing authenticated equality. C58 remained blocked by the further insertion-owner scalar projection despite all three charged transports (sources above); the plausible mathematical argument is NOT an accepted proof.
+
+## Supervisor final ruling and Unit D
+
+The supervisor was temporarily unavailable; proof work stayed stopped throughout that wait. On the user's explicit retry, the authoritative ruling ratified the C58 3/3 stop and `f2f4003` boundary, prohibited re-budget/new proof declarations, and authorized final validation only. The two fallback dashboard FALSE responses were explicitly superseded as not a considered owner decision. Internal grouping/cursor implementation types and helpers correctly remain PRIVATE; the export-default doctrine applies to research proof helpers consumed by other modules.
+
+**Unit D is SKIPPED by explicit supervisor ruling**, not attempted or claimed complete. Cause-sharing CrossTrace/O19/O21 analysis moves to R174 with full authorization; O19 body and O21 withdrawal work remain untouched.
+
+## Final validation — seeded, not from scratch
+
+- Fresh `idris2 --build dgamma.ipkg` PASSED **18:49:30–18:49:48 UTC**, exit 0, no diagnostics, sampled 308,000 KiB. All **207/207 existing production TTC seeds** are present. This is a fresh invocation using preserved seeds, NOT a from-scratch rebuild.
+- Retained CanonicalSort source freshly passed the restoration check **18:14:01–18:14:56 UTC**, exit 0; no source edits followed it. Its 20,322,480 KiB sampled peak is recorded. R8 and repaired conditional R16 use the already-fresh B13/B14 direct checks (15:31:42–15:33:30 and 15:35:24–15:35:27 respectively); no later consumer rerun or aggregate R11 pass is claimed.
+- Fresh **18:52:58 UTC** census: **6 = 1 / 4 / 0 / 0 / 1** (CanonicalSort / CrossTrace / DeletionChain / LocalDiamond / RenamingComposition). No holes closed; O17 body stays **0/3**.
+- Production `src/` and `dgamma.ipkg` are byte-identical to `34b21c9`; CP3 blob `2c697e532e83989de8591fa6a4378747c6a501c0`. Other research spikes, including LocalDiamond and DeletionChain, are unchanged from start `15fb0e6`.
+- Frozen O6: exact 1470-byte declaration SHA256 `2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf`; exact 1154-byte statement SHA256 `3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf`. Frozen untracked review SHA256 `61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8`.
+- Fresh diff scan finds no new code holes, `believe_me`, `assert_total`, partial declarations, postulates, `with`, let aliases, as-patterns, or `deletionTheoremProof` calls. All 79 source commits add at most one top-level declaration; recorded compiler intervals are serialized, and no compiler is active.
+- Ledger: **106 compiler invocations**, 84 clean passes, 21 compiler diagnostic rejections, plus C20-1 `ABORTED_TOOL_TIMEOUT` with no compiler verdict. That orphan incident is separately reconciled above, not treated as a concurrent invocation or a pass. No proof attempt started after 18:33:47.
+- The disposable `R173O17FreshNameProbe.idr` source is absent, but its `.ttc` AND `.ttm` remain in `build/ttc/2025081600/DGamma/`; no seed was deleted. Source removal is not falsely advertised as removal of those cached artifacts.
+- **Non-proof hygiene warning remains:** `git diff --check 15fb0e6` returns 2 solely for `CP5UniqueRawNameOrdinalCapital.idr:48: new blank line at EOF`. It is recorded, not silently waived or fixed after the guard; the enormous helper was not needlessly rebuilt for whitespace.
+- Tree before this documentation commit contained ONLY the allowed untracked `paper/` and `review-o6-body-adversarial.md`; no staged/source dirt. Validation details: `/tmp/dgamma-r173/validation.json`; serialized check ledger `/tmp/dgamma-r173/ledger.jsonl`.
+
+## Status
+
+**Fully proved here:** strong uniqueness definition and both concrete fixtures; actual deletion and finite-adjacent-derivation uniqueness transport; actual actor-prefix/block/range inspection; exact first-owned grouping pair production with fixed-order membership; derived A/O parent exclusion and checked activation output installation.
+
+**Partial:** O17 producer capital, not sorting. The EXACT remaining producers are: root-input placement/hoisting; the actual A/Insert actor-distinctness scalar bridge and A/A–O/A–O/O applicability/orientation dispatch; a sealed adjacent result with transported registration/external evidence from each produced pair; reached closing-free shape preservation; simultaneous updated blocks/ranges/finite derivation; structural `BlockBefore` across the actual pieces; a complete strictly decreasing sorting measure; and exact registration-accounting fold alignment. Shared original/reduced support order and `CanonicalReplayAccountingLaws` producers are also still OPEN, supplied by the conditional late records. A general whole-trace UID checker/allocator is optional open debt.
+
+**Merely stated/open:** O17 and the five other census holes; the R16 assembly is explicitly conditional and goes through those holes, never an unconditional Theorem 73.
+
+**Next:** R174 begins at this committed boundary with the archived C58 wall and the above producer list; no unapproved retry budget is inferred. Perform the deferred Unit D reconnaissance under the supervisor's authorization. Preserve O19/O21 restrictions and the measured ordinal TTC/import-cost debt.

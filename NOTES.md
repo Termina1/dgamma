@@ -2436,3 +2436,25 @@ effect equality; and explicit `AlignedTransitions` dictionary alignment.
 **Next:** stop at the Lemma-72 boundary. The supervisor will run the required
 fresh-context adversarial review separately. Do not begin Theorem 73 or split
 the registered validation debt in this shift.
+
+
+### R173 research status (2026-09-06; supersedes the old CP5 next-step note)
+
+Production remains frozen. Strong whole-trace raw insertion uniqueness, its
+negative reuse/positive distinct-name fixtures, and transport through actual
+deletion/adjacent derivations are proved. O17 and R8/R16 now expose the revised
+conditional hypotheses. The actual worklist produces correlated blocks/ranges
+and adjacent grouping candidates with fixed-order membership; A/O parent
+exclusion and activation output installation are proved. No sorting theorem is
+claimed: C58 exhausted 3/3 at its final insertion-owner scalar projection and
+was removed, archived and restoration-checked. O17 body remains 0/3; the research
+census remains 6 (1/4/0/0/1). No escapes or new holes were added.
+
+The supervisor ratified the committed stop, confirmed internal implementation
+cursors/helpers remain private, and moved Unit D to R174. Fresh seeded package
+build passed 207/207 at 18:49 UTC; this is not from-scratch validation. Exact
+remaining producers, C58 sources, validation/frozen hashes, compiler incident,
+895-MiB ordinal TTC performance debt, cached disposable-probe artifacts, and the
+retained EOF-whitespace warning are catalogued in
+`research-tests/O6-R173-GRIND-SHIFT-AUDIT.md`. Continue only at the approved R174
+boundary; no fourth C58 attempt or unconditional Theorem-73 claim is inferred.
