@@ -29590,6 +29590,15 @@ scopedAfterBirthOccurrence name key world error value initial finalState global 
         (replace {p = LT (registrationOrdinal birth)} (plusSuccRightSucc (registrationOrdinal birth) (transitionCount leading))
           (LTESucc (lteAddRight {m = transitionCount leading} (registrationOrdinal birth)))))
 
+0 scopedGeneratedAfterActionOccurrence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedActionOccurrence (OInsert child (ChildOf parent) component) global) -> (action : Action name key value world error) ->
+  ActionOccurs action (afterActionOccurrence birth) -> ActionOccurs action (afterRegistration (deletionActionOccurrenceToGenerated birth))
+scopedGeneratedAfterActionOccurrence name key world error value initial finalState global child parent component
+  (MkLocatedActionOccurrence before afterState leading transition rest same decomposition) action occurs = occurs
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
