@@ -2533,6 +2533,17 @@ canonicalWorkFindNextActor name key world error value nameEq selected (MoreTrans
         (\noTail => remains (NoLifecycleByStep step rest
           (\lifecycle, same => foreign (CanonicalWorkLifecycle lifecycle same)) noTail)))
 
+||| The stronger foreign-action span entails its lifecycle-only projection.
+0 canonicalWorkForeignNoLifecycle :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  CanonicalWorkForeignSpan selected trace -> NoLifecycleBy selected trace
+canonicalWorkForeignNoLifecycle name key world error value selected CanonicalWorkForeignEnd = NoLifecycleByEnd
+canonicalWorkForeignNoLifecycle name key world error value selected (CanonicalWorkForeignStep step rest excluded tail) =
+  NoLifecycleByStep step rest (\lifecycle, same => excluded (CanonicalWorkLifecycle lifecycle same))
+    (canonicalWorkForeignNoLifecycle name key world error value selected tail)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
