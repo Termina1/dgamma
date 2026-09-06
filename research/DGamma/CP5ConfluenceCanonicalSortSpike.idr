@@ -1653,6 +1653,21 @@ canonicalHoistedRootOccurrence name key world error value protocol nameEq keyEq 
   (locatedActionOrdinal (canonicalHoistedRootOccurrence name key world error value protocol nameEq keyEq original prefixTrace left right suffix root component hoist) = transitionCount prefixTrace)
 canonicalHoistedRootOrdinal name key world error value protocol nameEq keyEq original prefixTrace left right suffix root component hoist = Refl
 
+0 canonicalOriginalHoistedRootOccurrence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) -> (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) -> (root : name) -> (component : Component key value world error) ->
+  (hoist : CanonicalRootInsertionHoist name key world error value protocol nameEq keyEq original prefixTrace left right suffix root component) ->
+  LocatedActionOccurrence (OInsert root Root component) original
+canonicalOriginalHoistedRootOccurrence name key world error value protocol nameEq keyEq original prefixTrace left right suffix root component hoist =
+  MkLocatedActionOccurrence _ _ (appendTransitions prefixTrace (MoreTransitions left NoTransitions)) right suffix
+    (trans (sym (movedRightAction (rootHoistDiamond hoist))) (rootHoistedAction hoist))
+    (trans (appendTransitionsAssociative prefixTrace (MoreTransitions left NoTransitions) (MoreTransitions right suffix))
+      (originalDecomposition (rootHoistResult hoist)))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
