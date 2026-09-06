@@ -1363,6 +1363,22 @@ canonicalSortingReplayStart name key world error value protocol nameEq keyEq ini
     (sameExternalOrchestrationReflexiveSpike nameEq original)
     (relationalReplayEndpointReflexiveSpike nameEq keyEq originalFinal (replayFinalWellFormed premises))
 
+0 canonicalSortingDerivationAppend :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, sourceFinal, middleFinal, targetFinal : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (middleTrace : Transitions initial middleFinal) ->
+  (target : Transitions initial targetFinal) ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq source middleTrace ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq middleTrace target ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq source target
+canonicalSortingDerivationAppend name key world error value protocol nameEq keyEq source source target FiniteAdjacentSwapDone later = later
+canonicalSortingDerivationAppend name key world error value protocol nameEq keyEq source middleTrace target
+  (FiniteAdjacentSwapStep source prefixTrace left right suffix orientation diamond result middleTrace rest) later =
+    FiniteAdjacentSwapStep source prefixTrace left right suffix orientation diamond result target
+      (canonicalSortingDerivationAppend name key world error value protocol nameEq keyEq
+        (swappedTrace result) middleTrace target rest later)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
