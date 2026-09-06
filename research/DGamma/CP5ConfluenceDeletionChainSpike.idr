@@ -27741,6 +27741,14 @@ scopedRegistrationAccountingFromExclusion name key world error value nameEq keyE
           (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result capital birth) = generation) -> Void)
       (excluded generation member))
 
+0 scopedBirthFreshShift :
+  (name : Type) -> (registered : List (RegistrationGeneration name)) -> (child : name) -> (ordinal, sourceIndex : Nat) ->
+  Not (Elem (MkRegistrationGeneration child (S ordinal + sourceIndex)) registered) ->
+  Not (Elem (MkRegistrationGeneration child (ordinal + S sourceIndex)) registered)
+scopedBirthFreshShift name registered child ordinal sourceIndex absent present =
+  absent (replace {p = \birthOrdinal => Elem (MkRegistrationGeneration child birthOrdinal) registered}
+    (sym (plusSuccRightSucc ordinal sourceIndex)) present)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
