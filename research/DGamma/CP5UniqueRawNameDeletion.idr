@@ -176,3 +176,21 @@ uniqueInsertionsFromDeletionCertificate name key world error value nameEq keyEq 
         (uniqueInsertionPosition unique actor leftParent rightParent leftComponent rightComponent
           (replayActionOrigin (deletionOperationalCorrespondence certificate) left)
           (replayActionOrigin (deletionOperationalCorrespondence certificate) right)))
+
+0 uniqueInsertionsAfterDeletionStep :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq original) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq original) ->
+  (step : DeletionChainStep name key world error value protocol nameEq keyEq original premises candidate) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq (survivingTrace (deletionResult step))
+uniqueInsertionsAfterDeletionStep name key world error value nameEq keyEq protocol original premises candidate step unique =
+  uniqueInsertionsFromDeletionCertificate name key world error value nameEq keyEq original
+    (selectedActor candidate) (selectedEpisode candidate) (selectedRegistrations candidate)
+    (selectedStartOrdinal candidate) (selectedStartLive candidate) (deletionResult step)
+    (deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol original premises candidate
+      (deletionResult step) (deletionProducerCapital step)) unique
