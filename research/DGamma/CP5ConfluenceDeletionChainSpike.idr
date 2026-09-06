@@ -30280,6 +30280,21 @@ scopedCumulativeRegistrationRemoved name key world error value initial sourceFin
       (ScopedRegistrationRemoval name key world error value initial sourceFinal targetFinal source target (\birth => canonicalToOriginal (sealedAccounting left) (canonicalToOriginal right birth))) rightWithdrawn
       (\generation, member => scopedRemovalRight name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right generation (withdrawnRegistrationRemoved right generation member)))
 
+0 scopedComposeRegistrationAccounting :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (initial, sourceFinal, middleFinal, targetFinal : SystemState name key value world error) ->
+  (source : Transitions initial sourceFinal) -> (middle : Transitions initial middleFinal) -> (target : Transitions initial targetFinal) ->
+  (leftWithdrawn, rightWithdrawn : List (RegistrationGeneration name)) -> (renaming : RegistrationGenerationBijection name) ->
+  (left : ScopedCanonicalAccounting name key world error value initial sourceFinal middleFinal source middle leftWithdrawn renaming) ->
+  (right : CanonicalRegistrationCorrespondence middle target rightWithdrawn) ->
+  CanonicalRegistrationCorrespondence source target (leftWithdrawn ++ map (generationBackward renaming) rightWithdrawn)
+scopedComposeRegistrationAccounting name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right =
+  MkCanonicalRegistrationCorrespondence (\birth => canonicalToOriginal (sealedAccounting left) (canonicalToOriginal right birth))
+    (\birth => scopedCoverageSourceDecision name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right _ _ _ birth (originalRegistrationAccounted (sealedAccounting left) birth))
+    (\firstBirth, secondBirth, same => canonicalOccurrenceInjective right firstBirth secondBirth
+      (canonicalOccurrenceInjective (sealedAccounting left) (canonicalToOriginal right firstBirth) (canonicalToOriginal right secondBirth) same))
+    (scopedCumulativeRegistrationRemoved name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
