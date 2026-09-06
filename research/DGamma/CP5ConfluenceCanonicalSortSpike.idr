@@ -3307,6 +3307,36 @@ canonicalWorkAcceptAdjacentResult name key world error value nameEq keyEq protoc
       (canonicalSortingReplayExtend name key world error value protocol nameEq keyEq original
         (workReachedReplay current) prefixTrace left right suffix orientation diamond result)
 
+||| Total positive rule classifier for the actual action/tag pair. Nothing is
+||| deliberately NOT a proof of inapplicability or of absence from O17 inputs.
+0 canonicalWorkInspectPaperStep :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {before, afterState : SystemState name key value world error} ->
+  (step : Transition before afterState) ->
+  Maybe (Either (PaperActivationStep step) (PaperOrchestrationStep step))
+canonicalWorkInspectPaperStep name key world error value
+  (Fired stepNameEq stepKeyEq (OInsert actor parent component) tag checked) = Just (Right (PaperInsertStep Refl))
+canonicalWorkInspectPaperStep name key world error value
+  (Fired stepNameEq stepKeyEq (ORetire actor) tag checked) = Just (Right (PaperRetireStep Refl))
+canonicalWorkInspectPaperStep name key world error value
+  (Fired stepNameEq stepKeyEq (ORemove actor) tag checked) = Just (Right (PaperRemoveStep Refl))
+canonicalWorkInspectPaperStep name key world error value
+  (Fired stepNameEq stepKeyEq (LBegin actor) LBeginTag checked) = Just (Left (PaperBeginStep Refl Refl))
+canonicalWorkInspectPaperStep name key world error value
+  (Fired stepNameEq stepKeyEq (LBegin actor) tag checked) = Nothing
+canonicalWorkInspectPaperStep name key world error value
+  (Fired stepNameEq stepKeyEq (LAdvance actor) LIterTag checked) = Just (Left (PaperIterStep Refl Refl))
+canonicalWorkInspectPaperStep name key world error value
+  (Fired stepNameEq stepKeyEq (LAdvance actor) LFinishTag checked) = Just (Left (PaperFinishStep Refl Refl))
+canonicalWorkInspectPaperStep name key world error value
+  (Fired stepNameEq stepKeyEq (LAdvance actor) tag checked) = Nothing
+canonicalWorkInspectPaperStep name key world error value
+  (Fired stepNameEq stepKeyEq (LDivert actor) tag checked) = Nothing
+canonicalWorkInspectPaperStep name key world error value
+  (Fired stepNameEq stepKeyEq (LLeave actor) tag checked) = Nothing
+canonicalWorkInspectPaperStep name key world error value
+  (Fired stepNameEq stepKeyEq (LUnload actor) tag checked) = Nothing
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
