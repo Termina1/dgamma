@@ -29812,6 +29812,13 @@ scopedClassifiedGenerationsExact name key world error value nameEq initial final
 scopedClassifiedGenerationsExact name key world error value nameEq initial finalState global (generation :: rest) classified =
   cong (generation ::) (scopedClassifiedGenerationsExact name key world error value nameEq initial finalState global rest (\later, member => classified later (There member)))
 
+0 scopedHistoryAppendExact :
+  (item, index : Type) -> (keyOf : item -> index) -> (left, right : List item) ->
+  (map keyOf (left ++ right) = map keyOf left ++ map keyOf right)
+scopedHistoryAppendExact item index keyOf [] right = Refl
+scopedHistoryAppendExact item index keyOf (head :: rest) right =
+  cong (keyOf head ::) (scopedHistoryAppendExact item index keyOf rest right)
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
