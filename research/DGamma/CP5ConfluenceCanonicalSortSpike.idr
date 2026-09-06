@@ -2630,6 +2630,22 @@ record CanonicalWorkGroupingPair
   0 workPairDecomposition : appendTransitions workPairPrefix
     (MoreTransitions workPairLeft (MoreTransitions workPairRight workPairSuffix)) = trace
 
+0 canonicalWorkGroupingPairFromSnoc :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  (next : CanonicalWorkNextActor name key world error value selected trace) ->
+  CanonicalWorkForeignSnoc name key world error value selected (workBeforeNext next) ->
+  CanonicalWorkGroupingPair name key world error value selected trace
+canonicalWorkGroupingPairFromSnoc name key world error value selected trace next split =
+  MkCanonicalWorkGroupingPair (workSnocBefore split) (workNextBefore next) (workNextAfter next)
+    (workSnocPrefix split) (workSnocLast split) (workNextStep next) (workAfterNext next)
+    (workSnocLastForeign split) (workNextOwned next)
+    (trans (sym (appendTransitionsAssociative (workSnocPrefix split)
+      (MoreTransitions (workSnocLast split) NoTransitions) (MoreTransitions (workNextStep next) (workAfterNext next))))
+      (trans (cong (\earlier => appendTransitions earlier (MoreTransitions (workNextStep next) (workAfterNext next)))
+        (workSnocDecomposition split)) (workNextDecomposition next)))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
