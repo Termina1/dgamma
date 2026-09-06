@@ -29570,6 +29570,26 @@ record ScopedAfterBirthOccurrence
   afterBirthOccurrence : LocatedActionOccurrence action global
   0 afterBirthStrict : LT (registrationOrdinal birth) (locatedActionOrdinal afterBirthOccurrence)
 
+0 scopedAfterBirthOccurrence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedGeneratedRegistration child parent component global) -> (action : Action name key value world error) ->
+  LocatedActionOccurrence action (afterRegistration birth) ->
+  ScopedAfterBirthOccurrence name key world error value initial finalState global child parent component birth action
+scopedAfterBirthOccurrence name key world error value initial finalState global child parent component birth action
+  (MkLocatedActionOccurrence before afterState leading transition rest same decomposition) =
+    MkScopedAfterBirthOccurrence
+      (MkLocatedActionOccurrence before afterState
+        (appendTransitions (beforeRegistration birth) (MoreTransitions (registrationTransition birth) leading)) transition rest same
+        (trans (appendTransitionsAssociative (beforeRegistration birth) (MoreTransitions (registrationTransition birth) leading) (MoreTransitions transition rest))
+          (trans (cong (\suffix => appendTransitions (beforeRegistration birth) (MoreTransitions (registrationTransition birth) suffix)) decomposition)
+            (registrationDecomposition birth))))
+      (replace {p = LT (registrationOrdinal birth)}
+        (sym (transitionCountAppend (beforeRegistration birth) (MoreTransitions (registrationTransition birth) leading)))
+        (replace {p = LT (registrationOrdinal birth)} (plusSuccRightSucc (registrationOrdinal birth) (transitionCount leading))
+          (LTESucc (lteAddRight {m = transitionCount leading} (registrationOrdinal birth)))))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
