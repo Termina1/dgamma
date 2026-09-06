@@ -26586,6 +26586,30 @@ scopedDeletionOrdinalSegments name key world error value nameEq keyEq initial fi
       (locatedAfter (selectedEpisode candidate)) finalState (survivingEpisodeEnd result) (survivingFinal result)
       (traceAfterClosing (selectedEpisode candidate)) (survivingAfter result) (afterDeletion result))
 
+0 scopedDeletionEmbeddedOrdinalPath :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (segments : ScopedDeletionOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result) ->
+  (sourceIndex, targetIndex : Nat) -> DeletionSurvivingOrdinalEmbedding result targetIndex sourceIndex ->
+  ScopedOrdinalPath (joinedOrdinalSpine (wholeOrdinalJoin segments)) sourceIndex targetIndex
+scopedDeletionEmbeddedOrdinalPath name key world error value nameEq keyEq initial finalState global candidate result segments _ _
+  (DeletionBeforeEmbedding {survivingOrdinal} {originalOrdinal} exact) =
+    appendLeftPath (wholeOrdinalJoin segments) originalOrdinal survivingOrdinal
+      (appendLeftPath (prefixOrdinalJoin segments) originalOrdinal survivingOrdinal
+        (originPath (beforeOrdinalSegment segments) originalOrdinal survivingOrdinal exact))
+scopedDeletionEmbeddedOrdinalPath name key world error value nameEq keyEq initial finalState global candidate result segments _ _
+  (DeletionEpisodeEmbedding {survivingOrdinal} {originalOrdinal} exact) =
+    appendLeftPath (wholeOrdinalJoin segments) (deletionOriginalBeforeCount result + originalOrdinal) (deletionSurvivingBeforeCount result + survivingOrdinal)
+      (appendRightPath (prefixOrdinalJoin segments) originalOrdinal survivingOrdinal
+        (originPath (centerOrdinalSegment segments) originalOrdinal survivingOrdinal exact))
+scopedDeletionEmbeddedOrdinalPath name key world error value nameEq keyEq initial finalState global candidate result segments _ _
+  (DeletionAfterEmbedding {survivingOrdinal} {originalOrdinal} exact) =
+    appendRightPath (wholeOrdinalJoin segments) originalOrdinal survivingOrdinal
+      (originPath (suffixOrdinalSegment segments) originalOrdinal survivingOrdinal exact)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
