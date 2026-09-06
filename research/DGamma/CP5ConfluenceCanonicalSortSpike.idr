@@ -3648,6 +3648,17 @@ canonicalWorkEpisodePairActivationContinuation name key world error value nameEq
 canonicalWorkEpisodePairActivationContinuation name key world error value nameEq keyEq selected
   trace episode scanned remains (PaperFinishStep {actor} action tag) = (actor ** (action, Right tag))
 
+||| Specification of the actual Maybe selection result. Nothing remains only
+||| absence of a selected grouping pair; it is NOT successful sorting.
+0 canonicalWorkSelectedAvoidsBegin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) -> (pending : List name) ->
+  Maybe (CanonicalWorkSelectedPair name key world error value trace pending) -> Type
+canonicalWorkSelectedAvoidsBegin name key world error value trace pending Nothing = ()
+canonicalWorkSelectedAvoidsBegin name key world error value trace pending (Just found) =
+  (actor : name) -> Not (transitionAction (workPairRight (workSelectedPair found)) = LBegin actor)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
