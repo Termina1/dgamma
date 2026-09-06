@@ -30116,6 +30116,12 @@ record ScopedCanonicalAccounting
     (birth : LocatedGeneratedRegistration child parent component target) ->
     (registrationGeneration (canonicalToOriginal sealedAccounting birth) = generationBackward renaming (registrationGeneration birth))
 
+0 scopedBackwardInjective :
+  (name : Type) -> (renaming : RegistrationGenerationBijection name) -> (left, right : RegistrationGeneration name) ->
+  (generationBackward renaming left = generationBackward renaming right) -> (left = right)
+scopedBackwardInjective name renaming left right same =
+  trans (sym (generationRightInverse renaming left)) (trans (cong (generationForward renaming) same) (generationRightInverse renaming right))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
