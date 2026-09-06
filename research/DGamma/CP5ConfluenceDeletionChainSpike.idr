@@ -26380,6 +26380,19 @@ scopedKeptOrdinalOrigin : (Nat -> Maybe Nat) -> Nat -> Maybe Nat
 scopedKeptOrdinalOrigin origin Z = Just Z
 scopedKeptOrdinalOrigin origin (S targetIndex) = map S (origin targetIndex)
 
+0 scopedKeptOriginPath :
+  (sourceCount, targetCount : Nat) -> (origin : Nat -> Maybe Nat) ->
+  (witness : ScopedOrdinalOriginWitness sourceCount targetCount origin) ->
+  (sourceIndex, targetIndex : Nat) -> (scopedKeptOrdinalOrigin origin targetIndex = Just sourceIndex) ->
+  ScopedOrdinalPath (ScopedOrdinalKeep (originSpine witness)) sourceIndex targetIndex
+scopedKeptOriginPath sourceCount targetCount origin witness sourceIndex Z exact =
+  replace {p = \position => ScopedOrdinalPath (ScopedOrdinalKeep (originSpine witness)) position Z}
+    (justInjective exact) ScopedOrdinalHere
+scopedKeptOriginPath sourceCount targetCount origin witness sourceIndex (S targetIndex) exact =
+  scopedMapSuccEliminate (\position => ScopedOrdinalPath (ScopedOrdinalKeep (originSpine witness)) position (S targetIndex))
+    (origin targetIndex) sourceIndex exact
+    (\predecessor, tailExact => ScopedOrdinalKeptLater (originPath witness predecessor targetIndex tailExact))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
