@@ -26965,6 +26965,22 @@ scopedAppendLengthBound name key world error value sourceFirst sourceMiddle sour
     (replace {p = \targetSize => LTE (margin + targetSize) (traceLength sourceLeft + traceLength sourceRight)}
       (sym (scopedAppendTraceLength name key world error value targetFirst targetMiddle targetFinal targetLeft targetRight)) bounded)
 
+0 scopedDeletionCenterShorter :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (LTE (S (traceLength (survivingEpisode result)))
+    (S (traceLength (closedTransitions (locatedEpisode (selectedEpisode candidate))))))
+scopedDeletionCenterShorter name key world error value nameEq keyEq initial finalState global candidate result =
+  scopedDeletedHeadStrictLength name key world error value nameEq
+    (EpisodeGenerationDeletedActor nameEq (selectedActor candidate) (selectedRegistrations candidate)) (selectedStartOrdinal candidate) (selectedStartLive candidate)
+    (locatedPreStart (selectedEpisode candidate)) (closedStartState (locatedEpisode (selectedEpisode candidate))) (locatedAfter (selectedEpisode candidate))
+    (survivingBeforeEnd result) (survivingEpisodeEnd result)
+    (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))
+    (survivingEpisode result) (episodeDeletion result) (DeleteEpisodeGenerationLifecycle Refl Refl)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
