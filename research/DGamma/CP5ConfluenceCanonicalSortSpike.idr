@@ -2818,6 +2818,20 @@ canonicalWorkActivationEvolutionInstalled name key world error value nameEq keyE
 canonicalWorkActivationEvolutionInstalled name key world error value nameEq keyEq first afterState (LUnload actor) LUnloadTag checked
   ClosedInstallation (PaperFinishStep Refl sameTag) impossible
 
+0 canonicalWorkActivationEndsInstalled :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, afterState : SystemState name key value world error} ->
+  (step : Transition first afterState) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions step NoTransitions) ->
+  PaperActivationStep step -> installedAt @{nameEq} (transitionActor step) afterState = True
+canonicalWorkActivationEndsInstalled name key world error value nameEq keyEq {first} {afterState} _
+  (AlignedStep action tag checked _ AlignedEnd) activation =
+    replace {p = \actor => installedAt @{nameEq} actor afterState = True}
+      (sym (canonicalTransitionActorActionOwner (Fired {before = first} {afterState} nameEq keyEq action tag checked)))
+      (canonicalWorkActivationEvolutionInstalled name key world error value nameEq keyEq first afterState action tag checked
+        (installationEvolutionStep nameEq keyEq (actionOwner action) action tag first afterState checked) activation)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
