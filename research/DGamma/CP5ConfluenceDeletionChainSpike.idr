@@ -20305,6 +20305,21 @@ scopedRootExclusionStepAt name key world error value nameEq keyEq registered ord
     (systemLocalUpdateForeign nameEq actor (actionOwner action) distinct source target (applyActionLocalUpdate nameEq keyEq action source target tag raw)))
     (roots actor generation member (trans (sym (lookupAdvanceGenerationOther nameEq ordinal action actor distinct live)) current))
 
+0 scopedRootExclusionStep :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  GenerationEnvironmentNamesUnique live -> (action : Action name key value world error) ->
+  (source, target : SystemState name key value world error) -> (tag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} action source = Just (tag, target)) ->
+  ((child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+    (action = OInsert child parent component) -> Elem (MkRegistrationGeneration child ordinal) registered -> (scopedParentRoot parent = False)) ->
+  CurrentRegisteredInactiveFibers name key world error value nameEq registered live source ->
+  ScopedCurrentRootExclusion name key world error value nameEq registered live source ->
+  ScopedCurrentRootExclusion name key world error value nameEq registered (advanceGenerationEnvironment @{nameEq} ordinal action live) target
+scopedRootExclusionStep name key world error value nameEq keyEq registered ordinal live unique action source target tag raw births inactive roots actor generation member current =
+  scopedRootExclusionStepAt name key world error value nameEq keyEq registered ordinal live unique action source target tag raw births inactive roots actor generation member current
+    (decEq @{nameEq} actor (actionOwner action))
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
