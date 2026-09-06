@@ -351,3 +351,23 @@ public export
 0 r172ReuseOrdering : SupportOrderingCapital Nat R45Key Unit String R45Value r45NameEq r45KeyEq r172ReuseFinal
 r172ReuseOrdering = supportOrderingSpike r45NameEq r45KeyEq r45Protocol r172ReuseTrace r172ReuseBundle
 
+||| The identity/terminal route is genuinely unavailable; this is not a global sorting refutation.
+public export
+0 r172ReuseSourceNotRootFirst : RootInputsBeforeLifecycle r45NameEq r172ReuseTrace -> Void
+r172ReuseSourceNotRootFirst
+  (RootInputsBeforeLifecycleStep _ _ _ (RootInputsBeforeLifecycleStep _ _ noRoot later)) =
+    forbiddenRoot _ (noRoot Refl) r172ReuseRoot
+      (OccursLater (OccursLater (OccursLater OccursHere))) (RootInsertStep Refl)
+  where
+  0 forbiddenRoot :
+    {first, finalState, before, afterState : SystemState Nat R45Key R45Value Unit String} ->
+    (trace : Transitions first finalState) -> NoRootOrchestration r45NameEq trace ->
+    (transition : Transition before afterState) -> OccursIn transition trace ->
+    RootOrchestrationStep r45NameEq transition -> Void
+  forbiddenRoot (MoreTransitions transition rest) (NoRootOrchestrationStep _ _ excluded later)
+    transition OccursHere root = excluded root
+  forbiddenRoot (MoreTransitions head rest) (NoRootOrchestrationStep _ _ excluded later)
+    transition (OccursLater occurs) root = forbiddenRoot rest later transition occurs root
+  forbiddenRoot NoTransitions NoRootOrchestrationEnd transition occurs root =
+    case occurs of OccursHere impossible; OccursLater later impossible
+
