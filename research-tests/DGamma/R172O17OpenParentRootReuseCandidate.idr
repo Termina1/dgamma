@@ -54,3 +54,7 @@ public export
 0 r172ReuseRootChecked : checkedApplyAction @{r45NameEq} @{r45KeyEq} (OInsert 1 Root r45Child) r45AfterBegin = Just (OInsertTag, r172ReuseAfterRoot)
 r172ReuseRootChecked = Refl
 
+public export
+0 r172ReuseRetireChecked : checkedApplyAction @{r45NameEq} @{r45KeyEq} (ORetire 1) r172ReuseAfterRoot = Just (ORetireTag, r172ReuseAfterRetire)
+r172ReuseRetireChecked = Refl
+
