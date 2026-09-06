@@ -30208,6 +30208,26 @@ scopedCoverageMiddleDecision name key world error value initial sourceFinal midd
 scopedCoverageMiddle name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right child parent component original (atMiddle ** sourceExact) =
   scopedCoverageMiddleDecision name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right child parent component original atMiddle sourceExact (originalRegistrationAccounted right atMiddle)
 
+0 scopedCoverageSourceDecision :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (initial, sourceFinal, middleFinal, targetFinal : SystemState name key value world error) ->
+  (source : Transitions initial sourceFinal) -> (middle : Transitions initial middleFinal) -> (target : Transitions initial targetFinal) ->
+  (leftWithdrawn, rightWithdrawn : List (RegistrationGeneration name)) -> (renaming : RegistrationGenerationBijection name) ->
+  (left : ScopedCanonicalAccounting name key world error value initial sourceFinal middleFinal source middle leftWithdrawn renaming) ->
+  (right : CanonicalRegistrationCorrespondence middle target rightWithdrawn) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (original : LocatedGeneratedRegistration child parent component source) ->
+  Either (Elem (registrationGeneration original) leftWithdrawn)
+    (atMiddle : LocatedGeneratedRegistration child parent component middle **
+      (registrationGeneration (canonicalToOriginal (sealedAccounting left) atMiddle) = registrationGeneration original)) ->
+  Either (Elem (registrationGeneration original) (leftWithdrawn ++ map (generationBackward renaming) rightWithdrawn))
+    (atTarget : LocatedGeneratedRegistration child parent component target **
+      (registrationGeneration (canonicalToOriginal (sealedAccounting left) (canonicalToOriginal right atTarget)) = registrationGeneration original))
+scopedCoverageSourceDecision name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right child parent component original (Left member) =
+  Left (scopedAppendMemberLeft (RegistrationGeneration name) leftWithdrawn (map (generationBackward renaming) rightWithdrawn) (registrationGeneration original) member)
+scopedCoverageSourceDecision name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right child parent component original (Right retained) =
+  scopedCoverageMiddle name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right child parent component original retained
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
