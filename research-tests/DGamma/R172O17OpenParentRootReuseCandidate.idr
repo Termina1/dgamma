@@ -592,3 +592,8 @@ public export
   transitionCount (appendTransitions left right) = transitionCount left + transitionCount right
 r172ReuseCountAppend NoTransitions right = Refl
 r172ReuseCountAppend (MoreTransitions head rest) right = cong S (r172ReuseCountAppend rest right)
+
+public export
+0 r172ReuseBeforeAppendSuccessor : (left, right : Nat) -> LT left (left + S right)
+r172ReuseBeforeAppendSuccessor Z right = LTESucc LTEZero
+r172ReuseBeforeAppendSuccessor (S left) right = LTESucc (r172ReuseBeforeAppendSuccessor left right)
