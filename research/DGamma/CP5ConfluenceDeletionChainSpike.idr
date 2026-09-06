@@ -26672,6 +26672,33 @@ scopedGeneratedActionOrdinal name key world error value initial finalState trace
 scopedActionGeneratedOrdinal name key world error value initial finalState trace child parent component
   (MkLocatedActionOccurrence before afterState beforeTrace transition later actionShape decomposition) = Refl
 
+||| The global generation equation uses the frozen origin, never a replacement occurrence map.
+0 scopedDeletionGeneratedOrdinal :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (segments : ScopedDeletionOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result) ->
+  (witness : ScopedOrdinalSpinePermutationWitness (joinedOrdinalSpine (wholeOrdinalJoin segments))) ->
+  {child, parent : name} -> {component : Component key value world error} ->
+  (occurrence : LocatedGeneratedRegistration child parent component (survivingTrace result)) ->
+  (generationForward (scopedOrdinalGenerationBijection name (spinePermutation witness))
+    (registrationGeneration (deletionActionOccurrenceToGenerated
+      (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+        (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result
+        (generatedRegistrationActionOccurrence occurrence))))) = registrationGeneration occurrence)
+scopedDeletionGeneratedOrdinal name key world error value nameEq keyEq initial finalState global candidate result segments witness {child} {parent} {component} occurrence =
+  cong (MkRegistrationGeneration child)
+    (trans (cong (ordinalForward (spinePermutation witness))
+      (scopedActionGeneratedOrdinal name key world error value initial finalState global child parent component
+        (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+          (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result
+          (generatedRegistrationActionOccurrence occurrence)))))
+      (trans (scopedDeletionWholeOrdinal name key world error value nameEq keyEq initial finalState global candidate result segments witness
+        (generatedRegistrationActionOccurrence occurrence))
+        (scopedGeneratedActionOrdinal name key world error value initial (survivingFinal result) (survivingTrace result) child parent component occurrence)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
