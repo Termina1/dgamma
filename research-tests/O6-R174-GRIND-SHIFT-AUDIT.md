@@ -810,3 +810,16 @@ selection/non-Begin evidence with early Iter/Finish or registration
 applicability, consume sealed results through S17, and prove a global measure
 and completed-prefix/accounting preservation before any O17 body attempt.
 The large ordinal TTC/import-cost debt remains measured but uncured.
+
+
+Final frozen snapshot at **23:45:03 UTC**, HEAD `e829ea1`, is committed as
+`O6-R174-FINAL-VALIDATION.json`. Production/package remain byte-identical to
+`34b21c9`; LocalDiamond/DeletionChain/CrossTrace/RenamingComposition are unchanged
+from `8b68e37`. The exact O6 declaration/statement hashes, frozen CP3 blob and
+adversarial-review hash match; 207/207 seeds, six-hole census, no staged files,
+no compiler orphan and serialized 77-entry ledger all pass. CanonicalSort's
+entire delta is additive (no removed/revised old declaration), and every changed
+Idris file retains `%default total`. No forbidden additions are found.
+Only allowed `paper/` and frozen `review-o6-body-adversarial.md` are untracked.
+A final supervisor gate is requested at this committed boundary; no further
+Idris declaration or O17 body attempt is proposed during the gate.

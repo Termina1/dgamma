@@ -1,0 +1,75 @@
+{
+  "timestamp": "2026-09-06T23:45:03.411269+00:00",
+  "head": "e829ea1",
+  "holes": {
+    "CanonicalSort": [
+      "?sortClosingFreeTraceSpike_rhs"
+    ],
+    "CrossTrace": [
+      "?operationalAdjacentBlockSwapSpike_rhs",
+      "?canonicalSupportOrdersMatchSpike_rhs",
+      "?selectOperationalCanonicalPermutationSpike_rhs",
+      "?canonicalSchedulesConvergeSpike_rhs"
+    ],
+    "DeletionChain": [],
+    "LocalDiamond": [],
+    "RenamingComposition": [
+      "?replayedCanonicalToOriginalEndpointSpike_rhs"
+    ]
+  },
+  "productionDiffEmpty": true,
+  "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+  "LocalDiamondDiffVs8b68e37": "empty",
+  "adjacentFullBytes": 1470,
+  "adjacentFullSHA": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+  "adjacentStatementBytes": 1154,
+  "adjacentStatementSHA": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+  "reviewSHA": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8",
+  "seeded": "207/207",
+  "checksSerialized": true,
+  "checkCount": 77,
+  "noCompiler": true,
+  "noStagedFiles": true,
+  "tree": "?? paper/\n?? review-o6-body-adversarial.md",
+  "prohibitedAdditions": {
+    "\\bbelieve_me\\b": [],
+    "\\bassert_total\\b": [],
+    "^\\s*partial\\b": [],
+    "\\?\\w+": [],
+    "\\blet\\b": [],
+    "\\bwith\\s*\\(": [],
+    "\\bdeletionTheoremProof\\b": [],
+    "\\bpostulate\\b": [],
+    "\\b[A-Za-z_]\\w*@\\s*[\\(\\[]": []
+  },
+  "lastProofCommit": "f157f8f",
+  "lastFreshProofUnit": "S39-1",
+  "lastFreshProofStart": "2026-09-06T23:37:55.605996+00:00",
+  "lastFreshProofEnd": "2026-09-06T23:38:50.554891+00:00",
+  "checksSummary": {
+    "total": 77,
+    "cleanPass": 67,
+    "diagnosticRejection": 5,
+    "engineeringStopNoCompilerVerdict": 5
+  },
+  "canonicalDeltaAdditiveOnly": true,
+  "allChangedIdrisDefaultTotal": true,
+  "ledgerMatchesTemporaryMonitorLedger": true,
+  "noNewProofAfterS39": true,
+  "O17BodyAttempts": "0/3",
+  "independentReviewClaimed": false,
+  "changedFilesBeforeValidationArtifact": [
+    "NOTES.md",
+    "README.md",
+    "THM73-PLAN.md",
+    "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+    "research-tests/DGamma/R174O17ProvisionCollisionUnique.idr",
+    "research-tests/DGamma/R174O17ProvisionProtocol.idr",
+    "research-tests/DGamma/R174O17SortedProvisionGuard.idr",
+    "research-tests/O6-R174-A8-CAUSE-SHARING-RECON.md",
+    "research-tests/O6-R174-COMPILER-LEDGER.json",
+    "research-tests/O6-R174-GRIND-SHIFT-AUDIT.md",
+    "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+    "research/DGamma/CP5UniqueRawNameOrdinalCapital.idr"
+  ]
+}
