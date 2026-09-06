@@ -29921,6 +29921,18 @@ scopedWithdrawnAbsent name key world error value nameEq actor source target (Nam
 scopedControlAbsentRight name key world error value _ _ NoControlFibers absent = Refl
 scopedControlAbsentRight name key world error value _ _ (SomeControlFibers related) absent = absurd absent
 
+0 scopedEndpointAbsentAt :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (source, target : SystemState name key value world error) ->
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq source target) -> (actor : name) ->
+  Dec (Elem actor (endpointWithdrawnNames endpoint)) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry source) = Nothing) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry target) = Nothing)
+scopedEndpointAbsentAt name key world error value nameEq keyEq source target endpoint actor (Yes member) absent =
+  scopedWithdrawnAbsent name key world error value nameEq actor source target (endpointNamesWithdrawn endpoint actor member)
+scopedEndpointAbsentAt name key world error value nameEq keyEq source target endpoint actor (No outside) absent =
+  scopedControlAbsentRight name key world error value _ _ (endpointControlsOutside endpoint actor outside) absent
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
