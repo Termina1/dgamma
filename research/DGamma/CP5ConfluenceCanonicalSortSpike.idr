@@ -3767,6 +3767,24 @@ canonicalWorkGroupingActivationOrchestrationDiamond name key world error value n
           (canonicalSortingPairIndependent name key world error value protocol nameEq keyEq trace
             (workPairPrefix pair) (workPairLeft pair) (workPairRight pair) (workPairSuffix pair) (workPairDecomposition pair) premises)
 
+||| A generated registration is internal in both original and moved traces.
+||| No root-placement assumption is used: the action constructor decides it.
+0 canonicalWorkRegistrationInternal :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {before, afterState : SystemState name key value world error} ->
+  (step : Transition before afterState) -> (child, parent : name) ->
+  (component : Component key value world error) ->
+  (transitionAction step = OInsert child (ChildOf parent) component) ->
+  (RootOrchestrationStep nameEq step) -> Void
+canonicalWorkRegistrationInternal name key world error value nameEq step child parent component inserted
+  (RootInsertStep rootInserted) =
+    canonicalRootChildInsertImpossible name key world error value _ child parent _ component
+      (trans (sym rootInserted) inserted)
+canonicalWorkRegistrationInternal name key world error value nameEq step child parent component inserted
+  (RootRetireStep fiber found rootParent retired) = case trans (sym inserted) retired of Refl impossible
+canonicalWorkRegistrationInternal name key world error value nameEq step child parent component inserted
+  (RootRemoveStep fiber found rootParent removed) = case trans (sym inserted) removed of Refl impossible
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
