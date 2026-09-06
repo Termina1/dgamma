@@ -21040,6 +21040,13 @@ record ScopedSelectedClosedEpisodeFoldOutput
   0 selectedOutputSemantic : ScopedReadySemanticReplay name key world error value nameEq keyEq
     (EpisodeGenerationDeletedActor nameEq selected registered) episodeStartOrdinal episodeStartLive preStart afterClose preStart
     (MoreTransitions (beginTransition (closedOpening episode)) (closedTransitions episode)) (selectedFoldReady selectedOutputFold)
+  0 selectedOutputExternal :
+    ScopedOwnedRootSeals name key world error value nameEq registered episodeStartOrdinal episodeStartLive preStart afterClose
+      (MoreTransitions (beginTransition (closedOpening episode)) (closedTransitions episode)) ->
+    SameExternalOrchestration nameEq (MoreTransitions (beginTransition (closedOpening episode)) (closedTransitions episode))
+      (scopedReadyTrace name key world error value nameEq keyEq (EpisodeGenerationDeletedActor nameEq selected registered)
+        episodeStartOrdinal episodeStartLive preStart afterClose preStart
+        (MoreTransitions (beginTransition (closedOpening episode)) (closedTransitions episode)) (selectedFoldReady selectedOutputFold))
 
 record ScopedPostCloseSuffixFoldOutput
   (name, key, world, error : Type) (value : key -> Type)
@@ -24545,6 +24552,21 @@ scopedAssembleSelectedClosedOutput name key world error value protocol nameEq ke
         (S episodeStartOrdinal) episodeStartLive (closedInside episode) preStart (interiorReady (interiorOutputFold interior))
         (interiorFinalSurvivor (interiorOutputFold interior)) (interiorReadyEnds (interiorOutputFold interior))
         (closing episode) (interiorOutputSemantic interior))
+      (\roots => scopedExternalDelete name key world error value nameEq preStart (closedStartState episode) afterClose preStart _
+        (beginTransition (closedOpening episode)) (closedTransitions episode)
+        (scopedReadyTrace name key world error value nameEq keyEq (EpisodeGenerationDeletedActor nameEq selected registered)
+          (S episodeStartOrdinal) episodeStartLive (closedStartState episode) afterClose preStart (closedTransitions episode)
+          (appendedSelectedCloseReady (scopedAppendSelectedCloseReplay name key world error value nameEq keyEq selected registered
+            (S episodeStartOrdinal) episodeStartLive (closedInside episode) preStart (interiorReady (interiorOutputFold interior))
+            (interiorFinalSurvivor (interiorOutputFold interior)) (interiorReadyEnds (interiorOutputFold interior)) (closing episode))))
+        (MkScopedDeletedRootSeal Refl)
+        (scopedAppendSelectedCloseExternal name key world error value nameEq keyEq selected registered
+          (S episodeStartOrdinal) episodeStartLive (closedInside episode) preStart (interiorReady (interiorOutputFold interior))
+          (interiorFinalSurvivor (interiorOutputFold interior)) (interiorReadyEnds (interiorOutputFold interior)) (closing episode)
+          (interiorOutputExternal interior
+            (scopedRootSealsAppendLeft name key world error value nameEq registered (S episodeStartOrdinal) episodeStartLive
+              (closedStartState episode) (lastInstalledState episode) afterClose (closedInside episode)
+              (MoreTransitions (unloadTransition (closing episode)) NoTransitions) (snd roots)))))
 
 0 scopedSelectedClosedOutputFromInterior :
   (name, key, world, error : Type) -> (value : key -> Type) ->
