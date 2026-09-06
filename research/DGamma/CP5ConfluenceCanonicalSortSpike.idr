@@ -2731,6 +2731,29 @@ canonicalWorkSelectedPairThere name key world error value trace head remaining N
 canonicalWorkSelectedPairThere name key world error value trace head remaining (Just (MkCanonicalWorkSelectedPair actor present pair)) =
   Just (MkCanonicalWorkSelectedPair actor (There present) pair)
 
+||| Producer over the actual finite worklist. A grouping node yields its real
+||| adjacent pair and fixed-order membership. Nothing is NOT sorting success:
+||| an ordering-blocked node deliberately remains another progress obligation.
+0 canonicalWorkSelectGroupingPair :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) -> (pending : List name) -> (minimumStart : Nat) ->
+  CanonicalWorklistInspection name key world error value nameEq keyEq trace pending minimumStart ->
+  Maybe (CanonicalWorkSelectedPair name key world error value trace pending)
+canonicalWorkSelectGroupingPair name key world error value nameEq keyEq trace _ _ CanonicalWorklistEnd = Nothing
+canonicalWorkSelectGroupingPair name key world error value nameEq keyEq trace _ _
+  (CanonicalWorklistReady {selected = actor} {remaining} completed startsAfter tail) =
+    canonicalWorkSelectedPairThere name key world error value trace actor remaining
+      (canonicalWorkSelectGroupingPair name key world error value nameEq keyEq trace remaining
+        (workRangeStart completed + workRangeSize completed) tail)
+canonicalWorkSelectGroupingPair name key world error value nameEq keyEq trace _ _
+  (CanonicalWorklistNeedsGrouping {selected = actor} episode scanned remains) =
+    Just (MkCanonicalWorkSelectedPair actor Here
+      (canonicalWorkGroupingPairForEpisode name key world error value nameEq keyEq actor trace episode scanned remains))
+canonicalWorkSelectGroupingPair name key world error value nameEq keyEq trace _ _
+  (CanonicalWorklistNeedsOrdering completed startsTooEarly) = Nothing
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
