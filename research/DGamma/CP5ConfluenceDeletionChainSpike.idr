@@ -20390,6 +20390,27 @@ scopedEpisodeDeletedRootSeal name key world error value nameEq selected register
   MkScopedDeletedRootSeal (scopedLifecycleRootFalse name key world error value nameEq (transitionAction transition) lifecycle source)
 scopedEpisodeDeletedRootSeal name key world error value nameEq selected registered ordinal live source target transition owned (DeleteRegisteredGeneration deleted) = owned deleted
 
+0 scopedExternalAppend :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (sourceFirst, sourceMiddle, sourceFinal, targetFirst, targetMiddle, targetFinal : SystemState name key value world error) ->
+  (sourceLeft : Transitions sourceFirst sourceMiddle) -> (sourceRight : Transitions sourceMiddle sourceFinal) ->
+  (targetLeft : Transitions targetFirst targetMiddle) -> (targetRight : Transitions targetMiddle targetFinal) ->
+  SameExternalOrchestration nameEq sourceLeft targetLeft -> SameExternalOrchestration nameEq sourceRight targetRight ->
+  SameExternalOrchestration nameEq (appendTransitions sourceLeft sourceRight) (appendTransitions targetLeft targetRight)
+scopedExternalAppend name key world error value nameEq _ sourceMiddle sourceFinal _ targetMiddle targetFinal _ sourceRight _ targetRight SameExternalOrchestrationEnd right = right
+scopedExternalAppend name key world error value nameEq sourceFirst sourceMiddle sourceFinal targetFirst targetMiddle targetFinal _ sourceRight targetLeft targetRight
+  (SkipLeftInternal transition rest internal tail) right =
+    SkipLeftInternal transition (appendTransitions rest sourceRight) internal
+      (scopedExternalAppend name key world error value nameEq _ sourceMiddle sourceFinal targetFirst targetMiddle targetFinal rest sourceRight targetLeft targetRight tail right)
+scopedExternalAppend name key world error value nameEq sourceFirst sourceMiddle sourceFinal targetFirst targetMiddle targetFinal sourceLeft sourceRight _ targetRight
+  (SkipRightInternal transition rest internal tail) right =
+    SkipRightInternal transition (appendTransitions rest targetRight) internal
+      (scopedExternalAppend name key world error value nameEq sourceFirst sourceMiddle sourceFinal _ targetMiddle targetFinal sourceLeft sourceRight rest targetRight tail right)
+scopedExternalAppend name key world error value nameEq sourceFirst sourceMiddle sourceFinal targetFirst targetMiddle targetFinal _ sourceRight _ targetRight
+  (MatchExternalInput action sourceStep sourceTail sourceRoot targetStep targetTail targetRoot sourceAction targetAction tail) right =
+    MatchExternalInput action sourceStep (appendTransitions sourceTail sourceRight) sourceRoot targetStep (appendTransitions targetTail targetRight) targetRoot sourceAction targetAction
+      (scopedExternalAppend name key world error value nameEq _ sourceMiddle sourceFinal _ targetMiddle targetFinal sourceTail sourceRight targetTail targetRight tail right)
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
