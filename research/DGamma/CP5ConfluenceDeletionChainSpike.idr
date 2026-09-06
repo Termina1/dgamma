@@ -19946,6 +19946,31 @@ record ScopedRootRoleSeal
     (scopedRootObservation name key world error value nameEq (transitionAction sourceStep) sourceFirst =
      scopedRootObservation name key world error value nameEq (transitionAction targetStep) targetFirst)
 
+0 scopedExternalKeepAt :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (sourceFirst, sourceMiddle, sourceFinal, targetFirst, targetMiddle, targetFinal : SystemState name key value world error) ->
+  (sourceStep : Transition sourceFirst sourceMiddle) -> (sourceTail : Transitions sourceMiddle sourceFinal) ->
+  (targetStep : Transition targetFirst targetMiddle) -> (targetTail : Transitions targetMiddle targetFinal) ->
+  (transitionAction sourceStep = transitionAction targetStep) ->
+  ScopedRootRoleSeal name key world error value nameEq sourceFirst sourceMiddle targetFirst targetMiddle sourceStep targetStep ->
+  SameExternalOrchestration nameEq sourceTail targetTail ->
+  (observed : Bool) -> (scopedRootObservation name key world error value nameEq (transitionAction sourceStep) sourceFirst = observed) ->
+  SameExternalOrchestration nameEq (MoreTransitions sourceStep sourceTail) (MoreTransitions targetStep targetTail)
+scopedExternalKeepAt name key world error value nameEq sourceFirst sourceMiddle sourceFinal targetFirst targetMiddle targetFinal
+  sourceStep sourceTail targetStep targetTail same seal tail True equation =
+    MatchExternalInput (transitionAction sourceStep) sourceStep sourceTail
+      (scopedObservedRoot name key world error value nameEq (transitionAction sourceStep) sourceFirst sourceMiddle sourceStep Refl equation)
+      targetStep targetTail
+      (scopedObservedRoot name key world error value nameEq (transitionAction targetStep) targetFirst targetMiddle targetStep Refl
+        (trans (sym (rootRoleExact seal)) equation)) Refl (sym same) tail
+scopedExternalKeepAt name key world error value nameEq sourceFirst sourceMiddle sourceFinal targetFirst targetMiddle targetFinal
+  sourceStep sourceTail targetStep targetTail same seal tail False equation =
+    SkipLeftInternal sourceStep sourceTail
+      (\root => absurd (trans (sym equation) (scopedRootObserved name key world error value nameEq sourceFirst sourceMiddle sourceStep root)))
+      (SkipRightInternal targetStep targetTail
+        (\root => absurd (trans (sym equation) (trans (rootRoleExact seal)
+          (scopedRootObserved name key world error value nameEq targetFirst targetMiddle targetStep root)))) tail)
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
