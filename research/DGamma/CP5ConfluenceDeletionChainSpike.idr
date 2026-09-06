@@ -29428,6 +29428,13 @@ scopedClosingFreeCoreDone name key world error value protocol nameEq keyEq initi
   MkClosingFreeTraceCore finalState trace premises closingFree (scopedExternalReflexive name key world error value nameEq initial finalState trace)
     (identityRelationalReplayCorrespondence trace) (ClosingFreeDeletionDone trace) []
 
+0 scopedOrdinalKeptPositive :
+  (sourceCount, targetCount : Nat) -> (tail : ScopedOrdinalSpine sourceCount targetCount) ->
+  (sourceIndex, targetIndex : Nat) -> ScopedOrdinalPath (ScopedOrdinalKeep tail) sourceIndex targetIndex ->
+  LT 0 targetIndex -> LT 0 sourceIndex
+scopedOrdinalKeptPositive sourceCount targetCount tail _ _ ScopedOrdinalHere later = absurd later
+scopedOrdinalKeptPositive sourceCount targetCount tail _ _ (ScopedOrdinalKeptLater path) later = LTESucc LTEZero
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
