@@ -30228,6 +30228,20 @@ scopedCoverageSourceDecision name key world error value initial sourceFinal midd
 scopedCoverageSourceDecision name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right child parent component original (Right retained) =
   scopedCoverageMiddle name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right child parent component original retained
 
+0 scopedRemovalLeft :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (initial, sourceFinal, middleFinal, targetFinal : SystemState name key value world error) ->
+  (source : Transitions initial sourceFinal) -> (middle : Transitions initial middleFinal) -> (target : Transitions initial targetFinal) ->
+  (leftWithdrawn, rightWithdrawn : List (RegistrationGeneration name)) -> (renaming : RegistrationGenerationBijection name) ->
+  (left : ScopedCanonicalAccounting name key world error value initial sourceFinal middleFinal source middle leftWithdrawn renaming) ->
+  (right : CanonicalRegistrationCorrespondence middle target rightWithdrawn) ->
+  (generation : RegistrationGeneration name) ->
+  ScopedRegistrationRemoval name key world error value initial sourceFinal middleFinal source middle (canonicalToOriginal (sealedAccounting left)) generation ->
+  ScopedRegistrationRemoval name key world error value initial sourceFinal targetFinal source target (\birth => canonicalToOriginal (sealedAccounting left) (canonicalToOriginal right birth)) generation
+scopedRemovalLeft name key world error value initial sourceFinal middleFinal targetFinal source middle target leftWithdrawn rightWithdrawn renaming left right generation (parent ** component ** occurrence ** evidence) =
+  (parent ** component ** occurrence ** (fst evidence,
+    \canonicalParent, canonicalComponent, birth, same => snd evidence canonicalParent canonicalComponent (canonicalToOriginal right birth) same))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
