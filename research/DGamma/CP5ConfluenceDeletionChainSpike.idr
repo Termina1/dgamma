@@ -27639,6 +27639,28 @@ scopedRetainedGeneratedOriginExact name key world error value nameEq keyEq initi
         (scopedWholeRetainedSourceOrdinal name key world error value nameEq keyEq initial finalState global candidate result
           (OInsert child (ChildOf parent) component) sourceIndex retained)))
 
+0 scopedOriginalRegistrationAccountedAt :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (capital : DeletionProducerOperationalCapital name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (sourceBirth : LocatedGeneratedRegistration child parent component global) ->
+  ScopedWholeBirthCoverage name key world error value nameEq keyEq initial finalState global candidate result child (ChildOf parent) component (registrationOrdinal sourceBirth) ->
+  Either (Elem (registrationGeneration sourceBirth) (selectedRegistrations candidate))
+    (targetBirth : LocatedGeneratedRegistration child parent component (survivingTrace result) **
+      (registrationGeneration (deletionProducerGeneratedOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+        (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result capital targetBirth) = registrationGeneration sourceBirth))
+scopedOriginalRegistrationAccountedAt name key world error value nameEq keyEq initial finalState global candidate result capital child parent component sourceBirth (Left deleted) = Left deleted
+scopedOriginalRegistrationAccountedAt name key world error value nameEq keyEq initial finalState global candidate result capital child parent component sourceBirth (Right retained) =
+  Right (deletionActionOccurrenceToGenerated (wholeRetainedOccurrence retained) **
+    scopedRetainedGeneratedOriginExact name key world error value nameEq keyEq initial finalState global candidate result capital child parent component
+      (registrationOrdinal sourceBirth) retained (deletionActionOccurrenceToGenerated (wholeRetainedOccurrence retained))
+      (deletionActionOccurrenceToGeneratedCoherent (wholeRetainedOccurrence retained)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
