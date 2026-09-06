@@ -66,3 +66,7 @@ public export
 r172ReuseRemove : Transition r45SourceFinal r45AfterBegin
 r172ReuseRemove = Fired r45NameEq r45KeyEq (ORemove 1) ORemoveTag r172ReuseRemoveChecked
 
+public export
+r172ReuseRoot : Transition r45AfterBegin r172ReuseAfterRoot
+r172ReuseRoot = Fired r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag r172ReuseRootChecked
+
