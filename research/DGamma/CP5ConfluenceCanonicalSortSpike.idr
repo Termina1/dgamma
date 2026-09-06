@@ -2416,6 +2416,20 @@ canonicalWorkStart name key world error value nameEq keyEq protocol {initial} {f
   canonicalWorkInspectReached name key world error value protocol nameEq keyEq trace premises ordering unique
     (canonicalSortingReplayStart name key world error value protocol nameEq keyEq initial finalState trace premises) shape
 
+||| Every accepted pair of half-open worklist ranges is position-disjoint.
+||| Only scalar counts cross the independently existential block states.
+0 canonicalWorkRangePositionsApart :
+  (start, size, nextStart, earlierPosition, laterPosition : Nat) ->
+  LTE (S earlierPosition) size -> LTE (start + size) nextStart ->
+  Not (start + earlierPosition = nextStart + laterPosition)
+canonicalWorkRangePositionsApart start size nextStart earlierPosition laterPosition bounded separated same =
+  LTImpliesNotGTE
+    (canonicalRankLTETransitive
+      (replace {p = \position => LTE position (start + size)}
+        (sym (plusSuccRightSucc start earlierPosition))
+        (plusLteMonotoneLeft start (S earlierPosition) size bounded)) separated)
+    (replace {p = LTE nextStart} (sym same) (lteAddRight {m = laterPosition} nextStart))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
