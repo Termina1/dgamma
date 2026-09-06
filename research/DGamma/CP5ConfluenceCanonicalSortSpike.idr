@@ -894,6 +894,15 @@ canonicalRankedSupportPathStrict name key world error value protocol nameEq stat
     rewrite canonicalProtocolRankExact name key world error value protocol nameEq state lower lowerRank lowerWitness in
     rewrite canonicalProtocolRankExact name key world error value protocol nameEq state upper upperRank upperWitness in increases
 
+||| Every head is bounded by every following rank, with all order evidence erased.
+data CanonicalRanksOrdered : (item : Type) -> (rank : item -> Nat) -> List item -> Type where
+  CanonicalRanksNil : {item : Type} -> {rank : item -> Nat} -> CanonicalRanksOrdered item rank []
+  CanonicalRanksCons : {item : Type} -> {rank : item -> Nat} ->
+    (head : item) -> (rest : List item) ->
+    (0 headBelow : (later : item) -> Elem later rest -> LTE (rank head) (rank later)) ->
+    (0 tailOrdered : CanonicalRanksOrdered item rank rest) ->
+    CanonicalRanksOrdered item rank (head :: rest)
+
 ||| Construct the finite linearization from re-established Lemma-68 capital.
 public export
 0 supportOrderingSpike :
