@@ -157,3 +157,8 @@ public export
 r172ReuseEmptyKeyBindings (MkCoeffectContext [] unique) = Refl
 r172ReuseEmptyKeyBindings (MkCoeffectContext (Bind key value :: rest) unique) = case key of _ impossible
 
+public export
+0 r172ReuseAllEffectStatesRelated : (left, right : EffectState Nat R45Key R45Value Unit) -> EffectStateRelated r45KeyEq left right
+r172ReuseAllEffectStatesRelated (MkEffectState () leftTables) (MkEffectState () rightTables) =
+  MkEffectStateRelated Refl (\selected => trans (r172ReuseEmptyKeyBindings (leftTables selected)) (sym (r172ReuseEmptyKeyBindings (rightTables selected))))
+
