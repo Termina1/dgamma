@@ -28515,6 +28515,22 @@ scopedActionAppendRight name key world error value first middle finalState (More
   ScopedActionLater transition (appendTransitions rest right)
     (scopedActionAppendRight name key world error value _ middle finalState rest right ordinal action present)
 
+0 scopedLocatedActionAt :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, finalState : SystemState name key value world error) -> (trace : Transitions first finalState) ->
+  (action : Action name key value world error) -> (occurrence : LocatedActionOccurrence action trace) ->
+  ScopedActionAt name key world error value trace (locatedActionOrdinal occurrence) action
+scopedLocatedActionAt name key world error value first finalState trace action occurrence =
+  replace {p = \ordinal => ScopedActionAt name key world error value trace ordinal action}
+    (plusZeroRightNeutral (transitionCount (beforeActionOccurrence occurrence)))
+    (replace {p = \whole => ScopedActionAt name key world error value whole (transitionCount (beforeActionOccurrence occurrence) + 0) action}
+      (actionOccurrenceDecomposition occurrence)
+      (scopedActionAppendRight name key world error value first (actionBeforeState occurrence) finalState
+        (beforeActionOccurrence occurrence) (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence)) 0 action
+        (replace {p = \observed => ScopedActionAt name key world error value
+          (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence)) 0 observed}
+          (locatedAction occurrence) (ScopedActionHere (locatedTransition occurrence) (afterActionOccurrence occurrence)))))
+
 0 scopedEnrichedStepFromExternal :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
