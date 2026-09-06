@@ -7,6 +7,8 @@ import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
 import DGamma.CP5ConfluenceRenamingCompositionSpike
 import DGamma.CP5ConfluenceCrossTraceSpike
+import DGamma.CP5UniqueRawNameInsertions
+import DGamma.CP5UniqueRawNameDeletion
 import Decidable.Equality
 
 %default total
@@ -63,6 +65,7 @@ record FullPipelineLateCanonicalPremises
 
 public export
 0 fullPipelineFromBundles :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) ->
   {initial, leftFinal, rightFinal : SystemState name key value world error} ->
@@ -77,11 +80,14 @@ public export
     protocol nameEq keyEq leftTrace) ->
   (rightLate : FullPipelineLateCanonicalPremises name key world error value
     protocol nameEq keyEq rightTrace) ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
   ConfluenceResult name key world error value protocol nameEq keyEq leftTrace
     rightTrace (generatedGenerationBijection sameInputs)
     (currentNameBijection (endpointRenaming sameInputs))
-fullPipelineFromBundles nameEq keyEq protocol leftTrace rightTrace leftPremises
-  rightPremises sameInputs leftLate rightLate =
+fullPipelineFromBundles {name} {key} {world} {error} {value}
+  nameEq keyEq protocol leftTrace rightTrace leftPremises
+  rightPremises sameInputs leftLate rightLate leftUnique rightUnique =
   let leftReduction = deleteAllClosingEpisodesSpike nameEq keyEq protocol
         leftTrace leftPremises
       leftShape = closingFreeTraceShapeSpike nameEq keyEq protocol
@@ -93,6 +99,7 @@ fullPipelineFromBundles nameEq keyEq protocol leftTrace rightTrace leftPremises
       leftSorted = sortClosingFreeTraceSpike nameEq keyEq protocol
         (reducedTrace leftReduction)
         (chainReplayCapital (reducedPremises leftReduction)) leftShape leftOrdering
+        (uniqueInsertionsAfterReduction name key world error value nameEq keyEq protocol leftReduction leftUnique)
       leftTransport = canonicalSupportTransportSpike nameEq keyEq leftTrace
         (reducedTrace leftReduction) (cumulativeEndpoint leftReduction)
         (cumulativeRegistrationAccounting leftReduction)
@@ -119,6 +126,7 @@ fullPipelineFromBundles nameEq keyEq protocol leftTrace rightTrace leftPremises
       rightSorted = sortClosingFreeTraceSpike nameEq keyEq protocol
         (reducedTrace rightReduction)
         (chainReplayCapital (reducedPremises rightReduction)) rightShape rightOrdering
+        (uniqueInsertionsAfterReduction name key world error value nameEq keyEq protocol rightReduction rightUnique)
       rightTransport = canonicalSupportTransportSpike nameEq keyEq rightTrace
         (reducedTrace rightReduction) (cumulativeEndpoint rightReduction)
         (cumulativeRegistrationAccounting rightReduction)
