@@ -20411,6 +20411,14 @@ scopedExternalAppend name key world error value nameEq sourceFirst sourceMiddle 
     MatchExternalInput action sourceStep (appendTransitions sourceTail sourceRight) sourceRoot targetStep (appendTransitions targetTail targetRight) targetRoot sourceAction targetAction
       (scopedExternalAppend name key world error value nameEq _ sourceMiddle sourceFinal _ targetMiddle targetFinal sourceTail sourceRight targetTail targetRight tail right)
 
+0 scopedAppendTraceEmpty :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, finalState : SystemState name key value world error) -> (trace : Transitions first finalState) ->
+  (appendTransitions trace NoTransitions = trace)
+scopedAppendTraceEmpty name key world error value _ finalState NoTransitions = Refl
+scopedAppendTraceEmpty name key world error value first finalState (MoreTransitions transition rest) =
+  cong (MoreTransitions transition) (scopedAppendTraceEmpty name key world error value _ finalState rest)
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
