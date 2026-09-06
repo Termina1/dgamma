@@ -27871,40 +27871,6 @@ scopedDeletionStepFromAccounting name key world error value protocol nameEq keyE
     (MkCanonicalizationPremises targetBundle)
     (scopedDeletionStrictlyShorter name key world error value nameEq keyEq initial finalState global candidate result)
 
-||| The live O9 assembler discharges all other fields; external/accounting remain explicit obligations.
-0 scopedEnrichedStepFromAccounting :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
-  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq global) ->
-  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
-  (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
-  SameExternalOrchestration nameEq global
-    (survivingTrace (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds
-      (replayAligned (chainReplayCapital premises)))) ->
-  (accounting : CanonicalRegistrationCorrespondence global
-    (survivingTrace (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds
-      (replayAligned (chainReplayCapital premises)))) (selectedRegistrations candidate)) ->
-  ({child, parent : name} -> {component : Component key value world error} ->
-    (birth : LocatedGeneratedRegistration child parent component
-      (survivingTrace (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds
-        (replayAligned (chainReplayCapital premises))))) ->
-    (canonicalToOriginal accounting birth = deletionProducerGeneratedOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
-      (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)
-      (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises)))
-      (scopedEnrichedOperationalCapital name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises))) birth)) ->
-  DeletionChainStep name key world error value protocol nameEq keyEq global premises candidate
-scopedEnrichedStepFromAccounting name key world error value protocol nameEq keyEq initial finalState global premises candidate folds external accounting originExact =
-  scopedDeletionStepFromAccounting name key world error value protocol nameEq keyEq initial finalState global premises candidate
-    (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises)))
-    (scopedEnrichedOperationalCapital name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises)))
-    (scopedEnrichedReplayFromHeads name key world error value protocol nameEq keyEq initial finalState global candidate folds
-      (scopedEnrichedHeadReplays name key world error value protocol nameEq keyEq initial finalState global candidate folds))
-    (scopedEnrichedTargetFromHeads name key world error value protocol nameEq keyEq initial finalState global candidate folds premises)
-    (scopedDeletionCanonicalEndpoint name key world error value nameEq keyEq initial finalState global candidate
-      (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises))))
-    external accounting originExact
-
 ||| A retained located action is sealed at the exact source-position map, not found by action equality alone.
 record ScopedLocatedOrdinalOrigin
   (name, key, world, error : Type) (value : key -> Type)
@@ -28954,6 +28920,27 @@ scopedEnrichedExternalOrchestration name key world error value protocol nameEq k
       (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result capital birth)
 scopedDeletionAccountingOriginExact name key world error value nameEq keyEq initial finalState global candidate result capital birth = Refl
 
+||| Seal all accounting while the actual deletion result is an explicit producer parameter.
+0 scopedStepFromResultCapital :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq global) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (capital : DeletionProducerOperationalCapital name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result) ->
+  RelationalReplayCorrespondence name key world error value global (survivingTrace result) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq (survivingTrace result) ->
+  SameExternalOrchestration nameEq global (survivingTrace result) ->
+  DeletionChainStep name key world error value protocol nameEq keyEq global premises candidate
+scopedStepFromResultCapital name key world error value protocol nameEq keyEq initial finalState global premises candidate result capital replay targetBundle external =
+  scopedDeletionStepFromAccounting name key world error value protocol nameEq keyEq initial finalState global premises candidate result capital replay targetBundle
+    (scopedDeletionCanonicalEndpoint name key world error value nameEq keyEq initial finalState global candidate result) external
+    (scopedDeletionRegistrationAccounting name key world error value nameEq keyEq initial finalState global candidate result capital)
+    (scopedDeletionAccountingOriginExact name key world error value nameEq keyEq initial finalState global candidate result capital)
+
 0 scopedEnrichedStepFromExternal :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
@@ -28963,14 +28950,13 @@ scopedDeletionAccountingOriginExact name key world error value nameEq keyEq init
   (folds : ScopedEnrichedDeletionFolds name key world error value protocol nameEq keyEq initial finalState global candidate) ->
   DeletionChainStep name key world error value protocol nameEq keyEq global premises candidate
 scopedEnrichedStepFromExternal name key world error value protocol nameEq keyEq initial finalState global premises candidate folds =
-  scopedEnrichedStepFromAccounting name key world error value protocol nameEq keyEq initial finalState global premises candidate folds
+  scopedStepFromResultCapital name key world error value protocol nameEq keyEq initial finalState global premises candidate
+    (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises)))
+    (scopedEnrichedOperationalCapital name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises)))
+    (scopedEnrichedReplayFromHeads name key world error value protocol nameEq keyEq initial finalState global candidate folds
+      (scopedEnrichedHeadReplays name key world error value protocol nameEq keyEq initial finalState global candidate folds))
+    (scopedEnrichedTargetFromHeads name key world error value protocol nameEq keyEq initial finalState global candidate folds premises)
     (scopedEnrichedExternalOrchestration name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises)))
-    (scopedDeletionRegistrationAccounting name key world error value nameEq keyEq initial finalState global candidate
-      (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises)))
-      (scopedEnrichedOperationalCapital name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises))))
-    (scopedDeletionAccountingOriginExact name key world error value nameEq keyEq initial finalState global candidate
-      (scopedEnrichedDeletionResult name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises)))
-      (scopedEnrichedOperationalCapital name key world error value protocol nameEq keyEq initial finalState global candidate folds (replayAligned (chainReplayCapital premises))))
 
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
