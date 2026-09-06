@@ -30015,6 +30015,21 @@ scopedWithdrawalFromControlCell name key world error value nameEq keyEq actor so
     (trans (cong bindings (sym (projectedActorTable {name} {key} {value} {world} {error} nameEq actor source fiber (fst evidence))))
       (trans (tablesExact effects actor) (trans (cong bindings (projectedActorTable {name} {key} {value} {world} {error} nameEq actor middle middleFiber found)) empty))) absent
 
+0 scopedWithdrawalThroughControls :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (source, middle, target : SystemState name key value world error) ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} source) (projectEffectState @{nameEq} middle) ->
+  FiberControlMaybeRelated (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry source))
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry middle)) ->
+  WithdrawnNameResult nameEq actor middle target -> WithdrawnNameResult nameEq actor source target
+scopedWithdrawalThroughControls name key world error value nameEq keyEq actor source middle target effects controls
+  (VestigialNameWithdrawn fiber found retired inactive empty absent) =
+    scopedWithdrawalFromControlCell name key world error value nameEq keyEq actor source middle target effects fiber found retired inactive empty absent
+      (scopedControlFoundLeft name key world error value _ fiber
+        (replace {p = FiberControlMaybeRelated (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry source))} found controls))
+scopedWithdrawalThroughControls name key world error value nameEq keyEq actor source middle target effects controls (NameAlreadyAbsent absent finalAbsent) =
+  NameAlreadyAbsent (scopedControlAbsentRight name key world error value _ _ (fiberControlMaybeSymmetric controls) absent) finalAbsent
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
