@@ -1544,6 +1544,34 @@ canonicalSortingPairIndependent name key world error value protocol nameEq keyEq
         (appendLeftOccurrenceEmbedding (MoreTransitions left (MoreTransitions right NoTransitions)) suffix transition occurs)))
     (replayIndependent premises)
 
+||| Derive the actual A/O diamond from a reached bundle and a distinct root insertion.
+||| Early applicability, alignment and parent exclusion are produced, not extra caller premises.
+0 canonicalRootInsertHoistDiamond :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) -> (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (appendTransitions prefixTrace (MoreTransitions left (MoreTransitions right suffix)) = original) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  (root : name) -> (component : Component key value world error) ->
+  PaperActivationStep left -> (transitionAction right = OInsert root Root component) ->
+  Not (transitionActor left = root) ->
+  LocalRelationalDiamond name key world error value nameEq keyEq left right
+canonicalRootInsertHoistDiamond name key world error value protocol nameEq keyEq original prefixTrace left right suffix
+  decomposition premises root component leftActivation rootAction different =
+    activationOrchestrationDiamondSpike nameEq keyEq left right
+      (canonicalSortingPairAligned name key world error value protocol nameEq keyEq original prefixTrace left right suffix decomposition premises)
+      leftActivation (PaperInsertStep rootAction)
+      (\same => different (trans same
+        (trans (canonicalTransitionActorActionOwner right) (cong actionOwner rootAction))))
+      (\child, parent, childComponent, childAction, actorSame =>
+        canonicalRootChildInsertImpossible name key world error value root child parent component childComponent
+          (trans (sym rootAction) childAction))
+      (canonicalSortingPairSourceWellFormed name key world error value protocol nameEq keyEq original prefixTrace left right suffix decomposition premises)
+      (canonicalSortingPairIndependent name key world error value protocol nameEq keyEq original prefixTrace left right suffix decomposition premises)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
