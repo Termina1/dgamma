@@ -42,3 +42,30 @@ r174AllRecursiveContainsFalse item predicate _ (head :: rest) Here false = rewri
 r174AllRecursiveContainsFalse item predicate selected (head :: rest) (There later) false =
   rewrite r174AllRecursiveContainsFalse item predicate selected rest later false in
     andFalseFalse (predicate head)
+
+0 r174ProvisionYieldRanks :
+  (parent, child : Component ToyKey ToyValue ToyRuntime String) ->
+  (step : StepEffect ToyKey ToyValue ToyRuntime String
+    (dependencies (componentDependencies parent)) (componentProvisions parent)) ->
+  (tag, parentRank, childRank : Nat) ->
+  Elem step (componentProgram parent) ->
+  r174ProvisionRank parent = Just parentRank ->
+  r174ProvisionRank child = Just childRank ->
+  registrationYieldTag step = Just tag ->
+  r174ProvisionCatalog tag = Just child -> LT parentRank childRank
+r174ProvisionYieldRanks (MkComponent (MkCoeffectSpec [] unique) provision program)
+  child step Z parentRank childRank present parentRanked childRanked tagged cataloged =
+    case cataloged of
+      Refl => case trans
+        (sym (cong (\free => the (Maybe Nat) (if free then Just 1 else Just 0))
+          (r174AllRecursiveContainsFalse
+            (StepEffect ToyKey ToyValue ToyRuntime String [] provision)
+            (\source => isNothing (registrationYieldTag source)) step program present
+            (cong isNothing tagged)))) parentRanked of
+          Refl => case childRanked of Refl => LTESucc LTEZero
+r174ProvisionYieldRanks (MkComponent (MkCoeffectSpec [] unique) provision program)
+  child step (S tag) parentRank childRank present parentRanked childRanked tagged cataloged =
+    case cataloged of Refl impossible
+r174ProvisionYieldRanks (MkComponent (MkCoeffectSpec (key :: rest) unique) provision program)
+  child step tag parentRank childRank present parentRanked childRanked tagged cataloged =
+    case parentRanked of Refl impossible
