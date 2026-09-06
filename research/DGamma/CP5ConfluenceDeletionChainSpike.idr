@@ -19971,6 +19971,21 @@ scopedExternalKeepAt name key world error value nameEq sourceFirst sourceMiddle 
         (\root => absurd (trans (sym equation) (trans (rootRoleExact seal)
           (scopedRootObserved name key world error value nameEq targetFirst targetMiddle targetStep root)))) tail)
 
+0 scopedExternalKeep :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (sourceFirst, sourceMiddle, sourceFinal, targetFirst, targetMiddle, targetFinal : SystemState name key value world error) ->
+  (sourceStep : Transition sourceFirst sourceMiddle) -> (sourceTail : Transitions sourceMiddle sourceFinal) ->
+  (targetStep : Transition targetFirst targetMiddle) -> (targetTail : Transitions targetMiddle targetFinal) ->
+  (transitionAction sourceStep = transitionAction targetStep) ->
+  ScopedRootRoleSeal name key world error value nameEq sourceFirst sourceMiddle targetFirst targetMiddle sourceStep targetStep ->
+  SameExternalOrchestration nameEq sourceTail targetTail ->
+  SameExternalOrchestration nameEq (MoreTransitions sourceStep sourceTail) (MoreTransitions targetStep targetTail)
+scopedExternalKeep name key world error value nameEq sourceFirst sourceMiddle sourceFinal targetFirst targetMiddle targetFinal
+  sourceStep sourceTail targetStep targetTail same seal tail =
+    scopedExternalKeepAt name key world error value nameEq sourceFirst sourceMiddle sourceFinal targetFirst targetMiddle targetFinal
+      sourceStep sourceTail targetStep targetTail same seal tail
+      (scopedRootObservation name key world error value nameEq (transitionAction sourceStep) sourceFirst) Refl
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
