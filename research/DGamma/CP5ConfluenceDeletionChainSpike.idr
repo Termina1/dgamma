@@ -20340,6 +20340,19 @@ scopedOwnedRootObservation name key world error value nameEq registered ordinal 
 scopedOwnedRootObservation name key world error value nameEq registered ordinal live (LLeave actor) source births roots generation member current = Refl
 scopedOwnedRootObservation name key world error value nameEq registered ordinal live (LUnload actor) source births roots generation member current = Refl
 
+0 scopedOwnedRootSeal :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (source, target : SystemState name key value world error) -> (transition : Transition source target) ->
+  ((child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+    (transitionAction transition = OInsert child parent component) -> Elem (MkRegistrationGeneration child ordinal) registered -> (scopedParentRoot parent = False)) ->
+  ScopedCurrentRootExclusion name key world error value nameEq registered live source ->
+  GenerationOwnedActor nameEq registered ordinal live (transitionAction transition) ->
+  ScopedDeletedRootSeal name key world error value nameEq source target transition
+scopedOwnedRootSeal name key world error value nameEq registered ordinal live source target transition births roots (generation ** evidence) =
+  MkScopedDeletedRootSeal (scopedOwnedRootObservation name key world error value nameEq registered ordinal live
+    (transitionAction transition) source births roots generation (snd evidence) (fst evidence))
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
