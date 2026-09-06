@@ -371,3 +371,9 @@ r172ReuseSourceNotRootFirst
   forbiddenRoot NoTransitions NoRootOrchestrationEnd transition occurs root =
     case occurs of OccursHere impossible; OccursLater later impossible
 
+||| The later same-name root cannot be hoisted across its immediate child removal.
+public export
+0 r172ReuseRootBeforeRemoveRejected : checkedApplyAction @{r45NameEq} @{r45KeyEq}
+  (OInsert 1 Root r45Child) r45SourceFinal = Nothing
+r172ReuseRootBeforeRemoveRejected = Refl
+
