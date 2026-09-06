@@ -1787,6 +1787,21 @@ canonicalSortingFiberParentSame name key world error value
   (FibersControlRelated leftParent rightParent leftRetired rightRetired leftTable rightTable
     leftLifecycle rightLifecycle parentSame retiredSame lifecycleSame) = parentSame
 
+0 canonicalSortingSupportFromRelatedActive :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (source, target : SystemState name key value world error) -> (selected : name) ->
+  (rankView : CanonicalActiveRank name key world error value protocol nameEq source selected) ->
+  ForeignRelatedFiberFound name key world error value nameEq selected (registry source) (registry target) (activeRankFiber rankView) ->
+  SupportMatchesActive nameEq keyEq target ->
+  isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected target = True
+canonicalSortingSupportFromRelatedActive name key world error value protocol nameEq keyEq source target selected rankView related targetMatches =
+  trans (targetMatches selected)
+    (trans (canonicalSupportedActiveAtFound name key world error value nameEq target selected
+      (foreignRelatedFiber related) (foreignRelatedFound related))
+      (trans (sym (canonicalSortingFiberActiveSame name key world error value (foreignRelatedControl related)))
+        (activeRankActive rankView)))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
