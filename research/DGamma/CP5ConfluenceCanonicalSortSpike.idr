@@ -3021,6 +3021,30 @@ canonicalWorkNoClosingRejectsUnloadPrefix name key world error value nameEq keyE
       (canonicalWorkSnocOccurrence name key world error value earlier
         (Fired {before} {afterState} nameEq keyEq (LUnload selected) tag checked))
 
+||| Consume the exact aligned occurrence returned by an operational origin map.
+||| The dictionary and checked equation come from that same source occurrence.
+0 canonicalWorkNoClosingRejectsLocatedUnload :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  bindings (registry initial) = [] ->
+  NoClosingEpisodes name key world error value nameEq keyEq global ->
+  LocatedActionOccurrence (LUnload selected) global -> Void
+canonicalWorkNoClosingRejectsLocatedUnload name key world error value nameEq keyEq selected
+  global aligned initialEmpty noClosing
+  (MkLocatedActionOccurrence before afterState earlier step later actionExact decomposition) =
+    case snd (alignedAppendSplit earlier (MoreTransitions step later)
+      (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+        (sym decomposition) aligned)) of
+      AlignedStep action tag checked rest tailAligned => case actionExact of
+        Refl => canonicalWorkNoClosingRejectsUnloadPrefix name key world error value nameEq keyEq selected
+          global earlier tag checked rest
+          (trans (appendTransitionsAssociative earlier
+            (MoreTransitions (Fired {before} {afterState} nameEq keyEq (LUnload selected) tag checked) NoTransitions) rest)
+            decomposition) aligned initialEmpty noClosing
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
