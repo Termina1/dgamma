@@ -29979,6 +29979,15 @@ scopedAppendMembership item predicate (head :: rest) right fromLeft fromRight wa
   (fiber : Fiber name key value world error ** ((left = Just fiber), FiberControlRelated fiber right))
 scopedControlFoundLeft name key world error value _ right (SomeControlFibers {left} related) = (left ** (Refl, related))
 
+0 scopedLifecycleInstalledSame :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (deps : List key) -> (provision : CoeffectSpec key) ->
+  (left, right : Lifecycle key value world error name deps provision) ->
+  LifecycleControlRelated left right -> (installed left = installed right)
+scopedLifecycleInstalledSame name key world error value deps provision _ _ (InactiveControls outcome) = Refl
+scopedLifecycleInstalledSame name key world error value deps provision _ _ (ReloadingControls remaining accumulator view) = Refl
+scopedLifecycleInstalledSame name key world error value deps provision _ _ (ActiveControls accumulator view) = Refl
+scopedLifecycleInstalledSame name key world error value deps provision _ _ (UnloadingControls accumulator view outcome) = Refl
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
