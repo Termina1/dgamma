@@ -30043,6 +30043,20 @@ scopedWithdrawalRightAt name key world error value nameEq keyEq actor source mid
   scopedWithdrawalThroughControls name key world error value nameEq keyEq actor source middle target
     (endpointEffectsEquivalent left) (endpointControlsOutside left actor outside) withdrawn
 
+0 scopedCumulativeNamesWithdrawn :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (source, middle, target : SystemState name key value world error) ->
+  (left : CanonicalEndpointRelation name key world error value nameEq keyEq source middle) ->
+  (right : CanonicalEndpointRelation name key world error value nameEq keyEq middle target) ->
+  RawNamesWithdrawn nameEq (endpointWithdrawnNames left ++ endpointWithdrawnNames right) source target
+scopedCumulativeNamesWithdrawn name key world error value nameEq keyEq source middle target left right =
+  scopedAppendMembership name (\actor => WithdrawnNameResult nameEq actor source target) (endpointWithdrawnNames left) (endpointWithdrawnNames right)
+    (\actor, member => scopedWithdrawalExtend name key world error value nameEq actor source middle target (endpointNamesWithdrawn left actor member)
+      (scopedEndpointAbsent name key world error value nameEq keyEq middle target right actor
+        (scopedWithdrawnAbsent name key world error value nameEq actor source middle (endpointNamesWithdrawn left actor member))))
+    (\actor, member => scopedWithdrawalRightAt name key world error value nameEq keyEq actor source middle target left
+      (isElem @{nameEq} actor (endpointWithdrawnNames left)) (endpointNamesWithdrawn right actor member))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
