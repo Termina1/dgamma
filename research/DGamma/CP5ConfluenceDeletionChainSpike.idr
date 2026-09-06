@@ -30122,6 +30122,15 @@ record ScopedCanonicalAccounting
 scopedBackwardInjective name renaming left right same =
   trans (sym (generationRightInverse renaming left)) (trans (cong (generationForward renaming) same) (generationRightInverse renaming right))
 
+0 scopedMappedMembership :
+  (source, target : Type) -> (function : source -> target) -> (predicate : target -> Type) -> (items : List source) ->
+  ((item : source) -> Elem item items -> predicate (function item)) ->
+  (wanted : target) -> Elem wanted (map function items) -> predicate wanted
+scopedMappedMembership source target function predicate [] produce wanted member = absurd member
+scopedMappedMembership source target function predicate (head :: rest) produce wanted member =
+  scopedElemConsEliminate target predicate (function head) (map function rest) (produce head Here)
+    (scopedMappedMembership source target function predicate rest (\item, present => produce item (There present))) wanted member
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
