@@ -19860,6 +19860,22 @@ scopedParentRoot : {name : Type} -> Parent name -> Bool
 scopedParentRoot Root = True
 scopedParentRoot (ChildOf actor) = False
 
+scopedRootObservation :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  Action name key value world error -> SystemState name key value world error -> Bool
+scopedRootObservation name key world error value nameEq (OInsert actor parent component) state = scopedParentRoot parent
+scopedRootObservation name key world error value nameEq (ORetire actor) state =
+  maybe False (scopedParentRoot . fiberParent)
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor (registry state))
+scopedRootObservation name key world error value nameEq (ORemove actor) state =
+  maybe False (scopedParentRoot . fiberParent)
+    (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} actor (registry state))
+scopedRootObservation name key world error value nameEq (LBegin actor) state = False
+scopedRootObservation name key world error value nameEq (LAdvance actor) state = False
+scopedRootObservation name key world error value nameEq (LDivert actor) state = False
+scopedRootObservation name key world error value nameEq (LLeave actor) state = False
+scopedRootObservation name key world error value nameEq (LUnload actor) state = False
+
 ||| Exact per-kept singleton map/yield replay, indexed by the producer's canonical readiness.
 0 ScopedReadySemanticReplay :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
