@@ -29745,6 +29745,24 @@ record ScopedClassifiedPullback
   0 pulledGenerationExact : (classifiedGeneration pulledClassification = generationBackward renaming targetGeneration)
   0 pulledNameExact : (generationName (classifiedGeneration pulledClassification) = generationName targetGeneration)
 
+0 scopedClassifiedPullback :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (capital : DeletionProducerOperationalCapital name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result) ->
+  (item : (generation : RegistrationGeneration name ** DeletedGenerationClassification name key world error value nameEq (survivingTrace result) generation)) ->
+  ScopedClassifiedPullback name key world error value nameEq initial finalState global (deletionProducerGenerationRenaming capital) (classifiedGeneration item)
+scopedClassifiedPullback name key world error value nameEq keyEq initial finalState global candidate result capital (generation ** classified) =
+  MkScopedClassifiedPullback
+    (scopedPullDeletedClassification name key world error value nameEq keyEq initial finalState global candidate result (generation ** classified))
+    (trans (sym (generationLeftInverse (deletionProducerGenerationRenaming capital)
+      (classifiedGeneration (scopedPullDeletedClassification name key world error value nameEq keyEq initial finalState global candidate result (generation ** classified)))))
+      (cong (generationBackward (deletionProducerGenerationRenaming capital))
+        (trans (deletionProducerGeneratedOrdinalPreserved capital (deletedOccurrence classified)) (deletedOccurrenceGeneration classified)))) Refl
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
