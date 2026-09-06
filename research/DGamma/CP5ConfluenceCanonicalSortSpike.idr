@@ -3672,6 +3672,31 @@ canonicalWorkSelectedThereAvoidsBegin name key world error value trace head rema
 canonicalWorkSelectedThereAvoidsBegin name key world error value trace head remaining
   (Just (MkCanonicalWorkSelectedPair actor present pair)) valid = valid
 
+||| The EXISTING actual worklist selector always preserves its inside-episode
+||| provenance: every selected right node excludes Begin, including after any
+||| number of ready nodes. No stronger arbitrary-pair hypothesis is assumed.
+0 canonicalWorkSelectionAvoidsBegin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) -> (pending : List name) -> (minimumStart : Nat) ->
+  (inspection : CanonicalWorklistInspection name key world error value nameEq keyEq trace pending minimumStart) ->
+  canonicalWorkSelectedAvoidsBegin name key world error value trace pending
+    (canonicalWorkSelectGroupingPair name key world error value nameEq keyEq trace pending minimumStart inspection)
+canonicalWorkSelectionAvoidsBegin name key world error value nameEq keyEq trace _ _ CanonicalWorklistEnd = ()
+canonicalWorkSelectionAvoidsBegin name key world error value nameEq keyEq trace _ _
+  (CanonicalWorklistReady {selected = actor} {remaining} completed startsAfter tail) =
+    canonicalWorkSelectedThereAvoidsBegin name key world error value trace actor remaining
+      (canonicalWorkSelectGroupingPair name key world error value nameEq keyEq trace remaining
+        (workRangeStart completed + workRangeSize completed) tail)
+      (canonicalWorkSelectionAvoidsBegin name key world error value nameEq keyEq trace remaining
+        (workRangeStart completed + workRangeSize completed) tail)
+canonicalWorkSelectionAvoidsBegin name key world error value nameEq keyEq trace _ _
+  (CanonicalWorklistNeedsGrouping {selected = actor} episode scanned remains) =
+    canonicalWorkEpisodePairRejectsBegin name key world error value nameEq keyEq actor trace episode scanned remains
+canonicalWorkSelectionAvoidsBegin name key world error value nameEq keyEq trace _ _
+  (CanonicalWorklistNeedsOrdering completed startsTooEarly) = ()
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
