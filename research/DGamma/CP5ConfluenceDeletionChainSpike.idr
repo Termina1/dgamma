@@ -30076,6 +30076,33 @@ scopedCumulativeBirthRight name left right pull names actor (birth ** member) =
       (scopedAppendMemberRight (RegistrationGeneration name) left (map pull right) (pull (MkRegistrationGeneration actor birth)) (elemMap pull member),
         names (MkRegistrationGeneration actor birth) member))
 
+||| Full endpoint composition retains literal empty tables and actual raw omissions separately from history.
+0 scopedCumulativeEndpoint :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (source, middle, target : SystemState name key value world error) ->
+  (left : CanonicalEndpointRelation name key world error value nameEq keyEq source middle) ->
+  (right : CanonicalEndpointRelation name key world error value nameEq keyEq middle target) ->
+  (pull : RegistrationGeneration name -> RegistrationGeneration name) ->
+  ((generation : RegistrationGeneration name) -> Elem generation (endpointWithdrawnGenerations right) ->
+    (generationName (pull generation) = generationName generation)) ->
+  ScopedCanonicalDeletionEndpoint name key world error value nameEq keyEq
+    (endpointWithdrawnGenerations left ++ map pull (endpointWithdrawnGenerations right)) source target
+scopedCumulativeEndpoint name key world error value nameEq keyEq source middle target left right pull names =
+  MkScopedCanonicalDeletionEndpoint
+    (MkCanonicalEndpointRelation (endpointWithdrawnNames left ++ endpointWithdrawnNames right)
+      (endpointWithdrawnGenerations left ++ map pull (endpointWithdrawnGenerations right))
+      (MkEffectStateRelated (trans (ambientExact (endpointEffectsEquivalent left)) (ambientExact (endpointEffectsEquivalent right)))
+        (\actor => trans (tablesExact (endpointEffectsEquivalent left) actor) (tablesExact (endpointEffectsEquivalent right) actor)))
+      (\actor, outside => fiberControlMaybeTransitive
+        (endpointControlsOutside left actor (\member => outside (scopedAppendMemberLeft name (endpointWithdrawnNames left) (endpointWithdrawnNames right) actor member)))
+        (endpointControlsOutside right actor (\member => outside (scopedAppendMemberRight name (endpointWithdrawnNames left) (endpointWithdrawnNames right) actor member))))
+      (scopedCumulativeNamesWithdrawn name key world error value nameEq keyEq source middle target left right)
+      (scopedAppendMembership name (\actor => (birth : Nat ** Elem (MkRegistrationGeneration actor birth)
+        (endpointWithdrawnGenerations left ++ map pull (endpointWithdrawnGenerations right))))
+        (endpointWithdrawnNames left) (endpointWithdrawnNames right)
+        (\actor, member => scopedCumulativeBirthLeft name (endpointWithdrawnGenerations left) (map pull (endpointWithdrawnGenerations right)) actor (endpointNameHasWithdrawnGeneration left actor member))
+        (\actor, member => scopedCumulativeBirthRight name (endpointWithdrawnGenerations left) (endpointWithdrawnGenerations right) pull names actor (endpointNameHasWithdrawnGeneration right actor member)))) Refl
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
