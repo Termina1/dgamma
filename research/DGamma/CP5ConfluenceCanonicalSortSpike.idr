@@ -2513,6 +2513,26 @@ canonicalWorkNextActorPrepend name key world error value selected step rest excl
     (CanonicalWorkForeignStep step (workBeforeNext next) excluded (workBeforeNextForeign next))
     (cong (MoreTransitions step) (workNextDecomposition next))
 
+||| Genuine decreasing selection from the worklist's grouping debt. Stop at
+||| the FIRST owned action, including yielded registrations (not merely the
+||| next lifecycle step); every skipped action is certified foreign.
+0 canonicalWorkFindNextActor :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  Not (NoLifecycleBy selected trace) ->
+  CanonicalWorkNextActor name key world error value selected trace
+canonicalWorkFindNextActor name key world error value nameEq selected NoTransitions remains =
+  void (remains NoLifecycleByEnd)
+canonicalWorkFindNextActor name key world error value nameEq selected (MoreTransitions step rest) remains =
+  case canonicalWorkClassifyActor name key world error value nameEq selected step of
+    Yes owned => MkCanonicalWorkNextActor _ _ NoTransitions step rest owned CanonicalWorkForeignEnd Refl
+    No foreign => canonicalWorkNextActorPrepend name key world error value selected step rest foreign
+      (canonicalWorkFindNextActor name key world error value nameEq selected rest
+        (\noTail => remains (NoLifecycleByStep step rest
+          (\lifecycle, same => foreign (CanonicalWorkLifecycle lifecycle same)) noTail)))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
