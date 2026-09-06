@@ -27314,6 +27314,19 @@ scopedEpisodeInsertionRegistered name key world error value nameEq selected regi
 scopedEpisodeInsertionRegistered name key world error value nameEq selected registered ordinal live child parent component
   (DeleteRegisteredGeneration owned) = scopedOwnedInsertionRegistered name key world error value nameEq registered ordinal live child parent component owned
 
+0 scopedLocatedAppendLeftOrigin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  (action : Action name key value world error) -> (occurrence : LocatedActionOccurrence action left) ->
+  DeletionSourceOccurrenceAtOrdinal name key world error value (appendTransitions left right) action (locatedActionOrdinal occurrence)
+scopedLocatedAppendLeftOrigin name key world error value first middle finalState left right action
+  (MkLocatedActionOccurrence before afterState beforeTrace transition later actionShape decomposition) =
+    MkDeletionSourceOccurrenceAtOrdinal
+      (MkLocatedActionOccurrence before afterState beforeTrace transition (appendTransitions later right) actionShape
+        (trans (sym (appendTransitionsAssociative beforeTrace (MoreTransitions transition later) right))
+          (cong (\part => appendTransitions part right) decomposition))) Refl
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
