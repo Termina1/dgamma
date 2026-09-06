@@ -347,3 +347,7 @@ public export
 0 r172ReuseShape : ClosingFreeTraceShape Nat R45Key Unit String R45Value r45NameEq r45KeyEq r172ReuseTrace
 r172ReuseShape = closingFreeTraceShapeSpike r45NameEq r45KeyEq r45Protocol r172ReuseTrace r172ReuseNoClosing r172ReuseBundle
 
+public export
+0 r172ReuseOrdering : SupportOrderingCapital Nat R45Key Unit String R45Value r45NameEq r45KeyEq r172ReuseFinal
+r172ReuseOrdering = supportOrderingSpike r45NameEq r45KeyEq r45Protocol r172ReuseTrace r172ReuseBundle
+
