@@ -29644,6 +29644,17 @@ scopedPullDeletedClassification name key world error value nameEq keyEq initial 
       (scopedLocateActionOccurs name key world error value (registrationAfter (deletedOccurrence classified)) (survivingFinal result)
         (afterRegistration (deletedOccurrence classified)) (LUnload (deletedParent classified)) (deletedParentEpisodeCloses classified)))
 
+0 scopedClassifiedGenerations :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (generations : List (RegistrationGeneration name)) ->
+  ((generation : RegistrationGeneration name) -> Elem generation generations -> DeletedGenerationClassification name key world error value nameEq global generation) ->
+  List (generation : RegistrationGeneration name ** DeletedGenerationClassification name key world error value nameEq global generation)
+scopedClassifiedGenerations name key world error value nameEq initial finalState global [] classified = []
+scopedClassifiedGenerations name key world error value nameEq initial finalState global (generation :: rest) classified =
+  (generation ** classified generation Here) :: scopedClassifiedGenerations name key world error value nameEq initial finalState global rest
+    (\later, member => classified later (There member))
+
 ||| O10: well-founded recursion only.  Cumulative endpoint and registration
 ||| accounting are intentionally deferred to the independently gateable O11.
 public export
