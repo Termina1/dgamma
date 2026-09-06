@@ -27595,6 +27595,25 @@ scopedDeletionEmbeddedOrdinalsUnique name key world error value nameEq keyEq ini
     (scopedOrdinalSpineWitness (joinedOrdinalSpine (wholeOrdinalJoin
       (scopedDeletionOrdinalSegments name key world error value nameEq keyEq initial finalState global candidate result))))
 
+0 scopedWholeRetainedSourceOrdinal :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq global) ->
+  (result : DeletionResult name key world error value nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (action : Action name key value world error) -> (sourceIndex : Nat) ->
+  (retained : ScopedWholeRetainedOrigin name key world error value nameEq keyEq initial finalState global candidate result action sourceIndex) ->
+  (locatedActionOrdinal (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result (wholeRetainedOccurrence retained))) = sourceIndex)
+scopedWholeRetainedSourceOrdinal name key world error value nameEq keyEq initial finalState global candidate result action sourceIndex retained =
+  scopedDeletionEmbeddedOrdinalsUnique name key world error value nameEq keyEq initial finalState global candidate result
+    (locatedActionOrdinal (deletionWholeSourceOccurrence (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+      (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result (wholeRetainedOccurrence retained)))) sourceIndex
+    (locatedActionOrdinal (wholeRetainedOccurrence retained))
+    (deletionWholeOrdinalEmbedding (deletionWholeOccurrenceOrigin nameEq keyEq global (selectedActor candidate) (selectedEpisode candidate)
+      (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate) result (wholeRetainedOccurrence retained)))
+    (wholeRetainedEmbedding retained)
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
