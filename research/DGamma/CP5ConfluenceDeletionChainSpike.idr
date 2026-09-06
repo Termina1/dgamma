@@ -27231,6 +27231,32 @@ scopedBirthCoverageKeepView name key world error value registered ordinal source
       (scopedBirthCoverageKeepLater name key world error value registered ordinal targetFirst targetMiddle targetFinal targetStep target origin child parent component
         (locatedActionOrdinal tailOccurrence) (continue tailOccurrence))
 
+0 scopedBirthCoverageDeleteView :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (registered : List (RegistrationGeneration name)) -> (ordinal : Nat) ->
+  (sourceFirst, sourceMiddle, sourceFinal, targetFirst, targetFinal : SystemState name key value world error) ->
+  (sourceStep : Transition sourceFirst sourceMiddle) -> (source : Transitions sourceMiddle sourceFinal) ->
+  (target : Transitions targetFirst targetFinal) -> (origin : Nat -> Maybe Nat) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  ((transitionAction sourceStep = OInsert child parent component) -> Elem (MkRegistrationGeneration child ordinal) registered) ->
+  ((birth : LocatedActionOccurrence (OInsert child parent component) source) ->
+    ScopedBirthCoverage name key world error value registered (S ordinal) targetFirst targetFinal target origin child parent component (locatedActionOrdinal birth)) ->
+  (occurrence : LocatedActionOccurrence (OInsert child parent component) (MoreTransitions sourceStep source)) ->
+  DeletionLocatedHeadView name key world error value sourceFirst sourceMiddle sourceFinal (OInsert child parent component) sourceStep source occurrence ->
+  ScopedBirthCoverage name key world error value registered ordinal targetFirst targetFinal target
+    (\index => map S (origin index)) child parent component (locatedActionOrdinal occurrence)
+scopedBirthCoverageDeleteView name key world error value registered ordinal sourceFirst sourceMiddle sourceFinal targetFirst targetFinal
+  sourceStep source target origin child parent component deletedHead continue occurrence (DeletionLocatedAtHead actionShape exactOrdinal) =
+    replace {p = ScopedBirthCoverage name key world error value registered ordinal targetFirst targetFinal target
+      (\index => map S (origin index)) child parent component} (sym exactOrdinal)
+      (Left (replace {p = \birthOrdinal => Elem (MkRegistrationGeneration child birthOrdinal) registered}
+        (sym (plusZeroRightNeutral ordinal)) (deletedHead actionShape)))
+scopedBirthCoverageDeleteView name key world error value registered ordinal sourceFirst sourceMiddle sourceFinal targetFirst targetFinal
+  sourceStep source target origin child parent component deletedHead continue occurrence (DeletionLocatedInTail tailOccurrence exactOrdinal) =
+    replace {p = ScopedBirthCoverage name key world error value registered ordinal targetFirst targetFinal target
+      (\index => map S (origin index)) child parent component} (sym exactOrdinal)
+      (scopedBirthCoverageDeleteLater name key world error value registered ordinal targetFirst targetFinal target origin child parent component
+        (locatedActionOrdinal tailOccurrence) (continue tailOccurrence))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
