@@ -2,7 +2,7 @@
 
 Branch: `cp5-thm73-scoping`
 
-## Current checkpoint — R172 O14 CLOSED (supersedes historical counts)
+## Current checkpoint — R172 O14 CLOSED; O17 semantic frontier (supersedes historical counts)
 
 At required start **0e58c54**, **DeletionChain is CLOSED**: O9
 `enrichDeletionChainStepSpike` at `89435dc`, O10
@@ -33,8 +33,16 @@ The full **start-coordinate** seven-hole type/last-stop/capital/route/risk censu
 [`O6-R172-NEXT-PHASE-RECON.md`](research-tests/O6-R172-NEXT-PHASE-RECON.md).
 Unit A changed documentation only and was ratified at `b5d6904`. Its ranked
 priority **O14 probe-first → O17 probe-first → canonical support matching** was
-approved; Unit B completed the first target only. The next target is **O17
-PROBE-FIRST**, not an immediate body attempt. The final evidence is in
+approved. Unit B closed O14, then the supervisor ratified/pushed `b590789` and
+authorized O17 continuation after P2 (`259eb71`). N1–N42 now prove an actual
+distinct-root insertion hoist and fixed-order transport through full no-withdrawal
+control equivalence. O17 remains **OPEN, body 0/3**, paused at a semantic gate:
+`R172O17OpenParentRootReuseCandidate` constructs every unchanged O17 premise
+for an eight-step child-removal/root-reuse trace, proves its source is not
+root-first and its immediate remove/root diamond impossible. This is **not** a
+proved negation of every sorting derivation. Candidate proof `a069cbc`; exact
+local wall `ccd0e2e`; private sort capital `1e8105e`. Ranked target #3 requires
+a separate supervisor authorization. The refreshed evidence is in
 [`O6-R172-GRIND-SHIFT-AUDIT.md`](research-tests/O6-R172-GRIND-SHIFT-AUDIT.md). R146's surviving ranking is preserved:
 the earlier deletion slots are closed; O21's bounded sealed-bijection cure landed
 at `e6314b1` in R147 and its remaining withdrawal branches are parked. **O19 body
@@ -44,6 +52,12 @@ The R146 stop-map has a historical label slip: O14 is `supportOrderingSpike`,
 O17 is `sortClosingFreeTraceSpike`, as the source and R134–R145 audits confirm.
 
 ### Current debt register — not hidden by the hole count
+
+O17-specific semantic frontier: the retained full-input root-reuse candidate
+exposes a checked local obstruction to universal root-first hoisting. A global
+occurrence/generation birth-order invariant or an alternative sorter remains
+unproved; no frozen placement revision or paper counterexample is claimed.
+
 
 | Debt | Status / next discharge |
 |---|---|
@@ -2435,7 +2449,7 @@ research capital; no CP3 production declaration changed.
 | O14 | `supportOrderingSpike` | **CLOSED `c99145c`**, R172 body 1/3 after committed P1 and simultaneous invariant; unchanged surface, concrete reductions `9a70ffd`. |
 | O15 | Chosen original/reduced support-order bridge | Closed under R143 corrected chosen-order premises; real shared-order producer debt remains. |
 | O16 | Exact-fold one-trace accounting | Closed under R143 corrected exact accounting premises; real producer/fixture debt remains. |
-| O17 | `sortClosingFreeTraceSpike` | 1 hole; R144 body 3/3 parked; PROBE-FIRST operational stable-sort invariant. |
+| O17 | `sortClosingFreeTraceSpike` | **OPEN**, R144 body 3/3 historical; R172 body **0/3**. P2 passed before N1–N42 actual hoist/fixed-order capital; full-premise root-reuse candidate and exact local diamond obstruction `a069cbc`, not a global sorting refutation. Semantic-frontier gate. |
 | O18 | Sealed independent canonical capital | Closed R143. |
 | O19 | Support matching, adjacent-block transposition, operational permutation selection | 3 holes; matching lacks endpoint support preservation; block-swap BODY BANNED until revision + negative; selector depends on corrected block swap. |
 | O20 | Four-clause canonical endpoint bridge | 1 hole; R144 body 3/3, replay bookkeeping closed, semantic bridge not produced. |
@@ -2445,9 +2459,9 @@ research capital; no CP3 production declaration changed.
 
 ## 11. Exact hole reconciliation — current R172 inventory
 
-The source census at proof coordinate `9a70ffd` is **6**, split **1/4/0/0/1** (R172 start `0e58c54`: 7):
+The source census at proof coordinate `a069cbc` (whitespace correction `775bd22`) is **6**, split **1/4/0/0/1** (R172 start `0e58c54`: 7):
 
-- CanonicalSort: `sortClosingFreeTraceSpike_rhs` (now line 1319);
+- CanonicalSort: `sortClosingFreeTraceSpike_rhs` (now line 1935);
 - CrossTrace: `operationalAdjacentBlockSwapSpike_rhs`,
   `canonicalSupportOrdersMatchSpike_rhs`,
   `selectOperationalCanonicalPermutationSpike_rhs`,

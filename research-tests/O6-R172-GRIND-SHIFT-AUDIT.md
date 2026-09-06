@@ -484,3 +484,431 @@ artifact. This transcript is committed **before any retained O17 declaration**.
 O17 body budget in this continuation is still **0/3**; the six-hole census and
 all frozen bytes remain unchanged. This successful state-index probe permits
 only the scoped producer-owned capital campaign; it is not a block-hoist proof.
+
+
+## O17 continuation — retained capital and full-input local obstruction
+
+This section **supersedes the O14-only stopping/next-target status above**;
+the entire O14 audit ratified at `b590789` is preserved byte-for-byte. The
+supervisor ratified and pushed that milestone, explicitly ruled “DO NOT STAND
+DOWN”, and authorized O17 probe-first in the same shift. P2 and its removed
+source/TTC/TTM transcript were committed at `259eb71` before N1.
+
+At proof checkpoint **a069cbc** (whitespace-only validation correction
+**775bd22**), O17 is **OPEN / paused for a semantic-frontier gate**, body
+**0/3**. No micro-unit exhausted its three-attempt budget; this is not a claimed
+compiler-budget exhaustion. O14 remains closed; six named holes remain,
+**1/4/0/0/1**, net shift delta **-1**. No other original research declaration,
+production source or package surface was changed.
+
+### N1–N42: actual reached-state capital, not an assumed sorted output
+
+* N1–N8 simultaneously carry the exact current trace/final, finite operational
+  derivation, complete current bundle, external correspondence and endpoint;
+  the source-to-current operational occurrence/replay folds come from that
+  same derivation. A genuinely applied `adjacentSwapSuffixSpike` extends it.
+* N9–N20 derive the distinct-root insertion crossing from the actual source
+  bundle, decomposition, paper activation branch and actor/root inequality.
+  Alignment, source well-formedness, pair independence, early applicability,
+  child-parent exclusion, local diamond and pair-external relation are produced,
+  not new premises supplied to O17. The owner-produced hoist contains the exact
+  returned `AdjacentSwapResult` and moved root action.
+* N21–N28 locate exact original/moved root occurrences, prove the moved ordinal
+  decreases by one, build a nonempty derivation, and extend the reached state.
+* N29–N42 preserve active/component/parent observations, support truth and every
+  parent/precedence path under **full no-withdrawal ControlEquivalent**. O14's
+  authentic active/rank witness feeds this argument. N42 preserves the **same
+  fixed desired list**, using the two endpoints' authenticated rank/support
+  facts; it does not recompute an unrelated order. This is **not** the R143-
+  refuted arbitrary original/reduced deletion-order transfer.
+
+N42 is committed at `1e8105e`. Remaining operational work is real: a decreasing
+full worklist/selector, all root orchestration and activation cases, stable
+child-yield placement, contiguous block ranges/order/disjointness, coverage,
+closing-freedom transport and exact registration accounting. A one-position
+root-insert decrease is not a termination theorem for this full selector.
+
+#### Retained N micro-unit ledger
+
+Each row is one new top-level declaration, followed immediately by its clean
+fresh compiler check and commit. No new export/visibility declaration was added
+to the research module. Direct imports added there are `DGamma.CP3Support`,
+`DGamma.CP4TerminalRecovery`, and `DGamma.CP4RecoveryModelTrace`.
+
+| Unit | Declaration | Check | Commit |
+|---|---|---|---|
+| N1 | `CanonicalSortingReplayState` | PASS 1/3 | `05be2ba` |
+| N2 | `canonicalSortingCurrentOrdering` | PASS 1/3 | `2db89f0` |
+| N3 | `canonicalSortingReplayCorrespondence` | PASS 1/3 | `f7c6177` |
+| N4 | `canonicalSortingOccurrenceCorrespondence` | PASS 1/3 | `f421607` |
+| N5 | `canonicalSortingReplayStart` | PASS 1/3 | `ebbacbc` |
+| N6 | `canonicalSortingDerivationAppend` | PASS 1/3 | `db96bad` |
+| N7 | `canonicalSortingReplayExtend` | PASS 1/3 | `7138bf7` |
+| N8 | `canonicalSortingReplaySwap` | PASS 1/3 | `0e19aa6` |
+| N9 | `canonicalPaperActivationLifecycle` | PASS 1/3 | `1bae176` |
+| N10 | `canonicalRootChildInsertImpossible` | PASS 2/3 | `578fbb6` |
+| N11 | `canonicalLifecycleInternal` | PASS 1/3 | `02efd60` |
+| N12 | `canonicalRootInsertPairExternal` | PASS 1/3 | `74d8a7d` |
+| N13 | `canonicalSortingPairAligned` | PASS 1/3 | `af1ff7a` |
+| N14 | `canonicalSortingPairSourceWellFormed` | PASS 1/3 | `2984c65` |
+| N15 | `canonicalSortingAppendRightOccurrence` | PASS 1/3 | `40dcf95` |
+| N16 | `canonicalSortingPairIndependent` | PASS 2/3 | `694d660` |
+| N17 | `canonicalRootInsertHoistDiamond` | PASS 1/3 | `b3ac87d` |
+| N18 | `CanonicalRootInsertionHoist` | PASS 1/3 | `64948d6` |
+| N19 | `canonicalRootInsertionHoistFromDiamond` | PASS 1/3 | `dbeec85` |
+| N20 | `canonicalRootInsertionHoist` | PASS 1/3 | `0ea1a11` |
+| N21 | `canonicalHoistedRootOccurrence` | PASS 1/3 | `88bc6d2` |
+| N22 | `canonicalHoistedRootOrdinal` | PASS 1/3 | `1fa867b` |
+| N23 | `canonicalOriginalHoistedRootOccurrence` | PASS 1/3 | `1624837` |
+| N24 | `canonicalSortingPrefixSnocCount` | PASS 1/3 | `427d8eb` |
+| N25 | `canonicalRootHoistMovesOneOrdinal` | PASS 1/3 | `c48d682` |
+| N26 | `canonicalRootHoistNonempty` | PASS 1/3 | `0738d2c` |
+| N27 | `canonicalSortingAcceptRootHoist` | PASS 1/3 | `c93dfac` |
+| N28 | `canonicalSortingHoistRoot` | PASS 1/3 | `f6677ee` |
+| N29 | `canonicalSortingLifecycleActiveSame` | PASS 1/3 | `26772fa` |
+| N30 | `canonicalSortingFiberActiveSame` | PASS 1/3 | `2f7b3de` |
+| N31 | `canonicalSortingFiberComponentSame` | PASS 1/3 | `c7eed3b` |
+| N32 | `canonicalSortingFiberParentSame` | PASS 1/3 | `69cc47d` |
+| N33 | `canonicalSortingSupportFromRelatedActive` | PASS 1/3 | `17dec8c` |
+| N34 | `canonicalSortingSupportFromActiveRank` | PASS 1/3 | `8c80210` |
+| N35 | `canonicalSortingSupportTrueForward` | PASS 1/3 | `71f62f6` |
+| N36 | `canonicalSortingPrecedenceFromFibers` | PASS 1/3 | `d484ef4` |
+| N37 | `canonicalSortingPrecedenceForward` | PASS 1/3 | `72f7c1c` |
+| N38 | `canonicalSortingParentFromFiber` | PASS 1/3 | `21863c4` |
+| N39 | `canonicalSortingParentForward` | PASS 1/3 | `80e6d56` |
+| N40 | `canonicalSortingSupportEdgeForward` | PASS 1/3 | `a7241d2` |
+| N41 | `canonicalSortingSupportPathForward` | PASS 1/3 | `918ba6c` |
+| N42 | `canonicalSortingFixedLinearization` | PASS 2/3 | `1e8105e` |
+
+### C1–C49: a full O17 input, with an exact local obstruction
+
+File: `research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr`.
+This is a **retained checked candidate**, not one of the two disposable probes.
+It imports the public R45 empty-key, Unit-world, tagged/ranked registration
+fixture. Its exact checked trace is:
+
+| Ordinal | Checked action | Role |
+|---|---|---|
+| 0 | `OInsert 0 Root r45Parent` | external root birth |
+| 1 | `LBegin 0` | the parent's sole open activation starts |
+| 2 | `OInsert 1 (ChildOf 0) r45Child` | actual next tagged iterator step licenses this child |
+| 3 | `ORetire 1` | internal retirement of that generated child |
+| 4 | `ORemove 1` | internal removal; name 1 becomes fresh |
+| 5 | `OInsert 1 Root r45Child` | a later external root reissues raw name 1 |
+| 6 | `ORetire 1` | external retirement of the later root |
+| 7 | `LAdvance 0`, `LFinishTag` | parent finishes; no closing episode occurs |
+
+The root reissue is during the **still-open** parent's activation. The actual
+`RegistrationDiscipline` licenses it: the generated child's immediate retirement
+provides `ChildRetiredBeforeParent`; it does not forbid its removal/root reissue.
+The endpoint is well-formed, quiet and failure-free, with support set **[0]**.
+The checked finish equation excludes the executable final-state helper's default
+branch; no assumed evaluator success is used.
+
+**Every unchanged O17 input is constructed**, without calling its hole:
+`r172ReuseTrace`, `r172ReuseBundle`, `r172ReuseShape`, `r172ReuseOrdering`.
+The bundle includes full trace independence, totality, rank/parent-rank/path
+capital and `SupportMatchesActive`; `r172ReuseNoClosing` derives the shape by
+the existing proved O13 producer. `r172ReuseOrderingIsParentOnly` authenticates
+O14's exact output **[0]** from membership/uniqueness laws, not an opaque `Refl`.
+Trace independence is not assumed: all empty-key/Unit effect states have equal
+runtime observations, generated transformations respect those observations,
+partial domains are reflected, generated maps commute, and iterator outcomes
+are stable by the public runtime-respect theorem.
+
+Additional **proved** facts:
+
+* `r172ReuseSourceNotRootFirst` rules out using the original trace as an already
+  canonical identity terminal.
+* `r172ReuseRootBeforeRemoveRejected` computes the later root insertion before
+  the child removal to `Nothing` (the raw name is still occupied).
+* `r172ReuseRemoveRootDiamondImpossible` rejects **every LocalRelationalDiamond
+  for this exact immediate removal/root-insertion pair**, through its aligned
+  moved-right equation. No pre-supplied target or diamond is hidden here.
+
+**Not proved:** `SortedClosingFreeTrace ... r172ReuseTrace r172ReuseOrdering ->
+Void`, or impossibility of every finite alternative sorting derivation. A local
+failed crossing and a noncanonical input alone do not imply that negation.
+The plausible global obstruction is a cycle: full discipline places the child
+birth after parent begin; same-name insertion generations cannot reverse their
+relative birth order via valid adjacent swaps; canonical all-root-first would
+place the later root birth before that begin. Formalizing that invariant and
+its occurrence/ordinal transports is still necessary. This is not a claimed
+paper counterexample, nor permission to revise the frozen canonical-placement
+surface. No false O17 body was manufactured to conceal this frontier.
+
+#### Retained C micro-unit ledger
+
+Each C row is one new top-level declaration in the total, unbound-implicits-off
+candidate fixture. Local `where` proofs are explicit; no new `let`/`with`.
+
+| Unit | Declaration | Check | Commit |
+|---|---|---|---|
+| C1 | `r172ReuseRootFresh` | PASS 1/3 | `be67d97` |
+| C2 | `r172ReuseAfterRoot` | PASS 1/3 | `c2888d8` |
+| C3 | `r172ReuseRootRetired` | PASS 1/3 | `9d5ba78` |
+| C4 | `r172ReuseAfterRetire` | PASS 1/3 | `1e0e123` |
+| C5 | `r172ReuseFinal` | PASS 1/3 | `b0fb77b` |
+| C6 | `r172ReuseRemoveChecked` | PASS 1/3 | `c648250` |
+| C7 | `r172ReuseRootChecked` | PASS 1/3 | `900c6a0` |
+| C8 | `r172ReuseRetireChecked` | PASS 1/3 | `1cd47df` |
+| C9 | `r172ReuseFinishChecked` | PASS 1/3 | `755254b` |
+| C10 | `r172ReuseRemove` | PASS 1/3 | `7a90861` |
+| C11 | `r172ReuseRoot` | PASS 1/3 | `404b5bb` |
+| C12 | `r172ReuseRetire` | PASS 1/3 | `4ce45ab` |
+| C13 | `r172ReuseFinish` | PASS 1/3 | `a7286f2` |
+| C14 | `r172ReuseTail` | PASS 1/3 | `7645629` |
+| C15 | `r172ReuseTrace` | PASS 1/3 | `8566dcb` |
+| C16 | `r172ReuseAligned` | PASS 1/3 | `6a31871` |
+| C17 | `r172ReuseDiscipline` | PASS 1/3 | `def5e50` |
+| C18 | `r172ReuseInitialWellFormed` | PASS 1/3 | `72fd98a` |
+| C19 | `r172ReuseInitialEmpty` | PASS 1/3 | `59fced7` |
+| C20 | `r172ReuseFinalWellFormed` | PASS 1/3 | `085370d` |
+| C21 | `r172ReuseQuiet` | PASS 1/3 | `8b307be` |
+| C22 | `r172ReuseNoFailure` | PASS 1/3 | `84a6f64` |
+| C23 | `r172ReuseSupportSet` | PASS 1/3 | `3b0a8df` |
+| C24 | `r172ReuseAnyTransitionTotal` | PASS 1/3 | `6f0af99` |
+| C25 | `r172ReuseTotal` | PASS 1/3 | `757235a` |
+| C26 | `r172ReuseEmptyKeyBindings` | PASS 1/3 | `0a37fde` |
+| C27 | `r172ReuseAllEffectStatesRelated` | PASS 1/3 | `efcb8c6` |
+| C28 | `r172ReuseRelatedBind` | PASS 1/3 | `36f57d4` |
+| C29 | `r172ReuseTransformationRespects` | PASS 2/3 | `d80e9f6` |
+| C30 | `r172ReuseUndefinedRight` | PASS 1/3 | `76a4072` |
+| C31 | `r172ReuseBothDefinedRelated` | PASS 1/3 | `f1b24e4` |
+| C32 | `r172ReuseCommuteAt` | PASS 1/3 | `274ded9` |
+| C33 | `r172ReuseMapsCommute` | PASS 1/3 | `f429fa1` |
+| C34 | `r172ReuseIteratorStableAt` | PASS 1/3 | `41ea1a5` |
+| C35 | `r172ReuseIndependent` | PASS 1/3 | `ce8001e` |
+| C36 | `r172ReuseReached` | PASS 1/3 | `9d30a7c` |
+| C37 | `r172ReuseProvenance` | PASS 1/3 | `474f273` |
+| C38 | `r172ReuseBundle` | PASS 1/3 | `24efce9` |
+| C39 | `r172ReuseNoUnload` | PASS 1/3 | `c435481` |
+| C40 | `r172ReuseAppendRightOccurrence` | PASS 1/3 | `035d428` |
+| C41 | `r172ReuseClosingOccurs` | PASS 2/3 | `27c0d29` |
+| C42 | `r172ReuseNoClosing` | PASS 1/3 | `0ca2a41` |
+| C43 | `r172ReuseShape` | PASS 1/3 | `f0147a5` |
+| C44 | `r172ReuseOrdering` | PASS 1/3 | `e5ee1b5` |
+| C45 | `r172ReuseSourceNotRootFirst` | PASS 2/3 | `21bf0d3` |
+| C46 | `r172ReuseRootBeforeRemoveRejected` | PASS 1/3 | `db8b9c0` |
+| C47 | `r172ReuseMovedRootImpossible` | PASS 1/3 | `e7ee8c5` |
+| C48 | `r172ReuseRemoveRootDiamondImpossible` | PASS 1/3 | `ccd0e2e` |
+| C49 | `r172ReuseOrderingIsParentOnly` | PASS 2/3 | `a069cbc` |
+
+### Continuation failures and corrections (all charged)
+
+All N/C units not listed here passed 1/3. O17's body was never attempted.
+
+* **N10-1 → N10-2:** dependent impossible root/child equality had residual named
+  component indices; replacing those impossible-clause arguments with `_`
+  removed the binding wall without changing the statement.
+* **N16-1 → N16-2:** the exact occurrence-embedding type required the direct
+  `DGamma.CP4RecoveryModelTrace` import, not a visibility edit.
+* **N42-1 → N42-2:** `controlEquivalentSymmetric` required direct
+  `DGamma.CP3Support` import, not a new assumption.
+* **C29-1 → C29-2:** independently generated anonymous case trees did not
+  definitionally identify with executable `partialCompose`; the corrected
+  proof carries actual evaluation equations through a local composition fold.
+  C28's weaker case-tree lemma remains honest but is not used by that fold.
+* **C41-1 → C41-2:** `prefix` was a reserved token, not a term variable; renamed
+  to `earlier`. No statement change.
+* **C45-1 → C45-2:** the concrete nested indexed pattern exceeded the external
+  **120-second** tool window. The wrapper and compiler were gone by the
+  **13:55:06 UTC** inspection; the buffered log was empty. This is charged as
+  exit 124 in the ledger, **not** a compiler Error diagnostic or pass. The RSS
+  sample was lost with the wrapper (the ledger's 0 means unavailable). A generic
+  occurrence eliminator replaced the deeply nested concrete NoRoot match; the
+  same theorem then passed in 15.1 seconds. No concurrent compiler was started.
+* **C49-1 → C49-2:** O14's returned order was opaque to direct `Refl`; the
+  corrected proof uses its actual four-field linearization certificate and a
+  singleton unique-enumeration argument. No metadata/visibility widening.
+
+Complete diagnostic-bearing failed outputs follow (trailing spaces normalized
+for the baseline whitespace gate). The already ratified P1-1
+(exit 0 with Error diagnostics) and M42-1 failures remain recorded above and are
+included in the cumulative failure count.
+
+#### N10-1
+
+```text
+3/3: Building DGamma.CP5ConfluenceCanonicalSortSpike (research/DGamma/CP5ConfluenceCanonicalSortSpike.idr)
+Error: Impossible pattern gives an error:
+When unifying:
+    OInsert ?child (ChildOf ?parent) ?childComponent = OInsert ?child (ChildOf ?parent) ?childComponent
+and:
+    OInsert ?root Root ?rootComponent = OInsert ?child (ChildOf ?parent) ?childComponent
+Pattern variable rootComponent unifies with: ?childComponent [no locals in scope].
+
+DGamma.CP5ConfluenceCanonicalSortSpike:1448:81--1448:109
+      |
+ 1448 | canonicalRootChildInsertImpossible name key world error value root child parent rootComponent childComponent Refl impossible
+      |                                                                                 ^^^^^^^^^^^^^ ^^^^^^^^^^^^^^
+
+Suggestion: Use the same name for both pattern variables, since they unify.
+```
+
+#### N16-1
+
+```text
+3/3: Building DGamma.CP5ConfluenceCanonicalSortSpike (research/DGamma/CP5ConfluenceCanonicalSortSpike.idr)
+Error: While processing right hand side of canonicalSortingPairIndependent. When unifying:
+    OccurrenceEmbedding name key world error value pairFirst pairFinal pairFirst originalFinal (MoreTransitions left (MoreTransitions right NoTransitions)) (appendTransitions (MoreTransitions left (MoreTransitions right NoTransitions)) suffix)
+and:
+    Transition stepBefore stepAfter -> OccursIn transition (MoreTransitions left (MoreTransitions right NoTransitions)) -> OccursIn transition (MoreTransitions left (MoreTransitions right suffix))
+Undefined name DGamma.CP4RecoveryModelTrace.OccurrenceEmbedding.
+
+DGamma.CP5ConfluenceCanonicalSortSpike:1543:10--1543:125
+ 1539 |   traceIndependentUnderEmbedding
+ 1540 |     (\transition, occurs => replace {p = OccursIn transition} decomposition
+ 1541 |       (canonicalSortingAppendRightOccurrence name key world error value prefixTrace
+ 1542 |         (MoreTransitions left (MoreTransitions right suffix)) transition
+ 1543 |         (appendLeftOccurrenceEmbedding (MoreTransitions left (MoreTransitions right NoTransitions)) suffix transition occurs)))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+```
+
+#### N42-1
+
+```text
+3/3: Building DGamma.CP5ConfluenceCanonicalSortSpike (research/DGamma/CP5ConfluenceCanonicalSortSpike.idr)
+Error: While processing right hand side of canonicalSortingFixedLinearization. Undefined name controlEquivalentSymmetric.
+
+DGamma.CP5ConfluenceCanonicalSortSpike:1917:12--1917:38
+ 1913 |         (canonicalSortingSupportTrueForward name key world error value protocol nameEq keyEq target source
+ 1914 |           targetRanked targetMatches sourceMatches (controlEquivalentSymmetric controls) selected supported))
+ 1915 |       (\lower, upper, path, lowerIn, upperIn => supportPathsOrdered linearization lower upper
+ 1916 |         (canonicalSortingSupportPathForward name key world error value nameEq target source
+ 1917 |           (controlEquivalentSymmetric controls) lower upper path) lowerIn upperIn)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+```
+
+#### C29-1
+
+```text
+2/2: Building DGamma.R172O17OpenParentRootReuseCandidate (research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr)
+Error: While processing right hand side of r172ReuseTransformationRespects. Can't solve constraint between: case runTraceEffectTransformation before x of
+  { Nothing => Nothing
+  ; Just middle => runTraceEffectTransformation after middle
+  } and case runTraceEffectTransformation before x of
+  { Nothing => Nothing
+  ; Just middle => runTraceEffectTransformation after middle
+  }.
+
+DGamma.R172O17OpenParentRootReuseCandidate:185:3--187:59
+ 185 |   r172ReuseRelatedBind (runTraceEffectTransformation before x) (runTraceEffectTransformation before y)
+ 186 |     (runTraceEffectTransformation after) (r172ReuseTransformationRespects actor after)
+ 187 |     (r172ReuseTransformationRespects actor before related)
+```
+
+#### C41-1
+
+```text
+2/2: Building DGamma.R172O17OpenParentRootReuseCandidate (research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr)
+Error: Couldn't parse declaration.
+
+DGamma.R172O17OpenParentRootReuseCandidate:334:1--334:23
+ 330 |   {selected : Nat} -> {initial, finalState : SystemState Nat R45Key R45Value Unit String} ->
+ 331 |   {trace : Transitions initial finalState} ->
+ 332 |   (located : LocatedClosedEpisode Nat R45Key Unit String R45Value r45NameEq r45KeyEq selected trace) ->
+ 333 |   OccursIn (unloadTransition (closing (locatedEpisode located))) trace
+ 334 | r172ReuseClosingOccurs (MkLocatedClosedEpisode pre after prefix episode suffix decomposition) =
+       ^^^^^^^^^^^^^^^^^^^^^^
+```
+
+#### C49-1
+
+```text
+2/2: Building DGamma.R172O17OpenParentRootReuseCandidate (research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr)
+Error: While processing right hand side of r172ReuseOrderingIsParentOnly. Can't solve constraint between: [0] and r172ReuseOrdering .orderedSupportNames.
+
+DGamma.R172O17OpenParentRootReuseCandidate:399:33--399:37
+ 395 |   (movedPairAligned diamond) (movedRightAction diamond)
+ 396 |
+ 397 | public export
+ 398 | 0 r172ReuseOrderingIsParentOnly : orderedSupportNames r172ReuseOrdering = [0]
+ 399 | r172ReuseOrderingIsParentOnly = Refl
+                                       ^^^^
+```
+
+The baseline whitespace validator, not the compiler, found one final blank
+line in the newly added candidate file. `775bd22` removes exactly that line;
+its fresh check passed. This zero-declaration correction is separate from the
+49 C declarations, not a hidden extra C49 body attempt. No compiler failure is
+charged for a documentation/whitespace validation assertion.
+
+### Refreshed continuation validation and frozen boundaries
+
+Eight serial continuation gate invocations passed, including the final
+whitespace-only source check. CanonicalSort and the candidate were source-mtime
+refreshed only to force fresh elaboration; no TTC or source bytes were deleted.
+RenamingComposition and CrossTrace also freshly elaborated as dependents.
+DeletionChain and LocalDiamond are explicitly **cached boundary checks** here;
+their unchanged bytes still have the genuine Unit A fresh-check evidence
+(85.6 seconds / 4,339,104 KiB and 503.9 seconds / 50,365,840 KiB respectively).
+Inherited CrossTrace shadowing warnings are not new diagnostics.
+
+| Check | UTC start–end | Outcome | Sample peak KiB |
+|---|---|---|---|
+| `gate-o17-CanonicalSort` | 14:01:48–14:01:58 | PASS; fresh | 748,768 |
+| `gate-o17-RenamingComposition` | 14:01:58–14:02:09 | PASS; fresh | 815,360 |
+| `gate-o17-CrossTrace` | 14:02:09–14:02:14 | PASS; fresh | 0 |
+| `gate-o17-DeletionChain` | 14:02:14–14:02:19 | PASS; seeded/cached | 0 |
+| `gate-o17-LocalDiamond` | 14:02:19–14:02:24 | PASS; seeded/cached | 0 |
+| `gate-o17-candidate` | 14:02:24–14:02:39 | PASS; fresh | 1,734,464 |
+| `gate-o17-package` | 14:02:39–14:02:59 | PASS; seeded/cached | 219,920 |
+| `gate-o17-candidate-whitespace` | 14:05:05–14:05:20 | PASS; fresh | 1,727,776 |
+
+Cumulative compiler ledger: **166 invocations = 157 diagnostic-clean passes +
+9 charged corrected failures**, including the external C45 timeout. The original
+P1 diagnostic is recomputed from its full log because its early wrapper had no
+`diagnosticErrors` field. Every successful micro-unit has a fresh `Building`
+marker and an immediately following source commit: **133 new top-level
+declarations**, **135 source commits** (85 CanonicalSort, including O14's body;
+50 candidate, including the zero-declaration whitespace correction). All budgets
+are ≤2/3 in the continuation. No clean-rebuild or R11/R16/full-runtime-suite pass
+is claimed; all 207/207 production module seeds remain.
+
+The refreshed validator checks stripping **only** the two exact private capital
+blocks, O14's new body and the three imports restores CanonicalSort at `0e58c54`;
+both original O14/O17 signatures are exact. The other four research sources are
+byte-identical to start. It also checks the ratified O14 audit is an exact prefix,
+both disposable probes have no source/TTC/TTM, each source commit adds ≤1
+new top-level declaration, all clean commit checks are unique and fresh, and
+no compiler is left running.
+
+* `src/` and `dgamma.ipkg`: empty diff against **34b21c9**.
+* LocalDiamond: empty diff against **0e58c54**; full frozen suffix producer is
+  **1470 bytes**, SHA-256
+  `2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf`.
+* Frozen statement prefix: **1154 bytes**, SHA-256
+  `3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf`.
+* CP3 blob: `2c697e532e83989de8591fa6a4378747c6a501c0`.
+* Untracked adversarial review SHA-256 remains
+  `61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8`;
+  it was never staged, modified or removed. Only it and `paper/` are untracked.
+* DeletionChain legacy `with (` count: **9 → 9**; no exception renewed.
+* No new hole, unsafe totality escape, postulate, residual as-pattern, `let`,
+  `with`, frozen deletion-theorem call or generation-scoped-to-raw cast.
+
+Live six-hole coordinates: CanonicalSort `sortClosingFreeTraceSpike_rhs:1935`;
+CrossTrace `operationalAdjacentBlockSwapSpike_rhs:714`,
+`canonicalSupportOrdersMatchSpike_rhs:986`,
+`selectOperationalCanonicalPermutationSpike_rhs:1067`,
+`canonicalSchedulesConvergeSpike_rhs:1325`; RenamingComposition
+`replayedCanonicalToOriginalEndpointSpike_rhs:2723`. DeletionChain/LocalDiamond
+remain hole-free. The reconnaissance memo deliberately remains the ratified
+**seven-hole start-coordinate snapshot**, not silently rewritten.
+
+### Gate request / next, not authorization
+
+O17 should stay open pending either a proved global generation-order obstruction
+or a real alternative operational selector; current capital proves neither full
+sorting nor its negation. Retain the full-input candidate and exact local wall
+for review. O14's fixed-order transport through no-withdrawal equivalence is useful
+capital, not a cure for deletion-order matching or registration accounting.
+
+At this checkpoint more than 90 minutes remain until the absolute shift deadline;
+request the supervisor's O17 stop/frontier ruling and **separate authorization
+for ranked target #3, canonical support matching, probe-first**, rather than
+self-starting it. O19's body, O21 withdrawals, production/surface revision and
+debt-register implementation remain forbidden. The accounting/original-order,
+R16/R129, concrete two-birth/one-withdrawal and repeated-Iter, copied-with and
+paper/guarded-scope debts remain OPEN/parked exactly as catalogued in the plan.

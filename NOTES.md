@@ -2313,13 +2313,56 @@ does not fix the frozen CP3 raw-premise defect. Exact canonical accounting,
 shared original/reduced order, R16 fixture drift, R129 integration and copied
 legacy `with` cleanup remain explicit debts, not hidden by the hole count.
 
-**Validation / next:** one fresh check for every retained declaration/body;
+**O14 milestone validation (ratified at `b590789`):** one fresh check for every retained declaration/body;
 final dependent spikes pass and seeded package retains 207/207 modules. No wider
-suite or clean rebuild claimed. O17 is next **probe-first**; O19 body and O21
+suite or clean rebuild claimed. Its then-next O17 **probe-first** status is superseded
+by the continuation below; O19 body and O21
 withdrawal lanes remain barred/parked. Full attempts, boundaries and types are in
 `research-tests/O6-R172-NEXT-PHASE-RECON.md` and
 `research-tests/O6-R172-GRIND-SHIFT-AUDIT.md`; current debt register is in
 `THM73-PLAN.md`. Independent reviewer acceptance remains a separate gate.
+
+### R172 O17 continuation status (supersedes O14-only next-target text)
+
+**Fully proved capital:** N1–N42 (`1e8105e`) carry one exact reached replay
+state, derive an actual distinct-root insertion diamond/suffix swap and a
+one-position root-occurrence decrease, and transport the same support list
+through full no-withdrawal control equivalence. They do not implement the full
+block selector or its decreasing measure.
+
+**Checked semantic frontier:** `R172O17OpenParentRootReuseCandidate` (`a069cbc`,
+whitespace correction `775bd22`) has all unchanged O17 inputs: full replay
+bundle (including generated-monoid independence and iterator-yield stability),
+closing-free shape and actual O14 order, proved to be [0]. The eight-step trace
+yields/removes child 1 and reissues it as a root while parent 0 remains open.
+Its source is not root-first; the immediate child-removal/root-insertion pair
+admits no local diamond (`r172ReuseRemoveRootDiamondImpossible`).
+**This is not a proved global sorting impossibility or a paper counterexample.**
+A same-name birth-order invariant through every finite adjacent derivation and
+the resulting global placement contradiction, or an alternative actual sorter,
+remain unproved. No new premise or frozen surface was changed to hide this.
+
+**Partial / merely stated:** O17 body remains 0/3 and its hole remains. Theorem
+73 still has six research holes; all accounting, original/reduced-order,
+R16/R129, regression and frozen raw-premise debts remain. N42's full-control
+transport does not undo the permanent R143 arbitrary-deletion counterexample.
+
+**Validation / escapes:** 133 new top-level declarations in 135 source commits
+this shift; 166 serial compiler invocations, 157 diagnostic-clean passes and
+9 charged corrected failures. The C45 external 120-second timeout is included;
+its deeply indexed match was replaced with an explicit generic occurrence
+eliminator and passed 2/3. The final source-whitespace fix was freshly checked.
+Eight continuation gate checks passed; unchanged DeletionChain/LocalDiamond
+cached checks rely on their genuine Unit A fresh evidence. Production and
+package remain frozen, 207/207 TTC seeds retained, no concurrent compiler, new
+hole, postulate, unsafe totality escape, `let`, `with`, residual as-pattern,
+frozen deletion call or scoped-to-raw cast. Full audit/diagnostics are in
+`research-tests/O6-R172-GRIND-SHIFT-AUDIT.md`.
+
+**Next:** request the O17 semantic-frontier/stop gate. With >90 minutes until
+the absolute deadline, request separate target-#3 canonical support matching
+probe-first authorization; do not self-start it. A global O17 refutation is
+not silently substituted for the original sorting obligation.
 
 ### Historical Shift-37 status (preserved as that revision's record)
 
