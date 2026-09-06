@@ -3554,6 +3554,17 @@ canonicalWorkInstalledPairRejectsBegin name key world error value nameEq keyEq s
         (workPairRight pair) (workPairRightOwned pair) observedActor begins)))
       (canonicalWorkGroupingRightOccurs name key world error value selected trace pair))
 
+||| Reindexing the grouping packet along genuine trace equality preserves its
+||| observed right ACTION. No equality of proof-bearing transitions is needed.
+0 canonicalWorkReindexPairRightAction :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (source, target : Transitions initial finalState) -> (same : source = target) ->
+  (pair : CanonicalWorkGroupingPair name key world error value selected source) ->
+  transitionAction (workPairRight (replace {p = CanonicalWorkGroupingPair name key world error value selected} same pair)) =
+    transitionAction (workPairRight pair)
+canonicalWorkReindexPairRightAction name key world error value selected _ _ Refl pair = Refl
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
