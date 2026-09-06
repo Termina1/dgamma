@@ -27027,6 +27027,21 @@ scopedDeletionStrictlyShorter name key world error value nameEq keyEq initial fi
             (survivingBefore result) (beforeDeletion result))
           (scopedDeletionSuffixShorter name key world error value nameEq keyEq initial finalState global candidate result))))
 
+0 scopedSelectedBirthClosing :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (initial, finalState : SystemState name key value world error) -> (global : Transitions initial finalState) ->
+  (selected, child : name) -> (component : Component key value world error) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq selected global) ->
+  (birth : LocatedActionOccurrence (OInsert child (ChildOf selected) component)
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode))) (closedTransitions (locatedEpisode episode)))) ->
+  ActionOccurs (LUnload selected)
+    (afterRegistration (locatedEpisodeChildRegistration nameEq keyEq global selected child component episode birth))
+scopedSelectedBirthClosing name key world error value nameEq keyEq initial finalState global selected child component episode
+  (MkLocatedActionOccurrence before afterState beforeTrace transition later actionShape decomposition) =
+    appendActionOccursRight (LUnload selected) later (traceAfterClosing episode)
+      (selectedClosingAfterChildBirth nameEq keyEq selected child component (locatedEpisode episode)
+        (MkLocatedActionOccurrence before afterState beforeTrace transition later actionShape decomposition))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
