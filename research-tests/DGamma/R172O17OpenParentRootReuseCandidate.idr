@@ -444,3 +444,25 @@ r172ReuseConclusionChildBirth sorted =
       {p = \omitted => Elem (registrationGeneration r172ReuseOriginalChildBirth) omitted}
       (sortedWithdrawsNoGenerations sorted) withdrawn of Here impossible; There later impossible
     Right (actual ** originalMatches) => actual
+
+public export
+0 r172ReuseExternalRootForward :
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState Nat R45Key R45Value Unit String} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  SameExternalOrchestration r45NameEq left right ->
+  ActionOccurs (OInsert 1 Root r45Child) left -> ActionOccurs (OInsert 1 Root r45Child) right
+r172ReuseExternalRootForward SameExternalOrchestrationEnd occurrence =
+  case occurrence of ActionOccursHere _ _ _ impossible; ActionOccursLater _ _ _ impossible
+r172ReuseExternalRootForward (SkipLeftInternal head rest excluded same) (ActionOccursHere _ _ rootAction) =
+  void (excluded (RootInsertStep rootAction))
+r172ReuseExternalRootForward (SkipLeftInternal head rest excluded same) (ActionOccursLater _ _ later) =
+  r172ReuseExternalRootForward same later
+r172ReuseExternalRootForward (SkipRightInternal head rest excluded same) occurrence =
+  ActionOccursLater head rest (r172ReuseExternalRootForward same occurrence)
+r172ReuseExternalRootForward
+  (MatchExternalInput action left leftRest leftRoot right rightRest rightRoot leftAction rightAction same)
+  (ActionOccursHere _ _ rootAction) =
+    ActionOccursHere right rightRest (trans rightAction (trans (sym leftAction) rootAction))
+r172ReuseExternalRootForward
+  (MatchExternalInput action left leftRest leftRoot right rightRest rightRoot leftAction rightAction same)
+  (ActionOccursLater _ _ later) = ActionOccursLater right rightRest (r172ReuseExternalRootForward same later)
