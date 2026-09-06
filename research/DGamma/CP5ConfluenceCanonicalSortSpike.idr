@@ -2782,6 +2782,42 @@ canonicalWorkGroupingParentSafe name key world error value selected pair activat
         (trans same (sym (canonicalWorkChildInsertParentInjective name key world error value
           ownChild child selected parent ownComponent component (trans (sym actual) inserted)))))
 
+||| Actual installation evolution plus a checked paper activation forces an
+||| installed output. In the preserved-false branch, LAdvance's installed input
+||| is contradictory; no private production endpoint helper is re-exported.
+0 canonicalWorkActivationEvolutionInstalled :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (first, afterState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action first = Just (tag, afterState)) ->
+  InstallationEvolution name key world error value nameEq keyEq (actionOwner action) first afterState action tag ->
+  PaperActivationStep (Fired {before = first} {afterState} nameEq keyEq action tag checked) ->
+  installedAt @{nameEq} (actionOwner action) afterState = True
+canonicalWorkActivationEvolutionInstalled name key world error value nameEq keyEq first afterState action tag checked
+  (RemainedInstalled beforeInstalled afterInstalled) activation = afterInstalled
+canonicalWorkActivationEvolutionInstalled name key world error value nameEq keyEq first afterState action tag checked
+  (RemainedUninstalled beforeUninstalled afterUninstalled) activation =
+    case activation of
+      PaperBeginStep {actor} sameAction sameTag => case sameAction of
+        Refl => snd (snd (lBeginBoundary nameEq keyEq actor first afterState tag checked))
+      PaperIterStep {actor} sameAction sameTag => case sameAction of
+        Refl => void (canonicalFalseNotTrue (trans (sym beforeUninstalled)
+          (lAdvanceStartsInstalled nameEq keyEq actor first afterState tag
+            (checkedActionProjects nameEq keyEq (LAdvance actor) first afterState tag checked))))
+      PaperFinishStep {actor} sameAction sameTag => case sameAction of
+        Refl => void (canonicalFalseNotTrue (trans (sym beforeUninstalled)
+          (lAdvanceStartsInstalled nameEq keyEq actor first afterState tag
+            (checkedActionProjects nameEq keyEq (LAdvance actor) first afterState tag checked))))
+canonicalWorkActivationEvolutionInstalled name key world error value nameEq keyEq first afterState (LBegin actor) LBeginTag checked
+  OpenedInstallation activation = snd (snd (lBeginBoundary nameEq keyEq actor first afterState LBeginTag checked))
+canonicalWorkActivationEvolutionInstalled name key world error value nameEq keyEq first afterState (LUnload actor) LUnloadTag checked
+  ClosedInstallation (PaperBeginStep Refl sameTag) impossible
+canonicalWorkActivationEvolutionInstalled name key world error value nameEq keyEq first afterState (LUnload actor) LUnloadTag checked
+  ClosedInstallation (PaperIterStep Refl sameTag) impossible
+canonicalWorkActivationEvolutionInstalled name key world error value nameEq keyEq first afterState (LUnload actor) LUnloadTag checked
+  ClosedInstallation (PaperFinishStep Refl sameTag) impossible
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
