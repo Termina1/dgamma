@@ -26841,6 +26841,21 @@ scopedWithdrawalCensus name key world error value nameEq (head :: tail) live ori
   scopedWithdrawalCensusHead name key world error value nameEq head tail live original survivor (withdrawn head Here)
     (scopedWithdrawalCensus name key world error value nameEq tail live original survivor (\generation, member => withdrawn generation (There member)))
 
+0 scopedWithdrawalCensusOutside :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) -> (live : GenerationEnvironment name) ->
+  (original, survivor : SystemState name key value world error) ->
+  GenerationEnvironmentStamped live ->
+  (census : ScopedWithdrawalCensus name key world error value nameEq registered live original survivor) ->
+  (actor : name) -> Not (Elem actor (withdrawalNames census)) ->
+  CurrentGenerationOutside {nameEq = nameEq} registered live actor
+scopedWithdrawalCensusOutside name key world error value nameEq registered live original survivor stamped census actor absent generation current member =
+  absent (replace {p = \selected => Elem selected (withdrawalNames census)}
+    (stamped actor generation (currentGenerationEntryFromLookup nameEq actor generation live current))
+    (withdrawalCurrentCovered census generation member
+      (trans (cong (\selected => lookupCurrentGeneration @{nameEq} selected live)
+        (stamped actor generation (currentGenerationEntryFromLookup nameEq actor generation live current))) current)))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
