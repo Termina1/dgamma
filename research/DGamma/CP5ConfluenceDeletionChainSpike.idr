@@ -27788,6 +27788,42 @@ scopedKeptBirthFreshView name key world error value registered ordinal first mid
       (trans (sym (cong (scopedKeptOrdinalOrigin origin) targetOrdinal)) exact)
       (\predecessor, tailExact => scopedBirthFreshShift name registered child ordinal predecessor (continue tailOccurrence predecessor tailExact))
 
+0 scopedSubsequenceKeptBirthFresh :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type) ->
+  ((atOrdinal : Nat) -> (atLive : GenerationEnvironment name) -> (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+    Elem (MkRegistrationGeneration child atOrdinal) registered -> deletable atOrdinal atLive (OInsert child parent component)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (sourceFirst, sourceFinal, targetFirst, targetFinal : SystemState name key value world error) ->
+  (source : Transitions sourceFirst sourceFinal) -> (target : Transitions targetFirst targetFinal) ->
+  (subsequence : GenerationActionSubsequence nameEq deletable ordinal live source target) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  (occurrence : LocatedActionOccurrence (OInsert child parent component) target) -> (sourceIndex : Nat) ->
+  (generationSubsequenceSourceOrdinal subsequence (locatedActionOrdinal occurrence) = Just sourceIndex) ->
+  Not (Elem (MkRegistrationGeneration child (ordinal + sourceIndex)) registered)
+scopedSubsequenceKeptBirthFresh name key world error value nameEq registered deletable registeredDeleted ordinal live _ _ _ _ _ _ GenerationActionSubsequenceEnd
+  child parent component occurrence sourceIndex exact = void (locatedActionImpossibleInEmpty occurrence)
+scopedSubsequenceKeptBirthFresh name key world error value nameEq registered deletable registeredDeleted ordinal live sourceFirst sourceFinal targetFirst targetFinal _ _
+  (KeepGenerationAction sourceStep source targetStep target kept sameAction tail) child parent component occurrence sourceIndex exact =
+    scopedKeptBirthFreshView name key world error value registered ordinal targetFirst _ targetFinal targetStep target (generationSubsequenceSourceOrdinal tail) child parent component
+      (scopedKeptBirthHeadFresh name key world error value registered deletable ordinal live sourceFirst _ targetFirst _ sourceStep targetStep kept sameAction
+        child parent component (registeredDeleted ordinal live child parent component))
+      (scopedSubsequenceKeptBirthFresh name key world error value nameEq registered deletable registeredDeleted (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) _ sourceFinal _ targetFinal source target tail child parent component)
+      occurrence sourceIndex
+      (trans (scopedKeptSubsequenceOriginExact name key world error value nameEq deletable ordinal live sourceFirst _ sourceFinal targetFirst _ targetFinal
+        sourceStep source targetStep target kept sameAction tail (locatedActionOrdinal occurrence)) exact)
+      (deletionLocatedHead (OInsert child parent component) targetStep target occurrence)
+scopedSubsequenceKeptBirthFresh name key world error value nameEq registered deletable registeredDeleted ordinal live sourceFirst sourceFinal targetFirst targetFinal _ target
+  (DeleteGenerationAction sourceStep source deleted tail) child parent component occurrence sourceIndex exact =
+    scopedMapSuccEliminate (\position => Not (Elem (MkRegistrationGeneration child (ordinal + position)) registered))
+      (generationSubsequenceSourceOrdinal tail (locatedActionOrdinal occurrence)) sourceIndex exact
+      (\predecessor, tailExact => scopedBirthFreshShift name registered child ordinal predecessor
+        (scopedSubsequenceKeptBirthFresh name key world error value nameEq registered deletable registeredDeleted (S ordinal)
+          (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction sourceStep) live) _ sourceFinal targetFirst targetFinal source target tail child parent component
+          occurrence predecessor tailExact))
+
 ||| O9 is the separately gateable enriched Lemma-72 adapter.  Its explicit
 ||| dependency premise is scoped to the selected registration generation and
 ||| activation interval; the refuted raw-name-global predicate is not accepted.
