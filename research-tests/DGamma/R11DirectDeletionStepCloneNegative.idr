@@ -20,6 +20,6 @@ public export
     trace premises candidate
 cloneDeletionStepWithAlternateMap
   (MkDeletionChainStep result producer replay occurrences exact external endpoint
-    withdrawn classified accounting next shorter) alternate =
+    withdrawn classified accounting originExact next shorter) alternate =
       MkDeletionChainStep result producer replay alternate exact external endpoint
-        withdrawn classified accounting next shorter
+        withdrawn classified accounting originExact next shorter
