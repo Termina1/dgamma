@@ -2930,6 +2930,31 @@ canonicalWorkObservedActivationInsertDistinct name key world error value nameEq 
       (canonicalWorkObservedActivationInstalled name key world error value nameEq keyEq left aligned activation observed exact)
       (canonicalWorkCheckedInsertUninstalled name key world error value nameEq keyEq middle finalState child parent component tag checked)
 
+||| Authenticate the right constructor from the SAME aligned pair, retaining
+||| the explicit left actor observation through the scalar-only cure.
+0 canonicalWorkObservedPairInsertDistinct :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (left : Transition first middle) -> (right : Transition middle finalState) ->
+  (AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))) ->
+  (PaperActivationStep left) -> (observed : name) ->
+  (0 exact : (transitionActor left = observed)) ->
+  (child : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (transitionAction right = OInsert child parent component) ->
+  (Not (observed = child))
+canonicalWorkObservedPairInsertDistinct name key world error value nameEq keyEq {first} {middle} {finalState} _ _
+  (AlignedStep leftAction leftTag leftChecked _ (AlignedStep rightAction rightTag rightChecked _ AlignedEnd))
+  activation observed exact child parent component inserted =
+    canonicalWorkObservedActivationInsertDistinct name key world error value nameEq keyEq
+      (Fired {before = first} {afterState = middle} nameEq keyEq leftAction leftTag leftChecked)
+      (AlignedStep leftAction leftTag leftChecked NoTransitions AlignedEnd) activation observed exact
+      finalState child parent component rightTag
+      (replace {p = \action => checkedApplyAction @{nameEq} @{keyEq} action middle = Just (rightTag, finalState)}
+        inserted rightChecked)
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
