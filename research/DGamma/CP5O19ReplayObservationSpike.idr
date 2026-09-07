@@ -191,3 +191,21 @@ o19AppendFiniteCount FiniteAdjacentSwapDone next = Refl
 o19AppendFiniteCount
   (FiniteAdjacentSwapStep original earlier left right later orientation diamond result _ rest) next =
     cong S (o19AppendFiniteCount rest next)
+
+||| B41: exact nonempty-chain extension count, preserving the actual first
+||| node. This is generic induction capital, NOT an assumed four-count oracle.
+public export
+0 o19AppendNonEmptyCount :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, sourceFinal, middleFinal, targetFinal : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> {middleTrace : Transitions initial middleFinal} ->
+  {target : Transitions initial targetFinal} ->
+  (previous : NonEmptyFiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq source middleTrace) ->
+  (next : FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq middleTrace target) ->
+  (nonEmptyAdjacentSwapNodeCount (o19AppendNonEmpty previous next) =
+    nonEmptyAdjacentSwapNodeCount previous + finiteAdjacentSwapNodeCount next)
+o19AppendNonEmptyCount
+  (NonEmptyAdjacentSwap original earlier left right later orientation diamond result _ rest) next =
+    cong S (o19AppendFiniteCount rest next)
