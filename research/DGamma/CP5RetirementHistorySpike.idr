@@ -497,3 +497,31 @@ rawRetiredPropertyStep name key world error value nameEq keyEq property action b
       Refl => case retiredOwnerStepCause name key world error value nameEq keyEq action before afterState tag raw observed found retiredTrue of
         Left exact => retiredNow exact
         Right (sourceFiber ** (sourceFound, sourceRetired)) => previous (actionOwner action) sourceFiber sourceFound sourceRetired
+
+export
+0 rawRetiredPropertyTrace :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (property : name -> Type) ->
+  {initial, finalState, first, last : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (segment : Transitions first last) ->
+  AlignedTransitions name key world error value nameEq keyEq segment ->
+  ((action : Action name key value world error) -> LocatedActionOccurrence action segment -> LocatedActionOccurrence action global) ->
+  ((selected : name) -> LocatedActionOccurrence (ORetire selected) global -> property selected) ->
+  ((selected : name) -> (fiber : Fiber name key value world error) ->
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry first) = Just fiber) -> (retired fiber = True) -> property selected) ->
+  (selected : name) -> (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry last) = Just observed) -> (retired observed = True) -> property selected
+rawRetiredPropertyTrace name key world error value nameEq keyEq property global NoTransitions AlignedEnd embedding retiredNow previous = previous
+rawRetiredPropertyTrace name key world error value nameEq keyEq property global (MoreTransitions head rest) aligned embedding retiredNow previous =
+  case aligned of
+    AlignedStep action tag checked _ alignedRest =>
+      rawRetiredPropertyTrace name key world error value nameEq keyEq property global rest alignedRest
+        (\wanted, occurrence => embedding wanted
+          (currentBirthPrependLocation name key world error value (Fired nameEq keyEq action tag checked) rest wanted occurrence)) retiredNow
+        (rawRetiredPropertyStep name key world error value nameEq keyEq property action _ _ tag
+          (checkedActionProjects nameEq keyEq action _ _ tag checked)
+          (\exact => retiredNow (actionOwner action)
+            (replace {p = \wanted => LocatedActionOccurrence wanted global} exact
+              (embedding action (MkLocatedActionOccurrence _ _ NoTransitions (Fired nameEq keyEq action tag checked) rest Refl Refl)))) previous)
