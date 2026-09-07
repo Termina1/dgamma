@@ -79,3 +79,17 @@ rootBirthBackwardObserved name key world error value renaming leftOrdinal rightO
   (MatchExternalRootBirth leftStep leftRest rightStep rightRest leftExact rightExact mapped later) selected component (S position) observed =
     currentBirthPrependLocation name key world error value leftStep leftRest (OInsert selected Root component)
       (rootBirthBackwardObserved name key world error value renaming (S leftOrdinal) (S rightOrdinal) leftRest rightRest later selected component position observed)
+
+export
+0 rootBirthForwardLocated :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  ExternalRootBirthCorrespondence renaming Z left Z right ->
+  (selected : name) -> (component : Component key value world error) ->
+  (birth : LocatedActionOccurrence (OInsert selected Root component) left) ->
+  LocatedActionOccurrence (OInsert selected Root component) right
+rootBirthForwardLocated name key world error value renaming left right correspondence selected component birth =
+  rootBirthForwardObserved name key world error value renaming Z Z left right correspondence selected component (locatedActionOrdinal birth)
+    (rawClosingActionAtLocated name key world error value left (OInsert selected Root component) birth)
