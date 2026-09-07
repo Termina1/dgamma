@@ -114,3 +114,35 @@ o19ActivationRowStepObserved {name} {key} {world} {error} {value}
           diamond result (swappedTrace result) FiniteAdjacentSwapDone))
         (trans (cong (\count => count + 1) (rowNodeCount previous))
           (plusCommutative crossings 1)))
+
+||| Construct the next actual A/A crossing at the observed row boundary.
+||| The prefix is still untouched; its early guard is relabelled using the
+||| producer-owned right labels. Bundle-derived pair facts feed the real replay.
+export
+0 o19ActivationRowStep :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, sourceFinal, before, middle, rightBefore, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (earlier : Transitions initial before) ->
+  (left : Transition before middle) -> (sourceRight : Transition rightBefore rightAfter) ->
+  (crossings : Nat) ->
+  (previous : O19ActivationRow name key world error value protocol nameEq keyEq source
+    (appendTransitions earlier (MoreTransitions left NoTransitions)) sourceRight crossings) ->
+  PaperActivationStep left -> Not (transitionActor sourceRight = transitionActor left) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq before
+    (transitionAction sourceRight) (transitionTag sourceRight) ->
+  O19ActivationRow name key world error value protocol nameEq keyEq source earlier sourceRight (S crossings)
+o19ActivationRowStep nameEq keyEq protocol source earlier left sourceRight crossings
+  previous leftActivation distinct early =
+    o19ActivationRowStepObserved nameEq keyEq protocol source earlier left sourceRight
+      crossings previous leftActivation
+      (o19ActivationPairReplay nameEq keyEq protocol (cursorTrace (rowCursor previous))
+        earlier left (rowRight previous) (rowRest previous)
+        (trans (sym (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions)
+          (MoreTransitions (rowRight previous) (rowRest previous)))) (rowDecomposition previous))
+        (cursorBundle (rowCursor previous)) leftActivation (rowActivation previous)
+        (\same => distinct (sym (trans same (rowActor previous))))
+        (o19EarlyLabels nameEq keyEq (transitionAction sourceRight) (transitionAction (rowRight previous))
+          (transitionTag sourceRight) (transitionTag (rowRight previous))
+          (rowAction previous) (rowTag previous) early))
