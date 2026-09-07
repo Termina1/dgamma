@@ -636,3 +636,64 @@ currentAdvanceResolvedOwner name key world error value nameEq keyEq actor before
   currentAdvanceOutcomeOwner name key world error value nameEq keyEq actor before component parent retiredFlag table step rest accumulator view found capability exact
     (runStepEffect step capability (MkLocalState (worldState before) (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component) (ownedValues table)))) Refl
     (targetMatches @{nameEq} (targetFiber @{nameEq} @{keyEq} (MkFiber component parent retiredFlag table (Reloading (step :: rest) accumulator view)) (registry before)) view) Refl
+
+||| All successful lifecycle branches retain their actor in the actual target.
+0 currentLifecycleResultOwner :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (isLifecycleAction action = True) ->
+  (before : SystemState name key value world error) -> (fiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} (actionOwner action) (registry before) = Just fiber) ->
+  CurrentResultOwner name key world error value nameEq (actionOwner action) (applyAction @{nameEq} @{keyEq} action before)
+currentLifecycleResultOwner name key world error value nameEq keyEq (OInsert actor parent component) lifecycle before fiber found = case lifecycle of Refl impossible
+currentLifecycleResultOwner name key world error value nameEq keyEq (ORetire actor) lifecycle before fiber found = case lifecycle of Refl impossible
+currentLifecycleResultOwner name key world error value nameEq keyEq (ORemove actor) lifecycle before fiber found = case lifecycle of Refl impossible
+currentLifecycleResultOwner name key world error value nameEq keyEq (LBegin actor) lifecycle before fiber found =
+  currentBeginOwner name key world error value nameEq keyEq actor before fiber found
+    (targetFiber @{nameEq} @{keyEq} fiber (registry before)) Refl
+currentLifecycleResultOwner name key world error value nameEq keyEq (LAdvance actor) lifecycle before
+  (MkFiber component parent retiredFlag table (Inactive outcome)) found = rewrite found in ()
+currentLifecycleResultOwner name key world error value nameEq keyEq (LAdvance actor) lifecycle before
+  (MkFiber component parent retiredFlag table (Active accumulator view)) found = rewrite found in ()
+currentLifecycleResultOwner name key world error value nameEq keyEq (LAdvance actor) lifecycle before
+  (MkFiber component parent retiredFlag table (Unloading accumulator view outcome)) found = rewrite found in ()
+currentLifecycleResultOwner name key world error value nameEq keyEq (LDivert actor) lifecycle before
+  (MkFiber component parent retiredFlag table (Inactive outcome)) found = rewrite found in ()
+currentLifecycleResultOwner name key world error value nameEq keyEq (LDivert actor) lifecycle before
+  (MkFiber component parent retiredFlag table (Active accumulator view)) found = rewrite found in ()
+currentLifecycleResultOwner name key world error value nameEq keyEq (LDivert actor) lifecycle before
+  (MkFiber component parent retiredFlag table (Unloading accumulator view outcome)) found = rewrite found in ()
+currentLifecycleResultOwner name key world error value nameEq keyEq (LLeave actor) lifecycle before
+  (MkFiber component parent retiredFlag table (Inactive outcome)) found = rewrite found in ()
+currentLifecycleResultOwner name key world error value nameEq keyEq (LLeave actor) lifecycle before
+  (MkFiber component parent retiredFlag table (Reloading remaining accumulator view)) found = rewrite found in ()
+currentLifecycleResultOwner name key world error value nameEq keyEq (LLeave actor) lifecycle before
+  (MkFiber component parent retiredFlag table (Unloading accumulator view outcome)) found = rewrite found in ()
+currentLifecycleResultOwner name key world error value nameEq keyEq (LUnload actor) lifecycle before
+  (MkFiber component parent retiredFlag table (Inactive outcome)) found = rewrite found in ()
+currentLifecycleResultOwner name key world error value nameEq keyEq (LUnload actor) lifecycle before
+  (MkFiber component parent retiredFlag table (Reloading remaining accumulator view)) found = rewrite found in ()
+currentLifecycleResultOwner name key world error value nameEq keyEq (LUnload actor) lifecycle before
+  (MkFiber component parent retiredFlag table (Active accumulator view)) found = rewrite found in ()
+currentLifecycleResultOwner name key world error value nameEq keyEq (LAdvance actor) lifecycle before
+  (MkFiber component parent retiredFlag table (Reloading [] accumulator view)) found =
+    currentAdvanceEmptyOwner name key world error value nameEq keyEq actor before component parent retiredFlag table accumulator view found
+      (targetMatches @{nameEq} (targetFiber @{nameEq} @{keyEq} (MkFiber component parent retiredFlag table (Reloading [] accumulator view)) (registry before)) view) Refl
+currentLifecycleResultOwner name key world error value nameEq keyEq (LAdvance actor) lifecycle before
+  (MkFiber component parent retiredFlag table (Reloading (step :: rest) accumulator view)) found =
+    currentAdvanceResolvedOwner name key world error value nameEq keyEq actor before component parent retiredFlag table step rest accumulator view found
+      (resolveCommittedValues {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq}
+        (dependencies (componentDependencies component)) view (registry before)) Refl
+currentLifecycleResultOwner name key world error value nameEq keyEq (LDivert actor) lifecycle before
+  (MkFiber component parent retiredFlag table (Reloading remaining accumulator view)) found =
+    currentDivertOwner name key world error value nameEq keyEq actor before component parent retiredFlag table remaining accumulator view found
+      (targetMatches @{nameEq} (targetFiber @{nameEq} @{keyEq} (MkFiber component parent retiredFlag table (Reloading remaining accumulator view)) (registry before)) view) Refl
+currentLifecycleResultOwner name key world error value nameEq keyEq (LLeave actor) lifecycle before
+  (MkFiber component parent retiredFlag table (Active accumulator view)) found =
+    currentLeaveOwner name key world error value nameEq keyEq actor before component parent retiredFlag table accumulator view found
+      (targetMatches @{nameEq} (targetFiber @{nameEq} @{keyEq} (MkFiber component parent retiredFlag table (Active accumulator view)) (registry before)) view) Refl
+currentLifecycleResultOwner name key world error value nameEq keyEq (LUnload actor) lifecycle before
+  (MkFiber component parent retiredFlag table (Unloading accumulator view outcome)) found =
+    currentUnloadOwner name key world error value nameEq keyEq actor before component parent retiredFlag table accumulator view outcome found
+      (relied {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} actor (registry before)) Refl
