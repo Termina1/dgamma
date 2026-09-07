@@ -2987,3 +2987,37 @@ acceptedRightCurrentFiber name key world error value nameEq keyEq left right ren
     right (rightFinalIndex registrations) (rightRegistrationSideScan (generationTraceCorrespondence registrations)) of
     (finalOrdinal ** scan) => currentFiberFromEmptyScan name key world error value nameEq keyEq right finalOrdinal
       (rightFinalGenerations registrations) scan aligned selected generation current
+
+||| Full forward DOMAIN bridge from endpoint support: both exact accepted
+||| current lookups, the same generation bijection, and the actual right fiber.
+||| This deliberately does not assert destination support or component equality.
+export
+0 acceptedSupportedForwardDomain :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  AlignedTransitions name key world error value nameEq keyEq right -> (bindings (registry initial) = []) ->
+  (selected : name) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected leftFinal = True) ->
+  (leftGeneration : RegistrationGeneration name ** rightGeneration : RegistrationGeneration name **
+    rightFiber : Fiber name key value world error **
+    (lookupCurrentGeneration @{nameEq} selected (leftFinalGenerations (generatedRegistrationTree sameInputs)) = Just leftGeneration,
+     lookupCurrentGeneration @{nameEq} (renameForward (currentNameBijection (endpointRenaming sameInputs)) selected)
+       (rightFinalGenerations (generatedRegistrationTree sameInputs)) = Just rightGeneration,
+     generationForward (generatedGenerationBijection sameInputs) leftGeneration = rightGeneration,
+     lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq}
+       (renameForward (currentNameBijection (endpointRenaming sameInputs)) selected) (registry rightFinal) = Just rightFiber))
+acceptedSupportedForwardDomain name key world error value nameEq keyEq {leftFinal} left right sameInputs leftAligned rightAligned empty selected supported =
+  case computedSupportPresent name key world error value nameEq keyEq leftFinal selected supported of
+    (leftFiber ** leftFound) => case acceptedLeftEndpointCurrent name key world error value nameEq keyEq left right
+      (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) leftAligned empty selected leftFiber leftFound of
+      (leftGeneration ** leftCurrent) => case leftCurrentGenerationMapped (endpointRenaming sameInputs) selected leftGeneration leftCurrent of
+        Left vestigial => case trans (sym supported) (vestigialUnsupported vestigial) of Refl impossible
+        Right (rightGeneration ** (mapped, rightCurrent)) =>
+          case acceptedRightCurrentFiber name key world error value nameEq keyEq left right
+            (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) rightAligned
+            (renameForward (currentNameBijection (endpointRenaming sameInputs)) selected) rightGeneration rightCurrent of
+            (rightFiber ** rightFound) => (leftGeneration ** rightGeneration ** rightFiber ** (leftCurrent, rightCurrent, mapped, rightFound))
