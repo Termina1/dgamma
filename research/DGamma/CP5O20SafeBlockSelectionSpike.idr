@@ -96,3 +96,21 @@ export
   (gap : Transitions first finalState) -> Maybe (transitionCount gap = 0)
 o20CheckEmptyGap NoTransitions = Just Refl
 o20CheckEmptyGap (MoreTransitions step rest) = Nothing
+
+||| R179's authenticated evaluator is run at the ACTUAL selected left block's
+||| pre-opening cut, not traceDescentBefore of an unrelated adjacent-node pair.
+||| Thus the cut-alignment obligation is satisfied by the producer's index.
+export
+0 o20CheckRightAtLeftOpening :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (left, right : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq left trace) ->
+  Maybe (CheckedEarlyApplication name key world error value nameEq keyEq
+    (blockPreStart block) (LBegin right) LBeginTag)
+o20CheckRightAtLeftOpening {name} {key} {world} {error} {value}
+  nameEq keyEq left right trace block =
+    checkedEarlyApplicationObserved name key world error value nameEq keyEq
+      (blockPreStart block) (LBegin right) LBeginTag
+      (checkedApplyAction @{nameEq} @{keyEq} (LBegin right) (blockPreStart block)) Refl
