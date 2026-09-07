@@ -191,3 +191,15 @@ export
   (locatedActionOrdinal (beforeCutOccurrence name key world error value prior later action occurrence) = locatedActionOrdinal occurrence)
 beforeCutOccurrenceOrdinal name key world error value prior later action
   (MkLocatedActionOccurrence before afterState earlier step remaining exact decomposition) = Refl
+
+export
+0 afterCutOccurrence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (prior : Transitions first middle) -> (later : Transitions middle finalState) ->
+  (action : Action name key value world error) -> LocatedActionOccurrence action later ->
+  LocatedActionOccurrence action (appendTransitions prior later)
+afterCutOccurrence name key world error value NoTransitions later action occurrence = occurrence
+afterCutOccurrence name key world error value (MoreTransitions step rest) later action occurrence =
+  currentBirthPrependLocation name key world error value step (appendTransitions rest later) action
+    (afterCutOccurrence name key world error value rest later action occurrence)
