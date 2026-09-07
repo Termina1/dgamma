@@ -166,3 +166,45 @@ actual-pair integration/rebasing and checked controls remain open;
 Therefore operationalAdjacentBlockSwapSpike body NOT ATTEMPTED. O19 remains
 open; no milestone-closure claim. Fresh frozen/census gate follows this commit,
 then exactly one disposable O20 selector probe (max3 checks), then Unit C.
+
+## Unit B: one disposable O20 selector probe, 2/3 checks
+
+B1-1 expected-rejection fresh PASS1.050s: direct construction fails at
+`0` versus `transitionCount (betweenBlocks ordered)`.
+B1-2 expected-rejection fresh PASS1.045s: after isolating the other field
+and explicitly granting the full orientation and right Begin labels, direct
+reuse fails at `traceDescentBefore choice` versus the selected left block's
+`blockPreStart`. These are EXACTLY the two R182 revised safety obligations.
+Both source snapshots/diagnostics are archived. The entire disposable
+R183O20SelectorProbe.idr is removed. No third check and NO O20 BODY.
+
+Verdict: R179 supplies an actual adjacent-node location, four-way positive
+classification and a guard at THAT pair cut; it does not itself produce
+either revised whole-block safety clause. These failures size direct reuse;
+they are NOT an impossibility theorem for a future semantic selector. A4
+and Adj6 remain the existing concrete guards against dropping these clauses.
+
+### Finite linear-extension obligations still required
+
+1. Establish a compatible accepted support/ancestor order under the FIXED
+   endpoint bijection, despite differing paths through withdrawn intermediates.
+2. Construct a finite certified actor permutation with exact membership and
+   uniqueness, not a pure certificate passed off as operational evidence.
+3. If the orders differ, select an actual legal adjacent actor inversion and
+   prove it respects provider/ancestor constraints in the desired extension.
+4. Locate its authoritative blocks in the ACTUAL reached trace; adjacent
+   actor-list entries alone do not eliminate an intervening root event (Adj6).
+5. Derive BOTH NoGeneratedChild exclusions from the current selected bodies.
+6. Authenticate the selected labels/actors and derive the right Begin guard
+   at the PRE-LEFT-BLOCK cut, not merely R179's adjacent-node cut (A4).
+7. Prove the betweenBlocks count is0, or account for immovable root barriers
+   without weakening the sanctioned O19 surface/frozen O17 root placement.
+8. Produce the complete O19 Cartesian swap, installed target decomposition,
+   full bundle, original uniqueness and exact occurrence-origin update.
+9. Re-select/rebuild all safety evidence after each ACTUAL replay and prove
+   strict descent of a finite actor/block measure and exact final order.
+10. Prove selector completeness: a first positive check returning Nothing is
+    neither a search over later candidates nor a no-legal-swap/canonicality proof.
+
+Unit C now proceeds only on canonical pair-selection prerequisites (max8),
+continuing R181's actual-view producer. No O20/O17/O21 body is authorized.
