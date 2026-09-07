@@ -74,3 +74,45 @@ canonicalSupportedChildBirth name key world error value nameEq keyEq protocol or
         replace {p = \program => LocatedGeneratedRegistration selected parent program (canonicalTrace (canonicalSchedule capital))}
           (cong snd (canonicalGeneratedOriginMetadata name key world error value nameEq keyEq protocol original capital unique
             selected parent component occurrence observed found)) occurrence
+
+||| Accepted static metadata PLUS genuine A9 support truth. The opposite fiber,
+||| fields and support are produced, not premises of a bridge constructor.
+export
+0 bridgeSupportedOriginalTarget :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq left) ->
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq right) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  GeneratedOrchestrationMatched name key world error value nameEq left right (generatedGenerationBijection sameInputs) ->
+  (selected : name) -> (sourceFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry leftFinal) = Just sourceFiber) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} selected leftFinal = True) ->
+  (opposite : Fiber name key value world error **
+    ((lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} (renameForward (expectedBridgeBijection sameInputs) selected) (registry rightFinal) = Just opposite),
+     (fiberComponent opposite = fiberComponent sourceFiber),
+     (fiberParent opposite = supportMapParent name (renameForward (expectedBridgeBijection sameInputs)) (fiberParent sourceFiber)),
+     (isSupported {name = name} {key = key} {value = value} {world = world} {error = error}
+       @{nameEq} @{keyEq} (renameForward (expectedBridgeBijection sameInputs) selected) rightFinal = True)))
+bridgeSupportedOriginalTarget name key world error value nameEq keyEq protocol left right sameInputs leftCapital rightCapital
+  leftUnique rightUnique matched selected sourceFiber sourceFound supported =
+    case acceptedAllSupportedMetadataForward name key world error value nameEq keyEq protocol left right sameInputs
+      (replayAligned (chainReplayCapital (capitalPremises leftCapital)))
+      (replayAligned (chainReplayCapital (capitalPremises rightCapital)))
+      (replayDiscipline (chainReplayCapital (capitalPremises leftCapital)))
+      (replayInitialEmpty (chainReplayCapital (capitalPremises leftCapital))) leftUnique rightUnique
+      selected sourceFiber sourceFound supported of
+      (opposite ** (found, component, parent)) => (opposite ** (found, component, parent,
+        acceptedSupportedTruthForward name key world error value nameEq keyEq protocol left right sameInputs matched
+          (replayAligned (chainReplayCapital (capitalPremises leftCapital)))
+          (replayAligned (chainReplayCapital (capitalPremises rightCapital)))
+          (replayDiscipline (chainReplayCapital (capitalPremises leftCapital)))
+          (replayInitialEmpty (chainReplayCapital (capitalPremises leftCapital))) leftUnique rightUnique selected supported))
