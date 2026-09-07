@@ -170,3 +170,27 @@ rawMetadataBirthAtPrefix name key world error value nameEq keyEq {initial}
         case emptyRegistryProtocolRanked (emptyRegistrationProtocol {key = key} {value = value}
           {world = world} {error = error}) nameEq initial empty selected fiber found of
           (rank ** ranked) => void (nothingIsNotJust ranked))
+
+||| Uniqueness compares two authenticated births, yielding both immutable fields.
+public export
+0 uniqueRawBirthMetadata :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq trace ->
+  (selected : name) -> (leftParent, rightParent : Parent name) ->
+  (leftComponent, rightComponent : Component key value world error) ->
+  (left : LocatedActionOccurrence (OInsert selected leftParent leftComponent) trace) ->
+  (right : LocatedActionOccurrence (OInsert selected rightParent rightComponent) trace) ->
+  (leftParent, leftComponent) = (rightParent, rightComponent)
+uniqueRawBirthMetadata name key world error value nameEq keyEq trace unique
+  selected leftParent rightParent leftComponent rightComponent left right =
+    case justInjective
+      (trans (sym (rawClosingActionAtLocated name key world error value trace
+        (OInsert selected leftParent leftComponent) left))
+        (trans (cong (\ordinal => rawClosingActionAt name key world error value ordinal trace)
+          (uniqueInsertionPosition unique selected leftParent rightParent leftComponent rightComponent left right))
+          (rawClosingActionAtLocated name key world error value trace
+            (OInsert selected rightParent rightComponent) right))) of
+      Refl => Refl
