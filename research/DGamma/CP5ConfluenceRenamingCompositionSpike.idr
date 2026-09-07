@@ -3427,3 +3427,20 @@ projectionRightBirthCoverage name key world error value nameEq left right renami
     registrationSideFoldCoverage name key world error value nameEq Z emptyRegistrationIndex right rightFold
       selected parent component (locatedActionOrdinal birth)
       (rawClosingActionAtLocated name key world error value right (OInsert selected (ChildOf parent) component) birth)
+
+||| Every actual left generated birth is covered by the ACCEPTED scanner's
+||| retained domain or its authentic closing classification. Not support truth.
+export
+0 acceptedLeftBirthCoverage :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq renaming left right) ->
+  (selected, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedActionOccurrence (OInsert selected (ChildOf parent) component) left) ->
+  ClassifiedGeneratedBirth name key world error value Z left
+    (leftScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right renaming registrations)) selected
+acceptedLeftBirthCoverage name key world error value nameEq left right renaming registrations selected parent component birth =
+  projectionLeftBirthCoverage name key world error value nameEq left right renaming
+    (alignFiniteRegistrationProjection (generationTraceCorrespondence registrations)) selected parent component birth
