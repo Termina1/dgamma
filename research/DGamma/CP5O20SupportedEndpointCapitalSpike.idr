@@ -33,3 +33,18 @@ canonicalSupportedTruthFromOriginal name key world error value nameEq keyEq prot
   trans (replaySupportMatchesActive (canonicalReplayPremises capital) selected)
     (blockActiveAtFinal (canonicalBlock (canonicalSchedule capital) selected
       (orderComplete (supportLinearization (canonicalSchedule capital)) selected supported)))
+
+||| Actual supported canonical lookup with endpoint facts. The stored view
+||| invariant concerns the actual registry; it does not compare two schedules.
+public export
+record SupportedCanonicalEndpointView
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
+  (state : SystemState name key value world error) where
+  constructor MkSupportedCanonicalEndpointView
+  supportedCanonicalFiber : Fiber name key value world error
+  0 supportedCanonicalFound : lookupFiber @{nameEq} selected (registry state) = Just supportedCanonicalFiber
+  0 supportedCanonicalTruth : isSupported @{nameEq} @{keyEq} selected state = True
+  0 supportedCanonicalActive : supportedActiveAt @{nameEq} selected state = True
+  0 supportedCanonicalNotRetired : retired supportedCanonicalFiber = False
+  0 supportedCanonicalViewDomain : fiberViewInvariant @{nameEq} @{keyEq} supportedCanonicalFiber (registry state) = True
