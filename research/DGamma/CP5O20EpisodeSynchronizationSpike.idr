@@ -319,3 +319,44 @@ synchronizationEmptyOrigin name key world error value nameEq keyEq
         error value nameEq (expectedBridgeBijection sameInputs) ambient fibers empty))
       (snd (synchronizationEmptyObservations name key world error value nameEq
         (expectedBridgeBijection sameInputs) ambient fibers empty selected))
+
+||| Instantiate ZERO prefixes of the ACTUAL O19 operational replay and the
+||| ACTUAL right canonical execution. Unique births/matched generation capital
+||| remain threaded; no arbitrary replacement execution or bijection is chosen.
+export
+0 synchronizationOperationalOrigin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (leftTrace : Transitions initial leftFinal) ->
+  (rightTrace : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace) ->
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace) ->
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace) ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  (0 matched : GeneratedOrchestrationMatched name key world error value nameEq
+    leftTrace rightTrace (generatedGenerationBijection sameInputs)) ->
+  {matching : MappedCanonicalSupportOrders name key world error value protocol
+    nameEq keyEq leftTrace rightTrace (currentNameBijection (endpointRenaming sameInputs))
+    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
+  (operational : CertifiedOperationalCanonicalPermutation name key world error value
+    protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital matching) ->
+  (selected : name) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world}
+    {error = error} @{nameEq} @{keyEq} selected leftFinal = True) ->
+  SupportedCanonicalEpisodeSynchronization name key world error value nameEq keyEq
+    leftTrace rightTrace sameInputs (operationalTargetTrace operational)
+    (canonicalTrace (canonicalSchedule rightCapital)) selected initial initial
+    NoTransitions (operationalTargetTrace operational)
+    NoTransitions (canonicalTrace (canonicalSchedule rightCapital))
+synchronizationOperationalOrigin name key world error value nameEq keyEq protocol
+  leftTrace rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique
+  matched operational selected supported =
+    synchronizationEmptyOrigin name key world error value nameEq keyEq leftTrace
+      rightTrace sameInputs (operationalTargetTrace operational)
+      (canonicalTrace (canonicalSchedule rightCapital))
+      (replayInitialEmpty (operationalTargetPremises operational)) selected supported
