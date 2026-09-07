@@ -372,3 +372,22 @@ currentBirthMatchesScannedEvent name key world error value nameEq keyEq trace un
         (currentBirthComponent current) (eventComponent event)
         (currentLocatedBirth current) (scannedLocatedBirth scanned)))
       (sym (scannedBirthStampExact scanned)))
+
+||| All immutable endpoint data needed by dependency/provision support analysis.
+||| Parent identities are related through the authenticated birth/activation
+||| match; NO retired-flag equality or support truth is included.
+public export
+record MatchedEndpointStaticMetadata
+  (name, key, world, error : Type) (value : key -> Type)
+  (renaming : RegistrationGenerationBijection name)
+  (leftEvent, rightEvent : RegistrationEvent name key world error value)
+  (leftFiber, rightFiber : Fiber name key value world error) where
+  constructor MkMatchedEndpointStaticMetadata
+  0 endpointEventMatch : RegistrationEventMatch renaming leftEvent rightEvent
+  0 endpointComponentsMatch : fiberComponent leftFiber = fiberComponent rightFiber
+  0 endpointDependenciesMatch : componentDependencies (fiberComponent leftFiber) =
+    componentDependencies (fiberComponent rightFiber)
+  0 endpointProvisionsMatch : componentProvisions (fiberComponent leftFiber) =
+    componentProvisions (fiberComponent rightFiber)
+  0 leftEndpointBirthParent : fiberParent leftFiber = ChildOf (eventParent leftEvent)
+  0 rightEndpointBirthParent : fiberParent rightFiber = ChildOf (eventParent rightEvent)
