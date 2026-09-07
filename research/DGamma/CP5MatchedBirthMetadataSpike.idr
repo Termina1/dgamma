@@ -169,3 +169,35 @@ supportedMatchingMetadataBackward name key world error value nameEq keyEq left r
                       (rightScannedBirths matching rightEvent rightMember) rightGeneration (acceptedRightCurrentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) (eventChild rightEvent) rightGeneration rightCurrent))
                     mapped (renameBackward (currentNameBijection (endpointRenaming sameInputs)) (eventChild rightEvent)) (acceptedLeftCurrentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) (renameBackward (currentNameBijection (endpointRenaming sameInputs)) (eventChild rightEvent)) leftGeneration leftCurrent))
                 Refl leftFound rightFound))
+
+||| Fully sealed forward boundary: matching and births come from sameInputs itself.
+||| The explicit remaining coverage premise is membership of this retained event.
+export
+0 acceptedSupportedGeneratedMetadataForward :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  AlignedTransitions name key world error value nameEq keyEq right ->
+  bindings (registry initial) = [] ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  (leftEvent : RegistrationEvent name key world error value) -> Elem leftEvent (leftScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs))) ->
+  (leftFiber : Fiber name key value world error) ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} (eventChild leftEvent) (registry leftFinal) = Just leftFiber ->
+  isSupported {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} (eventChild leftEvent) leftFinal = True ->
+  (rightEvent : RegistrationEvent name key world error value ** rightFiber : Fiber name key value world error **
+    (Elem rightEvent (rightScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs))),
+     eventChild rightEvent = (renameForward (currentNameBijection (endpointRenaming sameInputs)) (eventChild leftEvent)),
+     lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+       @{nameEq} (renameForward (currentNameBijection (endpointRenaming sameInputs)) (eventChild leftEvent)) (registry rightFinal) = Just rightFiber,
+     MatchedEndpointStaticMetadata name key world error value (generatedGenerationBijection sameInputs) leftEvent rightEvent leftFiber rightFiber))
+acceptedSupportedGeneratedMetadataForward name key world error value nameEq keyEq left right sameInputs
+  leftAligned rightAligned empty leftUnique rightUnique leftEvent leftMember leftFiber leftFound supported =
+    supportedMatchingMetadataForward name key world error value nameEq keyEq left right sameInputs
+      leftAligned rightAligned empty leftUnique rightUnique (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs))
+      leftEvent leftMember leftFiber leftFound supported
