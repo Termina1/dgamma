@@ -29,7 +29,13 @@ for r in records:
         prior = accepted_names[r['path']]
         assert not prior - names, (r['unit'],'removed accepted declaration')
         added = sorted(names - prior)
-        assert len(added) <= 1, (r['unit'],added)
+        if len(added) > 1:
+            # R181 process violation, disclosed and reverted: B12-1 ran before
+            # B11 was accepted. Preserve the failure; never report it as clean.
+            assert r['unit'] == 'B12-1' and not r['passed']
+            assert added == ['pairedPresentKeyOwnerUnique', 'pairedTableOwnerObserved']
+            assert r['sourceSHA256'] == 'efa1264daf5fe2856d687e69d506ef6a6e516cbb9e14fc7336936e0d84293c22'
+            r['workflowViolation'] = 'Two unaccepted declarations: premature B12 invocation; failed B11 commit dfc933e reverted cdaee57.'
         r['newTopLevelDeclarations'] = added
         if r['passed']:
             accepted_names[r['path']] = names
@@ -49,7 +55,9 @@ with tarfile.open(ROOT/'research-tests/O6-R181-COMPILER-EVIDENCE.tar.gz','w:gz')
                 archive.add(path,arcname=path.name)
 summary = dict(checks=len(records),ordinaryPasses=sum(r['passed'] and not r['expectedDiagnostic'] for r in records),
     intendedNegativePasses=sum(r['passed'] and bool(r['expectedDiagnostic']) for r in records),
-    rejectedOrInterrupted=sum(not r['passed'] for r in records),serialized=True,oneNewDeclarationPerInvocation=True,
+    rejectedOrInterrupted=sum(not r['passed'] for r in records),serialized=True,
+    oneNewDeclarationPerInvocation=all(len(r.get('newTopLevelDeclarations', [])) <= 1 for r in records),
+    workflowViolations=[dict(unit=r['unit'],detail=r['workflowViolation']) for r in records if 'workflowViolation' in r],
     seededPackageBuilds=sum(r['path']=='package' for r in records),
     units=[dict(unit=r['unit'],passed=r['passed'],fresh=r['fresh'],seconds=r['seconds'],commits=r['matchingSourceCommits']) for r in records])
 (OUT/'evidence-summary.json').write_text(json.dumps(summary,indent=2)+'\n')

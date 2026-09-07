@@ -127,3 +127,81 @@ value and lifecycle equation produced on the checked Begin/Finish transitions,
 then installation cuts as projections. Never another A11 installation-cut
 statement or guessed accumulator. Unit C follows. No surface/body permission.
 A-stop package PASS16.605s,207/207 seeds. Frozen audit passed at7ecf289.
+
+## Unit B — B12 mandatory 3/3 stop, B13 prerequisite retained
+
+B consumed13/15 units (B13 authorized out of order while B12 parked). B14/B15
+remain unused, not silently recycled. No O20 body or original-surface edit.
+
+| Unit | Accepted declaration | Commit/result |
+|---|---|---|
+| B1 | `pairedCommittedResolution` | de79e47 PASS1 |
+| B2 | `pairedEffectsAcrossFrames` | a69ce21 PASS1 |
+| B3 | `pairedForeignTableObserved` | 25c5374 PASS1 |
+| B4 | `pairedSetTableBindings` | 96cd19c PASS1 |
+| B5 | `pairedSetRuntimeEffects` | 751a987 PASS1 |
+| B6 | `pairedInsertEffects` | 65cb50c PASS1 |
+| B7 | `pairedInsertControls` | b518843 PASS2 |
+| B8 | `synchronizationRegistrationSuccessor` | af6c689 PASS1 |
+| B9 | `pairedRuntimeReplacementEffects` | 544f1e8 PASS1 |
+| B10 | `pairedSuccessfulOutcome` | 0fbdc47 PASS1 |
+| B11 | `pairedTableOwnerObserved` | 19a798c PASS2; failed earlier commit REVERTED |
+| B12 | `pairedPresentKeyOwnerUnique` | **STOP3/3; entirely removed** |
+| B13 | `pairedProjectOwnerTableObserved` | 364924d PASS1; distinct prerequisite |
+
+**Genuine nonzero capital:** B8 constructs the EXISTING synchronization record
+at both successor cuts of two actual transition-prefix occurrences. It keeps
+the supplied whole executions and the FIXED `expectedBridgeBijection`, deriving
+all runtime ambient/ordered-table agreement and selected control agreement from
+the previous cut and actual insertion output observations. It does not assume
+cross-side endpoint agreement. Registration guard/edge authenticity belongs to
+the supplied actual transitions and exact output equations; this is not a
+producer of the still-missing canonical selection/decomposition of such pairs.
+B1 connects the actual committed resolver to R180's observed-head consumers;
+B9 handles projected real replacement outputs; B10 derives local outcome
+identity and pointwise pushed undo from actual run results, not an oracle.
+
+**Still absent:** selecting/aligning arbitrary canonical prefix pairs, complete
+Begin view agreement, Advance/Finish control propagation and paired successor
+constructors, induction over supported episodes, unsupported-child/gap handling,
+selector assembly and an O20 endpoint theorem. B8 is NOT the complete producer.
+Existing supported-birth bridge/one-sided endpoint packets remain unchanged.
+
+### Process violation (not hidden by evidence tooling)
+
+At14:34, an unconditional combined shell command printed B11-1's failure but
+then mistakenly committed it as **dfc933e** and launched B12-1. This violates
+both immediate-PASS-only commits and one-unaccepted-declaration-per-invocation:
+B12-1 contained failed B11 plus the new B12. Both compiler checks failed and
+are counted normally. The B12 draft was immediately removed; `git revert`
+**cdaee57** undid the failed commit without rewriting history. B11-2 independently
+PASSed and was properly committed19a798c. No failed declaration survives.
+The supervisor was notified. The evidence checker records this ONE exact
+snapshot exception as `workflowViolation`, and explicitly reports
+`oneNewDeclarationPerInvocation=false`; it is NOT silently waived or renamed.
+Subsequent commits are gated by machine-reading the invocation's `passed` bit.
+
+B11-1 failed the lookupBinding-vs-lookupEntries opaque table accessor conversion;
+B11-2 exposes the actual Fiber/OwnedTable/context payload (never guesses a
+callback) and proves provenance. B7-1 lacked explicit dependent implicits;
+B7-2 also corrects constructor arguments/emptyOwned's implicit provision.
+
+### B12 exact stop and B13 authorization
+
+1. Premature B12-1 additionally failed at the projection's suspended tableFor
+   case versus the B11 observed-table case.
+2. Switching the actual observation from lookupFiber to lookupBinding exposed
+   identical-looking but still nonconvertible case terms.
+3. Supervisor explicitly authorized parking/removing B12 at2/3, checking the
+   DISTINCT B13 actual lookup→exact projected-table observation, then ONE LAST
+   B12 transport attempt. B13 PASSed; B12's final attempt used its named equation
+   plus B11/CP4 pairwise uniqueness, exposing the registry payload for the final
+   lookup-entry projection. It still failed on identical printed suspended
+   cases. No stronger hypothesis, body restart, fourth attempt or budget reset.
+
+Full B12 addition removed, exact accepted B13 source freshly rechecked:
+**B12-restored PASS3.149s**. This is a conversion boundary, not a counterexample
+to owner uniqueness or the claimed synchronization theorem. A later genuinely
+distinct route needs ONE shared exported runtime observation value type (rather
+than two separately elaborated anonymous case expressions) at the producer
+boundary; it is not authorized here as a fourth B12 attempt.

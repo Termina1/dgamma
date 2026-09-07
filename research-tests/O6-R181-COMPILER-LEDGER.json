@@ -514,5 +514,578 @@
     "matchingSourceCommits": [
       "cd746150d67811f1131eb690c57e34a2a95cf2e5"
     ]
+  },
+  {
+    "unit": "A-stop-package",
+    "path": "package",
+    "command": [
+      "idris2",
+      "--build",
+      "dgamma.ipkg"
+    ],
+    "start": "2026-09-07T14:12:35.607346+00:00",
+    "end": "2026-09-07T14:12:52.212386+00:00",
+    "seconds": 16.604906334076077,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 275008,
+    "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "",
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B1-1",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T14:16:22.032102+00:00",
+    "end": "2026-09-07T14:16:25.155850+00:00",
+    "seconds": 3.123586291912943,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2949840,
+    "sourceSHA256": "6c46e7dda4aa5fd940a6ff162897a7e7946c21014c49f0178b0c646e06a82334",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "pairedCommittedResolution"
+    ],
+    "matchingSourceCommits": [
+      "de79e471a8841cbc12ae079c59832d452a9035ac"
+    ]
+  },
+  {
+    "unit": "B2-1",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T14:16:50.845809+00:00",
+    "end": "2026-09-07T14:16:52.930099+00:00",
+    "seconds": 2.0840881671756506,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1033568,
+    "sourceSHA256": "fd948963b1f3dbdd9584b2a3cd4d50288cd287b4cb89c608eccb63afe51f64d4",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "pairedEffectsAcrossFrames"
+    ],
+    "matchingSourceCommits": [
+      "a69ce2158ce4013463be18ba2c66389d05417f55"
+    ]
+  },
+  {
+    "unit": "B3-1",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T14:17:42.154143+00:00",
+    "end": "2026-09-07T14:17:44.225408+00:00",
+    "seconds": 2.0710835000500083,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 684544,
+    "sourceSHA256": "384d2effecb02b48e7205b5968dc1fe33c15cd78db6ea740696cfefff22f9f17",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "pairedForeignTableObserved"
+    ],
+    "matchingSourceCommits": [
+      "25c5374d4a56e70f3dc866eafcb4a7edaf2a8c33"
+    ]
+  },
+  {
+    "unit": "B4-1",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T14:18:49.228704+00:00",
+    "end": "2026-09-07T14:18:51.306621+00:00",
+    "seconds": 2.0777139170095325,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 818144,
+    "sourceSHA256": "627fa963a92e3c5ce4a11c047ddb607f21ee432a6bde73315beed73fe39fa523",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "pairedSetTableBindings"
+    ],
+    "matchingSourceCommits": [
+      "96cd19c4793b50e2cd2aeab4936dbb53dc07eca3"
+    ]
+  },
+  {
+    "unit": "B5-1",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T14:19:43.728843+00:00",
+    "end": "2026-09-07T14:19:45.816235+00:00",
+    "seconds": 2.086558791808784,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 737552,
+    "sourceSHA256": "d29fe707c75831106c9db068528a3f7359df40e7083ccbd8fcb0efd47fc0e7ba",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "pairedSetRuntimeEffects"
+    ],
+    "matchingSourceCommits": [
+      "751a987859180a4c6c3002e700a6ff14667e1b5d"
+    ]
+  },
+  {
+    "unit": "B6-1",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T14:21:16.326843+00:00",
+    "end": "2026-09-07T14:21:19.457416+00:00",
+    "seconds": 3.1303495410829782,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2949536,
+    "sourceSHA256": "d0174867a835ad1b88510dd616e39c77aa1f569aab55925c35ea0337a3b432c8",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "pairedInsertEffects"
+    ],
+    "matchingSourceCommits": [
+      "65cb50cdf8d1f609bd319478e10ec1cb14ac48a5"
+    ]
+  },
+  {
+    "unit": "B7-1",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T14:23:59.774980+00:00",
+    "end": "2026-09-07T14:24:01.876526+00:00",
+    "seconds": 2.1013563750311732,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 287664,
+    "sourceSHA256": "a13141465551fa9decb937e4fb3355df972f71d6531a3433b709266de850cf95",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\nError: While processing type of pairedInsertControls. Can't bind implicit DGamma.CP5O20PairedPrefixProducerSpike.{value:4191} of type ({arg:10199} : ?DGamma.CP5O20PairedPrefixProducerSpike.{key:4190}_[name[17], key[16], world[15], error[14], value[13], nameEq[12], renaming[11], actor[10], component[9], leftParent[8], rightParent[7], {arg:4140}[6], leftRegistry[5], rightRegistry[4], leftAbsent[3], rightAbsent[2], selected[1], {arg:4167}[0]]) -> Type\n\nDGamma.CP5O20PairedPrefixProducerSpike:192:1--215:36\n 192 | ||| Actual inserted/foreign lookup split, preserving the selected control cut.\n 193 | ||| No selected-name opacity: fresh and foreign cases use actual lookup laws.\n 194 | export\n 195 | 0 pairedInsertControls :\n 196 |   (name, key, world, error : Type) -> (value : key -> Type) ->\n 197 |   (nameEq : DecEq name) -> (renaming : NameBijection name) -> (actor : name) ->\n\nError: No type declaration for DGamma.CP5O20PairedPrefixProducerSpike.pairedInsertControls.\n\nDGamma.CP5O20PairedPrefixProducerSpike:216:1--235:81\n 216 | pairedInsertControls name key world error value nameEq renaming actor component\n 217 |   leftParent rightParent parents leftRegistry rightRegistry leftAbsent rightAbsent\n 218 |   selected controls = case decEq @{nameEq} selected actor of\n 219 |     Yes same => rewrite same in\n 220 |       rewrite lookupInserted @{nameEq} actor (freshFiber component leftParent)\n 221 |         leftRegistry leftAbsent in\n\n",
+    "newTopLevelDeclarations": [
+      "pairedInsertControls"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B7-2",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T14:24:36.730317+00:00",
+    "end": "2026-09-07T14:24:39.872673+00:00",
+    "seconds": 3.142165833618492,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2938304,
+    "sourceSHA256": "1b3e2bb0ade3999e1c49dd2abb78fc521cf1149150b7e03e531ceb18415b3eca",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "pairedInsertControls"
+    ],
+    "matchingSourceCommits": [
+      "b518843cf0644536d9e033c3aa059e439dc7e890"
+    ]
+  },
+  {
+    "unit": "B8-1",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T14:26:58.869182+00:00",
+    "end": "2026-09-07T14:27:02.007705+00:00",
+    "seconds": 3.1383072920143604,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2938272,
+    "sourceSHA256": "75c42eb26e9c36ef5134933eaa457736380f279ab2aafe963c186a20fc011f21",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "synchronizationRegistrationSuccessor"
+    ],
+    "matchingSourceCommits": [
+      "af6c689a21a65f42c4847e02b8995b2655dce5ad"
+    ]
+  },
+  {
+    "unit": "B9-1",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T14:28:27.169617+00:00",
+    "end": "2026-09-07T14:28:30.310328+00:00",
+    "seconds": 3.1404117504134774,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2960208,
+    "sourceSHA256": "78bbde3b62f01f76500c6fbe91d61fe32f3d53061558a3b9723edb5d024c3bfe",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "pairedRuntimeReplacementEffects"
+    ],
+    "matchingSourceCommits": [
+      "544f1e85af40658260d5b7483fac8b91dae00c1c"
+    ]
+  },
+  {
+    "unit": "B10-1",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T14:29:57.023302+00:00",
+    "end": "2026-09-07T14:30:00.158760+00:00",
+    "seconds": 3.1352244168519974,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3933888,
+    "sourceSHA256": "3c53d650c0f4300b368bac2663bdc162c5ab3a269b9870f82c243b259b687d2d",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "pairedSuccessfulOutcome"
+    ],
+    "matchingSourceCommits": [
+      "0fbdc4789c96dda4584fa74089a0d824a5d5ddf6",
+      "cdaee5774333675b1ede9fe7bdfbd016a9852fe4"
+    ]
+  },
+  {
+    "unit": "B11-1",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T14:33:39.474162+00:00",
+    "end": "2026-09-07T14:33:41.555916+00:00",
+    "seconds": 2.081511542201042,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 307280,
+    "sourceSHA256": "74327cbdc9099c2a1815ba706353319ac283a605eeb0b660b51131babdca58ea",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\nError: While processing right hand side of pairedTableOwnerObserved. Can't solve constraint between: lookupBinding wanted (case Just fiber of { Nothing => emptyContext ; Just fiber => ownedValues (fiberTable fiber) }) and lookupEntries wanted (bindings (ownedValues (fiberTable fiber))).\n\nDGamma.CP5O20PairedPrefixProducerSpike:437:18--437:25\n 433 | pairedTableOwnerObserved name key world error value nameEq keyEq owner wanted fibers\n 434 |   (Just fiber) found provided present =\n 435 |     (fiber ** (found, ownedSound (fiberTable fiber) wanted\n 436 |       (lookupJustElem @{keyEq} wanted (bindings (ownedValues (fiberTable fiber)))\n 437 |         provided present)))\n                        ^^^^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "pairedTableOwnerObserved"
+    ],
+    "matchingSourceCommits": [
+      "dfc933ea539570d263a907e69b5357dc15e108a2"
+    ]
+  },
+  {
+    "unit": "B12-1",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T14:34:24.299761+00:00",
+    "end": "2026-09-07T14:34:26.400014+00:00",
+    "seconds": 2.0999826658517122,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 315360,
+    "sourceSHA256": "efa1264daf5fe2856d687e69d506ef6a6e516cbb9e14fc7336936e0d84293c22",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\nError: While processing right hand side of pairedTableOwnerObserved. Can't solve constraint between: lookupBinding wanted (case Just fiber of { Nothing => emptyContext ; Just fiber => ownedValues (fiberTable fiber) }) and lookupEntries wanted (bindings (ownedValues (fiberTable fiber))).\n\nDGamma.CP5O20PairedPrefixProducerSpike:437:18--437:25\n 433 | pairedTableOwnerObserved name key world error value nameEq keyEq owner wanted fibers\n 434 |   (Just fiber) found provided present =\n 435 |     (fiber ** (found, ownedSound (fiberTable fiber) wanted\n 436 |       (lookupJustElem @{keyEq} wanted (bindings (ownedValues (fiberTable fiber)))\n 437 |         provided present)))\n                        ^^^^^^^\n\nError: While processing right hand side of pairedPresentKeyOwnerUnique. Can't solve constraint between: case lookupBinding rightOwner fibers of\n  { Nothing => emptyContext\n  ; Just fiber => ownedValues (fiberTable fiber)\n  } and case lookupFiber rightOwner fibers of\n  { Nothing => emptyContext\n  ; Just fiber => ownedValues (fiberTable fiber)\n  }.\n\nDGamma.CP5O20PairedPrefixProducerSpike:473:17--473:32\n 469 |                 wanted fibers (lookupFiber @{nameEq} leftOwner fibers) Refl leftValue\n 470 |                 leftValueFound,\n 471 |               pairedTableOwnerObserved name key world error value nameEq keyEq rightOwner\n 472 |                 wanted fibers (lookupFiber @{nameEq} rightOwner fibers) Refl rightValue\n 473 |                 rightValueFound) of\n                       ^^^^^^^^^^^^^^^\n\n",
+    "workflowViolation": "Two unaccepted declarations: premature B12 invocation; failed B11 commit dfc933e reverted cdaee57.",
+    "newTopLevelDeclarations": [
+      "pairedPresentKeyOwnerUnique",
+      "pairedTableOwnerObserved"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B11-2",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T14:35:29.177208+00:00",
+    "end": "2026-09-07T14:35:32.296990+00:00",
+    "seconds": 3.1195991248823702,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2949392,
+    "sourceSHA256": "6b436a75cdbe7e7d8b812f81906630cd3e5f58150e1327a02324243f0c342679",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "pairedTableOwnerObserved"
+    ],
+    "matchingSourceCommits": [
+      "19a798c3cddecb9fce936b1a07be90f176b1f7e9"
+    ]
+  },
+  {
+    "unit": "B12-2",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T14:36:20.412540+00:00",
+    "end": "2026-09-07T14:36:22.494175+00:00",
+    "seconds": 2.081420375034213,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 315360,
+    "sourceSHA256": "3103605349412863f4c38c9ac81001615e56681c3e7d18c2083ce40ac953b2d9",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\nError: While processing right hand side of pairedPresentKeyOwnerUnique. Can't solve constraint between: case lookupBinding rightOwner fibers of\n  { Nothing => emptyContext\n  ; Just fiber => ownedValues (fiberTable fiber)\n  } and case lookupBinding rightOwner fibers of\n  { Nothing => emptyContext\n  ; Just fiber => ownedValues (fiberTable fiber)\n  }.\n\nDGamma.CP5O20PairedPrefixProducerSpike:475:17--475:32\n 471 |                 wanted fibers (lookupBinding @{nameEq} leftOwner fibers) Refl leftValue\n 472 |                 leftValueFound,\n 473 |               pairedTableOwnerObserved name key world error value nameEq keyEq rightOwner\n 474 |                 wanted fibers (lookupBinding @{nameEq} rightOwner fibers) Refl rightValue\n 475 |                 rightValueFound) of\n                       ^^^^^^^^^^^^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "pairedPresentKeyOwnerUnique"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B13-1",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T14:38:28.760885+00:00",
+    "end": "2026-09-07T14:38:31.889574+00:00",
+    "seconds": 3.128472958691418,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3912224,
+    "sourceSHA256": "14b0c7ac908bfbb2ce2e7bfc8897c5fa4430425f68d8cae11fed66624d6e29bb",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "pairedProjectOwnerTableObserved"
+    ],
+    "matchingSourceCommits": [
+      "364924d8e0fa6b68e832ecb3b37cc7e9f11614a8"
+    ]
+  },
+  {
+    "unit": "B12-3",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T14:39:44.950499+00:00",
+    "end": "2026-09-07T14:39:47.045390+00:00",
+    "seconds": 2.0946692917495966,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 308096,
+    "sourceSHA256": "6ef325dede3a06e70c86ae8eaaf3d2a3729a02f7cb7a1c31e035938a9abc10f4",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\nError: While processing right hand side of pairedPresentKeyOwnerUnique. Can't solve constraint between: case lookupBinding rightOwner (MkCoeffectContext entries unique) of\n  { Nothing => emptyContext\n  ; Just fiber => ownedValues (fiberTable fiber)\n  } and case lookupBinding rightOwner (MkCoeffectContext entries unique) of\n  { Nothing => emptyContext\n  ; Just fiber => ownedValues (fiberTable fiber)\n  }.\n\nDGamma.CP5O20PairedPrefixProducerSpike:499:18--503:34\n 499 |                 (trans (sym (cong (lookupBinding {key = key} {value = value}\n 500 |                   @{keyEq} wanted) (pairedProjectOwnerTableObserved name key world error\n 501 |                   value nameEq ambient (MkCoeffectContext entries unique) rightOwner\n 502 |                   (lookupBinding @{nameEq} rightOwner (MkCoeffectContext entries unique)) Refl)))\n 503 |                   rightValueFound)) of\n\n",
+    "newTopLevelDeclarations": [
+      "pairedPresentKeyOwnerUnique"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B12-restored",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T14:40:28.085033+00:00",
+    "end": "2026-09-07T14:40:31.233968+00:00",
+    "seconds": 3.148720375262201,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2995536,
+    "sourceSHA256": "14b0c7ac908bfbb2ce2e7bfc8897c5fa4430425f68d8cae11fed66624d6e29bb",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "364924d8e0fa6b68e832ecb3b37cc7e9f11614a8"
+    ]
   }
 ]
