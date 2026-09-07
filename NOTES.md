@@ -2578,3 +2578,10 @@ prove both genuine support-truth implications, fill O18 only if valid, immediate
 re-census (expected five = 1/3/0/0/1), and gate. Neither that closure nor the
 five-hole gate occurred during this shift. Detailed per-invocation compiler,
 stop, frozen-hash and final validation evidence is in the R177 research audits.
+
+R177 final validation: fresh CanonicalSort, UniqueCapital/CrossTrace,
+R8FullPipeline and generated-static-coherence checks PASS; seeded package build
+PASS with 207/207 TTC seeds preserved. Final clean frozen audit/census PASS,
+six holes unchanged, production/LocalDiamond/O17/O21 boundaries preserved. The
+broad R11 diagnostic suite was not rerun. Complete 156-invocation evidence and
+qualified P2-4 result are committed; no extra post-validation coverage unit ran.

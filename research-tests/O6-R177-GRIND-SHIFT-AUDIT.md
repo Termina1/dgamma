@@ -390,3 +390,32 @@ The first frozen audit attempt caught six trailing-whitespace presentation lines
 in the newly tracked compiler Markdown (not previously included by untracked-file
 git diff --check). These presentation lines were trimmed and the read-only audit
 rerun. Raw JSON/archive evidence and every Idris source remained unchanged.
+
+## Final census and frozen result (05:52 UTC)
+
+Read-only `run-r177-frozen-audit.py` PASS at implementation/audit head `0ddfff2`.
+The machine result plus all final compiler checks is committed in
+`O6-R177-FINAL-VALIDATION.json`. Census remains exactly:
+
+| Family | Holes |
+|---|---|
+| CanonicalSort | `?sortClosingFreeTraceSpike_rhs` |
+| CrossTrace | `?operationalAdjacentBlockSwapSpike_rhs`, `?canonicalSupportOrdersMatchSpike_rhs`, `?selectOperationalCanonicalPermutationSpike_rhs`, `?canonicalSchedulesConvergeSpike_rhs` |
+| DeletionChain | none |
+| LocalDiamond | none |
+| RenamingComposition | `?replayedCanonicalToOriginalEndpointSpike_rhs` |
+
+**6 = 1/4/0/0/1**, unchanged. All eight audited supporting/new research modules
+have zero holes. Production `src/` and `dgamma.ipkg` diff versus `34b21c9` is empty;
+CP3 blob remains `2c697e532e83989de8591fa6a4378747c6a501c0`. Entire LocalDiamond,
+CrossTrace and DeletionChain files are unchanged versus R177 start. Protected O17
+and O21 declarations are byte-identical. The 1470-byte adjacent-suffix definition
+and 1154-byte statement hashes match the required frozen values. LocalDiamond
+TTC remains 125,368,223 bytes at its preserved R176 timestamp; all **207/207**
+production TTC seeds remain. Frozen adversarial-review hash is unchanged.
+
+No forbidden added proof escape, hole, partial declaration, with, let alias,
+frozen deletion theorem call or as-pattern was found. Clean tracked state, only
+allowed untracked paper/review files, all disposable .idr probes absent, no Idris
+backend. The final report commit adds documentation only; proof source stayed
+unchanged after B122. Optional post-validation coverage attempts: **0**.

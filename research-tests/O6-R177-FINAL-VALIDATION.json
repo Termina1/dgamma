@@ -1,0 +1,230 @@
+{
+  "timestamp": "2026-09-07T05:52:39.358503+00:00",
+  "verifiedImplementationAndAuditHead": "0ddfff24facf8c8ebc9a475216db7bc8ebd3a11d",
+  "startHead": "86659a16b07be8225bf2269df2c155bae01491b6",
+  "branch": "cp5-thm73-scoping",
+  "idrisVersion": "Idris 2, version 0.8.0",
+  "holes": {
+    "CanonicalSort": [
+      "?sortClosingFreeTraceSpike_rhs"
+    ],
+    "CrossTrace": [
+      "?operationalAdjacentBlockSwapSpike_rhs",
+      "?canonicalSupportOrdersMatchSpike_rhs",
+      "?selectOperationalCanonicalPermutationSpike_rhs",
+      "?canonicalSchedulesConvergeSpike_rhs"
+    ],
+    "DeletionChain": [],
+    "LocalDiamond": [],
+    "RenamingComposition": [
+      "?replayedCanonicalToOriginalEndpointSpike_rhs"
+    ]
+  },
+  "holeCounts": [
+    1,
+    4,
+    0,
+    0,
+    1
+  ],
+  "zeroHoleResearchModules": {
+    "research/DGamma/CP5CurrentGenerationBirthSpike.idr": [],
+    "research/DGamma/CP5ImmutableBirthMetadataSpike.idr": [],
+    "research/DGamma/CP5MatchedBirthMetadataSpike.idr": [],
+    "research/DGamma/CP5RegistrationParentBirthSpike.idr": [],
+    "research/DGamma/CP5ConfluenceWorkMeasureSpike.idr": [],
+    "research/DGamma/CP5UniqueRawNameCanonicalCapital.idr": [],
+    "research/DGamma/CP5RawClosingRankSpike.idr": [],
+    "research/DGamma/CP5ConfluenceRankObservationSpike.idr": []
+  },
+  "productionDiffVs34b21c9": "empty",
+  "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+  "LocalDiamondDiffVsR177Start": "empty",
+  "LocalDiamondSourceSHA256": "c6ce9dcb5ae983e5af5d01e4b90c76e4431b810b023418564898cddb8a1f01d4",
+  "CrossTraceDiffVsR177Start": "empty",
+  "DeletionChainDiffVsR177Start": "empty",
+  "protectedDeclarations": {
+    "sortClosingFreeTraceSpike": {
+      "unchanged": true,
+      "sha256": "1df8d174b9a4f119a5a52e2073a72907bdb890413f877d55886e905e1d0279d1"
+    },
+    "replayedCanonicalToOriginalEndpointSpike": {
+      "unchanged": true,
+      "sha256": "eace6b7c99c299880e9dfd85cbd1830adec0b849647a3b031686f8932edb6811"
+    }
+  },
+  "adjacentFullBytes": 1470,
+  "adjacentFullSHA256": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+  "adjacentStatementBytes": 1154,
+  "adjacentStatementSHA256": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+  "reviewSHA256": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8",
+  "productionTTCSeeds": "207/207",
+  "LocalDiamondTTC": {
+    "bytes": 125368223,
+    "mtimeUTC": "2026-09-07T01:56:14.905763+00:00",
+    "deleted": false
+  },
+  "changedIdrisFiles": [
+    "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+    "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+    "research/DGamma/CP5ConfluenceWorkMeasureSpike.idr",
+    "research/DGamma/CP5CurrentGenerationBirthSpike.idr",
+    "research/DGamma/CP5ImmutableBirthMetadataSpike.idr",
+    "research/DGamma/CP5MatchedBirthMetadataSpike.idr",
+    "research/DGamma/CP5RegistrationParentBirthSpike.idr"
+  ],
+  "sourceSHA256": {
+    "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr": "1d325339f25d488d2cb9d9c22acdc5c6d012e2af967acdb3d8c4e25fe2de1603",
+    "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr": "e4dd051e833f05ab70d235d4529d9850a47e852da39dc62f3227ccdedfaa6a2e",
+    "research/DGamma/CP5ConfluenceWorkMeasureSpike.idr": "ccc05f56216aa91e99d5248dd28ac61413f386b200252eba838034caf372cefa",
+    "research/DGamma/CP5CurrentGenerationBirthSpike.idr": "4c51e74b3fb7001f4f1e27b2c28d92bf8a4adb4e0032b14e9276aeb5314a7645",
+    "research/DGamma/CP5ImmutableBirthMetadataSpike.idr": "b433688bd294067d99b36e32a812e410e737a95f2473b637c647d0a52cfda1c2",
+    "research/DGamma/CP5MatchedBirthMetadataSpike.idr": "2537e53d485e8834ec72c4086288a665f44d1b39def130e90f3c557e7695a68d",
+    "research/DGamma/CP5RegistrationParentBirthSpike.idr": "e77a178f7a7e5d2cb7cdb520ddde18a03c7aef52dba1bfb1dc5ed2428771341a"
+  },
+  "changedFiles": [
+    "NOTES.md",
+    "README.md",
+    "THM73-PLAN.md",
+    "research-tests/O6-R177-COMPILER-EVIDENCE.tar.gz",
+    "research-tests/O6-R177-COMPILER-LEDGER.json",
+    "research-tests/O6-R177-COMPILER-TRANSCRIPTS.md",
+    "research-tests/O6-R177-GRIND-SHIFT-AUDIT.md",
+    "research-tests/O6-R177-P2-STOP-AUDIT.md",
+    "research-tests/r177-probes/B1-ExactCurrentDomain.idr.txt",
+    "research-tests/r177-probes/C1-AuthenticatedCurrentBirth.idr.txt",
+    "research-tests/r177-probes/P-RetirementTransport.idr.txt",
+    "research-tests/r177-probes/P1-1-RetirementTransport.idr.txt",
+    "research-tests/r177-probes/P1-1-RetirementTransport.json",
+    "research-tests/r177-probes/P1-1-RetirementTransport.log.txt",
+    "research-tests/r177-probes/P2-1-RetirementTransport.idr.txt",
+    "research-tests/r177-probes/P2-1-RetirementTransport.json",
+    "research-tests/r177-probes/P2-1-RetirementTransport.log.txt",
+    "research-tests/r177-probes/P2-2-RetirementTransport.idr.txt",
+    "research-tests/r177-probes/P2-2-RetirementTransport.json",
+    "research-tests/r177-probes/P2-2-RetirementTransport.log.txt",
+    "research-tests/r177-probes/P2-3-RetirementTransport.idr.txt",
+    "research-tests/r177-probes/P2-3-RetirementTransport.json",
+    "research-tests/r177-probes/P2-3-RetirementTransport.log.txt",
+    "research-tests/r177-probes/P2-4-RetirementTransport-freshness.json",
+    "research-tests/r177-probes/P2-4-RetirementTransport.idr.txt",
+    "research-tests/r177-probes/P2-4-RetirementTransport.json",
+    "research-tests/r177-probes/P2-4-RetirementTransport.log.txt",
+    "research-tests/run-r177-frozen-audit.py",
+    "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+    "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+    "research/DGamma/CP5ConfluenceWorkMeasureSpike.idr",
+    "research/DGamma/CP5CurrentGenerationBirthSpike.idr",
+    "research/DGamma/CP5ImmutableBirthMetadataSpike.idr",
+    "research/DGamma/CP5MatchedBirthMetadataSpike.idr",
+    "research/DGamma/CP5RegistrationParentBirthSpike.idr"
+  ],
+  "prohibitedAdditions": {
+    "\\bbelieve_me\\b": [],
+    "\\bassert_total\\b": [],
+    "^\\s*partial\\b": [],
+    "\\?\\w+": [],
+    "\\blet\\b": [],
+    "\\bwith\\b": [],
+    "\\bdeletionTheoremProof\\b": [],
+    "\\bpostulate\\b": [],
+    "\\b[A-Za-z_]\\w*@\\s*[\\(\\[]": []
+  },
+  "allChangedIdrisDefaultTotal": true,
+  "noCompiler": true,
+  "noStagedFiles": true,
+  "noTrackedChanges": true,
+  "allowedUntrackedOnly": true,
+  "tree": "?? paper/\n?? review-o6-body-adversarial.md",
+  "probesRemoved": true,
+  "O18BodyUnchanged": true,
+  "O18ClosureClaimed": false,
+  "expectedFiveHoleGateFired": false,
+  "O17Frontier": "actual pair location and orientation applicability; root placement owner-paused",
+  "O18Frontier": "all-supported retained-event/root coverage; retired flags and cross-endpoint support truth under A9",
+  "A9Finding": "P1 checked non-root classification and P2-4 executable quiet unequal-support pair; both IndependentCanonicalSchedule capitals unconstructed",
+  "A9PendingOwnerOverride": "research-side GeneratedOrchestrationMatched modulo accepted generation bijection, threaded like uniqueness; production frozen; NOT implemented",
+  "aggregateR11SuiteRun": false,
+  "fullPaperProofClaimed": false,
+  "compilerValidation": [
+    {
+      "unit": "F3-FinalCanonicalSort",
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "command": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "start": "2026-09-07T05:36:11.458308+00:00",
+      "end": "2026-09-07T05:37:07.375055+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "maxSampleRSSKiB": 20152992,
+      "validationMode": "fresh-source-check"
+    },
+    {
+      "unit": "F4-FinalUniqueCapital",
+      "path": "research/DGamma/CP5UniqueRawNameCanonicalCapital.idr",
+      "command": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5UniqueRawNameCanonicalCapital.idr",
+      "start": "2026-09-07T05:37:34.250731+00:00",
+      "end": "2026-09-07T05:37:40.477379+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "maxSampleRSSKiB": 4624768,
+      "validationMode": "fresh-source-check"
+    },
+    {
+      "unit": "F5-FinalFullPipeline",
+      "path": "research-tests/DGamma/R8FullPipeline.idr",
+      "command": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R8FullPipeline.idr",
+      "start": "2026-09-07T05:39:31.826155+00:00",
+      "end": "2026-09-07T05:41:12.392978+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "maxSampleRSSKiB": 38703008,
+      "validationMode": "fresh-source-check"
+    },
+    {
+      "unit": "F6-FinalGeneratedStaticCoherence",
+      "path": "research/DGamma/CP5MatchedBirthMetadataSpike.idr",
+      "command": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5MatchedBirthMetadataSpike.idr",
+      "start": "2026-09-07T05:44:16.943294+00:00",
+      "end": "2026-09-07T05:44:21.088898+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "maxSampleRSSKiB": 3513568,
+      "validationMode": "fresh-source-check"
+    },
+    {
+      "unit": "F7-SeededPackage207",
+      "path": "dgamma.ipkg",
+      "command": "idris2 --build dgamma.ipkg",
+      "start": "2026-09-07T05:44:29.358867+00:00",
+      "end": "2026-09-07T05:44:45.905716+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "maxSampleRSSKiB": 224144,
+      "validationMode": "seeded-package"
+    }
+  ],
+  "compilerInvocationCounts": {
+    "positive": 143,
+    "charged-proof-rejection": 12,
+    "authorized-check-exec-success": 1
+  },
+  "compilerInvocationTotal": 156,
+  "compilerEvidenceArchive": {
+    "path": "research-tests/O6-R177-COMPILER-EVIDENCE.tar.gz",
+    "bytes": 1160546,
+    "sha256": "4867bab1025cb55adaa7fd7f3075a0a7db039721aeb61c70a0ffc24cc398adcf"
+  },
+  "unitA": "12/12 first-check PASS; actual worklist decrease conditional on same supplied descending accepted pair; pair discovery/orientation not proved",
+  "unitB": "B2-B122 original current/parent birth authentication and bidirectional static coherence for covered generated events; global coverage and retired/support truth remain open",
+  "unitC": "one checked conditional authenticated identity-sizing probe; no O21 withdrawal or body proof",
+  "P2Gate": "3/3 stop ratified; exactly one explicitly authorized mechanical P2-4 repair/check+exec; exact two projection qualifications only",
+  "optionalPostValidationCoverageUnitAttempts": 0,
+  "optionalCoverageUnitTiming": "All checks including clean committed frozen/census audit completed 05:52 UTC, leaving <15 minutes before 06:00; conditional extra unit was not eligible",
+  "proofCodeFrozenAfter": "B122, commit 62dede6",
+  "finalReportAssembledUTC": "2026-09-07T05:55:01.144126+00:00"
+}
