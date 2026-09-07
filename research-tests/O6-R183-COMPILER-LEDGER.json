@@ -1,0 +1,1978 @@
+[
+  {
+    "unit": "baseline",
+    "path": "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr"
+    ],
+    "start": "2026-09-07T20:43:13.504369+00:00",
+    "end": "2026-09-07T20:43:16.646692+00:00",
+    "seconds": 3.1421138336881995,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3868848,
+    "sourceSHA256": "d07435985a00c7e49ebf0deca0325262249b4c0db80689c550ed4bb716e6690c",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "11/11: Building DGamma.CP5O19AdjacentReplayProducerSpike (research/DGamma/CP5O19AdjacentReplayProducerSpike.idr)\n",
+    "baselineDeclarationSource": "973a81a:research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "973a81adac1dc0d36244c385012301e2db593b11"
+    ]
+  },
+  {
+    "unit": "A1-1",
+    "path": "research/DGamma/CP5O19CartesianCursorSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19CartesianCursorSpike.idr"
+    ],
+    "start": "2026-09-07T20:45:05.879077+00:00",
+    "end": "2026-09-07T20:45:07.956669+00:00",
+    "seconds": 2.077362208161503,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 677600,
+    "sourceSHA256": "5ae85aa714fd89aaaf928a3369b4e4adf6c3068b2fff8632ae9d64f2bf8d80e2",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "13/13: Building DGamma.CP5O19CartesianCursorSpike (research/DGamma/CP5O19CartesianCursorSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "O19ReachedCursor"
+    ],
+    "matchingSourceCommits": [
+      "52523ad965baf32f028dc1a37f85775ef3d3ad92"
+    ]
+  },
+  {
+    "unit": "A2-1",
+    "path": "research/DGamma/CP5O19CartesianCursorSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19CartesianCursorSpike.idr"
+    ],
+    "start": "2026-09-07T20:45:41.385320+00:00",
+    "end": "2026-09-07T20:45:43.472934+00:00",
+    "seconds": 2.0874565416015685,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 729920,
+    "sourceSHA256": "1d922e6dcb35da5702d55879b92fce790714b7a4406d1d93e674ba100a1d9dd6",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "13/13: Building DGamma.CP5O19CartesianCursorSpike (research/DGamma/CP5O19CartesianCursorSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19InitialCursor"
+    ],
+    "matchingSourceCommits": [
+      "cb1bfb44e3d11e7361ae32c783340b612877bf92"
+    ]
+  },
+  {
+    "unit": "A3-1",
+    "path": "research/DGamma/CP5O19CartesianCursorSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19CartesianCursorSpike.idr"
+    ],
+    "start": "2026-09-07T20:46:24.871689+00:00",
+    "end": "2026-09-07T20:46:26.950416+00:00",
+    "seconds": 2.0785288331098855,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 658944,
+    "sourceSHA256": "e18c09da9ef390fc7324b2b1d1fe9e5015a09365f1b4755df7f7c55bef07324d",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "13/13: Building DGamma.CP5O19CartesianCursorSpike (research/DGamma/CP5O19CartesianCursorSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19CursorFromProduced"
+    ],
+    "matchingSourceCommits": [
+      "3b5e4aaa293d4373df4d163f99390c226863c69e"
+    ]
+  },
+  {
+    "unit": "A4-1",
+    "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr"
+    ],
+    "start": "2026-09-07T20:48:21.321053+00:00",
+    "end": "2026-09-07T20:56:38.233914+00:00",
+    "seconds": 496.9105492909439,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 50239808,
+    "sourceSHA256": "5b93ece25fc7b43d3db2108b96e0ecb7e5871061e5a4ee01fef19e3332228012",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.CP5ConfluenceLocalDiamondSpike (research/DGamma/CP5ConfluenceLocalDiamondSpike.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  tail is shadowing Prelude.Types.tail\n\nDGamma.CP5ConfluenceLocalDiamondSpike:992:3--996:64\n 992 |   ConsStageOccursLater :\n 993 |     (head : Transition first middle) ->\n 994 |     (later : OccursIn selected tail) ->\n 995 |     ConsStageOccurrenceView {head} {tail}\n 996 |       (DGamma.Metatheory.OccursLater {transition = head} later)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  head is shadowing Prelude.Types.head\n  tail is shadowing Prelude.Types.tail\n\nDGamma.CP5ConfluenceLocalDiamondSpike:998:3--1000:33\n 0998 | 0 viewConsStageOccurrence :\n 0999 |   (occurs : OccursIn selected (MoreTransitions head tail)) ->\n 1000 |   ConsStageOccurrenceView occurs\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  tail is shadowing Prelude.Types.tail\n\nDGamma.CP5ConfluenceLocalDiamondSpike:1818:3--1821:77\n 1818 | 0 prependIteratorStage :\n 1819 |   (head : Transition sourceFirst sourceMiddle) ->\n 1820 |   IteratorStage name key world error value actor tail ->\n 1821 |   IteratorStage name key world error value actor (MoreTransitions head tail)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  tail is shadowing Prelude.Types.tail\n\nDGamma.CP5ConfluenceLocalDiamondSpike:1846:3--1850:32\n 1846 | 0 prependGenerator :\n 1847 |   (head : Transition sourceFirst sourceMiddle) ->\n 1848 |   TraceEffectGenerator name key world error value actor tail ->\n 1849 |   TraceEffectGenerator name key world error value actor\n 1850 |     (MoreTransitions head tail)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  tail is shadowing Prelude.Types.tail\n\nDGamma.CP5ConfluenceLocalDiamondSpike:1878:3--1883:38\n 1878 | 0 prependGeneratorMapExact :\n 1879 |   (head : Transition sourceFirst sourceMiddle) ->\n 1880 |   (generator : TraceEffectGenerator name key world error value actor tail) ->\n 1881 |   (state : EffectState name key value world) ->\n 1882 |   traceGeneratorMap (prependGenerator head generator) state =\n 1883 |     traceGeneratorMap generator state\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  tail is shadowing Prelude.Types.tail\n\nDGamma.CP5ConfluenceLocalDiamondSpike:2107:3--2112:37\n 2107 | 0 prependIteratorOutcomeExact :\n 2108 |   (head : Transition sourceFirst sourceMiddle) ->\n 2109 |   (stage : IteratorStage name key world error value actor tail) ->\n 2110 |   (state : EffectState name key value world) ->\n 2111 |   iteratorStageOutcome (prependIteratorStage head stage) state =\n 2112 |     iteratorStageOutcome stage state\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sourceAccumulator is shadowing DGamma.CP3.ParentRegistrationYield.sourceAccumulator\n  view is shadowing Data.Nat.LT.view\n\nDGamma.CP5ConfluenceLocalDiamondSpike:6690:5--6702:53\n 6690 |   0 emptyByMatch :\n 6691 |     (matches : Bool) ->\n 6692 |     targetMatches @{nameEq}\n 6693 |       (targetFiber @{nameEq} @{keyEq}\n 6694 |         (MkFiber component sourceParent retiredFlag sourceTable\n 6695 |           (Reloading [] sourceAccumulator view)) sourceRegistry) view = matches ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:14304:11--14306:84\n 14304 |         0 leftMovedSame : (state : EffectState name key value world) ->\n 14305 |           partialEffectMapFor nameEq keyEq leftAction leftTag first state =\n 14306 |           partialEffectMapFor nameEq keyEq leftAction leftTag earlyRightFinal state\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16727:21--16728:69\n 16727 |                   0 effectOutput : ActivationPairEffectOutput nameEq keyEq\n 16728 |                     leftAction leftTag earlyRightFinal originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16733:21--16734:36\n 16733 |                   0 rawMove : RawActivationMove nameEq keyEq leftAction leftTag\n 16734 |                     earlyRightFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16742:21--16743:58\n 16742 |                   0 endpoint : CheckedActivationEndpoint nameEq keyEq leftAction\n 16743 |                     leftTag earlyRightFinal originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16793:21--16795:75\n 16793 |                   0 earlyActivation : PaperActivationStep\n 16794 |                     (Fired {before = first} {afterState = earlyRightFinal}\n 16795 |                       nameEq keyEq rightAction rightTag earlyCheckedRight)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16804:21--16805:43\n 16804 |                   0 earlyWellFormed : registryWellFormed @{nameEq} @{keyEq}\n 16805 |                     earlyRightFinal = True\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16884:21--16887:74\n 16884 |                   0 rawEarlyFrame : PartialRelated\n 16885 |                     (EffectState name key value world) (EffectStateRelated keyEq)\n 16886 |                     (earlyRightMap (projectEffectState @{nameEq} first))\n 16887 |                     (Just (projectEffectState @{nameEq} earlyRightFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16890:21--16893:74\n 16890 |                   0 earlyFrame : PartialRelated\n 16891 |                     (EffectState name key value world) (EffectStateRelated keyEq)\n 16892 |                     (rightMap (projectEffectState @{nameEq} first))\n 16893 |                     (Just (projectEffectState @{nameEq} earlyRightFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16905:21--16909:74\n 16905 |                   0 rightGeneratorFrame : PartialRelated\n 16906 |                     (EffectState name key value world) (EffectStateRelated keyEq)\n 16907 |                     (traceGeneratorMap rightGenerator\n 16908 |                       (projectEffectState @{nameEq} first))\n 16909 |                     (Just (projectEffectState @{nameEq} earlyRightFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16913:21--16914:69\n 16913 |                   0 effectOutput : ActivationPairEffectOutput nameEq keyEq\n 16914 |                     leftAction leftTag earlyRightFinal originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16919:21--16920:36\n 16919 |                   0 rawMove : RawActivationMove nameEq keyEq leftAction leftTag\n 16920 |                     earlyRightFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16926:21--16927:58\n 16926 |                   0 endpoint : CheckedActivationEndpoint nameEq keyEq leftAction\n 16927 |                     leftTag earlyRightFinal originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16933:21--16934:78\n 16933 |                   0 movedCheckedLeft : checkedApplyAction @{nameEq} @{keyEq}\n 16934 |                     leftAction earlyRightFinal = Just (leftTag, swappedFinal)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16936:21--16938:75\n 16936 |                   0 movedRightActivation : PaperActivationStep\n 16937 |                     (Fired {before = first} {afterState = earlyRightFinal}\n 16938 |                       nameEq keyEq rightAction rightTag earlyCheckedRight)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16940:21--16942:72\n 16940 |                   0 movedLeftActivation : PaperActivationStep\n 16941 |                     (Fired {before = earlyRightFinal} {afterState = swappedFinal}\n 16942 |                       nameEq keyEq leftAction leftTag movedCheckedLeft)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16952:21--16958:65\n 16952 |                   0 leftLookup : (lookupFiber @{nameEq} {name = name}\n 16953 |                     {key = key} {value = value} {world = world}\n 16954 |                     {error = error} (actionOwner leftAction)\n 16955 |                     (registry earlyRightFinal) = lookupFiber @{nameEq}\n 16956 |                       {name = name} {key = key} {value = value}\n 16957 |                       {world = world} {error = error}\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16970:21--16977:61\n 16970 |                   0 leftTargets : (fiber : Fiber name key value world error) ->\n 16971 |                     (view : View name (dependencies\n 16972 |                       (componentDependencies\n 16973 |                         (fiberComponent fiber)))) ->\n 16974 |                     targetFiber @{nameEq} @{keyEq} fiber\n 16975 |                       (registry first) = Just view ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16995:21--17003:62\n 16995 |                   0 leftOutcomes : (stage : IteratorStage name key\n 16996 |                     world error value (actionOwner leftAction)\n 16997 |                     pairTrace) -> IteratorOutcomeAgreement name key\n 16998 |                       value world error keyEq\n 16999 |                       (iteratorStageOutcome stage\n 17000 |                         (projectEffectState @{nameEq}\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17028:21--17030:49\n 17028 |                   0 leftComparison : ActivationReplacementComparison\n 17029 |                     nameEq (actionOwner leftAction) first middle\n 17030 |                     earlyRightFinal swappedFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17039:21--17041:57\n 17039 |                   0 rightComparison : ActivationReplacementComparison\n 17040 |                     nameEq (actionOwner rightAction) first\n 17041 |                     earlyRightFinal middle originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17393:21--17395:75\n 17393 |                   0 earlyActivation : PaperActivationStep\n 17394 |                     (Fired {before = first} {afterState = earlyRightFinal}\n 17395 |                       nameEq keyEq rightAction rightTag earlyCheckedRight)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17398:21--17399:43\n 17398 |                   0 earlyWellFormed : registryWellFormed @{nameEq} @{keyEq}\n 17399 |                     earlyRightFinal = True\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17491:21--17493:36\n 17491 |                   0 comparison : ActivationReplacementComparison nameEq\n 17492 |                     (actionOwner rightAction) middle originalFinal first\n 17493 |                     earlyRightFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17500:21--17501:69\n 17500 |                   0 effectOutput : ActivationPairEffectOutput nameEq keyEq\n 17501 |                     leftAction leftTag earlyRightFinal originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17506:21--17507:36\n 17506 |                   0 rawMove : RawActivationMove nameEq keyEq leftAction leftTag\n 17507 |                     earlyRightFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17512:21--17513:58\n 17512 |                   0 endpoint : CheckedActivationEndpoint nameEq keyEq leftAction\n 17513 |                     leftTag earlyRightFinal originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17519:21--17520:78\n 17519 |                   0 movedCheckedLeft : checkedApplyAction @{nameEq} @{keyEq}\n 17520 |                     leftAction earlyRightFinal = Just (leftTag, swappedFinal)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17522:21--17524:72\n 17522 |                   0 movedLeftOrchestration : PaperOrchestrationStep\n 17523 |                     (Fired {before = earlyRightFinal} {afterState = swappedFinal}\n 17524 |                       nameEq keyEq leftAction leftTag movedCheckedLeft)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17591:5--17593:151\n 17591 |   0 leftOwnerRelated : FiberControlMaybeRelated\n 17592 |     (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction) (registry originalFinal))\n 17593 |     (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction) (registry swappedFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17595:11--17598:40\n 17595 |     let 0 sourceSame : Equal\n 17596 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction) (registry first))\n 17597 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction)\n 17598 |             (registry earlyRightFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17602:11--17608:39\n 17602 |         0 ownerRelated : FiberControlMaybeRelated\n 17603 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n 17604 |             {world = world} {error = error} (actionOwner leftAction)\n 17605 |               (registry middle))\n 17606 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n 17607 |             {world = world} {error = error} (actionOwner leftAction)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17624:5--17626:152\n 17624 |   0 rightOwnerRelated : FiberControlMaybeRelated\n 17625 |     (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction) (registry originalFinal))\n 17626 |     (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction) (registry swappedFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17633:11--17639:42\n 17633 |         0 ownerRelated : FiberControlMaybeRelated\n 17634 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n 17635 |             {world = world} {error = error} (actionOwner rightAction)\n 17636 |               (registry originalFinal))\n 17637 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n 17638 |             {world = world} {error = error} (actionOwner rightAction)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17642:11--17646:40\n 17642 |         0 swappedFrame : Equal\n 17643 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction)\n 17644 |             (registry swappedFinal))\n 17645 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction)\n 17646 |             (registry earlyRightFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17656:5--17661:137\n 17656 |   0 outsideRelated : (selected : name) ->\n 17657 |     Not (selected = actionOwner leftAction) ->\n 17658 |     Not (selected = actionOwner rightAction) ->\n 17659 |     FiberControlMaybeRelated\n 17660 |       (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} selected (registry originalFinal))\n 17661 |       (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} selected (registry swappedFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17671:11--17673:141\n 17671 |         0 sameLookup : Equal\n 17672 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} selected (registry originalFinal))\n 17673 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} selected (registry swappedFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17679:5--17683:72\n 17679 |   0 pointwise : (selected : name) -> FiberControlMaybeRelated\n 17680 |     (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n 17681 |       {world = world} {error = error} selected (registry originalFinal))\n 17682 |     (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n 17683 |       {world = world} {error = error} selected (registry swappedFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  replayedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.AdjacentSwapResult.replayedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:21178:3--21185:45\n 21178 | 0 replayPointwiseSuffixTraceComponentsTotal :\n 21179 |   (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n 21180 |   (source : Transitions sourceFirst sourceFinal) ->\n 21181 |   (replayed : Transitions replayedFirst replayedFinal) ->\n 21182 |   SealedSuffixReplaySpine name key world error value nameEq keyEq source\n 21183 |     replayed ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  replayedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.AdjacentSwapResult.replayedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:21203:3--21225:63\n 21203 | 0 adjacentTargetTraceComponentsTotal :\n 21204 |   (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n 21205 |   (tracePrefix : Transitions initial pairFirst) ->\n 21206 |   (left : Transition pairFirst pairMiddle) ->\n 21207 |   (right : Transition pairMiddle pairFinal) ->\n 21208 |   (suffix : Transitions pairFinal originalFinal) ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  replayedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.AdjacentSwapResult.replayedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:22099:3--22121:63\n 22099 | 0 r97Field9WholeAppendCorrespondence :\n 22100 |   (original : Transitions initial originalFinal) ->\n 22101 |   (tracePrefix : Transitions initial pairFirst) ->\n 22102 |   (left : Transition pairFirst pairMiddle) ->\n 22103 |   (right : Transition pairMiddle pairFinal) ->\n 22104 |   (suffix : Transitions pairFinal originalFinal) ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  replayedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.AdjacentSwapResult.replayedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:22144:3--22164:63\n 22144 | 0 r97Field9ConcreteCapitalConsumer :\n 22145 |   (original : Transitions initial originalFinal) ->\n 22146 |   (tracePrefix : Transitions initial pairFirst) ->\n 22147 |   (left : Transition pairFirst pairMiddle) ->\n 22148 |   (right : Transition pairMiddle pairFinal) ->\n 22149 |   (suffix : Transitions pairFinal originalFinal) ->\n\n",
+    "baselineDeclarationSource": "973a81a:research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "403e5127b12ae58d29810b3ffef67db452825be5"
+    ]
+  },
+  {
+    "unit": "A5-1",
+    "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr"
+    ],
+    "start": "2026-09-07T20:59:42.035659+00:00",
+    "end": "2026-09-07T21:08:02.419013+00:00",
+    "seconds": 500.3810488753952,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 50237136,
+    "sourceSHA256": "480848f94e2e127effe2e0b8ac5bb889f0995ae78b507ad113eab0b506d530a5",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.CP5ConfluenceLocalDiamondSpike (research/DGamma/CP5ConfluenceLocalDiamondSpike.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  tail is shadowing Prelude.Types.tail\n\nDGamma.CP5ConfluenceLocalDiamondSpike:992:3--996:64\n 992 |   ConsStageOccursLater :\n 993 |     (head : Transition first middle) ->\n 994 |     (later : OccursIn selected tail) ->\n 995 |     ConsStageOccurrenceView {head} {tail}\n 996 |       (DGamma.Metatheory.OccursLater {transition = head} later)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  head is shadowing Prelude.Types.head\n  tail is shadowing Prelude.Types.tail\n\nDGamma.CP5ConfluenceLocalDiamondSpike:998:3--1000:33\n 0998 | 0 viewConsStageOccurrence :\n 0999 |   (occurs : OccursIn selected (MoreTransitions head tail)) ->\n 1000 |   ConsStageOccurrenceView occurs\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  tail is shadowing Prelude.Types.tail\n\nDGamma.CP5ConfluenceLocalDiamondSpike:1818:3--1821:77\n 1818 | 0 prependIteratorStage :\n 1819 |   (head : Transition sourceFirst sourceMiddle) ->\n 1820 |   IteratorStage name key world error value actor tail ->\n 1821 |   IteratorStage name key world error value actor (MoreTransitions head tail)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  tail is shadowing Prelude.Types.tail\n\nDGamma.CP5ConfluenceLocalDiamondSpike:1846:3--1850:32\n 1846 | 0 prependGenerator :\n 1847 |   (head : Transition sourceFirst sourceMiddle) ->\n 1848 |   TraceEffectGenerator name key world error value actor tail ->\n 1849 |   TraceEffectGenerator name key world error value actor\n 1850 |     (MoreTransitions head tail)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  tail is shadowing Prelude.Types.tail\n\nDGamma.CP5ConfluenceLocalDiamondSpike:1878:3--1883:38\n 1878 | 0 prependGeneratorMapExact :\n 1879 |   (head : Transition sourceFirst sourceMiddle) ->\n 1880 |   (generator : TraceEffectGenerator name key world error value actor tail) ->\n 1881 |   (state : EffectState name key value world) ->\n 1882 |   traceGeneratorMap (prependGenerator head generator) state =\n 1883 |     traceGeneratorMap generator state\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  tail is shadowing Prelude.Types.tail\n\nDGamma.CP5ConfluenceLocalDiamondSpike:2107:3--2112:37\n 2107 | 0 prependIteratorOutcomeExact :\n 2108 |   (head : Transition sourceFirst sourceMiddle) ->\n 2109 |   (stage : IteratorStage name key world error value actor tail) ->\n 2110 |   (state : EffectState name key value world) ->\n 2111 |   iteratorStageOutcome (prependIteratorStage head stage) state =\n 2112 |     iteratorStageOutcome stage state\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sourceAccumulator is shadowing DGamma.CP3.ParentRegistrationYield.sourceAccumulator\n  view is shadowing Data.Nat.LT.view\n\nDGamma.CP5ConfluenceLocalDiamondSpike:6690:5--6702:53\n 6690 |   0 emptyByMatch :\n 6691 |     (matches : Bool) ->\n 6692 |     targetMatches @{nameEq}\n 6693 |       (targetFiber @{nameEq} @{keyEq}\n 6694 |         (MkFiber component sourceParent retiredFlag sourceTable\n 6695 |           (Reloading [] sourceAccumulator view)) sourceRegistry) view = matches ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:14305:11--14307:84\n 14305 |         0 leftMovedSame : (state : EffectState name key value world) ->\n 14306 |           partialEffectMapFor nameEq keyEq leftAction leftTag first state =\n 14307 |           partialEffectMapFor nameEq keyEq leftAction leftTag earlyRightFinal state\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16728:21--16729:69\n 16728 |                   0 effectOutput : ActivationPairEffectOutput nameEq keyEq\n 16729 |                     leftAction leftTag earlyRightFinal originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16734:21--16735:36\n 16734 |                   0 rawMove : RawActivationMove nameEq keyEq leftAction leftTag\n 16735 |                     earlyRightFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16743:21--16744:58\n 16743 |                   0 endpoint : CheckedActivationEndpoint nameEq keyEq leftAction\n 16744 |                     leftTag earlyRightFinal originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16794:21--16796:75\n 16794 |                   0 earlyActivation : PaperActivationStep\n 16795 |                     (Fired {before = first} {afterState = earlyRightFinal}\n 16796 |                       nameEq keyEq rightAction rightTag earlyCheckedRight)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16805:21--16806:43\n 16805 |                   0 earlyWellFormed : registryWellFormed @{nameEq} @{keyEq}\n 16806 |                     earlyRightFinal = True\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16885:21--16888:74\n 16885 |                   0 rawEarlyFrame : PartialRelated\n 16886 |                     (EffectState name key value world) (EffectStateRelated keyEq)\n 16887 |                     (earlyRightMap (projectEffectState @{nameEq} first))\n 16888 |                     (Just (projectEffectState @{nameEq} earlyRightFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16891:21--16894:74\n 16891 |                   0 earlyFrame : PartialRelated\n 16892 |                     (EffectState name key value world) (EffectStateRelated keyEq)\n 16893 |                     (rightMap (projectEffectState @{nameEq} first))\n 16894 |                     (Just (projectEffectState @{nameEq} earlyRightFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16906:21--16910:74\n 16906 |                   0 rightGeneratorFrame : PartialRelated\n 16907 |                     (EffectState name key value world) (EffectStateRelated keyEq)\n 16908 |                     (traceGeneratorMap rightGenerator\n 16909 |                       (projectEffectState @{nameEq} first))\n 16910 |                     (Just (projectEffectState @{nameEq} earlyRightFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16914:21--16915:69\n 16914 |                   0 effectOutput : ActivationPairEffectOutput nameEq keyEq\n 16915 |                     leftAction leftTag earlyRightFinal originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16920:21--16921:36\n 16920 |                   0 rawMove : RawActivationMove nameEq keyEq leftAction leftTag\n 16921 |                     earlyRightFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16927:21--16928:58\n 16927 |                   0 endpoint : CheckedActivationEndpoint nameEq keyEq leftAction\n 16928 |                     leftTag earlyRightFinal originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16934:21--16935:78\n 16934 |                   0 movedCheckedLeft : checkedApplyAction @{nameEq} @{keyEq}\n 16935 |                     leftAction earlyRightFinal = Just (leftTag, swappedFinal)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16937:21--16939:75\n 16937 |                   0 movedRightActivation : PaperActivationStep\n 16938 |                     (Fired {before = first} {afterState = earlyRightFinal}\n 16939 |                       nameEq keyEq rightAction rightTag earlyCheckedRight)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16941:21--16943:72\n 16941 |                   0 movedLeftActivation : PaperActivationStep\n 16942 |                     (Fired {before = earlyRightFinal} {afterState = swappedFinal}\n 16943 |                       nameEq keyEq leftAction leftTag movedCheckedLeft)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16953:21--16959:65\n 16953 |                   0 leftLookup : (lookupFiber @{nameEq} {name = name}\n 16954 |                     {key = key} {value = value} {world = world}\n 16955 |                     {error = error} (actionOwner leftAction)\n 16956 |                     (registry earlyRightFinal) = lookupFiber @{nameEq}\n 16957 |                       {name = name} {key = key} {value = value}\n 16958 |                       {world = world} {error = error}\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16971:21--16978:61\n 16971 |                   0 leftTargets : (fiber : Fiber name key value world error) ->\n 16972 |                     (view : View name (dependencies\n 16973 |                       (componentDependencies\n 16974 |                         (fiberComponent fiber)))) ->\n 16975 |                     targetFiber @{nameEq} @{keyEq} fiber\n 16976 |                       (registry first) = Just view ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16996:21--17004:62\n 16996 |                   0 leftOutcomes : (stage : IteratorStage name key\n 16997 |                     world error value (actionOwner leftAction)\n 16998 |                     pairTrace) -> IteratorOutcomeAgreement name key\n 16999 |                       value world error keyEq\n 17000 |                       (iteratorStageOutcome stage\n 17001 |                         (projectEffectState @{nameEq}\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17029:21--17031:49\n 17029 |                   0 leftComparison : ActivationReplacementComparison\n 17030 |                     nameEq (actionOwner leftAction) first middle\n 17031 |                     earlyRightFinal swappedFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17040:21--17042:57\n 17040 |                   0 rightComparison : ActivationReplacementComparison\n 17041 |                     nameEq (actionOwner rightAction) first\n 17042 |                     earlyRightFinal middle originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17394:21--17396:75\n 17394 |                   0 earlyActivation : PaperActivationStep\n 17395 |                     (Fired {before = first} {afterState = earlyRightFinal}\n 17396 |                       nameEq keyEq rightAction rightTag earlyCheckedRight)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17399:21--17400:43\n 17399 |                   0 earlyWellFormed : registryWellFormed @{nameEq} @{keyEq}\n 17400 |                     earlyRightFinal = True\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17492:21--17494:36\n 17492 |                   0 comparison : ActivationReplacementComparison nameEq\n 17493 |                     (actionOwner rightAction) middle originalFinal first\n 17494 |                     earlyRightFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17501:21--17502:69\n 17501 |                   0 effectOutput : ActivationPairEffectOutput nameEq keyEq\n 17502 |                     leftAction leftTag earlyRightFinal originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17507:21--17508:36\n 17507 |                   0 rawMove : RawActivationMove nameEq keyEq leftAction leftTag\n 17508 |                     earlyRightFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17513:21--17514:58\n 17513 |                   0 endpoint : CheckedActivationEndpoint nameEq keyEq leftAction\n 17514 |                     leftTag earlyRightFinal originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17520:21--17521:78\n 17520 |                   0 movedCheckedLeft : checkedApplyAction @{nameEq} @{keyEq}\n 17521 |                     leftAction earlyRightFinal = Just (leftTag, swappedFinal)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17523:21--17525:72\n 17523 |                   0 movedLeftOrchestration : PaperOrchestrationStep\n 17524 |                     (Fired {before = earlyRightFinal} {afterState = swappedFinal}\n 17525 |                       nameEq keyEq leftAction leftTag movedCheckedLeft)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17592:5--17594:151\n 17592 |   0 leftOwnerRelated : FiberControlMaybeRelated\n 17593 |     (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction) (registry originalFinal))\n 17594 |     (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction) (registry swappedFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17596:11--17599:40\n 17596 |     let 0 sourceSame : Equal\n 17597 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction) (registry first))\n 17598 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction)\n 17599 |             (registry earlyRightFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17603:11--17609:39\n 17603 |         0 ownerRelated : FiberControlMaybeRelated\n 17604 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n 17605 |             {world = world} {error = error} (actionOwner leftAction)\n 17606 |               (registry middle))\n 17607 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n 17608 |             {world = world} {error = error} (actionOwner leftAction)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17625:5--17627:152\n 17625 |   0 rightOwnerRelated : FiberControlMaybeRelated\n 17626 |     (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction) (registry originalFinal))\n 17627 |     (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction) (registry swappedFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17634:11--17640:42\n 17634 |         0 ownerRelated : FiberControlMaybeRelated\n 17635 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n 17636 |             {world = world} {error = error} (actionOwner rightAction)\n 17637 |               (registry originalFinal))\n 17638 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n 17639 |             {world = world} {error = error} (actionOwner rightAction)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17643:11--17647:40\n 17643 |         0 swappedFrame : Equal\n 17644 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction)\n 17645 |             (registry swappedFinal))\n 17646 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction)\n 17647 |             (registry earlyRightFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17657:5--17662:137\n 17657 |   0 outsideRelated : (selected : name) ->\n 17658 |     Not (selected = actionOwner leftAction) ->\n 17659 |     Not (selected = actionOwner rightAction) ->\n 17660 |     FiberControlMaybeRelated\n 17661 |       (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} selected (registry originalFinal))\n 17662 |       (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} selected (registry swappedFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17672:11--17674:141\n 17672 |         0 sameLookup : Equal\n 17673 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} selected (registry originalFinal))\n 17674 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} selected (registry swappedFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17680:5--17684:72\n 17680 |   0 pointwise : (selected : name) -> FiberControlMaybeRelated\n 17681 |     (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n 17682 |       {world = world} {error = error} selected (registry originalFinal))\n 17683 |     (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n 17684 |       {world = world} {error = error} selected (registry swappedFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  replayedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.AdjacentSwapResult.replayedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:21179:3--21186:45\n 21179 | 0 replayPointwiseSuffixTraceComponentsTotal :\n 21180 |   (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n 21181 |   (source : Transitions sourceFirst sourceFinal) ->\n 21182 |   (replayed : Transitions replayedFirst replayedFinal) ->\n 21183 |   SealedSuffixReplaySpine name key world error value nameEq keyEq source\n 21184 |     replayed ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  replayedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.AdjacentSwapResult.replayedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:21204:3--21226:63\n 21204 | 0 adjacentTargetTraceComponentsTotal :\n 21205 |   (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n 21206 |   (tracePrefix : Transitions initial pairFirst) ->\n 21207 |   (left : Transition pairFirst pairMiddle) ->\n 21208 |   (right : Transition pairMiddle pairFinal) ->\n 21209 |   (suffix : Transitions pairFinal originalFinal) ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  replayedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.AdjacentSwapResult.replayedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:22100:3--22122:63\n 22100 | 0 r97Field9WholeAppendCorrespondence :\n 22101 |   (original : Transitions initial originalFinal) ->\n 22102 |   (tracePrefix : Transitions initial pairFirst) ->\n 22103 |   (left : Transition pairFirst pairMiddle) ->\n 22104 |   (right : Transition pairMiddle pairFinal) ->\n 22105 |   (suffix : Transitions pairFinal originalFinal) ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  replayedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.AdjacentSwapResult.replayedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:22145:3--22165:63\n 22145 | 0 r97Field9ConcreteCapitalConsumer :\n 22146 |   (original : Transitions initial originalFinal) ->\n 22147 |   (tracePrefix : Transitions initial pairFirst) ->\n 22148 |   (left : Transition pairFirst pairMiddle) ->\n 22149 |   (right : Transition pairMiddle pairFinal) ->\n 22150 |   (suffix : Transitions pairFinal originalFinal) ->\n\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "ccf0e8ab089b6f2a648827a336a50bf06c08cf67"
+    ]
+  },
+  {
+    "unit": "A6-1",
+    "path": "research/DGamma/CP5O19OpeningPropagationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19OpeningPropagationSpike.idr"
+    ],
+    "start": "2026-09-07T21:08:40.065071+00:00",
+    "end": "2026-09-07T21:15:50.541224+00:00",
+    "seconds": 430.46873712493107,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 43663856,
+    "sourceSHA256": "501b8e3718a5e835ae6ec59937e51d13697b85020b3b84dc630dc762d097cb1e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": " 5/12: Building DGamma.CP5ConfluenceDeletionChainSpike (research/DGamma/CP5ConfluenceDeletionChainSpike.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  surviving is shadowing DGamma.CP4DeletionGenerationFilter.GenerationFilterResult.surviving\n\nDGamma.CP5ConfluenceDeletionChainSpike:3013:1--3015:19\n 3013 | generationSubsequenceSourceOrdinal :\n 3014 |   GenerationActionSubsequence nameEq deletable ordinal live original surviving ->\n 3015 |   Nat -> Maybe Nat\n\n 6/12: Building DGamma.CP5UniqueRawNameOrdinalCapital (research/DGamma/CP5UniqueRawNameOrdinalCapital.idr)\n 8/12: Building DGamma.CP5ConfluenceCanonicalSortSpike (research/DGamma/CP5ConfluenceCanonicalSortSpike.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sorted is shadowing Data.List.sorted\n\nDGamma.CP5ConfluenceCanonicalSortSpike:4659:3--4663:39\n 4659 | 0 abstractTwoBirthOneWithdrawalAccounting :\n 4660 |   (fixture : AbstractTwoBirthOneWithdrawalAssembly name key world error value protocol\n 4661 |     nameEq keyEq original reduction ordering sorted) ->\n 4662 |   OneTraceOrchestrationAccounting name key world error value protocol nameEq keyEq\n 4663 |     original reduction ordering sorted\n\n10/12: Building DGamma.CP5RankedEarlyApplicabilitySpike (research/DGamma/CP5RankedEarlyApplicabilitySpike.idr)\n11/12: Building DGamma.CP5O19AdjacentReplayProducerSpike (research/DGamma/CP5O19AdjacentReplayProducerSpike.idr)\n12/12: Building DGamma.CP5O19OpeningPropagationSpike (research/DGamma/CP5O19OpeningPropagationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19CheckObservedRawMove"
+    ],
+    "matchingSourceCommits": [
+      "e7e1736ca3b53bf23e892cd1ae87f9acdd0bde3c"
+    ]
+  },
+  {
+    "unit": "A7-1",
+    "path": "research/DGamma/CP5O19OpeningPropagationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19OpeningPropagationSpike.idr"
+    ],
+    "start": "2026-09-07T21:16:51.802035+00:00",
+    "end": "2026-09-07T21:16:53.881890+00:00",
+    "seconds": 2.0796577497385442,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1954176,
+    "sourceSHA256": "7291633805943e8f4916b35ae02ec0ea611c218e6f4206d9b2b8fc8e58f7c489",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19OpeningPropagationSpike (research/DGamma/CP5O19OpeningPropagationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19BeginAfterActivation"
+    ],
+    "matchingSourceCommits": [
+      "674f05708c191245d6da6477bbab65edcba228b2"
+    ]
+  },
+  {
+    "unit": "A8-1",
+    "path": "research/DGamma/CP5O19OpeningPropagationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19OpeningPropagationSpike.idr"
+    ],
+    "start": "2026-09-07T21:17:23.069313+00:00",
+    "end": "2026-09-07T21:17:25.150284+00:00",
+    "seconds": 2.0807596249505877,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1473168,
+    "sourceSHA256": "3bbef893578ccd9bf943ce01cef702e90434dfefb577a5453a8e7685a0f96f28",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19OpeningPropagationSpike (research/DGamma/CP5O19OpeningPropagationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "O19EarlyAlong"
+    ],
+    "matchingSourceCommits": [
+      "85486b4ecccfe514424a505eef882e7f4378f1b2"
+    ]
+  },
+  {
+    "unit": "A9-1",
+    "path": "research/DGamma/CP5O19OpeningPropagationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19OpeningPropagationSpike.idr"
+    ],
+    "start": "2026-09-07T21:18:04.134611+00:00",
+    "end": "2026-09-07T21:18:07.259450+00:00",
+    "seconds": 3.1243702089414,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2880624,
+    "sourceSHA256": "4ff197170659e1936efec83cc84d55f01b584cf8aebb9b92fc3c7b975f384966",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19OpeningPropagationSpike (research/DGamma/CP5O19OpeningPropagationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19OpeningAlongForeignActivations"
+    ],
+    "matchingSourceCommits": [
+      "c56648e2736d6ffd70161048b56ed49344580163"
+    ]
+  },
+  {
+    "unit": "A10-1",
+    "path": "research/DGamma/CP5O19ActivationRowSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationRowSpike.idr"
+    ],
+    "start": "2026-09-07T21:18:52.324639+00:00",
+    "end": "2026-09-07T21:18:55.437921+00:00",
+    "seconds": 3.1130512501113117,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2003856,
+    "sourceSHA256": "a400afd3dde2a902218553e655dbbe042f52b97c2a91305cc0c6f2a626c070ad",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/15: Building DGamma.CP5O19ReplayObservationSpike (research/DGamma/CP5O19ReplayObservationSpike.idr)\n13/15: Building DGamma.CP5O19CartesianCursorSpike (research/DGamma/CP5O19CartesianCursorSpike.idr)\n15/15: Building DGamma.CP5O19ActivationRowSpike (research/DGamma/CP5O19ActivationRowSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "O19ActivationRow"
+    ],
+    "matchingSourceCommits": [
+      "1ac5686dd7a2f0dc737fbda3682631a77b69cc92"
+    ]
+  },
+  {
+    "unit": "A11-1",
+    "path": "research/DGamma/CP5O19ActivationRowSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationRowSpike.idr"
+    ],
+    "start": "2026-09-07T21:19:31.233449+00:00",
+    "end": "2026-09-07T21:19:34.361773+00:00",
+    "seconds": 3.1281192912720144,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 681776,
+    "sourceSHA256": "c1a35f644d0fbe2bf0ca359559b5bf96a6eb914265b08cf52c3dba3e90b4d782",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "15/15: Building DGamma.CP5O19ActivationRowSpike (research/DGamma/CP5O19ActivationRowSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ActivationRowZero"
+    ],
+    "matchingSourceCommits": [
+      "1c76084d675334bebf5d0e268cdd13598184181b"
+    ]
+  },
+  {
+    "unit": "A12-1",
+    "path": "research/DGamma/CP5O19ActivationRowSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationRowSpike.idr"
+    ],
+    "start": "2026-09-07T21:20:39.424961+00:00",
+    "end": "2026-09-07T21:20:42.546386+00:00",
+    "seconds": 3.1211723750457168,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 683808,
+    "sourceSHA256": "b0e97c08f8578acb96a32b32c66971b71bc7fd1edfb7b56f8aaa41f1211f14a7",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "15/15: Building DGamma.CP5O19ActivationRowSpike (research/DGamma/CP5O19ActivationRowSpike.idr)\nError: While processing right hand side of o19ActivationRowStepObserved. Undefined name uniqueInsertionsAfterFiniteDerivation. \n\nDGamma.CP5O19ActivationRowSpike:92:10--92:47\n 88 |   nameEq keyEq protocol source earlier left sourceRight crossings previous\n 89 |   leftActivation (diamond ** result) =\n 90 |     MkO19ActivationRow\n 91 |       (MkO19ReachedCursor (replayedFinal result) (swappedTrace result) (swappedPremises result)\n 92 |         (uniqueInsertionsAfterFiniteDerivation name key world error value protocol nameEq keyEq\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "o19ActivationRowStepObserved"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A12-2",
+    "path": "research/DGamma/CP5O19ActivationRowSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationRowSpike.idr"
+    ],
+    "start": "2026-09-07T21:21:39.126220+00:00",
+    "end": "2026-09-07T21:21:42.247254+00:00",
+    "seconds": 3.120826124679297,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3006512,
+    "sourceSHA256": "3b352ad508b70819629914ae763af54c29cd6e8a0dd17fdf0ea82cc05b92fb8a",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "15/15: Building DGamma.CP5O19ActivationRowSpike (research/DGamma/CP5O19ActivationRowSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ActivationRowStepObserved"
+    ],
+    "matchingSourceCommits": [
+      "c69364a64d01796199b2d192f4f05d0db2955a90"
+    ]
+  },
+  {
+    "unit": "A13-1",
+    "path": "research/DGamma/CP5O19ActivationRowSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationRowSpike.idr"
+    ],
+    "start": "2026-09-07T21:22:50.739719+00:00",
+    "end": "2026-09-07T21:22:53.850303+00:00",
+    "seconds": 3.1103667495772243,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2882800,
+    "sourceSHA256": "887368d823392f6920c44a7f3cc49811225cd029f96254acbc6f353d92215ca9",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "15/15: Building DGamma.CP5O19ActivationRowSpike (research/DGamma/CP5O19ActivationRowSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ActivationRowStep"
+    ],
+    "matchingSourceCommits": [
+      "1b68ec036428c145932dbb8f63a83bb6456faf1a"
+    ]
+  },
+  {
+    "unit": "A14-1",
+    "path": "research/DGamma/CP5O19ActivationRowSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationRowSpike.idr"
+    ],
+    "start": "2026-09-07T21:24:55.082465+00:00",
+    "end": "2026-09-07T21:24:58.202645+00:00",
+    "seconds": 3.119967916980386,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4129664,
+    "sourceSHA256": "a4664b198cbb34fd7aa7c1cef34750111c1d48ee45aa76c1391149025a597163",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "15/15: Building DGamma.CP5O19ActivationRowSpike (research/DGamma/CP5O19ActivationRowSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19BubbleActivationRow"
+    ],
+    "matchingSourceCommits": [
+      "c59d3d57c04c5a38ef52a04eb8dfe536608e714d"
+    ]
+  },
+  {
+    "unit": "A15-1",
+    "path": "research/DGamma/CP5O19ActivationRowSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationRowSpike.idr"
+    ],
+    "start": "2026-09-07T21:26:37.808750+00:00",
+    "end": "2026-09-07T21:26:40.935100+00:00",
+    "seconds": 3.1261167088523507,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4186496,
+    "sourceSHA256": "7690825bfb65c11985091683ef14f4eedd96a0bcaa36b19e2105439404e321bb",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "15/15: Building DGamma.CP5O19ActivationRowSpike (research/DGamma/CP5O19ActivationRowSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19BubbleBeginRow"
+    ],
+    "matchingSourceCommits": [
+      "2f39d01f7bd3ebdd33ff63e9414078afc360d626"
+    ]
+  },
+  {
+    "unit": "A16-1",
+    "path": "research/DGamma/CP5O19ActivationRowSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationRowSpike.idr"
+    ],
+    "start": "2026-09-07T21:31:08.876348+00:00",
+    "end": "2026-09-07T21:31:11.993327+00:00",
+    "seconds": 3.1167855001986027,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2524320,
+    "sourceSHA256": "8a8b69c143a456967eccb6ebef741c2c6f38f9d8b1b77e0686744a2fd938b677",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "15/15: Building DGamma.CP5O19ActivationRowSpike (research/DGamma/CP5O19ActivationRowSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19TwoForeignActivationClasses"
+    ],
+    "matchingSourceCommits": [
+      "e3e0b9d61aa1f340b0d37f85240a9d968f760826"
+    ]
+  },
+  {
+    "unit": "A17-1",
+    "path": "research-tests/DGamma/R183O19GenericBeginRowPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R183O19GenericBeginRowPositive.idr"
+    ],
+    "start": "2026-09-07T21:32:12.201123+00:00",
+    "end": "2026-09-07T21:37:22.052880+00:00",
+    "seconds": 309.84956245915964,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 10708496,
+    "sourceSHA256": "22dcd3542668d2eae177b26bed4ef5be323b303cc5c15e028c5b52c21766ab76",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": " 1/12: Building DGamma.R45BareDiamondDisciplineCounterexamplePositive (research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr)\n 2/12: Building DGamma.R39RelationalMapAlgebraPositive (research-tests/DGamma/R39RelationalMapAlgebraPositive.idr)\n 3/12: Building DGamma.R172O17OpenParentRootReuseCandidate (research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr)\n 8/12: Building DGamma.R181O19BundlePrerequisites (research-tests/DGamma/R181O19BundlePrerequisites.idr)\n 9/12: Building DGamma.R182O19RevisedSafetyNegative (research-tests/DGamma/R182O19RevisedSafetyNegative.idr)\n10/12: Building DGamma.R182O19RevisedSafetyPositive (research-tests/DGamma/R182O19RevisedSafetyPositive.idr)\n11/12: Building DGamma.R182O19ActualCrossingPositive (research-tests/DGamma/R182O19ActualCrossingPositive.idr)\n12/12: Building DGamma.R183O19GenericBeginRowPositive (research-tests/DGamma/R183O19GenericBeginRowPositive.idr)\nError: While processing type of r183ActualGenericBeginRow. Can't solve constraint between: Just (LBeginTag, r182IndependentState 5) and if registryWellFormed (MkSystemState (worldState (r182IndependentState 4)) (replaceBinding 1 (setFiberLifecycle (freshFiber r45Child Root) (Reloading (componentProgram (fiberComponent (freshFiber r45Child Root))) id EmptyView)) (registry (r182IndependentState 4)))) then Just (LBeginTag, MkSystemState (worldState (r182IndependentState 4)) (replaceBinding 1 (setFiberLifecycle (freshFiber r45Child Root) (Reloading (componentProgram (fiberComponent (freshFiber r45Child Root))) id EmptyView)) (registry (r182IndependentState 4)))) else Nothing.\n\nDGamma.R183O19GenericBeginRowPositive:31:124--31:128\n 27 |   O19ActivationRow Nat R45Key Unit String R45Value r45Protocol r45NameEq r45KeyEq\n 28 |     (r182IndependentTrace False)\n 29 |     (MoreTransitions (Fired {before = r182IndependentState 0} {afterState = r182IndependentState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Child) OInsertTag Refl)\n 30 |       (MoreTransitions (Fired {before = r182IndependentState 1} {afterState = r182IndependentState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl) NoTransitions))\n 31 |     (Fired {before = r182IndependentState 4} {afterState = r182IndependentState 5} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl) 2\n                                                                                                                                 ^^^^\n\nError: While processing right hand side of r183ActualGenericBeginRow. DGamma.CP5O19ActivationRowSpike.o19BubbleBeginRow is not accessible in this context.\n\nDGamma.R183O19GenericBeginRowPositive:33:3--33:20\n 29 |     (MoreTransitions (Fired {before = r182IndependentState 0} {afterState = r182IndependentState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Child) OInsertTag Refl)\n 30 |       (MoreTransitions (Fired {before = r182IndependentState 1} {afterState = r182IndependentState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl) NoTransitions))\n 31 |     (Fired {before = r182IndependentState 4} {afterState = r182IndependentState 5} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl) 2\n 32 | r183ActualGenericBeginRow =\n 33 |   o19BubbleBeginRow r45NameEq r45KeyEq r45Protocol 1 (r182IndependentTrace False)\n        ^^^^^^^^^^^^^^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "r183ActualGenericBeginRow"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A17-2",
+    "path": "research-tests/DGamma/R183O19GenericBeginRowPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R183O19GenericBeginRowPositive.idr"
+    ],
+    "start": "2026-09-07T21:39:32.921274+00:00",
+    "end": "2026-09-07T21:39:36.035587+00:00",
+    "seconds": 3.1141012497246265,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 5050048,
+    "sourceSHA256": "03523ebd512131a0f906bf9feb86bdf3a68b407b072ff6d822c172d3708dc8dc",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.R183O19GenericBeginRowPositive (research-tests/DGamma/R183O19GenericBeginRowPositive.idr)\n",
+    "newTopLevelDeclarations": [
+      "r183ActualGenericBeginRow"
+    ],
+    "matchingSourceCommits": [
+      "ce725335b00339017aaef5760305d7b32b104171"
+    ]
+  },
+  {
+    "unit": "A18-1",
+    "path": "research/DGamma/CP5O19CommutedDomainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19CommutedDomainSpike.idr"
+    ],
+    "start": "2026-09-07T21:40:24.140324+00:00",
+    "end": "2026-09-07T21:40:25.202203+00:00",
+    "seconds": 1.0616583749651909,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "c8534d952b699e8594a56d6bf9e07fade3979d21956bc663eea21f2082c5afe9",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19CommutedDomainSpike (research/DGamma/CP5O19CommutedDomainSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19RelatedDefined"
+    ],
+    "matchingSourceCommits": [
+      "ac22b28973a479d1a160522072dde54174870e75"
+    ]
+  },
+  {
+    "unit": "A19-1",
+    "path": "research/DGamma/CP5O19CommutedDomainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19CommutedDomainSpike.idr"
+    ],
+    "start": "2026-09-07T21:41:11.575463+00:00",
+    "end": "2026-09-07T21:41:12.633548+00:00",
+    "seconds": 1.0579145001247525,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "4b09819c5be2cbcb43364a83cfb997901140e754b17e31f18107e069036cbd48",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19CommutedDomainSpike (research/DGamma/CP5O19CommutedDomainSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ComposedFramesObserved"
+    ],
+    "matchingSourceCommits": [
+      "18f56332b2e3117c9c8bf89221e274b2f046f1d7"
+    ]
+  },
+  {
+    "unit": "A20-1",
+    "path": "research/DGamma/CP5O19CommutedDomainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19CommutedDomainSpike.idr"
+    ],
+    "start": "2026-09-07T21:41:48.851917+00:00",
+    "end": "2026-09-07T21:41:49.909630+00:00",
+    "seconds": 1.0575194167904556,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "fb5075b53dc8f20d52684dde6e3958358249cee18725b1ec65ee71af761db601",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19CommutedDomainSpike (research/DGamma/CP5O19CommutedDomainSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19FirstDomainObserved"
+    ],
+    "matchingSourceCommits": [
+      "110b0a370f378c167fa68f61947d829e7dd7ccb0"
+    ]
+  },
+  {
+    "unit": "A21-1",
+    "path": "research/DGamma/CP5O19CommutedDomainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19CommutedDomainSpike.idr"
+    ],
+    "start": "2026-09-07T21:42:22.556327+00:00",
+    "end": "2026-09-07T21:42:23.596071+00:00",
+    "seconds": 1.0395525409840047,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "1c6ff00e23967e4a44f90aa5c034f96ab02ff79ac9728d18327f58e083e6631b",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19CommutedDomainSpike (research/DGamma/CP5O19CommutedDomainSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19CommutingFramesEarlyDomain"
+    ],
+    "matchingSourceCommits": [
+      "5566509782db5ed8c33fe01bb4650fdbbe521ca4"
+    ]
+  },
+  {
+    "unit": "A22-1",
+    "path": "research/DGamma/CP5O19CommutedDomainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19CommutedDomainSpike.idr"
+    ],
+    "start": "2026-09-07T21:42:54.105447+00:00",
+    "end": "2026-09-07T21:42:55.165201+00:00",
+    "seconds": 1.059556792024523,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "c2517939152007eb8951a9333dff37690a5f8f46dc235df31e28baa17906425c",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19CommutedDomainSpike (research/DGamma/CP5O19CommutedDomainSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "O19PartialRun"
+    ],
+    "matchingSourceCommits": [
+      "c901c9b71b916f397d66b46a09370eeb58a5d383"
+    ]
+  },
+  {
+    "unit": "A23-1",
+    "path": "research/DGamma/CP5O19CommutedDomainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19CommutedDomainSpike.idr"
+    ],
+    "start": "2026-09-07T21:44:31.456577+00:00",
+    "end": "2026-09-07T21:44:32.494279+00:00",
+    "seconds": 1.0374993337318301,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "414025253511807c0158d3b67a2658389e04c51fc669f338eda884a6414401f1",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19CommutedDomainSpike (research/DGamma/CP5O19CommutedDomainSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19PartialRunObserved"
+    ],
+    "matchingSourceCommits": [
+      "9dce21a1c24d9555a88af1f690c2cf0986ccf1d1"
+    ]
+  },
+  {
+    "unit": "A24-1",
+    "path": "research/DGamma/CP5O19CommutedDomainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19CommutedDomainSpike.idr"
+    ],
+    "start": "2026-09-07T21:44:51.571326+00:00",
+    "end": "2026-09-07T21:44:52.633786+00:00",
+    "seconds": 1.0622903327457607,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "e8a4c6479a636b80e2f561391a206ec73e6d7d8aedca90feefdd05b0ee944e63",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19CommutedDomainSpike (research/DGamma/CP5O19CommutedDomainSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19CommutingFramesEarlyRun"
+    ],
+    "matchingSourceCommits": [
+      "c8bcd6fa277ea8aff4a23574c099d078732df192"
+    ]
+  },
+  {
+    "unit": "A25-1",
+    "path": "research/DGamma/CP5O19ActualCommutedDomainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActualCommutedDomainSpike.idr"
+    ],
+    "start": "2026-09-07T21:45:45.314985+00:00",
+    "end": "2026-09-07T21:45:46.350451+00:00",
+    "seconds": 1.0352880833670497,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "2c31704aa10e9ca5c6e60c22ad33d27590fa557529186ad46ae31a28ea4a524c",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "13/13: Building DGamma.CP5O19ActualCommutedDomainSpike (research/DGamma/CP5O19ActualCommutedDomainSpike.idr)\nError: While processing right hand side of o19PairEarlyEffectRunObserved. Can't solve constraint between: traceGeneratorRuntimeMap (traceEffectGeneratorRuntime (ActualForwardGenerator middle finalState nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)) and partialEffectMapFor nameEq keyEq rightAction rightTag middle.\n\nDGamma.CP5O19ActualCommutedDomainSpike:48:8--50:145\n 48 |       (generatedMonoidsCommute independent (actionOwner leftAction) (actionOwner rightAction) distinct\n 49 |         (TraceGenerator (ActualForwardGenerator first middle nameEq keyEq leftAction leftTag leftChecked OccursHere Refl))\n 50 |         (TraceGenerator (ActualForwardGenerator middle finalState nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)))\n\n",
+    "newTopLevelDeclarations": [
+      "o19PairEarlyEffectRunObserved"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A25-2",
+    "path": "research/DGamma/CP5O19ActualCommutedDomainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActualCommutedDomainSpike.idr"
+    ],
+    "start": "2026-09-07T21:47:08.360564+00:00",
+    "end": "2026-09-07T21:47:09.394296+00:00",
+    "seconds": 1.0339582092128694,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "5ac9c96e0cc50ec6aabb423c08709807c509c2b69eaa7b06b73db7339658f470",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "13/13: Building DGamma.CP5O19ActualCommutedDomainSpike (research/DGamma/CP5O19ActualCommutedDomainSpike.idr)\nError: While processing right hand side of o19PairEarlyEffectRunObserved. Name DGamma.Metatheory.partialCommuteMapsTransport is private.\n\nDGamma.CP5O19ActualCommutedDomainSpike:48:8--48:35\n 44 |     o19CommutingFramesEarlyRun (EffectState name key value world) (EffectStateEquivalence keyEq)\n 45 |       (partialEffectMapFor nameEq keyEq leftAction leftTag first)\n 46 |       (partialEffectMapFor nameEq keyEq rightAction rightTag middle)\n 47 |       (partialEffectMapForRespects nameEq keyEq rightAction rightTag middle)\n 48 |       (partialCommuteMapsTransport\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nSuggestion: add an explicit export or public export modifier. By default, all names are private in namespace blocks.\n",
+    "newTopLevelDeclarations": [
+      "o19PairEarlyEffectRunObserved"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A25-3",
+    "path": "research/DGamma/CP5O19ActualCommutedDomainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActualCommutedDomainSpike.idr"
+    ],
+    "start": "2026-09-07T21:48:23.550387+00:00",
+    "end": "2026-09-07T21:48:24.589273+00:00",
+    "seconds": 1.0386716253124177,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "f88b3e5b4d24bae641d564597f671b4690f1233d53b8b9e267b6ed4504f8f3a8",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "13/13: Building DGamma.CP5O19ActualCommutedDomainSpike (research/DGamma/CP5O19ActualCommutedDomainSpike.idr)\nError: While processing right hand side of o19PairEarlyEffectRunObserved. Can't solve constraint between: traceGeneratorRuntimeMap (traceEffectGeneratorRuntime (ActualForwardGenerator middle finalState nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)) and partialEffectMapFor nameEq keyEq rightAction rightTag middle.\n\nDGamma.CP5O19ActualCommutedDomainSpike:48:18--51:151\n 48 |       (\\state => generatedMonoidsCommute independent\n 49 |         (actionOwner leftAction) (actionOwner rightAction) distinct\n 50 |         (TraceGenerator (ActualForwardGenerator first middle nameEq keyEq leftAction leftTag leftChecked OccursHere Refl))\n 51 |         (TraceGenerator (ActualForwardGenerator middle finalState nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)) state)\n\n",
+    "newTopLevelDeclarations": [
+      "o19PairEarlyEffectRunObserved"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A26-1",
+    "path": "research/DGamma/CP5O19CommutedDomainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19CommutedDomainSpike.idr"
+    ],
+    "start": "2026-09-07T21:52:18.976394+00:00",
+    "end": "2026-09-07T21:52:20.032859+00:00",
+    "seconds": 1.0562767912633717,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "b3a72d0856eed978862a8d0a7eb60a4426edfeb8ac278d7bba305b129df14e2a",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19CommutedDomainSpike (research/DGamma/CP5O19CommutedDomainSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ComposeMapsSameObserved"
+    ],
+    "matchingSourceCommits": [
+      "73618c44ee4ba31786853d940f201c67fd21339e"
+    ]
+  },
+  {
+    "unit": "A27-1",
+    "path": "research/DGamma/CP5O19CommutedDomainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19CommutedDomainSpike.idr"
+    ],
+    "start": "2026-09-07T21:53:01.552776+00:00",
+    "end": "2026-09-07T21:53:02.593103+00:00",
+    "seconds": 1.040148959029466,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "bc376b0eeadcf51c372725a91be18058d23ee813ff0ec6863af00f5ec38b8762",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19CommutedDomainSpike (research/DGamma/CP5O19CommutedDomainSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19PartialCommuteMapsTransport"
+    ],
+    "matchingSourceCommits": [
+      "1a78311558d8500ee6a93ac10a25c779005791b2"
+    ]
+  },
+  {
+    "unit": "A28-1",
+    "path": "research/DGamma/CP5O19ActualCommutedDomainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActualCommutedDomainSpike.idr"
+    ],
+    "start": "2026-09-07T21:54:29.042415+00:00",
+    "end": "2026-09-07T21:54:30.082037+00:00",
+    "seconds": 1.0394281670451164,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "6e50fee59f6443448e50cd6b2a5583cfafa7fd221425bf07f9a81ebaeb4a6acd",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.CP5O19ActualCommutedDomainSpike (research/DGamma/CP5O19ActualCommutedDomainSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ActualForwardMapAt"
+    ],
+    "matchingSourceCommits": [
+      "de1aad146d807b653eccb9d84464a727669b8a3b"
+    ]
+  },
+  {
+    "unit": "A29-1",
+    "path": "research/DGamma/CP5O19ActualCommutedDomainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActualCommutedDomainSpike.idr"
+    ],
+    "start": "2026-09-07T21:55:53.545766+00:00",
+    "end": "2026-09-07T21:55:54.581489+00:00",
+    "seconds": 1.035593249835074,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "1790b64804d97ef1b3e202dea63ffadf51098a8dd38b5c290d9b4012f64ee08f",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.CP5O19ActualCommutedDomainSpike (research/DGamma/CP5O19ActualCommutedDomainSpike.idr)\nError: Unsolved holes:\nDGamma.CP5O19ActualCommutedDomainSpike.{last:3422} introduced at: \nDGamma.CP5O19ActualCommutedDomainSpike:55:8--56:123\n 55 |       (runTraceEffectTransformation\n 56 |         (TraceGenerator (ActualForwardGenerator first middle nameEq keyEq leftAction leftTag leftChecked OccursHere Refl)))\nDGamma.CP5O19ActualCommutedDomainSpike.{rest:3454} introduced at: \nDGamma.CP5O19ActualCommutedDomainSpike:56:106--56:116\n 52 | o19ActualPairMapCommutes {name} {key} {world} {error} {value} {first} {middle} {finalState}\n 53 |   nameEq keyEq leftAction rightAction leftTag rightTag leftChecked rightChecked distinct independent =\n 54 |     o19PartialCommuteMapsTransport (EffectState name key value world) (EffectStateEquivalence keyEq)\n 55 |       (runTraceEffectTransformation\n 56 |         (TraceGenerator (ActualForwardGenerator first middle nameEq keyEq leftAction leftTag leftChecked OccursHere Refl)))\n                                                                                                               ^^^^^^^^^^\nDGamma.CP5O19ActualCommutedDomainSpike.{first:3468} introduced at: \nDGamma.CP5O19ActualCommutedDomainSpike:58:8--59:145\n 58 |       (runTraceEffectTransformation\n 59 |         (TraceGenerator (ActualForwardGenerator middle finalState nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)))\nDGamma.CP5O19ActualCommutedDomainSpike.{last:3469} introduced at: \nDGamma.CP5O19ActualCommutedDomainSpike:58:8--59:145\n 58 |       (runTraceEffectTransformation\n 59 |         (TraceGenerator (ActualForwardGenerator middle finalState nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)))\nDGamma.CP5O19ActualCommutedDomainSpike.{transition:3503} introduced at: \nDGamma.CP5O19ActualCommutedDomainSpike:59:115--59:137\n 55 |       (runTraceEffectTransformation\n 56 |         (TraceGenerator (ActualForwardGenerator first middle nameEq keyEq leftAction leftTag leftChecked OccursHere Refl)))\n 57 |       (partialEffectMapFor nameEq keyEq leftAction leftTag first)\n 58 |       (runTraceEffectTransformation\n 59 |         (TraceGenerator (ActualForwardGenerator middle finalState nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)))\n                                                                                                                        ^^^^^^^^^^^^^^^^^^^^^^\nDGamma.CP5O19ActualCommutedDomainSpike.{rest:3515} introduced at: \nDGamma.CP5O19ActualCommutedDomainSpike:59:127--59:137\n 55 |       (runTraceEffectTransformation\n 56 |         (TraceGenerator (ActualForwardGenerator first middle nameEq keyEq leftAction leftTag leftChecked OccursHere Refl)))\n 57 |       (partialEffectMapFor nameEq keyEq leftAction leftTag first)\n 58 |       (runTraceEffectTransformation\n 59 |         (TraceGenerator (ActualForwardGenerator middle finalState nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)))\n                                                                                                                                    ^^^^^^^^^^\nDGamma.CP5O19ActualCommutedDomainSpike.{sourceFinal:3530} introduced at: \nDGamma.CP5O19ActualCommutedDomainSpike:61:8--61:89\n 57 |       (partialEffectMapFor nameEq keyEq leftAction leftTag first)\n 58 |       (runTraceEffectTransformation\n 59 |         (TraceGenerator (ActualForwardGenerator middle finalState nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)))\n 60 |       (partialEffectMapFor nameEq keyEq rightAction rightTag middle)\n 61 |       (o19ActualForwardMapAt nameEq keyEq leftAction leftTag leftChecked OccursHere Refl)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nDGamma.CP5O19ActualCommutedDomainSpike.{rest:3549} introduced at: \nDGamma.CP5O19ActualCommutedDomainSpike:61:74--61:84\n 57 |       (partialEffectMapFor nameEq keyEq leftAction leftTag first)\n 58 |       (runTraceEffectTransformation\n 59 |         (TraceGenerator (ActualForwardGenerator middle finalState nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)))\n 60 |       (partialEffectMapFor nameEq keyEq rightAction rightTag middle)\n 61 |       (o19ActualForwardMapAt nameEq keyEq leftAction leftTag leftChecked OccursHere Refl)\n                                                                               ^^^^^^^^^^\nDGamma.CP5O19ActualCommutedDomainSpike.{initial:3556} introduced at: \nDGamma.CP5O19ActualCommutedDomainSpike:62:8--62:106\n 58 |       (runTraceEffectTransformation\n 59 |         (TraceGenerator (ActualForwardGenerator middle finalState nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)))\n 60 |       (partialEffectMapFor nameEq keyEq rightAction rightTag middle)\n 61 |       (o19ActualForwardMapAt nameEq keyEq leftAction leftTag leftChecked OccursHere Refl)\n 62 |       (o19ActualForwardMapAt nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nDGamma.CP5O19ActualCommutedDomainSpike.{sourceFinal:3557} introduced at: \nDGamma.CP5O19ActualCommutedDomainSpike:62:8--62:106\n 58 |       (runTraceEffectTransformation\n 59 |         (TraceGenerator (ActualForwardGenerator middle finalState nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)))\n 60 |       (partialEffectMapFor nameEq keyEq rightAction rightTag middle)\n 61 |       (o19ActualForwardMapAt nameEq keyEq leftAction leftTag leftChecked OccursHere Refl)\n 62 |       (o19ActualForwardMapAt nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nDGamma.CP5O19ActualCommutedDomainSpike.{transition:3578} introduced at: \nDGamma.CP5O19ActualCommutedDomainSpike:62:78--62:100\n 58 |       (runTraceEffectTransformation\n 59 |         (TraceGenerator (ActualForwardGenerator middle finalState nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)))\n 60 |       (partialEffectMapFor nameEq keyEq rightAction rightTag middle)\n 61 |       (o19ActualForwardMapAt nameEq keyEq leftAction leftTag leftChecked OccursHere Refl)\n 62 |       (o19ActualForwardMapAt nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)\n                                                                                   ^^^^^^^^^^^^^^^^^^^^^^\nDGamma.CP5O19ActualCommutedDomainSpike.{rest:3590} introduced at: \nDGamma.CP5O19ActualCommutedDomainSpike:62:90--62:100\n 58 |       (runTraceEffectTransformation\n 59 |         (TraceGenerator (ActualForwardGenerator middle finalState nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)))\n 60 |       (partialEffectMapFor nameEq keyEq rightAction rightTag middle)\n 61 |       (o19ActualForwardMapAt nameEq keyEq leftAction leftTag leftChecked OccursHere Refl)\n 62 |       (o19ActualForwardMapAt nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)\n                                                                                               ^^^^^^^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "o19ActualPairMapCommutes"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A29-2",
+    "path": "research/DGamma/CP5O19ActualCommutedDomainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActualCommutedDomainSpike.idr"
+    ],
+    "start": "2026-09-07T21:58:36.801092+00:00",
+    "end": "2026-09-07T21:58:37.858360+00:00",
+    "seconds": 1.0570570002309978,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "a8231d58067f572d88021027b70955fa6ad02dbbceb8e47b6cb32847ff2b9064",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.CP5O19ActualCommutedDomainSpike (research/DGamma/CP5O19ActualCommutedDomainSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ActualPairMapCommutes"
+    ],
+    "matchingSourceCommits": [
+      "977bcfd9b9aac446c44bc0ffdb19d6a86a3b1160"
+    ]
+  },
+  {
+    "unit": "A30-1",
+    "path": "research/DGamma/CP5O19ActualCommutedDomainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActualCommutedDomainSpike.idr"
+    ],
+    "start": "2026-09-07T22:01:36.341643+00:00",
+    "end": "2026-09-07T22:01:37.376927+00:00",
+    "seconds": 1.035085374955088,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "2a9fbb58e83b5fb2d1803d5e08bf776f8ce1591cf7a78c724e273dc7e0ad3314",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.CP5O19ActualCommutedDomainSpike (research/DGamma/CP5O19ActualCommutedDomainSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ActualFrameRelated"
+    ],
+    "matchingSourceCommits": [
+      "dddad994988cf997ac700255b521d5a4bad77e55"
+    ]
+  },
+  {
+    "unit": "B1-1",
+    "path": "research-tests/DGamma/R183O20SelectorProbe.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R183O20SelectorProbe.idr"
+    ],
+    "start": "2026-09-07T22:03:44.332349+00:00",
+    "end": "2026-09-07T22:03:45.382749+00:00",
+    "seconds": 1.050191333051771,
+    "exit": 1,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "a38710e1d6db847b4cb4fb482cf05a0b90c772ea570731abc5e94a2da6f30717",
+    "expectedDiagnostic": "Can't solve constraint",
+    "symbol": "r183SelectorRevisedClausesProbe",
+    "transcript": "1/1: Building DGamma.R183O20SelectorProbe (research-tests/DGamma/R183O20SelectorProbe.idr)\nError: While processing right hand side of r183SelectorRevisedClausesProbe. Can't solve constraint between: 0 and transitionCount (betweenBlocks ordered).\n\nDGamma.R183O20SelectorProbe:50:6--50:10\n 46 | r183SelectorRevisedClausesProbe name key world error value nameEq keyEq swap source blocks\n 47 |   leftIn rightIn ordered choice rightAction rightTag early =\n 48 |     (o19EarlyLabels nameEq keyEq (transitionAction (traceDescentRight choice)) (LBegin (actorRight swap))\n 49 |        (transitionTag (traceDescentRight choice)) LBeginTag (sym rightAction) (sym rightTag) early,\n 50 |      Refl)\n           ^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "r183SelectorRevisedClausesProbe"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B1-2",
+    "path": "research-tests/DGamma/R183O20SelectorProbe.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R183O20SelectorProbe.idr"
+    ],
+    "start": "2026-09-07T22:05:12.681118+00:00",
+    "end": "2026-09-07T22:05:13.725988+00:00",
+    "seconds": 1.044506167061627,
+    "exit": 1,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "4ea78cd502403bb82076e5edb5319111d5567081e059b58749e7b06841363e6e",
+    "expectedDiagnostic": "Can't solve constraint",
+    "symbol": "r183SelectorRevisedClausesProbe",
+    "transcript": "1/1: Building DGamma.R183O20SelectorProbe (research-tests/DGamma/R183O20SelectorProbe.idr)\nError: While processing right hand side of r183SelectorRevisedClausesProbe. Can't solve constraint between: choice .traceDescentBefore and (decomposedBlock blocks (actorLeft swap) leftIn) .blockPreStart.\n\nDGamma.R183O20SelectorProbe:48:5--49:98\n 48 |     o19EarlyLabels nameEq keyEq (transitionAction (traceDescentRight choice)) (LBegin (actorRight swap))\n 49 |       (transitionTag (traceDescentRight choice)) LBeginTag (sym rightAction) (sym rightTag) early\n\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "C1-1",
+    "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr"
+    ],
+    "start": "2026-09-07T22:09:02.156416+00:00",
+    "end": "2026-09-07T22:09:20.842459+00:00",
+    "seconds": 18.685849499888718,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1560544,
+    "sourceSHA256": "2061916089de325d5a329cb79f44d9ce840105dcf87a7b62255724fab83bd760",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "16/34: Building DGamma.CP5ConfluenceRenamingCompositionSpike (research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr)\n28/34: Building DGamma.CP5ConfluenceCrossTraceSpike (research/DGamma/CP5ConfluenceCrossTraceSpike.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  order is shadowing Control.Order.order\n\nDGamma.CP5ConfluenceCrossTraceSpike:43:3--43:68\n 39 | \n 40 | public export\n 41 | data CertifiedActorPermutation :\n 42 |   (name : Type) -> List name -> List name -> Type where\n 43 |   ActorPermutationDone : CertifiedActorPermutation name order order\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  after is shadowing DGamma.Core.Applied.after\n\nDGamma.CP5ConfluenceCrossTraceSpike:44:3--47:48\n 44 |   ActorPermutationStep :\n 45 |     AdjacentActorOrderSwap name before middle ->\n 46 |     CertifiedActorPermutation name middle after ->\n 47 |     CertifiedActorPermutation name before after\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  after is shadowing DGamma.Core.Applied.after\n\nDGamma.CP5ConfluenceCrossTraceSpike:285:1--288:77\n 285 | transitionPrefixLength : (earlierTrace : Transitions initial before) ->\n 286 |   (step : Transition before after) ->\n 287 |   transitionCount (appendTransitions earlierTrace\n 288 |     (MoreTransitions step NoTransitions)) = S (transitionCount earlierTrace)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  order is shadowing Control.Order.order\n\nDGamma.CP5ConfluenceCrossTraceSpike:747:3--753:55\n 747 |   OperationalActorDone :\n 748 |     (blocks : ActorBlockDecomposition name key world error value nameEq keyEq\n 749 |       order trace) ->\n 750 |     (premises : ReplayInvariantBundle name key world error value protocol nameEq\n 751 |       keyEq trace) ->\n 752 |     OperationalActorPermutation name key world error value protocol nameEq keyEq\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  after is shadowing DGamma.Core.Applied.after\n\nDGamma.CP5ConfluenceCrossTraceSpike:754:3--770:35\n 754 |   OperationalActorStep :\n 755 |     (orderSwap : AdjacentActorOrderSwap name before middle) ->\n 756 |     (restCertificate : CertifiedActorPermutation name middle after) ->\n 757 |     (sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq\n 758 |       before sourceTrace) ->\n 759 |     (sourcePremises : ReplayInvariantBundle name key world error value protocol\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sameInputs is shadowing DGamma.CP3.CanonicalSchedule.sameInputs\n\nDGamma.CP5ConfluenceCrossTraceSpike:1247:3--1255:41\n 1247 | 0 permutationReplayCorrespondence :\n 1248 |   {operational : CertifiedOperationalCanonicalPermutation name key world error\n 1249 |     value protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital\n 1250 |       rightCapital matching} ->\n 1251 |   PermutedCanonicalExecution name key world error value protocol nameEq keyEq\n 1252 |     leftTrace rightTrace sameInputs leftCapital rightCapital operational ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sameInputs is shadowing DGamma.CP3.CanonicalSchedule.sameInputs\n\nDGamma.CP5ConfluenceCrossTraceSpike:1261:3--1269:41\n 1261 | 0 permutationOccurrenceCorrespondence :\n 1262 |   {operational : CertifiedOperationalCanonicalPermutation name key world error\n 1263 |     value protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital\n 1264 |       rightCapital matching} ->\n 1265 |   PermutedCanonicalExecution name key world error value protocol nameEq keyEq\n 1266 |     leftTrace rightTrace sameInputs leftCapital rightCapital operational ->\n\n29/34: Building DGamma.CP5O21EndpointIdentitySpike (research/DGamma/CP5O21EndpointIdentitySpike.idr)\n30/34: Building DGamma.CP5O20SupportedBirthBridgeSpike (research/DGamma/CP5O20SupportedBirthBridgeSpike.idr)\n31/34: Building DGamma.CP5O20SupportedEndpointCapitalSpike (research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr)\n32/34: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\n34/34: Building DGamma.CP5O20CanonicalPairSelectionSpike (research/DGamma/CP5O20CanonicalPairSelectionSpike.idr)\nError: While processing type of canonicalPairRightMember. Undefined name IndependentCanonicalSchedule. \n\nDGamma.CP5O20CanonicalPairSelectionSpike:33:18--33:46\n 29 |   (protocol : RegistrationProtocol key value world error) ->\n 30 |   {initial, leftFinal, rightFinal : SystemState name key value world error} ->\n 31 |   (leftTrace : Transitions initial leftFinal) -> (rightTrace : Transitions initial rightFinal) ->\n 32 |   (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace) ->\n 33 |   (leftCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq leftTrace) ->\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nError: No type declaration for DGamma.CP5O20CanonicalPairSelectionSpike.canonicalPairRightMember.\n\nDGamma.CP5O20CanonicalPairSelectionSpike:39:1--42:96\n 39 | canonicalPairRightMember nameEq keyEq protocol leftTrace rightTrace sameInputs\n 40 |   leftCapital rightCapital matching selected supported =\n 41 |     leftSupportMapped matching selected\n 42 |       (orderComplete (supportLinearization (canonicalSchedule leftCapital)) selected supported)\n\n",
+    "newTopLevelDeclarations": [
+      "canonicalPairRightMember"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "C1-2",
+    "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr"
+    ],
+    "start": "2026-09-07T22:11:09.158411+00:00",
+    "end": "2026-09-07T22:11:12.264113+00:00",
+    "seconds": 3.105523457750678,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3008080,
+    "sourceSHA256": "0aae8c912e92f70d835d2fd71af5948d00d808e9353eefd5983d9bb57a13be1e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "34/34: Building DGamma.CP5O20CanonicalPairSelectionSpike (research/DGamma/CP5O20CanonicalPairSelectionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "canonicalPairRightMember"
+    ],
+    "matchingSourceCommits": [
+      "83a46c6826112fc70ed02c1d19c0c031a20a892d"
+    ]
+  },
+  {
+    "unit": "C2-1",
+    "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr"
+    ],
+    "start": "2026-09-07T22:12:57.983567+00:00",
+    "end": "2026-09-07T22:13:01.095863+00:00",
+    "seconds": 3.112118124961853,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3008096,
+    "sourceSHA256": "3e3f042a1db36dd34113d4ae2b45ae099cb899e5043be935260ee38f77d59769",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "34/34: Building DGamma.CP5O20CanonicalPairSelectionSpike (research/DGamma/CP5O20CanonicalPairSelectionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "canonicalPairInverseMember"
+    ],
+    "matchingSourceCommits": [
+      "ff2e13785eda371879d7737a86a29a53d3c5f0b5"
+    ]
+  },
+  {
+    "unit": "C3-1",
+    "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr"
+    ],
+    "start": "2026-09-07T22:13:46.534595+00:00",
+    "end": "2026-09-07T22:13:49.654478+00:00",
+    "seconds": 3.1196554168127477,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4129104,
+    "sourceSHA256": "639fc7e9dc3196e57ccb87669d7fa2b32f4d95bc30f0fa408b805db4463d2556",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "34/34: Building DGamma.CP5O20CanonicalPairSelectionSpike (research/DGamma/CP5O20CanonicalPairSelectionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "SelectedCanonicalBlockPair"
+    ],
+    "matchingSourceCommits": [
+      "7917d14b77d23993ca996fb194ae62f4606077e8"
+    ]
+  },
+  {
+    "unit": "C4-1",
+    "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr"
+    ],
+    "start": "2026-09-07T22:15:02.066058+00:00",
+    "end": "2026-09-07T22:15:05.181115+00:00",
+    "seconds": 3.114864374976605,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4252848,
+    "sourceSHA256": "2371766dc85c8022a88852bf21d8346a4ec12c8e76291e2672c19e59d21cadfe",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "34/34: Building DGamma.CP5O20CanonicalPairSelectionSpike (research/DGamma/CP5O20CanonicalPairSelectionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "selectSupportedCanonicalBlockPair"
+    ],
+    "matchingSourceCommits": [
+      "92dcaa275b936a885afbf6240c0a365af43a0f78"
+    ]
+  },
+  {
+    "unit": "C5-1",
+    "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr"
+    ],
+    "start": "2026-09-07T22:16:12.802419+00:00",
+    "end": "2026-09-07T22:16:15.922033+00:00",
+    "seconds": 3.1194272502325475,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4252784,
+    "sourceSHA256": "a10d504de450ad20002bcfaa43812fe331d004930f31b7f8edd9520a11174d07",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "34/34: Building DGamma.CP5O20CanonicalPairSelectionSpike (research/DGamma/CP5O20CanonicalPairSelectionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "canonicalPairOpeningOccurrence"
+    ],
+    "matchingSourceCommits": [
+      "23fac02b73d17b38de743d634083ff57907d6380"
+    ]
+  },
+  {
+    "unit": "C6-1",
+    "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr"
+    ],
+    "start": "2026-09-07T22:17:30.645992+00:00",
+    "end": "2026-09-07T22:17:33.756821+00:00",
+    "seconds": 3.110664749983698,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2586480,
+    "sourceSHA256": "29cb2c9610a520124b85fe8f197b74ea3f2ebb10a95cdfeef96cb200f0913f8e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "34/34: Building DGamma.CP5O20CanonicalPairSelectionSpike (research/DGamma/CP5O20CanonicalPairSelectionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "canonicalPairCutsWellFormed"
+    ],
+    "matchingSourceCommits": [
+      "8bfd0c07bfefcc6dade11a1033ac22115f358d38"
+    ]
+  },
+  {
+    "unit": "C7-1",
+    "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr"
+    ],
+    "start": "2026-09-07T22:19:19.669128+00:00",
+    "end": "2026-09-07T22:19:22.782688+00:00",
+    "seconds": 3.1133667500689626,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 741760,
+    "sourceSHA256": "ab79821b813efd604a304208cc737a595fef74c4a584bf1db14aaf2236ef7b7b",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "34/34: Building DGamma.CP5O20CanonicalPairSelectionSpike (research/DGamma/CP5O20CanonicalPairSelectionSpike.idr)\nError: While processing type of canonicalPairViewsAtStates. Can't bind implicit DGamma.CP5O20CanonicalPairSelectionSpike.{value:7675} of type ({arg:11068} : key[14]) -> Type\n\nDGamma.CP5O20CanonicalPairSelectionSpike:180:1--195:44\n 180 | ||| Adapt R181 D6 to two EXPLICIT observed system states. Effect agreement\n 181 | ||| remains an induction hypothesis; successful views are actual resolver\n 182 | ||| observations. Right pairwise provision uniqueness is derived from WF.\n 183 | export\n 184 | 0 canonicalPairViewsAtStates :\n 185 |   {name, key, world, error : Type} -> {value : key -> Type} ->\n\nError: No type declaration for DGamma.CP5O20CanonicalPairSelectionSpike.canonicalPairViewsAtStates.\n\nDGamma.CP5O20CanonicalPairSelectionSpike:196:1--202:52\n 196 | canonicalPairViewsAtStates {name} {key} {world} {error} {value}\n 197 |   nameEq keyEq renaming deps (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry)\n 198 |   effects wellFormed leftView rightView leftResolved rightResolved =\n 199 |     pairedActualResolvedViews name key world error value nameEq keyEq renaming deps\n 200 |       leftWorld rightWorld leftRegistry rightRegistry effects\n 201 |       (registryWellFormedPairwiseOpenAnchor nameEq keyEq (MkSystemState rightWorld rightRegistry) wellFormed)\n\n",
+    "newTopLevelDeclarations": [
+      "canonicalPairViewsAtStates"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "C7-2",
+    "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr"
+    ],
+    "start": "2026-09-07T22:20:46.193870+00:00",
+    "end": "2026-09-07T22:20:49.310577+00:00",
+    "seconds": 3.1165355830453336,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2563456,
+    "sourceSHA256": "f6f24a6d17511e2bab20f481f48ba23389847bfaded2713a48f244a274b8b3fc",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "34/34: Building DGamma.CP5O20CanonicalPairSelectionSpike (research/DGamma/CP5O20CanonicalPairSelectionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "canonicalPairViewsAtStates"
+    ],
+    "matchingSourceCommits": [
+      "899258a379092025031d727a1b15ecc97f5f1e6c"
+    ]
+  },
+  {
+    "unit": "C8-1",
+    "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr"
+    ],
+    "start": "2026-09-07T22:22:42.095055+00:00",
+    "end": "2026-09-07T22:22:45.212694+00:00",
+    "seconds": 3.1174488747492433,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2398480,
+    "sourceSHA256": "a841cc7c44ab0ccaf1b8583b699b3ed04e8bfd7f4f43528f6d51d5a9ae2fb9c7",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "34/34: Building DGamma.CP5O20CanonicalPairSelectionSpike (research/DGamma/CP5O20CanonicalPairSelectionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "canonicalPairSelectedViews"
+    ],
+    "matchingSourceCommits": [
+      "2efecf5ce0bd05e12f0716630f5e2feabf80bc4e"
+    ]
+  },
+  {
+    "unit": "V01",
+    "path": "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr"
+    ],
+    "start": "2026-09-07T22:25:46.103203+00:00",
+    "end": "2026-09-07T22:29:00.187844+00:00",
+    "seconds": 194.08463758323342,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 14970256,
+    "sourceSHA256": "1fd0c49cfeb33b053221efa3be78986740ec2b6bfb61dff34901babbe249cb22",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/19: Building DGamma.R182O19SecondCrossingPositive (research-tests/DGamma/R182O19SecondCrossingPositive.idr)\n13/19: Building DGamma.R182O19RemainingCrossingFacts (research-tests/DGamma/R182O19RemainingCrossingFacts.idr)\n14/19: Building DGamma.R182O19ThirdCrossingConstruction (research-tests/DGamma/R182O19ThirdCrossingConstruction.idr)\n15/19: Building DGamma.R182O19ThirdCrossingPositive (research-tests/DGamma/R182O19ThirdCrossingPositive.idr)\n16/19: Building DGamma.R182O19FourthCrossingFacts (research-tests/DGamma/R182O19FourthCrossingFacts.idr)\n17/19: Building DGamma.R182O19FourthCrossingConstruction (research-tests/DGamma/R182O19FourthCrossingConstruction.idr)\n18/19: Building DGamma.R182O19FourCrossingsPositive (research-tests/DGamma/R182O19FourCrossingsPositive.idr)\n19/19: Building DGamma.R182O19AllFourCrossingsPositive (research-tests/DGamma/R182O19AllFourCrossingsPositive.idr)\n",
+    "baselineDeclarationSource": "973a81a:research-tests/DGamma/R182O19AllFourCrossingsPositive.idr",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "973a81adac1dc0d36244c385012301e2db593b11"
+    ]
+  },
+  {
+    "unit": "V02",
+    "path": "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19RevisedSafetyPositive.idr"
+    ],
+    "start": "2026-09-07T22:29:00.250600+00:00",
+    "end": "2026-09-07T22:29:18.921122+00:00",
+    "seconds": 18.670346540864557,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3762400,
+    "sourceSHA256": "a49817fc2666c8cef04fbff3c059ecfd421da3424c5ed20be010d9e132ff301f",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "10/10: Building DGamma.R182O19RevisedSafetyPositive (research-tests/DGamma/R182O19RevisedSafetyPositive.idr)\n",
+    "baselineDeclarationSource": "973a81a:research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "973a81adac1dc0d36244c385012301e2db593b11"
+    ]
+  },
+  {
+    "unit": "V03",
+    "path": "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19RevisedSafetyNegative.idr"
+    ],
+    "start": "2026-09-07T22:29:18.989397+00:00",
+    "end": "2026-09-07T22:29:22.099980+00:00",
+    "seconds": 3.110409625340253,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4680160,
+    "sourceSHA256": "a78c28f3fe7a1b29900c6b3d0522f9a0c8e1476169867e964818b6a697d22e54",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "6/6: Building DGamma.R182O19RevisedSafetyNegative (research-tests/DGamma/R182O19RevisedSafetyNegative.idr)\n",
+    "baselineDeclarationSource": "973a81a:research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "973a81adac1dc0d36244c385012301e2db593b11"
+    ]
+  },
+  {
+    "unit": "V04",
+    "path": "research-tests/DGamma/R182O19AdjacencyNegative.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19AdjacencyNegative.idr"
+    ],
+    "start": "2026-09-07T22:29:22.163273+00:00",
+    "end": "2026-09-07T22:29:35.624034+00:00",
+    "seconds": 13.460578249767423,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4616816,
+    "sourceSHA256": "07641432a6c2d2cf79b2cbf2ea182fb80c769d73ef21550df797110b027879d1",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "11/11: Building DGamma.R182O19AdjacencyNegative (research-tests/DGamma/R182O19AdjacencyNegative.idr)\n",
+    "baselineDeclarationSource": "973a81a:research-tests/DGamma/R182O19AdjacencyNegative.idr",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "973a81adac1dc0d36244c385012301e2db593b11"
+    ]
+  },
+  {
+    "unit": "V05",
+    "path": "research-tests/DGamma/R183O19GenericBeginRowPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R183O19GenericBeginRowPositive.idr"
+    ],
+    "start": "2026-09-07T22:29:35.688612+00:00",
+    "end": "2026-09-07T22:29:39.851567+00:00",
+    "seconds": 4.162769624963403,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4798112,
+    "sourceSHA256": "03523ebd512131a0f906bf9feb86bdf3a68b407b072ff6d822c172d3708dc8dc",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.R183O19GenericBeginRowPositive (research-tests/DGamma/R183O19GenericBeginRowPositive.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "ce725335b00339017aaef5760305d7b32b104171"
+    ]
+  },
+  {
+    "unit": "V06",
+    "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr"
+    ],
+    "start": "2026-09-07T22:29:39.918113+00:00",
+    "end": "2026-09-07T22:29:43.045222+00:00",
+    "seconds": 3.12689279159531,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2398464,
+    "sourceSHA256": "a841cc7c44ab0ccaf1b8583b699b3ed04e8bfd7f4f43528f6d51d5a9ae2fb9c7",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "34/34: Building DGamma.CP5O20CanonicalPairSelectionSpike (research/DGamma/CP5O20CanonicalPairSelectionSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "2efecf5ce0bd05e12f0716630f5e2feabf80bc4e"
+    ]
+  },
+  {
+    "unit": "V07",
+    "path": "research/DGamma/CP5O19CommutedDomainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19CommutedDomainSpike.idr"
+    ],
+    "start": "2026-09-07T22:29:43.110608+00:00",
+    "end": "2026-09-07T22:29:44.149873+00:00",
+    "seconds": 1.0390848750248551,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "bc376b0eeadcf51c372725a91be18058d23ee813ff0ec6863af00f5ec38b8762",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19CommutedDomainSpike (research/DGamma/CP5O19CommutedDomainSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "1a78311558d8500ee6a93ac10a25c779005791b2"
+    ]
+  },
+  {
+    "unit": "V08",
+    "path": "research/DGamma/CP5O19ActualCommutedDomainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActualCommutedDomainSpike.idr"
+    ],
+    "start": "2026-09-07T22:29:44.211767+00:00",
+    "end": "2026-09-07T22:29:45.253226+00:00",
+    "seconds": 1.04125720821321,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "2a9fbb58e83b5fb2d1803d5e08bf776f8ce1591cf7a78c724e273dc7e0ad3314",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.CP5O19ActualCommutedDomainSpike (research/DGamma/CP5O19ActualCommutedDomainSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "dddad994988cf997ac700255b521d5a4bad77e55"
+    ]
+  },
+  {
+    "unit": "V09",
+    "path": "research/DGamma/CP5O19OpeningPropagationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19OpeningPropagationSpike.idr"
+    ],
+    "start": "2026-09-07T22:29:45.317489+00:00",
+    "end": "2026-09-07T22:29:47.392673+00:00",
+    "seconds": 2.0750001673586667,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1184000,
+    "sourceSHA256": "4ff197170659e1936efec83cc84d55f01b584cf8aebb9b92fc3c7b975f384966",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19OpeningPropagationSpike (research/DGamma/CP5O19OpeningPropagationSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "c56648e2736d6ffd70161048b56ed49344580163"
+    ]
+  },
+  {
+    "unit": "V10",
+    "path": "research/DGamma/CP5O19ActivationRowSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationRowSpike.idr"
+    ],
+    "start": "2026-09-07T22:29:47.456368+00:00",
+    "end": "2026-09-07T22:29:50.578429+00:00",
+    "seconds": 3.1218699580058455,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2524352,
+    "sourceSHA256": "8a8b69c143a456967eccb6ebef741c2c6f38f9d8b1b77e0686744a2fd938b677",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "15/15: Building DGamma.CP5O19ActivationRowSpike (research/DGamma/CP5O19ActivationRowSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "e3e0b9d61aa1f340b0d37f85240a9d968f760826"
+    ]
+  },
+  {
+    "unit": "V11",
+    "path": "research/DGamma/CP5O19CartesianCursorSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19CartesianCursorSpike.idr"
+    ],
+    "start": "2026-09-07T22:29:50.642209+00:00",
+    "end": "2026-09-07T22:29:52.714219+00:00",
+    "seconds": 2.0718120420351624,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 675168,
+    "sourceSHA256": "e18c09da9ef390fc7324b2b1d1fe9e5015a09365f1b4755df7f7c55bef07324d",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "13/13: Building DGamma.CP5O19CartesianCursorSpike (research/DGamma/CP5O19CartesianCursorSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "3b5e4aaa293d4373df4d163f99390c226863c69e"
+    ]
+  },
+  {
+    "unit": "V12",
+    "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
+    ],
+    "start": "2026-09-07T22:29:52.778314+00:00",
+    "end": "2026-09-07T22:30:47.793473+00:00",
+    "seconds": 55.01504670828581,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 20117488,
+    "sourceSHA256": "3b62ba1c3bc88503116ed22d82c667043f7f41dd483fb093cc25b677a55245cc",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "8/8: Building DGamma.CP5ConfluenceCanonicalSortSpike (research/DGamma/CP5ConfluenceCanonicalSortSpike.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sorted is shadowing Data.List.sorted\n\nDGamma.CP5ConfluenceCanonicalSortSpike:4659:3--4663:39\n 4659 | 0 abstractTwoBirthOneWithdrawalAccounting :\n 4660 |   (fixture : AbstractTwoBirthOneWithdrawalAssembly name key world error value protocol\n 4661 |     nameEq keyEq original reduction ordering sorted) ->\n 4662 |   OneTraceOrchestrationAccounting name key world error value protocol nameEq keyEq\n 4663 |     original reduction ordering sorted\n\n",
+    "baselineDeclarationSource": "973a81a:research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "973a81adac1dc0d36244c385012301e2db593b11"
+    ]
+  },
+  {
+    "unit": "V13",
+    "path": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
+    ],
+    "start": "2026-09-07T22:30:47.857093+00:00",
+    "end": "2026-09-07T22:30:54.069333+00:00",
+    "seconds": 6.212046083062887,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3024688,
+    "sourceSHA256": "3af10eda3d7dd6435b02dd09339c2ac83aa6006cfe5f5063f8bc4106960feb57",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "28/28: Building DGamma.CP5ConfluenceCrossTraceSpike (research/DGamma/CP5ConfluenceCrossTraceSpike.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  order is shadowing Control.Order.order\n\nDGamma.CP5ConfluenceCrossTraceSpike:43:3--43:68\n 39 | \n 40 | public export\n 41 | data CertifiedActorPermutation :\n 42 |   (name : Type) -> List name -> List name -> Type where\n 43 |   ActorPermutationDone : CertifiedActorPermutation name order order\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  after is shadowing DGamma.Core.Applied.after\n\nDGamma.CP5ConfluenceCrossTraceSpike:44:3--47:48\n 44 |   ActorPermutationStep :\n 45 |     AdjacentActorOrderSwap name before middle ->\n 46 |     CertifiedActorPermutation name middle after ->\n 47 |     CertifiedActorPermutation name before after\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  after is shadowing DGamma.Core.Applied.after\n\nDGamma.CP5ConfluenceCrossTraceSpike:285:1--288:77\n 285 | transitionPrefixLength : (earlierTrace : Transitions initial before) ->\n 286 |   (step : Transition before after) ->\n 287 |   transitionCount (appendTransitions earlierTrace\n 288 |     (MoreTransitions step NoTransitions)) = S (transitionCount earlierTrace)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  order is shadowing Control.Order.order\n\nDGamma.CP5ConfluenceCrossTraceSpike:747:3--753:55\n 747 |   OperationalActorDone :\n 748 |     (blocks : ActorBlockDecomposition name key world error value nameEq keyEq\n 749 |       order trace) ->\n 750 |     (premises : ReplayInvariantBundle name key world error value protocol nameEq\n 751 |       keyEq trace) ->\n 752 |     OperationalActorPermutation name key world error value protocol nameEq keyEq\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  after is shadowing DGamma.Core.Applied.after\n\nDGamma.CP5ConfluenceCrossTraceSpike:754:3--770:35\n 754 |   OperationalActorStep :\n 755 |     (orderSwap : AdjacentActorOrderSwap name before middle) ->\n 756 |     (restCertificate : CertifiedActorPermutation name middle after) ->\n 757 |     (sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq\n 758 |       before sourceTrace) ->\n 759 |     (sourcePremises : ReplayInvariantBundle name key world error value protocol\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sameInputs is shadowing DGamma.CP3.CanonicalSchedule.sameInputs\n\nDGamma.CP5ConfluenceCrossTraceSpike:1247:3--1255:41\n 1247 | 0 permutationReplayCorrespondence :\n 1248 |   {operational : CertifiedOperationalCanonicalPermutation name key world error\n 1249 |     value protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital\n 1250 |       rightCapital matching} ->\n 1251 |   PermutedCanonicalExecution name key world error value protocol nameEq keyEq\n 1252 |     leftTrace rightTrace sameInputs leftCapital rightCapital operational ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sameInputs is shadowing DGamma.CP3.CanonicalSchedule.sameInputs\n\nDGamma.CP5ConfluenceCrossTraceSpike:1261:3--1269:41\n 1261 | 0 permutationOccurrenceCorrespondence :\n 1262 |   {operational : CertifiedOperationalCanonicalPermutation name key world error\n 1263 |     value protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital\n 1264 |       rightCapital matching} ->\n 1265 |   PermutedCanonicalExecution name key world error value protocol nameEq keyEq\n 1266 |     leftTrace rightTrace sameInputs leftCapital rightCapital operational ->\n\n",
+    "baselineDeclarationSource": "973a81a:research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "973a81adac1dc0d36244c385012301e2db593b11"
+    ]
+  },
+  {
+    "unit": "V14",
+    "path": "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
+    ],
+    "start": "2026-09-07T22:30:54.133132+00:00",
+    "end": "2026-09-07T22:31:03.464904+00:00",
+    "seconds": 9.331581625156105,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2121712,
+    "sourceSHA256": "91cd8a72fb114fd5e1b7d7ae1c7d48bfa10fc50295eab2e76e223a10ccf1548b",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "16/16: Building DGamma.CP5ConfluenceRenamingCompositionSpike (research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr)\n",
+    "baselineDeclarationSource": "973a81a:research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "973a81adac1dc0d36244c385012301e2db593b11"
+    ]
+  },
+  {
+    "unit": "V15",
+    "path": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ConfluenceDeletionChainSpike.idr"
+    ],
+    "start": "2026-09-07T22:31:03.530138+00:00",
+    "end": "2026-09-07T22:32:22.324972+00:00",
+    "seconds": 78.79470574995503,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 5046528,
+    "sourceSHA256": "5ca243616ce40e65aaeed35318d96156e98370c4319859e63f18f7b178ffec88",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "5/5: Building DGamma.CP5ConfluenceDeletionChainSpike (research/DGamma/CP5ConfluenceDeletionChainSpike.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  surviving is shadowing DGamma.CP4DeletionGenerationFilter.GenerationFilterResult.surviving\n\nDGamma.CP5ConfluenceDeletionChainSpike:3013:1--3015:19\n 3013 | generationSubsequenceSourceOrdinal :\n 3014 |   GenerationActionSubsequence nameEq deletable ordinal live original surviving ->\n 3015 |   Nat -> Maybe Nat\n\n",
+    "baselineDeclarationSource": "973a81a:research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "973a81adac1dc0d36244c385012301e2db593b11"
+    ]
+  },
+  {
+    "unit": "V16",
+    "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr"
+    ],
+    "start": "2026-09-07T22:32:22.391232+00:00",
+    "end": "2026-09-07T22:40:39.241538+00:00",
+    "seconds": 496.8506902921945,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 50237168,
+    "sourceSHA256": "480848f94e2e127effe2e0b8ac5bb889f0995ae78b507ad113eab0b506d530a5",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.CP5ConfluenceLocalDiamondSpike (research/DGamma/CP5ConfluenceLocalDiamondSpike.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  tail is shadowing Prelude.Types.tail\n\nDGamma.CP5ConfluenceLocalDiamondSpike:992:3--996:64\n 992 |   ConsStageOccursLater :\n 993 |     (head : Transition first middle) ->\n 994 |     (later : OccursIn selected tail) ->\n 995 |     ConsStageOccurrenceView {head} {tail}\n 996 |       (DGamma.Metatheory.OccursLater {transition = head} later)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  head is shadowing Prelude.Types.head\n  tail is shadowing Prelude.Types.tail\n\nDGamma.CP5ConfluenceLocalDiamondSpike:998:3--1000:33\n 0998 | 0 viewConsStageOccurrence :\n 0999 |   (occurs : OccursIn selected (MoreTransitions head tail)) ->\n 1000 |   ConsStageOccurrenceView occurs\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  tail is shadowing Prelude.Types.tail\n\nDGamma.CP5ConfluenceLocalDiamondSpike:1818:3--1821:77\n 1818 | 0 prependIteratorStage :\n 1819 |   (head : Transition sourceFirst sourceMiddle) ->\n 1820 |   IteratorStage name key world error value actor tail ->\n 1821 |   IteratorStage name key world error value actor (MoreTransitions head tail)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  tail is shadowing Prelude.Types.tail\n\nDGamma.CP5ConfluenceLocalDiamondSpike:1846:3--1850:32\n 1846 | 0 prependGenerator :\n 1847 |   (head : Transition sourceFirst sourceMiddle) ->\n 1848 |   TraceEffectGenerator name key world error value actor tail ->\n 1849 |   TraceEffectGenerator name key world error value actor\n 1850 |     (MoreTransitions head tail)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  tail is shadowing Prelude.Types.tail\n\nDGamma.CP5ConfluenceLocalDiamondSpike:1878:3--1883:38\n 1878 | 0 prependGeneratorMapExact :\n 1879 |   (head : Transition sourceFirst sourceMiddle) ->\n 1880 |   (generator : TraceEffectGenerator name key world error value actor tail) ->\n 1881 |   (state : EffectState name key value world) ->\n 1882 |   traceGeneratorMap (prependGenerator head generator) state =\n 1883 |     traceGeneratorMap generator state\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  tail is shadowing Prelude.Types.tail\n\nDGamma.CP5ConfluenceLocalDiamondSpike:2107:3--2112:37\n 2107 | 0 prependIteratorOutcomeExact :\n 2108 |   (head : Transition sourceFirst sourceMiddle) ->\n 2109 |   (stage : IteratorStage name key world error value actor tail) ->\n 2110 |   (state : EffectState name key value world) ->\n 2111 |   iteratorStageOutcome (prependIteratorStage head stage) state =\n 2112 |     iteratorStageOutcome stage state\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sourceAccumulator is shadowing DGamma.CP3.ParentRegistrationYield.sourceAccumulator\n  view is shadowing Data.Nat.LT.view\n\nDGamma.CP5ConfluenceLocalDiamondSpike:6690:5--6702:53\n 6690 |   0 emptyByMatch :\n 6691 |     (matches : Bool) ->\n 6692 |     targetMatches @{nameEq}\n 6693 |       (targetFiber @{nameEq} @{keyEq}\n 6694 |         (MkFiber component sourceParent retiredFlag sourceTable\n 6695 |           (Reloading [] sourceAccumulator view)) sourceRegistry) view = matches ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:14305:11--14307:84\n 14305 |         0 leftMovedSame : (state : EffectState name key value world) ->\n 14306 |           partialEffectMapFor nameEq keyEq leftAction leftTag first state =\n 14307 |           partialEffectMapFor nameEq keyEq leftAction leftTag earlyRightFinal state\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16728:21--16729:69\n 16728 |                   0 effectOutput : ActivationPairEffectOutput nameEq keyEq\n 16729 |                     leftAction leftTag earlyRightFinal originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16734:21--16735:36\n 16734 |                   0 rawMove : RawActivationMove nameEq keyEq leftAction leftTag\n 16735 |                     earlyRightFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16743:21--16744:58\n 16743 |                   0 endpoint : CheckedActivationEndpoint nameEq keyEq leftAction\n 16744 |                     leftTag earlyRightFinal originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16794:21--16796:75\n 16794 |                   0 earlyActivation : PaperActivationStep\n 16795 |                     (Fired {before = first} {afterState = earlyRightFinal}\n 16796 |                       nameEq keyEq rightAction rightTag earlyCheckedRight)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16805:21--16806:43\n 16805 |                   0 earlyWellFormed : registryWellFormed @{nameEq} @{keyEq}\n 16806 |                     earlyRightFinal = True\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16885:21--16888:74\n 16885 |                   0 rawEarlyFrame : PartialRelated\n 16886 |                     (EffectState name key value world) (EffectStateRelated keyEq)\n 16887 |                     (earlyRightMap (projectEffectState @{nameEq} first))\n 16888 |                     (Just (projectEffectState @{nameEq} earlyRightFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16891:21--16894:74\n 16891 |                   0 earlyFrame : PartialRelated\n 16892 |                     (EffectState name key value world) (EffectStateRelated keyEq)\n 16893 |                     (rightMap (projectEffectState @{nameEq} first))\n 16894 |                     (Just (projectEffectState @{nameEq} earlyRightFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16906:21--16910:74\n 16906 |                   0 rightGeneratorFrame : PartialRelated\n 16907 |                     (EffectState name key value world) (EffectStateRelated keyEq)\n 16908 |                     (traceGeneratorMap rightGenerator\n 16909 |                       (projectEffectState @{nameEq} first))\n 16910 |                     (Just (projectEffectState @{nameEq} earlyRightFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16914:21--16915:69\n 16914 |                   0 effectOutput : ActivationPairEffectOutput nameEq keyEq\n 16915 |                     leftAction leftTag earlyRightFinal originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16920:21--16921:36\n 16920 |                   0 rawMove : RawActivationMove nameEq keyEq leftAction leftTag\n 16921 |                     earlyRightFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16927:21--16928:58\n 16927 |                   0 endpoint : CheckedActivationEndpoint nameEq keyEq leftAction\n 16928 |                     leftTag earlyRightFinal originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16934:21--16935:78\n 16934 |                   0 movedCheckedLeft : checkedApplyAction @{nameEq} @{keyEq}\n 16935 |                     leftAction earlyRightFinal = Just (leftTag, swappedFinal)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16937:21--16939:75\n 16937 |                   0 movedRightActivation : PaperActivationStep\n 16938 |                     (Fired {before = first} {afterState = earlyRightFinal}\n 16939 |                       nameEq keyEq rightAction rightTag earlyCheckedRight)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16941:21--16943:72\n 16941 |                   0 movedLeftActivation : PaperActivationStep\n 16942 |                     (Fired {before = earlyRightFinal} {afterState = swappedFinal}\n 16943 |                       nameEq keyEq leftAction leftTag movedCheckedLeft)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16953:21--16959:65\n 16953 |                   0 leftLookup : (lookupFiber @{nameEq} {name = name}\n 16954 |                     {key = key} {value = value} {world = world}\n 16955 |                     {error = error} (actionOwner leftAction)\n 16956 |                     (registry earlyRightFinal) = lookupFiber @{nameEq}\n 16957 |                       {name = name} {key = key} {value = value}\n 16958 |                       {world = world} {error = error}\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16971:21--16978:61\n 16971 |                   0 leftTargets : (fiber : Fiber name key value world error) ->\n 16972 |                     (view : View name (dependencies\n 16973 |                       (componentDependencies\n 16974 |                         (fiberComponent fiber)))) ->\n 16975 |                     targetFiber @{nameEq} @{keyEq} fiber\n 16976 |                       (registry first) = Just view ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:16996:21--17004:62\n 16996 |                   0 leftOutcomes : (stage : IteratorStage name key\n 16997 |                     world error value (actionOwner leftAction)\n 16998 |                     pairTrace) -> IteratorOutcomeAgreement name key\n 16999 |                       value world error keyEq\n 17000 |                       (iteratorStageOutcome stage\n 17001 |                         (projectEffectState @{nameEq}\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17029:21--17031:49\n 17029 |                   0 leftComparison : ActivationReplacementComparison\n 17030 |                     nameEq (actionOwner leftAction) first middle\n 17031 |                     earlyRightFinal swappedFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17040:21--17042:57\n 17040 |                   0 rightComparison : ActivationReplacementComparison\n 17041 |                     nameEq (actionOwner rightAction) first\n 17042 |                     earlyRightFinal middle originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17394:21--17396:75\n 17394 |                   0 earlyActivation : PaperActivationStep\n 17395 |                     (Fired {before = first} {afterState = earlyRightFinal}\n 17396 |                       nameEq keyEq rightAction rightTag earlyCheckedRight)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17399:21--17400:43\n 17399 |                   0 earlyWellFormed : registryWellFormed @{nameEq} @{keyEq}\n 17400 |                     earlyRightFinal = True\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17492:21--17494:36\n 17492 |                   0 comparison : ActivationReplacementComparison nameEq\n 17493 |                     (actionOwner rightAction) middle originalFinal first\n 17494 |                     earlyRightFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17501:21--17502:69\n 17501 |                   0 effectOutput : ActivationPairEffectOutput nameEq keyEq\n 17502 |                     leftAction leftTag earlyRightFinal originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17507:21--17508:36\n 17507 |                   0 rawMove : RawActivationMove nameEq keyEq leftAction leftTag\n 17508 |                     earlyRightFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17513:21--17514:58\n 17513 |                   0 endpoint : CheckedActivationEndpoint nameEq keyEq leftAction\n 17514 |                     leftTag earlyRightFinal originalFinal\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17520:21--17521:78\n 17520 |                   0 movedCheckedLeft : checkedApplyAction @{nameEq} @{keyEq}\n 17521 |                     leftAction earlyRightFinal = Just (leftTag, swappedFinal)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17523:21--17525:72\n 17523 |                   0 movedLeftOrchestration : PaperOrchestrationStep\n 17524 |                     (Fired {before = earlyRightFinal} {afterState = swappedFinal}\n 17525 |                       nameEq keyEq leftAction leftTag movedCheckedLeft)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17592:5--17594:151\n 17592 |   0 leftOwnerRelated : FiberControlMaybeRelated\n 17593 |     (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction) (registry originalFinal))\n 17594 |     (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction) (registry swappedFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17596:11--17599:40\n 17596 |     let 0 sourceSame : Equal\n 17597 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction) (registry first))\n 17598 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner leftAction)\n 17599 |             (registry earlyRightFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17603:11--17609:39\n 17603 |         0 ownerRelated : FiberControlMaybeRelated\n 17604 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n 17605 |             {world = world} {error = error} (actionOwner leftAction)\n 17606 |               (registry middle))\n 17607 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n 17608 |             {world = world} {error = error} (actionOwner leftAction)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17625:5--17627:152\n 17625 |   0 rightOwnerRelated : FiberControlMaybeRelated\n 17626 |     (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction) (registry originalFinal))\n 17627 |     (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction) (registry swappedFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17634:11--17640:42\n 17634 |         0 ownerRelated : FiberControlMaybeRelated\n 17635 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n 17636 |             {world = world} {error = error} (actionOwner rightAction)\n 17637 |               (registry originalFinal))\n 17638 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n 17639 |             {world = world} {error = error} (actionOwner rightAction)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n  earlyRightFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.OrchestrationSwapSafety.earlyRightFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17643:11--17647:40\n 17643 |         0 swappedFrame : Equal\n 17644 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction)\n 17645 |             (registry swappedFinal))\n 17646 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} (actionOwner rightAction)\n 17647 |             (registry earlyRightFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17657:5--17662:137\n 17657 |   0 outsideRelated : (selected : name) ->\n 17658 |     Not (selected = actionOwner leftAction) ->\n 17659 |     Not (selected = actionOwner rightAction) ->\n 17660 |     FiberControlMaybeRelated\n 17661 |       (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} selected (registry originalFinal))\n 17662 |       (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} selected (registry swappedFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17672:11--17674:141\n 17672 |         0 sameLookup : Equal\n 17673 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} selected (registry originalFinal))\n 17674 |           (lookupFiber @{nameEq} {name = name} {key = key} {value = value} {world = world} {error = error} selected (registry swappedFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:17680:5--17684:72\n 17680 |   0 pointwise : (selected : name) -> FiberControlMaybeRelated\n 17681 |     (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n 17682 |       {world = world} {error = error} selected (registry originalFinal))\n 17683 |     (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n 17684 |       {world = world} {error = error} selected (registry swappedFinal))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  replayedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.AdjacentSwapResult.replayedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:21179:3--21186:45\n 21179 | 0 replayPointwiseSuffixTraceComponentsTotal :\n 21180 |   (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n 21181 |   (source : Transitions sourceFirst sourceFinal) ->\n 21182 |   (replayed : Transitions replayedFirst replayedFinal) ->\n 21183 |   SealedSuffixReplaySpine name key world error value nameEq keyEq source\n 21184 |     replayed ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  replayedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.AdjacentSwapResult.replayedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:21204:3--21226:63\n 21204 | 0 adjacentTargetTraceComponentsTotal :\n 21205 |   (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n 21206 |   (tracePrefix : Transitions initial pairFirst) ->\n 21207 |   (left : Transition pairFirst pairMiddle) ->\n 21208 |   (right : Transition pairMiddle pairFinal) ->\n 21209 |   (suffix : Transitions pairFinal originalFinal) ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  replayedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.AdjacentSwapResult.replayedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:22100:3--22122:63\n 22100 | 0 r97Field9WholeAppendCorrespondence :\n 22101 |   (original : Transitions initial originalFinal) ->\n 22102 |   (tracePrefix : Transitions initial pairFirst) ->\n 22103 |   (left : Transition pairFirst pairMiddle) ->\n 22104 |   (right : Transition pairMiddle pairFinal) ->\n 22105 |   (suffix : Transitions pairFinal originalFinal) ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  replayedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.AdjacentSwapResult.replayedFinal\n\nDGamma.CP5ConfluenceLocalDiamondSpike:22145:3--22165:63\n 22145 | 0 r97Field9ConcreteCapitalConsumer :\n 22146 |   (original : Transitions initial originalFinal) ->\n 22147 |   (tracePrefix : Transitions initial pairFirst) ->\n 22148 |   (left : Transition pairFirst pairMiddle) ->\n 22149 |   (right : Transition pairMiddle pairFinal) ->\n 22150 |   (suffix : Transitions pairFinal originalFinal) ->\n\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "ccf0e8ab089b6f2a648827a336a50bf06c08cf67"
+    ]
+  },
+  {
+    "unit": "V17",
+    "path": "package",
+    "command": [
+      "idris2",
+      "--build",
+      "dgamma.ipkg"
+    ],
+    "start": "2026-09-07T22:40:39.306339+00:00",
+    "end": "2026-09-07T22:40:55.915319+00:00",
+    "seconds": 16.60882804216817,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 275296,
+    "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "",
+    "matchingSourceCommits": [
+      "973a81adac1dc0d36244c385012301e2db593b11"
+    ]
+  }
+]

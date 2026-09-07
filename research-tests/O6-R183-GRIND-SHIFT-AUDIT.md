@@ -23,7 +23,7 @@ O20 selector probe<=3 checks after A stop/closure gate. C<=8 actual canonical
 pair-selection prerequisites; no bodies. Stop3/3 means audit/gate then next
 authorized unit; third O19 specification gap gates BEFORE surface modification.
 
-## Status
+## Initial status (chronological checkpoint)
 
 Start census5=1/3/0/0/1. No new proof or body yet. R182 audit and R179-R181
 audits read; actual four-node construction is not generic Cartesian induction.
@@ -239,3 +239,120 @@ paired block/cut SELECTION is now constructive conditional on existing real
 operational capital. Whole-prefix effect/control synchronization, matched
 program-step advancement and the endpoint bridge remain open. No O19/O20
 closure, no O17 root-placement/O21 withdrawal change. Validation follows.
+
+
+## Final source-commit correlation
+
+The evidence script verified EVERY37 retained Idris source change against
+an exact source snapshot with an earlier machine-read fresh ordinary PASS
+(Git timestamps have1-second resolution). These are35 new declarations and
+TWO separately charged approved visibility surfaces. Each invocation adds at
+most one top-level declaration; each micro-unit uses at most3 attempts.
+Rejected source snapshots were never committed. A25's consumer and the B
+probe are machine-checked absent. No fourth invocation, hidden source change
+or third O19 specification revision occurred.
+
+| Unit | Retained declaration/surface | Fresh PASS | Source commit |
+|---|---|---|---|
+| A1 | `O19ReachedCursor` | A1-1, 2.077s | `52523ad` |
+| A2 | `o19InitialCursor` | A2-1, 2.087s | `cb1bfb4` |
+| A3 | `o19CursorFromProduced` | A3-1, 2.079s | `3b5e4aa` |
+| A4 | `RawActivationMove visibility` | A4-1, 496.911s | `403e512` |
+| A5 | `beginRawAfterForeignActivation visibility` | A5-1, 500.381s | `ccf0e8a` |
+| A6 | `o19CheckObservedRawMove` | A6-1, 430.469s | `e7e1736` |
+| A7 | `o19BeginAfterActivation` | A7-1, 2.080s | `674f057` |
+| A8 | `O19EarlyAlong` | A8-1, 2.081s | `85486b4` |
+| A9 | `o19OpeningAlongForeignActivations` | A9-1, 3.124s | `c56648e` |
+| A10 | `O19ActivationRow` | A10-1, 3.113s | `1ac5686` |
+| A11 | `o19ActivationRowZero` | A11-1, 3.128s | `1c76084` |
+| A12 | `o19ActivationRowStepObserved` | A12-2, 3.121s | `c69364a` |
+| A13 | `o19ActivationRowStep` | A13-1, 3.110s | `1b68ec0` |
+| A14 | `o19BubbleActivationRow` | A14-1, 3.120s | `c59d3d5` |
+| A15 | `o19BubbleBeginRow` | A15-1, 3.126s | `2f39d01` |
+| A16 | `o19TwoForeignActivationClasses` | A16-1, 3.117s | `e3e0b9d` |
+| A17 | `r183ActualGenericBeginRow` | A17-2, 3.114s | `ce72533` |
+| A18 | `o19RelatedDefined` | A18-1, 1.062s | `ac22b28` |
+| A19 | `o19ComposedFramesObserved` | A19-1, 1.058s | `18f5633` |
+| A20 | `o19FirstDomainObserved` | A20-1, 1.058s | `110b0a3` |
+| A21 | `o19CommutingFramesEarlyDomain` | A21-1, 1.040s | `5566509` |
+| A22 | `O19PartialRun` | A22-1, 1.060s | `c901c9b` |
+| A23 | `o19PartialRunObserved` | A23-1, 1.037s | `9dce21a` |
+| A24 | `o19CommutingFramesEarlyRun` | A24-1, 1.062s | `c8bcd6f` |
+| A26 | `o19ComposeMapsSameObserved` | A26-1, 1.056s | `73618c4` |
+| A27 | `o19PartialCommuteMapsTransport` | A27-1, 1.040s | `1a78311` |
+| A28 | `o19ActualForwardMapAt` | A28-1, 1.039s | `de1aad1` |
+| A29 | `o19ActualPairMapCommutes` | A29-2, 1.057s | `977bcfd` |
+| A30 | `o19ActualFrameRelated` | A30-1, 1.035s | `dddad99` |
+| C1 | `canonicalPairRightMember` | C1-2, 3.106s | `83a46c6` |
+| C2 | `canonicalPairInverseMember` | C2-1, 3.112s | `ff2e137` |
+| C3 | `SelectedCanonicalBlockPair` | C3-1, 3.120s | `7917d14` |
+| C4 | `selectSupportedCanonicalBlockPair` | C4-1, 3.115s | `92dcaa2` |
+| C5 | `canonicalPairOpeningOccurrence` | C5-1, 3.119s | `23fac02` |
+| C6 | `canonicalPairCutsWellFormed` | C6-1, 3.111s | `8bfd0c0` |
+| C7 | `canonicalPairViewsAtStates` | C7-2, 3.117s | `899258a` |
+| C8 | `canonicalPairSelectedViews` | C8-1, 3.117s | `2efecf5` |
+
+
+## Final serialized regression gate
+
+All17 passed. V01-V16 each freshly compiled the named unchanged/current target;
+V17 is a fresh INVOCATION of the successful SEEDED production package build,
+not a claim to recompile all207 modules from scratch. Its silent output is
+normal for populated caches. All207 package TTCs remain present. Source
+snapshots, native exit status, expected diagnostics, full transcripts, sampled
+RSS and source/commit correlations are in the committed ledger/archive.
+
+| Check | Target | Result / elapsed |
+|---|---|---|
+| V01 | `research-tests/DGamma/R182O19AllFourCrossingsPositive.idr` | PASS, 194.085s |
+| V02 | `research-tests/DGamma/R182O19RevisedSafetyPositive.idr` | PASS, 18.670s |
+| V03 | `research-tests/DGamma/R182O19RevisedSafetyNegative.idr` | PASS, 3.110s |
+| V04 | `research-tests/DGamma/R182O19AdjacencyNegative.idr` | PASS, 13.461s |
+| V05 | `research-tests/DGamma/R183O19GenericBeginRowPositive.idr` | PASS, 4.163s |
+| V06 | `research/DGamma/CP5O20CanonicalPairSelectionSpike.idr` | PASS, 3.127s |
+| V07 | `research/DGamma/CP5O19CommutedDomainSpike.idr` | PASS, 1.039s |
+| V08 | `research/DGamma/CP5O19ActualCommutedDomainSpike.idr` | PASS, 1.041s |
+| V09 | `research/DGamma/CP5O19OpeningPropagationSpike.idr` | PASS, 2.075s |
+| V10 | `research/DGamma/CP5O19ActivationRowSpike.idr` | PASS, 3.122s |
+| V11 | `research/DGamma/CP5O19CartesianCursorSpike.idr` | PASS, 2.072s |
+| V12 | `research/DGamma/CP5ConfluenceCanonicalSortSpike.idr` | PASS, 55.015s |
+| V13 | `research/DGamma/CP5ConfluenceCrossTraceSpike.idr` | PASS, 6.212s |
+| V14 | `research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr` | PASS, 9.332s |
+| V15 | `research/DGamma/CP5ConfluenceDeletionChainSpike.idr` | PASS, 78.795s |
+| V16 | `research/DGamma/CP5ConfluenceLocalDiamondSpike.idr` | PASS, 496.851s |
+| V17 | `package` | PASS, 16.609s |
+
+
+## Status — final R183 stop (all authorized caps reached)
+
+- A:30/30 slots,29 retained prerequisites/visibility surfaces; A25 wholly
+  reverted after3 native rejections. All prerequisite groups(i)-(v) remain
+  incomplete. O19 body NOT ATTEMPTED, and no milestone closure is claimed.
+- B: ONE disposable selector probe,2/3 expected-rejection checks, no body.
+  Expected-rejection PASS means native exit1 plus the required diagnostic;
+  it does NOT mean the proposed selector proof typechecked.
+- C:8/8 prerequisite surfaces; actual canonical block/cut selection and
+  conditional selected-cut D6 consumer. Whole-prefix effects/controls and
+  successful same-dependency-list observations remain internal inputs/debts.
+- Total65 serialized invocations:55 ordinary PASS,2 expected-rejection PASS,
+  8 charged native rejections, ZERO interruptions. All failures are resolved
+  by bounded corrections or complete rollback, not silently dropped.
+- Maximum sampled RSS50,239,808KiB (A4), below the configured48GiB guard;
+  final LocalDiamond V16 sampled50,237,168KiB and passed496.851s. A sampled0
+  for short checks means the1-second sampler missed the process, not zero RAM.
+- No new escape hatch, partiality, hole, local alias/with, computed-existential
+  case, scoped-to-raw cast, frozen deletion call or scalar replay-builder
+  observer. A28's Refl is a primitive generator constructor observation.
+- LocalDiamond reconstructs973a81a after deleting ONLY the two approved
+  visibility keywords. Five protected declarations, the frozen suffix
+  statement/body, production vs34b21c9, CP3 and the untracked frozen review
+  remain authenticated. The final machine gate is persisted separately.
+- All research census entries remain5=1/3/0/0/1. No O17/root-placement or O21
+  withdrawal work. Original source uniqueness stays attached to actual
+  reached cursors, not re-created for substitute traces.
+
+Self-review found no additional scope/proof claim blocker. This is NOT an
+independent review verdict: owner/reviewer acceptance is still required.
+Next work is the exact open A(i)-(v)/B1-10/C prefix induction list above,
+not an unguarded O19/O20 theorem body. README and NOTES correspondence/status
+were updated without altering any production theorem surface.

@@ -3073,3 +3073,78 @@ bounds/uniqueness/count, and installed target ranges/decomposition. Only after
 that complete construction is committed may O19 RHS receive fresh3/3 and its
 mandatory census4/owner closure gate. Never supply those desired outputs as
 premises or substitute the independently constructed opposite-order trace.
+
+
+### R183 bounded construction status (supersedes R182's next-work list)
+
+**Proved in research:** an arbitrary-length A/A BEGIN row now derives every
+intermediate guard from the original one-cut guard and the actual replay
+bundle, then constructs its own local crossings, sealed suffix replays,
+reached bundle, original uniqueness, finite derivation and exact row count.
+`o19BubbleBeginRow` is not a four-crossing fixture disguised as induction;
+`r183ActualGenericBeginRow` independently instantiates that generic function
+on R182's admitted source, with NO INPUTS and two actual first-row crossings.
+The reached cursor always retains its own actual trace and evidence.
+
+A separate generic partial-map kernel derives an actual early-right effect
+result from original frames, congruence and partial commutation. This is NOT
+checked control/tag applicability. A25's attempted actual-pair integration
+exhausted three compiler checks (eta/visibility boundary) and was fully
+removed; it was NOT retried under a different name. Five later micro-units
+proved smaller pointwise composition/commutation transport, primitive actual
+forward-map projection, actual captured-map commutation and frame projection.
+The actual integration and source-map rebasing remain future work.
+
+Canonical pair selection now chooses both authoritative blocks in the actual
+operational-left/right-canonical executions under the fixed accepted bijection,
+conditional on genuine existing operational capital. It derives their actual
+opening occurrences and both pre-opening WF facts. R181 D6 is instantiated
+at these exact cuts. The shared dependency list, successful resolver outputs
+and cross-cut effect agreement are INTERNAL induction hypotheses; equal
+component headers/programs and whole-prefix effect/control synchronization
+are not produced. No arbitrary replacement execution, target state or
+caller-chosen bridge bijection is used.
+
+**Partial / stated:** no entire O19 prerequisite group(i)-(v) is complete.
+Later Cartesian rows and checked applicability, all four block orientations,
+exact original occurrence plan, whole coverage/product count, and installed
+target ranges/decomposition/origin update are open. O19 received ZERO body
+attempts. One disposable O20 selector probe used2/3 checks: the existing
+rank/adjacent guard has the wrong pre-block state index and does not prove
+an empty between-block gap. These are sizing diagnostics, not an impossibility
+proof for a future selector. Ten finite-linear-extension obligations are
+listed in the R183 audit. O20 synchronization and O21 withdrawal remain open;
+O17/root placement is untouched. Census remains5=1/3/0/0/1.
+
+**Quantities / escape hatches:** new theorem/specification functions and
+proof fields are quantity0; actual states, traces, selected ranges and partial
+outputs remain ordinary indexed data. Model types stay abstract except the
+honest Unit/empty-key fixture. No unsafe primitive, postulate, partiality, new
+hole, new with/local alias, computed-existential local case or scoped-to-raw
+cast was introduced. The only permission exception is TWO prior-approved
+LocalDiamond visibility keywords: public export on the existing
+`RawActivationMove` record, plain export on existing
+`beginRawAfterForeignActivation`. Their actual consumers are
+`o19CheckObservedRawMove` (both raw projections) and
+`o19BeginAfterActivation`. No LocalDiamond declaration/body/signature/order
+changed; byte reconstruction and frozen suffix hashes are checked by the
+R183 frozen-audit script. No build/seed/LocalDiamond TTC was deleted.
+
+**Next:** use the small actual-map transport/frame lemmas to finish the
+actual effect-domain specialization, then DERIVE rebased checked control/tag
+applicability for later Cartesian rows. Complete all-four orientation,
+source-origin/coverage/product-count and target-installed-block construction
+before any O19 RHS attempt. For O20, derive legal complete block selection
+with BOTH revised clauses and preserve it through actual replays; establish
+the internal paired-prefix effects/controls before claiming an endpoint
+bridge. All30 A and8 C slots were consumed; no fourth retry or hidden body.
+Exact checks, rollback evidence and final validation are in the R183 audit,
+compiler ledger/archive and final evidence report under research-tests.
+
+**Final validation:**65 serialized checks:55 ordinary PASS,2 expected compiler
+rejections counted as negative-test PASS,8 charged rejected attempts,0
+interruptions. All17 final regressions passed (16 fresh research target checks
+and the seeded production package build);207/207 seeds remain. Every37 retained
+source-changing commit has an earlier exact-hash fresh PASS. The final evidence
+report records frozen/production/CP3/census/cache authentication. No unproved
+body is recast as proved, and independent reviewer acceptance remains pending.

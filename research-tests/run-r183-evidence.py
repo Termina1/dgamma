@@ -77,6 +77,11 @@ assert all(len(v)<=3 and v==list(range(1,len(v)+1)) for v in attempts.values()),
 assert sum(k.startswith('A') for k in attempts)<=30
 assert sum(k.startswith('B') for k in attempts)==1 and len(attempts['B1'])<=3
 assert sum(k.startswith('C') for k in attempts)<=8
+assert not (ROOT/'research-tests/DGamma/R183O20SelectorProbe.idr').exists(), 'disposable probe retained'
+actual_domain = (ROOT/'research/DGamma/CP5O19ActualCommutedDomainSpike.idr').read_text()
+assert 'o19PairEarlyEffectRunObserved' not in actual_domain, 'exhausted A25 consumer retained'
+assert set(re.findall(r'^0 ([A-Za-z_]\w*)\s*:',actual_domain,re.M)) == {
+    'o19ActualForwardMapAt','o19ActualPairMapCommutes','o19ActualFrameRelated'}
 (ROOT/'research-tests/O6-R183-COMPILER-LEDGER.json').write_text(json.dumps(records,indent=2)+'\n')
 with tarfile.open(ROOT/'research-tests/O6-R183-COMPILER-EVIDENCE.tar.gz','w:gz') as archive:
     for r in records:
@@ -97,7 +102,7 @@ summary = dict(checks=len(records),ordinaryPasses=sum(r['passed'] and not r['exp
     workflowViolations=[dict(unit=r['unit'],detail=r['workflowViolation']) for r in records if 'workflowViolation' in r],
     seededPackageBuilds=sum(r['path']=='package' for r in records),
     attemptCapsVerified=attempts,priorFreshPassForEverySourceCommit=proof_commits,
-    rejectedSourcesNotCommitted=True,
+    rejectedSourcesNotCommitted=True,exhaustedA25ConsumerAbsent=True,disposableO20ProbeAbsent=True,
     retainedNewDeclarations=sum(len(r.get('newTopLevelDeclarations',[])) for r in records if r['passed'] and not r['expectedDiagnostic']),
     ledgerSHA256=hashlib.sha256((ROOT/'research-tests/O6-R183-COMPILER-LEDGER.json').read_bytes()).hexdigest(),
     archiveSHA256=hashlib.sha256((ROOT/'research-tests/O6-R183-COMPILER-EVIDENCE.tar.gz').read_bytes()).hexdigest(),
