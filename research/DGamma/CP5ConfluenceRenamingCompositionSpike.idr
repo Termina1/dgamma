@@ -2928,3 +2928,22 @@ acceptedLeftEndpointCurrent name key world error value nameEq keyEq left right r
     left (leftFinalIndex registrations) (leftRegistrationSideScan (generationTraceCorrespondence registrations)) of
     (finalOrdinal ** scan) => currentDomainFromEmptyScan name key world error value nameEq keyEq left finalOrdinal
       (leftFinalGenerations registrations) scan aligned empty selected observed found
+
+export
+0 acceptedRightEndpointCurrent :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq renaming left right) ->
+  AlignedTransitions name key world error value nameEq keyEq right -> (bindings (registry rightFirst) = []) ->
+  (selected : name) -> (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry rightFinal) = Just observed) ->
+  (generation : RegistrationGeneration name ** lookupCurrentGeneration @{nameEq} selected (rightFinalGenerations registrations) = Just generation)
+acceptedRightEndpointCurrent name key world error value nameEq keyEq left right renaming registrations aligned empty selected observed found =
+  case registrationSideGenerationScan name key world error value nameEq Z emptyRegistrationIndex
+    right (rightFinalIndex registrations) (rightRegistrationSideScan (generationTraceCorrespondence registrations)) of
+    (finalOrdinal ** scan) => currentDomainFromEmptyScan name key world error value nameEq keyEq right finalOrdinal
+      (rightFinalGenerations registrations) scan aligned empty selected observed found
