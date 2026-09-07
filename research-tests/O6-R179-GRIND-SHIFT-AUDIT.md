@@ -247,3 +247,44 @@ without the failed consumer target, (ii) a separately typed exact provider/targe
 resolution lemma using explicit name/key/world/value parameters and the existing
 `targetFiberExplicit`, then (iii) the checked consumer Begin edge. This is NOT
 permission to relabel another full A11 attempt.
+
+## Final A prerequisite outcome — partial, cap not circumvented
+
+The supervisor explicitly ratified the A11 stop and approved the three DISTINCT
+A12/A13/A14 statements (not another A11 packet attempt). If all three had landed,
+a future packet would have been their projection; no reattempt of A11 itself.
+
+- **A12 PASS1/1, 3.115s, `bf24a44`: `r179ObservedProviderEdges`.** Actual checked
+  provider Begin, Iter and Finish edges plus exact cut/finished WF. This
+  authenticates A9/A10's actual raw outputs and excludes their default branches.
+  It does not identify this fixture trace with A1's certified trace or package
+  the root insertion prefix, and makes NO consumer-target claim.
+- **A13 exhausted3/3, fully removed.** 2.08s: explicit targetFiberExplicit still
+  stops at resolveView/providerOf. 15.56s: explicit providerOf congruence exposes
+  the actual deeply nested setFiberRuntime/localTable/normalized-table projection.
+  17.67s: `restrictOwnedPreservingOrderBindings` plus an explicitly typed
+  dependent-context elimination handles the normalized table's binding fact,
+  but cannot identify that simple memberKey expression with the ACTUAL
+  provider candidate's nested fiber/table projection. No accepted target lemma.
+  Largest sample ~4.4GiB, not a cost stop; all are real diagnostic rejections.
+- **A14 blocked, 0 attempts.** Without A13's actual target resolution, do not
+  restate another target proof inside a checked-consumer-Begin attempt or add
+  that target as a counterexample assumption. No unused budget was laundered.
+- Full A12 source freshly restored after A13; no orphan, no staged source,
+  no remaining failed declaration, no compiler cache removed.
+
+**Next smallest prerequisite** is an independent producer-owned projection
+lemma for the ACTUAL provider Finish output: exact lookupFiber0, Active view,
+exact runtime table binding list across BOTH setFiberRuntime layers, and
+consumer lookupFiber1. Use `restrictOwnedPreservingOrderBindings` after named
+fiber/output equations have exposed those layers; do not unfold the hidden
+canonical normalization implementation or equate erased table certificates.
+Only then derive providerOf ServiceA=Just0, targetFiber=Just ProviderView0,
+checked consumer Begin/post-WF and final consumer Finish/quiet/noFailure.
+Original A1/A2 remains the sole certified empty-origin four-step negative cut;
+A12 is independent checked provider-edge capital, NOT an asserted equality of
+proof-bearing trace objects. The remaining protocol, fifteen-field bundle,
+blocks/decomposition and full current-safety negative list still applies.
+
+No surface/body revision this shift, O19 body0 attempts, O21 withdrawal0,
+O17/root/A8 body0, O20 body0. Frozen five-hole census remains 1/3/0/0/1.

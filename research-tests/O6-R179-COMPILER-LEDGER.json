@@ -744,5 +744,149 @@
     "matchingSourceCommits": [
       "39040bac3ba74fd51fa54f7c54a69422703812a2"
     ]
+  },
+  {
+    "unit": "A12-1",
+    "path": "research-tests/DGamma/R179O19ObservedExecution.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O19ObservedExecution.idr"
+    ],
+    "start": "2026-09-07T09:57:06.277744+00:00",
+    "end": "2026-09-07T09:57:09.392605+00:00",
+    "seconds": 3.1146317082457244,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 270160,
+    "sourceSHA256": "71150c8e0a473464f16401cebe07066004a29aed51806caf70548df67745457d",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\n",
+    "matchingSourceCommits": [
+      "bf24a4433b65084c4fa57158f549962c85de2b39"
+    ]
+  },
+  {
+    "unit": "A13-1",
+    "path": "research-tests/DGamma/R179O19ObservedExecution.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O19ObservedExecution.idr"
+    ],
+    "start": "2026-09-07T09:57:47.520932+00:00",
+    "end": "2026-09-07T09:57:49.598199+00:00",
+    "seconds": 2.077116083819419,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 270656,
+    "sourceSHA256": "3323911defdc34aae521a0588d3f4efb0f45da4cbe818ada541cdfac2a23eb9d",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\nError: While processing right hand side of r179ObservedConsumerTarget. Can't solve constraint between: case providerOf ServiceA (registry r179ObservedProviderFinished) of\n  { Nothing => Nothing\n  ; Just provider => map (ProviderView provider) (resolveView [] (registry r179ObservedProviderFinished))\n  } and Just (ProviderView 0 EmptyView).\n\nDGamma.R179O19ObservedExecution:71:3--77:9\n 71 |   trans\n 72 |     (targetFiberExplicit {name = Nat} {key = ToyKey} {value = ToyValue}\n 73 |       {world = ToyRuntime} {error = String} %search %search emptyConsumerComponent\n 74 |       Root False emptyOwned (Inactive Nothing)\n 75 |       (registry {name = Nat} {key = ToyKey} {value = ToyValue}\n 76 |         {world = ToyRuntime} {error = String} r179ObservedProviderFinished))\n\n",
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A13-2",
+    "path": "research-tests/DGamma/R179O19ObservedExecution.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O19ObservedExecution.idr"
+    ],
+    "start": "2026-09-07T09:58:39.554442+00:00",
+    "end": "2026-09-07T09:58:55.115700+00:00",
+    "seconds": 15.5609749997966,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4269440,
+    "sourceSHA256": "3652d3d535e1e3af3ae32370229a7f5df9f1e06f18f33f8e6114037e3de93ffb",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\nError: While processing right hand side of r179ObservedConsumerTarget. Can't solve constraint between: Just 0 and if isActive (fiberLifecycle (setFiberRuntime (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)) (localTable (MkLocalState (worldState r179ObservedProviderCut) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)))) (ownedValues (fiberTable (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView))))))) (Active (pushLocalUndo (componentProvisions (fiberComponent (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)))) (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) id) EmptyView))) && Delay (memberKey ServiceA (ownedValues (fiberTable (setFiberRuntime (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)) (localTable (MkLocalState (worldState r179ObservedProviderCut) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)))) (ownedValues (fiberTable (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView))))))) (Active (pushLocalUndo (componentProvisions (fiberComponent (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)))) (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) id) EmptyView))))) then Just 0 else providerIn ServiceA [].\n\nDGamma.R179O19ObservedExecution:83:89--83:93\n 79 |         Just owner => Just (ProviderView owner EmptyView))\n 80 |       (the (providerOf {name = Nat} {key = ToyKey} {value = ToyValue}\n 81 |         {world = ToyRuntime} {error = String} @{%search} @{%search} ServiceA\n 82 |         (registry {name = Nat} {key = ToyKey} {value = ToyValue}\n 83 |           {world = ToyRuntime} {error = String} r179ObservedProviderFinished) = Just 0) Refl))\n                                                                                              ^^^^\n\n",
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A13-3",
+    "path": "research-tests/DGamma/R179O19ObservedExecution.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O19ObservedExecution.idr"
+    ],
+    "start": "2026-09-07T10:02:39.692257+00:00",
+    "end": "2026-09-07T10:02:57.360901+00:00",
+    "seconds": 17.66835429193452,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4597952,
+    "sourceSHA256": "159a9a30f88cee0ac4aa369c3686fc2428664fe05cde31577e4e6459327dd298",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\nError: While processing right hand side of r179ObservedConsumerTarget. Can't solve constraint between: if memberKey ServiceA (ownedValues (restrictOwnedPreservingOrder toySpecA (contextA True))) then Just 0 else Nothing and if isActive (fiberLifecycle (setFiberRuntime (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)) (localTable (MkLocalState (worldState r179ObservedProviderCut) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)))) (ownedValues (fiberTable (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView))))))) (Active (pushLocalUndo (componentProvisions (fiberComponent (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)))) (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) id) EmptyView))) && Delay (memberKey ServiceA (ownedValues (fiberTable (setFiberRuntime (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)) (localTable (MkLocalState (worldState r179ObservedProviderCut) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)))) (ownedValues (fiberTable (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView))))))) (Active (pushLocalUndo (componentProvisions (fiberComponent (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)))) (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) id) EmptyView))))) then Just 0 else providerIn ServiceA [].\n\nDGamma.R179O19ObservedExecution:84:10--94:62\n 84 |         (cong (\\present => the (Maybe Nat) (if present then Just 0 else Nothing))\n 85 |           ((the ((table : CoeffectContext ToyKey ToyValue) ->\n 86 |               bindings table = bindings (contextA True) ->\n 87 |               memberKey @{%search} ServiceA table = True)\n 88 |             (\\(MkCoeffectContext entries unique), exact =>\n 89 |               cong (\\items => isJust (lookupEntries {key = ToyKey} {value = ToyValue}\n\n",
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A13-restored",
+    "path": "research-tests/DGamma/R179O19ObservedExecution.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O19ObservedExecution.idr"
+    ],
+    "start": "2026-09-07T10:03:53.722403+00:00",
+    "end": "2026-09-07T10:03:56.831995+00:00",
+    "seconds": 3.1094015412963927,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 270192,
+    "sourceSHA256": "71150c8e0a473464f16401cebe07066004a29aed51806caf70548df67745457d",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\n",
+    "matchingSourceCommits": [
+      "bf24a4433b65084c4fa57158f549962c85de2b39"
+    ]
   }
 ]
