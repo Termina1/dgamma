@@ -93,3 +93,17 @@ export
 rootBirthForwardLocated name key world error value renaming left right correspondence selected component birth =
   rootBirthForwardObserved name key world error value renaming Z Z left right correspondence selected component (locatedActionOrdinal birth)
     (rawClosingActionAtLocated name key world error value left (OInsert selected Root component) birth)
+
+export
+0 rootBirthBackwardLocated :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  ExternalRootBirthCorrespondence renaming Z left Z right ->
+  (selected : name) -> (component : Component key value world error) ->
+  (birth : LocatedActionOccurrence (OInsert selected Root component) right) ->
+  LocatedActionOccurrence (OInsert selected Root component) left
+rootBirthBackwardLocated name key world error value renaming left right correspondence selected component birth =
+  rootBirthBackwardObserved name key world error value renaming Z Z left right correspondence selected component (locatedActionOrdinal birth)
+    (rawClosingActionAtLocated name key world error value right (OInsert selected Root component) birth)
