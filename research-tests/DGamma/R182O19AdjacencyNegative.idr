@@ -55,3 +55,18 @@ r182GapState (S (S (S (S (S (S (S (S (S later))))))))) = MkSystemState ()
   (MkCoeffectContext [Bind 2 (MkFiber r45Child Root False emptyOwned (Active id EmptyView)), Bind 1 (MkFiber r45Child Root False emptyOwned (Active id EmptyView)), Bind 0 (MkFiber r45Child Root False emptyOwned (Active id EmptyView))]
     (uniqueBindings (the (Registry Nat R45Key R45Value Unit String)
       (insertBinding @{r45NameEq} 2 (freshFiber r45Child Root) (registry (r182IndependentState 4)) Refl))))
+
+||| B-Adj4: nine ACTUAL checked edges, together with the exact intervening
+||| Insert2 edge, its simultaneous nonzero count, and successful right-first
+||| opening at the genuine pre-left cut2. No nested execution builder.
+public export
+0 r182GapTrace :
+  (Transitions (r182GapState 0) (r182GapState 9),
+   (segment : Transitions (r182GapState 4) (r182GapState 5) **
+     ((transitionCount segment = 1),
+      CheckedEarlyApplication Nat R45Key Unit String R45Value r45NameEq r45KeyEq
+        (r182GapState 2) (LBegin 1) LBeginTag)))
+r182GapTrace =
+  ((MoreTransitions (Fired {before = r182GapState 0} {afterState = r182GapState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182GapState 1} {afterState = r182GapState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182GapState 2} {afterState = r182GapState 3} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl) (MoreTransitions (Fired {before = r182GapState 3} {afterState = r182GapState 4} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl) (MoreTransitions (Fired {before = r182GapState 4} {afterState = r182GapState 5} r45NameEq r45KeyEq (OInsert 2 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182GapState 5} {afterState = r182GapState 6} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl) (MoreTransitions (Fired {before = r182GapState 6} {afterState = r182GapState 7} r45NameEq r45KeyEq (LAdvance 1) LFinishTag Refl) (MoreTransitions (Fired {before = r182GapState 7} {afterState = r182GapState 8} r45NameEq r45KeyEq (LBegin 2) LBeginTag Refl) (MoreTransitions (Fired {before = r182GapState 8} {afterState = r182GapState 9} r45NameEq r45KeyEq (LAdvance 2) LFinishTag Refl) NoTransitions))))))))),
+   ((MoreTransitions (Fired {before = r182GapState 4} {afterState = r182GapState 5} r45NameEq r45KeyEq (OInsert 2 Root r45Child) OInsertTag Refl) NoTransitions) **
+     (Refl, MkCheckedEarlyApplication (r182IndependentState 7) Refl)))
