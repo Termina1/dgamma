@@ -92,6 +92,7 @@ import DGamma.CP4Support
 import DGamma.CP4SupportSolution
 import DGamma.CP4SupportQuiescence
 import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5RawClosingRankSpike
 import Data.List
 import Data.List.Elem
 import Data.Nat
@@ -10660,6 +10661,43 @@ installedFiberScoped nameEq actor state installed =
       void (missingLookupRejectsInstalledScoped nameEq actor state exact
         installed)
     MkErasedInspection (Just fiber) exact => (fiber ** exact)
+
+||| Every genuine located closing episode has an actual protocol-ranked actor
+||| at its OWN closedStartState. This prepares the finite rank maximum; it is
+||| not the raw maximal-closing theorem and does not call frozen deletion.
+public export
+0 rawClosingEpisodeProtocolRank :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq global ->
+  (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq selected global) ->
+  (rank : Nat ** NameProtocolRank protocol nameEq
+    (closedStartState (locatedEpisode episode)) selected rank)
+rawClosingEpisodeProtocolRank name key world error value nameEq keyEq protocol {initial}
+  global premises selected episode =
+    case installedFiberScoped nameEq selected (closedStartState (locatedEpisode episode))
+      (installedTraceStart (closedInsideInstalled (locatedEpisode episode))) of
+      (fiber ** found) =>
+        case rawProtocolRanksAtPrefix name key world error value protocol nameEq keyEq
+          (prefixThroughOpening episode)
+          (appendTransitions (closedTransitions (locatedEpisode episode)) (traceAfterClosing episode))
+          (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+            (sym (trans (appendTransitionsAssociative (traceBeforeOpening episode)
+              (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode))) NoTransitions)
+              (appendTransitions (closedTransitions (locatedEpisode episode)) (traceAfterClosing episode)))
+              (locatedDecomposition episode))) (replayAligned premises))
+          (replace {p = RegistrationProvenance protocol nameEq}
+            (sym (trans (appendTransitionsAssociative (traceBeforeOpening episode)
+              (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode))) NoTransitions)
+              (appendTransitions (closedTransitions (locatedEpisode episode)) (traceAfterClosing episode)))
+              (locatedDecomposition episode))) (replayProvenance premises))
+          (emptyRegistryProtocolRanked protocol nameEq initial (replayInitialEmpty premises))
+          selected fiber found of
+          (rank ** ranked) => (rank ** MkNameProtocolRank fiber found ranked)
 
 record ScopedCommittedOpeningEvidence
   (name, key, world, error : Type) (value : key -> Type)
