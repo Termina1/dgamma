@@ -5,11 +5,13 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4Support
+import DGamma.CP4ParentSafety
 import DGamma.CP4DeletionSelectedOwn
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5RawClosingRankSpike
 import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5ImmutableBirthMetadataSpike
+import DGamma.CP5RetiredFlagEvaluationSpike
 import Data.Nat
 import Decidable.Equality
 
@@ -402,3 +404,20 @@ retirementOccurrenceLocated name key world error value _ action (ActionOccursHer
 retirementOccurrenceLocated name key world error value _ action (ActionOccursLater step rest later) =
   currentBirthPrependLocation name key world error value step rest action
     (retirementOccurrenceLocated name key world error value rest action later)
+
+0 nonInsertionSourceObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  ((parent : Parent name) -> (component : Component key value world error) -> (action = OInsert (actionOwner action) parent component) -> Void) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} (actionOwner action) (registry before) = observed) ->
+  (fiber : Fiber name key value world error **
+    lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} (actionOwner action) (registry before) = Just fiber)
+nonInsertionSourceObserved name key world error value nameEq keyEq action before afterState tag raw notInsert Nothing exact =
+  case rawAbsentOwnerInsertion name key world error value nameEq keyEq action before afterState tag raw exact of
+    (parent ** component ** inserted) => void (notInsert parent component inserted)
+nonInsertionSourceObserved name key world error value nameEq keyEq action before afterState tag raw notInsert (Just fiber) exact = (fiber ** exact)
