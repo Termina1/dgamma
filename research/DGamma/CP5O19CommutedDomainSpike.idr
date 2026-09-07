@@ -52,3 +52,22 @@ o19FirstDomainObserved after before origin Nothing exact defined =
       Refl impossible
 o19FirstDomainObserved after before origin (Just actual) exact defined =
   cong isJust exact
+
+||| Infer the previously UNSUPPLIED early right-map domain from the two
+||| original frames and genuine partial commutation. No early map result,
+||| early checked action, target trace, or output relation is an input.
+export
+0 o19CommutingFramesEarlyDomain :
+  (state : Type) -> (eq : Equivalence state) -> (left, right : PartialMap state) ->
+  ((first, second : state) -> relation eq first second ->
+    PartialRelated state (relation eq) (right first) (right second)) ->
+  PartialCommute eq left right -> (origin, middle, final : state) ->
+  PartialRelated state (relation eq) (left origin) (Just middle) ->
+  PartialRelated state (relation eq) (right middle) (Just final) ->
+  (isJust (right origin) = True)
+o19CommutingFramesEarlyDomain state eq left right rightRespects commute origin middle final
+  leftFrame rightFrame =
+    o19FirstDomainObserved left right origin (right origin) Refl
+      (trans (o19RelatedDefined (commute origin))
+        (o19ComposedFramesObserved state (relation eq) right left rightRespects
+          origin middle final (left origin) Refl leftFrame rightFrame))
