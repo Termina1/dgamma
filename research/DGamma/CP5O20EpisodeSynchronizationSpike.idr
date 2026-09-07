@@ -95,3 +95,31 @@ synchronizationHeadValue name key world value keyEq renaming wanted leftOwner
         (synchronizedTables effects leftOwner))
         (cong (\owner => lookupBinding {key = key} {value = value} @{keyEq}
           wanted (effectTables right owner)) ownerSame))))
+
+||| Supervisor-authorized projection of B4+B5 along structural dependency
+||| recursion. No direct attempt at the exhausted B3 suspended-case body.
+||| This consumes an INTERNAL cut invariant; it does not produce that invariant.
+export
+0 synchronizationResolutionFromObservedHeads :
+  (name, key, world : Type) -> (value : key -> Type) ->
+  (keyEq : DecEq key) -> (renaming : NameBijection name) ->
+  (deps : List key) -> (leftView, rightView : View name deps) ->
+  (left, right : EffectState name key value world) ->
+  RenamedRuntimeEffects name key world value renaming left right ->
+  ViewRelatedBy renaming leftView rightView ->
+  (resolveEffectValues @{keyEq} deps leftView left =
+    resolveEffectValues @{keyEq} deps rightView right)
+synchronizationResolutionFromObservedHeads name key world value keyEq renaming
+  [] EmptyView EmptyView left right effects views = Refl
+synchronizationResolutionFromObservedHeads name key world value keyEq renaming
+  (wanted :: rest) (ProviderView leftOwner leftTail)
+  (ProviderView rightOwner rightTail) left right effects views =
+    case synchronizationHeadValue name key world value keyEq renaming wanted
+      leftOwner rightOwner left right effects (fst (consInjective views)) of
+      (headValue ** (leftHead, rightHead)) =>
+        synchronizationResolvedHeadObserved name key world value keyEq wanted
+          rest leftOwner rightOwner leftTail rightTail left right headValue
+          leftHead rightHead
+          (synchronizationResolutionFromObservedHeads name key world value keyEq
+            renaming rest leftTail rightTail left right effects
+              (snd (consInjective views)))
