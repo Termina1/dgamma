@@ -4,6 +4,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP4Support
 import DGamma.CP4DeletionBoundaryPlan
 import DGamma.CP4DeletionBoundaryDeleted
 import DGamma.CP4DeletionInactiveInvariant
@@ -378,3 +379,24 @@ currentDomainScanInvariant name key world error value nameEq keyEq trace ordinal
           (advanceGenerationEnvironment @{nameEq} ordinal action live) finalOrdinal finalLive tail alignedTail
           (currentDomainAfterAction name key world error value nameEq keyEq ordinal live action _ _ tag
             (checkedActionProjects nameEq keyEq action _ _ tag checked) previous)
+
+||| Every actual endpoint fiber has a current generation in THIS exact scan.
+||| Both state and scanner start empty; no endpoint-domain axiom is supplied.
+export
+0 currentDomainFromEmptyScan :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) -> (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq Z [] trace finalOrdinal finalLive ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  (bindings (registry initial) = []) ->
+  (selected : name) -> (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry finalState) = Just observed) ->
+  (generation : RegistrationGeneration name ** lookupCurrentGeneration @{nameEq} selected finalLive = Just generation)
+currentDomainFromEmptyScan name key world error value nameEq keyEq {initial} trace finalOrdinal finalLive scan aligned empty =
+  currentDomainScanInvariant name key world error value nameEq keyEq trace Z [] finalOrdinal finalLive scan aligned
+    (\selected, fiber, found => case emptyRegistryProtocolRanked
+      (emptyRegistrationProtocol {key = key} {value = value} {world = world} {error = error}) nameEq initial empty selected fiber found of
+      (rank ** ranked) => case ranked of Refl impossible)
