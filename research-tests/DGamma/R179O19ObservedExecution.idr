@@ -37,3 +37,10 @@ public export
 r179ObservedProviderCut : SystemState Nat ToyKey ToyValue ToyRuntime String
 r179ObservedProviderCut = maybe r179ObservedProviderBegin snd
   (applyAction (LAdvance 0) r179ObservedProviderBegin)
+
+||| Observe the real provider Finish payload rather than invent its accumulator.
+||| The next packet authenticates this target and its consumer resolution.
+public export
+r179ObservedProviderFinished : SystemState Nat ToyKey ToyValue ToyRuntime String
+r179ObservedProviderFinished = maybe r179ObservedProviderCut snd
+  (applyAction (LAdvance 0) r179ObservedProviderCut)
