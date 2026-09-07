@@ -72,3 +72,11 @@ consumes both gated rawActivationAfter/rawActivationRuns and derives the
 checked-domain condition by preservation. The long check freshly regenerated
 transitive consumers of the changed LocalDiamond interface (including
 CanonicalSort/DeletionChain), not a new edit to those frozen source files.
+
+A7 PASS1,2.080s (674f057), actual Begin-after-foreign producer.
+A8 PASS1,2.081s (85486b4), O19EarlyAlong indexed cut evidence.
+A9 PASS1,3.124s: arbitrary-length structural induction now DERIVES every
+Begin guard along an actual aligned foreign-activation trace from the ONE
+initial guard, deriving reached well-formedness simultaneously. Classification
+/foreignness are internal source-shape hypotheses, not new O19 premises;
+obtaining them for every installed block and handling insertions remain open.

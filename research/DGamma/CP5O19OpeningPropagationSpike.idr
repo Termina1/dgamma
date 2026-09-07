@@ -81,3 +81,38 @@ data O19EarlyAlong :
     (0 early : CheckedEarlyApplication name key world error value nameEq keyEq before action tag) ->
     (0 remaining : O19EarlyAlong name key world error value nameEq keyEq action tag rest) ->
     O19EarlyAlong name key world error value nameEq keyEq action tag (MoreTransitions step rest)
+
+||| Arbitrary-length FORWARD guard derivation for an actual aligned foreign
+||| activation segment. Only the initial Begin guard is input; every later
+||| guard and every reached well-formedness fact is constructed simultaneously.
+||| Classifying arbitrary installed block bodies remains a separate obligation.
+public export
+0 o19OpeningAlongForeignActivations :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {before, finalState : SystemState name key value world error} ->
+  (trace : Transitions before finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  (0 classes : {first, last : SystemState name key value world error} ->
+    (step : Transition first last) -> OccursIn step trace ->
+    (PaperActivationStep step, Not (actor = transitionActor step))) ->
+  (registryWellFormed @{nameEq} @{keyEq} before = True) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq before (LBegin actor) LBeginTag ->
+  O19EarlyAlong name key world error value nameEq keyEq (LBegin actor) LBeginTag trace
+o19OpeningAlongForeignActivations nameEq keyEq actor NoTransitions AlignedEnd
+  classes wellFormed early = EarlyAlongEnd early
+o19OpeningAlongForeignActivations {before} nameEq keyEq actor _
+  (AlignedStep {middle} action tag checked rest alignedRest) classes wellFormed early =
+    EarlyAlongStep (Fired {before} {afterState = middle} nameEq keyEq action tag checked)
+      rest early
+      (o19OpeningAlongForeignActivations nameEq keyEq actor rest alignedRest
+        (\step, occurs => classes step (OccursLater occurs))
+        (preservationTheoremProof nameEq keyEq action before middle tag wellFormed
+          (checkedActionProjects nameEq keyEq action before middle tag checked))
+        (o19BeginAfterActivation nameEq keyEq actor action tag checked
+          (Builtin.fst (classes (Fired {before} {afterState = middle} nameEq keyEq action tag checked) OccursHere))
+          (\same => Builtin.snd (classes
+            (Fired {before} {afterState = middle} nameEq keyEq action tag checked) OccursHere)
+              (trans same (sym (o19TransitionActorOwner
+                (Fired {before} {afterState = middle} nameEq keyEq action tag checked)))))
+          wellFormed early))
