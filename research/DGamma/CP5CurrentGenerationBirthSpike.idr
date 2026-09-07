@@ -400,3 +400,14 @@ currentDomainFromEmptyScan name key world error value nameEq keyEq {initial} tra
     (\selected, fiber, found => case emptyRegistryProtocolRanked
       (emptyRegistrationProtocol {key = key} {value = value} {world = world} {error = error}) nameEq initial empty selected fiber found of
       (rank ** ranked) => case ranked of Refl impossible)
+
+||| Predicate on the evaluator's ACTUAL result: failure imposes no obligation;
+||| a successful result must contain its action owner. Used only for non-removal.
+0 CurrentResultOwner :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (actor : name) -> Maybe (RuleTag, SystemState name key value world error) -> Type
+CurrentResultOwner name key world error value nameEq actor Nothing = ()
+CurrentResultOwner name key world error value nameEq actor (Just (tag, state)) =
+  (fiber : Fiber name key value world error **
+    lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} actor (registry state) = Just fiber)
