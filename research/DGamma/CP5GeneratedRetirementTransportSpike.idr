@@ -87,3 +87,20 @@ currentBirthBeforeCut name key world error value prior later selected generation
   MkCurrentGenerationBirth parent component (beforeCutOccurrence name key world error value prior later (OInsert selected parent component) birth)
     (trans stamp (cong (MkRegistrationGeneration selected)
       (sym (beforeCutOccurrenceOrdinal name key world error value prior later (OInsert selected parent component) birth))))
+
+||| A9's prefix-current stamp authenticates a real birth in its ORIGINAL trace.
+export
+0 generatedPacketCurrentBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  (packet : LocatedGeneratedOrchestration name key world error value nameEq trace) ->
+  CurrentGenerationBirth name key world error value trace (generatedActor packet) (generatedCurrent packet)
+generatedPacketCurrentBirth name key world error value nameEq trace packet =
+  replace {p = \whole => CurrentGenerationBirth name key world error value whole (generatedActor packet) (generatedCurrent packet)}
+    (actionOccurrenceDecomposition (generatedOccurrence packet))
+    (currentBirthBeforeCut name key world error value (beforeActionOccurrence (generatedOccurrence packet))
+      (MoreTransitions (locatedTransition (generatedOccurrence packet)) (afterActionOccurrence (generatedOccurrence packet)))
+      (generatedActor packet) (generatedCurrent packet)
+      (currentBirthFromGenerationScan name key world error value nameEq (beforeActionOccurrence (generatedOccurrence packet))
+        (generatedScanOrdinal packet) (generatedLive packet) (generatedScan packet) (generatedActor packet) (generatedCurrent packet) (generatedCurrentExact packet)))
