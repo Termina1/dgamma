@@ -755,3 +755,27 @@ currentOwnerFiberAfterAction name key world error value nameEq keyEq ordinal liv
   currentLifecycleTargetPresent name key world error value nameEq keyEq (LLeave actor) Refl before afterState tag raw
 currentOwnerFiberAfterAction name key world error value nameEq keyEq ordinal live unique (LUnload actor) before afterState tag raw generation current =
   currentLifecycleTargetPresent name key world error value nameEq keyEq (LUnload actor) Refl before afterState tag raw
+
+0 currentFiberAfterAction :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) -> GenerationEnvironmentNamesUnique live ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  ((selected : name) -> (generation : RegistrationGeneration name) ->
+    (lookupCurrentGeneration @{nameEq} selected live = Just generation) ->
+    (fiber : Fiber name key value world error **
+      lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+        @{nameEq} selected (registry before) = Just fiber)) ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected (advanceGenerationEnvironment @{nameEq} ordinal action live) = Just generation) ->
+  (fiber : Fiber name key value world error **
+    lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry afterState) = Just fiber)
+currentFiberAfterAction name key world error value nameEq keyEq ordinal live unique action before afterState tag raw previous selected generation current =
+  case decEq @{nameEq} selected (actionOwner action) of
+    Yes same => case same of Refl => currentOwnerFiberAfterAction name key world error value nameEq keyEq ordinal live unique action before afterState tag raw generation current
+    No distinct => case previous selected generation (trans (sym (lookupAdvanceGenerationOther nameEq ordinal action selected distinct live)) current) of
+      (fiber ** found) => (fiber ** trans (registryLocalUpdateForeign nameEq selected (actionOwner action) distinct (registry before)
+        (systemRegistryUpdate (applyActionLocalUpdate nameEq keyEq action before afterState tag raw))) found)
