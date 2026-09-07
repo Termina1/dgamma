@@ -5240,3 +5240,33 @@ canonicalWorkObservedSequenceLift name key world error value nameEq fixedOrder
     canonicalWorkObservedActionLift name key world error value nameEq fixedOrder action
       (canonicalWorkActionRank name key world error value nameEq fixedOrder action) Refl
       (canonicalWorkObservedSequenceLift name key world error value nameEq fixedOrder rest source target progress)
+
+||| Exact whole-prefix decrease at the SAME two observed action ranks.
+||| No unproved rank decrease or arbitrary target word is accepted as a premise.
+0 canonicalWorkObservedPairDrop :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (fixedOrder : List name) ->
+  {first, pairFirst : SystemState name key value world error} ->
+  (earlier : Transitions first pairFirst) ->
+  (leftAction, rightAction : Action name key value world error) ->
+  (leftRank, rightRank : Nat) ->
+  (canonicalWorkActionRank name key world error value nameEq fixedOrder leftAction = Just leftRank) ->
+  (canonicalWorkActionRank name key world error value nameEq fixedOrder rightAction = Just rightRank) ->
+  (rankCrossing leftRank rightRank = 1) -> (segments : List (List Nat)) ->
+  (foldr (+) Z (map DGamma.CP5ConfluenceWorkMeasureSpike.rankInversions
+    (traceActionFold name key world error value (List (List Nat))
+      (canonicalWorkRankStep name key world error value nameEq fixedOrder)
+      (canonicalWorkRankStep name key world error value nameEq fixedOrder leftAction
+        (canonicalWorkRankStep name key world error value nameEq fixedOrder rightAction segments)) earlier)) =
+   S (foldr (+) Z (map DGamma.CP5ConfluenceWorkMeasureSpike.rankInversions
+    (traceActionFold name key world error value (List (List Nat))
+      (canonicalWorkRankStep name key world error value nameEq fixedOrder)
+      (canonicalWorkRankStep name key world error value nameEq fixedOrder rightAction
+        (canonicalWorkRankStep name key world error value nameEq fixedOrder leftAction segments)) earlier))))
+canonicalWorkObservedPairDrop name key world error value nameEq fixedOrder earlier
+  leftAction rightAction leftRank rightRank leftExact rightExact crossed segments =
+    rewrite leftExact in rewrite rightExact in
+      segmentedRankProgressDrops (canonicalWorkObservedSequenceLift name key world error value nameEq fixedOrder earlier
+        (rankSegmentStep (Just leftRank) (rankSegmentStep (Just rightRank) segments))
+        (rankSegmentStep (Just rightRank) (rankSegmentStep (Just leftRank) segments))
+        (rankSegmentHeadProgress leftRank rightRank segments crossed))
