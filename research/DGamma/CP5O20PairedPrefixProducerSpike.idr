@@ -309,3 +309,58 @@ synchronizationRegistrationSuccessor name key world error value nameEq keyEq
         (expectedBridgeBijection sameInputs) actor component leftParent rightParent
         parents leftRegistry rightRegistry leftAbsent rightAbsent selected
         (synchronizedActorControls paired))
+
+||| Simultaneous runtime-write projection, ready for actual Advance/Finish
+||| observations. These are separate one-sided lookup/output observations;
+||| cross-side world/table equalities must come from the deterministic consumer.
+export
+0 pairedRuntimeReplacementEffects :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (renaming : NameBijection name) -> (actor : name) ->
+  (leftWorld, rightWorld, leftNextWorld, rightNextWorld : world) ->
+  (leftOld, rightOld, leftNext, rightNext : Fiber name key value world error) ->
+  (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world}
+    {error = error} @{nameEq} actor leftRegistry = Just leftOld) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world}
+    {error = error} @{nameEq} (renameForward renaming actor) rightRegistry = Just rightOld) ->
+  (leftNextWorld = rightNextWorld) ->
+  (bindings (ownedValues (fiberTable leftNext)) =
+    bindings (ownedValues (fiberTable rightNext))) ->
+  RenamedRuntimeEffects name key world value renaming
+    (projectEffectState {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} (MkSystemState leftWorld leftRegistry))
+    (projectEffectState {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} (MkSystemState rightWorld rightRegistry)) ->
+  RenamedRuntimeEffects name key world value renaming
+    (projectEffectState {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} (MkSystemState leftNextWorld
+        (replaceBinding @{nameEq} actor leftNext leftRegistry)))
+    (projectEffectState {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} (MkSystemState rightNextWorld
+        (replaceBinding @{nameEq} (renameForward renaming actor) rightNext rightRegistry)))
+pairedRuntimeReplacementEffects name key world error value nameEq keyEq renaming
+  actor leftWorld rightWorld leftNextWorld rightNextWorld leftOld rightOld leftNext
+  rightNext leftRegistry rightRegistry leftFound rightFound worlds tables paired =
+    pairedEffectsAcrossFrames name key world value keyEq renaming
+      (setEffectTable @{nameEq} actor (ownedValues (fiberTable leftNext))
+        (setEffectAmbient leftNextWorld
+          (projectEffectState @{nameEq} (MkSystemState leftWorld leftRegistry))))
+      (projectEffectState @{nameEq} (MkSystemState leftNextWorld
+        (replaceBinding @{nameEq} actor leftNext leftRegistry)))
+      (setEffectTable @{nameEq} (renameForward renaming actor)
+        (ownedValues (fiberTable rightNext)) (setEffectAmbient rightNextWorld
+          (projectEffectState @{nameEq} (MkSystemState rightWorld rightRegistry))))
+      (projectEffectState @{nameEq} (MkSystemState rightNextWorld
+        (replaceBinding @{nameEq} (renameForward renaming actor) rightNext rightRegistry)))
+      (projectRuntimeReplace nameEq keyEq actor leftWorld leftNextWorld leftOld
+        leftNext leftRegistry leftFound (ownedValues (fiberTable leftNext)) Refl)
+      (pairedSetRuntimeEffects name key world value nameEq renaming actor leftNextWorld
+        rightNextWorld worlds (ownedValues (fiberTable leftNext))
+        (ownedValues (fiberTable rightNext)) tables
+        (projectEffectState @{nameEq} (MkSystemState leftWorld leftRegistry))
+        (projectEffectState @{nameEq} (MkSystemState rightWorld rightRegistry)) paired)
+      (projectRuntimeReplace nameEq keyEq (renameForward renaming actor) rightWorld
+        rightNextWorld rightOld rightNext rightRegistry rightFound
+        (ownedValues (fiberTable rightNext)) Refl)
