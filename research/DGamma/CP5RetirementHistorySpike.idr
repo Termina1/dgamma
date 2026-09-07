@@ -525,3 +525,22 @@ rawRetiredPropertyTrace name key world error value nameEq keyEq property global 
           (\exact => retiredNow (actionOwner action)
             (replace {p = \wanted => LocatedActionOccurrence wanted global} exact
               (embedding action (MkLocatedActionOccurrence _ _ NoTransitions (Fired nameEq keyEq action tag checked) rest Refl Refl)))) previous)
+
+||| Every retired endpoint fiber from the empty registry has an ACTUAL original
+||| ORetire occurrence. No name/generation match or history token is supplied.
+export
+0 retiredEndpointHasRetirement :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> AlignedTransitions name key world error value nameEq keyEq trace ->
+  (bindings (registry first) = []) -> (selected : name) -> (fiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry finalState) = Just fiber) -> (retired fiber = True) ->
+  LocatedActionOccurrence (ORetire selected) trace
+retiredEndpointHasRetirement name key world error value nameEq keyEq {first} trace aligned empty =
+  rawRetiredPropertyTrace name key world error value nameEq keyEq
+    (\selected => LocatedActionOccurrence (ORetire selected) trace) trace trace aligned
+    (\action, occurrence => occurrence) (\selected, occurrence => occurrence)
+    (\selected, fiber, found, retiredTrue => void
+      (nothingIsNotJust (trans (sym (lookupFiberEmptyRegistry nameEq selected first empty)) found)))
