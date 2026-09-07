@@ -3304,3 +3304,24 @@ Next frontier, in order:
 Rank A consumed exactly 12 micro-units; its accepted actual-worklist decrease is
 conditional on the same supplied checked descending pair, not a total sorter.
 See `research-tests/O6-R177-GRIND-SHIFT-AUDIT.md` and the P2 stop/repair audit.
+
+## R178 delegated decisions — owner override pending
+
+A9 and A8 are each a **supervisor decision under delegation, owner override
+pending**. A9 adopts an explicit research-only GeneratedOrchestrationMatched
+hypothesis covering every located generated/non-root ORetire and ORemove,
+one-to-one and in relative order modulo the SAME accepted generation bijection.
+Thread it alongside original uniqueness only where needed; do not edit frozen
+CP3 or strengthen every IndependentCanonicalSchedule inhabitant. R177's quiet
+countershape retains its TWO-CAPITAL GAP, not a full O18 counterexample.
+
+A8 revises O17's RESEARCH root-placement conclusion to root-first modulo
+provision availability: earliest legal placement after removal of earlier
+same-key providers, retaining relative root-input order. This repairs the
+literal paper root-before-every-lifecycle clause, not the production guard.
+STORE occupancy, released by the provider disposer (Cordis reflect.ts:189/198),
+is the runtime reason; retirement alone is not release. R174's distinct-name
+candidate is a placement-shape fixture target, not a full O17 proof. R172 reuse
+remains excluded by uniqueness. Frozen adjacentSwapSuffixSpike stays untouched;
+any genuine need to revise it triggers STOP/gate. Detailed clause designs and
+implementation ledger: research-tests/O6-R178-GRIND-SHIFT-AUDIT.md.
