@@ -183,3 +183,12 @@ r181PrecedenceRanks
   (MkComponent (MkCoeffectSpec (targetHead :: targetRest) targetUnique) (MkCoeffectSpec (targetProvided :: targetMore) targetProvisionUnique) targetProgram)
   providerRank consumerRank providerRanked consumerRanked wanted provides depends =
     case providerRanked of Refl impossible
+
+||| Empty generated catalog, but NOT an empty component universe: both actual
+||| provider and dependency-bearing consumer are admitted and rank-coherent.
+public export
+r181Protocol : RegistrationProtocol ToyKey ToyValue ToyRuntime String
+r181Protocol = MkRegistrationProtocol (\tag => Nothing) r181ProtocolRank
+  (\parent, child, step, tag, parentRank, childRank, occurs, parentRanked,
+    childRanked, tagged, cataloged => case cataloged of Refl impossible)
+  r181PrecedenceRanks
