@@ -33,3 +33,15 @@ record RenamedRuntimeEffects
   0 synchronizedTables : (selected : name) ->
     (bindings (effectTables left selected) =
       bindings (effectTables right (renameForward renaming selected)))
+
+||| Runtime binding equality, not equality of erased table certificates.
+export
+0 synchronizationLookupBindings :
+  (key : Type) -> (value : key -> Type) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (left, right : CoeffectContext key value) ->
+  (bindings left = bindings right) ->
+  (lookupBinding @{keyEq} wanted left = lookupBinding @{keyEq} wanted right)
+synchronizationLookupBindings key value keyEq wanted
+  (MkCoeffectContext leftEntries leftUnique)
+  (MkCoeffectContext rightEntries rightUnique) same =
+    cong (lookupEntries {key = key} {value = value} @{keyEq} wanted) same
