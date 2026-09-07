@@ -178,3 +178,23 @@ canonicalControlStaticFields
   (FibersControlRelated leftParent rightParent leftRetired rightRetired leftTable rightTable
     leftLifecycle rightLifecycle parentExact retiredExact lifecycleExact) =
       (Refl, parentExact, retiredExact)
+
+||| Exact GLOBAL one-sided effect transport: original -> its own canonical
+||| endpoint -> an actual relational replay endpoint. No right schedule occurs.
+export
+0 originalThroughCanonicalReplayEffects :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState, replayedFinal : SystemState name key value world error} ->
+  (original : Transitions initial finalState) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq
+    (canonicalFinal (canonicalSchedule capital)) replayedFinal ->
+  EffectStateRelated keyEq (projectEffectState @{nameEq} finalState) (projectEffectState @{nameEq} replayedFinal)
+originalThroughCanonicalReplayEffects name key world error value nameEq keyEq protocol original capital replay =
+  MkEffectStateRelated
+    (trans (ambientExact (endpointEffectsEquivalent (canonicalEndpoint (canonicalSchedule capital))))
+      (ambientExact (replayedEffects replay)))
+    (\selected => trans (tablesExact (endpointEffectsEquivalent (canonicalEndpoint (canonicalSchedule capital))) selected)
+      (tablesExact (replayedEffects replay) selected))
