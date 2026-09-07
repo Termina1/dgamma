@@ -142,3 +142,32 @@ export
     (projectEffectState {name} {key} {value} {world} {error} @{nameEq} afterState)
 o20BeginFrameProjection nameEq keyEq actor before afterState
   (MkActualEffectFrame (PartialDefined related)) = related
+
+||| Advance a real paired-prefix EFFECT hypothesis through the two actual
+||| Begin executions. Both one-sided frames are produced from checked actions,
+||| not supplied endpoint relations. Program-step synchronization is separate.
+export
+0 o20PairedBeginEffects :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (renaming : NameBijection name) -> (leftActor, rightActor : name) ->
+  (leftBefore, leftAfter, rightBefore, rightAfter : SystemState name key value world error) ->
+  BeginStep nameEq keyEq leftActor leftBefore leftAfter ->
+  BeginStep nameEq keyEq rightActor rightBefore rightAfter ->
+  RenamedRuntimeEffects name key world value renaming
+    (projectEffectState {name} {key} {value} {world} {error} @{nameEq} leftBefore)
+    (projectEffectState {name} {key} {value} {world} {error} @{nameEq} rightBefore) ->
+  RenamedRuntimeEffects name key world value renaming
+    (projectEffectState {name} {key} {value} {world} {error} @{nameEq} leftAfter)
+    (projectEffectState {name} {key} {value} {world} {error} @{nameEq} rightAfter)
+o20PairedBeginEffects {name} {key} {world} {error} {value} nameEq keyEq renaming
+  leftActor rightActor leftBefore leftAfter rightBefore rightAfter leftOpening rightOpening effects =
+    pairedEffectsAcrossFrames name key world value keyEq renaming
+      (projectEffectState @{nameEq} leftBefore) (projectEffectState @{nameEq} leftAfter)
+      (projectEffectState @{nameEq} rightBefore) (projectEffectState @{nameEq} rightAfter)
+      (o20BeginFrameProjection nameEq keyEq leftActor leftBefore leftAfter
+        (actualTransitionEffectFrame nameEq keyEq (LBegin leftActor) LBeginTag leftBefore leftAfter
+          (beginEquation leftOpening))) effects
+      (o20BeginFrameProjection nameEq keyEq rightActor rightBefore rightAfter
+        (actualTransitionEffectFrame nameEq keyEq (LBegin rightActor) LBeginTag rightBefore rightAfter
+          (beginEquation rightOpening)))
