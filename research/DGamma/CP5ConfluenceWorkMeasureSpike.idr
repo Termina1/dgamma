@@ -20,3 +20,11 @@ rankInversions : List Nat -> Nat
 rankInversions [] = Z
 rankInversions (actor :: later) =
   sum (map (rankCrossing actor) later) + rankInversions later
+
+||| Readable reassociation used for every unaffected third-node contribution.
+export
+0 rankPlusSwap : (a, b, c : Nat) -> a + (b + c) = b + (a + c)
+rankPlusSwap a b c =
+  trans (plusAssociative a b c)
+    (trans (cong (\combined => combined + c) (plusCommutative a b))
+      (sym (plusAssociative b a c)))
