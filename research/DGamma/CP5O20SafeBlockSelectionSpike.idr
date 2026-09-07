@@ -185,3 +185,23 @@ o20CheckCandidate nameEq keyEq protocol sourceOrder trace blocks premises unique
       (Builtin.fst (o20ChosenActorFacts swap))
       (Builtin.fst (Builtin.snd (o20ChosenActorFacts swap)))
       (Builtin.snd (Builtin.snd (o20ChosenActorFacts swap))))
+
+||| Enumerate every distinct NEIGHBORING actor pair, preserving the exact
+||| source word at each structural cut. This enumerates possible safe swaps,
+||| not yet inversions of a fixed accepted support/ancestor extension.
+export
+0 o20AdjacentCandidates :
+  {name : Type} -> (nameEq : DecEq name) ->
+  (sourceOrder, earlier, later : List name) -> (sourceOrder = earlier ++ later) ->
+  List (targetOrder : List name ** AdjacentActorOrderSwap name sourceOrder targetOrder)
+o20AdjacentCandidates nameEq sourceOrder earlier [] exact = []
+o20AdjacentCandidates nameEq sourceOrder earlier [last] exact = []
+o20AdjacentCandidates nameEq sourceOrder earlier (left :: right :: rest) exact =
+  case decEq @{nameEq} left right of
+    Yes same => o20AdjacentCandidates nameEq sourceOrder (earlier ++ [left]) (right :: rest)
+      (trans exact (appendAssociative earlier [left] (right :: rest)))
+    No distinct =>
+      (earlier ++ (right :: left :: rest) **
+        MkAdjacentActorOrderSwap earlier left right rest exact Refl distinct) ::
+      o20AdjacentCandidates nameEq sourceOrder (earlier ++ [left]) (right :: rest)
+        (trans exact (appendAssociative earlier [left] (right :: rest)))
