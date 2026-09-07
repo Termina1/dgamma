@@ -905,3 +905,20 @@ supportSolutionParent name key world error value nameEq keyEq state candidate so
         (not (retired observed) && candidate parent && (allList (\wanted => providerFromPredicate {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} wanted candidate (registryFibers (registry state))) (dependencies (componentDependencies (fiberComponent observed))))))
       (rewrite found in rewrite parentExact in Refl)))
       (trans (sym (solution selected)) supported))
+
+||| Executable computed support is parent-closed within this one endpoint.
+export
+0 computedSupportParent :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> (selected : name) ->
+  (observed : Fiber name key value world error) ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry state) = Just observed ->
+  (parent : name) -> fiberParent observed = ChildOf parent ->
+  isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected state = True ->
+  isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} parent state = True
+computedSupportParent name key world error value nameEq keyEq state selected observed found parent parentExact supported =
+  supportSolutionParent name key world error value nameEq keyEq state
+    (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor state)
+    (supportSetIsSolution nameEq keyEq state) selected observed found parent parentExact supported
