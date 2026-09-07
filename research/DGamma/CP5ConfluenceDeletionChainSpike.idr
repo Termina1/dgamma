@@ -93,6 +93,7 @@ import DGamma.CP4SupportSolution
 import DGamma.CP4SupportQuiescence
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5RawClosingRankSpike
+import DGamma.CP5UniqueRawNameInsertions
 import Data.List
 import Data.List.Elem
 import Data.Nat
@@ -30606,3 +30607,39 @@ rawClosingReachedCutExact name key world error value nameEq keyEq selected episo
     (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode))) NoTransitions)
     (appendTransitions (closedTransitions (locatedEpisode episode)) (traceAfterClosing episode)))
     (locatedDecomposition episode)
+
+||| Same authenticated raw actor has one protocol rank at arbitrary closings.
+||| The two reached states remain distinct; B13 supplies genuine cross-time coherence.
+0 rawClosingRanksSameActor :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq global) ->
+  (UniqueRawNameInsertions name key world error value nameEq keyEq global) ->
+  (leftActor, rightActor : name) ->
+  (left : LocatedClosedEpisode name key world error value nameEq keyEq leftActor global) ->
+  (right : LocatedClosedEpisode name key world error value nameEq keyEq rightActor global) ->
+  (leftActor = rightActor) ->
+  (rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises
+    (ErasedClosingEpisodeOccurrence leftActor left) =
+   rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises
+    (ErasedClosingEpisodeOccurrence rightActor right))
+rawClosingRanksSameActor name key world error value nameEq keyEq protocol global premises unique
+  leftActor _ left right Refl =
+    uniqueRawRanksAcrossPrefixes name key world error value protocol nameEq keyEq global
+      (replayAligned premises) (replayInitialEmpty premises) unique
+      (prefixThroughOpening left)
+      (appendTransitions (closedTransitions (locatedEpisode left)) (traceAfterClosing left))
+      (rawClosingReachedCutExact name key world error value nameEq keyEq leftActor left)
+      (prefixThroughOpening right)
+      (appendTransitions (closedTransitions (locatedEpisode right)) (traceAfterClosing right))
+      (rawClosingReachedCutExact name key world error value nameEq keyEq leftActor right)
+      leftActor
+      (rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises
+        (ErasedClosingEpisodeOccurrence leftActor left))
+      (rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises
+        (ErasedClosingEpisodeOccurrence leftActor right))
+      (rawClosingOccurrenceRankSound name key world error value nameEq keyEq protocol global premises leftActor left)
+      (rawClosingOccurrenceRankSound name key world error value nameEq keyEq protocol global premises leftActor right)
