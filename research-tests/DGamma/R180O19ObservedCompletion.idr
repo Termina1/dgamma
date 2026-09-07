@@ -149,3 +149,14 @@ export
   (checkedApplyAction @{%search} @{%search} action before = Just (tag, afterState))
 r180CheckedFromPrerequisites action before afterState tag raw domains =
   rewrite raw in rewrite domains in Refl
+
+||| Constructor projection of the COMMITTED A7 raw equation and A8 exact output
+||| domains through A9. This is not a fourth direct A5 checked-edge attempt.
+export
+0 r180ConsumerBeginFromPrerequisites :
+  BeginStep (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) 1
+    r179ObservedProviderFinished r180ObservedConsumerBegun
+r180ConsumerBeginFromPrerequisites = MkBeginStep
+  (r180CheckedFromPrerequisites (LBegin 1) r179ObservedProviderFinished
+    r180ObservedConsumerBegun LBeginTag r180ConsumerBeginRaw
+    (fst r180ConsumerBeginOutputDomains))
