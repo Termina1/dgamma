@@ -114,3 +114,13 @@ r181EndpointReady = r181EndpointObserved
     @{%search} DGamma.Section3Example.toySpecA (ownedValues (ownedA True))))) Refl
   (r180NormalizedServiceMemberObserved (ownedValues (restrictOwnedPreservingOrder
     @{%search} DGamma.Section3Example.toySpecA (ownedValues (ownedA True)))) Refl)
+
+||| Admit dependency-free providers at rank0, and genuine consumers ONLY if
+||| they declare no provisions, at rank1. No function equality is inspected.
+public export
+r181ProtocolRank : Component ToyKey ToyValue ToyRuntime String -> Maybe Nat
+r181ProtocolRank (MkComponent (MkCoeffectSpec [] unique) provision program) = Just 0
+r181ProtocolRank (MkComponent (MkCoeffectSpec (wanted :: rest) unique)
+  (MkCoeffectSpec [] provisionUnique) program) = Just 1
+r181ProtocolRank (MkComponent (MkCoeffectSpec (wanted :: rest) unique)
+  (MkCoeffectSpec (provided :: more) provisionUnique) program) = Nothing
