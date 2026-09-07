@@ -88,3 +88,26 @@ exactBirthStampRejectsLater name selected generation ordinal exact later =
   LTImpliesNotGTE later
     (replace {p = \position => LTE ordinal position}
       (sym (cong generationBirthOrdinal exact)) reflexive)
+
+||| Original-trace identity capital, not endpoint withdrawal capital.
+||| All fields are erased; no runtime state or undo handle is duplicated.
+||| The producers below fix the environment to the ACCEPTED side scanner.
+public export
+record AcceptedEndpointBirthIdentity
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name)
+  {initial, finalState : SystemState name key value world error}
+  (trace : Transitions initial finalState)
+  (environment : GenerationEnvironment name) (selected : name) where
+  constructor MkAcceptedEndpointBirthIdentity
+  0 endpointIdentityGeneration : RegistrationGeneration name
+  0 endpointIdentityCurrent :
+    (lookupCurrentGeneration @{nameEq} selected environment = Just endpointIdentityGeneration)
+  0 endpointIdentityEveryBirth :
+    (parent : Parent name) -> (component : Component key value world error) ->
+    (birth : LocatedActionOccurrence (OInsert selected parent component) trace) ->
+    (endpointIdentityGeneration = MkRegistrationGeneration selected (locatedActionOrdinal birth))
+  0 endpointIdentityNoLaterBirth :
+    (parent : Parent name) -> (component : Component key value world error) ->
+    (birth : LocatedActionOccurrence (OInsert selected parent component) trace) ->
+    Not (LT (generationBirthOrdinal endpointIdentityGeneration) (locatedActionOrdinal birth))
