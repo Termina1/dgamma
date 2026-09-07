@@ -261,3 +261,19 @@ r182IndependentDecomposition = MkActorBlockDecomposition r182IndependentBlocks
         (CoveredLifecycleStep _ _ Refl Here
           (CoveredLifecycleStep _ _ Refl (There Here)
             (CoveredLifecycleStep _ _ Refl (There Here) LifecycleActorsCoveredEnd))))))
+
+||| A14: full revised safety inhabitant, with no assumed input. Both programs
+||| and both provision/dependency lists are empty; A6 authenticates BOTH entire
+||| orders. The new right-first certificate uses the exact common cut2 and its
+||| actual right-first destination7. Left-first is the selected blockOpening.
+public export
+0 r182IndependentSafety : AdjacentActorSwapSafety Nat R45Key Unit String R45Value
+  r45Protocol r45NameEq r45KeyEq r182SwapZeroOne (r182IndependentTrace False)
+  r182IndependentDecomposition r182IndependentBundle
+r182IndependentSafety = MkAdjacentActorSwapSafety Here (There Here) (BeforeHere Here)
+  (r182IndependentBlockOrder 0 1 Here (There Here) (BeforeHere Here))
+  (NoGeneratedChildStep _ _ (\parent, component, same => case same of Refl impossible)
+    NoGeneratedChildEnd)
+  (NoGeneratedChildStep _ _ (\parent, component, same => case same of Refl impossible)
+    NoGeneratedChildEnd)
+  (MkCheckedEarlyApplication (r182IndependentState 7) Refl)
