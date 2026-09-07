@@ -70,3 +70,18 @@ currentPutEntryObserved name nameEq inserted fresh candidate current rest (No di
     There later => case recur selected generation later of
       Left same => Left same
       Right old => Right (There old)
+
+0 currentPutEntryOrigin :
+  (name : Type) -> (nameEq : DecEq name) ->
+  (inserted : name) -> (fresh : RegistrationGeneration name) ->
+  (live : GenerationEnvironment name) ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  Elem (selected, generation) (putCurrentGeneration @{nameEq} inserted fresh live) ->
+  Either ((selected, generation) = (inserted, fresh)) (Elem (selected, generation) live)
+currentPutEntryOrigin name nameEq inserted fresh [] selected generation member = case member of
+  Here => Left Refl
+  There later => absurd later
+currentPutEntryOrigin name nameEq inserted fresh ((candidate, current) :: rest) selected generation member =
+  currentPutEntryObserved name nameEq inserted fresh candidate current rest
+    (decEq @{nameEq} inserted candidate) Refl
+    (currentPutEntryOrigin name nameEq inserted fresh rest) selected generation member
