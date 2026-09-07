@@ -5020,3 +5020,72 @@ canonicalWorkRankStep name key world error value nameEq fixedOrder action segmen
       segment :: later => (length (Data.List.takeWhile (\candidate => case decEq @{nameEq} candidate owner of
         Yes same => False
         No distinct => True) fixedOrder) :: segment) :: later
+
+||| The new action fold computes EXACTLY the existing R175 whole-trace measure
+||| input, not a replacement word or a new per-actor debt.
+0 canonicalWorkRankSegmentsFold :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (fixedOrder : List name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (canonicalWorkRankSegments name key world error value nameEq fixedOrder trace =
+    traceActionFold name key world error value (List (List Nat))
+      (canonicalWorkRankStep name key world error value nameEq fixedOrder) [[]] trace)
+canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder NoTransitions = Refl
+canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder
+  (MoreTransitions (Fired stepNameEq stepKeyEq (OInsert child Root component) tag checked) rest) =
+    cong ([] ::) (canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder rest)
+canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder
+  (MoreTransitions (Fired stepNameEq stepKeyEq (OInsert child (ChildOf parent) component) tag checked) rest) =
+    rewrite sym (canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder rest) in
+      case (the (observed : List (List Nat) **
+        canonicalWorkRankSegments name key world error value nameEq fixedOrder rest = observed)
+        (canonicalWorkRankSegments name key world error value nameEq fixedOrder rest ** Refl)) of
+          ([] ** exact) => rewrite exact in Refl
+          ((segment :: later) ** exact) => rewrite exact in Refl
+canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder
+  (MoreTransitions (Fired stepNameEq stepKeyEq (ORetire actor) tag checked) rest) =
+    cong ([] ::) (canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder rest)
+canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder
+  (MoreTransitions (Fired stepNameEq stepKeyEq (ORemove actor) tag checked) rest) =
+    cong ([] ::) (canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder rest)
+canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder
+  (MoreTransitions (Fired stepNameEq stepKeyEq (LBegin actor) tag checked) rest) =
+    rewrite sym (canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder rest) in
+      case (the (observed : List (List Nat) **
+        canonicalWorkRankSegments name key world error value nameEq fixedOrder rest = observed)
+        (canonicalWorkRankSegments name key world error value nameEq fixedOrder rest ** Refl)) of
+          ([] ** exact) => rewrite exact in Refl
+          ((segment :: later) ** exact) => rewrite exact in Refl
+canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder
+  (MoreTransitions (Fired stepNameEq stepKeyEq (LAdvance actor) tag checked) rest) =
+    rewrite sym (canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder rest) in
+      case (the (observed : List (List Nat) **
+        canonicalWorkRankSegments name key world error value nameEq fixedOrder rest = observed)
+        (canonicalWorkRankSegments name key world error value nameEq fixedOrder rest ** Refl)) of
+          ([] ** exact) => rewrite exact in Refl
+          ((segment :: later) ** exact) => rewrite exact in Refl
+canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder
+  (MoreTransitions (Fired stepNameEq stepKeyEq (LDivert actor) tag checked) rest) =
+    rewrite sym (canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder rest) in
+      case (the (observed : List (List Nat) **
+        canonicalWorkRankSegments name key world error value nameEq fixedOrder rest = observed)
+        (canonicalWorkRankSegments name key world error value nameEq fixedOrder rest ** Refl)) of
+          ([] ** exact) => rewrite exact in Refl
+          ((segment :: later) ** exact) => rewrite exact in Refl
+canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder
+  (MoreTransitions (Fired stepNameEq stepKeyEq (LLeave actor) tag checked) rest) =
+    rewrite sym (canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder rest) in
+      case (the (observed : List (List Nat) **
+        canonicalWorkRankSegments name key world error value nameEq fixedOrder rest = observed)
+        (canonicalWorkRankSegments name key world error value nameEq fixedOrder rest ** Refl)) of
+          ([] ** exact) => rewrite exact in Refl
+          ((segment :: later) ** exact) => rewrite exact in Refl
+canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder
+  (MoreTransitions (Fired stepNameEq stepKeyEq (LUnload actor) tag checked) rest) =
+    rewrite sym (canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder rest) in
+      case (the (observed : List (List Nat) **
+        canonicalWorkRankSegments name key world error value nameEq fixedOrder rest = observed)
+        (canonicalWorkRankSegments name key world error value nameEq fixedOrder rest ** Refl)) of
+          ([] ** exact) => rewrite exact in Refl
+          ((segment :: later) ** exact) => rewrite exact in Refl
