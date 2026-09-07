@@ -6,8 +6,10 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5GeneratedOrchestrationMatched
+import DGamma.CP5AcceptedSupportTruthSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
+import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5ConfluenceCrossTraceSpike
 import DGamma.CP5ConfluenceRenamingCompositionSpike
 import DGamma.CP5O20SupportedBirthBridgeSpike
@@ -360,3 +362,46 @@ synchronizationOperationalOrigin name key world error value nameEq keyEq protoco
       rightTrace sameInputs (operationalTargetTrace operational)
       (canonicalTrace (canonicalSchedule rightCapital))
       (replayInitialEmpty (operationalTargetPremises operational)) selected supported
+
+||| R179's one-sided capital at BOTH actual canonical endpoints, with the
+||| opposite support truth produced by accepted A9/unique-birth transport.
+||| These two packets do NOT assert equal views, accumulators, or endpoints.
+export
+0 synchronizationSupportedCanonicalPackets :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (leftTrace : Transitions initial leftFinal) ->
+  (rightTrace : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace) ->
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace) ->
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace) ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  (0 matched : GeneratedOrchestrationMatched name key world error value nameEq
+    leftTrace rightTrace (generatedGenerationBijection sameInputs)) ->
+  (selected : name) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world}
+    {error = error} @{nameEq} @{keyEq} selected leftFinal = True) ->
+  (SupportedCanonicalEndpointView name key world error value nameEq keyEq selected
+    (canonicalFinal (canonicalSchedule leftCapital)),
+   SupportedCanonicalEndpointView name key world error value nameEq keyEq
+    (renameForward (expectedBridgeBijection sameInputs) selected)
+    (canonicalFinal (canonicalSchedule rightCapital)))
+synchronizationSupportedCanonicalPackets name key world error value nameEq keyEq
+  protocol leftTrace rightTrace sameInputs leftCapital rightCapital leftUnique
+  rightUnique matched selected supported =
+    (canonicalSupportedEndpointView name key world error value nameEq keyEq protocol
+      leftTrace leftCapital selected supported,
+     canonicalSupportedEndpointView name key world error value nameEq keyEq protocol
+      rightTrace rightCapital (renameForward (expectedBridgeBijection sameInputs) selected)
+      (acceptedSupportedTruthForward name key world error value nameEq keyEq protocol
+        leftTrace rightTrace sameInputs matched
+        (replayAligned (chainReplayCapital (capitalPremises leftCapital)))
+        (replayAligned (chainReplayCapital (capitalPremises rightCapital)))
+        (replayDiscipline (chainReplayCapital (capitalPremises leftCapital)))
+        (replayInitialEmpty (chainReplayCapital (capitalPremises leftCapital)))
+        leftUnique rightUnique selected supported))
