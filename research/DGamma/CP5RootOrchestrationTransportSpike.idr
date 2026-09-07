@@ -32,3 +32,14 @@ data RootActionOccurs :
     (0 step : Transition first middle) -> (0 rest : Transitions middle finalState) ->
     (0 later : RootActionOccurs name key world error value nameEq action rest) ->
     RootActionOccurs name key world error value nameEq action (MoreTransitions step rest)
+
+export
+0 rootActionOccursPrefix :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (prior : Transitions first middle) -> (later : Transitions middle finalState) ->
+  (action : Action name key value world error) -> RootActionOccurs name key world error value nameEq action later ->
+  RootActionOccurs name key world error value nameEq action (appendTransitions prior later)
+rootActionOccursPrefix name key world error value nameEq NoTransitions later action occurrence = occurrence
+rootActionOccursPrefix name key world error value nameEq (MoreTransitions step rest) later action occurrence =
+  RootActionLater step (appendTransitions rest later) (rootActionOccursPrefix name key world error value nameEq rest later action occurrence)
