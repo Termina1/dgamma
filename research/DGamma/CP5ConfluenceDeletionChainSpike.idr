@@ -30691,3 +30691,45 @@ rawClosingMaximumRankBound name key world error value nameEq keyEq protocol glob
         replace {p = \rank => LTE rank maximumRank}
           (rawClosingOrdinalRankSame name key world error value nameEq keyEq protocol global premises unique
             other consumer episode same) (upper other member)
+
+||| A rank maximum contradicts any RAW outgoing closing precedence edge.
+||| No generation-scoped negative is accepted or relabelled.
+0 rawClosingRankMaximumHasNoDependent :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq global) ->
+  (UniqueRawNameInsertions name key world error value nameEq keyEq global) ->
+  (scan : ClosingEpisodeScan name key world error value nameEq keyEq global) ->
+  (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq selected global) ->
+  ((other : ClosingEpisodeOccurrence name key world error value nameEq keyEq global) ->
+    (Elem other (scannedClosingOccurrences scan)) ->
+    (LTE (rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises other)
+      (rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises
+        (ErasedClosingEpisodeOccurrence selected episode)))) ->
+  (NoDependentClosingEpisode {nameEq = nameEq} {keyEq = keyEq} selected global)
+rawClosingRankMaximumHasNoDependent name key world error value nameEq keyEq protocol global premises unique
+  scan selected episode upper consumer consumerEpisode edge =
+    LTEImpliesNotGT
+      (rawClosingMaximumRankBound name key world error value nameEq keyEq protocol global premises unique scan
+        (rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises
+          (ErasedClosingEpisodeOccurrence selected episode)) upper consumer consumerEpisode)
+      (rawPrecedenceRankAcrossPrefixes name key world error value protocol nameEq keyEq global
+        (replayAligned premises) (replayInitialEmpty premises) unique
+        (prefixThroughOpening episode)
+        (appendTransitions (closedTransitions (locatedEpisode episode)) (traceAfterClosing episode))
+        (rawClosingReachedCutExact name key world error value nameEq keyEq selected episode)
+        (prefixThroughOpening consumerEpisode)
+        (appendTransitions (closedTransitions (locatedEpisode consumerEpisode)) (traceAfterClosing consumerEpisode))
+        (rawClosingReachedCutExact name key world error value nameEq keyEq consumer consumerEpisode)
+        selected consumer
+        (rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises
+          (ErasedClosingEpisodeOccurrence selected episode))
+        (rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises
+          (ErasedClosingEpisodeOccurrence consumer consumerEpisode))
+        (rawClosingOccurrenceRankSound name key world error value nameEq keyEq protocol global premises selected episode)
+        (rawClosingOccurrenceRankSound name key world error value nameEq keyEq protocol global premises consumer consumerEpisode)
+        edge)
