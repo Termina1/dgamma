@@ -11,6 +11,7 @@ import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.R8FullPipeline
 import DGamma.CP5UniqueRawNameInsertions
+import DGamma.CP5GeneratedOrchestrationMatched
 import Decidable.Equality
 
 %default total
@@ -101,6 +102,8 @@ public export
   (rightLate : FullPipelineLateCanonicalPremises name key world error value protocol nameEq keyEq rightTrace) ->
   (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
   (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  (0 leftRightGeneratedMatched : GeneratedOrchestrationMatched name key world error value nameEq
+    leftTrace rightTrace (generatedGenerationBijection sameInputs)) ->
   ConfluenceResult name key world error value protocol nameEq keyEq leftTrace
     rightTrace (generatedGenerationBijection sameInputs)
     (currentNameBijection (endpointRenaming sameInputs))
@@ -108,7 +111,7 @@ r16ConfluenceTheoremAssembly nameEq keyEq protocol initial leftFinal rightFinal
   leftTrace rightTrace leftAligned rightAligned leftDiscipline rightDiscipline
   initialWellFormed initialEmpty leftQuiet rightQuiet leftNoFailures
   rightNoFailures leftTotal rightTotal leftIndependent rightIndependent
-  sameInputs leftLate rightLate leftUnique rightUnique =
+  sameInputs leftLate rightLate leftUnique rightUnique leftRightGeneratedMatched =
     let leftPremises = canonicalPremisesFromTheoremInputs nameEq keyEq protocol
           leftTrace leftAligned leftDiscipline initialWellFormed initialEmpty
           leftQuiet leftNoFailures leftTotal leftIndependent
@@ -116,4 +119,4 @@ r16ConfluenceTheoremAssembly nameEq keyEq protocol initial leftFinal rightFinal
           rightTrace rightAligned rightDiscipline initialWellFormed initialEmpty
           rightQuiet rightNoFailures rightTotal rightIndependent
     in fullPipelineFromBundles nameEq keyEq protocol leftTrace rightTrace
-      leftPremises rightPremises sameInputs leftLate rightLate leftUnique rightUnique
+      leftPremises rightPremises sameInputs leftLate rightLate leftUnique rightUnique leftRightGeneratedMatched
