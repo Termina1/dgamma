@@ -30733,3 +30733,26 @@ rawClosingRankMaximumHasNoDependent name key world error value nameEq keyEq prot
         (rawClosingOccurrenceRankSound name key world error value nameEq keyEq protocol global premises selected episode)
         (rawClosingOccurrenceRankSound name key world error value nameEq keyEq protocol global premises consumer consumerEpisode)
         edge)
+
+||| Open only the selected genuine inventory occurrence; retain that SAME episode.
+0 rawClosingMaximumFromOccurrence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq global) ->
+  (UniqueRawNameInsertions name key world error value nameEq keyEq global) ->
+  (scan : ClosingEpisodeScan name key world error value nameEq keyEq global) ->
+  (occurrence : ClosingEpisodeOccurrence name key world error value nameEq keyEq global) ->
+  ((other : ClosingEpisodeOccurrence name key world error value nameEq keyEq global) ->
+    (Elem other (scannedClosingOccurrences scan)) ->
+    (LTE (rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises other)
+      (rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises occurrence))) ->
+  (selected : name **
+    (episode : LocatedClosedEpisode name key world error value nameEq keyEq selected global **
+      NoDependentClosingEpisode {nameEq = nameEq} {keyEq = keyEq} selected global))
+rawClosingMaximumFromOccurrence name key world error value nameEq keyEq protocol global premises unique scan
+  (ErasedClosingEpisodeOccurrence selected episode) upper =
+    (selected ** (episode ** rawClosingRankMaximumHasNoDependent name key world error value nameEq keyEq
+      protocol global premises unique scan selected episode upper))
