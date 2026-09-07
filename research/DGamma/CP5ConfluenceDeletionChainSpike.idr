@@ -30527,3 +30527,18 @@ public export
 deleteAllClosingEpisodesSpike nameEq keyEq protocol trace premises =
   assembleClosingFreeAccountingSpike nameEq keyEq protocol trace
     (deleteClosingEpisodesCoreSpike nameEq keyEq protocol trace premises)
+
+||| Finite O7 measure at each occurrence's authentic reached opening state.
+||| This is protocol rank, not opening ordinal or a generation-scoped predicate.
+0 rawClosingOccurrenceRank :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq global) ->
+  (ClosingEpisodeOccurrence name key world error value nameEq keyEq global) -> Nat
+rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises
+  (ErasedClosingEpisodeOccurrence selected episode) =
+    fst (rawClosingEpisodeProtocolRank name key world error value nameEq keyEq protocol
+      global premises selected episode)
