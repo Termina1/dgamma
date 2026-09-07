@@ -2062,5 +2062,566 @@
     "symbol": null,
     "transcript": "",
     "matchingSourceCommits": []
+  },
+  {
+    "unit": "F1-1",
+    "path": "research-tests/DGamma/R181O19BundlePrerequisites.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19BundlePrerequisites.idr"
+    ],
+    "start": "2026-09-07T15:38:27.950768+00:00",
+    "end": "2026-09-07T15:38:31.072430+00:00",
+    "seconds": 3.121476082596928,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3190256,
+    "sourceSHA256": "396e27f4708c89c7b6089ccd4590761b6c089b7ee7ca914807afe0dd59bc394e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "5/5: Building DGamma.R181O19BundlePrerequisites (research-tests/DGamma/R181O19BundlePrerequisites.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181BlocksByActor"
+    ],
+    "matchingSourceCommits": [
+      "95d6e036da2287910fdcc291e7dd655e7bbaaf64"
+    ]
+  },
+  {
+    "unit": "F2-1",
+    "path": "research-tests/DGamma/R181O19BundlePrerequisites.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19BundlePrerequisites.idr"
+    ],
+    "start": "2026-09-07T15:39:57.824869+00:00",
+    "end": "2026-09-07T15:39:58.872152+00:00",
+    "seconds": 1.047103582881391,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "6430b9e0027adef35bfaf24873e71588df8e29fb71898af955be484695b7d5f5",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "5/5: Building DGamma.R181O19BundlePrerequisites (research-tests/DGamma/R181O19BundlePrerequisites.idr)\nError: While processing left hand side of r181BlocksFollowOrder. When unifying:\n    BeforeIn 0 ?later [0, 1]\nand:\n    BeforeIn ?earlier ?later [0, 1]\nPattern variable earlier unifies with: 0.\n\nDGamma.R181O19BundlePrerequisites:44:27--48:30\n    |\n 44 |   BeforeIn earlier later [0, 1] ->\n    |                           ^\n 45 |   BlockBefore Nat ToyKey ToyRuntime String ToyValue\n 48 | r181BlocksFollowOrder earlier later earlierMember laterMember (BeforeHere Here) =\n    |                       ^^^^^^^\n\nSuggestion: Use the same name for both pattern variables, since they unify.\n",
+    "newTopLevelDeclarations": [
+      "r181BlocksFollowOrder"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "F2-2",
+    "path": "research-tests/DGamma/R181O19BundlePrerequisites.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19BundlePrerequisites.idr"
+    ],
+    "start": "2026-09-07T15:41:35.572099+00:00",
+    "end": "2026-09-07T15:41:37.647873+00:00",
+    "seconds": 2.0755657497793436,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 726976,
+    "sourceSHA256": "4d0b305f815b5617b6aea1fed9b13181cb14e4a3e30f9555e354d02ac007ccd2",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "5/5: Building DGamma.R181O19BundlePrerequisites (research-tests/DGamma/R181O19BundlePrerequisites.idr)\nError: r181BlocksFollowOrder is not covering.\n\nDGamma.R181O19BundlePrerequisites:39:1--47:84\n 39 | ||| F2: all strict-order witnesses in [0,1] select the actual E7 ordering.\n 40 | ||| Impossible tails are eliminated structurally, not by an assumed ordering.\n 41 | public export\n 42 | 0 r181BlocksFollowOrder : (earlier, later : Nat) ->\n 43 |   (earlierMember : Elem earlier [0, 1]) -> (laterMember : Elem later [0, 1]) ->\n 44 |   BeforeIn earlier later [0, 1] ->\n\nMissing cases:\n    r181BlocksFollowOrder 0 1 _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 1 _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 1 _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 1 _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 1 _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 1 _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 1 _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 1 _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 1 _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 (S (S _)) _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 (S (S _)) _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 (S (S _)) _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 (S (S _)) _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 (S (S _)) _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 (S (S _)) _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 (S (S _)) _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 (S (S _)) _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 (S (S _)) _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 0 _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 0 _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 0 _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 0 _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 0 _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 0 _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 0 _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 0 _ _ (BeforeThere _)\n    r181BlocksFollowOrder 0 0 _ _ (BeforeThere _)\n\n",
+    "newTopLevelDeclarations": [
+      "r181BlocksFollowOrder"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "F2-3",
+    "path": "research-tests/DGamma/R181O19BundlePrerequisites.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19BundlePrerequisites.idr"
+    ],
+    "start": "2026-09-07T15:44:00.809685+00:00",
+    "end": "2026-09-07T15:44:03.916376+00:00",
+    "seconds": 3.106521791778505,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2125360,
+    "sourceSHA256": "e5e164edb7719e5cf2872aaf1b7a201d21f94691699ce49f99bd4c221ff88677",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "5/5: Building DGamma.R181O19BundlePrerequisites (research-tests/DGamma/R181O19BundlePrerequisites.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181BlocksFollowOrder"
+    ],
+    "matchingSourceCommits": [
+      "5aaaab7cfd8ad8f656f689a6c680131331714764"
+    ]
+  },
+  {
+    "unit": "F3-1",
+    "path": "research-tests/DGamma/R181O19BundlePrerequisites.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19BundlePrerequisites.idr"
+    ],
+    "start": "2026-09-07T15:46:16.364062+00:00",
+    "end": "2026-09-07T15:46:22.618789+00:00",
+    "seconds": 6.254562417045236,
+    "exit": 0,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 729040,
+    "sourceSHA256": "d706aac9049178a9f9d9ac55576eaa15f9373e540f7c224dfeebe0042c59d95b",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "5/5: Building DGamma.R181O19BundlePrerequisites (research-tests/DGamma/R181O19BundlePrerequisites.idr)\nError: While processing right hand side of r181BlockRangesApart. Undefined name DGamma.R179O19ObservedExecution.r179ObservedProviderCut. \n\n",
+    "newTopLevelDeclarations": [
+      "r181BlockRangesApart"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "F3-2",
+    "path": "research-tests/DGamma/R181O19BundlePrerequisites.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19BundlePrerequisites.idr"
+    ],
+    "start": "2026-09-07T15:49:20.286549+00:00",
+    "end": "2026-09-07T15:50:28.842470+00:00",
+    "seconds": 68.5558508746326,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4510816,
+    "sourceSHA256": "91326288398bb46cd36956eb43cc9ae3483ffcd8781904f4973d1b065554ebd0",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "5/5: Building DGamma.R181O19BundlePrerequisites (research-tests/DGamma/R181O19BundlePrerequisites.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181BlockRangesApart"
+    ],
+    "matchingSourceCommits": [
+      "b0664ae2cf7cb88af28312044549325a8fe00e08"
+    ]
+  },
+  {
+    "unit": "F4-1",
+    "path": "research-tests/DGamma/R181O19BundlePrerequisites.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19BundlePrerequisites.idr"
+    ],
+    "start": "2026-09-07T15:51:50.316366+00:00",
+    "end": "2026-09-07T15:52:58.884235+00:00",
+    "seconds": 68.56775804236531,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 5187040,
+    "sourceSHA256": "f50b7a6b2fb8d89e5b1f5ce7fcb3d6661510f8c57aa3c886ffcaa9570bdda8ee",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "5/5: Building DGamma.R181O19BundlePrerequisites (research-tests/DGamma/R181O19BundlePrerequisites.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181ActorBlockDecomposition"
+    ],
+    "matchingSourceCommits": [
+      "af9cc1edbf760454ccadc97b268f0830f35c6536"
+    ]
+  },
+  {
+    "unit": "F5-1",
+    "path": "research-tests/DGamma/R181O19UniquenessAndBundle.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19UniquenessAndBundle.idr"
+    ],
+    "start": "2026-09-07T15:55:45.551044+00:00",
+    "end": "2026-09-07T15:55:47.659293+00:00",
+    "seconds": 2.108104833867401,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 923408,
+    "sourceSHA256": "a759407c9d6eb287b9d9a7d43a84d911e79a221599551e229dc87d2533a712ea",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "4/4: Building DGamma.R181O19UniquenessAndBundle (research-tests/DGamma/R181O19UniquenessAndBundle.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181ActualBirthPosition"
+    ],
+    "matchingSourceCommits": [
+      "0e21a8920b885ac1439e4b93925c40a3c119451d"
+    ]
+  },
+  {
+    "unit": "F6-1",
+    "path": "research-tests/DGamma/R181O19UniquenessAndBundle.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19UniquenessAndBundle.idr"
+    ],
+    "start": "2026-09-07T15:58:42.725100+00:00",
+    "end": "2026-09-07T15:58:44.817989+00:00",
+    "seconds": 2.09267674991861,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 654816,
+    "sourceSHA256": "62525e7e00c0bb926e01527282963d8b56789357feb493e8e29882df5c289980",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "4/4: Building DGamma.R181O19UniquenessAndBundle (research-tests/DGamma/R181O19UniquenessAndBundle.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181OriginalUniqueInsertions"
+    ],
+    "matchingSourceCommits": [
+      "73528e4b08892e1a07088583ec40378c18f94bf3"
+    ]
+  },
+  {
+    "unit": "F7-1",
+    "path": "research-tests/DGamma/R181O19UniquenessAndBundle.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19UniquenessAndBundle.idr"
+    ],
+    "start": "2026-09-07T15:59:39.258974+00:00",
+    "end": "2026-09-07T15:59:41.355669+00:00",
+    "seconds": 2.09653858281672,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 921344,
+    "sourceSHA256": "8d83bf3f0035069ace3187a724ee12e4ea7ba90b308463b7443c24a9db22ff99",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "4/4: Building DGamma.R181O19UniquenessAndBundle (research-tests/DGamma/R181O19UniquenessAndBundle.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181ReachedAndProvenance"
+    ],
+    "matchingSourceCommits": [
+      "7dbad1801de252b0239b38fa93ecd7217b7e0de5"
+    ]
+  },
+  {
+    "unit": "F8-1",
+    "path": "research-tests/DGamma/R181O19UniquenessAndBundle.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19UniquenessAndBundle.idr"
+    ],
+    "start": "2026-09-07T16:01:27.425614+00:00",
+    "end": "2026-09-07T16:01:29.524808+00:00",
+    "seconds": 2.099042708054185,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 921232,
+    "sourceSHA256": "341f797d187cea3c1b83c4b1c5d7e41c38cca69067090b11930c5d8b53559d9e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "4/4: Building DGamma.R181O19UniquenessAndBundle (research-tests/DGamma/R181O19UniquenessAndBundle.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181ReplayBundleFromIndependence"
+    ],
+    "matchingSourceCommits": [
+      "52ea2605616c181cf3cb73d85bca906b32d000e7"
+    ]
+  },
+  {
+    "unit": "F-final-installed",
+    "path": "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr"
+    ],
+    "start": "2026-09-07T16:08:28.197826+00:00",
+    "end": "2026-09-07T16:08:29.233004+00:00",
+    "seconds": 1.0350247090682387,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "77eef9aac99afa4e9c2f0dde5d8ae00e1e74e27cde0fc5be6d4211238f2e0c47",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5ObservedInstalledLifecycleSpike (research/DGamma/CP5ObservedInstalledLifecycleSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "51eb5ef832849277434528ea2f5a7eb332dfe6db"
+    ]
+  },
+  {
+    "unit": "F-final-paired",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T16:08:29.298181+00:00",
+    "end": "2026-09-07T16:08:32.449986+00:00",
+    "seconds": 3.1515807500109076,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2607664,
+    "sourceSHA256": "c57be81f7d44b33ab240a0f01b77a78aa2bf00e4adda57d609705d0151f05dd0",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "3d4986623a968d77b1bf9f5c51ed4bf3fea7c5b0"
+    ]
+  },
+  {
+    "unit": "F-final-negative-capital",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T16:08:32.512916+00:00",
+    "end": "2026-09-07T16:09:04.701830+00:00",
+    "seconds": 32.188781125005335,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1790880,
+    "sourceSHA256": "821680d533db389cbaa25af65c8f180fc0224de94c9f6c9d9cfed6260d1ad180",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "95b4ab595c5e86851fb0de8d63cd6ff882367626"
+    ]
+  },
+  {
+    "unit": "F-final-blocks",
+    "path": "research-tests/DGamma/R181O19LocatedBlocks.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19LocatedBlocks.idr"
+    ],
+    "start": "2026-09-07T16:09:04.765013+00:00",
+    "end": "2026-09-07T16:09:07.895030+00:00",
+    "seconds": 3.1298457919619977,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 550368,
+    "sourceSHA256": "e7bcb0e849d264b6951c053a50dd921fa6c4e22494bdba72484bcfefc0fd6a3f",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "4/4: Building DGamma.R181O19LocatedBlocks (research-tests/DGamma/R181O19LocatedBlocks.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "c1667529c5489921f1774b26412a04151b0e5a08"
+    ]
+  },
+  {
+    "unit": "F-final-decomposition",
+    "path": "research-tests/DGamma/R181O19BundlePrerequisites.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19BundlePrerequisites.idr"
+    ],
+    "start": "2026-09-07T16:09:07.956112+00:00",
+    "end": "2026-09-07T16:10:15.346136+00:00",
+    "seconds": 67.38985995808616,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4308752,
+    "sourceSHA256": "f50b7a6b2fb8d89e5b1f5ce7fcb3d6661510f8c57aa3c886ffcaa9570bdda8ee",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "5/5: Building DGamma.R181O19BundlePrerequisites (research-tests/DGamma/R181O19BundlePrerequisites.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "af9cc1edbf760454ccadc97b268f0830f35c6536"
+    ]
+  },
+  {
+    "unit": "F-final-bundle",
+    "path": "research-tests/DGamma/R181O19UniquenessAndBundle.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19UniquenessAndBundle.idr"
+    ],
+    "start": "2026-09-07T16:10:15.412355+00:00",
+    "end": "2026-09-07T16:10:17.484053+00:00",
+    "seconds": 2.0715118749067187,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 602432,
+    "sourceSHA256": "341f797d187cea3c1b83c4b1c5d7e41c38cca69067090b11930c5d8b53559d9e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "4/4: Building DGamma.R181O19UniquenessAndBundle (research-tests/DGamma/R181O19UniquenessAndBundle.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "52ea2605616c181cf3cb73d85bca906b32d000e7"
+    ]
+  },
+  {
+    "unit": "F-final-package",
+    "path": "package",
+    "command": [
+      "idris2",
+      "--build",
+      "dgamma.ipkg"
+    ],
+    "start": "2026-09-07T16:10:17.547943+00:00",
+    "end": "2026-09-07T16:10:34.144233+00:00",
+    "seconds": 16.596104791853577,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 316048,
+    "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "",
+    "matchingSourceCommits": []
   }
 ]

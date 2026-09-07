@@ -461,3 +461,15 @@ Remaining O19 debts: actual component-specific TraceIndependent, the two concret
 NoGeneratedChild body proofs and final AdjacentActorSwapSafety/order-swap assembly.
 The complete negative is STILL absent; no revision/body gate may be inferred.
 D's actual resolved views do not close O20; C stays withdrawal obligations only.
+
+### F final fresh validation (16:07–16:10UTC)
+
+All SIX retained changed Idris modules freshly PASS: actual installed observer
+1.035s; paired runtime/actual views3.152s; count7/totality/actual observations
+32.189s; located blocks3.130s; actual decomposition67.390s; raw uniqueness/
+conditional bundle2.072s. Seeded package invocation PASS16.596s207/207. Whole
+shift85 serialized checks70P/15F, zero interruptions, five seeded package checks.
+F's three normal failures are fully archived; the sole flagged multi-declaration
+invocation remains the original B12-1 violation. No new declaration follows F8.
+The current final/acceptance artifacts now supersede both earlier prefix gates;
+stand-down still requires the supervisor and independent review belongs to parent.
