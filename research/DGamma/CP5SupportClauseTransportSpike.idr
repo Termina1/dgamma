@@ -259,3 +259,35 @@ supportedParentTransport name key world error value nameEq keyEq source target r
 supportedParentTransport name key world error value nameEq keyEq source target renaming selected sourceFiber sourceFound supported recursive (ChildOf parent) parentExact =
   recursive parent (SupportParent (MkParentSupportEdge sourceFiber sourceFound parentExact))
     (computedSupportParent name key world error value nameEq keyEq source selected sourceFiber sourceFound parent parentExact supported)
+
+||| One genuine Definition-67 induction step. No destination support is assumed
+||| for the selected name; only support of smaller ACTUAL edge predecessors.
+export
+0 supportedClauseTransportStep :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (source, target : SystemState name key value world error) -> (renaming : name -> name) ->
+  SupportedClauseTransport name key world error value nameEq keyEq source target renaming ->
+  (selected : name) -> (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected source = True) ->
+  ((lower : name) -> SupportEdge nameEq source lower selected ->
+    (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} lower source = True) ->
+    (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} (renaming lower) target = True)) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} (renaming selected) target = True)
+supportedClauseTransportStep name key world error value nameEq keyEq source target renaming transport selected supported recursive =
+  case computedSupportPresent name key world error value nameEq keyEq source selected supported of
+    (sourceFiber ** sourceFound) => case clauseImage transport selected sourceFiber sourceFound supported of
+      (targetFiber ** (targetFound, componentsSame, parentsSame)) =>
+        actualSupportFromFacts name key world error value nameEq keyEq target (renaming selected) targetFiber targetFound
+          (clauseImageNotRetired transport selected supported targetFiber targetFound)
+          (replace {p = \parent => (supportClauseParent name
+            (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor target) parent = True)}
+            (sym parentsSame) (supportedParentTransport name key world error value nameEq keyEq source target renaming selected sourceFiber sourceFound
+              supported recursive (fiberParent sourceFiber) Refl))
+          (replace {p = \component => (allList (\wanted => providerFromPredicate {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} wanted
+            (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor target)
+            (registryFibers {name = name} {key = key} {value = value} {world = world} {error = error} (registry target)))
+            (dependencies (componentDependencies component)) = True)} (sym componentsSame)
+            (clauseAllListBuild key (\wanted => providerFromPredicate {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} wanted
+              (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor target)
+              (registryFibers {name = name} {key = key} {value = value} {world = world} {error = error} (registry target)))
+              (dependencies (componentDependencies (fiberComponent sourceFiber)))
+              (supportedDependencyTransport name key world error value nameEq keyEq source target renaming transport selected sourceFiber sourceFound supported recursive)))
