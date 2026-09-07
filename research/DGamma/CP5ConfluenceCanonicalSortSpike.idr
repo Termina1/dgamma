@@ -3785,6 +3785,37 @@ canonicalWorkRegistrationInternal name key world error value nameEq step child p
 canonicalWorkRegistrationInternal name key world error value nameEq step child parent component inserted
   (RootRemoveStep fiber found rootParent removed) = case trans (sym inserted) removed of Refl impossible
 
+||| All four actual nodes in this A/generated-insertion crossing are internal.
+||| The moved labels and activation class come from the same checked diamond.
+0 canonicalWorkGroupingActivationOrchestrationExternal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (pair : CanonicalWorkGroupingPair name key world error value selected trace) ->
+  (PaperActivationStep (workPairLeft pair)) -> (PaperOrchestrationStep (workPairRight pair)) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq (workPairLeft pair) (workPairRight pair)) ->
+  (SameExternalOrchestration nameEq
+    (MoreTransitions (workPairLeft pair) (MoreTransitions (workPairRight pair) NoTransitions))
+    (MoreTransitions (movedRight diamond) (MoreTransitions (movedLeft diamond) NoTransitions)))
+canonicalWorkGroupingActivationOrchestrationExternal name key world error value nameEq keyEq selected
+  trace pair activation orchestration diamond =
+    case canonicalWorkOwnedOrchestrationInsertion name key world error value selected
+      (workPairRight pair) (workPairRightOwned pair) orchestration of
+      (child ** (component ** inserted)) =>
+        SkipLeftInternal (workPairLeft pair) (MoreTransitions (workPairRight pair) NoTransitions)
+          (canonicalLifecycleInternal name key world error value nameEq (workPairLeft pair)
+            (canonicalPaperActivationLifecycle name key world error value (workPairLeft pair) activation))
+          (SkipLeftInternal (workPairRight pair) NoTransitions
+            (canonicalWorkRegistrationInternal name key world error value nameEq (workPairRight pair) child selected component inserted)
+            (SkipRightInternal (movedRight diamond) (MoreTransitions (movedLeft diamond) NoTransitions)
+              (canonicalWorkRegistrationInternal name key world error value nameEq (movedRight diamond) child selected component
+                (trans (movedRightAction diamond) inserted))
+              (SkipRightInternal (movedLeft diamond) NoTransitions
+                (canonicalLifecycleInternal name key world error value nameEq (movedLeft diamond)
+                  (canonicalPaperActivationLifecycle name key world error value (movedLeft diamond)
+                    (movedLeftActivationBranch diamond activation))) SameExternalOrchestrationEnd)))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
