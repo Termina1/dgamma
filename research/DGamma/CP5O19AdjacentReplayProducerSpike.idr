@@ -189,3 +189,41 @@ o19ActivationPairReplay nameEq keyEq protocol original earlier left right later
      (o19ActivationPairExternal nameEq keyEq left right leftActivation rightActivation
        (o19ActivationDiamond nameEq keyEq protocol original earlier left right later
       decomposition premises leftActivation rightActivation distinct early)))
+
+||| B8: genuine one-node operational advance, with the ORIGINAL erased
+||| uniqueness premise transported through the sealed actual occurrence fold.
+||| Result itself owns the reached bundle/external/registration correspondence.
+||| This is one A/A node, NOT yet a WholeBlockSwapDerivation/Cartesian loop.
+public export
+0 o19AdvanceActivationPair :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, first, middle, last, finalState : SystemState name key value world error} ->
+  (original : Transitions initial finalState) -> (earlier : Transitions initial first) ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  (later : Transitions last finalState) ->
+  (appendTransitions earlier (MoreTransitions left (MoreTransitions right later)) = original) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  (0 sourceUnique : UniqueRawNameInsertions name key world error value nameEq keyEq original) ->
+  PaperActivationStep left -> PaperActivationStep right ->
+  Not (transitionActor left = transitionActor right) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq first
+    (transitionAction right) (transitionTag right) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right **
+   (result : AdjacentSwapResult name key world error value protocol nameEq keyEq original earlier left right later diamond **
+     (NonEmptyFiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq original (swappedTrace result),
+      UniqueRawNameInsertions name key world error value nameEq keyEq (swappedTrace result))))
+o19AdvanceActivationPair {name} {key} {world} {error} {value}
+  nameEq keyEq protocol original earlier left right later decomposition premises
+  sourceUnique leftActivation rightActivation distinct early =
+  case o19ActivationPairReplay nameEq keyEq protocol original earlier left right later
+    decomposition premises leftActivation rightActivation distinct early of
+      (diamond ** result) => (diamond ** (result **
+        (NonEmptyAdjacentSwap original earlier left right later
+          (AdjacentActivationActivation left right leftActivation rightActivation)
+          diamond result (swappedTrace result) FiniteAdjacentSwapDone,
+         uniqueInsertionsAfterFiniteDerivation name key world error value protocol nameEq keyEq
+           (FiniteAdjacentSwapStep original earlier left right later
+             (AdjacentActivationActivation left right leftActivation rightActivation)
+             diamond result (swappedTrace result) FiniteAdjacentSwapDone) sourceUnique)))
