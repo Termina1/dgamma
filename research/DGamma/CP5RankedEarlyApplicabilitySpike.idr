@@ -26,3 +26,18 @@ record CheckedEarlyApplication
   constructor MkCheckedEarlyApplication
   earlyApplicationFinal : SystemState name key value world error
   0 earlyApplicationChecked : checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, earlyApplicationFinal)
+
+||| Finite exact-tag check, not the existing test-only Boolean comparison.
+public export
+0 observedRuleTagSame : (actual, expected : RuleTag) -> Maybe (actual = expected)
+observedRuleTagSame OInsertTag OInsertTag = Just Refl
+observedRuleTagSame ORetireTag ORetireTag = Just Refl
+observedRuleTagSame ORemoveTag ORemoveTag = Just Refl
+observedRuleTagSame LBeginTag LBeginTag = Just Refl
+observedRuleTagSame LIterTag LIterTag = Just Refl
+observedRuleTagSame LFinishTag LFinishTag = Just Refl
+observedRuleTagSame LDivertTag LDivertTag = Just Refl
+observedRuleTagSame LRaiseTag LRaiseTag = Just Refl
+observedRuleTagSame LLeaveTag LLeaveTag = Just Refl
+observedRuleTagSame LUnloadTag LUnloadTag = Just Refl
+observedRuleTagSame _ _ = Nothing
