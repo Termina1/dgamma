@@ -36,3 +36,18 @@ rawClosingActionAtSplit name key world error value NoTransitions
   (Fired nameEq keyEq action tag checked) later = Refl
 rawClosingActionAtSplit name key world error value (MoreTransitions head tail) step later =
   rawClosingActionAtSplit name key world error value tail step later
+
+public export
+0 rawClosingActionAtLocated :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (action : Action name key value world error) ->
+  (occurrence : LocatedActionOccurrence action trace) ->
+  rawClosingActionAt name key world error value (locatedActionOrdinal occurrence) trace = Just action
+rawClosingActionAtLocated name key world error value trace action occurrence =
+  trans (cong (rawClosingActionAt name key world error value (locatedActionOrdinal occurrence))
+    (sym (actionOccurrenceDecomposition occurrence)))
+    (trans (rawClosingActionAtSplit name key world error value
+      (beforeActionOccurrence occurrence) (locatedTransition occurrence) (afterActionOccurrence occurrence))
+      (cong Just (locatedAction occurrence)))
