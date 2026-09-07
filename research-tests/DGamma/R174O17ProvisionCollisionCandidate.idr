@@ -97,3 +97,11 @@ r178R174ObservedAction (MoreTransitions (Fired nameEq keyEq action tag checked) 
   MkLocatedActionOccurrence _ _ NoTransitions (Fired nameEq keyEq action tag checked) rest (justInjective observed) Refl
 r178R174ObservedAction (MoreTransitions step rest) wanted (S position) observed =
   currentBirthPrependLocation Nat ToyKey ToyRuntime String ToyValue step rest wanted (r178R174ObservedAction rest wanted position observed)
+
+||| Fixture-only erased reconstruction of explicit actual-state annotations.
+||| The runtime observer itself remains executable; no sorting proof is built.
+0 r178R174Annotate :
+  {first, finalState : SystemState Nat ToyKey ToyValue ToyRuntime String} ->
+  (trace : Transitions first finalState) -> AvailabilityTrace Nat ToyKey ToyRuntime String ToyValue trace
+r178R174Annotate {first} NoTransitions = AvailabilityEnd first
+r178R174Annotate {first} (MoreTransitions step rest) = AvailabilityStep first step rest (r178R174Annotate rest)
