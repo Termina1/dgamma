@@ -166,3 +166,15 @@ clauseProviderFromLookup name key world error value nameEq keyEq (Bind current o
           (lookupEntries {key = name} {value = FiberAt name key value world error} @{nameEq} selected (Bind current observedFiber :: rest) =
            lookupEntries {key = name} {value = FiberAt name key value world error} @{nameEq} selected rest)
           (rewrite observed in Refl))) found) supported declares))
+
+export
+0 actualProviderFromFacts :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> (wanted : key) -> (predicate : name -> Bool) ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry state) = Just fiber) ->
+  (predicate selected = True) -> (listMember @{keyEq} wanted (dependencies (componentProvisions (fiberComponent fiber))) = True) ->
+  (providerFromPredicate {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} wanted predicate
+    (registryFibers {name = name} {key = key} {value = value} {world = world} {error = error} (registry state)) = True)
+actualProviderFromFacts name key world error value nameEq keyEq (MkSystemState ambient (MkCoeffectContext entries unique)) =
+  clauseProviderFromLookup name key world error value nameEq keyEq entries
