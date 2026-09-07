@@ -2232,5 +2232,1684 @@
     "symbol": null,
     "transcript": "",
     "matchingSourceCommits": []
+  },
+  {
+    "unit": "B13-1",
+    "path": "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr"
+    ],
+    "start": "2026-09-07T18:35:28.971290+00:00",
+    "end": "2026-09-07T18:35:31.074974+00:00",
+    "seconds": 2.1035391250625253,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 665344,
+    "sourceSHA256": "cc6f62489cd6bdecc20ce93b0be1e814fcd0ba83389b7b8c67bcd1cb928236ad",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "11/11: Building DGamma.CP5O19AdjacentReplayProducerSpike (research/DGamma/CP5O19AdjacentReplayProducerSpike.idr)\nError: While processing left hand side of o19AlignedDestination. When unifying:\n    AlignedTransitions ?name ?key ?world ?error ?value ?nameEq ?keyEq (MoreTransitions (Fired ?nameEq ?keyEq ?actualAction ?actualTag ?checked) ?rest)\nand:\n    AlignedTransitions ?_ ?_ ?_ ?_ ?_ ?nameEq ?keyEq (MoreTransitions ?step ?rest)\nPattern variable step unifies with: Fired ?nameEq ?keyEq ?actualAction ?actualTag ?checked.\n\nDGamma.CP5O19AdjacentReplayProducerSpike:245:45--245:49\n 241 |   (transitionAction step = action) -> (transitionTag step = tag) ->\n 242 |   (expectedAfter : SystemState name key value world error) ->\n 243 |   (checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, expectedAfter)) ->\n 244 |   (actualAfter = expectedAfter)\n 245 | o19AlignedDestination {before} nameEq keyEq step rest\n                                                   ^^^^\n\nSuggestion: Use the same name for both pattern variables, since they unify.\n",
+    "newTopLevelDeclarations": [
+      "o19AlignedDestination"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B13-2",
+    "path": "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr"
+    ],
+    "start": "2026-09-07T18:36:47.044911+00:00",
+    "end": "2026-09-07T18:36:50.176492+00:00",
+    "seconds": 3.1314259162172675,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2882736,
+    "sourceSHA256": "26d3526d724c8b63c27ada0b6906181f67e1ce4815784135ff52891afe2b64f4",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "11/11: Building DGamma.CP5O19AdjacentReplayProducerSpike (research/DGamma/CP5O19AdjacentReplayProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19AlignedDestination"
+    ],
+    "matchingSourceCommits": [
+      "e011cc29eab5970ee9ab31c7fb88fc0360a6e7d0"
+    ]
+  },
+  {
+    "unit": "B14-1",
+    "path": "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr"
+    ],
+    "start": "2026-09-07T18:41:09.687168+00:00",
+    "end": "2026-09-07T18:41:12.818379+00:00",
+    "seconds": 3.1310542076826096,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2882720,
+    "sourceSHA256": "18a987a19581fbc72fefcc2adf3c5ed72409ab8234325e049ce3db24597e02e6",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "11/11: Building DGamma.CP5O19AdjacentReplayProducerSpike (research/DGamma/CP5O19AdjacentReplayProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "c74de5b29d9b1975580db19b48f56ca55384bb49"
+    ]
+  },
+  {
+    "unit": "B15-1",
+    "path": "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr"
+    ],
+    "start": "2026-09-07T18:49:08.487304+00:00",
+    "end": "2026-09-07T18:49:11.616326+00:00",
+    "seconds": 3.1288217077963054,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3006464,
+    "sourceSHA256": "10d6a04f224b74f2b0ed727005ff23417562f7ad0f33461ff7cde3e8ddb8d3d6",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "11/11: Building DGamma.CP5O19AdjacentReplayProducerSpike (research/DGamma/CP5O19AdjacentReplayProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19MovedRightDestination"
+    ],
+    "matchingSourceCommits": [
+      "0cbea4fa50151388da69bd4e0deac69f2f5e14f2"
+    ]
+  },
+  {
+    "unit": "B16-1",
+    "path": "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr"
+    ],
+    "start": "2026-09-07T18:50:08.550022+00:00",
+    "end": "2026-09-07T18:50:11.685269+00:00",
+    "seconds": 3.135070082731545,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2882720,
+    "sourceSHA256": "a5cba1d7236fd97bf55d3b9fd50555e79b7041de04c77c15484ca261bc05f179",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "11/11: Building DGamma.CP5O19AdjacentReplayProducerSpike (research/DGamma/CP5O19AdjacentReplayProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19MovedPairDestination"
+    ],
+    "matchingSourceCommits": [
+      "a9256232e6e45be6e0fd5a469a97615b5a21eb1a"
+    ]
+  },
+  {
+    "unit": "B17-1",
+    "path": "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr"
+    ],
+    "start": "2026-09-07T18:52:15.723394+00:00",
+    "end": "2026-09-07T18:52:18.853298+00:00",
+    "seconds": 3.1297606667503715,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2884816,
+    "sourceSHA256": "5e295971b6390246cb9c9f85766fa6b357771c488f132d0ca49d22c17d664e41",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "11/11: Building DGamma.CP5O19AdjacentReplayProducerSpike (research/DGamma/CP5O19AdjacentReplayProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19EarlyLabels"
+    ],
+    "matchingSourceCommits": [
+      "579083a81cd0b677bcf8800284283f678fc3d9a8"
+    ]
+  },
+  {
+    "unit": "B18-1",
+    "path": "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr"
+    ],
+    "start": "2026-09-07T18:53:53.926983+00:00",
+    "end": "2026-09-07T18:53:56.013003+00:00",
+    "seconds": 2.0858288342133164,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 671584,
+    "sourceSHA256": "15b852af1efaa6ad07d2482abec8e6130844c9b7c3f20758b6c529bf038a9d81",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "11/11: Building DGamma.CP5O19AdjacentReplayProducerSpike (research/DGamma/CP5O19AdjacentReplayProducerSpike.idr)\nError: While processing right hand side of o19TransitionActorOwner. Can't solve constraint between: actionOwner (transitionAction (Fired nameEq keyEq action tag checked)) and case transitionAction (Fired nameEq keyEq action tag checked) of\n  { OInsert n _ _ => n\n  ; ORetire n => n\n  ; ORemove n => n\n  ; LBegin n => n\n  ; LAdvance n => n\n  ; LDivert n => n\n  ; LLeave n => n\n  ; LUnload n => n\n  }.\n\nDGamma.CP5O19AdjacentReplayProducerSpike:322:67--322:71\n 318 |   {name, key, world, error : Type} -> {value : key -> Type} ->\n 319 |   {before, afterState : SystemState name key value world error} ->\n 320 |   (step : Transition before afterState) ->\n 321 |   (transitionActor step = actionOwner (transitionAction step))\n 322 | o19TransitionActorOwner (Fired nameEq keyEq action tag checked) = Refl\n                                                                         ^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "o19TransitionActorOwner"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B18-2",
+    "path": "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr"
+    ],
+    "start": "2026-09-07T18:55:23.877547+00:00",
+    "end": "2026-09-07T18:55:26.995668+00:00",
+    "seconds": 3.1179535831324756,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3008464,
+    "sourceSHA256": "d07435985a00c7e49ebf0deca0325262249b4c0db80689c550ed4bb716e6690c",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "11/11: Building DGamma.CP5O19AdjacentReplayProducerSpike (research/DGamma/CP5O19AdjacentReplayProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19TransitionActorOwner"
+    ],
+    "matchingSourceCommits": [
+      "898fa1494da4c8f383ffd9b2f41b62c07a2a5c25"
+    ]
+  },
+  {
+    "unit": "B19-1",
+    "path": "research-tests/DGamma/R182O19ActualCrossingPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19ActualCrossingPositive.idr"
+    ],
+    "start": "2026-09-07T18:58:18.439137+00:00",
+    "end": "2026-09-07T19:00:37.380573+00:00",
+    "seconds": 138.93008695868775,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 5831680,
+    "sourceSHA256": "90e4a1e75583291c6ae94e2ec2784cbfdf5ce84f12ded4e549d662b9c8db2e8f",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "11/11: Building DGamma.R182O19ActualCrossingPositive (research-tests/DGamma/R182O19ActualCrossingPositive.idr)\nError: While processing right hand side of r182SecondCrossingObserved. Can't solve constraint between: r182SwapZeroOne .actorRight and 1.\n\nDGamma.R182O19ActualCrossingPositive:142:8--142:53\n 138 |         (cong actionOwner (movedRightAction firstDiamond)))))\n 139 |     (o19EarlyLabels r45NameEq r45KeyEq (LBegin 1) (transitionAction (movedRight firstDiamond))\n 140 |       LBeginTag (transitionTag (movedRight firstDiamond))\n 141 |       (movedRightAction firstDiamond) (movedRightTag firstDiamond)\n 142 |       (safetyRightOpeningEarly r182IndependentSafety)) of\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "r182SecondCrossingObserved"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B19-2",
+    "path": "research-tests/DGamma/R182O19ActualCrossingPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19ActualCrossingPositive.idr"
+    ],
+    "start": "2026-09-07T19:02:39.300542+00:00",
+    "end": "2026-09-07T19:05:38.792657+00:00",
+    "seconds": 179.49208308337256,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 11553600,
+    "sourceSHA256": "aaf2979e131a7d8c4a56f9368a0caea3245ddb5bf792d253c1800a2c9e82d40c",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "11/11: Building DGamma.R182O19ActualCrossingPositive (research-tests/DGamma/R182O19ActualCrossingPositive.idr)\n",
+    "newTopLevelDeclarations": [
+      "r182SecondCrossingObserved"
+    ],
+    "matchingSourceCommits": [
+      "98e39914b91b69309885dff1022b981c05c83f7b"
+    ]
+  },
+  {
+    "unit": "B20-1",
+    "path": "research-tests/DGamma/R182O19SecondCrossingPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19SecondCrossingPositive.idr"
+    ],
+    "start": "2026-09-07T19:07:30.939784+00:00",
+    "end": "2026-09-07T19:07:35.109503+00:00",
+    "seconds": 4.169560582842678,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2705520,
+    "sourceSHA256": "4b5a8bd07b4bb72b6a293ee8253c7a627c18365cec7f78131b3fc1ccd222be2e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.R182O19SecondCrossingPositive (research-tests/DGamma/R182O19SecondCrossingPositive.idr)\n",
+    "newTopLevelDeclarations": [
+      "r182ActualSecondCrossing"
+    ],
+    "matchingSourceCommits": [
+      "34ecceb4dc988db1684deb96d2413389665c5e9c"
+    ]
+  },
+  {
+    "unit": "B21-1",
+    "path": "research/DGamma/CP5O19ReplayObservationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ReplayObservationSpike.idr"
+    ],
+    "start": "2026-09-07T19:12:38.286344+00:00",
+    "end": "2026-09-07T19:12:40.357204+00:00",
+    "seconds": 2.070680041797459,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1002192,
+    "sourceSHA256": "41cea5bfaa3243637050effad29c0d00bd935eca048c428d0f4fb34b9f696221",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19ReplayObservationSpike (research/DGamma/CP5O19ReplayObservationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ActionWord"
+    ],
+    "matchingSourceCommits": [
+      "c3432dc470c7217538e4ef547fc844d05c28c0c8"
+    ]
+  },
+  {
+    "unit": "B22-1",
+    "path": "research/DGamma/CP5O19ReplayObservationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ReplayObservationSpike.idr"
+    ],
+    "start": "2026-09-07T19:15:04.219357+00:00",
+    "end": "2026-09-07T19:15:06.297509+00:00",
+    "seconds": 2.077995417173952,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1909760,
+    "sourceSHA256": "ff80ead685170375171022c8da4ca340f45aeb3726072da35d6ef9aaab3abf81",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19ReplayObservationSpike (research/DGamma/CP5O19ReplayObservationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "ObservedTwoActionTrace"
+    ],
+    "matchingSourceCommits": [
+      "61461802fc862c78062f8ec1f666327ee838620a"
+    ]
+  },
+  {
+    "unit": "B23-1",
+    "path": "research/DGamma/CP5O19ReplayObservationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ReplayObservationSpike.idr"
+    ],
+    "start": "2026-09-07T19:16:38.688082+00:00",
+    "end": "2026-09-07T19:16:40.801091+00:00",
+    "seconds": 2.1128551247529685,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1875088,
+    "sourceSHA256": "16d966261ae080e2017283bbc616c5d2793989362e8be8aa626c48b137513984",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19ReplayObservationSpike (research/DGamma/CP5O19ReplayObservationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19TwoActionTraceObserved"
+    ],
+    "matchingSourceCommits": [
+      "a61f7c6d1d7d192956492452e78d599db0389ee8"
+    ]
+  },
+  {
+    "unit": "B24-1",
+    "path": "research/DGamma/CP5O19ReplayObservationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ReplayObservationSpike.idr"
+    ],
+    "start": "2026-09-07T19:17:59.009697+00:00",
+    "end": "2026-09-07T19:18:01.097037+00:00",
+    "seconds": 2.087165749631822,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 770384,
+    "sourceSHA256": "40eb6f182d0cb9c0ae322ed6c983a997cf7f27c5b2697b507004e709514678b2",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19ReplayObservationSpike (research/DGamma/CP5O19ReplayObservationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19SealedActionWord"
+    ],
+    "matchingSourceCommits": [
+      "bf3e61e0450c337d46db8145a49724b8735c639c"
+    ]
+  },
+  {
+    "unit": "B25-1",
+    "path": "research/DGamma/CP5O19ReplayObservationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ReplayObservationSpike.idr"
+    ],
+    "start": "2026-09-07T19:18:50.046818+00:00",
+    "end": "2026-09-07T19:18:52.127068+00:00",
+    "seconds": 2.0801098751835525,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1557120,
+    "sourceSHA256": "530da66f3e7b75497a17139fae441e7c5710993e577dbe4e9d6494ecac095630",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19ReplayObservationSpike (research/DGamma/CP5O19ReplayObservationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ReplayedSuffixAligned"
+    ],
+    "matchingSourceCommits": [
+      "568a42966c52899ff6dc3f342ec75bbee018b918"
+    ]
+  },
+  {
+    "unit": "B26-1",
+    "path": "research-tests/DGamma/R182O19RemainingCrossingFacts.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19RemainingCrossingFacts.idr"
+    ],
+    "start": "2026-09-07T19:21:11.665014+00:00",
+    "end": "2026-09-07T19:21:14.774969+00:00",
+    "seconds": 3.1097869998775423,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4624208,
+    "sourceSHA256": "78b1a975fb7be4cd269b8b576c975b1a0c8bae45f04ebb8e40bf0748d4152d4a",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "13/13: Building DGamma.R182O19RemainingCrossingFacts (research-tests/DGamma/R182O19RemainingCrossingFacts.idr)\n",
+    "newTopLevelDeclarations": [
+      "r182RemainingPrimitiveChecks"
+    ],
+    "matchingSourceCommits": [
+      "57e5ee06a1772171455000c3518dba8cdb5c7ef3"
+    ]
+  },
+  {
+    "unit": "B27-1",
+    "path": "research-tests/DGamma/R182O19RemainingCrossingFacts.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19RemainingCrossingFacts.idr"
+    ],
+    "start": "2026-09-07T19:25:53.947356+00:00",
+    "end": "2026-09-07T19:25:57.054687+00:00",
+    "seconds": 3.107156042009592,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4231840,
+    "sourceSHA256": "ede4e03d4271f4777155344a3d4e6712205b3312bbd0299a5b3b8c4b16806280",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "13/13: Building DGamma.R182O19RemainingCrossingFacts (research-tests/DGamma/R182O19RemainingCrossingFacts.idr)\n",
+    "newTopLevelDeclarations": [
+      "r182SecondPairEnd"
+    ],
+    "matchingSourceCommits": [
+      "99fd176646338c9b001210f6904d3fec0a2084e8"
+    ]
+  },
+  {
+    "unit": "B28-1",
+    "path": "research-tests/DGamma/R182O19RemainingCrossingFacts.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19RemainingCrossingFacts.idr"
+    ],
+    "start": "2026-09-07T19:27:15.624782+00:00",
+    "end": "2026-09-07T19:27:18.739102+00:00",
+    "seconds": 3.114151250105351,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2078752,
+    "sourceSHA256": "8c72167193ecdb2fd60dc28d9577195626444ab49121ad67bf5fa3952aa2f0b3",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "13/13: Building DGamma.R182O19RemainingCrossingFacts (research-tests/DGamma/R182O19RemainingCrossingFacts.idr)\nError: While processing right hand side of r182SecondSuffixView. When unifying:\n    transitionAction (movedLeft firstDiamond) :: o19ActionWord (replayedSuffix firstResult) = LAdvance 0 :: o19ActionWord (MoreTransitions (Fired r45NameEq r45KeyEq (LAdvance 1) LFinishTag Refl) NoTransitions)\nand:\n    o19ActionWord (MoreTransitions (movedLeft firstDiamond) (replayedSuffix firstResult)) = LAdvance 0 :: o19ActionWord (MoreTransitions (Fired r45NameEq r45KeyEq (LAdvance 1) LFinishTag Refl) NoTransitions)\nUndefined name DGamma.CP5ConfluenceRankObservationSpike.traceActionFold. \n\nDGamma.R182O19RemainingCrossingFacts:86:8--89:85\n 86 |       (trans (cong (\\action => action :: o19ActionWord (replayedSuffix firstResult))\n 87 |         (movedLeftAction firstDiamond))\n 88 |         (cong ((LAdvance 0) ::)\n 89 |           (o19SealedActionWord r45NameEq r45KeyEq (sealedSuffixReplay firstResult)))))\n\n",
+    "newTopLevelDeclarations": [
+      "r182SecondSuffixView"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B28-2",
+    "path": "research-tests/DGamma/R182O19RemainingCrossingFacts.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19RemainingCrossingFacts.idr"
+    ],
+    "start": "2026-09-07T19:30:00.289115+00:00",
+    "end": "2026-09-07T19:30:04.440214+00:00",
+    "seconds": 4.150929667055607,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4125872,
+    "sourceSHA256": "481de7861734f047d819de97c5425812e4e50df9e92753d4fe4c69b7c038f290",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "13/13: Building DGamma.R182O19RemainingCrossingFacts (research-tests/DGamma/R182O19RemainingCrossingFacts.idr)\n",
+    "newTopLevelDeclarations": [
+      "r182SecondSuffixView"
+    ],
+    "matchingSourceCommits": [
+      "6cc0a3be4eb08858c92d6a8353496ad455146ae3"
+    ]
+  },
+  {
+    "unit": "B29-1",
+    "path": "research-tests/DGamma/R182O19RemainingCrossingFacts.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19RemainingCrossingFacts.idr"
+    ],
+    "start": "2026-09-07T19:32:10.739072+00:00",
+    "end": "2026-09-07T19:32:14.901014+00:00",
+    "seconds": 4.161748208105564,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4555664,
+    "sourceSHA256": "8e8c9cbfd1b9b23fe0f06a6c83394833503db795b9c5eb454d8654b98db50e6d",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "13/13: Building DGamma.R182O19RemainingCrossingFacts (research-tests/DGamma/R182O19RemainingCrossingFacts.idr)\n",
+    "newTopLevelDeclarations": [
+      "r182ThirdPairFacts"
+    ],
+    "matchingSourceCommits": [
+      "0948c2125ab3aa66f305ef921dc91846cf631aa5"
+    ]
+  },
+  {
+    "unit": "B30-1",
+    "path": "research/DGamma/CP5O19ReplayObservationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ReplayObservationSpike.idr"
+    ],
+    "start": "2026-09-07T19:34:33.914371+00:00",
+    "end": "2026-09-07T19:34:35.990849+00:00",
+    "seconds": 2.076303292065859,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 673040,
+    "sourceSHA256": "d9ad8f1b7e3104a952e84250c57a34d7684f699d3e26e0553a78eeb942cedd6c",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19ReplayObservationSpike (research/DGamma/CP5O19ReplayObservationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19AppendFinite"
+    ],
+    "matchingSourceCommits": [
+      "378f6d9bc11e3c5daab047d461c65d9120af7f2a"
+    ]
+  },
+  {
+    "unit": "B31-1",
+    "path": "research/DGamma/CP5O19ReplayObservationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ReplayObservationSpike.idr"
+    ],
+    "start": "2026-09-07T19:35:56.407398+00:00",
+    "end": "2026-09-07T19:35:59.528950+00:00",
+    "seconds": 3.1213953332044184,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2882672,
+    "sourceSHA256": "e2f67b82760db2b5dcf5be9ab127158c4ff5591697d2f52fe69e2ae3edbfaf9e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19ReplayObservationSpike (research/DGamma/CP5O19ReplayObservationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19AppendNonEmpty"
+    ],
+    "matchingSourceCommits": [
+      "2d875bbcb333587d541e4939d2cb6cedc5315152"
+    ]
+  },
+  {
+    "unit": "B32-1",
+    "path": "research-tests/DGamma/R182O19ThirdCrossingConstruction.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19ThirdCrossingConstruction.idr"
+    ],
+    "start": "2026-09-07T19:38:12.200498+00:00",
+    "end": "2026-09-07T19:46:49.695899+00:00",
+    "seconds": 517.4939850000665,
+    "exit": -15,
+    "fresh": false,
+    "passed": false,
+    "interrupted": true,
+    "maxSampleRSSKiB": 50435280,
+    "sourceSHA256": "feb3ea046d4fad14272c774f41d81f46b76da1016ae1777eeb666dd194d5e470",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "",
+    "newTopLevelDeclarations": [
+      "r182ThirdCrossingFromView"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B32-2",
+    "path": "research-tests/DGamma/R182O19ThirdCrossingConstruction.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19ThirdCrossingConstruction.idr"
+    ],
+    "start": "2026-09-07T19:49:36.784693+00:00",
+    "end": "2026-09-07T19:49:45.095957+00:00",
+    "seconds": 8.31108441669494,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 5147312,
+    "sourceSHA256": "2b8061e171c818e1117078199b37e5f8e98a965cefe056f3861b99d68c0a6556",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "14/14: Building DGamma.R182O19ThirdCrossingConstruction (research-tests/DGamma/R182O19ThirdCrossingConstruction.idr)\n",
+    "newTopLevelDeclarations": [
+      "r182ThirdCrossingFromView"
+    ],
+    "matchingSourceCommits": [
+      "2d917f9c12535bdda947706ce2f52cad9fd31a1d"
+    ]
+  },
+  {
+    "unit": "B33-1",
+    "path": "research/DGamma/CP5O19ReplayObservationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ReplayObservationSpike.idr"
+    ],
+    "start": "2026-09-07T19:51:49.117086+00:00",
+    "end": "2026-09-07T19:51:52.234587+00:00",
+    "seconds": 3.1173173747956753,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 675152,
+    "sourceSHA256": "67d13df1ddb54c6e40362353276775c63c1a2e2817e30bce750ba4f0fa4d3734",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19ReplayObservationSpike (research/DGamma/CP5O19ReplayObservationSpike.idr)\nError: While processing type of o19ComposeProduced. Undefined name UniqueRawNameInsertions. \n\nDGamma.CP5O19ReplayObservationSpike:166:6--166:29\n 162 |   NonEmptyFiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq original current ->\n 163 |   (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right **\n 164 |    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq current earlier left right later diamond **\n 165 |     (NonEmptyFiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq current (swappedTrace result),\n 166 |      UniqueRawNameInsertions name key world error value nameEq keyEq (swappedTrace result)))) ->\n            ^^^^^^^^^^^^^^^^^^^^^^^\n\nError: No type declaration for DGamma.CP5O19ReplayObservationSpike.o19ComposeProduced.\n\nDGamma.CP5O19ReplayObservationSpike:171:1--173:89\n 171 | o19ComposeProduced previous (diamond ** (result ** (node, unique))) =\n 172 |   (diamond ** (result **\n 173 |     (o19AppendNonEmpty previous (nonEmptyToFiniteAdjacentSwapDerivation node), unique)))\n\n",
+    "newTopLevelDeclarations": [
+      "o19ComposeProduced"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B33-2",
+    "path": "research/DGamma/CP5O19ReplayObservationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ReplayObservationSpike.idr"
+    ],
+    "start": "2026-09-07T19:53:00.360277+00:00",
+    "end": "2026-09-07T19:53:03.486336+00:00",
+    "seconds": 3.1258532917127013,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3008384,
+    "sourceSHA256": "87c47fca78c9b7be86c0236ebd2f1562626a9bd0d6b66af8f91f2a7dfaa4d0ad",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19ReplayObservationSpike (research/DGamma/CP5O19ReplayObservationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ComposeProduced"
+    ],
+    "matchingSourceCommits": [
+      "45053061c4ba77e2147d040091b5b45cdd889efc"
+    ]
+  },
+  {
+    "unit": "B34-1",
+    "path": "research-tests/DGamma/R182O19ThirdCrossingPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19ThirdCrossingPositive.idr"
+    ],
+    "start": "2026-09-07T19:53:51.871866+00:00",
+    "end": "2026-09-07T19:54:12.638726+00:00",
+    "seconds": 20.766579125076532,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 5103328,
+    "sourceSHA256": "365d426bcbdb8f90f8982933efbf333e5ee8599068368c85a166342da171c610",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "13/15: Building DGamma.R182O19RemainingCrossingFacts (research-tests/DGamma/R182O19RemainingCrossingFacts.idr)\n14/15: Building DGamma.R182O19ThirdCrossingConstruction (research-tests/DGamma/R182O19ThirdCrossingConstruction.idr)\n15/15: Building DGamma.R182O19ThirdCrossingPositive (research-tests/DGamma/R182O19ThirdCrossingPositive.idr)\n",
+    "newTopLevelDeclarations": [
+      "r182ThirdCrossingObserved"
+    ],
+    "matchingSourceCommits": [
+      "f03c2d28dc22666f903cf23ec12f6d634f682732"
+    ]
+  },
+  {
+    "unit": "B35-1",
+    "path": "research-tests/DGamma/R182O19ThirdCrossingPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19ThirdCrossingPositive.idr"
+    ],
+    "start": "2026-09-07T19:56:39.225139+00:00",
+    "end": "2026-09-07T19:56:55.800003+00:00",
+    "seconds": 16.57464125007391,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 6179840,
+    "sourceSHA256": "d6ad60c9f2528c665185a1f86c945245392a7bdeffd9af1e41f1fece13c50ac2",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "15/15: Building DGamma.R182O19ThirdCrossingPositive (research-tests/DGamma/R182O19ThirdCrossingPositive.idr)\n",
+    "newTopLevelDeclarations": [
+      "r182ActualThirdCrossing"
+    ],
+    "matchingSourceCommits": [
+      "39d89a77d81aee40e2f32989a2e52893fc94aa73"
+    ]
+  },
+  {
+    "unit": "B36-1",
+    "path": "research-tests/DGamma/R182O19FourthCrossingFacts.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19FourthCrossingFacts.idr"
+    ],
+    "start": "2026-09-07T19:58:26.229061+00:00",
+    "end": "2026-09-07T19:58:30.398477+00:00",
+    "seconds": 4.1692072921432555,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3952288,
+    "sourceSHA256": "a31711c68efefef45c55fd6a9e7af0e16a21ebee1aa4672fb8ed1579ffe88b5e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "16/16: Building DGamma.R182O19FourthCrossingFacts (research-tests/DGamma/R182O19FourthCrossingFacts.idr)\n",
+    "newTopLevelDeclarations": [
+      "r182FourthPairEarly"
+    ],
+    "matchingSourceCommits": [
+      "a07f84ad157e81302f9d363eb6e0ed30cac4b590"
+    ]
+  },
+  {
+    "unit": "B37-1",
+    "path": "research-tests/DGamma/R182O19FourthCrossingConstruction.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19FourthCrossingConstruction.idr"
+    ],
+    "start": "2026-09-07T20:00:58.132482+00:00",
+    "end": "2026-09-07T20:01:38.572362+00:00",
+    "seconds": 40.4395924997516,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 6956384,
+    "sourceSHA256": "4cf75f53ac1b9844f28dfc76032d14bcecc3444e04d2927186a75b02f52f26ef",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "17/17: Building DGamma.R182O19FourthCrossingConstruction (research-tests/DGamma/R182O19FourthCrossingConstruction.idr)\n",
+    "newTopLevelDeclarations": [
+      "r182FourthCrossingFromReached"
+    ],
+    "matchingSourceCommits": [
+      "4591cdfa2b9eb80153dfe9109df5d8cc96938645"
+    ]
+  },
+  {
+    "unit": "B38-1",
+    "path": "research-tests/DGamma/R182O19FourCrossingsPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19FourCrossingsPositive.idr"
+    ],
+    "start": "2026-09-07T20:04:19.284268+00:00",
+    "end": "2026-09-07T20:06:16.543245+00:00",
+    "seconds": 117.25847891718149,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 16509456,
+    "sourceSHA256": "ead634d2e10fe4a21a9ba505c2f9c2abc5ae4a640e40eac45f97d116349afb4e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "18/18: Building DGamma.R182O19FourCrossingsPositive (research-tests/DGamma/R182O19FourCrossingsPositive.idr)\n",
+    "newTopLevelDeclarations": [
+      "r182FourCrossingsObserved"
+    ],
+    "matchingSourceCommits": [
+      "98b7d927c18d324ab3294b1779384faf2700740b"
+    ]
+  },
+  {
+    "unit": "B39-1",
+    "path": "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr"
+    ],
+    "start": "2026-09-07T20:07:53.916585+00:00",
+    "end": "2026-09-07T20:08:20.865269+00:00",
+    "seconds": 26.946917791385204,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 6033024,
+    "sourceSHA256": "1fd0c49cfeb33b053221efa3be78986740ec2b6bfb61dff34901babbe249cb22",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "19/19: Building DGamma.R182O19AllFourCrossingsPositive (research-tests/DGamma/R182O19AllFourCrossingsPositive.idr)\n",
+    "newTopLevelDeclarations": [
+      "r182ActualAllFourCrossings"
+    ],
+    "matchingSourceCommits": [
+      "65c62e6258a16e5366e1151e9e3252f92d4aaa4d"
+    ]
+  },
+  {
+    "unit": "F-producer",
+    "path": "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr"
+    ],
+    "start": "2026-09-07T20:11:56.214595+00:00",
+    "end": "2026-09-07T20:11:59.338294+00:00",
+    "seconds": 3.1235063332132995,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3008544,
+    "sourceSHA256": "d07435985a00c7e49ebf0deca0325262249b4c0db80689c550ed4bb716e6690c",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "11/11: Building DGamma.CP5O19AdjacentReplayProducerSpike (research/DGamma/CP5O19AdjacentReplayProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "898fa1494da4c8f383ffd9b2f41b62c07a2a5c25"
+    ]
+  },
+  {
+    "unit": "F-observation",
+    "path": "research/DGamma/CP5O19ReplayObservationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ReplayObservationSpike.idr"
+    ],
+    "start": "2026-09-07T20:11:59.404902+00:00",
+    "end": "2026-09-07T20:12:02.519440+00:00",
+    "seconds": 3.114313874859363,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3008448,
+    "sourceSHA256": "87c47fca78c9b7be86c0236ebd2f1562626a9bd0d6b66af8f91f2a7dfaa4d0ad",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19ReplayObservationSpike (research/DGamma/CP5O19ReplayObservationSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "45053061c4ba77e2147d040091b5b45cdd889efc"
+    ]
+  },
+  {
+    "unit": "F-cross",
+    "path": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
+    ],
+    "start": "2026-09-07T20:12:02.583416+00:00",
+    "end": "2026-09-07T20:12:07.759577+00:00",
+    "seconds": 5.175957583356649,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1958304,
+    "sourceSHA256": "3af10eda3d7dd6435b02dd09339c2ac83aa6006cfe5f5063f8bc4106960feb57",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "28/28: Building DGamma.CP5ConfluenceCrossTraceSpike (research/DGamma/CP5ConfluenceCrossTraceSpike.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  order is shadowing Control.Order.order\n\nDGamma.CP5ConfluenceCrossTraceSpike:43:3--43:68\n 39 | \n 40 | public export\n 41 | data CertifiedActorPermutation :\n 42 |   (name : Type) -> List name -> List name -> Type where\n 43 |   ActorPermutationDone : CertifiedActorPermutation name order order\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  after is shadowing DGamma.Core.Applied.after\n\nDGamma.CP5ConfluenceCrossTraceSpike:44:3--47:48\n 44 |   ActorPermutationStep :\n 45 |     AdjacentActorOrderSwap name before middle ->\n 46 |     CertifiedActorPermutation name middle after ->\n 47 |     CertifiedActorPermutation name before after\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  after is shadowing DGamma.Core.Applied.after\n\nDGamma.CP5ConfluenceCrossTraceSpike:285:1--288:77\n 285 | transitionPrefixLength : (earlierTrace : Transitions initial before) ->\n 286 |   (step : Transition before after) ->\n 287 |   transitionCount (appendTransitions earlierTrace\n 288 |     (MoreTransitions step NoTransitions)) = S (transitionCount earlierTrace)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  order is shadowing Control.Order.order\n\nDGamma.CP5ConfluenceCrossTraceSpike:747:3--753:55\n 747 |   OperationalActorDone :\n 748 |     (blocks : ActorBlockDecomposition name key world error value nameEq keyEq\n 749 |       order trace) ->\n 750 |     (premises : ReplayInvariantBundle name key world error value protocol nameEq\n 751 |       keyEq trace) ->\n 752 |     OperationalActorPermutation name key world error value protocol nameEq keyEq\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  after is shadowing DGamma.Core.Applied.after\n\nDGamma.CP5ConfluenceCrossTraceSpike:754:3--770:35\n 754 |   OperationalActorStep :\n 755 |     (orderSwap : AdjacentActorOrderSwap name before middle) ->\n 756 |     (restCertificate : CertifiedActorPermutation name middle after) ->\n 757 |     (sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq\n 758 |       before sourceTrace) ->\n 759 |     (sourcePremises : ReplayInvariantBundle name key world error value protocol\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sameInputs is shadowing DGamma.CP3.CanonicalSchedule.sameInputs\n\nDGamma.CP5ConfluenceCrossTraceSpike:1247:3--1255:41\n 1247 | 0 permutationReplayCorrespondence :\n 1248 |   {operational : CertifiedOperationalCanonicalPermutation name key world error\n 1249 |     value protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital\n 1250 |       rightCapital matching} ->\n 1251 |   PermutedCanonicalExecution name key world error value protocol nameEq keyEq\n 1252 |     leftTrace rightTrace sameInputs leftCapital rightCapital operational ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sameInputs is shadowing DGamma.CP3.CanonicalSchedule.sameInputs\n\nDGamma.CP5ConfluenceCrossTraceSpike:1261:3--1269:41\n 1261 | 0 permutationOccurrenceCorrespondence :\n 1262 |   {operational : CertifiedOperationalCanonicalPermutation name key world error\n 1263 |     value protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital\n 1264 |       rightCapital matching} ->\n 1265 |   PermutedCanonicalExecution name key world error value protocol nameEq keyEq\n 1266 |     leftTrace rightTrace sameInputs leftCapital rightCapital operational ->\n\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "ca4bc02481642dc510a11393010c746ea182fe96"
+    ]
+  },
+  {
+    "unit": "F-negative",
+    "path": "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19RevisedSafetyNegative.idr"
+    ],
+    "start": "2026-09-07T20:12:07.828390+00:00",
+    "end": "2026-09-07T20:12:10.940514+00:00",
+    "seconds": 3.111925959121436,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4680336,
+    "sourceSHA256": "a78c28f3fe7a1b29900c6b3d0522f9a0c8e1476169867e964818b6a697d22e54",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "6/6: Building DGamma.R182O19RevisedSafetyNegative (research-tests/DGamma/R182O19RevisedSafetyNegative.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "bc7ec8926bf1c000dbe5c43100e01598fba97685"
+    ]
+  },
+  {
+    "unit": "F-positive",
+    "path": "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19RevisedSafetyPositive.idr"
+    ],
+    "start": "2026-09-07T20:12:11.009143+00:00",
+    "end": "2026-09-07T20:12:28.673658+00:00",
+    "seconds": 17.664258333388716,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3556016,
+    "sourceSHA256": "a49817fc2666c8cef04fbff3c059ecfd421da3424c5ed20be010d9e132ff301f",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "10/10: Building DGamma.R182O19RevisedSafetyPositive (research-tests/DGamma/R182O19RevisedSafetyPositive.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "ffeb554b620be3ae9b6aa39a8a97b15b88d0af12"
+    ]
+  },
+  {
+    "unit": "F-gap",
+    "path": "research-tests/DGamma/R182O19AdjacencyNegative.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19AdjacencyNegative.idr"
+    ],
+    "start": "2026-09-07T20:12:28.738188+00:00",
+    "end": "2026-09-07T20:12:42.243784+00:00",
+    "seconds": 13.505357124842703,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4719552,
+    "sourceSHA256": "07641432a6c2d2cf79b2cbf2ea182fb80c769d73ef21550df797110b027879d1",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "11/11: Building DGamma.R182O19AdjacencyNegative (research-tests/DGamma/R182O19AdjacencyNegative.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "a0234ea7ae2a74a10eee8916eed6cc0317581883"
+    ]
+  },
+  {
+    "unit": "F-all-four",
+    "path": "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr"
+    ],
+    "start": "2026-09-07T20:12:42.313903+00:00",
+    "end": "2026-09-07T20:13:11.418826+00:00",
+    "seconds": 29.104570208117366,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 10593376,
+    "sourceSHA256": "1fd0c49cfeb33b053221efa3be78986740ec2b6bfb61dff34901babbe249cb22",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "19/19: Building DGamma.R182O19AllFourCrossingsPositive (research-tests/DGamma/R182O19AllFourCrossingsPositive.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "65c62e6258a16e5366e1151e9e3252f92d4aaa4d"
+    ]
+  },
+  {
+    "unit": "F-thread",
+    "path": "research-tests/DGamma/R7OperationalThreadingPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R7OperationalThreadingPositive.idr"
+    ],
+    "start": "2026-09-07T20:13:11.485366+00:00",
+    "end": "2026-09-07T20:13:13.577513+00:00",
+    "seconds": 2.0919553749263287,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2403472,
+    "sourceSHA256": "9cd588a0f20cae4f2e6f58d02757f5434df33f32d80583bbfa22cfbaf2fe4315",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R7OperationalThreadingPositive (research-tests/DGamma/R7OperationalThreadingPositive.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "F-singleton",
+    "path": "research-tests/DGamma/R9WholeBlockSingletonPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R9WholeBlockSingletonPositive.idr"
+    ],
+    "start": "2026-09-07T20:13:13.640945+00:00",
+    "end": "2026-09-07T20:13:15.741124+00:00",
+    "seconds": 2.0999892498366535,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1016720,
+    "sourceSHA256": "4e4d6a16494a2749f3bdf95bd342f797a471345722fd5b26b68a1d745cd4626f",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R9WholeBlockSingletonPositive (research-tests/DGamma/R9WholeBlockSingletonPositive.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "F-twoone",
+    "path": "research-tests/DGamma/R9WholeBlockTwoByOnePositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R9WholeBlockTwoByOnePositive.idr"
+    ],
+    "start": "2026-09-07T20:13:15.808005+00:00",
+    "end": "2026-09-07T20:13:17.875362+00:00",
+    "seconds": 2.0671439999714494,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1175088,
+    "sourceSHA256": "11e52ea4a9e406d6a2ebb32afb1efbbaddfb203847cecdc5dcc13c84468d4fe1",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R9WholeBlockTwoByOnePositive (research-tests/DGamma/R9WholeBlockTwoByOnePositive.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "F-twotwo",
+    "path": "research-tests/DGamma/R9WholeBlockTwoByTwoPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R9WholeBlockTwoByTwoPositive.idr"
+    ],
+    "start": "2026-09-07T20:13:17.939188+00:00",
+    "end": "2026-09-07T20:13:20.013638+00:00",
+    "seconds": 2.074275374878198,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 746304,
+    "sourceSHA256": "d8b209bb171e63d4caac8f956580de0b2cbd0e585adbb6da6e4a61bb19eec819",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R9WholeBlockTwoByTwoPositive (research-tests/DGamma/R9WholeBlockTwoByTwoPositive.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "F-coordinate",
+    "path": "research-tests/DGamma/R9CoordinateBoundaryPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R9CoordinateBoundaryPositive.idr"
+    ],
+    "start": "2026-09-07T20:13:20.078277+00:00",
+    "end": "2026-09-07T20:13:22.175826+00:00",
+    "seconds": 2.0973473750054836,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4128096,
+    "sourceSHA256": "24feff15fbfbb0cb8889c719de9084155ee92e1bc5741c0a9db175a708eacc41",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R9CoordinateBoundaryPositive (research-tests/DGamma/R9CoordinateBoundaryPositive.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "F-endpoint",
+    "path": "research-tests/DGamma/R16EndpointControlsImpossibilityPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R16EndpointControlsImpossibilityPositive.idr"
+    ],
+    "start": "2026-09-07T20:13:22.240141+00:00",
+    "end": "2026-09-07T20:13:25.358541+00:00",
+    "seconds": 3.1182287498377264,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4252736,
+    "sourceSHA256": "265f280458f3556074634c6d6b3ea2023bd00b259320ece83ba368a52a690d7d",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R16EndpointControlsImpossibilityPositive (research-tests/DGamma/R16EndpointControlsImpossibilityPositive.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sameInputs is shadowing DGamma.CP3.CanonicalSchedule.sameInputs\n\nDGamma.R16EndpointControlsImpossibilityPositive:170:3--183:65\n 170 | 0 o19TargetOrchestrationPairCapital :\n 171 |   (selected : CertifiedOperationalCanonicalPermutation name key world error value\n 172 |     protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital\n 173 |     matching) ->\n 174 |   (prefixTrace : Transitions initial pairFirst) ->\n 175 |   (left : Transition pairFirst pairMiddle) ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  swappedMiddle is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedMiddle\n  swappedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.LocalRelationalDiamond.swappedFinal\n  replayedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.AdjacentSwapResult.replayedFinal\n\nDGamma.R16EndpointControlsImpossibilityPositive:439:3--449:34\n 439 | 0 pairFoldForcesEmptyReplayedSuffix :\n 440 |   (left : Transition first middle) ->\n 441 |   (right : Transition middle originalFinal) ->\n 442 |   (movedRight : Transition first swappedMiddle) ->\n 443 |   (movedLeft : Transition swappedMiddle swappedFinal) ->\n 444 |   (replayedSuffix : Transitions swappedFinal replayedFinal) ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  replayedFinal is shadowing DGamma.CP5ConfluenceLocalDiamondSpike.AdjacentSwapResult.replayedFinal\n\nDGamma.R16EndpointControlsImpossibilityPositive:454:9--454:51\n 450 | pairFoldForcesEmptyReplayedSuffix left right movedRight movedLeft NoTransitions\n 451 |   swappedTrace fold = ReviewNoTransitions\n 452 | pairFoldForcesEmptyReplayedSuffix left right movedRight movedLeft\n 453 |   (MoreTransitions extra rest) swappedTrace fold =\n 454 |     let explicit : Transitions first replayedFinal\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "F-detachment",
+    "path": "research-tests/DGamma/R6SafetyDetachmentNegative.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R6SafetyDetachmentNegative.idr"
+    ],
+    "start": "2026-09-07T20:13:25.424916+00:00",
+    "end": "2026-09-07T20:13:26.459647+00:00",
+    "seconds": 1.034518166910857,
+    "exit": 1,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "2a7dd5d170838d96c8c549b0bf8ff7f72f0180309c3fb0d668f5c06c0d06ba34",
+    "expectedDiagnostic": "firstPremises and secondPremises",
+    "symbol": "detachSafetyFromCurrentState",
+    "transcript": "1/1: Building DGamma.R6SafetyDetachmentNegative (research-tests/DGamma/R6SafetyDetachmentNegative.idr)\nError: While processing right hand side of detachSafetyFromCurrentState. When unifying:\n    AdjacentActorSwapSafety name key world error value protocol nameEq keyEq orderSwap firstTrace firstBlocks firstPremises\nand:\n    AdjacentActorSwapSafety name key world error value protocol nameEq keyEq orderSwap secondTrace secondBlocks secondPremises\nMismatch between: firstPremises and secondPremises.\n\nDGamma.R6SafetyDetachmentNegative:33:39--33:45\n 29 |   AdjacentActorSwapSafety name key world error value protocol nameEq keyEq\n 30 |     orderSwap firstTrace firstBlocks firstPremises ->\n 31 |   AdjacentActorSwapSafety name key world error value protocol nameEq keyEq\n 32 |     orderSwap secondTrace secondBlocks secondPremises\n 33 | detachSafetyFromCurrentState safety = safety\n                                            ^^^^^^\n\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "F-zeroderivation",
+    "path": "research-tests/DGamma/R8ZeroDerivationOperationalStepNegative.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R8ZeroDerivationOperationalStepNegative.idr"
+    ],
+    "start": "2026-09-07T20:13:26.524122+00:00",
+    "end": "2026-09-07T20:13:27.576625+00:00",
+    "seconds": 1.0523049170151353,
+    "exit": 1,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "69f3604c9468e8e7e9aace369e75cb50e057e858e910ff3f82c4baa418314c41",
+    "expectedDiagnostic": "FiniteAdjacentSwapDerivation",
+    "symbol": "zeroDerivationOperationalStepStillAccepted",
+    "transcript": "1/1: Building DGamma.R8ZeroDerivationOperationalStepNegative (research-tests/DGamma/R8ZeroDerivationOperationalStepNegative.idr)\nError: While processing right hand side of zeroDerivationOperationalStepStillAccepted. When unifying:\n    FiniteAdjacentSwapDerivation ?name ?key ?world ?error ?value ?protocol ?nameEq ?keyEq ?trace ?trace\nand:\n    WholeBlockSwapDerivation name key world error value ?protocol ?nameEq ?keyEq ?orderSwap ?sourceTrace ?sourceBlocks ?sourcePremises ?safety sourceTrace\nMismatch between: FiniteAdjacentSwapDerivation ?name ?key ?world ?error ?value ?protocol ?nameEq ?keyEq ?trace ?trace and WholeBlockSwapDerivation name key world error value ?protocol ?nameEq ?keyEq ?orderSwap ?sourceTrace ?sourceBlocks ?sourcePremises ?safety sourceTrace.\n\nDGamma.R8ZeroDerivationOperationalStepNegative:40:7--40:29\n 36 |     orderSwap sourceTrace sourceBlocks sourcePremises safety\n 37 | zeroDerivationOperationalStepStillAccepted {sourceFinal} {sourceTrace} {sourcePremises}\n 38 |   safety targetBlocks endpoint sameInputs =\n 39 |     MkOperationalAdjacentBlockSwap sourceFinal sourceTrace\n 40 |       FiniteAdjacentSwapDone targetBlocks endpoint sourcePremises sameInputs\n            ^^^^^^^^^^^^^^^^^^^^^^\n\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "F-pipeline",
+    "path": "research-tests/DGamma/R8FullPipeline.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R8FullPipeline.idr"
+    ],
+    "start": "2026-09-07T20:13:27.641649+00:00",
+    "end": "2026-09-07T20:15:08.400440+00:00",
+    "seconds": 100.75828175013885,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 40506560,
+    "sourceSHA256": "7583af47a1b91494f1b08858f0951792cf987ea3456146c25b0dc06800a28519",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R8FullPipeline (research-tests/DGamma/R8FullPipeline.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "F-package",
+    "path": "package",
+    "command": [
+      "idris2",
+      "--build",
+      "dgamma.ipkg"
+    ],
+    "start": "2026-09-07T20:15:08.465224+00:00",
+    "end": "2026-09-07T20:15:25.055703+00:00",
+    "seconds": 16.59024599986151,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 265408,
+    "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "",
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B40-1",
+    "path": "research/DGamma/CP5O19ReplayObservationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ReplayObservationSpike.idr"
+    ],
+    "start": "2026-09-07T20:18:05.438033+00:00",
+    "end": "2026-09-07T20:18:08.564289+00:00",
+    "seconds": 3.1260225838050246,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3008400,
+    "sourceSHA256": "4c0fda186fb0c93b63a1dbd8077bf643e8413effa37851d1e5acc609952a48fe",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19ReplayObservationSpike (research/DGamma/CP5O19ReplayObservationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19AppendFiniteCount"
+    ],
+    "matchingSourceCommits": [
+      "ad26424ff5206ab72ded8cb847ea7d79d267c00d"
+    ]
+  },
+  {
+    "unit": "B41-1",
+    "path": "research/DGamma/CP5O19ReplayObservationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ReplayObservationSpike.idr"
+    ],
+    "start": "2026-09-07T20:19:15.163477+00:00",
+    "end": "2026-09-07T20:19:18.292319+00:00",
+    "seconds": 3.128629084210843,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2884752,
+    "sourceSHA256": "37b28d64c25692733b7b9f3a99c71ca0cd8035e06b0d74746b28a2a9ed9a6c8a",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19ReplayObservationSpike (research/DGamma/CP5O19ReplayObservationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19AppendNonEmptyCount"
+    ],
+    "matchingSourceCommits": [
+      "1a49d3f02552ec19ddc1729bc2cc0dcf4c49da31"
+    ]
+  },
+  {
+    "unit": "F2-observation",
+    "path": "research/DGamma/CP5O19ReplayObservationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ReplayObservationSpike.idr"
+    ],
+    "start": "2026-09-07T20:20:41.827450+00:00",
+    "end": "2026-09-07T20:20:44.939806+00:00",
+    "seconds": 3.1121752918697894,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2884704,
+    "sourceSHA256": "37b28d64c25692733b7b9f3a99c71ca0cd8035e06b0d74746b28a2a9ed9a6c8a",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19ReplayObservationSpike (research/DGamma/CP5O19ReplayObservationSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "1a49d3f02552ec19ddc1729bc2cc0dcf4c49da31"
+    ]
+  },
+  {
+    "unit": "F2-all-four",
+    "path": "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr"
+    ],
+    "start": "2026-09-07T20:20:45.004500+00:00",
+    "end": "2026-09-07T20:23:57.891026+00:00",
+    "seconds": 192.88575324974954,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 13962288,
+    "sourceSHA256": "1fd0c49cfeb33b053221efa3be78986740ec2b6bfb61dff34901babbe249cb22",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "13/19: Building DGamma.R182O19RemainingCrossingFacts (research-tests/DGamma/R182O19RemainingCrossingFacts.idr)\n14/19: Building DGamma.R182O19ThirdCrossingConstruction (research-tests/DGamma/R182O19ThirdCrossingConstruction.idr)\n15/19: Building DGamma.R182O19ThirdCrossingPositive (research-tests/DGamma/R182O19ThirdCrossingPositive.idr)\n16/19: Building DGamma.R182O19FourthCrossingFacts (research-tests/DGamma/R182O19FourthCrossingFacts.idr)\n17/19: Building DGamma.R182O19FourthCrossingConstruction (research-tests/DGamma/R182O19FourthCrossingConstruction.idr)\n18/19: Building DGamma.R182O19FourCrossingsPositive (research-tests/DGamma/R182O19FourCrossingsPositive.idr)\n19/19: Building DGamma.R182O19AllFourCrossingsPositive (research-tests/DGamma/R182O19AllFourCrossingsPositive.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "65c62e6258a16e5366e1151e9e3252f92d4aaa4d"
+    ]
+  },
+  {
+    "unit": "F2-package",
+    "path": "package",
+    "command": [
+      "idris2",
+      "--build",
+      "dgamma.ipkg"
+    ],
+    "start": "2026-09-07T20:23:57.956884+00:00",
+    "end": "2026-09-07T20:24:14.560359+00:00",
+    "seconds": 16.60322720790282,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 266176,
+    "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "",
+    "matchingSourceCommits": []
   }
 ]

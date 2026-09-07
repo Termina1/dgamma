@@ -641,3 +641,25 @@ full old-safety countermodel. The full A14 adjacent positive continues to pass.
 |---|---|---|
 | Exact A/A operational adjacent replay | `CP5O19AdjacentReplayProducerSpike.o19AdvanceActivationPair` | Proved lower-level producer; actual diamond/sealed result/unique transport |
 | Actual first Cartesian crossing of admitted pair | `R182O19ActualCrossingPositive.r182ActualFirstCrossing` | Proved, no inputs; one of four nodes, NOT O19 closure |
+
+### Latest R182 status — four actual crossings, O19 still open
+
+The first-node checkpoint above has advanced: the input-free
+`R182O19AllFourCrossingsPositive.r182ActualAllFourCrossings` produces ALL FOUR
+actual Cartesian crossings on A14's independent six-edge source. It retains
+four sealed results, all reached bundles, the complete nonempty source-to-final
+chain and transported original uniqueness. This is not an arbitrary-context
+whole-block producer, not count7/ServiceA independence, and not Thm73 closure.
+
+| Paper / research obligation | Idris correspondence | Status |
+|---|---|---|
+| Thm73/O19: actual-cut authentication | `CP5O19AdjacentReplayProducerSpike.o19AlignedDestination`, `o19MovedPairDestination` | Proved from aligned checked determinism, not arbitrary view equality |
+| Thm73/O19: owned suffix observation/composition | `CP5O19ReplayObservationSpike.o19TwoActionTraceObserved`, `o19ComposeProduced` | Proved; actual trace/alignment, sealed fold and same reached package |
+| Thm73/O19: complete concrete Cartesian execution | `R182O19AllFourCrossingsPositive.r182ActualAllFourCrossings` | Proved, no inputs; four actual node results plus full nonempty chain |
+| Thm73/O19: structural iteration measure | `CP5O19ReplayObservationSpike.o19AppendFiniteCount`, `o19AppendNonEmptyCount` | Proved generic count addition; no concrete four-count certificate claimed |
+| Thm73/O19: generic whole-block swap | `CP5ConfluenceCrossTraceSpike.operationalAdjacentBlockSwapSpike` | Stated/unchanged hole; universal loop, all orientations, target ranges and origin plan remain open |
+
+See `research-tests/O6-R182-GRIND-SHIFT-AUDIT.md` for every charged failure,
+per-commit fresh check, the resolved 48GiB existential-elimination boundary and
+precise R183 prerequisites. The census remains **5 = 1/3/0/0/1**; production,
+CP3, LocalDiamond, O17/O20/O21 and frozen suffix theorem boundaries are unchanged.

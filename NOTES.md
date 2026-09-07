@@ -3023,3 +3023,53 @@ general later applicability, other orientations, complete Cartesian/range
 update remain open. O19 RHS untouched (zero body attempts because complete
 construction prerequisite is missing). No new hole/escape or count7-independence
 claim. See R182 audit's exact remaining boundary.
+
+## Status
+
+### R182 final construction status (supersedes the first-node checkpoint)
+
+**Fully proved in research:** owner-authorized right-first and true-adjacency
+safety corrections, real count7 dependent-pair rejection, full independent
+A14 safety/bundle/both six-edge traces, and the observed-gap rejection with its
+explicit `gapObserved` premise. Generic A/A node production invokes the frozen
+suffix theorem and retains the same reached bundle and original uniqueness.
+Actual checked determinism authenticates opaque reached cuts without arbitrary
+state equality. Public sealed folds produce the actual two-Finish suffix view.
+Explicit observed-package composition constructs all FOUR concrete crossings
+with NO INPUTS (`r182ActualAllFourCrossings`), preserving four actual sealed
+results and the complete nonempty source-to-final chain. Generic finite and
+nonempty count-addition lemmas are proved by structural induction on observed
+derivation data, not scalar observations of dense replay builders.
+
+**Partial / merely stated:** O19 remains the same hole with ZERO body attempts.
+The input-free four-node instance is not `WholeBlockSwapDerivation`: no complete
+source-origin plan, concrete count-equals-four certificate, target block
+installation/range/decomposition or arbitrary-block Cartesian induction is
+claimed. A/O, O/A and O/O propagation is still absent from the new producer.
+O17/A8, O20 synchronization and O21 withdrawal remain as previously gated.
+R181 count7 TraceIndependent is still absent; C/D were not begun. Census5.
+
+**Resource / design notes:** B32-1's case on a computed existential hit the
+48GiB guard (517.494s, sampled48.10GiB), was process-group terminated with NO
+VERDICT, and is fully charged. B32-2 returned the direct produced package in
+8.311s/~4.91GiB; B33 moved elimination to an explicit observed parameter. B38
+then simultaneously assembled all four actual nodes (117.258s/~15.75GiB).
+This is a resolved proof-engineering boundary, not a specification counterexample.
+Separate observation/fixture modules prevent needless rechecks of costly
+construction bodies. Exact source snapshots, diagnostics, memory samples and
+commit associations are archived. No fourth invocation or failed3/3 B stop.
+
+**Escape hatches:** NONE added. No believe_me/assert_total/postulate/partiality,
+new holes, local let/with/as-pattern, callback extensionality, scoped-to-raw cast,
+private visibility change or frozen deletion/suffix-body modification. Data
+fields remain ordinary executable indexed data; proofs and observations are
+quantity0. The new generic modules keep model types abstract; Unit/empty-key
+specialization is confined to the honest concrete fixture.
+
+**Next:** follow the seven exact R183 construction nodes in the R182 audit:
+produce the current-state cursor, arbitrary later applicability/four orientations,
+simultaneous Cartesian iteration plus source-origin equations, exact coverage/
+bounds/uniqueness/count, and installed target ranges/decomposition. Only after
+that complete construction is committed may O19 RHS receive fresh3/3 and its
+mandatory census4/owner closure gate. Never supply those desired outputs as
+premises or substitute the independently constructed opposite-order trace.

@@ -3578,3 +3578,25 @@ is NOT a full Cartesian block producer: intermediate applicability, other
 orientations, block-range/decomposition and full origin-plan update remain.
 O19 body has zero attempts because its complete-construction prerequisite is
 not yet landed; all frozen surface/body boundaries remain as last authorized.
+
+### R182 final continuation / R183 exact boundary
+
+B13–B39 advance the real A/A pipeline through ALL FOUR concrete Cartesian nodes.
+`R182O19AllFourCrossingsPositive.r182ActualAllFourCrossings` is input-free and
+retains actual diamonds/results, same reached bundles, original uniqueness and
+full nonempty source-to-final derivation. B40/B41 prove generic structural
+finite/nonempty node-count addition. No scalar four-count theorem or source-
+origin labeling is asserted for that opaque assembled chain.
+
+The B32 48GiB computed-existential wall was resolved by direct production plus
+an explicit observed-package consumer (not by an oracle or unsafe cast). Future
+Cartesian recursion should carry source-origin equations and count witnesses
+SIMULTANEOUSLY at that same observed boundary. Do not retrofit dense scalar
+observers, infer local views, or independently reconstruct uniqueness callbacks.
+
+Remaining BEFORE O19 body: arbitrary-block cursor/applicability; A/O, O/A, O/O
+premises/classifier use; finite Cartesian induction; exact per-node ORIGINAL
+block coordinates through composed occurrence maps; coverage/bounds/UniqueKeys/
+product count; actual target block openings/bodies/locations/order/ranges and
+lifecycle coverage. The R182 audit enumerates all seven dependency nodes.
+O19 body ZERO attempts/census5; O17/A8, O20/O21 frozen; count7 independence absent.

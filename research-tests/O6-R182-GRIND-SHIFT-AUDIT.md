@@ -382,3 +382,167 @@ small explicit checked guards to authenticate reached cuts. It does not try
 scalar Refl on projections of the dense diamond/suffix builders. The public
 movedPairAligned/action/tag fields are enough to identify the reached middle
 and end against a separately executed checked pair, without unfolding builders.
+
+## B continuation: all FOUR concrete crossings, not O19 closure
+
+Supervisor-directed continuation retained B13–B39. B14 is one signature
+strengthening of B13, not an additional declaration. All other units add exactly
+one top-level declaration (B22 one record). Every accepted source was freshly
+checked before its commit. Full raw diagnostics and interrupted snapshots are
+in the updated compiler archive/ledger; no compilation overlapped another.
+
+| Unit | Retained commit | Fresh accepted invocation | Seconds | Result |
+|---|---|---|---:|---|
+| B13 | `e011cc2` | B13-2 | 3.131 | derive exact reached destination by aligned checked-action determinism |
+| B14 | `c74de5b` | B14-1 | 3.131 | derive both actual rule tag and destination from the action check |
+| B15 | `0cbea4f` | B15-1 | 3.129 | identify the opaque reached middle by genuine checked determinism |
+| B16 | `a925623` | B16-1 | 3.135 | identify the actual replay pair end without unfolding its builder |
+| B17 | `579083a` | B17-1 | 3.130 | preserve the exact early guard under actual moved action/tag labels |
+| B18 | `898fa14` | B18-2 | 3.118 | derive moved actor identities by explicit observed action cases |
+| B19 | `98e3991` | B19-2 | 179.492 | construct actual second Cartesian crossing and thread reached evidence |
+| B20 | `34ecceb` | B20-1 | 4.170 | instantiate first two actual sealed Cartesian crossings with no inputs |
+| B21 | `c3432dc` | B21-1 | 2.071 | specialize the sealed-producer action observation in a separate dependency module |
+| B22 | `6146180` | B22-1 | 2.078 | tie observed two-action nodes to their exact actual trace and alignment |
+| B23 | `a61f7c6` | B23-1 | 2.113 | derive actual two-node view from the observed action word and alignment |
+| B24 | `bf3e61e` | B24-1 | 2.087 | derive suffix word preservation solely through the existing sealed fold |
+| B25 | `568a429` | B25-1 | 2.080 | project actual replayed suffix alignment from its reached sealed result |
+| B26 | `57e5ee0` | B26-1 | 3.110 | authenticate six remaining primitive edges on explicit runtime cuts |
+| B27 | `99fd176` | B27-1 | 3.107 | authenticate the second reached cut through actual checked determinism |
+| B28 | `6cc0a3b` | B28-2 | 4.151 | derive the real two-Finish suffix view from both sealed replay folds |
+| B29 | `0948c21` | B29-1 | 4.162 | derive both actual Finish classes and third-cut early applicability |
+| B30 | `378f6d9` | B30-1 | 2.076 | compose concrete sealed finite derivations at the same reached trace |
+| B31 | `2d875bb` | B31-1 | 3.121 | retain authentic nonemptiness during simultaneous operational extension |
+| B32 | `2d917f9` | B32-2 | 8.311 | directly produce third actual crossing without computed existential capture |
+| B33 | `4505306` | B33-2 | 3.126 | compose whole reached evidence through an explicit observed producer package |
+| B34 | `f03c2d2` | B34-1 | 20.767 | simultaneously assemble three real Cartesian nodes at observed boundaries |
+| B35 | `39d89a7` | B35-1 | 16.575 | instantiate all three authentic reached Cartesian nodes with no inputs |
+| B36 | `a07f84a` | B36-1 | 4.169 | derive final Cartesian early guard at the actual opaque reached middle |
+| B37 | `4591cdf` | B37-1 | 40.440 | produce the real fourth Cartesian crossing at its current reached source |
+| B38 | `98b7d92` | B38-1 | 117.258 | simultaneously assemble all four actual Cartesian replay nodes |
+| B39 | `65c62e6` | B39-1 | 26.947 | instantiate all four real Cartesian crossings with no inputs |
+
+### Actual construction, preserved ownership and exact limits
+
+B13/B14 use ACTUAL aligned checked execution to derive both tag and destination.
+B15/B16 identify opaque moved cuts against small explicit successful checks.
+B17/B18 preserve moved labels/actor identities. No scalar Refl observation over
+an opaque diamond/suffix builder, callback extensionality, fresh uniqueness
+reconstruction or supplied arbitrary target equality is involved.
+
+B19/B20 construct the second actual crossing from the same first result and
+A14 guard. B21–B25 observe a TWO-ACTION actual suffix through the public sealed
+fold and its same reached bundle, never opening hidden sealed constructors.
+B26–B29 execute primitive checks at explicit cuts, identify the actual second
+pair end by determinism, and derive both Finish tags plus early-right success.
+B30/B31 compose sealed derivations at the exact shared current trace. B32/B33
+separate direct production from an EXPLICIT observed existential consumer.
+B34/B35 construct the genuine third node; B36–B39 similarly construct the fourth.
+
+`R182O19AllFourCrossingsPositive.r182ActualAllFourCrossings` has NO INPUTS and
+retains all four ACTUAL diamonds/results, their full reached bundles, a real
+source-to-final nonempty finite derivation, and transported original uniqueness.
+The actual crossing sequence is Finish0/Begin1, Begin0/Begin1, Finish0/Finish1,
+Begin0/Finish1 (current absolute pair starts 3,2,4,3; intended SOURCE Cartesian
+coordinates (1,0),(0,0),(1,1),(0,1)). The action sequence follows constructor
+and sealed-action equations. Those coordinate labels are NOT yet accompanied
+by `BlockCrossingOriginPlan`; no formal node-count-equals-four theorem is claimed.
+The global chain is assembled from the four real produced nodes, not a zero
+chain or endpoint assertion. The fixture remains the honest empty-key/Unit
+independent example, never count7/ServiceA independence.
+
+### Complete charged continuation failures / correction boundaries
+
+- B13-1: determined `step` pattern unified with `Fired ...`; B13-2 used `_ _`
+  for determined step/rest (and direct Data.Maybe import), PASS3.131s.
+- B18-1: neutral action's two owner definitions did not reduce together.
+  B18-2 explicitly eliminated each actual action constructor, PASS3.118s.
+- B19-1: `Can't solve constraint between: r182SwapZeroOne .actorRight and 1.`
+  Missing DIRECT revised-negative import prevented reduction of the actual swap
+  definition. B19-2 added that import, PASS179.492s / 11,553,600KiB.
+- B28-1: `Undefined name DGamma.CP5ConfluenceRankObservationSpike.traceActionFold.`
+  B28-2 added its direct import; exact sealed-fold view PASS4.151s.
+- B32-1: computed existential elimination reached the automatic 48GiB guard,
+  517.494s / 50,435,280KiB (48.10GiB sampled), process-group SIGTERM. NO VERDICT;
+  `fresh=false` records unflushed interrupted output, not acceptance. No orphan.
+  B32-2 returned the DIRECT produced node package instead of locally casing it,
+  PASS8.311s / 5,147,312KiB. Global assembly moved to B33's explicit observed
+  parameter boundary, then B34 simultaneously assembled actual reached evidence.
+  This is a genuine resolved resource boundary, not a third specification defect.
+- B33-1: `Undefined name UniqueRawNameInsertions.` Direct defining-module import
+  fixed B33-2. Every compiler rejection and interruption stays charged/archived.
+
+No B unit reached a failed3/3 stop. Therefore C remained supervisor-deferred;
+no count7 TraceIndependent work or O20/O21 body work was opportunistically begun.
+No fourth invocation, fake body failure, unsafe primitive, new hole, private
+visibility change or local let/with/as-pattern was introduced.
+
+### Exact R183 construction nodes, BEFORE any O19 RHS attempt
+
+1. GENERAL moving-block cursor: expose each actual next source node through an
+   explicit observed argument, retaining SAME current trace, full15-field bundle,
+   original uniqueness, finite derivation and action/registration origin map.
+   B8/B33 are genuine A/A node/composition capital, not universal block iteration.
+2. Derive later applicability from current block/safety facts for arbitrary
+   effect/coeffect-bearing blocks. The concrete checked-cut path is NOT that
+   universal propagation theorem. For A/O, O/A, O/O derive each orientation's
+   generated-registration/licensing/support premises through owned observations
+   and R179's classifier; never widen O19 by accepting its desired outputs.
+3. Recursive Cartesian induction over BOTH finite block spines, composing the
+   same current result and tuple of source positions. Each current crossing
+   must be classified and produced before recursion (no result/suffix oracle).
+4. Produce `BlockCrossingOriginPlan` SIMULTANEOUSLY with the derivation. At EACH
+   `CrossingOriginPlanStep`, prove its two actual `replayActionOrigin` ordinals
+   equal the SELECTED source block start plus its source-relative position,
+   with exact composed occurrence correspondence. Do not retrofit scalar Refl
+   observations onto a dense independently rebuilt global derivation.
+5. From that same plan: Cartesian coverage, selected-block bounds, UniqueKeys,
+   and `nonEmptyAdjacentSwapNodeCount = leftCount * rightCount`. B39 has no
+   formal scalar four-count certificate and is not WholeBlockSwapDerivation.
+6. Install target blocks on the ACTUAL final reached trace: new locations,
+   openings/bodies, parent/control evidence, block-follow-order witnesses,
+   disjoint numerical ranges and LifecycleActorsCovered for targetOrder. The
+   independently supplied A14 opposite-order trace is NOT this target.
+7. Project reached endpoint, all15 bundle fields and external correspondence
+   from the same constructed chain. Only when 1–6 are COMPLETE/committed may
+   O19 RHS be attempted with fresh3/3, followed by census4=1/2/0/0/1 and the
+   mandatory immediate owner closure gate. No such prerequisite closure exists.
+
+O19 body attempts remain ZERO, census5=1/3/0/0/1. Existing O17/A8, O20 sync and
+O21 withdrawal boundaries are unchanged. R182 is not an O19 or Thm73 closure.
+
+### Late structural measure capital and final validation
+
+B40 (`ad26424`, first-attempt PASS3.126s) proves exact finite append node-count
+addition by induction on EXPLICIT finite derivation data. B41 (`1a49d3f`,
+first-attempt PASS3.129s) proves the corresponding nonempty extension count.
+These are universal structural lemmas for R183's simultaneous induction, NOT
+scalar Refl observers over replay builders or a claimed B39 four-count theorem.
+They close no O19 hole and add no safety premise. Proof attempts ended at B41;
+only post-count validation/evidence work follows before the20:27 guard.
+
+The 17-target final sweep passed, including fresh producer/observation/CrossTrace,
+both revised-safety fixtures, actual gap negative and input-free all-four
+pipeline; R7 threading; all four R9 targets; R16 endpoint; exact R6/R8 intended
+negative diagnostics; full R8 pipeline (100.758s); seeded207/207 package (16.590s).
+The two count lemmas receive additional fresh observation/all-four/package
+validation before the final seal. No frozen target or production source changed.
+
+### Guard stop / final compiler seal
+
+Last proof invocation: B41-1 started20:19:15UTC, PASS20:19:18UTC. The post-count
+sweep passed fresh observation3.112s, all-four pipeline192.886s/~13.32GiB, and
+seeded package16.603s. LAST compiler ended20:24:14UTC; no new invocation after
+the20:27 guard. No compiler remains; work after guard is evidence/audit only.
+
+Final archive:128 serialized checks =107 ordinary PASS +6 intended-negative PASS
++13 compiler rejections +2 charged interruptions without verdict. One-new-top-
+level-declaration/surface rule holds for every invocation; workflow violations[];
+five seeded package builds. The17-target final sweep and3 post-count checks all
+passed. R8 full final peak40,506,560KiB remained below48GiB. The original seeded
+LocalDiamond TTC and production207-module cache are preserved.
+
+R182 concludes at a substantial but honest PARTIAL B milestone: full A and its
+six-unit adjacency correction, actual four-node concrete B pipeline, generic
+A/A observed composition/measure capital, and exact R183 prerequisites. O19
+remains unclosed (ZERO body attempts), C/D unbegun as ruled, census5 unchanged.
+No closure claim or artificial body retry is hidden in the validation totals.
