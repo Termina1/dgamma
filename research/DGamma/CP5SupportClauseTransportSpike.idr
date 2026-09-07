@@ -7,6 +7,7 @@ import DGamma.CP3
 import DGamma.CP4SupportSolution
 import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5AllSupportedMetadataSpike
+import DGamma.CP5SupportEdgeInductionSpike
 import Data.List.Elem
 import Decidable.Equality
 
@@ -291,3 +292,19 @@ supportedClauseTransportStep name key world error value nameEq keyEq source targ
               (registryFibers {name = name} {key = key} {value = value} {world = world} {error = error} (registry target)))
               (dependencies (componentDependencies (fiberComponent sourceFiber)))
               (supportedDependencyTransport name key world error value nameEq keyEq source target renaming transport selected sourceFiber sourceFound supported recursive)))
+
+export
+0 originalSupportedClauseTransport :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, source : SystemState name key value world error} ->
+  (trace : Transitions initial source) -> AlignedTransitions name key world error value nameEq keyEq trace ->
+  RegistrationDiscipline protocol nameEq trace -> (bindings (registry initial) = []) ->
+  (target : SystemState name key value world error) -> (renaming : name -> name) ->
+  SupportedClauseTransport name key world error value nameEq keyEq source target renaming ->
+  (selected : name) -> (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected source = True) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} (renaming selected) target = True)
+originalSupportedClauseTransport name key world error value nameEq keyEq protocol {source} trace aligned discipline empty target renaming transport =
+  originalSupportedEdgeInduction name key world error value protocol nameEq keyEq trace aligned discipline empty
+    (\selected => (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} (renaming selected) target = True))
+    (supportedClauseTransportStep name key world error value nameEq keyEq source target renaming transport)
