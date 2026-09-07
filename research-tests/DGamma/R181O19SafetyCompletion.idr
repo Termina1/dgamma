@@ -228,3 +228,21 @@ r181TotalityObserved table tableObserved Nothing bindingObserved present =
   case present of Refl impossible
 r181TotalityObserved table tableObserved (Just service) bindingObserved present =
   rewrite tableObserved in rewrite bindingObserved in Refl
+
+||| Whole-trace Definition69 producer: close all actual table observations,
+||| then project the validator-owned proof. No totality premise or fallback.
+export
+0 r181WholeTotal : TraceComponentsTotal (the (DecEq Nat) %search)
+  (the (DecEq ToyKey) %search) r181WholeTrace
+r181WholeTotal =
+  case isJustTrueWitness
+    (checkTraceComponentsTotal (the (DecEq Nat) %search)
+      (the (DecEq ToyKey) %search) r181WholeTrace)
+    (r181TotalityObserved
+      (restrictOwnedPreservingOrder @{%search} DGamma.Section3Example.toySpecA
+        (ownedValues (ownedA True))) Refl
+      (lookupBinding @{%search} ServiceA (ownedValues (restrictOwnedPreservingOrder
+        @{%search} DGamma.Section3Example.toySpecA (ownedValues (ownedA True))))) Refl
+      (r180NormalizedServiceMemberObserved (ownedValues (restrictOwnedPreservingOrder
+        @{%search} DGamma.Section3Example.toySpecA (ownedValues (ownedA True)))) Refl)) of
+    (totality ** observed) => totality
