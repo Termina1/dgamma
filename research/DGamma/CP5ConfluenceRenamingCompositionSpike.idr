@@ -3086,3 +3086,11 @@ registrationSideFoldBirth name key world error value nameEq ordinal
         step rest actionExact
       There after => scannedRegistrationBirthPrepend name key world error value ordinal step rest event
         (registrationSideFoldBirth name key world error value nameEq (S ordinal) later event after)
+
+||| Membership of an exact occurrence removed by the finite event pairing.
+||| This is list bookkeeping only, not endpoint/trace withdrawal evidence.
+0 pairingRemovedMember :
+  {element : Type} -> {selected : element} -> {source, remainder : List element} ->
+  RemoveListOccurrence selected source remainder -> Elem selected source
+pairingRemovedMember RemoveListHere = Here
+pairingRemovedMember (RemoveListThere later) = There (pairingRemovedMember later)
