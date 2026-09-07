@@ -3148,6 +3148,26 @@ registrationPairingDomains
           (paired ** (present, exactMatch)) =>
             (paired ** (pairingEmbedRemainingMember leftRemoval present, exactMatch))))
 
+||| Explicit owned projection boundary, shared by child and parent metadata.
+0 authenticatedMatchingFromProjection :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  {leftResultIndex, rightResultIndex : RegistrationIndexState name} ->
+  AlignedFiniteRegistrationProjection nameEq renaming Z
+    (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex) left leftResultIndex Z
+    (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex) right rightResultIndex [] [] ->
+  AuthenticatedRegistrationMatching name key world error value renaming left right
+authenticatedMatchingFromProjection name key world error value nameEq left right renaming projection =
+  case projection of
+    MkAlignedFiniteRegistrationProjection plan leftScan rightScan leftEvents rightEvents planFold leftFold rightFold =>
+      MkAuthenticatedRegistrationMatching leftEvents rightEvents
+        (registrationSideFoldBirth name key world error value nameEq Z leftFold)
+        (registrationSideFoldBirth name key world error value nameEq Z rightFold)
+        (fst (registrationPairingDomains (matchingPlanPairing planFold)))
+        (snd (registrationPairingDomains (matchingPlanPairing planFold)))
+
 ||| Authenticate the sealed accepted scanner's own event domains and matches.
 ||| No endpoint support/order equality or O20 capital is consumed.
 export
@@ -3160,13 +3180,9 @@ export
   RegistrationCorrespondenceByGeneration nameEq renaming left right ->
   AuthenticatedRegistrationMatching name key world error value renaming left right
 acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right renaming registrations =
-  case alignFiniteRegistrationProjection (generationTraceCorrespondence registrations) of
-    MkAlignedFiniteRegistrationProjection plan leftScan rightScan leftEvents rightEvents planFold leftFold rightFold =>
-      MkAuthenticatedRegistrationMatching leftEvents rightEvents
-        (registrationSideFoldBirth name key world error value nameEq Z leftFold)
-        (registrationSideFoldBirth name key world error value nameEq Z rightFold)
-        (fst (registrationPairingDomains (matchingPlanPairing planFold)))
-        (snd (registrationPairingDomains (matchingPlanPairing planFold)))
+  authenticatedMatchingFromProjection name key world error value nameEq left right renaming
+    (alignFiniteRegistrationProjection (generationTraceCorrespondence registrations))
+
 
 ||| Authenticate the parent generation AT each real retained event's birth.
 ||| No assertion that the historical parent stamp is endpoint-current is made.
