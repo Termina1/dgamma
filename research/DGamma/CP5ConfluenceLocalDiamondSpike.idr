@@ -12241,6 +12241,7 @@ beginRawAfterForeignState {name} {key} {world} {error} {value}
                       rewrite targetAtMoved in Refl
                 in MkRawActivationMove movedAfter movedRaw
 
+export
 0 beginRawAfterForeignActivation :
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (leftActor : name) ->

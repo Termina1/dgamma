@@ -56,3 +56,13 @@ seeded LocalDiamond check/commit, no new declaration/body/signature/order edits.
 Stripping these two keywords must reconstruct973a81a byte-for-byte. Never delete
 the LocalDiamond TTC. Consumer planned in CP5O19OpeningPropagationSpike.
 A4 check currently running; A5 not begun. No assumed arbitrary early cut added.
+
+A4 commit403e512: fresh PASS1,496.911s; source hash and byte reconstruction
+authenticated before commit; peak50,239,808KiB<48GiB. A post-auth hash locator
+used an obsolete hole-RHS delimiter and errored; corrected fixed-size hashes
+now verify full1470/statement1154 unchanged. Compiler result was unaffected.
+A5 begins: second explicitly gated keyword, plain export on existing proof.
+
+A5 fresh PASS1,500.381s; peak50,237,136KiB<48GiB. Both allowed
+keywords now present; stripping reconstructs973a81a byte-for-byte. Frozen
+full/statement hashes verified again. No LocalDiamond declaration or body edit.
