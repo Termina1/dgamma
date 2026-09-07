@@ -421,3 +421,25 @@ nonInsertionSourceObserved name key world error value nameEq keyEq action before
   case rawAbsentOwnerInsertion name key world error value nameEq keyEq action before afterState tag raw exact of
     (parent ** component ** inserted) => void (notInsert parent component inserted)
 nonInsertionSourceObserved name key world error value nameEq keyEq action before afterState tag raw notInsert (Just fiber) exact = (fiber ** exact)
+
+0 retiredLifecycleSource :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (action : Action name key value world error) ->
+  (isLifecycleAction action = True) -> (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} (actionOwner action) (registry afterState) = Just observed) -> (retired observed = True) ->
+  (sourceFiber : Fiber name key value world error **
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} (actionOwner action) (registry before) = Just sourceFiber, retired sourceFiber = True))
+retiredLifecycleSource name key world error value nameEq keyEq action lifecycle before afterState tag raw observed found retiredTrue =
+  case nonInsertionSourceObserved name key world error value nameEq keyEq action before afterState tag raw
+    (\parent, component, inserted => case trans (sym lifecycle) (cong isLifecycleAction inserted) of Refl impossible)
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} (actionOwner action) (registry before)) Refl of
+    (sourceFiber ** sourceFound) =>
+      case rawLifecycleRetiredFlags name key world error value nameEq keyEq action lifecycle before afterState tag sourceFiber sourceFound raw of
+        (targetFiber ** (targetFound, flagsSame)) =>
+          (sourceFiber ** (sourceFound, trans (sym flagsSame)
+            (trans (cong retired (justInjective (trans (sym targetFound) found))) retiredTrue)))
