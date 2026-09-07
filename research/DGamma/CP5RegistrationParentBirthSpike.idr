@@ -88,3 +88,22 @@ parentPutEntryOrigin name nameEq inserted fresh ((candidate, current) :: rest) s
     (decEq @{nameEq} inserted candidate) Refl
     (parentPutEntryOrigin name nameEq inserted fresh rest) selected generation member
 
+
+||| A parent activation carries the genuine insertion birth of its stamped generation.
+0 parentBirthAfterPut :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (live : List (name, RegistrationActivation name)) ->
+  (inserted : name) -> (fresh : RegistrationActivation name) ->
+  CurrentGenerationBirth name key world error value global inserted (activationParentGeneration fresh) ->
+  ((selected : name) -> (generation : RegistrationActivation name) ->
+    Elem (selected, generation) live -> CurrentGenerationBirth name key world error value global selected (activationParentGeneration generation)) ->
+  (selected : name) -> (generation : RegistrationActivation name) ->
+  Elem (selected, generation) (putParentActivation @{nameEq} inserted fresh live) ->
+  CurrentGenerationBirth name key world error value global selected (activationParentGeneration generation)
+parentBirthAfterPut name key world error value nameEq global live inserted fresh birth previous selected generation member =
+  case parentPutEntryOrigin name nameEq inserted fresh live selected generation member of
+    Left exact => case exact of Refl => birth
+    Right old => previous selected generation old
+
