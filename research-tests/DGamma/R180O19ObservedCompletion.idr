@@ -203,3 +203,39 @@ r180ConsumerFinishRaw = r180ConsumerFinishRawObserved
     @{%search} DGamma.Section3Example.toySpecA (ownedValues (ownedA True))))) Refl
   (r180NormalizedServiceMemberObserved (ownedValues (restrictOwnedPreservingOrder
     @{%search} DGamma.Section3Example.toySpecA (ownedValues (ownedA True)))) Refl)
+
+||| Authentic FIVE-edge lifecycle suffix: provider Begin/Iter/Finish, consumer
+||| Begin/Finish, with final WF PRODUCED by raw preservation. The start is the
+||| already-registered root source, NOT yet an authenticated empty-origin trace.
+||| This packet does NOT inhabit AdjacentActorSwapSafety or claim a full negative.
+export
+0 r180ObservedLifecycleSuffix :
+  (Transitions r179ObservedRootSource r180ObservedConsumerFinished,
+   registryWellFormed {name = Nat} {key = ToyKey} {value = ToyValue}
+    {world = ToyRuntime} {error = String} @{%search} @{%search}
+    r180ObservedConsumerFinished = True)
+r180ObservedLifecycleSuffix =
+  (MoreTransitions
+    (Fired {before = r179ObservedRootSource} {afterState = r179ObservedProviderBegin}
+      %search %search (LBegin 0) LBeginTag (fst r179ObservedProviderEdges))
+    (MoreTransitions
+      (Fired {before = r179ObservedProviderBegin} {afterState = r179ObservedProviderCut}
+        %search %search (LAdvance 0) LIterTag (fst (snd r179ObservedProviderEdges)))
+      (MoreTransitions
+        (Fired {before = r179ObservedProviderCut} {afterState = r179ObservedProviderFinished}
+          %search %search (LAdvance 0) LFinishTag (fst (snd (snd r179ObservedProviderEdges))))
+        (MoreTransitions (beginTransition r180ConsumerBeginFromPrerequisites)
+          (MoreTransitions
+            (Fired {before = r180ObservedConsumerBegun} {afterState = r180ObservedConsumerFinished}
+              %search %search (LAdvance 1) LFinishTag
+              (r180CheckedFromPrerequisites (LAdvance 1) r180ObservedConsumerBegun
+                r180ObservedConsumerFinished LFinishTag r180ConsumerFinishRaw
+                (preservationTheoremProof {name = Nat} {key = ToyKey} {value = ToyValue}
+                  {world = ToyRuntime} {error = String} %search %search (LAdvance 1)
+                  r180ObservedConsumerBegun r180ObservedConsumerFinished LFinishTag
+                  (fst r180ConsumerBeginOutputDomains) r180ConsumerFinishRaw)))
+            NoTransitions)))),
+   preservationTheoremProof {name = Nat} {key = ToyKey} {value = ToyValue}
+    {world = ToyRuntime} {error = String} %search %search (LAdvance 1)
+    r180ObservedConsumerBegun r180ObservedConsumerFinished LFinishTag
+    (fst r180ConsumerBeginOutputDomains) r180ConsumerFinishRaw)
