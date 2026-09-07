@@ -137,3 +137,29 @@ truth implications, then and only then the support-order body, immediate fresh
 five-hole census/milestone gate if closed. O17/root placement, O19, and O21
 withdrawals remain prohibited. A's 12-unit cap is not reopened. Final validation
 F1/F2 ran before this redirect was read and passed; later checks are postponed.
+
+### B2–B21 — shared scanner-birth authentication milestone
+
+`CP5CurrentGenerationBirthSpike` now proves forward exact-scan authentication
+from the original empty generation environment. `CurrentGenerationBirth`
+contains an actual original `LocatedActionOccurrence` and its exact generation
+stamp, not a supplied generation-name coincidence. Observed dictionary equations
+B3/B4 avoid a computed-view rewrite; B5/B6/B7 propagate actual entries through
+put/delete/action; B8–B11 preserve original occurrence ordinals through the scan.
+
+Producer-owned B12–B17 in RenamingComposition project its private accepted side
+scan into the exact `GenerationTraceScan`, retaining the SAME final indices.
+`acceptedLeftCurrentBirth` / `acceptedRightCurrentBirth` derive their own original
+births directly from `RegistrationCorrespondenceByGeneration` and current lookup.
+B18 uses R175 B10 `rawComponentBirthAtPrefix` to obtain the second authentic
+component birth; ONLY THEN it applies original `uniqueInsertionPosition`.
+B20/B21 `acceptedLeftEndpointCurrentBirth` / `acceptedRightEndpointCurrentBirth`
+therefore give a located insertion of the actual endpoint component and exact
+accepted current-generation stamp, without a caller-selected birth premise.
+
+All B2–B21 retained and freshly checked: B5 needed 2/3 (move member elimination
+from overlapping dependent LHS to ordinary case); B18 needed 2/3 (explicit
+Metatheory/Coeffects imports). Every other unit PASS 1/1. No 3/3 stop and no body
+hole edits. The next obligation is the operational registry/current-domain
+connection needed to obtain a current lookup from endpoint support, then genuine
+cross-endpoint parent/component/retirement/provider support transport.
