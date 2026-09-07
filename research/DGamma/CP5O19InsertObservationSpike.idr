@@ -50,3 +50,21 @@ o19ResolutionFromInsertPlan {name} {key} {world} {error} {value}
     MkO19ResolutionObservation (resolveView @{nameEq} @{keyEq} {value} {world} {error} deps source)
       Refl (resolveViewInactiveInsert {name} {key} {world} {error} {value}
         nameEq keyEq deps child component parent source absent)
+
+||| Execute the public insertion-plan producer on the actual checked edge,
+||| then pass that explicit result across the A4 observation boundary.
+export
+0 o19ResolutionAfterCheckedInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (deps : List key) ->
+  (child : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (checkedApplyAction @{nameEq} @{keyEq} (OInsert child parent component) before = Just (tag, afterState)) ->
+  O19ResolutionObservation name key world error value nameEq keyEq deps (registry before) (registry afterState)
+o19ResolutionAfterCheckedInsert nameEq keyEq deps child parent component
+  (MkSystemState ambient source) afterState tag checked =
+    o19ResolutionFromInsertPlan nameEq keyEq deps child parent component ambient source tag afterState
+      (foreignInsertPlanView nameEq keyEq child parent component ambient source tag afterState
+        (checkedActionProjects nameEq keyEq (OInsert child parent component)
+          (MkSystemState ambient source) afterState tag checked))
