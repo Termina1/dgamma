@@ -53,3 +53,26 @@ acceptedBackwardSupportedClauseTransport name key world error value nameEq keyEq
         leftAligned rightAligned discipline empty leftUnique rightUnique)
       (acceptedSupportedBackwardNotRetired name key world error value nameEq keyEq left right sameInputs matched
         leftAligned rightAligned empty leftUnique rightUnique)
+
+||| FIRST closed support-truth implication. All generated/root coverage, actual
+||| retirement agreement and smaller-provider/parent recursion are producer-owned.
+export
+0 acceptedSupportedTruthForward :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  GeneratedOrchestrationMatched name key world error value nameEq left right (generatedGenerationBijection sameInputs) ->
+  AlignedTransitions name key world error value nameEq keyEq left -> AlignedTransitions name key world error value nameEq keyEq right ->
+  RegistrationDiscipline protocol nameEq left -> (bindings (registry initial) = []) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left -> UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  (selected : name) -> (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected leftFinal = True) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq}
+    (renameForward (currentNameBijection (endpointRenaming sameInputs)) selected) rightFinal = True)
+acceptedSupportedTruthForward name key world error value nameEq keyEq protocol {rightFinal} left right sameInputs matched
+  leftAligned rightAligned discipline empty leftUnique rightUnique =
+    originalSupportedClauseTransport name key world error value nameEq keyEq protocol left leftAligned discipline empty rightFinal
+      (renameForward (currentNameBijection (endpointRenaming sameInputs)))
+      (acceptedForwardSupportedClauseTransport name key world error value nameEq keyEq protocol left right sameInputs matched
+        leftAligned rightAligned discipline empty leftUnique rightUnique)
