@@ -109,3 +109,30 @@ r180ConsumerBeginRaw = r180ConsumerBeginRawObserved
     @{%search} DGamma.Section3Example.toySpecA (ownedValues (ownedA True))))) Refl
   (r180NormalizedServiceMemberObserved (ownedValues (restrictOwnedPreservingOrder
     @{%search} DGamma.Section3Example.toySpecA (ownedValues (ownedA True)))) Refl)
+
+||| A8 DISTINCT exact-output WF/domain prerequisite. Raw Theorem59 PRODUCES the
+||| output validity from R179's authenticated source WF and A7's raw edge; its
+||| committed-view conjunct includes every actual per-view provider/value domain.
+||| Neither output WF nor any individual view domain is assumed.
+export
+0 r180ConsumerBeginOutputDomains :
+  (registryWellFormed {name = Nat} {key = ToyKey} {value = ToyValue}
+    {world = ToyRuntime} {error = String} @{%search} @{%search}
+    r180ObservedConsumerBegun = True,
+   viewsInvariant {name = Nat} {key = ToyKey} {value = ToyValue}
+    {world = ToyRuntime} {error = String} @{%search} @{%search}
+    (registryFibers {name = Nat} {key = ToyKey} {value = ToyValue}
+      {world = ToyRuntime} {error = String} (registry r180ObservedConsumerBegun))
+    (registry r180ObservedConsumerBegun) = True)
+r180ConsumerBeginOutputDomains =
+  (preservationTheoremProof {name = Nat} {key = ToyKey} {value = ToyValue}
+    {world = ToyRuntime} {error = String} %search %search (LBegin 1)
+    r179ObservedProviderFinished r180ObservedConsumerBegun LBeginTag
+    (snd (snd (snd (snd r179ObservedProviderEdges)))) r180ConsumerBeginRaw,
+   wellFormedViewsInvariant {name = Nat} {key = ToyKey} {value = ToyValue}
+    {world = ToyRuntime} {error = String} %search %search
+    (worldState r180ObservedConsumerBegun) (registry r180ObservedConsumerBegun)
+    (preservationTheoremProof {name = Nat} {key = ToyKey} {value = ToyValue}
+      {world = ToyRuntime} {error = String} %search %search (LBegin 1)
+      r179ObservedProviderFinished r180ObservedConsumerBegun LBeginTag
+      (snd (snd (snd (snd r179ObservedProviderEdges)))) r180ConsumerBeginRaw))
