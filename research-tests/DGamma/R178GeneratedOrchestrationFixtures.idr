@@ -73,3 +73,9 @@ r178ChildRetire = Fired r45NameEq r45KeyEq (ORetire 1) ORetireTag
   (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
     (ORetire 1) r178ParentDoneState r178RightFinal ORetireTag
     (checkedTransitionTargetValid r178ParentFinish) Refl)
+
+public export
+r178CommonTrace : Transitions r45Initial r178ParentDoneState
+r178CommonTrace = MoreTransitions r45ParentInsert
+  (MoreTransitions r45Begin (MoreTransitions r45ChildInsert
+    (MoreTransitions r178ParentFinish NoTransitions)))
