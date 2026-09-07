@@ -102,3 +102,30 @@ currentBirthAfterPut name key world error value nameEq global live inserted fres
   case currentPutEntryOrigin name nameEq inserted fresh live selected generation member of
     Left exact => case exact of Refl => birth
     Right old => previous selected generation old
+
+||| The generation update introduces only the actual head insertion at its
+||| authenticated global ordinal; all other entries retain their real births.
+0 currentBirthAfterAction :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (ordinal : Nat) ->
+  (live : GenerationEnvironment name) -> (action : Action name key value world error) ->
+  (occurrence : LocatedActionOccurrence action global) ->
+  (locatedActionOrdinal occurrence = ordinal) ->
+  ((selected : name) -> (generation : RegistrationGeneration name) ->
+    Elem (selected, generation) live -> CurrentGenerationBirth name key world error value global selected generation) ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  Elem (selected, generation) (advanceGenerationEnvironment @{nameEq} ordinal action live) ->
+  CurrentGenerationBirth name key world error value global selected generation
+currentBirthAfterAction name key world error value nameEq global ordinal live (OInsert inserted parent component) occurrence exact previous =
+  currentBirthAfterPut name key world error value nameEq global live inserted (MkRegistrationGeneration inserted ordinal)
+    (MkCurrentGenerationBirth parent component occurrence (sym (cong (MkRegistrationGeneration inserted) exact))) previous
+currentBirthAfterAction name key world error value nameEq global ordinal live (ORetire actor) occurrence exact previous = previous
+currentBirthAfterAction name key world error value nameEq global ordinal live (ORemove actor) occurrence exact previous =
+  \selected, generation, member => previous selected generation (entryAfterDeleteComesFromOld nameEq actor live selected generation member)
+currentBirthAfterAction name key world error value nameEq global ordinal live (LBegin actor) occurrence exact previous = previous
+currentBirthAfterAction name key world error value nameEq global ordinal live (LAdvance actor) occurrence exact previous = previous
+currentBirthAfterAction name key world error value nameEq global ordinal live (LDivert actor) occurrence exact previous = previous
+currentBirthAfterAction name key world error value nameEq global ordinal live (LLeave actor) occurrence exact previous = previous
+currentBirthAfterAction name key world error value nameEq global ordinal live (LUnload actor) occurrence exact previous = previous
