@@ -188,3 +188,18 @@ r180ConsumerFinishRawObserved table tableObserved Nothing bindingObserved presen
   case present of Refl impossible
 r180ConsumerFinishRawObserved table tableObserved (Just service) bindingObserved present =
   rewrite tableObserved in rewrite bindingObserved in Refl
+
+||| Close every consumer Finish observation with the same actual provider
+||| normalization and its proved binding truth. No availability assumption.
+export
+0 r180ConsumerFinishRaw :
+  (applyAction {name = Nat} {key = ToyKey} {value = ToyValue}
+    {world = ToyRuntime} {error = String} @{%search} @{%search} (LAdvance 1)
+    r180ObservedConsumerBegun = Just (LFinishTag, r180ObservedConsumerFinished))
+r180ConsumerFinishRaw = r180ConsumerFinishRawObserved
+  (restrictOwnedPreservingOrder @{%search} DGamma.Section3Example.toySpecA
+    (ownedValues (ownedA True))) Refl
+  (lookupBinding @{%search} ServiceA (ownedValues (restrictOwnedPreservingOrder
+    @{%search} DGamma.Section3Example.toySpecA (ownedValues (ownedA True))))) Refl
+  (r180NormalizedServiceMemberObserved (ownedValues (restrictOwnedPreservingOrder
+    @{%search} DGamma.Section3Example.toySpecA (ownedValues (ownedA True)))) Refl)
