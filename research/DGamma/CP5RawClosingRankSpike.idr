@@ -126,3 +126,53 @@ rawAbsentOwnerInsertion name key world error value nameEq keyEq
     void (nothingIsNotJust (trans (sym (the
       (applyAction @{nameEq} @{keyEq} (LUnload actor) before = Nothing)
       (rewrite absent in Refl))) raw))
+
+
+||| Structural observed-update rule. The update is an EXPLICIT argument, not a
+||| computed scrutinee expected to refine rigid projections of a system state.
+public export
+0 rawImmutableComponentUpdate :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) ->
+  (property : name -> Component key value world error -> Type) ->
+  (actor : name) -> (source, target : Registry name key value world error) ->
+  (update : RegistryLocalUpdate name key world error value nameEq actor source target) ->
+  ((next : Fiber name key value world error) ->
+    (absent : lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} actor source = Nothing) ->
+    target = insertBinding @{nameEq} actor next source absent -> property actor (fiberComponent next)) ->
+  ((selected : name) -> (fiber : Fiber name key value world error) ->
+    lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected source = Just fiber -> property selected (fiberComponent fiber)) ->
+  (selected : name) -> (observed : Fiber name key value world error) ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected target = Just observed -> property selected (fiberComponent observed)
+rawImmutableComponentUpdate name key world error value nameEq property actor source _
+  (LocalInsert next absent) inserted previous selected observed found =
+    case decEq @{nameEq} selected actor of
+      Yes same => case same of
+        Refl => replace {p = property actor}
+          (cong fiberComponent (justInjective (trans (sym (lookupInserted actor next source absent)) found)))
+          (inserted next absent Refl)
+      No distinct => previous selected observed
+        (trans (sym (registryLocalUpdateForeign nameEq selected actor distinct source
+          (LocalInsert next absent))) found)
+rawImmutableComponentUpdate name key world error value nameEq property actor source _
+  (LocalReplace {oldFiber} {oldFound} {staticComponent} next) inserted previous selected observed found =
+    case decEq @{nameEq} selected actor of
+      Yes same => case same of
+        Refl => replace {p = property actor}
+          (trans (sym staticComponent) (cong fiberComponent
+            (justInjective (trans (sym (lookupReplacedFiber actor oldFiber next source oldFound)) found))))
+          (previous actor oldFiber oldFound)
+      No distinct => previous selected observed
+        (trans (sym (registryLocalUpdateForeign nameEq selected actor distinct source
+          (LocalReplace {oldFiber} {oldFound} {staticComponent} next))) found)
+rawImmutableComponentUpdate name key world error value nameEq property actor source _
+  LocalDelete inserted previous selected observed found =
+    case decEq @{nameEq} selected actor of
+      Yes same => case same of
+        Refl => void (nothingIsNotJust
+          (trans (sym (DGamma.CP4DeletionSelectedOwn.lookupDeleteSelf @{nameEq} actor source)) found))
+      No distinct => previous selected observed
+        (trans (sym (registryLocalUpdateForeign nameEq selected actor distinct source LocalDelete)) found)
