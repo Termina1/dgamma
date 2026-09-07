@@ -149,7 +149,7 @@ fullPipelineFromBundles {name} {key} {world} {error} {value}
       convergence = canonicalSchedulesConvergeSpike nameEq keyEq protocol leftTrace
         rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique operational
       equivalent = originalEndpointsConvergeSpike nameEq keyEq protocol leftTrace
-        rightTrace sameInputs leftCapital rightCapital convergence in
+        rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique convergence in
     confluenceResultFromCanonicalCapital nameEq keyEq protocol leftTrace rightTrace
       sameInputs (canonicalSchedule leftCapital)
       (canonicalSchedule rightCapital) equivalent
