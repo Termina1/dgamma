@@ -140,3 +140,12 @@ currentBirthPrependLocation name key world error value step rest action
   (MkLocatedActionOccurrence before afterState prior located later exact decomposition) =
     MkLocatedActionOccurrence before afterState (MoreTransitions step prior) located later exact
       (cong (MoreTransitions step) decomposition)
+
+0 currentBirthPrependOrdinal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (action : Action name key value world error) -> (occurrence : LocatedActionOccurrence action rest) ->
+  (locatedActionOrdinal (currentBirthPrependLocation name key world error value step rest action occurrence) = S (locatedActionOrdinal occurrence))
+currentBirthPrependOrdinal name key world error value step rest action
+  (MkLocatedActionOccurrence before afterState prior located later exact decomposition) = Refl
