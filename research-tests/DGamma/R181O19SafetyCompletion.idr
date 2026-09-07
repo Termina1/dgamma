@@ -192,3 +192,22 @@ r181Protocol = MkRegistrationProtocol (\tag => Nothing) r181ProtocolRank
   (\parent, child, step, tag, parentRank, childRank, occurs, parentRanked,
     childRanked, tagged, cataloged => case cataloged of Refl impossible)
   r181PrecedenceRanks
+
+||| Authenticate protocol discipline and exact count7 of the SAME whole trace;
+||| the consumer is unavailable at its prospective swapped block source.
+||| This is NOT yet a full AdjacentActorSwapSafety counterexample.
+export
+0 r181TraceStructure :
+  (RegistrationDiscipline r181Protocol (the (DecEq Nat) %search) r181WholeTrace,
+   (transitionCount r181WholeTrace = 7),
+   (applyAction {name = Nat} {key = ToyKey} {value = ToyValue} {world = ToyRuntime}
+      {error = String} @{%search} @{%search} (LBegin 1) r179ObservedRootSource = Nothing))
+r181TraceStructure =
+  (RegistrationDisciplineStep _ _ (0 ** Refl)
+    (RegistrationDisciplineStep _ _ (1 ** Refl)
+      (RegistrationDisciplineStep _ _ ()
+        (RegistrationDisciplineStep _ _ ()
+          (RegistrationDisciplineStep _ _ ()
+            (RegistrationDisciplineStep _ _ ()
+              (RegistrationDisciplineStep _ _ () RegistrationDisciplineEnd)))))),
+   Refl, Refl)
