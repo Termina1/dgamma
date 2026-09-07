@@ -421,3 +421,13 @@ CurrentResultOwner name key world error value nameEq actor (Just (tag, state)) =
   CurrentResultOwner name key world error value nameEq actor (if condition then yesResult else noResult)
 currentResultOwnerIf name key world error value nameEq actor True yesResult noResult yes no = yes
 currentResultOwnerIf name key world error value nameEq actor False yesResult noResult yes no = no
+
+0 currentResultOwnerMaybe :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (actor : name) -> (argument : Type) -> (observed : Maybe argument) ->
+  (next : argument -> Maybe (RuleTag, SystemState name key value world error)) ->
+  ((item : argument) -> CurrentResultOwner name key world error value nameEq actor (next item)) ->
+  CurrentResultOwner name key world error value nameEq actor
+    (case observed of Nothing => Nothing; Just item => next item)
+currentResultOwnerMaybe name key world error value nameEq actor argument Nothing next valid = ()
+currentResultOwnerMaybe name key world error value nameEq actor argument (Just item) next valid = valid item
