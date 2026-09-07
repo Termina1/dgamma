@@ -222,3 +222,34 @@ currentBirthMetadataAtPrefix name key world error value nameEq keyEq global prio
       (currentLocatedBirth authentication)
       (rawMetadataBirthAtPrefix name key world error value nameEq keyEq global prior later
         decomposition aligned empty selected observed found)
+
+||| Actual parent/component birth with the exact scanner stamp, not a chosen birth.
+public export
+0 currentBirthAtPrefixMetadata :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, middle, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (prior : Transitions initial middle) -> (later : Transitions middle finalState) ->
+  (appendTransitions prior later = global) ->
+  AlignedTransitions name key world error value nameEq keyEq prior ->
+  (bindings (registry initial) = []) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq global ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  (authentication : CurrentGenerationBirth name key world error value global selected generation) ->
+  (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry middle) = Just observed) ->
+  (birth : LocatedActionOccurrence (OInsert selected (fiberParent observed) (fiberComponent observed)) global **
+    generation = MkRegistrationGeneration selected (locatedActionOrdinal birth))
+currentBirthAtPrefixMetadata name key world error value nameEq keyEq global prior later decomposition aligned empty unique
+  selected generation authentication observed found =
+    (rawMetadataBirthAtPrefix name key world error value nameEq keyEq global prior later
+      decomposition aligned empty selected observed found **
+      trans (currentBirthStampExact authentication)
+        (cong (MkRegistrationGeneration selected)
+          (uniqueInsertionPosition unique selected (currentBirthParent authentication) (fiberParent observed)
+            (currentBirthComponent authentication) (fiberComponent observed)
+            (currentLocatedBirth authentication)
+            (rawMetadataBirthAtPrefix name key world error value nameEq keyEq global prior later
+              decomposition aligned empty selected observed found))))
