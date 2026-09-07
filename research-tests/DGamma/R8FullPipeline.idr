@@ -8,6 +8,7 @@ import DGamma.CP5ConfluenceCanonicalSortSpike
 import DGamma.CP5ConfluenceRenamingCompositionSpike
 import DGamma.CP5ConfluenceCrossTraceSpike
 import DGamma.CP5UniqueRawNameInsertions
+import DGamma.CP5GeneratedOrchestrationMatched
 import DGamma.CP5UniqueRawNameDeletion
 import Decidable.Equality
 
@@ -82,12 +83,14 @@ public export
     protocol nameEq keyEq rightTrace) ->
   (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
   (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  (0 leftRightGeneratedMatched : GeneratedOrchestrationMatched name key world error value nameEq
+    leftTrace rightTrace (generatedGenerationBijection sameInputs)) ->
   ConfluenceResult name key world error value protocol nameEq keyEq leftTrace
     rightTrace (generatedGenerationBijection sameInputs)
     (currentNameBijection (endpointRenaming sameInputs))
 fullPipelineFromBundles {name} {key} {world} {error} {value}
   nameEq keyEq protocol leftTrace rightTrace leftPremises
-  rightPremises sameInputs leftLate rightLate leftUnique rightUnique =
+  rightPremises sameInputs leftLate rightLate leftUnique rightUnique leftRightGeneratedMatched =
   let leftReduction = deleteAllClosingEpisodesSpike nameEq keyEq protocol
         leftTrace leftPremises
       leftShape = closingFreeTraceShapeSpike nameEq keyEq protocol
@@ -143,13 +146,13 @@ fullPipelineFromBundles {name} {key} {world} {error} {value}
         rightTrace rightPremises rightReduction rightOrdering rightSorted
         rightTransport rightAccounting
       matching = canonicalSupportOrdersMatchSpike nameEq keyEq protocol leftTrace
-        rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique
+        rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique leftRightGeneratedMatched
       operational = selectOperationalCanonicalPermutationSpike nameEq keyEq
-        protocol leftTrace rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique matching
+        protocol leftTrace rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique leftRightGeneratedMatched matching
       convergence = canonicalSchedulesConvergeSpike nameEq keyEq protocol leftTrace
-        rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique operational
+        rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique leftRightGeneratedMatched operational
       equivalent = originalEndpointsConvergeSpike nameEq keyEq protocol leftTrace
-        rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique convergence in
+        rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique leftRightGeneratedMatched convergence in
     confluenceResultFromCanonicalCapital nameEq keyEq protocol leftTrace rightTrace
       sameInputs (canonicalSchedule leftCapital)
       (canonicalSchedule rightCapital) equivalent
