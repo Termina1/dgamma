@@ -104,3 +104,22 @@ findActualRankDescent name key world error value observe (MoreTransitions left (
     Just choice => Just choice
     Nothing => map (locatedRankDescentPrepend name key world error value observe left (MoreTransitions right suffix))
       (findActualRankDescent name key world error value observe (MoreTransitions right suffix))
+
+||| The selected checked pair inherits the designated replay dictionaries from
+||| its OWN actual global alignment; no unrelated aligned pair is supplied.
+export
+0 locatedRankDescentAligned :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (observe : Action name key value world error -> Maybe Nat) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  (choice : LocatedRankDescent name key world error value observe trace) ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions (traceDescentLeft choice) (MoreTransitions (traceDescentRight choice) NoTransitions))
+locatedRankDescentAligned name key world error value nameEq keyEq observe trace aligned
+  (MkLocatedRankDescent before middle afterState prior left right suffix leftRank rightRank leftExact rightExact crossed decomposition) =
+    fst (alignedAppendSplit (MoreTransitions left (MoreTransitions right NoTransitions)) suffix
+      (snd (alignedAppendSplit prior (MoreTransitions left (MoreTransitions right suffix))
+        (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym decomposition) aligned))))
