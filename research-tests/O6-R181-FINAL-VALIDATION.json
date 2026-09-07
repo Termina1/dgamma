@@ -1,0 +1,603 @@
+{
+  "frozen": {
+    "timestamp": "2026-09-07T15:02:42.345046+00:00",
+    "head": "b424fd1a8000b1cd04f6399c2758a5ca8a7bfb74",
+    "start": "5871236",
+    "holes": {
+      "CanonicalSort": [
+        "?sortClosingFreeTraceSpike_rhs"
+      ],
+      "CrossTrace": [
+        "?operationalAdjacentBlockSwapSpike_rhs",
+        "?selectOperationalCanonicalPermutationSpike_rhs",
+        "?canonicalSchedulesConvergeSpike_rhs"
+      ],
+      "DeletionChain": [],
+      "LocalDiamond": [],
+      "RenamingComposition": [
+        "?replayedCanonicalToOriginalEndpointSpike_rhs"
+      ]
+    },
+    "split": [
+      1,
+      3,
+      0,
+      0,
+      1
+    ],
+    "productionDiffVs34b21c9": "empty",
+    "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+    "LocalDiamondDiffVsStart": "empty",
+    "CanonicalSortDiffVsStart": "empty",
+    "CanonicalSortAuthorizedVisibility": {},
+    "DeletionChainDiffVsStart": "empty",
+    "CrossTraceDiffVsStart": "empty",
+    "RenamingCompositionDiffVsStart": "empty",
+    "adjacentFullBytes": 1470,
+    "adjacentFullSHA256": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+    "adjacentStatementBytes": 1154,
+    "adjacentStatementSHA256": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+    "reviewSHA256": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8",
+    "seeds": "207/207",
+    "LocalDiamondTTC": {
+      "bytes": 125368223,
+      "mtimeUTC": "2026-09-07T01:56:14.905763+00:00"
+    },
+    "changedIdrisFiles": [
+      "research-tests/DGamma/R181O19SafetyCompletion.idr",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+      "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr"
+    ],
+    "sourceSHA256": {
+      "research-tests/DGamma/R181O19SafetyCompletion.idr": "821680d533db389cbaa25af65c8f180fc0224de94c9f6c9d9cfed6260d1ad180",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr": "14b0c7ac908bfbb2ce2e7bfc8897c5fa4430425f68d8cae11fed66624d6e29bb",
+      "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr": "77eef9aac99afa4e9c2f0dde5d8ae00e1e74e27cde0fc5be6d4211238f2e0c47"
+    },
+    "protectedDeclarationSHA256": {
+      "sortClosingFreeTraceSpike": "1df8d174b9a4f119a5a52e2073a72907bdb890413f877d55886e905e1d0279d1",
+      "operationalAdjacentBlockSwapSpike": "db3e282d0d0c7b6f40b9ba42b88165ffc6752e27f4d4076dc7e8210496f3d6b8",
+      "selectOperationalCanonicalPermutationSpike": "b00063eacf339b58828eac5829cebc66fc7265f3518be459af0602463b6fbae7",
+      "canonicalSchedulesConvergeSpike": "0e8a177ea7bb4807cb77680cde29e75f7d37224711cc51cf7bf6636426690dd9",
+      "replayedCanonicalToOriginalEndpointSpike": "377b08ff82e1e4212738bb00a45a088b1f0d8fd8bc8b54bf061c96f2f4891681"
+    },
+    "prohibitedAdditions": {
+      "\\bbelieve_me\\b": [],
+      "\\bassert_total\\b": [],
+      "^\\s*partial\\b": [],
+      "\\?\\w+": [],
+      "\\blet\\b": [],
+      "\\bwith\\b": [],
+      "\\bdeletionTheoremProof\\b": [],
+      "\\bpostulate\\b": [],
+      "\\b[A-Za-z_]\\w*@\\s*[\\(\\[]": []
+    },
+    "noCompiler": true,
+    "noStagedFiles": true,
+    "cleanTrackedTree": true,
+    "allowedUntrackedOnly": true
+  },
+  "compilerSummary": {
+    "checks": 47,
+    "ordinaryPasses": 36,
+    "intendedNegativePasses": 0,
+    "rejectedOrInterrupted": 11,
+    "serialized": true,
+    "oneNewDeclarationPerInvocation": false,
+    "workflowViolations": [
+      {
+        "unit": "B12-1",
+        "detail": "Two unaccepted declarations: premature B12 invocation; failed B11 commit dfc933e reverted cdaee57."
+      }
+    ],
+    "seededPackageBuilds": 3,
+    "units": [
+      {
+        "unit": "A1-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.041268290951848,
+        "commits": [
+          "ab0f080e26dd2ac2e14d20ea53e7e03ed526c244"
+        ]
+      },
+      {
+        "unit": "A2-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 1.0420985841192305,
+        "commits": []
+      },
+      {
+        "unit": "A2-2",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.0927016669884324,
+        "commits": [
+          "f6c87dccc6e85fe3b7b7212748b2f87368c7d10f"
+        ]
+      },
+      {
+        "unit": "A3-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.098959666211158,
+        "commits": [
+          "0b6d288d57aea3a52ac240b7df33d995c4c5a079"
+        ]
+      },
+      {
+        "unit": "A4-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.105015916749835,
+        "commits": [
+          "9f73ac995ecf0caafbd3f12713ba340f6d4f0339"
+        ]
+      },
+      {
+        "unit": "A5-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.066029999870807,
+        "commits": [
+          "f0abb880ba87aa9ce37283f223e21baea32963f6"
+        ]
+      },
+      {
+        "unit": "A6-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 2.084155833348632,
+        "commits": []
+      },
+      {
+        "unit": "A6-2",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.0698858750984073,
+        "commits": [
+          "519cb791ca3041e2a5e56469fbe84ade41809574"
+        ]
+      },
+      {
+        "unit": "A7-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.0717432079836726,
+        "commits": [
+          "1be77ecc5fc6500dc9738d504736c730255b51e1"
+        ]
+      },
+      {
+        "unit": "A8-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.07909404207021,
+        "commits": [
+          "d307a1e9164ef135aee43f5b3fcce0eae9dc03a7"
+        ]
+      },
+      {
+        "unit": "A9-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 13.524587292224169,
+        "commits": [
+          "5b517624ab4b611fe205dcffff6fd7cdcb9f5b8c"
+        ]
+      },
+      {
+        "unit": "A10-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 13.500769041944295,
+        "commits": [
+          "cd746150d67811f1131eb690c57e34a2a95cf2e5"
+        ]
+      },
+      {
+        "unit": "A11-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 11.391508999746293,
+        "commits": []
+      },
+      {
+        "unit": "A11-2",
+        "passed": false,
+        "fresh": true,
+        "seconds": 1.0547740831971169,
+        "commits": []
+      },
+      {
+        "unit": "A11-3",
+        "passed": false,
+        "fresh": true,
+        "seconds": 12.449332291726023,
+        "commits": []
+      },
+      {
+        "unit": "A11-restored",
+        "passed": true,
+        "fresh": true,
+        "seconds": 14.554884542245418,
+        "commits": [
+          "cd746150d67811f1131eb690c57e34a2a95cf2e5"
+        ]
+      },
+      {
+        "unit": "A-stop-package",
+        "passed": true,
+        "fresh": true,
+        "seconds": 16.604906334076077,
+        "commits": []
+      },
+      {
+        "unit": "B1-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.123586291912943,
+        "commits": [
+          "de79e471a8841cbc12ae079c59832d452a9035ac"
+        ]
+      },
+      {
+        "unit": "B2-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.0840881671756506,
+        "commits": [
+          "a69ce2158ce4013463be18ba2c66389d05417f55"
+        ]
+      },
+      {
+        "unit": "B3-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.0710835000500083,
+        "commits": [
+          "25c5374d4a56e70f3dc866eafcb4a7edaf2a8c33"
+        ]
+      },
+      {
+        "unit": "B4-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.0777139170095325,
+        "commits": [
+          "96cd19c4793b50e2cd2aeab4936dbb53dc07eca3"
+        ]
+      },
+      {
+        "unit": "B5-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.086558791808784,
+        "commits": [
+          "751a987859180a4c6c3002e700a6ff14667e1b5d"
+        ]
+      },
+      {
+        "unit": "B6-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1303495410829782,
+        "commits": [
+          "65cb50cdf8d1f609bd319478e10ec1cb14ac48a5"
+        ]
+      },
+      {
+        "unit": "B7-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 2.1013563750311732,
+        "commits": []
+      },
+      {
+        "unit": "B7-2",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.142165833618492,
+        "commits": [
+          "b518843cf0644536d9e033c3aa059e439dc7e890"
+        ]
+      },
+      {
+        "unit": "B8-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1383072920143604,
+        "commits": [
+          "af6c689a21a65f42c4847e02b8995b2655dce5ad"
+        ]
+      },
+      {
+        "unit": "B9-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1404117504134774,
+        "commits": [
+          "544f1e85af40658260d5b7483fac8b91dae00c1c"
+        ]
+      },
+      {
+        "unit": "B10-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1352244168519974,
+        "commits": [
+          "0fbdc4789c96dda4584fa74089a0d824a5d5ddf6",
+          "cdaee5774333675b1ede9fe7bdfbd016a9852fe4"
+        ]
+      },
+      {
+        "unit": "B11-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 2.081511542201042,
+        "commits": [
+          "dfc933ea539570d263a907e69b5357dc15e108a2"
+        ]
+      },
+      {
+        "unit": "B12-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 2.0999826658517122,
+        "commits": []
+      },
+      {
+        "unit": "B11-2",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1195991248823702,
+        "commits": [
+          "19a798c3cddecb9fce936b1a07be90f176b1f7e9"
+        ]
+      },
+      {
+        "unit": "B12-2",
+        "passed": false,
+        "fresh": true,
+        "seconds": 2.081420375034213,
+        "commits": []
+      },
+      {
+        "unit": "B13-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.128472958691418,
+        "commits": [
+          "364924d8e0fa6b68e832ecb3b37cc7e9f11614a8"
+        ]
+      },
+      {
+        "unit": "B12-3",
+        "passed": false,
+        "fresh": true,
+        "seconds": 2.0946692917495966,
+        "commits": []
+      },
+      {
+        "unit": "B12-restored",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.148720375262201,
+        "commits": [
+          "364924d8e0fa6b68e832ecb3b37cc7e9f11614a8"
+        ]
+      },
+      {
+        "unit": "B-stop-package",
+        "passed": true,
+        "fresh": true,
+        "seconds": 16.640639916993678,
+        "commits": []
+      },
+      {
+        "unit": "A12-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0420882920734584,
+        "commits": [
+          "5f835ac01e99337e6f3cad04802d739d9f897355"
+        ]
+      },
+      {
+        "unit": "A13-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0320139159448445,
+        "commits": [
+          "43386eaf7db95f10c7dedfc516d122fad1a6ff6d"
+        ]
+      },
+      {
+        "unit": "A14-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0680926661007106,
+        "commits": [
+          "1e87c3b0f24ff5707b9339ac75bcc0c8c50fe7c3"
+        ]
+      },
+      {
+        "unit": "A15-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0602269158698618,
+        "commits": [
+          "51eb5ef832849277434528ea2f5a7eb332dfe6db"
+        ]
+      },
+      {
+        "unit": "A16-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 40.52677175030112,
+        "commits": []
+      },
+      {
+        "unit": "A16-2",
+        "passed": true,
+        "fresh": true,
+        "seconds": 32.15531049994752,
+        "commits": [
+          "95b4ab595c5e86851fb0de8d63cd6ff882367626"
+        ]
+      },
+      {
+        "unit": "C-probe-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.0798156247474253,
+        "commits": []
+      },
+      {
+        "unit": "final-installed",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0349960420280695,
+        "commits": [
+          "51eb5ef832849277434528ea2f5a7eb332dfe6db"
+        ]
+      },
+      {
+        "unit": "final-paired",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.139593416824937,
+        "commits": [
+          "364924d8e0fa6b68e832ecb3b37cc7e9f11614a8"
+        ]
+      },
+      {
+        "unit": "final-negative-capital",
+        "passed": true,
+        "fresh": true,
+        "seconds": 32.18751324992627,
+        "commits": [
+          "95b4ab595c5e86851fb0de8d63cd6ff882367626"
+        ]
+      },
+      {
+        "unit": "final-package",
+        "passed": true,
+        "fresh": true,
+        "seconds": 16.610327458009124,
+        "commits": []
+      }
+    ]
+  },
+  "finalChecks": [
+    {
+      "unit": "final-installed",
+      "path": "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr"
+      ],
+      "start": "2026-09-07T15:00:02.933119+00:00",
+      "end": "2026-09-07T15:00:03.968285+00:00",
+      "seconds": 1.0349960420280695,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 0,
+      "sourceSHA256": "77eef9aac99afa4e9c2f0dde5d8ae00e1e74e27cde0fc5be6d4211238f2e0c47",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "transcript": "1/1: Building DGamma.CP5ObservedInstalledLifecycleSpike (research/DGamma/CP5ObservedInstalledLifecycleSpike.idr)\n"
+    },
+    {
+      "unit": "final-paired",
+      "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+      ],
+      "start": "2026-09-07T15:00:04.038334+00:00",
+      "end": "2026-09-07T15:00:07.178167+00:00",
+      "seconds": 3.139593416824937,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 3912224,
+      "sourceSHA256": "14b0c7ac908bfbb2ce2e7bfc8897c5fa4430425f68d8cae11fed66624d6e29bb",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n"
+    },
+    {
+      "unit": "final-negative-capital",
+      "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--source-dir",
+        "research-tests",
+        "--check",
+        "research-tests/DGamma/R181O19SafetyCompletion.idr"
+      ],
+      "start": "2026-09-07T15:00:07.241375+00:00",
+      "end": "2026-09-07T15:00:39.429418+00:00",
+      "seconds": 32.18751324992627,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 1525792,
+      "sourceSHA256": "821680d533db389cbaa25af65c8f180fc0224de94c9f6c9d9cfed6260d1ad180",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n"
+    },
+    {
+      "unit": "final-package",
+      "path": "package",
+      "command": [
+        "idris2",
+        "--build",
+        "dgamma.ipkg"
+      ],
+      "start": "2026-09-07T15:00:39.492145+00:00",
+      "end": "2026-09-07T15:00:56.102825+00:00",
+      "seconds": 16.610327458009124,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 257344,
+      "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "transcript": ""
+    }
+  ],
+  "reviewGate": "required; independent reviewer not run by child",
+  "supervisorStopGates": [
+    "A11 STOP ratified; five distinct A units after B authorized",
+    "B12 STOP ratified; B14/B15 explicitly unused; no fourth attempt"
+  ],
+  "budget": {
+    "A": "16/16 consumed; A11 removed",
+    "B": "13/15 consumed; B12 removed; B14/B15 blocked",
+    "C": "1/3 disposable type checks; source removed"
+  },
+  "workflowConformance": false
+}
